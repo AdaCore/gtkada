@@ -34,6 +34,7 @@ pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;            use Gdk.Types;
+with Glib;                 use Glib;
 with Glib.Object;          use Glib.Object;
 with Gtk.Enums;            use Gtk.Enums;
 with Interfaces.C.Strings; use Interfaces.C.Strings;
@@ -42,7 +43,7 @@ package Gtk.Binding_Set is
 
    type Gtk_Binding_Set is record
       Set_Name : Interfaces.C.Strings.chars_ptr;
-      Priority : Gint := 0;
+      Priority : Glib.Gint := 0;
       Widget_Path_Pspecs : System.Address := System.Null_Address;
       Widget_Class_Pspecs : System.Address := System.Null_Address;
       Class_Branch_Pspecs : System.Address := System.Null_Address;

@@ -354,8 +354,8 @@ package Gtk.Label is
 
    procedure Get_Layout_Offsets
       (Label : not null access Gtk_Label_Record;
-       X     : out Gint;
-       Y     : out Gint);
+       X     : out Glib.Gint;
+       Y     : out Glib.Gint);
    --  Obtains the coordinates where the label will draw the
    --  Pango.Layout.Pango_Layout representing the text in the label; useful to
    --  convert mouse events into coordinates inside the
@@ -402,14 +402,15 @@ package Gtk.Label is
    --  Since: gtk+ 2.10
    --  "wrap_mode": the line wrapping mode
 
-   function Get_Lines (Label : not null access Gtk_Label_Record) return Gint;
+   function Get_Lines
+      (Label : not null access Gtk_Label_Record) return Glib.Gint;
    --  Gets the number of lines to which an ellipsized, wrapping label should
    --  be limited. See Gtk.Label.Set_Lines.
    --  Since: gtk+ 3.10
 
    procedure Set_Lines
       (Label : not null access Gtk_Label_Record;
-       Lines : Gint);
+       Lines : Glib.Gint);
    --  Sets the number of lines to which an ellipsized, wrapping label should
    --  be limited. This has no effect if the label is not wrapping or
    --  ellipsized. Set this to -1 if you don't want to limit the number of
@@ -418,14 +419,14 @@ package Gtk.Label is
    --  "lines": the desired number of lines, or -1
 
    function Get_Max_Width_Chars
-      (Label : not null access Gtk_Label_Record) return Gint;
+      (Label : not null access Gtk_Label_Record) return Glib.Gint;
    --  Retrieves the desired maximum width of Label, in characters. See
    --  Gtk.Label.Set_Width_Chars.
    --  Since: gtk+ 2.6
 
    procedure Set_Max_Width_Chars
       (Label   : not null access Gtk_Label_Record;
-       N_Chars : Gint);
+       N_Chars : Glib.Gint);
    --  Sets the desired maximum width in characters of Label to N_Chars.
    --  Since: gtk+ 2.6
    --  "n_chars": the new desired maximum width, in characters.
@@ -473,8 +474,8 @@ package Gtk.Label is
 
    procedure Get_Selection_Bounds
       (Label         : not null access Gtk_Label_Record;
-       Start         : out Gint;
-       The_End       : out Gint;
+       Start         : out Glib.Gint;
+       The_End       : out Glib.Gint;
        Has_Selection : out Boolean);
    --  Gets the selected range of characters in the label, returning True if
    --  there's a selection.
@@ -546,22 +547,22 @@ package Gtk.Label is
    --  "setting": True if underlines in the text indicate mnemonics
 
    function Get_Width_Chars
-      (Label : not null access Gtk_Label_Record) return Gint;
+      (Label : not null access Gtk_Label_Record) return Glib.Gint;
    --  Retrieves the desired width of Label, in characters. See
    --  Gtk.Label.Set_Width_Chars.
    --  Since: gtk+ 2.6
 
    procedure Set_Width_Chars
       (Label   : not null access Gtk_Label_Record;
-       N_Chars : Gint);
+       N_Chars : Glib.Gint);
    --  Sets the desired width in characters of Label to N_Chars.
    --  Since: gtk+ 2.6
    --  "n_chars": the new desired width, in characters.
 
    procedure Select_Region
       (Label        : not null access Gtk_Label_Record;
-       Start_Offset : Gint := -1;
-       End_Offset   : Gint := -1);
+       Start_Offset : Glib.Gint := -1;
+       End_Offset   : Glib.Gint := -1);
    --  Selects a range of characters in the label, if the label is selectable.
    --  See Gtk.Label.Set_Selectable. If the label is not selectable, this
    --  function has no effect. If Start_Offset or End_Offset are -1, then the
@@ -781,13 +782,13 @@ package Gtk.Label is
    type Cb_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void is not null access procedure
      (Self             : access Gtk_Label_Record'Class;
       Step             : Gtk.Enums.Gtk_Movement_Step;
-      Count            : Gint;
+      Count            : Glib.Gint;
       Extend_Selection : Boolean);
 
    type Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void is not null access procedure
      (Self             : access Glib.Object.GObject_Record'Class;
       Step             : Gtk.Enums.Gtk_Movement_Step;
-      Count            : Gint;
+      Count            : Glib.Gint;
       Extend_Selection : Boolean);
 
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";

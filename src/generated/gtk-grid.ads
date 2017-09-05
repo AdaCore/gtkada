@@ -80,10 +80,10 @@ package Gtk.Grid is
    procedure Attach
       (Self   : not null access Gtk_Grid_Record;
        Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Left   : Gint;
-       Top    : Gint;
-       Width  : Gint := 1;
-       Height : Gint := 1);
+       Left   : Glib.Gint;
+       Top    : Glib.Gint;
+       Width  : Glib.Gint := 1;
+       Height : Glib.Gint := 1);
    --  Adds a widget to the grid.
    --  The position of Child is determined by Left and Top. The number of
    --  "cells" that Child will occupy is determined by Width and Height.
@@ -98,8 +98,8 @@ package Gtk.Grid is
        Child   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Sibling : access Gtk.Widget.Gtk_Widget_Record'Class;
        Side    : Gtk.Enums.Gtk_Position_Type;
-       Width   : Gint := 1;
-       Height  : Gint := 1);
+       Width   : Glib.Gint := 1;
+       Height  : Glib.Gint := 1);
    --  Adds a widget to the grid.
    --  The widget is placed next to Sibling, on the side determined by Side.
    --  When Sibling is null, the widget is placed in row (for left or right
@@ -115,13 +115,13 @@ package Gtk.Grid is
    --  "height": the number of rows that Child will span
 
    function Get_Baseline_Row
-      (Self : not null access Gtk_Grid_Record) return Gint;
+      (Self : not null access Gtk_Grid_Record) return Glib.Gint;
    --  Returns which row defines the global baseline of Grid.
    --  Since: gtk+ 3.10
 
    procedure Set_Baseline_Row
       (Self : not null access Gtk_Grid_Record;
-       Row  : Gint);
+       Row  : Glib.Gint);
    --  Sets which row defines the global baseline for the entire grid. Each
    --  row in the grid can have its own local baseline, but only one of those
    --  is global, meaning it will be the baseline in the parent of the Grid.
@@ -130,8 +130,8 @@ package Gtk.Grid is
 
    function Get_Child_At
       (Self : not null access Gtk_Grid_Record;
-       Left : Gint;
-       Top  : Gint) return Gtk.Widget.Gtk_Widget;
+       Left : Glib.Gint;
+       Top  : Glib.Gint) return Gtk.Widget.Gtk_Widget;
    --  Gets the child of Grid whose area covers the grid cell whose upper left
    --  corner is at Left, Top.
    --  Since: gtk+ 3.2
@@ -160,7 +160,7 @@ package Gtk.Grid is
 
    function Get_Row_Baseline_Position
       (Self : not null access Gtk_Grid_Record;
-       Row  : Gint) return Gtk.Enums.Gtk_Baseline_Position;
+       Row  : Glib.Gint) return Gtk.Enums.Gtk_Baseline_Position;
    --  Returns the baseline position of Row as set by
    --  Gtk.Grid.Set_Row_Baseline_Position or the default value
    --  Gtk.Enums.Baseline_Position_Center.
@@ -169,7 +169,7 @@ package Gtk.Grid is
 
    procedure Set_Row_Baseline_Position
       (Self : not null access Gtk_Grid_Record;
-       Row  : Gint;
+       Row  : Glib.Gint;
        Pos  : Gtk.Enums.Gtk_Baseline_Position);
    --  Sets how the baseline should be positioned on Row of the grid, in case
    --  that row is assigned more space than is requested.
@@ -199,7 +199,7 @@ package Gtk.Grid is
 
    procedure Insert_Column
       (Self     : not null access Gtk_Grid_Record;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Inserts a column at the specified position.
    --  Children which are attached at or to the right of this position are
    --  moved one column to the right. Children which span across this position
@@ -223,7 +223,7 @@ package Gtk.Grid is
 
    procedure Insert_Row
       (Self     : not null access Gtk_Grid_Record;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Inserts a row at the specified position.
    --  Children which are attached at or below this position are moved one row
    --  down. Children which span across this position are grown to span the new
@@ -233,7 +233,7 @@ package Gtk.Grid is
 
    procedure Remove_Column
       (Self     : not null access Gtk_Grid_Record;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Removes a column from the grid.
    --  Children that are placed in this column are removed, spanning children
    --  that overlap this column have their width reduced by one, and children
@@ -243,7 +243,7 @@ package Gtk.Grid is
 
    procedure Remove_Row
       (Self     : not null access Gtk_Grid_Record;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Removes a row from the grid.
    --  Children that are placed in this row are removed, spanning children
    --  that overlap this row have their height reduced by one, and children

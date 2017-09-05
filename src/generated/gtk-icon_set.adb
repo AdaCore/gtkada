@@ -245,14 +245,14 @@ package body Gtk.Icon_Set is
       (Self       : Gtk_Icon_Set;
        Context    : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
        Size       : Gtk.Enums.Gtk_Icon_Size;
-       Scale      : Gint;
+       Scale      : Glib.Gint;
        For_Window : Gdk.Gdk_Window) return Cairo.Cairo_Surface
    is
       function Internal
          (Self       : System.Address;
           Context    : System.Address;
           Size       : Gtk.Enums.Gtk_Icon_Size;
-          Scale      : Gint;
+          Scale      : Glib.Gint;
           For_Window : Gdk.Gdk_Window) return Cairo.Cairo_Surface;
       pragma Import (C, Internal, "gtk_icon_set_render_icon_surface");
    begin

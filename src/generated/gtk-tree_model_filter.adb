@@ -35,7 +35,7 @@ package body Gtk.Tree_Model_Filter is
 
    procedure C_Gtk_Tree_Model_Filter_Set_Modify_Func
       (Self      : System.Address;
-       N_Columns : Gint;
+       N_Columns : Glib.Gint;
        Types     : Glib.GType_Array;
        Func      : System.Address;
        Data      : System.Address;
@@ -120,7 +120,7 @@ package body Gtk.Tree_Model_Filter is
       (Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter   : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Value  : in out Glib.Values.GValue;
-       Column : Gint;
+       Column : Glib.Gint;
        Data   : System.Address);
    pragma Convention (C, Internal_Gtk_Tree_Model_Filter_Modify_Func);
    --  "model": the Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter
@@ -161,7 +161,7 @@ package body Gtk.Tree_Model_Filter is
       (Model  : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter   : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Value  : in out Glib.Values.GValue;
-       Column : Gint;
+       Column : Glib.Gint;
        Data   : System.Address)
    is
       Func : constant Gtk_Tree_Model_Filter_Modify_Func := To_Gtk_Tree_Model_Filter_Modify_Func (Data);
@@ -472,7 +472,7 @@ package body Gtk.Tree_Model_Filter is
          (Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter   : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Value  : in out Glib.Values.GValue;
-          Column : Gint;
+          Column : Glib.Gint;
           Data   : System.Address);
       pragma Convention (C, Internal_Cb);
       --  A function which calculates display values from raw values in the
@@ -496,7 +496,7 @@ package body Gtk.Tree_Model_Filter is
          (Model  : Gtk.Tree_Model.Gtk_Tree_Model;
           Iter   : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Value  : in out Glib.Values.GValue;
-          Column : Gint;
+          Column : Glib.Gint;
           Data   : System.Address)
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
@@ -532,9 +532,9 @@ package body Gtk.Tree_Model_Filter is
 
    procedure Set_Visible_Column
       (Self   : not null access Gtk_Tree_Model_Filter_Record;
-       Column : Gint)
+       Column : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Column : Gint);
+      procedure Internal (Self : System.Address; Column : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_model_filter_set_visible_column");
    begin
       Internal (Get_Object (Self), Column);
@@ -679,11 +679,11 @@ package body Gtk.Tree_Model_Filter is
 
    function Get_Column_Type
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
-       Index      : Gint) return GType
+       Index      : Glib.Gint) return GType
    is
       function Internal
          (Tree_Model : System.Address;
-          Index      : Gint) return GType;
+          Index      : Glib.Gint) return GType;
       pragma Import (C, Internal, "gtk_tree_model_get_column_type");
    begin
       return Internal (Get_Object (Tree_Model), Index);
@@ -776,9 +776,9 @@ package body Gtk.Tree_Model_Filter is
 
    function Get_N_Columns
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record)
-       return Gint
+       return Glib.Gint
    is
-      function Internal (Tree_Model : System.Address) return Gint;
+      function Internal (Tree_Model : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_model_get_n_columns");
    begin
       return Internal (Get_Object (Tree_Model));
@@ -825,13 +825,13 @@ package body Gtk.Tree_Model_Filter is
    procedure Get_Value
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       Column     : Gint;
+       Column     : Glib.Gint;
        Value      : out Glib.Values.GValue)
    is
       procedure Internal
          (Tree_Model : System.Address;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Column     : Gint;
+          Column     : Glib.Gint;
           Value      : out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_tree_model_get_value");
    begin
@@ -861,7 +861,7 @@ package body Gtk.Tree_Model_Filter is
    function N_Children
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter)
-       return Gint
+       return Glib.Gint
    is
       function Internal
           (Tree_Model : Gtk_Tree_Model; Iter : System.Address) return Gint;
@@ -897,7 +897,7 @@ package body Gtk.Tree_Model_Filter is
    function Nth_Child
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
        Parent     : Gtk.Tree_Model.Gtk_Tree_Iter;
-       N          : Gint) return Gtk.Tree_Model.Gtk_Tree_Iter
+       N          : Glib.Gint) return Gtk.Tree_Model.Gtk_Tree_Iter
    is
       function Internal
         (Tree_Model : Gtk_Tree_Model;
@@ -1086,14 +1086,14 @@ package body Gtk.Tree_Model_Filter is
        Path       : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
        New_Order  : Gint_Array;
-       Length     : Gint)
+       Length     : Glib.Gint)
    is
       procedure Internal
          (Tree_Model : System.Address;
           Path       : System.Address;
           Iter       : System.Address;
           New_Order  : System.Address;
-          Length     : Gint);
+          Length     : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_model_rows_reordered_with_length");
    begin
       Internal (Get_Object (Tree_Model), Get_Object (Path), Iter_Or_Null (Iter'Address), New_Order (New_Order'First)'Address, Length);

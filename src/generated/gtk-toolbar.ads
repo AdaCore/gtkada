@@ -83,8 +83,8 @@ package Gtk.Toolbar is
 
    function Get_Drop_Index
       (Toolbar : not null access Gtk_Toolbar_Record;
-       X       : Gint;
-       Y       : Gint) return Gint;
+       X       : Glib.Gint;
+       Y       : Glib.Gint) return Glib.Gint;
    --  Returns the position corresponding to the indicated point on Toolbar.
    --  This is useful when dragging items to the toolbar: this function returns
    --  the position a new item should be inserted.
@@ -113,20 +113,20 @@ package Gtk.Toolbar is
    function Get_Item_Index
       (Toolbar : not null access Gtk_Toolbar_Record;
        Item    : not null access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class)
-       return Gint;
+       return Glib.Gint;
    --  Returns the position of Item on the toolbar, starting from 0. It is an
    --  error if Item is not a child of the toolbar.
    --  Since: gtk+ 2.4
    --  "item": a Gtk.Tool_Item.Gtk_Tool_Item that is a child of Toolbar
 
    function Get_N_Items
-      (Toolbar : not null access Gtk_Toolbar_Record) return Gint;
+      (Toolbar : not null access Gtk_Toolbar_Record) return Glib.Gint;
    --  Returns the number of items on the toolbar.
    --  Since: gtk+ 2.4
 
    function Get_Nth_Item
       (Toolbar : not null access Gtk_Toolbar_Record;
-       N       : Gint) return Gtk.Tool_Item.Gtk_Tool_Item;
+       N       : Glib.Gint) return Gtk.Tool_Item.Gtk_Tool_Item;
    --  Returns the N'th item on Toolbar, or null if the toolbar does not
    --  contain an N'th item.
    --  Since: gtk+ 2.4
@@ -170,7 +170,7 @@ package Gtk.Toolbar is
    procedure Insert
       (Toolbar : not null access Gtk_Toolbar_Record;
        Item    : not null access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class;
-       Pos     : Gint := -1);
+       Pos     : Glib.Gint := -1);
    --  Insert a Gtk.Tool_Item.Gtk_Tool_Item into the toolbar at position Pos.
    --  If Pos is 0 the item is prepended to the start of the toolbar. If Pos is
    --  negative, the item is appended to the end of the toolbar.
@@ -181,7 +181,7 @@ package Gtk.Toolbar is
    procedure Set_Drop_Highlight_Item
       (Toolbar   : not null access Gtk_Toolbar_Record;
        Tool_Item : access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class;
-       Index     : Gint);
+       Index     : Glib.Gint);
    --  Highlights Toolbar to give an idea of what it would look like if Item
    --  was added to Toolbar at the position indicated by Index_. If Item is
    --  null, highlighting is turned off. In that case Index_ is ignored.
@@ -306,15 +306,15 @@ package Gtk.Toolbar is
 
    type Cb_Gtk_Toolbar_Gint_Gint_Gint_Boolean is not null access function
      (Self   : access Gtk_Toolbar_Record'Class;
-      X      : Gint;
-      Y      : Gint;
-      Button : Gint) return Boolean;
+      X      : Glib.Gint;
+      Y      : Glib.Gint;
+      Button : Glib.Gint) return Boolean;
 
    type Cb_GObject_Gint_Gint_Gint_Boolean is not null access function
      (Self   : access Glib.Object.GObject_Record'Class;
-      X      : Gint;
-      Y      : Gint;
-      Button : Gint) return Boolean;
+      X      : Glib.Gint;
+      Y      : Glib.Gint;
+      Button : Glib.Gint) return Boolean;
 
    Signal_Popup_Context_Menu : constant Glib.Signal_Name := "popup-context-menu";
    procedure On_Popup_Context_Menu

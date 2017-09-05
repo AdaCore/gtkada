@@ -366,7 +366,7 @@ package Gtk.Cell_View is
       (Cell_Layout : not null access Gtk_Cell_View_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint);
+       Column      : Glib.Gint);
 
    procedure Clear (Cell_Layout : not null access Gtk_Cell_View_Record);
 
@@ -391,7 +391,7 @@ package Gtk.Cell_View is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Cell_View_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint);
+       Position    : Glib.Gint);
 
    function Get_Orientation
       (Self : not null access Gtk_Cell_View_Record)

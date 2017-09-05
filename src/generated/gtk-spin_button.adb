@@ -283,9 +283,10 @@ package body Gtk.Spin_Button is
    ----------------------
 
    function Get_Value_As_Int
-      (Spin_Button : not null access Gtk_Spin_Button_Record) return Gint
+      (Spin_Button : not null access Gtk_Spin_Button_Record)
+       return Glib.Gint
    is
-      function Internal (Spin_Button : System.Address) return Gint;
+      function Internal (Spin_Button : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_spin_button_get_value_as_int");
    begin
       return Internal (Get_Object (Spin_Button));
@@ -522,13 +523,13 @@ package body Gtk.Spin_Button is
 
    procedure Delete_Text
       (Editable  : not null access Gtk_Spin_Button_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1)
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1)
    is
       procedure Internal
          (Editable  : System.Address;
-          Start_Pos : Gint;
-          End_Pos   : Gint);
+          Start_Pos : Glib.Gint;
+          End_Pos   : Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_delete_text");
    begin
       Internal (Get_Object (Editable), Start_Pos, End_Pos);
@@ -553,13 +554,13 @@ package body Gtk.Spin_Button is
 
    function Get_Chars
       (Editable  : not null access Gtk_Spin_Button_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1) return UTF8_String
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1) return UTF8_String
    is
       function Internal
          (Editable  : System.Address;
-          Start_Pos : Gint;
-          End_Pos   : Gint) return Interfaces.C.Strings.chars_ptr;
+          Start_Pos : Glib.Gint;
+          End_Pos   : Glib.Gint) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_editable_get_chars");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Editable), Start_Pos, End_Pos));
@@ -598,9 +599,9 @@ package body Gtk.Spin_Button is
    ------------------
 
    function Get_Position
-      (Editable : not null access Gtk_Spin_Button_Record) return Gint
+      (Editable : not null access Gtk_Spin_Button_Record) return Glib.Gint
    is
-      function Internal (Editable : System.Address) return Gint;
+      function Internal (Editable : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_editable_get_position");
    begin
       return Internal (Get_Object (Editable));
@@ -612,17 +613,17 @@ package body Gtk.Spin_Button is
 
    procedure Get_Selection_Bounds
       (Editable      : not null access Gtk_Spin_Button_Record;
-       Start_Pos     : out Gint;
-       End_Pos       : out Gint;
+       Start_Pos     : out Glib.Gint;
+       End_Pos       : out Glib.Gint;
        Has_Selection : out Boolean)
    is
       function Internal
          (Editable      : System.Address;
-          Acc_Start_Pos : access Gint;
-          Acc_End_Pos   : access Gint) return Glib.Gboolean;
+          Acc_Start_Pos : access Glib.Gint;
+          Acc_End_Pos   : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_editable_get_selection_bounds");
-      Acc_Start_Pos : aliased Gint;
-      Acc_End_Pos   : aliased Gint;
+      Acc_Start_Pos : aliased Glib.Gint;
+      Acc_End_Pos   : aliased Glib.Gint;
       Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Editable), Acc_Start_Pos'Access, Acc_End_Pos'Access);
@@ -638,14 +639,14 @@ package body Gtk.Spin_Button is
    procedure Insert_Text
       (Editable        : not null access Gtk_Spin_Button_Record;
        New_Text        : UTF8_String;
-       New_Text_Length : Gint;
-       Position        : in out Gint)
+       New_Text_Length : Glib.Gint;
+       Position        : in out Glib.Gint)
    is
       procedure Internal
          (Editable        : System.Address;
           New_Text        : Interfaces.C.Strings.chars_ptr;
-          New_Text_Length : Gint;
-          Position        : in out Gint);
+          New_Text_Length : Glib.Gint;
+          Position        : in out Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_insert_text");
       Tmp_New_Text : Interfaces.C.Strings.chars_ptr := New_String (New_Text);
    begin
@@ -685,13 +686,13 @@ package body Gtk.Spin_Button is
 
    procedure Select_Region
       (Editable  : not null access Gtk_Spin_Button_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1)
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1)
    is
       procedure Internal
          (Editable  : System.Address;
-          Start_Pos : Gint;
-          End_Pos   : Gint);
+          Start_Pos : Glib.Gint;
+          End_Pos   : Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_select_region");
    begin
       Internal (Get_Object (Editable), Start_Pos, End_Pos);
@@ -735,9 +736,9 @@ package body Gtk.Spin_Button is
 
    procedure Set_Position
       (Editable : not null access Gtk_Spin_Button_Record;
-       Position : Gint)
+       Position : Glib.Gint)
    is
-      procedure Internal (Editable : System.Address; Position : Gint);
+      procedure Internal (Editable : System.Address; Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_set_position");
    begin
       Internal (Get_Object (Editable), Position);
@@ -1121,7 +1122,7 @@ package body Gtk.Spin_Button is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdouble_Gint := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Gint := H (Obj, Unchecked_To_Gdouble_Access (Params, 1));
+      V   : aliased Glib.Gint := H (Obj, Unchecked_To_Gdouble_Access (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
       exception when E : others => Process_Exception (E);
@@ -1203,7 +1204,7 @@ package body Gtk.Spin_Button is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Spin_Button_Gdouble_Gint := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Spin_Button := Gtk_Spin_Button (Unchecked_To_Object (Params, 0));
-      V   : aliased Gint := H (Obj, Unchecked_To_Gdouble_Access (Params, 1));
+      V   : aliased Glib.Gint := H (Obj, Unchecked_To_Gdouble_Access (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
       exception when E : others => Process_Exception (E);

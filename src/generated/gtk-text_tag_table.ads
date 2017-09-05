@@ -123,7 +123,7 @@ package Gtk.Text_Tag_Table is
    end Foreach_User_Data;
 
    function Get_Size
-      (Table : not null access Gtk_Text_Tag_Table_Record) return Gint;
+      (Table : not null access Gtk_Text_Tag_Table_Record) return Glib.Gint;
    --  Returns the size of the table (number of tags)
 
    function Lookup

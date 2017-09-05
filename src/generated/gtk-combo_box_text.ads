@@ -161,7 +161,7 @@ package Gtk.Combo_Box_Text is
 
    procedure Insert
       (Self     : not null access Gtk_Combo_Box_Text_Record;
-       Position : Gint;
+       Position : Glib.Gint;
        Id       : UTF8_String := "";
        Text     : UTF8_String);
    --  Inserts Text at Position in the list of strings stored in Combo_Box. If
@@ -175,7 +175,7 @@ package Gtk.Combo_Box_Text is
 
    procedure Insert_Text
       (Self     : not null access Gtk_Combo_Box_Text_Record;
-       Position : Gint;
+       Position : Glib.Gint;
        Text     : UTF8_String);
    --  Inserts Text at Position in the list of strings stored in Combo_Box.
    --  If Position is negative then Text is appended.
@@ -208,7 +208,7 @@ package Gtk.Combo_Box_Text is
 
    procedure Remove
       (Self     : not null access Gtk_Combo_Box_Text_Record;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Removes the string at Position from Combo_Box.
    --  Since: gtk+ 2.24
    --  "position": Index of the item to remove
@@ -288,7 +288,7 @@ package Gtk.Combo_Box_Text is
       (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint);
+       Column      : Glib.Gint);
 
    procedure Clear (Cell_Layout : not null access Gtk_Combo_Box_Text_Record);
 
@@ -313,7 +313,7 @@ package Gtk.Combo_Box_Text is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint);
+       Position    : Glib.Gint);
 
    ----------------
    -- Interfaces --

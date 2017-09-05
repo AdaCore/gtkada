@@ -389,9 +389,9 @@ package body Gtk.Style_Context is
    ---------------
 
    function Get_Scale
-      (Self : not null access Gtk_Style_Context_Record) return Gint
+      (Self : not null access Gtk_Style_Context_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_style_context_get_scale");
    begin
       return Internal (Get_Object (Self));
@@ -711,14 +711,14 @@ package body Gtk.Style_Context is
    procedure Scroll_Animations
       (Self   : not null access Gtk_Style_Context_Record;
        Window : Gdk.Gdk_Window;
-       Dx     : Gint;
-       Dy     : Gint)
+       Dx     : Glib.Gint;
+       Dy     : Glib.Gint)
    is
       procedure Internal
          (Self   : System.Address;
           Window : Gdk.Gdk_Window;
-          Dx     : Gint;
-          Dy     : Gint);
+          Dx     : Glib.Gint;
+          Dy     : Glib.Gint);
       pragma Import (C, Internal, "gtk_style_context_scroll_animations");
    begin
       Internal (Get_Object (Self), Window, Dx, Dy);
@@ -822,9 +822,9 @@ package body Gtk.Style_Context is
 
    procedure Set_Scale
       (Self  : not null access Gtk_Style_Context_Record;
-       Scale : Gint)
+       Scale : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Scale : Gint);
+      procedure Internal (Self : System.Address; Scale : Glib.Gint);
       pragma Import (C, Internal, "gtk_style_context_set_scale");
    begin
       Internal (Get_Object (Self), Scale);

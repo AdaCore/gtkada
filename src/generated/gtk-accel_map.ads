@@ -261,7 +261,7 @@ package Gtk.Accel_Map is
    --  "file_name": a file containing accelerator specifications, in the GLib
    --  file name encoding
 
-   procedure Load_Fd (Fd : Gint);
+   procedure Load_Fd (Fd : Glib.Gint);
    --  Filedescriptor variant of Gtk.Accel_Map.Load.
    --  Note that the file descriptor will not be closed by this function.
    --  "fd": a valid readable file descriptor
@@ -297,7 +297,7 @@ package Gtk.Accel_Map is
    --  "file_name": the name of the file to contain accelerator
    --  specifications, in the GLib file name encoding
 
-   procedure Save_Fd (Fd : Gint);
+   procedure Save_Fd (Fd : Glib.Gint);
    --  Filedescriptor variant of Gtk.Accel_Map.Save.
    --  Note that the file descriptor will not be closed by this function.
    --  "fd": a valid writable file descriptor

@@ -61,7 +61,7 @@ package Pango.Tabs is
 
    procedure Gdk_New
       (Self                : out Pango_Tab_Array;
-       Initial_Size        : Gint;
+       Initial_Size        : Glib.Gint;
        Positions_In_Pixels : Boolean);
    --  Creates an array of Initial_Size tab stops. Tab stops are specified in
    --  pixel units if Positions_In_Pixels is True, otherwise in Pango units.
@@ -70,7 +70,7 @@ package Pango.Tabs is
    --  "positions_in_pixels": whether positions are in pixel units
 
    function Pango_Tab_Array_New
-      (Initial_Size        : Gint;
+      (Initial_Size        : Glib.Gint;
        Positions_In_Pixels : Boolean) return Pango_Tab_Array;
    --  Creates an array of Initial_Size tab stops. Tab stops are specified in
    --  pixel units if Positions_In_Pixels is True, otherwise in Pango units.
@@ -95,14 +95,14 @@ package Pango.Tabs is
    --  Returns True if the tab positions are in pixels, False if they are in
    --  Pango units.
 
-   function Get_Size (Self : Pango_Tab_Array) return Gint;
+   function Get_Size (Self : Pango_Tab_Array) return Glib.Gint;
    --  Gets the number of tab stops in Tab_Array.
 
    procedure Get_Tab
       (Self      : Pango_Tab_Array;
-       Tab_Index : Gint;
+       Tab_Index : Glib.Gint;
        Alignment : out Pango_Tab_Align;
-       Location  : out Gint);
+       Location  : out Glib.Gint);
    --  Gets the alignment and position of a tab stop.
    --  "tab_index": tab stop index
    --  "alignment": location to store alignment, or null
@@ -110,16 +110,16 @@ package Pango.Tabs is
 
    procedure Set_Tab
       (Self      : Pango_Tab_Array;
-       Tab_Index : Gint;
+       Tab_Index : Glib.Gint;
        Alignment : Pango_Tab_Align;
-       Location  : Gint);
+       Location  : Glib.Gint);
    --  Sets the alignment and location of a tab stop. Alignment must always be
    --  PANGO_TAB_LEFT in the current implementation.
    --  "tab_index": the index of a tab stop
    --  "alignment": tab alignment
    --  "location": tab location in Pango units
 
-   procedure Resize (Self : Pango_Tab_Array; New_Size : Gint);
+   procedure Resize (Self : Pango_Tab_Array; New_Size : Glib.Gint);
    --  Resizes a tab array. You must subsequently initialize any tabs that
    --  were added as a result of growing the array.
    --  "new_size": new size of the array

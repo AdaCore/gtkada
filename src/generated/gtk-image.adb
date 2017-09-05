@@ -603,9 +603,9 @@ package body Gtk.Image is
    --------------------
 
    function Get_Pixel_Size
-      (Image : not null access Gtk_Image_Record) return Gint
+      (Image : not null access Gtk_Image_Record) return Glib.Gint
    is
-      function Internal (Image : System.Address) return Gint;
+      function Internal (Image : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_image_get_pixel_size");
    begin
       return Internal (Get_Object (Image));
@@ -798,9 +798,9 @@ package body Gtk.Image is
 
    procedure Set_Pixel_Size
       (Image      : not null access Gtk_Image_Record;
-       Pixel_Size : Gint)
+       Pixel_Size : Glib.Gint)
    is
-      procedure Internal (Image : System.Address; Pixel_Size : Gint);
+      procedure Internal (Image : System.Address; Pixel_Size : Glib.Gint);
       pragma Import (C, Internal, "gtk_image_set_pixel_size");
    begin
       Internal (Get_Object (Image), Pixel_Size);

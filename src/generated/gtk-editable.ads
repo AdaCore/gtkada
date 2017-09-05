@@ -94,8 +94,8 @@ package Gtk.Editable is
 
    procedure Delete_Text
       (Editable  : Gtk_Editable;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1);
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1);
    pragma Import (C, Delete_Text, "gtk_editable_delete_text");
    --  Deletes a sequence of characters. The characters that are deleted are
    --  those characters at positions from Start_Pos up to, but not including
@@ -107,8 +107,8 @@ package Gtk.Editable is
 
    function Get_Chars
       (Editable  : Gtk_Editable;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1) return UTF8_String;
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1) return UTF8_String;
    --  Retrieves a sequence of characters. The characters that are retrieved
    --  are those characters at positions from Start_Pos up to, but not
    --  including End_Pos. If End_Pos is negative, then the characters retrieved
@@ -125,13 +125,13 @@ package Gtk.Editable is
    --  "is_editable": True if the user is allowed to edit the text in the
    --  widget
 
-   function Get_Position (Editable : Gtk_Editable) return Gint;
+   function Get_Position (Editable : Gtk_Editable) return Glib.Gint;
    pragma Import (C, Get_Position, "gtk_editable_get_position");
    --  Retrieves the current position of the cursor relative to the start of
    --  the content of the editable.
    --  Note that this position is in characters, not in bytes.
 
-   procedure Set_Position (Editable : Gtk_Editable; Position : Gint);
+   procedure Set_Position (Editable : Gtk_Editable; Position : Glib.Gint);
    pragma Import (C, Set_Position, "gtk_editable_set_position");
    --  Sets the cursor position in the editable to the given value.
    --  The cursor is displayed before the character with the given (base 0)
@@ -143,8 +143,8 @@ package Gtk.Editable is
 
    procedure Get_Selection_Bounds
       (Editable      : Gtk_Editable;
-       Start_Pos     : out Gint;
-       End_Pos       : out Gint;
+       Start_Pos     : out Glib.Gint;
+       End_Pos       : out Glib.Gint;
        Has_Selection : out Boolean);
    --  Retrieves the selection bound of the editable. start_pos will be filled
    --  with the start of the selection and End_Pos with end. If no text was
@@ -156,8 +156,8 @@ package Gtk.Editable is
    procedure Insert_Text
       (Editable        : Gtk_Editable;
        New_Text        : UTF8_String;
-       New_Text_Length : Gint;
-       Position        : in out Gint);
+       New_Text_Length : Glib.Gint;
+       Position        : in out Glib.Gint);
    --  Inserts New_Text_Length bytes of New_Text into the contents of the
    --  widget, at position Position.
    --  Note that the position is in characters, not in bytes. The function
@@ -173,8 +173,8 @@ package Gtk.Editable is
 
    procedure Select_Region
       (Editable  : Gtk_Editable;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1);
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1);
    pragma Import (C, Select_Region, "gtk_editable_select_region");
    --  Selects a region of text. The characters that are selected are those
    --  characters at positions from Start_Pos up to, but not including End_Pos.
@@ -224,13 +224,13 @@ package Gtk.Editable is
 
    type Cb_Gtk_Editable_Gint_Gint_Void is not null access procedure
      (Self      : Gtk_Editable;
-      Start_Pos : Gint;
-      End_Pos   : Gint);
+      Start_Pos : Glib.Gint;
+      End_Pos   : Glib.Gint);
 
    type Cb_GObject_Gint_Gint_Void is not null access procedure
      (Self      : access Glib.Object.GObject_Record'Class;
-      Start_Pos : Gint;
-      End_Pos   : Gint);
+      Start_Pos : Glib.Gint;
+      End_Pos   : Glib.Gint);
 
    Signal_Delete_Text : constant Glib.Signal_Name := "delete-text";
    procedure On_Delete_Text
@@ -257,14 +257,14 @@ package Gtk.Editable is
    type Cb_Gtk_Editable_UTF8_String_Gint_Gint_Void is not null access procedure
      (Self            : Gtk_Editable;
       New_Text        : UTF8_String;
-      New_Text_Length : Gint;
-      Position        : access Gint);
+      New_Text_Length : Glib.Gint;
+      Position        : access Glib.Gint);
 
    type Cb_GObject_UTF8_String_Gint_Gint_Void is not null access procedure
      (Self            : access Glib.Object.GObject_Record'Class;
       New_Text        : UTF8_String;
-      New_Text_Length : Gint;
-      Position        : access Gint);
+      New_Text_Length : Glib.Gint;
+      Position        : access Glib.Gint);
 
    Signal_Insert_Text : constant Glib.Signal_Name := "insert-text";
    procedure On_Insert_Text
@@ -307,7 +307,10 @@ package Gtk.Editable is
    type Virtual_Changed is access procedure (Editable : Gtk_Editable);
    pragma Convention (C, Virtual_Changed);
 
-   type Virtual_Delete_Text is access procedure (Editable : Gtk_Editable; Start_Pos : Gint; End_Pos : Gint);
+   type Virtual_Delete_Text is access procedure
+     (Editable  : Gtk_Editable;
+      Start_Pos : Glib.Gint;
+      End_Pos   : Glib.Gint);
    pragma Convention (C, Virtual_Delete_Text);
    --  Deletes a sequence of characters. The characters that are deleted are
    --  those characters at positions from Start_Pos up to, but not including
@@ -317,7 +320,10 @@ package Gtk.Editable is
    --  "start_pos": start position
    --  "end_pos": end position
 
-   type Virtual_Do_Delete_Text is access procedure (Editable : Gtk_Editable; Start_Pos : Gint; End_Pos : Gint);
+   type Virtual_Do_Delete_Text is access procedure
+     (Editable  : Gtk_Editable;
+      Start_Pos : Glib.Gint;
+      End_Pos   : Glib.Gint);
    pragma Convention (C, Virtual_Do_Delete_Text);
    --  Deletes a sequence of characters. The characters that are deleted are
    --  those characters at positions from Start_Pos up to, but not including
@@ -330,8 +336,8 @@ package Gtk.Editable is
    type Virtual_Do_Insert_Text is access procedure
      (Editable        : Gtk_Editable;
       New_Text        : Interfaces.C.Strings.chars_ptr;
-      New_Text_Length : Gint;
-      Position        : in out Gint);
+      New_Text_Length : Glib.Gint;
+      Position        : in out Glib.Gint);
    pragma Convention (C, Virtual_Do_Insert_Text);
    --  Inserts New_Text_Length bytes of New_Text into the contents of the
    --  widget, at position Position.
@@ -343,8 +349,8 @@ package Gtk.Editable is
 
    type Virtual_Get_Chars is access function
      (Editable  : Gtk_Editable;
-      Start_Pos : Gint;
-      End_Pos   : Gint) return Interfaces.C.Strings.chars_ptr;
+      Start_Pos : Glib.Gint;
+      End_Pos   : Glib.Gint) return Interfaces.C.Strings.chars_ptr;
    pragma Convention (C, Virtual_Get_Chars);
    --  Retrieves a sequence of characters. The characters that are retrieved
    --  are those characters at positions from Start_Pos up to, but not
@@ -354,7 +360,7 @@ package Gtk.Editable is
    --  "start_pos": start of text
    --  "end_pos": end of text
 
-   type Virtual_Get_Position is access function (Editable : Gtk_Editable) return Gint;
+   type Virtual_Get_Position is access function (Editable : Gtk_Editable) return Glib.Gint;
    pragma Convention (C, Virtual_Get_Position);
    --  Retrieves the current position of the cursor relative to the start of
    --  the content of the editable.
@@ -362,8 +368,8 @@ package Gtk.Editable is
 
    type Virtual_Get_Selection_Bounds is access function
      (Editable  : Gtk_Editable;
-      Start_Pos : access Gint;
-      End_Pos   : access Gint) return Glib.Gboolean;
+      Start_Pos : access Glib.Gint;
+      End_Pos   : access Glib.Gint) return Glib.Gboolean;
    pragma Convention (C, Virtual_Get_Selection_Bounds);
    --  Retrieves the selection bound of the editable. start_pos will be filled
    --  with the start of the selection and End_Pos with end. If no text was
@@ -375,8 +381,8 @@ package Gtk.Editable is
    type Virtual_Insert_Text is access procedure
      (Editable        : Gtk_Editable;
       New_Text        : Interfaces.C.Strings.chars_ptr;
-      New_Text_Length : Gint;
-      Position        : in out Gint);
+      New_Text_Length : Glib.Gint;
+      Position        : in out Glib.Gint);
    pragma Convention (C, Virtual_Insert_Text);
    --  Inserts New_Text_Length bytes of New_Text into the contents of the
    --  widget, at position Position.
@@ -386,7 +392,7 @@ package Gtk.Editable is
    --  "new_text_length": the length of the text in bytes, or -1
    --  "position": location of the position text will be inserted at
 
-   type Virtual_Set_Position is access procedure (Editable : Gtk_Editable; Position : Gint);
+   type Virtual_Set_Position is access procedure (Editable : Gtk_Editable; Position : Glib.Gint);
    pragma Convention (C, Virtual_Set_Position);
    --  Sets the cursor position in the editable to the given value.
    --  The cursor is displayed before the character with the given (base 0)
@@ -396,7 +402,10 @@ package Gtk.Editable is
    --  the editable. Note that Position is in characters, not in bytes.
    --  "position": the position of the cursor
 
-   type Virtual_Set_Selection_Bounds is access procedure (Editable : Gtk_Editable; Start_Pos : Gint; End_Pos : Gint);
+   type Virtual_Set_Selection_Bounds is access procedure
+     (Editable  : Gtk_Editable;
+      Start_Pos : Glib.Gint;
+      End_Pos   : Glib.Gint);
    pragma Convention (C, Virtual_Set_Selection_Bounds);
    --  Selects a region of text. The characters that are selected are those
    --  characters at positions from Start_Pos up to, but not including End_Pos.

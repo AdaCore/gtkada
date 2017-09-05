@@ -501,8 +501,8 @@ package body Gtk.Tree_Model is
    -- Append_Index --
    ------------------
 
-   procedure Append_Index (Path : Gtk_Tree_Path; Index : Gint) is
-      procedure Internal (Path : System.Address; Index : Gint);
+   procedure Append_Index (Path : Gtk_Tree_Path; Index : Glib.Gint) is
+      procedure Internal (Path : System.Address; Index : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_path_append_index");
    begin
       Internal (Get_Object (Path), Index);
@@ -534,10 +534,13 @@ package body Gtk.Tree_Model is
    -- Compare --
    -------------
 
-   function Compare (Path : Gtk_Tree_Path; B : Gtk_Tree_Path) return Gint is
+   function Compare
+      (Path : Gtk_Tree_Path;
+       B    : Gtk_Tree_Path) return Glib.Gint
+   is
       function Internal
          (Path : System.Address;
-          B    : System.Address) return Gint;
+          B    : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_path_compare");
    begin
       return Internal (Get_Object (Path), Get_Object (B));
@@ -646,8 +649,8 @@ package body Gtk.Tree_Model is
    -- Get_Depth --
    ---------------
 
-   function Get_Depth (Path : Gtk_Tree_Path) return Gint is
-      function Internal (Path : System.Address) return Gint;
+   function Get_Depth (Path : Gtk_Tree_Path) return Glib.Gint is
+      function Internal (Path : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_path_get_depth");
    begin
       return Internal (Get_Object (Path));
@@ -828,7 +831,8 @@ package body Gtk.Tree_Model is
 
    function N_Children
       (Tree_Model : Gtk_Tree_Model;
-       Iter       : Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter) return Gint
+       Iter       : Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter)
+       return Glib.Gint
    is
       function Internal
           (Tree_Model : Gtk_Tree_Model; Iter : System.Address) return Gint;
@@ -872,7 +876,7 @@ package body Gtk.Tree_Model is
    function Nth_Child
       (Tree_Model : Gtk_Tree_Model;
        Parent     : Gtk_Tree_Iter;
-       N          : Gint) return Gtk_Tree_Iter
+       N          : Glib.Gint) return Gtk_Tree_Iter
    is
       function Internal
         (Tree_Model : Gtk_Tree_Model;
@@ -924,8 +928,8 @@ package body Gtk.Tree_Model is
    -- Prepend_Index --
    -------------------
 
-   procedure Prepend_Index (Path : Gtk_Tree_Path; Index : Gint) is
-      procedure Internal (Path : System.Address; Index : Gint);
+   procedure Prepend_Index (Path : Gtk_Tree_Path; Index : Glib.Gint) is
+      procedure Internal (Path : System.Address; Index : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_path_prepend_index");
    begin
       Internal (Get_Object (Path), Index);
@@ -1058,14 +1062,14 @@ package body Gtk.Tree_Model is
        Path       : Gtk_Tree_Path;
        Iter       : Gtk_Tree_Iter;
        New_Order  : Gint_Array;
-       Length     : Gint)
+       Length     : Glib.Gint)
    is
       procedure Internal
          (Tree_Model : Gtk_Tree_Model;
           Path       : System.Address;
           Iter       : System.Address;
           New_Order  : System.Address;
-          Length     : Gint);
+          Length     : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_model_rows_reordered_with_length");
    begin
       Internal (Tree_Model, Get_Object (Path), Iter_Or_Null (Iter'Address), New_Order (New_Order'First)'Address, Length);

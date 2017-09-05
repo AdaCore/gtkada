@@ -704,19 +704,19 @@ package body Gtk.Widget is
       (Widget  : not null access Gtk_Widget_Record;
        Targets : Gtk.Target_List.Gtk_Target_List;
        Actions : Gdk.Drag_Contexts.Gdk_Drag_Action;
-       Button  : Gint;
+       Button  : Glib.Gint;
        Event   : Gdk.Event.Gdk_Event;
-       X       : Gint;
-       Y       : Gint) return Gdk.Drag_Contexts.Drag_Context
+       X       : Glib.Gint;
+       Y       : Glib.Gint) return Gdk.Drag_Contexts.Drag_Context
    is
       function Internal
          (Widget  : System.Address;
           Targets : System.Address;
           Actions : Gdk.Drag_Contexts.Gdk_Drag_Action;
-          Button  : Gint;
+          Button  : Glib.Gint;
           Event   : Gdk.Event.Gdk_Event;
-          X       : Gint;
-          Y       : Gint) return System.Address;
+          X       : Glib.Gint;
+          Y       : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_drag_begin_with_coordinates");
       Stub_Drag_Context : Gdk.Drag_Contexts.Drag_Context_Record;
    begin
@@ -729,17 +729,17 @@ package body Gtk.Widget is
 
    function Drag_Check_Threshold
       (Widget    : not null access Gtk_Widget_Record;
-       Start_X   : Gint;
-       Start_Y   : Gint;
-       Current_X : Gint;
-       Current_Y : Gint) return Boolean
+       Start_X   : Glib.Gint;
+       Start_Y   : Glib.Gint;
+       Current_X : Glib.Gint;
+       Current_Y : Glib.Gint) return Boolean
    is
       function Internal
          (Widget    : System.Address;
-          Start_X   : Gint;
-          Start_Y   : Gint;
-          Current_X : Gint;
-          Current_Y : Gint) return Glib.Gboolean;
+          Start_X   : Glib.Gint;
+          Start_Y   : Glib.Gint;
+          Current_X : Glib.Gint;
+          Current_Y : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_drag_check_threshold");
    begin
       return Internal (Get_Object (Widget), Start_X, Start_Y, Current_X, Current_Y) /= 0;
@@ -1077,9 +1077,9 @@ package body Gtk.Widget is
    ----------------------------
 
    function Get_Allocated_Baseline
-      (Widget : not null access Gtk_Widget_Record) return Gint
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal (Widget : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_widget_get_allocated_baseline");
    begin
       return Internal (Get_Object (Widget));
@@ -1090,9 +1090,9 @@ package body Gtk.Widget is
    --------------------------
 
    function Get_Allocated_Height
-      (Widget : not null access Gtk_Widget_Record) return Gint
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal (Widget : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_widget_get_allocated_height");
    begin
       return Internal (Get_Object (Widget));
@@ -1103,9 +1103,9 @@ package body Gtk.Widget is
    -------------------------
 
    function Get_Allocated_Width
-      (Widget : not null access Gtk_Widget_Record) return Gint
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal (Widget : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_widget_get_allocated_width");
    begin
       return Internal (Get_Object (Widget));
@@ -1434,9 +1434,9 @@ package body Gtk.Widget is
    -----------------------
 
    function Get_Margin_Bottom
-      (Widget : not null access Gtk_Widget_Record) return Gint
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal (Widget : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_widget_get_margin_bottom");
    begin
       return Internal (Get_Object (Widget));
@@ -1447,9 +1447,9 @@ package body Gtk.Widget is
    --------------------
 
    function Get_Margin_End
-      (Widget : not null access Gtk_Widget_Record) return Gint
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal (Widget : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_widget_get_margin_end");
    begin
       return Internal (Get_Object (Widget));
@@ -1460,9 +1460,9 @@ package body Gtk.Widget is
    ---------------------
 
    function Get_Margin_Left
-      (Widget : not null access Gtk_Widget_Record) return Gint
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal (Widget : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_widget_get_margin_left");
    begin
       return Internal (Get_Object (Widget));
@@ -1473,9 +1473,9 @@ package body Gtk.Widget is
    ----------------------
 
    function Get_Margin_Right
-      (Widget : not null access Gtk_Widget_Record) return Gint
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal (Widget : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_widget_get_margin_right");
    begin
       return Internal (Get_Object (Widget));
@@ -1486,9 +1486,9 @@ package body Gtk.Widget is
    ----------------------
 
    function Get_Margin_Start
-      (Widget : not null access Gtk_Widget_Record) return Gint
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal (Widget : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_widget_get_margin_start");
    begin
       return Internal (Get_Object (Widget));
@@ -1499,9 +1499,9 @@ package body Gtk.Widget is
    --------------------
 
    function Get_Margin_Top
-      (Widget : not null access Gtk_Widget_Record) return Gint
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal (Widget : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_widget_get_margin_top");
    begin
       return Internal (Get_Object (Widget));
@@ -1625,13 +1625,13 @@ package body Gtk.Widget is
 
    procedure Get_Pointer
       (Widget : not null access Gtk_Widget_Record;
-       X      : out Gint;
-       Y      : out Gint)
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint)
    is
       procedure Internal
          (Widget : System.Address;
-          X      : out Gint;
-          Y      : out Gint);
+          X      : out Glib.Gint;
+          Y      : out Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_get_pointer");
    begin
       Internal (Get_Object (Widget), X, Y);
@@ -1643,13 +1643,13 @@ package body Gtk.Widget is
 
    procedure Get_Preferred_Height
       (Widget         : not null access Gtk_Widget_Record;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint)
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint)
    is
       procedure Internal
          (Widget         : System.Address;
-          Minimum_Height : out Gint;
-          Natural_Height : out Gint);
+          Minimum_Height : out Glib.Gint;
+          Natural_Height : out Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_get_preferred_height");
    begin
       Internal (Get_Object (Widget), Minimum_Height, Natural_Height);
@@ -1661,19 +1661,19 @@ package body Gtk.Widget is
 
    procedure Get_Preferred_Height_And_Baseline_For_Width
       (Widget           : not null access Gtk_Widget_Record;
-       Width            : Gint;
-       Minimum_Height   : out Gint;
-       Natural_Height   : out Gint;
-       Minimum_Baseline : out Gint;
-       Natural_Baseline : out Gint)
+       Width            : Glib.Gint;
+       Minimum_Height   : out Glib.Gint;
+       Natural_Height   : out Glib.Gint;
+       Minimum_Baseline : out Glib.Gint;
+       Natural_Baseline : out Glib.Gint)
    is
       procedure Internal
          (Widget           : System.Address;
-          Width            : Gint;
-          Minimum_Height   : out Gint;
-          Natural_Height   : out Gint;
-          Minimum_Baseline : out Gint;
-          Natural_Baseline : out Gint);
+          Width            : Glib.Gint;
+          Minimum_Height   : out Glib.Gint;
+          Natural_Height   : out Glib.Gint;
+          Minimum_Baseline : out Glib.Gint;
+          Natural_Baseline : out Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_get_preferred_height_and_baseline_for_width");
    begin
       Internal (Get_Object (Widget), Width, Minimum_Height, Natural_Height, Minimum_Baseline, Natural_Baseline);
@@ -1685,15 +1685,15 @@ package body Gtk.Widget is
 
    procedure Get_Preferred_Height_For_Width
       (Widget         : not null access Gtk_Widget_Record;
-       Width          : Gint;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint)
+       Width          : Glib.Gint;
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint)
    is
       procedure Internal
          (Widget         : System.Address;
-          Width          : Gint;
-          Minimum_Height : out Gint;
-          Natural_Height : out Gint);
+          Width          : Glib.Gint;
+          Minimum_Height : out Glib.Gint;
+          Natural_Height : out Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_get_preferred_height_for_width");
    begin
       Internal (Get_Object (Widget), Width, Minimum_Height, Natural_Height);
@@ -1727,13 +1727,13 @@ package body Gtk.Widget is
 
    procedure Get_Preferred_Width
       (Widget        : not null access Gtk_Widget_Record;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint)
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint)
    is
       procedure Internal
          (Widget        : System.Address;
-          Minimum_Width : out Gint;
-          Natural_Width : out Gint);
+          Minimum_Width : out Glib.Gint;
+          Natural_Width : out Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_get_preferred_width");
    begin
       Internal (Get_Object (Widget), Minimum_Width, Natural_Width);
@@ -1745,15 +1745,15 @@ package body Gtk.Widget is
 
    procedure Get_Preferred_Width_For_Height
       (Widget        : not null access Gtk_Widget_Record;
-       Height        : Gint;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint)
+       Height        : Glib.Gint;
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint)
    is
       procedure Internal
          (Widget        : System.Address;
-          Height        : Gint;
-          Minimum_Width : out Gint;
-          Natural_Width : out Gint);
+          Height        : Glib.Gint;
+          Minimum_Width : out Glib.Gint;
+          Natural_Width : out Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_get_preferred_width_for_height");
    begin
       Internal (Get_Object (Widget), Height, Minimum_Width, Natural_Width);
@@ -1836,9 +1836,9 @@ package body Gtk.Widget is
    ----------------------
 
    function Get_Scale_Factor
-      (Widget : not null access Gtk_Widget_Record) return Gint
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint
    is
-      function Internal (Widget : System.Address) return Gint;
+      function Internal (Widget : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_widget_get_scale_factor");
    begin
       return Internal (Get_Object (Widget));
@@ -1878,13 +1878,13 @@ package body Gtk.Widget is
 
    procedure Get_Size_Request
       (Widget : not null access Gtk_Widget_Record;
-       Width  : out Gint;
-       Height : out Gint)
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint)
    is
       procedure Internal
          (Widget : System.Address;
-          Width  : out Gint;
-          Height : out Gint);
+          Width  : out Glib.Gint;
+          Height : out Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_get_size_request");
    begin
       Internal (Get_Object (Widget), Width, Height);
@@ -2710,17 +2710,17 @@ package body Gtk.Widget is
 
    procedure Queue_Draw_Area
       (Widget : not null access Gtk_Widget_Record;
-       X      : Gint;
-       Y      : Gint;
-       Width  : Gint;
-       Height : Gint)
+       X      : Glib.Gint;
+       Y      : Glib.Gint;
+       Width  : Glib.Gint;
+       Height : Glib.Gint)
    is
       procedure Internal
          (Widget : System.Address;
-          X      : Gint;
-          Y      : Gint;
-          Width  : Gint;
-          Height : Gint);
+          X      : Glib.Gint;
+          Y      : Glib.Gint;
+          Width  : Glib.Gint;
+          Height : Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_queue_draw_area");
    begin
       Internal (Get_Object (Widget), X, Y, Width, Height);
@@ -2955,11 +2955,11 @@ package body Gtk.Widget is
 
    function Send_Expose
       (Widget : not null access Gtk_Widget_Record;
-       Event  : Gdk.Event.Gdk_Event) return Gint
+       Event  : Gdk.Event.Gdk_Event) return Glib.Gint
    is
       function Internal
          (Widget : System.Address;
-          Event  : Gdk.Event.Gdk_Event) return Gint;
+          Event  : Gdk.Event.Gdk_Event) return Glib.Gint;
       pragma Import (C, Internal, "gtk_widget_send_expose");
    begin
       return Internal (Get_Object (Widget), Event);
@@ -3394,9 +3394,9 @@ package body Gtk.Widget is
 
    procedure Set_Margin_Bottom
       (Widget : not null access Gtk_Widget_Record;
-       Margin : Gint)
+       Margin : Glib.Gint)
    is
-      procedure Internal (Widget : System.Address; Margin : Gint);
+      procedure Internal (Widget : System.Address; Margin : Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_set_margin_bottom");
    begin
       Internal (Get_Object (Widget), Margin);
@@ -3408,9 +3408,9 @@ package body Gtk.Widget is
 
    procedure Set_Margin_End
       (Widget : not null access Gtk_Widget_Record;
-       Margin : Gint)
+       Margin : Glib.Gint)
    is
-      procedure Internal (Widget : System.Address; Margin : Gint);
+      procedure Internal (Widget : System.Address; Margin : Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_set_margin_end");
    begin
       Internal (Get_Object (Widget), Margin);
@@ -3422,9 +3422,9 @@ package body Gtk.Widget is
 
    procedure Set_Margin_Left
       (Widget : not null access Gtk_Widget_Record;
-       Margin : Gint)
+       Margin : Glib.Gint)
    is
-      procedure Internal (Widget : System.Address; Margin : Gint);
+      procedure Internal (Widget : System.Address; Margin : Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_set_margin_left");
    begin
       Internal (Get_Object (Widget), Margin);
@@ -3436,9 +3436,9 @@ package body Gtk.Widget is
 
    procedure Set_Margin_Right
       (Widget : not null access Gtk_Widget_Record;
-       Margin : Gint)
+       Margin : Glib.Gint)
    is
-      procedure Internal (Widget : System.Address; Margin : Gint);
+      procedure Internal (Widget : System.Address; Margin : Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_set_margin_right");
    begin
       Internal (Get_Object (Widget), Margin);
@@ -3450,9 +3450,9 @@ package body Gtk.Widget is
 
    procedure Set_Margin_Start
       (Widget : not null access Gtk_Widget_Record;
-       Margin : Gint)
+       Margin : Glib.Gint)
    is
-      procedure Internal (Widget : System.Address; Margin : Gint);
+      procedure Internal (Widget : System.Address; Margin : Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_set_margin_start");
    begin
       Internal (Get_Object (Widget), Margin);
@@ -3464,9 +3464,9 @@ package body Gtk.Widget is
 
    procedure Set_Margin_Top
       (Widget : not null access Gtk_Widget_Record;
-       Margin : Gint)
+       Margin : Glib.Gint)
    is
-      procedure Internal (Widget : System.Address; Margin : Gint);
+      procedure Internal (Widget : System.Address; Margin : Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_set_margin_top");
    begin
       Internal (Get_Object (Widget), Margin);
@@ -3618,13 +3618,13 @@ package body Gtk.Widget is
 
    procedure Set_Size_Request
       (Widget : not null access Gtk_Widget_Record;
-       Width  : Gint := -1;
-       Height : Gint := -1)
+       Width  : Glib.Gint := -1;
+       Height : Glib.Gint := -1)
    is
       procedure Internal
          (Widget : System.Address;
-          Width  : Gint;
-          Height : Gint);
+          Width  : Glib.Gint;
+          Height : Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_set_size_request");
    begin
       Internal (Get_Object (Widget), Width, Height);
@@ -3914,12 +3914,12 @@ package body Gtk.Widget is
    procedure Size_Allocate_With_Baseline
       (Widget     : not null access Gtk_Widget_Record;
        Allocation : in out Gtk_Allocation;
-       Baseline   : Gint)
+       Baseline   : Glib.Gint)
    is
       procedure Internal
          (Widget     : System.Address;
           Allocation : in out Gtk_Allocation;
-          Baseline   : Gint);
+          Baseline   : Glib.Gint);
       pragma Import (C, Internal, "gtk_widget_size_allocate_with_baseline");
    begin
       Internal (Get_Object (Widget), Allocation, Baseline);
@@ -3992,22 +3992,22 @@ package body Gtk.Widget is
    procedure Translate_Coordinates
       (Widget      : not null access Gtk_Widget_Record;
        Dest_Widget : not null access Gtk_Widget_Record'Class;
-       Src_X       : Gint;
-       Src_Y       : Gint;
-       Dest_X      : out Gint;
-       Dest_Y      : out Gint;
+       Src_X       : Glib.Gint;
+       Src_Y       : Glib.Gint;
+       Dest_X      : out Glib.Gint;
+       Dest_Y      : out Glib.Gint;
        Result      : out Boolean)
    is
       function Internal
          (Widget      : System.Address;
           Dest_Widget : System.Address;
-          Src_X       : Gint;
-          Src_Y       : Gint;
-          Acc_Dest_X  : access Gint;
-          Acc_Dest_Y  : access Gint) return Glib.Gboolean;
+          Src_X       : Glib.Gint;
+          Src_Y       : Glib.Gint;
+          Acc_Dest_X  : access Glib.Gint;
+          Acc_Dest_Y  : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_widget_translate_coordinates");
-      Acc_Dest_X : aliased Gint;
-      Acc_Dest_Y : aliased Gint;
+      Acc_Dest_X : aliased Glib.Gint;
+      Acc_Dest_Y : aliased Glib.Gint;
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Widget), Get_Object (Dest_Widget), Src_X, Src_Y, Acc_Dest_X'Access, Acc_Dest_Y'Access);

@@ -224,13 +224,13 @@ package Gtk.Expander is
    --  "resize_toplevel": whether to resize the toplevel
 
    function Get_Spacing
-      (Expander : not null access Gtk_Expander_Record) return Gint;
+      (Expander : not null access Gtk_Expander_Record) return Glib.Gint;
    --  Gets the value set by Gtk.Expander.Set_Spacing.
    --  Since: gtk+ 2.4
 
    procedure Set_Spacing
       (Expander : not null access Gtk_Expander_Record;
-       Spacing  : Gint);
+       Spacing  : Glib.Gint);
    --  Sets the spacing field of Expander, which is the number of pixels to
    --  place between expander and the child.
    --  Since: gtk+ 2.4

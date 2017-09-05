@@ -363,13 +363,13 @@ package body Gtk.Cell_Area is
       (Self      : not null access Gtk_Cell_Area_Record;
        Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute : UTF8_String;
-       Column    : Gint)
+       Column    : Glib.Gint)
    is
       procedure Internal
          (Self      : System.Address;
           Renderer  : System.Address;
           Attribute : Interfaces.C.Strings.chars_ptr;
-          Column    : Gint);
+          Column    : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_attribute_connect");
       Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
    begin
@@ -404,15 +404,15 @@ package body Gtk.Cell_Area is
    function Attribute_Get_Column
       (Self      : not null access Gtk_Cell_Area_Record;
        Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Attribute : UTF8_String) return Gint
+       Attribute : UTF8_String) return Glib.Gint
    is
       function Internal
          (Self      : System.Address;
           Renderer  : System.Address;
-          Attribute : Interfaces.C.Strings.chars_ptr) return Gint;
+          Attribute : Interfaces.C.Strings.chars_ptr) return Glib.Gint;
       pragma Import (C, Internal, "gtk_cell_area_attribute_get_column");
       Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
-      Tmp_Return    : Gint;
+      Tmp_Return    : Glib.Gint;
    begin
       Tmp_Return := Internal (Get_Object (Self), Get_Object (Renderer), Tmp_Attribute);
       Free (Tmp_Attribute);
@@ -506,7 +506,8 @@ package body Gtk.Cell_Area is
        Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Event     : Gdk.Event.Gdk_Event;
        Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
-       Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State) return Gint
+       Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State)
+       return Glib.Gint
    is
       function Internal
          (Self      : System.Address;
@@ -514,7 +515,8 @@ package body Gtk.Cell_Area is
           Widget    : System.Address;
           Event     : Gdk.Event.Gdk_Event;
           Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
-          Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State) return Gint;
+          Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State)
+          return Glib.Gint;
       pragma Import (C, Internal, "gtk_cell_area_event");
    begin
       return Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Event, Cell_Area, Flags);
@@ -826,15 +828,15 @@ package body Gtk.Cell_Area is
       (Self           : not null access Gtk_Cell_Area_Record;
        Context        : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
        Widget         : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint)
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint)
    is
       procedure Internal
          (Self           : System.Address;
           Context        : System.Address;
           Widget         : System.Address;
-          Minimum_Height : out Gint;
-          Natural_Height : out Gint);
+          Minimum_Height : out Glib.Gint;
+          Natural_Height : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_get_preferred_height");
    begin
       Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Minimum_Height, Natural_Height);
@@ -848,17 +850,17 @@ package body Gtk.Cell_Area is
       (Self           : not null access Gtk_Cell_Area_Record;
        Context        : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
        Widget         : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Width          : Gint;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint)
+       Width          : Glib.Gint;
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint)
    is
       procedure Internal
          (Self           : System.Address;
           Context        : System.Address;
           Widget         : System.Address;
-          Width          : Gint;
-          Minimum_Height : out Gint;
-          Natural_Height : out Gint);
+          Width          : Glib.Gint;
+          Minimum_Height : out Glib.Gint;
+          Natural_Height : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_get_preferred_height_for_width");
    begin
       Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Width, Minimum_Height, Natural_Height);
@@ -872,15 +874,15 @@ package body Gtk.Cell_Area is
       (Self          : not null access Gtk_Cell_Area_Record;
        Context       : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
        Widget        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint)
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint)
    is
       procedure Internal
          (Self          : System.Address;
           Context       : System.Address;
           Widget        : System.Address;
-          Minimum_Width : out Gint;
-          Natural_Width : out Gint);
+          Minimum_Width : out Glib.Gint;
+          Natural_Width : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_get_preferred_width");
    begin
       Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Minimum_Width, Natural_Width);
@@ -894,17 +896,17 @@ package body Gtk.Cell_Area is
       (Self          : not null access Gtk_Cell_Area_Record;
        Context       : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
        Widget        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Height        : Gint;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint)
+       Height        : Glib.Gint;
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint)
    is
       procedure Internal
          (Self          : System.Address;
           Context       : System.Address;
           Widget        : System.Address;
-          Height        : Gint;
-          Minimum_Width : out Gint;
-          Natural_Width : out Gint);
+          Height        : Glib.Gint;
+          Minimum_Width : out Glib.Gint;
+          Natural_Width : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_get_preferred_width_for_height");
    begin
       Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Height, Minimum_Width, Natural_Width);
@@ -1063,18 +1065,18 @@ package body Gtk.Cell_Area is
        Renderer     : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Orientation  : Gtk.Enums.Gtk_Orientation;
        Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       For_Size     : Gint;
-       Minimum_Size : out Gint;
-       Natural_Size : out Gint)
+       For_Size     : Glib.Gint;
+       Minimum_Size : out Glib.Gint;
+       Natural_Size : out Glib.Gint)
    is
       procedure Internal
          (Self         : System.Address;
           Renderer     : System.Address;
           Orientation  : Gtk.Enums.Gtk_Orientation;
           Widget       : System.Address;
-          For_Size     : Gint;
-          Minimum_Size : out Gint;
-          Natural_Size : out Gint);
+          For_Size     : Glib.Gint;
+          Minimum_Size : out Glib.Gint;
+          Natural_Size : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_request_renderer");
    begin
       Internal (Get_Object (Self), Get_Object (Renderer), Orientation, Get_Object (Widget), For_Size, Minimum_Size, Natural_Size);
@@ -1199,13 +1201,13 @@ package body Gtk.Cell_Area is
       (Cell_Layout : not null access Gtk_Cell_Area_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint)
+       Column      : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
           Attribute   : Interfaces.C.Strings.chars_ptr;
-          Column      : Gint);
+          Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
       Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
    begin
@@ -1299,12 +1301,12 @@ package body Gtk.Cell_Area is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Cell_Area_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint)
+       Position    : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Position    : Gint);
+          Position    : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_reorder");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);

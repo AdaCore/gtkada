@@ -151,9 +151,9 @@ package body Gtk.Font_Selection is
    --------------
 
    function Get_Size
-      (Fontsel : not null access Gtk_Font_Selection_Record) return Gint
+      (Fontsel : not null access Gtk_Font_Selection_Record) return Glib.Gint
    is
-      function Internal (Fontsel : System.Address) return Gint;
+      function Internal (Fontsel : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_font_selection_get_size");
    begin
       return Internal (Get_Object (Fontsel));

@@ -431,11 +431,11 @@ package Gtk.File_Chooser_Widget is
 
    type Cb_Gtk_File_Chooser_Widget_Gint_Void is not null access procedure
      (Self           : access Gtk_File_Chooser_Widget_Record'Class;
-      Bookmark_Index : Gint);
+      Bookmark_Index : Glib.Gint);
 
    type Cb_GObject_Gint_Void is not null access procedure
      (Self           : access Glib.Object.GObject_Record'Class;
-      Bookmark_Index : Gint);
+      Bookmark_Index : Glib.Gint);
 
    Signal_Quick_Bookmark : constant Glib.Signal_Name := "quick-bookmark";
    procedure On_Quick_Bookmark

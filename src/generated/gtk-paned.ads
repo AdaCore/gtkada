@@ -187,12 +187,12 @@ package Gtk.Paned is
    --  Since: gtk+ 2.20
 
    function Get_Position
-      (Paned : not null access Gtk_Paned_Record) return Gint;
+      (Paned : not null access Gtk_Paned_Record) return Glib.Gint;
    --  Obtains the position of the divider between the two panes.
 
    procedure Set_Position
       (Paned    : not null access Gtk_Paned_Record;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Sets the position of the divider between the two panes.
    --  "position": pixel position of divider, a negative value means that the
    --  position is unset.

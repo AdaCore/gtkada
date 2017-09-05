@@ -103,11 +103,11 @@ package Gtk.Box is
    procedure Gtk_New
       (Box         : out Gtk_Box;
        Orientation : Gtk.Enums.Gtk_Orientation;
-       Spacing     : Gint);
+       Spacing     : Glib.Gint);
    procedure Initialize
       (Box         : not null access Gtk_Box_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
-       Spacing     : Gint);
+       Spacing     : Glib.Gint);
    --  Creates a new Gtk.Box.Gtk_Box.
    --  Since: gtk+ 3.0
    --  Initialize does nothing if the object was already created with another
@@ -117,7 +117,7 @@ package Gtk.Box is
 
    function Gtk_Box_New
       (Orientation : Gtk.Enums.Gtk_Orientation;
-       Spacing     : Gint) return Gtk_Box;
+       Spacing     : Glib.Gint) return Gtk_Box;
    --  Creates a new Gtk.Box.Gtk_Box.
    --  Since: gtk+ 3.0
    --  "orientation": the box's orientation.
@@ -130,11 +130,11 @@ package Gtk.Box is
    procedure Gtk_New_Hbox
       (Box         : out Gtk_Hbox;
        Homogeneous : Boolean := False;
-       Spacing     : Gint := 0);
+       Spacing     : Glib.Gint := 0);
    procedure Initialize_Hbox
       (Box         : not null access Gtk_Hbox_Record'Class;
        Homogeneous : Boolean := False;
-       Spacing     : Gint := 0);
+       Spacing     : Glib.Gint := 0);
    --  Creates a new Gtk.Box.Gtk_Hbox.
    --  Initialize_Hbox does nothing if the object was already created with
    --  another call to Initialize* or G_New.
@@ -144,7 +144,7 @@ package Gtk.Box is
 
    function Gtk_Hbox_New
       (Homogeneous : Boolean := False;
-       Spacing     : Gint := 0) return Gtk_Hbox;
+       Spacing     : Glib.Gint := 0) return Gtk_Hbox;
    --  Creates a new Gtk.Box.Gtk_Hbox.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
@@ -156,11 +156,11 @@ package Gtk.Box is
    procedure Gtk_New_Vbox
       (Box         : out Gtk_Vbox;
        Homogeneous : Boolean := False;
-       Spacing     : Gint := 0);
+       Spacing     : Glib.Gint := 0);
    procedure Initialize_Vbox
       (Box         : not null access Gtk_Vbox_Record'Class;
        Homogeneous : Boolean := False;
-       Spacing     : Gint := 0);
+       Spacing     : Glib.Gint := 0);
    --  Creates a new Gtk.Box.Gtk_Vbox.
    --  Initialize_Vbox does nothing if the object was already created with
    --  another call to Initialize* or G_New.
@@ -170,7 +170,7 @@ package Gtk.Box is
 
    function Gtk_Vbox_New
       (Homogeneous : Boolean := False;
-       Spacing     : Gint := 0) return Gtk_Vbox;
+       Spacing     : Glib.Gint := 0) return Gtk_Vbox;
    --  Creates a new Gtk.Box.Gtk_Vbox.
    --  "homogeneous": True if all children are to be given equal space
    --  allotments.
@@ -227,12 +227,13 @@ package Gtk.Box is
    --  "homogeneous": a boolean value, True to create equal allotments, False
    --  for variable allotments
 
-   function Get_Spacing (Box : not null access Gtk_Box_Record) return Gint;
+   function Get_Spacing
+      (Box : not null access Gtk_Box_Record) return Glib.Gint;
    --  Gets the value set by Gtk.Box.Set_Spacing.
 
    procedure Set_Spacing
       (Box     : not null access Gtk_Box_Record;
-       Spacing : Gint);
+       Spacing : Glib.Gint);
    --  Sets the Gtk.Box.Gtk_Box:spacing property of Box, which is the number
    --  of pixels to place between children of Box.
    --  "spacing": the number of pixels to put between children
@@ -316,7 +317,7 @@ package Gtk.Box is
    procedure Reorder_Child
       (Box      : not null access Gtk_Box_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Moves Child to a new Position in the list of Box children. The list
    --  contains widgets packed GTK_PACK_START as well as widgets packed
    --  GTK_PACK_END, in the order that these widgets were added to Box.
@@ -330,7 +331,7 @@ package Gtk.Box is
 
    function Get_Child
       (Box : not null access Gtk_Box_Record;
-       Num : Gint) return Gtk.Widget.Gtk_Widget;
+       Num : Glib.Gint) return Gtk.Widget.Gtk_Widget;
    --  Return the Num-th child of the box, or null if there is no such child
    --  Since: gtk+ GtkAda 1.0
 

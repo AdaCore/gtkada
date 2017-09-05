@@ -138,8 +138,8 @@ package Gtk.Text_View is
       (View         : not null access Gtk_Text_View_Record;
        Child        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Which_Window : Gtk.Enums.Gtk_Text_Window_Type;
-       Xpos         : Gint;
-       Ypos         : Gint);
+       Xpos         : Glib.Gint;
+       Ypos         : Glib.Gint);
    --  Adds a child at fixed coordinates in one of the text widget's windows.
    --  The window must have nonzero size (see
    --  Gtk.Text_View.Set_Border_Window_Size). Note that the child coordinates
@@ -182,10 +182,10 @@ package Gtk.Text_View is
    procedure Buffer_To_Window_Coords
       (View     : not null access Gtk_Text_View_Record;
        Win      : Gtk.Enums.Gtk_Text_Window_Type;
-       Buffer_X : Gint;
-       Buffer_Y : Gint;
-       Window_X : out Gint;
-       Window_Y : out Gint);
+       Buffer_X : Glib.Gint;
+       Buffer_Y : Glib.Gint;
+       Window_X : out Glib.Gint;
+       Window_Y : out Glib.Gint);
    --  Converts coordinate (Buffer_X, Buffer_Y) to coordinates for the window
    --  Win, and stores the result in (Window_X, Window_Y).
    --  Note that you can't convert coordinates for a nonexisting window (see
@@ -241,7 +241,7 @@ package Gtk.Text_View is
 
    function Get_Border_Window_Size
       (View     : not null access Gtk_Text_View_Record;
-       The_Type : Gtk.Enums.Gtk_Text_Window_Type) return Gint;
+       The_Type : Gtk.Enums.Gtk_Text_Window_Type) return Glib.Gint;
    --  Gets the width of the specified border window. See
    --  Gtk.Text_View.Set_Border_Window_Size.
    --  "type": window to return size from
@@ -249,7 +249,7 @@ package Gtk.Text_View is
    procedure Set_Border_Window_Size
       (View     : not null access Gtk_Text_View_Record;
        The_Type : Gtk.Enums.Gtk_Text_Window_Type;
-       Size     : Gint);
+       Size     : Glib.Gint);
    --  Sets the width of Gtk.Enums.Text_Window_Left or
    --  Gtk.Enums.Text_Window_Right, or the height of Gtk.Enums.Text_Window_Top
    --  or Gtk.Enums.Text_Window_Bottom. Automatically destroys the
@@ -338,13 +338,13 @@ package Gtk.Text_View is
    --  "setting": whether it's editable
 
    function Get_Indent
-      (View : not null access Gtk_Text_View_Record) return Gint;
+      (View : not null access Gtk_Text_View_Record) return Glib.Gint;
    --  Gets the default indentation of paragraphs in Text_View. Tags in the
    --  view's buffer may override the default. The indentation may be negative.
 
    procedure Set_Indent
       (View   : not null access Gtk_Text_View_Record;
-       Indent : Gint);
+       Indent : Glib.Gint);
    --  Sets the default indentation for paragraphs in Text_View. Tags in the
    --  buffer may override the default.
    --  "indent": indentation in pixels
@@ -382,8 +382,8 @@ package Gtk.Text_View is
    procedure Get_Iter_At_Location
       (View : not null access Gtk_Text_View_Record;
        Iter : out Gtk.Text_Iter.Gtk_Text_Iter;
-       X    : Gint;
-       Y    : Gint);
+       X    : Glib.Gint;
+       Y    : Glib.Gint);
    --  Retrieves the iterator at buffer coordinates X and Y. Buffer
    --  coordinates are coordinates for the entire buffer, not just the
    --  currently-displayed portion. If you have coordinates from an event, you
@@ -396,9 +396,9 @@ package Gtk.Text_View is
    procedure Get_Iter_At_Position
       (View     : not null access Gtk_Text_View_Record;
        Iter     : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Trailing : out Gint;
-       X        : Gint;
-       Y        : Gint);
+       Trailing : out Glib.Gint;
+       X        : Glib.Gint;
+       Y        : Glib.Gint);
    --  Retrieves the iterator pointing to the character at buffer coordinates
    --  X and Y. Buffer coordinates are coordinates for the entire buffer, not
    --  just the currently-displayed portion. If you have coordinates from an
@@ -440,13 +440,13 @@ package Gtk.Text_View is
    --  "justification": justification
 
    function Get_Left_Margin
-      (View : not null access Gtk_Text_View_Record) return Gint;
+      (View : not null access Gtk_Text_View_Record) return Glib.Gint;
    --  Gets the default left margin size of paragraphs in the Text_View. Tags
    --  in the buffer may override the default.
 
    procedure Set_Left_Margin
       (View        : not null access Gtk_Text_View_Record;
-       Left_Margin : Gint);
+       Left_Margin : Glib.Gint);
    --  Sets the default left margin for text in Text_View. Tags in the buffer
    --  may override the default.
    --  "left_margin": left margin in pixels
@@ -454,8 +454,8 @@ package Gtk.Text_View is
    procedure Get_Line_At_Y
       (View        : not null access Gtk_Text_View_Record;
        Target_Iter : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Y           : Gint;
-       Line_Top    : out Gint);
+       Y           : Glib.Gint;
+       Line_Top    : out Glib.Gint);
    --  Gets the Gtk.Text_Iter.Gtk_Text_Iter at the start of the line
    --  containing the coordinate Y. Y is in buffer coordinates, convert from
    --  window coordinates with Gtk.Text_View.Window_To_Buffer_Coords. If
@@ -468,8 +468,8 @@ package Gtk.Text_View is
    procedure Get_Line_Yrange
       (View   : not null access Gtk_Text_View_Record;
        Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
-       Y      : out Gint;
-       Height : out Gint);
+       Y      : out Glib.Gint;
+       Height : out Glib.Gint);
    --  Gets the y coordinate of the top of the line containing Iter, and the
    --  height of the line. The coordinate is a buffer coordinate; convert to
    --  window coordinates with Gtk.Text_View.Buffer_To_Window_Coords.
@@ -491,48 +491,48 @@ package Gtk.Text_View is
    --  "overwrite": True to turn on overwrite mode, False to turn it off
 
    function Get_Pixels_Above_Lines
-      (View : not null access Gtk_Text_View_Record) return Gint;
+      (View : not null access Gtk_Text_View_Record) return Glib.Gint;
    --  Gets the default number of pixels to put above paragraphs.
 
    procedure Set_Pixels_Above_Lines
       (View               : not null access Gtk_Text_View_Record;
-       Pixels_Above_Lines : Gint);
+       Pixels_Above_Lines : Glib.Gint);
    --  Sets the default number of blank pixels above paragraphs in Text_View.
    --  Tags in the buffer for Text_View may override the defaults.
    --  "pixels_above_lines": pixels above paragraphs
 
    function Get_Pixels_Below_Lines
-      (View : not null access Gtk_Text_View_Record) return Gint;
+      (View : not null access Gtk_Text_View_Record) return Glib.Gint;
    --  Gets the value set by Gtk.Text_View.Set_Pixels_Below_Lines.
 
    procedure Set_Pixels_Below_Lines
       (View               : not null access Gtk_Text_View_Record;
-       Pixels_Below_Lines : Gint);
+       Pixels_Below_Lines : Glib.Gint);
    --  Sets the default number of pixels of blank space to put below
    --  paragraphs in Text_View. May be overridden by tags applied to
    --  Text_View's buffer.
    --  "pixels_below_lines": pixels below paragraphs
 
    function Get_Pixels_Inside_Wrap
-      (View : not null access Gtk_Text_View_Record) return Gint;
+      (View : not null access Gtk_Text_View_Record) return Glib.Gint;
    --  Gets the value set by Gtk.Text_View.Set_Pixels_Inside_Wrap.
 
    procedure Set_Pixels_Inside_Wrap
       (View               : not null access Gtk_Text_View_Record;
-       Pixels_Inside_Wrap : Gint);
+       Pixels_Inside_Wrap : Glib.Gint);
    --  Sets the default number of pixels of blank space to leave between
    --  display/wrapped lines within a paragraph. May be overridden by tags in
    --  Text_View's buffer.
    --  "pixels_inside_wrap": default number of pixels between wrapped lines
 
    function Get_Right_Margin
-      (View : not null access Gtk_Text_View_Record) return Gint;
+      (View : not null access Gtk_Text_View_Record) return Glib.Gint;
    --  Gets the default right margin for text in Text_View. Tags in the buffer
    --  may override the default.
 
    procedure Set_Right_Margin
       (View         : not null access Gtk_Text_View_Record;
-       Right_Margin : Gint);
+       Right_Margin : Glib.Gint);
    --  Sets the default right margin for text in the text view. Tags in the
    --  buffer may override the default.
    --  "right_margin": right margin in pixels
@@ -613,8 +613,8 @@ package Gtk.Text_View is
    procedure Move_Child
       (View  : not null access Gtk_Text_View_Record;
        Child : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Xpos  : Gint;
-       Ypos  : Gint);
+       Xpos  : Glib.Gint;
+       Ypos  : Glib.Gint);
    --  Updates the position of a child, as for
    --  Gtk.Text_View.Add_Child_In_Window.
    --  "child": child widget already added to the text view
@@ -632,7 +632,7 @@ package Gtk.Text_View is
    function Move_Visually
       (View  : not null access Gtk_Text_View_Record;
        Iter  : Gtk.Text_Iter.Gtk_Text_Iter;
-       Count : Gint) return Boolean;
+       Count : Glib.Gint) return Boolean;
    --  Move the iterator a given number of characters visually, treating it as
    --  the strong cursor position. If Count is positive, then the new strong
    --  cursor position will be Count positions to the right of the old cursor
@@ -721,10 +721,10 @@ package Gtk.Text_View is
    procedure Window_To_Buffer_Coords
       (View     : not null access Gtk_Text_View_Record;
        Win      : Gtk.Enums.Gtk_Text_Window_Type;
-       Window_X : Gint;
-       Window_Y : Gint;
-       Buffer_X : out Gint;
-       Buffer_Y : out Gint);
+       Window_X : Glib.Gint;
+       Window_Y : Glib.Gint;
+       Buffer_X : out Glib.Gint;
+       Buffer_Y : out Glib.Gint);
    --  Converts coordinates on the window identified by Win to buffer
    --  coordinates, storing the result in (Buffer_X,Buffer_Y).
    --  Note that you can't convert coordinates for a nonexisting window (see
@@ -890,12 +890,12 @@ package Gtk.Text_View is
    type Cb_Gtk_Text_View_Gtk_Delete_Type_Gint_Void is not null access procedure
      (Self     : access Gtk_Text_View_Record'Class;
       The_Type : Gtk.Enums.Gtk_Delete_Type;
-      Count    : Gint);
+      Count    : Glib.Gint);
 
    type Cb_GObject_Gtk_Delete_Type_Gint_Void is not null access procedure
      (Self     : access Glib.Object.GObject_Record'Class;
       The_Type : Gtk.Enums.Gtk_Delete_Type;
-      Count    : Gint);
+      Count    : Glib.Gint);
 
    Signal_Delete_From_Cursor : constant Glib.Signal_Name := "delete-from-cursor";
    procedure On_Delete_From_Cursor
@@ -949,13 +949,13 @@ package Gtk.Text_View is
    type Cb_Gtk_Text_View_Gtk_Movement_Step_Gint_Boolean_Void is not null access procedure
      (Self             : access Gtk_Text_View_Record'Class;
       Step             : Gtk.Enums.Gtk_Movement_Step;
-      Count            : Gint;
+      Count            : Glib.Gint;
       Extend_Selection : Boolean);
 
    type Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void is not null access procedure
      (Self             : access Glib.Object.GObject_Record'Class;
       Step             : Gtk.Enums.Gtk_Movement_Step;
-      Count            : Gint;
+      Count            : Glib.Gint;
       Extend_Selection : Boolean);
 
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
@@ -993,12 +993,12 @@ package Gtk.Text_View is
    type Cb_Gtk_Text_View_Gtk_Scroll_Step_Gint_Void is not null access procedure
      (Self  : access Gtk_Text_View_Record'Class;
       Step  : Gtk.Enums.Gtk_Scroll_Step;
-      Count : Gint);
+      Count : Glib.Gint);
 
    type Cb_GObject_Gtk_Scroll_Step_Gint_Void is not null access procedure
      (Self  : access Glib.Object.GObject_Record'Class;
       Step  : Gtk.Enums.Gtk_Scroll_Step;
-      Count : Gint);
+      Count : Glib.Gint);
 
    Signal_Move_Viewport : constant Glib.Signal_Name := "move-viewport";
    procedure On_Move_Viewport

@@ -63,8 +63,8 @@ package Gtk.Cell_Area_Context is
 
    procedure Allocate
       (Self   : not null access Gtk_Cell_Area_Context_Record;
-       Width  : Gint;
-       Height : Gint);
+       Width  : Glib.Gint;
+       Height : Glib.Gint);
    --  Allocates a width and/or a height for all rows which are to be rendered
    --  with Context.
    --  Usually allocation is performed only horizontally or sometimes
@@ -82,8 +82,8 @@ package Gtk.Cell_Area_Context is
 
    procedure Get_Allocation
       (Self   : not null access Gtk_Cell_Area_Context_Record;
-       Width  : out Gint;
-       Height : out Gint);
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint);
    --  Fetches the current allocation size for Context.
    --  If the context was not allocated in width or height, or if the context
    --  was recently reset with Gtk.Cell_Area_Context.Reset, the returned value
@@ -94,8 +94,8 @@ package Gtk.Cell_Area_Context is
 
    procedure Get_Preferred_Height
       (Self           : not null access Gtk_Cell_Area_Context_Record;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint);
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint);
    --  Gets the accumulative preferred height for all rows which have been
    --  requested with this context.
    --  After Gtk.Cell_Area_Context.Reset is called and/or before ever
@@ -107,9 +107,9 @@ package Gtk.Cell_Area_Context is
 
    procedure Get_Preferred_Height_For_Width
       (Self           : not null access Gtk_Cell_Area_Context_Record;
-       Width          : Gint;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint);
+       Width          : Glib.Gint;
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint);
    --  Gets the accumulative preferred height for Width for all rows which
    --  have been requested for the same said Width with this context.
    --  After Gtk.Cell_Area_Context.Reset is called and/or before ever
@@ -122,8 +122,8 @@ package Gtk.Cell_Area_Context is
 
    procedure Get_Preferred_Width
       (Self          : not null access Gtk_Cell_Area_Context_Record;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint);
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint);
    --  Gets the accumulative preferred width for all rows which have been
    --  requested with this context.
    --  After Gtk.Cell_Area_Context.Reset is called and/or before ever
@@ -135,9 +135,9 @@ package Gtk.Cell_Area_Context is
 
    procedure Get_Preferred_Width_For_Height
       (Self          : not null access Gtk_Cell_Area_Context_Record;
-       Height        : Gint;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint);
+       Height        : Glib.Gint;
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint);
    --  Gets the accumulative preferred width for Height for all rows which
    --  have been requested for the same said Height with this context.
    --  After Gtk.Cell_Area_Context.Reset is called and/or before ever
@@ -150,8 +150,8 @@ package Gtk.Cell_Area_Context is
 
    procedure Push_Preferred_Height
       (Self           : not null access Gtk_Cell_Area_Context_Record;
-       Minimum_Height : Gint;
-       Natural_Height : Gint);
+       Minimum_Height : Glib.Gint;
+       Natural_Height : Glib.Gint);
    --  Causes the minimum and/or natural height to grow if the new proposed
    --  sizes exceed the current minimum and natural height.
    --  This is used by Gtk.Cell_Area_Context.Gtk_Cell_Area_Context
@@ -164,8 +164,8 @@ package Gtk.Cell_Area_Context is
 
    procedure Push_Preferred_Width
       (Self          : not null access Gtk_Cell_Area_Context_Record;
-       Minimum_Width : Gint;
-       Natural_Width : Gint);
+       Minimum_Width : Glib.Gint;
+       Natural_Width : Glib.Gint);
    --  Causes the minimum and/or natural width to grow if the new proposed
    --  sizes exceed the current minimum and natural width.
    --  This is used by Gtk.Cell_Area_Context.Gtk_Cell_Area_Context

@@ -151,7 +151,7 @@ package body Glib.Application is
    is
       function Internal
          (Self : System.Address;
-          Argc : access Gint) return chars_ptr_array_access;
+          Argc : access Glib.Gint) return chars_ptr_array_access;
       pragma Import (C, Internal, "g_application_command_line_get_arguments");
    begin
       return To_String_List_And_Free (Internal (Get_Object (Self), null));
@@ -206,9 +206,10 @@ package body Glib.Application is
    ---------------------
 
    function Get_Exit_Status
-      (Self : not null access Gapplication_Command_Line_Record) return Gint
+      (Self : not null access Gapplication_Command_Line_Record)
+       return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "g_application_command_line_get_exit_status");
    begin
       return Internal (Get_Object (Self));
@@ -396,16 +397,16 @@ package body Glib.Application is
 
    function Run
       (Self : not null access Gapplication_Record;
-       Argc : Gint;
-       Argv : GNAT.Strings.String_List) return Gint
+       Argc : Glib.Gint;
+       Argv : GNAT.Strings.String_List) return Glib.Gint
    is
       function Internal
          (Self : System.Address;
-          Argc : Gint;
-          Argv : Interfaces.C.Strings.chars_ptr_array) return Gint;
+          Argc : Glib.Gint;
+          Argv : Interfaces.C.Strings.chars_ptr_array) return Glib.Gint;
       pragma Import (C, Internal, "g_application_run");
       Tmp_Argv   : Interfaces.C.Strings.chars_ptr_array := From_String_List (Argv);
-      Tmp_Return : Gint;
+      Tmp_Return : Glib.Gint;
    begin
       Tmp_Return := Internal (Get_Object (Self), Argc, Tmp_Argv);
       GtkAda.Types.Free (Tmp_Argv);
@@ -493,9 +494,9 @@ package body Glib.Application is
 
    procedure Set_Exit_Status
       (Self        : not null access Gapplication_Command_Line_Record;
-       Exit_Status : Gint)
+       Exit_Status : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Exit_Status : Gint);
+      procedure Internal (Self : System.Address; Exit_Status : Glib.Gint);
       pragma Import (C, Internal, "g_application_command_line_set_exit_status");
    begin
       Internal (Get_Object (Self), Exit_Status);
@@ -705,7 +706,7 @@ package body Glib.Application is
       procedure Internal
          (Self      : System.Address;
           Entries   : GAction_Entry_Array;
-          N_Entries : Gint;
+          N_Entries : Glib.Gint;
           User_Data : System.Address);
       pragma Import (C, Internal, "g_action_map_add_action_entries");
    begin
@@ -1172,7 +1173,7 @@ package body Glib.Application is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gapplication_Command_Line_Gint := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Gint := H (Obj, Glib.Application.Gapplication_Command_Line (Unchecked_To_Object (Params, 1)));
+      V   : aliased Glib.Gint := H (Obj, Glib.Application.Gapplication_Command_Line (Unchecked_To_Object (Params, 1)));
    begin
       Set_Value (Return_Value, V'Address);
       exception when E : others => Process_Exception (E);
@@ -1213,7 +1214,7 @@ package body Glib.Application is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gapplication_Gapplication_Command_Line_Gint := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gapplication := Gapplication (Unchecked_To_Object (Params, 0));
-      V   : aliased Gint := H (Obj, Glib.Application.Gapplication_Command_Line (Unchecked_To_Object (Params, 1)));
+      V   : aliased Glib.Gint := H (Obj, Glib.Application.Gapplication_Command_Line (Unchecked_To_Object (Params, 1)));
    begin
       Set_Value (Return_Value, V'Address);
       exception when E : others => Process_Exception (E);

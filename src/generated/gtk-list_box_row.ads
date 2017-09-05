@@ -115,7 +115,7 @@ package Gtk.List_Box_Row is
    --  "header": the header, or null
 
    function Get_Index
-      (Self : not null access Gtk_List_Box_Row_Record) return Gint;
+      (Self : not null access Gtk_List_Box_Row_Record) return Glib.Gint;
    --  Gets the current index of the Row in its Gtk.List_Box.Gtk_List_Box
    --  container.
    --  Since: gtk+ 3.10

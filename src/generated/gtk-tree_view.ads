@@ -163,7 +163,7 @@ package Gtk.Tree_View is
    type Gtk_Tree_Destroy_Count_Func is access procedure
      (Tree_View : not null access Gtk_Tree_View_Record'Class;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path;
-      Children  : Gint);
+      Children  : Glib.Gint);
 
    type Gtk_Tree_View_Row_Separator_Func is access function
      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -177,7 +177,7 @@ package Gtk.Tree_View is
 
    type Gtk_Tree_View_Search_Equal_Func is access function
      (Model  : Gtk.Tree_Model.Gtk_Tree_Model;
-      Column : Gint;
+      Column : Glib.Gint;
       Key    : UTF8_String;
       Iter   : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
    --  A function used for checking whether a row in Model matches a search
@@ -244,7 +244,7 @@ package Gtk.Tree_View is
    function Append_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
        Column    : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class)
-       return Gint;
+       return Glib.Gint;
    --  Appends Column to the list of columns. If Tree_View has "fixed_height"
    --  mode enabled, then Column must have its "sizing" property set to be
    --  GTK_TREE_VIEW_COLUMN_FIXED.
@@ -266,10 +266,10 @@ package Gtk.Tree_View is
 
    procedure Convert_Bin_Window_To_Tree_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Bx        : Gint;
-       By        : Gint;
-       Tx        : out Gint;
-       Ty        : out Gint);
+       Bx        : Glib.Gint;
+       By        : Glib.Gint;
+       Tx        : out Glib.Gint;
+       Ty        : out Glib.Gint);
    --  Converts bin_window coordinates to coordinates for the tree (the full
    --  scrollable area of the tree).
    --  Since: gtk+ 2.12
@@ -280,10 +280,10 @@ package Gtk.Tree_View is
 
    procedure Convert_Bin_Window_To_Widget_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Bx        : Gint;
-       By        : Gint;
-       Wx        : out Gint;
-       Wy        : out Gint);
+       Bx        : Glib.Gint;
+       By        : Glib.Gint;
+       Wx        : out Glib.Gint;
+       Wy        : out Glib.Gint);
    --  Converts bin_window coordinates (see Gtk.Tree_View.Get_Bin_Window) to
    --  widget relative coordinates.
    --  Since: gtk+ 2.12
@@ -294,10 +294,10 @@ package Gtk.Tree_View is
 
    procedure Convert_Tree_To_Bin_Window_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Tx        : Gint;
-       Ty        : Gint;
-       Bx        : out Gint;
-       By        : out Gint);
+       Tx        : Glib.Gint;
+       Ty        : Glib.Gint;
+       Bx        : out Glib.Gint;
+       By        : out Glib.Gint);
    --  Converts tree coordinates (coordinates in full scrollable area of the
    --  tree) to bin_window coordinates.
    --  Since: gtk+ 2.12
@@ -308,10 +308,10 @@ package Gtk.Tree_View is
 
    procedure Convert_Tree_To_Widget_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Tx        : Gint;
-       Ty        : Gint;
-       Wx        : out Gint;
-       Wy        : out Gint);
+       Tx        : Glib.Gint;
+       Ty        : Glib.Gint;
+       Wx        : out Glib.Gint;
+       Wy        : out Glib.Gint);
    --  Converts tree coordinates (coordinates in full scrollable area of the
    --  tree) to widget coordinates.
    --  Since: gtk+ 2.12
@@ -322,10 +322,10 @@ package Gtk.Tree_View is
 
    procedure Convert_Widget_To_Bin_Window_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Wx        : Gint;
-       Wy        : Gint;
-       Bx        : out Gint;
-       By        : out Gint);
+       Wx        : Glib.Gint;
+       Wy        : Glib.Gint;
+       Bx        : out Glib.Gint;
+       By        : out Glib.Gint);
    --  Converts widget coordinates to coordinates for the bin_window (see
    --  Gtk.Tree_View.Get_Bin_Window).
    --  Since: gtk+ 2.12
@@ -336,10 +336,10 @@ package Gtk.Tree_View is
 
    procedure Convert_Widget_To_Tree_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Wx        : Gint;
-       Wy        : Gint;
-       Tx        : out Gint;
-       Ty        : out Gint);
+       Wx        : Glib.Gint;
+       Wy        : Glib.Gint;
+       Tx        : out Glib.Gint;
+       Ty        : out Glib.Gint);
    --  Converts widget coordinates to coordinates for the tree (the full
    --  scrollable area of the tree).
    --  Since: gtk+ 2.12
@@ -458,7 +458,8 @@ package Gtk.Tree_View is
 
    function Get_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
-       N         : Gint) return Gtk.Tree_View_Column.Gtk_Tree_View_Column;
+       N         : Glib.Gint)
+       return Gtk.Tree_View_Column.Gtk_Tree_View_Column;
    --  Gets the Gtk.Tree_View_Column.Gtk_Tree_View_Column at the given
    --  position in the tree_view.
    --  "n": The position of the column, counting from 0.
@@ -504,8 +505,8 @@ package Gtk.Tree_View is
 
    function Get_Dest_Row_At_Pos
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Drag_X    : Gint;
-       Drag_Y    : Gint;
+       Drag_X    : Glib.Gint;
+       Drag_Y    : Glib.Gint;
        Path      : access Gtk.Tree_Model.Gtk_Tree_Path;
        Pos       : access Gtk_Tree_View_Drop_Position) return Boolean;
    --  Determines the destination row for a given position. Drag_X and Drag_Y
@@ -658,14 +659,14 @@ package Gtk.Tree_View is
    --  "hover": True to enable hover selection mode
 
    function Get_Level_Indentation
-      (Tree_View : not null access Gtk_Tree_View_Record) return Gint;
+      (Tree_View : not null access Gtk_Tree_View_Record) return Glib.Gint;
    --  Returns the amount, in pixels, of extra indentation for child levels in
    --  Tree_View.
    --  Since: gtk+ 2.12
 
    procedure Set_Level_Indentation
       (Tree_View   : not null access Gtk_Tree_View_Record;
-       Indentation : Gint);
+       Indentation : Glib.Gint);
    --  Sets the amount of extra indentation for child levels to use in
    --  Tree_View in addition to the default indentation. The value should be
    --  specified in pixels, a value of 0 disables this feature and in this case
@@ -696,12 +697,12 @@ package Gtk.Tree_View is
 
    procedure Get_Path_At_Pos
       (Tree_View : not null access Gtk_Tree_View_Record;
-       X         : Gint;
-       Y         : Gint;
+       X         : Glib.Gint;
+       Y         : Glib.Gint;
        Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
        Column    : out Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-       Cell_X    : out Gint;
-       Cell_Y    : out Gint;
+       Cell_X    : out Glib.Gint;
+       Cell_Y    : out Glib.Gint;
        Row_Found : out Boolean);
    --  Finds the path at the point (X, Y), relative to bin_window coordinates
    --  (please see Gtk.Tree_View.Get_Bin_Window). That is, X and Y are relative
@@ -810,12 +811,12 @@ package Gtk.Tree_View is
    --  "setting": True if the tree requires reading across rows
 
    function Get_Search_Column
-      (Tree_View : not null access Gtk_Tree_View_Record) return Gint;
+      (Tree_View : not null access Gtk_Tree_View_Record) return Glib.Gint;
    --  Gets the column searched on by the interactive search code.
 
    procedure Set_Search_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Column    : Gint);
+       Column    : Glib.Gint);
    --  Sets Column as the column where the interactive search code should
    --  search in for the current model.
    --  If the search column is set, users can use the
@@ -898,14 +899,14 @@ package Gtk.Tree_View is
    --  "enabled": True to enable expander drawing, False otherwise.
 
    function Get_Tooltip_Column
-      (Tree_View : not null access Gtk_Tree_View_Record) return Gint;
+      (Tree_View : not null access Gtk_Tree_View_Record) return Glib.Gint;
    --  Returns the column of Tree_View's model which is being used for
    --  displaying tooltips on Tree_View's rows.
    --  Since: gtk+ 2.12
 
    procedure Set_Tooltip_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Column    : Gint);
+       Column    : Glib.Gint);
    --  If you only plan to have simple (text-only) tooltips on full rows, you
    --  can use this function to have Gtk.Tree_View.Gtk_Tree_View handle these
    --  automatically for you. Column should be set to the column in Tree_View's
@@ -921,8 +922,8 @@ package Gtk.Tree_View is
 
    procedure Get_Tooltip_Context
       (Tree_View    : not null access Gtk_Tree_View_Record;
-       X            : in out Gint;
-       Y            : in out Gint;
+       X            : in out Glib.Gint;
+       Y            : in out Glib.Gint;
        Keyboard_Tip : Boolean;
        Model        : out Gtk.Tree_Model.Gtk_Tree_Model;
        Path         : out Gtk.Tree_Model.Gtk_Tree_Path;
@@ -972,7 +973,7 @@ package Gtk.Tree_View is
    function Insert_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
        Column    : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class;
-       Position  : Gint := -1) return Gint;
+       Position  : Glib.Gint := -1) return Glib.Gint;
    --  This inserts the Column into the Tree_View at Position. If Position is
    --  -1, then the column is inserted at the end. If Tree_View has
    --  "fixed_height" mode enabled, then Column must have its "sizing" property
@@ -982,11 +983,11 @@ package Gtk.Tree_View is
 
    function Insert_Column_With_Data_Func
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Position  : Gint;
+       Position  : Glib.Gint;
        Title     : UTF8_String;
        Cell      : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Func      : Gtk_Tree_Cell_Data_Func;
-       Dnotify   : Glib.G_Destroy_Notify_Address) return Gint;
+       Dnotify   : Glib.G_Destroy_Notify_Address) return Glib.Gint;
    --  Convenience function that inserts a new column into the
    --  Gtk.Tree_View.Gtk_Tree_View with the given cell renderer and a
    --  Gtk_Tree_Cell_Data_Func to set cell renderer attributes (normally using
@@ -1026,12 +1027,12 @@ package Gtk.Tree_View is
 
       function Insert_Column_With_Data_Func
          (Tree_View : not null access Gtk.Tree_View.Gtk_Tree_View_Record'Class;
-          Position  : Gint;
+          Position  : Glib.Gint;
           Title     : UTF8_String;
           Cell      : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func      : Gtk_Tree_Cell_Data_Func;
           Data      : User_Data_Type;
-          Dnotify   : Glib.G_Destroy_Notify_Address) return Gint;
+          Dnotify   : Glib.G_Destroy_Notify_Address) return Glib.Gint;
       --  Convenience function that inserts a new column into the
       --  Gtk.Tree_View.Gtk_Tree_View with the given cell renderer and a
       --  Gtk_Tree_Cell_Data_Func to set cell renderer attributes (normally
@@ -1051,12 +1052,12 @@ package Gtk.Tree_View is
 
    function Is_Blank_At_Pos
       (Tree_View : not null access Gtk_Tree_View_Record;
-       X         : Gint;
-       Y         : Gint;
+       X         : Glib.Gint;
+       Y         : Glib.Gint;
        Path      : access Gtk.Tree_Model.Gtk_Tree_Path;
        Column    : access Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-       Cell_X    : access Gint;
-       Cell_Y    : access Gint) return Boolean;
+       Cell_X    : access Glib.Gint;
+       Cell_Y    : access Glib.Gint) return Boolean;
    --  Determine whether the point (X, Y) in Tree_View is blank, that is no
    --  cell content nor an expander arrow is drawn at the location. If so, the
    --  location can be considered as the background. You might wish to take
@@ -1132,7 +1133,7 @@ package Gtk.Tree_View is
    function Remove_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
        Column    : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class)
-       return Gint;
+       return Glib.Gint;
    --  Removes Column from Tree_View.
    --  "column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column to remove.
 
@@ -1183,8 +1184,8 @@ package Gtk.Tree_View is
 
    procedure Scroll_To_Point
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Tree_X    : Gint;
-       Tree_Y    : Gint);
+       Tree_X    : Glib.Gint;
+       Tree_Y    : Glib.Gint);
    --  Scrolls the tree view such that the top-left corner of the visible area
    --  is Tree_X, Tree_Y, where Tree_X and Tree_Y are specified in tree
    --  coordinates. The Tree_View must be realized before this function is
@@ -1301,7 +1302,7 @@ package Gtk.Tree_View is
       type Gtk_Tree_Destroy_Count_Func is access procedure
         (Tree_View : not null access Gtk.Tree_View.Gtk_Tree_View_Record'Class;
          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
-         Children  : Gint;
+         Children  : Glib.Gint;
          User_Data : User_Data_Type);
 
       procedure Set_Destroy_Count_Func
@@ -1355,7 +1356,7 @@ package Gtk.Tree_View is
 
       type Gtk_Tree_View_Search_Equal_Func is access function
         (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
-         Column      : Gint;
+         Column      : Glib.Gint;
          Key         : UTF8_String;
          Iter        : Gtk.Tree_Model.Gtk_Tree_Iter;
          Search_Data : User_Data_Type) return Boolean;
@@ -1626,12 +1627,12 @@ package Gtk.Tree_View is
    type Cb_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean is not null access function
      (Self      : access Gtk_Tree_View_Record'Class;
       Step      : Gtk.Enums.Gtk_Movement_Step;
-      Direction : Gint) return Boolean;
+      Direction : Glib.Gint) return Boolean;
 
    type Cb_GObject_Gtk_Movement_Step_Gint_Boolean is not null access function
      (Self      : access Glib.Object.GObject_Record'Class;
       Step      : Gtk.Enums.Gtk_Movement_Step;
-      Direction : Gint) return Boolean;
+      Direction : Glib.Gint) return Boolean;
 
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    procedure On_Move_Cursor

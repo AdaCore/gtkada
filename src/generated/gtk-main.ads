@@ -27,6 +27,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Device;     use Gdk.Device;
 with Gdk.Event;      use Gdk.Event;
 with Gdk.Types;      use Gdk.Types;
+with Glib;           use Glib;
 with Gtk.Widget;     use Gtk.Widget;
 with Pango.Language; use Pango.Language;
 
@@ -38,7 +39,7 @@ package Gtk.Main is
 
    type Gtk_Key_Snoop_Func is access function
      (Grab_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-      Event       : Gdk.Event.Gdk_Event_Key) return Gint;
+      Event       : Gdk.Event.Gdk_Event_Key) return Glib.Gint;
    --  Key snooper functions are called before normal event delivery. They can
    --  be used to implement custom key event handling.
    --  "grab_widget": the widget to which the event will be delivered

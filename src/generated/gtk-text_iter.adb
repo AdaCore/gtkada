@@ -138,12 +138,12 @@ package body Gtk.Text_Iter is
 
    procedure Backward_Chars
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_chars");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -178,12 +178,12 @@ package body Gtk.Text_Iter is
 
    procedure Backward_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_cursor_positions");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -218,12 +218,12 @@ package body Gtk.Text_Iter is
 
    procedure Backward_Lines
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_lines");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -297,12 +297,12 @@ package body Gtk.Text_Iter is
 
    procedure Backward_Sentence_Starts
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_sentence_starts");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -358,12 +358,12 @@ package body Gtk.Text_Iter is
 
    procedure Backward_Visible_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_visible_cursor_positions");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -398,12 +398,12 @@ package body Gtk.Text_Iter is
 
    procedure Backward_Visible_Lines
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_visible_lines");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -438,12 +438,12 @@ package body Gtk.Text_Iter is
 
    procedure Backward_Visible_Word_Starts
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_visible_word_starts");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -478,12 +478,12 @@ package body Gtk.Text_Iter is
 
    procedure Backward_Word_Starts
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_backward_word_starts");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -628,12 +628,12 @@ package body Gtk.Text_Iter is
 
    procedure Forward_Chars
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_chars");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -668,12 +668,12 @@ package body Gtk.Text_Iter is
 
    procedure Forward_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_cursor_positions");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -708,12 +708,12 @@ package body Gtk.Text_Iter is
 
    procedure Forward_Lines
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_lines");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -787,12 +787,12 @@ package body Gtk.Text_Iter is
 
    procedure Forward_Sentence_Ends
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_sentence_ends");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -867,12 +867,12 @@ package body Gtk.Text_Iter is
 
    procedure Forward_Visible_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_visible_cursor_positions");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -907,12 +907,12 @@ package body Gtk.Text_Iter is
 
    procedure Forward_Visible_Lines
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_visible_lines");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -947,12 +947,12 @@ package body Gtk.Text_Iter is
 
    procedure Forward_Visible_Word_Ends
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_visible_word_ends");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;
@@ -987,12 +987,12 @@ package body Gtk.Text_Iter is
 
    procedure Forward_Word_Ends
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Acc_Iter : access Gtk_Text_Iter;
-          Count    : Gint) return Glib.Gboolean;
+          Count    : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_iter_forward_word_ends");
       Acc_Iter   : aliased Gtk_Text_Iter := Iter;
       Tmp_Return : Glib.Gboolean;

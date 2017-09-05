@@ -48,7 +48,7 @@ package Gtk.Tree_Sortable is
    type Gtk_Tree_Iter_Compare_Func is access function
      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
       A     : Gtk.Tree_Model.Gtk_Tree_Iter;
-      B     : Gtk.Tree_Model.Gtk_Tree_Iter) return Gint;
+      B     : Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gint;
    --  A GtkTreeIterCompareFunc should return a negative integer, zero, or a
    --  positive integer if A sorts before B, A sorts with B, or A sorts after B
    --  respectively. If two iters compare as equal, their order in the sorted
@@ -76,7 +76,7 @@ package Gtk.Tree_Sortable is
 
    procedure Get_Sort_Column_Id
       (Sortable       : Gtk_Tree_Sortable;
-       Sort_Column_Id : out Gint;
+       Sort_Column_Id : out Glib.Gint;
        Order          : out Gtk.Enums.Gtk_Sort_Type);
    pragma Import (C, Get_Sort_Column_Id, "gtk_tree_sortable_get_sort_column_id");
    --  Fills in Sort_Column_Id and Order with the current sort column and the
@@ -88,7 +88,7 @@ package Gtk.Tree_Sortable is
 
    procedure Set_Sort_Column_Id
       (Sortable       : Gtk_Tree_Sortable;
-       Sort_Column_Id : Gint;
+       Sort_Column_Id : Glib.Gint;
        Order          : Gtk.Enums.Gtk_Sort_Type);
    pragma Import (C, Set_Sort_Column_Id, "gtk_tree_sortable_set_sort_column_id");
    --  Sets the current sort column to be Sort_Column_Id. The Sortable will
@@ -131,7 +131,7 @@ package Gtk.Tree_Sortable is
         (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
          A         : Gtk.Tree_Model.Gtk_Tree_Iter;
          B         : Gtk.Tree_Model.Gtk_Tree_Iter;
-         User_Data : User_Data_Type) return Gint;
+         User_Data : User_Data_Type) return Glib.Gint;
       --  A GtkTreeIterCompareFunc should return a negative integer, zero, or a
       --  positive integer if A sorts before B, A sorts with B, or A sorts after B
       --  respectively. If two iters compare as equal, their order in the sorted
@@ -168,7 +168,7 @@ package Gtk.Tree_Sortable is
 
    procedure Set_Sort_Func
       (Sortable       : Gtk_Tree_Sortable;
-       Sort_Column_Id : Gint;
+       Sort_Column_Id : Glib.Gint;
        Sort_Func      : Gtk_Tree_Iter_Compare_Func);
    --  Sets the comparison function used when sorting to be Sort_Func. If the
    --  current sort column id of Sortable is the same as Sort_Column_Id, then
@@ -185,7 +185,7 @@ package Gtk.Tree_Sortable is
         (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
          A         : Gtk.Tree_Model.Gtk_Tree_Iter;
          B         : Gtk.Tree_Model.Gtk_Tree_Iter;
-         User_Data : User_Data_Type) return Gint;
+         User_Data : User_Data_Type) return Glib.Gint;
       --  A GtkTreeIterCompareFunc should return a negative integer, zero, or a
       --  positive integer if A sorts before B, A sorts with B, or A sorts after B
       --  respectively. If two iters compare as equal, their order in the sorted
@@ -204,7 +204,7 @@ package Gtk.Tree_Sortable is
 
       procedure Set_Sort_Func
          (Sortable       : Gtk.Tree_Sortable.Gtk_Tree_Sortable;
-          Sort_Column_Id : Gint;
+          Sort_Column_Id : Glib.Gint;
           Sort_Func      : Gtk_Tree_Iter_Compare_Func;
           User_Data      : User_Data_Type);
       --  Sets the comparison function used when sorting to be Sort_Func. If
@@ -268,7 +268,7 @@ package Gtk.Tree_Sortable is
 
    type Virtual_Get_Sort_Column_Id is access function
      (Sortable       : Gtk_Tree_Sortable;
-      Sort_Column_Id : access Gint;
+      Sort_Column_Id : access Glib.Gint;
       Order          : access Gtk.Enums.Gtk_Sort_Type) return Glib.Gboolean;
    pragma Convention (C, Virtual_Get_Sort_Column_Id);
    --  Fills in Sort_Column_Id and Order with the current sort column and the
@@ -305,7 +305,7 @@ package Gtk.Tree_Sortable is
 
    type Virtual_Set_Sort_Column_Id is access procedure
      (Sortable       : Gtk_Tree_Sortable;
-      Sort_Column_Id : Gint;
+      Sort_Column_Id : Glib.Gint;
       Order          : Gtk.Enums.Gtk_Sort_Type);
    pragma Convention (C, Virtual_Set_Sort_Column_Id);
    --  Sets the current sort column to be Sort_Column_Id. The Sortable will
@@ -321,7 +321,7 @@ package Gtk.Tree_Sortable is
 
    type Virtual_Set_Sort_Func is access procedure
      (Sortable       : Gtk_Tree_Sortable;
-      Sort_Column_Id : Gint;
+      Sort_Column_Id : Glib.Gint;
       Sort_Func      : System.Address;
       User_Data      : System.Address;
       Destroy        : Glib.G_Destroy_Notify_Address);

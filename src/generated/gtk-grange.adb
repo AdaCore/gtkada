@@ -109,9 +109,9 @@ package body Gtk.GRange is
    -------------------------
 
    function Get_Min_Slider_Size
-      (The_Range : not null access Gtk_Range_Record) return Gint
+      (The_Range : not null access Gtk_Range_Record) return Glib.Gint
    is
-      function Internal (The_Range : System.Address) return Gint;
+      function Internal (The_Range : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_range_get_min_slider_size");
    begin
       return Internal (Get_Object (The_Range));
@@ -151,9 +151,9 @@ package body Gtk.GRange is
    ----------------------
 
    function Get_Round_Digits
-      (The_Range : not null access Gtk_Range_Record) return Gint
+      (The_Range : not null access Gtk_Range_Record) return Glib.Gint
    is
-      function Internal (The_Range : System.Address) return Gint;
+      function Internal (The_Range : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_range_get_round_digits");
    begin
       return Internal (Get_Object (The_Range));
@@ -178,13 +178,13 @@ package body Gtk.GRange is
 
    procedure Get_Slider_Range
       (The_Range    : not null access Gtk_Range_Record;
-       Slider_Start : out Gint;
-       Slider_End   : out Gint)
+       Slider_Start : out Glib.Gint;
+       Slider_End   : out Glib.Gint)
    is
       procedure Internal
          (The_Range    : System.Address;
-          Slider_Start : out Gint;
-          Slider_End   : out Gint);
+          Slider_Start : out Glib.Gint;
+          Slider_End   : out Glib.Gint);
       pragma Import (C, Internal, "gtk_range_get_slider_range");
    begin
       Internal (Get_Object (The_Range), Slider_Start, Slider_End);
@@ -333,9 +333,9 @@ package body Gtk.GRange is
 
    procedure Set_Min_Slider_Size
       (The_Range : not null access Gtk_Range_Record;
-       Min_Size  : Gint)
+       Min_Size  : Glib.Gint)
    is
-      procedure Internal (The_Range : System.Address; Min_Size : Gint);
+      procedure Internal (The_Range : System.Address; Min_Size : Glib.Gint);
       pragma Import (C, Internal, "gtk_range_set_min_slider_size");
    begin
       Internal (Get_Object (The_Range), Min_Size);
@@ -381,9 +381,11 @@ package body Gtk.GRange is
 
    procedure Set_Round_Digits
       (The_Range    : not null access Gtk_Range_Record;
-       Round_Digits : Gint)
+       Round_Digits : Glib.Gint)
    is
-      procedure Internal (The_Range : System.Address; Round_Digits : Gint);
+      procedure Internal
+         (The_Range    : System.Address;
+          Round_Digits : Glib.Gint);
       pragma Import (C, Internal, "gtk_range_set_round_digits");
    begin
       Internal (Get_Object (The_Range), Round_Digits);

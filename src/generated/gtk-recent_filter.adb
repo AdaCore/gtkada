@@ -141,9 +141,9 @@ package body Gtk.Recent_Filter is
 
    procedure Add_Age
       (Filter : not null access Gtk_Recent_Filter_Record;
-       Days   : Gint)
+       Days   : Glib.Gint)
    is
-      procedure Internal (Filter : System.Address; Days : Gint);
+      procedure Internal (Filter : System.Address; Days : Glib.Gint);
       pragma Import (C, Internal, "gtk_recent_filter_add_age");
    begin
       Internal (Get_Object (Filter), Days);

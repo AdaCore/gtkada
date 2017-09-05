@@ -106,13 +106,13 @@ package Gtk.Search_Entry is
 
    procedure Delete_Text
       (Editable  : not null access Gtk_Search_Entry_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1);
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1);
 
    function Get_Chars
       (Editable  : not null access Gtk_Search_Entry_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1) return UTF8_String;
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1) return UTF8_String;
 
    function Get_Editable
       (Editable : not null access Gtk_Search_Entry_Record) return Boolean;
@@ -122,31 +122,31 @@ package Gtk.Search_Entry is
        Is_Editable : Boolean);
 
    function Get_Position
-      (Editable : not null access Gtk_Search_Entry_Record) return Gint;
+      (Editable : not null access Gtk_Search_Entry_Record) return Glib.Gint;
 
    procedure Set_Position
       (Editable : not null access Gtk_Search_Entry_Record;
-       Position : Gint);
+       Position : Glib.Gint);
 
    procedure Get_Selection_Bounds
       (Editable      : not null access Gtk_Search_Entry_Record;
-       Start_Pos     : out Gint;
-       End_Pos       : out Gint;
+       Start_Pos     : out Glib.Gint;
+       End_Pos       : out Glib.Gint;
        Has_Selection : out Boolean);
 
    procedure Insert_Text
       (Editable        : not null access Gtk_Search_Entry_Record;
        New_Text        : UTF8_String;
-       New_Text_Length : Gint;
-       Position        : in out Gint);
+       New_Text_Length : Glib.Gint;
+       Position        : in out Glib.Gint);
 
    procedure Paste_Clipboard
       (Editable : not null access Gtk_Search_Entry_Record);
 
    procedure Select_Region
       (Editable  : not null access Gtk_Search_Entry_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1);
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1);
 
    -------------
    -- Signals --

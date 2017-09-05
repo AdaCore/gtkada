@@ -119,7 +119,7 @@ package Glib.Menu is
    procedure G_New_From_Model
       (Self       : out Gmenu_Item;
        Model      : not null access Glib.Menu_Model.Gmenu_Model_Record'Class;
-       Item_Index : Gint);
+       Item_Index : Glib.Gint);
    --  Creates a Glib.Menu.Gmenu_Item as an exact copy of an existing menu
    --  item in a Glib.Menu_Model.Gmenu_Model.
    --  Item_Index must be valid (ie: be sure to call
@@ -131,7 +131,7 @@ package Glib.Menu is
    procedure Initialize_From_Model
       (Self       : not null access Gmenu_Item_Record'Class;
        Model      : not null access Glib.Menu_Model.Gmenu_Model_Record'Class;
-       Item_Index : Gint);
+       Item_Index : Glib.Gint);
    --  Creates a Glib.Menu.Gmenu_Item as an exact copy of an existing menu
    --  item in a Glib.Menu_Model.Gmenu_Model.
    --  Item_Index must be valid (ie: be sure to call
@@ -144,7 +144,7 @@ package Glib.Menu is
 
    function Gmenu_Item_New_From_Model
       (Model      : not null access Glib.Menu_Model.Gmenu_Model_Record'Class;
-       Item_Index : Gint) return Gmenu_Item;
+       Item_Index : Glib.Gint) return Gmenu_Item;
    --  Creates a Glib.Menu.Gmenu_Item as an exact copy of an existing menu
    --  item in a Glib.Menu_Model.Gmenu_Model.
    --  Item_Index must be valid (ie: be sure to call
@@ -360,7 +360,7 @@ package Glib.Menu is
 
    procedure Insert
       (Self            : not null access Gmenu_Record;
-       Position        : Gint;
+       Position        : Glib.Gint;
        Label           : UTF8_String := "";
        Detailed_Action : UTF8_String := "");
    --  Convenience function for inserting a normal menu item into Menu.
@@ -373,7 +373,7 @@ package Glib.Menu is
 
    procedure Insert_Item
       (Self     : not null access Gmenu_Record;
-       Position : Gint;
+       Position : Glib.Gint;
        Item     : not null access Gmenu_Item_Record'Class);
    --  Inserts Item into Menu.
    --  The "insertion" is actually done by copying all of the attribute and
@@ -393,7 +393,7 @@ package Glib.Menu is
 
    procedure Insert_Section
       (Self     : not null access Gmenu_Record;
-       Position : Gint;
+       Position : Glib.Gint;
        Label    : UTF8_String := "";
        Section  : not null access Glib.Menu_Model.Gmenu_Model_Record'Class);
    --  Convenience function for inserting a section menu item into Menu.
@@ -406,7 +406,7 @@ package Glib.Menu is
 
    procedure Insert_Submenu
       (Self     : not null access Gmenu_Record;
-       Position : Gint;
+       Position : Glib.Gint;
        Label    : UTF8_String := "";
        Submenu  : not null access Glib.Menu_Model.Gmenu_Model_Record'Class);
    --  Convenience function for inserting a submenu menu item into Menu.
@@ -458,7 +458,9 @@ package Glib.Menu is
    --  "label": the section label, or null
    --  "submenu": a Glib.Menu_Model.Gmenu_Model with the items of the submenu
 
-   procedure Remove (Self : not null access Gmenu_Record; Position : Gint);
+   procedure Remove
+      (Self     : not null access Gmenu_Record;
+       Position : Glib.Gint);
    --  Removes an item from the menu.
    --  Position gives the index of the item to remove.
    --  It is an error if position is not in range the range from 0 to one less

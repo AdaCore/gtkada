@@ -72,11 +72,11 @@ package Gtk.Selection_Data is
    --  Retrieves the display of the selection.
    --  Since: gtk+ 2.14
 
-   function Get_Format (Selection : Gtk_Selection_Data) return Gint;
+   function Get_Format (Selection : Gtk_Selection_Data) return Glib.Gint;
    --  Retrieves the format of the selection.
    --  Since: gtk+ 2.14
 
-   function Get_Length (Selection : Gtk_Selection_Data) return Gint;
+   function Get_Length (Selection : Gtk_Selection_Data) return Glib.Gint;
    --  Retrieves the length of the raw data of the selection.
    --  Since: gtk+ 2.14
 
@@ -110,7 +110,7 @@ package Gtk.Selection_Data is
    function Set_Text
       (Selection : Gtk_Selection_Data;
        Str       : UTF8_String;
-       Len       : Gint) return Boolean;
+       Len       : Glib.Gint) return Boolean;
    --  Sets the contents of the selection from a UTF-8 encoded string. The
    --  string is converted to the form determined by Selection_Data->target.
    --  "str": a UTF-8 string

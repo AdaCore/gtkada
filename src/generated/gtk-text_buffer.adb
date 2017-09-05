@@ -600,9 +600,9 @@ package body Gtk.Text_Buffer is
    --------------------
 
    function Get_Char_Count
-      (Buffer : not null access Gtk_Text_Buffer_Record) return Gint
+      (Buffer : not null access Gtk_Text_Buffer_Record) return Glib.Gint
    is
-      function Internal (Buffer : System.Address) return Gint;
+      function Internal (Buffer : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_text_buffer_get_char_count");
    begin
       return Internal (Get_Object (Buffer));
@@ -695,12 +695,12 @@ package body Gtk.Text_Buffer is
    procedure Get_Iter_At_Line
       (Buffer      : not null access Gtk_Text_Buffer_Record;
        Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Line_Number : Gint)
+       Line_Number : Glib.Gint)
    is
       procedure Internal
          (Buffer      : System.Address;
           Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-          Line_Number : Gint);
+          Line_Number : Glib.Gint);
       pragma Import (C, Internal, "gtk_text_buffer_get_iter_at_line");
       Tmp_Iter : aliased Gtk.Text_Iter.Gtk_Text_Iter;
    begin
@@ -715,14 +715,14 @@ package body Gtk.Text_Buffer is
    procedure Get_Iter_At_Line_Index
       (Buffer      : not null access Gtk_Text_Buffer_Record;
        Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Line_Number : Gint;
-       Byte_Index  : Gint)
+       Line_Number : Glib.Gint;
+       Byte_Index  : Glib.Gint)
    is
       procedure Internal
          (Buffer      : System.Address;
           Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-          Line_Number : Gint;
-          Byte_Index  : Gint);
+          Line_Number : Glib.Gint;
+          Byte_Index  : Glib.Gint);
       pragma Import (C, Internal, "gtk_text_buffer_get_iter_at_line_index");
       Tmp_Iter : aliased Gtk.Text_Iter.Gtk_Text_Iter;
    begin
@@ -737,8 +737,8 @@ package body Gtk.Text_Buffer is
    procedure Get_Iter_At_Line_Offset
       (Buffer      : not null access Gtk_Text_Buffer_Record;
        Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Line_Number : Gint;
-       Char_Offset : Gint)
+       Line_Number : Glib.Gint;
+       Char_Offset : Glib.Gint)
    is
       procedure Internal
          (Buffer      : System.Address;
@@ -787,12 +787,12 @@ package body Gtk.Text_Buffer is
    procedure Get_Iter_At_Offset
       (Buffer      : not null access Gtk_Text_Buffer_Record;
        Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Char_Offset : Gint)
+       Char_Offset : Glib.Gint)
    is
       procedure Internal
          (Buffer      : System.Address;
           Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-          Char_Offset : Gint);
+          Char_Offset : Glib.Gint);
       pragma Import (C, Internal, "gtk_text_buffer_get_iter_at_offset");
       Tmp_Iter : aliased Gtk.Text_Iter.Gtk_Text_Iter;
    begin
@@ -805,9 +805,9 @@ package body Gtk.Text_Buffer is
    --------------------
 
    function Get_Line_Count
-      (Buffer : not null access Gtk_Text_Buffer_Record) return Gint
+      (Buffer : not null access Gtk_Text_Buffer_Record) return Glib.Gint
    is
-      function Internal (Buffer : System.Address) return Gint;
+      function Internal (Buffer : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_text_buffer_get_line_count");
    begin
       return Internal (Get_Object (Buffer));
@@ -994,7 +994,7 @@ package body Gtk.Text_Buffer is
          (Buffer : System.Address;
           Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
           Text   : Interfaces.C.Strings.chars_ptr;
-          Len    : Gint);
+          Len    : Glib.Gint);
       pragma Import (C, Internal, "gtk_text_buffer_insert");
       Tmp_Iter : aliased Gtk.Text_Iter.Gtk_Text_Iter := Iter;
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
@@ -1015,7 +1015,7 @@ package body Gtk.Text_Buffer is
       procedure Internal
          (Buffer : System.Address;
           Text   : Interfaces.C.Strings.chars_ptr;
-          Len    : Gint);
+          Len    : Glib.Gint);
       pragma Import (C, Internal, "gtk_text_buffer_insert_at_cursor");
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
    begin
@@ -1055,7 +1055,7 @@ package body Gtk.Text_Buffer is
          (Buffer           : System.Address;
           Acc_Iter         : access Gtk.Text_Iter.Gtk_Text_Iter;
           Text             : Interfaces.C.Strings.chars_ptr;
-          Len              : Gint;
+          Len              : Glib.Gint;
           Default_Editable : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_insert_interactive");
       Acc_Iter     : aliased Gtk.Text_Iter.Gtk_Text_Iter;
@@ -1082,7 +1082,7 @@ package body Gtk.Text_Buffer is
       function Internal
          (Buffer           : System.Address;
           Text             : Interfaces.C.Strings.chars_ptr;
-          Len              : Gint;
+          Len              : Glib.Gint;
           Default_Editable : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_insert_interactive_at_cursor");
       Tmp_Text   : Interfaces.C.Strings.chars_ptr := New_String (Text);
@@ -1397,7 +1397,7 @@ package body Gtk.Text_Buffer is
       procedure Internal
          (Buffer : System.Address;
           Text   : Interfaces.C.Strings.chars_ptr;
-          Len    : Gint);
+          Len    : Glib.Gint);
       pragma Import (C, Internal, "gtk_text_buffer_set_text");
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
    begin

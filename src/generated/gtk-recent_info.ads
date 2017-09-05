@@ -81,7 +81,7 @@ package Gtk.Recent_Info is
    --  added to the recently used resources list.
    --  Since: gtk+ 2.10
 
-   function Get_Age (Self : Gtk_Recent_Info) return Gint;
+   function Get_Age (Self : Gtk_Recent_Info) return Glib.Gint;
    --  Gets the number of days elapsed since the last update of the resource
    --  pointed by Info.
    --  Since: gtk+ 2.10
@@ -101,7 +101,7 @@ package Gtk.Recent_Info is
 
    function Get_Icon
       (Self : Gtk_Recent_Info;
-       Size : Gint) return Gdk.Pixbuf.Gdk_Pixbuf;
+       Size : Glib.Gint) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Retrieves the icon of size Size associated to the resource MIME type.
    --  Since: gtk+ 2.10
    --  "size": the size of the icon in pixels

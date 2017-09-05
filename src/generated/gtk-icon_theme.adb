@@ -174,13 +174,13 @@ package body Gtk.Icon_Theme is
    function Choose_Icon
       (Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
        Icon_Names : GNAT.Strings.String_List;
-       Size       : Gint;
+       Size       : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info
    is
       function Internal
          (Icon_Theme : System.Address;
           Icon_Names : Interfaces.C.Strings.chars_ptr_array;
-          Size       : Gint;
+          Size       : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_choose_icon");
       Tmp_Icon_Names     : Interfaces.C.Strings.chars_ptr_array := From_String_List (Icon_Names);
@@ -199,15 +199,15 @@ package body Gtk.Icon_Theme is
    function Choose_Icon_For_Scale
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Names : GNAT.Strings.String_List;
-       Size       : Gint;
-       Scale      : Gint;
+       Size       : Glib.Gint;
+       Scale      : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info
    is
       function Internal
          (Icon_Theme : System.Address;
           Icon_Names : Interfaces.C.Strings.chars_ptr_array;
-          Size       : Gint;
-          Scale      : Gint;
+          Size       : Glib.Gint;
+          Scale      : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_choose_icon_for_scale");
       Tmp_Icon_Names     : Interfaces.C.Strings.chars_ptr_array := From_String_List (Icon_Names);
@@ -282,9 +282,9 @@ package body Gtk.Icon_Theme is
    --------------------
 
    function Get_Base_Scale
-      (Icon_Info : not null access Gtk_Icon_Info_Record) return Gint
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return Glib.Gint
    is
-      function Internal (Icon_Info : System.Address) return Gint;
+      function Internal (Icon_Info : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_info_get_base_scale");
    begin
       return Internal (Get_Object (Icon_Info));
@@ -295,9 +295,9 @@ package body Gtk.Icon_Theme is
    -------------------
 
    function Get_Base_Size
-      (Icon_Info : not null access Gtk_Icon_Info_Record) return Gint
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return Glib.Gint
    is
-      function Internal (Icon_Info : System.Address) return Gint;
+      function Internal (Icon_Info : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_info_get_base_size");
    begin
       return Internal (Get_Object (Icon_Info));
@@ -513,14 +513,14 @@ package body Gtk.Icon_Theme is
    function Load_Icon
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Name  : UTF8_String;
-       Size       : Gint;
+       Size       : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags;
        Error      : access Glib.Error.GError) return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal
          (Icon_Theme : System.Address;
           Icon_Name  : Interfaces.C.Strings.chars_ptr;
-          Size       : Gint;
+          Size       : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags;
           Acc_Error  : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_load_icon");
@@ -559,16 +559,16 @@ package body Gtk.Icon_Theme is
    function Load_Icon_For_Scale
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Name  : UTF8_String;
-       Size       : Gint;
-       Scale      : Gint;
+       Size       : Glib.Gint;
+       Scale      : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags;
        Error      : access Glib.Error.GError) return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal
          (Icon_Theme : System.Address;
           Icon_Name  : Interfaces.C.Strings.chars_ptr;
-          Size       : Gint;
-          Scale      : Gint;
+          Size       : Glib.Gint;
+          Scale      : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags;
           Acc_Error  : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_load_icon_for_scale");
@@ -592,8 +592,8 @@ package body Gtk.Icon_Theme is
    function Load_Surface
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Name  : UTF8_String;
-       Size       : Gint;
-       Scale      : Gint;
+       Size       : Glib.Gint;
+       Scale      : Glib.Gint;
        For_Window : Gdk.Gdk_Window;
        Flags      : Gtk_Icon_Lookup_Flags;
        Error      : access Glib.Error.GError) return Cairo.Cairo_Surface
@@ -601,8 +601,8 @@ package body Gtk.Icon_Theme is
       function Internal
          (Icon_Theme : System.Address;
           Icon_Name  : Interfaces.C.Strings.chars_ptr;
-          Size       : Gint;
-          Scale      : Gint;
+          Size       : Glib.Gint;
+          Scale      : Glib.Gint;
           For_Window : Gdk.Gdk_Window;
           Flags      : Gtk_Icon_Lookup_Flags;
           Acc_Error  : access Glib.Error.GError) return Cairo.Cairo_Surface;
@@ -750,13 +750,13 @@ package body Gtk.Icon_Theme is
    function Lookup_By_Gicon
       (Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
        Icon       : Glib.G_Icon.G_Icon;
-       Size       : Gint;
+       Size       : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info
    is
       function Internal
          (Icon_Theme : System.Address;
           Icon       : Glib.G_Icon.G_Icon;
-          Size       : Gint;
+          Size       : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_lookup_by_gicon");
       Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
@@ -771,15 +771,15 @@ package body Gtk.Icon_Theme is
    function Lookup_By_Gicon_For_Scale
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon       : Glib.G_Icon.G_Icon;
-       Size       : Gint;
-       Scale      : Gint;
+       Size       : Glib.Gint;
+       Scale      : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info
    is
       function Internal
          (Icon_Theme : System.Address;
           Icon       : Glib.G_Icon.G_Icon;
-          Size       : Gint;
-          Scale      : Gint;
+          Size       : Glib.Gint;
+          Scale      : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_lookup_by_gicon_for_scale");
       Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
@@ -794,13 +794,13 @@ package body Gtk.Icon_Theme is
    function Lookup_Icon
       (Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
        Icon_Name  : UTF8_String;
-       Size       : Gint;
+       Size       : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info
    is
       function Internal
          (Icon_Theme : System.Address;
           Icon_Name  : Interfaces.C.Strings.chars_ptr;
-          Size       : Gint;
+          Size       : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_lookup_icon");
       Tmp_Icon_Name      : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
@@ -819,15 +819,15 @@ package body Gtk.Icon_Theme is
    function Lookup_Icon_For_Scale
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Name  : UTF8_String;
-       Size       : Gint;
-       Scale      : Gint;
+       Size       : Glib.Gint;
+       Scale      : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info
    is
       function Internal
          (Icon_Theme : System.Address;
           Icon_Name  : Interfaces.C.Strings.chars_ptr;
-          Size       : Gint;
-          Scale      : Gint;
+          Size       : Glib.Gint;
+          Scale      : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_lookup_icon_for_scale");
       Tmp_Icon_Name      : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
@@ -936,7 +936,7 @@ package body Gtk.Icon_Theme is
       procedure Internal
          (Icon_Theme : System.Address;
           Path       : Interfaces.C.Strings.chars_ptr_array;
-          N_Elements : Gint);
+          N_Elements : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_theme_set_search_path");
       Tmp_Path : Interfaces.C.Strings.chars_ptr_array := From_String_List (Path);
    begin
@@ -950,12 +950,12 @@ package body Gtk.Icon_Theme is
 
    procedure Add_Builtin_Icon
       (Icon_Name : UTF8_String;
-       Size      : Gint;
+       Size      : Glib.Gint;
        Pixbuf    : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
       procedure Internal
          (Icon_Name : Interfaces.C.Strings.chars_ptr;
-          Size      : Gint;
+          Size      : Glib.Gint;
           Pixbuf    : System.Address);
       pragma Import (C, Internal, "gtk_icon_theme_add_builtin_icon");
       Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);

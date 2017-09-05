@@ -37,7 +37,7 @@ package body Gtk.Box is
 
    function Gtk_Box_New
       (Orientation : Gtk.Enums.Gtk_Orientation;
-       Spacing     : Gint) return Gtk_Box
+       Spacing     : Glib.Gint) return Gtk_Box
    is
       Box : constant Gtk_Box := new Gtk_Box_Record;
    begin
@@ -51,7 +51,7 @@ package body Gtk.Box is
 
    function Gtk_Hbox_New
       (Homogeneous : Boolean := False;
-       Spacing     : Gint := 0) return Gtk_Hbox
+       Spacing     : Glib.Gint := 0) return Gtk_Hbox
    is
       Box : constant Gtk_Hbox := new Gtk_Hbox_Record;
    begin
@@ -66,7 +66,7 @@ package body Gtk.Box is
    procedure Gtk_New
       (Box         : out Gtk_Box;
        Orientation : Gtk.Enums.Gtk_Orientation;
-       Spacing     : Gint)
+       Spacing     : Glib.Gint)
    is
    begin
       Box := new Gtk_Box_Record;
@@ -80,7 +80,7 @@ package body Gtk.Box is
    procedure Gtk_New_Hbox
       (Box         : out Gtk_Hbox;
        Homogeneous : Boolean := False;
-       Spacing     : Gint := 0)
+       Spacing     : Glib.Gint := 0)
    is
    begin
       Box := new Gtk_Hbox_Record;
@@ -94,7 +94,7 @@ package body Gtk.Box is
    procedure Gtk_New_Vbox
       (Box         : out Gtk_Vbox;
        Homogeneous : Boolean := False;
-       Spacing     : Gint := 0)
+       Spacing     : Glib.Gint := 0)
    is
    begin
       Box := new Gtk_Vbox_Record;
@@ -107,7 +107,7 @@ package body Gtk.Box is
 
    function Gtk_Vbox_New
       (Homogeneous : Boolean := False;
-       Spacing     : Gint := 0) return Gtk_Vbox
+       Spacing     : Glib.Gint := 0) return Gtk_Vbox
    is
       Box : constant Gtk_Vbox := new Gtk_Vbox_Record;
    begin
@@ -122,11 +122,11 @@ package body Gtk.Box is
    procedure Initialize
       (Box         : not null access Gtk_Box_Record'Class;
        Orientation : Gtk.Enums.Gtk_Orientation;
-       Spacing     : Gint)
+       Spacing     : Glib.Gint)
    is
       function Internal
          (Orientation : Gtk.Enums.Gtk_Orientation;
-          Spacing     : Gint) return System.Address;
+          Spacing     : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_box_new");
    begin
       if not Box.Is_Created then
@@ -141,11 +141,11 @@ package body Gtk.Box is
    procedure Initialize_Hbox
       (Box         : not null access Gtk_Hbox_Record'Class;
        Homogeneous : Boolean := False;
-       Spacing     : Gint := 0)
+       Spacing     : Glib.Gint := 0)
    is
       function Internal
          (Homogeneous : Glib.Gboolean;
-          Spacing     : Gint) return System.Address;
+          Spacing     : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_hbox_new");
    begin
       if not Box.Is_Created then
@@ -160,11 +160,11 @@ package body Gtk.Box is
    procedure Initialize_Vbox
       (Box         : not null access Gtk_Vbox_Record'Class;
        Homogeneous : Boolean := False;
-       Spacing     : Gint := 0)
+       Spacing     : Glib.Gint := 0)
    is
       function Internal
          (Homogeneous : Glib.Gboolean;
-          Spacing     : Gint) return System.Address;
+          Spacing     : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_vbox_new");
    begin
       if not Box.Is_Created then
@@ -207,11 +207,11 @@ package body Gtk.Box is
 
    function Get_Child
       (Box : not null access Gtk_Box_Record;
-       Num : Gint) return Gtk.Widget.Gtk_Widget
+       Num : Glib.Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
          (Box : System.Address;
-          Num : Gint) return System.Address;
+          Num : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "ada_box_get_child");
       Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
@@ -235,8 +235,10 @@ package body Gtk.Box is
    -- Get_Spacing --
    -----------------
 
-   function Get_Spacing (Box : not null access Gtk_Box_Record) return Gint is
-      function Internal (Box : System.Address) return Gint;
+   function Get_Spacing
+      (Box : not null access Gtk_Box_Record) return Glib.Gint
+   is
+      function Internal (Box : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_box_get_spacing");
    begin
       return Internal (Get_Object (Box));
@@ -321,12 +323,12 @@ package body Gtk.Box is
    procedure Reorder_Child
       (Box      : not null access Gtk_Box_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position : Gint)
+       Position : Glib.Gint)
    is
       procedure Internal
          (Box      : System.Address;
           Child    : System.Address;
-          Position : Gint);
+          Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_box_reorder_child");
    begin
       Internal (Get_Object (Box), Get_Object (Child), Position);
@@ -406,9 +408,9 @@ package body Gtk.Box is
 
    procedure Set_Spacing
       (Box     : not null access Gtk_Box_Record;
-       Spacing : Gint)
+       Spacing : Glib.Gint)
    is
-      procedure Internal (Box : System.Address; Spacing : Gint);
+      procedure Internal (Box : System.Address; Spacing : Glib.Gint);
       pragma Import (C, Internal, "gtk_box_set_spacing");
    begin
       Internal (Get_Object (Box), Spacing);

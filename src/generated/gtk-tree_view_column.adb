@@ -189,18 +189,18 @@ package body Gtk.Tree_View_Column is
    procedure Cell_Get_Position
       (Tree_Column   : not null access Gtk_Tree_View_Column_Record;
        Cell_Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       X_Offset      : out Gint;
-       Width         : out Gint;
+       X_Offset      : out Glib.Gint;
+       Width         : out Glib.Gint;
        Success       : out Boolean)
    is
       function Internal
          (Tree_Column   : System.Address;
           Cell_Renderer : System.Address;
-          Acc_X_Offset  : access Gint;
-          Acc_Width     : access Gint) return Glib.Gboolean;
+          Acc_X_Offset  : access Glib.Gint;
+          Acc_Width     : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_column_cell_get_position");
-      Acc_X_Offset : aliased Gint;
-      Acc_Width    : aliased Gint;
+      Acc_X_Offset : aliased Glib.Gint;
+      Acc_Width    : aliased Glib.Gint;
       Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Tree_Column), Get_Object (Cell_Renderer), Acc_X_Offset'Access, Acc_Width'Access);
@@ -216,18 +216,18 @@ package body Gtk.Tree_View_Column is
    procedure Cell_Get_Size
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        Cell_Area   : Gdk.Rectangle.Gdk_Rectangle;
-       X_Offset    : out Gint;
-       Y_Offset    : out Gint;
-       Width       : out Gint;
-       Height      : out Gint)
+       X_Offset    : out Glib.Gint;
+       Y_Offset    : out Glib.Gint;
+       Width       : out Glib.Gint;
+       Height      : out Glib.Gint)
    is
       procedure Internal
          (Tree_Column : System.Address;
           Cell_Area   : Gdk.Rectangle.Gdk_Rectangle;
-          X_Offset    : out Gint;
-          Y_Offset    : out Gint;
-          Width       : out Gint;
-          Height      : out Gint);
+          X_Offset    : out Glib.Gint;
+          Y_Offset    : out Glib.Gint;
+          Width       : out Glib.Gint;
+          Height      : out Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_column_cell_get_size");
    begin
       Internal (Get_Object (Tree_Column), Cell_Area, X_Offset, Y_Offset, Width, Height);
@@ -361,9 +361,9 @@ package body Gtk.Tree_View_Column is
 
    function Get_Fixed_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint
+       return Glib.Gint
    is
-      function Internal (Tree_Column : System.Address) return Gint;
+      function Internal (Tree_Column : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_column_get_fixed_width");
    begin
       return Internal (Get_Object (Tree_Column));
@@ -375,9 +375,9 @@ package body Gtk.Tree_View_Column is
 
    function Get_Max_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint
+       return Glib.Gint
    is
-      function Internal (Tree_Column : System.Address) return Gint;
+      function Internal (Tree_Column : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_column_get_max_width");
    begin
       return Internal (Get_Object (Tree_Column));
@@ -389,9 +389,9 @@ package body Gtk.Tree_View_Column is
 
    function Get_Min_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint
+       return Glib.Gint
    is
-      function Internal (Tree_Column : System.Address) return Gint;
+      function Internal (Tree_Column : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_column_get_min_width");
    begin
       return Internal (Get_Object (Tree_Column));
@@ -446,9 +446,9 @@ package body Gtk.Tree_View_Column is
 
    function Get_Sort_Column_Id
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint
+       return Glib.Gint
    is
-      function Internal (Tree_Column : System.Address) return Gint;
+      function Internal (Tree_Column : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_column_get_sort_column_id");
    begin
       return Internal (Get_Object (Tree_Column));
@@ -489,9 +489,9 @@ package body Gtk.Tree_View_Column is
 
    function Get_Spacing
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint
+       return Glib.Gint
    is
-      function Internal (Tree_Column : System.Address) return Gint;
+      function Internal (Tree_Column : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_column_get_spacing");
    begin
       return Internal (Get_Object (Tree_Column));
@@ -563,9 +563,9 @@ package body Gtk.Tree_View_Column is
 
    function Get_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint
+       return Glib.Gint
    is
-      function Internal (Tree_Column : System.Address) return Gint;
+      function Internal (Tree_Column : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_column_get_width");
    begin
       return Internal (Get_Object (Tree_Column));
@@ -577,9 +577,9 @@ package body Gtk.Tree_View_Column is
 
    function Get_X_Offset
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint
+       return Glib.Gint
    is
-      function Internal (Tree_Column : System.Address) return Gint;
+      function Internal (Tree_Column : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_column_get_x_offset");
    begin
       return Internal (Get_Object (Tree_Column));
@@ -733,9 +733,11 @@ package body Gtk.Tree_View_Column is
 
    procedure Set_Fixed_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
-       Fixed_Width : Gint)
+       Fixed_Width : Glib.Gint)
    is
-      procedure Internal (Tree_Column : System.Address; Fixed_Width : Gint);
+      procedure Internal
+         (Tree_Column : System.Address;
+          Fixed_Width : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_column_set_fixed_width");
    begin
       Internal (Get_Object (Tree_Column), Fixed_Width);
@@ -747,9 +749,11 @@ package body Gtk.Tree_View_Column is
 
    procedure Set_Max_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
-       Max_Width   : Gint)
+       Max_Width   : Glib.Gint)
    is
-      procedure Internal (Tree_Column : System.Address; Max_Width : Gint);
+      procedure Internal
+         (Tree_Column : System.Address;
+          Max_Width   : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_column_set_max_width");
    begin
       Internal (Get_Object (Tree_Column), Max_Width);
@@ -761,9 +765,11 @@ package body Gtk.Tree_View_Column is
 
    procedure Set_Min_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
-       Min_Width   : Gint)
+       Min_Width   : Glib.Gint)
    is
-      procedure Internal (Tree_Column : System.Address; Min_Width : Gint);
+      procedure Internal
+         (Tree_Column : System.Address;
+          Min_Width   : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_column_set_min_width");
    begin
       Internal (Get_Object (Tree_Column), Min_Width);
@@ -823,11 +829,11 @@ package body Gtk.Tree_View_Column is
 
    procedure Set_Sort_Column_Id
       (Tree_Column    : not null access Gtk_Tree_View_Column_Record;
-       Sort_Column_Id : Gint)
+       Sort_Column_Id : Glib.Gint)
    is
       procedure Internal
          (Tree_Column    : System.Address;
-          Sort_Column_Id : Gint);
+          Sort_Column_Id : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_column_set_sort_column_id");
    begin
       Internal (Get_Object (Tree_Column), Sort_Column_Id);
@@ -871,9 +877,9 @@ package body Gtk.Tree_View_Column is
 
    procedure Set_Spacing
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
-       Spacing     : Gint)
+       Spacing     : Glib.Gint)
    is
-      procedure Internal (Tree_Column : System.Address; Spacing : Gint);
+      procedure Internal (Tree_Column : System.Address; Spacing : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_column_set_spacing");
    begin
       Internal (Get_Object (Tree_Column), Spacing);
@@ -937,13 +943,13 @@ package body Gtk.Tree_View_Column is
       (Cell_Layout : not null access Gtk_Tree_View_Column_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint)
+       Column      : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
           Attribute   : Interfaces.C.Strings.chars_ptr;
-          Column      : Gint);
+          Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
       Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
    begin
@@ -1039,12 +1045,12 @@ package body Gtk.Tree_View_Column is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Tree_View_Column_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint)
+       Position    : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Position    : Gint);
+          Position    : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_reorder");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);

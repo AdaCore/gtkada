@@ -55,13 +55,13 @@ package body Gtk.Misc is
 
    procedure Get_Padding
       (Misc : not null access Gtk_Misc_Record;
-       Xpad : out Gint;
-       Ypad : out Gint)
+       Xpad : out Glib.Gint;
+       Ypad : out Glib.Gint)
    is
       procedure Internal
          (Misc : System.Address;
-          Xpad : out Gint;
-          Ypad : out Gint);
+          Xpad : out Glib.Gint;
+          Ypad : out Glib.Gint);
       pragma Import (C, Internal, "gtk_misc_get_padding");
    begin
       Internal (Get_Object (Misc), Xpad, Ypad);
@@ -91,10 +91,13 @@ package body Gtk.Misc is
 
    procedure Set_Padding
       (Misc : not null access Gtk_Misc_Record;
-       Xpad : Gint;
-       Ypad : Gint)
+       Xpad : Glib.Gint;
+       Ypad : Glib.Gint)
    is
-      procedure Internal (Misc : System.Address; Xpad : Gint; Ypad : Gint);
+      procedure Internal
+         (Misc : System.Address;
+          Xpad : Glib.Gint;
+          Ypad : Glib.Gint);
       pragma Import (C, Internal, "gtk_misc_set_padding");
    begin
       Internal (Get_Object (Misc), Xpad, Ypad);

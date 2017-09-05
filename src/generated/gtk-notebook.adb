@@ -113,12 +113,13 @@ package body Gtk.Notebook is
    function Append_Page
       (Notebook  : not null access Gtk_Notebook_Record;
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint
+       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Glib.Gint
    is
       function Internal
          (Notebook  : System.Address;
           Child     : System.Address;
-          Tab_Label : System.Address) return Gint;
+          Tab_Label : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_notebook_append_page");
    begin
       return Internal (Get_Object (Notebook), Get_Object (Child), Get_Object_Or_Null (GObject (Tab_Label)));
@@ -166,9 +167,9 @@ package body Gtk.Notebook is
    ----------------------
 
    function Get_Current_Page
-      (Notebook : not null access Gtk_Notebook_Record) return Gint
+      (Notebook : not null access Gtk_Notebook_Record) return Glib.Gint
    is
-      function Internal (Notebook : System.Address) return Gint;
+      function Internal (Notebook : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_notebook_get_current_page");
    begin
       return Internal (Get_Object (Notebook));
@@ -228,9 +229,9 @@ package body Gtk.Notebook is
    -----------------
 
    function Get_N_Pages
-      (Notebook : not null access Gtk_Notebook_Record) return Gint
+      (Notebook : not null access Gtk_Notebook_Record) return Glib.Gint
    is
-      function Internal (Notebook : System.Address) return Gint;
+      function Internal (Notebook : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_notebook_get_n_pages");
    begin
       return Internal (Get_Object (Notebook));
@@ -242,11 +243,11 @@ package body Gtk.Notebook is
 
    function Get_Nth_Page
       (Notebook : not null access Gtk_Notebook_Record;
-       Page_Num : Gint) return Gtk.Widget.Gtk_Widget
+       Page_Num : Glib.Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
          (Notebook : System.Address;
-          Page_Num : Gint) return System.Address;
+          Page_Num : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_notebook_get_nth_page");
       Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
@@ -410,13 +411,13 @@ package body Gtk.Notebook is
       (Notebook  : not null access Gtk_Notebook_Record;
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position  : Gint) return Gint
+       Position  : Glib.Gint) return Glib.Gint
    is
       function Internal
          (Notebook  : System.Address;
           Child     : System.Address;
           Tab_Label : System.Address;
-          Position  : Gint) return Gint;
+          Position  : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gtk_notebook_insert_page");
    begin
       return Internal (Get_Object (Notebook), Get_Object (Child), Get_Object_Or_Null (GObject (Tab_Label)), Position);
@@ -431,14 +432,14 @@ package body Gtk.Notebook is
        Child      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
        Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position   : Gint) return Gint
+       Position   : Glib.Gint) return Glib.Gint
    is
       function Internal
          (Notebook   : System.Address;
           Child      : System.Address;
           Tab_Label  : System.Address;
           Menu_Label : System.Address;
-          Position   : Gint) return Gint;
+          Position   : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gtk_notebook_insert_page_menu");
    begin
       return Internal (Get_Object (Notebook), Get_Object (Child), Get_Object_Or_Null (GObject (Tab_Label)), Get_Object_Or_Null (GObject (Menu_Label)), Position);
@@ -462,11 +463,11 @@ package body Gtk.Notebook is
    function Page_Num
       (Notebook : not null access Gtk_Notebook_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class)
-       return Gint
+       return Glib.Gint
    is
       function Internal
          (Notebook : System.Address;
-          Child    : System.Address) return Gint;
+          Child    : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_notebook_page_num");
    begin
       return Internal (Get_Object (Notebook), Get_Object (Child));
@@ -501,12 +502,13 @@ package body Gtk.Notebook is
    function Prepend_Page
       (Notebook  : not null access Gtk_Notebook_Record;
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint
+       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Glib.Gint
    is
       function Internal
          (Notebook  : System.Address;
           Child     : System.Address;
-          Tab_Label : System.Address) return Gint;
+          Tab_Label : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_notebook_prepend_page");
    begin
       return Internal (Get_Object (Notebook), Get_Object (Child), Get_Object_Or_Null (GObject (Tab_Label)));
@@ -520,13 +522,14 @@ package body Gtk.Notebook is
       (Notebook   : not null access Gtk_Notebook_Record;
        Child      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint
+       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Glib.Gint
    is
       function Internal
          (Notebook   : System.Address;
           Child      : System.Address;
           Tab_Label  : System.Address;
-          Menu_Label : System.Address) return Gint;
+          Menu_Label : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_notebook_prepend_page_menu");
    begin
       return Internal (Get_Object (Notebook), Get_Object (Child), Get_Object_Or_Null (GObject (Tab_Label)), Get_Object_Or_Null (GObject (Menu_Label)));
@@ -549,9 +552,9 @@ package body Gtk.Notebook is
 
    procedure Remove_Page
       (Notebook : not null access Gtk_Notebook_Record;
-       Page_Num : Gint)
+       Page_Num : Glib.Gint)
    is
-      procedure Internal (Notebook : System.Address; Page_Num : Gint);
+      procedure Internal (Notebook : System.Address; Page_Num : Glib.Gint);
       pragma Import (C, Internal, "gtk_notebook_remove_page");
    begin
       Internal (Get_Object (Notebook), Page_Num);
@@ -564,12 +567,12 @@ package body Gtk.Notebook is
    procedure Reorder_Child
       (Notebook : not null access Gtk_Notebook_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position : Gint)
+       Position : Glib.Gint)
    is
       procedure Internal
          (Notebook : System.Address;
           Child    : System.Address;
-          Position : Gint);
+          Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_notebook_reorder_child");
    begin
       Internal (Get_Object (Notebook), Get_Object (Child), Position);
@@ -599,9 +602,9 @@ package body Gtk.Notebook is
 
    procedure Set_Current_Page
       (Notebook : not null access Gtk_Notebook_Record;
-       Page_Num : Gint := -1)
+       Page_Num : Glib.Gint := -1)
    is
-      procedure Internal (Notebook : System.Address; Page_Num : Gint);
+      procedure Internal (Notebook : System.Address; Page_Num : Glib.Gint);
       pragma Import (C, Internal, "gtk_notebook_set_current_page");
    begin
       Internal (Get_Object (Notebook), Page_Num);

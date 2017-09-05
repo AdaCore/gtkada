@@ -428,7 +428,7 @@ package Gtk.UI_Manager is
    procedure Insert_Action_Group
       (Self         : not null access Gtk_UI_Manager_Record;
        Action_Group : not null access Gtk.Action_Group.Gtk_Action_Group_Record'Class;
-       Pos          : Gint);
+       Pos          : Glib.Gint);
    pragma Obsolescent (Insert_Action_Group);
    --  Inserts an action group into the list of action groups associated with
    --  Manager. Actions in earlier groups hide actions with the same name in

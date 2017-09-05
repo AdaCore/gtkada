@@ -133,7 +133,7 @@ package Gtk.Clipboard is
    type Gtk_Clipboard_Targets_Received_Func is access procedure
      (Clipboard : not null access Gtk_Clipboard_Record'Class;
       Atoms     : Gdk_Atom_Array;
-      N_Atoms   : Gint);
+      N_Atoms   : Glib.Gint);
    --  A function to be called when the results of
    --  Gtk.Clipboard.Request_Targets are received, or when the request fails.
    --  Since: gtk+ 2.4
@@ -275,7 +275,7 @@ package Gtk.Clipboard is
    procedure Set_Can_Store
       (Clipboard : not null access Gtk_Clipboard_Record;
        Targets   : Gtk.Target_List.Target_Entry_Array;
-       N_Targets : Gint);
+       N_Targets : Glib.Gint);
    --  Hints that the clipboard data should be stored somewhere when the
    --  application exits or when gtk_clipboard_store () is called.
    --  This value is reset when the clipboard owner changes. Where the

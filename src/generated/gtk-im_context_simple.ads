@@ -56,8 +56,8 @@ package Gtk.IM_Context_Simple is
    procedure Add_Table
       (Self        : not null access Gtk_IM_Context_Simple_Record;
        Data        : Gint_Array;
-       Max_Seq_Len : Gint;
-       N_Seqs      : Gint);
+       Max_Seq_Len : Glib.Gint;
+       N_Seqs      : Glib.Gint);
    --  Adds an additional table to search to the input context. Each row of
    --  the table consists of Max_Seq_Len key symbols followed by two Guint16
    --  interpreted as the high and low words of a gunicode value. Tables are

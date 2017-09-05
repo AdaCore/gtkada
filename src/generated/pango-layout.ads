@@ -212,16 +212,16 @@ package Pango.Layout is
    --  layout's contents.
 
    function Get_Baseline
-      (Layout : not null access Pango_Layout_Record) return Gint;
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Gets the Y position of baseline of the first line in Layout.
    --  Since: gtk+ 1.22
 
-   function Get_Baseline (Self : Pango_Layout_Iter) return Gint;
+   function Get_Baseline (Self : Pango_Layout_Iter) return Glib.Gint;
    --  Gets the Y position of the current line's baseline, in layout
    --  coordinates (origin at top left of the entire layout).
 
    function Get_Character_Count
-      (Layout : not null access Pango_Layout_Record) return Gint;
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Returns the number of Unicode characters in the the text of Layout.
    --  Since: gtk+ 1.30
 
@@ -232,7 +232,7 @@ package Pango.Layout is
 
    procedure Get_Cursor_Pos
       (Layout     : not null access Pango_Layout_Record;
-       Index      : Gint;
+       Index      : Glib.Gint;
        Strong_Pos : out Pango_Rectangle;
        Weak_Pos   : out Pango_Rectangle);
    --  Given an index within a layout, determines the positions that of the
@@ -302,14 +302,14 @@ package Pango.Layout is
    --  current font description
 
    function Get_Height
-      (Layout : not null access Pango_Layout_Record) return Gint;
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Gets the height of layout used for ellipsization. See
    --  Pango.Layout.Set_Height for details.
    --  Since: gtk+ 1.20
 
    procedure Set_Height
       (Layout : not null access Pango_Layout_Record;
-       Height : Gint);
+       Height : Glib.Gint);
    --  Sets the height to which the Pango.Layout.Pango_Layout should be
    --  ellipsized at. There are two different behaviors, based on whether
    --  Height is positive or negative.
@@ -336,13 +336,13 @@ package Pango.Layout is
    --  or desired number of lines if negative.
 
    function Get_Indent
-      (Layout : not null access Pango_Layout_Record) return Gint;
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Gets the paragraph indent width in Pango units. A negative value
    --  indicates a hanging indentation.
 
    procedure Set_Indent
       (Layout : not null access Pango_Layout_Record;
-       Indent : Gint);
+       Indent : Glib.Gint);
    --  Sets the width in Pango units to indent each paragraph. A negative
    --  value of Indent will produce a hanging indentation. That is, the first
    --  line will have the full width, and subsequent lines will be indented by
@@ -374,7 +374,7 @@ package Pango.Layout is
 
    function Get_Line
       (Layout : not null access Pango_Layout_Record;
-       Line   : Gint) return Pango_Layout_Line;
+       Line   : Glib.Gint) return Pango_Layout_Line;
    --  Retrieves a particular line from a Pango.Layout.Pango_Layout.
    --  Use the faster Pango.Layout.Get_Line_Readonly if you do not plan to
    --  modify the contents of the line (glyphs, glyph widths, etc.).
@@ -387,12 +387,12 @@ package Pango.Layout is
    --  modify the contents of the line (glyphs, glyph widths, etc.).
 
    function Get_Line_Count
-      (Layout : not null access Pango_Layout_Record) return Gint;
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Retrieves the count of lines for the Layout.
 
    function Get_Line_Readonly
       (Layout : not null access Pango_Layout_Record;
-       Line   : Gint) return Pango_Layout_Line;
+       Line   : Glib.Gint) return Pango_Layout_Line;
    --  Retrieves a particular line from a Pango.Layout.Pango_Layout.
    --  This is a faster alternative to Pango.Layout.Get_Line, but the user is
    --  not expected to modify the contents of the line (glyphs, glyph widths,
@@ -425,8 +425,8 @@ package Pango.Layout is
 
    procedure Get_Pixel_Size
       (Layout : not null access Pango_Layout_Record;
-       Width  : out Gint;
-       Height : out Gint);
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint);
    --  Determines the logical width and height of a Pango.Layout.Pango_Layout
    --  in device units. (pango_layout_get_size returns the width and height
    --  scaled by PANGO_SCALE.) This is simply a convenience function around
@@ -463,8 +463,8 @@ package Pango.Layout is
 
    procedure Get_Size
       (Layout : not null access Pango_Layout_Record;
-       Width  : out Gint;
-       Height : out Gint);
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint);
    --  Determines the logical width and height of a Pango.Layout.Pango_Layout
    --  in Pango units (device units scaled by PANGO_SCALE). This is simply a
    --  convenience function around Pango.Layout.Get_Extents.
@@ -472,12 +472,12 @@ package Pango.Layout is
    --  "height": location to store the logical height, or null
 
    function Get_Spacing
-      (Layout : not null access Pango_Layout_Record) return Gint;
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Gets the amount of spacing between the lines of the layout.
 
    procedure Set_Spacing
       (Layout  : not null access Pango_Layout_Record;
-       Spacing : Gint);
+       Spacing : Glib.Gint);
    --  Sets the amount of spacing in Pango unit between the lines of the
    --  layout.
    --  "spacing": the amount of spacing
@@ -515,7 +515,7 @@ package Pango.Layout is
    --  "text": a valid UTF-8 string
 
    function Get_Unknown_Glyphs_Count
-      (Layout : not null access Pango_Layout_Record) return Gint;
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Counts the number unknown glyphs in Layout. That is, zero if glyphs for
    --  all characters in the layout text were found, or more than zero
    --  otherwise.
@@ -526,13 +526,13 @@ package Pango.Layout is
    --  Since: gtk+ 1.16
 
    function Get_Width
-      (Layout : not null access Pango_Layout_Record) return Gint;
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Gets the width to which the lines of the Pango.Layout.Pango_Layout
    --  should wrap.
 
    procedure Set_Width
       (Layout : not null access Pango_Layout_Record;
-       Width  : Gint);
+       Width  : Glib.Gint);
    --  Sets the width to which the lines of the Pango.Layout.Pango_Layout
    --  should wrap or ellipsized. The default value is -1: no width set.
    --  "width": the desired width in Pango units, or -1 to indicate that no
@@ -555,10 +555,10 @@ package Pango.Layout is
 
    procedure Index_To_Line_X
       (Layout   : not null access Pango_Layout_Record;
-       Index    : Gint;
+       Index    : Glib.Gint;
        Trailing : Boolean;
-       Line     : out Gint;
-       X_Pos    : out Gint);
+       Line     : out Glib.Gint;
+       X_Pos    : out Glib.Gint);
    --  Converts from byte Index_ within the Layout to line and X position. (X
    --  position is measured from the left edge of the line)
    --  "index_": the byte index of a grapheme within the layout.
@@ -572,7 +572,7 @@ package Pango.Layout is
 
    procedure Index_To_Pos
       (Layout : not null access Pango_Layout_Record;
-       Index  : Gint;
+       Index  : Glib.Gint;
        Pos    : out Pango_Rectangle);
    --  Converts from an index within a Pango.Layout.Pango_Layout to the
    --  onscreen position corresponding to the grapheme at that index, which is
@@ -602,11 +602,11 @@ package Pango.Layout is
    procedure Move_Cursor_Visually
       (Layout       : not null access Pango_Layout_Record;
        Strong       : Boolean;
-       Old_Index    : Gint;
-       Old_Trailing : Gint;
-       Direction    : Gint;
-       New_Index    : out Gint;
-       New_Trailing : out Gint);
+       Old_Index    : Glib.Gint;
+       Old_Trailing : Glib.Gint;
+       Direction    : Glib.Gint;
+       New_Index    : out Glib.Gint;
+       New_Trailing : out Glib.Gint);
    --  Computes a new cursor position from an old position and a count of
    --  positions to move visually. If Direction is positive, then the new
    --  strong cursor position will be one position to the right of the old
@@ -648,7 +648,7 @@ package Pango.Layout is
    procedure Set_Markup_With_Accel
       (Layout       : not null access Pango_Layout_Record;
        Markup       : UTF8_String;
-       Length       : Gint;
+       Length       : Glib.Gint;
        Accel_Marker : Gunichar;
        Accel_Char   : out Gunichar);
    --  Sets the layout text and attribute list from marked-up text (see <link
@@ -670,10 +670,10 @@ package Pango.Layout is
 
    procedure Xy_To_Index
       (Layout   : not null access Pango_Layout_Record;
-       X        : Gint;
-       Y        : Gint;
-       Index    : out Gint;
-       Trailing : out Gint;
+       X        : Glib.Gint;
+       Y        : Glib.Gint;
+       Index    : out Glib.Gint;
+       Trailing : out Glib.Gint;
        Exact    : out Boolean);
    --  Converts from X and Y position within a layout to the byte index to the
    --  character at that logical position. If the Y position is not inside the
@@ -715,7 +715,7 @@ package Pango.Layout is
    --  "ink_rect": rectangle to fill with ink extents, or null
    --  "logical_rect": rectangle to fill with logical extents, or null
 
-   function Get_Index (Self : Pango_Layout_Iter) return Gint;
+   function Get_Index (Self : Pango_Layout_Iter) return Glib.Gint;
    --  Gets the current byte index. Note that iterating forward by char moves
    --  in visual order, not logical order, so indexes may not be sequential.
    --  Also, the index may be equal to the length of the text in the layout, if
@@ -750,8 +750,8 @@ package Pango.Layout is
 
    procedure Get_Line_Yrange
       (Self : Pango_Layout_Iter;
-       Y0   : out Gint;
-       Y1   : out Gint);
+       Y0   : out Glib.Gint;
+       Y1   : out Glib.Gint);
    --  Divides the vertical space in the Pango.Layout.Pango_Layout being
    --  iterated over between the lines in the layout, and returns the space
    --  belonging to the current line. A line's range includes the line's
@@ -799,8 +799,8 @@ package Pango.Layout is
 private
 type Pango_Layout_Line is record
    Layout : System.Address;
-   Start_Index : Gint := 0;
-   Length : Gint := 0;
+   Start_Index : Glib.Gint := 0;
+   Length : Glib.Gint := 0;
    Runs : System.Address := System.Null_Address;
    Is_Paragraph_Start : Guint;
    Resolved_Dir : Guint;

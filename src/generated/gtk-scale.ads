@@ -297,12 +297,12 @@ package Gtk.Scale is
    --  Since: gtk+ 2.16
 
    function Get_Digits
-      (Scale : not null access Gtk_Scale_Record) return Gint;
+      (Scale : not null access Gtk_Scale_Record) return Glib.Gint;
    --  Gets the number of decimal places that are displayed in the value.
 
    procedure Set_Digits
       (Scale      : not null access Gtk_Scale_Record;
-       The_Digits : Gint);
+       The_Digits : Glib.Gint);
    --  Sets the number of decimal places that are displayed in the value. Also
    --  causes the value of the adjustment to be rounded off to this number of
    --  digits, so the retrieved value matches the value the user saw.
@@ -345,8 +345,8 @@ package Gtk.Scale is
 
    procedure Get_Layout_Offsets
       (Scale : not null access Gtk_Scale_Record;
-       X     : out Gint;
-       Y     : out Gint);
+       X     : out Glib.Gint;
+       Y     : out Glib.Gint);
    --  Obtains the coordinates where the scale will draw the
    --  Pango.Layout.Pango_Layout representing the text in the scale. Remember
    --  when using the Pango.Layout.Pango_Layout function you need to convert to

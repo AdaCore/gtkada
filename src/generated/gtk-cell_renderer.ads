@@ -187,8 +187,8 @@ package Gtk.Cell_Renderer is
 
    procedure Get_Fixed_Size
       (Cell   : not null access Gtk_Cell_Renderer_Record;
-       Width  : out Gint;
-       Height : out Gint);
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint);
    --  Fills in Width and Height with the appropriate size of Cell.
    --  "width": location to fill in with the fixed width of the cell, or null
    --  "height": location to fill in with the fixed height of the cell, or
@@ -196,8 +196,8 @@ package Gtk.Cell_Renderer is
 
    procedure Set_Fixed_Size
       (Cell   : not null access Gtk_Cell_Renderer_Record;
-       Width  : Gint;
-       Height : Gint);
+       Width  : Glib.Gint;
+       Height : Glib.Gint);
    --  Sets the renderer size to be explicit, independent of the properties
    --  set.
    --  "width": the width of the cell renderer, or -1
@@ -205,8 +205,8 @@ package Gtk.Cell_Renderer is
 
    procedure Get_Padding
       (Cell : not null access Gtk_Cell_Renderer_Record;
-       Xpad : out Gint;
-       Ypad : out Gint);
+       Xpad : out Glib.Gint;
+       Ypad : out Glib.Gint);
    --  Fills in Xpad and Ypad with the appropriate values of Cell.
    --  Since: gtk+ 2.18
    --  "xpad": location to fill in with the x padding of the cell, or null
@@ -214,8 +214,8 @@ package Gtk.Cell_Renderer is
 
    procedure Set_Padding
       (Cell : not null access Gtk_Cell_Renderer_Record;
-       Xpad : Gint;
-       Ypad : Gint);
+       Xpad : Glib.Gint;
+       Ypad : Glib.Gint);
    --  Sets the renderer's padding.
    --  Since: gtk+ 2.18
    --  "xpad": the x padding of the cell renderer
@@ -224,8 +224,8 @@ package Gtk.Cell_Renderer is
    procedure Get_Preferred_Height
       (Cell         : not null access Gtk_Cell_Renderer_Record;
        Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Minimum_Size : out Gint;
-       Natural_Size : out Gint);
+       Minimum_Size : out Glib.Gint;
+       Natural_Size : out Glib.Gint);
    --  Retreives a renderer's natural size when rendered to Widget.
    --  Since: gtk+ 3.0
    --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
@@ -235,9 +235,9 @@ package Gtk.Cell_Renderer is
    procedure Get_Preferred_Height_For_Width
       (Cell           : not null access Gtk_Cell_Renderer_Record;
        Widget         : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Width          : Gint;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint);
+       Width          : Glib.Gint;
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint);
    --  Retreives a cell renderers's minimum and natural height if it were
    --  rendered to Widget with the specified Width.
    --  Since: gtk+ 3.0
@@ -261,8 +261,8 @@ package Gtk.Cell_Renderer is
    procedure Get_Preferred_Width
       (Cell         : not null access Gtk_Cell_Renderer_Record;
        Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Minimum_Size : out Gint;
-       Natural_Size : out Gint);
+       Minimum_Size : out Glib.Gint;
+       Natural_Size : out Glib.Gint);
    --  Retreives a renderer's natural size when rendered to Widget.
    --  Since: gtk+ 3.0
    --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
@@ -272,9 +272,9 @@ package Gtk.Cell_Renderer is
    procedure Get_Preferred_Width_For_Height
       (Cell          : not null access Gtk_Cell_Renderer_Record;
        Widget        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Height        : Gint;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint);
+       Height        : Glib.Gint;
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint);
    --  Retreives a cell renderers's minimum and natural width if it were
    --  rendered to Widget with the specified Height.
    --  Since: gtk+ 3.0
@@ -306,10 +306,10 @@ package Gtk.Cell_Renderer is
       (Cell      : not null access Gtk_Cell_Renderer_Record;
        Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Cell_Area : in out Gdk.Rectangle.Gdk_Rectangle;
-       X_Offset  : out Gint;
-       Y_Offset  : out Gint;
-       Width     : out Gint;
-       Height    : out Gint);
+       X_Offset  : out Glib.Gint;
+       Y_Offset  : out Glib.Gint;
+       Width     : out Glib.Gint;
+       Height    : out Glib.Gint);
    pragma Obsolescent (Get_Size);
    --  Obtains the width and height needed to render the cell. Used by view
    --  widgets to determine the appropriate size for the cell_area passed to

@@ -186,9 +186,9 @@ package body Gdk.Device is
    ----------------
 
    function Get_N_Axes
-      (Self : not null access Gdk_Device_Record) return Gint
+      (Self : not null access Gdk_Device_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gdk_device_get_n_axes");
    begin
       return Internal (Get_Object (Self));
@@ -199,9 +199,9 @@ package body Gdk.Device is
    ----------------
 
    function Get_N_Keys
-      (Self : not null access Gdk_Device_Record) return Gint
+      (Self : not null access Gdk_Device_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gdk_device_get_n_keys");
    begin
       return Internal (Get_Object (Self));
@@ -406,14 +406,14 @@ package body Gdk.Device is
    procedure Warp
       (Self   : not null access Gdk_Device_Record;
        Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class;
-       X      : Gint;
-       Y      : Gint)
+       X      : Glib.Gint;
+       Y      : Glib.Gint)
    is
       procedure Internal
          (Self   : System.Address;
           Screen : System.Address;
-          X      : Gint;
-          Y      : Gint);
+          X      : Glib.Gint;
+          Y      : Glib.Gint);
       pragma Import (C, Internal, "gdk_device_warp");
    begin
       Internal (Get_Object (Self), Get_Object (Screen), X, Y);

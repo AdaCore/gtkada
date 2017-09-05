@@ -48,7 +48,7 @@ package body Gtk.Radio_Action is
        Label    : UTF8_String := "";
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "";
-       Value    : Gint)
+       Value    : Glib.Gint)
    is
    begin
       Action := new Gtk_Radio_Action_Record;
@@ -64,7 +64,7 @@ package body Gtk.Radio_Action is
        Label    : UTF8_String := "";
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "";
-       Value    : Gint) return Gtk_Radio_Action
+       Value    : Glib.Gint) return Gtk_Radio_Action
    is
       Action : constant Gtk_Radio_Action := new Gtk_Radio_Action_Record;
    begin
@@ -82,14 +82,14 @@ package body Gtk.Radio_Action is
        Label    : UTF8_String := "";
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "";
-       Value    : Gint)
+       Value    : Glib.Gint)
    is
       function Internal
          (Name     : Interfaces.C.Strings.chars_ptr;
           Label    : Interfaces.C.Strings.chars_ptr;
           Tooltip  : Interfaces.C.Strings.chars_ptr;
           Stock_Id : Interfaces.C.Strings.chars_ptr;
-          Value    : Gint) return System.Address;
+          Value    : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_radio_action_new");
       Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
       Tmp_Label    : Interfaces.C.Strings.chars_ptr;
@@ -127,9 +127,9 @@ package body Gtk.Radio_Action is
    -----------------------
 
    function Get_Current_Value
-      (Action : not null access Gtk_Radio_Action_Record) return Gint
+      (Action : not null access Gtk_Radio_Action_Record) return Glib.Gint
    is
-      function Internal (Action : System.Address) return Gint;
+      function Internal (Action : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_radio_action_get_current_value");
    begin
       return Internal (Get_Object (Action));
@@ -173,9 +173,11 @@ package body Gtk.Radio_Action is
 
    procedure Set_Current_Value
       (Action        : not null access Gtk_Radio_Action_Record;
-       Current_Value : Gint)
+       Current_Value : Glib.Gint)
    is
-      procedure Internal (Action : System.Address; Current_Value : Gint);
+      procedure Internal
+         (Action        : System.Address;
+          Current_Value : Glib.Gint);
       pragma Import (C, Internal, "gtk_radio_action_set_current_value");
    begin
       Internal (Get_Object (Action), Current_Value);

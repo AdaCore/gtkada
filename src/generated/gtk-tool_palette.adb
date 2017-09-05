@@ -113,13 +113,13 @@ package body Gtk.Tool_Palette is
 
    function Get_Drop_Group
       (Self : not null access Gtk_Tool_Palette_Record;
-       X    : Gint;
-       Y    : Gint) return Gtk.Tool_Item_Group.Gtk_Tool_Item_Group
+       X    : Glib.Gint;
+       Y    : Glib.Gint) return Gtk.Tool_Item_Group.Gtk_Tool_Item_Group
    is
       function Internal
          (Self : System.Address;
-          X    : Gint;
-          Y    : Gint) return System.Address;
+          X    : Glib.Gint;
+          Y    : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_tool_palette_get_drop_group");
       Stub_Gtk_Tool_Item_Group : Gtk.Tool_Item_Group.Gtk_Tool_Item_Group_Record;
    begin
@@ -132,13 +132,13 @@ package body Gtk.Tool_Palette is
 
    function Get_Drop_Item
       (Self : not null access Gtk_Tool_Palette_Record;
-       X    : Gint;
-       Y    : Gint) return Gtk.Tool_Item.Gtk_Tool_Item
+       X    : Glib.Gint;
+       Y    : Glib.Gint) return Gtk.Tool_Item.Gtk_Tool_Item
    is
       function Internal
          (Self : System.Address;
-          X    : Gint;
-          Y    : Gint) return System.Address;
+          X    : Glib.Gint;
+          Y    : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_tool_palette_get_drop_item");
       Stub_Gtk_Tool_Item : Gtk.Tool_Item.Gtk_Tool_Item_Record;
    begin
@@ -186,11 +186,11 @@ package body Gtk.Tool_Palette is
    function Get_Group_Position
       (Self  : not null access Gtk_Tool_Palette_Record;
        Group : not null access Gtk.Tool_Item_Group.Gtk_Tool_Item_Group_Record'Class)
-       return Gint
+       return Glib.Gint
    is
       function Internal
          (Self  : System.Address;
-          Group : System.Address) return Gint;
+          Group : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tool_palette_get_group_position");
    begin
       return Internal (Get_Object (Self), Get_Object (Group));
@@ -285,12 +285,12 @@ package body Gtk.Tool_Palette is
    procedure Set_Group_Position
       (Self     : not null access Gtk_Tool_Palette_Record;
        Group    : not null access Gtk.Tool_Item_Group.Gtk_Tool_Item_Group_Record'Class;
-       Position : Gint)
+       Position : Glib.Gint)
    is
       procedure Internal
          (Self     : System.Address;
           Group    : System.Address;
-          Position : Gint);
+          Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_tool_palette_set_group_position");
    begin
       Internal (Get_Object (Self), Get_Object (Group), Position);

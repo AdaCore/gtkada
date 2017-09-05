@@ -221,8 +221,8 @@ package Gtk.Icon_Factory is
 
    procedure Icon_Size_Lookup
       (Size   : Gtk.Enums.Gtk_Icon_Size;
-       Width  : out Gint;
-       Height : out Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint;
        Result : out Boolean);
    --  Obtains the pixel size of a semantic icon size Size:
    --  GTK_ICON_SIZE_MENU, GTK_ICON_SIZE_BUTTON, etc. This function isn't
@@ -238,8 +238,8 @@ package Gtk.Icon_Factory is
    procedure Icon_Size_Lookup_For_Settings
       (Settings : not null access Gtk.Settings.Gtk_Settings_Record'Class;
        Size     : Gtk.Enums.Gtk_Icon_Size;
-       Width    : out Gint;
-       Height   : out Gint;
+       Width    : out Glib.Gint;
+       Height   : out Glib.Gint;
        Result   : out Boolean);
    pragma Obsolescent (Icon_Size_Lookup_For_Settings);
    --  Obtains the pixel size of a semantic icon size, possibly modified by
@@ -261,8 +261,8 @@ package Gtk.Icon_Factory is
 
    function Icon_Size_Register
       (Name   : UTF8_String;
-       Width  : Gint;
-       Height : Gint) return Gtk.Enums.Gtk_Icon_Size;
+       Width  : Glib.Gint;
+       Height : Glib.Gint) return Gtk.Enums.Gtk_Icon_Size;
    pragma Obsolescent (Icon_Size_Register);
    --  Registers a new icon size, along the same lines as GTK_ICON_SIZE_MENU,
    --  etc. Returns the integer value for the size.

@@ -172,10 +172,10 @@ package Gtk.Icon_View is
 
    procedure Convert_Widget_To_Bin_Window_Coords
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Wx        : Gint;
-       Wy        : Gint;
-       Bx        : out Gint;
-       By        : out Gint);
+       Wx        : Glib.Gint;
+       Wy        : Glib.Gint;
+       Bx        : out Glib.Gint;
+       By        : out Glib.Gint);
    --  Converts widget coordinates to coordinates for the bin_window, as
    --  expected by e.g. Gtk.Icon_View.Get_Path_At_Pos.
    --  Since: gtk+ 2.12
@@ -219,26 +219,26 @@ package Gtk.Icon_View is
    --  "rect": rectangle to fill with cell rect
 
    function Get_Column_Spacing
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint;
    --  Returns the value of the ::column-spacing property.
    --  Since: gtk+ 2.6
 
    procedure Set_Column_Spacing
       (Icon_View      : not null access Gtk_Icon_View_Record;
-       Column_Spacing : Gint);
+       Column_Spacing : Glib.Gint);
    --  Sets the ::column-spacing property which specifies the space which is
    --  inserted between the columns of the icon view.
    --  Since: gtk+ 2.6
    --  "column_spacing": the column spacing
 
    function Get_Columns
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint;
    --  Returns the value of the ::columns property.
    --  Since: gtk+ 2.6
 
    procedure Set_Columns
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Columns   : Gint);
+       Columns   : Glib.Gint);
    --  Sets the ::columns property which determines in how many columns the
    --  icons are arranged. If Columns is -1, the number of columns will be
    --  chosen automatically to fill the available area.
@@ -279,8 +279,8 @@ package Gtk.Icon_View is
 
    procedure Get_Dest_Item_At_Pos
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Drag_X    : Gint;
-       Drag_Y    : Gint;
+       Drag_X    : Glib.Gint;
+       Drag_Y    : Glib.Gint;
        Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
        Pos       : out Gtk_Icon_View_Drop_Position;
        Has_Item  : out Boolean);
@@ -311,8 +311,8 @@ package Gtk.Icon_View is
 
    procedure Get_Item_At_Pos
       (Icon_View : not null access Gtk_Icon_View_Record;
-       X         : Gint;
-       Y         : Gint;
+       X         : Glib.Gint;
+       Y         : Glib.Gint;
        Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
        Cell      : out Gtk.Cell_Renderer.Gtk_Cell_Renderer;
        Has_Item  : out Boolean);
@@ -331,7 +331,7 @@ package Gtk.Icon_View is
 
    function Get_Item_Column
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Gint;
+       Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Glib.Gint;
    --  Gets the column in which the item Path is currently displayed. Column
    --  numbers start at 0.
    --  Since: gtk+ 2.22
@@ -353,13 +353,13 @@ package Gtk.Icon_View is
    --  "orientation": the relative position of texts and icons
 
    function Get_Item_Padding
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint;
    --  Returns the value of the ::item-padding property.
    --  Since: gtk+ 2.18
 
    procedure Set_Item_Padding
       (Icon_View    : not null access Gtk_Icon_View_Record;
-       Item_Padding : Gint);
+       Item_Padding : Glib.Gint);
    --  Sets the Gtk.Icon_View.Gtk_Icon_View:item-padding property which
    --  specifies the padding around each of the icon view's items.
    --  Since: gtk+ 2.18
@@ -367,20 +367,20 @@ package Gtk.Icon_View is
 
    function Get_Item_Row
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Gint;
+       Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Glib.Gint;
    --  Gets the row in which the item Path is currently displayed. Row numbers
    --  start at 0.
    --  Since: gtk+ 2.22
    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path of the item
 
    function Get_Item_Width
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint;
    --  Returns the value of the ::item-width property.
    --  Since: gtk+ 2.6
 
    procedure Set_Item_Width
       (Icon_View  : not null access Gtk_Icon_View_Record;
-       Item_Width : Gint);
+       Item_Width : Glib.Gint);
    --  Sets the ::item-width property which specifies the width to use for
    --  each item. If it is set to -1, the icon view will automatically
    --  determine a suitable item size.
@@ -388,26 +388,26 @@ package Gtk.Icon_View is
    --  "item_width": the width for each item
 
    function Get_Margin
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint;
    --  Returns the value of the ::margin property.
    --  Since: gtk+ 2.6
 
    procedure Set_Margin
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Margin    : Gint);
+       Margin    : Glib.Gint);
    --  Sets the ::margin property which specifies the space which is inserted
    --  at the top, bottom, left and right of the icon view.
    --  Since: gtk+ 2.6
    --  "margin": the margin
 
    function Get_Markup_Column
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint;
    --  Returns the column with markup text for Icon_View.
    --  Since: gtk+ 2.6
 
    procedure Set_Markup_Column
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Column    : Gint);
+       Column    : Glib.Gint);
    --  Sets the column with markup information for Icon_View to be Column. The
    --  markup column must be of type G_TYPE_STRING. If the markup column is set
    --  to something, it overrides the text column set by
@@ -434,8 +434,8 @@ package Gtk.Icon_View is
 
    function Get_Path_At_Pos
       (Icon_View : not null access Gtk_Icon_View_Record;
-       X         : Gint;
-       Y         : Gint) return Gtk.Tree_Model.Gtk_Tree_Path;
+       X         : Glib.Gint;
+       Y         : Glib.Gint) return Gtk.Tree_Model.Gtk_Tree_Path;
    --  Finds the path at the point (X, Y), relative to bin_window coordinates.
    --  See Gtk.Icon_View.Get_Item_At_Pos, if you are also interested in the
    --  cell at the specified position. See
@@ -446,13 +446,13 @@ package Gtk.Icon_View is
    --  "y": The y position to be identified
 
    function Get_Pixbuf_Column
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint;
    --  Returns the column with pixbufs for Icon_View.
    --  Since: gtk+ 2.6
 
    procedure Set_Pixbuf_Column
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Column    : Gint);
+       Column    : Glib.Gint);
    --  Sets the column with pixbufs for Icon_View to be Column. The pixbuf
    --  column must be of type GDK_TYPE_PIXBUF
    --  Since: gtk+ 2.6
@@ -484,13 +484,13 @@ package Gtk.Icon_View is
    --  "reorderable": True, if the list of items can be reordered.
 
    function Get_Row_Spacing
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint;
    --  Returns the value of the ::row-spacing property.
    --  Since: gtk+ 2.6
 
    procedure Set_Row_Spacing
       (Icon_View   : not null access Gtk_Icon_View_Record;
-       Row_Spacing : Gint);
+       Row_Spacing : Glib.Gint);
    --  Sets the ::row-spacing property which specifies the space which is
    --  inserted between the rows of the icon view.
    --  Since: gtk+ 2.6
@@ -522,26 +522,26 @@ package Gtk.Icon_View is
    --  "mode": The selection mode
 
    function Get_Spacing
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint;
    --  Returns the value of the ::spacing property.
    --  Since: gtk+ 2.6
 
    procedure Set_Spacing
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Spacing   : Gint);
+       Spacing   : Glib.Gint);
    --  Sets the ::spacing property which specifies the space which is inserted
    --  between the cells (i.e. the icon and the text) of an item.
    --  Since: gtk+ 2.6
    --  "spacing": the spacing
 
    function Get_Text_Column
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint;
    --  Returns the column with text for Icon_View.
    --  Since: gtk+ 2.6
 
    procedure Set_Text_Column
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Column    : Gint);
+       Column    : Glib.Gint);
    --  Sets the column with text for Icon_View to be Column. The text column
    --  must be of type G_TYPE_STRING.
    --  Since: gtk+ 2.6
@@ -549,14 +549,14 @@ package Gtk.Icon_View is
    --  text
 
    function Get_Tooltip_Column
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint;
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint;
    --  Returns the column of Icon_View's model which is being used for
    --  displaying tooltips on Icon_View's rows.
    --  Since: gtk+ 2.12
 
    procedure Set_Tooltip_Column
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Column    : Gint);
+       Column    : Glib.Gint);
    --  If you only plan to have simple (text-only) tooltips on full items, you
    --  can use this function to have Gtk.Icon_View.Gtk_Icon_View handle these
    --  automatically for you. Column should be set to the column in Icon_View's
@@ -572,8 +572,8 @@ package Gtk.Icon_View is
 
    procedure Get_Tooltip_Context
       (Icon_View    : not null access Gtk_Icon_View_Record;
-       X            : in out Gint;
-       Y            : in out Gint;
+       X            : in out Glib.Gint;
+       Y            : in out Glib.Gint;
        Keyboard_Tip : Boolean;
        Model        : out Gtk.Tree_Model.Gtk_Tree_Model;
        Path         : out Gtk.Tree_Model.Gtk_Tree_Path;
@@ -823,7 +823,7 @@ package Gtk.Icon_View is
       (Cell_Layout : not null access Gtk_Icon_View_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint);
+       Column      : Glib.Gint);
 
    procedure Clear (Cell_Layout : not null access Gtk_Icon_View_Record);
 
@@ -848,7 +848,7 @@ package Gtk.Icon_View is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Icon_View_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint);
+       Position    : Glib.Gint);
 
    function Get_Hadjustment
       (Self : not null access Gtk_Icon_View_Record)
@@ -1026,12 +1026,12 @@ package Gtk.Icon_View is
    type Cb_Gtk_Icon_View_Gtk_Movement_Step_Gint_Boolean is not null access function
      (Self  : access Gtk_Icon_View_Record'Class;
       Step  : Gtk.Enums.Gtk_Movement_Step;
-      Count : Gint) return Boolean;
+      Count : Glib.Gint) return Boolean;
 
    type Cb_GObject_Gtk_Movement_Step_Gint_Boolean is not null access function
      (Self  : access Glib.Object.GObject_Record'Class;
       Step  : Gtk.Enums.Gtk_Movement_Step;
-      Count : Gint) return Boolean;
+      Count : Glib.Gint) return Boolean;
 
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    procedure On_Move_Cursor

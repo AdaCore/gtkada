@@ -148,7 +148,7 @@ package Gtk.Cell_Layout is
       (Cell_Layout : Gtk_Cell_Layout;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint);
+       Column      : Glib.Gint);
    --  Adds an attribute mapping to the list in Cell_Layout.
    --  The Column is the column of the model to get a value from, and the
    --  Attribute is the parameter on Cell to be set from the value. So for
@@ -210,7 +210,7 @@ package Gtk.Cell_Layout is
    procedure Reorder
       (Cell_Layout : Gtk_Cell_Layout;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint);
+       Position    : Glib.Gint);
    --  Re-inserts Cell at Position.
    --  Note that Cell has already to be packed into Cell_Layout for this to
    --  function properly.

@@ -87,8 +87,8 @@ package Gtk.Color_Chooser_Widget is
    procedure Add_Palette
       (Self            : not null access Gtk_Color_Chooser_Widget_Record;
        Orientation     : Gtk.Enums.Gtk_Orientation;
-       Colors_Per_Line : Gint;
-       N_Colors        : Gint;
+       Colors_Per_Line : Glib.Gint;
+       N_Colors        : Glib.Gint;
        Colors          : array_of_Gdk_RGBA);
 
    procedure Get_Rgba

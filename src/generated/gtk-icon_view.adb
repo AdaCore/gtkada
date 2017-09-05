@@ -298,17 +298,17 @@ package body Gtk.Icon_View is
 
    procedure Convert_Widget_To_Bin_Window_Coords
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Wx        : Gint;
-       Wy        : Gint;
-       Bx        : out Gint;
-       By        : out Gint)
+       Wx        : Glib.Gint;
+       Wy        : Glib.Gint;
+       Bx        : out Glib.Gint;
+       By        : out Glib.Gint)
    is
       procedure Internal
          (Icon_View : System.Address;
-          Wx        : Gint;
-          Wy        : Gint;
-          Bx        : out Gint;
-          By        : out Gint);
+          Wx        : Glib.Gint;
+          Wy        : Glib.Gint;
+          Bx        : out Glib.Gint;
+          By        : out Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_view_convert_widget_to_bin_window_coords");
    begin
       Internal (Get_Object (Icon_View), Wx, Wy, Bx, By);
@@ -373,9 +373,9 @@ package body Gtk.Icon_View is
    ------------------------
 
    function Get_Column_Spacing
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint
    is
-      function Internal (Icon_View : System.Address) return Gint;
+      function Internal (Icon_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_column_spacing");
    begin
       return Internal (Get_Object (Icon_View));
@@ -386,9 +386,9 @@ package body Gtk.Icon_View is
    -----------------
 
    function Get_Columns
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint
    is
-      function Internal (Icon_View : System.Address) return Gint;
+      function Internal (Icon_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_columns");
    begin
       return Internal (Get_Object (Icon_View));
@@ -430,16 +430,16 @@ package body Gtk.Icon_View is
 
    procedure Get_Dest_Item_At_Pos
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Drag_X    : Gint;
-       Drag_Y    : Gint;
+       Drag_X    : Glib.Gint;
+       Drag_Y    : Glib.Gint;
        Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
        Pos       : out Gtk_Icon_View_Drop_Position;
        Has_Item  : out Boolean)
    is
       function Internal
          (Icon_View : System.Address;
-          Drag_X    : Gint;
-          Drag_Y    : Gint;
+          Drag_X    : Glib.Gint;
+          Drag_Y    : Glib.Gint;
           Acc_Path  : access System.Address;
           Acc_Pos   : access Gtk_Icon_View_Drop_Position)
           return Glib.Gboolean;
@@ -482,16 +482,16 @@ package body Gtk.Icon_View is
 
    procedure Get_Item_At_Pos
       (Icon_View : not null access Gtk_Icon_View_Record;
-       X         : Gint;
-       Y         : Gint;
+       X         : Glib.Gint;
+       Y         : Glib.Gint;
        Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
        Cell      : out Gtk.Cell_Renderer.Gtk_Cell_Renderer;
        Has_Item  : out Boolean)
    is
       function Internal
          (Icon_View : System.Address;
-          X         : Gint;
-          Y         : Gint;
+          X         : Glib.Gint;
+          Y         : Glib.Gint;
           Acc_Path  : access System.Address;
           Acc_Cell  : access System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_view_get_item_at_pos");
@@ -516,11 +516,11 @@ package body Gtk.Icon_View is
 
    function Get_Item_Column
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Gint
+       Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Glib.Gint
    is
       function Internal
          (Icon_View : System.Address;
-          Path      : System.Address) return Gint;
+          Path      : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_item_column");
    begin
       return Internal (Get_Object (Icon_View), Get_Object (Path));
@@ -546,9 +546,9 @@ package body Gtk.Icon_View is
    ----------------------
 
    function Get_Item_Padding
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint
    is
-      function Internal (Icon_View : System.Address) return Gint;
+      function Internal (Icon_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_item_padding");
    begin
       return Internal (Get_Object (Icon_View));
@@ -560,11 +560,11 @@ package body Gtk.Icon_View is
 
    function Get_Item_Row
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Gint
+       Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Glib.Gint
    is
       function Internal
          (Icon_View : System.Address;
-          Path      : System.Address) return Gint;
+          Path      : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_item_row");
    begin
       return Internal (Get_Object (Icon_View), Get_Object (Path));
@@ -575,9 +575,9 @@ package body Gtk.Icon_View is
    --------------------
 
    function Get_Item_Width
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint
    is
-      function Internal (Icon_View : System.Address) return Gint;
+      function Internal (Icon_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_item_width");
    begin
       return Internal (Get_Object (Icon_View));
@@ -588,9 +588,9 @@ package body Gtk.Icon_View is
    ----------------
 
    function Get_Margin
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint
    is
-      function Internal (Icon_View : System.Address) return Gint;
+      function Internal (Icon_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_margin");
    begin
       return Internal (Get_Object (Icon_View));
@@ -601,9 +601,9 @@ package body Gtk.Icon_View is
    -----------------------
 
    function Get_Markup_Column
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint
    is
-      function Internal (Icon_View : System.Address) return Gint;
+      function Internal (Icon_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_markup_column");
    begin
       return Internal (Get_Object (Icon_View));
@@ -630,13 +630,13 @@ package body Gtk.Icon_View is
 
    function Get_Path_At_Pos
       (Icon_View : not null access Gtk_Icon_View_Record;
-       X         : Gint;
-       Y         : Gint) return Gtk.Tree_Model.Gtk_Tree_Path
+       X         : Glib.Gint;
+       Y         : Glib.Gint) return Gtk.Tree_Model.Gtk_Tree_Path
    is
       function Internal
          (Icon_View : System.Address;
-          X         : Gint;
-          Y         : Gint) return System.Address;
+          X         : Glib.Gint;
+          Y         : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_icon_view_get_path_at_pos");
    begin
       return From_Object (Internal (Get_Object (Icon_View), X, Y));
@@ -647,9 +647,9 @@ package body Gtk.Icon_View is
    -----------------------
 
    function Get_Pixbuf_Column
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint
    is
-      function Internal (Icon_View : System.Address) return Gint;
+      function Internal (Icon_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_pixbuf_column");
    begin
       return Internal (Get_Object (Icon_View));
@@ -673,9 +673,9 @@ package body Gtk.Icon_View is
    ---------------------
 
    function Get_Row_Spacing
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint
    is
-      function Internal (Icon_View : System.Address) return Gint;
+      function Internal (Icon_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_row_spacing");
    begin
       return Internal (Get_Object (Icon_View));
@@ -717,9 +717,9 @@ package body Gtk.Icon_View is
    -----------------
 
    function Get_Spacing
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint
    is
-      function Internal (Icon_View : System.Address) return Gint;
+      function Internal (Icon_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_spacing");
    begin
       return Internal (Get_Object (Icon_View));
@@ -730,9 +730,9 @@ package body Gtk.Icon_View is
    ---------------------
 
    function Get_Text_Column
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint
    is
-      function Internal (Icon_View : System.Address) return Gint;
+      function Internal (Icon_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_text_column");
    begin
       return Internal (Get_Object (Icon_View));
@@ -743,9 +743,9 @@ package body Gtk.Icon_View is
    ------------------------
 
    function Get_Tooltip_Column
-      (Icon_View : not null access Gtk_Icon_View_Record) return Gint
+      (Icon_View : not null access Gtk_Icon_View_Record) return Glib.Gint
    is
-      function Internal (Icon_View : System.Address) return Gint;
+      function Internal (Icon_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_icon_view_get_tooltip_column");
    begin
       return Internal (Get_Object (Icon_View));
@@ -757,8 +757,8 @@ package body Gtk.Icon_View is
 
    procedure Get_Tooltip_Context
       (Icon_View    : not null access Gtk_Icon_View_Record;
-       X            : in out Gint;
-       Y            : in out Gint;
+       X            : in out Glib.Gint;
+       Y            : in out Glib.Gint;
        Keyboard_Tip : Boolean;
        Model        : out Gtk.Tree_Model.Gtk_Tree_Model;
        Path         : out Gtk.Tree_Model.Gtk_Tree_Path;
@@ -767,16 +767,16 @@ package body Gtk.Icon_View is
    is
       function Internal
          (Icon_View    : System.Address;
-          Acc_X        : access Gint;
-          Acc_Y        : access Gint;
+          Acc_X        : access Glib.Gint;
+          Acc_Y        : access Glib.Gint;
           Keyboard_Tip : Glib.Gboolean;
           Acc_Model    : access Gtk.Tree_Model.Gtk_Tree_Model;
           Acc_Path     : access System.Address;
           Acc_Iter     : access Gtk.Tree_Model.Gtk_Tree_Iter)
           return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_view_get_tooltip_context");
-      Acc_X        : aliased Gint := X;
-      Acc_Y        : aliased Gint := Y;
+      Acc_X        : aliased Glib.Gint := X;
+      Acc_Y        : aliased Glib.Gint := Y;
       Acc_Model    : aliased Gtk.Tree_Model.Gtk_Tree_Model;
       Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Iter     : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
@@ -1074,9 +1074,11 @@ package body Gtk.Icon_View is
 
    procedure Set_Column_Spacing
       (Icon_View      : not null access Gtk_Icon_View_Record;
-       Column_Spacing : Gint)
+       Column_Spacing : Glib.Gint)
    is
-      procedure Internal (Icon_View : System.Address; Column_Spacing : Gint);
+      procedure Internal
+         (Icon_View      : System.Address;
+          Column_Spacing : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_view_set_column_spacing");
    begin
       Internal (Get_Object (Icon_View), Column_Spacing);
@@ -1088,9 +1090,9 @@ package body Gtk.Icon_View is
 
    procedure Set_Columns
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Columns   : Gint)
+       Columns   : Glib.Gint)
    is
-      procedure Internal (Icon_View : System.Address; Columns : Gint);
+      procedure Internal (Icon_View : System.Address; Columns : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_view_set_columns");
    begin
       Internal (Get_Object (Icon_View), Columns);
@@ -1156,9 +1158,11 @@ package body Gtk.Icon_View is
 
    procedure Set_Item_Padding
       (Icon_View    : not null access Gtk_Icon_View_Record;
-       Item_Padding : Gint)
+       Item_Padding : Glib.Gint)
    is
-      procedure Internal (Icon_View : System.Address; Item_Padding : Gint);
+      procedure Internal
+         (Icon_View    : System.Address;
+          Item_Padding : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_view_set_item_padding");
    begin
       Internal (Get_Object (Icon_View), Item_Padding);
@@ -1170,9 +1174,11 @@ package body Gtk.Icon_View is
 
    procedure Set_Item_Width
       (Icon_View  : not null access Gtk_Icon_View_Record;
-       Item_Width : Gint)
+       Item_Width : Glib.Gint)
    is
-      procedure Internal (Icon_View : System.Address; Item_Width : Gint);
+      procedure Internal
+         (Icon_View  : System.Address;
+          Item_Width : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_view_set_item_width");
    begin
       Internal (Get_Object (Icon_View), Item_Width);
@@ -1184,9 +1190,9 @@ package body Gtk.Icon_View is
 
    procedure Set_Margin
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Margin    : Gint)
+       Margin    : Glib.Gint)
    is
-      procedure Internal (Icon_View : System.Address; Margin : Gint);
+      procedure Internal (Icon_View : System.Address; Margin : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_view_set_margin");
    begin
       Internal (Get_Object (Icon_View), Margin);
@@ -1198,9 +1204,9 @@ package body Gtk.Icon_View is
 
    procedure Set_Markup_Column
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Column    : Gint)
+       Column    : Glib.Gint)
    is
-      procedure Internal (Icon_View : System.Address; Column : Gint);
+      procedure Internal (Icon_View : System.Address; Column : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_view_set_markup_column");
    begin
       Internal (Get_Object (Icon_View), Column);
@@ -1228,9 +1234,9 @@ package body Gtk.Icon_View is
 
    procedure Set_Pixbuf_Column
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Column    : Gint)
+       Column    : Glib.Gint)
    is
-      procedure Internal (Icon_View : System.Address; Column : Gint);
+      procedure Internal (Icon_View : System.Address; Column : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_view_set_pixbuf_column");
    begin
       Internal (Get_Object (Icon_View), Column);
@@ -1258,9 +1264,11 @@ package body Gtk.Icon_View is
 
    procedure Set_Row_Spacing
       (Icon_View   : not null access Gtk_Icon_View_Record;
-       Row_Spacing : Gint)
+       Row_Spacing : Glib.Gint)
    is
-      procedure Internal (Icon_View : System.Address; Row_Spacing : Gint);
+      procedure Internal
+         (Icon_View   : System.Address;
+          Row_Spacing : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_view_set_row_spacing");
    begin
       Internal (Get_Object (Icon_View), Row_Spacing);
@@ -1288,9 +1296,9 @@ package body Gtk.Icon_View is
 
    procedure Set_Spacing
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Spacing   : Gint)
+       Spacing   : Glib.Gint)
    is
-      procedure Internal (Icon_View : System.Address; Spacing : Gint);
+      procedure Internal (Icon_View : System.Address; Spacing : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_view_set_spacing");
    begin
       Internal (Get_Object (Icon_View), Spacing);
@@ -1302,9 +1310,9 @@ package body Gtk.Icon_View is
 
    procedure Set_Text_Column
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Column    : Gint)
+       Column    : Glib.Gint)
    is
-      procedure Internal (Icon_View : System.Address; Column : Gint);
+      procedure Internal (Icon_View : System.Address; Column : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_view_set_text_column");
    begin
       Internal (Get_Object (Icon_View), Column);
@@ -1336,9 +1344,9 @@ package body Gtk.Icon_View is
 
    procedure Set_Tooltip_Column
       (Icon_View : not null access Gtk_Icon_View_Record;
-       Column    : Gint)
+       Column    : Glib.Gint)
    is
-      procedure Internal (Icon_View : System.Address; Column : Gint);
+      procedure Internal (Icon_View : System.Address; Column : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_view_set_tooltip_column");
    begin
       Internal (Get_Object (Icon_View), Column);
@@ -1421,13 +1429,13 @@ package body Gtk.Icon_View is
       (Cell_Layout : not null access Gtk_Icon_View_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint)
+       Column      : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
           Attribute   : Interfaces.C.Strings.chars_ptr;
-          Column      : Gint);
+          Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
       Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
    begin
@@ -1581,12 +1589,12 @@ package body Gtk.Icon_View is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Icon_View_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint)
+       Position    : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Position    : Gint);
+          Position    : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_reorder");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);

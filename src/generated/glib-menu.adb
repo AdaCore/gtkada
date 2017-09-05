@@ -69,7 +69,7 @@ package body Glib.Menu is
    procedure G_New_From_Model
       (Self       : out Gmenu_Item;
        Model      : not null access Glib.Menu_Model.Gmenu_Model_Record'Class;
-       Item_Index : Gint)
+       Item_Index : Glib.Gint)
    is
    begin
       Self := new Gmenu_Item_Record;
@@ -124,7 +124,7 @@ package body Glib.Menu is
 
    function Gmenu_Item_New_From_Model
       (Model      : not null access Glib.Menu_Model.Gmenu_Model_Record'Class;
-       Item_Index : Gint) return Gmenu_Item
+       Item_Index : Glib.Gint) return Gmenu_Item
    is
       Self : constant Gmenu_Item := new Gmenu_Item_Record;
    begin
@@ -229,11 +229,11 @@ package body Glib.Menu is
    procedure Initialize_From_Model
       (Self       : not null access Gmenu_Item_Record'Class;
        Model      : not null access Glib.Menu_Model.Gmenu_Model_Record'Class;
-       Item_Index : Gint)
+       Item_Index : Glib.Gint)
    is
       function Internal
          (Model      : System.Address;
-          Item_Index : Gint) return System.Address;
+          Item_Index : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "g_menu_item_new_from_model");
    begin
       if not Self.Is_Created then
@@ -454,13 +454,13 @@ package body Glib.Menu is
 
    procedure Insert
       (Self            : not null access Gmenu_Record;
-       Position        : Gint;
+       Position        : Glib.Gint;
        Label           : UTF8_String := "";
        Detailed_Action : UTF8_String := "")
    is
       procedure Internal
          (Self            : System.Address;
-          Position        : Gint;
+          Position        : Glib.Gint;
           Label           : Interfaces.C.Strings.chars_ptr;
           Detailed_Action : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "g_menu_insert");
@@ -488,12 +488,12 @@ package body Glib.Menu is
 
    procedure Insert_Item
       (Self     : not null access Gmenu_Record;
-       Position : Gint;
+       Position : Glib.Gint;
        Item     : not null access Gmenu_Item_Record'Class)
    is
       procedure Internal
          (Self     : System.Address;
-          Position : Gint;
+          Position : Glib.Gint;
           Item     : System.Address);
       pragma Import (C, Internal, "g_menu_insert_item");
    begin
@@ -506,13 +506,13 @@ package body Glib.Menu is
 
    procedure Insert_Section
       (Self     : not null access Gmenu_Record;
-       Position : Gint;
+       Position : Glib.Gint;
        Label    : UTF8_String := "";
        Section  : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
    is
       procedure Internal
          (Self     : System.Address;
-          Position : Gint;
+          Position : Glib.Gint;
           Label    : Interfaces.C.Strings.chars_ptr;
           Section  : System.Address);
       pragma Import (C, Internal, "g_menu_insert_section");
@@ -533,13 +533,13 @@ package body Glib.Menu is
 
    procedure Insert_Submenu
       (Self     : not null access Gmenu_Record;
-       Position : Gint;
+       Position : Glib.Gint;
        Label    : UTF8_String := "";
        Submenu  : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
    is
       procedure Internal
          (Self     : System.Address;
-          Position : Gint;
+          Position : Glib.Gint;
           Label    : Interfaces.C.Strings.chars_ptr;
           Submenu  : System.Address);
       pragma Import (C, Internal, "g_menu_insert_submenu");
@@ -654,8 +654,11 @@ package body Glib.Menu is
    -- Remove --
    ------------
 
-   procedure Remove (Self : not null access Gmenu_Record; Position : Gint) is
-      procedure Internal (Self : System.Address; Position : Gint);
+   procedure Remove
+      (Self     : not null access Gmenu_Record;
+       Position : Glib.Gint)
+   is
+      procedure Internal (Self : System.Address; Position : Glib.Gint);
       pragma Import (C, Internal, "g_menu_remove");
    begin
       Internal (Get_Object (Self), Position);

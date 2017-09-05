@@ -154,9 +154,9 @@ package body Gdk.Screen is
    ----------------
 
    function Get_Height
-      (Screen : not null access Gdk_Screen_Record) return Gint
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint
    is
-      function Internal (Screen : System.Address) return Gint;
+      function Internal (Screen : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_get_height");
    begin
       return Internal (Get_Object (Screen));
@@ -167,9 +167,9 @@ package body Gdk.Screen is
    -------------------
 
    function Get_Height_Mm
-      (Screen : not null access Gdk_Screen_Record) return Gint
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint
    is
-      function Internal (Screen : System.Address) return Gint;
+      function Internal (Screen : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_get_height_mm");
    begin
       return Internal (Get_Object (Screen));
@@ -181,13 +181,13 @@ package body Gdk.Screen is
 
    function Get_Monitor_At_Point
       (Screen : not null access Gdk_Screen_Record;
-       X      : Gint;
-       Y      : Gint) return Gint
+       X      : Glib.Gint;
+       Y      : Glib.Gint) return Glib.Gint
    is
       function Internal
          (Screen : System.Address;
-          X      : Gint;
-          Y      : Gint) return Gint;
+          X      : Glib.Gint;
+          Y      : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_get_monitor_at_point");
    begin
       return Internal (Get_Object (Screen), X, Y);
@@ -199,11 +199,11 @@ package body Gdk.Screen is
 
    function Get_Monitor_At_Window
       (Screen : not null access Gdk_Screen_Record;
-       Window : Gdk.Gdk_Window) return Gint
+       Window : Gdk.Gdk_Window) return Glib.Gint
    is
       function Internal
          (Screen : System.Address;
-          Window : Gdk.Gdk_Window) return Gint;
+          Window : Gdk.Gdk_Window) return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_get_monitor_at_window");
    begin
       return Internal (Get_Object (Screen), Window);
@@ -215,12 +215,12 @@ package body Gdk.Screen is
 
    procedure Get_Monitor_Geometry
       (Screen      : not null access Gdk_Screen_Record;
-       Monitor_Num : Gint;
+       Monitor_Num : Glib.Gint;
        Dest        : out Gdk.Rectangle.Gdk_Rectangle)
    is
       procedure Internal
          (Screen      : System.Address;
-          Monitor_Num : Gint;
+          Monitor_Num : Glib.Gint;
           Dest        : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gdk_screen_get_monitor_geometry");
    begin
@@ -233,11 +233,11 @@ package body Gdk.Screen is
 
    function Get_Monitor_Height_Mm
       (Screen      : not null access Gdk_Screen_Record;
-       Monitor_Num : Gint) return Gint
+       Monitor_Num : Glib.Gint) return Glib.Gint
    is
       function Internal
          (Screen      : System.Address;
-          Monitor_Num : Gint) return Gint;
+          Monitor_Num : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_get_monitor_height_mm");
    begin
       return Internal (Get_Object (Screen), Monitor_Num);
@@ -249,11 +249,11 @@ package body Gdk.Screen is
 
    function Get_Monitor_Plug_Name
       (Screen      : not null access Gdk_Screen_Record;
-       Monitor_Num : Gint) return UTF8_String
+       Monitor_Num : Glib.Gint) return UTF8_String
    is
       function Internal
          (Screen      : System.Address;
-          Monitor_Num : Gint) return Interfaces.C.Strings.chars_ptr;
+          Monitor_Num : Glib.Gint) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gdk_screen_get_monitor_plug_name");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Screen), Monitor_Num));
@@ -265,11 +265,11 @@ package body Gdk.Screen is
 
    function Get_Monitor_Scale_Factor
       (Screen      : not null access Gdk_Screen_Record;
-       Monitor_Num : Gint) return Gint
+       Monitor_Num : Glib.Gint) return Glib.Gint
    is
       function Internal
          (Screen      : System.Address;
-          Monitor_Num : Gint) return Gint;
+          Monitor_Num : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_get_monitor_scale_factor");
    begin
       return Internal (Get_Object (Screen), Monitor_Num);
@@ -281,11 +281,11 @@ package body Gdk.Screen is
 
    function Get_Monitor_Width_Mm
       (Screen      : not null access Gdk_Screen_Record;
-       Monitor_Num : Gint) return Gint
+       Monitor_Num : Glib.Gint) return Glib.Gint
    is
       function Internal
          (Screen      : System.Address;
-          Monitor_Num : Gint) return Gint;
+          Monitor_Num : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_get_monitor_width_mm");
    begin
       return Internal (Get_Object (Screen), Monitor_Num);
@@ -297,12 +297,12 @@ package body Gdk.Screen is
 
    procedure Get_Monitor_Workarea
       (Screen      : not null access Gdk_Screen_Record;
-       Monitor_Num : Gint;
+       Monitor_Num : Glib.Gint;
        Dest        : out Gdk.Rectangle.Gdk_Rectangle)
    is
       procedure Internal
          (Screen      : System.Address;
-          Monitor_Num : Gint;
+          Monitor_Num : Glib.Gint;
           Dest        : out Gdk.Rectangle.Gdk_Rectangle);
       pragma Import (C, Internal, "gdk_screen_get_monitor_workarea");
    begin
@@ -314,9 +314,9 @@ package body Gdk.Screen is
    --------------------
 
    function Get_N_Monitors
-      (Screen : not null access Gdk_Screen_Record) return Gint
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint
    is
-      function Internal (Screen : System.Address) return Gint;
+      function Internal (Screen : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_get_n_monitors");
    begin
       return Internal (Get_Object (Screen));
@@ -327,9 +327,9 @@ package body Gdk.Screen is
    ----------------
 
    function Get_Number
-      (Screen : not null access Gdk_Screen_Record) return Gint
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint
    is
-      function Internal (Screen : System.Address) return Gint;
+      function Internal (Screen : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_get_number");
    begin
       return Internal (Get_Object (Screen));
@@ -340,9 +340,9 @@ package body Gdk.Screen is
    -------------------------
 
    function Get_Primary_Monitor
-      (Screen : not null access Gdk_Screen_Record) return Gint
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint
    is
-      function Internal (Screen : System.Address) return Gint;
+      function Internal (Screen : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_get_primary_monitor");
    begin
       return Internal (Get_Object (Screen));
@@ -409,9 +409,9 @@ package body Gdk.Screen is
    ---------------
 
    function Get_Width
-      (Screen : not null access Gdk_Screen_Record) return Gint
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint
    is
-      function Internal (Screen : System.Address) return Gint;
+      function Internal (Screen : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_get_width");
    begin
       return Internal (Get_Object (Screen));
@@ -422,9 +422,9 @@ package body Gdk.Screen is
    ------------------
 
    function Get_Width_Mm
-      (Screen : not null access Gdk_Screen_Record) return Gint
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint
    is
-      function Internal (Screen : System.Address) return Gint;
+      function Internal (Screen : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_get_width_mm");
    begin
       return Internal (Get_Object (Screen));
@@ -503,8 +503,8 @@ package body Gdk.Screen is
    -- Height --
    ------------
 
-   function Height return Gint is
-      function Internal return Gint;
+   function Height return Glib.Gint is
+      function Internal return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_height");
    begin
       return Internal;
@@ -514,8 +514,8 @@ package body Gdk.Screen is
    -- Height_Mm --
    ---------------
 
-   function Height_Mm return Gint is
-      function Internal return Gint;
+   function Height_Mm return Glib.Gint is
+      function Internal return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_height_mm");
    begin
       return Internal;
@@ -525,8 +525,8 @@ package body Gdk.Screen is
    -- Width --
    -----------
 
-   function Width return Gint is
-      function Internal return Gint;
+   function Width return Glib.Gint is
+      function Internal return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_width");
    begin
       return Internal;
@@ -536,8 +536,8 @@ package body Gdk.Screen is
    -- Width_Mm --
    --------------
 
-   function Width_Mm return Gint is
-      function Internal return Gint;
+   function Width_Mm return Glib.Gint is
+      function Internal return Glib.Gint;
       pragma Import (C, Internal, "gdk_screen_width_mm");
    begin
       return Internal;

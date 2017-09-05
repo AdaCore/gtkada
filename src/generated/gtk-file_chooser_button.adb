@@ -168,9 +168,10 @@ package body Gtk.File_Chooser_Button is
    ---------------------
 
    function Get_Width_Chars
-      (Button : not null access Gtk_File_Chooser_Button_Record) return Gint
+      (Button : not null access Gtk_File_Chooser_Button_Record)
+       return Glib.Gint
    is
-      function Internal (Button : System.Address) return Gint;
+      function Internal (Button : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_file_chooser_button_get_width_chars");
    begin
       return Internal (Get_Object (Button));
@@ -216,9 +217,9 @@ package body Gtk.File_Chooser_Button is
 
    procedure Set_Width_Chars
       (Button  : not null access Gtk_File_Chooser_Button_Record;
-       N_Chars : Gint)
+       N_Chars : Glib.Gint)
    is
-      procedure Internal (Button : System.Address; N_Chars : Gint);
+      procedure Internal (Button : System.Address; N_Chars : Glib.Gint);
       pragma Import (C, Internal, "gtk_file_chooser_button_set_width_chars");
    begin
       Internal (Get_Object (Button), N_Chars);

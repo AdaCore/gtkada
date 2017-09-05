@@ -52,14 +52,14 @@ package body Glib.Menu_Model is
 
    function Get_Item_Attribute_Value
       (Self          : not null access Gmenu_Model_Record;
-       Item_Index    : Gint;
+       Item_Index    : Glib.Gint;
        Attribute     : UTF8_String;
        Expected_Type : Glib.Variant.Gvariant_Type)
        return Glib.Variant.Gvariant
    is
       function Internal
          (Self          : System.Address;
-          Item_Index    : Gint;
+          Item_Index    : Glib.Gint;
           Attribute     : Interfaces.C.Strings.chars_ptr;
           Expected_Type : Glib.Variant.Gvariant_Type) return System.Address;
       pragma Import (C, Internal, "g_menu_model_get_item_attribute_value");
@@ -77,12 +77,12 @@ package body Glib.Menu_Model is
 
    function Get_Item_Link
       (Self       : not null access Gmenu_Model_Record;
-       Item_Index : Gint;
+       Item_Index : Glib.Gint;
        Link       : UTF8_String) return Gmenu_Model
    is
       function Internal
          (Self       : System.Address;
-          Item_Index : Gint;
+          Item_Index : Glib.Gint;
           Link       : Interfaces.C.Strings.chars_ptr) return System.Address;
       pragma Import (C, Internal, "g_menu_model_get_item_link");
       Tmp_Link         : Interfaces.C.Strings.chars_ptr := New_String (Link);
@@ -99,9 +99,9 @@ package body Glib.Menu_Model is
    -----------------
 
    function Get_N_Items
-      (Self : not null access Gmenu_Model_Record) return Gint
+      (Self : not null access Gmenu_Model_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "g_menu_model_get_n_items");
    begin
       return Internal (Get_Object (Self));
@@ -183,15 +183,15 @@ package body Glib.Menu_Model is
 
    procedure Items_Changed
       (Self     : not null access Gmenu_Model_Record;
-       Position : Gint;
-       Removed  : Gint;
-       Added    : Gint)
+       Position : Glib.Gint;
+       Removed  : Glib.Gint;
+       Added    : Glib.Gint)
    is
       procedure Internal
          (Self     : System.Address;
-          Position : Gint;
-          Removed  : Gint;
-          Added    : Gint);
+          Position : Glib.Gint;
+          Removed  : Glib.Gint;
+          Added    : Glib.Gint);
       pragma Import (C, Internal, "g_menu_model_items_changed");
    begin
       Internal (Get_Object (Self), Position, Removed, Added);
@@ -203,11 +203,11 @@ package body Glib.Menu_Model is
 
    function Iterate_Item_Attributes
       (Self       : not null access Gmenu_Model_Record;
-       Item_Index : Gint) return Gmenu_Attribute_Iter
+       Item_Index : Glib.Gint) return Gmenu_Attribute_Iter
    is
       function Internal
          (Self       : System.Address;
-          Item_Index : Gint) return System.Address;
+          Item_Index : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "g_menu_model_iterate_item_attributes");
       Stub_Gmenu_Attribute_Iter : Gmenu_Attribute_Iter_Record;
    begin
@@ -220,11 +220,11 @@ package body Glib.Menu_Model is
 
    function Iterate_Item_Links
       (Self       : not null access Gmenu_Model_Record;
-       Item_Index : Gint) return Gmenu_Link_Iter
+       Item_Index : Glib.Gint) return Gmenu_Link_Iter
    is
       function Internal
          (Self       : System.Address;
-          Item_Index : Gint) return System.Address;
+          Item_Index : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "g_menu_model_iterate_item_links");
       Stub_Gmenu_Link_Iter : Gmenu_Link_Iter_Record;
    begin

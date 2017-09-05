@@ -149,7 +149,7 @@ package body Gtk.List_Box is
    function Internal_Gtk_List_Box_Sort_Func
       (Row1      : System.Address;
        Row2      : System.Address;
-       User_Data : System.Address) return Gint;
+       User_Data : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_List_Box_Sort_Func);
    --  "row1": the first row
    --  "row2": the second row
@@ -201,7 +201,7 @@ package body Gtk.List_Box is
    function Internal_Gtk_List_Box_Sort_Func
       (Row1      : System.Address;
        Row2      : System.Address;
-       User_Data : System.Address) return Gint
+       User_Data : System.Address) return Glib.Gint
    is
       Func                  : constant Gtk_List_Box_Sort_Func := To_Gtk_List_Box_Sort_Func (User_Data);
       Stub_Gtk_List_Box_Row : Gtk.List_Box_Row.Gtk_List_Box_Row_Record;
@@ -323,11 +323,11 @@ package body Gtk.List_Box is
 
    function Get_Row_At_Index
       (Self  : not null access Gtk_List_Box_Record;
-       Index : Gint) return Gtk.List_Box_Row.Gtk_List_Box_Row
+       Index : Glib.Gint) return Gtk.List_Box_Row.Gtk_List_Box_Row
    is
       function Internal
          (Self  : System.Address;
-          Index : Gint) return System.Address;
+          Index : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_list_box_get_row_at_index");
       Stub_Gtk_List_Box_Row : Gtk.List_Box_Row.Gtk_List_Box_Row_Record;
    begin
@@ -340,11 +340,11 @@ package body Gtk.List_Box is
 
    function Get_Row_At_Y
       (Self : not null access Gtk_List_Box_Record;
-       Y    : Gint) return Gtk.List_Box_Row.Gtk_List_Box_Row
+       Y    : Glib.Gint) return Gtk.List_Box_Row.Gtk_List_Box_Row
    is
       function Internal
          (Self : System.Address;
-          Y    : Gint) return System.Address;
+          Y    : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_list_box_get_row_at_y");
       Stub_Gtk_List_Box_Row : Gtk.List_Box_Row.Gtk_List_Box_Row_Record;
    begin
@@ -404,12 +404,12 @@ package body Gtk.List_Box is
    procedure Insert
       (Self     : not null access Gtk_List_Box_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position : Gint)
+       Position : Glib.Gint)
    is
       procedure Internal
          (Self     : System.Address;
           Child    : System.Address;
-          Position : Gint);
+          Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_list_box_insert");
    begin
       Internal (Get_Object (Self), Get_Object (Child), Position);
@@ -805,7 +805,7 @@ package body Gtk.List_Box is
       function Internal_Cb
          (Row1      : System.Address;
           Row2      : System.Address;
-          User_Data : System.Address) return Gint;
+          User_Data : System.Address) return Glib.Gint;
       pragma Convention (C, Internal_Cb);
       --  Compare two rows to determine which should be first.
       --  Since: gtk+ 3.10
@@ -820,7 +820,7 @@ package body Gtk.List_Box is
       function Internal_Cb
          (Row1      : System.Address;
           Row2      : System.Address;
-          User_Data : System.Address) return Gint
+          User_Data : System.Address) return Glib.Gint
       is
          D                     : constant Users.Internal_Data_Access := Users.Convert (User_Data);
          Stub_Gtk_List_Box_Row : Gtk.List_Box_Row.Gtk_List_Box_Row_Record;

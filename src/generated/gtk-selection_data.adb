@@ -197,8 +197,8 @@ package body Gtk.Selection_Data is
    -- Get_Format --
    ----------------
 
-   function Get_Format (Selection : Gtk_Selection_Data) return Gint is
-      function Internal (Selection : System.Address) return Gint;
+   function Get_Format (Selection : Gtk_Selection_Data) return Glib.Gint is
+      function Internal (Selection : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_selection_data_get_format");
    begin
       return Internal (Get_Object (Selection));
@@ -208,8 +208,8 @@ package body Gtk.Selection_Data is
    -- Get_Length --
    ----------------
 
-   function Get_Length (Selection : Gtk_Selection_Data) return Gint is
-      function Internal (Selection : System.Address) return Gint;
+   function Get_Length (Selection : Gtk_Selection_Data) return Glib.Gint is
+      function Internal (Selection : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_selection_data_get_length");
    begin
       return Internal (Get_Object (Selection));
@@ -307,12 +307,12 @@ package body Gtk.Selection_Data is
    function Set_Text
       (Selection : Gtk_Selection_Data;
        Str       : UTF8_String;
-       Len       : Gint) return Boolean
+       Len       : Glib.Gint) return Boolean
    is
       function Internal
          (Selection : System.Address;
           Str       : Interfaces.C.Strings.chars_ptr;
-          Len       : Gint) return Glib.Gboolean;
+          Len       : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_selection_data_set_text");
       Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
       Tmp_Return : Glib.Gboolean;

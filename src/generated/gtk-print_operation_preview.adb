@@ -36,11 +36,11 @@ package body Gtk.Print_Operation_Preview is
 
    function Is_Selected
       (Preview : Gtk_Print_Operation_Preview;
-       Page_Nr : Gint) return Boolean
+       Page_Nr : Glib.Gint) return Boolean
    is
       function Internal
          (Preview : Gtk_Print_Operation_Preview;
-          Page_Nr : Gint) return Glib.Gboolean;
+          Page_Nr : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_operation_preview_is_selected");
    begin
       return Internal (Preview, Page_Nr) /= 0;

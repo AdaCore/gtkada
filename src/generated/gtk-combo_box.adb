@@ -416,9 +416,9 @@ package body Gtk.Combo_Box is
    ----------------
 
    function Get_Active
-      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint
+      (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint
    is
-      function Internal (Combo_Box : System.Address) return Gint;
+      function Internal (Combo_Box : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_combo_box_get_active");
    begin
       return Internal (Get_Object (Combo_Box));
@@ -471,9 +471,9 @@ package body Gtk.Combo_Box is
    ----------------------------
 
    function Get_Column_Span_Column
-      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint
+      (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint
    is
-      function Internal (Combo_Box : System.Address) return Gint;
+      function Internal (Combo_Box : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_combo_box_get_column_span_column");
    begin
       return Internal (Get_Object (Combo_Box));
@@ -484,9 +484,9 @@ package body Gtk.Combo_Box is
    ---------------------------
 
    function Get_Entry_Text_Column
-      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint
+      (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint
    is
-      function Internal (Combo_Box : System.Address) return Gint;
+      function Internal (Combo_Box : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_combo_box_get_entry_text_column");
    begin
       return Internal (Get_Object (Combo_Box));
@@ -523,9 +523,9 @@ package body Gtk.Combo_Box is
    -------------------
 
    function Get_Id_Column
-      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint
+      (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint
    is
-      function Internal (Combo_Box : System.Address) return Gint;
+      function Internal (Combo_Box : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_combo_box_get_id_column");
    begin
       return Internal (Get_Object (Combo_Box));
@@ -577,9 +577,9 @@ package body Gtk.Combo_Box is
    -------------------------
 
    function Get_Row_Span_Column
-      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint
+      (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint
    is
-      function Internal (Combo_Box : System.Address) return Gint;
+      function Internal (Combo_Box : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_combo_box_get_row_span_column");
    begin
       return Internal (Get_Object (Combo_Box));
@@ -604,9 +604,9 @@ package body Gtk.Combo_Box is
    --------------------
 
    function Get_Wrap_Width
-      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint
+      (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint
    is
-      function Internal (Combo_Box : System.Address) return Gint;
+      function Internal (Combo_Box : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_combo_box_get_wrap_width");
    begin
       return Internal (Get_Object (Combo_Box));
@@ -640,9 +640,9 @@ package body Gtk.Combo_Box is
 
    procedure Set_Active
       (Combo_Box : not null access Gtk_Combo_Box_Record;
-       Index     : Gint)
+       Index     : Glib.Gint)
    is
-      procedure Internal (Combo_Box : System.Address; Index : Gint);
+      procedure Internal (Combo_Box : System.Address; Index : Glib.Gint);
       pragma Import (C, Internal, "gtk_combo_box_set_active");
    begin
       Internal (Get_Object (Combo_Box), Index);
@@ -808,9 +808,11 @@ package body Gtk.Combo_Box is
 
    procedure Set_Column_Span_Column
       (Combo_Box   : not null access Gtk_Combo_Box_Record;
-       Column_Span : Gint)
+       Column_Span : Glib.Gint)
    is
-      procedure Internal (Combo_Box : System.Address; Column_Span : Gint);
+      procedure Internal
+         (Combo_Box   : System.Address;
+          Column_Span : Glib.Gint);
       pragma Import (C, Internal, "gtk_combo_box_set_column_span_column");
    begin
       Internal (Get_Object (Combo_Box), Column_Span);
@@ -822,9 +824,11 @@ package body Gtk.Combo_Box is
 
    procedure Set_Entry_Text_Column
       (Combo_Box   : not null access Gtk_Combo_Box_Record;
-       Text_Column : Gint)
+       Text_Column : Glib.Gint)
    is
-      procedure Internal (Combo_Box : System.Address; Text_Column : Gint);
+      procedure Internal
+         (Combo_Box   : System.Address;
+          Text_Column : Glib.Gint);
       pragma Import (C, Internal, "gtk_combo_box_set_entry_text_column");
    begin
       Internal (Get_Object (Combo_Box), Text_Column);
@@ -852,9 +856,9 @@ package body Gtk.Combo_Box is
 
    procedure Set_Id_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record;
-       Id_Column : Gint)
+       Id_Column : Glib.Gint)
    is
-      procedure Internal (Combo_Box : System.Address; Id_Column : Gint);
+      procedure Internal (Combo_Box : System.Address; Id_Column : Glib.Gint);
       pragma Import (C, Internal, "gtk_combo_box_set_id_column");
    begin
       Internal (Get_Object (Combo_Box), Id_Column);
@@ -971,9 +975,9 @@ package body Gtk.Combo_Box is
 
    procedure Set_Row_Span_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record;
-       Row_Span  : Gint)
+       Row_Span  : Glib.Gint)
    is
-      procedure Internal (Combo_Box : System.Address; Row_Span : Gint);
+      procedure Internal (Combo_Box : System.Address; Row_Span : Glib.Gint);
       pragma Import (C, Internal, "gtk_combo_box_set_row_span_column");
    begin
       Internal (Get_Object (Combo_Box), Row_Span);
@@ -1003,9 +1007,9 @@ package body Gtk.Combo_Box is
 
    procedure Set_Wrap_Width
       (Combo_Box : not null access Gtk_Combo_Box_Record;
-       Width     : Gint)
+       Width     : Glib.Gint)
    is
-      procedure Internal (Combo_Box : System.Address; Width : Gint);
+      procedure Internal (Combo_Box : System.Address; Width : Glib.Gint);
       pragma Import (C, Internal, "gtk_combo_box_set_wrap_width");
    begin
       Internal (Get_Object (Combo_Box), Width);
@@ -1019,13 +1023,13 @@ package body Gtk.Combo_Box is
       (Cell_Layout : not null access Gtk_Combo_Box_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint)
+       Column      : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
           Attribute   : Interfaces.C.Strings.chars_ptr;
-          Column      : Gint);
+          Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
       Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
    begin
@@ -1145,12 +1149,12 @@ package body Gtk.Combo_Box is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Combo_Box_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint)
+       Position    : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Position    : Gint);
+          Position    : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_reorder");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);

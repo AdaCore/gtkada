@@ -338,7 +338,8 @@ package Gtk.Spin_Button is
    --  "value": the new value
 
    function Get_Value_As_Int
-      (Spin_Button : not null access Gtk_Spin_Button_Record) return Gint;
+      (Spin_Button : not null access Gtk_Spin_Button_Record)
+       return Glib.Gint;
    --  Get the value Spin_Button represented as an integer.
 
    function Get_Wrap
@@ -396,13 +397,13 @@ package Gtk.Spin_Button is
 
    procedure Delete_Text
       (Editable  : not null access Gtk_Spin_Button_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1);
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1);
 
    function Get_Chars
       (Editable  : not null access Gtk_Spin_Button_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1) return UTF8_String;
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1) return UTF8_String;
 
    function Get_Editable
       (Editable : not null access Gtk_Spin_Button_Record) return Boolean;
@@ -412,31 +413,31 @@ package Gtk.Spin_Button is
        Is_Editable : Boolean);
 
    function Get_Position
-      (Editable : not null access Gtk_Spin_Button_Record) return Gint;
+      (Editable : not null access Gtk_Spin_Button_Record) return Glib.Gint;
 
    procedure Set_Position
       (Editable : not null access Gtk_Spin_Button_Record;
-       Position : Gint);
+       Position : Glib.Gint);
 
    procedure Get_Selection_Bounds
       (Editable      : not null access Gtk_Spin_Button_Record;
-       Start_Pos     : out Gint;
-       End_Pos       : out Gint;
+       Start_Pos     : out Glib.Gint;
+       End_Pos       : out Glib.Gint;
        Has_Selection : out Boolean);
 
    procedure Insert_Text
       (Editable        : not null access Gtk_Spin_Button_Record;
        New_Text        : UTF8_String;
-       New_Text_Length : Gint;
-       Position        : in out Gint);
+       New_Text_Length : Glib.Gint;
+       Position        : in out Glib.Gint);
 
    procedure Paste_Clipboard
       (Editable : not null access Gtk_Spin_Button_Record);
 
    procedure Select_Region
       (Editable  : not null access Gtk_Spin_Button_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1);
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1);
 
    function Get_Orientation
       (Self : not null access Gtk_Spin_Button_Record)
@@ -506,11 +507,11 @@ package Gtk.Spin_Button is
 
    type Cb_Gtk_Spin_Button_Gdouble_Gint is not null access function
      (Self      : access Gtk_Spin_Button_Record'Class;
-      New_Value : access Gdouble) return Gint;
+      New_Value : access Gdouble) return Glib.Gint;
 
    type Cb_GObject_Gdouble_Gint is not null access function
      (Self      : access Glib.Object.GObject_Record'Class;
-      New_Value : access Gdouble) return Gint;
+      New_Value : access Gdouble) return Glib.Gint;
 
    Signal_Input : constant Glib.Signal_Name := "input";
    procedure On_Input

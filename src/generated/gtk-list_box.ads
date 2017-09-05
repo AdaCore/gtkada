@@ -99,7 +99,7 @@ package Gtk.List_Box is
    type Gtk_List_Box_Sort_Func is access function
      (Row1 : not null access Gtk.List_Box_Row.Gtk_List_Box_Row_Record'Class;
       Row2 : not null access Gtk.List_Box_Row.Gtk_List_Box_Row_Record'Class)
-   return Gint;
+   return Glib.Gint;
    --  Compare two rows to determine which should be first.
    --  Since: gtk+ 3.10
    --  "row1": the first row
@@ -179,7 +179,7 @@ package Gtk.List_Box is
 
    function Get_Row_At_Index
       (Self  : not null access Gtk_List_Box_Record;
-       Index : Gint) return Gtk.List_Box_Row.Gtk_List_Box_Row;
+       Index : Glib.Gint) return Gtk.List_Box_Row.Gtk_List_Box_Row;
    --  Gets the n-th child in the list (not counting headers). If _Index is
    --  negative or larger than the number of items in the list, null is
    --  returned.
@@ -188,7 +188,7 @@ package Gtk.List_Box is
 
    function Get_Row_At_Y
       (Self : not null access Gtk_List_Box_Record;
-       Y    : Gint) return Gtk.List_Box_Row.Gtk_List_Box_Row;
+       Y    : Glib.Gint) return Gtk.List_Box_Row.Gtk_List_Box_Row;
    --  Gets the row at the Y position.
    --  Since: gtk+ 3.10
    --  "y": position
@@ -224,7 +224,7 @@ package Gtk.List_Box is
    procedure Insert
       (Self     : not null access Gtk_List_Box_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Insert the Child into the Box at Position. If a sort function is set,
    --  the widget will actually be inserted at the calculated position and this
    --  function has the same effect of Gtk.Container.Add.
@@ -452,7 +452,7 @@ package Gtk.List_Box is
       type Gtk_List_Box_Sort_Func is access function
         (Row1      : not null access Gtk.List_Box_Row.Gtk_List_Box_Row_Record'Class;
          Row2      : not null access Gtk.List_Box_Row.Gtk_List_Box_Row_Record'Class;
-         User_Data : User_Data_Type) return Gint;
+         User_Data : User_Data_Type) return Glib.Gint;
       --  Compare two rows to determine which should be first.
       --  Since: gtk+ 3.10
       --  "row1": the first row
@@ -519,12 +519,12 @@ package Gtk.List_Box is
    type Cb_Gtk_List_Box_Gtk_Movement_Step_Gint_Void is not null access procedure
      (Self   : access Gtk_List_Box_Record'Class;
       Object : Gtk.Enums.Gtk_Movement_Step;
-      P0     : Gint);
+      P0     : Glib.Gint);
 
    type Cb_GObject_Gtk_Movement_Step_Gint_Void is not null access procedure
      (Self   : access Glib.Object.GObject_Record'Class;
       Object : Gtk.Enums.Gtk_Movement_Step;
-      P0     : Gint);
+      P0     : Glib.Gint);
 
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    procedure On_Move_Cursor

@@ -79,12 +79,12 @@ package body Gtk.Info_Bar is
    procedure Add_Action_Widget
       (Self        : not null access Gtk_Info_Bar_Record;
        Child       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Response_Id : Gint)
+       Response_Id : Glib.Gint)
    is
       procedure Internal
          (Self        : System.Address;
           Child       : System.Address;
-          Response_Id : Gint);
+          Response_Id : Glib.Gint);
       pragma Import (C, Internal, "gtk_info_bar_add_action_widget");
    begin
       Internal (Get_Object (Self), Get_Object (Child), Response_Id);
@@ -97,12 +97,12 @@ package body Gtk.Info_Bar is
    function Add_Button
       (Self        : not null access Gtk_Info_Bar_Record;
        Button_Text : UTF8_String;
-       Response_Id : Gint) return Gtk.Widget.Gtk_Widget
+       Response_Id : Glib.Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
          (Self        : System.Address;
           Button_Text : Interfaces.C.Strings.chars_ptr;
-          Response_Id : Gint) return System.Address;
+          Response_Id : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_info_bar_add_button");
       Tmp_Button_Text : Interfaces.C.Strings.chars_ptr := New_String (Button_Text);
       Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
@@ -177,9 +177,9 @@ package body Gtk.Info_Bar is
 
    procedure Response
       (Self        : not null access Gtk_Info_Bar_Record;
-       Response_Id : Gint)
+       Response_Id : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Response_Id : Gint);
+      procedure Internal (Self : System.Address; Response_Id : Glib.Gint);
       pragma Import (C, Internal, "gtk_info_bar_response");
    begin
       Internal (Get_Object (Self), Response_Id);
@@ -191,9 +191,9 @@ package body Gtk.Info_Bar is
 
    procedure Set_Default_Response
       (Self        : not null access Gtk_Info_Bar_Record;
-       Response_Id : Gint)
+       Response_Id : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Response_Id : Gint);
+      procedure Internal (Self : System.Address; Response_Id : Glib.Gint);
       pragma Import (C, Internal, "gtk_info_bar_set_default_response");
    begin
       Internal (Get_Object (Self), Response_Id);
@@ -221,12 +221,12 @@ package body Gtk.Info_Bar is
 
    procedure Set_Response_Sensitive
       (Self        : not null access Gtk_Info_Bar_Record;
-       Response_Id : Gint;
+       Response_Id : Glib.Gint;
        Setting     : Boolean)
    is
       procedure Internal
          (Self        : System.Address;
-          Response_Id : Gint;
+          Response_Id : Glib.Gint;
           Setting     : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_info_bar_set_response_sensitive");
    begin

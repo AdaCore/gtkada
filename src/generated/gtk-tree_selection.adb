@@ -156,9 +156,10 @@ package body Gtk.Tree_Selection is
    -------------------------
 
    function Count_Selected_Rows
-      (Selection : not null access Gtk_Tree_Selection_Record) return Gint
+      (Selection : not null access Gtk_Tree_Selection_Record)
+       return Glib.Gint
    is
-      function Internal (Selection : System.Address) return Gint;
+      function Internal (Selection : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_selection_count_selected_rows");
    begin
       return Internal (Get_Object (Selection));

@@ -341,8 +341,8 @@ package body Gtk.Accel_Map is
    -- Load_Fd --
    -------------
 
-   procedure Load_Fd (Fd : Gint) is
-      procedure Internal (Fd : Gint);
+   procedure Load_Fd (Fd : Glib.Gint) is
+      procedure Internal (Fd : Glib.Gint);
       pragma Import (C, Internal, "gtk_accel_map_load_fd");
    begin
       Internal (Fd);
@@ -404,8 +404,8 @@ package body Gtk.Accel_Map is
    -- Save_Fd --
    -------------
 
-   procedure Save_Fd (Fd : Gint) is
-      procedure Internal (Fd : Gint);
+   procedure Save_Fd (Fd : Glib.Gint) is
+      procedure Internal (Fd : Glib.Gint);
       pragma Import (C, Internal, "gtk_accel_map_save_fd");
    begin
       Internal (Fd);

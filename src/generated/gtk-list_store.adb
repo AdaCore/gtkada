@@ -163,7 +163,7 @@ package body Gtk.List_Store is
 
    procedure C_Gtk_Tree_Sortable_Set_Sort_Func
       (Sortable       : System.Address;
-       Sort_Column_Id : Gint;
+       Sort_Column_Id : Glib.Gint;
        Sort_Func      : System.Address;
        User_Data      : System.Address;
        Destroy        : System.Address);
@@ -192,7 +192,7 @@ package body Gtk.List_Store is
       (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
        A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
        B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       User_Data : System.Address) return Gint;
+       User_Data : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_Tree_Iter_Compare_Func);
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
    --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -219,7 +219,7 @@ package body Gtk.List_Store is
       (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
        A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
        B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       User_Data : System.Address) return Gint
+       User_Data : System.Address) return Glib.Gint
    is
       Func : constant Gtk_Tree_Iter_Compare_Func := To_Gtk_Tree_Iter_Compare_Func (User_Data);
    begin
@@ -275,7 +275,7 @@ package body Gtk.List_Store is
        Types      : GType_Array)
    is
       function Internal
-         (N_Columns : Gint;
+         (N_Columns : Glib.Gint;
           Types     : GType_Array) return System.Address;
       pragma Import (C, Internal, "gtk_list_store_newv");
    begin
@@ -397,12 +397,12 @@ package body Gtk.List_Store is
    procedure Insert
       (List_Store : not null access Gtk_List_Store_Record;
        Iter       : out Gtk.Tree_Model.Gtk_Tree_Iter;
-       Position   : Gint)
+       Position   : Glib.Gint)
    is
       procedure Internal
          (List_Store : System.Address;
           Iter       : out Gtk.Tree_Model.Gtk_Tree_Iter;
-          Position   : Gint);
+          Position   : Glib.Gint);
       pragma Import (C, Internal, "gtk_list_store_insert");
       Tmp_Iter : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
    begin
@@ -566,7 +566,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
    is
       procedure Internal
          (List_Store : System.Address;
-          N_Columns  : Gint;
+          N_Columns  : Glib.Gint;
           Types      : GType_Array);
       pragma Import (C, Internal, "gtk_list_store_set_column_types");
    begin
@@ -604,7 +604,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
          (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
           A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
           B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data : System.Address) return Gint;
+          User_Data : System.Address) return Glib.Gint;
       pragma Convention (C, Internal_Cb);
       --  A GtkTreeIterCompareFunc should return a negative integer, zero, or
       --  a positive integer if A sorts before B, A sorts with B, or A sorts
@@ -630,7 +630,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
          (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
           A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
           B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data : System.Address) return Gint
+          User_Data : System.Address) return Glib.Gint
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
@@ -664,7 +664,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
 
    procedure Set_Sort_Func
       (Sortable       : not null access Gtk_List_Store_Record;
-       Sort_Column_Id : Gint;
+       Sort_Column_Id : Glib.Gint;
        Sort_Func      : Gtk_Tree_Iter_Compare_Func)
    is
    begin
@@ -690,7 +690,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
          (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
           A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
           B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data : System.Address) return Gint;
+          User_Data : System.Address) return Glib.Gint;
       pragma Convention (C, Internal_Cb);
       --  A GtkTreeIterCompareFunc should return a negative integer, zero, or
       --  a positive integer if A sorts before B, A sorts with B, or A sorts
@@ -716,7 +716,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
          (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
           A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
           B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data : System.Address) return Gint
+          User_Data : System.Address) return Glib.Gint
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
@@ -729,7 +729,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
 
       procedure Set_Sort_Func
          (Sortable       : not null access Gtk.List_Store.Gtk_List_Store_Record'Class;
-          Sort_Column_Id : Gint;
+          Sort_Column_Id : Glib.Gint;
           Sort_Func      : Gtk_Tree_Iter_Compare_Func;
           User_Data      : User_Data_Type)
       is
@@ -752,13 +752,13 @@ Iter := Gtk.Tree_Model.Null_Iter;
    procedure Set_Value
       (List_Store : not null access Gtk_List_Store_Record;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       Column     : Gint;
+       Column     : Glib.Gint;
        Value      : Glib.Values.GValue)
    is
       procedure Internal
          (List_Store : System.Address;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Column     : Gint;
+          Column     : Glib.Gint;
           Value      : Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_list_store_set_value");
    begin
@@ -866,11 +866,11 @@ Iter := Gtk.Tree_Model.Null_Iter;
 
    function Get_Column_Type
       (Tree_Model : not null access Gtk_List_Store_Record;
-       Index      : Gint) return GType
+       Index      : Glib.Gint) return GType
    is
       function Internal
          (Tree_Model : System.Address;
-          Index      : Gint) return GType;
+          Index      : Glib.Gint) return GType;
       pragma Import (C, Internal, "gtk_tree_model_get_column_type");
    begin
       return Internal (Get_Object (Tree_Model), Index);
@@ -962,9 +962,9 @@ Iter := Gtk.Tree_Model.Null_Iter;
    -------------------
 
    function Get_N_Columns
-      (Tree_Model : not null access Gtk_List_Store_Record) return Gint
+      (Tree_Model : not null access Gtk_List_Store_Record) return Glib.Gint
    is
-      function Internal (Tree_Model : System.Address) return Gint;
+      function Internal (Tree_Model : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_model_get_n_columns");
    begin
       return Internal (Get_Object (Tree_Model));
@@ -993,12 +993,12 @@ Iter := Gtk.Tree_Model.Null_Iter;
 
    procedure Get_Sort_Column_Id
       (Sortable       : not null access Gtk_List_Store_Record;
-       Sort_Column_Id : out Gint;
+       Sort_Column_Id : out Glib.Gint;
        Order          : out Gtk.Enums.Gtk_Sort_Type)
    is
       procedure Internal
          (Sortable       : System.Address;
-          Sort_Column_Id : out Gint;
+          Sort_Column_Id : out Glib.Gint;
           Order          : out Gtk.Enums.Gtk_Sort_Type);
       pragma Import (C, Internal, "gtk_tree_sortable_get_sort_column_id");
    begin
@@ -1029,13 +1029,13 @@ Iter := Gtk.Tree_Model.Null_Iter;
    procedure Get_Value
       (Tree_Model : not null access Gtk_List_Store_Record;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       Column     : Gint;
+       Column     : Glib.Gint;
        Value      : out Glib.Values.GValue)
    is
       procedure Internal
          (Tree_Model : System.Address;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Column     : Gint;
+          Column     : Glib.Gint;
           Value      : out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_tree_model_get_value");
    begin
@@ -1078,7 +1078,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
    function N_Children
       (Tree_Model : not null access Gtk_List_Store_Record;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter)
-       return Gint
+       return Glib.Gint
    is
       function Internal
           (Tree_Model : Gtk_Tree_Model; Iter : System.Address) return Gint;
@@ -1114,7 +1114,7 @@ Iter := Gtk.Tree_Model.Null_Iter;
    function Nth_Child
       (Tree_Model : not null access Gtk_List_Store_Record;
        Parent     : Gtk.Tree_Model.Gtk_Tree_Iter;
-       N          : Gint) return Gtk.Tree_Model.Gtk_Tree_Iter
+       N          : Glib.Gint) return Gtk.Tree_Model.Gtk_Tree_Iter
    is
       function Internal
         (Tree_Model : Gtk_Tree_Model;
@@ -1322,14 +1322,14 @@ Iter := Gtk.Tree_Model.Null_Iter;
        Path       : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
        New_Order  : Gint_Array;
-       Length     : Gint)
+       Length     : Glib.Gint)
    is
       procedure Internal
          (Tree_Model : System.Address;
           Path       : System.Address;
           Iter       : System.Address;
           New_Order  : System.Address;
-          Length     : Gint);
+          Length     : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_model_rows_reordered_with_length");
    begin
       Internal (Get_Object (Tree_Model), Get_Object (Path), Iter_Or_Null (Iter'Address), New_Order (New_Order'First)'Address, Length);
@@ -1341,12 +1341,12 @@ Iter := Gtk.Tree_Model.Null_Iter;
 
    procedure Set_Sort_Column_Id
       (Sortable       : not null access Gtk_List_Store_Record;
-       Sort_Column_Id : Gint;
+       Sort_Column_Id : Glib.Gint;
        Order          : Gtk.Enums.Gtk_Sort_Type)
    is
       procedure Internal
          (Sortable       : System.Address;
-          Sort_Column_Id : Gint;
+          Sort_Column_Id : Glib.Gint;
           Order          : Gtk.Enums.Gtk_Sort_Type);
       pragma Import (C, Internal, "gtk_tree_sortable_set_sort_column_id");
    begin

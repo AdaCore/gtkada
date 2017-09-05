@@ -182,12 +182,12 @@ package body Gtk.Menu_Shell is
    procedure Insert
       (Menu_Shell : not null access Gtk_Menu_Shell_Record;
        Child      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position   : Gint)
+       Position   : Glib.Gint)
    is
       procedure Internal
          (Menu_Shell : System.Address;
           Child      : System.Address;
-          Position   : Gint);
+          Position   : Glib.Gint);
       pragma Import (C, Internal, "gtk_menu_shell_insert");
    begin
       Internal (Get_Object (Menu_Shell), Get_Object (Child), Position);

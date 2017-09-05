@@ -226,7 +226,7 @@ package Gtk.Recent_Manager is
    --  the item pointed by Uri in the list
 
    function Purge_Items
-      (Self : not null access Gtk_Recent_Manager_Record) return Gint;
+      (Self : not null access Gtk_Recent_Manager_Record) return Glib.Gint;
    --  Purges every item from the recently used resources list.
    --  Since: gtk+ 2.10
 

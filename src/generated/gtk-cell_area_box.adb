@@ -132,9 +132,9 @@ package body Gtk.Cell_Area_Box is
    -----------------
 
    function Get_Spacing
-      (Self : not null access Gtk_Cell_Area_Box_Record) return Gint
+      (Self : not null access Gtk_Cell_Area_Box_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_cell_area_box_get_spacing");
    begin
       return Internal (Get_Object (Self));
@@ -273,9 +273,9 @@ package body Gtk.Cell_Area_Box is
 
    procedure Set_Spacing
       (Self    : not null access Gtk_Cell_Area_Box_Record;
-       Spacing : Gint)
+       Spacing : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Spacing : Gint);
+      procedure Internal (Self : System.Address; Spacing : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_box_set_spacing");
    begin
       Internal (Get_Object (Self), Spacing);
@@ -289,13 +289,13 @@ package body Gtk.Cell_Area_Box is
       (Cell_Layout : not null access Gtk_Cell_Area_Box_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint)
+       Column      : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
           Attribute   : Interfaces.C.Strings.chars_ptr;
-          Column      : Gint);
+          Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
       Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
    begin
@@ -404,12 +404,12 @@ package body Gtk.Cell_Area_Box is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Cell_Area_Box_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint)
+       Position    : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Position    : Gint);
+          Position    : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_reorder");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);

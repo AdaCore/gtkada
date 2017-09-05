@@ -232,7 +232,7 @@ package Gtk.GEntry is
    --  "completion": The Gtk.Entry_Completion.Gtk_Entry_Completion or null
 
    function Get_Current_Icon_Drag_Source
-      (The_Entry : not null access Gtk_Entry_Record) return Gint;
+      (The_Entry : not null access Gtk_Entry_Record) return Glib.Gint;
    --  Returns the index of the icon which is the source of the current DND
    --  operation, or -1.
    --  This function is meant to be used in a
@@ -300,8 +300,8 @@ package Gtk.GEntry is
 
    function Get_Icon_At_Pos
       (The_Entry : not null access Gtk_Entry_Record;
-       X         : Gint;
-       Y         : Gint) return Gint;
+       X         : Glib.Gint;
+       Y         : Glib.Gint) return Glib.Gint;
    --  Finds the icon at the given position and return its index. The
    --  position's coordinates are relative to the Entry's top left corner. If
    --  X, Y doesn't lie inside an icon, -1 is returned. This function is
@@ -504,8 +504,8 @@ package Gtk.GEntry is
 
    procedure Get_Layout_Offsets
       (The_Entry : not null access Gtk_Entry_Record;
-       X         : out Gint;
-       Y         : out Gint);
+       X         : out Glib.Gint;
+       Y         : out Glib.Gint);
    --  Obtains the position of the Pango.Layout.Pango_Layout used to render
    --  text in the entry, in widget coordinates. Useful if you want to line up
    --  the text in an entry with some other text, e.g. when using the entry to
@@ -526,7 +526,7 @@ package Gtk.GEntry is
    --  "y": location to store Y offset of layout, or null
 
    function Get_Max_Length
-      (The_Entry : not null access Gtk_Entry_Record) return Gint;
+      (The_Entry : not null access Gtk_Entry_Record) return Glib.Gint;
    --  Retrieves the maximum allowed length of the text in Entry. See
    --  Gtk.GEntry.Set_Max_Length.
    --  This is equivalent to:
@@ -536,7 +536,7 @@ package Gtk.GEntry is
 
    procedure Set_Max_Length
       (The_Entry : not null access Gtk_Entry_Record;
-       Max       : Gint);
+       Max       : Glib.Gint);
    --  Sets the maximum allowed length of the contents of the widget. If the
    --  current contents are longer than the given length, then they will be
    --  truncated to fit.
@@ -549,14 +549,14 @@ package Gtk.GEntry is
    --  to the range 0-65536.
 
    function Get_Max_Width_Chars
-      (The_Entry : not null access Gtk_Entry_Record) return Gint;
+      (The_Entry : not null access Gtk_Entry_Record) return Glib.Gint;
    --  Retrieves the desired maximum width of Entry, in characters. See
    --  Gtk.GEntry.Set_Max_Width_Chars.
    --  Since: gtk+ 3.12
 
    procedure Set_Max_Width_Chars
       (The_Entry : not null access Gtk_Entry_Record;
-       N_Chars   : Gint);
+       N_Chars   : Glib.Gint);
    --  Sets the desired maximum width in characters of Entry.
    --  Since: gtk+ 3.12
    --  "n_chars": the new desired maximum width, in characters
@@ -691,12 +691,12 @@ package Gtk.GEntry is
    --  "visible": True if the contents of the entry are displayed as plaintext
 
    function Get_Width_Chars
-      (The_Entry : not null access Gtk_Entry_Record) return Gint;
+      (The_Entry : not null access Gtk_Entry_Record) return Glib.Gint;
    --  Gets the value set by Gtk.GEntry.Set_Width_Chars.
 
    procedure Set_Width_Chars
       (The_Entry : not null access Gtk_Entry_Record;
-       Width     : Gint);
+       Width     : Glib.Gint);
    --  Changes the size request of the entry to be about the right size for
    --  N_Chars characters. Note that it changes the size request, the size can
    --  still be affected by how you pack the widget into containers. If N_Chars
@@ -720,7 +720,7 @@ package Gtk.GEntry is
 
    function Layout_Index_To_Text_Index
       (The_Entry    : not null access Gtk_Entry_Record;
-       Layout_Index : Gint) return Gint;
+       Layout_Index : Glib.Gint) return Glib.Gint;
    --  Converts from a position in the entry contents (returned by
    --  Gtk.GEntry.Get_Text) to a position in the entry's
    --  Pango.Layout.Pango_Layout (returned by Gtk.GEntry.Get_Layout, with text
@@ -813,7 +813,7 @@ package Gtk.GEntry is
 
    function Text_Index_To_Layout_Index
       (The_Entry  : not null access Gtk_Entry_Record;
-       Text_Index : Gint) return Gint;
+       Text_Index : Glib.Gint) return Glib.Gint;
    --  Converts from a position in the entry's Pango.Layout.Pango_Layout
    --  (returned by Gtk.GEntry.Get_Layout) to a position in the entry contents
    --  (returned by Gtk.GEntry.Get_Text).
@@ -863,13 +863,13 @@ package Gtk.GEntry is
 
    procedure Delete_Text
       (Editable  : not null access Gtk_Entry_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1);
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1);
 
    function Get_Chars
       (Editable  : not null access Gtk_Entry_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1) return UTF8_String;
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1) return UTF8_String;
 
    function Get_Editable
       (Editable : not null access Gtk_Entry_Record) return Boolean;
@@ -879,30 +879,30 @@ package Gtk.GEntry is
        Is_Editable : Boolean);
 
    function Get_Position
-      (Editable : not null access Gtk_Entry_Record) return Gint;
+      (Editable : not null access Gtk_Entry_Record) return Glib.Gint;
 
    procedure Set_Position
       (Editable : not null access Gtk_Entry_Record;
-       Position : Gint);
+       Position : Glib.Gint);
 
    procedure Get_Selection_Bounds
       (Editable      : not null access Gtk_Entry_Record;
-       Start_Pos     : out Gint;
-       End_Pos       : out Gint;
+       Start_Pos     : out Glib.Gint;
+       End_Pos       : out Glib.Gint;
        Has_Selection : out Boolean);
 
    procedure Insert_Text
       (Editable        : not null access Gtk_Entry_Record;
        New_Text        : UTF8_String;
-       New_Text_Length : Gint;
-       Position        : in out Gint);
+       New_Text_Length : Glib.Gint;
+       Position        : in out Glib.Gint);
 
    procedure Paste_Clipboard (Editable : not null access Gtk_Entry_Record);
 
    procedure Select_Region
       (Editable  : not null access Gtk_Entry_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1);
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1);
 
    ----------------
    -- Properties --
@@ -1203,12 +1203,12 @@ package Gtk.GEntry is
    type Cb_Gtk_Entry_Gtk_Delete_Type_Gint_Void is not null access procedure
      (Self     : access Gtk_Entry_Record'Class;
       The_Type : Gtk.Enums.Gtk_Delete_Type;
-      Count    : Gint);
+      Count    : Glib.Gint);
 
    type Cb_GObject_Gtk_Delete_Type_Gint_Void is not null access procedure
      (Self     : access Glib.Object.GObject_Record'Class;
       The_Type : Gtk.Enums.Gtk_Delete_Type;
-      Count    : Gint);
+      Count    : Glib.Gint);
 
    Signal_Delete_From_Cursor : constant Glib.Signal_Name := "delete-from-cursor";
    procedure On_Delete_From_Cursor
@@ -1304,13 +1304,13 @@ package Gtk.GEntry is
    type Cb_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void is not null access procedure
      (Self             : access Gtk_Entry_Record'Class;
       Step             : Gtk.Enums.Gtk_Movement_Step;
-      Count            : Gint;
+      Count            : Glib.Gint;
       Extend_Selection : Boolean);
 
    type Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void is not null access procedure
      (Self             : access Glib.Object.GObject_Record'Class;
       Step             : Gtk.Enums.Gtk_Movement_Step;
-      Count            : Gint;
+      Count            : Glib.Gint;
       Extend_Selection : Boolean);
 
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";

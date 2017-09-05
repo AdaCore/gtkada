@@ -181,7 +181,8 @@ package Glib.Cancellable is
    --  Since: gtk+ 2.22
    --  "handler_id": Handler id of the handler to be disconnected, or %0.
 
-   function Get_Fd (Self : not null access Gcancellable_Record) return Gint;
+   function Get_Fd
+      (Self : not null access Gcancellable_Record) return Glib.Gint;
    --  Gets the file descriptor for a cancellable job. This can be used to
    --  implement cancellable operations on Unix systems. The returned fd will
    --  turn readable when Cancellable is cancelled.

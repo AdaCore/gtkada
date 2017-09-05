@@ -44,12 +44,12 @@ package body Gtk.Tree_View is
 
    function C_Gtk_Tree_View_Insert_Column_With_Data_Func
       (Tree_View : System.Address;
-       Position  : Gint;
+       Position  : Glib.Gint;
        Title     : Interfaces.C.Strings.chars_ptr;
        Cell      : System.Address;
        Func      : System.Address;
        Data      : System.Address;
-       Dnotify   : Glib.G_Destroy_Notify_Address) return Gint;
+       Dnotify   : Glib.G_Destroy_Notify_Address) return Glib.Gint;
    pragma Import (C, C_Gtk_Tree_View_Insert_Column_With_Data_Func, "gtk_tree_view_insert_column_with_data_func");
    --  Convenience function that inserts a new column into the
    --  Gtk.Tree_View.Gtk_Tree_View with the given cell renderer and a
@@ -209,7 +209,7 @@ package body Gtk.Tree_View is
    procedure Internal_Gtk_Tree_Destroy_Count_Func
       (Tree_View : System.Address;
        Path      : System.Address;
-       Children  : Gint;
+       Children  : Glib.Gint;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gtk_Tree_Destroy_Count_Func);
 
@@ -248,7 +248,7 @@ package body Gtk.Tree_View is
 
    function Internal_Gtk_Tree_View_Search_Equal_Func
       (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
-       Column      : Gint;
+       Column      : Glib.Gint;
        Key         : Interfaces.C.Strings.chars_ptr;
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Search_Data : System.Address) return Glib.Gboolean;
@@ -291,7 +291,7 @@ package body Gtk.Tree_View is
    procedure Internal_Gtk_Tree_Destroy_Count_Func
       (Tree_View : System.Address;
        Path      : System.Address;
-       Children  : Gint;
+       Children  : Glib.Gint;
        User_Data : System.Address)
    is
       Func               : constant Gtk_Tree_Destroy_Count_Func := To_Gtk_Tree_Destroy_Count_Func (User_Data);
@@ -353,7 +353,7 @@ package body Gtk.Tree_View is
 
    function Internal_Gtk_Tree_View_Search_Equal_Func
       (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
-       Column      : Gint;
+       Column      : Glib.Gint;
        Key         : Interfaces.C.Strings.chars_ptr;
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Search_Data : System.Address) return Glib.Gboolean
@@ -469,11 +469,11 @@ package body Gtk.Tree_View is
    function Append_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
        Column    : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class)
-       return Gint
+       return Glib.Gint
    is
       function Internal
          (Tree_View : System.Address;
-          Column    : System.Address) return Gint;
+          Column    : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_append_column");
    begin
       return Internal (Get_Object (Tree_View), Get_Object (Column));
@@ -525,17 +525,17 @@ package body Gtk.Tree_View is
 
    procedure Convert_Bin_Window_To_Tree_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Bx        : Gint;
-       By        : Gint;
-       Tx        : out Gint;
-       Ty        : out Gint)
+       Bx        : Glib.Gint;
+       By        : Glib.Gint;
+       Tx        : out Glib.Gint;
+       Ty        : out Glib.Gint)
    is
       procedure Internal
          (Tree_View : System.Address;
-          Bx        : Gint;
-          By        : Gint;
-          Tx        : out Gint;
-          Ty        : out Gint);
+          Bx        : Glib.Gint;
+          By        : Glib.Gint;
+          Tx        : out Glib.Gint;
+          Ty        : out Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_convert_bin_window_to_tree_coords");
    begin
       Internal (Get_Object (Tree_View), Bx, By, Tx, Ty);
@@ -547,17 +547,17 @@ package body Gtk.Tree_View is
 
    procedure Convert_Bin_Window_To_Widget_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Bx        : Gint;
-       By        : Gint;
-       Wx        : out Gint;
-       Wy        : out Gint)
+       Bx        : Glib.Gint;
+       By        : Glib.Gint;
+       Wx        : out Glib.Gint;
+       Wy        : out Glib.Gint)
    is
       procedure Internal
          (Tree_View : System.Address;
-          Bx        : Gint;
-          By        : Gint;
-          Wx        : out Gint;
-          Wy        : out Gint);
+          Bx        : Glib.Gint;
+          By        : Glib.Gint;
+          Wx        : out Glib.Gint;
+          Wy        : out Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_convert_bin_window_to_widget_coords");
    begin
       Internal (Get_Object (Tree_View), Bx, By, Wx, Wy);
@@ -569,17 +569,17 @@ package body Gtk.Tree_View is
 
    procedure Convert_Tree_To_Bin_Window_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Tx        : Gint;
-       Ty        : Gint;
-       Bx        : out Gint;
-       By        : out Gint)
+       Tx        : Glib.Gint;
+       Ty        : Glib.Gint;
+       Bx        : out Glib.Gint;
+       By        : out Glib.Gint)
    is
       procedure Internal
          (Tree_View : System.Address;
-          Tx        : Gint;
-          Ty        : Gint;
-          Bx        : out Gint;
-          By        : out Gint);
+          Tx        : Glib.Gint;
+          Ty        : Glib.Gint;
+          Bx        : out Glib.Gint;
+          By        : out Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_convert_tree_to_bin_window_coords");
    begin
       Internal (Get_Object (Tree_View), Tx, Ty, Bx, By);
@@ -591,17 +591,17 @@ package body Gtk.Tree_View is
 
    procedure Convert_Tree_To_Widget_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Tx        : Gint;
-       Ty        : Gint;
-       Wx        : out Gint;
-       Wy        : out Gint)
+       Tx        : Glib.Gint;
+       Ty        : Glib.Gint;
+       Wx        : out Glib.Gint;
+       Wy        : out Glib.Gint)
    is
       procedure Internal
          (Tree_View : System.Address;
-          Tx        : Gint;
-          Ty        : Gint;
-          Wx        : out Gint;
-          Wy        : out Gint);
+          Tx        : Glib.Gint;
+          Ty        : Glib.Gint;
+          Wx        : out Glib.Gint;
+          Wy        : out Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_convert_tree_to_widget_coords");
    begin
       Internal (Get_Object (Tree_View), Tx, Ty, Wx, Wy);
@@ -613,17 +613,17 @@ package body Gtk.Tree_View is
 
    procedure Convert_Widget_To_Bin_Window_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Wx        : Gint;
-       Wy        : Gint;
-       Bx        : out Gint;
-       By        : out Gint)
+       Wx        : Glib.Gint;
+       Wy        : Glib.Gint;
+       Bx        : out Glib.Gint;
+       By        : out Glib.Gint)
    is
       procedure Internal
          (Tree_View : System.Address;
-          Wx        : Gint;
-          Wy        : Gint;
-          Bx        : out Gint;
-          By        : out Gint);
+          Wx        : Glib.Gint;
+          Wy        : Glib.Gint;
+          Bx        : out Glib.Gint;
+          By        : out Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_convert_widget_to_bin_window_coords");
    begin
       Internal (Get_Object (Tree_View), Wx, Wy, Bx, By);
@@ -635,17 +635,17 @@ package body Gtk.Tree_View is
 
    procedure Convert_Widget_To_Tree_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Wx        : Gint;
-       Wy        : Gint;
-       Tx        : out Gint;
-       Ty        : out Gint)
+       Wx        : Glib.Gint;
+       Wy        : Glib.Gint;
+       Tx        : out Glib.Gint;
+       Ty        : out Glib.Gint)
    is
       procedure Internal
          (Tree_View : System.Address;
-          Wx        : Gint;
-          Wy        : Gint;
-          Tx        : out Gint;
-          Ty        : out Gint);
+          Wx        : Glib.Gint;
+          Wy        : Glib.Gint;
+          Tx        : out Glib.Gint;
+          Ty        : out Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_convert_widget_to_tree_coords");
    begin
       Internal (Get_Object (Tree_View), Wx, Wy, Tx, Ty);
@@ -679,7 +679,7 @@ package body Gtk.Tree_View is
       procedure Internal
          (Tree_View : System.Address;
           Targets   : Gtk.Target_List.Target_Entry_Array;
-          N_Targets : Gint;
+          N_Targets : Glib.Gint;
           Actions   : Gdk.Drag_Contexts.Gdk_Drag_Action);
       pragma Import (C, Internal, "gtk_tree_view_enable_model_drag_dest");
    begin
@@ -700,7 +700,7 @@ package body Gtk.Tree_View is
          (Tree_View         : System.Address;
           Start_Button_Mask : Gdk.Types.Gdk_Modifier_Type;
           Targets           : Gtk.Target_List.Target_Entry_Array;
-          N_Targets         : Gint;
+          N_Targets         : Glib.Gint;
           Actions           : Gdk.Drag_Contexts.Gdk_Drag_Action);
       pragma Import (C, Internal, "gtk_tree_view_enable_model_drag_source");
    begin
@@ -823,11 +823,12 @@ package body Gtk.Tree_View is
 
    function Get_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
-       N         : Gint) return Gtk.Tree_View_Column.Gtk_Tree_View_Column
+       N         : Glib.Gint)
+       return Gtk.Tree_View_Column.Gtk_Tree_View_Column
    is
       function Internal
          (Tree_View : System.Address;
-          N         : Gint) return System.Address;
+          N         : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_tree_view_get_column");
       Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
    begin
@@ -879,15 +880,15 @@ package body Gtk.Tree_View is
 
    function Get_Dest_Row_At_Pos
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Drag_X    : Gint;
-       Drag_Y    : Gint;
+       Drag_X    : Glib.Gint;
+       Drag_Y    : Glib.Gint;
        Path      : access Gtk.Tree_Model.Gtk_Tree_Path;
        Pos       : access Gtk_Tree_View_Drop_Position) return Boolean
    is
       function Internal
          (Tree_View : System.Address;
-          Drag_X    : Gint;
-          Drag_Y    : Gint;
+          Drag_X    : Glib.Gint;
+          Drag_Y    : Glib.Gint;
           Acc_Path  : access System.Address;
           Acc_Pos   : access Gtk_Tree_View_Drop_Position)
           return Glib.Gboolean;
@@ -1055,9 +1056,9 @@ package body Gtk.Tree_View is
    ---------------------------
 
    function Get_Level_Indentation
-      (Tree_View : not null access Gtk_Tree_View_Record) return Gint
+      (Tree_View : not null access Gtk_Tree_View_Record) return Glib.Gint
    is
-      function Internal (Tree_View : System.Address) return Gint;
+      function Internal (Tree_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_get_level_indentation");
    begin
       return Internal (Get_Object (Tree_View));
@@ -1097,27 +1098,27 @@ package body Gtk.Tree_View is
 
    procedure Get_Path_At_Pos
       (Tree_View : not null access Gtk_Tree_View_Record;
-       X         : Gint;
-       Y         : Gint;
+       X         : Glib.Gint;
+       Y         : Glib.Gint;
        Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
        Column    : out Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-       Cell_X    : out Gint;
-       Cell_Y    : out Gint;
+       Cell_X    : out Glib.Gint;
+       Cell_Y    : out Glib.Gint;
        Row_Found : out Boolean)
    is
       function Internal
          (Tree_View  : System.Address;
-          X          : Gint;
-          Y          : Gint;
+          X          : Glib.Gint;
+          Y          : Glib.Gint;
           Acc_Path   : access System.Address;
           Acc_Column : access System.Address;
-          Acc_Cell_X : access Gint;
-          Acc_Cell_Y : access Gint) return Glib.Gboolean;
+          Acc_Cell_X : access Glib.Gint;
+          Acc_Cell_Y : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_path_at_pos");
       Acc_Path                  : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Column                : aliased Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-      Acc_Cell_X                : aliased Gint;
-      Acc_Cell_Y                : aliased Gint;
+      Acc_Cell_X                : aliased Glib.Gint;
+      Acc_Cell_Y                : aliased Glib.Gint;
       Tmp_Acc_Path              : aliased System.Address;
       Tmp_Acc_Column            : aliased System.Address;
       Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
@@ -1190,9 +1191,9 @@ package body Gtk.Tree_View is
    -----------------------
 
    function Get_Search_Column
-      (Tree_View : not null access Gtk_Tree_View_Record) return Gint
+      (Tree_View : not null access Gtk_Tree_View_Record) return Glib.Gint
    is
-      function Internal (Tree_View : System.Address) return Gint;
+      function Internal (Tree_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_get_search_column");
    begin
       return Internal (Get_Object (Tree_View));
@@ -1272,9 +1273,9 @@ package body Gtk.Tree_View is
    ------------------------
 
    function Get_Tooltip_Column
-      (Tree_View : not null access Gtk_Tree_View_Record) return Gint
+      (Tree_View : not null access Gtk_Tree_View_Record) return Glib.Gint
    is
-      function Internal (Tree_View : System.Address) return Gint;
+      function Internal (Tree_View : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_get_tooltip_column");
    begin
       return Internal (Get_Object (Tree_View));
@@ -1286,8 +1287,8 @@ package body Gtk.Tree_View is
 
    procedure Get_Tooltip_Context
       (Tree_View    : not null access Gtk_Tree_View_Record;
-       X            : in out Gint;
-       Y            : in out Gint;
+       X            : in out Glib.Gint;
+       Y            : in out Glib.Gint;
        Keyboard_Tip : Boolean;
        Model        : out Gtk.Tree_Model.Gtk_Tree_Model;
        Path         : out Gtk.Tree_Model.Gtk_Tree_Path;
@@ -1296,16 +1297,16 @@ package body Gtk.Tree_View is
    is
       function Internal
          (Tree_View    : System.Address;
-          Acc_X        : access Gint;
-          Acc_Y        : access Gint;
+          Acc_X        : access Glib.Gint;
+          Acc_Y        : access Glib.Gint;
           Keyboard_Tip : Glib.Gboolean;
           Acc_Model    : access Gtk.Tree_Model.Gtk_Tree_Model;
           Acc_Path     : access System.Address;
           Acc_Iter     : access Gtk.Tree_Model.Gtk_Tree_Iter)
           return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_tooltip_context");
-      Acc_X        : aliased Gint := X;
-      Acc_Y        : aliased Gint := Y;
+      Acc_X        : aliased Glib.Gint := X;
+      Acc_Y        : aliased Glib.Gint := Y;
       Acc_Model    : aliased Gtk.Tree_Model.Gtk_Tree_Model;
       Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Iter     : aliased Gtk.Tree_Model.Gtk_Tree_Iter;
@@ -1376,12 +1377,12 @@ package body Gtk.Tree_View is
    function Insert_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
        Column    : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class;
-       Position  : Gint := -1) return Gint
+       Position  : Glib.Gint := -1) return Glib.Gint
    is
       function Internal
          (Tree_View : System.Address;
           Column    : System.Address;
-          Position  : Gint) return Gint;
+          Position  : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_insert_column");
    begin
       return Internal (Get_Object (Tree_View), Get_Object (Column), Position);
@@ -1393,14 +1394,14 @@ package body Gtk.Tree_View is
 
    function Insert_Column_With_Data_Func
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Position  : Gint;
+       Position  : Glib.Gint;
        Title     : UTF8_String;
        Cell      : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Func      : Gtk_Tree_Cell_Data_Func;
-       Dnotify   : Glib.G_Destroy_Notify_Address) return Gint
+       Dnotify   : Glib.G_Destroy_Notify_Address) return Glib.Gint
    is
       Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
-      Tmp_Return : Gint;
+      Tmp_Return : Glib.Gint;
    begin
       if Func = null then
          Tmp_Return := C_Gtk_Tree_View_Insert_Column_With_Data_Func (Get_Object (Tree_View), Position, Tmp_Title, Get_Object (Cell), System.Null_Address, System.Null_Address, Dnotify);
@@ -1450,15 +1451,15 @@ package body Gtk.Tree_View is
 
       function Insert_Column_With_Data_Func
          (Tree_View : not null access Gtk.Tree_View.Gtk_Tree_View_Record'Class;
-          Position  : Gint;
+          Position  : Glib.Gint;
           Title     : UTF8_String;
           Cell      : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
           Func      : Gtk_Tree_Cell_Data_Func;
           Data      : User_Data_Type;
-          Dnotify   : Glib.G_Destroy_Notify_Address) return Gint
+          Dnotify   : Glib.G_Destroy_Notify_Address) return Glib.Gint
       is
          Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
-         Tmp_Return : Gint;
+         Tmp_Return : Glib.Gint;
          D          : System.Address;
       begin
          if Func = null then
@@ -1499,26 +1500,26 @@ package body Gtk.Tree_View is
 
    function Is_Blank_At_Pos
       (Tree_View : not null access Gtk_Tree_View_Record;
-       X         : Gint;
-       Y         : Gint;
+       X         : Glib.Gint;
+       Y         : Glib.Gint;
        Path      : access Gtk.Tree_Model.Gtk_Tree_Path;
        Column    : access Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-       Cell_X    : access Gint;
-       Cell_Y    : access Gint) return Boolean
+       Cell_X    : access Glib.Gint;
+       Cell_Y    : access Glib.Gint) return Boolean
    is
       function Internal
          (Tree_View  : System.Address;
-          X          : Gint;
-          Y          : Gint;
+          X          : Glib.Gint;
+          Y          : Glib.Gint;
           Acc_Path   : access System.Address;
           Acc_Column : access System.Address;
-          Acc_Cell_X : access Gint;
-          Acc_Cell_Y : access Gint) return Glib.Gboolean;
+          Acc_Cell_X : access Glib.Gint;
+          Acc_Cell_Y : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_is_blank_at_pos");
       Acc_Path                  : aliased Gtk.Tree_Model.Gtk_Tree_Path;
       Acc_Column                : aliased Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-      Acc_Cell_X                : aliased Gint;
-      Acc_Cell_Y                : aliased Gint;
+      Acc_Cell_X                : aliased Glib.Gint;
+      Acc_Cell_Y                : aliased Glib.Gint;
       Tmp_Acc_Path              : aliased System.Address;
       Tmp_Acc_Column            : aliased System.Address;
       Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
@@ -1654,11 +1655,11 @@ package body Gtk.Tree_View is
    function Remove_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
        Column    : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class)
-       return Gint
+       return Glib.Gint
    is
       function Internal
          (Tree_View : System.Address;
-          Column    : System.Address) return Gint;
+          Column    : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tree_view_remove_column");
    begin
       return Internal (Get_Object (Tree_View), Get_Object (Column));
@@ -1728,13 +1729,13 @@ package body Gtk.Tree_View is
 
    procedure Scroll_To_Point
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Tree_X    : Gint;
-       Tree_Y    : Gint)
+       Tree_X    : Glib.Gint;
+       Tree_Y    : Glib.Gint)
    is
       procedure Internal
          (Tree_View : System.Address;
-          Tree_X    : Gint;
-          Tree_Y    : Gint);
+          Tree_X    : Glib.Gint;
+          Tree_Y    : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_scroll_to_point");
    begin
       Internal (Get_Object (Tree_View), Tree_X, Tree_Y);
@@ -1918,7 +1919,7 @@ package body Gtk.Tree_View is
       procedure Internal_Cb
          (Tree_View : System.Address;
           Path      : System.Address;
-          Children  : Gint;
+          Children  : Glib.Gint;
           User_Data : System.Address);
       pragma Convention (C, Internal_Cb);
 
@@ -1929,7 +1930,7 @@ package body Gtk.Tree_View is
       procedure Internal_Cb
          (Tree_View : System.Address;
           Path      : System.Address;
-          Children  : Gint;
+          Children  : Glib.Gint;
           User_Data : System.Address)
       is
          D                  : constant Users.Internal_Data_Access := Users.Convert (User_Data);
@@ -2125,9 +2126,11 @@ package body Gtk.Tree_View is
 
    procedure Set_Level_Indentation
       (Tree_View   : not null access Gtk_Tree_View_Record;
-       Indentation : Gint)
+       Indentation : Glib.Gint)
    is
-      procedure Internal (Tree_View : System.Address; Indentation : Gint);
+      procedure Internal
+         (Tree_View   : System.Address;
+          Indentation : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_set_level_indentation");
    begin
       Internal (Get_Object (Tree_View), Indentation);
@@ -2278,9 +2281,9 @@ package body Gtk.Tree_View is
 
    procedure Set_Search_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Column    : Gint)
+       Column    : Glib.Gint)
    is
-      procedure Internal (Tree_View : System.Address; Column : Gint);
+      procedure Internal (Tree_View : System.Address; Column : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_set_search_column");
    begin
       Internal (Get_Object (Tree_View), Column);
@@ -2332,7 +2335,7 @@ package body Gtk.Tree_View is
 
       function Internal_Cb
          (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
-          Column      : Gint;
+          Column      : Glib.Gint;
           Key         : Interfaces.C.Strings.chars_ptr;
           Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Search_Data : System.Address) return Glib.Gboolean;
@@ -2354,7 +2357,7 @@ package body Gtk.Tree_View is
 
       function Internal_Cb
          (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
-          Column      : Gint;
+          Column      : Glib.Gint;
           Key         : Interfaces.C.Strings.chars_ptr;
           Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Search_Data : System.Address) return Glib.Gboolean
@@ -2500,9 +2503,9 @@ package body Gtk.Tree_View is
 
    procedure Set_Tooltip_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
-       Column    : Gint)
+       Column    : Glib.Gint)
    is
-      procedure Internal (Tree_View : System.Address; Column : Gint);
+      procedure Internal (Tree_View : System.Address; Column : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_view_set_tooltip_column");
    begin
       Internal (Get_Object (Tree_View), Column);

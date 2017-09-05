@@ -58,7 +58,7 @@ package Gtk.Recent_Action is
 
    type Gtk_Recent_Sort_Func is access function
      (A : Gtk.Recent_Info.Gtk_Recent_Info;
-      B : Gtk.Recent_Info.Gtk_Recent_Info) return Gint;
+      B : Gtk.Recent_Info.Gtk_Recent_Info) return Glib.Gint;
 
    ------------------
    -- Constructors --
@@ -200,7 +200,7 @@ package Gtk.Recent_Action is
       type Gtk_Recent_Sort_Func is access function
         (A         : Gtk.Recent_Info.Gtk_Recent_Info;
          B         : Gtk.Recent_Info.Gtk_Recent_Info;
-         User_Data : User_Data_Type) return Gint;
+         User_Data : User_Data_Type) return Glib.Gint;
 
       procedure Set_Sort_Func
          (Chooser      : not null access Gtk.Recent_Action.Gtk_Recent_Action_Record'Class;
@@ -258,11 +258,11 @@ package Gtk.Recent_Action is
        return Gtk.Recent_Manager.Gtk_Recent_Info_List.Glist;
 
    function Get_Limit
-      (Chooser : not null access Gtk_Recent_Action_Record) return Gint;
+      (Chooser : not null access Gtk_Recent_Action_Record) return Glib.Gint;
 
    procedure Set_Limit
       (Chooser : not null access Gtk_Recent_Action_Record;
-       Limit   : Gint);
+       Limit   : Glib.Gint);
 
    function Get_Local_Only
       (Chooser : not null access Gtk_Recent_Action_Record) return Boolean;

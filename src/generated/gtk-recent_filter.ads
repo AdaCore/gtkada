@@ -96,7 +96,7 @@ package Gtk.Recent_Filter is
       Mime_Type : Interfaces.C.Strings.chars_ptr;
       Applications : Interfaces.C.Strings.char_array_access;
       Groups : Interfaces.C.Strings.char_array_access;
-      Age : Gint := 0;
+      Age : Glib.Gint := 0;
    end record;
    pragma Convention (C, Gtk_Recent_Filter_Info);
 
@@ -167,7 +167,7 @@ package Gtk.Recent_Filter is
 
    procedure Add_Age
       (Filter : not null access Gtk_Recent_Filter_Record;
-       Days   : Gint);
+       Days   : Glib.Gint);
    --  Adds a rule that allows resources based on their age - that is, the
    --  number of days elapsed since they were last modified.
    --  Since: gtk+ 2.10

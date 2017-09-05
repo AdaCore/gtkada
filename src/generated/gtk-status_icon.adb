@@ -379,9 +379,10 @@ package body Gtk.Status_Icon is
    --------------
 
    function Get_Size
-      (Status_Icon : not null access Gtk_Status_Icon_Record) return Gint
+      (Status_Icon : not null access Gtk_Status_Icon_Record)
+       return Glib.Gint
    is
-      function Internal (Status_Icon : System.Address) return Gint;
+      function Internal (Status_Icon : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_status_icon_get_size");
    begin
       return Internal (Get_Object (Status_Icon));
@@ -722,8 +723,8 @@ package body Gtk.Status_Icon is
 
    procedure Position_Menu
       (Menu    : not null access Gtk.Menu.Gtk_Menu_Record'Class;
-       X       : out Gint;
-       Y       : out Gint;
+       X       : out Glib.Gint;
+       Y       : out Glib.Gint;
        Push_In : out Boolean;
        Icon    : Glib.Object.GObject)
    is

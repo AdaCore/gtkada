@@ -103,20 +103,20 @@ package Gdk.Screen is
    --  set default font options.
 
    function Get_Height
-      (Screen : not null access Gdk_Screen_Record) return Gint;
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
    --  Gets the height of Screen in pixels
    --  Since: gtk+ 2.2
 
    function Get_Height_Mm
-      (Screen : not null access Gdk_Screen_Record) return Gint;
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
    --  Returns the height of Screen in millimeters. Note that on some X
    --  servers this value will not be correct.
    --  Since: gtk+ 2.2
 
    function Get_Monitor_At_Point
       (Screen : not null access Gdk_Screen_Record;
-       X      : Gint;
-       Y      : Gint) return Gint;
+       X      : Glib.Gint;
+       Y      : Glib.Gint) return Glib.Gint;
    --  Returns the monitor number in which the point (X,Y) is located.
    --  Since: gtk+ 2.2
    --  "x": the x coordinate in the virtual screen.
@@ -124,7 +124,7 @@ package Gdk.Screen is
 
    function Get_Monitor_At_Window
       (Screen : not null access Gdk_Screen_Record;
-       Window : Gdk.Gdk_Window) return Gint;
+       Window : Gdk.Gdk_Window) return Glib.Gint;
    --  Returns the number of the monitor in which the largest area of the
    --  bounding rectangle of Window resides.
    --  Since: gtk+ 2.2
@@ -132,7 +132,7 @@ package Gdk.Screen is
 
    procedure Get_Monitor_Geometry
       (Screen      : not null access Gdk_Screen_Record;
-       Monitor_Num : Gint;
+       Monitor_Num : Glib.Gint;
        Dest        : out Gdk.Rectangle.Gdk_Rectangle);
    --  Retrieves the Gdk.Rectangle.Gdk_Rectangle representing the size and
    --  position of the individual monitor within the entire screen area.
@@ -147,7 +147,7 @@ package Gdk.Screen is
 
    function Get_Monitor_Height_Mm
       (Screen      : not null access Gdk_Screen_Record;
-       Monitor_Num : Gint) return Gint;
+       Monitor_Num : Glib.Gint) return Glib.Gint;
    --  Gets the height in millimeters of the specified monitor.
    --  Since: gtk+ 2.14
    --  "monitor_num": number of the monitor, between 0 and
@@ -155,7 +155,7 @@ package Gdk.Screen is
 
    function Get_Monitor_Plug_Name
       (Screen      : not null access Gdk_Screen_Record;
-       Monitor_Num : Gint) return UTF8_String;
+       Monitor_Num : Glib.Gint) return UTF8_String;
    --  Returns the output name of the specified monitor. Usually something
    --  like VGA, DVI, or TV, not the actual product name of the display device.
    --  Since: gtk+ 2.14
@@ -164,7 +164,7 @@ package Gdk.Screen is
 
    function Get_Monitor_Scale_Factor
       (Screen      : not null access Gdk_Screen_Record;
-       Monitor_Num : Gint) return Gint;
+       Monitor_Num : Glib.Gint) return Glib.Gint;
    --  Returns the internal scale factor that maps from monitor coordiantes to
    --  the actual device pixels. On traditional systems this is 1, but on very
    --  high density outputs this can be a higher value (often 2).
@@ -177,7 +177,7 @@ package Gdk.Screen is
 
    function Get_Monitor_Width_Mm
       (Screen      : not null access Gdk_Screen_Record;
-       Monitor_Num : Gint) return Gint;
+       Monitor_Num : Glib.Gint) return Glib.Gint;
    --  Gets the width in millimeters of the specified monitor, if available.
    --  Since: gtk+ 2.14
    --  "monitor_num": number of the monitor, between 0 and
@@ -185,7 +185,7 @@ package Gdk.Screen is
 
    procedure Get_Monitor_Workarea
       (Screen      : not null access Gdk_Screen_Record;
-       Monitor_Num : Gint;
+       Monitor_Num : Glib.Gint;
        Dest        : out Gdk.Rectangle.Gdk_Rectangle);
    --  Retrieves the Gdk.Rectangle.Gdk_Rectangle representing the size and
    --  position of the "work area" on a monitor within the entire screen area.
@@ -203,18 +203,18 @@ package Gdk.Screen is
    --  workarea
 
    function Get_N_Monitors
-      (Screen : not null access Gdk_Screen_Record) return Gint;
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
    --  Returns the number of monitors which Screen consists of.
    --  Since: gtk+ 2.2
 
    function Get_Number
-      (Screen : not null access Gdk_Screen_Record) return Gint;
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
    --  Gets the index of Screen among the screens in the display to which it
    --  belongs. (See Gdk.Screen.Get_Display)
    --  Since: gtk+ 2.2
 
    function Get_Primary_Monitor
-      (Screen : not null access Gdk_Screen_Record) return Gint;
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
    --  Gets the primary monitor for Screen. The primary monitor is considered
    --  the monitor where the "main desktop" lives. While normal application
    --  windows typically allow the window manager to place the windows,
@@ -269,12 +269,12 @@ package Gdk.Screen is
    --  Since: gtk+ 2.2
 
    function Get_Width
-      (Screen : not null access Gdk_Screen_Record) return Gint;
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
    --  Gets the width of Screen in pixels
    --  Since: gtk+ 2.2
 
    function Get_Width_Mm
-      (Screen : not null access Gdk_Screen_Record) return Gint;
+      (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
    --  Gets the width of Screen in millimeters. Note that on some X servers
    --  this value will not be correct.
    --  Since: gtk+ 2.2
@@ -349,17 +349,17 @@ package Gdk.Screen is
    --  gdk_display_get_default ()).
    --  Since: gtk+ 2.2
 
-   function Height return Gint;
+   function Height return Glib.Gint;
    --  Returns the height of the default screen in pixels.
 
-   function Height_Mm return Gint;
+   function Height_Mm return Glib.Gint;
    --  Returns the height of the default screen in millimeters. Note that on
    --  many X servers this value will not be correct.
 
-   function Width return Gint;
+   function Width return Glib.Gint;
    --  Returns the width of the default screen in pixels.
 
-   function Width_Mm return Gint;
+   function Width_Mm return Glib.Gint;
    --  Returns the width of the default screen in millimeters. Note that on
    --  many X servers this value will not be correct.
 

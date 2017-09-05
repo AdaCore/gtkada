@@ -116,7 +116,7 @@ package Gtk.Info_Bar is
    procedure Add_Action_Widget
       (Self        : not null access Gtk_Info_Bar_Record;
        Child       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Response_Id : Gint);
+       Response_Id : Glib.Gint);
    --  Add an activatable widget to the action area of a
    --  Gtk.Info_Bar.Gtk_Info_Bar, connecting a signal handler that will emit
    --  the Gtk.Info_Bar.Gtk_Info_Bar::response signal on the message area when
@@ -129,7 +129,7 @@ package Gtk.Info_Bar is
    function Add_Button
       (Self        : not null access Gtk_Info_Bar_Record;
        Button_Text : UTF8_String;
-       Response_Id : Gint) return Gtk.Widget.Gtk_Widget;
+       Response_Id : Glib.Gint) return Gtk.Widget.Gtk_Widget;
    --  Adds a button with the given text and sets things up so that clicking
    --  the button will emit the "response" signal with the given response_id.
    --  The button is appended to the end of the info bars's action area. The
@@ -179,14 +179,14 @@ package Gtk.Info_Bar is
 
    procedure Response
       (Self        : not null access Gtk_Info_Bar_Record;
-       Response_Id : Gint);
+       Response_Id : Glib.Gint);
    --  Emits the "response" signal with the given Response_Id.
    --  Since: gtk+ 2.18
    --  "response_id": a response ID
 
    procedure Set_Default_Response
       (Self        : not null access Gtk_Info_Bar_Record;
-       Response_Id : Gint);
+       Response_Id : Glib.Gint);
    --  Sets the last widget in the info bar's action area with the given
    --  response_id as the default widget for the dialog. Pressing "Enter"
    --  normally activates the default widget.
@@ -197,7 +197,7 @@ package Gtk.Info_Bar is
 
    procedure Set_Response_Sensitive
       (Self        : not null access Gtk_Info_Bar_Record;
-       Response_Id : Gint;
+       Response_Id : Glib.Gint;
        Setting     : Boolean);
    --  Calls gtk_widget_set_sensitive (widget, setting) for each widget in the
    --  info bars's action area with the given response_id. A convenient way to
@@ -262,11 +262,11 @@ package Gtk.Info_Bar is
 
    type Cb_Gtk_Info_Bar_Gint_Void is not null access procedure
      (Self        : access Gtk_Info_Bar_Record'Class;
-      Response_Id : Gint);
+      Response_Id : Glib.Gint);
 
    type Cb_GObject_Gint_Void is not null access procedure
      (Self        : access Glib.Object.GObject_Record'Class;
-      Response_Id : Gint);
+      Response_Id : Glib.Gint);
 
    Signal_Response : constant Glib.Signal_Name := "response";
    procedure On_Response

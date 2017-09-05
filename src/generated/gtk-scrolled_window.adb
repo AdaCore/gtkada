@@ -167,9 +167,9 @@ package body Gtk.Scrolled_Window is
 
    function Get_Min_Content_Height
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
-       return Gint
+       return Glib.Gint
    is
-      function Internal (Scrolled_Window : System.Address) return Gint;
+      function Internal (Scrolled_Window : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_scrolled_window_get_min_content_height");
    begin
       return Internal (Get_Object (Scrolled_Window));
@@ -181,9 +181,9 @@ package body Gtk.Scrolled_Window is
 
    function Get_Min_Content_Width
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
-       return Gint
+       return Glib.Gint
    is
-      function Internal (Scrolled_Window : System.Address) return Gint;
+      function Internal (Scrolled_Window : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_scrolled_window_get_min_content_width");
    begin
       return Internal (Get_Object (Scrolled_Window));
@@ -323,9 +323,11 @@ package body Gtk.Scrolled_Window is
 
    procedure Set_Min_Content_Height
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
-       Height          : Gint)
+       Height          : Glib.Gint)
    is
-      procedure Internal (Scrolled_Window : System.Address; Height : Gint);
+      procedure Internal
+         (Scrolled_Window : System.Address;
+          Height          : Glib.Gint);
       pragma Import (C, Internal, "gtk_scrolled_window_set_min_content_height");
    begin
       Internal (Get_Object (Scrolled_Window), Height);
@@ -337,9 +339,11 @@ package body Gtk.Scrolled_Window is
 
    procedure Set_Min_Content_Width
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
-       Width           : Gint)
+       Width           : Glib.Gint)
    is
-      procedure Internal (Scrolled_Window : System.Address; Width : Gint);
+      procedure Internal
+         (Scrolled_Window : System.Address;
+          Width           : Glib.Gint);
       pragma Import (C, Internal, "gtk_scrolled_window_set_min_content_width");
    begin
       Internal (Get_Object (Scrolled_Window), Width);

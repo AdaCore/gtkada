@@ -80,9 +80,9 @@ package body Gtk.Cell_Renderer_Text is
 
    procedure Set_Fixed_Height_From_Font
       (Self           : not null access Gtk_Cell_Renderer_Text_Record;
-       Number_Of_Rows : Gint)
+       Number_Of_Rows : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Number_Of_Rows : Gint);
+      procedure Internal (Self : System.Address; Number_Of_Rows : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_renderer_text_set_fixed_height_from_font");
    begin
       Internal (Get_Object (Self), Number_Of_Rows);

@@ -201,13 +201,13 @@ package Gtk.Scrolled_Window is
 
    function Get_Min_Content_Height
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
-       return Gint;
+       return Glib.Gint;
    --  Gets the minimal content height of Scrolled_Window, or -1 if not set.
    --  Since: gtk+ 3.0
 
    procedure Set_Min_Content_Height
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
-       Height          : Gint);
+       Height          : Glib.Gint);
    --  Sets the minimum height that Scrolled_Window should keep visible. Note
    --  that this can and (usually will) be smaller than the minimum size of the
    --  content.
@@ -216,13 +216,13 @@ package Gtk.Scrolled_Window is
 
    function Get_Min_Content_Width
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
-       return Gint;
+       return Glib.Gint;
    --  Gets the minimum content width of Scrolled_Window, or -1 if not set.
    --  Since: gtk+ 3.0
 
    procedure Set_Min_Content_Width
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
-       Width           : Gint);
+       Width           : Glib.Gint);
    --  Sets the minimum width that Scrolled_Window should keep visible. Note
    --  that this can and (usually will) be smaller than the minimum size of the
    --  content.

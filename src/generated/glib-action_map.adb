@@ -76,7 +76,7 @@ package body Glib.Action_Map is
       procedure Internal
          (Self      : Gaction_Map;
           Entries   : GAction_Entry_Array;
-          N_Entries : Gint;
+          N_Entries : Glib.Gint;
           User_Data : System.Address);
       pragma Import (C, Internal, "g_action_map_add_action_entries");
    begin

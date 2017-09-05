@@ -131,16 +131,16 @@ package body Gtk.Menu is
 
    procedure Internal_Gtk_Menu_Position_Func
       (Menu      : System.Address;
-       X         : out Gint;
-       Y         : out Gint;
+       X         : out Glib.Gint;
+       Y         : out Glib.Gint;
        Push_In   : out Glib.Gboolean;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gtk_Menu_Position_Func);
    --  "menu": a Gtk.Menu.Gtk_Menu.
-   --  "x": address of the Gint representing the horizontal position where the
-   --  menu shall be drawn.
-   --  "y": address of the Gint representing the vertical position where the
-   --  menu shall be drawn. This is an output parameter.
+   --  "x": address of the Glib.Gint representing the horizontal position
+   --  where the menu shall be drawn.
+   --  "y": address of the Glib.Gint representing the vertical position where
+   --  the menu shall be drawn. This is an output parameter.
    --  "push_in": This parameter controls how menus placed outside the monitor
    --  are handled. If this is set to True and part of the menu is outside the
    --  monitor then GTK+ pushes the window into the visible area, effectively
@@ -159,8 +159,8 @@ package body Gtk.Menu is
 
    procedure Internal_Gtk_Menu_Position_Func
       (Menu      : System.Address;
-       X         : out Gint;
-       Y         : out Gint;
+       X         : out Glib.Gint;
+       Y         : out Glib.Gint;
        Push_In   : out Glib.Gboolean;
        User_Data : System.Address)
    is
@@ -367,8 +367,10 @@ package body Gtk.Menu is
    -- Get_Monitor --
    -----------------
 
-   function Get_Monitor (Menu : not null access Gtk_Menu_Record) return Gint is
-      function Internal (Menu : System.Address) return Gint;
+   function Get_Monitor
+      (Menu : not null access Gtk_Menu_Record) return Glib.Gint
+   is
+      function Internal (Menu : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_menu_get_monitor");
    begin
       return Internal (Get_Object (Menu));
@@ -479,8 +481,8 @@ package body Gtk.Menu is
 
       procedure Internal_Cb
          (Menu      : System.Address;
-          X         : out Gint;
-          Y         : out Gint;
+          X         : out Glib.Gint;
+          Y         : out Glib.Gint;
           Push_In   : out Glib.Gboolean;
           User_Data : System.Address);
       pragma Convention (C, Internal_Cb);
@@ -490,10 +492,10 @@ package body Gtk.Menu is
       --  drawn. To make the menu appear on a different monitor than the mouse
       --  pointer, Gtk.Menu.Set_Monitor must be called.
       --  "menu": a Gtk.Menu.Gtk_Menu.
-      --  "x": address of the Gint representing the horizontal position where
-      --  the menu shall be drawn.
-      --  "y": address of the Gint representing the vertical position where
-      --  the menu shall be drawn. This is an output parameter.
+      --  "x": address of the Glib.Gint representing the horizontal position
+      --  where the menu shall be drawn.
+      --  "y": address of the Glib.Gint representing the vertical position
+      --  where the menu shall be drawn. This is an output parameter.
       --  "push_in": This parameter controls how menus placed outside the
       --  monitor are handled. If this is set to True and part of the menu is
       --  outside the monitor then GTK+ pushes the window into the visible
@@ -513,8 +515,8 @@ package body Gtk.Menu is
 
       procedure Internal_Cb
          (Menu      : System.Address;
-          X         : out Gint;
-          Y         : out Gint;
+          X         : out Glib.Gint;
+          Y         : out Glib.Gint;
           Push_In   : out Glib.Gboolean;
           User_Data : System.Address)
       is
@@ -565,8 +567,8 @@ package body Gtk.Menu is
 
       procedure Internal_Cb
          (Menu      : System.Address;
-          X         : out Gint;
-          Y         : out Gint;
+          X         : out Glib.Gint;
+          Y         : out Glib.Gint;
           Push_In   : out Glib.Gboolean;
           User_Data : System.Address);
       pragma Convention (C, Internal_Cb);
@@ -576,10 +578,10 @@ package body Gtk.Menu is
       --  drawn. To make the menu appear on a different monitor than the mouse
       --  pointer, Gtk.Menu.Set_Monitor must be called.
       --  "menu": a Gtk.Menu.Gtk_Menu.
-      --  "x": address of the Gint representing the horizontal position where
-      --  the menu shall be drawn.
-      --  "y": address of the Gint representing the vertical position where
-      --  the menu shall be drawn. This is an output parameter.
+      --  "x": address of the Glib.Gint representing the horizontal position
+      --  where the menu shall be drawn.
+      --  "y": address of the Glib.Gint representing the vertical position
+      --  where the menu shall be drawn. This is an output parameter.
       --  "push_in": This parameter controls how menus placed outside the
       --  monitor are handled. If this is set to True and part of the menu is
       --  outside the monitor then GTK+ pushes the window into the visible
@@ -599,8 +601,8 @@ package body Gtk.Menu is
 
       procedure Internal_Cb
          (Menu      : System.Address;
-          X         : out Gint;
-          Y         : out Gint;
+          X         : out Glib.Gint;
+          Y         : out Glib.Gint;
           Push_In   : out Glib.Gboolean;
           User_Data : System.Address)
       is
@@ -645,12 +647,12 @@ package body Gtk.Menu is
    procedure Reorder_Child
       (Menu     : not null access Gtk_Menu_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position : Gint)
+       Position : Glib.Gint)
    is
       procedure Internal
          (Menu     : System.Address;
           Child    : System.Address;
-          Position : Gint);
+          Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_menu_reorder_child");
    begin
       Internal (Get_Object (Menu), Get_Object (Child), Position);
@@ -726,9 +728,9 @@ package body Gtk.Menu is
 
    procedure Set_Monitor
       (Menu        : not null access Gtk_Menu_Record;
-       Monitor_Num : Gint)
+       Monitor_Num : Glib.Gint)
    is
-      procedure Internal (Menu : System.Address; Monitor_Num : Gint);
+      procedure Internal (Menu : System.Address; Monitor_Num : Glib.Gint);
       pragma Import (C, Internal, "gtk_menu_set_monitor");
    begin
       Internal (Get_Object (Menu), Monitor_Num);

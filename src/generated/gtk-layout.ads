@@ -138,8 +138,8 @@ package Gtk.Layout is
    procedure Move
       (Layout       : not null access Gtk_Layout_Record;
        Child_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       X            : Gint;
-       Y            : Gint);
+       X            : Glib.Gint;
+       Y            : Glib.Gint);
    --  Moves a current child of Layout to a new position.
    --  "child_widget": a current child of Layout
    --  "x": X position to move to
@@ -148,8 +148,8 @@ package Gtk.Layout is
    procedure Put
       (Layout       : not null access Gtk_Layout_Record;
        Child_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       X            : Gint;
-       Y            : Gint);
+       X            : Glib.Gint;
+       Y            : Glib.Gint);
    --  The child will be displayed on the screen only if at least part of it
    --  intersects the visible area of the layout. The layout does not resize
    --  itself to automatically show the widget. You also need to call Set_Size,

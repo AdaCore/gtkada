@@ -324,12 +324,12 @@ package body Gtk.UI_Manager is
    procedure Insert_Action_Group
       (Self         : not null access Gtk_UI_Manager_Record;
        Action_Group : not null access Gtk.Action_Group.Gtk_Action_Group_Record'Class;
-       Pos          : Gint)
+       Pos          : Glib.Gint)
    is
       procedure Internal
          (Self         : System.Address;
           Action_Group : System.Address;
-          Pos          : Gint);
+          Pos          : Glib.Gint);
       pragma Import (C, Internal, "gtk_ui_manager_insert_action_group");
    begin
       Internal (Get_Object (Self), Get_Object (Action_Group), Pos);

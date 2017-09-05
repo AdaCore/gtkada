@@ -64,7 +64,7 @@ package Gtk.Recent_Chooser is
 
    type Gtk_Recent_Sort_Func is access function
      (A : Gtk.Recent_Info.Gtk_Recent_Info;
-      B : Gtk.Recent_Info.Gtk_Recent_Info) return Gint;
+      B : Gtk.Recent_Info.Gtk_Recent_Info) return Glib.Gint;
 
    ----------------------------
    -- Enumeration Properties --
@@ -136,13 +136,13 @@ package Gtk.Recent_Chooser is
    --  "limit" properties of Chooser.
    --  Since: gtk+ 2.10
 
-   function Get_Limit (Chooser : Gtk_Recent_Chooser) return Gint;
+   function Get_Limit (Chooser : Gtk_Recent_Chooser) return Glib.Gint;
    pragma Import (C, Get_Limit, "gtk_recent_chooser_get_limit");
    --  Gets the number of items returned by Gtk.Recent_Chooser.Get_Items and
    --  gtk_recent_chooser_get_uris.
    --  Since: gtk+ 2.10
 
-   procedure Set_Limit (Chooser : Gtk_Recent_Chooser; Limit : Gint);
+   procedure Set_Limit (Chooser : Gtk_Recent_Chooser; Limit : Glib.Gint);
    pragma Import (C, Set_Limit, "gtk_recent_chooser_set_limit");
    --  Sets the number of items that should be returned by
    --  Gtk.Recent_Chooser.Get_Items and gtk_recent_chooser_get_uris.
@@ -293,7 +293,7 @@ package Gtk.Recent_Chooser is
       type Gtk_Recent_Sort_Func is access function
         (A         : Gtk.Recent_Info.Gtk_Recent_Info;
          B         : Gtk.Recent_Info.Gtk_Recent_Info;
-         User_Data : User_Data_Type) return Gint;
+         User_Data : User_Data_Type) return Glib.Gint;
 
       procedure Set_Sort_Func
          (Chooser      : Gtk.Recent_Chooser.Gtk_Recent_Chooser;

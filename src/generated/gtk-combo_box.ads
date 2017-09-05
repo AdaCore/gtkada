@@ -212,7 +212,7 @@ package Gtk.Combo_Box is
    -------------
 
    function Get_Active
-      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint;
+      (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint;
    --  Returns the index of the currently active item, or -1 if there's no
    --  active item. If the model is a non-flat treemodel, and the active item
    --  is not an immediate child of the root of the tree, this function returns
@@ -222,7 +222,7 @@ package Gtk.Combo_Box is
 
    procedure Set_Active
       (Combo_Box : not null access Gtk_Combo_Box_Record;
-       Index     : Gint);
+       Index     : Glib.Gint);
    --  Sets the active item of Combo_Box to be the item at Index.
    --  Since: gtk+ 2.4
    --  "index_": An index in the model passed during construction, or -1 to
@@ -287,13 +287,13 @@ package Gtk.Combo_Box is
    --  "sensitivity": specify the sensitivity of the dropdown button
 
    function Get_Column_Span_Column
-      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint;
+      (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint;
    --  Returns the column with column span information for Combo_Box.
    --  Since: gtk+ 2.6
 
    procedure Set_Column_Span_Column
       (Combo_Box   : not null access Gtk_Combo_Box_Record;
-       Column_Span : Gint);
+       Column_Span : Glib.Gint);
    --  Sets the column with column span information for Combo_Box to be
    --  Column_Span. The column span column contains integers which indicate how
    --  many columns an item should span.
@@ -301,14 +301,14 @@ package Gtk.Combo_Box is
    --  "column_span": A column in the model passed during construction
 
    function Get_Entry_Text_Column
-      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint;
+      (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint;
    --  Returns the column which Combo_Box is using to get the strings from to
    --  display in the internal entry.
    --  Since: gtk+ 2.24
 
    procedure Set_Entry_Text_Column
       (Combo_Box   : not null access Gtk_Combo_Box_Record;
-       Text_Column : Gint);
+       Text_Column : Glib.Gint);
    --  Sets the model column which Combo_Box should use to get strings from to
    --  be Text_Column. The column Text_Column in the model of Combo_Box must be
    --  of type G_TYPE_STRING.
@@ -341,14 +341,14 @@ package Gtk.Combo_Box is
    --  Since: gtk+ 2.24
 
    function Get_Id_Column
-      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint;
+      (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint;
    --  Returns the column which Combo_Box is using to get string IDs for
    --  values from.
    --  Since: gtk+ 3.0
 
    procedure Set_Id_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record;
-       Id_Column : Gint);
+       Id_Column : Glib.Gint);
    --  Sets the model column which Combo_Box should use to get string IDs for
    --  values from. The column Id_Column in the model of Combo_Box must be of
    --  type G_TYPE_STRING.
@@ -403,13 +403,13 @@ package Gtk.Combo_Box is
    --  "func": a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
 
    function Get_Row_Span_Column
-      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint;
+      (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint;
    --  Returns the column with row span information for Combo_Box.
    --  Since: gtk+ 2.6
 
    procedure Set_Row_Span_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record;
-       Row_Span  : Gint);
+       Row_Span  : Glib.Gint);
    --  Sets the column with row span information for Combo_Box to be Row_Span.
    --  The row span column contains integers which indicate how many rows an
    --  item should span.
@@ -434,7 +434,7 @@ package Gtk.Combo_Box is
    --  "title": a title for the menu in tearoff mode
 
    function Get_Wrap_Width
-      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gint;
+      (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint;
    --  Returns the wrap width which is used to determine the number of columns
    --  for the popup menu. If the wrap width is larger than 1, the combo box is
    --  in table mode.
@@ -442,7 +442,7 @@ package Gtk.Combo_Box is
 
    procedure Set_Wrap_Width
       (Combo_Box : not null access Gtk_Combo_Box_Record;
-       Width     : Gint);
+       Width     : Glib.Gint);
    --  Sets the wrap width of Combo_Box to be Width. The wrap width is
    --  basically the preferred number of columns when you want the popup to be
    --  layed out in a table.
@@ -584,7 +584,7 @@ package Gtk.Combo_Box is
       (Cell_Layout : not null access Gtk_Combo_Box_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint);
+       Column      : Glib.Gint);
 
    procedure Clear (Cell_Layout : not null access Gtk_Combo_Box_Record);
 
@@ -609,7 +609,7 @@ package Gtk.Combo_Box is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Combo_Box_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint);
+       Position    : Glib.Gint);
 
    ----------------
    -- Properties --

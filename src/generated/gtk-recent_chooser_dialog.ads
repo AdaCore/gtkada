@@ -80,7 +80,7 @@ package Gtk.Recent_Chooser_Dialog is
 
    type Gtk_Recent_Sort_Func is access function
      (A : Gtk.Recent_Info.Gtk_Recent_Info;
-      B : Gtk.Recent_Info.Gtk_Recent_Info) return Gint;
+      B : Gtk.Recent_Info.Gtk_Recent_Info) return Glib.Gint;
 
    ------------------
    -- Constructors --
@@ -152,7 +152,7 @@ package Gtk.Recent_Chooser_Dialog is
       type Gtk_Recent_Sort_Func is access function
         (A         : Gtk.Recent_Info.Gtk_Recent_Info;
          B         : Gtk.Recent_Info.Gtk_Recent_Info;
-         User_Data : User_Data_Type) return Gint;
+         User_Data : User_Data_Type) return Glib.Gint;
 
       procedure Set_Sort_Func
          (Chooser      : not null access Gtk.Recent_Chooser_Dialog.Gtk_Recent_Chooser_Dialog_Record'Class;
@@ -211,11 +211,11 @@ package Gtk.Recent_Chooser_Dialog is
 
    function Get_Limit
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
-       return Gint;
+       return Glib.Gint;
 
    procedure Set_Limit
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record;
-       Limit   : Gint);
+       Limit   : Glib.Gint);
 
    function Get_Local_Only
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)

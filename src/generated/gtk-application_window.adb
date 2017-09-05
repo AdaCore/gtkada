@@ -244,7 +244,7 @@ package body Gtk.Application_Window is
       procedure Internal
          (Self      : System.Address;
           Entries   : GAction_Entry_Array;
-          N_Entries : Gint;
+          N_Entries : Glib.Gint;
           User_Data : System.Address);
       pragma Import (C, Internal, "g_action_map_add_action_entries");
    begin

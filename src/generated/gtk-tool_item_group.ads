@@ -88,8 +88,8 @@ package Gtk.Tool_Item_Group is
 
    function Get_Drop_Item
       (Self : not null access Gtk_Tool_Item_Group_Record;
-       X    : Gint;
-       Y    : Gint) return Gtk.Tool_Item.Gtk_Tool_Item;
+       X    : Glib.Gint;
+       Y    : Glib.Gint) return Gtk.Tool_Item.Gtk_Tool_Item;
    --  Gets the tool item at position (x, y).
    --  Since: gtk+ 2.20
    --  "x": the x position
@@ -126,7 +126,7 @@ package Gtk.Tool_Item_Group is
    function Get_Item_Position
       (Self : not null access Gtk_Tool_Item_Group_Record;
        Item : not null access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class)
-       return Gint;
+       return Glib.Gint;
    --  Gets the position of Item in Group as index.
    --  Since: gtk+ 2.20
    --  "item": a Gtk.Tool_Item.Gtk_Tool_Item
@@ -134,7 +134,7 @@ package Gtk.Tool_Item_Group is
    procedure Set_Item_Position
       (Self     : not null access Gtk_Tool_Item_Group_Record;
        Item     : not null access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Sets the position of Item in the list of children of Group.
    --  Since: gtk+ 2.20
    --  "item": the Gtk.Tool_Item.Gtk_Tool_Item to move to a new position,
@@ -185,7 +185,7 @@ package Gtk.Tool_Item_Group is
    procedure Insert
       (Self     : not null access Gtk_Tool_Item_Group_Record;
        Item     : not null access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Inserts Item at Position in the list of children of Group.
    --  Since: gtk+ 2.20
    --  "item": the Gtk.Tool_Item.Gtk_Tool_Item to insert into Group

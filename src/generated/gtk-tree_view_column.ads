@@ -140,8 +140,8 @@ package Gtk.Tree_View_Column is
    procedure Cell_Get_Position
       (Tree_Column   : not null access Gtk_Tree_View_Column_Record;
        Cell_Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       X_Offset      : out Gint;
-       Width         : out Gint;
+       X_Offset      : out Glib.Gint;
+       Width         : out Glib.Gint;
        Success       : out Boolean);
    --  Obtains the horizontal position and size of a cell in a column. If the
    --  cell is not found in the column, Start_Pos and Width are not changed and
@@ -154,10 +154,10 @@ package Gtk.Tree_View_Column is
    procedure Cell_Get_Size
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        Cell_Area   : Gdk.Rectangle.Gdk_Rectangle;
-       X_Offset    : out Gint;
-       Y_Offset    : out Gint;
-       Width       : out Gint;
-       Height      : out Gint);
+       X_Offset    : out Glib.Gint;
+       Y_Offset    : out Glib.Gint;
+       Width       : out Glib.Gint;
+       Height      : out Glib.Gint);
    --  Obtains the width and height needed to render the column. This is used
    --  primarily by the Gtk.Tree_View.Gtk_Tree_View.
    --  "cell_area": The area a cell in the column will be allocated, or null
@@ -257,14 +257,14 @@ package Gtk.Tree_View_Column is
 
    function Get_Fixed_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint;
+       return Glib.Gint;
    --  Gets the fixed width of the column. This may not be the actual
    --  displayed width of the column; for that, use
    --  Gtk.Tree_View_Column.Get_Width.
 
    procedure Set_Fixed_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
-       Fixed_Width : Gint);
+       Fixed_Width : Glib.Gint);
    --  If Fixed_Width is not -1, sets the fixed width of Tree_Column;
    --  otherwise unsets it. The effective value of Fixed_Width is clamped
    --  between the minumum and maximum width of the column; however, the value
@@ -280,13 +280,13 @@ package Gtk.Tree_View_Column is
 
    function Get_Max_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint;
+       return Glib.Gint;
    --  Returns the maximum width in pixels of the Tree_Column, or -1 if no
    --  maximum width is set.
 
    procedure Set_Max_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
-       Max_Width   : Gint);
+       Max_Width   : Glib.Gint);
    --  Sets the maximum width of the Tree_Column. If Max_Width is -1, then the
    --  maximum width is unset. Note, the column can actually be wider than max
    --  width if it's the last column in a view. In this case, the column
@@ -295,13 +295,13 @@ package Gtk.Tree_View_Column is
 
    function Get_Min_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint;
+       return Glib.Gint;
    --  Returns the minimum width in pixels of the Tree_Column, or -1 if no
    --  minimum width is set.
 
    procedure Set_Min_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
-       Min_Width   : Gint);
+       Min_Width   : Glib.Gint);
    --  Sets the minimum width of the Tree_Column. If Min_Width is -1, then the
    --  minimum width is unset.
    --  "min_width": The minimum width of the column in pixels, or -1.
@@ -345,14 +345,14 @@ package Gtk.Tree_View_Column is
 
    function Get_Sort_Column_Id
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint;
+       return Glib.Gint;
    --  Gets the logical Sort_Column_Id that the model sorts on when this
    --  column is selected for sorting. See
    --  Gtk.Tree_View_Column.Set_Sort_Column_Id.
 
    procedure Set_Sort_Column_Id
       (Tree_Column    : not null access Gtk_Tree_View_Column_Record;
-       Sort_Column_Id : Gint);
+       Sort_Column_Id : Glib.Gint);
    --  Sets the logical Sort_Column_Id that this column sorts on when this
    --  column is selected for sorting. Doing so makes the column header
    --  clickable.
@@ -393,12 +393,12 @@ package Gtk.Tree_View_Column is
 
    function Get_Spacing
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint;
+       return Glib.Gint;
    --  Returns the spacing of Tree_Column.
 
    procedure Set_Spacing
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
-       Spacing     : Gint);
+       Spacing     : Glib.Gint);
    --  Sets the spacing field of Tree_Column, which is the number of pixels to
    --  place between cell renderers packed into it.
    --  "spacing": distance between cell renderers in pixels.
@@ -450,12 +450,12 @@ package Gtk.Tree_View_Column is
 
    function Get_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint;
+       return Glib.Gint;
    --  Returns the current size of Tree_Column in pixels.
 
    function Get_X_Offset
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
-       return Gint;
+       return Glib.Gint;
    --  Returns the current X offset of Tree_Column in pixels.
    --  Since: gtk+ 3.2
 
@@ -526,7 +526,7 @@ package Gtk.Tree_View_Column is
       (Cell_Layout : not null access Gtk_Tree_View_Column_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint);
+       Column      : Glib.Gint);
 
    procedure Clear
       (Cell_Layout : not null access Gtk_Tree_View_Column_Record);
@@ -552,7 +552,7 @@ package Gtk.Tree_View_Column is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Tree_View_Column_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint);
+       Position    : Glib.Gint);
 
    ----------------
    -- Properties --

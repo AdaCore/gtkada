@@ -110,7 +110,8 @@ package Gtk.Notebook is
    function Append_Page
       (Notebook  : not null access Gtk_Notebook_Record;
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
+       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Glib.Gint;
    --  Appends a page to Notebook.
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
@@ -154,12 +155,12 @@ package Gtk.Notebook is
    --  "pack_type": pack type of the action widget
 
    function Get_Current_Page
-      (Notebook : not null access Gtk_Notebook_Record) return Gint;
+      (Notebook : not null access Gtk_Notebook_Record) return Glib.Gint;
    --  Returns the page number of the current page.
 
    procedure Set_Current_Page
       (Notebook : not null access Gtk_Notebook_Record;
-       Page_Num : Gint := -1);
+       Page_Num : Glib.Gint := -1);
    --  Switches to the page number Page_Num.
    --  Note that due to historical reasons, GtkNotebook refuses to switch to a
    --  page unless the child widget is visible. Therefore, it is recommended to
@@ -214,13 +215,13 @@ package Gtk.Notebook is
    --  "menu_text": the label text
 
    function Get_N_Pages
-      (Notebook : not null access Gtk_Notebook_Record) return Gint;
+      (Notebook : not null access Gtk_Notebook_Record) return Glib.Gint;
    --  Gets the number of pages in a notebook.
    --  Since: gtk+ 2.2
 
    function Get_Nth_Page
       (Notebook : not null access Gtk_Notebook_Record;
-       Page_Num : Gint) return Gtk.Widget.Gtk_Widget;
+       Page_Num : Glib.Gint) return Gtk.Widget.Gtk_Widget;
    --  Returns the child widget contained in page number Page_Num.
    --  "page_num": the index of a page in the notebook, or -1 to get the last
    --  page
@@ -380,7 +381,7 @@ package Gtk.Notebook is
       (Notebook  : not null access Gtk_Notebook_Record;
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position  : Gint) return Gint;
+       Position  : Glib.Gint) return Glib.Gint;
    --  Insert a page into Notebook at the given position.
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
@@ -393,7 +394,7 @@ package Gtk.Notebook is
        Child      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
        Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position   : Gint) return Gint;
+       Position   : Glib.Gint) return Glib.Gint;
    --  Insert a page into Notebook at the given position, specifying the
    --  widget to use as the label in the popup menu.
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
@@ -414,7 +415,7 @@ package Gtk.Notebook is
    function Page_Num
       (Notebook : not null access Gtk_Notebook_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class)
-       return Gint;
+       return Glib.Gint;
    --  Finds the index of the page which contains the given child widget.
    --  "child": a Gtk.Widget.Gtk_Widget
 
@@ -428,7 +429,8 @@ package Gtk.Notebook is
    function Prepend_Page
       (Notebook  : not null access Gtk_Notebook_Record;
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
+       Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Glib.Gint;
    --  Prepends a page to Notebook.
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
    --  "tab_label": the Gtk.Widget.Gtk_Widget to be used as the label for the
@@ -438,7 +440,8 @@ package Gtk.Notebook is
       (Notebook   : not null access Gtk_Notebook_Record;
        Child      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Tab_Label  : access Gtk.Widget.Gtk_Widget_Record'Class;
-       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class) return Gint;
+       Menu_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Glib.Gint;
    --  Prepends a page to Notebook, specifying the widget to use as the label
    --  in the popup menu.
    --  "child": the Gtk.Widget.Gtk_Widget to use as the contents of the page
@@ -456,7 +459,7 @@ package Gtk.Notebook is
 
    procedure Remove_Page
       (Notebook : not null access Gtk_Notebook_Record;
-       Page_Num : Gint);
+       Page_Num : Glib.Gint);
    --  Removes a page from the notebook given its index in the notebook.
    --  "page_num": the index of a notebook page, starting from 0. If -1, the
    --  last page will be removed.
@@ -464,7 +467,7 @@ package Gtk.Notebook is
    procedure Reorder_Child
       (Notebook : not null access Gtk_Notebook_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Reorders the page containing Child, so that it appears in position
    --  Position. If Position is greater than or equal to the number of children
    --  in the list or negative, Child will be moved to the end of the list.
@@ -515,11 +518,11 @@ package Gtk.Notebook is
 
    type Cb_Gtk_Notebook_Gint_Boolean is not null access function
      (Self   : access Gtk_Notebook_Record'Class;
-      Object : Gint) return Boolean;
+      Object : Glib.Gint) return Boolean;
 
    type Cb_GObject_Gint_Boolean is not null access function
      (Self   : access Glib.Object.GObject_Record'Class;
-      Object : Gint) return Boolean;
+      Object : Glib.Gint) return Boolean;
 
    Signal_Change_Current_Page : constant Glib.Signal_Name := "change-current-page";
    procedure On_Change_Current_Page
@@ -535,14 +538,14 @@ package Gtk.Notebook is
    type Cb_Gtk_Notebook_Gtk_Widget_Gint_Gint_Gtk_Notebook is not null access function
      (Self : access Gtk_Notebook_Record'Class;
       Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-      X    : Gint;
-      Y    : Gint) return Gtk_Notebook;
+      X    : Glib.Gint;
+      Y    : Glib.Gint) return Gtk_Notebook;
 
    type Cb_GObject_Gtk_Widget_Gint_Gint_Gtk_Notebook is not null access function
      (Self : access Glib.Object.GObject_Record'Class;
       Page : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-      X    : Gint;
-      Y    : Gint) return Gtk_Notebook;
+      X    : Glib.Gint;
+      Y    : Glib.Gint) return Gtk_Notebook;
 
    Signal_Create_Window : constant Glib.Signal_Name := "create-window";
    procedure On_Create_Window

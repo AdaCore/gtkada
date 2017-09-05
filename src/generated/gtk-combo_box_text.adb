@@ -229,13 +229,13 @@ package body Gtk.Combo_Box_Text is
 
    procedure Insert
       (Self     : not null access Gtk_Combo_Box_Text_Record;
-       Position : Gint;
+       Position : Glib.Gint;
        Id       : UTF8_String := "";
        Text     : UTF8_String)
    is
       procedure Internal
          (Self     : System.Address;
-          Position : Gint;
+          Position : Glib.Gint;
           Id       : Interfaces.C.Strings.chars_ptr;
           Text     : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_combo_box_text_insert");
@@ -258,12 +258,12 @@ package body Gtk.Combo_Box_Text is
 
    procedure Insert_Text
       (Self     : not null access Gtk_Combo_Box_Text_Record;
-       Position : Gint;
+       Position : Glib.Gint;
        Text     : UTF8_String)
    is
       procedure Internal
          (Self     : System.Address;
-          Position : Gint;
+          Position : Glib.Gint;
           Text     : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_combo_box_text_insert_text");
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
@@ -323,9 +323,9 @@ package body Gtk.Combo_Box_Text is
 
    procedure Remove
       (Self     : not null access Gtk_Combo_Box_Text_Record;
-       Position : Gint)
+       Position : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Position : Gint);
+      procedure Internal (Self : System.Address; Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_combo_box_text_remove");
    begin
       Internal (Get_Object (Self), Position);
@@ -433,13 +433,13 @@ package body Gtk.Combo_Box_Text is
       (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint)
+       Column      : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
           Attribute   : Interfaces.C.Strings.chars_ptr;
-          Column      : Gint);
+          Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
       Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
    begin
@@ -559,12 +559,12 @@ package body Gtk.Combo_Box_Text is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Combo_Box_Text_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint)
+       Position    : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Position    : Gint);
+          Position    : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_reorder");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);

@@ -98,13 +98,13 @@ package body Gtk.Tool_Item_Group is
 
    function Get_Drop_Item
       (Self : not null access Gtk_Tool_Item_Group_Record;
-       X    : Gint;
-       Y    : Gint) return Gtk.Tool_Item.Gtk_Tool_Item
+       X    : Glib.Gint;
+       Y    : Glib.Gint) return Gtk.Tool_Item.Gtk_Tool_Item
    is
       function Internal
          (Self : System.Address;
-          X    : Gint;
-          Y    : Gint) return System.Address;
+          X    : Glib.Gint;
+          Y    : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_tool_item_group_get_drop_item");
       Stub_Gtk_Tool_Item : Gtk.Tool_Item.Gtk_Tool_Item_Record;
    begin
@@ -148,11 +148,11 @@ package body Gtk.Tool_Item_Group is
    function Get_Item_Position
       (Self : not null access Gtk_Tool_Item_Group_Record;
        Item : not null access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class)
-       return Gint
+       return Glib.Gint
    is
       function Internal
          (Self : System.Address;
-          Item : System.Address) return Gint;
+          Item : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_tool_item_group_get_item_position");
    begin
       return Internal (Get_Object (Self), Get_Object (Item));
@@ -224,12 +224,12 @@ package body Gtk.Tool_Item_Group is
    procedure Insert
       (Self     : not null access Gtk_Tool_Item_Group_Record;
        Item     : not null access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class;
-       Position : Gint)
+       Position : Glib.Gint)
    is
       procedure Internal
          (Self     : System.Address;
           Item     : System.Address;
-          Position : Gint);
+          Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_tool_item_group_insert");
    begin
       Internal (Get_Object (Self), Get_Object (Item), Position);
@@ -288,12 +288,12 @@ package body Gtk.Tool_Item_Group is
    procedure Set_Item_Position
       (Self     : not null access Gtk_Tool_Item_Group_Record;
        Item     : not null access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class;
-       Position : Gint)
+       Position : Glib.Gint)
    is
       procedure Internal
          (Self     : System.Address;
           Item     : System.Address;
-          Position : Gint);
+          Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_tool_item_group_set_item_position");
    begin
       Internal (Get_Object (Self), Get_Object (Item), Position);

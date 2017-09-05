@@ -181,8 +181,8 @@ package Gtk.Tool_Palette is
 
    function Get_Drop_Group
       (Self : not null access Gtk_Tool_Palette_Record;
-       X    : Gint;
-       Y    : Gint) return Gtk.Tool_Item_Group.Gtk_Tool_Item_Group;
+       X    : Glib.Gint;
+       Y    : Glib.Gint) return Gtk.Tool_Item_Group.Gtk_Tool_Item_Group;
    --  Gets the group at position (x, y).
    --  Since: gtk+ 2.20
    --  "x": the x position
@@ -190,8 +190,8 @@ package Gtk.Tool_Palette is
 
    function Get_Drop_Item
       (Self : not null access Gtk_Tool_Palette_Record;
-       X    : Gint;
-       Y    : Gint) return Gtk.Tool_Item.Gtk_Tool_Item;
+       X    : Glib.Gint;
+       Y    : Glib.Gint) return Gtk.Tool_Item.Gtk_Tool_Item;
    --  Gets the item at position (x, y). See Gtk.Tool_Palette.Get_Drop_Group.
    --  Since: gtk+ 2.20
    --  "x": the x position
@@ -241,7 +241,7 @@ package Gtk.Tool_Palette is
    function Get_Group_Position
       (Self  : not null access Gtk_Tool_Palette_Record;
        Group : not null access Gtk.Tool_Item_Group.Gtk_Tool_Item_Group_Record'Class)
-       return Gint;
+       return Glib.Gint;
    --  Gets the position of Group in Palette as index. See
    --  Gtk.Tool_Palette.Set_Group_Position.
    --  Since: gtk+ 2.20
@@ -250,7 +250,7 @@ package Gtk.Tool_Palette is
    procedure Set_Group_Position
       (Self     : not null access Gtk_Tool_Palette_Record;
        Group    : not null access Gtk.Tool_Item_Group.Gtk_Tool_Item_Group_Record'Class;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Sets the position of the group as an index of the tool palette. If
    --  position is 0 the group will become the first child, if position is -1
    --  it will become the last child.

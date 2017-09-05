@@ -434,8 +434,8 @@ package Glib.Application is
 
    function Run
       (Self : not null access Gapplication_Record;
-       Argc : Gint;
-       Argv : GNAT.Strings.String_List) return Gint;
+       Argc : Glib.Gint;
+       Argv : GNAT.Strings.String_List) return Glib.Gint;
    --  Runs the application.
    --  This function is intended to be run from main and its return value is
    --  intended to be returned by main. Although you are expected to pass the
@@ -622,14 +622,15 @@ package Glib.Application is
    --  Since: gtk+ 2.28
 
    function Get_Exit_Status
-      (Self : not null access Gapplication_Command_Line_Record) return Gint;
+      (Self : not null access Gapplication_Command_Line_Record)
+       return Glib.Gint;
    --  Gets the exit status of Cmdline. See Glib.Application.Set_Exit_Status
    --  for more information.
    --  Since: gtk+ 2.28
 
    procedure Set_Exit_Status
       (Self        : not null access Gapplication_Command_Line_Record;
-       Exit_Status : Gint);
+       Exit_Status : Glib.Gint);
    --  Sets the exit status that will be used when the invoking process exits.
    --  The return value of the Glib.Application.Gapplication::command-line
    --  signal is passed to this function when the handler returns. This is the
@@ -862,12 +863,12 @@ package Glib.Application is
    type Cb_Gapplication_Gapplication_Command_Line_Gint is not null access function
      (Self         : access Gapplication_Record'Class;
       Command_Line : not null access Gapplication_Command_Line_Record'Class)
-   return Gint;
+   return Glib.Gint;
 
    type Cb_GObject_Gapplication_Command_Line_Gint is not null access function
      (Self         : access Glib.Object.GObject_Record'Class;
       Command_Line : not null access Gapplication_Command_Line_Record'Class)
-   return Gint;
+   return Glib.Gint;
 
    Signal_Command_Line : constant Glib.Signal_Name := "command-line";
    procedure On_Command_Line
@@ -934,7 +935,7 @@ package Glib.Application is
    --  required.
    --    function Handler
    --       (Self    : access Gapplication_Record'Class;
-   --        Options : GLib.Variant_Dict) return Gint
+   --        Options : GLib.Variant_Dict) return Glib.Gint
    -- 
    --  Callback parameters:
    --    --  "options": the options dictionary
@@ -949,7 +950,7 @@ package Glib.Application is
    --    procedure Handler
    --       (Self    : access Gapplication_Record'Class;
    --        Files   : array_of_File;
-   --        N_Files : Gint;
+   --        N_Files : Glib.Gint;
    --        Hint    : UTF8_String)
    -- 
    --  Callback parameters:
@@ -1020,13 +1021,13 @@ package Glib.Application is
 
    type Virtual_Command_Line is access function
      (Self         : System.Address;
-      Command_Line : System.Address) return Gint;
+      Command_Line : System.Address) return Glib.Gint;
    pragma Convention (C, Virtual_Command_Line);
 
    type Virtual_Local_Command_Line is access function
      (Self        : System.Address;
       Arguments   : access Gtkada.Bindings.chars_ptr_array_access;
-      Exit_Status : access Gint) return Glib.Gboolean;
+      Exit_Status : access Glib.Gint) return Glib.Gboolean;
    pragma Convention (C, Virtual_Local_Command_Line);
    --  This virtual function is always invoked in the local instance. It gets
    --  passed a pointer to a null-terminated copy of Argv and is expected to

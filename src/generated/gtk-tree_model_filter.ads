@@ -116,7 +116,7 @@ package Gtk.Tree_Model_Filter is
      (Model  : Gtk.Tree_Model.Gtk_Tree_Model;
       Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
       Value  : in out Glib.Values.GValue;
-      Column : Gint);
+      Column : Glib.Gint);
    --  A function which calculates display values from raw values in the
    --  model. It must fill Value with the display value for the column Column
    --  in the row indicated by Iter.
@@ -277,7 +277,7 @@ package Gtk.Tree_Model_Filter is
         (Model  : Gtk.Tree_Model.Gtk_Tree_Model;
          Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
          Value  : in out Glib.Values.GValue;
-         Column : Gint;
+         Column : Glib.Gint;
          Data   : User_Data_Type);
       --  A function which calculates display values from raw values in the
       --  model. It must fill Value with the display value for the column Column
@@ -315,7 +315,7 @@ package Gtk.Tree_Model_Filter is
 
    procedure Set_Visible_Column
       (Self   : not null access Gtk_Tree_Model_Filter_Record;
-       Column : Gint);
+       Column : Glib.Gint);
    --  Sets Column of the child_model to be the column where Filter should
    --  look for visibility information. Columns should be a column of type
    --  G_TYPE_BOOLEAN, where True means that a row is visible, and False if
@@ -324,7 +324,8 @@ package Gtk.Tree_Model_Filter is
    --  Gtk.Tree_Model_Filter.Set_Visible_Column can only be called once for a
    --  given filter model.
    --  Since: gtk+ 2.4
-   --  "column": A Gint which is the column containing the visible information
+   --  "column": A Glib.Gint which is the column containing the visible
+   --  information
 
    procedure Set_Visible_Func
       (Self : not null access Gtk_Tree_Model_Filter_Record;
@@ -454,7 +455,7 @@ package Gtk.Tree_Model_Filter is
 
    function Get_Column_Type
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
-       Index      : Gint) return GType;
+       Index      : Glib.Gint) return GType;
 
    function Get_Flags
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record)
@@ -475,7 +476,7 @@ package Gtk.Tree_Model_Filter is
 
    function Get_N_Columns
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record)
-       return Gint;
+       return Glib.Gint;
 
    function Get_Path
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
@@ -489,7 +490,7 @@ package Gtk.Tree_Model_Filter is
    procedure Get_Value
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       Column     : Gint;
+       Column     : Glib.Gint;
        Value      : out Glib.Values.GValue);
 
    function Children
@@ -504,7 +505,7 @@ package Gtk.Tree_Model_Filter is
    function N_Children
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter)
-       return Gint;
+       return Glib.Gint;
 
    procedure Next
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
@@ -513,7 +514,7 @@ package Gtk.Tree_Model_Filter is
    function Nth_Child
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
        Parent     : Gtk.Tree_Model.Gtk_Tree_Iter;
-       N          : Gint) return Gtk.Tree_Model.Gtk_Tree_Iter;
+       N          : Glib.Gint) return Gtk.Tree_Model.Gtk_Tree_Iter;
 
    function Parent
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
@@ -558,7 +559,7 @@ package Gtk.Tree_Model_Filter is
        Path       : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
        New_Order  : Gint_Array;
-       Length     : Gint);
+       Length     : Glib.Gint);
 
    procedure Unref_Node
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;

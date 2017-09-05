@@ -54,7 +54,7 @@ package Gtk.Print_Operation_Preview is
 
    function Is_Selected
       (Preview : Gtk_Print_Operation_Preview;
-       Page_Nr : Gint) return Boolean;
+       Page_Nr : Glib.Gint) return Boolean;
    --  Returns whether the given page is included in the set of pages that
    --  have been selected for printing.
    --  Since: gtk+ 2.10
@@ -62,7 +62,7 @@ package Gtk.Print_Operation_Preview is
 
    procedure Render_Page
       (Preview : Gtk_Print_Operation_Preview;
-       Page_Nr : Gint);
+       Page_Nr : Glib.Gint);
    pragma Import (C, Render_Page, "gtk_print_operation_preview_render_page");
    --  Renders a page to the preview, using the print context that was passed
    --  to the Gtk.Print_Operation.Gtk_Print_Operation::preview handler together
@@ -160,7 +160,7 @@ package Gtk.Print_Operation_Preview is
 
    type Virtual_Is_Selected is access function
      (Preview : Gtk_Print_Operation_Preview;
-      Page_Nr : Gint) return Glib.Gboolean;
+      Page_Nr : Glib.Gint) return Glib.Gboolean;
    pragma Convention (C, Virtual_Is_Selected);
    --  Returns whether the given page is included in the set of pages that
    --  have been selected for printing.
@@ -172,7 +172,9 @@ package Gtk.Print_Operation_Preview is
       Context : System.Address);
    pragma Convention (C, Virtual_Ready);
 
-   type Virtual_Render_Page is access procedure (Preview : Gtk_Print_Operation_Preview; Page_Nr : Gint);
+   type Virtual_Render_Page is access procedure
+     (Preview : Gtk_Print_Operation_Preview;
+      Page_Nr : Glib.Gint);
    pragma Convention (C, Virtual_Render_Page);
    --  Renders a page to the preview, using the print context that was passed
    --  to the Gtk.Print_Operation.Gtk_Print_Operation::preview handler together

@@ -210,14 +210,14 @@ package body Pango.Attributes is
    procedure Splice
       (Self  : Pango_Attr_List;
        Other : Pango_Attr_List;
-       Pos   : Gint;
-       Len   : Gint)
+       Pos   : Glib.Gint;
+       Len   : Glib.Gint)
    is
       procedure Internal
          (Self  : System.Address;
           Other : System.Address;
-          Pos   : Gint;
-          Len   : Gint);
+          Pos   : Glib.Gint;
+          Len   : Glib.Gint);
       pragma Import (C, Internal, "pango_attr_list_splice");
    begin
       Internal (Get_Object (Self), Get_Object (Other), Pos, Len);

@@ -71,9 +71,9 @@ package body Pango.Font_Metrics is
    --------------------------------
 
    function Get_Approximate_Char_Width
-      (Self : Pango_Font_Metrics) return Gint
+      (Self : Pango_Font_Metrics) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_font_metrics_get_approximate_char_width");
    begin
       return Internal (Get_Object (Self));
@@ -84,9 +84,9 @@ package body Pango.Font_Metrics is
    ---------------------------------
 
    function Get_Approximate_Digit_Width
-      (Self : Pango_Font_Metrics) return Gint
+      (Self : Pango_Font_Metrics) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_font_metrics_get_approximate_digit_width");
    begin
       return Internal (Get_Object (Self));
@@ -96,8 +96,8 @@ package body Pango.Font_Metrics is
    -- Get_Ascent --
    ----------------
 
-   function Get_Ascent (Self : Pango_Font_Metrics) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Ascent (Self : Pango_Font_Metrics) return Glib.Gint is
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_font_metrics_get_ascent");
    begin
       return Internal (Get_Object (Self));
@@ -107,8 +107,8 @@ package body Pango.Font_Metrics is
    -- Get_Descent --
    -----------------
 
-   function Get_Descent (Self : Pango_Font_Metrics) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Descent (Self : Pango_Font_Metrics) return Glib.Gint is
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_font_metrics_get_descent");
    begin
       return Internal (Get_Object (Self));
@@ -119,9 +119,9 @@ package body Pango.Font_Metrics is
    --------------------------------
 
    function Get_Strikethrough_Position
-      (Self : Pango_Font_Metrics) return Gint
+      (Self : Pango_Font_Metrics) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_font_metrics_get_strikethrough_position");
    begin
       return Internal (Get_Object (Self));
@@ -132,9 +132,9 @@ package body Pango.Font_Metrics is
    ---------------------------------
 
    function Get_Strikethrough_Thickness
-      (Self : Pango_Font_Metrics) return Gint
+      (Self : Pango_Font_Metrics) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_font_metrics_get_strikethrough_thickness");
    begin
       return Internal (Get_Object (Self));
@@ -144,8 +144,10 @@ package body Pango.Font_Metrics is
    -- Get_Underline_Position --
    ----------------------------
 
-   function Get_Underline_Position (Self : Pango_Font_Metrics) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Underline_Position
+      (Self : Pango_Font_Metrics) return Glib.Gint
+   is
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_font_metrics_get_underline_position");
    begin
       return Internal (Get_Object (Self));
@@ -155,8 +157,10 @@ package body Pango.Font_Metrics is
    -- Get_Underline_Thickness --
    -----------------------------
 
-   function Get_Underline_Thickness (Self : Pango_Font_Metrics) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Underline_Thickness
+      (Self : Pango_Font_Metrics) return Glib.Gint
+   is
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_font_metrics_get_underline_thickness");
    begin
       return Internal (Get_Object (Self));

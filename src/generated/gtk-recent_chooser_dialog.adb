@@ -61,7 +61,7 @@ package body Gtk.Recent_Chooser_Dialog is
    function Internal_Gtk_Recent_Sort_Func
       (A         : System.Address;
        B         : System.Address;
-       User_Data : System.Address) return Gint;
+       User_Data : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_Recent_Sort_Func);
 
    -----------------------------------
@@ -71,7 +71,7 @@ package body Gtk.Recent_Chooser_Dialog is
    function Internal_Gtk_Recent_Sort_Func
       (A         : System.Address;
        B         : System.Address;
-       User_Data : System.Address) return Gint
+       User_Data : System.Address) return Glib.Gint
    is
       Func : constant Gtk_Recent_Sort_Func := To_Gtk_Recent_Sort_Func (User_Data);
    begin
@@ -231,7 +231,7 @@ package body Gtk.Recent_Chooser_Dialog is
       function Internal_Cb
          (A         : System.Address;
           B         : System.Address;
-          User_Data : System.Address) return Gint;
+          User_Data : System.Address) return Glib.Gint;
       pragma Convention (C, Internal_Cb);
 
       -----------------
@@ -241,7 +241,7 @@ package body Gtk.Recent_Chooser_Dialog is
       function Internal_Cb
          (A         : System.Address;
           B         : System.Address;
-          User_Data : System.Address) return Gint
+          User_Data : System.Address) return Glib.Gint
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
@@ -350,9 +350,9 @@ package body Gtk.Recent_Chooser_Dialog is
 
    function Get_Limit
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record)
-       return Gint
+       return Glib.Gint
    is
-      function Internal (Chooser : System.Address) return Gint;
+      function Internal (Chooser : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_recent_chooser_get_limit");
    begin
       return Internal (Get_Object (Chooser));
@@ -561,9 +561,9 @@ package body Gtk.Recent_Chooser_Dialog is
 
    procedure Set_Limit
       (Chooser : not null access Gtk_Recent_Chooser_Dialog_Record;
-       Limit   : Gint)
+       Limit   : Glib.Gint)
    is
-      procedure Internal (Chooser : System.Address; Limit : Gint);
+      procedure Internal (Chooser : System.Address; Limit : Glib.Gint);
       pragma Import (C, Internal, "gtk_recent_chooser_set_limit");
    begin
       Internal (Get_Object (Chooser), Limit);

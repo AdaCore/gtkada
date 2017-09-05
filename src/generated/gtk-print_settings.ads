@@ -295,7 +295,7 @@ package Gtk.Print_Settings is
 
    function Get_Int
       (Self : not null access Gtk_Print_Settings_Record;
-       Key  : UTF8_String) return Gint;
+       Key  : UTF8_String) return Glib.Gint;
    --  Returns the integer value of Key, or 0.
    --  Since: gtk+ 2.10
    --  "key": a key
@@ -303,7 +303,7 @@ package Gtk.Print_Settings is
    procedure Set_Int
       (Self  : not null access Gtk_Print_Settings_Record;
        Key   : UTF8_String;
-       Value : Gint);
+       Value : Glib.Gint);
    --  Sets Key to an integer value.
    --  Since: gtk+ 2.10
    --  "key": a key
@@ -312,7 +312,7 @@ package Gtk.Print_Settings is
    function Get_Int_With_Default
       (Self : not null access Gtk_Print_Settings_Record;
        Key  : UTF8_String;
-       Def  : Gint) return Gint;
+       Def  : Glib.Gint) return Glib.Gint;
    --  Returns the value of Key, interpreted as an integer, or the default
    --  value.
    --  Since: gtk+ 2.10
@@ -355,25 +355,25 @@ package Gtk.Print_Settings is
    --  "media_type": the media type
 
    function Get_N_Copies
-      (Self : not null access Gtk_Print_Settings_Record) return Gint;
+      (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint;
    --  Gets the value of GTK_PRINT_SETTINGS_N_COPIES.
    --  Since: gtk+ 2.10
 
    procedure Set_N_Copies
       (Self       : not null access Gtk_Print_Settings_Record;
-       Num_Copies : Gint);
+       Num_Copies : Glib.Gint);
    --  Sets the value of GTK_PRINT_SETTINGS_N_COPIES.
    --  Since: gtk+ 2.10
    --  "num_copies": the number of copies
 
    function Get_Number_Up
-      (Self : not null access Gtk_Print_Settings_Record) return Gint;
+      (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint;
    --  Gets the value of GTK_PRINT_SETTINGS_NUMBER_UP.
    --  Since: gtk+ 2.10
 
    procedure Set_Number_Up
       (Self      : not null access Gtk_Print_Settings_Record;
-       Number_Up : Gint);
+       Number_Up : Glib.Gint);
    --  Sets the value of GTK_PRINT_SETTINGS_NUMBER_UP.
    --  Since: gtk+ 2.10
    --  "number_up": the number of pages per sheet
@@ -541,25 +541,25 @@ package Gtk.Print_Settings is
    --  "quality": a Gtk.Enums.Gtk_Print_Quality value
 
    function Get_Resolution
-      (Self : not null access Gtk_Print_Settings_Record) return Gint;
+      (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint;
    --  Gets the value of GTK_PRINT_SETTINGS_RESOLUTION.
    --  Since: gtk+ 2.10
 
    procedure Set_Resolution
       (Self       : not null access Gtk_Print_Settings_Record;
-       Resolution : Gint);
+       Resolution : Glib.Gint);
    --  Sets the values of GTK_PRINT_SETTINGS_RESOLUTION,
    --  GTK_PRINT_SETTINGS_RESOLUTION_X and GTK_PRINT_SETTINGS_RESOLUTION_Y.
    --  Since: gtk+ 2.10
    --  "resolution": the resolution in dpi
 
    function Get_Resolution_X
-      (Self : not null access Gtk_Print_Settings_Record) return Gint;
+      (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint;
    --  Gets the value of GTK_PRINT_SETTINGS_RESOLUTION_X.
    --  Since: gtk+ 2.16
 
    function Get_Resolution_Y
-      (Self : not null access Gtk_Print_Settings_Record) return Gint;
+      (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint;
    --  Gets the value of GTK_PRINT_SETTINGS_RESOLUTION_Y.
    --  Since: gtk+ 2.16
 
@@ -638,8 +638,8 @@ package Gtk.Print_Settings is
 
    procedure Set_Resolution_Xy
       (Self         : not null access Gtk_Print_Settings_Record;
-       Resolution_X : Gint;
-       Resolution_Y : Gint);
+       Resolution_X : Glib.Gint;
+       Resolution_Y : Glib.Gint);
    --  Sets the values of GTK_PRINT_SETTINGS_RESOLUTION,
    --  GTK_PRINT_SETTINGS_RESOLUTION_X and GTK_PRINT_SETTINGS_RESOLUTION_Y.
    --  Since: gtk+ 2.16

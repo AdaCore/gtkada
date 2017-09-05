@@ -101,8 +101,8 @@ package Gtk.Menu is
 
    type Gtk_Menu_Position_Func is access procedure
      (Menu    : not null access Gtk_Menu_Record'Class;
-      X       : out Gint;
-      Y       : out Gint;
+      X       : out Glib.Gint;
+      Y       : out Glib.Gint;
       Push_In : out Boolean);
    --  A user function supplied when calling Gtk.Menu.Popup which controls the
    --  positioning of the menu when it is displayed. The function sets the X
@@ -110,10 +110,10 @@ package Gtk.Menu is
    --  make the menu appear on a different monitor than the mouse pointer,
    --  gtk_menu_set_monitor must be called.
    --  "menu": a Gtk.Menu.Gtk_Menu.
-   --  "x": address of the Gint representing the horizontal position where the
-   --  menu shall be drawn.
-   --  "y": address of the Gint representing the vertical position where the
-   --  menu shall be drawn. This is an output parameter.
+   --  "x": address of the Glib.Gint representing the horizontal position
+   --  where the menu shall be drawn.
+   --  "y": address of the Glib.Gint representing the vertical position where
+   --  the menu shall be drawn. This is an output parameter.
    --  "push_in": This parameter controls how menus placed outside the monitor
    --  are handled. If this is set to True and part of the menu is outside the
    --  monitor then GTK+ pushes the window into the visible area, effectively
@@ -284,13 +284,14 @@ package Gtk.Menu is
       (Menu : not null access Gtk_Menu_Record) return Gtk.Widget.Gtk_Widget;
    --  Returns the Gtk.Widget.Gtk_Widget that the menu is attached to.
 
-   function Get_Monitor (Menu : not null access Gtk_Menu_Record) return Gint;
+   function Get_Monitor
+      (Menu : not null access Gtk_Menu_Record) return Glib.Gint;
    --  Retrieves the number of the monitor on which to show the menu.
    --  Since: gtk+ 2.14
 
    procedure Set_Monitor
       (Menu        : not null access Gtk_Menu_Record;
-       Monitor_Num : Gint);
+       Monitor_Num : Glib.Gint);
    --  Informs GTK+ on which monitor a menu should be popped up. See
    --  Gdk.Screen.Get_Monitor_Geometry.
    --  This function should be called from a Gtk_Menu_Position_Func if the
@@ -391,8 +392,8 @@ package Gtk.Menu is
 
       type Gtk_Menu_Position_Func is access procedure
         (Menu      : not null access Gtk.Menu.Gtk_Menu_Record'Class;
-         X         : out Gint;
-         Y         : out Gint;
+         X         : out Glib.Gint;
+         Y         : out Glib.Gint;
          Push_In   : out Boolean;
          User_Data : User_Data_Type);
       --  A user function supplied when calling Gtk.Menu.Popup which controls the
@@ -401,10 +402,10 @@ package Gtk.Menu is
       --  make the menu appear on a different monitor than the mouse pointer,
       --  gtk_menu_set_monitor must be called.
       --  "menu": a Gtk.Menu.Gtk_Menu.
-      --  "x": address of the Gint representing the horizontal position where the
-      --  menu shall be drawn.
-      --  "y": address of the Gint representing the vertical position where the
-      --  menu shall be drawn. This is an output parameter.
+      --  "x": address of the Glib.Gint representing the horizontal position
+      --  where the menu shall be drawn.
+      --  "y": address of the Glib.Gint representing the vertical position where
+      --  the menu shall be drawn. This is an output parameter.
       --  "push_in": This parameter controls how menus placed outside the monitor
       --  are handled. If this is set to True and part of the menu is outside the
       --  monitor then GTK+ pushes the window into the visible area, effectively
@@ -493,8 +494,8 @@ package Gtk.Menu is
 
       type Gtk_Menu_Position_Func is access procedure
         (Menu      : not null access Gtk.Menu.Gtk_Menu_Record'Class;
-         X         : out Gint;
-         Y         : out Gint;
+         X         : out Glib.Gint;
+         Y         : out Glib.Gint;
          Push_In   : out Boolean;
          User_Data : User_Data_Type);
       --  A user function supplied when calling Gtk.Menu.Popup which controls the
@@ -503,10 +504,10 @@ package Gtk.Menu is
       --  make the menu appear on a different monitor than the mouse pointer,
       --  gtk_menu_set_monitor must be called.
       --  "menu": a Gtk.Menu.Gtk_Menu.
-      --  "x": address of the Gint representing the horizontal position where the
-      --  menu shall be drawn.
-      --  "y": address of the Gint representing the vertical position where the
-      --  menu shall be drawn. This is an output parameter.
+      --  "x": address of the Glib.Gint representing the horizontal position
+      --  where the menu shall be drawn.
+      --  "y": address of the Glib.Gint representing the vertical position where
+      --  the menu shall be drawn. This is an output parameter.
       --  "push_in": This parameter controls how menus placed outside the monitor
       --  are handled. If this is set to True and part of the menu is outside the
       --  monitor then GTK+ pushes the window into the visible area, effectively
@@ -560,7 +561,7 @@ package Gtk.Menu is
    procedure Reorder_Child
       (Menu     : not null access Gtk_Menu_Record;
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Moves Child to a new Position in the list of Menu children.
    --  "child": the Gtk.Menu_Item.Gtk_Menu_Item to move
    --  "position": the new position to place Child. Positions are numbered

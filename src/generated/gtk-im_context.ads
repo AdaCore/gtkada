@@ -110,8 +110,8 @@ package Gtk.IM_Context is
 
    function Delete_Surrounding
       (Self    : not null access Gtk_IM_Context_Record;
-       Offset  : Gint;
-       N_Chars : Gint) return Boolean;
+       Offset  : Glib.Gint;
+       N_Chars : Glib.Gint) return Boolean;
    --  Asks the widget that the input context is attached to to delete
    --  characters around the cursor position by emitting the
    --  GtkIMContext::delete_surrounding signal. Note that Offset and N_Chars
@@ -174,8 +174,8 @@ package Gtk.IM_Context is
    procedure Set_Surrounding
       (Self         : not null access Gtk_IM_Context_Record;
        Text         : UTF8_String;
-       Len          : Gint;
-       Cursor_Index : Gint);
+       Len          : Glib.Gint;
+       Cursor_Index : Glib.Gint);
    --  Sets surrounding context around the insertion point and preedit string.
    --  This function is expected to be called in response to the
    --  GtkIMContext::retrieve_surrounding signal, and will likely have no
@@ -232,13 +232,13 @@ package Gtk.IM_Context is
 
    type Cb_Gtk_IM_Context_Gint_Gint_Boolean is not null access function
      (Self    : access Gtk_IM_Context_Record'Class;
-      Offset  : Gint;
-      N_Chars : Gint) return Boolean;
+      Offset  : Glib.Gint;
+      N_Chars : Glib.Gint) return Boolean;
 
    type Cb_GObject_Gint_Gint_Boolean is not null access function
      (Self    : access Glib.Object.GObject_Record'Class;
-      Offset  : Gint;
-      N_Chars : Gint) return Boolean;
+      Offset  : Glib.Gint;
+      N_Chars : Glib.Gint) return Boolean;
 
    Signal_Delete_Surrounding : constant Glib.Signal_Name := "delete-surrounding";
    procedure On_Delete_Surrounding

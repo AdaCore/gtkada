@@ -58,8 +58,8 @@ package body Gtk.Assistant is
      (Gtk_Assistant_Page_Func, System.Address);
 
    function Internal_Gtk_Assistant_Page_Func
-      (Current_Page : Gint;
-       Data         : System.Address) return Gint;
+      (Current_Page : Glib.Gint;
+       Data         : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_Assistant_Page_Func);
    --  "current_page": The page number used to calculate the next page.
    --  "data": user data.
@@ -69,8 +69,8 @@ package body Gtk.Assistant is
    --------------------------------------
 
    function Internal_Gtk_Assistant_Page_Func
-      (Current_Page : Gint;
-       Data         : System.Address) return Gint
+      (Current_Page : Glib.Gint;
+       Data         : System.Address) return Glib.Gint
    is
       Func : constant Gtk_Assistant_Page_Func := To_Gtk_Assistant_Page_Func (Data);
    begin
@@ -140,11 +140,11 @@ package body Gtk.Assistant is
    function Append_Page
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
-       return Gint
+       return Glib.Gint
    is
       function Internal
          (Assistant : System.Address;
-          Page      : System.Address) return Gint;
+          Page      : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_assistant_append_page");
    begin
       return Internal (Get_Object (Assistant), Get_Object (Page));
@@ -166,9 +166,9 @@ package body Gtk.Assistant is
    ----------------------
 
    function Get_Current_Page
-      (Assistant : not null access Gtk_Assistant_Record) return Gint
+      (Assistant : not null access Gtk_Assistant_Record) return Glib.Gint
    is
-      function Internal (Assistant : System.Address) return Gint;
+      function Internal (Assistant : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_assistant_get_current_page");
    begin
       return Internal (Get_Object (Assistant));
@@ -179,9 +179,9 @@ package body Gtk.Assistant is
    -----------------
 
    function Get_N_Pages
-      (Assistant : not null access Gtk_Assistant_Record) return Gint
+      (Assistant : not null access Gtk_Assistant_Record) return Glib.Gint
    is
-      function Internal (Assistant : System.Address) return Gint;
+      function Internal (Assistant : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_assistant_get_n_pages");
    begin
       return Internal (Get_Object (Assistant));
@@ -193,11 +193,11 @@ package body Gtk.Assistant is
 
    function Get_Nth_Page
       (Assistant : not null access Gtk_Assistant_Record;
-       Page_Num  : Gint) return Gtk.Widget.Gtk_Widget
+       Page_Num  : Glib.Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
          (Assistant : System.Address;
-          Page_Num  : Gint) return System.Address;
+          Page_Num  : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_assistant_get_nth_page");
       Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
@@ -298,12 +298,12 @@ package body Gtk.Assistant is
    function Insert_Page
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position  : Gint) return Gint
+       Position  : Glib.Gint) return Glib.Gint
    is
       function Internal
          (Assistant : System.Address;
           Page      : System.Address;
-          Position  : Gint) return Gint;
+          Position  : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gtk_assistant_insert_page");
    begin
       return Internal (Get_Object (Assistant), Get_Object (Page), Position);
@@ -327,11 +327,11 @@ package body Gtk.Assistant is
    function Prepend_Page
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
-       return Gint
+       return Glib.Gint
    is
       function Internal
          (Assistant : System.Address;
-          Page      : System.Address) return Gint;
+          Page      : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_assistant_prepend_page");
    begin
       return Internal (Get_Object (Assistant), Get_Object (Page));
@@ -372,9 +372,9 @@ package body Gtk.Assistant is
 
    procedure Remove_Page
       (Assistant : not null access Gtk_Assistant_Record;
-       Page_Num  : Gint)
+       Page_Num  : Glib.Gint)
    is
-      procedure Internal (Assistant : System.Address; Page_Num : Gint);
+      procedure Internal (Assistant : System.Address; Page_Num : Glib.Gint);
       pragma Import (C, Internal, "gtk_assistant_remove_page");
    begin
       Internal (Get_Object (Assistant), Page_Num);
@@ -386,9 +386,9 @@ package body Gtk.Assistant is
 
    procedure Set_Current_Page
       (Assistant : not null access Gtk_Assistant_Record;
-       Page_Num  : Gint)
+       Page_Num  : Glib.Gint)
    is
-      procedure Internal (Assistant : System.Address; Page_Num : Gint);
+      procedure Internal (Assistant : System.Address; Page_Num : Glib.Gint);
       pragma Import (C, Internal, "gtk_assistant_set_current_page");
    begin
       Internal (Get_Object (Assistant), Page_Num);
@@ -422,8 +422,8 @@ package body Gtk.Assistant is
         (Gtk_Assistant_Page_Func, System.Address);
 
       function Internal_Cb
-         (Current_Page : Gint;
-          Data         : System.Address) return Gint;
+         (Current_Page : Glib.Gint;
+          Data         : System.Address) return Glib.Gint;
       pragma Convention (C, Internal_Cb);
       --  A function used by Gtk.Assistant.Set_Forward_Page_Func to know which
       --  is the next page given a current one. It's called both for computing
@@ -437,8 +437,8 @@ package body Gtk.Assistant is
       -----------------
 
       function Internal_Cb
-         (Current_Page : Gint;
-          Data         : System.Address) return Gint
+         (Current_Page : Glib.Gint;
+          Data         : System.Address) return Glib.Gint
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin

@@ -101,13 +101,13 @@ package Gtk.Cell_Area_Box is
    -------------
 
    function Get_Spacing
-      (Self : not null access Gtk_Cell_Area_Box_Record) return Gint;
+      (Self : not null access Gtk_Cell_Area_Box_Record) return Glib.Gint;
    --  Gets the spacing added between cell renderers.
    --  Since: gtk+ 3.0
 
    procedure Set_Spacing
       (Self    : not null access Gtk_Cell_Area_Box_Record;
-       Spacing : Gint);
+       Spacing : Glib.Gint);
    --  Sets the spacing to add between cell renderers in Box.
    --  Since: gtk+ 3.0
    --  "spacing": the space to add between Gtk_Cell_Renderers
@@ -207,7 +207,7 @@ package Gtk.Cell_Area_Box is
       (Cell_Layout : not null access Gtk_Cell_Area_Box_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint);
+       Column      : Glib.Gint);
 
    procedure Clear (Cell_Layout : not null access Gtk_Cell_Area_Box_Record);
 
@@ -232,7 +232,7 @@ package Gtk.Cell_Area_Box is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Cell_Area_Box_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint);
+       Position    : Glib.Gint);
 
    function Get_Orientation
       (Self : not null access Gtk_Cell_Area_Box_Record)

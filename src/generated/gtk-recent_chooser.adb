@@ -61,7 +61,7 @@ package body Gtk.Recent_Chooser is
    function Internal_Gtk_Recent_Sort_Func
       (A         : System.Address;
        B         : System.Address;
-       User_Data : System.Address) return Gint;
+       User_Data : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_Recent_Sort_Func);
 
    -----------------------------------
@@ -71,7 +71,7 @@ package body Gtk.Recent_Chooser is
    function Internal_Gtk_Recent_Sort_Func
       (A         : System.Address;
        B         : System.Address;
-       User_Data : System.Address) return Gint
+       User_Data : System.Address) return Glib.Gint
    is
       Func : constant Gtk_Recent_Sort_Func := To_Gtk_Recent_Sort_Func (User_Data);
    begin
@@ -436,7 +436,7 @@ package body Gtk.Recent_Chooser is
       function Internal_Cb
          (A         : System.Address;
           B         : System.Address;
-          User_Data : System.Address) return Gint;
+          User_Data : System.Address) return Glib.Gint;
       pragma Convention (C, Internal_Cb);
 
       -----------------
@@ -446,7 +446,7 @@ package body Gtk.Recent_Chooser is
       function Internal_Cb
          (A         : System.Address;
           B         : System.Address;
-          User_Data : System.Address) return Gint
+          User_Data : System.Address) return Glib.Gint
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin

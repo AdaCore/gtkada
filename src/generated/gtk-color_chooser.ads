@@ -61,8 +61,8 @@ package Gtk.Color_Chooser is
    procedure Add_Palette
       (Self            : Gtk_Color_Chooser;
        Orientation     : Gtk.Enums.Gtk_Orientation;
-       Colors_Per_Line : Gint;
-       N_Colors        : Gint;
+       Colors_Per_Line : Glib.Gint;
+       N_Colors        : Glib.Gint;
        Colors          : array_of_Gdk_RGBA);
    pragma Import (C, Add_Palette, "gtk_color_chooser_add_palette");
    --  Adds a palette to the color chooser. If Orientation is horizontal, the
@@ -172,8 +172,8 @@ package Gtk.Color_Chooser is
    type Virtual_Add_Palette is access procedure
      (Self            : Gtk_Color_Chooser;
       Orientation     : Gtk.Enums.Gtk_Orientation;
-      Colors_Per_Line : Gint;
-      N_Colors        : Gint;
+      Colors_Per_Line : Glib.Gint;
+      N_Colors        : Glib.Gint;
       Colors          : array_of_Gdk_RGBA);
    pragma Convention (C, Virtual_Add_Palette);
    --  Adds a palette to the color chooser. If Orientation is horizontal, the

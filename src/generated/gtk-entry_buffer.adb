@@ -44,7 +44,7 @@ package body Gtk.Entry_Buffer is
 
    function Gtk_Entry_Buffer_New
       (Initial_Chars   : UTF8_String := "";
-       N_Initial_Chars : Gint) return Gtk_Entry_Buffer
+       N_Initial_Chars : Glib.Gint) return Gtk_Entry_Buffer
    is
       Self : constant Gtk_Entry_Buffer := new Gtk_Entry_Buffer_Record;
    begin
@@ -59,7 +59,7 @@ package body Gtk.Entry_Buffer is
    procedure Gtk_New
       (Self            : out Gtk_Entry_Buffer;
        Initial_Chars   : UTF8_String := "";
-       N_Initial_Chars : Gint)
+       N_Initial_Chars : Glib.Gint)
    is
    begin
       Self := new Gtk_Entry_Buffer_Record;
@@ -73,11 +73,11 @@ package body Gtk.Entry_Buffer is
    procedure Initialize
       (Self            : not null access Gtk_Entry_Buffer_Record'Class;
        Initial_Chars   : UTF8_String := "";
-       N_Initial_Chars : Gint)
+       N_Initial_Chars : Glib.Gint)
    is
       function Internal
          (Initial_Chars   : Interfaces.C.Strings.chars_ptr;
-          N_Initial_Chars : Gint) return System.Address;
+          N_Initial_Chars : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_entry_buffer_new");
       Tmp_Initial_Chars : Interfaces.C.Strings.chars_ptr;
       Tmp_Return        : System.Address;
@@ -101,12 +101,12 @@ package body Gtk.Entry_Buffer is
    function Delete_Text
       (Self     : not null access Gtk_Entry_Buffer_Record;
        Position : Guint;
-       N_Chars  : Gint) return Guint
+       N_Chars  : Glib.Gint) return Guint
    is
       function Internal
          (Self     : System.Address;
           Position : Guint;
-          N_Chars  : Gint) return Guint;
+          N_Chars  : Glib.Gint) return Guint;
       pragma Import (C, Internal, "gtk_entry_buffer_delete_text");
    begin
       return Internal (Get_Object (Self), Position, N_Chars);
@@ -183,9 +183,9 @@ package body Gtk.Entry_Buffer is
    --------------------
 
    function Get_Max_Length
-      (Self : not null access Gtk_Entry_Buffer_Record) return Gint
+      (Self : not null access Gtk_Entry_Buffer_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_entry_buffer_get_max_length");
    begin
       return Internal (Get_Object (Self));
@@ -213,13 +213,13 @@ package body Gtk.Entry_Buffer is
       (Self     : not null access Gtk_Entry_Buffer_Record;
        Position : Guint;
        Chars    : UTF8_String;
-       N_Chars  : Gint) return Guint
+       N_Chars  : Glib.Gint) return Guint
    is
       function Internal
          (Self     : System.Address;
           Position : Guint;
           Chars    : Interfaces.C.Strings.chars_ptr;
-          N_Chars  : Gint) return Guint;
+          N_Chars  : Glib.Gint) return Guint;
       pragma Import (C, Internal, "gtk_entry_buffer_insert_text");
       Tmp_Chars  : Interfaces.C.Strings.chars_ptr := New_String (Chars);
       Tmp_Return : Guint;
@@ -235,9 +235,9 @@ package body Gtk.Entry_Buffer is
 
    procedure Set_Max_Length
       (Self       : not null access Gtk_Entry_Buffer_Record;
-       Max_Length : Gint)
+       Max_Length : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Max_Length : Gint);
+      procedure Internal (Self : System.Address; Max_Length : Glib.Gint);
       pragma Import (C, Internal, "gtk_entry_buffer_set_max_length");
    begin
       Internal (Get_Object (Self), Max_Length);
@@ -250,12 +250,12 @@ package body Gtk.Entry_Buffer is
    procedure Set_Text
       (Self    : not null access Gtk_Entry_Buffer_Record;
        Chars   : UTF8_String;
-       N_Chars : Gint)
+       N_Chars : Glib.Gint)
    is
       procedure Internal
          (Self    : System.Address;
           Chars   : Interfaces.C.Strings.chars_ptr;
-          N_Chars : Gint);
+          N_Chars : Glib.Gint);
       pragma Import (C, Internal, "gtk_entry_buffer_set_text");
       Tmp_Chars : Interfaces.C.Strings.chars_ptr := New_String (Chars);
    begin

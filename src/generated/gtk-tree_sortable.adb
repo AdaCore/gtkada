@@ -51,7 +51,7 @@ package body Gtk.Tree_Sortable is
 
    procedure C_Gtk_Tree_Sortable_Set_Sort_Func
       (Sortable       : Gtk_Tree_Sortable;
-       Sort_Column_Id : Gint;
+       Sort_Column_Id : Glib.Gint;
        Sort_Func      : System.Address;
        User_Data      : System.Address;
        Destroy        : System.Address);
@@ -74,7 +74,7 @@ package body Gtk.Tree_Sortable is
       (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
        A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
        B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       User_Data : System.Address) return Gint;
+       User_Data : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_Tree_Iter_Compare_Func);
    --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
    --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
@@ -90,7 +90,7 @@ package body Gtk.Tree_Sortable is
       (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
        A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
        B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
-       User_Data : System.Address) return Gint
+       User_Data : System.Address) return Glib.Gint
    is
       Func : constant Gtk_Tree_Iter_Compare_Func := To_Gtk_Tree_Iter_Compare_Func (User_Data);
    begin
@@ -141,7 +141,7 @@ package body Gtk.Tree_Sortable is
          (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
           A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
           B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data : System.Address) return Gint;
+          User_Data : System.Address) return Glib.Gint;
       pragma Convention (C, Internal_Cb);
       --  A GtkTreeIterCompareFunc should return a negative integer, zero, or
       --  a positive integer if A sorts before B, A sorts with B, or A sorts
@@ -167,7 +167,7 @@ package body Gtk.Tree_Sortable is
          (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
           A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
           B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data : System.Address) return Gint
+          User_Data : System.Address) return Glib.Gint
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
@@ -201,7 +201,7 @@ package body Gtk.Tree_Sortable is
 
    procedure Set_Sort_Func
       (Sortable       : Gtk_Tree_Sortable;
-       Sort_Column_Id : Gint;
+       Sort_Column_Id : Glib.Gint;
        Sort_Func      : Gtk_Tree_Iter_Compare_Func)
    is
    begin
@@ -227,7 +227,7 @@ package body Gtk.Tree_Sortable is
          (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
           A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
           B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data : System.Address) return Gint;
+          User_Data : System.Address) return Glib.Gint;
       pragma Convention (C, Internal_Cb);
       --  A GtkTreeIterCompareFunc should return a negative integer, zero, or
       --  a positive integer if A sorts before B, A sorts with B, or A sorts
@@ -253,7 +253,7 @@ package body Gtk.Tree_Sortable is
          (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
           A         : access Gtk.Tree_Model.Gtk_Tree_Iter;
           B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
-          User_Data : System.Address) return Gint
+          User_Data : System.Address) return Glib.Gint
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
       begin
@@ -266,7 +266,7 @@ package body Gtk.Tree_Sortable is
 
       procedure Set_Sort_Func
          (Sortable       : Gtk.Tree_Sortable.Gtk_Tree_Sortable;
-          Sort_Column_Id : Gint;
+          Sort_Column_Id : Glib.Gint;
           Sort_Func      : Gtk_Tree_Iter_Compare_Func;
           User_Data      : User_Data_Type)
       is

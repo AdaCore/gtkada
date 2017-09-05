@@ -196,9 +196,9 @@ package body Gtk.Text_Tag_Table is
    --------------
 
    function Get_Size
-      (Table : not null access Gtk_Text_Tag_Table_Record) return Gint
+      (Table : not null access Gtk_Text_Tag_Table_Record) return Glib.Gint
    is
-      function Internal (Table : System.Address) return Gint;
+      function Internal (Table : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_text_tag_table_get_size");
    begin
       return Internal (Get_Object (Table));

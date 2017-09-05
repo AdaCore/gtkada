@@ -78,7 +78,7 @@ package Gtk.Flow_Box_Child is
    --  Since: gtk+ 3.12
 
    function Get_Index
-      (Self : not null access Gtk_Flow_Box_Child_Record) return Gint;
+      (Self : not null access Gtk_Flow_Box_Child_Record) return Glib.Gint;
    --  Gets the current index of the Child in its Gtk.Flow_Box.Gtk_Flow_Box
    --  container.
    --  Since: gtk+ 3.12

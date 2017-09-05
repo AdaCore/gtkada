@@ -96,8 +96,8 @@ package Gtk.Misc is
 
    procedure Get_Padding
       (Misc : not null access Gtk_Misc_Record;
-       Xpad : out Gint;
-       Ypad : out Gint);
+       Xpad : out Glib.Gint;
+       Ypad : out Glib.Gint);
    pragma Obsolescent (Get_Padding);
    --  Gets the padding in the X and Y directions of the widget. See
    --  Gtk.Misc.Set_Padding.
@@ -107,8 +107,8 @@ package Gtk.Misc is
 
    procedure Set_Padding
       (Misc : not null access Gtk_Misc_Record;
-       Xpad : Gint;
-       Ypad : Gint);
+       Xpad : Glib.Gint;
+       Ypad : Glib.Gint);
    pragma Obsolescent (Set_Padding);
    --  Sets the amount of space to add around the widget.
    --  Deprecated since 3.14, 1

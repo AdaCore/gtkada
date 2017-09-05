@@ -200,7 +200,7 @@ package Gtk.Icon_Set is
       (Self       : Gtk_Icon_Set;
        Context    : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
        Size       : Gtk.Enums.Gtk_Icon_Size;
-       Scale      : Gint;
+       Scale      : Glib.Gint;
        For_Window : Gdk.Gdk_Window) return Cairo.Cairo_Surface;
    pragma Obsolescent (Render_Icon_Surface);
    --  Renders an icon using gtk_render_icon_pixbuf and converts it to a cairo

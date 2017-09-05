@@ -357,7 +357,7 @@ package Gdk.Event is
       Send_Event : Gint8;
       Area : Gdk.Rectangle.Gdk_Rectangle;
       Region : Cairo.Region.Cairo_Region;
-      Count : Gint := 0;
+      Count : Glib.Gint := 0;
    end record;
    pragma Convention (C, Gdk_Event_Expose);
 
@@ -433,7 +433,7 @@ package Gdk.Event is
       Time : Guint32;
       State : Gdk.Types.Gdk_Modifier_Type;
       Keyval : Gdk.Types.Gdk_Key_Type;
-      Length : Gint := 0;
+      Length : Glib.Gint := 0;
       String : Interfaces.C.Strings.chars_ptr;
       Hardware_Keycode : Guint16;
       Group : Guint8;
@@ -482,10 +482,10 @@ package Gdk.Event is
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
       Send_Event : Gint8;
-      X : Gint := 0;
-      Y : Gint := 0;
-      Width : Gint := 0;
-      Height : Gint := 0;
+      X : Glib.Gint := 0;
+      Y : Glib.Gint := 0;
+      Width : Glib.Gint := 0;
+      Height : Glib.Gint := 0;
    end record;
    pragma Convention (C, Gdk_Event_Configure);
 

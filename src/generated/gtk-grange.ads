@@ -149,14 +149,14 @@ package Gtk.GRange is
    --  "sensitivity": the lower stepper's sensitivity policy.
 
    function Get_Min_Slider_Size
-      (The_Range : not null access Gtk_Range_Record) return Gint;
+      (The_Range : not null access Gtk_Range_Record) return Glib.Gint;
    --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  See Gtk.GRange.Set_Min_Slider_Size.
    --  Since: gtk+ 2.20
 
    procedure Set_Min_Slider_Size
       (The_Range : not null access Gtk_Range_Record;
-       Min_Size  : Gint);
+       Min_Size  : Glib.Gint);
    --  Sets the minimum size of the range's slider.
    --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  Since: gtk+ 2.20
@@ -187,14 +187,14 @@ package Gtk.GRange is
    --  movement.
 
    function Get_Round_Digits
-      (The_Range : not null access Gtk_Range_Record) return Gint;
+      (The_Range : not null access Gtk_Range_Record) return Glib.Gint;
    --  Gets the number of digits to round the value to when it changes. See
    --  Gtk.GRange.Gtk_Range::change-value.
    --  Since: gtk+ 2.24
 
    procedure Set_Round_Digits
       (The_Range    : not null access Gtk_Range_Record;
-       Round_Digits : Gint);
+       Round_Digits : Glib.Gint);
    --  Sets the number of digits to round the value to when it changes. See
    --  Gtk.GRange.Gtk_Range::change-value.
    --  Since: gtk+ 2.24
@@ -216,8 +216,8 @@ package Gtk.GRange is
 
    procedure Get_Slider_Range
       (The_Range    : not null access Gtk_Range_Record;
-       Slider_Start : out Gint;
-       Slider_End   : out Gint);
+       Slider_Start : out Glib.Gint;
+       Slider_End   : out Glib.Gint);
    --  This function returns sliders range along the long dimension, in
    --  widget->window coordinates.
    --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.

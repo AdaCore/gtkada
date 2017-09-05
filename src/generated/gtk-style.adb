@@ -111,20 +111,20 @@ package body Gtk.Style is
        Cr         : Cairo.Cairo_Context;
        Window     : Gdk.Gdk_Window;
        State_Type : Gtk.Enums.Gtk_State_Type;
-       X          : Gint;
-       Y          : Gint;
-       Width      : Gint;
-       Height     : Gint)
+       X          : Glib.Gint;
+       Y          : Glib.Gint;
+       Width      : Glib.Gint;
+       Height     : Glib.Gint)
    is
       procedure Internal
          (Style      : System.Address;
           Cr         : Cairo.Cairo_Context;
           Window     : Gdk.Gdk_Window;
           State_Type : Gtk.Enums.Gtk_State_Type;
-          X          : Gint;
-          Y          : Gint;
-          Width      : Gint;
-          Height     : Gint);
+          X          : Glib.Gint;
+          Y          : Glib.Gint;
+          Width      : Glib.Gint;
+          Height     : Glib.Gint);
       pragma Import (C, Internal, "gtk_style_apply_default_background");
    begin
       Internal (Get_Object (Style), Cr, Window, State_Type, X, Y, Width, Height);

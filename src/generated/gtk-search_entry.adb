@@ -119,13 +119,13 @@ package body Gtk.Search_Entry is
 
    procedure Delete_Text
       (Editable  : not null access Gtk_Search_Entry_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1)
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1)
    is
       procedure Internal
          (Editable  : System.Address;
-          Start_Pos : Gint;
-          End_Pos   : Gint);
+          Start_Pos : Glib.Gint;
+          End_Pos   : Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_delete_text");
    begin
       Internal (Get_Object (Editable), Start_Pos, End_Pos);
@@ -150,13 +150,13 @@ package body Gtk.Search_Entry is
 
    function Get_Chars
       (Editable  : not null access Gtk_Search_Entry_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1) return UTF8_String
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1) return UTF8_String
    is
       function Internal
          (Editable  : System.Address;
-          Start_Pos : Gint;
-          End_Pos   : Gint) return Interfaces.C.Strings.chars_ptr;
+          Start_Pos : Glib.Gint;
+          End_Pos   : Glib.Gint) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_editable_get_chars");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Editable), Start_Pos, End_Pos));
@@ -180,9 +180,9 @@ package body Gtk.Search_Entry is
    ------------------
 
    function Get_Position
-      (Editable : not null access Gtk_Search_Entry_Record) return Gint
+      (Editable : not null access Gtk_Search_Entry_Record) return Glib.Gint
    is
-      function Internal (Editable : System.Address) return Gint;
+      function Internal (Editable : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_editable_get_position");
    begin
       return Internal (Get_Object (Editable));
@@ -194,17 +194,17 @@ package body Gtk.Search_Entry is
 
    procedure Get_Selection_Bounds
       (Editable      : not null access Gtk_Search_Entry_Record;
-       Start_Pos     : out Gint;
-       End_Pos       : out Gint;
+       Start_Pos     : out Glib.Gint;
+       End_Pos       : out Glib.Gint;
        Has_Selection : out Boolean)
    is
       function Internal
          (Editable      : System.Address;
-          Acc_Start_Pos : access Gint;
-          Acc_End_Pos   : access Gint) return Glib.Gboolean;
+          Acc_Start_Pos : access Glib.Gint;
+          Acc_End_Pos   : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_editable_get_selection_bounds");
-      Acc_Start_Pos : aliased Gint;
-      Acc_End_Pos   : aliased Gint;
+      Acc_Start_Pos : aliased Glib.Gint;
+      Acc_End_Pos   : aliased Glib.Gint;
       Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Editable), Acc_Start_Pos'Access, Acc_End_Pos'Access);
@@ -220,14 +220,14 @@ package body Gtk.Search_Entry is
    procedure Insert_Text
       (Editable        : not null access Gtk_Search_Entry_Record;
        New_Text        : UTF8_String;
-       New_Text_Length : Gint;
-       Position        : in out Gint)
+       New_Text_Length : Glib.Gint;
+       Position        : in out Glib.Gint)
    is
       procedure Internal
          (Editable        : System.Address;
           New_Text        : Interfaces.C.Strings.chars_ptr;
-          New_Text_Length : Gint;
-          Position        : in out Gint);
+          New_Text_Length : Glib.Gint;
+          Position        : in out Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_insert_text");
       Tmp_New_Text : Interfaces.C.Strings.chars_ptr := New_String (New_Text);
    begin
@@ -267,13 +267,13 @@ package body Gtk.Search_Entry is
 
    procedure Select_Region
       (Editable  : not null access Gtk_Search_Entry_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1)
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1)
    is
       procedure Internal
          (Editable  : System.Address;
-          Start_Pos : Gint;
-          End_Pos   : Gint);
+          Start_Pos : Glib.Gint;
+          End_Pos   : Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_select_region");
    begin
       Internal (Get_Object (Editable), Start_Pos, End_Pos);
@@ -301,9 +301,9 @@ package body Gtk.Search_Entry is
 
    procedure Set_Position
       (Editable : not null access Gtk_Search_Entry_Record;
-       Position : Gint)
+       Position : Glib.Gint)
    is
-      procedure Internal (Editable : System.Address; Position : Gint);
+      procedure Internal (Editable : System.Address; Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_set_position");
    begin
       Internal (Get_Object (Editable), Position);

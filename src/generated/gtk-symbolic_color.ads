@@ -154,7 +154,7 @@ package Gtk.Symbolic_Color is
    procedure Gtk_New_Win32
       (Self        : out Gtk_Symbolic_Color;
        Theme_Class : UTF8_String;
-       Id          : Gint);
+       Id          : Glib.Gint);
    --  Creates a symbolic color based on the current win32 theme.
    --  Note that while this call is available on all platforms the actual
    --  value returned is not reliable on non-win32 platforms.
@@ -164,7 +164,7 @@ package Gtk.Symbolic_Color is
 
    function Gtk_Symbolic_Color_New_Win32
       (Theme_Class : UTF8_String;
-       Id          : Gint) return Gtk_Symbolic_Color;
+       Id          : Glib.Gint) return Gtk_Symbolic_Color;
    --  Creates a symbolic color based on the current win32 theme.
    --  Note that while this call is available on all platforms the actual
    --  value returned is not reliable on non-win32 platforms.

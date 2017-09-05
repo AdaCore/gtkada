@@ -90,7 +90,7 @@ package Gtk.Flow_Box is
    type Gtk_Flow_Box_Sort_Func is access function
      (Child1 : not null access Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record'Class;
       Child2 : not null access Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record'Class)
-   return Gint;
+   return Glib.Gint;
    --  A function to compare two children to determine which should come
    --  first.
    --  Since: gtk+ 3.12
@@ -134,7 +134,7 @@ package Gtk.Flow_Box is
 
    function Get_Child_At_Index
       (Self : not null access Gtk_Flow_Box_Record;
-       Idx  : Gint) return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child;
+       Idx  : Glib.Gint) return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child;
    --  Gets the nth child in the Box.
    --  Since: gtk+ 3.12
    --  "idx": the position of the child
@@ -233,7 +233,7 @@ package Gtk.Flow_Box is
    procedure Insert
       (Self     : not null access Gtk_Flow_Box_Record;
        Widget   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position : Gint);
+       Position : Glib.Gint);
    --  Inserts the Widget into Box at Position.
    --  If a sort function is set, the widget will actually be inserted at the
    --  calculated position and this function has the same effect as
@@ -384,7 +384,7 @@ package Gtk.Flow_Box is
       type Gtk_Flow_Box_Sort_Func is access function
         (Child1    : not null access Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record'Class;
          Child2    : not null access Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record'Class;
-         User_Data : User_Data_Type) return Gint;
+         User_Data : User_Data_Type) return Glib.Gint;
       --  A function to compare two children to determine which should come
       --  first.
       --  Since: gtk+ 3.12
@@ -528,12 +528,12 @@ package Gtk.Flow_Box is
    type Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void is not null access procedure
      (Self  : access Gtk_Flow_Box_Record'Class;
       Step  : Gtk.Enums.Gtk_Movement_Step;
-      Count : Gint);
+      Count : Glib.Gint);
 
    type Cb_GObject_Gtk_Movement_Step_Gint_Void is not null access procedure
      (Self  : access Glib.Object.GObject_Record'Class;
       Step  : Gtk.Enums.Gtk_Movement_Step;
-      Count : Gint);
+      Count : Glib.Gint);
 
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    procedure On_Move_Cursor

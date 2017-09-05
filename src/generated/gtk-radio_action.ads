@@ -55,14 +55,14 @@ package Gtk.Radio_Action is
        Label    : UTF8_String := "";
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "";
-       Value    : Gint);
+       Value    : Glib.Gint);
    procedure Initialize
       (Action   : not null access Gtk_Radio_Action_Record'Class;
        Name     : UTF8_String;
        Label    : UTF8_String := "";
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "";
-       Value    : Gint);
+       Value    : Glib.Gint);
    --  Creates a new Gtk.Radio_Action.Gtk_Radio_Action object. To add the
    --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
    --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
@@ -82,7 +82,7 @@ package Gtk.Radio_Action is
        Label    : UTF8_String := "";
        Tooltip  : UTF8_String := "";
        Stock_Id : UTF8_String := "";
-       Value    : Gint) return Gtk_Radio_Action;
+       Value    : Glib.Gint) return Gtk_Radio_Action;
    --  Creates a new Gtk.Radio_Action.Gtk_Radio_Action object. To add the
    --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
    --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
@@ -103,7 +103,7 @@ package Gtk.Radio_Action is
    -------------
 
    function Get_Current_Value
-      (Action : not null access Gtk_Radio_Action_Record) return Gint;
+      (Action : not null access Gtk_Radio_Action_Record) return Glib.Gint;
    pragma Obsolescent (Get_Current_Value);
    --  Obtains the value property of the currently active member of the group
    --  to which Action belongs.
@@ -112,7 +112,7 @@ package Gtk.Radio_Action is
 
    procedure Set_Current_Value
       (Action        : not null access Gtk_Radio_Action_Record;
-       Current_Value : Gint);
+       Current_Value : Glib.Gint);
    pragma Obsolescent (Set_Current_Value);
    --  Sets the currently active group member to the member with value
    --  property Current_Value.

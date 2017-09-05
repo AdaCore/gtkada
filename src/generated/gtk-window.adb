@@ -220,16 +220,16 @@ package body Gtk.Window is
 
    procedure Begin_Move_Drag
       (Window    : not null access Gtk_Window_Record;
-       Button    : Gint;
-       Root_X    : Gint;
-       Root_Y    : Gint;
+       Button    : Glib.Gint;
+       Root_X    : Glib.Gint;
+       Root_Y    : Glib.Gint;
        Timestamp : Guint32)
    is
       procedure Internal
          (Window    : System.Address;
-          Button    : Gint;
-          Root_X    : Gint;
-          Root_Y    : Gint;
+          Button    : Glib.Gint;
+          Root_X    : Glib.Gint;
+          Root_Y    : Glib.Gint;
           Timestamp : Guint32);
       pragma Import (C, Internal, "gtk_window_begin_move_drag");
    begin
@@ -243,17 +243,17 @@ package body Gtk.Window is
    procedure Begin_Resize_Drag
       (Window    : not null access Gtk_Window_Record;
        Edge      : Gdk.Window.Gdk_Window_Edge;
-       Button    : Gint;
-       Root_X    : Gint;
-       Root_Y    : Gint;
+       Button    : Glib.Gint;
+       Root_X    : Glib.Gint;
+       Root_Y    : Glib.Gint;
        Timestamp : Guint32)
    is
       procedure Internal
          (Window    : System.Address;
           Edge      : Gdk.Window.Gdk_Window_Edge;
-          Button    : Gint;
-          Root_X    : Gint;
-          Root_Y    : Gint;
+          Button    : Glib.Gint;
+          Root_X    : Glib.Gint;
+          Root_Y    : Glib.Gint;
           Timestamp : Guint32);
       pragma Import (C, Internal, "gtk_window_begin_resize_drag");
    begin
@@ -374,13 +374,13 @@ package body Gtk.Window is
 
    procedure Get_Default_Size
       (Window : not null access Gtk_Window_Record;
-       Width  : out Gint;
-       Height : out Gint)
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint)
    is
       procedure Internal
          (Window : System.Address;
-          Width  : out Gint;
-          Height : out Gint);
+          Width  : out Glib.Gint;
+          Height : out Glib.Gint);
       pragma Import (C, Internal, "gtk_window_get_default_size");
    begin
       Internal (Get_Object (Window), Width, Height);
@@ -615,13 +615,13 @@ package body Gtk.Window is
 
    procedure Get_Position
       (Window : not null access Gtk_Window_Record;
-       Root_X : out Gint;
-       Root_Y : out Gint)
+       Root_X : out Glib.Gint;
+       Root_Y : out Glib.Gint)
    is
       procedure Internal
          (Window : System.Address;
-          Root_X : out Gint;
-          Root_Y : out Gint);
+          Root_X : out Glib.Gint;
+          Root_Y : out Glib.Gint);
       pragma Import (C, Internal, "gtk_window_get_position");
    begin
       Internal (Get_Object (Window), Root_X, Root_Y);
@@ -697,13 +697,13 @@ package body Gtk.Window is
 
    procedure Get_Size
       (Window : not null access Gtk_Window_Record;
-       Width  : out Gint;
-       Height : out Gint)
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint)
    is
       procedure Internal
          (Window : System.Address;
-          Width  : out Gint;
-          Height : out Gint);
+          Width  : out Glib.Gint;
+          Height : out Glib.Gint);
       pragma Import (C, Internal, "gtk_window_get_size");
    begin
       Internal (Get_Object (Window), Width, Height);
@@ -921,10 +921,13 @@ package body Gtk.Window is
 
    procedure Move
       (Window : not null access Gtk_Window_Record;
-       X      : Gint;
-       Y      : Gint)
+       X      : Glib.Gint;
+       Y      : Glib.Gint)
    is
-      procedure Internal (Window : System.Address; X : Gint; Y : Gint);
+      procedure Internal
+         (Window : System.Address;
+          X      : Glib.Gint;
+          Y      : Glib.Gint);
       pragma Import (C, Internal, "gtk_window_move");
    begin
       Internal (Get_Object (Window), X, Y);
@@ -1060,13 +1063,13 @@ package body Gtk.Window is
 
    procedure Resize
       (Window : not null access Gtk_Window_Record;
-       Width  : Gint;
-       Height : Gint)
+       Width  : Glib.Gint;
+       Height : Glib.Gint)
    is
       procedure Internal
          (Window : System.Address;
-          Width  : Gint;
-          Height : Gint);
+          Width  : Glib.Gint;
+          Height : Glib.Gint);
       pragma Import (C, Internal, "gtk_window_resize");
    begin
       Internal (Get_Object (Window), Width, Height);
@@ -1091,13 +1094,13 @@ package body Gtk.Window is
 
    procedure Resize_To_Geometry
       (Window : not null access Gtk_Window_Record;
-       Width  : Gint;
-       Height : Gint)
+       Width  : Glib.Gint;
+       Height : Glib.Gint)
    is
       procedure Internal
          (Window : System.Address;
-          Width  : Gint;
-          Height : Gint);
+          Width  : Glib.Gint;
+          Height : Glib.Gint);
       pragma Import (C, Internal, "gtk_window_resize_to_geometry");
    begin
       Internal (Get_Object (Window), Width, Height);
@@ -1169,13 +1172,13 @@ package body Gtk.Window is
 
    procedure Set_Default_Geometry
       (Window : not null access Gtk_Window_Record;
-       Width  : Gint;
-       Height : Gint)
+       Width  : Glib.Gint;
+       Height : Glib.Gint)
    is
       procedure Internal
          (Window : System.Address;
-          Width  : Gint;
-          Height : Gint);
+          Width  : Glib.Gint;
+          Height : Glib.Gint);
       pragma Import (C, Internal, "gtk_window_set_default_geometry");
    begin
       Internal (Get_Object (Window), Width, Height);
@@ -1187,13 +1190,13 @@ package body Gtk.Window is
 
    procedure Set_Default_Size
       (Window : not null access Gtk_Window_Record;
-       Width  : Gint;
-       Height : Gint)
+       Width  : Glib.Gint;
+       Height : Glib.Gint)
    is
       procedure Internal
          (Window : System.Address;
-          Width  : Gint;
-          Height : Gint);
+          Width  : Glib.Gint;
+          Height : Glib.Gint);
       pragma Import (C, Internal, "gtk_window_set_default_size");
    begin
       Internal (Get_Object (Window), Width, Height);

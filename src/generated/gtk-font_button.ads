@@ -304,7 +304,7 @@ package Gtk.Font_Button is
        return Pango.Font_Family.Pango_Font_Family;
 
    function Get_Font_Size
-      (Self : not null access Gtk_Font_Button_Record) return Gint;
+      (Self : not null access Gtk_Font_Button_Record) return Glib.Gint;
 
    function Get_Preview_Text
       (Self : not null access Gtk_Font_Button_Record) return UTF8_String;

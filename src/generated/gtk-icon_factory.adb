@@ -152,17 +152,17 @@ package body Gtk.Icon_Factory is
 
    procedure Icon_Size_Lookup
       (Size   : Gtk.Enums.Gtk_Icon_Size;
-       Width  : out Gint;
-       Height : out Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint;
        Result : out Boolean)
    is
       function Internal
          (Size       : Gtk.Enums.Gtk_Icon_Size;
-          Acc_Width  : access Gint;
-          Acc_Height : access Gint) return Glib.Gboolean;
+          Acc_Width  : access Glib.Gint;
+          Acc_Height : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_size_lookup");
-      Acc_Width  : aliased Gint;
-      Acc_Height : aliased Gint;
+      Acc_Width  : aliased Glib.Gint;
+      Acc_Height : aliased Glib.Gint;
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Size, Acc_Width'Access, Acc_Height'Access);
@@ -178,18 +178,18 @@ package body Gtk.Icon_Factory is
    procedure Icon_Size_Lookup_For_Settings
       (Settings : not null access Gtk.Settings.Gtk_Settings_Record'Class;
        Size     : Gtk.Enums.Gtk_Icon_Size;
-       Width    : out Gint;
-       Height   : out Gint;
+       Width    : out Glib.Gint;
+       Height   : out Glib.Gint;
        Result   : out Boolean)
    is
       function Internal
          (Settings   : System.Address;
           Size       : Gtk.Enums.Gtk_Icon_Size;
-          Acc_Width  : access Gint;
-          Acc_Height : access Gint) return Glib.Gboolean;
+          Acc_Width  : access Glib.Gint;
+          Acc_Height : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_size_lookup_for_settings");
-      Acc_Width  : aliased Gint;
-      Acc_Height : aliased Gint;
+      Acc_Width  : aliased Glib.Gint;
+      Acc_Height : aliased Glib.Gint;
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Settings), Size, Acc_Width'Access, Acc_Height'Access);
@@ -204,13 +204,13 @@ package body Gtk.Icon_Factory is
 
    function Icon_Size_Register
       (Name   : UTF8_String;
-       Width  : Gint;
-       Height : Gint) return Gtk.Enums.Gtk_Icon_Size
+       Width  : Glib.Gint;
+       Height : Glib.Gint) return Gtk.Enums.Gtk_Icon_Size
    is
       function Internal
          (Name   : Interfaces.C.Strings.chars_ptr;
-          Width  : Gint;
-          Height : Gint) return Gtk.Enums.Gtk_Icon_Size;
+          Width  : Glib.Gint;
+          Height : Glib.Gint) return Gtk.Enums.Gtk_Icon_Size;
       pragma Import (C, Internal, "gtk_icon_size_register");
       Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
       Tmp_Return : Gtk.Enums.Gtk_Icon_Size;

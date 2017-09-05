@@ -394,13 +394,13 @@ package Gtk.Style_Context is
    --  "value": return location for the style property value
 
    function Get_Scale
-      (Self : not null access Gtk_Style_Context_Record) return Gint;
+      (Self : not null access Gtk_Style_Context_Record) return Glib.Gint;
    --  Returns the scale used for assets.
    --  Since: gtk+ 3.10
 
    procedure Set_Scale
       (Self  : not null access Gtk_Style_Context_Record;
-       Scale : Gint);
+       Scale : Glib.Gint);
    --  Sets the scale to use when getting image assets for the style .
    --  Since: gtk+ 3.10
    --  "scale": scale
@@ -608,8 +608,8 @@ package Gtk.Style_Context is
    procedure Scroll_Animations
       (Self   : not null access Gtk_Style_Context_Record;
        Window : Gdk.Gdk_Window;
-       Dx     : Gint;
-       Dy     : Gint);
+       Dx     : Glib.Gint;
+       Dy     : Glib.Gint);
    pragma Obsolescent (Scroll_Animations);
    --  This function is analogous to Gdk.Window.Scroll, and should be called
    --  together with it so the invalidation areas for any ongoing animation are

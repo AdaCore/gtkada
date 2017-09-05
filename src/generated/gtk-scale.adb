@@ -370,9 +370,9 @@ package body Gtk.Scale is
    ----------------
 
    function Get_Digits
-      (Scale : not null access Gtk_Scale_Record) return Gint
+      (Scale : not null access Gtk_Scale_Record) return Glib.Gint
    is
-      function Internal (Scale : System.Address) return Gint;
+      function Internal (Scale : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_scale_get_digits");
    begin
       return Internal (Get_Object (Scale));
@@ -425,13 +425,13 @@ package body Gtk.Scale is
 
    procedure Get_Layout_Offsets
       (Scale : not null access Gtk_Scale_Record;
-       X     : out Gint;
-       Y     : out Gint)
+       X     : out Glib.Gint;
+       Y     : out Glib.Gint)
    is
       procedure Internal
          (Scale : System.Address;
-          X     : out Gint;
-          Y     : out Gint);
+          X     : out Glib.Gint;
+          Y     : out Glib.Gint);
       pragma Import (C, Internal, "gtk_scale_get_layout_offsets");
    begin
       Internal (Get_Object (Scale), X, Y);
@@ -458,9 +458,9 @@ package body Gtk.Scale is
 
    procedure Set_Digits
       (Scale      : not null access Gtk_Scale_Record;
-       The_Digits : Gint)
+       The_Digits : Glib.Gint)
    is
-      procedure Internal (Scale : System.Address; The_Digits : Gint);
+      procedure Internal (Scale : System.Address; The_Digits : Glib.Gint);
       pragma Import (C, Internal, "gtk_scale_set_digits");
    begin
       Internal (Get_Object (Scale), The_Digits);

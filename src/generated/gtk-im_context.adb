@@ -44,13 +44,13 @@ package body Gtk.IM_Context is
 
    function Delete_Surrounding
       (Self    : not null access Gtk_IM_Context_Record;
-       Offset  : Gint;
-       N_Chars : Gint) return Boolean
+       Offset  : Glib.Gint;
+       N_Chars : Glib.Gint) return Boolean
    is
       function Internal
          (Self    : System.Address;
-          Offset  : Gint;
-          N_Chars : Gint) return Glib.Gboolean;
+          Offset  : Glib.Gint;
+          N_Chars : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_im_context_delete_surrounding");
    begin
       return Internal (Get_Object (Self), Offset, N_Chars) /= 0;
@@ -142,14 +142,14 @@ package body Gtk.IM_Context is
    procedure Set_Surrounding
       (Self         : not null access Gtk_IM_Context_Record;
        Text         : UTF8_String;
-       Len          : Gint;
-       Cursor_Index : Gint)
+       Len          : Glib.Gint;
+       Cursor_Index : Glib.Gint)
    is
       procedure Internal
          (Self         : System.Address;
           Text         : Interfaces.C.Strings.chars_ptr;
-          Len          : Gint;
-          Cursor_Index : Gint);
+          Len          : Glib.Gint;
+          Cursor_Index : Glib.Gint);
       pragma Import (C, Internal, "gtk_im_context_set_surrounding");
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
    begin

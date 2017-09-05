@@ -144,8 +144,8 @@ package Pango.Attributes is
    procedure Splice
       (Self  : Pango_Attr_List;
        Other : Pango_Attr_List;
-       Pos   : Gint;
-       Len   : Gint);
+       Pos   : Glib.Gint;
+       Len   : Glib.Gint);
    --  This function opens up a hole in List, fills it in with attributes from
    --  the left, and then merges Other on top of the hole.
    --  This operation is equivalent to stretching every attribute that applies
@@ -227,7 +227,7 @@ package Pango.Attributes is
    --  text will have its size multiplied by Scale_Factor.
    --  "scale_factor": factor to scale the font
 
-   function Attr_Rise_New (Rise : Gint) return Pango_Attribute;
+   function Attr_Rise_New (Rise : Glib.Gint) return Pango_Attribute;
    pragma Import (C, Attr_Rise_New, "pango_attr_rise_new");
    --  Create a new baseline displacement attribute.
    --  "rise": the amount that the text should be displaced vertically, in

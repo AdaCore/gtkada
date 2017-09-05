@@ -73,7 +73,7 @@ package body Gtk.Main is
    function Internal_Gtk_Key_Snoop_Func
       (Grab_Widget : System.Address;
        Event       : access Gdk.Event.Gdk_Event_Key;
-       Func_Data   : System.Address) return Gint;
+       Func_Data   : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_Key_Snoop_Func);
    --  "grab_widget": the widget to which the event will be delivered
    --  "event": the key event
@@ -86,7 +86,7 @@ package body Gtk.Main is
    function Internal_Gtk_Key_Snoop_Func
       (Grab_Widget : System.Address;
        Event       : access Gdk.Event.Gdk_Event_Key;
-       Func_Data   : System.Address) return Gint
+       Func_Data   : System.Address) return Glib.Gint
    is
       Func            : constant Gtk_Key_Snoop_Func := To_Gtk_Key_Snoop_Func (Func_Data);
       Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;

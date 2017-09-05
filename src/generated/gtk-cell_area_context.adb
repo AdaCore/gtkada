@@ -37,13 +37,13 @@ package body Gtk.Cell_Area_Context is
 
    procedure Allocate
       (Self   : not null access Gtk_Cell_Area_Context_Record;
-       Width  : Gint;
-       Height : Gint)
+       Width  : Glib.Gint;
+       Height : Glib.Gint)
    is
       procedure Internal
          (Self   : System.Address;
-          Width  : Gint;
-          Height : Gint);
+          Width  : Glib.Gint;
+          Height : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_context_allocate");
    begin
       Internal (Get_Object (Self), Width, Height);
@@ -55,13 +55,13 @@ package body Gtk.Cell_Area_Context is
 
    procedure Get_Allocation
       (Self   : not null access Gtk_Cell_Area_Context_Record;
-       Width  : out Gint;
-       Height : out Gint)
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint)
    is
       procedure Internal
          (Self   : System.Address;
-          Width  : out Gint;
-          Height : out Gint);
+          Width  : out Glib.Gint;
+          Height : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_context_get_allocation");
    begin
       Internal (Get_Object (Self), Width, Height);
@@ -73,13 +73,13 @@ package body Gtk.Cell_Area_Context is
 
    procedure Get_Preferred_Height
       (Self           : not null access Gtk_Cell_Area_Context_Record;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint)
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint)
    is
       procedure Internal
          (Self           : System.Address;
-          Minimum_Height : out Gint;
-          Natural_Height : out Gint);
+          Minimum_Height : out Glib.Gint;
+          Natural_Height : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_context_get_preferred_height");
    begin
       Internal (Get_Object (Self), Minimum_Height, Natural_Height);
@@ -91,15 +91,15 @@ package body Gtk.Cell_Area_Context is
 
    procedure Get_Preferred_Height_For_Width
       (Self           : not null access Gtk_Cell_Area_Context_Record;
-       Width          : Gint;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint)
+       Width          : Glib.Gint;
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint)
    is
       procedure Internal
          (Self           : System.Address;
-          Width          : Gint;
-          Minimum_Height : out Gint;
-          Natural_Height : out Gint);
+          Width          : Glib.Gint;
+          Minimum_Height : out Glib.Gint;
+          Natural_Height : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_context_get_preferred_height_for_width");
    begin
       Internal (Get_Object (Self), Width, Minimum_Height, Natural_Height);
@@ -111,13 +111,13 @@ package body Gtk.Cell_Area_Context is
 
    procedure Get_Preferred_Width
       (Self          : not null access Gtk_Cell_Area_Context_Record;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint)
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint)
    is
       procedure Internal
          (Self          : System.Address;
-          Minimum_Width : out Gint;
-          Natural_Width : out Gint);
+          Minimum_Width : out Glib.Gint;
+          Natural_Width : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_context_get_preferred_width");
    begin
       Internal (Get_Object (Self), Minimum_Width, Natural_Width);
@@ -129,15 +129,15 @@ package body Gtk.Cell_Area_Context is
 
    procedure Get_Preferred_Width_For_Height
       (Self          : not null access Gtk_Cell_Area_Context_Record;
-       Height        : Gint;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint)
+       Height        : Glib.Gint;
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint)
    is
       procedure Internal
          (Self          : System.Address;
-          Height        : Gint;
-          Minimum_Width : out Gint;
-          Natural_Width : out Gint);
+          Height        : Glib.Gint;
+          Minimum_Width : out Glib.Gint;
+          Natural_Width : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_context_get_preferred_width_for_height");
    begin
       Internal (Get_Object (Self), Height, Minimum_Width, Natural_Width);
@@ -149,13 +149,13 @@ package body Gtk.Cell_Area_Context is
 
    procedure Push_Preferred_Height
       (Self           : not null access Gtk_Cell_Area_Context_Record;
-       Minimum_Height : Gint;
-       Natural_Height : Gint)
+       Minimum_Height : Glib.Gint;
+       Natural_Height : Glib.Gint)
    is
       procedure Internal
          (Self           : System.Address;
-          Minimum_Height : Gint;
-          Natural_Height : Gint);
+          Minimum_Height : Glib.Gint;
+          Natural_Height : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_context_push_preferred_height");
    begin
       Internal (Get_Object (Self), Minimum_Height, Natural_Height);
@@ -167,13 +167,13 @@ package body Gtk.Cell_Area_Context is
 
    procedure Push_Preferred_Width
       (Self          : not null access Gtk_Cell_Area_Context_Record;
-       Minimum_Width : Gint;
-       Natural_Width : Gint)
+       Minimum_Width : Glib.Gint;
+       Natural_Width : Glib.Gint)
    is
       procedure Internal
          (Self          : System.Address;
-          Minimum_Width : Gint;
-          Natural_Width : Gint);
+          Minimum_Width : Glib.Gint;
+          Natural_Width : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_context_push_preferred_width");
    begin
       Internal (Get_Object (Self), Minimum_Width, Natural_Width);

@@ -87,9 +87,9 @@ package body Gtk.Flow_Box_Child is
    ---------------
 
    function Get_Index
-      (Self : not null access Gtk_Flow_Box_Child_Record) return Gint
+      (Self : not null access Gtk_Flow_Box_Child_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_flow_box_child_get_index");
    begin
       return Internal (Get_Object (Self));

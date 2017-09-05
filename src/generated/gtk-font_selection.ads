@@ -146,7 +146,7 @@ package Gtk.Font_Selection is
    --  "text": the text to display in the preview area
 
    function Get_Size
-      (Fontsel : not null access Gtk_Font_Selection_Record) return Gint;
+      (Fontsel : not null access Gtk_Font_Selection_Record) return Glib.Gint;
    pragma Obsolescent (Get_Size);
    --  The selected font size.
    --  Since: gtk+ 2.14

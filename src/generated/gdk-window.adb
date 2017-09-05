@@ -176,17 +176,17 @@ package body Gdk.Window is
    procedure Begin_Move_Drag_For_Device
       (Self      : Gdk.Gdk_Window;
        Device    : not null access Gdk.Device.Gdk_Device_Record'Class;
-       Button    : Gint;
-       Root_X    : Gint;
-       Root_Y    : Gint;
+       Button    : Glib.Gint;
+       Root_X    : Glib.Gint;
+       Root_Y    : Glib.Gint;
        Timestamp : Guint32)
    is
       procedure Internal
          (Self      : Gdk.Gdk_Window;
           Device    : System.Address;
-          Button    : Gint;
-          Root_X    : Gint;
-          Root_Y    : Gint;
+          Button    : Glib.Gint;
+          Root_X    : Glib.Gint;
+          Root_Y    : Glib.Gint;
           Timestamp : Guint32);
       pragma Import (C, Internal, "gdk_window_begin_move_drag_for_device");
    begin
@@ -201,18 +201,18 @@ package body Gdk.Window is
       (Self      : Gdk.Gdk_Window;
        Edge      : Gdk_Window_Edge;
        Device    : not null access Gdk.Device.Gdk_Device_Record'Class;
-       Button    : Gint;
-       Root_X    : Gint;
-       Root_Y    : Gint;
+       Button    : Glib.Gint;
+       Root_X    : Glib.Gint;
+       Root_Y    : Glib.Gint;
        Timestamp : Guint32)
    is
       procedure Internal
          (Self      : Gdk.Gdk_Window;
           Edge      : Gdk_Window_Edge;
           Device    : System.Address;
-          Button    : Gint;
-          Root_X    : Gint;
-          Root_Y    : Gint;
+          Button    : Glib.Gint;
+          Root_X    : Glib.Gint;
+          Root_Y    : Glib.Gint;
           Timestamp : Guint32);
       pragma Import (C, Internal, "gdk_window_begin_resize_drag_for_device");
    begin
@@ -329,21 +329,21 @@ package body Gdk.Window is
    procedure Get_Device_Position
       (Self   : Gdk.Gdk_Window;
        Device : not null access Gdk.Device.Gdk_Device_Record'Class;
-       X      : out Gint;
-       Y      : out Gint;
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
        Mask   : out Gdk.Types.Gdk_Modifier_Type;
        Window : out Gdk.Gdk_Window)
    is
       function Internal
          (Self     : Gdk.Gdk_Window;
           Device   : System.Address;
-          Acc_X    : access Gint;
-          Acc_Y    : access Gint;
+          Acc_X    : access Glib.Gint;
+          Acc_Y    : access Glib.Gint;
           Acc_Mask : access Gdk.Types.Gdk_Modifier_Type)
           return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gdk_window_get_device_position");
-      Acc_X      : aliased Gint;
-      Acc_Y      : aliased Gint;
+      Acc_X      : aliased Glib.Gint;
+      Acc_Y      : aliased Glib.Gint;
       Acc_Mask   : aliased Gdk.Types.Gdk_Modifier_Type;
       Tmp_Return : Gdk.Gdk_Window;
    begin
@@ -458,20 +458,20 @@ package body Gdk.Window is
 
    procedure Get_Pointer
       (Self   : Gdk.Gdk_Window;
-       X      : out Gint;
-       Y      : out Gint;
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
        Mask   : out Gdk.Types.Gdk_Modifier_Type;
        Window : out Gdk.Gdk_Window)
    is
       function Internal
          (Self     : Gdk.Gdk_Window;
-          Acc_X    : access Gint;
-          Acc_Y    : access Gint;
+          Acc_X    : access Glib.Gint;
+          Acc_Y    : access Glib.Gint;
           Acc_Mask : access Gdk.Types.Gdk_Modifier_Type)
           return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gdk_window_get_pointer");
-      Acc_X      : aliased Gint;
-      Acc_Y      : aliased Gint;
+      Acc_X      : aliased Glib.Gint;
+      Acc_Y      : aliased Glib.Gint;
       Acc_Mask   : aliased Gdk.Types.Gdk_Modifier_Type;
       Tmp_Return : Gdk.Gdk_Window;
    begin
@@ -1054,16 +1054,16 @@ package body Gdk.Window is
    ----------------
 
    procedure At_Pointer
-      (Win_X  : out Gint;
-       Win_Y  : out Gint;
+      (Win_X  : out Glib.Gint;
+       Win_Y  : out Glib.Gint;
        Window : out Gdk.Gdk_Window)
    is
       function Internal
-         (Acc_Win_X : access Gint;
-          Acc_Win_Y : access Gint) return Gdk.Gdk_Window;
+         (Acc_Win_X : access Glib.Gint;
+          Acc_Win_Y : access Glib.Gint) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gdk_window_at_pointer");
-      Acc_Win_X  : aliased Gint;
-      Acc_Win_Y  : aliased Gint;
+      Acc_Win_X  : aliased Glib.Gint;
+      Acc_Win_Y  : aliased Glib.Gint;
       Tmp_Return : Gdk.Gdk_Window;
    begin
       Tmp_Return := Internal (Acc_Win_X'Access, Acc_Win_Y'Access);

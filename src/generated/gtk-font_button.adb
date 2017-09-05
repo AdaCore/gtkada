@@ -533,9 +533,9 @@ package body Gtk.Font_Button is
    -------------------
 
    function Get_Font_Size
-      (Self : not null access Gtk_Font_Button_Record) return Gint
+      (Self : not null access Gtk_Font_Button_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_font_chooser_get_font_size");
    begin
       return Internal (Get_Object (Self));

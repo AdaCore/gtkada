@@ -91,7 +91,7 @@ package Gtk.Assistant is
    -- Callbacks --
    ---------------
 
-   type Gtk_Assistant_Page_Func is access function (Current_Page : Gint) return Gint;
+   type Gtk_Assistant_Page_Func is access function (Current_Page : Glib.Gint) return Glib.Gint;
    --  A function used by Gtk.Assistant.Set_Forward_Page_Func to know which is
    --  the next page given a current one. It's called both for computing the
    --  next page when the user presses the "forward" button and for handling
@@ -139,7 +139,7 @@ package Gtk.Assistant is
    function Append_Page
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
-       return Gint;
+       return Glib.Gint;
    --  Appends a page to the Assistant.
    --  Since: gtk+ 2.10
    --  "page": a Gtk.Widget.Gtk_Widget
@@ -154,13 +154,13 @@ package Gtk.Assistant is
    --  Since: gtk+ 2.22
 
    function Get_Current_Page
-      (Assistant : not null access Gtk_Assistant_Record) return Gint;
+      (Assistant : not null access Gtk_Assistant_Record) return Glib.Gint;
    --  Returns the page number of the current page.
    --  Since: gtk+ 2.10
 
    procedure Set_Current_Page
       (Assistant : not null access Gtk_Assistant_Record;
-       Page_Num  : Gint);
+       Page_Num  : Glib.Gint);
    --  Switches the page to Page_Num.
    --  Note that this will only be necessary in custom buttons, as the
    --  Assistant flow can be set with Gtk.Assistant.Set_Forward_Page_Func.
@@ -170,13 +170,13 @@ package Gtk.Assistant is
    --  pages in the Assistant, nothing will be done.
 
    function Get_N_Pages
-      (Assistant : not null access Gtk_Assistant_Record) return Gint;
+      (Assistant : not null access Gtk_Assistant_Record) return Glib.Gint;
    --  Returns the number of pages in the Assistant
    --  Since: gtk+ 2.10
 
    function Get_Nth_Page
       (Assistant : not null access Gtk_Assistant_Record;
-       Page_Num  : Gint) return Gtk.Widget.Gtk_Widget;
+       Page_Num  : Glib.Gint) return Gtk.Widget.Gtk_Widget;
    --  Returns the child widget contained in page number Page_Num.
    --  Since: gtk+ 2.10
    --  "page_num": the index of a page in the Assistant, or -1 to get the last
@@ -285,7 +285,7 @@ package Gtk.Assistant is
    function Insert_Page
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position  : Gint) return Gint;
+       Position  : Glib.Gint) return Glib.Gint;
    --  Inserts a page in the Assistant at a given position.
    --  Since: gtk+ 2.10
    --  "page": a Gtk.Widget.Gtk_Widget
@@ -303,7 +303,7 @@ package Gtk.Assistant is
    function Prepend_Page
       (Assistant : not null access Gtk_Assistant_Record;
        Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
-       return Gint;
+       return Glib.Gint;
    --  Prepends a page to the Assistant.
    --  Since: gtk+ 2.10
    --  "page": a Gtk.Widget.Gtk_Widget
@@ -326,7 +326,7 @@ package Gtk.Assistant is
 
    procedure Remove_Page
       (Assistant : not null access Gtk_Assistant_Record;
-       Page_Num  : Gint);
+       Page_Num  : Glib.Gint);
    --  Removes the Page_Num's page from Assistant.
    --  Since: gtk+ 3.2
    --  "page_num": the index of a page in the Assistant, or -1 to remove the
@@ -349,7 +349,9 @@ package Gtk.Assistant is
       with procedure Destroy (Data : in out User_Data_Type) is null;
    package Set_Forward_Page_Func_User_Data is
 
-      type Gtk_Assistant_Page_Func is access function (Current_Page : Gint; Data : User_Data_Type) return Gint;
+      type Gtk_Assistant_Page_Func is access function
+        (Current_Page : Glib.Gint;
+         Data         : User_Data_Type) return Glib.Gint;
       --  A function used by Gtk.Assistant.Set_Forward_Page_Func to know which is
       --  the next page given a current one. It's called both for computing the
       --  next page when the user presses the "forward" button and for handling

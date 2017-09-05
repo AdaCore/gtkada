@@ -428,7 +428,7 @@ package Gtk.Cell_Area is
       (Self      : not null access Gtk_Cell_Area_Record;
        Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute : UTF8_String;
-       Column    : Gint);
+       Column    : Glib.Gint);
    --  Connects an Attribute to apply values from Column for the
    --  Gtk.Tree_Model.Gtk_Tree_Model in use.
    --  Since: gtk+ 3.0
@@ -452,7 +452,7 @@ package Gtk.Cell_Area is
    function Attribute_Get_Column
       (Self      : not null access Gtk_Cell_Area_Record;
        Renderer  : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Attribute : UTF8_String) return Gint;
+       Attribute : UTF8_String) return Glib.Gint;
    --  Returns the model column that an attribute has been mapped to, or -1 if
    --  the attribute is not mapped.
    --  Since: gtk+ 3.14
@@ -515,7 +515,8 @@ package Gtk.Cell_Area is
        Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Event     : Gdk.Event.Gdk_Event;
        Cell_Area : Gdk.Rectangle.Gdk_Rectangle;
-       Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State) return Gint;
+       Flags     : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State)
+       return Glib.Gint;
    --  Delegates event handling to a Gtk.Cell_Area.Gtk_Cell_Area.
    --  Since: gtk+ 3.0
    --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this row
@@ -713,8 +714,8 @@ package Gtk.Cell_Area is
       (Self           : not null access Gtk_Cell_Area_Record;
        Context        : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
        Widget         : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint);
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint);
    --  Retrieves a cell area's initial minimum and natural height.
    --  Area will store some geometrical information in Context along the way;
    --  when requesting sizes over an arbitrary number of rows, it's not
@@ -732,9 +733,9 @@ package Gtk.Cell_Area is
       (Self           : not null access Gtk_Cell_Area_Record;
        Context        : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
        Widget         : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Width          : Gint;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint);
+       Width          : Glib.Gint;
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint);
    --  Retrieves a cell area's minimum and natural height if it would be given
    --  the specified Width.
    --  Area stores some geometrical information in Context along the way while
@@ -759,8 +760,8 @@ package Gtk.Cell_Area is
       (Self          : not null access Gtk_Cell_Area_Record;
        Context       : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
        Widget        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint);
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint);
    --  Retrieves a cell area's initial minimum and natural width.
    --  Area will store some geometrical information in Context along the way;
    --  when requesting sizes over an arbitrary number of rows, it's not
@@ -778,9 +779,9 @@ package Gtk.Cell_Area is
       (Self          : not null access Gtk_Cell_Area_Record;
        Context       : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
        Widget        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Height        : Gint;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint);
+       Height        : Glib.Gint;
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint);
    --  Retrieves a cell area's minimum and natural width if it would be given
    --  the specified Height.
    --  Area stores some geometrical information in Context along the way while
@@ -898,9 +899,9 @@ package Gtk.Cell_Area is
        Renderer     : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Orientation  : Gtk.Enums.Gtk_Orientation;
        Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       For_Size     : Gint;
-       Minimum_Size : out Gint;
-       Natural_Size : out Gint);
+       For_Size     : Glib.Gint;
+       Minimum_Size : out Glib.Gint;
+       Natural_Size : out Glib.Gint);
    --  This is a convenience function for Gtk.Cell_Area.Gtk_Cell_Area
    --  implementations to request size for cell renderers. It's important to
    --  use this function to request size and then use
@@ -1033,7 +1034,7 @@ package Gtk.Cell_Area is
       (Cell_Layout : not null access Gtk_Cell_Area_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint);
+       Column      : Glib.Gint);
 
    procedure Clear (Cell_Layout : not null access Gtk_Cell_Area_Record);
 
@@ -1058,7 +1059,7 @@ package Gtk.Cell_Area is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Cell_Area_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint);
+       Position    : Glib.Gint);
 
    ----------------
    -- Properties --

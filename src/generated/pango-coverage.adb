@@ -59,11 +59,11 @@ package body Pango.Coverage is
 
    function Get
       (Self  : Pango_Coverage;
-       Index : Gint) return Pango.Enums.Coverage_Level
+       Index : Glib.Gint) return Pango.Enums.Coverage_Level
    is
       function Internal
          (Self  : System.Address;
-          Index : Gint) return Pango.Enums.Coverage_Level;
+          Index : Glib.Gint) return Pango.Enums.Coverage_Level;
       pragma Import (C, Internal, "pango_coverage_get");
    begin
       return Internal (Get_Object (Self), Index);
@@ -97,12 +97,12 @@ package body Pango.Coverage is
 
    procedure Set
       (Self  : Pango_Coverage;
-       Index : Gint;
+       Index : Glib.Gint;
        Level : Pango.Enums.Coverage_Level)
    is
       procedure Internal
          (Self  : System.Address;
-          Index : Gint;
+          Index : Glib.Gint;
           Level : Pango.Enums.Coverage_Level);
       pragma Import (C, Internal, "pango_coverage_set");
    begin

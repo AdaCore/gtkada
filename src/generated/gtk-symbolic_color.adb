@@ -139,11 +139,11 @@ package body Gtk.Symbolic_Color is
    procedure Gtk_New_Win32
       (Self        : out Gtk_Symbolic_Color;
        Theme_Class : UTF8_String;
-       Id          : Gint)
+       Id          : Glib.Gint)
    is
       function Internal
          (Theme_Class : Interfaces.C.Strings.chars_ptr;
-          Id          : Gint) return System.Address;
+          Id          : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_symbolic_color_new_win32");
       Tmp_Theme_Class : Interfaces.C.Strings.chars_ptr := New_String (Theme_Class);
       Tmp_Return      : System.Address;
@@ -250,11 +250,11 @@ package body Gtk.Symbolic_Color is
 
    function Gtk_Symbolic_Color_New_Win32
       (Theme_Class : UTF8_String;
-       Id          : Gint) return Gtk_Symbolic_Color
+       Id          : Glib.Gint) return Gtk_Symbolic_Color
    is
       function Internal
          (Theme_Class : Interfaces.C.Strings.chars_ptr;
-          Id          : Gint) return System.Address;
+          Id          : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_symbolic_color_new_win32");
       Tmp_Theme_Class : Interfaces.C.Strings.chars_ptr := New_String (Theme_Class);
       Tmp_Return      : System.Address;

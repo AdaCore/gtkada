@@ -155,9 +155,9 @@ package body Gtk.Print_Operation is
    --------------------------
 
    function Get_N_Pages_To_Print
-      (Self : not null access Gtk_Print_Operation_Record) return Gint
+      (Self : not null access Gtk_Print_Operation_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_print_operation_get_n_pages_to_print");
    begin
       return Internal (Get_Object (Self));
@@ -273,9 +273,9 @@ package body Gtk.Print_Operation is
 
    procedure Set_Current_Page
       (Self         : not null access Gtk_Print_Operation_Record;
-       Current_Page : Gint)
+       Current_Page : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Current_Page : Gint);
+      procedure Internal (Self : System.Address; Current_Page : Glib.Gint);
       pragma Import (C, Internal, "gtk_print_operation_set_current_page");
    begin
       Internal (Get_Object (Self), Current_Page);
@@ -405,9 +405,9 @@ package body Gtk.Print_Operation is
 
    procedure Set_N_Pages
       (Self    : not null access Gtk_Print_Operation_Record;
-       N_Pages : Gint)
+       N_Pages : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; N_Pages : Gint);
+      procedure Internal (Self : System.Address; N_Pages : Glib.Gint);
       pragma Import (C, Internal, "gtk_print_operation_set_n_pages");
    begin
       Internal (Get_Object (Self), N_Pages);
@@ -524,11 +524,11 @@ package body Gtk.Print_Operation is
 
    function Is_Selected
       (Preview : not null access Gtk_Print_Operation_Record;
-       Page_Nr : Gint) return Boolean
+       Page_Nr : Glib.Gint) return Boolean
    is
       function Internal
          (Preview : System.Address;
-          Page_Nr : Gint) return Glib.Gboolean;
+          Page_Nr : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_operation_preview_is_selected");
    begin
       return Internal (Get_Object (Preview), Page_Nr) /= 0;
@@ -540,9 +540,9 @@ package body Gtk.Print_Operation is
 
    procedure Render_Page
       (Preview : not null access Gtk_Print_Operation_Record;
-       Page_Nr : Gint)
+       Page_Nr : Glib.Gint)
    is
-      procedure Internal (Preview : System.Address; Page_Nr : Gint);
+      procedure Internal (Preview : System.Address; Page_Nr : Glib.Gint);
       pragma Import (C, Internal, "gtk_print_operation_preview_render_page");
    begin
       Internal (Get_Object (Preview), Page_Nr);

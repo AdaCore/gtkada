@@ -172,7 +172,7 @@ package Glib.Menu_Model is
 
    function Get_Item_Attribute_Value
       (Self          : not null access Gmenu_Model_Record;
-       Item_Index    : Gint;
+       Item_Index    : Glib.Gint;
        Attribute     : UTF8_String;
        Expected_Type : Glib.Variant.Gvariant_Type)
        return Glib.Variant.Gvariant;
@@ -191,7 +191,7 @@ package Glib.Menu_Model is
 
    function Get_Item_Link
       (Self       : not null access Gmenu_Model_Record;
-       Item_Index : Gint;
+       Item_Index : Glib.Gint;
        Link       : UTF8_String) return Gmenu_Model;
    --  Queries the item at position Item_Index in Model for the link specified
    --  by Link.
@@ -202,7 +202,7 @@ package Glib.Menu_Model is
    --  "link": the link to query
 
    function Get_N_Items
-      (Self : not null access Gmenu_Model_Record) return Gint;
+      (Self : not null access Gmenu_Model_Record) return Glib.Gint;
    --  Query the number of items in Model.
    --  Since: gtk+ 2.32
 
@@ -216,9 +216,9 @@ package Glib.Menu_Model is
 
    procedure Items_Changed
       (Self     : not null access Gmenu_Model_Record;
-       Position : Gint;
-       Removed  : Gint;
-       Added    : Gint);
+       Position : Glib.Gint;
+       Removed  : Glib.Gint;
+       Added    : Glib.Gint);
    --  Requests emission of the Glib.Menu_Model.Gmenu_Model::items-changed
    --  signal on Model.
    --  This function should never be called except by
@@ -239,7 +239,7 @@ package Glib.Menu_Model is
 
    function Iterate_Item_Attributes
       (Self       : not null access Gmenu_Model_Record;
-       Item_Index : Gint) return Gmenu_Attribute_Iter;
+       Item_Index : Glib.Gint) return Gmenu_Attribute_Iter;
    --  Creates a Glib.Menu_Model.Gmenu_Attribute_Iter to iterate over the
    --  attributes of the item at position Item_Index in Model.
    --  You must free the iterator with g_object_unref when you are done.
@@ -248,7 +248,7 @@ package Glib.Menu_Model is
 
    function Iterate_Item_Links
       (Self       : not null access Gmenu_Model_Record;
-       Item_Index : Gint) return Gmenu_Link_Iter;
+       Item_Index : Glib.Gint) return Gmenu_Link_Iter;
    --  Creates a Glib.Menu_Model.Gmenu_Link_Iter to iterate over the links of
    --  the item at position Item_Index in Model.
    --  You must free the iterator with g_object_unref when you are done.
@@ -308,15 +308,15 @@ package Glib.Menu_Model is
 
    type Cb_Gmenu_Model_Gint_Gint_Gint_Void is not null access procedure
      (Self     : access Gmenu_Model_Record'Class;
-      Position : Gint;
-      Removed  : Gint;
-      Added    : Gint);
+      Position : Glib.Gint;
+      Removed  : Glib.Gint;
+      Added    : Glib.Gint);
 
    type Cb_GObject_Gint_Gint_Gint_Void is not null access procedure
      (Self     : access Glib.Object.GObject_Record'Class;
-      Position : Gint;
-      Removed  : Gint;
-      Added    : Gint);
+      Position : Glib.Gint;
+      Removed  : Glib.Gint;
+      Added    : Glib.Gint);
 
    Signal_Items_Changed : constant Glib.Signal_Name := "items-changed";
    procedure On_Items_Changed

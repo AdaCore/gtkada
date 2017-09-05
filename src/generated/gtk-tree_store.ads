@@ -78,7 +78,7 @@ package Gtk.Tree_Store is
    type Gtk_Tree_Iter_Compare_Func is access function
      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
       A     : Gtk.Tree_Model.Gtk_Tree_Iter;
-      B     : Gtk.Tree_Model.Gtk_Tree_Iter) return Gint;
+      B     : Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gint;
    --  A GtkTreeIterCompareFunc should return a negative integer, zero, or a
    --  positive integer if A sorts before B, A sorts with B, or A sorts after B
    --  respectively. If two iters compare as equal, their order in the sorted
@@ -137,7 +137,7 @@ package Gtk.Tree_Store is
       (Tree_Store : not null access Gtk_Tree_Store_Record;
        Iter       : out Gtk.Tree_Model.Gtk_Tree_Iter;
        Parent     : Gtk.Tree_Model.Gtk_Tree_Iter;
-       Position   : Gint);
+       Position   : Glib.Gint);
    --  Creates a new row at Position. If parent is non-null, then the row will
    --  be made a child of Parent. Otherwise, the row will be created at the
    --  toplevel. If Position is -1 or is larger than the number of rows at that
@@ -194,7 +194,7 @@ package Gtk.Tree_Store is
 
    function Iter_Depth
       (Tree_Store : not null access Gtk_Tree_Store_Record;
-       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Gint;
+       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gint;
    --  Returns the depth of Iter. This will be 0 for anything on the root
    --  level, 1 for anything down a level, etc.
    --  "iter": A valid Gtk.Tree_Model.Gtk_Tree_Iter
@@ -280,7 +280,7 @@ package Gtk.Tree_Store is
    procedure Set_Value
       (Tree_Store : not null access Gtk_Tree_Store_Record;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       Column     : Gint;
+       Column     : Glib.Gint;
        Value      : Glib.Values.GValue);
    --  Sets the data in the cell specified by Iter and Column. The type of
    --  Value must be convertible to the type of the column.
@@ -358,7 +358,7 @@ package Gtk.Tree_Store is
         (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
          A         : Gtk.Tree_Model.Gtk_Tree_Iter;
          B         : Gtk.Tree_Model.Gtk_Tree_Iter;
-         User_Data : User_Data_Type) return Gint;
+         User_Data : User_Data_Type) return Glib.Gint;
       --  A GtkTreeIterCompareFunc should return a negative integer, zero, or a
       --  positive integer if A sorts before B, A sorts with B, or A sorts after B
       --  respectively. If two iters compare as equal, their order in the sorted
@@ -395,7 +395,7 @@ package Gtk.Tree_Store is
 
    procedure Set_Sort_Func
       (Sortable       : not null access Gtk_Tree_Store_Record;
-       Sort_Column_Id : Gint;
+       Sort_Column_Id : Glib.Gint;
        Sort_Func      : Gtk_Tree_Iter_Compare_Func);
    --  Sets the comparison function used when sorting to be Sort_Func. If the
    --  current sort column id of Sortable is the same as Sort_Column_Id, then
@@ -412,7 +412,7 @@ package Gtk.Tree_Store is
         (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
          A         : Gtk.Tree_Model.Gtk_Tree_Iter;
          B         : Gtk.Tree_Model.Gtk_Tree_Iter;
-         User_Data : User_Data_Type) return Gint;
+         User_Data : User_Data_Type) return Glib.Gint;
       --  A GtkTreeIterCompareFunc should return a negative integer, zero, or a
       --  positive integer if A sorts before B, A sorts with B, or A sorts after B
       --  respectively. If two iters compare as equal, their order in the sorted
@@ -431,7 +431,7 @@ package Gtk.Tree_Store is
 
       procedure Set_Sort_Func
          (Sortable       : not null access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class;
-          Sort_Column_Id : Gint;
+          Sort_Column_Id : Glib.Gint;
           Sort_Func      : Gtk_Tree_Iter_Compare_Func;
           User_Data      : User_Data_Type);
       --  Sets the comparison function used when sorting to be Sort_Func. If
@@ -576,7 +576,7 @@ package Gtk.Tree_Store is
 
    function Get_Column_Type
       (Tree_Model : not null access Gtk_Tree_Store_Record;
-       Index      : Gint) return GType;
+       Index      : Glib.Gint) return GType;
 
    function Get_Flags
       (Tree_Model : not null access Gtk_Tree_Store_Record)
@@ -596,7 +596,7 @@ package Gtk.Tree_Store is
        Path_String : UTF8_String) return Gtk.Tree_Model.Gtk_Tree_Iter;
 
    function Get_N_Columns
-      (Tree_Model : not null access Gtk_Tree_Store_Record) return Gint;
+      (Tree_Model : not null access Gtk_Tree_Store_Record) return Glib.Gint;
 
    function Get_Path
       (Tree_Model : not null access Gtk_Tree_Store_Record;
@@ -610,7 +610,7 @@ package Gtk.Tree_Store is
    procedure Get_Value
       (Tree_Model : not null access Gtk_Tree_Store_Record;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       Column     : Gint;
+       Column     : Glib.Gint;
        Value      : out Glib.Values.GValue);
 
    function Children
@@ -625,7 +625,7 @@ package Gtk.Tree_Store is
    function N_Children
       (Tree_Model : not null access Gtk_Tree_Store_Record;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter)
-       return Gint;
+       return Glib.Gint;
 
    procedure Next
       (Tree_Model : not null access Gtk_Tree_Store_Record;
@@ -634,7 +634,7 @@ package Gtk.Tree_Store is
    function Nth_Child
       (Tree_Model : not null access Gtk_Tree_Store_Record;
        Parent     : Gtk.Tree_Model.Gtk_Tree_Iter;
-       N          : Gint) return Gtk.Tree_Model.Gtk_Tree_Iter;
+       N          : Glib.Gint) return Gtk.Tree_Model.Gtk_Tree_Iter;
 
    function Parent
       (Tree_Model : not null access Gtk_Tree_Store_Record;
@@ -679,7 +679,7 @@ package Gtk.Tree_Store is
        Path       : Gtk.Tree_Model.Gtk_Tree_Path;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
        New_Order  : Gint_Array;
-       Length     : Gint);
+       Length     : Glib.Gint);
 
    procedure Unref_Node
       (Tree_Model : not null access Gtk_Tree_Store_Record;
@@ -687,12 +687,12 @@ package Gtk.Tree_Store is
 
    procedure Get_Sort_Column_Id
       (Sortable       : not null access Gtk_Tree_Store_Record;
-       Sort_Column_Id : out Gint;
+       Sort_Column_Id : out Glib.Gint;
        Order          : out Gtk.Enums.Gtk_Sort_Type);
 
    procedure Set_Sort_Column_Id
       (Sortable       : not null access Gtk_Tree_Store_Record;
-       Sort_Column_Id : Gint;
+       Sort_Column_Id : Glib.Gint;
        Order          : Gtk.Enums.Gtk_Sort_Type);
 
    function Has_Default_Sort_Func

@@ -75,13 +75,13 @@ package body Gtk.Toolbar is
 
    function Get_Drop_Index
       (Toolbar : not null access Gtk_Toolbar_Record;
-       X       : Gint;
-       Y       : Gint) return Gint
+       X       : Glib.Gint;
+       Y       : Glib.Gint) return Glib.Gint
    is
       function Internal
          (Toolbar : System.Address;
-          X       : Gint;
-          Y       : Gint) return Gint;
+          X       : Glib.Gint;
+          Y       : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gtk_toolbar_get_drop_index");
    begin
       return Internal (Get_Object (Toolbar), X, Y);
@@ -109,11 +109,11 @@ package body Gtk.Toolbar is
    function Get_Item_Index
       (Toolbar : not null access Gtk_Toolbar_Record;
        Item    : not null access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class)
-       return Gint
+       return Glib.Gint
    is
       function Internal
          (Toolbar : System.Address;
-          Item    : System.Address) return Gint;
+          Item    : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_toolbar_get_item_index");
    begin
       return Internal (Get_Object (Toolbar), Get_Object (Item));
@@ -124,9 +124,9 @@ package body Gtk.Toolbar is
    -----------------
 
    function Get_N_Items
-      (Toolbar : not null access Gtk_Toolbar_Record) return Gint
+      (Toolbar : not null access Gtk_Toolbar_Record) return Glib.Gint
    is
-      function Internal (Toolbar : System.Address) return Gint;
+      function Internal (Toolbar : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_toolbar_get_n_items");
    begin
       return Internal (Get_Object (Toolbar));
@@ -138,11 +138,11 @@ package body Gtk.Toolbar is
 
    function Get_Nth_Item
       (Toolbar : not null access Gtk_Toolbar_Record;
-       N       : Gint) return Gtk.Tool_Item.Gtk_Tool_Item
+       N       : Glib.Gint) return Gtk.Tool_Item.Gtk_Tool_Item
    is
       function Internal
          (Toolbar : System.Address;
-          N       : Gint) return System.Address;
+          N       : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_toolbar_get_nth_item");
       Stub_Gtk_Tool_Item : Gtk.Tool_Item.Gtk_Tool_Item_Record;
    begin
@@ -199,12 +199,12 @@ package body Gtk.Toolbar is
    procedure Insert
       (Toolbar : not null access Gtk_Toolbar_Record;
        Item    : not null access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class;
-       Pos     : Gint := -1)
+       Pos     : Glib.Gint := -1)
    is
       procedure Internal
          (Toolbar : System.Address;
           Item    : System.Address;
-          Pos     : Gint);
+          Pos     : Glib.Gint);
       pragma Import (C, Internal, "gtk_toolbar_insert");
    begin
       Internal (Get_Object (Toolbar), Get_Object (Item), Pos);
@@ -217,12 +217,12 @@ package body Gtk.Toolbar is
    procedure Set_Drop_Highlight_Item
       (Toolbar   : not null access Gtk_Toolbar_Record;
        Tool_Item : access Gtk.Tool_Item.Gtk_Tool_Item_Record'Class;
-       Index     : Gint)
+       Index     : Glib.Gint)
    is
       procedure Internal
          (Toolbar   : System.Address;
           Tool_Item : System.Address;
-          Index     : Gint);
+          Index     : Glib.Gint);
       pragma Import (C, Internal, "gtk_toolbar_set_drop_highlight_item");
    begin
       Internal (Get_Object (Toolbar), Get_Object_Or_Null (GObject (Tool_Item)), Index);

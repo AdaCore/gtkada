@@ -72,14 +72,14 @@ package body Gtk.Fixed is
    procedure Move
       (Fixed  : not null access Gtk_Fixed_Record;
        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       X      : Gint;
-       Y      : Gint)
+       X      : Glib.Gint;
+       Y      : Glib.Gint)
    is
       procedure Internal
          (Fixed  : System.Address;
           Widget : System.Address;
-          X      : Gint;
-          Y      : Gint);
+          X      : Glib.Gint;
+          Y      : Glib.Gint);
       pragma Import (C, Internal, "gtk_fixed_move");
    begin
       Internal (Get_Object (Fixed), Get_Object (Widget), X, Y);
@@ -92,14 +92,14 @@ package body Gtk.Fixed is
    procedure Put
       (Fixed  : not null access Gtk_Fixed_Record;
        Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       X      : Gint;
-       Y      : Gint)
+       X      : Glib.Gint;
+       Y      : Glib.Gint)
    is
       procedure Internal
          (Fixed  : System.Address;
           Widget : System.Address;
-          X      : Gint;
-          Y      : Gint);
+          X      : Glib.Gint;
+          Y      : Glib.Gint);
       pragma Import (C, Internal, "gtk_fixed_put");
    begin
       Internal (Get_Object (Fixed), Get_Object (Widget), X, Y);

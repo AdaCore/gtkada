@@ -183,9 +183,9 @@ package body Gtk.Calendar is
    ----------------------------
 
    function Get_Detail_Height_Rows
-      (Calendar : not null access Gtk_Calendar_Record) return Gint
+      (Calendar : not null access Gtk_Calendar_Record) return Glib.Gint
    is
-      function Internal (Calendar : System.Address) return Gint;
+      function Internal (Calendar : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_calendar_get_detail_height_rows");
    begin
       return Internal (Get_Object (Calendar));
@@ -196,9 +196,9 @@ package body Gtk.Calendar is
    ----------------------------
 
    function Get_Detail_Width_Chars
-      (Calendar : not null access Gtk_Calendar_Record) return Gint
+      (Calendar : not null access Gtk_Calendar_Record) return Glib.Gint
    is
-      function Internal (Calendar : System.Address) return Gint;
+      function Internal (Calendar : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_calendar_get_detail_width_chars");
    begin
       return Internal (Get_Object (Calendar));
@@ -354,9 +354,9 @@ package body Gtk.Calendar is
 
    procedure Set_Detail_Height_Rows
       (Calendar : not null access Gtk_Calendar_Record;
-       Rows     : Gint)
+       Rows     : Glib.Gint)
    is
-      procedure Internal (Calendar : System.Address; Rows : Gint);
+      procedure Internal (Calendar : System.Address; Rows : Glib.Gint);
       pragma Import (C, Internal, "gtk_calendar_set_detail_height_rows");
    begin
       Internal (Get_Object (Calendar), Rows);
@@ -368,9 +368,9 @@ package body Gtk.Calendar is
 
    procedure Set_Detail_Width_Chars
       (Calendar : not null access Gtk_Calendar_Record;
-       Chars    : Gint)
+       Chars    : Glib.Gint)
    is
-      procedure Internal (Calendar : System.Address; Chars : Gint);
+      procedure Internal (Calendar : System.Address; Chars : Glib.Gint);
       pragma Import (C, Internal, "gtk_calendar_set_detail_width_chars");
    begin
       Internal (Get_Object (Calendar), Chars);

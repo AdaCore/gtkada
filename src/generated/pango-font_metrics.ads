@@ -65,14 +65,14 @@ package Pango.Font_Metrics is
    -------------
 
    function Get_Approximate_Char_Width
-      (Self : Pango_Font_Metrics) return Gint;
+      (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the approximate character width for a font metrics structure. This
    --  is merely a representative value useful, for example, for determining
    --  the initial size for a window. Actual characters in text will be wider
    --  and narrower than this.
 
    function Get_Approximate_Digit_Width
-      (Self : Pango_Font_Metrics) return Gint;
+      (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the approximate digit width for a font metrics structure. This is
    --  merely a representative value useful, for example, for determining the
    --  initial size for a window. Actual digits in text can be wider or
@@ -80,38 +80,40 @@ package Pango.Font_Metrics is
    --  accurate than the result of
    --  Pango.Font_Metrics.Get_Approximate_Char_Width for digits.
 
-   function Get_Ascent (Self : Pango_Font_Metrics) return Gint;
+   function Get_Ascent (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the ascent from a font metrics structure. The ascent is the
    --  distance from the baseline to the logical top of a line of text. (The
    --  logical top may be above or below the top of the actual drawn ink. It is
    --  necessary to lay out the text to figure where the ink will be.)
 
-   function Get_Descent (Self : Pango_Font_Metrics) return Gint;
+   function Get_Descent (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the descent from a font metrics structure. The descent is the
    --  distance from the baseline to the logical bottom of a line of text. (The
    --  logical bottom may be above or below the bottom of the actual drawn ink.
    --  It is necessary to lay out the text to figure where the ink will be.)
 
    function Get_Strikethrough_Position
-      (Self : Pango_Font_Metrics) return Gint;
+      (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the suggested position to draw the strikethrough. The value
    --  returned is the distance *above* the baseline of the top of the
    --  strikethrough.
    --  Since: gtk+ 1.6
 
    function Get_Strikethrough_Thickness
-      (Self : Pango_Font_Metrics) return Gint;
+      (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the suggested thickness to draw for the strikethrough.
    --  Since: gtk+ 1.6
 
-   function Get_Underline_Position (Self : Pango_Font_Metrics) return Gint;
+   function Get_Underline_Position
+      (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the suggested position to draw the underline. The value returned
    --  is the distance *above* the baseline of the top of the underline. Since
    --  most fonts have underline positions beneath the baseline, this value is
    --  typically negative.
    --  Since: gtk+ 1.6
 
-   function Get_Underline_Thickness (Self : Pango_Font_Metrics) return Gint;
+   function Get_Underline_Thickness
+      (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the suggested thickness to draw for the underline.
    --  Since: gtk+ 1.6
 

@@ -161,7 +161,8 @@ package Gtk.Font_Chooser_Widget is
        return Pango.Font_Family.Pango_Font_Family;
 
    function Get_Font_Size
-      (Self : not null access Gtk_Font_Chooser_Widget_Record) return Gint;
+      (Self : not null access Gtk_Font_Chooser_Widget_Record)
+       return Glib.Gint;
 
    function Get_Preview_Text
       (Self : not null access Gtk_Font_Chooser_Widget_Record)

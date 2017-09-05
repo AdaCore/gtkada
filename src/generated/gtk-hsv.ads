@@ -95,8 +95,8 @@ package Gtk.Hsv is
 
    procedure Get_Metrics
       (Self       : not null access Gtk_Hsv_Record;
-       Size       : out Gint;
-       Ring_Width : out Gint);
+       Size       : out Glib.Gint;
+       Ring_Width : out Glib.Gint);
    --  Queries the size and ring width of an HSV color selector.
    --  Since: gtk+ 2.14
    --  "size": Return value for the diameter of the hue ring
@@ -104,8 +104,8 @@ package Gtk.Hsv is
 
    procedure Set_Metrics
       (Self       : not null access Gtk_Hsv_Record;
-       Size       : Gint;
-       Ring_Width : Gint);
+       Size       : Glib.Gint;
+       Ring_Width : Glib.Gint);
    --  Sets the size and ring width of an HSV color selector.
    --  Since: gtk+ 2.14
    --  "size": Diameter for the hue ring

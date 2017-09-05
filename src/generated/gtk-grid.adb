@@ -72,18 +72,18 @@ package body Gtk.Grid is
    procedure Attach
       (Self   : not null access Gtk_Grid_Record;
        Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Left   : Gint;
-       Top    : Gint;
-       Width  : Gint := 1;
-       Height : Gint := 1)
+       Left   : Glib.Gint;
+       Top    : Glib.Gint;
+       Width  : Glib.Gint := 1;
+       Height : Glib.Gint := 1)
    is
       procedure Internal
          (Self   : System.Address;
           Child  : System.Address;
-          Left   : Gint;
-          Top    : Gint;
-          Width  : Gint;
-          Height : Gint);
+          Left   : Glib.Gint;
+          Top    : Glib.Gint;
+          Width  : Glib.Gint;
+          Height : Glib.Gint);
       pragma Import (C, Internal, "gtk_grid_attach");
    begin
       Internal (Get_Object (Self), Get_Object (Child), Left, Top, Width, Height);
@@ -98,16 +98,16 @@ package body Gtk.Grid is
        Child   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Sibling : access Gtk.Widget.Gtk_Widget_Record'Class;
        Side    : Gtk.Enums.Gtk_Position_Type;
-       Width   : Gint := 1;
-       Height  : Gint := 1)
+       Width   : Glib.Gint := 1;
+       Height  : Glib.Gint := 1)
    is
       procedure Internal
          (Self    : System.Address;
           Child   : System.Address;
           Sibling : System.Address;
           Side    : Gtk.Enums.Gtk_Position_Type;
-          Width   : Gint;
-          Height  : Gint);
+          Width   : Glib.Gint;
+          Height  : Glib.Gint);
       pragma Import (C, Internal, "gtk_grid_attach_next_to");
    begin
       Internal (Get_Object (Self), Get_Object (Child), Get_Object_Or_Null (GObject (Sibling)), Side, Width, Height);
@@ -118,9 +118,9 @@ package body Gtk.Grid is
    ----------------------
 
    function Get_Baseline_Row
-      (Self : not null access Gtk_Grid_Record) return Gint
+      (Self : not null access Gtk_Grid_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_grid_get_baseline_row");
    begin
       return Internal (Get_Object (Self));
@@ -132,13 +132,13 @@ package body Gtk.Grid is
 
    function Get_Child_At
       (Self : not null access Gtk_Grid_Record;
-       Left : Gint;
-       Top  : Gint) return Gtk.Widget.Gtk_Widget
+       Left : Glib.Gint;
+       Top  : Glib.Gint) return Gtk.Widget.Gtk_Widget
    is
       function Internal
          (Self : System.Address;
-          Left : Gint;
-          Top  : Gint) return System.Address;
+          Left : Glib.Gint;
+          Top  : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_grid_get_child_at");
       Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
    begin
@@ -177,11 +177,11 @@ package body Gtk.Grid is
 
    function Get_Row_Baseline_Position
       (Self : not null access Gtk_Grid_Record;
-       Row  : Gint) return Gtk.Enums.Gtk_Baseline_Position
+       Row  : Glib.Gint) return Gtk.Enums.Gtk_Baseline_Position
    is
       function Internal
          (Self : System.Address;
-          Row  : Gint) return Gtk.Enums.Gtk_Baseline_Position;
+          Row  : Glib.Gint) return Gtk.Enums.Gtk_Baseline_Position;
       pragma Import (C, Internal, "gtk_grid_get_row_baseline_position");
    begin
       return Internal (Get_Object (Self), Row);
@@ -219,9 +219,9 @@ package body Gtk.Grid is
 
    procedure Insert_Column
       (Self     : not null access Gtk_Grid_Record;
-       Position : Gint)
+       Position : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Position : Gint);
+      procedure Internal (Self : System.Address; Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_grid_insert_column");
    begin
       Internal (Get_Object (Self), Position);
@@ -251,9 +251,9 @@ package body Gtk.Grid is
 
    procedure Insert_Row
       (Self     : not null access Gtk_Grid_Record;
-       Position : Gint)
+       Position : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Position : Gint);
+      procedure Internal (Self : System.Address; Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_grid_insert_row");
    begin
       Internal (Get_Object (Self), Position);
@@ -265,9 +265,9 @@ package body Gtk.Grid is
 
    procedure Remove_Column
       (Self     : not null access Gtk_Grid_Record;
-       Position : Gint)
+       Position : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Position : Gint);
+      procedure Internal (Self : System.Address; Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_grid_remove_column");
    begin
       Internal (Get_Object (Self), Position);
@@ -279,9 +279,9 @@ package body Gtk.Grid is
 
    procedure Remove_Row
       (Self     : not null access Gtk_Grid_Record;
-       Position : Gint)
+       Position : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Position : Gint);
+      procedure Internal (Self : System.Address; Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_grid_remove_row");
    begin
       Internal (Get_Object (Self), Position);
@@ -293,9 +293,9 @@ package body Gtk.Grid is
 
    procedure Set_Baseline_Row
       (Self : not null access Gtk_Grid_Record;
-       Row  : Gint)
+       Row  : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Row : Gint);
+      procedure Internal (Self : System.Address; Row : Glib.Gint);
       pragma Import (C, Internal, "gtk_grid_set_baseline_row");
    begin
       Internal (Get_Object (Self), Row);
@@ -337,12 +337,12 @@ package body Gtk.Grid is
 
    procedure Set_Row_Baseline_Position
       (Self : not null access Gtk_Grid_Record;
-       Row  : Gint;
+       Row  : Glib.Gint;
        Pos  : Gtk.Enums.Gtk_Baseline_Position)
    is
       procedure Internal
          (Self : System.Address;
-          Row  : Gint;
+          Row  : Glib.Gint;
           Pos  : Gtk.Enums.Gtk_Baseline_Position);
       pragma Import (C, Internal, "gtk_grid_set_row_baseline_position");
    begin

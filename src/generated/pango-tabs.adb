@@ -48,11 +48,11 @@ package body Pango.Tabs is
 
    procedure Gdk_New
       (Self                : out Pango_Tab_Array;
-       Initial_Size        : Gint;
+       Initial_Size        : Glib.Gint;
        Positions_In_Pixels : Boolean)
    is
       function Internal
-         (Initial_Size        : Gint;
+         (Initial_Size        : Glib.Gint;
           Positions_In_Pixels : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "pango_tab_array_new");
    begin
@@ -64,11 +64,11 @@ package body Pango.Tabs is
    -------------------------
 
    function Pango_Tab_Array_New
-      (Initial_Size        : Gint;
+      (Initial_Size        : Glib.Gint;
        Positions_In_Pixels : Boolean) return Pango_Tab_Array
    is
       function Internal
-         (Initial_Size        : Gint;
+         (Initial_Size        : Glib.Gint;
           Positions_In_Pixels : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "pango_tab_array_new");
       Self : Pango_Tab_Array;
@@ -114,8 +114,8 @@ package body Pango.Tabs is
    -- Get_Size --
    --------------
 
-   function Get_Size (Self : Pango_Tab_Array) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Size (Self : Pango_Tab_Array) return Glib.Gint is
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_tab_array_get_size");
    begin
       return Internal (Get_Object (Self));
@@ -127,15 +127,15 @@ package body Pango.Tabs is
 
    procedure Get_Tab
       (Self      : Pango_Tab_Array;
-       Tab_Index : Gint;
+       Tab_Index : Glib.Gint;
        Alignment : out Pango_Tab_Align;
-       Location  : out Gint)
+       Location  : out Glib.Gint)
    is
       procedure Internal
          (Self      : System.Address;
-          Tab_Index : Gint;
+          Tab_Index : Glib.Gint;
           Alignment : out Pango_Tab_Align;
-          Location  : out Gint);
+          Location  : out Glib.Gint);
       pragma Import (C, Internal, "pango_tab_array_get_tab");
    begin
       Internal (Get_Object (Self), Tab_Index, Alignment, Location);
@@ -145,8 +145,8 @@ package body Pango.Tabs is
    -- Resize --
    ------------
 
-   procedure Resize (Self : Pango_Tab_Array; New_Size : Gint) is
-      procedure Internal (Self : System.Address; New_Size : Gint);
+   procedure Resize (Self : Pango_Tab_Array; New_Size : Glib.Gint) is
+      procedure Internal (Self : System.Address; New_Size : Glib.Gint);
       pragma Import (C, Internal, "pango_tab_array_resize");
    begin
       Internal (Get_Object (Self), New_Size);
@@ -158,15 +158,15 @@ package body Pango.Tabs is
 
    procedure Set_Tab
       (Self      : Pango_Tab_Array;
-       Tab_Index : Gint;
+       Tab_Index : Glib.Gint;
        Alignment : Pango_Tab_Align;
-       Location  : Gint)
+       Location  : Glib.Gint)
    is
       procedure Internal
          (Self      : System.Address;
-          Tab_Index : Gint;
+          Tab_Index : Glib.Gint;
           Alignment : Pango_Tab_Align;
-          Location  : Gint);
+          Location  : Glib.Gint);
       pragma Import (C, Internal, "pango_tab_array_set_tab");
    begin
       Internal (Get_Object (Self), Tab_Index, Alignment, Location);

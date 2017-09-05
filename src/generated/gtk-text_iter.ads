@@ -100,7 +100,7 @@ package Gtk.Text_Iter is
 
    procedure Backward_Chars
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Moves Count characters backward, if possible (if Count would move past
    --  the start or end of the buffer, moves to the start or end of the
@@ -117,7 +117,7 @@ package Gtk.Text_Iter is
 
    procedure Backward_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Moves up to Count cursor positions. See
    --  Gtk.Text_Iter.Forward_Cursor_Position for details.
@@ -136,7 +136,7 @@ package Gtk.Text_Iter is
 
    procedure Backward_Lines
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Moves Count lines backward, if possible (if Count would move past the
    --  start or end of the buffer, moves to the start or end of the buffer).
@@ -176,7 +176,7 @@ package Gtk.Text_Iter is
 
    procedure Backward_Sentence_Starts
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Calls Gtk.Text_Iter.Backward_Sentence_Start up to Count times, or until
    --  it returns False. If Count is negative, moves forward instead of
@@ -204,7 +204,7 @@ package Gtk.Text_Iter is
 
    procedure Backward_Visible_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Moves up to Count visible cursor positions. See
    --  Gtk.Text_Iter.Backward_Cursor_Position for details.
@@ -225,7 +225,7 @@ package Gtk.Text_Iter is
 
    procedure Backward_Visible_Lines
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Moves Count visible lines backward, if possible (if Count would move
    --  past the start or end of the buffer, moves to the start or end of the
@@ -249,7 +249,7 @@ package Gtk.Text_Iter is
 
    procedure Backward_Visible_Word_Starts
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Calls Gtk.Text_Iter.Backward_Visible_Word_Start up to Count times.
    --  Since: gtk+ 2.4
@@ -265,7 +265,7 @@ package Gtk.Text_Iter is
 
    procedure Backward_Word_Starts
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Calls Gtk.Text_Iter.Backward_Word_Start up to Count times.
    --  "count": number of times to move
@@ -293,7 +293,9 @@ package Gtk.Text_Iter is
    --  position.
    --  "default_editability": True if text is editable by default
 
-   function Compare (Iter : Gtk_Text_Iter; Rhs : Gtk_Text_Iter) return Gint;
+   function Compare
+      (Iter : Gtk_Text_Iter;
+       Rhs  : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Compare, "gtk_text_iter_compare");
    --  A qsort-style function that returns negative if Lhs is less than Rhs,
    --  positive if Lhs is greater than Rhs, and 0 if they're equal. Ordering is
@@ -368,7 +370,7 @@ package Gtk.Text_Iter is
 
    procedure Forward_Chars
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Moves Count characters if possible (if Count would move past the start
    --  or end of the buffer, moves to the start or end of the buffer). The
@@ -393,7 +395,7 @@ package Gtk.Text_Iter is
 
    procedure Forward_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Moves up to Count cursor positions. See
    --  Gtk.Text_Iter.Forward_Cursor_Position for details.
@@ -409,7 +411,7 @@ package Gtk.Text_Iter is
 
    procedure Forward_Lines
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Moves Count lines forward, if possible (if Count would move past the
    --  start or end of the buffer, moves to the start or end of the buffer).
@@ -452,7 +454,7 @@ package Gtk.Text_Iter is
 
    procedure Forward_Sentence_Ends
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Calls Gtk.Text_Iter.Forward_Sentence_End Count times (or until
    --  Gtk.Text_Iter.Forward_Sentence_End returns False). If Count is negative,
@@ -498,7 +500,7 @@ package Gtk.Text_Iter is
 
    procedure Forward_Visible_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Moves up to Count visible cursor positions. See
    --  Gtk.Text_Iter.Forward_Cursor_Position for details.
@@ -516,7 +518,7 @@ package Gtk.Text_Iter is
 
    procedure Forward_Visible_Lines
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Moves Count visible lines forward, if possible (if Count would move
    --  past the start or end of the buffer, moves to the start or end of the
@@ -539,7 +541,7 @@ package Gtk.Text_Iter is
 
    procedure Forward_Visible_Word_Ends
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Calls Gtk.Text_Iter.Forward_Visible_Word_End up to Count times.
    --  Since: gtk+ 2.4
@@ -555,7 +557,7 @@ package Gtk.Text_Iter is
 
    procedure Forward_Word_Ends
       (Iter   : in out Gtk_Text_Iter;
-       Count  : Gint;
+       Count  : Glib.Gint;
        Result : out Boolean);
    --  Calls Gtk.Text_Iter.Forward_Word_End up to Count times.
    --  "count": number of times to move
@@ -579,7 +581,7 @@ package Gtk.Text_Iter is
    --  function returns True.
    --  "values": a Gtk.Text_Attributes.Gtk_Text_Attributes to be filled in
 
-   function Get_Bytes_In_Line (Iter : Gtk_Text_Iter) return Gint;
+   function Get_Bytes_In_Line (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Bytes_In_Line, "gtk_text_iter_get_bytes_in_line");
    --  Returns the number of bytes in the line containing Iter, including the
    --  paragraph delimiters.
@@ -593,7 +595,7 @@ package Gtk.Text_Iter is
    --  iterator, zero is returned; zero is not a valid Unicode character. So
    --  you can write a loop which ends when Gtk.Text_Iter.Get_Char returns 0.
 
-   function Get_Chars_In_Line (Iter : Gtk_Text_Iter) return Gint;
+   function Get_Chars_In_Line (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Chars_In_Line, "gtk_text_iter_get_chars_in_line");
    --  Returns the number of characters in the line containing Iter, including
    --  the paragraph delimiters.
@@ -605,20 +607,20 @@ package Gtk.Text_Iter is
    --  apply to Iter, the return value is identical to that of
    --  gtk_get_default_language ().
 
-   function Get_Line (Iter : Gtk_Text_Iter) return Gint;
+   function Get_Line (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Line, "gtk_text_iter_get_line");
    --  Returns the line number containing the iterator. Lines in a
    --  Gtk.Text_Buffer.Gtk_Text_Buffer are numbered beginning with 0 for the
    --  first line in the buffer.
 
-   procedure Set_Line (Iter : in out Gtk_Text_Iter; Line_Number : Gint);
+   procedure Set_Line (Iter : in out Gtk_Text_Iter; Line_Number : Glib.Gint);
    pragma Import (C, Set_Line, "gtk_text_iter_set_line");
    --  Moves iterator Iter to the start of the line Line_Number. If
    --  Line_Number is negative or larger than the number of lines in the
    --  buffer, moves Iter to the start of the last line in the buffer.
    --  "line_number": line number (counted from 0)
 
-   function Get_Line_Index (Iter : Gtk_Text_Iter) return Gint;
+   function Get_Line_Index (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Line_Index, "gtk_text_iter_get_line_index");
    --  Returns the byte index of the iterator, counting from the start of a
    --  newline-terminated line. Remember that Gtk.Text_Buffer.Gtk_Text_Buffer
@@ -627,7 +629,7 @@ package Gtk.Text_Iter is
 
    procedure Set_Line_Index
       (Iter         : in out Gtk_Text_Iter;
-       Byte_On_Line : Gint);
+       Byte_On_Line : Glib.Gint);
    pragma Import (C, Set_Line_Index, "gtk_text_iter_set_line_index");
    --  Same as Gtk.Text_Iter.Set_Line_Offset, but works with a byte index. The
    --  given byte index must be at the start of a character, it can't be in the
@@ -635,7 +637,7 @@ package Gtk.Text_Iter is
    --  "byte_on_line": a byte index relative to the start of Iter's current
    --  line
 
-   function Get_Line_Offset (Iter : Gtk_Text_Iter) return Gint;
+   function Get_Line_Offset (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Line_Offset, "gtk_text_iter_get_line_offset");
    --  Returns the character offset of the iterator, counting from the start
    --  of a newline-terminated line. The first character on the line has offset
@@ -643,7 +645,7 @@ package Gtk.Text_Iter is
 
    procedure Set_Line_Offset
       (Iter         : in out Gtk_Text_Iter;
-       Char_On_Line : Gint);
+       Char_On_Line : Glib.Gint);
    pragma Import (C, Set_Line_Offset, "gtk_text_iter_set_line_offset");
    --  Moves Iter within a line, to a new character (not byte) offset. The
    --  given character offset must be less than or equal to the number of
@@ -661,14 +663,16 @@ package Gtk.Text_Iter is
    --  marks can exist in the same place. The returned list is not in any
    --  meaningful order.
 
-   function Get_Offset (Iter : Gtk_Text_Iter) return Gint;
+   function Get_Offset (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Offset, "gtk_text_iter_get_offset");
    --  Returns the character offset of an iterator. Each character in a
    --  Gtk.Text_Buffer.Gtk_Text_Buffer has an offset, starting with 0 for the
    --  first character in the buffer. Use gtk_text_buffer_get_iter_at_offset ()
    --  to convert an offset back into an iterator.
 
-   procedure Set_Offset (Iter : in out Gtk_Text_Iter; Char_Offset : Gint);
+   procedure Set_Offset
+      (Iter        : in out Gtk_Text_Iter;
+       Char_Offset : Glib.Gint);
    pragma Import (C, Set_Offset, "gtk_text_iter_set_offset");
    --  Sets Iter to point to Char_Offset. Char_Offset counts from the start of
    --  the entire text buffer, starting with 0.
@@ -717,7 +721,7 @@ package Gtk.Text_Iter is
    --  tag applied to it.
    --  "toggled_on": True to get toggled-on tags
 
-   function Get_Visible_Line_Index (Iter : Gtk_Text_Iter) return Gint;
+   function Get_Visible_Line_Index (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Visible_Line_Index, "gtk_text_iter_get_visible_line_index");
    --  Returns the number of bytes from the start of the line to the given
    --  Iter, not counting bytes that are invisible due to tags with the
@@ -725,13 +729,13 @@ package Gtk.Text_Iter is
 
    procedure Set_Visible_Line_Index
       (Iter         : in out Gtk_Text_Iter;
-       Byte_On_Line : Gint);
+       Byte_On_Line : Glib.Gint);
    pragma Import (C, Set_Visible_Line_Index, "gtk_text_iter_set_visible_line_index");
    --  Like Gtk.Text_Iter.Set_Line_Index, but the index is in visible bytes,
    --  i.e. text with a tag making it invisible is not counted in the index.
    --  "byte_on_line": a byte index
 
-   function Get_Visible_Line_Offset (Iter : Gtk_Text_Iter) return Gint;
+   function Get_Visible_Line_Offset (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Visible_Line_Offset, "gtk_text_iter_get_visible_line_offset");
    --  Returns the offset in characters from the start of the line to the
    --  given Iter, not counting characters that are invisible due to tags with
@@ -739,7 +743,7 @@ package Gtk.Text_Iter is
 
    procedure Set_Visible_Line_Offset
       (Iter         : in out Gtk_Text_Iter;
-       Char_On_Line : Gint);
+       Char_On_Line : Glib.Gint);
    pragma Import (C, Set_Visible_Line_Offset, "gtk_text_iter_set_visible_line_offset");
    --  Like Gtk.Text_Iter.Set_Line_Offset, but the offset is in visible
    --  characters, i.e. text with a tag making it invisible is not counted in
@@ -892,17 +896,17 @@ private
 type Gtk_Text_Iter is record
    Dummy1 : System.Address := System.Null_Address;
    Dummy2 : System.Address := System.Null_Address;
-   Dummy3 : Gint := 0;
-   Dummy4 : Gint := 0;
-   Dummy5 : Gint := 0;
-   Dummy6 : Gint := 0;
-   Dummy7 : Gint := 0;
-   Dummy8 : Gint := 0;
+   Dummy3 : Glib.Gint := 0;
+   Dummy4 : Glib.Gint := 0;
+   Dummy5 : Glib.Gint := 0;
+   Dummy6 : Glib.Gint := 0;
+   Dummy7 : Glib.Gint := 0;
+   Dummy8 : Glib.Gint := 0;
    Dummy9 : System.Address := System.Null_Address;
    Dummy10 : System.Address := System.Null_Address;
-   Dummy11 : Gint := 0;
-   Dummy12 : Gint := 0;
-   Dummy13 : Gint := 0;
+   Dummy11 : Glib.Gint := 0;
+   Dummy12 : Glib.Gint := 0;
+   Dummy13 : Glib.Gint := 0;
    Dummy14 : System.Address := System.Null_Address;
 end record;
 pragma Convention (C, Gtk_Text_Iter);

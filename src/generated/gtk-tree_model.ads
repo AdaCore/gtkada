@@ -371,7 +371,7 @@ package Gtk.Tree_Model is
 
    function Get_Column_Type
       (Tree_Model : Gtk_Tree_Model;
-       Index      : Gint) return GType;
+       Index      : Glib.Gint) return GType;
    pragma Import (C, Get_Column_Type, "gtk_tree_model_get_column_type");
    --  Returns the type of the column.
    --  "index_": the column index
@@ -403,7 +403,7 @@ package Gtk.Tree_Model is
    --  "path_string": a string representation of a
    --  Gtk.Tree_Model.Gtk_Tree_Path-struct
 
-   function Get_N_Columns (Tree_Model : Gtk_Tree_Model) return Gint;
+   function Get_N_Columns (Tree_Model : Gtk_Tree_Model) return Glib.Gint;
    pragma Import (C, Get_N_Columns, "gtk_tree_model_get_n_columns");
    --  Returns the number of columns supported by Tree_Model.
 
@@ -427,7 +427,7 @@ package Gtk.Tree_Model is
    procedure Get_Value
       (Tree_Model : Gtk_Tree_Model;
        Iter       : Gtk_Tree_Iter;
-       Column     : Gint;
+       Column     : Glib.Gint;
        Value      : out Glib.Values.GValue);
    pragma Import (C, Get_Value, "gtk_tree_model_get_value");
    --  Initializes and sets Value to that at Column.
@@ -456,7 +456,8 @@ package Gtk.Tree_Model is
 
    function N_Children
       (Tree_Model : Gtk_Tree_Model;
-       Iter       : Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter) return Gint;
+       Iter       : Gtk_Tree_Iter := Gtk.Tree_Model.Null_Iter)
+       return Glib.Gint;
    --  Returns the number of children that Iter has.
    --  As a special case, if Iter is null, then the number of toplevel nodes
    --  is returned.
@@ -474,7 +475,7 @@ package Gtk.Tree_Model is
    function Nth_Child
       (Tree_Model : Gtk_Tree_Model;
        Parent     : Gtk_Tree_Iter;
-       N          : Gint) return Gtk_Tree_Iter;
+       N          : Glib.Gint) return Gtk_Tree_Iter;
    --  Sets Iter to be the child of Parent, using the given index.
    --  The first index is 0. If N is too big, or Parent has no children, Iter
    --  is set to an invalid iterator and False is returned. Parent will remain
@@ -586,7 +587,7 @@ package Gtk.Tree_Model is
        Path       : Gtk_Tree_Path;
        Iter       : Gtk_Tree_Iter;
        New_Order  : Gint_Array;
-       Length     : Gint);
+       Length     : Glib.Gint);
    --  Emits the Gtk.Tree_Model.Gtk_Tree_Model::rows-reordered signal on
    --  Tree_Model.
    --  This should be called by models when their rows have been reordered.
@@ -623,12 +624,14 @@ package Gtk.Tree_Model is
    --  Frees an iterator that has been allocated by Gtk.Tree_Model.Iter_Copy.
    --  This function is mainly used for language bindings.
 
-   procedure Append_Index (Path : Gtk_Tree_Path; Index : Gint);
+   procedure Append_Index (Path : Gtk_Tree_Path; Index : Glib.Gint);
    --  Appends a new index to a path.
    --  As a result, the depth of the path is increased.
    --  "index_": the index
 
-   function Compare (Path : Gtk_Tree_Path; B : Gtk_Tree_Path) return Gint;
+   function Compare
+      (Path : Gtk_Tree_Path;
+       B    : Gtk_Tree_Path) return Glib.Gint;
    --  Compares two paths.
    --  If A appears before B in a tree, then -1 is returned. If B appears
    --  before A, then 1 is returned. If the two nodes are equal, then 0 is
@@ -644,7 +647,7 @@ package Gtk.Tree_Model is
    procedure Path_Free (Path : Gtk_Tree_Path);
    --  Frees Path. If Path is null, it simply returns.
 
-   function Get_Depth (Path : Gtk_Tree_Path) return Gint;
+   function Get_Depth (Path : Gtk_Tree_Path) return Glib.Gint;
    --  Returns the current depth of Path.
 
    function Get_Indices (Path : Gtk_Tree_Path) return Glib.Gint_Array;
@@ -665,7 +668,7 @@ package Gtk.Tree_Model is
    --  Returns True if Path is a descendant of Ancestor.
    --  "ancestor": another Gtk.Tree_Model.Gtk_Tree_Path-struct
 
-   procedure Prepend_Index (Path : Gtk_Tree_Path; Index : Gint);
+   procedure Prepend_Index (Path : Gtk_Tree_Path; Index : Glib.Gint);
    --  Prepends a new index to a path.
    --  As a result, the depth of the path is increased.
    --  "index_": the index
@@ -956,7 +959,9 @@ package Gtk.Tree_Model is
    -- Virtual Methods --
    ---------------------
 
-   type Virtual_Get_Column_Type is access function (Tree_Model : Gtk_Tree_Model; Index : Gint) return GType;
+   type Virtual_Get_Column_Type is access function
+     (Tree_Model : Gtk_Tree_Model;
+      Index      : Glib.Gint) return GType;
    pragma Convention (C, Virtual_Get_Column_Type);
    --  Returns the type of the column.
    --  "index_": the column index
@@ -978,7 +983,7 @@ package Gtk.Tree_Model is
    --  "iter": the uninitialized Gtk.Tree_Model.Gtk_Tree_Iter-struct
    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path-struct
 
-   type Virtual_Get_N_Columns is access function (Tree_Model : Gtk_Tree_Model) return Gint;
+   type Virtual_Get_N_Columns is access function (Tree_Model : Gtk_Tree_Model) return Glib.Gint;
    pragma Convention (C, Virtual_Get_N_Columns);
    --  Returns the number of columns supported by Tree_Model.
 
@@ -994,7 +999,7 @@ package Gtk.Tree_Model is
    type Virtual_Get_Value is access procedure
      (Tree_Model : Gtk_Tree_Model;
       Iter       : Gtk_Tree_Iter;
-      Column     : Gint;
+      Column     : Glib.Gint;
       Value      : out Glib.Values.GValue);
    pragma Convention (C, Virtual_Get_Value);
    --  Initializes and sets Value to that at Column.
@@ -1028,7 +1033,7 @@ package Gtk.Tree_Model is
 
    type Virtual_Iter_N_Children is access function
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk_Tree_Iter) return Gint;
+      Iter       : access Gtk_Tree_Iter) return Glib.Gint;
    pragma Convention (C, Virtual_Iter_N_Children);
    --  Returns the number of children that Iter has.
    --  As a special case, if Iter is null, then the number of toplevel nodes
@@ -1048,7 +1053,7 @@ package Gtk.Tree_Model is
      (Tree_Model : Gtk_Tree_Model;
       Iter       : access Gtk_Tree_Iter;
       Parent     : access Gtk_Tree_Iter;
-      N          : Gint) return Glib.Gboolean;
+      N          : Glib.Gint) return Glib.Gboolean;
    pragma Convention (C, Virtual_Iter_Nth_Child);
    --  Sets Iter to be the child of Parent, using the given index.
    --  The first index is 0. If N is too big, or Parent has no children, Iter
@@ -1153,7 +1158,7 @@ package Gtk.Tree_Model is
      (Tree_Model : Gtk_Tree_Model;
       Path       : System.Address;
       Iter       : Gtk_Tree_Iter;
-      New_Order  : in out Gint);
+      New_Order  : in out Glib.Gint);
    pragma Convention (C, Virtual_Rows_Reordered);
    --  Emits the Gtk.Tree_Model.Gtk_Tree_Model::rows-reordered signal on
    --  Tree_Model.
@@ -1282,7 +1287,7 @@ package Gtk.Tree_Model is
 
 private
 type Gtk_Tree_Iter is record
-   Stamp : Gint := 0;
+   Stamp : Glib.Gint := 0;
    User_Data : System.Address := System.Null_Address;
    User_Data2 : System.Address := System.Null_Address;
    User_Data3 : System.Address := System.Null_Address;

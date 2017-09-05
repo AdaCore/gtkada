@@ -205,9 +205,9 @@ package body Gtk.Expander is
    -----------------
 
    function Get_Spacing
-      (Expander : not null access Gtk_Expander_Record) return Gint
+      (Expander : not null access Gtk_Expander_Record) return Glib.Gint
    is
-      function Internal (Expander : System.Address) return Gint;
+      function Internal (Expander : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_expander_get_spacing");
    begin
       return Internal (Get_Object (Expander));
@@ -332,9 +332,9 @@ package body Gtk.Expander is
 
    procedure Set_Spacing
       (Expander : not null access Gtk_Expander_Record;
-       Spacing  : Gint)
+       Spacing  : Glib.Gint)
    is
-      procedure Internal (Expander : System.Address; Spacing : Gint);
+      procedure Internal (Expander : System.Address; Spacing : Glib.Gint);
       pragma Import (C, Internal, "gtk_expander_set_spacing");
    begin
       Internal (Get_Object (Expander), Spacing);

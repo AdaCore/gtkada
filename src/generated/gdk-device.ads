@@ -148,12 +148,12 @@ package Gdk.Device is
    --  "mode": the input mode.
 
    function Get_N_Axes
-      (Self : not null access Gdk_Device_Record) return Gint;
+      (Self : not null access Gdk_Device_Record) return Glib.Gint;
    --  Returns the number of axes the device currently has.
    --  Since: gtk+ 3.0
 
    function Get_N_Keys
-      (Self : not null access Gdk_Device_Record) return Gint;
+      (Self : not null access Gdk_Device_Record) return Glib.Gint;
    --  Returns the number of keys the device currently has.
    --  Since: gtk+ 2.24
 
@@ -279,8 +279,8 @@ package Gdk.Device is
    procedure Warp
       (Self   : not null access Gdk_Device_Record;
        Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class;
-       X      : Gint;
-       Y      : Gint);
+       X      : Glib.Gint;
+       Y      : Glib.Gint);
    --  Warps Device in Display to the point X,Y on the screen Screen, unless
    --  the device is confined to a window by a grab, in which case it will be
    --  moved as far as allowed by the grab. Warping the pointer creates events

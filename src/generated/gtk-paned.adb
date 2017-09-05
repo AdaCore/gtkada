@@ -226,9 +226,9 @@ package body Gtk.Paned is
    ------------------
 
    function Get_Position
-      (Paned : not null access Gtk_Paned_Record) return Gint
+      (Paned : not null access Gtk_Paned_Record) return Glib.Gint
    is
-      function Internal (Paned : System.Address) return Gint;
+      function Internal (Paned : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_paned_get_position");
    begin
       return Internal (Get_Object (Paned));
@@ -280,9 +280,9 @@ package body Gtk.Paned is
 
    procedure Set_Position
       (Paned    : not null access Gtk_Paned_Record;
-       Position : Gint)
+       Position : Glib.Gint)
    is
-      procedure Internal (Paned : System.Address; Position : Gint);
+      procedure Internal (Paned : System.Address; Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_paned_set_position");
    begin
       Internal (Get_Object (Paned), Position);

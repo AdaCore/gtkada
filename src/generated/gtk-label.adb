@@ -243,13 +243,13 @@ package body Gtk.Label is
 
    procedure Get_Layout_Offsets
       (Label : not null access Gtk_Label_Record;
-       X     : out Gint;
-       Y     : out Gint)
+       X     : out Glib.Gint;
+       Y     : out Glib.Gint)
    is
       procedure Internal
          (Label : System.Address;
-          X     : out Gint;
-          Y     : out Gint);
+          X     : out Glib.Gint;
+          Y     : out Glib.Gint);
       pragma Import (C, Internal, "gtk_label_get_layout_offsets");
    begin
       Internal (Get_Object (Label), X, Y);
@@ -287,8 +287,10 @@ package body Gtk.Label is
    -- Get_Lines --
    ---------------
 
-   function Get_Lines (Label : not null access Gtk_Label_Record) return Gint is
-      function Internal (Label : System.Address) return Gint;
+   function Get_Lines
+      (Label : not null access Gtk_Label_Record) return Glib.Gint
+   is
+      function Internal (Label : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_label_get_lines");
    begin
       return Internal (Get_Object (Label));
@@ -299,9 +301,9 @@ package body Gtk.Label is
    -------------------------
 
    function Get_Max_Width_Chars
-      (Label : not null access Gtk_Label_Record) return Gint
+      (Label : not null access Gtk_Label_Record) return Glib.Gint
    is
-      function Internal (Label : System.Address) return Gint;
+      function Internal (Label : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_label_get_max_width_chars");
    begin
       return Internal (Get_Object (Label));
@@ -354,17 +356,17 @@ package body Gtk.Label is
 
    procedure Get_Selection_Bounds
       (Label         : not null access Gtk_Label_Record;
-       Start         : out Gint;
-       The_End       : out Gint;
+       Start         : out Glib.Gint;
+       The_End       : out Glib.Gint;
        Has_Selection : out Boolean)
    is
       function Internal
          (Label       : System.Address;
-          Acc_Start   : access Gint;
-          Acc_The_End : access Gint) return Glib.Gboolean;
+          Acc_Start   : access Glib.Gint;
+          Acc_The_End : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_label_get_selection_bounds");
-      Acc_Start   : aliased Gint;
-      Acc_The_End : aliased Gint;
+      Acc_Start   : aliased Glib.Gint;
+      Acc_The_End : aliased Glib.Gint;
       Tmp_Return  : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Label), Acc_Start'Access, Acc_The_End'Access);
@@ -444,9 +446,9 @@ package body Gtk.Label is
    ---------------------
 
    function Get_Width_Chars
-      (Label : not null access Gtk_Label_Record) return Gint
+      (Label : not null access Gtk_Label_Record) return Glib.Gint
    is
-      function Internal (Label : System.Address) return Gint;
+      function Internal (Label : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_label_get_width_chars");
    begin
       return Internal (Get_Object (Label));
@@ -458,13 +460,13 @@ package body Gtk.Label is
 
    procedure Select_Region
       (Label        : not null access Gtk_Label_Record;
-       Start_Offset : Gint := -1;
-       End_Offset   : Gint := -1)
+       Start_Offset : Glib.Gint := -1;
+       End_Offset   : Glib.Gint := -1)
    is
       procedure Internal
          (Label        : System.Address;
-          Start_Offset : Gint;
-          End_Offset   : Gint);
+          Start_Offset : Glib.Gint;
+          End_Offset   : Glib.Gint);
       pragma Import (C, Internal, "gtk_label_select_region");
    begin
       Internal (Get_Object (Label), Start_Offset, End_Offset);
@@ -584,9 +586,9 @@ package body Gtk.Label is
 
    procedure Set_Lines
       (Label : not null access Gtk_Label_Record;
-       Lines : Gint)
+       Lines : Glib.Gint)
    is
-      procedure Internal (Label : System.Address; Lines : Gint);
+      procedure Internal (Label : System.Address; Lines : Glib.Gint);
       pragma Import (C, Internal, "gtk_label_set_lines");
    begin
       Internal (Get_Object (Label), Lines);
@@ -634,9 +636,9 @@ package body Gtk.Label is
 
    procedure Set_Max_Width_Chars
       (Label   : not null access Gtk_Label_Record;
-       N_Chars : Gint)
+       N_Chars : Glib.Gint)
    is
-      procedure Internal (Label : System.Address; N_Chars : Gint);
+      procedure Internal (Label : System.Address; N_Chars : Glib.Gint);
       pragma Import (C, Internal, "gtk_label_set_max_width_chars");
    begin
       Internal (Get_Object (Label), N_Chars);
@@ -790,9 +792,9 @@ package body Gtk.Label is
 
    procedure Set_Width_Chars
       (Label   : not null access Gtk_Label_Record;
-       N_Chars : Gint)
+       N_Chars : Glib.Gint)
    is
-      procedure Internal (Label : System.Address; N_Chars : Gint);
+      procedure Internal (Label : System.Address; N_Chars : Glib.Gint);
       pragma Import (C, Internal, "gtk_label_set_width_chars");
    begin
       Internal (Get_Object (Label), N_Chars);

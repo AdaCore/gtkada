@@ -95,13 +95,13 @@ package body Gtk.Hsv is
 
    procedure Get_Metrics
       (Self       : not null access Gtk_Hsv_Record;
-       Size       : out Gint;
-       Ring_Width : out Gint)
+       Size       : out Glib.Gint;
+       Ring_Width : out Glib.Gint)
    is
       procedure Internal
          (Self       : System.Address;
-          Size       : out Gint;
-          Ring_Width : out Gint);
+          Size       : out Glib.Gint;
+          Ring_Width : out Glib.Gint);
       pragma Import (C, Internal, "gtk_hsv_get_metrics");
    begin
       Internal (Get_Object (Self), Size, Ring_Width);
@@ -146,13 +146,13 @@ package body Gtk.Hsv is
 
    procedure Set_Metrics
       (Self       : not null access Gtk_Hsv_Record;
-       Size       : Gint;
-       Ring_Width : Gint)
+       Size       : Glib.Gint;
+       Ring_Width : Glib.Gint)
    is
       procedure Internal
          (Self       : System.Address;
-          Size       : Gint;
-          Ring_Width : Gint);
+          Size       : Glib.Gint;
+          Ring_Width : Glib.Gint);
       pragma Import (C, Internal, "gtk_hsv_set_metrics");
    begin
       Internal (Get_Object (Self), Size, Ring_Width);

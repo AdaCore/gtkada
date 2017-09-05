@@ -206,7 +206,7 @@ package Gtk.Icon_Theme is
    function Choose_Icon
       (Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
        Icon_Names : GNAT.Strings.String_List;
-       Size       : Gint;
+       Size       : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info;
    --  Looks up a named icon and returns a Gtk.Icon_Theme.Gtk_Icon_Info
    --  containing information such as the filename of the icon. The icon can
@@ -223,8 +223,8 @@ package Gtk.Icon_Theme is
    function Choose_Icon_For_Scale
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Names : GNAT.Strings.String_List;
-       Size       : Gint;
-       Scale      : Gint;
+       Size       : Glib.Gint;
+       Scale      : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info;
    --  Looks up a named icon for a particular window scale and returns a
    --  Gtk.Icon_Theme.Gtk_Icon_Info containing information such as the filename
@@ -307,7 +307,7 @@ package Gtk.Icon_Theme is
    function Load_Icon
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Name  : UTF8_String;
-       Size       : Gint;
+       Size       : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags;
        Error      : access Glib.Error.GError) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Looks up an icon in an icon theme, scales it to the given size and
@@ -346,8 +346,8 @@ package Gtk.Icon_Theme is
    function Load_Icon_For_Scale
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Name  : UTF8_String;
-       Size       : Gint;
-       Scale      : Gint;
+       Size       : Glib.Gint;
+       Scale      : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags;
        Error      : access Glib.Error.GError) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Looks up an icon in an icon theme for a particular window scale, scales
@@ -371,8 +371,8 @@ package Gtk.Icon_Theme is
    function Load_Surface
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Name  : UTF8_String;
-       Size       : Gint;
-       Scale      : Gint;
+       Size       : Glib.Gint;
+       Scale      : Glib.Gint;
        For_Window : Gdk.Gdk_Window;
        Flags      : Gtk_Icon_Lookup_Flags;
        Error      : access Glib.Error.GError) return Cairo.Cairo_Surface;
@@ -411,7 +411,7 @@ package Gtk.Icon_Theme is
    function Lookup_By_Gicon
       (Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
        Icon       : Glib.G_Icon.G_Icon;
-       Size       : Gint;
+       Size       : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info;
    --  Looks up an icon and returns a Gtk.Icon_Theme.Gtk_Icon_Info containing
    --  information such as the filename of the icon. The icon can then be
@@ -424,8 +424,8 @@ package Gtk.Icon_Theme is
    function Lookup_By_Gicon_For_Scale
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon       : Glib.G_Icon.G_Icon;
-       Size       : Gint;
-       Scale      : Gint;
+       Size       : Glib.Gint;
+       Scale      : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info;
    --  Looks up an icon and returns a Gtk.Icon_Theme.Gtk_Icon_Info containing
    --  information such as the filename of the icon. The icon can then be
@@ -439,7 +439,7 @@ package Gtk.Icon_Theme is
    function Lookup_Icon
       (Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
        Icon_Name  : UTF8_String;
-       Size       : Gint;
+       Size       : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info;
    --  Looks up a named icon and returns a Gtk.Icon_Theme.Gtk_Icon_Info
    --  containing information such as the filename of the icon. The icon can
@@ -454,8 +454,8 @@ package Gtk.Icon_Theme is
    function Lookup_Icon_For_Scale
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
        Icon_Name  : UTF8_String;
-       Size       : Gint;
-       Scale      : Gint;
+       Size       : Glib.Gint;
+       Scale      : Glib.Gint;
        Flags      : Gtk_Icon_Lookup_Flags) return Gtk_Icon_Info;
    --  Looks up a named icon for a particular window scale and returns a
    --  Gtk.Icon_Theme.Gtk_Icon_Info containing information such as the filename
@@ -526,7 +526,7 @@ package Gtk.Icon_Theme is
    --  Deprecated since 3.14, 1
 
    function Get_Base_Scale
-      (Icon_Info : not null access Gtk_Icon_Info_Record) return Gint;
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return Glib.Gint;
    --  Gets the base scale for the icon. The base scale is a scale for the
    --  icon that was specified by the icon theme creator. For instance an icon
    --  drawn for a high-dpi screen with window scale 2 for a base size of 32
@@ -534,7 +534,7 @@ package Gtk.Icon_Theme is
    --  Since: gtk+ 3.10
 
    function Get_Base_Size
-      (Icon_Info : not null access Gtk_Icon_Info_Record) return Gint;
+      (Icon_Info : not null access Gtk_Icon_Info_Record) return Glib.Gint;
    --  Gets the base size for the icon. The base size is a size for the icon
    --  that was specified by the icon theme creator. This may be different than
    --  the actual size of image; an example of this is small emblem icons that
@@ -689,7 +689,7 @@ package Gtk.Icon_Theme is
 
    procedure Add_Builtin_Icon
       (Icon_Name : UTF8_String;
-       Size      : Gint;
+       Size      : Glib.Gint;
        Pixbuf    : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
    pragma Obsolescent (Add_Builtin_Icon);
    --  Registers a built-in icon for icon theme lookups. The idea of built-in

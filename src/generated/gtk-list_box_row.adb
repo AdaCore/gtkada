@@ -125,9 +125,9 @@ package body Gtk.List_Box_Row is
    ---------------
 
    function Get_Index
-      (Self : not null access Gtk_List_Box_Row_Record) return Gint
+      (Self : not null access Gtk_List_Box_Row_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_list_box_row_get_index");
    begin
       return Internal (Get_Object (Self));

@@ -144,28 +144,28 @@ package Gtk.Calendar is
    --  "day": the day number between 1 and 31.
 
    function Get_Detail_Height_Rows
-      (Calendar : not null access Gtk_Calendar_Record) return Gint;
+      (Calendar : not null access Gtk_Calendar_Record) return Glib.Gint;
    --  Queries the height of detail cells, in rows. See
    --  Gtk.Calendar.Gtk_Calendar:detail-width-chars.
    --  Since: gtk+ 2.14
 
    procedure Set_Detail_Height_Rows
       (Calendar : not null access Gtk_Calendar_Record;
-       Rows     : Gint);
+       Rows     : Glib.Gint);
    --  Updates the height of detail cells. See
    --  Gtk.Calendar.Gtk_Calendar:detail-height-rows.
    --  Since: gtk+ 2.14
    --  "rows": detail height in rows.
 
    function Get_Detail_Width_Chars
-      (Calendar : not null access Gtk_Calendar_Record) return Gint;
+      (Calendar : not null access Gtk_Calendar_Record) return Glib.Gint;
    --  Queries the width of detail cells, in characters. See
    --  Gtk.Calendar.Gtk_Calendar:detail-width-chars.
    --  Since: gtk+ 2.14
 
    procedure Set_Detail_Width_Chars
       (Calendar : not null access Gtk_Calendar_Record;
-       Chars    : Gint);
+       Chars    : Glib.Gint);
    --  Updates the width of detail cells. See
    --  Gtk.Calendar.Gtk_Calendar:detail-width-chars.
    --  Since: gtk+ 2.14

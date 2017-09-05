@@ -212,8 +212,10 @@ package body Glib.Cancellable is
    -- Get_Fd --
    ------------
 
-   function Get_Fd (Self : not null access Gcancellable_Record) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Fd
+      (Self : not null access Gcancellable_Record) return Glib.Gint
+   is
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "g_cancellable_get_fd");
    begin
       return Internal (Get_Object (Self));

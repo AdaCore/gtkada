@@ -199,9 +199,9 @@ package body Gtk.GEntry is
    ----------------------------------
 
    function Get_Current_Icon_Drag_Source
-      (The_Entry : not null access Gtk_Entry_Record) return Gint
+      (The_Entry : not null access Gtk_Entry_Record) return Glib.Gint
    is
-      function Internal (The_Entry : System.Address) return Gint;
+      function Internal (The_Entry : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_entry_get_current_icon_drag_source");
    begin
       return Internal (Get_Object (The_Entry));
@@ -275,13 +275,13 @@ package body Gtk.GEntry is
 
    function Get_Icon_At_Pos
       (The_Entry : not null access Gtk_Entry_Record;
-       X         : Gint;
-       Y         : Gint) return Gint
+       X         : Glib.Gint;
+       Y         : Glib.Gint) return Glib.Gint
    is
       function Internal
          (The_Entry : System.Address;
-          X         : Gint;
-          Y         : Gint) return Gint;
+          X         : Glib.Gint;
+          Y         : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gtk_entry_get_icon_at_pos");
    begin
       return Internal (Get_Object (The_Entry), X, Y);
@@ -500,13 +500,13 @@ package body Gtk.GEntry is
 
    procedure Get_Layout_Offsets
       (The_Entry : not null access Gtk_Entry_Record;
-       X         : out Gint;
-       Y         : out Gint)
+       X         : out Glib.Gint;
+       Y         : out Glib.Gint)
    is
       procedure Internal
          (The_Entry : System.Address;
-          X         : out Gint;
-          Y         : out Gint);
+          X         : out Glib.Gint;
+          Y         : out Glib.Gint);
       pragma Import (C, Internal, "gtk_entry_get_layout_offsets");
    begin
       Internal (Get_Object (The_Entry), X, Y);
@@ -517,9 +517,9 @@ package body Gtk.GEntry is
    --------------------
 
    function Get_Max_Length
-      (The_Entry : not null access Gtk_Entry_Record) return Gint
+      (The_Entry : not null access Gtk_Entry_Record) return Glib.Gint
    is
-      function Internal (The_Entry : System.Address) return Gint;
+      function Internal (The_Entry : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_entry_get_max_length");
    begin
       return Internal (Get_Object (The_Entry));
@@ -530,9 +530,9 @@ package body Gtk.GEntry is
    -------------------------
 
    function Get_Max_Width_Chars
-      (The_Entry : not null access Gtk_Entry_Record) return Gint
+      (The_Entry : not null access Gtk_Entry_Record) return Glib.Gint
    is
-      function Internal (The_Entry : System.Address) return Gint;
+      function Internal (The_Entry : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_entry_get_max_width_chars");
    begin
       return Internal (Get_Object (The_Entry));
@@ -666,9 +666,9 @@ package body Gtk.GEntry is
    ---------------------
 
    function Get_Width_Chars
-      (The_Entry : not null access Gtk_Entry_Record) return Gint
+      (The_Entry : not null access Gtk_Entry_Record) return Glib.Gint
    is
-      function Internal (The_Entry : System.Address) return Gint;
+      function Internal (The_Entry : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_entry_get_width_chars");
    begin
       return Internal (Get_Object (The_Entry));
@@ -696,11 +696,11 @@ package body Gtk.GEntry is
 
    function Layout_Index_To_Text_Index
       (The_Entry    : not null access Gtk_Entry_Record;
-       Layout_Index : Gint) return Gint
+       Layout_Index : Glib.Gint) return Glib.Gint
    is
       function Internal
          (The_Entry    : System.Address;
-          Layout_Index : Gint) return Gint;
+          Layout_Index : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gtk_entry_layout_index_to_text_index");
    begin
       return Internal (Get_Object (The_Entry), Layout_Index);
@@ -1098,9 +1098,9 @@ package body Gtk.GEntry is
 
    procedure Set_Max_Length
       (The_Entry : not null access Gtk_Entry_Record;
-       Max       : Gint)
+       Max       : Glib.Gint)
    is
-      procedure Internal (The_Entry : System.Address; Max : Gint);
+      procedure Internal (The_Entry : System.Address; Max : Glib.Gint);
       pragma Import (C, Internal, "gtk_entry_set_max_length");
    begin
       Internal (Get_Object (The_Entry), Max);
@@ -1112,9 +1112,9 @@ package body Gtk.GEntry is
 
    procedure Set_Max_Width_Chars
       (The_Entry : not null access Gtk_Entry_Record;
-       N_Chars   : Gint)
+       N_Chars   : Glib.Gint)
    is
-      procedure Internal (The_Entry : System.Address; N_Chars : Gint);
+      procedure Internal (The_Entry : System.Address; N_Chars : Glib.Gint);
       pragma Import (C, Internal, "gtk_entry_set_max_width_chars");
    begin
       Internal (Get_Object (The_Entry), N_Chars);
@@ -1236,9 +1236,9 @@ package body Gtk.GEntry is
 
    procedure Set_Width_Chars
       (The_Entry : not null access Gtk_Entry_Record;
-       Width     : Gint)
+       Width     : Glib.Gint)
    is
-      procedure Internal (The_Entry : System.Address; Width : Gint);
+      procedure Internal (The_Entry : System.Address; Width : Glib.Gint);
       pragma Import (C, Internal, "gtk_entry_set_width_chars");
    begin
       Internal (Get_Object (The_Entry), Width);
@@ -1250,11 +1250,11 @@ package body Gtk.GEntry is
 
    function Text_Index_To_Layout_Index
       (The_Entry  : not null access Gtk_Entry_Record;
-       Text_Index : Gint) return Gint
+       Text_Index : Glib.Gint) return Glib.Gint
    is
       function Internal
          (The_Entry  : System.Address;
-          Text_Index : Gint) return Gint;
+          Text_Index : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gtk_entry_text_index_to_layout_index");
    begin
       return Internal (Get_Object (The_Entry), Text_Index);
@@ -1312,13 +1312,13 @@ package body Gtk.GEntry is
 
    procedure Delete_Text
       (Editable  : not null access Gtk_Entry_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1)
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1)
    is
       procedure Internal
          (Editable  : System.Address;
-          Start_Pos : Gint;
-          End_Pos   : Gint);
+          Start_Pos : Glib.Gint;
+          End_Pos   : Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_delete_text");
    begin
       Internal (Get_Object (Editable), Start_Pos, End_Pos);
@@ -1341,13 +1341,13 @@ package body Gtk.GEntry is
 
    function Get_Chars
       (Editable  : not null access Gtk_Entry_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1) return UTF8_String
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1) return UTF8_String
    is
       function Internal
          (Editable  : System.Address;
-          Start_Pos : Gint;
-          End_Pos   : Gint) return Interfaces.C.Strings.chars_ptr;
+          Start_Pos : Glib.Gint;
+          End_Pos   : Glib.Gint) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_editable_get_chars");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Editable), Start_Pos, End_Pos));
@@ -1371,9 +1371,9 @@ package body Gtk.GEntry is
    ------------------
 
    function Get_Position
-      (Editable : not null access Gtk_Entry_Record) return Gint
+      (Editable : not null access Gtk_Entry_Record) return Glib.Gint
    is
-      function Internal (Editable : System.Address) return Gint;
+      function Internal (Editable : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_editable_get_position");
    begin
       return Internal (Get_Object (Editable));
@@ -1385,17 +1385,17 @@ package body Gtk.GEntry is
 
    procedure Get_Selection_Bounds
       (Editable      : not null access Gtk_Entry_Record;
-       Start_Pos     : out Gint;
-       End_Pos       : out Gint;
+       Start_Pos     : out Glib.Gint;
+       End_Pos       : out Glib.Gint;
        Has_Selection : out Boolean)
    is
       function Internal
          (Editable      : System.Address;
-          Acc_Start_Pos : access Gint;
-          Acc_End_Pos   : access Gint) return Glib.Gboolean;
+          Acc_Start_Pos : access Glib.Gint;
+          Acc_End_Pos   : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_editable_get_selection_bounds");
-      Acc_Start_Pos : aliased Gint;
-      Acc_End_Pos   : aliased Gint;
+      Acc_Start_Pos : aliased Glib.Gint;
+      Acc_End_Pos   : aliased Glib.Gint;
       Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Editable), Acc_Start_Pos'Access, Acc_End_Pos'Access);
@@ -1411,14 +1411,14 @@ package body Gtk.GEntry is
    procedure Insert_Text
       (Editable        : not null access Gtk_Entry_Record;
        New_Text        : UTF8_String;
-       New_Text_Length : Gint;
-       Position        : in out Gint)
+       New_Text_Length : Glib.Gint;
+       Position        : in out Glib.Gint)
    is
       procedure Internal
          (Editable        : System.Address;
           New_Text        : Interfaces.C.Strings.chars_ptr;
-          New_Text_Length : Gint;
-          Position        : in out Gint);
+          New_Text_Length : Glib.Gint;
+          Position        : in out Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_insert_text");
       Tmp_New_Text : Interfaces.C.Strings.chars_ptr := New_String (New_Text);
    begin
@@ -1456,13 +1456,13 @@ package body Gtk.GEntry is
 
    procedure Select_Region
       (Editable  : not null access Gtk_Entry_Record;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1)
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1)
    is
       procedure Internal
          (Editable  : System.Address;
-          Start_Pos : Gint;
-          End_Pos   : Gint);
+          Start_Pos : Glib.Gint;
+          End_Pos   : Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_select_region");
    begin
       Internal (Get_Object (Editable), Start_Pos, End_Pos);
@@ -1490,9 +1490,9 @@ package body Gtk.GEntry is
 
    procedure Set_Position
       (Editable : not null access Gtk_Entry_Record;
-       Position : Gint)
+       Position : Glib.Gint)
    is
-      procedure Internal (Editable : System.Address; Position : Gint);
+      procedure Internal (Editable : System.Address; Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_set_position");
    begin
       Internal (Get_Object (Editable), Position);

@@ -110,13 +110,13 @@ package Gtk.Gesture_Multi_Press is
 
    type Cb_Gtk_Gesture_Multi_Press_Gint_Gdouble_Gdouble_Void is not null access procedure
      (Self    : access Gtk_Gesture_Multi_Press_Record'Class;
-      N_Press : Gint;
+      N_Press : Glib.Gint;
       X       : Gdouble;
       Y       : Gdouble);
 
    type Cb_GObject_Gint_Gdouble_Gdouble_Void is not null access procedure
      (Self    : access Glib.Object.GObject_Record'Class;
-      N_Press : Gint;
+      N_Press : Glib.Gint;
       X       : Gdouble;
       Y       : Gdouble);
 

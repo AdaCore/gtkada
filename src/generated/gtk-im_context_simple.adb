@@ -74,14 +74,14 @@ package body Gtk.IM_Context_Simple is
    procedure Add_Table
       (Self        : not null access Gtk_IM_Context_Simple_Record;
        Data        : Gint_Array;
-       Max_Seq_Len : Gint;
-       N_Seqs      : Gint)
+       Max_Seq_Len : Glib.Gint;
+       N_Seqs      : Glib.Gint)
    is
       procedure Internal
          (Self        : System.Address;
           Data        : System.Address;
-          Max_Seq_Len : Gint;
-          N_Seqs      : Gint);
+          Max_Seq_Len : Glib.Gint;
+          N_Seqs      : Glib.Gint);
       pragma Import (C, Internal, "gtk_im_context_simple_add_table");
    begin
       Internal (Get_Object (Self), Data (Data'First)'Address, Max_Seq_Len, N_Seqs);

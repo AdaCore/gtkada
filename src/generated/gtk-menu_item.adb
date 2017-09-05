@@ -394,9 +394,11 @@ package body Gtk.Menu_Item is
 
    procedure Toggle_Size_Allocate
       (Menu_Item  : not null access Gtk_Menu_Item_Record;
-       Allocation : Gint)
+       Allocation : Glib.Gint)
    is
-      procedure Internal (Menu_Item : System.Address; Allocation : Gint);
+      procedure Internal
+         (Menu_Item  : System.Address;
+          Allocation : Glib.Gint);
       pragma Import (C, Internal, "gtk_menu_item_toggle_size_allocate");
    begin
       Internal (Get_Object (Menu_Item), Allocation);
@@ -408,11 +410,11 @@ package body Gtk.Menu_Item is
 
    procedure Toggle_Size_Request
       (Menu_Item   : not null access Gtk_Menu_Item_Record;
-       Requisition : in out Gint)
+       Requisition : in out Glib.Gint)
    is
       procedure Internal
          (Menu_Item   : System.Address;
-          Requisition : in out Gint);
+          Requisition : in out Glib.Gint);
       pragma Import (C, Internal, "gtk_menu_item_toggle_size_request");
    begin
       Internal (Get_Object (Menu_Item), Requisition);

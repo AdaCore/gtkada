@@ -246,14 +246,14 @@ package Gtk.Menu_Item is
 
    procedure Toggle_Size_Allocate
       (Menu_Item  : not null access Gtk_Menu_Item_Record;
-       Allocation : Gint);
+       Allocation : Glib.Gint);
    --  Emits the Gtk.Menu_Item.Gtk_Menu_Item::toggle-size-allocate signal on
    --  the given item.
    --  "allocation": the allocation to use as signal data.
 
    procedure Toggle_Size_Request
       (Menu_Item   : not null access Gtk_Menu_Item_Record;
-       Requisition : in out Gint);
+       Requisition : in out Glib.Gint);
    --  Emits the Gtk.Menu_Item.Gtk_Menu_Item::toggle-size-request signal on
    --  the given item.
    --  "requisition": the requisition to use as signal data.
@@ -409,11 +409,11 @@ package Gtk.Menu_Item is
 
    type Cb_Gtk_Menu_Item_Gint_Void is not null access procedure
      (Self   : access Gtk_Menu_Item_Record'Class;
-      Object : Gint);
+      Object : Glib.Gint);
 
    type Cb_GObject_Gint_Void is not null access procedure
      (Self   : access Glib.Object.GObject_Record'Class;
-      Object : Gint);
+      Object : Glib.Gint);
 
    Signal_Toggle_Size_Allocate : constant Glib.Signal_Name := "toggle-size-allocate";
    procedure On_Toggle_Size_Allocate

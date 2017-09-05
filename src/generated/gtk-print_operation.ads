@@ -256,7 +256,7 @@ package Gtk.Print_Operation is
    --  "has_selection": True indicates that a selection exists
 
    function Get_N_Pages_To_Print
-      (Self : not null access Gtk_Print_Operation_Record) return Gint;
+      (Self : not null access Gtk_Print_Operation_Record) return Glib.Gint;
    --  Returns the number of pages that will be printed.
    --  Note that this value is set during print preparation phase
    --  (Gtk.Print_Operation.Status_Preparing), so this function should never be
@@ -377,7 +377,7 @@ package Gtk.Print_Operation is
 
    procedure Set_Current_Page
       (Self         : not null access Gtk_Print_Operation_Record;
-       Current_Page : Gint);
+       Current_Page : Glib.Gint);
    --  Sets the current page.
    --  If this is called before Gtk.Print_Operation.Run, the user will be able
    --  to select to print only the current page.
@@ -425,7 +425,7 @@ package Gtk.Print_Operation is
 
    procedure Set_N_Pages
       (Self    : not null access Gtk_Print_Operation_Record;
-       N_Pages : Gint);
+       N_Pages : Glib.Gint);
    --  Sets the number of pages in the document.
    --  This must be set to a positive number before the rendering starts. It
    --  may be set in a Gtk.Print_Operation.Gtk_Print_Operation::begin-print
@@ -489,11 +489,11 @@ package Gtk.Print_Operation is
 
    function Is_Selected
       (Preview : not null access Gtk_Print_Operation_Record;
-       Page_Nr : Gint) return Boolean;
+       Page_Nr : Glib.Gint) return Boolean;
 
    procedure Render_Page
       (Preview : not null access Gtk_Print_Operation_Record;
-       Page_Nr : Gint);
+       Page_Nr : Glib.Gint);
 
    ----------------
    -- Properties --
@@ -756,12 +756,12 @@ package Gtk.Print_Operation is
    type Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Void is not null access procedure
      (Self    : access Gtk_Print_Operation_Record'Class;
       Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-      Page_Nr : Gint);
+      Page_Nr : Glib.Gint);
 
    type Cb_GObject_Gtk_Print_Context_Gint_Void is not null access procedure
      (Self    : access Glib.Object.GObject_Record'Class;
       Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-      Page_Nr : Gint);
+      Page_Nr : Glib.Gint);
 
    Signal_Draw_Page : constant Glib.Signal_Name := "draw-page";
    procedure On_Draw_Page
@@ -905,13 +905,13 @@ package Gtk.Print_Operation is
    type Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void is not null access procedure
      (Self    : access Gtk_Print_Operation_Record'Class;
       Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-      Page_Nr : Gint;
+      Page_Nr : Glib.Gint;
       Setup   : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class);
 
    type Cb_GObject_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void is not null access procedure
      (Self    : access Glib.Object.GObject_Record'Class;
       Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
-      Page_Nr : Gint;
+      Page_Nr : Glib.Gint;
       Setup   : not null access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class);
 
    Signal_Request_Page_Setup : constant Glib.Signal_Name := "request-page-setup";

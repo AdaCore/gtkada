@@ -315,7 +315,7 @@ package Gtk.Text_Buffer is
    --  "end": iterator to initialize with the end iterator
 
    function Get_Char_Count
-      (Buffer : not null access Gtk_Text_Buffer_Record) return Gint;
+      (Buffer : not null access Gtk_Text_Buffer_Record) return Glib.Gint;
    --  Gets the number of characters in the buffer; note that characters and
    --  bytes are not the same, you can't e.g. expect the contents of the buffer
    --  in string form to be this many bytes long. The character count is
@@ -378,7 +378,7 @@ package Gtk.Text_Buffer is
    procedure Get_Iter_At_Line
       (Buffer      : not null access Gtk_Text_Buffer_Record;
        Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Line_Number : Gint);
+       Line_Number : Glib.Gint);
    --  Initializes Iter to the start of the given line. If Line_Number is
    --  greater than the number of lines in the Buffer, the end iterator is
    --  returned.
@@ -388,8 +388,8 @@ package Gtk.Text_Buffer is
    procedure Get_Iter_At_Line_Index
       (Buffer      : not null access Gtk_Text_Buffer_Record;
        Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Line_Number : Gint;
-       Byte_Index  : Gint);
+       Line_Number : Glib.Gint;
+       Byte_Index  : Glib.Gint);
    --  Obtains an iterator pointing to Byte_Index within the given line.
    --  Byte_Index must be the start of a UTF-8 character, and must not be
    --  beyond the end of the line. Note bytes, not characters; UTF-8 may encode
@@ -401,8 +401,8 @@ package Gtk.Text_Buffer is
    procedure Get_Iter_At_Line_Offset
       (Buffer      : not null access Gtk_Text_Buffer_Record;
        Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Line_Number : Gint;
-       Char_Offset : Gint);
+       Line_Number : Glib.Gint;
+       Char_Offset : Glib.Gint);
    --  Obtains an iterator pointing to Char_Offset within the given line. The
    --  Char_Offset must exist, offsets off the end of the line are not allowed.
    --  Note characters, not bytes; UTF-8 may encode one character as multiple
@@ -422,7 +422,7 @@ package Gtk.Text_Buffer is
    procedure Get_Iter_At_Offset
       (Buffer      : not null access Gtk_Text_Buffer_Record;
        Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Char_Offset : Gint);
+       Char_Offset : Glib.Gint);
    --  Initializes Iter to a position Char_Offset chars from the start of the
    --  entire buffer. If Char_Offset is -1 or greater than the number of
    --  characters in the buffer, Iter is initialized to the end iterator, the
@@ -431,7 +431,7 @@ package Gtk.Text_Buffer is
    --  "char_offset": char offset from start of buffer, counting from 0, or -1
 
    function Get_Line_Count
-      (Buffer : not null access Gtk_Text_Buffer_Record) return Gint;
+      (Buffer : not null access Gtk_Text_Buffer_Record) return Glib.Gint;
    --  Obtains the number of lines in the buffer. This value is cached, so the
    --  function is very fast.
 
@@ -1103,13 +1103,13 @@ package Gtk.Text_Buffer is
      (Self     : access Gtk_Text_Buffer_Record'Class;
       Location : Gtk.Text_Iter.Gtk_Text_Iter;
       Text     : UTF8_String;
-      Len      : Gint);
+      Len      : Glib.Gint);
 
    type Cb_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void is not null access procedure
      (Self     : access Glib.Object.GObject_Record'Class;
       Location : Gtk.Text_Iter.Gtk_Text_Iter;
       Text     : UTF8_String;
-      Len      : Gint);
+      Len      : Glib.Gint);
 
    Signal_Insert_Text : constant Glib.Signal_Name := "insert-text";
    procedure On_Insert_Text

@@ -54,11 +54,11 @@ package Gtk.Entry_Buffer is
    procedure Gtk_New
       (Self            : out Gtk_Entry_Buffer;
        Initial_Chars   : UTF8_String := "";
-       N_Initial_Chars : Gint);
+       N_Initial_Chars : Glib.Gint);
    procedure Initialize
       (Self            : not null access Gtk_Entry_Buffer_Record'Class;
        Initial_Chars   : UTF8_String := "";
-       N_Initial_Chars : Gint);
+       N_Initial_Chars : Glib.Gint);
    --  Create a new GtkEntryBuffer object.
    --  Optionally, specify initial text to set in the buffer.
    --  Since: gtk+ 2.18
@@ -69,7 +69,7 @@ package Gtk.Entry_Buffer is
 
    function Gtk_Entry_Buffer_New
       (Initial_Chars   : UTF8_String := "";
-       N_Initial_Chars : Gint) return Gtk_Entry_Buffer;
+       N_Initial_Chars : Glib.Gint) return Gtk_Entry_Buffer;
    --  Create a new GtkEntryBuffer object.
    --  Optionally, specify initial text to set in the buffer.
    --  Since: gtk+ 2.18
@@ -86,7 +86,7 @@ package Gtk.Entry_Buffer is
    function Delete_Text
       (Self     : not null access Gtk_Entry_Buffer_Record;
        Position : Guint;
-       N_Chars  : Gint) return Guint;
+       N_Chars  : Glib.Gint) return Guint;
    --  Deletes a sequence of characters from the buffer. N_Chars characters
    --  are deleted starting at Position. If N_Chars is negative, then all
    --  characters until the end of the text are deleted.
@@ -129,14 +129,14 @@ package Gtk.Entry_Buffer is
    --  Since: gtk+ 2.18
 
    function Get_Max_Length
-      (Self : not null access Gtk_Entry_Buffer_Record) return Gint;
+      (Self : not null access Gtk_Entry_Buffer_Record) return Glib.Gint;
    --  Retrieves the maximum allowed length of the text in Buffer. See
    --  Gtk.Entry_Buffer.Set_Max_Length.
    --  Since: gtk+ 2.18
 
    procedure Set_Max_Length
       (Self       : not null access Gtk_Entry_Buffer_Record;
-       Max_Length : Gint);
+       Max_Length : Glib.Gint);
    --  Sets the maximum allowed length of the contents of the buffer. If the
    --  current contents are longer than the given length, then they will be
    --  truncated to fit.
@@ -155,7 +155,7 @@ package Gtk.Entry_Buffer is
    procedure Set_Text
       (Self    : not null access Gtk_Entry_Buffer_Record;
        Chars   : UTF8_String;
-       N_Chars : Gint);
+       N_Chars : Glib.Gint);
    --  Sets the text in the buffer.
    --  This is roughly equivalent to calling Gtk.Entry_Buffer.Delete_Text and
    --  Gtk.Entry_Buffer.Insert_Text.
@@ -168,7 +168,7 @@ package Gtk.Entry_Buffer is
       (Self     : not null access Gtk_Entry_Buffer_Record;
        Position : Guint;
        Chars    : UTF8_String;
-       N_Chars  : Gint) return Guint;
+       N_Chars  : Glib.Gint) return Guint;
    --  Inserts N_Chars characters of Chars into the contents of the buffer, at
    --  position Position.
    --  If N_Chars is negative, then characters from chars will be inserted

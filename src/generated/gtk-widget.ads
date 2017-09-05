@@ -375,8 +375,8 @@ package Gtk.Widget is
    --  Kinds of widget-specific help. Used by the ::show-help signal.
 
    type Gtk_Requisition is record
-      Width : Gint := 0;
-      Height : Gint := 0;
+      Width : Glib.Gint := 0;
+      Height : Glib.Gint := 0;
    end record;
    pragma Convention (C, Gtk_Requisition);
 
@@ -740,10 +740,10 @@ package Gtk.Widget is
       (Widget  : not null access Gtk_Widget_Record;
        Targets : Gtk.Target_List.Gtk_Target_List;
        Actions : Gdk.Drag_Contexts.Gdk_Drag_Action;
-       Button  : Gint;
+       Button  : Glib.Gint;
        Event   : Gdk.Event.Gdk_Event;
-       X       : Gint;
-       Y       : Gint) return Gdk.Drag_Contexts.Drag_Context;
+       X       : Glib.Gint;
+       Y       : Glib.Gint) return Gdk.Drag_Contexts.Drag_Context;
    --  Initiates a drag on the source side. The function only needs to be used
    --  when the application is starting drags itself, and is not needed when
    --  gtk_drag_source_set is used.
@@ -781,10 +781,10 @@ package Gtk.Widget is
 
    function Drag_Check_Threshold
       (Widget    : not null access Gtk_Widget_Record;
-       Start_X   : Gint;
-       Start_Y   : Gint;
-       Current_X : Gint;
-       Current_Y : Gint) return Boolean;
+       Start_X   : Glib.Gint;
+       Start_Y   : Glib.Gint;
+       Current_X : Glib.Gint;
+       Current_Y : Glib.Gint) return Boolean;
    --  Checks to see if a mouse drag starting at (Start_X, Start_Y) and ending
    --  at (Current_X, Current_Y) has passed the GTK+ drag threshold, and thus
    --  should trigger the beginning of a drag-and-drop operation.
@@ -987,7 +987,7 @@ package Gtk.Widget is
    --  This is the analogue of g_object_freeze_notify for child properties.
 
    function Get_Allocated_Baseline
-      (Widget : not null access Gtk_Widget_Record) return Gint;
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
    --  Returns the baseline that has currently been allocated to Widget. This
    --  function is intended to be used when implementing handlers for the
    --  Gtk.Widget.Gtk_Widget::draw function, and when allocating child widgets
@@ -995,13 +995,13 @@ package Gtk.Widget is
    --  Since: gtk+ 3.10
 
    function Get_Allocated_Height
-      (Widget : not null access Gtk_Widget_Record) return Gint;
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
    --  Returns the height that has currently been allocated to Widget. This
    --  function is intended to be used when implementing handlers for the
    --  Gtk.Widget.Gtk_Widget::draw function.
 
    function Get_Allocated_Width
-      (Widget : not null access Gtk_Widget_Record) return Gint;
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
    --  Returns the width that has currently been allocated to Widget. This
    --  function is intended to be used when implementing handlers for the
    --  Gtk.Widget.Gtk_Widget::draw function.
@@ -1484,33 +1484,33 @@ package Gtk.Widget is
    --  "mapped": True to mark the widget as mapped
 
    function Get_Margin_Bottom
-      (Widget : not null access Gtk_Widget_Record) return Gint;
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
    --  Gets the value of the Gtk.Widget.Gtk_Widget:margin-bottom property.
    --  Since: gtk+ 3.0
 
    procedure Set_Margin_Bottom
       (Widget : not null access Gtk_Widget_Record;
-       Margin : Gint);
+       Margin : Glib.Gint);
    --  Sets the bottom margin of Widget. See the
    --  Gtk.Widget.Gtk_Widget:margin-bottom property.
    --  Since: gtk+ 3.0
    --  "margin": the bottom margin
 
    function Get_Margin_End
-      (Widget : not null access Gtk_Widget_Record) return Gint;
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
    --  Gets the value of the Gtk.Widget.Gtk_Widget:margin-end property.
    --  Since: gtk+ 3.12
 
    procedure Set_Margin_End
       (Widget : not null access Gtk_Widget_Record;
-       Margin : Gint);
+       Margin : Glib.Gint);
    --  Sets the end margin of Widget. See the Gtk.Widget.Gtk_Widget:margin-end
    --  property.
    --  Since: gtk+ 3.12
    --  "margin": the end margin
 
    function Get_Margin_Left
-      (Widget : not null access Gtk_Widget_Record) return Gint;
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
    pragma Obsolescent (Get_Margin_Left);
    --  Gets the value of the Gtk.Widget.Gtk_Widget:margin-left property.
    --  Since: gtk+ 3.0
@@ -1518,7 +1518,7 @@ package Gtk.Widget is
 
    procedure Set_Margin_Left
       (Widget : not null access Gtk_Widget_Record;
-       Margin : Gint);
+       Margin : Glib.Gint);
    pragma Obsolescent (Set_Margin_Left);
    --  Sets the left margin of Widget. See the
    --  Gtk.Widget.Gtk_Widget:margin-left property.
@@ -1527,7 +1527,7 @@ package Gtk.Widget is
    --  "margin": the left margin
 
    function Get_Margin_Right
-      (Widget : not null access Gtk_Widget_Record) return Gint;
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
    pragma Obsolescent (Get_Margin_Right);
    --  Gets the value of the Gtk.Widget.Gtk_Widget:margin-right property.
    --  Since: gtk+ 3.0
@@ -1535,7 +1535,7 @@ package Gtk.Widget is
 
    procedure Set_Margin_Right
       (Widget : not null access Gtk_Widget_Record;
-       Margin : Gint);
+       Margin : Glib.Gint);
    pragma Obsolescent (Set_Margin_Right);
    --  Sets the right margin of Widget. See the
    --  Gtk.Widget.Gtk_Widget:margin-right property.
@@ -1544,26 +1544,26 @@ package Gtk.Widget is
    --  "margin": the right margin
 
    function Get_Margin_Start
-      (Widget : not null access Gtk_Widget_Record) return Gint;
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
    --  Gets the value of the Gtk.Widget.Gtk_Widget:margin-start property.
    --  Since: gtk+ 3.12
 
    procedure Set_Margin_Start
       (Widget : not null access Gtk_Widget_Record;
-       Margin : Gint);
+       Margin : Glib.Gint);
    --  Sets the start margin of Widget. See the
    --  Gtk.Widget.Gtk_Widget:margin-start property.
    --  Since: gtk+ 3.12
    --  "margin": the start margin
 
    function Get_Margin_Top
-      (Widget : not null access Gtk_Widget_Record) return Gint;
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
    --  Gets the value of the Gtk.Widget.Gtk_Widget:margin-top property.
    --  Since: gtk+ 3.0
 
    procedure Set_Margin_Top
       (Widget : not null access Gtk_Widget_Record;
-       Margin : Gint);
+       Margin : Glib.Gint);
    --  Sets the top margin of Widget. See the Gtk.Widget.Gtk_Widget:margin-top
    --  property.
    --  Since: gtk+ 3.0
@@ -1684,8 +1684,8 @@ package Gtk.Widget is
 
    procedure Get_Pointer
       (Widget : not null access Gtk_Widget_Record;
-       X      : out Gint;
-       Y      : out Gint);
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint);
    pragma Obsolescent (Get_Pointer);
    --  Obtains the location of the mouse pointer in widget coordinates. Widget
    --  coordinates are a bit odd; for historical reasons, they are defined as
@@ -1698,8 +1698,8 @@ package Gtk.Widget is
 
    procedure Get_Preferred_Height
       (Widget         : not null access Gtk_Widget_Record;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint);
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint);
    --  Retrieves a widget's initial minimum and natural height.
    --  This call is specific to width-for-height requests.
    --  The returned request will be modified by the
@@ -1713,11 +1713,11 @@ package Gtk.Widget is
 
    procedure Get_Preferred_Height_And_Baseline_For_Width
       (Widget           : not null access Gtk_Widget_Record;
-       Width            : Gint;
-       Minimum_Height   : out Gint;
-       Natural_Height   : out Gint;
-       Minimum_Baseline : out Gint;
-       Natural_Baseline : out Gint);
+       Width            : Glib.Gint;
+       Minimum_Height   : out Glib.Gint;
+       Natural_Height   : out Glib.Gint;
+       Minimum_Baseline : out Glib.Gint;
+       Natural_Baseline : out Glib.Gint);
    --  Retrieves a widget's minimum and natural height and the corresponding
    --  baselines if it would be given the specified Width, or the default
    --  height if Width is -1. The baselines may be -1 which means that no
@@ -1739,9 +1739,9 @@ package Gtk.Widget is
 
    procedure Get_Preferred_Height_For_Width
       (Widget         : not null access Gtk_Widget_Record;
-       Width          : Gint;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint);
+       Width          : Glib.Gint;
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint);
    --  Retrieves a widget's minimum and natural height if it would be given
    --  the specified Width.
    --  The returned request will be modified by the
@@ -1776,8 +1776,8 @@ package Gtk.Widget is
 
    procedure Get_Preferred_Width
       (Widget        : not null access Gtk_Widget_Record;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint);
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint);
    --  Retrieves a widget's initial minimum and natural width.
    --  This call is specific to height-for-width requests.
    --  The returned request will be modified by the
@@ -1791,9 +1791,9 @@ package Gtk.Widget is
 
    procedure Get_Preferred_Width_For_Height
       (Widget        : not null access Gtk_Widget_Record;
-       Height        : Gint;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint);
+       Height        : Glib.Gint;
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint);
    --  Retrieves a widget's minimum and natural width if it would be given the
    --  specified Height.
    --  The returned request will be modified by the
@@ -1877,7 +1877,7 @@ package Gtk.Widget is
    --  Deprecated since 3.12, 1
 
    function Get_Scale_Factor
-      (Widget : not null access Gtk_Widget_Record) return Gint;
+      (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
    --  Retrieves the internal scale factor that maps from window coordinates
    --  to the actual device pixels. On traditional systems this is 1, on high
    --  density outputs, it can be a higher value (typically 2).
@@ -1914,8 +1914,8 @@ package Gtk.Widget is
 
    procedure Get_Size_Request
       (Widget : not null access Gtk_Widget_Record;
-       Width  : out Gint;
-       Height : out Gint);
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint);
    --  Gets the size request that was explicitly set for the widget using
    --  Gtk.Widget.Set_Size_Request. A value of -1 stored in Width or Height
    --  indicates that that dimension has not been set explicitly and the
@@ -1927,8 +1927,8 @@ package Gtk.Widget is
 
    procedure Set_Size_Request
       (Widget : not null access Gtk_Widget_Record;
-       Width  : Gint := -1;
-       Height : Gint := -1);
+       Width  : Glib.Gint := -1;
+       Height : Glib.Gint := -1);
    --  Sets the minimum size of a widget; that is, the widget's size request
    --  will be at least Width by Height. You can use this function to force a
    --  widget to be larger than it normally would be.
@@ -2685,10 +2685,10 @@ package Gtk.Widget is
 
    procedure Queue_Draw_Area
       (Widget : not null access Gtk_Widget_Record;
-       X      : Gint;
-       Y      : Gint;
-       Width  : Gint;
-       Height : Gint);
+       X      : Glib.Gint;
+       Y      : Glib.Gint;
+       Width  : Glib.Gint;
+       Height : Glib.Gint);
    --  Convenience function that calls Gtk.Widget.Queue_Draw_Region on the
    --  region created from the given coordinates.
    --  The region here is specified in widget coordinates. Widget coordinates
@@ -2871,7 +2871,7 @@ package Gtk.Widget is
 
    function Send_Expose
       (Widget : not null access Gtk_Widget_Record;
-       Event  : Gdk.Event.Gdk_Event) return Gint;
+       Event  : Gdk.Event.Gdk_Event) return Glib.Gint;
    --  Very rarely-used function. This function is used to emit an expose
    --  event on a widget. This function is not normally used directly. The only
    --  time it is used is when propagating an expose event to a child NO_WINDOW
@@ -2996,7 +2996,7 @@ package Gtk.Widget is
    procedure Size_Allocate_With_Baseline
       (Widget     : not null access Gtk_Widget_Record;
        Allocation : in out Gtk_Allocation;
-       Baseline   : Gint);
+       Baseline   : Glib.Gint);
    --  This function is only used by Gtk.Container.Gtk_Container subclasses,
    --  to assign a size, position and (optionally) baseline to their child
    --  widgets.
@@ -3041,10 +3041,10 @@ package Gtk.Widget is
    procedure Translate_Coordinates
       (Widget      : not null access Gtk_Widget_Record;
        Dest_Widget : not null access Gtk_Widget_Record'Class;
-       Src_X       : Gint;
-       Src_Y       : Gint;
-       Dest_X      : out Gint;
-       Dest_Y      : out Gint;
+       Src_X       : Glib.Gint;
+       Src_Y       : Glib.Gint;
+       Dest_X      : out Glib.Gint;
+       Dest_Y      : out Glib.Gint;
        Result      : out Boolean);
    --  Translate coordinates relative to Src_Widget's allocation to
    --  coordinates relative to Dest_Widget's allocations. In order to perform
@@ -3977,8 +3977,8 @@ package Gtk.Widget is
    type Cb_Gtk_Widget_Drag_Context_Gint_Gint_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
      (Self    : access Gtk_Widget_Record'Class;
       Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      X       : Gint;
-      Y       : Gint;
+      X       : Glib.Gint;
+      Y       : Glib.Gint;
       Data    : Gtk.Selection_Data.Gtk_Selection_Data;
       Info    : Guint;
       Time    : Guint);
@@ -3986,8 +3986,8 @@ package Gtk.Widget is
    type Cb_GObject_Drag_Context_Gint_Gint_Gtk_Selection_Data_Guint_Guint_Void is not null access procedure
      (Self    : access Glib.Object.GObject_Record'Class;
       Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      X       : Gint;
-      Y       : Gint;
+      X       : Glib.Gint;
+      Y       : Glib.Gint;
       Data    : Gtk.Selection_Data.Gtk_Selection_Data;
       Info    : Guint;
       Time    : Guint);
@@ -4051,15 +4051,15 @@ package Gtk.Widget is
    type Cb_Gtk_Widget_Drag_Context_Gint_Gint_Guint_Boolean is not null access function
      (Self    : access Gtk_Widget_Record'Class;
       Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      X       : Gint;
-      Y       : Gint;
+      X       : Glib.Gint;
+      Y       : Glib.Gint;
       Time    : Guint) return Boolean;
 
    type Cb_GObject_Drag_Context_Gint_Gint_Guint_Boolean is not null access function
      (Self    : access Glib.Object.GObject_Record'Class;
       Context : not null access Gdk.Drag_Contexts.Drag_Context_Record'Class;
-      X       : Gint;
-      Y       : Gint;
+      X       : Glib.Gint;
+      Y       : Glib.Gint;
       Time    : Guint) return Boolean;
 
    Signal_Drag_Drop : constant Glib.Signal_Name := "drag-drop";
@@ -4869,16 +4869,16 @@ package Gtk.Widget is
 
    type Cb_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean is not null access function
      (Self          : access Gtk_Widget_Record'Class;
-      X             : Gint;
-      Y             : Gint;
+      X             : Glib.Gint;
+      Y             : Glib.Gint;
       Keyboard_Mode : Boolean;
       Tooltip       : not null access Glib.Object.GObject_Record'Class)
    return Boolean;
 
    type Cb_GObject_Gint_Gint_Boolean_GObject_Boolean is not null access function
      (Self          : access Glib.Object.GObject_Record'Class;
-      X             : Gint;
-      Y             : Gint;
+      X             : Glib.Gint;
+      Y             : Glib.Gint;
       Keyboard_Mode : Boolean;
       Tooltip       : not null access Glib.Object.GObject_Record'Class)
    return Boolean;

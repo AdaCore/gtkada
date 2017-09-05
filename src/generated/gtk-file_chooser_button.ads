@@ -171,14 +171,15 @@ package Gtk.File_Chooser_Button is
    --  "title": the new browse dialog title.
 
    function Get_Width_Chars
-      (Button : not null access Gtk_File_Chooser_Button_Record) return Gint;
+      (Button : not null access Gtk_File_Chooser_Button_Record)
+       return Glib.Gint;
    --  Retrieves the width in characters of the Button widget's entry and/or
    --  label.
    --  Since: gtk+ 2.6
 
    procedure Set_Width_Chars
       (Button  : not null access Gtk_File_Chooser_Button_Record;
-       N_Chars : Gint);
+       N_Chars : Glib.Gint);
    --  Sets the width (in characters) that Button will use to N_Chars.
    --  Since: gtk+ 2.6
    --  "n_chars": the new width, in characters.

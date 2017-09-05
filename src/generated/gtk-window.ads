@@ -192,9 +192,9 @@ package Gtk.Window is
 
    procedure Begin_Move_Drag
       (Window    : not null access Gtk_Window_Record;
-       Button    : Gint;
-       Root_X    : Gint;
-       Root_Y    : Gint;
+       Button    : Glib.Gint;
+       Root_X    : Glib.Gint;
+       Root_Y    : Glib.Gint;
        Timestamp : Guint32);
    --  Starts moving a window. This function is used if an application has
    --  window movement grips. When GDK can support it, the window movement will
@@ -211,9 +211,9 @@ package Gtk.Window is
    procedure Begin_Resize_Drag
       (Window    : not null access Gtk_Window_Record;
        Edge      : Gdk.Window.Gdk_Window_Edge;
-       Button    : Gint;
-       Root_X    : Gint;
-       Root_Y    : Gint;
+       Button    : Glib.Gint;
+       Root_X    : Glib.Gint;
+       Root_Y    : Glib.Gint;
        Timestamp : Guint32);
    --  Starts resizing a window. This function is used if an application has
    --  window resizing controls. When GDK can support it, the resize will be
@@ -312,8 +312,8 @@ package Gtk.Window is
 
    procedure Get_Default_Size
       (Window : not null access Gtk_Window_Record;
-       Width  : out Gint;
-       Height : out Gint);
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint);
    --  Gets the default size of the window. A value of -1 for the width or
    --  height indicates that a default size has not been explicitly set for
    --  that dimension, so the "natural" size of the window will be used.
@@ -322,8 +322,8 @@ package Gtk.Window is
 
    procedure Set_Default_Size
       (Window : not null access Gtk_Window_Record;
-       Width  : Gint;
-       Height : Gint);
+       Width  : Glib.Gint;
+       Height : Glib.Gint);
    --  Sets the default size of a window. If the window's "natural" size (its
    --  size request) is larger than the default, the default will be ignored.
    --  More generally, if the default size does not obey the geometry hints for
@@ -610,8 +610,8 @@ package Gtk.Window is
 
    procedure Get_Position
       (Window : not null access Gtk_Window_Record;
-       Root_X : out Gint;
-       Root_Y : out Gint);
+       Root_X : out Glib.Gint;
+       Root_Y : out Glib.Gint);
    --  This function returns the position you need to pass to Gtk.Window.Move
    --  to keep Window in its current position. This means that the meaning of
    --  the returned value varies with window gravity. See Gtk.Window.Move for
@@ -714,8 +714,8 @@ package Gtk.Window is
 
    procedure Get_Size
       (Window : not null access Gtk_Window_Record;
-       Width  : out Gint;
-       Height : out Gint);
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint);
    --  Obtains the current size of Window. If Window is not onscreen, it
    --  returns the size GTK+ will suggest to the [window manager][gtk-X11-arch]
    --  for the initial window size (but this is not reliably the same as the
@@ -917,8 +917,8 @@ package Gtk.Window is
 
    procedure Move
       (Window : not null access Gtk_Window_Record;
-       X      : Gint;
-       Y      : Gint);
+       X      : Glib.Gint;
+       Y      : Glib.Gint);
    --  Asks the [window manager][gtk-X11-arch] to move Window to the given
    --  position. Window managers are free to ignore this; most window managers
    --  ignore requests for initial window positions (instead using a
@@ -1048,8 +1048,8 @@ package Gtk.Window is
 
    procedure Resize
       (Window : not null access Gtk_Window_Record;
-       Width  : Gint;
-       Height : Gint);
+       Width  : Glib.Gint;
+       Height : Glib.Gint);
    --  Resizes the window as if the user had done so, obeying geometry
    --  constraints. The default geometry constraint is that windows may not be
    --  smaller than their size request; to override this constraint, call
@@ -1071,8 +1071,8 @@ package Gtk.Window is
 
    procedure Resize_To_Geometry
       (Window : not null access Gtk_Window_Record;
-       Width  : Gint;
-       Height : Gint);
+       Width  : Glib.Gint;
+       Height : Glib.Gint);
    --  Like Gtk.Window.Resize, but Width and Height are interpreted in terms
    --  of the base size and increment set with gtk_window_set_geometry_hints.
    --  Since: gtk+ 3.0
@@ -1094,8 +1094,8 @@ package Gtk.Window is
 
    procedure Set_Default_Geometry
       (Window : not null access Gtk_Window_Record;
-       Width  : Gint;
-       Height : Gint);
+       Width  : Glib.Gint;
+       Height : Glib.Gint);
    --  Like Gtk.Window.Set_Default_Size, but Width and Height are interpreted
    --  in terms of the base size and increment set with
    --  gtk_window_set_geometry_hints.

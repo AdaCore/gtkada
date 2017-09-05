@@ -117,14 +117,14 @@ package body Gtk.Layout is
    procedure Move
       (Layout       : not null access Gtk_Layout_Record;
        Child_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       X            : Gint;
-       Y            : Gint)
+       X            : Glib.Gint;
+       Y            : Glib.Gint)
    is
       procedure Internal
          (Layout       : System.Address;
           Child_Widget : System.Address;
-          X            : Gint;
-          Y            : Gint);
+          X            : Glib.Gint;
+          Y            : Glib.Gint);
       pragma Import (C, Internal, "gtk_layout_move");
    begin
       Internal (Get_Object (Layout), Get_Object (Child_Widget), X, Y);
@@ -137,14 +137,14 @@ package body Gtk.Layout is
    procedure Put
       (Layout       : not null access Gtk_Layout_Record;
        Child_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       X            : Gint;
-       Y            : Gint)
+       X            : Glib.Gint;
+       Y            : Glib.Gint)
    is
       procedure Internal
          (Layout       : System.Address;
           Child_Widget : System.Address;
-          X            : Gint;
-          Y            : Gint);
+          X            : Glib.Gint;
+          Y            : Glib.Gint);
       pragma Import (C, Internal, "gtk_layout_put");
    begin
       Internal (Get_Object (Layout), Get_Object (Child_Widget), X, Y);

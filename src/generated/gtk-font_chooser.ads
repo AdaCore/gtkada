@@ -123,7 +123,7 @@ package Gtk.Font_Chooser is
    --  If the selected font is not installed, returns null.
    --  Since: gtk+ 3.2
 
-   function Get_Font_Size (Self : Gtk_Font_Chooser) return Gint;
+   function Get_Font_Size (Self : Gtk_Font_Chooser) return Glib.Gint;
    pragma Import (C, Get_Font_Size, "gtk_font_chooser_get_font_size");
    --  The selected font size.
    --  Since: gtk+ 3.2
@@ -263,7 +263,7 @@ package Gtk.Font_Chooser is
    --  If the selected font is not installed, returns null.
    --  Since: gtk+ 3.2
 
-   type Virtual_Get_Font_Size is access function (Self : Gtk_Font_Chooser) return Gint;
+   type Virtual_Get_Font_Size is access function (Self : Gtk_Font_Chooser) return Glib.Gint;
    pragma Convention (C, Virtual_Get_Font_Size);
    --  The selected font size.
    --  Since: gtk+ 3.2

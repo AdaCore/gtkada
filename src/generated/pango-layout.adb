@@ -216,9 +216,9 @@ package body Pango.Layout is
    ------------------
 
    function Get_Baseline
-      (Layout : not null access Pango_Layout_Record) return Gint
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint
    is
-      function Internal (Layout : System.Address) return Gint;
+      function Internal (Layout : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_layout_get_baseline");
    begin
       return Internal (Get_Object (Layout));
@@ -228,8 +228,8 @@ package body Pango.Layout is
    -- Get_Baseline --
    ------------------
 
-   function Get_Baseline (Self : Pango_Layout_Iter) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Baseline (Self : Pango_Layout_Iter) return Glib.Gint is
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_layout_iter_get_baseline");
    begin
       return Internal (Get_Object (Self));
@@ -256,9 +256,9 @@ package body Pango.Layout is
    -------------------------
 
    function Get_Character_Count
-      (Layout : not null access Pango_Layout_Record) return Gint
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint
    is
-      function Internal (Layout : System.Address) return Gint;
+      function Internal (Layout : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_layout_get_character_count");
    begin
       return Internal (Get_Object (Layout));
@@ -303,13 +303,13 @@ package body Pango.Layout is
 
    procedure Get_Cursor_Pos
       (Layout     : not null access Pango_Layout_Record;
-       Index      : Gint;
+       Index      : Glib.Gint;
        Strong_Pos : out Pango_Rectangle;
        Weak_Pos   : out Pango_Rectangle)
    is
       procedure Internal
          (Layout     : System.Address;
-          Index      : Gint;
+          Index      : Glib.Gint;
           Strong_Pos : out Pango_Rectangle;
           Weak_Pos   : out Pango_Rectangle);
       pragma Import (C, Internal, "pango_layout_get_cursor_pos");
@@ -370,9 +370,9 @@ package body Pango.Layout is
    ----------------
 
    function Get_Height
-      (Layout : not null access Pango_Layout_Record) return Gint
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint
    is
-      function Internal (Layout : System.Address) return Gint;
+      function Internal (Layout : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_layout_get_height");
    begin
       return Internal (Get_Object (Layout));
@@ -383,9 +383,9 @@ package body Pango.Layout is
    ----------------
 
    function Get_Indent
-      (Layout : not null access Pango_Layout_Record) return Gint
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint
    is
-      function Internal (Layout : System.Address) return Gint;
+      function Internal (Layout : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_layout_get_indent");
    begin
       return Internal (Get_Object (Layout));
@@ -395,8 +395,8 @@ package body Pango.Layout is
    -- Get_Index --
    ---------------
 
-   function Get_Index (Self : Pango_Layout_Iter) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Index (Self : Pango_Layout_Iter) return Glib.Gint is
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_layout_iter_get_index");
    begin
       return Internal (Get_Object (Self));
@@ -465,11 +465,11 @@ package body Pango.Layout is
 
    function Get_Line
       (Layout : not null access Pango_Layout_Record;
-       Line   : Gint) return Pango_Layout_Line
+       Line   : Glib.Gint) return Pango_Layout_Line
    is
       function Internal
          (Layout : System.Address;
-          Line   : Gint) return access Pango_Layout_Line;
+          Line   : Glib.Gint) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_get_line");
    begin
       return Internal (Get_Object (Layout), Line).all;
@@ -492,9 +492,9 @@ package body Pango.Layout is
    --------------------
 
    function Get_Line_Count
-      (Layout : not null access Pango_Layout_Record) return Gint
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint
    is
-      function Internal (Layout : System.Address) return Gint;
+      function Internal (Layout : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_layout_get_line_count");
    begin
       return Internal (Get_Object (Layout));
@@ -524,11 +524,11 @@ package body Pango.Layout is
 
    function Get_Line_Readonly
       (Layout : not null access Pango_Layout_Record;
-       Line   : Gint) return Pango_Layout_Line
+       Line   : Glib.Gint) return Pango_Layout_Line
    is
       function Internal
          (Layout : System.Address;
-          Line   : Gint) return access Pango_Layout_Line;
+          Line   : Glib.Gint) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_get_line_readonly");
    begin
       return Internal (Get_Object (Layout), Line).all;
@@ -554,13 +554,13 @@ package body Pango.Layout is
 
    procedure Get_Line_Yrange
       (Self : Pango_Layout_Iter;
-       Y0   : out Gint;
-       Y1   : out Gint)
+       Y0   : out Glib.Gint;
+       Y1   : out Glib.Gint)
    is
       procedure Internal
          (Self : System.Address;
-          Y0   : out Gint;
-          Y1   : out Gint);
+          Y0   : out Glib.Gint;
+          Y1   : out Glib.Gint);
       pragma Import (C, Internal, "pango_layout_iter_get_line_yrange");
    begin
       Internal (Get_Object (Self), Y0, Y1);
@@ -590,13 +590,13 @@ package body Pango.Layout is
 
    procedure Get_Pixel_Size
       (Layout : not null access Pango_Layout_Record;
-       Width  : out Gint;
-       Height : out Gint)
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint)
    is
       procedure Internal
          (Layout : System.Address;
-          Width  : out Gint;
-          Height : out Gint);
+          Width  : out Glib.Gint;
+          Height : out Glib.Gint);
       pragma Import (C, Internal, "pango_layout_get_pixel_size");
    begin
       Internal (Get_Object (Layout), Width, Height);
@@ -652,13 +652,13 @@ package body Pango.Layout is
 
    procedure Get_Size
       (Layout : not null access Pango_Layout_Record;
-       Width  : out Gint;
-       Height : out Gint)
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint)
    is
       procedure Internal
          (Layout : System.Address;
-          Width  : out Gint;
-          Height : out Gint);
+          Width  : out Glib.Gint;
+          Height : out Glib.Gint);
       pragma Import (C, Internal, "pango_layout_get_size");
    begin
       Internal (Get_Object (Layout), Width, Height);
@@ -669,9 +669,9 @@ package body Pango.Layout is
    -----------------
 
    function Get_Spacing
-      (Layout : not null access Pango_Layout_Record) return Gint
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint
    is
-      function Internal (Layout : System.Address) return Gint;
+      function Internal (Layout : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_layout_get_spacing");
    begin
       return Internal (Get_Object (Layout));
@@ -710,9 +710,9 @@ package body Pango.Layout is
    ------------------------------
 
    function Get_Unknown_Glyphs_Count
-      (Layout : not null access Pango_Layout_Record) return Gint
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint
    is
-      function Internal (Layout : System.Address) return Gint;
+      function Internal (Layout : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_layout_get_unknown_glyphs_count");
    begin
       return Internal (Get_Object (Layout));
@@ -723,9 +723,9 @@ package body Pango.Layout is
    ---------------
 
    function Get_Width
-      (Layout : not null access Pango_Layout_Record) return Gint
+      (Layout : not null access Pango_Layout_Record) return Glib.Gint
    is
-      function Internal (Layout : System.Address) return Gint;
+      function Internal (Layout : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "pango_layout_get_width");
    begin
       return Internal (Get_Object (Layout));
@@ -752,17 +752,17 @@ package body Pango.Layout is
 
    procedure Index_To_Line_X
       (Layout   : not null access Pango_Layout_Record;
-       Index    : Gint;
+       Index    : Glib.Gint;
        Trailing : Boolean;
-       Line     : out Gint;
-       X_Pos    : out Gint)
+       Line     : out Glib.Gint;
+       X_Pos    : out Glib.Gint)
    is
       procedure Internal
          (Layout   : System.Address;
-          Index    : Gint;
+          Index    : Glib.Gint;
           Trailing : Glib.Gboolean;
-          Line     : out Gint;
-          X_Pos    : out Gint);
+          Line     : out Glib.Gint;
+          X_Pos    : out Glib.Gint);
       pragma Import (C, Internal, "pango_layout_index_to_line_x");
    begin
       Internal (Get_Object (Layout), Index, Boolean'Pos (Trailing), Line, X_Pos);
@@ -774,12 +774,12 @@ package body Pango.Layout is
 
    procedure Index_To_Pos
       (Layout : not null access Pango_Layout_Record;
-       Index  : Gint;
+       Index  : Glib.Gint;
        Pos    : out Pango_Rectangle)
    is
       procedure Internal
          (Layout : System.Address;
-          Index  : Gint;
+          Index  : Glib.Gint;
           Pos    : out Pango_Rectangle);
       pragma Import (C, Internal, "pango_layout_index_to_pos");
    begin
@@ -819,20 +819,20 @@ package body Pango.Layout is
    procedure Move_Cursor_Visually
       (Layout       : not null access Pango_Layout_Record;
        Strong       : Boolean;
-       Old_Index    : Gint;
-       Old_Trailing : Gint;
-       Direction    : Gint;
-       New_Index    : out Gint;
-       New_Trailing : out Gint)
+       Old_Index    : Glib.Gint;
+       Old_Trailing : Glib.Gint;
+       Direction    : Glib.Gint;
+       New_Index    : out Glib.Gint;
+       New_Trailing : out Glib.Gint)
    is
       procedure Internal
          (Layout       : System.Address;
           Strong       : Glib.Gboolean;
-          Old_Index    : Gint;
-          Old_Trailing : Gint;
-          Direction    : Gint;
-          New_Index    : out Gint;
-          New_Trailing : out Gint);
+          Old_Index    : Glib.Gint;
+          Old_Trailing : Glib.Gint;
+          Direction    : Glib.Gint;
+          New_Index    : out Glib.Gint;
+          New_Trailing : out Glib.Gint);
       pragma Import (C, Internal, "pango_layout_move_cursor_visually");
    begin
       Internal (Get_Object (Layout), Boolean'Pos (Strong), Old_Index, Old_Trailing, Direction, New_Index, New_Trailing);
@@ -964,9 +964,9 @@ package body Pango.Layout is
 
    procedure Set_Height
       (Layout : not null access Pango_Layout_Record;
-       Height : Gint)
+       Height : Glib.Gint)
    is
-      procedure Internal (Layout : System.Address; Height : Gint);
+      procedure Internal (Layout : System.Address; Height : Glib.Gint);
       pragma Import (C, Internal, "pango_layout_set_height");
    begin
       Internal (Get_Object (Layout), Height);
@@ -978,9 +978,9 @@ package body Pango.Layout is
 
    procedure Set_Indent
       (Layout : not null access Pango_Layout_Record;
-       Indent : Gint)
+       Indent : Glib.Gint)
    is
-      procedure Internal (Layout : System.Address; Indent : Gint);
+      procedure Internal (Layout : System.Address; Indent : Glib.Gint);
       pragma Import (C, Internal, "pango_layout_set_indent");
    begin
       Internal (Get_Object (Layout), Indent);
@@ -1011,7 +1011,7 @@ package body Pango.Layout is
       procedure Internal
          (Layout : System.Address;
           Markup : Interfaces.C.Strings.chars_ptr;
-          Length : Gint);
+          Length : Glib.Gint);
       pragma Import (C, Internal, "pango_layout_set_markup");
       Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
    begin
@@ -1026,14 +1026,14 @@ package body Pango.Layout is
    procedure Set_Markup_With_Accel
       (Layout       : not null access Pango_Layout_Record;
        Markup       : UTF8_String;
-       Length       : Gint;
+       Length       : Glib.Gint;
        Accel_Marker : Gunichar;
        Accel_Char   : out Gunichar)
    is
       procedure Internal
          (Layout       : System.Address;
           Markup       : Interfaces.C.Strings.chars_ptr;
-          Length       : Gint;
+          Length       : Glib.Gint;
           Accel_Marker : Gunichar;
           Accel_Char   : out Gunichar);
       pragma Import (C, Internal, "pango_layout_set_markup_with_accel");
@@ -1063,9 +1063,9 @@ package body Pango.Layout is
 
    procedure Set_Spacing
       (Layout  : not null access Pango_Layout_Record;
-       Spacing : Gint)
+       Spacing : Glib.Gint)
    is
-      procedure Internal (Layout : System.Address; Spacing : Gint);
+      procedure Internal (Layout : System.Address; Spacing : Glib.Gint);
       pragma Import (C, Internal, "pango_layout_set_spacing");
    begin
       Internal (Get_Object (Layout), Spacing);
@@ -1096,7 +1096,7 @@ package body Pango.Layout is
       procedure Internal
          (Layout : System.Address;
           Text   : Interfaces.C.Strings.chars_ptr;
-          Length : Gint);
+          Length : Glib.Gint);
       pragma Import (C, Internal, "pango_layout_set_text");
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
    begin
@@ -1110,9 +1110,9 @@ package body Pango.Layout is
 
    procedure Set_Width
       (Layout : not null access Pango_Layout_Record;
-       Width  : Gint)
+       Width  : Glib.Gint)
    is
-      procedure Internal (Layout : System.Address; Width : Gint);
+      procedure Internal (Layout : System.Address; Width : Glib.Gint);
       pragma Import (C, Internal, "pango_layout_set_width");
    begin
       Internal (Get_Object (Layout), Width);
@@ -1140,21 +1140,21 @@ package body Pango.Layout is
 
    procedure Xy_To_Index
       (Layout   : not null access Pango_Layout_Record;
-       X        : Gint;
-       Y        : Gint;
-       Index    : out Gint;
-       Trailing : out Gint;
+       X        : Glib.Gint;
+       Y        : Glib.Gint;
+       Index    : out Glib.Gint;
+       Trailing : out Glib.Gint;
        Exact    : out Boolean)
    is
       function Internal
          (Layout       : System.Address;
-          X            : Gint;
-          Y            : Gint;
-          Acc_Index    : access Gint;
-          Acc_Trailing : access Gint) return Glib.Gboolean;
+          X            : Glib.Gint;
+          Y            : Glib.Gint;
+          Acc_Index    : access Glib.Gint;
+          Acc_Trailing : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_layout_xy_to_index");
-      Acc_Index    : aliased Gint;
-      Acc_Trailing : aliased Gint;
+      Acc_Index    : aliased Glib.Gint;
+      Acc_Trailing : aliased Glib.Gint;
       Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Layout), X, Y, Acc_Index'Access, Acc_Trailing'Access);

@@ -185,7 +185,7 @@ package Gtk.Entry_Completion is
 
    procedure Delete_Action
       (Completion : not null access Gtk_Entry_Completion_Record;
-       Index      : Gint);
+       Index      : Glib.Gint);
    --  Deletes the action at Index_ from Completion's action list.
    --  Since: gtk+ 2.4
    --  "index_": the index of the item to delete
@@ -233,13 +233,14 @@ package Gtk.Entry_Completion is
    --  "inline_selection": True to do inline selection
 
    function Get_Minimum_Key_Length
-      (Completion : not null access Gtk_Entry_Completion_Record) return Gint;
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Glib.Gint;
    --  Returns the minimum key length as set for Completion.
    --  Since: gtk+ 2.4
 
    procedure Set_Minimum_Key_Length
       (Completion : not null access Gtk_Entry_Completion_Record;
-       Length     : Gint);
+       Length     : Glib.Gint);
    --  Requires the length of the search key for Completion to be at least
    --  Length. This is useful for long lists, where completing using a small
    --  key takes a lot of time and will come up with meaningless results anyway
@@ -310,13 +311,14 @@ package Gtk.Entry_Completion is
    --  match
 
    function Get_Text_Column
-      (Completion : not null access Gtk_Entry_Completion_Record) return Gint;
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Glib.Gint;
    --  Returns the column in the model of Completion to get strings from.
    --  Since: gtk+ 2.6
 
    procedure Set_Text_Column
       (Completion : not null access Gtk_Entry_Completion_Record;
-       Column     : Gint);
+       Column     : Glib.Gint);
    --  Convenience function for setting up the most used case of this code: a
    --  completion list with just strings. This function will set up Completion
    --  to have a list displaying all (and just) strings in the completion list,
@@ -331,7 +333,7 @@ package Gtk.Entry_Completion is
 
    procedure Insert_Action_Markup
       (Completion : not null access Gtk_Entry_Completion_Record;
-       Index      : Gint;
+       Index      : Glib.Gint;
        Markup     : UTF8_String);
    --  Inserts an action in Completion's action item list at position Index_
    --  with markup Markup.
@@ -341,7 +343,7 @@ package Gtk.Entry_Completion is
 
    procedure Insert_Action_Text
       (Completion : not null access Gtk_Entry_Completion_Record;
-       Index      : Gint;
+       Index      : Glib.Gint;
        Text       : UTF8_String);
    --  Inserts an action in Completion's action item list at position Index_
    --  with text Text. If you want the action item to have markup, use
@@ -459,7 +461,7 @@ package Gtk.Entry_Completion is
       (Cell_Layout : not null access Gtk_Entry_Completion_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint);
+       Column      : Glib.Gint);
 
    procedure Clear
       (Cell_Layout : not null access Gtk_Entry_Completion_Record);
@@ -485,7 +487,7 @@ package Gtk.Entry_Completion is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Entry_Completion_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint);
+       Position    : Glib.Gint);
 
    ----------------
    -- Properties --
@@ -539,11 +541,11 @@ package Gtk.Entry_Completion is
 
    type Cb_Gtk_Entry_Completion_Gint_Void is not null access procedure
      (Self  : access Gtk_Entry_Completion_Record'Class;
-      Index : Gint);
+      Index : Glib.Gint);
 
    type Cb_GObject_Gint_Void is not null access procedure
      (Self  : access Glib.Object.GObject_Record'Class;
-      Index : Gint);
+      Index : Glib.Gint);
 
    Signal_Action_Activated : constant Glib.Signal_Name := "action-activated";
    procedure On_Action_Activated

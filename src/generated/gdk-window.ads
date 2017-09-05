@@ -209,14 +209,14 @@ package Gdk.Window is
    --  over when in fullscreen mode.
 
    type Gdk_Geometry is record
-      Min_Width : Gint := 0;
-      Min_Height : Gint := 0;
-      Max_Width : Gint := 0;
-      Max_Height : Gint := 0;
-      Base_Width : Gint := 0;
-      Base_Height : Gint := 0;
-      Width_Inc : Gint := 0;
-      Height_Inc : Gint := 0;
+      Min_Width : Glib.Gint := 0;
+      Min_Height : Glib.Gint := 0;
+      Max_Width : Glib.Gint := 0;
+      Max_Height : Glib.Gint := 0;
+      Base_Width : Glib.Gint := 0;
+      Base_Height : Glib.Gint := 0;
+      Width_Inc : Glib.Gint := 0;
+      Height_Inc : Glib.Gint := 0;
       Min_Aspect : Gdouble;
       Max_Aspect : Gdouble;
       Win_Gravity : Gdk_Gravity;
@@ -397,9 +397,9 @@ package Gdk.Window is
 
    procedure Begin_Move_Drag
       (Self      : Gdk.Gdk_Window;
-       Button    : Gint;
-       Root_X    : Gint;
-       Root_Y    : Gint;
+       Button    : Glib.Gint;
+       Root_X    : Glib.Gint;
+       Root_Y    : Glib.Gint;
        Timestamp : Guint32);
    pragma Import (C, Begin_Move_Drag, "gdk_window_begin_move_drag");
    --  Begins a window move operation (for a toplevel window).
@@ -415,9 +415,9 @@ package Gdk.Window is
    procedure Begin_Move_Drag_For_Device
       (Self      : Gdk.Gdk_Window;
        Device    : not null access Gdk.Device.Gdk_Device_Record'Class;
-       Button    : Gint;
-       Root_X    : Gint;
-       Root_Y    : Gint;
+       Button    : Glib.Gint;
+       Root_X    : Glib.Gint;
+       Root_Y    : Glib.Gint;
        Timestamp : Guint32);
    --  Begins a window move operation (for a toplevel window). You might use
    --  this function to implement a "window move grip," for example. The
@@ -483,9 +483,9 @@ package Gdk.Window is
    procedure Begin_Resize_Drag
       (Self      : Gdk.Gdk_Window;
        Edge      : Gdk_Window_Edge;
-       Button    : Gint;
-       Root_X    : Gint;
-       Root_Y    : Gint;
+       Button    : Glib.Gint;
+       Root_X    : Glib.Gint;
+       Root_Y    : Glib.Gint;
        Timestamp : Guint32);
    pragma Import (C, Begin_Resize_Drag, "gdk_window_begin_resize_drag");
    --  Begins a window resize operation (for a toplevel window).
@@ -504,9 +504,9 @@ package Gdk.Window is
       (Self      : Gdk.Gdk_Window;
        Edge      : Gdk_Window_Edge;
        Device    : not null access Gdk.Device.Gdk_Device_Record'Class;
-       Button    : Gint;
-       Root_X    : Gint;
-       Root_Y    : Gint;
+       Button    : Glib.Gint;
+       Root_X    : Glib.Gint;
+       Root_Y    : Glib.Gint;
        Timestamp : Guint32);
    --  Begins a window resize operation (for a toplevel window). You might use
    --  this function to implement a "window resize grip," for example; in fact
@@ -586,9 +586,9 @@ package Gdk.Window is
    function Create_Similar_Image_Surface
       (Self   : Gdk.Gdk_Window;
        Format : Cairo.Cairo_Format;
-       Width  : Gint;
-       Height : Gint;
-       Scale  : Gint) return Cairo.Cairo_Surface;
+       Width  : Glib.Gint;
+       Height : Glib.Gint;
+       Scale  : Glib.Gint) return Cairo.Cairo_Surface;
    pragma Import (C, Create_Similar_Image_Surface, "gdk_window_create_similar_image_surface");
    --  Create a new image surface that is efficient to draw on the given
    --  Window.
@@ -603,8 +603,8 @@ package Gdk.Window is
    function Create_Similar_Surface
       (Self    : Gdk.Gdk_Window;
        Content : Cairo.Cairo_Content;
-       Width   : Gint;
-       Height  : Gint) return Cairo.Cairo_Surface;
+       Width   : Glib.Gint;
+       Height  : Glib.Gint) return Cairo.Cairo_Surface;
    pragma Import (C, Create_Similar_Surface, "gdk_window_create_similar_surface");
    --  Create a new surface that is as compatible as possible with the given
    --  Window. For example the new surface will have the same fallback
@@ -883,8 +883,8 @@ package Gdk.Window is
    procedure Get_Device_Position
       (Self   : Gdk.Gdk_Window;
        Device : not null access Gdk.Device.Gdk_Device_Record'Class;
-       X      : out Gint;
-       Y      : out Gint;
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
        Mask   : out Gdk.Types.Gdk_Modifier_Type;
        Window : out Gdk.Gdk_Window);
    --  Obtains the current device position and modifier state. The position is
@@ -1033,10 +1033,10 @@ package Gdk.Window is
 
    procedure Get_Geometry
       (Self   : Gdk.Gdk_Window;
-       X      : out Gint;
-       Y      : out Gint;
-       Width  : out Gint;
-       Height : out Gint);
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint);
    pragma Import (C, Get_Geometry, "gdk_window_get_geometry");
    --  Any of the return location arguments to this function may be null, if
    --  you aren't interested in getting the value of that field.
@@ -1079,7 +1079,7 @@ package Gdk.Window is
    --  "leader": group leader window, or null to restore the default group
    --  leader window
 
-   function Get_Height (Self : Gdk.Gdk_Window) return Gint;
+   function Get_Height (Self : Gdk.Gdk_Window) return Glib.Gint;
    pragma Import (C, Get_Height, "gdk_window_get_height");
    --  Returns the height of the given Window.
    --  On the X11 platform the returned size is the size reported in the
@@ -1100,7 +1100,10 @@ package Gdk.Window is
    --  called Gdk.Window.Set_Transient_For
    --  "modal": True if the window is modal, False otherwise.
 
-   procedure Get_Origin (Self : Gdk.Gdk_Window; X : out Gint; Y : out Gint);
+   procedure Get_Origin
+      (Self : Gdk.Gdk_Window;
+       X    : out Glib.Gint;
+       Y    : out Glib.Gint);
    pragma Import (C, Get_Origin, "gdk_window_get_origin");
    --  Obtains the position of a window in root window coordinates. (Compare
    --  with Gdk.Window.Get_Position and Gdk.Window.Get_Geometry which return
@@ -1123,8 +1126,8 @@ package Gdk.Window is
 
    procedure Get_Pointer
       (Self   : Gdk.Gdk_Window;
-       X      : out Gint;
-       Y      : out Gint;
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
        Mask   : out Gdk.Types.Gdk_Modifier_Type;
        Window : out Gdk.Gdk_Window);
    pragma Obsolescent (Get_Pointer);
@@ -1140,8 +1143,8 @@ package Gdk.Window is
 
    procedure Get_Position
       (Self : Gdk.Gdk_Window;
-       X    : out Gint;
-       Y    : out Gint);
+       X    : out Glib.Gint;
+       Y    : out Glib.Gint);
    pragma Import (C, Get_Position, "gdk_window_get_position");
    --  Obtains the position of the window as reported in the
    --  most-recently-processed Gdk.Event.Gdk_Event_Configure. Contrast with
@@ -1154,10 +1157,10 @@ package Gdk.Window is
 
    procedure Get_Root_Coords
       (Self   : Gdk.Gdk_Window;
-       X      : Gint;
-       Y      : Gint;
-       Root_X : out Gint;
-       Root_Y : out Gint);
+       X      : Glib.Gint;
+       Y      : Glib.Gint;
+       Root_X : out Glib.Gint;
+       Root_Y : out Glib.Gint);
    pragma Import (C, Get_Root_Coords, "gdk_window_get_root_coords");
    --  Obtains the position of a window position in root window coordinates.
    --  This is similar to Gdk.Window.Get_Origin but allows you go pass in any
@@ -1170,15 +1173,15 @@ package Gdk.Window is
 
    procedure Get_Root_Origin
       (Self : Gdk.Gdk_Window;
-       X    : out Gint;
-       Y    : out Gint);
+       X    : out Glib.Gint;
+       Y    : out Glib.Gint);
    pragma Import (C, Get_Root_Origin, "gdk_window_get_root_origin");
    --  Obtains the top-left corner of the window manager frame in root window
    --  coordinates.
    --  "x": return location for X position of window frame
    --  "y": return location for Y position of window frame
 
-   function Get_Scale_Factor (Self : Gdk.Gdk_Window) return Gint;
+   function Get_Scale_Factor (Self : Gdk.Gdk_Window) return Glib.Gint;
    pragma Import (C, Get_Scale_Factor, "gdk_window_get_scale_factor");
    --  Returns the internal scale factor that maps from window coordiantes to
    --  the actual device pixels. On traditional systems this is 1, but on very
@@ -1286,7 +1289,7 @@ package Gdk.Window is
    --  Gets the Gdk.Visual.Gdk_Visual describing the pixel format of Window.
    --  Since: gtk+ 2.24
 
-   function Get_Width (Self : Gdk.Gdk_Window) return Gint;
+   function Get_Width (Self : Gdk.Gdk_Window) return Glib.Gint;
    pragma Import (C, Get_Width, "gdk_window_get_width");
    --  Returns the width of the given Window.
    --  On the X11 platform the returned size is the size reported in the
@@ -1319,8 +1322,8 @@ package Gdk.Window is
    procedure Input_Shape_Combine_Region
       (Self         : Gdk.Gdk_Window;
        Shape_Region : Cairo.Region.Cairo_Region;
-       Offset_X     : Gint;
-       Offset_Y     : Gint);
+       Offset_X     : Glib.Gint;
+       Offset_Y     : Glib.Gint);
    pragma Import (C, Input_Shape_Combine_Region, "gdk_window_input_shape_combine_region");
    --  Like Gdk.Window.Shape_Combine_Region, but the shape applies only to
    --  event handling. Mouse events which happen while the pointer position
@@ -1493,7 +1496,7 @@ package Gdk.Window is
    --  This function is distinct from Gdk.Window.Set_Child_Shapes because it
    --  includes Window's shape mask in the set of shapes to be merged.
 
-   procedure Move (Self : Gdk.Gdk_Window; X : Gint; Y : Gint);
+   procedure Move (Self : Gdk.Gdk_Window; X : Glib.Gint; Y : Glib.Gint);
    pragma Import (C, Move, "gdk_window_move");
    --  Repositions a window relative to its parent window. For toplevel
    --  windows, window managers may ignore or modify the move; you should
@@ -1509,8 +1512,8 @@ package Gdk.Window is
    procedure Move_Region
       (Self   : Gdk.Gdk_Window;
        Region : Cairo.Region.Cairo_Region;
-       Dx     : Gint;
-       Dy     : Gint);
+       Dx     : Glib.Gint;
+       Dy     : Glib.Gint);
    pragma Import (C, Move_Region, "gdk_window_move_region");
    --  Move the part of Window indicated by Region by Dy pixels in the Y
    --  direction and Dx pixels in the X direction. The portions of Region that
@@ -1523,10 +1526,10 @@ package Gdk.Window is
 
    procedure Move_Resize
       (Self   : Gdk.Gdk_Window;
-       X      : Gint;
-       Y      : Gint;
-       Width  : Gint;
-       Height : Gint);
+       X      : Glib.Gint;
+       Y      : Glib.Gint;
+       Width  : Glib.Gint;
+       Height : Glib.Gint);
    pragma Import (C, Move_Resize, "gdk_window_move_resize");
    --  Equivalent to calling Gdk.Window.Move and Gdk.Window.Resize, except
    --  that both operations are performed at once, avoiding strange visual
@@ -1571,8 +1574,8 @@ package Gdk.Window is
    procedure Reparent
       (Self       : Gdk.Gdk_Window;
        New_Parent : Gdk.Gdk_Window;
-       X          : Gint;
-       Y          : Gint);
+       X          : Glib.Gint;
+       Y          : Glib.Gint);
    pragma Import (C, Reparent, "gdk_window_reparent");
    --  Reparents Window into the given New_Parent. The window being reparented
    --  will be unmapped as a side effect.
@@ -1580,7 +1583,10 @@ package Gdk.Window is
    --  "x": X location inside the new parent
    --  "y": Y location inside the new parent
 
-   procedure Resize (Self : Gdk.Gdk_Window; Width : Gint; Height : Gint);
+   procedure Resize
+      (Self   : Gdk.Gdk_Window;
+       Width  : Glib.Gint;
+       Height : Glib.Gint);
    pragma Import (C, Resize, "gdk_window_resize");
    --  Resizes Window; for toplevel windows, asks the window manager to resize
    --  the window. The window manager may not allow the resize. When using
@@ -1607,7 +1613,7 @@ package Gdk.Window is
    --  "sibling": a Gdk.Gdk_Window that is a sibling of Window, or null
    --  "above": a boolean
 
-   procedure Scroll (Self : Gdk.Gdk_Window; Dx : Gint; Dy : Gint);
+   procedure Scroll (Self : Gdk.Gdk_Window; Dx : Glib.Gint; Dy : Glib.Gint);
    pragma Import (C, Scroll, "gdk_window_scroll");
    --  Scroll the contents of Window, both pixels and children, by the given
    --  amount. Window itself does not move. Portions of the window that the
@@ -1804,10 +1810,10 @@ package Gdk.Window is
 
    procedure Set_Shadow_Width
       (Self   : Gdk.Gdk_Window;
-       Left   : Gint;
-       Right  : Gint;
-       Top    : Gint;
-       Bottom : Gint);
+       Left   : Glib.Gint;
+       Right  : Glib.Gint;
+       Top    : Glib.Gint;
+       Bottom : Glib.Gint);
    pragma Import (C, Set_Shadow_Width, "gdk_window_set_shadow_width");
    --  Newer GTK+ windows using client-side decorations use extra geometry
    --  around their frames for effects like shadows and invisible borders.
@@ -1905,8 +1911,8 @@ package Gdk.Window is
    procedure Shape_Combine_Region
       (Self         : Gdk.Gdk_Window;
        Shape_Region : Cairo.Region.Cairo_Region;
-       Offset_X     : Gint;
-       Offset_Y     : Gint);
+       Offset_X     : Glib.Gint;
+       Offset_Y     : Glib.Gint);
    pragma Import (C, Shape_Combine_Region, "gdk_window_shape_combine_region");
    --  Makes pixels in Window outside Shape_Region be transparent, so that the
    --  window may be nonrectangular.
@@ -2037,8 +2043,8 @@ package Gdk.Window is
    ---------------
 
    procedure At_Pointer
-      (Win_X  : out Gint;
-       Win_Y  : out Gint;
+      (Win_X  : out Glib.Gint;
+       Win_Y  : out Glib.Gint;
        Window : out Gdk.Gdk_Window);
    pragma Obsolescent (At_Pointer);
    --  Obtains the window underneath the mouse pointer, returning the location
@@ -2055,10 +2061,10 @@ package Gdk.Window is
    procedure Constrain_Size
       (Geometry   : Gdk_Geometry;
        Flags      : Gdk_Window_Hints;
-       Width      : Gint;
-       Height     : Gint;
-       New_Width  : out Gint;
-       New_Height : out Gint);
+       Width      : Glib.Gint;
+       Height     : Glib.Gint;
+       New_Width  : out Glib.Gint;
+       New_Height : out Glib.Gint);
    pragma Import (C, Constrain_Size, "gdk_window_constrain_size");
    --  Constrains a desired width and height according to a set of geometry
    --  hints (such as minimum and maximum size).
@@ -2120,8 +2126,8 @@ package Gdk.Window is
    --  gdk_offscreen_window_get_surface will lead to a crash.
    --    function Handler
    --       (Self   : Gdk_Window;
-   --        Width  : Gint;
-   --        Height : Gint) return Cairo.Cairo_Surface
+   --        Width  : Glib.Gint;
+   --        Height : Glib.Gint) return Cairo.Cairo_Surface
    -- 
    --  Callback parameters:
    --    --  "width": the width of the offscreen surface to create

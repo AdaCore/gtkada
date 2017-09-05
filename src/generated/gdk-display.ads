@@ -115,7 +115,7 @@ package Gdk.Display is
    --  "height": the return location for the maximal cursor height
 
    function Get_N_Screens
-      (Self : not null access Gdk_Display_Record) return Gint;
+      (Self : not null access Gdk_Display_Record) return Glib.Gint;
    pragma Obsolescent (Get_N_Screens);
    --  Gets the number of screen managed by the Display.
    --  Since: gtk+ 2.2

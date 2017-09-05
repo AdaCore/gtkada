@@ -88,7 +88,7 @@ package Gtk.Cell_Renderer_Text is
 
    procedure Set_Fixed_Height_From_Font
       (Self           : not null access Gtk_Cell_Renderer_Text_Record;
-       Number_Of_Rows : Gint);
+       Number_Of_Rows : Glib.Gint);
    --  Sets the height of a renderer to explicitly be determined by the "font"
    --  and "y_pad" property set on it. Further changes in these properties do
    --  not affect the height, so they must be accompanied by a subsequent call

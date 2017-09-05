@@ -275,9 +275,9 @@ package body Gtk.Recent_Manager is
    -----------------
 
    function Purge_Items
-      (Self : not null access Gtk_Recent_Manager_Record) return Gint
+      (Self : not null access Gtk_Recent_Manager_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_recent_manager_purge_items");
    begin
       return Internal (Get_Object (Self));

@@ -197,11 +197,11 @@ package Pango.Font is
    pragma Import (C, Get_Set_Fields, "pango_font_description_get_set_fields");
    --  Determines which fields in a font description have been set.
 
-   function Get_Size (Self : Pango_Font_Description) return Gint;
+   function Get_Size (Self : Pango_Font_Description) return Glib.Gint;
    pragma Import (C, Get_Size, "pango_font_description_get_size");
    --  Gets the size field of a font description. See Pango.Font.Set_Size.
 
-   procedure Set_Size (Self : Pango_Font_Description; Size : Gint);
+   procedure Set_Size (Self : Pango_Font_Description; Size : Glib.Gint);
    pragma Import (C, Set_Size, "pango_font_description_set_size");
    --  Sets the size field of a font description in fractional points. This is
    --  mutually exclusive with Pango.Font.Set_Absolute_Size.

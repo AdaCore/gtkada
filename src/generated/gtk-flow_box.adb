@@ -114,7 +114,7 @@ package body Gtk.Flow_Box is
    function Internal_Gtk_Flow_Box_Sort_Func
       (Child1    : System.Address;
        Child2    : System.Address;
-       User_Data : System.Address) return Gint;
+       User_Data : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_Flow_Box_Sort_Func);
    --  "child1": the first child
    --  "child2": the second child
@@ -157,7 +157,7 @@ package body Gtk.Flow_Box is
    function Internal_Gtk_Flow_Box_Sort_Func
       (Child1    : System.Address;
        Child2    : System.Address;
-       User_Data : System.Address) return Gint
+       User_Data : System.Address) return Glib.Gint
    is
       Func                    : constant Gtk_Flow_Box_Sort_Func := To_Gtk_Flow_Box_Sort_Func (User_Data);
       Stub_Gtk_Flow_Box_Child : Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record;
@@ -222,11 +222,11 @@ package body Gtk.Flow_Box is
 
    function Get_Child_At_Index
       (Self : not null access Gtk_Flow_Box_Record;
-       Idx  : Gint) return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
+       Idx  : Glib.Gint) return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
    is
       function Internal
          (Self : System.Address;
-          Idx  : Gint) return System.Address;
+          Idx  : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_flow_box_get_child_at_index");
       Stub_Gtk_Flow_Box_Child : Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record;
    begin
@@ -336,12 +336,12 @@ package body Gtk.Flow_Box is
    procedure Insert
       (Self     : not null access Gtk_Flow_Box_Record;
        Widget   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position : Gint)
+       Position : Glib.Gint)
    is
       procedure Internal
          (Self     : System.Address;
           Widget   : System.Address;
-          Position : Gint);
+          Position : Glib.Gint);
       pragma Import (C, Internal, "gtk_flow_box_insert");
    begin
       Internal (Get_Object (Self), Get_Object (Widget), Position);
@@ -692,7 +692,7 @@ package body Gtk.Flow_Box is
       function Internal_Cb
          (Child1    : System.Address;
           Child2    : System.Address;
-          User_Data : System.Address) return Gint;
+          User_Data : System.Address) return Glib.Gint;
       pragma Convention (C, Internal_Cb);
       --  A function to compare two children to determine which should come
       --  first.
@@ -708,7 +708,7 @@ package body Gtk.Flow_Box is
       function Internal_Cb
          (Child1    : System.Address;
           Child2    : System.Address;
-          User_Data : System.Address) return Gint
+          User_Data : System.Address) return Glib.Gint
       is
          D                       : constant Users.Internal_Data_Access := Users.Convert (User_Data);
          Stub_Gtk_Flow_Box_Child : Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record;

@@ -97,8 +97,8 @@ package body Gtk.Recent_Info is
    -- Get_Age --
    -------------
 
-   function Get_Age (Self : Gtk_Recent_Info) return Gint is
-      function Internal (Self : System.Address) return Gint;
+   function Get_Age (Self : Gtk_Recent_Info) return Glib.Gint is
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_recent_info_get_age");
    begin
       return Internal (Get_Object (Self));
@@ -145,11 +145,11 @@ package body Gtk.Recent_Info is
 
    function Get_Icon
       (Self : Gtk_Recent_Info;
-       Size : Gint) return Gdk.Pixbuf.Gdk_Pixbuf
+       Size : Glib.Gint) return Gdk.Pixbuf.Gdk_Pixbuf
    is
       function Internal
          (Self : System.Address;
-          Size : Gint) return System.Address;
+          Size : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_recent_info_get_icon");
       Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
    begin

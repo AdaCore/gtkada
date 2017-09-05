@@ -259,9 +259,9 @@ package body Gtk.Entry_Completion is
 
    procedure Delete_Action
       (Completion : not null access Gtk_Entry_Completion_Record;
-       Index      : Gint)
+       Index      : Glib.Gint)
    is
-      procedure Internal (Completion : System.Address; Index : Gint);
+      procedure Internal (Completion : System.Address; Index : Glib.Gint);
       pragma Import (C, Internal, "gtk_entry_completion_delete_action");
    begin
       Internal (Get_Object (Completion), Index);
@@ -330,9 +330,10 @@ package body Gtk.Entry_Completion is
    ----------------------------
 
    function Get_Minimum_Key_Length
-      (Completion : not null access Gtk_Entry_Completion_Record) return Gint
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Glib.Gint
    is
-      function Internal (Completion : System.Address) return Gint;
+      function Internal (Completion : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_entry_completion_get_minimum_key_length");
    begin
       return Internal (Get_Object (Completion));
@@ -400,9 +401,10 @@ package body Gtk.Entry_Completion is
    ---------------------
 
    function Get_Text_Column
-      (Completion : not null access Gtk_Entry_Completion_Record) return Gint
+      (Completion : not null access Gtk_Entry_Completion_Record)
+       return Glib.Gint
    is
-      function Internal (Completion : System.Address) return Gint;
+      function Internal (Completion : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_entry_completion_get_text_column");
    begin
       return Internal (Get_Object (Completion));
@@ -414,12 +416,12 @@ package body Gtk.Entry_Completion is
 
    procedure Insert_Action_Markup
       (Completion : not null access Gtk_Entry_Completion_Record;
-       Index      : Gint;
+       Index      : Glib.Gint;
        Markup     : UTF8_String)
    is
       procedure Internal
          (Completion : System.Address;
-          Index      : Gint;
+          Index      : Glib.Gint;
           Markup     : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_entry_completion_insert_action_markup");
       Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
@@ -434,12 +436,12 @@ package body Gtk.Entry_Completion is
 
    procedure Insert_Action_Text
       (Completion : not null access Gtk_Entry_Completion_Record;
-       Index      : Gint;
+       Index      : Glib.Gint;
        Text       : UTF8_String)
    is
       procedure Internal
          (Completion : System.Address;
-          Index      : Gint;
+          Index      : Glib.Gint;
           Text       : Interfaces.C.Strings.chars_ptr);
       pragma Import (C, Internal, "gtk_entry_completion_insert_action_text");
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
@@ -663,9 +665,9 @@ package body Gtk.Entry_Completion is
 
    procedure Set_Minimum_Key_Length
       (Completion : not null access Gtk_Entry_Completion_Record;
-       Length     : Gint)
+       Length     : Glib.Gint)
    is
-      procedure Internal (Completion : System.Address; Length : Gint);
+      procedure Internal (Completion : System.Address; Length : Glib.Gint);
       pragma Import (C, Internal, "gtk_entry_completion_set_minimum_key_length");
    begin
       Internal (Get_Object (Completion), Length);
@@ -741,9 +743,9 @@ package body Gtk.Entry_Completion is
 
    procedure Set_Text_Column
       (Completion : not null access Gtk_Entry_Completion_Record;
-       Column     : Gint)
+       Column     : Glib.Gint)
    is
-      procedure Internal (Completion : System.Address; Column : Gint);
+      procedure Internal (Completion : System.Address; Column : Glib.Gint);
       pragma Import (C, Internal, "gtk_entry_completion_set_text_column");
    begin
       Internal (Get_Object (Completion), Column);
@@ -757,13 +759,13 @@ package body Gtk.Entry_Completion is
       (Cell_Layout : not null access Gtk_Entry_Completion_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Attribute   : UTF8_String;
-       Column      : Gint)
+       Column      : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
           Attribute   : Interfaces.C.Strings.chars_ptr;
-          Column      : Gint);
+          Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
       Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
    begin
@@ -859,12 +861,12 @@ package body Gtk.Entry_Completion is
    procedure Reorder
       (Cell_Layout : not null access Gtk_Entry_Completion_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
-       Position    : Gint)
+       Position    : Glib.Gint)
    is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Position    : Gint);
+          Position    : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_reorder");
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);

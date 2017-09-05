@@ -96,9 +96,9 @@ package body Gtk.Text_Tag is
    ------------------
 
    function Get_Priority
-      (Tag : not null access Gtk_Text_Tag_Record) return Gint
+      (Tag : not null access Gtk_Text_Tag_Record) return Glib.Gint
    is
-      function Internal (Tag : System.Address) return Gint;
+      function Internal (Tag : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_text_tag_get_priority");
    begin
       return Internal (Get_Object (Tag));
@@ -110,9 +110,9 @@ package body Gtk.Text_Tag is
 
    procedure Set_Priority
       (Tag      : not null access Gtk_Text_Tag_Record;
-       Priority : Gint)
+       Priority : Glib.Gint)
    is
-      procedure Internal (Tag : System.Address; Priority : Gint);
+      procedure Internal (Tag : System.Address; Priority : Glib.Gint);
       pragma Import (C, Internal, "gtk_text_tag_set_priority");
    begin
       Internal (Get_Object (Tag), Priority);

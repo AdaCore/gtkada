@@ -169,9 +169,9 @@ package body Gdk.Display is
    -------------------
 
    function Get_N_Screens
-      (Self : not null access Gdk_Display_Record) return Gint
+      (Self : not null access Gdk_Display_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gdk_display_get_n_screens");
    begin
       return Internal (Get_Object (Self));

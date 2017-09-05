@@ -483,13 +483,13 @@ package Gtk.Image is
    --  reference to the returned pixbuf.
 
    function Get_Pixel_Size
-      (Image : not null access Gtk_Image_Record) return Gint;
+      (Image : not null access Gtk_Image_Record) return Glib.Gint;
    --  Gets the pixel size used for named icons.
    --  Since: gtk+ 2.6
 
    procedure Set_Pixel_Size
       (Image      : not null access Gtk_Image_Record;
-       Pixel_Size : Gint);
+       Pixel_Size : Glib.Gint);
    --  Sets the pixel size to use for named icons. If the pixel size is set to
    --  a value != -1, it is used instead of the icon size set by
    --  Gtk.Image.Set_From_Icon_Name.

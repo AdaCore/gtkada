@@ -194,7 +194,7 @@ package Gtk.Menu_Shell is
    procedure Insert
       (Menu_Shell : not null access Gtk_Menu_Shell_Record;
        Child      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Position   : Gint);
+       Position   : Glib.Gint);
    --  Adds a new Gtk.Menu_Item.Gtk_Menu_Item to the menu shell's item list at
    --  the position indicated by Position.
    --  "child": The Gtk.Menu_Item.Gtk_Menu_Item to add
@@ -314,12 +314,12 @@ package Gtk.Menu_Shell is
    type Cb_Gtk_Menu_Shell_Gtk_Widget_Gint_Void is not null access procedure
      (Self     : access Gtk_Menu_Shell_Record'Class;
       Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position : Gint);
+      Position : Glib.Gint);
 
    type Cb_GObject_Gtk_Widget_Gint_Void is not null access procedure
      (Self     : access Glib.Object.GObject_Record'Class;
       Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-      Position : Gint);
+      Position : Glib.Gint);
 
    Signal_Insert : constant Glib.Signal_Name := "insert";
    procedure On_Insert
@@ -365,11 +365,11 @@ package Gtk.Menu_Shell is
 
    type Cb_Gtk_Menu_Shell_Gint_Boolean is not null access function
      (Self     : access Gtk_Menu_Shell_Record'Class;
-      Distance : Gint) return Boolean;
+      Distance : Glib.Gint) return Boolean;
 
    type Cb_GObject_Gint_Boolean is not null access function
      (Self     : access Glib.Object.GObject_Record'Class;
-      Distance : Gint) return Boolean;
+      Distance : Glib.Gint) return Boolean;
 
    Signal_Move_Selected : constant Glib.Signal_Name := "move-selected";
    procedure On_Move_Selected

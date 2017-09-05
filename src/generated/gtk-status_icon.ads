@@ -306,7 +306,8 @@ package Gtk.Status_Icon is
    --  "screen": a Gdk.Screen.Gdk_Screen
 
    function Get_Size
-      (Status_Icon : not null access Gtk_Status_Icon_Record) return Gint;
+      (Status_Icon : not null access Gtk_Status_Icon_Record)
+       return Glib.Gint;
    pragma Obsolescent (Get_Size);
    --  Gets the size in pixels that is available for the image. Stock icons
    --  and named icons adapt their size automatically if the size of the
@@ -480,8 +481,8 @@ package Gtk.Status_Icon is
 
    procedure Position_Menu
       (Menu    : not null access Gtk.Menu.Gtk_Menu_Record'Class;
-       X       : out Gint;
-       Y       : out Gint;
+       X       : out Glib.Gint;
+       Y       : out Glib.Gint;
        Push_In : out Boolean;
        Icon    : Glib.Object.GObject);
    pragma Obsolescent (Position_Menu);
@@ -700,16 +701,16 @@ package Gtk.Status_Icon is
 
    type Cb_Gtk_Status_Icon_Gint_Gint_Boolean_Gtk_Tooltip_Boolean is not null access function
      (Self          : access Gtk_Status_Icon_Record'Class;
-      X             : Gint;
-      Y             : Gint;
+      X             : Glib.Gint;
+      Y             : Glib.Gint;
       Keyboard_Mode : Boolean;
       Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
    return Boolean;
 
    type Cb_GObject_Gint_Gint_Boolean_Gtk_Tooltip_Boolean is not null access function
      (Self          : access Glib.Object.GObject_Record'Class;
-      X             : Gint;
-      Y             : Gint;
+      X             : Glib.Gint;
+      Y             : Glib.Gint;
       Keyboard_Mode : Boolean;
       Tooltip       : not null access Gtk.Tooltip.Gtk_Tooltip_Record'Class)
    return Boolean;
@@ -780,11 +781,11 @@ package Gtk.Status_Icon is
 
    type Cb_Gtk_Status_Icon_Gint_Boolean is not null access function
      (Self : access Gtk_Status_Icon_Record'Class;
-      Size : Gint) return Boolean;
+      Size : Glib.Gint) return Boolean;
 
    type Cb_GObject_Gint_Boolean is not null access function
      (Self : access Glib.Object.GObject_Record'Class;
-      Size : Gint) return Boolean;
+      Size : Glib.Gint) return Boolean;
 
    Signal_Size_Changed : constant Glib.Signal_Name := "size-changed";
    procedure On_Size_Changed

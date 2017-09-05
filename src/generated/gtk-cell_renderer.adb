@@ -124,13 +124,13 @@ package body Gtk.Cell_Renderer is
 
    procedure Get_Fixed_Size
       (Cell   : not null access Gtk_Cell_Renderer_Record;
-       Width  : out Gint;
-       Height : out Gint)
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint)
    is
       procedure Internal
          (Cell   : System.Address;
-          Width  : out Gint;
-          Height : out Gint);
+          Width  : out Glib.Gint;
+          Height : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_renderer_get_fixed_size");
    begin
       Internal (Get_Object (Cell), Width, Height);
@@ -142,13 +142,13 @@ package body Gtk.Cell_Renderer is
 
    procedure Get_Padding
       (Cell : not null access Gtk_Cell_Renderer_Record;
-       Xpad : out Gint;
-       Ypad : out Gint)
+       Xpad : out Glib.Gint;
+       Ypad : out Glib.Gint)
    is
       procedure Internal
          (Cell : System.Address;
-          Xpad : out Gint;
-          Ypad : out Gint);
+          Xpad : out Glib.Gint;
+          Ypad : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_renderer_get_padding");
    begin
       Internal (Get_Object (Cell), Xpad, Ypad);
@@ -161,14 +161,14 @@ package body Gtk.Cell_Renderer is
    procedure Get_Preferred_Height
       (Cell         : not null access Gtk_Cell_Renderer_Record;
        Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Minimum_Size : out Gint;
-       Natural_Size : out Gint)
+       Minimum_Size : out Glib.Gint;
+       Natural_Size : out Glib.Gint)
    is
       procedure Internal
          (Cell         : System.Address;
           Widget       : System.Address;
-          Minimum_Size : out Gint;
-          Natural_Size : out Gint);
+          Minimum_Size : out Glib.Gint;
+          Natural_Size : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_renderer_get_preferred_height");
    begin
       Internal (Get_Object (Cell), Get_Object (Widget), Minimum_Size, Natural_Size);
@@ -181,16 +181,16 @@ package body Gtk.Cell_Renderer is
    procedure Get_Preferred_Height_For_Width
       (Cell           : not null access Gtk_Cell_Renderer_Record;
        Widget         : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Width          : Gint;
-       Minimum_Height : out Gint;
-       Natural_Height : out Gint)
+       Width          : Glib.Gint;
+       Minimum_Height : out Glib.Gint;
+       Natural_Height : out Glib.Gint)
    is
       procedure Internal
          (Cell           : System.Address;
           Widget         : System.Address;
-          Width          : Gint;
-          Minimum_Height : out Gint;
-          Natural_Height : out Gint);
+          Width          : Glib.Gint;
+          Minimum_Height : out Glib.Gint;
+          Natural_Height : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_renderer_get_preferred_height_for_width");
    begin
       Internal (Get_Object (Cell), Get_Object (Widget), Width, Minimum_Height, Natural_Height);
@@ -227,14 +227,14 @@ package body Gtk.Cell_Renderer is
    procedure Get_Preferred_Width
       (Cell         : not null access Gtk_Cell_Renderer_Record;
        Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Minimum_Size : out Gint;
-       Natural_Size : out Gint)
+       Minimum_Size : out Glib.Gint;
+       Natural_Size : out Glib.Gint)
    is
       procedure Internal
          (Cell         : System.Address;
           Widget       : System.Address;
-          Minimum_Size : out Gint;
-          Natural_Size : out Gint);
+          Minimum_Size : out Glib.Gint;
+          Natural_Size : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_renderer_get_preferred_width");
    begin
       Internal (Get_Object (Cell), Get_Object (Widget), Minimum_Size, Natural_Size);
@@ -247,16 +247,16 @@ package body Gtk.Cell_Renderer is
    procedure Get_Preferred_Width_For_Height
       (Cell          : not null access Gtk_Cell_Renderer_Record;
        Widget        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-       Height        : Gint;
-       Minimum_Width : out Gint;
-       Natural_Width : out Gint)
+       Height        : Glib.Gint;
+       Minimum_Width : out Glib.Gint;
+       Natural_Width : out Glib.Gint)
    is
       procedure Internal
          (Cell          : System.Address;
           Widget        : System.Address;
-          Height        : Gint;
-          Minimum_Width : out Gint;
-          Natural_Width : out Gint);
+          Height        : Glib.Gint;
+          Minimum_Width : out Glib.Gint;
+          Natural_Width : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_renderer_get_preferred_width_for_height");
    begin
       Internal (Get_Object (Cell), Get_Object (Widget), Height, Minimum_Width, Natural_Width);
@@ -298,19 +298,19 @@ package body Gtk.Cell_Renderer is
       (Cell      : not null access Gtk_Cell_Renderer_Record;
        Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Cell_Area : in out Gdk.Rectangle.Gdk_Rectangle;
-       X_Offset  : out Gint;
-       Y_Offset  : out Gint;
-       Width     : out Gint;
-       Height    : out Gint)
+       X_Offset  : out Glib.Gint;
+       Y_Offset  : out Glib.Gint;
+       Width     : out Glib.Gint;
+       Height    : out Glib.Gint)
    is
       procedure Internal
          (Cell      : System.Address;
           Widget    : System.Address;
           Cell_Area : in out Gdk.Rectangle.Gdk_Rectangle;
-          X_Offset  : out Gint;
-          Y_Offset  : out Gint;
-          Width     : out Gint;
-          Height    : out Gint);
+          X_Offset  : out Glib.Gint;
+          Y_Offset  : out Glib.Gint;
+          Width     : out Glib.Gint;
+          Height    : out Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_renderer_get_size");
    begin
       Internal (Get_Object (Cell), Get_Object (Widget), Cell_Area, X_Offset, Y_Offset, Width, Height);
@@ -410,13 +410,13 @@ package body Gtk.Cell_Renderer is
 
    procedure Set_Fixed_Size
       (Cell   : not null access Gtk_Cell_Renderer_Record;
-       Width  : Gint;
-       Height : Gint)
+       Width  : Glib.Gint;
+       Height : Glib.Gint)
    is
       procedure Internal
          (Cell   : System.Address;
-          Width  : Gint;
-          Height : Gint);
+          Width  : Glib.Gint;
+          Height : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_renderer_set_fixed_size");
    begin
       Internal (Get_Object (Cell), Width, Height);
@@ -428,10 +428,13 @@ package body Gtk.Cell_Renderer is
 
    procedure Set_Padding
       (Cell : not null access Gtk_Cell_Renderer_Record;
-       Xpad : Gint;
-       Ypad : Gint)
+       Xpad : Glib.Gint;
+       Ypad : Glib.Gint)
    is
-      procedure Internal (Cell : System.Address; Xpad : Gint; Ypad : Gint);
+      procedure Internal
+         (Cell : System.Address;
+          Xpad : Glib.Gint;
+          Ypad : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_renderer_set_padding");
    begin
       Internal (Get_Object (Cell), Xpad, Ypad);

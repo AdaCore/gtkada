@@ -454,14 +454,14 @@ package body Gtk.Print_Settings is
 
    function Get_Int
       (Self : not null access Gtk_Print_Settings_Record;
-       Key  : UTF8_String) return Gint
+       Key  : UTF8_String) return Glib.Gint
    is
       function Internal
          (Self : System.Address;
-          Key  : Interfaces.C.Strings.chars_ptr) return Gint;
+          Key  : Interfaces.C.Strings.chars_ptr) return Glib.Gint;
       pragma Import (C, Internal, "gtk_print_settings_get_int");
       Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
-      Tmp_Return : Gint;
+      Tmp_Return : Glib.Gint;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key);
       Free (Tmp_Key);
@@ -475,15 +475,15 @@ package body Gtk.Print_Settings is
    function Get_Int_With_Default
       (Self : not null access Gtk_Print_Settings_Record;
        Key  : UTF8_String;
-       Def  : Gint) return Gint
+       Def  : Glib.Gint) return Glib.Gint
    is
       function Internal
          (Self : System.Address;
           Key  : Interfaces.C.Strings.chars_ptr;
-          Def  : Gint) return Gint;
+          Def  : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gtk_print_settings_get_int_with_default");
       Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
-      Tmp_Return : Gint;
+      Tmp_Return : Glib.Gint;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key, Def);
       Free (Tmp_Key);
@@ -531,9 +531,9 @@ package body Gtk.Print_Settings is
    ------------------
 
    function Get_N_Copies
-      (Self : not null access Gtk_Print_Settings_Record) return Gint
+      (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_print_settings_get_n_copies");
    begin
       return Internal (Get_Object (Self));
@@ -544,9 +544,9 @@ package body Gtk.Print_Settings is
    -------------------
 
    function Get_Number_Up
-      (Self : not null access Gtk_Print_Settings_Record) return Gint
+      (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_print_settings_get_number_up");
    begin
       return Internal (Get_Object (Self));
@@ -757,9 +757,9 @@ package body Gtk.Print_Settings is
    --------------------
 
    function Get_Resolution
-      (Self : not null access Gtk_Print_Settings_Record) return Gint
+      (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_print_settings_get_resolution");
    begin
       return Internal (Get_Object (Self));
@@ -770,9 +770,9 @@ package body Gtk.Print_Settings is
    ----------------------
 
    function Get_Resolution_X
-      (Self : not null access Gtk_Print_Settings_Record) return Gint
+      (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_print_settings_get_resolution_x");
    begin
       return Internal (Get_Object (Self));
@@ -783,9 +783,9 @@ package body Gtk.Print_Settings is
    ----------------------
 
    function Get_Resolution_Y
-      (Self : not null access Gtk_Print_Settings_Record) return Gint
+      (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint
    is
-      function Internal (Self : System.Address) return Gint;
+      function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "gtk_print_settings_get_resolution_y");
    begin
       return Internal (Get_Object (Self));
@@ -1055,12 +1055,12 @@ package body Gtk.Print_Settings is
    procedure Set_Int
       (Self  : not null access Gtk_Print_Settings_Record;
        Key   : UTF8_String;
-       Value : Gint)
+       Value : Glib.Gint)
    is
       procedure Internal
          (Self  : System.Address;
           Key   : Interfaces.C.Strings.chars_ptr;
-          Value : Gint);
+          Value : Glib.Gint);
       pragma Import (C, Internal, "gtk_print_settings_set_int");
       Tmp_Key : Interfaces.C.Strings.chars_ptr := New_String (Key);
    begin
@@ -1114,9 +1114,9 @@ package body Gtk.Print_Settings is
 
    procedure Set_N_Copies
       (Self       : not null access Gtk_Print_Settings_Record;
-       Num_Copies : Gint)
+       Num_Copies : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Num_Copies : Gint);
+      procedure Internal (Self : System.Address; Num_Copies : Glib.Gint);
       pragma Import (C, Internal, "gtk_print_settings_set_n_copies");
    begin
       Internal (Get_Object (Self), Num_Copies);
@@ -1128,9 +1128,9 @@ package body Gtk.Print_Settings is
 
    procedure Set_Number_Up
       (Self      : not null access Gtk_Print_Settings_Record;
-       Number_Up : Gint)
+       Number_Up : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Number_Up : Gint);
+      procedure Internal (Self : System.Address; Number_Up : Glib.Gint);
       pragma Import (C, Internal, "gtk_print_settings_set_number_up");
    begin
       Internal (Get_Object (Self), Number_Up);
@@ -1344,9 +1344,9 @@ package body Gtk.Print_Settings is
 
    procedure Set_Resolution
       (Self       : not null access Gtk_Print_Settings_Record;
-       Resolution : Gint)
+       Resolution : Glib.Gint)
    is
-      procedure Internal (Self : System.Address; Resolution : Gint);
+      procedure Internal (Self : System.Address; Resolution : Glib.Gint);
       pragma Import (C, Internal, "gtk_print_settings_set_resolution");
    begin
       Internal (Get_Object (Self), Resolution);
@@ -1358,13 +1358,13 @@ package body Gtk.Print_Settings is
 
    procedure Set_Resolution_Xy
       (Self         : not null access Gtk_Print_Settings_Record;
-       Resolution_X : Gint;
-       Resolution_Y : Gint)
+       Resolution_X : Glib.Gint;
+       Resolution_Y : Glib.Gint)
    is
       procedure Internal
          (Self         : System.Address;
-          Resolution_X : Gint;
-          Resolution_Y : Gint);
+          Resolution_X : Glib.Gint;
+          Resolution_Y : Glib.Gint);
       pragma Import (C, Internal, "gtk_print_settings_set_resolution_xy");
    begin
       Internal (Get_Object (Self), Resolution_X, Resolution_Y);

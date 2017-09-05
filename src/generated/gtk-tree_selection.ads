@@ -104,7 +104,8 @@ package Gtk.Tree_Selection is
    -------------
 
    function Count_Selected_Rows
-      (Selection : not null access Gtk_Tree_Selection_Record) return Gint;
+      (Selection : not null access Gtk_Tree_Selection_Record)
+       return Glib.Gint;
    --  Returns the number of rows that have been selected in Tree.
    --  Since: gtk+ 2.2
 

@@ -30,6 +30,7 @@
 pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
+with Glib;        use Glib;
 with Pango.Enums; use Pango.Enums;
 
 package Pango.Coverage is
@@ -52,7 +53,7 @@ package Pango.Coverage is
 
    function Get
       (Self  : Pango_Coverage;
-       Index : Gint) return Pango.Enums.Coverage_Level;
+       Index : Glib.Gint) return Pango.Enums.Coverage_Level;
    --  Determine whether a particular index is covered by Coverage
    --  "index_": the index to check
 
@@ -68,7 +69,7 @@ package Pango.Coverage is
 
    procedure Set
       (Self  : Pango_Coverage;
-       Index : Gint;
+       Index : Glib.Gint;
        Level : Pango.Enums.Coverage_Level);
    --  Modify a particular index within Coverage
    --  "index_": the index to modify

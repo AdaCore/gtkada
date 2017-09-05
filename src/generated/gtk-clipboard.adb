@@ -248,7 +248,7 @@ package body Gtk.Clipboard is
    procedure Internal_Gtk_Clipboard_Targets_Received_Func
       (Clipboard : System.Address;
        Atoms     : System.Address;
-       N_Atoms   : Gint;
+       N_Atoms   : Glib.Gint;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Targets_Received_Func);
    --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
@@ -331,7 +331,7 @@ package body Gtk.Clipboard is
    procedure Internal_Gtk_Clipboard_Targets_Received_Func
       (Clipboard : System.Address;
        Atoms     : System.Address;
-       N_Atoms   : Gint;
+       N_Atoms   : Glib.Gint;
        Data      : System.Address)
    is
       Func               : constant Gtk_Clipboard_Targets_Received_Func := To_Gtk_Clipboard_Targets_Received_Func (Data);
@@ -520,12 +520,12 @@ package body Gtk.Clipboard is
    procedure Set_Can_Store
       (Clipboard : not null access Gtk_Clipboard_Record;
        Targets   : Gtk.Target_List.Target_Entry_Array;
-       N_Targets : Gint)
+       N_Targets : Glib.Gint)
    is
       procedure Internal
          (Clipboard : System.Address;
           Targets   : Gtk.Target_List.Target_Entry_Array;
-          N_Targets : Gint);
+          N_Targets : Glib.Gint);
       pragma Import (C, Internal, "gtk_clipboard_set_can_store");
    begin
       Internal (Get_Object (Clipboard), Targets, N_Targets);
@@ -558,7 +558,7 @@ package body Gtk.Clipboard is
       procedure Internal
          (Clipboard : System.Address;
           Text      : Interfaces.C.Strings.chars_ptr;
-          Len       : Gint);
+          Len       : Glib.Gint);
       pragma Import (C, Internal, "gtk_clipboard_set_text");
       Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
    begin

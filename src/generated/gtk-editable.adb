@@ -45,13 +45,13 @@ package body Gtk.Editable is
 
    function Get_Chars
       (Editable  : Gtk_Editable;
-       Start_Pos : Gint;
-       End_Pos   : Gint := -1) return UTF8_String
+       Start_Pos : Glib.Gint;
+       End_Pos   : Glib.Gint := -1) return UTF8_String
    is
       function Internal
          (Editable  : Gtk_Editable;
-          Start_Pos : Gint;
-          End_Pos   : Gint) return Interfaces.C.Strings.chars_ptr;
+          Start_Pos : Glib.Gint;
+          End_Pos   : Glib.Gint) return Interfaces.C.Strings.chars_ptr;
       pragma Import (C, Internal, "gtk_editable_get_chars");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Editable, Start_Pos, End_Pos));
@@ -74,17 +74,17 @@ package body Gtk.Editable is
 
    procedure Get_Selection_Bounds
       (Editable      : Gtk_Editable;
-       Start_Pos     : out Gint;
-       End_Pos       : out Gint;
+       Start_Pos     : out Glib.Gint;
+       End_Pos       : out Glib.Gint;
        Has_Selection : out Boolean)
    is
       function Internal
          (Editable      : Gtk_Editable;
-          Acc_Start_Pos : access Gint;
-          Acc_End_Pos   : access Gint) return Glib.Gboolean;
+          Acc_Start_Pos : access Glib.Gint;
+          Acc_End_Pos   : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_editable_get_selection_bounds");
-      Acc_Start_Pos : aliased Gint;
-      Acc_End_Pos   : aliased Gint;
+      Acc_Start_Pos : aliased Glib.Gint;
+      Acc_End_Pos   : aliased Glib.Gint;
       Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Editable, Acc_Start_Pos'Access, Acc_End_Pos'Access);
@@ -100,14 +100,14 @@ package body Gtk.Editable is
    procedure Insert_Text
       (Editable        : Gtk_Editable;
        New_Text        : UTF8_String;
-       New_Text_Length : Gint;
-       Position        : in out Gint)
+       New_Text_Length : Glib.Gint;
+       Position        : in out Glib.Gint)
    is
       procedure Internal
          (Editable        : Gtk_Editable;
           New_Text        : Interfaces.C.Strings.chars_ptr;
-          New_Text_Length : Gint;
-          Position        : in out Gint);
+          New_Text_Length : Glib.Gint;
+          Position        : in out Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_insert_text");
       Tmp_New_Text : Interfaces.C.Strings.chars_ptr := New_String (New_Text);
    begin
