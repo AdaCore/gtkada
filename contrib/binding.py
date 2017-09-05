@@ -1788,7 +1788,7 @@ See Glib.Properties for more information on properties)""")
                     # Only display the type if it isn't obvious from the actual
                     # type of the property.
                     if p["type"] not in ("Boolean", "UTF8_String", "Gfloat",
-                                         "Gint", "Guint") \
+                                         "Glib.Gint", "Guint") \
                        and not p["type"].startswith("Gtk.Enums."):
                         section.add(
                             Code("Type:  %(type)s" % p, iscomment=True))
