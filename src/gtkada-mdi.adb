@@ -1956,7 +1956,6 @@ package body Gtkada.MDI is
    -------------------
 
    procedure Destroy_Child (Child : access Gtk_Widget_Record'Class) is
-      use type Widget_SList.GSlist;
       C                   : constant MDI_Child := MDI_Child (Child);
       MDI                 : constant MDI_Window := C.MDI;
       In_Selection_Dialog : Boolean := False;

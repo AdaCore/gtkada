@@ -3198,7 +3198,6 @@ package body Gtkada.Canvas_View is
      (Self     : not null access Container_Item_Record;
       In_Model : not null access Canvas_Model_Record'Class)
    is
-      use Item_Sets;
       To_Remove : Item_Sets.Set;
 
       procedure Do_Child (C : not null access Container_Item_Record'Class);

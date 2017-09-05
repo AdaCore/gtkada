@@ -720,8 +720,8 @@ package body Gtkada.Multi_Paned is
    procedure Destroy_Paned
      (Paned : access Gtk_Widget_Record'Class)
    is
-      use type Widget_List.Glist;
       Split : constant Gtkada_Multi_Paned := Gtkada_Multi_Paned (Paned);
+
    begin
       --  Destruction of children would be done automatically by the default
       --  "destroy" handler of the ancestor of Gtkada_Multi_Paned (ie GtkFixed)

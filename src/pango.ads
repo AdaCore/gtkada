@@ -30,7 +30,7 @@ pragma Warnings (Off);
 with System;  --   Needed for child packages
 pragma Warnings (On);
 
-with Glib;   use Glib;
+with Glib;
 
 package Pango is
 

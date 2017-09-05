@@ -39,8 +39,6 @@ package Glib is
    pragma Preelaborate;
 
    package C renames Interfaces.C;
-   use type C.int;
-   use type C.unsigned;
 
    -------------------------------------
    -- The basic types defined by glib --

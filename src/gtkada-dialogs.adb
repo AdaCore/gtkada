@@ -218,7 +218,6 @@ package body Gtkada.Dialogs is
       Img         : Gtk_Image;
       Pixmap      : Gdk_Pixbuf;
 
-      use Gdk;
    begin
       Gtk_New
         (Dialog,

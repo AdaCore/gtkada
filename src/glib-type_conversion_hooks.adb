@@ -79,10 +79,8 @@ package body Glib.Type_Conversion_Hooks is
       function Get_Type (Obj : System.Address) return GType;
       pragma Import (C, Get_Type, "ada_gobject_get_type");
 
-      The_Type  : GType := Get_Type (Obj);
-      Hooks     : Glib.Type_Conversion_Hooks.Hook_List_Access;
-
-      use type Glib.Type_Conversion_Hooks.Hook_List_Access;
+      The_Type : GType := Get_Type (Obj);
+      Hooks    : Glib.Type_Conversion_Hooks.Hook_List_Access;
 
    begin
       while The_Type > GType_Object loop
