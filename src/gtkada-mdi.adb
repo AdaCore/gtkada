@@ -522,10 +522,13 @@ package body Gtkada.MDI is
    --  when using the scroll arrows when there are too many pages to be
    --  displayed
 
+   procedure Set_Focus_To_Last_Focused_Child
+     (MDI    : not null access MDI_Window_Record'Class;
+      Window : access Gtk.Window.Gtk_Window_Record'Class := null);
+   --  Set the focus to the last focused child in the given window.
+   --  If now window is specified, the main window is used.
+
    function Toplevel_Focus_In
-     (MDI   : access GObject_Record'Class;
-      Event : Gdk_Event_Focus) return Boolean;
-   function Toplevel_Focus_Out
      (MDI   : access GObject_Record'Class;
       Event : Gdk_Event_Focus) return Boolean;
    --  Called when the toplevel window that contains a the MDI gains the focus
@@ -873,45 +876,6 @@ package body Gtkada.MDI is
       return False;
    end Set_Focus_Child_MDI_From_Tab;
 
-   ------------------------
-   -- Toplevel_Focus_Out --
-   ------------------------
-
-   function Toplevel_Focus_Out
-     (MDI   : access GObject_Record'Class;
-      Event : Gdk_Event_Focus) return Boolean
-   is
-      pragma Unreferenced (Event);
-      M   : constant MDI_Window := MDI_Window (MDI);
-      Win : constant Gtk_Window := Gtk_Window (Get_Toplevel (M));
-   begin
-      --  This doesn't work, because the current MDI child remains valid,
-      --  but will no longer have the focus when the main window gains the
-      --  focus. This also does not work when using Next Tag with a floating
-      --  Locations window, since the latter temporarily gets the focus, and
-      --  the editor does not get it back.
-
-      if False then
-         Win.Set_Focus (null);
-      end if;
-
-      --  However, we still want to report that the child was unselected.
-      --  In the context of GPS for instance, this means that pressing
-      --  Backspace in a dialog (codepeer messages) correctly sends it to
-      --  the dialog, and not to the last editor that had the focus.
-      --
-      --  This might break contextual menus though, since they steal the
-      --  focus but still need to know the previous context.
-      --  So in GPS we ended up doing our own GPS_Dialog which connects to
-      --  Focus_In and disables the child selection in the MDI.
-
-      if False then
-         Child_Selected (M, null);
-      end if;
-
-      return False;
-   end Toplevel_Focus_Out;
-
    -----------------------
    -- Toplevel_Focus_In --
    -----------------------
@@ -923,96 +887,41 @@ package body Gtkada.MDI is
       pragma Unreferenced (Event);
       M   : constant MDI_Window := MDI_Window (MDI);
       Win : constant Gtk_Window := Gtk_Window (Get_Toplevel (M));
-      W : Gtk_Widget;
-      C : MDI_Child;
    begin
       Print_Debug ("Toplevel_Focus_In");
 
-      if False
-         and then M.Focus_Child /= null
-         and then M.Focus_Child.State = Floating
+      --  When the main window gains the focus, make sure to give the focus
+      --  to the MDI child that had the focus before leaving the main window.
+
+      if M.Focus_Child /= null
+        and then M.Focus_Child.State = Floating
       then
-         --  Keep the current child on the floating, so remove the
-         --  keyboard focus in toplevel window for consistency.
-         --
-         --  This does not work though since the omni-search never
-         --  gets the focus that way, and we need two clicks to give
-         --  the focus to an editor.
-
-         Win.Set_Focus (null);
-
-      elsif False then
-         --  This will unfortunately prevent users from using /Windows
-         --  menu on floating windows. On mac, if you have the focus on a
-         --  floating window and then click in the menu bar in the main
-         --  window, the focus is given to the main window (and thus here
-         --  we change the current child), and then the focus is given to
-         --  the menu eventually (or maybe only when the user starts
-         --  using the arrow keys). But at this point the current child
-         --  in the /Windows menu is the one from the main window.
-         --
-         --  On the other hand this is needed since otherwise the
-         --  keyboard focus has been moved to a widget in the main
-         --  window, but the current MDI child would still be the
-         --  floating window so the MDI is out of sync.
-
-         W := Win.Get_Focus;
-         if W /= null then
-
-            C := Find_MDI_Child_From_Widget (W);
-            if C /= null then
-               Set_Focus_Child (C);
+         declare
+            Focus_Widget : constant Gtk_Widget := Win.Get_Focus;
+            Child        : MDI_Child := null;
+         begin
+            if Focus_Widget /= null then
+               Child := Find_MDI_Child_From_Widget (Focus_Widget);
             end if;
-         end if;
 
+            --  If the focus widget of the main window is contained in a MDI
+            --  child, make sure to give it the focus too.
+            --
+            --  Otherwise, give the focus to the last focused MDI child of the
+            --  main window.
+
+            if Child /= null then
+               Give_Focus_To_Child (Child);
+               M.Set_Focus_Child (Child);
+            else
+               M.Set_Focus_To_Last_Focused_Child;
+            end if;
+         end;
       else
-         --  If the current child was a floating window, make sure it keeps the
-         --  focus, and that no one gains the keyboard focus in the main
-         --  window.  This avoids a situation where an TextView has the
-         --  keyboard focus, but isn't the MDI focus child.
-         --
-         --  This fails in the following scenario:
-         --  Open floating search window, press shift-F3; the omni-search does
-         --  not have the focus.
-         --  As a workaround, we therefore test whether the current focus
-         --  widget is inside a MDI_Child, and still pass it the focus if not.
-         --  We keep the current floating MDI_Child though, so that the menus
-         --  can apply to it.
-
-         if M.Focus_Child = null then
-            Win.Set_Focus (null);
-         elsif M.Focus_Child.State = Floating then
-            --  Give the focus back to the widget that last had the focus
-            --  in the main window.
-            declare
-               List : Widget_List.Glist;
-               C    : MDI_Child;
-               W    : constant Gtk_Widget := Gtk_Widget (Win);
-               To_Focus : MDI_Child := null;
-            begin
-               List := First (M.Items);
-               while List /= Null_List loop
-                  C := MDI_Child (Get_Data (List));
-                  if C.Initial.Get_Toplevel = W then
-                     To_Focus := C;
-                     exit;
-                  end if;
-                  List := Widget_List.Next (List);
-               end loop;
-
-               if To_Focus /= null then
-                  Give_Focus_To_Child (To_Focus);
-                  M.Set_Focus_Child (To_Focus);
-               else
-                  Win.Set_Focus (null);
-               end if;
-            end;
-         else
-            --  Make sure the keyboard focus is correctly restored, for
-            --  instance if we had open a temporary dialog and then closed it
-            --  to get back to the main window.
-            Give_Focus_To_Child (M.Focus_Child);
-         end if;
+         --  Make sure the keyboard focus is correctly restored, for
+         --  instance if we had open a temporary dialog and then closed it
+         --  to get back to the main window.
+         Give_Focus_To_Child (M.Focus_Child);
       end if;
 
       return False;
@@ -1027,7 +936,6 @@ package body Gtkada.MDI is
       Parent : access Gtk.Window.Gtk_Window_Record'Class) is
    begin
       Parent.On_Focus_In_Event (Toplevel_Focus_In'Access, MDI);
-      Parent.On_Focus_Out_Event (Toplevel_Focus_Out'Access, MDI);
    end Setup_Toplevel_Window;
 
    -------------
@@ -3771,6 +3679,47 @@ package body Gtkada.MDI is
       Widget_Callback.Emit_By_Name (C, "selected");
       Child_Selected (C.MDI, C);
    end Set_Focus_Child;
+
+   -------------------------------------
+   -- Set_Focus_To_Last_Focused_Child --
+   -------------------------------------
+
+   procedure Set_Focus_To_Last_Focused_Child
+     (MDI    : not null access MDI_Window_Record'Class;
+      Window : access Gtk_Window_Record'Class := null)
+   is
+      Toplevel : Gtk_Widget := Gtk_Widget (Window);
+      List     : Widget_List.Glist;
+      Child    : MDI_Child;
+      To_Focus : MDI_Child := null;
+   begin
+      --  If no window has been given, try to give the focus to the last
+      --  focused child of the main window.
+      if Toplevel = null then
+         Toplevel := MDI.Get_Toplevel;
+      end if;
+
+      --  Retrive the list of items, in focus order
+      List := First (MDI.Items);
+
+      while List /= Null_List loop
+         Child := MDI_Child (Get_Data (List));
+
+         --  Give the focus to the first child that has Toplevel as its
+         --  toplevel widget.
+         if Child.Initial.Get_Toplevel = Toplevel then
+            To_Focus := Child;
+            exit;
+         end if;
+
+         List := Widget_List.Next (List);
+      end loop;
+
+      if To_Focus /= null then
+         Give_Focus_To_Child (To_Focus);
+         MDI.Set_Focus_Child (To_Focus);
+      end if;
+   end Set_Focus_To_Last_Focused_Child;
 
    ------------------
    -- Delete_Child --
