@@ -51,15 +51,15 @@ exampledir=${datadir}/examples/gtkada/testgtk
 
 all:
 
+ifeq (${BUILD_STATIC}, yes)
+all tools tests: static
+install: install/static
+endif
+
 ifeq (${BUILD_STATIC_PIC}, yes)
 all tools tests: build_library_type/static-pic
 install: install/static-pic
 LIBRARY_TYPE_FOR_TOOLS=static-pic
-endif
-
-ifeq (${BUILD_STATIC}, yes)
-all tools tests: static
-install: install/static
 endif
 
 ifeq (${BUILD_SHARED},yes)
