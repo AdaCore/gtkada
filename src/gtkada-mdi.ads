@@ -393,6 +393,11 @@ package Gtkada.MDI is
      (Child : not null access MDI_Child_Record'Class) return Allowed_Areas;
    --  What areas the child can be put int
 
+   function Get_Tab_Orientation
+     (Child : not null access MDI_Child_Record'Class)
+      return Tab_Orientation_Type;
+   --  Return the child's tab orientation
+
    function Get_Tooltip
      (Child : not null access MDI_Child_Record)
      return String;

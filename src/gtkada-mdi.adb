@@ -2021,6 +2021,25 @@ package body Gtkada.MDI is
       return Child.Areas;
    end Get_Allowed_Areas;
 
+   -------------------------
+   -- Get_Tab_Orientation --
+   -------------------------
+
+   function Get_Tab_Orientation
+     (Child : not null access MDI_Child_Record'Class)
+      return Tab_Orientation_Type
+   is
+      Angle : constant Gdouble := Child.Tab_Label.Get_Angle;
+   begin
+      if Angle = 0.0 then
+         return Horizontal;
+      elsif Angle = 90.0 then
+         return Bottom_To_Top;
+      else
+         return Top_To_Bottom;
+      end if;
+   end Get_Tab_Orientation;
+
    ----------------------------------
    -- Button_Pressed_On_Title_Icon --
    ----------------------------------
