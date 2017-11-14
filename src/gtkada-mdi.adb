@@ -522,12 +522,6 @@ package body Gtkada.MDI is
    --  when using the scroll arrows when there are too many pages to be
    --  displayed
 
-   procedure Set_Focus_To_Last_Focused_Child
-     (MDI    : not null access MDI_Window_Record'Class;
-      Window : access Gtk.Window.Gtk_Window_Record'Class := null);
-   --  Set the focus to the last focused child in the given window.
-   --  If now window is specified, the main window is used.
-
    function Toplevel_Focus_In
      (MDI   : access GObject_Record'Class;
       Event : Gdk_Event_Focus) return Boolean;
@@ -893,8 +887,9 @@ package body Gtkada.MDI is
       --  When the main window gains the focus, make sure to give the focus
       --  to the MDI child that had the focus before leaving the main window.
 
-      if M.Focus_Child /= null
-        and then M.Focus_Child.State = Floating
+      if (M.Focus_Child /= null
+          and then M.Focus_Child.State = Floating)
+        or else M.Focus_Child = null
       then
          declare
             Focus_Widget : constant Gtk_Widget := Win.Get_Focus;
@@ -913,15 +908,8 @@ package body Gtkada.MDI is
             if Child /= null then
                Give_Focus_To_Child (Child);
                M.Set_Focus_Child (Child);
-            else
-               M.Set_Focus_To_Last_Focused_Child;
             end if;
          end;
-      else
-         --  Make sure the keyboard focus is correctly restored, for
-         --  instance if we had open a temporary dialog and then closed it
-         --  to get back to the main window.
-         Give_Focus_To_Child (M.Focus_Child);
       end if;
 
       return False;
@@ -3679,47 +3667,6 @@ package body Gtkada.MDI is
       Widget_Callback.Emit_By_Name (C, "selected");
       Child_Selected (C.MDI, C);
    end Set_Focus_Child;
-
-   -------------------------------------
-   -- Set_Focus_To_Last_Focused_Child --
-   -------------------------------------
-
-   procedure Set_Focus_To_Last_Focused_Child
-     (MDI    : not null access MDI_Window_Record'Class;
-      Window : access Gtk_Window_Record'Class := null)
-   is
-      Toplevel : Gtk_Widget := Gtk_Widget (Window);
-      List     : Widget_List.Glist;
-      Child    : MDI_Child;
-      To_Focus : MDI_Child := null;
-   begin
-      --  If no window has been given, try to give the focus to the last
-      --  focused child of the main window.
-      if Toplevel = null then
-         Toplevel := MDI.Get_Toplevel;
-      end if;
-
-      --  Retrive the list of items, in focus order
-      List := First (MDI.Items);
-
-      while List /= Null_List loop
-         Child := MDI_Child (Get_Data (List));
-
-         --  Give the focus to the first child that has Toplevel as its
-         --  toplevel widget.
-         if Child.Initial.Get_Toplevel = Toplevel then
-            To_Focus := Child;
-            exit;
-         end if;
-
-         List := Widget_List.Next (List);
-      end loop;
-
-      if To_Focus /= null then
-         Give_Focus_To_Child (To_Focus);
-         MDI.Set_Focus_Child (To_Focus);
-      end if;
-   end Set_Focus_To_Last_Focused_Child;
 
    ------------------
    -- Delete_Child --
