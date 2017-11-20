@@ -195,17 +195,17 @@ GtkAda in the same location as GNAT itself, nothing else needs to be done.
 
 Otherwise, you need to make the directory that contains these project files
 visible to the compiler. This is done by adding the directory to the
-`ADA_PROJECT_PATH` environment variable. Assuming you have installed the
+`GPR_PROJECT_PATH` environment variable. Assuming you have installed the
 library in :file:`prefix`, the directory you need to add is
 :file:`prefix/lib/gnat`.
 
 On Unix, this is done with::
 
   csh:
-     setenv ADA_PROJECT_PATH $prefix/lib/gnat:$ADA_PROJECT_PATH
+     setenv GPR_PROJECT_PATH $prefix/lib/gnat:$GPR_PROJECT_PATH
   sh:
-     ADA_PROJECT_PATH=$prefix/lib/gnat:$ADA_PROJECT_PATH
-     export ADA_PROJECT_PATH
+     GPR_PROJECT_PATH=$prefix/lib/gnat:$GPR_PROJECT_PATH
+     export GPR_PROJECT_PATH
 
 .. highlight:: ada
   
