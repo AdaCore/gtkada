@@ -59,12 +59,12 @@ project Shared is
       case Build is
          when "Debug" =>
              for Switches ("Ada") use
-                ("-gnat05", "-gnatQ", "-gnatwae", "-gnatay", "-g", "-O0",
+                ("-gnatQ", "-gnatwae", "-gnatay", "-g", "-O0",
                  "-Werror=format-security");
              for Switches ("C") use ("-g", "-O0");
          when "Production" =>
              for Switches ("Ada") use
-                ("-gnat05", "-gnatQ", "-O2", "-gnatn", "-gnatwa", "-gnaty",
+                ("-gnatQ", "-O2", "-gnatn", "-gnatwa", "-gnaty",
                  "-Werror=format-security");
              for Switches ("C") use ("-O2");
       end case;
