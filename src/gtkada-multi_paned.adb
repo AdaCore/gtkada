@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2003-2017, AdaCore                     --
+--                     Copyright (C) 2003-2018, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -2512,10 +2512,11 @@ package body Gtkada.Multi_Paned is
    --------------
 
    procedure Set_Size
-     (Win           : access Gtkada_Multi_Paned_Record;
-      Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Width, Height : Glib.Gint := -1;
-      Fixed_Size    : Boolean := False)
+     (Win              : access Gtkada_Multi_Paned_Record;
+      Widget           : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Width, Height    : Glib.Gint := -1;
+      Fixed_Size       : Boolean   := False;
+      Force_Given_Size : Boolean   := False)
    is
       Iter              : Child_Iterator := Start (Win);
       Current, Previous : Child_Description_Access;
@@ -2534,6 +2535,7 @@ package body Gtkada.Multi_Paned is
             --  possible the current size of windows
             if Win.Get_Realized
               and then Win.Children.Width > 0.0
+              and then not Force_Given_Size
             then
                --  We need to adjust the size of several widgets, to take into
                --  account the fact that resizing one will impact its neighbors

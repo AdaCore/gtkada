@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2003-2017, AdaCore                     --
+--                     Copyright (C) 2003-2018, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -106,11 +106,15 @@ package Gtkada.Multi_Paned is
    --  left or at the top if After is False).
 
    procedure Set_Size
-     (Win           : access Gtkada_Multi_Paned_Record;
-      Widget        : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Width, Height : Glib.Gint := -1;
-      Fixed_Size    : Boolean := False);
-   --  Force a specific size for Widget
+     (Win              : access Gtkada_Multi_Paned_Record;
+      Widget           : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Width, Height    : Glib.Gint := -1;
+      Fixed_Size       : Boolean   := False;
+      Force_Given_Size : Boolean   := False);
+   --  Try to update the size of Widget considering its siblings.
+   --  If Force_Given_Size is true then Widget will have the exact sizes
+   --  given to this function. Thus it will ignore the actual state of the
+   --  multipaned and can deform its siblings.
 
    function Splitted_Area
      (Win           : access Gtkada_Multi_Paned_Record;

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2017, AdaCore                     --
+--                     Copyright (C) 2001-2018, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -28,10 +28,13 @@
 --  </description>
 --  <group>Layout containers</group>
 
+with Ada.Containers.Indefinite_Doubly_Linked_Lists;
+with Ada.Containers.Indefinite_Hashed_Maps;
+with Ada.Strings.Hash;
 with Ada.Tags;
 with Cairo;
 with GNAT.Strings;
-with Glib;        use Glib;
+with Glib;                use Glib;
 with Glib.Simple_Action;
 with Glib.Menu;
 with Glib.Xml_Int;
@@ -52,7 +55,7 @@ with Gtk.Menu;
 with Gtk.Notebook;
 with Gtk.Radio_Menu_Item;
 with Gtk.Css_Provider;
-with Gtk.Widget;
+with Gtk.Widget;          use Gtk.Widget;
 with Gtk.Window;
 with Gtkada.Handlers;
 with Gtkada.Multi_Paned;
@@ -1114,15 +1117,25 @@ package Gtkada.MDI is
    --  - "child_state_changed"
    --    procedure Handler (Child : access MDI_Child_Record'Class);
    --
+   --    Emitted when the state of the child has changed. See the function
+   --    Get_State. In particular, this signal can be detected when a child is
+   --    removed from the current perspective (the new state is "invisible"),
+   --    and when it is put back (the new state is "normal" or "floating").
+   --
    --  - "before_destroy_child"
    --    procedure Handler (Child : access MDI_Child_Record'Class);
    --
    --    Emitted when a child is about to be destroyed
    --
-   --    Emitted when the state of the child has changed. See the function
-   --    Get_State. In particular, this signal can be detected when a child is
-   --    removed from the current perspective (the new state is "invisible"),
-   --    and when it is put back (the new state is "normal" or "floating").
+   --  - "before_remove_child"
+   --    procedure Handler (Child : access MDI_Child_Record'Class);
+   --
+   --    Emitted when a child is about to be removed from its MDI_Notebook
+   --
+   --  - "double_click_child_tab"
+   --    procedure Handler (Child : access MDI_Child_Record'Class);
+   --
+   --    Emitted when double clicking on the notebook's tab of a MDI_Child
    --
    --  </signals>
 
@@ -1144,6 +1157,9 @@ package Gtkada.MDI is
    Signal_Child_State_Changed  : constant Signal_Name := "child_state_changed";
    Signal_Before_Destroy_Child : constant Signal_Name :=
      "before_destroy_child";
+   Signal_Before_Remove_Child  : constant Signal_Name := "before_remove_child";
+   Signal_Maximize_Child       : constant Signal_Name :=
+     "double_click_child_tab";
 
    procedure Child_Selected
       (Self  : not null access MDI_Window_Record'Class;
@@ -1151,6 +1167,38 @@ package Gtkada.MDI is
    --  Emit the "child_selected" signal
 
 private
+   type Hidden_Container_Data_Record is record
+      Container   : Gtk.Widget.Gtk_Widget;
+      Height      : Gint;
+      Width       : Gint;
+   end record;
+
+   type Hidden_Container_Data is access all Hidden_Container_Data_Record;
+
+   package MDI_Child_Container_List is new
+     Ada.Containers.Indefinite_Doubly_Linked_Lists
+       (Element_Type => Hidden_Container_Data,
+        "="          => "=");
+   use MDI_Child_Container_List;
+
+   type Saved_Perspective_Record is record
+      List_Hidden   : MDI_Child_Container_List.List;
+      --  List of the hidden MDI Child Container and their dimensions
+
+      Container : Gtk.Widget.Gtk_Widget;
+      --  The Container currently maximized
+   end record;
+
+   type Saved_Perspective is access all Saved_Perspective_Record;
+
+   package Saved_Perspectives_Map is new Ada.Containers.Indefinite_Hashed_Maps
+     (Key_Type        => String,
+      Element_Type    => Saved_Perspective,
+      Hash            => Ada.Strings.Hash,
+      Equivalent_Keys => "=",
+      "="             => "=");
+   use Saved_Perspectives_Map;
+
    type String_Access is access all UTF8_String;
 
    type MDI_Child_Record is new Gtk.Event_Box.Gtk_Event_Box_Record with record
@@ -1336,6 +1384,9 @@ private
 
       Current_Perspective    : Glib.Xml_Int.Node_Ptr;
       --  pointer into Perspectives
+      Saved_Sizes            : Saved_Perspectives_Map.Map;
+      --  Map containing the sizes of the MDI children before the last
+      --  child maximization
 
       Internal_Updating_Menu : Boolean := False;
       --  Flag to prevent giving focus to a child in response to a menu being

@@ -106,7 +106,6 @@ with Gtk.Separator_Menu_Item; use Gtk.Separator_Menu_Item;
 with Gtk.Stock;               use Gtk.Stock;
 with Gtk.Style_Context;       use Gtk.Style_Context;
 with Gtk.Style_Provider;      use Gtk.Style_Provider;
-with Gtk.Widget;              use Gtk.Widget;
 with Gtk.Window;              use Gtk.Window;
 
 with Gtkada.Handlers;         use Gtkada.Handlers;
@@ -169,7 +168,9 @@ package body Gtkada.MDI is
       3 => New_String (String (Signal_Before_Unfloat_Child)),
       4 => New_String (String (Signal_Selected)),
       5 => New_String (String (Signal_Child_State_Changed)),
-      6 => New_String (String (Signal_Before_Destroy_Child)));
+      6 => New_String (String (Signal_Before_Destroy_Child)),
+      7 => New_String (String (Signal_Before_Remove_Child)),
+      8 => New_String (String (Signal_Maximize_Child)));
 
    use Widget_List;
 
@@ -258,7 +259,7 @@ package body Gtkada.MDI is
       Orientation : Tab_Orientation_Type);
    --  Called when the user selects a new orientation for the tabs.
 
-   type MDI_Notebook_Record is new Gtk_Notebook_Record with record
+   type MDI_Notebook_Record is new Gtk.Notebook.Gtk_Notebook_Record with record
       Timestamp : Natural := 0;
       Tab_Size  : Gint;
       --  Used to handle the sizing of tabs (through MDI_Tab_Record). Tab_Size
@@ -674,13 +675,30 @@ package body Gtkada.MDI is
       --   if it's in the notebook tab.
 
    end Close_Button;
+   package body Close_Button is separate;
+
+   package Maximize_Action is
+      procedure On_Maximize_Child
+        (Child : access Gtk_Widget_Record'Class);
+      --  Callback when the signal "double_click_child_tab" is sent
+
+      procedure On_Remove_Child
+        (Self : access Gtk.Widget.Gtk_Widget_Record'Class);
+      --  Called before destroying a child
+
+      procedure Hide_When_Maximized (MDI : access MDI_Window_Record'Class);
+      --  Hide the non-maximized MDI children
+
+      procedure Free_Saved_Data (MDI : access MDI_Window_Record'Class);
+      --  Free the data used by the maximize feature
+
+   end Maximize_Action;
+   package body Maximize_Action is separate;
 
    function Get_Icon
      (Child : not null access MDI_Child_Record'Class)
       return Gtk_Image;
    --  Retrieve icon. Can return null.
-
-   package body Close_Button is separate;
 
    ---------------------
    -- In_Central_Area --
@@ -1774,6 +1792,8 @@ package body Gtkada.MDI is
       Print_Debug ("Close_Child, " & Get_Title (Child) & " force="
                    & Boolean'Image (Force));
 
+      Widget_Callback.Emit_By_Name (Child, Signal_Before_Remove_Child);
+
       if MDI.Get_Realized then
          --  For a top-level window, we must rebuild the initial widget
          --  temporarily, so that the application can do all the test it wants.
@@ -2081,9 +2101,7 @@ package body Gtkada.MDI is
    begin
       C.MDI.In_Drag := No_Drag;
 
-      if Event.The_Type /= Button_Press
-        or else Event.Button /= 1
-      then
+      if Event.The_Type /= Button_Press or else Event.Button /= 1 then
          return False;
       end if;
 
@@ -2799,6 +2817,12 @@ package body Gtkada.MDI is
         (Child.Initial, Signal_Hide, Child_Widget_Hidden'Access, Child);
       Widget_Callback.Object_Connect
         (Child.Initial, Signal_Show, Child_Widget_Shown'Access, Child);
+      Widget_Callback.Connect
+        (Child, Signal_Maximize_Child,
+         Maximize_Action.On_Maximize_Child'Access);
+      Widget_Callback.Connect
+        (Child, Signal_Before_Remove_Child,
+         Maximize_Action.On_Remove_Child'Access);
    end Initialize;
 
    -------------------------
@@ -2996,7 +3020,11 @@ package body Gtkada.MDI is
    function Get_Title
      (Child : not null access MDI_Child_Record) return UTF8_String is
    begin
-      return Child.Title.all;
+      if Child.Title = null then
+         return "";
+      else
+         return Child.Title.all;
+      end if;
    end Get_Title;
 
    ---------------------
@@ -4224,6 +4252,12 @@ package body Gtkada.MDI is
          Popup (Menu,
                 Button        => 3,
                 Activate_Time => Gdk.Event.Get_Time (Event));
+         return True;
+
+      elsif Get_Event_Type (Event) = Gdk_2button_Press
+        and then Get_Button (Event) = 1
+      then
+         Widget_Callback.Emit_By_Name (C, Signal_Maximize_Child);
          return True;
 
       elsif Get_Button (Event) = 2 then
@@ -6923,6 +6957,8 @@ package body Gtkada.MDI is
          MDI_Width, MDI_Height               : Gint;
 
       begin
+         Maximize_Action.Free_Saved_Data (MDI);
+
          if Perspectives = null
            or else Perspectives.Child = null  --   <perspective> node
          then
@@ -7939,6 +7975,8 @@ package body Gtkada.MDI is
             MDI_Width        => MDI.Get_Allocated_Width,
             MDI_Height       => MDI.Get_Allocated_Height,
             Do_Size_Allocate => False);
+
+         Maximize_Action.Hide_When_Maximized (MDI);
       end Load_Perspective;
 
       ----------------------------------
