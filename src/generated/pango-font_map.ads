@@ -41,7 +41,6 @@
 --  rendering system
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;

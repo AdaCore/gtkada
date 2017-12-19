@@ -27,7 +27,6 @@
 --  Gdk_Events, and possibly trigger actions as a consequence of those.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;       use Gdk.Event;

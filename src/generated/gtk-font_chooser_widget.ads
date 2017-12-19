@@ -37,7 +37,6 @@
 --  Gtk.Font_Chooser.Set_Preview_Text.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;

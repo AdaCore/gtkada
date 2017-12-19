@@ -162,7 +162,6 @@
 --  <screenshot>gtk-label</screenshot>
 --  <group>Display widgets</group>
 --  <testgtk>create_label.adb</testgtk>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;

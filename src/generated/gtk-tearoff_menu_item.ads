@@ -40,7 +40,6 @@
 --  be used in newly > written code. Menus are not meant to be torn around.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

@@ -35,7 +35,6 @@
 --  happening outside that area is considered to be a first click of its own.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle;      use Gdk.Rectangle;

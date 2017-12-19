@@ -37,7 +37,6 @@
 --  can be known through Gtk.Gesture_Single.Get_Current_Button.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;       use Gdk.Event;

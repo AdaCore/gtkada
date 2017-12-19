@@ -27,7 +27,6 @@
 --  but differ in slant, weight, width and other aspects.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

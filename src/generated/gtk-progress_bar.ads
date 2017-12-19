@@ -49,7 +49,6 @@
 --  <screenshot>gtk-progress_bar</screenshot>
 --  <group>Display widgets</group>
 --  <testgtk>create_progress.adb</testgtk>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

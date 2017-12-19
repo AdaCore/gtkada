@@ -273,7 +273,6 @@
 --
 --  </description>
 --  <group>Layout Containers</group>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                 use Cairo;

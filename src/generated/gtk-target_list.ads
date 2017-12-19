@@ -26,7 +26,6 @@
 --  Gtk_Target_Pair and should be treated as opaque.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;               use Gdk.Types;

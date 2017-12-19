@@ -27,7 +27,6 @@
 --  methods provided by this interface to sort the model.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;

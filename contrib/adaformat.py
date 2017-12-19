@@ -4,10 +4,9 @@
 Various formatting classes for Ada code
 """
 
-import sys
 import re
 import copy
-from collections import namedtuple, defaultdict
+from collections import namedtuple
 
 # A lot of subprograms below take a "lang" parameter, which indicates how
 # values should be converted:
@@ -187,8 +186,6 @@ class CType(object):
            `pkg` is the package in which we insert the name. It is used to
            avoid qualified name when in the same package
         """
-        # Do not fully qualify within the current package
-        p = self.ada[:self.ada.rfind(".")]
         return self.param.replace("%s." % pkg.name, "")
 
     def as_c_param(self, pkg=None):
@@ -234,10 +231,10 @@ class CType(object):
             # variable: Internal(Enum'Pos(Param)) is invalid
             # Unless we are already using a temporary variable.
 
-            if (ret
-                    and ret != "%(var)s"
-                    and mode != "in"
-                    and not is_temporary_variable):
+            if (ret and
+               ret != "%(var)s" and
+               mode != "in" and
+               not is_temporary_variable):
 
                 tmp = "Tmp_%s" % name
 
@@ -862,8 +859,6 @@ class AdaNaming(object):
 
         result = name[0]
         prev = result
-        prev_is_underscore = False
-        prev_is_upper = True
 
         for r in name[1:]:
             if prev != "_" \
@@ -917,13 +912,13 @@ class AdaNaming(object):
         if cname is None:
             cname = self.girname_to_ctype.get(name, None)
 
-        if (cname == "gchar**"
-           or name == "array_of_utf8"
-           or name == "array_of_filename"):
+        if (cname == "gchar**" or
+           name == "array_of_utf8" or
+           name == "array_of_filename"):
             t = UTF8_List()
-        elif (cname in ("gint**", "int**")
-              or name in ("array_of_gint", "array_of_guint", "array_of_gint8",
-                          "array_of_guint8", "array_of_guint16")):
+        elif (cname in ("gint**", "int**") or
+              name in ("array_of_gint", "array_of_guint", "array_of_gint8",
+                       "array_of_guint8", "array_of_guint16")):
             t = AdaTypeArray("gint")
             isArray = True
         elif name in ("array_of_Gdk.Atom", ):
@@ -1578,10 +1573,10 @@ class Subprogram(object):
 
             # If too long, split on several lines
             if len(p) + len(prefix) + len(suffix) > maxlen:
-                max = max_length([p.name for p in self.plist])
-                plist = [p.spec(pkg=pkg, length=max, lang=self.lang,
-                                show_default=self.lang == "ada")
-                         for p in self.plist]
+                max = max_length([p_iter.name for p_iter in self.plist])
+                plist = [p_iter.spec(pkg=pkg, length=max, lang=self.lang,
+                                     show_default=self.lang == "ada")
+                         for p_iter in self.plist]
                 p = "\n   " + indent + "(" \
                     + (";\n    " + indent).join(plist) + ")"
 
@@ -1882,8 +1877,8 @@ class Section(object):
         # Whether we should sort the objects. If yes, code always comes before
         # subprograms. Otherwise, they are output in the order they were added
         self.sort_objects = (
-            not Section.sort_alphabetically
-            or Section.group_getters_and_setters)
+            not Section.sort_alphabetically or
+            Section.group_getters_and_setters)
 
     def add_comment(self, comment, fill=True):
         """If 'fill' is true, the comment is automatically split on several
@@ -1893,9 +1888,9 @@ class Section(object):
         if comment == "":
             self.__comment += "   --\n"
         else:
-            self.__comment += "".join(
-                format_doc(comment, indent="   ", fill=fill)) + \
-                "\n"
+            self.__comment += ("".join(
+                format_doc(comment, indent="   ", fill=fill)) +
+                "\n")
 
     def add(self, obj, in_spec=True, add_newline=True):
         """Add one or more objects to the section (subprogram, code,...).
@@ -1993,9 +1988,8 @@ class Section(object):
             for obj in group:
                 # If the previous object requested a trailing newline, and the
                 # current object is not a comment, then add the newline now.
-                if (add_newline
-                    and (not isinstance(obj, Code)
-                         or not obj.iscomment)):
+                if (add_newline and
+                   (not isinstance(obj, Code) or not obj.iscomment)):
 
                     result += "\n"
 
@@ -2004,20 +1998,20 @@ class Section(object):
                     add_newline = obj.add_newline
 
                 elif isinstance(obj, Subprogram):
-                    show_doc = ((not Section.group_getters_and_setters
-                                 and not obj.name.startswith("Gtk_New"))
-                                or obj == group[-1])
+                    show_doc = ((not Section.group_getters_and_setters and
+                                 not obj.name.startswith("Gtk_New")) or
+                                obj == group[-1])
                     result += obj.spec(pkg=pkg,
                                        show_doc=show_doc,
                                        indent=indent).strip("\n") + "\n"
-                    add_newline = (hasattr(obj, "add_newline")
-                                   and obj.add_newline
-                                   and show_doc)
+                    add_newline = (hasattr(obj, "add_newline") and
+                                   obj.add_newline and
+                                   show_doc)
 
                 elif isinstance(obj, Package):
                     result += obj.spec().strip("\n") + "\n"
-                    add_newline = (hasattr(obj, "add_newline")
-                                   and obj.add_newline)
+                    add_newline = (hasattr(obj, "add_newline") and
+                                   obj.add_newline)
 
                 elif isinstance(obj, unicode):
                     print("Not adding unicode to package: %s\n" % (
@@ -2208,7 +2202,6 @@ class Package(object):
             if self.doc:
                 result.append(format_doc(self.doc, indent=""))
 
-            result.append("pragma Ada_2005;\n")
             result.append('pragma Warnings (Off, "*is already use-visible*");')
             result.append(self._output_withs(self.spec_withs))
 

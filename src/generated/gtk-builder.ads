@@ -181,7 +181,6 @@
 --  format allowing one to define a widget class's components.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;    use GNAT.Strings;

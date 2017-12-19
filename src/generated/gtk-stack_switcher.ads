@@ -35,7 +35,6 @@
 --  The GtkStackSwitcher widget was added in 3.10.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

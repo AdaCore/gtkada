@@ -29,8 +29,6 @@
 --  <group>Layout containers</group>
 --  <testgtk>create_splittable.adb</testgtk>
 
-pragma Ada_2005;
-
 with Cairo;
 with Gdk;
 with Glib;          use Glib;

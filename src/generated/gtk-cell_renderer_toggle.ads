@@ -29,7 +29,6 @@
 --  Gtk.Cell_Renderer_Toggle.Gtk_Cell_Renderer_Toggle::toggled signal.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;

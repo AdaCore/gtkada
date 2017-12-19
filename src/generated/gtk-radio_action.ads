@@ -29,7 +29,6 @@
 --  </description>
 --  <group>Action-based menus</group>
 --  <see>Gtk_Action</see>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;

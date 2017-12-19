@@ -41,7 +41,6 @@
 --  a Gtk.Widget.Gtk_Widget::damage-event signal.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;         use Cairo;

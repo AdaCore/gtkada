@@ -26,7 +26,6 @@
 --  in a way that is compatible with cairos notion of color.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;

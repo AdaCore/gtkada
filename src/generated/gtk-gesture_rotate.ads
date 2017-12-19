@@ -28,7 +28,6 @@
 --  Gtk.Gesture_Rotate.Gtk_Gesture_Rotate::angle-changed signal is emitted.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;

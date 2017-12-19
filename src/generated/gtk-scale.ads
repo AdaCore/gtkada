@@ -46,7 +46,6 @@
 --  </description>
 --  <screenshot>gtk-scale.png</screenshot>
 --  <group>Numeric/Text Data Entry</group>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

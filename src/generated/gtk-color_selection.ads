@@ -36,7 +36,6 @@
 --  <screenshot>gtk-colorsel</screenshot>
 --  <group>Drawing</group>
 --  <testgtk>create_color_selection.adb</testgtk>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Color;       use Gdk.Color;

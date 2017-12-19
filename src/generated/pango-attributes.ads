@@ -30,7 +30,6 @@
 --  default an attribute will have an all-inclusive range of [0,G_MAXUINT].
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;

@@ -135,7 +135,6 @@
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog to ensure proper operation.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;

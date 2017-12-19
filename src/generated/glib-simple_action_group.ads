@@ -27,7 +27,6 @@
 --  Glib.Action_Group.Gaction_Group and Glib.Action_Map.Gaction_Map interfaces.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;      use GNAT.Strings;

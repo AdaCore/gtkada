@@ -42,7 +42,6 @@
 --  type="gchararray"/> <column type="gint"/> </columns> </object> ]|
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                 use Glib;

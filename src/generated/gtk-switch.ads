@@ -30,7 +30,6 @@
 --  with a delay. See Gtk.Switch.Gtk_Switch::state-set for details.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

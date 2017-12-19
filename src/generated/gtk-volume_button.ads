@@ -27,7 +27,6 @@
 --  volume control widget with suitable icons, tooltips and accessible labels.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;

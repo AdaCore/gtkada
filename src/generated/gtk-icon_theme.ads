@@ -74,7 +74,6 @@
 --  pixbuf g_object_unref (pixbuf); } ]|
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;

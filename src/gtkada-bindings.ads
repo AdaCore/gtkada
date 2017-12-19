@@ -27,8 +27,6 @@
 --  release to release.
 --  See also Gtkada.Types
 
-pragma Ada_2005;
-
 with Ada.Exceptions;
 with Glib;
 with Glib.Object;

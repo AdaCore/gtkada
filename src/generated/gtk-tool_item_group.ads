@@ -27,7 +27,6 @@
 --  container with different categories and drag and drop support.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

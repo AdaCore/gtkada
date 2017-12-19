@@ -119,7 +119,6 @@
 --  id="2">50</col> </data> </object> ]|
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Pixbuf;           use Gdk.Pixbuf;

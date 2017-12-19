@@ -72,7 +72,6 @@
 --  GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE); ]|
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;       use Gdk.Types;

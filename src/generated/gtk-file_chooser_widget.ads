@@ -27,7 +27,6 @@
 --  should use the methods of this interface to interact with the widget.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;

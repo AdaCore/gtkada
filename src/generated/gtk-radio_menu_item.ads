@@ -42,7 +42,6 @@
 --  (GTK_CHECK_MENU_ITEM (item), TRUE); } ]|
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                use Glib;

@@ -44,7 +44,6 @@
 --  example](https://git.gnome.org/browse/gtk+/tree/examples/search-bar.c)
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;       use Gdk.Event;

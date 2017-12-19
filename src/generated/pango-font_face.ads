@@ -26,7 +26,6 @@
 --  of fonts with the same family, slant, weight, width, but varying sizes.
 --
 --  </description>
-pragma Ada_2005;
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;
