@@ -65,7 +65,7 @@ package Glib.Types is
    ----------------
    -- Interfaces --
    ----------------
-   --  Interfaces are similar, in concept, to those found in Ada 2005 or in
+   --  Interfaces are similar, in concept, to those found in Ada 2012 or in
    --  Java. They define a set of subprograms that any type implementing the
    --  interface must also define. They are different from standard inheritance
    --  since no implementation of these subprograms can be provided in the

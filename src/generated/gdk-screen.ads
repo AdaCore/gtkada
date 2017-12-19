@@ -301,7 +301,7 @@ package Gdk.Screen is
    -------------
    --  These subprograms should really be in gdk-display.ads to match what is
    --  done for gtk+ itself, but that would create dependency circularities.
-   --  Ada 2005 has support for these, but we want GtkAda to build with Ada95
+   --  Ada 2012 has support for these, but we want GtkAda to build with Ada95
    --  compilers.
 
    function Get_Screen

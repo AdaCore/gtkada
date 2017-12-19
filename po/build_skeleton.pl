@@ -18,7 +18,7 @@ sub analyze_dir () {
    foreach (readdir (DIR)) {
       if (-d "$dir/$_" && $_ ne '.' && $_ ne '..') {
          push (@modules, "$dir/$_");
-         &analyze_dir ("$dir/$_"); 
+         &analyze_dir ("$dir/$_");
       }
    }
    close (DIR);
@@ -52,8 +52,8 @@ sub process_modules() {
               $str =~ s/"\s*&\s*"//g;
               $str =~ s/"\s*$//g;
               ${$strings{$str}}{$file}++; #  .= "$file ";
-           } 
-           close (FILE); 
+           }
+           close (FILE);
         }
      }
 
@@ -69,7 +69,7 @@ chomp ($date);
 
 print <<EOF
 # Translation file for the GNAT Programming Studio
-# Copyright (C) 2005 AdaCore
+# Copyright (C) 2012 AdaCore
 #
 msgid ""
 msgstr ""

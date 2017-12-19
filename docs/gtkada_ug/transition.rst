@@ -57,12 +57,11 @@ available as primitive operations in the types that implement the interface.
 
 We also expect to simplify the handling of signals and signal handlers.
 
-Ada 2005
+Ada 2012
 --------
 
-GtkAda 3 makes use of Ada 2005 and requires GtkAda applications
-to be compiled in Ada 2005 or Ada 2012 mode (e.g. using the -gnat05 or
--gnat2012 switch).
+GtkAda 3 makes use of Ada 2012 and requires GtkAda applications
+to be compiled in Ada 2012 mode (e.g. using the -gnat2012 switch).
 
 This makes it possible to use the object-dotted notation when calling
 primitive operations. For instance, the following code::
