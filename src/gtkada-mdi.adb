@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2017, AdaCore                     --
+--                     Copyright (C) 2001-2018, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -4213,7 +4213,7 @@ package body Gtkada.MDI is
             Gtk_New (Item, "Close");
             Widget_Callback.Object_Connect
               (Item, Gtk.Menu_Item.Signal_Activate, Close_Cb'Access, Child);
-            Append (Menu, Item);
+            Prepend (Menu, Item);
          end if;
 
          if C.MDI.Tab_Factory /= null then
