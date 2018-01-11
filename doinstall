@@ -15,11 +15,11 @@ EOF
    read x
 }
 
-current_dir=`/bin/pwd`
+current_dir="`/bin/pwd`"
 
 # Checks for the presence of a Gtk+ binary package in gtk-bin/
 check_gtk_bin() {
-   gtk_bin_dir=`pwd`/gtk-bin
+   gtk_bin_dir="`pwd`/gtk-bin"
    if test ! -d "$gtk_bin_dir"; then
       echo "Gtk+ binary package not found. Aborting the installation process."
       exit
@@ -30,11 +30,11 @@ check_gtk_bin() {
 ## Sets the variable  $basedir
 ask_basedir() {
    clear
-   default_dir=`type gnatmake 2>/dev/null| cut -d' ' -f3`
-   default_dir=`dirname "$default_dir" 2>/dev/null`
+   default_dir="`type gnatmake 2>/dev/null| cut -d' ' -f3`"
+   default_dir="`dirname \"$default_dir\" 2>/dev/null`"
 
    if [ "$default_dir" != "" -a "$default_dir" != "." -a "$default_dir" != "/usr/bin" ]; then
-      default_dir=`cd "$default_dir/.."; pwd`
+      default_dir="`cd "$default_dir/.."; pwd`"
       cat <<EOF
 
   GNAT has been found in $default_dir.
@@ -53,18 +53,24 @@ EOF
    while [ "$basedir" = "" ]; do
       printf "[$default_dir] "
       read basedir
-      if [ "$basedir" = "" ]; then
-         basedir="$default_dir"
-      fi
-      if echo "$basedir" | egrep "^[/~]" >/dev/null; then
-         true
+      if echo "$basedir" | egrep "[ ]" >/dev/null; then
+         echo "GtkAda cannot be installed in a path that contains spaces."
+         echo "Please enter another directory."
+         basedir=""
       else
-         basedir=`pwd`/"$basedir"
+         if [ "$basedir" = "" ]; then
+            basedir="$default_dir"
+         fi
+         if echo "$basedir" | egrep "^[/~]" >/dev/null; then
+            true
+         else
+            basedir="`pwd`"/"$basedir"
+         fi
       fi
    done
 
    # Suppress the final / in basedir
-   basedir=`echo "$basedir" | sed -e 's/\/$//'`
+   basedir="`echo "$basedir" | sed -e 's/\/$//'`"
 
    # Check that we have permission to write in $basedir
    if test -d "$basedir"; then
@@ -113,16 +119,17 @@ install_binaries() {
 
   echo "Copying the Gtk+ binaries"
 
-  cp -r $gtk_bin_dir/* $basedir
+  cp -r "$gtk_bin_dir"/* "$basedir"
 
   echo "Setting up the environment"
-  eval `$basedir/bin/gtkada-env.sh --print-only`
+  eval `"$basedir"/bin/gtkada-env.sh --print-only`
 
   echo "Compiling GtkAda"
-  ./configure --prefix=$basedir --with-GL=no && make all install 2>&1 | \
+  ./configure --prefix="$basedir" --with-GL=no && make all install 2>&1 | \
      tee install.log
 
-  if [ "$?" != "0" ]; then
+  # Test for the presence of a gtkada.gpr as check that the install succeeded
+  if [ ! -f "$basedir/lib/gnat/gtkada.gpr" ]; then
      echo ""
      echo "An error occurred. Please see install.log."""
      exit 1
@@ -140,7 +147,7 @@ end_message() {
 
    You can enter the GtkAda environment by doing:
 
-      $basedir/bin/gtkada-env.sh
+      "$basedir/bin/gtkada-env.sh"
 
 EOF
 }
