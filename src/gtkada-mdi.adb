@@ -7243,6 +7243,8 @@ package body Gtkada.MDI is
          Child_Node       : Node_Ptr;
          Child            : MDI_Child;
 
+         Has_Negative_Values : Boolean := False;
+
          procedure Add (Parent : Node_Ptr; Name, Value : String);
          --  Add a new child to Child_Node
 
@@ -7402,6 +7404,14 @@ package body Gtkada.MDI is
          begin
             Get_Size (Iter, Width, Height, Parent_Width, Parent_Height,
                       Orientation);
+
+            if Width < 0
+              or else Height < 0
+              or else Parent_Width < 0
+              or else Parent_Height < 0
+            then
+               Has_Negative_Values := True;
+            end if;
 
             case Orientation is
                when Orientation_Horizontal =>
@@ -7563,6 +7573,8 @@ package body Gtkada.MDI is
             end if;
          end Save_Paned;
 
+         Old_Perspectives : Glib.Xml_Int.Node_Ptr;
+
       begin
          if MDI.Perspectives = null then
             MDI.Perspectives := new Node;
@@ -7575,6 +7587,8 @@ package body Gtkada.MDI is
             then
                return;
             end if;
+
+            Old_Perspectives := Deep_Copy (MDI.Perspectives);
 
             --  Replace (in place) the perspective. This is so that the
             --  order in the /Window/Perspectives menu is preserved as much
@@ -7597,6 +7611,7 @@ package body Gtkada.MDI is
             Set_Attribute (MDI.Current_Perspective, "name", "default");
             Add_Child
               (MDI.Perspectives, MDI.Current_Perspective, Append => False);
+            Old_Perspectives := Deep_Copy (MDI.Perspectives);
          end if;
 
          Central := new Node;
@@ -7663,6 +7678,28 @@ package body Gtkada.MDI is
 
             Item := Widget_List.Next (Item);
          end loop;
+
+         if Has_Negative_Values then
+            declare
+               N    : Node_Ptr := Old_Perspectives.Child;
+               Name : constant String := Get_Attribute
+                 (MDI.Current_Perspective, "name");
+            begin
+               while N /= null loop
+                  if Get_Attribute (N, "name") /= Name then
+                     MDI.Current_Perspective := N;
+                     exit;
+                  end if;
+                  N := N.Next;
+               end loop;
+            end;
+
+            Free (MDI.Perspectives);
+            MDI.Perspectives := Old_Perspectives;
+
+         else
+            Free (Old_Perspectives);
+         end if;
 
          Perspectives := Deep_Copy (MDI.Perspectives);
 
