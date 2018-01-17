@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2001-2017, AdaCore
+ * Copyright (C) 2001-2018, AdaCore
  * Copyright (C) 1997-1998 Janne Löf <jlof@mail.student.oulu.fi>
  *
  * This library is free software; you can redistribute it and/or
