@@ -43,10 +43,6 @@ The following Internet sites will always contain the latest public packages for
 
 * `http://www.cairographics.org/ <http://www.cairographics.org/>`_
 
-The scheme used for GtkAda's version numbers is the following: the major and
-minor version number is the same as for the underlying gtk+ library (e.g 2.18).
-The micro version number depends on GtkAda's release number.
-
 This toolkit was tested on the following systems:
 
 * GNU Linux/x86
