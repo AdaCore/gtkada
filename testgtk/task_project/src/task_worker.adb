@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                      Copyright (C) 2015, AdaCore                         --
+--                       Copyright (C) 2018, AdaCore                        --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,26 +21,51 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "../src/gtkada";
-with "opengl/testgtk_opengl";
-with "task_project/task_project";
+package body Task_Worker is
 
-project TestGtk is
+   use type Ada.Containers.Count_Type;
 
-   for Languages use ("Ada");
-   for Main use ("testgtk.adb", "test_rtree.adb");
-   for Source_Dirs use ("./");
-   for Object_Dir use "obj/";
-   for Exec_Dir use ".";
+   -------------------
+   --  Working_Task --
+   -------------------
 
-   package Compiler is
-      --  subprogram specs not required in testgtk
-      for Switches ("Ada") use ("-g", "-O0", "-gnaty-s", "-gnatwJ");
-   end Compiler;
+   task type Working_Task (Number : Natural);
+   type Task_Access is access Working_Task;
 
-   package Install is
-      for artifacts ("share/examples/gtkada/testgtk") use
-        ("*.ad*", "*.xpm", "*.svg", "*.png", "*.gif", "*.css", "*.ui", "*.lwo", "*.xml");
-   end Install;
+   Task_Number : Natural := 1;
+   --  A global counter for tasks
 
-end TestGtk;
+   task body Working_Task is
+      Data : Work_Item;
+      Num  : constant String := Natural'Image (Number);
+   begin
+      --  Send some data on the queue
+      Data.Some_Data := To_Unbounded_String ("hello from task" & Num);
+      Queue.Enqueue (Data);
+
+      --  Simulate a blocking work: assume the work takes 1 second to compute;
+      --  the interesting part of this example is that the GUI will keep being
+      --  operational while this task is blocked.
+      delay 1.0;
+      Data.Some_Data := To_Unbounded_String ("hello again from task" & Num);
+      Queue.Enqueue (Data);
+
+      --  Another blocking work 2 seconds this time
+      delay 2.0;
+      Data.Some_Data := To_Unbounded_String ("goodbye from task" & Num);
+      Queue.Enqueue (Data);
+   end Working_Task;
+
+   --------------
+   -- Run_Task --
+   --------------
+
+   procedure Run_Task is
+      A : Task_Access;
+   begin
+      A := new Working_Task (Task_Number);
+      --  Note: we're leaking accesses here.
+      Task_Number := Task_Number + 1;
+   end Run_Task;
+
+end Task_Worker;

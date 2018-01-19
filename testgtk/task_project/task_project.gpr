@@ -1,0 +1,6 @@
+--  This project should not import gtkada.gpr
+
+project Task_Project is
+   for Source_Dirs use ("src");
+   for Object_Dir use "obj";
+end Task_Project;

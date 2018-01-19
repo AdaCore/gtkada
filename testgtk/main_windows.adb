@@ -125,6 +125,7 @@ with Create_Spinners;
 with Create_Splittable;
 with Create_Status;
 with Create_Status_Icons;
+with Create_Task_Monitor;
 with Create_Test_Idle;
 with Create_Test_Timeout;
 with Create_Text_View;
@@ -433,6 +434,8 @@ package body Main_Windows is
       (NS ("test selection"),   Misc,    null, null),
       (NS ("test timeout"),     Misc,    Create_Test_Timeout.Run'Access,
                                          Create_Test_Timeout.Help'Access),
+      (NS ("test tasking"),     Misc,    Create_Task_Monitor.Run'Access,
+                                         Create_Task_Monitor.Help'Access),
       (NS ("text view"),        Complex, Create_Text_View.Run'Access,
                                          Create_Text_View.Help'Access),
       (NS ("toggle buttons"),   Base,    Create_Toggle_Buttons.Run'Access,
