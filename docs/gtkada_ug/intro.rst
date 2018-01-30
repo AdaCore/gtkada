@@ -35,7 +35,7 @@ with your OpenGL library, for more information.
 The following Internet sites will always contain the latest public packages for
 `GtkAda`, `gtk+`, `Glade` and `Cairo`
 
-* `http://libre.adacore.com/libre/tools/GtkAda/ <http://libre.adacore.com/libre/tools/GtkAda/>`_
+* `https://github.com/AdaCore/gtkada <https://github.com/AdaCore/gtkada`_
 
 * `http://www.gtk.org/ <http://www.gtk.org/>`_
 
