@@ -1783,6 +1783,7 @@ package body Gtkada.Multi_Paned is
                Move_Handle (Split, Tmp, Old_Pos);
 
                Xchild := Xchild + Gint (Child) + Split.Handle_Width;
+               Show (Tmp.Handle.Win);
             elsif Tmp.Handle.Win /= null then
                Hide (Tmp.Handle.Win);
             end if;
@@ -1833,6 +1834,7 @@ package body Gtkada.Multi_Paned is
                Move_Handle (Split, Tmp, Old_Pos);
 
                Ychild := Ychild + Gint (Child) + Split.Handle_Width;
+               Show (Tmp.Handle.Win);
             elsif Tmp.Handle.Win /= null then
                Hide (Tmp.Handle.Win);
             end if;

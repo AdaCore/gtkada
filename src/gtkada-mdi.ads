@@ -28,7 +28,6 @@
 --  </description>
 --  <group>Layout containers</group>
 
-with Ada.Containers.Indefinite_Doubly_Linked_Lists;
 with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Hash;
 with Ada.Tags;
@@ -1167,23 +1166,10 @@ package Gtkada.MDI is
    --  Emit the "child_selected" signal
 
 private
-   type Hidden_Container_Data_Record is record
-      Container   : Gtk.Widget.Gtk_Widget;
-      Height      : Gint;
-      Width       : Gint;
-   end record;
-
-   type Hidden_Container_Data is access all Hidden_Container_Data_Record;
-
-   package MDI_Child_Container_List is new
-     Ada.Containers.Indefinite_Doubly_Linked_Lists
-       (Element_Type => Hidden_Container_Data,
-        "="          => "=");
-   use MDI_Child_Container_List;
-
    type Saved_Perspective_Record is record
-      List_Hidden   : MDI_Child_Container_List.List;
-      --  List of the hidden MDI Child Container and their dimensions
+      Height    : Gint;
+      Width     : Gint;
+      --  The sizes of the maximized container
 
       Container : Gtk.Widget.Gtk_Widget;
       --  The Container currently maximized

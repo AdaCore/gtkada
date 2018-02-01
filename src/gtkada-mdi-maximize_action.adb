@@ -28,22 +28,14 @@ separate (Gtkada.MDI)
 package body Maximize_Action is
 
    procedure Free is new Ada.Unchecked_Deallocation
-     (Hidden_Container_Data_Record, Hidden_Container_Data);
-
-   procedure Free is new Ada.Unchecked_Deallocation
      (Saved_Perspective_Record, Saved_Perspective);
-
-   function Save_Sizes
-     (MDI : access MDI_Window_Record'Class)
-      return MDI_Child_Container_List.List;
-   --  Save the sizes of the MDI children containers before maximizing
-
-   procedure Restore_Sizes (MDI : access MDI_Window_Record'Class);
-   --  Restore the sizes of the MDI children containers saved before maximizing
 
    function Get_Container (Child : MDI_Child) return Gtk.Widget.Gtk_Widget;
    --  Returns the container to hide Child when not maximized.
    --  Always return null is Child is in a floating window.
+
+   procedure Show_Hidden_Children (MDI : access MDI_Window_Record'Class);
+   --  Go through all the MDI children and call show on them
 
    -----------------------
    -- On_Maximize_Child --
@@ -72,17 +64,24 @@ package body Maximize_Action is
                          & """ in perspective """ & Perspective & """");
             --  Save the widget currently maximized
             New_Element.Container := Get_Container (C);
-            --  Save the current dimensions of the others containers
-            New_Element.List_Hidden := Save_Sizes (MDI);
+            --  Save the current dimensions of the Central area
+            New_Element.Width := Get_Allocated_Width (New_Element.Container);
+            New_Element.Height := Get_Allocated_Height (New_Element.Container);
             MDI.Saved_Sizes.Include (Perspective, New_Element);
          end;
          --  Hide the other containers
          Hide_When_Maximized (MDI);
       else
-         --  Restore the desktop and Free the saved XML
+         --  Restore the desktop and Free the saved data
          if MDI.Saved_Sizes.Contains (Perspective) then
             Print_Debug ("Unmaximize perspective """ & Perspective & """");
-            Restore_Sizes (MDI);
+            MDI.Set_Size
+              (Widget           => MDI.Saved_Sizes (Perspective).Container,
+               Width            => MDI.Saved_Sizes (Perspective).Width,
+               Height           => MDI.Saved_Sizes (Perspective).Height,
+               Fixed_Size       => False,
+               Force_Given_Size => True);
+            Show_Hidden_Children (MDI);
             Free (MDI.Saved_Sizes (Perspective));
          end if;
       end if;
@@ -156,17 +155,41 @@ package body Maximize_Action is
       return Container;
    end Get_Container;
 
+   --------------------------
+   -- Show_Hidden_Children --
+   --------------------------
+
+   procedure Show_Hidden_Children (MDI : access MDI_Window_Record'Class)
+   is
+      Iter         : Child_Iterator  :=
+        MDI.First_Child (Group_By_Notebook => False, Visible_Only => False);
+      Cur_Child    : MDI_Child;
+      Container    : Gtk.Widget.Gtk_Widget;
+   begin
+      loop
+         Cur_Child := Gtkada.MDI.Get (Iter);
+         exit when Cur_Child = null;
+         Container := Get_Container (Cur_Child);
+         if Container /= null then
+            Show (Container);
+         end if;
+         Gtkada.MDI.Next (Iter);
+      end loop;
+      Show (MDI.Central);
+   end Show_Hidden_Children;
+
    -------------------------
    -- Hide_When_Maximized --
    -------------------------
 
    procedure Hide_When_Maximized (MDI : access MDI_Window_Record'Class)
    is
-      Perspective : constant String := Current_Perspective (MDI);
-      Iter        : Child_Iterator  :=
+      Perspective  : constant String := Current_Perspective (MDI);
+      Iter         : Child_Iterator  :=
         MDI.First_Child (Group_By_Notebook => False, Visible_Only => False);
-      Cur_Child   : MDI_Child;
-      Container   : Gtk.Widget.Gtk_Widget;
+      Cur_Child    : MDI_Child;
+      Container    : Gtk.Widget.Gtk_Widget;
+      Hide_Central : Boolean         := True;
    begin
       if MDI.Saved_Sizes.Contains (Perspective)
         and then MDI.Saved_Sizes (Perspective) /= null
@@ -174,6 +197,8 @@ package body Maximize_Action is
          loop
             Cur_Child := Gtkada.MDI.Get (Iter);
             exit when Cur_Child = null;
+            Hide_Central :=
+              Hide_Central and not MDI.In_Central_Area (Cur_Child);
             Container := Get_Container (Cur_Child);
             if Container /= null and then
               Container /= MDI.Saved_Sizes (Perspective).Container
@@ -182,81 +207,12 @@ package body Maximize_Action is
             end if;
             Gtkada.MDI.Next (Iter);
          end loop;
+         --  If Central possesses no MDI_Child then hide it
+         if Hide_Central then
+            Hide (MDI.Central);
+         end if;
       end if;
    end Hide_When_Maximized;
-
-   ----------------
-   -- Save_Sizes --
-   ----------------
-
-   function Save_Sizes
-     (MDI : access MDI_Window_Record'Class)
-      return MDI_Child_Container_List.List
-   is
-      List : MDI_Child_Container_List.List;
-      function Is_Already_Saved (W : Gtk.Widget.Gtk_Widget) return Boolean;
-      --  Return True if W is already in List
-
-      function Is_Already_Saved (W : Gtk.Widget.Gtk_Widget) return Boolean
-      is
-         Res : Boolean := False;
-      begin
-         for Cur of List loop
-            if Cur.Container = W then
-               Res := True;
-               exit;
-            end if;
-         end loop;
-         return Res;
-      end Is_Already_Saved;
-
-      Iter       : Child_Iterator  :=
-        MDI.First_Child (Group_By_Notebook => False, Visible_Only => False);
-      Cur_Child  : MDI_Child;
-      Container  : Gtk.Widget.Gtk_Widget;
-      Saved_Data : Hidden_Container_Data;
-   begin
-      loop
-         Cur_Child := Gtkada.MDI.Get (Iter);
-         exit when Cur_Child = null;
-         Container := Get_Container (Cur_Child);
-         if Container /= null and not Is_Already_Saved (Container) then
-            Saved_Data := new Hidden_Container_Data_Record;
-            Saved_Data.Container := Container;
-            Saved_Data.Width := Get_Allocated_Width (Container);
-            Saved_Data.Height := Get_Allocated_Height (Container);
-            List.Append (Saved_Data);
-         end if;
-         Gtkada.MDI.Next (Iter);
-      end loop;
-      return List;
-   end Save_Sizes;
-
-   -------------------
-   -- Restore_Sizes --
-   -------------------
-
-   procedure Restore_Sizes (MDI : access MDI_Window_Record'Class)
-   is
-      Perspective : constant String := Current_Perspective (MDI);
-      Cpt : Integer := 0;
-   begin
-      if MDI.Saved_Sizes.Contains (Perspective)
-        and then MDI.Saved_Sizes (Perspective) /= null
-      then
-         for Container of MDI.Saved_Sizes (Perspective).List_Hidden loop
-            Cpt := Cpt + 1;
-            Print_Debug (Integer'Image (Cpt));
-            MDI.Set_Size
-              (Widget           => Container.Container,
-               Width            => Container.Width,
-               Height           => Container.Height,
-               Fixed_Size       => False,
-               Force_Given_Size => True);
-         end loop;
-         Show_All (MDI);
-      end if;
-   end Restore_Sizes;
 
    ---------------------
    -- Free_Saved_Data --
@@ -266,13 +222,7 @@ package body Maximize_Action is
    is
    begin
       for Perspective of MDI.Saved_Sizes loop
-         if Perspective /= null then
-            for Container of Perspective.List_Hidden loop
-               Free (Container);
-            end loop;
-            Perspective.List_Hidden.Clear;
-            Free (Perspective);
-         end if;
+         Free (Perspective);
       end loop;
       MDI.Saved_Sizes.Clear;
    end Free_Saved_Data;
