@@ -798,7 +798,12 @@ package body Gtkada.MDI is
       Child : MDI_Child;
    begin
       Child := MDI_Child (Get_Nth_Page (N, Gint (Page)));
-      if Child /= null then
+
+      --  Avoid setting the focus child at this point when we are performing
+      --  a Drag'n'Drop operation: the focus will be set properly once it
+      --  has fully finished.
+
+      if Child /= null and then Child.MDI.In_Drag = No_Drag then
          Print_Debug ("Set_Focus_Child_Switch_Notebook_Page "
                       & Get_Title (Child));
          Set_Focus_Child (Child);
