@@ -36,7 +36,7 @@ with Glib.Object;             use Glib.Object;
 with Glib.Values;             use Glib.Values;
 with Gtk.Text_Attributes;     use Gtk.Text_Attributes;
 with Gtk.Text_Tag;            use Gtk.Text_Tag;
-with Interfaces.C.Strings;    use Interfaces.C.Strings;
+with Gtkada.Types;            use Gtkada.Types;
 with Pango.Language;          use Pango.Language;
 
 package Gtk.Text_Iter is
@@ -887,9 +887,10 @@ package Gtk.Text_Iter is
 
    function Get_Slice
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+      The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr;
    --  Same as Get_Slice above, but returns the raw C string.
-   --  The caller is responsible for freeing the string returned.
+   --  The caller is responsible for freeing the string returned,
+   --  using Gtkada.Types.g_free.
 
 private
 type Gtk_Text_Iter is record

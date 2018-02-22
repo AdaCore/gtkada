@@ -35,7 +35,7 @@ package body Pango.Layout is
    return Gtkada.Types.Chars_Ptr
    is
       function Internal (Layout : System.Address)
-      return Interfaces.C.Strings.chars_ptr;
+      return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "pango_layout_get_text");
    begin
       return Internal (Get_Object (Layout));

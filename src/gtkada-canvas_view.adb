@@ -23,8 +23,8 @@
 ------------------------------------------------------------------------------
 
 with Ada.Unchecked_Conversion;
-with GNAT.Strings;                       use GNAT.Strings;
 with Interfaces.C.Strings;               use Interfaces.C.Strings;
+with GNAT.Strings;                       use GNAT.Strings;
 with System;
 with Cairo;                              use Cairo;
 with Cairo.Matrix;                       use Cairo.Matrix;
@@ -56,18 +56,17 @@ with Gtkada.Canvas_View.Links;           use Gtkada.Canvas_View.Links;
 with Gtkada.Canvas_View.Objects;         use Gtkada.Canvas_View.Objects;
 with Gtkada.Canvas_View.Views;           use Gtkada.Canvas_View.Views;
 with Gtkada.Handlers;                    use Gtkada.Handlers;
-with Gtkada.Types;                       use Gtkada.Types;
 with Pango.Font;                         use Pango.Font;
 with System.Storage_Elements;            use System.Storage_Elements;
 
 package body Gtkada.Canvas_View is
 
-   Model_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
+   Model_Signals : constant Interfaces.C.Strings.chars_ptr_array :=
      (1 => New_String (String (Signal_Item_Contents_Changed)),
       2 => New_String (String (Signal_Layout_Changed)),
       3 => New_String (String (Signal_Selection_Changed)),
       4 => New_String (String (Signal_Item_Destroyed)));
-   View_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
+   View_Signals : constant Interfaces.C.Strings.chars_ptr_array :=
      (1 => New_String (String (Signal_Viewport_Changed)),
       2 => New_String (String (Signal_Item_Event)),
       3 => New_String (String (Signal_Inline_Editing_Started)),

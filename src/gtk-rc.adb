@@ -23,8 +23,6 @@
 ------------------------------------------------------------------------------
 
 with Gtkada.Types; use Gtkada.Types;
-with Interfaces.C.Strings;
-with Interfaces.C;  use Interfaces.C;
 
 package body Gtk.Rc is
 
@@ -37,7 +35,7 @@ package body Gtk.Rc is
       pragma Import (C, Internal, "gtk_rc_get_theme_dir");
 
       S   : constant Chars_Ptr := Internal;
-      Str : constant String := Strings.Value (S);
+      Str : constant String := Value (S);
 
    begin
       g_free (S);

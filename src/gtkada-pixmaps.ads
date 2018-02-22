@@ -28,14 +28,13 @@
 --  </description>
 
 with Interfaces.C.Strings;
-with Gtkada.Types;
 
 package Gtkada.Pixmaps is
 
-   function "+" (Str : String) return Gtkada.Types.Chars_Ptr
+   function "+" (Str : String) return Interfaces.C.Strings.chars_ptr
      renames Interfaces.C.Strings.New_String;
 
-   Warning_Xpm : Gtkada.Types.Chars_Ptr_Array :=
+   Warning_Xpm : Interfaces.C.Strings.chars_ptr_array :=
    --  Provide a yellow exclamation point
      (+"32 32 7 1",
       --  colors
@@ -80,7 +79,7 @@ package Gtkada.Pixmaps is
       +"bbbbcccccccccccccccccccccccccccb",
       +"bbbbbcccccccccccccccccccccccccbb");
 
-   Error_Xpm : Gtkada.Types.Chars_Ptr_Array :=
+   Error_Xpm : Interfaces.C.Strings.chars_ptr_array :=
    --  Provide a red stop sign
      (+"32 32 7 1",
       --  colors
@@ -125,7 +124,7 @@ package Gtkada.Pixmaps is
       +"bbbbbbbbbbccccccccccccccbbbbbbbb",
       +"bbbbbbbbbbbbbccccccccbbbbbbbbbbb");
 
-   Information_Xpm : Gtkada.Types.Chars_Ptr_Array :=
+   Information_Xpm : Interfaces.C.Strings.chars_ptr_array :=
    --  Provide a blue "i" sign
      (+"32 32 6 1",
       --  colors
@@ -169,7 +168,7 @@ package Gtkada.Pixmaps is
       +"aaaaaaaaaaaaaaaaaabbbaaaaaaaaaaa",
       +"aaaaaaaaaaaaaaaaaaabbaaaaaaaaaaa");
 
-   Confirmation_Xpm : Gtkada.Types.Chars_Ptr_Array :=
+   Confirmation_Xpm : Interfaces.C.Strings.chars_ptr_array :=
    --  Provide a blue question mark
      (+"32 32 6 1",
       --  colors

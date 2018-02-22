@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Interfaces.C.Strings;
 with Unchecked_Conversion;
 with Unchecked_Deallocation;
 with System;          use System;
@@ -53,7 +52,7 @@ package body Glib.Object is
      (Ancestor     : GType;
       Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
-      Signals      : Gtkada.Types.Chars_Ptr_Array;
+      Signals      : Interfaces.C.Strings.chars_ptr_array;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
       Returns      : Signal_Return_Types := No_Return_Types;
       Class_Init   : Ada_Class_Init := null;
@@ -310,7 +309,7 @@ package body Glib.Object is
      (Ancestor     : GType;
       Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
-      Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
+      Signals      : Interfaces.C.Strings.chars_ptr_array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
       Returns      : Signal_Return_Types := No_Return_Types;
       Class_Init   : Ada_Class_Init := null)
@@ -331,7 +330,7 @@ package body Glib.Object is
      (Ancestor     : GType;
       Class_Record : not null access Ada_GObject_Class;
       Type_Name    : String;
-      Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
+      Signals      : Interfaces.C.Strings.chars_ptr_array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
       Returns      : Signal_Return_Types := No_Return_Types;
       Class_Init   : Ada_Class_Init := null)
@@ -353,7 +352,7 @@ package body Glib.Object is
      (Ancestor     : GType;
       Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
-      Signals      : Gtkada.Types.Chars_Ptr_Array;
+      Signals      : Interfaces.C.Strings.chars_ptr_array;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
       Returns      : Signal_Return_Types := No_Return_Types;
       Class_Init   : Ada_Class_Init := null;

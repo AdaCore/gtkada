@@ -31,7 +31,8 @@
 --  <group>Glib, the general-purpose library</group>
 
 with Glib.Error; use Glib.Error;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Interfaces.C.Strings;
+with Gtkada.Types;
 
 package Glib.Convert is
    pragma Preelaborate;
@@ -82,7 +83,7 @@ package Glib.Convert is
    --  Same as above, but return a String directly.
 
    procedure Convert
-     (Str           : chars_ptr;
+     (Str           : Interfaces.C.Strings.chars_ptr;
       Len           : Natural;
       To_Codeset    : String;
       From_Codeset  : String;
@@ -98,17 +99,17 @@ package Glib.Convert is
       From_Codeset  : String;
       Bytes_Read    : access Natural;
       Bytes_Written : access Natural;
-      Error         : GError_Access := null) return chars_ptr;
+      Error         : GError_Access := null) return Gtkada.Types.Chars_Ptr;
    --  Same as Convert procedure, but return the result as a C string.
 
    function Convert
-     (Str           : chars_ptr;
+     (Str           : Interfaces.C.Strings.chars_ptr;
       Len           : Natural;
       To_Codeset    : String;
       From_Codeset  : String;
       Bytes_Read    : access Natural;
       Bytes_Written : access Natural;
-      Error         : GError_Access := null) return chars_ptr;
+      Error         : GError_Access := null) return Gtkada.Types.Chars_Ptr;
    --  Same as Convert procedure, but take and return the result as a C string.
 
    procedure Locale_To_UTF8
@@ -138,7 +139,7 @@ package Glib.Convert is
      (OS_String     : String;
       Bytes_Read    : access Natural;
       Bytes_Written : access Natural;
-      Error         : GError_Access := null) return chars_ptr;
+      Error         : GError_Access := null) return Gtkada.Types.Chars_Ptr;
    --  Same as procedure Locale_To_UTF8, but return the raw C string for
    --  efficiency. The caller is responsible for freeing the resulting string.
 
@@ -172,7 +173,7 @@ package Glib.Convert is
      (UTF8_String   : String;
       Bytes_Read    : access Natural;
       Bytes_Written : access Natural;
-      Error         : GError_Access := null) return chars_ptr;
+      Error         : GError_Access := null) return Gtkada.Types.Chars_Ptr;
    --  Same as procedure Locale_From_UTF8, but return the raw C string for
    --  efficiency. The caller is responsible for freeing the resulting string.
    --  Use the C "free" function to free this.
@@ -193,7 +194,7 @@ package Glib.Convert is
 
    function Filename_From_URI
      (URI      : String;
-      Hostname : access chars_ptr;
+      Hostname : access Interfaces.C.Strings.chars_ptr;
       Error    : GError_Access := null) return String;
    --  Convert an escaped UTF-8 encoded URI to a local filename in the
    --  encoding used for filenames.

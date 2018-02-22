@@ -121,7 +121,7 @@ package body Gtk.Text_Buffer is
          Start                : Gtk.Text_Iter.Gtk_Text_Iter;
          The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
          Include_Hidden_Chars : Gboolean)
-      return Interfaces.C.Strings.chars_ptr;
+      return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_text_buffer_get_text");
 
    begin

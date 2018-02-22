@@ -27,6 +27,7 @@
 --
 --  </description>
 
+with Interfaces.C;
 with Interfaces.C.Strings;
 
 package Gtkada.Types is
@@ -35,17 +36,41 @@ package Gtkada.Types is
 
    Data_Error : exception;
 
-   subtype Chars_Ptr is Interfaces.C.Strings.chars_ptr;
-   subtype Chars_Ptr_Array is Interfaces.C.Strings.chars_ptr_array;
+   -------------------------
+   -- Handling of Strings --
+   -------------------------
+
+   --  The Chars_Ptr type introduced below represent a C string that has been
+   --  allocated in C using g_malloc, and which should therefore be deallocated
+   --  with g_free rather than the function in Interfaces.C.Strings.
+   --
+   --  This is represented by an incompatible type, to make sure that
+   --  application code will use g_free.
+
+   type Chars_Ptr is private;
+   type Chars_Ptr_Array is array (Interfaces.C.size_t range <>)
+     of aliased Chars_Ptr;
 
    procedure g_free (Mem : Chars_Ptr);
-   --  Free a C string returned from Gtk
+   --  Free a C string that was returned from Gtk
 
-   Null_Ptr : Chars_Ptr renames Interfaces.C.Strings.Null_Ptr;
+   function Null_Ptr return Chars_Ptr;
+   pragma Inline (Null_Ptr);
+   --  Return a null pointer
 
    function Null_Array return Chars_Ptr_Array;
-   --  Return a null array.
    pragma Inline (Null_Array);
+   --  Return a null array.
+
+   function Value (Item : Chars_Ptr) return String;
+   pragma Inline (Value);
+   --  Utility conversion function
+
+   function Value
+     (Item   : Chars_Ptr;
+      Length : Interfaces.C.size_t) return Interfaces.C.char_array;
+   pragma Inline (Value);
+   --  Utility conversion function
 
    -------------------------------------
    --  Handling of arrays of Strings  --
@@ -91,6 +116,10 @@ package Gtkada.Types is
    procedure Free (A : in out Chars_Ptr_Array);
    --  Free all the strings in A.
 
+   procedure Free (A : in out Interfaces.C.Strings.chars_ptr_array);
+   --  Free all the strings in A.
+
 private
+   type Chars_Ptr is new Interfaces.C.Strings.chars_ptr;
    pragma Import (C, g_free, "g_free");
 end Gtkada.Types;

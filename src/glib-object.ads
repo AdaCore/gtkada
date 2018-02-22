@@ -29,7 +29,7 @@
 --  </description>
 --  <group>Glib, the general-purpose library</group>
 
-with Gtkada.Types;
+with Interfaces.C.Strings;
 with Glib.GSlist;
 with Glib.Glist;
 pragma Elaborate_All (Glib.GSlist);
@@ -290,8 +290,8 @@ package Glib.Object is
    --  GtkAda assumes the return value is used to stop signal propagation when
    --  it is true (indicating the signal has been handled).
 
-   No_Signals : constant Gtkada.Types.Chars_Ptr_Array :=
-      (1 .. 0 => Gtkada.Types.Null_Ptr);
+   No_Signals : constant Interfaces.C.Strings.chars_ptr_array :=
+      (1 .. 0 => Interfaces.C.Strings.Null_Ptr);
    Null_Parameter_Types : constant Signal_Parameter_Types (1 .. 0, 1 .. 0) :=
      (others => (others => GType_None));
    --  An empty array, used as a default parameter in Initialize_Class_Record.
@@ -300,7 +300,7 @@ package Glib.Object is
      (Ancestor     : GType;
       Class_Record : in out Ada_GObject_Class;
       Type_Name    : String;
-      Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
+      Signals      : Interfaces.C.Strings.chars_ptr_array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
       Returns      : Signal_Return_Types := No_Return_Types;
       Class_Init   : Ada_Class_Init := null);
@@ -308,7 +308,7 @@ package Glib.Object is
      (Ancestor     : GType;
       Class_Record : not null access Ada_GObject_Class;
       Type_Name    : String;
-      Signals      : Gtkada.Types.Chars_Ptr_Array := No_Signals;
+      Signals      : Interfaces.C.Strings.chars_ptr_array := No_Signals;
       Parameters   : Signal_Parameter_Types := Null_Parameter_Types;
       Returns      : Signal_Return_Types := No_Return_Types;
       Class_Init   : Ada_Class_Init := null)

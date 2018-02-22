@@ -3754,7 +3754,7 @@ __PRE__
          Start                : Gtk.Text_Iter.Gtk_Text_Iter;
          The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
          Include_Hidden_Chars : Gboolean)
-         return Interfaces.C.Strings.chars_ptr;
+         return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_text_buffer_get_text");
 
    begin
@@ -4952,7 +4952,7 @@ text. Since: 3.14
       return Gtkada.Types.Chars_Ptr
    is
       function Internal (Layout : System.Address)
-         return Interfaces.C.Strings.chars_ptr;
+         return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "pango_layout_get_text");
    begin
       return Internal (Get_Object (Layout));
@@ -6050,7 +6050,8 @@ direction, widget state, or icon size.
      </method>
      <extra>
         <with_spec pkg="Glib.Values"/>
-        <with_spec pkg="Interfaces.C.Strings"/>
+        <with_spec pkg="Gtkada.Types"/>
+        <with_body pkg="Interfaces.C.Strings"/>
         <with_body pkg="Ada.Unchecked_Conversion" use="False"/>
         <with_body pkg="System.Address_To_Access_Conversions" use="False"/>
         <type>
@@ -6099,9 +6100,10 @@ direction, widget state, or icon size.
 
    function Get_Slice
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+      The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr;
    --  Same as Get_Slice above, but returns the raw C string.
-   --  The caller is responsible for freeing the string returned.
+   --  The caller is responsible for freeing the string returned,
+   --  using Gtkada.Types.g_free.
 
         </spec>
         <body>
@@ -6172,11 +6174,11 @@ direction, widget state, or icon size.
 
    function Get_Slice
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr
+      The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr
    is
       function Internal
         (Start   : Gtk_Text_Iter;
-         The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+         The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_slice");
 
    begin

@@ -26,6 +26,9 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Gtkada.Bindings;                      use Gtkada.Bindings;
 with System.Address_To_Access_Conversions;
+pragma Warnings(Off);  --  might be unused
+with Interfaces.C.Strings;                 use Interfaces.C.Strings;
+pragma Warnings(On);
 
 package body Gtk.Text_Iter is
 
@@ -102,11 +105,11 @@ package body Gtk.Text_Iter is
 
    function Get_Slice
      (Start   : Gtk_Text_Iter;
-      The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr
+      The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr
    is
       function Internal
         (Start   : Gtk_Text_Iter;
-         The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+         The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_slice");
 
    begin

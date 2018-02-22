@@ -40,9 +40,9 @@ with Ada.Strings.Fixed;       use Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;   use Ada.Strings.Unbounded;
 with Ada.Tags;                use Ada.Tags;
 with Ada.Exceptions;          use Ada.Exceptions;
+with Interfaces.C.Strings;    use Interfaces.C.Strings;
 with System;                  use System;
 with System.Address_Image;
-with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 with GNAT.IO;                 use GNAT.IO;
 with GNAT.Strings;            use GNAT.Strings;

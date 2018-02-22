@@ -1207,30 +1207,30 @@ def indent_code(code, indent=3, addnewlines=True):
     parent_count = 0
     result = ""
 
-    for l in body.splitlines():
-        if l.find("--") != -1:
-            eol_comment = l[l.find("--"):].strip()
-            l = l[:l.find("--")]
+    for line in body.splitlines():
+        if line.find("--") != -1:
+            eol_comment = line[line.find("--"):].strip()
+            line = line[:line.find("--")]
         else:
             eol_comment = ""
 
-        l = l.strip()
+        line = line.strip()
 
-        if l.startswith("end") \
-           or l.startswith("elsif")  \
-           or l.startswith("else")  \
-           or l.startswith("begin") \
-           or l.startswith("}"):   # for C
+        if line.startswith("end") \
+           or line.startswith("elsif")  \
+           or line.startswith("else")  \
+           or line.startswith("begin") \
+           or line.startswith("}"):   # for C
             indent -= 3
 
         old_parent = parent_count
-        parent_count = parent_count + l.count("(") - l.count(")")
+        parent_count = parent_count + line.count("(") - line.count(")")
 
-        if not l:
+        if not line:
             if eol_comment:
                 result += " " * indent
 
-        elif l[0] == '(':
+        elif line[0] == '(':
             result += " " * (indent + 2)
             if parent_count > old_parent:
                 indent += (parent_count - old_parent) * 3
@@ -1246,23 +1246,23 @@ def indent_code(code, indent=3, addnewlines=True):
         if old_parent > parent_count:
             indent -= (old_parent - parent_count) * 3
 
-        result += l + eol_comment + "\n"
+        result += line + eol_comment + "\n"
 
-        if (l.endswith("then") and not l.endswith("and then")) \
-           or l.endswith("loop") \
-           or(l.endswith("else") and not l.endswith("or else"))\
-           or l.endswith("begin") \
-           or l.endswith("{") \
-           or l.endswith("record") \
-           or l.endswith("is") \
-           or l.endswith("do") \
-           or l.endswith("declare"):
+        if (line.endswith("then") and not line.endswith("and then")) \
+           or line.endswith("loop") \
+           or(line.endswith("else") and not line.endswith("or else"))\
+           or line.endswith("begin") \
+           or line.endswith("{") \
+           or line.endswith("record") \
+           or line.endswith("is") \
+           or line.endswith("do") \
+           or line.endswith("declare"):
             indent += 3
 
         # Case of generic instantiation:
         #     package A is
         #         new B ();
-        if l.startswith("new"):
+        if line.startswith("new"):
             indent -= 3
 
     return result
@@ -2202,6 +2202,7 @@ class Package(object):
             if self.doc:
                 result.append(format_doc(self.doc, indent=""))
 
+            result.append('')
             result.append('pragma Warnings (Off, "*is already use-visible*");')
             result.append(self._output_withs(self.spec_withs))
 

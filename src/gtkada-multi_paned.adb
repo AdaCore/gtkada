@@ -23,8 +23,8 @@
 
 with Ada.Exceptions;       use Ada.Exceptions;
 with Ada.Unchecked_Deallocation;
+with Interfaces.C.Strings;
 with GNAT.IO;              use GNAT.IO;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
 with System;               use System;
 with System.Address_Image;
 
@@ -588,7 +588,7 @@ package body Gtkada.Multi_Paned is
    begin
       Glib.Object.Initialize_Class_Record
         (Ancestor     => Gtk.Fixed.Get_Type,
-         Signals      => (1 .. 0 => Null_Ptr),
+         Signals      => (1 .. 0 => Interfaces.C.Strings.Null_Ptr),
          Class_Record => Paned_Class_Record,
          Type_Name    => "GtkAdaMultiPaned",
          Parameters   => (1 .. 0 => (1 => GType_None)),
