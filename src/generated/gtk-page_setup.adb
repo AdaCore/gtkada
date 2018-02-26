@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Page_Setup is
@@ -131,9 +131,9 @@ package body Gtk.Page_Setup is
        File_Name : UTF8_String)
    is
       function Internal
-         (File_Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (File_Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_page_setup_new_from_file");
-      Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
+      Tmp_File_Name : Gtkada.Types.Chars_Ptr := New_String (File_Name);
       Tmp_Return    : System.Address;
    begin
       if not Self.Is_Created then
@@ -154,14 +154,14 @@ package body Gtk.Page_Setup is
    is
       function Internal
          (Key_File   : Glib.Key_File.G_Key_File;
-          Group_Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Group_Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_page_setup_new_from_key_file");
-      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr;
       Tmp_Return     : System.Address;
    begin
       if not Self.Is_Created then
          if Group_Name = "" then
-            Tmp_Group_Name := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Group_Name := Gtkada.Types.Null_Ptr;
          else
             Tmp_Group_Name := New_String (Group_Name);
          end if;
@@ -352,9 +352,9 @@ package body Gtk.Page_Setup is
    is
       function Internal
          (Self      : System.Address;
-          File_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          File_Name : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_page_setup_load_file");
-      Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
+      Tmp_File_Name : Gtkada.Types.Chars_Ptr := New_String (File_Name);
       Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_File_Name);
@@ -374,13 +374,13 @@ package body Gtk.Page_Setup is
       function Internal
          (Self       : System.Address;
           Key_File   : Glib.Key_File.G_Key_File;
-          Group_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Group_Name : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_page_setup_load_key_file");
-      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr;
       Tmp_Return     : Glib.Gboolean;
    begin
       if Group_Name = "" then
-         Tmp_Group_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Group_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Group_Name := New_String (Group_Name);
       end if;
@@ -515,9 +515,9 @@ package body Gtk.Page_Setup is
    is
       function Internal
          (Self      : System.Address;
-          File_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          File_Name : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_page_setup_to_file");
-      Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
+      Tmp_File_Name : Gtkada.Types.Chars_Ptr := New_String (File_Name);
       Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_File_Name);
@@ -537,9 +537,9 @@ package body Gtk.Page_Setup is
       procedure Internal
          (Self       : System.Address;
           Key_File   : Glib.Key_File.G_Key_File;
-          Group_Name : Interfaces.C.Strings.chars_ptr);
+          Group_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_page_setup_to_key_file");
-      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr := New_String (Group_Name);
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr := New_String (Group_Name);
    begin
       Internal (Get_Object (Self), Key_File, Tmp_Group_Name);
       Free (Tmp_Group_Name);

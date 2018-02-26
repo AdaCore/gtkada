@@ -26,7 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Object;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;     use Interfaces.C.Strings;
+with Gtkada.Types;             use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Cell_Layout is
@@ -99,10 +99,10 @@ package body Gtk.Cell_Layout is
       procedure Internal
          (Cell_Layout : Gtk_Cell_Layout;
           Cell        : System.Address;
-          Attribute   : Interfaces.C.Strings.chars_ptr;
+          Attribute   : Gtkada.Types.Chars_Ptr;
           Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
    begin
       Internal (Cell_Layout, Get_Object (Cell), Tmp_Attribute, Column);
       Free (Tmp_Attribute);

@@ -26,7 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Tool_Item_Group is
@@ -67,9 +67,9 @@ package body Gtk.Tool_Item_Group is
        Label : UTF8_String)
    is
       function Internal
-         (Label : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Label : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_tool_item_group_new");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label  : Gtkada.Types.Chars_Ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
@@ -166,7 +166,7 @@ package body Gtk.Tool_Item_Group is
       (Self : not null access Gtk_Tool_Item_Group_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_tool_item_group_get_label");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -309,9 +309,9 @@ package body Gtk.Tool_Item_Group is
    is
       procedure Internal
          (Self  : System.Address;
-          Label : Interfaces.C.Strings.chars_ptr);
+          Label : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_tool_item_group_set_label");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label : Gtkada.Types.Chars_Ptr := New_String (Label);
    begin
       Internal (Get_Object (Self), Tmp_Label);
       Free (Tmp_Label);

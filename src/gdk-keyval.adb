@@ -22,7 +22,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Interfaces.C.Strings;
+with Gtkada.Types;
 with Glib; use Glib;
 
 package body Gdk.Keyval is
@@ -70,16 +70,16 @@ package body Gdk.Keyval is
    function Name (Keyval : Gdk.Types.Gdk_Key_Type) return String is
       function Internal
         (Keyval : Gdk.Types.Gdk_Key_Type)
-         return Interfaces.C.Strings.chars_ptr;
+         return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gdk_keyval_name");
 
-      use type Interfaces.C.Strings.chars_ptr;
-      P : constant Interfaces.C.Strings.chars_ptr := Internal (Keyval);
+      use type Gtkada.Types.Chars_Ptr;
+      P : constant Gtkada.Types.Chars_Ptr := Internal (Keyval);
    begin
-      if P = Interfaces.C.Strings.Null_Ptr then
+      if P = Gtkada.Types.Null_Ptr then
          return "";
       else
-         return C.Strings.Value (P);
+         return Gtkada.Types.Value (P);
       end if;
    end Name;
 

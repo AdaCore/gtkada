@@ -26,9 +26,6 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Gtkada.Bindings;                      use Gtkada.Bindings;
 with System.Address_To_Access_Conversions;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;                 use Interfaces.C.Strings;
-pragma Warnings(On);
 
 package body Gtk.Text_Iter is
 
@@ -251,7 +248,7 @@ package body Gtk.Text_Iter is
    is
       function Internal
          (Acc_Iter        : access Gtk_Text_Iter;
-          Str             : Interfaces.C.Strings.chars_ptr;
+          Str             : Gtkada.Types.Chars_Ptr;
           Flags           : Gtk_Text_Search_Flags;
           Acc_Match_Start : access Gtk_Text_Iter;
           Acc_Match_End   : access Gtk_Text_Iter;
@@ -260,7 +257,7 @@ package body Gtk.Text_Iter is
       Acc_Iter            : aliased Gtk_Text_Iter := Iter;
       Acc_Match_Start     : aliased Gtk_Text_Iter;
       Acc_Match_End       : aliased Gtk_Text_Iter;
-      Tmp_Str             : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str             : Gtkada.Types.Chars_Ptr := New_String (Str);
       Tmp_Acc_Match_Start : aliased Gtk_Text_Iter;
       Tmp_Acc_Match_End   : aliased Gtk_Text_Iter;
       Tmp_Return          : Glib.Gboolean;
@@ -741,7 +738,7 @@ package body Gtk.Text_Iter is
    is
       function Internal
          (Acc_Iter        : access Gtk_Text_Iter;
-          Str             : Interfaces.C.Strings.chars_ptr;
+          Str             : Gtkada.Types.Chars_Ptr;
           Flags           : Gtk_Text_Search_Flags;
           Acc_Match_Start : access Gtk_Text_Iter;
           Acc_Match_End   : access Gtk_Text_Iter;
@@ -750,7 +747,7 @@ package body Gtk.Text_Iter is
       Acc_Iter            : aliased Gtk_Text_Iter := Iter;
       Acc_Match_Start     : aliased Gtk_Text_Iter;
       Acc_Match_End       : aliased Gtk_Text_Iter;
-      Tmp_Str             : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str             : Gtkada.Types.Chars_Ptr := New_String (Str);
       Tmp_Acc_Match_Start : aliased Gtk_Text_Iter;
       Tmp_Acc_Match_End   : aliased Gtk_Text_Iter;
       Tmp_Return          : Glib.Gboolean;
@@ -1079,7 +1076,7 @@ package body Gtk.Text_Iter is
    is
       function Internal
          (Iter    : Gtk_Text_Iter;
-          The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+          The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_slice");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Iter, The_End));
@@ -1110,7 +1107,7 @@ package body Gtk.Text_Iter is
    is
       function Internal
          (Iter    : Gtk_Text_Iter;
-          The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+          The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_text");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Iter, The_End));
@@ -1144,7 +1141,7 @@ package body Gtk.Text_Iter is
    is
       function Internal
          (Iter    : Gtk_Text_Iter;
-          The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+          The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_visible_slice");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Iter, The_End));
@@ -1160,7 +1157,7 @@ package body Gtk.Text_Iter is
    is
       function Internal
          (Iter    : Gtk_Text_Iter;
-          The_End : Gtk_Text_Iter) return Interfaces.C.Strings.chars_ptr;
+          The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_text_iter_get_visible_text");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Iter, The_End));

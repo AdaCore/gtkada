@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Aspect_Frame is
@@ -81,18 +81,18 @@ package body Gtk.Aspect_Frame is
        Obey_Child   : Boolean)
    is
       function Internal
-         (Label      : Interfaces.C.Strings.chars_ptr;
+         (Label      : Gtkada.Types.Chars_Ptr;
           Xalign     : Gfloat;
           Yalign     : Gfloat;
           Ratio      : Gfloat;
           Obey_Child : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "gtk_aspect_frame_new");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label  : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Aspect_Frame.Is_Created then
          if Label = "" then
-            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Label := Gtkada.Types.Null_Ptr;
          else
             Tmp_Label := New_String (Label);
          end if;

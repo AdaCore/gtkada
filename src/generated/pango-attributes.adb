@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;     use Interfaces.C.Strings;
+with Gtkada.Types;             use Gtkada.Types;
 pragma Warnings(On);
 
 package body Pango.Attributes is
@@ -240,9 +240,9 @@ package body Pango.Attributes is
 
    function Attr_Family_New (Family : UTF8_String) return Pango_Attribute is
       function Internal
-         (Family : Interfaces.C.Strings.chars_ptr) return Pango_Attribute;
+         (Family : Gtkada.Types.Chars_Ptr) return Pango_Attribute;
       pragma Import (C, Internal, "pango_attr_family_new");
-      Tmp_Family : Interfaces.C.Strings.chars_ptr := New_String (Family);
+      Tmp_Family : Gtkada.Types.Chars_Ptr := New_String (Family);
       Tmp_Return : Pango_Attribute;
    begin
       Tmp_Return := Internal (Tmp_Family);

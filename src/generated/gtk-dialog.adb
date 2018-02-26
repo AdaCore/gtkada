@@ -30,7 +30,7 @@ with Gtk.Arguments;              use Gtk.Arguments;
 with Gtk.Settings;               use Gtk.Settings;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Dialog is
@@ -171,11 +171,11 @@ package body Gtk.Dialog is
        Flags  : Gtk_Dialog_Flags)
    is
       function Internal
-         (Title  : Interfaces.C.Strings.chars_ptr;
+         (Title  : Gtkada.Types.Chars_Ptr;
           Parent : System.Address;
           Flags  : Gtk_Dialog_Flags) return System.Address;
       pragma Import (C, Internal, "ada_gtk_dialog_new_with_buttons");
-      Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title  : Gtkada.Types.Chars_Ptr := New_String (Title);
       Tmp_Return : System.Address;
    begin
       if not Dialog.Is_Created then
@@ -214,10 +214,10 @@ package body Gtk.Dialog is
    is
       function Internal
          (Dialog      : System.Address;
-          Text        : Interfaces.C.Strings.chars_ptr;
+          Text        : Gtkada.Types.Chars_Ptr;
           Response_Id : Gtk_Response_Type) return System.Address;
       pragma Import (C, Internal, "gtk_dialog_add_button");
-      Tmp_Text        : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text        : Gtkada.Types.Chars_Ptr := New_String (Text);
       Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
       Tmp_Return      : System.Address;
    begin

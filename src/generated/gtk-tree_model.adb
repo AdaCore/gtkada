@@ -26,9 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Gtk.Arguments;            use Gtk.Arguments;
 with Gtkada.Bindings;          use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;     use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Types;             use Gtkada.Types;
 
 package body Gtk.Tree_Model is
 
@@ -170,26 +168,26 @@ package body Gtk.Tree_Model is
         (Tree_Model : Gtk_Tree_Model;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : out Interfaces.C.Strings.chars_ptr);
+         Value      : out Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "ada_gtk_tree_model_get");
-      A : Interfaces.C.Strings.chars_ptr;
+      A : Gtkada.Types.Chars_Ptr;
    begin
       if Iter = Null_Iter then
          raise Program_Error with "Get_String with null_iter";
       end if;
       Internal (Tree_Model, Iter, Column, A);
-      if A = Interfaces.C.Strings.Null_Ptr then
+      if A = Gtkada.Types.Null_Ptr then
          return "";
       else
          declare
-            S : constant String := Interfaces.C.Strings.Value (A);
+            S : constant String := Gtkada.Types.Value (A);
 
-            procedure C_Free (S : Interfaces.C.Strings.chars_ptr);
+            procedure C_Free (S : Gtkada.Types.Chars_Ptr);
             pragma Import (C, C_Free, "free");
 
          begin
             --  Since A was allocated by gtk+ via malloc(), and not via
-            --  System.Memory, we should not be using Interfaces.C.Strings.Free
+            --  System.Memory, we should not be using Gtkada.Types.g_free
             --  which goes through System.Memory. So we call free() directly
             --  instead.
             C_Free (A);
@@ -380,9 +378,9 @@ package body Gtk.Tree_Model is
 
    procedure Gtk_New (Self : out Gtk_Tree_Path; Path : UTF8_String) is
       function Internal
-         (Path : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Path : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_tree_path_new_from_string");
-      Tmp_Path   : Interfaces.C.Strings.chars_ptr := New_String (Path);
+      Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Path);
@@ -485,9 +483,9 @@ package body Gtk.Tree_Model is
       (Path : UTF8_String) return Gtk_Tree_Path
    is
       function Internal
-         (Path : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Path : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_tree_path_new_from_string");
-      Tmp_Path   : Interfaces.C.Strings.chars_ptr := New_String (Path);
+      Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
       Tmp_Return : System.Address;
       Self       : Gtk_Tree_Path;
    begin
@@ -771,7 +769,7 @@ package body Gtk.Tree_Model is
    is
       function Internal
          (Tree_Model : Gtk_Tree_Model;
-          Iter       : Gtk_Tree_Iter) return Interfaces.C.Strings.chars_ptr;
+          Iter       : Gtk_Tree_Iter) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_tree_model_get_string_from_iter");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Tree_Model, Iter));
@@ -1081,7 +1079,7 @@ package body Gtk.Tree_Model is
 
    function To_String (Path : Gtk_Tree_Path) return UTF8_String is
       function Internal
-         (Path : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Path : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_tree_path_to_string");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Path)));

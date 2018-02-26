@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Label is
@@ -93,15 +93,14 @@ package body Gtk.Label is
       (Label : not null access Gtk_Label_Record'Class;
        Str   : UTF8_String := "")
    is
-      function Internal
-         (Str : Interfaces.C.Strings.chars_ptr) return System.Address;
+      function Internal (Str : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_label_new");
-      Tmp_Str    : Interfaces.C.Strings.chars_ptr;
+      Tmp_Str    : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Label.Is_Created then
          if Str = "" then
-            Tmp_Str := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Str := Gtkada.Types.Null_Ptr;
          else
             Tmp_Str := New_String (Str);
          end if;
@@ -119,15 +118,14 @@ package body Gtk.Label is
       (Label : not null access Gtk_Label_Record'Class;
        Str   : UTF8_String := "")
    is
-      function Internal
-         (Str : Interfaces.C.Strings.chars_ptr) return System.Address;
+      function Internal (Str : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_label_new_with_mnemonic");
-      Tmp_Str    : Interfaces.C.Strings.chars_ptr;
+      Tmp_Str    : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Label.Is_Created then
          if Str = "" then
-            Tmp_Str := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Str := Gtkada.Types.Null_Ptr;
          else
             Tmp_Str := New_String (Str);
          end if;
@@ -172,7 +170,7 @@ package body Gtk.Label is
       (Label : not null access Gtk_Label_Record) return UTF8_String
    is
       function Internal
-         (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Label : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_label_get_current_uri");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Label)));
@@ -216,7 +214,7 @@ package body Gtk.Label is
       (Label : not null access Gtk_Label_Record) return UTF8_String
    is
       function Internal
-         (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Label : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_label_get_label");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Label)));
@@ -396,7 +394,7 @@ package body Gtk.Label is
       (Label : not null access Gtk_Label_Record) return UTF8_String
    is
       function Internal
-         (Label : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Label : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_label_get_text");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Label)));
@@ -542,9 +540,9 @@ package body Gtk.Label is
    is
       procedure Internal
          (Label : System.Address;
-          Str   : Interfaces.C.Strings.chars_ptr);
+          Str   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_label_set_label");
-      Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str : Gtkada.Types.Chars_Ptr := New_String (Str);
    begin
       Internal (Get_Object (Label), Tmp_Str);
       Free (Tmp_Str);
@@ -604,9 +602,9 @@ package body Gtk.Label is
    is
       procedure Internal
          (Label : System.Address;
-          Str   : Interfaces.C.Strings.chars_ptr);
+          Str   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_label_set_markup");
-      Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str : Gtkada.Types.Chars_Ptr := New_String (Str);
    begin
       Internal (Get_Object (Label), Tmp_Str);
       Free (Tmp_Str);
@@ -622,9 +620,9 @@ package body Gtk.Label is
    is
       procedure Internal
          (Label : System.Address;
-          Str   : Interfaces.C.Strings.chars_ptr);
+          Str   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_label_set_markup_with_mnemonic");
-      Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str : Gtkada.Types.Chars_Ptr := New_String (Str);
    begin
       Internal (Get_Object (Label), Tmp_Str);
       Free (Tmp_Str);
@@ -668,9 +666,9 @@ package body Gtk.Label is
    is
       procedure Internal
          (Label   : System.Address;
-          Pattern : Interfaces.C.Strings.chars_ptr);
+          Pattern : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_label_set_pattern");
-      Tmp_Pattern : Interfaces.C.Strings.chars_ptr := New_String (Pattern);
+      Tmp_Pattern : Gtkada.Types.Chars_Ptr := New_String (Pattern);
    begin
       Internal (Get_Object (Label), Tmp_Pattern);
       Free (Tmp_Pattern);
@@ -716,9 +714,9 @@ package body Gtk.Label is
    is
       procedure Internal
          (Label : System.Address;
-          Str   : Interfaces.C.Strings.chars_ptr);
+          Str   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_label_set_text");
-      Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str : Gtkada.Types.Chars_Ptr := New_String (Str);
    begin
       Internal (Get_Object (Label), Tmp_Str);
       Free (Tmp_Str);
@@ -734,9 +732,9 @@ package body Gtk.Label is
    is
       procedure Internal
          (Label : System.Address;
-          Str   : Interfaces.C.Strings.chars_ptr);
+          Str   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_label_set_text_with_mnemonic");
-      Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str : Gtkada.Types.Chars_Ptr := New_String (Str);
    begin
       Internal (Get_Object (Label), Tmp_Str);
       Free (Tmp_Str);

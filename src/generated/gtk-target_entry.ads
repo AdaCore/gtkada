@@ -29,14 +29,14 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;                 use Glib;
-with Gtk.Enums;            use Gtk.Enums;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Glib;         use Glib;
+with Gtk.Enums;    use Gtk.Enums;
+with Gtkada.Types; use Gtkada.Types;
 
 package Gtk.Target_Entry is
 
    type Gtk_Target_Entry is record
-      Target : Interfaces.C.Strings.chars_ptr;
+      Target : Gtkada.Types.Chars_Ptr;
       Flags : Gtk.Enums.Gtk_Target_Flags;
       Info : Guint;
    end record;

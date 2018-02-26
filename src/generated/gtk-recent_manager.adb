@@ -107,10 +107,10 @@ package body Gtk.Recent_Manager is
       --  Clean up, making sure to avoid double-deallocations where such
       --  may be possible.
       if GRD.display_name /= Null_Ptr then
-         Free (GRD.display_name);
+         g_free (GRD.display_name);
       end if;
       if GRD.description /= Null_Ptr then
-         Free (GRD.description);
+         g_free (GRD.description);
       end if;
       Free (GRD.mime_type);
       Free (GRD.app_name);
@@ -175,9 +175,9 @@ package body Gtk.Recent_Manager is
    is
       function Internal
          (Self : System.Address;
-          URI  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          URI  : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_manager_add_item");
-      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI    : Gtkada.Types.Chars_Ptr := New_String (URI);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI);
@@ -211,9 +211,9 @@ package body Gtk.Recent_Manager is
    is
       function Internal
          (Self : System.Address;
-          URI  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          URI  : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_manager_has_item");
-      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI    : Gtkada.Types.Chars_Ptr := New_String (URI);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI);
@@ -231,9 +231,9 @@ package body Gtk.Recent_Manager is
    is
       function Internal
          (Self : System.Address;
-          URI  : Interfaces.C.Strings.chars_ptr) return System.Address;
+          URI  : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_recent_manager_lookup_item");
-      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI    : Gtkada.Types.Chars_Ptr := New_String (URI);
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI);
@@ -252,15 +252,15 @@ package body Gtk.Recent_Manager is
    is
       function Internal
          (Self    : System.Address;
-          URI     : Interfaces.C.Strings.chars_ptr;
-          New_Uri : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          URI     : Gtkada.Types.Chars_Ptr;
+          New_Uri : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_manager_move_item");
-      Tmp_URI     : Interfaces.C.Strings.chars_ptr := New_String (URI);
-      Tmp_New_Uri : Interfaces.C.Strings.chars_ptr;
+      Tmp_URI     : Gtkada.Types.Chars_Ptr := New_String (URI);
+      Tmp_New_Uri : Gtkada.Types.Chars_Ptr;
       Tmp_Return  : Glib.Gboolean;
    begin
       if New_Uri = "" then
-         Tmp_New_Uri := Interfaces.C.Strings.Null_Ptr;
+         Tmp_New_Uri := Gtkada.Types.Null_Ptr;
       else
          Tmp_New_Uri := New_String (New_Uri);
       end if;
@@ -293,9 +293,9 @@ package body Gtk.Recent_Manager is
    is
       function Internal
          (Self : System.Address;
-          URI  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          URI  : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_manager_remove_item");
-      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI    : Gtkada.Types.Chars_Ptr := New_String (URI);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_URI);

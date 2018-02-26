@@ -28,7 +28,7 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Cell_Area is
@@ -368,10 +368,10 @@ package body Gtk.Cell_Area is
       procedure Internal
          (Self      : System.Address;
           Renderer  : System.Address;
-          Attribute : Interfaces.C.Strings.chars_ptr;
+          Attribute : Gtkada.Types.Chars_Ptr;
           Column    : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_area_attribute_connect");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
    begin
       Internal (Get_Object (Self), Get_Object (Renderer), Tmp_Attribute, Column);
       Free (Tmp_Attribute);
@@ -389,9 +389,9 @@ package body Gtk.Cell_Area is
       procedure Internal
          (Self      : System.Address;
           Renderer  : System.Address;
-          Attribute : Interfaces.C.Strings.chars_ptr);
+          Attribute : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_cell_area_attribute_disconnect");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
    begin
       Internal (Get_Object (Self), Get_Object (Renderer), Tmp_Attribute);
       Free (Tmp_Attribute);
@@ -409,9 +409,9 @@ package body Gtk.Cell_Area is
       function Internal
          (Self      : System.Address;
           Renderer  : System.Address;
-          Attribute : Interfaces.C.Strings.chars_ptr) return Glib.Gint;
+          Attribute : Gtkada.Types.Chars_Ptr) return Glib.Gint;
       pragma Import (C, Internal, "gtk_cell_area_attribute_get_column");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
       Tmp_Return    : Glib.Gint;
    begin
       Tmp_Return := Internal (Get_Object (Self), Get_Object (Renderer), Tmp_Attribute);
@@ -432,10 +432,10 @@ package body Gtk.Cell_Area is
       procedure Internal
          (Self          : System.Address;
           Renderer      : System.Address;
-          Property_Name : Interfaces.C.Strings.chars_ptr;
+          Property_Name : Gtkada.Types.Chars_Ptr;
           Value         : in out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_cell_area_cell_get_property");
-      Tmp_Property_Name : Interfaces.C.Strings.chars_ptr := New_String (Property_Name);
+      Tmp_Property_Name : Gtkada.Types.Chars_Ptr := New_String (Property_Name);
    begin
       Internal (Get_Object (Self), Get_Object (Renderer), Tmp_Property_Name, Value);
       Free (Tmp_Property_Name);
@@ -454,10 +454,10 @@ package body Gtk.Cell_Area is
       procedure Internal
          (Self          : System.Address;
           Renderer      : System.Address;
-          Property_Name : Interfaces.C.Strings.chars_ptr;
+          Property_Name : Gtkada.Types.Chars_Ptr;
           Value         : in out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_cell_area_cell_set_property");
-      Tmp_Property_Name : Interfaces.C.Strings.chars_ptr := New_String (Property_Name);
+      Tmp_Property_Name : Gtkada.Types.Chars_Ptr := New_String (Property_Name);
    begin
       Internal (Get_Object (Self), Get_Object (Renderer), Tmp_Property_Name, Value);
       Free (Tmp_Property_Name);
@@ -732,7 +732,7 @@ package body Gtk.Cell_Area is
       (Self : not null access Gtk_Cell_Area_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_cell_area_get_current_path_string");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -1206,10 +1206,10 @@ package body Gtk.Cell_Area is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Attribute   : Interfaces.C.Strings.chars_ptr;
+          Attribute   : Gtkada.Types.Chars_Ptr;
           Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Tmp_Attribute, Column);
       Free (Tmp_Attribute);

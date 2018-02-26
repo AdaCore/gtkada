@@ -23,9 +23,9 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Bindings;      use Gtkada.Bindings;
+with Gtkada.Bindings; use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types;    use Gtkada.Types;
 pragma Warnings(On);
 
 package body Pango.Language is
@@ -52,7 +52,7 @@ package body Pango.Language is
 
    function Get_Sample_String (Self : Pango_Language) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "pango_language_get_sample_string");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -112,9 +112,9 @@ package body Pango.Language is
    is
       function Internal
          (Self       : System.Address;
-          Range_List : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Range_List : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "pango_language_matches");
-      Tmp_Range_List : Interfaces.C.Strings.chars_ptr := New_String (Range_List);
+      Tmp_Range_List : Gtkada.Types.Chars_Ptr := New_String (Range_List);
       Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Range_List);
@@ -128,7 +128,7 @@ package body Pango.Language is
 
    function To_String (Self : Pango_Language) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "pango_language_to_string");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -140,13 +140,13 @@ package body Pango.Language is
 
    function From_String (Language : UTF8_String := "") return Pango_Language is
       function Internal
-         (Language : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Language : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "pango_language_from_string");
-      Tmp_Language : Interfaces.C.Strings.chars_ptr;
+      Tmp_Language : Gtkada.Types.Chars_Ptr;
       Tmp_Return   : System.Address;
    begin
       if Language = "" then
-         Tmp_Language := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Language := Gtkada.Types.Null_Ptr;
       else
          Tmp_Language := New_String (Language);
       end if;

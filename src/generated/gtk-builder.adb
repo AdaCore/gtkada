@@ -25,10 +25,9 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
-with GtkAda.Types;               use GtkAda.Types;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Builder is
@@ -55,8 +54,8 @@ package body Gtk.Builder is
    procedure Internal_Gtk_Builder_Connect_Func
       (Builder        : System.Address;
        Object         : System.Address;
-       Signal_Name    : Interfaces.C.Strings.chars_ptr;
-       Handler_Name   : Interfaces.C.Strings.chars_ptr;
+       Signal_Name    : Gtkada.Types.Chars_Ptr;
+       Handler_Name   : Gtkada.Types.Chars_Ptr;
        Connect_Object : System.Address;
        Flags          : Glib.G_Connect_Flags;
        User_Data      : System.Address);
@@ -77,8 +76,8 @@ package body Gtk.Builder is
    procedure Internal_Gtk_Builder_Connect_Func
       (Builder        : System.Address;
        Object         : System.Address;
-       Signal_Name    : Interfaces.C.Strings.chars_ptr;
-       Handler_Name   : Interfaces.C.Strings.chars_ptr;
+       Signal_Name    : Gtkada.Types.Chars_Ptr;
+       Handler_Name   : Gtkada.Types.Chars_Ptr;
        Connect_Object : System.Address;
        Flags          : Glib.G_Connect_Flags;
        User_Data      : System.Address)
@@ -217,9 +216,9 @@ package body Gtk.Builder is
        Filename : UTF8_String)
    is
       function Internal
-         (Filename : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Filename : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_builder_new_from_file");
-      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
+      Tmp_Filename : Gtkada.Types.Chars_Ptr := New_String (Filename);
       Tmp_Return   : System.Address;
    begin
       if not Builder.Is_Created then
@@ -238,10 +237,9 @@ package body Gtk.Builder is
        Resource_Path : UTF8_String)
    is
       function Internal
-         (Resource_Path : Interfaces.C.Strings.chars_ptr)
-          return System.Address;
+         (Resource_Path : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_builder_new_from_resource");
-      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr := New_String (Resource_Path);
+      Tmp_Resource_Path : Gtkada.Types.Chars_Ptr := New_String (Resource_Path);
       Tmp_Return        : System.Address;
    begin
       if not Builder.Is_Created then
@@ -261,10 +259,10 @@ package body Gtk.Builder is
        Length  : Gssize)
    is
       function Internal
-         (String : Interfaces.C.Strings.chars_ptr;
+         (String : Gtkada.Types.Chars_Ptr;
           Length : Gssize) return System.Address;
       pragma Import (C, Internal, "gtk_builder_new_from_string");
-      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
+      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
       Tmp_Return : System.Address;
    begin
       if not Builder.Is_Created then
@@ -285,11 +283,11 @@ package body Gtk.Builder is
    is
       function Internal
          (Builder   : System.Address;
-          Filename  : Interfaces.C.Strings.chars_ptr;
+          Filename  : Gtkada.Types.Chars_Ptr;
           Acc_Error : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_from_file");
       Acc_Error    : aliased Glib.Error.GError;
-      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
+      Tmp_Filename : Gtkada.Types.Chars_Ptr := New_String (Filename);
       Tmp_Return   : Guint;
    begin
       Tmp_Return := Internal (Get_Object (Builder), Tmp_Filename, Acc_Error'Access);
@@ -311,11 +309,11 @@ package body Gtk.Builder is
    is
       function Internal
          (Builder       : System.Address;
-          Resource_Path : Interfaces.C.Strings.chars_ptr;
+          Resource_Path : Gtkada.Types.Chars_Ptr;
           Acc_Error     : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_from_resource");
       Acc_Error         : aliased Glib.Error.GError;
-      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr := New_String (Resource_Path);
+      Tmp_Resource_Path : Gtkada.Types.Chars_Ptr := New_String (Resource_Path);
       Tmp_Return        : Guint;
    begin
       Tmp_Return := Internal (Get_Object (Builder), Tmp_Resource_Path, Acc_Error'Access);
@@ -335,12 +333,12 @@ package body Gtk.Builder is
    is
       function Internal
          (Builder   : System.Address;
-          Buffer    : Interfaces.C.Strings.chars_ptr;
+          Buffer    : Gtkada.Types.Chars_Ptr;
           Length    : Gsize;
           Acc_Error : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_from_string");
       Acc_Error  : aliased Glib.Error.GError;
-      Tmp_Buffer : Interfaces.C.Strings.chars_ptr := New_String (Buffer);
+      Tmp_Buffer : Gtkada.Types.Chars_Ptr := New_String (Buffer);
       Tmp_Return : Guint;
    begin
       Tmp_Return := Internal (Get_Object (Builder), Tmp_Buffer, -1, Acc_Error'Access);
@@ -361,17 +359,17 @@ package body Gtk.Builder is
    is
       function Internal
          (Builder    : System.Address;
-          Filename   : Interfaces.C.Strings.chars_ptr;
-          Object_Ids : Interfaces.C.Strings.chars_ptr_array;
+          Filename   : Gtkada.Types.Chars_Ptr;
+          Object_Ids : Gtkada.Types.chars_ptr_array;
           Acc_Error  : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_objects_from_file");
       Acc_Error      : aliased Glib.Error.GError;
-      Tmp_Filename   : Interfaces.C.Strings.chars_ptr := New_String (Filename);
-      Tmp_Object_Ids : Interfaces.C.Strings.chars_ptr_array := From_String_List (Object_Ids);
+      Tmp_Filename   : Gtkada.Types.Chars_Ptr := New_String (Filename);
+      Tmp_Object_Ids : Gtkada.Types.chars_ptr_array := From_String_List (Object_Ids);
       Tmp_Return     : Guint;
    begin
       Tmp_Return := Internal (Get_Object (Builder), Tmp_Filename, Tmp_Object_Ids, Acc_Error'Access);
-      GtkAda.Types.Free (Tmp_Object_Ids);
+      Gtkada.Types.Free (Tmp_Object_Ids);
       Free (Tmp_Filename);
       Error.all := Acc_Error;
       return Tmp_Return;
@@ -389,17 +387,17 @@ package body Gtk.Builder is
    is
       function Internal
          (Builder       : System.Address;
-          Resource_Path : Interfaces.C.Strings.chars_ptr;
-          Object_Ids    : Interfaces.C.Strings.chars_ptr_array;
+          Resource_Path : Gtkada.Types.Chars_Ptr;
+          Object_Ids    : Gtkada.Types.chars_ptr_array;
           Acc_Error     : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_objects_from_resource");
       Acc_Error         : aliased Glib.Error.GError;
-      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr := New_String (Resource_Path);
-      Tmp_Object_Ids    : Interfaces.C.Strings.chars_ptr_array := From_String_List (Object_Ids);
+      Tmp_Resource_Path : Gtkada.Types.Chars_Ptr := New_String (Resource_Path);
+      Tmp_Object_Ids    : Gtkada.Types.chars_ptr_array := From_String_List (Object_Ids);
       Tmp_Return        : Guint;
    begin
       Tmp_Return := Internal (Get_Object (Builder), Tmp_Resource_Path, Tmp_Object_Ids, Acc_Error'Access);
-      GtkAda.Types.Free (Tmp_Object_Ids);
+      Gtkada.Types.Free (Tmp_Object_Ids);
       Free (Tmp_Resource_Path);
       Error.all := Acc_Error;
       return Tmp_Return;
@@ -418,18 +416,18 @@ package body Gtk.Builder is
    is
       function Internal
          (Builder    : System.Address;
-          Buffer     : Interfaces.C.Strings.chars_ptr;
+          Buffer     : Gtkada.Types.Chars_Ptr;
           Length     : Gsize;
-          Object_Ids : Interfaces.C.Strings.chars_ptr_array;
+          Object_Ids : Gtkada.Types.chars_ptr_array;
           Acc_Error  : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_objects_from_string");
       Acc_Error      : aliased Glib.Error.GError;
-      Tmp_Buffer     : Interfaces.C.Strings.chars_ptr := New_String (Buffer);
-      Tmp_Object_Ids : Interfaces.C.Strings.chars_ptr_array := From_String_List (Object_Ids);
+      Tmp_Buffer     : Gtkada.Types.Chars_Ptr := New_String (Buffer);
+      Tmp_Object_Ids : Gtkada.Types.chars_ptr_array := From_String_List (Object_Ids);
       Tmp_Return     : Guint;
    begin
       Tmp_Return := Internal (Get_Object (Builder), Tmp_Buffer, Length, Tmp_Object_Ids, Acc_Error'Access);
-      GtkAda.Types.Free (Tmp_Object_Ids);
+      Gtkada.Types.Free (Tmp_Object_Ids);
       Free (Tmp_Buffer);
       Error.all := Acc_Error;
       return Tmp_Return;
@@ -478,10 +476,10 @@ package body Gtk.Builder is
    is
       procedure Internal
          (Builder : System.Address;
-          Name    : Interfaces.C.Strings.chars_ptr;
+          Name    : Gtkada.Types.Chars_Ptr;
           Object  : System.Address);
       pragma Import (C, Internal, "gtk_builder_expose_object");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Builder), Tmp_Name, Get_Object (Object));
       Free (Tmp_Name);
@@ -497,9 +495,9 @@ package body Gtk.Builder is
    is
       function Internal
          (Builder : System.Address;
-          Name    : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Name    : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_builder_get_object");
-      Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name     : Gtkada.Types.Chars_Ptr := New_String (Name);
       Stub_GObject : Glib.Object.GObject_Record;
       Tmp_Return   : System.Address;
    begin
@@ -532,7 +530,7 @@ package body Gtk.Builder is
       (Builder : not null access Gtk_Builder_Record) return UTF8_String
    is
       function Internal
-         (Builder : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Builder : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_builder_get_translation_domain");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Builder)));
@@ -548,9 +546,9 @@ package body Gtk.Builder is
    is
       function Internal
          (Builder   : System.Address;
-          Type_Name : Interfaces.C.Strings.chars_ptr) return GType;
+          Type_Name : Gtkada.Types.Chars_Ptr) return GType;
       pragma Import (C, Internal, "gtk_builder_get_type_from_name");
-      Tmp_Type_Name : Interfaces.C.Strings.chars_ptr := New_String (Type_Name);
+      Tmp_Type_Name : Gtkada.Types.Chars_Ptr := New_String (Type_Name);
       Tmp_Return    : GType;
    begin
       Tmp_Return := Internal (Get_Object (Builder), Tmp_Type_Name);
@@ -568,9 +566,9 @@ package body Gtk.Builder is
    is
       procedure Internal
          (Builder       : System.Address;
-          Callback_Name : Interfaces.C.Strings.chars_ptr);
+          Callback_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_builder_lookup_callback_symbol");
-      Tmp_Callback_Name : Interfaces.C.Strings.chars_ptr := New_String (Callback_Name);
+      Tmp_Callback_Name : Gtkada.Types.Chars_Ptr := New_String (Callback_Name);
    begin
       Internal (Get_Object (Builder), Tmp_Callback_Name);
       Free (Tmp_Callback_Name);
@@ -586,12 +584,12 @@ package body Gtk.Builder is
    is
       procedure Internal
          (Builder : System.Address;
-          Domain  : Interfaces.C.Strings.chars_ptr);
+          Domain  : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_builder_set_translation_domain");
-      Tmp_Domain : Interfaces.C.Strings.chars_ptr;
+      Tmp_Domain : Gtkada.Types.Chars_Ptr;
    begin
       if Domain = "" then
-         Tmp_Domain := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Domain := Gtkada.Types.Null_Ptr;
       else
          Tmp_Domain := New_String (Domain);
       end if;
@@ -613,12 +611,12 @@ package body Gtk.Builder is
       function Internal
          (Builder   : System.Address;
           Acc_Pspec : access Glib.Param_Spec;
-          String    : Interfaces.C.Strings.chars_ptr;
+          String    : Gtkada.Types.Chars_Ptr;
           Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_value_from_string");
       Acc_Pspec  : aliased Glib.Param_Spec := Pspec;
       Acc_Value  : aliased Glib.Values.GValue;
-      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
+      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Builder), Acc_Pspec'Access, Tmp_String, Acc_Value'Access);
@@ -641,11 +639,11 @@ package body Gtk.Builder is
       function Internal
          (Builder   : System.Address;
           The_Type  : GType;
-          String    : Interfaces.C.Strings.chars_ptr;
+          String    : Gtkada.Types.Chars_Ptr;
           Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_value_from_string_type");
       Acc_Value  : aliased Glib.Values.GValue;
-      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
+      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Builder), The_Type, Tmp_String, Acc_Value'Access);

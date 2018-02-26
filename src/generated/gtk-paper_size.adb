@@ -23,10 +23,8 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Bindings;      use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Bindings; use Gtkada.Bindings;
+with Gtkada.Types;    use Gtkada.Types;
 
 package body Gtk.Paper_Size is
 
@@ -52,13 +50,13 @@ package body Gtk.Paper_Size is
 
    procedure Gtk_New (Widget : out Gtk_Paper_Size; Name : UTF8_String := "") is
       function Internal
-         (Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_paper_size_new");
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr;
+      Tmp_Name   : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if Name = "" then
-         Tmp_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Name := New_String (Name);
       end if;
@@ -80,14 +78,14 @@ package body Gtk.Paper_Size is
        Unit         : Gtk.Enums.Gtk_Unit)
    is
       function Internal
-         (Name         : Interfaces.C.Strings.chars_ptr;
-          Display_Name : Interfaces.C.Strings.chars_ptr;
+         (Name         : Gtkada.Types.Chars_Ptr;
+          Display_Name : Gtkada.Types.Chars_Ptr;
           Width        : Gdouble;
           Height       : Gdouble;
           Unit         : Gtk.Enums.Gtk_Unit) return System.Address;
       pragma Import (C, Internal, "gtk_paper_size_new_custom");
-      Tmp_Name         : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Tmp_Display_Name : Interfaces.C.Strings.chars_ptr := New_String (Display_Name);
+      Tmp_Name         : Gtkada.Types.Chars_Ptr := New_String (Name);
+      Tmp_Display_Name : Gtkada.Types.Chars_Ptr := New_String (Display_Name);
       Tmp_Return       : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Name, Tmp_Display_Name, Width, Height, Unit);
@@ -107,9 +105,9 @@ package body Gtk.Paper_Size is
    is
       function Internal
          (Key_File   : Glib.Key_File.G_Key_File;
-          Group_Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Group_Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_paper_size_new_from_key_file");
-      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr := New_String (Group_Name);
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr := New_String (Group_Name);
       Tmp_Return     : System.Address;
    begin
       Tmp_Return := Internal (Key_File, Tmp_Group_Name);
@@ -129,13 +127,13 @@ package body Gtk.Paper_Size is
        Height           : Gdouble)
    is
       function Internal
-         (Ppd_Name         : Interfaces.C.Strings.chars_ptr;
-          Ppd_Display_Name : Interfaces.C.Strings.chars_ptr;
+         (Ppd_Name         : Gtkada.Types.Chars_Ptr;
+          Ppd_Display_Name : Gtkada.Types.Chars_Ptr;
           Width            : Gdouble;
           Height           : Gdouble) return System.Address;
       pragma Import (C, Internal, "gtk_paper_size_new_from_ppd");
-      Tmp_Ppd_Name         : Interfaces.C.Strings.chars_ptr := New_String (Ppd_Name);
-      Tmp_Ppd_Display_Name : Interfaces.C.Strings.chars_ptr := New_String (Ppd_Display_Name);
+      Tmp_Ppd_Name         : Gtkada.Types.Chars_Ptr := New_String (Ppd_Name);
+      Tmp_Ppd_Display_Name : Gtkada.Types.Chars_Ptr := New_String (Ppd_Display_Name);
       Tmp_Return           : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Ppd_Name, Tmp_Ppd_Display_Name, Width, Height);
@@ -152,14 +150,14 @@ package body Gtk.Paper_Size is
       (Name : UTF8_String := "") return Gtk_Paper_Size
    is
       function Internal
-         (Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_paper_size_new");
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr;
+      Tmp_Name   : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
       Widget     : Gtk_Paper_Size;
    begin
       if Name = "" then
-         Tmp_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Name := New_String (Name);
       end if;
@@ -181,14 +179,14 @@ package body Gtk.Paper_Size is
        Unit         : Gtk.Enums.Gtk_Unit) return Gtk_Paper_Size
    is
       function Internal
-         (Name         : Interfaces.C.Strings.chars_ptr;
-          Display_Name : Interfaces.C.Strings.chars_ptr;
+         (Name         : Gtkada.Types.Chars_Ptr;
+          Display_Name : Gtkada.Types.Chars_Ptr;
           Width        : Gdouble;
           Height       : Gdouble;
           Unit         : Gtk.Enums.Gtk_Unit) return System.Address;
       pragma Import (C, Internal, "gtk_paper_size_new_custom");
-      Tmp_Name         : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Tmp_Display_Name : Interfaces.C.Strings.chars_ptr := New_String (Display_Name);
+      Tmp_Name         : Gtkada.Types.Chars_Ptr := New_String (Name);
+      Tmp_Display_Name : Gtkada.Types.Chars_Ptr := New_String (Display_Name);
       Tmp_Return       : System.Address;
       Widget           : Gtk_Paper_Size;
    begin
@@ -209,9 +207,9 @@ package body Gtk.Paper_Size is
    is
       function Internal
          (Key_File   : Glib.Key_File.G_Key_File;
-          Group_Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Group_Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_paper_size_new_from_key_file");
-      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr := New_String (Group_Name);
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr := New_String (Group_Name);
       Tmp_Return     : System.Address;
       Widget         : Gtk_Paper_Size;
    begin
@@ -232,13 +230,13 @@ package body Gtk.Paper_Size is
        Height           : Gdouble) return Gtk_Paper_Size
    is
       function Internal
-         (Ppd_Name         : Interfaces.C.Strings.chars_ptr;
-          Ppd_Display_Name : Interfaces.C.Strings.chars_ptr;
+         (Ppd_Name         : Gtkada.Types.Chars_Ptr;
+          Ppd_Display_Name : Gtkada.Types.Chars_Ptr;
           Width            : Gdouble;
           Height           : Gdouble) return System.Address;
       pragma Import (C, Internal, "gtk_paper_size_new_from_ppd");
-      Tmp_Ppd_Name         : Interfaces.C.Strings.chars_ptr := New_String (Ppd_Name);
-      Tmp_Ppd_Display_Name : Interfaces.C.Strings.chars_ptr := New_String (Ppd_Display_Name);
+      Tmp_Ppd_Name         : Gtkada.Types.Chars_Ptr := New_String (Ppd_Name);
+      Tmp_Ppd_Display_Name : Gtkada.Types.Chars_Ptr := New_String (Ppd_Display_Name);
       Tmp_Return           : System.Address;
       Widget               : Gtk_Paper_Size;
    begin
@@ -341,7 +339,7 @@ package body Gtk.Paper_Size is
 
    function Get_Display_Name (Widget : Gtk_Paper_Size) return UTF8_String is
       function Internal
-         (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Widget : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_paper_size_get_display_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Widget)));
@@ -369,7 +367,7 @@ package body Gtk.Paper_Size is
 
    function Get_Name (Widget : Gtk_Paper_Size) return UTF8_String is
       function Internal
-         (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Widget : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_paper_size_get_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Widget)));
@@ -381,7 +379,7 @@ package body Gtk.Paper_Size is
 
    function Get_Ppd_Name (Widget : Gtk_Paper_Size) return UTF8_String is
       function Internal
-         (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Widget : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_paper_size_get_ppd_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Widget)));
@@ -462,9 +460,9 @@ package body Gtk.Paper_Size is
       procedure Internal
          (Widget     : System.Address;
           Key_File   : Glib.Key_File.G_Key_File;
-          Group_Name : Interfaces.C.Strings.chars_ptr);
+          Group_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_paper_size_to_key_file");
-      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr := New_String (Group_Name);
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr := New_String (Group_Name);
    begin
       Internal (Get_Object (Widget), Key_File, Tmp_Group_Name);
       Free (Tmp_Group_Name);
@@ -485,7 +483,7 @@ package body Gtk.Paper_Size is
    -----------------
 
    function Get_Default return UTF8_String is
-      function Internal return Interfaces.C.Strings.chars_ptr;
+      function Internal return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_paper_size_get_default");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal);

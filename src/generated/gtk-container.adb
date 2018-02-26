@@ -28,7 +28,7 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Container is
@@ -130,10 +130,10 @@ package body Gtk.Container is
       procedure Internal
          (Container     : System.Address;
           Child         : System.Address;
-          Property_Name : Interfaces.C.Strings.chars_ptr;
+          Property_Name : Gtkada.Types.Chars_Ptr;
           Value         : in out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_container_child_get_property");
-      Tmp_Property_Name : Interfaces.C.Strings.chars_ptr := New_String (Property_Name);
+      Tmp_Property_Name : Gtkada.Types.Chars_Ptr := New_String (Property_Name);
    begin
       Internal (Get_Object (Container), Get_Object (Child), Tmp_Property_Name, Value);
       Free (Tmp_Property_Name);
@@ -151,9 +151,9 @@ package body Gtk.Container is
       procedure Internal
          (Container      : System.Address;
           Child          : System.Address;
-          Child_Property : Interfaces.C.Strings.chars_ptr);
+          Child_Property : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_container_child_notify");
-      Tmp_Child_Property : Interfaces.C.Strings.chars_ptr := New_String (Child_Property);
+      Tmp_Child_Property : Gtkada.Types.Chars_Ptr := New_String (Child_Property);
    begin
       Internal (Get_Object (Container), Get_Object (Child), Tmp_Child_Property);
       Free (Tmp_Child_Property);
@@ -172,10 +172,10 @@ package body Gtk.Container is
       procedure Internal
          (Container     : System.Address;
           Child         : System.Address;
-          Property_Name : Interfaces.C.Strings.chars_ptr;
+          Property_Name : Gtkada.Types.Chars_Ptr;
           Value         : Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_container_child_set_property");
-      Tmp_Property_Name : Interfaces.C.Strings.chars_ptr := New_String (Property_Name);
+      Tmp_Property_Name : Gtkada.Types.Chars_Ptr := New_String (Property_Name);
    begin
       Internal (Get_Object (Container), Get_Object (Child), Tmp_Property_Name, Value);
       Free (Tmp_Property_Name);

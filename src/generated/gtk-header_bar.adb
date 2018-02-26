@@ -26,7 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Header_Bar is
@@ -92,7 +92,7 @@ package body Gtk.Header_Bar is
       (Self : not null access Gtk_Header_Bar_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_header_bar_get_decoration_layout");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -132,7 +132,7 @@ package body Gtk.Header_Bar is
       (Self : not null access Gtk_Header_Bar_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_header_bar_get_subtitle");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -146,7 +146,7 @@ package body Gtk.Header_Bar is
       (Self : not null access Gtk_Header_Bar_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_header_bar_get_title");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -206,12 +206,12 @@ package body Gtk.Header_Bar is
    is
       procedure Internal
          (Self   : System.Address;
-          Layout : Interfaces.C.Strings.chars_ptr);
+          Layout : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_header_bar_set_decoration_layout");
-      Tmp_Layout : Interfaces.C.Strings.chars_ptr;
+      Tmp_Layout : Gtkada.Types.Chars_Ptr;
    begin
       if Layout = "" then
-         Tmp_Layout := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Layout := Gtkada.Types.Null_Ptr;
       else
          Tmp_Layout := New_String (Layout);
       end if;
@@ -257,12 +257,12 @@ package body Gtk.Header_Bar is
    is
       procedure Internal
          (Self     : System.Address;
-          Subtitle : Interfaces.C.Strings.chars_ptr);
+          Subtitle : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_header_bar_set_subtitle");
-      Tmp_Subtitle : Interfaces.C.Strings.chars_ptr;
+      Tmp_Subtitle : Gtkada.Types.Chars_Ptr;
    begin
       if Subtitle = "" then
-         Tmp_Subtitle := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Subtitle := Gtkada.Types.Null_Ptr;
       else
          Tmp_Subtitle := New_String (Subtitle);
       end if;
@@ -280,12 +280,12 @@ package body Gtk.Header_Bar is
    is
       procedure Internal
          (Self  : System.Address;
-          Title : Interfaces.C.Strings.chars_ptr);
+          Title : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_header_bar_set_title");
-      Tmp_Title : Interfaces.C.Strings.chars_ptr;
+      Tmp_Title : Gtkada.Types.Chars_Ptr;
    begin
       if Title = "" then
-         Tmp_Title := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Title := Gtkada.Types.Null_Ptr;
       else
          Tmp_Title := New_String (Title);
       end if;

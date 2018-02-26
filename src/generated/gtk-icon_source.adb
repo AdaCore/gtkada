@@ -23,9 +23,9 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Bindings;      use Gtkada.Bindings;
+with Gtkada.Bindings; use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types;    use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Icon_Source is
@@ -123,7 +123,7 @@ package body Gtk.Icon_Source is
 
    function Get_Filename (Self : Gtk_Icon_Source) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_icon_source_get_filename");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -135,7 +135,7 @@ package body Gtk.Icon_Source is
 
    function Get_Icon_Name (Self : Gtk_Icon_Source) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_icon_source_get_icon_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -238,9 +238,9 @@ package body Gtk.Icon_Source is
    procedure Set_Filename (Self : Gtk_Icon_Source; Filename : UTF8_String) is
       procedure Internal
          (Self     : System.Address;
-          Filename : Interfaces.C.Strings.chars_ptr);
+          Filename : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_icon_source_set_filename");
-      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
+      Tmp_Filename : Gtkada.Types.Chars_Ptr := New_String (Filename);
    begin
       Internal (Get_Object (Self), Tmp_Filename);
       Free (Tmp_Filename);
@@ -256,12 +256,12 @@ package body Gtk.Icon_Source is
    is
       procedure Internal
          (Self      : System.Address;
-          Icon_Name : Interfaces.C.Strings.chars_ptr);
+          Icon_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_icon_source_set_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr;
    begin
       if Icon_Name = "" then
-         Tmp_Icon_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Icon_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Icon_Name := New_String (Icon_Name);
       end if;

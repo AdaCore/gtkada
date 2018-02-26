@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Status_Bar is
@@ -84,10 +84,9 @@ package body Gtk.Status_Bar is
    is
       function Internal
          (Statusbar           : System.Address;
-          Context_Description : Interfaces.C.Strings.chars_ptr)
-          return Context_Id;
+          Context_Description : Gtkada.Types.Chars_Ptr) return Context_Id;
       pragma Import (C, Internal, "gtk_statusbar_get_context_id");
-      Tmp_Context_Description : Interfaces.C.Strings.chars_ptr := New_String (Context_Description);
+      Tmp_Context_Description : Gtkada.Types.Chars_Ptr := New_String (Context_Description);
       Tmp_Return              : Context_Id;
    begin
       Tmp_Return := Internal (Get_Object (Statusbar), Tmp_Context_Description);
@@ -136,9 +135,9 @@ package body Gtk.Status_Bar is
       function Internal
          (Statusbar : System.Address;
           Context   : Context_Id;
-          Text      : Interfaces.C.Strings.chars_ptr) return Message_Id;
+          Text      : Gtkada.Types.Chars_Ptr) return Message_Id;
       pragma Import (C, Internal, "gtk_statusbar_push");
-      Tmp_Text   : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text   : Gtkada.Types.Chars_Ptr := New_String (Text);
       Tmp_Return : Message_Id;
    begin
       Tmp_Return := Internal (Get_Object (Statusbar), Context, Tmp_Text);

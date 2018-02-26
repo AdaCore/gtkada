@@ -22,7 +22,7 @@
 ------------------------------------------------------------------------------
 
 with Ada.Unchecked_Conversion;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types; use Gtkada.Types;
 
 package body Glib.Values is
 
@@ -66,14 +66,14 @@ package body Glib.Values is
    ----------------
 
    function Get_String (Value : GValue) return String is
-      function Internal (Value : GValue) return chars_ptr;
+      function Internal (Value : GValue) return Chars_Ptr;
       pragma Import (C, Internal, "g_value_get_string");
-      C : constant chars_ptr := Internal (Value);
+      C : constant Chars_Ptr := Internal (Value);
    begin
       if C = Null_Ptr then
          return "";
       else
-         return Interfaces.C.Strings.Value (C);
+         return Gtkada.Types.Value (C);
       end if;
    end Get_String;
 
@@ -82,14 +82,14 @@ package body Glib.Values is
    ----------------
 
    function Get_String (Value : GValue; Length : Gint) return String is
-      function Internal (Value : GValue) return chars_ptr;
+      function Internal (Value : GValue) return Chars_Ptr;
       pragma Import (C, Internal, "g_value_get_string");
-      C : constant chars_ptr := Internal (Value);
+      C : constant Chars_Ptr := Internal (Value);
    begin
       if C = Null_Ptr then
          return "";
       else
-         return Interfaces.C.Strings.Value
+         return Gtkada.Types.Value
            (C, Interfaces.C.size_t (Length));
       end if;
    end Get_String;
@@ -260,7 +260,7 @@ package body Glib.Values is
    procedure Free (Params : in out GParameter_Array) is
    begin
       for P in Params'Range loop
-         Free (Params (P).Name);
+         Gtkada.Types.g_free (Params (P).Name);
          Unset (Params (P).Value);
       end loop;
    end Free;

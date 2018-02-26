@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Accel_Map is
@@ -67,7 +67,7 @@ package body Gtk.Accel_Map is
 
    procedure Internal_Gtk_Accel_Map_Foreach
       (Data       : System.Address;
-       Accel_Path : Interfaces.C.Strings.chars_ptr;
+       Accel_Path : Gtkada.Types.Chars_Ptr;
        Accel_Key  : Gdk.Types.Gdk_Key_Type;
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
        Changed    : Glib.Gboolean);
@@ -87,7 +87,7 @@ package body Gtk.Accel_Map is
 
    procedure Internal_Gtk_Accel_Map_Foreach
       (Data       : System.Address;
-       Accel_Path : Interfaces.C.Strings.chars_ptr;
+       Accel_Path : Gtkada.Types.Chars_Ptr;
        Accel_Key  : Gdk.Types.Gdk_Key_Type;
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
        Changed    : Glib.Gboolean)
@@ -140,7 +140,7 @@ package body Gtk.Accel_Map is
 
       procedure Internal_Cb
          (Data       : System.Address;
-          Accel_Path : Interfaces.C.Strings.chars_ptr;
+          Accel_Path : Gtkada.Types.Chars_Ptr;
           Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Glib.Gboolean);
@@ -179,7 +179,7 @@ package body Gtk.Accel_Map is
 
       procedure Internal_Cb
          (Data       : System.Address;
-          Accel_Path : Interfaces.C.Strings.chars_ptr;
+          Accel_Path : Gtkada.Types.Chars_Ptr;
           Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Glib.Gboolean)
@@ -204,7 +204,7 @@ package body Gtk.Accel_Map is
 
       procedure Internal_Cb
          (Data       : System.Address;
-          Accel_Path : Interfaces.C.Strings.chars_ptr;
+          Accel_Path : Gtkada.Types.Chars_Ptr;
           Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Glib.Gboolean);
@@ -243,7 +243,7 @@ package body Gtk.Accel_Map is
 
       procedure Internal_Cb
          (Data       : System.Address;
-          Accel_Path : Interfaces.C.Strings.chars_ptr;
+          Accel_Path : Gtkada.Types.Chars_Ptr;
           Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Glib.Gboolean)
@@ -265,11 +265,11 @@ package body Gtk.Accel_Map is
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type)
    is
       procedure Internal
-         (Accel_Path : Interfaces.C.Strings.chars_ptr;
+         (Accel_Path : Gtkada.Types.Chars_Ptr;
           Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type);
       pragma Import (C, Internal, "gtk_accel_map_add_entry");
-      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr := New_String (Accel_Path);
+      Tmp_Accel_Path : Gtkada.Types.Chars_Ptr := New_String (Accel_Path);
    begin
       Internal (Tmp_Accel_Path, Accel_Key, Accel_Mods);
       Free (Tmp_Accel_Path);
@@ -280,9 +280,9 @@ package body Gtk.Accel_Map is
    ----------------
 
    procedure Add_Filter (Filter_Pattern : UTF8_String) is
-      procedure Internal (Filter_Pattern : Interfaces.C.Strings.chars_ptr);
+      procedure Internal (Filter_Pattern : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_accel_map_add_filter");
-      Tmp_Filter_Pattern : Interfaces.C.Strings.chars_ptr := New_String (Filter_Pattern);
+      Tmp_Filter_Pattern : Gtkada.Types.Chars_Ptr := New_String (Filter_Pattern);
    begin
       Internal (Tmp_Filter_Pattern);
       Free (Tmp_Filter_Pattern);
@@ -299,12 +299,12 @@ package body Gtk.Accel_Map is
        Replace    : Boolean) return Boolean
    is
       function Internal
-         (Accel_Path : Interfaces.C.Strings.chars_ptr;
+         (Accel_Path : Gtkada.Types.Chars_Ptr;
           Accel_Key  : Gdk.Types.Gdk_Key_Type;
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Replace    : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accel_map_change_entry");
-      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr := New_String (Accel_Path);
+      Tmp_Accel_Path : Gtkada.Types.Chars_Ptr := New_String (Accel_Path);
       Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_Accel_Path, Accel_Key, Accel_Mods, Boolean'Pos (Replace));
@@ -329,9 +329,9 @@ package body Gtk.Accel_Map is
    ----------
 
    procedure Load (File_Name : UTF8_String) is
-      procedure Internal (File_Name : Interfaces.C.Strings.chars_ptr);
+      procedure Internal (File_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_accel_map_load");
-      Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
+      Tmp_File_Name : Gtkada.Types.Chars_Ptr := New_String (File_Name);
    begin
       Internal (Tmp_File_Name);
       Free (Tmp_File_Name);
@@ -353,9 +353,9 @@ package body Gtk.Accel_Map is
    ---------------
 
    procedure Lock_Path (Accel_Path : UTF8_String) is
-      procedure Internal (Accel_Path : Interfaces.C.Strings.chars_ptr);
+      procedure Internal (Accel_Path : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_accel_map_lock_path");
-      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr := New_String (Accel_Path);
+      Tmp_Accel_Path : Gtkada.Types.Chars_Ptr := New_String (Accel_Path);
    begin
       Internal (Tmp_Accel_Path);
       Free (Tmp_Accel_Path);
@@ -371,12 +371,12 @@ package body Gtk.Accel_Map is
        Found      : out Boolean)
    is
       function Internal
-         (Accel_Path : Interfaces.C.Strings.chars_ptr;
+         (Accel_Path : Gtkada.Types.Chars_Ptr;
           Acc_Key    : access Gtk.Accel_Group.Gtk_Accel_Key)
           return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_accel_map_lookup_entry");
       Acc_Key        : aliased Gtk.Accel_Group.Gtk_Accel_Key;
-      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr := New_String (Accel_Path);
+      Tmp_Accel_Path : Gtkada.Types.Chars_Ptr := New_String (Accel_Path);
       Tmp_Acc_Key    : aliased Gtk.Accel_Group.Gtk_Accel_Key;
       Tmp_Return     : Glib.Gboolean;
    begin
@@ -392,9 +392,9 @@ package body Gtk.Accel_Map is
    ----------
 
    procedure Save (File_Name : UTF8_String) is
-      procedure Internal (File_Name : Interfaces.C.Strings.chars_ptr);
+      procedure Internal (File_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_accel_map_save");
-      Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
+      Tmp_File_Name : Gtkada.Types.Chars_Ptr := New_String (File_Name);
    begin
       Internal (Tmp_File_Name);
       Free (Tmp_File_Name);
@@ -416,9 +416,9 @@ package body Gtk.Accel_Map is
    -----------------
 
    procedure Unlock_Path (Accel_Path : UTF8_String) is
-      procedure Internal (Accel_Path : Interfaces.C.Strings.chars_ptr);
+      procedure Internal (Accel_Path : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_accel_map_unlock_path");
-      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr := New_String (Accel_Path);
+      Tmp_Accel_Path : Gtkada.Types.Chars_Ptr := New_String (Accel_Path);
    begin
       Internal (Tmp_Accel_Path);
       Free (Tmp_Accel_Path);

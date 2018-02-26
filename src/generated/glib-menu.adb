@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Glib.Menu is
@@ -196,22 +196,21 @@ package body Glib.Menu is
        Detailed_Action : UTF8_String := "")
    is
       function Internal
-         (Label           : Interfaces.C.Strings.chars_ptr;
-          Detailed_Action : Interfaces.C.Strings.chars_ptr)
-          return System.Address;
+         (Label           : Gtkada.Types.Chars_Ptr;
+          Detailed_Action : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_menu_item_new");
-      Tmp_Label           : Interfaces.C.Strings.chars_ptr;
-      Tmp_Detailed_Action : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label           : Gtkada.Types.Chars_Ptr;
+      Tmp_Detailed_Action : Gtkada.Types.Chars_Ptr;
       Tmp_Return          : System.Address;
    begin
       if not Self.Is_Created then
          if Label = "" then
-            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Label := Gtkada.Types.Null_Ptr;
          else
             Tmp_Label := New_String (Label);
          end if;
          if Detailed_Action = "" then
-            Tmp_Detailed_Action := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Detailed_Action := Gtkada.Types.Null_Ptr;
          else
             Tmp_Detailed_Action := New_String (Detailed_Action);
          end if;
@@ -251,15 +250,15 @@ package body Glib.Menu is
        Section : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
    is
       function Internal
-         (Label   : Interfaces.C.Strings.chars_ptr;
+         (Label   : Gtkada.Types.Chars_Ptr;
           Section : System.Address) return System.Address;
       pragma Import (C, Internal, "g_menu_item_new_section");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label  : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
          if Label = "" then
-            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Label := Gtkada.Types.Null_Ptr;
          else
             Tmp_Label := New_String (Label);
          end if;
@@ -279,15 +278,15 @@ package body Glib.Menu is
        Submenu : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
    is
       function Internal
-         (Label   : Interfaces.C.Strings.chars_ptr;
+         (Label   : Gtkada.Types.Chars_Ptr;
           Submenu : System.Address) return System.Address;
       pragma Import (C, Internal, "g_menu_item_new_submenu");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label  : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
          if Label = "" then
-            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Label := Gtkada.Types.Null_Ptr;
          else
             Tmp_Label := New_String (Label);
          end if;
@@ -308,19 +307,19 @@ package body Glib.Menu is
    is
       procedure Internal
          (Self            : System.Address;
-          Label           : Interfaces.C.Strings.chars_ptr;
-          Detailed_Action : Interfaces.C.Strings.chars_ptr);
+          Label           : Gtkada.Types.Chars_Ptr;
+          Detailed_Action : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_menu_append");
-      Tmp_Label           : Interfaces.C.Strings.chars_ptr;
-      Tmp_Detailed_Action : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label           : Gtkada.Types.Chars_Ptr;
+      Tmp_Detailed_Action : Gtkada.Types.Chars_Ptr;
    begin
       if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Label := Gtkada.Types.Null_Ptr;
       else
          Tmp_Label := New_String (Label);
       end if;
       if Detailed_Action = "" then
-         Tmp_Detailed_Action := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Detailed_Action := Gtkada.Types.Null_Ptr;
       else
          Tmp_Detailed_Action := New_String (Detailed_Action);
       end if;
@@ -354,13 +353,13 @@ package body Glib.Menu is
    is
       procedure Internal
          (Self    : System.Address;
-          Label   : Interfaces.C.Strings.chars_ptr;
+          Label   : Gtkada.Types.Chars_Ptr;
           Section : System.Address);
       pragma Import (C, Internal, "g_menu_append_section");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label : Gtkada.Types.Chars_Ptr;
    begin
       if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Label := Gtkada.Types.Null_Ptr;
       else
          Tmp_Label := New_String (Label);
       end if;
@@ -379,13 +378,13 @@ package body Glib.Menu is
    is
       procedure Internal
          (Self    : System.Address;
-          Label   : Interfaces.C.Strings.chars_ptr;
+          Label   : Gtkada.Types.Chars_Ptr;
           Submenu : System.Address);
       pragma Import (C, Internal, "g_menu_append_submenu");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label : Gtkada.Types.Chars_Ptr;
    begin
       if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Label := Gtkada.Types.Null_Ptr;
       else
          Tmp_Label := New_String (Label);
       end if;
@@ -416,10 +415,10 @@ package body Glib.Menu is
    is
       function Internal
          (Self          : System.Address;
-          Attribute     : Interfaces.C.Strings.chars_ptr;
+          Attribute     : Gtkada.Types.Chars_Ptr;
           Expected_Type : Glib.Variant.Gvariant_Type) return System.Address;
       pragma Import (C, Internal, "g_menu_item_get_attribute_value");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
       Tmp_Return    : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Attribute, Expected_Type);
@@ -437,9 +436,9 @@ package body Glib.Menu is
    is
       function Internal
          (Self : System.Address;
-          Link : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Link : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_menu_item_get_link");
-      Tmp_Link         : Interfaces.C.Strings.chars_ptr := New_String (Link);
+      Tmp_Link         : Gtkada.Types.Chars_Ptr := New_String (Link);
       Stub_Gmenu_Model : Glib.Menu_Model.Gmenu_Model_Record;
       Tmp_Return       : System.Address;
    begin
@@ -461,19 +460,19 @@ package body Glib.Menu is
       procedure Internal
          (Self            : System.Address;
           Position        : Glib.Gint;
-          Label           : Interfaces.C.Strings.chars_ptr;
-          Detailed_Action : Interfaces.C.Strings.chars_ptr);
+          Label           : Gtkada.Types.Chars_Ptr;
+          Detailed_Action : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_menu_insert");
-      Tmp_Label           : Interfaces.C.Strings.chars_ptr;
-      Tmp_Detailed_Action : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label           : Gtkada.Types.Chars_Ptr;
+      Tmp_Detailed_Action : Gtkada.Types.Chars_Ptr;
    begin
       if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Label := Gtkada.Types.Null_Ptr;
       else
          Tmp_Label := New_String (Label);
       end if;
       if Detailed_Action = "" then
-         Tmp_Detailed_Action := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Detailed_Action := Gtkada.Types.Null_Ptr;
       else
          Tmp_Detailed_Action := New_String (Detailed_Action);
       end if;
@@ -513,13 +512,13 @@ package body Glib.Menu is
       procedure Internal
          (Self     : System.Address;
           Position : Glib.Gint;
-          Label    : Interfaces.C.Strings.chars_ptr;
+          Label    : Gtkada.Types.Chars_Ptr;
           Section  : System.Address);
       pragma Import (C, Internal, "g_menu_insert_section");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label : Gtkada.Types.Chars_Ptr;
    begin
       if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Label := Gtkada.Types.Null_Ptr;
       else
          Tmp_Label := New_String (Label);
       end if;
@@ -540,13 +539,13 @@ package body Glib.Menu is
       procedure Internal
          (Self     : System.Address;
           Position : Glib.Gint;
-          Label    : Interfaces.C.Strings.chars_ptr;
+          Label    : Gtkada.Types.Chars_Ptr;
           Submenu  : System.Address);
       pragma Import (C, Internal, "g_menu_insert_submenu");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label : Gtkada.Types.Chars_Ptr;
    begin
       if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Label := Gtkada.Types.Null_Ptr;
       else
          Tmp_Label := New_String (Label);
       end if;
@@ -565,19 +564,19 @@ package body Glib.Menu is
    is
       procedure Internal
          (Self            : System.Address;
-          Label           : Interfaces.C.Strings.chars_ptr;
-          Detailed_Action : Interfaces.C.Strings.chars_ptr);
+          Label           : Gtkada.Types.Chars_Ptr;
+          Detailed_Action : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_menu_prepend");
-      Tmp_Label           : Interfaces.C.Strings.chars_ptr;
-      Tmp_Detailed_Action : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label           : Gtkada.Types.Chars_Ptr;
+      Tmp_Detailed_Action : Gtkada.Types.Chars_Ptr;
    begin
       if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Label := Gtkada.Types.Null_Ptr;
       else
          Tmp_Label := New_String (Label);
       end if;
       if Detailed_Action = "" then
-         Tmp_Detailed_Action := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Detailed_Action := Gtkada.Types.Null_Ptr;
       else
          Tmp_Detailed_Action := New_String (Detailed_Action);
       end if;
@@ -611,13 +610,13 @@ package body Glib.Menu is
    is
       procedure Internal
          (Self    : System.Address;
-          Label   : Interfaces.C.Strings.chars_ptr;
+          Label   : Gtkada.Types.Chars_Ptr;
           Section : System.Address);
       pragma Import (C, Internal, "g_menu_prepend_section");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label : Gtkada.Types.Chars_Ptr;
    begin
       if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Label := Gtkada.Types.Null_Ptr;
       else
          Tmp_Label := New_String (Label);
       end if;
@@ -636,13 +635,13 @@ package body Glib.Menu is
    is
       procedure Internal
          (Self    : System.Address;
-          Label   : Interfaces.C.Strings.chars_ptr;
+          Label   : Gtkada.Types.Chars_Ptr;
           Submenu : System.Address);
       pragma Import (C, Internal, "g_menu_prepend_submenu");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label : Gtkada.Types.Chars_Ptr;
    begin
       if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Label := Gtkada.Types.Null_Ptr;
       else
          Tmp_Label := New_String (Label);
       end if;
@@ -686,13 +685,13 @@ package body Glib.Menu is
    is
       procedure Internal
          (Self         : System.Address;
-          Action       : Interfaces.C.Strings.chars_ptr;
+          Action       : Gtkada.Types.Chars_Ptr;
           Target_Value : System.Address);
       pragma Import (C, Internal, "g_menu_item_set_action_and_target_value");
-      Tmp_Action : Interfaces.C.Strings.chars_ptr;
+      Tmp_Action : Gtkada.Types.Chars_Ptr;
    begin
       if Action = "" then
-         Tmp_Action := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Action := Gtkada.Types.Null_Ptr;
       else
          Tmp_Action := New_String (Action);
       end if;
@@ -711,10 +710,10 @@ package body Glib.Menu is
    is
       procedure Internal
          (Self      : System.Address;
-          Attribute : Interfaces.C.Strings.chars_ptr;
+          Attribute : Gtkada.Types.Chars_Ptr;
           Value     : System.Address);
       pragma Import (C, Internal, "g_menu_item_set_attribute_value");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
    begin
       Internal (Get_Object (Self), Tmp_Attribute, Get_Object (Value));
       Free (Tmp_Attribute);
@@ -730,9 +729,9 @@ package body Glib.Menu is
    is
       procedure Internal
          (Self            : System.Address;
-          Detailed_Action : Interfaces.C.Strings.chars_ptr);
+          Detailed_Action : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_menu_item_set_detailed_action");
-      Tmp_Detailed_Action : Interfaces.C.Strings.chars_ptr := New_String (Detailed_Action);
+      Tmp_Detailed_Action : Gtkada.Types.Chars_Ptr := New_String (Detailed_Action);
    begin
       Internal (Get_Object (Self), Tmp_Detailed_Action);
       Free (Tmp_Detailed_Action);
@@ -762,12 +761,12 @@ package body Glib.Menu is
    is
       procedure Internal
          (Self  : System.Address;
-          Label : Interfaces.C.Strings.chars_ptr);
+          Label : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_menu_item_set_label");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label : Gtkada.Types.Chars_Ptr;
    begin
       if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Label := Gtkada.Types.Null_Ptr;
       else
          Tmp_Label := New_String (Label);
       end if;
@@ -786,10 +785,10 @@ package body Glib.Menu is
    is
       procedure Internal
          (Self  : System.Address;
-          Link  : Interfaces.C.Strings.chars_ptr;
+          Link  : Gtkada.Types.Chars_Ptr;
           Model : System.Address);
       pragma Import (C, Internal, "g_menu_item_set_link");
-      Tmp_Link : Interfaces.C.Strings.chars_ptr := New_String (Link);
+      Tmp_Link : Gtkada.Types.Chars_Ptr := New_String (Link);
    begin
       Internal (Get_Object (Self), Tmp_Link, Get_Object_Or_Null (GObject (Model)));
       Free (Tmp_Link);

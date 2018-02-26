@@ -25,7 +25,6 @@
 --  with System.Address_Image;
 with Ada.Exceptions;
 with Ada.Text_IO;          use Ada.Text_IO;
---  with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 with Glib;                 use Glib;
 with Glib.Error;           use Glib.Error;

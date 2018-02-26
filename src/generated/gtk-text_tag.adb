@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Text_Tag is
@@ -74,14 +74,14 @@ package body Gtk.Text_Tag is
        Name : UTF8_String := "")
    is
       function Internal
-         (Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_text_tag_new");
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr;
+      Tmp_Name   : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Tag.Is_Created then
          if Name = "" then
-            Tmp_Name := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Name := Gtkada.Types.Null_Ptr;
          else
             Tmp_Name := New_String (Name);
          end if;

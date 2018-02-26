@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Tooltip is
@@ -93,13 +93,13 @@ package body Gtk.Tooltip is
    is
       procedure Internal
          (Self      : System.Address;
-          Icon_Name : Interfaces.C.Strings.chars_ptr;
+          Icon_Name : Gtkada.Types.Chars_Ptr;
           Size      : Gtk.Enums.Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_tooltip_set_icon_from_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr;
    begin
       if Icon_Name = "" then
-         Tmp_Icon_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Icon_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Icon_Name := New_String (Icon_Name);
       end if;
@@ -118,13 +118,13 @@ package body Gtk.Tooltip is
    is
       procedure Internal
          (Self     : System.Address;
-          Stock_Id : Interfaces.C.Strings.chars_ptr;
+          Stock_Id : Gtkada.Types.Chars_Ptr;
           Size     : Gtk.Enums.Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_tooltip_set_icon_from_stock");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr;
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr;
    begin
       if Stock_Id = "" then
-         Tmp_Stock_Id := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Stock_Id := Gtkada.Types.Null_Ptr;
       else
          Tmp_Stock_Id := New_String (Stock_Id);
       end if;
@@ -142,12 +142,12 @@ package body Gtk.Tooltip is
    is
       procedure Internal
          (Self   : System.Address;
-          Markup : Interfaces.C.Strings.chars_ptr);
+          Markup : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_tooltip_set_markup");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr;
+      Tmp_Markup : Gtkada.Types.Chars_Ptr;
    begin
       if Markup = "" then
-         Tmp_Markup := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Markup := Gtkada.Types.Null_Ptr;
       else
          Tmp_Markup := New_String (Markup);
       end if;
@@ -165,12 +165,12 @@ package body Gtk.Tooltip is
    is
       procedure Internal
          (Self : System.Address;
-          Text : Interfaces.C.Strings.chars_ptr);
+          Text : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_tooltip_set_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr;
+      Tmp_Text : Gtkada.Types.Chars_Ptr;
    begin
       if Text = "" then
-         Tmp_Text := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Text := Gtkada.Types.Null_Ptr;
       else
          Tmp_Text := New_String (Text);
       end if;

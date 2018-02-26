@@ -159,9 +159,9 @@ package body Gtk.Recent_Filter is
    is
       procedure Internal
          (Filter      : System.Address;
-          Application : Interfaces.C.Strings.chars_ptr);
+          Application : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_recent_filter_add_application");
-      Tmp_Application : Interfaces.C.Strings.chars_ptr := New_String (Application);
+      Tmp_Application : Gtkada.Types.Chars_Ptr := New_String (Application);
    begin
       Internal (Get_Object (Filter), Tmp_Application);
       Free (Tmp_Application);
@@ -253,9 +253,9 @@ package body Gtk.Recent_Filter is
    is
       procedure Internal
          (Filter : System.Address;
-          Group  : Interfaces.C.Strings.chars_ptr);
+          Group  : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_recent_filter_add_group");
-      Tmp_Group : Interfaces.C.Strings.chars_ptr := New_String (Group);
+      Tmp_Group : Gtkada.Types.Chars_Ptr := New_String (Group);
    begin
       Internal (Get_Object (Filter), Tmp_Group);
       Free (Tmp_Group);
@@ -271,9 +271,9 @@ package body Gtk.Recent_Filter is
    is
       procedure Internal
          (Filter    : System.Address;
-          Mime_Type : Interfaces.C.Strings.chars_ptr);
+          Mime_Type : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_recent_filter_add_mime_type");
-      Tmp_Mime_Type : Interfaces.C.Strings.chars_ptr := New_String (Mime_Type);
+      Tmp_Mime_Type : Gtkada.Types.Chars_Ptr := New_String (Mime_Type);
    begin
       Internal (Get_Object (Filter), Tmp_Mime_Type);
       Free (Tmp_Mime_Type);
@@ -289,9 +289,9 @@ package body Gtk.Recent_Filter is
    is
       procedure Internal
          (Filter  : System.Address;
-          Pattern : Interfaces.C.Strings.chars_ptr);
+          Pattern : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_recent_filter_add_pattern");
-      Tmp_Pattern : Interfaces.C.Strings.chars_ptr := New_String (Pattern);
+      Tmp_Pattern : Gtkada.Types.Chars_Ptr := New_String (Pattern);
    begin
       Internal (Get_Object (Filter), Tmp_Pattern);
       Free (Tmp_Pattern);
@@ -334,7 +334,7 @@ package body Gtk.Recent_Filter is
       (Filter : not null access Gtk_Recent_Filter_Record) return UTF8_String
    is
       function Internal
-         (Filter : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Filter : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_recent_filter_get_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Filter)));
@@ -365,9 +365,9 @@ package body Gtk.Recent_Filter is
    is
       procedure Internal
          (Filter : System.Address;
-          Name   : Interfaces.C.Strings.chars_ptr);
+          Name   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_recent_filter_set_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Filter), Tmp_Name);
       Free (Tmp_Name);

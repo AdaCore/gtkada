@@ -25,9 +25,6 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
-pragma Warnings(On);
 
 package body Pango.Layout is
 
@@ -699,7 +696,7 @@ package body Pango.Layout is
       (Layout : not null access Pango_Layout_Record) return UTF8_String
    is
       function Internal
-         (Layout : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Layout : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "pango_layout_get_text");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Layout)));
@@ -1010,10 +1007,10 @@ package body Pango.Layout is
    is
       procedure Internal
          (Layout : System.Address;
-          Markup : Interfaces.C.Strings.chars_ptr;
+          Markup : Gtkada.Types.Chars_Ptr;
           Length : Glib.Gint);
       pragma Import (C, Internal, "pango_layout_set_markup");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
+      Tmp_Markup : Gtkada.Types.Chars_Ptr := New_String (Markup);
    begin
       Internal (Get_Object (Layout), Tmp_Markup, -1);
       Free (Tmp_Markup);
@@ -1032,12 +1029,12 @@ package body Pango.Layout is
    is
       procedure Internal
          (Layout       : System.Address;
-          Markup       : Interfaces.C.Strings.chars_ptr;
+          Markup       : Gtkada.Types.Chars_Ptr;
           Length       : Glib.Gint;
           Accel_Marker : Gunichar;
           Accel_Char   : out Gunichar);
       pragma Import (C, Internal, "pango_layout_set_markup_with_accel");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
+      Tmp_Markup : Gtkada.Types.Chars_Ptr := New_String (Markup);
    begin
       Internal (Get_Object (Layout), Tmp_Markup, Length, Accel_Marker, Accel_Char);
       Free (Tmp_Markup);
@@ -1095,10 +1092,10 @@ package body Pango.Layout is
    is
       procedure Internal
          (Layout : System.Address;
-          Text   : Interfaces.C.Strings.chars_ptr;
+          Text   : Gtkada.Types.Chars_Ptr;
           Length : Glib.Gint);
       pragma Import (C, Internal, "pango_layout_set_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Layout), Tmp_Text, -1);
       Free (Tmp_Text);

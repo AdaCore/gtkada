@@ -28,7 +28,7 @@ with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Combo_Box_Text is
@@ -175,14 +175,14 @@ package body Gtk.Combo_Box_Text is
    is
       procedure Internal
          (Self : System.Address;
-          Id   : Interfaces.C.Strings.chars_ptr;
-          Text : Interfaces.C.Strings.chars_ptr);
+          Id   : Gtkada.Types.Chars_Ptr;
+          Text : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_combo_box_text_append");
-      Tmp_Id   : Interfaces.C.Strings.chars_ptr;
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Id   : Gtkada.Types.Chars_Ptr;
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       if Id = "" then
-         Tmp_Id := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Id := Gtkada.Types.Null_Ptr;
       else
          Tmp_Id := New_String (Id);
       end if;
@@ -201,9 +201,9 @@ package body Gtk.Combo_Box_Text is
    is
       procedure Internal
          (Self : System.Address;
-          Text : Interfaces.C.Strings.chars_ptr);
+          Text : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_combo_box_text_append_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Self), Tmp_Text);
       Free (Tmp_Text);
@@ -217,7 +217,7 @@ package body Gtk.Combo_Box_Text is
       (Self : not null access Gtk_Combo_Box_Text_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_combo_box_text_get_active_text");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
@@ -236,14 +236,14 @@ package body Gtk.Combo_Box_Text is
       procedure Internal
          (Self     : System.Address;
           Position : Glib.Gint;
-          Id       : Interfaces.C.Strings.chars_ptr;
-          Text     : Interfaces.C.Strings.chars_ptr);
+          Id       : Gtkada.Types.Chars_Ptr;
+          Text     : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_combo_box_text_insert");
-      Tmp_Id   : Interfaces.C.Strings.chars_ptr;
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Id   : Gtkada.Types.Chars_Ptr;
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       if Id = "" then
-         Tmp_Id := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Id := Gtkada.Types.Null_Ptr;
       else
          Tmp_Id := New_String (Id);
       end if;
@@ -264,9 +264,9 @@ package body Gtk.Combo_Box_Text is
       procedure Internal
          (Self     : System.Address;
           Position : Glib.Gint;
-          Text     : Interfaces.C.Strings.chars_ptr);
+          Text     : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_combo_box_text_insert_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Self), Position, Tmp_Text);
       Free (Tmp_Text);
@@ -283,14 +283,14 @@ package body Gtk.Combo_Box_Text is
    is
       procedure Internal
          (Self : System.Address;
-          Id   : Interfaces.C.Strings.chars_ptr;
-          Text : Interfaces.C.Strings.chars_ptr);
+          Id   : Gtkada.Types.Chars_Ptr;
+          Text : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_combo_box_text_prepend");
-      Tmp_Id   : Interfaces.C.Strings.chars_ptr;
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Id   : Gtkada.Types.Chars_Ptr;
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       if Id = "" then
-         Tmp_Id := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Id := Gtkada.Types.Null_Ptr;
       else
          Tmp_Id := New_String (Id);
       end if;
@@ -309,9 +309,9 @@ package body Gtk.Combo_Box_Text is
    is
       procedure Internal
          (Self : System.Address;
-          Text : Interfaces.C.Strings.chars_ptr);
+          Text : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_combo_box_text_prepend_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Self), Tmp_Text);
       Free (Tmp_Text);
@@ -438,10 +438,10 @@ package body Gtk.Combo_Box_Text is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Attribute   : Interfaces.C.Strings.chars_ptr;
+          Attribute   : Gtkada.Types.Chars_Ptr;
           Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Tmp_Attribute, Column);
       Free (Tmp_Attribute);

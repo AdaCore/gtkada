@@ -35,14 +35,14 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;                 use Glib;
-with Glib.Action;          use Glib.Action;
-with Glib.Object;          use Glib.Object;
-with Glib.Simple_Action;   use Glib.Simple_Action;
-with Glib.Types;           use Glib.Types;
-with Glib.Variant;         use Glib.Variant;
+with Glib;               use Glib;
+with Glib.Action;        use Glib.Action;
+with Glib.Object;        use Glib.Object;
+with Glib.Simple_Action; use Glib.Simple_Action;
+with Glib.Types;         use Glib.Types;
+with Glib.Variant;       use Glib.Variant;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types;       use Gtkada.Types;
 pragma Warnings(On);
 
 package Glib.Action_Map is
@@ -185,17 +185,14 @@ package Glib.Action_Map is
 
    type Virtual_Lookup_Action is access function
      (Self        : Gaction_Map;
-      Action_Name : Interfaces.C.Strings.chars_ptr)
-   return Glib.Action.Gaction;
+      Action_Name : Gtkada.Types.Chars_Ptr) return Glib.Action.Gaction;
    pragma Convention (C, Virtual_Lookup_Action);
    --  Looks up the action with the name Action_Name in Action_Map.
    --  If no such action exists, returns null.
    --  Since: gtk+ 2.32
    --  "action_name": the name of an action
 
-   type Virtual_Remove_Action is access procedure
-     (Self        : Gaction_Map;
-      Action_Name : Interfaces.C.Strings.chars_ptr);
+   type Virtual_Remove_Action is access procedure (Self : Gaction_Map; Action_Name : Gtkada.Types.Chars_Ptr);
    pragma Convention (C, Virtual_Remove_Action);
    --  Removes the named action from the action map.
    --  If no action of this name is in the map then nothing happens.
@@ -222,10 +219,10 @@ package Glib.Action_Map is
 
 private
 type GAction_Entry is record
-   Name : Interfaces.C.Strings.chars_ptr;
+   Name : Gtkada.Types.Chars_Ptr;
    Activate : System.Address;
-   Parameter_Type : Interfaces.C.Strings.chars_ptr;
-   State : Interfaces.C.Strings.chars_ptr;
+   Parameter_Type : Gtkada.Types.Chars_Ptr;
+   State : Gtkada.Types.Chars_Ptr;
    Change_State : System.Address;
    Padding : array_of_gsize (1 .. 3);
 end record;

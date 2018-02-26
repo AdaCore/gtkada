@@ -23,11 +23,10 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with GtkAda.Types;         use GtkAda.Types;
-with Gtkada.C;             use Gtkada.C;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.C;        use Gtkada.C;
 pragma Warnings(Off);  --  might be unused
-with Gtkada.Bindings;      use Gtkada.Bindings;
+with Gtkada.Bindings; use Gtkada.Bindings;
+with Gtkada.Types;    use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Selection_Data is
@@ -126,10 +125,10 @@ package body Gtk.Selection_Data is
      (Selection : Gtk_Selection_Data) return String
    is
       function Internal
-        (Selection : System.Address) return Interfaces.C.Strings.chars_ptr;
+        (Selection : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_selection_data_get_data");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Selection)));
+      return Gtkada.Types.Value (Internal (Get_Object (Selection)));
    end Get_Data_As_String;
 
    ----------
@@ -263,7 +262,7 @@ package body Gtk.Selection_Data is
 
    function Get_Text (Selection : Gtk_Selection_Data) return UTF8_String is
       function Internal
-         (Selection : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Selection : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_selection_data_get_text");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Selection)));
@@ -311,10 +310,10 @@ package body Gtk.Selection_Data is
    is
       function Internal
          (Selection : System.Address;
-          Str       : Interfaces.C.Strings.chars_ptr;
+          Str       : Gtkada.Types.Chars_Ptr;
           Len       : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_selection_data_set_text");
-      Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str    : Gtkada.Types.Chars_Ptr := New_String (Str);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Selection), Tmp_Str, Len);
@@ -332,14 +331,13 @@ package body Gtk.Selection_Data is
    is
       function Internal
          (Selection : System.Address;
-          Uris      : Interfaces.C.Strings.chars_ptr_array)
-          return Glib.Gboolean;
+          Uris      : Gtkada.Types.chars_ptr_array) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_selection_data_set_uris");
-      Tmp_Uris   : Interfaces.C.Strings.chars_ptr_array := From_String_List (Uris);
+      Tmp_Uris   : Gtkada.Types.chars_ptr_array := From_String_List (Uris);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Selection), Tmp_Uris);
-      GtkAda.Types.Free (Tmp_Uris);
+      Gtkada.Types.Free (Tmp_Uris);
       return Tmp_Return /= 0;
    end Set_Uris;
 

@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types; use Gtkada.Types;
 with Ada.Unchecked_Conversion;
 
 package body Glib.Error is
@@ -29,7 +29,7 @@ package body Glib.Error is
    type GError_Struct is record
       Domain  : GQuark;
       Code    : Gint;
-      Message : Interfaces.C.Strings.chars_ptr;
+      Message : Gtkada.Types.Chars_Ptr;
    end record;
    pragma Convention (C, GError_Struct);
    --  The underlying C struct as defined in gerror.h

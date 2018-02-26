@@ -41,18 +41,18 @@ package body Gtk.Stock is
       Keyval             : Gdk.Types.Gdk_Key_Type;
       Translation_Domain : String) is
    begin
-      Item.Stock_Id           := Interfaces.C.Strings.New_String (Stock_Id);
-      Item.Label              := Interfaces.C.Strings.New_String (Label);
+      Item.Stock_Id           := Gtkada.Types.New_String (Stock_Id);
+      Item.Label              := Gtkada.Types.New_String (Label);
       Item.Modifier           := Modifier;
       Item.Keyval             := Guint (Keyval);
-      Item.Translation_Domain := Interfaces.C.Strings.New_String (Translation_Domain);
+      Item.Translation_Domain := Gtkada.Types.New_String (Translation_Domain);
    end Gtk_New;
 
    procedure Free (Item : in out Gtk_Stock_Item) is
    begin
-      Interfaces.C.Strings.Free (Item.Stock_Id);
-      Interfaces.C.Strings.Free (Item.Label);
-      Interfaces.C.Strings.Free (Item.Translation_Domain);
+      Gtkada.Types.g_free (Item.Stock_Id);
+      Gtkada.Types.g_free (Item.Label);
+      Gtkada.Types.g_free (Item.Translation_Domain);
    end Free;
 
    ---------
@@ -103,11 +103,11 @@ package body Gtk.Stock is
        Success  : out Boolean)
    is
       function Internal
-         (Stock_Id : Interfaces.C.Strings.chars_ptr;
+         (Stock_Id : Gtkada.Types.Chars_Ptr;
           Acc_Item : access Gtk_Stock_Item) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_stock_lookup");
       Acc_Item     : aliased Gtk_Stock_Item;
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
       Tmp_Acc_Item : aliased Gtk_Stock_Item;
       Tmp_Return   : Glib.Gboolean;
    begin

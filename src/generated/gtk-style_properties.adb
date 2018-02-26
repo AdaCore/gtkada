@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Style_Properties is
@@ -94,12 +94,12 @@ package body Gtk.Style_Properties is
    is
       function Internal
          (Self      : System.Address;
-          Property  : Interfaces.C.Strings.chars_ptr;
+          Property  : Gtkada.Types.Chars_Ptr;
           State     : Gtk.Enums.Gtk_State_Flags;
           Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_properties_get_property");
       Acc_Value    : aliased Glib.Values.GValue;
-      Tmp_Property : Interfaces.C.Strings.chars_ptr := New_String (Property);
+      Tmp_Property : Gtkada.Types.Chars_Ptr := New_String (Property);
       Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Property, State, Acc_Value'Access);
@@ -118,9 +118,9 @@ package body Gtk.Style_Properties is
    is
       function Internal
          (Self : System.Address;
-          Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_style_properties_lookup_color");
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name   : Gtkada.Types.Chars_Ptr := New_String (Name);
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Name);
@@ -139,10 +139,10 @@ package body Gtk.Style_Properties is
    is
       procedure Internal
          (Self  : System.Address;
-          Name  : Interfaces.C.Strings.chars_ptr;
+          Name  : Gtkada.Types.Chars_Ptr;
           Color : System.Address);
       pragma Import (C, Internal, "gtk_style_properties_map_color");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Self), Tmp_Name, Get_Object (Color));
       Free (Tmp_Name);
@@ -178,11 +178,11 @@ package body Gtk.Style_Properties is
    is
       procedure Internal
          (Self     : System.Address;
-          Property : Interfaces.C.Strings.chars_ptr;
+          Property : Gtkada.Types.Chars_Ptr;
           State    : Gtk.Enums.Gtk_State_Flags;
           Value    : in out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_style_properties_set_property");
-      Tmp_Property : Interfaces.C.Strings.chars_ptr := New_String (Property);
+      Tmp_Property : Gtkada.Types.Chars_Ptr := New_String (Property);
    begin
       Internal (Get_Object (Self), Tmp_Property, State, Value);
       Free (Tmp_Property);
@@ -199,10 +199,10 @@ package body Gtk.Style_Properties is
    is
       procedure Internal
          (Self     : System.Address;
-          Property : Interfaces.C.Strings.chars_ptr;
+          Property : Gtkada.Types.Chars_Ptr;
           State    : Gtk.Enums.Gtk_State_Flags);
       pragma Import (C, Internal, "gtk_style_properties_unset_property");
-      Tmp_Property : Interfaces.C.Strings.chars_ptr := New_String (Property);
+      Tmp_Property : Gtkada.Types.Chars_Ptr := New_String (Property);
    begin
       Internal (Get_Object (Self), Tmp_Property, State);
       Free (Tmp_Property);

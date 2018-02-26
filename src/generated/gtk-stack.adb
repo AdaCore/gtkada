@@ -26,7 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Stack is
@@ -81,9 +81,9 @@ package body Gtk.Stack is
       procedure Internal
          (Self  : System.Address;
           Child : System.Address;
-          Name  : Interfaces.C.Strings.chars_ptr);
+          Name  : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_stack_add_named");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Self), Get_Object (Child), Tmp_Name);
       Free (Tmp_Name);
@@ -102,11 +102,11 @@ package body Gtk.Stack is
       procedure Internal
          (Self  : System.Address;
           Child : System.Address;
-          Name  : Interfaces.C.Strings.chars_ptr;
-          Title : Interfaces.C.Strings.chars_ptr);
+          Name  : Gtkada.Types.Chars_Ptr;
+          Title : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_stack_add_titled");
-      Tmp_Name  : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Tmp_Title : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Name  : Gtkada.Types.Chars_Ptr := New_String (Name);
+      Tmp_Title : Gtkada.Types.Chars_Ptr := New_String (Title);
    begin
       Internal (Get_Object (Self), Get_Object (Child), Tmp_Name, Tmp_Title);
       Free (Tmp_Title);
@@ -123,9 +123,9 @@ package body Gtk.Stack is
    is
       function Internal
          (Self : System.Address;
-          Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_stack_get_child_by_name");
-      Tmp_Name        : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name        : Gtkada.Types.Chars_Ptr := New_String (Name);
       Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
       Tmp_Return      : System.Address;
    begin
@@ -210,7 +210,7 @@ package body Gtk.Stack is
       (Self : not null access Gtk_Stack_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_stack_get_visible_child_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -287,10 +287,10 @@ package body Gtk.Stack is
    is
       procedure Internal
          (Self       : System.Address;
-          Name       : Interfaces.C.Strings.chars_ptr;
+          Name       : Gtkada.Types.Chars_Ptr;
           Transition : Gtk_Stack_Transition_Type);
       pragma Import (C, Internal, "gtk_stack_set_visible_child_full");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Self), Tmp_Name, Transition);
       Free (Tmp_Name);
@@ -306,9 +306,9 @@ package body Gtk.Stack is
    is
       procedure Internal
          (Self : System.Address;
-          Name : Interfaces.C.Strings.chars_ptr);
+          Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_stack_set_visible_child_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Self), Tmp_Name);
       Free (Tmp_Name);

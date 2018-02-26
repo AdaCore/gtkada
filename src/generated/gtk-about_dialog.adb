@@ -27,10 +27,9 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
-with GtkAda.Types;               use GtkAda.Types;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.About_Dialog is
@@ -86,14 +85,14 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About        : System.Address;
-          Section_Name : Interfaces.C.Strings.chars_ptr;
-          People       : Interfaces.C.Strings.chars_ptr_array);
+          Section_Name : Gtkada.Types.Chars_Ptr;
+          People       : Gtkada.Types.chars_ptr_array);
       pragma Import (C, Internal, "gtk_about_dialog_add_credit_section");
-      Tmp_Section_Name : Interfaces.C.Strings.chars_ptr := New_String (Section_Name);
-      Tmp_People       : Interfaces.C.Strings.chars_ptr_array := From_String_List (People);
+      Tmp_Section_Name : Gtkada.Types.Chars_Ptr := New_String (Section_Name);
+      Tmp_People       : Gtkada.Types.chars_ptr_array := From_String_List (People);
    begin
       Internal (Get_Object (About), Tmp_Section_Name, Tmp_People);
-      GtkAda.Types.Free (Tmp_People);
+      Gtkada.Types.Free (Tmp_People);
       Free (Tmp_Section_Name);
    end Add_Credit_Section;
 
@@ -135,7 +134,7 @@ package body Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_comments");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
@@ -149,7 +148,7 @@ package body Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_copyright");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
@@ -178,7 +177,7 @@ package body Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_license");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
@@ -220,7 +219,7 @@ package body Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_logo_icon_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
@@ -234,7 +233,7 @@ package body Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_program_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
@@ -248,7 +247,7 @@ package body Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_translator_credits");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
@@ -262,7 +261,7 @@ package body Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_version");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
@@ -276,7 +275,7 @@ package body Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_website");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
@@ -290,7 +289,7 @@ package body Gtk.About_Dialog is
       (About : not null access Gtk_About_Dialog_Record) return UTF8_String
    is
       function Internal
-         (About : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (About : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_about_dialog_get_website_label");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (About)));
@@ -319,12 +318,12 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About   : System.Address;
-          Artists : Interfaces.C.Strings.chars_ptr_array);
+          Artists : Gtkada.Types.chars_ptr_array);
       pragma Import (C, Internal, "gtk_about_dialog_set_artists");
-      Tmp_Artists : Interfaces.C.Strings.chars_ptr_array := From_String_List (Artists);
+      Tmp_Artists : Gtkada.Types.chars_ptr_array := From_String_List (Artists);
    begin
       Internal (Get_Object (About), Tmp_Artists);
-      GtkAda.Types.Free (Tmp_Artists);
+      Gtkada.Types.Free (Tmp_Artists);
    end Set_Artists;
 
    -----------------
@@ -337,12 +336,12 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About   : System.Address;
-          Authors : Interfaces.C.Strings.chars_ptr_array);
+          Authors : Gtkada.Types.chars_ptr_array);
       pragma Import (C, Internal, "gtk_about_dialog_set_authors");
-      Tmp_Authors : Interfaces.C.Strings.chars_ptr_array := From_String_List (Authors);
+      Tmp_Authors : Gtkada.Types.chars_ptr_array := From_String_List (Authors);
    begin
       Internal (Get_Object (About), Tmp_Authors);
-      GtkAda.Types.Free (Tmp_Authors);
+      Gtkada.Types.Free (Tmp_Authors);
    end Set_Authors;
 
    ------------------
@@ -355,12 +354,12 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About    : System.Address;
-          Comments : Interfaces.C.Strings.chars_ptr);
+          Comments : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_comments");
-      Tmp_Comments : Interfaces.C.Strings.chars_ptr;
+      Tmp_Comments : Gtkada.Types.Chars_Ptr;
    begin
       if Comments = "" then
-         Tmp_Comments := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Comments := Gtkada.Types.Null_Ptr;
       else
          Tmp_Comments := New_String (Comments);
       end if;
@@ -378,12 +377,12 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About     : System.Address;
-          Copyright : Interfaces.C.Strings.chars_ptr);
+          Copyright : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_copyright");
-      Tmp_Copyright : Interfaces.C.Strings.chars_ptr;
+      Tmp_Copyright : Gtkada.Types.Chars_Ptr;
    begin
       if Copyright = "" then
-         Tmp_Copyright := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Copyright := Gtkada.Types.Null_Ptr;
       else
          Tmp_Copyright := New_String (Copyright);
       end if;
@@ -401,12 +400,12 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About       : System.Address;
-          Documenters : Interfaces.C.Strings.chars_ptr_array);
+          Documenters : Gtkada.Types.chars_ptr_array);
       pragma Import (C, Internal, "gtk_about_dialog_set_documenters");
-      Tmp_Documenters : Interfaces.C.Strings.chars_ptr_array := From_String_List (Documenters);
+      Tmp_Documenters : Gtkada.Types.chars_ptr_array := From_String_List (Documenters);
    begin
       Internal (Get_Object (About), Tmp_Documenters);
-      GtkAda.Types.Free (Tmp_Documenters);
+      Gtkada.Types.Free (Tmp_Documenters);
    end Set_Documenters;
 
    -----------------
@@ -419,12 +418,12 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About   : System.Address;
-          License : Interfaces.C.Strings.chars_ptr);
+          License : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_license");
-      Tmp_License : Interfaces.C.Strings.chars_ptr;
+      Tmp_License : Gtkada.Types.Chars_Ptr;
    begin
       if License = "" then
-         Tmp_License := Interfaces.C.Strings.Null_Ptr;
+         Tmp_License := Gtkada.Types.Null_Ptr;
       else
          Tmp_License := New_String (License);
       end if;
@@ -472,12 +471,12 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About     : System.Address;
-          Icon_Name : Interfaces.C.Strings.chars_ptr);
+          Icon_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_logo_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr;
    begin
       if Icon_Name = "" then
-         Tmp_Icon_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Icon_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Icon_Name := New_String (Icon_Name);
       end if;
@@ -495,9 +494,9 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About : System.Address;
-          Name  : Interfaces.C.Strings.chars_ptr);
+          Name  : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_program_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (About), Tmp_Name);
       Free (Tmp_Name);
@@ -513,12 +512,12 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About              : System.Address;
-          Translator_Credits : Interfaces.C.Strings.chars_ptr);
+          Translator_Credits : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_translator_credits");
-      Tmp_Translator_Credits : Interfaces.C.Strings.chars_ptr;
+      Tmp_Translator_Credits : Gtkada.Types.Chars_Ptr;
    begin
       if Translator_Credits = "" then
-         Tmp_Translator_Credits := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Translator_Credits := Gtkada.Types.Null_Ptr;
       else
          Tmp_Translator_Credits := New_String (Translator_Credits);
       end if;
@@ -536,12 +535,12 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About   : System.Address;
-          Version : Interfaces.C.Strings.chars_ptr);
+          Version : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_version");
-      Tmp_Version : Interfaces.C.Strings.chars_ptr;
+      Tmp_Version : Gtkada.Types.Chars_Ptr;
    begin
       if Version = "" then
-         Tmp_Version := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Version := Gtkada.Types.Null_Ptr;
       else
          Tmp_Version := New_String (Version);
       end if;
@@ -559,12 +558,12 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About   : System.Address;
-          Website : Interfaces.C.Strings.chars_ptr);
+          Website : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_website");
-      Tmp_Website : Interfaces.C.Strings.chars_ptr;
+      Tmp_Website : Gtkada.Types.Chars_Ptr;
    begin
       if Website = "" then
-         Tmp_Website := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Website := Gtkada.Types.Null_Ptr;
       else
          Tmp_Website := New_String (Website);
       end if;
@@ -582,9 +581,9 @@ package body Gtk.About_Dialog is
    is
       procedure Internal
          (About         : System.Address;
-          Website_Label : Interfaces.C.Strings.chars_ptr);
+          Website_Label : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_about_dialog_set_website_label");
-      Tmp_Website_Label : Interfaces.C.Strings.chars_ptr := New_String (Website_Label);
+      Tmp_Website_Label : Gtkada.Types.Chars_Ptr := New_String (Website_Label);
    begin
       Internal (Get_Object (About), Tmp_Website_Label);
       Free (Tmp_Website_Label);

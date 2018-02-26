@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Button is
@@ -150,14 +150,14 @@ package body Gtk.Button is
        Label  : UTF8_String := "")
    is
       function Internal
-         (Label : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Label : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_label");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label  : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Button.Is_Created then
          if Label = "" then
-            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Label := Gtkada.Types.Null_Ptr;
          else
             Tmp_Label := New_String (Label);
          end if;
@@ -177,10 +177,10 @@ package body Gtk.Button is
        Size      : Gtk.Enums.Gtk_Icon_Size)
    is
       function Internal
-         (Icon_Name : Interfaces.C.Strings.chars_ptr;
+         (Icon_Name : Gtkada.Types.Chars_Ptr;
           Size      : Gtk.Enums.Gtk_Icon_Size) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_from_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
       Tmp_Return    : System.Address;
    begin
       if not Button.Is_Created then
@@ -199,9 +199,9 @@ package body Gtk.Button is
        Stock_Id : UTF8_String)
    is
       function Internal
-         (Stock_Id : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Stock_Id : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_from_stock");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
       Tmp_Return   : System.Address;
    begin
       if not Button.Is_Created then
@@ -220,9 +220,9 @@ package body Gtk.Button is
        Label  : UTF8_String)
    is
       function Internal
-         (Label : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Label : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_button_new_with_mnemonic");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label  : Gtkada.Types.Chars_Ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
       if not Button.Is_Created then
@@ -349,7 +349,7 @@ package body Gtk.Button is
       (Button : not null access Gtk_Button_Record) return UTF8_String
    is
       function Internal
-         (Button : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Button : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_button_get_label");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Button)));
@@ -519,9 +519,9 @@ package body Gtk.Button is
    is
       procedure Internal
          (Button : System.Address;
-          Label  : Interfaces.C.Strings.chars_ptr);
+          Label  : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_button_set_label");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label : Gtkada.Types.Chars_Ptr := New_String (Label);
    begin
       Internal (Get_Object (Button), Tmp_Label);
       Free (Tmp_Label);
@@ -597,7 +597,7 @@ package body Gtk.Button is
       (Self : not null access Gtk_Button_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_actionable_get_action_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -655,9 +655,9 @@ package body Gtk.Button is
    is
       procedure Internal
          (Self        : System.Address;
-          Action_Name : Interfaces.C.Strings.chars_ptr);
+          Action_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_actionable_set_action_name");
-      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
    begin
       Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
@@ -689,9 +689,9 @@ package body Gtk.Button is
    is
       procedure Internal
          (Self                 : System.Address;
-          Detailed_Action_Name : Interfaces.C.Strings.chars_ptr);
+          Detailed_Action_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_actionable_set_detailed_action_name");
-      Tmp_Detailed_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Detailed_Action_Name);
+      Tmp_Detailed_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Detailed_Action_Name);
    begin
       Internal (Get_Object (Self), Tmp_Detailed_Action_Name);
       Free (Tmp_Detailed_Action_Name);

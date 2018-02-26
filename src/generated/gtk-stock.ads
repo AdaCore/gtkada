@@ -23,8 +23,8 @@
 
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Types;            use Gdk.Types;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gdk.Types;    use Gdk.Types;
+with Gtkada.Types; use Gtkada.Types;
 
 package Gtk.Stock is
 
@@ -210,11 +210,11 @@ package Gtk.Stock is
 
 private
 type Gtk_Stock_Item is record
-   Stock_Id : Interfaces.C.Strings.chars_ptr;
-   Label : Interfaces.C.Strings.chars_ptr;
+   Stock_Id : Gtkada.Types.Chars_Ptr;
+   Label : Gtkada.Types.Chars_Ptr;
    Modifier : Gdk.Types.Gdk_Modifier_Type;
    Keyval : Guint;
-   Translation_Domain : Interfaces.C.Strings.chars_ptr;
+   Translation_Domain : Gtkada.Types.Chars_Ptr;
 end record;
 pragma Convention (C, Gtk_Stock_Item);
 

@@ -28,9 +28,7 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Types;               use Gtkada.Types;
 
 package body Gtk.Accel_Group is
 
@@ -172,10 +170,10 @@ package body Gtk.Accel_Group is
    is
       procedure Internal
          (Accel_Group : System.Address;
-          Accel_Path  : Interfaces.C.Strings.chars_ptr;
+          Accel_Path  : Gtkada.Types.Chars_Ptr;
           Closure     : C_Gtk_Accel_Group_Activate);
       pragma Import (C, Internal, "gtk_accel_group_connect_by_path");
-      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr := New_String (Accel_Path);
+      Tmp_Accel_Path : Gtkada.Types.Chars_Ptr := New_String (Accel_Path);
    begin
       Internal (Get_Object (Accel_Group), Tmp_Accel_Path, Closure);
       Free (Tmp_Accel_Path);
@@ -310,7 +308,7 @@ package body Gtk.Accel_Group is
       function Internal
          (Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
           Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type)
-          return Interfaces.C.Strings.chars_ptr;
+          return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_accelerator_get_label");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Accelerator_Key, Accelerator_Mods));
@@ -327,7 +325,7 @@ package body Gtk.Accel_Group is
       function Internal
          (Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
           Accelerator_Mods : Gdk.Types.Gdk_Modifier_Type)
-          return Interfaces.C.Strings.chars_ptr;
+          return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_accelerator_name");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Accelerator_Key, Accelerator_Mods));
@@ -343,11 +341,11 @@ package body Gtk.Accel_Group is
        Accelerator_Mods : out Gdk.Types.Gdk_Modifier_Type)
    is
       procedure Internal
-         (Accelerator      : Interfaces.C.Strings.chars_ptr;
+         (Accelerator      : Gtkada.Types.Chars_Ptr;
           Accelerator_Key  : out Gdk.Types.Gdk_Key_Type;
           Accelerator_Mods : out Gdk.Types.Gdk_Modifier_Type);
       pragma Import (C, Internal, "gtk_accelerator_parse");
-      Tmp_Accelerator : Interfaces.C.Strings.chars_ptr := New_String (Accelerator);
+      Tmp_Accelerator : Gtkada.Types.Chars_Ptr := New_String (Accelerator);
    begin
       Internal (Tmp_Accelerator, Accelerator_Key, Accelerator_Mods);
       Free (Tmp_Accelerator);

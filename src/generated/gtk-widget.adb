@@ -27,9 +27,7 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Types;               use Gtkada.Types;
 
 package body Gtk.Widget is
 
@@ -267,8 +265,8 @@ package body Gtk.Widget is
    procedure Internal_Gtk_Builder_Connect_Func
       (Builder        : System.Address;
        Object         : System.Address;
-       Signal_Name    : Interfaces.C.Strings.chars_ptr;
-       Handler_Name   : Interfaces.C.Strings.chars_ptr;
+       Signal_Name    : Gtkada.Types.Chars_Ptr;
+       Handler_Name   : Gtkada.Types.Chars_Ptr;
        Connect_Object : System.Address;
        Flags          : Glib.G_Connect_Flags;
        User_Data      : System.Address);
@@ -299,8 +297,8 @@ package body Gtk.Widget is
    procedure Internal_Gtk_Builder_Connect_Func
       (Builder        : System.Address;
        Object         : System.Address;
-       Signal_Name    : Interfaces.C.Strings.chars_ptr;
-       Handler_Name   : Interfaces.C.Strings.chars_ptr;
+       Signal_Name    : Gtkada.Types.Chars_Ptr;
+       Handler_Name   : Gtkada.Types.Chars_Ptr;
        Connect_Object : System.Address;
        Flags          : Glib.G_Connect_Flags;
        User_Data      : System.Address)
@@ -359,13 +357,13 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget       : System.Address;
-          Accel_Signal : Interfaces.C.Strings.chars_ptr;
+          Accel_Signal : Gtkada.Types.Chars_Ptr;
           Accel_Group  : System.Address;
           Accel_Key    : Gdk.Types.Gdk_Key_Type;
           Accel_Mods   : Gdk.Types.Gdk_Modifier_Type;
           Accel_Flags  : Gtk.Accel_Group.Gtk_Accel_Flags);
       pragma Import (C, Internal, "gtk_widget_add_accelerator");
-      Tmp_Accel_Signal : Interfaces.C.Strings.chars_ptr := New_String (String (Accel_Signal));
+      Tmp_Accel_Signal : Gtkada.Types.Chars_Ptr := New_String (String (Accel_Signal));
    begin
       Internal (Get_Object (Widget), Tmp_Accel_Signal, Get_Object (Accel_Group), Accel_Key, Accel_Mods, Accel_Flags);
       Free (Tmp_Accel_Signal);
@@ -508,11 +506,11 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Self           : Glib.Object.GObject_Class;
-          Name           : Interfaces.C.Strings.chars_ptr;
+          Name           : Gtkada.Types.Chars_Ptr;
           Internal_Child : Glib.Gboolean;
           Struct_Offset  : Gssize);
       pragma Import (C, Internal, "gtk_widget_class_bind_template_child_full");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Self, Tmp_Name, Boolean'Pos (Internal_Child), Struct_Offset);
       Free (Tmp_Name);
@@ -560,9 +558,9 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget         : System.Address;
-          Child_Property : Interfaces.C.Strings.chars_ptr);
+          Child_Property : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_widget_child_notify");
-      Tmp_Child_Property : Interfaces.C.Strings.chars_ptr := New_String (Child_Property);
+      Tmp_Child_Property : Gtkada.Types.Chars_Ptr := New_String (Child_Property);
    begin
       Internal (Get_Object (Widget), Tmp_Child_Property);
       Free (Tmp_Child_Property);
@@ -609,14 +607,14 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget : System.Address;
-          Text   : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Text   : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_widget_create_pango_layout");
-      Tmp_Text          : Interfaces.C.Strings.chars_ptr;
+      Tmp_Text          : Gtkada.Types.Chars_Ptr;
       Stub_Pango_Layout : Pango.Layout.Pango_Layout_Record;
       Tmp_Return        : System.Address;
    begin
       if Text = "" then
-         Tmp_Text := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Text := Gtkada.Types.Null_Ptr;
       else
          Tmp_Text := New_String (Text);
       end if;
@@ -924,9 +922,9 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget    : System.Address;
-          Icon_Name : Interfaces.C.Strings.chars_ptr);
+          Icon_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_drag_source_set_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
    begin
       Internal (Get_Object (Widget), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
@@ -956,9 +954,9 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget   : System.Address;
-          Stock_Id : Interfaces.C.Strings.chars_ptr);
+          Stock_Id : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_drag_source_set_icon_stock");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
    begin
       Internal (Get_Object (Widget), Tmp_Stock_Id);
       Free (Tmp_Stock_Id);
@@ -1048,10 +1046,9 @@ package body Gtk.Widget is
    is
       function Internal
          (Self          : Glib.Object.GObject_Class;
-          Property_Name : Interfaces.C.Strings.chars_ptr)
-          return Glib.Param_Spec;
+          Property_Name : Gtkada.Types.Chars_Ptr) return Glib.Param_Spec;
       pragma Import (C, Internal, "gtk_widget_class_find_style_property");
-      Tmp_Property_Name : Interfaces.C.Strings.chars_ptr := New_String (Property_Name);
+      Tmp_Property_Name : Gtkada.Types.Chars_Ptr := New_String (Property_Name);
       Tmp_Return        : Glib.Param_Spec;
    begin
       Tmp_Return := Internal (Self, Tmp_Property_Name);
@@ -1238,7 +1235,7 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record) return UTF8_String
    is
       function Internal
-         (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Widget : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_widget_get_composite_name");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Widget)));
@@ -1531,7 +1528,7 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record) return UTF8_String
    is
       function Internal
-         (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Widget : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_widget_get_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Widget)));
@@ -1960,10 +1957,9 @@ package body Gtk.Widget is
       function Internal
          (Widget      : System.Address;
           Widget_Type : GType;
-          Name        : Interfaces.C.Strings.chars_ptr)
-          return System.Address;
+          Name        : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_widget_get_template_child");
-      Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name     : Gtkada.Types.Chars_Ptr := New_String (Name);
       Stub_GObject : Glib.Object.GObject_Record;
       Tmp_Return   : System.Address;
    begin
@@ -1980,7 +1976,7 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record) return UTF8_String
    is
       function Internal
-         (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Widget : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_widget_get_tooltip_markup");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Widget)));
@@ -1994,7 +1990,7 @@ package body Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record) return UTF8_String
    is
       function Internal
-         (Widget : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Widget : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_widget_get_tooltip_text");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Widget)));
@@ -2671,10 +2667,10 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget : System.Address;
-          Name   : Interfaces.C.Strings.chars_ptr;
+          Name   : Gtkada.Types.Chars_Ptr;
           Color  : System.Address);
       pragma Import (C, Internal, "gtk_widget_override_symbolic_color");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Widget), Tmp_Name, Gdk.RGBA.Gdk_RGBA_Or_Null (Color'Address));
       Free (Tmp_Name);
@@ -2868,17 +2864,17 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget   : System.Address;
-          Stock_Id : Interfaces.C.Strings.chars_ptr;
+          Stock_Id : Gtkada.Types.Chars_Ptr;
           Size     : Gtk.Enums.Gtk_Icon_Size;
-          Detail   : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Detail   : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_widget_render_icon");
-      Tmp_Stock_Id    : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
-      Tmp_Detail      : Interfaces.C.Strings.chars_ptr;
+      Tmp_Stock_Id    : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
+      Tmp_Detail      : Gtkada.Types.Chars_Ptr;
       Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return      : System.Address;
    begin
       if Detail = "" then
-         Tmp_Detail := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Detail := Gtkada.Types.Null_Ptr;
       else
          Tmp_Detail := New_String (Detail);
       end if;
@@ -2899,10 +2895,10 @@ package body Gtk.Widget is
    is
       function Internal
          (Widget   : System.Address;
-          Stock_Id : Interfaces.C.Strings.chars_ptr;
+          Stock_Id : Gtkada.Types.Chars_Ptr;
           Size     : Gtk.Enums.Gtk_Icon_Size) return System.Address;
       pragma Import (C, Internal, "gtk_widget_render_icon_pixbuf");
-      Tmp_Stock_Id    : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id    : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
       Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return      : System.Address;
    begin
@@ -2992,13 +2988,13 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget      : System.Address;
-          Accel_Path  : Interfaces.C.Strings.chars_ptr;
+          Accel_Path  : Gtkada.Types.Chars_Ptr;
           Accel_Group : System.Address);
       pragma Import (C, Internal, "gtk_widget_set_accel_path");
-      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr;
+      Tmp_Accel_Path : Gtkada.Types.Chars_Ptr;
    begin
       if Accel_Path = "" then
-         Tmp_Accel_Path := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Accel_Path := Gtkada.Types.Null_Ptr;
       else
          Tmp_Accel_Path := New_String (Accel_Path);
       end if;
@@ -3112,9 +3108,9 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget : System.Address;
-          Name   : Interfaces.C.Strings.chars_ptr);
+          Name   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_widget_set_composite_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Widget), Tmp_Name);
       Free (Tmp_Name);
@@ -3151,8 +3147,8 @@ package body Gtk.Widget is
       procedure Internal_Cb
          (Builder        : System.Address;
           Object         : System.Address;
-          Signal_Name    : Interfaces.C.Strings.chars_ptr;
-          Handler_Name   : Interfaces.C.Strings.chars_ptr;
+          Signal_Name    : Gtkada.Types.Chars_Ptr;
+          Handler_Name   : Gtkada.Types.Chars_Ptr;
           Connect_Object : System.Address;
           Flags          : Glib.G_Connect_Flags;
           User_Data      : System.Address);
@@ -3181,8 +3177,8 @@ package body Gtk.Widget is
       procedure Internal_Cb
          (Builder        : System.Address;
           Object         : System.Address;
-          Signal_Name    : Interfaces.C.Strings.chars_ptr;
-          Handler_Name   : Interfaces.C.Strings.chars_ptr;
+          Signal_Name    : Gtkada.Types.Chars_Ptr;
+          Handler_Name   : Gtkada.Types.Chars_Ptr;
           Connect_Object : System.Address;
           Flags          : Glib.G_Connect_Flags;
           User_Data      : System.Address)
@@ -3482,9 +3478,9 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget : System.Address;
-          Name   : Interfaces.C.Strings.chars_ptr);
+          Name   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_widget_set_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Widget), Tmp_Name);
       Free (Tmp_Name);
@@ -3704,12 +3700,12 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget : System.Address;
-          Markup : Interfaces.C.Strings.chars_ptr);
+          Markup : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_widget_set_tooltip_markup");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr;
+      Tmp_Markup : Gtkada.Types.Chars_Ptr;
    begin
       if Markup = "" then
-         Tmp_Markup := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Markup := Gtkada.Types.Null_Ptr;
       else
          Tmp_Markup := New_String (Markup);
       end if;
@@ -3727,12 +3723,12 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget : System.Address;
-          Text   : Interfaces.C.Strings.chars_ptr);
+          Text   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_widget_set_tooltip_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr;
+      Tmp_Text : Gtkada.Types.Chars_Ptr;
    begin
       if Text = "" then
-         Tmp_Text := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Text := Gtkada.Types.Null_Ptr;
       else
          Tmp_Text := New_String (Text);
       end if;
@@ -3965,10 +3961,10 @@ package body Gtk.Widget is
    is
       procedure Internal
          (Widget        : System.Address;
-          Property_Name : Interfaces.C.Strings.chars_ptr;
+          Property_Name : Gtkada.Types.Chars_Ptr;
           Value         : in out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_widget_style_get_property");
-      Tmp_Property_Name : Interfaces.C.Strings.chars_ptr := New_String (Property_Name);
+      Tmp_Property_Name : Gtkada.Types.Chars_Ptr := New_String (Property_Name);
    begin
       Internal (Get_Object (Widget), Tmp_Property_Name, Value);
       Free (Tmp_Property_Name);

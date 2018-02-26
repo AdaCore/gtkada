@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Menu_Tool_Button is
@@ -103,15 +103,14 @@ package body Gtk.Menu_Tool_Button is
    is
       function Internal
          (Icon_Widget : System.Address;
-          Label       : Interfaces.C.Strings.chars_ptr)
-          return System.Address;
+          Label       : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_menu_tool_button_new");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label  : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Menu.Is_Created then
          if Label = "" then
-            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Label := Gtkada.Types.Null_Ptr;
          else
             Tmp_Label := New_String (Label);
          end if;
@@ -130,9 +129,9 @@ package body Gtk.Menu_Tool_Button is
        Stock_Id : UTF8_String)
    is
       function Internal
-         (Stock_Id : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Stock_Id : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_menu_tool_button_new_from_stock");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
       Tmp_Return   : System.Address;
    begin
       if not Menu.Is_Created then
@@ -167,9 +166,9 @@ package body Gtk.Menu_Tool_Button is
    is
       procedure Internal
          (Button : System.Address;
-          Markup : Interfaces.C.Strings.chars_ptr);
+          Markup : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_menu_tool_button_set_arrow_tooltip_markup");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
+      Tmp_Markup : Gtkada.Types.Chars_Ptr := New_String (Markup);
    begin
       Internal (Get_Object (Button), Tmp_Markup);
       Free (Tmp_Markup);
@@ -185,9 +184,9 @@ package body Gtk.Menu_Tool_Button is
    is
       procedure Internal
          (Button : System.Address;
-          Text   : Interfaces.C.Strings.chars_ptr);
+          Text   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_menu_tool_button_set_arrow_tooltip_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Button), Tmp_Text);
       Free (Tmp_Text);
@@ -230,7 +229,7 @@ package body Gtk.Menu_Tool_Button is
        return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_actionable_get_action_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -288,9 +287,9 @@ package body Gtk.Menu_Tool_Button is
    is
       procedure Internal
          (Self        : System.Address;
-          Action_Name : Interfaces.C.Strings.chars_ptr);
+          Action_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_actionable_set_action_name");
-      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
    begin
       Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
@@ -322,9 +321,9 @@ package body Gtk.Menu_Tool_Button is
    is
       procedure Internal
          (Self                 : System.Address;
-          Detailed_Action_Name : Interfaces.C.Strings.chars_ptr);
+          Detailed_Action_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_actionable_set_detailed_action_name");
-      Tmp_Detailed_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Detailed_Action_Name);
+      Tmp_Detailed_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Detailed_Action_Name);
    begin
       Internal (Get_Object (Self), Tmp_Detailed_Action_Name);
       Free (Tmp_Detailed_Action_Name);

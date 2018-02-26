@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;     use Interfaces.C.Strings;
+with Gtkada.Types;             use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gdk.Window is
@@ -832,12 +832,12 @@ package body Gdk.Window is
    procedure Set_Icon_Name (Self : Gdk.Gdk_Window; Name : UTF8_String := "") is
       procedure Internal
          (Self : Gdk.Gdk_Window;
-          Name : Interfaces.C.Strings.chars_ptr);
+          Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gdk_window_set_icon_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Name : Gtkada.Types.Chars_Ptr;
    begin
       if Name = "" then
-         Tmp_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Name := New_String (Name);
       end if;
@@ -917,9 +917,9 @@ package body Gdk.Window is
    procedure Set_Role (Self : Gdk.Gdk_Window; Role : UTF8_String) is
       procedure Internal
          (Self : Gdk.Gdk_Window;
-          Role : Interfaces.C.Strings.chars_ptr);
+          Role : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gdk_window_set_role");
-      Tmp_Role : Interfaces.C.Strings.chars_ptr := New_String (Role);
+      Tmp_Role : Gtkada.Types.Chars_Ptr := New_String (Role);
    begin
       Internal (Self, Tmp_Role);
       Free (Tmp_Role);
@@ -967,9 +967,9 @@ package body Gdk.Window is
    is
       procedure Internal
          (Self       : Gdk.Gdk_Window;
-          Startup_Id : Interfaces.C.Strings.chars_ptr);
+          Startup_Id : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gdk_window_set_startup_id");
-      Tmp_Startup_Id : Interfaces.C.Strings.chars_ptr := New_String (Startup_Id);
+      Tmp_Startup_Id : Gtkada.Types.Chars_Ptr := New_String (Startup_Id);
    begin
       Internal (Self, Tmp_Startup_Id);
       Free (Tmp_Startup_Id);
@@ -1014,9 +1014,9 @@ package body Gdk.Window is
    procedure Set_Title (Self : Gdk.Gdk_Window; Title : UTF8_String) is
       procedure Internal
          (Self  : Gdk.Gdk_Window;
-          Title : Interfaces.C.Strings.chars_ptr);
+          Title : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gdk_window_set_title");
-      Tmp_Title : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title : Gtkada.Types.Chars_Ptr := New_String (Title);
    begin
       Internal (Self, Tmp_Title);
       Free (Tmp_Title);

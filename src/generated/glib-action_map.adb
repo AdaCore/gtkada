@@ -93,10 +93,9 @@ package body Glib.Action_Map is
    is
       function Internal
          (Self        : Gaction_Map;
-          Action_Name : Interfaces.C.Strings.chars_ptr)
-          return Glib.Action.Gaction;
+          Action_Name : Gtkada.Types.Chars_Ptr) return Glib.Action.Gaction;
       pragma Import (C, Internal, "g_action_map_lookup_action");
-      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
       Tmp_Return      : Glib.Action.Gaction;
    begin
       Tmp_Return := Internal (Self, Tmp_Action_Name);
@@ -111,9 +110,9 @@ package body Glib.Action_Map is
    procedure Remove_Action (Self : Gaction_Map; Action_Name : UTF8_String) is
       procedure Internal
          (Self        : Gaction_Map;
-          Action_Name : Interfaces.C.Strings.chars_ptr);
+          Action_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_action_map_remove_action");
-      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
    begin
       Internal (Self, Tmp_Action_Name);
       Free (Tmp_Action_Name);

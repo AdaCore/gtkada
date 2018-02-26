@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Entry_Completion is
@@ -94,7 +94,7 @@ package body Gtk.Entry_Completion is
 
    function Internal_Gtk_Entry_Completion_Match_Func
       (Completion : System.Address;
-       Key        : Interfaces.C.Strings.chars_ptr;
+       Key        : Gtkada.Types.Chars_Ptr;
        Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
        User_Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Entry_Completion_Match_Func);
@@ -126,7 +126,7 @@ package body Gtk.Entry_Completion is
 
    function Internal_Gtk_Entry_Completion_Match_Func
       (Completion : System.Address;
-       Key        : Interfaces.C.Strings.chars_ptr;
+       Key        : Gtkada.Types.Chars_Ptr;
        Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
        User_Data  : System.Address) return Glib.Gboolean
    is
@@ -242,11 +242,10 @@ package body Gtk.Entry_Completion is
    is
       function Internal
          (Completion : System.Address;
-          Key        : Interfaces.C.Strings.chars_ptr)
-          return Interfaces.C.Strings.chars_ptr;
+          Key        : Gtkada.Types.Chars_Ptr) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_entry_completion_compute_prefix");
-      Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
-      Tmp_Return : Interfaces.C.Strings.chars_ptr;
+      Tmp_Key    : Gtkada.Types.Chars_Ptr := New_String (Key);
+      Tmp_Return : Gtkada.Types.Chars_Ptr;
    begin
       Tmp_Return := Internal (Get_Object (Completion), Tmp_Key);
       Free (Tmp_Key);
@@ -276,7 +275,7 @@ package body Gtk.Entry_Completion is
        return UTF8_String
    is
       function Internal
-         (Completion : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Completion : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_entry_completion_get_completion_prefix");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Completion)));
@@ -422,9 +421,9 @@ package body Gtk.Entry_Completion is
       procedure Internal
          (Completion : System.Address;
           Index      : Glib.Gint;
-          Markup     : Interfaces.C.Strings.chars_ptr);
+          Markup     : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_entry_completion_insert_action_markup");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
+      Tmp_Markup : Gtkada.Types.Chars_Ptr := New_String (Markup);
    begin
       Internal (Get_Object (Completion), Index, Tmp_Markup);
       Free (Tmp_Markup);
@@ -442,9 +441,9 @@ package body Gtk.Entry_Completion is
       procedure Internal
          (Completion : System.Address;
           Index      : Glib.Gint;
-          Text       : Interfaces.C.Strings.chars_ptr);
+          Text       : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_entry_completion_insert_action_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Completion), Index, Tmp_Text);
       Free (Tmp_Text);
@@ -607,7 +606,7 @@ package body Gtk.Entry_Completion is
 
       function Internal_Cb
          (Completion : System.Address;
-          Key        : Interfaces.C.Strings.chars_ptr;
+          Key        : Gtkada.Types.Chars_Ptr;
           Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data  : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
@@ -628,7 +627,7 @@ package body Gtk.Entry_Completion is
 
       function Internal_Cb
          (Completion : System.Address;
-          Key        : Interfaces.C.Strings.chars_ptr;
+          Key        : Gtkada.Types.Chars_Ptr;
           Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
           User_Data  : System.Address) return Glib.Gboolean
       is
@@ -764,10 +763,10 @@ package body Gtk.Entry_Completion is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Attribute   : Interfaces.C.Strings.chars_ptr;
+          Attribute   : Gtkada.Types.Chars_Ptr;
           Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Tmp_Attribute, Column);
       Free (Tmp_Attribute);

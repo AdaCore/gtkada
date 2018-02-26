@@ -23,10 +23,9 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with GtkAda.Types;         use GtkAda.Types;
-with Gtkada.Bindings;      use Gtkada.Bindings;
+with Gtkada.Bindings; use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types;    use Gtkada.Types;
 pragma Warnings(On);
 
 package body Glib.Variant is
@@ -53,9 +52,9 @@ package body Glib.Variant is
 
    procedure G_New (Self : out Gvariant_Type; Type_String : UTF8_String) is
       function Internal
-         (Type_String : Interfaces.C.Strings.chars_ptr) return Gvariant_Type;
+         (Type_String : Gtkada.Types.Chars_Ptr) return Gvariant_Type;
       pragma Import (C, Internal, "g_variant_type_new");
-      Tmp_Type_String : Interfaces.C.Strings.chars_ptr := New_String (Type_String);
+      Tmp_Type_String : Gtkada.Types.Chars_Ptr := New_String (Type_String);
       Tmp_Return      : Gvariant_Type;
    begin
       Tmp_Return := Internal (Tmp_Type_String);
@@ -106,14 +105,14 @@ package body Glib.Variant is
        Length : Gssize)
    is
       function Internal
-         (Strv   : Interfaces.C.Strings.chars_ptr_array;
+         (Strv   : Gtkada.Types.chars_ptr_array;
           Length : Gssize) return System.Address;
       pragma Import (C, Internal, "g_variant_new_bytestring_array");
-      Tmp_Strv   : Interfaces.C.Strings.chars_ptr_array := From_String_List (Strv);
+      Tmp_Strv   : Gtkada.Types.chars_ptr_array := From_String_List (Strv);
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Strv, Length);
-      GtkAda.Types.Free (Tmp_Strv);
+      Gtkada.Types.Free (Tmp_Strv);
       Self.Set_Object (Tmp_Return);
    end G_New_Bytestring_Array;
 
@@ -215,10 +214,9 @@ package body Glib.Variant is
        Object_Path : UTF8_String)
    is
       function Internal
-         (Object_Path : Interfaces.C.Strings.chars_ptr)
-          return System.Address;
+         (Object_Path : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_variant_new_object_path");
-      Tmp_Object_Path : Interfaces.C.Strings.chars_ptr := New_String (Object_Path);
+      Tmp_Object_Path : Gtkada.Types.Chars_Ptr := New_String (Object_Path);
       Tmp_Return      : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Object_Path);
@@ -236,14 +234,14 @@ package body Glib.Variant is
        Length : Gssize)
    is
       function Internal
-         (Strv   : Interfaces.C.Strings.chars_ptr_array;
+         (Strv   : Gtkada.Types.chars_ptr_array;
           Length : Gssize) return System.Address;
       pragma Import (C, Internal, "g_variant_new_objv");
-      Tmp_Strv   : Interfaces.C.Strings.chars_ptr_array := From_String_List (Strv);
+      Tmp_Strv   : Gtkada.Types.chars_ptr_array := From_String_List (Strv);
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Strv, Length);
-      GtkAda.Types.Free (Tmp_Strv);
+      Gtkada.Types.Free (Tmp_Strv);
       Self.Set_Object (Tmp_Return);
    end G_New_Objv;
 
@@ -253,9 +251,9 @@ package body Glib.Variant is
 
    procedure G_New_Signature (Self : out Gvariant; Signature : UTF8_String) is
       function Internal
-         (Signature : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Signature : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_variant_new_signature");
-      Tmp_Signature : Interfaces.C.Strings.chars_ptr := New_String (Signature);
+      Tmp_Signature : Gtkada.Types.Chars_Ptr := New_String (Signature);
       Tmp_Return    : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Signature);
@@ -269,9 +267,9 @@ package body Glib.Variant is
 
    procedure G_New_String (Self : out Gvariant; String : UTF8_String) is
       function Internal
-         (String : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (String : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_variant_new_string");
-      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
+      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_String);
@@ -289,14 +287,14 @@ package body Glib.Variant is
        Length : Gssize)
    is
       function Internal
-         (Strv   : Interfaces.C.Strings.chars_ptr_array;
+         (Strv   : Gtkada.Types.chars_ptr_array;
           Length : Gssize) return System.Address;
       pragma Import (C, Internal, "g_variant_new_strv");
-      Tmp_Strv   : Interfaces.C.Strings.chars_ptr_array := From_String_List (Strv);
+      Tmp_Strv   : Gtkada.Types.chars_ptr_array := From_String_List (Strv);
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Strv, Length);
-      GtkAda.Types.Free (Tmp_Strv);
+      Gtkada.Types.Free (Tmp_Strv);
       Self.Set_Object (Tmp_Return);
    end G_New_Strv;
 
@@ -306,9 +304,9 @@ package body Glib.Variant is
 
    procedure G_New_Take_String (Self : out Gvariant; String : UTF8_String) is
       function Internal
-         (String : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (String : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_variant_new_take_string");
-      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
+      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_String);
@@ -408,15 +406,15 @@ package body Glib.Variant is
        Length : Gssize) return Gvariant
    is
       function Internal
-         (Strv   : Interfaces.C.Strings.chars_ptr_array;
+         (Strv   : Gtkada.Types.chars_ptr_array;
           Length : Gssize) return System.Address;
       pragma Import (C, Internal, "g_variant_new_bytestring_array");
-      Tmp_Strv   : Interfaces.C.Strings.chars_ptr_array := From_String_List (Strv);
+      Tmp_Strv   : Gtkada.Types.chars_ptr_array := From_String_List (Strv);
       Tmp_Return : System.Address;
       Self       : Gvariant;
    begin
       Tmp_Return := Internal (Tmp_Strv, Length);
-      GtkAda.Types.Free (Tmp_Strv);
+      Gtkada.Types.Free (Tmp_Strv);
       Self.Set_Object (Tmp_Return);
       return Self;
    end Gvariant_New_Bytestring_Array;
@@ -512,10 +510,9 @@ package body Glib.Variant is
       (Object_Path : UTF8_String) return Gvariant
    is
       function Internal
-         (Object_Path : Interfaces.C.Strings.chars_ptr)
-          return System.Address;
+         (Object_Path : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_variant_new_object_path");
-      Tmp_Object_Path : Interfaces.C.Strings.chars_ptr := New_String (Object_Path);
+      Tmp_Object_Path : Gtkada.Types.Chars_Ptr := New_String (Object_Path);
       Tmp_Return      : System.Address;
       Self            : Gvariant;
    begin
@@ -534,15 +531,15 @@ package body Glib.Variant is
        Length : Gssize) return Gvariant
    is
       function Internal
-         (Strv   : Interfaces.C.Strings.chars_ptr_array;
+         (Strv   : Gtkada.Types.chars_ptr_array;
           Length : Gssize) return System.Address;
       pragma Import (C, Internal, "g_variant_new_objv");
-      Tmp_Strv   : Interfaces.C.Strings.chars_ptr_array := From_String_List (Strv);
+      Tmp_Strv   : Gtkada.Types.chars_ptr_array := From_String_List (Strv);
       Tmp_Return : System.Address;
       Self       : Gvariant;
    begin
       Tmp_Return := Internal (Tmp_Strv, Length);
-      GtkAda.Types.Free (Tmp_Strv);
+      Gtkada.Types.Free (Tmp_Strv);
       Self.Set_Object (Tmp_Return);
       return Self;
    end Gvariant_New_Objv;
@@ -553,9 +550,9 @@ package body Glib.Variant is
 
    function Gvariant_New_Signature (Signature : UTF8_String) return Gvariant is
       function Internal
-         (Signature : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Signature : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_variant_new_signature");
-      Tmp_Signature : Interfaces.C.Strings.chars_ptr := New_String (Signature);
+      Tmp_Signature : Gtkada.Types.Chars_Ptr := New_String (Signature);
       Tmp_Return    : System.Address;
       Self          : Gvariant;
    begin
@@ -571,9 +568,9 @@ package body Glib.Variant is
 
    function Gvariant_New_String (String : UTF8_String) return Gvariant is
       function Internal
-         (String : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (String : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_variant_new_string");
-      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
+      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
       Tmp_Return : System.Address;
       Self       : Gvariant;
    begin
@@ -592,15 +589,15 @@ package body Glib.Variant is
        Length : Gssize) return Gvariant
    is
       function Internal
-         (Strv   : Interfaces.C.Strings.chars_ptr_array;
+         (Strv   : Gtkada.Types.chars_ptr_array;
           Length : Gssize) return System.Address;
       pragma Import (C, Internal, "g_variant_new_strv");
-      Tmp_Strv   : Interfaces.C.Strings.chars_ptr_array := From_String_List (Strv);
+      Tmp_Strv   : Gtkada.Types.chars_ptr_array := From_String_List (Strv);
       Tmp_Return : System.Address;
       Self       : Gvariant;
    begin
       Tmp_Return := Internal (Tmp_Strv, Length);
-      GtkAda.Types.Free (Tmp_Strv);
+      Gtkada.Types.Free (Tmp_Strv);
       Self.Set_Object (Tmp_Return);
       return Self;
    end Gvariant_New_Strv;
@@ -611,9 +608,9 @@ package body Glib.Variant is
 
    function Gvariant_New_Take_String (String : UTF8_String) return Gvariant is
       function Internal
-         (String : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (String : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_variant_new_take_string");
-      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
+      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
       Tmp_Return : System.Address;
       Self       : Gvariant;
    begin
@@ -683,9 +680,9 @@ package body Glib.Variant is
       (Type_String : UTF8_String) return Gvariant_Type
    is
       function Internal
-         (Type_String : Interfaces.C.Strings.chars_ptr) return Gvariant_Type;
+         (Type_String : Gtkada.Types.Chars_Ptr) return Gvariant_Type;
       pragma Import (C, Internal, "g_variant_type_new");
-      Tmp_Type_String : Interfaces.C.Strings.chars_ptr := New_String (Type_String);
+      Tmp_Type_String : Gtkada.Types.Chars_Ptr := New_String (Type_String);
       Tmp_Return      : Gvariant_Type;
       Self            : Gvariant_Type;
    begin
@@ -735,10 +732,10 @@ package body Glib.Variant is
    is
       function Internal
          (Self          : System.Address;
-          Format_String : Interfaces.C.Strings.chars_ptr;
+          Format_String : Gtkada.Types.Chars_Ptr;
           Copy_Only     : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_check_format_string");
-      Tmp_Format_String : Interfaces.C.Strings.chars_ptr := New_String (Format_String);
+      Tmp_Format_String : Gtkada.Types.Chars_Ptr := New_String (Format_String);
       Tmp_Return        : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Format_String, Boolean'Pos (Copy_Only));
@@ -811,10 +808,10 @@ package body Glib.Variant is
    is
       function Internal
          (Self       : System.Address;
-          Acc_Length : access Gsize) return Interfaces.C.Strings.chars_ptr;
+          Acc_Length : access Gsize) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_variant_dup_string");
       Acc_Length : aliased Gsize;
-      Tmp_Return : Interfaces.C.Strings.chars_ptr;
+      Tmp_Return : Gtkada.Types.Chars_Ptr;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Length'Access);
       Length.all := Acc_Length;
@@ -826,8 +823,7 @@ package body Glib.Variant is
    ----------------
 
    function Dup_String (Self : Gvariant_Type) return UTF8_String is
-      function Internal
-         (Self : Gvariant_Type) return Interfaces.C.Strings.chars_ptr;
+      function Internal (Self : Gvariant_Type) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_variant_type_dup_string");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Self));
@@ -1032,10 +1028,10 @@ package body Glib.Variant is
    is
       function Internal
          (Self       : System.Address;
-          Acc_Length : access Gsize) return Interfaces.C.Strings.chars_ptr;
+          Acc_Length : access Gsize) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_variant_get_string");
       Acc_Length : aliased Gsize;
-      Tmp_Return : Interfaces.C.Strings.chars_ptr;
+      Tmp_Return : Gtkada.Types.Chars_Ptr;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Length'Access);
       if Length /= null then
@@ -1083,7 +1079,7 @@ package body Glib.Variant is
 
    function Get_Type_String (Self : Gvariant) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_variant_get_type_string");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -1332,10 +1328,10 @@ package body Glib.Variant is
    is
       function Internal
          (Self          : System.Address;
-          Key           : Interfaces.C.Strings.chars_ptr;
+          Key           : Gtkada.Types.Chars_Ptr;
           Expected_Type : Gvariant_Type) return System.Address;
       pragma Import (C, Internal, "g_variant_lookup_value");
-      Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key    : Gtkada.Types.Chars_Ptr := New_String (Key);
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key, Expected_Type);
@@ -1370,8 +1366,7 @@ package body Glib.Variant is
    -----------------
 
    function Peek_String (Self : Gvariant_Type) return UTF8_String is
-      function Internal
-         (Self : Gvariant_Type) return Interfaces.C.Strings.chars_ptr;
+      function Internal (Self : Gvariant_Type) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_variant_type_peek_string");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Self));
@@ -1387,8 +1382,7 @@ package body Glib.Variant is
    is
       function Internal
          (Self          : System.Address;
-          Type_Annotate : Glib.Gboolean)
-          return Interfaces.C.Strings.chars_ptr;
+          Type_Annotate : Glib.Gboolean) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_variant_print");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self), Boolean'Pos (Type_Annotate)));
@@ -1473,9 +1467,9 @@ package body Glib.Variant is
 
    function Is_Object_Path (String : UTF8_String) return Boolean is
       function Internal
-         (String : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+         (String : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_is_object_path");
-      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
+      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_String);
@@ -1489,9 +1483,9 @@ package body Glib.Variant is
 
    function Is_Signature (String : UTF8_String) return Boolean is
       function Internal
-         (String : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+         (String : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_is_signature");
-      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
+      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_String);
@@ -1511,23 +1505,22 @@ package body Glib.Variant is
    is
       function Internal
          (The_Type : Gvariant_Type;
-          Text     : Interfaces.C.Strings.chars_ptr;
-          Limit    : Interfaces.C.Strings.chars_ptr;
-          Endptr   : Interfaces.C.Strings.chars_ptr_array)
-          return System.Address;
+          Text     : Gtkada.Types.Chars_Ptr;
+          Limit    : Gtkada.Types.Chars_Ptr;
+          Endptr   : Gtkada.Types.chars_ptr_array) return System.Address;
       pragma Import (C, Internal, "g_variant_parse");
-      Tmp_Text   : Interfaces.C.Strings.chars_ptr := New_String (Text);
-      Tmp_Limit  : Interfaces.C.Strings.chars_ptr;
-      Tmp_Endptr : Interfaces.C.Strings.chars_ptr_array := From_String_List (Endptr);
+      Tmp_Text   : Gtkada.Types.Chars_Ptr := New_String (Text);
+      Tmp_Limit  : Gtkada.Types.Chars_Ptr;
+      Tmp_Endptr : Gtkada.Types.chars_ptr_array := From_String_List (Endptr);
       Tmp_Return : System.Address;
    begin
       if Limit = "" then
-         Tmp_Limit := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Limit := Gtkada.Types.Null_Ptr;
       else
          Tmp_Limit := New_String (Limit);
       end if;
       Tmp_Return := Internal (The_Type, Tmp_Text, Tmp_Limit, Tmp_Endptr);
-      GtkAda.Types.Free (Tmp_Endptr);
+      Gtkada.Types.Free (Tmp_Endptr);
       Free (Tmp_Limit);
       Free (Tmp_Text);
       return From_Object (Tmp_Return);
@@ -1543,11 +1536,10 @@ package body Glib.Variant is
    is
       function Internal
          (Error      : Glib.Error.GError;
-          Source_Str : Interfaces.C.Strings.chars_ptr)
-          return Interfaces.C.Strings.chars_ptr;
+          Source_Str : Gtkada.Types.Chars_Ptr) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_variant_parse_error_print_context");
-      Tmp_Source_Str : Interfaces.C.Strings.chars_ptr := New_String (Source_Str);
-      Tmp_Return     : Interfaces.C.Strings.chars_ptr;
+      Tmp_Source_Str : Gtkada.Types.Chars_Ptr := New_String (Source_Str);
+      Tmp_Return     : Gtkada.Types.Chars_Ptr;
    begin
       Tmp_Return := Internal (Error, Tmp_Source_Str);
       Free (Tmp_Source_Str);
@@ -1582,9 +1574,9 @@ package body Glib.Variant is
 
    function String_Is_Valid (Type_String : UTF8_String) return Boolean is
       function Internal
-         (Type_String : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+         (Type_String : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "g_variant_type_string_is_valid");
-      Tmp_Type_String : Interfaces.C.Strings.chars_ptr := New_String (Type_String);
+      Tmp_Type_String : Gtkada.Types.Chars_Ptr := New_String (Type_String);
       Tmp_Return      : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_Type_String);

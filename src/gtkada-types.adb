@@ -21,6 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with System; use System;
+with Glib; use Glib;
+
 package body Gtkada.Types is
 
    ---------
@@ -119,5 +122,34 @@ package body Gtkada.Types is
         (Interfaces.C.Strings.chars_ptr (Item),
          Length);
    end Value;
+
+   function Value
+     (Item   : Chars_Ptr;
+      Length : Interfaces.C.size_t) return String is
+   begin
+      return Interfaces.C.Strings.Value
+        (Interfaces.C.Strings.chars_ptr (Item), Length);
+   end Value;
+
+   ----------------
+   -- New_String --
+   ----------------
+
+   function New_String (S : String) return Chars_Ptr is
+      function g_strndup (S : System.Address; N : Gsize) return Chars_Ptr;
+      pragma Import (C, g_strndup);
+   begin
+      return g_strndup (S'Address, Gsize (S'Length));
+   end New_String;
+
+   ----------
+   -- Free --
+   ----------
+
+   procedure Free (Mem : in out Chars_Ptr) is
+      X : constant Chars_Ptr := Mem;
+   begin
+      g_free (X);
+   end Free;
 
 end Gtkada.Types;

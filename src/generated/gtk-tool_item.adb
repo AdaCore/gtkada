@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Tool_Item is
@@ -169,10 +169,9 @@ package body Gtk.Tool_Item is
    is
       function Internal
          (Tool_Item    : System.Address;
-          Menu_Item_Id : Interfaces.C.Strings.chars_ptr)
-          return System.Address;
+          Menu_Item_Id : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_tool_item_get_proxy_menu_item");
-      Tmp_Menu_Item_Id   : Interfaces.C.Strings.chars_ptr := New_String (Menu_Item_Id);
+      Tmp_Menu_Item_Id   : Gtkada.Types.Chars_Ptr := New_String (Menu_Item_Id);
       Stub_Gtk_Menu_Item : Gtk.Menu_Item.Gtk_Menu_Item_Record;
       Tmp_Return         : System.Address;
    begin
@@ -378,10 +377,10 @@ package body Gtk.Tool_Item is
    is
       procedure Internal
          (Tool_Item    : System.Address;
-          Menu_Item_Id : Interfaces.C.Strings.chars_ptr;
+          Menu_Item_Id : Gtkada.Types.Chars_Ptr;
           Menu_Item    : System.Address);
       pragma Import (C, Internal, "gtk_tool_item_set_proxy_menu_item");
-      Tmp_Menu_Item_Id : Interfaces.C.Strings.chars_ptr := New_String (Menu_Item_Id);
+      Tmp_Menu_Item_Id : Gtkada.Types.Chars_Ptr := New_String (Menu_Item_Id);
    begin
       Internal (Get_Object (Tool_Item), Tmp_Menu_Item_Id, Get_Object (Menu_Item));
       Free (Tmp_Menu_Item_Id);
@@ -397,9 +396,9 @@ package body Gtk.Tool_Item is
    is
       procedure Internal
          (Tool_Item : System.Address;
-          Markup    : Interfaces.C.Strings.chars_ptr);
+          Markup    : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_tool_item_set_tooltip_markup");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
+      Tmp_Markup : Gtkada.Types.Chars_Ptr := New_String (Markup);
    begin
       Internal (Get_Object (Tool_Item), Tmp_Markup);
       Free (Tmp_Markup);
@@ -415,9 +414,9 @@ package body Gtk.Tool_Item is
    is
       procedure Internal
          (Tool_Item : System.Address;
-          Text      : Interfaces.C.Strings.chars_ptr);
+          Text      : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_tool_item_set_tooltip_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Tool_Item), Tmp_Text);
       Free (Tmp_Text);

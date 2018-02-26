@@ -106,13 +106,13 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with GNAT.Strings;         use GNAT.Strings;
-with Glib;                 use Glib;
-with Glib.Glist;           use Glib.Glist;
-with Glib.Object;          use Glib.Object;
-with Glib.Properties;      use Glib.Properties;
-with Gtk.Recent_Info;      use Gtk.Recent_Info;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with GNAT.Strings;    use GNAT.Strings;
+with Glib;            use Glib;
+with Glib.Glist;      use Glib.Glist;
+with Glib.Object;     use Glib.Object;
+with Glib.Properties; use Glib.Properties;
+with Gtk.Recent_Info; use Gtk.Recent_Info;
+with Gtkada.Types;    use Gtkada.Types;
 
 package Gtk.Recent_Manager is
 
@@ -120,12 +120,12 @@ package Gtk.Recent_Manager is
    type Gtk_Recent_Manager is access all Gtk_Recent_Manager_Record'Class;
 
    type Gtk_Recent_Data is record
-      Display_Name : Interfaces.C.Strings.chars_ptr;
-      Description : Interfaces.C.Strings.chars_ptr;
-      Mime_Type : Interfaces.C.Strings.chars_ptr;
-      App_Name : Interfaces.C.Strings.chars_ptr;
-      App_Exec : Interfaces.C.Strings.chars_ptr;
-      Groups : Interfaces.C.Strings.char_array_access;
+      Display_Name : Gtkada.Types.Chars_Ptr;
+      Description : Gtkada.Types.Chars_Ptr;
+      Mime_Type : Gtkada.Types.Chars_Ptr;
+      App_Name : Gtkada.Types.Chars_Ptr;
+      App_Exec : Gtkada.Types.Chars_Ptr;
+      Groups : Gtkada.Types.char_array_access;
       Is_Private : Boolean;
    end record;
    pragma Convention (C, Gtk_Recent_Data);

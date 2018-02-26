@@ -22,7 +22,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types;         use Gtkada.Types;
 with System;               use System;
 
 package body Glib is
@@ -81,9 +81,9 @@ package body Glib is
    ---------------
 
    function Type_Name (Type_Num : GType) return String is
-      function Internal (Type_Num : GType) return chars_ptr;
+      function Internal (Type_Num : GType) return Chars_Ptr;
       pragma Import (C, Internal, "g_type_name");
-      Ret : constant chars_ptr := Internal (Type_Num);
+      Ret : constant Chars_Ptr := Internal (Type_Num);
    begin
       if Ret = Null_Ptr then
          return "";

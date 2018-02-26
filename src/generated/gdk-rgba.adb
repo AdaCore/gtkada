@@ -25,9 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Gtkada.Bindings;         use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;    use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Types;            use Gtkada.Types;
 
 package body Gdk.RGBA is
 
@@ -106,10 +104,10 @@ package body Gdk.RGBA is
    is
       function Internal
          (Acc_Self : access Gdk_RGBA;
-          Spec     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Spec     : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_rgba_parse");
       Acc_Self   : aliased Gdk_RGBA;
-      Tmp_Spec   : Interfaces.C.Strings.chars_ptr := New_String (Spec);
+      Tmp_Spec   : Gtkada.Types.Chars_Ptr := New_String (Spec);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Acc_Self'Access, Tmp_Spec);
@@ -123,8 +121,7 @@ package body Gdk.RGBA is
    ---------------
 
    function To_String (Self : Gdk_RGBA) return UTF8_String is
-      function Internal
-         (Self : Gdk_RGBA) return Interfaces.C.Strings.chars_ptr;
+      function Internal (Self : Gdk_RGBA) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gdk_rgba_to_string");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Self));

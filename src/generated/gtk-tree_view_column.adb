@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Tree_View_Column is
@@ -506,8 +506,7 @@ package body Gtk.Tree_View_Column is
        return UTF8_String
    is
       function Internal
-         (Tree_Column : System.Address)
-          return Interfaces.C.Strings.chars_ptr;
+         (Tree_Column : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_tree_view_column_get_title");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Tree_Column)));
@@ -895,9 +894,9 @@ package body Gtk.Tree_View_Column is
    is
       procedure Internal
          (Tree_Column : System.Address;
-          Title       : Interfaces.C.Strings.chars_ptr);
+          Title       : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_tree_view_column_set_title");
-      Tmp_Title : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title : Gtkada.Types.Chars_Ptr := New_String (Title);
    begin
       Internal (Get_Object (Tree_Column), Tmp_Title);
       Free (Tmp_Title);
@@ -948,10 +947,10 @@ package body Gtk.Tree_View_Column is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Attribute   : Interfaces.C.Strings.chars_ptr;
+          Attribute   : Gtkada.Types.Chars_Ptr;
           Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Tmp_Attribute, Column);
       Free (Tmp_Attribute);

@@ -61,7 +61,7 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
 with Glib.Types;              use Glib.Types;
 with Gtk.Buildable;           use Gtk.Buildable;
-with Interfaces.C.Strings;    use Interfaces.C.Strings;
+with Gtkada.Types;            use Gtkada.Types;
 
 package Gtk.File_Filter is
 
@@ -81,10 +81,10 @@ package Gtk.File_Filter is
 
    type Gtk_File_Filter_Info is record
       Contains : Gtk_File_Filter_Flags;
-      Filename : Interfaces.C.Strings.chars_ptr;
-      URI : Interfaces.C.Strings.chars_ptr;
-      Display_Name : Interfaces.C.Strings.chars_ptr;
-      Mime_Type : Interfaces.C.Strings.chars_ptr;
+      Filename : Gtkada.Types.Chars_Ptr;
+      URI : Gtkada.Types.Chars_Ptr;
+      Display_Name : Gtkada.Types.Chars_Ptr;
+      Mime_Type : Gtkada.Types.Chars_Ptr;
    end record;
    pragma Convention (C, Gtk_File_Filter_Info);
 

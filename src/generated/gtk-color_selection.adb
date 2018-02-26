@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.C;                   use Gtkada.C;
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 
 package body Gtk.Color_Selection is
 
@@ -55,7 +55,7 @@ package body Gtk.Color_Selection is
       declare
          Result : constant Gdk_Color_Array := To_Array (Output, Integer (N));
       begin
-         G_Free (Output);
+         g_free (Output);
          return Result;
       end;
    end Palette_From_String;
@@ -64,7 +64,7 @@ package body Gtk.Color_Selection is
       function Internal
         (Colors   : System.Address;
          N_Colors : Gint)
-      return Interfaces.C.Strings.chars_ptr;
+      return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_color_selection_palette_to_string");
       Str : chars_ptr;
    begin
@@ -75,7 +75,7 @@ package body Gtk.Color_Selection is
          declare
             Result : constant String := Value (Str);
          begin
-            Free (Str);
+            g_free (Str);
             return Result;
          end;
       end if;

@@ -28,7 +28,7 @@ with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Font_Chooser_Widget is
@@ -202,7 +202,7 @@ package body Gtk.Font_Chooser_Widget is
        return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_font_chooser_get_font");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
@@ -291,7 +291,7 @@ package body Gtk.Font_Chooser_Widget is
        return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_font_chooser_get_preview_text");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
@@ -320,9 +320,9 @@ package body Gtk.Font_Chooser_Widget is
    is
       procedure Internal
          (Self     : System.Address;
-          Fontname : Interfaces.C.Strings.chars_ptr);
+          Fontname : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_font_chooser_set_font");
-      Tmp_Fontname : Interfaces.C.Strings.chars_ptr := New_String (Fontname);
+      Tmp_Fontname : Gtkada.Types.Chars_Ptr := New_String (Fontname);
    begin
       Internal (Get_Object (Self), Tmp_Fontname);
       Free (Tmp_Fontname);
@@ -370,9 +370,9 @@ package body Gtk.Font_Chooser_Widget is
    is
       procedure Internal
          (Self : System.Address;
-          Text : Interfaces.C.Strings.chars_ptr);
+          Text : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_font_chooser_set_preview_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Self), Tmp_Text);
       Free (Tmp_Text);

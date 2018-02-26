@@ -28,7 +28,7 @@ with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Recent_Action is
@@ -161,30 +161,30 @@ package body Gtk.Recent_Action is
        Stock_Id : UTF8_String := "")
    is
       function Internal
-         (Name     : Interfaces.C.Strings.chars_ptr;
-          Label    : Interfaces.C.Strings.chars_ptr;
-          Tooltip  : Interfaces.C.Strings.chars_ptr;
-          Stock_Id : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Name     : Gtkada.Types.Chars_Ptr;
+          Label    : Gtkada.Types.Chars_Ptr;
+          Tooltip  : Gtkada.Types.Chars_Ptr;
+          Stock_Id : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_recent_action_new");
-      Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Tmp_Label    : Interfaces.C.Strings.chars_ptr;
-      Tmp_Tooltip  : Interfaces.C.Strings.chars_ptr;
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr;
+      Tmp_Name     : Gtkada.Types.Chars_Ptr := New_String (Name);
+      Tmp_Label    : Gtkada.Types.Chars_Ptr;
+      Tmp_Tooltip  : Gtkada.Types.Chars_Ptr;
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr;
       Tmp_Return   : System.Address;
    begin
       if not Widget.Is_Created then
          if Label = "" then
-            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Label := Gtkada.Types.Null_Ptr;
          else
             Tmp_Label := New_String (Label);
          end if;
          if Tooltip = "" then
-            Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Tooltip := Gtkada.Types.Null_Ptr;
          else
             Tmp_Tooltip := New_String (Tooltip);
          end if;
          if Stock_Id = "" then
-            Tmp_Stock_Id := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Stock_Id := Gtkada.Types.Null_Ptr;
          else
             Tmp_Stock_Id := New_String (Stock_Id);
          end if;
@@ -210,31 +210,31 @@ package body Gtk.Recent_Action is
        Manager  : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class := Gtk.Recent_Manager.Get_Default)
    is
       function Internal
-         (Name     : Interfaces.C.Strings.chars_ptr;
-          Label    : Interfaces.C.Strings.chars_ptr;
-          Tooltip  : Interfaces.C.Strings.chars_ptr;
-          Stock_Id : Interfaces.C.Strings.chars_ptr;
+         (Name     : Gtkada.Types.Chars_Ptr;
+          Label    : Gtkada.Types.Chars_Ptr;
+          Tooltip  : Gtkada.Types.Chars_Ptr;
+          Stock_Id : Gtkada.Types.Chars_Ptr;
           Manager  : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_recent_action_new_for_manager");
-      Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Tmp_Label    : Interfaces.C.Strings.chars_ptr;
-      Tmp_Tooltip  : Interfaces.C.Strings.chars_ptr;
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr;
+      Tmp_Name     : Gtkada.Types.Chars_Ptr := New_String (Name);
+      Tmp_Label    : Gtkada.Types.Chars_Ptr;
+      Tmp_Tooltip  : Gtkada.Types.Chars_Ptr;
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr;
       Tmp_Return   : System.Address;
    begin
       if not Widget.Is_Created then
          if Label = "" then
-            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Label := Gtkada.Types.Null_Ptr;
          else
             Tmp_Label := New_String (Label);
          end if;
          if Tooltip = "" then
-            Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Tooltip := Gtkada.Types.Null_Ptr;
          else
             Tmp_Tooltip := New_String (Tooltip);
          end if;
          if Stock_Id = "" then
-            Tmp_Stock_Id := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Stock_Id := Gtkada.Types.Null_Ptr;
          else
             Tmp_Stock_Id := New_String (Stock_Id);
          end if;
@@ -383,7 +383,7 @@ package body Gtk.Recent_Action is
        return UTF8_String
    is
       function Internal
-         (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Chooser : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_recent_chooser_get_current_uri");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Chooser)));
@@ -578,9 +578,9 @@ package body Gtk.Recent_Action is
    is
       function Internal
          (Chooser : System.Address;
-          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          URI     : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_select_uri");
-      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI    : Gtkada.Types.Chars_Ptr := New_String (URI);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
@@ -598,9 +598,9 @@ package body Gtk.Recent_Action is
    is
       function Internal
          (Chooser : System.Address;
-          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          URI     : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_set_current_uri");
-      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI    : Gtkada.Types.Chars_Ptr := New_String (URI);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
@@ -771,9 +771,9 @@ package body Gtk.Recent_Action is
    is
       procedure Internal
          (Chooser : System.Address;
-          URI     : Interfaces.C.Strings.chars_ptr);
+          URI     : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_recent_chooser_unselect_uri");
-      Tmp_URI : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI : Gtkada.Types.Chars_Ptr := New_String (URI);
    begin
       Internal (Get_Object (Chooser), Tmp_URI);
       Free (Tmp_URI);

@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Level_Bar is
@@ -130,10 +130,10 @@ package body Gtk.Level_Bar is
    is
       procedure Internal
          (Self  : System.Address;
-          Name  : Interfaces.C.Strings.chars_ptr;
+          Name  : Gtkada.Types.Chars_Ptr;
           Value : Gdouble);
       pragma Import (C, Internal, "gtk_level_bar_add_offset_value");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Self), Tmp_Name, Value);
       Free (Tmp_Name);
@@ -204,15 +204,15 @@ package body Gtk.Level_Bar is
    is
       function Internal
          (Self      : System.Address;
-          Name      : Interfaces.C.Strings.chars_ptr;
+          Name      : Gtkada.Types.Chars_Ptr;
           Acc_Value : access Gdouble) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_level_bar_get_offset_value");
       Acc_Value  : aliased Gdouble;
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr;
+      Tmp_Name   : Gtkada.Types.Chars_Ptr;
       Tmp_Return : Glib.Gboolean;
    begin
       if Name = "" then
-         Tmp_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Name := New_String (Name);
       end if;
@@ -245,12 +245,12 @@ package body Gtk.Level_Bar is
    is
       procedure Internal
          (Self : System.Address;
-          Name : Interfaces.C.Strings.chars_ptr);
+          Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_level_bar_remove_offset_value");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Name : Gtkada.Types.Chars_Ptr;
    begin
       if Name = "" then
-         Tmp_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Name := New_String (Name);
       end if;

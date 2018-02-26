@@ -80,7 +80,7 @@ package body Gtk.Font_Chooser is
 
    function Get_Font (Self : Gtk_Font_Chooser) return UTF8_String is
       function Internal
-         (Self : Gtk_Font_Chooser) return Interfaces.C.Strings.chars_ptr;
+         (Self : Gtk_Font_Chooser) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_font_chooser_get_font");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Self));
@@ -120,7 +120,7 @@ package body Gtk.Font_Chooser is
 
    function Get_Preview_Text (Self : Gtk_Font_Chooser) return UTF8_String is
       function Internal
-         (Self : Gtk_Font_Chooser) return Interfaces.C.Strings.chars_ptr;
+         (Self : Gtk_Font_Chooser) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_font_chooser_get_preview_text");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Self));
@@ -220,9 +220,9 @@ package body Gtk.Font_Chooser is
    procedure Set_Font (Self : Gtk_Font_Chooser; Fontname : UTF8_String) is
       procedure Internal
          (Self     : Gtk_Font_Chooser;
-          Fontname : Interfaces.C.Strings.chars_ptr);
+          Fontname : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_font_chooser_set_font");
-      Tmp_Fontname : Interfaces.C.Strings.chars_ptr := New_String (Fontname);
+      Tmp_Fontname : Gtkada.Types.Chars_Ptr := New_String (Fontname);
    begin
       Internal (Self, Tmp_Fontname);
       Free (Tmp_Fontname);
@@ -235,9 +235,9 @@ package body Gtk.Font_Chooser is
    procedure Set_Preview_Text (Self : Gtk_Font_Chooser; Text : UTF8_String) is
       procedure Internal
          (Self : Gtk_Font_Chooser;
-          Text : Interfaces.C.Strings.chars_ptr);
+          Text : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_font_chooser_set_preview_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Self, Tmp_Text);
       Free (Tmp_Text);

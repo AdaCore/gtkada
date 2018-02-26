@@ -28,7 +28,7 @@ with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Recent_Chooser_Widget is
@@ -268,7 +268,7 @@ package body Gtk.Recent_Chooser_Widget is
        return UTF8_String
    is
       function Internal
-         (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Chooser : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_recent_chooser_get_current_uri");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Chooser)));
@@ -487,9 +487,9 @@ package body Gtk.Recent_Chooser_Widget is
    is
       function Internal
          (Chooser : System.Address;
-          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          URI     : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_select_uri");
-      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI    : Gtkada.Types.Chars_Ptr := New_String (URI);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
@@ -507,9 +507,9 @@ package body Gtk.Recent_Chooser_Widget is
    is
       function Internal
          (Chooser : System.Address;
-          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          URI     : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_set_current_uri");
-      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI    : Gtkada.Types.Chars_Ptr := New_String (URI);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
@@ -696,9 +696,9 @@ package body Gtk.Recent_Chooser_Widget is
    is
       procedure Internal
          (Chooser : System.Address;
-          URI     : Interfaces.C.Strings.chars_ptr);
+          URI     : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_recent_chooser_unselect_uri");
-      Tmp_URI : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI : Gtkada.Types.Chars_Ptr := New_String (URI);
    begin
       Internal (Get_Object (Chooser), Tmp_URI);
       Free (Tmp_URI);

@@ -21,14 +21,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types; use Gtkada.Types;
 
 package body Glib.Messages is
 
    procedure C_Log_Func
-     (Log_Domain : chars_ptr;
+     (Log_Domain : Chars_Ptr;
       Log_Level  : Log_Level_Flags;
-      Message    : chars_ptr;
+      Message    : Chars_Ptr;
       Ada_Func   : Log_Function);
    --  Low level log wrapper
    pragma Convention (C, C_Log_Func);
@@ -38,9 +38,9 @@ package body Glib.Messages is
    ----------------
 
    procedure C_Log_Func
-     (Log_Domain : chars_ptr;
+     (Log_Domain : Chars_Ptr;
       Log_Level  : Log_Level_Flags;
-      Message    : chars_ptr;
+      Message    : Chars_Ptr;
       Ada_Func   : Log_Function) is
    begin
       if Log_Domain = Null_Ptr then

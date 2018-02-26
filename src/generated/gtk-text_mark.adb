@@ -25,9 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Types;               use Gtkada.Types;
 
 package body Gtk.Text_Mark is
 
@@ -95,15 +93,15 @@ package body Gtk.Text_Mark is
        Left_Gravity : Boolean)
    is
       function Internal
-         (Name         : Interfaces.C.Strings.chars_ptr;
+         (Name         : Gtkada.Types.Chars_Ptr;
           Left_Gravity : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "gtk_text_mark_new");
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr;
+      Tmp_Name   : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Mark.Is_Created then
          if Name = "" then
-            Tmp_Name := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Name := Gtkada.Types.Null_Ptr;
          else
             Tmp_Name := New_String (Name);
          end if;
@@ -147,7 +145,7 @@ package body Gtk.Text_Mark is
       (Mark : not null access Gtk_Text_Mark_Record) return UTF8_String
    is
       function Internal
-         (Mark : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Mark : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_text_mark_get_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Mark)));

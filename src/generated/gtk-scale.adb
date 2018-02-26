@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Scale is
@@ -341,12 +341,12 @@ package body Gtk.Scale is
          (Scale    : System.Address;
           Value    : Gdouble;
           Position : Gtk.Enums.Gtk_Position_Type;
-          Markup   : Interfaces.C.Strings.chars_ptr);
+          Markup   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_scale_add_mark");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr;
+      Tmp_Markup : Gtkada.Types.Chars_Ptr;
    begin
       if Markup = "" then
-         Tmp_Markup := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Markup := Gtkada.Types.Null_Ptr;
       else
          Tmp_Markup := New_String (Markup);
       end if;

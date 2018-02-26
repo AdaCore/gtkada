@@ -31,7 +31,6 @@
 --  <group>Glib, the general-purpose library</group>
 
 with Glib.Error; use Glib.Error;
-with Interfaces.C.Strings;
 with Gtkada.Types;
 
 package Glib.Convert is
@@ -82,17 +81,6 @@ package Glib.Convert is
       Error         : GError_Access := null) return String;
    --  Same as above, but return a String directly.
 
-   procedure Convert
-     (Str           : Interfaces.C.Strings.chars_ptr;
-      Len           : Natural;
-      To_Codeset    : String;
-      From_Codeset  : String;
-      Bytes_Read    : out Natural;
-      Bytes_Written : out Natural;
-      Error         : GError_Access := null;
-      Result        : out String);
-   --  Same as Convert procedure, but take a C string as input.
-
    function Convert
      (Str           : String;
       To_Codeset    : String;
@@ -101,16 +89,6 @@ package Glib.Convert is
       Bytes_Written : access Natural;
       Error         : GError_Access := null) return Gtkada.Types.Chars_Ptr;
    --  Same as Convert procedure, but return the result as a C string.
-
-   function Convert
-     (Str           : Interfaces.C.Strings.chars_ptr;
-      Len           : Natural;
-      To_Codeset    : String;
-      From_Codeset  : String;
-      Bytes_Read    : access Natural;
-      Bytes_Written : access Natural;
-      Error         : GError_Access := null) return Gtkada.Types.Chars_Ptr;
-   --  Same as Convert procedure, but take and return the result as a C string.
 
    procedure Locale_To_UTF8
      (OS_String     : String;
@@ -194,7 +172,7 @@ package Glib.Convert is
 
    function Filename_From_URI
      (URI      : String;
-      Hostname : access Interfaces.C.Strings.chars_ptr;
+      Hostname : access Gtkada.Types.Chars_Ptr;
       Error    : GError_Access := null) return String;
    --  Convert an escaped UTF-8 encoded URI to a local filename in the
    --  encoding used for filenames.

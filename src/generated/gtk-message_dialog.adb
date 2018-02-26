@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Message_Dialog is
@@ -119,15 +119,15 @@ package body Gtk.Message_Dialog is
           Flags    : Gtk_Dialog_Flags;
           The_Type : Gtk_Message_Type;
           Buttons  : Gtk_Buttons_Type;
-          Message  : Interfaces.C.Strings.chars_ptr;
+          Message  : Gtkada.Types.Chars_Ptr;
           Varargs  : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_message_dialog_new");
-      Tmp_Message : Interfaces.C.Strings.chars_ptr;
+      Tmp_Message : Gtkada.Types.Chars_Ptr;
       Tmp_Return  : System.Address;
    begin
       if not Dialog.Is_Created then
          if Message = "" then
-            Tmp_Message := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Message := Gtkada.Types.Null_Ptr;
          else
             Tmp_Message := New_String (Message);
          end if;
@@ -154,15 +154,15 @@ package body Gtk.Message_Dialog is
           Flags    : Gtk_Dialog_Flags;
           The_Type : Gtk_Message_Type;
           Buttons  : Gtk_Buttons_Type;
-          Message  : Interfaces.C.Strings.chars_ptr;
+          Message  : Gtkada.Types.Chars_Ptr;
           Varargs  : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_message_dialog_new_with_markup");
-      Tmp_Message : Interfaces.C.Strings.chars_ptr;
+      Tmp_Message : Gtkada.Types.Chars_Ptr;
       Tmp_Return  : System.Address;
    begin
       if not Dialog.Is_Created then
          if Message = "" then
-            Tmp_Message := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Message := Gtkada.Types.Null_Ptr;
          else
             Tmp_Message := New_String (Message);
          end if;
@@ -182,10 +182,10 @@ package body Gtk.Message_Dialog is
    is
       procedure Internal
          (Dialog  : System.Address;
-          Message : Interfaces.C.Strings.chars_ptr;
+          Message : Gtkada.Types.Chars_Ptr;
           Varargs : System.Address);
       pragma Import (C, Internal, "gtk_message_dialog_format_secondary_markup");
-      Tmp_Message : Interfaces.C.Strings.chars_ptr := New_String (Message);
+      Tmp_Message : Gtkada.Types.Chars_Ptr := New_String (Message);
    begin
       Internal (Get_Object (Dialog), Tmp_Message, System.Null_Address);
       Free (Tmp_Message);
@@ -245,9 +245,9 @@ package body Gtk.Message_Dialog is
    is
       procedure Internal
          (Dialog : System.Address;
-          Str    : Interfaces.C.Strings.chars_ptr);
+          Str    : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_message_dialog_set_markup");
-      Tmp_Str : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str : Gtkada.Types.Chars_Ptr := New_String (Str);
    begin
       Internal (Get_Object (Dialog), Tmp_Str);
       Free (Tmp_Str);

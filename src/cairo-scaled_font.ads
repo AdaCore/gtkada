@@ -28,7 +28,7 @@
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>
 
-with Interfaces.C.Strings;
+with Gtkada.Types;
 
 package Cairo.Scaled_Font is
 
@@ -97,7 +97,7 @@ package Cairo.Scaled_Font is
 
    procedure Text_Extents
      (Scaled_Font : Cairo_Scaled_Font;
-      Utf8        : Interfaces.C.Strings.chars_ptr;
+      Utf8        : Gtkada.Types.Chars_Ptr;
       Extents     : access Cairo_Text_Extents);
    --  Scaled_Font: a Cairo_Scaled_Font
    --  Utf8: a NUL-terminated string of text, encoded in UTF-8

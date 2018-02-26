@@ -97,7 +97,7 @@ package body Glib.Option is
          Ret := Internal (Get_Object (Self), Argc'Access, Argv'Address, Err'Address);
       else
          declare
-            Args : aliased ICS.chars_ptr_array := To_Chars_Ptr (Argv);
+            Args : aliased Gtkada.Types.Chars_Ptr_Array := To_Chars_Ptr (Argv);
             Idx  : aliased Glib.Gint := 1;
          begin
             --  Copy command name argument
@@ -105,7 +105,9 @@ package body Glib.Option is
             Idx := 1;
 
             for J in 1 .. Argc - 1 loop
-               if Filter (ICS.Value (Argv (Interfaces.C.size_t (J)))) then
+               if Filter
+                 (Gtkada.Types.Value (Argv (Interfaces.C.size_t (J))))
+               then
                   Args (Interfaces.C.size_t (Idx)) :=
                   Argv (Interfaces.C.size_t (J));
                   Idx := Idx + 1;
@@ -145,12 +147,12 @@ package body Glib.Option is
       Argc : aliased Glib.Gint := 0;
 
    begin
-      while Argv.all (size_t (Argc)) /= Null_Ptr loop
+      while Argv.all (size_t (Argc)) /= Gtkada.Types.Null_Ptr loop
          Argc := Argc + 1;
       end loop;
 
       Ret := Internal (Get_Object (Self), Argc'Access, Argv, Err'Address);
-      Argv.all (size_t (Argc)) := Null_Ptr;
+      Argv.all (size_t (Argc)) := Gtkada.Types.Null_Ptr;
       Error := Err;
       Success := Ret /= 0;
    end Parse;
@@ -182,8 +184,8 @@ package body Glib.Option is
      (Gtranslate_Func, System.Address);
 
    function Internal_Gtranslate_Func
-      (Str  : Interfaces.C.Strings.chars_ptr;
-       Data : System.Address) return Interfaces.C.Strings.chars_ptr;
+      (Str  : Gtkada.Types.Chars_Ptr;
+       Data : System.Address) return Gtkada.Types.Chars_Ptr;
    pragma Convention (C, Internal_Gtranslate_Func);
    --  "str": the untranslated string
    --  "data": user data specified when installing the function, e.g. in
@@ -194,8 +196,8 @@ package body Glib.Option is
    ------------------------------
 
    function Internal_Gtranslate_Func
-      (Str  : Interfaces.C.Strings.chars_ptr;
-       Data : System.Address) return Interfaces.C.Strings.chars_ptr
+      (Str  : Gtkada.Types.Chars_Ptr;
+       Data : System.Address) return Gtkada.Types.Chars_Ptr
    is
       Func : constant Gtranslate_Func := To_Gtranslate_Func (Data);
    begin
@@ -225,12 +227,12 @@ package body Glib.Option is
       procedure Internal
          (Self               : System.Address;
           Entries            : GOption_Entry_Array;
-          Translation_Domain : Interfaces.C.Strings.chars_ptr);
+          Translation_Domain : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_option_context_add_main_entries");
-      Tmp_Translation_Domain : Interfaces.C.Strings.chars_ptr;
+      Tmp_Translation_Domain : Gtkada.Types.Chars_Ptr;
    begin
       if Translation_Domain = "" then
-         Tmp_Translation_Domain := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Translation_Domain := Gtkada.Types.Null_Ptr;
       else
          Tmp_Translation_Domain := New_String (Translation_Domain);
       end if;
@@ -255,7 +257,7 @@ package body Glib.Option is
 
    function Get_Description (Self : Goption_Context) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_option_context_get_description");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -273,7 +275,7 @@ package body Glib.Option is
       function Internal
          (Self      : System.Address;
           Main_Help : Glib.Gboolean;
-          Group     : GOption_Group) return Interfaces.C.Strings.chars_ptr;
+          Group     : GOption_Group) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_option_context_get_help");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self), Boolean'Pos (Main_Help), Group));
@@ -320,7 +322,7 @@ package body Glib.Option is
 
    function Get_Summary (Self : Goption_Context) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_option_context_get_summary");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -336,12 +338,12 @@ package body Glib.Option is
    is
       procedure Internal
          (Self        : System.Address;
-          Description : Interfaces.C.Strings.chars_ptr);
+          Description : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_option_context_set_description");
-      Tmp_Description : Interfaces.C.Strings.chars_ptr;
+      Tmp_Description : Gtkada.Types.Chars_Ptr;
    begin
       if Description = "" then
-         Tmp_Description := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Description := Gtkada.Types.Null_Ptr;
       else
          Tmp_Description := New_String (Description);
       end if;
@@ -402,12 +404,12 @@ package body Glib.Option is
    is
       procedure Internal
          (Self    : System.Address;
-          Summary : Interfaces.C.Strings.chars_ptr);
+          Summary : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_option_context_set_summary");
-      Tmp_Summary : Interfaces.C.Strings.chars_ptr;
+      Tmp_Summary : Gtkada.Types.Chars_Ptr;
    begin
       if Summary = "" then
-         Tmp_Summary := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Summary := Gtkada.Types.Null_Ptr;
       else
          Tmp_Summary := New_String (Summary);
       end if;
@@ -444,8 +446,8 @@ package body Glib.Option is
         (Gtranslate_Func, System.Address);
 
       function Internal_Cb
-         (Str  : Interfaces.C.Strings.chars_ptr;
-          Data : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Str  : Gtkada.Types.Chars_Ptr;
+          Data : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Convention (C, Internal_Cb);
       --  The type of functions which are used to translate user-visible
       --  strings, for <option>--help</option> output.
@@ -458,8 +460,8 @@ package body Glib.Option is
       -----------------
 
       function Internal_Cb
-         (Str  : Interfaces.C.Strings.chars_ptr;
-          Data : System.Address) return Interfaces.C.Strings.chars_ptr
+         (Str  : Gtkada.Types.Chars_Ptr;
+          Data : System.Address) return Gtkada.Types.Chars_Ptr
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Data);
       begin
@@ -498,9 +500,9 @@ package body Glib.Option is
    is
       procedure Internal
          (Self   : System.Address;
-          Domain : Interfaces.C.Strings.chars_ptr);
+          Domain : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_option_context_set_translation_domain");
-      Tmp_Domain : Interfaces.C.Strings.chars_ptr := New_String (Domain);
+      Tmp_Domain : Gtkada.Types.Chars_Ptr := New_String (Domain);
    begin
       Internal (Get_Object (Self), Tmp_Domain);
       Free (Tmp_Domain);
@@ -514,14 +516,13 @@ package body Glib.Option is
       (Parameter_String : UTF8_String := "") return Goption_Context
    is
       function Internal
-         (Parameter_String : Interfaces.C.Strings.chars_ptr)
-          return System.Address;
+         (Parameter_String : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_option_context_new");
-      Tmp_Parameter_String : Interfaces.C.Strings.chars_ptr;
+      Tmp_Parameter_String : Gtkada.Types.Chars_Ptr;
       Tmp_Return           : System.Address;
    begin
       if Parameter_String = "" then
-         Tmp_Parameter_String := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Parameter_String := Gtkada.Types.Null_Ptr;
       else
          Tmp_Parameter_String := New_String (Parameter_String);
       end if;

@@ -33,9 +33,9 @@
 --  <group>Glib, the general-purpose library</group>
 
 with System;
-with Interfaces.C.Strings;
 
 with Glib.Object;
+with Gtkada.Types;
 
 package Glib.Values is
 
@@ -163,7 +163,7 @@ package Glib.Values is
    function  Get_String (Value : GValue) return String;
    function  Get_String (Value : GValue; Length : Gint) return String;
 
-   function  Get_Chars (Value : GValue) return Interfaces.C.Strings.chars_ptr;
+   function  Get_Chars (Value : GValue) return Gtkada.Types.Chars_Ptr;
 
    procedure Set_Proxy (Value : in out GValue; V_Proxy : C_Proxy);
    function  Get_Proxy (Value : GValue) return C_Proxy;
@@ -219,7 +219,7 @@ package Glib.Values is
    --  to set properties immediately, since they can't be set after creation.
 
    type GParameter is record
-      Name  : Interfaces.C.Strings.chars_ptr;
+      Name  : Gtkada.Types.Chars_Ptr;
       Value : GValue;
    end record;
    type GParameter_Array is array (Natural range <>) of GParameter;

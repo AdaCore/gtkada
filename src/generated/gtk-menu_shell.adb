@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Menu_Shell is
@@ -85,13 +85,13 @@ package body Gtk.Menu_Shell is
       procedure Internal
          (Menu_Shell       : System.Address;
           Model            : System.Address;
-          Action_Namespace : Interfaces.C.Strings.chars_ptr;
+          Action_Namespace : Gtkada.Types.Chars_Ptr;
           With_Separators  : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_menu_shell_bind_model");
-      Tmp_Action_Namespace : Interfaces.C.Strings.chars_ptr;
+      Tmp_Action_Namespace : Gtkada.Types.Chars_Ptr;
    begin
       if Action_Namespace = "" then
-         Tmp_Action_Namespace := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Action_Namespace := Gtkada.Types.Null_Ptr;
       else
          Tmp_Action_Namespace := New_String (Action_Namespace);
       end if;

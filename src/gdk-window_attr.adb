@@ -22,7 +22,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Interfaces.C.Strings;
+with Gtkada.Types;
 with Glib; use Glib;
 
 package body Gdk.Window_Attr is
@@ -102,11 +102,11 @@ package body Gdk.Window_Attr is
 
    function Get_Title (Window_Attr : Gdk_Window_Attr) return UTF8_String is
       function Internal
-        (Window_Attr : Gdk_Window_Attr) return Interfaces.C.Strings.chars_ptr;
+        (Window_Attr : Gdk_Window_Attr) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "ada_gdk_window_attr_get_title");
 
    begin
-      return Interfaces.C.Strings.Value (Internal (Window_Attr));
+      return Gtkada.Types.Value (Internal (Window_Attr));
    end Get_Title;
 
    -----------------------
@@ -117,11 +117,11 @@ package body Gdk.Window_Attr is
      (Window_Attr : Gdk_Window_Attr) return String
    is
       function Internal
-        (Window_Attr : Gdk_Window_Attr) return Interfaces.C.Strings.chars_ptr;
+        (Window_Attr : Gdk_Window_Attr) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "ada_gdk_window_attr_get_wmclass_class");
 
    begin
-      return Interfaces.C.Strings.Value (Internal (Window_Attr));
+      return Gtkada.Types.Value (Internal (Window_Attr));
    end Get_Wmclass_Class;
 
    ----------------------
@@ -132,11 +132,11 @@ package body Gdk.Window_Attr is
      (Window_Attr : Gdk_Window_Attr) return String
    is
       function Internal
-        (Window_Attr : Gdk_Window_Attr) return Interfaces.C.Strings.chars_ptr;
+        (Window_Attr : Gdk_Window_Attr) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "ada_gdk_window_attr_get_wmclass_name");
 
    begin
-      return Interfaces.C.Strings.Value (Internal (Window_Attr));
+      return Gtkada.Types.Value (Internal (Window_Attr));
    end Get_Wmclass_Name;
 
    ---------------------------

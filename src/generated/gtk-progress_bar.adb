@@ -26,7 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Progress_Bar is
@@ -152,8 +152,7 @@ package body Gtk.Progress_Bar is
        return UTF8_String
    is
       function Internal
-         (Progress_Bar : System.Address)
-          return Interfaces.C.Strings.chars_ptr;
+         (Progress_Bar : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_progress_bar_get_text");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Progress_Bar)));
@@ -256,12 +255,12 @@ package body Gtk.Progress_Bar is
    is
       procedure Internal
          (Progress_Bar : System.Address;
-          Text         : Interfaces.C.Strings.chars_ptr);
+          Text         : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_progress_bar_set_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr;
+      Tmp_Text : Gtkada.Types.Chars_Ptr;
    begin
       if Text = "" then
-         Tmp_Text := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Text := Gtkada.Types.Null_Ptr;
       else
          Tmp_Text := New_String (Text);
       end if;

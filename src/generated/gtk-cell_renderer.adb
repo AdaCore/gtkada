@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Cell_Renderer is
@@ -65,12 +65,12 @@ package body Gtk.Cell_Renderer is
          (Cell            : System.Address;
           Event           : Gdk.Event.Gdk_Event;
           Widget          : System.Address;
-          Path            : Interfaces.C.Strings.chars_ptr;
+          Path            : Gtkada.Types.Chars_Ptr;
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
           Flags           : Gtk_Cell_Renderer_State) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_cell_renderer_activate");
-      Tmp_Path   : Interfaces.C.Strings.chars_ptr := New_String (Path);
+      Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Cell), Event, Get_Object (Widget), Tmp_Path, Background_Area, Cell_Area, Flags);
@@ -486,13 +486,13 @@ package body Gtk.Cell_Renderer is
          (Cell            : System.Address;
           Event           : Gdk.Event.Gdk_Event;
           Widget          : System.Address;
-          Path            : Interfaces.C.Strings.chars_ptr;
+          Path            : Gtkada.Types.Chars_Ptr;
           Background_Area : Gdk.Rectangle.Gdk_Rectangle;
           Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
           Flags           : Gtk_Cell_Renderer_State)
           return Gtk.Cell_Editable.Gtk_Cell_Editable;
       pragma Import (C, Internal, "gtk_cell_renderer_start_editing");
-      Tmp_Path   : Interfaces.C.Strings.chars_ptr := New_String (Path);
+      Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
       Tmp_Return : Gtk.Cell_Editable.Gtk_Cell_Editable;
    begin
       Tmp_Return := Internal (Get_Object (Cell), Event, Get_Object (Widget), Tmp_Path, Background_Area, Cell_Area, Flags);

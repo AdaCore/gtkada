@@ -23,12 +23,8 @@
 
 with System;                  use System;
 with System.Storage_Elements; use System.Storage_Elements;
-with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 package body Glib.Unicode is
-
-   procedure C_Free (S : Interfaces.C.Strings.chars_ptr);
-   pragma Import (C, C_Free, "free");
 
    -------------------
    -- UTF8_Validate --
@@ -140,13 +136,13 @@ package body Glib.Unicode is
 
    function UTF8_Strdown (Str : UTF8_String) return UTF8_String is
       function Internal
-        (Str : UTF8_String; Len : Natural) return ICS.chars_ptr;
+        (Str : UTF8_String; Len : Natural) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_utf8_strdown");
 
-      S : constant chars_ptr := Internal (Str, Str'Length);
-      Result : constant String := Value (S);
+      S : constant Gtkada.Types.Chars_Ptr := Internal (Str, Str'Length);
+      Result : constant String := Gtkada.Types.Value (S);
    begin
-      C_Free (S);
+      Gtkada.Types.g_free (S);
       return Result;
    end UTF8_Strdown;
 
@@ -156,13 +152,13 @@ package body Glib.Unicode is
 
    function UTF8_Strup (Str : UTF8_String) return UTF8_String is
       function Internal
-        (Str : UTF8_String; Length : Natural) return ICS.chars_ptr;
+        (Str : UTF8_String; Length : Natural) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_utf8_strup");
 
-      S : constant chars_ptr := Internal (Str, Str'Length);
-      Result : constant String := Value (S);
+      S : constant Gtkada.Types.Chars_Ptr := Internal (Str, Str'Length);
+      Result : constant String := Gtkada.Types.Value (S);
    begin
-      C_Free (S);
+      Gtkada.Types.g_free (S);
       return Result;
    end UTF8_Strup;
 

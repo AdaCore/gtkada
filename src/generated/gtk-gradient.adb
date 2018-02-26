@@ -23,10 +23,8 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Bindings;      use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Bindings; use Gtkada.Bindings;
+with Gtkada.Types;    use Gtkada.Types;
 
 package body Gtk.Gradient is
 
@@ -215,7 +213,7 @@ package body Gtk.Gradient is
 
    function To_String (Self : Gtk_Gradient) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_gradient_to_string");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));

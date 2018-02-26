@@ -24,33 +24,33 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
-with Interfaces.C.Strings;
+with Gtkada.Types;
 
 package body Gtk.Enums is
 
    function Convert (S : String) return System.Address is
       function Internal is new
-      Ada.Unchecked_Conversion (Interfaces.C.Strings.chars_ptr, System.Address);
+      Ada.Unchecked_Conversion (Gtkada.Types.Chars_Ptr, System.Address);
    begin
-      return Internal (Interfaces.C.Strings.New_String (S));
+      return Internal (Gtkada.Types.New_String (S));
    end Convert;
 
    function Convert_Chars_Ptr is new
-   Ada.Unchecked_Conversion (System.Address, Interfaces.C.Strings.chars_ptr);
+   Ada.Unchecked_Conversion (System.Address, Gtkada.Types.Chars_Ptr);
 
    function Convert (S : System.Address) return String is
    begin
-      return Interfaces.C.Strings.Value (Convert_Chars_Ptr (S));
+      return Gtkada.Types.Value (Convert_Chars_Ptr (S));
    end Convert;
 
    procedure Free_String_List (List : in out String_List.Glist) is
       use type String_List.Glist;
       Tmp   : String_List.Glist := List;
-      Chars : Interfaces.C.Strings.chars_ptr;
+      Chars : Gtkada.Types.Chars_Ptr;
    begin
       while Tmp /= String_List.Null_List loop
          Chars := Convert_Chars_Ptr (String_List.Get_Data_Address (Tmp));
-         Interfaces.C.Strings.Free (Chars);
+         Gtkada.Types.g_free (Chars);
          Tmp := String_List.Next (Tmp);
       end loop;
 
@@ -62,11 +62,11 @@ package body Gtk.Enums is
       use type String_SList.GSlist;
 
       Tmp   : String_SList.GSlist := List;
-      Chars : Interfaces.C.Strings.chars_ptr;
+      Chars : Gtkada.Types.Chars_Ptr;
    begin
       while Tmp /= String_SList.Null_List loop
          Chars := Convert_Chars_Ptr (String_SList.Get_Data_Address (Tmp));
-         Interfaces.C.Strings.Free (Chars);
+         Gtkada.Types.g_free (Chars);
          Tmp := String_SList.Next (Tmp);
       end loop;
 

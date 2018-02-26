@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Entry_Buffer is
@@ -76,15 +76,15 @@ package body Gtk.Entry_Buffer is
        N_Initial_Chars : Glib.Gint)
    is
       function Internal
-         (Initial_Chars   : Interfaces.C.Strings.chars_ptr;
+         (Initial_Chars   : Gtkada.Types.Chars_Ptr;
           N_Initial_Chars : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_entry_buffer_new");
-      Tmp_Initial_Chars : Interfaces.C.Strings.chars_ptr;
+      Tmp_Initial_Chars : Gtkada.Types.Chars_Ptr;
       Tmp_Return        : System.Address;
    begin
       if not Self.Is_Created then
          if Initial_Chars = "" then
-            Tmp_Initial_Chars := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Initial_Chars := Gtkada.Types.Null_Ptr;
          else
             Tmp_Initial_Chars := New_String (Initial_Chars);
          end if;
@@ -143,10 +143,10 @@ package body Gtk.Entry_Buffer is
       procedure Internal
          (Self     : System.Address;
           Position : Guint;
-          Chars    : Interfaces.C.Strings.chars_ptr;
+          Chars    : Gtkada.Types.Chars_Ptr;
           N_Chars  : Guint);
       pragma Import (C, Internal, "gtk_entry_buffer_emit_inserted_text");
-      Tmp_Chars : Interfaces.C.Strings.chars_ptr := New_String (Chars);
+      Tmp_Chars : Gtkada.Types.Chars_Ptr := New_String (Chars);
    begin
       Internal (Get_Object (Self), Position, Tmp_Chars, N_Chars);
       Free (Tmp_Chars);
@@ -199,7 +199,7 @@ package body Gtk.Entry_Buffer is
       (Self : not null access Gtk_Entry_Buffer_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_entry_buffer_get_text");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -218,10 +218,10 @@ package body Gtk.Entry_Buffer is
       function Internal
          (Self     : System.Address;
           Position : Guint;
-          Chars    : Interfaces.C.Strings.chars_ptr;
+          Chars    : Gtkada.Types.Chars_Ptr;
           N_Chars  : Glib.Gint) return Guint;
       pragma Import (C, Internal, "gtk_entry_buffer_insert_text");
-      Tmp_Chars  : Interfaces.C.Strings.chars_ptr := New_String (Chars);
+      Tmp_Chars  : Gtkada.Types.Chars_Ptr := New_String (Chars);
       Tmp_Return : Guint;
    begin
       Tmp_Return := Internal (Get_Object (Self), Position, Tmp_Chars, N_Chars);
@@ -254,10 +254,10 @@ package body Gtk.Entry_Buffer is
    is
       procedure Internal
          (Self    : System.Address;
-          Chars   : Interfaces.C.Strings.chars_ptr;
+          Chars   : Gtkada.Types.Chars_Ptr;
           N_Chars : Glib.Gint);
       pragma Import (C, Internal, "gtk_entry_buffer_set_text");
-      Tmp_Chars : Interfaces.C.Strings.chars_ptr := New_String (Chars);
+      Tmp_Chars : Gtkada.Types.Chars_Ptr := New_String (Chars);
    begin
       Internal (Get_Object (Self), Tmp_Chars, N_Chars);
       Free (Tmp_Chars);

@@ -45,37 +45,10 @@ with Gtk.Selection_Data; use Gtk.Selection_Data;
 
 package body Create_Dnd is
 
-   function "+" (S : String) return Interfaces.C.Strings.chars_ptr
-                renames Interfaces.C.Strings.New_String;
+   function "+" (S : String) return Gtkada.Types.Chars_Ptr
+                renames Gtkada.Types.New_String;
 
-   function "+" (S1, S2 : String)
-      return Interfaces.C.Strings.Chars_Ptr_Array is
-   begin
-      return (0 => Interfaces.C.Strings.New_String (S1),
-              1 => Interfaces.C.Strings.New_String (S2));
-   end "+";
-
-   function "+" (S1 : Interfaces.C.Strings.Chars_Ptr_Array;
-                 S2 : Interfaces.C.Strings.Chars_Ptr)
-     return Interfaces.C.Strings.Chars_Ptr_Array
-   is
-      use type Interfaces.C.size_t;
-
-      Result : Interfaces.C.Strings.Chars_Ptr_Array (S1'First .. S1'Last + 1);
-
-   begin
-      Result (S1'Range) := S1;
-      Result (S1'Last + 1) := S2;
-      return Result;
-   end "+";
-
-   function "+" (S1 : Interfaces.C.Strings.chars_ptr_array; S2 : String)
-                 return Interfaces.C.Strings.chars_ptr_array is
-   begin
-      return S1 + Interfaces.C.Strings.New_String (S2);
-   end "+";
-
-   Drag_Icon_Xpm : constant Interfaces.C.Strings.chars_ptr_array
+   Drag_Icon_Xpm : constant Gtkada.Types.Chars_Ptr_Array
      := "36 48 9 1"
      + "       c None"
      + ".      c #020204"
@@ -135,7 +108,7 @@ package body Create_Dnd is
      + ".&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&."
      + "....................................";
 
-   Trashcan_Closed_Xpm : constant Interfaces.C.Strings.chars_ptr_array
+   Trashcan_Closed_Xpm : constant Gtkada.Types.Chars_Ptr_Array
      := "64 80 17 1"
      + "        c None"
      + ".       c #030304"
@@ -235,7 +208,7 @@ package body Create_Dnd is
      + "                                                                "
      + "                                                                ";
 
-   Trashcan_Open_Xpm : constant Interfaces.C.Strings.Chars_Ptr_Array :=
+   Trashcan_Open_Xpm : constant Gtkada.Types.Chars_Ptr_Array :=
      "64 80 17 1"
      + "        c None"
      + ".       c #030304"

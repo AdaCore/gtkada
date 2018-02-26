@@ -467,7 +467,7 @@ See Gtk.Extra.Color_Combo for a different way to select colors.
         </spec>
 
         <with_body pkg="Gtkada.C"/>
-        <with_body pkg="Interfaces.C.Strings"/>
+        <with_body pkg="Gtkada.Types"/>
 
         <body>
    package Color_Arrays is new Gtkada.C.Unbounded_Arrays
@@ -492,7 +492,7 @@ See Gtk.Extra.Color_Combo for a different way to select colors.
       declare
          Result : constant Gdk_Color_Array := To_Array (Output, Integer (N));
       begin
-         G_Free (Output);
+         g_free (Output);
          return Result;
       end;
    end Palette_From_String;
@@ -501,7 +501,7 @@ See Gtk.Extra.Color_Combo for a different way to select colors.
       function Internal
         (Colors   : System.Address;
          N_Colors : Gint)
-         return Interfaces.C.Strings.chars_ptr;
+         return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_color_selection_palette_to_string");
       Str : chars_ptr;
    begin
@@ -512,7 +512,7 @@ See Gtk.Extra.Color_Combo for a different way to select colors.
          declare
             Result : constant String := Value (Str);
          begin
-            Free (Str);
+            g_free (Str);
             return Result;
          end;
       end if;
@@ -1074,7 +1074,6 @@ on how all the parameters for the boxes work.
          <with_spec pkg="Gtk.Widget" />
          <with_spec pkg="Gtk.Window" />
          <with_spec pkg="Gtkada.Types" />
-         <with_body pkg="Interfaces.C.Strings" />
          <with_body pkg="Gdk.Color" />
          <spec>
    function Create_Pixmap
@@ -1609,7 +1608,7 @@ lower    value        value + page_size       upper
    is
       procedure Internal
         (Image : System.Address;
-         Name  : out Interfaces.C.Strings.chars_ptr;
+         Name  : out Gtkada.Types.Chars_Ptr;
          Size  : out Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_image_get_icon_name");
       Str : chars_ptr;
@@ -1624,17 +1623,17 @@ lower    value        value + page_size       upper
    is
       procedure Internal
         (Image    : System.Address;
-         Stock_Id : out Interfaces.C.Strings.chars_ptr;
+         Stock_Id : out Gtkada.Types.Chars_Ptr;
          Size     : out Gint);
       pragma Import (C, Internal, "gtk_image_get_stock");
 
-      Stock : Interfaces.C.Strings.chars_ptr;
+      Stock : Gtkada.Types.Chars_Ptr;
       Sze   : Gint;
 
    begin
       Internal (Get_Object (Image), Stock, Sze);
       Size.all := Gtk.Enums.Gtk_Icon_Size'Val (Sze);
-      return Interfaces.C.Strings.Value (Stock);
+      return Gtkada.Types.Value (Stock);
    end Get;
         </body>
      </extra>
@@ -2409,10 +2408,10 @@ __PRE__
       --  Clean up, making sure to avoid double-deallocations where such
       --  may be possible.
       if GRD.display_name /= Null_Ptr then
-         Free (GRD.display_name);
+         g_free (GRD.display_name);
       end if;
       if GRD.description /= Null_Ptr then
-         Free (GRD.description);
+         g_free (GRD.description);
       end if;
       Free (GRD.mime_type);
       Free (GRD.app_name);
@@ -3034,31 +3033,31 @@ __PRE__
    --  as the memory occupied by the list itself.
        </spec>
        <with_body pkg="Ada.Unchecked_Conversion" use="False"/>
-       <with_body pkg="Interfaces.C.Strings" use="False"/>
+       <with_body pkg="Gtkada.Types" use="False"/>
        <body>
    function Convert (S : String) return System.Address is
       function Internal is new
-        Ada.Unchecked_Conversion (Interfaces.C.Strings.chars_ptr, System.Address);
+        Ada.Unchecked_Conversion (Gtkada.Types.Chars_Ptr, System.Address);
    begin
-      return Internal (Interfaces.C.Strings.New_String (S));
+      return Internal (Gtkada.Types.New_String (S));
    end Convert;
 
    function Convert_Chars_Ptr is new
-     Ada.Unchecked_Conversion (System.Address, Interfaces.C.Strings.chars_ptr);
+     Ada.Unchecked_Conversion (System.Address, Gtkada.Types.Chars_Ptr);
 
    function Convert (S : System.Address) return String is
    begin
-      return Interfaces.C.Strings.Value (Convert_Chars_Ptr (S));
+      return Gtkada.Types.Value (Convert_Chars_Ptr (S));
    end Convert;
 
    procedure Free_String_List (List : in out String_List.Glist) is
       use type String_List.Glist;
       Tmp   : String_List.Glist := List;
-      Chars : Interfaces.C.Strings.chars_ptr;
+      Chars : Gtkada.Types.Chars_Ptr;
    begin
       while Tmp /= String_List.Null_List loop
          Chars := Convert_Chars_Ptr (String_List.Get_Data_Address (Tmp));
-         Interfaces.C.Strings.Free (Chars);
+         Gtkada.Types.g_free (Chars);
          Tmp := String_List.Next (Tmp);
       end loop;
 
@@ -3070,11 +3069,11 @@ __PRE__
       use type String_SList.GSlist;
 
       Tmp   : String_SList.GSlist := List;
-      Chars : Interfaces.C.Strings.chars_ptr;
+      Chars : Gtkada.Types.Chars_Ptr;
    begin
       while Tmp /= String_SList.Null_List loop
          Chars := Convert_Chars_Ptr (String_SList.Get_Data_Address (Tmp));
-         Interfaces.C.Strings.Free (Chars);
+         Gtkada.Types.g_free (Chars);
          Tmp := String_SList.Next (Tmp);
       end loop;
 
@@ -3815,11 +3814,11 @@ __PRE__
    is
       function Internal
         (Buffer              : System.Address;
-         Tag_Name            : Interfaces.C.Strings.chars_ptr)
+         Tag_Name            : Gtkada.Types.Chars_Ptr)
          return System.Address;
       pragma Import (C, Internal, "ada_gtk_text_buffer_create_tag");
       Stub : Gtk_Text_Tag_Record;
-      Str  : Interfaces.C.Strings.chars_ptr := String_Or_Null (Tag_Name);
+      Str  : Gtkada.Types.Chars_Ptr := String_Or_Null (Tag_Name);
       Tag  : Gtk_Text_Tag;
    begin
       Tag := Gtk_Text_Tag
@@ -3949,6 +3948,7 @@ creating a tag.
      <function id="gtk_propagate_event" />
 
      <extra>
+       <with_body pkg="Interfaces.C"/>
        <spec>
    procedure Init;
    --  Initialize GtkAda's internal structures.
@@ -4585,10 +4585,10 @@ text. Since: 3.14
      (Selection : Gtk_Selection_Data) return String
    is
       function Internal
-        (Selection : System.Address) return Interfaces.C.Strings.chars_ptr;
+        (Selection : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_selection_data_get_data");
    begin
-      return Interfaces.C.Strings.Value (Internal (Get_Object (Selection)));
+      return Gtkada.Types.Value (Internal (Get_Object (Selection)));
    end Get_Data_As_String;
         </body>
      </extra>
@@ -5027,7 +5027,7 @@ text. Since: 3.14
      <method id="gtk_action_group_add_toggle_actions_full" bind="False"/> <!-- see below -->
 
      <extra>
-       <with_spec pkg="Interfaces.C.Strings"/>
+       <with_spec pkg="Gtkada.Types" use="True" />
        <spec>
    type Action_Callback is access procedure
      (Action : System.Address; User_Data : System.Address);
@@ -5037,31 +5037,31 @@ text. Since: 3.14
    --      Act : constant Gtk_Action := Convert (Action);
 
    type Action_Entry is record
-      Name         : Interfaces.C.Strings.chars_ptr;
-      Stock_Id     : Interfaces.C.Strings.chars_ptr;
-      Label        : Interfaces.C.Strings.chars_ptr;
-      Accelerator  : Interfaces.C.Strings.chars_ptr;
-      Tooltip      : Interfaces.C.Strings.chars_ptr;
+      Name         : Gtkada.Types.Chars_Ptr;
+      Stock_Id     : Gtkada.Types.Chars_Ptr;
+      Label        : Gtkada.Types.Chars_Ptr;
+      Accelerator  : Gtkada.Types.Chars_Ptr;
+      Tooltip      : Gtkada.Types.Chars_Ptr;
       Callback     : Action_Callback;
    end record;
    pragma Convention (C, Action_Entry);
 
    type Radio_Action_Entry is record
-      Name         : Interfaces.C.Strings.chars_ptr;
-      Stock_Id     : Interfaces.C.Strings.chars_ptr;
-      Label        : Interfaces.C.Strings.chars_ptr;
-      Accelerator  : Interfaces.C.Strings.chars_ptr;
-      Tooltip      : Interfaces.C.Strings.chars_ptr;
+      Name         : Gtkada.Types.Chars_Ptr;
+      Stock_Id     : Gtkada.Types.Chars_Ptr;
+      Label        : Gtkada.Types.Chars_Ptr;
+      Accelerator  : Gtkada.Types.Chars_Ptr;
+      Tooltip      : Gtkada.Types.Chars_Ptr;
       Value        : Glib.Gint;
    end record;
    pragma Convention (C, Radio_Action_Entry);
 
    type Toggle_Action_Entry is record
-      Name         : Interfaces.C.Strings.chars_ptr;
-      Stock_Id     : Interfaces.C.Strings.chars_ptr;
-      Label        : Interfaces.C.Strings.chars_ptr;
-      Accelerator  : Interfaces.C.Strings.chars_ptr;
-      Tooltip      : Interfaces.C.Strings.chars_ptr;
+      Name         : Gtkada.Types.Chars_Ptr;
+      Stock_Id     : Gtkada.Types.Chars_Ptr;
+      Label        : Gtkada.Types.Chars_Ptr;
+      Accelerator  : Gtkada.Types.Chars_Ptr;
+      Tooltip      : Gtkada.Types.Chars_Ptr;
       Callback     : Action_Callback;
       Is_Active    : Glib.Gboolean;
    end record;
@@ -5261,11 +5261,11 @@ text. Since: 3.14
 
    procedure Free (Action  : in out Action_Entry) is
    begin
-      Free (Action.Name);
-      Free (Action.Label);
-      Free (Action.Stock_Id);
-      Free (Action.Accelerator);
-      Free (Action.Tooltip);
+      g_free (Action.Name);
+      g_free (Action.Label);
+      g_free (Action.Stock_Id);
+      g_free (Action.Accelerator);
+      g_free (Action.Tooltip);
    end Free;
 
    procedure Free (Actions : in out Action_Entry_Array) is
@@ -5277,11 +5277,11 @@ text. Since: 3.14
 
    procedure Free (Action  : in out Radio_Action_Entry) is
    begin
-      Free (Action.Name);
-      Free (Action.Label);
-      Free (Action.Stock_Id);
-      Free (Action.Accelerator);
-      Free (Action.Tooltip);
+      g_free (Action.Name);
+      g_free (Action.Label);
+      g_free (Action.Stock_Id);
+      g_free (Action.Accelerator);
+      g_free (Action.Tooltip);
    end Free;
 
    procedure Free (Actions : in out Radio_Action_Entry_Array) is
@@ -5293,11 +5293,11 @@ text. Since: 3.14
 
    procedure Free (Action  : in out Toggle_Action_Entry) is
    begin
-      Free (Action.Name);
-      Free (Action.Label);
-      Free (Action.Stock_Id);
-      Free (Action.Accelerator);
-      Free (Action.Tooltip);
+      g_free (Action.Name);
+      g_free (Action.Label);
+      g_free (Action.Stock_Id);
+      g_free (Action.Accelerator);
+      g_free (Action.Tooltip);
    end Free;
 
    procedure Free (Actions : in out Toggle_Action_Entry_Array) is
@@ -5780,7 +5780,7 @@ direction, widget state, or icon size.
       Origin   : String)
    is
       type Property_Value is record
-         Origin : Interfaces.C.Strings.chars_ptr;
+         Origin : Gtkada.Types.Chars_Ptr;
          Value  : GValue;
       end record;
       pragma Convention (C, Property_Value);
@@ -5796,7 +5796,7 @@ direction, widget state, or icon size.
          Value  => Value);
    begin
       Internal (Get_Object (Settings), Name &amp; ASCII.NUL, Val'Address);
-      Free (Val.Origin);
+      g_free (Val.Origin);
    end Set_Property_Value;
        </body>
      </extra>
@@ -5846,7 +5846,6 @@ direction, widget state, or icon size.
    --  not hold any pointer into item and item can be freed. Use
    --  Add_Static if item is persistent and GtkAda need not copy the array.
        </spec>
-       <with_body pkg="Interfaces.C.Strings" />
        <body>
    procedure Gtk_New
      (Item               : out Gtk_Stock_Item;
@@ -5856,18 +5855,18 @@ direction, widget state, or icon size.
       Keyval             : Gdk.Types.Gdk_Key_Type;
       Translation_Domain : String) is
    begin
-      Item.Stock_Id           := Interfaces.C.Strings.New_String (Stock_Id);
-      Item.Label              := Interfaces.C.Strings.New_String (Label);
+      Item.Stock_Id           := Gtkada.Types.New_String (Stock_Id);
+      Item.Label              := Gtkada.Types.New_String (Label);
       Item.Modifier           := Modifier;
       Item.Keyval             := Guint (Keyval);
-      Item.Translation_Domain := Interfaces.C.Strings.New_String (Translation_Domain);
+      Item.Translation_Domain := Gtkada.Types.New_String (Translation_Domain);
    end Gtk_New;
 
    procedure Free (Item : in out Gtk_Stock_Item) is
    begin
-      Interfaces.C.Strings.Free (Item.Stock_Id);
-      Interfaces.C.Strings.Free (Item.Label);
-      Interfaces.C.Strings.Free (Item.Translation_Domain);
+      Gtkada.Types.g_free (Item.Stock_Id);
+      Gtkada.Types.g_free (Item.Label);
+      Gtkada.Types.g_free (Item.Translation_Domain);
    end Free;
 
    ---------
@@ -6051,7 +6050,6 @@ direction, widget state, or icon size.
      <extra>
         <with_spec pkg="Glib.Values"/>
         <with_spec pkg="Gtkada.Types"/>
-        <with_body pkg="Interfaces.C.Strings"/>
         <with_body pkg="Ada.Unchecked_Conversion" use="False"/>
         <with_body pkg="System.Address_To_Access_Conversions" use="False"/>
         <type>
@@ -6860,26 +6858,26 @@ direction, widget state, or icon size.
         (Tree_Model : Gtk_Tree_Model;
          Iter       : Gtk_Tree_Iter;
          Column     : Gint;
-         Value      : out Interfaces.C.Strings.chars_ptr);
+         Value      : out Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "ada_gtk_tree_model_get");
-      A : Interfaces.C.Strings.chars_ptr;
+      A : Gtkada.Types.Chars_Ptr;
    begin
       if Iter = Null_Iter then
          raise Program_Error with "Get_String with null_iter";
       end if;
       Internal (Tree_Model, Iter, Column, A);
-      if A = Interfaces.C.Strings.Null_Ptr then
+      if A = Gtkada.Types.Null_Ptr then
          return "";
       else
          declare
-            S : constant String := Interfaces.C.Strings.Value (A);
+            S : constant String := Gtkada.Types.Value (A);
 
-            procedure C_Free (S : Interfaces.C.Strings.chars_ptr);
+            procedure C_Free (S : Gtkada.Types.Chars_Ptr);
             pragma Import (C, C_Free, "free");
 
          begin
             --  Since A was allocated by gtk+ via malloc(), and not via
-            --  System.Memory, we should not be using Interfaces.C.Strings.Free
+            --  System.Memory, we should not be using Gtkada.Types.g_free
             --  which goes through System.Memory. So we call free() directly
             --  instead.
             C_Free (A);
@@ -7859,7 +7857,6 @@ package body Generic_Set is
        </type>
        <with_spec pkg="Glib.Application"/>
        <with_spec pkg="Glib.Error"/>
-       <with_spec pkg="Interfaces.C.Strings"/>
        <with_spec pkg="Gtkada.Bindings"/>
        <with_body pkg="Ada.Unchecked_Conversion" use='false'/>
        <spec>
@@ -7887,9 +7884,9 @@ package body Generic_Set is
        </spec>
        <spec private="True">
    Null_GOption_Entry : constant GOption_Entry :=
-                          (ICS.Null_Ptr, Gchar(ASCII.NUL),
+                          (Gtkada.Types.Null_Ptr, Gchar(ASCII.NUL),
                            0, G_Option_Arg_None, System.Null_Address,
-                           ICS.Null_Ptr, ICS.Null_Ptr);
+                           Gtkada.Types.Null_Ptr, Gtkada.Types.Null_Ptr);
        </spec>
        <body>
    -----------
@@ -7931,7 +7928,7 @@ package body Generic_Set is
          Ret := Internal (Get_Object (Self), Argc'Access, Argv'Address, Err'Address);
       else
          declare
-            Args : aliased ICS.chars_ptr_array := To_Chars_Ptr (Argv);
+            Args : aliased Gtkada.Types.Chars_Ptr_Array := To_Chars_Ptr (Argv);
             Idx  : aliased Glib.Gint := 1;
          begin
             --  Copy command name argument
@@ -7939,7 +7936,9 @@ package body Generic_Set is
             Idx := 1;
 
             for J in 1 .. Argc - 1 loop
-               if Filter (ICS.Value (Argv (Interfaces.C.size_t (J)))) then
+               if Filter 
+                  (Gtkada.Types.Value (Argv (Interfaces.C.size_t (J)))) 
+               then
                   Args (Interfaces.C.size_t (Idx)) :=
                     Argv (Interfaces.C.size_t (J));
                   Idx := Idx + 1;
@@ -7979,12 +7978,12 @@ package body Generic_Set is
       Argc : aliased Glib.Gint := 0;
 
    begin
-      while Argv.all (size_t (Argc)) /= Null_Ptr loop
+      while Argv.all (size_t (Argc)) /= Gtkada.Types.Null_Ptr loop
          Argc := Argc + 1;
       end loop;
 
       Ret := Internal (Get_Object (Self), Argc'Access, Argv, Err'Address);
-      Argv.all (size_t (Argc)) := Null_Ptr;
+      Argv.all (size_t (Argc)) := Gtkada.Types.Null_Ptr;
       Error := Err;
       Success := Ret /= 0;
    end Parse;

@@ -23,9 +23,9 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Bindings;      use Gtkada.Bindings;
+with Gtkada.Bindings; use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types;    use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Buildable is
@@ -44,12 +44,12 @@ package body Gtk.Buildable is
          (Self     : Gtk_Buildable;
           Builder  : System.Address;
           Child    : System.Address;
-          The_Type : Interfaces.C.Strings.chars_ptr);
+          The_Type : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_buildable_add_child");
-      Tmp_The_Type : Interfaces.C.Strings.chars_ptr;
+      Tmp_The_Type : Gtkada.Types.Chars_Ptr;
    begin
       if The_Type = "" then
-         Tmp_The_Type := Interfaces.C.Strings.Null_Ptr;
+         Tmp_The_Type := Gtkada.Types.Null_Ptr;
       else
          Tmp_The_Type := New_String (The_Type);
       end if;
@@ -69,9 +69,9 @@ package body Gtk.Buildable is
       function Internal
          (Self    : Gtk_Buildable;
           Builder : System.Address;
-          Name    : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Name    : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_buildable_construct_child");
-      Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name     : Gtkada.Types.Chars_Ptr := New_String (Name);
       Stub_GObject : Glib.Object.GObject_Record;
       Tmp_Return   : System.Address;
    begin
@@ -95,10 +95,10 @@ package body Gtk.Buildable is
          (Self    : Gtk_Buildable;
           Builder : System.Address;
           Child   : System.Address;
-          Tagname : Interfaces.C.Strings.chars_ptr;
+          Tagname : Gtkada.Types.Chars_Ptr;
           Data    : System.Address);
       pragma Import (C, Internal, "gtk_buildable_custom_finished");
-      Tmp_Tagname : Interfaces.C.Strings.chars_ptr := New_String (Tagname);
+      Tmp_Tagname : Gtkada.Types.Chars_Ptr := New_String (Tagname);
    begin
       Internal (Self, Get_Object (Builder), Get_Object_Or_Null (GObject (Child)), Tmp_Tagname, Data);
       Free (Tmp_Tagname);
@@ -119,10 +119,10 @@ package body Gtk.Buildable is
          (Self    : Gtk_Buildable;
           Builder : System.Address;
           Child   : System.Address;
-          Tagname : Interfaces.C.Strings.chars_ptr;
+          Tagname : Gtkada.Types.Chars_Ptr;
           Data    : in out System.Address);
       pragma Import (C, Internal, "gtk_buildable_custom_tag_end");
-      Tmp_Tagname : Interfaces.C.Strings.chars_ptr := New_String (Tagname);
+      Tmp_Tagname : Gtkada.Types.Chars_Ptr := New_String (Tagname);
    begin
       Internal (Self, Get_Object (Builder), Get_Object_Or_Null (GObject (Child)), Tmp_Tagname, Data);
       Free (Tmp_Tagname);
@@ -140,9 +140,9 @@ package body Gtk.Buildable is
       function Internal
          (Self      : Gtk_Buildable;
           Builder   : System.Address;
-          Childname : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Childname : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_buildable_get_internal_child");
-      Tmp_Childname : Interfaces.C.Strings.chars_ptr := New_String (Childname);
+      Tmp_Childname : Gtkada.Types.Chars_Ptr := New_String (Childname);
       Stub_GObject  : Glib.Object.GObject_Record;
       Tmp_Return    : System.Address;
    begin
@@ -156,8 +156,7 @@ package body Gtk.Buildable is
    --------------
 
    function Get_Name (Self : Gtk_Buildable) return UTF8_String is
-      function Internal
-         (Self : Gtk_Buildable) return Interfaces.C.Strings.chars_ptr;
+      function Internal (Self : Gtk_Buildable) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_buildable_get_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Self));
@@ -190,10 +189,10 @@ package body Gtk.Buildable is
       procedure Internal
          (Self    : Gtk_Buildable;
           Builder : System.Address;
-          Name    : Interfaces.C.Strings.chars_ptr;
+          Name    : Gtkada.Types.Chars_Ptr;
           Value   : in out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_buildable_set_buildable_property");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Self, Get_Object (Builder), Tmp_Name, Value);
       Free (Tmp_Name);
@@ -206,9 +205,9 @@ package body Gtk.Buildable is
    procedure Set_Name (Self : Gtk_Buildable; Name : UTF8_String) is
       procedure Internal
          (Self : Gtk_Buildable;
-          Name : Interfaces.C.Strings.chars_ptr);
+          Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_buildable_set_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Self, Tmp_Name);
       Free (Tmp_Name);

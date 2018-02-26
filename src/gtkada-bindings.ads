@@ -33,6 +33,7 @@ with Glib.Object;
 with Glib.Types;
 with Glib.Values;
 with Gtkada.C;
+with Gtkada.Types;
 with GNAT.Strings;
 with Interfaces.C.Strings;
 with System;
@@ -53,12 +54,18 @@ package Gtkada.Bindings is
 
    function Value_And_Free
      (Str : Interfaces.C.Strings.chars_ptr) return String;
+   function Value_And_Free
+     (Str : Gtkada.Types.Chars_Ptr) return String;
    --  Returns the value stored in Str, and free the memory occupied by Str.
 
    function Value_Allowing_Null
      (Str : Interfaces.C.Strings.chars_ptr) return String;
    function Value_Allowing_Null
+     (Str : Gtkada.Types.Chars_Ptr) return String;
+   function Value_Allowing_Null
      (Str : Interfaces.C.Strings.chars_ptr) return Glib.Signal_Name;
+   function Value_Allowing_Null
+     (Str : Gtkada.Types.Chars_Ptr) return Glib.Signal_Name;
    --  Return the value stored in Str, and an empty string if Str is null.
 
    -------------
@@ -66,11 +73,12 @@ package Gtkada.Bindings is
    -------------
 
    function String_Or_Null (S : String) return ICS.chars_ptr;
+   function String_Or_Null (S : String) return Gtkada.Types.Chars_Ptr;
    --  Return Null_Ptr if S is the empty string, or a newly allocated string
    --  otherwise. This is intended mostly for the binding itself.
 
    type chars_ptr_array_access
-     is access ICS.chars_ptr_array (Interfaces.C.size_t);
+     is access Gtkada.Types.Chars_Ptr_Array (Interfaces.C.size_t);
    pragma Convention (C, chars_ptr_array_access);
    --  Suitable for a C function that returns a gchar**
 
@@ -80,7 +88,7 @@ package Gtkada.Bindings is
    --  simply return.
 
    function To_String_List
-     (C : ICS.chars_ptr_array) return GNAT.Strings.String_List;
+     (C : Gtkada.Types.Chars_Ptr_Array) return GNAT.Strings.String_List;
    --  Converts C into a String_List. Returned value must be freed by caller,
    --  as well as C. C is NULL terminated.
 
@@ -90,18 +98,18 @@ package Gtkada.Bindings is
    --  Returned value must be freed by caller.
 
    function To_String_List
-     (C : ICS.chars_ptr_array; N : Glib.Gint)
+     (C : Gtkada.Types.Chars_Ptr_Array; N : Glib.Gint)
       return GNAT.Strings.String_List;
    --  Converts C into a String_List. N is the number of elements in C.
    --  Returned value must be freed by caller, as well as C.
 
    function From_String_List
-     (C : GNAT.Strings.String_List) return ICS.chars_ptr_array;
+     (C : GNAT.Strings.String_List) return Gtkada.Types.Chars_Ptr_Array;
    --  Converts C into a chars_ptr_array. Returned value must be freed by
    --  caller, as well as C.
 
    function To_Chars_Ptr
-     (C : chars_ptr_array_access) return ICS.chars_ptr_array;
+     (C : chars_ptr_array_access) return Gtkada.Types.Chars_Ptr_Array;
    --  Return a bounded array that contains the same strings as C (so you
    --  shouldn't free C). 'Last applies to the result, whereas it doesn't to C.
 

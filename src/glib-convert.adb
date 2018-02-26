@@ -33,16 +33,6 @@ package body Glib.Convert is
       Bytes_Read    : access Gsize;
       Bytes_Written : access Gsize;
       Error         : GError_Access) return Gtkada.Types.Chars_Ptr;
-
-   function g_convert
-     (Str           : Interfaces.C.Strings.chars_ptr;
-      Len           : Gsize;
-      To_Codeset    : String;
-      From_Codeset  : String;
-      Bytes_Read    : access Gsize;
-      Bytes_Written : access Gsize;
-      Error         : GError_Access) return Gtkada.Types.Chars_Ptr;
-
    pragma Import (C, g_convert, "g_convert");
 
    -------------
@@ -75,7 +65,7 @@ package body Glib.Convert is
          Result (Result'First .. Result'First + Bytes_Written - 1) := Res;
       end;
 
-      Gtkada.Types.g_free (S);
+      Gtkada.Types.Free (S);
    end Convert;
 
    function Convert
@@ -99,42 +89,9 @@ package body Glib.Convert is
          declare
             Res : constant String := Gtkada.Types.Value (S);
          begin
-            Gtkada.Types.g_free (S);
+            Gtkada.Types.Free (S);
             return Res;
          end;
-      end if;
-   end Convert;
-
-   procedure Convert
-     (Str           : Interfaces.C.Strings.chars_ptr;
-      Len           : Natural;
-      To_Codeset    : String;
-      From_Codeset  : String;
-      Bytes_Read    : out Natural;
-      Bytes_Written : out Natural;
-      Error         : GError_Access := null;
-      Result        : out String)
-   is
-      Read    : aliased Gsize;
-      Written : aliased Gsize;
-      S       : Gtkada.Types.Chars_Ptr;
-
-   begin
-      S := g_convert
-        (Str, Gsize (Len), To_Codeset & ASCII.NUL, From_Codeset & ASCII.NUL,
-         Read'Access, Written'Access, Error);
-      Bytes_Read := Natural (Read);
-      Bytes_Written := Natural (Written);
-
-      if S = Gtkada.Types.Null_Ptr then
-         Bytes_Written := 0;
-      else
-         declare
-            Res : constant String := Gtkada.Types.Value (S);
-         begin
-            Result (Result'First .. Result'First + Bytes_Written - 1) := Res;
-         end;
-         Gtkada.Types.g_free (S);
       end if;
    end Convert;
 
@@ -159,49 +116,27 @@ package body Glib.Convert is
       return S;
    end Convert;
 
-   function Convert
-     (Str           : Interfaces.C.Strings.chars_ptr;
-      Len           : Natural;
-      To_Codeset    : String;
-      From_Codeset  : String;
-      Bytes_Read    : access Natural;
-      Bytes_Written : access Natural;
-      Error         : GError_Access := null) return Gtkada.Types.Chars_Ptr
-   is
-      Read    : aliased Gsize;
-      Written : aliased Gsize;
-      S       : Gtkada.Types.Chars_Ptr;
-
-   begin
-      S := g_convert
-        (Str, Gsize (Len), To_Codeset & ASCII.NUL, From_Codeset & ASCII.NUL,
-         Read'Access, Written'Access, Error);
-      Bytes_Read.all := Natural (Read);
-      Bytes_Written.all := Natural (Written);
-      return S;
-   end Convert;
-
    -----------------------
    -- Filename_From_URI --
    -----------------------
 
    function Filename_From_URI
      (URI      : String;
-      Hostname : access Interfaces.C.Strings.chars_ptr;
+      Hostname : access Gtkada.Types.Chars_Ptr;
       Error    : GError_Access := null) return String
    is
       function Internal
         (URI      : String;
-         Hostname : access Interfaces.C.Strings.chars_ptr;
+         Hostname : access Gtkada.Types.Chars_Ptr;
          Error    : GError_Access) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "ada_g_filename_from_uri");
 
-      S   : constant Gtkada.Types.Chars_Ptr :=
+      S   : Gtkada.Types.Chars_Ptr :=
         Internal (URI & ASCII.NUL, Hostname, Error);
       Str : constant String := Gtkada.Types.Value (S);
 
    begin
-      Gtkada.Types.g_free (S);
+      Gtkada.Types.Free (S);
       return Str;
    end Filename_From_URI;
 
@@ -221,12 +156,12 @@ package body Glib.Convert is
          Error         : GError_Access) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "ada_g_filename_from_utf8");
 
-      S   : constant Gtkada.Types.Chars_Ptr := Internal
+      S   : Gtkada.Types.Chars_Ptr := Internal
         (UTF8_String, UTF8_String'Length, Error => Error);
       Str : constant String := Gtkada.Types.Value (S);
 
    begin
-      Gtkada.Types.g_free (S);
+      Gtkada.Types.Free (S);
       return Str;
    end Filename_From_UTF8;
 
@@ -258,7 +193,7 @@ package body Glib.Convert is
       declare
          Str : constant String := Gtkada.Types.Value (S);
       begin
-         Gtkada.Types.g_free (S);
+         Gtkada.Types.Free (S);
          return Str;
       end;
    end Filename_To_URI;
@@ -279,15 +214,15 @@ package body Glib.Convert is
          Error         : GError_Access) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "ada_g_filename_to_utf8");
 
-      S   : constant Gtkada.Types.Chars_Ptr := Internal
+      S   : Gtkada.Types.Chars_Ptr := Internal
         (OS_String, OS_String'Length, Error => Error);
    begin
       if S /= Gtkada.Types.Null_Ptr then
          return Str : constant String := Gtkada.Types.Value (S) do
-            Gtkada.Types.g_free (S);
+            Gtkada.Types.Free (S);
          end return;
       else
-         Gtkada.Types.g_free (S);
+         Gtkada.Types.Free (S);
          return "";
       end if;
    end Filename_To_UTF8;
@@ -327,7 +262,7 @@ package body Glib.Convert is
          Result (Result'First .. Result'First + Bytes_Written - 1) := Res;
       end;
 
-      Gtkada.Types.g_free (S);
+      Gtkada.Types.Free (S);
    end Locale_From_UTF8;
 
    function Locale_From_UTF8
@@ -365,7 +300,7 @@ package body Glib.Convert is
          Error         : GError_Access := null) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_locale_from_utf8");
 
-      S : constant Gtkada.Types.Chars_Ptr :=
+      S : Gtkada.Types.Chars_Ptr :=
         Internal (UTF8_String, UTF8_String'Length);
 
    begin
@@ -375,7 +310,7 @@ package body Glib.Convert is
          declare
             Str : constant String := Gtkada.Types.Value (S);
          begin
-            Gtkada.Types.g_free (S);
+            Gtkada.Types.Free (S);
             return Str;
          end;
       end if;
@@ -421,7 +356,7 @@ package body Glib.Convert is
          Result (Result'First .. Result'First + Bytes_Written - 1) := Res;
       end;
 
-      Gtkada.Types.g_free (S);
+      Gtkada.Types.Free (S);
    end Locale_To_UTF8;
 
    function Locale_To_UTF8
@@ -459,7 +394,7 @@ package body Glib.Convert is
          Error         : GError_Access := null) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_locale_to_utf8");
 
-      S : constant Gtkada.Types.Chars_Ptr :=
+      S : Gtkada.Types.Chars_Ptr :=
         Internal (OS_String, OS_String'Length);
 
    begin
@@ -470,7 +405,7 @@ package body Glib.Convert is
          declare
             Str : constant String := Gtkada.Types.Value (S);
          begin
-            Gtkada.Types.g_free (S);
+            Gtkada.Types.Free (S);
             return Str;
          end;
       end if;
@@ -485,12 +420,12 @@ package body Glib.Convert is
         Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_markup_escape_text");
 
-      C_Res  : constant Gtkada.Types.Chars_Ptr :=
+      C_Res  : Gtkada.Types.Chars_Ptr :=
         Internal (S, S'Length);
       Result : constant String := Gtkada.Types.Value (C_Res);
 
    begin
-      Gtkada.Types.g_free (C_Res);
+      Gtkada.Types.Free (C_Res);
       return Result;
    end Escape_Text;
 

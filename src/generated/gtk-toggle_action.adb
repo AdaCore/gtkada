@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Toggle_Action is
@@ -82,30 +82,30 @@ package body Gtk.Toggle_Action is
        Stock_Id : UTF8_String := "")
    is
       function Internal
-         (Name     : Interfaces.C.Strings.chars_ptr;
-          Label    : Interfaces.C.Strings.chars_ptr;
-          Tooltip  : Interfaces.C.Strings.chars_ptr;
-          Stock_Id : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Name     : Gtkada.Types.Chars_Ptr;
+          Label    : Gtkada.Types.Chars_Ptr;
+          Tooltip  : Gtkada.Types.Chars_Ptr;
+          Stock_Id : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_toggle_action_new");
-      Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Tmp_Label    : Interfaces.C.Strings.chars_ptr;
-      Tmp_Tooltip  : Interfaces.C.Strings.chars_ptr;
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr;
+      Tmp_Name     : Gtkada.Types.Chars_Ptr := New_String (Name);
+      Tmp_Label    : Gtkada.Types.Chars_Ptr;
+      Tmp_Tooltip  : Gtkada.Types.Chars_Ptr;
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr;
       Tmp_Return   : System.Address;
    begin
       if not Action.Is_Created then
          if Label = "" then
-            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Label := Gtkada.Types.Null_Ptr;
          else
             Tmp_Label := New_String (Label);
          end if;
          if Tooltip = "" then
-            Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Tooltip := Gtkada.Types.Null_Ptr;
          else
             Tmp_Tooltip := New_String (Tooltip);
          end if;
          if Stock_Id = "" then
-            Tmp_Stock_Id := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Stock_Id := Gtkada.Types.Null_Ptr;
          else
             Tmp_Stock_Id := New_String (Stock_Id);
          end if;

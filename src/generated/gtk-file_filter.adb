@@ -206,9 +206,9 @@ package body Gtk.File_Filter is
    is
       procedure Internal
          (Self      : System.Address;
-          Mime_Type : Interfaces.C.Strings.chars_ptr);
+          Mime_Type : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_file_filter_add_mime_type");
-      Tmp_Mime_Type : Interfaces.C.Strings.chars_ptr := New_String (Mime_Type);
+      Tmp_Mime_Type : Gtkada.Types.Chars_Ptr := New_String (Mime_Type);
    begin
       Internal (Get_Object (Self), Tmp_Mime_Type);
       Free (Tmp_Mime_Type);
@@ -224,9 +224,9 @@ package body Gtk.File_Filter is
    is
       procedure Internal
          (Self    : System.Address;
-          Pattern : Interfaces.C.Strings.chars_ptr);
+          Pattern : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_file_filter_add_pattern");
-      Tmp_Pattern : Interfaces.C.Strings.chars_ptr := New_String (Pattern);
+      Tmp_Pattern : Gtkada.Types.Chars_Ptr := New_String (Pattern);
    begin
       Internal (Get_Object (Self), Tmp_Pattern);
       Free (Tmp_Pattern);
@@ -269,7 +269,7 @@ package body Gtk.File_Filter is
       (Self : not null access Gtk_File_Filter_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_file_filter_get_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -299,12 +299,12 @@ package body Gtk.File_Filter is
    is
       procedure Internal
          (Self : System.Address;
-          Name : Interfaces.C.Strings.chars_ptr);
+          Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_file_filter_set_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Name : Gtkada.Types.Chars_Ptr;
    begin
       if Name = "" then
-         Tmp_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Name := New_String (Name);
       end if;

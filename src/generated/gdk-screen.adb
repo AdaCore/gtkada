@@ -25,9 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Types;               use Gtkada.Types;
 
 package body Gdk.Screen is
 
@@ -253,7 +251,7 @@ package body Gdk.Screen is
    is
       function Internal
          (Screen      : System.Address;
-          Monitor_Num : Glib.Gint) return Interfaces.C.Strings.chars_ptr;
+          Monitor_Num : Glib.Gint) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gdk_screen_get_monitor_plug_name");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Screen), Monitor_Num));
@@ -451,7 +449,7 @@ package body Gdk.Screen is
       (Screen : not null access Gdk_Screen_Record) return UTF8_String
    is
       function Internal
-         (Screen : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Screen : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gdk_screen_make_display_name");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Screen)));

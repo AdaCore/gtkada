@@ -27,7 +27,7 @@ with Ada.Unchecked_Conversion;
 with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Cell_View is
@@ -263,9 +263,9 @@ package body Gtk.Cell_View is
        Markup    : UTF8_String)
    is
       function Internal
-         (Markup : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Markup : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_cell_view_new_with_markup");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr := New_String (Markup);
+      Tmp_Markup : Gtkada.Types.Chars_Ptr := New_String (Markup);
       Tmp_Return : System.Address;
    begin
       if not Cell_View.Is_Created then
@@ -300,9 +300,9 @@ package body Gtk.Cell_View is
        Text      : UTF8_String)
    is
       function Internal
-         (Text : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Text : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_cell_view_new_with_text");
-      Tmp_Text   : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text   : Gtkada.Types.Chars_Ptr := New_String (Text);
       Tmp_Return : System.Address;
    begin
       if not Cell_View.Is_Created then
@@ -582,10 +582,10 @@ package body Gtk.Cell_View is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Attribute   : Interfaces.C.Strings.chars_ptr;
+          Attribute   : Gtkada.Types.Chars_Ptr;
           Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Tmp_Attribute, Column);
       Free (Tmp_Attribute);

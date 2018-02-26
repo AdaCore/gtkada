@@ -23,10 +23,8 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Bindings;      use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Bindings; use Gtkada.Bindings;
+with Gtkada.Types;    use Gtkada.Types;
 
 package body Gtk.Symbolic_Color is
 
@@ -105,9 +103,9 @@ package body Gtk.Symbolic_Color is
        Name : UTF8_String)
    is
       function Internal
-         (Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_symbolic_color_new_name");
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name   : Gtkada.Types.Chars_Ptr := New_String (Name);
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Name);
@@ -142,10 +140,10 @@ package body Gtk.Symbolic_Color is
        Id          : Glib.Gint)
    is
       function Internal
-         (Theme_Class : Interfaces.C.Strings.chars_ptr;
+         (Theme_Class : Gtkada.Types.Chars_Ptr;
           Id          : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_symbolic_color_new_win32");
-      Tmp_Theme_Class : Interfaces.C.Strings.chars_ptr := New_String (Theme_Class);
+      Tmp_Theme_Class : Gtkada.Types.Chars_Ptr := New_String (Theme_Class);
       Tmp_Return      : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Theme_Class, Id);
@@ -214,9 +212,9 @@ package body Gtk.Symbolic_Color is
       (Name : UTF8_String) return Gtk_Symbolic_Color
    is
       function Internal
-         (Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_symbolic_color_new_name");
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name   : Gtkada.Types.Chars_Ptr := New_String (Name);
       Tmp_Return : System.Address;
       Self       : Gtk_Symbolic_Color;
    begin
@@ -253,10 +251,10 @@ package body Gtk.Symbolic_Color is
        Id          : Glib.Gint) return Gtk_Symbolic_Color
    is
       function Internal
-         (Theme_Class : Interfaces.C.Strings.chars_ptr;
+         (Theme_Class : Gtkada.Types.Chars_Ptr;
           Id          : Glib.Gint) return System.Address;
       pragma Import (C, Internal, "gtk_symbolic_color_new_win32");
-      Tmp_Theme_Class : Interfaces.C.Strings.chars_ptr := New_String (Theme_Class);
+      Tmp_Theme_Class : Gtkada.Types.Chars_Ptr := New_String (Theme_Class);
       Tmp_Return      : System.Address;
       Self            : Gtk_Symbolic_Color;
    begin
@@ -283,7 +281,7 @@ package body Gtk.Symbolic_Color is
 
    function To_String (Self : Gtk_Symbolic_Color) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_symbolic_color_to_string");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));

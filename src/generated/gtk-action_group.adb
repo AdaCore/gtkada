@@ -140,11 +140,11 @@ package body Gtk.Action_Group is
 
       procedure Free (Action  : in out Action_Entry) is
       begin
-         Free (Action.Name);
-         Free (Action.Label);
-         Free (Action.Stock_Id);
-         Free (Action.Accelerator);
-         Free (Action.Tooltip);
+         g_free (Action.Name);
+         g_free (Action.Label);
+         g_free (Action.Stock_Id);
+         g_free (Action.Accelerator);
+         g_free (Action.Tooltip);
       end Free;
 
       procedure Free (Actions : in out Action_Entry_Array) is
@@ -156,11 +156,11 @@ package body Gtk.Action_Group is
 
       procedure Free (Action  : in out Radio_Action_Entry) is
       begin
-         Free (Action.Name);
-         Free (Action.Label);
-         Free (Action.Stock_Id);
-         Free (Action.Accelerator);
-         Free (Action.Tooltip);
+         g_free (Action.Name);
+         g_free (Action.Label);
+         g_free (Action.Stock_Id);
+         g_free (Action.Accelerator);
+         g_free (Action.Tooltip);
       end Free;
 
       procedure Free (Actions : in out Radio_Action_Entry_Array) is
@@ -172,11 +172,11 @@ package body Gtk.Action_Group is
 
       procedure Free (Action  : in out Toggle_Action_Entry) is
       begin
-         Free (Action.Name);
-         Free (Action.Label);
-         Free (Action.Stock_Id);
-         Free (Action.Accelerator);
-         Free (Action.Tooltip);
+         g_free (Action.Name);
+         g_free (Action.Label);
+         g_free (Action.Stock_Id);
+         g_free (Action.Accelerator);
+         g_free (Action.Tooltip);
       end Free;
 
       procedure Free (Actions : in out Toggle_Action_Entry_Array) is
@@ -282,8 +282,8 @@ package body Gtk.Action_Group is
      (Gtk_Translate_Func, System.Address);
 
    function Internal_Gtk_Translate_Func
-      (Path      : Interfaces.C.Strings.chars_ptr;
-       Func_Data : System.Address) return Interfaces.C.Strings.chars_ptr;
+      (Path      : Gtkada.Types.Chars_Ptr;
+       Func_Data : System.Address) return Gtkada.Types.Chars_Ptr;
    pragma Obsolescent (Internal_Gtk_Translate_Func);
    pragma Convention (C, Internal_Gtk_Translate_Func);
    --  Deprecated since 3.10, 1
@@ -296,8 +296,8 @@ package body Gtk.Action_Group is
    ---------------------------------
 
    function Internal_Gtk_Translate_Func
-      (Path      : Interfaces.C.Strings.chars_ptr;
-       Func_Data : System.Address) return Interfaces.C.Strings.chars_ptr
+      (Path      : Gtkada.Types.Chars_Ptr;
+       Func_Data : System.Address) return Gtkada.Types.Chars_Ptr
    is
       Func : constant Gtk_Translate_Func := To_Gtk_Translate_Func (Func_Data);
    begin
@@ -343,9 +343,9 @@ package body Gtk.Action_Group is
        Name         : UTF8_String)
    is
       function Internal
-         (Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_action_group_new");
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name   : Gtkada.Types.Chars_Ptr := New_String (Name);
       Tmp_Return : System.Address;
    begin
       if not Action_Group.Is_Created then
@@ -383,12 +383,12 @@ package body Gtk.Action_Group is
       procedure Internal
          (Action_Group : System.Address;
           Action       : System.Address;
-          Accelerator  : Interfaces.C.Strings.chars_ptr);
+          Accelerator  : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_action_group_add_action_with_accel");
-      Tmp_Accelerator : Interfaces.C.Strings.chars_ptr;
+      Tmp_Accelerator : Gtkada.Types.Chars_Ptr;
    begin
       if Accelerator = "" then
-         Tmp_Accelerator := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Accelerator := Gtkada.Types.Null_Ptr;
       else
          Tmp_Accelerator := New_String (Accelerator);
       end if;
@@ -422,10 +422,9 @@ package body Gtk.Action_Group is
    is
       function Internal
          (Action_Group : System.Address;
-          Action_Name  : Interfaces.C.Strings.chars_ptr)
-          return System.Address;
+          Action_Name  : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_action_group_get_action");
-      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
       Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
       Tmp_Return      : System.Address;
    begin
@@ -443,8 +442,7 @@ package body Gtk.Action_Group is
        return UTF8_String
    is
       function Internal
-         (Action_Group : System.Address)
-          return Interfaces.C.Strings.chars_ptr;
+         (Action_Group : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_action_group_get_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action_Group)));
@@ -571,8 +569,8 @@ package body Gtk.Action_Group is
         (Gtk_Translate_Func, System.Address);
 
       function Internal_Cb
-         (Path      : Interfaces.C.Strings.chars_ptr;
-          Func_Data : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Path      : Gtkada.Types.Chars_Ptr;
+          Func_Data : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Obsolescent (Internal_Cb);
       pragma Convention (C, Internal_Cb);
       --  The function used to translate messages in e.g.
@@ -588,8 +586,8 @@ package body Gtk.Action_Group is
       -----------------
 
       function Internal_Cb
-         (Path      : Interfaces.C.Strings.chars_ptr;
-          Func_Data : System.Address) return Interfaces.C.Strings.chars_ptr
+         (Path      : Gtkada.Types.Chars_Ptr;
+          Func_Data : System.Address) return Gtkada.Types.Chars_Ptr
       is
          D : constant Users.Internal_Data_Access := Users.Convert (Func_Data);
       begin
@@ -627,12 +625,12 @@ package body Gtk.Action_Group is
    is
       procedure Internal
          (Action_Group : System.Address;
-          Domain       : Interfaces.C.Strings.chars_ptr);
+          Domain       : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_action_group_set_translation_domain");
-      Tmp_Domain : Interfaces.C.Strings.chars_ptr;
+      Tmp_Domain : Gtkada.Types.Chars_Ptr;
    begin
       if Domain = "" then
-         Tmp_Domain := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Domain := Gtkada.Types.Null_Ptr;
       else
          Tmp_Domain := New_String (Domain);
       end if;
@@ -666,11 +664,11 @@ package body Gtk.Action_Group is
    is
       function Internal
          (Action_Group : System.Address;
-          String       : Interfaces.C.Strings.chars_ptr)
-          return Interfaces.C.Strings.chars_ptr;
+          String       : Gtkada.Types.Chars_Ptr)
+          return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_action_group_translate_string");
-      Tmp_String : Interfaces.C.Strings.chars_ptr := New_String (String);
-      Tmp_Return : Interfaces.C.Strings.chars_ptr;
+      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
+      Tmp_Return : Gtkada.Types.Chars_Ptr;
    begin
       Tmp_Return := Internal (Get_Object (Action_Group), Tmp_String);
       Free (Tmp_String);

@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Color_Chooser_Dialog is
@@ -73,15 +73,15 @@ package body Gtk.Color_Chooser_Dialog is
        Parent : access Gtk.Window.Gtk_Window_Record'Class)
    is
       function Internal
-         (Title  : Interfaces.C.Strings.chars_ptr;
+         (Title  : Gtkada.Types.Chars_Ptr;
           Parent : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_color_chooser_dialog_new");
-      Tmp_Title  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Title  : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
          if Title = "" then
-            Tmp_Title := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Title := Gtkada.Types.Null_Ptr;
          else
             Tmp_Title := New_String (Title);
          end if;

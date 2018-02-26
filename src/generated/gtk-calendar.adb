@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Calendar is
@@ -66,7 +66,7 @@ package body Gtk.Calendar is
        Year      : Guint;
        Month     : Guint;
        Day       : Guint;
-       User_Data : System.Address) return Interfaces.C.Strings.chars_ptr;
+       User_Data : System.Address) return Gtkada.Types.Chars_Ptr;
    pragma Convention (C, Internal_Gtk_Calendar_Detail_Func);
    --  "calendar": a Gtk.Calendar.Gtk_Calendar.
    --  "year": the year for which details are needed.
@@ -83,7 +83,7 @@ package body Gtk.Calendar is
        Year      : Guint;
        Month     : Guint;
        Day       : Guint;
-       User_Data : System.Address) return Interfaces.C.Strings.chars_ptr
+       User_Data : System.Address) return Gtkada.Types.Chars_Ptr
    is
       Func              : constant Gtk_Calendar_Detail_Func := To_Gtk_Calendar_Detail_Func (User_Data);
       Stub_Gtk_Calendar : Gtk_Calendar_Record;
@@ -297,7 +297,7 @@ package body Gtk.Calendar is
           Year      : Guint;
           Month     : Guint;
           Day       : Guint;
-          User_Data : System.Address) return Interfaces.C.Strings.chars_ptr;
+          User_Data : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Convention (C, Internal_Cb);
       --  This kind of functions provide Pango markup with detail information
       --  for the specified day. Examples for such details are holidays or
@@ -319,7 +319,7 @@ package body Gtk.Calendar is
           Year      : Guint;
           Month     : Guint;
           Day       : Guint;
-          User_Data : System.Address) return Interfaces.C.Strings.chars_ptr
+          User_Data : System.Address) return Gtkada.Types.Chars_Ptr
       is
          D                 : constant Users.Internal_Data_Access := Users.Convert (User_Data);
          Stub_Gtk_Calendar : Gtk.Calendar.Gtk_Calendar_Record;

@@ -67,7 +67,7 @@
 with Ada.Unchecked_Deallocation;
 
 with System;
-with Interfaces.C.Strings;
+with Gtkada.Types;
 
 with Glib; use Glib;
 with Glib.Values;
@@ -2255,7 +2255,7 @@ package Cairo is
 
    procedure Text_Extents
      (Cr      : Cairo_Context;
-      Utf8    : Interfaces.C.Strings.chars_ptr;
+      Utf8    : Gtkada.Types.Chars_Ptr;
       Extents : access Cairo_Text_Extents);
    --  Cr: a Cairo_Context
    --  Utf8: a NUL-terminated string of text encoded in UTF-8, or Null_Ptr

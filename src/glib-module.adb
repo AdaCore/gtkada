@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types; use Gtkada.Types;
 
 package body Glib.Module is
 
@@ -71,7 +71,7 @@ package body Glib.Module is
    ------------------
 
    function Module_Error return String is
-      function Internal return chars_ptr;
+      function Internal return Chars_Ptr;
       pragma Import (C, Internal, "ada_g_module_error");
 
    begin
@@ -106,7 +106,7 @@ package body Glib.Module is
    -----------------
 
    function Module_Name (Module : G_Module) return String is
-      function Internal (Module : G_Module) return chars_ptr;
+      function Internal (Module : G_Module) return Chars_Ptr;
       pragma Import (C, Internal, "ada_g_module_name");
 
    begin
@@ -122,7 +122,7 @@ package body Glib.Module is
       Module_Name : String) return String
    is
       function Internal
-        (Directory : String; Module_Name : String) return chars_ptr;
+        (Directory : String; Module_Name : String) return Chars_Ptr;
       pragma Import (C, Internal, "ada_g_module_build_path");
 
    begin

@@ -483,7 +483,7 @@ class UTF8(CType):
 
     def __init__(self):
         CType.__init__(self, "UTF8_String", "Glib.Properties.Property_String")
-        self.cparam = "Interfaces.C.Strings.chars_ptr"
+        self.cparam = "Gtkada.Types.Chars_Ptr"
         self.cleanup = "Free (%s);"
 
     def convert_from_c(self):
@@ -500,11 +500,12 @@ class UTF8(CType):
     def convert_from_c_add_with(self, pkg, specs=False):
         if pkg:
             pkg.add_with("Gtkada.Bindings", specs=specs)
+            pkg.add_with("Gtkada.Types", specs=specs)
 
     def convert_to_c(self, pkg=None):
         if self.allow_none:
             return 'if %(var)s = "" then %(tmp)s :=' \
-                + ' Interfaces.C.Strings.Null_Ptr; else'\
+                + ' Gtkada.Types.Null_Ptr; else'\
                 + ' %(tmp)s := New_String (%(var)s); end if;'
         else:
             return "New_String (%(var)s)"
@@ -512,7 +513,7 @@ class UTF8(CType):
     def add_with(self, pkg, specs=False):
         super(UTF8, self).add_with(pkg)
         if pkg:
-            pkg.add_with("Interfaces.C.Strings", specs=specs,
+            pkg.add_with("Gtkada.Types", specs=specs,
                          might_be_unused=True)
 
 
@@ -523,7 +524,7 @@ class SignalName(UTF8):
     def __init__(self):
         super(SignalName, self).__init__()
         self.set_ada_name("Glib.Signal_Name")
-        self.cparam = "Interfaces.C.Strings.chars_ptr"
+        self.cparam = "Gtkada.Types.Chars_Ptr"
 
     def convert_to_c(self, pkg=None):
         return "New_String (String (%(var)s))"
@@ -533,8 +534,8 @@ class UTF8_List(CType):
 
     def __init__(self):
         CType.__init__(self, "GNAT.Strings.String_List", "")
-        self.cparam = "Interfaces.C.Strings.chars_ptr_array"
-        self.cleanup = "GtkAda.Types.Free (%s);"
+        self.cparam = "Gtkada.Types.chars_ptr_array"
+        self.cleanup = "Gtkada.Types.Free (%s);"
 
     def convert_from_c(self):
         # Use a temporary variable to store the result of To_String_List,
@@ -554,18 +555,15 @@ class UTF8_List(CType):
                 "chars_ptr_array_access", conv)
 
     def record_field_type(self, pkg=None):
-        return "Interfaces.C.Strings.char_array_access"
+        return "Gtkada.Types.char_array_access"
 
     def convert_to_c(self, pkg=None):
-        if pkg:
-            pkg.add_with("GtkAda.Types", specs=False)
         return "From_String_List (%(var)s)"
 
     def add_with(self, pkg=None, specs=False):
         super(UTF8_List, self).add_with(pkg=pkg)
         if pkg:
             pkg.add_with("GNAT.Strings", specs=True)
-            pkg.add_with("Interfaces.C.Strings", specs=specs)
             pkg.add_with("Gtkada.Bindings", specs=specs, might_be_unused=True)
 
 

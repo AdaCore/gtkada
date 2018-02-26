@@ -68,7 +68,7 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
 with Glib.Types;              use Glib.Types;
 with Gtk.Buildable;           use Gtk.Buildable;
-with Interfaces.C.Strings;    use Interfaces.C.Strings;
+with Gtkada.Types;            use Gtkada.Types;
 
 package Gtk.Recent_Filter is
 
@@ -90,11 +90,11 @@ package Gtk.Recent_Filter is
 
    type Gtk_Recent_Filter_Info is record
       Contains : Gtk_Recent_Filter_Flags;
-      URI : Interfaces.C.Strings.chars_ptr;
-      Display_Name : Interfaces.C.Strings.chars_ptr;
-      Mime_Type : Interfaces.C.Strings.chars_ptr;
-      Applications : Interfaces.C.Strings.char_array_access;
-      Groups : Interfaces.C.Strings.char_array_access;
+      URI : Gtkada.Types.Chars_Ptr;
+      Display_Name : Gtkada.Types.Chars_Ptr;
+      Mime_Type : Gtkada.Types.Chars_Ptr;
+      Applications : Gtkada.Types.char_array_access;
+      Groups : Gtkada.Types.char_array_access;
       Age : Glib.Gint := 0;
    end record;
    pragma Convention (C, Gtk_Recent_Filter_Info);

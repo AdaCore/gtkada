@@ -27,7 +27,7 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Print_Settings is
@@ -49,8 +49,8 @@ package body Gtk.Print_Settings is
      (Gtk_Print_Settings_Func, System.Address);
 
    procedure Internal_Gtk_Print_Settings_Func
-      (Key       : Interfaces.C.Strings.chars_ptr;
-       Value     : Interfaces.C.Strings.chars_ptr;
+      (Key       : Gtkada.Types.Chars_Ptr;
+       Value     : Gtkada.Types.Chars_Ptr;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gtk_Print_Settings_Func);
 
@@ -59,8 +59,8 @@ package body Gtk.Print_Settings is
    --------------------------------------
 
    procedure Internal_Gtk_Print_Settings_Func
-      (Key       : Interfaces.C.Strings.chars_ptr;
-       Value     : Interfaces.C.Strings.chars_ptr;
+      (Key       : Gtkada.Types.Chars_Ptr;
+       Value     : Gtkada.Types.Chars_Ptr;
        User_Data : System.Address)
    is
       Func : constant Gtk_Print_Settings_Func := To_Gtk_Print_Settings_Func (User_Data);
@@ -171,9 +171,9 @@ package body Gtk.Print_Settings is
        File_Name : UTF8_String)
    is
       function Internal
-         (File_Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (File_Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_print_settings_new_from_file");
-      Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
+      Tmp_File_Name : Gtkada.Types.Chars_Ptr := New_String (File_Name);
       Tmp_Return    : System.Address;
    begin
       if not Self.Is_Created then
@@ -194,14 +194,14 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Key_File   : Glib.Key_File.G_Key_File;
-          Group_Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Group_Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_print_settings_new_from_key_file");
-      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr;
       Tmp_Return     : System.Address;
    begin
       if not Self.Is_Created then
          if Group_Name = "" then
-            Tmp_Group_Name := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Group_Name := Gtkada.Types.Null_Ptr;
          else
             Tmp_Group_Name := New_String (Group_Name);
          end if;
@@ -254,8 +254,8 @@ package body Gtk.Print_Settings is
         (Gtk_Print_Settings_Func, System.Address);
 
       procedure Internal_Cb
-         (Key       : Interfaces.C.Strings.chars_ptr;
-          Value     : Interfaces.C.Strings.chars_ptr;
+         (Key       : Gtkada.Types.Chars_Ptr;
+          Value     : Gtkada.Types.Chars_Ptr;
           User_Data : System.Address);
       pragma Convention (C, Internal_Cb);
 
@@ -284,8 +284,8 @@ package body Gtk.Print_Settings is
       -----------------
 
       procedure Internal_Cb
-         (Key       : Interfaces.C.Strings.chars_ptr;
-          Value     : Interfaces.C.Strings.chars_ptr;
+         (Key       : Gtkada.Types.Chars_Ptr;
+          Value     : Gtkada.Types.Chars_Ptr;
           User_Data : System.Address)
       is
          D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
@@ -305,11 +305,10 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self : System.Address;
-          Key  : Interfaces.C.Strings.chars_ptr)
-          return Interfaces.C.Strings.chars_ptr;
+          Key  : Gtkada.Types.Chars_Ptr) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_print_settings_get");
-      Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
-      Tmp_Return : Interfaces.C.Strings.chars_ptr;
+      Tmp_Key    : Gtkada.Types.Chars_Ptr := New_String (Key);
+      Tmp_Return : Gtkada.Types.Chars_Ptr;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key);
       Free (Tmp_Key);
@@ -326,9 +325,9 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self : System.Address;
-          Key  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Key  : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_get_bool");
-      Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key    : Gtkada.Types.Chars_Ptr := New_String (Key);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key);
@@ -357,7 +356,7 @@ package body Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_print_settings_get_default_source");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -371,7 +370,7 @@ package body Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_print_settings_get_dither");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -387,9 +386,9 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self : System.Address;
-          Key  : Interfaces.C.Strings.chars_ptr) return Gdouble;
+          Key  : Gtkada.Types.Chars_Ptr) return Gdouble;
       pragma Import (C, Internal, "gtk_print_settings_get_double");
-      Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key    : Gtkada.Types.Chars_Ptr := New_String (Key);
       Tmp_Return : Gdouble;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key);
@@ -408,10 +407,10 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self : System.Address;
-          Key  : Interfaces.C.Strings.chars_ptr;
+          Key  : Gtkada.Types.Chars_Ptr;
           Def  : Gdouble) return Gdouble;
       pragma Import (C, Internal, "gtk_print_settings_get_double_with_default");
-      Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key    : Gtkada.Types.Chars_Ptr := New_String (Key);
       Tmp_Return : Gdouble;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key, Def);
@@ -442,7 +441,7 @@ package body Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_print_settings_get_finishings");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -458,9 +457,9 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self : System.Address;
-          Key  : Interfaces.C.Strings.chars_ptr) return Glib.Gint;
+          Key  : Gtkada.Types.Chars_Ptr) return Glib.Gint;
       pragma Import (C, Internal, "gtk_print_settings_get_int");
-      Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key    : Gtkada.Types.Chars_Ptr := New_String (Key);
       Tmp_Return : Glib.Gint;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key);
@@ -479,10 +478,10 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self : System.Address;
-          Key  : Interfaces.C.Strings.chars_ptr;
+          Key  : Gtkada.Types.Chars_Ptr;
           Def  : Glib.Gint) return Glib.Gint;
       pragma Import (C, Internal, "gtk_print_settings_get_int_with_default");
-      Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key    : Gtkada.Types.Chars_Ptr := New_String (Key);
       Tmp_Return : Glib.Gint;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key, Def);
@@ -501,10 +500,10 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self : System.Address;
-          Key  : Interfaces.C.Strings.chars_ptr;
+          Key  : Gtkada.Types.Chars_Ptr;
           Unit : Gtk.Enums.Gtk_Unit) return Gdouble;
       pragma Import (C, Internal, "gtk_print_settings_get_length");
-      Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key    : Gtkada.Types.Chars_Ptr := New_String (Key);
       Tmp_Return : Gdouble;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key, Unit);
@@ -520,7 +519,7 @@ package body Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_print_settings_get_media_type");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -590,7 +589,7 @@ package body Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_print_settings_get_output_bin");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -718,7 +717,7 @@ package body Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_print_settings_get_printer");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -840,9 +839,9 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self : System.Address;
-          Key  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Key  : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_has_key");
-      Tmp_Key    : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key    : Gtkada.Types.Chars_Ptr := New_String (Key);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Key);
@@ -860,9 +859,9 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self      : System.Address;
-          File_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          File_Name : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_load_file");
-      Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
+      Tmp_File_Name : Gtkada.Types.Chars_Ptr := New_String (File_Name);
       Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_File_Name);
@@ -882,13 +881,13 @@ package body Gtk.Print_Settings is
       function Internal
          (Self       : System.Address;
           Key_File   : Glib.Key_File.G_Key_File;
-          Group_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Group_Name : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_load_key_file");
-      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr;
       Tmp_Return     : Glib.Gboolean;
    begin
       if Group_Name = "" then
-         Tmp_Group_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Group_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Group_Name := New_String (Group_Name);
       end if;
@@ -908,14 +907,14 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
          (Self  : System.Address;
-          Key   : Interfaces.C.Strings.chars_ptr;
-          Value : Interfaces.C.Strings.chars_ptr);
+          Key   : Gtkada.Types.Chars_Ptr;
+          Value : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_print_settings_set");
-      Tmp_Key   : Interfaces.C.Strings.chars_ptr := New_String (Key);
-      Tmp_Value : Interfaces.C.Strings.chars_ptr;
+      Tmp_Key   : Gtkada.Types.Chars_Ptr := New_String (Key);
+      Tmp_Value : Gtkada.Types.Chars_Ptr;
    begin
       if Value = "" then
-         Tmp_Value := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Value := Gtkada.Types.Null_Ptr;
       else
          Tmp_Value := New_String (Value);
       end if;
@@ -935,10 +934,10 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
          (Self  : System.Address;
-          Key   : Interfaces.C.Strings.chars_ptr;
+          Key   : Gtkada.Types.Chars_Ptr;
           Value : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_print_settings_set_bool");
-      Tmp_Key : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key : Gtkada.Types.Chars_Ptr := New_String (Key);
    begin
       Internal (Get_Object (Self), Tmp_Key, Boolean'Pos (Value));
       Free (Tmp_Key);
@@ -968,9 +967,9 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
          (Self           : System.Address;
-          Default_Source : Interfaces.C.Strings.chars_ptr);
+          Default_Source : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_print_settings_set_default_source");
-      Tmp_Default_Source : Interfaces.C.Strings.chars_ptr := New_String (Default_Source);
+      Tmp_Default_Source : Gtkada.Types.Chars_Ptr := New_String (Default_Source);
    begin
       Internal (Get_Object (Self), Tmp_Default_Source);
       Free (Tmp_Default_Source);
@@ -986,9 +985,9 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
          (Self   : System.Address;
-          Dither : Interfaces.C.Strings.chars_ptr);
+          Dither : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_print_settings_set_dither");
-      Tmp_Dither : Interfaces.C.Strings.chars_ptr := New_String (Dither);
+      Tmp_Dither : Gtkada.Types.Chars_Ptr := New_String (Dither);
    begin
       Internal (Get_Object (Self), Tmp_Dither);
       Free (Tmp_Dither);
@@ -1005,10 +1004,10 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
          (Self  : System.Address;
-          Key   : Interfaces.C.Strings.chars_ptr;
+          Key   : Gtkada.Types.Chars_Ptr;
           Value : Gdouble);
       pragma Import (C, Internal, "gtk_print_settings_set_double");
-      Tmp_Key : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key : Gtkada.Types.Chars_Ptr := New_String (Key);
    begin
       Internal (Get_Object (Self), Tmp_Key, Value);
       Free (Tmp_Key);
@@ -1040,9 +1039,9 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
          (Self       : System.Address;
-          Finishings : Interfaces.C.Strings.chars_ptr);
+          Finishings : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_print_settings_set_finishings");
-      Tmp_Finishings : Interfaces.C.Strings.chars_ptr := New_String (Finishings);
+      Tmp_Finishings : Gtkada.Types.Chars_Ptr := New_String (Finishings);
    begin
       Internal (Get_Object (Self), Tmp_Finishings);
       Free (Tmp_Finishings);
@@ -1059,10 +1058,10 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
          (Self  : System.Address;
-          Key   : Interfaces.C.Strings.chars_ptr;
+          Key   : Gtkada.Types.Chars_Ptr;
           Value : Glib.Gint);
       pragma Import (C, Internal, "gtk_print_settings_set_int");
-      Tmp_Key : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key : Gtkada.Types.Chars_Ptr := New_String (Key);
    begin
       Internal (Get_Object (Self), Tmp_Key, Value);
       Free (Tmp_Key);
@@ -1080,11 +1079,11 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
          (Self  : System.Address;
-          Key   : Interfaces.C.Strings.chars_ptr;
+          Key   : Gtkada.Types.Chars_Ptr;
           Value : Gdouble;
           Unit  : Gtk.Enums.Gtk_Unit);
       pragma Import (C, Internal, "gtk_print_settings_set_length");
-      Tmp_Key : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key : Gtkada.Types.Chars_Ptr := New_String (Key);
    begin
       Internal (Get_Object (Self), Tmp_Key, Value, Unit);
       Free (Tmp_Key);
@@ -1100,9 +1099,9 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
          (Self       : System.Address;
-          Media_Type : Interfaces.C.Strings.chars_ptr);
+          Media_Type : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_print_settings_set_media_type");
-      Tmp_Media_Type : Interfaces.C.Strings.chars_ptr := New_String (Media_Type);
+      Tmp_Media_Type : Gtkada.Types.Chars_Ptr := New_String (Media_Type);
    begin
       Internal (Get_Object (Self), Tmp_Media_Type);
       Free (Tmp_Media_Type);
@@ -1178,9 +1177,9 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
          (Self       : System.Address;
-          Output_Bin : Interfaces.C.Strings.chars_ptr);
+          Output_Bin : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_print_settings_set_output_bin");
-      Tmp_Output_Bin : Interfaces.C.Strings.chars_ptr := New_String (Output_Bin);
+      Tmp_Output_Bin : Gtkada.Types.Chars_Ptr := New_String (Output_Bin);
    begin
       Internal (Get_Object (Self), Tmp_Output_Bin);
       Free (Tmp_Output_Bin);
@@ -1300,9 +1299,9 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
          (Self    : System.Address;
-          Printer : Interfaces.C.Strings.chars_ptr);
+          Printer : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_print_settings_set_printer");
-      Tmp_Printer : Interfaces.C.Strings.chars_ptr := New_String (Printer);
+      Tmp_Printer : Gtkada.Types.Chars_Ptr := New_String (Printer);
    begin
       Internal (Get_Object (Self), Tmp_Printer);
       Free (Tmp_Printer);
@@ -1424,9 +1423,9 @@ package body Gtk.Print_Settings is
    is
       function Internal
          (Self      : System.Address;
-          File_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          File_Name : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_print_settings_to_file");
-      Tmp_File_Name : Interfaces.C.Strings.chars_ptr := New_String (File_Name);
+      Tmp_File_Name : Gtkada.Types.Chars_Ptr := New_String (File_Name);
       Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_File_Name);
@@ -1446,9 +1445,9 @@ package body Gtk.Print_Settings is
       procedure Internal
          (Self       : System.Address;
           Key_File   : Glib.Key_File.G_Key_File;
-          Group_Name : Interfaces.C.Strings.chars_ptr);
+          Group_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_print_settings_to_key_file");
-      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr := New_String (Group_Name);
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr := New_String (Group_Name);
    begin
       Internal (Get_Object (Self), Key_File, Tmp_Group_Name);
       Free (Tmp_Group_Name);
@@ -1464,9 +1463,9 @@ package body Gtk.Print_Settings is
    is
       procedure Internal
          (Self : System.Address;
-          Key  : Interfaces.C.Strings.chars_ptr);
+          Key  : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_print_settings_unset");
-      Tmp_Key : Interfaces.C.Strings.chars_ptr := New_String (Key);
+      Tmp_Key : Gtkada.Types.Chars_Ptr := New_String (Key);
    begin
       Internal (Get_Object (Self), Tmp_Key);
       Free (Tmp_Key);

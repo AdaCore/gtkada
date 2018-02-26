@@ -30,7 +30,7 @@ with Gtk.Arguments;              use Gtk.Arguments;
 with Gtk.GEntry;                 use Gtk.GEntry;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Combo_Box is
@@ -432,7 +432,7 @@ package body Gtk.Combo_Box is
       (Combo_Box : not null access Gtk_Combo_Box_Record) return UTF8_String
    is
       function Internal
-         (Combo_Box : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Combo_Box : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_combo_box_get_active_id");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Combo_Box)));
@@ -593,7 +593,7 @@ package body Gtk.Combo_Box is
       (Combo_Box : not null access Gtk_Combo_Box_Record) return UTF8_String
    is
       function Internal
-         (Combo_Box : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Combo_Box : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_combo_box_get_title");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Combo_Box)));
@@ -658,13 +658,13 @@ package body Gtk.Combo_Box is
    is
       function Internal
          (Combo_Box : System.Address;
-          Active_Id : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Active_Id : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_combo_box_set_active_id");
-      Tmp_Active_Id : Interfaces.C.Strings.chars_ptr;
+      Tmp_Active_Id : Gtkada.Types.Chars_Ptr;
       Tmp_Return    : Glib.Gboolean;
    begin
       if Active_Id = "" then
-         Tmp_Active_Id := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Active_Id := Gtkada.Types.Null_Ptr;
       else
          Tmp_Active_Id := New_String (Active_Id);
       end if;
@@ -993,9 +993,9 @@ package body Gtk.Combo_Box is
    is
       procedure Internal
          (Combo_Box : System.Address;
-          Title     : Interfaces.C.Strings.chars_ptr);
+          Title     : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_combo_box_set_title");
-      Tmp_Title : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title : Gtkada.Types.Chars_Ptr := New_String (Title);
    begin
       Internal (Get_Object (Combo_Box), Tmp_Title);
       Free (Tmp_Title);
@@ -1028,10 +1028,10 @@ package body Gtk.Combo_Box is
       procedure Internal
          (Cell_Layout : System.Address;
           Cell        : System.Address;
-          Attribute   : Interfaces.C.Strings.chars_ptr;
+          Attribute   : Gtkada.Types.Chars_Ptr;
           Column      : Glib.Gint);
       pragma Import (C, Internal, "gtk_cell_layout_add_attribute");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
    begin
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Tmp_Attribute, Column);
       Free (Tmp_Attribute);

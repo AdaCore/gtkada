@@ -53,13 +53,13 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;                 use Glib;
-with Glib.Object;          use Glib.Object;
-with Glib.Properties;      use Glib.Properties;
-with Glib.Types;           use Glib.Types;
-with Glib.Variant;         use Glib.Variant;
+with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
+with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Glib.Variant;    use Glib.Variant;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types;    use Gtkada.Types;
 pragma Warnings(On);
 
 package Glib.Action is
@@ -264,7 +264,7 @@ package Glib.Action is
    --  its state changed from outside callers.
    --  Since: gtk+ 2.28
 
-   type Virtual_Get_Name is access function (Self : Gaction) return Interfaces.C.Strings.chars_ptr;
+   type Virtual_Get_Name is access function (Self : Gaction) return Gtkada.Types.Chars_Ptr;
    pragma Convention (C, Virtual_Get_Name);
    --  Queries the name of Action.
    --  Since: gtk+ 2.28

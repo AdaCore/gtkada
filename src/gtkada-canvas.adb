@@ -24,7 +24,6 @@
 
 with Ada.Numerics;                       use Ada.Numerics;
 with Ada.Numerics.Generic_Elementary_Functions;
-with Interfaces.C.Strings;               use Interfaces.C.Strings;
 with System;
 with Unchecked_Deallocation;
 with GNAT.IO;                            use GNAT.IO;
@@ -61,6 +60,7 @@ with Gtk.Widget;                         use Gtk.Widget;
 
 with Gtkada.Bindings;                    use Gtkada.Bindings;
 with Gtkada.Handlers;                    use Gtkada.Handlers;
+with Interfaces.C.Strings;               use Interfaces.C.Strings;
 
 with Pango.Font;                         use Pango.Font;
 with Pango.Layout;                       use Pango.Layout;
@@ -105,7 +105,7 @@ package body Gtkada.Canvas is
    --  used to make the canvas still usable when there are lots of links to a
    --  given item.
 
-   Signals : constant chars_ptr_array :=
+   Signals : constant Interfaces.C.Strings.chars_ptr_array :=
                (1 => New_String (String (Signal_Background_Click)),
                 2 => New_String (String (Signal_Item_Selected)),
                 3 => New_String (String (Signal_Zoomed)),

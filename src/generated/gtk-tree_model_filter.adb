@@ -27,9 +27,7 @@ with Ada.Unchecked_Conversion;
 with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Types;               use Gtkada.Types;
 
 package body Gtk.Tree_Model_Filter is
 
@@ -812,7 +810,7 @@ package body Gtk.Tree_Model_Filter is
       function Internal
          (Tree_Model : System.Address;
           Iter       : Gtk.Tree_Model.Gtk_Tree_Iter)
-          return Interfaces.C.Strings.chars_ptr;
+          return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_tree_model_get_string_from_iter");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Tree_Model), Iter));

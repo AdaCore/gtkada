@@ -26,7 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Font_Selection is
@@ -110,7 +110,7 @@ package body Gtk.Font_Selection is
        return UTF8_String
    is
       function Internal
-         (Fontsel : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Fontsel : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_font_selection_get_font_name");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Fontsel)));
@@ -140,7 +140,7 @@ package body Gtk.Font_Selection is
        return UTF8_String
    is
       function Internal
-         (Fontsel : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Fontsel : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_font_selection_get_preview_text");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Fontsel)));
@@ -199,9 +199,9 @@ package body Gtk.Font_Selection is
    is
       function Internal
          (Fontsel  : System.Address;
-          Fontname : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Fontname : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_font_selection_set_font_name");
-      Tmp_Fontname : Interfaces.C.Strings.chars_ptr := New_String (Fontname);
+      Tmp_Fontname : Gtkada.Types.Chars_Ptr := New_String (Fontname);
       Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Fontsel), Tmp_Fontname);
@@ -219,9 +219,9 @@ package body Gtk.Font_Selection is
    is
       procedure Internal
          (Fontsel : System.Address;
-          Text    : Interfaces.C.Strings.chars_ptr);
+          Text    : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_font_selection_set_preview_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Fontsel), Tmp_Text);
       Free (Tmp_Text);

@@ -43,6 +43,7 @@ with Gtk.Icon_View;            use Gtk.Icon_View;
 with Gtk.List_Store;           use Gtk.List_Store;
 with Gtk.Scrolled_Window;      use Gtk.Scrolled_Window;
 with Gtk.Tree_Model;           use Gtk.Tree_Model;
+with Gtkada.Types;             use Gtkada.Types;
 with Interfaces.C.Strings;     use Interfaces.C.Strings;
 with Gtk.Target_List;          use Gtk.Target_List;
 

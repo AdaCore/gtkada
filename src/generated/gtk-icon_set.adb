@@ -24,7 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types; use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Icon_Set is
@@ -202,14 +202,14 @@ package body Gtk.Icon_Set is
           State     : Gtk.Enums.Gtk_State_Type;
           Size      : Gtk.Enums.Gtk_Icon_Size;
           Widget    : System.Address;
-          Detail    : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Detail    : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_icon_set_render_icon");
-      Tmp_Detail      : Interfaces.C.Strings.chars_ptr;
+      Tmp_Detail      : Gtkada.Types.Chars_Ptr;
       Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return      : System.Address;
    begin
       if Detail = "" then
-         Tmp_Detail := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Detail := Gtkada.Types.Null_Ptr;
       else
          Tmp_Detail := New_String (Detail);
       end if;

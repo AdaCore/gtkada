@@ -70,14 +70,14 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with GNAT.Strings;         use GNAT.Strings;
-with Glib;                 use Glib;
-with Glib.Object;          use Glib.Object;
-with Glib.Types;           use Glib.Types;
-with Glib.Variant;         use Glib.Variant;
+with GNAT.Strings;    use GNAT.Strings;
+with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
+with Glib.Types;      use Glib.Types;
+with Glib.Variant;    use Glib.Variant;
 pragma Warnings(Off);  --  might be unused
-with Gtkada.Bindings;      use Gtkada.Bindings;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Bindings; use Gtkada.Bindings;
+with Gtkada.Types;    use Gtkada.Types;
 pragma Warnings(On);
 
 package Glib.Action_Group is
@@ -401,7 +401,7 @@ package Glib.Action_Group is
 
    type Virtual_Action_Added is access procedure
      (Self        : Gaction_Group;
-      Action_Name : Interfaces.C.Strings.chars_ptr);
+      Action_Name : Gtkada.Types.Chars_Ptr);
    pragma Convention (C, Virtual_Action_Added);
    --  Emits the Glib.Action_Group.Gaction_Group::action-added signal on
    --  Action_Group.
@@ -412,7 +412,7 @@ package Glib.Action_Group is
 
    type Virtual_Action_Enabled_Changed is access procedure
      (Self        : Gaction_Group;
-      Action_Name : Interfaces.C.Strings.chars_ptr;
+      Action_Name : Gtkada.Types.Chars_Ptr;
       Enabled     : Glib.Gboolean);
    pragma Convention (C, Virtual_Action_Enabled_Changed);
    --  Emits the Glib.Action_Group.Gaction_Group::action-enabled-changed
@@ -425,7 +425,7 @@ package Glib.Action_Group is
 
    type Virtual_Action_Removed is access procedure
      (Self        : Gaction_Group;
-      Action_Name : Interfaces.C.Strings.chars_ptr);
+      Action_Name : Gtkada.Types.Chars_Ptr);
    pragma Convention (C, Virtual_Action_Removed);
    --  Emits the Glib.Action_Group.Gaction_Group::action-removed signal on
    --  Action_Group.
@@ -436,7 +436,7 @@ package Glib.Action_Group is
 
    type Virtual_Action_State_Changed is access procedure
      (Self        : Gaction_Group;
-      Action_Name : Interfaces.C.Strings.chars_ptr;
+      Action_Name : Gtkada.Types.Chars_Ptr;
       State       : System.Address);
    pragma Convention (C, Virtual_Action_State_Changed);
    --  Emits the Glib.Action_Group.Gaction_Group::action-state-changed signal
@@ -449,7 +449,7 @@ package Glib.Action_Group is
 
    type Virtual_Activate_Action is access procedure
      (Self        : Gaction_Group;
-      Action_Name : Interfaces.C.Strings.chars_ptr;
+      Action_Name : Gtkada.Types.Chars_Ptr;
       Parameter   : System.Address);
    pragma Convention (C, Virtual_Activate_Action);
    --  Activate the named action within Action_Group.
@@ -463,7 +463,7 @@ package Glib.Action_Group is
 
    type Virtual_Change_Action_State is access procedure
      (Self        : Gaction_Group;
-      Action_Name : Interfaces.C.Strings.chars_ptr;
+      Action_Name : Gtkada.Types.Chars_Ptr;
       Value       : System.Address);
    pragma Convention (C, Virtual_Change_Action_State);
    --  Request for the state of the named action within Action_Group to be
@@ -480,7 +480,7 @@ package Glib.Action_Group is
 
    type Virtual_Get_Action_Enabled is access function
      (Self        : Gaction_Group;
-      Action_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+      Action_Name : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
    pragma Convention (C, Virtual_Get_Action_Enabled);
    --  Checks if the named action within Action_Group is currently enabled.
    --  An action must be enabled in order to be activated or in order to have
@@ -490,7 +490,7 @@ package Glib.Action_Group is
 
    type Virtual_Get_Action_Parameter_Type is access function
      (Self        : Gaction_Group;
-      Action_Name : Interfaces.C.Strings.chars_ptr)
+      Action_Name : Gtkada.Types.Chars_Ptr)
    return Glib.Variant.Gvariant_Type;
    pragma Convention (C, Virtual_Get_Action_Parameter_Type);
    --  Queries the type of the parameter that must be given when activating
@@ -508,7 +508,7 @@ package Glib.Action_Group is
 
    type Virtual_Get_Action_State is access function
      (Self        : Gaction_Group;
-      Action_Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+      Action_Name : Gtkada.Types.Chars_Ptr) return System.Address;
    pragma Convention (C, Virtual_Get_Action_State);
    --  Queries the current state of the named action within Action_Group.
    --  If the action is not stateful then null will be returned. If the action
@@ -521,7 +521,7 @@ package Glib.Action_Group is
 
    type Virtual_Get_Action_State_Hint is access function
      (Self        : Gaction_Group;
-      Action_Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+      Action_Name : Gtkada.Types.Chars_Ptr) return System.Address;
    pragma Convention (C, Virtual_Get_Action_State_Hint);
    --  Requests a hint about the valid range of values for the state of the
    --  named action within Action_Group.
@@ -542,7 +542,7 @@ package Glib.Action_Group is
 
    type Virtual_Get_Action_State_Type is access function
      (Self        : Gaction_Group;
-      Action_Name : Interfaces.C.Strings.chars_ptr)
+      Action_Name : Gtkada.Types.Chars_Ptr)
    return Glib.Variant.Gvariant_Type;
    pragma Convention (C, Virtual_Get_Action_State_Type);
    --  Queries the type of the state of the named action within Action_Group.
@@ -562,7 +562,7 @@ package Glib.Action_Group is
 
    type Virtual_Has_Action is access function
      (Self        : Gaction_Group;
-      Action_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+      Action_Name : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
    pragma Convention (C, Virtual_Has_Action);
    --  Checks if the named action exists within Action_Group.
    --  Since: gtk+ 2.28
@@ -577,7 +577,7 @@ package Glib.Action_Group is
 
    type Virtual_Query_Action is access function
      (Self           : Gaction_Group;
-      Action_Name    : Interfaces.C.Strings.chars_ptr;
+      Action_Name    : Gtkada.Types.Chars_Ptr;
       Enabled        : access Glib.Gboolean;
       Parameter_Type : access Glib.Variant.Gvariant_Type;
       State_Type     : access Glib.Variant.Gvariant_Type;

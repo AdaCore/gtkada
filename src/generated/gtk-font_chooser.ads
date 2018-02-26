@@ -32,15 +32,15 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;                 use Glib;
-with Glib.Object;          use Glib.Object;
-with Glib.Properties;      use Glib.Properties;
-with Glib.Types;           use Glib.Types;
-with Pango.Font;           use Pango.Font;
-with Pango.Font_Face;      use Pango.Font_Face;
-with Pango.Font_Family;    use Pango.Font_Family;
+with Glib;              use Glib;
+with Glib.Object;       use Glib.Object;
+with Glib.Properties;   use Glib.Properties;
+with Glib.Types;        use Glib.Types;
+with Pango.Font;        use Pango.Font;
+with Pango.Font_Face;   use Pango.Font_Face;
+with Pango.Font_Family; use Pango.Font_Family;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types;      use Gtkada.Types;
 pragma Warnings(On);
 
 package Gtk.Font_Chooser is
@@ -245,7 +245,7 @@ package Gtk.Font_Chooser is
 
    type Virtual_Font_Activated is access procedure
      (Self     : Gtk_Font_Chooser;
-      Fontname : Interfaces.C.Strings.chars_ptr);
+      Fontname : Gtkada.Types.Chars_Ptr);
    pragma Convention (C, Virtual_Font_Activated);
 
    type Virtual_Get_Font_Face is access function (Self : Gtk_Font_Chooser) return System.Address;

@@ -53,7 +53,7 @@ with Gdk.Types;               use Gdk.Types;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Values;             use Glib.Values;
-with Interfaces.C.Strings;    use Interfaces.C.Strings;
+with Gtkada.Types;            use Gtkada.Types;
 
 package Gdk.Event is
 
@@ -433,7 +433,7 @@ package Gdk.Event is
       State : Gdk.Types.Gdk_Modifier_Type;
       Keyval : Gdk.Types.Gdk_Key_Type;
       Length : Glib.Gint := 0;
-      String : Interfaces.C.Strings.chars_ptr;
+      String : Gtkada.Types.Chars_Ptr;
       Hardware_Keycode : Guint16;
       Group : Guint8;
       Is_Modifier : Guint;
@@ -595,7 +595,7 @@ package Gdk.Event is
       Window : Gdk.Gdk_Window;
       Send_Event : Gint8;
       Action : Gdk_Setting_Action;
-      Name : Interfaces.C.Strings.chars_ptr;
+      Name : Gtkada.Types.Chars_Ptr;
    end record;
    pragma Convention (C, Gdk_Event_Setting);
 

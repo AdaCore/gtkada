@@ -41,9 +41,9 @@ package body Gtk.Binding_Set is
       (Set_Name : UTF8_String) return Gtk_Binding_Set
    is
       function Internal
-         (Set_Name : Interfaces.C.Strings.chars_ptr) return Gtk_Binding_Set;
+         (Set_Name : Gtkada.Types.Chars_Ptr) return Gtk_Binding_Set;
       pragma Import (C, Internal, "gtk_binding_set_new");
-      Tmp_Set_Name : Interfaces.C.Strings.chars_ptr := New_String (Set_Name);
+      Tmp_Set_Name : Gtkada.Types.Chars_Ptr := New_String (Set_Name);
       Tmp_Return   : Gtk_Binding_Set;
       Self         : Gtk_Binding_Set;
    begin
@@ -59,9 +59,9 @@ package body Gtk.Binding_Set is
 
    procedure Gtk_New (Self : out Gtk_Binding_Set; Set_Name : UTF8_String) is
       function Internal
-         (Set_Name : Interfaces.C.Strings.chars_ptr) return Gtk_Binding_Set;
+         (Set_Name : Gtkada.Types.Chars_Ptr) return Gtk_Binding_Set;
       pragma Import (C, Internal, "gtk_binding_set_new");
-      Tmp_Set_Name : Interfaces.C.Strings.chars_ptr := New_String (Set_Name);
+      Tmp_Set_Name : Gtkada.Types.Chars_Ptr := New_String (Set_Name);
       Tmp_Return   : Gtk_Binding_Set;
    begin
       Tmp_Return := Internal (Tmp_Set_Name);
@@ -103,10 +103,10 @@ package body Gtk.Binding_Set is
       procedure Internal
          (Self         : Gtk_Binding_Set;
           Path_Type    : Gtk.Enums.Gtk_Path_Type;
-          Path_Pattern : Interfaces.C.Strings.chars_ptr;
+          Path_Pattern : Gtkada.Types.Chars_Ptr;
           Priority     : Gtk.Enums.Gtk_Path_Priority_Type);
       pragma Import (C, Internal, "gtk_binding_set_add_path");
-      Tmp_Path_Pattern : Interfaces.C.Strings.chars_ptr := New_String (Path_Pattern);
+      Tmp_Path_Pattern : Gtkada.Types.Chars_Ptr := New_String (Path_Pattern);
    begin
       Internal (Self, Path_Type, Tmp_Path_Pattern, Priority);
       Free (Tmp_Path_Pattern);
@@ -118,10 +118,9 @@ package body Gtk.Binding_Set is
 
    function Find (Set_Name : UTF8_String) return Gtk_Binding_Set is
       function Internal
-         (Set_Name : Interfaces.C.Strings.chars_ptr)
-          return access Gtk_Binding_Set;
+         (Set_Name : Gtkada.Types.Chars_Ptr) return access Gtk_Binding_Set;
       pragma Import (C, Internal, "gtk_binding_set_find");
-      Tmp_Set_Name : Interfaces.C.Strings.chars_ptr := New_String (Set_Name);
+      Tmp_Set_Name : Gtkada.Types.Chars_Ptr := New_String (Set_Name);
       Tmp_Return   : access Gtk_Binding_Set;
    begin
       Tmp_Return := Internal (Tmp_Set_Name);

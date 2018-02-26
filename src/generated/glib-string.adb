@@ -41,9 +41,9 @@ package body Glib.String is
    function Append (Self : Gstring; Val : UTF8_String) return Gstring is
       function Internal
          (Self : Gstring;
-          Val  : Interfaces.C.Strings.chars_ptr) return access Gstring;
+          Val  : Gtkada.Types.Chars_Ptr) return access Gstring;
       pragma Import (C, Internal, "g_string_append");
-      Tmp_Val    : Interfaces.C.Strings.chars_ptr := New_String (Val);
+      Tmp_Val    : Gtkada.Types.Chars_Ptr := New_String (Val);
       Tmp_Return : access Gstring;
    begin
       Tmp_Return := Internal (Self, Tmp_Val);
@@ -62,10 +62,10 @@ package body Glib.String is
    is
       function Internal
          (Self : Gstring;
-          Val  : Interfaces.C.Strings.chars_ptr;
+          Val  : Gtkada.Types.Chars_Ptr;
           Len  : Gssize) return access Gstring;
       pragma Import (C, Internal, "g_string_append_len");
-      Tmp_Val    : Interfaces.C.Strings.chars_ptr := New_String (Val);
+      Tmp_Val    : Gtkada.Types.Chars_Ptr := New_String (Val);
       Tmp_Return : access Gstring;
    begin
       Tmp_Return := Internal (Self, Tmp_Val, Len);
@@ -85,12 +85,12 @@ package body Glib.String is
    is
       function Internal
          (Self                   : Gstring;
-          Unescaped              : Interfaces.C.Strings.chars_ptr;
-          Reserved_Chars_Allowed : Interfaces.C.Strings.chars_ptr;
+          Unescaped              : Gtkada.Types.Chars_Ptr;
+          Reserved_Chars_Allowed : Gtkada.Types.Chars_Ptr;
           Allow_Utf8             : Glib.Gboolean) return access Gstring;
       pragma Import (C, Internal, "g_string_append_uri_escaped");
-      Tmp_Unescaped              : Interfaces.C.Strings.chars_ptr := New_String (Unescaped);
-      Tmp_Reserved_Chars_Allowed : Interfaces.C.Strings.chars_ptr := New_String (Reserved_Chars_Allowed);
+      Tmp_Unescaped              : Gtkada.Types.Chars_Ptr := New_String (Unescaped);
+      Tmp_Reserved_Chars_Allowed : Gtkada.Types.Chars_Ptr := New_String (Reserved_Chars_Allowed);
       Tmp_Return                 : access Gstring;
    begin
       Tmp_Return := Internal (Self, Tmp_Unescaped, Tmp_Reserved_Chars_Allowed, Boolean'Pos (Allow_Utf8));
@@ -106,9 +106,9 @@ package body Glib.String is
    function Assign (Self : Gstring; Rval : UTF8_String) return Gstring is
       function Internal
          (Self : Gstring;
-          Rval : Interfaces.C.Strings.chars_ptr) return access Gstring;
+          Rval : Gtkada.Types.Chars_Ptr) return access Gstring;
       pragma Import (C, Internal, "g_string_assign");
-      Tmp_Rval   : Interfaces.C.Strings.chars_ptr := New_String (Rval);
+      Tmp_Rval   : Gtkada.Types.Chars_Ptr := New_String (Rval);
       Tmp_Return : access Gstring;
    begin
       Tmp_Return := Internal (Self, Tmp_Rval);
@@ -134,8 +134,7 @@ package body Glib.String is
    function Free (Self : Gstring; Free_Segment : Boolean) return UTF8_String is
       function Internal
          (Self         : Gstring;
-          Free_Segment : Glib.Gboolean)
-          return Interfaces.C.Strings.chars_ptr;
+          Free_Segment : Glib.Gboolean) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_string_free");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Self, Boolean'Pos (Free_Segment)));
@@ -153,9 +152,9 @@ package body Glib.String is
       function Internal
          (Self : Gstring;
           Pos  : Gssize;
-          Val  : Interfaces.C.Strings.chars_ptr) return access Gstring;
+          Val  : Gtkada.Types.Chars_Ptr) return access Gstring;
       pragma Import (C, Internal, "g_string_insert");
-      Tmp_Val    : Interfaces.C.Strings.chars_ptr := New_String (Val);
+      Tmp_Val    : Gtkada.Types.Chars_Ptr := New_String (Val);
       Tmp_Return : access Gstring;
    begin
       Tmp_Return := Internal (Self, Pos, Tmp_Val);
@@ -176,10 +175,10 @@ package body Glib.String is
       function Internal
          (Self : Gstring;
           Pos  : Gssize;
-          Val  : Interfaces.C.Strings.chars_ptr;
+          Val  : Gtkada.Types.Chars_Ptr;
           Len  : Gssize) return access Gstring;
       pragma Import (C, Internal, "g_string_insert_len");
-      Tmp_Val    : Interfaces.C.Strings.chars_ptr := New_String (Val);
+      Tmp_Val    : Gtkada.Types.Chars_Ptr := New_String (Val);
       Tmp_Return : access Gstring;
    begin
       Tmp_Return := Internal (Self, Pos, Tmp_Val, Len);
@@ -199,9 +198,9 @@ package body Glib.String is
       function Internal
          (Self : Gstring;
           Pos  : Gsize;
-          Val  : Interfaces.C.Strings.chars_ptr) return access Gstring;
+          Val  : Gtkada.Types.Chars_Ptr) return access Gstring;
       pragma Import (C, Internal, "g_string_overwrite");
-      Tmp_Val    : Interfaces.C.Strings.chars_ptr := New_String (Val);
+      Tmp_Val    : Gtkada.Types.Chars_Ptr := New_String (Val);
       Tmp_Return : access Gstring;
    begin
       Tmp_Return := Internal (Self, Pos, Tmp_Val);
@@ -222,10 +221,10 @@ package body Glib.String is
       function Internal
          (Self : Gstring;
           Pos  : Gsize;
-          Val  : Interfaces.C.Strings.chars_ptr;
+          Val  : Gtkada.Types.Chars_Ptr;
           Len  : Gssize) return access Gstring;
       pragma Import (C, Internal, "g_string_overwrite_len");
-      Tmp_Val    : Interfaces.C.Strings.chars_ptr := New_String (Val);
+      Tmp_Val    : Gtkada.Types.Chars_Ptr := New_String (Val);
       Tmp_Return : access Gstring;
    begin
       Tmp_Return := Internal (Self, Pos, Tmp_Val, Len);
@@ -240,9 +239,9 @@ package body Glib.String is
    function Prepend (Self : Gstring; Val : UTF8_String) return Gstring is
       function Internal
          (Self : Gstring;
-          Val  : Interfaces.C.Strings.chars_ptr) return access Gstring;
+          Val  : Gtkada.Types.Chars_Ptr) return access Gstring;
       pragma Import (C, Internal, "g_string_prepend");
-      Tmp_Val    : Interfaces.C.Strings.chars_ptr := New_String (Val);
+      Tmp_Val    : Gtkada.Types.Chars_Ptr := New_String (Val);
       Tmp_Return : access Gstring;
    begin
       Tmp_Return := Internal (Self, Tmp_Val);
@@ -261,10 +260,10 @@ package body Glib.String is
    is
       function Internal
          (Self : Gstring;
-          Val  : Interfaces.C.Strings.chars_ptr;
+          Val  : Gtkada.Types.Chars_Ptr;
           Len  : Gssize) return access Gstring;
       pragma Import (C, Internal, "g_string_prepend_len");
-      Tmp_Val    : Interfaces.C.Strings.chars_ptr := New_String (Val);
+      Tmp_Val    : Gtkada.Types.Chars_Ptr := New_String (Val);
       Tmp_Return : access Gstring;
    begin
       Tmp_Return := Internal (Self, Tmp_Val, Len);

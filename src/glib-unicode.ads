@@ -30,12 +30,10 @@
 --  <c_version>2.2.1</c_version>
 --  <group>Glib, the general-purpose library</group>
 
-with Interfaces.C.Strings;
+with Gtkada.Types;
 
 package Glib.Unicode is
    pragma Preelaborate;
-
-   package ICS renames Interfaces.C.Strings;
 
    procedure UTF8_Validate
      (Str         : UTF8_String;
@@ -117,7 +115,8 @@ package Glib.Unicode is
    --  Convert Char to upper cases
 
    function UTF8_Strdown
-     (Str : ICS.chars_ptr; Len : Integer) return ICS.chars_ptr;
+     (Str : Gtkada.Types.Chars_Ptr; Len : Integer)
+      return Gtkada.Types.Chars_Ptr;
    pragma Import (C, UTF8_Strdown, "g_utf8_strdown");
    --  Convert all characters in Str to lowercase. The resulting string
    --  must be freed by the user. It can have a different length than
@@ -127,7 +126,8 @@ package Glib.Unicode is
    --  Convert Str to lower cases
 
    function UTF8_Strup
-     (Str : ICS.chars_ptr; Len : Integer) return ICS.chars_ptr;
+     (Str : Gtkada.Types.Chars_Ptr; Len : Integer)
+      return Gtkada.Types.Chars_Ptr;
    pragma Import (C, UTF8_Strup, "g_utf8_strup");
    --  Convert all characters in Str to uppercase. The resulting string is
    --  newly allocated, and can have a different length than Str (for
@@ -142,7 +142,8 @@ package Glib.Unicode is
    ---------------------------
 
    function UTF8_Strlen
-     (Str : ICS.chars_ptr; Max : Integer := -1) return Glong;
+     (Str : Gtkada.Types.Chars_Ptr;
+      Max : Integer := -1) return Glong;
    pragma Import (C, UTF8_Strlen, "g_utf8_strlen");
    --  Return the length of a utf8-encoded string.
    --  Max is the maximal number of bytes to examine. If it is negative, then
@@ -152,8 +153,9 @@ package Glib.Unicode is
    --  Return the number of characters in Str
 
    function UTF8_Find_Next_Char
-     (Str     : ICS.chars_ptr;
-      Str_End : ICS.chars_ptr := ICS.Null_Ptr) return ICS.chars_ptr;
+     (Str     : Gtkada.Types.Chars_Ptr;
+      Str_End : Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr)
+      return Gtkada.Types.Chars_Ptr;
    pragma Import (C, UTF8_Find_Next_Char, "g_utf8_find_next_char");
    --  Find the start of the next UTF8 character after Str.
    --  Str_End points to the end of the string. If Null_Ptr, the string must
@@ -176,7 +178,8 @@ package Glib.Unicode is
    --  character.
 
    function UTF8_Find_Prev_Char
-     (Str_Start : ICS.chars_ptr; Str : ICS.chars_ptr) return ICS.chars_ptr;
+     (Str_Start : Gtkada.Types.Chars_Ptr;
+      Str       : Gtkada.Types.Chars_Ptr) return Gtkada.Types.Chars_Ptr;
    pragma Import (C, UTF8_Find_Prev_Char, "g_utf8_find_prev_char");
    --  Find the start of the previous UTF8 character before Str.
    --  Str_Start is a pointer to the beginning of the string.
@@ -194,7 +197,8 @@ package Glib.Unicode is
    -----------------
 
    function Unichar_To_UTF8
-     (C : Gunichar; Buffer : ICS.chars_ptr := ICS.Null_Ptr) return Natural;
+     (C : Gunichar;
+      Buffer : Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr) return Natural;
    pragma Import (C, Unichar_To_UTF8, "g_unichar_to_utf8");
    --  Encode C into Buffer, which must have at least 6 bytes free.
    --  Return the number of bytes written in Buffer.

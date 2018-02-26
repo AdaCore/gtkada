@@ -28,7 +28,7 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Style is
@@ -183,10 +183,10 @@ package body Gtk.Style is
       procedure Internal
          (Style         : System.Address;
           Widget_Type   : GType;
-          Property_Name : Interfaces.C.Strings.chars_ptr;
+          Property_Name : Gtkada.Types.Chars_Ptr;
           Value         : out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_style_get_style_property");
-      Tmp_Property_Name : Interfaces.C.Strings.chars_ptr := New_String (Property_Name);
+      Tmp_Property_Name : Gtkada.Types.Chars_Ptr := New_String (Property_Name);
    begin
       Internal (Get_Object (Style), Widget_Type, Tmp_Property_Name, Value);
       Free (Tmp_Property_Name);
@@ -217,11 +217,11 @@ package body Gtk.Style is
    is
       function Internal
          (Style      : System.Address;
-          Color_Name : Interfaces.C.Strings.chars_ptr;
+          Color_Name : Gtkada.Types.Chars_Ptr;
           Acc_Color  : access Gdk.Color.Gdk_Color) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_lookup_color");
       Acc_Color      : aliased Gdk.Color.Gdk_Color;
-      Tmp_Color_Name : Interfaces.C.Strings.chars_ptr := New_String (Color_Name);
+      Tmp_Color_Name : Gtkada.Types.Chars_Ptr := New_String (Color_Name);
       Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Style), Tmp_Color_Name, Acc_Color'Access);

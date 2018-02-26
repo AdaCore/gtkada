@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Menu_Item is
@@ -135,9 +135,9 @@ package body Gtk.Menu_Item is
        Label     : UTF8_String)
    is
       function Internal
-         (Label : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Label : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_menu_item_new_with_label");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label  : Gtkada.Types.Chars_Ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
       if not Menu_Item.Is_Created then
@@ -156,9 +156,9 @@ package body Gtk.Menu_Item is
        Label     : UTF8_String)
    is
       function Internal
-         (Label : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Label : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_menu_item_new_with_mnemonic");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label  : Gtkada.Types.Chars_Ptr := New_String (Label);
       Tmp_Return : System.Address;
    begin
       if not Menu_Item.Is_Created then
@@ -198,7 +198,7 @@ package body Gtk.Menu_Item is
       (Menu_Item : not null access Gtk_Menu_Item_Record) return UTF8_String
    is
       function Internal
-         (Menu_Item : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Menu_Item : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_menu_item_get_accel_path");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Menu_Item)));
@@ -212,7 +212,7 @@ package body Gtk.Menu_Item is
       (Menu_Item : not null access Gtk_Menu_Item_Record) return UTF8_String
    is
       function Internal
-         (Menu_Item : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Menu_Item : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_menu_item_get_label");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Menu_Item)));
@@ -293,12 +293,12 @@ package body Gtk.Menu_Item is
    is
       procedure Internal
          (Menu_Item  : System.Address;
-          Accel_Path : Interfaces.C.Strings.chars_ptr);
+          Accel_Path : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_menu_item_set_accel_path");
-      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr;
+      Tmp_Accel_Path : Gtkada.Types.Chars_Ptr;
    begin
       if Accel_Path = "" then
-         Tmp_Accel_Path := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Accel_Path := Gtkada.Types.Null_Ptr;
       else
          Tmp_Accel_Path := New_String (Accel_Path);
       end if;
@@ -316,9 +316,9 @@ package body Gtk.Menu_Item is
    is
       procedure Internal
          (Menu_Item : System.Address;
-          Label     : Interfaces.C.Strings.chars_ptr);
+          Label     : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_menu_item_set_label");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label : Gtkada.Types.Chars_Ptr := New_String (Label);
    begin
       Internal (Get_Object (Menu_Item), Tmp_Label);
       Free (Tmp_Label);
@@ -442,7 +442,7 @@ package body Gtk.Menu_Item is
       (Self : not null access Gtk_Menu_Item_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_actionable_get_action_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -500,9 +500,9 @@ package body Gtk.Menu_Item is
    is
       procedure Internal
          (Self        : System.Address;
-          Action_Name : Interfaces.C.Strings.chars_ptr);
+          Action_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_actionable_set_action_name");
-      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
    begin
       Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
@@ -534,9 +534,9 @@ package body Gtk.Menu_Item is
    is
       procedure Internal
          (Self                 : System.Address;
-          Detailed_Action_Name : Interfaces.C.Strings.chars_ptr);
+          Detailed_Action_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_actionable_set_detailed_action_name");
-      Tmp_Detailed_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Detailed_Action_Name);
+      Tmp_Detailed_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Detailed_Action_Name);
    begin
       Internal (Get_Object (Self), Tmp_Detailed_Action_Name);
       Free (Tmp_Detailed_Action_Name);

@@ -23,10 +23,8 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Bindings;      use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Bindings; use Gtkada.Bindings;
+with Gtkada.Types;    use Gtkada.Types;
 
 package body Gtk.Recent_Info is
 
@@ -56,13 +54,13 @@ package body Gtk.Recent_Info is
    is
       function Internal
          (Self     : System.Address;
-          App_Name : Interfaces.C.Strings.chars_ptr) return Glib.GApp_Info;
+          App_Name : Gtkada.Types.Chars_Ptr) return Glib.GApp_Info;
       pragma Import (C, Internal, "gtk_recent_info_create_app_info");
-      Tmp_App_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_App_Name : Gtkada.Types.Chars_Ptr;
       Tmp_Return   : Glib.GApp_Info;
    begin
       if App_Name = "" then
-         Tmp_App_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_App_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_App_Name := New_String (App_Name);
       end if;
@@ -110,7 +108,7 @@ package body Gtk.Recent_Info is
 
    function Get_Description (Self : Gtk_Recent_Info) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_description");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -122,7 +120,7 @@ package body Gtk.Recent_Info is
 
    function Get_Display_Name (Self : Gtk_Recent_Info) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_display_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -162,7 +160,7 @@ package body Gtk.Recent_Info is
 
    function Get_Mime_Type (Self : Gtk_Recent_Info) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_mime_type");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -196,7 +194,7 @@ package body Gtk.Recent_Info is
 
    function Get_Short_Name (Self : Gtk_Recent_Info) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_short_name");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
@@ -208,7 +206,7 @@ package body Gtk.Recent_Info is
 
    function Get_Uri (Self : Gtk_Recent_Info) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_uri");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -220,7 +218,7 @@ package body Gtk.Recent_Info is
 
    function Get_Uri_Display (Self : Gtk_Recent_Info) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_recent_info_get_uri_display");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
@@ -247,9 +245,9 @@ package body Gtk.Recent_Info is
    is
       function Internal
          (Self     : System.Address;
-          App_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          App_Name : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_info_has_application");
-      Tmp_App_Name : Interfaces.C.Strings.chars_ptr := New_String (App_Name);
+      Tmp_App_Name : Gtkada.Types.Chars_Ptr := New_String (App_Name);
       Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_App_Name);
@@ -267,9 +265,9 @@ package body Gtk.Recent_Info is
    is
       function Internal
          (Self       : System.Address;
-          Group_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Group_Name : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_info_has_group");
-      Tmp_Group_Name : Interfaces.C.Strings.chars_ptr := New_String (Group_Name);
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr := New_String (Group_Name);
       Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Group_Name);
@@ -294,7 +292,7 @@ package body Gtk.Recent_Info is
 
    function Last_Application (Self : Gtk_Recent_Info) return UTF8_String is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_recent_info_last_application");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));

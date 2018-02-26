@@ -53,11 +53,11 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;                 use Glib;
-with Glib.Object;          use Glib.Object;
-with Glib.Types;           use Glib.Types;
+with Glib;         use Glib;
+with Glib.Object;  use Glib.Object;
+with Glib.Types;   use Glib.Types;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types; use Gtkada.Types;
 pragma Warnings(On);
 
 package Gtk.Editable is
@@ -334,7 +334,7 @@ package Gtk.Editable is
 
    type Virtual_Do_Insert_Text is access procedure
      (Editable        : Gtk_Editable;
-      New_Text        : Interfaces.C.Strings.chars_ptr;
+      New_Text        : Gtkada.Types.Chars_Ptr;
       New_Text_Length : Glib.Gint;
       Position        : in out Glib.Gint);
    pragma Convention (C, Virtual_Do_Insert_Text);
@@ -349,7 +349,7 @@ package Gtk.Editable is
    type Virtual_Get_Chars is access function
      (Editable  : Gtk_Editable;
       Start_Pos : Glib.Gint;
-      End_Pos   : Glib.Gint) return Interfaces.C.Strings.chars_ptr;
+      End_Pos   : Glib.Gint) return Gtkada.Types.Chars_Ptr;
    pragma Convention (C, Virtual_Get_Chars);
    --  Retrieves a sequence of characters. The characters that are retrieved
    --  are those characters at positions from Start_Pos up to, but not
@@ -379,7 +379,7 @@ package Gtk.Editable is
 
    type Virtual_Insert_Text is access procedure
      (Editable        : Gtk_Editable;
-      New_Text        : Interfaces.C.Strings.chars_ptr;
+      New_Text        : Gtkada.Types.Chars_Ptr;
       New_Text_Length : Glib.Gint;
       Position        : in out Glib.Gint);
    pragma Convention (C, Virtual_Insert_Text);

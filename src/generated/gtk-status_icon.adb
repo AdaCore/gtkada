@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Status_Icon is
@@ -214,9 +214,9 @@ package body Gtk.Status_Icon is
        Filename    : UTF8_String)
    is
       function Internal
-         (Filename : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Filename : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_status_icon_new_from_file");
-      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
+      Tmp_Filename : Gtkada.Types.Chars_Ptr := New_String (Filename);
       Tmp_Return   : System.Address;
    begin
       if not Status_Icon.Is_Created then
@@ -251,9 +251,9 @@ package body Gtk.Status_Icon is
        Icon_Name   : UTF8_String)
    is
       function Internal
-         (Icon_Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Icon_Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_status_icon_new_from_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
       Tmp_Return    : System.Address;
    begin
       if not Status_Icon.Is_Created then
@@ -288,9 +288,9 @@ package body Gtk.Status_Icon is
        Stock_Id    : UTF8_String)
    is
       function Internal
-         (Stock_Id : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Stock_Id : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_status_icon_new_from_stock");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
       Tmp_Return   : System.Address;
    begin
       if not Status_Icon.Is_Created then
@@ -337,8 +337,7 @@ package body Gtk.Status_Icon is
        return UTF8_String
    is
       function Internal
-         (Status_Icon : System.Address)
-          return Interfaces.C.Strings.chars_ptr;
+         (Status_Icon : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_status_icon_get_icon_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Status_Icon)));
@@ -397,8 +396,7 @@ package body Gtk.Status_Icon is
        return UTF8_String
    is
       function Internal
-         (Status_Icon : System.Address)
-          return Interfaces.C.Strings.chars_ptr;
+         (Status_Icon : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_status_icon_get_stock");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Status_Icon)));
@@ -428,8 +426,7 @@ package body Gtk.Status_Icon is
        return UTF8_String
    is
       function Internal
-         (Status_Icon : System.Address)
-          return Interfaces.C.Strings.chars_ptr;
+         (Status_Icon : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_status_icon_get_title");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Status_Icon)));
@@ -444,8 +441,7 @@ package body Gtk.Status_Icon is
        return UTF8_String
    is
       function Internal
-         (Status_Icon : System.Address)
-          return Interfaces.C.Strings.chars_ptr;
+         (Status_Icon : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_status_icon_get_tooltip_markup");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Status_Icon)));
@@ -460,8 +456,7 @@ package body Gtk.Status_Icon is
        return UTF8_String
    is
       function Internal
-         (Status_Icon : System.Address)
-          return Interfaces.C.Strings.chars_ptr;
+         (Status_Icon : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_status_icon_get_tooltip_text");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Status_Icon)));
@@ -516,9 +511,9 @@ package body Gtk.Status_Icon is
    is
       procedure Internal
          (Status_Icon : System.Address;
-          Filename    : Interfaces.C.Strings.chars_ptr);
+          Filename    : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_status_icon_set_from_file");
-      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
+      Tmp_Filename : Gtkada.Types.Chars_Ptr := New_String (Filename);
    begin
       Internal (Get_Object (Status_Icon), Tmp_Filename);
       Free (Tmp_Filename);
@@ -550,9 +545,9 @@ package body Gtk.Status_Icon is
    is
       procedure Internal
          (Status_Icon : System.Address;
-          Icon_Name   : Interfaces.C.Strings.chars_ptr);
+          Icon_Name   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_status_icon_set_from_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
    begin
       Internal (Get_Object (Status_Icon), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
@@ -584,9 +579,9 @@ package body Gtk.Status_Icon is
    is
       procedure Internal
          (Status_Icon : System.Address;
-          Stock_Id    : Interfaces.C.Strings.chars_ptr);
+          Stock_Id    : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_status_icon_set_from_stock");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
    begin
       Internal (Get_Object (Status_Icon), Tmp_Stock_Id);
       Free (Tmp_Stock_Id);
@@ -618,9 +613,9 @@ package body Gtk.Status_Icon is
    is
       procedure Internal
          (Status_Icon : System.Address;
-          Name        : Interfaces.C.Strings.chars_ptr);
+          Name        : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_status_icon_set_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Status_Icon), Tmp_Name);
       Free (Tmp_Name);
@@ -652,9 +647,9 @@ package body Gtk.Status_Icon is
    is
       procedure Internal
          (Status_Icon : System.Address;
-          Title       : Interfaces.C.Strings.chars_ptr);
+          Title       : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_status_icon_set_title");
-      Tmp_Title : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title : Gtkada.Types.Chars_Ptr := New_String (Title);
    begin
       Internal (Get_Object (Status_Icon), Tmp_Title);
       Free (Tmp_Title);
@@ -670,12 +665,12 @@ package body Gtk.Status_Icon is
    is
       procedure Internal
          (Status_Icon : System.Address;
-          Markup      : Interfaces.C.Strings.chars_ptr);
+          Markup      : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_status_icon_set_tooltip_markup");
-      Tmp_Markup : Interfaces.C.Strings.chars_ptr;
+      Tmp_Markup : Gtkada.Types.Chars_Ptr;
    begin
       if Markup = "" then
-         Tmp_Markup := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Markup := Gtkada.Types.Null_Ptr;
       else
          Tmp_Markup := New_String (Markup);
       end if;
@@ -693,9 +688,9 @@ package body Gtk.Status_Icon is
    is
       procedure Internal
          (Status_Icon : System.Address;
-          Text        : Interfaces.C.Strings.chars_ptr);
+          Text        : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_status_icon_set_tooltip_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Status_Icon), Tmp_Text);
       Free (Tmp_Text);

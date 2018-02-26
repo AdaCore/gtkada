@@ -28,9 +28,7 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Types;               use Gtkada.Types;
 
 package body Glib.Menu_Model is
 
@@ -60,10 +58,10 @@ package body Glib.Menu_Model is
       function Internal
          (Self          : System.Address;
           Item_Index    : Glib.Gint;
-          Attribute     : Interfaces.C.Strings.chars_ptr;
+          Attribute     : Gtkada.Types.Chars_Ptr;
           Expected_Type : Glib.Variant.Gvariant_Type) return System.Address;
       pragma Import (C, Internal, "g_menu_model_get_item_attribute_value");
-      Tmp_Attribute : Interfaces.C.Strings.chars_ptr := New_String (Attribute);
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
       Tmp_Return    : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Item_Index, Tmp_Attribute, Expected_Type);
@@ -83,9 +81,9 @@ package body Glib.Menu_Model is
       function Internal
          (Self       : System.Address;
           Item_Index : Glib.Gint;
-          Link       : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Link       : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_menu_model_get_item_link");
-      Tmp_Link         : Interfaces.C.Strings.chars_ptr := New_String (Link);
+      Tmp_Link         : Gtkada.Types.Chars_Ptr := New_String (Link);
       Stub_Gmenu_Model : Gmenu_Model_Record;
       Tmp_Return       : System.Address;
    begin
@@ -116,7 +114,7 @@ package body Glib.Menu_Model is
        return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_menu_attribute_iter_get_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -130,7 +128,7 @@ package body Glib.Menu_Model is
       (Self : not null access Gmenu_Link_Iter_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_menu_link_iter_get_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));

@@ -30,7 +30,7 @@
 --  <group>Cairo</group>
 
 with System;
-with Interfaces.C.Strings;
+with Gtkada.Types;
 
 package Cairo.Font_Face is
 
@@ -116,7 +116,7 @@ package Cairo.Font_Face is
    --  slot could not be allocated for the user data.
 
    function Toy_Font_Face_Create
-     (Family : Interfaces.C.Strings.chars_ptr;
+     (Family : Gtkada.Types.Chars_Ptr;
       Slant  : Cairo_Font_Slant;
       Weight : Cairo_Font_Weight)
       return   Cairo_Font_Face;
@@ -142,7 +142,7 @@ package Cairo.Font_Face is
 
    function Toy_Font_Face_Get_Family
      (Font_Face : Cairo_Font_Face)
-      return      Interfaces.C.Strings.chars_ptr;
+      return      Gtkada.Types.Chars_Ptr;
    --  Font_Face: A toy font face
    --
    --  Gets the familly name of a toy font.

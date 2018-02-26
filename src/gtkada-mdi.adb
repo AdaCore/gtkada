@@ -32,6 +32,8 @@
 --    on a per-child basis).
 --  - contextual menu in the title bar of children to dock them, float them,...
 
+with Interfaces.C.Strings;    use Interfaces.C.Strings;
+
 with Ada.Characters.Handling; use Ada.Characters.Handling;
 with Ada.Containers.Vectors;
 with Ada.Containers.Doubly_Linked_Lists;
@@ -40,7 +42,6 @@ with Ada.Strings.Fixed;       use Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;   use Ada.Strings.Unbounded;
 with Ada.Tags;                use Ada.Tags;
 with Ada.Exceptions;          use Ada.Exceptions;
-with Interfaces.C.Strings;    use Interfaces.C.Strings;
 with System;                  use System;
 with System.Address_Image;
 
@@ -148,7 +149,7 @@ package body Gtkada.MDI is
    Child_Class_Record      : aliased Glib.Object.Ada_GObject_Class :=
      Glib.Object.Uninitialized_Class;
 
-   MDI_Signals : constant chars_ptr_array :=
+   MDI_Signals : constant Interfaces.C.Strings.chars_ptr_array :=
      (1 => New_String (String (Signal_Child_Selected)),
       2 => New_String (String (Signal_Float_Child)),
       3 => New_String (String (Signal_Child_Title_Changed)),
@@ -162,7 +163,7 @@ package body Gtkada.MDI is
       11 => New_String (String (Signal_Before_Destroy_Child)),
       12 => New_String (String (Signal_Perspectives_Added)));
 
-   Child_Signals : constant chars_ptr_array :=
+   Child_Signals : constant Interfaces.C.Strings.chars_ptr_array :=
      (1 => New_String (String (Signal_Float_Child)),
       2 => New_String (String (Signal_Unfloat_Child)),
       3 => New_String (String (Signal_Before_Unfloat_Child)),
@@ -4705,7 +4706,7 @@ package body Gtkada.MDI is
 
             Glib.Object.Initialize_Class_Record
               (Ancestor     => Gtk.Event_Box.Get_Type,
-               Signals      => (1 .. 0 => Null_Ptr),
+               Signals      => (1 .. 0 => Interfaces.C.Strings.Null_Ptr),
                Parameters   => (1 .. 0 => (1 => GType_None)),
                Class_Record => MDI_Tab_Class_Record,
                Type_Name    => "MDITab",

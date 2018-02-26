@@ -28,7 +28,7 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Style_Context is
@@ -95,9 +95,9 @@ package body Gtk.Style_Context is
    is
       procedure Internal
          (Self       : System.Address;
-          Class_Name : Interfaces.C.Strings.chars_ptr);
+          Class_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_style_context_add_class");
-      Tmp_Class_Name : Interfaces.C.Strings.chars_ptr := New_String (Class_Name);
+      Tmp_Class_Name : Gtkada.Types.Chars_Ptr := New_String (Class_Name);
    begin
       Internal (Get_Object (Self), Tmp_Class_Name);
       Free (Tmp_Class_Name);
@@ -132,10 +132,10 @@ package body Gtk.Style_Context is
    is
       procedure Internal
          (Self        : System.Address;
-          Region_Name : Interfaces.C.Strings.chars_ptr;
+          Region_Name : Gtkada.Types.Chars_Ptr;
           Flags       : Gtk.Enums.Gtk_Region_Flags);
       pragma Import (C, Internal, "gtk_style_context_add_region");
-      Tmp_Region_Name : Interfaces.C.Strings.chars_ptr := New_String (Region_Name);
+      Tmp_Region_Name : Gtkada.Types.Chars_Ptr := New_String (Region_Name);
    begin
       Internal (Get_Object (Self), Tmp_Region_Name, Flags);
       Free (Tmp_Region_Name);
@@ -374,11 +374,11 @@ package body Gtk.Style_Context is
    is
       procedure Internal
          (Self     : System.Address;
-          Property : Interfaces.C.Strings.chars_ptr;
+          Property : Gtkada.Types.Chars_Ptr;
           State    : Gtk.Enums.Gtk_State_Flags;
           Value    : out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_style_context_get_property");
-      Tmp_Property : Interfaces.C.Strings.chars_ptr := New_String (Property);
+      Tmp_Property : Gtkada.Types.Chars_Ptr := New_String (Property);
    begin
       Internal (Get_Object (Self), Tmp_Property, State, Value);
       Free (Tmp_Property);
@@ -422,9 +422,9 @@ package body Gtk.Style_Context is
    is
       function Internal
          (Self     : System.Address;
-          Property : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Property : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_style_context_get_section");
-      Tmp_Property : Interfaces.C.Strings.chars_ptr := New_String (Property);
+      Tmp_Property : Gtkada.Types.Chars_Ptr := New_String (Property);
       Tmp_Return   : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Property);
@@ -458,10 +458,10 @@ package body Gtk.Style_Context is
    is
       procedure Internal
          (Self          : System.Address;
-          Property_Name : Interfaces.C.Strings.chars_ptr;
+          Property_Name : Gtkada.Types.Chars_Ptr;
           Value         : in out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_style_context_get_style_property");
-      Tmp_Property_Name : Interfaces.C.Strings.chars_ptr := New_String (Property_Name);
+      Tmp_Property_Name : Gtkada.Types.Chars_Ptr := New_String (Property_Name);
    begin
       Internal (Get_Object (Self), Tmp_Property_Name, Value);
       Free (Tmp_Property_Name);
@@ -477,9 +477,9 @@ package body Gtk.Style_Context is
    is
       function Internal
          (Self       : System.Address;
-          Class_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Class_Name : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_context_has_class");
-      Tmp_Class_Name : Interfaces.C.Strings.chars_ptr := New_String (Class_Name);
+      Tmp_Class_Name : Gtkada.Types.Chars_Ptr := New_String (Class_Name);
       Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Class_Name);
@@ -499,12 +499,12 @@ package body Gtk.Style_Context is
    is
       function Internal
          (Self             : System.Address;
-          Region_Name      : Interfaces.C.Strings.chars_ptr;
+          Region_Name      : Gtkada.Types.Chars_Ptr;
           Acc_Flags_Return : access Gtk.Enums.Gtk_Region_Flags)
           return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_context_has_region");
       Acc_Flags_Return : aliased Gtk.Enums.Gtk_Region_Flags;
-      Tmp_Region_Name  : Interfaces.C.Strings.chars_ptr := New_String (Region_Name);
+      Tmp_Region_Name  : Gtkada.Types.Chars_Ptr := New_String (Region_Name);
       Tmp_Return       : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Region_Name, Acc_Flags_Return'Access);
@@ -568,11 +568,11 @@ package body Gtk.Style_Context is
    is
       function Internal
          (Self       : System.Address;
-          Color_Name : Interfaces.C.Strings.chars_ptr;
+          Color_Name : Gtkada.Types.Chars_Ptr;
           Acc_Color  : access Gdk.RGBA.Gdk_RGBA) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_style_context_lookup_color");
       Acc_Color      : aliased Gdk.RGBA.Gdk_RGBA;
-      Tmp_Color_Name : Interfaces.C.Strings.chars_ptr := New_String (Color_Name);
+      Tmp_Color_Name : Gtkada.Types.Chars_Ptr := New_String (Color_Name);
       Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Color_Name, Acc_Color'Access);
@@ -640,9 +640,9 @@ package body Gtk.Style_Context is
    is
       procedure Internal
          (Self       : System.Address;
-          Class_Name : Interfaces.C.Strings.chars_ptr);
+          Class_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_style_context_remove_class");
-      Tmp_Class_Name : Interfaces.C.Strings.chars_ptr := New_String (Class_Name);
+      Tmp_Class_Name : Gtkada.Types.Chars_Ptr := New_String (Class_Name);
    begin
       Internal (Get_Object (Self), Tmp_Class_Name);
       Free (Tmp_Class_Name);
@@ -674,9 +674,9 @@ package body Gtk.Style_Context is
    is
       procedure Internal
          (Self        : System.Address;
-          Region_Name : Interfaces.C.Strings.chars_ptr);
+          Region_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_style_context_remove_region");
-      Tmp_Region_Name : Interfaces.C.Strings.chars_ptr := New_String (Region_Name);
+      Tmp_Region_Name : Gtkada.Types.Chars_Ptr := New_String (Region_Name);
    begin
       Internal (Get_Object (Self), Tmp_Region_Name);
       Free (Tmp_Region_Name);

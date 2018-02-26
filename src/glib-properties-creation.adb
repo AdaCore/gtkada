@@ -21,13 +21,15 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Interfaces.C.Strings; use Interfaces.C, Interfaces.C.Strings;
 with Glib.Object; use Glib.Object;
 with Glib.Values; use Glib.Values;
+with Gtkada.Types; use Gtkada.Types;
+with Interfaces.C;
 
 with Ada.Unchecked_Conversion;
 
 package body Glib.Properties.Creation is
+   use type Interfaces.C.size_t;
 
    function To_Address is new Ada.Unchecked_Conversion
      (Get_Property_Handler, System.Address);
@@ -58,10 +60,10 @@ package body Glib.Properties.Creation is
 
    function Pspec_Name (Param : Param_Spec) return String is
       function Internal (Param : Param_Spec)
-         return Interfaces.C.Strings.chars_ptr;
+         return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "ada_gparam_get_name");
    begin
-      return Interfaces.C.Strings.Value (Internal (Param));
+      return Gtkada.Types.Value (Internal (Param));
    end Pspec_Name;
 
    -----------------
@@ -70,10 +72,10 @@ package body Glib.Properties.Creation is
 
    function Description (Param : Param_Spec) return String is
       function Internal (Param : Param_Spec)
-         return Interfaces.C.Strings.chars_ptr;
+         return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_param_spec_get_blurb");
    begin
-      return Interfaces.C.Strings.Value (Internal (Param));
+      return Gtkada.Types.Value (Internal (Param));
    end Description;
 
    ---------------
@@ -82,10 +84,10 @@ package body Glib.Properties.Creation is
 
    function Nick_Name (Param : Param_Spec) return String is
       function Internal (Param : Param_Spec)
-         return Interfaces.C.Strings.chars_ptr;
+         return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_param_spec_get_nick");
    begin
-      return Interfaces.C.Strings.Value (Internal (Param));
+      return Gtkada.Types.Value (Internal (Param));
    end Nick_Name;
 
    -------------
@@ -656,9 +658,9 @@ package body Glib.Properties.Creation is
    -------------
 
    function Default (Param : Param_Spec_String) return String is
-      function Internal (Param : Param_Spec_String) return chars_ptr;
+      function Internal (Param : Param_Spec_String) return Chars_Ptr;
       pragma Import (C, Internal, "ada_gparam_default_string");
-      C : constant chars_ptr := Internal (Param);
+      C : constant Chars_Ptr := Internal (Param);
    begin
       if C /= Null_Ptr then
          return Value (C);
@@ -672,9 +674,9 @@ package body Glib.Properties.Creation is
    ----------------
 
    function Cset_First (Param : Param_Spec_String) return String is
-      function Internal (Param : Param_Spec_String) return chars_ptr;
+      function Internal (Param : Param_Spec_String) return Chars_Ptr;
       pragma Import (C, Internal, "ada_gparam_cset_first_string");
-      C : constant chars_ptr := Internal (Param);
+      C : constant Chars_Ptr := Internal (Param);
    begin
       if C /= Null_Ptr then
          return Value (C);
@@ -688,9 +690,9 @@ package body Glib.Properties.Creation is
    --------------
 
    function Cset_Nth (Param : Param_Spec_String) return String is
-      function Internal (Param : Param_Spec_String) return chars_ptr;
+      function Internal (Param : Param_Spec_String) return Chars_Ptr;
       pragma Import (C, Internal, "ada_gparam_cset_nth_string");
-      C : constant chars_ptr := Internal (Param);
+      C : constant Chars_Ptr := Internal (Param);
    begin
       if C /= Null_Ptr then
          return Value (C);
@@ -839,7 +841,7 @@ package body Glib.Properties.Creation is
    ----------
 
    function Name (Val : Enum_Value) return String is
-      function Internal (Val : Enum_Value) return chars_ptr;
+      function Internal (Val : Enum_Value) return Chars_Ptr;
       pragma Import (C, Internal, "ada_genum_get_name");
    begin
       return Value (Internal (Val));
@@ -850,7 +852,7 @@ package body Glib.Properties.Creation is
    ----------
 
    function Nick (Val : Enum_Value) return String is
-      function Internal (Val : Enum_Value) return chars_ptr;
+      function Internal (Val : Enum_Value) return Chars_Ptr;
       pragma Import (C, Internal, "ada_genum_get_nick");
    begin
       return Value (Internal (Val));
@@ -885,7 +887,7 @@ package body Glib.Properties.Creation is
    ----------
 
    function Name (Val : Flags_Value) return String is
-      function Internal (Val : Flags_Value) return chars_ptr;
+      function Internal (Val : Flags_Value) return Chars_Ptr;
       pragma Import (C, Internal, "ada_gflags_get_name");
    begin
       return Value (Internal (Val));
@@ -896,7 +898,7 @@ package body Glib.Properties.Creation is
    ----------
 
    function Nick (Val : Flags_Value) return String is
-      function Internal (Val : Flags_Value) return chars_ptr;
+      function Internal (Val : Flags_Value) return Chars_Ptr;
       pragma Import (C, Internal, "ada_gflags_get_nick");
    begin
       return Value (Internal (Val));
@@ -1001,7 +1003,7 @@ package body Glib.Properties.Creation is
 
    function Register_Static_Enum
      (Name   : String;
-      Values : Interfaces.C.Strings.chars_ptr_array) return Glib.GType
+      Values : Gtkada.Types.Chars_Ptr_Array) return Glib.GType
    is
       type Byte is range 0 .. 255;
       for Byte'Size use 8;
@@ -1019,7 +1021,7 @@ package body Glib.Properties.Creation is
       pragma Import (C, C_Register_Static, "g_enum_register_static");
 
       procedure C_Create_Enum_Value
-        (Value : Gint; Name, Nick : chars_ptr; Enum : out C_Enum_Value);
+        (Value : Gint; Name, Nick : Chars_Ptr; Enum : out C_Enum_Value);
       pragma Import (C, C_Create_Enum_Value, "ada_genum_create_enum_value");
       --  The strings Name and Nick are duplicated
 
@@ -1093,9 +1095,9 @@ package body Glib.Properties.Creation is
       procedure Internal
          (CR   : Glib.Object.GObject_Class;
           Id   : Property_Id;
-          Name : chars_ptr);
+          Name : Chars_Ptr);
       pragma Import (C, Internal, "g_object_class_override_property");
-      N : constant chars_ptr := New_String (Name);
+      N : constant Chars_Ptr := New_String (Name);
    begin
       Internal (Class_Record, Prop_Id, N);
 

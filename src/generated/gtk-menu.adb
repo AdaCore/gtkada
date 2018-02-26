@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Menu is
@@ -328,7 +328,7 @@ package body Gtk.Menu is
       (Menu : not null access Gtk_Menu_Record) return UTF8_String
    is
       function Internal
-         (Menu : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Menu : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_menu_get_accel_path");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Menu)));
@@ -410,7 +410,7 @@ package body Gtk.Menu is
       (Menu : not null access Gtk_Menu_Record) return UTF8_String
    is
       function Internal
-         (Menu : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Menu : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_menu_get_title");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Menu)));
@@ -695,12 +695,12 @@ package body Gtk.Menu is
    is
       procedure Internal
          (Menu       : System.Address;
-          Accel_Path : Interfaces.C.Strings.chars_ptr);
+          Accel_Path : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_menu_set_accel_path");
-      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr;
+      Tmp_Accel_Path : Gtkada.Types.Chars_Ptr;
    begin
       if Accel_Path = "" then
-         Tmp_Accel_Path := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Accel_Path := Gtkada.Types.Null_Ptr;
       else
          Tmp_Accel_Path := New_String (Accel_Path);
       end if;
@@ -790,9 +790,9 @@ package body Gtk.Menu is
    is
       procedure Internal
          (Menu  : System.Address;
-          Title : Interfaces.C.Strings.chars_ptr);
+          Title : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_menu_set_title");
-      Tmp_Title : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title : Gtkada.Types.Chars_Ptr := New_String (Title);
    begin
       Internal (Get_Object (Menu), Tmp_Title);
       Free (Tmp_Title);

@@ -49,16 +49,26 @@ package body Gtkada.Bindings is
       end if;
    end String_Or_Null;
 
+   function String_Or_Null (S : String) return Gtkada.Types.Chars_Ptr is
+   begin
+      if S = "" then
+         return Gtkada.Types.Null_Ptr;
+      else
+         return Gtkada.Types.New_String (S);
+      end if;
+   end String_Or_Null;
+
    --------------------
    -- To_String_List --
    --------------------
 
    function To_String_List
-     (C : Interfaces.C.Strings.chars_ptr_array) return String_List
+     (C : Gtkada.Types.Chars_Ptr_Array) return String_List
    is
       Count : Natural := 0;
+      use type Gtkada.Types.Chars_Ptr;
    begin
-      while C (size_t (Count)) /= Null_Ptr loop
+      while C (size_t (Count)) /= Gtkada.Types.Null_Ptr loop
          Count := Count + 1;
       end loop;
 
@@ -83,12 +93,13 @@ package body Gtkada.Bindings is
    --------------------
 
    function To_String_List
-     (C : ICS.chars_ptr_array; N : Gint) return GNAT.Strings.String_List
+     (C : Gtkada.Types.Chars_Ptr_Array; N : Gint)
+      return GNAT.Strings.String_List
    is
       Result : String_List (1 .. Natural (N));
    begin
       for R in Result'Range loop
-         Result (R) := new String'(Value (C (size_t (R) - 1)));
+         Result (R) := new String'(Gtkada.Types.Value (C (size_t (R) - 1)));
       end loop;
       return Result;
    end To_String_List;
@@ -98,14 +109,14 @@ package body Gtkada.Bindings is
    ----------------------
 
    function From_String_List
-     (C : String_List) return Interfaces.C.Strings.chars_ptr_array
+     (C : String_List) return Gtkada.Types.Chars_Ptr_Array
    is
-      Result : Interfaces.C.Strings.chars_ptr_array (0 .. C'Length);
+      Result : Gtkada.Types.Chars_Ptr_Array (0 .. C'Length);
    begin
       for S in C'Range loop
-         Result (size_t (S - C'First)) := New_String (C (S).all);
+         Result (size_t (S - C'First)) := Gtkada.Types.New_String (C (S).all);
       end loop;
-      Result (Result'Last) := Null_Ptr;
+      Result (Result'Last) := Gtkada.Types.Null_Ptr;
       return Result;
    end From_String_List;
 
@@ -114,16 +125,17 @@ package body Gtkada.Bindings is
    ------------------
 
    function To_Chars_Ptr
-     (C : chars_ptr_array_access) return ICS.chars_ptr_array
+     (C : chars_ptr_array_access) return Gtkada.Types.Chars_Ptr_Array
    is
       Count : size_t := 0;
+      use type Gtkada.Types.Chars_Ptr;
    begin
-      while C (Count) /= Null_Ptr loop
+      while C (Count) /= Gtkada.Types.Null_Ptr loop
          Count := Count + 1;
       end loop;
 
       declare
-         Result : chars_ptr_array (0 .. Count - 1);
+         Result : Gtkada.Types.Chars_Ptr_Array (0 .. Count - 1);
       begin
          for J in Result'Range loop
             Result (J) := C (J);
@@ -201,6 +213,27 @@ package body Gtkada.Bindings is
       end;
    end Value_And_Free;
 
+   --------------------
+   -- Value_And_Free --
+   --------------------
+
+   function Value_And_Free
+     (Str : Gtkada.Types.Chars_Ptr) return String
+   is
+      use type Gtkada.Types.Chars_Ptr;
+   begin
+      if Str = Gtkada.Types.Null_Ptr then
+         return "";
+      end if;
+
+      declare
+         Val : constant String := Gtkada.Types.Value (Str);
+      begin
+         Gtkada.Types.g_free (Str);
+         return Val;
+      end;
+   end Value_And_Free;
+
    -------------------------
    -- Value_Allowing_Null --
    -------------------------
@@ -217,6 +250,18 @@ package body Gtkada.Bindings is
    end Value_Allowing_Null;
 
    function Value_Allowing_Null
+     (Str : Gtkada.Types.Chars_Ptr) return String
+   is
+      use type Gtkada.Types.Chars_Ptr;
+   begin
+      if Str = Gtkada.Types.Null_Ptr then
+         return "";
+      end if;
+
+      return Gtkada.Types.Value (Str);
+   end Value_Allowing_Null;
+
+   function Value_Allowing_Null
      (Str : Interfaces.C.Strings.chars_ptr) return Glib.Signal_Name
    is
    begin
@@ -225,6 +270,18 @@ package body Gtkada.Bindings is
       end if;
 
       return Glib.Signal_Name (String'(Interfaces.C.Strings.Value (Str)));
+   end Value_Allowing_Null;
+
+   function Value_Allowing_Null
+     (Str : Gtkada.Types.Chars_Ptr) return Glib.Signal_Name
+   is
+      use type Gtkada.Types.Chars_Ptr;
+   begin
+      if Str = Gtkada.Types.Null_Ptr then
+         return "";
+      end if;
+
+      return Glib.Signal_Name (String'(Gtkada.Types.Value (Str)));
    end Value_Allowing_Null;
 
    ---------------------------------

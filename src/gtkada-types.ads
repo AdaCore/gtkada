@@ -54,6 +54,10 @@ package Gtkada.Types is
    procedure g_free (Mem : Chars_Ptr);
    --  Free a C string that was returned from Gtk
 
+   procedure Free (Mem : in out Chars_Ptr);
+   --  Same as above, provided to ease API compatibility with
+   --  Interfaces.C.String;
+
    function Null_Ptr return Chars_Ptr;
    pragma Inline (Null_Ptr);
    --  Return a null pointer
@@ -70,7 +74,17 @@ package Gtkada.Types is
      (Item   : Chars_Ptr;
       Length : Interfaces.C.size_t) return Interfaces.C.char_array;
    pragma Inline (Value);
+   function Value
+     (Item   : Chars_Ptr;
+      Length : Interfaces.C.size_t) return String;
+   pragma Inline (Value);
    --  Utility conversion function
+
+   function New_String (S : String) return Chars_Ptr;
+   pragma Inline (New_String);
+   --  Create a Chars_Ptr from S. The result must be freed using g_free.
+
+   subtype char_array_access is Interfaces.C.Strings.char_array_access;
 
    -------------------------------------
    --  Handling of arrays of Strings  --

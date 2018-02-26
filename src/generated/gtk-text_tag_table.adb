@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Text_Tag_Table is
@@ -214,9 +214,9 @@ package body Gtk.Text_Tag_Table is
    is
       function Internal
          (Table : System.Address;
-          Name  : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Name  : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_text_tag_table_lookup");
-      Tmp_Name          : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name          : Gtkada.Types.Chars_Ptr := New_String (Name);
       Stub_Gtk_Text_Tag : Gtk.Text_Tag.Gtk_Text_Tag_Record;
       Tmp_Return        : System.Address;
    begin

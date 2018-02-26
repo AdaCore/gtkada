@@ -452,10 +452,10 @@ package body Gdk.Pixbuf is
    ---------------------------
 
    function Gdk_New_From_Xpm_Data
-     (Data : Interfaces.C.Strings.chars_ptr_array) return Gdk_Pixbuf
+     (Data : Gtkada.Types.Chars_Ptr_Array) return Gdk_Pixbuf
    is
       function Internal
-        (Data : Interfaces.C.Strings.chars_ptr_array) return System.Address;
+        (Data : Gtkada.Types.Chars_Ptr_Array) return System.Address;
       pragma Import (C, Internal, "gdk_pixbuf_new_from_xpm_data");
 
    begin

@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Image is
@@ -37,7 +37,7 @@ package body Gtk.Image is
    is
       procedure Internal
         (Image : System.Address;
-         Name  : out Interfaces.C.Strings.chars_ptr;
+         Name  : out Gtkada.Types.Chars_Ptr;
          Size  : out Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_image_get_icon_name");
       Str : chars_ptr;
@@ -52,17 +52,17 @@ package body Gtk.Image is
    is
       procedure Internal
         (Image    : System.Address;
-         Stock_Id : out Interfaces.C.Strings.chars_ptr;
+         Stock_Id : out Gtkada.Types.Chars_Ptr;
          Size     : out Gint);
       pragma Import (C, Internal, "gtk_image_get_stock");
 
-      Stock : Interfaces.C.Strings.chars_ptr;
+      Stock : Gtkada.Types.Chars_Ptr;
       Sze   : Gint;
 
    begin
       Internal (Get_Object (Image), Stock, Sze);
       Size.all := Gtk.Enums.Gtk_Icon_Size'Val (Sze);
-      return Interfaces.C.Strings.Value (Stock);
+      return Gtkada.Types.Value (Stock);
    end Get;
 
    package Type_Conversion_Gtk_Image is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -368,9 +368,9 @@ package body Gtk.Image is
        Filename : UTF8_String)
    is
       function Internal
-         (Filename : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Filename : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_file");
-      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
+      Tmp_Filename : Gtkada.Types.Chars_Ptr := New_String (Filename);
       Tmp_Return   : System.Address;
    begin
       if not Image.Is_Created then
@@ -425,10 +425,10 @@ package body Gtk.Image is
        Size     : Gtk.Enums.Gtk_Icon_Size)
    is
       function Internal
-         (Stock_Id : Interfaces.C.Strings.chars_ptr;
+         (Stock_Id : Gtkada.Types.Chars_Ptr;
           Size     : Gtk.Enums.Gtk_Icon_Size) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_stock");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
       Tmp_Return   : System.Address;
    begin
       if not Image.Is_Created then
@@ -467,10 +467,10 @@ package body Gtk.Image is
        Size      : Gtk.Enums.Gtk_Icon_Size)
    is
       function Internal
-         (Icon_Name : Interfaces.C.Strings.chars_ptr;
+         (Icon_Name : Gtkada.Types.Chars_Ptr;
           Size      : Gtk.Enums.Gtk_Icon_Size) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
       Tmp_Return    : System.Address;
    begin
       if not Image.Is_Created then
@@ -489,10 +489,9 @@ package body Gtk.Image is
        Resource_Path : UTF8_String)
    is
       function Internal
-         (Resource_Path : Interfaces.C.Strings.chars_ptr)
-          return System.Address;
+         (Resource_Path : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_resource");
-      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr := New_String (Resource_Path);
+      Tmp_Resource_Path : Gtkada.Types.Chars_Ptr := New_String (Resource_Path);
       Tmp_Return        : System.Address;
    begin
       if not Image.Is_Created then
@@ -650,12 +649,12 @@ package body Gtk.Image is
    is
       procedure Internal
          (Image    : System.Address;
-          Filename : Interfaces.C.Strings.chars_ptr);
+          Filename : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_image_set_from_file");
-      Tmp_Filename : Interfaces.C.Strings.chars_ptr;
+      Tmp_Filename : Gtkada.Types.Chars_Ptr;
    begin
       if Filename = "" then
-         Tmp_Filename := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Filename := Gtkada.Types.Null_Ptr;
       else
          Tmp_Filename := New_String (Filename);
       end if;
@@ -724,10 +723,10 @@ package body Gtk.Image is
    is
       procedure Internal
          (Image    : System.Address;
-          Stock_Id : Interfaces.C.Strings.chars_ptr;
+          Stock_Id : Gtkada.Types.Chars_Ptr;
           Size     : Gtk.Enums.Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_image_set_from_stock");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
    begin
       Internal (Get_Object (Image), Tmp_Stock_Id, Size);
       Free (Tmp_Stock_Id);
@@ -744,10 +743,10 @@ package body Gtk.Image is
    is
       procedure Internal
          (Image     : System.Address;
-          Icon_Name : Interfaces.C.Strings.chars_ptr;
+          Icon_Name : Gtkada.Types.Chars_Ptr;
           Size      : Gtk.Enums.Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_image_set_from_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
    begin
       Internal (Get_Object (Image), Tmp_Icon_Name, Size);
       Free (Tmp_Icon_Name);
@@ -763,12 +762,12 @@ package body Gtk.Image is
    is
       procedure Internal
          (Image         : System.Address;
-          Resource_Path : Interfaces.C.Strings.chars_ptr);
+          Resource_Path : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_image_set_from_resource");
-      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr;
+      Tmp_Resource_Path : Gtkada.Types.Chars_Ptr;
    begin
       if Resource_Path = "" then
-         Tmp_Resource_Path := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Resource_Path := Gtkada.Types.Null_Ptr;
       else
          Tmp_Resource_Path := New_String (Resource_Path);
       end if;

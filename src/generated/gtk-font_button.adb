@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Font_Button is
@@ -153,9 +153,9 @@ package body Gtk.Font_Button is
        Fontname    : UTF8_String)
    is
       function Internal
-         (Fontname : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Fontname : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_font_button_new_with_font");
-      Tmp_Fontname : Interfaces.C.Strings.chars_ptr := New_String (Fontname);
+      Tmp_Fontname : Gtkada.Types.Chars_Ptr := New_String (Fontname);
       Tmp_Return   : System.Address;
    begin
       if not Font_Button.Is_Created then
@@ -174,8 +174,7 @@ package body Gtk.Font_Button is
        return UTF8_String
    is
       function Internal
-         (Font_Button : System.Address)
-          return Interfaces.C.Strings.chars_ptr;
+         (Font_Button : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_font_button_get_font_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Font_Button)));
@@ -216,8 +215,7 @@ package body Gtk.Font_Button is
        return UTF8_String
    is
       function Internal
-         (Font_Button : System.Address)
-          return Interfaces.C.Strings.chars_ptr;
+         (Font_Button : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_font_button_get_title");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Font_Button)));
@@ -335,9 +333,9 @@ package body Gtk.Font_Button is
    is
       function Internal
          (Font_Button : System.Address;
-          Fontname    : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Fontname    : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_font_button_set_font_name");
-      Tmp_Fontname : Interfaces.C.Strings.chars_ptr := New_String (Fontname);
+      Tmp_Fontname : Gtkada.Types.Chars_Ptr := New_String (Fontname);
       Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Font_Button), Tmp_Fontname);
@@ -387,9 +385,9 @@ package body Gtk.Font_Button is
    is
       procedure Internal
          (Font_Button : System.Address;
-          Title       : Interfaces.C.Strings.chars_ptr);
+          Title       : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_font_button_set_title");
-      Tmp_Title : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title : Gtkada.Types.Chars_Ptr := New_String (Title);
    begin
       Internal (Get_Object (Font_Button), Tmp_Title);
       Free (Tmp_Title);
@@ -449,7 +447,7 @@ package body Gtk.Font_Button is
       (Self : not null access Gtk_Font_Button_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_actionable_get_action_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -477,7 +475,7 @@ package body Gtk.Font_Button is
       (Self : not null access Gtk_Font_Button_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_font_chooser_get_font");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
@@ -549,7 +547,7 @@ package body Gtk.Font_Button is
       (Self : not null access Gtk_Font_Button_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_font_chooser_get_preview_text");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
@@ -606,9 +604,9 @@ package body Gtk.Font_Button is
    is
       procedure Internal
          (Self        : System.Address;
-          Action_Name : Interfaces.C.Strings.chars_ptr);
+          Action_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_actionable_set_action_name");
-      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
    begin
       Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
@@ -640,9 +638,9 @@ package body Gtk.Font_Button is
    is
       procedure Internal
          (Self                 : System.Address;
-          Detailed_Action_Name : Interfaces.C.Strings.chars_ptr);
+          Detailed_Action_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_actionable_set_detailed_action_name");
-      Tmp_Detailed_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Detailed_Action_Name);
+      Tmp_Detailed_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Detailed_Action_Name);
    begin
       Internal (Get_Object (Self), Tmp_Detailed_Action_Name);
       Free (Tmp_Detailed_Action_Name);
@@ -658,9 +656,9 @@ package body Gtk.Font_Button is
    is
       procedure Internal
          (Self     : System.Address;
-          Fontname : Interfaces.C.Strings.chars_ptr);
+          Fontname : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_font_chooser_set_font");
-      Tmp_Fontname : Interfaces.C.Strings.chars_ptr := New_String (Fontname);
+      Tmp_Fontname : Gtkada.Types.Chars_Ptr := New_String (Fontname);
    begin
       Internal (Get_Object (Self), Tmp_Fontname);
       Free (Tmp_Fontname);
@@ -692,9 +690,9 @@ package body Gtk.Font_Button is
    is
       procedure Internal
          (Self : System.Address;
-          Text : Interfaces.C.Strings.chars_ptr);
+          Text : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_font_chooser_set_preview_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Self), Tmp_Text);
       Free (Tmp_Text);

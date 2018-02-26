@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Icon_Factory is
@@ -95,10 +95,10 @@ package body Gtk.Icon_Factory is
    is
       procedure Internal
          (Self     : System.Address;
-          Stock_Id : Interfaces.C.Strings.chars_ptr;
+          Stock_Id : Gtkada.Types.Chars_Ptr;
           Icon_Set : System.Address);
       pragma Import (C, Internal, "gtk_icon_factory_add");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
    begin
       Internal (Get_Object (Self), Tmp_Stock_Id, Get_Object (Icon_Set));
       Free (Tmp_Stock_Id);
@@ -125,9 +125,9 @@ package body Gtk.Icon_Factory is
    is
       function Internal
          (Self     : System.Address;
-          Stock_Id : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Stock_Id : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_icon_factory_lookup");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
       Tmp_Return   : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Stock_Id);
@@ -208,11 +208,11 @@ package body Gtk.Icon_Factory is
        Height : Glib.Gint) return Gtk.Enums.Gtk_Icon_Size
    is
       function Internal
-         (Name   : Interfaces.C.Strings.chars_ptr;
+         (Name   : Gtkada.Types.Chars_Ptr;
           Width  : Glib.Gint;
           Height : Glib.Gint) return Gtk.Enums.Gtk_Icon_Size;
       pragma Import (C, Internal, "gtk_icon_size_register");
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name   : Gtkada.Types.Chars_Ptr := New_String (Name);
       Tmp_Return : Gtk.Enums.Gtk_Icon_Size;
    begin
       Tmp_Return := Internal (Tmp_Name, Width, Height);
@@ -229,10 +229,10 @@ package body Gtk.Icon_Factory is
        Target : Gtk.Enums.Gtk_Icon_Size)
    is
       procedure Internal
-         (Alias  : Interfaces.C.Strings.chars_ptr;
+         (Alias  : Gtkada.Types.Chars_Ptr;
           Target : Gtk.Enums.Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_icon_size_register_alias");
-      Tmp_Alias : Interfaces.C.Strings.chars_ptr := New_String (Alias);
+      Tmp_Alias : Gtkada.Types.Chars_Ptr := New_String (Alias);
    begin
       Internal (Tmp_Alias, Target);
       Free (Tmp_Alias);
@@ -246,9 +246,9 @@ package body Gtk.Icon_Factory is
       (Stock_Id : UTF8_String) return Gtk.Icon_Set.Gtk_Icon_Set
    is
       function Internal
-         (Stock_Id : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Stock_Id : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_icon_factory_lookup_default");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
       Tmp_Return   : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Stock_Id);

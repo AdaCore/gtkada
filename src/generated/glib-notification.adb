@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Glib.Notification is
@@ -64,9 +64,9 @@ package body Glib.Notification is
        Title : UTF8_String)
    is
       function Internal
-         (Title : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Title : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "g_notification_new");
-      Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title  : Gtkada.Types.Chars_Ptr := New_String (Title);
       Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
@@ -87,11 +87,11 @@ package body Glib.Notification is
    is
       procedure Internal
          (Self            : System.Address;
-          Label           : Interfaces.C.Strings.chars_ptr;
-          Detailed_Action : Interfaces.C.Strings.chars_ptr);
+          Label           : Gtkada.Types.Chars_Ptr;
+          Detailed_Action : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_notification_add_button");
-      Tmp_Label           : Interfaces.C.Strings.chars_ptr := New_String (Label);
-      Tmp_Detailed_Action : Interfaces.C.Strings.chars_ptr := New_String (Detailed_Action);
+      Tmp_Label           : Gtkada.Types.Chars_Ptr := New_String (Label);
+      Tmp_Detailed_Action : Gtkada.Types.Chars_Ptr := New_String (Detailed_Action);
    begin
       Internal (Get_Object (Self), Tmp_Label, Tmp_Detailed_Action);
       Free (Tmp_Detailed_Action);
@@ -110,12 +110,12 @@ package body Glib.Notification is
    is
       procedure Internal
          (Self   : System.Address;
-          Label  : Interfaces.C.Strings.chars_ptr;
-          Action : Interfaces.C.Strings.chars_ptr;
+          Label  : Gtkada.Types.Chars_Ptr;
+          Action : Gtkada.Types.Chars_Ptr;
           Target : System.Address);
       pragma Import (C, Internal, "g_notification_add_button_with_target_value");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr := New_String (Label);
-      Tmp_Action : Interfaces.C.Strings.chars_ptr := New_String (Action);
+      Tmp_Label  : Gtkada.Types.Chars_Ptr := New_String (Label);
+      Tmp_Action : Gtkada.Types.Chars_Ptr := New_String (Action);
    begin
       Internal (Get_Object (Self), Tmp_Label, Tmp_Action, Get_Object (Target));
       Free (Tmp_Action);
@@ -132,12 +132,12 @@ package body Glib.Notification is
    is
       procedure Internal
          (Self     : System.Address;
-          The_Body : Interfaces.C.Strings.chars_ptr);
+          The_Body : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_notification_set_body");
-      Tmp_The_Body : Interfaces.C.Strings.chars_ptr;
+      Tmp_The_Body : Gtkada.Types.Chars_Ptr;
    begin
       if The_Body = "" then
-         Tmp_The_Body := Interfaces.C.Strings.Null_Ptr;
+         Tmp_The_Body := Gtkada.Types.Null_Ptr;
       else
          Tmp_The_Body := New_String (The_Body);
       end if;
@@ -155,9 +155,9 @@ package body Glib.Notification is
    is
       procedure Internal
          (Self            : System.Address;
-          Detailed_Action : Interfaces.C.Strings.chars_ptr);
+          Detailed_Action : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_notification_set_default_action");
-      Tmp_Detailed_Action : Interfaces.C.Strings.chars_ptr := New_String (Detailed_Action);
+      Tmp_Detailed_Action : Gtkada.Types.Chars_Ptr := New_String (Detailed_Action);
    begin
       Internal (Get_Object (Self), Tmp_Detailed_Action);
       Free (Tmp_Detailed_Action);
@@ -174,10 +174,10 @@ package body Glib.Notification is
    is
       procedure Internal
          (Self   : System.Address;
-          Action : Interfaces.C.Strings.chars_ptr;
+          Action : Gtkada.Types.Chars_Ptr;
           Target : System.Address);
       pragma Import (C, Internal, "g_notification_set_default_action_and_target_value");
-      Tmp_Action : Interfaces.C.Strings.chars_ptr := New_String (Action);
+      Tmp_Action : Gtkada.Types.Chars_Ptr := New_String (Action);
    begin
       Internal (Get_Object (Self), Tmp_Action, Get_Object (Target));
       Free (Tmp_Action);
@@ -223,9 +223,9 @@ package body Glib.Notification is
    is
       procedure Internal
          (Self  : System.Address;
-          Title : Interfaces.C.Strings.chars_ptr);
+          Title : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "g_notification_set_title");
-      Tmp_Title : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title : Gtkada.Types.Chars_Ptr := New_String (Title);
    begin
       Internal (Get_Object (Self), Tmp_Title);
       Free (Tmp_Title);

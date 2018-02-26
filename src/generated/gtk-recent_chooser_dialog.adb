@@ -28,7 +28,7 @@ with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Recent_Chooser_Dialog is
@@ -152,15 +152,15 @@ package body Gtk.Recent_Chooser_Dialog is
        Parent : access Gtk.Window.Gtk_Window_Record'Class)
    is
       function Internal
-         (Title  : Interfaces.C.Strings.chars_ptr;
+         (Title  : Gtkada.Types.Chars_Ptr;
           Parent : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_recent_chooser_dialog_new");
-      Tmp_Title  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Title  : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Widget.Is_Created then
          if Title = "" then
-            Tmp_Title := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Title := Gtkada.Types.Null_Ptr;
          else
             Tmp_Title := New_String (Title);
          end if;
@@ -181,16 +181,16 @@ package body Gtk.Recent_Chooser_Dialog is
        Manager : access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
    is
       function Internal
-         (Title   : Interfaces.C.Strings.chars_ptr;
+         (Title   : Gtkada.Types.Chars_Ptr;
           Parent  : System.Address;
           Manager : System.Address) return System.Address;
       pragma Import (C, Internal, "ada_gtk_recent_chooser_dialog_new_for_manager");
-      Tmp_Title  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Title  : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Widget.Is_Created then
          if Title = "" then
-            Tmp_Title := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Title := Gtkada.Types.Null_Ptr;
          else
             Tmp_Title := New_String (Title);
          end if;
@@ -307,7 +307,7 @@ package body Gtk.Recent_Chooser_Dialog is
        return UTF8_String
    is
       function Internal
-         (Chooser : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Chooser : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_recent_chooser_get_current_uri");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Chooser)));
@@ -511,9 +511,9 @@ package body Gtk.Recent_Chooser_Dialog is
    is
       function Internal
          (Chooser : System.Address;
-          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          URI     : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_select_uri");
-      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI    : Gtkada.Types.Chars_Ptr := New_String (URI);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
@@ -531,9 +531,9 @@ package body Gtk.Recent_Chooser_Dialog is
    is
       function Internal
          (Chooser : System.Address;
-          URI     : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          URI     : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_recent_chooser_set_current_uri");
-      Tmp_URI    : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI    : Gtkada.Types.Chars_Ptr := New_String (URI);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Chooser), Tmp_URI);
@@ -704,9 +704,9 @@ package body Gtk.Recent_Chooser_Dialog is
    is
       procedure Internal
          (Chooser : System.Address;
-          URI     : Interfaces.C.Strings.chars_ptr);
+          URI     : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_recent_chooser_unselect_uri");
-      Tmp_URI : Interfaces.C.Strings.chars_ptr := New_String (URI);
+      Tmp_URI : Gtkada.Types.Chars_Ptr := New_String (URI);
    begin
       Internal (Get_Object (Chooser), Tmp_URI);
       Free (Tmp_URI);

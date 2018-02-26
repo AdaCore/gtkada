@@ -65,8 +65,7 @@ package body Glib.Action is
    --------------
 
    function Get_Name (Self : Gaction) return UTF8_String is
-      function Internal
-         (Self : Gaction) return Interfaces.C.Strings.chars_ptr;
+      function Internal (Self : Gaction) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_action_get_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Self));
@@ -100,9 +99,9 @@ package body Glib.Action is
 
    function Name_Is_Valid (Action_Name : UTF8_String) return Boolean is
       function Internal
-         (Action_Name : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+         (Action_Name : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "g_action_name_is_valid");
-      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
       Tmp_Return      : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Tmp_Action_Name);
@@ -119,12 +118,11 @@ package body Glib.Action is
        Target_Value : Glib.Variant.Gvariant) return UTF8_String
    is
       function Internal
-         (Action_Name  : Interfaces.C.Strings.chars_ptr;
-          Target_Value : System.Address)
-          return Interfaces.C.Strings.chars_ptr;
+         (Action_Name  : Gtkada.Types.Chars_Ptr;
+          Target_Value : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_action_print_detailed_name");
-      Tmp_Action_Name : Interfaces.C.Strings.chars_ptr := New_String (Action_Name);
-      Tmp_Return      : Interfaces.C.Strings.chars_ptr;
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
+      Tmp_Return      : Gtkada.Types.Chars_Ptr;
    begin
       Tmp_Return := Internal (Tmp_Action_Name, Get_Object (Target_Value));
       Free (Tmp_Action_Name);

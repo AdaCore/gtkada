@@ -24,7 +24,7 @@
 
 with Glib.Object;  use Glib.Object;
 with Interfaces.C.Pointers;
-with Interfaces.C.Strings;
+with Gtkada.Types;
 
 package body Gdk.Property is
 
@@ -69,11 +69,11 @@ package body Gdk.Property is
 
    function Atom_Name (Atom : Gdk.Types.Gdk_Atom) return String is
       function Internal
-        (Atom : Gdk.Types.Gdk_Atom) return Interfaces.C.Strings.chars_ptr;
+        (Atom : Gdk.Types.Gdk_Atom) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gdk_atom_name");
 
    begin
-      return Interfaces.C.Strings.Value (Internal (Atom));
+      return Gtkada.Types.Value (Internal (Atom));
    end Atom_Name;
 
    ------------

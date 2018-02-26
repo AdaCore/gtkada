@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.UI_Manager is
@@ -88,18 +88,18 @@ package body Gtk.UI_Manager is
       procedure Internal
          (Self     : System.Address;
           Merge_Id : Guint;
-          Path     : Interfaces.C.Strings.chars_ptr;
-          Name     : Interfaces.C.Strings.chars_ptr;
-          Action   : Interfaces.C.Strings.chars_ptr;
+          Path     : Gtkada.Types.Chars_Ptr;
+          Name     : Gtkada.Types.Chars_Ptr;
+          Action   : Gtkada.Types.Chars_Ptr;
           The_Type : Manager_Item_Type;
           Top      : Glib.Gboolean);
       pragma Import (C, Internal, "gtk_ui_manager_add_ui");
-      Tmp_Path   : Interfaces.C.Strings.chars_ptr := New_String (Path);
-      Tmp_Name   : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Tmp_Action : Interfaces.C.Strings.chars_ptr;
+      Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
+      Tmp_Name   : Gtkada.Types.Chars_Ptr := New_String (Name);
+      Tmp_Action : Gtkada.Types.Chars_Ptr;
    begin
       if Action = "" then
-         Tmp_Action := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Action := Gtkada.Types.Null_Ptr;
       else
          Tmp_Action := New_String (Action);
       end if;
@@ -120,11 +120,11 @@ package body Gtk.UI_Manager is
    is
       function Internal
          (Self      : System.Address;
-          Filename  : Interfaces.C.Strings.chars_ptr;
+          Filename  : Gtkada.Types.Chars_Ptr;
           Acc_Error : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_ui_manager_add_ui_from_file");
       Acc_Error    : aliased Glib.Error.GError;
-      Tmp_Filename : Interfaces.C.Strings.chars_ptr := New_String (Filename);
+      Tmp_Filename : Gtkada.Types.Chars_Ptr := New_String (Filename);
       Tmp_Return   : Guint;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Filename, Acc_Error'Access);
@@ -146,11 +146,11 @@ package body Gtk.UI_Manager is
    is
       function Internal
          (Self          : System.Address;
-          Resource_Path : Interfaces.C.Strings.chars_ptr;
+          Resource_Path : Gtkada.Types.Chars_Ptr;
           Acc_Error     : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_ui_manager_add_ui_from_resource");
       Acc_Error         : aliased Glib.Error.GError;
-      Tmp_Resource_Path : Interfaces.C.Strings.chars_ptr := New_String (Resource_Path);
+      Tmp_Resource_Path : Gtkada.Types.Chars_Ptr := New_String (Resource_Path);
       Tmp_Return        : Guint;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Resource_Path, Acc_Error'Access);
@@ -172,12 +172,12 @@ package body Gtk.UI_Manager is
    is
       function Internal
          (Self      : System.Address;
-          Buffer    : Interfaces.C.Strings.chars_ptr;
+          Buffer    : Gtkada.Types.Chars_Ptr;
           Length    : Gssize;
           Acc_Error : access Glib.Error.GError) return Guint;
       pragma Import (C, Internal, "gtk_ui_manager_add_ui_from_string");
       Acc_Error  : aliased Glib.Error.GError;
-      Tmp_Buffer : Interfaces.C.Strings.chars_ptr := New_String (Buffer);
+      Tmp_Buffer : Gtkada.Types.Chars_Ptr := New_String (Buffer);
       Tmp_Return : Guint;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Buffer, -1, Acc_Error'Access);
@@ -224,9 +224,9 @@ package body Gtk.UI_Manager is
    is
       function Internal
          (Self : System.Address;
-          Path : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Path : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_ui_manager_get_action");
-      Tmp_Path        : Interfaces.C.Strings.chars_ptr := New_String (Path);
+      Tmp_Path        : Gtkada.Types.Chars_Ptr := New_String (Path);
       Stub_Gtk_Action : Gtk.Action.Gtk_Action_Record;
       Tmp_Return      : System.Address;
    begin
@@ -290,7 +290,7 @@ package body Gtk.UI_Manager is
       (Self : not null access Gtk_UI_Manager_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_ui_manager_get_ui");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
@@ -306,9 +306,9 @@ package body Gtk.UI_Manager is
    is
       function Internal
          (Self : System.Address;
-          Path : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Path : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_ui_manager_get_widget");
-      Tmp_Path        : Interfaces.C.Strings.chars_ptr := New_String (Path);
+      Tmp_Path        : Gtkada.Types.Chars_Ptr := New_String (Path);
       Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
       Tmp_Return      : System.Address;
    begin

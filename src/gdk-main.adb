@@ -24,7 +24,8 @@
 
 with Gdk.Types;             use Gdk.Types;
 with System;
-with Interfaces.C.Strings;
+with Interfaces.C;
+with Gtkada.Types;          use Gtkada.Types;
 
 package body Gdk.Main is
 
@@ -51,18 +52,17 @@ package body Gdk.Main is
    -----------------
 
    function Get_Display return String is
-      use Interfaces.C.Strings;
 
-      function Internal return chars_ptr;
+      function Internal return Chars_Ptr;
       pragma Import (C, Internal, "gdk_get_display");
 
-      Result : constant chars_ptr := Internal;
+      Result : constant Chars_Ptr := Internal;
 
    begin
       if Result = Null_Ptr then
          return "";
       else
-         return Interfaces.C.Strings.Value (Internal);
+         return Value (Internal);
       end if;
    end Get_Display;
 

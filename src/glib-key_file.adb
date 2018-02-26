@@ -22,12 +22,12 @@
 ------------------------------------------------------------------------------
 
 with Interfaces.C;         use Interfaces.C;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types;         use Gtkada.Types;
 with Gtkada.Bindings;      use Gtkada.Bindings;
 
 package body Glib.Key_File is
 
-   function Convert_Then_Free (Item : chars_ptr) return String;
+   function Convert_Then_Free (Item : Chars_Ptr) return String;
    --  Converts the given C string to an Ada string, and then frees the
    --  C string before returning.
 
@@ -40,8 +40,8 @@ package body Glib.Key_File is
    -- Convert_Then_Free --
    -----------------------
 
-   function Convert_Then_Free (Item : chars_ptr) return String is
-      I : chars_ptr := Item;
+   function Convert_Then_Free (Item : Chars_Ptr) return String is
+      I : constant Chars_Ptr := Item;
    begin
       if Item = Null_Ptr then
          return "";
@@ -49,7 +49,7 @@ package body Glib.Key_File is
          declare
             S : constant String := Value (Item);
          begin
-            Free (I);
+            g_free (I);
             return S;
          end;
       end if;
@@ -171,7 +171,7 @@ package body Glib.Key_File is
          Group_Name : String;
          Key        : String;
          Error      : Glib.Error.GError)
-         return chars_ptr;
+         return Chars_Ptr;
       pragma Import (C, Internal, "g_key_file_get_comment");
    begin
       return Convert_Then_Free (Internal
@@ -387,7 +387,7 @@ package body Glib.Key_File is
          Group_Name : String;
          Key        : String;
          Locale     : String)
-         return chars_ptr;
+         return Chars_Ptr;
       pragma Import (C, Internal, "g_key_file_get_locale_string");
    begin
       return Convert_Then_Free (Internal
@@ -433,7 +433,7 @@ package body Glib.Key_File is
    ---------------------
 
    function Get_Start_Group (Key_File : G_Key_File) return String is
-      function Internal (Key_File : G_Key_File) return chars_ptr;
+      function Internal (Key_File : G_Key_File) return Chars_Ptr;
       pragma Import (C, Internal, "g_key_file_get_start_group");
    begin
       return Convert_Then_Free (Internal (Key_File));
@@ -455,7 +455,7 @@ package body Glib.Key_File is
          Group_Name : String;
          Key        : String;
          Error      : Glib.Error.GError)
-         return chars_ptr;
+         return Chars_Ptr;
       pragma Import (C, Internal, "g_key_file_get_string");
    begin
       return Convert_Then_Free (Internal
@@ -506,7 +506,7 @@ package body Glib.Key_File is
          Group_Name : String;
          Key        : String;
          Error      : Glib.Error.GError)
-         return chars_ptr;
+         return Chars_Ptr;
       pragma Import (C, Internal, "g_key_file_get_value");
    begin
       return Convert_Then_Free (Internal
@@ -628,7 +628,7 @@ package body Glib.Key_File is
          return Gboolean;
       pragma Import (C, Internal, "g_key_file_load_from_dirs");
 
-      L      : aliased chars_ptr_array := From_String_List (Search_Dirs);
+      L      : aliased Chars_Ptr_Array := From_String_List (Search_Dirs);
       Result : Gboolean;
    begin
       if Search_Dirs'Length = 0 then
@@ -650,7 +650,7 @@ package body Glib.Key_File is
       end if;
 
       for I in L'Range loop
-         Free (L (I));
+         g_free (L (I));
       end loop;
 
       return Boolean'Val (Result);
@@ -702,22 +702,22 @@ package body Glib.Key_File is
    is
       function Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
-         Key        : chars_ptr;
+         Group_Name : Chars_Ptr;
+         Key        : Chars_Ptr;
          Error      : Glib.Error.GError)
          return Gboolean;
       pragma Import (C, Internal, "g_key_file_remove_comment");
 
-      G : chars_ptr := String_Or_Null (Group_Name);
-      K : chars_ptr := String_Or_Null (Key);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
+      K : constant Chars_Ptr := String_Or_Null (Key);
       Result : Gboolean;
    begin
       Result := Internal (Key_File, G, K, Error);
       if G /= Null_Ptr then
-         Free (G);
+         g_free (G);
       end if;
       if K /= Null_Ptr then
-         Free (K);
+         g_free (K);
       end if;
       return Boolean'Val (Result);
    end Remove_Comment;
@@ -777,14 +777,14 @@ package body Glib.Key_File is
    is
       procedure Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
+         Group_Name : Chars_Ptr;
          Key        : String;
          Value      : Gboolean);
       pragma Import (C, Internal, "g_key_file_set_boolean");
-      G : chars_ptr := String_Or_Null (Group_Name);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
    begin
       Internal (Key_File, G, Key & ASCII.NUL, Boolean'Pos (Value));
-      Free (G);
+      g_free (G);
    end Set_Boolean;
 
    ----------------------
@@ -799,13 +799,13 @@ package body Glib.Key_File is
    is
       procedure Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
+         Group_Name : Chars_Ptr;
          Key        : String;
          List       : System.Address;
          Length     : Gsize);
       pragma Import (C, Internal, "g_key_file_set_boolean_list");
 
-      G : chars_ptr := String_Or_Null (Group_Name);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
       L : array (List'Range) of Gboolean;
       pragma Convention (C, L);
    begin
@@ -813,7 +813,7 @@ package body Glib.Key_File is
          L (I) := Boolean'Pos (List (I));
       end loop;
       Internal (Key_File, G, Key & ASCII.NUL, L (L'First)'Address, L'Length);
-      Free (G);
+      g_free (G);
    end Set_Boolean_List;
 
    -----------------
@@ -830,23 +830,23 @@ package body Glib.Key_File is
    is
       function Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
-         Key        : chars_ptr;
+         Group_Name : Chars_Ptr;
+         Key        : Chars_Ptr;
          Comment    : String;
          Error      : Glib.Error.GError)
          return Gboolean;
       pragma Import (C, Internal, "g_key_file_set_comment");
 
-      G : chars_ptr := String_Or_Null (Group_Name);
-      K : chars_ptr := String_Or_Null (Key);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
+      K : constant Chars_Ptr := String_Or_Null (Key);
       Result : Gboolean;
    begin
       Result := Internal (Key_File, G, K, Comment & ASCII.NUL, Error);
       if G /= Null_Ptr then
-         Free (G);
+         g_free (G);
       end if;
       if K /= Null_Ptr then
-         Free (K);
+         g_free (K);
       end if;
       return Boolean'Val (Result);
    end Set_Comment;
@@ -863,14 +863,14 @@ package body Glib.Key_File is
    is
       procedure Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
+         Group_Name : Chars_Ptr;
          Key        : String;
          Value      : Gdouble);
       pragma Import (C, Internal, "g_key_file_set_double");
-      G : chars_ptr := String_Or_Null (Group_Name);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
    begin
       Internal (Key_File, G, Key & ASCII.NUL, Value);
-      Free (G);
+      g_free (G);
    end Set_Double;
 
    ---------------------
@@ -885,17 +885,17 @@ package body Glib.Key_File is
    is
       procedure Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
+         Group_Name : Chars_Ptr;
          Key        : String;
          List       : System.Address;
          Length     : Gsize);
       pragma Import (C, Internal, "g_key_file_set_double_list");
 
-      G : chars_ptr := String_Or_Null (Group_Name);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
    begin
       Internal
         (Key_File, G, Key & ASCII.NUL, List (List'First)'Address, List'Length);
-      Free (G);
+      g_free (G);
    end Set_Double_List;
 
    -----------------
@@ -910,15 +910,15 @@ package body Glib.Key_File is
    is
       procedure Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
+         Group_Name : Chars_Ptr;
          Key        : String;
          Value      : Gint);
       pragma Import (C, Internal, "g_key_file_set_integer");
 
-      G : chars_ptr := String_Or_Null (Group_Name);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
    begin
       Internal (Key_File, G, Key & ASCII.NUL, Value);
-      Free (G);
+      g_free (G);
    end Set_Integer;
 
    ----------------------
@@ -933,17 +933,17 @@ package body Glib.Key_File is
    is
       procedure Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
+         Group_Name : Chars_Ptr;
          Key        : String;
          List       : System.Address;
          Length     : Gsize);
       pragma Import (C, Internal, "g_key_file_set_integer_list");
 
-      G : chars_ptr := String_Or_Null (Group_Name);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
    begin
       Internal
         (Key_File, G, Key & ASCII.NUL, List (List'First)'Address, List'Length);
-      Free (G);
+      g_free (G);
    end Set_Integer_List;
 
    -----------------------
@@ -959,13 +959,13 @@ package body Glib.Key_File is
    is
       procedure Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
+         Group_Name : Chars_Ptr;
          Key        : String;
          Locale     : String;
          The_String : String);
       pragma Import (C, Internal, "g_key_file_set_locale_string");
 
-      G : chars_ptr := String_Or_Null (Group_Name);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
    begin
       Internal
         (Key_File,
@@ -973,7 +973,7 @@ package body Glib.Key_File is
          Key & ASCII.NUL,
          Locale & ASCII.NUL,
          The_String & ASCII.NUL);
-      Free (G);
+      g_free (G);
    end Set_Locale_String;
 
    ----------------------------
@@ -989,15 +989,15 @@ package body Glib.Key_File is
    is
       procedure Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
+         Group_Name : Chars_Ptr;
          Key        : String;
          Locale     : String;
          List       : System.Address;
          Length     : Gsize);
       pragma Import (C, Internal, "g_key_file_set_locale_string_list");
 
-      G : chars_ptr := String_Or_Null (Group_Name);
-      L : aliased chars_ptr_array := From_String_List (List);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
+      L : aliased Chars_Ptr_Array := From_String_List (List);
    begin
       if List'Length = 0 then
          Internal
@@ -1017,9 +1017,9 @@ package body Glib.Key_File is
             L'Length);
       end if;
 
-      Free (G);
+      g_free (G);
       for I in L'Range loop
-         Free (L (I));
+         g_free (L (I));
       end loop;
    end Set_Locale_String_List;
 
@@ -1035,15 +1035,15 @@ package body Glib.Key_File is
    is
       procedure Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
+         Group_Name : Chars_Ptr;
          Key        : String;
          The_String : String);
       pragma Import (C, Internal, "g_key_file_set_string");
 
-      G : chars_ptr := String_Or_Null (Group_Name);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
    begin
       Internal (Key_File, G, Key & ASCII.NUL, The_String & ASCII.NUL);
-      Free (G);
+      g_free (G);
    end Set_String;
 
    ---------------------
@@ -1058,19 +1058,19 @@ package body Glib.Key_File is
    is
       procedure Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
+         Group_Name : Chars_Ptr;
          Key        : String;
          List       : System.Address;
          Length     : Gsize);
       pragma Import (C, Internal, "g_key_file_set_string_list");
 
-      G : chars_ptr := String_Or_Null (Group_Name);
-      L : aliased chars_ptr_array := From_String_List (List);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
+      L : aliased Chars_Ptr_Array := From_String_List (List);
    begin
       Internal (Key_File, G, Key & ASCII.NUL, L (L'First)'Address, L'Length);
-      Free (G);
+      g_free (G);
       for I in L'Range loop
-         Free (L (I));
+         g_free (L (I));
       end loop;
    end Set_String_List;
 
@@ -1086,15 +1086,15 @@ package body Glib.Key_File is
    is
       procedure Internal
         (Key_File   : G_Key_File;
-         Group_Name : chars_ptr;
+         Group_Name : Chars_Ptr;
          Key        : String;
          Value      : String);
       pragma Import (C, Internal, "g_key_file_set_value");
 
-      G : chars_ptr := String_Or_Null (Group_Name);
+      G : constant Chars_Ptr := String_Or_Null (Group_Name);
    begin
       Internal (Key_File, G, Key & ASCII.NUL, Value & ASCII.NUL);
-      Free (G);
+      g_free (G);
    end Set_Value;
 
    -------------
@@ -1106,16 +1106,16 @@ package body Glib.Key_File is
         (Key_File   : G_Key_File;
          Length     : access Gsize;
          Error      : Glib.Error.GError)
-         return chars_ptr;
+         return Chars_Ptr;
       pragma Import (C, Internal, "g_key_file_to_data");
       Len : aliased Gsize;
-      C : chars_ptr;
+      C : Chars_Ptr;
    begin
       C := Internal (Key_File, Len'Access, null);
       declare
-         S : constant String := Value (C, size_t (Len));
+         S : constant String := Gtkada.Types.Value (C, size_t (Len));
       begin
-         Free (C);
+         g_free (C);
          return S;
       end;
    end To_Data;

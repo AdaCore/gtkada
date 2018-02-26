@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Action is
@@ -82,30 +82,30 @@ package body Gtk.Action is
        Stock_Id : UTF8_String := "")
    is
       function Internal
-         (Name     : Interfaces.C.Strings.chars_ptr;
-          Label    : Interfaces.C.Strings.chars_ptr;
-          Tooltip  : Interfaces.C.Strings.chars_ptr;
-          Stock_Id : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Name     : Gtkada.Types.Chars_Ptr;
+          Label    : Gtkada.Types.Chars_Ptr;
+          Tooltip  : Gtkada.Types.Chars_Ptr;
+          Stock_Id : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_action_new");
-      Tmp_Name     : Interfaces.C.Strings.chars_ptr := New_String (Name);
-      Tmp_Label    : Interfaces.C.Strings.chars_ptr;
-      Tmp_Tooltip  : Interfaces.C.Strings.chars_ptr;
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr;
+      Tmp_Name     : Gtkada.Types.Chars_Ptr := New_String (Name);
+      Tmp_Label    : Gtkada.Types.Chars_Ptr;
+      Tmp_Tooltip  : Gtkada.Types.Chars_Ptr;
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr;
       Tmp_Return   : System.Address;
    begin
       if not Action.Is_Created then
          if Label = "" then
-            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Label := Gtkada.Types.Null_Ptr;
          else
             Tmp_Label := New_String (Label);
          end if;
          if Tooltip = "" then
-            Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Tooltip := Gtkada.Types.Null_Ptr;
          else
             Tmp_Tooltip := New_String (Tooltip);
          end if;
          if Stock_Id = "" then
-            Tmp_Stock_Id := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Stock_Id := Gtkada.Types.Null_Ptr;
          else
             Tmp_Stock_Id := New_String (Stock_Id);
          end if;
@@ -236,7 +236,7 @@ package body Gtk.Action is
       (Action : not null access Gtk_Action_Record) return UTF8_String
    is
       function Internal
-         (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Action : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_action_get_accel_path");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
@@ -276,7 +276,7 @@ package body Gtk.Action is
       (Action : not null access Gtk_Action_Record) return UTF8_String
    is
       function Internal
-         (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Action : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_action_get_icon_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
@@ -303,7 +303,7 @@ package body Gtk.Action is
       (Action : not null access Gtk_Action_Record) return UTF8_String
    is
       function Internal
-         (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Action : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_action_get_label");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
@@ -317,7 +317,7 @@ package body Gtk.Action is
       (Action : not null access Gtk_Action_Record) return UTF8_String
    is
       function Internal
-         (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Action : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_action_get_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
@@ -360,7 +360,7 @@ package body Gtk.Action is
       (Action : not null access Gtk_Action_Record) return UTF8_String
    is
       function Internal
-         (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Action : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_action_get_short_label");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
@@ -374,7 +374,7 @@ package body Gtk.Action is
       (Action : not null access Gtk_Action_Record) return UTF8_String
    is
       function Internal
-         (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Action : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_action_get_stock_id");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
@@ -388,7 +388,7 @@ package body Gtk.Action is
       (Action : not null access Gtk_Action_Record) return UTF8_String
    is
       function Internal
-         (Action : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Action : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_action_get_tooltip");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Action)));
@@ -485,9 +485,9 @@ package body Gtk.Action is
    is
       procedure Internal
          (Action     : System.Address;
-          Accel_Path : Interfaces.C.Strings.chars_ptr);
+          Accel_Path : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_action_set_accel_path");
-      Tmp_Accel_Path : Interfaces.C.Strings.chars_ptr := New_String (Accel_Path);
+      Tmp_Accel_Path : Gtkada.Types.Chars_Ptr := New_String (Accel_Path);
    begin
       Internal (Get_Object (Action), Tmp_Accel_Path);
       Free (Tmp_Accel_Path);
@@ -535,9 +535,9 @@ package body Gtk.Action is
    is
       procedure Internal
          (Action    : System.Address;
-          Icon_Name : Interfaces.C.Strings.chars_ptr);
+          Icon_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_action_set_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
    begin
       Internal (Get_Object (Action), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
@@ -569,9 +569,9 @@ package body Gtk.Action is
    is
       procedure Internal
          (Action : System.Address;
-          Label  : Interfaces.C.Strings.chars_ptr);
+          Label  : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_action_set_label");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr := New_String (Label);
+      Tmp_Label : Gtkada.Types.Chars_Ptr := New_String (Label);
    begin
       Internal (Get_Object (Action), Tmp_Label);
       Free (Tmp_Label);
@@ -603,9 +603,9 @@ package body Gtk.Action is
    is
       procedure Internal
          (Action      : System.Address;
-          Short_Label : Interfaces.C.Strings.chars_ptr);
+          Short_Label : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_action_set_short_label");
-      Tmp_Short_Label : Interfaces.C.Strings.chars_ptr := New_String (Short_Label);
+      Tmp_Short_Label : Gtkada.Types.Chars_Ptr := New_String (Short_Label);
    begin
       Internal (Get_Object (Action), Tmp_Short_Label);
       Free (Tmp_Short_Label);
@@ -621,9 +621,9 @@ package body Gtk.Action is
    is
       procedure Internal
          (Action   : System.Address;
-          Stock_Id : Interfaces.C.Strings.chars_ptr);
+          Stock_Id : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_action_set_stock_id");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr := New_String (Stock_Id);
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr := New_String (Stock_Id);
    begin
       Internal (Get_Object (Action), Tmp_Stock_Id);
       Free (Tmp_Stock_Id);
@@ -639,9 +639,9 @@ package body Gtk.Action is
    is
       procedure Internal
          (Action  : System.Address;
-          Tooltip : Interfaces.C.Strings.chars_ptr);
+          Tooltip : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_action_set_tooltip");
-      Tmp_Tooltip : Interfaces.C.Strings.chars_ptr := New_String (Tooltip);
+      Tmp_Tooltip : Gtkada.Types.Chars_Ptr := New_String (Tooltip);
    begin
       Internal (Get_Object (Action), Tmp_Tooltip);
       Free (Tmp_Tooltip);

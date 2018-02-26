@@ -26,7 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Pango.Font is
@@ -207,8 +207,7 @@ package body Pango.Font is
 
    function Get_Family (Self : Pango_Font_Description) return UTF8_String is
       function Internal
-         (Self : Pango_Font_Description)
-          return Interfaces.C.Strings.chars_ptr;
+         (Self : Pango_Font_Description) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "pango_font_description_get_family");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Self));
@@ -310,9 +309,9 @@ package body Pango.Font is
    is
       procedure Internal
          (Self   : Pango_Font_Description;
-          Family : Interfaces.C.Strings.chars_ptr);
+          Family : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "pango_font_description_set_family");
-      Tmp_Family : Interfaces.C.Strings.chars_ptr := New_String (Family);
+      Tmp_Family : Gtkada.Types.Chars_Ptr := New_String (Family);
    begin
       Internal (Self, Tmp_Family);
       Free (Tmp_Family);
@@ -328,9 +327,9 @@ package body Pango.Font is
    is
       procedure Internal
          (Self   : Pango_Font_Description;
-          Family : Interfaces.C.Strings.chars_ptr);
+          Family : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "pango_font_description_set_family_static");
-      Tmp_Family : Interfaces.C.Strings.chars_ptr := New_String (Family);
+      Tmp_Family : Gtkada.Types.Chars_Ptr := New_String (Family);
    begin
       Internal (Self, Tmp_Family);
       Free (Tmp_Family);
@@ -342,8 +341,7 @@ package body Pango.Font is
 
    function To_Filename (Self : Pango_Font_Description) return UTF8_String is
       function Internal
-         (Self : Pango_Font_Description)
-          return Interfaces.C.Strings.chars_ptr;
+         (Self : Pango_Font_Description) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "pango_font_description_to_filename");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Self));
@@ -355,8 +353,7 @@ package body Pango.Font is
 
    function To_String (Self : Pango_Font_Description) return UTF8_String is
       function Internal
-         (Self : Pango_Font_Description)
-          return Interfaces.C.Strings.chars_ptr;
+         (Self : Pango_Font_Description) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "pango_font_description_to_string");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Self));
@@ -368,10 +365,9 @@ package body Pango.Font is
 
    function From_String (Str : UTF8_String) return Pango_Font_Description is
       function Internal
-         (Str : Interfaces.C.Strings.chars_ptr)
-          return Pango_Font_Description;
+         (Str : Gtkada.Types.Chars_Ptr) return Pango_Font_Description;
       pragma Import (C, Internal, "pango_font_description_from_string");
-      Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str    : Gtkada.Types.Chars_Ptr := New_String (Str);
       Tmp_Return : Pango_Font_Description;
    begin
       Tmp_Return := Internal (Tmp_Str);

@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Assistant is
@@ -268,7 +268,7 @@ package body Gtk.Assistant is
    is
       function Internal
          (Assistant : System.Address;
-          Page      : System.Address) return Interfaces.C.Strings.chars_ptr;
+          Page      : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_assistant_get_page_title");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Assistant), Get_Object (Page)));
@@ -532,9 +532,9 @@ package body Gtk.Assistant is
       procedure Internal
          (Assistant : System.Address;
           Page      : System.Address;
-          Title     : Interfaces.C.Strings.chars_ptr);
+          Title     : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_assistant_set_page_title");
-      Tmp_Title : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title : Gtkada.Types.Chars_Ptr := New_String (Title);
    begin
       Internal (Get_Object (Assistant), Get_Object (Page), Tmp_Title);
       Free (Tmp_Title);

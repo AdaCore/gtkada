@@ -28,9 +28,7 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Types;               use Gtkada.Types;
 
 package body Gtk.Tree_View is
 
@@ -45,7 +43,7 @@ package body Gtk.Tree_View is
    function C_Gtk_Tree_View_Insert_Column_With_Data_Func
       (Tree_View : System.Address;
        Position  : Glib.Gint;
-       Title     : Interfaces.C.Strings.chars_ptr;
+       Title     : Gtkada.Types.Chars_Ptr;
        Cell      : System.Address;
        Func      : System.Address;
        Data      : System.Address;
@@ -249,7 +247,7 @@ package body Gtk.Tree_View is
    function Internal_Gtk_Tree_View_Search_Equal_Func
       (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
        Column      : Glib.Gint;
-       Key         : Interfaces.C.Strings.chars_ptr;
+       Key         : Gtkada.Types.Chars_Ptr;
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Search_Data : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_View_Search_Equal_Func);
@@ -354,7 +352,7 @@ package body Gtk.Tree_View is
    function Internal_Gtk_Tree_View_Search_Equal_Func
       (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
        Column      : Glib.Gint;
-       Key         : Interfaces.C.Strings.chars_ptr;
+       Key         : Gtkada.Types.Chars_Ptr;
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Search_Data : System.Address) return Glib.Gboolean
    is
@@ -1400,7 +1398,7 @@ package body Gtk.Tree_View is
        Func      : Gtk_Tree_Cell_Data_Func;
        Dnotify   : Glib.G_Destroy_Notify_Address) return Glib.Gint
    is
-      Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
+      Tmp_Title  : Gtkada.Types.Chars_Ptr := New_String (Title);
       Tmp_Return : Glib.Gint;
    begin
       if Func = null then
@@ -1458,7 +1456,7 @@ package body Gtk.Tree_View is
           Data      : User_Data_Type;
           Dnotify   : Glib.G_Destroy_Notify_Address) return Glib.Gint
       is
-         Tmp_Title  : Interfaces.C.Strings.chars_ptr := New_String (Title);
+         Tmp_Title  : Gtkada.Types.Chars_Ptr := New_String (Title);
          Tmp_Return : Glib.Gint;
          D          : System.Address;
       begin
@@ -2336,7 +2334,7 @@ package body Gtk.Tree_View is
       function Internal_Cb
          (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
           Column      : Glib.Gint;
-          Key         : Interfaces.C.Strings.chars_ptr;
+          Key         : Gtkada.Types.Chars_Ptr;
           Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Search_Data : System.Address) return Glib.Gboolean;
       pragma Convention (C, Internal_Cb);
@@ -2358,7 +2356,7 @@ package body Gtk.Tree_View is
       function Internal_Cb
          (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
           Column      : Glib.Gint;
-          Key         : Interfaces.C.Strings.chars_ptr;
+          Key         : Gtkada.Types.Chars_Ptr;
           Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
           Search_Data : System.Address) return Glib.Gboolean
       is

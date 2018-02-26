@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gdk.Display is
@@ -185,7 +185,7 @@ package body Gdk.Display is
       (Self : not null access Gdk_Display_Record) return UTF8_String
    is
       function Internal
-         (Self : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gdk_display_get_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
@@ -241,9 +241,9 @@ package body Gdk.Display is
    is
       procedure Internal
          (Self       : System.Address;
-          Startup_Id : Interfaces.C.Strings.chars_ptr);
+          Startup_Id : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gdk_display_notify_startup_complete");
-      Tmp_Startup_Id : Interfaces.C.Strings.chars_ptr := New_String (Startup_Id);
+      Tmp_Startup_Id : Gtkada.Types.Chars_Ptr := New_String (Startup_Id);
    begin
       Internal (Get_Object (Self), Tmp_Startup_Id);
       Free (Tmp_Startup_Id);
@@ -469,10 +469,9 @@ package body Gdk.Display is
 
    function Open (Display_Name : UTF8_String) return Gdk_Display is
       function Internal
-         (Display_Name : Interfaces.C.Strings.chars_ptr)
-          return System.Address;
+         (Display_Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gdk_display_open");
-      Tmp_Display_Name : Interfaces.C.Strings.chars_ptr := New_String (Display_Name);
+      Tmp_Display_Name : Gtkada.Types.Chars_Ptr := New_String (Display_Name);
       Stub_Gdk_Display : Gdk_Display_Record;
       Tmp_Return       : System.Address;
    begin

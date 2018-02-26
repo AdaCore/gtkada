@@ -26,7 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Frame is
@@ -65,14 +65,14 @@ package body Gtk.Frame is
        Label : UTF8_String := "")
    is
       function Internal
-         (Label : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Label : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_frame_new");
-      Tmp_Label  : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label  : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Frame.Is_Created then
          if Label = "" then
-            Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+            Tmp_Label := Gtkada.Types.Null_Ptr;
          else
             Tmp_Label := New_String (Label);
          end if;
@@ -90,7 +90,7 @@ package body Gtk.Frame is
       (Frame : not null access Gtk_Frame_Record) return UTF8_String
    is
       function Internal
-         (Frame : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Frame : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_frame_get_label");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Frame)));
@@ -154,12 +154,12 @@ package body Gtk.Frame is
    is
       procedure Internal
          (Frame : System.Address;
-          Label : Interfaces.C.Strings.chars_ptr);
+          Label : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_frame_set_label");
-      Tmp_Label : Interfaces.C.Strings.chars_ptr;
+      Tmp_Label : Gtkada.Types.Chars_Ptr;
    begin
       if Label = "" then
-         Tmp_Label := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Label := Gtkada.Types.Null_Ptr;
       else
          Tmp_Label := New_String (Label);
       end if;

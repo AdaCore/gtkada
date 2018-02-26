@@ -54,7 +54,7 @@
 
 with Glib.Object;
 with Glib.Values;
-with Interfaces.C.Strings;
+with Gtkada.Types;
 
 package Glib.Properties.Creation is
 
@@ -110,7 +110,7 @@ package Glib.Properties.Creation is
 
    function Register_Static_Enum
      (Name   : String;
-      Values : Interfaces.C.Strings.chars_ptr_array) return Glib.GType;
+      Values : Gtkada.Types.Chars_Ptr_Array) return Glib.GType;
    --  Create a new enumeration class from a list of valid values.
    --  Values must be freed by the caller.
 

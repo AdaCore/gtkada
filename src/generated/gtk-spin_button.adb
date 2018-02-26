@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Spin_Button is
@@ -560,7 +560,7 @@ package body Gtk.Spin_Button is
       function Internal
          (Editable  : System.Address;
           Start_Pos : Glib.Gint;
-          End_Pos   : Glib.Gint) return Interfaces.C.Strings.chars_ptr;
+          End_Pos   : Glib.Gint) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_editable_get_chars");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Editable), Start_Pos, End_Pos));
@@ -644,11 +644,11 @@ package body Gtk.Spin_Button is
    is
       procedure Internal
          (Editable        : System.Address;
-          New_Text        : Interfaces.C.Strings.chars_ptr;
+          New_Text        : Gtkada.Types.Chars_Ptr;
           New_Text_Length : Glib.Gint;
           Position        : in out Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_insert_text");
-      Tmp_New_Text : Interfaces.C.Strings.chars_ptr := New_String (New_Text);
+      Tmp_New_Text : Gtkada.Types.Chars_Ptr := New_String (New_Text);
    begin
       Internal (Get_Object (Editable), Tmp_New_Text, New_Text_Length, Position);
       Free (Tmp_New_Text);

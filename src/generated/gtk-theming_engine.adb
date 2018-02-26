@@ -25,7 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.Theming_Engine is
@@ -223,11 +223,11 @@ package body Gtk.Theming_Engine is
    is
       procedure Internal
          (Self     : System.Address;
-          Property : Interfaces.C.Strings.chars_ptr;
+          Property : Gtkada.Types.Chars_Ptr;
           State    : Gtk.Enums.Gtk_State_Flags;
           Value    : out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_theming_engine_get_property");
-      Tmp_Property : Interfaces.C.Strings.chars_ptr := New_String (Property);
+      Tmp_Property : Gtkada.Types.Chars_Ptr := New_String (Property);
    begin
       Internal (Get_Object (Self), Tmp_Property, State, Value);
       Free (Tmp_Property);
@@ -274,10 +274,10 @@ package body Gtk.Theming_Engine is
    is
       procedure Internal
          (Self          : System.Address;
-          Property_Name : Interfaces.C.Strings.chars_ptr;
+          Property_Name : Gtkada.Types.Chars_Ptr;
           Value         : out Glib.Values.GValue);
       pragma Import (C, Internal, "gtk_theming_engine_get_style_property");
-      Tmp_Property_Name : Interfaces.C.Strings.chars_ptr := New_String (Property_Name);
+      Tmp_Property_Name : Gtkada.Types.Chars_Ptr := New_String (Property_Name);
    begin
       Internal (Get_Object (Self), Tmp_Property_Name, Value);
       Free (Tmp_Property_Name);
@@ -293,9 +293,9 @@ package body Gtk.Theming_Engine is
    is
       function Internal
          (Self        : System.Address;
-          Style_Class : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Style_Class : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_theming_engine_has_class");
-      Tmp_Style_Class : Interfaces.C.Strings.chars_ptr := New_String (Style_Class);
+      Tmp_Style_Class : Gtkada.Types.Chars_Ptr := New_String (Style_Class);
       Tmp_Return      : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Style_Class);
@@ -314,12 +314,12 @@ package body Gtk.Theming_Engine is
    is
       function Internal
          (Self         : System.Address;
-          Style_Region : Interfaces.C.Strings.chars_ptr;
+          Style_Region : Gtkada.Types.Chars_Ptr;
           Acc_Flags    : access Gtk.Enums.Gtk_Region_Flags)
           return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_theming_engine_has_region");
       Acc_Flags        : aliased Gtk.Enums.Gtk_Region_Flags;
-      Tmp_Style_Region : Interfaces.C.Strings.chars_ptr := New_String (Style_Region);
+      Tmp_Style_Region : Gtkada.Types.Chars_Ptr := New_String (Style_Region);
       Tmp_Return       : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Style_Region, Acc_Flags'Access);
@@ -341,11 +341,11 @@ package body Gtk.Theming_Engine is
    is
       function Internal
          (Self       : System.Address;
-          Color_Name : Interfaces.C.Strings.chars_ptr;
+          Color_Name : Gtkada.Types.Chars_Ptr;
           Acc_Color  : access Gdk.RGBA.Gdk_RGBA) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_theming_engine_lookup_color");
       Acc_Color      : aliased Gdk.RGBA.Gdk_RGBA;
-      Tmp_Color_Name : Interfaces.C.Strings.chars_ptr := New_String (Color_Name);
+      Tmp_Color_Name : Gtkada.Types.Chars_Ptr := New_String (Color_Name);
       Tmp_Return     : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Color_Name, Acc_Color'Access);
@@ -382,9 +382,9 @@ package body Gtk.Theming_Engine is
 
    function Load (Name : UTF8_String) return Gtk_Theming_Engine is
       function Internal
-         (Name : Interfaces.C.Strings.chars_ptr) return System.Address;
+         (Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_theming_engine_load");
-      Tmp_Name                : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name                : Gtkada.Types.Chars_Ptr := New_String (Name);
       Stub_Gtk_Theming_Engine : Gtk_Theming_Engine_Record;
       Tmp_Return              : System.Address;
    begin

@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;       use Gtkada.Types;
 with Ada.Unchecked_Conversion;
 
 with Glib.Application;           use Glib.Application;
@@ -118,13 +118,13 @@ package body Gtkada.Application is
    --------------
 
    function Get_Path (File : GFile) return UTF8_String is
-      function Internal (File : GFile) return Interfaces.C.Strings.chars_ptr;
+      function Internal (File : GFile) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_file_get_path");
-      C_Path : Interfaces.C.Strings.chars_ptr := Internal (File);
-      Path   : constant String := Interfaces.C.Strings.Value (C_Path);
+      C_Path : Gtkada.Types.Chars_Ptr := Internal (File);
+      Path   : constant String := Gtkada.Types.Value (C_Path);
 
    begin
-      Interfaces.C.Strings.Free (C_Path);
+      Gtkada.Types.Free (C_Path);
       return Path;
    end Get_Path;
 

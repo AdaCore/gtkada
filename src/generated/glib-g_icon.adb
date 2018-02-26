@@ -23,9 +23,9 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Bindings;      use Gtkada.Bindings;
+with Gtkada.Bindings; use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types;    use Gtkada.Types;
 pragma Warnings(On);
 
 package body Glib.G_Icon is
@@ -57,8 +57,7 @@ package body Glib.G_Icon is
    ---------------
 
    function To_String (Self : G_Icon) return UTF8_String is
-      function Internal
-         (Self : G_Icon) return Interfaces.C.Strings.chars_ptr;
+      function Internal (Self : G_Icon) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_icon_to_string");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Self));
@@ -80,9 +79,9 @@ package body Glib.G_Icon is
    --------------------
 
    function New_For_String (Str : UTF8_String) return G_Icon is
-      function Internal (Str : Interfaces.C.Strings.chars_ptr) return G_Icon;
+      function Internal (Str : Gtkada.Types.Chars_Ptr) return G_Icon;
       pragma Import (C, Internal, "g_icon_new_for_string");
-      Tmp_Str    : Interfaces.C.Strings.chars_ptr := New_String (Str);
+      Tmp_Str    : Gtkada.Types.Chars_Ptr := New_String (Str);
       Tmp_Return : G_Icon;
    begin
       Tmp_Return := Internal (Tmp_Str);

@@ -27,13 +27,13 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;                 use Glib;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Glib;         use Glib;
+with Gtkada.Types; use Gtkada.Types;
 
 package Glib.String is
 
    type Gstring is record
-      Str : Interfaces.C.Strings.chars_ptr;
+      Str : Gtkada.Types.Chars_Ptr;
       Len : Gsize;
       Allocated_Len : Gsize;
    end record;

@@ -29,7 +29,7 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
+with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gtk.GEntry is
@@ -313,8 +313,7 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Gtk_Entry_Icon_Position)
-          return Interfaces.C.Strings.chars_ptr;
+          Icon_Pos  : Gtk_Entry_Icon_Position) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_entry_get_icon_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (The_Entry), Icon_Pos));
@@ -363,8 +362,7 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Gtk_Entry_Icon_Position)
-          return Interfaces.C.Strings.chars_ptr;
+          Icon_Pos  : Gtk_Entry_Icon_Position) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_entry_get_icon_stock");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (The_Entry), Icon_Pos));
@@ -397,8 +395,7 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Gtk_Entry_Icon_Position)
-          return Interfaces.C.Strings.chars_ptr;
+          Icon_Pos  : Gtk_Entry_Icon_Position) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_entry_get_icon_tooltip_markup");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (The_Entry), Icon_Pos));
@@ -414,8 +411,7 @@ package body Gtk.GEntry is
    is
       function Internal
          (The_Entry : System.Address;
-          Icon_Pos  : Gtk_Entry_Icon_Position)
-          return Interfaces.C.Strings.chars_ptr;
+          Icon_Pos  : Gtk_Entry_Icon_Position) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_entry_get_icon_tooltip_text");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (The_Entry), Icon_Pos));
@@ -559,7 +555,7 @@ package body Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record) return UTF8_String
    is
       function Internal
-         (The_Entry : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (The_Entry : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_entry_get_placeholder_text");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (The_Entry)));
@@ -613,7 +609,7 @@ package body Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record) return UTF8_String
    is
       function Internal
-         (The_Entry : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (The_Entry : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_entry_get_text");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (The_Entry)));
@@ -906,12 +902,12 @@ package body Gtk.GEntry is
       procedure Internal
          (The_Entry : System.Address;
           Icon_Pos  : Gtk_Entry_Icon_Position;
-          Icon_Name : Interfaces.C.Strings.chars_ptr);
+          Icon_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_entry_set_icon_from_icon_name");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr;
    begin
       if Icon_Name = "" then
-         Tmp_Icon_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Icon_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Icon_Name := New_String (Icon_Name);
       end if;
@@ -949,12 +945,12 @@ package body Gtk.GEntry is
       procedure Internal
          (The_Entry : System.Address;
           Icon_Pos  : Gtk_Entry_Icon_Position;
-          Stock_Id  : Interfaces.C.Strings.chars_ptr);
+          Stock_Id  : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_entry_set_icon_from_stock");
-      Tmp_Stock_Id : Interfaces.C.Strings.chars_ptr;
+      Tmp_Stock_Id : Gtkada.Types.Chars_Ptr;
    begin
       if Stock_Id = "" then
-         Tmp_Stock_Id := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Stock_Id := Gtkada.Types.Null_Ptr;
       else
          Tmp_Stock_Id := New_String (Stock_Id);
       end if;
@@ -992,12 +988,12 @@ package body Gtk.GEntry is
       procedure Internal
          (The_Entry : System.Address;
           Icon_Pos  : Gtk_Entry_Icon_Position;
-          Tooltip   : Interfaces.C.Strings.chars_ptr);
+          Tooltip   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_entry_set_icon_tooltip_markup");
-      Tmp_Tooltip : Interfaces.C.Strings.chars_ptr;
+      Tmp_Tooltip : Gtkada.Types.Chars_Ptr;
    begin
       if Tooltip = "" then
-         Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Tooltip := Gtkada.Types.Null_Ptr;
       else
          Tmp_Tooltip := New_String (Tooltip);
       end if;
@@ -1017,12 +1013,12 @@ package body Gtk.GEntry is
       procedure Internal
          (The_Entry : System.Address;
           Icon_Pos  : Gtk_Entry_Icon_Position;
-          Tooltip   : Interfaces.C.Strings.chars_ptr);
+          Tooltip   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_entry_set_icon_tooltip_text");
-      Tmp_Tooltip : Interfaces.C.Strings.chars_ptr;
+      Tmp_Tooltip : Gtkada.Types.Chars_Ptr;
    begin
       if Tooltip = "" then
-         Tmp_Tooltip := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Tooltip := Gtkada.Types.Null_Ptr;
       else
          Tmp_Tooltip := New_String (Tooltip);
       end if;
@@ -1146,9 +1142,9 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (The_Entry : System.Address;
-          Text      : Interfaces.C.Strings.chars_ptr);
+          Text      : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_entry_set_placeholder_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (The_Entry), Tmp_Text);
       Free (Tmp_Text);
@@ -1206,9 +1202,9 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (The_Entry : System.Address;
-          Text      : Interfaces.C.Strings.chars_ptr);
+          Text      : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_entry_set_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (The_Entry), Tmp_Text);
       Free (Tmp_Text);
@@ -1347,7 +1343,7 @@ package body Gtk.GEntry is
       function Internal
          (Editable  : System.Address;
           Start_Pos : Glib.Gint;
-          End_Pos   : Glib.Gint) return Interfaces.C.Strings.chars_ptr;
+          End_Pos   : Glib.Gint) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_editable_get_chars");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Editable), Start_Pos, End_Pos));
@@ -1416,11 +1412,11 @@ package body Gtk.GEntry is
    is
       procedure Internal
          (Editable        : System.Address;
-          New_Text        : Interfaces.C.Strings.chars_ptr;
+          New_Text        : Gtkada.Types.Chars_Ptr;
           New_Text_Length : Glib.Gint;
           Position        : in out Glib.Gint);
       pragma Import (C, Internal, "gtk_editable_insert_text");
-      Tmp_New_Text : Interfaces.C.Strings.chars_ptr := New_String (New_Text);
+      Tmp_New_Text : Gtkada.Types.Chars_Ptr := New_String (New_Text);
    begin
       Internal (Get_Object (Editable), Tmp_New_Text, New_Text_Length, Position);
       Free (Tmp_New_Text);

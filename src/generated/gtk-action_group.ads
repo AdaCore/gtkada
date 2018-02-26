@@ -69,16 +69,16 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;                 use Glib;
-with Glib.Glist;           use Glib.Glist;
-with Glib.Object;          use Glib.Object;
-with Glib.Properties;      use Glib.Properties;
-with Glib.Types;           use Glib.Types;
-with Gtk.Accel_Group;      use Gtk.Accel_Group;
-with Gtk.Action;           use Gtk.Action;
-with Gtk.Buildable;        use Gtk.Buildable;
-with Gtk.Widget;           use Gtk.Widget;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Glib;            use Glib;
+with Glib.Glist;      use Glib.Glist;
+with Glib.Object;     use Glib.Object;
+with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Gtk.Accel_Group; use Gtk.Accel_Group;
+with Gtk.Action;      use Gtk.Action;
+with Gtk.Buildable;   use Gtk.Buildable;
+with Gtk.Widget;      use Gtk.Widget;
+with Gtkada.Types;    use Gtkada.Types;
 
 package Gtk.Action_Group is
 
@@ -330,31 +330,31 @@ package Gtk.Action_Group is
    --      Act : constant Gtk_Action := Convert (Action);
 
    type Action_Entry is record
-      Name         : Interfaces.C.Strings.chars_ptr;
-      Stock_Id     : Interfaces.C.Strings.chars_ptr;
-      Label        : Interfaces.C.Strings.chars_ptr;
-      Accelerator  : Interfaces.C.Strings.chars_ptr;
-      Tooltip      : Interfaces.C.Strings.chars_ptr;
+      Name         : Gtkada.Types.Chars_Ptr;
+      Stock_Id     : Gtkada.Types.Chars_Ptr;
+      Label        : Gtkada.Types.Chars_Ptr;
+      Accelerator  : Gtkada.Types.Chars_Ptr;
+      Tooltip      : Gtkada.Types.Chars_Ptr;
       Callback     : Action_Callback;
    end record;
    pragma Convention (C, Action_Entry);
 
    type Radio_Action_Entry is record
-      Name         : Interfaces.C.Strings.chars_ptr;
-      Stock_Id     : Interfaces.C.Strings.chars_ptr;
-      Label        : Interfaces.C.Strings.chars_ptr;
-      Accelerator  : Interfaces.C.Strings.chars_ptr;
-      Tooltip      : Interfaces.C.Strings.chars_ptr;
+      Name         : Gtkada.Types.Chars_Ptr;
+      Stock_Id     : Gtkada.Types.Chars_Ptr;
+      Label        : Gtkada.Types.Chars_Ptr;
+      Accelerator  : Gtkada.Types.Chars_Ptr;
+      Tooltip      : Gtkada.Types.Chars_Ptr;
       Value        : Glib.Gint;
    end record;
    pragma Convention (C, Radio_Action_Entry);
 
    type Toggle_Action_Entry is record
-      Name         : Interfaces.C.Strings.chars_ptr;
-      Stock_Id     : Interfaces.C.Strings.chars_ptr;
-      Label        : Interfaces.C.Strings.chars_ptr;
-      Accelerator  : Interfaces.C.Strings.chars_ptr;
-      Tooltip      : Interfaces.C.Strings.chars_ptr;
+      Name         : Gtkada.Types.Chars_Ptr;
+      Stock_Id     : Gtkada.Types.Chars_Ptr;
+      Label        : Gtkada.Types.Chars_Ptr;
+      Accelerator  : Gtkada.Types.Chars_Ptr;
+      Tooltip      : Gtkada.Types.Chars_Ptr;
       Callback     : Action_Callback;
       Is_Active    : Glib.Gboolean;
    end record;

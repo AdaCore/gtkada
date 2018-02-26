@@ -44,11 +44,11 @@ package body Gtk.Target_Entry is
        Info         : Guint)
    is
       function Internal
-         (Target : Interfaces.C.Strings.chars_ptr;
+         (Target : Gtkada.Types.Chars_Ptr;
           Flags  : Gtk.Enums.Gtk_Target_Flags;
           Info   : Guint) return Gtk_Target_Entry;
       pragma Import (C, Internal, "gtk_target_entry_new");
-      Tmp_Target : Interfaces.C.Strings.chars_ptr := New_String (Target);
+      Tmp_Target : Gtkada.Types.Chars_Ptr := New_String (Target);
       Tmp_Return : Gtk_Target_Entry;
    begin
       Tmp_Return := Internal (Tmp_Target, Flags, Info);
@@ -66,11 +66,11 @@ package body Gtk.Target_Entry is
        Info   : Guint) return Gtk_Target_Entry
    is
       function Internal
-         (Target : Interfaces.C.Strings.chars_ptr;
+         (Target : Gtkada.Types.Chars_Ptr;
           Flags  : Gtk.Enums.Gtk_Target_Flags;
           Info   : Guint) return Gtk_Target_Entry;
       pragma Import (C, Internal, "gtk_target_entry_new");
-      Tmp_Target   : Interfaces.C.Strings.chars_ptr := New_String (Target);
+      Tmp_Target   : Gtkada.Types.Chars_Ptr := New_String (Target);
       Tmp_Return   : Gtk_Target_Entry;
       Target_Entry : Gtk_Target_Entry;
    begin

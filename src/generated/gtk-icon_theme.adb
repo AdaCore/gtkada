@@ -27,12 +27,9 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
-with GtkAda.Types;               use GtkAda.Types;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.C;                   use Gtkada.C;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
-pragma Warnings(On);
+with Gtkada.Types;               use Gtkada.Types;
 
 package body Gtk.Icon_Theme is
 
@@ -141,9 +138,9 @@ package body Gtk.Icon_Theme is
    is
       procedure Internal
          (Icon_Theme : System.Address;
-          Path       : Interfaces.C.Strings.chars_ptr);
+          Path       : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_icon_theme_add_resource_path");
-      Tmp_Path : Interfaces.C.Strings.chars_ptr := New_String (Path);
+      Tmp_Path : Gtkada.Types.Chars_Ptr := New_String (Path);
    begin
       Internal (Get_Object (Icon_Theme), Tmp_Path);
       Free (Tmp_Path);
@@ -159,9 +156,9 @@ package body Gtk.Icon_Theme is
    is
       procedure Internal
          (Icon_Theme : System.Address;
-          Path       : Interfaces.C.Strings.chars_ptr);
+          Path       : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_icon_theme_append_search_path");
-      Tmp_Path : Interfaces.C.Strings.chars_ptr := New_String (Path);
+      Tmp_Path : Gtkada.Types.Chars_Ptr := New_String (Path);
    begin
       Internal (Get_Object (Icon_Theme), Tmp_Path);
       Free (Tmp_Path);
@@ -179,16 +176,16 @@ package body Gtk.Icon_Theme is
    is
       function Internal
          (Icon_Theme : System.Address;
-          Icon_Names : Interfaces.C.Strings.chars_ptr_array;
+          Icon_Names : Gtkada.Types.chars_ptr_array;
           Size       : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_choose_icon");
-      Tmp_Icon_Names     : Interfaces.C.Strings.chars_ptr_array := From_String_List (Icon_Names);
+      Tmp_Icon_Names     : Gtkada.Types.chars_ptr_array := From_String_List (Icon_Names);
       Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
       Tmp_Return         : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Names, Size, Flags);
-      GtkAda.Types.Free (Tmp_Icon_Names);
+      Gtkada.Types.Free (Tmp_Icon_Names);
       return Gtk.Icon_Theme.Gtk_Icon_Info (Get_User_Data (Tmp_Return, Stub_Gtk_Icon_Info));
    end Choose_Icon;
 
@@ -205,17 +202,17 @@ package body Gtk.Icon_Theme is
    is
       function Internal
          (Icon_Theme : System.Address;
-          Icon_Names : Interfaces.C.Strings.chars_ptr_array;
+          Icon_Names : Gtkada.Types.chars_ptr_array;
           Size       : Glib.Gint;
           Scale      : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_choose_icon_for_scale");
-      Tmp_Icon_Names     : Interfaces.C.Strings.chars_ptr_array := From_String_List (Icon_Names);
+      Tmp_Icon_Names     : Gtkada.Types.chars_ptr_array := From_String_List (Icon_Names);
       Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
       Tmp_Return         : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Names, Size, Scale, Flags);
-      GtkAda.Types.Free (Tmp_Icon_Names);
+      Gtkada.Types.Free (Tmp_Icon_Names);
       return Gtk.Icon_Theme.Gtk_Icon_Info (Get_User_Data (Tmp_Return, Stub_Gtk_Icon_Info));
    end Choose_Icon_For_Scale;
 
@@ -326,7 +323,7 @@ package body Gtk.Icon_Theme is
       (Icon_Info : not null access Gtk_Icon_Info_Record) return UTF8_String
    is
       function Internal
-         (Icon_Info : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Icon_Info : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_icon_info_get_display_name");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Icon_Info)));
@@ -363,7 +360,7 @@ package body Gtk.Icon_Theme is
        return UTF8_String
    is
       function Internal
-         (Icon_Theme : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Icon_Theme : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_icon_theme_get_example_icon_name");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Icon_Theme)));
@@ -377,7 +374,7 @@ package body Gtk.Icon_Theme is
       (Icon_Info : not null access Gtk_Icon_Info_Record) return UTF8_String
    is
       function Internal
-         (Icon_Info : System.Address) return Interfaces.C.Strings.chars_ptr;
+         (Icon_Info : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_icon_info_get_filename");
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Icon_Info)));
@@ -442,9 +439,9 @@ package body Gtk.Icon_Theme is
    is
       function Internal
          (Icon_Theme : System.Address;
-          Icon_Name  : Interfaces.C.Strings.chars_ptr) return Glib.Gboolean;
+          Icon_Name  : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_icon_theme_has_icon");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
       Tmp_Return    : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name);
@@ -491,13 +488,13 @@ package body Gtk.Icon_Theme is
    is
       function Internal
          (Icon_Theme : System.Address;
-          Context    : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Context    : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_list_icons");
-      Tmp_Context : Interfaces.C.Strings.chars_ptr;
+      Tmp_Context : Gtkada.Types.Chars_Ptr;
       Tmp_Return  : Gtk.Enums.String_List.Glist;
    begin
       if Context = "" then
-         Tmp_Context := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Context := Gtkada.Types.Null_Ptr;
       else
          Tmp_Context := New_String (Context);
       end if;
@@ -519,13 +516,13 @@ package body Gtk.Icon_Theme is
    is
       function Internal
          (Icon_Theme : System.Address;
-          Icon_Name  : Interfaces.C.Strings.chars_ptr;
+          Icon_Name  : Gtkada.Types.Chars_Ptr;
           Size       : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags;
           Acc_Error  : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_load_icon");
       Acc_Error       : aliased Glib.Error.GError;
-      Tmp_Icon_Name   : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name   : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
       Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return      : System.Address;
    begin
@@ -566,14 +563,14 @@ package body Gtk.Icon_Theme is
    is
       function Internal
          (Icon_Theme : System.Address;
-          Icon_Name  : Interfaces.C.Strings.chars_ptr;
+          Icon_Name  : Gtkada.Types.Chars_Ptr;
           Size       : Glib.Gint;
           Scale      : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags;
           Acc_Error  : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_load_icon_for_scale");
       Acc_Error       : aliased Glib.Error.GError;
-      Tmp_Icon_Name   : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name   : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
       Stub_Gdk_Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf_Record;
       Tmp_Return      : System.Address;
    begin
@@ -600,7 +597,7 @@ package body Gtk.Icon_Theme is
    is
       function Internal
          (Icon_Theme : System.Address;
-          Icon_Name  : Interfaces.C.Strings.chars_ptr;
+          Icon_Name  : Gtkada.Types.Chars_Ptr;
           Size       : Glib.Gint;
           Scale      : Glib.Gint;
           For_Window : Gdk.Gdk_Window;
@@ -608,7 +605,7 @@ package body Gtk.Icon_Theme is
           Acc_Error  : access Glib.Error.GError) return Cairo.Cairo_Surface;
       pragma Import (C, Internal, "gtk_icon_theme_load_surface");
       Acc_Error     : aliased Glib.Error.GError;
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
       Tmp_Return    : Cairo.Cairo_Surface;
    begin
       Tmp_Return := Internal (Get_Object (Icon_Theme), Tmp_Icon_Name, Size, Scale, For_Window, Flags, Acc_Error'Access);
@@ -799,11 +796,11 @@ package body Gtk.Icon_Theme is
    is
       function Internal
          (Icon_Theme : System.Address;
-          Icon_Name  : Interfaces.C.Strings.chars_ptr;
+          Icon_Name  : Gtkada.Types.Chars_Ptr;
           Size       : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_lookup_icon");
-      Tmp_Icon_Name      : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name      : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
       Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
       Tmp_Return         : System.Address;
    begin
@@ -825,12 +822,12 @@ package body Gtk.Icon_Theme is
    is
       function Internal
          (Icon_Theme : System.Address;
-          Icon_Name  : Interfaces.C.Strings.chars_ptr;
+          Icon_Name  : Gtkada.Types.Chars_Ptr;
           Size       : Glib.Gint;
           Scale      : Glib.Gint;
           Flags      : Gtk_Icon_Lookup_Flags) return System.Address;
       pragma Import (C, Internal, "gtk_icon_theme_lookup_icon_for_scale");
-      Tmp_Icon_Name      : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name      : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
       Stub_Gtk_Icon_Info : Gtk_Icon_Info_Record;
       Tmp_Return         : System.Address;
    begin
@@ -849,9 +846,9 @@ package body Gtk.Icon_Theme is
    is
       procedure Internal
          (Icon_Theme : System.Address;
-          Path       : Interfaces.C.Strings.chars_ptr);
+          Path       : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_icon_theme_prepend_search_path");
-      Tmp_Path : Interfaces.C.Strings.chars_ptr := New_String (Path);
+      Tmp_Path : Gtkada.Types.Chars_Ptr := New_String (Path);
    begin
       Internal (Get_Object (Icon_Theme), Tmp_Path);
       Free (Tmp_Path);
@@ -880,12 +877,12 @@ package body Gtk.Icon_Theme is
    is
       procedure Internal
          (Icon_Theme : System.Address;
-          Theme_Name : Interfaces.C.Strings.chars_ptr);
+          Theme_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_icon_theme_set_custom_theme");
-      Tmp_Theme_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Theme_Name : Gtkada.Types.Chars_Ptr;
    begin
       if Theme_Name = "" then
-         Tmp_Theme_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Theme_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Theme_Name := New_String (Theme_Name);
       end if;
@@ -935,13 +932,13 @@ package body Gtk.Icon_Theme is
    is
       procedure Internal
          (Icon_Theme : System.Address;
-          Path       : Interfaces.C.Strings.chars_ptr_array;
+          Path       : Gtkada.Types.chars_ptr_array;
           N_Elements : Glib.Gint);
       pragma Import (C, Internal, "gtk_icon_theme_set_search_path");
-      Tmp_Path : Interfaces.C.Strings.chars_ptr_array := From_String_List (Path);
+      Tmp_Path : Gtkada.Types.chars_ptr_array := From_String_List (Path);
    begin
       Internal (Get_Object (Icon_Theme), Tmp_Path, Path'Length);
-      GtkAda.Types.Free (Tmp_Path);
+      Gtkada.Types.Free (Tmp_Path);
    end Set_Search_Path;
 
    ----------------------
@@ -954,11 +951,11 @@ package body Gtk.Icon_Theme is
        Pixbuf    : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
    is
       procedure Internal
-         (Icon_Name : Interfaces.C.Strings.chars_ptr;
+         (Icon_Name : Gtkada.Types.Chars_Ptr;
           Size      : Glib.Gint;
           Pixbuf    : System.Address);
       pragma Import (C, Internal, "gtk_icon_theme_add_builtin_icon");
-      Tmp_Icon_Name : Interfaces.C.Strings.chars_ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
    begin
       Internal (Tmp_Icon_Name, Size, Get_Object (Pixbuf));
       Free (Tmp_Icon_Name);

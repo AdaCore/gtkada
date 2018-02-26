@@ -28,9 +28,6 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings;       use Interfaces.C.Strings;
-pragma Warnings(On);
 
 package body Gtk.Text_Buffer is
 
@@ -182,11 +179,11 @@ package body Gtk.Text_Buffer is
    is
       function Internal
         (Buffer              : System.Address;
-         Tag_Name            : Interfaces.C.Strings.chars_ptr)
+         Tag_Name            : Gtkada.Types.Chars_Ptr)
       return System.Address;
       pragma Import (C, Internal, "ada_gtk_text_buffer_create_tag");
       Stub : Gtk_Text_Tag_Record;
-      Str  : Interfaces.C.Strings.chars_ptr := String_Or_Null (Tag_Name);
+      Str  : Gtkada.Types.Chars_Ptr := String_Or_Null (Tag_Name);
       Tag  : Gtk_Text_Tag;
    begin
       Tag := Gtk_Text_Tag
@@ -308,11 +305,11 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
          (Buffer  : System.Address;
-          Name    : Interfaces.C.Strings.chars_ptr;
+          Name    : Gtkada.Types.Chars_Ptr;
           Start   : Gtk.Text_Iter.Gtk_Text_Iter;
           The_End : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_apply_tag_by_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Buffer), Tmp_Name, Start, The_End);
       Free (Tmp_Name);
@@ -397,16 +394,16 @@ package body Gtk.Text_Buffer is
    is
       function Internal
          (Buffer       : System.Address;
-          Mark_Name    : Interfaces.C.Strings.chars_ptr;
+          Mark_Name    : Gtkada.Types.Chars_Ptr;
           Where        : Gtk.Text_Iter.Gtk_Text_Iter;
           Left_Gravity : Glib.Gboolean) return System.Address;
       pragma Import (C, Internal, "gtk_text_buffer_create_mark");
-      Tmp_Mark_Name      : Interfaces.C.Strings.chars_ptr;
+      Tmp_Mark_Name      : Gtkada.Types.Chars_Ptr;
       Stub_Gtk_Text_Mark : Gtk.Text_Mark.Gtk_Text_Mark_Record;
       Tmp_Return         : System.Address;
    begin
       if Mark_Name = "" then
-         Tmp_Mark_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Mark_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Mark_Name := New_String (Mark_Name);
       end if;
@@ -500,9 +497,9 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
          (Buffer : System.Address;
-          Name   : Interfaces.C.Strings.chars_ptr);
+          Name   : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_text_buffer_delete_mark_by_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Buffer), Tmp_Name);
       Free (Tmp_Name);
@@ -823,9 +820,9 @@ package body Gtk.Text_Buffer is
    is
       function Internal
          (Buffer : System.Address;
-          Name   : Interfaces.C.Strings.chars_ptr) return System.Address;
+          Name   : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_text_buffer_get_mark");
-      Tmp_Name           : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name           : Gtkada.Types.Chars_Ptr := New_String (Name);
       Stub_Gtk_Text_Mark : Gtk.Text_Mark.Gtk_Text_Mark_Record;
       Tmp_Return         : System.Address;
    begin
@@ -921,7 +918,7 @@ package body Gtk.Text_Buffer is
           Start                : Gtk.Text_Iter.Gtk_Text_Iter;
           The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
           Include_Hidden_Chars : Glib.Gboolean)
-          return Interfaces.C.Strings.chars_ptr;
+          return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_text_buffer_get_slice");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Buffer), Start, The_End, Boolean'Pos (Include_Hidden_Chars)));
@@ -975,7 +972,7 @@ package body Gtk.Text_Buffer is
           Start                : Gtk.Text_Iter.Gtk_Text_Iter;
           The_End              : Gtk.Text_Iter.Gtk_Text_Iter;
           Include_Hidden_Chars : Glib.Gboolean)
-          return Interfaces.C.Strings.chars_ptr;
+          return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gtk_text_buffer_get_text");
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Buffer), Start, The_End, Boolean'Pos (Include_Hidden_Chars)));
@@ -993,11 +990,11 @@ package body Gtk.Text_Buffer is
       procedure Internal
          (Buffer : System.Address;
           Iter   : in out Gtk.Text_Iter.Gtk_Text_Iter;
-          Text   : Interfaces.C.Strings.chars_ptr;
+          Text   : Gtkada.Types.Chars_Ptr;
           Len    : Glib.Gint);
       pragma Import (C, Internal, "gtk_text_buffer_insert");
       Tmp_Iter : aliased Gtk.Text_Iter.Gtk_Text_Iter := Iter;
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Buffer), Tmp_Iter, Tmp_Text, -1);
       Free (Tmp_Text);
@@ -1014,10 +1011,10 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
          (Buffer : System.Address;
-          Text   : Interfaces.C.Strings.chars_ptr;
+          Text   : Gtkada.Types.Chars_Ptr;
           Len    : Glib.Gint);
       pragma Import (C, Internal, "gtk_text_buffer_insert_at_cursor");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Buffer), Tmp_Text, -1);
       Free (Tmp_Text);
@@ -1054,13 +1051,13 @@ package body Gtk.Text_Buffer is
       function Internal
          (Buffer           : System.Address;
           Acc_Iter         : access Gtk.Text_Iter.Gtk_Text_Iter;
-          Text             : Interfaces.C.Strings.chars_ptr;
+          Text             : Gtkada.Types.Chars_Ptr;
           Len              : Glib.Gint;
           Default_Editable : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_insert_interactive");
       Acc_Iter     : aliased Gtk.Text_Iter.Gtk_Text_Iter;
       Tmp_Acc_Iter : aliased Gtk.Text_Iter.Gtk_Text_Iter;
-      Tmp_Text     : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text     : Gtkada.Types.Chars_Ptr := New_String (Text);
       Tmp_Return   : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Buffer), Tmp_Acc_Iter'Access, Tmp_Text, -1, Boolean'Pos (Default_Editable));
@@ -1081,11 +1078,11 @@ package body Gtk.Text_Buffer is
    is
       function Internal
          (Buffer           : System.Address;
-          Text             : Interfaces.C.Strings.chars_ptr;
+          Text             : Gtkada.Types.Chars_Ptr;
           Len              : Glib.Gint;
           Default_Editable : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_insert_interactive_at_cursor");
-      Tmp_Text   : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text   : Gtkada.Types.Chars_Ptr := New_String (Text);
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Buffer), Tmp_Text, -1, Boolean'Pos (Default_Editable));
@@ -1182,10 +1179,10 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
          (Buffer : System.Address;
-          Name   : Interfaces.C.Strings.chars_ptr;
+          Name   : Gtkada.Types.Chars_Ptr;
           Where  : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_move_mark_by_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Buffer), Tmp_Name, Where);
       Free (Tmp_Name);
@@ -1236,14 +1233,13 @@ package body Gtk.Text_Buffer is
    is
       function Internal
          (Buffer      : System.Address;
-          Tagset_Name : Interfaces.C.Strings.chars_ptr)
-          return Gdk.Types.Gdk_Atom;
+          Tagset_Name : Gtkada.Types.Chars_Ptr) return Gdk.Types.Gdk_Atom;
       pragma Import (C, Internal, "gtk_text_buffer_register_deserialize_tagset");
-      Tmp_Tagset_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Tagset_Name : Gtkada.Types.Chars_Ptr;
       Tmp_Return      : Gdk.Types.Gdk_Atom;
    begin
       if Tagset_Name = "" then
-         Tmp_Tagset_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Tagset_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Tagset_Name := New_String (Tagset_Name);
       end if;
@@ -1262,14 +1258,13 @@ package body Gtk.Text_Buffer is
    is
       function Internal
          (Buffer      : System.Address;
-          Tagset_Name : Interfaces.C.Strings.chars_ptr)
-          return Gdk.Types.Gdk_Atom;
+          Tagset_Name : Gtkada.Types.Chars_Ptr) return Gdk.Types.Gdk_Atom;
       pragma Import (C, Internal, "gtk_text_buffer_register_serialize_tagset");
-      Tmp_Tagset_Name : Interfaces.C.Strings.chars_ptr;
+      Tmp_Tagset_Name : Gtkada.Types.Chars_Ptr;
       Tmp_Return      : Gdk.Types.Gdk_Atom;
    begin
       if Tagset_Name = "" then
-         Tmp_Tagset_Name := Interfaces.C.Strings.Null_Ptr;
+         Tmp_Tagset_Name := Gtkada.Types.Null_Ptr;
       else
          Tmp_Tagset_Name := New_String (Tagset_Name);
       end if;
@@ -1344,11 +1339,11 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
          (Buffer  : System.Address;
-          Name    : Interfaces.C.Strings.chars_ptr;
+          Name    : Gtkada.Types.Chars_Ptr;
           Start   : Gtk.Text_Iter.Gtk_Text_Iter;
           The_End : Gtk.Text_Iter.Gtk_Text_Iter);
       pragma Import (C, Internal, "gtk_text_buffer_remove_tag_by_name");
-      Tmp_Name : Interfaces.C.Strings.chars_ptr := New_String (Name);
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
    begin
       Internal (Get_Object (Buffer), Tmp_Name, Start, The_End);
       Free (Tmp_Name);
@@ -1396,10 +1391,10 @@ package body Gtk.Text_Buffer is
    is
       procedure Internal
          (Buffer : System.Address;
-          Text   : Interfaces.C.Strings.chars_ptr;
+          Text   : Gtkada.Types.Chars_Ptr;
           Len    : Glib.Gint);
       pragma Import (C, Internal, "gtk_text_buffer_set_text");
-      Tmp_Text : Interfaces.C.Strings.chars_ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Buffer), Tmp_Text, -1);
       Free (Tmp_Text);

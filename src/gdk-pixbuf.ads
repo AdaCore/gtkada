@@ -40,13 +40,13 @@
 --  <group>Gdk, the low-level API</group>
 --  <testgtk>create_pixbuf.adb</testgtk>
 
-with Interfaces.C.Strings;
 with System;
 with Cairo;
 with Glib; use Glib;
 with Glib.Error; use Glib.Error;
 with Glib.Object;
 with Gdk.Display;
+with Gtkada.Types;
 
 package Gdk.Pixbuf is
 
@@ -253,7 +253,7 @@ package Gdk.Pixbuf is
    --  Otherwise, data is never freed.
 
    function Gdk_New_From_Xpm_Data
-     (Data : Interfaces.C.Strings.chars_ptr_array) return Gdk_Pixbuf;
+     (Data : Gtkada.Types.Chars_Ptr_Array) return Gdk_Pixbuf;
    --  Create an image from a XPM data.
 
    procedure Fill (Pixbuf : Gdk_Pixbuf; Pixel : Guint32);

@@ -41,13 +41,13 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;                 use Glib;
-with Glib.Object;          use Glib.Object;
-with Glib.Properties;      use Glib.Properties;
-with Glib.Types;           use Glib.Types;
-with Glib.Variant;         use Glib.Variant;
+with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
+with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+with Glib.Variant;    use Glib.Variant;
 pragma Warnings(Off);  --  might be unused
-with Interfaces.C.Strings; use Interfaces.C.Strings;
+with Gtkada.Types;    use Gtkada.Types;
 pragma Warnings(On);
 
 package Gtk.Actionable is
@@ -156,8 +156,7 @@ package Gtk.Actionable is
    -- Virtual Methods --
    ---------------------
 
-   type Virtual_Get_Action_Name is access function
-     (Self : Gtk_Actionable) return Interfaces.C.Strings.chars_ptr;
+   type Virtual_Get_Action_Name is access function (Self : Gtk_Actionable) return Gtkada.Types.Chars_Ptr;
    pragma Convention (C, Virtual_Get_Action_Name);
    --  Gets the action name for Actionable.
    --  See Gtk.Actionable.Set_Action_Name for more information.
@@ -171,7 +170,7 @@ package Gtk.Actionable is
 
    type Virtual_Set_Action_Name is access procedure
      (Self        : Gtk_Actionable;
-      Action_Name : Interfaces.C.Strings.chars_ptr);
+      Action_Name : Gtkada.Types.Chars_Ptr);
    pragma Convention (C, Virtual_Set_Action_Name);
    --  Specifies the name of the action with which this widget should be
    --  associated. If Action_Name is null then the widget will be unassociated

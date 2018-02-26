@@ -22,8 +22,8 @@
 ------------------------------------------------------------------------------
 
 with System;               use System;
+with Gtkada.Types;         use Gtkada.Types;
 with Interfaces.C;         use Interfaces.C;
-with Interfaces.C.Strings; use Interfaces.C.Strings;
 
 package body Fontconfig is
 
@@ -34,10 +34,10 @@ package body Fontconfig is
    function App_Font_Add_File (Filename : String) return Boolean is
       function Add_Font_File
         (FC_Config : System.Address;
-         File : Interfaces.C.Strings.chars_ptr) return Interfaces.C.int;
+         File : Gtkada.Types.Chars_Ptr) return Interfaces.C.int;
       pragma Import (C, Add_Font_File, "FcConfigAppFontAddFile");
 
-      Path   : chars_ptr := New_String (Filename);
+      Path   : Gtkada.Types.Chars_Ptr := New_String (Filename);
       Result : Boolean;
    begin
       Result := Add_Font_File (System.Null_Address, Path) /= 0;
