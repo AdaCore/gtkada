@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2017, AdaCore                     --
+--                     Copyright (C) 1998-2018, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -587,8 +587,8 @@ package Gtkada.Canvas_View is
      return Boolean is (False);
    function Inner_Most_Item
      (Self     : not null access Canvas_Item_Record;
-      At_Point : Model_Point;
-      Context  : Draw_Context)
+      Unused_At_Point : Model_Point;
+      Unused_Context  : Draw_Context)
       return Abstract_Item is (Self);
    overriding function Position
      (Self : not null access Canvas_Item_Record) return Gtkada.Style.Point;
@@ -789,7 +789,7 @@ package Gtkada.Canvas_View is
 
    function Is_Selectable
      (Self : not null access Canvas_Model_Record;
-      Item : not null access Abstract_Item_Record'Class)
+      Unused_Item : not null access Abstract_Item_Record'Class)
       return Boolean is (True);
    --  Whether the given item is selectable. By default, all items are
    --  selectable.
@@ -1981,15 +1981,15 @@ package Gtkada.Canvas_View is
      return Boolean is (False);
    overriding function Inner_Most_Item
      (Self     : not null access Canvas_Link_Record;
-      At_Point : Model_Point;
-      Context  : Draw_Context)
+      Unused_At_Point : Model_Point;
+      Unused_Context  : Draw_Context)
       return Abstract_Item is (Self);
    overriding function Parent
      (Self : not null access Canvas_Link_Record)
       return Abstract_Item is (null);
    overriding function Edit_Widget
      (Self  : not null access Canvas_Link_Record;
-      View  : not null access Canvas_View_Record'Class)
+      Unused_View  : not null access Canvas_View_Record'Class)
       return Gtk.Widget.Gtk_Widget is (null);
    overriding procedure Set_Visibility_Threshold
      (Self      : not null access Canvas_Link_Record;
