@@ -141,9 +141,6 @@ package body Gtkada.MDI is
    --  Windows the later seems to be set to 0, and thus we can't change a
    --  notebook page by clicking on its tab without splitting the notebook
 
-   Entries_In_Menu : constant Natural := 20;
-   --  Number of items to display in the Window menu
-
    Icon_Size_In_Title : constant := 8;
    Icon_Size_In_Tabs  : constant := 8;
 
@@ -462,10 +459,8 @@ package body Gtkada.MDI is
 
    procedure Get_Sorted_List_Of_Visible_Children
       (MDI  : not null access MDI_Window_Record'Class;
-       Vec  : out Child_Vectors.Vector;
-       Num  : Natural);
-   --  Return the list of the Num first visible children in Vec.
-   --  If Num is 0, return all the children.
+       Vec  : out Child_Vectors.Vector);
+   --  Return the list of visible children in Vec.
 
    procedure Update_Menu_Model_List_Of_Children
       (MDI : not null access MDI_Window_Record'Class);
@@ -5415,26 +5410,19 @@ package body Gtkada.MDI is
 
    procedure Get_Sorted_List_Of_Visible_Children
       (MDI  : not null access MDI_Window_Record'Class;
-       Vec  : out Child_Vectors.Vector;
-       Num  : Natural)
+       Vec  : out Child_Vectors.Vector)
    is
       use Child_Vectors;
       Tmp   : Widget_List.Glist;
       Child : MDI_Child;
-      Count : Integer;
    begin
       Vec.Clear;
-      Count := 0;
       Tmp := First (MDI.Items);
       while Tmp /= Null_List loop
          Child := MDI_Child (Get_Data (Tmp));
          if Child.State /= Invisible then
             Vec.Append (Child);
          end if;
-
-         Count := Count + 1;
-         exit when Count = Num;
-
          Tmp := Next (Tmp);
       end loop;
 
@@ -5493,7 +5481,7 @@ package body Gtkada.MDI is
 
       --  Add the list of children
 
-      Get_Sorted_List_Of_Visible_Children (M.MDI, Vec, Entries_In_Menu);
+      Get_Sorted_List_Of_Visible_Children (M.MDI, Vec);
 
       Curs := First (Vec);
       while Has_Element (Curs) loop
@@ -8084,7 +8072,7 @@ package body Gtkada.MDI is
       if MDI.Menu_Items_Section /= null then
          MDI.Menu_Items_Section.Remove_All;
 
-         Get_Sorted_List_Of_Visible_Children (MDI, Vec, Entries_In_Menu);
+         Get_Sorted_List_Of_Visible_Children (MDI, Vec);
 
          Curs := First (Vec);
          while Has_Element (Curs) loop
