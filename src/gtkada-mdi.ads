@@ -736,6 +736,15 @@ package Gtkada.MDI is
    --  If the children are maximized, this selected the next page from the
    --  notebook.
 
+   procedure Give_Focus_To_Previous_Child
+     (Child          : access MDI_Child_Record'Class;
+      From_Same_Area : Boolean := True);
+   --  Give focus to the last child.
+   --  If From_Same_Area is True, it will return the previously focused child
+   --  in the same area / notebook as Child, and which is not Child itself.
+   --  Otherwise, it will return the previously focused child, no matter its
+   --  area/notebook.
+
    type Split_Mode is
      (Before, Before_Reuse,
       After,  After_Reuse,

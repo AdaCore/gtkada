@@ -529,11 +529,6 @@ package body Gtkada.MDI is
    --  Give the focus to a specific MDI child
    --  You should never call Grab_Focus directly
 
-   procedure Give_Focus_To_Previous_Child
-     (Child : access MDI_Child_Record'Class);
-   --  Give focus to the last child in the same area/notebook as Child, and
-   --  which is not Child itself.
-
    function Matching_Children
      (MDI : access MDI_Window_Record'Class; Str : String)
       return Children_Array;
@@ -2856,7 +2851,8 @@ package body Gtkada.MDI is
    ----------------------------------
 
    procedure Give_Focus_To_Previous_Child
-     (Child : access MDI_Child_Record'Class)
+     (Child          : access MDI_Child_Record'Class;
+      From_Same_Area : Boolean := True)
    is
       Item : Widget_List.Glist;
       It   : MDI_Child;
@@ -2874,8 +2870,9 @@ package body Gtkada.MDI is
                Last := It;
             end if;
 
-            if It.State = Child.State
-              and then Get_Parent (It) = Get_Parent (Child)
+            if not From_Same_Area
+              or else (It.State = Child.State
+                       and then  Get_Parent (It) = Get_Parent (Child))
             then
                Print_Debug ("Give_Focus_To_Previous_Child "
                             & Get_Title (It));
