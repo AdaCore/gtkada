@@ -36,7 +36,6 @@ library project GtkAda is
    for Source_Dirs use ("generated", ".");
 
    for Library_Kind use Shared.Library_Kind;
-   for Library_Dir use "lib/gtkada/" & Project'Library_Kind;
    for Library_Name use "gtkada";
    for Library_Version use
       "lib" & Project'Library_Name & Shared.So_Ext & "." & Version;
@@ -45,16 +44,19 @@ library project GtkAda is
       when "static-pic" | "relocatable" =>
          --  Objects used for static-pic and relocatable are exactly the same
          for Object_Dir use "obj/gtkada/relocatable";
+         for Library_Dir use "lib/gtkada/relocatable";
       when "static" =>
          case Shared.So_Ext is
             when ".dll" | ".dylib" =>
                --  On Windows and Darwin, objects are always position
                --  independent.
                for Object_Dir use "obj/gtkada/relocatable";
+               for Library_Dir use "lib/gtkada/relocatable";
             when others =>
                --  This is not the case in general for Unix systems such
                --  as Linux.
                for Object_Dir use "obj/gtkada/static";
+               for Library_Dir use "lib/gtkada/static";
          end case;
    end case;
 
