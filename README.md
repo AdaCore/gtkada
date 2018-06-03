@@ -1,5 +1,6 @@
 GtkAda - An Ada graphical toolkit based on Gtk+
 ===============================================
+[![Build Status](https://travis-ci.org/AdaCore/gtkada.svg?branch=master)](https://travis-ci.org/AdaCore/gtkada)
 
 Installation
 ------------
