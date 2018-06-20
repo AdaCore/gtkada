@@ -586,9 +586,9 @@ package Gtkada.Canvas_View is
      (Self : not null access Canvas_Item_Record)
      return Boolean is (False);
    function Inner_Most_Item
-     (Self     : not null access Canvas_Item_Record;
-      At_Point : Model_Point;
-      Context  : Draw_Context)
+     (Self           : not null access Canvas_Item_Record;
+      Dummy_At_Point : Model_Point;
+      Dummy_Context  : Draw_Context)
       return Abstract_Item is (Self);
    overriding function Position
      (Self : not null access Canvas_Item_Record) return Gtkada.Style.Point;
@@ -788,8 +788,8 @@ package Gtkada.Canvas_View is
    --  emitted.
 
    function Is_Selectable
-     (Self : not null access Canvas_Model_Record;
-      Item : not null access Abstract_Item_Record'Class)
+     (Self       : not null access Canvas_Model_Record;
+      Dummy_Item : not null access Abstract_Item_Record'Class)
       return Boolean is (True);
    --  Whether the given item is selectable. By default, all items are
    --  selectable.
@@ -1980,16 +1980,16 @@ package Gtkada.Canvas_View is
      (Self : not null access Canvas_Link_Record)
      return Boolean is (False);
    overriding function Inner_Most_Item
-     (Self     : not null access Canvas_Link_Record;
-      At_Point : Model_Point;
-      Context  : Draw_Context)
+     (Self           : not null access Canvas_Link_Record;
+      Dummy_At_Point : Model_Point;
+      Dummy_Context  : Draw_Context)
       return Abstract_Item is (Self);
    overriding function Parent
      (Self : not null access Canvas_Link_Record)
       return Abstract_Item is (null);
    overriding function Edit_Widget
-     (Self  : not null access Canvas_Link_Record;
-      View  : not null access Canvas_View_Record'Class)
+     (Self       : not null access Canvas_Link_Record;
+      Dummy_View : not null access Canvas_View_Record'Class)
       return Gtk.Widget.Gtk_Widget is (null);
    overriding procedure Set_Visibility_Threshold
      (Self      : not null access Canvas_Link_Record;
