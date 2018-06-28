@@ -689,6 +689,18 @@ package Gtkada.Canvas_View is
    --  which one of the ends is Item, and then the links to these links, and so
    --  on).
 
+   procedure From
+     (Self : not null access Canvas_Model_Record'Class;
+      Item : not null access Abstract_Item_Record'Class;
+      Set  : in out Item_Sets.Set);
+   --  Append all the items with a link coming from Item
+
+   procedure To
+     (Self : not null access Canvas_Model_Record'Class;
+      Item : not null access Abstract_Item_Record'Class;
+      Set  : in out Item_Sets.Set);
+   --  Append all the items with a link going to Item
+
    function Bounding_Box
      (Self   : not null access Canvas_Model_Record;
       Margin : Model_Coordinate := 0.0)

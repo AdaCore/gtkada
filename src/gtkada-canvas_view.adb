@@ -2609,6 +2609,70 @@ package body Gtkada.Canvas_View is
       Set.Include (Abstract_Item (Item));
    end Include_Related_Items;
 
+   ----------
+   -- From --
+   ----------
+
+   procedure From
+     (Self : not null access Canvas_Model_Record'Class;
+      Item : not null access Abstract_Item_Record'Class;
+      Set  : in out Item_Sets.Set)
+   is
+      procedure Internal (C : not null access Abstract_Item_Record'Class);
+      procedure Internal (C : not null access Abstract_Item_Record'Class) is
+      begin
+         if C.all in Canvas_Link_Record'Class
+           and then Canvas_Link (C).From = Abstract_Item (Item)
+         then
+            declare
+               Cur : constant Abstract_Item := Canvas_Link (C).Get_To;
+            begin
+               if not Set.Contains (Abstract_Item (C)) then
+                  Set.Include (Abstract_Item (C));
+               end if;
+               if not Set.Contains (Cur) then
+                  Set.Include (Cur);
+                  From (Self, Cur, Set);
+               end if;
+            end;
+         end if;
+      end Internal;
+   begin
+      Self.For_Each_Item (Internal'Access, Filter => Kind_Link);
+   end From;
+
+   --------
+   -- To --
+   --------
+
+   procedure To
+     (Self : not null access Canvas_Model_Record'Class;
+      Item : not null access Abstract_Item_Record'Class;
+      Set  : in out Item_Sets.Set)
+   is
+      procedure Internal (C : not null access Abstract_Item_Record'Class);
+      procedure Internal (C : not null access Abstract_Item_Record'Class) is
+      begin
+         if C.all in Canvas_Link_Record'Class
+           and then Canvas_Link (C).To = Abstract_Item (Item)
+         then
+            declare
+               Cur : constant Abstract_Item := Canvas_Link (C).Get_From;
+            begin
+               if not Set.Contains (Abstract_Item (C)) then
+                  Set.Include (Abstract_Item (C));
+               end if;
+               if not Set.Contains (Cur) then
+                  Set.Include (Cur);
+                  To (Self, Cur, Set);
+               end if;
+            end;
+         end if;
+      end Internal;
+   begin
+      Self.For_Each_Item (Internal'Access, Filter => Kind_Link);
+   end To;
+
    -----------
    -- Clear --
    -----------
