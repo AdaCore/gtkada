@@ -39,7 +39,9 @@ project Shared is
    type Library_Kinds is ("relocatable", "static", "static-pic");
    Library_Kind : Library_Kinds := external ("LIBRARY_TYPE", "@DEFAULT_LIBRARY_TYPE@");
 
-   So_Ext      := "@SO_EXT@";
+   type So_Ext_Type is (".so", ".sl", ".dll", ".dylib");
+   So_Ext      : So_Ext_Type := "@SO_EXT@";
+
    Version     := "@PACKAGE_VERSION@";
    Gtk_Include := Gtk.Gtk_Default_Include & (@GTK_CFLAGS_GPR@);
    Gtk_Libs    := Gtk.Gtk_Default_Libs    & (@GTK_LIBS_GPR@);
