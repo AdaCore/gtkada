@@ -49,10 +49,6 @@ package body Maximize_Action is
       Perspective : constant String         := Current_Perspective (MDI);
       Dummy       : Boolean;
    begin
-      if Perspective = "Maximized Editors" then
-         return;
-      end if;
-
       if not MDI.Saved_Sizes.Contains (Perspective)
         or else MDI.Saved_Sizes (Perspective) = null
       then
