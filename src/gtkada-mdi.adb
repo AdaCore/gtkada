@@ -7683,13 +7683,16 @@ package body Gtkada.MDI is
          end loop;
 
          if Has_Negative_Values then
+            --  In case of negative values, retrieve the old perspectives
+            --  But keep the current perspective as the active one
+
             declare
                N    : Node_Ptr := Old_Perspectives.Child;
                Name : constant String := Get_Attribute
                  (MDI.Current_Perspective, "name");
             begin
                while N /= null loop
-                  if Get_Attribute (N, "name") /= Name then
+                  if Get_Attribute (N, "name") = Name then
                      MDI.Current_Perspective := N;
                      exit;
                   end if;
