@@ -693,7 +693,7 @@ package body Gtkada.Canvas_View is
            (Event_Type => Scroll,
             Button     => Button,
             Key        => 0,
-            State      => Event.State,
+            State      => Event.State and Get_Default_Mod_Mask,
             Root_Point => (Event.X_Root, Event.Y_Root),
             M_Point    => Self.Window_To_Model ((X => Event.X, Y => Event.Y)),
             T_Point    => No_Item_Point,
@@ -746,7 +746,7 @@ package body Gtkada.Canvas_View is
         (Event_Type => Button_Press,
          Button     => Event.Button,
          Key        => 0,
-         State      => Event.State,
+         State      => Event.State and Get_Default_Mod_Mask,
          Root_Point => (Event.X_Root, Event.Y_Root),
          M_Point    => Self.Window_To_Model ((X => Event.X, Y => Event.Y)),
          T_Point    => No_Item_Point,
@@ -811,7 +811,7 @@ package body Gtkada.Canvas_View is
 
       if Self.Model /= null then
          Details.Event_Type        := Key_Press;
-         Details.State             := Event.State;
+         Details.State             := Event.State and Get_Default_Mod_Mask;
          Details.Allow_Snapping    := True;
          Details.Allowed_Drag_Area := No_Drag_Allowed;
          Details.Key               := Event.Keyval;
@@ -1001,7 +1001,7 @@ package body Gtkada.Canvas_View is
          if Self.In_Drag then
             Details            := Self.Last_Button_Press;
             Details.Event_Type := In_Drag;
-            Details.State      := Event.State;
+            Details.State      := Event.State and Get_Default_Mod_Mask;
             Details.Root_Point := (Event.X_Root, Event.Y_Root);
             Details.M_Point    :=
               Self.Window_To_Model ((X => Event.X, Y => Event.Y));
