@@ -2629,10 +2629,11 @@ package body Gtkada.Canvas_View is
             begin
                if not Set.Contains (Abstract_Item (C)) then
                   Set.Include (Abstract_Item (C));
-               end if;
-               if not Set.Contains (Cur) then
-                  Set.Include (Cur);
-                  From (Self, Cur, Set);
+                  if not Set.Contains (Cur) then
+                     Set.Include (Cur);
+                     To (Self, Cur, Set);
+                     From (Self, Cur, Set);
+                  end if;
                end if;
             end;
          end if;
@@ -2661,10 +2662,11 @@ package body Gtkada.Canvas_View is
             begin
                if not Set.Contains (Abstract_Item (C)) then
                   Set.Include (Abstract_Item (C));
-               end if;
-               if not Set.Contains (Cur) then
-                  Set.Include (Cur);
-                  To (Self, Cur, Set);
+                  if not Set.Contains (Cur) then
+                     Set.Include (Cur);
+                     To (Self, Cur, Set);
+                     From (Self, Cur, Set);
+                  end if;
                end if;
             end;
          end if;
