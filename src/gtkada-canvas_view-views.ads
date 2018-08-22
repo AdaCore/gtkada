@@ -166,6 +166,17 @@ package Gtkada.Canvas_View.Views is
    --  gtk+, and for horizontal scrolling when used with shift).
    --  If a duration other than 0.0 is provided, the scaling is animated.
 
+   function On_Item_Event_Zoom
+     (View     : not null access Glib.Object.GObject_Record'Class;
+      Event    : Event_Details_Access;
+      Modifier : Gdk.Types.Gdk_Modifier_Type;
+      Factor   : Gdouble;
+      Duration : Standard.Duration;
+      Easing   : Easing_Function)
+      return Boolean;
+   --  This function does zooming. It is called by On_Item_Event_Zoom_Generic
+   --  and usually it is not necesarry to call it directly.
+
    function On_Item_Event_Select
      (View   : not null access Glib.Object.GObject_Record'Class;
       Event : Event_Details_Access)

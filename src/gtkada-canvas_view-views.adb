@@ -520,6 +520,23 @@ package body Gtkada.Canvas_View.Views is
    function On_Item_Event_Zoom_Generic
      (View   : not null access Glib.Object.GObject_Record'Class;
       Event : Event_Details_Access)
+      return Boolean is
+   begin
+      return On_Item_Event_Zoom
+        (View, Event, Modifier, Factor,  Duration, Easing);
+   end On_Item_Event_Zoom_Generic;
+
+   ------------------------
+   -- On_Item_Event_Zoom --
+   ------------------------
+
+   function On_Item_Event_Zoom
+     (View     : not null access Glib.Object.GObject_Record'Class;
+      Event    : Event_Details_Access;
+      Modifier : Gdk.Types.Gdk_Modifier_Type;
+      Factor   : Gdouble;
+      Duration : Standard.Duration;
+      Easing   : Easing_Function)
       return Boolean
    is
       Self : constant Canvas_View := Canvas_View (View);
@@ -548,7 +565,7 @@ package body Gtkada.Canvas_View.Views is
          end if;
       end if;
       return False;
-   end On_Item_Event_Zoom_Generic;
+   end On_Item_Event_Zoom;
 
    --------------------------
    -- On_Item_Event_Select --
