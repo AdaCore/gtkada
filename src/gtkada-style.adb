@@ -1757,6 +1757,21 @@ package body Gtkada.Style is
       Restore (Cr);
    end Finish_Path;
 
+   ----------
+   -- Copy --
+   ----------
+
+   function Copy (Source : Font_Style) return Font_Style is
+   begin
+      return Font_Style'
+        (Name          => Copy (Source.Name),
+         Underline     => Source.Underline,
+         Strikethrough => Source.Strikethrough,
+         Color         => Source.Color,
+         Line_Spacing  => Source.Line_Spacing,
+         Halign        => Source.Halign);
+   end Copy;
+
    --------------------
    -- Get_Arrow_From --
    --------------------

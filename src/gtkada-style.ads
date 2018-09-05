@@ -302,6 +302,9 @@ package Gtkada.Style is
    --  Some of the attributes like Halign are only taken into account when
    --  using Gtkada.Canvas_View.Text_Item.
 
+   function Copy (Source : Font_Style) return Font_Style;
+   --  Return a copy of the given font style.
+
    type Shadow_Style is record
       Color    : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.Null_RGBA;
       X_Offset : Glib.Gdouble := 2.0;
