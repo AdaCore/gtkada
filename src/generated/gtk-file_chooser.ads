@@ -132,6 +132,7 @@
 --  <group></group>
 
 pragma Warnings (Off, "*is already use-visible*");
+with GNAT.Strings;            use GNAT.Strings;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
@@ -202,6 +203,26 @@ package Gtk.File_Chooser is
    -- Methods --
    -------------
 
+   procedure Add_Choice
+      (Chooser       : Gtk_File_Chooser;
+       Id            : UTF8_String;
+       Label         : UTF8_String;
+       Options       : GNAT.Strings.String_List;
+       Option_Labels : GNAT.Strings.String_List);
+   --  Adds a 'choice' to the file chooser. This is typically implemented as a
+   --  combobox or, for boolean choices, as a checkbutton. You can select a
+   --  value using Gtk.File_Chooser.Set_Choice before the dialog is shown, and
+   --  you can obtain the user-selected value in the ::response signal handler
+   --  using Gtk.File_Chooser.Get_Choice.
+   --  Compare Gtk.File_Chooser.Set_Extra_Widget.
+   --  Since: gtk+ 3.22
+   --  "id": id for the added choice
+   --  "label": user-visible label for the added choice
+   --  "options": ids for the options of the choice, or null for a boolean
+   --  choice
+   --  "option_labels": user-visible labels for the options, must be the same
+   --  length as Options
+
    procedure Add_Filter
       (Chooser : Gtk_File_Chooser;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
@@ -251,6 +272,24 @@ package Gtk.File_Chooser is
    --  Gtk.File_Chooser.Action_Open.
    --  Since: gtk+ 2.4
    --  "action": the action that the file selector is performing
+
+   function Get_Choice
+      (Chooser : Gtk_File_Chooser;
+       Id      : UTF8_String) return UTF8_String;
+   --  Gets the currently selected option in the 'choice' with the given ID.
+   --  Since: gtk+ 3.22
+   --  "id": the ID of the choice to get
+
+   procedure Set_Choice
+      (Chooser : Gtk_File_Chooser;
+       Id      : UTF8_String;
+       Option  : UTF8_String);
+   --  Selects an option in a 'choice' that has been added with
+   --  Gtk.File_Chooser.Add_Choice. For a boolean choice, the possible options
+   --  are "true" and "false".
+   --  Since: gtk+ 3.22
+   --  "id": the ID of the choice to set
+   --  "option": the ID of the option to select
 
    function Get_Create_Folders (Chooser : Gtk_File_Chooser) return Boolean;
    --  Gets whether file choser will offer to create new folders. See
@@ -365,7 +404,7 @@ package Gtk.File_Chooser is
 
    function Get_Extra_Widget
       (Chooser : Gtk_File_Chooser) return Gtk.Widget.Gtk_Widget;
-   --  Gets the current preview widget; see Gtk.File_Chooser.Set_Extra_Widget.
+   --  Gets the current extra widget; see Gtk.File_Chooser.Set_Extra_Widget.
    --  Since: gtk+ 2.4
 
    procedure Set_Extra_Widget
@@ -613,6 +652,12 @@ package Gtk.File_Chooser is
    --  Queries the list of shortcut folders in the file chooser, as set by
    --  Gtk.File_Chooser.Add_Shortcut_Folder.
    --  Since: gtk+ 2.4
+
+   procedure Remove_Choice (Chooser : Gtk_File_Chooser; Id : UTF8_String);
+   --  Removes a 'choice' that has been added with
+   --  Gtk.File_Chooser.Add_Choice.
+   --  Since: gtk+ 3.22
+   --  "id": the ID of the choice to remove
 
    procedure Remove_Filter
       (Chooser : Gtk_File_Chooser;

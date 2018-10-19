@@ -34,6 +34,11 @@
 --  top to bottom, starting a new column to the right when necessary. Reducing
 --  the height will require more columns, so a larger width will be requested.
 --
+--  The size request of a GtkFlowBox alone may not be what you expect; if you
+--  need to be able to shrink it along both axes and dynamically reflow its
+--  children, you may have to wrap it in a
+--  Gtk.Scrolled_Window.Gtk_Scrolled_Window to enable that.
+--
 --  The children of a GtkFlowBox can be dynamically sorted and filtered.
 --
 --  Although a GtkFlowBox must have only Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
@@ -44,6 +49,15 @@
 --  Also see Gtk.List_Box.Gtk_List_Box.
 --
 --  GtkFlowBox was added in GTK+ 3.12.
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> flowbox ├── flowboxchild │ ╰── <child> ├──
+--  flowboxchild │ ╰── <child> ┊ ╰── [rubberband] ]|
+--
+--  GtkFlowBox uses a single CSS node with name flowbox. GtkFlowBoxChild uses
+--  a single CSS node with name flowboxchild. For rubberband selection, a
+--  subnode with name rubberband is used.
 --
 --  </description>
 
@@ -137,6 +151,15 @@ package Gtk.Flow_Box is
    --  Gets the nth child in the Box.
    --  Since: gtk+ 3.12
    --  "idx": the position of the child
+
+   function Get_Child_At_Pos
+      (Self : not null access Gtk_Flow_Box_Record;
+       X    : Glib.Gint;
+       Y    : Glib.Gint) return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child;
+   --  Gets the child in the (X, Y) position.
+   --  Since: gtk+ 3.22.6
+   --  "x": the x coordinate of the child
+   --  "y": the y coordinate of the child
 
    function Get_Column_Spacing
       (Self : not null access Gtk_Flow_Box_Record) return Guint;
@@ -315,6 +338,8 @@ package Gtk.Flow_Box is
    --  will continue to be called each time a child changes (via
    --  Gtk.Flow_Box_Child.Changed) or when Gtk.Flow_Box.Invalidate_Filter is
    --  called.
+   --  Note that using a filter function is incompatible with using a model
+   --  (see gtk_flow_box_bind_model).
    --  Since: gtk+ 3.12
    --  "filter_func": callback that lets you filter which children to show
 
@@ -343,6 +368,8 @@ package Gtk.Flow_Box is
       --  will continue to be called each time a child changes (via
       --  Gtk.Flow_Box_Child.Changed) or when Gtk.Flow_Box.Invalidate_Filter is
       --  called.
+      --  Note that using a filter function is incompatible with using a model
+      --  (see gtk_flow_box_bind_model).
       --  Since: gtk+ 3.12
       --  "filter_func": callback that lets you filter which children to show
       --  "user_data": user data passed to Filter_Func
@@ -372,6 +399,8 @@ package Gtk.Flow_Box is
    --  continue to be called each time a child changes (via
    --  Gtk.Flow_Box_Child.Changed) and when Gtk.Flow_Box.Invalidate_Sort is
    --  called.
+   --  Note that using a sort function is incompatible with using a model (see
+   --  gtk_flow_box_bind_model).
    --  Since: gtk+ 3.12
    --  "sort_func": the sort function
 
@@ -401,6 +430,8 @@ package Gtk.Flow_Box is
       --  continue to be called each time a child changes (via
       --  Gtk.Flow_Box_Child.Changed) and when Gtk.Flow_Box.Invalidate_Sort is
       --  called.
+      --  Note that using a sort function is incompatible with using a model
+      --  (see gtk_flow_box_bind_model).
       --  Since: gtk+ 3.12
       --  "sort_func": the sort function
       --  "user_data": user data passed to Sort_Func
@@ -524,30 +555,28 @@ package Gtk.Flow_Box is
    --  The ::child-activated signal is emitted when a child has been activated
    --  by the user.
 
-   type Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void is not null access procedure
+   type Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean is not null access function
      (Self  : access Gtk_Flow_Box_Record'Class;
       Step  : Gtk.Enums.Gtk_Movement_Step;
-      Count : Glib.Gint);
+      Count : Glib.Gint) return Boolean;
 
-   type Cb_GObject_Gtk_Movement_Step_Gint_Void is not null access procedure
+   type Cb_GObject_Gtk_Movement_Step_Gint_Boolean is not null access function
      (Self  : access Glib.Object.GObject_Record'Class;
       Step  : Gtk.Enums.Gtk_Movement_Step;
-      Count : Glib.Gint);
+      Count : Glib.Gint) return Boolean;
 
    Signal_Move_Cursor : constant Glib.Signal_Name := "move-cursor";
    procedure On_Move_Cursor
       (Self  : not null access Gtk_Flow_Box_Record;
-       Call  : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void;
+       Call  : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean;
        After : Boolean := False);
    procedure On_Move_Cursor
       (Self  : not null access Gtk_Flow_Box_Record;
-       Call  : Cb_GObject_Gtk_Movement_Step_Gint_Void;
+       Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::move-cursor signal is a [keybinding signal][GtkBindingSignal]
-   --  which gets emitted when the user initiates a cursor movement. If the
-   --  cursor is not visible in Text_View, this signal causes the viewport to
-   --  be moved instead.
+   --  which gets emitted when the user initiates a cursor movement.
    --
    --  Applications should not connect to it, but may emit it with
    --  g_signal_emit_by_name if they need to control the cursor
@@ -562,6 +591,8 @@ package Gtk.Flow_Box is
    --  Callback parameters:
    --    --  "step": the granularity fo the move, as a Gtk.Enums.Gtk_Movement_Step
    --    --  "count": the number of Step units to move
+   --    --  Returns True to stop other handlers from being invoked for the event.
+   -- False to propagate the event further.
 
    Signal_Select_All : constant Glib.Signal_Name := "select-all";
    procedure On_Select_All

@@ -59,7 +59,7 @@
 --  returns. See the code examples below.
 --
 --  If used, the expected form of an application identifier is very close to
---  that of of a [DBus bus
+--  that of of a [D-Bus bus
 --  name](http://dbus.freedesktop.org/doc/dbus-specification.htmlmessage-protocol-names-interface).
 --  Examples include: "com.example.MyApp",
 --  "org.example.internal-apps.Calculator". For details on valid application
@@ -169,6 +169,7 @@ package Glib.Application is
    G_Application_Handles_Command_Line : constant GApplication_Flags := 8;
    G_Application_Send_Environment : constant GApplication_Flags := 16;
    G_Application_Non_Unique : constant GApplication_Flags := 32;
+   G_Application_Can_Override_App_Id : constant GApplication_Flags := 64;
 
    type Gapplication_Command_Line_Record is new GObject_Record with null record;
    type Gapplication_Command_Line is access all Gapplication_Command_Line_Record'Class;
@@ -242,6 +243,19 @@ package Glib.Application is
    --  The application must be registered before calling this function.
    --  Since: gtk+ 2.28
 
+   procedure Bind_Busy_Property
+      (Self     : not null access Gapplication_Record;
+       Object   : System.Address;
+       Property : UTF8_String);
+   --  Marks Application as busy (see Glib.Application.Mark_Busy) while
+   --  Property on Object is True.
+   --  The binding holds a reference to Application while it is active, but
+   --  not to Object. Instead, the binding is destroyed when Object is
+   --  finalized.
+   --  Since: gtk+ 2.44
+   --  "object": a Glib.Object.GObject
+   --  "property": the name of a boolean property of Object
+
    function Get_Application_Id
       (Self : not null access Gapplication_Record) return UTF8_String;
    --  Gets the unique identifier for Application.
@@ -309,6 +323,12 @@ package Glib.Application is
    --  Since: gtk+ 2.28
    --  "inactivity_timeout": the timeout, in milliseconds
 
+   function Get_Is_Busy
+      (Self : not null access Gapplication_Record) return Boolean;
+   --  Gets the application's current busy state, as set through
+   --  Glib.Application.Mark_Busy or Glib.Application.Bind_Busy_Property.
+   --  Since: gtk+ 2.44
+
    function Get_Is_Registered
       (Self : not null access Gapplication_Record) return Boolean;
    --  Checks if Application is registered.
@@ -364,7 +384,13 @@ package Glib.Application is
    --  path to null.
    --  Changing the resource base path once the application is running is not
    --  recommended. The point at which the resource path is consulted for
-   --  forming paths for various purposes is unspecified.
+   --  forming paths for various purposes is unspecified. When writing a
+   --  sub-class of Glib.Application.Gapplication you should either set the
+   --  Glib.Application.Gapplication:resource-base-path property at
+   --  construction time, or call this function during the instance
+   --  initialization. Alternatively, you can call this function in the
+   --  GApplication_Class.startup virtual function, before chaining up to the
+   --  parent implementation.
    --  Since: gtk+ 2.42
    --  "resource_path": the resource path to use
 
@@ -483,11 +509,9 @@ package Glib.Application is
    --  immediately, except in the case that
    --  Glib.Application.Set_Inactivity_Timeout is in use.
    --  This function sets the prgname (g_set_prgname), if not already set, to
-   --  the basename of argv[0]. Since 2.38, if
-   --  Glib.Application.G_Application_Is_Service is specified, the prgname is
-   --  set to the application ID. The main impact of this is is that the
-   --  wmclass of windows created by Gtk+ will be set accordingly, which helps
-   --  the window manager determine which application is showing the window.
+   --  the basename of argv[0].
+   --  Much like g_main_loop_run, this function will acquire the main context
+   --  for the duration that the application is running.
    --  Since 2.40, applications that are not explicitly flagged as services or
    --  launchers (ie: neither Glib.Application.G_Application_Is_Service or
    --  Glib.Application.G_Application_Is_Launcher are given as flags) will
@@ -554,6 +578,16 @@ package Glib.Application is
    --  Application is destroyed then the default application will revert back
    --  to null.
    --  Since: gtk+ 2.32
+
+   procedure Unbind_Busy_Property
+      (Self     : not null access Gapplication_Record;
+       Object   : System.Address;
+       Property : UTF8_String);
+   --  Destroys a binding between Property and the busy state of Application
+   --  that was previously created with Glib.Application.Bind_Busy_Property.
+   --  Since: gtk+ 2.44
+   --  "object": a Glib.Object.GObject
+   --  "property": the name of a boolean property of Object
 
    procedure Unmark_Busy (Self : not null access Gapplication_Record);
    --  Decreases the busy count of Application.
@@ -792,7 +826,7 @@ package Glib.Application is
    --  - Application identifiers must contain only the ASCII characters
    --  "[A-Z][a-z][0-9]_-." and must not begin with a digit.
    --  - Application identifiers must contain at least one '.' (period)
-   --  character (and thus at least three elements).
+   --  character (and thus at least two elements).
    --  - Application identifiers must not begin or end with a '.' (period)
    --  character.
    --  - Application identifiers must not contain consecutive '.' (period)
@@ -818,6 +852,10 @@ package Glib.Application is
    --  Type: Application_Flags
 
    Inactivity_Timeout_Property : constant Glib.Properties.Property_Uint;
+
+   Is_Busy_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the application is currently marked as busy through
+   --  Glib.Application.Mark_Busy or Glib.Application.Bind_Busy_Property.
 
    Is_Registered_Property : constant Glib.Properties.Property_Boolean;
 
@@ -905,9 +943,9 @@ package Glib.Application is
    --
    --  In the event that the application is marked
    --  Glib.Application.G_Application_Handles_Command_Line the "normal
-   --  processing" will send the Option dictionary to the primary instance
-   --  where it can be read with g_application_command_line_get_options. The
-   --  signal handler can modify the dictionary before returning, and the
+   --  processing" will send the Options dictionary to the primary instance
+   --  where it can be read with g_application_command_line_get_options_dict.
+   --  The signal handler can modify the dictionary before returning, and the
    --  modified dictionary will be sent.
    --
    --  In the event that Glib.Application.G_Application_Handles_Command_Line
@@ -1065,6 +1103,8 @@ private
      Glib.Properties.Build ("is-remote");
    Is_Registered_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("is-registered");
+   Is_Busy_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is-busy");
    Inactivity_Timeout_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("inactivity-timeout");
    Flags_Property : constant Glib.Properties.Property_Boxed :=

@@ -24,15 +24,15 @@
 --  <description>
 --  The Gtk.Progress_Bar.Gtk_Progress_Bar is typically used to display the
 --  progress of a long running operation. It provides a visual clue that
---  processing is underway. The Gtk.Progress_Bar.Gtk_Progress_Bar can be used
---  in two different modes: percentage mode and activity mode.
+--  processing is underway. The GtkProgressBar can be used in two different
+--  modes: percentage mode and activity mode.
 --
 --  When an application can determine how much work needs to take place (e.g.
 --  read a fixed number of bytes from a file) and can monitor its progress, it
---  can use the Gtk.Progress_Bar.Gtk_Progress_Bar in percentage mode and the
---  user sees a growing bar indicating the percentage of the work that has been
---  completed. In this mode, the application is required to call
---  Gtk.Progress_Bar.Set_Fraction periodically to update the progress bar.
+--  can use the GtkProgressBar in percentage mode and the user sees a growing
+--  bar indicating the percentage of the work that has been completed. In this
+--  mode, the application is required to call Gtk.Progress_Bar.Set_Fraction
+--  periodically to update the progress bar.
 --
 --  When an application has no accurate way of knowing the amount of work to
 --  do, it can use the Gtk.Progress_Bar.Gtk_Progress_Bar in activity mode,
@@ -44,6 +44,20 @@
 --  the Gtk.Progress_Bar.Gtk_Progress_Bar. Functions are provided to control
 --  the orientation of the bar, optional text can be displayed along with the
 --  bar, and the step size used in activity mode can be set.
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> progressbar[.osd] ├── [text] ╰──
+--  trough[.empty][.full] ╰── progress[.pulse] ]|
+--
+--  GtkProgressBar has a main CSS node with name progressbar and subnodes with
+--  names text and trough, of which the latter has a subnode named progress.
+--  The text subnode is only present if text is shown. The progress subnode has
+--  the style class .pulse when in activity mode. It gets the style classes
+--  .left, .right, .top or .bottom added when the progress 'touches' the
+--  corresponding end of the GtkProgressBar. The .osd class on the progressbar
+--  node is for use in overlays like the one Epiphany has for page loading
+--  progress.
 --
 --  </description>
 --  <screenshot>gtk-progress_bar</screenshot>
@@ -147,21 +161,21 @@ package Gtk.Progress_Bar is
    procedure Set_Show_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Show_Text    : Boolean);
-   --  Sets whether the progress bar will show text superimposed over the bar.
-   --  The shown text is either the value of the
-   --  Gtk.Progress_Bar.Gtk_Progress_Bar:text property or, if that is null, the
+   --  Sets whether the progress bar will show text next to the bar. The shown
+   --  text is either the value of the Gtk.Progress_Bar.Gtk_Progress_Bar:text
+   --  property or, if that is null, the
    --  Gtk.Progress_Bar.Gtk_Progress_Bar:fraction value, as a percentage.
    --  To make a progress bar that is styled and sized suitably for containing
    --  text (even if the actual text is blank), set
    --  Gtk.Progress_Bar.Gtk_Progress_Bar:show-text to True and
    --  Gtk.Progress_Bar.Gtk_Progress_Bar:text to the empty string (not null).
    --  Since: gtk+ 3.0
-   --  "show_text": whether to show superimposed text
+   --  "show_text": whether to show text
 
    function Get_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return UTF8_String;
-   --  Retrieves the text displayed superimposed on the progress bar, if any,
+   --  Retrieves the text that is displayed with the progress bar, if any,
    --  otherwise null. The return value is a reference to the text, not a copy
    --  of it, so will become invalid if you change the text in the progress
    --  bar.
@@ -169,7 +183,7 @@ package Gtk.Progress_Bar is
    procedure Set_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
        Text         : UTF8_String := "");
-   --  Causes the given Text to appear superimposed on the progress bar.
+   --  Causes the given Text to appear next to the progress bar.
    --  If Text is null and Gtk.Progress_Bar.Gtk_Progress_Bar:show-text is
    --  True, the current value of Gtk.Progress_Bar.Gtk_Progress_Bar:fraction
    --  will be displayed as a percentage.
@@ -228,12 +242,12 @@ package Gtk.Progress_Bar is
    --  Type: Gdouble
 
    Show_Text_Property : constant Glib.Properties.Property_Boolean;
-   --  Sets whether the progress bar will show text superimposed over the bar.
-   --  The shown text is either the value of the
+   --  Sets whether the progress bar will show a text in addition to the bar
+   --  itself. The shown text is either the value of the
    --  Gtk.Progress_Bar.Gtk_Progress_Bar:text property or, if that is null, the
    --  Gtk.Progress_Bar.Gtk_Progress_Bar:fraction value, as a percentage.
    --
-   --  To make a progress bar that is styled and sized suitably for containing
+   --  To make a progress bar that is styled and sized suitably for showing
    --  text (even if the actual text is blank), set
    --  Gtk.Progress_Bar.Gtk_Progress_Bar:show-text to True and
    --  Gtk.Progress_Bar.Gtk_Progress_Bar:text to the empty string (not null).

@@ -71,6 +71,24 @@ package body Gtk.Settings is
      (Get_Type'Access, Gtk_Settings_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Settings);
 
+   --------------------
+   -- Reset_Property --
+   --------------------
+
+   procedure Reset_Property
+      (Self : not null access Gtk_Settings_Record;
+       Name : UTF8_String)
+   is
+      procedure Internal
+         (Self : System.Address;
+          Name : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "gtk_settings_reset_property");
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
+   begin
+      Internal (Get_Object (Self), Tmp_Name);
+      Free (Tmp_Name);
+   end Reset_Property;
+
    -------------------------
    -- Set_Double_Property --
    -------------------------

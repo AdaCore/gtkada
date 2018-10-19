@@ -159,15 +159,19 @@ package Gtk.Size_Group is
 
    function Get_Ignore_Hidden
       (Size_Group : not null access Gtk_Size_Group_Record) return Boolean;
+   pragma Obsolescent (Get_Ignore_Hidden);
    --  Returns if invisible widgets are ignored when calculating the size.
    --  Since: gtk+ 2.8
+   --  Deprecated since 3.22, 1
 
    procedure Set_Ignore_Hidden
       (Size_Group    : not null access Gtk_Size_Group_Record;
        Ignore_Hidden : Boolean);
+   pragma Obsolescent (Set_Ignore_Hidden);
    --  Sets whether unmapped widgets should be ignored when calculating the
    --  size.
    --  Since: gtk+ 2.8
+   --  Deprecated since 3.22, 1
    --  "ignore_hidden": whether unmapped widgets should be ignored when
    --  calculating the size
 

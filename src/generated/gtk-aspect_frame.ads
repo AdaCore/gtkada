@@ -29,6 +29,10 @@
 --  can draw a label and a frame around the child. The frame will be
 --  "shrink-wrapped" to the size of the child.
 --
+--  # CSS nodes
+--
+--  GtkAspectFrame uses a CSS node with name frame.
+--
 --  </description>
 --  <group>Layout Containers</group>
 --  <testgtk>create_frame.adb</testgtk>

@@ -30,6 +30,10 @@
 --  full width of the box, even if the children at either side take up
 --  different amounts of space.
 --
+--  # CSS nodes
+--
+--  GtkActionBar has a single CSS node with name actionbar.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");

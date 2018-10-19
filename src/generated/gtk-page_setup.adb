@@ -58,6 +58,19 @@ package body Gtk.Page_Setup is
    end Gtk_New_From_File;
 
    ---------------------------
+   -- Gtk_New_From_Gvariant --
+   ---------------------------
+
+   procedure Gtk_New_From_Gvariant
+      (Self    : out Gtk_Page_Setup;
+       Variant : Glib.Variant.Gvariant)
+   is
+   begin
+      Self := new Gtk_Page_Setup_Record;
+      Gtk.Page_Setup.Initialize_From_Gvariant (Self, Variant);
+   end Gtk_New_From_Gvariant;
+
+   ---------------------------
    -- Gtk_New_From_Key_File --
    ---------------------------
 
@@ -94,6 +107,19 @@ package body Gtk.Page_Setup is
       Gtk.Page_Setup.Initialize_From_File (Self, File_Name);
       return Self;
    end Gtk_Page_Setup_New_From_File;
+
+   --------------------------------------
+   -- Gtk_Page_Setup_New_From_Gvariant --
+   --------------------------------------
+
+   function Gtk_Page_Setup_New_From_Gvariant
+      (Variant : Glib.Variant.Gvariant) return Gtk_Page_Setup
+   is
+      Self : constant Gtk_Page_Setup := new Gtk_Page_Setup_Record;
+   begin
+      Gtk.Page_Setup.Initialize_From_Gvariant (Self, Variant);
+      return Self;
+   end Gtk_Page_Setup_New_From_Gvariant;
 
    --------------------------------------
    -- Gtk_Page_Setup_New_From_Key_File --
@@ -142,6 +168,22 @@ package body Gtk.Page_Setup is
          Set_Object (Self, Tmp_Return);
       end if;
    end Initialize_From_File;
+
+   ------------------------------
+   -- Initialize_From_Gvariant --
+   ------------------------------
+
+   procedure Initialize_From_Gvariant
+      (Self    : not null access Gtk_Page_Setup_Record'Class;
+       Variant : Glib.Variant.Gvariant)
+   is
+      function Internal (Variant : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_page_setup_new_from_gvariant");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Get_Object (Variant)));
+      end if;
+   end Initialize_From_Gvariant;
 
    ------------------------------
    -- Initialize_From_Key_File --
@@ -524,6 +566,20 @@ package body Gtk.Page_Setup is
       Free (Tmp_File_Name);
       return Tmp_Return /= 0;
    end To_File;
+
+   -----------------
+   -- To_Gvariant --
+   -----------------
+
+   function To_Gvariant
+      (Self : not null access Gtk_Page_Setup_Record)
+       return Glib.Variant.Gvariant
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_page_setup_to_gvariant");
+   begin
+      return From_Object (Internal (Get_Object (Self)));
+   end To_Gvariant;
 
    -----------------
    -- To_Key_File --

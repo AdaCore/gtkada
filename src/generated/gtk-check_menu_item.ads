@@ -30,6 +30,13 @@
 --  left side of the Gtk.Menu_Item.Gtk_Menu_Item. Activating the
 --  Gtk.Menu_Item.Gtk_Menu_Item toggles the value.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> menuitem ├── check.left ╰── <child> ]|
+--
+--  GtkCheckMenuItem has a main CSS node with name menuitem, and a subnode
+--  with name check, which gets the .left or .right style class.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -160,7 +167,7 @@ package Gtk.Check_Menu_Item is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Check_Menu_Item_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Check_Menu_Item_Record)

@@ -50,6 +50,19 @@
 --  The application can set the position of the slider as if it were set by
 --  the user, by calling Gtk.Paned.Set_Position.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> paned ├── <child> ├── separator[.wide] ╰──
+--  <child> ]|
+--
+--  GtkPaned has a main CSS node with name paned, and a subnode for the
+--  separator with name separator. The subnode gets a .wide style class when
+--  the paned is supposed to be wide.
+--
+--  In horizontal orientation, the nodes of the children are always arranged
+--  from left to right. So :first-child will always select the leftmost child,
+--  regardless of text direction.
+--
 --  ## Creating a paned widget with minimum sizes.
 --
 --  |[<!-- language="C" --> GtkWidget *hpaned = gtk_paned_new
@@ -196,6 +209,18 @@ package Gtk.Paned is
    --  "position": pixel position of divider, a negative value means that the
    --  position is unset.
 
+   function Get_Wide_Handle
+      (Paned : not null access Gtk_Paned_Record) return Boolean;
+   --  Gets the Gtk.Paned.Gtk_Paned:wide-handle property.
+   --  Since: gtk+ 3.16
+
+   procedure Set_Wide_Handle
+      (Paned : not null access Gtk_Paned_Record;
+       Wide  : Boolean);
+   --  Sets the Gtk.Paned.Gtk_Paned:wide-handle property.
+   --  Since: gtk+ 3.16
+   --  "wide": the new value for the Gtk.Paned.Gtk_Paned:wide-handle property
+
    procedure Pack1
       (Paned  : not null access Gtk_Paned_Record;
        Child  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -253,6 +278,11 @@ package Gtk.Paned is
    Position_Property : constant Glib.Properties.Property_Int;
 
    Position_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Wide_Handle_Property : constant Glib.Properties.Property_Boolean;
+   --  Setting this property to True indicates that the paned needs to provide
+   --  stronger visual separation (e.g. because it separates between two
+   --  notebooks, whose tab rows would otherwise merge visually).
 
    -------------
    -- Signals --
@@ -409,6 +439,8 @@ package Gtk.Paned is
    renames Implements_Gtk_Orientable.To_Object;
 
 private
+   Wide_Handle_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("wide-handle");
    Position_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("position-set");
    Position_Property : constant Glib.Properties.Property_Int :=

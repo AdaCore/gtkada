@@ -38,11 +38,11 @@ package body Gtk.Container is
        Callback      : System.Address;
        Callback_Data : System.Address);
    pragma Import (C, C_Gtk_Container_Forall, "gtk_container_forall");
-   --  Invokes Callback on each child of Container, including children that
-   --  are considered "internal" (implementation details of the container).
-   --  "Internal" children generally weren't added by the user of the
-   --  container, but were added by the container implementation itself. Most
-   --  applications should use Gtk.Container.Foreach, rather than
+   --  Invokes Callback on each direct child of Container, including children
+   --  that are considered "internal" (implementation details of the
+   --  container). "Internal" children generally weren't added by the user of
+   --  the container, but were added by the container implementation itself.
+   --  Most applications should use Gtk.Container.Foreach, rather than
    --  Gtk.Container.Forall.
    --  "callback": a callback
    --  "callback_data": callback user data
@@ -54,7 +54,10 @@ package body Gtk.Container is
    pragma Import (C, C_Gtk_Container_Foreach, "gtk_container_foreach");
    --  Invokes Callback on each non-internal child of Container. See
    --  Gtk.Container.Forall for details on what constitutes an "internal"
-   --  child. Most applications should use Gtk.Container.Foreach, rather than
+   --  child. For all practical purposes, this function should iterate over
+   --  precisely those child widgets that were added to the container by the
+   --  application with explicit add calls.
+   --  Most applications should use Gtk.Container.Foreach, rather than
    --  Gtk.Container.Forall.
    --  "callback": a callback
    --  "callback_data": callback user data
@@ -158,6 +161,24 @@ package body Gtk.Container is
       Internal (Get_Object (Container), Get_Object (Child), Tmp_Child_Property);
       Free (Tmp_Child_Property);
    end Child_Notify;
+
+   ---------------------------
+   -- Child_Notify_By_Pspec --
+   ---------------------------
+
+   procedure Child_Notify_By_Pspec
+      (Container : not null access Gtk_Container_Record;
+       Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Pspec     : in out Glib.Param_Spec)
+   is
+      procedure Internal
+         (Container : System.Address;
+          Child     : System.Address;
+          Pspec     : in out Glib.Param_Spec);
+      pragma Import (C, Internal, "gtk_container_child_notify_by_pspec");
+   begin
+      Internal (Get_Object (Container), Get_Object (Child), Pspec);
+   end Child_Notify_By_Pspec;
 
    ------------------------
    -- Child_Set_Property --

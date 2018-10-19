@@ -33,10 +33,15 @@
 --  The URI bound to a GtkLinkButton can be set specifically using
 --  Gtk.Link_Button.Set_Uri, and retrieved using Gtk.Link_Button.Get_Uri.
 --
---  By default, GtkLinkButton calls gtk_show_uri() when the button is clicked.
---  This behaviour can be overridden by connecting to the
+--  By default, GtkLinkButton calls gtk_show_uri_on_window when the button is
+--  clicked. This behaviour can be overridden by connecting to the
 --  Gtk.Link_Button.Gtk_Link_Button::activate-link signal and returning True
 --  from the signal handler.
+--
+--  # CSS nodes
+--
+--  GtkLinkButton has a single CSS node with name button. To differentiate it
+--  from a plain Gtk.Button.Gtk_Button, it gets the .link style class.
 --
 --  </description>
 --  <group>Buttons and Toggles</group>
@@ -150,7 +155,7 @@ package Gtk.Link_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Link_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Link_Button_Record)
@@ -230,8 +235,8 @@ package Gtk.Link_Button is
    --  The ::activate-link signal is emitted each time the
    --  Gtk.Link_Button.Gtk_Link_Button has been clicked.
    --
-   --  The default handler will call gtk_show_uri() with the URI stored inside
-   --  the Gtk.Link_Button.Gtk_Link_Button:uri property.
+   --  The default handler will call gtk_show_uri_on_window with the URI
+   --  stored inside the Gtk.Link_Button.Gtk_Link_Button:uri property.
    --
    --  To override the default behavior, you can connect to the
    --  ::activate-link signal and stop the propagation of the signal by

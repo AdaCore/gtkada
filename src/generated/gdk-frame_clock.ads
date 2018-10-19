@@ -151,8 +151,8 @@ package Gdk.Frame_Clock is
    procedure Get_Refresh_Info
       (Self                     : not null access Gdk_Frame_Clock_Record;
        Base_Time                : Gint64;
-       Refresh_Interval_Return  : in out Gint64;
-       Presentation_Time_Return : in out Gint64);
+       Refresh_Interval_Return  : out Gint64;
+       Presentation_Time_Return : out Gint64);
    --  Using the frame history stored in the frame clock, finds the last known
    --  presentation time and refresh interval, and assuming that presentation
    --  times are separated by the refresh interval, predicts a presentation

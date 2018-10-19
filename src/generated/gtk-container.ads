@@ -46,6 +46,18 @@
 --  children in a horizontal row, and a Gtk.Grid.Gtk_Grid arranges the widgets
 --  it contains in a two-dimensional grid.
 --
+--  For implementations of Gtk.Container.Gtk_Container the virtual method
+--  Gtk.Container_Class.Gtk_Container_Class.forall is always required, since
+--  it's used for drawing and other internal operations on the children. If the
+--  Gtk.Container.Gtk_Container implementation expect to have non internal
+--  children it's needed to implement both
+--  Gtk.Container_Class.Gtk_Container_Class.add and
+--  Gtk.Container_Class.Gtk_Container_Class.remove. If the GtkContainer
+--  implementation has internal children, they should be added with
+--  Gtk.Widget.Set_Parent on init and removed with Gtk.Widget.Unparent in the
+--  Gtk.Widget.GObject_Class.destroy implementation. See more about
+--  implementing custom widgets at https://wiki.gnome.org/HowDoI/CustomWidgets
+--
 --  # Height for width geometry management
 --
 --  GTK+ uses a height-for-width (and width-for-height) geometry management
@@ -165,13 +177,19 @@
 --  <packing> element for children, which can contain multiple <property>
 --  elements that specify child properties for the child.
 --
---  An example of child properties in UI definitions: |[ <object
---  class="GtkVBox"> <child> <object class="GtkLabel"/> <packing> <property
---  name="pack-type">start</property> </packing> </child> </object> ]|
---
 --  Since 2.16, child properties can also be marked as translatable using the
 --  same "translatable", "comments" and "context" attributes that are used for
 --  regular properties.
+--
+--  Since 3.16, containers can have a <focus-chain> element containing
+--  multiple <widget> elements, one for each child that should be added to the
+--  focus chain. The "name" attribute gives the id of the widget.
+--
+--  An example of these properties in UI definitions: |[ <object
+--  class="GtkBox"> <child> <object class="GtkEntry" id="entry1"/> <packing>
+--  <property name="pack-type">start</property> </packing> </child> <child>
+--  <object class="GtkEntry" id="entry2"/> </child> <focus-chain> <widget
+--  name="entry1"/> <widget name="entry2"/> </focus-chain> </object> ]|
 --
 --  </description>
 
@@ -258,13 +276,25 @@ package Gtk.Container is
        Child          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Child_Property : UTF8_String);
    --  Emits a Gtk.Widget.Gtk_Widget::child-notify signal for the [child
-   --  property][child-properties] Child_Property on widget.
+   --  property][child-properties] Child_Property on the child.
    --  This is an analogue of g_object_notify for child properties.
    --  Also see Gtk.Widget.Child_Notify.
    --  Since: gtk+ 3.2
    --  "child": the child widget
    --  "child_property": the name of a child property installed on the class
    --  of Container
+
+   procedure Child_Notify_By_Pspec
+      (Container : not null access Gtk_Container_Record;
+       Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Pspec     : in out Glib.Param_Spec);
+   --  Emits a Gtk.Widget.Gtk_Widget::child-notify signal for the [child
+   --  property][child-properties] specified by Pspec on the child.
+   --  This is an analogue of g_object_notify_by_pspec for child properties.
+   --  Since: gtk+ 3.18
+   --  "child": the child widget
+   --  "pspec": the Glib.Param_Spec of a child property instealled on the
+   --  class of Container
 
    function Child_Type
       (Container : not null access Gtk_Container_Record) return GType;
@@ -276,11 +306,11 @@ package Gtk.Container is
    procedure Forall
       (Container : not null access Gtk_Container_Record;
        Callback  : Gtk_Callback);
-   --  Invokes Callback on each child of Container, including children that
-   --  are considered "internal" (implementation details of the container).
-   --  "Internal" children generally weren't added by the user of the
-   --  container, but were added by the container implementation itself. Most
-   --  applications should use Gtk.Container.Foreach, rather than
+   --  Invokes Callback on each direct child of Container, including children
+   --  that are considered "internal" (implementation details of the
+   --  container). "Internal" children generally weren't added by the user of
+   --  the container, but were added by the container implementation itself.
+   --  Most applications should use Gtk.Container.Foreach, rather than
    --  Gtk.Container.Forall.
    --  "callback": a callback
 
@@ -301,10 +331,11 @@ package Gtk.Container is
          (Container     : not null access Gtk.Container.Gtk_Container_Record'Class;
           Callback      : Gtk_Callback;
           Callback_Data : User_Data_Type);
-      --  Invokes Callback on each child of Container, including children that
-      --  are considered "internal" (implementation details of the container).
-      --  "Internal" children generally weren't added by the user of the
-      --  container, but were added by the container implementation itself.
+      --  Invokes Callback on each direct child of Container, including
+      --  children that are considered "internal" (implementation details of
+      --  the container). "Internal" children generally weren't added by the
+      --  user of the container, but were added by the container implementation
+      --  itself.
       --  Most applications should use Gtk.Container.Foreach, rather than
       --  Gtk.Container.Forall.
       --  "callback": a callback
@@ -317,7 +348,10 @@ package Gtk.Container is
        Callback  : Gtk_Callback);
    --  Invokes Callback on each non-internal child of Container. See
    --  Gtk.Container.Forall for details on what constitutes an "internal"
-   --  child. Most applications should use Gtk.Container.Foreach, rather than
+   --  child. For all practical purposes, this function should iterate over
+   --  precisely those child widgets that were added to the container by the
+   --  application with explicit add calls.
+   --  Most applications should use Gtk.Container.Foreach, rather than
    --  Gtk.Container.Forall.
    --  "callback": a callback
 
@@ -340,8 +374,11 @@ package Gtk.Container is
           Callback_Data : User_Data_Type);
       --  Invokes Callback on each non-internal child of Container. See
       --  Gtk.Container.Forall for details on what constitutes an "internal"
-      --  child. Most applications should use Gtk.Container.Foreach, rather
-      --  than Gtk.Container.Forall.
+      --  child. For all practical purposes, this function should iterate over
+      --  precisely those child widgets that were added to the container by the
+      --  application with explicit add calls.
+      --  Most applications should use Gtk.Container.Foreach, rather than
+      --  Gtk.Container.Forall.
       --  "callback": a callback
       --  "callback_data": callback user data
 
@@ -388,7 +425,7 @@ package Gtk.Container is
    --  Container. Implementations of Gtk.Container.Gtk_Container can override
    --  the default behaviour by overriding the class closure of this signal.
    --  This is function is mostly meant to be used by widgets. Applications
-   --  can use Gtk.Widget.Grab_Focus to manualy set the focus to a specific
+   --  can use Gtk.Widget.Grab_Focus to manually set the focus to a specific
    --  widget.
    --  "child": a Gtk.Widget.Gtk_Widget, or null
 
@@ -489,7 +526,7 @@ package Gtk.Container is
    --  that Container will own a reference to Widget, and that this may be the
    --  last reference held; so removing a widget from its container can destroy
    --  that widget. If you want to use Widget again, you need to add a
-   --  reference to it while it's not inside a container, using g_object_ref.
+   --  reference to it before removing it from a container, using g_object_ref.
    --  If you don't want to use Widget again it's usually more efficient to
    --  simply destroy it directly using Gtk.Widget.Destroy since this will
    --  remove it from the container and help break any circular reference count

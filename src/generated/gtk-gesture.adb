@@ -187,7 +187,7 @@ package body Gtk.Gesture is
          (Self : System.Address) return access Gdk.Event.Gdk_Event_Sequence;
       pragma Import (C, Internal, "gtk_gesture_get_last_updated_sequence");
    begin
-      return From_Object_Free (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)).all;
    end Get_Last_Updated_Sequence;
 
    ---------------

@@ -52,6 +52,7 @@
 --  <group>Buttons and Toggles</group>
 
 pragma Warnings (Off, "*is already use-visible*");
+with GNAT.Strings;     use GNAT.Strings;
 with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
 with Glib.Properties;  use Glib.Properties;
@@ -140,18 +141,22 @@ package Gtk.File_Chooser_Button is
    function Get_Focus_On_Click
       (Button : not null access Gtk_File_Chooser_Button_Record)
        return Boolean;
+   pragma Obsolescent (Get_Focus_On_Click);
    --  Returns whether the button grabs focus when it is clicked with the
    --  mouse. See Gtk.File_Chooser_Button.Set_Focus_On_Click.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.20, 1
 
    procedure Set_Focus_On_Click
       (Button         : not null access Gtk_File_Chooser_Button_Record;
        Focus_On_Click : Boolean);
+   pragma Obsolescent (Set_Focus_On_Click);
    --  Sets whether the button will grab focus when it is clicked with the
    --  mouse. Making mouse clicks not grab focus is useful in places like
    --  toolbars where you don't want the keyboard focus removed from the main
    --  area of the application.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.20, 1
    --  "focus_on_click": whether the button grabs focus when clicked with the
    --  mouse
 
@@ -190,6 +195,13 @@ package Gtk.File_Chooser_Button is
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
 
+   procedure Add_Choice
+      (Chooser       : not null access Gtk_File_Chooser_Button_Record;
+       Id            : UTF8_String;
+       Label         : UTF8_String;
+       Options       : GNAT.Strings.String_List;
+       Option_Labels : GNAT.Strings.String_List);
+
    procedure Add_Filter
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
@@ -209,6 +221,15 @@ package Gtk.File_Chooser_Button is
    procedure Set_Action
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action);
+
+   function Get_Choice
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
+       Id      : UTF8_String) return UTF8_String;
+
+   procedure Set_Choice
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
+       Id      : UTF8_String;
+       Option  : UTF8_String);
 
    function Get_Create_Folders
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
@@ -358,6 +379,10 @@ package Gtk.File_Chooser_Button is
       (Chooser : not null access Gtk_File_Chooser_Button_Record)
        return Gtk.Enums.String_SList.GSlist;
 
+   procedure Remove_Choice
+      (Chooser : not null access Gtk_File_Chooser_Button_Record;
+       Id      : UTF8_String);
+
    procedure Remove_Filter
       (Chooser : not null access Gtk_File_Chooser_Button_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
@@ -411,10 +436,6 @@ package Gtk.File_Chooser_Button is
    --  Flags: write
    --  Instance of the Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog
    --  associated with the button.
-
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
-   --  Whether the Gtk.File_Chooser_Button.Gtk_File_Chooser_Button button
-   --  grabs focus when it is clicked with the mouse.
 
    Title_Property : constant Glib.Properties.Property_String;
    --  Title to put on the Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog
@@ -496,8 +517,6 @@ private
      Glib.Properties.Build ("width-chars");
    Title_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("title");
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("focus-on-click");
    Dialog_Property : constant Glib.Properties.Property_Interface :=
      Glib.Properties.Build ("dialog");
 end Gtk.File_Chooser_Button;

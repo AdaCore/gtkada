@@ -74,6 +74,22 @@ package body Gtk.Search_Entry is
       end if;
    end Initialize;
 
+   ------------------
+   -- Handle_Event --
+   ------------------
+
+   function Handle_Event
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Event : Gdk.Event.Gdk_Event) return Boolean
+   is
+      function Internal
+         (Self  : System.Address;
+          Event : Gdk.Event.Gdk_Event) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_search_entry_handle_event");
+   begin
+      return Internal (Get_Object (Self), Event) /= 0;
+   end Handle_Event;
+
    --------------------
    -- Copy_Clipboard --
    --------------------
@@ -448,6 +464,60 @@ package body Gtk.Search_Entry is
       exception when E : others => Process_Exception (E);
    end Marsh_Gtk_Search_Entry_Void;
 
+   -------------------
+   -- On_Next_Match --
+   -------------------
+
+   procedure On_Next_Match
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_Gtk_Search_Entry_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "next-match" & ASCII.NUL, Call, After);
+   end On_Next_Match;
+
+   -------------------
+   -- On_Next_Match --
+   -------------------
+
+   procedure On_Next_Match
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "next-match" & ASCII.NUL, Call, After, Slot);
+   end On_Next_Match;
+
+   -----------------------
+   -- On_Previous_Match --
+   -----------------------
+
+   procedure On_Previous_Match
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_Gtk_Search_Entry_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "previous-match" & ASCII.NUL, Call, After);
+   end On_Previous_Match;
+
+   -----------------------
+   -- On_Previous_Match --
+   -----------------------
+
+   procedure On_Previous_Match
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "previous-match" & ASCII.NUL, Call, After, Slot);
+   end On_Previous_Match;
+
    -----------------------
    -- On_Search_Changed --
    -----------------------
@@ -474,5 +544,32 @@ package body Gtk.Search_Entry is
    begin
       Connect_Slot (Self, "search-changed" & ASCII.NUL, Call, After, Slot);
    end On_Search_Changed;
+
+   --------------------
+   -- On_Stop_Search --
+   --------------------
+
+   procedure On_Stop_Search
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_Gtk_Search_Entry_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "stop-search" & ASCII.NUL, Call, After);
+   end On_Stop_Search;
+
+   --------------------
+   -- On_Stop_Search --
+   --------------------
+
+   procedure On_Stop_Search
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "stop-search" & ASCII.NUL, Call, After, Slot);
+   end On_Stop_Search;
 
 end Gtk.Search_Entry;

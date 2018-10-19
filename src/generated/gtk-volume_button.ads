@@ -81,7 +81,7 @@ package Gtk.Volume_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Volume_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Volume_Button_Record)

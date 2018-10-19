@@ -112,7 +112,8 @@
 --  An example of a Gtk.Dialog.Gtk_Dialog UI definition fragment: |[ <object
 --  class="GtkDialog" id="dialog1"> <child type="action"> <object
 --  class="GtkButton" id="button_cancel"/> </child> <child type="action">
---  <object class="GtkButton" id="button_ok"/> </child> <action-widgets>
+--  <object class="GtkButton" id="button_ok"> <property
+--  name="can-default">True</property> </object> </child> <action-widgets>
 --  <action-widget response="cancel">button_cancel</action-widget>
 --  <action-widget response="ok" default="true">button_ok</action-widget>
 --  </action-widgets> </object> ]|
@@ -335,10 +336,11 @@ package Gtk.Dialog is
    --  or not.
    --  After Gtk.Dialog.Run returns, you are responsible for hiding or
    --  destroying the dialog if you wish to do so.
-   --  Typical usage of this function might be: |[<!-- language="C" --> gint
-   --  result = gtk_dialog_run (GTK_DIALOG (dialog)); switch (result) { case
-   --  GTK_RESPONSE_ACCEPT: do_application_specific_something (); break;
-   --  default: do_nothing_since_dialog_was_cancelled (); break; }
+   --  Typical usage of this function might be: |[<!-- language="C" -->
+   --  GtkWidget *dialog = gtk_dialog_new (); // Set up dialog...
+   --  int result = gtk_dialog_run (GTK_DIALOG (dialog)); switch (result) {
+   --  case GTK_RESPONSE_ACCEPT: // do_application_specific_something ();
+   --  break; default: // do_nothing_since_dialog_was_cancelled (); break; }
    --  gtk_widget_destroy (dialog); ]|
    --  Note that even though the recursive main loop gives the effect of a
    --  modal dialog (it prevents the user from interacting with other windows

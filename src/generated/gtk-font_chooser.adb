@@ -114,6 +114,20 @@ package body Gtk.Font_Chooser is
       return Pango.Font_Family.Pango_Font_Family (Get_User_Data (Internal (Self), Stub_Pango_Font_Family));
    end Get_Font_Family;
 
+   ------------------
+   -- Get_Font_Map --
+   ------------------
+
+   function Get_Font_Map
+      (Self : Gtk_Font_Chooser) return Pango.Font_Map.Pango_Font_Map
+   is
+      function Internal (Self : Gtk_Font_Chooser) return System.Address;
+      pragma Import (C, Internal, "gtk_font_chooser_get_font_map");
+      Stub_Pango_Font_Map : Pango.Font_Map.Pango_Font_Map_Record;
+   begin
+      return Pango.Font_Map.Pango_Font_Map (Get_User_Data (Internal (Self), Stub_Pango_Font_Map));
+   end Get_Font_Map;
+
    ----------------------
    -- Get_Preview_Text --
    ----------------------
@@ -227,6 +241,20 @@ package body Gtk.Font_Chooser is
       Internal (Self, Tmp_Fontname);
       Free (Tmp_Fontname);
    end Set_Font;
+
+   ------------------
+   -- Set_Font_Map --
+   ------------------
+
+   procedure Set_Font_Map
+      (Self    : Gtk_Font_Chooser;
+       Fontmap : access Pango.Font_Map.Pango_Font_Map_Record'Class)
+   is
+      procedure Internal (Self : Gtk_Font_Chooser; Fontmap : System.Address);
+      pragma Import (C, Internal, "gtk_font_chooser_set_font_map");
+   begin
+      Internal (Self, Get_Object_Or_Null (GObject (Fontmap)));
+   end Set_Font_Map;
 
    ----------------------
    -- Set_Preview_Text --

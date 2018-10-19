@@ -26,6 +26,10 @@
 --  Gtk.Menu_Shell.Gtk_Menu_Shell which contains one or more Gtk_Menu_Items.
 --  The result is a standard menu bar which can hold many menu items.
 --
+--  # CSS nodes
+--
+--  GtkMenuBar has a single CSS node with name menubar.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");

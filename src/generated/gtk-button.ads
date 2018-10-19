@@ -30,6 +30,24 @@
 --  it can hold almost any other standard Gtk.Widget.Gtk_Widget. The most
 --  commonly used child is the Gtk.Label.Gtk_Label.
 --
+--  # CSS nodes
+--
+--  GtkButton has a single CSS node with name button. The node will get the
+--  style classes .image-button or .text-button, if the content is just an
+--  image or label, respectively. It may also receive the .flat style class.
+--
+--  Other style classes that are commonly used with GtkButton include
+--  .suggested-action and .destructive-action. In special cases, buttons can be
+--  made round by adding the .circular style class.
+--
+--  Button-like widgets like Gtk.Toggle_Button.Gtk_Toggle_Button,
+--  Gtk.Menu_Button.Gtk_Menu_Button, Gtk.Volume_Button.Gtk_Volume_Button,
+--  Gtk.Lock_Button.Gtk_Lock_Button, Gtk.Color_Button.Gtk_Color_Button,
+--  Gtk.Font_Button.Gtk_Font_Button or
+--  Gtk.File_Chooser_Button.Gtk_File_Chooser_Button use style classes such as
+--  .toggle, .popup, .scale, .lock, .color, .font, .file to differentiate
+--  themselves from a plain GtkButton.
+--
 --  </description>
 --  <screenshot>gtk-button</screenshot>
 --  <group>Buttons and Toggles</group>
@@ -61,11 +79,11 @@ package Gtk.Button is
 
    procedure Gtk_New_From_Icon_Name
       (Button    : out Gtk_Button;
-       Icon_Name : UTF8_String;
+       Icon_Name : UTF8_String := "";
        Size      : Gtk.Enums.Gtk_Icon_Size);
    procedure Initialize_From_Icon_Name
       (Button    : not null access Gtk_Button_Record'Class;
-       Icon_Name : UTF8_String;
+       Icon_Name : UTF8_String := "";
        Size      : Gtk.Enums.Gtk_Icon_Size);
    --  Creates a new button containing an icon from the current icon theme.
    --  If the icon name isn't known, a "broken image" icon will be displayed
@@ -76,11 +94,11 @@ package Gtk.Button is
    --  Since: gtk+ 3.10
    --  Initialize_From_Icon_Name does nothing if the object was already
    --  created with another call to Initialize* or G_New.
-   --  "icon_name": an icon name
-   --  "size": an icon size
+   --  "icon_name": an icon name or null
+   --  "size": an icon size (Gtk.Enums.Gtk_Icon_Size)
 
    function Gtk_Button_New_From_Icon_Name
-      (Icon_Name : UTF8_String;
+      (Icon_Name : UTF8_String := "";
        Size      : Gtk.Enums.Gtk_Icon_Size) return Gtk_Button;
    --  Creates a new button containing an icon from the current icon theme.
    --  If the icon name isn't known, a "broken image" icon will be displayed
@@ -89,8 +107,8 @@ package Gtk.Button is
    --  This function is a convenience wrapper around gtk_button_new and
    --  Gtk.Button.Set_Image.
    --  Since: gtk+ 3.10
-   --  "icon_name": an icon name
-   --  "size": an icon size
+   --  "icon_name": an icon name or null
+   --  "size": an icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Gtk_New_From_Stock
       (Button   : out Gtk_Button;
@@ -226,18 +244,22 @@ package Gtk.Button is
 
    function Get_Focus_On_Click
       (Button : not null access Gtk_Button_Record) return Boolean;
+   pragma Obsolescent (Get_Focus_On_Click);
    --  Returns whether the button grabs focus when it is clicked with the
    --  mouse. See Gtk.Button.Set_Focus_On_Click.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.20, 1
 
    procedure Set_Focus_On_Click
       (Button         : not null access Gtk_Button_Record;
        Focus_On_Click : Boolean);
+   pragma Obsolescent (Set_Focus_On_Click);
    --  Sets whether the button will grab focus when it is clicked with the
    --  mouse. Making mouse clicks not grab focus is useful in places like
    --  toolbars where you don't want the keyboard focus removed from the main
    --  area of the application.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.20, 1
    --  "focus_on_click": whether the button grabs focus when clicked with the
    --  mouse
 
@@ -251,13 +273,13 @@ package Gtk.Button is
 
    procedure Set_Image
       (Button : not null access Gtk_Button_Record;
-       Image  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+       Image  : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Set the image of Button to the given widget. The image will be
    --  displayed if the label text is null or if
    --  Gtk.Button.Gtk_Button:always-show-image is True. You don't have to call
    --  Gtk.Widget.Show on Image yourself.
    --  Since: gtk+ 2.6
-   --  "image": a widget to set as the image for the button
+   --  "image": a widget to set as the image for the button, or null to unset
 
    function Get_Image_Position
       (Button : not null access Gtk_Button_Record)
@@ -359,7 +381,7 @@ package Gtk.Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Button_Record)
@@ -415,8 +437,6 @@ package Gtk.Button is
    --
    --  Use this property if the button would be useless or hard to use without
    --  the image.
-
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
 
    Image_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
@@ -588,8 +608,6 @@ private
      Gtk.Enums.Build ("image-position");
    Image_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("image");
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("focus-on-click");
    Always_Show_Image_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("always-show-image");
 end Gtk.Button;

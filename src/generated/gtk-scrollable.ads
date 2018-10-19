@@ -58,10 +58,12 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Gtk.Adjustment;  use Gtk.Adjustment;
 with Gtk.Enums;       use Gtk.Enums;
+with Gtk.Style;       use Gtk.Style;
 
 package Gtk.Scrollable is
 
@@ -78,6 +80,16 @@ package Gtk.Scrollable is
    -------------
    -- Methods --
    -------------
+
+   function Get_Border
+      (Self   : Gtk_Scrollable;
+       Border : access Gtk.Style.Gtk_Border) return Boolean;
+   --  Returns the size of a non-scrolling border around the outside of the
+   --  scrollable. An example for this would be treeview headers. GTK+ can use
+   --  this information to display overlayed graphics, like the overshoot
+   --  indication, at the right position.
+   --  Since: gtk+ 3.16
+   --  "border": return location for the results
 
    function Get_Hadjustment
       (Self : Gtk_Scrollable) return Gtk.Adjustment.Gtk_Adjustment;
@@ -172,6 +184,29 @@ package Gtk.Scrollable is
 
    function "+" (W : Gtk_Scrollable) return Gtk_Scrollable;
    pragma Inline ("+");
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Get_Border is access function
+     (Self   : Gtk_Scrollable;
+      Border : access Gtk.Style.Gtk_Border) return Glib.Gboolean;
+   pragma Convention (C, Virtual_Get_Border);
+   --  Returns the size of a non-scrolling border around the outside of the
+   --  scrollable. An example for this would be treeview headers. GTK+ can use
+   --  this information to display overlayed graphics, like the overshoot
+   --  indication, at the right position.
+   --  Since: gtk+ 3.16
+   --  "border": return location for the results
+
+   subtype Scrollable_Interface_Descr is Glib.Object.Interface_Description;
+
+   procedure Set_Get_Border
+     (Self    : Scrollable_Interface_Descr;
+      Handler : Virtual_Get_Border);
+   pragma Import (C, Set_Get_Border, "gtkada_Scrollable_set_get_border");
+   --  See Glib.Object.Add_Interface
 
 private
    Vscroll_Policy_Property : constant Gtk.Enums.Property_Gtk_Scrollable_Policy :=

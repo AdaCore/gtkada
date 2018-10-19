@@ -36,6 +36,10 @@
 --  To change the text which is shown in the preview area, use
 --  Gtk.Font_Chooser.Set_Preview_Text.
 --
+--  # CSS nodes
+--
+--  GtkFontChooserWidget has a single CSS node with name fontchooser.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -49,6 +53,7 @@ with Gtk.Orientable;    use Gtk.Orientable;
 with Pango.Font;        use Pango.Font;
 with Pango.Font_Face;   use Pango.Font_Face;
 with Pango.Font_Family; use Pango.Font_Family;
+with Pango.Font_Map;    use Pango.Font_Map;
 
 package Gtk.Font_Chooser_Widget is
 
@@ -158,6 +163,14 @@ package Gtk.Font_Chooser_Widget is
    function Get_Font_Family
       (Self : not null access Gtk_Font_Chooser_Widget_Record)
        return Pango.Font_Family.Pango_Font_Family;
+
+   function Get_Font_Map
+      (Self : not null access Gtk_Font_Chooser_Widget_Record)
+       return Pango.Font_Map.Pango_Font_Map;
+
+   procedure Set_Font_Map
+      (Self    : not null access Gtk_Font_Chooser_Widget_Record;
+       Fontmap : access Pango.Font_Map.Pango_Font_Map_Record'Class);
 
    function Get_Font_Size
       (Self : not null access Gtk_Font_Chooser_Widget_Record)

@@ -93,6 +93,18 @@ package Gtk.Text_Tag is
    -- Methods --
    -------------
 
+   procedure Changed
+      (Tag          : not null access Gtk_Text_Tag_Record;
+       Size_Changed : Boolean);
+   --  Emits the Gtk.Text_Tag_Table.Gtk_Text_Tag_Table::tag-changed signal on
+   --  the Gtk.Text_Tag_Table.Gtk_Text_Tag_Table where the tag is included.
+   --  The signal is already emitted when setting a Gtk.Text_Tag.Gtk_Text_Tag
+   --  property. This function is useful for a Gtk.Text_Tag.Gtk_Text_Tag
+   --  subclass.
+   --  Since: gtk+ 3.20
+   --  "size_changed": whether the change affects the
+   --  Gtk.Text_View.Gtk_Text_View layout.
+
    function Get_Priority
       (Tag : not null access Gtk_Text_Tag_Record) return Glib.Gint;
    --  Get the tag priority.
@@ -148,6 +160,14 @@ package Gtk.Text_Tag is
 
    Editable_Set_Property : constant Glib.Properties.Property_Boolean;
 
+   Fallback_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether font fallback is enabled.
+   --
+   --  When set to True, other fonts will be substituted where the current
+   --  font is missing glyphs.
+
+   Fallback_Set_Property : constant Glib.Properties.Property_Boolean;
+
    Family_Property : constant Glib.Properties.Property_String;
 
    Family_Set_Property : constant Glib.Properties.Property_Boolean;
@@ -160,6 +180,11 @@ package Gtk.Text_Tag is
 
    Font_Desc_Property : constant Pango.Font.Property_Font_Description;
    --  Type: Pango.Font.Pango_Font_Description
+
+   Font_Features_Property : constant Glib.Properties.Property_String;
+   --  OpenType font features, as a string.
+
+   Font_Features_Set_Property : constant Glib.Properties.Property_Boolean;
 
    Foreground_Property : constant Glib.Properties.Property_String;
    --  Flags: write
@@ -204,6 +229,11 @@ package Gtk.Text_Tag is
    Left_Margin_Property : constant Glib.Properties.Property_Int;
 
    Left_Margin_Set_Property : constant Glib.Properties.Property_Boolean;
+
+   Letter_Spacing_Property : constant Glib.Properties.Property_Int;
+   --  Extra spacing between graphemes, in Pango units.
+
+   Letter_Spacing_Set_Property : constant Glib.Properties.Property_Boolean;
 
    Name_Property : constant Glib.Properties.Property_String;
 
@@ -260,6 +290,15 @@ package Gtk.Text_Tag is
 
    Strikethrough_Property : constant Glib.Properties.Property_Boolean;
 
+   Strikethrough_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
+   --  Type: Gdk.RGBA.Gdk_RGBA
+   --  This property modifies the color of strikeouts. If not set, strikeouts
+   --  will use the forground color.
+
+   Strikethrough_Rgba_Set_Property : constant Glib.Properties.Property_Boolean;
+   --  If the Gtk.Text_Tag.Gtk_Text_Tag:strikethrough-rgba property has been
+   --  set.
+
    Strikethrough_Set_Property : constant Glib.Properties.Property_Boolean;
 
    Style_Property : constant Pango.Enums.Property_Style;
@@ -274,6 +313,19 @@ package Gtk.Text_Tag is
 
    Underline_Property : constant Pango.Enums.Property_Underline;
    --  Type: Pango.Enums.Underline
+
+   Underline_Rgba_Property : constant Gdk.RGBA.Property_RGBA;
+   --  Type: Gdk.RGBA.Gdk_RGBA
+   --  This property modifies the color of underlines. If not set, underlines
+   --  will use the forground color.
+   --
+   --  If Gtk.Text_Tag.Gtk_Text_Tag:underline is set to
+   --  Pango.Enums.Pango_Underline_Error, an alternate color may be applied
+   --  instead of the foreground. Setting this property will always override
+   --  those defaults.
+
+   Underline_Rgba_Set_Property : constant Glib.Properties.Property_Boolean;
+   --  If the Gtk.Text_Tag.Gtk_Text_Tag:underline-rgba property has been set.
 
    Underline_Set_Property : constant Glib.Properties.Property_Boolean;
 
@@ -309,7 +361,7 @@ package Gtk.Text_Tag is
    --    --  Gtk.Text_View.Gtk_Text_View)
    --    --  "event": the event which triggered the signal
    --    --  "iter": a Gtk.Text_Iter.Gtk_Text_Iter pointing at the location the
-   --    --  event occured
+   --    --  event occurred
    --    --  Returns True to stop other handlers from being invoked for the
    -- event. False to propagate the event further.
 
@@ -328,6 +380,10 @@ private
      Pango.Enums.Build ("variant");
    Underline_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("underline-set");
+   Underline_Rgba_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("underline-rgba-set");
+   Underline_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("underline-rgba");
    Underline_Property : constant Pango.Enums.Property_Underline :=
      Pango.Enums.Build ("underline");
    Tabs_Set_Property : constant Glib.Properties.Property_Boolean :=
@@ -340,6 +396,10 @@ private
      Pango.Enums.Build ("style");
    Strikethrough_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("strikethrough-set");
+   Strikethrough_Rgba_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("strikethrough-rgba-set");
+   Strikethrough_Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
+     Gdk.RGBA.Build ("strikethrough-rgba");
    Strikethrough_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("strikethrough");
    Stretch_Set_Property : constant Glib.Properties.Property_Boolean :=
@@ -386,6 +446,10 @@ private
      Glib.Properties.Build ("paragraph-background");
    Name_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("name");
+   Letter_Spacing_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("letter-spacing-set");
+   Letter_Spacing_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("letter-spacing");
    Left_Margin_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("left-margin-set");
    Left_Margin_Property : constant Glib.Properties.Property_Int :=
@@ -414,6 +478,10 @@ private
      Gdk.Color.Build ("foreground-gdk");
    Foreground_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("foreground");
+   Font_Features_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("font-features-set");
+   Font_Features_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("font-features");
    Font_Desc_Property : constant Pango.Font.Property_Font_Description :=
      Pango.Font.Build ("font-desc");
    Font_Property : constant Glib.Properties.Property_String :=
@@ -422,6 +490,10 @@ private
      Glib.Properties.Build ("family-set");
    Family_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("family");
+   Fallback_Set_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("fallback-set");
+   Fallback_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("fallback");
    Editable_Set_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("editable-set");
    Editable_Property : constant Glib.Properties.Property_Boolean :=

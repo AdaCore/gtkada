@@ -23,7 +23,7 @@
 
 --  <description>
 --  A Gdk.RGBA.Gdk_RGBA is used to represent a (possibly translucent) color,
---  in a way that is compatible with cairos notion of color.
+--  in a way that is compatible with cairo's notion of color.
 --
 --  </description>
 
@@ -45,7 +45,7 @@ package Gdk.RGBA is
    function From_Object_Free (B : access Gdk_RGBA) return Gdk_RGBA;
    pragma Inline (From_Object_Free);
    --  A Gdk.RGBA.Gdk_RGBA is used to represent a (possibly translucent)
-   --  color, in a way that is compatible with cairos notion of color.
+   --  color, in a way that is compatible with cairo's notion of color.
 
    ------------------
    -- Constructors --
@@ -93,7 +93,7 @@ package Gdk.RGBA is
    --  form "rgba(r,g,b,a)"
    --  Where "r", "g", "b" and "a" are respectively the red, green, blue and
    --  alpha color values. In the last two cases, r g and b are either integers
-   --  in the range 0 to 255 or precentage values in the range 0% to 100%, and
+   --  in the range 0 to 255 or percentage values in the range 0% to 100%, and
    --  a is a floating point value in the range 0 to 1.
    --  Since: gtk+ 3.0
    --  "spec": the string specifying the color

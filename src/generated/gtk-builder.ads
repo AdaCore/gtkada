@@ -116,16 +116,18 @@
 --  (can be specified by their name, nick or integer value), flags (can be
 --  specified by their name, nick, integer value, optionally combined with "|",
 --  e.g. "GTK_VISIBLE|GTK_REALIZED") and colors (in a format understood by
---  Gdk.RGBA.Parse). Pixbufs can be specified as a filename of an image file to
---  load. Objects can be referred to by their name and by default refer to
---  objects declared in the local xml fragment and objects exposed via
---  Gtk.Builder.Expose_Object.
+--  Gdk.RGBA.Parse).
 --
---  In general, GtkBuilder allows forward references to objects — declared in
---  the local xml; an object doesn't have to be constructed before it can be
---  referred to. The exception to this rule is that an object has to be
---  constructed before it can be used as the value of a construct-only
---  property.
+--  GVariants can be specified in the format understood by Glib.Variant.Parse,
+--  and pixbufs can be specified as a filename of an image file to load.
+--
+--  Objects can be referred to by their name and by default refer to objects
+--  declared in the local xml fragment and objects exposed via
+--  Gtk.Builder.Expose_Object. In general, GtkBuilder allows forward references
+--  to objects — declared in the local xml; an object doesn't have to be
+--  constructed before it can be referred to. The exception to this rule is
+--  that an object has to be constructed before it can be used as the value of
+--  a construct-only property.
 --
 --  It is also possible to bind a property value to another object's property
 --  value using the attributes "bind-source" to specify the source object of
@@ -159,9 +161,9 @@
 --  # A GtkBuilder UI Definition
 --
 --  |[ <interface> <object class="GtkDialog" id="dialog1"> <child
---  internal-child="vbox"> <object class="GtkVBox" id="vbox1"> <property
+--  internal-child="vbox"> <object class="GtkBox" id="vbox1"> <property
 --  name="border-width">10</property> <child internal-child="action_area">
---  <object class="GtkHButtonBox" id="hbuttonbox1"> <property
+--  <object class="GtkButtonBox" id="hbuttonbox1"> <property
 --  name="border-width">20</property> <child> <object class="GtkButton"
 --  id="ok_button"> <property name="label">gtk-ok</property> <property
 --  name="use-stock">TRUE</property> <signal name="clicked"
@@ -178,7 +180,8 @@
 --  objects.
 --
 --  Additionally, since 3.10 a special <template> tag has been added to the
---  format allowing one to define a widget class's components.
+--  format allowing one to define a widget class's components. See the
+--  [GtkWidget documentation][composite-templates] for details.
 --
 --  </description>
 
@@ -189,6 +192,7 @@ with Glib.Error;      use Glib.Error;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Values;     use Glib.Values;
+with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Builder is
 
@@ -279,7 +283,7 @@ package Gtk.Builder is
       (Builder       : not null access Gtk_Builder_Record'Class;
        Resource_Path : UTF8_String);
    --  Builds the [GtkBuilder UI definition][BUILDER-UI] at Resource_Path.
-   --  If there is an error locating the resurce or parsing the description
+   --  If there is an error locating the resource or parsing the description,
    --  then the program will be aborted.
    --  Since: gtk+ 3.10
    --  Initialize_From_Resource does nothing if the object was already created
@@ -289,7 +293,7 @@ package Gtk.Builder is
    function Gtk_Builder_New_From_Resource
       (Resource_Path : UTF8_String) return Gtk_Builder;
    --  Builds the [GtkBuilder UI definition][BUILDER-UI] at Resource_Path.
-   --  If there is an error locating the resurce or parsing the description
+   --  If there is an error locating the resource or parsing the description,
    --  then the program will be aborted.
    --  Since: gtk+ 3.10
    --  "resource_path": a Gresource.Gresource resource path
@@ -304,8 +308,8 @@ package Gtk.Builder is
        Length  : Gssize);
    --  Builds the user interface described by String (in the [GtkBuilder UI
    --  definition][BUILDER-UI] format).
-   --  If String is null-terminated then Length should be -1. If Length is not
-   --  -1 then it is the length of String.
+   --  If String is null-terminated, then Length should be -1. If Length is
+   --  not -1, then it is the length of String.
    --  If there is an error parsing String then the program will be aborted.
    --  You should not attempt to parse user interface description from
    --  untrusted sources.
@@ -320,8 +324,8 @@ package Gtk.Builder is
        Length : Gssize) return Gtk_Builder;
    --  Builds the user interface described by String (in the [GtkBuilder UI
    --  definition][BUILDER-UI] format).
-   --  If String is null-terminated then Length should be -1. If Length is not
-   --  -1 then it is the length of String.
+   --  If String is null-terminated, then Length should be -1. If Length is
+   --  not -1, then it is the length of String.
    --  If there is an error parsing String then the program will be aborted.
    --  You should not attempt to parse user interface description from
    --  untrusted sources.
@@ -343,7 +347,7 @@ package Gtk.Builder is
    --  Parses a file containing a [GtkBuilder UI definition][BUILDER-UI] and
    --  merges it with the current contents of Builder.
    --  Most users will probably want to use Gtk.Builder.Gtk_New_From_File.
-   --  Upon errors 0 will be returned and Error will be assigned a
+   --  If an error occurs, 0 will be returned and Error will be assigned a
    --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or G_FILE_ERROR
    --  domain.
    --  It's not really reasonable to attempt to handle failures of this call.
@@ -363,7 +367,7 @@ package Gtk.Builder is
    --  definition][BUILDER-UI] and merges it with the current contents of
    --  Builder.
    --  Most users will probably want to use Gtk.Builder.Gtk_New_From_Resource.
-   --  Upon errors 0 will be returned and Error will be assigned a
+   --  If an error occurs, 0 will be returned and Error will be assigned a
    --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or
    --  G_RESOURCE_ERROR domain.
    --  It's not really reasonable to attempt to handle failures of this call.
@@ -489,6 +493,21 @@ package Gtk.Builder is
    --  Since: gtk+ 3.8
    --  "name": the name of the object exposed to the builder
    --  "object": the object to expose
+
+   function Extend_With_Template
+      (Builder       : not null access Gtk_Builder_Record;
+       Widget        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Template_Type : GType;
+       Buffer        : UTF8_String;
+       Length        : Gsize) return Guint;
+   --  Main private entry point for building composite container components
+   --  from template XML.
+   --  This is exported purely to let gtk-builder-tool validate templates,
+   --  applications have no need to call this function.
+   --  "widget": the widget that is being extended
+   --  "template_type": the type that the template is for
+   --  "buffer": the string to parse
+   --  "length": the length of Buffer (may be -1 if Buffer is nul-terminated)
 
    function Get_Object
       (Builder : not null access Gtk_Builder_Record;

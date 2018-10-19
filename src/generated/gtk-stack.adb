@@ -134,6 +134,19 @@ package body Gtk.Stack is
       return Gtk.Widget.Gtk_Widget (Get_User_Data (Tmp_Return, Stub_Gtk_Widget));
    end Get_Child_By_Name;
 
+   ----------------------
+   -- Get_Hhomogeneous --
+   ----------------------
+
+   function Get_Hhomogeneous
+      (Self : not null access Gtk_Stack_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_stack_get_hhomogeneous");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Hhomogeneous;
+
    ---------------------
    -- Get_Homogeneous --
    ---------------------
@@ -146,6 +159,19 @@ package body Gtk.Stack is
    begin
       return Internal (Get_Object (Self)) /= 0;
    end Get_Homogeneous;
+
+   --------------------------
+   -- Get_Interpolate_Size --
+   --------------------------
+
+   function Get_Interpolate_Size
+      (Self : not null access Gtk_Stack_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_stack_get_interpolate_size");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Interpolate_Size;
 
    -----------------------------
    -- Get_Transition_Duration --
@@ -188,6 +214,19 @@ package body Gtk.Stack is
       return Internal (Get_Object (Self));
    end Get_Transition_Type;
 
+   ----------------------
+   -- Get_Vhomogeneous --
+   ----------------------
+
+   function Get_Vhomogeneous
+      (Self : not null access Gtk_Stack_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_stack_get_vhomogeneous");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Vhomogeneous;
+
    -----------------------
    -- Get_Visible_Child --
    -----------------------
@@ -216,6 +255,22 @@ package body Gtk.Stack is
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Visible_Child_Name;
 
+   ----------------------
+   -- Set_Hhomogeneous --
+   ----------------------
+
+   procedure Set_Hhomogeneous
+      (Self         : not null access Gtk_Stack_Record;
+       Hhomogeneous : Boolean)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Hhomogeneous : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_stack_set_hhomogeneous");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Hhomogeneous));
+   end Set_Hhomogeneous;
+
    ---------------------
    -- Set_Homogeneous --
    ---------------------
@@ -231,6 +286,22 @@ package body Gtk.Stack is
    begin
       Internal (Get_Object (Self), Boolean'Pos (Homogeneous));
    end Set_Homogeneous;
+
+   --------------------------
+   -- Set_Interpolate_Size --
+   --------------------------
+
+   procedure Set_Interpolate_Size
+      (Self             : not null access Gtk_Stack_Record;
+       Interpolate_Size : Boolean)
+   is
+      procedure Internal
+         (Self             : System.Address;
+          Interpolate_Size : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_stack_set_interpolate_size");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Interpolate_Size));
+   end Set_Interpolate_Size;
 
    -----------------------------
    -- Set_Transition_Duration --
@@ -261,6 +332,22 @@ package body Gtk.Stack is
    begin
       Internal (Get_Object (Self), Transition);
    end Set_Transition_Type;
+
+   ----------------------
+   -- Set_Vhomogeneous --
+   ----------------------
+
+   procedure Set_Vhomogeneous
+      (Self         : not null access Gtk_Stack_Record;
+       Vhomogeneous : Boolean)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Vhomogeneous : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_stack_set_vhomogeneous");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Vhomogeneous));
+   end Set_Vhomogeneous;
 
    -----------------------
    -- Set_Visible_Child --

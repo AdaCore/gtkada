@@ -28,6 +28,9 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Types;               use Gtkada.Types;
+pragma Warnings(On);
 
 package body Gtk.List_Box_Row is
 
@@ -202,6 +205,91 @@ package body Gtk.List_Box_Row is
    begin
       Internal (Get_Object (Self), Boolean'Pos (Selectable));
    end Set_Selectable;
+
+   ---------------------
+   -- Get_Action_Name --
+   ---------------------
+
+   function Get_Action_Name
+      (Self : not null access Gtk_List_Box_Row_Record) return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "gtk_actionable_get_action_name");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
+   end Get_Action_Name;
+
+   -----------------------------
+   -- Get_Action_Target_Value --
+   -----------------------------
+
+   function Get_Action_Target_Value
+      (Self : not null access Gtk_List_Box_Row_Record)
+       return Glib.Variant.Gvariant
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_actionable_get_action_target_value");
+   begin
+      return From_Object (Internal (Get_Object (Self)));
+   end Get_Action_Target_Value;
+
+   ---------------------
+   -- Set_Action_Name --
+   ---------------------
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_List_Box_Row_Record;
+       Action_Name : UTF8_String := "")
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Action_Name : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "gtk_actionable_set_action_name");
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr;
+   begin
+      if Action_Name = "" then
+         Tmp_Action_Name := Gtkada.Types.Null_Ptr;
+      else
+         Tmp_Action_Name := New_String (Action_Name);
+      end if;
+      Internal (Get_Object (Self), Tmp_Action_Name);
+      Free (Tmp_Action_Name);
+   end Set_Action_Name;
+
+   -----------------------------
+   -- Set_Action_Target_Value --
+   -----------------------------
+
+   procedure Set_Action_Target_Value
+      (Self         : not null access Gtk_List_Box_Row_Record;
+       Target_Value : Glib.Variant.Gvariant)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Target_Value : System.Address);
+      pragma Import (C, Internal, "gtk_actionable_set_action_target_value");
+   begin
+      Internal (Get_Object (Self), Get_Object (Target_Value));
+   end Set_Action_Target_Value;
+
+   ------------------------------
+   -- Set_Detailed_Action_Name --
+   ------------------------------
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_List_Box_Row_Record;
+       Detailed_Action_Name : UTF8_String)
+   is
+      procedure Internal
+         (Self                 : System.Address;
+          Detailed_Action_Name : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "gtk_actionable_set_detailed_action_name");
+      Tmp_Detailed_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Detailed_Action_Name);
+   begin
+      Internal (Get_Object (Self), Tmp_Detailed_Action_Name);
+      Free (Tmp_Detailed_Action_Name);
+   end Set_Detailed_Action_Name;
 
    use type System.Address;
 

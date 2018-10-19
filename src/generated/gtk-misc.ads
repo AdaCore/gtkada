@@ -123,12 +123,21 @@ package Gtk.Misc is
    --  Glib.Properties for more information on properties)
 
    Xalign_Property : constant Glib.Properties.Property_Float;
+   --  The horizontal alignment. A value of 0.0 means left alignment (or right
+   --  on RTL locales); a value of 1.0 means right alignment (or left on RTL
+   --  locales).
 
    Xpad_Property : constant Glib.Properties.Property_Int;
+   --  The amount of space to add on the left and right of the widget, in
+   --  pixels.
 
    Yalign_Property : constant Glib.Properties.Property_Float;
+   --  The vertical alignment. A value of 0.0 means top alignment; a value of
+   --  1.0 means bottom alignment.
 
    Ypad_Property : constant Glib.Properties.Property_Int;
+   --  The amount of space to add on the top and bottom of the widget, in
+   --  pixels.
 
    ----------------
    -- Interfaces --

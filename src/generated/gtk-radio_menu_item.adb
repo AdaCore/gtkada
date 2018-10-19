@@ -173,6 +173,22 @@ package body Gtk.Radio_Menu_Item is
       return Tmp_Return;
    end Get_Group;
 
+   ----------------
+   -- Join_Group --
+   ----------------
+
+   procedure Join_Group
+      (Radio_Menu_Item : not null access Gtk_Radio_Menu_Item_Record;
+       Group_Source    : access Gtk_Radio_Menu_Item_Record'Class)
+   is
+      procedure Internal
+         (Radio_Menu_Item : System.Address;
+          Group_Source    : System.Address);
+      pragma Import (C, Internal, "gtk_radio_menu_item_join_group");
+   begin
+      Internal (Get_Object (Radio_Menu_Item), Get_Object_Or_Null (GObject (Group_Source)));
+   end Join_Group;
+
    ---------------
    -- Set_Group --
    ---------------
@@ -265,14 +281,19 @@ package body Gtk.Radio_Menu_Item is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Radio_Menu_Item_Record;
-       Action_Name : UTF8_String)
+       Action_Name : UTF8_String := "")
    is
       procedure Internal
          (Self        : System.Address;
           Action_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_actionable_set_action_name");
-      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr;
    begin
+      if Action_Name = "" then
+         Tmp_Action_Name := Gtkada.Types.Null_Ptr;
+      else
+         Tmp_Action_Name := New_String (Action_Name);
+      end if;
       Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
    end Set_Action_Name;

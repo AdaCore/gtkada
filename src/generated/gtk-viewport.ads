@@ -24,7 +24,7 @@
 --  <description>
 --  The Gtk.Viewport.Gtk_Viewport widget acts as an adaptor class,
 --  implementing scrollability for child widgets that lack their own scrolling
---  capabilities. Use Gtk.Viewport.Gtk_Viewport to scroll child widgets such as
+--  capabilities. Use GtkViewport to scroll child widgets such as
 --  Gtk.Grid.Gtk_Grid, Gtk.Box.Gtk_Box, and so on.
 --
 --  If a widget has native scrolling abilities, such as
@@ -38,8 +38,12 @@
 --  Gtk.Scrolled_Window.Gtk_Scrolled_Window, so you can ignore the presence of
 --  the viewport.
 --
---  The Gtk.Viewport.Gtk_Viewport will start scrolling content only if
---  allocated less than the child widget's minimum size in a given orientation.
+--  The GtkViewport will start scrolling content only if allocated less than
+--  the child widget's minimum size in a given orientation.
+--
+--  # CSS nodes
+--
+--  GtkViewport has a single CSS node with name viewport.
 --
 --  </description>
 --  <group>Scrolling</group>
@@ -53,6 +57,7 @@ with Gtk.Bin;        use Gtk.Bin;
 with Gtk.Buildable;  use Gtk.Buildable;
 with Gtk.Enums;      use Gtk.Enums;
 with Gtk.Scrollable; use Gtk.Scrollable;
+with Gtk.Style;      use Gtk.Style;
 
 package Gtk.Viewport is
 
@@ -122,6 +127,10 @@ package Gtk.Viewport is
    --  Methods inherited from the Buildable interface are not duplicated here
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Border
+      (Self   : not null access Gtk_Viewport_Record;
+       Border : access Gtk.Style.Gtk_Border) return Boolean;
 
    function Get_Hadjustment
       (Self : not null access Gtk_Viewport_Record)

@@ -34,6 +34,10 @@
 --
 --  The GtkStack widget was added in GTK+ 3.10.
 --
+--  # CSS nodes
+--
+--  GtkStack has a single CSS node named stack.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -137,6 +141,22 @@ package Gtk.Stack is
    --  Since: gtk+ 3.12
    --  "name": the name of the child to find
 
+   function Get_Hhomogeneous
+      (Self : not null access Gtk_Stack_Record) return Boolean;
+   --  Gets whether Stack is horizontally homogeneous. See
+   --  Gtk.Stack.Set_Hhomogeneous.
+   --  Since: gtk+ 3.16
+
+   procedure Set_Hhomogeneous
+      (Self         : not null access Gtk_Stack_Record;
+       Hhomogeneous : Boolean);
+   --  Sets the Gtk.Stack.Gtk_Stack to be horizontally homogeneous or not. If
+   --  it is homogeneous, the Gtk.Stack.Gtk_Stack will request the same width
+   --  for all its children. If it isn't, the stack may change width when a
+   --  different child becomes visible.
+   --  Since: gtk+ 3.16
+   --  "hhomogeneous": True to make Stack horizontally homogeneous
+
    function Get_Homogeneous
       (Self : not null access Gtk_Stack_Record) return Boolean;
    --  Gets whether Stack is homogeneous. See Gtk.Stack.Set_Homogeneous.
@@ -149,8 +169,28 @@ package Gtk.Stack is
    --  homogeneous, the Gtk.Stack.Gtk_Stack will request the same size for all
    --  its children. If it isn't, the stack may change size when a different
    --  child becomes visible.
+   --  Since 3.16, homogeneity can be controlled separately for horizontal and
+   --  vertical size, with the Gtk.Stack.Gtk_Stack:hhomogeneous and
+   --  Gtk.Stack.Gtk_Stack:vhomogeneous.
    --  Since: gtk+ 3.10
    --  "homogeneous": True to make Stack homogeneous
+
+   function Get_Interpolate_Size
+      (Self : not null access Gtk_Stack_Record) return Boolean;
+   --  Returns wether the Gtk.Stack.Gtk_Stack is set up to interpolate between
+   --  the sizes of children on page switch.
+   --  Since: gtk+ 3.18
+
+   procedure Set_Interpolate_Size
+      (Self             : not null access Gtk_Stack_Record;
+       Interpolate_Size : Boolean);
+   --  Sets whether or not Stack will interpolate its size when changing the
+   --  visible child. If the Gtk.Stack.Gtk_Stack:interpolate-size property is
+   --  set to True, Stack will interpolate its size between the current one and
+   --  the one it'll take after changing the visible child, according to the
+   --  set transition duration.
+   --  Since: gtk+ 3.18
+   --  "interpolate_size": the new value
 
    function Get_Transition_Duration
       (Self : not null access Gtk_Stack_Record) return Guint;
@@ -189,6 +229,22 @@ package Gtk.Stack is
    --  become current.
    --  Since: gtk+ 3.10
    --  "transition": the new transition type
+
+   function Get_Vhomogeneous
+      (Self : not null access Gtk_Stack_Record) return Boolean;
+   --  Gets whether Stack is vertically homogeneous. See
+   --  Gtk.Stack.Set_Vhomogeneous.
+   --  Since: gtk+ 3.16
+
+   procedure Set_Vhomogeneous
+      (Self         : not null access Gtk_Stack_Record;
+       Vhomogeneous : Boolean);
+   --  Sets the Gtk.Stack.Gtk_Stack to be vertically homogeneous or not. If it
+   --  is homogeneous, the Gtk.Stack.Gtk_Stack will request the same height for
+   --  all its children. If it isn't, the stack may change height when a
+   --  different child becomes visible.
+   --  Since: gtk+ 3.16
+   --  "vhomogeneous": True to make Stack vertically homogeneous
 
    function Get_Visible_Child
       (Self : not null access Gtk_Stack_Record) return Gtk.Widget.Gtk_Widget;
@@ -243,7 +299,12 @@ package Gtk.Stack is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Hhomogeneous_Property : constant Glib.Properties.Property_Boolean;
+   --  True if the stack allocates the same width for all children.
+
    Homogeneous_Property : constant Glib.Properties.Property_Boolean;
+
+   Interpolate_Size_Property : constant Glib.Properties.Property_Boolean;
 
    Transition_Duration_Property : constant Glib.Properties.Property_Uint;
 
@@ -251,6 +312,9 @@ package Gtk.Stack is
 
    Transition_Type_Property : constant Gtk.Stack.Property_Gtk_Stack_Transition_Type;
    --  Type: Gtk_Stack_Transition_Type
+
+   Vhomogeneous_Property : constant Glib.Properties.Property_Boolean;
+   --  True if the stack allocates the same height for all children.
 
    Visible_Child_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
@@ -280,12 +344,18 @@ private
      Glib.Properties.Build ("visible-child-name");
    Visible_Child_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("visible-child");
+   Vhomogeneous_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("vhomogeneous");
    Transition_Type_Property : constant Gtk.Stack.Property_Gtk_Stack_Transition_Type :=
      Gtk.Stack.Build ("transition-type");
    Transition_Running_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("transition-running");
    Transition_Duration_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("transition-duration");
+   Interpolate_Size_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("interpolate-size");
    Homogeneous_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("homogeneous");
+   Hhomogeneous_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("hhomogeneous");
 end Gtk.Stack;

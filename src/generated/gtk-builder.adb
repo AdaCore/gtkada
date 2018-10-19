@@ -485,6 +485,32 @@ package body Gtk.Builder is
       Free (Tmp_Name);
    end Expose_Object;
 
+   --------------------------
+   -- Extend_With_Template --
+   --------------------------
+
+   function Extend_With_Template
+      (Builder       : not null access Gtk_Builder_Record;
+       Widget        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Template_Type : GType;
+       Buffer        : UTF8_String;
+       Length        : Gsize) return Guint
+   is
+      function Internal
+         (Builder       : System.Address;
+          Widget        : System.Address;
+          Template_Type : GType;
+          Buffer        : Gtkada.Types.Chars_Ptr;
+          Length        : Gsize) return Guint;
+      pragma Import (C, Internal, "gtk_builder_extend_with_template");
+      Tmp_Buffer : Gtkada.Types.Chars_Ptr := New_String (Buffer);
+      Tmp_Return : Guint;
+   begin
+      Tmp_Return := Internal (Get_Object (Builder), Get_Object (Widget), Template_Type, Tmp_Buffer, Length);
+      Free (Tmp_Buffer);
+      return Tmp_Return;
+   end Extend_With_Template;
+
    ----------------
    -- Get_Object --
    ----------------

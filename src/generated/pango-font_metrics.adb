@@ -26,31 +26,22 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Pango.Font_Metrics is
 
-   function From_Object_Free
-     (B : access Pango_Font_Metrics'Class) return Pango_Font_Metrics
-   is
-      Result : constant Pango_Font_Metrics := Pango_Font_Metrics (B.all);
+   function From_Object_Free (B : access Pango_Font_Metrics) return Pango_Font_Metrics is
+      Result : constant Pango_Font_Metrics := B.all;
    begin
       Glib.g_free (B.all'Address);
       return Result;
    end From_Object_Free;
-
-   function From_Object (Object : System.Address) return Pango_Font_Metrics is
-      S : Pango_Font_Metrics;
-   begin
-      S.Set_Object (Object);
-      return S;
-   end From_Object;
 
    -------------
    -- Gdk_New --
    -------------
 
    procedure Gdk_New (Self : out Pango_Font_Metrics) is
-      function Internal return System.Address;
+      function Internal return Pango_Font_Metrics;
       pragma Import (C, Internal, "pango_font_metrics_new");
    begin
-      Self.Set_Object (Internal);
+      Self := Internal;
    end Gdk_New;
 
    ----------------------------
@@ -58,134 +49,12 @@ package body Pango.Font_Metrics is
    ----------------------------
 
    function Pango_Font_Metrics_New return Pango_Font_Metrics is
-      function Internal return System.Address;
+      function Internal return Pango_Font_Metrics;
       pragma Import (C, Internal, "pango_font_metrics_new");
       Self : Pango_Font_Metrics;
    begin
-      Self.Set_Object (Internal);
+      Self := Internal;
       return Self;
    end Pango_Font_Metrics_New;
-
-   --------------------------------
-   -- Get_Approximate_Char_Width --
-   --------------------------------
-
-   function Get_Approximate_Char_Width
-      (Self : Pango_Font_Metrics) return Glib.Gint
-   is
-      function Internal (Self : System.Address) return Glib.Gint;
-      pragma Import (C, Internal, "pango_font_metrics_get_approximate_char_width");
-   begin
-      return Internal (Get_Object (Self));
-   end Get_Approximate_Char_Width;
-
-   ---------------------------------
-   -- Get_Approximate_Digit_Width --
-   ---------------------------------
-
-   function Get_Approximate_Digit_Width
-      (Self : Pango_Font_Metrics) return Glib.Gint
-   is
-      function Internal (Self : System.Address) return Glib.Gint;
-      pragma Import (C, Internal, "pango_font_metrics_get_approximate_digit_width");
-   begin
-      return Internal (Get_Object (Self));
-   end Get_Approximate_Digit_Width;
-
-   ----------------
-   -- Get_Ascent --
-   ----------------
-
-   function Get_Ascent (Self : Pango_Font_Metrics) return Glib.Gint is
-      function Internal (Self : System.Address) return Glib.Gint;
-      pragma Import (C, Internal, "pango_font_metrics_get_ascent");
-   begin
-      return Internal (Get_Object (Self));
-   end Get_Ascent;
-
-   -----------------
-   -- Get_Descent --
-   -----------------
-
-   function Get_Descent (Self : Pango_Font_Metrics) return Glib.Gint is
-      function Internal (Self : System.Address) return Glib.Gint;
-      pragma Import (C, Internal, "pango_font_metrics_get_descent");
-   begin
-      return Internal (Get_Object (Self));
-   end Get_Descent;
-
-   --------------------------------
-   -- Get_Strikethrough_Position --
-   --------------------------------
-
-   function Get_Strikethrough_Position
-      (Self : Pango_Font_Metrics) return Glib.Gint
-   is
-      function Internal (Self : System.Address) return Glib.Gint;
-      pragma Import (C, Internal, "pango_font_metrics_get_strikethrough_position");
-   begin
-      return Internal (Get_Object (Self));
-   end Get_Strikethrough_Position;
-
-   ---------------------------------
-   -- Get_Strikethrough_Thickness --
-   ---------------------------------
-
-   function Get_Strikethrough_Thickness
-      (Self : Pango_Font_Metrics) return Glib.Gint
-   is
-      function Internal (Self : System.Address) return Glib.Gint;
-      pragma Import (C, Internal, "pango_font_metrics_get_strikethrough_thickness");
-   begin
-      return Internal (Get_Object (Self));
-   end Get_Strikethrough_Thickness;
-
-   ----------------------------
-   -- Get_Underline_Position --
-   ----------------------------
-
-   function Get_Underline_Position
-      (Self : Pango_Font_Metrics) return Glib.Gint
-   is
-      function Internal (Self : System.Address) return Glib.Gint;
-      pragma Import (C, Internal, "pango_font_metrics_get_underline_position");
-   begin
-      return Internal (Get_Object (Self));
-   end Get_Underline_Position;
-
-   -----------------------------
-   -- Get_Underline_Thickness --
-   -----------------------------
-
-   function Get_Underline_Thickness
-      (Self : Pango_Font_Metrics) return Glib.Gint
-   is
-      function Internal (Self : System.Address) return Glib.Gint;
-      pragma Import (C, Internal, "pango_font_metrics_get_underline_thickness");
-   begin
-      return Internal (Get_Object (Self));
-   end Get_Underline_Thickness;
-
-   ---------
-   -- Ref --
-   ---------
-
-   function Ref (Self : Pango_Font_Metrics) return Pango_Font_Metrics is
-      function Internal (Self : System.Address) return System.Address;
-      pragma Import (C, Internal, "pango_font_metrics_ref");
-   begin
-      return From_Object (Internal (Get_Object (Self)));
-   end Ref;
-
-   -----------
-   -- Unref --
-   -----------
-
-   procedure Unref (Self : Pango_Font_Metrics) is
-      procedure Internal (Self : System.Address);
-      pragma Import (C, Internal, "pango_font_metrics_unref");
-   begin
-      Internal (Get_Object (Self));
-   end Unref;
 
 end Pango.Font_Metrics;

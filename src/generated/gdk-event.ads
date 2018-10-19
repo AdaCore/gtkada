@@ -48,6 +48,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo.Region;            use Cairo.Region;
 with Gdk;                     use Gdk;
+with Gdk.Device_Tool;         use Gdk.Device_Tool;
 with Gdk.Rectangle;           use Gdk.Rectangle;
 with Gdk.Types;               use Gdk.Types;
 with Glib;                    use Glib;
@@ -98,7 +99,14 @@ package Gdk.Event is
       Touch_Begin,
       Touch_Update,
       Touch_End,
-      Touch_Cancel);
+      Touch_Cancel,
+      Touchpad_Swipe,
+      Touchpad_Pinch,
+      Pad_Button_Press,
+      Pad_Button_Release,
+      Pad_Ring,
+      Pad_Strip,
+      Pad_Group_Mode);
    pragma Convention (C, Gdk_Event_Type);
    --  Specifies the type of the event.
    --
@@ -153,13 +161,23 @@ package Gdk.Event is
       Touch_Begin => 37,
       Touch_Update => 38,
       Touch_End => 39,
-      Touch_Cancel => 40);
+      Touch_Cancel => 40,
+      Touchpad_Swipe => 41,
+      Touchpad_Pinch => 42,
+      Pad_Button_Press => 43,
+      Pad_Button_Release => 44,
+      Pad_Ring => 45,
+      Pad_Strip => 46,
+      Pad_Group_Mode => 47);
 
    type Gdk_Event_Mask is mod 2 ** Integer'Size;
    pragma Convention (C, Gdk_Event_Mask);
    --  A set of bit-flags to indicate which events a window is to receive.
    --  Most of these masks map onto one or more of the Gdk.Event.Gdk_Event_Type
    --  event types above.
+   --
+   --  See the [input handling overview][chap-input-handling] for details of
+   --  [event masks][event-masks] and [event propagation][event-propagation].
    --
    --  Gdk.Event.Pointer_Motion_Hint_Mask is deprecated. It is a special mask
    --  to reduce the number of Gdk.Event.Motion_Notify events received. When
@@ -204,7 +222,9 @@ package Gdk.Event is
    Scroll_Mask : constant Gdk_Event_Mask := 2097152;
    Touch_Mask : constant Gdk_Event_Mask := 4194304;
    Smooth_Scroll_Mask : constant Gdk_Event_Mask := 8388608;
-   All_Events_Mask : constant Gdk_Event_Mask := 16777214;
+   Touchpad_Gesture_Mask : constant Gdk_Event_Mask := 16777216;
+   Tablet_Pad_Mask : constant Gdk_Event_Mask := 33554432;
+   All_Events_Mask : constant Gdk_Event_Mask := 67108862;
 
    type Gdk_Visibility_State is (
       Visibility_Unobscured,
@@ -269,6 +289,14 @@ package Gdk.Event is
    Window_State_Below : constant Gdk_Window_State := 64;
    Window_State_Focused : constant Gdk_Window_State := 128;
    Window_State_Tiled : constant Gdk_Window_State := 256;
+   Window_State_Top_Tiled : constant Gdk_Window_State := 512;
+   Window_State_Top_Resizable : constant Gdk_Window_State := 1024;
+   Window_State_Right_Tiled : constant Gdk_Window_State := 2048;
+   Window_State_Right_Resizable : constant Gdk_Window_State := 4096;
+   Window_State_Bottom_Tiled : constant Gdk_Window_State := 8192;
+   Window_State_Bottom_Resizable : constant Gdk_Window_State := 16384;
+   Window_State_Left_Tiled : constant Gdk_Window_State := 32768;
+   Window_State_Left_Resizable : constant Gdk_Window_State := 65536;
 
    type Gdk_Setting_Action is (
       Setting_Action_New,
@@ -284,6 +312,33 @@ package Gdk.Event is
       Owner_Change_Close);
    pragma Convention (C, Gdk_Owner_Change);
    --  Specifies why a selection ownership was changed.
+
+   type Gdk_Touchpad_Gesture_Phase is (
+      Touchpad_Gesture_Phase_Begin,
+      Touchpad_Gesture_Phase_Update,
+      Touchpad_Gesture_Phase_End,
+      Touchpad_Gesture_Phase_Cancel);
+   pragma Convention (C, Gdk_Touchpad_Gesture_Phase);
+   --  Specifies the current state of a touchpad gesture. All gestures are
+   --  guaranteed to begin with an event with phase
+   --  Gdk.Event.Touchpad_Gesture_Phase_Begin, followed by 0 or several events
+   --  with phase Gdk.Event.Touchpad_Gesture_Phase_Update.
+   --
+   --  A finished gesture may have 2 possible outcomes, an event with phase
+   --  Gdk.Event.Touchpad_Gesture_Phase_End will be emitted when the gesture is
+   --  considered successful, this should be used as the hint to perform any
+   --  permanent changes.
+   --
+   --  Cancelled gestures may be so for a variety of reasons, due to hardware
+   --  or the compositor, or due to the gesture recognition layers hinting the
+   --  gesture did not finish resolutely (eg. a 3rd finger being added during a
+   --  pinch gesture). In these cases, the last event will report the phase
+   --  Gdk.Event.Touchpad_Gesture_Phase_Cancel, this should be used as a hint
+   --  to undo any visible/permanent changes that were done throughout the
+   --  progress of the gesture.
+   --
+   --  See also Gdk.Event.Gdk_Event_Touchpad_Swipe and
+   --  Gdk.Event.Gdk_Event_Touchpad_Pinch.
 
    type Gdk_Event_Sequence is new Glib.C_Proxy;
    function From_Object_Free (B : access Gdk_Event_Sequence) return Gdk_Event_Sequence;
@@ -411,6 +466,7 @@ package Gdk.Event is
       Y_Root : Gdouble;
       Delta_X : Gdouble;
       Delta_Y : Gdouble;
+      Is_Stop : Guint;
    end record;
    pragma Convention (C, Gdk_Event_Scroll);
 
@@ -590,6 +646,83 @@ package Gdk.Event is
    pragma Inline (From_Object_Free);
    --  Generated when the state of a toplevel window changes.
 
+   type Gdk_Event_Touchpad_Pinch is record
+      The_Type : Gdk_Event_Type;
+      Window : Gdk.Gdk_Window;
+      Send_Event : Gint8;
+      Phase : Gdk_Touchpad_Gesture_Phase;
+      N_Fingers : Gint8;
+      Time : Guint32;
+      X : Gdouble;
+      Y : Gdouble;
+      Dx : Gdouble;
+      Dy : Gdouble;
+      Angle_Delta : Gdouble;
+      Scale : Gdouble;
+      X_Root : Gdouble;
+      Y_Root : Gdouble;
+      State : Gdk.Types.Gdk_Modifier_Type;
+   end record;
+   pragma Convention (C, Gdk_Event_Touchpad_Pinch);
+
+   function From_Object_Free (B : access Gdk_Event_Touchpad_Pinch) return Gdk_Event_Touchpad_Pinch;
+   pragma Inline (From_Object_Free);
+   --  Generated during touchpad swipe gestures.
+
+   type Gdk_Event_Touchpad_Swipe is record
+      The_Type : Gdk_Event_Type;
+      Window : Gdk.Gdk_Window;
+      Send_Event : Gint8;
+      Phase : Gdk_Touchpad_Gesture_Phase;
+      N_Fingers : Gint8;
+      Time : Guint32;
+      X : Gdouble;
+      Y : Gdouble;
+      Dx : Gdouble;
+      Dy : Gdouble;
+      X_Root : Gdouble;
+      Y_Root : Gdouble;
+      State : Gdk.Types.Gdk_Modifier_Type;
+   end record;
+   pragma Convention (C, Gdk_Event_Touchpad_Swipe);
+
+   function From_Object_Free (B : access Gdk_Event_Touchpad_Swipe) return Gdk_Event_Touchpad_Swipe;
+   pragma Inline (From_Object_Free);
+   --  Generated during touchpad swipe gestures.
+
+   type Gdk_Event_Pad_Button is record
+      The_Type : Gdk_Event_Type;
+      Window : Gdk.Gdk_Window;
+      Send_Event : Gint8;
+      Time : Guint32;
+      Group : Guint;
+      Button : Guint;
+      Mode : Guint;
+   end record;
+   pragma Convention (C, Gdk_Event_Pad_Button);
+
+   function From_Object_Free (B : access Gdk_Event_Pad_Button) return Gdk_Event_Pad_Button;
+   pragma Inline (From_Object_Free);
+   --  Generated during GDK_SOURCE_TABLET_PAD button presses and releases.
+
+   type Gdk_Event_Pad_Axis is record
+      The_Type : Gdk_Event_Type;
+      Window : Gdk.Gdk_Window;
+      Send_Event : Gint8;
+      Time : Guint32;
+      Group : Guint;
+      Index : Guint;
+      Mode : Guint;
+      Value : Gdouble;
+   end record;
+   pragma Convention (C, Gdk_Event_Pad_Axis);
+
+   function From_Object_Free (B : access Gdk_Event_Pad_Axis) return Gdk_Event_Pad_Axis;
+   pragma Inline (From_Object_Free);
+   --  Generated during GDK_SOURCE_TABLET_PAD interaction with tactile
+   --  sensors.
+   --  Generated when the state of a toplevel window changes.
+
    type Gdk_Event_Setting is record
       The_Type : Gdk_Event_Type;
       Window : Gdk.Gdk_Window;
@@ -649,6 +782,20 @@ package Gdk.Event is
    --  ancestors is unmapped), or if the same application grabs the pointer or
    --  keyboard again. Note that implicit grabs (which are initiated by button
    --  presses) can also cause Gdk.Event.Gdk_Event_Grab_Broken events.
+
+   type Gdk_Event_Pad_Group_Mode is record
+      The_Type : Gdk_Event_Type;
+      Window : Gdk.Gdk_Window;
+      Send_Event : Gint8;
+      Time : Guint32;
+      Group : Guint;
+      Mode : Guint;
+   end record;
+   pragma Convention (C, Gdk_Event_Pad_Group_Mode);
+
+   function From_Object_Free (B : access Gdk_Event_Pad_Group_Mode) return Gdk_Event_Pad_Group_Mode;
+   pragma Inline (From_Object_Free);
+   --  Generated during GDK_SOURCE_TABLET_PAD mode switches in a group.
 
    type Gdk_Event_Record (The_Type : Gdk_Event_Type := Gdk.Event.Nothing) is record
       case The_Type is
@@ -731,6 +878,23 @@ package Gdk.Event is
 
          when Gdk.Event.Grab_Broken =>
          Grab_Broken : Gdk_Event_Grab_Broken;
+
+         when Gdk.Event.Touchpad_Swipe =>
+         Touchpad_Swipe : Gdk_Event_Touchpad_Swipe;
+
+         when Gdk.Event.Touchpad_Pinch =>
+         Touchpad_Pinch : Gdk_Event_Touchpad_Pinch;
+
+         when Gdk.Event.Pad_Button_Press
+         | Gdk.Event.Pad_Button_Release =>
+         Pad_Button : Gdk_Event_Pad_Button;
+
+         when Gdk.Event.Pad_Ring
+         | Gdk.Event.Pad_Strip =>
+         Pad_Axis : Gdk_Event_Pad_Axis;
+
+         when Gdk.Event.Pad_Group_Mode =>
+         Pad_Group_Mode : Gdk_Event_Pad_Group_Mode;
       end case;
    end record;
    pragma Convention (C, Gdk_Event_Record);
@@ -813,6 +977,10 @@ package Gdk.Event is
    package Gdk_Owner_Change_Properties is
       new Generic_Internal_Discrete_Property (Gdk_Owner_Change);
    type Property_Gdk_Owner_Change is new Gdk_Owner_Change_Properties.Property;
+
+   package Gdk_Touchpad_Gesture_Phase_Properties is
+      new Generic_Internal_Discrete_Property (Gdk_Touchpad_Gesture_Phase);
+   type Property_Gdk_Touchpad_Gesture_Phase is new Gdk_Touchpad_Gesture_Phase_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -902,6 +1070,24 @@ package Gdk.Event is
    --  "x_win": location to put event window x coordinate
    --  "y_win": location to put event window y coordinate
 
+   function Get_Device_Tool
+      (Event : Gdk_Event) return Gdk.Device_Tool.Gdk_Device_Tool;
+   --  If the event was generated by a device that supports different tools
+   --  (eg. a tablet), this function will return a
+   --  Gdk.Device_Tool.Gdk_Device_Tool representing the tool that caused the
+   --  event. Otherwise, null will be returned.
+   --  Note: the Gdk.Device_Tool.Gdk_Device_Tool<!-- -->s will be constant
+   --  during the application lifetime, if settings must be stored persistently
+   --  across runs, see Gdk.Device_Tool.Get_Serial
+   --  Since: gtk+ 3.22
+
+   procedure Set_Device_Tool
+      (Event : Gdk_Event;
+       Tool  : access Gdk.Device_Tool.Gdk_Device_Tool_Record'Class);
+   --  Sets the device tool for this event, should be rarely used.
+   --  Since: gtk+ 3.22
+   --  "tool": tool to set on the event, or null
+
    function Get_Event_Sequence (Event : Gdk_Event) return Gdk_Event_Sequence;
    pragma Import (C, Get_Event_Sequence, "gdk_event_get_event_sequence");
    --  If Event if of type Gdk.Event.Touch_Begin, Gdk.Event.Touch_Update,
@@ -915,6 +1101,12 @@ package Gdk.Event is
    --  Retrieves the type of the event.
    --  Since: gtk+ 3.10
 
+   function Get_Pointer_Emulated (Event : Gdk_Event) return Boolean;
+   --  event: a Gdk.Event.Gdk_Event Returns whether this event is an
+   --  'emulated' pointer event (typically from a touch event), as opposed to a
+   --  real one.
+   --  Since: gtk+ 3.22
+
    procedure Get_Root_Coords
       (Event  : Gdk_Event;
        X_Root : out Gdouble;
@@ -923,6 +1115,14 @@ package Gdk.Event is
    --  Extract the root window relative x/y coordinates from an event.
    --  "x_root": location to put root window x coordinate
    --  "y_root": location to put root window y coordinate
+
+   function Get_Scancode (Event : Gdk_Event) return Glib.Gint;
+   pragma Import (C, Get_Scancode, "gdk_event_get_scancode");
+   --  Gets the keyboard low-level scancode of a key event.
+   --  This is usually hardware_keycode. On Windows this is the high word of
+   --  WM_KEY{DOWN,UP} lParam which contains the scancode and some extended
+   --  flags.
+   --  Since: gtk+ 3.22
 
    procedure Get_Scroll_Deltas
       (Event   : Gdk_Event;
@@ -951,6 +1151,15 @@ package Gdk.Event is
    pragma Import (C, Get_Window, "gdk_event_get_window");
    --  Extracts the Gdk.Gdk_Window associated with an event.
    --  Since: gtk+ 3.10
+
+   function Is_Scroll_Stop_Event (Event : Gdk_Event) return Boolean;
+   --  Check whether a scroll event is a stop scroll event. Scroll sequences
+   --  with smooth scroll information may provide a stop scroll event once the
+   --  interaction with the device finishes, e.g. by lifting a finger. This
+   --  stop scroll event is the signal that a widget may trigger kinetic
+   --  scrolling based on the current velocity.
+   --  Stop scroll events always have a a delta of 0/0.
+   --  Since: gtk+ 3.20
 
    procedure Put (Event : Gdk_Event);
    pragma Import (C, Put, "gdk_event_put");

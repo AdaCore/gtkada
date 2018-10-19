@@ -31,7 +31,26 @@
 --
 --  The main properties of a GtkSpinButton are through an adjustment. See the
 --  Gtk.Adjustment.Gtk_Adjustment section for more details about an
---  adjustment's properties.
+--  adjustment's properties. Note that GtkSpinButton will by default make its
+--  entry large enough to accomodate the lower and upper bounds of the
+--  adjustment, which can lead to surprising results. Best practice is to set
+--  both the Gtk.GEntry.Gtk_Entry:width-chars and
+--  Gtk.GEntry.Gtk_Entry:max-width-chars poperties to the desired number of
+--  characters to display in the entry.
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> spinbutton.horizontal ├── undershoot.left ├──
+--  undershoot.right ├── entry │ ╰── ... ├── button.down ╰── button.up ]|
+--
+--  |[<!-- language="plain" --> spinbutton.vertical ├── undershoot.left ├──
+--  undershoot.right ├── button.up ├── entry │ ╰── ... ╰── button.down ]|
+--
+--  GtkSpinButtons main CSS node has the name spinbutton. It creates subnodes
+--  for the entry and the two buttons, with these names. The button nodes have
+--  the style classes .up and .down. The GtkEntry subnodes (if present) are put
+--  below the entry node. The orientation of the spin button is reflected in
+--  the .vertical or .horizontal style class on the main node.
 --
 --  ## Using a GtkSpinButton to get an integer
 --
@@ -221,9 +240,10 @@ package Gtk.Spin_Button is
        Climb_Rate  : Gdouble;
        The_Digits  : Guint);
    --  Changes the properties of an existing spin button. The adjustment,
-   --  climb rate, and number of decimal places are all changed accordingly,
-   --  after this function call.
-   --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment
+   --  climb rate, and number of decimal places are updated accordingly.
+   --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment to replace the spin
+   --  button's existing adjustment, or null to leave its current adjustment
+   --  unchanged
    --  "climb_rate": the new climb rate
    --  "digits": the number of decimal places to display in the spin button
 

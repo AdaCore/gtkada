@@ -127,6 +127,26 @@ package body Glib.Application is
    end Activate;
 
    ------------------------
+   -- Bind_Busy_Property --
+   ------------------------
+
+   procedure Bind_Busy_Property
+      (Self     : not null access Gapplication_Record;
+       Object   : System.Address;
+       Property : UTF8_String)
+   is
+      procedure Internal
+         (Self     : System.Address;
+          Object   : System.Address;
+          Property : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "g_application_bind_busy_property");
+      Tmp_Property : Gtkada.Types.Chars_Ptr := New_String (Property);
+   begin
+      Internal (Get_Object (Self), Object, Tmp_Property);
+      Free (Tmp_Property);
+   end Bind_Busy_Property;
+
+   ------------------------
    -- Get_Application_Id --
    ------------------------
 
@@ -239,6 +259,19 @@ package body Glib.Application is
    begin
       return Internal (Get_Object (Self));
    end Get_Inactivity_Timeout;
+
+   -----------------
+   -- Get_Is_Busy --
+   -----------------
+
+   function Get_Is_Busy
+      (Self : not null access Gapplication_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_application_get_is_busy");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Is_Busy;
 
    -----------------------
    -- Get_Is_Registered --
@@ -550,6 +583,26 @@ package body Glib.Application is
       Internal (Get_Object (Self), Tmp_Resource_Path);
       Free (Tmp_Resource_Path);
    end Set_Resource_Base_Path;
+
+   --------------------------
+   -- Unbind_Busy_Property --
+   --------------------------
+
+   procedure Unbind_Busy_Property
+      (Self     : not null access Gapplication_Record;
+       Object   : System.Address;
+       Property : UTF8_String)
+   is
+      procedure Internal
+         (Self     : System.Address;
+          Object   : System.Address;
+          Property : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "g_application_unbind_busy_property");
+      Tmp_Property : Gtkada.Types.Chars_Ptr := New_String (Property);
+   begin
+      Internal (Get_Object (Self), Object, Tmp_Property);
+      Free (Tmp_Property);
+   end Unbind_Busy_Property;
 
    -----------------
    -- Unmark_Busy --

@@ -96,6 +96,19 @@ package body Gdk.Device is
       return Gdk.Device.Gdk_Device (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Device));
    end Get_Associated_Device;
 
+   --------------
+   -- Get_Axes --
+   --------------
+
+   function Get_Axes
+      (Self : not null access Gdk_Device_Record) return Gdk_Axis_Flags
+   is
+      function Internal (Self : System.Address) return Gdk_Axis_Flags;
+      pragma Import (C, Internal, "gdk_device_get_axes");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Axes;
+
    ------------------
    -- Get_Axis_Use --
    ------------------
@@ -242,6 +255,20 @@ package body Gdk.Device is
       Screen := Gdk.Screen.Gdk_Screen (Get_User_Data (Tmp_Screen, Stub_Gdk_Screen));
    end Get_Position_Double;
 
+   --------------------
+   -- Get_Product_Id --
+   --------------------
+
+   function Get_Product_Id
+      (Self : not null access Gdk_Device_Record) return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "gdk_device_get_product_id");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
+   end Get_Product_Id;
+
    ----------------
    -- Get_Source --
    ----------------
@@ -274,6 +301,20 @@ package body Gdk.Device is
    begin
       Internal (Get_Object (Self), Window, Axes (Axes'First)'Address, Mask);
    end Get_State;
+
+   -------------------
+   -- Get_Vendor_Id --
+   -------------------
+
+   function Get_Vendor_Id
+      (Self : not null access Gdk_Device_Record) return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "gdk_device_get_vendor_id");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
+   end Get_Vendor_Id;
 
    -----------------------------------
    -- Get_Window_At_Position_Double --

@@ -243,7 +243,7 @@ package Gtk.Icon_Source is
    --  Gtk.Icon_Source.Set_Size_Wildcarded to un-wildcard it in addition to
    --  calling this function.
    --  Deprecated since 3.10, 1
-   --  "size": icon size this source applies to
+   --  "size": icon size (Gtk.Enums.Gtk_Icon_Size) this source applies to
 
    function Get_Size_Wildcarded (Self : Gtk_Icon_Source) return Boolean;
    pragma Obsolescent (Get_Size_Wildcarded);

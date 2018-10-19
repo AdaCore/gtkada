@@ -94,8 +94,8 @@ package Gtk.Text_Iter is
        Result : out Boolean);
    --  Moves backward by one character offset. Returns True if movement was
    --  possible; if Iter was the first in the buffer (character offset 0),
-   --  gtk_text_iter_backward_char () returns False for convenience when
-   --  writing loops.
+   --  Gtk.Text_Iter.Backward_Char returns False for convenience when writing
+   --  loops.
 
    procedure Backward_Chars
       (Iter   : in out Gtk_Text_Iter;
@@ -272,6 +272,7 @@ package Gtk.Text_Iter is
    function Begins_Tag
       (Iter : Gtk_Text_Iter;
        Tag  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class) return Boolean;
+   pragma Obsolescent (Begins_Tag);
    --  Returns True if Tag is toggled on at exactly this point. If Tag is
    --  null, returns True if any tag is toggled on at this point.
    --  Note that if Gtk.Text_Iter.Begins_Tag returns True, it means that Iter
@@ -279,6 +280,7 @@ package Gtk.Text_Iter is
    --  is inside the tagged range. In other words, unlike
    --  Gtk.Text_Iter.Ends_Tag, if Gtk.Text_Iter.Begins_Tag returns True,
    --  Gtk.Text_Iter.Has_Tag will also return True for the same parameters.
+   --  Deprecated since 3.20, 1
    --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag, or null
 
    function Can_Insert
@@ -308,8 +310,8 @@ package Gtk.Text_Iter is
    --  Returns whether the character at Iter is within an editable region of
    --  text. Non-editable text is "locked" and can't be changed by the user via
    --  Gtk.Text_View.Gtk_Text_View. This function is simply a convenience
-   --  wrapper around gtk_text_iter_get_attributes (). If no tags applied to
-   --  this text affect editability, Default_Setting will be returned.
+   --  wrapper around Gtk.Text_Iter.Get_Attributes. If no tags applied to this
+   --  text affect editability, Default_Setting will be returned.
    --  You don't want to use this function to decide whether text can be
    --  inserted at Iter, because for insertion you don't want to know whether
    --  the char at Iter is inside an editable range, you want to know whether a
@@ -339,7 +341,7 @@ package Gtk.Text_Iter is
    --  Note that if Gtk.Text_Iter.Ends_Tag returns True, it means that Iter is
    --  at the end of the tagged range, but that the character at Iter is
    --  outside the tagged range. In other words, unlike
-   --  Gtk.Text_Iter.Begins_Tag, if Gtk.Text_Iter.Ends_Tag returns True,
+   --  Gtk.Text_Iter.Starts_Tag, if Gtk.Text_Iter.Ends_Tag returns True,
    --  Gtk.Text_Iter.Has_Tag will return False for the same parameters.
    --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag, or null
 
@@ -360,12 +362,11 @@ package Gtk.Text_Iter is
       (Iter   : in out Gtk_Text_Iter;
        Result : out Boolean);
    --  Moves Iter forward by one character offset. Note that images embedded
-   --  in the buffer occupy 1 character slot, so gtk_text_iter_forward_char ()
-   --  may actually move onto an image instead of a character, if you have
-   --  images in your buffer. If Iter is the end iterator or one character
-   --  before it, Iter will now point at the end iterator, and
-   --  gtk_text_iter_forward_char () returns False for convenience when writing
-   --  loops.
+   --  in the buffer occupy 1 character slot, so Gtk.Text_Iter.Forward_Char may
+   --  actually move onto an image instead of a character, if you have images
+   --  in your buffer. If Iter is the end iterator or one character before it,
+   --  Iter will now point at the end iterator, and Gtk.Text_Iter.Forward_Char
+   --  returns False for convenience when writing loops.
 
    procedure Forward_Chars
       (Iter   : in out Gtk_Text_Iter;
@@ -575,9 +576,9 @@ package Gtk.Text_Iter is
    --  Values parameter should be initialized to the default settings you wish
    --  to use if no tags are in effect. You'd typically obtain the defaults
    --  from Gtk.Text_View.Get_Default_Attributes.
-   --  gtk_text_iter_get_attributes () will modify Values, applying the
-   --  effects of any tags present at Iter. If any tags affected Values, the
-   --  function returns True.
+   --  Gtk.Text_Iter.Get_Attributes will modify Values, applying the effects
+   --  of any tags present at Iter. If any tags affected Values, the function
+   --  returns True.
    --  "values": a Gtk.Text_Attributes.Gtk_Text_Attributes to be filled in
 
    function Get_Bytes_In_Line (Iter : Gtk_Text_Iter) return Glib.Gint;
@@ -601,10 +602,10 @@ package Gtk.Text_Iter is
 
    function Get_Language
       (Iter : Gtk_Text_Iter) return Pango.Language.Pango_Language;
-   --  A convenience wrapper around gtk_text_iter_get_attributes (), which
+   --  A convenience wrapper around Gtk.Text_Iter.Get_Attributes, which
    --  returns the language in effect at Iter. If no tags affecting language
    --  apply to Iter, the return value is identical to that of
-   --  gtk_get_default_language ().
+   --  Gtk.Main.Get_Default_Language.
 
    function Get_Line (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Line, "gtk_text_iter_get_line");
@@ -666,8 +667,8 @@ package Gtk.Text_Iter is
    pragma Import (C, Get_Offset, "gtk_text_iter_get_offset");
    --  Returns the character offset of an iterator. Each character in a
    --  Gtk.Text_Buffer.Gtk_Text_Buffer has an offset, starting with 0 for the
-   --  first character in the buffer. Use gtk_text_buffer_get_iter_at_offset ()
-   --  to convert an offset back into an iterator.
+   --  first character in the buffer. Use Gtk.Text_Buffer.Get_Iter_At_Offset to
+   --  convert an offset back into an iterator.
 
    procedure Set_Offset
       (Iter        : in out Gtk_Text_Iter;
@@ -706,7 +707,7 @@ package Gtk.Text_Iter is
    --  Returns text in the given range. If the range contains non-text
    --  elements such as images, the character and byte offsets in the returned
    --  string will not correspond to character and byte offsets in the buffer.
-   --  If you want offsets to correspond, see gtk_text_iter_get_slice ().
+   --  If you want offsets to correspond, see Gtk.Text_Iter.Get_Slice.
    --  "end": iterator at end of a range
 
    function Get_Toggled_Tags
@@ -752,7 +753,7 @@ package Gtk.Text_Iter is
    function Get_Visible_Slice
       (Iter    : Gtk_Text_Iter;
        The_End : Gtk_Text_Iter) return UTF8_String;
-   --  Like gtk_text_iter_get_slice (), but invisible text is not included.
+   --  Like Gtk.Text_Iter.Get_Slice, but invisible text is not included.
    --  Invisible text is usually invisible because a Gtk.Text_Tag.Gtk_Text_Tag
    --  with the "invisible" attribute turned on has been applied to it.
    --  "end": iterator at end of range
@@ -760,7 +761,7 @@ package Gtk.Text_Iter is
    function Get_Visible_Text
       (Iter    : Gtk_Text_Iter;
        The_End : Gtk_Text_Iter) return UTF8_String;
-   --  Like gtk_text_iter_get_text (), but invisible text is not included.
+   --  Like Gtk.Text_Iter.Get_Text, but invisible text is not included.
    --  Invisible text is usually invisible because a Gtk.Text_Tag.Gtk_Text_Tag
    --  with the "invisible" attribute turned on has been applied to it.
    --  "end": iterator at end of range
@@ -770,7 +771,7 @@ package Gtk.Text_Iter is
        Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class)
        return Boolean;
    --  Returns True if Iter points to a character that is part of a range
-   --  tagged with Tag. See also Gtk.Text_Iter.Begins_Tag and
+   --  tagged with Tag. See also Gtk.Text_Iter.Starts_Tag and
    --  Gtk.Text_Iter.Ends_Tag.
    --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag
 
@@ -805,8 +806,8 @@ package Gtk.Text_Iter is
 
    function Is_End (Iter : Gtk_Text_Iter) return Boolean;
    --  Returns True if Iter is the end iterator, i.e. one past the last
-   --  dereferenceable iterator in the buffer. gtk_text_iter_is_end () is the
-   --  most efficient way to check whether an iterator is the end iterator.
+   --  dereferenceable iterator in the buffer. Gtk.Text_Iter.Is_End is the most
+   --  efficient way to check whether an iterator is the end iterator.
 
    function Is_Start (Iter : Gtk_Text_Iter) return Boolean;
    --  Returns True if Iter is the first iterator in the buffer, that is if
@@ -824,15 +825,27 @@ package Gtk.Text_Iter is
 
    function Starts_Line (Iter : Gtk_Text_Iter) return Boolean;
    --  Returns True if Iter begins a paragraph, i.e. if
-   --  gtk_text_iter_get_line_offset () would return 0. However this function
-   --  is potentially more efficient than gtk_text_iter_get_line_offset ()
-   --  because it doesn't have to compute the offset, it just has to see
-   --  whether it's 0.
+   --  Gtk.Text_Iter.Get_Line_Offset would return 0. However this function is
+   --  potentially more efficient than Gtk.Text_Iter.Get_Line_Offset because it
+   --  doesn't have to compute the offset, it just has to see whether it's 0.
 
    function Starts_Sentence (Iter : Gtk_Text_Iter) return Boolean;
    --  Determines whether Iter begins a sentence. Sentence boundaries are
    --  determined by Pango and should be correct for nearly any language (if
    --  not, the correct fix would be to the Pango text boundary algorithms).
+
+   function Starts_Tag
+      (Iter : Gtk_Text_Iter;
+       Tag  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class) return Boolean;
+   --  Returns True if Tag is toggled on at exactly this point. If Tag is
+   --  null, returns True if any tag is toggled on at this point.
+   --  Note that if Gtk.Text_Iter.Starts_Tag returns True, it means that Iter
+   --  is at the beginning of the tagged range, and that the character at Iter
+   --  is inside the tagged range. In other words, unlike
+   --  Gtk.Text_Iter.Ends_Tag, if Gtk.Text_Iter.Starts_Tag returns True,
+   --  Gtk.Text_Iter.Has_Tag will also return True for the same parameters.
+   --  Since: gtk+ 3.20
+   --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag, or null
 
    function Starts_Word (Iter : Gtk_Text_Iter) return Boolean;
    --  Determines whether Iter begins a natural-language word. Word breaks are
@@ -842,8 +855,8 @@ package Gtk.Text_Iter is
    function Toggles_Tag
       (Iter : Gtk_Text_Iter;
        Tag  : access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class) return Boolean;
-   --  This is equivalent to (gtk_text_iter_begins_tag () ||
-   --  gtk_text_iter_ends_tag ()), i.e. it tells you whether a range with Tag
+   --  This is equivalent to (gtk_text_iter_starts_tag ||
+   --  Gtk.Text_Iter.Ends_Tag), i.e. it tells you whether a range with Tag
    --  applied to it begins or ends at Iter.
    --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag, or null
 

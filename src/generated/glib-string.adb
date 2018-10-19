@@ -48,7 +48,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Tmp_Val);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Append;
 
    ----------------
@@ -70,7 +70,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Tmp_Val, Len);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Append_Len;
 
    ------------------------
@@ -96,7 +96,7 @@ package body Glib.String is
       Tmp_Return := Internal (Self, Tmp_Unescaped, Tmp_Reserved_Chars_Allowed, Boolean'Pos (Allow_Utf8));
       Free (Tmp_Reserved_Chars_Allowed);
       Free (Tmp_Unescaped);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Append_Uri_Escaped;
 
    ------------
@@ -113,7 +113,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Tmp_Rval);
       Free (Tmp_Rval);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Assign;
 
    -----------
@@ -159,7 +159,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Pos, Tmp_Val);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Insert;
 
    ----------------
@@ -183,7 +183,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Pos, Tmp_Val, Len);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Insert_Len;
 
    ---------------
@@ -205,7 +205,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Pos, Tmp_Val);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Overwrite;
 
    -------------------
@@ -229,7 +229,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Pos, Tmp_Val, Len);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Overwrite_Len;
 
    -------------
@@ -246,7 +246,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Tmp_Val);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Prepend;
 
    -----------------
@@ -268,7 +268,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Tmp_Val, Len);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Prepend_Len;
 
 end Glib.String;

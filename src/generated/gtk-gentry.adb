@@ -670,6 +670,19 @@ package body Gtk.GEntry is
       return Internal (Get_Object (The_Entry));
    end Get_Width_Chars;
 
+   ----------------------------------
+   -- Grab_Focus_Without_Selecting --
+   ----------------------------------
+
+   procedure Grab_Focus_Without_Selecting
+      (The_Entry : not null access Gtk_Entry_Record)
+   is
+      procedure Internal (The_Entry : System.Address);
+      pragma Import (C, Internal, "gtk_entry_grab_focus_without_selecting");
+   begin
+      Internal (Get_Object (The_Entry));
+   end Grab_Focus_Without_Selecting;
+
    --------------------------------
    -- Im_Context_Filter_Keypress --
    --------------------------------
@@ -808,14 +821,14 @@ package body Gtk.GEntry is
 
    procedure Set_Cursor_Hadjustment
       (The_Entry  : not null access Gtk_Entry_Record;
-       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
    is
       procedure Internal
          (The_Entry  : System.Address;
           Adjustment : System.Address);
       pragma Import (C, Internal, "gtk_entry_set_cursor_hadjustment");
    begin
-      Internal (Get_Object (The_Entry), Get_Object (Adjustment));
+      Internal (Get_Object (The_Entry), Get_Object_Or_Null (GObject (Adjustment)));
    end Set_Cursor_Hadjustment;
 
    -------------------
@@ -1138,14 +1151,19 @@ package body Gtk.GEntry is
 
    procedure Set_Placeholder_Text
       (The_Entry : not null access Gtk_Entry_Record;
-       Text      : UTF8_String)
+       Text      : UTF8_String := "")
    is
       procedure Internal
          (The_Entry : System.Address;
           Text      : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_entry_set_placeholder_text");
-      Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
+      Tmp_Text : Gtkada.Types.Chars_Ptr;
    begin
+      if Text = "" then
+         Tmp_Text := Gtkada.Types.Null_Ptr;
+      else
+         Tmp_Text := New_String (Text);
+      end if;
       Internal (Get_Object (The_Entry), Tmp_Text);
       Free (Tmp_Text);
    end Set_Placeholder_Text;
@@ -2453,6 +2471,33 @@ package body Gtk.GEntry is
    begin
       Connect_Slot (Self, "insert-at-cursor" & ASCII.NUL, Call, After, Slot);
    end On_Insert_At_Cursor;
+
+   ---------------------
+   -- On_Insert_Emoji --
+   ---------------------
+
+   procedure On_Insert_Emoji
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "insert-emoji" & ASCII.NUL, Call, After);
+   end On_Insert_Emoji;
+
+   ---------------------
+   -- On_Insert_Emoji --
+   ---------------------
+
+   procedure On_Insert_Emoji
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "insert-emoji" & ASCII.NUL, Call, After, Slot);
+   end On_Insert_Emoji;
 
    --------------------
    -- On_Move_Cursor --

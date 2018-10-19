@@ -66,6 +66,7 @@ package Gdk.Screen is
 
    function Get_Active_Window
       (Screen : not null access Gdk_Screen_Record) return Gdk.Gdk_Window;
+   pragma Obsolescent (Get_Active_Window);
    --  Returns the screen's currently active window.
    --  On X11, this is done by inspecting the _NET_ACTIVE_WINDOW property on
    --  the root window, as described in the [Extended Window Manager
@@ -77,6 +78,7 @@ package Gdk.Screen is
    --  The returned window should be unrefed using g_object_unref when no
    --  longer needed.
    --  Since: gtk+ 2.10
+   --  Deprecated since 3.22, 1
 
    function Get_Display
       (Screen : not null access Gdk_Screen_Record)
@@ -103,43 +105,59 @@ package Gdk.Screen is
 
    function Get_Height
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
-   --  Gets the height of Screen in pixels
+   pragma Obsolescent (Get_Height);
+   --  Gets the height of Screen in pixels. The returned size is in
+   --  "application pixels", not in "device pixels" (see
+   --  Gdk.Screen.Get_Monitor_Scale_Factor).
    --  Since: gtk+ 2.2
+   --  Deprecated since 3.22, 1
 
    function Get_Height_Mm
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
-   --  Returns the height of Screen in millimeters. Note that on some X
-   --  servers this value will not be correct.
+   pragma Obsolescent (Get_Height_Mm);
+   --  Returns the height of Screen in millimeters.
+   --  Note that this value is somewhat ill-defined when the screen has
+   --  multiple monitors of different resolution. It is recommended to use the
+   --  monitor dimensions instead.
    --  Since: gtk+ 2.2
+   --  Deprecated since 3.22, 1
 
    function Get_Monitor_At_Point
       (Screen : not null access Gdk_Screen_Record;
        X      : Glib.Gint;
        Y      : Glib.Gint) return Glib.Gint;
+   pragma Obsolescent (Get_Monitor_At_Point);
    --  Returns the monitor number in which the point (X,Y) is located.
    --  Since: gtk+ 2.2
+   --  Deprecated since 3.22, 1
    --  "x": the x coordinate in the virtual screen.
    --  "y": the y coordinate in the virtual screen.
 
    function Get_Monitor_At_Window
       (Screen : not null access Gdk_Screen_Record;
        Window : Gdk.Gdk_Window) return Glib.Gint;
+   pragma Obsolescent (Get_Monitor_At_Window);
    --  Returns the number of the monitor in which the largest area of the
    --  bounding rectangle of Window resides.
    --  Since: gtk+ 2.2
+   --  Deprecated since 3.22, 1
    --  "window": a Gdk.Gdk_Window
 
    procedure Get_Monitor_Geometry
       (Screen      : not null access Gdk_Screen_Record;
        Monitor_Num : Glib.Gint;
        Dest        : out Gdk.Rectangle.Gdk_Rectangle);
+   pragma Obsolescent (Get_Monitor_Geometry);
    --  Retrieves the Gdk.Rectangle.Gdk_Rectangle representing the size and
-   --  position of the individual monitor within the entire screen area.
+   --  position of the individual monitor within the entire screen area. The
+   --  returned geometry is in "application pixels", not in "device pixels"
+   --  (see Gdk.Screen.Get_Monitor_Scale_Factor).
    --  Monitor numbers start at 0. To obtain the number of monitors of Screen,
    --  use Gdk.Screen.Get_N_Monitors.
    --  Note that the size of the entire screen area can be retrieved via
    --  Gdk.Screen.Get_Width and Gdk.Screen.Get_Height.
    --  Since: gtk+ 2.2
+   --  Deprecated since 3.22, 1
    --  "monitor_num": the monitor number
    --  "dest": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
    --  geometry
@@ -147,38 +165,46 @@ package Gdk.Screen is
    function Get_Monitor_Height_Mm
       (Screen      : not null access Gdk_Screen_Record;
        Monitor_Num : Glib.Gint) return Glib.Gint;
+   pragma Obsolescent (Get_Monitor_Height_Mm);
    --  Gets the height in millimeters of the specified monitor.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.22, 1
    --  "monitor_num": number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
 
    function Get_Monitor_Plug_Name
       (Screen      : not null access Gdk_Screen_Record;
        Monitor_Num : Glib.Gint) return UTF8_String;
+   pragma Obsolescent (Get_Monitor_Plug_Name);
    --  Returns the output name of the specified monitor. Usually something
    --  like VGA, DVI, or TV, not the actual product name of the display device.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.22, 1
    --  "monitor_num": number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
 
    function Get_Monitor_Scale_Factor
       (Screen      : not null access Gdk_Screen_Record;
        Monitor_Num : Glib.Gint) return Glib.Gint;
-   --  Returns the internal scale factor that maps from monitor coordiantes to
+   pragma Obsolescent (Get_Monitor_Scale_Factor);
+   --  Returns the internal scale factor that maps from monitor coordinates to
    --  the actual device pixels. On traditional systems this is 1, but on very
    --  high density outputs this can be a higher value (often 2).
-   --  This can be used if you want to create pixel based data for a particula
-   --  monitor, but most of the time you're drawing to a window where it is
-   --  better to use Gdk.Window.Get_Scale_Factor instead.
+   --  This can be used if you want to create pixel based data for a
+   --  particular monitor, but most of the time you're drawing to a window
+   --  where it is better to use Gdk.Window.Get_Scale_Factor instead.
    --  Since: gtk+ 3.10
+   --  Deprecated since 3.22, 1
    --  "monitor_num": number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
 
    function Get_Monitor_Width_Mm
       (Screen      : not null access Gdk_Screen_Record;
        Monitor_Num : Glib.Gint) return Glib.Gint;
+   pragma Obsolescent (Get_Monitor_Width_Mm);
    --  Gets the width in millimeters of the specified monitor, if available.
    --  Since: gtk+ 2.14
+   --  Deprecated since 3.22, 1
    --  "monitor_num": number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
 
@@ -186,8 +212,11 @@ package Gdk.Screen is
       (Screen      : not null access Gdk_Screen_Record;
        Monitor_Num : Glib.Gint;
        Dest        : out Gdk.Rectangle.Gdk_Rectangle);
+   pragma Obsolescent (Get_Monitor_Workarea);
    --  Retrieves the Gdk.Rectangle.Gdk_Rectangle representing the size and
    --  position of the "work area" on a monitor within the entire screen area.
+   --  The returned geometry is in "application pixels", not in "device pixels"
+   --  (see Gdk.Screen.Get_Monitor_Scale_Factor).
    --  The work area should be considered when positioning menus and similar
    --  popups, to avoid placing them below panels, docks or other desktop
    --  components.
@@ -197,23 +226,29 @@ package Gdk.Screen is
    --  Monitor numbers start at 0. To obtain the number of monitors of Screen,
    --  use Gdk.Screen.Get_N_Monitors.
    --  Since: gtk+ 3.4
+   --  Deprecated since 3.22, 1
    --  "monitor_num": the monitor number
    --  "dest": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
    --  workarea
 
    function Get_N_Monitors
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
+   pragma Obsolescent (Get_N_Monitors);
    --  Returns the number of monitors which Screen consists of.
    --  Since: gtk+ 2.2
+   --  Deprecated since 3.22, 1
 
    function Get_Number
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
+   pragma Obsolescent (Get_Number);
    --  Gets the index of Screen among the screens in the display to which it
    --  belongs. (See Gdk.Screen.Get_Display)
    --  Since: gtk+ 2.2
+   --  Deprecated since 3.22, 1
 
    function Get_Primary_Monitor
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
+   pragma Obsolescent (Get_Primary_Monitor);
    --  Gets the primary monitor for Screen. The primary monitor is considered
    --  the monitor where the "main desktop" lives. While normal application
    --  windows typically allow the window manager to place the windows,
@@ -222,6 +257,7 @@ package Gdk.Screen is
    --  If no primary monitor is configured by the user, the return value will
    --  be 0, defaulting to the first monitor.
    --  Since: gtk+ 2.20
+   --  Deprecated since 3.22, 1
 
    function Get_Resolution
       (Screen : not null access Gdk_Screen_Record) return Gdouble;
@@ -269,14 +305,22 @@ package Gdk.Screen is
 
    function Get_Width
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
-   --  Gets the width of Screen in pixels
+   pragma Obsolescent (Get_Width);
+   --  Gets the width of Screen in pixels. The returned size is in
+   --  "application pixels", not in "device pixels" (see
+   --  Gdk.Screen.Get_Monitor_Scale_Factor).
    --  Since: gtk+ 2.2
+   --  Deprecated since 3.22, 1
 
    function Get_Width_Mm
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
-   --  Gets the width of Screen in millimeters. Note that on some X servers
-   --  this value will not be correct.
+   pragma Obsolescent (Get_Width_Mm);
+   --  Gets the width of Screen in millimeters.
+   --  Note that this value is somewhat ill-defined when the screen has
+   --  multiple monitors of different resolution. It is recommended to use the
+   --  monitor dimensions instead.
    --  Since: gtk+ 2.2
+   --  Deprecated since 3.22, 1
 
    function Is_Composited
       (Screen : not null access Gdk_Screen_Record) return Boolean;
@@ -288,9 +332,11 @@ package Gdk.Screen is
 
    function Make_Display_Name
       (Screen : not null access Gdk_Screen_Record) return UTF8_String;
+   pragma Obsolescent (Make_Display_Name);
    --  Determines the name to pass to Gdk.Display.Open to get a
    --  Gdk.Display.Gdk_Display with this screen as the default screen.
    --  Since: gtk+ 2.2
+   --  Deprecated since 3.22, 1
 
    ----------------------
    -- GtkAda additions --
@@ -349,18 +395,30 @@ package Gdk.Screen is
    --  Since: gtk+ 2.2
 
    function Height return Glib.Gint;
-   --  Returns the height of the default screen in pixels.
+   pragma Obsolescent (Height);
+   --  Gets the height of the default screen in pixels. The returned size is
+   --  in "application pixels", not in "device pixels" (see
+   --  Gdk.Screen.Get_Monitor_Scale_Factor).
+   --  Deprecated since 3.22, 1
 
    function Height_Mm return Glib.Gint;
+   pragma Obsolescent (Height_Mm);
    --  Returns the height of the default screen in millimeters. Note that on
    --  many X servers this value will not be correct.
+   --  Deprecated since 3.22, 1
 
    function Width return Glib.Gint;
-   --  Returns the width of the default screen in pixels.
+   pragma Obsolescent (Width);
+   --  Gets the width of the default screen in pixels. The returned size is in
+   --  "application pixels", not in "device pixels" (see
+   --  Gdk.Screen.Get_Monitor_Scale_Factor).
+   --  Deprecated since 3.22, 1
 
    function Width_Mm return Glib.Gint;
+   pragma Obsolescent (Width_Mm);
    --  Returns the width of the default screen in millimeters. Note that on
    --  many X servers this value will not be correct.
+   --  Deprecated since 3.22, 1
 
    ----------------
    -- Properties --

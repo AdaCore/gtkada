@@ -303,18 +303,21 @@ package Gtk.Accel_Group is
    procedure Set_Default_Mod_Mask
       (Default_Mod_Mask : Gdk.Types.Gdk_Modifier_Type);
    --  Sets the modifiers that will be considered significant for keyboard
-   --  accelerators. The default mod mask is GDK_CONTROL_MASK | GDK_SHIFT_MASK
-   --  | GDK_MOD1_MASK | GDK_SUPER_MASK | GDK_HYPER_MASK | GDK_META_MASK, that
-   --  is, Control, Shift, Alt, Super, Hyper and Meta. Other modifiers will by
-   --  default be ignored by Gtk.Accel_Group.Gtk_Accel_Group. You must include
-   --  at least the three modifiers Control, Shift and Alt in any value you
-   --  pass to this function.
+   --  accelerators. The default mod mask depends on the GDK backend in use,
+   --  but will typically include GDK_CONTROL_MASK | GDK_SHIFT_MASK |
+   --  GDK_MOD1_MASK | GDK_SUPER_MASK | GDK_HYPER_MASK | GDK_META_MASK. In
+   --  other words, Control, Shift, Alt, Super, Hyper and Meta. Other modifiers
+   --  will by default be ignored by Gtk.Accel_Group.Gtk_Accel_Group.
+   --  You must include at least the three modifiers Control, Shift and Alt in
+   --  any value you pass to this function.
    --  The default mod mask should be changed on application startup, before
    --  using any accelerator groups.
    --  "default_mod_mask": accelerator modifier mask
 
    function Get_Default_Mod_Mask return Gdk.Types.Gdk_Modifier_Type;
-   --  Gets the value set by Gtk.Accel_Group.Set_Default_Mod_Mask.
+   --  Gets the modifier mask.
+   --  The modifier mask determines which modifiers are considered significant
+   --  for keyboard accelerators. See Gtk.Accel_Group.Set_Default_Mod_Mask.
 
    ----------------
    -- Properties --

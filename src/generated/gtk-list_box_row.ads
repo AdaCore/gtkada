@@ -28,6 +28,8 @@ with Glib.Glist;      use Glib.Glist;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
+with Glib.Variant;    use Glib.Variant;
+with Gtk.Actionable;  use Gtk.Actionable;
 with Gtk.Bin;         use Gtk.Bin;
 with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Widget;      use Gtk.Widget;
@@ -139,6 +141,32 @@ package Gtk.List_Box_Row is
    --  Gtk.List_Box.Gtk_List_Box container.
    --  Since: gtk+ 3.14
 
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Action_Name
+      (Self : not null access Gtk_List_Box_Row_Record) return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_List_Box_Row_Record;
+       Action_Name : UTF8_String := "");
+
+   function Get_Action_Target_Value
+      (Self : not null access Gtk_List_Box_Row_Record)
+       return Glib.Variant.Gvariant;
+
+   procedure Set_Action_Target_Value
+      (Self         : not null access Gtk_List_Box_Row_Record;
+       Target_Value : Glib.Variant.Gvariant);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_List_Box_Row_Record;
+       Detailed_Action_Name : UTF8_String);
+
    ----------------
    -- Properties --
    ----------------
@@ -173,13 +201,31 @@ package Gtk.List_Box_Row is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
+   --  This is a keybinding signal, which will cause this row to be activated.
+   --
+   --  If you want to be notified when the user activates a row (by key or
+   --  not), use the Gtk.List_Box.Gtk_List_Box::row-activated signal on the
+   --  row's parent Gtk.List_Box.Gtk_List_Box.
 
    ----------------
    -- Interfaces --
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Actionable"
+   --
    --  - "Buildable"
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_List_Box_Row_Record, Gtk_List_Box_Row);
+   function "+"
+     (Widget : access Gtk_List_Box_Row_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_List_Box_Row
+   renames Implements_Gtk_Actionable.To_Object;
 
    package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_List_Box_Row_Record, Gtk_List_Box_Row);

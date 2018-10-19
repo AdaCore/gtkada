@@ -147,6 +147,34 @@ package body Gdk.Event is
       return Result;
    end From_Object_Free;
 
+   function From_Object_Free (B : access Gdk_Event_Touchpad_Pinch) return Gdk_Event_Touchpad_Pinch is
+      Result : constant Gdk_Event_Touchpad_Pinch := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Touchpad_Swipe) return Gdk_Event_Touchpad_Swipe is
+      Result : constant Gdk_Event_Touchpad_Swipe := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Pad_Button) return Gdk_Event_Pad_Button is
+      Result : constant Gdk_Event_Pad_Button := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Pad_Axis) return Gdk_Event_Pad_Axis is
+      Result : constant Gdk_Event_Pad_Axis := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object_Free (B : access Gdk_Event_Setting) return Gdk_Event_Setting is
       Result : constant Gdk_Event_Setting := B.all;
    begin
@@ -168,12 +196,21 @@ package body Gdk.Event is
       return Result;
    end From_Object_Free;
 
+   function From_Object_Free (B : access Gdk_Event_Pad_Group_Mode) return Gdk_Event_Pad_Group_Mode is
+      Result : constant Gdk_Event_Pad_Group_Mode := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function From_Object_Free (B : access Gdk_Event_Record) return Gdk_Event_Record is
       Result : constant Gdk_Event_Record := B.all;
    begin
       Glib.g_free (B.all'Address);
       return Result;
    end From_Object_Free;
+
+   use Glib.Object;
 
    function From_Address (C : System.Address) return Gdk_Event is
       function Convert is new Ada.Unchecked_Conversion
@@ -326,6 +363,20 @@ package body Gdk.Event is
       return Tmp_Return /= 0;
    end Get_Center;
 
+   ---------------------
+   -- Get_Device_Tool --
+   ---------------------
+
+   function Get_Device_Tool
+      (Event : Gdk_Event) return Gdk.Device_Tool.Gdk_Device_Tool
+   is
+      function Internal (Event : Gdk_Event) return System.Address;
+      pragma Import (C, Internal, "gdk_event_get_device_tool");
+      Stub_Gdk_Device_Tool : Gdk.Device_Tool.Gdk_Device_Tool_Record;
+   begin
+      return Gdk.Device_Tool.Gdk_Device_Tool (Get_User_Data (Internal (Event), Stub_Gdk_Device_Tool));
+   end Get_Device_Tool;
+
    ------------------
    -- Get_Distance --
    ------------------
@@ -347,6 +398,17 @@ package body Gdk.Event is
       Distance.all := Acc_Distance;
       return Tmp_Return /= 0;
    end Get_Distance;
+
+   --------------------------
+   -- Get_Pointer_Emulated --
+   --------------------------
+
+   function Get_Pointer_Emulated (Event : Gdk_Event) return Boolean is
+      function Internal (Event : Gdk_Event) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_event_get_pointer_emulated");
+   begin
+      return Internal (Event) /= 0;
+   end Get_Pointer_Emulated;
 
    -----------------
    -- Handler_Set --
@@ -411,6 +473,31 @@ package body Gdk.Event is
       end Internal_Cb;
 
    end Handler_Set_User_Data;
+
+   --------------------------
+   -- Is_Scroll_Stop_Event --
+   --------------------------
+
+   function Is_Scroll_Stop_Event (Event : Gdk_Event) return Boolean is
+      function Internal (Event : Gdk_Event) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_event_is_scroll_stop_event");
+   begin
+      return Internal (Event) /= 0;
+   end Is_Scroll_Stop_Event;
+
+   ---------------------
+   -- Set_Device_Tool --
+   ---------------------
+
+   procedure Set_Device_Tool
+      (Event : Gdk_Event;
+       Tool  : access Gdk.Device_Tool.Gdk_Device_Tool_Record'Class)
+   is
+      procedure Internal (Event : Gdk_Event; Tool : System.Address);
+      pragma Import (C, Internal, "gdk_event_set_device_tool");
+   begin
+      Internal (Event, Get_Object_Or_Null (GObject (Tool)));
+   end Set_Device_Tool;
 
    ---------------------------
    -- Triggers_Context_Menu --

@@ -34,6 +34,11 @@
 --  any methods of its own. Instead, you should use the functions that work on
 --  a Gtk.File_Chooser.Gtk_File_Chooser.
 --
+--  If you want to integrate well with the platform you should use the
+--  Gtk.File_Chooser_Native.Gtk_File_Chooser_Native API, which will use a
+--  platform-specific dialog if available and fall back to GtkFileChooserDialog
+--  otherwise.
+--
 --  ## Typical usage ## {gtkfilechooser-typical-usage}
 --
 --  In the simplest of cases, you can the following code to use
@@ -137,6 +142,7 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
+with GNAT.Strings;     use GNAT.Strings;
 with Glib;             use Glib;
 with Glib.Object;      use Glib.Object;
 with Glib.Types;       use Glib.Types;
@@ -198,6 +204,13 @@ package Gtk.File_Chooser_Dialog is
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
 
+   procedure Add_Choice
+      (Chooser       : not null access Gtk_File_Chooser_Dialog_Record;
+       Id            : UTF8_String;
+       Label         : UTF8_String;
+       Options       : GNAT.Strings.String_List;
+       Option_Labels : GNAT.Strings.String_List);
+
    procedure Add_Filter
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
        Filter  : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class);
@@ -217,6 +230,15 @@ package Gtk.File_Chooser_Dialog is
    procedure Set_Action
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
        Action  : Gtk.File_Chooser.Gtk_File_Chooser_Action);
+
+   function Get_Choice
+      (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
+       Id      : UTF8_String) return UTF8_String;
+
+   procedure Set_Choice
+      (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
+       Id      : UTF8_String;
+       Option  : UTF8_String);
 
    function Get_Create_Folders
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
@@ -365,6 +387,10 @@ package Gtk.File_Chooser_Dialog is
    function List_Shortcut_Folders
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record)
        return Gtk.Enums.String_SList.GSlist;
+
+   procedure Remove_Choice
+      (Chooser : not null access Gtk_File_Chooser_Dialog_Record;
+       Id      : UTF8_String);
 
    procedure Remove_Filter
       (Chooser : not null access Gtk_File_Chooser_Dialog_Record;

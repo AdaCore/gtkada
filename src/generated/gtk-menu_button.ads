@@ -32,7 +32,7 @@
 --  If no widget is explicitely added to the Gtk.Menu_Button.Gtk_Menu_Button, a
 --  Gtk.Image.Gtk_Image is automatically created, using an arrow image oriented
 --  according to Gtk.Menu_Button.Gtk_Menu_Button:direction or the generic
---  "view-context-menu" icon if the direction is not set.
+--  "open-menu-symbolic" icon if the direction is not set.
 --
 --  The positioning of the popup is determined by the
 --  Gtk.Menu_Button.Gtk_Menu_Button:direction property of the menu button.
@@ -102,6 +102,11 @@
 --  - valign = end
 --
 --  ![](right-end.png)
+--
+--  # CSS nodes
+--
+--  GtkMenuButton has a single CSS node with name button. To differentiate it
+--  from a plain Gtk.Button.Gtk_Button, it gets the .popup style class.
 --
 --  </description>
 
@@ -277,7 +282,7 @@ package Gtk.Menu_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Menu_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Menu_Button_Record)

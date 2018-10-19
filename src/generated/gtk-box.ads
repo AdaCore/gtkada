@@ -64,6 +64,14 @@
 --  Note that a single-row or single-column Gtk.Grid.Gtk_Grid provides exactly
 --  the same functionality as Gtk.Box.Gtk_Box.
 --
+--  # CSS nodes
+--
+--  GtkBox uses a single CSS node with name box.
+--
+--  In horizontal orientation, the nodes of the children are always arranged
+--  from left to right. So :first-child will always select the leftmost child,
+--  regardless of text direction.
+--
 --  </description>
 --  <description>
 --  See the testgtk example in the GtkAda distribution to see concrete

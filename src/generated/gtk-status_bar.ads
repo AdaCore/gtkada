@@ -51,6 +51,10 @@
 --  its message id was recorded at the time it was added. This is done using
 --  Gtk.Status_Bar.Remove.
 --
+--  # CSS node
+--
+--  GtkStatusbar has a single CSS node with name statusbar.
+--
 --  </description>
 --  <screenshot>gtk-status_bar</screenshot>
 --  <group>Display widgets</group>

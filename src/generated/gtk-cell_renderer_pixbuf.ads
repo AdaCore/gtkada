@@ -116,6 +116,8 @@ package Gtk.Cell_Renderer_Pixbuf is
    Stock_Id_Property : constant Glib.Properties.Property_String;
 
    Stock_Size_Property : constant Glib.Properties.Property_Uint;
+   --  The Gtk.Enums.Gtk_Icon_Size value that specifies the size of the
+   --  rendered icon.
 
    Surface_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Cairo.Cairo_Surface

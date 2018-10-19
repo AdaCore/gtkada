@@ -37,6 +37,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
 with Glib.Object;        use Glib.Object;
+with Glib.Properties;    use Glib.Properties;
 with Gtk.Gesture_Single; use Gtk.Gesture_Single;
 with Gtk.Widget;         use Gtk.Widget;
 
@@ -73,6 +74,15 @@ package Gtk.Gesture_Long_Press is
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_gesture_long_press_get_type");
 
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Delay_Factor_Property : constant Glib.Properties.Property_Double;
+   --  Type: Gdouble
+
    -------------
    -- Signals --
    -------------
@@ -94,7 +104,7 @@ package Gtk.Gesture_Long_Press is
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  This signal is emitted whenever a press moved too far, or was released
-   --  before Gtk.Gesture_Long_Press.Gtk_Gesture_Long_Press:pressed happened.
+   --  before Gtk.Gesture_Long_Press.Gtk_Gesture_Long_Press::pressed happened.
 
    type Cb_Gtk_Gesture_Long_Press_Gdouble_Gdouble_Void is not null access procedure
      (Self : access Gtk_Gesture_Long_Press_Record'Class;
@@ -125,4 +135,7 @@ package Gtk.Gesture_Long_Press is
    --    --  "y": the Y coordinate where the press happened, relative to the widget
    --    --  allocation
 
+private
+   Delay_Factor_Property : constant Glib.Properties.Property_Double :=
+     Glib.Properties.Build ("delay-factor");
 end Gtk.Gesture_Long_Press;

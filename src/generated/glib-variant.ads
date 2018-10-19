@@ -22,9 +22,37 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  Glib.Variant.Gvariant is a variant datatype; it stores a value along with
---  information about the type of that value. The range of possible values is
---  determined by the type. The type system used by Glib.Variant.Gvariant is
+--  Glib.Variant.Gvariant is a variant datatype; it can contain one or more
+--  values along with information about the type of the values.
+--
+--  A Glib.Variant.Gvariant may contain simple types, like an integer, or a
+--  boolean value; or complex types, like an array of two strings, or a
+--  dictionary of key value pairs. A Glib.Variant.Gvariant is also immutable:
+--  once it's been created neither its type nor its content can be modified
+--  further.
+--
+--  GVariant is useful whenever data needs to be serialized, for example when
+--  sending method parameters in DBus, or when saving settings using GSettings.
+--
+--  When creating a new Glib.Variant.Gvariant, you pass the data you want to
+--  store in it along with a string representing the type of data you wish to
+--  pass to it.
+--
+--  For instance, if you want to create a Glib.Variant.Gvariant holding an
+--  integer value you can use:
+--
+--  |[<!-- language="C" --> GVariant *v = g_variant_new ("u", 40); ]|
+--
+--  The string "u" in the first argument tells Glib.Variant.Gvariant that the
+--  data passed to the constructor (40) is going to be an unsigned integer.
+--
+--  More advanced examples of Glib.Variant.Gvariant in use can be found in
+--  documentation for [GVariant format
+--  strings][gvariant-format-strings-pointers].
+--
+--  The range of possible values is determined by the type.
+--
+--  The type system used by Glib.Variant.Gvariant is
 --  Glib.Variant.Gvariant_Type.
 --
 --  Glib.Variant.Gvariant instances always have a type and a value (which are
@@ -221,7 +249,7 @@
 --
 --  To put the entire example together, for our dictionary mapping strings to
 --  variants (with two entries, as given above), we are using 91 bytes of
---  memory for type information, 29 byes of memory for the serialised data, 16
+--  memory for type information, 29 bytes of memory for the serialised data, 16
 --  bytes for buffer management and 24 bytes for the Glib.Variant.Gvariant
 --  instance, or a total of 160 bytes, plus malloc overhead. If we were to use
 --  Glib.Variant.Get_Child_Value to access the two dictionary entries, we would
@@ -332,7 +360,7 @@ package Glib.Variant is
    procedure G_New_Bytestring (Self : out Gvariant; String : Gint_Array);
    --  Creates an array-of-bytes Glib.Variant.Gvariant with the contents of
    --  String. This function is just like g_variant_new_string except that the
-   --  string need not be valid utf8.
+   --  string need not be valid UTF-8.
    --  The nul terminator character at the end of the string is stored in the
    --  array.
    --  Since: gtk+ 2.26
@@ -341,7 +369,7 @@ package Glib.Variant is
    function Gvariant_New_Bytestring (String : Gint_Array) return Gvariant;
    --  Creates an array-of-bytes Glib.Variant.Gvariant with the contents of
    --  String. This function is just like g_variant_new_string except that the
-   --  string need not be valid utf8.
+   --  string need not be valid UTF-8.
    --  The nul terminator character at the end of the string is stored in the
    --  array.
    --  Since: gtk+ 2.26
@@ -519,15 +547,19 @@ package Glib.Variant is
 
    procedure G_New_String (Self : out Gvariant; String : UTF8_String);
    --  Creates a string Glib.Variant.Gvariant with the contents of String.
-   --  String must be valid utf8.
+   --  String must be valid UTF-8, and must not be null. To encode
+   --  potentially-null strings, use g_variant_new with `ms` as the [format
+   --  string][gvariant-format-strings-maybe-types].
    --  Since: gtk+ 2.24
-   --  "string": a normal utf8 nul-terminated string
+   --  "string": a normal UTF-8 nul-terminated string
 
    function Gvariant_New_String (String : UTF8_String) return Gvariant;
    --  Creates a string Glib.Variant.Gvariant with the contents of String.
-   --  String must be valid utf8.
+   --  String must be valid UTF-8, and must not be null. To encode
+   --  potentially-null strings, use g_variant_new with `ms` as the [format
+   --  string][gvariant-format-strings-maybe-types].
    --  Since: gtk+ 2.24
-   --  "string": a normal utf8 nul-terminated string
+   --  "string": a normal UTF-8 nul-terminated string
 
    procedure G_New_Strv
       (Self   : out Gvariant;
@@ -552,23 +584,25 @@ package Glib.Variant is
 
    procedure G_New_Take_String (Self : out Gvariant; String : UTF8_String);
    --  Creates a string Glib.Variant.Gvariant with the contents of String.
-   --  String must be valid utf8.
+   --  String must be valid UTF-8, and must not be null. To encode
+   --  potentially-null strings, use this with g_variant_new_maybe.
    --  This function consumes String. g_free will be called on String when it
    --  is no longer required.
    --  You must not modify or access String in any other way after passing it
    --  to this function. It is even possible that String is immediately freed.
    --  Since: gtk+ 2.38
-   --  "string": a normal utf8 nul-terminated string
+   --  "string": a normal UTF-8 nul-terminated string
 
    function Gvariant_New_Take_String (String : UTF8_String) return Gvariant;
    --  Creates a string Glib.Variant.Gvariant with the contents of String.
-   --  String must be valid utf8.
+   --  String must be valid UTF-8, and must not be null. To encode
+   --  potentially-null strings, use this with g_variant_new_maybe.
    --  This function consumes String. g_free will be called on String when it
    --  is no longer required.
    --  You must not modify or access String in any other way after passing it
    --  to this function. It is even possible that String is immediately freed.
    --  Since: gtk+ 2.38
-   --  "string": a normal utf8 nul-terminated string
+   --  "string": a normal UTF-8 nul-terminated string
 
    procedure G_New_Uint16 (Self : out Gvariant; Value : Guint16);
    --  Creates a new uint16 Glib.Variant.Gvariant instance.
@@ -717,7 +751,7 @@ package Glib.Variant is
        Length : access Gsize) return UTF8_String;
    --  Similar to Glib.Variant.Get_String except that instead of returning a
    --  constant string, the string is duplicated.
-   --  The string will always be utf8 encoded.
+   --  The string will always be UTF-8 encoded.
    --  The return value must be freed using g_free.
    --  Since: gtk+ 2.24
    --  "length": a pointer to a Gsize, to store the length
@@ -861,7 +895,7 @@ package Glib.Variant is
    --  Returns the string value of a Glib.Variant.Gvariant instance with a
    --  string type. This includes the types G_VARIANT_TYPE_STRING,
    --  G_VARIANT_TYPE_OBJECT_PATH and G_VARIANT_TYPE_SIGNATURE.
-   --  The string will always be utf8 encoded.
+   --  The string will always be UTF-8 encoded, and will never be null.
    --  If Length is non-null then the length of the string (in bytes) is
    --  returned there. For trusted values, this information is already known.
    --  For untrusted values, a strlen will be performed.
@@ -1334,7 +1368,8 @@ package Glib.Variant is
    --  case that the type would have been ambiguous, such as with empty
    --  arrays).
    --  In the event that the parsing is successful, the resulting
-   --  Glib.Variant.Gvariant is returned.
+   --  Glib.Variant.Gvariant is returned. It is never floating, and must be
+   --  freed with Glib.Variant.Unref.
    --  In case of any error, null will be returned. If Error is non-null then
    --  it will be set to reflect the error that occurred.
    --  Officially, the language understood by the parser is "any string

@@ -55,6 +55,8 @@ package body Gtk.Flow_Box is
    --  will continue to be called each time a child changes (via
    --  Gtk.Flow_Box_Child.Changed) or when Gtk.Flow_Box.Invalidate_Filter is
    --  called.
+   --  Note that using a filter function is incompatible with using a model
+   --  (see gtk_flow_box_bind_model).
    --  Since: gtk+ 3.12
    --  "filter_func": callback that lets you filter which children to show
    --  "user_data": user data passed to Filter_Func
@@ -72,6 +74,8 @@ package body Gtk.Flow_Box is
    --  continue to be called each time a child changes (via
    --  Gtk.Flow_Box_Child.Changed) and when Gtk.Flow_Box.Invalidate_Sort is
    --  called.
+   --  Note that using a sort function is incompatible with using a model (see
+   --  gtk_flow_box_bind_model).
    --  Since: gtk+ 3.12
    --  "sort_func": the sort function
    --  "user_data": user data passed to Sort_Func
@@ -232,6 +236,25 @@ package body Gtk.Flow_Box is
    begin
       return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child (Get_User_Data (Internal (Get_Object (Self), Idx), Stub_Gtk_Flow_Box_Child));
    end Get_Child_At_Index;
+
+   ----------------------
+   -- Get_Child_At_Pos --
+   ----------------------
+
+   function Get_Child_At_Pos
+      (Self : not null access Gtk_Flow_Box_Record;
+       X    : Glib.Gint;
+       Y    : Glib.Gint) return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
+   is
+      function Internal
+         (Self : System.Address;
+          X    : Glib.Gint;
+          Y    : Glib.Gint) return System.Address;
+      pragma Import (C, Internal, "gtk_flow_box_get_child_at_pos");
+      Stub_Gtk_Flow_Box_Child : Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record;
+   begin
+      return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child (Get_User_Data (Internal (Get_Object (Self), X, Y), Stub_Gtk_Flow_Box_Child));
+   end Get_Child_At_Pos;
 
    ------------------------
    -- Get_Column_Spacing --
@@ -832,14 +855,14 @@ package body Gtk.Flow_Box is
      (System.Address, Cb_GObject_Gtk_Flow_Box_Child_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void, System.Address);
+     (Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void);
+     (System.Address, Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Gtk_Movement_Step_Gint_Void, System.Address);
+     (Cb_GObject_Gtk_Movement_Step_Gint_Boolean, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Gtk_Movement_Step_Gint_Void);
+     (System.Address, Cb_GObject_Gtk_Movement_Step_Gint_Boolean);
 
    procedure Connect
       (Object  : access Gtk_Flow_Box_Record'Class;
@@ -856,7 +879,7 @@ package body Gtk.Flow_Box is
    procedure Connect
       (Object  : access Gtk_Flow_Box_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void;
+       Handler : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean;
        After   : Boolean);
 
    procedure Connect_Slot
@@ -876,7 +899,7 @@ package body Gtk.Flow_Box is
    procedure Connect_Slot
       (Object  : access Gtk_Flow_Box_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Void;
+       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
@@ -889,14 +912,14 @@ package body Gtk.Flow_Box is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Gtk_Flow_Box_Child_Void);
 
-   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Void
+   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_Gtk_Movement_Step_Gint_Void);
+   pragma Convention (C, Marsh_GObject_Gtk_Movement_Step_Gint_Boolean);
 
    procedure Marsh_GObject_Void
       (Closure         : GClosure;
@@ -916,14 +939,14 @@ package body Gtk.Flow_Box is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_Gtk_Flow_Box_Gtk_Flow_Box_Child_Void);
 
-   procedure Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void
+   procedure Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void);
+   pragma Convention (C, Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean);
 
    procedure Marsh_Gtk_Flow_Box_Void
       (Closure         : GClosure;
@@ -979,14 +1002,14 @@ package body Gtk.Flow_Box is
    procedure Connect
       (Object  : access Gtk_Flow_Box_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void;
+       Handler : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean;
        After   : Boolean)
    is
    begin
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void'Access,
+         Marshaller  => Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -1040,7 +1063,7 @@ package body Gtk.Flow_Box is
    procedure Connect_Slot
       (Object  : access Gtk_Flow_Box_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Void;
+       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
    is
@@ -1048,7 +1071,7 @@ package body Gtk.Flow_Box is
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_Gtk_Movement_Step_Gint_Void'Access,
+         Marshaller  => Marsh_GObject_Gtk_Movement_Step_Gint_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
@@ -1074,11 +1097,11 @@ package body Gtk.Flow_Box is
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Flow_Box_Child_Void;
 
-   -----------------------------------------------
-   -- Marsh_GObject_Gtk_Movement_Step_Gint_Void --
-   -----------------------------------------------
+   --------------------------------------------------
+   -- Marsh_GObject_Gtk_Movement_Step_Gint_Boolean --
+   --------------------------------------------------
 
-   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Void
+   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -1086,13 +1109,14 @@ package body Gtk.Flow_Box is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_Gtk_Movement_Step_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gtk_Movement_Step_Gint_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2));
    begin
-      H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2));
+      Set_Value (Return_Value, V'Address);
       exception when E : others => Process_Exception (E);
-   end Marsh_GObject_Gtk_Movement_Step_Gint_Void;
+   end Marsh_GObject_Gtk_Movement_Step_Gint_Boolean;
 
    ------------------------
    -- Marsh_GObject_Void --
@@ -1134,11 +1158,11 @@ package body Gtk.Flow_Box is
       exception when E : others => Process_Exception (E);
    end Marsh_Gtk_Flow_Box_Gtk_Flow_Box_Child_Void;
 
-   ----------------------------------------------------
-   -- Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void --
-   ----------------------------------------------------
+   -------------------------------------------------------
+   -- Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean --
+   -------------------------------------------------------
 
-   procedure Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void
+   procedure Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -1146,13 +1170,14 @@ package body Gtk.Flow_Box is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Flow_Box := Gtk_Flow_Box (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2));
    begin
-      H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2));
+      Set_Value (Return_Value, V'Address);
       exception when E : others => Process_Exception (E);
-   end Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void;
+   end Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean;
 
    -----------------------------
    -- Marsh_Gtk_Flow_Box_Void --
@@ -1234,7 +1259,7 @@ package body Gtk.Flow_Box is
 
    procedure On_Move_Cursor
       (Self  : not null access Gtk_Flow_Box_Record;
-       Call  : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void;
+       Call  : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean;
        After : Boolean := False)
    is
    begin
@@ -1247,7 +1272,7 @@ package body Gtk.Flow_Box is
 
    procedure On_Move_Cursor
       (Self  : not null access Gtk_Flow_Box_Record;
-       Call  : Cb_GObject_Gtk_Movement_Step_Gint_Void;
+       Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is

@@ -125,7 +125,7 @@ package body Gtk.Image is
    ----------------------------------
 
    function Gtk_Image_New_From_Icon_Name
-      (Icon_Name : UTF8_String;
+      (Icon_Name : UTF8_String := "";
        Size      : Gtk.Enums.Gtk_Icon_Size) return Gtk_Image
    is
       Image : constant Gtk_Image := new Gtk_Image_Record;
@@ -295,7 +295,7 @@ package body Gtk.Image is
 
    procedure Gtk_New_From_Icon_Name
       (Image     : out Gtk_Image;
-       Icon_Name : UTF8_String;
+       Icon_Name : UTF8_String := "";
        Size      : Gtk.Enums.Gtk_Icon_Size)
    is
    begin
@@ -463,17 +463,22 @@ package body Gtk.Image is
 
    procedure Initialize_From_Icon_Name
       (Image     : not null access Gtk_Image_Record'Class;
-       Icon_Name : UTF8_String;
+       Icon_Name : UTF8_String := "";
        Size      : Gtk.Enums.Gtk_Icon_Size)
    is
       function Internal
          (Icon_Name : Gtkada.Types.Chars_Ptr;
           Size      : Gtk.Enums.Gtk_Icon_Size) return System.Address;
       pragma Import (C, Internal, "gtk_image_new_from_icon_name");
-      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr;
       Tmp_Return    : System.Address;
    begin
       if not Image.Is_Created then
+         if Icon_Name = "" then
+            Tmp_Icon_Name := Gtkada.Types.Null_Ptr;
+         else
+            Tmp_Icon_Name := New_String (Icon_Name);
+         end if;
          Tmp_Return := Internal (Tmp_Icon_Name, Size);
          Free (Tmp_Icon_Name);
          Set_Object (Image, Tmp_Return);
@@ -738,7 +743,7 @@ package body Gtk.Image is
 
    procedure Set_From_Icon_Name
       (Image     : not null access Gtk_Image_Record;
-       Icon_Name : UTF8_String;
+       Icon_Name : UTF8_String := "";
        Size      : Gtk.Enums.Gtk_Icon_Size)
    is
       procedure Internal
@@ -746,8 +751,13 @@ package body Gtk.Image is
           Icon_Name : Gtkada.Types.Chars_Ptr;
           Size      : Gtk.Enums.Gtk_Icon_Size);
       pragma Import (C, Internal, "gtk_image_set_from_icon_name");
-      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr;
    begin
+      if Icon_Name = "" then
+         Tmp_Icon_Name := Gtkada.Types.Null_Ptr;
+      else
+         Tmp_Icon_Name := New_String (Icon_Name);
+      end if;
       Internal (Get_Object (Image), Tmp_Icon_Name, Size);
       Free (Tmp_Icon_Name);
    end Set_From_Icon_Name;

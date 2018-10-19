@@ -21,6 +21,36 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+--  <description>
+--  GtkIMContextSimple is a simple input method context supporting table-based
+--  input methods. It has a built-in table of compose sequences that is derived
+--  from the X11 Compose files.
+--
+--  GtkIMContextSimple reads additional compose sequences from the first of
+--  the following files that is found: ~/.config/gtk-3.0/Compose, ~/.XCompose,
+--  /usr/share/X11/locale/$locale/Compose (for locales that have a nontrivial
+--  Compose file). The syntax of these files is described in the Compose(5)
+--  manual page.
+--
+--  ## Unicode characters
+--
+--  GtkIMContextSimple also supports numeric entry of Unicode characters by
+--  typing Ctrl-Shift-u, followed by a hexadecimal Unicode codepoint. For
+--  example, Ctrl-Shift-u 1 2 3 Enter yields U+0123 LATIN SMALL LETTER G WITH
+--  CEDILLA, i.e. ģ.
+--
+--  ## Emoji
+--
+--  GtkIMContextSimple also supports entry of Emoji by their name. This works
+--  by first typing Ctrl-Shift-e, followed by an Emoji name.
+--
+--  The following names are supported: - :-) 🙂 - 8-) 😍 - <3 ❤ - kiss 💋 -
+--  grin 😁 - joy 😂 - :-* 😚 - xD 😆 - like 👍 - dislike 👎 - up 👆 - v ✌ - ok
+--  👌 - B-) 😎 - ;-) 😉 - ;-P 😜 - :-p 😋 - 3( 😔 - :-( 😞 - :] 😏 - :'( 😢 -
+--  :_( 😭 - :(( 😩 - :o 😨 - :| 😐 - 3-) 😌 - >( 😠 - >(( 😡 - O:) 😇 - ;o 😰
+--  - 8| 😳 - 8o 😲 - :X 😷 - }:) 😈
+--
+--  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
@@ -51,6 +81,10 @@ package Gtk.IM_Context_Simple is
    -------------
    -- Methods --
    -------------
+
+   procedure Add_Compose_File
+      (Self         : not null access Gtk_IM_Context_Simple_Record;
+       Compose_File : UTF8_String);
 
    procedure Add_Table
       (Self        : not null access Gtk_IM_Context_Simple_Record;

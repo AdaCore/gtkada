@@ -143,9 +143,8 @@ package Glib.Option is
 
    procedure Add_Group (Self : Goption_Context; Group : GOption_Group);
    --  Adds a Glib.Option.GOption_Group to the Context, so that parsing with
-   --  Context will recognize the options in the group. Note that the group
-   --  will be freed together with the context when Glib.Option.Free is called,
-   --  so you must not free the group yourself after adding it to a context.
+   --  Context will recognize the options in the group. Note that this will
+   --  take ownership of the Group and thus the Group should not be freed.
    --  Since: gtk+ 2.6
    --  "group": the group to add
 
@@ -240,6 +239,35 @@ package Glib.Option is
    --  generating `--help` output.
    --  Since: gtk+ 2.6
    --  "group": the group to set as main group
+
+   function Get_Strict_Posix (Self : Goption_Context) return Boolean;
+   --  Returns whether strict POSIX code is enabled.
+   --  See Glib.Option.Set_Strict_Posix for more information.
+   --  Since: gtk+ 2.44
+
+   procedure Set_Strict_Posix
+      (Self         : Goption_Context;
+       Strict_Posix : Boolean);
+   --  Sets strict POSIX mode.
+   --  By default, this mode is disabled.
+   --  In strict POSIX mode, the first non-argument parameter encountered (eg:
+   --  filename) terminates argument processing. Remaining arguments are
+   --  treated as non-options and are not attempted to be parsed.
+   --  If strict POSIX mode is disabled then parsing is done in the GNU way
+   --  where option arguments can be freely mixed with non-options.
+   --  As an example, consider "ls foo -l". With GNU style parsing, this will
+   --  list "foo" in long mode. In strict POSIX style, this will list the files
+   --  named "foo" and "-l".
+   --  It may be useful to force strict POSIX mode when creating "verb style"
+   --  command line tools. For example, the "gsettings" command line tool
+   --  supports the global option "--schemadir" as well as many subcommands
+   --  ("get", "set", etc.) which each have their own set of arguments. Using
+   --  strict POSIX mode will allow parsing the global options up to the verb
+   --  name while leaving the remaining options to be parsed by the relevant
+   --  subcommand (which can be determined by examining the verb name, which
+   --  should be present in argv[1] after parsing).
+   --  Since: gtk+ 2.44
+   --  "strict_posix": the new value
 
    function Get_Summary (Self : Goption_Context) return UTF8_String;
    --  Returns the summary. See Glib.Option.Set_Summary.

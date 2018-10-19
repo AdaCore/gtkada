@@ -24,6 +24,9 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Types;               use Gtkada.Types;
+pragma Warnings(On);
 
 package body Gtk.IM_Context_Simple is
 
@@ -66,6 +69,24 @@ package body Gtk.IM_Context_Simple is
          Set_Object (Self, Internal);
       end if;
    end Initialize;
+
+   ----------------------
+   -- Add_Compose_File --
+   ----------------------
+
+   procedure Add_Compose_File
+      (Self         : not null access Gtk_IM_Context_Simple_Record;
+       Compose_File : UTF8_String)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Compose_File : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "gtk_im_context_simple_add_compose_file");
+      Tmp_Compose_File : Gtkada.Types.Chars_Ptr := New_String (Compose_File);
+   begin
+      Internal (Get_Object (Self), Tmp_Compose_File);
+      Free (Tmp_Compose_File);
+   end Add_Compose_File;
 
    ---------------
    -- Add_Table --

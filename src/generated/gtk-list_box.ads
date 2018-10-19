@@ -44,6 +44,14 @@
 --
 --  The GtkListBox widget was added in GTK+ 3.10.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> list ╰── row[.activatable] ]|
+--
+--  GtkListBox uses a single CSS node named list. Each GtkListBoxRow uses a
+--  single CSS node named row. The row nodes get the .activatable style class
+--  added when appropriate.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -317,6 +325,8 @@ package Gtk.List_Box is
    --  continue to be called each time a row changes (via
    --  Gtk.List_Box_Row.Changed) or when Gtk.List_Box.Invalidate_Filter is
    --  called.
+   --  Note that using a filter function is incompatible with using a model
+   --  (see gtk_list_box_bind_model).
    --  Since: gtk+ 3.10
    --  "filter_func": callback that lets you filter which rows to show
 
@@ -346,6 +356,8 @@ package Gtk.List_Box is
       --  will continue to be called each time a row changes (via
       --  Gtk.List_Box_Row.Changed) or when Gtk.List_Box.Invalidate_Filter is
       --  called.
+      --  Note that using a filter function is incompatible with using a model
+      --  (see gtk_list_box_bind_model).
       --  Since: gtk+ 3.10
       --  "filter_func": callback that lets you filter which rows to show
       --  "user_data": user data passed to Filter_Func
@@ -440,6 +452,8 @@ package Gtk.List_Box is
    --  continue to be called each time a row changes (via
    --  Gtk.List_Box_Row.Changed) and when Gtk.List_Box.Invalidate_Sort is
    --  called.
+   --  Note that using a sort function is incompatible with using a model (see
+   --  gtk_list_box_bind_model).
    --  Since: gtk+ 3.10
    --  "sort_func": the sort function
 
@@ -468,6 +482,8 @@ package Gtk.List_Box is
       --  continue to be called each time a row changes (via
       --  Gtk.List_Box_Row.Changed) and when Gtk.List_Box.Invalidate_Sort is
       --  called.
+      --  Note that using a sort function is incompatible with using a model
+      --  (see gtk_list_box_bind_model).
       --  Since: gtk+ 3.10
       --  "sort_func": the sort function
       --  "user_data": user data passed to Sort_Func

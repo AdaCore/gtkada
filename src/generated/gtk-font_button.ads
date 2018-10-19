@@ -27,6 +27,11 @@
 --  the font. It is suitable widget for selecting a font in a preference
 --  dialog.
 --
+--  # CSS nodes
+--
+--  GtkFontButton has a single CSS node with name button and style class
+--  .font.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -44,6 +49,7 @@ with Gtk.Font_Chooser;  use Gtk.Font_Chooser;
 with Pango.Font;        use Pango.Font;
 with Pango.Font_Face;   use Pango.Font_Face;
 with Pango.Font_Family; use Pango.Font_Family;
+with Pango.Font_Map;    use Pango.Font_Map;
 
 package Gtk.Font_Button is
 
@@ -108,6 +114,7 @@ package Gtk.Font_Button is
    function Get_Font_Name
       (Font_Button : not null access Gtk_Font_Button_Record)
        return UTF8_String;
+   pragma Obsolescent (Get_Font_Name);
    --  Retrieves the name of the currently selected font. This name includes
    --  style and size information as well. If you want to render something with
    --  the font, use this string with Pango.Font.From_String . If you're
@@ -115,12 +122,15 @@ package Gtk.Font_Button is
    --  just query these properties from the Pango.Font.Pango_Font_Description
    --  object.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.22, 1
 
    function Set_Font_Name
       (Font_Button : not null access Gtk_Font_Button_Record;
        Fontname    : UTF8_String) return Boolean;
+   pragma Obsolescent (Set_Font_Name);
    --  Sets or updates the currently-displayed font in font picker dialog.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.22, 1
    --  "fontname": Name of font to display in font chooser dialog
 
    function Get_Show_Size
@@ -236,7 +246,7 @@ package Gtk.Font_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Font_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Font_Button_Record)
@@ -301,6 +311,14 @@ package Gtk.Font_Button is
    function Get_Font_Family
       (Self : not null access Gtk_Font_Button_Record)
        return Pango.Font_Family.Pango_Font_Family;
+
+   function Get_Font_Map
+      (Self : not null access Gtk_Font_Button_Record)
+       return Pango.Font_Map.Pango_Font_Map;
+
+   procedure Set_Font_Map
+      (Self    : not null access Gtk_Font_Button_Record;
+       Fontmap : access Pango.Font_Map.Pango_Font_Map_Record'Class);
 
    function Get_Font_Size
       (Self : not null access Gtk_Font_Button_Record) return Glib.Gint;
@@ -375,7 +393,7 @@ package Gtk.Font_Button is
    --
    --  Note that this signal is only emitted when the user changes the font.
    --  If you need to react to programmatic font changes as well, use the
-   --  notify::font-name signal.
+   --  notify::font signal.
 
    ----------------
    -- Interfaces --

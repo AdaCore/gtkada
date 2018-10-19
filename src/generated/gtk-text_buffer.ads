@@ -390,9 +390,14 @@ package Gtk.Text_Buffer is
        Line_Number : Glib.Gint;
        Byte_Index  : Glib.Gint);
    --  Obtains an iterator pointing to Byte_Index within the given line.
-   --  Byte_Index must be the start of a UTF-8 character, and must not be
-   --  beyond the end of the line. Note bytes, not characters; UTF-8 may encode
-   --  one character as multiple bytes.
+   --  Byte_Index must be the start of a UTF-8 character. Note bytes, not
+   --  characters; UTF-8 may encode one character as multiple bytes.
+   --  Before the 3.20 version, it was not allowed to pass an invalid
+   --  location.
+   --  Since the 3.20 version, if Line_Number is greater than the number of
+   --  lines in the Buffer, the end iterator is returned. And if Byte_Index is
+   --  off the end of the line, the iterator at the end of the line is
+   --  returned.
    --  "iter": iterator to initialize
    --  "line_number": line number counting from 0
    --  "byte_index": byte index from start of line
@@ -402,10 +407,14 @@ package Gtk.Text_Buffer is
        Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
        Line_Number : Glib.Gint;
        Char_Offset : Glib.Gint);
-   --  Obtains an iterator pointing to Char_Offset within the given line. The
-   --  Char_Offset must exist, offsets off the end of the line are not allowed.
-   --  Note characters, not bytes; UTF-8 may encode one character as multiple
-   --  bytes.
+   --  Obtains an iterator pointing to Char_Offset within the given line. Note
+   --  characters, not bytes; UTF-8 may encode one character as multiple bytes.
+   --  Before the 3.20 version, it was not allowed to pass an invalid
+   --  location.
+   --  Since the 3.20 version, if Line_Number is greater than the number of
+   --  lines in the Buffer, the end iterator is returned. And if Char_Offset is
+   --  off the end of the line, the iterator at the end of the line is
+   --  returned.
    --  "iter": iterator to initialize
    --  "line_number": line number counting from 0
    --  "char_offset": char offset from start of line
@@ -599,6 +608,22 @@ package Gtk.Text_Buffer is
    --  Gtk.Text_View.Get_Editable is appropriate here.
    --  "text": text in UTF-8 format
    --  "default_editable": default editability of buffer
+
+   procedure Insert_Markup
+      (Buffer : not null access Gtk_Text_Buffer_Record;
+       Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+       Markup : UTF8_String;
+       Len    : Glib.Gint);
+   --  Inserts the text in Markup at position Iter. Markup will be inserted in
+   --  its entirety and must be nul-terminated and valid UTF-8. Emits the
+   --  Gtk.Text_Buffer.Gtk_Text_Buffer::insert-text signal, possibly multiple
+   --  times; insertion actually occurs in the default handler for the signal.
+   --  Iter will point to the end of the inserted text on return.
+   --  Since: gtk+ 3.16
+   --  "iter": location to insert the markup
+   --  "markup": a nul-terminated UTF-8 string containing [Pango
+   --  markup][PangoMarkupFormat]
+   --  "len": length of Markup in bytes, or -1
 
    procedure Insert_Pixbuf
       (Buffer : not null access Gtk_Text_Buffer_Record;

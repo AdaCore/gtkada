@@ -176,10 +176,12 @@ package body Pango.Fontset is
       (Self : not null access Pango_Fontset_Record)
        return Pango.Font_Metrics.Pango_Font_Metrics
    is
-      function Internal (Self : System.Address) return System.Address;
+      function Internal
+         (Self : System.Address)
+          return access Pango.Font_Metrics.Pango_Font_Metrics;
       pragma Import (C, Internal, "pango_fontset_get_metrics");
    begin
-      return From_Object (Internal (Get_Object (Self)));
+      return From_Object_Free (Internal (Get_Object (Self)));
    end Get_Metrics;
 
 end Pango.Fontset;

@@ -373,7 +373,7 @@ package body Gtk.Tool_Item is
    procedure Set_Proxy_Menu_Item
       (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Menu_Item_Id : UTF8_String;
-       Menu_Item    : not null access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
+       Menu_Item    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class)
    is
       procedure Internal
          (Tool_Item    : System.Address;
@@ -382,7 +382,7 @@ package body Gtk.Tool_Item is
       pragma Import (C, Internal, "gtk_tool_item_set_proxy_menu_item");
       Tmp_Menu_Item_Id : Gtkada.Types.Chars_Ptr := New_String (Menu_Item_Id);
    begin
-      Internal (Get_Object (Tool_Item), Tmp_Menu_Item_Id, Get_Object (Menu_Item));
+      Internal (Get_Object (Tool_Item), Tmp_Menu_Item_Id, Get_Object_Or_Null (GObject (Menu_Item)));
       Free (Tmp_Menu_Item_Id);
    end Set_Proxy_Menu_Item;
 

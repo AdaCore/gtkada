@@ -491,6 +491,8 @@ package Gtk.Tree_Model is
    --  If Child is at the toplevel, and doesn't have a parent, then Iter is
    --  set to an invalid iterator and False is returned. Child will remain a
    --  valid node after this function has been called.
+   --  Iter will be initialized before the lookup is performed, so Child and
+   --  Iter cannot point to the same memory location.
    --  "child": the Gtk.Tree_Model.Gtk_Tree_Iter-struct
 
    procedure Previous
@@ -1032,7 +1034,7 @@ package Gtk.Tree_Model is
 
    type Virtual_Iter_N_Children is access function
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk_Tree_Iter) return Glib.Gint;
+      Iter       : Gtk_Tree_Iter) return Glib.Gint;
    pragma Convention (C, Virtual_Iter_N_Children);
    --  Returns the number of children that Iter has.
    --  As a special case, if Iter is null, then the number of toplevel nodes
@@ -1073,6 +1075,8 @@ package Gtk.Tree_Model is
    --  If Child is at the toplevel, and doesn't have a parent, then Iter is
    --  set to an invalid iterator and False is returned. Child will remain a
    --  valid node after this function has been called.
+   --  Iter will be initialized before the lookup is performed, so Child and
+   --  Iter cannot point to the same memory location.
    --  "iter": the new Gtk.Tree_Model.Gtk_Tree_Iter-struct to set to the
    --  parent
    --  "child": the Gtk.Tree_Model.Gtk_Tree_Iter-struct

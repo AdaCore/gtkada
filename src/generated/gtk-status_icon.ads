@@ -31,10 +31,16 @@
 --
 --  A Gtk.Status_Icon.Gtk_Status_Icon object can be used to display an icon in
 --  a "system tray". The icon can have a tooltip, and the user can interact
---  with it by activating it or popping up a context menu. Critical information
---  should not solely be displayed in a Gtk.Status_Icon.Gtk_Status_Icon, since
---  it may not be visible (e.g. when the user doesn't have a notification area
---  on his panel). This can be checked with Gtk.Status_Icon.Is_Embedded.
+--  with it by activating it or popping up a context menu.
+--
+--  It is very important to notice that status icons depend on the existence
+--  of a notification area being available to the user; you should not use
+--  status icons as the only way to convey critical information regarding your
+--  application, as the notification area may not exist on the user's
+--  environment, or may have been removed. You should always check that a
+--  status icon has been embedded into a notification area by using
+--  Gtk.Status_Icon.Is_Embedded, and gracefully recover if the function returns
+--  False.
 --
 --  On X11, the implementation follows the [FreeDesktop System Tray
 --  Specification](http://www.freedesktop.org/wiki/Specifications/systemtray-spec).
@@ -42,11 +48,16 @@
 --  in the GNOME 2 and KDE panel applications.
 --
 --  Note that a GtkStatusIcon is not a widget, but just a Glib.Object.GObject.
---  Making it a widget would be impractical, since the system tray on Win32
+--  Making it a widget would be impractical, since the system tray on Windows
 --  doesn't allow to embed arbitrary widgets.
 --
 --  GtkStatusIcon has been deprecated in 3.14. You should consider using
---  notifications or more modern platform-specific APIs instead.
+--  notifications or more modern platform-specific APIs instead. GLib provides
+--  the Glib.Notification.Gnotification API which works well with
+--  Gtk.Application.Gtk_Application on multiple platforms and environments, and
+--  should be the preferred mechanism to notify the users of transient status
+--  updates. See this [HowDoI](https://wiki.gnome.org/HowDoI/GNotification) for
+--  code examples.
 --
 --  </description>
 
@@ -435,8 +446,8 @@ package Gtk.Status_Icon is
    function Get_X11_Window_Id
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Guint32;
    pragma Obsolescent (Get_X11_Window_Id);
-   --  This function is only useful on the X11/freedesktop.org platform. It
-   --  returns a window ID for the widget in the underlying status icon
+   --  This function is only useful on the X11/freedesktop.org platform.
+   --  It returns a window ID for the widget in the underlying status icon
    --  implementation. This is useful for the Galago notification service,
    --  which can send a window ID in the protocol in order for the server to
    --  position notification windows pointing to a status icon reliably.
