@@ -231,6 +231,10 @@ package Gtk.Arguments is
    function Unchecked_To_Cairo_Rectangle_Int
      (Args : Glib.Values.C_GValues; Num : Guint)
      return Cairo.Region.Cairo_Rectangle_Int;
+   function Unchecked_To_Gdk_Rectangle
+     (Args : Glib.Values.C_GValues; Num : Guint)
+     return Cairo.Region.Cairo_Rectangle_Int
+     renames Unchecked_To_Cairo_Rectangle_Int;
    function Unchecked_To_Gtk_Allocation
      (Args : Glib.Values.C_GValues; Num : Guint)
      return Gtk.Widget.Gtk_Allocation
