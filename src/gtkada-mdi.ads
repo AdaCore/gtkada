@@ -36,6 +36,7 @@ with GNAT.Strings;
 with Glib;                use Glib;
 with Glib.Simple_Action;
 with Glib.Menu;
+with Glib.Object;
 with Glib.Xml_Int;
 with Glib.Values;
 with Gdk.Event;
@@ -1147,25 +1148,143 @@ package Gtkada.MDI is
    --
    --  </signals>
 
+   type Cb_Gtkada_MDI_Window_MDI_Child_Void is not null access procedure
+     (Self  : access MDI_Window_Record'Class;
+      Child : not null access MDI_Child_Record'Class);
+
+   type Cb_GObject_MDI_Child_Void is not null access procedure
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Child : not null access MDI_Child_Record'Class);
+
    Signal_Child_Selected       : constant Signal_Name := "child_selected";
+   procedure On_Child_Selected
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False);
+   procedure On_Child_Selected
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False);
+
    Signal_Float_Child          : constant Signal_Name := "float_child";
+   procedure On_Float_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False);
+   procedure On_Float_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False);
+
    Signal_Child_Title_Changed  : constant Signal_Name := "child_title_changed";
+   procedure On_Child_Title_Changed
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False);
+   procedure On_Child_Title_Changed
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False);
+
    Signal_Child_Added          : constant Signal_Name := "child_added";
+   procedure On_Child_Added
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False);
+   procedure On_Child_Added
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False);
+
    Signal_Child_Removed        : constant Signal_Name := "child_removed";
+   procedure On_Child_Removed
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False);
+   procedure On_Child_Removed
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False);
+
    Signal_Child_Icon_Changed   : constant Signal_Name := "child_icon_changed";
+   procedure On_Child_Icon_Changed
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False);
+   procedure On_Child_Icon_Changed
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False);
+
    Signal_Delete_Event         : constant Signal_Name := "delete_event";
-   Signal_Selected             : constant Signal_Name := "selected";
+   procedure On_Delete_Event
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False);
+   procedure On_Delete_Event
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False);
+
    Signal_Unfloat_Child        : constant Signal_Name := "unfloat_child";
+   procedure On_Unfloat_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False);
+   procedure On_Unfloat_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False);
+
    Signal_Before_Unfloat_Child : constant Signal_Name :=
      "before_unfloat_child";
+   procedure On_Before_Unfloat_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False);
+   procedure On_Before_Unfloat_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False);
+
+   Signal_Before_Destroy_Child : constant Signal_Name :=
+     "before_destroy_child";
+   procedure On_Before_Destroy_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False);
+   procedure On_Before_Destroy_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False);
+
+   Signal_Before_Remove_Child  : constant Signal_Name := "before_remove_child";
+   procedure On_Before_Remove_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False);
+   procedure On_Before_Remove_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False);
+
+   Signal_Selected             : constant Signal_Name := "selected";
    Signal_Perspective_Changed  : constant Signal_Name := "perspective_changed";
    Signal_Perspectives_Added   : constant Signal_Name := "perspectives_added";
    Signal_Children_Reorganized : constant Signal_Name :=
                                    "children_reorganized";
    Signal_Child_State_Changed  : constant Signal_Name := "child_state_changed";
-   Signal_Before_Destroy_Child : constant Signal_Name :=
-     "before_destroy_child";
-   Signal_Before_Remove_Child  : constant Signal_Name := "before_remove_child";
    Signal_Maximize_Child       : constant Signal_Name :=
      "double_click_child_tab";
 
