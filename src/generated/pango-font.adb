@@ -87,6 +87,30 @@ package body Pango.Font is
          Stretch_Map (Stretch) & Gint'Image (Size));
    end To_Font_Description;
 
+   function Get_Style_As_String
+     (Self : Pango_Font_Description) return String
+   is
+      Style : constant Pango.Enums.Style := Get_Style (Self);
+   begin
+      if Style = Pango.Enums.Pango_Style_Normal then
+         return "Normal";
+      else
+         return Style_Map (Style);
+      end if;
+   end Get_Style_As_String;
+
+   function Get_Weight_As_String
+     (Self : Pango_Font_Description) return String
+   is
+      Weight : constant Pango.Enums.Weight := Get_Weight (Self);
+   begin
+      if Weight = Pango.Enums.Pango_Weight_Normal then
+         return "Normal";
+      else
+         return Weight_Map (Weight);
+      end if;
+   end Get_Weight_As_String;
+
    function To_Address
      (F : Pango_Font_Description; Add : System.Address)
    return System.Address
