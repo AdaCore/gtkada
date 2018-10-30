@@ -370,6 +370,14 @@ package Pango.Font is
       Size        : Gint := 0) return Pango_Font_Description;
    --  Create a new font decription from the given parameters.
 
+   function Get_Style_As_String
+     (Self : Pango_Font_Description) return String;
+   -- Return the font's style as a string (e.g: 'Oblique').
+
+   function Get_Weight_As_String
+     (Self : Pango_Font_Description) return String;
+   -- Return the font's style as a string (e.g: 'Oblique').
+
    function To_Address
      (F : Pango_Font_Description; Add : System.Address) return System.Address;
    package Desc_Properties is new Generic_Internal_Boxed_Property
