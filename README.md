@@ -12,7 +12,7 @@ General Information
 
 The home page for GtkAda is
 
-  - http://libre.adacore.com/tools/gtkada/
+  - https://github.com/AdaCore/gtkada
 
 The home page for gtk is
 
