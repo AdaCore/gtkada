@@ -1509,7 +1509,6 @@ package body Gtkada.MDI is
       Note         : Gtk_Notebook;
       Success      : Boolean;
       pragma Unreferenced (Success);
-      Default_Bg   : Gdk.RGBA.Gdk_RGBA;
       Homogeneous_Changed : constant Boolean :=
          MDI.Homogeneous_Tabs /= Homogeneous_Tabs;
 
@@ -1545,10 +1544,6 @@ package body Gtkada.MDI is
       then
          MDI.Focus_Title_Color := Focus_Title_Color;
          MDI.Title_Bar_Color := Title_Bar_Color;
-
-         Get_Style_Context (MDI).Get_Background_Color
-           (Gtk.Enums.Gtk_State_Flag_Normal,
-            Default_Bg);
 
          declare
             Err  : aliased GError;
@@ -4252,9 +4247,11 @@ package body Gtkada.MDI is
          end if;
 
          Show_All (Menu);
-         Popup (Menu,
-                Button        => 3,
-                Activate_Time => Gdk.Event.Get_Time (Event));
+
+         if Get_Button (Event) = 3 then
+            Menu.Popup_At_Pointer (Event);
+         end if;
+
          return True;
 
       elsif Get_Event_Type (Event) = Gdk_2button_Press

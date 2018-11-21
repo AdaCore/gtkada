@@ -1104,7 +1104,11 @@ package body Gtkada.Canvas_View is
          Gdk_New (Window, W.Get_Parent_Window, Attr, Mask);
          Register_Window (W, Window);
          W.Set_Window (Window);
+
+         --  Disable the 'call to obsolescent procedure' warning
+         pragma Warnings (Off);
          Get_Style_Context (W).Set_Background (Window);
+         pragma Warnings (On);
 
          --  See also handler for size_allocate, which moves the window to its
          --  proper location.

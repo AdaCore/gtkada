@@ -456,7 +456,10 @@ package body Gtkada.Style is
       Ctx.Get_Border (Gtk_State_Flag_Normal, Border);
 
       X_Thick := Gdouble (Border.Left + Border.Right);
+
+      pragma Warnings (Off);
       Ctx.Get_Background_Color (Gtk_State_Flag_Normal, Color);
+      pragma Warnings (Off);
 
       Cairo.Save (Cr);
 
@@ -744,8 +747,11 @@ package body Gtkada.Style is
       end loop;
 
       if Window_Provider /= null then
+         --  Disable the 'call to obsolescent procedure' warning
+         pragma Warnings (Off);
          Get_Style_Context (Window_Provider).Get_Background_Color
            (Gtk_State_Flag_Normal, Color);
+         pragma Warnings (On);
       end if;
 
       Ctx := Create (Surface);
@@ -977,10 +983,12 @@ package body Gtkada.Style is
    is
       use Device_List;
       Screen : constant Gdk_Screen := Widget.Get_Screen;
-      Mgr : constant Gdk_Device_Manager :=
+      Mgr    : constant Gdk_Device_Manager :=
         Get_Device_Manager (Screen.Get_Display);
-      L : Device_List.Glist := Mgr.List_Devices (Gdk_Device_Type_Master);
-      L2 : Device_List.Glist := L;
+      pragma Warnings (Off);
+      L      : Device_List.Glist := Mgr.List_Devices (Gdk_Device_Type_Master);
+      pragma Warnings (On);
+      L2     : Device_List.Glist := L;
       Device : Gdk_Device;
    begin
       while L2 /= Device_List.Null_List loop

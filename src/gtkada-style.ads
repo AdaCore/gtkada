@@ -160,12 +160,16 @@ package Gtkada.Style is
       Shadow_Type         : Gtk.Enums.Gtk_Shadow_Type;
       X, Y, Width, Height : Glib.Gint;
       Corner_Radius       : Glib.Gdouble := 0.0);
+   pragma Obsolescent (Draw_Shadow);
    --  Draws a Frame of size Width x Height at position (X, Y) and (X2, Y2)
    --  using the specified color.
    --  Corner_Radius allows you to draw a rounded frame if set to a value > 0.
    --
    --  Additional drawing styles can be specified by using Cairo.Set_Line_XXXX
    --  on the Cairo_Context before calling this procedure.
+   --
+   --  This function is now deprecated: you can use the CSS 'box-shadow'
+   --  property to draw shadows around widgets instead.
 
    procedure Draw_Rectangle
      (Cr                  : Cairo.Cairo_Context;
@@ -492,6 +496,7 @@ package Gtkada.Style is
    function Snapshot
      (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
       return Cairo.Cairo_Surface;
+   pragma Obsolescent (Snapshot);
    --  Create a snapshot of the widget.
    --  This allocates a new surface and draws the widget on it. The surface
    --  needs to be destroyed when you are done with it using Surface_Destroy.
@@ -504,6 +509,9 @@ package Gtkada.Style is
    --  its own window. In this case, you should use:
    --      Get_Allocation (Widget, Alloc);
    --      --  and replace 0.0 with Gdouble (Alloc.X)
+   --
+   --  This function is now deprecated: you can use the Gtk.Offscreen_Window
+   --  package to create snapshots of widgets instead.
 
    procedure Draw_Overlay
      (Widget  : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -550,11 +558,16 @@ package Gtkada.Style is
    function Get_First_Device
      (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
       Source : Gdk.Types.Gdk_Input_Source) return Gdk.Device.Gdk_Device;
+   pragma Obsolescent (Get_First_Device);
    --  Return the first device that matches the given source.
    --  This can be used to simulate keyboard events (using Source_Keyboard)
    --  or mouse events (Source_Mouse) for instance.
    --  The returned value (if not null) must be Ref-ed before being assigned
    --  to an event for instance.
+   --
+   --  This function is now deprecated: you can use respectively the
+   --  Gdk.Seat.Get_Display, Gdk.Seat.Get_Pointer, Gdk.Seat.Get_Keyboard
+   --  functions instead.
 
 private
 
