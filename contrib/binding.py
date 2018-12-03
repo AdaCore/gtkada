@@ -449,7 +449,23 @@ class SubprogramProfile(object):
             n = p.name
             is_temporary = False
 
-            if self.returns is not None and p.mode != "in" and p.ada_binding:
+            # Restore original mode only for arrays now
+            # because generator is not adopted for c_mode = p.c_mod and
+            # generates incorrect code for example for instance parameters
+            c_mode = p.mode
+            if p.type.isArray and p.c_mode == "out" \
+               and p.is_caller_allocates:
+                # C expects an allocated array like for "in out" mode
+                # so we will pass an address of buffer's first element
+                # and do not expect allocation in C
+                c_mode = "in"
+
+            # Pass the array as is, without creating temporary variable
+            as_array = p.type.isArray and p.is_caller_allocates \
+                and p.c_mode in ("in", "in out", "out")
+
+            if self.returns is not None and p.mode != "in" and p.ada_binding \
+               and as_array is False:
                 n = "Acc_%s" % p.name
                 var = Local_Var(
                     name=n,
@@ -476,11 +492,14 @@ class SubprogramProfile(object):
             # end up with Interfaces.C.Strings.chars_ptr=""
 
             result.append(Parameter(
-                name=n, mode=p.mode, type=p.type,
+                name=n, mode=c_mode, type=p.type,
                 for_function=self.returns is not None,
                 default=p.default if not p.ada_binding else None,
                 is_temporary_variable=is_temporary,
-                ada_binding=p.ada_binding))
+                ada_binding=p.ada_binding,
+                c_mode=p.c_mode,
+                ownership=p.ownership,
+                is_caller_allocates=p.is_caller_allocates))
 
         return result
 
@@ -645,17 +664,25 @@ class SubprogramProfile(object):
             assert direction in ("in", "out", "inout", "access"), \
                 "Invalid value for direction: '%s'" % direction
 
+            is_allocated = (gtkparam.get_caller_allocates() or
+                            p.get("caller-allocates", None)) == "1"
+
+            ownership = (gtkparam.get_transfer_ownership() or
+                         p.get("transfer-ownership", "none")) == "full"
+
             if direction == "inout":
-                mode = "in out"
+                c_mode = "in out"
             elif direction in ("out", "access"):
-                mode = direction
+                c_mode = direction
             elif type.is_ptr:
-                mode = "in out"
+                c_mode = "in out"
             else:
-                mode = "in"
+                c_mode = "in"
 
             if is_function and direction not in ("in", "access"):
                 mode = "access"
+            else:
+                mode = c_mode
 
             doc = _get_clean_doc(p)
             if doc:
@@ -667,7 +694,10 @@ class SubprogramProfile(object):
                           mode=mode,
                           default=default,
                           ada_binding=ada_binding,
-                          doc=doc))
+                          doc=doc,
+                          c_mode=c_mode,
+                          ownership=ownership,
+                          is_caller_allocates=is_allocated))
 
         return result
 

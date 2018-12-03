@@ -80,6 +80,9 @@
 --  <group>Glib, the general-purpose library</group>
 --  <testgtk>create_sources.adb</testgtk>
 
+with Glib.Poll;
+with Glib.Spawn;
+
 package Glib.Main is
 
    --------------------
@@ -309,6 +312,49 @@ package Glib.Main is
    --  Gets the context with which the source is associated. Calling this
    --  function on a destroyed source is an error. The returned value is Null
    --  for sources that haven't been attached yet
+
+   procedure Add_Poll
+     (Source : G_Source;
+      Fd     : Glib.Poll.GPoll_FD);
+   --  Adds a file descriptor to the set of file descriptors polled for this
+   --  source.
+
+   procedure Remove_Poll
+     (Source : G_Source;
+      Fd     : Glib.Poll.GPoll_FD);
+   --  Removes a file descriptor from the set of file descriptors polled
+   --  for this source.
+
+   generic
+      type User_Data is limited private;
+   function Generic_Child_Add_Watch
+     (pid      : Glib.Spawn.GPid;
+      callback : access procedure
+        (pid    : Glib.Spawn.GPid;
+         status : Glib.Gint;
+         data   : access User_Data);
+      data   : access User_Data) return G_Source_Id;
+   pragma Import (C, Generic_Child_Add_Watch, "g_child_watch_add");
+   --  Sets a function to be called when the child indicated by pid exits, at a
+   --  default priority, G_PRIORITY_DEFAULT.
+   --
+   --  If you obtain pid from g_spawn_async() or g_spawn_async_with_pipes()
+   --  you will need to pass G_SPAWN_DO_NOT_REAP_CHILD as flag to the spawn
+   --  function for the child watching to work.
+   --
+   --  Note that on platforms where GPid must be explicitly closed (see
+   --  g_spawn_close_pid()) pid must not be closed while the source is still
+   --  active. Typically, you will want to call g_spawn_close_pid() in the
+   --  callback function for the source.
+   --
+   --  GLib supports only a single callback per process id. On POSIX platforms,
+   --  the same restrictions mentioned for g_child_watch_source_new() apply to
+   --  this function.
+   --
+   --  This internally creates a main loop source using
+   --  g_child_watch_source_new() and attaches it to the main loop context
+   --  using g_source_attach(). You can do these steps manually if you need
+   --  greater control.
 
    ----------------------
    -- Idle and timeout --
