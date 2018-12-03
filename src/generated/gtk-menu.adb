@@ -123,6 +123,9 @@ package body Gtk.Menu is
    --  "button": the mouse button which was pressed to initiate the event
    --  "activate_time": the time at which the activation event occurred
 
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Menu_Detach_Func, System.Address);
+
    function To_Gtk_Menu_Position_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Menu_Position_Func);
 
@@ -290,7 +293,7 @@ package body Gtk.Menu is
       if Detacher = null then
          C_Gtk_Menu_Attach_To_Widget (Get_Object (Menu), Get_Object (Attach_Widget), System.Null_Address);
       else
-         C_Gtk_Menu_Attach_To_Widget (Get_Object (Menu), Get_Object (Attach_Widget), Detacher'Address);
+         C_Gtk_Menu_Attach_To_Widget (Get_Object (Menu), Get_Object (Attach_Widget), To_Address (Detacher));
       end if;
    end Attach_To_Widget;
 

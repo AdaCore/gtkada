@@ -110,6 +110,9 @@ package body Gdk.Window is
    function To_Address is new Ada.Unchecked_Conversion
      (Gdk_Window_Child_Func, System.Address);
 
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gdk_Window_Invalidate_Handler_Func, System.Address);
+
    function Internal_Gdk_Window_Child_Func
       (Window    : Gdk.Gdk_Window;
        User_Data : System.Address) return Glib.Gboolean;
@@ -857,7 +860,7 @@ package body Gdk.Window is
       if Handler = null then
          C_Gdk_Window_Set_Invalidate_Handler (Self, System.Null_Address);
       else
-         C_Gdk_Window_Set_Invalidate_Handler (Self, Handler'Address);
+         C_Gdk_Window_Set_Invalidate_Handler (Self, To_Address (Handler));
       end if;
    end Set_Invalidate_Handler;
 

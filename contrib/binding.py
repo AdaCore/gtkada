@@ -1128,6 +1128,10 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                     "\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
                 section.add(
                     "\npragma Convention (C, %s);" % funcname)
+                section.add(
+                    ("function To_Address is new Ada.Unchecked_Conversion\n"
+                     + "   (%s, System.Address);\n") % (cb_type_name,),
+                    in_spec=False)
 
             else:
                 # Generate a simpler version of the callback, without
@@ -1207,11 +1211,11 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
         if user_data is None:
             values = {destroy: "System.Null_Address",
-                      cb.name.lower(): "%s'Address" % cb.name}
+                      cb.name.lower(): "To_Address (%s)" % cb.name}
         elif cb_user_data is None:
             values = {destroy: "System.Null_Address",
                       cb.name.lower(): "Internal_%s'Address" % funcname,
-                      user_data.lower(): "%s'Address" % cb.name}
+                      user_data.lower(): "To_Address (%s)" % cb.name}
         else:
             nouser_profile.remove_param(destroy_data_params + [user_data])
             values = {destroy: "System.Null_Address",
