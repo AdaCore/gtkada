@@ -29,24 +29,6 @@ pragma Warnings(On);
 
 package body Glib.Spawn is
 
-   ------------------------------
-   -- Spawn_Command_Line_Async --
-   ------------------------------
-
-   function Spawn_Command_Line_Async
-     (Command_Line : UTF8_String;
-      Error        : access Glib.Error.GError)
-   return Boolean
-   is
-      function Internal
-        (Command_Line : UTF8_String;
-         Error        : access Glib.Error.GError)
-      return Glib.Gboolean;
-      pragma Import (C, Internal, "g_spawn_command_line_async");
-   begin
-      return Internal (Command_Line, Error) /= 0;
-   end Spawn_Command_Line_Async;
-
    -----------------------------
    -- Spawn_Check_Exit_Status --
    -----------------------------
