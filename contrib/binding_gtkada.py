@@ -190,8 +190,9 @@ Where the package node is defined as follows:
     </package>
 """
 
-from xml.etree.cElementTree import parse, SubElement
-from adaformat import AdaType, GObject, List, naming, Enum, Record
+from xml.etree.cElementTree import parse, QName, tostring, SubElement
+from adaformat import AdaType, GObject, CType, Proxy, List, naming,\
+    Enum, package_name, Record
 
 
 class GtkAda(object):
@@ -578,22 +579,6 @@ class GtkAdaParameter(object):
         if self.default is not None:
             return self.default.get("direction", None)
         return None
-
-    def get_caller_allocates(self):
-        value = None
-        if self.node is not None:
-            value = self.node.get("caller-allocates", None)
-        if self.default is not None:
-            value = self.default.get("caller-allocates", None)
-        return value
-
-    def get_transfer_ownership(self):
-        value = None
-        if self.node is not None:
-            value = self.node.get("transfer-ownership", None)
-        if self.default is not None:
-            value = self.default.get("transfer-ownership", None)
-        return value
 
     def ada_name(self):
         name = None

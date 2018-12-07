@@ -135,7 +135,6 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "--GFilterOutputStream",  # Not tested yet, from Gio
            "--GIOExtension",  # Not tested yet, from Gio
            "--GIOExtensionPoint",  # Not tested yet, from Gio
-           "GIOChannel",
            "--GIOModule",  # Not tested yet, from Gio
            "--GIOModuleScope",  # Not tested yet, from Gio
            "--GIOSchedulerJob",  # Not tested yet, from Gio
@@ -158,8 +157,6 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GNotification",
            "--GOutputStream",  # Not tested yet, from Gio
            "GOptionContext",
-           "GPoll",
-           "Spawn",
 
            "--GParamSpec",   # Bound manually
            "--GParamSpecBoolean",   # Bound manually
@@ -669,7 +666,6 @@ naming.type_exceptions = {
     "gdouble":  Proxy("Gdouble", "Glib.Properties.Property_Double"),
     "double":   Proxy("Gdouble", "Glib.Properties.Property_Double"),
     "gshort":   Proxy("Gshort",  "Glib.Properties.Property_Int"),
-    "gushort":  Proxy("Gushort",  "Glib.Properties.Property_Uint"),
     "int":      Proxy("Glib.Gint",    "Glib.Properties.Property_Int"),
     "gint":     Proxy("Glib.Gint",    "Glib.Properties.Property_Int",
                       default_record_field="0"),

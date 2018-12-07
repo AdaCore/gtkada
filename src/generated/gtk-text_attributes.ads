@@ -75,7 +75,7 @@ package Gtk.Text_Attributes is
       Bg_Full_Height : Guint;
       Editable : Guint;
       Pg_Bg_Rgba : Gdk.RGBA.Gdk_RGBA;
-      Padding : Gint_Array (1 .. 3);
+      Padding : System.Address;
    end record;
    pragma Convention (C, Gtk_Text_Attributes);
 

@@ -607,7 +607,7 @@ package Glib.Application is
       (Self : not null access Gapplication_Command_Line_Record)
        return GNAT.Strings.String_List;
    --  Gets the contents of the 'environ' variable of the command line
-   --  invocation, as would be returned by Glib.Spawn.Get_Environ, ie as a
+   --  invocation, as would be returned by g_get_environ, ie as a
    --  null-terminated list of strings in the form 'NAME=VALUE'. The strings
    --  may contain non-utf8 data.
    --  The remote application usually does not send an environment. Use
