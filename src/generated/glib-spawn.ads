@@ -426,7 +426,20 @@ package Glib.Spawn is
    --  Returns
    --  TRUE on success, FALSE if an error was set
 
-
+   function Spawn_Command_Line_Async
+     (Command_Line : UTF8_String;
+      Error        : access Glib.Error.GError)
+   return Boolean;
+   --  A simple version of Glib.Spawn.Spawn_Async that parses a command line
+   --  with g_shell_parse_argv and passes it to Glib.Spawn.Spawn_Async. Runs a
+   --  command line in the background. Unlike Glib.Spawn.Spawn_Async, the
+   --  Glib.Spawn.G_Spawn_Search_Path flag is enabled, other flags are not.
+   --  Note that Glib.Spawn.G_Spawn_Search_Path can have security implications,
+   --  so consider using Glib.Spawn.Spawn_Async directly if appropriate.
+   --  Possible errors are those from g_shell_parse_argv and
+   --  Glib.Spawn.Spawn_Async.
+   --  The same concerns on Windows apply as for g_spawn_command_line_sync.
+   --  "command_line": a command line
 
    function Spawn_Check_Exit_Status
      (Exit_Status : Glib.Gint;
