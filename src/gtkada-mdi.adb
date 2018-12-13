@@ -7556,15 +7556,26 @@ package body Gtkada.MDI is
 
                if Child.State = Floating then
                   declare
-                     Win : constant Gtk_Widget :=
-                       Get_Toplevel (Child.Initial);
+                     Win  : constant Gtk_Widget :=
+                              Get_Toplevel (Child.Initial);
+                     X, Y : Gint;
                   begin
+
+                     --  Save the floating window's size
                      --  Note: This size doesn't include the size of the window
                      --  decorations, doesn't seem to be a way to do this.
+
                      Add (Child_Node, "height",
                           Gint'Image (Win.Get_Allocated_Height));
                      Add (Child_Node, "width",
                           Gint'Image (Win.Get_Allocated_Width));
+
+                     --  Save the floating window's coordinates
+
+                     Get_Root_Origin (Get_Window (Win), X, Y);
+
+                     Add (Child_Node, "X", Gint'Image (X));
+                     Add (Child_Node, "Y", Gint'Image (Y));
                   end;
                end if;
 
