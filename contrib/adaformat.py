@@ -781,6 +781,14 @@ class AdaTypeArray(CType):
                 self.cparam,      # name of C type for out parameters
                 c)                # convert from previous line to Ada type
 
+    def record_field_type(self, pkg=None):
+        if self.isArray and self.array_fixed_size is not None:
+            return "%s (1 .. %s)" % (
+                self.as_ada_param(pkg=pkg),
+                self.array_fixed_size)
+        else:
+            return self.as_c_param(pkg=pkg)
+
 
 class AdaNaming(object):
 
@@ -924,6 +932,9 @@ class AdaNaming(object):
             isArray = True
         elif name in ("array_of_gdouble", ):
             t = AdaTypeArray("gdouble")
+            isArray = True
+        elif name in ("array_of_gchar", ):
+            t = AdaTypeArray("gchar")
             isArray = True
         elif cname == "void":
             return None
@@ -1348,11 +1359,13 @@ class Local_Var(object):
 
 class Parameter(Local_Var):
     __slots__ = ["name", "type", "default", "aliased", "mode", "doc",
-                 "ada_binding", "for_function", "is_temporary_variable"]
+                 "ada_binding", "for_function", "is_temporary_variable",
+                 "c_mode", "ownership", "is_caller_allocates"]
 
     def __init__(self, name, type, default="", doc="", mode="in",
                  for_function=False, ada_binding=True,
-                 is_temporary_variable=False):
+                 is_temporary_variable=False, c_mode="in", ownership="none",
+                 is_caller_allocates=False):
         """
            'mode' is the mode for the Ada subprogram, and is automatically
               converted when generating a subprogram as a direct C import.
@@ -1367,6 +1380,13 @@ class Parameter(Local_Var):
            :param is_temporary_variable: True if this parameter represents a
               local variable. In this case, we can sometimes avoid creating
               other such variables, a minor optimization.
+
+           :param 'c_mode' is the original mode of parameter in C
+
+           :param 'ownership' means that caller should free memory if 'full'
+
+           :param is_caller_allocates: True if memory for the parameter should
+              be allocated by method caller
         """
         assert mode in ("in", "out", "in out", "not null access",
                         "access"), "Incorrect mode: %s" % mode
@@ -1377,6 +1397,9 @@ class Parameter(Local_Var):
         self.ada_binding = ada_binding
         self.for_function = for_function
         self.is_temporary_variable = is_temporary_variable
+        self.c_mode = c_mode
+        self.ownership = ownership
+        self.is_caller_allocates = is_caller_allocates
 
     def _type(self, lang, pkg):
         mode = self.mode
