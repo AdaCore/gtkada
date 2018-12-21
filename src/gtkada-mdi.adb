@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2019, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -3534,7 +3534,7 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Raise_Child
-     (Child : not null access MDI_Child_Record'Class;
+     (Child      : not null access MDI_Child_Record'Class;
       Give_Focus : Boolean := True)
    is
       Old_Focus     : constant MDI_Child := Child.MDI.Focus_Child;
@@ -3586,6 +3586,33 @@ package body Gtkada.MDI is
         and then Give_Focus
         and then Child.Initial.Get_Realized
       then
+         --  When raising a floating child that has the Float_As_Transient
+         --  flag set to True, set it as transient for the current window
+         --  (i.e: the currently focused child's window if any or the MDI's
+         --  main window).
+         --  This ensures that the floating child will always be on top of
+         --  the currently focused window, which is what we want in the
+         --  Float_As_Transient mode.
+
+         if (Child.Flags and Float_As_Transient) /= 0 then
+            declare
+               Child_Window : constant Gtk_Window :=
+                                Gtk_Window
+                                  (Child.Initial.Get_Toplevel);
+               New_Parent   : Gtk_Window := null;
+            begin
+               if Old_Focus = null then
+                  New_Parent := Gtk_Window (Child.MDI.Get_Toplevel);
+               else
+                  New_Parent := Gtk_Window (Old_Focus.Initial.Get_Toplevel);
+               end if;
+
+               if New_Parent /= null then
+                  Child_Window.Set_Transient_For (New_Parent);
+               end if;
+            end;
+         end if;
+
          Present (Gtk_Window (Get_Toplevel (Child.Initial)));
 
       elsif Child.Get_Realized then
@@ -3883,43 +3910,60 @@ package body Gtkada.MDI is
        Win       : out Gtk_Window;
        Container : out Gtk_Container)
    is
-      Parent : Gtk_Window := null;
-      Item   : Widget_List.Glist;
-      It     : MDI_Child;
+      function Get_Current_Floating_Child return MDI_Child;
+      --  If the current MDI child (i.e: the one that has the focus) is
+      --  floating and realized, return it. Return null otherwise.
+
+      --------------------------------
+      -- Get_Current_Floating_Child --
+      --------------------------------
+
+      function Get_Current_Floating_Child return MDI_Child
+      is
+         Children : Widget_List.Glist;
+         It       : MDI_Child;
+      begin
+         Children := Child.MDI.Items;
+         It := MDI_Child (Get_Data (Children));
+
+         if It /= MDI_Child (Child)
+           and then It.State = Floating
+              and then It.Initial.Get_Realized
+         then
+            return It;
+         else
+            return null;
+         end if;
+      end Get_Current_Floating_Child;
+
+      Parent                 : Gtk_Window := null;
+      Current_Floating_Child : constant MDI_Child :=
+                                 Get_Current_Floating_Child;
    begin
       Gtk_New (Win);
       Container := Gtk_Container (Win);
 
-      --  If the current child is floating, and the mode is
-      --  Float_As_Transient, we want to float the dialog as
-      --  transient for the current child.
+      --  If the mode is set to Float_To_Main, we want to float the dialog as
+      --  transient for the MDI's main window.
+      --
+      --  If the mode is set to Float_As_Transient , we want to float the
+      --  dialog as transient for the current child when floating or the main
+      --  window otherwise.
+      --
+      --  In any other case, we don't set any transient window.
 
-      if (Child.Flags and Float_As_Transient) /= 0 then
-         Item := Child.MDI.Items;
-         while Item /= Widget_List.Null_List loop
-            It := MDI_Child (Get_Data (Item));
-
-            if It /= MDI_Child (Child) then
-               if It.State = Floating
-                 and then It.Initial.Get_Realized
-               then
-                  Parent := Gtk_Window (Get_Toplevel (It.Initial));
-               else
-                  Parent := Gtk_Window (Get_Toplevel (Child.MDI));
-               end if;
-
-               exit;
-            end if;
-
-            Item := Widget_List.Next (Item);
-         end loop;
-      elsif (Child.Flags and Float_To_Main) /= 0 then
-         Parent := Gtk_Window (Get_Toplevel (Child.MDI));
+      if (Child.Flags and Float_To_Main) /= 0 then
+         Parent := Gtk_Window (Child.MDI.Get_Toplevel);
+      elsif (Child.Flags and Float_As_Transient) /= 0 then
+         if Current_Floating_Child /= null then
+            Parent := Gtk_Window (Current_Floating_Child.Initial.Get_Toplevel);
+         else
+            Parent := Gtk_Window (Child.MDI.Get_Toplevel);
+         end if;
       end if;
 
       if Parent /= null then
          Win.Set_Transient_For (Parent);
-         Win.Set_Destroy_With_Parent (True);
       end if;
    end Create_Float_Window_For_Child;
 
