@@ -8131,7 +8131,7 @@ package body Generic_Set is
      <enum ctype="GSeekType"/>
 
      <record ctype="GIOFuncs"/>
-     <record ctype="GIOChannel"/>
+     <record ctype="GIOChannel" ada="GIO_Channel_Record" />
 
      <method id="g_io_channel_new_file" bind="False" />
      <method id="g_io_channel_read_line" bind="False" /> <!-- too complicated for generator -->
@@ -8146,6 +8146,11 @@ package body Generic_Set is
      <function id="g_io_create_watch"/>
 
      <extra>
+         <type ctype="GIOChannel*" ada="Giochannel">
+           type Giochannel is access all GIO_Channel_Record;
+           pragma No_Strict_Aliasing (Giochannel);
+         </type>
+
        <spec>
    generic
       type User_Data is limited private;

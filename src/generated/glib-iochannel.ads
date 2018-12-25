@@ -120,7 +120,7 @@ package Glib.IOChannel is
    --  A table of functions used to handle different types of
    --  Glib.IOChannel.Giochannel in a generic way.
 
-   type Giochannel is record
+   type GIO_Channel_Record is record
       Ref_Count : Glib.Gint := 0;
       Funcs : GIOFuncs;
       Encoding : Gtkada.Types.Chars_Ptr;
@@ -142,13 +142,16 @@ package Glib.IOChannel is
       Reserved1 : System.Address := System.Null_Address;
       Reserved2 : System.Address := System.Null_Address;
    end record;
-   pragma Convention (C, Giochannel);
+   pragma Convention (C, GIO_Channel_Record);
 
-   function From_Object_Free (B : access Giochannel) return Giochannel;
+   function From_Object_Free (B : access GIO_Channel_Record) return GIO_Channel_Record;
    pragma Inline (From_Object_Free);
    --  A data structure representing an IO Channel. The fields should be
    --  considered private and should only be accessed with the following
    --  functions.
+
+   type Giochannel is access all GIO_Channel_Record;
+   pragma No_Strict_Aliasing (Giochannel);
 
    ----------------------------
    -- Enumeration Properties --

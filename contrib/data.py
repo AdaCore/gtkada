@@ -631,6 +631,7 @@ naming.girname_to_ctype = {
     "TreeModel":           "GtkTreeModel*",
     "GObject.InitiallyUnowned": "GObject*",  # An alias
     "GObject.ParamSpec":   "GParamSpec",
+    "Giochannel":          "GIOChannel*"
 }
 
 # Naming exceptions. In particular maps Ada keywords.
@@ -700,6 +701,7 @@ naming.type_exceptions = {
     "GdkRGBA*":  Proxy("Gdk.RGBA.Gdk_RGBA", "Gdk.RGBA.Property_RGBA",
                        "Gdk.RGBA.Gdk_RGBA_Or_Null"),
     "GdkEvent*": Proxy("Gdk.Event.Gdk_Event", ""),
+    "GIOChannel*": Proxy("Glib.IOChannel.Giochannel", ""),
 
     "cairo_t*":              Proxy("Cairo.Cairo_Context"),
     "cairo_format_t":        Proxy("Cairo.Cairo_Format"),

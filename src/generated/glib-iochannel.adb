@@ -34,8 +34,8 @@ package body Glib.IOChannel is
       return Result;
    end From_Object_Free;
 
-   function From_Object_Free (B : access Giochannel) return Giochannel is
-      Result : constant Giochannel := B.all;
+   function From_Object_Free (B : access GIO_Channel_Record) return GIO_Channel_Record is
+      Result : constant GIO_Channel_Record := B.all;
    begin
       Glib.g_free (B.all'Address);
       return Result;
