@@ -26,6 +26,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
 with Glib.Error;              use Glib.Error;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Gtkada.Types;            use Gtkada.Types;
 
 package Glib.Spawn is
 
@@ -90,16 +91,16 @@ package Glib.Spawn is
    generic
    type User_Data is limited private;
    function Generic_Spawn_Async
-     (Working_Directory : UTF8_String := "";
-      Argv              : GNAT.Strings.String_List;
-      Envp              : GNAT.Strings.String_List;
+     (Working_Directory : Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
+      Argv              : access Gtkada.Types.Chars_Ptr_Array;
+      Envp              : access Gtkada.Types.Chars_Ptr_Array;
       Flags             : GSpawn_Flags;
       Child_Setup       : access procedure
         (Data : access User_Data);
       Data              : access User_Data;
       Child_Pid         : access GPid;
       Error             : access Glib.Error.GError)
-   return Boolean;
+   return Glib.Gboolean;
    pragma Import (C, Generic_Spawn_Async, "gnat_spawn_async");
    --  See Glib.Spawn.Spawn_Async_With_Pipes for a full description; this
    --  function simply calls the Glib.Spawn.Spawn_Async_With_Pipes without any
@@ -124,9 +125,9 @@ package Glib.Spawn is
    generic
    type User_Data is limited private;
    function Generic_Spawn_Async_With_Pipes
-     (Working_Directory : UTF8_String := "";
-      Argv              : GNAT.Strings.String_List;
-      Envp              : GNAT.Strings.String_List;
+     (Working_Directory : Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
+      Argv              : access Gtkada.Types.Chars_Ptr_Array;
+      Envp              : access Gtkada.Types.Chars_Ptr_Array;
       Flags             : GSpawn_Flags;
       Child_Setup       : access procedure
         (Data : access User_Data);
@@ -136,7 +137,7 @@ package Glib.Spawn is
       Standard_Output   : access Glib.Gint;
       Standard_Error    : access Glib.Gint;
       Error             : access Glib.Error.GError)
-   return Boolean;
+   return Glib.Gboolean;
    pragma Import
      (C, Generic_Spawn_Async_With_Pipes, "gnat_spawn_async_with_pipes");
    --  Executes a child program asynchronously (your program will not block
@@ -293,19 +294,19 @@ package Glib.Spawn is
    generic
    type User_Data is limited private;
    function Generic_Spawn_Sync
-     (Working_Directory : UTF8_String := "";
-      Argv              : GNAT.Strings.String_List;
-      Envp              : GNAT.Strings.String_List;
+     (Working_Directory : Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
+      Argv              : access Gtkada.Types.Chars_Ptr_Array;
+      Envp              : access Gtkada.Types.Chars_Ptr_Array;
       Flags             : GSpawn_Flags;
       Child_Setup       : access procedure
         (Data : access User_Data);
       Data              : access User_Data;
       Child_Pid         : access GPid;
-      Standard_Output   : access Gint_Array;
-      Standard_Error    : access Gint_Array;
+      Standard_Output   : access Gtkada.Types.Chars_Ptr_Array;
+      Standard_Error    : access Gtkada.Types.Chars_Ptr_Array;
       Exit_Status       : access Glib.Gint;
       Error             : access Glib.Error.GError)
-   return Boolean;
+   return Glib.Gboolean;
    pragma Import (C, Generic_Spawn_Sync, "gnat_spawn_sync");
    --  Executes a child synchronously (waits for the child to exit before
    --  returning). All output from the child is stored in Standard_Output and
@@ -337,12 +338,12 @@ package Glib.Spawn is
    generic
    type User_Data is limited private;
    function Generic_Spawn_Command_Line_Sync
-     (Command_Line      : UTF8_String;
-      Standard_Output   : access Gint_Array;
-      Standard_Error    : access Gint_Array;
+     (Command_Line      : Gtkada.Types.Chars_Ptr;
+      Standard_Output   : access Gtkada.Types.Chars_Ptr_Array;
+      Standard_Error    : access Gtkada.Types.Chars_Ptr_Array;
       Exit_Status       : access Glib.Gint;
       Error             : access Glib.Error.GError)
-   return Boolean;
+   return Glib.Gboolean;
    pragma Import
      (C, Generic_Spawn_Command_Line_Sync, "gnat_spawn_command_line_sync");
    --  A simple version of g_spawn_sync() with little-used parameters removed,
@@ -375,7 +376,7 @@ package Glib.Spawn is
    --  TRUE on success, FALSE if an error was set
 
    function Spawn_Command_Line_Async
-     (Command_Line : UTF8_String;
+     (Command_Line : Gtkada.Types.Chars_Ptr;
       Error        : access Glib.Error.GError)
    return Boolean;
    --  A simple version of Glib.Spawn.Spawn_Async that parses a command line

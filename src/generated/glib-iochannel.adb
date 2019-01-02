@@ -41,6 +41,85 @@ package body Glib.IOChannel is
       return Result;
    end From_Object_Free;
 
+   ------------------
+   -- Set_Encoding --
+   ------------------
+
+   function Set_Encoding
+     (Self     : Giochannel;
+      Encoding : UTF8_String := "";
+      Error    : access Glib.Error.GError) return GIOStatus
+   is
+      function Internal
+        (Self     : Giochannel;
+         Encoding : Gtkada.Types.Chars_Ptr;
+         Error    : access Glib.Error.GError) return GIOStatus;
+      pragma Import (C, Internal, "g_io_channel_set_encoding");
+      Tmp_Encoding : Gtkada.Types.Chars_Ptr;
+      Tmp_Return   : GIOStatus;
+   begin
+      if Encoding = "" then
+         Tmp_Encoding := Gtkada.Types.Null_Ptr;
+      else
+         Tmp_Encoding := New_String (Encoding);
+      end if;
+      Tmp_Return := Internal (Self, Tmp_Encoding, Error);
+      Free (Tmp_Encoding);
+      return Tmp_Return;
+   end Set_Encoding;
+
+   ----------------
+   -- Read_Chars --
+   ----------------
+
+   function Read_Chars
+     (Self       : Giochannel;
+      Buf        : out Ada.Streams.Stream_Element_Array;
+      Bytes_Read : access Gsize;
+      Error    : access Glib.Error.GError) return GIOStatus
+   is
+      function Internal
+        (Self           : Giochannel;
+         Buf            : System.Address;
+         Count          : Gsize;
+         Acc_Bytes_Read : access Gsize;
+         Error          : access Glib.Error.GError) return GIOStatus;
+      pragma Import (C, Internal, "g_io_channel_read_chars");
+      Acc_Bytes_Read : aliased Gsize;
+      Tmp_Return     : GIOStatus;
+   begin
+      Tmp_Return := Internal (Self, Buf'Address, Buf'Length, Acc_Bytes_Read'Access, Error);
+      if Bytes_Read /= null then
+         Bytes_Read.all := Acc_Bytes_Read;
+      end if;
+      return Tmp_Return;
+   end Read_Chars;
+
+   -----------------
+   -- Write_Chars --
+   -----------------
+
+   function Write_Chars
+     (Self          : Giochannel;
+      Buf           : Ada.Streams.Stream_Element_Array;
+      Bytes_Written : access Gsize;
+      Error         : access Glib.Error.GError) return GIOStatus
+   is
+      function Internal
+        (Self              : Giochannel;
+         Buf               : System.Address;
+         Count             : Gssize;
+         Acc_Bytes_Written : access Gsize;
+         Error             : access Glib.Error.GError) return GIOStatus;
+      pragma Import (C, Internal, "g_io_channel_write_chars");
+      Acc_Bytes_Written : aliased Gsize;
+      Tmp_Return        : GIOStatus;
+   begin
+      Tmp_Return := Internal (Self, Buf'Address, Buf'Length, Acc_Bytes_Written'Access, Error);
+      Bytes_Written.all := Acc_Bytes_Written;
+      return Tmp_Return;
+   end Write_Chars;
+
    ----------------
    -- G_Unix_New --
    ----------------
@@ -118,32 +197,6 @@ package body Glib.IOChannel is
       return Gtkada.Bindings.Value_Allowing_Null (Tmp_Return);
    end Get_Line_Term;
 
-   ----------------
-   -- Read_Chars --
-   ----------------
-
-   function Read_Chars
-      (Self       : Giochannel;
-       Buf        : access Gint_Array;
-       Count      : Gsize;
-       Bytes_Read : access Gsize) return GIOStatus
-   is
-      function Internal
-         (Self           : Giochannel;
-          Buf            : System.Address;
-          Count          : Gsize;
-          Acc_Bytes_Read : access Gsize) return GIOStatus;
-      pragma Import (C, Internal, "g_io_channel_read_chars");
-      Acc_Bytes_Read : aliased Gsize;
-      Tmp_Return     : GIOStatus;
-   begin
-      Tmp_Return := Internal (Self, Buf (Buf'First)'Address, Count, Acc_Bytes_Read'Access);
-      if Bytes_Read /= null then
-         Bytes_Read.all := Acc_Bytes_Read;
-      end if;
-      return Tmp_Return;
-   end Read_Chars;
-
    ------------------
    -- Set_Buffered --
    ------------------
@@ -165,31 +218,6 @@ package body Glib.IOChannel is
    begin
       Internal (Self, Boolean'Pos (Do_Close));
    end Set_Close_On_Unref;
-
-   ------------------
-   -- Set_Encoding --
-   ------------------
-
-   function Set_Encoding
-      (Self     : Giochannel;
-       Encoding : UTF8_String := "") return GIOStatus
-   is
-      function Internal
-         (Self     : Giochannel;
-          Encoding : Gtkada.Types.Chars_Ptr) return GIOStatus;
-      pragma Import (C, Internal, "g_io_channel_set_encoding");
-      Tmp_Encoding : Gtkada.Types.Chars_Ptr;
-      Tmp_Return   : GIOStatus;
-   begin
-      if Encoding = "" then
-         Tmp_Encoding := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Encoding := New_String (Encoding);
-      end if;
-      Tmp_Return := Internal (Self, Tmp_Encoding);
-      Free (Tmp_Encoding);
-      return Tmp_Return;
-   end Set_Encoding;
 
    -------------------
    -- Set_Line_Term --
@@ -215,42 +243,5 @@ package body Glib.IOChannel is
       Internal (Self, Tmp_Line_Term, Length);
       Free (Tmp_Line_Term);
    end Set_Line_Term;
-
-   --------------
-   -- Shutdown --
-   --------------
-
-   function Shutdown (Self : Giochannel; Flush : Boolean) return GIOStatus is
-      function Internal
-         (Self  : Giochannel;
-          Flush : Glib.Gboolean) return GIOStatus;
-      pragma Import (C, Internal, "g_io_channel_shutdown");
-   begin
-      return Internal (Self, Boolean'Pos (Flush));
-   end Shutdown;
-
-   -----------------
-   -- Write_Chars --
-   -----------------
-
-   function Write_Chars
-      (Self          : Giochannel;
-       Buf           : Gint_Array;
-       Count         : Gssize;
-       Bytes_Written : access Gsize) return GIOStatus
-   is
-      function Internal
-         (Self              : Giochannel;
-          Buf               : System.Address;
-          Count             : Gssize;
-          Acc_Bytes_Written : access Gsize) return GIOStatus;
-      pragma Import (C, Internal, "g_io_channel_write_chars");
-      Acc_Bytes_Written : aliased Gsize;
-      Tmp_Return        : GIOStatus;
-   begin
-      Tmp_Return := Internal (Self, Buf (Buf'First)'Address, Count, Acc_Bytes_Written'Access);
-      Bytes_Written.all := Acc_Bytes_Written;
-      return Tmp_Return;
-   end Write_Chars;
 
 end Glib.IOChannel;

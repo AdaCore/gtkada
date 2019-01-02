@@ -29,7 +29,9 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Streams;             use Ada.Streams;
 with Glib;                    use Glib;
+with Glib.Error;              use Glib.Error;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Main;               use Glib.Main;
 with Glib.String;             use Glib.String;
@@ -53,7 +55,7 @@ package Glib.IOChannel is
    pragma Convention (C, GIOFlags);
    --  Specifies properties of a Glib.IOChannel.Giochannel. Some of the flags
    --  can only be read with Glib.IOChannel.Get_Flags, but not changed with
-   --  Glib.IOChannel.Set_Flags.
+   --  g_io_channel_set_flags.
 
    G_Io_Flag_Append : constant GIOFlags := 1;
    G_Io_Flag_Nonblock : constant GIOFlags := 2;
@@ -192,9 +194,9 @@ package Glib.IOChannel is
    --  The default encoding for Glib.IOChannel.Giochannel is UTF-8. If your
    --  application is reading output from a command using via pipe, you may
    --  need to set the encoding to the encoding of the current locale (see
-   --  g_get_charset) with the Glib.IOChannel.Set_Encoding function.
+   --  g_get_charset) with the g_io_channel_set_encoding function.
    --  If you want to read raw binary data without interpretation, then call
-   --  the Glib.IOChannel.Set_Encoding function with null for the encoding
+   --  the g_io_channel_set_encoding function with null for the encoding
    --  argument.
    --  This function is available in GLib on Windows, too, but you should
    --  avoid using it on Windows. The domain of file descriptors and sockets
@@ -211,9 +213,9 @@ package Glib.IOChannel is
    --  The default encoding for Glib.IOChannel.Giochannel is UTF-8. If your
    --  application is reading output from a command using via pipe, you may
    --  need to set the encoding to the encoding of the current locale (see
-   --  g_get_charset) with the Glib.IOChannel.Set_Encoding function.
+   --  g_get_charset) with the g_io_channel_set_encoding function.
    --  If you want to read raw binary data without interpretation, then call
-   --  the Glib.IOChannel.Set_Encoding function with null for the encoding
+   --  the g_io_channel_set_encoding function with null for the encoding
    --  argument.
    --  This function is available in GLib on Windows, too, but you should
    --  avoid using it on Windows. The domain of file descriptors and sockets
@@ -223,16 +225,9 @@ package Glib.IOChannel is
    --  assumes that it is the file descriptor you mean.
    --  "fd": a file descriptor.
 
-   function Get_Type return Glib.GType;
-   pragma Import (C, Get_Type, "g_io_channel_get_type");
-
    -------------
    -- Methods --
    -------------
-
-   function Flush (Self : Giochannel) return GIOStatus;
-   pragma Import (C, Flush, "g_io_channel_flush");
-   --  Flushes the write buffer for the GIOChannel.
 
    function Get_Buffer_Condition (Self : Giochannel) return GIOCondition;
    pragma Import (C, Get_Buffer_Condition, "g_io_channel_get_buffer_condition");
@@ -289,39 +284,6 @@ package Glib.IOChannel is
    --  encoding is always UTF-8. The encoding null makes the channel safe for
    --  binary data.
 
-   function Set_Encoding
-      (Self     : Giochannel;
-       Encoding : UTF8_String := "") return GIOStatus;
-   --  Sets the encoding for the input/output of the channel. The internal
-   --  encoding is always UTF-8. The default encoding for the external file is
-   --  UTF-8.
-   --  The encoding null is safe to use with binary data.
-   --  The encoding can only be set if one of the following conditions is
-   --  true:
-   --  - The channel was just created, and has not been written to or read
-   --  from yet.
-   --  - The channel is write-only.
-   --  - The channel is a file, and the file pointer was just repositioned by
-   --  a call to Glib.IOChannel.Seek_Position. (This flushes all the internal
-   --  buffers.)
-   --  - The current encoding is null or UTF-8.
-   --  - One of the (new API) read functions has just returned
-   --  Glib.IOChannel.G_Io_Status_Eof (or, in the case of
-   --  g_io_channel_read_to_end, Glib.IOChannel.G_Io_Status_Normal).
-   --  - One of the functions Glib.IOChannel.Read_Chars or
-   --  Glib.IOChannel.Read_Unichar has returned
-   --  Glib.IOChannel.G_Io_Status_Again or Glib.IOChannel.G_Io_Status_Error.
-   --  This may be useful in the case of G_CONVERT_ERROR_ILLEGAL_SEQUENCE.
-   --  Returning one of these statuses from g_io_channel_read_line,
-   --  Glib.IOChannel.Read_Line_String, or g_io_channel_read_to_end does not
-   --  guarantee that the encoding can be changed.
-   --  Channels which do not meet one of the above conditions cannot call
-   --  Glib.IOChannel.Seek_Position with an offset of
-   --  Glib.IOChannel.G_Seek_Cur, and, if they are "seekable", cannot call
-   --  Glib.IOChannel.Write_Chars after calling one of the API "read"
-   --  functions.
-   --  "encoding": the encoding type
-
    function Get_Flags (Self : Giochannel) return GIOFlags;
    pragma Import (C, Get_Flags, "g_io_channel_get_flags");
    --  Gets the current flags for a Glib.IOChannel.Giochannel, including
@@ -332,12 +294,6 @@ package Glib.IOChannel is
    --  (e.g. partial shutdown of a socket with the UNIX shutdown function), the
    --  user should immediately call Glib.IOChannel.Get_Flags to update the
    --  internal values of these flags.
-
-   function Set_Flags (Self : Giochannel; Flags : GIOFlags) return GIOStatus;
-   pragma Import (C, Set_Flags, "g_io_channel_set_flags");
-   --  Sets the (writeable) flags in Channel to (Flags &
-   --  Glib.IOChannel.G_Io_Flag_Set_Mask).
-   --  "flags": the flags to set on the IO channel
 
    function Get_Line_Term
       (Self   : Giochannel;
@@ -369,40 +325,6 @@ package Glib.IOChannel is
    --  programmer (unless you are creating a new type of
    --  Glib.IOChannel.Giochannel).
 
-   function Read_Chars
-      (Self       : Giochannel;
-       Buf        : access Gint_Array;
-       Count      : Gsize;
-       Bytes_Read : access Gsize) return GIOStatus;
-   --  Replacement for g_io_channel_read with the new API.
-   --  "buf": a buffer to read data into
-   --  "count": the size of the buffer. Note that the buffer may not be
-   --  complelely filled even if there is data in the buffer if the remaining
-   --  data is not a complete character.
-   --  "bytes_read": The number of bytes read. This may be zero even on
-   --  success if count < 6 and the channel's encoding is non-null. This
-   --  indicates that the next UTF-8 character is too wide for the buffer.
-
-   function Read_Line_String
-      (Self           : Giochannel;
-       Buffer         : Glib.String.Gstring;
-       Terminator_Pos : in out Gsize) return GIOStatus;
-   pragma Import (C, Read_Line_String, "g_io_channel_read_line_string");
-   --  Reads a line from a Glib.IOChannel.Giochannel, using a
-   --  Glib.String.Gstring as a buffer.
-   --  "buffer": a Glib.String.Gstring into which the line will be written. If
-   --  Buffer already contains data, the old data will be overwritten.
-   --  "terminator_pos": location to store position of line terminator, or
-   --  null
-
-   function Read_Unichar
-      (Self    : Giochannel;
-       Thechar : access Gunichar) return GIOStatus;
-   pragma Import (C, Read_Unichar, "g_io_channel_read_unichar");
-   --  Reads a Unicode character from Channel. This function cannot be called
-   --  on a channel with null encoding.
-   --  "thechar": a location to return a character
-
    function Ref (Self : Giochannel) return Giochannel;
    pragma Import (C, Ref, "g_io_channel_ref");
    --  Increments the reference count of a Glib.IOChannel.Giochannel.
@@ -419,12 +341,6 @@ package Glib.IOChannel is
    --  () is allowed. See the documentation for g_io_channel_set_encoding ()
    --  for details.
 
-   function Shutdown (Self : Giochannel; Flush : Boolean) return GIOStatus;
-   --  Close an IO channel. Any pending data to be written will be flushed if
-   --  Flush is True. The channel will not be freed until the last reference is
-   --  dropped using Glib.IOChannel.Unref.
-   --  "flush": if True, flush pending
-
    function Unix_Get_Fd (Self : Giochannel) return Glib.Gint;
    pragma Import (C, Unix_Get_Fd, "g_io_channel_unix_get_fd");
    --  Returns the file descriptor of the Glib.IOChannel.Giochannel.
@@ -435,11 +351,87 @@ package Glib.IOChannel is
    pragma Import (C, Unref, "g_io_channel_unref");
    --  Decrements the reference count of a Glib.IOChannel.Giochannel.
 
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function Shutdown
+     (Self     : Giochannel;
+      Flush    : Glib.Gboolean;
+      Error    : access Glib.Error.GError) return GIOStatus;
+   pragma Import (C, Shutdown, "g_io_channel_shutdown");
+   --  Close an IO channel. Any pending data to be written will be flushed if
+   --  Flush is True. The channel will not be freed until the last reference is
+   --  dropped using Glib.IOChannel.Unref.
+   --  "flush": if True, flush pending
+
+   function Flush
+     (Self  : Giochannel;
+      Error : access Glib.Error.GError) return GIOStatus;
+   pragma Import (C, Flush, "g_io_channel_flush");
+   --  Flushes the write buffer for the GIOChannel.
+
+   function Set_Encoding
+     (Self     : Giochannel;
+      Encoding : UTF8_String := "";
+      Error    : access Glib.Error.GError) return GIOStatus;
+   --  Sets the encoding for the input/output of the channel. The internal
+   --  encoding is always UTF-8. The default encoding for the external file is
+   --  UTF-8.
+   --  The encoding null is safe to use with binary data.
+   --  The encoding can only be set if one of the following conditions is
+   --  true:
+   --  - The channel was just created, and has not been written to or read
+   --  from yet.
+   --  - The channel is write-only.
+   --  - The channel is a file, and the file pointer was just repositioned by
+   --  a call to Glib.IOChannel.Seek_Position. (This flushes all the internal
+   --  buffers.)
+   --  - The current encoding is null or UTF-8.
+   --  - One of the (new API) read functions has just returned
+   --  Glib.IOChannel.G_Io_Status_Eof (or, in the case of
+   --  g_io_channel_read_to_end, Glib.IOChannel.G_Io_Status_Normal).
+   --  - One of the functions Glib.IOChannel.Read_Chars or
+   --  Glib.IOChannel.Read_Unichar has returned
+   --  Glib.IOChannel.G_Io_Status_Again or Glib.IOChannel.G_Io_Status_Error.
+   --  This may be useful in the case of G_CONVERT_ERROR_ILLEGAL_SEQUENCE.
+   --  Returning one of these statuses from g_io_channel_read_line,
+   --  Glib.IOChannel.Read_Line_String, or g_io_channel_read_to_end does not
+   --  guarantee that the encoding can be changed.
+   --  Channels which do not meet one of the above conditions cannot call
+   --  Glib.IOChannel.Seek_Position with an offset of
+   --  Glib.IOChannel.G_Seek_Cur, and, if they are "seekable", cannot call
+   --  Glib.IOChannel.Write_Chars after calling one of the API "read"
+   --  functions.
+   --  "encoding": the encoding type
+
+   function Set_Flags
+     (Self : Giochannel;
+      Flags : GIOFlags;
+      Error : access Glib.Error.GError) return GIOStatus;
+   pragma Import (C, Set_Flags, "g_io_channel_set_flags");
+   --  Sets the (writeable) flags in Channel to (Flags and
+   --  Glib.IOChannel.G_Io_Flag_Set_Mask).
+   --  "flags": the flags to set on the IO channel
+
+   function Read_Chars
+     (Self       : Giochannel;
+      Buf        : out Ada.Streams.Stream_Element_Array;
+      Bytes_Read : access Gsize;
+      Error      : access Glib.Error.GError) return GIOStatus;
+   --  Replacement for g_io_channel_read with the new API.
+   --  "buf": a buffer to read data into
+   --  "count": is sent as Buf'Length.
+   --  "bytes_read": The number of bytes read. This may be zero even on
+   --  success if count less than 6 and the channel's encoding is non-null.
+   --  This indicates that the next UTF-8 character is too wide for
+   --  the buffer.
+
    function Write_Chars
-      (Self          : Giochannel;
-       Buf           : Gint_Array;
-       Count         : Gssize;
-       Bytes_Written : access Gsize) return GIOStatus;
+     (Self          : Giochannel;
+      Buf           : Ada.Streams.Stream_Element_Array;
+      Bytes_Written : access Gsize;
+      Error         : access Glib.Error.GError) return GIOStatus;
    --  Replacement for g_io_channel_write with the new API.
    --  On seekable channels with encodings other than null or UTF-8, generic
    --  mixing of reading and writing is not allowed. A call to
@@ -447,24 +439,42 @@ package Glib.IOChannel is
    --  data has been read in the cases described in the documentation for
    --  g_io_channel_set_encoding ().
    --  "buf": a buffer to write data from
-   --  "count": the size of the buffer. If -1, the buffer is taken to be a
-   --  nul-terminated string.
+   --  "count": is sent as Buf'Length.
    --  "bytes_written": The number of bytes written. This can be nonzero even
    --  if the return value is not Glib.IOChannel.G_Io_Status_Normal. If the
    --  return value is Glib.IOChannel.G_Io_Status_Normal and the channel is
    --  blocking, this will always be equal to Count if Count >= 0.
 
+   function Read_Line_String
+     (Self           : Giochannel;
+      Buffer         : Glib.String.Gstring;
+      Terminator_Pos : in out Gsize;
+      Error          : access Glib.Error.GError) return GIOStatus;
+   pragma Import (C, Read_Line_String, "g_io_channel_read_line_string");
+   --  Reads a line from a Glib.IOChannel.Giochannel, using a
+   --  Glib.String.Gstring as a buffer.
+   --  "buffer": a Glib.String.Gstring into which the line will be written. If
+   --  Buffer already contains data, the old data will be overwritten.
+   --  "terminator_pos": location to store position of line terminator, or
+   --  null
+
+   function Read_Unichar
+     (Self    : Giochannel;
+      Thechar : access Gunichar;
+      Error   : access Glib.Error.GError) return GIOStatus;
+   pragma Import (C, Read_Unichar, "g_io_channel_read_unichar");
+   --  Reads a Unicode character from Channel. This function cannot be called
+   --  on a channel with null encoding.
+   --  "thechar": a location to return a character
+
    function Write_Unichar
-      (Self    : Giochannel;
-       Thechar : Gunichar) return GIOStatus;
+     (Self    : Giochannel;
+      Thechar : Gunichar;
+      Error   : access Glib.Error.GError) return GIOStatus;
    pragma Import (C, Write_Unichar, "g_io_channel_write_unichar");
    --  Writes a Unicode character to Channel. This function cannot be called
    --  on a channel with null encoding.
    --  "thechar": a character
-
-   ----------------------
-   -- GtkAda additions --
-   ----------------------
 
    generic
    type User_Data is limited private;

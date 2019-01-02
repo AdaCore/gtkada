@@ -34,12 +34,12 @@ package body Glib.Spawn is
    ------------------------------
 
    function Spawn_Command_Line_Async
-     (Command_Line : UTF8_String;
+     (Command_Line : Gtkada.Types.Chars_Ptr;
       Error        : access Glib.Error.GError)
    return Boolean
    is
       function Internal
-        (Command_Line : UTF8_String;
+        (Command_Line : Gtkada.Types.Chars_Ptr;
          Error        : access Glib.Error.GError)
       return Glib.Gboolean;
       pragma Import (C, Internal, "gnat_spawn_command_line_async");
