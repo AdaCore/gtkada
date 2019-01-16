@@ -3594,7 +3594,9 @@ package body Gtkada.MDI is
          --  the currently focused window, which is what we want in the
          --  Float_As_Transient mode.
 
-         if (Child.Flags and Float_As_Transient) /= 0 then
+         if Old_Focus /= Child
+           and then (Child.Flags and Float_As_Transient) /= 0
+         then
             declare
                Child_Window : constant Gtk_Window :=
                                 Gtk_Window
