@@ -160,6 +160,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GOptionContext",
            "GPoll",
            "Spawn",
+           "Utils",
 
            "--GParamSpec",   # Bound manually
            "--GParamSpecBoolean",   # Bound manually

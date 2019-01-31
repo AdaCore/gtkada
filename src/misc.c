@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2018, AdaCore                   --
+--                Copyright (C) 2000-2019, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -2212,6 +2212,11 @@ gboolean gnat_spawn_command_line_sync (const gchar          *command_line,
 gboolean gnat_spawn_command_line_async (const gchar          *command_line,
                                         GError              **error) {
   return g_spawn_command_line_async (command_line, error);
+}
+
+/* gutils.h */
+const gchar * glib_get_home_dir () {
+  return g_get_home_dir ();
 }
 
 /* constants */
