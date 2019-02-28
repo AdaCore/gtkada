@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2019, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -83,7 +83,8 @@ package Gtkada.Dialogs is
       Help_Msg       : Glib.UTF8_String := "";
       Title          : Glib.UTF8_String := "";
       Justification  : Gtk_Justification := Justify_Center;
-      Parent         : Gtk.Window.Gtk_Window := null)
+      Parent         : Gtk.Window.Gtk_Window := null;
+      Icon_Name      : String := "")
       return Message_Dialog_Buttons;
    --  Display a message dialog box centered on the mouse.
    --  This will create a dialog box containing the specified message.
@@ -96,6 +97,8 @@ package Gtkada.Dialogs is
    --  displayed will only have a OK button.
    --  If Title is null, a default title will be chosen depending on the value
    --  of Dialog_Type.
+   --  If Icon_Name is specified, this icon will be displayed instead of the
+   --  default one.
    --  The dialog will be centered with regards to Parent
    --
    --  This function will return only after the user pressed one of the buttons
@@ -116,13 +119,16 @@ package Gtkada.Dialogs is
       Dialog_Type   : Message_Dialog_Type := Information;
       Title         : Glib.UTF8_String := "";
       Justification : Gtk_Justification := Justify_Center;
-      Parent        : Gtk.Window.Gtk_Window := null)
+      Parent        : Gtk.Window.Gtk_Window := null;
+      Icon_Name     : String := "")
       return Gtk.Dialog.Gtk_Dialog;
    --  Convenience function to create a new dialog.
    --  This function was introduced in GtkAda 2.0 to provide a compatibility
    --  with Message_Dialog, while using the standard Gtk.Dialog. You should add
    --  the buttons yourself, through Gtk.Dialog.Gtk_Dialog, and then display
    --  the dialog on the screen through Gtk.Dialog.Run.
+   --  If Icon_Name is specified, this icon will be displayed instead of the
+   --  default one.
    --  As opposed to Message_Dialog, you can provide your own custom buttons if
    --  needed.
 

@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2019, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -87,7 +87,8 @@ package body Gtkada.Dialogs is
       Help_Msg       : UTF8_String := "";
       Title          : UTF8_String := "";
       Justification  : Gtk_Justification := Justify_Center;
-      Parent         : Gtk.Window.Gtk_Window := null)
+      Parent         : Gtk.Window.Gtk_Window := null;
+      Icon_Name      : String := "")
       return Message_Dialog_Buttons
    is
       Dialog   : constant Gtk_Dialog := Create_Gtk_Dialog
@@ -95,7 +96,8 @@ package body Gtkada.Dialogs is
          Dialog_Type   => Dialog_Type,
          Title         => Title,
          Justification => Justification,
-         Parent        => Parent);
+         Parent        => Parent,
+         Icon_Name     => Icon_Name);
       Button   : Gtk_Widget;
       Result   : Message_Dialog_Buttons;
       Response : Gtk_Response_Type;
@@ -209,14 +211,49 @@ package body Gtkada.Dialogs is
       Dialog_Type   : Message_Dialog_Type := Information;
       Title         : UTF8_String := "";
       Justification : Gtk_Justification := Justify_Center;
-      Parent        : Gtk.Window.Gtk_Window := null)
+      Parent        : Gtk.Window.Gtk_Window := null;
+      Icon_Name     : String := "")
       return Gtk.Dialog.Gtk_Dialog
    is
       Dialog      : Gtk_Dialog;
       Label       : Gtk_Label;
       Box         : Gtk_Box;
-      Img         : Gtk_Image;
-      Pixmap      : Gdk_Pixbuf;
+      Icon_Img    : Gtk_Image;
+
+      procedure Create_Dialog_Icon;
+
+      ------------------------
+      -- Create_Dialog_Icon --
+      ------------------------
+
+      procedure Create_Dialog_Icon is
+         Pixmap   : Gdk_Pixbuf;
+      begin
+         if Icon_Name /= "" then
+            Gtk_New_From_Icon_Name
+              (Icon_Img,
+               Icon_Name => Icon_Name,
+               Size      => Icon_Size_Dialog);
+         else
+            Pixmap :=
+              (case Dialog_Type is
+                  when Warning      =>
+                    Gdk_New_From_Xpm_Data (Warning_Xpm),
+                  when Error        =>
+                    Gdk_New_From_Xpm_Data (Error_Xpm),
+                  when Information  =>
+                    Gdk_New_From_Xpm_Data (Information_Xpm),
+                  when Confirmation =>
+                    Gdk_New_From_Xpm_Data (Confirmation_Xpm),
+                  when Custom       => null);
+            Gtk_New (Icon_Img, Pixmap);
+
+            --  Unref the pixmap since the Gtk_Image now holds its
+            --  own reference to it.
+
+            Pixmap.Unref;
+         end if;
+      end Create_Dialog_Icon;
 
    begin
       Gtk_New
@@ -232,25 +269,21 @@ package body Gtkada.Dialogs is
 
       case Dialog_Type is
          when Warning =>
-            Pixmap := Gdk.Pixbuf.Gdk_New_From_Xpm_Data (Warning_Xpm);
             if Title = "" then
                Set_Title (Dialog, -"Warning");
             end if;
 
          when Error =>
-            Pixmap := Gdk.Pixbuf.Gdk_New_From_Xpm_Data (Error_Xpm);
             if Title = "" then
                Set_Title (Dialog, -"Error");
             end if;
 
          when Information =>
-            Pixmap := Gdk.Pixbuf.Gdk_New_From_Xpm_Data (Information_Xpm);
             if Title = "" then
                Set_Title (Dialog, -"Information");
             end if;
 
          when Confirmation =>
-            Pixmap := Gdk.Pixbuf.Gdk_New_From_Xpm_Data (Confirmation_Xpm);
             if Title = "" then
                Set_Title (Dialog, -"Confirmation");
             end if;
@@ -262,9 +295,10 @@ package body Gtkada.Dialogs is
       Gtk_New_Hbox (Box);
       Pack_Start (Get_Content_Area (Dialog), Box, Padding => 10);
 
-      if Pixmap /= null then
-         Gtk_New (Img, Pixmap);
-         Pack_Start (Box, Img, Padding => 10);
+      Create_Dialog_Icon;
+
+      if Icon_Img /= null then
+         Pack_Start (Box, Icon_Img, Padding => 10);
       end if;
 
       Gtk_New (Label, Msg);
