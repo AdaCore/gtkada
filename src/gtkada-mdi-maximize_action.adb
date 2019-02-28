@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2018-2018, AdaCore                --
+--                     Copyright (C) 2018-2019, AdaCore                --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -38,10 +38,23 @@ package body Maximize_Action is
    --  Go through all the MDI children and call show on them
 
    -----------------------
-   -- On_Maximize_Child --
+   -- Is_Maximized_Mode --
    -----------------------
 
-   procedure On_Maximize_Child
+   function Is_Maximized_Mode
+     (MDI : access MDI_Window_Record'Class) return Boolean
+   is
+      Perspective : constant String := Current_Perspective (MDI);
+   begin
+      return MDI.Saved_Sizes.Contains (Perspective)
+        and then MDI.Saved_Sizes (Perspective) /= null;
+   end Is_Maximized_Mode;
+
+   ------------------------
+   -- On_Toggle_Maximize --
+   ------------------------
+
+   procedure On_Toggle_Maximize
      (Child : access Gtk_Widget_Record'Class)
    is
       C           : constant MDI_Child      := MDI_Child (Child);
@@ -49,9 +62,7 @@ package body Maximize_Action is
       Perspective : constant String         := Current_Perspective (MDI);
       Dummy       : Boolean;
    begin
-      if not MDI.Saved_Sizes.Contains (Perspective)
-        or else MDI.Saved_Sizes (Perspective) = null
-      then
+      if not Is_Maximized_Mode (MDI) then
          declare
             New_Element : constant Saved_Perspective :=
               new Saved_Perspective_Record;
@@ -81,7 +92,7 @@ package body Maximize_Action is
             Free (MDI.Saved_Sizes (Perspective));
          end if;
       end if;
-   end On_Maximize_Child;
+   end On_Toggle_Maximize;
 
    ---------------------
    -- On_Remove_Child --
@@ -116,14 +127,14 @@ package body Maximize_Action is
                  (Gtk_Container (Child.Get_Notebook).Get_Children) = 1
                then
                   --  Unmaximize the perspective
-                  On_Maximize_Child (Child);
+                  On_Toggle_Maximize (Child);
                end if;
             else
                if Gtk.Widget.Widget_List.Length
                  (Gtk_Container (Maximized_Container).Get_Children) = 1
                then
                   --  Unmaximize the perspective
-                  On_Maximize_Child (Child);
+                  On_Toggle_Maximize (Child);
                end if;
             end if;
          end if;

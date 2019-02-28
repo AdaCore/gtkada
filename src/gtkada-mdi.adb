@@ -173,7 +173,8 @@ package body Gtkada.MDI is
       5 => New_String (String (Signal_Child_State_Changed)),
       6 => New_String (String (Signal_Before_Destroy_Child)),
       7 => New_String (String (Signal_Before_Remove_Child)),
-      8 => New_String (String (Signal_Maximize_Child)));
+      8 => New_String (String (Signal_Maximize_Child)),
+      9 => New_String (String (Signal_Unmaximize)));
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtkada_MDI_Window_MDI_Child_Void, System.Address);
@@ -541,11 +542,13 @@ package body Gtkada.MDI is
       It    : not null access Gtk_Radio_Menu_Item_Record'Class);
    --  Destroy and recreate the content of a Menu
 
-   procedure Split_H_Cb (MDI   : access Gtk_Widget_Record'Class);
-   procedure Split_V_Cb (MDI   : access Gtk_Widget_Record'Class);
-   procedure Float_Cb   (MDI   : access GObject_Record'Class);
-   procedure Close_Cb   (MDI   : access Gtk_Widget_Record'Class);
-   procedure Focus_Cb   (Item  : access Gtk_Check_Menu_Item_Record'Class);
+   procedure Split_H_Cb    (MDI  : access Gtk_Widget_Record'Class);
+   procedure Split_V_Cb    (MDI  : access Gtk_Widget_Record'Class);
+   procedure Maximize_Cb   (MDI  : access Gtk_Widget_Record'Class);
+   procedure Unmaximize_Cb (MDI  : access Gtk_Widget_Record'Class);
+   procedure Float_Cb      (MDI  : access GObject_Record'Class);
+   procedure Close_Cb      (MDI  : access Gtk_Widget_Record'Class);
+   procedure Focus_Cb      (Item : access Gtk_Check_Menu_Item_Record'Class);
    --  Callbacks for the menu
 
    procedure On_Action_Floating
@@ -743,7 +746,11 @@ package body Gtkada.MDI is
    package body Close_Button is separate;
 
    package Maximize_Action is
-      procedure On_Maximize_Child
+      function Is_Maximized_Mode
+        (MDI : access MDI_Window_Record'Class) return Boolean;
+      --  Return True if a child is currently maximized in MDI
+
+      procedure On_Toggle_Maximize
         (Child : access Gtk_Widget_Record'Class);
       --  Callback when the signal "double_click_child_tab" is sent
 
@@ -2889,7 +2896,10 @@ package body Gtkada.MDI is
         (Child.Initial, Signal_Show, Child_Widget_Shown'Access, Child);
       Widget_Callback.Connect
         (Child, Signal_Maximize_Child,
-         Maximize_Action.On_Maximize_Child'Access);
+         Maximize_Action.On_Toggle_Maximize'Access);
+      Widget_Callback.Connect
+        (Child, Signal_Unmaximize,
+         Maximize_Action.On_Toggle_Maximize'Access);
       Widget_Callback.Connect
         (Child, Signal_Before_Remove_Child,
          Maximize_Action.On_Remove_Child'Access);
@@ -3712,6 +3722,13 @@ package body Gtkada.MDI is
          return;
       end if;
 
+      if not Child.Is_Visible
+        and then Maximize_Action.Is_Maximized_Mode (Child.MDI)
+      then
+         --  The child is hidden of another maximized child, thus unmaximize
+         Widget_Callback.Emit_By_Name (Child, Signal_Unmaximize);
+      end if;
+
       --  Be lazy. And avoid infinite loop when updating the MDI menu...
 
       if C = Old or else C.MDI.In_Destruction then
@@ -4375,7 +4392,11 @@ package body Gtkada.MDI is
       elsif Get_Event_Type (Event) = Gdk_2button_Press
         and then Get_Button (Event) = 1
       then
-         Widget_Callback.Emit_By_Name (C, Signal_Maximize_Child);
+         if not Maximize_Action.Is_Maximized_Mode (C.MDI) then
+            Widget_Callback.Emit_By_Name (C, Signal_Maximize_Child);
+         else
+            Widget_Callback.Emit_By_Name (C, Signal_Unmaximize);
+         end if;
          return True;
 
       elsif Get_Button (Event) = 2 then
@@ -5479,6 +5500,44 @@ package body Gtkada.MDI is
            ("Unexpected exception: " & Exception_Information (E));
    end Split_V_Cb;
 
+   -----------------
+   -- Maximize_Cb --
+   -----------------
+
+   procedure Maximize_Cb (MDI : access Gtk_Widget_Record'Class)
+   is
+      Child : constant MDI_Child := MDI_Window (MDI).Focus_Child;
+   begin
+      if Child /= null
+        and then not Maximize_Action.Is_Maximized_Mode (MDI_Window (MDI))
+      then
+         Widget_Callback.Emit_By_Name (Child, Signal_Maximize_Child);
+      end if;
+   exception
+      when E : others =>
+         Print_Debug
+           ("Unexpected exception: " & Exception_Information (E));
+   end Maximize_Cb;
+
+   -------------------
+   -- Unmaximize_Cb --
+   -------------------
+
+   procedure Unmaximize_Cb (MDI : access Gtk_Widget_Record'Class)
+   is
+      Child : constant MDI_Child := MDI_Window (MDI).Focus_Child;
+   begin
+      if Child /= null
+        and then Maximize_Action.Is_Maximized_Mode (MDI_Window (MDI))
+      then
+         Widget_Callback.Emit_By_Name (Child, Signal_Unmaximize);
+      end if;
+   exception
+      when E : others =>
+         Print_Debug
+           ("Unexpected exception: " & Exception_Information (E));
+   end Unmaximize_Cb;
+
    ---------------------------------------
    -- On_Select_Child_Update_Close_Menu --
    ---------------------------------------
@@ -6361,6 +6420,12 @@ package body Gtkada.MDI is
 
          Gtk_New (Sep);
          Append (Menu, Sep);
+
+         Gtk_New (Item, "Maximize");
+         Connect_Menu (Item, Maximize_Cb'Access, "maximize_current_child");
+
+         Gtk_New (Item, "Unmaximize");
+         Connect_Menu (Item, Unmaximize_Cb'Access, "unmaximize_current_child");
 
          Check := new MDI_Check_Menu_Item_Record'
             (Gtk_Check_Menu_Item_Record with MDI => MDI_Window (MDI));

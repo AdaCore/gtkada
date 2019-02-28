@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2019, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -1285,8 +1285,8 @@ package Gtkada.MDI is
    Signal_Children_Reorganized : constant Signal_Name :=
                                    "children_reorganized";
    Signal_Child_State_Changed  : constant Signal_Name := "child_state_changed";
-   Signal_Maximize_Child       : constant Signal_Name :=
-     "double_click_child_tab";
+   Signal_Maximize_Child       : constant Signal_Name := "maximize_child";
+   Signal_Unmaximize           : constant Signal_Name := "unmaximize";
 
    procedure Child_Selected
       (Self  : not null access MDI_Window_Record'Class;
