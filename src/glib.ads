@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2019, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -111,6 +111,7 @@ package Glib is
    type Gushort_Array  is array (Natural range <>) of Gushort;
    type Gulong_Array   is array (Natural range <>) of Gulong;
    type Gfloat_Array   is array (Natural range <>) of Gfloat;
+   type Gchar_Array    is array (Natural range <>) of Gchar;
    type Guchar_Array   is array (Natural range <>) of Guchar;
    type Gdouble_Array  is array (Natural range <>) of Gdouble;
 

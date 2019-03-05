@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2006-2018, AdaCore                     --
+--                     Copyright (C) 2006-2019, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -257,6 +257,20 @@ package body Glib.Main is
       Tmp := Remove (Id);
    end Remove;
 
+   -----------------
+   -- Remove_Poll --
+   -----------------
+
+   procedure Remove_Poll
+     (Source : G_Source;
+      Fd     : Glib.Poll.GPoll_FD)
+   is
+      procedure Internal (Source : G_Source; Fd : Glib.Poll.GPoll_FD);
+      pragma Import (C, Internal, "g_source_remove_poll");
+   begin
+      Internal (Source, Fd);
+   end Remove_Poll;
+
    ----------------------
    -- Default_Dispatch --
    ----------------------
@@ -285,6 +299,20 @@ package body Glib.Main is
    begin
       return Boolean'Val (Internal (Context));
    end Acquire;
+
+   --------------
+   -- Add_Poll --
+   --------------
+
+   procedure Add_Poll
+     (Source : G_Source;
+      Fd     : Glib.Poll.GPoll_FD)
+   is
+      procedure Internal (Source : G_Source; Fd : Glib.Poll.GPoll_FD);
+      pragma Import (C, Internal, "g_source_add_poll");
+   begin
+      Internal (Source, Fd);
+   end Add_Poll;
 
    --------------
    -- Is_Owner --

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2019, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -35,13 +35,14 @@
 with Interfaces.C.Strings;    use Interfaces.C.Strings;
 
 with Ada.Characters.Handling; use Ada.Characters.Handling;
-with Ada.Containers.Vectors;
 with Ada.Containers.Doubly_Linked_Lists;
-with Ada.Unchecked_Deallocation;
+with Ada.Containers.Vectors;
+with Ada.Exceptions;          use Ada.Exceptions;
 with Ada.Strings.Fixed;       use Ada.Strings.Fixed;
 with Ada.Strings.Unbounded;   use Ada.Strings.Unbounded;
 with Ada.Tags;                use Ada.Tags;
-with Ada.Exceptions;          use Ada.Exceptions;
+with Ada.Unchecked_Conversion;
+with Ada.Unchecked_Deallocation;
 with System;                  use System;
 with System.Address_Image;
 
@@ -109,6 +110,7 @@ with Gtk.Style_Context;       use Gtk.Style_Context;
 with Gtk.Style_Provider;      use Gtk.Style_Provider;
 with Gtk.Window;              use Gtk.Window;
 
+with Gtkada.Bindings;         use Gtkada.Bindings;
 with Gtkada.Handlers;         use Gtkada.Handlers;
 with Gtkada.Multi_Paned;      use Gtkada.Multi_Paned;
 with Gtkada.Style;
@@ -172,6 +174,47 @@ package body Gtkada.MDI is
       6 => New_String (String (Signal_Before_Destroy_Child)),
       7 => New_String (String (Signal_Before_Remove_Child)),
       8 => New_String (String (Signal_Maximize_Child)));
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtkada_MDI_Window_MDI_Child_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtkada_MDI_Window_MDI_Child_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_MDI_Child_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_MDI_Child_Void);
+
+   procedure Connect
+     (Object  : access MDI_Window_Record'Class;
+      C_Name  : Glib.Signal_Name;
+      Handler : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After   : Boolean);
+
+   procedure Connect_Slot
+     (Object  : access MDI_Window_Record'Class;
+      C_Name  : Glib.Signal_Name;
+      Handler : Cb_GObject_MDI_Child_Void;
+      After   : Boolean;
+      Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_MDI_Child_Void
+     (Closure         : GClosure;
+      Return_Value    : Glib.Values.GValue;
+      N_Params        : Glib.Guint;
+      Params          : Glib.Values.C_GValues;
+      Invocation_Hint : System.Address;
+      User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_MDI_Child_Void);
+
+   procedure Marsh_MDI_Window_MDI_Child_Void
+     (Closure         : GClosure;
+      Return_Value    : Glib.Values.GValue;
+      N_Params        : Glib.Guint;
+      Params          : Glib.Values.C_GValues;
+      Invocation_Hint : System.Address;
+      User_Data       : System.Address);
+   pragma Convention (C, Marsh_MDI_Window_MDI_Child_Void);
 
    use Widget_List;
 
@@ -465,12 +508,38 @@ package body Gtkada.MDI is
    --  Return the list of visible children in Vec.
 
    procedure Update_Menu_Model_List_Of_Children
-      (MDI : not null access MDI_Window_Record'Class);
-   procedure On_Child_Changed_Update_Menu
-      (Menu : access Gtk_Widget_Record'Class);
+     (MDI : not null access MDI_Window_Record'Class);
+   procedure Add_Child_Menu
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Child : not null access MDI_Child_Record'Class);
+   procedure Remove_Child_Menu
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Child : not null access MDI_Child_Record'Class);
+   procedure Update_Child_Menu
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Child : not null access MDI_Child_Record'Class);
+   procedure Recompute_Menu
+     (Menu : access Gtk_Widget_Record'Class);
    procedure On_Child_Selected_Update_Menu
-      (Item : access Gtk_Widget_Record'Class);
+     (Item : access Gtk_Widget_Record'Class);
    --  Update the contents of the menu with the list of children.
+
+   function Find_Child_Menu
+     (Menu  : access MDI_Menu_Record'Class;
+      Child : not null access MDI_Child_Record'Class)
+      return Menu_Item_For_Child;
+   --  Return the Menu of Child in MDI
+
+   procedure Internal_Add_Child_Menu
+     (Menu  : access MDI_Menu_Record'Class;
+      Child : not null access MDI_Child_Record'Class;
+      Group : in out Widget_SList.GSlist);
+   --  Add a menu for Child in Group of Menu
+
+   procedure Internal_Update_Menu_Content
+     (Child : access MDI_Child_Record'Class;
+      It    : not null access Gtk_Radio_Menu_Item_Record'Class);
+   --  Destroy and recreate the content of a Menu
 
    procedure Split_H_Cb (MDI   : access Gtk_Widget_Record'Class);
    procedure Split_V_Cb (MDI   : access Gtk_Widget_Record'Class);
@@ -3460,7 +3529,7 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Raise_Child
-     (Child : not null access MDI_Child_Record'Class;
+     (Child      : not null access MDI_Child_Record'Class;
       Give_Focus : Boolean := True)
    is
       Old_Focus     : constant MDI_Child := Child.MDI.Focus_Child;
@@ -3512,6 +3581,35 @@ package body Gtkada.MDI is
         and then Give_Focus
         and then Child.Initial.Get_Realized
       then
+         --  When raising a floating child that has the Float_As_Transient
+         --  flag set to True, set it as transient for the current window
+         --  (i.e: the currently focused child's window if any or the MDI's
+         --  main window).
+         --  This ensures that the floating child will always be on top of
+         --  the currently focused window, which is what we want in the
+         --  Float_As_Transient mode.
+
+         if Old_Focus /= Child
+           and then (Child.Flags and Float_As_Transient) /= 0
+         then
+            declare
+               Child_Window : constant Gtk_Window :=
+                                Gtk_Window
+                                  (Child.Initial.Get_Toplevel);
+               New_Parent   : Gtk_Window := null;
+            begin
+               if Old_Focus = null then
+                  New_Parent := Gtk_Window (Child.MDI.Get_Toplevel);
+               else
+                  New_Parent := Gtk_Window (Old_Focus.Initial.Get_Toplevel);
+               end if;
+
+               if New_Parent /= null then
+                  Child_Window.Set_Transient_For (New_Parent);
+               end if;
+            end;
+         end if;
+
          Present (Gtk_Window (Get_Toplevel (Child.Initial)));
 
       elsif Child.Get_Realized then
@@ -3809,43 +3907,60 @@ package body Gtkada.MDI is
        Win       : out Gtk_Window;
        Container : out Gtk_Container)
    is
-      Parent : Gtk_Window := null;
-      Item   : Widget_List.Glist;
-      It     : MDI_Child;
+      function Get_Current_Floating_Child return MDI_Child;
+      --  If the current MDI child (i.e: the one that has the focus) is
+      --  floating and realized, return it. Return null otherwise.
+
+      --------------------------------
+      -- Get_Current_Floating_Child --
+      --------------------------------
+
+      function Get_Current_Floating_Child return MDI_Child
+      is
+         Children : Widget_List.Glist;
+         It       : MDI_Child;
+      begin
+         Children := Child.MDI.Items;
+         It := MDI_Child (Get_Data (Children));
+
+         if It /= MDI_Child (Child)
+           and then It.State = Floating
+              and then It.Initial.Get_Realized
+         then
+            return It;
+         else
+            return null;
+         end if;
+      end Get_Current_Floating_Child;
+
+      Parent                 : Gtk_Window := null;
+      Current_Floating_Child : constant MDI_Child :=
+                                 Get_Current_Floating_Child;
    begin
       Gtk_New (Win);
       Container := Gtk_Container (Win);
 
-      --  If the current child is floating, and the mode is
-      --  Float_As_Transient, we want to float the dialog as
-      --  transient for the current child.
+      --  If the mode is set to Float_To_Main, we want to float the dialog as
+      --  transient for the MDI's main window.
+      --
+      --  If the mode is set to Float_As_Transient , we want to float the
+      --  dialog as transient for the current child when floating or the main
+      --  window otherwise.
+      --
+      --  In any other case, we don't set any transient window.
 
-      if (Child.Flags and Float_As_Transient) /= 0 then
-         Item := Child.MDI.Items;
-         while Item /= Widget_List.Null_List loop
-            It := MDI_Child (Get_Data (Item));
-
-            if It /= MDI_Child (Child) then
-               if It.State = Floating
-                 and then It.Initial.Get_Realized
-               then
-                  Parent := Gtk_Window (Get_Toplevel (It.Initial));
-               else
-                  Parent := Gtk_Window (Get_Toplevel (Child.MDI));
-               end if;
-
-               exit;
-            end if;
-
-            Item := Widget_List.Next (Item);
-         end loop;
-      elsif (Child.Flags and Float_To_Main) /= 0 then
-         Parent := Gtk_Window (Get_Toplevel (Child.MDI));
+      if (Child.Flags and Float_To_Main) /= 0 then
+         Parent := Gtk_Window (Child.MDI.Get_Toplevel);
+      elsif (Child.Flags and Float_As_Transient) /= 0 then
+         if Current_Floating_Child /= null then
+            Parent := Gtk_Window (Current_Floating_Child.Initial.Get_Toplevel);
+         else
+            Parent := Gtk_Window (Child.MDI.Get_Toplevel);
+         end if;
       end if;
 
       if Parent /= null then
          Win.Set_Transient_For (Parent);
-         Win.Set_Destroy_With_Parent (True);
       end if;
    end Create_Float_Window_For_Child;
 
@@ -5496,28 +5611,191 @@ package body Gtkada.MDI is
       It.Child.MDI.Internal_Updating_Menu := False;
    end On_Child_Selected_Update_Menu;
 
+   -----------------------------
+   -- Internal_Add_Child_Menu --
+   -----------------------------
+
+   procedure Internal_Add_Child_Menu
+     (Menu  : access MDI_Menu_Record'Class;
+      Child : not null access MDI_Child_Record'Class;
+      Group : in out Widget_SList.GSlist)
+   is
+      It : Gtk_Radio_Menu_Item;
+   begin
+      It := new Menu_Item_For_Child_Record'
+        (Gtk_Radio_Menu_Item_Record with Child => MDI_Child (Child));
+      Gtk.Radio_Menu_Item.Initialize (It, Group, "");
+      Group := It.Get_Group;
+      Menu.Add (It);
+
+      Internal_Update_Menu_Content (Child, It);
+
+      It.On_Toggled (Focus_Cb'Access, After => True);
+      Widget_Callback.Object_Connect
+        (Menu.MDI, Signal_Child_Selected,
+         On_Child_Selected_Update_Menu'Access, It,
+         After => True);
+
+      It.Set_Accel_Path
+        (Child.MDI.Accel_Path_Prefix.all
+         & "/window/child/" & Child.Short_Title.all,
+         Child.MDI.Group);
+   end Internal_Add_Child_Menu;
+
    ----------------------------------
-   -- On_Child_Changed_Update_Menu --
+   -- Internal_Update_Menu_Content --
    ----------------------------------
 
-   procedure On_Child_Changed_Update_Menu
+   procedure Internal_Update_Menu_Content
+     (Child : access MDI_Child_Record'Class;
+      It    : not null access Gtk_Radio_Menu_Item_Record'Class)
+   is
+      Box   : Gtk_Box;
+      Label : Gtk_Accel_Label;
+      Icon  : Gtk_Image;
+   begin
+      It.Remove (It.Get_Child);
+
+      Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 5);
+      It.Add (Box);
+
+      Icon := Get_Icon (Child);
+      if Icon /= null then
+         Box.Pack_Start (Icon, Expand => False);
+      end if;
+
+      Gtk_New (Label, Child.Short_Title.all);
+      Label.Set_Alignment (0.0, 0.5);
+      Label.Set_Accel_Widget (It);
+      Box.Pack_Start (Label, Expand => True, Fill => True);
+      It.Set_Active (Child = Child.MDI.Focus_Child);
+
+      --  Refresh graphically the menu
+      It.Show_All;
+   end Internal_Update_Menu_Content;
+
+   ---------------------
+   -- Find_Child_Menu --
+   ---------------------
+
+   function Find_Child_Menu
+     (Menu  : access MDI_Menu_Record'Class;
+      Child : not null access MDI_Child_Record'Class)
+      return Menu_Item_For_Child
+   is
+      Children, L : Widget_List.Glist;
+      W           : Gtk_Widget;
+   begin
+      Children := Menu.Get_Children;
+      L := Children;
+      while L /= Null_List loop
+         W := Get_Data (L);
+         L := Next (L);
+         if W.all in Menu_Item_For_Child_Record'Class then
+            declare
+               It : constant Menu_Item_For_Child := Menu_Item_For_Child (W);
+            begin
+               if It.Child = Child then
+                  return It;
+               end if;
+            end;
+         end if;
+      end loop;
+
+      return null;
+   end Find_Child_Menu;
+
+   --------------------
+   -- Add_Child_Menu --
+   --------------------
+
+   procedure Add_Child_Menu
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Child : not null access MDI_Child_Record'Class)
+   is
+      Menu        : constant MDI_Menu := MDI_Menu (Self);
+      G           : Widget_SList.GSlist := Widget_SList.Null_List;
+      Children, L : Widget_List.Glist;
+      W           : Gtk_Widget;
+   begin
+      Children := Menu.Get_Children;
+      L := Children;
+      while L /= Null_List loop
+         W := Get_Data (L);
+         L := Next (L);
+         if W.all in Menu_Item_For_Child_Record'Class then
+            G := Menu_Item_For_Child (W).Get_Group;
+            exit;
+         end if;
+      end loop;
+      Free (Children);
+
+      Internal_Add_Child_Menu (Menu, Child, G);
+
+   end Add_Child_Menu;
+
+   -----------------------
+   -- Remove_Child_Menu --
+   -----------------------
+
+   procedure Remove_Child_Menu
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Child : not null access MDI_Child_Record'Class)
+   is
+      Menu : constant MDI_Menu := MDI_Menu (Self);
+   begin
+      if Self = null then
+         return;
+      end if;
+
+      declare
+         It : constant Menu_Item_For_Child := Find_Child_Menu (Menu, Child);
+      begin
+         if It /= null then
+            It.Destroy;
+         end if;
+      end;
+   end Remove_Child_Menu;
+
+   -----------------------
+   -- Update_Child_Menu --
+   -----------------------
+
+   procedure Update_Child_Menu
+     (Self  : access Glib.Object.GObject_Record'Class;
+      Child : not null access MDI_Child_Record'Class)
+   is
+      Menu : constant MDI_Menu := MDI_Menu (Self);
+   begin
+      if Self = null then
+         return;
+      end if;
+
+      declare
+         It : constant Menu_Item_For_Child := Find_Child_Menu (Menu, Child);
+      begin
+         if It /= null then
+            Internal_Update_Menu_Content (Child, It);
+         end if;
+      end;
+   end Update_Child_Menu;
+
+   --------------------
+   -- Recompute_Menu --
+   --------------------
+
+   procedure Recompute_Menu
       (Menu : access Gtk_Widget_Record'Class)
    is
       M : constant MDI_Menu := MDI_Menu (Menu);
 
-      --  ??? Some code duplication with Update_Menu_Model_List_Of_Children,
-      --  but this code will be removed when we only support menu models.
       use Child_Vectors;
-      G      : Widget_SList.GSlist := Widget_SList.Null_List;
-      Vec    : Child_Vectors.Vector;
-      Curs   : Child_Vectors.Cursor;
-      Child  : MDI_Child;
-      It     : Gtk_Radio_Menu_Item;
-      Box    : Gtk_Box;
-      Label  : Gtk_Accel_Label;
+      G           : Widget_SList.GSlist := Widget_SList.Null_List;
+      Vec         : Child_Vectors.Vector;
+      Curs        : Child_Vectors.Cursor;
+      Child       : MDI_Child;
       Children, L : Widget_List.Glist;
-      W      : Gtk_Widget;
-      Icon   : Gtk_Image;
+      W           : Gtk_Widget;
    begin
       --  Remove all items
 
@@ -5539,45 +5817,12 @@ package body Gtkada.MDI is
       Curs := First (Vec);
       while Has_Element (Curs) loop
          Child := Element (Curs);
-
-         It := new Menu_Item_For_Child_Record'
-            (Gtk_Radio_Menu_Item_Record with Child => Child);
-         Gtk.Radio_Menu_Item.Initialize (It, G, "");
-         G := It.Get_Group;
-         M.Add (It);
-
-         It.Remove (It.Get_Child);
-
-         Gtk_New_Hbox (Box, Homogeneous => False, Spacing => 5);
-         It.Add (Box);
-
-         Icon := Get_Icon (Child);
-         if Icon /= null then
-            Box.Pack_Start (Icon, Expand => False);
-         end if;
-
-         Gtk_New (Label, Child.Short_Title.all);
-         Label.Set_Alignment (0.0, 0.5);
-         Label.Set_Accel_Widget (It);
-         Box.Pack_Start (Label, Expand => True, Fill => True);
-
-         It.Set_Active (Child = Child.MDI.Focus_Child);
-         It.On_Toggled (Focus_Cb'Access, After => True);
-         Widget_Callback.Object_Connect
-            (M.MDI, Signal_Child_Selected,
-             On_Child_Selected_Update_Menu'Access, It,
-             After => True);
-
-         It.Set_Accel_Path
-           (Child.MDI.Accel_Path_Prefix.all
-            & "/window/child/" & Child.Short_Title.all,
-            Child.MDI.Group);
-
+         Internal_Add_Child_Menu (M, Child, G);
          Next (Curs);
       end loop;
 
       M.Show_All;
-   end On_Child_Changed_Update_Menu;
+   end Recompute_Menu;
 
    ---------------------
    -- Set_Focus_Child --
@@ -6142,22 +6387,13 @@ package body Gtkada.MDI is
          Gtk_New (Sep);
          Append (Menu, Sep);
 
-         On_Child_Changed_Update_Menu (Menu);
+         Recompute_Menu (Menu);
+         MDI.On_Child_Removed (Remove_Child_Menu'Access, Slot => Menu);
+         MDI.On_Child_Added (Add_Child_Menu'Access, Slot => Menu);
+         MDI.On_Child_Icon_Changed (Update_Child_Menu'Access, Slot => Menu);
+         MDI.On_Child_Title_Changed (Update_Child_Menu'Access, Slot => Menu);
          Widget_Callback.Object_Connect
-            (MDI, Signal_Child_Removed,
-             On_Child_Changed_Update_Menu'Access, Menu);
-         Widget_Callback.Object_Connect
-            (MDI, Signal_Child_Added,
-             On_Child_Changed_Update_Menu'Access, Menu);
-         Widget_Callback.Object_Connect
-            (MDI, Signal_Child_Icon_Changed,
-             On_Child_Changed_Update_Menu'Access, Menu);
-         Widget_Callback.Object_Connect
-            (MDI, Signal_Child_Title_Changed,
-             On_Child_Changed_Update_Menu'Access, Menu);
-         Widget_Callback.Object_Connect
-            (MDI, Signal_Perspective_Changed,
-             On_Child_Changed_Update_Menu'Access, Menu);
+            (MDI, Signal_Perspective_Changed, Recompute_Menu'Access, Menu);
 
          Show_All (Menu);
          return Gtk_Menu (Menu);
@@ -7363,15 +7599,26 @@ package body Gtkada.MDI is
 
                if Child.State = Floating then
                   declare
-                     Win : constant Gtk_Widget :=
-                       Get_Toplevel (Child.Initial);
+                     Win  : constant Gtk_Widget :=
+                              Get_Toplevel (Child.Initial);
+                     X, Y : Gint;
                   begin
+
+                     --  Save the floating window's size
                      --  Note: This size doesn't include the size of the window
                      --  decorations, doesn't seem to be a way to do this.
+
                      Add (Child_Node, "height",
                           Gint'Image (Win.Get_Allocated_Height));
                      Add (Child_Node, "width",
                           Gint'Image (Win.Get_Allocated_Width));
+
+                     --  Save the floating window's coordinates
+
+                     Get_Root_Origin (Get_Window (Win), X, Y);
+
+                     Add (Child_Node, "X", Gint'Image (X));
+                     Add (Child_Node, "Y", Gint'Image (Y));
                   end;
                end if;
 
@@ -9010,4 +9257,371 @@ package body Gtkada.MDI is
       end if;
    end Thaw_Focus;
 
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+     (Object  : access MDI_Window_Record'Class;
+      C_Name  : Glib.Signal_Name;
+      Handler : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After   : Boolean) is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_MDI_Window_MDI_Child_Void'Access,
+         Handler     => Cb_To_Address (Handler), --  Set in the closure
+         After       => After);
+   end Connect;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+     (Object  : access MDI_Window_Record'Class;
+      C_Name  : Glib.Signal_Name;
+      Handler : Cb_GObject_MDI_Child_Void;
+      After   : Boolean;
+      Slot    : access Glib.Object.GObject_Record'Class := null) is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_MDI_Child_Void'Access,
+         Handler     => Cb_To_Address (Handler), --  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ----------------------------------
+   -- Marsh_GObject_MDI_Child_Void --
+   ----------------------------------
+
+   procedure Marsh_GObject_MDI_Child_Void
+     (Closure         : GClosure;
+      Return_Value    : Glib.Values.GValue;
+      N_Params        : Glib.Guint;
+      Params          : Glib.Values.C_GValues;
+      Invocation_Hint : System.Address;
+      User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_MDI_Child_Void :=
+        Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject :=
+        Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, MDI_Child (Unchecked_To_Object (Params, 1)));
+   exception when E : others => Process_Exception (E);
+   end Marsh_GObject_MDI_Child_Void;
+
+   -------------------------------------
+   -- Marsh_MDI_Window_MDI_Child_Void --
+   -------------------------------------
+
+   procedure Marsh_MDI_Window_MDI_Child_Void
+     (Closure         : GClosure;
+      Return_Value    : Glib.Values.GValue;
+      N_Params        : Glib.Guint;
+      Params          : Glib.Values.C_GValues;
+      Invocation_Hint : System.Address;
+      User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtkada_MDI_Window_MDI_Child_Void :=
+        Address_To_Cb (Get_Callback (Closure));
+      Obj : constant MDI_Window :=
+        MDI_Window (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, MDI_Child (Unchecked_To_Object (Params, 1)));
+   exception when E : others => Process_Exception (E);
+   end Marsh_MDI_Window_MDI_Child_Void;
+
+   -----------------------
+   -- On_Child_Selected --
+   -----------------------
+
+   procedure On_Child_Selected
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False) is
+   begin
+      Connect (Self, Signal_Child_Selected & ASCII.NUL, Call, After);
+   end On_Child_Selected;
+
+   -----------------------
+   -- On_Child_Selected --
+   -----------------------
+
+   procedure On_Child_Selected
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False) is
+   begin
+      Connect_Slot
+        (Self, Signal_Child_Selected & ASCII.NUL, Call, After, Slot);
+   end On_Child_Selected;
+
+   --------------------
+   -- On_Float_Child --
+   --------------------
+
+   procedure On_Float_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False) is
+   begin
+      Connect (Self, Signal_Float_Child & ASCII.NUL, Call, After);
+   end On_Float_Child;
+
+   --------------------
+   -- On_Float_Child --
+   --------------------
+
+   procedure On_Float_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False) is
+   begin
+      Connect_Slot
+        (Self, Signal_Float_Child & ASCII.NUL, Call, After, Slot);
+   end On_Float_Child;
+
+   ----------------------------
+   -- On_Child_Title_Changed --
+   ----------------------------
+
+   procedure On_Child_Title_Changed
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False) is
+   begin
+      Connect (Self, Signal_Child_Title_Changed & ASCII.NUL, Call, After);
+   end On_Child_Title_Changed;
+
+   ----------------------------
+   -- On_Child_Title_Changed --
+   ----------------------------
+
+   procedure On_Child_Title_Changed
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False) is
+   begin
+      Connect_Slot
+        (Self, Signal_Child_Title_Changed & ASCII.NUL, Call, After, Slot);
+   end On_Child_Title_Changed;
+
+   --------------------
+   -- On_Child_Added --
+   --------------------
+
+   procedure On_Child_Added
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False) is
+   begin
+      Connect (Self, Signal_Child_Added & ASCII.NUL, Call, After);
+   end On_Child_Added;
+
+   --------------------
+   -- On_Child_Added --
+   --------------------
+
+   procedure On_Child_Added
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False) is
+   begin
+      Connect_Slot
+        (Self, Signal_Child_Added & ASCII.NUL, Call, After, Slot);
+   end On_Child_Added;
+
+   ----------------------
+   -- On_Child_Removed --
+   ----------------------
+
+   procedure On_Child_Removed
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False) is
+   begin
+      Connect (Self, Signal_Child_Removed & ASCII.NUL, Call, After);
+   end On_Child_Removed;
+
+   ----------------------
+   -- On_Child_Removed --
+   ----------------------
+
+   procedure On_Child_Removed
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False) is
+   begin
+      Connect_Slot
+        (Self, Signal_Child_Removed & ASCII.NUL, Call, After, Slot);
+   end On_Child_Removed;
+
+   ---------------------------
+   -- On_Child_Icon_Changed --
+   ---------------------------
+
+   procedure On_Child_Icon_Changed
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False) is
+   begin
+      Connect (Self, Signal_Child_Icon_Changed & ASCII.NUL, Call, After);
+   end On_Child_Icon_Changed;
+
+   ---------------------------
+   -- On_Child_Icon_Changed --
+   ---------------------------
+
+   procedure On_Child_Icon_Changed
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False) is
+   begin
+      Connect_Slot
+        (Self, Signal_Child_Icon_Changed & ASCII.NUL, Call, After, Slot);
+   end On_Child_Icon_Changed;
+
+   ---------------------
+   -- On_Delete_Event --
+   ---------------------
+
+   procedure On_Delete_Event
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False) is
+   begin
+      Connect (Self, Signal_Delete_Event & ASCII.NUL, Call, After);
+   end On_Delete_Event;
+
+   ---------------------
+   -- On_Delete_Event --
+   ---------------------
+
+   procedure On_Delete_Event
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False) is
+   begin
+      Connect_Slot
+        (Self, Signal_Delete_Event & ASCII.NUL, Call, After, Slot);
+   end On_Delete_Event;
+
+   ----------------------
+   -- On_Unfloat_Child --
+   ----------------------
+
+   procedure On_Unfloat_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False) is
+   begin
+      Connect (Self, Signal_Unfloat_Child & ASCII.NUL, Call, After);
+   end On_Unfloat_Child;
+
+   ----------------------
+   -- On_Unfloat_Child --
+   ----------------------
+
+   procedure On_Unfloat_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False) is
+   begin
+      Connect_Slot
+        (Self, Signal_Unfloat_Child & ASCII.NUL, Call, After, Slot);
+   end On_Unfloat_Child;
+
+   -----------------------------
+   -- On_Before_Unfloat_Child --
+   -----------------------------
+
+   procedure On_Before_Unfloat_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False) is
+   begin
+      Connect (Self, Signal_Before_Unfloat_Child & ASCII.NUL, Call, After);
+   end On_Before_Unfloat_Child;
+
+   -----------------------------
+   -- On_Before_Unfloat_Child --
+   -----------------------------
+
+   procedure On_Before_Unfloat_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False) is
+   begin
+      Connect_Slot
+        (Self, Signal_Before_Unfloat_Child & ASCII.NUL, Call, After, Slot);
+   end On_Before_Unfloat_Child;
+
+   -----------------------------
+   -- On_Before_Destroy_Child --
+   -----------------------------
+
+   procedure On_Before_Destroy_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False) is
+   begin
+      Connect (Self, Signal_Before_Destroy_Child & ASCII.NUL, Call, After);
+   end On_Before_Destroy_Child;
+
+   -----------------------------
+   -- On_Before_Unfloat_Child --
+   -----------------------------
+
+   procedure On_Before_Destroy_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False) is
+   begin
+      Connect_Slot
+        (Self, Signal_Before_Destroy_Child & ASCII.NUL, Call, After, Slot);
+   end On_Before_Destroy_Child;
+
+   ----------------------------
+   -- On_Before_Remove_Child --
+   ----------------------------
+
+   procedure On_Before_Remove_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_Gtkada_MDI_Window_MDI_Child_Void;
+      After : Boolean := False) is
+   begin
+      Connect (Self, Signal_Before_Remove_Child & ASCII.NUL, Call, After);
+   end On_Before_Remove_Child;
+
+   -----------------------------
+   -- On_Before_Unfloat_Child --
+   -----------------------------
+
+   procedure On_Before_Remove_Child
+     (Self  : not null access MDI_Window_Record'Class;
+      Call  : Cb_GObject_MDI_Child_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False) is
+   begin
+      Connect_Slot
+        (Self, Signal_Before_Remove_Child & ASCII.NUL, Call, After, Slot);
+   end On_Before_Remove_Child;
 end Gtkada.MDI;
