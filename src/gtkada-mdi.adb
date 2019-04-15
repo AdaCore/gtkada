@@ -3983,6 +3983,12 @@ package body Gtkada.MDI is
 
       if Parent /= null then
          Win.Set_Transient_For (Parent);
+
+         --  Set the window's type hint to dialog to avoid displaying the
+         --  minimize/maximize buttons: these buttons can lead to some strange
+         --  behavior when a window is set as transient to a parent one (e.g:
+         --  minimizing a window also minimizes the parent window on Windows).
+         Win.Set_Type_Hint (Window_Type_Hint_Dialog);
       end if;
    end Create_Float_Window_For_Child;
 
