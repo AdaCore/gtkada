@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2019, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -415,11 +415,11 @@ package body Glib.Object is
    -------------------
 
    procedure Add_Interface
-      (Klass : Ada_GObject_Class;
-       Iface : GType;
-       Info  : not null access GInterface_Info)
+     (Klass : Ada_GObject_Class;
+      Iface : GType;
+      Info  : not null GInterface_Info_Access)
    is
-      procedure Internal (Klass, Iface : GType; Info : access GInterface_Info);
+      procedure Internal (Klass, Iface : GType; Info : GInterface_Info_Access);
       pragma Import (C, Internal, "g_type_add_interface_static");
    begin
       Internal (Klass.The_Type, Iface, Info);

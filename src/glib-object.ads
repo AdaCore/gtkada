@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2019, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -397,7 +397,7 @@ package Glib.Object is
    --   end Class_Init;
    --
    --   function Get_Type return GType is
-   --      Info : access GInterface_Info;
+   --      Info : GInterface_Info_Access;
    --   begin
    --      if Initialize_Class_Record
    --         (Ancestor     => Gtk.Button.Get_Type,
@@ -465,10 +465,12 @@ package Glib.Object is
    --  A structure that provides information to the type system which is used
    --  specifically for managing interface types.
 
+   type GInterface_Info_Access is access all GInterface_Info;
+
    procedure Add_Interface
       (Klass : Ada_GObject_Class;
        Iface : GType;
-       Info  : not null access GInterface_Info);
+       Info  : not null GInterface_Info_Access);
    --  State that Klass implements the given interface. It will need to
    --  override the inherited methods. This is low-level handling.
    --  Info should be allocated in this call, and is never freed in the
