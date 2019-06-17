@@ -808,6 +808,18 @@ package body Gtkada.MDI is
       end if;
    end Set_State;
 
+   ------------------------
+   -- Get_Child_Notebook --
+   ------------------------
+
+   function Get_Child_Notebook
+     (Child : access MDI_Child_Record'Class) return Gtk.Notebook.Gtk_Notebook
+   is
+      Notebook : constant MDI_Notebook := Get_Notebook (Child);
+   begin
+      return Gtk_Notebook (Notebook);
+   end Get_Child_Notebook;
+
    ------------------
    -- Get_Notebook --
    ------------------
