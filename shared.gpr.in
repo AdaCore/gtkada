@@ -48,6 +48,12 @@ project Shared is
    GL_Include  := Gtk.GL_Default_Include  & (@GL_CFLAGS_GPR@);
    GL_Libs     := Gtk.GL_Default_Libs     & (@GL_LIBS_GPR@);
 
+   Adaflags    := External_As_List ("ADAFLAGS", " ");
+   Cflags      := External_As_List ("CFLAGS", " ");
+   Cppflags    := External_As_List ("CPPFLAGS", " ");
+   Ldflags     := External_As_List ("LDFLAGS", " ");
+   Objcflags   := External_As_List ("OBJCFLAGS", " ");
+
    package Naming is
       for Body_Suffix ("Objective-C") use ".m";
    end Naming;
@@ -73,6 +79,11 @@ project Shared is
 
       for Switches ("C") use Compiler'Switches ("C") & Gtk_Include;
       for Switches ("Objective-C") use Compiler'Switches ("Objective-C") & Gtk_Include;
+
+      for Switches ("Ada") use Compiler'Switches ("Ada") & Adaflags;
+      for Switches ("C") use Compiler'Switches ("C") & Cflags & Cppflags;
+      for Switches ("Objective-C") use Compiler'Switches ("Objective-C")
+        & Objcflags & Cppflags;
    end Compiler;
 
    package Builder is
@@ -94,6 +105,10 @@ project Shared is
              null;
       end case;
    end Binder;
+
+   package Linker is
+      for Leading_Switches ("Ada") use Ldflags;
+   end Linker;
 
    package IDE is
       for VCS_Kind use "auto";

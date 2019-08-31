@@ -42,6 +42,7 @@ library project GtkAda_GL is
 
    case Shared.Library_Kind is
       when "relocatable" =>
+         for Leading_Library_Options use Shared.Ldflags;
          for Library_Options use Shared.GL_Libs & Shared.Gtk_Libs;
       when others =>
          null;
