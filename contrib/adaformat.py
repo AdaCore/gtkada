@@ -837,7 +837,7 @@ class AdaNaming(object):
             return self.cname_to_adaname[cname]
         except KeyError:
             if warning_if_not_found and cname.lower().startswith("gtk_"):
-                print "Name quoted in doc has no Ada binding: %s" % cname
+                print("Name quoted in doc has no Ada binding: %s" % cname)
             self.cname_to_adaname[cname] = cname  # Display warning once only
             return cname
 
@@ -1922,7 +1922,7 @@ class Section(object):
 
         iscode = False
 
-        if isinstance(obj, str) or isinstance(obj, unicode):
+        if isinstance(obj, str):
             obj = Code(obj)
             iscode = True
         elif isinstance(obj, Package):
@@ -1960,7 +1960,7 @@ class Section(object):
                 if not in_spec:
                     continue
 
-                if isinstance(obj, Code) or isinstance(obj, unicode):
+                if isinstance(obj, Code) or isinstance(obj, str):
                     code.append([obj])
 
                 elif isinstance(obj, Subprogram) or isinstance(obj, Package):
@@ -2034,7 +2034,7 @@ class Section(object):
                     add_newline = (hasattr(obj, "add_newline") and
                                    obj.add_newline)
 
-                elif isinstance(obj, unicode):
+                elif isinstance(obj, str):
                     print("Not adding unicode to package: %s\n" % (
                         obj.encode('UTF-8'), ))
 
@@ -2235,8 +2235,7 @@ class Package(object):
             result.append(indent + "   %s" % self.formal_params)
         result.append(indent + "package %s is\n" % self.name)
 
-        self.sections.sort(lambda x, y: cmp(self.section_order(x.name),
-                                            self.section_order(y.name)))
+        self.sections.sort(key=lambda x: self.section_order(x.name))
 
         for s in self.sections:
             sec = s.spec(pkg=self, indent=indent + "   ")

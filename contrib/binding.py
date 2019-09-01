@@ -172,16 +172,25 @@ class GIR(object):
            no Ada binding.
         """
 
-        print "Missing bindings:"
+        print("Missing bindings:")
         count = 0
-        for name in sorted(gir.interfaces.iterkeys()):
+        for name in sorted(gir.interfaces.keys()):
             if name not in self.bound:
                 sys.stdout.write("%-28s" % (name + "(intf)", ))
                 count += 1
                 if (count % 4) == 0:
                     sys.stdout.write("\n")
 
-        for name in sorted(gir.classes.iterkeys()):
+        # In Python2, 'sorted' implicitly relies on cmp accepting a None
+        # argument instead of a string.
+        # Python3 now protests.
+        # Imitate the old behaviour until all keys are strings.
+        def acceptNone (x):
+            if x is None:
+                return "None"
+            else:
+                return x
+        for name in sorted(gir.classes.keys(), key=acceptNone):
             if name not in self.bound:
                 sys.stdout.write("%-28s" % name)
                 # print '    "--%s", # Not tested yet, from Gio' % name
@@ -189,7 +198,7 @@ class GIR(object):
                 if (count % 4) == 0:
                     sys.stdout.write("\n")
 
-        print
+        print()
 
     def _get_class_node(self, rootNode, girname):
         """Find the <class> node in the same XML document as node that matches
@@ -230,10 +239,10 @@ class GIR(object):
 
     def generate(self, out, cout):
         """Generate Ada code for all packages"""
-        for pkg in self.packages.itervalues():
-            out.write(pkg.spec().encode('UTF-8'))
+        for pkg in self.packages.values():
+            out.write(pkg.spec())
             out.write("\n")
-            out.write(pkg.body().encode('UTF-8'))
+            out.write(pkg.body())
             out.write("\n")
 
         cout.write(self.ccode)
@@ -885,7 +894,7 @@ class GIRClass(object):
         t = None
         if not inherited:
             try:
-                ip = node.iter(ninstanceparam).next()
+                ip = next(node.iter(ninstanceparam))
                 ipt = ip.find(ntype)
                 if ipt is not None:
                     ctype_name = ipt.get(ctype_qname)
@@ -938,7 +947,7 @@ class GIRClass(object):
         if profile.has_varargs() \
                 and gtkmethod.get_param("varargs").node is None:
             naming.add_cmethod(cname, cname)  # Avoid warning later on.
-            print "No binding for %s: varargs" % cname
+            print("No binding for %s: varargs" % cname)
             return None
 
         is_import = self._func_is_direct_import(profile) \
@@ -1058,7 +1067,7 @@ class GIRClass(object):
         """
 
         if len(cb) > 1:
-            print "No binding for %s: multiple callback parameters" % cname
+            print("No binding for %s: multiple callback parameters" % cname)
             return
         cb = cb[0]
 
@@ -1143,7 +1152,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             section = self.pkg.section("Callbacks")
 
             if cb_user_data is None:
-                print "callback has no user data: %s" % cbname
+                print("callback has no user data: %s" % cbname)
                 # If the C function has no user data, we do not know how to
                 # generate a high-level binding, since we cannot go through an
                 # intermediate C function that transforms the parameters into
@@ -1378,7 +1387,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                     and gtkmethod.get_param("varargs").node is None:
 
                 naming.add_cmethod(cname, cname)  # Avoid warning later on.
-                print "No binding for %s: varargs" % cname
+                print("No binding for %s: varargs" % cname)
                 continue
 
             self._handle_constructor(
@@ -1813,7 +1822,7 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
                     """The following properties are defined for this widget.
 See Glib.Properties for more information on properties)""")
 
-                adaprops.sort(lambda x, y: cmp(x["name"], y["name"]))
+                adaprops.sort(key=lambda x: x["name"])
 
                 for p in adaprops:
                     prop_str = '   %(name)s_Property : constant %(ptype)s;' % p
@@ -2275,7 +2284,7 @@ end "+";""" % self._subst,
             section = self.pkg.section(
                 "Inherited subprograms (from interfaces)")
 
-            for impl in sorted(self.implements.iterkeys()):
+            for impl in sorted(self.implements.keys()):
                 impl = self.implements[impl]
                 if impl["name"] == "Buildable":
                     # Do not repeat for buildable, that's rarely used
@@ -2293,8 +2302,8 @@ end "+";""" % self._subst,
 
                 # Ignore interfaces that we haven't bound
                 if interf is not None and not hasattr(interf, "gtkpkg"):
-                    print "%s: methods for interface %s were not bound" % (
-                        self.name, impl["name"])
+                    print("%s: methods for interface %s were not bound" % (
+                        self.name, impl["name"]))
                 elif interf is not None:
                     all = interf.node.findall(nmethod)
                     for c in all:
@@ -2311,7 +2320,7 @@ end "+";""" % self._subst,
             section.add_comment(
                 "This class implements several interfaces. See Glib.Types")
 
-            for impl in sorted(self.implements.iterkeys()):
+            for impl in sorted(self.implements.keys()):
                 impl = self.implements[impl]
                 section.add_comment("")
                 section.add_comment('- "%(name)s"' % impl)
@@ -2443,8 +2452,8 @@ end "+";""" % self._subst,
                             "System.Address", pkg=self.pkg)
 
                 else:
-                    print "WARNING: Field '%s.%s' has no type" % (name, base)
-                    print " generated record is most certainly incorrect"
+                    print("WARNING: Field '%s.%s' has no type" % (name, base))
+                    print(" generated record is most certainly incorrect")
 
                 if ftype is not None:
                     if ftype.ada in ("GSList", "GList") and private:
@@ -2554,7 +2563,7 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
         constants = []
         r = re.compile(regexp)
 
-        for name, node in gir.constants.iteritems():
+        for name, node in gir.constants.items():
             if r.match(name):
                 name = name.replace(prefix, "").title()
 
@@ -3027,8 +3036,8 @@ for the_ctype in binding:
     gir.bound.add(the_ctype)
 
 
-out = file(options.ada_outfile, "w")
-cout = file(options.c_outfile, "w")
-gir.generate(out, cout)
+with open(options.ada_outfile, "w", encoding='utf-8') as out:
+    with open(options.c_outfile, "w", encoding='utf-8') as cout:
+        gir.generate(out, cout)
 
 gir.show_unbound()
