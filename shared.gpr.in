@@ -62,11 +62,11 @@ project Shared is
          when "Debug" =>
              for Switches ("Ada") use
                 ("-gnatQ", "-gnatwae", "-gnatay", "-g", "-O0");
-             for Switches ("C") use ("-g", "-O0", "-Werror=format-security");
+             for Switches ("C") use ("-g", "-O0", "-Wformat", "-Werror=format-security");
          when "Production" =>
              for Switches ("Ada") use
                 ("-gnatQ", "-O2", "-gnatn", "-gnatwa", "-gnaty");
-             for Switches ("C") use ("-O2", "-Werror=format-security");
+             for Switches ("C") use ("-O2", "-Wformat", "-Werror=format-security");
       end case;
 
       for Switches ("C") use Compiler'Switches ("C") & Gtk_Include;
