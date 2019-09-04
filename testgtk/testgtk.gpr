@@ -21,6 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with "../shared";
 with "../src/gtkada";
 with "opengl/testgtk_opengl";
 with "task_project/task_project";
@@ -35,8 +36,11 @@ project TestGtk is
 
    package Compiler is
       --  subprogram specs not required in testgtk
-      for Switches ("Ada") use ("-g", "-O0", "-gnaty-s", "-gnatwJ");
+      for Switches ("Ada") use ("-g", "-O0", "-gnaty-s", "-gnatwJ")
+         & Shared.Adaflags;
    end Compiler;
+
+   package Linker renames Shared.Linker;
 
    package Install is
       for artifacts ("share/examples/gtkada/testgtk") use
