@@ -4088,6 +4088,9 @@ package body Gtkada.MDI is
 
          Child_User_Data.Set (Win, MDI_Child (Child), "parent_mdi_child");
 
+         --  Add the 'mdichild' CSS class to the newly created floating window
+         Get_Style_Context (Win).Add_Class ("mdichild");
+
          --  Set the accelerators for this window, so that menu key shortcuts
          --  behave the same as in the main window.
          --  ??? Should we do the same for mnemonics, even though the menu
