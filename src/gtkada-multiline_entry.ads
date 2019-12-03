@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2017-2018, AdaCore                     --
+--                     Copyright (C) 2017-2019, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -42,6 +42,7 @@
 
 with Glib;                use Glib;
 with Gtk.Frame;           use Gtk.Frame;
+with Gtk.Text_Buffer;     use Gtk.Text_Buffer;
 with Gtk.Text_View;       use Gtk.Text_View;
 
 package Gtkada.Multiline_Entry is
@@ -68,6 +69,10 @@ package Gtkada.Multiline_Entry is
       Text       : UTF8_String);
    --  Set the contents of the multiline entry widget.
 
+   function Get_Buffer
+     (Mult_Entry : not null access Gtkada_Multiline_Entry_Record)
+      return Gtk_Text_Buffer;
+   --  Return the buffer
 private
 
    type Gtkada_Multiline_Entry_Record is new Gtk_Frame_Record

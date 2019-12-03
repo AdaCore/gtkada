@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2017-2018, AdaCore                     --
+--                     Copyright (C) 2017-2019, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -28,7 +28,6 @@ with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Style_Context;   use Gtk.Style_Context;
 with Gtk.Style_Provider;
-with Gtk.Text_Buffer;     use Gtk.Text_Buffer;
 with Gtk.Text_Iter;       use Gtk.Text_Iter;
 
 package body Gtkada.Multiline_Entry is
@@ -130,5 +129,16 @@ package body Gtkada.Multiline_Entry is
    begin
       Buffer.Set_Text (Text);
    end Set_Text;
+
+   ----------------
+   -- Get_Buffer --
+   ----------------
+
+   function Get_Buffer
+     (Mult_Entry : not null access Gtkada_Multiline_Entry_Record)
+      return Gtk_Text_Buffer is
+   begin
+      return Mult_Entry.Text_View.Get_Buffer;
+   end Get_Buffer;
 
 end Gtkada.Multiline_Entry;
