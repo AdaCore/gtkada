@@ -11,43 +11,20 @@ The default prefix is /usr/local. If you don't have the rights to move
 these files, then you should at least make sure that your ADA_INCLUDE_PATH
 and your ADA_OBJECTS_PATH don't include this directory before building GtkAda.
 
-To install GtkAda, you first need to install GNU make, glib, pango, atk and
-gtk+, then do the following:
+To install GtkAda, you will first need to install GNAT in order to compile
+it.
 
-If you are under Windows, you need to use GCC 4.7 (or later) to build the
-C files, and a unix-like environment (e.g. cygwin or msys) where the paths
-correspond to real Windows path (for instance by installing cygwin under
-the root directory). You can use an older GCC version for the Ada files
-(gnatmake). Under sh:
+On Unix systems, you'll then just need to run the following command once
+GNAT is installed and available in your PATH:
 
-   $ (cd src; patch -p0 < ../contrib/gtkada-2.10-win32.diff)
-   $ CC='gcc-4.7 -mms-bitfields' ./configure --prefix=<install_dir> \
-       --build=i686-pc-mingw32
-   $ make
-   $ make install
+   $ sudo env "PATH=$PATH" ./doinstall
 
-On OSX, we need to use the system's gcc to compile some of the files.
-So the build procedure is:
-
-   $ CC=/usr/bin/gcc ./configure --prefix=<install_dir>
-   $ make
-   $ make install
-
-On others platforms:
-
-   $ ./configure --prefix=<install_dir>
-   $ make
-   $ make install
-
-This will create (and install) the GtkAda library and then compile the
-testgtk example.
+On Windows, just run the Gtkada installer and follow the displayed instructions.
 
 Note that you might have to be root to install GtkAda on your system.
 
-Finally, update your LD_LIBRARY_PATH variable to include the <prefix>/lib
-directory, so that the linker can find the libraries.  The other
-alternative under GNU/Linux if you have root priviledges is to add this
-'prefix/lib' directory added in /etc/ld.conf and then run ldconfig.
+On Unix systems, you'll need to run the <prefix>/bin/gtkada-env.sh script
+to setup your environment for Gtkada.
 
 Then, to compile your application, simply add on top of your project file:
 
