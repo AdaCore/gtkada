@@ -371,6 +371,7 @@ package body Create_MDI is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
    begin
+      Gtk.Frame.Set_Label (Frame, "MDI");
       Setup (Frame, Independent => False);
    end Run;
 
@@ -381,6 +382,7 @@ package body Create_MDI is
    procedure Run_Independent
       (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
    begin
+      Gtk.Frame.Set_Label (Frame, "MDI (independent perspectives)");
       Setup (Frame, Independent => True);
    end Run_Independent;
 end Create_MDI;

@@ -179,6 +179,8 @@ package body Create_Canvas_View_Events is
 
       L             : Gdouble;
    begin
+      Gtk.Frame.Set_Label (Frame, "Canvas View (events)");
+
       Gtk_New (Model);
       Model.Set_Selection_Mode (Selection_Multiple);
 

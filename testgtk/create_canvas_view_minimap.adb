@@ -68,6 +68,8 @@ package body Create_Canvas_View_Minimap is
 
       L             : Gdouble;
    begin
+      Gtk.Frame.Set_Label (Frame, "Canvas View (minimap)");
+
       Gtk_New (Model);
 
       Canvas := new Canvas_View_Record;
