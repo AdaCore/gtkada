@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2020, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -1257,6 +1257,21 @@ package Gtkada.Canvas_View is
    type Event_Details_Access is not null access all Canvas_Event_Details;
    --  This record describes high-level aspects of user interaction with the
    --  canvas.
+
+   Null_Canvas_Event_Details : constant Canvas_Event_Details :=
+     Canvas_Event_Details'
+       (Event_Type        => Custom,
+        Button            => 0,
+        State             => 0,
+        Key               => 0,
+        Root_Point        => (0.0, 0.0),
+        M_Point           => (0.0, 0.0),
+        Item              => null,
+        Toplevel_Item     => null,
+        T_Point           => (0.0, 0.0),
+        I_Point           => (0.0, 0.0),
+        Allowed_Drag_Area => (0.0, 0.0, 0.0, 0.0),
+        Allow_Snapping    => False);
 
    procedure Initialize_Details
      (Self    : not null access Canvas_View_Record'Class;
