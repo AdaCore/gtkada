@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2011-2018, AdaCore                     --
+--                     Copyright (C) 2011-2020, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -84,7 +84,10 @@ package body Close_Button is
       Get_Style_Context (Button).Add_Class ("mdiCloseButton");
       Set_Visible_Window (Button, False);
 
-      Button.Child       := MDI_Child (Child);
+      Button.Child       := (if Child /= null then
+                                MDI_Child_Record (Child.all)'Unchecked_Access
+                             else
+                                null);
       Button.Pressed     := False;
       Button.Over        := False;
       Button.Tab_Over    := False;

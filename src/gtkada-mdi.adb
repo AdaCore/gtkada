@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2019, AdaCore                     --
+--                     Copyright (C) 2001-2020, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -3394,11 +3394,16 @@ package body Gtkada.MDI is
       Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return MDI_Child
    is
       Tmp : Widget_List.Glist;
+      Child_Widget : constant Gtk_Widget :=
+        (if Widget /= null then
+           Gtk_Widget_Record (Widget.all)'Unchecked_Access
+         else
+           null);
    begin
       Tmp := First (MDI.Items);
 
       while Tmp /= Null_List loop
-         if MDI_Child (Get_Data (Tmp)).Initial = Gtk_Widget (Widget) then
+         if MDI_Child (Get_Data (Tmp)).Initial = Child_Widget then
             return Insert_Child_If_Needed (MDI, MDI_Child (Get_Data (Tmp)));
          end if;
 
@@ -3591,7 +3596,8 @@ package body Gtkada.MDI is
          --  Temporary fool the system, so that the child doesn't necessarily
          --  gain the focus. Otherwise, switching a notebook page gives the
          --  child the focus.
-         Child.MDI.Focus_Child := MDI_Child (Child);
+         Child.MDI.Focus_Child :=
+           MDI_Child_Record (Child.all)'Unchecked_Access;
 
          --  There could be no parent if we are in all-floating mode
          if Note /= null then
@@ -3724,11 +3730,13 @@ package body Gtkada.MDI is
 
    procedure Set_Focus_Child (Child : not null access MDI_Child_Record) is
       Old : constant MDI_Child := Child.MDI.Focus_Child;
-      C   : constant MDI_Child := MDI_Child (Child);
+      C   : constant MDI_Child := Child.all'Unchecked_Access;
       Tmp : Boolean;
       pragma Unreferenced (Tmp);
 
       Previous_Focus_Child : constant MDI_Child := Child.MDI.Focus_Child;
+      Widget : constant Gtk_Widget :=
+        Gtk_Widget_Record (Child.all)'Unchecked_Access;
    begin
       if Child.MDI.Loading_Desktop then
          return;
@@ -3752,7 +3760,7 @@ package body Gtkada.MDI is
       --  point (might be called because we insert the child in a notebook
       --  first for instance)
 
-      if Widget_List.Find (C.MDI.Items, Gtk_Widget (Child)) = Null_List then
+      if Widget_List.Find (C.MDI.Items, Widget) = Null_List then
          return;
       end if;
 
@@ -3775,8 +3783,8 @@ package body Gtkada.MDI is
       Update_Tab_Color (Get_Notebook (C), True);
 
       Ref (C);
-      Remove (C.MDI.Items, Gtk_Widget (Child));
-      Prepend (C.MDI.Items, Gtk_Widget (Child));
+      Remove (C.MDI.Items, Widget);
+      Prepend (C.MDI.Items, Widget);
       Unref (C);
 
       --  Make sure the page containing Child in a notebook is put on top.

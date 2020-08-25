@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2020, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -407,7 +407,10 @@ package body Gtk.Handlers is
            new Data_Type_Record'
              (Func     => To_Handler (Marsh.Func),
               Proxy    => Marsh.Proxy,
-              Object   => Acc (Slot_Object));
+              Object   => (if Slot_Object /= null then
+                             Widget_Type (Slot_Object.all)'Unchecked_Access
+                           else
+                             null));
 
       begin
          return Do_Signal_Connect
@@ -465,7 +468,10 @@ package body Gtk.Handlers is
            new Data_Type_Record'
              (Func     => Cb,
               Proxy    => null,
-              Object   => Acc (Slot_Object));
+              Object   => (if Slot_Object /= null then
+                             Widget_Type (Slot_Object.all)'Unchecked_Access
+                           else
+                             null));
 
       begin
          return Do_Signal_Connect
