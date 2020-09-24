@@ -1628,8 +1628,10 @@ package body Gtkada.MDI is
       MDI.Title_Bar_Height :=
         2 + Get_Size (MDI.Title_Font) / Pango.Enums.Pango_Scale;
 
-      if MDI.Focus_Title_Color /= Focus_Title_Color
-        or MDI.Title_Bar_Color /= Title_Bar_Color
+      if (Focus_Title_Color /= Gdk.RGBA.Null_RGBA
+          and then MDI.Focus_Title_Color /= Focus_Title_Color)
+        or (Title_Bar_Color /= Gdk.RGBA.Null_RGBA
+            and then MDI.Title_Bar_Color /= Title_Bar_Color)
       then
          MDI.Focus_Title_Color := Focus_Title_Color;
          MDI.Title_Bar_Color := Title_Bar_Color;
@@ -8799,7 +8801,6 @@ package body Gtkada.MDI is
 
       procedure Do_Draw (Cr : Cairo_Context; Draw : Boolean);
       procedure Do_Draw (Cr : Cairo_Context; Draw : Boolean) is
-         Base_Color : Gdk_RGBA;
          Color : Gdk_RGBA;
          Layout : Pango_Layout;
          Ink_Rect, Logical_Rect : Pango_Rectangle;
@@ -8816,18 +8817,10 @@ package body Gtkada.MDI is
                return;
             end if;
 
-            if In_Central then
-               Base_Color := MDI.Focus_Title_Color;
-            else
-               Base_Color := (Red   => 1.0 - MDI.Focus_Title_Color.Red,
-                              Green => 1.0 - MDI.Focus_Title_Color.Green,
-                              Blue  => 1.0 - MDI.Focus_Title_Color.Blue,
-                              Alpha => 1.0);
-            end if;
+            --  Adapt the color to make it more visible on the current theme
+            Color := Gtkada.Style.Shade_Or_Lighten (MDI.Title_Bar_Color, 0.1);
 
-            Color := Base_Color;
-
-            Color.Alpha := 0.2;
+            Color.Alpha := 0.5;
             Set_Source_RGBA (Cr, Color);
             Cairo.Rectangle
               (Cr,
@@ -8887,7 +8880,7 @@ package body Gtkada.MDI is
             --  Slightly lighter (and non-transparent) background for the msg.
             Set_Line_Width (Cr, 1.0);
             Set_Source_RGBA
-              (Cr, Gtkada.Style.Lighten (Base_Color, 0.3));
+              (Cr, Gtkada.Style.Shade_Or_Lighten (Color, 0.2));
             Gtkada.Style.Rounded_Rectangle
               (Cr, X - 2.0, Y - 2.0, W + 4.0, H + 4.0, 4.0);
             Cairo.Fill (Cr);
