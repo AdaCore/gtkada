@@ -2,4 +2,4 @@
 host = review.eu.adacore.com
 port = 29418
 project = gtkada
-defaultbranch = gtk-3.22.30
+defaultbranch = 21.0-gtk-3.22.30
