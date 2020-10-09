@@ -31,9 +31,8 @@ Copyright C 2000-2014, AdaCore
 
 Permission is granted to copy, distribute and/or modify this document under the
 terms of the GNU Free Documentation License, Version 1.1 or any later version
-published by the Free Software Foundation; with the Invariant Sections being
-'GNU Free Documentation License', with the Front-Cover Texts being 'GtkAda
-User's Guide', and with no Back-Cover Texts.  A copy of the license is included
+published by the Free Software Foundation; with no Invariant Sections, no
+Front-Cover Texts, and no Back-Cover Texts. A copy of the license is included
 in the section entitled 'GNU Free Documentation License'.
 
 
