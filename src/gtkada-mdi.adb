@@ -5596,6 +5596,14 @@ package body Gtkada.MDI is
       Focus : constant MDI_Child := C.MDI.Get_Focus_Child;
    begin
       C.MDI.Freeze_Float_Menu := True;
+
+      --  Update the child's tab color if the child has been unfloated
+      if Focus /= null and then Focus.State = Normal then
+         Update_Tab_Color
+           (Note    => Get_Notebook (Focus),
+            Focused => True);
+      end if;
+
       C.Set_Active (Focus /= null and then Focus.State = Floating);
       C.MDI.Freeze_Float_Menu := False;
    end On_Float_Child_Update_Menu;
