@@ -1924,7 +1924,9 @@ package body Gtkada.MDI is
             --  Transfer the focus before unfloating, so that the parent in
             --  which the child is unfloated (which might be random from the
             --  user's point of view) doesn't influence who gets the focus.
-            if MDI_Child (Child) = MDI.Focus_Child then
+            if MDI_Child_Record (Child.all)'Unchecked_Access
+              = MDI.Focus_Child
+            then
                Give_Focus_To_Previous_Child (Child);
             end if;
 
@@ -1943,17 +1945,6 @@ package body Gtkada.MDI is
             Destroy (Child);
          end if;
       end if;
-
-   exception
-      when E : others =>
-         --  Silently ignore the exceptions for now, to avoid crashes.
-         --  The application using the MDI can not do it, since this callback
-         --  is called directly from the button in Initialize
-
-         if Traces then
-            Print_Debug ("Unexpected exception "
-                         & Exception_Information (E));
-         end if;
    end Close_Child;
 
    -------------------
@@ -2956,7 +2947,10 @@ package body Gtkada.MDI is
       while Item /= Widget_List.Null_List loop
          It := MDI_Child (Get_Data (Item));
 
-         if It.Get_Visible and then It /= MDI_Child (Child) then
+         if It.Get_Visible
+           and then Child /= null
+           and then It /= MDI_Child_Record (Child.all)'Unchecked_Access
+         then
             if Last = null then
                Last := It;
             end if;
