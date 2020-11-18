@@ -1,0 +1,100 @@
+# Build with GNAT Community compiler
+on:
+  push:
+    branches:
+      - master
+      - gtk-3.22.30
+  pull_request:
+    branches:
+      - master
+      - gtk-3.22.30
+  workflow_dispatch: # Manual launch
+name: GNAT CE Build
+jobs:
+  build:
+    name: Do # intentionly short
+    strategy:
+      fail-fast: false
+      matrix: # Build debug and production
+        build_type: ['Debug', 'Production']
+        os: [macos-latest, ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Install Gtk (Linux only)
+        if: ${{ runner.os == 'Linux' }}
+        run: |
+          sudo apt-get install -y pkg-config libgtk-3-dev
+
+      - name: Install Gtk (Windows only)
+        if: ${{ runner.os == 'Windows' }}
+        uses: msys2/setup-msys2@v2
+        with:
+          path-type: inherit
+          update: true
+          install: >-
+            mingw64/mingw-w64-x86_64-gtk3
+            mingw64/mingw-w64-x86_64-pkg-config
+            mingw64/mingw-w64-x86_64-winpthreads-git
+            msys/make
+
+      - name: Set up Homebrew (Mac OS X only)
+        id: set-up-homebrew
+        if: ${{ runner.os == 'macOS' }}
+        uses: Homebrew/actions/setup-homebrew@master
+
+      - name: Install Gtk (Mac OS X only)
+        if: ${{ runner.os == 'macOS' }}
+        run: |
+          brew install --verbose gtk+3
+          brew install --verbose pkg-config
+
+      - name: Get GtkAda
+        uses: actions/checkout@v2
+
+      - uses: actions/cache@v2
+        with:
+          path: ./cached_gnat
+          key: ${{ runner.os }}-gnat-ce-2020
+
+      - name: Get GNAT Community 2020 toolchain
+        uses: ada-actions/toolchain@ce2020
+        with:
+          distrib: community
+          install_dir: ./cached_gnat
+
+      - name: Build GtkAda (Windows only)
+        if: ${{ runner.os == 'Windows' }}
+        shell: msys2 {0}
+        run: |
+          # To find libpthread.dll on msys2:
+          export LIBRARY_PATH=/mingw64/x86_64-w64-mingw32/lib/
+          ./configure --disable-static-pic --disable-static --with-GL=no --enable-build=${{ matrix.build_type }} --prefix=$PWD/prefix
+          make all install
+
+      - name: Build GtkAda (non-Windows)
+        if: ${{ runner.os != 'Windows' }}
+        run: |
+          ./configure --disable-static-pic --disable-static --with-GL=no --enable-build=${{ matrix.build_type }} --prefix=$PWD/prefix
+          make all install
+
+      - name: Archive binaries
+        shell: bash
+        run: |
+          NAME=gtkada-`basename $GITHUB_REF`-${{ runner.os }}
+          tar czf ${NAME}.tar.gz -C prefix .
+          if [ '${{ matrix.build_type }}' = 'Debug' ]; then
+             mv ${NAME}.tar.gz ${NAME}-dbg.tar.gz
+          fi
+
+      - name: Upload tar-ball to Bintray
+        if: ${{ github.event_name != 'pull_request' }}
+        uses: reznikmm/upload-bintray-action@v3
+        with:
+          subject: reznikmm
+          repository: libadalang
+          package: gtkada
+          version: 0.1-git
+          sourcePath: '*.tar.gz'
+          override: 1
+          username: reznikmm
+          apiKey: ${{secrets.BINTRAY_API_KEY}}

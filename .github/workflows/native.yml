@@ -1,0 +1,50 @@
+# Build GtkAda using native compiler and libs
+on:
+  push:
+    branches:
+      - master
+      - gtk-3.22.30
+  pull_request:
+    branches:
+      - master
+      - gtk-3.22.30
+name: Native (FSF) Build
+jobs:
+  ubuntu:
+    runs-on: ubuntu-20.04
+    name: Native on Ubuntu
+    steps:
+      - name: Get GtkAda
+        uses: actions/checkout@v2
+      - name: Install packages
+        run: |
+          sudo apt-get -qq update
+          sudo apt-get install -y cmake g++ gnat gprbuild pkg-config libgtk-3-dev make
+      - name: Build GtkAda
+        run: |
+          ./configure --disable-static-pic --disable-static --with-GL=no --prefix=$PWD/prefix
+          make all install
+
+  windows:
+    runs-on: windows-latest
+    name: Native on Windows
+    defaults:
+      run:
+        shell: msys2 {0}
+    steps:
+      - name: Get GtkAda
+        uses: actions/checkout@v2
+      - name: Install packages
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >-
+            mingw64/mingw-w64-x86_64-gtk3
+            mingw64/mingw-w64-x86_64-gprbuild
+            mingw64/mingw-w64-x86_64-gcc-ada
+            mingw64/mingw-w64-x86_64-pkg-config
+            msys/make
+      - name: Build GtkAda
+        run: |
+          ./configure --disable-static-pic --disable-static --with-GL=no --prefix=$PWD/prefix
+          make all install
