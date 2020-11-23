@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2013, AdaCore                   --
+--                Copyright (C) 2000-2020, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -35,6 +35,10 @@
 
 #include <glib.h>
 #include <gdk/gdkquartz.h>
+
+// gdk_quartz_window_get_nswindow was dropped from headers since gtk 3.24.14
+#import <AppKit/AppKit.h>
+NSWindow *gdk_quartz_window_get_nswindow(GdkWindow *window);
 
 #include "misc_osx.h"
 
@@ -257,7 +261,7 @@ void ada_gtk_osx_allow_fullscreen (GtkWindow *window)
   if (!gdk_window)
     {
       g_signal_connect
-	(window,
+        (window,
          "map-event",
          G_CALLBACK (_ada_gtk_osx_allow_fullscreen_on_mapped),
          NULL);
