@@ -1,5 +1,7 @@
 #!/bin/sh
 
+current_dir="`/bin/pwd`"
+
 begin_message() {
    clear
    cat <<EOF
@@ -14,8 +16,6 @@ EOF
 
    read x
 }
-
-current_dir="`/bin/pwd`"
 
 # Checks for the presence of a Gtk+ binary package in gtk-bin/
 check_gtk_bin() {
@@ -153,6 +153,27 @@ EOF
 }
 
 ## Main program
+
+if [ $# -eq 1 ]; then
+  if [ "$1" = "--help" ]; then
+    printf "
+   Usage: $0 [install_dir]
+
+   When no argument is specified, runs the GtkAda installer
+   interactively, otherwise installs automatically under install_dir.
+"
+  else
+    echo "installing GtkAda under $1"
+    check_gtk_bin
+    basedir="$1"
+    mkdir -p $basedir || exit 1
+    install_binaries
+    end_message
+  fi
+  exit 0
+fi
+
+# Perform interactive install
 
 check_gtk_bin
 begin_message
