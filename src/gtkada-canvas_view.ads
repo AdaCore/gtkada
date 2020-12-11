@@ -668,6 +668,11 @@ package Gtkada.Canvas_View is
       Equivalent_Elements => "=",
       "="                 => "=");
 
+   function Get_Selected_Items
+     (Self : not null access Canvas_Model_Record) return Item_Sets.Set;
+   --  Return the currently selected items. If no item is selected, an empty
+   --  set is returned.
+
    procedure For_Each_Link
      (Self       : not null access Canvas_Model_Record;
       Callback   : not null access procedure
