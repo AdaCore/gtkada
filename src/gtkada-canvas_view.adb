@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2019, AdaCore                     --
+--                     Copyright (C) 1998-2020, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -2919,6 +2919,16 @@ package body Gtkada.Canvas_View is
             Compute_Layout_For_Curve_Link (Self, Context);
       end case;
    end Refresh_Layout;
+
+   ------------------------
+   -- Get_Selected_Items --
+   ------------------------
+
+   function Get_Selected_Items
+     (Self : not null access Canvas_Model_Record) return Item_Sets.Set is
+   begin
+      return Self.Selection;
+   end Get_Selected_Items;
 
    -------------------
    -- For_Each_Link --
