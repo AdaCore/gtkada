@@ -12,8 +12,6 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-import sys
-import os
 import time
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -46,6 +44,7 @@ master_doc = 'index'
 def get_copyright():
     return u'2000-%s, AdaCore' % time.strftime("%Y")
 
+
 # General information about the project.
 project = u'GtkAda'
 copyright = get_copyright()
@@ -56,6 +55,7 @@ def get_version():
         if line.startswith("AC_INIT"):
             return line.split(",")[1]
     raise Exception("Cannot find version number")
+
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -96,7 +96,7 @@ exclude_patterns = ['_build']
 # show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = None
 
 # A list of ignored prefixes for module index sorting.
 # modindex_common_prefix = []
