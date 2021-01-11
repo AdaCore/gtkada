@@ -58,7 +58,9 @@ package Gtk.Text_View is
 
    type Gtk_Text_View_Layer is (
       Text_View_Layer_Below,
-      Text_View_Layer_Above);
+      Text_View_Layer_Above,
+      Text_View_Layer_Below_Text,
+      Text_View_Layer_Above_Text);
    pragma Convention (C, Gtk_Text_View_Layer);
    --  Used to reference the layers of Gtk.Text_View.Gtk_Text_View for the
    --  purpose of customized drawing with the ::draw_layer vfunc.
