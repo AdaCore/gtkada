@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2003-2018, AdaCore                     --
+--                     Copyright (C) 2003-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -862,7 +862,6 @@ package body Gtkada.Multi_Paned is
 
       Current : Child_Description_Access := Pane;
       Tmp, Parent : Child_Description_Access;
-      Alloc : Gtk_Allocation;
    begin
       if Traces then
          if Pane.Is_Widget then
@@ -904,33 +903,7 @@ package body Gtkada.Multi_Paned is
             end if;
          end if;
 
-         if Split.Children /= null
-            and then Split.Get_Realized
-            and then Split.Children.Width  > 0.0
-            and then Split.Children.Height > 0.0
-         then
-            --  We have to redo some of the work done by Size_Allocate_Paned.
-            --  The reason is that the latter will do nothing since the
-            --  allocation has changed, but we might have changed the top-level
-            --  Child, and need to reset the allocation properties anyway
-
-            if Get_Has_Window (Split) then
-               Split.Children.X := 0;
-               Split.Children.Y := 0;
-            else
-               Split.Get_Allocation (Alloc);
-               Split.Children.X := Alloc.X;
-               Split.Children.Y := Alloc.Y;
-            end if;
-
-            Size_Allocate_Child
-              (Split   => Split,
-               Current => Split.Children,
-               Width   => Float (Get_Allocated_Width (Split)),
-               Height  => Float (Get_Allocated_Height (Split)));
-         else
-            Queue_Resize (Split);
-         end if;
+         Queue_Resize (Split);
       end if;
 
       if Traces then
@@ -1679,6 +1652,8 @@ package body Gtkada.Multi_Paned is
       Handles_Size              : Float;
       Alloc                     : Gtk_Allocation;
       Old_Pos                   : Gdk.Rectangle.Gdk_Rectangle;
+      Nat_Width, Min_Width      : Gint;
+      Nat_Height, Min_Height    : Gint;
 
       procedure Compute_Ratios (Total, Requested, Fixed  : Float);
       --  Compute the various ratios to apply, given the total size allocated
@@ -1773,11 +1748,32 @@ package body Gtkada.Multi_Paned is
                end if;
 
                if Tmp.Is_Widget then
-                  Alloc := (X      => Xchild,
-                            Y      => Current.Y,
-                            Width  => Gint'Max (1, Gint (Child)),
-                            Height => Gint (Height));
+
+                  --  Retrieve the child's minimum size ...
+
+                  Tmp.Widget.Get_Preferred_Width_For_Height
+                    (Height        => Gint (Height),
+                     Minimum_Width => Min_Width,
+                     Natural_Width => Nat_Width);
+                  Tmp.Widget.Get_Preferred_Height_For_Width
+                    (Width          => Gint (Width),
+                     Minimum_Height => Min_Height,
+                     Natural_Height => Nat_Height);
+
+                  --  ... To make sure that we don't call Size_Allocate with
+                  --  a size that is lesser than the minimum required. This
+                  --  avoids Gtk warnings such as "gtk_box_gadget_distribute:
+                  --  assertion 'size >= 0' failed in <widget_class> " when
+                  --  allocating all the child's widgets recursively.
+
+                  Alloc :=
+                    (X      => Xchild,
+                     Y      => Current.Y,
+                     Width  => Gint'Max (Min_Width, Gint (Child)),
+                     Height => Gint'Max (Min_Height, Gint (Height)));
+
                   Size_Allocate (Tmp.Widget, Alloc);
+
                   Tmp.Width  := Float'Max (1.0, Child);
                   Tmp.Height := Height;
                else
@@ -1823,12 +1819,34 @@ package body Gtkada.Multi_Paned is
                else
                   Child := Tmp.Height * Ratio;
                end if;
+
                if Tmp.Is_Widget then
-                  Alloc := (X      => Current.X,
-                            Y      => Ychild,
-                            Width  => Gint (Width),
-                            Height => Gint'Max (1, Gint (Child)));
+
+                  --  Retrieve the child's minimum size ...
+
+                  Tmp.Widget.Get_Preferred_Width_For_Height
+                    (Height        => Gint (Height),
+                     Minimum_Width => Min_Width,
+                     Natural_Width => Nat_Width);
+                  Tmp.Widget.Get_Preferred_Height_For_Width
+                    (Width          => Gint (Width),
+                     Minimum_Height => Min_Height,
+                     Natural_Height => Nat_Height);
+
+                  --  ... To make sure that we don't call Size_Allocate with
+                  --  a size that is lesser than the minimum required. This
+                  --  avoids Gtk warnings such as "gtk_box_gadget_distribute:
+                  --  assertion  'size >= 0' failed in <widget_class> " when
+                  --  allocating all the child's widgets recursively.
+
+                  Alloc :=
+                    (X      => Current.X,
+                     Y      => Ychild,
+                     Width  => Gint'Max (Min_Width, Gint (Width)),
+                     Height => Gint'Max (Min_Height, Gint (Child)));
+
                   Size_Allocate (Tmp.Widget, Alloc);
+
                   Tmp.Width  := Width;
                   Tmp.Height := Float'Max (1.0, Child);
                else
