@@ -1342,8 +1342,11 @@ package body Gtkada.Multi_Paned is
       Iter    : Child_Iterator := Start (Split);
       Current : Child_Description_Access;
       Ctx     : constant Gtk_Style_Context := Get_Style_Context (Split);
-      Flags : Gtk_State_Flags;
+      Flags   : Gtk_State_Flags;
+      Result  : Boolean;
    begin
+      Result := Inherited_Draw (Paned_Class_Record, Split, Cr);
+
       loop
          Current := Get (Iter);
          exit when Current = null;
@@ -1389,7 +1392,7 @@ package body Gtkada.Multi_Paned is
       end loop;
 
       --  Chain up to draw children
-      return Boolean'Pos (Inherited_Draw (Paned_Class_Record, Split, Cr));
+      return Boolean'Pos (Result);
    end On_Draw;
 
    -----------------------
