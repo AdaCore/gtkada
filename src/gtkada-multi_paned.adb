@@ -1650,15 +1650,26 @@ package body Gtkada.Multi_Paned is
       Fixed_Width, Fixed_Height : Float := 0.0;
       Req_Width, Req_Height     : Float := 0.0;
       Handles_Size              : Float;
-      Alloc                     : Gtk_Allocation;
       Old_Pos                   : Gdk.Rectangle.Gdk_Rectangle;
-      Nat_Width, Min_Width      : Gint;
-      Nat_Height, Min_Height    : Gint;
 
       procedure Compute_Ratios (Total, Requested, Fixed  : Float);
       --  Compute the various ratios to apply, given the total size allocated
       --  to the widget, its requested size, and the size dedicated to fixed
       --  size children
+
+      function Get_Child_Allocation
+        (Child  : Child_Description_Access;
+         X      : Gint;
+         Y      : Gint;
+         Width  : Gint;
+         Height : Gint) return Gtk_Allocation;
+      --  Return the allocation needed for the given child.
+      --  The child's widget minimum size is taken into account to avoid
+      --  returning a size that won't fit at the end.
+
+      --------------------
+      -- Compute_Ratios --
+      --------------------
 
       procedure Compute_Ratios (Total, Requested, Fixed  : Float) is
          T : Float;
@@ -1685,6 +1696,47 @@ package body Gtkada.Multi_Paned is
             end if;
          end if;
       end Compute_Ratios;
+
+      --------------------------
+      -- Get_Child_Allocation --
+      --------------------------
+
+      function Get_Child_Allocation
+        (Child  : Child_Description_Access;
+         X      : Gint;
+         Y      : Gint;
+         Width  : Gint;
+         Height : Gint) return Gtk_Allocation
+      is
+         Alloc                  : Gtk_Allocation;
+         Nat_Width, Min_Width   : Gint;
+         Nat_Height, Min_Height : Gint;
+      begin
+         --  Retrieve the child's minimum size ...
+
+         Child.Widget.Get_Preferred_Width_For_Height
+           (Height        => Height,
+            Minimum_Width => Min_Width,
+            Natural_Width => Nat_Width);
+         Child.Widget.Get_Preferred_Height_For_Width
+           (Width          => Width,
+            Minimum_Height => Min_Height,
+            Natural_Height => Nat_Height);
+
+         --  ... To make sure that we don't call Size_Allocate with
+         --  a size that is lesser than the minimum required. This
+         --  avoids Gtk warnings such as "gtk_box_gadget_distribute:
+         --  assertion 'size >= 0' failed in <widget_class> " when
+         --  allocating all the child's widgets recursively.
+
+         Alloc :=
+           (X      => X,
+            Y      => Y,
+            Width  => Gint'Max (Min_Width, Width),
+            Height => Gint'Max (Min_Height, Height));
+
+         return Alloc;
+      end Get_Child_Allocation;
 
    begin
       if Split.Frozen then
@@ -1748,31 +1800,14 @@ package body Gtkada.Multi_Paned is
                end if;
 
                if Tmp.Is_Widget then
-
-                  --  Retrieve the child's minimum size ...
-
-                  Tmp.Widget.Get_Preferred_Width_For_Height
-                    (Height        => Gint (Height),
-                     Minimum_Width => Min_Width,
-                     Natural_Width => Nat_Width);
-                  Tmp.Widget.Get_Preferred_Height_For_Width
-                    (Width          => Gint (Width),
-                     Minimum_Height => Min_Height,
-                     Natural_Height => Nat_Height);
-
-                  --  ... To make sure that we don't call Size_Allocate with
-                  --  a size that is lesser than the minimum required. This
-                  --  avoids Gtk warnings such as "gtk_box_gadget_distribute:
-                  --  assertion 'size >= 0' failed in <widget_class> " when
-                  --  allocating all the child's widgets recursively.
-
-                  Alloc :=
-                    (X      => Xchild,
-                     Y      => Current.Y,
-                     Width  => Gint'Max (Min_Width, Gint (Child)),
-                     Height => Gint'Max (Min_Height, Gint (Height)));
-
-                  Size_Allocate (Tmp.Widget, Alloc);
+                  Size_Allocate
+                    (Widget     => Tmp.Widget,
+                     Allocation => Get_Child_Allocation
+                       (Child  => Tmp,
+                        X      => Xchild,
+                        Y      => Current.Y,
+                        Width  => Gint (Child),
+                        Height => Gint (Height)));
 
                   Tmp.Width  := Float'Max (1.0, Child);
                   Tmp.Height := Height;
@@ -1821,31 +1856,14 @@ package body Gtkada.Multi_Paned is
                end if;
 
                if Tmp.Is_Widget then
-
-                  --  Retrieve the child's minimum size ...
-
-                  Tmp.Widget.Get_Preferred_Width_For_Height
-                    (Height        => Gint (Height),
-                     Minimum_Width => Min_Width,
-                     Natural_Width => Nat_Width);
-                  Tmp.Widget.Get_Preferred_Height_For_Width
-                    (Width          => Gint (Width),
-                     Minimum_Height => Min_Height,
-                     Natural_Height => Nat_Height);
-
-                  --  ... To make sure that we don't call Size_Allocate with
-                  --  a size that is lesser than the minimum required. This
-                  --  avoids Gtk warnings such as "gtk_box_gadget_distribute:
-                  --  assertion  'size >= 0' failed in <widget_class> " when
-                  --  allocating all the child's widgets recursively.
-
-                  Alloc :=
-                    (X      => Current.X,
-                     Y      => Ychild,
-                     Width  => Gint'Max (Min_Width, Gint (Width)),
-                     Height => Gint'Max (Min_Height, Gint (Child)));
-
-                  Size_Allocate (Tmp.Widget, Alloc);
+                  Size_Allocate
+                    (Widget     => Tmp.Widget,
+                     Allocation => Get_Child_Allocation
+                       (Child  => Tmp,
+                        X      => Current.X,
+                        Y      => Ychild,
+                        Width  => Gint (Width),
+                        Height => Gint (Child)));
 
                   Tmp.Width  := Width;
                   Tmp.Height := Float'Max (1.0, Child);
