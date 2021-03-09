@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2020, AdaCore                     --
+--                     Copyright (C) 2001-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -1869,8 +1869,9 @@ package body Gtkada.MDI is
    -----------------
 
    procedure Close_Child
-     (Child : not null access MDI_Child_Record'Class;
-      Force : Boolean := False)
+     (Child           : not null access MDI_Child_Record'Class;
+      Force           : Boolean := False;
+      Focus_Same_Area : Boolean := True)
    is
       MDI   : constant MDI_Window := Child.MDI;
       Event : Gdk_Event;
@@ -1881,7 +1882,8 @@ package body Gtkada.MDI is
       --  can't send create the event anyway.
 
       Print_Debug ("Close_Child, " & Get_Title (Child) & " force="
-                   & Boolean'Image (Force));
+                   & Boolean'Image (Force) & " focus_same_parent="
+                   & Boolean'Image (Focus_Same_Area));
 
       Widget_Callback.Emit_By_Name (Child, Signal_Before_Remove_Child);
 
@@ -1929,7 +1931,9 @@ package body Gtkada.MDI is
             if MDI_Child_Record (Child.all)'Unchecked_Access
               = MDI.Focus_Child
             then
-               Give_Focus_To_Previous_Child (Child);
+               Give_Focus_To_Previous_Child
+                 (Child          => Child,
+                  From_Same_Area => Focus_Same_Area);
             end if;
 
             --  The call to Float_Child below will change the focus_child
