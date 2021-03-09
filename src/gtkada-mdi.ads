@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2019, AdaCore                     --
+--                     Copyright (C) 2001-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -715,9 +715,15 @@ package Gtkada.MDI is
    ----------------------
 
    procedure Close_Child
-     (Child : not null access MDI_Child_Record'Class;
-      Force : Boolean := False);
+     (Child           : not null access MDI_Child_Record'Class;
+      Force           : Boolean := False;
+      Focus_Same_Area : Boolean := True);
    --  Same as Close, but applies directly to a MDI_Child.
+   --  If Focus_Same_Area is True, the focus will return to the previously
+   --  focused child in the same area / notebook as Child, and which is not
+   --  Child itself.
+   --  Otherwise, the focus will return to the previously focused child, no
+   --  matter its area/notebook.
 
    ---------------------------
    -- Reorganizing children --
