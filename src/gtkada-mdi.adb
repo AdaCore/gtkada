@@ -7711,8 +7711,8 @@ package body Gtkada.MDI is
                   begin
                      Win.Get_Size (Width  => Width,
                                    Height => Height);
-                     Add (Child_Node, "width", Gint'Image (Width));
                      Add (Child_Node, "height", Gint'Image (Height));
+                     Add (Child_Node, "width", Gint'Image (Width));
 
                      --  Save the floating window's coordinates
 
