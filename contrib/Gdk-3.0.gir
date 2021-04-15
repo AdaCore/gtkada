@@ -8660,7 +8660,7 @@ can also cause #GdkEventGrabBroken events.</doc>
              line="875">the key that was pressed or released. See the
   `gdk/gdkkeysyms.h` header file for a
   complete list of GDK key codes.</doc>
-        <type name="guint" c:type="guint"/>
+        <type name="GdkKeyType" c:type="GdkKeyType"/>
       </field>
       <field name="length" writable="1">
         <doc xml:space="preserve"
@@ -25350,13 +25350,13 @@ The result must be freed through gdk_rgba_free().</doc>
             <doc xml:space="preserve"
                  filename="../gdk/gdkrgba.c"
                  line="304">a #GdkRGBA pointer</doc>
-            <type name="RGBA" c:type="gconstpointer"/>
+            <type name="RGBA" c:type="GdkRGBA*"/>
           </instance-parameter>
           <parameter name="p2" transfer-ownership="none">
             <doc xml:space="preserve"
                  filename="../gdk/gdkrgba.c"
                  line="305">another #GdkRGBA pointer</doc>
-            <type name="RGBA" c:type="gconstpointer"/>
+            <type name="RGBA" c:type="GdkRGBA*"/>
           </parameter>
         </parameters>
       </method>
@@ -25394,7 +25394,7 @@ table that stores #GdkRGBAs.</doc>
             <doc xml:space="preserve"
                  filename="../gdk/gdkrgba.c"
                  line="282">a #GdkRGBA pointer</doc>
-            <type name="RGBA" c:type="gconstpointer"/>
+            <type name="RGBA" c:type="GdkRGBA*"/>
           </instance-parameter>
         </parameters>
       </method>
@@ -32656,7 +32656,11 @@ e.g. a child widget appears in multiple places.</doc>
                  line="4302">a #GdkWindow</doc>
             <type name="Window" c:type="GdkWindow*"/>
           </instance-parameter>
-          <parameter name="handler" transfer-ownership="none">
+          <parameter name="handler" transfer-ownership="none"
+              allow-none="0"
+              scope="call"
+              closure="0"
+             >
             <doc xml:space="preserve"
                  filename="../gdk/gdkwindow.c"
                  line="4303">a #GdkWindowInvalidateHandlerFunc callback function</doc>
