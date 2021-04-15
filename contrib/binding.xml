@@ -11,6 +11,7 @@
 
    <package id="GdkDevice">
       <enum ctype="GdkDeviceType" />
+      <enum ctype="GdkAxisFlags" />
       <list ada="Device_List" ctype="GdkDevice"/>
       <method id="::changed" bind="False" /> <!-- elaboration circularity -->
       <method id="gdk_device_get_axis" bind="False" /><!-- need support for array of gdoubles -->
@@ -24,6 +25,11 @@
       <method id="gdk_device_list_axes" bind="False"/><!-- no support for atom lists -->
       <method id="gdk_device_list_slave_devices" bind="False"/><!-- no support
       for Gdk_Device_Type_Master lists -->
+
+      <method id="gdk_device_get_seat" return="GObject*"/>
+      <method id="::tool-changed">
+        <parameter name="tool" ctype="GObject*"/>
+      </method>
 
       <extra>
          <spec>
@@ -102,13 +108,37 @@
    </package>
 
    <!-- ################################################
+        Gdk.DeviceTool
+        ################################################-->
+
+   <package id="GdkDeviceTool">
+     <enum ctype="GdkDeviceToolType" />
+   </package>
+
+   <!-- ################################################
+        Gdk.Monitor
+        ################################################-->
+
+   <package id="GdkMonitor">
+     <enum ctype="GdkSubpixelLayout"/>
+     <method id="gdk_monitor_get_display" return="GObject*"/>
+   </package>
+
+   <!-- ################################################
         Gdk.Drag_Contexts
         ################################################-->
 
    <package id="GdkDragContext">
       <enum ctype="GdkDragAction" prefix="GDK_"/>
+      <enum ctype="GdkDragCancelReason" prefix="GDK_"/>
       <enum ctype="GdkDragProtocol" prefix="GDK_"/>
       <method id="gdk_drag_context_list_targets" bind="False"/><!-- not supposed to be used by applications -->
+      <method id="::action-changed">
+        <parameter name="action" ctype="GdkDragAction"/>
+      </method>
+      <method id="::cancel">
+        <parameter name="reason" ctype="GdkDragCancelReason"/>
+      </method>
    </package>
 
    <!-- ################################################
@@ -245,6 +275,32 @@
    end Warp_Pointer;
        </body>
      </extra>
+   </package>
+
+   <!-- ################################################
+        Gdk.Seat
+        ################################################-->
+
+   <package id="GdkSeat">
+     <enum ctype="GdkSeatCapabilities"/>
+     <list ada="Gdk_Seat_List" ctype="GdkSeat*"/>
+     <method id="gdk_seat_get_slaves" return="DeviceList"/>
+     <method id="gdk_seat_get_display" return ="GObject*"/>
+      <method id="::tool-added">
+        <parameter name="tool" ctype="GObject*"/>
+      </method>
+      <method id="::tool-removed">
+        <parameter name="tool" ctype="GObject*"/>
+      </method>
+      <method id="::device-added">
+        <parameter name="device" ctype="GObject*"/>
+      </method>
+      <method id="::device-removed">
+        <parameter name="device" ctype="GObject*"/>
+      </method>
+      <extra>
+        <with_spec pkg="Gdk.Types" />
+      </extra>
    </package>
 
    <!-- ################################################
@@ -4053,11 +4109,13 @@ text. Since: 3.14
      <enum ctype="GdkWMFunction" prefix="GDK_"/>
      <enum ctype="GdkGravity" prefix="GDK_"/>
      <enum ctype="GdkFullscreenMode" prefix="GDK_FULLSCREEN_" />
+     <enum ctype="GdkAnchorHints" prefix="GDK_"/>
      <list ada="Gdk_Window_List" ctype="GdkWindow"/>
      <method id="::pick-embedded-child" bind="False" />
      <method id="::from-embedder" bind="False" />
      <method id="::to-embedder" bind="False" />
      <method id="::create-surface" bind="False" />
+     <method id="::moved-to-rect" bind="False" />
      <method id="gdk_window_add_filter" bind="False" />   <!-- dangerous -->
      <method id="gdk_window_remove_filter" bind="False" />   <!-- dangerous -->
      <method id="gdk_window_get_children" return="GdkWindowList"/>
@@ -4233,6 +4291,12 @@ text. Since: 3.14
      <record ctype="GdkEventSetting"/>
      <record ctype="GdkEventTouch"/>
      <record ctype="GdkEventGrabBroken"/>
+     <record ctype="GdkEventGrabBroken"/>
+     <record ctype="GdkEventTouchpadSwipe"/>
+     <record ctype="GdkEventTouchpadPinch"/>
+     <record ctype="GdkEventPadButton"/>
+     <record ctype="GdkEventPadAxis"/>
+     <record ctype="GdkEventPadGroupMode"/>
 
      <record ctype="GdkEvent" ada="Gdk_Event_Record">
        <union value="GDK_NOTHING" field="any"/>
@@ -4276,6 +4340,13 @@ text. Since: 3.14
        <union value="GDK_TOUCH_UPDATE" field="touch" />
        <union value="GDK_TOUCH_END" field="touch" />
        <union value="GDK_TOUCH_CANCEL" field="touch" />
+       <union value="GDK_TOUCHPAD_SWIPE" field="touchpad_swipe" />
+       <union value="GDK_TOUCHPAD_PINCH" field="touchpad_pinch" />
+       <union value="GDK_PAD_BUTTON_PRESS" field="pad_button" />
+       <union value="GDK_PAD_BUTTON_RELEASE" field="pad_button" />
+       <union value="GDK_PAD_RING" field="pad_axis" />
+       <union value="GDK_PAD_STRIP" field="pad_axis" />
+       <union value="GDK_PAD_GROUP_MODE" field="pad_group_mode" />
      </record>
 
      <method id="gdk_event_get_coords" return="void"/>
@@ -4301,6 +4372,7 @@ text. Since: 3.14
      <method id="gdk_event_set_source_device" bind="False"/>
      <method id="gdk_event_get_screen" bind="False"/>
      <method id="gdk_event_set_screen" bind="False"/>
+     <method id="gdk_event_get_seat" return="GObject*"/>
 
      <function id="gdk_events_pending" ada="Events_Pending"/>
      <method id="gdk_events_get_angle" ada="Get_Angle"/>
@@ -8930,6 +9002,23 @@ package body Generic_Set is
       <method id="gdk_display_device_is_grabbed" bind="False"/> <!-- circular dependency -->
       <method id="gdk_display_store_clipboard" bind="False"/> <!-- see below -->
       <method id="gdk_display_get_window_at_pointer" bind="False"/> <!-- see below -->
+
+      <method id="gdk_display_get_default_seat" return="GObject*"/>
+      <method id="gdk_display_list_seats" return="ObjectList"/>
+
+      <method id="::monitor-added">
+        <parameter name="monitor" ctype="GObject*"/>
+      </method>
+      <method id="::monitor-removed">
+        <parameter name="monitor" ctype="GObject*"/>
+      </method>
+      <method id="::seat-added">
+        <parameter name="seat" ctype="GObject*"/>
+      </method>
+      <method id="::seat-removed">
+        <parameter name="seat" ctype="GObject*"/>
+      </method>
+
       <extra>
          <spec>
    procedure Store_Clipboard
