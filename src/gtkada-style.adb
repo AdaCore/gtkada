@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2011-2018, AdaCore                     --
+--                     Copyright (C) 2011-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -979,6 +979,7 @@ package body Gtkada.Style is
       Screen : constant Gdk_Screen := Widget.Get_Screen;
       Mgr : constant Gdk_Device_Manager :=
         Get_Device_Manager (Screen.Get_Display);
+      pragma Warnings (Off, "call to obsolescent function ""List_Devices""");
       L : Device_List.Glist := Mgr.List_Devices (Gdk_Device_Type_Master);
       L2 : Device_List.Glist := L;
       Device : Gdk_Device;

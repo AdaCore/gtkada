@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -44,6 +44,7 @@ with Cairo.Region;
 with Glib.Values;
 with Glib.Object;
 with Glib.Types;
+with Gdk.Drag_Contexts;
 with Gdk.Event;
 with Gdk.RGBA;
 with Gdk.Rectangle;
@@ -161,6 +162,11 @@ package Gtk.Arguments is
      is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Visibility);
    function Unchecked_To_Gdk_Event_Window_State
      is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Window_State);
+   function Unchecked_To_Gdk_Drag_Action
+     is new Glib.Values.Unsafe_Enum_Nth (Gdk.Drag_Contexts.Gdk_Drag_Action);
+   function Unchecked_To_Gdk_Drag_Cancel_Reason
+     is new Glib.Values.Unsafe_Enum_Nth
+              (Gdk.Drag_Contexts.Gdk_Drag_Cancel_Reason);
    function Unchecked_To_Gtk_Movement_Step
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Movement_Step);
    function Unchecked_To_Gtk_Drag_Result
