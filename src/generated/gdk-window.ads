@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -29,8 +29,10 @@ with Gdk;                     use Gdk;
 with Gdk.Color;               use Gdk.Color;
 with Gdk.Device;              use Gdk.Device;
 with Gdk.Display;             use Gdk.Display;
+with Gdk.Drawing_Context;     use Gdk.Drawing_Context;
 with Gdk.Event;               use Gdk.Event;
 with Gdk.Frame_Clock;         use Gdk.Frame_Clock;
+with Gdk.Glcontext;           use Gdk.Glcontext;
 with Gdk.RGBA;                use Gdk.RGBA;
 with Gdk.Rectangle;           use Gdk.Rectangle;
 with Gdk.Screen;              use Gdk.Screen;
@@ -207,6 +209,34 @@ package Gdk.Window is
    --  Indicates which monitor (in a multi-head setup) a window should span
    --  over when in fullscreen mode.
 
+   type Gdk_Anchor_Hints is mod 2 ** Integer'Size;
+   pragma Convention (C, Gdk_Anchor_Hints);
+   --  Positioning hints for aligning a window relative to a rectangle.
+   --
+   --  These hints determine how the window should be positioned in the case
+   --  that the window would fall off-screen if placed in its ideal position.
+   --
+   --  For example, Gdk.Anchor_Flip_X will replace Gdk.Gravity_North_West with
+   --  Gdk.Gravity_North_East and vice versa if the window extends beyond the
+   --  left or right edges of the monitor.
+   --
+   --  If Gdk.Anchor_Slide_X is set, the window can be shifted horizontally to
+   --  fit on-screen. If Gdk.Anchor_Resize_X is set, the window can be shrunken
+   --  horizontally to fit.
+   --
+   --  In general, when multiple flags are set, flipping should take
+   --  precedence over sliding, which should take precedence over resizing.
+
+   Anchor_Flip_X : constant Gdk_Anchor_Hints := 1;
+   Anchor_Flip_Y : constant Gdk_Anchor_Hints := 2;
+   Anchor_Slide_X : constant Gdk_Anchor_Hints := 4;
+   Anchor_Slide_Y : constant Gdk_Anchor_Hints := 8;
+   Anchor_Resize_X : constant Gdk_Anchor_Hints := 16;
+   Anchor_Resize_Y : constant Gdk_Anchor_Hints := 32;
+   Anchor_Flip : constant Gdk_Anchor_Hints := 3;
+   Anchor_Slide : constant Gdk_Anchor_Hints := 12;
+   Anchor_Resize : constant Gdk_Anchor_Hints := 48;
+
    type Gdk_Geometry is record
       Min_Width : Glib.Gint := 0;
       Min_Height : Glib.Gint := 0;
@@ -349,6 +379,10 @@ package Gdk.Window is
       new Generic_Internal_Discrete_Property (Gdk_Fullscreen_Mode);
    type Property_Gdk_Fullscreen_Mode is new Gdk_Fullscreen_Mode_Properties.Property;
 
+   package Gdk_Anchor_Hints_Properties is
+      new Generic_Internal_Discrete_Property (Gdk_Anchor_Hints);
+   type Property_Gdk_Anchor_Hints is new Gdk_Anchor_Hints_Properties.Property;
+
    ------------------
    -- Constructors --
    ------------------
@@ -394,6 +428,36 @@ package Gdk.Window is
    --  Gdk.Display.Beep.
    --  Since: gtk+ 2.12
 
+   function Begin_Draw_Frame
+      (Self   : Gdk.Gdk_Window;
+       Region : Cairo.Region.Cairo_Region)
+       return Gdk.Drawing_Context.Gdk_Drawing_Context;
+   --  Indicates that you are beginning the process of redrawing Region on
+   --  Window, and provides you with a Gdk.Drawing_Context.Gdk_Drawing_Context.
+   --  If Window is a top level Gdk.Gdk_Window, backed by a native window
+   --  implementation, a backing store (offscreen buffer) large enough to
+   --  contain Region will be created. The backing store will be initialized
+   --  with the background color or background surface for Window. Then, all
+   --  drawing operations performed on Window will be diverted to the backing
+   --  store. When you call gdk_window_end_frame, the contents of the backing
+   --  store will be copied to Window, making it visible on screen. Only the
+   --  part of Window contained in Region will be modified; that is, drawing
+   --  operations are clipped to Region.
+   --  The net result of all this is to remove flicker, because the user sees
+   --  the finished product appear all at once when you call
+   --  Gdk.Window.End_Draw_Frame. If you draw to Window directly without
+   --  calling Gdk.Window.Begin_Draw_Frame, the user may see flicker as
+   --  individual drawing operations are performed in sequence.
+   --  When using GTK+, the widget system automatically places calls to
+   --  Gdk.Window.Begin_Draw_Frame and Gdk.Window.End_Draw_Frame around
+   --  emissions of the `GtkWidget::draw` signal. That is, if you're drawing
+   --  the contents of the widget yourself, you can assume that the widget has
+   --  a cleared background, is already set as the clip region, and already has
+   --  a backing store. Therefore in most cases, application code in GTK does
+   --  not need to call Gdk.Window.Begin_Draw_Frame explicitly.
+   --  Since: gtk+ 3.22
+   --  "region": a Cairo region
+
    procedure Begin_Move_Drag
       (Self      : Gdk.Gdk_Window;
        Button    : Glib.Gint;
@@ -435,15 +499,18 @@ package Gdk.Window is
       (Self      : Gdk.Gdk_Window;
        Rectangle : Gdk.Rectangle.Gdk_Rectangle);
    pragma Import (C, Begin_Paint_Rect, "gdk_window_begin_paint_rect");
+   pragma Obsolescent (Begin_Paint_Rect);
    --  A convenience wrapper around Gdk.Window.Begin_Paint_Region which
    --  creates a rectangular region for you. See Gdk.Window.Begin_Paint_Region
    --  for details.
+   --  Deprecated since 3.22, 1
    --  "rectangle": rectangle you intend to draw to
 
    procedure Begin_Paint_Region
       (Self   : Gdk.Gdk_Window;
        Region : Cairo.Region.Cairo_Region);
    pragma Import (C, Begin_Paint_Region, "gdk_window_begin_paint_region");
+   pragma Obsolescent (Begin_Paint_Region);
    --  Indicates that you are beginning the process of redrawing Region. A
    --  backing store (offscreen buffer) large enough to contain Region will be
    --  created. The backing store will be initialized with the background color
@@ -477,6 +544,7 @@ package Gdk.Window is
    --  pops the stack. All drawing operations affect only the topmost backing
    --  store in the stack. One matching call to Gdk.Window.End_Paint is
    --  required for each call to Gdk.Window.Begin_Paint_Region.
+   --  Deprecated since 3.22, 1
    --  "region": region you intend to draw to
 
    procedure Begin_Resize_Drag
@@ -582,6 +650,17 @@ package Gdk.Window is
    --  "parent_y": return location for Y coordinate in parent's coordinate
    --  system, or null
 
+   function Create_Gl_Context
+      (Self : Gdk.Gdk_Window) return Gdk.Glcontext.Gdk_Glcontext;
+   --  Creates a new Gdk.Glcontext.Gdk_Glcontext matching the framebuffer
+   --  format to the visual of the Gdk.Gdk_Window. The context is disconnected
+   --  from any particular window or surface.
+   --  If the creation of the Gdk.Glcontext.Gdk_Glcontext failed, Error will
+   --  be set.
+   --  Before using the returned Gdk.Glcontext.Gdk_Glcontext, you will need to
+   --  call Gdk.Glcontext.Make_Current or Gdk.Glcontext.Realize.
+   --  Since: gtk+ 3.16
+
    function Create_Similar_Image_Surface
       (Self   : Gdk.Gdk_Window;
        Format : Cairo.Cairo_Format;
@@ -593,6 +672,19 @@ package Gdk.Window is
    --  Window.
    --  Initially the surface contents are all 0 (transparent if contents have
    --  transparency, black otherwise.)
+   --  The Width and Height of the new surface are not affected by the scaling
+   --  factor of the Window, or by the Scale argument; they are the size of the
+   --  surface in device pixels. If you wish to create an image surface capable
+   --  of holding the contents of Window you can use:
+   --  |[<!-- language="C" --> int scale = gdk_window_get_scale_factor
+   --  (window); int width = gdk_window_get_width (window) * scale; int height
+   --  = gdk_window_get_height (window) * scale;
+   --  // format is set elsewhere cairo_surface_t *surface =
+   --  gdk_window_create_similar_image_surface (window, format, width, height,
+   --  scale); ]|
+   --  Note that unlike cairo_surface_create_similar_image, the new surface's
+   --  device scale is set to Scale, or to the scale factor of Window if Scale
+   --  is 0.
    --  Since: gtk+ 3.10
    --  "format": the format for the new surface
    --  "width": width of the new surface
@@ -623,8 +715,9 @@ package Gdk.Window is
    --  Attempt to deiconify (unminimize) Window. On X11 the window manager may
    --  choose to ignore the request to deiconify. When using GTK+, use
    --  Gtk.Window.Deiconify instead of the Gdk.Gdk_Window variant. Or better
-   --  yet, you probably want to use Gtk.Window.Present, which raises the
-   --  window, focuses it, unminimizes it, and puts it on the current desktop.
+   --  yet, you probably want to use Gtk.Window.Present_With_Time, which raises
+   --  the window, focuses it, unminimizes it, and puts it on the current
+   --  desktop.
 
    procedure Destroy (Self : Gdk.Gdk_Window);
    pragma Import (C, Destroy, "gdk_window_destroy");
@@ -646,13 +739,27 @@ package Gdk.Window is
    --  Since: gtk+ 2.6
    --  Deprecated since 3.8, 1
 
+   procedure End_Draw_Frame
+      (Self    : Gdk.Gdk_Window;
+       Context : not null access Gdk.Drawing_Context.Gdk_Drawing_Context_Record'Class);
+   --  Indicates that the drawing of the contents of Window started with
+   --  gdk_window_begin_frame has been completed.
+   --  This function will take care of destroying the
+   --  Gdk.Drawing_Context.Gdk_Drawing_Context.
+   --  It is an error to call this function without a matching
+   --  gdk_window_begin_frame first.
+   --  Since: gtk+ 3.22
+   --  "context": the Gdk.Drawing_Context.Gdk_Drawing_Context created by
+   --  Gdk.Window.Begin_Draw_Frame
+
    procedure End_Paint (Self : Gdk.Gdk_Window);
    pragma Import (C, End_Paint, "gdk_window_end_paint");
    --  Indicates that the backing store created by the most recent call to
    --  Gdk.Window.Begin_Paint_Region should be copied onscreen and deleted,
    --  leaving the next-most-recent backing store or no backing store at all as
    --  the active paint region. See Gdk.Window.Begin_Paint_Region for full
-   --  details. It is an error to call this function without a matching
+   --  details.
+   --  It is an error to call this function without a matching
    --  Gdk.Window.Begin_Paint_Region first.
 
    function Ensure_Native (Self : Gdk.Gdk_Window) return Boolean;
@@ -671,12 +778,14 @@ package Gdk.Window is
 
    procedure Focus (Self : Gdk.Gdk_Window; Timestamp : Guint32);
    pragma Import (C, Focus, "gdk_window_focus");
-   --  Sets keyboard focus to Window. In most cases, Gtk.Window.Present should
-   --  be used on a Gtk.Window.Gtk_Window, rather than calling this function.
+   --  Sets keyboard focus to Window. In most cases,
+   --  Gtk.Window.Present_With_Time should be used on a Gtk.Window.Gtk_Window,
+   --  rather than calling this function.
    --  "timestamp": timestamp of the event triggering the window focus
 
    procedure Freeze_Toplevel_Updates_Libgtk_Only (Self : Gdk.Gdk_Window);
    pragma Import (C, Freeze_Toplevel_Updates_Libgtk_Only, "gdk_window_freeze_toplevel_updates_libgtk_only");
+   pragma Obsolescent (Freeze_Toplevel_Updates_Libgtk_Only);
    --  Temporarily freezes a window and all its descendants such that it won't
    --  receive expose events. The window will begin receiving expose events
    --  again when Gdk.Window.Thaw_Toplevel_Updates_Libgtk_Only is called. If
@@ -685,6 +794,7 @@ package Gdk.Window is
    --  equal number of times to begin processing exposes.
    --  This function is not part of the GDK public API and is only for use by
    --  GTK+.
+   --  Deprecated since 3.16, 1
 
    procedure Freeze_Updates (Self : Gdk.Gdk_Window);
    pragma Import (C, Freeze_Updates, "gdk_window_freeze_updates");
@@ -706,6 +816,16 @@ package Gdk.Window is
    --  happening. But it will happen with most standard window managers, and
    --  GDK makes a best effort to get it to happen.
    --  Since: gtk+ 2.2
+
+   procedure Fullscreen_On_Monitor
+      (Self    : Gdk.Gdk_Window;
+       Monitor : Glib.Gint);
+   pragma Import (C, Fullscreen_On_Monitor, "gdk_window_fullscreen_on_monitor");
+   --  Moves the window into fullscreen mode on the given monitor. This means
+   --  the window covers the entire screen and is above any panels or task
+   --  bars.
+   --  If the window was already fullscreen, then this function does nothing.
+   --  "monitor": Which monitor to display fullscreen on.
 
    procedure Geometry_Changed (Self : Gdk.Gdk_Window);
    pragma Import (C, Geometry_Changed, "gdk_window_geometry_changed");
@@ -732,20 +852,23 @@ package Gdk.Window is
    function Get_Background_Pattern
       (Self : Gdk.Gdk_Window) return Cairo.Cairo_Pattern;
    pragma Import (C, Get_Background_Pattern, "gdk_window_get_background_pattern");
-   --  Gets the pattern used to clear the background on Window. If Window does
-   --  not have its own background and reuses the parent's, null is returned
-   --  and you'll have to query it yourself.
+   pragma Obsolescent (Get_Background_Pattern);
+   --  Gets the pattern used to clear the background on Window.
    --  Since: gtk+ 2.22
+   --  Deprecated since 3.22, 1
 
    procedure Set_Background_Pattern
       (Self    : Gdk.Gdk_Window;
        Pattern : Cairo.Cairo_Pattern);
    pragma Import (C, Set_Background_Pattern, "gdk_window_set_background_pattern");
+   pragma Obsolescent (Set_Background_Pattern);
    --  Sets the background of Window.
-   --  A background of null means that the window will inherit its background
-   --  from its parent window.
+   --  A background of null means that the window won't have any background.
+   --  On the X11 backend it's also possible to inherit the background from the
+   --  parent window using gdk_x11_get_parent_relative_pattern.
    --  The windowing system will normally fill a window with its background
    --  when the window is obscured then exposed.
+   --  Deprecated since 3.22, 1
    --  "pattern": a pattern to use, or null
 
    function Get_Children
@@ -766,11 +889,14 @@ package Gdk.Window is
    --  of this region will be affected by drawing primitives.
 
    function Get_Composited (Self : Gdk.Gdk_Window) return Boolean;
+   pragma Obsolescent (Get_Composited);
    --  Determines whether Window is composited.
    --  See Gdk.Window.Set_Composited.
    --  Since: gtk+ 2.22
+   --  Deprecated since 3.16, 1
 
    procedure Set_Composited (Self : Gdk.Gdk_Window; Composited : Boolean);
+   pragma Obsolescent (Set_Composited);
    --  Sets a Gdk.Gdk_Window as composited, or unsets it. Composited windows
    --  do not automatically have their contents drawn to the screen. Drawing is
    --  redirected to an offscreen buffer and an expose event is emitted on the
@@ -787,6 +913,7 @@ package Gdk.Window is
    --  Gdk.Display.Supports_Composite to check if setting a window as
    --  composited is supported before attempting to do so.
    --  Since: gtk+ 2.12
+   --  Deprecated since 3.16, 1
    --  "composited": True to set the window as composited
 
    function Get_Cursor (Self : Gdk.Gdk_Window) return Gdk.Gdk_Cursor;
@@ -799,11 +926,12 @@ package Gdk.Window is
 
    procedure Set_Cursor (Self : Gdk.Gdk_Window; Cursor : Gdk.Gdk_Cursor);
    pragma Import (C, Set_Cursor, "gdk_window_set_cursor");
-   --  Sets the default mouse pointer for a Gdk.Gdk_Window. Use
-   --  gdk_cursor_new_for_display or gdk_cursor_new_from_pixbuf to create the
-   --  cursor. To make the cursor invisible, use Gdk.Blank_Cursor. Passing null
-   --  for the Cursor argument to Gdk.Window.Set_Cursor means that Window will
-   --  use the cursor of its parent window. Most windows should use this
+   --  Sets the default mouse pointer for a Gdk.Gdk_Window.
+   --  Note that Cursor must be for the same display as Window.
+   --  Use gdk_cursor_new_for_display or gdk_cursor_new_from_pixbuf to create
+   --  the cursor. To make the cursor invisible, use Gdk.Blank_Cursor. Passing
+   --  null for the Cursor argument to Gdk.Window.Set_Cursor means that Window
+   --  will use the cursor of its parent window. Most windows should use this
    --  default.
    --  "cursor": a cursor
 
@@ -875,6 +1003,7 @@ package Gdk.Window is
    --  including GDK_BUTTON_PRESS_MASK means the window should report button
    --  press events. The event mask is the bitwise OR of values from the
    --  Gdk.Event.Gdk_Event_Mask enumeration.
+   --  See the [input handling overview][event-masks] for details.
    --  Since: gtk+ 3.0
    --  "device": Gdk.Device.Gdk_Device to enable events for.
    --  "event_mask": event mask for Window
@@ -965,6 +1094,7 @@ package Gdk.Window is
    --  mask including GDK_BUTTON_PRESS_MASK means the window should report
    --  button press events. The event mask is the bitwise OR of values from the
    --  Gdk.Event.Gdk_Event_Mask enumeration.
+   --  See the [input handling overview][event-masks] for details.
    --  "event_mask": event mask for Window
 
    function Get_Focus_On_Map (Self : Gdk.Gdk_Window) return Boolean;
@@ -1123,6 +1253,32 @@ package Gdk.Window is
    --  Gdk.Window.Get_Parent will most likely not do what you expect if there
    --  are offscreen windows in the hierarchy.
 
+   function Get_Pass_Through (Self : Gdk.Gdk_Window) return Boolean;
+   --  Returns whether input to the window is passed through to the window
+   --  below.
+   --  See Gdk.Window.Set_Pass_Through for details
+   --  Since: gtk+ 3.18
+
+   procedure Set_Pass_Through
+      (Self         : Gdk.Gdk_Window;
+       Pass_Through : Boolean);
+   --  Sets whether input to the window is passed through to the window below.
+   --  The default value of this is False, which means that pointer events
+   --  that happen inside the window are send first to the window, but if the
+   --  event is not selected by the event mask then the event is sent to the
+   --  parent window, and so on up the hierarchy.
+   --  If Pass_Through is True then such pointer events happen as if the
+   --  window wasn't there at all, and thus will be sent first to any windows
+   --  below Window. This is useful if the window is used in a transparent
+   --  fashion. In the terminology of the web this would be called
+   --  "pointer-events: none".
+   --  Note that a window with Pass_Through True can still have a subwindow
+   --  without pass through, so you can get events on a subset of a window. And
+   --  in that cases you would get the in-between related events such as the
+   --  pointer enter/leave events on its way to the destination window.
+   --  Since: gtk+ 3.18
+   --  "pass_through": a boolean
+
    procedure Get_Pointer
       (Self   : Gdk.Gdk_Window;
        X      : out Glib.Gint;
@@ -1162,7 +1318,7 @@ package Gdk.Window is
        Root_Y : out Glib.Gint);
    pragma Import (C, Get_Root_Coords, "gdk_window_get_root_coords");
    --  Obtains the position of a window position in root window coordinates.
-   --  This is similar to Gdk.Window.Get_Origin but allows you go pass in any
+   --  This is similar to Gdk.Window.Get_Origin but allows you to pass in any
    --  position in the window, not just the origin.
    --  Since: gtk+ 2.18
    --  "x": X coordinate in window
@@ -1464,6 +1620,21 @@ package Gdk.Window is
    --  Note that Gdk.Window.Show raises the window again, so don't call this
    --  function before Gdk.Window.Show. (Try Gdk.Window.Show_Unraised.)
 
+   procedure Mark_Paint_From_Clip
+      (Self : Gdk.Gdk_Window;
+       Cr   : Cairo.Cairo_Context);
+   pragma Import (C, Mark_Paint_From_Clip, "gdk_window_mark_paint_from_clip");
+   --  If you call this during a paint (e.g. between
+   --  Gdk.Window.Begin_Paint_Region and Gdk.Window.End_Paint then GDK will
+   --  mark the current clip region of the window as being drawn. This is
+   --  required when mixing GL rendering via gdk_cairo_draw_from_gl and cairo
+   --  rendering, as otherwise GDK has no way of knowing when something paints
+   --  over the GL-drawn regions.
+   --  This is typically called automatically by GTK+ and you don't need to
+   --  care about this.
+   --  Since: gtk+ 3.16
+   --  "cr": a cairo_t
+
    procedure Maximize (Self : Gdk.Gdk_Window);
    pragma Import (C, Maximize, "gdk_window_maximize");
    --  Maximizes the window. If the window was already maximized, then this
@@ -1539,6 +1710,38 @@ package Gdk.Window is
    --  "width": new width
    --  "height": new height
 
+   procedure Move_To_Rect
+      (Self           : Gdk.Gdk_Window;
+       Rect           : Gdk.Rectangle.Gdk_Rectangle;
+       Rect_Anchor    : Gdk_Gravity;
+       Window_Anchor  : Gdk_Gravity;
+       Anchor_Hints   : Gdk_Anchor_Hints;
+       Rect_Anchor_Dx : Glib.Gint;
+       Rect_Anchor_Dy : Glib.Gint);
+   pragma Import (C, Move_To_Rect, "gdk_window_move_to_rect");
+   --  Moves Window to Rect, aligning their anchor points.
+   --  Rect is relative to the top-left corner of the window that Window is
+   --  transient for. Rect_Anchor and Window_Anchor determine anchor points on
+   --  Rect and Window to pin together. Rect's anchor point can optionally be
+   --  offset by Rect_Anchor_Dx and Rect_Anchor_Dy, which is equivalent to
+   --  offsetting the position of Window.
+   --  Anchor_Hints determines how Window will be moved if the anchor points
+   --  cause it to move off-screen. For example, Gdk.Anchor_Flip_X will replace
+   --  Gdk.Gravity_North_West with Gdk.Gravity_North_East and vice versa if
+   --  Window extends beyond the left or right edges of the monitor.
+   --  Connect to the Gdk.Gdk_Window::moved-to-rect signal to find out how it
+   --  was actually positioned.
+   --  Since: gtk+ 3.24
+   --  "rect": the destination Gdk.Rectangle.Gdk_Rectangle to align Window
+   --  with
+   --  "rect_anchor": the point on Rect to align with Window's anchor point
+   --  "window_anchor": the point on Window to align with Rect's anchor point
+   --  "anchor_hints": positioning hints to use when limited on space
+   --  "rect_anchor_dx": horizontal offset to shift Window, i.e. Rect's anchor
+   --  point
+   --  "rect_anchor_dy": vertical offset to shift Window, i.e. Rect's anchor
+   --  point
+
    function Peek_Children
       (Self : Gdk.Gdk_Window) return Gdk_Window_List.Glist;
    --  Like Gdk.Window.Get_Children, but does not copy the list of children,
@@ -1547,6 +1750,7 @@ package Gdk.Window is
    procedure Process_Updates
       (Self            : Gdk.Gdk_Window;
        Update_Children : Boolean);
+   pragma Obsolescent (Process_Updates);
    --  Sends one or more expose events to Window. The areas in each expose
    --  event will cover the entire update area for the window (see
    --  Gdk.Window.Invalidate_Region for details). Normally GDK calls
@@ -1555,6 +1759,7 @@ package Gdk.Window is
    --  delivered immediately and synchronously (vs. the usual case, where GDK
    --  delivers them in an idle handler). Occasionally this is useful to
    --  produce nicer scrolling behavior, for example.
+   --  Deprecated since 3.22, 1
    --  "update_children": whether to also process updates for child windows
 
    procedure Gdk_Raise (Self : Gdk.Gdk_Window);
@@ -1631,11 +1836,11 @@ package Gdk.Window is
        Color : Gdk.Color.Gdk_Color);
    pragma Import (C, Set_Background, "gdk_window_set_background");
    pragma Obsolescent (Set_Background);
-   --  Sets the background color of Window. (However, when using GTK+, set the
-   --  background of a widget with Gtk.Widget.Modify_Bg - if you're an
-   --  application - or Gtk.Style.Set_Background - if you're implementing a
-   --  custom widget.)
-   --  See also Gdk.Window.Set_Background_Pattern.
+   --  Sets the background color of Window.
+   --  However, when using GTK+, influence the background of a widget using a
+   --  style class or CSS — if you're an application — or with
+   --  Gtk.Style_Context.Set_Background — if you're implementing a custom
+   --  widget.
    --  Deprecated since 3.4, 1
    --  "color": a Gdk.Color.Gdk_Color
 
@@ -1643,8 +1848,10 @@ package Gdk.Window is
       (Self : Gdk.Gdk_Window;
        Rgba : Gdk.RGBA.Gdk_RGBA);
    pragma Import (C, Set_Background_Rgba, "gdk_window_set_background_rgba");
+   pragma Obsolescent (Set_Background_Rgba);
    --  Sets the background color of Window.
    --  See also Gdk.Window.Set_Background_Pattern.
+   --  Deprecated since 3.22, 1
    --  "rgba": a Gdk.RGBA.Gdk_RGBA color
 
    procedure Set_Child_Input_Shapes (Self : Gdk.Gdk_Window);
@@ -1711,6 +1918,7 @@ package Gdk.Window is
    --  will not update the icon title.
    --  Using null for Name unsets the icon title; further calls to
    --  Gdk.Window.Set_Title will again update the icon title as well.
+   --  Note that some platforms don't support window icons.
    --  "name": name of window while iconified (minimized)
 
    procedure Set_Invalidate_Handler
@@ -1756,7 +1964,12 @@ package Gdk.Window is
    --  are clamped to the [0,1] range.)
    --  For toplevel windows this depends on support from the windowing system
    --  that may not always be there. For instance, On X11, this works only on X
-   --  screens with a compositing manager running.
+   --  screens with a compositing manager running. On Wayland, there is no
+   --  per-window opacity value that the compositor would apply. Instead, use
+   --  `gdk_window_set_opaque_region (window, NULL)` to tell the compositor
+   --  that the entire window is (potentially) non-opaque, and draw your
+   --  content with alpha, or use Gtk.Widget.Set_Opacity to set an overall
+   --  opacity for your widgets.
    --  For child windows this function only works for non-native windows.
    --  For setting up per-pixel alpha topelevels, see
    --  Gdk.Screen.Get_Rgba_Visual, and for non-toplevels, see
@@ -1769,18 +1982,18 @@ package Gdk.Window is
       (Self   : Gdk.Gdk_Window;
        Region : Cairo.Region.Cairo_Region);
    pragma Import (C, Set_Opaque_Region, "gdk_window_set_opaque_region");
-   --  For optimizization purposes, compositing window managers may like to
-   --  not draw obscured regions of windows, or turn off blending during for
-   --  these regions. With RGB windows with no transparency, this is just the
-   --  shape of the window, but with ARGB32 windows, the compositor does not
-   --  know what regions of the window are transparent or not.
+   --  For optimisation purposes, compositing window managers may like to not
+   --  draw obscured regions of windows, or turn off blending during for these
+   --  regions. With RGB windows with no transparency, this is just the shape
+   --  of the window, but with ARGB32 windows, the compositor does not know
+   --  what regions of the window are transparent or not.
    --  This function only works for toplevel windows.
-   --  GTK+ will automatically update this property automatically if the
-   --  Window background is opaque, as we know where the opaque regions are. If
-   --  your window background is not opaque, please update this property in
-   --  your Gtk.Widget.Gtk_Widget::style-updated handler.
+   --  GTK+ will update this property automatically if the Window background
+   --  is opaque, as we know where the opaque regions are. If your window
+   --  background is not opaque, please update this property in your
+   --  Gtk.Widget.Gtk_Widget::style-updated handler.
    --  Since: gtk+ 3.10
-   --  "region": a region
+   --  "region": a region, or null
 
    procedure Set_Override_Redirect
       (Self              : Gdk.Gdk_Window;
@@ -1863,10 +2076,12 @@ package Gdk.Window is
    function Set_Static_Gravities
       (Self       : Gdk.Gdk_Window;
        Use_Static : Boolean) return Boolean;
-   --  Set the bit gravity of the given window to static, and flag it so all
-   --  children get static subwindow gravity. This is used if you are
+   pragma Obsolescent (Set_Static_Gravities);
+   --  Used to set the bit gravity of the given window to static, and flag it
+   --  so all children get static subwindow gravity. This is used if you are
    --  implementing scary features that involve deep knowledge of the windowing
-   --  system. Don't worry about it unless you have to.
+   --  system. Don't worry about it.
+   --  Deprecated since 3.16, 1
    --  "use_static": True to turn on static gravity
 
    procedure Set_Title (Self : Gdk.Gdk_Window; Title : UTF8_String);
@@ -1969,10 +2184,12 @@ package Gdk.Window is
 
    procedure Thaw_Toplevel_Updates_Libgtk_Only (Self : Gdk.Gdk_Window);
    pragma Import (C, Thaw_Toplevel_Updates_Libgtk_Only, "gdk_window_thaw_toplevel_updates_libgtk_only");
+   pragma Obsolescent (Thaw_Toplevel_Updates_Libgtk_Only);
    --  Thaws a window frozen with
    --  Gdk.Window.Freeze_Toplevel_Updates_Libgtk_Only.
    --  This function is not part of the GDK public API and is only for use by
    --  GTK+.
+   --  Deprecated since 3.16, 1
 
    procedure Thaw_Updates (Self : Gdk.Gdk_Window);
    pragma Import (C, Thaw_Updates, "gdk_window_thaw_updates");
@@ -2076,10 +2293,13 @@ package Gdk.Window is
 
    procedure Process_All_Updates;
    pragma Import (C, Process_All_Updates, "gdk_window_process_all_updates");
+   pragma Obsolescent (Process_All_Updates);
    --  Calls Gdk.Window.Process_Updates for all windows (see Gdk.Gdk_Window)
    --  in the application.
+   --  Deprecated since 3.22, 1
 
    procedure Set_Debug_Updates (Setting : Boolean);
+   pragma Obsolescent (Set_Debug_Updates);
    --  With update debugging enabled, calls to Gdk.Window.Invalidate_Region
    --  clear the invalidated region of the screen to a noticeable color, and
    --  GDK pauses for a short time before sending exposes to windows during
@@ -2096,6 +2316,7 @@ package Gdk.Window is
    --  more useful than calling Gdk.Window.Set_Debug_Updates yourself, though
    --  you might want to use this function to enable updates sometime after
    --  application startup time.
+   --  Deprecated since 3.22, 1
    --  "setting": True to turn on update debugging
 
    ----------------
@@ -2152,6 +2373,33 @@ package Gdk.Window is
    --    --  window
    --    --  "offscreen_y": return location for the y coordinate in the offscreen
    --    --  window
+
+   Signal_Moved_To_Rect : constant Glib.Signal_Name := "moved-to-rect";
+   --  Emitted when the position of Window is finalized after being moved to a
+   --  destination rectangle.
+   --
+   --  Window might be flipped over the destination rectangle in order to keep
+   --  it on-screen, in which case Flipped_X and Flipped_Y will be set to True
+   --  accordingly.
+   --
+   --  Flipped_Rect is the ideal position of Window after any possible
+   --  flipping, but before any possible sliding. Final_Rect is Flipped_Rect,
+   --  but possibly translated in the case that flipping is still ineffective
+   --  in keeping Window on-screen.
+   --    procedure Handler
+   --       (Self         : Gdk_Window;
+   --        Flipped_Rect : System.Address;
+   --        Final_Rect   : System.Address;
+   --        Flipped_X    : Boolean;
+   --        Flipped_Y    : Boolean)
+   -- 
+   --  Callback parameters:
+   --    --  "flipped_rect": the position of Window after any possible flipping or
+   --    --  null if the backend can't obtain it
+   --    --  "final_rect": the final position of Window or null if the backend can't
+   --    --  obtain it
+   --    --  "flipped_x": True if the anchors were flipped horizontally
+   --    --  "flipped_y": True if the anchors were flipped vertically
 
    Signal_Pick_Embedded_Child : constant Glib.Signal_Name := "pick-embedded-child";
    --  The ::pick-embedded-child signal is emitted to find an embedded child

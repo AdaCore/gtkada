@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -24,7 +24,6 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
-with Glib.Object;
 
 package body Gdk.Event is
 
@@ -163,6 +162,41 @@ package body Gdk.Event is
 
    function From_Object_Free (B : access Gdk_Event_Grab_Broken) return Gdk_Event_Grab_Broken is
       Result : constant Gdk_Event_Grab_Broken := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Touchpad_Swipe) return Gdk_Event_Touchpad_Swipe is
+      Result : constant Gdk_Event_Touchpad_Swipe := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Touchpad_Pinch) return Gdk_Event_Touchpad_Pinch is
+      Result : constant Gdk_Event_Touchpad_Pinch := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Pad_Button) return Gdk_Event_Pad_Button is
+      Result : constant Gdk_Event_Pad_Button := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Pad_Axis) return Gdk_Event_Pad_Axis is
+      Result : constant Gdk_Event_Pad_Axis := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   function From_Object_Free (B : access Gdk_Event_Pad_Group_Mode) return Gdk_Event_Pad_Group_Mode is
+      Result : constant Gdk_Event_Pad_Group_Mode := B.all;
    begin
       Glib.g_free (B.all'Address);
       return Result;
@@ -326,6 +360,20 @@ package body Gdk.Event is
       return Tmp_Return /= 0;
    end Get_Center;
 
+   ---------------------
+   -- Get_Device_Tool --
+   ---------------------
+
+   function Get_Device_Tool
+      (Event : Gdk_Event) return Gdk.Device_Tool.Gdk_Device_Tool
+   is
+      function Internal (Event : Gdk_Event) return System.Address;
+      pragma Import (C, Internal, "gdk_event_get_device_tool");
+      Stub_Gdk_Device_Tool : Gdk.Device_Tool.Gdk_Device_Tool_Record;
+   begin
+      return Gdk.Device_Tool.Gdk_Device_Tool (Get_User_Data (Internal (Event), Stub_Gdk_Device_Tool));
+   end Get_Device_Tool;
+
    ------------------
    -- Get_Distance --
    ------------------
@@ -347,6 +395,29 @@ package body Gdk.Event is
       Distance.all := Acc_Distance;
       return Tmp_Return /= 0;
    end Get_Distance;
+
+   --------------------------
+   -- Get_Pointer_Emulated --
+   --------------------------
+
+   function Get_Pointer_Emulated (Event : Gdk_Event) return Boolean is
+      function Internal (Event : Gdk_Event) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_event_get_pointer_emulated");
+   begin
+      return Internal (Event) /= 0;
+   end Get_Pointer_Emulated;
+
+   --------------
+   -- Get_Seat --
+   --------------
+
+   function Get_Seat (Event : Gdk_Event) return Glib.Object.GObject is
+      function Internal (Event : Gdk_Event) return System.Address;
+      pragma Import (C, Internal, "gdk_event_get_seat");
+      Stub_GObject : Glib.Object.GObject_Record;
+   begin
+      return Get_User_Data (Internal (Event), Stub_GObject);
+   end Get_Seat;
 
    -----------------
    -- Handler_Set --
@@ -411,6 +482,31 @@ package body Gdk.Event is
       end Internal_Cb;
 
    end Handler_Set_User_Data;
+
+   --------------------------
+   -- Is_Scroll_Stop_Event --
+   --------------------------
+
+   function Is_Scroll_Stop_Event (Event : Gdk_Event) return Boolean is
+      function Internal (Event : Gdk_Event) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_event_is_scroll_stop_event");
+   begin
+      return Internal (Event) /= 0;
+   end Is_Scroll_Stop_Event;
+
+   ---------------------
+   -- Set_Device_Tool --
+   ---------------------
+
+   procedure Set_Device_Tool
+      (Event : Gdk_Event;
+       Tool  : access Gdk.Device_Tool.Gdk_Device_Tool_Record'Class)
+   is
+      procedure Internal (Event : Gdk_Event; Tool : System.Address);
+      pragma Import (C, Internal, "gdk_event_set_device_tool");
+   begin
+      Internal (Event, Get_Object_Or_Null (GObject (Tool)));
+   end Set_Device_Tool;
 
    ---------------------------
    -- Triggers_Context_Menu --
