@@ -29,6 +29,13 @@
 --  GtkSwitch can also handle situations where the underlying state changes
 --  with a delay. See Gtk.Switch.Gtk_Switch::state-set for details.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> switch ╰── slider ]|
+--
+--  GtkSwitch has two css nodes, the main node with the name switch and a
+--  subnode named slider. Neither of them is using any style classes.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -110,7 +117,7 @@ package Gtk.Switch is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Switch_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Switch_Record)
@@ -209,8 +216,8 @@ package Gtk.Switch is
        After : Boolean := False);
    --  The ::state-set signal on GtkSwitch is emitted to change the underlying
    --  state. It is emitted when the user changes the switch position. The
-   --  default handler keeps the state in sync with the Gtk_State:active
-   --  property.
+   --  default handler keeps the state in sync with the
+   --  Gtk.Switch.Gtk_Switch:active property.
    --
    --  To implement delayed state change, applications can connect to this
    --  signal, initiate the change of the underlying state, and call

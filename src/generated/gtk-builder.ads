@@ -65,7 +65,7 @@
 --  files containing GtkBuilder UI definitions.
 --
 --  [RELAX NG Compact
---  Syntax](https://git.gnome.org/browse/gtk+/tree/gtk/gtkbuilder.rnc)
+--  Syntax](https://gitlab.gnome.org/GNOME/gtk/-/blob/gtk-3-24/gtk/gtkbuilder.rnc)
 --
 --  The toplevel element is <interface>. It optionally takes a "domain"
 --  attribute, which will make the builder look for translated strings using
@@ -116,22 +116,25 @@
 --  (can be specified by their name, nick or integer value), flags (can be
 --  specified by their name, nick, integer value, optionally combined with "|",
 --  e.g. "GTK_VISIBLE|GTK_REALIZED") and colors (in a format understood by
---  Gdk.RGBA.Parse). Pixbufs can be specified as a filename of an image file to
---  load. Objects can be referred to by their name and by default refer to
---  objects declared in the local xml fragment and objects exposed via
---  Gtk.Builder.Expose_Object.
+--  Gdk.RGBA.Parse).
 --
---  In general, GtkBuilder allows forward references to objects — declared in
---  the local xml; an object doesn't have to be constructed before it can be
---  referred to. The exception to this rule is that an object has to be
---  constructed before it can be used as the value of a construct-only
---  property.
+--  GVariants can be specified in the format understood by Glib.Variant.Parse,
+--  and pixbufs can be specified as a filename of an image file to load.
+--
+--  Objects can be referred to by their name and by default refer to objects
+--  declared in the local xml fragment and objects exposed via
+--  Gtk.Builder.Expose_Object. In general, GtkBuilder allows forward references
+--  to objects — declared in the local xml; an object doesn't have to be
+--  constructed before it can be referred to. The exception to this rule is
+--  that an object has to be constructed before it can be used as the value of
+--  a construct-only property.
 --
 --  It is also possible to bind a property value to another object's property
 --  value using the attributes "bind-source" to specify the source object of
 --  the binding, "bind-property" to specify the source property and optionally
---  "bind-flags" to specify the binding flags Internally builder implement this
---  using GBinding objects. For more information see g_object_bind_property
+--  "bind-flags" to specify the binding flags. Internally builder implements
+--  this using GBinding objects. For more information see
+--  g_object_bind_property
 --
 --  Signal handlers are set up with the <signal> element. The "name" attribute
 --  specifies the name of the signal, and the "handler" attribute specifies the
@@ -146,9 +149,10 @@
 --  Sometimes it is necessary to refer to widgets which have implicitly been
 --  constructed by GTK+ as part of a composite widget, to set properties on
 --  them or to add further children (e.g. the Vbox of a Gtk.Dialog.Gtk_Dialog).
---  This can be achieved by setting the "internal-child" propery of the <child>
---  element to a true value. Note that GtkBuilder still requires an <object>
---  element for the internal child, even if it has already been constructed.
+--  This can be achieved by setting the "internal-child" property of the
+--  <child> element to a true value. Note that GtkBuilder still requires an
+--  <object> element for the internal child, even if it has already been
+--  constructed.
 --
 --  A number of widgets have different places where a child can be added (e.g.
 --  tabs vs. page content in notebooks). This can be reflected in a UI
@@ -159,9 +163,9 @@
 --  # A GtkBuilder UI Definition
 --
 --  |[ <interface> <object class="GtkDialog" id="dialog1"> <child
---  internal-child="vbox"> <object class="GtkVBox" id="vbox1"> <property
+--  internal-child="vbox"> <object class="GtkBox" id="vbox1"> <property
 --  name="border-width">10</property> <child internal-child="action_area">
---  <object class="GtkHButtonBox" id="hbuttonbox1"> <property
+--  <object class="GtkButtonBox" id="hbuttonbox1"> <property
 --  name="border-width">20</property> <child> <object class="GtkButton"
 --  id="ok_button"> <property name="label">gtk-ok</property> <property
 --  name="use-stock">TRUE</property> <signal name="clicked"
@@ -178,7 +182,8 @@
 --  objects.
 --
 --  Additionally, since 3.10 a special <template> tag has been added to the
---  format allowing one to define a widget class's components.
+--  format allowing one to define a widget class's components. See the
+--  [GtkWidget documentation][composite-templates] for details.
 --
 --  </description>
 
@@ -279,7 +284,7 @@ package Gtk.Builder is
       (Builder       : not null access Gtk_Builder_Record'Class;
        Resource_Path : UTF8_String);
    --  Builds the [GtkBuilder UI definition][BUILDER-UI] at Resource_Path.
-   --  If there is an error locating the resurce or parsing the description
+   --  If there is an error locating the resource or parsing the description,
    --  then the program will be aborted.
    --  Since: gtk+ 3.10
    --  Initialize_From_Resource does nothing if the object was already created
@@ -289,7 +294,7 @@ package Gtk.Builder is
    function Gtk_Builder_New_From_Resource
       (Resource_Path : UTF8_String) return Gtk_Builder;
    --  Builds the [GtkBuilder UI definition][BUILDER-UI] at Resource_Path.
-   --  If there is an error locating the resurce or parsing the description
+   --  If there is an error locating the resource or parsing the description,
    --  then the program will be aborted.
    --  Since: gtk+ 3.10
    --  "resource_path": a Gresource.Gresource resource path
@@ -304,8 +309,8 @@ package Gtk.Builder is
        Length  : Gssize);
    --  Builds the user interface described by String (in the [GtkBuilder UI
    --  definition][BUILDER-UI] format).
-   --  If String is null-terminated then Length should be -1. If Length is not
-   --  -1 then it is the length of String.
+   --  If String is null-terminated, then Length should be -1. If Length is
+   --  not -1, then it is the length of String.
    --  If there is an error parsing String then the program will be aborted.
    --  You should not attempt to parse user interface description from
    --  untrusted sources.
@@ -320,8 +325,8 @@ package Gtk.Builder is
        Length : Gssize) return Gtk_Builder;
    --  Builds the user interface described by String (in the [GtkBuilder UI
    --  definition][BUILDER-UI] format).
-   --  If String is null-terminated then Length should be -1. If Length is not
-   --  -1 then it is the length of String.
+   --  If String is null-terminated, then Length should be -1. If Length is
+   --  not -1, then it is the length of String.
    --  If there is an error parsing String then the program will be aborted.
    --  You should not attempt to parse user interface description from
    --  untrusted sources.
@@ -343,7 +348,7 @@ package Gtk.Builder is
    --  Parses a file containing a [GtkBuilder UI definition][BUILDER-UI] and
    --  merges it with the current contents of Builder.
    --  Most users will probably want to use Gtk.Builder.Gtk_New_From_File.
-   --  Upon errors 0 will be returned and Error will be assigned a
+   --  If an error occurs, 0 will be returned and Error will be assigned a
    --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or G_FILE_ERROR
    --  domain.
    --  It's not really reasonable to attempt to handle failures of this call.
@@ -357,13 +362,12 @@ package Gtk.Builder is
 
    function Add_From_Resource
       (Builder       : not null access Gtk_Builder_Record;
-       Resource_Path : UTF8_String;
-       Error         : access Glib.Error.GError) return Guint;
+       Resource_Path : UTF8_String) return Guint;
    --  Parses a resource file containing a [GtkBuilder UI
    --  definition][BUILDER-UI] and merges it with the current contents of
    --  Builder.
    --  Most users will probably want to use Gtk.Builder.Gtk_New_From_Resource.
-   --  Upon errors 0 will be returned and Error will be assigned a
+   --  If an error occurs, 0 will be returned and Error will be assigned a
    --  Gerror.Gerror from the GTK_BUILDER_ERROR, G_MARKUP_ERROR or
    --  G_RESOURCE_ERROR domain.
    --  It's not really reasonable to attempt to handle failures of this call.

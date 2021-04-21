@@ -22,6 +22,14 @@
 ------------------------------------------------------------------------------
 
 --  <description>
+--  > GtkUIManager is deprecated since GTK+ 3.10. To construct user interfaces
+--  > from XML definitions, you should use Gtk.Builder.Gtk_Builder,
+--  Glib.Menu_Model.Gmenu_Model, et al. To > work with actions, use
+--  Glib.Action.Gaction, Gtk.Actionable.Gtk_Actionable et al. These newer
+--  classes > support richer functionality and integration with various desktop
+--  shells. > It should be possible to migrate most/all functionality from
+--  GtkUIManager.
+--
 --  A Gtk.UI_Manager.Gtk_UI_Manager constructs a user interface (menus and
 --  toolbars) from one or more UI definitions, which reference actions from one
 --  or more action groups.
@@ -292,8 +300,7 @@ package Gtk.UI_Manager is
 
    function Add_UI_From_File
       (Self     : not null access Gtk_UI_Manager_Record;
-       Filename : UTF8_String;
-       Error    : access Glib.Error.GError) return Guint;
+       Filename : UTF8_String) return Guint;
    pragma Obsolescent (Add_UI_From_File);
    --  Parses a file containing a [UI definition][XML-UI] and merges it with
    --  the current contents of Manager.
@@ -303,8 +310,7 @@ package Gtk.UI_Manager is
 
    function Add_UI_From_Resource
       (Self          : not null access Gtk_UI_Manager_Record;
-       Resource_Path : UTF8_String;
-       Error         : access Glib.Error.GError) return Guint;
+       Resource_Path : UTF8_String) return Guint;
    pragma Obsolescent (Add_UI_From_Resource);
    --  Parses a resource file containing a [UI definition][XML-UI] and merges
    --  it with the current contents of Manager.

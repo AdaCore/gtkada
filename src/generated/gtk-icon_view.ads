@@ -35,6 +35,13 @@
 --  Gtk.Icon_View.Gtk_Icon_View will only display the first level of the tree
 --  and ignore the tree's branches.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> iconview.view ╰── [rubberband] ]|
+--
+--  GtkIconView has a single CSS node with name iconview and style class
+--  .view. For rubberband selection, a subnode with name rubberband is used.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -55,6 +62,7 @@ with Gtk.Cell_Renderer;       use Gtk.Cell_Renderer;
 with Gtk.Container;           use Gtk.Container;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Scrollable;          use Gtk.Scrollable;
+with Gtk.Style;               use Gtk.Style;
 with Gtk.Target_List;         use Gtk.Target_List;
 with Gtk.Tooltip;             use Gtk.Tooltip;
 with Gtk.Tree_Model;          use Gtk.Tree_Model;
@@ -848,6 +856,10 @@ package Gtk.Icon_View is
       (Cell_Layout : not null access Gtk_Icon_View_Record;
        Cell        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
        Position    : Glib.Gint);
+
+   function Get_Border
+      (Self   : not null access Gtk_Icon_View_Record;
+       Border : access Gtk.Style.Gtk_Border) return Boolean;
 
    function Get_Hadjustment
       (Self : not null access Gtk_Icon_View_Record)

@@ -23,11 +23,7 @@
 
 --  <description>
 --  GtkGrid is a container which arranges its child widgets in rows and
---  columns. It is a very similar to Gtk.Table.Gtk_Table and Gtk.Box.Gtk_Box,
---  but it consistently uses Gtk.Widget.Gtk_Widget's
---  Gtk.Widget.Gtk_Widget:margin and Gtk.Widget.Gtk_Widget:expand properties
---  instead of custom child properties, and it fully supports [height-for-width
---  geometry management][geometry-management].
+--  columns, with arbitrary positions and horizontal/vertical spans.
 --
 --  Children are added using Gtk.Grid.Attach. They can span multiple rows or
 --  columns. It is also possible to add a child next to an existing child,
@@ -37,7 +33,12 @@
 --  GtkGrid can be used like a Gtk.Box.Gtk_Box by just using
 --  Gtk.Container.Add, which will place children next to each other in the
 --  direction determined by the Gtk.Orientable.Gtk_Orientable:orientation
---  property.
+--  property. However, if all you want is a single row or column, then
+--  Gtk.Box.Gtk_Box is the preferred widget.
+--
+--  # CSS nodes
+--
+--  GtkGrid uses a single CSS node with name grid.
 --
 --  </description>
 

@@ -87,14 +87,14 @@ package body Gtk.Cell_Renderer_Accel is
      (System.Address, Cb_GObject_UTF8_String_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void, System.Address);
+     (Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void);
+     (System.Address, Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void, System.Address);
+     (Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void);
+     (System.Address, Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void);
 
    procedure Connect
       (Object  : access Gtk_Cell_Renderer_Accel_Record'Class;
@@ -105,7 +105,7 @@ package body Gtk.Cell_Renderer_Accel is
    procedure Connect
       (Object  : access Gtk_Cell_Renderer_Accel_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void;
+       Handler : Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void;
        After   : Boolean);
 
    procedure Connect_Slot
@@ -118,18 +118,18 @@ package body Gtk.Cell_Renderer_Accel is
    procedure Connect_Slot
       (Object  : access Gtk_Cell_Renderer_Accel_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void;
+       Handler : Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
-   procedure Marsh_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void
+   procedure Marsh_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void);
+   pragma Convention (C, Marsh_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void);
 
    procedure Marsh_GObject_UTF8_String_Void
       (Closure         : GClosure;
@@ -140,14 +140,14 @@ package body Gtk.Cell_Renderer_Accel is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_UTF8_String_Void);
 
-   procedure Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void
+   procedure Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void);
+   pragma Convention (C, Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void);
 
    procedure Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Void
       (Closure         : GClosure;
@@ -184,14 +184,14 @@ package body Gtk.Cell_Renderer_Accel is
    procedure Connect
       (Object  : access Gtk_Cell_Renderer_Accel_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void;
+       Handler : Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void;
        After   : Boolean)
    is
    begin
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void'Access,
+         Marshaller  => Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -224,7 +224,7 @@ package body Gtk.Cell_Renderer_Accel is
    procedure Connect_Slot
       (Object  : access Gtk_Cell_Renderer_Accel_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void;
+       Handler : Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
    is
@@ -232,17 +232,17 @@ package body Gtk.Cell_Renderer_Accel is
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void'Access,
+         Marshaller  => Marsh_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
-   -------------------------------------------------------------------------
-   -- Marsh_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void --
-   -------------------------------------------------------------------------
+   ------------------------------------------------------------------
+   -- Marsh_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void --
+   ------------------------------------------------------------------
 
-   procedure Marsh_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void
+   procedure Marsh_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -251,12 +251,12 @@ package body Gtk.Cell_Renderer_Accel is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
-      H (Obj, Unchecked_To_UTF8_String (Params, 1), Unchecked_To_Gdk_Key_Type (Params, 2), Unchecked_To_Gdk_Modifier_Type (Params, 3), Unchecked_To_Guint (Params, 4));
+      H (Obj, Unchecked_To_UTF8_String (Params, 1), Unchecked_To_Guint (Params, 2), Unchecked_To_Gdk_Modifier_Type (Params, 3), Unchecked_To_Guint (Params, 4));
       exception when E : others => Process_Exception (E);
-   end Marsh_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void;
+   end Marsh_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void;
 
    ------------------------------------
    -- Marsh_GObject_UTF8_String_Void --
@@ -278,11 +278,11 @@ package body Gtk.Cell_Renderer_Accel is
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_UTF8_String_Void;
 
-   -----------------------------------------------------------------------------------------
-   -- Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void --
-   -----------------------------------------------------------------------------------------
+   ----------------------------------------------------------------------------------
+   -- Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void --
+   ----------------------------------------------------------------------------------
 
-   procedure Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void
+   procedure Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -291,12 +291,12 @@ package body Gtk.Cell_Renderer_Accel is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Cell_Renderer_Accel := Gtk_Cell_Renderer_Accel (Unchecked_To_Object (Params, 0));
    begin
-      H (Obj, Unchecked_To_UTF8_String (Params, 1), Unchecked_To_Gdk_Key_Type (Params, 2), Unchecked_To_Gdk_Modifier_Type (Params, 3), Unchecked_To_Guint (Params, 4));
+      H (Obj, Unchecked_To_UTF8_String (Params, 1), Unchecked_To_Guint (Params, 2), Unchecked_To_Gdk_Modifier_Type (Params, 3), Unchecked_To_Guint (Params, 4));
       exception when E : others => Process_Exception (E);
-   end Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void;
+   end Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void;
 
    ----------------------------------------------------
    -- Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Void --
@@ -351,7 +351,7 @@ package body Gtk.Cell_Renderer_Accel is
 
    procedure On_Accel_Edited
       (Self  : not null access Gtk_Cell_Renderer_Accel_Record;
-       Call  : Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void;
+       Call  : Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void;
        After : Boolean := False)
    is
    begin
@@ -364,7 +364,7 @@ package body Gtk.Cell_Renderer_Accel is
 
    procedure On_Accel_Edited
       (Self  : not null access Gtk_Cell_Renderer_Accel_Record;
-       Call  : Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void;
+       Call  : Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is

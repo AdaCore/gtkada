@@ -272,6 +272,19 @@ package body Gtk.Text_View is
       return Internal (Get_Object (View), The_Type);
    end Get_Border_Window_Size;
 
+   -----------------------
+   -- Get_Bottom_Margin --
+   -----------------------
+
+   function Get_Bottom_Margin
+      (View : not null access Gtk_Text_View_Record) return Glib.Gint
+   is
+      function Internal (View : System.Address) return Glib.Gint;
+      pragma Import (C, Internal, "gtk_text_view_get_bottom_margin");
+   begin
+      return Internal (Get_Object (View));
+   end Get_Bottom_Margin;
+
    ----------------
    -- Get_Buffer --
    ----------------
@@ -396,46 +409,58 @@ package body Gtk.Text_View is
    -- Get_Iter_At_Location --
    --------------------------
 
-   procedure Get_Iter_At_Location
+   function Get_Iter_At_Location
       (View : not null access Gtk_Text_View_Record;
-       Iter : out Gtk.Text_Iter.Gtk_Text_Iter;
+       Iter : access Gtk.Text_Iter.Gtk_Text_Iter;
        X    : Glib.Gint;
-       Y    : Glib.Gint)
+       Y    : Glib.Gint) return Boolean
    is
-      procedure Internal
-         (View : System.Address;
-          Iter : out Gtk.Text_Iter.Gtk_Text_Iter;
-          X    : Glib.Gint;
-          Y    : Glib.Gint);
+      function Internal
+         (View     : System.Address;
+          Acc_Iter : access Gtk.Text_Iter.Gtk_Text_Iter;
+          X        : Glib.Gint;
+          Y        : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_view_get_iter_at_location");
-      Tmp_Iter : aliased Gtk.Text_Iter.Gtk_Text_Iter;
+      Acc_Iter     : aliased Gtk.Text_Iter.Gtk_Text_Iter;
+      Tmp_Acc_Iter : aliased Gtk.Text_Iter.Gtk_Text_Iter;
+      Tmp_Return   : Glib.Gboolean;
    begin
-      Internal (Get_Object (View), Tmp_Iter, X, Y);
-      Iter := Tmp_Iter;
+      Tmp_Return := Internal (Get_Object (View), Tmp_Acc_Iter'Access, X, Y);
+      Acc_Iter := Tmp_Acc_Iter;
+      Iter.all := Acc_Iter;
+      return Tmp_Return /= 0;
    end Get_Iter_At_Location;
 
    --------------------------
    -- Get_Iter_At_Position --
    --------------------------
 
-   procedure Get_Iter_At_Position
+   function Get_Iter_At_Position
       (View     : not null access Gtk_Text_View_Record;
-       Iter     : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Trailing : out Glib.Gint;
+       Iter     : access Gtk.Text_Iter.Gtk_Text_Iter;
+       Trailing : access Glib.Gint;
        X        : Glib.Gint;
-       Y        : Glib.Gint)
+       Y        : Glib.Gint) return Boolean
    is
-      procedure Internal
-         (View     : System.Address;
-          Iter     : out Gtk.Text_Iter.Gtk_Text_Iter;
-          Trailing : out Glib.Gint;
-          X        : Glib.Gint;
-          Y        : Glib.Gint);
+      function Internal
+         (View         : System.Address;
+          Acc_Iter     : access Gtk.Text_Iter.Gtk_Text_Iter;
+          Acc_Trailing : access Glib.Gint;
+          X            : Glib.Gint;
+          Y            : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_view_get_iter_at_position");
-      Tmp_Iter : aliased Gtk.Text_Iter.Gtk_Text_Iter;
+      Acc_Iter     : aliased Gtk.Text_Iter.Gtk_Text_Iter;
+      Acc_Trailing : aliased Glib.Gint;
+      Tmp_Acc_Iter : aliased Gtk.Text_Iter.Gtk_Text_Iter;
+      Tmp_Return   : Glib.Gboolean;
    begin
-      Internal (Get_Object (View), Tmp_Iter, Trailing, X, Y);
-      Iter := Tmp_Iter;
+      Tmp_Return := Internal (Get_Object (View), Tmp_Acc_Iter'Access, Acc_Trailing'Access, X, Y);
+      Acc_Iter := Tmp_Acc_Iter;
+      Iter.all := Acc_Iter;
+      if Trailing /= null then
+         Trailing.all := Acc_Trailing;
+      end if;
+      return Tmp_Return /= 0;
    end Get_Iter_At_Position;
 
    -----------------------
@@ -527,6 +552,19 @@ package body Gtk.Text_View is
    end Get_Line_Yrange;
 
    -------------------
+   -- Get_Monospace --
+   -------------------
+
+   function Get_Monospace
+      (View : not null access Gtk_Text_View_Record) return Boolean
+   is
+      function Internal (View : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_text_view_get_monospace");
+   begin
+      return Internal (Get_Object (View)) /= 0;
+   end Get_Monospace;
+
+   -------------------
    -- Get_Overwrite --
    -------------------
 
@@ -604,6 +642,19 @@ package body Gtk.Text_View is
    begin
       return From_Object (Internal (Get_Object (View)));
    end Get_Tabs;
+
+   --------------------
+   -- Get_Top_Margin --
+   --------------------
+
+   function Get_Top_Margin
+      (View : not null access Gtk_Text_View_Record) return Glib.Gint
+   is
+      function Internal (View : System.Address) return Glib.Gint;
+      pragma Import (C, Internal, "gtk_text_view_get_top_margin");
+   begin
+      return Internal (Get_Object (View));
+   end Get_Top_Margin;
 
    ----------------------
    -- Get_Visible_Rect --
@@ -752,6 +803,19 @@ package body Gtk.Text_View is
       return Internal (Get_Object (View)) /= 0;
    end Place_Cursor_Onscreen;
 
+   ------------------------
+   -- Reset_Cursor_Blink --
+   ------------------------
+
+   procedure Reset_Cursor_Blink
+      (View : not null access Gtk_Text_View_Record)
+   is
+      procedure Internal (View : System.Address);
+      pragma Import (C, Internal, "gtk_text_view_reset_cursor_blink");
+   begin
+      Internal (Get_Object (View));
+   end Reset_Cursor_Blink;
+
    ----------------------
    -- Reset_Im_Context --
    ----------------------
@@ -858,6 +922,20 @@ package body Gtk.Text_View is
    begin
       Internal (Get_Object (View), The_Type, Size);
    end Set_Border_Window_Size;
+
+   -----------------------
+   -- Set_Bottom_Margin --
+   -----------------------
+
+   procedure Set_Bottom_Margin
+      (View          : not null access Gtk_Text_View_Record;
+       Bottom_Margin : Glib.Gint)
+   is
+      procedure Internal (View : System.Address; Bottom_Margin : Glib.Gint);
+      pragma Import (C, Internal, "gtk_text_view_set_bottom_margin");
+   begin
+      Internal (Get_Object (View), Bottom_Margin);
+   end Set_Bottom_Margin;
 
    ----------------
    -- Set_Buffer --
@@ -978,6 +1056,20 @@ package body Gtk.Text_View is
    end Set_Left_Margin;
 
    -------------------
+   -- Set_Monospace --
+   -------------------
+
+   procedure Set_Monospace
+      (View      : not null access Gtk_Text_View_Record;
+       Monospace : Boolean)
+   is
+      procedure Internal (View : System.Address; Monospace : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_text_view_set_monospace");
+   begin
+      Internal (Get_Object (View), Boolean'Pos (Monospace));
+   end Set_Monospace;
+
+   -------------------
    -- Set_Overwrite --
    -------------------
 
@@ -1067,6 +1159,20 @@ package body Gtk.Text_View is
       Internal (Get_Object (View), Get_Object (Tabs));
    end Set_Tabs;
 
+   --------------------
+   -- Set_Top_Margin --
+   --------------------
+
+   procedure Set_Top_Margin
+      (View       : not null access Gtk_Text_View_Record;
+       Top_Margin : Glib.Gint)
+   is
+      procedure Internal (View : System.Address; Top_Margin : Glib.Gint);
+      pragma Import (C, Internal, "gtk_text_view_set_top_margin");
+   begin
+      Internal (Get_Object (View), Top_Margin);
+   end Set_Top_Margin;
+
    -------------------
    -- Set_Wrap_Mode --
    -------------------
@@ -1122,6 +1228,28 @@ package body Gtk.Text_View is
    begin
       Internal (Get_Object (View), Win, Window_X, Window_Y, Buffer_X, Buffer_Y);
    end Window_To_Buffer_Coords;
+
+   ----------------
+   -- Get_Border --
+   ----------------
+
+   function Get_Border
+      (Self   : not null access Gtk_Text_View_Record;
+       Border : access Gtk.Style.Gtk_Border) return Boolean
+   is
+      function Internal
+         (Self       : System.Address;
+          Acc_Border : access Gtk.Style.Gtk_Border) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_scrollable_get_border");
+      Acc_Border     : aliased Gtk.Style.Gtk_Border;
+      Tmp_Acc_Border : aliased Gtk.Style.Gtk_Border;
+      Tmp_Return     : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Acc_Border'Access);
+      Acc_Border := Tmp_Acc_Border;
+      Border.all := Acc_Border;
+      return Tmp_Return /= 0;
+   end Get_Border;
 
    ---------------------
    -- Get_Hadjustment --
@@ -1270,6 +1398,16 @@ package body Gtk.Text_View is
      (System.Address, Cb_GObject_Gtk_Delete_Type_Gint_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Text_View_UTF8_String_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
      (System.Address, Cb_Gtk_Text_View_UTF8_String_Void);
@@ -1334,6 +1472,12 @@ package body Gtk.Text_View is
    procedure Connect
       (Object  : access Gtk_Text_View_Record'Class;
        C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Text_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
        Handler : Cb_Gtk_Text_View_UTF8_String_Void;
        After   : Boolean);
 
@@ -1372,6 +1516,13 @@ package body Gtk.Text_View is
       (Object  : access Gtk_Text_View_Record'Class;
        C_Name  : Glib.Signal_Name;
        Handler : Cb_GObject_Gtk_Delete_Type_Gint_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
@@ -1446,6 +1597,15 @@ package body Gtk.Text_View is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Gtk_Scroll_Step_Gint_Void);
 
+   procedure Marsh_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean);
+
    procedure Marsh_GObject_Gtk_Widget_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -1509,6 +1669,15 @@ package body Gtk.Text_View is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_Gtk_Text_View_Gtk_Scroll_Step_Gint_Void);
 
+   procedure Marsh_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean);
+
    procedure Marsh_Gtk_Text_View_Gtk_Widget_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -1570,6 +1739,25 @@ package body Gtk.Text_View is
         (Object      => Object,
          C_Name      => C_Name,
          Marshaller  => Marsh_Gtk_Text_View_Gtk_Delete_Type_Gint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Text_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -1706,6 +1894,27 @@ package body Gtk.Text_View is
         (Object      => Object,
          C_Name      => C_Name,
          Marshaller  => Marsh_GObject_Gtk_Delete_Type_Gint_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Text_View_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
@@ -1896,6 +2105,27 @@ package body Gtk.Text_View is
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Scroll_Step_Gint_Void;
 
+   -----------------------------------------------------------------------------------------------
+   -- Marsh_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean --
+   -----------------------------------------------------------------------------------------------
+
+   procedure Marsh_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Text_Extend_Selection (Params, 1), Unchecked_To_Gtk_Text_Iter (Params, 2), Unchecked_To_Gtk_Text_Iter (Params, 3), Unchecked_To_Gtk_Text_Iter (Params, 4));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
+
    -----------------------------------
    -- Marsh_GObject_Gtk_Widget_Void --
    -----------------------------------
@@ -2035,6 +2265,27 @@ package body Gtk.Text_View is
       H (Obj, Unchecked_To_Gtk_Scroll_Step (Params, 1), Unchecked_To_Gint (Params, 2));
       exception when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_View_Gtk_Scroll_Step_Gint_Void;
+
+   -----------------------------------------------------------------------------------------------------
+   -- Marsh_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean --
+   -----------------------------------------------------------------------------------------------------
+
+   procedure Marsh_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Text_View := Gtk_Text_View (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Text_Extend_Selection (Params, 1), Unchecked_To_Gtk_Text_Iter (Params, 2), Unchecked_To_Gtk_Text_Iter (Params, 3), Unchecked_To_Gtk_Text_Iter (Params, 4));
+   begin
+      Set_Value (Return_Value, V'Address);
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
 
    -----------------------------------------
    -- Marsh_Gtk_Text_View_Gtk_Widget_Void --
@@ -2205,6 +2456,33 @@ package body Gtk.Text_View is
    end On_Delete_From_Cursor;
 
    -------------------------
+   -- On_Extend_Selection --
+   -------------------------
+
+   procedure On_Extend_Selection
+      (Self  : not null access Gtk_Text_View_Record;
+       Call  : Cb_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "extend-selection" & ASCII.NUL, Call, After);
+   end On_Extend_Selection;
+
+   -------------------------
+   -- On_Extend_Selection --
+   -------------------------
+
+   procedure On_Extend_Selection
+      (Self  : not null access Gtk_Text_View_Record;
+       Call  : Cb_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "extend-selection" & ASCII.NUL, Call, After, Slot);
+   end On_Extend_Selection;
+
+   -------------------------
    -- On_Insert_At_Cursor --
    -------------------------
 
@@ -2230,6 +2508,33 @@ package body Gtk.Text_View is
    begin
       Connect_Slot (Self, "insert-at-cursor" & ASCII.NUL, Call, After, Slot);
    end On_Insert_At_Cursor;
+
+   ---------------------
+   -- On_Insert_Emoji --
+   ---------------------
+
+   procedure On_Insert_Emoji
+      (Self  : not null access Gtk_Text_View_Record;
+       Call  : Cb_Gtk_Text_View_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "insert-emoji" & ASCII.NUL, Call, After);
+   end On_Insert_Emoji;
+
+   ---------------------
+   -- On_Insert_Emoji --
+   ---------------------
+
+   procedure On_Insert_Emoji
+      (Self  : not null access Gtk_Text_View_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "insert-emoji" & ASCII.NUL, Call, After, Slot);
+   end On_Insert_Emoji;
 
    --------------------
    -- On_Move_Cursor --

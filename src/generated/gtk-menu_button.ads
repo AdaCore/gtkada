@@ -32,7 +32,7 @@
 --  If no widget is explicitely added to the Gtk.Menu_Button.Gtk_Menu_Button, a
 --  Gtk.Image.Gtk_Image is automatically created, using an arrow image oriented
 --  according to Gtk.Menu_Button.Gtk_Menu_Button:direction or the generic
---  "view-context-menu" icon if the direction is not set.
+--  "open-menu-symbolic" icon if the direction is not set.
 --
 --  The positioning of the popup is determined by the
 --  Gtk.Menu_Button.Gtk_Menu_Button:direction property of the menu button.
@@ -102,6 +102,11 @@
 --  - valign = end
 --
 --  ![](right-end.png)
+--
+--  # CSS nodes
+--
+--  GtkMenuButton has a single CSS node with name button. To differentiate it
+--  from a plain Gtk.Button.Gtk_Button, it gets the .popup style class.
 --
 --  </description>
 
@@ -202,17 +207,20 @@ package Gtk.Menu_Button is
       (Self       : not null access Gtk_Menu_Button_Record;
        Menu_Model : access Glib.Menu_Model.Gmenu_Model_Record'Class);
    --  Sets the Glib.Menu_Model.Gmenu_Model from which the popup will be
-   --  constructed, or null to disable the button.
+   --  constructed, or null to dissociate any existing menu model and disable
+   --  the button.
    --  Depending on the value of Gtk.Menu_Button.Gtk_Menu_Button:use-popover,
    --  either a Gtk.Menu.Gtk_Menu will be created with
    --  Gtk.Menu.Gtk_New_From_Model, or a Gtk.Popover.Gtk_Popover with
    --  Gtk.Popover.Gtk_New_From_Model. In either case, actions will be
    --  connected as documented for these functions.
    --  If Gtk.Menu_Button.Gtk_Menu_Button:popup or
-   --  Gtk.Menu_Button.Gtk_Menu_Button:popover are already set, their content
-   --  will be lost and replaced by the newly created popup.
+   --  Gtk.Menu_Button.Gtk_Menu_Button:popover are already set, those widgets
+   --  are dissociated from the Menu_Button, and those properties are set to
+   --  null.
    --  Since: gtk+ 3.6
-   --  "menu_model": a Glib.Menu_Model.Gmenu_Model
+   --  "menu_model": a Glib.Menu_Model.Gmenu_Model, or null to unset and
+   --  disable the button
 
    function Get_Popover
       (Self : not null access Gtk_Menu_Button_Record)
@@ -225,12 +233,15 @@ package Gtk.Menu_Button is
    procedure Set_Popover
       (Self    : not null access Gtk_Menu_Button_Record;
        Popover : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Sets the Gtk.Popover.Gtk_Popover that will be popped up when the button
-   --  is clicked, or null to disable the button. If
-   --  Gtk.Menu_Button.Gtk_Menu_Button:menu-model or
-   --  Gtk.Menu_Button.Gtk_Menu_Button:popup are set, they will be set to null.
+   --  Sets the Gtk.Popover.Gtk_Popover that will be popped up when the
+   --  Menu_Button is clicked, or null to dissociate any existing popover and
+   --  disable the button.
+   --  If Gtk.Menu_Button.Gtk_Menu_Button:menu-model or
+   --  Gtk.Menu_Button.Gtk_Menu_Button:popup are set, those objects are
+   --  dissociated from the Menu_Button, and those properties are set to null.
    --  Since: gtk+ 3.12
-   --  "popover": a Gtk.Popover.Gtk_Popover
+   --  "popover": a Gtk.Popover.Gtk_Popover, or null to unset and disable the
+   --  button
 
    function Get_Popup
       (Self : not null access Gtk_Menu_Button_Record)
@@ -242,13 +253,14 @@ package Gtk.Menu_Button is
    procedure Set_Popup
       (Self : not null access Gtk_Menu_Button_Record;
        Menu : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Sets the Gtk.Menu.Gtk_Menu that will be popped up when the button is
-   --  clicked, or null to disable the button. If
-   --  Gtk.Menu_Button.Gtk_Menu_Button:menu-model or
-   --  Gtk.Menu_Button.Gtk_Menu_Button:popover are set, they will be set to
-   --  null.
+   --  Sets the Gtk.Menu.Gtk_Menu that will be popped up when the Menu_Button
+   --  is clicked, or null to dissociate any existing menu and disable the
+   --  button.
+   --  If Gtk.Menu_Button.Gtk_Menu_Button:menu-model or
+   --  Gtk.Menu_Button.Gtk_Menu_Button:popover are set, those objects are
+   --  dissociated from the Menu_Button, and those properties are set to null.
    --  Since: gtk+ 3.6
-   --  "menu": a Gtk.Menu.Gtk_Menu
+   --  "menu": a Gtk.Menu.Gtk_Menu, or null to unset and disable the button
 
    function Get_Use_Popover
       (Self : not null access Gtk_Menu_Button_Record) return Boolean;
@@ -277,7 +289,7 @@ package Gtk.Menu_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Menu_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Menu_Button_Record)

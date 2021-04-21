@@ -36,8 +36,19 @@
 --  Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item:draw is set to FALSE, the
 --  effect is to force all following items to the end of the toolbar.
 --
+--  By default, a toolbar can be shrunk, upon which it will add an arrow
+--  button to show an overflow menu offering access to any
+--  Gtk.Tool_Item.Gtk_Tool_Item child that has a proxy menu item. To disable
+--  this and request enough size for all children, call
+--  Gtk.Toolbar.Set_Show_Arrow to set Gtk.Toolbar.Gtk_Toolbar:show-arrow to
+--  False.
+--
 --  Creating a context menu for the toolbar can be done by connecting to the
 --  Gtk.Toolbar.Gtk_Toolbar::popup-context-menu signal.
+--
+--  # CSS nodes
+--
+--  GtkToolbar has a single CSS node with name toolbar.
 --
 --  </description>
 
@@ -147,9 +158,14 @@ package Gtk.Toolbar is
    procedure Set_Show_Arrow
       (Toolbar    : not null access Gtk_Toolbar_Record;
        Show_Arrow : Boolean := True);
-   --  Sets whether to show an overflow menu when Toolbar doesn't have room
-   --  for all items on it. If True, items that there are not room are
-   --  available through an overflow menu.
+   --  Sets whether to show an overflow menu when Toolbar isn't allocated
+   --  enough size to show all of its items. If True, items which can't fit in
+   --  Toolbar, and which have a proxy menu item set by
+   --  Gtk.Tool_Item.Set_Proxy_Menu_Item or
+   --  Gtk.Tool_Item.Gtk_Tool_Item::create-menu-proxy, will be available in an
+   --  overflow menu, which can be opened by an added arrow button. If False,
+   --  Toolbar will request enough size to fit all of its child items without
+   --  any overflow.
    --  Since: gtk+ 2.4
    --  "show_arrow": Whether to show an overflow menu
 

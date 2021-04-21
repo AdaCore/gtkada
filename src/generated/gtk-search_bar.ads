@@ -38,10 +38,14 @@
 --  as your search entry using Gtk.Search_Bar.Connect_Entry. The following
 --  example shows you how to create a more complex search entry.
 --
+--  # CSS nodes
+--
+--  GtkSearchBar has a single CSS node with name searchbar.
+--
 --  ## Creating a search bar
 --
 --  [A simple
---  example](https://git.gnome.org/browse/gtk+/tree/examples/search-bar.c)
+--  example](https://gitlab.gnome.org/GNOME/gtk/blob/gtk-3-24/examples/search-bar.c)
 --
 --  </description>
 
@@ -138,8 +142,11 @@ package Gtk.Search_Bar is
    --  *widget, GdkEvent *event, gpointer user_data) { GtkSearchBar *bar =
    --  GTK_SEARCH_BAR (user_data); return gtk_search_bar_handle_event (bar,
    --  event); }
+   --  static void create_toplevel (void) { GtkWidget *window = gtk_window_new
+   --  (GTK_WINDOW_TOPLEVEL); GtkWindow *search_bar = gtk_search_bar_new ();
+   --  // Add more widgets to the window...
    --  g_signal_connect (window, "key-press-event", G_CALLBACK
-   --  (on_key_press_event), search_bar); ]|
+   --  (on_key_press_event), search_bar); } ]|
    --  Since: gtk+ 3.10
    --  "event": a Gdk.Event.Gdk_Event containing key press events
 

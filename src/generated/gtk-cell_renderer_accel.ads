@@ -112,28 +112,28 @@ package Gtk.Cell_Renderer_Accel is
        After : Boolean := False);
    --  Gets emitted when the user has removed the accelerator.
 
-   type Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void is not null access procedure
+   type Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void is not null access procedure
      (Self             : access Gtk_Cell_Renderer_Accel_Record'Class;
       Path_String      : UTF8_String;
-      Accel_Key        : Gdk.Types.Gdk_Key_Type;
+      Accel_Key        : Guint;
       Accel_Mods       : Gdk.Types.Gdk_Modifier_Type;
       Hardware_Keycode : Guint);
 
-   type Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void is not null access procedure
+   type Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void is not null access procedure
      (Self             : access Glib.Object.GObject_Record'Class;
       Path_String      : UTF8_String;
-      Accel_Key        : Gdk.Types.Gdk_Key_Type;
+      Accel_Key        : Guint;
       Accel_Mods       : Gdk.Types.Gdk_Modifier_Type;
       Hardware_Keycode : Guint);
 
    Signal_Accel_Edited : constant Glib.Signal_Name := "accel-edited";
    procedure On_Accel_Edited
       (Self  : not null access Gtk_Cell_Renderer_Accel_Record;
-       Call  : Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void;
+       Call  : Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void;
        After : Boolean := False);
    procedure On_Accel_Edited
       (Self  : not null access Gtk_Cell_Renderer_Accel_Record;
-       Call  : Cb_GObject_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Guint_Void;
+       Call  : Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Gets emitted when the user has selected a new accelerator.

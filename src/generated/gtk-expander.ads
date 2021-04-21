@@ -41,19 +41,19 @@
 --  its expansion state. You should watch this property with a signal
 --  connection as follows:
 --
---  |[<!-- language="C" --> expander = gtk_expander_new_with_mnemonic ("_More
---  Options"); g_signal_connect (expander, "notify::expanded", G_CALLBACK
---  (expander_callback), NULL);
---
---  ...
---
---  static void expander_callback (GObject *object, GParamSpec *param_spec,
---  gpointer user_data) { GtkExpander *expander;
+--  |[<!-- language="C" --> static void expander_callback (GObject *object,
+--  GParamSpec *param_spec, gpointer user_data) { GtkExpander *expander;
 --
 --  expander = GTK_EXPANDER (object);
 --
 --  if (gtk_expander_get_expanded (expander)) { // Show or create widgets }
---  else { // Hide or destroy widgets } } ]|
+--  else { // Hide or destroy widgets } }
+--
+--  static void create_expander (void) { GtkWidget *expander =
+--  gtk_expander_new_with_mnemonic ("_More Options"); g_signal_connect
+--  (expander, "notify::expanded", G_CALLBACK (expander_callback), NULL);
+--
+--  // ... } ]|
 --
 --  # GtkExpander as GtkBuildable
 --
@@ -66,6 +66,16 @@
 --  class="GtkExpander"> <child type="label"> <object class="GtkLabel"
 --  id="expander-label"/> </child> <child> <object class="GtkEntry"
 --  id="expander-content"/> </child> </object> ]|
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> expander ├── title │ ├── arrow │ ╰── <label
+--  widget> ╰── <child> ]|
+--
+--  GtkExpander has three CSS nodes, the main node with the name expander, a
+--  subnode with name title and node below it with name arrow. The arrow of an
+--  expander that is showing its child gets the :checked pseudoclass added to
+--  it.
 --
 --  </description>
 --  <screenshot>gtk-expanded</screenshot>
@@ -89,17 +99,19 @@ package Gtk.Expander is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (Expander : out Gtk_Expander; Label : UTF8_String);
+   procedure Gtk_New
+      (Expander : out Gtk_Expander;
+       Label    : UTF8_String := "");
    procedure Initialize
       (Expander : not null access Gtk_Expander_Record'Class;
-       Label    : UTF8_String);
+       Label    : UTF8_String := "");
    --  Creates a new expander using Label as the text of the label.
    --  Since: gtk+ 2.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
    --  "label": the text of the label
 
-   function Gtk_Expander_New (Label : UTF8_String) return Gtk_Expander;
+   function Gtk_Expander_New (Label : UTF8_String := "") return Gtk_Expander;
    --  Creates a new expander using Label as the text of the label.
    --  Since: gtk+ 2.4
    --  "label": the text of the label
@@ -189,6 +201,7 @@ package Gtk.Expander is
        Label_Fill : Boolean);
    --  Sets whether the label widget should fill all available horizontal
    --  space allocated to Expander.
+   --  Note that this function has no effect since 3.20.
    --  Since: gtk+ 2.22
    --  "label_fill": True if the label should should fill all available
    --  horizontal space
@@ -224,15 +237,19 @@ package Gtk.Expander is
 
    function Get_Spacing
       (Expander : not null access Gtk_Expander_Record) return Glib.Gint;
+   pragma Obsolescent (Get_Spacing);
    --  Gets the value set by Gtk.Expander.Set_Spacing.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.20, 1
 
    procedure Set_Spacing
       (Expander : not null access Gtk_Expander_Record;
        Spacing  : Glib.Gint);
+   pragma Obsolescent (Set_Spacing);
    --  Sets the spacing field of Expander, which is the number of pixels to
    --  place between expander and the child.
    --  Since: gtk+ 2.4
+   --  Deprecated since 3.20, 1
    --  "spacing": distance between the expander and child in pixels
 
    function Get_Use_Markup
@@ -275,6 +292,9 @@ package Gtk.Expander is
    Label_Property : constant Glib.Properties.Property_String;
 
    Label_Fill_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the label widget should fill all available horizontal space.
+   --
+   --  Note that this property is ignored since 3.20.
 
    Label_Widget_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
@@ -284,6 +304,8 @@ package Gtk.Expander is
    --  widget containing the expander upon expanding and collapsing.
 
    Spacing_Property : constant Glib.Properties.Property_Int;
+   --  Space to put between the label and the child when the expander is
+   --  expanded.
 
    Use_Markup_Property : constant Glib.Properties.Property_Boolean;
 

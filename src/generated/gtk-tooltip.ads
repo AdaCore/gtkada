@@ -117,7 +117,7 @@ package Gtk.Tooltip is
    --  null, the image will be hidden.
    --  Since: gtk+ 2.20
    --  "gicon": a Glib.G_Icon.G_Icon representing the icon, or null
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Set_Icon_From_Icon_Name
       (Self      : not null access Gtk_Tooltip_Record;
@@ -128,7 +128,7 @@ package Gtk.Tooltip is
    --  Icon_Name is null, the image will be hidden.
    --  Since: gtk+ 2.14
    --  "icon_name": an icon name, or null
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Set_Icon_From_Stock
       (Self     : not null access Gtk_Tooltip_Record;
@@ -141,7 +141,7 @@ package Gtk.Tooltip is
    --  Since: gtk+ 2.12
    --  Deprecated since 3.10, 1
    --  "stock_id": a stock id, or null
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Set_Markup
       (Self   : not null access Gtk_Tooltip_Record;

@@ -29,6 +29,11 @@
 --  To start the animation, use Gtk.Spinner.Start, to stop it use
 --  Gtk.Spinner.Stop.
 --
+--  # CSS nodes
+--
+--  GtkSpinner has a single CSS node with the name spinner. When the animation
+--  is active, the :checked pseudoclass is added to this node.
+--
 --  </description>
 --  <group>Ornaments</group>
 

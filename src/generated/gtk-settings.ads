@@ -36,14 +36,14 @@
 --  provide default values for settings by installing a `settings.ini` file
 --  next to their `gtk.css` file.
 --
---  Applications can override system-wide settings with
---  Gtk.Settings.Set_String_Property, Gtk.Settings.Set_Long_Property, etc. This
---  should be restricted to special cases though; GtkSettings are not meant as
---  an application configuration facility. When doing so, you need to be aware
---  that settings that are specific to individual widgets may not be available
---  before the widget type has been realized at least once. The following
---  example demonstrates a way to do this: |[<!-- language="C" --> gtk_init
---  (&argc, &argv);
+--  Applications can override system-wide settings by setting the property of
+--  the GtkSettings object with g_object_set. This should be restricted to
+--  special cases though; GtkSettings are not meant as an application
+--  configuration facility. When doing so, you need to be aware that settings
+--  that are specific to individual widgets may not be available before the
+--  widget type has been realized at least once. The following example
+--  demonstrates a way to do this: |[<!-- language="C" --> gtk_init (&argc,
+--  &argv);
 --
 --  // make sure the type is realized g_type_class_unref (g_type_class_ref
 --  (GTK_TYPE_IMAGE_MENU_ITEM));
@@ -85,23 +85,38 @@ package Gtk.Settings is
    -- Methods --
    -------------
 
+   procedure Reset_Property
+      (Self : not null access Gtk_Settings_Record;
+       Name : UTF8_String);
+   --  Undoes the effect of calling g_object_set to install an
+   --  application-specific value for a setting. After this call, the setting
+   --  will again follow the session-wide value for this setting.
+   --  Since: gtk+ 3.20
+   --  "name": the name of the setting to reset
+
    procedure Set_Double_Property
       (Self     : not null access Gtk_Settings_Record;
        Name     : UTF8_String;
        V_Double : Gdouble;
        Origin   : UTF8_String);
+   pragma Obsolescent (Set_Double_Property);
+   --  Deprecated since 3.16, 1
 
    procedure Set_Long_Property
       (Self   : not null access Gtk_Settings_Record;
        Name   : UTF8_String;
        V_Long : Glong;
        Origin : UTF8_String);
+   pragma Obsolescent (Set_Long_Property);
+   --  Deprecated since 3.16, 1
 
    procedure Set_String_Property
       (Self     : not null access Gtk_Settings_Record;
        Name     : UTF8_String;
        V_String : UTF8_String;
        Origin   : UTF8_String);
+   pragma Obsolescent (Set_String_Property);
+   --  Deprecated since 3.16, 1
 
    ----------------------
    -- GtkAda additions --
@@ -151,6 +166,8 @@ package Gtk.Settings is
    --  "screen": a Gdk.Screen.Gdk_Screen.
 
    procedure Install_Property (Pspec : in out Glib.Param_Spec);
+   pragma Obsolescent (Install_Property);
+   --  Deprecated since 3.16, 1
 
    ----------------
    -- Properties --
@@ -190,6 +207,7 @@ package Gtk.Settings is
    --  user presses the mnemonic activator.
 
    Gtk_Button_Images_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether images should be shown on buttons
 
    Gtk_Can_Change_Accels_Property : constant Glib.Properties.Property_Boolean;
    --  Whether menu accelerators can be changed by pressing a key over the
@@ -210,6 +228,8 @@ package Gtk.Settings is
    --
    --  Starting with GTK+ 2.12, the entries can alternatively be separated by
    --  ';' instead of newlines: |[ name1: color1; name2: color2; ... ]|
+
+   Gtk_Cursor_Aspect_Ratio_Property : constant Glib.Properties.Property_Float;
 
    Gtk_Cursor_Blink_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the cursor should blink.
@@ -321,6 +341,8 @@ package Gtk.Settings is
    --  Name of the GtkFileChooser backend to use by default.
 
    Gtk_Font_Name_Property : constant Glib.Properties.Property_String;
+   --  The default font to use. GTK+ uses the family name and size from this
+   --  string.
 
    Gtk_Fontconfig_Timestamp_Property : constant Glib.Properties.Property_Uint;
 
@@ -362,6 +384,10 @@ package Gtk.Settings is
    --  using the cursor keys only. Tab, Shift etc. keys can't be expected to be
    --  present on the used input device.
 
+   Gtk_Keynav_Use_Caret_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether GTK+ should make sure that text can be navigated with a caret,
+   --  even if it is not editable. This is useful when using a screen reader.
+
    Gtk_Keynav_Wrap_Around_Property : constant Glib.Properties.Property_Boolean;
    --  When True, some widgets will wrap around when doing keyboard
    --  navigation, such as menus, menubars and notebooks.
@@ -378,6 +404,7 @@ package Gtk.Settings is
    --  Delay before the submenus of a menu bar appear.
 
    Gtk_Menu_Images_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether images should be shown in menu items
 
    Gtk_Menu_Popdown_Delay_Property : constant Glib.Properties.Property_Int;
    --  The time before hiding a submenu when the pointer is moving towards the
@@ -389,9 +416,20 @@ package Gtk.Settings is
 
    Gtk_Modules_Property : constant Glib.Properties.Property_String;
 
+   Gtk_Overlay_Scrolling_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether scrolled windows may use overlayed scrolling indicators. If
+   --  this is set to False, scrolled windows will have permanent scrollbars.
+
    Gtk_Primary_Button_Warps_Slider_Property : constant Glib.Properties.Property_Boolean;
-   --  Whether a click in a Gtk.GRange.Gtk_Range trough should scroll to the
-   --  click position or scroll by a single page in the respective direction.
+   --  If the value of this setting is True, clicking the primary button in a
+   --  Gtk.GRange.Gtk_Range trough will move the slider, and hence set the
+   --  range's value, to the point that you clicked. If it is False, a primary
+   --  click will cause the slider/value to move by the range's page-size
+   --  towards the point clicked.
+   --
+   --  Whichever action you choose for the primary button, the other action
+   --  will be available by holding Shift and primary-clicking, or (since GTK+
+   --  3.22.25) clicking the middle mouse button.
 
    Gtk_Print_Backends_Property : constant Glib.Properties.Property_String;
    --  A comma-separated list of print backends to use in the print dialog.
@@ -608,6 +646,8 @@ private
      Glib.Properties.Build ("gtk-print-backends");
    Gtk_Primary_Button_Warps_Slider_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("gtk-primary-button-warps-slider");
+   Gtk_Overlay_Scrolling_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-overlay-scrolling");
    Gtk_Modules_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("gtk-modules");
    Gtk_Menu_Popup_Delay_Property : constant Glib.Properties.Property_Int :=
@@ -626,6 +666,8 @@ private
      Glib.Properties.Build ("gtk-label-select-on-focus");
    Gtk_Keynav_Wrap_Around_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("gtk-keynav-wrap-around");
+   Gtk_Keynav_Use_Caret_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("gtk-keynav-use-caret");
    Gtk_Keynav_Cursor_Only_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("gtk-keynav-cursor-only");
    Gtk_Key_Theme_Name_Property : constant Glib.Properties.Property_String :=
@@ -688,6 +730,8 @@ private
      Glib.Properties.Build ("gtk-cursor-blink-time");
    Gtk_Cursor_Blink_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("gtk-cursor-blink");
+   Gtk_Cursor_Aspect_Ratio_Property : constant Glib.Properties.Property_Float :=
+     Glib.Properties.Build ("gtk-cursor-aspect-ratio");
    Gtk_Color_Scheme_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("gtk-color-scheme");
    Gtk_Color_Palette_Property : constant Glib.Properties.Property_String :=

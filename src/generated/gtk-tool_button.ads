@@ -45,6 +45,10 @@
 --  is non-null, the icon is determined by the stock item. Otherwise, the
 --  button does not have a icon.
 --
+--  # CSS nodes
+--
+--  GtkToolButton has a single CSS node with name toolbutton.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -77,8 +81,8 @@ package Gtk.Tool_Button is
       (Button      : not null access Gtk_Tool_Button_Record'Class;
        Icon_Widget : Gtk.Widget.Gtk_Widget := null;
        Label       : UTF8_String := "");
-   --  Creates a new GtkToolButton using Icon_Widget as contents and Label as
-   --  label.
+   --  Creates a new Gtk.Tool_Button.Gtk_Tool_Button using Icon_Widget as
+   --  contents and Label as label.
    --  Since: gtk+ 2.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
@@ -89,8 +93,8 @@ package Gtk.Tool_Button is
    function Gtk_Tool_Button_New
       (Icon_Widget : Gtk.Widget.Gtk_Widget := null;
        Label       : UTF8_String := "") return Gtk_Tool_Button;
-   --  Creates a new GtkToolButton using Icon_Widget as contents and Label as
-   --  label.
+   --  Creates a new Gtk.Tool_Button.Gtk_Tool_Button using Icon_Widget as
+   --  contents and Label as label.
    --  Since: gtk+ 2.4
    --  "icon_widget": a widget that will be used as the button contents, or
    --  null
@@ -137,9 +141,11 @@ package Gtk.Tool_Button is
       (Button    : not null access Gtk_Tool_Button_Record;
        Icon_Name : UTF8_String := "");
    --  Sets the icon for the tool button from a named themed icon. See the
-   --  docs for Gtk.Icon_Theme.Gtk_Icon_Theme for more details. The "icon_name"
-   --  property only has an effect if not overridden by non-null "label",
-   --  "icon_widget" and "stock_id" properties.
+   --  docs for Gtk.Icon_Theme.Gtk_Icon_Theme for more details. The
+   --  Gtk.Tool_Button.Gtk_Tool_Button:icon-name property only has an effect if
+   --  not overridden by non-null Gtk.Tool_Button.Gtk_Tool_Button:label-widget,
+   --  Gtk.Tool_Button.Gtk_Tool_Button:icon-widget and
+   --  Gtk.Tool_Button.Gtk_Tool_Button:stock-id properties.
    --  Since: gtk+ 2.8
    --  "icon_name": the name of the themed icon
 
@@ -154,8 +160,9 @@ package Gtk.Tool_Button is
       (Button      : not null access Gtk_Tool_Button_Record;
        Icon_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Sets Icon as the widget used as icon on Button. If Icon_Widget is null
-   --  the icon is determined by the "stock_id" property. If the "stock_id"
-   --  property is also null, Button will not have an icon.
+   --  the icon is determined by the Gtk.Tool_Button.Gtk_Tool_Button:stock-id
+   --  property. If the Gtk.Tool_Button.Gtk_Tool_Button:stock-id property is
+   --  also null, Button will not have an icon.
    --  Since: gtk+ 2.4
    --  "icon_widget": the widget used as icon, or null
 
@@ -169,11 +176,14 @@ package Gtk.Tool_Button is
    procedure Set_Label
       (Button : not null access Gtk_Tool_Button_Record;
        Label  : UTF8_String := "");
-   --  Sets Label as the label used for the tool button. The "label" property
-   --  only has an effect if not overridden by a non-null "label_widget"
-   --  property. If both the "label_widget" and "label" properties are null,
-   --  the label is determined by the "stock_id" property. If the "stock_id"
-   --  property is also null, Button will not have a label.
+   --  Sets Label as the label used for the tool button. The
+   --  Gtk.Tool_Button.Gtk_Tool_Button:label property only has an effect if not
+   --  overridden by a non-null Gtk.Tool_Button.Gtk_Tool_Button:label-widget
+   --  property. If both the Gtk.Tool_Button.Gtk_Tool_Button:label-widget and
+   --  Gtk.Tool_Button.Gtk_Tool_Button:label properties are null, the label is
+   --  determined by the Gtk.Tool_Button.Gtk_Tool_Button:stock-id property. If
+   --  the Gtk.Tool_Button.Gtk_Tool_Button:stock-id property is also null,
+   --  Button will not have a label.
    --  Since: gtk+ 2.4
    --  "label": a string that will be used as label, or null.
 
@@ -188,10 +198,12 @@ package Gtk.Tool_Button is
       (Button       : not null access Gtk_Tool_Button_Record;
        Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Sets Label_Widget as the widget that will be used as the label for
-   --  Button. If Label_Widget is null the "label" property is used as label.
-   --  If "label" is also null, the label in the stock item determined by the
-   --  "stock_id" property is used as label. If "stock_id" is also null, Button
-   --  does not have a label.
+   --  Button. If Label_Widget is null the
+   --  Gtk.Tool_Button.Gtk_Tool_Button:label property is used as label. If
+   --  Gtk.Tool_Button.Gtk_Tool_Button:label is also null, the label in the
+   --  stock item determined by the Gtk.Tool_Button.Gtk_Tool_Button:stock-id
+   --  property is used as label. If Gtk.Tool_Button.Gtk_Tool_Button:stock-id
+   --  is also null, Button does not have a label.
    --  Since: gtk+ 2.4
    --  "label_widget": the widget used as label, or null
 
@@ -209,8 +221,9 @@ package Gtk.Tool_Button is
    pragma Obsolescent (Set_Stock_Id);
    --  Sets the name of the stock item. See
    --  Gtk.Tool_Button.Gtk_New_From_Stock. The stock_id property only has an
-   --  effect if not overridden by non-null "label" and "icon_widget"
-   --  properties.
+   --  effect if not overridden by non-null
+   --  Gtk.Tool_Button.Gtk_Tool_Button:label-widget and
+   --  Gtk.Tool_Button.Gtk_Tool_Button:icon-widget properties.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
    --  "stock_id": a name of a stock item, or null
@@ -247,7 +260,7 @@ package Gtk.Tool_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Tool_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Tool_Button_Record)
@@ -298,8 +311,10 @@ package Gtk.Tool_Button is
 
    Icon_Name_Property : constant Glib.Properties.Property_String;
    --  The name of the themed icon displayed on the item. This property only
-   --  has an effect if not overridden by "label", "icon_widget" or "stock_id"
-   --  properties.
+   --  has an effect if not overridden by
+   --  Gtk.Tool_Button.Gtk_Tool_Button:label-widget,
+   --  Gtk.Tool_Button.Gtk_Tool_Button:icon-widget or
+   --  Gtk.Tool_Button.Gtk_Tool_Button:stock-id properties.
 
    Icon_Widget_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget

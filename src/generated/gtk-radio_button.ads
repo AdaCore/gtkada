@@ -53,6 +53,19 @@
 --  Gtk.Radio_Button.Gtk_Radio_Button will remove itself and its list item when
 --  it is destroyed.
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> radiobutton ├── radio ╰── <child> ]|
+--
+--  A GtkRadioButton with indicator (see Gtk.Toggle_Button.Set_Mode) has a
+--  main CSS node with name radiobutton and a subnode with name radio.
+--
+--  |[<!-- language="plain" --> button.radio ├── radio ╰── <child> ]|
+--
+--  A GtkRadioButton without indicator changes the name of its main node to
+--  button and adds a .radio style class to it. The subnode is invisible in
+--  this case.
+--
 --  ## How to create a group of two radio buttons.
 --
 --  |[<!-- language="C" --> void create_radio_buttons (void) {
@@ -70,9 +83,9 @@
 --  "I'm the second radio button.");
 --
 --  // Pack them into a box, then show all the widgets gtk_box_pack_start
---  (GTK_BOX (box), radio1, TRUE, TRUE, 2); gtk_box_pack_start (GTK_BOX (box),
---  radio2, TRUE, TRUE, 2); gtk_container_add (GTK_CONTAINER (window), box);
---  gtk_widget_show_all (window); return; } ]|
+--  (GTK_BOX (box), radio1); gtk_box_pack_start (GTK_BOX (box), radio2);
+--  gtk_container_add (GTK_CONTAINER (window), box); gtk_widget_show_all
+--  (window); return; } ]|
 --
 --  When an unselected button in the group is clicked the clicked button
 --  receives the Gtk.Toggle_Button.Gtk_Toggle_Button::toggled signal, as does
@@ -258,8 +271,7 @@ package Gtk.Radio_Button is
    --  A common way to set up a group of radio buttons is the following:
    --  |[<!-- language="C" --> GtkRadioButton *radio_button; GtkRadioButton
    --  *last_button;
-   --  while ( ...more buttons to add... ) { radio_button =
-   --  gtk_radio_button_new (...);
+   --  while (some_condition) { radio_button = gtk_radio_button_new (NULL);
    --  gtk_radio_button_join_group (radio_button, last_button); last_button =
    --  radio_button; } ]|
    --  Since: gtk+ 3.0
@@ -278,7 +290,7 @@ package Gtk.Radio_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Radio_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Radio_Button_Record)

@@ -234,6 +234,19 @@ package body Gtk.Paned is
       return Internal (Get_Object (Paned));
    end Get_Position;
 
+   ---------------------
+   -- Get_Wide_Handle --
+   ---------------------
+
+   function Get_Wide_Handle
+      (Paned : not null access Gtk_Paned_Record) return Boolean
+   is
+      function Internal (Paned : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_paned_get_wide_handle");
+   begin
+      return Internal (Get_Object (Paned)) /= 0;
+   end Get_Wide_Handle;
+
    -----------
    -- Pack1 --
    -----------
@@ -287,6 +300,20 @@ package body Gtk.Paned is
    begin
       Internal (Get_Object (Paned), Position);
    end Set_Position;
+
+   ---------------------
+   -- Set_Wide_Handle --
+   ---------------------
+
+   procedure Set_Wide_Handle
+      (Paned : not null access Gtk_Paned_Record;
+       Wide  : Boolean)
+   is
+      procedure Internal (Paned : System.Address; Wide : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_paned_set_wide_handle");
+   begin
+      Internal (Get_Object (Paned), Boolean'Pos (Wide));
+   end Set_Wide_Handle;
 
    ---------------------
    -- Get_Orientation --

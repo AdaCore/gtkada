@@ -168,6 +168,28 @@ package body Gtk.Layout is
       Internal (Get_Object (Layout), Width, Height);
    end Set_Size;
 
+   ----------------
+   -- Get_Border --
+   ----------------
+
+   function Get_Border
+      (Self   : not null access Gtk_Layout_Record;
+       Border : access Gtk.Style.Gtk_Border) return Boolean
+   is
+      function Internal
+         (Self       : System.Address;
+          Acc_Border : access Gtk.Style.Gtk_Border) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_scrollable_get_border");
+      Acc_Border     : aliased Gtk.Style.Gtk_Border;
+      Tmp_Acc_Border : aliased Gtk.Style.Gtk_Border;
+      Tmp_Return     : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Acc_Border'Access);
+      Acc_Border := Tmp_Acc_Border;
+      Border.all := Acc_Border;
+      return Tmp_Return /= 0;
+   end Get_Border;
+
    ---------------------
    -- Get_Hadjustment --
    ---------------------

@@ -55,7 +55,8 @@
 --  target.
 --
 --  After the capture phase, GTK+ emits the traditional
---  Gtk.Widget.Gtk_Widget::button-press, Gtk.Widget.Gtk_Widget::button-release,
+--  Gtk.Widget.Gtk_Widget::button-press-event,
+--  Gtk.Widget.Gtk_Widget::button-release-event,
 --  Gtk.Widget.Gtk_Widget::touch-event, etc signals. Gestures with the
 --  Gtk.Enums.Phase_Target phase are fed events from the default
 --  Gtk.Widget.Gtk_Widget::event handlers.
@@ -105,6 +106,15 @@
 --  Sequence states can't be changed freely, see
 --  Gtk.Gesture.Set_Sequence_State to know about the possible lifetimes of a
 --  Gdk.Event.Gdk_Event_Sequence.
+--
+--  ## Touchpad gestures
+--
+--  On the platforms that support it, Gtk.Gesture.Gtk_Gesture will handle
+--  transparently touchpad gesture events. The only precautions users of
+--  Gtk.Gesture.Gtk_Gesture should do to enable this support are: - Enabling
+--  Gdk.Event.Touchpad_Gesture_Mask on their Gdk_Windows - If the gesture has
+--  Gtk.Enums.Phase_None, ensuring events of type Gdk.Event.Touchpad_Swipe and
+--  Gdk.Event.Touchpad_Pinch are handled by the Gtk.Gesture.Gtk_Gesture
 --
 --  </description>
 --  <description>
@@ -178,6 +188,10 @@ package Gtk.Gesture is
    --  If there are touch sequences being currently handled by Gesture, this
    --  function returns True and fills in Rect with the bounding box containing
    --  all active touches. Otherwise, False will be returned.
+   --  Note: This function will yield unexpected results on touchpad gestures.
+   --  Since there is no correlation between physical and pixel distances,
+   --  these will look as if constrained in an infinitely small area, Rect
+   --  width and height will thus be 0 regardless of the number of touchpoints.
    --  Since: gtk+ 3.14
    --  "rect": bounding box containing all active touches.
 
@@ -225,6 +239,9 @@ package Gtk.Gesture is
       (Self     : not null access Gtk_Gesture_Record;
        Sequence : Gdk.Event.Gdk_Event_Sequence) return Gdk.Event.Gdk_Event;
    --  Returns the last event that was processed for Sequence.
+   --  Note that the returned pointer is only valid as long as the Sequence is
+   --  still interpreted by the Gesture. If in doubt, you should make a copy of
+   --  the event.
    --  "sequence": a Gdk.Event.Gdk_Event_Sequence
 
    function Get_Last_Updated_Sequence
@@ -274,12 +291,12 @@ package Gtk.Gesture is
    --  |[ static void first_gesture_begin_cb (GtkGesture *first_gesture,
    --  GdkEventSequence *sequence, gpointer user_data) {
    --  gtk_gesture_set_sequence_state (first_gesture, sequence,
-   --  GTK_EVENT_SEQUENCE_ACCEPTED); gtk_gesture_set_sequence_state
+   --  GTK_EVENT_SEQUENCE_CLAIMED); gtk_gesture_set_sequence_state
    --  (second_gesture, sequence, GTK_EVENT_SEQUENCE_DENIED); }
    --  static void second_gesture_begin_cb (GtkGesture *second_gesture,
    --  GdkEventSequence *sequence, gpointer user_data) { if
    --  (gtk_gesture_get_sequence_state (first_gesture, sequence) ==
-   --  GTK_EVENT_SEQUENCE_ACCEPTED) gtk_gesture_set_sequence_state
+   --  GTK_EVENT_SEQUENCE_CLAIMED) gtk_gesture_set_sequence_state
    --  (second_gesture, sequence, GTK_EVENT_SEQUENCE_DENIED); } ]|
    --  If both gestures are in the same group, just set the state on the
    --  gesture emitting the event, the sequence will be already be initialized
@@ -316,7 +333,7 @@ package Gtk.Gesture is
    --  Returns True if Gesture is currently handling events corresponding to
    --  Sequence.
    --  Since: gtk+ 3.14
-   --  "sequence": a Gdk.Event.Gdk_Event_Sequence
+   --  "sequence": a Gdk.Event.Gdk_Event_Sequence or null
 
    function Is_Active
       (Self : not null access Gtk_Gesture_Record) return Boolean;

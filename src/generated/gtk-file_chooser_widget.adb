@@ -84,6 +84,36 @@ package body Gtk.File_Chooser_Widget is
    end Initialize;
 
    ----------------
+   -- Add_Choice --
+   ----------------
+
+   procedure Add_Choice
+      (Chooser       : not null access Gtk_File_Chooser_Widget_Record;
+       Id            : UTF8_String;
+       Label         : UTF8_String;
+       Options       : GNAT.Strings.String_List;
+       Option_Labels : GNAT.Strings.String_List)
+   is
+      procedure Internal
+         (Chooser       : System.Address;
+          Id            : Gtkada.Types.Chars_Ptr;
+          Label         : Gtkada.Types.Chars_Ptr;
+          Options       : Gtkada.Types.chars_ptr_array;
+          Option_Labels : Gtkada.Types.chars_ptr_array);
+      pragma Import (C, Internal, "gtk_file_chooser_add_choice");
+      Tmp_Id            : Gtkada.Types.Chars_Ptr := New_String (Id);
+      Tmp_Label         : Gtkada.Types.Chars_Ptr := New_String (Label);
+      Tmp_Options       : Gtkada.Types.chars_ptr_array := From_String_List (Options);
+      Tmp_Option_Labels : Gtkada.Types.chars_ptr_array := From_String_List (Option_Labels);
+   begin
+      Internal (Get_Object (Chooser), Tmp_Id, Tmp_Label, Tmp_Options, Tmp_Option_Labels);
+      Gtkada.Types.Free (Tmp_Option_Labels);
+      Gtkada.Types.Free (Tmp_Options);
+      Free (Tmp_Label);
+      Free (Tmp_Id);
+   end Add_Choice;
+
+   ----------------
    -- Add_Filter --
    ----------------
 
@@ -152,6 +182,26 @@ package body Gtk.File_Chooser_Widget is
    begin
       return Internal (Get_Object (Chooser));
    end Get_Action;
+
+   ----------------
+   -- Get_Choice --
+   ----------------
+
+   function Get_Choice
+      (Chooser : not null access Gtk_File_Chooser_Widget_Record;
+       Id      : UTF8_String) return UTF8_String
+   is
+      function Internal
+         (Chooser : System.Address;
+          Id      : Gtkada.Types.Chars_Ptr) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "gtk_file_chooser_get_choice");
+      Tmp_Id     : Gtkada.Types.Chars_Ptr := New_String (Id);
+      Tmp_Return : Gtkada.Types.Chars_Ptr;
+   begin
+      Tmp_Return := Internal (Get_Object (Chooser), Tmp_Id);
+      Free (Tmp_Id);
+      return Gtkada.Bindings.Value_Allowing_Null (Tmp_Return);
+   end Get_Choice;
 
    ------------------------
    -- Get_Create_Folders --
@@ -497,6 +547,24 @@ package body Gtk.File_Chooser_Widget is
    end List_Shortcut_Folders;
 
    -------------------
+   -- Remove_Choice --
+   -------------------
+
+   procedure Remove_Choice
+      (Chooser : not null access Gtk_File_Chooser_Widget_Record;
+       Id      : UTF8_String)
+   is
+      procedure Internal
+         (Chooser : System.Address;
+          Id      : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "gtk_file_chooser_remove_choice");
+      Tmp_Id : Gtkada.Types.Chars_Ptr := New_String (Id);
+   begin
+      Internal (Get_Object (Chooser), Tmp_Id);
+      Free (Tmp_Id);
+   end Remove_Choice;
+
+   -------------------
    -- Remove_Filter --
    -------------------
 
@@ -618,6 +686,28 @@ package body Gtk.File_Chooser_Widget is
    begin
       Internal (Get_Object (Chooser), Action);
    end Set_Action;
+
+   ----------------
+   -- Set_Choice --
+   ----------------
+
+   procedure Set_Choice
+      (Chooser : not null access Gtk_File_Chooser_Widget_Record;
+       Id      : UTF8_String;
+       Option  : UTF8_String)
+   is
+      procedure Internal
+         (Chooser : System.Address;
+          Id      : Gtkada.Types.Chars_Ptr;
+          Option  : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "gtk_file_chooser_set_choice");
+      Tmp_Id     : Gtkada.Types.Chars_Ptr := New_String (Id);
+      Tmp_Option : Gtkada.Types.Chars_Ptr := New_String (Option);
+   begin
+      Internal (Get_Object (Chooser), Tmp_Id, Tmp_Option);
+      Free (Tmp_Option);
+      Free (Tmp_Id);
+   end Set_Choice;
 
    ------------------------
    -- Set_Create_Folders --
@@ -1464,6 +1554,33 @@ package body Gtk.File_Chooser_Widget is
    begin
       Connect_Slot (Self, "location-toggle-popup" & ASCII.NUL, Call, After, Slot);
    end On_Location_Toggle_Popup;
+
+   ------------------------
+   -- On_Places_Shortcut --
+   ------------------------
+
+   procedure On_Places_Shortcut
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_Gtk_File_Chooser_Widget_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "places-shortcut" & ASCII.NUL, Call, After);
+   end On_Places_Shortcut;
+
+   ------------------------
+   -- On_Places_Shortcut --
+   ------------------------
+
+   procedure On_Places_Shortcut
+      (Self  : not null access Gtk_File_Chooser_Widget_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "places-shortcut" & ASCII.NUL, Call, After, Slot);
+   end On_Places_Shortcut;
 
    -----------------------
    -- On_Quick_Bookmark --

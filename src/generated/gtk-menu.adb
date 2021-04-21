@@ -60,6 +60,7 @@ package body Gtk.Menu is
        Button            : Guint;
        Activate_Time     : Guint32);
    pragma Import (C, C_Gtk_Menu_Popup, "gtk_menu_popup");
+   pragma Obsolescent (C_Gtk_Menu_Popup);
    --  Displays a menu and makes it available for selection.
    --  Applications can use this function to display context-sensitive menus,
    --  and will typically supply null for the Parent_Menu_Shell,
@@ -75,6 +76,11 @@ package body Gtk.Menu is
    --  mouse click or key press) that caused the initiation of the popup. Only
    --  if no such event is available, Gtk.Main.Get_Current_Event_Time can be
    --  used instead.
+   --  Note that this function does not work very well on GDK backends that do
+   --  not have global coordinates, such as Wayland or Mir. You should probably
+   --  use one of the gtk_menu_popup_at_ variants, which do not have this
+   --  problem.
+   --  Deprecated since 3.22, 1
    --  "parent_menu_shell": the menu shell containing the triggering menu
    --  item, or null
    --  "parent_menu_item": the menu item whose activation triggered the popup,
@@ -95,6 +101,7 @@ package body Gtk.Menu is
        Button            : Guint;
        Activate_Time     : Guint32);
    pragma Import (C, C_Gtk_Menu_Popup_For_Device, "gtk_menu_popup_for_device");
+   pragma Obsolescent (C_Gtk_Menu_Popup_For_Device);
    --  Displays a menu and makes it available for selection.
    --  Applications can use this function to display context-sensitive menus,
    --  and will typically supply null for the Parent_Menu_Shell,
@@ -111,7 +118,12 @@ package body Gtk.Menu is
    --  mouse click or key press) that caused the initiation of the popup. Only
    --  if no such event is available, Gtk.Main.Get_Current_Event_Time can be
    --  used instead.
+   --  Note that this function does not work very well on GDK backends that do
+   --  not have global coordinates, such as Wayland or Mir. You should probably
+   --  use one of the gtk_menu_popup_at_ variants, which do not have this
+   --  problem.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.22, 1
    --  "device": a Gdk.Device.Gdk_Device
    --  "parent_menu_shell": the menu shell containing the triggering menu
    --  item, or null
@@ -419,6 +431,20 @@ package body Gtk.Menu is
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Menu)));
    end Get_Title;
 
+   ----------------------
+   -- Place_On_Monitor --
+   ----------------------
+
+   procedure Place_On_Monitor
+      (Menu    : not null access Gtk_Menu_Record;
+       Monitor : not null access Gdk.Monitor.Gdk_Monitor_Record'Class)
+   is
+      procedure Internal (Menu : System.Address; Monitor : System.Address);
+      pragma Import (C, Internal, "gtk_menu_place_on_monitor");
+   begin
+      Internal (Get_Object (Menu), Get_Object (Monitor));
+   end Place_On_Monitor;
+
    -------------
    -- Popdown --
    -------------
@@ -449,6 +475,68 @@ package body Gtk.Menu is
          C_Gtk_Menu_Popup (Get_Object (Menu), Get_Object_Or_Null (GObject (Parent_Menu_Shell)), Get_Object_Or_Null (GObject (Parent_Menu_Item)), Internal_Gtk_Menu_Position_Func'Address, To_Address (Func), Button, Activate_Time);
       end if;
    end Popup;
+
+   ----------------------
+   -- Popup_At_Pointer --
+   ----------------------
+
+   procedure Popup_At_Pointer
+      (Menu          : not null access Gtk_Menu_Record;
+       Trigger_Event : Gdk.Event.Gdk_Event)
+   is
+      procedure Internal
+         (Menu          : System.Address;
+          Trigger_Event : Gdk.Event.Gdk_Event);
+      pragma Import (C, Internal, "gtk_menu_popup_at_pointer");
+   begin
+      Internal (Get_Object (Menu), Trigger_Event);
+   end Popup_At_Pointer;
+
+   -------------------
+   -- Popup_At_Rect --
+   -------------------
+
+   procedure Popup_At_Rect
+      (Menu          : not null access Gtk_Menu_Record;
+       Rect_Window   : Gdk.Gdk_Window;
+       Rect          : Gdk.Rectangle.Gdk_Rectangle;
+       Rect_Anchor   : Gdk.Window.Gdk_Gravity;
+       Menu_Anchor   : Gdk.Window.Gdk_Gravity;
+       Trigger_Event : Gdk.Event.Gdk_Event)
+   is
+      procedure Internal
+         (Menu          : System.Address;
+          Rect_Window   : Gdk.Gdk_Window;
+          Rect          : Gdk.Rectangle.Gdk_Rectangle;
+          Rect_Anchor   : Gdk.Window.Gdk_Gravity;
+          Menu_Anchor   : Gdk.Window.Gdk_Gravity;
+          Trigger_Event : Gdk.Event.Gdk_Event);
+      pragma Import (C, Internal, "gtk_menu_popup_at_rect");
+   begin
+      Internal (Get_Object (Menu), Rect_Window, Rect, Rect_Anchor, Menu_Anchor, Trigger_Event);
+   end Popup_At_Rect;
+
+   ---------------------
+   -- Popup_At_Widget --
+   ---------------------
+
+   procedure Popup_At_Widget
+      (Menu          : not null access Gtk_Menu_Record;
+       Widget        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Widget_Anchor : Gdk.Window.Gdk_Gravity;
+       Menu_Anchor   : Gdk.Window.Gdk_Gravity;
+       Trigger_Event : Gdk.Event.Gdk_Event)
+   is
+      procedure Internal
+         (Menu          : System.Address;
+          Widget        : System.Address;
+          Widget_Anchor : Gdk.Window.Gdk_Gravity;
+          Menu_Anchor   : Gdk.Window.Gdk_Gravity;
+          Trigger_Event : Gdk.Event.Gdk_Event);
+      pragma Import (C, Internal, "gtk_menu_popup_at_widget");
+   begin
+      Internal (Get_Object (Menu), Get_Object (Widget), Widget_Anchor, Menu_Anchor, Trigger_Event);
+   end Popup_At_Widget;
 
    ----------------------
    -- Popup_For_Device --
@@ -789,14 +877,19 @@ package body Gtk.Menu is
 
    procedure Set_Title
       (Menu  : not null access Gtk_Menu_Record;
-       Title : UTF8_String)
+       Title : UTF8_String := "")
    is
       procedure Internal
          (Menu  : System.Address;
           Title : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_menu_set_title");
-      Tmp_Title : Gtkada.Types.Chars_Ptr := New_String (Title);
+      Tmp_Title : Gtkada.Types.Chars_Ptr;
    begin
+      if Title = "" then
+         Tmp_Title := Gtkada.Types.Null_Ptr;
+      else
+         Tmp_Title := New_String (Title);
+      end if;
       Internal (Get_Object (Menu), Tmp_Title);
       Free (Tmp_Title);
    end Set_Title;
@@ -829,10 +922,26 @@ package body Gtk.Menu is
    function Address_To_Cb is new Ada.Unchecked_Conversion
      (System.Address, Cb_GObject_Gtk_Scroll_Type_Void);
 
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gtk_Menu_Address_Address_Boolean_Boolean_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gtk_Menu_Address_Address_Boolean_Boolean_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Address_Address_Boolean_Boolean_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Address_Address_Boolean_Boolean_Void);
+
    procedure Connect
       (Object  : access Gtk_Menu_Record'Class;
        C_Name  : Glib.Signal_Name;
        Handler : Cb_Gtk_Menu_Gtk_Scroll_Type_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gtk_Menu_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Menu_Address_Address_Boolean_Boolean_Void;
        After   : Boolean);
 
    procedure Connect_Slot
@@ -842,6 +951,22 @@ package body Gtk.Menu is
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
+   procedure Connect_Slot
+      (Object  : access Gtk_Menu_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Address_Address_Boolean_Boolean_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Address_Address_Boolean_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Address_Address_Boolean_Boolean_Void);
+
    procedure Marsh_GObject_Gtk_Scroll_Type_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
@@ -850,6 +975,15 @@ package body Gtk.Menu is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Gtk_Scroll_Type_Void);
+
+   procedure Marsh_Gtk_Menu_Address_Address_Boolean_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gtk_Menu_Address_Address_Boolean_Boolean_Void);
 
    procedure Marsh_Gtk_Menu_Gtk_Scroll_Type_Void
       (Closure         : GClosure;
@@ -879,6 +1013,25 @@ package body Gtk.Menu is
          After       => After);
    end Connect;
 
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gtk_Menu_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gtk_Menu_Address_Address_Boolean_Boolean_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gtk_Menu_Address_Address_Boolean_Boolean_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
    ------------------
    -- Connect_Slot --
    ------------------
@@ -900,6 +1053,47 @@ package body Gtk.Menu is
          After       => After);
    end Connect_Slot;
 
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gtk_Menu_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Address_Address_Boolean_Boolean_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Address_Address_Boolean_Boolean_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   --------------------------------------------------------
+   -- Marsh_GObject_Address_Address_Boolean_Boolean_Void --
+   --------------------------------------------------------
+
+   procedure Marsh_GObject_Address_Address_Boolean_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Address_Address_Boolean_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, Unchecked_To_Address (Params, 1), Unchecked_To_Address (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Boolean (Params, 4));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Address_Address_Boolean_Boolean_Void;
+
    ----------------------------------------
    -- Marsh_GObject_Gtk_Scroll_Type_Void --
    ----------------------------------------
@@ -919,6 +1113,26 @@ package body Gtk.Menu is
       H (Obj, Unchecked_To_Gtk_Scroll_Type (Params, 1));
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Scroll_Type_Void;
+
+   ---------------------------------------------------------
+   -- Marsh_Gtk_Menu_Address_Address_Boolean_Boolean_Void --
+   ---------------------------------------------------------
+
+   procedure Marsh_Gtk_Menu_Address_Address_Boolean_Boolean_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Menu_Address_Address_Boolean_Boolean_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Menu := Gtk_Menu (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Unchecked_To_Address (Params, 1), Unchecked_To_Address (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Boolean (Params, 4));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gtk_Menu_Address_Address_Boolean_Boolean_Void;
 
    -----------------------------------------
    -- Marsh_Gtk_Menu_Gtk_Scroll_Type_Void --
@@ -966,5 +1180,32 @@ package body Gtk.Menu is
    begin
       Connect_Slot (Self, "move-scroll" & ASCII.NUL, Call, After, Slot);
    end On_Move_Scroll;
+
+   ------------------
+   -- On_Popped_Up --
+   ------------------
+
+   procedure On_Popped_Up
+      (Self  : not null access Gtk_Menu_Record;
+       Call  : Cb_Gtk_Menu_Address_Address_Boolean_Boolean_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "popped-up" & ASCII.NUL, Call, After);
+   end On_Popped_Up;
+
+   ------------------
+   -- On_Popped_Up --
+   ------------------
+
+   procedure On_Popped_Up
+      (Self  : not null access Gtk_Menu_Record;
+       Call  : Cb_GObject_Address_Address_Boolean_Boolean_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "popped-up" & ASCII.NUL, Call, After, Slot);
+   end On_Popped_Up;
 
 end Gtk.Menu;

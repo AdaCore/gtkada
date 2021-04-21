@@ -95,21 +95,63 @@ package body Gtk.Paper_Size is
    end Gtk_New_Custom;
 
    ---------------------------
+   -- Gtk_New_From_Gvariant --
+   ---------------------------
+
+   procedure Gtk_New_From_Gvariant
+      (Widget  : out Gtk_Paper_Size;
+       Variant : Glib.Variant.Gvariant)
+   is
+      function Internal (Variant : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_paper_size_new_from_gvariant");
+   begin
+      Widget.Set_Object (Internal (Get_Object (Variant)));
+   end Gtk_New_From_Gvariant;
+
+   ----------------------
+   -- Gtk_New_From_Ipp --
+   ----------------------
+
+   procedure Gtk_New_From_Ipp
+      (Widget   : out Gtk_Paper_Size;
+       Ipp_Name : UTF8_String;
+       Width    : Gdouble;
+       Height   : Gdouble)
+   is
+      function Internal
+         (Ipp_Name : Gtkada.Types.Chars_Ptr;
+          Width    : Gdouble;
+          Height   : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_paper_size_new_from_ipp");
+      Tmp_Ipp_Name : Gtkada.Types.Chars_Ptr := New_String (Ipp_Name);
+      Tmp_Return   : System.Address;
+   begin
+      Tmp_Return := Internal (Tmp_Ipp_Name, Width, Height);
+      Free (Tmp_Ipp_Name);
+      Widget.Set_Object (Tmp_Return);
+   end Gtk_New_From_Ipp;
+
+   ---------------------------
    -- Gtk_New_From_Key_File --
    ---------------------------
 
    procedure Gtk_New_From_Key_File
       (Widget     : out Gtk_Paper_Size;
        Key_File   : Glib.Key_File.G_Key_File;
-       Group_Name : UTF8_String)
+       Group_Name : UTF8_String := "")
    is
       function Internal
          (Key_File   : Glib.Key_File.G_Key_File;
           Group_Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_paper_size_new_from_key_file");
-      Tmp_Group_Name : Gtkada.Types.Chars_Ptr := New_String (Group_Name);
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr;
       Tmp_Return     : System.Address;
    begin
+      if Group_Name = "" then
+         Tmp_Group_Name := Gtkada.Types.Null_Ptr;
+      else
+         Tmp_Group_Name := New_String (Group_Name);
+      end if;
       Tmp_Return := Internal (Key_File, Tmp_Group_Name);
       Free (Tmp_Group_Name);
       Widget.Set_Object (Tmp_Return);
@@ -198,21 +240,65 @@ package body Gtk.Paper_Size is
    end Gtk_Paper_Size_New_Custom;
 
    --------------------------------------
+   -- Gtk_Paper_Size_New_From_Gvariant --
+   --------------------------------------
+
+   function Gtk_Paper_Size_New_From_Gvariant
+      (Variant : Glib.Variant.Gvariant) return Gtk_Paper_Size
+   is
+      function Internal (Variant : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_paper_size_new_from_gvariant");
+      Widget : Gtk_Paper_Size;
+   begin
+      Widget.Set_Object (Internal (Get_Object (Variant)));
+      return Widget;
+   end Gtk_Paper_Size_New_From_Gvariant;
+
+   ---------------------------------
+   -- Gtk_Paper_Size_New_From_Ipp --
+   ---------------------------------
+
+   function Gtk_Paper_Size_New_From_Ipp
+      (Ipp_Name : UTF8_String;
+       Width    : Gdouble;
+       Height   : Gdouble) return Gtk_Paper_Size
+   is
+      function Internal
+         (Ipp_Name : Gtkada.Types.Chars_Ptr;
+          Width    : Gdouble;
+          Height   : Gdouble) return System.Address;
+      pragma Import (C, Internal, "gtk_paper_size_new_from_ipp");
+      Tmp_Ipp_Name : Gtkada.Types.Chars_Ptr := New_String (Ipp_Name);
+      Tmp_Return   : System.Address;
+      Widget       : Gtk_Paper_Size;
+   begin
+      Tmp_Return := Internal (Tmp_Ipp_Name, Width, Height);
+      Free (Tmp_Ipp_Name);
+      Widget.Set_Object (Tmp_Return);
+      return Widget;
+   end Gtk_Paper_Size_New_From_Ipp;
+
+   --------------------------------------
    -- Gtk_Paper_Size_New_From_Key_File --
    --------------------------------------
 
    function Gtk_Paper_Size_New_From_Key_File
       (Key_File   : Glib.Key_File.G_Key_File;
-       Group_Name : UTF8_String) return Gtk_Paper_Size
+       Group_Name : UTF8_String := "") return Gtk_Paper_Size
    is
       function Internal
          (Key_File   : Glib.Key_File.G_Key_File;
           Group_Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_paper_size_new_from_key_file");
-      Tmp_Group_Name : Gtkada.Types.Chars_Ptr := New_String (Group_Name);
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr;
       Tmp_Return     : System.Address;
       Widget         : Gtk_Paper_Size;
    begin
+      if Group_Name = "" then
+         Tmp_Group_Name := Gtkada.Types.Null_Ptr;
+      else
+         Tmp_Group_Name := New_String (Group_Name);
+      end if;
       Tmp_Return := Internal (Key_File, Tmp_Group_Name);
       Free (Tmp_Group_Name);
       Widget.Set_Object (Tmp_Return);
@@ -428,6 +514,17 @@ package body Gtk.Paper_Size is
       return Internal (Get_Object (Widget), Get_Object (Size2)) /= 0;
    end Is_Equal;
 
+   ------------
+   -- Is_Ipp --
+   ------------
+
+   function Is_Ipp (Widget : Gtk_Paper_Size) return Boolean is
+      function Internal (Widget : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_paper_size_is_ipp");
+   begin
+      return Internal (Get_Object (Widget)) /= 0;
+   end Is_Ipp;
+
    --------------
    -- Set_Size --
    --------------
@@ -447,6 +544,19 @@ package body Gtk.Paper_Size is
    begin
       Internal (Get_Object (Widget), Width, Height, Unit);
    end Set_Size;
+
+   -----------------
+   -- To_Gvariant --
+   -----------------
+
+   function To_Gvariant
+      (Widget : Gtk_Paper_Size) return Glib.Variant.Gvariant
+   is
+      function Internal (Widget : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_paper_size_to_gvariant");
+   begin
+      return From_Object (Internal (Get_Object (Widget)));
+   end To_Gvariant;
 
    -----------------
    -- To_Key_File --

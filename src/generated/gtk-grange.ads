@@ -149,16 +149,20 @@ package Gtk.GRange is
 
    function Get_Min_Slider_Size
       (The_Range : not null access Gtk_Range_Record) return Glib.Gint;
+   pragma Obsolescent (Get_Min_Slider_Size);
    --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  See Gtk.GRange.Set_Min_Slider_Size.
    --  Since: gtk+ 2.20
+   --  Deprecated since 3.20, 1
 
    procedure Set_Min_Slider_Size
       (The_Range : not null access Gtk_Range_Record;
        Min_Size  : Glib.Gint);
+   pragma Obsolescent (Set_Min_Slider_Size);
    --  Sets the minimum size of the range's slider.
    --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  Since: gtk+ 2.20
+   --  Deprecated since 3.20, 1
    --  "min_size": The slider's minimum size
 
    procedure Get_Range_Rect
@@ -393,9 +397,6 @@ package Gtk.GRange is
    --  GtkRange::change-value signal is responsible for clamping the value to
    --  the desired number of decimal digits; the default GTK+ handler clamps
    --  the value based on Gtk.GRange.Gtk_Range:round-digits.
-   --
-   --  It is not possible to use delayed update policies in an overridden
-   --  Gtk.GRange.Gtk_Range::change-value handler.
    -- 
    --  Callback parameters:
    --    --  "scroll": the type of scroll action that was performed

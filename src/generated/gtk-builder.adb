@@ -304,21 +304,17 @@ package body Gtk.Builder is
 
    function Add_From_Resource
       (Builder       : not null access Gtk_Builder_Record;
-       Resource_Path : UTF8_String;
-       Error         : access Glib.Error.GError) return Guint
+       Resource_Path : UTF8_String) return Guint
    is
       function Internal
          (Builder       : System.Address;
-          Resource_Path : Gtkada.Types.Chars_Ptr;
-          Acc_Error     : access Glib.Error.GError) return Guint;
+          Resource_Path : Gtkada.Types.Chars_Ptr) return Guint;
       pragma Import (C, Internal, "gtk_builder_add_from_resource");
-      Acc_Error         : aliased Glib.Error.GError;
       Tmp_Resource_Path : Gtkada.Types.Chars_Ptr := New_String (Resource_Path);
       Tmp_Return        : Guint;
    begin
-      Tmp_Return := Internal (Get_Object (Builder), Tmp_Resource_Path, Acc_Error'Access);
+      Tmp_Return := Internal (Get_Object (Builder), Tmp_Resource_Path);
       Free (Tmp_Resource_Path);
-      Error.all := Acc_Error;
       return Tmp_Return;
    end Add_From_Resource;
 

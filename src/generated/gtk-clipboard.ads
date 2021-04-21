@@ -190,6 +190,12 @@ package Gtk.Clipboard is
    --  Gtk.Clipboard.Clear has not subsequently called, returns the owner set
    --  by gtk_clipboard_set_with_owner.
 
+   function Get_Selection
+      (Clipboard : not null access Gtk_Clipboard_Record)
+       return Gdk.Types.Gdk_Atom;
+   --  Gets the selection that this clipboard is for.
+   --  Since: gtk+ 3.22
+
    procedure Request_Contents
       (Clipboard : not null access Gtk_Clipboard_Record;
        Target    : Gdk.Types.Gdk_Atom;
@@ -424,6 +430,15 @@ package Gtk.Clipboard is
    --  Returns the clipboard object for the given selection. See
    --  Gtk.Clipboard.Get_For_Display for complete details.
    --  "selection": a Gdk.Types.Gdk_Atom which identifies the clipboard to use
+
+   function Get_Default
+      (Display : not null access Gdk.Display.Gdk_Display_Record'Class)
+       return Gtk_Clipboard;
+   --  Returns the default clipboard object for use with cut/copy/paste menu
+   --  items and keyboard shortcuts.
+   --  Since: gtk+ 3.16
+   --  "display": the Gdk.Display.Gdk_Display for which the clipboard is to be
+   --  retrieved.
 
    function Get_For_Display
       (Display   : not null access Gdk.Display.Gdk_Display_Record'Class;

@@ -22,7 +22,7 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  The frame widget is a Bin that surrounds its child with a decorative frame
+--  The frame widget is a bin that surrounds its child with a decorative frame
 --  and an optional label. If present, the label is drawn in a gap in the top
 --  side of the frame. The position of the label can be controlled with
 --  Gtk.Frame.Set_Label_Align.
@@ -38,6 +38,21 @@
 --  class="GtkFrame"> <child type="label"> <object class="GtkLabel"
 --  id="frame-label"/> </child> <child> <object class="GtkEntry"
 --  id="frame-content"/> </child> </object> ]|
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> frame ├── border[.flat] ├── <label widget> ╰──
+--  <child> ]|
+--
+--  GtkFrame has a main CSS node named "frame" and a subnode named "border".
+--  The "border" node is used to draw the visible border. You can set the
+--  appearance of the border using CSS properties like "border-style" on the
+--  "border" node.
+--
+--  The border node can be given the style class ".flat", which is used by
+--  themes to disable drawing of the border. To do this from code, call
+--  Gtk.Frame.Set_Shadow_Type with Gtk.Enums.Shadow_None to add the ".flat"
+--  class or any other shadow type to remove it.
 --
 --  </description>
 --  <description>
@@ -103,8 +118,9 @@ package Gtk.Frame is
    procedure Set_Label
       (Frame : not null access Gtk_Frame_Record;
        Label : UTF8_String := "");
-   --  Sets the text of the label. If Label is null, the current label is
-   --  removed.
+   --  Removes the current Gtk.Frame.Gtk_Frame:label-widget. If Label is not
+   --  null, creates a new Gtk.Label.Gtk_Label with that text and adds it as
+   --  the Gtk.Frame.Gtk_Frame:label-widget.
    --  "label": the text to use as the label of the frame
 
    procedure Get_Label_Align
@@ -138,8 +154,9 @@ package Gtk.Frame is
    procedure Set_Label_Widget
       (Frame        : not null access Gtk_Frame_Record;
        Label_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Sets the label widget for the frame. This is the widget that will
-   --  appear embedded in the top edge of the frame as a title.
+   --  Sets the Gtk.Frame.Gtk_Frame:label-widget for the frame. This is the
+   --  widget that will appear embedded in the top edge of the frame as a
+   --  title.
    --  "label_widget": the new label widget
 
    function Get_Shadow_Type
@@ -150,7 +167,11 @@ package Gtk.Frame is
    procedure Set_Shadow_Type
       (Frame    : not null access Gtk_Frame_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type);
-   --  Sets the shadow type for Frame.
+   --  Sets the Gtk.Frame.Gtk_Frame:shadow-type for Frame, i.e. whether it is
+   --  drawn without (Gtk.Enums.Shadow_None) or with (other values) a visible
+   --  border. Values other than Gtk.Enums.Shadow_None are treated identically
+   --  by GtkFrame. The chosen type is applied by removing or adding the .flat
+   --  class to the CSS node named border.
    --  "type": the new Gtk.Enums.Gtk_Shadow_Type
 
    ----------------

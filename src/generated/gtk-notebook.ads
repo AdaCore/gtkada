@@ -51,6 +51,33 @@
 --  </child> <child type="tab"> <object class="GtkLabel" id="notebook-tab">
 --  <property name="label">Tab</property> </object> </child> </object> ]|
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> notebook ├── header.top │ ├── [<action
+--  widget>] │ ├── tabs │ │ ├── [arrow] │ │ ├── tab │ │ │ ╰── <tab label> ┊ ┊ ┊
+--  │ │ ├── tab[.reorderable-page] │ │ │ ╰── <tab label> │ │ ╰── [arrow] │ ╰──
+--  [<action widget>] │ ╰── stack ├── <child> ┊ ╰── <child> ]|
+--
+--  GtkNotebook has a main CSS node with name notebook, a subnode with name
+--  header and below that a subnode with name tabs which contains one subnode
+--  per tab with name tab.
+--
+--  If action widgets are present, their CSS nodes are placed next to the tabs
+--  node. If the notebook is scrollable, CSS nodes with name arrow are placed
+--  as first and last child of the tabs node.
+--
+--  The main node gets the .frame style class when the notebook has a border
+--  (see Gtk.Notebook.Set_Show_Border).
+--
+--  The header node gets one of the style class .top, .bottom, .left or
+--  .right, depending on where the tabs are placed. For reorderable pages, the
+--  tab node gets the .reorderable-page class.
+--
+--  A tab node gets the .dnd style class while it is moved with drag-and-drop.
+--
+--  The nodes are always arranged from left-to-right, regarldess of text
+--  direction.
+--
 --  </description>
 --  <screenshot>gtk-notebook</screenshot>
 --  <group>Layout containers</group>
@@ -131,6 +158,16 @@ package Gtk.Notebook is
    --  null, then the menu label will be a newly created label with the same
    --  text as Tab_Label; if Tab_Label is not a Gtk.Label.Gtk_Label, Menu_Label
    --  must be specified if the page-switch menu is to be used.
+
+   procedure Detach_Tab
+      (Notebook : not null access Gtk_Notebook_Record;
+       Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Removes the child from the notebook.
+   --  This function is very similar to Gtk.Container.Remove, but additionally
+   --  informs the notebook that the removal is happening as part of a tab DND
+   --  operation, which should not be cancelled.
+   --  Since: gtk+ 3.16
+   --  "child": a child
 
    function Get_Action_Widget
       (Notebook  : not null access Gtk_Notebook_Record;
@@ -282,15 +319,20 @@ package Gtk.Notebook is
    --  accept dragged tabs from it) it must be set as a drop destination and
    --  accept the target "GTK_NOTEBOOK_TAB". The notebook will fill the
    --  selection with a GtkWidget** pointing to the child widget that
-   --  corresponds to the dropped tab. |[<!-- language="C" --> static void
-   --  on_drag_data_received (GtkWidget *widget, GdkDragContext *context, gint
-   --  x, gint y, GtkSelectionData *data, guint info, guint time, gpointer
-   --  user_data) { GtkWidget *notebook; GtkWidget **child; GtkContainer
-   --  *container;
+   --  corresponds to the dropped tab.
+   --  Note that you should use Gtk.Notebook.Detach_Tab instead of
+   --  Gtk.Container.Remove if you want to remove the tab from the source
+   --  notebook as part of accepting a drop. Otherwise, the source notebook
+   --  will think that the dragged tab was removed from underneath the ongoing
+   --  drag operation, and will initiate a drag cancel animation.
+   --  |[<!-- language="C" --> static void on_drag_data_received (GtkWidget
+   --  *widget, GdkDragContext *context, gint x, gint y, GtkSelectionData
+   --  *data, guint info, guint time, gpointer user_data) { GtkWidget
+   --  *notebook; GtkWidget **child;
    --  notebook = gtk_drag_get_source_widget (context); child = (void*)
    --  gtk_selection_data_get_data (data);
-   --  process_widget (*child); container = GTK_CONTAINER (notebook);
-   --  gtk_container_remove (container, *child); } ]|
+   --  // process_widget (*child);
+   --  gtk_notebook_detach_tab (GTK_NOTEBOOK (notebook), *child); } ]|
    --  If you want a notebook to accept drags from other widgets, you will
    --  have to set your own DnD code to do it.
    --  Since: gtk+ 2.10

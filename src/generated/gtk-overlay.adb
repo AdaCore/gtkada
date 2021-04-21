@@ -83,6 +83,59 @@ package body Gtk.Overlay is
       Internal (Get_Object (Self), Get_Object (Widget));
    end Add_Overlay;
 
+   ------------------------------
+   -- Get_Overlay_Pass_Through --
+   ------------------------------
+
+   function Get_Overlay_Pass_Through
+      (Self   : not null access Gtk_Overlay_Record;
+       Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean
+   is
+      function Internal
+         (Self   : System.Address;
+          Widget : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_overlay_get_overlay_pass_through");
+   begin
+      return Internal (Get_Object (Self), Get_Object (Widget)) /= 0;
+   end Get_Overlay_Pass_Through;
+
+   ---------------------
+   -- Reorder_Overlay --
+   ---------------------
+
+   procedure Reorder_Overlay
+      (Self  : not null access Gtk_Overlay_Record;
+       Child : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Index : Glib.Gint)
+   is
+      procedure Internal
+         (Self  : System.Address;
+          Child : System.Address;
+          Index : Glib.Gint);
+      pragma Import (C, Internal, "gtk_overlay_reorder_overlay");
+   begin
+      Internal (Get_Object (Self), Get_Object (Child), Index);
+   end Reorder_Overlay;
+
+   ------------------------------
+   -- Set_Overlay_Pass_Through --
+   ------------------------------
+
+   procedure Set_Overlay_Pass_Through
+      (Self         : not null access Gtk_Overlay_Record;
+       Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Pass_Through : Boolean)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Widget       : System.Address;
+          Pass_Through : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_overlay_set_overlay_pass_through");
+   begin
+      Internal (Get_Object (Self), Get_Object (Widget), Boolean'Pos (Pass_Through));
+   end Set_Overlay_Pass_Through;
+
    use type System.Address;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion

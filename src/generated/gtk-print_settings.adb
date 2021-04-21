@@ -96,6 +96,19 @@ package body Gtk.Print_Settings is
    end Gtk_New_From_File;
 
    ---------------------------
+   -- Gtk_New_From_Gvariant --
+   ---------------------------
+
+   procedure Gtk_New_From_Gvariant
+      (Self    : out Gtk_Print_Settings;
+       Variant : Glib.Variant.Gvariant)
+   is
+   begin
+      Self := new Gtk_Print_Settings_Record;
+      Gtk.Print_Settings.Initialize_From_Gvariant (Self, Variant);
+   end Gtk_New_From_Gvariant;
+
+   ---------------------------
    -- Gtk_New_From_Key_File --
    ---------------------------
 
@@ -132,6 +145,19 @@ package body Gtk.Print_Settings is
       Gtk.Print_Settings.Initialize_From_File (Self, File_Name);
       return Self;
    end Gtk_Print_Settings_New_From_File;
+
+   ------------------------------------------
+   -- Gtk_Print_Settings_New_From_Gvariant --
+   ------------------------------------------
+
+   function Gtk_Print_Settings_New_From_Gvariant
+      (Variant : Glib.Variant.Gvariant) return Gtk_Print_Settings
+   is
+      Self : constant Gtk_Print_Settings := new Gtk_Print_Settings_Record;
+   begin
+      Gtk.Print_Settings.Initialize_From_Gvariant (Self, Variant);
+      return Self;
+   end Gtk_Print_Settings_New_From_Gvariant;
 
    ------------------------------------------
    -- Gtk_Print_Settings_New_From_Key_File --
@@ -182,6 +208,22 @@ package body Gtk.Print_Settings is
          Set_Object (Self, Tmp_Return);
       end if;
    end Initialize_From_File;
+
+   ------------------------------
+   -- Initialize_From_Gvariant --
+   ------------------------------
+
+   procedure Initialize_From_Gvariant
+      (Self    : not null access Gtk_Print_Settings_Record'Class;
+       Variant : Glib.Variant.Gvariant)
+   is
+      function Internal (Variant : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_print_settings_new_from_gvariant");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Get_Object (Variant)));
+      end if;
+   end Initialize_From_Gvariant;
 
    ------------------------------
    -- Initialize_From_Key_File --
@@ -1434,21 +1476,40 @@ package body Gtk.Print_Settings is
    end To_File;
 
    -----------------
+   -- To_Gvariant --
+   -----------------
+
+   function To_Gvariant
+      (Self : not null access Gtk_Print_Settings_Record)
+       return Glib.Variant.Gvariant
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_print_settings_to_gvariant");
+   begin
+      return From_Object (Internal (Get_Object (Self)));
+   end To_Gvariant;
+
+   -----------------
    -- To_Key_File --
    -----------------
 
    procedure To_Key_File
       (Self       : not null access Gtk_Print_Settings_Record;
        Key_File   : Glib.Key_File.G_Key_File;
-       Group_Name : UTF8_String)
+       Group_Name : UTF8_String := "")
    is
       procedure Internal
          (Self       : System.Address;
           Key_File   : Glib.Key_File.G_Key_File;
           Group_Name : Gtkada.Types.Chars_Ptr);
       pragma Import (C, Internal, "gtk_print_settings_to_key_file");
-      Tmp_Group_Name : Gtkada.Types.Chars_Ptr := New_String (Group_Name);
+      Tmp_Group_Name : Gtkada.Types.Chars_Ptr;
    begin
+      if Group_Name = "" then
+         Tmp_Group_Name := Gtkada.Types.Null_Ptr;
+      else
+         Tmp_Group_Name := New_String (Group_Name);
+      end if;
       Internal (Get_Object (Self), Key_File, Tmp_Group_Name);
       Free (Tmp_Group_Name);
    end To_Key_File;

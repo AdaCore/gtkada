@@ -40,6 +40,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;
+with Glib.Error;  use Glib.Error;
 with Glib.Object; use Glib.Object;
 with Glib.Types;  use Glib.Types;
 with Glib.Values; use Glib.Values;
@@ -65,7 +66,8 @@ package Gtk.Buildable is
       (Self     : Gtk_Buildable;
        Builder  : not null access Gtk.Builder.Gtk_Builder_Record'Class;
        Child    : not null access Glib.Object.GObject_Record'Class;
-       The_Type : UTF8_String := "");
+       The_Type : UTF8_String := "";
+       Error    : Glib.Error.GError);
    --  Adds a child to Buildable. Type is an optional string describing how
    --  the child should be added.
    --  Since: gtk+ 2.12

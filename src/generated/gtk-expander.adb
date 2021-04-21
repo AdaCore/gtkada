@@ -42,7 +42,7 @@ package body Gtk.Expander is
    -- Gtk_Expander_New --
    ----------------------
 
-   function Gtk_Expander_New (Label : UTF8_String) return Gtk_Expander is
+   function Gtk_Expander_New (Label : UTF8_String := "") return Gtk_Expander is
       Expander : constant Gtk_Expander := new Gtk_Expander_Record;
    begin
       Gtk.Expander.Initialize (Expander, Label);
@@ -66,7 +66,10 @@ package body Gtk.Expander is
    -- Gtk_New --
    -------------
 
-   procedure Gtk_New (Expander : out Gtk_Expander; Label : UTF8_String) is
+   procedure Gtk_New
+      (Expander : out Gtk_Expander;
+       Label    : UTF8_String := "")
+   is
    begin
       Expander := new Gtk_Expander_Record;
       Gtk.Expander.Initialize (Expander, Label);
@@ -91,15 +94,20 @@ package body Gtk.Expander is
 
    procedure Initialize
       (Expander : not null access Gtk_Expander_Record'Class;
-       Label    : UTF8_String)
+       Label    : UTF8_String := "")
    is
       function Internal
          (Label : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_expander_new");
-      Tmp_Label  : Gtkada.Types.Chars_Ptr := New_String (Label);
+      Tmp_Label  : Gtkada.Types.Chars_Ptr;
       Tmp_Return : System.Address;
    begin
       if not Expander.Is_Created then
+         if Label = "" then
+            Tmp_Label := Gtkada.Types.Null_Ptr;
+         else
+            Tmp_Label := New_String (Label);
+         end if;
          Tmp_Return := Internal (Tmp_Label);
          Free (Tmp_Label);
          Set_Object (Expander, Tmp_Return);
