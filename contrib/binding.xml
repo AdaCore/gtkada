@@ -346,6 +346,9 @@
       </method>
       <method id="gtk_cell_area_get_focus_siblings" return="ObjectList"/>
       <method id="gtk_cell_area_get_cell_at_position" bind="False"/>
+      <method id="::add-editable">
+        <parameter name="cell_area" type="Gdk.Rectangle.Gdk_Rectangle"/>
+      </method>
       <!-- bound manually below -->
       <extra>
         <spec>
@@ -2229,6 +2232,8 @@ __PRE__
 
       <method id="gtk_status_icon_position_menu">
         <parameter name="user_data" ada="Icon" type="Glib.Object.GObject"/>
+        <parameter name="x" direction="out"/>
+        <parameter name="y" direction="out"/>
         <body>
       procedure Internal
          (Menu    : System.Address;
@@ -3037,6 +3042,7 @@ __PRE__
      <enum ctype="GtkPageOrientation"/>
      <enum ctype="GtkPageSet"/>
      <enum ctype="GtkPanDirection"/>
+     <enum ctype="GtkPopoverConstraint"/>
      <enum ctype="GtkPropagationPhase"/>
      <enum ctype="GtkEventSequenceState"/>
      <enum ctype="GtkLevelBarMode"/>
@@ -3497,6 +3503,7 @@ __PRE__
    </package>
 
    <package id="GtkStyleContext">
+     <enum ctype="GtkStyleContextPrintFlags"/>
      <method id="gtk_style_context_has_region"
              return_as_param="Is_Defined"/>
      <method id="gtk_style_context_list_classes" return="StringList"/>
@@ -3557,6 +3564,10 @@ __PRE__
 
    <package id="GtkFontButton">
      <parameter name="self" ada="Font_Button"/>
+   </package>
+
+   <package id="GtkFontChooser">
+     <enum ctype="GtkFontChooserLevel"/>
    </package>
 
    <package id="GtkTextBuffer">
@@ -4078,6 +4089,7 @@ creating a tag.
    <package id="GtkTextView">
      <parameter name="self" ada="View"/>
      <enum ctype="GtkTextViewLayer" />
+     <enum ctype="GtkTextExtendSelection"/>
 
      <!-- These are now inherited from the Scrollable interface -->
      <method id="gtk_text_view_get_hadjustment" bind="false"/>
@@ -5548,6 +5560,7 @@ text. Since: 3.14
 
      <method id="gtk_builder_set_application" bind="False"/> <!-- circular dep with GtkWidget -->
      <method id="gtk_builder_get_application" bind="False"/> <!-- circular dep with GtkWidget -->
+     <method id="gtk_builder_extend_with_template" bind="False"/> <!-- circular dep with GtkWidget -->
 
      <method id="gtk_builder_add_callback_symbol" bind="False"/> <!-- error in generated binding -->
    </package>
@@ -7858,6 +7871,8 @@ package body Generic_Set is
      <method id="g_string_vprintf" bind="False"/> <!-- valist -->
      <method id="g_string_free_to_bytes" bind="False"/> <!-- requires GByte -->
    </package>
+
+   <package id="GListModel" ada="Glib.List_Model"/>
 
    <package id="GMenu" ada="Glib.Menu">
       <method id="g_menu_get_type" ada="Get_Type_Menu" />
