@@ -327,7 +327,7 @@ package Glib.Menu_Model is
        Call  : Cb_GObject_Gint_Gint_Gint_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
-   --  Emitted when a change has occured to the menu.
+   --  Emitted when a change has occurred to the menu.
    --
    --  The only changes that can occur to a menu is that items are removed or
    --  added. Items may not change (except by being removed and added back in

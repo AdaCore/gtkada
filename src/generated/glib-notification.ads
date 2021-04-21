@@ -204,8 +204,10 @@ package Glib.Notification is
    procedure Set_Urgent
       (Self   : not null access Gnotification_Record;
        Urgent : Boolean);
+   pragma Obsolescent (Set_Urgent);
    --  Deprecated in favor of Glib.Notification.Set_Priority.
    --  Since: gtk+ 2.40
+   --  Deprecated since 2.42, 1
    --  "urgent": True if Notification is urgent
 
 end Glib.Notification;
