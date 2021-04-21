@@ -86,7 +86,6 @@ with Gtk.Accel_Label;         use Gtk.Accel_Label;
 with Gtk.Application;         use Gtk.Application;
 with Gtk.Arguments;           use Gtk.Arguments;
 with Gtk.Box;                 use Gtk.Box;
-with Gtk.Button;              use Gtk.Button;
 with Gtk.Check_Menu_Item;     use Gtk.Check_Menu_Item;
 with Gtk.Css_Provider;        use Gtk.Css_Provider;
 with Gtk.Container;           use Gtk.Container;
@@ -114,6 +113,11 @@ with Gtkada.Bindings;         use Gtkada.Bindings;
 with Gtkada.Handlers;         use Gtkada.Handlers;
 with Gtkada.Multi_Paned;      use Gtkada.Multi_Paned;
 with Gtkada.Style;
+
+pragma Warnings
+  (Off, "call to obsolescent procedure ""Get_Background_Color""");
+pragma Warnings (Off, "call to obsolescent procedure ""Popup""");
+--  Deprecated in Gtk+ 3.24
 
 package body Gtkada.MDI is
 
@@ -6193,8 +6197,8 @@ package body Gtkada.MDI is
          Dialog : Gtk_Dialog;
          Label  : Gtk_Label;
          Ent    : Gtk_Entry;
-         Button : Gtk_Widget;
-         pragma Warnings (Off, Button);
+         Button : Gtk_Widget with Unreferenced;
+
       begin
          Gtk_New (Dialog, Title => "Enter perspective name",
                   Parent => Gtk_Window (Get_Toplevel (MDI)),

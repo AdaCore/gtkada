@@ -53,6 +53,11 @@ with Pango.Enums;        use Pango.Enums;
 with Pango.Font;         use Pango.Font;
 with Pango.Layout;       use Pango.Layout;
 
+pragma Warnings (Off, "call to obsolescent function ""List_Devices""");
+pragma Warnings
+  (Off, "call to obsolescent procedure ""Get_Background_Color""");
+--  Deprecated in Gtk+ 3.24
+
 package body Gtkada.Style is
 
    Dec_To_Hex : constant array (0 .. 15) of Character :=
@@ -979,7 +984,6 @@ package body Gtkada.Style is
       Screen : constant Gdk_Screen := Widget.Get_Screen;
       Mgr : constant Gdk_Device_Manager :=
         Get_Device_Manager (Screen.Get_Display);
-      pragma Warnings (Off, "call to obsolescent function ""List_Devices""");
       L : Device_List.Glist := Mgr.List_Devices (Gdk_Device_Type_Master);
       L2 : Device_List.Glist := L;
       Device : Gdk_Device;
