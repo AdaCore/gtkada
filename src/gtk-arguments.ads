@@ -56,6 +56,7 @@ with Gtk.Notebook;
 with Gtk.Print_Operation;
 with Gtk.Status_Bar;
 with Gtk.Text_Iter;
+with Gtk.Text_View;
 with Gtk.Tree_Model;
 with Gtk.Widget;
 
@@ -181,6 +182,8 @@ package Gtk.Arguments is
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Text_Direction);
    function Unchecked_To_Gtk_Pan_Direction
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Pan_Direction);
+   function Unchecked_To_Gtk_Position_Type
+     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Position_Type);
    function Unchecked_To_Gtk_Event_Sequence_State
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Event_Sequence_State);
    function Unchecked_To_Gtk_Direction_Type
@@ -210,6 +213,9 @@ package Gtk.Arguments is
      is new Glib.Values.Unsafe_Enum_Nth (Gtk.GEntry.Gtk_Entry_Icon_Position);
    function Unchecked_To_Gtk_Text_Iter
      is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Text_Iter.Gtk_Text_Iter);
+   function Unchecked_To_Gtk_Text_Extend_Selection
+     is new Glib.Values.Unsafe_Enum_Nth
+              (Gtk.Text_View.Gtk_Text_Extend_Selection);
    function Unchecked_To_Gtk_Tree_Iter
      is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Tree_Model.Gtk_Tree_Iter);
    function Unchecked_To_Gtk_Tree_Model
@@ -225,6 +231,10 @@ package Gtk.Arguments is
    function Unchecked_To_Cairo_Rectangle_Int
      (Args : Glib.Values.C_GValues; Num : Guint)
      return Cairo.Region.Cairo_Rectangle_Int;
+   function Unchecked_To_Gdk_Rectangle
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Gdk.Rectangle.Gdk_Rectangle
+      renames Unchecked_To_Cairo_Rectangle_Int;
    function Unchecked_To_Gtk_Allocation
      (Args : Glib.Values.C_GValues; Num : Guint)
      return Gtk.Widget.Gtk_Allocation
