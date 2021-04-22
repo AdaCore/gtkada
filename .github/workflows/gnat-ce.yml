@@ -1,14 +1,5 @@
 # Build with GNAT Community compiler
-on:
-  push:
-    branches:
-      - master
-      - gtk-3.22.30
-  pull_request:
-    branches:
-      - master
-      - gtk-3.22.30
-  workflow_dispatch: # Manual launch
+on: [push, pull_request, workflow_dispatch] # Manual launch
 name: GNAT CE Build
 jobs:
   build:
@@ -38,7 +29,6 @@ jobs:
             msys/make
 
       - name: Set up Homebrew (Mac OS X only)
-        id: set-up-homebrew
         if: ${{ runner.os == 'macOS' }}
         uses: Homebrew/actions/setup-homebrew@master
 
@@ -55,6 +45,7 @@ jobs:
         with:
           path: ./cached_gnat
           key: ${{ runner.os }}-gnat-ce-2020
+          restore-keys: ${{ runner.os }}-gnat-ce-2020
 
       - name: Get GNAT Community 2020 toolchain
         uses: ada-actions/toolchain@ce2020
@@ -86,15 +77,22 @@ jobs:
              mv ${NAME}.tar.gz ${NAME}-dbg.tar.gz
           fi
 
-      - name: Upload tar-ball to Bintray
-        if: ${{ github.event_name != 'pull_request' }}
-        uses: reznikmm/upload-bintray-action@v3
+      - name: Keep artifacts
+        uses: actions/upload-artifact@v2
         with:
-          subject: reznikmm
-          repository: libadalang
-          package: gtkada
-          version: 0.1-git
-          sourcePath: '*.tar.gz'
-          override: 1
-          username: reznikmm
-          apiKey: ${{secrets.BINTRAY_API_KEY}}
+          name: ${{ runner.os }}-${{ matrix.debug }}
+          path: '*.tar.gz'
+
+      - name: AWS S3 upload
+        if: ${{ github.event_name != 'pull_request' &&
+            (github.ref == 'refs/heads/master' ||
+             github.ref == 'refs/heads/edge' ||
+             github.ref == 'refs/heads/gtk-3.24')
+            }}
+        env:
+          AWS_ACCESS_KEY_ID: ${{secrets.GHA_CACHE_ACCESS_KEY_ID}}
+          AWS_SECRET_ACCESS_KEY: ${{secrets.GHA_CACHE_SECRET}}
+          AWS_DEFAULT_REGION: eu-west-1
+        run: |
+            aws s3 cp . s3://adacore-gha-tray-eu-west-1/gtkada/ --recursive --exclude "*" --include "*.tar.gz" --sse=AES256
+            aws s3 ls s3://adacore-gha-tray-eu-west-1/gtkada/
