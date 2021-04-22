@@ -4820,7 +4820,6 @@ text. Since: 3.14
    </package>
 
    <package id="PangoFontMetrics">
-      <!--<record ctype="PangoFontMetrics" private="true"/>-->
    </package>
 
    <package id="PangoFontset">
@@ -4959,6 +4958,7 @@ text. Since: 3.14
          type Pango_Font_Face_Array is array (Natural range &lt;&gt;) of Pango_Font_Face;
        </type>
      </extra>
+     <method id="pango_font_face_get_family" bind="False"/>  <!-- circular dependency -->
      <method id="pango_font_face_list_sizes" return="gint**">
        <parameter name="sizes" ada=""/>
        <parameter name="n_sizes" ada=""/>
@@ -5010,6 +5010,8 @@ text. Since: 3.14
      <method id="pango_layout_get_log_attrs" bind="false"/> <!--  what is a pango_log -->
      <method id="pango_layout_get_log_attrs_readonly" bind="false"/> <!--  what
      is a pango_log -->
+     <method id="pango_layout_get_line_spacing" bind="False"/>
+     <method id="pango_layout_set_line_spacing" bind="False"/>
 
      <method id="pango_layout_get_iter" classwide="true"/>
 
@@ -5023,6 +5025,7 @@ text. Since: 3.14
      <method id="pango_layout_set_markup">
        <parameter name="length" default="-1" ada=""/>
      </method>
+
      <extra>
        <with_spec pkg="Gtkada.Types" />
        <spec>
@@ -5061,6 +5064,7 @@ text. Since: 3.14
      <method id="pango_layout_line_get_x_ranges" bind="false"/>
      <method id="pango_layout_line_index_to_x" bind="false"/>
      <method id="pango_layout_line_x_to_index" bind="false"/>
+     <method id="pango_layout_line_get_height" bind="False"/>
 
    </package>
 
@@ -6295,6 +6299,9 @@ direction, widget state, or icon size.
      <method id="pango_font_descriptions_free" bind="False"/> <!-- in Ada, need iteration -->
      <method id="pango_font_get_coverage" bind="False"/> <!-- circular dependency -->
      <method id="pango_font_get_font_map" bind="False"/> <!-- circular dependency -->
+     <method id="pango_font_get_face" bind="False"/> <!-- circular dependency -->
+     <method id="pango_font_get_features" bind="False"/> <!-- Harfbuzz required -->
+     <method id="pango_font_get_hb_font" bind="False"/> <!-- Harfbuzz required -->
      <method id="pango_font_get_metrics">
        <parameter name="language" default="Pango.Language.Null_Pango_Language"/>
      </method>
@@ -6314,7 +6321,6 @@ direction, widget state, or icon size.
    </package>
 
    <package id="PangoCoverage">
-     <method id="pango_coverage_new" ada="Pango_New"/>
      <method id="pango_coverage_from_bytes" bind="False"/>  <!-- not used for Ada -->
      <method id="pango_coverage_to_bytes" bind="False"/>  <!-- not used for Ada -->
    </package>
@@ -6325,7 +6331,9 @@ direction, widget state, or icon size.
    </package>
 
    <package id="PangoAttribute" ada="Pango.Attributes">
+     <slist ada="Pango_Attribute_SList" ctype="PangoAttribute"/>
      <method id="pango_attribute_init" bind="False"/> <!--  low-level -->
+     <method id="pango_attribute_get_type" ada="Get_Type_Attribute"/>
      <function id="pango_attr_underline_new"/>
      <function id="pango_attr_background_new"/>
      <function id="pango_attr_foreground_new"/>
@@ -6341,6 +6349,8 @@ direction, widget state, or icon size.
 
    <package id="PangoAttrList" into="PangoAttribute">
      <method id="pango_attr_list_get_iterator" bind="False"/>  <!-- Not needed ? -->
+     <method id="pango_attr_list_get_type" ada="Get_Type_Attr_List"/>
+     <method id="pango_attr_list_get_attributes" bind="False"/>
    </package>
 
    <package id="PangoContext">
