@@ -37,6 +37,16 @@ package body Pango.Attributes is
       return Result;
    end From_Object_Free;
 
+   function Convert (R : Pango.Attributes.Pango_Attribute) return System.Address is
+   begin
+      return Glib.To_Address (Glib.C_Proxy (R));
+   end Convert;
+
+   function Convert (R : System.Address) return Pango.Attributes.Pango_Attribute is
+   begin
+      return Pango.Attributes.Pango_Attribute(Glib.C_Proxy'(Glib.To_Proxy (R)));
+   end Convert;
+
    function From_Object_Free
      (B : access Pango_Attr_List'Class) return Pango_Attr_List
    is
@@ -154,6 +164,22 @@ package body Pango.Attributes is
       return Internal (Self, Attr2) /= 0;
    end Equal;
 
+   -----------
+   -- Equal --
+   -----------
+
+   function Equal
+      (Self       : Pango_Attr_List;
+       Other_List : Pango_Attr_List) return Boolean
+   is
+      function Internal
+         (Self       : System.Address;
+          Other_List : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "pango_attr_list_equal");
+   begin
+      return Internal (Get_Object (Self), Get_Object (Other_List)) /= 0;
+   end Equal;
+
    ------------
    -- Filter --
    ------------
@@ -233,6 +259,26 @@ package body Pango.Attributes is
    begin
       Internal (Get_Object (Self));
    end Unref;
+
+   ------------
+   -- Update --
+   ------------
+
+   procedure Update
+      (Self   : Pango_Attr_List;
+       Pos    : Glib.Gint;
+       Remove : Glib.Gint;
+       Add    : Glib.Gint)
+   is
+      procedure Internal
+         (Self   : System.Address;
+          Pos    : Glib.Gint;
+          Remove : Glib.Gint;
+          Add    : Glib.Gint);
+      pragma Import (C, Internal, "pango_attr_list_update");
+   begin
+      Internal (Get_Object (Self), Pos, Remove, Add);
+   end Update;
 
    ---------------------
    -- Attr_Family_New --

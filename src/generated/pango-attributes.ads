@@ -33,6 +33,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;
+with Glib.GSlist; use Glib.GSlist;
 with Pango.Enums; use Pango.Enums;
 
 package Pango.Attributes is
@@ -47,6 +48,10 @@ package Pango.Attributes is
    --  attribute applies and should be initialized using pango_attribute_init.
    --  By default an attribute will have an all-inclusive range of
    --  [0,G_MAXUINT].
+
+   function Convert (R : Pango.Attributes.Pango_Attribute) return System.Address;
+   function Convert (R : System.Address) return Pango.Attributes.Pango_Attribute;
+   package Pango_Attribute_SList is new Generic_SList (Pango.Attributes.Pango_Attribute);
 
    type Pango_Attr_List is new Glib.C_Boxed with null record;
    Null_Pango_Attr_List : constant Pango_Attr_List;
@@ -67,14 +72,17 @@ package Pango.Attributes is
    -- Constructors --
    ------------------
 
+   function Get_Type_Attribute return Glib.GType;
+   pragma Import (C, Get_Type_Attribute, "pango_attribute_get_type");
+
    procedure Gdk_New (Self : out Pango_Attr_List);
    --  Create a new empty attribute list with a reference count of one.
 
    function Pango_Attr_List_New return Pango_Attr_List;
    --  Create a new empty attribute list with a reference count of one.
 
-   function Get_Type return Glib.GType;
-   pragma Import (C, Get_Type, "pango_attr_list_get_type");
+   function Get_Type_Attr_List return Glib.GType;
+   pragma Import (C, Get_Type_Attr_List, "pango_attr_list_get_type");
 
    -------------
    -- Methods --
@@ -100,11 +108,20 @@ package Pango.Attributes is
    --  to.
    --  "attr2": another Pango.Attributes.Pango_Attribute
 
+   function Equal
+      (Self       : Pango_Attr_List;
+       Other_List : Pango_Attr_List) return Boolean;
+   --  Checks whether List and Other_List contain the same attributes and
+   --  whether those attributes apply to the same ranges. Beware that this will
+   --  return wrong values if any list contains duplicates.
+   --  Since: gtk+ 1.46
+   --  "other_list": the other Pango.Attributes.Pango_Attr_List
+
    procedure Change (Self : Pango_Attr_List; Attr : Pango_Attribute);
    --  Insert the given attribute into the Pango.Attributes.Pango_Attr_List.
    --  It will replace any attributes of the same type on that segment and be
    --  merged with any adjoining attributes that are identical.
-   --  This function is slower than Pango.Attributes.Insert for creating a
+   --  This function is slower than Pango.Attributes.Insert for creating an
    --  attribute list in order (potentially much slower for large lists).
    --  However, Pango.Attributes.Insert is not suitable for continually
    --  changing a set of attributes since it never removes or combines existing
@@ -162,6 +179,26 @@ package Pango.Attributes is
    procedure Unref (Self : Pango_Attr_List);
    --  Decrease the reference count of the given attribute list by one. If the
    --  result is zero, free the attribute list and the attributes it contains.
+
+   procedure Update
+      (Self   : Pango_Attr_List;
+       Pos    : Glib.Gint;
+       Remove : Glib.Gint;
+       Add    : Glib.Gint);
+   --  Update indices of attributes in List for a change in the text they
+   --  refer to.
+   --  The change that this function applies is removing Remove bytes at
+   --  position Pos and inserting Add bytes instead.
+   --  Attributes that fall entirely in the (Pos, Pos + Remove) range are
+   --  removed.
+   --  Attributes that start or end inside the (Pos, Pos + Remove) range are
+   --  shortened to reflect the removal.
+   --  Attributes start and end positions are updated if they are behind Pos +
+   --  Remove.
+   --  Since: gtk+ 1.44
+   --  "pos": the position of the change
+   --  "remove": the number of removed bytes
+   --  "add": the number of added bytes
 
    ---------------
    -- Functions --

@@ -42,30 +42,6 @@ package body Pango.Font_Metrics is
       return S;
    end From_Object;
 
-   -------------
-   -- Gdk_New --
-   -------------
-
-   procedure Gdk_New (Self : out Pango_Font_Metrics) is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "pango_font_metrics_new");
-   begin
-      Self.Set_Object (Internal);
-   end Gdk_New;
-
-   ----------------------------
-   -- Pango_Font_Metrics_New --
-   ----------------------------
-
-   function Pango_Font_Metrics_New return Pango_Font_Metrics is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "pango_font_metrics_new");
-      Self : Pango_Font_Metrics;
-   begin
-      Self.Set_Object (Internal);
-      return Self;
-   end Pango_Font_Metrics_New;
-
    --------------------------------
    -- Get_Approximate_Char_Width --
    --------------------------------
@@ -113,6 +89,17 @@ package body Pango.Font_Metrics is
    begin
       return Internal (Get_Object (Self));
    end Get_Descent;
+
+   ----------------
+   -- Get_Height --
+   ----------------
+
+   function Get_Height (Self : Pango_Font_Metrics) return Glib.Gint is
+      function Internal (Self : System.Address) return Glib.Gint;
+      pragma Import (C, Internal, "pango_font_metrics_get_height");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Height;
 
    --------------------------------
    -- Get_Strikethrough_Position --

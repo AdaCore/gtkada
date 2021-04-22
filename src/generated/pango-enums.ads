@@ -61,7 +61,15 @@ package Pango.Enums is
       Pango_Attr_Strikethrough_Color,
       Pango_Attr_Absolute_Size,
       Pango_Attr_Gravity,
-      Pango_Attr_Gravity_Hint);
+      Pango_Attr_Gravity_Hint,
+      Pango_Attr_Font_Features,
+      Pango_Attr_Foreground_Alpha,
+      Pango_Attr_Background_Alpha,
+      Pango_Attr_Allow_Breaks,
+      Pango_Attr_Show,
+      Pango_Attr_Insert_Hyphens,
+      Pango_Attr_Overline,
+      Pango_Attr_Overline_Color);
    pragma Convention (C, Attr_Type);
    --  The Pango.Enums.Attr_Type distinguishes between different types of
    --  attributes. Along with the predefined values, it is possible to allocate
@@ -77,6 +85,9 @@ package Pango.Enums is
    pragma Convention (C, Coverage_Level);
    --  Used to indicate how well a font can represent a particular Unicode
    --  character point for a particular script.
+   --
+   --  Since 1.44, only Pango.Enums.Pango_Coverage_None and
+   --  Pango.Enums.Pango_Coverage_Exact will be returned.
 
    type Direction is (
       Pango_Direction_Ltr,
@@ -102,6 +113,10 @@ package Pango.Enums is
    --  interpretation of this enumeration as the writing direction of a block
    --  of text and are no longer used; See Pango.Enums.Gravity for how vertical
    --  text is handled in Pango.
+   --
+   --  If you are interested in text direction, you should really use fribidi
+   --  directly. PangoDirection is only retained because it is used in some
+   --  public apis.
 
    type Font_Mask is mod 2 ** Integer'Size;
    pragma Convention (C, Font_Mask);
@@ -115,6 +130,7 @@ package Pango.Enums is
    Pango_Font_Mask_Stretch : constant Font_Mask := 16;
    Pango_Font_Mask_Size : constant Font_Mask := 32;
    Pango_Font_Mask_Gravity : constant Font_Mask := 64;
+   Pango_Font_Mask_Variations : constant Font_Mask := 128;
 
    type Gravity is (
       Pango_Gravity_South,
@@ -172,7 +188,10 @@ package Pango.Enums is
       Pango_Underline_Single,
       Pango_Underline_Double,
       Pango_Underline_Low,
-      Pango_Underline_Error);
+      Pango_Underline_Error,
+      Pango_Underline_Single_Line,
+      Pango_Underline_Double_Line,
+      Pango_Underline_Error_Line);
    pragma Convention (C, Underline);
    --  The Pango.Enums.Underline enumeration is used to specify whether text
    --  should be underlined, and if so, the type of underlining.

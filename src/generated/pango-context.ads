@@ -229,6 +229,24 @@ package Pango.Context is
    --  used. If no language tag is set on the context, metrics for the default
    --  language (as determined by Pango.Language.Get_Default) will be returned.
 
+   function Get_Round_Glyph_Positions
+      (Self : not null access Pango_Context_Record) return Boolean;
+   --  Returns whether font rendering with this context should round glyph
+   --  positions and widths.
+   --  Since: gtk+ 1.44
+
+   procedure Set_Round_Glyph_Positions
+      (Self            : not null access Pango_Context_Record;
+       Round_Positions : Boolean);
+   --  Sets whether font rendering with this context should round glyph
+   --  positions and widths to integral positions, in device units.
+   --  This is useful when the renderer can't handle subpixel positioning of
+   --  glyphs.
+   --  The default value is to round glyph positions, to remain compatible
+   --  with previous Pango behavior.
+   --  Since: gtk+ 1.44
+   --  "round_positions": whether to round glyph positions
+
    function Get_Serial
       (Self : not null access Pango_Context_Record) return Guint;
    --  Returns the current serial number of Context. The serial number is

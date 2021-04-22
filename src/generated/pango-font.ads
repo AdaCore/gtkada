@@ -118,6 +118,14 @@ package Pango.Font is
    --  "language": language tag used to determine which script to get the
    --  metrics for, or null to indicate to get the metrics for the entire font.
 
+   function Has_Char
+      (Font : not null access Pango_Font_Record;
+       Wc   : Gunichar) return Boolean;
+   --  Returns whether the font provides a glyph for this character.
+   --  Returns True if Font can render Wc
+   --  Since: gtk+ 1.44
+   --  "wc": a Unicode character
+
    function Better_Match
       (Self      : Pango_Font_Description;
        Old_Match : Pango_Font_Description;
@@ -267,6 +275,27 @@ package Pango.Font is
    --  Pango.Enums.Pango_Variant_Small_Caps.
    --  "variant": the variant type for the font description.
 
+   function Get_Variations
+      (Self : Pango_Font_Description) return UTF8_String;
+   --  Gets the variations field of a font description. See
+   --  Pango.Font.Set_Variations.
+   --  Since: gtk+ 1.42
+
+   procedure Set_Variations
+      (Self       : Pango_Font_Description;
+       Variations : UTF8_String);
+   --  Sets the variations field of a font description. OpenType font
+   --  variations allow to select a font instance by specifying values for a
+   --  number of axes, such as width or weight.
+   --  The format of the variations string is AXIS1=VALUE,AXIS2=VALUE..., with
+   --  each AXIS a 4 character tag that identifies a font axis, and each VALUE
+   --  a floating point number. Unknown axes are ignored, and values are
+   --  clamped to their allowed range.
+   --  Pango does not currently have a way to find supported axes of a font.
+   --  Both harfbuzz or freetype have API for this.
+   --  Since: gtk+ 1.42
+   --  "variations": a string representing the variations
+
    function Get_Weight
       (Self : Pango_Font_Description) return Pango.Enums.Weight;
    pragma Import (C, Get_Weight, "pango_font_description_get_weight");
@@ -336,6 +365,17 @@ package Pango.Font is
    --  needed temporarily.
    --  "family": a string representing the family name.
 
+   procedure Set_Variations_Static
+      (Self       : Pango_Font_Description;
+       Variations : UTF8_String);
+   --  Like Pango.Font.Set_Variations, except that no copy of Variations is
+   --  made. The caller must make sure that the string passed in stays around
+   --  until Desc has been freed or the name is set again. This function can be
+   --  used if Variations is a static string such as a C string literal, or if
+   --  Desc is only needed temporarily.
+   --  Since: gtk+ 1.42
+   --  "variations": a string representing the variations
+
    function To_Filename (Self : Pango_Font_Description) return UTF8_String;
    --  Creates a filename representation of a font description. The filename
    --  is identical to the result from calling Pango.Font.To_String, but with
@@ -393,17 +433,34 @@ package Pango.Font is
 
    function From_String (Str : UTF8_String) return Pango_Font_Description;
    --  Creates a new font description from a string representation in the form
-   --  "[FAMILY-LIST] [STYLE-OPTIONS] [SIZE]", where FAMILY-LIST is a comma
-   --  separated list of families optionally terminated by a comma,
-   --  STYLE_OPTIONS is a whitespace separated list of words where each WORD
-   --  describes one of style, variant, weight, stretch, or gravity, and SIZE
-   --  is a decimal number (size in points) or optionally followed by the unit
-   --  modifier "px" for absolute size. Any one of the options may be absent.
-   --  If FAMILY-LIST is absent, then the family_name field of the resulting
-   --  font description will be initialized to null. If STYLE-OPTIONS is
-   --  missing, then all style options will be set to the default values. If
-   --  SIZE is missing, the size in the resulting font description will be set
-   --  to 0.
+   --  "\[FAMILY-LIST] \[STYLE-OPTIONS] \[SIZE] \[VARIATIONS]",
+   --  where FAMILY-LIST is a comma-separated list of families optionally
+   --  terminated by a comma, STYLE_OPTIONS is a whitespace-separated list of
+   --  words where each word describes one of style, variant, weight, stretch,
+   --  or gravity, and SIZE is a decimal number (size in points) or optionally
+   --  followed by the unit modifier "px" for absolute size. VARIATIONS is a
+   --  comma-separated list of font variation specifications of the form
+   --  "\Axis=value" (the = sign is optional).
+   --  The following words are understood as styles: "Normal", "Roman",
+   --  "Oblique", "Italic".
+   --  The following words are understood as variants: "Small-Caps".
+   --  The following words are understood as weights: "Thin", "Ultra-Light",
+   --  "Extra-Light", "Light", "Semi-Light", "Demi-Light", "Book", "Regular",
+   --  "Medium", "Semi-Bold", "Demi-Bold", "Bold", "Ultra-Bold", "Extra-Bold",
+   --  "Heavy", "Black", "Ultra-Black", "Extra-Black".
+   --  The following words are understood as stretch values:
+   --  "Ultra-Condensed", "Extra-Condensed", "Condensed", "Semi-Condensed",
+   --  "Semi-Expanded", "Expanded", "Extra-Expanded", "Ultra-Expanded".
+   --  The following words are understood as gravity values: "Not-Rotated",
+   --  "South", "Upside-Down", "North", "Rotated-Left", "East",
+   --  "Rotated-Right", "West".
+   --  Any one of the options may be absent. If FAMILY-LIST is absent, then
+   --  the family_name field of the resulting font description will be
+   --  initialized to null. If STYLE-OPTIONS is missing, then all style options
+   --  will be set to the default values. If SIZE is missing, the size in the
+   --  resulting font description will be set to 0.
+   --  A typical example:
+   --  "Cantarell Italic Light 15 \Wght=200"
    --  "str": string representation of a font description.
 
 end Pango.Font;
