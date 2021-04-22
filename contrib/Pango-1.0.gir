@@ -7734,36 +7734,6 @@ structure are private to implementations of a font backend. See
 the documentation of the corresponding getters for documentation
 of their meaning.</doc>
       <source-position filename="../pango/pango-font.h" line="344"/>
-      <field name="ref_count" readable="0" private="1">
-        <type name="guint" c:type="guint"/>
-      </field>
-      <field name="ascent" readable="0" private="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="descent" readable="0" private="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="height" readable="0" private="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="approximate_char_width" readable="0" private="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="approximate_digit_width" readable="0" private="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="underline_position" readable="0" private="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="underline_thickness" readable="0" private="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="strikethrough_position" readable="0" private="1">
-        <type name="gint" c:type="int"/>
-      </field>
-      <field name="strikethrough_thickness" readable="0" private="1">
-        <type name="gint" c:type="int"/>
-      </field>
       <method name="get_approximate_char_width"
               c:identifier="pango_font_metrics_get_approximate_char_width">
         <doc xml:space="preserve"
