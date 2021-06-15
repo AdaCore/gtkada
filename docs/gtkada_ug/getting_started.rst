@@ -82,13 +82,16 @@ For example, assuming you have installed Gtk+ under :file:`/opt/gtk` and
 using bash::
 
   $ export FONTCONFIG_FILE=/opt/gtk/etc/fonts/fonts.conf
-  
-If your application is using printing, on UNIX and Linux you will need to
-point your environment variable GTK_EXE_PREFIX to the root directory of your
-Gtk+ installation::
 
-  $ export GTK_EXE_PREFIX=/opt/gtk/
-  
+If your application is using printing, on UNIX and Linux you will need to
+point your environment variable GTK_PATH to the directory that contains
+your Gtk+ libraries, appending it with the :file:`gtk-3.0` suffix::
+
+  $ export GTK_PATH=<gtk_install_dir>/lib/gtk-3.0
+
+This will allow Gtk+ to show the available printers and options when using
+`Gtk.Print` and `Gtk.PrintOperations` packages (or `Gtkada.Printing`, which
+is a high-level interface built on top of these packages).
 
 How to distribute a GtkAda application
 ======================================
@@ -143,7 +146,7 @@ if you are using the system's libraries)::
 
    FONTCONFIG_FILE=$prefix/etc/fonts/fonts.conf
    export FONTCONFIG_FILE
-   
+
    XDG_DATA_DIRS=$XDG_DATA_DIRS:$prefix/share
    export XDG_DATA_DIRS
 
@@ -208,13 +211,13 @@ On Unix, this is done with::
      export GPR_PROJECT_PATH
 
 .. highlight:: ada
-  
+
 To build your own application, you should then setup a project file (see
 the GNAT documentation for more details on project files), which simply
 contains the statement::
 
   with "gtkada";
-  
+
 This will automatically set the right compiler and linker options, so that
 your application is linked with GtkAda.
 
@@ -278,7 +281,7 @@ recompiled as-is on other platforms::
   +----+-----------+----+----+---------------+
   |        GLIB         |   X-Window / Win32  |
   +---------------------+--------------------+
-  
+
 Although the packages have been evolving a lot since the first versions of
 GtkAda, the specs are stabilizing now. We will try as much as possible to
 provide backward compatibility whenever possible.
@@ -293,18 +296,18 @@ We have tried to adopt a consistent naming scheme for Ada identifiers:
   sign (_) is used to separate words, e.g::
 
     Gtk_Button   Gtk_Color_Selection_Dialog
-    
+
 * Because of a clash between Ada keywords and widget names, there
   are two exceptions to the above general rule::
 
     Gtk.GEntry.Gtk_Entry   Gtk.GRange.Gtk_Range
-    
+
 * The function names are the same as in  C, ignoring the leading
   `gtk_` and the widget name, e.g::
 
     gtk_misc_set_padding        =>  Gtk.Misc.Set_Padding
     gtk_toggle_button_set_state =>  Gtk.Toggle_Button.Set_State
-    
+
 * Most enum types have been grouped in the :file:`gtk-enums.ads` file
 
 * Some features have been implemented as generic packages. These
