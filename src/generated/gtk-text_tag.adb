@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -90,6 +90,22 @@ package body Gtk.Text_Tag is
          Set_Object (Tag, Tmp_Return);
       end if;
    end Initialize;
+
+   -------------
+   -- Changed --
+   -------------
+
+   procedure Changed
+      (Tag          : not null access Gtk_Text_Tag_Record;
+       Size_Changed : Boolean)
+   is
+      procedure Internal
+         (Tag          : System.Address;
+          Size_Changed : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_text_tag_changed");
+   begin
+      Internal (Get_Object (Tag), Boolean'Pos (Size_Changed));
+   end Changed;
 
    ------------------
    -- Get_Priority --

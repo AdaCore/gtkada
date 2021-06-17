@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -23,8 +23,9 @@
 
 --  <description>
 --  The Gtk.Cell_Editable.Gtk_Cell_Editable interface must be implemented for
---  widgets to be usable when editing the contents of a
---  Gtk.Tree_View.Gtk_Tree_View cell.
+--  widgets to be usable to edit the contents of a Gtk.Tree_View.Gtk_Tree_View
+--  cell. It provides a way to specify how temporary widgets should be
+--  configured for editing, get the new value, etc.
 --
 --  </description>
 --  <group>Trees and Lists</group>
@@ -64,10 +65,19 @@ package Gtk.Cell_Editable is
       (Cell_Editable : Gtk_Cell_Editable;
        Event         : Gdk.Event.Gdk_Event);
    pragma Import (C, Start_Editing, "gtk_cell_editable_start_editing");
-   --  Begins editing on a Cell_Editable. Event is the Gdk.Event.Gdk_Event
-   --  that began the editing process. It may be null, in the instance that
-   --  editing was initiated through programatic means.
-   --  "event": A Gdk.Event.Gdk_Event, or null
+   --  Begins editing on a Cell_Editable.
+   --  The Gtk.Cell_Renderer.Gtk_Cell_Renderer for the cell creates and
+   --  returns a Gtk.Cell_Editable.Gtk_Cell_Editable from
+   --  Gtk.Cell_Renderer.Start_Editing, configured for the
+   --  Gtk.Cell_Renderer.Gtk_Cell_Renderer type.
+   --  Gtk.Cell_Editable.Start_Editing can then set up Cell_Editable suitably
+   --  for editing a cell, e.g. making the Esc key emit
+   --  Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done.
+   --  Note that the Cell_Editable is created on-demand for the current edit;
+   --  its lifetime is temporary and does not persist across other edits and/or
+   --  cells.
+   --  "event": The Gdk.Event.Gdk_Event that began the editing process, or
+   --  null if editing was initiated programmatically
 
    ----------------
    -- Properties --
@@ -102,7 +112,10 @@ package Gtk.Cell_Editable is
    --
    --  Implementations of Gtk.Cell_Editable.Gtk_Cell_Editable are responsible
    --  for emitting this signal when they are done editing, e.g.
-   --  Gtk.GEntry.Gtk_Entry is emitting it when the user presses Enter.
+   --  Gtk.GEntry.Gtk_Entry emits this signal when the user presses Enter.
+   --  Typical things to do in a handler for ::editing-done are to capture the
+   --  edited value, disconnect the Cell_Editable from signals on the
+   --  Gtk.Cell_Renderer.Gtk_Cell_Renderer, etc.
    --
    --  Gtk.Cell_Editable.Editing_Done is a convenience method for emitting
    --  Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done.
@@ -118,7 +131,8 @@ package Gtk.Cell_Editable is
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  This signal is meant to indicate that the cell is finished editing, and
-   --  the widget may now be destroyed.
+   --  the Cell_Editable widget is being removed and may subsequently be
+   --  destroyed.
    --
    --  Implementations of Gtk.Cell_Editable.Gtk_Cell_Editable are responsible
    --  for emitting this signal when they are done editing. It must be emitted
@@ -155,10 +169,19 @@ package Gtk.Cell_Editable is
      (Cell_Editable : Gtk_Cell_Editable;
       Event         : Gdk.Event.Gdk_Event);
    pragma Convention (C, Virtual_Start_Editing);
-   --  Begins editing on a Cell_Editable. Event is the Gdk.Event.Gdk_Event
-   --  that began the editing process. It may be null, in the instance that
-   --  editing was initiated through programatic means.
-   --  "event": A Gdk.Event.Gdk_Event, or null
+   --  Begins editing on a Cell_Editable.
+   --  The Gtk.Cell_Renderer.Gtk_Cell_Renderer for the cell creates and
+   --  returns a Gtk.Cell_Editable.Gtk_Cell_Editable from
+   --  gtk_cell_renderer_start_editing, configured for the
+   --  Gtk.Cell_Renderer.Gtk_Cell_Renderer type.
+   --  Gtk.Cell_Editable.Start_Editing can then set up Cell_Editable suitably
+   --  for editing a cell, e.g. making the Esc key emit
+   --  Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done.
+   --  Note that the Cell_Editable is created on-demand for the current edit;
+   --  its lifetime is temporary and does not persist across other edits and/or
+   --  cells.
+   --  "event": The Gdk.Event.Gdk_Event that began the editing process, or
+   --  null if editing was initiated programmatically
 
    subtype Cell_Editable_Interface_Descr is Glib.Object.Interface_Description;
 

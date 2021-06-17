@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -220,6 +220,23 @@ package body Gtk.Assistant is
    begin
       return Internal (Get_Object (Assistant), Get_Object (Page)) /= 0;
    end Get_Page_Complete;
+
+   --------------------------
+   -- Get_Page_Has_Padding --
+   --------------------------
+
+   function Get_Page_Has_Padding
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean
+   is
+      function Internal
+         (Assistant : System.Address;
+          Page      : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_assistant_get_page_has_padding");
+   begin
+      return Internal (Get_Object (Assistant), Get_Object (Page)) /= 0;
+   end Get_Page_Has_Padding;
 
    ---------------------------
    -- Get_Page_Header_Image --
@@ -483,6 +500,24 @@ package body Gtk.Assistant is
    begin
       Internal (Get_Object (Assistant), Get_Object (Page), Boolean'Pos (Complete));
    end Set_Page_Complete;
+
+   --------------------------
+   -- Set_Page_Has_Padding --
+   --------------------------
+
+   procedure Set_Page_Has_Padding
+      (Assistant   : not null access Gtk_Assistant_Record;
+       Page        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Has_Padding : Boolean)
+   is
+      procedure Internal
+         (Assistant   : System.Address;
+          Page        : System.Address;
+          Has_Padding : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_assistant_set_page_has_padding");
+   begin
+      Internal (Get_Object (Assistant), Get_Object (Page), Boolean'Pos (Has_Padding));
+   end Set_Page_Has_Padding;
 
    ---------------------------
    -- Set_Page_Header_Image --

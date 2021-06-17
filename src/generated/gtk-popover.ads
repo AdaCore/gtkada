@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -60,6 +60,18 @@
 --  <attribute name="label">Paste</attribute> <attribute
 --  name="action">app.paste</attribute> <attribute
 --  name="verb-icon">edit-paste-symbolic</attribute> </item> </section> ]|
+--
+--  # CSS nodes
+--
+--  GtkPopover has a single css node called popover. It always gets the
+--  .background style class and it gets the .menu style class if it is
+--  menu-like (e.g. Gtk.Popover_Menu.Gtk_Popover_Menu or created using
+--  Gtk.Popover.Gtk_New_From_Model.
+--
+--  Particular uses of GtkPopover, such as touch selection popups or
+--  magnifiers in Gtk.GEntry.Gtk_Entry or Gtk.Text_View.Gtk_Text_View get style
+--  classes like .touch-selection or .magnifier to differentiate from plain
+--  popovers.
 --
 --  </description>
 
@@ -178,6 +190,39 @@ package Gtk.Popover is
    --  binding
    --  "action_namespace": the namespace for actions in Model
 
+   function Get_Constrain_To
+      (Self : not null access Gtk_Popover_Record)
+       return Gtk.Enums.Gtk_Popover_Constraint;
+   --  Returns the constraint for placing this popover. See
+   --  Gtk.Popover.Set_Constrain_To.
+   --  Since: gtk+ 3.20
+
+   procedure Set_Constrain_To
+      (Self       : not null access Gtk_Popover_Record;
+       Constraint : Gtk.Enums.Gtk_Popover_Constraint);
+   --  Sets a constraint for positioning this popover.
+   --  Note that not all platforms support placing popovers freely, and may
+   --  already impose constraints.
+   --  Since: gtk+ 3.20
+   --  "constraint": the new constraint
+
+   function Get_Default_Widget
+      (Self : not null access Gtk_Popover_Record)
+       return Gtk.Widget.Gtk_Widget;
+   --  Gets the widget that should be set as the default while the popover is
+   --  shown.
+   --  Since: gtk+ 3.18
+
+   procedure Set_Default_Widget
+      (Self   : not null access Gtk_Popover_Record;
+       Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Sets the widget that should be set as default widget while the popover
+   --  is shown (see Gtk.Window.Set_Default). Gtk.Popover.Gtk_Popover remembers
+   --  the previous default widget and reestablishes it when the popover is
+   --  dismissed.
+   --  Since: gtk+ 3.18
+   --  "widget": the new default widget, or null
+
    function Get_Modal
       (Self : not null access Gtk_Popover_Record) return Boolean;
    --  Returns whether the popover is modal, see gtk_popover_set_modal to see
@@ -244,18 +289,49 @@ package Gtk.Popover is
    --  Since: gtk+ 3.12
    --  "relative_to": a Gtk.Widget.Gtk_Widget
 
+   function Get_Transitions_Enabled
+      (Self : not null access Gtk_Popover_Record) return Boolean;
+   pragma Obsolescent (Get_Transitions_Enabled);
+   --  Returns whether show/hide transitions are enabled on this popover.
+   --  Since: gtk+ 3.16
+   --  Deprecated since 3.22, 1
+
+   procedure Set_Transitions_Enabled
+      (Self                : not null access Gtk_Popover_Record;
+       Transitions_Enabled : Boolean);
+   pragma Obsolescent (Set_Transitions_Enabled);
+   --  Sets whether show/hide transitions are enabled on this popover
+   --  Since: gtk+ 3.16
+   --  Deprecated since 3.22, 1
+   --  "transitions_enabled": Whether transitions are enabled
+
+   procedure Popdown (Self : not null access Gtk_Popover_Record);
+   --  Pops Popover down.This is different than a Gtk.Widget.Hide call in that
+   --  it shows the popover with a transition. If you want to hide the popover
+   --  without a transition, use Gtk.Widget.Hide.
+   --  Since: gtk+ 3.22
+
+   procedure Popup (Self : not null access Gtk_Popover_Record);
+   --  Pops Popover up. This is different than a Gtk.Widget.Show call in that
+   --  it shows the popover with a transition. If you want to show the popover
+   --  without a transition, use Gtk.Widget.Show.
+   --  Since: gtk+ 3.22
+
    ----------------
    -- Properties --
    ----------------
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Constrain_To_Property : constant Gtk.Enums.Property_Gtk_Popover_Constraint;
+   --  Sets a constraint for the popover position.
+
    Modal_Property : constant Glib.Properties.Property_Boolean;
    --  Sets whether the popover is modal (so other elements in the window do
    --  not receive input while the popover is visible).
 
    Pointing_To_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Cairo.Region.Cairo_Rectangle_Int
+   --  Type: Gdk.Rectangle
    --  Marks a specific rectangle to be pointed.
 
    Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type;
@@ -264,6 +340,9 @@ package Gtk.Popover is
    Relative_To_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
    --  Sets the attached widget.
+
+   Transitions_Enabled_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether show/hide transitions are enabled for this popover.
 
    -------------
    -- Signals --
@@ -284,6 +363,8 @@ package Gtk.Popover is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
+   --  This signal is emitted when the popover is dismissed either through API
+   --  or user interaction.
 
    ----------------
    -- Interfaces --
@@ -304,6 +385,8 @@ package Gtk.Popover is
    renames Implements_Gtk_Buildable.To_Object;
 
 private
+   Transitions_Enabled_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("transitions-enabled");
    Relative_To_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("relative-to");
    Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type :=
@@ -312,4 +395,6 @@ private
      Glib.Properties.Build ("pointing-to");
    Modal_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("modal");
+   Constrain_To_Property : constant Gtk.Enums.Property_Gtk_Popover_Constraint :=
+     Gtk.Enums.Build ("constrain-to");
 end Gtk.Popover;

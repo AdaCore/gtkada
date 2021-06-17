@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -44,10 +44,26 @@
 --
 --  The GtkListBox widget was added in GTK+ 3.10.
 --
+--  # GtkListBox as GtkBuildable
+--
+--  The GtkListBox implementation of the Gtk.Buildable.Gtk_Buildable interface
+--  supports setting a child as the placeholder by specifying "placeholder" as
+--  the "type" attribute of a <child> element. See Gtk.List_Box.Set_Placeholder
+--  for info.
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> list ╰── row[.activatable] ]|
+--
+--  GtkListBox uses a single CSS node named list. Each GtkListBoxRow uses a
+--  single CSS node named row. The row nodes get the .activatable style class
+--  added when appropriate.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
+with Glib.List_Model;  use Glib.List_Model;
 with Glib.Object;      use Glib.Object;
 with Glib.Properties;  use Glib.Properties;
 with Glib.Types;       use Glib.Types;
@@ -66,6 +82,16 @@ package Gtk.List_Box is
    ---------------
    -- Callbacks --
    ---------------
+
+   type Gtk_List_Box_Create_Widget_Func is access function (Item : System.Address) return Gtk.Widget.Gtk_Widget;
+   --  Called for list boxes that are bound to a Glib.List_Model.Glist_Model
+   --  with Gtk.List_Box.Bind_Model for each item that gets added to the model.
+   --  Versions of GTK+ prior to 3.18 called gtk_widget_show_all on the rows
+   --  created by the GtkListBoxCreateWidgetFunc, but this forced all widgets
+   --  inside the row to be shown, and is no longer the case. Applications
+   --  should be updated to show the desired row widgets.
+   --  Since: gtk+ 3.16
+   --  "item": the item from the model for which to create a widget for
 
    type Gtk_List_Box_Foreach_Func is access procedure
      (Box : not null access Gtk_List_Box_Record'Class;
@@ -125,6 +151,73 @@ package Gtk.List_Box is
    -------------
    -- Methods --
    -------------
+
+   procedure Bind_Model
+      (Self                : not null access Gtk_List_Box_Record;
+       Model               : Glib.List_Model.Glist_Model;
+       Create_Widget_Func  : Gtk_List_Box_Create_Widget_Func;
+       User_Data_Free_Func : Glib.G_Destroy_Notify_Address);
+   --  Binds Model to Box.
+   --  If Box was already bound to a model, that previous binding is
+   --  destroyed.
+   --  The contents of Box are cleared and then filled with widgets that
+   --  represent items from Model. Box is updated whenever Model changes. If
+   --  Model is null, Box is left empty.
+   --  It is undefined to add or remove widgets directly (for example, with
+   --  Gtk.List_Box.Insert or Gtk.Container.Add) while Box is bound to a model.
+   --  Note that using a model is incompatible with the filtering and sorting
+   --  functionality in GtkListBox. When using a model, filtering and sorting
+   --  should be implemented by the model.
+   --  Since: gtk+ 3.16
+   --  "model": the Glib.List_Model.Glist_Model to be bound to Box
+   --  "create_widget_func": a function that creates widgets for items or null
+   --  in case you also passed null as Model
+   --  "user_data_free_func": function for freeing User_Data
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type) is null;
+   package Bind_Model_User_Data is
+
+      type Gtk_List_Box_Create_Widget_Func is access function
+        (Item      : System.Address;
+         User_Data : User_Data_Type) return Gtk.Widget.Gtk_Widget;
+      --  Called for list boxes that are bound to a Glib.List_Model.Glist_Model
+      --  with Gtk.List_Box.Bind_Model for each item that gets added to the model.
+      --  Versions of GTK+ prior to 3.18 called gtk_widget_show_all on the rows
+      --  created by the GtkListBoxCreateWidgetFunc, but this forced all widgets
+      --  inside the row to be shown, and is no longer the case. Applications
+      --  should be updated to show the desired row widgets.
+      --  Since: gtk+ 3.16
+      --  "item": the item from the model for which to create a widget for
+      --  "user_data": user data
+
+      procedure Bind_Model
+         (Self                : not null access Gtk.List_Box.Gtk_List_Box_Record'Class;
+          Model               : Glib.List_Model.Glist_Model;
+          Create_Widget_Func  : Gtk_List_Box_Create_Widget_Func;
+          User_Data           : User_Data_Type;
+          User_Data_Free_Func : Glib.G_Destroy_Notify_Address);
+      --  Binds Model to Box.
+      --  If Box was already bound to a model, that previous binding is
+      --  destroyed.
+      --  The contents of Box are cleared and then filled with widgets that
+      --  represent items from Model. Box is updated whenever Model changes. If
+      --  Model is null, Box is left empty.
+      --  It is undefined to add or remove widgets directly (for example, with
+      --  Gtk.List_Box.Insert or Gtk.Container.Add) while Box is bound to a
+      --  model.
+      --  Note that using a model is incompatible with the filtering and
+      --  sorting functionality in GtkListBox. When using a model, filtering
+      --  and sorting should be implemented by the model.
+      --  Since: gtk+ 3.16
+      --  "model": the Glib.List_Model.Glist_Model to be bound to Box
+      --  "create_widget_func": a function that creates widgets for items or
+      --  null in case you also passed null as Model
+      --  "user_data": user data passed to Create_Widget_Func
+      --  "user_data_free_func": function for freeing User_Data
+
+   end Bind_Model_User_Data;
 
    procedure Drag_Highlight_Row
       (Self : not null access Gtk_List_Box_Record;
@@ -317,6 +410,8 @@ package Gtk.List_Box is
    --  continue to be called each time a row changes (via
    --  Gtk.List_Box_Row.Changed) or when Gtk.List_Box.Invalidate_Filter is
    --  called.
+   --  Note that using a filter function is incompatible with using a model
+   --  (see Gtk.List_Box.Bind_Model).
    --  Since: gtk+ 3.10
    --  "filter_func": callback that lets you filter which rows to show
 
@@ -346,6 +441,8 @@ package Gtk.List_Box is
       --  will continue to be called each time a row changes (via
       --  Gtk.List_Box_Row.Changed) or when Gtk.List_Box.Invalidate_Filter is
       --  called.
+      --  Note that using a filter function is incompatible with using a model
+      --  (see Gtk.List_Box.Bind_Model).
       --  Since: gtk+ 3.10
       --  "filter_func": callback that lets you filter which rows to show
       --  "user_data": user data passed to Filter_Func
@@ -440,6 +537,8 @@ package Gtk.List_Box is
    --  continue to be called each time a row changes (via
    --  Gtk.List_Box_Row.Changed) and when Gtk.List_Box.Invalidate_Sort is
    --  called.
+   --  Note that using a sort function is incompatible with using a model (see
+   --  Gtk.List_Box.Bind_Model).
    --  Since: gtk+ 3.10
    --  "sort_func": the sort function
 
@@ -468,6 +567,8 @@ package Gtk.List_Box is
       --  continue to be called each time a row changes (via
       --  Gtk.List_Box_Row.Changed) and when Gtk.List_Box.Invalidate_Sort is
       --  called.
+      --  Note that using a sort function is incompatible with using a model
+      --  (see Gtk.List_Box.Bind_Model).
       --  Since: gtk+ 3.10
       --  "sort_func": the sort function
       --  "user_data": user data passed to Sort_Func

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -34,6 +34,32 @@ package body Pango.Font_Family is
    pragma Unreferenced (Type_Conversion_Pango_Font_Family);
 
    --------------
+   -- Get_Face --
+   --------------
+
+   function Get_Face
+      (Self : not null access Pango_Font_Family_Record;
+       Name : UTF8_String := "") return Pango.Font_Face.Pango_Font_Face
+   is
+      function Internal
+         (Self : System.Address;
+          Name : Gtkada.Types.Chars_Ptr) return System.Address;
+      pragma Import (C, Internal, "pango_font_family_get_face");
+      Tmp_Name             : Gtkada.Types.Chars_Ptr;
+      Stub_Pango_Font_Face : Pango.Font_Face.Pango_Font_Face_Record;
+      Tmp_Return           : System.Address;
+   begin
+      if Name = "" then
+         Tmp_Name := Gtkada.Types.Null_Ptr;
+      else
+         Tmp_Name := New_String (Name);
+      end if;
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Name);
+      Free (Tmp_Name);
+      return Pango.Font_Face.Pango_Font_Face (Get_User_Data (Tmp_Return, Stub_Pango_Font_Face));
+   end Get_Face;
+
+   --------------
    -- Get_Name --
    --------------
 
@@ -59,6 +85,19 @@ package body Pango.Font_Family is
    begin
       return Internal (Get_Object (Self)) /= 0;
    end Is_Monospace;
+
+   -----------------
+   -- Is_Variable --
+   -----------------
+
+   function Is_Variable
+      (Self : not null access Pango_Font_Family_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "pango_font_family_is_variable");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Variable;
 
    ----------------
    -- List_Faces --

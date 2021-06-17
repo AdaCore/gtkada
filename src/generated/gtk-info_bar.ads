@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -41,24 +41,25 @@
 --  informational message, etc, by using Gtk.Info_Bar.Set_Message_Type. GTK+
 --  may use the message type to determine how the message is displayed.
 --
---  A simple example for using a GtkInfoBar: |[<!-- language="C" --> // set up
---  info bar GtkWidget *widget; GtkInfoBar *bar;
+--  A simple example for using a Gtk.Info_Bar.Gtk_Info_Bar: |[<!--
+--  language="C" --> GtkWidget *widget, *message_label, *content_area;
+--  GtkWidget *grid; GtkInfoBar *bar;
 --
---  widget = gtk_info_bar_new (); bar = GTK_INFO_BAR (bar);
+--  // set up info bar widget = gtk_info_bar_new (); bar = GTK_INFO_BAR
+--  (widget); grid = gtk_grid_new ();
 --
 --  gtk_widget_set_no_show_all (widget, TRUE); message_label = gtk_label_new
---  (""); gtk_widget_show (message_label); content_area =
---  gtk_info_bar_get_content_area (bar); gtk_container_add (GTK_CONTAINER
---  (content_area), message_label); gtk_info_bar_add_button (bar, _("_OK"),
---  GTK_RESPONSE_OK); g_signal_connect (bar, "response", G_CALLBACK
---  (gtk_widget_hide), NULL); gtk_grid_attach (GTK_GRID (grid), widget, 0, 2,
---  1, 1);
+--  (""); content_area = gtk_info_bar_get_content_area (bar); gtk_container_add
+--  (GTK_CONTAINER (content_area), message_label); gtk_info_bar_add_button
+--  (bar, _("_OK"), GTK_RESPONSE_OK); g_signal_connect (bar, "response",
+--  G_CALLBACK (gtk_widget_hide), NULL); gtk_grid_attach (GTK_GRID (grid),
+--  widget, 0, 2, 1, 1);
 --
---  ...
+--  // ...
 --
 --  // show an error message gtk_label_set_text (GTK_LABEL (message_label),
---  message); gtk_info_bar_set_message_type (bar, GTK_MESSAGE_ERROR);
---  gtk_widget_show (bar); ]|
+--  "An error occurred!"); gtk_info_bar_set_message_type (bar,
+--  GTK_MESSAGE_ERROR); gtk_widget_show (bar); ]|
 --
 --  # GtkInfoBar as GtkBuildable
 --
@@ -70,6 +71,12 @@
 --  multiple <action-widget> elements. The "response" attribute specifies a
 --  numeric response, and the content of the element is the id of widget (which
 --  should be a child of the dialogs Action_Area).
+--
+--  # CSS nodes
+--
+--  GtkInfoBar has a single CSS node with name infobar. The node may get one
+--  of the style classes .info, .warning, .error or .question, depending on the
+--  message type.
 --
 --  </description>
 
@@ -158,10 +165,24 @@ package Gtk.Info_Bar is
    procedure Set_Message_Type
       (Self         : not null access Gtk_Info_Bar_Record;
        Message_Type : Gtk.Message_Dialog.Gtk_Message_Type);
-   --  Sets the message type of the message area. GTK+ uses this type to
-   --  determine what color to use when drawing the message area.
+   --  Sets the message type of the message area.
+   --  GTK+ uses this type to determine how the message is displayed.
    --  Since: gtk+ 2.18
    --  "message_type": a Gtk.Message_Dialog.Gtk_Message_Type
+
+   function Get_Revealed
+      (Self : not null access Gtk_Info_Bar_Record) return Boolean;
+   --  Since: gtk+ 3.22.29
+
+   procedure Set_Revealed
+      (Self     : not null access Gtk_Info_Bar_Record;
+       Revealed : Boolean);
+   --  Sets the GtkInfoBar:revealed property to Revealed. This will cause
+   --  Info_Bar to show up with a slide-in transition.
+   --  Note that this property does not automatically show Info_Bar and thus
+   --  won't have any effect if it is invisible.
+   --  Since: gtk+ 3.22.29
+   --  "revealed": The new value of the property
 
    function Get_Show_Close_Button
       (Self : not null access Gtk_Info_Bar_Record) return Boolean;
@@ -231,6 +252,8 @@ package Gtk.Info_Bar is
    --  The type of the message.
    --
    --  The type may be used to determine the appearance of the info bar.
+
+   Revealed_Property : constant Glib.Properties.Property_Boolean;
 
    Show_Close_Button_Property : constant Glib.Properties.Property_Boolean;
    --  Whether to include a standard close button.
@@ -315,6 +338,8 @@ package Gtk.Info_Bar is
 private
    Show_Close_Button_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("show-close-button");
+   Revealed_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("revealed");
    Message_Type_Property : constant Gtk.Message_Dialog.Property_Gtk_Message_Type :=
      Gtk.Message_Dialog.Build ("message-type");
 end Gtk.Info_Bar;

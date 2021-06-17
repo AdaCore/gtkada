@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -27,6 +27,13 @@
 --  multimedia applications, and GTK+ provides a
 --  Gtk.Volume_Button.Gtk_Volume_Button subclass that is tailored for this use
 --  case.
+--
+--  # CSS nodes
+--
+--  GtkScaleButton has a single CSS node with name button. To differentiate it
+--  from a plain Gtk.Button.Gtk_Button, it gets the .scale style class.
+--
+--  The popup widget that contains the scale has a .scale-popup style class.
 --
 --  </description>
 
@@ -75,7 +82,7 @@ package Gtk.Scale_Button is
    --  Since: gtk+ 2.12
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
    --  "min": the minimum value of the scale (usually 0)
    --  "max": the maximum value of the scale (usually 100)
    --  "step": the stepping of value when a scroll-wheel event, or up/down
@@ -92,7 +99,7 @@ package Gtk.Scale_Button is
    --  Creates a Gtk.Scale_Button.Gtk_Scale_Button, with a range between Min
    --  and Max, with a stepping of Step.
    --  Since: gtk+ 2.12
-   --  "size": a stock icon size
+   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
    --  "min": the minimum value of the scale (usually 0)
    --  "max": the maximum value of the scale (usually 100)
    --  "step": the stepping of value when a scroll-wheel event, or up/down
@@ -178,7 +185,7 @@ package Gtk.Scale_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Scale_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Scale_Button_Record)

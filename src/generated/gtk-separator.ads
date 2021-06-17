@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -26,6 +26,11 @@
 --  the value of the Gtk.Orientable.Gtk_Orientable:orientation property, used
 --  to group the widgets within a window. It displays a line with a shadow to
 --  make it appear sunken into the interface.
+--
+--  # CSS nodes
+--
+--  GtkSeparator has a single CSS node with name separator. The node gets one
+--  of the .horizontal or .vertical style classes.
 --
 --  </description>
 --  <screenshot>gtk-separator</screenshot>

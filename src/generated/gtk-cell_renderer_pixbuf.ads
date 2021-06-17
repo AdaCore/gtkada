@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -116,6 +116,8 @@ package Gtk.Cell_Renderer_Pixbuf is
    Stock_Id_Property : constant Glib.Properties.Property_String;
 
    Stock_Size_Property : constant Glib.Properties.Property_Uint;
+   --  The Gtk.Enums.Gtk_Icon_Size value that specifies the size of the
+   --  rendered icon.
 
    Surface_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Cairo.Cairo_Surface

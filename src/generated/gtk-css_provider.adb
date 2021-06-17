@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -123,6 +123,24 @@ package body Gtk.Css_Provider is
       end if;
       return Tmp_Return /= 0;
    end Load_From_Path;
+
+   ------------------------
+   -- Load_From_Resource --
+   ------------------------
+
+   procedure Load_From_Resource
+      (Self          : not null access Gtk_Css_Provider_Record;
+       Resource_Path : UTF8_String)
+   is
+      procedure Internal
+         (Self          : System.Address;
+          Resource_Path : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "gtk_css_provider_load_from_resource");
+      Tmp_Resource_Path : Gtkada.Types.Chars_Ptr := New_String (Resource_Path);
+   begin
+      Internal (Get_Object (Self), Tmp_Resource_Path);
+      Free (Tmp_Resource_Path);
+   end Load_From_Resource;
 
    ---------------
    -- To_String --

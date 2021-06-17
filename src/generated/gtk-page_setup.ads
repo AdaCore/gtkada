@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -63,6 +63,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
 with Glib.Key_File;  use Glib.Key_File;
 with Glib.Object;    use Glib.Object;
+with Glib.Variant;   use Glib.Variant;
 with Gtk.Enums;      use Gtk.Enums;
 with Gtk.Paper_Size; use Gtk.Paper_Size;
 
@@ -107,6 +108,26 @@ package Gtk.Page_Setup is
    --  null if an error occurred. See Gtk.Page_Setup.To_File.
    --  Since: gtk+ 2.12
    --  "file_name": the filename to read the page setup from
+
+   procedure Gtk_New_From_Gvariant
+      (Self    : out Gtk_Page_Setup;
+       Variant : Glib.Variant.Gvariant);
+   procedure Initialize_From_Gvariant
+      (Self    : not null access Gtk_Page_Setup_Record'Class;
+       Variant : Glib.Variant.Gvariant);
+   --  Desrialize a page setup from an a{sv} variant in the format produced by
+   --  Gtk.Page_Setup.To_Gvariant.
+   --  Since: gtk+ 3.22
+   --  Initialize_From_Gvariant does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
+   --  "variant": an a{sv} Glib.Variant.Gvariant
+
+   function Gtk_Page_Setup_New_From_Gvariant
+      (Variant : Glib.Variant.Gvariant) return Gtk_Page_Setup;
+   --  Desrialize a page setup from an a{sv} variant in the format produced by
+   --  Gtk.Page_Setup.To_Gvariant.
+   --  Since: gtk+ 3.22
+   --  "variant": an a{sv} Glib.Variant.Gvariant
 
    procedure Gtk_New_From_Key_File
       (Self       : out Gtk_Page_Setup;
@@ -311,10 +332,16 @@ package Gtk.Page_Setup is
    --  Since: gtk+ 2.12
    --  "file_name": the file to save to
 
+   function To_Gvariant
+      (Self : not null access Gtk_Page_Setup_Record)
+       return Glib.Variant.Gvariant;
+   --  Serialize page setup to an a{sv} variant.
+   --  Since: gtk+ 3.22
+
    procedure To_Key_File
       (Self       : not null access Gtk_Page_Setup_Record;
        Key_File   : Glib.Key_File.G_Key_File;
-       Group_Name : UTF8_String);
+       Group_Name : UTF8_String := "");
    --  This function adds the page setup from Setup to Key_File.
    --  Since: gtk+ 2.12
    --  "key_file": the Gkey.File.Gkey_File to save the page setup to

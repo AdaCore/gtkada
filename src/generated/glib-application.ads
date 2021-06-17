@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -42,7 +42,7 @@
 --  but corresponds roughly to a graphical desktop login. When your application
 --  is launched again, its arguments are passed through platform communication
 --  to the already running program. The already running instance of the program
---  is called the "primary instance"; for non-unique applications this is the
+--  is called the "primary instance"; for non-unique applications this is
 --  always the current instance. On Linux, the D-Bus session bus is used for
 --  communication.
 --
@@ -58,12 +58,12 @@
 --  signal is sent to the primary instance and Glib.Application.Run promptly
 --  returns. See the code examples below.
 --
---  If used, the expected form of an application identifier is very close to
---  that of of a [DBus bus
---  name](http://dbus.freedesktop.org/doc/dbus-specification.htmlmessage-protocol-names-interface).
---  Examples include: "com.example.MyApp",
---  "org.example.internal-apps.Calculator". For details on valid application
---  identifiers, see Glib.Application.Id_Is_Valid.
+--  If used, the expected form of an application identifier is the same as
+--  that of of a [D-Bus well-known bus
+--  name](https://dbus.freedesktop.org/doc/dbus-specification.htmlmessage-protocol-names-bus).
+--  Examples include: `com.example.MyApp`,
+--  `org.example.internal_apps.Calculator`, `org._7_zip.Archiver`. For details
+--  on valid application identifiers, see Glib.Application.Id_Is_Valid.
 --
 --  On Linux, the application identifier is claimed as a well-known bus name
 --  on the user's session bus. This means that the uniqueness of your
@@ -103,7 +103,7 @@
 --  application initialization for all of these in a single place.
 --
 --  Regardless of which of these entry points is used to start the
---  application, GApplication passes some "platform data from the launching
+--  application, GApplication passes some ‘platform data' from the launching
 --  instance to the primary instance, in the form of a Glib.Variant.Gvariant
 --  dictionary mapping strings to variants. To use platform data, override the
 --  Before_Emit or After_Emit virtual functions in your
@@ -169,6 +169,9 @@ package Glib.Application is
    G_Application_Handles_Command_Line : constant GApplication_Flags := 8;
    G_Application_Send_Environment : constant GApplication_Flags := 16;
    G_Application_Non_Unique : constant GApplication_Flags := 32;
+   G_Application_Can_Override_App_Id : constant GApplication_Flags := 64;
+   G_Application_Allow_Replacement : constant GApplication_Flags := 128;
+   G_Application_Replace : constant GApplication_Flags := 256;
 
    type Gapplication_Command_Line_Record is new GObject_Record with null record;
    type Gapplication_Command_Line is access all Gapplication_Command_Line_Record'Class;
@@ -242,6 +245,19 @@ package Glib.Application is
    --  The application must be registered before calling this function.
    --  Since: gtk+ 2.28
 
+   procedure Bind_Busy_Property
+      (Self     : not null access Gapplication_Record;
+       Object   : System.Address;
+       Property : UTF8_String);
+   --  Marks Application as busy (see Glib.Application.Mark_Busy) while
+   --  Property on Object is True.
+   --  The binding holds a reference to Application while it is active, but
+   --  not to Object. Instead, the binding is destroyed when Object is
+   --  finalized.
+   --  Since: gtk+ 2.44
+   --  "object": a Glib.Object.GObject
+   --  "property": the name of a boolean property of Object
+
    function Get_Application_Id
       (Self : not null access Gapplication_Record) return UTF8_String;
    --  Gets the unique identifier for Application.
@@ -309,6 +325,12 @@ package Glib.Application is
    --  Since: gtk+ 2.28
    --  "inactivity_timeout": the timeout, in milliseconds
 
+   function Get_Is_Busy
+      (Self : not null access Gapplication_Record) return Boolean;
+   --  Gets the application's current busy state, as set through
+   --  Glib.Application.Mark_Busy or Glib.Application.Bind_Busy_Property.
+   --  Since: gtk+ 2.44
+
    function Get_Is_Registered
       (Self : not null access Gapplication_Record) return Boolean;
    --  Checks if Application is registered.
@@ -364,7 +386,13 @@ package Glib.Application is
    --  path to null.
    --  Changing the resource base path once the application is running is not
    --  recommended. The point at which the resource path is consulted for
-   --  forming paths for various purposes is unspecified.
+   --  forming paths for various purposes is unspecified. When writing a
+   --  sub-class of Glib.Application.Gapplication you should either set the
+   --  Glib.Application.Gapplication:resource-base-path property at
+   --  construction time, or call this function during the instance
+   --  initialization. Alternatively, you can call this function in the
+   --  GApplication_Class.startup virtual function, before chaining up to the
+   --  parent implementation.
    --  Since: gtk+ 2.42
    --  "resource_path": the resource path to use
 
@@ -389,7 +417,11 @@ package Glib.Application is
    --  Immediately quits the application.
    --  Upon return to the mainloop, Glib.Application.Run will return, calling
    --  only the 'shutdown' function before doing so.
-   --  The hold count is ignored.
+   --  The hold count is ignored. Take care if your code has called
+   --  Glib.Application.Hold on the application and is therefore still
+   --  expecting it to exist. (Note that you may have called
+   --  Glib.Application.Hold indirectly, for example through
+   --  Gtk.Application.Add_Window.)
    --  The result of calling Glib.Application.Run again after it returns is
    --  unspecified.
    --  Since: gtk+ 2.32
@@ -483,11 +515,9 @@ package Glib.Application is
    --  immediately, except in the case that
    --  Glib.Application.Set_Inactivity_Timeout is in use.
    --  This function sets the prgname (g_set_prgname), if not already set, to
-   --  the basename of argv[0]. Since 2.38, if
-   --  Glib.Application.G_Application_Is_Service is specified, the prgname is
-   --  set to the application ID. The main impact of this is is that the
-   --  wmclass of windows created by Gtk+ will be set accordingly, which helps
-   --  the window manager determine which application is showing the window.
+   --  the basename of argv[0].
+   --  Much like g_main_loop_run, this function will acquire the main context
+   --  for the duration that the application is running.
    --  Since 2.40, applications that are not explicitly flagged as services or
    --  launchers (ie: neither Glib.Application.G_Application_Is_Service or
    --  Glib.Application.G_Application_Is_Launcher are given as flags) will
@@ -554,6 +584,46 @@ package Glib.Application is
    --  Application is destroyed then the default application will revert back
    --  to null.
    --  Since: gtk+ 2.32
+
+   procedure Set_Option_Context_Description
+      (Self        : not null access Gapplication_Record;
+       Description : UTF8_String := "");
+   --  Adds a description to the Application option context.
+   --  See Glib.Option.Set_Description for more information.
+   --  Since: gtk+ 2.56
+   --  "description": a string to be shown in `--help` output after the list
+   --  of options, or null
+
+   procedure Set_Option_Context_Parameter_String
+      (Self             : not null access Gapplication_Record;
+       Parameter_String : UTF8_String := "");
+   --  Sets the parameter string to be used by the commandline handling of
+   --  Application.
+   --  This function registers the argument to be passed to Glib.Option.G_New
+   --  when the internal Glib.Option.Goption_Context of Application is created.
+   --  See Glib.Option.G_New for more information about Parameter_String.
+   --  Since: gtk+ 2.56
+   --  "parameter_string": a string which is displayed in the first line of
+   --  `--help` output, after the usage summary `programname [OPTION...]`.
+
+   procedure Set_Option_Context_Summary
+      (Self    : not null access Gapplication_Record;
+       Summary : UTF8_String := "");
+   --  Adds a summary to the Application option context.
+   --  See Glib.Option.Set_Summary for more information.
+   --  Since: gtk+ 2.56
+   --  "summary": a string to be shown in `--help` output before the list of
+   --  options, or null
+
+   procedure Unbind_Busy_Property
+      (Self     : not null access Gapplication_Record;
+       Object   : System.Address;
+       Property : UTF8_String);
+   --  Destroys a binding between Property and the busy state of Application
+   --  that was previously created with Glib.Application.Bind_Busy_Property.
+   --  Since: gtk+ 2.44
+   --  "object": a Glib.Object.GObject
+   --  "property": the name of a boolean property of Object
 
    procedure Unmark_Busy (Self : not null access Gapplication_Record);
    --  Decreases the busy count of Application.
@@ -787,17 +857,42 @@ package Glib.Application is
    --  Checks if Application_Id is a valid application identifier.
    --  A valid ID is required for calls to Glib.Application.G_New and
    --  Glib.Application.Set_Application_Id.
+   --  Application identifiers follow the same format as [D-Bus well-known bus
+   --  names](https://dbus.freedesktop.org/doc/dbus-specification.htmlmessage-protocol-names-bus).
    --  For convenience, the restrictions on application identifiers are
    --  reproduced here:
-   --  - Application identifiers must contain only the ASCII characters
-   --  "[A-Z][a-z][0-9]_-." and must not begin with a digit.
-   --  - Application identifiers must contain at least one '.' (period)
-   --  character (and thus at least three elements).
-   --  - Application identifiers must not begin or end with a '.' (period)
+   --  - Application identifiers are composed of 1 or more elements separated
+   --  by a period (`.`) character. All elements must contain at least one
    --  character.
-   --  - Application identifiers must not contain consecutive '.' (period)
-   --  characters.
+   --  - Each element must only contain the ASCII characters
+   --  `[A-Z][a-z][0-9]_-`, with `-` discouraged in new application
+   --  identifiers. Each element must not begin with a digit.
+   --  - Application identifiers must contain at least one `.` (period)
+   --  character (and thus at least two elements).
+   --  - Application identifiers must not begin with a `.` (period) character.
    --  - Application identifiers must not exceed 255 characters.
+   --  Note that the hyphen (`-`) character is allowed in application
+   --  identifiers, but is problematic or not allowed in various specifications
+   --  and APIs that refer to D-Bus, such as [Flatpak application
+   --  IDs](http://docs.flatpak.org/en/latest/introduction.htmlidentifiers),
+   --  the [`DBusActivatable` interface in the Desktop Entry
+   --  Specification](https://specifications.freedesktop.org/desktop-entry-spec/desktop-entry-spec-latest.htmldbus),
+   --  and the convention that an application's "main" interface and object
+   --  path resemble its application identifier and bus name. To avoid
+   --  situations that require special-case handling, it is recommended that
+   --  new application identifiers consistently replace hyphens with
+   --  underscores.
+   --  Like D-Bus interface names, application identifiers should start with
+   --  the reversed DNS domain name of the author of the interface (in
+   --  lower-case), and it is conventional for the rest of the application
+   --  identifier to consist of words run together, with initial capital
+   --  letters.
+   --  As with D-Bus interface names, if the author's DNS domain name contains
+   --  hyphen/minus characters they should be replaced by underscores, and if
+   --  it contains leading digits they should be escaped by prepending an
+   --  underscore. For example, if the owner of 7-zip.org used an application
+   --  identifier for an archiving application, it might be named
+   --  `org._7_zip.Archiver`.
    --  "application_id": a potential application identifier
 
    ----------------
@@ -818,6 +913,10 @@ package Glib.Application is
    --  Type: Application_Flags
 
    Inactivity_Timeout_Property : constant Glib.Properties.Property_Uint;
+
+   Is_Busy_Property : constant Glib.Properties.Property_Boolean;
+   --  Whether the application is currently marked as busy through
+   --  Glib.Application.Mark_Busy or Glib.Application.Bind_Busy_Property.
 
    Is_Registered_Property : constant Glib.Properties.Property_Boolean;
 
@@ -905,9 +1004,9 @@ package Glib.Application is
    --
    --  In the event that the application is marked
    --  Glib.Application.G_Application_Handles_Command_Line the "normal
-   --  processing" will send the Option dictionary to the primary instance
-   --  where it can be read with g_application_command_line_get_options. The
-   --  signal handler can modify the dictionary before returning, and the
+   --  processing" will send the Options dictionary to the primary instance
+   --  where it can be read with g_application_command_line_get_options_dict.
+   --  The signal handler can modify the dictionary before returning, and the
    --  modified dictionary will be sent.
    --
    --  In the event that Glib.Application.G_Application_Handles_Command_Line
@@ -942,6 +1041,33 @@ package Glib.Application is
    -- to exit the process, return a non-negative option, 0 for success,
    -- and a positive value for failure. To continue, return -1 to let
    -- the default option processing continue.
+
+   type Cb_Gapplication_Boolean is not null access function
+     (Self : access Gapplication_Record'Class) return Boolean;
+
+   type Cb_GObject_Boolean is not null access function
+     (Self : access Glib.Object.GObject_Record'Class)
+   return Boolean;
+
+   Signal_Name_Lost : constant Glib.Signal_Name := "name-lost";
+   procedure On_Name_Lost
+      (Self  : not null access Gapplication_Record;
+       Call  : Cb_Gapplication_Boolean;
+       After : Boolean := False);
+   procedure On_Name_Lost
+      (Self  : not null access Gapplication_Record;
+       Call  : Cb_GObject_Boolean;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::name-lost signal is emitted only on the registered primary
+   --  instance when a new instance has taken over. This can only happen if the
+   --  application is using the
+   --  Glib.Application.G_Application_Allow_Replacement flag.
+   --
+   --  The default handler for this signal calls Glib.Application.Quit.
+   -- 
+   --  Callback parameters:
+   --    --  Returns True if the signal has been handled
 
    Signal_Open : constant Glib.Signal_Name := "open";
    --  The ::open signal is emitted on the primary instance when there are
@@ -1065,6 +1191,8 @@ private
      Glib.Properties.Build ("is-remote");
    Is_Registered_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("is-registered");
+   Is_Busy_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("is-busy");
    Inactivity_Timeout_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("inactivity-timeout");
    Flags_Property : constant Glib.Properties.Property_Boxed :=

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -186,6 +186,8 @@ package Gtk.Entry_Completion is
       (Completion : not null access Gtk_Entry_Completion_Record;
        Index      : Glib.Gint);
    --  Deletes the action at Index_ from Completion's action list.
+   --  Note that Index_ is a relative position and the position of an action
+   --  may have changed since it was inserted.
    --  Since: gtk+ 2.4
    --  "index_": the index of the item to delete
 
@@ -347,6 +349,8 @@ package Gtk.Entry_Completion is
    --  Inserts an action in Completion's action item list at position Index_
    --  with text Text. If you want the action item to have markup, use
    --  Gtk.Entry_Completion.Insert_Action_Markup.
+   --  Note that Index_ is a relative position in the list of actions and the
+   --  position of an action can change when deleting a different action.
    --  Since: gtk+ 2.4
    --  "index_": the index of the item to insert
    --  "text": text of the item to insert

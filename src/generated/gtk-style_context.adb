@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -27,9 +27,7 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
 with Gtkada.Types;               use Gtkada.Types;
-pragma Warnings(On);
 
 package body Gtk.Style_Context is
 
@@ -882,6 +880,23 @@ package body Gtk.Style_Context is
       Progress := Acc_Progress;
       Is_Running := Tmp_Return /= 0;
    end State_Is_Running;
+
+   ---------------
+   -- To_String --
+   ---------------
+
+   function To_String
+      (Self  : not null access Gtk_Style_Context_Record;
+       Flags : Gtk_Style_Context_Print_Flags) return UTF8_String
+   is
+      function Internal
+         (Self  : System.Address;
+          Flags : Gtk_Style_Context_Print_Flags)
+          return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "gtk_style_context_to_string");
+   begin
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self), Flags));
+   end To_String;
 
    -----------------------------
    -- Add_Provider_For_Screen --

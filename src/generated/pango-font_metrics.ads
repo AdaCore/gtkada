@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -46,16 +46,6 @@ package Pango.Font_Metrics is
    -- Constructors --
    ------------------
 
-   procedure Gdk_New (Self : out Pango_Font_Metrics);
-   --  Creates a new Pango.Font_Metrics.Pango_Font_Metrics structure. This is
-   --  only for internal use by Pango backends and there is no public way to
-   --  set the fields of the structure.
-
-   function Pango_Font_Metrics_New return Pango_Font_Metrics;
-   --  Creates a new Pango.Font_Metrics.Pango_Font_Metrics structure. This is
-   --  only for internal use by Pango backends and there is no public way to
-   --  set the fields of the structure.
-
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "pango_font_metrics_get_type");
 
@@ -90,6 +80,12 @@ package Pango.Font_Metrics is
    --  distance from the baseline to the logical bottom of a line of text. (The
    --  logical bottom may be above or below the bottom of the actual drawn ink.
    --  It is necessary to lay out the text to figure where the ink will be.)
+
+   function Get_Height (Self : Pango_Font_Metrics) return Glib.Gint;
+   --  Gets the line height from a font metrics structure. The line height is
+   --  the distance between successive baselines in wrapped text.
+   --  If the line height is not available, 0 is returned.
+   --  Since: gtk+ 1.44
 
    function Get_Strikethrough_Position
       (Self : Pango_Font_Metrics) return Glib.Gint;

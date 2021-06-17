@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -196,6 +196,19 @@ package body Pango.Context is
       return From_Object (Internal (Get_Object (Self), Desc, Get_Object (Language)));
    end Get_Metrics;
 
+   -------------------------------
+   -- Get_Round_Glyph_Positions --
+   -------------------------------
+
+   function Get_Round_Glyph_Positions
+      (Self : not null access Pango_Context_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "pango_context_get_round_glyph_positions");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Round_Glyph_Positions;
+
    ----------------
    -- Get_Serial --
    ----------------
@@ -378,5 +391,21 @@ package body Pango.Context is
    begin
       Internal (Get_Object (Self), Matrix);
    end Set_Matrix;
+
+   -------------------------------
+   -- Set_Round_Glyph_Positions --
+   -------------------------------
+
+   procedure Set_Round_Glyph_Positions
+      (Self            : not null access Pango_Context_Record;
+       Round_Positions : Boolean)
+   is
+      procedure Internal
+         (Self            : System.Address;
+          Round_Positions : Glib.Gboolean);
+      pragma Import (C, Internal, "pango_context_set_round_glyph_positions");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Round_Positions));
+   end Set_Round_Glyph_Positions;
 
 end Pango.Context;

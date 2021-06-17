@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -27,11 +27,13 @@
 --  that is part of a group of toggle buttons where only one button can be
 --  active at a time.
 --
---  Use Gtk.Radio_Tool_Button.Gtk_New to create a new
---  Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button. Use
---  gtk_radio_tool_button_new_from_widget to create a new
---  Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button that is part of the same group
---  as an existing Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button.
+--  Use Gtk.Radio_Tool_Button.Gtk_New to create a new GtkRadioToolButton. Use
+--  gtk_radio_tool_button_new_from_widget to create a new GtkRadioToolButton
+--  that is part of the same group as an existing GtkRadioToolButton.
+--
+--  # CSS nodes
+--
+--  GtkRadioToolButton has a single CSS node with name toolbutton.
 --
 --  </description>
 
@@ -140,7 +142,7 @@ package Gtk.Radio_Tool_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Radio_Tool_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Radio_Tool_Button_Record)

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -70,6 +70,24 @@ package body Gtk.Settings is
    package Type_Conversion_Gtk_Settings is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Settings_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Settings);
+
+   --------------------
+   -- Reset_Property --
+   --------------------
+
+   procedure Reset_Property
+      (Self : not null access Gtk_Settings_Record;
+       Name : UTF8_String)
+   is
+      procedure Internal
+         (Self : System.Address;
+          Name : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "gtk_settings_reset_property");
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
+   begin
+      Internal (Get_Object (Self), Tmp_Name);
+      Free (Tmp_Name);
+   end Reset_Property;
 
    -------------------------
    -- Set_Double_Property --

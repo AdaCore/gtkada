@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -1434,7 +1434,7 @@ package body Gtk.Tree_View is
       --  straight mapping between the cell and the model. This is useful for
       --  customizing the cell renderer. For example, a function might get an
       --  integer from the Tree_Model, and render it to the "text" attribute of
-      --  "cell" by converting it to its written equivilent. This is set by
+      --  "cell" by converting it to its written equivalent. This is set by
       --  calling gtk_tree_view_column_set_cell_data_func
       --  "tree_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column
       --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being
@@ -2552,6 +2552,28 @@ package body Gtk.Tree_View is
    begin
       Internal (Get_Object (Tree_View));
    end Unset_Rows_Drag_Source;
+
+   ----------------
+   -- Get_Border --
+   ----------------
+
+   function Get_Border
+      (Self   : not null access Gtk_Tree_View_Record;
+       Border : access Gtk.Style.Gtk_Border) return Boolean
+   is
+      function Internal
+         (Self       : System.Address;
+          Acc_Border : access Gtk.Style.Gtk_Border) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_scrollable_get_border");
+      Acc_Border     : aliased Gtk.Style.Gtk_Border;
+      Tmp_Acc_Border : aliased Gtk.Style.Gtk_Border;
+      Tmp_Return     : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Acc_Border'Access);
+      Acc_Border := Tmp_Acc_Border;
+      Border.all := Acc_Border;
+      return Tmp_Return /= 0;
+   end Get_Border;
 
    ---------------------
    -- Get_Hadjustment --

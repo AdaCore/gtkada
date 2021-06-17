@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -42,6 +42,42 @@
 --  meaning as Gtk.Scale.Add_Mark parameters of the same name. If the element
 --  is not empty, its content is taken as the markup to show at the mark. It
 --  can be translated with the usual "translatable" and "context" attributes.
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> scale[.fine-tune][.marks-before][.marks-after]
+--  ├── marks.top │ ├── mark │ ┊ ├── [label] │ ┊ ╰── indicator ┊ ┊ │ ╰── mark
+--  ├── [value] ├── contents │ ╰── trough │ ├── slider │ ├── [highlight] │ ╰──
+--  [fill] ╰── marks.bottom ├── mark ┊ ├── indicator ┊ ╰── [label] ╰── mark ]|
+--
+--  GtkScale has a main CSS node with name scale and a subnode for its
+--  contents, with subnodes named trough and slider.
+--
+--  The main node gets the style class .fine-tune added when the scale is in
+--  'fine-tuning' mode.
+--
+--  If the scale has an origin (see Gtk.Scale.Set_Has_Origin), there is a
+--  subnode with name highlight below the trough node that is used for
+--  rendering the highlighted part of the trough.
+--
+--  If the scale is showing a fill level (see Gtk.GRange.Set_Show_Fill_Level),
+--  there is a subnode with name fill below the trough node that is used for
+--  rendering the filled in part of the trough.
+--
+--  If marks are present, there is a marks subnode before or after the
+--  contents node, below which each mark gets a node with name mark. The marks
+--  nodes get either the .top or .bottom style class.
+--
+--  The mark node has a subnode named indicator. If the mark has text, it also
+--  has a subnode named label. When the mark is either above or left of the
+--  scale, the label subnode is the first when present. Otherwise, the
+--  indicator subnode is the first.
+--
+--  The main CSS node gets the 'marks-before' and/or 'marks-after' style
+--  classes added depending on what marks are present.
+--
+--  If the scale is displaying the value (see Gtk.Scale.Gtk_Scale:draw-value),
+--  there is subnode with name value.
 --
 --  </description>
 --  <screenshot>gtk-scale.png</screenshot>
@@ -303,8 +339,15 @@ package Gtk.Scale is
       (Scale      : not null access Gtk_Scale_Record;
        The_Digits : Glib.Gint);
    --  Sets the number of decimal places that are displayed in the value. Also
-   --  causes the value of the adjustment to be rounded off to this number of
-   --  digits, so the retrieved value matches the value the user saw.
+   --  causes the value of the adjustment to be rounded to this number of
+   --  digits, so the retrieved value matches the displayed one, if
+   --  Gtk.Scale.Gtk_Scale:draw-value is True when the value changes. If you
+   --  want to enforce rounding the value when Gtk.Scale.Gtk_Scale:draw-value
+   --  is False, you can set Gtk.GRange.Gtk_Range:round-digits instead.
+   --  Note that rounding to a small number of digits can interfere with the
+   --  smooth autoscrolling that is built into Gtk.Scale.Gtk_Scale. As an
+   --  alternative, you can use the Gtk.Scale.Gtk_Scale::format-value signal to
+   --  format the displayed value yourself.
    --  "digits": the number of decimal places to display, e.g. use 1 to
    --  display 1.0, 2 to display 1.00, etc
 
@@ -328,9 +371,9 @@ package Gtk.Scale is
    procedure Set_Has_Origin
       (Scale      : not null access Gtk_Scale_Record;
        Has_Origin : Boolean);
-   --  If Has_Origin is set to True (the default), the scale will highlight
-   --  the part of the scale between the origin (bottom or left side) of the
-   --  scale and the current value.
+   --  If Gtk.Scale.Gtk_Scale:has-origin is set to True (the default), the
+   --  scale will highlight the part of the trough between the origin (bottom
+   --  or left side) and the current value.
    --  Since: gtk+ 3.4
    --  "has_origin": True if the scale has an origin
 
@@ -421,6 +464,10 @@ package Gtk.Scale is
    --  Signal which allows you to change how the scale value is displayed.
    --  Connect a signal handler which returns an allocated string representing
    --  Value. That string will then be used to display the scale's value.
+   --
+   --  If no user-provided handlers are installed, the value will be displayed
+   --  on its own, rounded according to the value of the
+   --  Gtk.Scale.Gtk_Scale:digits property.
    --
    --  Here's an example signal handler which displays a value 1.0 as with
    --  "-->1.0<--". |[<!-- language="C" --> static gchar* format_value_callback

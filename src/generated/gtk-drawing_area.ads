@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -42,21 +42,29 @@
 --  The following code portion demonstrates using a drawing area to display a
 --  circle in the normal widget foreground color.
 --
---  Note that GDK automatically clears the exposed area to the background
---  color before sending the expose event, and that drawing is implicitly
---  clipped to the exposed area.
+--  Note that GDK automatically clears the exposed area before sending the
+--  expose event, and that drawing is implicitly clipped to the exposed area.
+--  If you want to have a theme-provided background, you need to call
+--  Gtk.Style_Context.Render_Background in your ::draw method.
 --
 --  ## Simple GtkDrawingArea usage
 --
 --  |[<!-- language="C" --> gboolean draw_callback (GtkWidget *widget, cairo_t
---  *cr, gpointer data) { guint width, height; GdkRGBA color;
+--  *cr, gpointer data) { guint width, height; GdkRGBA color; GtkStyleContext
+--  *context;
+--
+--  context = gtk_widget_get_style_context (widget);
 --
 --  width = gtk_widget_get_allocated_width (widget); height =
---  gtk_widget_get_allocated_height (widget); cairo_arc (cr, width / 2.0,
---  height / 2.0, MIN (width, height) / 2.0, 0, 2 * G_PI);
+--  gtk_widget_get_allocated_height (widget);
 --
---  gtk_style_context_get_color (gtk_widget_get_style_context (widget), 0,
---  &color); gdk_cairo_set_source_rgba (cr, &color);
+--  gtk_render_background (context, cr, 0, 0, width, height);
+--
+--  cairo_arc (cr, width / 2.0, height / 2.0, MIN (width, height) / 2.0, 0, 2
+--  * G_PI);
+--
+--  gtk_style_context_get_color (context, gtk_style_context_get_state
+--  (context), &color); gdk_cairo_set_source_rgba (cr, &color);
 --
 --  cairo_fill (cr);
 --

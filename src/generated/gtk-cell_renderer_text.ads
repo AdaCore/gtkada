@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -133,6 +133,13 @@ package Gtk.Cell_Renderer_Text is
    Background_Set_Property : constant Glib.Properties.Property_Boolean;
 
    Cancel_On_Focus_Out_Property : constant Glib.Properties.Property_Boolean;
+   --  Specifies whether or not to discard the edition when the
+   --  Gtk.Cell_Renderer.Gtk_Cell_Renderer loses focus.
+   --
+   --  If this is set to TRUE (the default), then edition will be canceled if
+   --  the focus leaves the tree.
+   --
+   --  Since 3.22
 
    Editable_Property : constant Glib.Properties.Property_Boolean;
 

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -42,12 +42,12 @@
 --  while invoking actions locally with Glib.Action_Group.Activate_Action. The
 --  same applies to actions associated with
 --  Gtk.Application_Window.Gtk_Application_Window and to the "activate" and
---  'open' Glib.Application.Gapplication methods.
+--  "open" Glib.Application.Gapplication methods.
 --
 --  ## Automatic resources ## {automatic-resources}
 --
 --  Gtk.Application.Gtk_Application will automatically load menus from the
---  Gtk.Builder.Gtk_Builder file located at "gtk/menus.ui", relative to the
+--  Gtk.Builder.Gtk_Builder resource located at "gtk/menus.ui", relative to the
 --  application's resource base path (see
 --  Glib.Application.Set_Resource_Base_Path). The menu with the ID "app-menu"
 --  is taken as the application's app menu and the menu with the ID "menubar"
@@ -55,9 +55,12 @@
 --  submenus) can be named and accessed via Gtk.Application.Get_Menu_By_Id
 --  which allows for dynamic population of a part of the menu structure.
 --
---  If the files "gtk/menus-appmenu.ui" or "gtk/menus-traditional.ui" are
+--  If the resources "gtk/menus-appmenu.ui" or "gtk/menus-traditional.ui" are
 --  present then these files will be used in preference, depending on the value
---  of Gtk.Application.Prefers_App_Menu.
+--  of Gtk.Application.Prefers_App_Menu. If the resource "gtk/menus-common.ui"
+--  is present it will be loaded as well. This is useful for storing items that
+--  are referenced from both "gtk/menus-appmenu.ui" and
+--  "gtk/menus-traditional.ui".
 --
 --  It is also possible to provide the menus manually using
 --  Gtk.Application.Set_App_Menu and Gtk.Application.Set_Menubar.
@@ -66,6 +69,14 @@
 --  search path for the default icon theme by appending "icons" to the resource
 --  base path. This allows your application to easily store its icons as
 --  resources. See Gtk.Icon_Theme.Add_Resource_Path for more information.
+--
+--  If there is a resource located at "gtk/help-overlay.ui" which defines a
+--  Gtk.Shortcuts_Window.Gtk_Shortcuts_Window with ID "help_overlay" then
+--  GtkApplication associates an instance of this shortcuts window with each
+--  Gtk.Application_Window.Gtk_Application_Window and sets up keyboard
+--  accelerators (Control-F1 and Control-?) to open it. To create a menu item
+--  that displays the shortcuts window, associate the item with the action
+--  win.show-help-overlay.
 --
 --  ## A simple application ## {gtkapplication}
 --
@@ -83,6 +94,11 @@
 --  CD or performing a disk backup. The session manager may not honor the
 --  inhibitor, but it can be expected to inform the user about the negative
 --  consequences of ending the session while inhibitors are present.
+--
+--  ## See Also ## {seealso} [HowDoI: Using
+--  GtkApplication](https://wiki.gnome.org/HowDoI/GtkApplication), [Getting
+--  Started with GTK+:
+--  Basics](https://developer.gnome.org/gtk3/stable/gtk-getting-started.htmlid-1.2.3.3)
 --
 --  </description>
 
@@ -228,12 +244,15 @@ package Gtk.Application is
       (Self   : not null access Gtk_Application_Record;
        Window : not null access Gtk.Window.Gtk_Window_Record'Class);
    --  Adds a window to Application.
+   --  This call can only happen after the Application has started; typically,
+   --  you should add new application windows in response to the emission of
+   --  the Glib.Application.Gapplication::activate signal.
    --  This call is equivalent to setting the
    --  Gtk.Window.Gtk_Window:application property of Window to Application.
    --  Normally, the connection between the application and the window will
    --  remain until the window is destroyed, but you can explicitly remove it
    --  with Gtk.Application.Remove_Window.
-   --  GTK+ will keep the application running as long as it has any windows.
+   --  GTK+ will keep the Application running as long as it has any windows.
    --  Since: gtk+ 3.0
    --  "window": a Gtk.Window.Gtk_Window
 
@@ -255,6 +274,8 @@ package Gtk.Application is
    --  may be displayed in the UI.
    --  To remove all accelerators for an action, use an empty, zero-terminated
    --  array for Accels.
+   --  For the Detailed_Action_Name, see g_action_parse_detailed_name and
+   --  Glib.Action.Print_Detailed_Name.
    --  Since: gtk+ 3.12
    --  "detailed_action_name": a detailed action name, specifying an action
    --  and target to associate accelerators with
@@ -285,7 +306,7 @@ package Gtk.Application is
    --  Gets the "active" window for the application.
    --  The active window is the one that was most recently focused (within the
    --  application). This window may not have the focus at the moment if
-   --  another application has it -- this is just the most recently-focused
+   --  another application has it — this is just the most recently-focused
    --  window within this application.
    --  Since: gtk+ 3.6
 
@@ -341,7 +362,7 @@ package Gtk.Application is
    --  each window, or at the top of the screen. In some environments, if both
    --  the application menu and the menubar are set, the application menu will
    --  be presented as if it were the first item of the menubar. Other
-   --  environments treat the two as completely separate -- for example, the
+   --  environments treat the two as completely separate — for example, the
    --  application menu may be rendered by the desktop shell while the menubar
    --  (if set) remains in each individual window.
    --  Use the base Glib.Action_Map.Gaction_Map interface to add actions, to
@@ -354,6 +375,8 @@ package Gtk.Application is
        Id   : Guint) return Gtk.Window.Gtk_Window;
    --  Returns the Gtk.Application_Window.Gtk_Application_Window with the
    --  given ID.
+   --  The ID of a Gtk.Application_Window.Gtk_Application_Window can be
+   --  retrieved with Gtk.Application_Window.Get_Id.
    --  Since: gtk+ 3.6
    --  "id": an identifier number
 
@@ -382,7 +405,7 @@ package Gtk.Application is
    --  of actions that may be blocked are specified by the Flags parameter.
    --  When the application completes the operation it should call
    --  Gtk.Application.Uninhibit to remove the inhibitor. Note that an
-   --  application can have multiple inhibitors, and all of the must be
+   --  application can have multiple inhibitors, and all of them must be
    --  individually removed. Inhibitors are also cleared when the application
    --  exits.
    --  Applications should not expect that they will always be able to block
@@ -402,6 +425,8 @@ package Gtk.Application is
        Flags : Gtk_Application_Inhibit_Flags) return Boolean;
    --  Determines if any of the actions specified in Flags are currently
    --  inhibited (possibly by another application).
+   --  Note that this information may not be available (for example when the
+   --  application is running in a sandbox).
    --  Since: gtk+ 3.4
    --  "flags": what types of actions should be queried
 
@@ -580,9 +605,38 @@ package Gtk.Application is
    Register_Session_Property : constant Glib.Properties.Property_Boolean;
    --  Set this property to True to register with the session manager.
 
+   Screensaver_Active_Property : constant Glib.Properties.Property_Boolean;
+   --  This property is True if GTK+ believes that the screensaver is
+   --  currently active. GTK+ only tracks session state (including this) when
+   --  Gtk.Application.Gtk_Application::register-session is set to True.
+   --
+   --  Tracking the screensaver state is supported on Linux.
+
    -------------
    -- Signals --
    -------------
+
+   type Cb_Gtk_Application_Void is not null access procedure
+     (Self : access Gtk_Application_Record'Class);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
+   Signal_Query_End : constant Glib.Signal_Name := "query-end";
+   procedure On_Query_End
+      (Self  : not null access Gtk_Application_Record;
+       Call  : Cb_Gtk_Application_Void;
+       After : Boolean := False);
+   procedure On_Query_End
+      (Self  : not null access Gtk_Application_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  Emitted when the session manager is about to end the session, only if
+   --  Gtk.Application.Gtk_Application::register-session is True. Applications
+   --  can connect to this signal and call Gtk.Application.Inhibit with
+   --  Gtk.Application.Application_Inhibit_Logout to delay the end of the
+   --  session until state has been saved.
 
    type Cb_Gtk_Application_Gtk_Window_Void is not null access procedure
      (Self   : access Gtk_Application_Record'Class;
@@ -651,6 +705,8 @@ package Gtk.Application is
    renames Implements_Gaction_Map.To_Object;
 
 private
+   Screensaver_Active_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("screensaver-active");
    Register_Session_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("register-session");
    Menubar_Property : constant Glib.Properties.Property_Boxed :=

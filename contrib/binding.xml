@@ -11,6 +11,7 @@
 
    <package id="GdkDevice">
       <enum ctype="GdkDeviceType" />
+      <enum ctype="GdkAxisFlags" />
       <list ada="Device_List" ctype="GdkDevice"/>
       <method id="::changed" bind="False" /> <!-- elaboration circularity -->
       <method id="gdk_device_get_axis" bind="False" /><!-- need support for array of gdoubles -->
@@ -24,6 +25,11 @@
       <method id="gdk_device_list_axes" bind="False"/><!-- no support for atom lists -->
       <method id="gdk_device_list_slave_devices" bind="False"/><!-- no support
       for Gdk_Device_Type_Master lists -->
+
+      <method id="gdk_device_get_seat" return="GObject*"/>
+      <method id="::tool-changed">
+        <parameter name="tool" ctype="GObject*"/>
+      </method>
 
       <extra>
          <spec>
@@ -102,13 +108,37 @@
    </package>
 
    <!-- ################################################
+        Gdk.DeviceTool
+        ################################################-->
+
+   <package id="GdkDeviceTool">
+     <enum ctype="GdkDeviceToolType" />
+   </package>
+
+   <!-- ################################################
+        Gdk.Monitor
+        ################################################-->
+
+   <package id="GdkMonitor">
+     <enum ctype="GdkSubpixelLayout"/>
+     <method id="gdk_monitor_get_display" return="GObject*"/>
+   </package>
+
+   <!-- ################################################
         Gdk.Drag_Contexts
         ################################################-->
 
    <package id="GdkDragContext">
       <enum ctype="GdkDragAction" prefix="GDK_"/>
+      <enum ctype="GdkDragCancelReason" prefix="GDK_"/>
       <enum ctype="GdkDragProtocol" prefix="GDK_"/>
       <method id="gdk_drag_context_list_targets" bind="False"/><!-- not supposed to be used by applications -->
+      <method id="::action-changed">
+        <parameter name="action" ctype="GdkDragAction"/>
+      </method>
+      <method id="::cancel">
+        <parameter name="reason" ctype="GdkDragCancelReason"/>
+      </method>
    </package>
 
    <!-- ################################################
@@ -248,6 +278,32 @@
    </package>
 
    <!-- ################################################
+        Gdk.Seat
+        ################################################-->
+
+   <package id="GdkSeat">
+     <enum ctype="GdkSeatCapabilities"/>
+     <list ada="Gdk_Seat_List" ctype="GdkSeat*"/>
+     <method id="gdk_seat_get_slaves" return="DeviceList"/>
+     <method id="gdk_seat_get_display" return ="GObject*"/>
+      <method id="::tool-added">
+        <parameter name="tool" ctype="GObject*"/>
+      </method>
+      <method id="::tool-removed">
+        <parameter name="tool" ctype="GObject*"/>
+      </method>
+      <method id="::device-added">
+        <parameter name="device" ctype="GObject*"/>
+      </method>
+      <method id="::device-removed">
+        <parameter name="device" ctype="GObject*"/>
+      </method>
+      <extra>
+        <with_spec pkg="Gdk.Types" />
+      </extra>
+   </package>
+
+   <!-- ################################################
         Gtk.Aspect_Frame
         ################################################-->
 
@@ -290,6 +346,9 @@
       </method>
       <method id="gtk_cell_area_get_focus_siblings" return="ObjectList"/>
       <method id="gtk_cell_area_get_cell_at_position" bind="False"/>
+      <method id="::add-editable">
+        <parameter name="cell_area" type="Gdk.Rectangle.Gdk_Rectangle"/>
+      </method>
       <!-- bound manually below -->
       <extra>
         <spec>
@@ -2173,6 +2232,8 @@ __PRE__
 
       <method id="gtk_status_icon_position_menu">
         <parameter name="user_data" ada="Icon" type="Glib.Object.GObject"/>
+        <parameter name="x" direction="out"/>
+        <parameter name="y" direction="out"/>
         <body>
       procedure Internal
          (Menu    : System.Address;
@@ -2981,6 +3042,7 @@ __PRE__
      <enum ctype="GtkPageOrientation"/>
      <enum ctype="GtkPageSet"/>
      <enum ctype="GtkPanDirection"/>
+     <enum ctype="GtkPopoverConstraint"/>
      <enum ctype="GtkPropagationPhase"/>
      <enum ctype="GtkEventSequenceState"/>
      <enum ctype="GtkLevelBarMode"/>
@@ -3441,6 +3503,7 @@ __PRE__
    </package>
 
    <package id="GtkStyleContext">
+     <enum ctype="GtkStyleContextPrintFlags"/>
      <method id="gtk_style_context_has_region"
              return_as_param="Is_Defined"/>
      <method id="gtk_style_context_list_classes" return="StringList"/>
@@ -3501,6 +3564,10 @@ __PRE__
 
    <package id="GtkFontButton">
      <parameter name="self" ada="Font_Button"/>
+   </package>
+
+   <package id="GtkFontChooser">
+     <enum ctype="GtkFontChooserLevel"/>
    </package>
 
    <package id="GtkTextBuffer">
@@ -4022,6 +4089,7 @@ creating a tag.
    <package id="GtkTextView">
      <parameter name="self" ada="View"/>
      <enum ctype="GtkTextViewLayer" />
+     <enum ctype="GtkTextExtendSelection"/>
 
      <!-- These are now inherited from the Scrollable interface -->
      <method id="gtk_text_view_get_hadjustment" bind="false"/>
@@ -4053,11 +4121,13 @@ text. Since: 3.14
      <enum ctype="GdkWMFunction" prefix="GDK_"/>
      <enum ctype="GdkGravity" prefix="GDK_"/>
      <enum ctype="GdkFullscreenMode" prefix="GDK_FULLSCREEN_" />
+     <enum ctype="GdkAnchorHints" prefix="GDK_"/>
      <list ada="Gdk_Window_List" ctype="GdkWindow"/>
      <method id="::pick-embedded-child" bind="False" />
      <method id="::from-embedder" bind="False" />
      <method id="::to-embedder" bind="False" />
      <method id="::create-surface" bind="False" />
+     <method id="::moved-to-rect" bind="False" />
      <method id="gdk_window_add_filter" bind="False" />   <!-- dangerous -->
      <method id="gdk_window_remove_filter" bind="False" />   <!-- dangerous -->
      <method id="gdk_window_get_children" return="GdkWindowList"/>
@@ -4233,6 +4303,12 @@ text. Since: 3.14
      <record ctype="GdkEventSetting"/>
      <record ctype="GdkEventTouch"/>
      <record ctype="GdkEventGrabBroken"/>
+     <record ctype="GdkEventGrabBroken"/>
+     <record ctype="GdkEventTouchpadSwipe"/>
+     <record ctype="GdkEventTouchpadPinch"/>
+     <record ctype="GdkEventPadButton"/>
+     <record ctype="GdkEventPadAxis"/>
+     <record ctype="GdkEventPadGroupMode"/>
 
      <record ctype="GdkEvent" ada="Gdk_Event_Record">
        <union value="GDK_NOTHING" field="any"/>
@@ -4276,6 +4352,13 @@ text. Since: 3.14
        <union value="GDK_TOUCH_UPDATE" field="touch" />
        <union value="GDK_TOUCH_END" field="touch" />
        <union value="GDK_TOUCH_CANCEL" field="touch" />
+       <union value="GDK_TOUCHPAD_SWIPE" field="touchpad_swipe" />
+       <union value="GDK_TOUCHPAD_PINCH" field="touchpad_pinch" />
+       <union value="GDK_PAD_BUTTON_PRESS" field="pad_button" />
+       <union value="GDK_PAD_BUTTON_RELEASE" field="pad_button" />
+       <union value="GDK_PAD_RING" field="pad_axis" />
+       <union value="GDK_PAD_STRIP" field="pad_axis" />
+       <union value="GDK_PAD_GROUP_MODE" field="pad_group_mode" />
      </record>
 
      <method id="gdk_event_get_coords" return="void"/>
@@ -4301,6 +4384,7 @@ text. Since: 3.14
      <method id="gdk_event_set_source_device" bind="False"/>
      <method id="gdk_event_get_screen" bind="False"/>
      <method id="gdk_event_set_screen" bind="False"/>
+     <method id="gdk_event_get_seat" return="GObject*"/>
 
      <function id="gdk_events_pending" ada="Events_Pending"/>
      <method id="gdk_events_get_angle" ada="Get_Angle"/>
@@ -4736,7 +4820,6 @@ text. Since: 3.14
    </package>
 
    <package id="PangoFontMetrics">
-      <!--<record ctype="PangoFontMetrics" private="true"/>-->
    </package>
 
    <package id="PangoFontset">
@@ -4875,6 +4958,7 @@ text. Since: 3.14
          type Pango_Font_Face_Array is array (Natural range &lt;&gt;) of Pango_Font_Face;
        </type>
      </extra>
+     <method id="pango_font_face_get_family" bind="False"/>  <!-- circular dependency -->
      <method id="pango_font_face_list_sizes" return="gint**">
        <parameter name="sizes" ada=""/>
        <parameter name="n_sizes" ada=""/>
@@ -4926,6 +5010,8 @@ text. Since: 3.14
      <method id="pango_layout_get_log_attrs" bind="false"/> <!--  what is a pango_log -->
      <method id="pango_layout_get_log_attrs_readonly" bind="false"/> <!--  what
      is a pango_log -->
+     <method id="pango_layout_get_line_spacing" bind="False"/>
+     <method id="pango_layout_set_line_spacing" bind="False"/>
 
      <method id="pango_layout_get_iter" classwide="true"/>
 
@@ -4939,6 +5025,7 @@ text. Since: 3.14
      <method id="pango_layout_set_markup">
        <parameter name="length" default="-1" ada=""/>
      </method>
+
      <extra>
        <with_spec pkg="Gtkada.Types" />
        <spec>
@@ -4977,6 +5064,7 @@ text. Since: 3.14
      <method id="pango_layout_line_get_x_ranges" bind="false"/>
      <method id="pango_layout_line_index_to_x" bind="false"/>
      <method id="pango_layout_line_x_to_index" bind="false"/>
+     <method id="pango_layout_line_get_height" bind="False"/>
 
    </package>
 
@@ -5476,6 +5564,7 @@ text. Since: 3.14
 
      <method id="gtk_builder_set_application" bind="False"/> <!-- circular dep with GtkWidget -->
      <method id="gtk_builder_get_application" bind="False"/> <!-- circular dep with GtkWidget -->
+     <method id="gtk_builder_extend_with_template" bind="False"/> <!-- circular dep with GtkWidget -->
 
      <method id="gtk_builder_add_callback_symbol" bind="False"/> <!-- error in generated binding -->
    </package>
@@ -6210,6 +6299,9 @@ direction, widget state, or icon size.
      <method id="pango_font_descriptions_free" bind="False"/> <!-- in Ada, need iteration -->
      <method id="pango_font_get_coverage" bind="False"/> <!-- circular dependency -->
      <method id="pango_font_get_font_map" bind="False"/> <!-- circular dependency -->
+     <method id="pango_font_get_face" bind="False"/> <!-- circular dependency -->
+     <method id="pango_font_get_features" bind="False"/> <!-- Harfbuzz required -->
+     <method id="pango_font_get_hb_font" bind="False"/> <!-- Harfbuzz required -->
      <method id="pango_font_get_metrics">
        <parameter name="language" default="Pango.Language.Null_Pango_Language"/>
      </method>
@@ -6229,7 +6321,6 @@ direction, widget state, or icon size.
    </package>
 
    <package id="PangoCoverage">
-     <method id="pango_coverage_new" ada="Pango_New"/>
      <method id="pango_coverage_from_bytes" bind="False"/>  <!-- not used for Ada -->
      <method id="pango_coverage_to_bytes" bind="False"/>  <!-- not used for Ada -->
    </package>
@@ -6240,7 +6331,9 @@ direction, widget state, or icon size.
    </package>
 
    <package id="PangoAttribute" ada="Pango.Attributes">
+     <slist ada="Pango_Attribute_SList" ctype="PangoAttribute"/>
      <method id="pango_attribute_init" bind="False"/> <!--  low-level -->
+     <method id="pango_attribute_get_type" ada="Get_Type_Attribute"/>
      <function id="pango_attr_underline_new"/>
      <function id="pango_attr_background_new"/>
      <function id="pango_attr_foreground_new"/>
@@ -6256,6 +6349,8 @@ direction, widget state, or icon size.
 
    <package id="PangoAttrList" into="PangoAttribute">
      <method id="pango_attr_list_get_iterator" bind="False"/>  <!-- Not needed ? -->
+     <method id="pango_attr_list_get_type" ada="Get_Type_Attr_List"/>
+     <method id="pango_attr_list_get_attributes" bind="False"/>
    </package>
 
    <package id="PangoContext">
@@ -7787,6 +7882,8 @@ package body Generic_Set is
      <method id="g_string_free_to_bytes" bind="False"/> <!-- requires GByte -->
    </package>
 
+   <package id="GListModel" ada="Glib.List_Model"/>
+
    <package id="GMenu" ada="Glib.Menu">
       <method id="g_menu_get_type" ada="Get_Type_Menu" />
    </package>
@@ -8930,6 +9027,23 @@ package body Generic_Set is
       <method id="gdk_display_device_is_grabbed" bind="False"/> <!-- circular dependency -->
       <method id="gdk_display_store_clipboard" bind="False"/> <!-- see below -->
       <method id="gdk_display_get_window_at_pointer" bind="False"/> <!-- see below -->
+
+      <method id="gdk_display_get_default_seat" return="GObject*"/>
+      <method id="gdk_display_list_seats" return="ObjectList"/>
+
+      <method id="::monitor-added">
+        <parameter name="monitor" ctype="GObject*"/>
+      </method>
+      <method id="::monitor-removed">
+        <parameter name="monitor" ctype="GObject*"/>
+      </method>
+      <method id="::seat-added">
+        <parameter name="seat" ctype="GObject*"/>
+      </method>
+      <method id="::seat-removed">
+        <parameter name="seat" ctype="GObject*"/>
+      </method>
+
       <extra>
          <spec>
    procedure Store_Clipboard

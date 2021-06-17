@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -59,9 +59,9 @@
 --
 --  cairo_stroke (cr);
 --
---  // Draw some text layout = gtk_print_context_create_layout (context);
---  pango_layout_set_text (layout, "Hello World! Printing is easy", -1); desc =
---  pango_font_description_from_string ("sans 28");
+--  // Draw some text layout = gtk_print_context_create_pango_layout
+--  (context); pango_layout_set_text (layout, "Hello World! Printing is easy",
+--  -1); desc = pango_font_description_from_string ("sans 28");
 --  pango_layout_set_font_description (layout, desc);
 --  pango_font_description_free (desc);
 --

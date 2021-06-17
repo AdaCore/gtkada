@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -35,9 +35,12 @@
 --  GtkBin.
 --
 --  An example for setting markup and accelerator on a MenuItem: |[<!--
---  language="C" --> GtkWidget *child = gtk_bin_get_child (GTK_BIN
---  (menu_item)); gtk_label_set_markup (GTK_LABEL (child), "<i>new label</i>
---  with <b>markup</b>"); gtk_accel_label_set_accel (GTK_ACCEL_LABEL (child),
+--  language="C" --> GtkWidget *menu_item = gtk_menu_item_new_with_label
+--  ("Example Menu Item");
+--
+--  GtkWidget *child = gtk_bin_get_child (GTK_BIN (menu_item));
+--  gtk_label_set_markup (GTK_LABEL (child), "<i>new label</i> with
+--  <b>markup</b>"); gtk_accel_label_set_accel (GTK_ACCEL_LABEL (child),
 --  GDK_KEY_1, 0); ]|
 --
 --  # GtkMenuItem as GtkBuildable
@@ -49,6 +52,14 @@
 --  An example of UI definition fragment with submenus: |[ <object
 --  class="GtkMenuItem"> <child type="submenu"> <object class="GtkMenu"/>
 --  </child> </object> ]|
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> menuitem ├── <child> ╰── [arrow.right] ]|
+--
+--  GtkMenuItem has a single CSS node with name menuitem. If the menuitem has
+--  a submenu, it gets another CSS node with name arrow, which has the .left or
+--  .right style class.
 --
 --  </description>
 
@@ -281,7 +292,7 @@ package Gtk.Menu_Item is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Menu_Item_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Menu_Item_Record)

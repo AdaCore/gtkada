@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -23,9 +23,14 @@
 
 --  <description>
 --  The Gtk.Color_Button.Gtk_Color_Button is a button which displays the
---  currently selected color an allows to open a color selection dialog to
+--  currently selected color and allows to open a color selection dialog to
 --  change the color. It is suitable widget for selecting a color in a
 --  preference dialog.
+--
+--  # CSS nodes
+--
+--  GtkColorButton has a single CSS node with name button. To differentiate it
+--  from a plain Gtk.Button.Gtk_Button, it gets the .color style class.
 --
 --  </description>
 --  <group>Buttons and Toggles</group>
@@ -179,7 +184,7 @@ package Gtk.Color_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Color_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Color_Button_Record)
@@ -260,6 +265,14 @@ package Gtk.Color_Button is
    Rgba_Property : constant Gdk.RGBA.Property_RGBA;
    --  Type: Gdk.RGBA.Gdk_RGBA
    --  The RGBA color.
+
+   Show_Editor_Property : constant Glib.Properties.Property_Boolean;
+   --  Set this property to True to skip the palette in the dialog and go
+   --  directly to the color editor.
+   --
+   --  This property should be used in cases where the palette in the editor
+   --  would be redundant, such as when the color button is already part of a
+   --  palette.
 
    Title_Property : constant Glib.Properties.Property_String;
    --  The title of the color selection dialog
@@ -359,6 +372,8 @@ private
      Glib.Properties.Build ("use-alpha");
    Title_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("title");
+   Show_Editor_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-editor");
    Rgba_Property : constant Gdk.RGBA.Property_RGBA :=
      Gdk.RGBA.Build ("rgba");
    Color_Property : constant Gdk.Color.Property_Gdk_Color :=

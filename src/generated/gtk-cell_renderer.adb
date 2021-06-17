@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -322,7 +322,7 @@ package body Gtk.Cell_Renderer is
 
    function Get_State
       (Cell       : not null access Gtk_Cell_Renderer_Record;
-       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class;
        Cell_State : Gtk_Cell_Renderer_State)
        return Gtk.Enums.Gtk_State_Flags
    is
@@ -333,7 +333,7 @@ package body Gtk.Cell_Renderer is
           return Gtk.Enums.Gtk_State_Flags;
       pragma Import (C, Internal, "gtk_cell_renderer_get_state");
    begin
-      return Internal (Get_Object (Cell), Get_Object (Widget), Cell_State);
+      return Internal (Get_Object (Cell), Get_Object_Or_Null (GObject (Widget)), Cell_State);
    end Get_State;
 
    -----------------

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -41,8 +41,7 @@
 --  automatic flipping between GTK_ARROW_LEFT and GTK_ARROW_RIGHT, depending on
 --  the text direction. To get the same effect with an image, use the icon
 --  names "pan-start-symbolic" and "pan-end-symbolic", which react to the text
---  direction instead of "pan-left-symbolic" and "pan-right-symbolic" which
---  don't.
+--  direction.
 --
 --  </description>
 --  <screenshot>gtk-arrow</screenshot>

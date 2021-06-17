@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2011-2018, AdaCore                     --
+--                     Copyright (C) 2011-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -52,6 +52,11 @@ with Pango.Attributes;   use Pango.Attributes;
 with Pango.Enums;        use Pango.Enums;
 with Pango.Font;         use Pango.Font;
 with Pango.Layout;       use Pango.Layout;
+
+pragma Warnings (Off, "call to obsolescent function ""List_Devices""");
+pragma Warnings
+  (Off, "call to obsolescent procedure ""Get_Background_Color""");
+--  Deprecated in Gtk+ 3.24
 
 package body Gtkada.Style is
 
