@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -171,14 +171,15 @@ package Gtk.Tool_Item is
    procedure Set_Proxy_Menu_Item
       (Tool_Item    : not null access Gtk_Tool_Item_Record;
        Menu_Item_Id : UTF8_String;
-       Menu_Item    : not null access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
+       Menu_Item    : access Gtk.Menu_Item.Gtk_Menu_Item_Record'Class);
    --  Sets the Gtk.Menu_Item.Gtk_Menu_Item used in the toolbar overflow menu.
    --  The Menu_Item_Id is used to identify the caller of this function and
    --  should also be used with Gtk.Tool_Item.Get_Proxy_Menu_Item.
+   --  See also Gtk.Tool_Item.Gtk_Tool_Item::create-menu-proxy.
    --  Since: gtk+ 2.4
    --  "menu_item_id": a string used to identify Menu_Item
-   --  "menu_item": a Gtk.Menu_Item.Gtk_Menu_Item to be used in the overflow
-   --  menu
+   --  "menu_item": a Gtk.Menu_Item.Gtk_Menu_Item to use in the overflow menu,
+   --  or null
 
    function Get_Relief_Style
       (Tool_Item : not null access Gtk_Tool_Item_Record)

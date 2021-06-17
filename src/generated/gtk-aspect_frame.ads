@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -28,6 +28,10 @@
 --  Gtk.Aspect_Frame.Gtk_Aspect_Frame derives from Gtk.Frame.Gtk_Frame, so it
 --  can draw a label and a frame around the child. The frame will be
 --  "shrink-wrapped" to the size of the child.
+--
+--  # CSS nodes
+--
+--  GtkAspectFrame uses a CSS node with name frame.
 --
 --  </description>
 --  <group>Layout Containers</group>

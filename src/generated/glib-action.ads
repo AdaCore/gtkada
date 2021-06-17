@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -44,8 +44,9 @@
 --  In all cases, the implementing class is responsible for storing the name
 --  of the action, the parameter type, the enabled state, the optional state
 --  type and the state and emitting the appropriate signals when these change.
---  The implementor responsible for filtering calls to Glib.Action.Activate and
---  Glib.Action.Change_State for type safety and for the state being enabled.
+--  The implementor is responsible for filtering calls to Glib.Action.Activate
+--  and Glib.Action.Change_State for type safety and for the state being
+--  enabled.
 --
 --  Probably the only useful thing to do with a Glib.Action.Gaction is to put
 --  it inside of a Glib.Simple_Action_Group.Gsimple_Action_Group.
@@ -173,15 +174,15 @@ package Glib.Action is
    --  It is an error to call this function with a non-utf8 Action_Name.
    --  Action_Name must not be null.
    --  Since: gtk+ 2.38
-   --  "action_name": an potential action name
+   --  "action_name": a potential action name
 
    function Print_Detailed_Name
       (Action_Name  : UTF8_String;
        Target_Value : Glib.Variant.Gvariant) return UTF8_String;
    --  Formats a detailed action name from Action_Name and Target_Value.
    --  It is an error to call this function with an invalid action name.
-   --  This function is the opposite of g_action_parse_detailed_action_name.
-   --  It will produce a string that can be parsed back to the Action_Name and
+   --  This function is the opposite of g_action_parse_detailed_name. It will
+   --  produce a string that can be parsed back to the Action_Name and
    --  Target_Value by that function.
    --  See that function for the types of strings that will be printed by this
    --  function.

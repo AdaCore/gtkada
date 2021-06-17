@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -187,7 +187,7 @@ package body Gtk.Gesture is
          (Self : System.Address) return access Gdk.Event.Gdk_Event_Sequence;
       pragma Import (C, Internal, "gtk_gesture_get_last_updated_sequence");
    begin
-      return From_Object_Free (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)).all;
    end Get_Last_Updated_Sequence;
 
    ---------------

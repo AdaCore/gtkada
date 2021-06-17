@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2020, AdaCore                     --
+--                     Copyright (C) 1998-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -58,6 +58,9 @@ with Gtkada.Canvas_View.Views;           use Gtkada.Canvas_View.Views;
 with Gtkada.Handlers;                    use Gtkada.Handlers;
 with Pango.Font;                         use Pango.Font;
 with System.Storage_Elements;            use System.Storage_Elements;
+
+pragma Warnings (Off, "call to obsolescent procedure ""Set_Background""");
+--  Deprecated in Gtk+ 3.24
 
 package body Gtkada.Canvas_View is
 

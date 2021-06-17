@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -30,12 +30,13 @@
 --  the dialog are optional.
 --
 --  About dialogs often contain links and email addresses. GtkAboutDialog
---  displays these as clickable links. By default, it calls gtk_show_uri() when
---  a user clicks one. The behaviour can be overridden with the
---  Gtk.About_Dialog.Gtk_About_Dialog::activate-link signal.
+--  displays these as clickable links. By default, it calls
+--  gtk_show_uri_on_window when a user clicks one. The behaviour can be
+--  overridden with the Gtk.About_Dialog.Gtk_About_Dialog::activate-link
+--  signal.
 --
 --  To specify a person with an email address, use a string like "Edgar Allan
---  Poe <edgarPoe.com>". To specify a website with a title, use a string like
+--  Poe <edgar\Poe.com>". To specify a website with a title, use a string like
 --  "GTK+ team http://www.gtk.org".
 --
 --  To make constructing a GtkAboutDialog as convenient as possible, you can
@@ -46,8 +47,9 @@
 --  window (where \%s is replaced by the name of the application, but in order
 --  to ensure proper translation of the title, applications should set the
 --  title property explicitly when constructing a GtkAboutDialog, as shown in
---  the following example: |[<!-- language="C" --> gtk_show_about_dialog (NULL,
---  "program-name", "ExampleCode", "logo", example_logo, "title" _("About
+--  the following example: |[<!-- language="C" --> GdkPixbuf *example_logo =
+--  gdk_pixbuf_new_from_file ("./logo.png", NULL); gtk_show_about_dialog (NULL,
+--  "program-name", "ExampleCode", "logo", example_logo, "title", _("About
 --  ExampleCode"), NULL); ]|
 --
 --  It is also possible to show a Gtk.About_Dialog.Gtk_About_Dialog like any
@@ -88,7 +90,12 @@ package Gtk.About_Dialog is
       License_Gpl_2_0_Only,
       License_Gpl_3_0_Only,
       License_Lgpl_2_1_Only,
-      License_Lgpl_3_0_Only);
+      License_Lgpl_3_0_Only,
+      License_Agpl_3_0,
+      License_Agpl_3_0_Only,
+      License_Bsd_3,
+      License_Apache_2_0,
+      License_Mpl_2_0);
    pragma Convention (C, Gtk_License);
    --  The type of license for an application.
    --
@@ -289,7 +296,8 @@ package Gtk.About_Dialog is
    --  The intended use for this string is to display the translator of the
    --  language which is currently used in the user interface. Using gettext, a
    --  simple way to achieve that is to mark the string for translation: |[<!--
-   --  language="C" --> gtk_about_dialog_set_translator_credits (about,
+   --  language="C" --> GtkWidget *about = gtk_about_dialog_new ();
+   --  gtk_about_dialog_set_translator_credits (GTK_ABOUT_DIALOG (about),
    --  _("translator-credits")); ]| It is a good idea to use the customary
    --  msgid "translator-credits" for this purpose, since translators will
    --  already know the purpose of that msgid, and since
@@ -452,7 +460,7 @@ package Gtk.About_Dialog is
        After : Boolean := False);
    --  The signal which gets emitted to activate a URI. Applications may
    --  connect to it to override the default behaviour, which is to call
-   --  gtk_show_uri().
+   --  gtk_show_uri_on_window.
    -- 
    --  Callback parameters:
    --    --  "uri": the URI that is activated

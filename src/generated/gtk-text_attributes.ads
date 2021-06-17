@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -74,8 +74,9 @@ package Gtk.Text_Attributes is
       Invisible : Guint;
       Bg_Full_Height : Guint;
       Editable : Guint;
+      No_Fallback : Guint;
       Pg_Bg_Rgba : Gdk.RGBA.Gdk_RGBA;
-      Padding : Gint_Array (1 .. 3);
+      Letter_Spacing : Glib.Gint := 0;
    end record;
    pragma Convention (C, Gtk_Text_Attributes);
 

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -63,13 +63,13 @@ package Gtk.Button_Box is
    --  Since: gtk+ 3.0
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "orientation": the box' orientation.
+   --  "orientation": the box's orientation.
 
    function Gtk_Button_Box_New
       (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Button_Box;
    --  Creates a new Gtk.Button_Box.Gtk_Button_Box.
    --  Since: gtk+ 3.0
-   --  "orientation": the box' orientation.
+   --  "orientation": the box's orientation.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_button_box_get_type");

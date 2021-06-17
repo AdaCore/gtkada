@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -180,14 +180,14 @@ package body Gtk.Accel_Label is
 
    procedure Set_Accel_Widget
       (Accel_Label  : not null access Gtk_Accel_Label_Record;
-       Accel_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
    is
       procedure Internal
          (Accel_Label  : System.Address;
           Accel_Widget : System.Address);
       pragma Import (C, Internal, "gtk_accel_label_set_accel_widget");
    begin
-      Internal (Get_Object (Accel_Label), Get_Object (Accel_Widget));
+      Internal (Get_Object (Accel_Label), Get_Object_Or_Null (GObject (Accel_Widget)));
    end Set_Accel_Widget;
 
 end Gtk.Accel_Label;

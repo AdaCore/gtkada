@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -25,8 +25,11 @@
 --  A Gtk.Toggle_Tool_Button.Gtk_Toggle_Tool_Button is a
 --  Gtk.Tool_Item.Gtk_Tool_Item that contains a toggle button.
 --
---  Use Gtk.Toggle_Tool_Button.Gtk_New to create a new
---  Gtk.Toggle_Tool_Button.Gtk_Toggle_Tool_Button.
+--  Use Gtk.Toggle_Tool_Button.Gtk_New to create a new GtkToggleToolButton.
+--
+--  # CSS nodes
+--
+--  GtkToggleToolButton has a single CSS node with name togglebutton.
 --
 --  </description>
 
@@ -124,7 +127,7 @@ package Gtk.Toggle_Tool_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Toggle_Tool_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Toggle_Tool_Button_Record)

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -101,8 +101,8 @@ package Glib.G_Icon is
    --  Gfile.Gfile for Icon is a native file. If the file is not native, the
    --  returned string is the result of g_file_get_uri (such as
    --  `sftp://path/to/my%20icon.png`).
-   --  - If Icon is a Gthemed.Icon.Gthemed_Icon with exactly one name, the
-   --  encoding is simply the name (such as `network-server`).
+   --  - If Icon is a Gthemed.Icon.Gthemed_Icon with exactly one name and no
+   --  fallbacks, the encoding is simply the name (such as `network-server`).
    --  Since: gtk+ 2.20
 
    ---------------

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -25,6 +25,10 @@
 --  The Gtk.Menu_Bar.Gtk_Menu_Bar is a subclass of
 --  Gtk.Menu_Shell.Gtk_Menu_Shell which contains one or more Gtk_Menu_Items.
 --  The result is a standard menu bar which can hold many menu items.
+--
+--  # CSS nodes
+--
+--  GtkMenuBar has a single CSS node with name menubar.
 --
 --  </description>
 

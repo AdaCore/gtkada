@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -158,6 +158,19 @@ package body Gtk.Info_Bar is
       return Internal (Get_Object (Self));
    end Get_Message_Type;
 
+   ------------------
+   -- Get_Revealed --
+   ------------------
+
+   function Get_Revealed
+      (Self : not null access Gtk_Info_Bar_Record) return Boolean
+   is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_info_bar_get_revealed");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Revealed;
+
    ---------------------------
    -- Get_Show_Close_Button --
    ---------------------------
@@ -232,6 +245,20 @@ package body Gtk.Info_Bar is
    begin
       Internal (Get_Object (Self), Response_Id, Boolean'Pos (Setting));
    end Set_Response_Sensitive;
+
+   ------------------
+   -- Set_Revealed --
+   ------------------
+
+   procedure Set_Revealed
+      (Self     : not null access Gtk_Info_Bar_Record;
+       Revealed : Boolean)
+   is
+      procedure Internal (Self : System.Address; Revealed : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_info_bar_set_revealed");
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Revealed));
+   end Set_Revealed;
 
    ---------------------------
    -- Set_Show_Close_Button --

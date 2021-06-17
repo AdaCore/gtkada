@@ -40,6 +40,7 @@ interfaces = (
     "Action",
     "ActionGroup",
     "ActionMap",
+    "ListModel",
     "--AppInfo",  # Not tested yet, from Gio
     "--AsyncInitable",  # Not tested yet, from Gio
     "--AsyncResult",  # Not tested yet, from Gio
@@ -77,13 +78,18 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GdkCursor",
            "GdkDevice",
            "GdkDeviceManager",
+           "GdkDeviceTool",
            "GdkDisplay",
            "GdkDragContext",
+           "GdkDrawingContext",
            "GdkEvent",
            "GdkFrameClock",
            "GdkFrameTimings",
+           "GdkGLContext",
            "GdkRGBA",
+           "GdkMonitor",
            "GdkScreen",
+           "GdkSeat",
            "GdkWindow",
 
            "GApplication",
@@ -466,6 +472,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkSeparator",
            "GtkSeparatorMenuItem",
            "GtkSeparatorToolItem",
+           "GtkShortcutsWindow",
            "GtkSizeGroup",
            "GtkScrollbar",
            "GtkScrolledWindow",

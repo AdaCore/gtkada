@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -26,18 +26,39 @@
 --  scrollbar, depending on the value of the
 --  Gtk.Orientable.Gtk_Orientable:orientation property.
 --
---  The position of the thumb in a scrollbar is controlled by the scroll
---  adjustments. See Gtk.Adjustment.Gtk_Adjustment for the fields in an
---  adjustment - for Gtk.Scrollbar.Gtk_Scrollbar, the
---  Gtk.Adjustment.Gtk_Adjustment:value field represents the position of the
---  scrollbar, which must be between the Gtk.Adjustment.Gtk_Adjustment:lower
---  field and Gtk.Adjustment.Gtk_Adjustment:upper -
---  Gtk.Adjustment.Gtk_Adjustment:page-size. The
---  Gtk.Adjustment.Gtk_Adjustment:page-size field represents the size of the
---  visible scrollable area. The Gtk.Adjustment.Gtk_Adjustment:step-increment
---  and Gtk.Adjustment.Gtk_Adjustment:page-increment fields are properties when
---  the user asks to step down (using the small stepper arrows) or page down
---  (using for example the `Page Down` key).
+--  Its position and movement are controlled by the adjustment that is passed
+--  to or created by Gtk.Scrollbar.Gtk_New. See Gtk.Adjustment.Gtk_Adjustment
+--  for more details. The Gtk.Adjustment.Gtk_Adjustment:value field sets the
+--  position of the thumb and must be between
+--  Gtk.Adjustment.Gtk_Adjustment:lower and Gtk.Adjustment.Gtk_Adjustment:upper
+--  - Gtk.Adjustment.Gtk_Adjustment:page-size. The
+--  Gtk.Adjustment.Gtk_Adjustment:page-size represents the size of the visible
+--  scrollable area. The fields Gtk.Adjustment.Gtk_Adjustment:step-increment
+--  and Gtk.Adjustment.Gtk_Adjustment:page-increment fields are added to or
+--  subtracted from the Gtk.Adjustment.Gtk_Adjustment:value when the user asks
+--  to move by a step (using e.g. the cursor arrow keys or, if present, the
+--  stepper buttons) or by a page (using e.g. the Page Down/Up keys).
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> scrollbar[.fine-tune] ╰── contents ├──
+--  [button.up] ├── [button.down] ├── trough │ ╰── slider ├── [button.up] ╰──
+--  [button.down] ]|
+--
+--  GtkScrollbar has a main CSS node with name scrollbar and a subnode for its
+--  contents, with subnodes named trough and slider.
+--
+--  The main node gets the style class .fine-tune added when the scrollbar is
+--  in 'fine-tuning' mode.
+--
+--  If steppers are enabled, they are represented by up to four additional
+--  subnodes with name button. These get the style classes .up and .down to
+--  indicate in which direction they are moving.
+--
+--  Other style classes that may be added to scrollbars inside
+--  Gtk.Scrolled_Window.Gtk_Scrolled_Window include the positional classes
+--  (.left, .right, .top, .bottom) and style classes related to overlay
+--  scrolling (.overlay-indicator, .dragging, .hovering).
 --
 --  </description>
 

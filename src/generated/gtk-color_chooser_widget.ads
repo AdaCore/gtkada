@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -23,7 +23,7 @@
 
 --  <description>
 --  The Gtk.Color_Chooser_Widget.Gtk_Color_Chooser_Widget widget lets the user
---  select a color. By default, the chooser presents a prefined palette of
+--  select a color. By default, the chooser presents a predefined palette of
 --  colors, plus a small number of settable custom colors. It is also possible
 --  to select a different color with the single-color editor. To enter the
 --  single-color editing mode, use the context menu of any color of the
@@ -38,6 +38,10 @@
 --  The Gtk.Color_Chooser_Widget.Gtk_Color_Chooser_Widget is used in the
 --  Gtk.Color_Chooser_Dialog.Gtk_Color_Chooser_Dialog to provide a dialog for
 --  selecting colors.
+--
+--  # CSS names
+--
+--  GtkColorChooserWidget has a single CSS node with name colorchooser.
 --
 --  </description>
 

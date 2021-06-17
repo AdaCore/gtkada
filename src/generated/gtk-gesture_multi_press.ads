@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -95,7 +95,7 @@ package Gtk.Gesture_Multi_Press is
        Rect : Gdk.Rectangle.Gdk_Rectangle);
    --  If Rect is non-null, the press area will be checked to be confined
    --  within the rectangle, otherwise the button count will be reset so the
-   --  press is seen as being the first one. If Rect is NULL, the area will be
+   --  press is seen as being the first one. If Rect is null, the area will be
    --  reset to an unrestricted state.
    --  Note: The rectangle is only used to determine whether any non-first
    --  click falls within the expected area. This is not akin to an input

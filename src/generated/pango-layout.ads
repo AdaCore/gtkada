@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -37,9 +37,10 @@
 --  lines.
 --
 --  <figure id="parameters">
---  == Adjustable parameters for a PangoLayout ==
+--  == Adjustable parameters (on the left) and font metrics (on the right) for
+--  a PangoLayout ==
 --
---  <graphic fileref="layout.gif" format="GIF"></graphic> </figure>
+--  <graphic fileref="layout.png" format="PNG"></graphic> </figure>
 --  The Pango.Layout.Pango_Layout structure is opaque, and has no user-visible
 --  fields.
 --
@@ -245,6 +246,13 @@ package Pango.Layout is
    --  "strong_pos": location to store the strong cursor position (may be
    --  null)
    --  "weak_pos": location to store the weak cursor position (may be null)
+
+   function Get_Direction
+      (Layout : not null access Pango_Layout_Record;
+       Index  : Glib.Gint) return Pango.Enums.Direction;
+   --  Gets the text direction at the given character position in Layout.
+   --  Since: gtk+ 1.46
+   --  "index": the byte index of the char
 
    function Get_Ellipsize
       (Layout : not null access Pango_Layout_Record)
@@ -478,7 +486,12 @@ package Pango.Layout is
       (Layout  : not null access Pango_Layout_Record;
        Spacing : Glib.Gint);
    --  Sets the amount of spacing in Pango unit between the lines of the
-   --  layout.
+   --  layout. When placing lines with spacing, Pango arranges things so that
+   --  line2.top = line1.bottom + spacing
+   --  Note: Since 1.44, Pango defaults to using the line height (as
+   --  determined by the font) for placing lines. The Spacing set with this
+   --  function is only taken into account when the line-height factor is set
+   --  to zero with pango_layout_set_line_spacing.
    --  "spacing": the amount of spacing
 
    function Get_Tabs
@@ -507,11 +520,13 @@ package Pango.Layout is
       (Layout : not null access Pango_Layout_Record;
        Text   : UTF8_String);
    --  Sets the text of the layout.
+   --  This function validates Text and renders invalid UTF-8 with a
+   --  placeholder glyph.
    --  Note that if you have used Pango.Layout.Set_Markup or
    --  Pango.Layout.Set_Markup_With_Accel on Layout before, you may want to
    --  call Pango.Layout.Set_Attributes to clear the attributes set on the
    --  layout from the markup as this function does not clear attributes.
-   --  "text": a valid UTF-8 string
+   --  "text": the text
 
    function Get_Unknown_Glyphs_Count
       (Layout : not null access Pango_Layout_Record) return Glib.Gint;
@@ -562,7 +577,7 @@ package Pango.Layout is
    --  position is measured from the left edge of the line)
    --  "index_": the byte index of a grapheme within the layout.
    --  "trailing": an integer indicating the edge of the grapheme to retrieve
-   --  the position of. If 0, the trailing edge of the grapheme, if > 0, the
+   --  the position of. If > 0, the trailing edge of the grapheme, if 0, the
    --  leading of the grapheme.
    --  "line": location to store resulting line index. (which will between 0
    --  and pango_layout_get_line_count(layout) - 1), or null
@@ -622,8 +637,8 @@ package Pango.Layout is
    --  cursor. The strong cursor is the cursor corresponding to text insertion
    --  in the base direction for the layout.
    --  "old_index": the byte index of the grapheme for the old index
-   --  "old_trailing": if 0, the cursor was at the trailing edge of the
-   --  grapheme indicated by Old_Index, if > 0, the cursor was at the leading
+   --  "old_trailing": if 0, the cursor was at the leading edge of the
+   --  grapheme indicated by Old_Index, if > 0, the cursor was at the trailing
    --  edge.
    --  "direction": direction to move cursor. A negative value indicates
    --  motion to the left.
@@ -679,15 +694,15 @@ package Pango.Layout is
    --  layout, the closest position is chosen (the position will be clamped
    --  inside the layout). If the X position is not within the layout, then the
    --  start or the end of the line is chosen as described for
-   --  Pango.Layout.Xy_To_Index. If either the X or Y positions were not inside
-   --  the layout, then the function returns False; on an exact hit, it returns
-   --  True.
+   --  pango_layout_line_x_to_index. If either the X or Y positions were not
+   --  inside the layout, then the function returns False; on an exact hit, it
+   --  returns True.
    --  "x": the X offset (in Pango units) from the left edge of the layout.
    --  "y": the Y offset (in Pango units) from the top edge of the layout
    --  "index_": location to store calculated byte index
    --  "trailing": location to store a integer indicating where in the
    --  grapheme the user clicked. It will either be zero, or the number of
-   --  characters in the grapheme. 0 represents the trailing edge of the
+   --  characters in the grapheme. 0 represents the leading edge of the
    --  grapheme.
 
    function At_Last_Line (Self : Pango_Layout_Iter) return Boolean;
@@ -758,6 +773,8 @@ package Pango.Layout is
    --  Pango.Layout.Set_Spacing has been called to set layout spacing. The Y
    --  positions are in layout coordinates (origin at top left of the entire
    --  layout).
+   --  Note: Since 1.44, Pango uses line heights for placing lines, and there
+   --  may be gaps between the ranges returned by this function.
    --  "y0_": start of line, or null
    --  "y1_": end of line, or null
 

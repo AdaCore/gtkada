@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -35,22 +35,22 @@
 --  For GTK+ widgets, any Gtk.Style_Context.Gtk_Style_Context returned by
 --  gtk_widget_get_style_context will already have a
 --  Gtk.Widget.Gtk_Widget_Path, a Gdk.Screen.Gdk_Screen and RTL/LTR information
---  set. The style context will be also updated automatically if any of these
+--  set. The style context will also be updated automatically if any of these
 --  settings change on the widget.
 --
 --  If you are using the theming layer standalone, you will need to set a
 --  widget path and a screen yourself to the created style context through
---  Gtk.Style_Context.Set_Path and Gtk.Style_Context.Set_Screen, as well as
---  updating the context yourself using Gtk.Style_Context.Invalidate whenever
---  any of the conditions change, such as a change in the
---  Gtk.Settings.Gtk_Settings:gtk-theme-name setting or a hierarchy change in
---  the rendered widget.
+--  Gtk.Style_Context.Set_Path and possibly Gtk.Style_Context.Set_Screen. See
+--  the "Foreign drawing" example in gtk3-demo.
 --
 --  # Style Classes # {gtkstylecontext-classes}
 --
 --  Widgets can add style classes to their context, which can be used to
---  associate different styles by class (see
---  [Selectors][gtkcssprovider-selectors]).
+--  associate different styles by class. The documentation for individual
+--  widgets lists which style classes it uses itself, and which style classes
+--  may be added by applications to affect their appearance.
+--
+--  GTK+ defines macros for a number of style classes.
 --
 --  # Style Regions
 --
@@ -58,18 +58,7 @@
 --  deprecated and will be removed in a future GTK+ update. Please use style
 --  classes instead.
 --
---  The regions used by GTK+ widgets are:
---
---  ## row Used by Gtk.Tree_View.Gtk_Tree_View. Can be used with the flags:
---  `even`, `odd`.
---
---  ## column Used by Gtk.Tree_View.Gtk_Tree_View. Can be used with the flags:
---  `first`, `last`, `sorted`.
---
---  ## column-header Used by Gtk.Tree_View.Gtk_Tree_View.
---
---  ## tab Used by Gtk.Notebook.Gtk_Notebook. Can be used with the flags:
---  `even`, `odd`, `first`, `last`.
+--  GTK+ defines macros for a number of style regions.
 --
 --  # Custom styling in UI libraries and applications
 --
@@ -92,28 +81,46 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Cairo;              use Cairo;
-with Gdk;                use Gdk;
-with Gdk.Frame_Clock;    use Gdk.Frame_Clock;
-with Gdk.Pixbuf;         use Gdk.Pixbuf;
-with Gdk.RGBA;           use Gdk.RGBA;
-with Gdk.Screen;         use Gdk.Screen;
-with Glib;               use Glib;
-with Glib.Object;        use Glib.Object;
-with Glib.Properties;    use Glib.Properties;
-with Glib.Values;        use Glib.Values;
-with Gtk.Css_Section;    use Gtk.Css_Section;
-with Gtk.Enums;          use Gtk.Enums;
-with Gtk.Style;          use Gtk.Style;
-with Gtk.Style_Provider; use Gtk.Style_Provider;
-with Gtk.Widget;         use Gtk.Widget;
-with Pango.Font;         use Pango.Font;
-with Pango.Layout;       use Pango.Layout;
+with Cairo;                   use Cairo;
+with Gdk;                     use Gdk;
+with Gdk.Frame_Clock;         use Gdk.Frame_Clock;
+with Gdk.Pixbuf;              use Gdk.Pixbuf;
+with Gdk.RGBA;                use Gdk.RGBA;
+with Gdk.Screen;              use Gdk.Screen;
+with Glib;                    use Glib;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Object;             use Glib.Object;
+with Glib.Properties;         use Glib.Properties;
+with Glib.Values;             use Glib.Values;
+with Gtk.Css_Section;         use Gtk.Css_Section;
+with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Style;               use Gtk.Style;
+with Gtk.Style_Provider;      use Gtk.Style_Provider;
+with Gtk.Widget;              use Gtk.Widget;
+with Pango.Font;              use Pango.Font;
+with Pango.Layout;            use Pango.Layout;
 
 package Gtk.Style_Context is
 
    type Gtk_Style_Context_Record is new GObject_Record with null record;
    type Gtk_Style_Context is access all Gtk_Style_Context_Record'Class;
+
+   type Gtk_Style_Context_Print_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Style_Context_Print_Flags);
+   --  Flags that modify the behavior of Gtk.Style_Context.To_String. New
+   --  values may be added to this enumeration.
+
+   Style_Context_Print_None : constant Gtk_Style_Context_Print_Flags := 0;
+   Style_Context_Print_Recurse : constant Gtk_Style_Context_Print_Flags := 1;
+   Style_Context_Print_Show_Style : constant Gtk_Style_Context_Print_Flags := 2;
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package Gtk_Style_Context_Print_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Style_Context_Print_Flags);
+   type Property_Gtk_Style_Context_Print_Flags is new Gtk_Style_Context_Print_Flags_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -154,11 +161,11 @@ package Gtk.Style_Context is
    --  Adds a style class to Context, so posterior calls to
    --  gtk_style_context_get or any of the gtk_render_* functions will make use
    --  of this new class for styling.
-   --  In the CSS file format, a Gtk.GEntry.Gtk_Entry defining an "entry"
+   --  In the CSS file format, a Gtk.GEntry.Gtk_Entry defining a "search"
    --  class, would be matched by:
-   --  |[ GtkEntry.entry { ... } ]|
-   --  While any widget defining an "entry" class would be matched by: |[
-   --  .entry { ... } ]|
+   --  |[ <!-- language="CSS" --> entry.search { ... } ]|
+   --  While any widget defining a "search" class would be matched by: |[ <!--
+   --  language="CSS" --> .search { ... } ]|
    --  Since: gtk+ 3.0
    --  "class_name": class name to use in styling
 
@@ -191,9 +198,9 @@ package Gtk.Style_Context is
    --  for styling.
    --  In the CSS file format, a Gtk.Tree_View.Gtk_Tree_View defining a "row"
    --  region, would be matched by:
-   --  |[ GtkTreeView row { ... } ]|
+   --  |[ <!-- language="CSS" --> treeview row { ... } ]|
    --  Pseudo-classes are used for matching Flags, so the two following rules:
-   --  |[ GtkTreeView row:nth-child(even) { ... } GtkTreeView
+   --  |[ <!-- language="CSS" --> treeview row:nth-child(even) { ... } treeview
    --  row:nth-child(odd) { ... } ]|
    --  would apply to even and odd rows, respectively.
    --  Region names must only contain lowercase letters and "-", starting
@@ -223,8 +230,19 @@ package Gtk.Style_Context is
       (Self  : not null access Gtk_Style_Context_Record;
        State : Gtk.Enums.Gtk_State_Flags;
        Color : out Gdk.RGBA.Gdk_RGBA);
+   pragma Obsolescent (Get_Background_Color);
    --  Gets the background color for a given state.
+   --  This function is far less useful than it seems, and it should not be
+   --  used in newly written code. CSS has no concept of "background color", as
+   --  a background can be an image, or a gradient, or any other pattern
+   --  including solid colors.
+   --  The only reason why you would call
+   --  Gtk.Style_Context.Get_Background_Color is to use the returned value to
+   --  draw the background with it; the correct way to achieve this result is
+   --  to use Gtk.Style_Context.Render_Background instead, along with CSS style
+   --  classes to modify the color to be rendered.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.16, 1
    --  "state": state to retrieve the color for
    --  "color": return value for the background color
 
@@ -232,8 +250,9 @@ package Gtk.Style_Context is
       (Self   : not null access Gtk_Style_Context_Record;
        State  : Gtk.Enums.Gtk_State_Flags;
        Border : out Gtk.Style.Gtk_Border);
-   --  Gets the border for a given state as a Gtk.Style.Gtk_Border. See
-   --  GTK_STYLE_PROPERTY_BORDER_WIDTH.
+   --  Gets the border for a given state as a Gtk.Style.Gtk_Border.
+   --  See Gtk.Style_Context.Get_Property and GTK_STYLE_PROPERTY_BORDER_WIDTH
+   --  for details.
    --  Since: gtk+ 3.0
    --  "state": state to retrieve the border for
    --  "border": return value for the border settings
@@ -242,8 +261,10 @@ package Gtk.Style_Context is
       (Self  : not null access Gtk_Style_Context_Record;
        State : Gtk.Enums.Gtk_State_Flags;
        Color : out Gdk.RGBA.Gdk_RGBA);
+   pragma Obsolescent (Get_Border_Color);
    --  Gets the border color for a given state.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.16, 1
    --  "state": state to retrieve the color for
    --  "color": return value for the border color
 
@@ -252,6 +273,8 @@ package Gtk.Style_Context is
        State : Gtk.Enums.Gtk_State_Flags;
        Color : out Gdk.RGBA.Gdk_RGBA);
    --  Gets the foreground color for a given state.
+   --  See Gtk.Style_Context.Get_Property and GTK_STYLE_PROPERTY_COLOR for
+   --  details.
    --  Since: gtk+ 3.0
    --  "state": state to retrieve the color for
    --  "color": return value for the foreground color
@@ -329,7 +352,7 @@ package Gtk.Style_Context is
        State  : Gtk.Enums.Gtk_State_Flags;
        Margin : out Gtk.Style.Gtk_Border);
    --  Gets the margin for a given state as a Gtk.Style.Gtk_Border. See
-   --  GTK_STYLE_PROPERTY_MARGIN.
+   --  gtk_style_property_get and GTK_STYLE_PROPERTY_MARGIN for details.
    --  Since: gtk+ 3.0
    --  "state": state to retrieve the border for
    --  "margin": return value for the margin settings
@@ -339,7 +362,7 @@ package Gtk.Style_Context is
        State   : Gtk.Enums.Gtk_State_Flags;
        Padding : out Gtk.Style.Gtk_Border);
    --  Gets the padding for a given state as a Gtk.Style.Gtk_Border. See
-   --  GTK_STYLE_PROPERTY_PADDING.
+   --  gtk_style_context_get and GTK_STYLE_PROPERTY_PADDING for details.
    --  Since: gtk+ 3.0
    --  "state": state to retrieve the padding for
    --  "padding": return value for the padding settings
@@ -385,6 +408,13 @@ package Gtk.Style_Context is
        State    : Gtk.Enums.Gtk_State_Flags;
        Value    : out Glib.Values.GValue);
    --  Gets a style property from Context for the given state.
+   --  Note that not all CSS properties that are supported by GTK+ can be
+   --  retrieved in this way, since they may not be representable as
+   --  Glib.Values.GValue. GTK+ defines macros for a number of properties that
+   --  can be used with this function.
+   --  Note that passing a state other than the current state of Context is
+   --  not recommended unless the style context has been saved with
+   --  Gtk.Style_Context.Save.
    --  When Value is no longer needed, g_value_unset must be called to free
    --  any allocated memory.
    --  Since: gtk+ 3.0
@@ -400,7 +430,7 @@ package Gtk.Style_Context is
    procedure Set_Scale
       (Self  : not null access Gtk_Style_Context_Record;
        Scale : Glib.Gint);
-   --  Sets the scale to use when getting image assets for the style .
+   --  Sets the scale to use when getting image assets for the style.
    --  Since: gtk+ 3.10
    --  "scale": scale
 
@@ -414,7 +444,7 @@ package Gtk.Style_Context is
        Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class);
    --  Attaches Context to the given screen.
    --  The screen is used to add style information from "global" style
-   --  providers, such as the screens Gtk.Settings.Gtk_Settings instance.
+   --  providers, such as the screen's Gtk.Settings.Gtk_Settings instance.
    --  If you are using a Gtk.Style_Context.Gtk_Style_Context returned from
    --  gtk_widget_get_style_context, you do not need to call this yourself.
    --  Since: gtk+ 3.0
@@ -437,14 +467,18 @@ package Gtk.Style_Context is
    function Get_State
       (Self : not null access Gtk_Style_Context_Record)
        return Gtk.Enums.Gtk_State_Flags;
-   --  Returns the state used when rendering.
+   --  Returns the state used for style matching.
+   --  This method should only be used to retrieve the
+   --  Gtk.Enums.Gtk_State_Flags to pass to Gtk.Style_Context.Gtk_Style_Context
+   --  methods, like Gtk.Style_Context.Get_Padding. If you need to retrieve the
+   --  current state of a Gtk.Widget.Gtk_Widget, use
+   --  Gtk.Widget.Get_State_Flags.
    --  Since: gtk+ 3.0
 
    procedure Set_State
       (Self  : not null access Gtk_Style_Context_Record;
        Flags : Gtk.Enums.Gtk_State_Flags);
-   --  Sets the state to be used when rendering with any of the gtk_render_*
-   --  functions.
+   --  Sets the state to be used for style matching.
    --  Since: gtk+ 3.0
    --  "flags": state to represent
 
@@ -461,7 +495,7 @@ package Gtk.Style_Context is
    function Has_Class
       (Self       : not null access Gtk_Style_Context_Record;
        Class_Name : UTF8_String) return Boolean;
-   --  Returns True if Context currently has defined the given class name
+   --  Returns True if Context currently has defined the given class name.
    --  Since: gtk+ 3.0
    --  "class_name": a class name
 
@@ -526,12 +560,12 @@ package Gtk.Style_Context is
    --  If Region_Id is null, all rendered elements using Context will be
    --  affected by this state transition.
    --  As a practical example, a Gtk.Button.Gtk_Button notifying a state
-   --  transition on the prelight state: |[<!-- language="C" -->
+   --  transition on the prelight state: |[ <!-- language="C" -->
    --  gtk_style_context_notify_state_change (context, gtk_widget_get_window
    --  (widget), NULL, GTK_STATE_PRELIGHT, button->in_button); ]|
-   --  Can be handled in the CSS file like this: |[ GtkButton {
-   --  background-color: f00 }
-   --  GtkButton:hover { background-color: fff; transition: 200ms linear } ]|
+   --  Can be handled in the CSS file like this: |[ <!-- language="CSS" -->
+   --  button { background-color: f00 }
+   --  button:hover { background-color: fff; transition: 200ms linear } ]|
    --  This combination will animate the button background from red to white
    --  if a pointer enters the button, and back to red if the pointer leaves
    --  the button.
@@ -597,11 +631,12 @@ package Gtk.Style_Context is
    --  Since: gtk+ 3.0
 
    procedure Save (Self : not null access Gtk_Style_Context_Record);
-   --  Saves the Context state, so all modifications done through
+   --  Saves the Context state, so temporary modifications done through
    --  Gtk.Style_Context.Add_Class, Gtk.Style_Context.Remove_Class,
-   --  Gtk.Style_Context.Add_Region, Gtk.Style_Context.Remove_Region or
-   --  Gtk.Style_Context.Set_Junction_Sides can be reverted in one go through
-   --  Gtk.Style_Context.Restore.
+   --  Gtk.Style_Context.Set_State, etc. can quickly be reverted in one go
+   --  through Gtk.Style_Context.Restore.
+   --  The matching call to Gtk.Style_Context.Restore must be done before GTK
+   --  returns to the main loop.
    --  Since: gtk+ 3.0
 
    procedure Scroll_Animations
@@ -623,9 +658,11 @@ package Gtk.Style_Context is
    procedure Set_Background
       (Self   : not null access Gtk_Style_Context_Record;
        Window : Gdk.Gdk_Window);
+   pragma Obsolescent (Set_Background);
    --  Sets the background of Window to the background pattern or color
    --  specified in Context for its current state.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.18, 1
    --  "window": a Gdk.Gdk_Window
 
    procedure State_Is_Running
@@ -644,6 +681,19 @@ package Gtk.Style_Context is
    --  Deprecated since 3.6, 1
    --  "state": a widget state
    --  "progress": return location for the transition progress
+
+   function To_String
+      (Self  : not null access Gtk_Style_Context_Record;
+       Flags : Gtk_Style_Context_Print_Flags) return UTF8_String;
+   --  Converts the style context into a string representation.
+   --  The string representation always includes information about the name,
+   --  state, id, visibility and style classes of the CSS node that is backing
+   --  Context. Depending on the flags, more information may be included.
+   --  This function is intended for testing and debugging of the CSS
+   --  implementation in GTK+. There are no guarantees about the format of the
+   --  returned string, it may change.
+   --  Since: gtk+ 3.20
+   --  "flags": Flags that determine what to print
 
    ----------------------
    -- GtkAda additions --
@@ -768,8 +818,7 @@ package Gtk.Style_Context is
        Y       : Gdouble;
        Size    : Gdouble);
    --  Renders an arrow pointing to Angle.
-   --  Typical arrow rendering at 0, 1&solidus;2 &pi;, &pi; and 3&solidus;2
-   --  &pi;:
+   --  Typical arrow rendering at 0, 1⁄2 π;, π; and 3⁄2 π:
    --  ![](arrows.png)
    --  Since: gtk+ 3.0
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
@@ -920,6 +969,7 @@ package Gtk.Style_Context is
        Gap_Side : Gtk.Enums.Gtk_Position_Type;
        Xy0_Gap  : Gdouble;
        Xy1_Gap  : Gdouble);
+   pragma Obsolescent (Render_Frame_Gap);
    --  Renders a frame around the rectangle defined by (X, Y, Width, Height),
    --  leaving a gap on one side. Xy0_Gap and Xy1_Gap will mean X coordinates
    --  for Gtk.Enums.Pos_Top and Gtk.Enums.Pos_Bottom gap sides, and Y
@@ -927,6 +977,7 @@ package Gtk.Style_Context is
    --  Typical rendering of a frame with a gap:
    --  ![](frame-gap.png)
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.24, 1
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
    --  "x": X origin of the rectangle
@@ -985,6 +1036,11 @@ package Gtk.Style_Context is
        X       : Gdouble;
        Y       : Gdouble);
    --  Renders the icon in Pixbuf at the specified X and Y coordinates.
+   --  This function will render the icon in Pixbuf at exactly its size,
+   --  regardless of scaling factors, which may not be appropriate when drawing
+   --  on displays with high pixel densities.
+   --  You probably want to use Gtk.Style_Context.Render_Icon_Surface instead,
+   --  if you already have a Cairo surface.
    --  Since: gtk+ 3.2
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
    --  "cr": a cairo_t
@@ -1045,6 +1101,14 @@ package Gtk.Style_Context is
        Call  : Cb_GObject_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
+   --  The ::changed signal is emitted when there is a change in the
+   --  Gtk.Style_Context.Gtk_Style_Context.
+   --
+   --  For a Gtk.Style_Context.Gtk_Style_Context returned by
+   --  gtk_widget_get_style_context, the Gtk.Widget.Gtk_Widget::style-updated
+   --  signal/vfunc might be more convenient to use.
+   --
+   --  This signal is useful when using the theming layer standalone.
 
 private
    Screen_Property : constant Glib.Properties.Property_Object :=

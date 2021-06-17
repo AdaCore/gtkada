@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -27,12 +27,22 @@
 --  various pages of the associated stack widget.
 --
 --  All the content for the buttons comes from the child properties of the
---  Gtk.Stack.Gtk_Stack.
+--  Gtk.Stack.Gtk_Stack; the button visibility in a
+--  Gtk.Stack_Switcher.Gtk_Stack_Switcher widget is controlled by the
+--  visibility of the child in the Gtk.Stack.Gtk_Stack.
 --
 --  It is possible to associate multiple Gtk.Stack_Switcher.Gtk_Stack_Switcher
---  widgets with the same stack widget.
+--  widgets with the same Gtk.Stack.Gtk_Stack widget.
 --
 --  The GtkStackSwitcher widget was added in 3.10.
+--
+--  # CSS nodes
+--
+--  GtkStackSwitcher has a single CSS node named stackswitcher and style class
+--  .stack-switcher.
+--
+--  When circumstances require it, GtkStackSwitcher adds the .needs-attention
+--  style class to the widgets representing the stack pages.
 --
 --  </description>
 
@@ -108,6 +118,10 @@ package Gtk.Stack_Switcher is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
+   Icon_Size_Property : constant Glib.Properties.Property_Int;
+   --  Use the "icon-size" property to change the size of the image displayed
+   --  when a Gtk.Stack_Switcher.Gtk_Stack_Switcher is displaying icons.
+
    Stack_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Stack.Gtk_Stack
 
@@ -145,4 +159,6 @@ package Gtk.Stack_Switcher is
 private
    Stack_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("stack");
+   Icon_Size_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("icon-size");
 end Gtk.Stack_Switcher;

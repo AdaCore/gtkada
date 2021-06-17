@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -165,5 +165,16 @@ package body Pango.Language is
    begin
       return From_Object (Internal);
    end Get_Default;
+
+   -------------------
+   -- Get_Preferred --
+   -------------------
+
+   function Get_Preferred return Pango_Language is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "pango_language_get_preferred");
+   begin
+      return From_Object (Internal);
+   end Get_Preferred;
 
 end Pango.Language;

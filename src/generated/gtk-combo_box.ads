@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -45,6 +45,22 @@
 --  can be a bit overwhelming. In this case,
 --  Gtk.Combo_Box_Text.Gtk_Combo_Box_Text offers a simple alternative. Both
 --  GtkComboBox and Gtk.Combo_Box_Text.Gtk_Combo_Box_Text can contain an entry.
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> combobox ├── box.linked │ ╰── button.combo │
+--  ╰── box │ ├── cellview │ ╰── arrow ╰── window.popup ]|
+--
+--  A normal combobox contains a box with the .linked class, a button with the
+--  .combo class and inside those buttons, there are a cellview and an arrow.
+--
+--  |[<!-- language="plain" --> combobox ├── box.linked │ ├── entry.combo │
+--  ╰── button.combo │ ╰── box │ ╰── arrow ╰── window.popup ]|
+--
+--  A GtkComboBox with an entry has a single CSS node with name combobox. It
+--  contains a box with the .linked class. That box contains an entry and a
+--  button, both with the .combo class added. The button also contains another
+--  node with name arrow.
 --
 --  </description>
 --  <group>Numeric/Text Data Entry</group>
@@ -319,18 +335,22 @@ package Gtk.Combo_Box is
 
    function Get_Focus_On_Click
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean;
+   pragma Obsolescent (Get_Focus_On_Click);
    --  Returns whether the combo box grabs focus when it is clicked with the
    --  mouse. See Gtk.Combo_Box.Set_Focus_On_Click.
    --  Since: gtk+ 2.6
+   --  Deprecated since 3.20, 1
 
    procedure Set_Focus_On_Click
       (Combo_Box      : not null access Gtk_Combo_Box_Record;
        Focus_On_Click : Boolean);
+   pragma Obsolescent (Set_Focus_On_Click);
    --  Sets whether the combo box will grab focus when it is clicked with the
    --  mouse. Making mouse clicks not grab focus is useful in places like
    --  toolbars where you don't want the keyboard focus removed from the main
    --  area of the application.
    --  Since: gtk+ 2.6
+   --  Deprecated since 3.20, 1
    --  "focus_on_click": whether the combo box grabs focus when clicked with
    --  the mouse
 
@@ -458,6 +478,7 @@ package Gtk.Combo_Box is
    --  Pops up the menu or dropdown list of Combo_Box.
    --  This function is mostly intended for use by accessibility technologies;
    --  applications should have little use for it.
+   --  Before calling this, Combo_Box must be mapped, or nothing will happen.
    --  Since: gtk+ 2.4
 
    procedure Set_Active_Iter
@@ -646,17 +667,16 @@ package Gtk.Combo_Box is
 
    Column_Span_Column_Property : constant Glib.Properties.Property_Int;
    --  If this is set to a non-negative value, it must be the index of a
-   --  column of type G_TYPE_INT in the model.
-   --
-   --  The values of that column are used to determine how many columns a
-   --  value in the list will span.
+   --  column of type G_TYPE_INT in the model. The value in that column for
+   --  each item will determine how many columns that item will span in the
+   --  popup. Therefore, values in this column must be greater than zero, and
+   --  the sum of an item's column position + span should not exceed
+   --  Gtk.Combo_Box.Gtk_Combo_Box:wrap-width.
 
    Entry_Text_Column_Property : constant Glib.Properties.Property_Int;
    --  The column in the combo box's model to associate with strings from the
    --  entry if the combo was created with
    --  Gtk.Combo_Box.Gtk_Combo_Box:has-entry = True.
-
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean;
 
    Has_Entry_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the combo box has an entry.
@@ -684,20 +704,18 @@ package Gtk.Combo_Box is
 
    Row_Span_Column_Property : constant Glib.Properties.Property_Int;
    --  If this is set to a non-negative value, it must be the index of a
-   --  column of type G_TYPE_INT in the model.
-   --
-   --  The values of that column are used to determine how many rows a value
-   --  in the list will span. Therefore, the values in the model column pointed
-   --  to by this property must be greater than zero and not larger than
-   --  wrap-width.
+   --  column of type G_TYPE_INT in the model. The value in that column for
+   --  each item will determine how many rows that item will span in the popup.
+   --  Therefore, values in this column must be greater than zero.
 
    Tearoff_Title_Property : constant Glib.Properties.Property_String;
    --  A title that may be displayed by the window manager when the popup is
    --  torn-off.
 
    Wrap_Width_Property : constant Glib.Properties.Property_Int;
-   --  If wrap-width is set to a positive value, the list will be displayed in
-   --  multiple columns, the number of columns is determined by wrap-width.
+   --  If wrap-width is set to a positive value, items in the popup will be
+   --  laid out along multiple columns, starting a new row on reaching the wrap
+   --  width.
 
    -------------
    -- Signals --
@@ -756,7 +774,9 @@ package Gtk.Combo_Box is
    --  displays it in the entry. |[<!-- language="C" --> static gchar*
    --  format_entry_text_callback (GtkComboBox *combo, const gchar *path,
    --  gpointer user_data) { GtkTreeIter iter; GtkTreeModel model; gdouble
-   --  value; model = gtk_combo_box_get_model (combo);
+   --  value;
+   --
+   --  model = gtk_combo_box_get_model (combo);
    --
    --  gtk_tree_model_get_iter_from_string (model, &iter, path);
    --  gtk_tree_model_get (model, &iter, THE_DOUBLE_VALUE_COLUMN, &value, -1);
@@ -890,8 +910,6 @@ private
      Glib.Properties.Build ("has-frame");
    Has_Entry_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-entry");
-   Focus_On_Click_Property : constant Glib.Properties.Property_Boolean :=
-     Glib.Properties.Build ("focus-on-click");
    Entry_Text_Column_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("entry-text-column");
    Column_Span_Column_Property : constant Glib.Properties.Property_Int :=

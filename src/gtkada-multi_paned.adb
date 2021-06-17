@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2003-2018, AdaCore                     --
+--                     Copyright (C) 2003-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -862,7 +862,6 @@ package body Gtkada.Multi_Paned is
 
       Current : Child_Description_Access := Pane;
       Tmp, Parent : Child_Description_Access;
-      Alloc : Gtk_Allocation;
    begin
       if Traces then
          if Pane.Is_Widget then
@@ -904,32 +903,7 @@ package body Gtkada.Multi_Paned is
             end if;
          end if;
 
-         if Split.Children /= null
-            and then Split.Get_Realized
-            and then Split.Children.Width  > 0.0
-            and then Split.Children.Height > 0.0
-         then
-            --  We have to redo some of the work done by Size_Allocate_Paned.
-            --  The reason is that the latter will do nothing since the
-            --  allocation has changed, but we might have changed the top-level
-            --  Child, and need to reset the allocation properties anyway
-
-            if Get_Has_Window (Split) then
-               Split.Children.X := 0;
-               Split.Children.Y := 0;
-            else
-               Split.Get_Allocation (Alloc);
-               Split.Children.X := Alloc.X;
-               Split.Children.Y := Alloc.Y;
-            end if;
-
-            Size_Allocate_Child
-              (Split, Split.Children,
-               Float (Get_Allocated_Width (Split)),
-               Float (Get_Allocated_Height (Split)));
-         else
-            Queue_Resize (Split);
-         end if;
+         Queue_Resize (Split);
       end if;
 
       if Traces then
@@ -1100,6 +1074,7 @@ package body Gtkada.Multi_Paned is
       begin
          Tmp := Parent.First_Child;
          Count := Children'First;
+
          while Tmp /= null loop
             Children (Count) := Tmp;
             if Tmp = Child then
@@ -1118,6 +1093,7 @@ package body Gtkada.Multi_Paned is
                else
                   Size := Children (H).Handle.Position.X - Parent.X;
                end if;
+
                if Size >= Minimum_Width then
                   Set_Size_Request
                     (Children (H), Float (Size), Children (H).Height,
@@ -1141,6 +1117,7 @@ package body Gtkada.Multi_Paned is
                Children (H).Handle.Position.X :=
                  Children (H - 1).Handle.Position.X + Gint (Children (H).Width)
                  + Handle_Width;
+
                if Size >= Minimum_Width then
                   Set_Size_Request
                     (Children (H), Float (Size), Children (H).Height,
@@ -1164,6 +1141,7 @@ package body Gtkada.Multi_Paned is
                else
                   Size := Children (H).Handle.Position.Y - Parent.Y;
                end if;
+
                if Size >= Minimum_Width then
                   Set_Size_Request
                     (Children (H), Children (H).Width, Float (Size),
@@ -1187,6 +1165,7 @@ package body Gtkada.Multi_Paned is
                Children (H).Handle.Position.Y :=
                  Children (H - 1).Handle.Position.Y
                  + Gint (Children (H).Height) + Handle_Width;
+
                if Size >= Minimum_Width then
                   Set_Size_Request
                     (Children (H), Children (H).Width, Float (Size),
@@ -1229,7 +1208,9 @@ package body Gtkada.Multi_Paned is
          end case;
 
          Resize_Child_And_Siblings
-           (Split.Selected.Parent, Split.Selected, Split.Handle_Width);
+            (Parent       => Split.Selected.Parent,
+             Child        => Split.Selected,
+             Handle_Width => Split.Handle_Width);
 
          Split.Queue_Resize;
 
@@ -1294,12 +1275,14 @@ package body Gtkada.Multi_Paned is
             Split.Selected_Pos.Y := New_Y;
 
             Resize_Child_And_Siblings
-              (Split.Selected.Parent, Split.Selected, Split.Handle_Width);
+              (Parent       => Split.Selected.Parent,
+               Child        => Split.Selected,
+               Handle_Width => Split.Handle_Width);
             Size_Allocate_Child
-              (Split,
-               Split.Selected.Parent,
-               Float'Max (1.0, Split.Selected.Parent.Width),
-               Float'Max (1.0, Split.Selected.Parent.Height));
+              (Split   => Split,
+               Current => Split.Selected.Parent,
+               Width   => Float'Max (1.0, Split.Selected.Parent.Width),
+               Height  => Float'Max (1.0, Split.Selected.Parent.Height));
          else
             Draw_Resize_Line (Split, New_X, New_Y);
          end if;
@@ -1359,8 +1342,11 @@ package body Gtkada.Multi_Paned is
       Iter    : Child_Iterator := Start (Split);
       Current : Child_Description_Access;
       Ctx     : constant Gtk_Style_Context := Get_Style_Context (Split);
-      Flags : Gtk_State_Flags;
+      Flags   : Gtk_State_Flags;
+      Result  : Boolean;
    begin
+      Result := Inherited_Draw (Paned_Class_Record, Split, Cr);
+
       loop
          Current := Get (Iter);
          exit when Current = null;
@@ -1406,7 +1392,7 @@ package body Gtkada.Multi_Paned is
       end loop;
 
       --  Chain up to draw children
-      return Boolean'Pos (Inherited_Draw (Paned_Class_Record, Split, Cr));
+      return Boolean'Pos (Result);
    end On_Draw;
 
    -----------------------
@@ -1654,24 +1640,39 @@ package body Gtkada.Multi_Paned is
       Current       : Child_Description_Access;
       Width, Height : Float)
    is
-      Xchild : Gint := Current.X;
-      Ychild : Gint := Current.Y;
-      Tmp    : Child_Description_Access := Current.First_Child;
-      Children_Count : Gint := 0;
-      Child  : Float;
-      Ratio, Fixed_Ratio  : Float := 1.0;
-      Has_Request_Child : Boolean := False;
-      Unrequested : Float := 0.0; --  Size for children that didn't request one
+      Xchild                    : Gint := Current.X;
+      Ychild                    : Gint := Current.Y;
+      Tmp                       : Child_Description_Access :=
+        Current.First_Child;
+      Children_Count            : Gint := 0;
+      Child                     : Float;
+      Ratio, Fixed_Ratio        : Float := 1.0;
+      Has_Request_Child         : Boolean := False;
+      Unrequested               : Float := 0.0;
+      --  Size for children that didn't request one
       Fixed_Width, Fixed_Height : Float := 0.0;
-      Req_Width, Req_Height : Float := 0.0;
-      Handles_Size : Float;
-      Alloc : Gtk_Allocation;
-      Old_Pos : Gdk.Rectangle.Gdk_Rectangle;
+      Req_Width, Req_Height     : Float := 0.0;
+      Handles_Size              : Float;
+      Old_Pos                   : Gdk.Rectangle.Gdk_Rectangle;
 
       procedure Compute_Ratios (Total, Requested, Fixed  : Float);
       --  Compute the various ratios to apply, given the total size allocated
       --  to the widget, its requested size, and the size dedicated to fixed
       --  size children
+
+      function Get_Child_Allocation
+        (Child  : Child_Description_Access;
+         X      : Gint;
+         Y      : Gint;
+         Width  : Gint;
+         Height : Gint) return Gtk_Allocation;
+      --  Return the allocation needed for the given child.
+      --  The child's widget minimum size is taken into account to avoid
+      --  returning a size that won't fit at the end.
+
+      --------------------
+      -- Compute_Ratios --
+      --------------------
 
       procedure Compute_Ratios (Total, Requested, Fixed  : Float) is
          T : Float;
@@ -1698,6 +1699,47 @@ package body Gtkada.Multi_Paned is
             end if;
          end if;
       end Compute_Ratios;
+
+      --------------------------
+      -- Get_Child_Allocation --
+      --------------------------
+
+      function Get_Child_Allocation
+        (Child  : Child_Description_Access;
+         X      : Gint;
+         Y      : Gint;
+         Width  : Gint;
+         Height : Gint) return Gtk_Allocation
+      is
+         Alloc                  : Gtk_Allocation;
+         Nat_Width, Min_Width   : Gint;
+         Nat_Height, Min_Height : Gint;
+      begin
+         --  Retrieve the child's minimum size ...
+
+         Child.Widget.Get_Preferred_Width_For_Height
+           (Height        => Height,
+            Minimum_Width => Min_Width,
+            Natural_Width => Nat_Width);
+         Child.Widget.Get_Preferred_Height_For_Width
+           (Width          => Width,
+            Minimum_Height => Min_Height,
+            Natural_Height => Nat_Height);
+
+         --  ... To make sure that we don't call Size_Allocate with
+         --  a size that is lesser than the minimum required. This
+         --  avoids Gtk warnings such as "gtk_box_gadget_distribute:
+         --  assertion 'size >= 0' failed in <widget_class> " when
+         --  allocating all the child's widgets recursively.
+
+         Alloc :=
+           (X      => X,
+            Y      => Y,
+            Width  => Gint'Max (Min_Width, Width),
+            Height => Gint'Max (Min_Height, Height));
+
+         return Alloc;
+      end Get_Child_Allocation;
 
    begin
       if Split.Frozen then
@@ -1761,11 +1803,15 @@ package body Gtkada.Multi_Paned is
                end if;
 
                if Tmp.Is_Widget then
-                  Alloc := (X      => Xchild,
-                            Y      => Current.Y,
-                            Width  => Gint'Max (1, Gint (Child)),
-                            Height => Gint (Height));
-                  Size_Allocate (Tmp.Widget, Alloc);
+                  Size_Allocate
+                    (Widget     => Tmp.Widget,
+                     Allocation => Get_Child_Allocation
+                       (Child  => Tmp,
+                        X      => Xchild,
+                        Y      => Current.Y,
+                        Width  => Gint (Child),
+                        Height => Gint (Height)));
+
                   Tmp.Width  := Float'Max (1.0, Child);
                   Tmp.Height := Height;
                else
@@ -1811,18 +1857,27 @@ package body Gtkada.Multi_Paned is
                else
                   Child := Tmp.Height * Ratio;
                end if;
+
                if Tmp.Is_Widget then
-                  Alloc := (X      => Current.X,
-                            Y      => Ychild,
-                            Width  => Gint (Width),
-                            Height => Gint'Max (1, Gint (Child)));
-                  Size_Allocate (Tmp.Widget, Alloc);
+                  Size_Allocate
+                    (Widget     => Tmp.Widget,
+                     Allocation => Get_Child_Allocation
+                       (Child  => Tmp,
+                        X      => Current.X,
+                        Y      => Ychild,
+                        Width  => Gint (Width),
+                        Height => Gint (Child)));
+
                   Tmp.Width  := Width;
                   Tmp.Height := Float'Max (1.0, Child);
                else
                   Tmp.X := Current.X;
                   Tmp.Y := Ychild;
-                  Size_Allocate_Child (Split, Tmp, Width, Child);
+                  Size_Allocate_Child
+                    (Split   => Split,
+                     Current => Tmp,
+                     Width   => Width,
+                     Height  => Child);
                end if;
 
                Old_Pos := Tmp.Handle.Position;
@@ -1908,8 +1963,10 @@ package body Gtkada.Multi_Paned is
       end if;
 
       Size_Allocate_Child
-        (Split, Split.Children,
-         Float (Alloc.Width), Float (Alloc.Height));
+        (Split   => Split,
+         Current => Split.Children,
+         Width   => Float (Alloc.Width),
+         Height  => Float (Alloc.Height));
 
       if Traces then
          Dump (Split, Split.Children);
@@ -2565,7 +2622,9 @@ package body Gtkada.Multi_Paned is
                             + Gint (Current.Height);
                      end if;
                      Resize_Child_And_Siblings
-                       (Current.Parent, Previous, Win.Handle_Width);
+                       (Parent       => Current.Parent,
+                        Child        => Previous,
+                        Handle_Width => Win.Handle_Width);
                   end if;
 
                else
@@ -2577,7 +2636,9 @@ package body Gtkada.Multi_Paned is
                        + Height - Gint (Current.Height);
                   end if;
                   Resize_Child_And_Siblings
-                    (Current.Parent, Current, Win.Handle_Width);
+                    (Parent       => Current.Parent,
+                     Child        => Current,
+                     Handle_Width => Win.Handle_Width);
                end if;
 
             else

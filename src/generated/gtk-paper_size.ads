@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -41,6 +41,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;          use Glib;
 with Glib.Glist;    use Glib.Glist;
 with Glib.Key_File; use Glib.Key_File;
+with Glib.Variant;  use Glib.Variant;
 with Gtk.Enums;     use Gtk.Enums;
 
 package Gtk.Paper_Size is
@@ -106,23 +107,65 @@ package Gtk.Paper_Size is
    --  "height": the paper height, in units of Unit
    --  "unit": the unit for Width and Height. not Gtk.Enums.None.
 
+   procedure Gtk_New_From_Gvariant
+      (Widget  : out Gtk_Paper_Size;
+       Variant : Glib.Variant.Gvariant);
+   --  Deserialize a paper size from an a{sv} variant in the format produced
+   --  by Gtk.Paper_Size.To_Gvariant.
+   --  Since: gtk+ 3.22
+   --  "variant": an a{sv} Glib.Variant.Gvariant
+
+   function Gtk_Paper_Size_New_From_Gvariant
+      (Variant : Glib.Variant.Gvariant) return Gtk_Paper_Size;
+   --  Deserialize a paper size from an a{sv} variant in the format produced
+   --  by Gtk.Paper_Size.To_Gvariant.
+   --  Since: gtk+ 3.22
+   --  "variant": an a{sv} Glib.Variant.Gvariant
+
+   procedure Gtk_New_From_Ipp
+      (Widget   : out Gtk_Paper_Size;
+       Ipp_Name : UTF8_String;
+       Width    : Gdouble;
+       Height   : Gdouble);
+   --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object by using IPP
+   --  information.
+   --  If Ipp_Name is not a recognized paper name, Width and Height are used
+   --  to construct a custom Gtk.Paper_Size.Gtk_Paper_Size object.
+   --  Since: gtk+ 3.16
+   --  "ipp_name": an IPP paper name
+   --  "width": the paper width, in points
+   --  "height": the paper height in points
+
+   function Gtk_Paper_Size_New_From_Ipp
+      (Ipp_Name : UTF8_String;
+       Width    : Gdouble;
+       Height   : Gdouble) return Gtk_Paper_Size;
+   --  Creates a new Gtk.Paper_Size.Gtk_Paper_Size object by using IPP
+   --  information.
+   --  If Ipp_Name is not a recognized paper name, Width and Height are used
+   --  to construct a custom Gtk.Paper_Size.Gtk_Paper_Size object.
+   --  Since: gtk+ 3.16
+   --  "ipp_name": an IPP paper name
+   --  "width": the paper width, in points
+   --  "height": the paper height in points
+
    procedure Gtk_New_From_Key_File
       (Widget     : out Gtk_Paper_Size;
        Key_File   : Glib.Key_File.G_Key_File;
-       Group_Name : UTF8_String);
+       Group_Name : UTF8_String := "");
    --  Reads a paper size from the group Group_Name in the key file Key_File.
    --  Since: gtk+ 2.12
    --  "key_file": the Gkey.File.Gkey_File to retrieve the papersize from
-   --  "group_name": the name ofthe group in the key file to read, or null to
+   --  "group_name": the name of the group in the key file to read, or null to
    --  read the first group
 
    function Gtk_Paper_Size_New_From_Key_File
       (Key_File   : Glib.Key_File.G_Key_File;
-       Group_Name : UTF8_String) return Gtk_Paper_Size;
+       Group_Name : UTF8_String := "") return Gtk_Paper_Size;
    --  Reads a paper size from the group Group_Name in the key file Key_File.
    --  Since: gtk+ 2.12
    --  "key_file": the Gkey.File.Gkey_File to retrieve the papersize from
-   --  "group_name": the name ofthe group in the key file to read, or null to
+   --  "group_name": the name of the group in the key file to read, or null to
    --  read the first group
 
    procedure Gtk_New_From_Ppd
@@ -240,6 +283,9 @@ package Gtk.Paper_Size is
    --  Since: gtk+ 2.10
    --  "size2": another Gtk.Paper_Size.Gtk_Paper_Size object
 
+   function Is_Ipp (Widget : Gtk_Paper_Size) return Boolean;
+   --  Returns True if Size is an IPP standard paper size.
+
    procedure Set_Size
       (Widget : Gtk_Paper_Size;
        Width  : Gdouble;
@@ -250,6 +296,11 @@ package Gtk.Paper_Size is
    --  "width": the new width in units of Unit
    --  "height": the new height in units of Unit
    --  "unit": the unit for Width and Height
+
+   function To_Gvariant
+      (Widget : Gtk_Paper_Size) return Glib.Variant.Gvariant;
+   --  Serialize a paper size to an a{sv} variant.
+   --  Since: gtk+ 3.22
 
    procedure To_Key_File
       (Widget     : Gtk_Paper_Size;

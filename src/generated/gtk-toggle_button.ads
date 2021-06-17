@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -39,30 +39,40 @@
 --  To simply switch the state of a toggle button, use
 --  Gtk.Toggle_Button.Toggled.
 --
+--  # CSS nodes
+--
+--  GtkToggleButton has a single CSS node with name button. To differentiate
+--  it from a plain Gtk.Button.Gtk_Button, it gets the .toggle style class.
+--
 --  ## Creating two Gtk.Toggle_Button.Gtk_Toggle_Button widgets.
 --
---  |[<!-- language="C" --> void make_toggles (void) { GtkWidget *dialog,
---  *toggle1, *toggle2; GtkWidget *content_area; const char *text;
+--  |[<!-- language="C" --> static void output_state (GtkToggleButton *source,
+--  gpointer user_data) { printf ("Active: %d\n", gtk_toggle_button_get_active
+--  (source)); }
 --
---  dialog = gtk_dialog_new (text); content_area = gtk_dialog_get_content_area
---  ();
+--  void make_toggles (void) { GtkWidget *window, *toggle1, *toggle2;
+--  GtkWidget *box; const char *text;
 --
---  text = "Hi, i'm a toggle button."; toggle1 =
+--  window = gtk_window_new (GTK_WINDOW_TOPLEVEL); box = gtk_box_new
+--  (GTK_ORIENTATION_VERTICAL, 12);
+--
+--  text = "Hi, I'm a toggle button."; toggle1 =
 --  gtk_toggle_button_new_with_label (text);
 --
 --  // Makes this toggle button invisible gtk_toggle_button_set_mode
 --  (GTK_TOGGLE_BUTTON (toggle1), TRUE);
 --
 --  g_signal_connect (toggle1, "toggled", G_CALLBACK (output_state), NULL);
---  gtk_box_pack_start (GTK_BOX (content_area), toggle1, FALSE, FALSE, 2);
+--  gtk_container_add (GTK_CONTAINER (box), toggle1);
 --
---  text = "Hi, i'm a toggle button."; toggle2 =
+--  text = "Hi, I'm a toggle button."; toggle2 =
 --  gtk_toggle_button_new_with_label (text); gtk_toggle_button_set_mode
 --  (GTK_TOGGLE_BUTTON (toggle2), FALSE); g_signal_connect (toggle2, "toggled",
---  G_CALLBACK (output_state), NULL); gtk_box_pack_start (GTK_BOX
---  (content_area), toggle2, FALSE, FALSE, 2);
+--  G_CALLBACK (output_state), NULL); gtk_container_add (GTK_CONTAINER (box),
+--  toggle2);
 --
---  gtk_widget_show_all (dialog); } ]|
+--  gtk_container_add (GTK_CONTAINER (window), box); gtk_widget_show_all
+--  (window); } ]|
 --
 --  </description>
 --  <description>
@@ -191,7 +201,9 @@ package Gtk.Toggle_Button is
        Draw_Indicator : Boolean);
    --  Sets whether the button is displayed as a separate indicator and label.
    --  You can call this function on a checkbutton or a radiobutton with
-   --  Draw_Indicator = False to make the button look like a normal button
+   --  Draw_Indicator = False to make the button look like a normal button.
+   --  This can be used to create linked strip of buttons that work like a
+   --  Gtk.Stack_Switcher.Gtk_Stack_Switcher.
    --  This function only affects instances of classes like
    --  Gtk.Check_Button.Gtk_Check_Button and Gtk.Radio_Button.Gtk_Radio_Button
    --  that derive from Gtk.Toggle_Button.Gtk_Toggle_Button, not instances of
@@ -217,7 +229,7 @@ package Gtk.Toggle_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Toggle_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Toggle_Button_Record)

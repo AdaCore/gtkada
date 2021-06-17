@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -51,6 +51,14 @@ package Pango.Font_Family is
    -- Methods --
    -------------
 
+   function Get_Face
+      (Self : not null access Pango_Font_Family_Record;
+       Name : UTF8_String := "") return Pango.Font_Face.Pango_Font_Face;
+   --  Gets the Pango.Font_Face.Pango_Font_Face of Family with the given name.
+   --  Since: gtk+ 1.46
+   --  "name": the name of a face. If the name is null, the family's default
+   --  face (fontconfig calls it "Regular") will be returned.
+
    function Get_Name
       (Self : not null access Pango_Font_Family_Record) return UTF8_String;
    --  Gets the name of the family. The name is unique among all fonts for the
@@ -71,6 +79,12 @@ package Pango.Font_Family is
    --  Pango.Font_Metrics.Get_Approximate_Char_Width may be affected by
    --  double-width characters.
    --  Since: gtk+ 1.4
+
+   function Is_Variable
+      (Self : not null access Pango_Font_Family_Record) return Boolean;
+   --  A variable font is a font which has axes that can be modified to
+   --  produce different faces.
+   --  Since: gtk+ 1.44
 
    function List_Faces
       (Self : not null access Pango_Font_Family_Record)

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -186,7 +186,8 @@ package Gtk.Text_Tag_Table is
    -- 
    --  Callback parameters:
    --    --  "tag": the changed tag.
-   --    --  "size_changed": whether the size has been changed.
+   --    --  "size_changed": whether the change affects the
+   --    --  Gtk.Text_View.Gtk_Text_View layout.
 
    Signal_Tag_Removed : constant Glib.Signal_Name := "tag-removed";
    procedure On_Tag_Removed

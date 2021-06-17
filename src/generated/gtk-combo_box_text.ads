@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -52,6 +52,15 @@
 --  <object class="GtkComboBoxText"> <items> <item translatable="yes"
 --  id="factory">Factory</item> <item translatable="yes" id="home">Home</item>
 --  <item translatable="yes" id="subway">Subway</item> </items> </object> ]|
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> combobox ╰── box.linked ├── entry.combo ├──
+--  button.combo ╰── window.popup ]|
+--
+--  GtkComboBoxText has a single CSS node with name combobox. It adds the
+--  style class .combo to the main CSS nodes of its entry and button children,
+--  and the .linked class to the node of its internal box.
 --
 --  </description>
 --  <group>Numeric/Text Data Entry</group>

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -169,6 +169,22 @@ package body Glib.Simple_Action is
    begin
       Internal (Get_Object (Self), Get_Object (Value));
    end Set_State;
+
+   --------------------
+   -- Set_State_Hint --
+   --------------------
+
+   procedure Set_State_Hint
+      (Self       : not null access Gsimple_Action_Record;
+       State_Hint : Glib.Variant.Gvariant)
+   is
+      procedure Internal
+         (Self       : System.Address;
+          State_Hint : System.Address);
+      pragma Import (C, Internal, "g_simple_action_set_state_hint");
+   begin
+      Internal (Get_Object (Self), Get_Object (State_Hint));
+   end Set_State_Hint;
 
    --------------
    -- Activate --

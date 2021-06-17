@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -30,6 +30,19 @@
 --
 --  The important signal ( Gtk.Toggle_Button.Gtk_Toggle_Button::toggled ) is
 --  also inherited from Gtk.Toggle_Button.Gtk_Toggle_Button.
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> checkbutton ├── check ╰── <child> ]|
+--
+--  A GtkCheckButton with indicator (see Gtk.Toggle_Button.Set_Mode) has a
+--  main CSS node with name checkbutton and a subnode with name check.
+--
+--  |[<!-- language="plain" --> button.check ├── check ╰── <child> ]|
+--
+--  A GtkCheckButton without indicator changes the name of its main node to
+--  button and adds a .check style class to it. The subnode is invisible in
+--  this case.
 --
 --  </description>
 --  <screenshot>gtk-check_button</screenshot>
@@ -112,7 +125,7 @@ package Gtk.Check_Button is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Check_Button_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Check_Button_Record)

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -33,6 +33,11 @@
 --
 --  GtkHeaderBar can add typical window frame controls, such as minimize,
 --  maximize and close buttons, or the window icon.
+--
+--  For these reasons, GtkHeaderBar is the natural choice for use as the
+--  custom titlebar widget of a Gtk.Window.Gtk_Window (see
+--  Gtk.Window.Set_Titlebar), as it gives features typical of titlebars while
+--  allowing the addition of child widgets.
 --
 --  </description>
 
@@ -140,7 +145,7 @@ package Gtk.Header_Bar is
    --  Sets whether this header bar shows the standard window decorations,
    --  including close, maximize, and minimize.
    --  Since: gtk+ 3.10
-   --  "setting": True to show standard widow decorations
+   --  "setting": True to show standard window decorations
 
    function Get_Subtitle
       (Self : not null access Gtk_Header_Bar_Record) return UTF8_String;

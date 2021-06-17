@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -63,11 +63,25 @@
 --
 --  return FALSE; } ]|
 --
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> menu ├── arrow.top ├── <child> ┊ ├── <child>
+--  ╰── arrow.bottom ]|
+--
+--  The main CSS node of GtkMenu has name menu, and there are two subnodes
+--  with name arrow, for scrolling menu arrows. These subnodes get the .top and
+--  .bottom style classes.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk;             use Gdk;
 with Gdk.Device;      use Gdk.Device;
+with Gdk.Event;       use Gdk.Event;
+with Gdk.Monitor;     use Gdk.Monitor;
+with Gdk.Rectangle;   use Gdk.Rectangle;
 with Gdk.Screen;      use Gdk.Screen;
+with Gdk.Window;      use Gdk.Window;
 with Glib;            use Glib;
 with Glib.Menu_Model; use Glib.Menu_Model;
 with Glib.Object;     use Glib.Object;
@@ -263,7 +277,7 @@ package Gtk.Menu is
    --  Note that Accel_Path string will be stored in a Glib.GQuark. Therefore,
    --  if you pass a static string, you can save some memory by interning it
    --  first with g_intern_static_string.
-   --  "accel_path": a valid accelerator path
+   --  "accel_path": a valid accelerator path, or null to unset the path
 
    function Get_Active
       (Menu : not null access Gtk_Menu_Record)
@@ -292,7 +306,7 @@ package Gtk.Menu is
       (Menu        : not null access Gtk_Menu_Record;
        Monitor_Num : Glib.Gint);
    --  Informs GTK+ on which monitor a menu should be popped up. See
-   --  Gdk.Screen.Get_Monitor_Geometry.
+   --  Gdk.Monitor.Get_Geometry.
    --  This function should be called from a Gtk_Menu_Position_Func if the
    --  menu should not appear on the same monitor as the pointer. This
    --  information can't be reliably inferred from the coordinates returned by
@@ -341,7 +355,7 @@ package Gtk.Menu is
 
    procedure Set_Title
       (Menu  : not null access Gtk_Menu_Record;
-       Title : UTF8_String);
+       Title : UTF8_String := "");
    pragma Obsolescent (Set_Title);
    --  Sets the title string for the menu.
    --  The title is displayed when the menu is shown as a tearoff menu. If
@@ -349,7 +363,15 @@ package Gtk.Menu is
    --  item, and if so it will try to use the same text as that menu item's
    --  label.
    --  Deprecated since 3.10, 1
-   --  "title": a string containing the title for the menu
+   --  "title": a string containing the title for the menu, or null to inherit
+   --  the title of the parent menu item, if any
+
+   procedure Place_On_Monitor
+      (Menu    : not null access Gtk_Menu_Record;
+       Monitor : not null access Gdk.Monitor.Gdk_Monitor_Record'Class);
+   --  Places Menu on the given monitor.
+   --  Since: gtk+ 3.22
+   --  "monitor": the monitor to place the menu on
 
    procedure Popdown (Menu : not null access Gtk_Menu_Record);
    --  Removes the menu from the screen.
@@ -361,6 +383,7 @@ package Gtk.Menu is
        Func              : Gtk_Menu_Position_Func := null;
        Button            : Guint := 1;
        Activate_Time     : Guint32 := 0);
+   pragma Obsolescent (Popup);
    --  Displays a menu and makes it available for selection.
    --  Applications can use this function to display context-sensitive menus,
    --  and will typically supply null for the Parent_Menu_Shell,
@@ -376,6 +399,11 @@ package Gtk.Menu is
    --  mouse click or key press) that caused the initiation of the popup. Only
    --  if no such event is available, Gtk.Main.Get_Current_Event_Time can be
    --  used instead.
+   --  Note that this function does not work very well on GDK backends that do
+   --  not have global coordinates, such as Wayland or Mir. You should probably
+   --  use one of the gtk_menu_popup_at_ variants, which do not have this
+   --  problem.
+   --  Deprecated since 3.22, 1
    --  "parent_menu_shell": the menu shell containing the triggering menu
    --  item, or null
    --  "parent_menu_item": the menu item whose activation triggered the popup,
@@ -425,6 +453,7 @@ package Gtk.Menu is
           Data              : User_Data_Type;
           Button            : Guint := 1;
           Activate_Time     : Guint32 := 0);
+      pragma Obsolescent (Popup);
       --  Displays a menu and makes it available for selection.
       --  Applications can use this function to display context-sensitive
       --  menus, and will typically supply null for the Parent_Menu_Shell,
@@ -441,6 +470,11 @@ package Gtk.Menu is
       --  mouse click or key press) that caused the initiation of the popup.
       --  Only if no such event is available, Gtk.Main.Get_Current_Event_Time
       --  can be used instead.
+      --  Note that this function does not work very well on GDK backends that
+      --  do not have global coordinates, such as Wayland or Mir. You should
+      --  probably use one of the gtk_menu_popup_at_ variants, which do not
+      --  have this problem.
+      --  Deprecated since 3.22, 1
       --  "parent_menu_shell": the menu shell containing the triggering menu
       --  item, or null
       --  "parent_menu_item": the menu item whose activation triggered the
@@ -452,6 +486,82 @@ package Gtk.Menu is
 
    end Popup_User_Data;
 
+   procedure Popup_At_Pointer
+      (Menu          : not null access Gtk_Menu_Record;
+       Trigger_Event : Gdk.Event.Gdk_Event);
+   --  Displays Menu and makes it available for selection.
+   --  See gtk_menu_popup_at_widget () to pop up a menu at a widget.
+   --  gtk_menu_popup_at_rect () also allows you to position a menu at an
+   --  arbitrary rectangle.
+   --  Menu will be positioned at the pointer associated with Trigger_Event.
+   --  Properties that influence the behaviour of this function are
+   --  Gtk.Menu.Gtk_Menu:anchor-hints, Gtk.Menu.Gtk_Menu:rect-anchor-dx,
+   --  Gtk.Menu.Gtk_Menu:rect-anchor-dy, and Gtk.Menu.Gtk_Menu:menu-type-hint.
+   --  Connect to the Gtk.Menu.Gtk_Menu::popped-up signal to find out how it
+   --  was actually positioned.
+   --  Since: gtk+ 3.22
+   --  "trigger_event": the Gdk.Event.Gdk_Event that initiated this request or
+   --  null if it's the current event
+
+   procedure Popup_At_Rect
+      (Menu          : not null access Gtk_Menu_Record;
+       Rect_Window   : Gdk.Gdk_Window;
+       Rect          : Gdk.Rectangle.Gdk_Rectangle;
+       Rect_Anchor   : Gdk.Window.Gdk_Gravity;
+       Menu_Anchor   : Gdk.Window.Gdk_Gravity;
+       Trigger_Event : Gdk.Event.Gdk_Event);
+   --  Displays Menu and makes it available for selection.
+   --  See gtk_menu_popup_at_widget () and gtk_menu_popup_at_pointer (), which
+   --  handle more common cases for popping up menus.
+   --  Menu will be positioned at Rect, aligning their anchor points. Rect is
+   --  relative to the top-left corner of Rect_Window. Rect_Anchor and
+   --  Menu_Anchor determine anchor points on Rect and Menu to pin together.
+   --  Menu can optionally be offset by Gtk.Menu.Gtk_Menu:rect-anchor-dx and
+   --  Gtk.Menu.Gtk_Menu:rect-anchor-dy.
+   --  Anchors should be specified under the assumption that the text
+   --  direction is left-to-right; they will be flipped horizontally
+   --  automatically if the text direction is right-to-left.
+   --  Other properties that influence the behaviour of this function are
+   --  Gtk.Menu.Gtk_Menu:anchor-hints and Gtk.Menu.Gtk_Menu:menu-type-hint.
+   --  Connect to the Gtk.Menu.Gtk_Menu::popped-up signal to find out how it
+   --  was actually positioned.
+   --  Since: gtk+ 3.22
+   --  "rect_window": the Gdk.Gdk_Window Rect is relative to
+   --  "rect": the Gdk.Rectangle.Gdk_Rectangle to align Menu with
+   --  "rect_anchor": the point on Rect to align with Menu's anchor point
+   --  "menu_anchor": the point on Menu to align with Rect's anchor point
+   --  "trigger_event": the Gdk.Event.Gdk_Event that initiated this request or
+   --  null if it's the current event
+
+   procedure Popup_At_Widget
+      (Menu          : not null access Gtk_Menu_Record;
+       Widget        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Widget_Anchor : Gdk.Window.Gdk_Gravity;
+       Menu_Anchor   : Gdk.Window.Gdk_Gravity;
+       Trigger_Event : Gdk.Event.Gdk_Event);
+   --  Displays Menu and makes it available for selection.
+   --  See gtk_menu_popup_at_pointer () to pop up a menu at the master
+   --  pointer. gtk_menu_popup_at_rect () also allows you to position a menu at
+   --  an arbitrary rectangle.
+   --  ![](popup-anchors.png)
+   --  Menu will be positioned at Widget, aligning their anchor points.
+   --  Widget_Anchor and Menu_Anchor determine anchor points on Widget and Menu
+   --  to pin together. Menu can optionally be offset by
+   --  Gtk.Menu.Gtk_Menu:rect-anchor-dx and Gtk.Menu.Gtk_Menu:rect-anchor-dy.
+   --  Anchors should be specified under the assumption that the text
+   --  direction is left-to-right; they will be flipped horizontally
+   --  automatically if the text direction is right-to-left.
+   --  Other properties that influence the behaviour of this function are
+   --  Gtk.Menu.Gtk_Menu:anchor-hints and Gtk.Menu.Gtk_Menu:menu-type-hint.
+   --  Connect to the Gtk.Menu.Gtk_Menu::popped-up signal to find out how it
+   --  was actually positioned.
+   --  Since: gtk+ 3.22
+   --  "widget": the Gtk.Widget.Gtk_Widget to align Menu with
+   --  "widget_anchor": the point on Widget to align with Menu's anchor point
+   --  "menu_anchor": the point on Menu to align with Widget's anchor point
+   --  "trigger_event": the Gdk.Event.Gdk_Event that initiated this request or
+   --  null if it's the current event
+
    procedure Popup_For_Device
       (Menu              : not null access Gtk_Menu_Record;
        Device            : access Gdk.Device.Gdk_Device_Record'Class;
@@ -460,6 +570,7 @@ package Gtk.Menu is
        Func              : Gtk_Menu_Position_Func;
        Button            : Guint;
        Activate_Time     : Guint32);
+   pragma Obsolescent (Popup_For_Device);
    --  Displays a menu and makes it available for selection.
    --  Applications can use this function to display context-sensitive menus,
    --  and will typically supply null for the Parent_Menu_Shell,
@@ -476,7 +587,12 @@ package Gtk.Menu is
    --  mouse click or key press) that caused the initiation of the popup. Only
    --  if no such event is available, Gtk.Main.Get_Current_Event_Time can be
    --  used instead.
+   --  Note that this function does not work very well on GDK backends that do
+   --  not have global coordinates, such as Wayland or Mir. You should probably
+   --  use one of the gtk_menu_popup_at_ variants, which do not have this
+   --  problem.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.22, 1
    --  "device": a Gdk.Device.Gdk_Device
    --  "parent_menu_shell": the menu shell containing the triggering menu
    --  item, or null
@@ -528,6 +644,7 @@ package Gtk.Menu is
           Data              : User_Data_Type;
           Button            : Guint;
           Activate_Time     : Guint32);
+      pragma Obsolescent (Popup_For_Device);
       --  Displays a menu and makes it available for selection.
       --  Applications can use this function to display context-sensitive
       --  menus, and will typically supply null for the Parent_Menu_Shell,
@@ -544,7 +661,12 @@ package Gtk.Menu is
       --  a mouse click or key press) that caused the initiation of the popup.
       --  Only if no such event is available, Gtk.Main.Get_Current_Event_Time
       --  can be used instead.
+      --  Note that this function does not work very well on GDK backends that
+      --  do not have global coordinates, such as Wayland or Mir. You should
+      --  probably use one of the gtk_menu_popup_at_ variants, which do not
+      --  have this problem.
       --  Since: gtk+ 3.0
+      --  Deprecated since 3.22, 1
       --  "device": a Gdk.Device.Gdk_Device
       --  "parent_menu_shell": the menu shell containing the triggering menu
       --  item, or null
@@ -607,14 +729,60 @@ package Gtk.Menu is
    --  The index of the currently selected menu item, or -1 if no menu item is
    --  selected.
 
+   Anchor_Hints_Property : constant Gdk.Window.Property_Gdk_Anchor_Hints;
+   --  Type: Gdk.Window.Gdk_Anchor_Hints
+   --  Positioning hints for aligning the menu relative to a rectangle.
+   --
+   --  These hints determine how the menu should be positioned in the case
+   --  that the menu would fall off-screen if placed in its ideal position.
+   --
+   --  ![](popup-flip.png)
+   --
+   --  For example, Gdk.Anchor_Flip_Y will replace Gdk.Gravity_North_West with
+   --  Gdk.Gravity_South_West and vice versa if the menu extends beyond the
+   --  bottom edge of the monitor.
+   --
+   --  See gtk_menu_popup_at_rect (), gtk_menu_popup_at_widget (),
+   --  gtk_menu_popup_at_pointer (), Gtk.Menu.Gtk_Menu:rect-anchor-dx,
+   --  Gtk.Menu.Gtk_Menu:rect-anchor-dy, Gtk.Menu.Gtk_Menu:menu-type-hint, and
+   --  Gtk.Menu.Gtk_Menu::popped-up.
+
    Attach_Widget_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Widget.Gtk_Widget
    --  The widget the menu is attached to. Setting this property attaches the
    --  menu without a Gtk_Menu_Detach_Func. If you need to use a detacher, use
    --  Gtk.Menu.Attach_To_Widget directly.
 
+   Menu_Type_Hint_Property : constant Gdk.Window.Property_Gdk_Window_Type_Hint;
+   --  Type: Gdk.Window.Gdk_Window_Type_Hint
+   --  The Gdk.Window.Gdk_Window_Type_Hint to use for the menu's
+   --  Gdk.Gdk_Window.
+   --
+   --  See gtk_menu_popup_at_rect (), gtk_menu_popup_at_widget (),
+   --  gtk_menu_popup_at_pointer (), Gtk.Menu.Gtk_Menu:anchor-hints,
+   --  Gtk.Menu.Gtk_Menu:rect-anchor-dx, Gtk.Menu.Gtk_Menu:rect-anchor-dy, and
+   --  Gtk.Menu.Gtk_Menu::popped-up.
+
    Monitor_Property : constant Glib.Properties.Property_Int;
    --  The monitor the menu will be popped up on.
+
+   Rect_Anchor_Dx_Property : constant Glib.Properties.Property_Int;
+   --  Horizontal offset to apply to the menu, i.e. the rectangle or widget
+   --  anchor.
+   --
+   --  See gtk_menu_popup_at_rect (), gtk_menu_popup_at_widget (),
+   --  gtk_menu_popup_at_pointer (), Gtk.Menu.Gtk_Menu:anchor-hints,
+   --  Gtk.Menu.Gtk_Menu:rect-anchor-dy, Gtk.Menu.Gtk_Menu:menu-type-hint, and
+   --  Gtk.Menu.Gtk_Menu::popped-up.
+
+   Rect_Anchor_Dy_Property : constant Glib.Properties.Property_Int;
+   --  Vertical offset to apply to the menu, i.e. the rectangle or widget
+   --  anchor.
+   --
+   --  See gtk_menu_popup_at_rect (), gtk_menu_popup_at_widget (),
+   --  gtk_menu_popup_at_pointer (), Gtk.Menu.Gtk_Menu:anchor-hints,
+   --  Gtk.Menu.Gtk_Menu:rect-anchor-dx, Gtk.Menu.Gtk_Menu:menu-type-hint, and
+   --  Gtk.Menu.Gtk_Menu::popped-up.
 
    Reserve_Toggle_Size_Property : constant Glib.Properties.Property_Boolean;
    --  A boolean that indicates whether the menu reserves space for toggles
@@ -655,6 +823,61 @@ package Gtk.Menu is
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
 
+   type Cb_Gtk_Menu_Address_Address_Boolean_Boolean_Void is not null access procedure
+     (Self         : access Gtk_Menu_Record'Class;
+      Flipped_Rect : System.Address;
+      Final_Rect   : System.Address;
+      Flipped_X    : Boolean;
+      Flipped_Y    : Boolean);
+
+   type Cb_GObject_Address_Address_Boolean_Boolean_Void is not null access procedure
+     (Self         : access Glib.Object.GObject_Record'Class;
+      Flipped_Rect : System.Address;
+      Final_Rect   : System.Address;
+      Flipped_X    : Boolean;
+      Flipped_Y    : Boolean);
+
+   Signal_Popped_Up : constant Glib.Signal_Name := "popped-up";
+   procedure On_Popped_Up
+      (Self  : not null access Gtk_Menu_Record;
+       Call  : Cb_Gtk_Menu_Address_Address_Boolean_Boolean_Void;
+       After : Boolean := False);
+   procedure On_Popped_Up
+      (Self  : not null access Gtk_Menu_Record;
+       Call  : Cb_GObject_Address_Address_Boolean_Boolean_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  Emitted when the position of Menu is finalized after being popped up
+   --  using gtk_menu_popup_at_rect (), gtk_menu_popup_at_widget (), or
+   --  gtk_menu_popup_at_pointer ().
+   --
+   --  Menu might be flipped over the anchor rectangle in order to keep it
+   --  on-screen, in which case Flipped_X and Flipped_Y will be set to True
+   --  accordingly.
+   --
+   --  Flipped_Rect is the ideal position of Menu after any possible flipping,
+   --  but before any possible sliding. Final_Rect is Flipped_Rect, but
+   --  possibly translated in the case that flipping is still ineffective in
+   --  keeping Menu on-screen.
+   --
+   --  ![](popup-slide.png)
+   --
+   --  The blue menu is Menu's ideal position, the green menu is Flipped_Rect,
+   --  and the red menu is Final_Rect.
+   --
+   --  See gtk_menu_popup_at_rect (), gtk_menu_popup_at_widget (),
+   --  gtk_menu_popup_at_pointer (), Gtk.Menu.Gtk_Menu:anchor-hints,
+   --  Gtk.Menu.Gtk_Menu:rect-anchor-dx, Gtk.Menu.Gtk_Menu:rect-anchor-dy, and
+   --  Gtk.Menu.Gtk_Menu:menu-type-hint.
+   -- 
+   --  Callback parameters:
+   --    --  "flipped_rect": the position of Menu after any possible flipping or
+   --    --  null if the backend can't obtain it
+   --    --  "final_rect": the final position of Menu or null if the backend can't
+   --    --  obtain it
+   --    --  "flipped_x": True if the anchors were flipped horizontally
+   --    --  "flipped_y": True if the anchors were flipped vertically
+
    ----------------
    -- Interfaces --
    ----------------
@@ -680,10 +903,18 @@ private
      Glib.Properties.Build ("tearoff-state");
    Reserve_Toggle_Size_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("reserve-toggle-size");
+   Rect_Anchor_Dy_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("rect-anchor-dy");
+   Rect_Anchor_Dx_Property : constant Glib.Properties.Property_Int :=
+     Glib.Properties.Build ("rect-anchor-dx");
    Monitor_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("monitor");
+   Menu_Type_Hint_Property : constant Gdk.Window.Property_Gdk_Window_Type_Hint :=
+     Gdk.Window.Build ("menu-type-hint");
    Attach_Widget_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("attach-widget");
+   Anchor_Hints_Property : constant Gdk.Window.Property_Gdk_Anchor_Hints :=
+     Gdk.Window.Build ("anchor-hints");
    Active_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("active");
    Accel_Path_Property : constant Glib.Properties.Property_String :=

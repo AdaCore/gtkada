@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -28,6 +28,11 @@
 --
 --  To start the animation, use Gtk.Spinner.Start, to stop it use
 --  Gtk.Spinner.Stop.
+--
+--  # CSS nodes
+--
+--  GtkSpinner has a single CSS node with the name spinner. When the animation
+--  is active, the :checked pseudoclass is added to this node.
 --
 --  </description>
 --  <group>Ornaments</group>

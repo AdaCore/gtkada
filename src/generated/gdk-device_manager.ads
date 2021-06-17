@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -73,19 +73,17 @@
 --
 --  # Master and slave devices
 --
---  |[ carlosSacarino:~$ xinput list Virtual core pointer id=2 [master pointer
---  (3)] - Virtual core XTEST pointer id=4 [slave pointer (2)] - Wacom ISDv4 E6
---  Pen stylus id=10 [slave pointer (2)] - Wacom ISDv4 E6 Finger touch id=11
---  [slave pointer (2)] - SynPS/2 Synaptics TouchPad id=13 [slave pointer (2)]
---  - TPPS/2 IBM TrackPoint id=14 [slave pointer (2)] - Wacom ISDv4 E6 Pen
---  eraser id=16 [slave pointer (2)]
---
---  Virtual core keyboard id=3 [master keyboard (2)] - Virtual core XTEST
---  keyboard id=5 [slave keyboard (3)] - Power button id=6 [slave keyboard (3)]
---  - Video bus id=7 [slave keyboard (3)] - Sleep button id=8 [slave keyboard
---  (3)] - Integrated Camera id=9 [slave keyboard (3)] - AT Translated Set 2
---  keyboard id=12 [slave keyboard (3)] - Thinkpad Extra Buttons id=15 [slave
---  keyboard (3)] ]|
+--  |[ carlosSacarino:~$ xinput list ⎡ Virtual core pointer id=2 [master
+--  pointer (3)] ⎜ ↳ Virtual core XTEST pointer id=4 [slave pointer (2)] ⎜ ↳
+--  Wacom ISDv4 E6 Pen stylus id=10 [slave pointer (2)] ⎜ ↳ Wacom ISDv4 E6
+--  Finger touch id=11 [slave pointer (2)] ⎜ ↳ SynPS/2 Synaptics TouchPad id=13
+--  [slave pointer (2)] ⎜ ↳ TPPS/2 IBM TrackPoint id=14 [slave pointer (2)] ⎜ ↳
+--  Wacom ISDv4 E6 Pen eraser id=16 [slave pointer (2)] ⎣ Virtual core keyboard
+--  id=3 [master keyboard (2)] ↳ Virtual core XTEST keyboard id=5 [slave
+--  keyboard (3)] ↳ Power Button id=6 [slave keyboard (3)] ↳ Video Bus id=7
+--  [slave keyboard (3)] ↳ Sleep Button id=8 [slave keyboard (3)] ↳ Integrated
+--  Camera id=9 [slave keyboard (3)] ↳ AT Translated Set 2 keyboard id=12
+--  [slave keyboard (3)] ↳ ThinkPad Extra Buttons id=15 [slave keyboard (3)] ]|
 --
 --  By default, GDK will automatically listen for events coming from all
 --  master devices, setting the Gdk.Device.Gdk_Device for all events coming
@@ -127,6 +125,10 @@
 --  globally set to map into normal X keyboard events. The mapping is set using
 --  Gdk.Device.Set_Key.
 --
+--  In GTK+ 3.20, a new Gdk.Seat.Gdk_Seat object has been introduced that
+--  supersedes Gdk.Device_Manager.Gdk_Device_Manager and should be preferred in
+--  newly written code.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -155,6 +157,7 @@ package Gdk.Device_Manager is
    function Get_Client_Pointer
       (Self : not null access Gdk_Device_Manager_Record)
        return Gdk.Device.Gdk_Device;
+   pragma Obsolescent (Get_Client_Pointer);
    --  Returns the client pointer, that is, the master pointer that acts as
    --  the core pointer for this application. In X11, window managers may
    --  change this depending on the interaction pattern under the presence of
@@ -163,6 +166,7 @@ package Gdk.Device_Manager is
    --  triggered by a Gdk.Event.Gdk_Event and there aren't other means to get a
    --  meaningful Gdk.Device.Gdk_Device to operate on.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.20, 1
 
    function Get_Display
       (Self : not null access Gdk_Device_Manager_Record)
@@ -174,9 +178,11 @@ package Gdk.Device_Manager is
       (Self     : not null access Gdk_Device_Manager_Record;
        The_Type : Gdk.Device.Gdk_Device_Type)
        return Gdk.Device.Device_List.Glist;
+   pragma Obsolescent (List_Devices);
    --  Returns the list of devices of type Type currently attached to
    --  Device_Manager.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.20, 1
    --  "type": device type to get.
 
    ----------------------
