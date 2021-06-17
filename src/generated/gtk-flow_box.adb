@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -31,6 +31,30 @@ with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Flow_Box is
 
+   procedure C_Gtk_Flow_Box_Bind_Model
+      (Self                : System.Address;
+       Model               : Glib.List_Model.Glist_Model;
+       Create_Widget_Func  : System.Address;
+       User_Data           : System.Address;
+       User_Data_Free_Func : Glib.G_Destroy_Notify_Address);
+   pragma Import (C, C_Gtk_Flow_Box_Bind_Model, "gtk_flow_box_bind_model");
+   --  Binds Model to Box.
+   --  If Box was already bound to a model, that previous binding is
+   --  destroyed.
+   --  The contents of Box are cleared and then filled with widgets that
+   --  represent items from Model. Box is updated whenever Model changes. If
+   --  Model is null, Box is left empty.
+   --  It is undefined to add or remove widgets directly (for example, with
+   --  Gtk.Flow_Box.Insert or Gtk.Container.Add) while Box is bound to a model.
+   --  Note that using a model is incompatible with the filtering and sorting
+   --  functionality in GtkFlowBox. When using a model, filtering and sorting
+   --  should be implemented by the model.
+   --  Since: gtk+ 3.18
+   --  "model": the Glib.List_Model.Glist_Model to be bound to Box
+   --  "create_widget_func": a function that creates widgets for items
+   --  "user_data": user data passed to Create_Widget_Func
+   --  "user_data_free_func": function for freeing User_Data
+
    procedure C_Gtk_Flow_Box_Selected_Foreach
       (Self : System.Address;
        Func : System.Address;
@@ -55,6 +79,8 @@ package body Gtk.Flow_Box is
    --  will continue to be called each time a child changes (via
    --  Gtk.Flow_Box_Child.Changed) or when Gtk.Flow_Box.Invalidate_Filter is
    --  called.
+   --  Note that using a filter function is incompatible with using a model
+   --  (see Gtk.Flow_Box.Bind_Model).
    --  Since: gtk+ 3.12
    --  "filter_func": callback that lets you filter which children to show
    --  "user_data": user data passed to Filter_Func
@@ -72,10 +98,18 @@ package body Gtk.Flow_Box is
    --  continue to be called each time a child changes (via
    --  Gtk.Flow_Box_Child.Changed) and when Gtk.Flow_Box.Invalidate_Sort is
    --  called.
+   --  Note that using a sort function is incompatible with using a model (see
+   --  Gtk.Flow_Box.Bind_Model).
    --  Since: gtk+ 3.12
    --  "sort_func": the sort function
    --  "user_data": user data passed to Sort_Func
    --  "destroy": destroy notifier for User_Data
+
+   function To_Gtk_Flow_Box_Create_Widget_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Flow_Box_Create_Widget_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Flow_Box_Create_Widget_Func, System.Address);
 
    function To_Gtk_Flow_Box_Foreach_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Flow_Box_Foreach_Func);
@@ -94,6 +128,13 @@ package body Gtk.Flow_Box is
 
    function To_Address is new Ada.Unchecked_Conversion
      (Gtk_Flow_Box_Sort_Func, System.Address);
+
+   function Internal_Gtk_Flow_Box_Create_Widget_Func
+      (Item      : System.Address;
+       User_Data : System.Address) return System.Address;
+   pragma Convention (C, Internal_Gtk_Flow_Box_Create_Widget_Func);
+   --  "item": the item from the model for which to create a widget for
+   --  "user_data": user data from Gtk.Flow_Box.Bind_Model
 
    function Internal_Gtk_Flow_Box_Filter_Func
       (Child     : System.Address;
@@ -119,6 +160,19 @@ package body Gtk.Flow_Box is
    --  "child1": the first child
    --  "child2": the second child
    --  "user_data": user data
+
+   ----------------------------------------------
+   -- Internal_Gtk_Flow_Box_Create_Widget_Func --
+   ----------------------------------------------
+
+   function Internal_Gtk_Flow_Box_Create_Widget_Func
+      (Item      : System.Address;
+       User_Data : System.Address) return System.Address
+   is
+      Func : constant Gtk_Flow_Box_Create_Widget_Func := To_Gtk_Flow_Box_Create_Widget_Func (User_Data);
+   begin
+      return Get_Object (Func (Item));
+   end Internal_Gtk_Flow_Box_Create_Widget_Func;
 
    ---------------------------------------
    -- Internal_Gtk_Flow_Box_Filter_Func --
@@ -203,6 +257,82 @@ package body Gtk.Flow_Box is
       end if;
    end Initialize;
 
+   ----------------
+   -- Bind_Model --
+   ----------------
+
+   procedure Bind_Model
+      (Self                : not null access Gtk_Flow_Box_Record;
+       Model               : Glib.List_Model.Glist_Model;
+       Create_Widget_Func  : Gtk_Flow_Box_Create_Widget_Func;
+       User_Data_Free_Func : Glib.G_Destroy_Notify_Address)
+   is
+   begin
+      if Create_Widget_Func = null then
+         C_Gtk_Flow_Box_Bind_Model (Get_Object (Self), Model, System.Null_Address, System.Null_Address, User_Data_Free_Func);
+      else
+         C_Gtk_Flow_Box_Bind_Model (Get_Object (Self), Model, Internal_Gtk_Flow_Box_Create_Widget_Func'Address, To_Address (Create_Widget_Func), User_Data_Free_Func);
+      end if;
+   end Bind_Model;
+
+   package body Bind_Model_User_Data is
+
+      package Users is new Glib.Object.User_Data_Closure
+        (User_Data_Type, Destroy);
+
+      function To_Gtk_Flow_Box_Create_Widget_Func is new Ada.Unchecked_Conversion
+        (System.Address, Gtk_Flow_Box_Create_Widget_Func);
+
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gtk_Flow_Box_Create_Widget_Func, System.Address);
+
+      function Internal_Cb
+         (Item      : System.Address;
+          User_Data : System.Address) return System.Address;
+      pragma Convention (C, Internal_Cb);
+      --  Called for flow boxes that are bound to a
+      --  Glib.List_Model.Glist_Model with Gtk.Flow_Box.Bind_Model for each
+      --  item that gets added to the model.
+      --  Since: gtk+ 3.18
+      --  "item": the item from the model for which to create a widget for
+      --  "user_data": user data from Gtk.Flow_Box.Bind_Model
+
+      ----------------
+      -- Bind_Model --
+      ----------------
+
+      procedure Bind_Model
+         (Self                : not null access Gtk.Flow_Box.Gtk_Flow_Box_Record'Class;
+          Model               : Glib.List_Model.Glist_Model;
+          Create_Widget_Func  : Gtk_Flow_Box_Create_Widget_Func;
+          User_Data           : User_Data_Type;
+          User_Data_Free_Func : Glib.G_Destroy_Notify_Address)
+      is
+         D : System.Address;
+      begin
+         if Create_Widget_Func = null then
+            C_Gtk_Flow_Box_Bind_Model (Get_Object (Self), Model, System.Null_Address, System.Null_Address, User_Data_Free_Func);
+         else
+            D := Users.Build (To_Address (Create_Widget_Func), User_Data);
+            C_Gtk_Flow_Box_Bind_Model (Get_Object (Self), Model, Internal_Cb'Address, D, User_Data_Free_Func);
+         end if;
+      end Bind_Model;
+
+      -----------------
+      -- Internal_Cb --
+      -----------------
+
+      function Internal_Cb
+         (Item      : System.Address;
+          User_Data : System.Address) return System.Address
+      is
+         D : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+      begin
+         return Get_Object (To_Gtk_Flow_Box_Create_Widget_Func (D.Func) (Item, D.Data.all));
+      end Internal_Cb;
+
+   end Bind_Model_User_Data;
+
    ----------------------------------
    -- Get_Activate_On_Single_Click --
    ----------------------------------
@@ -232,6 +362,25 @@ package body Gtk.Flow_Box is
    begin
       return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child (Get_User_Data (Internal (Get_Object (Self), Idx), Stub_Gtk_Flow_Box_Child));
    end Get_Child_At_Index;
+
+   ----------------------
+   -- Get_Child_At_Pos --
+   ----------------------
+
+   function Get_Child_At_Pos
+      (Self : not null access Gtk_Flow_Box_Record;
+       X    : Glib.Gint;
+       Y    : Glib.Gint) return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
+   is
+      function Internal
+         (Self : System.Address;
+          X    : Glib.Gint;
+          Y    : Glib.Gint) return System.Address;
+      pragma Import (C, Internal, "gtk_flow_box_get_child_at_pos");
+      Stub_Gtk_Flow_Box_Child : Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record;
+   begin
+      return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child (Get_User_Data (Internal (Get_Object (Self), X, Y), Stub_Gtk_Flow_Box_Child));
+   end Get_Child_At_Pos;
 
    ------------------------
    -- Get_Column_Spacing --
@@ -832,14 +981,14 @@ package body Gtk.Flow_Box is
      (System.Address, Cb_GObject_Gtk_Flow_Box_Child_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void, System.Address);
+     (Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void);
+     (System.Address, Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Gtk_Movement_Step_Gint_Void, System.Address);
+     (Cb_GObject_Gtk_Movement_Step_Gint_Boolean, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Gtk_Movement_Step_Gint_Void);
+     (System.Address, Cb_GObject_Gtk_Movement_Step_Gint_Boolean);
 
    procedure Connect
       (Object  : access Gtk_Flow_Box_Record'Class;
@@ -856,7 +1005,7 @@ package body Gtk.Flow_Box is
    procedure Connect
       (Object  : access Gtk_Flow_Box_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void;
+       Handler : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean;
        After   : Boolean);
 
    procedure Connect_Slot
@@ -876,7 +1025,7 @@ package body Gtk.Flow_Box is
    procedure Connect_Slot
       (Object  : access Gtk_Flow_Box_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Void;
+       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
@@ -889,14 +1038,14 @@ package body Gtk.Flow_Box is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Gtk_Flow_Box_Child_Void);
 
-   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Void
+   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_Gtk_Movement_Step_Gint_Void);
+   pragma Convention (C, Marsh_GObject_Gtk_Movement_Step_Gint_Boolean);
 
    procedure Marsh_GObject_Void
       (Closure         : GClosure;
@@ -916,14 +1065,14 @@ package body Gtk.Flow_Box is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_Gtk_Flow_Box_Gtk_Flow_Box_Child_Void);
 
-   procedure Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void
+   procedure Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void);
+   pragma Convention (C, Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean);
 
    procedure Marsh_Gtk_Flow_Box_Void
       (Closure         : GClosure;
@@ -979,14 +1128,14 @@ package body Gtk.Flow_Box is
    procedure Connect
       (Object  : access Gtk_Flow_Box_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void;
+       Handler : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean;
        After   : Boolean)
    is
    begin
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void'Access,
+         Marshaller  => Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -1040,7 +1189,7 @@ package body Gtk.Flow_Box is
    procedure Connect_Slot
       (Object  : access Gtk_Flow_Box_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Void;
+       Handler : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
    is
@@ -1048,7 +1197,7 @@ package body Gtk.Flow_Box is
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_Gtk_Movement_Step_Gint_Void'Access,
+         Marshaller  => Marsh_GObject_Gtk_Movement_Step_Gint_Boolean'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
@@ -1074,11 +1223,11 @@ package body Gtk.Flow_Box is
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Flow_Box_Child_Void;
 
-   -----------------------------------------------
-   -- Marsh_GObject_Gtk_Movement_Step_Gint_Void --
-   -----------------------------------------------
+   --------------------------------------------------
+   -- Marsh_GObject_Gtk_Movement_Step_Gint_Boolean --
+   --------------------------------------------------
 
-   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Void
+   procedure Marsh_GObject_Gtk_Movement_Step_Gint_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -1086,13 +1235,14 @@ package body Gtk.Flow_Box is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_Gtk_Movement_Step_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gtk_Movement_Step_Gint_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2));
    begin
-      H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2));
+      Set_Value (Return_Value, V'Address);
       exception when E : others => Process_Exception (E);
-   end Marsh_GObject_Gtk_Movement_Step_Gint_Void;
+   end Marsh_GObject_Gtk_Movement_Step_Gint_Boolean;
 
    ------------------------
    -- Marsh_GObject_Void --
@@ -1134,11 +1284,11 @@ package body Gtk.Flow_Box is
       exception when E : others => Process_Exception (E);
    end Marsh_Gtk_Flow_Box_Gtk_Flow_Box_Child_Void;
 
-   ----------------------------------------------------
-   -- Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void --
-   ----------------------------------------------------
+   -------------------------------------------------------
+   -- Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean --
+   -------------------------------------------------------
 
-   procedure Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void
+   procedure Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -1146,13 +1296,14 @@ package body Gtk.Flow_Box is
        Invocation_Hint : System.Address;
        User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void := Address_To_Cb (Get_Callback (Closure));
+      pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Flow_Box := Gtk_Flow_Box (Unchecked_To_Object (Params, 0));
+      V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2));
    begin
-      H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2));
+      Set_Value (Return_Value, V'Address);
       exception when E : others => Process_Exception (E);
-   end Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void;
+   end Marsh_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean;
 
    -----------------------------
    -- Marsh_Gtk_Flow_Box_Void --
@@ -1234,7 +1385,7 @@ package body Gtk.Flow_Box is
 
    procedure On_Move_Cursor
       (Self  : not null access Gtk_Flow_Box_Record;
-       Call  : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Void;
+       Call  : Cb_Gtk_Flow_Box_Gtk_Movement_Step_Gint_Boolean;
        After : Boolean := False)
    is
    begin
@@ -1247,7 +1398,7 @@ package body Gtk.Flow_Box is
 
    procedure On_Move_Cursor
       (Self  : not null access Gtk_Flow_Box_Record;
-       Call  : Cb_GObject_Gtk_Movement_Step_Gint_Void;
+       Call  : Cb_GObject_Gtk_Movement_Step_Gint_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is

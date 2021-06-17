@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -29,6 +29,13 @@
 --  A check box indicating the state of the boolean value is displayed at the
 --  left side of the Gtk.Menu_Item.Gtk_Menu_Item. Activating the
 --  Gtk.Menu_Item.Gtk_Menu_Item toggles the value.
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> menuitem ├── check.left ╰── <child> ]|
+--
+--  GtkCheckMenuItem has a main CSS node with name menuitem, and a subnode
+--  with name check, which gets the .left or .right style class.
 --
 --  </description>
 
@@ -160,7 +167,7 @@ package Gtk.Check_Menu_Item is
 
    procedure Set_Action_Name
       (Self        : not null access Gtk_Check_Menu_Item_Record;
-       Action_Name : UTF8_String);
+       Action_Name : UTF8_String := "");
 
    function Get_Action_Target_Value
       (Self : not null access Gtk_Check_Menu_Item_Record)

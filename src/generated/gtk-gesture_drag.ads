@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -24,9 +24,9 @@
 --  <description>
 --  Gtk.Gesture_Drag.Gtk_Gesture_Drag is a Gtk.Gesture.Gtk_Gesture
 --  implementation that recognizes drag operations. The drag operation itself
---  can be tracked throught the Gtk.Gesture_Drag.Gtk_Gesture_Drag:drag-begin,
---  Gtk.Gesture_Drag.Gtk_Gesture_Drag:drag-update and
---  Gtk.Gesture_Drag.Gtk_Gesture_Drag:drag-end signals, or the relevant
+--  can be tracked throught the Gtk.Gesture_Drag.Gtk_Gesture_Drag::drag-begin,
+--  Gtk.Gesture_Drag.Gtk_Gesture_Drag::drag-update and
+--  Gtk.Gesture_Drag.Gtk_Gesture_Drag::drag-end signals, or the relevant
 --  coordinates be extracted through Gtk.Gesture_Drag.Get_Offset and
 --  Gtk.Gesture_Drag.Get_Start_Point.
 --

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -24,20 +24,21 @@
 --  <description>
 --  The Gtk.Accel_Label.Gtk_Accel_Label widget is a subclass of
 --  Gtk.Label.Gtk_Label that also displays an accelerator key on the right of
---  the label text, e.g. "Ctl+S". It is commonly used in menus to show the
+--  the label text, e.g. "Ctrl+S". It is commonly used in menus to show the
 --  keyboard short-cuts for commands.
 --
---  The accelerator key to display is not set explicitly. Instead, the
+--  The accelerator key to display is typically not set explicitly (although
+--  it can be, with Gtk.Accel_Label.Set_Accel). Instead, the
 --  Gtk.Accel_Label.Gtk_Accel_Label displays the accelerators which have been
 --  added to a particular widget. This widget is set by calling
 --  Gtk.Accel_Label.Set_Accel_Widget.
 --
 --  For example, a Gtk.Menu_Item.Gtk_Menu_Item widget may have an accelerator
---  added to emit the "activate" signal when the "Ctl+S" key combination is
+--  added to emit the "activate" signal when the "Ctrl+S" key combination is
 --  pressed. A Gtk.Accel_Label.Gtk_Accel_Label is created and added to the
 --  Gtk.Menu_Item.Gtk_Menu_Item, and Gtk.Accel_Label.Set_Accel_Widget is called
 --  with the Gtk.Menu_Item.Gtk_Menu_Item as the second argument. The
---  Gtk.Accel_Label.Gtk_Accel_Label will now display "Ctl+S" after its label.
+--  Gtk.Accel_Label.Gtk_Accel_Label will now display "Ctrl+S" after its label.
 --
 --  Note that creating a Gtk.Menu_Item.Gtk_Menu_Item with
 --  Gtk.Menu_Item.Gtk_New_With_Label (or one of the similar functions for
@@ -54,7 +55,9 @@
 --
 --  ## Creating a simple menu item with an accelerator key.
 --
---  |[<!-- language="C" --> GtkWidget *save_item; GtkAccelGroup *accel_group;
+--  |[<!-- language="C" --> GtkWidget *window = gtk_window_new
+--  (GTK_WINDOW_TOPLEVEL); GtkWidget *menu = gtk_menu_new (); GtkWidget
+--  *save_item; GtkAccelGroup *accel_group;
 --
 --  // Create a GtkAccelGroup and add it to the window. accel_group =
 --  gtk_accel_group_new (); gtk_window_add_accel_group (GTK_WINDOW (window),
@@ -70,6 +73,13 @@
 --  accelerators. We just need to make sure we use // GTK_ACCEL_VISIBLE here.
 --  gtk_widget_add_accelerator (save_item, "activate", accel_group, GDK_KEY_s,
 --  GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE); ]|
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> label ╰── accelerator ]|
+--
+--  Like Gtk.Label.Gtk_Label, GtkAccelLabel has a main CSS node with the name
+--  label. It adds a subnode with name accelerator.
 --
 --  </description>
 
@@ -144,9 +154,11 @@ package Gtk.Accel_Label is
 
    procedure Set_Accel_Widget
       (Accel_Label  : not null access Gtk_Accel_Label_Record;
-       Accel_Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
-   --  Sets the widget to be monitored by this accelerator label.
-   --  "accel_widget": the widget to be monitored.
+       Accel_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Sets the widget to be monitored by this accelerator label. Passing null
+   --  for Accel_Widget will dissociate Accel_Label from its current widget, if
+   --  any.
+   --  "accel_widget": the widget to be monitored, or null
 
    function Get_Accel_Width
       (Accel_Label : not null access Gtk_Accel_Label_Record) return Guint;
@@ -165,7 +177,10 @@ package Gtk.Accel_Label is
        Accel_Closure : System.Address);
    --  Sets the closure to be monitored by this accelerator label. The closure
    --  must be connected to an accelerator group; see Gtk.Accel_Group.Connect.
-   --  "accel_closure": the closure to monitor for accelerator changes.
+   --  Passing null for Accel_Closure will dissociate Accel_Label from its
+   --  current closure, if any.
+   --  "accel_closure": the closure to monitor for accelerator changes, or
+   --  null
 
    ----------------
    -- Properties --

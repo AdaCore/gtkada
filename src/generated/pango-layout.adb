@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -315,6 +315,22 @@ package body Pango.Layout is
    end Get_Cursor_Pos;
 
    -------------------
+   -- Get_Direction --
+   -------------------
+
+   function Get_Direction
+      (Layout : not null access Pango_Layout_Record;
+       Index  : Glib.Gint) return Pango.Enums.Direction
+   is
+      function Internal
+         (Layout : System.Address;
+          Index  : Glib.Gint) return Pango.Enums.Direction;
+      pragma Import (C, Internal, "pango_layout_get_direction");
+   begin
+      return Internal (Get_Object (Layout), Index);
+   end Get_Direction;
+
+   -------------------
    -- Get_Ellipsize --
    -------------------
 
@@ -481,7 +497,7 @@ package body Pango.Layout is
          (Self : System.Address) return access Pango_Layout_Line;
       pragma Import (C, Internal, "pango_layout_iter_get_line");
    begin
-      return From_Object_Free (Internal (Get_Object (Self)));
+      return Internal (Get_Object (Self)).all;
    end Get_Line;
 
    --------------------

@@ -86,7 +86,6 @@ with Gtk.Accel_Label;         use Gtk.Accel_Label;
 with Gtk.Application;         use Gtk.Application;
 with Gtk.Arguments;           use Gtk.Arguments;
 with Gtk.Box;                 use Gtk.Box;
-with Gtk.Button;              use Gtk.Button;
 with Gtk.Check_Menu_Item;     use Gtk.Check_Menu_Item;
 with Gtk.Css_Provider;        use Gtk.Css_Provider;
 with Gtk.Container;           use Gtk.Container;
@@ -114,6 +113,11 @@ with Gtkada.Bindings;         use Gtkada.Bindings;
 with Gtkada.Handlers;         use Gtkada.Handlers;
 with Gtkada.Multi_Paned;      use Gtkada.Multi_Paned;
 with Gtkada.Style;
+
+pragma Warnings
+  (Off, "call to obsolescent procedure ""Get_Background_Color""");
+pragma Warnings (Off, "call to obsolescent procedure ""Popup""");
+--  Deprecated in Gtk+ 3.24
 
 package body Gtkada.MDI is
 
@@ -4916,11 +4920,7 @@ package body Gtkada.MDI is
 
          Note.Set_Tab_Label (Child, Event);
          Note.Set_Tab_Detachable (Child, False);
-
-         --  Disable reordering. Otherwise, we hit a bug in gtk 3.8 where the
-         --  display of the tabs is broken when the reorder operation ends up
-         --  being a drag of the view to another notebook (N408-003)
-         Note.Set_Tab_Reorderable (Child, False);
+         Note.Set_Tab_Reorderable (Child, True);
 
          Show_All (Event);
 
@@ -6197,8 +6197,8 @@ package body Gtkada.MDI is
          Dialog : Gtk_Dialog;
          Label  : Gtk_Label;
          Ent    : Gtk_Entry;
-         Button : Gtk_Widget;
-         pragma Warnings (Off, Button);
+         Button : Gtk_Widget with Unreferenced;
+
       begin
          Gtk_New (Dialog, Title => "Enter perspective name",
                   Parent => Gtk_Window (Get_Toplevel (MDI)),
@@ -7704,23 +7704,21 @@ package body Gtkada.MDI is
 
                if Child.State = Floating then
                   declare
-                     Win  : constant Gtk_Widget :=
-                              Get_Toplevel (Child.Initial);
-                     X, Y : Gint;
+                     Win           : constant Gtk_Window :=
+                       Gtk_Window (Get_Toplevel (Child.Initial));
+                     X, Y          : Gint;
+                     Width, Height : Gint;
                   begin
-
-                     --  Save the floating window's size
-                     --  Note: This size doesn't include the size of the window
-                     --  decorations, doesn't seem to be a way to do this.
-
-                     Add (Child_Node, "height",
-                          Gint'Image (Win.Get_Allocated_Height));
-                     Add (Child_Node, "width",
-                          Gint'Image (Win.Get_Allocated_Width));
+                     Win.Get_Size (Width  => Width,
+                                   Height => Height);
+                     Add (Child_Node, "height", Gint'Image (Height));
+                     Add (Child_Node, "width", Gint'Image (Width));
 
                      --  Save the floating window's coordinates
 
-                     Get_Root_Origin (Get_Window (Win), X, Y);
+                     Win.Get_Position
+                       (Root_X => X,
+                        Root_Y => Y);
 
                      Add (Child_Node, "X", Gint'Image (X));
                      Add (Child_Node, "Y", Gint'Image (Y));
@@ -7972,16 +7970,22 @@ package body Gtkada.MDI is
          --  Save the general configuration of the MDI
 
          declare
-            Win   : constant Gtk_Window := Gtk_Window (Get_Toplevel (MDI));
+            Win    : constant Gtk_Window :=
+              Gtk_Window (Get_Toplevel (MDI));
+            Width  : Gint;
+            Height : Gint;
          begin
             if Win /= null then
                if not Win.Is_Maximized and then Get_Window (Win) /= null then
+                  Win.Get_Size
+                    (Width  => Width,
+                     Height => Height);
                   Set_Attribute
                     (MDI.Perspectives, "width",
-                     Gint'Image (MDI.Get_Toplevel.Get_Allocated_Width));
+                     Gint'Image (Width));
                   Set_Attribute
                     (MDI.Perspectives, "height",
-                     Gint'Image (MDI.Get_Toplevel.Get_Allocated_Height));
+                     Gint'Image (Height));
                end if;
 
                Set_Attribute

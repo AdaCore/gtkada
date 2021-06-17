@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -132,15 +132,47 @@ package Pango.Language is
       Pango_Script_Miao,
       Pango_Script_Sharada,
       Pango_Script_Sora_Sompeng,
-      Pango_Script_Takri);
+      Pango_Script_Takri,
+      Pango_Script_Bassa_Vah,
+      Pango_Script_Caucasian_Albanian,
+      Pango_Script_Duployan,
+      Pango_Script_Elbasan,
+      Pango_Script_Grantha,
+      Pango_Script_Khojki,
+      Pango_Script_Khudawadi,
+      Pango_Script_Linear_A,
+      Pango_Script_Mahajani,
+      Pango_Script_Manichaean,
+      Pango_Script_Mende_Kikakui,
+      Pango_Script_Modi,
+      Pango_Script_Mro,
+      Pango_Script_Nabataean,
+      Pango_Script_Old_North_Arabian,
+      Pango_Script_Old_Permic,
+      Pango_Script_Pahawh_Hmong,
+      Pango_Script_Palmyrene,
+      Pango_Script_Pau_Cin_Hau,
+      Pango_Script_Psalter_Pahlavi,
+      Pango_Script_Siddham,
+      Pango_Script_Tirhuta,
+      Pango_Script_Warang_Citi,
+      Pango_Script_Ahom,
+      Pango_Script_Anatolian_Hieroglyphs,
+      Pango_Script_Hatran,
+      Pango_Script_Multani,
+      Pango_Script_Old_Hungarian,
+      Pango_Script_Signwriting);
    pragma Convention (C, Pango_Script);
    --  The Pango.Language.Pango_Script enumeration identifies different
    --  writing systems. The values correspond to the names as defined in the
-   --  Unicode standard. Note that new types may be added in the future.
-   --  Applications should be ready to handle unknown values. This enumeration
-   --  is interchangeable with GUnicode_Script. See <ulink
+   --  Unicode standard. See <ulink
    --  url="http://www.unicode.org/reports/tr24/">Unicode Standard Annex 24:
    --  Script names</ulink>.
+   --
+   --  Note that this enumeration is deprecated and will not be updated to
+   --  include values in newer versions of the Unicode standard. Applications
+   --  should use the GUnicodeScript enumeration instead, whose values are
+   --  interchangeable with PangoScript.
 
    for Pango_Script use (
       Pango_Script_Invalid_Code => -1,
@@ -231,7 +263,36 @@ package Pango.Language is
       Pango_Script_Miao => 84,
       Pango_Script_Sharada => 85,
       Pango_Script_Sora_Sompeng => 86,
-      Pango_Script_Takri => 87);
+      Pango_Script_Takri => 87,
+      Pango_Script_Bassa_Vah => 88,
+      Pango_Script_Caucasian_Albanian => 89,
+      Pango_Script_Duployan => 90,
+      Pango_Script_Elbasan => 91,
+      Pango_Script_Grantha => 92,
+      Pango_Script_Khojki => 93,
+      Pango_Script_Khudawadi => 94,
+      Pango_Script_Linear_A => 95,
+      Pango_Script_Mahajani => 96,
+      Pango_Script_Manichaean => 97,
+      Pango_Script_Mende_Kikakui => 98,
+      Pango_Script_Modi => 99,
+      Pango_Script_Mro => 100,
+      Pango_Script_Nabataean => 101,
+      Pango_Script_Old_North_Arabian => 102,
+      Pango_Script_Old_Permic => 103,
+      Pango_Script_Pahawh_Hmong => 104,
+      Pango_Script_Palmyrene => 105,
+      Pango_Script_Pau_Cin_Hau => 106,
+      Pango_Script_Psalter_Pahlavi => 107,
+      Pango_Script_Siddham => 108,
+      Pango_Script_Tirhuta => 109,
+      Pango_Script_Warang_Citi => 110,
+      Pango_Script_Ahom => 111,
+      Pango_Script_Anatolian_Hieroglyphs => 112,
+      Pango_Script_Hatran => 113,
+      Pango_Script_Multani => 114,
+      Pango_Script_Old_Hungarian => 115,
+      Pango_Script_Signwriting => 116);
 
    type Pango_Script_Array is array (Natural range <>) of Pango_Script;
 
@@ -283,6 +344,9 @@ package Pango.Language is
    --  the return value is not null, and it is a small number.
    --  The Pango.Language.Includes_Script function uses this function
    --  internally.
+   --  Note: while the return value is declared as PangoScript, the returned
+   --  values are from the GUnicodeScript enumeration, which may have more
+   --  values. Callers need to handle unknown values.
    --  Since: gtk+ 1.22
 
    function Includes_Script
@@ -352,6 +416,16 @@ package Pango.Language is
    --  automatically (by calling gtk_set_locale). See 'man setlocale' for more
    --  details.
    --  Since: gtk+ 1.16
+
+   function Get_Preferred return Pango_Language;
+   --  Returns the list of languages that the user prefers, as specified by
+   --  the PANGO_LANGUAGE or LANGUAGE environment variables, in order of
+   --  preference. Note that this list does not necessarily include the
+   --  language returned by Pango.Language.Get_Default.
+   --  When choosing language-specific resources, such as the sample text
+   --  returned by Pango.Language.Get_Sample_String, you should first try the
+   --  default language, followed by the languages returned by this function.
+   --  Since: gtk+ 1.48
 
 private
 

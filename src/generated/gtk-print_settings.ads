@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -41,6 +41,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
 with Glib.Key_File;  use Glib.Key_File;
 with Glib.Object;    use Glib.Object;
+with Glib.Variant;   use Glib.Variant;
 with Gtk.Enums;      use Gtk.Enums;
 with Gtk.Paper_Size; use Gtk.Paper_Size;
 
@@ -105,6 +106,26 @@ package Gtk.Print_Settings is
    --  Gtk.Print_Settings.To_File.
    --  Since: gtk+ 2.12
    --  "file_name": the filename to read the settings from
+
+   procedure Gtk_New_From_Gvariant
+      (Self    : out Gtk_Print_Settings;
+       Variant : Glib.Variant.Gvariant);
+   procedure Initialize_From_Gvariant
+      (Self    : not null access Gtk_Print_Settings_Record'Class;
+       Variant : Glib.Variant.Gvariant);
+   --  Deserialize print settings from an a{sv} variant in the format produced
+   --  by Gtk.Print_Settings.To_Gvariant.
+   --  Since: gtk+ 3.22
+   --  Initialize_From_Gvariant does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
+   --  "variant": an a{sv} Glib.Variant.Gvariant
+
+   function Gtk_Print_Settings_New_From_Gvariant
+      (Variant : Glib.Variant.Gvariant) return Gtk_Print_Settings;
+   --  Deserialize print settings from an a{sv} variant in the format produced
+   --  by Gtk.Print_Settings.To_Gvariant.
+   --  Since: gtk+ 3.22
+   --  "variant": an a{sv} Glib.Variant.Gvariant
 
    procedure Gtk_New_From_Key_File
       (Self       : out Gtk_Print_Settings;
@@ -654,10 +675,16 @@ package Gtk.Print_Settings is
    --  Since: gtk+ 2.12
    --  "file_name": the file to save to
 
+   function To_Gvariant
+      (Self : not null access Gtk_Print_Settings_Record)
+       return Glib.Variant.Gvariant;
+   --  Serialize print settings to an a{sv} variant.
+   --  Since: gtk+ 3.22
+
    procedure To_Key_File
       (Self       : not null access Gtk_Print_Settings_Record;
        Key_File   : Glib.Key_File.G_Key_File;
-       Group_Name : UTF8_String);
+       Group_Name : UTF8_String := "");
    --  This function adds the print settings from Settings to Key_File.
    --  Since: gtk+ 2.12
    --  "key_file": the Gkey.File.Gkey_File to save the print settings to

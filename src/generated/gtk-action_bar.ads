@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -29,6 +29,10 @@
 --  contains an internal centered box which is centered with respect to the
 --  full width of the box, even if the children at either side take up
 --  different amounts of space.
+--
+--  # CSS nodes
+--
+--  GtkActionBar has a single CSS node with name actionbar.
 --
 --  </description>
 

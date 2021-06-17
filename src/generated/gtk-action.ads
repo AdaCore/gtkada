@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -181,7 +181,8 @@ package Gtk.Action is
    --  icons displayed in the proxy widgets.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "icon_size": the size of the icon that should be created.
+   --  "icon_size": the size of the icon (Gtk.Enums.Gtk_Icon_Size) that should
+   --  be created.
 
    function Create_Menu
       (Action : not null access Gtk_Action_Record)

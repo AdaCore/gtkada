@@ -122,12 +122,20 @@ void gtkada_Font_Chooser_set_get_font_family(GtkFontChooserIface* iface, void* h
     iface->get_font_family = handler;
 }
 
+void gtkada_Font_Chooser_set_get_font_map(GtkFontChooserIface* iface, void* handler) {
+    iface->get_font_map = handler;
+}
+
 void gtkada_Font_Chooser_set_get_font_size(GtkFontChooserIface* iface, void* handler) {
     iface->get_font_size = handler;
 }
 
 void gtkada_Font_Chooser_set_set_filter_func(GtkFontChooserIface* iface, void* handler) {
     iface->set_filter_func = handler;
+}
+
+void gtkada_Font_Chooser_set_set_font_map(GtkFontChooserIface* iface, void* handler) {
+    iface->set_font_map = handler;
 }
 
 void gtkada_Print_Operation_Preview_set_end_preview(GtkPrintOperationPreviewIface* iface, void* handler) {
@@ -148,6 +156,10 @@ void gtkada_Print_Operation_Preview_set_ready(GtkPrintOperationPreviewIface* ifa
 
 void gtkada_Print_Operation_Preview_set_render_page(GtkPrintOperationPreviewIface* iface, void* handler) {
     iface->render_page = handler;
+}
+
+void gtkada_Scrollable_set_get_border(GtkScrollableInterface* iface, void* handler) {
+    iface->get_border = handler;
 }
 
 void gtkada_Tool_Shell_set_get_ellipsize_mode(GtkToolShellIface* iface, void* handler) {
@@ -408,6 +420,18 @@ void gtkada_Action_Map_set_lookup_action(GActionMapInterface* iface, void* handl
 
 void gtkada_Action_Map_set_remove_action(GActionMapInterface* iface, void* handler) {
     iface->remove_action = handler;
+}
+
+void gtkada_List_Model_set_get_item(GListModelInterface* iface, void* handler) {
+    iface->get_item = handler;
+}
+
+void gtkada_List_Model_set_get_item_type(GListModelInterface* iface, void* handler) {
+    iface->get_item_type = handler;
+}
+
+void gtkada_List_Model_set_get_n_items(GListModelInterface* iface, void* handler) {
+    iface->get_n_items = handler;
 }
 
 void gtkada_Application_set_command_line(GApplicationClass* iface, void* handler) {

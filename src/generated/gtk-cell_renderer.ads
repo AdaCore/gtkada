@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -49,8 +49,9 @@
 --  Gtk.Cell_Renderer_Toggle.Gtk_Cell_Renderer_Toggle, which toggles when it
 --  gets activated by a mouse click, or it can be "editable" like
 --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text, which allows the user to
---  edit the text using a Gtk.GEntry.Gtk_Entry. To make a cell renderer
---  activatable or editable, you have to implement the
+--  edit the text using a widget implementing the
+--  Gtk.Cell_Editable.Gtk_Cell_Editable interface, e.g. Gtk.GEntry.Gtk_Entry.
+--  To make a cell renderer activatable or editable, you have to implement the
 --  Gtk.Cell_Renderer_Class.Gtk_Cell_Renderer_Class.activate or
 --  Gtk.Cell_Renderer_Class.Gtk_Cell_Renderer_Class.start_editing virtual
 --  functions, respectively.
@@ -328,7 +329,7 @@ package Gtk.Cell_Renderer is
 
    function Get_State
       (Cell       : not null access Gtk_Cell_Renderer_Record;
-       Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class;
        Cell_State : Gtk_Cell_Renderer_State)
        return Gtk.Enums.Gtk_State_Flags;
    --  Translates the cell renderer state to Gtk.Enums.Gtk_State_Flags, based
@@ -386,7 +387,10 @@ package Gtk.Cell_Renderer is
        Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
        Flags           : Gtk_Cell_Renderer_State)
        return Gtk.Cell_Editable.Gtk_Cell_Editable;
-   --  Passes an activate event to the cell renderer for possible processing.
+   --  Starts editing the contents of this Cell, through a new
+   --  Gtk.Cell_Editable.Gtk_Cell_Editable widget created by the
+   --  Gtk.Cell_Renderer_Class.Gtk_Cell_Renderer_Class.start_editing virtual
+   --  function.
    --  "event": a Gdk.Event.Gdk_Event
    --  "widget": widget that received the event
    --  "path": widget-dependent string representation of the event location;
@@ -503,6 +507,9 @@ package Gtk.Cell_Renderer is
    --  use of this signal is to do special setup on Editable, e.g. adding a
    --  Gtk.Entry_Completion.Gtk_Entry_Completion or setting up additional
    --  columns in a Gtk.Combo_Box.Gtk_Combo_Box.
+   --
+   --  See Gtk.Cell_Editable.Start_Editing for information on the lifecycle of
+   --  the Editable and a way to do setup that doesn't depend on the Renderer.
    --
    --  Note that GTK+ doesn't guarantee that cell renderers will continue to
    --  use the same kind of widget for editing in future releases, therefore

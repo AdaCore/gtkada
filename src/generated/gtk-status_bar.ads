@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -50,6 +50,10 @@
 --  Gtk.Status_Bar.Pop. A message can be removed from anywhere in the stack if
 --  its message id was recorded at the time it was added. This is done using
 --  Gtk.Status_Bar.Remove.
+--
+--  # CSS node
+--
+--  GtkStatusbar has a single CSS node with name statusbar.
 --
 --  </description>
 --  <screenshot>gtk-status_bar</screenshot>

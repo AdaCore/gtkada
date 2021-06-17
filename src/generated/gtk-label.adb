@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -452,6 +452,32 @@ package body Gtk.Label is
       return Internal (Get_Object (Label));
    end Get_Width_Chars;
 
+   ----------------
+   -- Get_Xalign --
+   ----------------
+
+   function Get_Xalign
+      (Label : not null access Gtk_Label_Record) return Gfloat
+   is
+      function Internal (Label : System.Address) return Gfloat;
+      pragma Import (C, Internal, "gtk_label_get_xalign");
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Xalign;
+
+   ----------------
+   -- Get_Yalign --
+   ----------------
+
+   function Get_Yalign
+      (Label : not null access Gtk_Label_Record) return Gfloat
+   is
+      function Internal (Label : System.Address) return Gfloat;
+      pragma Import (C, Internal, "gtk_label_get_yalign");
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Yalign;
+
    -------------------
    -- Select_Region --
    -------------------
@@ -797,6 +823,34 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), N_Chars);
    end Set_Width_Chars;
+
+   ----------------
+   -- Set_Xalign --
+   ----------------
+
+   procedure Set_Xalign
+      (Label  : not null access Gtk_Label_Record;
+       Xalign : Gfloat)
+   is
+      procedure Internal (Label : System.Address; Xalign : Gfloat);
+      pragma Import (C, Internal, "gtk_label_set_xalign");
+   begin
+      Internal (Get_Object (Label), Xalign);
+   end Set_Xalign;
+
+   ----------------
+   -- Set_Yalign --
+   ----------------
+
+   procedure Set_Yalign
+      (Label  : not null access Gtk_Label_Record;
+       Yalign : Gfloat)
+   is
+      procedure Internal (Label : System.Address; Yalign : Gfloat);
+      pragma Import (C, Internal, "gtk_label_set_yalign");
+   begin
+      Internal (Get_Object (Label), Yalign);
+   end Set_Yalign;
 
    use type System.Address;
 

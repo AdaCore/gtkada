@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -55,6 +55,36 @@
 --  able to use a mouse or other pointing device. It is therefore recommended
 --  that any such functionality should also be available by other means, e.g.
 --  via the context menu of the entry.
+--
+--  # CSS nodes
+--
+--  |[<!-- language="plain" --> entry[.read-only][.flat][.warning][.error] ├──
+--  image.left ├── image.right ├── undershoot.left ├── undershoot.right ├──
+--  [selection] ├── [progress[.pulse]] ╰── [window.popup] ]|
+--
+--  GtkEntry has a main node with the name entry. Depending on the properties
+--  of the entry, the style classes .read-only and .flat may appear. The style
+--  classes .warning and .error may also be used with entries.
+--
+--  When the entry shows icons, it adds subnodes with the name image and the
+--  style class .left or .right, depending on where the icon appears.
+--
+--  When the entry has a selection, it adds a subnode with the name selection.
+--
+--  When the entry shows progress, it adds a subnode with the name progress.
+--  The node has the style class .pulse when the shown progress is pulsing.
+--
+--  The CSS node for a context menu is added as a subnode below entry as well.
+--
+--  The undershoot nodes are used to draw the underflow indication when
+--  content is scrolled out of view. These nodes get the .left and .right style
+--  classes added depending on where the indication is drawn.
+--
+--  When touch is used and touch selection handles are shown, they are using
+--  CSS nodes with name cursor-handle. They get the .top or .bottom style class
+--  depending on where they are shown in relation to the selection. If there is
+--  just a single handle for the text cursor, it gets the style class
+--  .insertion-cursor.
 --
 --  </description>
 --  <description>
@@ -247,7 +277,7 @@ package Gtk.GEntry is
 
    procedure Set_Cursor_Hadjustment
       (The_Entry  : not null access Gtk_Entry_Record;
-       Adjustment : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+       Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Hooks up an adjustment to the cursor position in an entry, so that when
    --  the cursor is moved, the adjustment is scrolled to show that position.
    --  See Gtk.Scrolled_Window.Get_Hadjustment for a typical way of obtaining
@@ -291,7 +321,8 @@ package Gtk.GEntry is
    --  Gets the area where entry's icon at Icon_Pos is drawn. This function is
    --  useful when drawing something to the entry in a draw callback.
    --  If the entry is not realized or has no icon at the given position,
-   --  Icon_Area is filled with zeros.
+   --  Icon_Area is filled with zeros. Otherwise, Icon_Area will be filled with
+   --  the icon's allocation, relative to Entry's allocation.
    --  See also Gtk.GEntry.Get_Text_Area
    --  Since: gtk+ 3.0
    --  "icon_pos": Icon position
@@ -415,6 +446,12 @@ package Gtk.GEntry is
    --  Use null for Tooltip to remove an existing tooltip.
    --  See also Gtk.Widget.Set_Tooltip_Text and
    --  Gtk.GEntry.Set_Icon_Tooltip_Markup.
+   --  If you unset the widget tooltip via Gtk.Widget.Set_Tooltip_Text or
+   --  Gtk.Widget.Set_Tooltip_Markup, this sets GtkWidget:has-tooltip to False,
+   --  which suppresses icon tooltips too. You can resolve this by then calling
+   --  Gtk.Widget.Set_Has_Tooltip to set GtkWidget:has-tooltip back to True, or
+   --  setting at least one non-empty tooltip on any icon achieves the same
+   --  result.
    --  Since: gtk+ 2.16
    --  "icon_pos": the icon position
    --  "tooltip": the contents of the tooltip for the icon, or null
@@ -528,10 +565,8 @@ package Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record) return Glib.Gint;
    --  Retrieves the maximum allowed length of the text in Entry. See
    --  Gtk.GEntry.Set_Max_Length.
-   --  This is equivalent to:
-   --  |[<!-- language="C" --> GtkEntryBuffer *buffer; buffer =
-   --  gtk_entry_get_buffer (entry); gtk_entry_buffer_get_max_length (buffer);
-   --  ]|
+   --  This is equivalent to getting Entry's Gtk.Entry_Buffer.Gtk_Entry_Buffer
+   --  and calling Gtk.Entry_Buffer.Get_Max_Length on it.
 
    procedure Set_Max_Length
       (The_Entry : not null access Gtk_Entry_Record;
@@ -539,10 +574,8 @@ package Gtk.GEntry is
    --  Sets the maximum allowed length of the contents of the widget. If the
    --  current contents are longer than the given length, then they will be
    --  truncated to fit.
-   --  This is equivalent to:
-   --  |[<!-- language="C" --> GtkEntryBuffer *buffer; buffer =
-   --  gtk_entry_get_buffer (entry); gtk_entry_buffer_set_max_length (buffer,
-   --  max); ]|
+   --  This is equivalent to getting Entry's Gtk.Entry_Buffer.Gtk_Entry_Buffer
+   --  and calling Gtk.Entry_Buffer.Set_Max_Length on it. ]|
    --  "max": the maximum length of the entry, or 0 for no maximum. (other
    --  than the maximum length of entries.) The value passed in will be clamped
    --  to the range 0-65536.
@@ -581,7 +614,7 @@ package Gtk.GEntry is
 
    procedure Set_Placeholder_Text
       (The_Entry : not null access Gtk_Entry_Record;
-       Text      : UTF8_String);
+       Text      : UTF8_String := "");
    --  Sets text to be displayed in Entry when it is empty and unfocused. This
    --  can be used to give a visual hint of the expected contents of the
    --  Gtk.GEntry.Gtk_Entry.
@@ -590,7 +623,7 @@ package Gtk.GEntry is
    --  given the initial focus in a window. Sometimes this can be worked around
    --  by delaying the initial focus setting until the first key event arrives.
    --  Since: gtk+ 3.2
-   --  "text": a string to be displayed when Entry is empty an unfocused, or
+   --  "text": a string to be displayed when Entry is empty and unfocused, or
    --  null
 
    function Get_Progress_Fraction
@@ -639,9 +672,8 @@ package Gtk.GEntry is
       (The_Entry : not null access Gtk_Entry_Record) return UTF8_String;
    --  Retrieves the contents of the entry widget. See also
    --  Gtk.Editable.Get_Chars.
-   --  This is equivalent to:
-   --  |[<!-- language="C" --> GtkEntryBuffer *buffer; buffer =
-   --  gtk_entry_get_buffer (entry); gtk_entry_buffer_get_text (buffer); ]|
+   --  This is equivalent to getting Entry's Gtk.Entry_Buffer.Gtk_Entry_Buffer
+   --  and calling Gtk.Entry_Buffer.Get_Text on it.
 
    procedure Set_Text
       (The_Entry : not null access Gtk_Entry_Record;
@@ -664,9 +696,8 @@ package Gtk.GEntry is
    function Get_Text_Length
       (The_Entry : not null access Gtk_Entry_Record) return Guint16;
    --  Retrieves the current length of the text in Entry.
-   --  This is equivalent to:
-   --  |[<!-- language="C" --> GtkEntryBuffer *buffer; buffer =
-   --  gtk_entry_get_buffer (entry); gtk_entry_buffer_get_length (buffer); ]|
+   --  This is equivalent to getting Entry's Gtk.Entry_Buffer.Gtk_Entry_Buffer
+   --  and calling Gtk.Entry_Buffer.Get_Length on it.
    --  Since: gtk+ 2.14
 
    function Get_Visibility
@@ -702,6 +733,15 @@ package Gtk.GEntry is
    --  is -1, the size reverts to the default entry size.
    --  "Width": width in chars
 
+   procedure Grab_Focus_Without_Selecting
+      (The_Entry : not null access Gtk_Entry_Record);
+   --  Causes Entry to have keyboard focus.
+   --  It behaves like Gtk.Widget.Grab_Focus, except that it doesn't select
+   --  the contents of the entry. You only want to call this on some special
+   --  entries which the user usually doesn't want to replace all text in, such
+   --  as search-as-you-type entries.
+   --  Since: gtk+ 3.16
+
    function Im_Context_Filter_Keypress
       (The_Entry : not null access Gtk_Entry_Record;
        Event     : Gdk.Event.Gdk_Event_Key) return Boolean;
@@ -720,10 +760,9 @@ package Gtk.GEntry is
    function Layout_Index_To_Text_Index
       (The_Entry    : not null access Gtk_Entry_Record;
        Layout_Index : Glib.Gint) return Glib.Gint;
-   --  Converts from a position in the entry contents (returned by
-   --  Gtk.GEntry.Get_Text) to a position in the entry's
-   --  Pango.Layout.Pango_Layout (returned by Gtk.GEntry.Get_Layout, with text
-   --  retrieved via Pango.Layout.Get_Text).
+   --  Converts from a position in the entry's Pango.Layout.Pango_Layout
+   --  (returned by Gtk.GEntry.Get_Layout) to a position in the entry contents
+   --  (returned by Gtk.GEntry.Get_Text).
    --  "layout_index": byte index into the entry layout text
 
    procedure Progress_Pulse (The_Entry : not null access Gtk_Entry_Record);
@@ -813,9 +852,10 @@ package Gtk.GEntry is
    function Text_Index_To_Layout_Index
       (The_Entry  : not null access Gtk_Entry_Record;
        Text_Index : Glib.Gint) return Glib.Gint;
-   --  Converts from a position in the entry's Pango.Layout.Pango_Layout
-   --  (returned by Gtk.GEntry.Get_Layout) to a position in the entry contents
-   --  (returned by Gtk.GEntry.Get_Text).
+   --  Converts from a position in the entry contents (returned by
+   --  Gtk.GEntry.Get_Text) to a position in the entry's
+   --  Pango.Layout.Pango_Layout (returned by Gtk.GEntry.Get_Layout, with text
+   --  retrieved via Pango.Layout.Get_Text).
    --  "text_index": byte index into the entry contents
 
    procedure Unset_Invisible_Char
@@ -916,6 +956,10 @@ package Gtk.GEntry is
    --  A list of Pango attributes to apply to the text of the entry.
    --
    --  This is mainly useful to change the size or weight of the text.
+   --
+   --  The Pango.Attributes.Pango_Attribute's Start_Index and End_Index must
+   --  refer to the Gtk.Entry_Buffer.Gtk_Entry_Buffer text, i.e. without the
+   --  preedit string.
 
    Buffer_Property : constant Glib.Properties.Property_Object;
    --  Type: Gtk.Entry_Buffer.Gtk_Entry_Buffer
@@ -934,6 +978,8 @@ package Gtk.GEntry is
    Cursor_Position_Property : constant Glib.Properties.Property_Int;
 
    Editable_Property : constant Glib.Properties.Property_Boolean;
+
+   Enable_Emoji_Completion_Property : constant Glib.Properties.Property_Boolean;
 
    Has_Frame_Property : constant Glib.Properties.Property_Boolean;
 
@@ -1108,6 +1154,8 @@ package Gtk.GEntry is
    --  Which kind of shadow to draw around the entry when
    --  Gtk.GEntry.Gtk_Entry:has-frame is set to True.
 
+   Show_Emoji_Icon_Property : constant Glib.Properties.Property_Boolean;
+
    Tabs_Property : constant Glib.Properties.Property_Boxed;
    --  Type: Pango.Tab_Array
 
@@ -1233,24 +1281,24 @@ package Gtk.GEntry is
    --    --  "type": the granularity of the deletion, as a Gtk.Enums.Gtk_Delete_Type
    --    --  "count": the number of Type units to delete
 
-   type Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void is not null access procedure
+   type Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Void is not null access procedure
      (Self     : access Gtk_Entry_Record'Class;
       Icon_Pos : Gtk_Entry_Icon_Position;
-      Event    : Gdk.Event.Gdk_Event_Button);
+      Event    : Gdk.Event.Gdk_Event);
 
-   type Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void is not null access procedure
+   type Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Void is not null access procedure
      (Self     : access Glib.Object.GObject_Record'Class;
       Icon_Pos : Gtk_Entry_Icon_Position;
-      Event    : Gdk.Event.Gdk_Event_Button);
+      Event    : Gdk.Event.Gdk_Event);
 
    Signal_Icon_Press : constant Glib.Signal_Name := "icon-press";
    procedure On_Icon_Press
       (Self  : not null access Gtk_Entry_Record;
-       Call  : Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+       Call  : Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Void;
        After : Boolean := False);
    procedure On_Icon_Press
       (Self  : not null access Gtk_Entry_Record;
-       Call  : Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+       Call  : Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::icon-press signal is emitted when an activatable icon is clicked.
@@ -1262,11 +1310,11 @@ package Gtk.GEntry is
    Signal_Icon_Release : constant Glib.Signal_Name := "icon-release";
    procedure On_Icon_Release
       (Self  : not null access Gtk_Entry_Record;
-       Call  : Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+       Call  : Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Void;
        After : Boolean := False);
    procedure On_Icon_Release
       (Self  : not null access Gtk_Entry_Record;
-       Call  : Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Button_Void;
+       Call  : Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::icon-release signal is emitted on the button release from a mouse
@@ -1299,6 +1347,21 @@ package Gtk.GEntry is
    --  insertion of a fixed string at the cursor.
    --
    --  This signal has no default bindings.
+
+   Signal_Insert_Emoji : constant Glib.Signal_Name := "insert-emoji";
+   procedure On_Insert_Emoji
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_Gtk_Entry_Void;
+       After : Boolean := False);
+   procedure On_Insert_Emoji
+      (Self  : not null access Gtk_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::insert-emoji signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted to present the Emoji chooser for the Entry.
+   --
+   --  The default bindings for this signal are Ctrl-. and Ctrl-;
 
    type Cb_Gtk_Entry_Gtk_Movement_Step_Gint_Boolean_Void is not null access procedure
      (Self             : access Gtk_Entry_Record'Class;
@@ -1360,12 +1423,12 @@ package Gtk.GEntry is
    --  The default bindings for this signal are Ctrl-v and Shift-Insert.
 
    type Cb_Gtk_Entry_Gtk_Widget_Void is not null access procedure
-     (Self  : access Gtk_Entry_Record'Class;
-      Popup : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+     (Self   : access Gtk_Entry_Record'Class;
+      Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
 
    type Cb_GObject_Gtk_Widget_Void is not null access procedure
-     (Self  : access Glib.Object.GObject_Record'Class;
-      Popup : not null access Gtk.Widget.Gtk_Widget_Record'Class);
+     (Self   : access Glib.Object.GObject_Record'Class;
+      Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
 
    Signal_Populate_Popup : constant Glib.Signal_Name := "populate-popup";
    procedure On_Populate_Popup
@@ -1478,6 +1541,8 @@ private
      Glib.Properties.Build ("text");
    Tabs_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("tabs");
+   Show_Emoji_Icon_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("show-emoji-icon");
    Shadow_Type_Property : constant Gtk.Enums.Property_Gtk_Shadow_Type :=
      Gtk.Enums.Build ("shadow-type");
    Selection_Bound_Property : constant Glib.Properties.Property_Int :=
@@ -1548,6 +1613,8 @@ private
      Glib.Properties.Build ("im-module");
    Has_Frame_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-frame");
+   Enable_Emoji_Completion_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("enable-emoji-completion");
    Editable_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("editable");
    Cursor_Position_Property : constant Glib.Properties.Property_Int :=

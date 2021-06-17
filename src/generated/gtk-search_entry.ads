@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -38,6 +38,15 @@
 --  To support this, Gtk.Search_Entry.Gtk_Search_Entry emits the
 --  Gtk.Search_Entry.Gtk_Search_Entry::search-changed signal which can be used
 --  instead of the Gtk.Editable.Gtk_Editable::changed signal.
+--
+--  The Gtk.Search_Entry.Gtk_Search_Entry::previous-match,
+--  Gtk.Search_Entry.Gtk_Search_Entry::next-match and
+--  Gtk.Search_Entry.Gtk_Search_Entry::stop-search signals can be used to
+--  implement moving between search results and ending the search.
+--
+--  Often, GtkSearchEntry will be fed events by means of being placed inside a
+--  Gtk.Search_Bar.Gtk_Search_Bar. If that is not the case, you can use
+--  Gtk.Search_Entry.Handle_Event to pass events.
 --
 --  </description>
 
@@ -76,6 +85,24 @@ package Gtk.Search_Entry is
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_search_entry_get_type");
+
+   -------------
+   -- Methods --
+   -------------
+
+   function Handle_Event
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Event : Gdk.Event.Gdk_Event) return Boolean;
+   --  This function should be called when the top-level window which contains
+   --  the search entry received a key event. If the entry is part of a
+   --  Gtk.Search_Bar.Gtk_Search_Bar, it is preferable to call
+   --  Gtk.Search_Bar.Handle_Event instead, which will reveal the entry in
+   --  addition to passing the event to this function.
+   --  If the key event is handled by the search entry and starts or continues
+   --  a search, GDK_EVENT_STOP will be returned. The caller should ensure that
+   --  the entry is shown in this case, and not propagate the event further.
+   --  Since: gtk+ 3.16
+   --  "event": a key event
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -157,6 +184,42 @@ package Gtk.Search_Entry is
    type Cb_GObject_Void is not null access procedure
      (Self : access Glib.Object.GObject_Record'Class);
 
+   Signal_Next_Match : constant Glib.Signal_Name := "next-match";
+   procedure On_Next_Match
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_Gtk_Search_Entry_Void;
+       After : Boolean := False);
+   procedure On_Next_Match
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::next-match signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user initiates a move to the next match for
+   --  the current search string.
+   --
+   --  Applications should connect to it, to implement moving between matches.
+   --
+   --  The default bindings for this signal is Ctrl-g.
+
+   Signal_Previous_Match : constant Glib.Signal_Name := "previous-match";
+   procedure On_Previous_Match
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_Gtk_Search_Entry_Void;
+       After : Boolean := False);
+   procedure On_Previous_Match
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::previous-match signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user initiates a move to the previous match
+   --  for the current search string.
+   --
+   --  Applications should connect to it, to implement moving between matches.
+   --
+   --  The default bindings for this signal is Ctrl-Shift-g.
+
    Signal_Search_Changed : constant Glib.Signal_Name := "search-changed";
    procedure On_Search_Changed
       (Self  : not null access Gtk_Search_Entry_Record;
@@ -170,6 +233,24 @@ package Gtk.Search_Entry is
    --  The Gtk.Search_Entry.Gtk_Search_Entry::search-changed signal is emitted
    --  with a short delay of 150 milliseconds after the last change to the
    --  entry text.
+
+   Signal_Stop_Search : constant Glib.Signal_Name := "stop-search";
+   procedure On_Stop_Search
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_Gtk_Search_Entry_Void;
+       After : Boolean := False);
+   procedure On_Stop_Search
+      (Self  : not null access Gtk_Search_Entry_Record;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  The ::stop-search signal is a [keybinding signal][GtkBindingSignal]
+   --  which gets emitted when the user stops a search via keyboard input.
+   --
+   --  Applications should connect to it, to implement hiding the search entry
+   --  in this case.
+   --
+   --  The default bindings for this signal is Escape.
 
    ----------------
    -- Interfaces --

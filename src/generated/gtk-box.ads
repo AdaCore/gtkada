@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,12 +22,12 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  The GtkBox widget organizes child widgets into a rectangular area.
---
---  The rectangular area of a GtkBox is organized into either a single row or
---  a single column of child widgets depending upon the orientation. Thus, all
---  children of a GtkBox are allocated one dimension in common, which is the
---  height of a row, or the width of a column.
+--  The GtkBox widget arranges child widgets into a single row or column,
+--  depending upon the value of its Gtk.Orientable.Gtk_Orientable:orientation
+--  property. Within the other dimension, all children are allocated the same
+--  size. Of course, the Gtk.Widget.Gtk_Widget:halign and
+--  Gtk.Widget.Gtk_Widget:valign properties can be used on the children to
+--  influence their allocation.
 --
 --  GtkBox uses a notion of packing. Packing refers to adding widgets with
 --  reference to a particular position in a Gtk.Container.Gtk_Container. For a
@@ -61,8 +61,13 @@
 --  Use Gtk.Box.Set_Child_Packing to reset the expand, fill and padding child
 --  properties. Use Gtk.Box.Query_Child_Packing to query these fields.
 --
---  Note that a single-row or single-column Gtk.Grid.Gtk_Grid provides exactly
---  the same functionality as Gtk.Box.Gtk_Box.
+--  # CSS nodes
+--
+--  GtkBox uses a single CSS node with name box.
+--
+--  In horizontal orientation, the nodes of the children are always arranged
+--  from left to right. So :first-child will always select the leftmost child,
+--  regardless of text direction.
 --
 --  </description>
 --  <description>

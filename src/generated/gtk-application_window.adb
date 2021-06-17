@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -78,6 +78,21 @@ package body Gtk.Application_Window is
       end if;
    end Initialize;
 
+   ----------------------
+   -- Get_Help_Overlay --
+   ----------------------
+
+   function Get_Help_Overlay
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Shortcuts_Window.Gtk_Shortcuts_Window
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_application_window_get_help_overlay");
+      Stub_Gtk_Shortcuts_Window : Gtk.Shortcuts_Window.Gtk_Shortcuts_Window_Record;
+   begin
+      return Gtk.Shortcuts_Window.Gtk_Shortcuts_Window (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Shortcuts_Window));
+   end Get_Help_Overlay;
+
    ------------
    -- Get_Id --
    ------------
@@ -103,6 +118,22 @@ package body Gtk.Application_Window is
    begin
       return Internal (Get_Object (Self)) /= 0;
    end Get_Show_Menubar;
+
+   ----------------------
+   -- Set_Help_Overlay --
+   ----------------------
+
+   procedure Set_Help_Overlay
+      (Self         : not null access Gtk_Application_Window_Record;
+       Help_Overlay : access Gtk.Shortcuts_Window.Gtk_Shortcuts_Window_Record'Class)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Help_Overlay : System.Address);
+      pragma Import (C, Internal, "gtk_application_window_set_help_overlay");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Help_Overlay)));
+   end Set_Help_Overlay;
 
    ----------------------
    -- Set_Show_Menubar --

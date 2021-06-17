@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -23,7 +23,7 @@
 
 --  <description>
 --  A Gdk.RGBA.Gdk_RGBA is used to represent a (possibly translucent) color,
---  in a way that is compatible with cairos notion of color.
+--  in a way that is compatible with cairo's notion of color.
 --
 --  </description>
 
@@ -45,7 +45,7 @@ package Gdk.RGBA is
    function From_Object_Free (B : access Gdk_RGBA) return Gdk_RGBA;
    pragma Inline (From_Object_Free);
    --  A Gdk.RGBA.Gdk_RGBA is used to represent a (possibly translucent)
-   --  color, in a way that is compatible with cairos notion of color.
+   --  color, in a way that is compatible with cairo's notion of color.
 
    ------------------
    -- Constructors --
@@ -92,23 +92,23 @@ package Gdk.RGBA is
    --  (In this case the color will have full opacity) - A RGBA color in the
    --  form "rgba(r,g,b,a)"
    --  Where "r", "g", "b" and "a" are respectively the red, green, blue and
-   --  alpha color values. In the last two cases, r g and b are either integers
-   --  in the range 0 to 255 or precentage values in the range 0% to 100%, and
-   --  a is a floating point value in the range 0 to 1.
+   --  alpha color values. In the last two cases, "r", "g", and "b" are either
+   --  integers in the range 0 to 255 or percentage values in the range 0% to
+   --  100%, and a is a floating point value in the range 0 to 1.
    --  Since: gtk+ 3.0
    --  "spec": the string specifying the color
 
    function To_String (Self : Gdk_RGBA) return UTF8_String;
-   --  Returns a textual specification of Rgba in the form `rgb (r, g, b)` or
-   --  `rgba (r, g, b, a)`, where "r", "g", "b" and "a" represent the red,
-   --  green, blue and alpha values respectively. r, g, and b are represented
-   --  as integers in the range 0 to 255, and a is represented as floating
+   --  Returns a textual specification of Rgba in the form `rgb(r,g,b)` or
+   --  `rgba(r g,b,a)`, where "r", "g", "b" and "a" represent the red, green,
+   --  blue and alpha values respectively. "r", "g", and "b" are represented as
+   --  integers in the range 0 to 255, and "a" is represented as a floating
    --  point value in the range 0 to 1.
-   --  These string forms are string forms those supported by the CSS3 colors
-   --  module, and can be parsed by Gdk.RGBA.Parse.
-   --  Note that this string representation may lose some precision, since r,
-   --  g and b are represented as 8-bit integers. If this is a concern, you
-   --  should use a different representation.
+   --  These string forms are string forms that are supported by the CSS3
+   --  colors module, and can be parsed by Gdk.RGBA.Parse.
+   --  Note that this string representation may lose some precision, since
+   --  "r", "g" and "b" are represented as 8-bit integers. If this is a
+   --  concern, you should use a different representation.
    --  Since: gtk+ 3.0
 
    ----------------------

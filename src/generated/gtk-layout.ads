@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -23,16 +23,20 @@
 
 --  <description>
 --  Gtk.Layout.Gtk_Layout is similar to Gtk.Drawing_Area.Gtk_Drawing_Area in
---  that it's a "blank slate" and doesn't do anything but paint a blank
+--  that it's a "blank slate" and doesn't do anything except paint a blank
 --  background by default. It's different in that it supports scrolling
---  natively (you can add it to a Gtk.Scrolled_Window.Gtk_Scrolled_Window), and
---  it can contain child widgets, since it's a Gtk.Container.Gtk_Container.
---  However if you're just going to draw, a Gtk.Drawing_Area.Gtk_Drawing_Area
---  is a better choice since it has lower overhead.
+--  natively due to implementing Gtk.Scrollable.Gtk_Scrollable, and can contain
+--  child widgets since it's a Gtk.Container.Gtk_Container.
+--
+--  If you just want to draw, a Gtk.Drawing_Area.Gtk_Drawing_Area is a better
+--  choice since it has lower overhead. If you just need to position child
+--  widgets at specific points, then Gtk.Fixed.Gtk_Fixed provides that
+--  functionality on its own.
 --
 --  When handling expose events on a Gtk.Layout.Gtk_Layout, you must draw to
---  GTK_LAYOUT (layout)->bin_window, rather than to GTK_WIDGET
---  (layout)->window, as you would for a drawing area.
+--  the Gdk.Gdk_Window returned by Gtk.Layout.Get_Bin_Window, rather than to
+--  the one returned by Gtk.Widget.Get_Window as you would for a
+--  Gtk.Drawing_Area.Gtk_Drawing_Area.
 --
 --  </description>
 --  <description>
@@ -67,6 +71,7 @@ with Gtk.Buildable;   use Gtk.Buildable;
 with Gtk.Container;   use Gtk.Container;
 with Gtk.Enums;       use Gtk.Enums;
 with Gtk.Scrollable;  use Gtk.Scrollable;
+with Gtk.Style;       use Gtk.Style;
 with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Layout is
@@ -164,6 +169,10 @@ package Gtk.Layout is
    --  Methods inherited from the Buildable interface are not duplicated here
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
+
+   function Get_Border
+      (Self   : not null access Gtk_Layout_Record;
+       Border : access Gtk.Style.Gtk_Border) return Boolean;
 
    function Get_Hadjustment
       (Self : not null access Gtk_Layout_Record)

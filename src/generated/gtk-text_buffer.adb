@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -1089,6 +1089,28 @@ package body Gtk.Text_Buffer is
       Free (Tmp_Text);
       return Tmp_Return /= 0;
    end Insert_Interactive_At_Cursor;
+
+   -------------------
+   -- Insert_Markup --
+   -------------------
+
+   procedure Insert_Markup
+      (Buffer : not null access Gtk_Text_Buffer_Record;
+       Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+       Markup : UTF8_String;
+       Len    : Glib.Gint)
+   is
+      procedure Internal
+         (Buffer : System.Address;
+          Iter   : Gtk.Text_Iter.Gtk_Text_Iter;
+          Markup : Gtkada.Types.Chars_Ptr;
+          Len    : Glib.Gint);
+      pragma Import (C, Internal, "gtk_text_buffer_insert_markup");
+      Tmp_Markup : Gtkada.Types.Chars_Ptr := New_String (Markup);
+   begin
+      Internal (Get_Object (Buffer), Iter, Tmp_Markup, Len);
+      Free (Tmp_Markup);
+   end Insert_Markup;
 
    -------------------
    -- Insert_Pixbuf --

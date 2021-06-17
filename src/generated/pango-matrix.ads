@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -86,8 +86,23 @@ package Pango.Matrix is
    pragma Import (C, Get_Font_Scale_Factor, "pango_matrix_get_font_scale_factor");
    --  Returns the scale factor of a matrix on the height of the font. That
    --  is, the scale factor in the direction perpendicular to the vector that
-   --  the X coordinate is mapped to.
+   --  the X coordinate is mapped to. If the scale in the X coordinate is
+   --  needed as well, use Pango.Matrix.Get_Font_Scale_Factors.
    --  Since: gtk+ 1.12
+
+   procedure Get_Font_Scale_Factors
+      (Self   : Pango_Matrix;
+       Xscale : out Gdouble;
+       Yscale : out Gdouble);
+   pragma Import (C, Get_Font_Scale_Factors, "pango_matrix_get_font_scale_factors");
+   --  Calculates the scale factor of a matrix on the width and height of the
+   --  font. That is, Xscale is the scale factor in the direction of the X
+   --  coordinate, and Yscale is the scale factor in the direction
+   --  perpendicular to the vector that the X coordinate is mapped to.
+   --  Note that output numbers will always be non-negative.
+   --  Since: gtk+ 1.38
+   --  "xscale": output scale factor in the x direction, or null
+   --  "yscale": output scale factor perpendicular to the x direction, or null
 
    procedure Rotate (Self : in out Pango_Matrix; Degrees : Gdouble);
    pragma Import (C, Rotate, "pango_matrix_rotate");

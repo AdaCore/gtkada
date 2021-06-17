@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -45,6 +45,10 @@
 --  To add pages to an assistant in Gtk.Builder.Gtk_Builder, simply add it as
 --  a child to the GtkAssistant object, and set its child properties as
 --  necessary.
+--
+--  # CSS nodes
+--
+--  GtkAssistant has a single CSS node with the name assistant.
 --
 --  </description>
 --  <group>Windows</group>
@@ -199,6 +203,23 @@ package Gtk.Assistant is
    --  Since: gtk+ 2.10
    --  "page": a page of Assistant
    --  "complete": the completeness status of the page
+
+   function Get_Page_Has_Padding
+      (Assistant : not null access Gtk_Assistant_Record;
+       Page      : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Boolean;
+   --  Gets whether page has padding.
+   --  Since: gtk+ 3.18
+   --  "page": a page of Assistant
+
+   procedure Set_Page_Has_Padding
+      (Assistant   : not null access Gtk_Assistant_Record;
+       Page        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Has_Padding : Boolean);
+   --  Sets whether the assistant is adding padding around the page.
+   --  Since: gtk+ 3.18
+   --  "page": a page of Assistant
+   --  "has_padding": whether this page has padding
 
    function Get_Page_Header_Image
       (Assistant : not null access Gtk_Assistant_Record;

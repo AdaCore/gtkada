@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -40,7 +40,7 @@
 --  palette = gtk_tool_palette_new (); group = gtk_tool_item_group_new
 --  (_("Test Category")); gtk_container_add (GTK_CONTAINER (palette), group);
 --
---  item = gtk_tool_button_new_new (NULL, _("_Open"));
+--  item = gtk_tool_button_new (NULL, _("_Open"));
 --  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (item), "document-open");
 --  gtk_tool_item_group_insert (GTK_TOOL_ITEM_GROUP (group), item, -1); ]|
 --
@@ -72,6 +72,10 @@
 --  (GTK_TOOL_PALETTE (palette), target, GTK_DEST_DEFAULT_ALL,
 --  GTK_TOOL_PALETTE_DRAG_ITEMS, GDK_ACTION_COPY); ]|
 --
+--  # CSS nodes
+--
+--  GtkToolPalette has a single CSS node named toolpalette.
+--
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -87,6 +91,7 @@ with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Orientable;          use Gtk.Orientable;
 with Gtk.Scrollable;          use Gtk.Scrollable;
 with Gtk.Selection_Data;      use Gtk.Selection_Data;
+with Gtk.Style;               use Gtk.Style;
 with Gtk.Target_Entry;        use Gtk.Target_Entry;
 with Gtk.Tool_Item;           use Gtk.Tool_Item;
 with Gtk.Tool_Item_Group;     use Gtk.Tool_Item_Group;
@@ -323,6 +328,10 @@ package Gtk.Tool_Palette is
    procedure Set_Orientation
       (Self        : not null access Gtk_Tool_Palette_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
+
+   function Get_Border
+      (Self   : not null access Gtk_Tool_Palette_Record;
+       Border : access Gtk.Style.Gtk_Border) return Boolean;
 
    function Get_Hadjustment
       (Self : not null access Gtk_Tool_Palette_Record)

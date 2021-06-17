@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -208,6 +208,9 @@ package Gtk.Enums is
    Input_Hint_Uppercase_Words : constant Gtk_Input_Hints := 32;
    Input_Hint_Uppercase_Sentences : constant Gtk_Input_Hints := 64;
    Input_Hint_Inhibit_Osk : constant Gtk_Input_Hints := 128;
+   Input_Hint_Vertical_Writing : constant Gtk_Input_Hints := 256;
+   Input_Hint_Emoji : constant Gtk_Input_Hints := 512;
+   Input_Hint_No_Emoji : constant Gtk_Input_Hints := 1024;
 
    type Gtk_Input_Purpose is (
       Input_Purpose_Free_Form,
@@ -219,7 +222,8 @@ package Gtk.Enums is
       Input_Purpose_Email,
       Input_Purpose_Name,
       Input_Purpose_Password,
-      Input_Purpose_Pin);
+      Input_Purpose_Pin,
+      Input_Purpose_Terminal);
    pragma Convention (C, Gtk_Input_Purpose);
    --  Describes primary purpose of the input widget. This information is
    --  useful for on-screen keyboards and similar input methods to decide which
@@ -299,6 +303,13 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Pan_Direction);
    --  Describes the panning direction of a Gtk.Gesture_Pan.Gtk_Gesture_Pan
 
+   type Gtk_Popover_Constraint is (
+      Popover_Constraint_None,
+      Popover_Constraint_Window);
+   pragma Convention (C, Gtk_Popover_Constraint);
+   --  Describes constraints to positioning of popovers. More values may be
+   --  added to this enumeration in the future.
+
    type Gtk_Propagation_Phase is (
       Phase_None,
       Phase_Capture,
@@ -352,7 +363,8 @@ package Gtk.Enums is
    type Gtk_Policy_Type is (
       Policy_Always,
       Policy_Automatic,
-      Policy_Never);
+      Policy_Never,
+      Policy_External);
    pragma Convention (C, Gtk_Policy_Type);
    --  Determines how the size should be computed to achieve the one of the
    --  visibility mode for the scrollbars.
@@ -515,6 +527,7 @@ package Gtk.Enums is
    Gtk_State_Flag_Link : constant Gtk_State_Flags := 512;
    Gtk_State_Flag_Visited : constant Gtk_State_Flags := 1024;
    Gtk_State_Flag_Checked : constant Gtk_State_Flags := 2048;
+   Gtk_State_Flag_Drop_Active : constant Gtk_State_Flags := 4096;
 
    type Gtk_State_Type is (
       State_Normal,
@@ -725,6 +738,10 @@ package Gtk.Enums is
    package Gtk_Pan_Direction_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Pan_Direction);
    type Property_Gtk_Pan_Direction is new Gtk_Pan_Direction_Properties.Property;
+
+   package Gtk_Popover_Constraint_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Popover_Constraint);
+   type Property_Gtk_Popover_Constraint is new Gtk_Popover_Constraint_Properties.Property;
 
    package Gtk_Propagation_Phase_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Propagation_Phase);

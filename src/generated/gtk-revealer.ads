@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -30,6 +30,10 @@
 --
 --  These animations respect the
 --  Gtk.Settings.Gtk_Settings:gtk-enable-animations setting.
+--
+--  # CSS nodes
+--
+--  GtkRevealer has a single CSS node with name revealer.
 --
 --  The GtkRevealer widget was added in GTK+ 3.10.
 --
@@ -91,8 +95,8 @@ package Gtk.Revealer is
 
    function Get_Child_Revealed
       (Self : not null access Gtk_Revealer_Record) return Boolean;
-   --  Returns whether the child is fully revealed, ie wether the transition
-   --  to the revealed state is completed.
+   --  Returns whether the child is fully revealed, in other words whether the
+   --  transition to the revealed state is completed.
    --  Since: gtk+ 3.10
 
    function Get_Reveal_Child

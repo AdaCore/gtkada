@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -44,6 +44,7 @@ with Gtk.Window;        use Gtk.Window;
 with Pango.Font;        use Pango.Font;
 with Pango.Font_Face;   use Pango.Font_Face;
 with Pango.Font_Family; use Pango.Font_Family;
+with Pango.Font_Map;    use Pango.Font_Map;
 
 package Gtk.Font_Chooser_Dialog is
 
@@ -166,9 +167,37 @@ package Gtk.Font_Chooser_Dialog is
       (Self : not null access Gtk_Font_Chooser_Dialog_Record)
        return Pango.Font_Family.Pango_Font_Family;
 
+   function Get_Font_Features
+      (Self : not null access Gtk_Font_Chooser_Dialog_Record)
+       return UTF8_String;
+
+   function Get_Font_Map
+      (Self : not null access Gtk_Font_Chooser_Dialog_Record)
+       return Pango.Font_Map.Pango_Font_Map;
+
+   procedure Set_Font_Map
+      (Self    : not null access Gtk_Font_Chooser_Dialog_Record;
+       Fontmap : access Pango.Font_Map.Pango_Font_Map_Record'Class);
+
    function Get_Font_Size
       (Self : not null access Gtk_Font_Chooser_Dialog_Record)
        return Glib.Gint;
+
+   function Get_Language
+      (Self : not null access Gtk_Font_Chooser_Dialog_Record)
+       return UTF8_String;
+
+   procedure Set_Language
+      (Self     : not null access Gtk_Font_Chooser_Dialog_Record;
+       Language : UTF8_String);
+
+   function Get_Level
+      (Self : not null access Gtk_Font_Chooser_Dialog_Record)
+       return Gtk.Font_Chooser.Gtk_Font_Chooser_Level;
+
+   procedure Set_Level
+      (Self  : not null access Gtk_Font_Chooser_Dialog_Record;
+       Level : Gtk.Font_Chooser.Gtk_Font_Chooser_Level);
 
    function Get_Preview_Text
       (Self : not null access Gtk_Font_Chooser_Dialog_Record)

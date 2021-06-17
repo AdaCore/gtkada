@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -170,8 +170,9 @@ package Gtk.Icon_Set is
    --  "style": a Gtk.Style.Gtk_Style associated with Widget, or null
    --  "direction": text direction
    --  "state": widget state
-   --  "size": icon size. A size of (GtkIconSize)-1 means render at the size
-   --  of the source and don't scale.
+   --  "size": icon size (Gtk.Enums.Gtk_Icon_Size). A size of
+   --  `(GtkIconSize)-1` means render at the size of the source and don't
+   --  scale.
    --  "widget": widget that will display the icon, or null. The only use that
    --  is typically made of this is to determine the appropriate
    --  Gdk.Screen.Gdk_Screen.
@@ -192,8 +193,9 @@ package Gtk.Icon_Set is
    --  Since: gtk+ 3.0
    --  Deprecated since 3.10, 1
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "size": icon size. A size of (GtkIconSize)-1 means render at the size
-   --  of the source and don't scale.
+   --  "size": icon size (Gtk.Enums.Gtk_Icon_Size). A size of
+   --  `(GtkIconSize)-1` means render at the size of the source and don't
+   --  scale.
 
    function Render_Icon_Surface
       (Self       : Gtk_Icon_Set;
@@ -210,8 +212,9 @@ package Gtk.Icon_Set is
    --  Since: gtk+ 3.10
    --  Deprecated since 3.10, 1
    --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "size": icon size. A size of (GtkIconSize)-1 means render at the size
-   --  of the source and don't scale.
+   --  "size": icon size (Gtk.Enums.Gtk_Icon_Size). A size of
+   --  `(GtkIconSize)-1` means render at the size of the source and don't
+   --  scale.
    --  "scale": the window scale to render for
    --  "for_window": Gdk.Gdk_Window to optimize drawing for, or null
 

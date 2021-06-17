@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -172,6 +172,24 @@ package body Gdk.Window is
       return Self;
    end Gdk_Window_New;
 
+   ----------------------
+   -- Begin_Draw_Frame --
+   ----------------------
+
+   function Begin_Draw_Frame
+      (Self   : Gdk.Gdk_Window;
+       Region : Cairo.Region.Cairo_Region)
+       return Gdk.Drawing_Context.Gdk_Drawing_Context
+   is
+      function Internal
+         (Self   : Gdk.Gdk_Window;
+          Region : Cairo.Region.Cairo_Region) return System.Address;
+      pragma Import (C, Internal, "gdk_window_begin_draw_frame");
+      Stub_Gdk_Drawing_Context : Gdk.Drawing_Context.Gdk_Drawing_Context_Record;
+   begin
+      return Gdk.Drawing_Context.Gdk_Drawing_Context (Get_User_Data (Internal (Self, Region), Stub_Gdk_Drawing_Context));
+   end Begin_Draw_Frame;
+
    --------------------------------
    -- Begin_Move_Drag_For_Device --
    --------------------------------
@@ -221,6 +239,34 @@ package body Gdk.Window is
    begin
       Internal (Self, Edge, Get_Object (Device), Button, Root_X, Root_Y, Timestamp);
    end Begin_Resize_Drag_For_Device;
+
+   -----------------------
+   -- Create_Gl_Context --
+   -----------------------
+
+   function Create_Gl_Context
+      (Self : Gdk.Gdk_Window) return Gdk.Glcontext.Gdk_Glcontext
+   is
+      function Internal (Self : Gdk.Gdk_Window) return System.Address;
+      pragma Import (C, Internal, "gdk_window_create_gl_context");
+      Stub_Gdk_Glcontext : Gdk.Glcontext.Gdk_Glcontext_Record;
+   begin
+      return Gdk.Glcontext.Gdk_Glcontext (Get_User_Data (Internal (Self), Stub_Gdk_Glcontext));
+   end Create_Gl_Context;
+
+   --------------------
+   -- End_Draw_Frame --
+   --------------------
+
+   procedure End_Draw_Frame
+      (Self    : Gdk.Gdk_Window;
+       Context : not null access Gdk.Drawing_Context.Gdk_Drawing_Context_Record'Class)
+   is
+      procedure Internal (Self : Gdk.Gdk_Window; Context : System.Address);
+      pragma Import (C, Internal, "gdk_window_end_draw_frame");
+   begin
+      Internal (Self, Get_Object (Context));
+   end End_Draw_Frame;
 
    -------------------
    -- Ensure_Native --
@@ -454,6 +500,17 @@ package body Gdk.Window is
    begin
       return Internal (Self) /= 0;
    end Get_Modal_Hint;
+
+   ----------------------
+   -- Get_Pass_Through --
+   ----------------------
+
+   function Get_Pass_Through (Self : Gdk.Gdk_Window) return Boolean is
+      function Internal (Self : Gdk.Gdk_Window) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_window_get_pass_through");
+   begin
+      return Internal (Self) /= 0;
+   end Get_Pass_Through;
 
    -----------------
    -- Get_Pointer --
@@ -912,6 +969,22 @@ package body Gdk.Window is
    begin
       Internal (Self, Boolean'Pos (Override_Redirect));
    end Set_Override_Redirect;
+
+   ----------------------
+   -- Set_Pass_Through --
+   ----------------------
+
+   procedure Set_Pass_Through
+      (Self         : Gdk.Gdk_Window;
+       Pass_Through : Boolean)
+   is
+      procedure Internal
+         (Self         : Gdk.Gdk_Window;
+          Pass_Through : Glib.Gboolean);
+      pragma Import (C, Internal, "gdk_window_set_pass_through");
+   begin
+      Internal (Self, Boolean'Pos (Pass_Through));
+   end Set_Pass_Through;
 
    --------------
    -- Set_Role --

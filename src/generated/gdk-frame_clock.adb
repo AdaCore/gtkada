@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -117,14 +117,14 @@ package body Gdk.Frame_Clock is
    procedure Get_Refresh_Info
       (Self                     : not null access Gdk_Frame_Clock_Record;
        Base_Time                : Gint64;
-       Refresh_Interval_Return  : in out Gint64;
-       Presentation_Time_Return : in out Gint64)
+       Refresh_Interval_Return  : out Gint64;
+       Presentation_Time_Return : out Gint64)
    is
       procedure Internal
          (Self                     : System.Address;
           Base_Time                : Gint64;
-          Refresh_Interval_Return  : in out Gint64;
-          Presentation_Time_Return : in out Gint64);
+          Refresh_Interval_Return  : out Gint64;
+          Presentation_Time_Return : out Gint64);
       pragma Import (C, Internal, "gdk_frame_clock_get_refresh_info");
    begin
       Internal (Get_Object (Self), Base_Time, Refresh_Interval_Return, Presentation_Time_Return);

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,8 +22,8 @@
 ------------------------------------------------------------------------------
 
 --  <description>
---  GtkApplicationWindow is a Gtk.Window.Gtk_Window subclass that offers some
---  extra functionality for better integration with
+--  Gtk.Application_Window.Gtk_Application_Window is a Gtk.Window.Gtk_Window
+--  subclass that offers some extra functionality for better integration with
 --  Gtk.Application.Gtk_Application features. Notably, it can handle both the
 --  application menu as well as the menubar. See Gtk.Application.Set_App_Menu
 --  and Gtk.Application.Set_Menubar.
@@ -37,8 +37,9 @@
 --  be addressed with the prefixed name when referring to them from a
 --  Glib.Menu_Model.Gmenu_Model.
 --
---  Note that widgets that are placed inside a GtkApplicationWindow can also
---  activate these actions, if they implement the GtkActionable interface.
+--  Note that widgets that are placed inside a
+--  Gtk.Application_Window.Gtk_Application_Window can also activate these
+--  actions, if they implement the Gtk.Actionable.Gtk_Actionable interface.
 --
 --  As with Gtk.Application.Gtk_Application, the GDK lock will be acquired
 --  when processing actions arriving from other processes and should therefore
@@ -54,31 +55,29 @@
 --
 --  If the desktop environment does not display the menubar, then
 --  Gtk.Application_Window.Gtk_Application_Window will automatically show a
---  Gtk.Menu_Bar.Gtk_Menu_Bar for it. (see the Gtk.Application.Gtk_Application
---  docs for some screenshots of how this looks on different platforms). This
---  behaviour can be overridden with the
+--  Gtk.Menu_Bar.Gtk_Menu_Bar for it. This behaviour can be overridden with the
 --  Gtk.Application_Window.Gtk_Application_Window:show-menubar property. If the
 --  desktop environment does not display the application menu, then it will
---  automatically be included in the menubar. It can also be shown as part of
---  client-side window decorations, e.g. by using
---  Gtk.Header_Bar.Set_Show_Close_Button.
+--  automatically be included in the menubar or in the windows client-side
+--  decorations.
 --
 --  ## A GtkApplicationWindow with a menubar
 --
---  |[<!-- language="C" --> app = gtk_application_new ();
+--  |[<!-- language="C" --> GtkApplication *app = gtk_application_new
+--  ("org.gtk.test", 0);
 --
---  builder = gtk_builder_new (); gtk_builder_add_from_string (builder,
---  "<interface>" " <menu id='menubar'>" " <submenu label='_Edit'>" " <item
---  label='_Copy' action='win.copy'/>" " <item label='_Paste'
---  action='win.paste'/>" " </submenu>" " </menu>" "</interface>");
+--  GtkBuilder *builder = gtk_builder_new_from_string ( "<interface>" " <menu
+--  id='menubar'>" " <submenu label='_Edit'>" " <item label='_Copy'
+--  action='win.copy'/>" " <item label='_Paste' action='win.paste'/>" "
+--  </submenu>" " </menu>" "</interface>", -1);
 --
---  menubar = G_MENU_MODEL (gtk_builder_get_object (builder, "menubar"));
---  gtk_application_set_menubar (G_APPLICATION (app), menubar); g_object_unref
---  (builder);
+--  GMenuModel *menubar = G_MENU_MODEL (gtk_builder_get_object (builder,
+--  "menubar")); gtk_application_set_menubar (GTK_APPLICATION (app), menubar);
+--  g_object_unref (builder);
 --
---  ...
+--  // ...
 --
---  window = gtk_application_window_new (app); ]|
+--  GtkWidget *window = gtk_application_window_new (app); ]|
 --
 --  ## Handling fallback yourself
 --
@@ -89,29 +88,52 @@
 --  Glib.Menu_Model.Gmenu_Model consists of a toplevel `<menu>` element, which
 --  contains one or more `<item>` elements. Each `<item>` element contains
 --  `<attribute>` and `<link>` elements with a mandatory name attribute.
---  `<link>` elements have the same content model as `<menu>`.
+--  `<link>` elements have the same content model as `<menu>`. Instead of
+--  `<link name="submenu>` or `<link name="section">`, you can use `<submenu>`
+--  or `<section>` elements.
 --
 --  Attribute values can be translated using gettext, like other
 --  Gtk.Builder.Gtk_Builder content. `<attribute>` elements can be marked for
 --  translation with a `translatable="yes"` attribute. It is also possible to
---  specify message context and translator comments,using the context and
+--  specify message context and translator comments, using the context and
 --  comments attributes. To make use of this, the Gtk.Builder.Gtk_Builder must
 --  have been given the gettext domain to use.
+--
+--  The following attributes are used when constructing menu items: - "label":
+--  a user-visible string to display - "action": the prefixed name of the
+--  action to trigger - "target": the parameter to use when activating the
+--  action - "icon" and "verb-icon": names of icons that may be displayed -
+--  "submenu-action": name of an action that may be used to determine if a
+--  submenu can be opened - "hidden-when": a string used to determine when the
+--  item will be hidden. Possible values include "action-disabled",
+--  "action-missing", "macos-menubar".
+--
+--  The following attributes are used when constructing sections: - "label": a
+--  user-visible string to use as section heading - "display-hint": a string
+--  used to determine special formatting for the section. Possible values
+--  include "horizontal-buttons". - "text-direction": a string used to
+--  determine the Gtk.Enums.Gtk_Text_Direction to use when "display-hint" is
+--  set to "horizontal-buttons". Possible values include "rtl", "ltr", and
+--  "none".
+--
+--  The following attributes are used when constructing submenus: - "label": a
+--  user-visible string to display - "icon": icon name to display
 --
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with GNAT.Strings;      use GNAT.Strings;
-with Glib;              use Glib;
-with Glib.Action;       use Glib.Action;
-with Glib.Action_Group; use Glib.Action_Group;
-with Glib.Action_Map;   use Glib.Action_Map;
-with Glib.Properties;   use Glib.Properties;
-with Glib.Types;        use Glib.Types;
-with Glib.Variant;      use Glib.Variant;
-with Gtk.Application;   use Gtk.Application;
-with Gtk.Buildable;     use Gtk.Buildable;
-with Gtk.Window;        use Gtk.Window;
+with GNAT.Strings;         use GNAT.Strings;
+with Glib;                 use Glib;
+with Glib.Action;          use Glib.Action;
+with Glib.Action_Group;    use Glib.Action_Group;
+with Glib.Action_Map;      use Glib.Action_Map;
+with Glib.Properties;      use Glib.Properties;
+with Glib.Types;           use Glib.Types;
+with Glib.Variant;         use Glib.Variant;
+with Gtk.Application;      use Gtk.Application;
+with Gtk.Buildable;        use Gtk.Buildable;
+with Gtk.Shortcuts_Window; use Gtk.Shortcuts_Window;
+with Gtk.Window;           use Gtk.Window;
 
 package Gtk.Application_Window is
 
@@ -147,6 +169,22 @@ package Gtk.Application_Window is
    -------------
    -- Methods --
    -------------
+
+   function Get_Help_Overlay
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Shortcuts_Window.Gtk_Shortcuts_Window;
+   --  Gets the Gtk.Shortcuts_Window.Gtk_Shortcuts_Window that has been set up
+   --  with a prior call to Gtk.Application_Window.Set_Help_Overlay.
+   --  Since: gtk+ 3.20
+
+   procedure Set_Help_Overlay
+      (Self         : not null access Gtk_Application_Window_Record;
+       Help_Overlay : access Gtk.Shortcuts_Window.Gtk_Shortcuts_Window_Record'Class);
+   --  Associates a shortcuts window with the application window, and sets up
+   --  an action with the name win.show-help-overlay to present it.
+   --  Window takes resposibility for destroying Help_Overlay.
+   --  Since: gtk+ 3.20
+   --  "help_overlay": a Gtk.Shortcuts_Window.Gtk_Shortcuts_Window
 
    function Get_Id
       (Self : not null access Gtk_Application_Window_Record) return Guint;

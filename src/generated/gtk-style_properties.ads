@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -35,6 +35,10 @@
 --  styling information from widget implementations and theming engine
 --  implementations should use the APIs provided by
 --  Gtk.Theming_Engine.Gtk_Theming_Engine instead.
+--
+--  Gtk.Style_Properties.Gtk_Style_Properties has been deprecated in GTK 3.16.
+--  The CSS machinery does not use it anymore and all users of this object have
+--  been deprecated.
 --
 --  </description>
 
@@ -75,7 +79,9 @@ package Gtk.Style_Properties is
    -------------
 
    procedure Clear (Self : not null access Gtk_Style_Properties_Record);
+   pragma Obsolescent (Clear);
    --  Clears all style information from Props.
+   --  Deprecated since 3.16, 1
 
    procedure Get_Property
       (Self     : not null access Gtk_Style_Properties_Record;
@@ -83,9 +89,11 @@ package Gtk.Style_Properties is
        State    : Gtk.Enums.Gtk_State_Flags;
        Value    : out Glib.Values.GValue;
        Exists   : out Boolean);
+   pragma Obsolescent (Get_Property);
    --  Gets a style property from Props for the given state. When done with
    --  Value, g_value_unset needs to be called to free any allocated memory.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.16, 1
    --  "property": style property name
    --  "state": state to retrieve the property value for
    --  "value": return location for the style property value.
@@ -95,8 +103,10 @@ package Gtk.Style_Properties is
        Property : UTF8_String;
        State    : Gtk.Enums.Gtk_State_Flags;
        Value    : in out Glib.Values.GValue);
+   pragma Obsolescent (Set_Property);
    --  Sets a styling property in Props.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.16, 1
    --  "property": styling property to set
    --  "state": state to set the value for
    --  "value": new value for the property
@@ -126,10 +136,12 @@ package Gtk.Style_Properties is
       (Self           : not null access Gtk_Style_Properties_Record;
        Props_To_Merge : not null access Gtk_Style_Properties_Record'Class;
        Replace        : Boolean);
+   pragma Obsolescent (Merge);
    --  Merges into Props all the style information contained in
    --  Props_To_Merge. If Replace is True, the values will be overwritten, if
    --  it is False, the older values will prevail.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.16, 1
    --  "props_to_merge": a second Gtk.Style_Properties.Gtk_Style_Properties
    --  "replace": whether to replace values or not
 
@@ -137,8 +149,10 @@ package Gtk.Style_Properties is
       (Self     : not null access Gtk_Style_Properties_Record;
        Property : UTF8_String;
        State    : Gtk.Enums.Gtk_State_Flags);
+   pragma Obsolescent (Unset_Property);
    --  Unsets a style property in Props.
    --  Since: gtk+ 3.0
+   --  Deprecated since 3.16, 1
    --  "property": property to unset
    --  "state": state to unset
 
