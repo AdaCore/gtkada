@@ -107,7 +107,7 @@ package body Gtk.List_Store is
          Columns    : System.Address;
          Values     : System.Address;
          N_Values   : Gint);
-      pragma Import (C, Internal, "gtk_tree_store_set_valuesv");
+      pragma Import (C, Internal, "gtk_list_store_set_valuesv");
    begin
       if Columns'Length = Values'Length then
          Internal (Get_Object (Self), Iter,
