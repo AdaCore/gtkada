@@ -1281,48 +1281,38 @@ package Gtk.GEntry is
    --    --  "type": the granularity of the deletion, as a Gtk.Enums.Gtk_Delete_Type
    --    --  "count": the number of Type units to delete
 
-   type Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Void is not null access procedure
+   type Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Void is not null access procedure
      (Self     : access Gtk_Entry_Record'Class;
-      Icon_Pos : Gtk_Entry_Icon_Position;
-      Event    : Gdk.Event.Gdk_Event);
+      Icon_Pos : Gtk_Entry_Icon_Position);
 
-   type Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Void is not null access procedure
+   type Cb_GObject_Gtk_Entry_Icon_Position_Void is not null access procedure
      (Self     : access Glib.Object.GObject_Record'Class;
-      Icon_Pos : Gtk_Entry_Icon_Position;
-      Event    : Gdk.Event.Gdk_Event);
+      Icon_Pos : Gtk_Entry_Icon_Position);
 
    Signal_Icon_Press : constant Glib.Signal_Name := "icon-press";
    procedure On_Icon_Press
       (Self  : not null access Gtk_Entry_Record;
-       Call  : Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Void;
+       Call  : Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Void;
        After : Boolean := False);
    procedure On_Icon_Press
       (Self  : not null access Gtk_Entry_Record;
-       Call  : Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Void;
+       Call  : Cb_GObject_Gtk_Entry_Icon_Position_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::icon-press signal is emitted when an activatable icon is clicked.
-   -- 
-   --  Callback parameters:
-   --    --  "icon_pos": The position of the clicked icon
-   --    --  "event": the button press event
 
    Signal_Icon_Release : constant Glib.Signal_Name := "icon-release";
    procedure On_Icon_Release
       (Self  : not null access Gtk_Entry_Record;
-       Call  : Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Gdk_Event_Void;
+       Call  : Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Void;
        After : Boolean := False);
    procedure On_Icon_Release
       (Self  : not null access Gtk_Entry_Record;
-       Call  : Cb_GObject_Gtk_Entry_Icon_Position_Gdk_Event_Void;
+       Call  : Cb_GObject_Gtk_Entry_Icon_Position_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::icon-release signal is emitted on the button release from a mouse
    --  click over an activatable icon.
-   -- 
-   --  Callback parameters:
-   --    --  "icon_pos": The position of the clicked icon
-   --    --  "event": the button release event
 
    type Cb_Gtk_Entry_UTF8_String_Void is not null access procedure
      (Self   : access Gtk_Entry_Record'Class;
