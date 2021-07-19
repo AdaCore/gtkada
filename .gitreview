@@ -2,4 +2,4 @@
 host = review.eu.adacore.com
 port = 29418
 project = gtkada
-defaultbranch = 21.2
+defaultbranch = 21-sustained
