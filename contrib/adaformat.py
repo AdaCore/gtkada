@@ -837,7 +837,7 @@ class AdaNaming(object):
             return self.cname_to_adaname[cname]
         except KeyError:
             if warning_if_not_found and cname.lower().startswith("gtk_"):
-                print "Name quoted in doc has no Ada binding: %s" % cname
+                print("Name quoted in doc has no Ada binding: %s" % cname)
             self.cname_to_adaname[cname] = cname  # Display warning once only
             return cname
 
@@ -1044,16 +1044,16 @@ def cleanup_doc(doc):
     # from the Gir file, and therefore no doc for the package. We can
     # now override it, unless it came from binding.xml
 
-    subp = re.compile("([\S_]+)\(\)")
+    subp = re.compile(r"([\S_]+)\(\)")
     doc = subp.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
 
-    types = re.compile("#([\w_]+)")
+    types = re.compile(r"#([\w_]+)")
     doc = types.sub(replace_type, doc)
 
-    params = re.compile("@([\w_]+)")
+    params = re.compile(r"@([\w_]+)")
     doc = params.sub(lambda x: x.group(1).title(), doc)
 
-    enums = re.compile("%([A-Z][\w_]+)")
+    enums = re.compile(r"%([A-Z][\w_]+)")
     doc = enums.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
 
     doc = doc.replace("<emphasis>", "*") \
@@ -1111,10 +1111,10 @@ def cleanup_doc(doc):
         .replace("<term>", "'") \
         .replace("</term>", "'")
 
-    doc = re.sub("<variablelist[^>]*>", "", doc)
-    doc = re.sub("<title>(.*?)</title>", r"\n\n== \1 ==\n\n", doc)
-    doc = re.sub("<refsect\d[^>]*>", "", doc)
-    doc = re.sub("</refsect\d>", "", doc)
+    doc = re.sub(r"<variablelist[^>]*>", "", doc)
+    doc = re.sub(r"<title>(.*?)</title>", r"\n\n== \1 ==\n\n", doc)
+    doc = re.sub(r"<refsect\d[^>]*>", "", doc)
+    doc = re.sub(r"</refsect\d>", "", doc)
 
     doc = doc.replace("<example>", "") \
              .replace("</example>", "") \
@@ -1206,12 +1206,12 @@ def indent_code(code, indent=3, addnewlines=True):
 
     if addnewlines:
         # Add newlines where needed, but preserve existing blank lines
-        body = re.sub(";(?!\s*\n)", ";\n", body)
-        body = re.sub("(?<!and )then(?!\s*\n)", "then\n", body)
-        body = re.sub("(?<!or )else(?!\s*\n)", "else\n", body)
-        body = re.sub("declare", "\ndeclare", body)
+        body = re.sub(r";(?!\s*\n)", ";\n", body)
+        body = re.sub(r"(?<!and )then(?!\s*\n)", "then\n", body)
+        body = re.sub(r"(?<!or )else(?!\s*\n)", "else\n", body)
+        body = re.sub(r"declare", "\ndeclare", body)
         body = re.sub(r"\bdo\b", "do\n", body)
-        body = re.sub("\n\s*\n+", "\n\n", body)
+        body = re.sub(r"\n\s*\n+", "\n\n", body)
 
     parent_count = 0
     result = ""
@@ -1259,7 +1259,7 @@ def indent_code(code, indent=3, addnewlines=True):
 
         if (line.endswith("then") and not line.endswith("and then")) \
            or line.endswith("loop") \
-           or(line.endswith("else") and not line.endswith("or else"))\
+           or (line.endswith("else") and not line.endswith("or else"))\
            or line.endswith("begin") \
            or line.endswith("{") \
            or line.endswith("record") \
@@ -1922,7 +1922,7 @@ class Section(object):
 
         iscode = False
 
-        if isinstance(obj, str) or isinstance(obj, unicode):
+        if isinstance(obj, bytes) or isinstance(obj, str):
             obj = Code(obj)
             iscode = True
         elif isinstance(obj, Package):
@@ -1960,7 +1960,7 @@ class Section(object):
                 if not in_spec:
                     continue
 
-                if isinstance(obj, Code) or isinstance(obj, unicode):
+                if isinstance(obj, Code) or isinstance(obj, str):
                     code.append([obj])
 
                 elif isinstance(obj, Subprogram) or isinstance(obj, Package):
@@ -2034,7 +2034,7 @@ class Section(object):
                     add_newline = (hasattr(obj, "add_newline") and
                                    obj.add_newline)
 
-                elif isinstance(obj, unicode):
+                elif isinstance(obj, str):
                     print("Not adding unicode to package: %s\n" % (
                         obj.encode('UTF-8'), ))
 
@@ -2160,7 +2160,7 @@ class Package(object):
             # sort so that all packages for which 'might_be_unused' is True
             # are last in the list
 
-            for w in sorted(withs.keys(),
+            for w in sorted(list(withs.keys()),
                             key=lambda w: 'zz%s' % w if withs[w][1] else w):
                 do_use, might_be_unused = withs[w]
 
@@ -2235,8 +2235,7 @@ class Package(object):
             result.append(indent + "   %s" % self.formal_params)
         result.append(indent + "package %s is\n" % self.name)
 
-        self.sections.sort(lambda x, y: cmp(self.section_order(x.name),
-                                            self.section_order(y.name)))
+        self.sections.sort(key=lambda x: (self.section_order(x.name)))
 
         for s in self.sections:
             sec = s.spec(pkg=self, indent=indent + "   ")
