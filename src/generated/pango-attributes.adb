@@ -164,22 +164,6 @@ package body Pango.Attributes is
       return Internal (Self, Attr2) /= 0;
    end Equal;
 
-   -----------
-   -- Equal --
-   -----------
-
-   function Equal
-      (Self       : Pango_Attr_List;
-       Other_List : Pango_Attr_List) return Boolean
-   is
-      function Internal
-         (Self       : System.Address;
-          Other_List : System.Address) return Glib.Gboolean;
-      pragma Import (C, Internal, "pango_attr_list_equal");
-   begin
-      return Internal (Get_Object (Self), Get_Object (Other_List)) /= 0;
-   end Equal;
-
    ------------
    -- Filter --
    ------------

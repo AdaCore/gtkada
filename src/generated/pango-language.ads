@@ -417,16 +417,6 @@ package Pango.Language is
    --  details.
    --  Since: gtk+ 1.16
 
-   function Get_Preferred return Pango_Language;
-   --  Returns the list of languages that the user prefers, as specified by
-   --  the PANGO_LANGUAGE or LANGUAGE environment variables, in order of
-   --  preference. Note that this list does not necessarily include the
-   --  language returned by Pango.Language.Get_Default.
-   --  When choosing language-specific resources, such as the sample text
-   --  returned by Pango.Language.Get_Sample_String, you should first try the
-   --  default language, followed by the languages returned by this function.
-   --  Since: gtk+ 1.48
-
 private
 
    Null_Pango_Language : constant Pango_Language := (Glib.C_Boxed with null record);

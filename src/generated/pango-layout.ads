@@ -247,13 +247,6 @@ package Pango.Layout is
    --  null)
    --  "weak_pos": location to store the weak cursor position (may be null)
 
-   function Get_Direction
-      (Layout : not null access Pango_Layout_Record;
-       Index  : Glib.Gint) return Pango.Enums.Direction;
-   --  Gets the text direction at the given character position in Layout.
-   --  Since: gtk+ 1.46
-   --  "index": the byte index of the char
-
    function Get_Ellipsize
       (Layout : not null access Pango_Layout_Record)
        return Pango_Ellipsize_Mode;

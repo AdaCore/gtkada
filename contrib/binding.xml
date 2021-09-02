@@ -2762,7 +2762,7 @@ __PRE__
        Width      : Glib.Gint;
        Minimum_Size, Natural_Size : out Glib.Gint);
    --  Call the default implementation
- 
+
    procedure Inherited_Size_Allocate
       (Klass      : Glib.Object.Ada_GObject_Class;
        Widget     : access Gtk_Widget_Record'Class;
@@ -2784,7 +2784,7 @@ __PRE__
       (Klass      : Glib.Object.Ada_GObject_Class;
        Widget     : access Gtk_Widget_Record'Class);
    --  Call the inherited realize.
- 
+
    ---------------------------
    -- Override Draw handler --
    ---------------------------
@@ -4828,6 +4828,9 @@ text. Since: 3.14
 
    <package id="PangoLanguage">
      <enum ctype="PangoScript"/>
+
+     <method id="pango_language_get_preferred" bind="False"/><!-- more recent than 1.44 -->
+
      <extra>
        <type ctype="Pango_Script_Array" ada="Pango_Script_Array">
          type Pango_Script_Array is array (Natural range &lt;&gt;) of Pango_Script;
@@ -4865,6 +4868,8 @@ text. Since: 3.14
    <package id="PangoFontMap">
      <doc>An object that represents the set of fonts available for a particular
      rendering system</doc>
+
+     <method id="pango_font_map_get_family" bind="False"/><!-- more recent than 1.44 -->
 
      <extra>
        <with_spec pkg="Pango.Font_Family"/>
@@ -4915,6 +4920,7 @@ text. Since: 3.14
          type Pango_Font_Family_Array is array (Natural range &lt;&gt;) of Pango_Font_Family;
        </type>
      </extra>
+     <method id="pango_font_family_get_face" bind="False"/><!-- more recent than 1.44 -->
      <method id="pango_font_family_list_faces" return="Pango_Font_Face_Array">
        <parameter name="faces" ada=""/>
        <parameter name="n_faces" ada=""/>
@@ -5000,6 +5006,8 @@ text. Since: 3.14
        <parameter name="index" ada="Byte_Index" direction="out"/>
        <parameter name="trailing" direction="out"/>
      </method>
+
+     <method id="pango_layout_get_direction" bind="False"/><!-- more recent than 1.44 -->
 
      <!-- Do not bind these, since they require a list of Pango_Layout_Line,
      which is incorrectly bound (error in From_Object) -->
@@ -6334,6 +6342,7 @@ direction, widget state, or icon size.
      <slist ada="Pango_Attribute_SList" ctype="PangoAttribute"/>
      <method id="pango_attribute_init" bind="False"/> <!--  low-level -->
      <method id="pango_attribute_get_type" ada="Get_Type_Attribute"/>
+
      <function id="pango_attr_underline_new"/>
      <function id="pango_attr_background_new"/>
      <function id="pango_attr_foreground_new"/>
@@ -6351,6 +6360,7 @@ direction, widget state, or icon size.
      <method id="pango_attr_list_get_iterator" bind="False"/>  <!-- Not needed ? -->
      <method id="pango_attr_list_get_type" ada="Get_Type_Attr_List"/>
      <method id="pango_attr_list_get_attributes" bind="False"/>
+     <method id="pango_attr_list_equal" bind="False"/><!-- more recent than 1.44 -->
    </package>
 
    <package id="PangoContext">
@@ -6496,7 +6506,7 @@ direction, widget state, or icon size.
    end Get_Style_As_String;
 
    function Get_Weight_As_String
-      (Self : Pango_Font_Description) return String 
+      (Self : Pango_Font_Description) return String
    is
       Weight : constant Pango.Enums.Weight := Get_Weight (Self);
    begin
@@ -8065,8 +8075,8 @@ package body Generic_Set is
             Idx := 1;
 
             for J in 1 .. Argc - 1 loop
-               if Filter 
-                  (Gtkada.Types.Value (Argv (Interfaces.C.size_t (J)))) 
+               if Filter
+                  (Gtkada.Types.Value (Argv (Interfaces.C.size_t (J))))
                then
                   Args (Interfaces.C.size_t (Idx)) :=
                     Argv (Interfaces.C.size_t (J));
