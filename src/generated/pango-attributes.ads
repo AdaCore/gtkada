@@ -108,15 +108,6 @@ package Pango.Attributes is
    --  to.
    --  "attr2": another Pango.Attributes.Pango_Attribute
 
-   function Equal
-      (Self       : Pango_Attr_List;
-       Other_List : Pango_Attr_List) return Boolean;
-   --  Checks whether List and Other_List contain the same attributes and
-   --  whether those attributes apply to the same ranges. Beware that this will
-   --  return wrong values if any list contains duplicates.
-   --  Since: gtk+ 1.46
-   --  "other_list": the other Pango.Attributes.Pango_Attr_List
-
    procedure Change (Self : Pango_Attr_List; Attr : Pango_Attribute);
    --  Insert the given attribute into the Pango.Attributes.Pango_Attr_List.
    --  It will replace any attributes of the same type on that segment and be

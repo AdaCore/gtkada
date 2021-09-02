@@ -88,13 +88,6 @@ package Pango.Font_Map is
    --  those instead.
    --  Since: gtk+ 1.22
 
-   function Get_Family
-      (Self : not null access Pango_Font_Map_Record;
-       Name : UTF8_String) return Pango.Font_Family.Pango_Font_Family;
-   --  Gets a font family by name.
-   --  Since: gtk+ 1.46
-   --  "name": a family name
-
    function Get_Serial
       (Self : not null access Pango_Font_Map_Record) return Guint;
    --  Returns the current serial number of Fontmap. The serial number is

@@ -51,14 +51,6 @@ package Pango.Font_Family is
    -- Methods --
    -------------
 
-   function Get_Face
-      (Self : not null access Pango_Font_Family_Record;
-       Name : UTF8_String := "") return Pango.Font_Face.Pango_Font_Face;
-   --  Gets the Pango.Font_Face.Pango_Font_Face of Family with the given name.
-   --  Since: gtk+ 1.46
-   --  "name": the name of a face. If the name is null, the family's default
-   --  face (fontconfig calls it "Regular") will be returned.
-
    function Get_Name
       (Self : not null access Pango_Font_Family_Record) return UTF8_String;
    --  Gets the name of the family. The name is unique among all fonts for the

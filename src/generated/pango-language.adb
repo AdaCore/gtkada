@@ -166,15 +166,4 @@ package body Pango.Language is
       return From_Object (Internal);
    end Get_Default;
 
-   -------------------
-   -- Get_Preferred --
-   -------------------
-
-   function Get_Preferred return Pango_Language is
-      function Internal return System.Address;
-      pragma Import (C, Internal, "pango_language_get_preferred");
-   begin
-      return From_Object (Internal);
-   end Get_Preferred;
-
 end Pango.Language;

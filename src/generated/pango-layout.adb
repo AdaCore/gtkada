@@ -315,22 +315,6 @@ package body Pango.Layout is
    end Get_Cursor_Pos;
 
    -------------------
-   -- Get_Direction --
-   -------------------
-
-   function Get_Direction
-      (Layout : not null access Pango_Layout_Record;
-       Index  : Glib.Gint) return Pango.Enums.Direction
-   is
-      function Internal
-         (Layout : System.Address;
-          Index  : Glib.Gint) return Pango.Enums.Direction;
-      pragma Import (C, Internal, "pango_layout_get_direction");
-   begin
-      return Internal (Get_Object (Layout), Index);
-   end Get_Direction;
-
-   -------------------
    -- Get_Ellipsize --
    -------------------
 

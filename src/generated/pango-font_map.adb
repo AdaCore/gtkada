@@ -24,9 +24,6 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
-pragma Warnings(Off);  --  might be unused
-with Gtkada.Types;               use Gtkada.Types;
-pragma Warnings(On);
 
 package body Pango.Font_Map is
 
@@ -59,27 +56,6 @@ package body Pango.Font_Map is
    begin
       return Pango.Context.Pango_Context (Get_User_Data (Internal (Get_Object (Self)), Stub_Pango_Context));
    end Create_Context;
-
-   ----------------
-   -- Get_Family --
-   ----------------
-
-   function Get_Family
-      (Self : not null access Pango_Font_Map_Record;
-       Name : UTF8_String) return Pango.Font_Family.Pango_Font_Family
-   is
-      function Internal
-         (Self : System.Address;
-          Name : Gtkada.Types.Chars_Ptr) return System.Address;
-      pragma Import (C, Internal, "pango_font_map_get_family");
-      Tmp_Name               : Gtkada.Types.Chars_Ptr := New_String (Name);
-      Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
-      Tmp_Return             : System.Address;
-   begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Name);
-      Free (Tmp_Name);
-      return Pango.Font_Family.Pango_Font_Family (Get_User_Data (Tmp_Return, Stub_Pango_Font_Family));
-   end Get_Family;
 
    ----------------
    -- Get_Serial --
