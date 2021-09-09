@@ -5725,7 +5725,33 @@ package body Gtkada.MDI is
         (Gtk_Radio_Menu_Item_Record with Child => MDI_Child (Child));
       Gtk.Radio_Menu_Item.Initialize (It, Group, "");
       Group := It.Get_Group;
-      Menu.Add (It);
+
+      --  Insert the new child's menu item in alphabetical order
+
+      declare
+         Children  : Widget_List.Glist := Menu.Get_Children;
+         Idx       : Gint := 0;
+         Widget    : Gtk_Widget;
+         Menu_Item : Menu_Item_For_Child;
+      begin
+         while Children /= Null_List loop
+            Widget := Get_Data (Children);
+
+            if Widget.all in Menu_Item_For_Child_Record'Class then
+               Menu_Item := Menu_Item_For_Child (Widget);
+
+               exit when Short_Title_Less_Than
+                 (MDI_Child (Child), Menu_Item.Child);
+            end if;
+
+            Idx := Idx + 1;
+            Children := Next (Children);
+         end loop;
+
+         Free (Children);
+
+         Menu.Insert (It, Idx);
+      end;
 
       Internal_Update_Menu_Content (Child, It);
 
@@ -5829,8 +5855,9 @@ package body Gtkada.MDI is
       end loop;
       Free (Children);
 
-      Internal_Add_Child_Menu (Menu, Child, G);
-
+      if Find_Child_Menu (Menu, Child) = null then
+         Internal_Add_Child_Menu (Menu, Child, G);
+      end if;
    end Add_Child_Menu;
 
    -----------------------
@@ -6438,6 +6465,7 @@ package body Gtkada.MDI is
          Menu := new MDI_Menu_Record;
          Menu.MDI := MDI_Window (MDI);
          Gtk.Menu.Initialize (Menu);
+         Menu.Set_Name ("gtkada-mdi-children-menu");
 
          Item := new MDI_Menu_Item_Record'
             (Gtk_Menu_Item_Record with
@@ -6494,7 +6522,7 @@ package body Gtkada.MDI is
 
          Recompute_Menu (Menu);
          MDI.On_Child_Removed (Remove_Child_Menu'Access, Slot => Menu);
-         MDI.On_Child_Added (Add_Child_Menu'Access, Slot => Menu);
+         MDI.On_Child_Title_Changed (Add_Child_Menu'Access, Slot => Menu);
          MDI.On_Child_Icon_Changed (Update_Child_Menu'Access, Slot => Menu);
          MDI.On_Child_Title_Changed (Update_Child_Menu'Access, Slot => Menu);
          Widget_Callback.Object_Connect
