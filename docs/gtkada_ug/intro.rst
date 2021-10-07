@@ -54,7 +54,7 @@ This toolkit was tested on the following systems:
 with the latest version of the `GNAT` compiler, developed and supported by
 Ada Core Technologies (see `http://www.adacore.com <http://www.adacore.com>`_).
 
-This version of GtkAda is known to be compatible with `gtk+` **3.14.x**
+This version of GtkAda is known to be compatible with `gtk+` **3.24.x**
 This release may or may not be compatible with older versions of
 gtk+.
 
@@ -73,4 +73,3 @@ If you are interested in getting support for GtkAda--including priority bug
 fixes, early releases, help in using the toolkit, help in designing your
 interface, and on site consulting--please contact AdaCore
 (`mailto:sales@adacore.com <mailto:sales@adacore.com>`_).
-
