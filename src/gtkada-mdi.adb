@@ -3969,7 +3969,7 @@ package body Gtkada.MDI is
          Children := Child.MDI.Items;
          It := MDI_Child (Get_Data (Children));
 
-         if It /= MDI_Child (Child)
+         if It /= null and then It /= MDI_Child (Child)
            and then It.State = Floating
               and then It.Initial.Get_Realized
          then
