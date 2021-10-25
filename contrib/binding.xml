@@ -7928,9 +7928,64 @@ package body Generic_Set is
      <method id="g_application_add_main_option_entries" bind="False"/>  <!--  requires GOptionEntry -->
      <method id="g_application_add_main_option" bind="False" /> <!--  circular dependency -->
      <method id="g_application_add_option_group" bind="False"/> <!--  circular dependency -->
+     <method id="g_application_register" bind="False"/> <!--  bound manually -->
      <method id="::handle-local-options" bind="False"/>  <!--  require GVariant -->
-   </package>
+     <!-- bound manually below -->
+      <extra>
+        <with_spec pkg="Glib.Cancellable"/>
+        <spec>
+   function Register
+      (Self        : not null access Gapplication_Record;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       return Boolean;
+   --  Attempts registration of the application.
+   --  This is the point at which the application discovers if it is the
+   --  primary instance or merely acting as a remote for an already-existing
+   --  primary instance. This is implemented by attempting to acquire the
+   --  application identifier as a unique bus name on the session bus using
+   --  GDBus.
+   --  If there is no application ID or if
+   --  Glib.Application.G_Application_Non_Unique was given, then this process
+   --  will always become the primary instance.
+   --  Due to the internal architecture of GDBus, method calls can be
+   --  dispatched at any time (even if a main loop is not running). For this
+   --  reason, you must ensure that any object paths that you wish to register
+   --  are registered before calling this function.
+   --  If the application has already been registered then True is returned
+   --  with no work performed.
+   --  The Glib.Application.Gapplication::startup signal is emitted if
+   --  registration succeeds and Application is the primary instance (including
+   --  the non-unique case).
+   --  In the event of an error (such as Cancellable being cancelled, or a
+   --  failure to connect to the session bus), False is returned and Error is
+   --  set appropriately.
+   --  Note: the return value of this function is not an indicator that this
+   --  instance is or is not the primary instance of the application. See
+   --  Glib.Application.Get_Is_Remote for that.
+   --  Since: gtk+ 2.28
+   --  "cancellable": a Glib.Cancellable.Gcancellable, or null
+        </spec>
+        <body>
+   --------------
+   -- Register --
+   --------------
 
+   function Register
+      (Self        : not null access Gapplication_Record;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       return Boolean
+   is
+      function Internal
+         (Self        : System.Address;
+          Cancellable : System.Address;
+          Error       : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_application_register");
+   begin
+      return Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address) /= 0;
+   end Register;
+        </body>
+      </extra>
+   </package>
    <package id="GNotification" ada="Glib.Notification">
       <method id="g_notification_set_body">
          <parameter name="body" ada="the_body"/>
