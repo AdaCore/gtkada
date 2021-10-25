@@ -75,9 +75,9 @@
 --  (even if a main loop is not running). For this reason, you must ensure that
 --  any object paths that you wish to register are registered before
 --  Glib.Application.Gapplication attempts to acquire the bus name of your
---  application (which happens in Glib.Application.Register). Unfortunately,
---  this means that you cannot use Glib.Application.Get_Is_Remote to decide if
---  you want to register object paths.
+--  application (which happens in g_application_register). Unfortunately, this
+--  means that you cannot use Glib.Application.Get_Is_Remote to decide if you
+--  want to register object paths.
 --
 --  GApplication also implements the Glib.Action_Group.Gaction_Group and
 --  Glib.Action_Map.Gaction_Map interfaces and lets you easily export actions
@@ -334,7 +334,7 @@ package Glib.Application is
    function Get_Is_Registered
       (Self : not null access Gapplication_Record) return Boolean;
    --  Checks if Application is registered.
-   --  An application is registered if Glib.Application.Register has been
+   --  An application is registered if g_application_register has been
    --  successfully called.
    --  Since: gtk+ 2.28
 
@@ -346,7 +346,7 @@ package Glib.Application is
    --  actions on Application will result in the actions being performed by the
    --  primary instance.
    --  The value of this property cannot be accessed before
-   --  Glib.Application.Register has been called. See
+   --  g_application_register has been called. See
    --  Glib.Application.Get_Is_Registered.
    --  Since: gtk+ 2.28
 
@@ -425,37 +425,6 @@ package Glib.Application is
    --  The result of calling Glib.Application.Run again after it returns is
    --  unspecified.
    --  Since: gtk+ 2.32
-
-   function Register
-      (Self        : not null access Gapplication_Record;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
-   --  Attempts registration of the application.
-   --  This is the point at which the application discovers if it is the
-   --  primary instance or merely acting as a remote for an already-existing
-   --  primary instance. This is implemented by attempting to acquire the
-   --  application identifier as a unique bus name on the session bus using
-   --  GDBus.
-   --  If there is no application ID or if
-   --  Glib.Application.G_Application_Non_Unique was given, then this process
-   --  will always become the primary instance.
-   --  Due to the internal architecture of GDBus, method calls can be
-   --  dispatched at any time (even if a main loop is not running). For this
-   --  reason, you must ensure that any object paths that you wish to register
-   --  are registered before calling this function.
-   --  If the application has already been registered then True is returned
-   --  with no work performed.
-   --  The Glib.Application.Gapplication::startup signal is emitted if
-   --  registration succeeds and Application is the primary instance (including
-   --  the non-unique case).
-   --  In the event of an error (such as Cancellable being cancelled, or a
-   --  failure to connect to the session bus), False is returned and Error is
-   --  set appropriately.
-   --  Note: the return value of this function is not an indicator that this
-   --  instance is or is not the primary instance of the application. See
-   --  Glib.Application.Get_Is_Remote for that.
-   --  Since: gtk+ 2.28
-   --  "cancellable": a Glib.Cancellable.Gcancellable, or null
 
    procedure Release (Self : not null access Gapplication_Record);
    --  Decrease the use count of Application.
@@ -749,6 +718,37 @@ package Glib.Application is
    ----------------------
    -- GtkAda additions --
    ----------------------
+
+   function Register
+     (Self        : not null access Gapplication_Record;
+      Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+   return Boolean;
+   --  Attempts registration of the application.
+   --  This is the point at which the application discovers if it is the
+   --  primary instance or merely acting as a remote for an already-existing
+   --  primary instance. This is implemented by attempting to acquire the
+   --  application identifier as a unique bus name on the session bus using
+   --  GDBus.
+   --  If there is no application ID or if
+   --  Glib.Application.G_Application_Non_Unique was given, then this process
+   --  will always become the primary instance.
+   --  Due to the internal architecture of GDBus, method calls can be
+   --  dispatched at any time (even if a main loop is not running). For this
+   --  reason, you must ensure that any object paths that you wish to register
+   --  are registered before calling this function.
+   --  If the application has already been registered then True is returned
+   --  with no work performed.
+   --  The Glib.Application.Gapplication::startup signal is emitted if
+   --  registration succeeds and Application is the primary instance (including
+   --  the non-unique case).
+   --  In the event of an error (such as Cancellable being cancelled, or a
+   --  failure to connect to the session bus), False is returned and Error is
+   --  set appropriately.
+   --  Note: the return value of this function is not an indicator that this
+   --  instance is or is not the primary instance of the application. See
+   --  Glib.Application.Get_Is_Remote for that.
+   --  Since: gtk+ 2.28
+   --  "cancellable": a Glib.Cancellable.Gcancellable, or null
 
    function Run
      (Self : not null access Gapplication_Record) return Gint;
@@ -1107,7 +1107,7 @@ package Glib.Application is
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::startup signal is emitted on the primary instance immediately
-   --  after registration. See Glib.Application.Register.
+   --  after registration. See g_application_register.
 
    ----------------
    -- Interfaces --

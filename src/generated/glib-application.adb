@@ -33,6 +33,24 @@ pragma Warnings(On);
 
 package body Glib.Application is
 
+   --------------
+   -- Register --
+   --------------
+
+   function Register
+     (Self        : not null access Gapplication_Record;
+      Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+   return Boolean
+   is
+      function Internal
+        (Self        : System.Address;
+         Cancellable : System.Address;
+         Error       : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_application_register");
+   begin
+      return Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address) /= 0;
+   end Register;
+
    gnat_argc : Interfaces.C.int;
    pragma Import (C, gnat_argc);
 
@@ -393,23 +411,6 @@ package body Glib.Application is
    begin
       Internal (Get_Object (Self));
    end Quit;
-
-   --------------
-   -- Register --
-   --------------
-
-   function Register
-      (Self        : not null access Gapplication_Record;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
-   is
-      function Internal
-         (Self        : System.Address;
-          Cancellable : System.Address) return Glib.Gboolean;
-      pragma Import (C, Internal, "g_application_register");
-   begin
-      return Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Cancellable))) /= 0;
-   end Register;
 
    -------------
    -- Release --
