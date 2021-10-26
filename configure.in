@@ -26,7 +26,7 @@ ALL_LINGUAS="en"
 AM_GNU_GETTEXT([external])
 
 # checking for gtk
-AM_PATH_GTK(3.14.0)
+AM_PATH_GTK(3.24.0)
 
 # try to find OpenGL if present
 AM_CHECK_OPENGL
