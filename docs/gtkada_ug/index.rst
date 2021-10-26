@@ -20,6 +20,7 @@ GtkAda User's Guide
    debugging
    transition
    reporting_bugs
+   system_dependencies
    gtk_parasite
    bibliography
    license
