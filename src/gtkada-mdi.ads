@@ -1366,7 +1366,11 @@ private
       Tab_Icon      : Gtk.Image.Gtk_Image;
       --  label used when child is in a notebook, null if not in a notebook
 
-      Icon_Name : GNAT.Strings.String_Access;
+      Icon_Name     : GNAT.Strings.String_Access;
+
+      Notebook_Before_Floating : Gtk.Notebook.Gtk_Notebook := null;
+      --  The original notebook of a floating child. Used to put the child
+      --  back in the same notebook when unfloating it.
    end record;
 
    type Child_Iterator (Group_By_Notebook : Boolean := False) is record

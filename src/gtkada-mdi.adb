@@ -386,6 +386,11 @@ package body Gtkada.MDI is
       Event    : Gdk.Event.Gdk_Event) return Boolean;
    --  Manage the contextual menu on tabs
 
+   procedure On_Notebook_Before_Floating_Destroy
+     (Slot : access Glib.Object.GObject_Record'Class);
+   --  Called when a notebook stored before floating a child is destroyed.
+   --  Used to avoid dangling pointers.
+
    function Hover_Tabs
      (N : MDI_Notebook; X_Root, Y_Root : Gdouble) return Boolean;
    --  Returns True if the given root coordinates are on top of the tabs area
@@ -4079,6 +4084,16 @@ package body Gtkada.MDI is
 
          Ref (Child);
 
+         --  Store the original notebook of the child we want to float: we want
+         --  to put it back in the same notebook if the user unfloats it.
+
+         Child.Notebook_Before_Floating := Gtk_Notebook (Get_Notebook (Child));
+
+         if Child.Notebook_Before_Floating /= null then
+            Child.Notebook_Before_Floating.On_Destroy
+              (On_Notebook_Before_Floating_Destroy'Access, Slot => Child);
+         end if;
+
          --  This could be called before the child even has a parent if
          --  All_Floating_Mode is set.
 
@@ -4195,7 +4210,10 @@ package body Gtkada.MDI is
          Set_State (Child, Normal);
          Destroy (Win);
 
-         Put_In_Notebook (Child.MDI, Child);
+         Put_In_Notebook
+           (MDI      => Child.MDI,
+            Child    => Child,
+            Notebook => MDI_Notebook (Child.Notebook_Before_Floating));
 
          Update_Float_Menu (Child);
 
@@ -4439,6 +4457,18 @@ package body Gtkada.MDI is
       end if;
       return False;
    end On_Notebook_Button_Press;
+
+   -----------------------------------------
+   -- On_Notebook_Before_Floating_Destroy --
+   -----------------------------------------
+
+   procedure On_Notebook_Before_Floating_Destroy
+     (Slot : access Glib.Object.GObject_Record'Class)
+   is
+      Child : constant MDI_Child := MDI_Child (Slot);
+   begin
+      Child.Notebook_Before_Floating := null;
+   end On_Notebook_Before_Floating_Destroy;
 
    ----------------------
    -- Menu_Switch_Page --
