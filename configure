@@ -2043,7 +2043,6 @@ test -n "$target_alias" &&
     NONENONEs,x,x, &&
   program_prefix=${target_alias}-
 
-
 TARGET=""
 if test x$host != x$target ; then
    TARGET=${target}
