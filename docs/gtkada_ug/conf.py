@@ -51,7 +51,7 @@ copyright = get_copyright()
 
 
 def get_version():
-    for line in open("../../configure.in").readlines():
+    for line in open("../../configure.ac").readlines():
         if line.startswith("AC_INIT"):
             return line.split(",")[1]
     raise Exception("Cannot find version number")
