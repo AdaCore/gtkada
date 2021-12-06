@@ -1,5 +1,5 @@
 AC_INIT(gtkada,18.0w,report@adacore.com,gtkada)
-AC_CANONICAL_SYSTEM
+AC_CANONICAL_TARGET
 
 TARGET=""
 if test x$host != x$target ; then
