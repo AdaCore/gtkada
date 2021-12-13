@@ -2132,8 +2132,13 @@ class Package(object):
         if type(pkg) == str:
             pkg = [pkg]
         for p in pkg:
-            if p.lower() == self.name.lower():
-                continue   # No dependence on self
+            def sublist(sub, parent):
+                """return a non-empty list if sub is not a sublist of parent"""
+                return [elem for elem in sub if elem not in parent]
+            l_name = self.name.lower().split(".")
+            l_p_name = p.lower().split(".")
+            if not sublist(l_p_name, l_name):
+                continue   # Already imported by construction
 
             p_info = (
                 do_use or self.spec_withs.get(p, False),   # do_use

@@ -28,7 +28,6 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk;                     use Gdk;
 with Gdk.Device;              use Gdk.Device;
 with Gdk.Event;               use Gdk.Event;
 with Gdk.Types;               use Gdk.Types;

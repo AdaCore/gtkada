@@ -39,7 +39,6 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;           use Cairo;
-with Gdk;             use Gdk;
 with Gdk.Display;     use Gdk.Display;
 with Gdk.Rectangle;   use Gdk.Rectangle;
 with Gdk.Types;       use Gdk.Types;

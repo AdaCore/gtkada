@@ -25,7 +25,6 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;
 with Cairo.Region;            use Cairo.Region;
-with Gdk;                     use Gdk;
 with Gdk.Color;               use Gdk.Color;
 with Gdk.Device;              use Gdk.Device;
 with Gdk.Display;             use Gdk.Display;

@@ -47,7 +47,6 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo.Region;            use Cairo.Region;
-with Gdk;                     use Gdk;
 with Gdk.Device_Tool;         use Gdk.Device_Tool;
 with Gdk.Rectangle;           use Gdk.Rectangle;
 with Gdk.Types;               use Gdk.Types;

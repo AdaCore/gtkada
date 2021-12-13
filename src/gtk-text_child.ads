@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2021, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -29,7 +29,6 @@
 --  <c_version>2.8.17</c_version>
 --  <group>Multiline Text Editor</group>
 
-with Gtk; use Gtk;
 with Gtk.Widget;
 
 package Gtk.Text_Child is
