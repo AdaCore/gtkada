@@ -140,7 +140,6 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
-with Glib;                    use Glib;
 with Glib.Action;             use Glib.Action;
 with Glib.Action_Group;       use Glib.Action_Group;
 with Glib.Action_Map;         use Glib.Action_Map;

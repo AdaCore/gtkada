@@ -35,7 +35,6 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;               use Glib;
 with Glib.Action;        use Glib.Action;
 with Glib.Object;        use Glib.Object;
 with Glib.Simple_Action; use Glib.Simple_Action;

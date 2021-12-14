@@ -30,7 +30,6 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Streams;             use Ada.Streams;
-with Glib;                    use Glib;
 with Glib.Error;              use Glib.Error;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Main;               use Glib.Main;

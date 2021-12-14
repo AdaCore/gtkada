@@ -43,7 +43,6 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk;         use Gdk;
 with Gdk.Event;   use Gdk.Event;
 with Gdk.Monitor; use Gdk.Monitor;
 with Gdk.Types;   use Gdk.Types;

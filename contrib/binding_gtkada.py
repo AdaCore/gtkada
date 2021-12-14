@@ -296,16 +296,16 @@ class GtkAdaPackage(object):
         """
         result = []
         if self.node:
-            for l in self.node.findall("list"):
-                result.append((l.get("ada"),
-                               naming.type(name="", cname=l.get("ctype")),
+            for l_inst in self.node.findall("list"):
+                result.append((l_inst.get("ada"),
+                               naming.type(name="", cname=l_inst.get("ctype")),
                                False,
-                               l.get("section", "")))
-            for l in self.node.findall("slist"):
-                result.append((l.get("ada"),
-                               naming.type(name="", cname=l.get("ctype")),
+                               l_inst.get("section", "")))
+            for s_l in self.node.findall("slist"):
+                result.append((s_l.get("ada"),
+                               naming.type(name="", cname=s_l.get("ctype")),
                                True,
-                               l.get("section", "")))
+                               s_l.get("section", "")))
 
         return result
 
@@ -433,7 +433,7 @@ class GtkAdaPackage(object):
         if self.node is not None:
             extra = self.node.find("extra")
             if extra is not None:
-                return extra.getchildren()
+                return list(extra)
         return None
 
     def get_default_param_node(self, name):

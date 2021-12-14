@@ -27,7 +27,6 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;         use Glib;
 with Gtkada.Types; use Gtkada.Types;
 
 package Glib.String is

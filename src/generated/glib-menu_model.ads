@@ -137,7 +137,6 @@
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;         use Glib;
 with Glib.Object;  use Glib.Object;
 with Glib.Variant; use Glib.Variant;
 
