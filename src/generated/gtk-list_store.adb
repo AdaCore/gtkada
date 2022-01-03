@@ -533,7 +533,6 @@ package body Gtk.List_Store is
       Tmp_Iter : aliased Gtk.Tree_Model.Gtk_Tree_Iter := Iter;
    begin
       Internal (Get_Object (List_Store), Tmp_Iter);
-      Iter := Tmp_Iter;
 
 Iter := Gtk.Tree_Model.Null_Iter;
    end Remove;

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2019, AdaCore                     --
+--                     Copyright (C) 2001-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -315,7 +315,6 @@ package body Glib.Object is
       Class_Init   : Ada_Class_Init := null)
    is
       Ignored : Boolean;
-      pragma Unreferenced (Ignored);
    begin
       Initialize_Class_Record
         (Ancestor, Class_Record, Type_Name, Signals, Parameters, Returns,
