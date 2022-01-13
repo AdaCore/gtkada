@@ -36,9 +36,28 @@ Ubunbu 18.04 & 20.04
 --------------------
 
  * libc6-dev
+ * libdrm-dev
+ * libegl1-mesa-dev
+ * libgl1-mesa-dev
+ * libgles1
+ * libglvnd-core-dev
+ * libglvnd-dev
+ * libopengl0
+ * libpthread-stubs0-dev
+ * libwayland-dev
  * libx11-dev
+ * libx11-xcb-dev
  * libxau-dev
+ * libxcb-dri2-0-dev
+ * libxcb-dri3-dev
+ * libxcb-glx0-dev
+ * libxcb-present-dev
+ * libxcb-randr0-dev
  * libxcb-render0-dev
+ * libxcb-shape0-dev
+ * libxcb-shm0-dev
+ * libxcb-sync-dev
+ * libxcb-xfixes0-dev
  * libxcb1-dev
  * libxcomposite-dev
  * libxcursor-dev
@@ -50,6 +69,10 @@ Ubunbu 18.04 & 20.04
  * libxinerama-dev
  * libxrandr-dev
  * libxrender-dev
+ * libxshmfence-dev
+ * libxxf86vm-dev
+ * mesa-common-dev
+ * uuid-dev
  * x11proto-composite-dev
  * x11proto-core-dev
  * x11proto-damage-dev
@@ -58,6 +81,6 @@ Ubunbu 18.04 & 20.04
  * x11proto-input-dev
  * x11proto-randr-dev
  * x11proto-xext-dev
+ * x11proto-xf86vidmode-dev
  * x11proto-xinerama-dev
-
 
