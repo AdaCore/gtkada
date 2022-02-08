@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -74,7 +74,6 @@ package body Gtkada.Canvas is
      Ada.Numerics.Generic_Elementary_Functions (Gdouble);
    use Double_Elementary_Functions;
 
-   use type Gdk.Gdk_Window;
    use type System.Address;
 
    Traces : constant Boolean := False;
