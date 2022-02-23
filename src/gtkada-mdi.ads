@@ -275,6 +275,11 @@ package Gtkada.MDI is
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
 
+   procedure Change_Group
+     (Child : not null access MDI_Child_Record'Class;
+      Group : Child_Group);
+   --  Change the child's MDI group.
+
    type Child_Position is
      (Position_Automatic,
       Position_Bottom,

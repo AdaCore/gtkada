@@ -2923,6 +2923,17 @@ package body Gtkada.MDI is
          Maximize_Action.On_Remove_Child'Access);
    end Initialize;
 
+   ------------------
+   -- Change_Group --
+   ------------------
+
+   procedure Change_Group
+     (Child : not null access MDI_Child_Record'Class;
+      Group : Child_Group) is
+   begin
+      Child.Group := Group;
+   end Change_Group;
+
    -------------------------
    -- Give_Focus_To_Child --
    -------------------------
