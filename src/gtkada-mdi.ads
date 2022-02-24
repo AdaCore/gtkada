@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2021, AdaCore                     --
+--                     Copyright (C) 2001-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -274,6 +274,11 @@ package Gtkada.MDI is
       Areas        : Allowed_Areas := Both);
    --  Internal initialization function.
    --  See the section "Creating your own widgets" in the documentation.
+
+   procedure Change_Group
+     (Child : not null access MDI_Child_Record'Class;
+      Group : Child_Group);
+   --  Change the child's MDI group.
 
    type Child_Position is
      (Position_Automatic,

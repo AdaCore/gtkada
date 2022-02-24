@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2021, AdaCore                     --
+--                     Copyright (C) 2001-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -2923,6 +2923,17 @@ package body Gtkada.MDI is
          Maximize_Action.On_Remove_Child'Access);
    end Initialize;
 
+   ------------------
+   -- Change_Group --
+   ------------------
+
+   procedure Change_Group
+     (Child : not null access MDI_Child_Record'Class;
+      Group : Child_Group) is
+   begin
+      Child.Group := Group;
+   end Change_Group;
+
    -------------------------
    -- Give_Focus_To_Child --
    -------------------------
@@ -5130,7 +5141,7 @@ package body Gtkada.MDI is
             while List /= Widget_List.Null_List loop
                C := MDI_Child (Get_Data (List));
 
-               if In_Central_Area (MDI, C) then
+               if In_Central_Area (MDI, C) and then C.Group = Group then
                   Note := Get_Notebook (C);
                   Current := Note;
                   exit;
