@@ -1,5 +1,7 @@
 AC_INIT(gtkada,18.0w,report@adacore.com,gtkada)
+AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_TARGET
+PKG_PROG_PKG_CONFIG
 
 TARGET=""
 if test x$host != x$target ; then
@@ -25,8 +27,13 @@ CHECK_BUILD_TYPE     # are we in devel mode ?
 ALL_LINGUAS="en"
 AM_GNU_GETTEXT([external])
 
-# checking for gtk
-AM_PATH_GTK(3.24.0)
+# checking for gtk:
+#  1. PKG_CHECK_MODULES: check for pkg-config modules, this provides useful
+#     diagnostic when some error occured.
+#  2. AM_PATH_GTK: check for low level binary interface of the libraries and
+#     create necessary variables to substitute into .gpr files.
+PKG_CHECK_MODULES([GTK], [gtk+-3.0])
+AM_PATH_GTK
 
 # try to find OpenGL if present
 AM_CHECK_OPENGL

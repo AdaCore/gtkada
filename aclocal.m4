@@ -1,525 +1,298 @@
-#############################################################
-#
-#  Adding some OS specific flags and parameters
-#
-############################################################
-
-AC_DEFUN(AM_ADD_OS_SPECIFIC_FLAGS,
-[
-   SO_EXT=.so
-   SO_OPTS=-Wl,-soname,
-   TARGET_LFLAGS=
-   DEFAULT_LIBRARY_TYPE=static
-   NEED_OBJECTIVE_C=no
-
-   AC_ARG_ENABLE(static,
-     [AC_HELP_STRING(
-        [--disable-static],
-        [Disable building of static libraries.])
-AC_HELP_STRING(
-        [--enable-static],
-        [Build static libraries (default).])],
-     [BUILD_STATIC=$enableval
-      if test $enableval = no; then
-         DEFAULT_LIBRARY_TYPE=relocatable
-      fi],
-     [BUILD_STATIC=yes])
-
-   AC_ARG_ENABLE(static_pic,
-     [AC_HELP_STRING(
-        [--disable-static-pic],
-        [Disable building of static PIC libraries.])
-AC_HELP_STRING(
-        [--enable-static-pic],
-        [Build static PIC libraries (default).])],
-     [BUILD_STATIC_PIC=$enableval
-      if test $enableval = yes; then
-         DEFAULT_LIBRARY_TYPE=static-pic
-      fi],
-     [BUILD_STATIC_PIC=yes])
-
-   AC_ARG_ENABLE(shared,
-     [AC_HELP_STRING(
-        [--disable-shared],
-        [Disable building of shared libraries (default is to build them if supported on the target)])
-AC_HELP_STRING(
-        [--enable-shared],
-        [Build shared libraries if supported on the target and
-make them preselected in project files (static libraries are preselected by default])],
-     [CAN_BUILD_SHARED=$enableval
-      if test $enableval = yes; then
-         DEFAULT_LIBRARY_TYPE=relocatable
-      fi],
-     [CAN_BUILD_SHARED=yes])
-
-   BUILD_SHARED=$CAN_BUILD_SHARED
-
-   case $build_os in
-   aix*)
-      BUILD_SHARED=no
-      OS_SPECIFIC_LINK_OPTIONS=-Wl,-bexpall,-berok
-      TARGET_LFLAGS=-Wl,-bbigtoc
-      SO_OPTS="-o "
-      ;;
-   hp*)
-      SO_EXT=.sl
-      SO_OPTS=-Wl,+h,
-      BUILD_SHARED=no
-      ;;
-   *sysv4uw* | *sysv5uw*)
-      SO_OPTS=-Wl,-h,
-      BUILD_SHARED=no
-      ;;
-   *solaris*)
-      SO_OPTS=-Wl,-h,
-      ;;
-   *irix*)
-      ;;
-   *osf*)
-      OS_SPECIFIC_LINK_OPTIONS=-Wl,-expect_unresolved,\*
-      ;;
-   *mingw*)
-      if test x$CAN_BUILD_SHARED = xyes ; then
-         BUILD_SHARED=yes
-      fi
-      SO_EXT=.dll
-      ac_tmp_GNATDIR=`which gcc | sed 's,/gcc$,,'`
-      ac_GNATDIR=`cygpath --mixed $ac_tmp_GNATDIR`
-      count=`cd $ac_GNATDIR; ls libgnat-*.dll | wc -l`
-      if test $count -gt 1 ; then
-         echo "Too many libgnat.dll, in $ac_GNATDIR"
-	 echo Found: `cd $ac_GNATDIR; ls libgnat-*.dll`
-         exit 1
-      fi
-      ac_GNATLIB=`cd $ac_GNATDIR; ls libgnat-*.dll | sed 's,lib,,;s,.dll,,'`
-      OS_SPECIFIC_LINK_OPTIONS=-Wl,-L$ac_GNATDIR,-l$ac_GNATLIB
-      ;;
-   *darwin*)
-      SO_EXT=.dylib
-      NEED_OBJECTIVE_C=yes
-      if test x$CAN_BUILD_SHARED = xyes ; then
-         BUILD_SHARED=yes
-      fi
-      SO_OPTS="-Wl,-undefined,dynamic_lookup -dynamiclib -Wl,-dylib_install_name,"
-      LDFLAGS="-Wl,-framework,Cocoa"
-      TARGET_LFLAGS="-Wl,-framework,Cocoa"
-      ;;
-   # ??? The following case has been introduced because of an elaboration
-   # problem with the GtkAda dynamic library and GPS (see E511-010). This
-   # is a workaround, and shall be removed as soon as the bug is fixed.
-   *linux*)
-      case $build_cpu in
-      *ia64*)
-         BUILD_SHARED=no
-         ;;
-      esac
-      ;;
-   esac
-
-  if test x$BUILD_SHARED = xno ; then
-    if test x$BUILD_STATIC_PIC = xno ; then
-       DEFAULT_LIBRARY_TYPE=static
-    fi
-  fi
-
-  AC_SUBST(DEFAULT_LIBRARY_TYPE)
-  AC_SUBST(OS_SPECIFIC_LINK_OPTIONS)
-  AC_SUBST(BUILD_STATIC)
-  AC_SUBST(BUILD_STATIC_PIC)
-  AC_SUBST(BUILD_SHARED)
-  AC_SUBST(SO_EXT)
-  AC_SUBST(SO_OPTS)
-  AC_SUBST(TARGET_LFLAGS)
-  AC_SUBST(NEED_OBJECTIVE_C)
-
-]
-)
-
-#############################################################
-#  Checking for build type
-#############################################################
-
-AC_DEFUN(CHECK_BUILD_TYPE,
-[
-    AC_ARG_ENABLE(build,
-       [AC_HELP_STRING(
-          [--enable-build=<type>],
-          [Default build type for the library (Debug, Production)])],
-       BUILD_TYPE=$enableval,
-       BUILD_TYPE=Production)
-   AC_SUBST(BUILD_TYPE)
-]
-)
-
-##########################################################################
-## Converts a list of space-separated words into a list suitable for
-## inclusion in .gpr files
-##   $1=the list
-##   $2=exported name
-##########################################################################
-
-AC_DEFUN(AM_TO_GPR,
-[
-   value=[$1]
-
-   # Special handling on darwin for gcc 4.5 and 4.7
-   case "$build_os" in
-      *darwin*)
-         value=`echo $value | sed -e "s/-framework \([[^ ]]*\)/-Wl,-framework -Wl,\1/g"`
-   esac
-
-   output=$2
-   result=""
-   for v in $value; do
-      if test "$result" != ""; then
-         result="$result, "
-      fi
-      result="$result\"$v\""
-   done
-   $2=$result
-   AC_SUBST($2)
-])
-
-#############################################################
-#
-#  Checking for Gnat
-#
-#############################################################
-
-conftest_ok="conftest.ok"
-
-AC_DEFUN(AM_PATH_GNAT,
-[
-   AC_PATH_PROG(GPRBUILD, gprbuild, no)
-   AC_PATH_PROG(GPRINSTALL, gprinstall, no)
-
-   if test x$GPRBUILD = xno ; then
-      AC_MSG_ERROR(I could not find gprbuild. See the file 'INSTALL' for more details.)
-   fi
-
-   AC_MSG_CHECKING(that your gnat compiler works with a simple example)
-
-   rm -f conftest.adb
-   cat << EOF > conftest.adb
-with Ada.Text_IO;
-
-procedure Conftest is
-   Conftest_Ok : Ada.Text_IO.File_Type;
-begin
-   Ada.Text_IO.Create (File => Conftest_Ok,
-                       Name => "$conftest_ok");
-   Ada.Text_IO.Close (Conftest_Ok);
-end Conftest;
-EOF
-   cat <<EOF > conftest.gpr
-project Conftest is
-   for Main use ("conftest.adb");
-   for Source_Files use ("conftest.adb");
-end Conftest;
-EOF
-
-   $GPRBUILD -q -P conftest.gpr > /dev/null
-   rm -f auto.cgpr b__conftest.*
-
-   if ( test ! -x conftest ) then
-      AC_MSG_RESULT(no)
-      AC_MSG_ERROR($GPRBUILD test failed at compile time! Check your configuration.)
-   fi
-
-   ./conftest
-
-   if ( test ! -f $conftest_ok ) then
-      AC_MSG_RESULT(no)
-      AC_MSG_ERROR($GPRBUILD test failed at run time! Check your configuration.)
-   fi
-
-   AC_MSG_RESULT(yes)
-])
-
-
-#############################################################
-#
-#  Checking for gnatprep
-#
-#############################################################
-
-
-AC_DEFUN(AM_PATH_GNATPREP,
-[
-   AC_PATH_PROG(GNATPREP, gnatprep, no)
-
-   if test x$GNATPREP = xno ; then
-      AC_MSG_ERROR(I could not find gnatprep. See the file 'INSTALL' for more details.)
-   fi
-
-])
-
-#############################################################
-#
-# Configure paths for GTK+
-# Input:
-#    $1=minimal version of gtk+ needed
-#
-#############################################################
-
-AC_DEFUN(AM_PATH_GTK,
-[
-  AC_PATH_PROG(PKG_CONFIG, pkg-config, no)
-  min_gtk_version=[$1]
-  AC_MSG_CHECKING(for GTK - version >= $min_gtk_version)
-  no_gtk=""
-  GTK="gtk+-3.0"
-  if test "$PKG_CONFIG" = "no" ; then
-     AC_MSG_ERROR([pkg-config not found])
-  else
-    $PKG_CONFIG $GTK --atleast-version=$min_gtk_version
-    if test $? != 0 ; then
-       AC_MSG_ERROR([old version detected])
-    fi
-
-    GTK_PREFIX=`$PKG_CONFIG $GTK --variable=prefix`
-    GTK_CFLAGS=`$PKG_CONFIG $GTK --cflags`
-    GTK_LIBS=`$PKG_CONFIG $GTK gmodule-2.0 fontconfig --libs`
-
-    dnl force some explicit flags, like -framework Cocoa. On some machines,
-    dnl these are added automatically by pkg-config, but not systematically.
-    GTK_LIBS="$GTK_LIBS $LDFLAGS"
-
-    dnl
-    dnl Now check if the installed GTK is sufficiently new. (Also sanity
-    dnl checks the results of pkg-config to some extent
-    dnl
-    ac_save_CFLAGS="$CFLAGS"
-    ac_save_LIBS="$LIBS"
-    CFLAGS="$CFLAGS $GTK_CFLAGS"
-    LIBS="$LIBS $GTK_LIBS"
-    rm -f conf.gtktest
-    AC_TRY_LINK([
-#include <gtk/gtk.h>
-#include <stdio.h>
-int
-main (int argc, char** argv)
-{
-  gtk_init(&argc, &argv);
-  return 0;
-}
-],, no_gtk=yes)
-
-    CFLAGS="$ac_save_CFLAGS"
-    LIBS="$ac_save_LIBS"
-  fi
-
-  if test "x$no_gtk" = x ; then
-     AC_MSG_RESULT(yes)
-  else
-     AC_MSG_ERROR(no)
-  fi
-  AC_SUBST(GTK_PREFIX)
-  AC_SUBST(GTK_CFLAGS)
-  AC_SUBST(GTK_LIBS)
-  AM_TO_GPR($GTK_CFLAGS, GTK_CFLAGS_GPR)
-
-  dnl On windows gtk will be embedded along with gtk distrib. In that
-  dnl case we need to adjust switches so that gtkada.gpr packaged in
-  dnl lib/gnat is usable
-
-  case $build_os in
-     *mingw*) GTK_LIBS="-L../../lib -L../../bin $GTK_LIBS";;
-  esac
-
-  AM_TO_GPR($GTK_LIBS, GTK_LIBS_GPR)
-  rm -f conf.gtktest
-])
-
-#############################################################
-#
-#  Checking for openGL
-#
-#############################################################
-
-
-AC_DEFUN(AM_CHECK_OPENGL,
-[
-
-   # checking for OpenGL libraries
-   AC_ARG_WITH(GL,         [  --with-GL=value         Which OpenGL library to compile GtkAda with (auto,GL,GL32,MesaGL,,no)])
-   AC_ARG_WITH(GL-prefix,  [  --with-GL-prefix=DIR    Prefix where GL/MesaGL is installed])
-
-   if test "x$with_GL_prefix" = "x" ; then
-      GL_LDOPTS=""
-      GL_CFLAGS=""
-   else
-      GL_CFLAGS="-I$with_GL_prefix/include"
-      case "${host}" in
-         *64*)
-            GL_LDOPTS="-L$with_GL_prefix/lib64"
-            ;;
-         *)
-            GL_LDOPTS="-L$with_GL_prefix/lib"
-            ;;
-      esac
-   fi
-
-   saved_LIBS="$LIBS"
-
-   if test "x$with_GL" != xno ; then
-     AC_MSG_CHECKING([for OpenGL])
-     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lGLU -lGL -lm -lX11"
-     AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_GL=yes, have_GL=no)
-     AC_MSG_RESULT($have_GL)
-
-     AC_MSG_CHECKING([for GL32])
-     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
-     AC_TRY_LINK([
-#include <GL/gl.h>
-#include <windows.h>],
-[ glBegin(0);
-  CreateCompatibleDC(NULL); ], have_GL32=yes, have_GL32=no)
-     AC_MSG_RESULT($have_GL32)
-
-     AC_MSG_CHECKING([for Mesa])
-     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL"
-     AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL=yes, have_MesaGL=no)
-     AC_MSG_RESULT($have_MesaGL)
-
-     if test "x$have_MesaGL" = "xno"; then
-       AC_MSG_CHECKING([Mesa with pthreads])
-       LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
-       AC_TRY_LINK( ,[ char glBegin(); glBegin(); ], have_MesaGL_pthread=yes, have_MesaGL_pthread=no)
-       AC_MSG_RESULT($have_MesaGL_pthread)
-     fi
-   fi
-
-   LIBS="$saved_LIBS"
-   HAVE_OPENGL="False"
-
-   case "x$with_GL" in
-   x|xauto)
-      if test "x$have_GL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lGLU -lGL -lm -lX11"
-         HAVE_OPENGL="True"
-      elif test "x$have_GL32" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
-         HAVE_OPENGL="True"
-      elif test "x$have_MesaGL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
-         HAVE_OPENGL="True"
-      elif test "x$have_MesaGL_pthread" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
-         HAVE_OPENGL="True"
-      fi
-      ;;
-   xGL)
-      if test "x$have_GL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lGLU -lGL -lm -lX11"
-         HAVE_OPENGL="True"
-      else
-         AC_MSG_ERROR([Missing OpenGL library])
-      fi
-      ;;
-   xGL32)
-      if test "x$have_GL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
-         HAVE_OPENGL="True"
-      else
-         AC_MSG_ERROR([Missing Windows OpenGL library])
-      fi
-      ;;
-   xMesaGL)
-      if test "x$have_MesaGL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
-         HAVE_OPENGL="True"
-      elif test "x$have_MesaGL_pthread" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
-         HAVE_OPENGL="True"
-      else
-         AC_MSG_ERROR([Missing Mesa library])
-      fi
-      ;;
-   xno)
-      ;;
-   *)
-      AC_MSG_ERROR([Unknown value for "--with-GL" option. Should be either auto, GL32, GL, MesaGL, no])
-      ;;
-   esac
-
-   AC_SUBST(GL_LIBS)
-   AC_SUBST(GL_CFLAGS)
-   AC_SUBST(HAVE_OPENGL)
-   AM_TO_GPR($GL_LIBS, GL_LIBS_GPR)
-   AM_TO_GPR($GL_CFLAGS, GL_CFLAGS_GPR)
-])
-
-#############################################################
-#
-#  A small macro to create a file after preprocessing it using gnatprep
-#
-#############################################################
-
-
-AC_DEFUN(AM_GNATPREP,
-[
-   echo "creating $1"
-   $GNATPREP $1.in $1 config.defs
-])
-
-
-#############################################################
-#
-#  Macro to add for using GNU gettext
-#
-#############################################################
-
-
-AC_DEFUN(AM_WITH_NLS,
-  [AC_MSG_CHECKING([whether NLS is requested])
-    dnl Default is enabled NLS
-    AC_ARG_ENABLE(nls,
-      [  --disable-nls           do not use Native Language Support],
-      USE_NLS=$enableval, USE_NLS=yes)
-    AC_MSG_RESULT($USE_NLS)
-    AC_SUBST(USE_NLS)
-
-    GETTEXT_INTL="False"
-    HAVE_GETTEXT="False"
-
-    dnl If we use NLS figure out what method
-    if test "$USE_NLS" = "yes"; then
-      AC_DEFINE(ENABLE_NLS)
-
-      dnl Figure out whether gettext is available in the C or intl library.
-      nls_cv_header_intl=
-      nls_cv_header_libgt=
-
-      AC_CACHE_CHECK([for gettext in libc], gt_cv_func_gettext_libc,
-       [AC_TRY_LINK([extern int gettext(char*);], [return (int) gettext ("")],
-	gt_cv_func_gettext_libc=yes, gt_cv_func_gettext_libc=no)])
-
-      if test "$gt_cv_func_gettext_libc" != "yes"; then
-        AC_CHECK_LIB(intl, bindtextdomain,
-         [AC_CACHE_CHECK([for gettext in libintl],
-           gt_cv_func_gettext_libintl,
-           [AC_CHECK_LIB(intl, gettext,
-              gt_cv_func_gettext_libintl=yes,
-              gt_cv_func_gettext_libintl=no)],
-	    gt_cv_func_gettext_libintl=no)])
-
-	  if test "$gt_cv_func_gettext_libintl" = "yes"; then
-            GETTEXT_INTL="True"
-          fi
-      fi
-
-       if test "$gt_cv_func_gettext_libc" = "yes" \
-         || test "$gt_cv_func_gettext_libintl" = "yes"; then
-            HAVE_GETTEXT="True"
-       fi
-    fi
-
-    dnl Make all variables we use known to autoconf.
-    AC_SUBST(GETTEXT_INTL)
-    AC_SUBST(HAVE_GETTEXT)
-  ])
-
-AC_DEFUN(AM_GNU_GETTEXT,
-  [AM_WITH_NLS
-  ])
+# generated automatically by aclocal 1.16.1 -*- Autoconf -*-
+
+# Copyright (C) 1996-2018 Free Software Foundation, Inc.
+
+# This file is free software; the Free Software Foundation
+# gives unlimited permission to copy and/or distribute it,
+# with or without modifications, as long as this notice is preserved.
+
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY, to the extent permitted by law; without
+# even the implied warranty of MERCHANTABILITY or FITNESS FOR A
+# PARTICULAR PURPOSE.
+
+m4_ifndef([AC_CONFIG_MACRO_DIRS], [m4_defun([_AM_CONFIG_MACRO_DIRS], [])m4_defun([AC_CONFIG_MACRO_DIRS], [_AM_CONFIG_MACRO_DIRS($@)])])
+dnl pkg.m4 - Macros to locate and utilise pkg-config.   -*- Autoconf -*-
+dnl serial 11 (pkg-config-0.29.1)
+dnl
+dnl Copyright © 2004 Scott James Remnant <scott@netsplit.com>.
+dnl Copyright © 2012-2015 Dan Nicholson <dbn.lists@gmail.com>
+dnl
+dnl This program is free software; you can redistribute it and/or modify
+dnl it under the terms of the GNU General Public License as published by
+dnl the Free Software Foundation; either version 2 of the License, or
+dnl (at your option) any later version.
+dnl
+dnl This program is distributed in the hope that it will be useful, but
+dnl WITHOUT ANY WARRANTY; without even the implied warranty of
+dnl MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+dnl General Public License for more details.
+dnl
+dnl You should have received a copy of the GNU General Public License
+dnl along with this program; if not, write to the Free Software
+dnl Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA
+dnl 02111-1307, USA.
+dnl
+dnl As a special exception to the GNU General Public License, if you
+dnl distribute this file as part of a program that contains a
+dnl configuration script generated by Autoconf, you may include it under
+dnl the same distribution terms that you use for the rest of that
+dnl program.
+
+dnl PKG_PREREQ(MIN-VERSION)
+dnl -----------------------
+dnl Since: 0.29
+dnl
+dnl Verify that the version of the pkg-config macros are at least
+dnl MIN-VERSION. Unlike PKG_PROG_PKG_CONFIG, which checks the user's
+dnl installed version of pkg-config, this checks the developer's version
+dnl of pkg.m4 when generating configure.
+dnl
+dnl To ensure that this macro is defined, also add:
+dnl m4_ifndef([PKG_PREREQ],
+dnl     [m4_fatal([must install pkg-config 0.29 or later before running autoconf/autogen])])
+dnl
+dnl See the "Since" comment for each macro you use to see what version
+dnl of the macros you require.
+m4_defun([PKG_PREREQ],
+[m4_define([PKG_MACROS_VERSION], [0.29.1])
+m4_if(m4_version_compare(PKG_MACROS_VERSION, [$1]), -1,
+    [m4_fatal([pkg.m4 version $1 or higher is required but ]PKG_MACROS_VERSION[ found])])
+])dnl PKG_PREREQ
+
+dnl PKG_PROG_PKG_CONFIG([MIN-VERSION])
+dnl ----------------------------------
+dnl Since: 0.16
+dnl
+dnl Search for the pkg-config tool and set the PKG_CONFIG variable to
+dnl first found in the path. Checks that the version of pkg-config found
+dnl is at least MIN-VERSION. If MIN-VERSION is not specified, 0.9.0 is
+dnl used since that's the first version where most current features of
+dnl pkg-config existed.
+AC_DEFUN([PKG_PROG_PKG_CONFIG],
+[m4_pattern_forbid([^_?PKG_[A-Z_]+$])
+m4_pattern_allow([^PKG_CONFIG(_(PATH|LIBDIR|SYSROOT_DIR|ALLOW_SYSTEM_(CFLAGS|LIBS)))?$])
+m4_pattern_allow([^PKG_CONFIG_(DISABLE_UNINSTALLED|TOP_BUILD_DIR|DEBUG_SPEW)$])
+AC_ARG_VAR([PKG_CONFIG], [path to pkg-config utility])
+AC_ARG_VAR([PKG_CONFIG_PATH], [directories to add to pkg-config's search path])
+AC_ARG_VAR([PKG_CONFIG_LIBDIR], [path overriding pkg-config's built-in search path])
+
+if test "x$ac_cv_env_PKG_CONFIG_set" != "xset"; then
+	AC_PATH_TOOL([PKG_CONFIG], [pkg-config])
+fi
+if test -n "$PKG_CONFIG"; then
+	_pkg_min_version=m4_default([$1], [0.9.0])
+	AC_MSG_CHECKING([pkg-config is at least version $_pkg_min_version])
+	if $PKG_CONFIG --atleast-pkgconfig-version $_pkg_min_version; then
+		AC_MSG_RESULT([yes])
+	else
+		AC_MSG_RESULT([no])
+		PKG_CONFIG=""
+	fi
+fi[]dnl
+])dnl PKG_PROG_PKG_CONFIG
+
+dnl PKG_CHECK_EXISTS(MODULES, [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
+dnl -------------------------------------------------------------------
+dnl Since: 0.18
+dnl
+dnl Check to see whether a particular set of modules exists. Similar to
+dnl PKG_CHECK_MODULES(), but does not set variables or print errors.
+dnl
+dnl Please remember that m4 expands AC_REQUIRE([PKG_PROG_PKG_CONFIG])
+dnl only at the first occurence in configure.ac, so if the first place
+dnl it's called might be skipped (such as if it is within an "if", you
+dnl have to call PKG_CHECK_EXISTS manually
+AC_DEFUN([PKG_CHECK_EXISTS],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+if test -n "$PKG_CONFIG" && \
+    AC_RUN_LOG([$PKG_CONFIG --exists --print-errors "$1"]); then
+  m4_default([$2], [:])
+m4_ifvaln([$3], [else
+  $3])dnl
+fi])
+
+dnl _PKG_CONFIG([VARIABLE], [COMMAND], [MODULES])
+dnl ---------------------------------------------
+dnl Internal wrapper calling pkg-config via PKG_CONFIG and setting
+dnl pkg_failed based on the result.
+m4_define([_PKG_CONFIG],
+[if test -n "$$1"; then
+    pkg_cv_[]$1="$$1"
+ elif test -n "$PKG_CONFIG"; then
+    PKG_CHECK_EXISTS([$3],
+                     [pkg_cv_[]$1=`$PKG_CONFIG --[]$2 "$3" 2>/dev/null`
+		      test "x$?" != "x0" && pkg_failed=yes ],
+		     [pkg_failed=yes])
+ else
+    pkg_failed=untried
+fi[]dnl
+])dnl _PKG_CONFIG
+
+dnl _PKG_SHORT_ERRORS_SUPPORTED
+dnl ---------------------------
+dnl Internal check to see if pkg-config supports short errors.
+AC_DEFUN([_PKG_SHORT_ERRORS_SUPPORTED],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])
+if $PKG_CONFIG --atleast-pkgconfig-version 0.20; then
+        _pkg_short_errors_supported=yes
+else
+        _pkg_short_errors_supported=no
+fi[]dnl
+])dnl _PKG_SHORT_ERRORS_SUPPORTED
+
+
+dnl PKG_CHECK_MODULES(VARIABLE-PREFIX, MODULES, [ACTION-IF-FOUND],
+dnl   [ACTION-IF-NOT-FOUND])
+dnl --------------------------------------------------------------
+dnl Since: 0.4.0
+dnl
+dnl Note that if there is a possibility the first call to
+dnl PKG_CHECK_MODULES might not happen, you should be sure to include an
+dnl explicit call to PKG_PROG_PKG_CONFIG in your configure.ac
+AC_DEFUN([PKG_CHECK_MODULES],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+AC_ARG_VAR([$1][_CFLAGS], [C compiler flags for $1, overriding pkg-config])dnl
+AC_ARG_VAR([$1][_LIBS], [linker flags for $1, overriding pkg-config])dnl
+
+pkg_failed=no
+AC_MSG_CHECKING([for $1])
+
+_PKG_CONFIG([$1][_CFLAGS], [cflags], [$2])
+_PKG_CONFIG([$1][_LIBS], [libs], [$2])
+
+m4_define([_PKG_TEXT], [Alternatively, you may set the environment variables $1[]_CFLAGS
+and $1[]_LIBS to avoid the need to call pkg-config.
+See the pkg-config man page for more details.])
+
+if test $pkg_failed = yes; then
+   	AC_MSG_RESULT([no])
+        _PKG_SHORT_ERRORS_SUPPORTED
+        if test $_pkg_short_errors_supported = yes; then
+	        $1[]_PKG_ERRORS=`$PKG_CONFIG --short-errors --print-errors --cflags --libs "$2" 2>&1`
+        else 
+	        $1[]_PKG_ERRORS=`$PKG_CONFIG --print-errors --cflags --libs "$2" 2>&1`
+        fi
+	# Put the nasty error message in config.log where it belongs
+	echo "$$1[]_PKG_ERRORS" >&AS_MESSAGE_LOG_FD
+
+	m4_default([$4], [AC_MSG_ERROR(
+[Package requirements ($2) were not met:
+
+$$1_PKG_ERRORS
+
+Consider adjusting the PKG_CONFIG_PATH environment variable if you
+installed software in a non-standard prefix.
+
+_PKG_TEXT])[]dnl
+        ])
+elif test $pkg_failed = untried; then
+     	AC_MSG_RESULT([no])
+	m4_default([$4], [AC_MSG_FAILURE(
+[The pkg-config script could not be found or is too old.  Make sure it
+is in your PATH or set the PKG_CONFIG environment variable to the full
+path to pkg-config.
+
+_PKG_TEXT
+
+To get pkg-config, see <http://pkg-config.freedesktop.org/>.])[]dnl
+        ])
+else
+	$1[]_CFLAGS=$pkg_cv_[]$1[]_CFLAGS
+	$1[]_LIBS=$pkg_cv_[]$1[]_LIBS
+        AC_MSG_RESULT([yes])
+	$3
+fi[]dnl
+])dnl PKG_CHECK_MODULES
+
+
+dnl PKG_CHECK_MODULES_STATIC(VARIABLE-PREFIX, MODULES, [ACTION-IF-FOUND],
+dnl   [ACTION-IF-NOT-FOUND])
+dnl ---------------------------------------------------------------------
+dnl Since: 0.29
+dnl
+dnl Checks for existence of MODULES and gathers its build flags with
+dnl static libraries enabled. Sets VARIABLE-PREFIX_CFLAGS from --cflags
+dnl and VARIABLE-PREFIX_LIBS from --libs.
+dnl
+dnl Note that if there is a possibility the first call to
+dnl PKG_CHECK_MODULES_STATIC might not happen, you should be sure to
+dnl include an explicit call to PKG_PROG_PKG_CONFIG in your
+dnl configure.ac.
+AC_DEFUN([PKG_CHECK_MODULES_STATIC],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+_save_PKG_CONFIG=$PKG_CONFIG
+PKG_CONFIG="$PKG_CONFIG --static"
+PKG_CHECK_MODULES($@)
+PKG_CONFIG=$_save_PKG_CONFIG[]dnl
+])dnl PKG_CHECK_MODULES_STATIC
+
+
+dnl PKG_INSTALLDIR([DIRECTORY])
+dnl -------------------------
+dnl Since: 0.27
+dnl
+dnl Substitutes the variable pkgconfigdir as the location where a module
+dnl should install pkg-config .pc files. By default the directory is
+dnl $libdir/pkgconfig, but the default can be changed by passing
+dnl DIRECTORY. The user can override through the --with-pkgconfigdir
+dnl parameter.
+AC_DEFUN([PKG_INSTALLDIR],
+[m4_pushdef([pkg_default], [m4_default([$1], ['${libdir}/pkgconfig'])])
+m4_pushdef([pkg_description],
+    [pkg-config installation directory @<:@]pkg_default[@:>@])
+AC_ARG_WITH([pkgconfigdir],
+    [AS_HELP_STRING([--with-pkgconfigdir], pkg_description)],,
+    [with_pkgconfigdir=]pkg_default)
+AC_SUBST([pkgconfigdir], [$with_pkgconfigdir])
+m4_popdef([pkg_default])
+m4_popdef([pkg_description])
+])dnl PKG_INSTALLDIR
+
+
+dnl PKG_NOARCH_INSTALLDIR([DIRECTORY])
+dnl --------------------------------
+dnl Since: 0.27
+dnl
+dnl Substitutes the variable noarch_pkgconfigdir as the location where a
+dnl module should install arch-independent pkg-config .pc files. By
+dnl default the directory is $datadir/pkgconfig, but the default can be
+dnl changed by passing DIRECTORY. The user can override through the
+dnl --with-noarch-pkgconfigdir parameter.
+AC_DEFUN([PKG_NOARCH_INSTALLDIR],
+[m4_pushdef([pkg_default], [m4_default([$1], ['${datadir}/pkgconfig'])])
+m4_pushdef([pkg_description],
+    [pkg-config arch-independent installation directory @<:@]pkg_default[@:>@])
+AC_ARG_WITH([noarch-pkgconfigdir],
+    [AS_HELP_STRING([--with-noarch-pkgconfigdir], pkg_description)],,
+    [with_noarch_pkgconfigdir=]pkg_default)
+AC_SUBST([noarch_pkgconfigdir], [$with_noarch_pkgconfigdir])
+m4_popdef([pkg_default])
+m4_popdef([pkg_description])
+])dnl PKG_NOARCH_INSTALLDIR
+
+
+dnl PKG_CHECK_VAR(VARIABLE, MODULE, CONFIG-VARIABLE,
+dnl [ACTION-IF-FOUND], [ACTION-IF-NOT-FOUND])
+dnl -------------------------------------------
+dnl Since: 0.28
+dnl
+dnl Retrieves the value of the pkg-config variable for the given module.
+AC_DEFUN([PKG_CHECK_VAR],
+[AC_REQUIRE([PKG_PROG_PKG_CONFIG])dnl
+AC_ARG_VAR([$1], [value of $3 for $2, overriding pkg-config])dnl
+
+_PKG_CONFIG([$1], [variable="][$3]["], [$2])
+AS_VAR_COPY([$1], [pkg_cv_][$1])
+
+AS_VAR_IF([$1], [""], [$5], [$4])dnl
+])dnl PKG_CHECK_VAR
+
+m4_include([m4/add_os_specific_flags.m4])
+m4_include([m4/check_build_type.m4])
+m4_include([m4/check_opengl.m4])
+m4_include([m4/gnu_gettext.m4])
+m4_include([m4/gtk-3.0.m4])
+m4_include([m4/path_gnat.m4])
+m4_include([m4/path_gtk.m4])
+m4_include([m4/to_gpr.m4])
