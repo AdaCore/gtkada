@@ -2171,8 +2171,10 @@ package body Gtk.GEntry is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Entry_Gtk_Entry_Icon_Position_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Entry := Gtk_Entry (Unchecked_To_Object (Params, 0));
+      Pos : GValue;
    begin
-      H (Obj, Unchecked_To_Gtk_Entry_Icon_Position (Params, 1));
+      Unsafe_Nth (Values => Params, Num => 1, V => Pos);
+      H (Obj, Gtk_Entry_Icon_Position'Val (Get_Enum (Pos)));
       exception when E : others => Process_Exception (E);
    end Marsh_Gtk_Entry_Gtk_Entry_Icon_Position_Void;
 
