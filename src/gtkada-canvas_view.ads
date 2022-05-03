@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2020, AdaCore                     --
+--                     Copyright (C) 1998-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -1147,12 +1147,24 @@ package Gtkada.Canvas_View is
       Width_In_Inches, Height_In_Inches : Gdouble;
    end record;
 
-   A3_Portrait      : constant Page_Format := (11.7, 16.5);
-   A3_Landscape     : constant Page_Format := (16.5, 11.7);
-   A4_Portrait      : constant Page_Format := (8.3, 11.7);
-   A4_Landscape     : constant Page_Format := (11.7, 8.3);
-   Letter_Portrait  : constant Page_Format := (8.5, 11.0);
-   Letter_Landscape : constant Page_Format := (11.0, 8.5);
+   type Predefined_Page_Format_Type is
+     (A3_Portrait,
+      A3_Landscape,
+      A4_Portrait,
+      A4_Landscape,
+      Letter_Portrait,
+      Letter_Landscape);
+
+   function To_Page_Format
+     (Value : Predefined_Page_Format_Type) return Page_Format
+   is
+     (case Value is
+         when A3_Portrait => (11.7, 16.5),
+         when A3_Landscape => (16.5, 11.7),
+         when A4_Portrait => (8.3, 11.7),
+         when A4_Landscape => (11.7, 8.3),
+         when Letter_Portrait => (8.5, 11.0),
+         when Letter_Landscape => (11.0, 8.5));
 
    type Export_Format is (Export_PDF, Export_SVG, Export_PNG);
 
