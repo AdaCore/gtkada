@@ -293,6 +293,58 @@ package Glib.Spawn is
 
    generic
    type User_Data is limited private;
+   function Generic_Spawn_Async_With_Fds
+     (Working_Directory : Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
+      Argv              : access Gtkada.Types.Chars_Ptr_Array;
+      Envp              : access Gtkada.Types.Chars_Ptr_Array;
+      Flags             : GSpawn_Flags;
+      Child_Setup       : access procedure
+        (Data : access User_Data);
+      Data              : access User_Data;
+      Child_Pid         : access GPid;
+      Stdin_Fd          : Glib.Gint;
+      Stdout_Fd         : Glib.Gint;
+      Stderr_Fd         : Glib.Gint;
+      Error             : access Glib.Error.GError)
+   return Glib.Gboolean;
+   pragma Import
+     (C, Generic_Spawn_Async_With_Fds, "gnat_spawn_async_with_fds");
+   --  Identical to g_spawn_async_with_pipes() but instead of creating pipes
+   --  for the stdin/stdout/stderr, you can pass existing file descriptors
+   --  into this function through the stdin_fd , stdout_fd and
+   --  stderr_fd parameters. The following flags also have their behaviour
+   --  slightly tweaked as a result: G_SPAWN_STDOUT_TO_DEV_NULL means that
+   --  the child's standard output will be discarded, instead of going to the
+   --  same location as the parent's standard output. If you use this flag,
+   --  standard_output must be -1. G_SPAWN_STDERR_TO_DEV_NULL means that the
+   --  child's standard error will be discarded, instead of going to the same
+   --  location as the parent's standard error. If you use this flag,
+   --  standard_error must be -1. G_SPAWN_CHILD_INHERITS_STDIN means that the
+   --  child will inherit the parent's standard input (by default, the child's
+   --  standard input is attached to /dev/null). If you use this flag,
+   --  standard_input must be -1.
+   --  It is valid to pass the same fd in multiple parameters (e.g. you can
+   --  pass a single fd for both stdout and stderr).
+   --  Parameters
+   --  "working_directory" child's current working directory, or NULL to
+   --  inherit parent's, in the GLib file name encoding.
+   --  "argv" child's argument vector, in the GLib file name encoding.
+   --  "envp"  child's environment, or NULL to inherit parent's, in the GLib
+   --  file name encoding.
+   --  "flags" flags from GSpawnFlags
+   --  "child_setup" function to run in the child just before exec().
+   --  "user_data" user data for child_setup
+   --  "child_pid" return location for child process ID, or NULL.
+   --  "stdin_fd" file descriptor to use for child's stdin, or -1
+   --  "stdout_fd" file descriptor to use for child's stdout, or -1
+   --  "stderr_fd" file descriptor to use for child's stderr, or -1
+   --  "error" return location for error
+   --  Returns
+   --  TRUE on success, FALSE if an error was set
+   --  Since: 2.58
+
+   generic
+   type User_Data is limited private;
    function Generic_Spawn_Sync
      (Working_Directory : Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
       Argv              : access Gtkada.Types.Chars_Ptr_Array;
