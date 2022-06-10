@@ -25,7 +25,7 @@
 with Ada.Numerics;                       use Ada.Numerics;
 with Ada.Numerics.Generic_Elementary_Functions;
 with System;
-with Unchecked_Deallocation;
+with Ada.Unchecked_Deallocation;
 with GNAT.IO;                            use GNAT.IO;
 
 with Cairo;                              use Cairo;
@@ -125,7 +125,7 @@ package body Gtkada.Canvas is
    --  reuse the callbacks in Gtkada.Handlers, and thus save a lot of space
    --  in the GtkAda library.
 
-   procedure Free is new Unchecked_Deallocation (String, String_Access);
+   procedure Free is new Ada.Unchecked_Deallocation (String, String_Access);
 
    package Canvas_Timeout is
      new Glib.Main.Generic_Sources (Interactive_Canvas);
@@ -1604,7 +1604,7 @@ package body Gtkada.Canvas is
       type Range_Array is array (Positive range <>) of Graph_Range;
       type Range_Array_Access is access all Range_Array;
 
-      procedure Free is new Unchecked_Deallocation
+      procedure Free is new Ada.Unchecked_Deallocation
         (Range_Array, Range_Array_Access);
 
       Free_Ranges : Range_Array_Access := new Range_Array (1 .. 1000);

@@ -993,7 +993,8 @@ package body Glib.XML is
       procedure Free_Node (N : in out Node_Ptr);
       --  Free the memory for a node, but doesn't remove it from its parent
 
-      procedure Unchecked_Free is new Unchecked_Deallocation (Node, Node_Ptr);
+      procedure Unchecked_Free is
+        new Ada.Unchecked_Deallocation (Node, Node_Ptr);
 
       ---------------
       -- Free_Node --

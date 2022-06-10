@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -30,7 +30,7 @@ with Glib.Glist;
 pragma Elaborate_All (Glib.Glist);
 
 with System;
-with Unchecked_Conversion;
+with Ada.Unchecked_Conversion;
 
 package Gdk.Visual is
 
@@ -75,8 +75,10 @@ package Gdk.Visual is
 
    function Query_Visual_Types return Gdk_Visual_Type_Array;
 
-   function Convert is new Unchecked_Conversion (Gdk_Visual, System.Address);
-   function Convert is new Unchecked_Conversion (System.Address, Gdk_Visual);
+   function Convert is
+     new Ada.Unchecked_Conversion (Gdk_Visual, System.Address);
+   function Convert is
+     new Ada.Unchecked_Conversion (System.Address, Gdk_Visual);
 
    package Gdk_Visual_List is new Glib.Glist.Generic_List (Gdk_Visual);
 

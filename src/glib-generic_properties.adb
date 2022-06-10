@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -23,7 +23,7 @@
 
 with Glib.Object;     use Glib.Object;
 with Glib.Values;     use Glib.Values;
-with Unchecked_Conversion;
+with Ada.Unchecked_Conversion;
 with System;          use System;
 
 --  Can't with because of elaboration order issues
@@ -57,7 +57,7 @@ package body Glib.Generic_Properties is
 
    package body Generic_Enumeration_Property is
 
-      function Conv is new Unchecked_Conversion (Enumeration, Gint);
+      function Conv is new Ada.Unchecked_Conversion (Enumeration, Gint);
       --  Note: this will raise a warning at compilation-time if no
       --  representation clause has been defined for Enumeration. As
       --  documented, Set_Property will not work anyway, so a warning
@@ -205,7 +205,7 @@ package body Glib.Generic_Properties is
    package body Generic_Internal_Boxed_Property is
 
       type Boxed_Access is access all Boxed_Type;
-      function Conv is new Unchecked_Conversion
+      function Conv is new Ada.Unchecked_Conversion
         (System.Address, Boxed_Access);
 
       ---------------
