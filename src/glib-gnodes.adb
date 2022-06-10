@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,7 +22,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Unchecked_Conversion;
+with Ada.Unchecked_Conversion;
 
 package body Glib.Gnodes is
 
@@ -93,7 +93,7 @@ package body Glib.Gnodes is
 
    package body Gnode_Data is
 
-      function Convert is new Unchecked_Conversion (Element_Access, Gnode);
+      function Convert is new Ada.Unchecked_Conversion (Element_Access, Gnode);
 
       ----------------
       --  Glib_New  --

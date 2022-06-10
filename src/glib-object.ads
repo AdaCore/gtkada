@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2019, AdaCore                     --
+--                     Copyright (C) 2001-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -108,7 +108,7 @@ package Glib.Object is
    --  The default implementation assumes that the value passed in is an
    --  access value created by an allocator of the default pool, i.e. it
    --  will assume that an instance of
-   --  Unchecked_Deallocation (GObject_Record'Class, GObject)
+   --  Ada.Unchecked_Deallocation (GObject_Record'Class, GObject)
    --  can be used to deallocate the designated object.
    --  Types derived of GObject_Record can override this operation in order
    --  to cope with objects allocated on other pools or even objects allocated

@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2020, AdaCore                     --
+--                     Copyright (C) 1998-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -24,7 +24,7 @@
 
 with System;
 with System.Assertions;       use System.Assertions;
-with Unchecked_Deallocation;
+with Ada.Unchecked_Deallocation;
 
 with Glib.Values;             use Glib.Values;
 
@@ -179,13 +179,13 @@ package body Gtk.Handlers is
 
    package body Return_Callback is
 
-      function To_Handler is new Unchecked_Conversion
+      function To_Handler is new Ada.Unchecked_Conversion
         (Gtk.Marshallers.General_Handler, Handler);
-      function To_General_Handler is new Unchecked_Conversion
+      function To_General_Handler is new Ada.Unchecked_Conversion
         (Handler, Gtk.Marshallers.General_Handler);
-      function To_Address is new Unchecked_Conversion
+      function To_Address is new Ada.Unchecked_Conversion
         (Handler, System.Address);
-      function To_Address is new Unchecked_Conversion
+      function To_Address is new Ada.Unchecked_Conversion
         (Marshallers.Handler_Proxy, System.Address);
 
       -------------
@@ -298,7 +298,7 @@ package body Gtk.Handlers is
       ---------------
 
       procedure Free_Data (Data : Data_Type_Access) is
-         procedure Internal is new Unchecked_Deallocation
+         procedure Internal is new Ada.Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
          D : Data_Type_Access := Data;
 
@@ -520,13 +520,13 @@ package body Gtk.Handlers is
 
    package body User_Return_Callback is
 
-      function To_Handler is new Unchecked_Conversion
+      function To_Handler is new Ada.Unchecked_Conversion
         (Gtk.Marshallers.General_Handler, Handler);
-      function To_General_Handler is new Unchecked_Conversion
+      function To_General_Handler is new Ada.Unchecked_Conversion
         (Handler, Gtk.Marshallers.General_Handler);
-      function To_Address is new Unchecked_Conversion
+      function To_Address is new Ada.Unchecked_Conversion
         (Handler, System.Address);
-      function To_Address is new Unchecked_Conversion
+      function To_Address is new Ada.Unchecked_Conversion
         (Marshallers.Handler_Proxy, System.Address);
 
       ---------------
@@ -534,9 +534,9 @@ package body Gtk.Handlers is
       ---------------
 
       procedure Free_Data (Data : Data_Type_Access) is
-         procedure Internal is new Unchecked_Deallocation
+         procedure Internal is new Ada.Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
-         procedure Internal2 is new Unchecked_Deallocation
+         procedure Internal2 is new Ada.Unchecked_Deallocation
            (User_Type, User_Access);
          D : Data_Type_Access := Data;
 
@@ -864,13 +864,13 @@ package body Gtk.Handlers is
 
    package body Callback is
 
-      function To_Handler is new Unchecked_Conversion
+      function To_Handler is new Ada.Unchecked_Conversion
         (Gtk.Marshallers.General_Handler, Handler);
-      function To_General_Handler is new Unchecked_Conversion
+      function To_General_Handler is new Ada.Unchecked_Conversion
         (Handler, Gtk.Marshallers.General_Handler);
-      function To_Address is new Unchecked_Conversion
+      function To_Address is new Ada.Unchecked_Conversion
         (Handler, System.Address);
-      function To_Address is new Unchecked_Conversion
+      function To_Address is new Ada.Unchecked_Conversion
         (Marshallers.Handler_Proxy, System.Address);
 
       ---------------
@@ -878,7 +878,7 @@ package body Gtk.Handlers is
       ---------------
 
       procedure Free_Data (Data : Data_Type_Access) is
-         procedure Internal is new Unchecked_Deallocation
+         procedure Internal is new Ada.Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
          D : Data_Type_Access := Data;
 
@@ -1188,13 +1188,13 @@ package body Gtk.Handlers is
 
    package body User_Callback is
 
-      function To_Handler is new Unchecked_Conversion
+      function To_Handler is new Ada.Unchecked_Conversion
         (Gtk.Marshallers.General_Handler, Handler);
-      function To_General_Handler is new Unchecked_Conversion
+      function To_General_Handler is new Ada.Unchecked_Conversion
         (Handler, Gtk.Marshallers.General_Handler);
-      function To_Address is new Unchecked_Conversion
+      function To_Address is new Ada.Unchecked_Conversion
         (Handler, System.Address);
-      function To_Address is new Unchecked_Conversion
+      function To_Address is new Ada.Unchecked_Conversion
         (Marshallers.Handler_Proxy, System.Address);
 
       ---------------
@@ -1202,9 +1202,9 @@ package body Gtk.Handlers is
       ---------------
 
       procedure Free_Data (Data : Data_Type_Access) is
-         procedure Internal is new Unchecked_Deallocation
+         procedure Internal is new Ada.Unchecked_Deallocation
            (Data_Type_Record, Data_Type_Access);
-         procedure Internal2 is new Unchecked_Deallocation
+         procedure Internal2 is new Ada.Unchecked_Deallocation
            (User_Type, User_Access);
          D : Data_Type_Access := Data;
       begin

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2018, AdaCore                     --
+--                     Copyright (C) 2010-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -23,7 +23,7 @@
 
 with System;
 with System.Assertions; use System.Assertions;
-with Unchecked_Conversion;
+with Ada.Unchecked_Conversion;
 
 with Glib.Object; use Glib.Object;
 with Glib.Values; use Glib.Values;
@@ -301,8 +301,8 @@ package body Gtkada.Printing is
      return Boolean
    is
       --  ???  ugly, but otherwise correct.
-      function To_Preview is
-        new Unchecked_Conversion (System.Address, Gtk_Print_Operation_Preview);
+      function To_Preview is new Ada.Unchecked_Conversion
+        (System.Address, Gtk_Print_Operation_Preview);
       Preview_Addr : constant System.Address := To_Address (Args, 1);
       Preview_Op   : constant Gtk_Print_Operation_Preview :=
         To_Preview (Preview_Addr);

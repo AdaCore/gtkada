@@ -21,8 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Unchecked_Conversion;
-with Unchecked_Deallocation;
+with Ada.Unchecked_Conversion;
+with Ada.Unchecked_Deallocation;
 with System;          use System;
 
 with Glib.Type_Conversion_Hooks;
@@ -69,7 +69,7 @@ package body Glib.Object is
    ----------------
 
    procedure Deallocate (Object : access GObject_Record) is
-      procedure Free is new Unchecked_Deallocation
+      procedure Free is new Ada.Unchecked_Deallocation
         (GObject_Record'Class, GObject);
 
       Obj : GObject := GObject (Object);
@@ -85,7 +85,8 @@ package body Glib.Object is
    procedure Free_User_Data (Data : System.Address) is
       pragma Warnings (Off);
       --  This UC is safe aliasing-wise, so kill warning
-      function Convert is new Unchecked_Conversion (System.Address, GObject);
+      function Convert is
+        new Ada.Unchecked_Conversion (System.Address, GObject);
       pragma Warnings (On);
 
    begin
@@ -554,7 +555,7 @@ package body Glib.Object is
       type Cb_Record_Access is access all Cb_Record;
 
       function Convert is new
-        Unchecked_Conversion (System.Address, Cb_Record_Access);
+        Ada.Unchecked_Conversion (System.Address, Cb_Record_Access);
 
       procedure Set_Data_Internal
         (Object  : System.Address;
@@ -581,10 +582,10 @@ package body Glib.Object is
 
       procedure Free_Data (Data : System.Address) is
          procedure Internal is new
-           Unchecked_Deallocation (Cb_Record, Cb_Record_Access);
+           Ada.Unchecked_Deallocation (Cb_Record, Cb_Record_Access);
 
          procedure Internal2 is new
-           Unchecked_Deallocation (Data_Type, Data_Access);
+           Ada.Unchecked_Deallocation (Data_Type, Data_Access);
 
          D : Cb_Record_Access := Convert (Data);
 
@@ -695,7 +696,7 @@ package body Glib.Object is
          On_Destroyed : On_Destroyed_Callback := null)
       is
          function Convert is new
-           Unchecked_Conversion (Cb_Record_Access, System.Address);
+           Ada.Unchecked_Conversion (Cb_Record_Access, System.Address);
          D : constant Cb_Record_Access :=
            new Cb_Record'(Ptr => new Data_Type'(Data),
                           On_Destroyed => On_Destroyed);
@@ -719,7 +720,7 @@ package body Glib.Object is
          On_Destroyed : On_Destroyed_Callback := null)
       is
          function Convert is new
-           Unchecked_Conversion (Cb_Record_Access, System.Address);
+           Ada.Unchecked_Conversion (Cb_Record_Access, System.Address);
          D : constant Cb_Record_Access :=
            new Cb_Record'(Ptr => new Data_Type'(Data),
                           On_Destroyed => On_Destroyed);

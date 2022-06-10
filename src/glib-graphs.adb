@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Unchecked_Deallocation;
+with Ada.Unchecked_Deallocation;
 
 package body Glib.Graphs is
 
@@ -119,7 +119,8 @@ package body Glib.Graphs is
    procedure Remove (G : in out Graph; E : access Edge'Class) is
       pragma Unreferenced (G);
 
-      procedure Free is new Unchecked_Deallocation (Edge'Class, Edge_Access);
+      procedure Free is
+        new Ada.Unchecked_Deallocation (Edge'Class, Edge_Access);
       E2 : Edge_Access := Edge_Access (E);
 
    begin
@@ -154,7 +155,7 @@ package body Glib.Graphs is
    ------------
 
    procedure Remove (G : in out Graph; V : access Vertex'Class) is
-      procedure Free is new Unchecked_Deallocation
+      procedure Free is new Ada.Unchecked_Deallocation
         (Vertex'Class, Vertex_Access);
       E : Edge_Iterator;
       E2 : Edge_Access;
@@ -219,7 +220,7 @@ package body Glib.Graphs is
    ------------
 
    procedure Remove (List : in out Edge_List; E : access Edge'Class) is
-      procedure Internal is new Unchecked_Deallocation
+      procedure Internal is new Ada.Unchecked_Deallocation
         (Edge_List_Record, Edge_List);
       Tmp      : Edge_List := List;
       Previous : Edge_List;
@@ -249,7 +250,7 @@ package body Glib.Graphs is
    ------------
 
    procedure Internal_Remove (G : in out Graph; V : access Vertex'Class) is
-      procedure Internal is new Unchecked_Deallocation
+      procedure Internal is new Ada.Unchecked_Deallocation
         (Vertex_List_Record, Vertex_List);
       Tmp      : Vertex_List := G.Vertices;
       Previous : Vertex_List := null;
@@ -723,7 +724,7 @@ package body Glib.Graphs is
    ----------
 
    procedure Free (List : in out Connected_Component_List) is
-      procedure Internal is new Unchecked_Deallocation
+      procedure Internal is new Ada.Unchecked_Deallocation
         (Connected_Component, Connected_Component_List);
       L : Connected_Component_List;
    begin

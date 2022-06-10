@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -30,7 +30,7 @@
 --  </description>
 --  <group>Glib, the general-purpose library</group>
 
-with Unchecked_Deallocation;
+with Ada.Unchecked_Deallocation;
 
 generic
    type XML_Specific_Data is private;
@@ -40,7 +40,7 @@ generic
 package Glib.XML is
 
    --  <doc_ignore>
-   procedure Free is new Unchecked_Deallocation (String, String_Ptr);
+   procedure Free is new Ada.Unchecked_Deallocation (String, String_Ptr);
    --  </doc_ignore>
 
    type Node;
