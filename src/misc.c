@@ -3,7 +3,7 @@
 --               GtkAda - Ada95 binding for Gtk+/Gnome               --
 --                                                                   --
 --   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet   --
---                Copyright (C) 2000-2019, AdaCore                   --
+--                Copyright (C) 2000-2022, AdaCore                   --
 --                                                                   --
 -- This library is free software; you can redistribute it and/or     --
 -- modify it under the terms of the GNU General Public               --
@@ -2166,8 +2166,6 @@ gboolean gnat_spawn_async_with_pipes (const gchar          *working_directory,
      standard_input, standard_output, standard_error, error);
 }
 
-/*
-GLIB_AVAILABLE_IN_2_58
 gboolean gnat_spawn_async_with_fds (const gchar          *working_directory,
                                     gchar               **argv,
                                     gchar               **envp,
@@ -2183,7 +2181,6 @@ gboolean gnat_spawn_async_with_fds (const gchar          *working_directory,
     (working_directory, argv, envp, flags, child_setup, user_data,
      child_pid, stdin_fd, stdout_fd, stderr_fd, error);
 }
-*/
 
 gboolean gnat_spawn_sync      (const gchar          *working_directory,
                                gchar               **argv,
