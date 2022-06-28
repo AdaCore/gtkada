@@ -1,0 +1,7 @@
+Code-Review+2: Vadim Godunko <godunko@adacore.com>
+Code-Review-1: CI Builder <ci-builder@adacore.com>
+Submitted-by: Adrien Boulanger <boulanger@adacore.com>
+Submitted-at: Tue, 28 Jun 2022 16:03:33 +0000
+Reviewed-on: https://git.adacore-it.com/c/gtkada/+/117360
+Project: gtkada
+Branch: refs/heads/master
