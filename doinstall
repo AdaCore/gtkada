@@ -134,11 +134,6 @@ install_binaries() {
      echo "An error occurred. Please see install.log."""
      exit 1
   fi
-
-  echo "Setting caches"
-  eval `"$basedir"/bin/gdk-pixbuf-query-loaders --update-cache`
-  eval `"$basedir"/bin/gtk-query-immodules-3.0 --update-cache`
-  eval `"$basedir"/bin/gtk-query-settings --update-cache`
 }
 
 ##
