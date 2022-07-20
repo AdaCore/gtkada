@@ -150,6 +150,16 @@ if you are using the system's libraries)::
    XDG_DATA_DIRS=$XDG_DATA_DIRS:$prefix/share
    export XDG_DATA_DIRS
 
+GDK_PIXBUF_MODULE_FILE contains the paths to find the libpixbufloader-*
+libraries. By default, the paths are relative to the executable loading the
+libraries: thus, GDK_PIXBUF_MODULEDIR must be installed relatively to the
+executable. When the paths are absolute, the location of
+GDK_PIXBUF_MODULEDIR doesn't matter when loading the libraries however it will
+be necessary to re-generate GDK_PIXBUF_MODULE_FILE on each host.
+Two executables are packaged with GtkAda to re-generate the modules' paths:
+gdk-pixbuf-query-loaders, which generates relative paths, and
+gdk-pixbuf-query-loaders-absolute, which generates absolute paths.
+
 Organization of the GtkAda package
 ==================================
 
