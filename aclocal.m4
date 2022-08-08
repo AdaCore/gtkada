@@ -290,7 +290,6 @@ AS_VAR_IF([$1], [""], [$5], [$4])dnl
 
 m4_include([m4/add_os_specific_flags.m4])
 m4_include([m4/check_build_type.m4])
-m4_include([m4/check_opengl.m4])
 m4_include([m4/gnu_gettext.m4])
 m4_include([m4/gtk-3.0.m4])
 m4_include([m4/path_gnat.m4])

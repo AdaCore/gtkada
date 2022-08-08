@@ -371,6 +371,7 @@ binding = ("--GdkAtom",   # No binding necessary, too low-level
            "GtkGestureSwipe",
            "GtkGestureZoom",
            "GtkGradient",
+           "GtkGLArea",
            "GtkGrid",
            "GtkHandleBox",
            "GtkHBox",
@@ -622,6 +623,7 @@ naming.girname_to_ctype = {
     "Gdk.EventOwnerChange": "GdkEventOwnerChange*",
     "Gdk.Pixmap":          "GdkPixmap*",
     "Gdk.Image":           "GdkImage*",
+    "Gdk.GLContext":       "GdkGLContext*",
     "Gdk.DragContext":     "GdkDragContext",
     "GdkPixbuf.PixbufAnimation": "GdkPixbufAnimation*",
     "Gdk.Bitmap":          "GdkBitmap*",
@@ -639,7 +641,7 @@ naming.girname_to_ctype = {
     "TreeModel":           "GtkTreeModel*",
     "GObject.InitiallyUnowned": "GObject*",  # An alias
     "GObject.ParamSpec":   "GParamSpec",
-    "Giochannel":          "GIOChannel*"
+    "Giochannel":          "GIOChannel*",
 }
 
 # Naming exceptions. In particular maps Ada keywords.
@@ -666,6 +668,8 @@ naming.exceptions = {
 
     "Gtk_Uimanager": "Gtk_UI_Manager",
     "Gicon": "G_Icon",
+    "Gtk_Glarea": "Gtk_GLArea",
+    "Gdk_Glcontext": "Gdk_GLContext",
 }
 
 # Maps C types to type descriptions.

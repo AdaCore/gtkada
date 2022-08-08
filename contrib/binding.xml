@@ -9308,4 +9308,7 @@ to be attached to some other widget.
   <package id="GtkFlowBox">
      <method id="gtk_flow_box_get_selected_children" return="WidgetList" />
   </package>
+
+  <package id="GtkGLArea" ada="Gtk.GLArea">
+  </package>
 </GIR>

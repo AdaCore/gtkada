@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2021, AdaCore                     --
+--                     Copyright (C) 2000-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -245,13 +245,13 @@ package body Gdk.Window is
    -----------------------
 
    function Create_Gl_Context
-      (Self : Gdk.Gdk_Window) return Gdk.Glcontext.Gdk_Glcontext
+      (Self : Gdk.Gdk_Window) return Gdk.GLContext.Gdk_GLContext
    is
       function Internal (Self : Gdk.Gdk_Window) return System.Address;
       pragma Import (C, Internal, "gdk_window_create_gl_context");
-      Stub_Gdk_Glcontext : Gdk.Glcontext.Gdk_Glcontext_Record;
+      Stub_Gdk_GLContext : Gdk.GLContext.Gdk_GLContext_Record;
    begin
-      return Gdk.Glcontext.Gdk_Glcontext (Get_User_Data (Internal (Self), Stub_Gdk_Glcontext));
+      return Gdk.GLContext.Gdk_GLContext (Get_User_Data (Internal (Self), Stub_Gdk_GLContext));
    end Create_Gl_Context;
 
    --------------------

@@ -35,9 +35,6 @@ AM_GNU_GETTEXT([external])
 PKG_CHECK_MODULES([GTK], [gtk+-3.0])
 AM_PATH_GTK
 
-# try to find OpenGL if present
-AM_CHECK_OPENGL
-
 # Ignore user's choice of libdir, as well as configure's own default,
 # because we want GtkAda to always install in /lib (backward compatibility)
 
@@ -48,5 +45,4 @@ AC_OUTPUT(Makefile shared.gpr po/Makefile docs/gtkada_rm/html/static/index.html)
 AC_MSG_NOTICE([--------- Summary for Gtkada $PACKAGE_VERSION -----------------])
 AC_MSG_NOTICE(AC_HELP_STRING(
               [Shared libraries:],[$CAN_BUILD_SHARED (default: $DEFAULT_LIBRARY_TYPE)]))
-AC_MSG_NOTICE(AC_HELP_STRING([OpenGL:],[$HAVE_OPENGL]))
 AC_MSG_NOTICE([--------------------------------------------])

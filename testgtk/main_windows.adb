@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -136,7 +136,6 @@ with Create_Tree_Filter;
 with Create_Tree_View;
 with Create_UI_Manager;
 with Common; use Common;
-with View_Gl; use View_Gl;
 with Create_Css_Accordion;
 with Create_Css_Editor;
 
@@ -911,13 +910,6 @@ package body Main_Windows is
       Create_Demo_Frame (Win, 1, "Gtk demo", False, False);
       Create_Demo_Frame (Win, 2, "GtkAda demo", True, False);
       Create_Demo_Frame (Win, 3, "Image manipulation", False, True);
-
-      --  Fourth page: OpenGL demos
-      Gtk_New (Frame);
-      Gtk_New (Label, "OpenGL demo");
-      Append_Page (Win.Notebook, Frame, Label);
-
-      View_Gl.Run (Frame);
 
       --  Button box for the buttons at the bottom
       --  Gtk_New_Hbox (Bbox, Homogeneous => True, Spacing => 10);

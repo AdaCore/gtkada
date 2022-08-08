@@ -586,11 +586,6 @@ PACKAGE_URL=''
 
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
-GL_CFLAGS_GPR
-GL_LIBS_GPR
-HAVE_OPENGL
-GL_CFLAGS
-GL_LIBS
 GTK_LIBS_GPR
 FONTCONFIG_LIBS
 FONTCONFIG_CFLAGS
@@ -689,8 +684,6 @@ enable_shared
 enable_build
 enable_nls
 enable_gtktest
-with_GL
-with_GL_prefix
 '
       ac_precious_vars='build_alias
 host_alias
@@ -1349,12 +1342,6 @@ Optional Features:
                           Production)
   --disable-nls           do not use Native Language Support
   --disable-gtktest       do not try to compile and run a test GTK+ program
-
-Optional Packages:
-  --with-PACKAGE[=ARG]    use PACKAGE [ARG=yes]
-  --without-PACKAGE       do not use PACKAGE (same as --with-PACKAGE=no)
-  --with-GL=value         Which OpenGL library to compile GtkAda with (auto,GL,GL32,MesaGL,,no)
-  --with-GL-prefix=DIR    Prefix where GL/MesaGL is installed
 
 Some influential environment variables:
   PKG_CONFIG  path to pkg-config utility
@@ -4377,241 +4364,6 @@ fi
 
 
 
-# try to find OpenGL if present
-
-
-   # checking for OpenGL libraries
-
-# Check whether --with-GL was given.
-if test "${with_GL+set}" = set; then :
-  withval=$with_GL;
-fi
-
-
-# Check whether --with-GL-prefix was given.
-if test "${with_GL_prefix+set}" = set; then :
-  withval=$with_GL_prefix;
-fi
-
-
-   if test "x$with_GL_prefix" = "x" ; then
-      GL_LDOPTS=""
-      GL_CFLAGS=""
-   else
-      GL_CFLAGS="-I$with_GL_prefix/include"
-      case "${host}" in
-         *64*)
-            GL_LDOPTS="-L$with_GL_prefix/lib64"
-            ;;
-         *)
-            GL_LDOPTS="-L$with_GL_prefix/lib"
-            ;;
-      esac
-   fi
-
-   saved_LIBS="$LIBS"
-
-   if test "x$with_GL" != xno ; then
-     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for OpenGL" >&5
-$as_echo_n "checking for OpenGL... " >&6; }
-     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lGLU -lGL -lm -lX11"
-     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
- char glBegin(); glBegin();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  have_GL=yes
-else
-  have_GL=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-     { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_GL" >&5
-$as_echo "$have_GL" >&6; }
-
-     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for GL32" >&5
-$as_echo_n "checking for GL32... " >&6; }
-     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
-     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-#include <GL/gl.h>
-#include <windows.h>
-int
-main ()
-{
- glBegin(0);
-  CreateCompatibleDC(NULL);
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  have_GL32=yes
-else
-  have_GL32=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-     { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_GL32" >&5
-$as_echo "$have_GL32" >&6; }
-
-     { $as_echo "$as_me:${as_lineno-$LINENO}: checking for Mesa" >&5
-$as_echo_n "checking for Mesa... " >&6; }
-     LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL"
-     cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
- char glBegin(); glBegin();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  have_MesaGL=yes
-else
-  have_MesaGL=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-     { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_MesaGL" >&5
-$as_echo "$have_MesaGL" >&6; }
-
-     if test "x$have_MesaGL" = "xno"; then
-       { $as_echo "$as_me:${as_lineno-$LINENO}: checking Mesa with pthreads" >&5
-$as_echo_n "checking Mesa with pthreads... " >&6; }
-       LIBS="$saved_LIBS $GTK_LIBS $GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
-       cat confdefs.h - <<_ACEOF >conftest.$ac_ext
-/* end confdefs.h.  */
-
-int
-main ()
-{
- char glBegin(); glBegin();
-  ;
-  return 0;
-}
-_ACEOF
-if ac_fn_c_try_link "$LINENO"; then :
-  have_MesaGL_pthread=yes
-else
-  have_MesaGL_pthread=no
-fi
-rm -f core conftest.err conftest.$ac_objext \
-    conftest$ac_exeext conftest.$ac_ext
-       { $as_echo "$as_me:${as_lineno-$LINENO}: result: $have_MesaGL_pthread" >&5
-$as_echo "$have_MesaGL_pthread" >&6; }
-     fi
-   fi
-
-   LIBS="$saved_LIBS"
-   HAVE_OPENGL="False"
-
-   case "x$with_GL" in
-   x|xauto)
-      if test "x$have_GL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lGLU -lGL -lm -lX11"
-         HAVE_OPENGL="True"
-      elif test "x$have_GL32" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
-         HAVE_OPENGL="True"
-      elif test "x$have_MesaGL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
-         HAVE_OPENGL="True"
-      elif test "x$have_MesaGL_pthread" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
-         HAVE_OPENGL="True"
-      fi
-      ;;
-   xGL)
-      if test "x$have_GL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lGLU -lGL -lm -lX11"
-         HAVE_OPENGL="True"
-      else
-         as_fn_error $? "Missing OpenGL library" "$LINENO" 5
-      fi
-      ;;
-   xGL32)
-      if test "x$have_GL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lglu32 -lopengl32 -lgdi32"
-         HAVE_OPENGL="True"
-      else
-         as_fn_error $? "Missing Windows OpenGL library" "$LINENO" 5
-      fi
-      ;;
-   xMesaGL)
-      if test "x$have_MesaGL" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL"
-         HAVE_OPENGL="True"
-      elif test "x$have_MesaGL_pthread" = "xyes"; then
-         GL_LIBS="$GL_LDOPTS -lMesaGLU -lMesaGL -lpthread"
-         HAVE_OPENGL="True"
-      else
-         as_fn_error $? "Missing Mesa library" "$LINENO" 5
-      fi
-      ;;
-   xno)
-      ;;
-   *)
-      as_fn_error $? "Unknown value for \"--with-GL\" option. Should be either auto, GL32, GL, MesaGL, no" "$LINENO" 5
-      ;;
-   esac
-
-
-
-
-
-   value=$GL_LIBS
-
-   # Special handling on darwin for gcc 4.5 and 4.7
-   case "$build_os" in
-      *darwin*)
-         value=`echo $value | sed -e "s/-framework \([^ ]*\)/-Wl,-framework -Wl,\1/g"`
-   esac
-
-   output=GL_LIBS_GPR
-   result=""
-   for v in $value; do
-      if test "$result" != ""; then
-         result="$result, "
-      fi
-      result="$result\"$v\""
-   done
-   GL_LIBS_GPR=$result
-
-
-
-   value=$GL_CFLAGS
-
-   # Special handling on darwin for gcc 4.5 and 4.7
-   case "$build_os" in
-      *darwin*)
-         value=`echo $value | sed -e "s/-framework \([^ ]*\)/-Wl,-framework -Wl,\1/g"`
-   esac
-
-   output=GL_CFLAGS_GPR
-   result=""
-   for v in $value; do
-      if test "$result" != ""; then
-         result="$result, "
-      fi
-      result="$result\"$v\""
-   done
-   GL_CFLAGS_GPR=$result
-
-
-
-
 # Ignore user's choice of libdir, as well as configure's own default,
 # because we want GtkAda to always install in /lib (backward compatibility)
 
@@ -5782,7 +5534,5 @@ fi
 $as_echo "$as_me: --------- Summary for Gtkada $PACKAGE_VERSION -----------------" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}:   Shared libraries:       $CAN_BUILD_SHARED (default: $DEFAULT_LIBRARY_TYPE)" >&5
 $as_echo "$as_me:   Shared libraries:       $CAN_BUILD_SHARED (default: $DEFAULT_LIBRARY_TYPE)" >&6;}
-{ $as_echo "$as_me:${as_lineno-$LINENO}:   OpenGL:                 $HAVE_OPENGL" >&5
-$as_echo "$as_me:   OpenGL:                 $HAVE_OPENGL" >&6;}
 { $as_echo "$as_me:${as_lineno-$LINENO}: --------------------------------------------" >&5
 $as_echo "$as_me: --------------------------------------------" >&6;}

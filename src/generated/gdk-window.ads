@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2021, AdaCore                     --
+--                     Copyright (C) 2000-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -31,7 +31,7 @@ with Gdk.Display;             use Gdk.Display;
 with Gdk.Drawing_Context;     use Gdk.Drawing_Context;
 with Gdk.Event;               use Gdk.Event;
 with Gdk.Frame_Clock;         use Gdk.Frame_Clock;
-with Gdk.Glcontext;           use Gdk.Glcontext;
+with Gdk.GLContext;           use Gdk.GLContext;
 with Gdk.RGBA;                use Gdk.RGBA;
 with Gdk.Rectangle;           use Gdk.Rectangle;
 with Gdk.Screen;              use Gdk.Screen;
@@ -650,14 +650,14 @@ package Gdk.Window is
    --  system, or null
 
    function Create_Gl_Context
-      (Self : Gdk.Gdk_Window) return Gdk.Glcontext.Gdk_Glcontext;
-   --  Creates a new Gdk.Glcontext.Gdk_Glcontext matching the framebuffer
+      (Self : Gdk.Gdk_Window) return Gdk.GLContext.Gdk_GLContext;
+   --  Creates a new Gdk.GLContext.Gdk_GLContext matching the framebuffer
    --  format to the visual of the Gdk.Gdk_Window. The context is disconnected
    --  from any particular window or surface.
-   --  If the creation of the Gdk.Glcontext.Gdk_Glcontext failed, Error will
+   --  If the creation of the Gdk.GLContext.Gdk_GLContext failed, Error will
    --  be set.
-   --  Before using the returned Gdk.Glcontext.Gdk_Glcontext, you will need to
-   --  call Gdk.Glcontext.Make_Current or Gdk.Glcontext.Realize.
+   --  Before using the returned Gdk.GLContext.Gdk_GLContext, you will need to
+   --  call Gdk.GLContext.Make_Current or Gdk.GLContext.Realize.
    --  Since: gtk+ 3.16
 
    function Create_Similar_Image_Surface
