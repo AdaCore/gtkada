@@ -35,7 +35,6 @@ GPRINSTALL_FULL = ${GPRINSTALL} -p -f --project-subdir=$(PRJDIR) \
 
 GETTEXT_INTL=@GETTEXT_INTL@
 HAVE_GETTEXT=@HAVE_GETTEXT@
-HAVE_OPENGL=@HAVE_OPENGL@
 BUILD_SHARED=@BUILD_SHARED@
 BUILD_STATIC=@BUILD_STATIC@
 BUILD_STATIC_PIC=@BUILD_STATIC_PIC@
@@ -83,9 +82,6 @@ tools:
 build_library_type/%:  src/gtkada-intl.adb
 	@echo "====== Building $(@F) libraries ====="
 	${GPRBUILD_FULL} -XLIBRARY_TYPE=$(@F) -Psrc/gtkada.gpr
-ifeq (${HAVE_OPENGL}, True)
-	${GPRBUILD_FULL} -XLIBRARY_TYPE=$(@F) -Psrc/opengl/gtkada_gl.gpr
-endif
 
 src/gtkada-intl.adb: src/gtkada-intl.gpb Makefile
 	gnatprep -DGETTEXT_INTL=$(GETTEXT_INTL) -DHAVE_GETTEXT=$(HAVE_GETTEXT) src/gtkada-intl.gpb $@
@@ -99,12 +95,6 @@ install/%: force
 		--sources-subdir=include/gtkada/gtkada.$(@F) \
 		--lib-subdir=lib/gtkada/gtkada.$(@F) \
 		-Psrc/gtkada.gpr
-ifeq (${HAVE_OPENGL}, True)
-	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) --build-name=$(@F) \
-		--sources-subdir=include/gtkada/gtkada_gl.$(@F) \
-		--lib-subdir=lib/gtkada/gtkada_gl.$(@F) \
-		-Psrc/opengl/gtkada_gl.gpr
-endif
 
 install-clean:
 ifneq (,$(wildcard $(prefix)/lib/gnat/manifests/gtkada))
