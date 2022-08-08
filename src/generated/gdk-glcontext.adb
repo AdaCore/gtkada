@@ -25,18 +25,18 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 
-package body Gdk.Glcontext is
+package body Gdk.GLContext is
 
-   package Type_Conversion_Gdk_Glcontext is new Glib.Type_Conversion_Hooks.Hook_Registrator
-     (Get_Type'Access, Gdk_Glcontext_Record);
-   pragma Unreferenced (Type_Conversion_Gdk_Glcontext);
+   package Type_Conversion_Gdk_GLContext is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Get_Type'Access, Gdk_GLContext_Record);
+   pragma Unreferenced (Type_Conversion_Gdk_GLContext);
 
    -----------------------
    -- Get_Debug_Enabled --
    -----------------------
 
    function Get_Debug_Enabled
-      (Self : not null access Gdk_Glcontext_Record) return Boolean
+      (Self : not null access Gdk_GLContext_Record) return Boolean
    is
       function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_gl_context_get_debug_enabled");
@@ -49,7 +49,7 @@ package body Gdk.Glcontext is
    -----------------
 
    function Get_Display
-      (Self : not null access Gdk_Glcontext_Record)
+      (Self : not null access Gdk_GLContext_Record)
        return Gdk.Display.Gdk_Display
    is
       function Internal (Self : System.Address) return System.Address;
@@ -64,7 +64,7 @@ package body Gdk.Glcontext is
    ----------------------------
 
    function Get_Forward_Compatible
-      (Self : not null access Gdk_Glcontext_Record) return Boolean
+      (Self : not null access Gdk_GLContext_Record) return Boolean
    is
       function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_gl_context_get_forward_compatible");
@@ -77,7 +77,7 @@ package body Gdk.Glcontext is
    --------------------------
 
    procedure Get_Required_Version
-      (Self  : not null access Gdk_Glcontext_Record;
+      (Self  : not null access Gdk_GLContext_Record;
        Major : out Glib.Gint;
        Minor : out Glib.Gint)
    is
@@ -95,13 +95,13 @@ package body Gdk.Glcontext is
    ------------------------
 
    function Get_Shared_Context
-      (Self : not null access Gdk_Glcontext_Record) return Gdk_Glcontext
+      (Self : not null access Gdk_GLContext_Record) return Gdk_GLContext
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_gl_context_get_shared_context");
-      Stub_Gdk_Glcontext : Gdk_Glcontext_Record;
+      Stub_Gdk_GLContext : Gdk_GLContext_Record;
    begin
-      return Gdk.Glcontext.Gdk_Glcontext (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Glcontext));
+      return Gdk.GLContext.Gdk_GLContext (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_GLContext));
    end Get_Shared_Context;
 
    ----------------
@@ -109,7 +109,7 @@ package body Gdk.Glcontext is
    ----------------
 
    function Get_Use_Es
-      (Self : not null access Gdk_Glcontext_Record) return Boolean
+      (Self : not null access Gdk_GLContext_Record) return Boolean
    is
       function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_gl_context_get_use_es");
@@ -122,7 +122,7 @@ package body Gdk.Glcontext is
    -----------------
 
    procedure Get_Version
-      (Self  : not null access Gdk_Glcontext_Record;
+      (Self  : not null access Gdk_GLContext_Record;
        Major : out Glib.Gint;
        Minor : out Glib.Gint)
    is
@@ -140,7 +140,7 @@ package body Gdk.Glcontext is
    ----------------
 
    function Get_Window
-      (Self : not null access Gdk_Glcontext_Record) return Gdk.Gdk_Window
+      (Self : not null access Gdk_GLContext_Record) return Gdk.Gdk_Window
    is
       function Internal (Self : System.Address) return Gdk.Gdk_Window;
       pragma Import (C, Internal, "gdk_gl_context_get_window");
@@ -153,7 +153,7 @@ package body Gdk.Glcontext is
    ---------------
 
    function Is_Legacy
-      (Self : not null access Gdk_Glcontext_Record) return Boolean
+      (Self : not null access Gdk_GLContext_Record) return Boolean
    is
       function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_gl_context_is_legacy");
@@ -165,7 +165,7 @@ package body Gdk.Glcontext is
    -- Make_Current --
    ------------------
 
-   procedure Make_Current (Self : not null access Gdk_Glcontext_Record) is
+   procedure Make_Current (Self : not null access Gdk_GLContext_Record) is
       procedure Internal (Self : System.Address);
       pragma Import (C, Internal, "gdk_gl_context_make_current");
    begin
@@ -177,7 +177,7 @@ package body Gdk.Glcontext is
    -------------
 
    function Realize
-      (Self : not null access Gdk_Glcontext_Record) return Boolean
+      (Self : not null access Gdk_GLContext_Record) return Boolean
    is
       function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_gl_context_realize");
@@ -190,7 +190,7 @@ package body Gdk.Glcontext is
    -----------------------
 
    procedure Set_Debug_Enabled
-      (Self    : not null access Gdk_Glcontext_Record;
+      (Self    : not null access Gdk_GLContext_Record;
        Enabled : Boolean)
    is
       procedure Internal (Self : System.Address; Enabled : Glib.Gboolean);
@@ -204,7 +204,7 @@ package body Gdk.Glcontext is
    ----------------------------
 
    procedure Set_Forward_Compatible
-      (Self       : not null access Gdk_Glcontext_Record;
+      (Self       : not null access Gdk_GLContext_Record;
        Compatible : Boolean)
    is
       procedure Internal (Self : System.Address; Compatible : Glib.Gboolean);
@@ -218,7 +218,7 @@ package body Gdk.Glcontext is
    --------------------------
 
    procedure Set_Required_Version
-      (Self  : not null access Gdk_Glcontext_Record;
+      (Self  : not null access Gdk_GLContext_Record;
        Major : Glib.Gint;
        Minor : Glib.Gint)
    is
@@ -236,7 +236,7 @@ package body Gdk.Glcontext is
    ----------------
 
    procedure Set_Use_Es
-      (Self   : not null access Gdk_Glcontext_Record;
+      (Self   : not null access Gdk_GLContext_Record;
        Use_Es : Glib.Gint)
    is
       procedure Internal (Self : System.Address; Use_Es : Glib.Gint);
@@ -260,12 +260,12 @@ package body Gdk.Glcontext is
    -- Get_Current --
    -----------------
 
-   function Get_Current return Gdk_Glcontext is
+   function Get_Current return Gdk_GLContext is
       function Internal return System.Address;
       pragma Import (C, Internal, "gdk_gl_context_get_current");
-      Stub_Gdk_Glcontext : Gdk_Glcontext_Record;
+      Stub_Gdk_GLContext : Gdk_GLContext_Record;
    begin
-      return Gdk.Glcontext.Gdk_Glcontext (Get_User_Data (Internal, Stub_Gdk_Glcontext));
+      return Gdk.GLContext.Gdk_GLContext (Get_User_Data (Internal, Stub_Gdk_GLContext));
    end Get_Current;
 
-end Gdk.Glcontext;
+end Gdk.GLContext;
