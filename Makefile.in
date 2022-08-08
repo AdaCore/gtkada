@@ -90,10 +90,7 @@ endif
 src/gtkada-intl.adb: src/gtkada-intl.gpb Makefile
 	gnatprep -DGETTEXT_INTL=$(GETTEXT_INTL) -DHAVE_GETTEXT=$(HAVE_GETTEXT) src/gtkada-intl.gpb $@
 
-testgtk/opengl/view_gl.adb: testgtk/opengl/view_gl.gpb Makefile
-	gnatprep -r -c -DHAVE_GL=${HAVE_OPENGL} -DWIN32=False testgtk/opengl/view_gl.gpb $@
-
-tests: testgtk/opengl/view_gl.adb
+tests:
 	@echo "====== Building tests ====="
 	cd testgtk; ${GPRBUILD_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) -Ptestgtk.gpr -aP ../src
 
