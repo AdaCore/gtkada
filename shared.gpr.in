@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                      Copyright (C) 2015, AdaCore                         --
+--                   Copyright (C) 2015-2022, AdaCore                       --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -28,9 +28,6 @@ project Shared is
    type Build_Type is ("Debug", "Production");
    Build : Build_Type := external ("BUILD", "@BUILD_TYPE@");
 
-   type Boolean_Type is ("True", "False");
-   Build_Opengl : Boolean_Type := "@HAVE_OPENGL@";
-
    type Yes_No is ("yes", "no");
    Need_Objective_C : Yes_No := "@NEED_OBJECTIVE_C@";
 
@@ -45,8 +42,6 @@ project Shared is
    Version     := "@PACKAGE_VERSION@";
    Gtk_Include := Gtk.Gtk_Default_Include & (@GTK_CFLAGS_GPR@);
    Gtk_Libs    := Gtk.Gtk_Default_Libs    & (@GTK_LIBS_GPR@);
-   GL_Include  := Gtk.GL_Default_Include  & (@GL_CFLAGS_GPR@);
-   GL_Libs     := Gtk.GL_Default_Libs     & (@GL_LIBS_GPR@);
 
    Adaflags    := External_As_List ("ADAFLAGS", " ");
    Cflags      := External_As_List ("CFLAGS", " ");
