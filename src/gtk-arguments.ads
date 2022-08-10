@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2021, AdaCore                     --
+--                     Copyright (C) 1998-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -210,7 +210,8 @@ package Gtk.Arguments is
    function Unchecked_To_Gdk_Modifier_Type
      is new Glib.Values.Unsafe_Enum_Nth (Gdk.Types.Gdk_Modifier_Type);
    function Unchecked_To_Gtk_Entry_Icon_Position
-     is new Glib.Values.Unsafe_Enum_Nth (Gtk.GEntry.Gtk_Entry_Icon_Position);
+     (Args : Glib.Values.C_GValues; Num : Guint)
+     return Gtk.GEntry.Gtk_Entry_Icon_Position;
    function Unchecked_To_Gtk_Text_Iter
      is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Text_Iter.Gtk_Text_Iter);
    function Unchecked_To_Gtk_Text_Extend_Selection

@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2022, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -336,6 +336,20 @@ package body Gtk.Arguments is
       Unsafe_Nth (Args, Num, Val);
       return Convert (Get_Proxy (Val));
    end Unchecked_To_Cairo_Rectangle_Int_Access;
+
+   ------------------------------------------
+   -- Unchecked_To_Gtk_Entry_Icon_Position --
+   ------------------------------------------
+
+   function Unchecked_To_Gtk_Entry_Icon_Position
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Gtk.GEntry.Gtk_Entry_Icon_Position
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Gtk.GEntry.Gtk_Entry_Icon_Position'Val (Get_Enum (Val));
+   end Unchecked_To_Gtk_Entry_Icon_Position;
 
    --------------------------------------
    -- Unchecked_To_Cairo_Rectangle_Int --
