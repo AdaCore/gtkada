@@ -108,7 +108,9 @@ install: install-clean
 	cd testgtk; ${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) \
 		--mode=usage --exec-subdir=${DESTDIR}${exampledir} \
 		-Ptestgtk.gpr -aP ../src
-
+ifneq ($(OS),Windows_NT)
+	ln -s ${libdir} ${DESTDIR}${datadir}/examples/gtkada
+endif
 	@echo '-----------------------------------------------------------------------'
 	@echo '--  GtkAda has now been installed.                                   --'
 	@echo '--  To use the library, you may need to update LD_LIBRARY_PATH       --'
