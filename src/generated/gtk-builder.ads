@@ -362,7 +362,8 @@ package Gtk.Builder is
 
    function Add_From_Resource
       (Builder       : not null access Gtk_Builder_Record;
-       Resource_Path : UTF8_String) return Guint;
+       Resource_Path : UTF8_String;
+       Error         : access Glib.Error.GError) return Guint;
    --  Parses a resource file containing a [GtkBuilder UI
    --  definition][BUILDER-UI] and merges it with the current contents of
    --  Builder.
