@@ -1,0 +1,7 @@
+Code-Review+2: Adrien Boulanger <boulanger@adacore.com>
+Code-Review-1: CI Builder <ci-builder@adacore.com>
+Submitted-by: Anthony Leonardo Gracio <leonardo@adacore.com>
+Submitted-at: Fri, 23 Sep 2022 13:56:10 +0000
+Reviewed-on: https://git.adacore-it.com/c/gtkada/+/122044
+Project: gtkada
+Branch: refs/heads/master
