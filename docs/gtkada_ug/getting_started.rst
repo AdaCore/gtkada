@@ -157,8 +157,10 @@ executable. When the paths are absolute, the location of
 GDK_PIXBUF_MODULEDIR doesn't matter when loading the libraries however it will
 be necessary to re-generate GDK_PIXBUF_MODULE_FILE on each host.
 Two executables are packaged with GtkAda to re-generate the modules' paths:
-gdk-pixbuf-query-loaders, which generates relative paths, and
-gdk-pixbuf-query-loaders-absolute, which generates absolute paths.
+`gdk-pixbuf-query-loaders`, which generates relative paths, and
+`gdk-pixbuf-query-loaders-absolute`, which generates absolute paths. Both should
+be launched with the `--update-cache` option to re-generate the proper cache file
+(by default it will just output the contents on stdout).
 
 Organization of the GtkAda package
 ==================================
