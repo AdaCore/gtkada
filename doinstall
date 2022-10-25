@@ -124,6 +124,13 @@ install_binaries() {
   echo "Setting up the environment"
   eval `"$basedir"/bin/gtkada-env.sh --print-only`
 
+  # Update immodules cache
+
+  LD_LIBRARY_PATH=$basedir/lib/gnatstudio:$LD_LIBRARY_PATH \
+  GTK_IM_MODULE_FILE=$basedir/lib/gnatstudio/gtk-3.0/3.0.0/immodules.cache \
+  GTK_PATH=$basedir/lib/gnatstudio/gtk-3.0 \
+  $basedir/bin/gtk-query-immodules-3.0 --update-cache
+
   echo "Compiling GtkAda"
   ./configure --prefix="$basedir" --with-GL=no && make all install 2>&1 | \
      tee install.log
