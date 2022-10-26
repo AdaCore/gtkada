@@ -139,7 +139,7 @@ install_binaries() {
   $basedir/bin/gtk-query-immodules-3.0 --update-cache
 
   echo "Compiling GtkAda"
-  ./configure --prefix="$basedir" --with-GL=no && make all install 2>&1 | \
+  ./configure --prefix="$basedir" && make all install 2>&1 | \
      tee install.log
 
   # Test for the presence of a gtkada.gpr as check that the install succeeded
