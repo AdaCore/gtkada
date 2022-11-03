@@ -34,6 +34,8 @@ with Gtk.Volume_Button; use Gtk.Volume_Button;
 
 package body Create_Range is
 
+   Zero_String  : aliased String := (1 => ASCII.NUL);
+
    ----------
    -- Help --
    ----------
@@ -107,7 +109,8 @@ package body Create_Range is
       Pack_Start (Box3, Label, False, False, 0);
 
       Gtk_New (Scale_Button, Icon_Size_Button, 0.0, 100.0, 2.0,
-               Icons => (1 .. 0 => null));
+               --               Icons => (1 .. 0 => null));  -- it seems to be a GTK issue in gtkscalebutton.c:988
+               Icons => (1 => Zero_String'Access));
       Pack_Start (Box3, Scale_Button, False, False, 0);
 
       Gtk_New (Label, "Volume button:");
