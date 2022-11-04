@@ -31,7 +31,6 @@
 with Ada.Containers.Indefinite_Hashed_Maps;
 with Ada.Strings.Hash;
 with Ada.Tags;
-with Cairo;
 with GNAT.Strings;
 with Glib;                use Glib;
 with Glib.Simple_Action;
@@ -49,6 +48,7 @@ with Gtk.Box;
 with Gtk.Container;
 with Gtk.Enums;
 with Gtk.Event_Box;
+with Gtk.Handlers;
 with Gtk.Image;
 with Gtk.Label;
 with Gtk.Menu;
@@ -60,6 +60,7 @@ with Gtk.Window;
 with Gtkada.Handlers;
 with Gtkada.Multi_Paned;
 with Pango.Font;
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package Gtkada.MDI is
 
@@ -1495,16 +1496,30 @@ private
 
       --  Handling of Dnd
       Drag_Start_X, Drag_Start_Y : Gint;
-      In_Drag           : Drag_Status := No_Drag;
-      Dnd_Rectangle     : Gdk.Rectangle.Gdk_Rectangle;  --  Highlighted area
-      Old_Dnd_Position  : Child_Position := Position_Automatic;
 
-      Dnd_Rectangle_Real : Gdk.Rectangle.Gdk_Rectangle;
-      --  Area to redraw to delete the Dnd overlay window
+      In_Drag                    : Drag_Status := No_Drag;
+      --  The Dnd status
 
-      Dnd_Target        : Gdk.Gdk_Window;     --  The current target for DND
+      Dnd_Rectangle              : Gdk.Rectangle.Gdk_Rectangle;
+      --  the Dnd highlighted area (e.g: left side of notebook)
 
-      Dnd_Overlay : Cairo.Cairo_Surface := Cairo.Null_Surface;
+      Old_Dnd_Position           : Child_Position := Position_Automatic;
+      --  The old Dnd position (e.g: top side of notebook). Used to know if
+      --  we should refresh the Dnd overlay (and the message) or not.
+
+      Dnd_Parent_Rect    : Gdk.Rectangle.Gdk_Rectangle;
+      --  The area that corresponds to the Dnd target parent (e.g: parent
+      --  notebook)
+
+      Dnd_Area_Message   : Unbounded_String;
+      --  The message displayed when Dnd is being performed, indicating the
+      --  are where the MDI child will be dropped
+
+      Dnd_Handler_Id     : Gtk.Handlers.Handler_Id;
+      --  The Dnd overlay drawing handler
+
+      Dnd_Target         : Gdk.Gdk_Window;
+      --  The current target for DND
 
       Drag_Areas : Allowed_Areas;
       --  The allowed areas during a drag
