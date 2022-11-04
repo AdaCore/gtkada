@@ -39,7 +39,6 @@ with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Containers.Vectors;
 with Ada.Exceptions;          use Ada.Exceptions;
 with Ada.Strings.Fixed;       use Ada.Strings.Fixed;
-with Ada.Strings.Unbounded;   use Ada.Strings.Unbounded;
 with Ada.Tags;                use Ada.Tags;
 with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
@@ -94,7 +93,6 @@ with Gtk.Enums;               use Gtk.Enums;
 with Gtk.Event_Box;           use Gtk.Event_Box;
 with Gtk.Frame;               use Gtk.Frame;
 with Gtk.GEntry;              use Gtk.GEntry;
-with Gtk.Handlers;
 with Gtk.Image;               use Gtk.Image;
 with Gtk.Image_Menu_Item;     use Gtk.Image_Menu_Item;
 with Gtk.Label;               use Gtk.Label;
@@ -487,9 +485,14 @@ package body Gtkada.MDI is
    --  In_Central is set to true if the Parent is inside the central area.
 
    procedure Draw_Dnd_Rectangle
-     (Child : access MDI_Child_Record'Class;
+     (Child     : access MDI_Child_Record'Class;
       Hide_Only : Boolean := False);
    --  Draw the DND rectangle
+
+   function Draw_DnD_Overlay
+     (Self : access Gtk_Widget_Record'Class;
+      Cr   : Cairo_Context) return Boolean;
+   --  Used to draw the Dnd overlay over the MDI when Dnd is active
 
    procedure Update_Float_Menu (Child : access MDI_Child_Record'Class);
    --  Update the state of the "Float" menu item associated with child
@@ -1814,6 +1817,9 @@ package body Gtkada.MDI is
       --  destroyed when their parent container is destroyed, so we have
       --  nothing to do for them.
 
+      --  Make sure to disconnect the DnD draw handler, if any
+      Gtk.Handlers.Disconnect (M, M.Dnd_Handler_Id);
+
       while Tmp /= Null_List loop
          --  Get the next field first, since Destroy will actually destroy Tmp
 
@@ -2260,15 +2266,12 @@ package body Gtkada.MDI is
 
       case C.MDI.In_Drag is
          when In_Pre_Drag =>
-            Gtkada.Style.Delete_Overlay (C.MDI, C.MDI.Dnd_Overlay);
             Child_Drag_Finished (C);
 
          when In_Drag =>
             if C.MDI.Central /= null then
                Set_Border_Width (C.MDI.Central, 0);
             end if;
-
-            Gtkada.Style.Delete_Overlay (C.MDI, C.MDI.Dnd_Overlay);
 
             if Allow_Move then
                Get_Dnd_Target
@@ -8856,134 +8859,108 @@ package body Gtkada.MDI is
       Widget.On_Button_Press_Event (Button_Pressed_Forced'Access, Child);
    end Set_Dnd_Source;
 
+   ----------------------
+   -- Draw_DnD_Overlay --
+   ----------------------
+
+   function Draw_DnD_Overlay
+     (Self : access Gtk_Widget_Record'Class;
+      Cr   : Cairo_Context) return Boolean
+   is
+      MDI                    : constant MDI_Window := MDI_Window (Self);
+      Color                  : Gdk_RGBA;
+      Layout                 : Pango_Layout;
+      Ink_Rect, Logical_Rect : Pango_Rectangle;
+      X, Y                   : Gdouble;
+      W, H                   : Gdouble;
+      Line_Width             : constant := 3.0;
+   begin
+      --  Adapt the color to make it more visible on the current theme
+      Color := Gtkada.Style.Shade_Or_Lighten (MDI.Title_Bar_Color, 0.1);
+
+      Color.Alpha := 0.5;
+      Set_Source_RGBA (Cr, Color);
+      Cairo.Rectangle
+        (Cr,
+         Gdouble (MDI.Dnd_Parent_Rect.X),
+         Gdouble (MDI.Dnd_Parent_Rect.Y),
+         Gdouble (MDI.Dnd_Parent_Rect.Width),
+         Gdouble (MDI.Dnd_Parent_Rect.Height));
+      Cairo.Fill (Cr);
+
+      Color.Alpha := 0.6;
+      Set_Source_RGBA (Cr, Color);
+
+      --  Offset here is to compensate the line width
+      Gtkada.Style.Rounded_Rectangle
+        (Cr,
+         Gdouble (MDI.Dnd_Rectangle.X) + Line_Width,
+         Gdouble (MDI.Dnd_Rectangle.Y) + Line_Width,
+         Gdouble (MDI.Dnd_Rectangle.Width) - 2.0 * Line_Width,
+         Gdouble (MDI.Dnd_Rectangle.Height) - 2.0 * Line_Width,
+         Radius => 8.0);
+      Cairo.Fill_Preserve (Cr);
+
+      Color.Alpha := 0.9;
+      Set_Source_RGBA (Cr, Color);
+      Set_Line_Width (Cr, 3.0);
+      Stroke (Cr);
+
+      Layout := MDI.Create_Pango_Layout;
+      Layout.Set_Markup
+        (ASCII.HT & To_String (MDI.Dnd_Area_Message)
+         & ASCII.LF & MDI.Dnd_Message.all);
+
+      Layout.Get_Extents (Ink_Rect, Logical_Rect);
+      W := Gdouble (Logical_Rect.Width / Pango_Scale);
+      H := Gdouble (Logical_Rect.Height / Pango_Scale);
+
+      X := Gdouble (MDI.Dnd_Rectangle.X) +
+        (Gdouble (MDI.Dnd_Rectangle.Width) - W) / 2.0;
+      Y := Gdouble (MDI.Dnd_Rectangle.Y) +
+        (Gdouble (MDI.Dnd_Rectangle.Height) - H) / 2.0;
+
+      --  Keep the text window within the MDI
+
+      X := Gdouble'Max (X, 0.0);
+      Y := Gdouble'Max (Y, 0.0);
+
+      X := Gdouble'Min (X, Gdouble (MDI.Get_Allocated_Width) - W);
+      Y := Gdouble'Min (Y, Gdouble (MDI.Get_Allocated_Height) - H);
+
+      --  Slightly lighter (and non-transparent) background for the msg.
+      Set_Line_Width (Cr, 1.0);
+      Set_Source_RGBA
+        (Cr, Gtkada.Style.Shade_Or_Lighten (Color, 0.2));
+      Gtkada.Style.Rounded_Rectangle
+        (Cr, X - 2.0, Y - 2.0, W + 4.0, H + 4.0, 4.0);
+      Cairo.Fill (Cr);
+
+      Get_Style_Context (MDI).Render_Layout (Cr, X, Y, Layout);
+      Unref (Layout);
+
+      return True;
+   end Draw_DnD_Overlay;
+
    ------------------------
    -- Draw_Dnd_Rectangle --
    ------------------------
 
    procedure Draw_Dnd_Rectangle
-     (Child : access MDI_Child_Record'Class;
+     (Child     : access MDI_Child_Record'Class;
       Hide_Only : Boolean := False)
    is
       MDI : constant MDI_Window := Child.MDI;
 
-      Current    : Gtk_Widget;
-      Position   : Child_Position;
-      New_Pos    : Gdk_Rectangle;
+      Current     : Gtk_Widget;
+      Position    : Child_Position;
+      New_Pos     : Gdk_Rectangle;
       Parent_Rect : Gdk_Rectangle;
-      Message    : Unbounded_String;
-      In_Central : Boolean;
-      C3         : MDI_Child;
-      Note       : Gtk_Notebook;
-      Allowed    : Boolean;
-
-      procedure Do_Draw (Cr : Cairo_Context; Draw : Boolean);
-      procedure Do_Draw (Cr : Cairo_Context; Draw : Boolean) is
-         Color : Gdk_RGBA;
-         Layout : Pango_Layout;
-         Ink_Rect, Logical_Rect : Pango_Rectangle;
-         X, Y : Gdouble;
-         W, H : Gdouble;
-      begin
-         if Draw then
-            if not Allowed
-              or else Current = null
-            then
-               --  A future floating child ? Nothing to draw for now, and there
-               --  will be nothing to hide either.
-               MDI.Dnd_Rectangle_Real.Width := 0;
-               return;
-            end if;
-
-            --  Adapt the color to make it more visible on the current theme
-            Color := Gtkada.Style.Shade_Or_Lighten (MDI.Title_Bar_Color, 0.1);
-
-            Color.Alpha := 0.5;
-            Set_Source_RGBA (Cr, Color);
-            Cairo.Rectangle
-              (Cr,
-               Gdouble (Parent_Rect.X),
-               Gdouble (Parent_Rect.Y),
-               Gdouble (Parent_Rect.Width),
-               Gdouble (Parent_Rect.Height));
-            Cairo.Fill (Cr);
-
-            Color.Alpha := 0.6;
-            Set_Source_RGBA (Cr, Color);
-
-            MDI.Dnd_Rectangle := New_Pos;
-
-            --  Offset here is to compensate the line width
-            Gtkada.Style.Rounded_Rectangle
-              (Cr,
-               Gdouble (New_Pos.X) + 3.0,
-               Gdouble (New_Pos.Y) + 3.0,
-               Gdouble (New_Pos.Width) - 6.0,
-               Gdouble (New_Pos.Height) - 6.0,
-               Radius => 8.0);
-            Cairo.Fill_Preserve (Cr);
-
-            Color.Alpha := 0.9;
-            Set_Source_RGBA (Cr, Color);
-            Set_Line_Width (Cr, 3.0);
-            Stroke (Cr);
-
-            Layout := MDI.Create_Pango_Layout;
-            Layout.Set_Markup
-              (ASCII.HT & To_String (Message)
-               & ASCII.LF & MDI.Dnd_Message.all);
-
-            Layout.Get_Extents (Ink_Rect, Logical_Rect);
-            W := Gdouble (Logical_Rect.Width / Pango_Scale);
-            H := Gdouble (Logical_Rect.Height / Pango_Scale);
-
-            X := Gdouble (MDI.Dnd_Rectangle.X) +
-              (Gdouble (New_Pos.Width) - W) / 2.0;
-            Y := Gdouble (MDI.Dnd_Rectangle.Y) +
-              (Gdouble (New_Pos.Height) - H) / 2.0;
-
-            --  Keep the text window within the MDI
-
-            X := Gdouble'Max (X, 0.0);
-            Y := Gdouble'Max (Y, 0.0);
-
-            if X + W > Gdouble (MDI.Get_Allocated_Width) then
-               X := Gdouble (MDI.Get_Allocated_Width) - W;
-            end if;
-
-            if Y + H > Gdouble (MDI.Get_Allocated_Height) then
-               Y := Gdouble (MDI.Get_Allocated_Height) - H;
-            end if;
-
-            --  Slightly lighter (and non-transparent) background for the msg.
-            Set_Line_Width (Cr, 1.0);
-            Set_Source_RGBA
-              (Cr, Gtkada.Style.Shade_Or_Lighten (Color, 0.2));
-            Gtkada.Style.Rounded_Rectangle
-              (Cr, X - 2.0, Y - 2.0, W + 4.0, H + 4.0, 4.0);
-            Cairo.Fill (Cr);
-
-            Get_Style_Context (MDI).Render_Layout (Cr, X, Y, Layout);
-            Unref (Layout);
-
-            MDI.Dnd_Rectangle_Real.X := Gint'Min (Parent_Rect.X, Gint (X) - 3);
-            MDI.Dnd_Rectangle_Real.Y := Gint'Min (Parent_Rect.Y, Gint (Y) - 3);
-            MDI.Dnd_Rectangle_Real.Width := Gint'Max
-              (Parent_Rect.Width + Parent_Rect.X - MDI.Dnd_Rectangle_Real.X,
-               Gint (W + X) + 4 - MDI.Dnd_Rectangle_Real.X);
-            MDI.Dnd_Rectangle_Real.Height := Gint'Max
-              (Parent_Rect.Height + Parent_Rect.Y - MDI.Dnd_Rectangle_Real.Y,
-               Gint (H + Y) + 4 - MDI.Dnd_Rectangle_Real.Y);
-
-         elsif MDI.Dnd_Rectangle_Real.Width /= 0 then
-            Cairo.Rectangle
-              (Cr,
-               Gdouble (MDI.Dnd_Rectangle_Real.X),
-               Gdouble (MDI.Dnd_Rectangle_Real.Y),
-               Gdouble (MDI.Dnd_Rectangle_Real.Width),
-               Gdouble (MDI.Dnd_Rectangle_Real.Height));
-            Cairo.Fill (Cr);
-         end if;
-      end Do_Draw;
+      Message     : Unbounded_String;
+      In_Central  : Boolean;
+      C3          : MDI_Child;
+      Note        : Gtk_Notebook;
+      Allowed     : Boolean;
 
       Old_Dnd_Target : constant Gdk.Gdk_Window := MDI.Dnd_Target;
 
@@ -9088,11 +9065,24 @@ package body Gtkada.MDI is
       --  Call this if the state has changed to hide the current highlight. We
       --  might, or not, highlight the target depending whether it is allowed
       --  for Child.
-
       if not (Position = MDI.Old_Dnd_Position
               and then MDI.Dnd_Target = Old_Dnd_Target)
+        and then Current /= null
       then
-         Gtkada.Style.Draw_Overlay (MDI, MDI.Dnd_Overlay, Do_Draw'Access);
+         MDI.Dnd_Rectangle := New_Pos;
+         MDI.Dnd_Parent_Rect := Parent_Rect;
+         MDI.Dnd_Area_Message := Message;
+
+         --  Connect to the MDI draw handler to draw the Dnd overlay over it
+         if MDI.Dnd_Handler_Id.Id = Gtk.Handlers.Null_Handler_Id then
+            MDI.Dnd_Handler_Id := Return_Callback.Connect
+              (MDI, Signal_Draw,
+               Return_Callback.To_Marshaller (Draw_DnD_Overlay'Access),
+               After => True);
+         end if;
+
+         --  Force a redraw since we have changed the Dnd overlay and message
+         MDI.Queue_Draw;
       end if;
 
       --  Update the drag state.
@@ -9170,10 +9160,12 @@ package body Gtkada.MDI is
    -- Child_Drag_Finished --
    -------------------------
 
-   procedure Child_Drag_Finished (Child : not null access MDI_Child_Record) is
-      pragma Unreferenced (Child);
+   procedure Child_Drag_Finished (Child : not null access MDI_Child_Record)
+   is
+      MDI : MDI_Window renames Child.MDI;
    begin
-      null;
+      Gtk.Handlers.Disconnect (MDI, MDI.Dnd_Handler_Id);
+      MDI.Queue_Draw;
    end Child_Drag_Finished;
 
    --------------------
