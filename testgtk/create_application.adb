@@ -111,7 +111,7 @@ package body Create_Application is
       Tool_Menu : Gmenu_Model;
       Success : Guint;
       Error   : aliased GError;
-      pragma Unreferenced (Success);
+
    begin
       --  Activation is when we should create the main window
 
@@ -119,11 +119,14 @@ package body Create_Application is
 
       Win := Gtk_Application_Window_New (App);
       Win.Set_Title ("GtkApplication test");
-      Win.Set_Icon_Name ("gtk-home");
+      Win.Set_Icon_Name ("go-home");
       Win.Set_Default_Size (200, 200);
 
       Builder := Gtk_Builder_New;
       Success := Builder.Add_From_File ("application.ui", Error'Access);
+      if Success = 0 then
+         Put_Line ("Error parsing application.ui: " & Get_Message (Error));
+      end if;
 
       Win.Add (Gtk_Widget (Builder.Get_Object ("grid")));
 
