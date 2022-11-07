@@ -129,9 +129,10 @@ package body Create_Cursors is
 
       --  The cursor change is asynchronous: if you plan to do a blocking
       --  operation right after setting this, it is useful to call
-      --  Process_All_Updates in order for impacted windows to have the new
+      --  Process_Updates in order for impacted windows to have the new
       --  cursor.
-      Process_All_Updates;
+      Process_Updates (Self            => Window,
+                       Update_Children => False);
 
       --  Note: the cursor pixmap is copied to the server, which keeps it as
       --  long at it needs. On the client side, it is possible to delete the

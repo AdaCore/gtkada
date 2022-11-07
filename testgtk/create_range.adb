@@ -32,7 +32,13 @@ with Gtk.Scale_Button;  use Gtk.Scale_Button;
 with Gtk.Scrollbar;     use Gtk.Scrollbar;
 with Gtk.Volume_Button; use Gtk.Volume_Button;
 
+with GNAT.Strings;
+
 package body Create_Range is
+
+   Before      : aliased String := "view-sort-descending" & ASCII.NUL;
+   After       : aliased String := "view-sort-ascending" & ASCII.NUL;
+   Slider_List : constant GNAT.Strings.String_List := (Before'Access, After'Access);
 
    ----------
    -- Help --
@@ -106,8 +112,7 @@ package body Create_Range is
       Gtk_New (Label, "Scale button:");
       Pack_Start (Box3, Label, False, False, 0);
 
-      Gtk_New (Scale_Button, Icon_Size_Button, 0.0, 100.0, 2.0,
-               Icons => (1 .. 0 => null));
+      Gtk_New (Scale_Button, Icon_Size_Button, 0.0, 100.0, 2.0, Icons => Slider_List);
       Pack_Start (Box3, Scale_Button, False, False, 0);
 
       Gtk_New (Label, "Volume button:");

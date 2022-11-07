@@ -102,6 +102,7 @@ package body Create_About is
       Set_Version (Dialog, "2.8.17");
       Set_Website (Dialog, "http://www.adacore.com");
       Set_Website_Label (Dialog, "AdaCore");
+      Set_Logo_Icon_Name (Dialog, "applications-system");
 
       --  Just checking that this works correctly
       declare
