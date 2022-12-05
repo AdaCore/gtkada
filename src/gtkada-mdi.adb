@@ -494,6 +494,11 @@ package body Gtkada.MDI is
       Cr   : Cairo_Context) return Boolean;
    --  Used to draw the Dnd overlay over the MDI when Dnd is active
 
+   procedure Remove_DnD_Overlay
+     (MDI    : not null access MDI_Window_Record'Class;
+      Redraw : Boolean := True);
+   --  Remove the DnD preview overlay, if any.
+
    procedure Update_Float_Menu (Child : access MDI_Child_Record'Class);
    --  Update the state of the "Float" menu item associated with child
 
@@ -1818,7 +1823,7 @@ package body Gtkada.MDI is
       --  nothing to do for them.
 
       --  Make sure to disconnect the DnD draw handler, if any
-      Gtk.Handlers.Disconnect (M, M.Dnd_Handler_Id);
+      Remove_DnD_Overlay (M, Redraw => False);
 
       while Tmp /= Null_List loop
          --  Get the next field first, since Destroy will actually destroy Tmp
@@ -2263,6 +2268,8 @@ package body Gtkada.MDI is
         ("Button release, drag=" & Drag_Status'Image (C.MDI.In_Drag));
 
       Pointer_Ungrab (Time => 0);
+
+      Remove_DnD_Overlay (MDI, Redraw => True);
 
       case C.MDI.In_Drag is
          when In_Pre_Drag =>
@@ -9091,6 +9098,21 @@ package body Gtkada.MDI is
 
    end Draw_Dnd_Rectangle;
 
+   ------------------------
+   -- Remove_DnD_Overlay --
+   ------------------------
+
+   procedure Remove_DnD_Overlay
+     (MDI    : not null access MDI_Window_Record'Class;
+      Redraw : Boolean := True) is
+   begin
+      Gtk.Handlers.Disconnect (MDI, MDI.Dnd_Handler_Id);
+
+      if Redraw then
+         MDI.Queue_Draw;
+      end if;
+   end Remove_DnD_Overlay;
+
    ----------------------
    -- Child_Drag_Begin --
    ----------------------
@@ -9164,8 +9186,7 @@ package body Gtkada.MDI is
    is
       MDI : MDI_Window renames Child.MDI;
    begin
-      Gtk.Handlers.Disconnect (MDI, MDI.Dnd_Handler_Id);
-      MDI.Queue_Draw;
+      Remove_DnD_Overlay (MDI, Redraw => True);
    end Child_Drag_Finished;
 
    --------------------
