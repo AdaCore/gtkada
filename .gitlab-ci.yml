@@ -1,0 +1,19 @@
+stages:
+  - build
+
+build:
+  services:
+     - image:sandbox-gtk
+     - cpu:8
+     - mem:16
+  stage: build
+  script:
+    - . ~/.aws_container_credentials
+    - export PATH=/it/e3/bin:$PATH
+
+    # Tell the anod sandbox to use our repository
+    - cd /it/wave
+    - anod vcs --add-repo gtkada $CI_PROJECT_DIR
+
+    # Build
+    - anod build gtkada
