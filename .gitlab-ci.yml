@@ -3,7 +3,7 @@ stages:
 
 build:
   services:
-     - image:sandbox-gtk
+     - image:gtk-deps
      - cpu:8
      - mem:16
   stage: build
