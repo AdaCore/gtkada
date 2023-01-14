@@ -88,6 +88,17 @@ debugging features.
     are mostly for internal use by gtk+ developpers, although
     @samp{keybindings} might prove useful sometimes.
 
+*keyboard input buffers/freezes while debugging on Windows*
+  GTK on windows is installing a low level hook to handle snapping via 
+  `set_up_low_level_keyboard_hook`. When the GTK application is stopped by
+  the debugger, the GTK handler will become irresponsive and freeze
+  the Keyboard input for `LowLevelHooksTimeout` ms.
+  Workarounds: 
+  - Set :file:`HKEY_CURRENT_USER\Control Panel\Desktop\LowLevelHooksTimeout`
+  registry to 30ms and restart the session.
+  - Recompile GTK after removing `set_up_low_level_keyboard_hook` calls.
+  See https://gitlab.gnome.org/GNOME/gtk/-/issues/2015 for more details.
+
 .. highlight:: ada
 
 *Import the C function ada_gtk_debug_get_ref_count*
