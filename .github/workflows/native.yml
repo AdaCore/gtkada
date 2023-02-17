@@ -11,11 +11,11 @@ on:
 name: Native (FSF) Build
 jobs:
   ubuntu:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     name: Native on Ubuntu
     steps:
       - name: Get GtkAda
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install packages
         run: |
           sudo apt-get -qq update
@@ -33,7 +33,7 @@ jobs:
         shell: msys2 {0}
     steps:
       - name: Get GtkAda
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Install packages
         uses: msys2/setup-msys2@v2
         with:
