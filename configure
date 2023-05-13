@@ -4369,7 +4369,7 @@ fi
 
 libdir='${prefix}/lib'
 
-ac_config_files="$ac_config_files Makefile shared.gpr po/Makefile docs/gtkada_rm/html/static/index.html"
+ac_config_files="$ac_config_files Makefile gtkada_shared.gpr po/Makefile docs/gtkada_rm/html/static/index.html"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -5077,7 +5077,7 @@ for ac_config_target in $ac_config_targets
 do
   case $ac_config_target in
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
-    "shared.gpr") CONFIG_FILES="$CONFIG_FILES shared.gpr" ;;
+    "gtkada_shared.gpr") CONFIG_FILES="$CONFIG_FILES gtkada_shared.gpr" ;;
     "po/Makefile") CONFIG_FILES="$CONFIG_FILES po/Makefile" ;;
     "docs/gtkada_rm/html/static/index.html") CONFIG_FILES="$CONFIG_FILES docs/gtkada_rm/html/static/index.html" ;;
 

@@ -142,7 +142,7 @@ clean-generic:
 	-${RM} .\#*
 
 mostlyclean-generic: clean-generic
-	-${RM} Makefile src/config.h shared.gpr
+	-${RM} Makefile src/config.h gtkada_shared.gpr
 	-${RM} testgtk/opengl/view_gl.adb
 
 clean/%: force
