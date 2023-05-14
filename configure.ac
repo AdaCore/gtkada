@@ -40,7 +40,7 @@ AM_PATH_GTK
 
 libdir='${prefix}/lib'
 
-AC_OUTPUT(Makefile shared.gpr po/Makefile docs/gtkada_rm/html/static/index.html)
+AC_OUTPUT(Makefile gtkada_shared.gpr po/Makefile docs/gtkada_rm/html/static/index.html)
 
 AC_MSG_NOTICE([--------- Summary for Gtkada $PACKAGE_VERSION -----------------])
 AC_MSG_NOTICE(AC_HELP_STRING(

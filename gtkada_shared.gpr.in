@@ -23,7 +23,7 @@
 
 with "gtk";
 
-project Shared is
+project GtkAda_Shared is
 
    type Build_Type is ("Debug", "Production");
    Build : Build_Type := external ("BUILD", "@BUILD_TYPE@");
@@ -84,9 +84,11 @@ project Shared is
 
       case Build is
          when "Debug" =>
-            for Global_Configuration_Pragmas use Shared'Project_Dir & "src/gnat_debug.adc";
+            for Global_Configuration_Pragmas use
+              GtkAda_Shared'Project_Dir & "src/gnat_debug.adc";
          when "Production" =>
-            for Global_Configuration_Pragmas use Shared'Project_Dir & "src/gnat.adc";
+            for Global_Configuration_Pragmas use
+              GtkAda_Shared'Project_Dir & "src/gnat.adc";
       end case;
    end Builder;
 
@@ -111,4 +113,4 @@ project Shared is
       for Documentation_Dir use "html";
    end Documentation;
 
-end Shared;
+end GtkAda_Shared;

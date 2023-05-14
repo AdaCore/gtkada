@@ -25,13 +25,13 @@ with "testgtk/testgtk";
 with "src/gtkada";
 with "src/opengl/opengl";
 with "src/tools/tools";
-with "shared";
+with "gtkada_shared";
 with "contrib/contrib";
 
 project GtkAda is
    for Source_Files use ();
    for Object_Dir use "src/obj";
 
-   package IDE           renames Shared.IDE;
-   package Documentation renames Shared.Documentation;
+   package IDE           renames GtkAda_Shared.IDE;
+   package Documentation renames GtkAda_Shared.Documentation;
 end GtkAda;
