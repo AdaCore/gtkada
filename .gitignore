@@ -20,7 +20,7 @@ po/Makefile
 b~*.ad*
 config.log
 config.status
-shared.gpr
+gtk_shared.gpr
 contrib/generated/*.ad?
 contrib/generated/tmp.ada
 src/Makefile.common

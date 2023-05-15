@@ -21,32 +21,32 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "../shared";
+with "../gtkada_shared";
 
 library project GtkAda is
-   case Shared.Need_Objective_C is
+   case GtkAda_Shared.Need_Objective_C is
       when "yes" => for Languages use ("C", "Ada", "Objective-C");
       when "no"  => for Languages use ("C", "Ada");
    end case;
 
-   Version := Shared.Version;
+   Version := GtkAda_Shared.Version;
 
    --  Put "generated" first, so that files are preferably taken from there
    --  even if they still exist in "."
    for Source_Dirs use ("generated", ".");
 
-   for Library_Kind use Shared.Library_Kind;
+   for Library_Kind use GtkAda_Shared.Library_Kind;
    for Library_Name use "gtkada";
    for Library_Version use
-      "lib" & Project'Library_Name & Shared.So_Ext & "." & Version;
+      "lib" & Project'Library_Name & GtkAda_Shared.So_Ext & "." & Version;
 
-   case Shared.Library_Kind is
+   case GtkAda_Shared.Library_Kind is
       when "static-pic" | "relocatable" =>
          --  Objects used for static-pic and relocatable are exactly the same
          for Object_Dir use "obj/gtkada/relocatable";
          for Library_Dir use "lib/gtkada/relocatable";
       when "static" =>
-         case Shared.So_Ext is
+         case GtkAda_Shared.So_Ext is
             when ".dll" | ".dylib" =>
                --  On Windows and Darwin, objects are always position
                --  independent.
@@ -60,22 +60,22 @@ library project GtkAda is
          end case;
    end case;
 
-   case Shared.Library_Kind is
+   case GtkAda_Shared.Library_Kind is
       when "relocatable" =>
-         for Leading_Library_Options use Shared.Ldflags;
-         for Library_Options use Shared.Gtk_Libs;
+         for Leading_Library_Options use GtkAda_Shared.Ldflags;
+         for Library_Options use GtkAda_Shared.Gtk_Libs;
       when others =>
          null;
    end case;
 
-   package Builder  renames Shared.Builder;
-   package Naming   renames Shared.Naming;
-   package Compiler renames Shared.Compiler;
-   package Binder   renames Shared.Binder;
-   package IDE      renames Shared.IDE;
+   package Builder  renames GtkAda_Shared.Builder;
+   package Naming   renames GtkAda_Shared.Naming;
+   package Compiler renames GtkAda_Shared.Compiler;
+   package Binder   renames GtkAda_Shared.Binder;
+   package IDE      renames GtkAda_Shared.IDE;
 
    package Linker is
-      for Linker_Options use Shared.Gtk_Libs;
+      for Linker_Options use GtkAda_Shared.Gtk_Libs;
    end Linker;
 
    package Install is
