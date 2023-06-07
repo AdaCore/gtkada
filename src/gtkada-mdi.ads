@@ -405,6 +405,11 @@ package Gtkada.MDI is
       return Tab_Orientation_Type;
    --  Return the child's tab orientation
 
+   function Get_Tab_Label
+     (Child : not null access MDI_Child_Record'Class)
+      return Gtk.Label.Gtk_Label;
+   --  Return the child's tab label
+
    function Get_Child_Notebook
      (Child : access MDI_Child_Record'Class) return Gtk.Notebook.Gtk_Notebook;
    --  Return the notebook that directly contains Child

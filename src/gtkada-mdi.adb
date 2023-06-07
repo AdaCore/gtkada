@@ -2154,6 +2154,17 @@ package body Gtkada.MDI is
       end if;
    end Get_Tab_Orientation;
 
+   -------------------
+   -- Get_Tab_Label --
+   -------------------
+
+   function Get_Tab_Label
+     (Child : not null access MDI_Child_Record'Class)
+      return Gtk.Label.Gtk_Label is
+   begin
+      return Child.Tab_Label;
+   end Get_Tab_Label;
+
    ----------------------------------
    -- Button_Pressed_On_Title_Icon --
    ----------------------------------
