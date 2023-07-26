@@ -29,8 +29,10 @@ with Glib.Values;              use Glib.Values;
 with Gtk;                      use Gtk;
 with Gtk.Enums;                use Gtk.Enums;
 with Gtk.Scrolled_Window;      use Gtk.Scrolled_Window;
+with Gtk.Cell_Renderer_Combo;  use Gtk.Cell_Renderer_Combo;
 with Gtk.Cell_Renderer_Text;   use Gtk.Cell_Renderer_Text;
 with Gtk.Cell_Renderer_Toggle; use Gtk.Cell_Renderer_Toggle;
+with Gtk.List_Store;           use Gtk.List_Store;
 with Gtk.Tree_View;            use Gtk.Tree_View;
 with Gtk.Tree_Model;           use Gtk.Tree_Model;
 with Gtk.Tree_Selection;       use Gtk.Tree_Selection;
@@ -51,6 +53,8 @@ package body Create_Tree_View is
    Active_Column     : constant := 3;
    Foreground_Column : constant := 4;
    Font_Column       : constant := 5;
+   Combo_Model_Column  : constant := 6;
+   Combo_Column_Column  : constant := 7;
 
    Base_Font, Small_Font : Pango_Font_Description;
 
@@ -155,9 +159,21 @@ package body Create_Tree_View is
       Example1 : constant Boolean := True;
 
       Iter : Gtk_Tree_Iter;
-      Values : GValue_Array (Text_Column .. Font_Column);
+      Values : GValue_Array (Text_Column .. Combo_Column_Column);
+
+      Combo_Model : Gtk_List_Store;
+      Combo_Iter  : Gtk_Tree_Iter;
    begin
       Append (Model, Iter, Parent);
+
+      --  Create a Tree_Store to contain the combo box values for this
+      --  row.
+      Gtk_New (Combo_Model, (0 => GType_String));
+      for Index in 1 .. Text'Length loop
+         Append (Combo_Model, Combo_Iter);
+         Set (Combo_Model, Combo_Iter, 0,
+              Text (Text'First .. Text'Last + 1 - Index));
+      end loop;
 
       if Example1 then
          --  First approach: set an GValue_Array. This requires more code, but
@@ -178,6 +194,11 @@ package body Create_Tree_View is
                (Values (Font_Column), Base_Font);
          end if;
 
+         Init (Values (Combo_Model_Column), Gtk.List_Store.Get_Type);
+         Set_Object (Values (Combo_Model_Column), GObject (Combo_Model));
+
+         Init_Set_Int (Values (Combo_Column_Column), 0);
+
          Model.Set (Iter, Values);
 
       else
@@ -193,6 +214,9 @@ package body Create_Tree_View is
          else
             Set (Model, Iter, Foreground_Column, "black");
          end if;
+
+         Set (Model, Iter, Combo_Model_Column, GObject (Combo_Model));
+         Set (Model, Iter, Combo_Column_Column, 0);
       end if;
 
       return Iter;
@@ -247,6 +271,8 @@ package body Create_Tree_View is
       Toggle_Render : Gtk_Cell_Renderer_Toggle;
       Parent, Iter  : Gtk_Tree_Iter;
       Value         : Glib.Values.GValue;
+
+      Combo         : Gtk_Cell_Renderer_Combo;
       pragma Unreferenced (Num);
       pragma Warnings (Off, Iter);
 
@@ -264,7 +290,9 @@ package body Create_Tree_View is
                 Editable_Column   => GType_Boolean,
                 Active_Column     => GType_Boolean,
                 Foreground_Column => GType_String,
-                Font_Column       => Pango.Font.Get_Type));
+                Font_Column       => Pango.Font.Get_Type,
+                Combo_Model_Column  => Gtk.List_Store.Get_Type,
+                Combo_Column_Column => GType_Int));
 
       --  Create the view: it shows two columns, the first contains some text,
       --  the second contains a toggle button. In each column, a renderer is
@@ -281,6 +309,7 @@ package body Create_Tree_View is
 
       Gtk_New (Text_Render);
       Gtk_New (Toggle_Render);
+      Gtk_New (Combo);
 
       Gtk_New (Col);
       Col.Set_Resizable (True);
@@ -291,7 +320,6 @@ package body Create_Tree_View is
       --  Set_Sizing (Col, Tree_View_Column_Autosize);
       Add_Attribute (Col, Text_Render, "text", Text_Column);
       Add_Attribute (Col, Text_Render, "strikethrough", Strike_Column);
-      Add_Attribute (Col, Text_Render, "editable", Editable_Column);
       Add_Attribute (Col, Text_Render, "foreground", Foreground_Column);
       Add_Attribute (Col, Text_Render, "font-desc", Font_Column);
 
@@ -303,6 +331,16 @@ package body Create_Tree_View is
       Pack_Start (Col, Toggle_Render, False);
       Add_Attribute (Col, Toggle_Render, "active", Active_Column);
       Add_Attribute (Col, Toggle_Render, "activatable", Editable_Column);
+
+      Gtk_New (Col);
+      Col.Set_Resizable (True);
+      Set_Sort_Column_Id (Col, -1);  --  unsortable
+      Num := Append_Column (Tree, Col);
+      Set_Title (Col, "Third column");
+      Pack_Start (Col, Combo, False);
+      Add_Attribute (Col, Combo, "editable", Editable_Column);
+      Add_Attribute (Col, Combo, "model", Combo_Model_Column);
+      Add_Attribute (Col, Combo, "text-column", Combo_Column_Column);
 
       Base_Font := From_String ("sans 16px");
       Small_Font := From_String ("sans 12px");
