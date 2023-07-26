@@ -7,13 +7,14 @@ build:
      - cpu:8
      - mem:16
   stage: build
-  script:
-    - . ~/.aws_container_credentials
-    - export PATH=/it/e3/bin:$PATH
+  interruptible: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'pipeline'
 
-    # Tell the anod sandbox to use our repository
-    - cd /it/wave
-    - anod vcs --add-repo gtkada $CI_PROJECT_DIR
+  script:
+    - generic_anod_ci
+    - . /tmp/ci_env.sh
 
     # Build
     - anod build gtkada
