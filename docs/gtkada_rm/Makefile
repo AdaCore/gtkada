@@ -6,7 +6,7 @@ gtkada_rm: docgen docgen_clean
 docgen:
 	$(MKDIR) gtkada_rm
 	$(MKDIR) doc_obj
-	gnatdoc -Pgtkada_documentation.gpr --enable-build
+	gnatdoc3 -Pgtkada_documentation.gpr --enable-build
 
 docgen_clean:
 	$(RM) -rf doc_obj/*
