@@ -62,11 +62,11 @@ project GtkAda_Shared is
       case Build is
          when "Debug" =>
              for Switches ("Ada") use
-                ("-gnatQ", "-gnatwae", "-gnatay", "-g", "-O0");
+                ("-gnatQ", "-gnatwae", "-gnatayM200", "-g", "-O0");
              for Switches ("C") use ("-g", "-O0", "-Wformat", "-Werror=format-security");
          when "Production" =>
              for Switches ("Ada") use
-                ("-gnatQ", "-O2", "-gnatn", "-gnatwa", "-gnaty");
+                ("-gnatQ", "-O2", "-gnatn", "-gnatwa", "-gnatyM200");
              for Switches ("C") use ("-O2", "-Wformat", "-Werror=format-security");
       end case;
 
