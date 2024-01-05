@@ -34,12 +34,13 @@ with Gtk.Container; use Gtk.Container;
 
 package body Create_Css_Accordion is
 
+   package FA is new Forall_User_Data (Gtk_Style_Provider);
+
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box : Gtk_Box;
       Provider : constant Gtk_Css_Provider
         := Gtk_Css_Provider_New;
       Error : aliased Glib.Error.GError;
-      package FA is new Forall_User_Data (Gtk_Style_Provider);
 
       procedure Apply_Css
         (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
