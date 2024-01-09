@@ -36,6 +36,8 @@ with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
 package body Create_Css_Editor is
 
+   package FA is new Forall_User_Data (Gtk_Style_Provider);
+
    CSS : constant String :=
       "/* You can edit the text in this window to change the" & ASCII.LF
      & " * appearance of this Window." & ASCII.LF
@@ -93,8 +95,6 @@ package body Create_Css_Editor is
       Container : Gtk_Scrolled_Window;
       Text_Buffer : Gtk_Text_Buffer;
       Text_View : Gtk_Text_View;
-
-      package FA is new Forall_User_Data (Gtk_Style_Provider);
 
       procedure Apply_Css
         (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
