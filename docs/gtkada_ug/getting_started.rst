@@ -17,81 +17,13 @@ How to build and install GtkAda
 This section explains how to build and install GtkAda on your machine.
 
 On Windows systems, we provide an automatic installer that installs GtkAda
-along with dependent components like gtk+ libraries and `Glade`.  If you are a
-Windows user, you can skip the rest of this section which will address
-installation on Unix systems.
+along with dependent components like gtk+ libraries and `Glade`.
 
-On Unix systems, you first need to install the glib and gtk+ libraries.
-Download the compatible packages from the gtk+ web site (`http://www.gtk.org
-<http://www.gtk.org>`_), compile and install it.  Alternatively, if your
-operating system vendor provides glib and gtk+ development packages, you can
-install the libraries they provide.
+On Unix systems, just follow the instructions listed in the
+:file:`README-gtkada-<release>.txt` file. Note that the :file:`doinstall.sh` script
+will compile GtkAda, so make sure the version of GNAT that you want to use is
+in your PATH.
 
-Change your PATH environment variable so that the script `pkg-config`, which
-indicates where gtk+ was installed and what libraries it needs is automatically
-found by GtkAda. You will no longer need this script once GtkAda is installed,
-unless you develop part of your application in C.
-
-OpenGL support will not be activated in GtkAda unless you already have the
-OpenGL libraries on your systems. You can for instance look at Mesa, which is
-free implementation.
-
-Optionally, you can also install the `Glade` interface builder. Get the
-compatible package from the Glade web site, compile and install it.
-
-You can finally download the latest version of GtkAda from the web site.  Untar
-and uncompress the package, then simply do the following steps::
-
-  $ ./configure
-  $ make
-  $ make tests     (this step is optional)
-  $ make install
-
-As usual with the `configure` script, you can specify where you want
-to install the GtkAda libraries by using the `--prefix` switch.
-
-You can specify the switch `--disable-shared` to prevent building shared
-libraries, even if your system supports them (by default, both shared and
-static libraries are installed). By default, your application will be linked
-statically with the GtkAda libraries. You can override this default by
-specifying `--enable-shared` as a switch to `configure`, although you can
-override it later through the LIBRARY_TYPE scenario variable.
-
-If you have some OpenGL libraries installed on your system, you can make sure
-that `configure` finds them by specifying the `--with-GL-prefix` switch on the
-command line. `configure` should be able to automatically detect the libraries
-however.
-
-You must then make sure that the system will be able to find the dynamic
-libraries at run time if your application uses them. Typically, you would do
-one of the following:
-
-* run `ldconfig` if you installed GtkAda in one of the standard
-  location and you are super-user on your machine
-* edit `/etc/ld.conf` if you are super-user but did not install
-  GtkAda in one of the standard location. Add the path that contains
-  libgtkada.so (by default :file:`/usr/local/lib` or :file:`$prefix/lib`.
-* modify your `LD_LIBRARY_PATH` environment variable if you are
-  not super-user. You should simply add the path to libgtkada.
-
-In addition, if you are using precompiled Gtk+ binary packages, you will
-also need to set the `FONTCONFIG_FILE` environment variable to point to
-the :file:`prefix/etc/fonts/fonts.conf` file of your binary installation.
-
-For example, assuming you have installed Gtk+ under :file:`/opt/gtk` and
-using bash::
-
-  $ export FONTCONFIG_FILE=/opt/gtk/etc/fonts/fonts.conf
-
-If your application is using printing, on UNIX and Linux you will need to
-point your environment variable GTK_PATH to the directory that contains
-your Gtk+ libraries, appending it with the :file:`gtk-3.0` suffix::
-
-  $ export GTK_PATH=<gtk_install_dir>/lib/gtk-3.0
-
-This will allow Gtk+ to show the available printers and options when using
-`Gtk.Print` and `Gtk.PrintOperations` packages (or `Gtkada.Printing`, which
-is a high-level interface built on top of these packages).
 
 How to distribute a GtkAda application
 ======================================
