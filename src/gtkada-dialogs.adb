@@ -41,19 +41,20 @@ with Gtkada.Pixmaps;    use Gtkada.Pixmaps;
 
 package body Gtkada.Dialogs is
 
-   subtype String_6 is String (1 .. 6);
+   subtype String_16 is String (1 .. 16);
    type String_Const_Ptr is access constant String;
 
-   Dialog_Button_String : constant array (Button_Range) of String_6 :=
-     ("Yes   ",
-      "No    ",
-      "All   ",
-      "OK    ",
-      "Cancel",
-      "Abort ",
-      "Retry ",
-      "Ignore",
-      "Help  ");
+   Dialog_Button_String : constant array (Button_Range) of String_16 :=
+     ("Yes             ",
+      "No              ",
+      "All             ",
+      "OK              ",
+      "Cancel          ",
+      "Abort           ",
+      "Retry           ",
+      "Ignore          ",
+      "Help            ",
+      "Don't Show Again");
 
    Yes    : aliased constant String := "gtk-yes";
    No     : aliased constant String := "gtk-no";
@@ -73,7 +74,8 @@ package body Gtkada.Dialogs is
       null,
       null,
       null,
-      Help'Access);
+      Help'Access,
+      null);
 
    --------------------
    -- Message_Dialog --
@@ -174,13 +176,14 @@ package body Gtkada.Dialogs is
 
             case Result is
                when Button_Yes
-                    | Button_No
-                    | Button_All
-                    | Button_OK
-                    | Button_Cancel
-                    | Button_Abort
-                    | Button_Retry
-                    | Button_Ignore =>
+                  | Button_No
+                  | Button_All
+                  | Button_OK
+                  | Button_Cancel
+                  | Button_Abort
+                  | Button_Retry
+                  | Button_Ignore
+                  | Button_Dont_Show_Again =>
 
                   Destroy (Dialog);
                   return Result;
