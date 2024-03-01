@@ -41,19 +41,20 @@ package Gtkada.Dialogs is
    type Message_Dialog_Buttons is mod 2 ** 32;
    --  Define the set of values a button in a message dialog box can have.
 
-   type Button_Range is range 0 .. 8;
+   type Button_Range is range 0 .. 9;
    --  The range of valid buttons.
 
-   Button_None   : constant Message_Dialog_Buttons := 0;
-   Button_Yes    : constant Message_Dialog_Buttons := 2 ** 0;
-   Button_No     : constant Message_Dialog_Buttons := 2 ** 1;
-   Button_All    : constant Message_Dialog_Buttons := 2 ** 2;
-   Button_OK     : constant Message_Dialog_Buttons := 2 ** 3;
-   Button_Cancel : constant Message_Dialog_Buttons := 2 ** 4;
-   Button_Abort  : constant Message_Dialog_Buttons := 2 ** 5;
-   Button_Retry  : constant Message_Dialog_Buttons := 2 ** 6;
-   Button_Ignore : constant Message_Dialog_Buttons := 2 ** 7;
-   Button_Help   : constant Message_Dialog_Buttons := 2 ** 8;
+   Button_None            : constant Message_Dialog_Buttons := 0;
+   Button_Yes             : constant Message_Dialog_Buttons := 2 ** 0;
+   Button_No              : constant Message_Dialog_Buttons := 2 ** 1;
+   Button_All             : constant Message_Dialog_Buttons := 2 ** 2;
+   Button_OK              : constant Message_Dialog_Buttons := 2 ** 3;
+   Button_Cancel          : constant Message_Dialog_Buttons := 2 ** 4;
+   Button_Abort           : constant Message_Dialog_Buttons := 2 ** 5;
+   Button_Retry           : constant Message_Dialog_Buttons := 2 ** 6;
+   Button_Ignore          : constant Message_Dialog_Buttons := 2 ** 7;
+   Button_Help            : constant Message_Dialog_Buttons := 2 ** 8;
+   Button_Dont_Show_Again : constant Message_Dialog_Buttons := 2 ** 9;
 
    type Message_Dialog_Type is
      (Warning,
