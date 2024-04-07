@@ -329,6 +329,8 @@ package body Create_Canvas_View_Items is
       Rect1, Rect2  : Rect_Item;
 
    begin
+      Gtk.Frame.Set_Label (Frame, "Canvas View (items)");
+
       Font := Gtk_New
         (Stroke => Null_RGBA,
          Font   => (Name   => From_String ("sans 10"),
