@@ -70,6 +70,7 @@ Ubunbu 18.04 & 20.04
  * libxrandr-dev
  * libxrender-dev
  * libxshmfence-dev
+ * libxtst-dev
  * libxxf86vm-dev
  * mesa-common-dev
  * uuid-dev
