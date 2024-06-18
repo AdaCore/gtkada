@@ -22,22 +22,23 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Ada.Strings;       use Ada.Strings;
-with Ada.Strings.Fixed; use Ada.Strings.Fixed;
+with Ada.Strings;         use Ada.Strings;
+with Ada.Strings.Fixed;   use Ada.Strings.Fixed;
 
-with Gdk.Event;         use Gdk.Event;
-with Gdk.Pixbuf;        use Gdk.Pixbuf;
-with Gdk.Window;        use Gdk.Window;
+with Gdk.Event;           use Gdk.Event;
+with Gdk.Pixbuf;          use Gdk.Pixbuf;
+with Gdk.Window;          use Gdk.Window;
 
-with Glib;              use Glib;
+with Glib;                use Glib;
 
-with Gtk.Box;           use Gtk.Box;
-with Gtk.Image;         use Gtk.Image;
-with Gtk.Label;         use Gtk.Label;
-with Gtk.Widget;        use Gtk.Widget;
+with Gtk.Box;             use Gtk.Box;
+with Gtk.Image;           use Gtk.Image;
+with Gtk.Label;           use Gtk.Label;
+with Gtk.Widget;          use Gtk.Widget;
 
-with Gtkada.Intl;       use Gtkada.Intl;
-with Gtkada.Pixmaps;    use Gtkada.Pixmaps;
+with Gtkada.Intl;         use Gtkada.Intl;
+with Gtkada.Pixmaps;      use Gtkada.Pixmaps;
+with Gtkada.Stock_Labels;
 
 package body Gtkada.Dialogs is
 
@@ -56,11 +57,11 @@ package body Gtkada.Dialogs is
       "Help            ",
       "Don't Show Again");
 
-   Yes    : aliased constant String := "gtk-yes";
-   No     : aliased constant String := "gtk-no";
-   Ok     : aliased constant String := "gtk-ok";
-   Cancel : aliased constant String := "gtk-cancel";
-   Help   : aliased constant String := "gtk-help";
+   Yes    : aliased constant String := Gtkada.Stock_Labels.Stock_Yes;
+   No     : aliased constant String := Gtkada.Stock_Labels.Stock_No;
+   Ok     : aliased constant String := Gtkada.Stock_Labels.Stock_Ok;
+   Cancel : aliased constant String := Gtkada.Stock_Labels.Stock_Cancel;
+   Help   : aliased constant String := "Help";
 
    --  ??? We used to reference Gtk.Stock.Stock_* instead, but there is
    --  apparently a bug in GCC when generating 'Access to these variables.

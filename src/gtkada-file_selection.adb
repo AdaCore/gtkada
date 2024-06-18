@@ -22,16 +22,16 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gtk.Main;           use Gtk.Main;
-with Gtk.Button;         use Gtk.Button;
-with Gtk.Dialog;         use Gtk.Dialog;
-with Gtk.Enums;          use Gtk.Enums;
-with Gtk.Widget;         use Gtk.Widget;
-with Gtk.File_Chooser;   use Gtk.File_Chooser;
+with GNAT.OS_Lib;               use GNAT.OS_Lib;
+with Gtk.Main;                  use Gtk.Main;
+with Gtk.Button;                use Gtk.Button;
+with Gtk.Dialog;                use Gtk.Dialog;
+with Gtk.Enums;                 use Gtk.Enums;
+with Gtk.Widget;                use Gtk.Widget;
+with Gtk.File_Chooser;          use Gtk.File_Chooser;
 with Gtk.File_Chooser_Dialog;   use Gtk.File_Chooser_Dialog;
-with Gtkada.Handlers;    use Gtkada.Handlers;
-with GNAT.OS_Lib;        use GNAT.OS_Lib;
-with Gtk.Stock;          use Gtk.Stock;
+with Gtkada.Handlers;           use Gtkada.Handlers;
+with Gtkada.Stock_Labels;       use Gtkada.Stock_Labels;
 
 package body Gtkada.File_Selection is
 
