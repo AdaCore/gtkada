@@ -102,7 +102,6 @@ with Gtk.Menu_Item;           use Gtk.Menu_Item;
 with Gtk.Notebook;            use Gtk.Notebook;
 with Gtk.Radio_Menu_Item;     use Gtk.Radio_Menu_Item;
 with Gtk.Separator_Menu_Item; use Gtk.Separator_Menu_Item;
-with Gtk.Stock;               use Gtk.Stock;
 with Gtk.Style_Context;       use Gtk.Style_Context;
 with Gtk.Style_Provider;      use Gtk.Style_Provider;
 with Gtk.Window;              use Gtk.Window;
@@ -110,6 +109,7 @@ with Gtk.Window;              use Gtk.Window;
 with Gtkada.Bindings;         use Gtkada.Bindings;
 with Gtkada.Handlers;         use Gtkada.Handlers;
 with Gtkada.Multi_Paned;      use Gtkada.Multi_Paned;
+with Gtkada.Stock_Labels;     use Gtkada.Stock_Labels;
 with Gtkada.Style;
 
 pragma Warnings
