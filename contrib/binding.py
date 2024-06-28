@@ -142,6 +142,7 @@ class GIR(object):
             for cl in root.findall(k):
                 self.constants[cl.get(ctype_qname)] = cl
 
+
             # Some <record> are defined with methods. They are bound the same
             # way in GtkAda, except that they do not derive from GObject
 
@@ -2564,10 +2565,25 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
                 type = node.findall(ntype)
                 ctype = type[0].get(ctype_qname)
                 ftype = naming.type(name="", cname=ctype)
+                deprecated = node.get("deprecated")
+                deprecated_version =  node.get("deprecated-version")
 
-                constants.append(
-                    '%s : constant %s := "%s";' %
-                    (name, ftype.ada, node.get("value")))
+                constant_str = '%s : constant %s := "%s";' % (
+                    name,
+                    ftype.ada,
+                    node.get("value"),
+                )
+
+                if deprecated:
+                    if deprecated_version:
+                        constant_str += (
+                            '\npragma Obsolescent (%s, Message => "Deprecated since %s");\n'
+                            % (name, node.get("deprecated-version"))
+                        )
+                    else:
+                        constant_str += '\npragma Obsolescent (%s);\n' % (name)
+
+                constants.append(constant_str)
 
         constants.sort()
         section.add("\n".join(constants))
