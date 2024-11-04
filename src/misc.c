@@ -81,61 +81,6 @@ ada_gtk_micro_version ()
  **  wrappers for functions which vary on Windows
  ********************************************************************/
 
-gchar *
-ada_g_filename_from_uri (const gchar *uri,
-			 gchar **hostname,
-			 GError **error) {
-#ifdef GDK_WINDOWING_WIN32
-  return g_filename_from_uri_utf8 (uri, hostname, error);
-#else
-  return g_filename_from_uri (uri, hostname, error);
-#endif
-}
-
-gchar *
-ada_g_filename_from_utf8 (const gchar *utf8string,
-		      gssize len,
-		      gsize *bytes_read,
-		      gsize *bytes_written,
-			  GError **error)
-{
-#ifdef GDK_WINDOWING_WIN32
-  return g_filename_from_utf8_utf8
-    (utf8string, len, bytes_read, bytes_written, error);
-#else
-  return g_filename_from_utf8
-    (utf8string, len, bytes_read, bytes_written, error);
-#endif
-}
-
-gchar *
-ada_g_filename_to_uri (const gchar *filename,
-		       const gchar *hostname,
-		       GError **error)
-{
-#ifdef GDK_WINDOWING_WIN32
-  return g_filename_to_uri_utf8 (filename, hostname, error);
-#else
-  return g_filename_to_uri (filename, hostname, error);
-#endif
-}
-
-gchar *
-ada_g_filename_to_utf8 (const gchar *opsysstring,
-			gssize len,
-			gsize *bytes_read,
-			gsize *bytes_written,
-			GError **error)
-{
-#ifdef GDK_WINDOWING_WIN32
-  return g_filename_to_utf8_utf8
-    (opsysstring, len, bytes_read, bytes_written, error);
-#else
-  return g_filename_to_utf8
-    (opsysstring, len, bytes_read, bytes_written, error);
-#endif
-}
-
 GdkPixbuf *
 ada_gdk_pixbuf_new_from_file (const char *filename,
 			      GError **error)
