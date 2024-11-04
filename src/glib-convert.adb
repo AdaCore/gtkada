@@ -129,7 +129,7 @@ package body Glib.Convert is
         (URI      : String;
          Hostname : access Gtkada.Types.Chars_Ptr;
          Error    : GError_Access) return Gtkada.Types.Chars_Ptr;
-      pragma Import (C, Internal, "ada_g_filename_from_uri");
+      pragma Import (C, Internal, "g_filename_from_uri");
 
       S   : Gtkada.Types.Chars_Ptr :=
         Internal (URI & ASCII.NUL, Hostname, Error);
@@ -154,7 +154,7 @@ package body Glib.Convert is
          Bytes_Read    : System.Address := System.Null_Address;
          Bytes_Written : System.Address := System.Null_Address;
          Error         : GError_Access) return Gtkada.Types.Chars_Ptr;
-      pragma Import (C, Internal, "ada_g_filename_from_utf8");
+      pragma Import (C, Internal, "g_filename_from_utf8");
 
       S   : Gtkada.Types.Chars_Ptr := Internal
         (UTF8_String, UTF8_String'Length, Error => Error);
@@ -178,7 +178,7 @@ package body Glib.Convert is
         (URI      : String;
          Hostname : System.Address;
          Error    : GError_Access) return Gtkada.Types.Chars_Ptr;
-      pragma Import (C, Internal, "ada_g_filename_to_uri");
+      pragma Import (C, Internal, "g_filename_to_uri");
 
       S    : Gtkada.Types.Chars_Ptr;
       Host : aliased constant String := Hostname & ASCII.NUL;
@@ -212,7 +212,7 @@ package body Glib.Convert is
          Bytes_Read    : System.Address := System.Null_Address;
          Bytes_Written : System.Address := System.Null_Address;
          Error         : GError_Access) return Gtkada.Types.Chars_Ptr;
-      pragma Import (C, Internal, "ada_g_filename_to_utf8");
+      pragma Import (C, Internal, "g_filename_to_utf8");
 
       S   : Gtkada.Types.Chars_Ptr := Internal
         (OS_String, OS_String'Length, Error => Error);
