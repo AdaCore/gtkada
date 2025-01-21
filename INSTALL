@@ -17,7 +17,9 @@ it.
 On Unix systems, you'll then just need to run the following command once
 GNAT is installed and available in your PATH:
 
-   $ sudo env "PATH=$PATH" ./doinstall
+   $ env "PATH=$PATH" ./doinstall
+
+You can prepend `sudo` to the command line to install it as a superuser.
 
 On Windows, just run the Gtkada installer and follow the displayed instructions.
 
