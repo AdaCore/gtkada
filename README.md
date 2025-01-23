@@ -50,6 +50,10 @@ The GtkAda Reference Manual can be found:
 
   - HTML version: in `gtkada_rm/gtkada_rm/index.html`
 
+Documentation is available on-line
+  - [GtkAda User's Guide](http://docs.adacore.com/live/wave/gtkada/html/gtkada_ug/index.html)
+  - [GtkAda Reference Manual](http://docs.adacore.com/live/wave/gtkada/html/gtkada_rm/index.html)
+
 Patches
 -------
 
