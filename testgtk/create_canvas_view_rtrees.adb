@@ -87,6 +87,8 @@ package body Create_Canvas_View_Rtrees is
       Link_Style    : Drawing_Style;
 
    begin
+      Gtk.Frame.Set_Label (Frame, "Canvas View (large)");
+
       Gtk_New (Model);
       Model.Set_Selection_Mode (Selection_Single);
 

@@ -81,7 +81,7 @@ package body Create_Tooltips is
    is
       pragma Unreferenced (X, Y, Keyboard_Tip, Tooltip);
       Window : constant Gtk_Window := Gtk_Window (Check.Get_Tooltip_Window);
-      Color  : constant Gdk_RGBA := (0.0, 0.0, 1.0, 0.5);
+      Color  : constant Gdk_RGBA := (0.25, 0.65, 1.0, 1.0);
    begin
       Window.Override_Background_Color (Gtk_State_Flag_Normal, Color);
       return True;
@@ -131,7 +131,7 @@ package body Create_Tooltips is
       Gtk_New (Label, "A selectable label");
       Box1.Pack_Start (Label, False, False, 0);
       Label.Set_Selectable (True);
-      Label.Set_Tooltip_Text ("<b>Another</b> Label tooltip");
+      Label.Set_Tooltip_Markup ("<b>Another</b> Label tooltip");
 
       --  Another one, with a custom tooltip window
 
