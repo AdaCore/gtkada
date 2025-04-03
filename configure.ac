@@ -1,4 +1,4 @@
-AC_INIT(gtkada,18.0w,report@adacore.com,gtkada)
+AC_INIT(gtkada,18.0w,support@adacore.com,gtkada)
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_TARGET
 PKG_PROG_PKG_CONFIG
