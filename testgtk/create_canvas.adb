@@ -791,6 +791,8 @@ package body Create_Canvas is
       Success  : Boolean;
 
    begin
+      Gtk.Frame.Set_Label (Frame, "Canvas (obsolescent)");
+
       Last_Item := Items_List'First;
       Last_Link := 1;
 
