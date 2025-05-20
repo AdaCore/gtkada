@@ -32,6 +32,19 @@ Red Hat Enterprise Linux 7 & 8
  * xorg-x11-proto-devel
 
 
+Red Hat Enterprise Linux 9
+------------------------------
+
+ * glibc-devel
+ * libXcomposite-devel
+ * libXcursor-devel
+ * libXdamage-devel
+ * libXinerama-devel
+ * libXrandr-devel
+ * libXtst-devel
+ * libglvnd-devel
+
+
 Ubunbu 18.04 & 20.04
 --------------------
 
