@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2018, AdaCore                     --
+--                     Copyright (C) 2010-2025, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -36,5 +36,8 @@ package Pango.Cairo is
    procedure Show_Layout (Cr : Cairo_Context; Layout : Pango_Layout);
    --  Draws a pango layout in the specified cairo context. The top-left corner
    --  of Layout will be drawn at the current point of the cairo context.
+
+   procedure Set_Default_Font_Type (Font_Type : Standard.Cairo.Cairo_Font_Type);
+   --  Sets default fontmap backend.
 
 end Pango.Cairo;

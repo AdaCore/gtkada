@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2018, AdaCore                     --
+--                     Copyright (C) 2010-2025, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -25,6 +25,28 @@ with System;      use System;
 with Glib.Object; use Glib.Object;
 
 package body Pango.Cairo is
+
+   ---------------------------
+   -- Set_Default_Font_Type --
+   ---------------------------
+
+   procedure Set_Default_Font_Type
+     (Font_Type : Standard.Cairo.Cairo_Font_Type)
+   is
+      function pango_cairo_font_map_new_for_font_type
+        (fonttype : Standard.Cairo.Cairo_Font_Type) return System.Address with
+        Import, Convention => C,
+        Link_Name          => "pango_cairo_font_map_new_for_font_type";
+
+      procedure pango_cairo_font_map_set_default
+        (fontmap : System.Address) with
+        Import, Convention => C,
+        Link_Name          => "pango_cairo_font_map_set_default";
+
+   begin
+      pango_cairo_font_map_set_default
+        (pango_cairo_font_map_new_for_font_type (Font_Type));
+   end Set_Default_Font_Type;
 
    -----------------
    -- Show_Layout --
