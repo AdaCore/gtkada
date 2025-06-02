@@ -38,6 +38,12 @@ package Pango.Cairo is
    --  of Layout will be drawn at the current point of the cairo context.
 
    procedure Set_Default_Font_Type (Font_Type : Standard.Cairo.Cairo_Font_Type);
-   --  Sets default fontmap backend.
+   --  Sets the default fontmap used by default. This can be used to
+   --  change the Cairo font backend that the default fontmap uses,
+   --  for example. The old default font map is unreffed.
+   --  Note that since Pango 1.32.6, the default fontmap is per-thread.
+   --  This function only changes the default fontmap for the current thread.
+   --  Default fontmaps of existing threads are not changed. Default fontmaps
+   --  of any new threads will still be created using the default mechanism.
 
 end Pango.Cairo;
