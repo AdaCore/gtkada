@@ -36,12 +36,12 @@ package body Pango.Cairo is
       function pango_cairo_font_map_new_for_font_type
         (fonttype : Standard.Cairo.Cairo_Font_Type) return System.Address with
         Import, Convention => C,
-        Link_Name          => "pango_cairo_font_map_new_for_font_type";
+        External_Name      => "pango_cairo_font_map_new_for_font_type";
 
       procedure pango_cairo_font_map_set_default
         (fontmap : System.Address) with
         Import, Convention => C,
-        Link_Name          => "pango_cairo_font_map_set_default";
+        External_Name      => "pango_cairo_font_map_set_default";
 
    begin
       pango_cairo_font_map_set_default
