@@ -4,8 +4,8 @@
 Support for Glade, the Gtk GUI builder
 **************************************
 
-Disclaimer
-==========
+Deprecation
+===========
 
 `Glade <https://glade.gnome.org/>`_ is no longer maintained in the wider GNOME
 community, as per the release notes of the last stable release 3.40.0. Using
