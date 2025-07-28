@@ -21,10 +21,6 @@ callbacks area), and object-oriented programming. As opposed to common
 knowledge, it requires *less* type casting than with in C.  Its efficiency is
 about the same as the C library through the use of inline subprograms.
 
-GtkAda comes with a complete integration to the graphical interface builder
-`Glade`. This makes it even easier to develop interfaces, since you just have to
-click to create a description of the window and all the dialogs. Ada code can
-simply import that description to bring the windows to life.
 
 Under some platforms, GtkAda also provides a bridge to use OpenGL, with which
 you can create graphical applications that display 3D graphics, and display
@@ -33,13 +29,11 @@ document OpenGL at all, see any book on OpenGL, or the specification that came
 with your OpenGL library, for more information.
 
 The following Internet sites will always contain the latest public packages for
-`GtkAda`, `gtk+`, `Glade` and `Cairo`
+`GtkAda`, `gtk+` and `Cairo`
 
 * `https://github.com/AdaCore/gtkada <https://github.com/AdaCore/gtkada>`_
 
 * `http://www.gtk.org/ <http://www.gtk.org/>`_
-
-* `http://glade.gnome.org/ <http://glade.gnome.org/>`_
 
 * `http://www.cairographics.org/ <http://www.cairographics.org/>`_
 
