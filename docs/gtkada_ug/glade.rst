@@ -1,11 +1,14 @@
 .. _Support_for_Glade,_the_Gtk_GUI_builder:
 
-**************************************
-Support for Glade, the Gtk GUI builder
-**************************************
+****************************************************************
+Support for Glade, the Gtk GUI builder (planned for deprecation)
+****************************************************************
 
 Deprecation
 ===========
+
+GtkAda 26 will be the last release that includes Glade; Glade will be removed
+from GtkAda starting with the 27.0 release.
 
 `Glade <https://glade.gnome.org/>`_ is no longer maintained in the wider GNOME
 community, as per the release notes of the last stable release 3.40.0. Using
