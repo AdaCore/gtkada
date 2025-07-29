@@ -1,13 +1,27 @@
 .. _Support_for_Glade,_the_Gtk_GUI_builder:
 
-**************************************
-Support for Glade, the Gtk GUI builder
-**************************************
+****************************************************************
+Support for Glade, the Gtk GUI builder (planned for deprecation)
+****************************************************************
+
+Deprecation
+===========
+
+GtkAda 26 will be the last release that includes Glade; Glade will be removed
+from GtkAda starting with the 27.0 release.
+
+`Glade <https://glade.gnome.org/>`_ is no longer maintained in the wider GNOME
+community, as per the release notes of the last stable release 3.40.0. Using
+Glade to produce XML GtkBuilder UI definitions is discouraged.
+
+However the XML GtkBuilder UI definitions format itself is still a supported
+artifact of the `Gtk.Builder <https://docs.gtk.org/gtk3/class.Builder.html>`_
+API and a valid means of interaction with the `Gtkada.Builder` package.
 
 Introduction
 ============
 
-GtkAda now comes with support for the GUI builder Glade-3.  Glade-3 provides a
+GtkAda comes with support for the GUI builder Glade-3.  Glade-3 provides a
 graphical interface for designing windows and dialogs.  The interface
 description is saved in an XML file which can be loaded at run-time by your
 GtkAda application. With this approach, there is no need to write or generate

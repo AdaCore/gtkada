@@ -17,7 +17,7 @@ How to build and install GtkAda
 This section explains how to build and install GtkAda on your machine.
 
 On Windows systems, we provide an automatic installer that installs GtkAda
-along with dependent components like gtk+ libraries and `Glade`.
+along with dependent components like gtk+ libraries.
 
 On Unix systems, just follow the instructions listed in the
 :file:`README-gtkada-<release>.txt` file. Note that the :file:`doinstall.sh` script
