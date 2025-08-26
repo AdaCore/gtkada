@@ -215,6 +215,8 @@ package body Create_Splittable is
       Box    : Gtk_Box;
       Toggle : Gtk_Toggle_Button;
    begin
+      Gtk.Frame.Set_Label (Frame, "Multi Paned");
+
       Gtk_New_Vbox (Box, Homogeneous => False);
       Add (Frame, Box);
 
