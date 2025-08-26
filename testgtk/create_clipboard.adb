@@ -21,7 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with System;
 with Glib;                   use Glib;
+with Glib.Unicode;           use Glib.Unicode;
 with Gdk.Pixbuf;             use Gdk.Pixbuf;
 with Gdk.Property;           use Gdk.Property;
 with Gdk.Types;              use Gdk.Types;
@@ -165,6 +167,9 @@ package body Create_Clipboard is
 
       declare
          Format : constant String := Get_String (Model, Iter, 0);
+         Valid : Boolean;
+         Invalid_Pos : Natural;
+         use type System.Address;
       begin
          Data := Wait_For_Contents (Clipboard, Atom_Intern (Format));
 
@@ -196,10 +201,27 @@ package body Create_Clipboard is
                & ASCII.LF);
 
             if As_String then
-               Insert
-                 (Contents,
-                  First,
-                  "As_String=" & Get_Data_As_String (Data));
+               if Data.Get_Data /= System.Null_Address then
+                  UTF8_Validate (Str         => Get_Data_As_String (Data),
+                                 Valid       => Valid,
+                                 Invalid_Pos => Invalid_Pos);
+                  if Valid then
+                     Insert
+                       (Contents,
+                        First,
+                        "As_String=" & Get_Data_As_String (Data));
+                  else
+                     Insert
+                       (Contents,
+                        First,
+                        "Non valid UTF8 string");
+                  end if;
+               else
+                  Insert
+                    (Contents,
+                     First,
+                     "Null data");
+               end if;
             end if;
 
             Free (Data);
