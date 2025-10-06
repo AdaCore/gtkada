@@ -589,7 +589,7 @@ package Gtkada.Canvas_View is
      (Self           : not null access Canvas_Item_Record;
       Dummy_At_Point : Model_Point;
       Dummy_Context  : Draw_Context)
-      return Abstract_Item is (Self);
+      return Abstract_Item is (Abstract_Item (Self));
    overriding function Position
      (Self : not null access Canvas_Item_Record) return Gtkada.Style.Point;
    overriding function Contains
@@ -2027,7 +2027,7 @@ package Gtkada.Canvas_View is
      (Self           : not null access Canvas_Link_Record;
       Dummy_At_Point : Model_Point;
       Dummy_Context  : Draw_Context)
-      return Abstract_Item is (Self);
+      return Abstract_Item is (Abstract_Item (Self));
    overriding function Parent
      (Self : not null access Canvas_Link_Record)
       return Abstract_Item is (null);
