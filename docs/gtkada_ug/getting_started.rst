@@ -20,7 +20,7 @@ On Windows systems, we provide an automatic installer that installs GtkAda
 along with dependent components like gtk+ libraries.
 
 On Unix systems, just follow the instructions listed in the
-:file:`README-gtkada-<release>.txt` file. Note that the :file:`doinstall.sh` script
+:file:`INSTALL` file. Note that the :file:`doinstall.sh` script
 will compile GtkAda, so make sure the version of GNAT that you want to use is
 in your PATH.
 
