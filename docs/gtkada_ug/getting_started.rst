@@ -137,10 +137,13 @@ How to compile an application with GtkAda
 
 This section explains how you can compile your own applications.
 
-A set of project files is installed along with GtkAda. If you have installed
-GtkAda in the same location as GNAT itself, nothing else needs to be done.
+.. note::
+   If GNAT is already installed on your system, it is recommended to
+   install GtkAda in a separate directory to avoid potential file conflicts.
 
-Otherwise, you need to make the directory that contains these project files
+A set of project files is installed along with GtkAda.
+
+You need to make the directory that contains these project files
 visible to the compiler. This is done by adding the directory to the
 `GPR_PROJECT_PATH` environment variable. Assuming you have installed the
 library in :file:`prefix`, the directory you need to add is
