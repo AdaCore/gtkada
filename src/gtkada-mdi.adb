@@ -7258,7 +7258,6 @@ package body Gtkada.MDI is
                       & Gint'Image (Full_Height), Debug_Increase);
 
          MDI.Freeze_Focus;
-         declare
          begin
             while Child_Node /= null loop
                if Traces then
@@ -8284,6 +8283,7 @@ package body Gtkada.MDI is
             --  If not found, and we already have a perspective => do nothing
 
             if MDI.Current_Perspective /= null then
+               MDI.Thaw_Focus;
                return;
             end if;
 
