@@ -64,6 +64,8 @@ package body Create_Canvas_View_Edit is
       Rect        : Rect_Item;
       White, Font : Drawing_Style;
    begin
+      Gtk.Frame.Set_Label (Frame, "Canvas View (editing)");
+
       Font := Gtk_New
         (Stroke => Null_RGBA,
          Font   => (Name   => From_String ("sans 10"),
