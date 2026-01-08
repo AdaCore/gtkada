@@ -77,7 +77,6 @@ package body Create_Revealer is
       Gtk_New (Button, "None");
       Box.Attach (Button, 0, 0, 1, 1);
       Gtk_New (Revealer);
-      Revealer.Set_Halign (Align_Start);
       Revealer.Set_Valign (Align_Start);
       Gtk_New (Ent);
       Ent.Set_Text ("00000");
