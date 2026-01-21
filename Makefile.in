@@ -97,9 +97,9 @@ install/%: force
 		-Psrc/gtkada.gpr
 
 install-clean:
-ifneq (,$(wildcard $(prefix)/lib/gnat/manifests/gtkada))
+ifneq (,$(wildcard $(prefix)/$(PRJDIR)/manifests/gtkada))
 	-$(GPRINSTALL) --uninstall -f --prefix=$(prefix) \
-		--project-subdir=lib/gnat gtkada
+		--project-subdir=$(PRJDIR) gtkada
 endif
 
 install: install-clean
@@ -109,14 +109,14 @@ install: install-clean
 		--mode=usage --exec-subdir=${DESTDIR}${exampledir} \
 		-Ptestgtk.gpr -aP ../src
 ifneq ($(OS),Windows_NT)
-	ln -s ${libdir} ${DESTDIR}${datadir}/examples/gtkada --force
+	ln -s -f ${libdir} ${DESTDIR}${datadir}/examples/gtkada
 endif
 	@echo '-----------------------------------------------------------------------'
 	@echo '--  GtkAda has now been installed.                                   --'
 	@echo '--  To use the library, you may need to update LD_LIBRARY_PATH       --'
 	@echo '--  or to run ldconfig. You may also need to update GPR_PROJECT_PATH --'
 	@echo '--  to include                                                       --'
-	@echo '--  ${prefix}/lib/gnat'
+	@echo '--  ${prefix}/$(PRJDIR)'
 	@echo '-----------------------------------------------------------------------'
 
 docs:
