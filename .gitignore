@@ -6,6 +6,7 @@
 b__conftest.ad?
 auto.cgpr
 autom4te.cache/
+gtkada_shared.gpr
 /Makefile
 docs/gtkada_rm/doc_obj/
 docs/gtkada_ug/_build
