@@ -357,9 +357,11 @@ package Gtkada.MDI is
    --  Force is set to True.
 
    procedure Set_Title
-     (Child       : not null access MDI_Child_Record;
-      Title       : String;
-      Short_Title : String := "");
+     (Child              : not null access MDI_Child_Record;
+      Title              : String;
+      Short_Title        : String := "";
+      Markup_Title       : String := "";
+      Markup_Short_Title : String := "");
    --  Set the title for a child. Title is the title put in titlebar of
    --  the children, whereas Short_Title is the name of the notebook tab when
    --  children are maximized. By default, it is the same as Title.
@@ -374,6 +376,8 @@ package Gtkada.MDI is
    --
    --  Child should already be in the MDI at this point (via a call to Put), so
    --  that the "use_short_titles" preference is taken into account.
+   --  Markup_* can contain markup if necessary. It is used when a child is not
+   --  floating and plain-text title/short title are used if floating.
 
    function Get_MDI
      (Child : not null access MDI_Child_Record) return MDI_Window;
@@ -382,11 +386,21 @@ package Gtkada.MDI is
 
    function Get_Title
      (Child : not null access MDI_Child_Record) return UTF8_String;
-   --  Return the title for a specific child
+   --  Return the title for a specific child or empty string.
+
+   function Get_Title_Markup
+     (Child : not null access MDI_Child_Record) return UTF8_String;
+   --  Return the markup title for a specific child or empty string.
 
    function Get_Short_Title
      (Child : not null access MDI_Child_Record) return UTF8_String;
-   --  Return the name of the notebook tab used when children are maximized.
+   --  Return the name of the notebook tab used when children are
+   --  maximized or empty string.
+
+   function Get_Short_Title_Markup
+     (Child : not null access MDI_Child_Record) return UTF8_String;
+   --  Return the markup name of the notebook tab used when children
+   --  are maximized or empty string.
 
    function Has_Title_Bar
      (Child : not null access MDI_Child_Record) return Boolean;
@@ -1337,47 +1351,51 @@ private
    type String_Access is access all UTF8_String;
 
    type MDI_Child_Record is new Gtk.Event_Box.Gtk_Event_Box_Record with record
-      Initial       : Gtk.Widget.Gtk_Widget;
+      Initial            : Gtk.Widget.Gtk_Widget;
       --  The widget we use to build this child.
 
-      Main_Box      : Gtk.Box.Gtk_Box;
+      Main_Box           : Gtk.Box.Gtk_Box;
       --  The main container.
 
-      State         : State_Type := Normal;
-      Group         : Child_Group := Group_Default;
-      Areas         : Allowed_Areas := Both;
+      State              : State_Type := Normal;
+      Group              : Child_Group := Group_Default;
+      Areas              : Allowed_Areas := Both;
 
-      Title         : String_Access;
-      Short_Title   : String_Access;
+      Title              : String_Access;
+      Short_Title        : String_Access;
       --  Title of the item, as it appears in the title bar.
       --  These are UTF8-Encoded
 
-      XML_Node_Name : String_Access;
+      Title_Markup       : String_Access;
+      Short_Title_Markup : String_Access;
+      --  Can hold murkup for the Title_Label
+
+      XML_Node_Name      : String_Access;
       --  The name of the XML node when this child is saved in a desktop (if
       --  we know it). This is used to reuse a child when switching
       --  perspectives.
 
-      MDI           : MDI_Window;
+      MDI                : MDI_Window;
       --  The MDI to which the child belongs. We cannot get this information
       --  directly from Get_Parent since some children are actually floating
       --  and do not belong to the MDI anymore.
 
-      Flags         : Child_Flags;
+      Flags              : Child_Flags;
 
-      Focus_Widget  : Gtk.Widget.Gtk_Widget;
+      Focus_Widget       : Gtk.Widget.Gtk_Widget;
       --  The widget which should actually get the keyboard focus
 
-      Title_Box     : Gtk.Box.Gtk_Box;
-      Title_Label   : Gtk.Label.Gtk_Label;
-      Title_Icon    : Gtk.Image.Gtk_Image;
+      Title_Box          : Gtk.Box.Gtk_Box;
+      Title_Label        : Gtk.Label.Gtk_Label;
+      Title_Icon         : Gtk.Image.Gtk_Image;
       --  Box that contains the title. It will be resized whenever the title
       --  font changes.
 
-      Tab_Label     : Gtk.Label.Gtk_Label;
-      Tab_Icon      : Gtk.Image.Gtk_Image;
+      Tab_Label          : Gtk.Label.Gtk_Label;
+      Tab_Icon           : Gtk.Image.Gtk_Image;
       --  label used when child is in a notebook, null if not in a notebook
 
-      Icon_Name     : GNAT.Strings.String_Access;
+      Icon_Name          : GNAT.Strings.String_Access;
 
       Notebook_Before_Floating : Gtk.Notebook.Gtk_Notebook := null;
       --  The original notebook of a floating child. Used to put the child
