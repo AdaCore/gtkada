@@ -2060,6 +2060,8 @@ package body Gtkada.MDI is
       Free (C.Icon_Name);
       Free (C.Title);
       Free (C.Short_Title);
+      Free (C.Title_Markup);
+      Free (C.Short_Title_Markup);
       Free (C.XML_Node_Name);
 
       if C.State = Invisible then
@@ -3162,6 +3164,20 @@ package body Gtkada.MDI is
       end if;
    end Get_Title;
 
+   ----------------------
+   -- Get_Title_Markup --
+   ----------------------
+
+   function Get_Title_Markup
+     (Child : not null access MDI_Child_Record) return UTF8_String is
+   begin
+      if Child.Title_Markup = null then
+         return "";
+      else
+         return Child.Title_Markup.all;
+      end if;
+   end Get_Title_Markup;
+
    ---------------------
    -- Get_Short_Title --
    ---------------------
@@ -3169,8 +3185,26 @@ package body Gtkada.MDI is
    function Get_Short_Title
      (Child : not null access MDI_Child_Record) return UTF8_String is
    begin
-      return Child.Short_Title.all;
+      if Child.Short_Title = null then
+         return "";
+      else
+         return Child.Short_Title.all;
+      end if;
    end Get_Short_Title;
+
+   ----------------------------
+   -- Get_Short_Title_Markup --
+   ----------------------------
+
+   function Get_Short_Title_Markup
+     (Child : not null access MDI_Child_Record) return UTF8_String is
+   begin
+      if Child.Short_Title_Markup = null then
+         return "";
+      else
+         return Child.Short_Title_Markup.all;
+      end if;
+   end Get_Short_Title_Markup;
 
    --------------
    -- Set_Icon --
@@ -3305,9 +3339,11 @@ package body Gtkada.MDI is
    ---------------
 
    procedure Set_Title
-     (Child       : not null access MDI_Child_Record;
-      Title       : String;
-      Short_Title : String := "")
+     (Child              : not null access MDI_Child_Record;
+      Title              : String;
+      Short_Title        : String := "";
+      Markup_Title       : String := "";
+      Markup_Short_Title : String := "")
    is
       function To_UTF8 (Str : String) return String;
       --  Ensure the output string is valid UTF8
@@ -3341,46 +3377,79 @@ package body Gtkada.MDI is
          end if;
       end To_UTF8;
 
-      T : constant String := To_UTF8 (Title);
-      S : constant String := To_UTF8 (Short_Title);
+      T  : constant String := To_UTF8 (Title);
+      S  : constant String := To_UTF8 (Short_Title);
+      MT : constant String := To_UTF8 (Markup_Title);
+      MS : constant String := To_UTF8 (Markup_Short_Title);
 
-      Title_Changed       : constant Boolean := Child.Title = null
-                              or else Child.Title.all /= T;
-      Short_Title_Changed : constant Boolean := Child.Short_Title = null
-                              or else Child.Short_Title.all /= S;
+      Title_Changed       : constant Boolean :=
+        (Child.Title = null
+         or else Child.Title.all /= T)
+        or else
+          ((Child.Title_Markup = null and then MT /= "")
+           or else (Child.Title_Markup /= null
+                    and then Child.Title_Markup.all /= MT));
 
+      Short_Title_Changed : constant Boolean :=
+        (Child.Short_Title = null
+         or else Child.Short_Title.all /= S)
+        or else
+          ((Child.Short_Title_Markup = null and then MS /= "")
+           or else (Child.Short_Title_Markup /= null
+                    and then Child.Short_Title_Markup.all /= MS));
    begin
       if Title_Changed then
          Free (Child.Title);
+         Free (Child.Title_Markup);
+
          Child.Title := new UTF8_String'(T);
+
+         if MT /= "" then
+            Child.Title_Markup := new UTF8_String'(MT);
+         end if;
       end if;
 
       if Short_Title_Changed then
          Free (Child.Short_Title);
+         Free (Child.Short_Title_Markup);
+
          if S /= "" then
             Child.Short_Title := new UTF8_String'(S);
          else
             Child.Short_Title := new UTF8_String'(T);
+         end if;
+
+         if MS /= "" then
+            Child.Short_Title_Markup := new UTF8_String'(MS);
          end if;
       end if;
 
       if Child.MDI /= null
         and then Child.MDI.Use_Short_Titles_For_Floats
       then
-         Child.Title_Label.Set_Text (Child.Short_Title.all);
+         if Child.Short_Title_Markup = null then
+            Child.Title_Label.Set_Text (Child.Get_Short_Title);
+         else
+            Child.Title_Label.Set_Markup (Child.Short_Title_Markup.all);
+         end if;
+
       else
-         Child.Title_Label.Set_Text (Child.Title.all);
+         if Child.Title_Markup = null then
+            Child.Title_Label.Set_Text (Child.Get_Title);
+         else
+            Child.Title_Label.Set_Markup (Child.Title_Markup.all);
+         end if;
       end if;
 
       if Title_Changed and then Child.State = Floating then
          if Child.MDI.Use_Short_Titles_For_Floats then
             Set_Title
               (Gtk_Window (Get_Toplevel (Child.Initial)),
-               Locale_From_UTF8 (Child.Short_Title.all));
+               Locale_From_UTF8 (Child.Get_Short_Title));
          else
             Set_Title
               (Gtk_Window (Get_Toplevel (Child.Initial)),
-               Locale_From_UTF8 (Child.Title.all));
+               Locale_From_UTF8 (Child.Get_Title));
          end if;
       end if;
 
@@ -3542,8 +3611,10 @@ package body Gtkada.MDI is
       loop
          Child := Get (Iter);
          exit when Child = null
-           or else Child.Title.all = Name
-           or else Child.Short_Title.all = Name;
+           or else Child.Get_Title = Name
+           or else Child.Get_Title_Markup = Name
+           or else Child.Get_Short_Title = Name
+           or else Child.Get_Short_Title_Markup = Name;
          Next (Iter);
       end loop;
 
@@ -4137,9 +4208,9 @@ package body Gtkada.MDI is
          Child.Set_Default_Size_For_Floating_Window (Win, W, H);
 
          if Child.MDI.Use_Short_Titles_For_Floats then
-            Set_Title (Win, Locale_From_UTF8 (Child.Short_Title.all));
+            Set_Title (Win, Locale_From_UTF8 (Child.Get_Short_Title));
          else
-            Set_Title (Win, Locale_From_UTF8 (Child.Title.all));
+            Set_Title (Win, Locale_From_UTF8 (Child.Get_Title));
          end if;
 
          --  Memorize the MDI_Child associated with the window, for faster
@@ -4371,11 +4442,16 @@ package body Gtkada.MDI is
             MItem := new Child_Menu_Item_Record;
             MItem.Child := Widget;
             Gtk.Image_Menu_Item.Initialize
-              (MItem, Label => Widget.Short_Title.all);
+              (MItem, Label => Widget.Get_Short_Title);
 
             if P - 1 = Current then
-               Gtk_Label (MItem.Get_Child).Set_Markup
-                 ("<b>" & Widget.Short_Title.all & "</b>");
+               if Widget.Short_Title_Markup = null then
+                  Gtk_Label (MItem.Get_Child).Set_Markup
+                    ("<b>" & Widget.Get_Short_Title & "</b>");
+               else
+                  Gtk_Label (MItem.Get_Child).Set_Markup
+                    ("<b>" & Widget.Short_Title_Markup.all & "</b>");
+               end if;
             end if;
 
             if Widget.Tab_Icon /= null then
@@ -4897,14 +4973,26 @@ package body Gtkada.MDI is
 
       procedure Add_Label is
       begin
-         Gtk_New (Child.Tab_Label, Child.Short_Title.all);
+         Gtk_New (Child.Tab_Label);
+         if Child.Short_Title_Markup = null then
+            Child.Tab_Label.Set_Text (Child.Get_Short_Title);
+         else
+            Child.Tab_Label.Set_Markup (Child.Short_Title_Markup.all);
+         end if;
+
          Box.Pack_Start (Child.Tab_Label, Expand => True, Fill => True);
 
          declare
             Tooltip : constant String := Child.Get_Tooltip;
          begin
             if Tooltip = "" then
-               Child.Tab_Label.Set_Tooltip_Text (Child.Title.all);
+               if Child.Title_Markup = null then
+                  Child.Tab_Label.Set_Tooltip_Text (Child.Get_Title);
+               else
+                  Child.Tab_Label.Set_Tooltip_Markup
+                    (Child.Title_Markup.all);
+               end if;
+
             elsif Child.Get_Tooltip_Is_Markup then
                Child.Tab_Label.Set_Tooltip_Markup (Tooltip);
             else
@@ -5089,7 +5177,7 @@ package body Gtkada.MDI is
       Set_State (Child, Normal);
 
       Append_Page (Note, Child);
-      Note.Set_Menu_Label_Text (Child, Child.Short_Title.all);
+      Note.Set_Menu_Label_Text (Child, Child.Get_Short_Title);
 
       Configure_Notebook_Tabs (MDI, Note);
 
@@ -5358,12 +5446,17 @@ package body Gtkada.MDI is
             Child := MDI_Child (Get_Data (List));
 
             declare
-               T : constant String := Child.Title.all;
-               S : constant String := Child.Short_Title.all;
+               T  : constant String := Child.Get_Title;
+               S  : constant String := Child.Get_Short_Title;
+               MT : constant String := Child.Get_Title_Markup;
+               MS : constant String := Child.Get_Short_Title_Markup;
             begin
                Free (Child.Title);  --  Force a refresh
                Free (Child.Short_Title);
-               Child.Set_Title (T, S);
+               Free (Child.Title_Markup);
+               Free (Child.Short_Title_Markup);
+
+               Child.Set_Title (T, S, MT, MS);
             end;
 
             List := Next (List);
@@ -5825,7 +5918,7 @@ package body Gtkada.MDI is
 
       It.Set_Accel_Path
         (Child.MDI.Accel_Path_Prefix.all
-         & "/window/child/" & Child.Short_Title.all,
+         & "/window/child/" & Child.Get_Short_Title,
          Child.MDI.Group);
    end Internal_Add_Child_Menu;
 
@@ -5851,7 +5944,12 @@ package body Gtkada.MDI is
          Box.Pack_Start (Icon, Expand => False);
       end if;
 
-      Gtk_New (Label, Child.Short_Title.all);
+      Gtk_New (Label, "");
+      if Child.Short_Title_Markup = null then
+         Label.Set_Text (Child.Get_Short_Title);
+      else
+         Label.Set_Markup (Child.Short_Title_Markup.all);
+      end if;
       Label.Set_Alignment (0.0, 0.5);
       Label.Set_Accel_Widget (It);
       Box.Pack_Start (Label, Expand => True, Fill => True);
