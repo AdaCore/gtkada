@@ -26,6 +26,49 @@ check_gtk_bin() {
    fi
 }
 
+# Find all conflicting libraries between gtk-bin and target directory
+# Outputs a list of conflicting library filenames
+find_conflicting_libs() {
+   local target_dir=$1
+
+   # Check lib and lib64 directories for conflicts
+   for gtk_lib_dir in lib lib64; do
+      if [ -d "$gtk_bin_dir/$gtk_lib_dir" ]; then
+         # Check all files in gtk-bin lib directory
+         for file in "$gtk_bin_dir/$gtk_lib_dir"/*; do
+            if [ -e "$file" ]; then
+               filename=$(basename "$file")
+               # Check if file exists in target lib or lib64
+               if [ -e "$target_dir/lib/$filename" ] || [ -e "$target_dir/lib64/$filename" ]; then
+                  echo "$filename"
+               fi
+            fi
+         done
+      fi
+   done
+}
+
+# Ask user about conflicting libraries
+ask_about_conflicts() {
+   local conflicts_list=$1
+
+   echo ""
+   echo "  The following libraries present in the installation package already"
+   echo "  exist in the target directory:"
+   echo ""
+   echo "$conflicts_list" | while read lib; do
+      echo "    - $lib"
+   done
+   echo ""
+   printf "  Do you want to overwrite these libraries [y/N] ? "
+   read x
+   if [ "$x" = "y" -o "$x" = "Y" ]; then
+      return 0
+   else
+      return 1
+   fi
+}
+
 ## Read the base directory (absolute path name)
 ## Sets the variable  $basedir
 ask_basedir() {
@@ -102,6 +145,16 @@ EOF
      mkdir -p "$basedir"
    fi
 
+   # Check for conflicting libraries
+   conflicting_libs=$(find_conflicting_libs "$basedir")
+   if [ -n "$conflicting_libs" ]; then
+      if ! ask_about_conflicts "$conflicting_libs"; then
+         skip_overwriting_libs=1
+         # Store the list of conflicting files for later use
+         conflicting_files="$conflicting_libs"
+      fi
+   fi
+
    echo ""
    printf "  Are you now ready to proceed with the installation [Y/n] ? "
    read x
@@ -119,21 +172,35 @@ install_binaries() {
 
   echo "Copying the Gtk+ binaries"
 
-  cp -r "$gtk_bin_dir"/* "$basedir"
+  # Copy binaries, excluding conflicting libs if requested
+  if [ "$skip_overwriting_libs" = "1" ]; then
+     # Detect conflicting files if not already detected (e.g., in non-interactive mode)
+     if [ -z "$conflicting_files" ]; then
+        conflicting_files=$(find_conflicting_libs "$basedir")
+     fi
+
+     # Create tar with exclude patterns for each conflicting file
+     # Build the exclude arguments dynamically from the detected conflicts
+     ( cd "$gtk_bin_dir" && \
+       tar $(echo "$conflicting_files" | sed 's/^/--exclude=*\//' | tr '\n' ' ') -cf - . ) | \
+     ( cd "$basedir" && tar -xf - )
+  else
+     cp -r "$gtk_bin_dir"/* "$basedir"
+  fi
 
   echo "Setting up the environment"
   eval `"$basedir"/bin/gtkada-env.sh --print-only`
 
   # Update gdkpixbuf loaders cache
 
-  LD_LIBRARY_PATH=$basedir/lib:$LD_LIBRARY_PATH \
+  LD_LIBRARY_PATH=$basedir/lib:$basedir/lib64:$LD_LIBRARY_PATH \
   GDK_PIXBUF_MODULE_FILE=$basedir/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache \
   GDK_PIXBUF_MODULEDIR=$basedir/lib/gdk-pixbuf-2.0/2.10.0/loaders \
   $basedir/bin/gdk-pixbuf-query-loaders --update-cache
 
   # Update immodules cache
 
-  LD_LIBRARY_PATH=$basedir/lib:$LD_LIBRARY_PATH \
+  LD_LIBRARY_PATH=$basedir/lib:$basedir/lib64:$LD_LIBRARY_PATH \
   GTK_IM_MODULE_FILE=$basedir/lib/gtk-3.0/3.0.0/immodules.cache \
   GTK_PATH=$basedir/lib/gtk-3.0 \
   $basedir/bin/gtk-query-immodules-3.0 --update-cache
@@ -168,21 +235,48 @@ EOF
 
 ## Main program
 
-if [ $# -eq 1 ]; then
+# Initialize variables
+skip_overwriting_libs=0
+interactive_mode=0
+
+if [ $# -ge 1 ]; then
   if [ "$1" = "--help" ]; then
     printf "
-   Usage: $0 [install_dir]
+   Usage: $0 [options] [install_dir]
 
-   When no argument is specified, runs the GtkAda installer
-   interactively, otherwise installs automatically under install_dir.
+   When no arguments are specified, runs the GtkAda installer
+   interactively. Otherwise installs automatically.
+
+   Options:
+      --help              Show this help message
+      --no-overwrite      Do not overwrite existing libraries in the target directory
 "
   else
-    echo "installing GtkAda under $1"
-    check_gtk_bin
-    basedir="$1"
-    mkdir -p $basedir || exit 1
-    install_binaries
-    end_message
+    # Parse arguments
+    while [ $# -gt 0 ]; do
+      case "$1" in
+        --no-overwrite)
+          skip_overwriting_libs=1
+          shift
+          ;;
+        *)
+          break
+          ;;
+      esac
+    done
+
+    # Remaining argument should be the install directory
+    if [ $# -eq 1 ]; then
+      echo "installing GtkAda under $1"
+      check_gtk_bin
+      basedir="$1"
+      mkdir -p $basedir || exit 1
+      install_binaries
+      end_message
+    else
+      echo "Error: Invalid arguments"
+      exit 1
+    fi
   fi
   exit 0
 fi
@@ -190,6 +284,7 @@ fi
 # Perform interactive install
 
 check_gtk_bin
+interactive_mode=1
 begin_message
 ask_basedir
 install_binaries
