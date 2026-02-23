@@ -30,11 +30,25 @@ check_gtk_bin() {
 ## Sets the variable  $basedir
 ask_basedir() {
    clear
-   default_dir=/opt/gtkada
-   cat <<EOF
+   default_dir="`type gnatmake 2>/dev/null| cut -d' ' -f3`"
+   default_dir="`dirname \"$default_dir\" 2>/dev/null`"
+
+   if [ "$default_dir" != "" -a "$default_dir" != "." -a "$default_dir" != "/usr/bin" ]; then
+      default_dir="`cd "$default_dir/.."; pwd`"
+      cat <<EOF
+
+  GNAT has been found in $default_dir.
+  Do you want to install GtkAda there too? Hit RETURN if yes or enter
+  the name of the directory in which GtkAda should be installed:
+
+EOF
+   else
+     default_dir=/opt/gtkada
+     cat <<EOF
   Enter the name of the directory in which you would like to install GtkAda
 
 EOF
+   fi
 
    while [ "$basedir" = "" ]; do
       printf "[$default_dir] "
@@ -105,7 +119,7 @@ install_binaries() {
 
   echo "Copying the Gtk+ binaries"
 
-  cp -ri "$gtk_bin_dir"/* "$basedir"
+  cp -r "$gtk_bin_dir"/* "$basedir"
 
   echo "Setting up the environment"
   eval `"$basedir"/bin/gtkada-env.sh --print-only`
