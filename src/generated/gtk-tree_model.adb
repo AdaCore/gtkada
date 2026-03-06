@@ -179,20 +179,7 @@ package body Gtk.Tree_Model is
       if A = Gtkada.Types.Null_Ptr then
          return "";
       else
-         declare
-            S : constant String := Gtkada.Types.Value (A);
-
-            procedure C_Free (S : Gtkada.Types.Chars_Ptr);
-            pragma Import (C, C_Free, "free");
-
-         begin
-            --  Since A was allocated by gtk+ via malloc(), and not via
-            --  System.Memory, we should not be using Gtkada.Types.g_free
-            --  which goes through System.Memory. So we call free() directly
-            --  instead.
-            C_Free (A);
-            return S;
-         end;
+         return Gtkada.Bindings.Value_And_Free (A);
       end if;
    end Get_String;
 
