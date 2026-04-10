@@ -45,7 +45,7 @@ Red Hat Enterprise Linux 9
  * libglvnd-devel
 
 
-Ubunbu 18.04 & 20.04
+Ubuntu 18.04 & 20.04
 --------------------
 
  * libc6-dev
