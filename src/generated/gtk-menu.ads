@@ -41,32 +41,51 @@
 --
 --  ## Connecting the popup signal handler.
 --
---  |[<!-- language="C" --> // connect our handler which will popup the menu
---  g_signal_connect_swapped (window, "button_press_event", G_CALLBACK
---  (my_popup_handler), menu); ]|
+--       // connect our handler which will popup the menu
+--       g_signal_connect_swapped (window, "button_press_event",
+--     G_CALLBACK (my_popup_handler), menu);
+--
 --
 --  ## Signal handler which displays a popup menu.
 --
---  |[<!-- language="C" --> static gint my_popup_handler (GtkWidget *widget,
---  GdkEvent *event) { GtkMenu *menu; GdkEventButton *event_button;
+--     static gint
+--     my_popup_handler (GtkWidget *widget, GdkEvent *event)
+--     {
+--       GtkMenu *menu;
+--       GdkEventButton *event_button;
 --
---  g_return_val_if_fail (widget != NULL, FALSE); g_return_val_if_fail
---  (GTK_IS_MENU (widget), FALSE); g_return_val_if_fail (event != NULL, FALSE);
+--       g_return_val_if_fail (widget != NULL, FALSE);
+--       g_return_val_if_fail (GTK_IS_MENU (widget), FALSE);
+--       g_return_val_if_fail (event != NULL, FALSE);
 --
---  // The "widget" is the menu that was supplied when //
---  g_signal_connect_swapped was called. menu = GTK_MENU (widget);
+--       // The "widget" is the menu that was supplied when
+--       // g_signal_connect_swapped was called.
+--       menu = GTK_MENU (widget);
 --
---  if (event->type == GDK_BUTTON_PRESS) { event_button = (GdkEventButton *)
---  event; if (event_button->button == GDK_BUTTON_SECONDARY) { gtk_menu_popup
---  (menu, NULL, NULL, NULL, NULL, event_button->button, event_button->time);
---  return TRUE; } }
+--       if (event->type == GDK_BUTTON_PRESS)
+--         {
+--           event_button = (GdkEventButton *) event;
+--           if (event_button->button == GDK_BUTTON_SECONDARY)
+--             {
+--               gtk_menu_popup (menu, NULL, NULL, NULL, NULL,
+--                               event_button->button, event_button->time);
+--               return TRUE;
+--             }
+--         }
 --
---  return FALSE; } ]|
+--       return FALSE;
+--     }
+--
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> menu ├── arrow.top ├── <child> ┊ ├── <child>
---  ╰── arrow.bottom ]|
+--     menu
+--     ├── arrow.top
+--     ├── <child>
+--     ┊
+--     ├── <child>
+--     ╰── arrow.bottom
+--
 --
 --  The main CSS node of GtkMenu has name menu, and there are two subnodes
 --  with name arrow, for scrolling menu arrows. These subnodes get the .top and

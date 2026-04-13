@@ -39,25 +39,36 @@
 --
 --  ## Adding a custom offset on the bar
 --
---  |[<!-- language="C" -->
+--     static GtkWidget *
+--     create_level_bar (void)
+--     {
+--       GtkWidget *widget;
+--       GtkLevelBar *bar;
 --
---  static GtkWidget * create_level_bar (void) { GtkWidget *widget;
---  GtkLevelBar *bar;
+--       widget = gtk_level_bar_new ();
+--       bar = GTK_LEVEL_BAR (widget);
 --
---  widget = gtk_level_bar_new (); bar = GTK_LEVEL_BAR (widget);
+--       // This changes the value of the default low offset
 --
---  // This changes the value of the default low offset
+--       gtk_level_bar_add_offset_value (bar,
+--                                       GTK_LEVEL_BAR_OFFSET_LOW,
+--                                       0.10);
 --
---  gtk_level_bar_add_offset_value (bar, GTK_LEVEL_BAR_OFFSET_LOW, 0.10);
+--       // This adds a new offset to the bar; the application will
+--       // be able to change its color CSS like this:
+--       //
+--       // levelbar block.my-offset {
+--       //   background-color: magenta;
+--       //   border-style: solid;
+--       //   border-color: black;
+--       //   border-style: 1px;
+--       // }
 --
---  // This adds a new offset to the bar; the application will // be able to
---  change its color CSS like this: // // levelbar block.my-offset { //
---  background-color: magenta; // border-style: solid; // border-color: black;
---  // border-style: 1px; // }
+--       gtk_level_bar_add_offset_value (bar, "my-offset", 0.60);
 --
---  gtk_level_bar_add_offset_value (bar, "my-offset", 0.60);
+--       return widget;
+--     }
 --
---  return widget; } ]|
 --
 --  The default interval of values is between zero and one, but it's possible
 --  to modify the interval using Gtk.Level_Bar.Set_Min_Value and
@@ -83,8 +94,13 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> levelbar[.discrete] ╰── trough ├──
---  block.filled.level-name ┊ ├── block.empty ┊ ]|
+--     levelbar[.discrete]
+--     ╰── trough
+--         ├── block.filled.level-name
+--         ┊
+--         ├── block.empty
+--         ┊
+--
 --
 --  GtkLevelBar has a main CSS node with name levelbar and one of the style
 --  classes .discrete or .continuous and a subnode with name trough. Below the

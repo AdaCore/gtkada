@@ -171,19 +171,43 @@ package Glib.Menu is
    --  The first would be populated with the "Undo" and "Redo" items, and the
    --  second with the "Cut", "Copy" and "Paste" items. The first and second
    --  menus would then be added as submenus of the third. In XML format, this
-   --  would look something like the following: |[ <menu id='edit-menu'>
-   --  <section> <item label='Undo'/> <item label='Redo'/> </section> <section>
-   --  <item label='Cut'/> <item label='Copy'/> <item label='Paste'/>
-   --  </section> </menu> ]|
+   --  would look something like the following:
+   --
+   --     <menu id='edit-menu'>
+   --       <section>
+   --         <item label='Undo'/>
+   --         <item label='Redo'/>
+   --       </section>
+   --       <section>
+   --         <item label='Cut'/>
+   --         <item label='Copy'/>
+   --         <item label='Paste'/>
+   --       </section>
+   --     </menu>
+   --
    --  The following example is exactly equivalent. It is more illustrative of
    --  the exact relationship between the menus and items (keeping in mind that
    --  the 'link' element defines a new menu that is linked to the containing
    --  one). The style of the second example is more verbose and difficult to
    --  read (and therefore not recommended except for the purpose of
-   --  understanding what is really going on). |[ <menu id='edit-menu'> <item>
-   --  <link name='section'> <item label='Undo'/> <item label='Redo'/> </link>
-   --  </item> <item> <link name='section'> <item label='Cut'/> <item
-   --  label='Copy'/> <item label='Paste'/> </link> </item> </menu> ]|
+   --  understanding what is really going on).
+   --
+   --     <menu id='edit-menu'>
+   --       <item>
+   --         <link name='section'>
+   --           <item label='Undo'/>
+   --           <item label='Redo'/>
+   --         </link>
+   --       </item>
+   --       <item>
+   --         <link name='section'>
+   --           <item label='Cut'/>
+   --           <item label='Copy'/>
+   --           <item label='Paste'/>
+   --         </link>
+   --       </item>
+   --     </menu>
+   --
    --  Since: gtk+ 2.32
    --  "label": the section label, or null
    --  "section": a Glib.Menu_Model.Gmenu_Model with the items of the section
@@ -208,19 +232,43 @@ package Glib.Menu is
    --  The first would be populated with the "Undo" and "Redo" items, and the
    --  second with the "Cut", "Copy" and "Paste" items. The first and second
    --  menus would then be added as submenus of the third. In XML format, this
-   --  would look something like the following: |[ <menu id='edit-menu'>
-   --  <section> <item label='Undo'/> <item label='Redo'/> </section> <section>
-   --  <item label='Cut'/> <item label='Copy'/> <item label='Paste'/>
-   --  </section> </menu> ]|
+   --  would look something like the following:
+   --
+   --     <menu id='edit-menu'>
+   --       <section>
+   --         <item label='Undo'/>
+   --         <item label='Redo'/>
+   --       </section>
+   --       <section>
+   --         <item label='Cut'/>
+   --         <item label='Copy'/>
+   --         <item label='Paste'/>
+   --       </section>
+   --     </menu>
+   --
    --  The following example is exactly equivalent. It is more illustrative of
    --  the exact relationship between the menus and items (keeping in mind that
    --  the 'link' element defines a new menu that is linked to the containing
    --  one). The style of the second example is more verbose and difficult to
    --  read (and therefore not recommended except for the purpose of
-   --  understanding what is really going on). |[ <menu id='edit-menu'> <item>
-   --  <link name='section'> <item label='Undo'/> <item label='Redo'/> </link>
-   --  </item> <item> <link name='section'> <item label='Cut'/> <item
-   --  label='Copy'/> <item label='Paste'/> </link> </item> </menu> ]|
+   --  understanding what is really going on).
+   --
+   --     <menu id='edit-menu'>
+   --       <item>
+   --         <link name='section'>
+   --           <item label='Undo'/>
+   --           <item label='Redo'/>
+   --         </link>
+   --       </item>
+   --       <item>
+   --         <link name='section'>
+   --           <item label='Cut'/>
+   --           <item label='Copy'/>
+   --           <item label='Paste'/>
+   --         </link>
+   --       </item>
+   --     </menu>
+   --
    --  Since: gtk+ 2.32
    --  Initialize_Section does nothing if the object was already created with
    --  another call to Initialize* or G_New.
@@ -247,19 +295,43 @@ package Glib.Menu is
    --  The first would be populated with the "Undo" and "Redo" items, and the
    --  second with the "Cut", "Copy" and "Paste" items. The first and second
    --  menus would then be added as submenus of the third. In XML format, this
-   --  would look something like the following: |[ <menu id='edit-menu'>
-   --  <section> <item label='Undo'/> <item label='Redo'/> </section> <section>
-   --  <item label='Cut'/> <item label='Copy'/> <item label='Paste'/>
-   --  </section> </menu> ]|
+   --  would look something like the following:
+   --
+   --     <menu id='edit-menu'>
+   --       <section>
+   --         <item label='Undo'/>
+   --         <item label='Redo'/>
+   --       </section>
+   --       <section>
+   --         <item label='Cut'/>
+   --         <item label='Copy'/>
+   --         <item label='Paste'/>
+   --       </section>
+   --     </menu>
+   --
    --  The following example is exactly equivalent. It is more illustrative of
    --  the exact relationship between the menus and items (keeping in mind that
    --  the 'link' element defines a new menu that is linked to the containing
    --  one). The style of the second example is more verbose and difficult to
    --  read (and therefore not recommended except for the purpose of
-   --  understanding what is really going on). |[ <menu id='edit-menu'> <item>
-   --  <link name='section'> <item label='Undo'/> <item label='Redo'/> </link>
-   --  </item> <item> <link name='section'> <item label='Cut'/> <item
-   --  label='Copy'/> <item label='Paste'/> </link> </item> </menu> ]|
+   --  understanding what is really going on).
+   --
+   --     <menu id='edit-menu'>
+   --       <item>
+   --         <link name='section'>
+   --           <item label='Undo'/>
+   --           <item label='Redo'/>
+   --         </link>
+   --       </item>
+   --       <item>
+   --         <link name='section'>
+   --           <item label='Cut'/>
+   --           <item label='Copy'/>
+   --           <item label='Paste'/>
+   --         </link>
+   --       </item>
+   --     </menu>
+   --
    --  Since: gtk+ 2.32
    --  "label": the section label, or null
    --  "section": a Glib.Menu_Model.Gmenu_Model with the items of the section

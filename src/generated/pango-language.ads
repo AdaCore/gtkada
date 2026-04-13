@@ -329,8 +329,7 @@ package Pango.Language is
    --  returned pointer value to that returned for (non-existent) language code
    --  "xx". That is, compare to:
    --
-   --      pango_language_get_sample_string (pango_language_from_string ("xx"))
-   --
+   --     pango_language_get_sample_string (pango_language_from_string ("xx"))
 
    function Get_Scripts (Self : Pango_Language) return Pango_Script_Array;
    --  Determines the scripts used to to write Language. If nothing is known

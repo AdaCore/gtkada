@@ -58,9 +58,15 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> entry[.read-only][.flat][.warning][.error] ├──
---  image.left ├── image.right ├── undershoot.left ├── undershoot.right ├──
---  [selection] ├── [progress[.pulse]] ╰── [window.popup] ]|
+--     entry[.read-only][.flat][.warning][.error]
+--     ├── image.left
+--     ├── image.right
+--     ├── undershoot.left
+--     ├── undershoot.right
+--     ├── [selection]
+--     ├── [progress[.pulse]]
+--     ╰── [window.popup]
+--
 --
 --  GtkEntry has a main node with the name entry. Depending on the properties
 --  of the entry, the style classes .read-only and .flat may appear. The style

@@ -41,9 +41,15 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> scrollbar[.fine-tune] ╰── contents ├──
---  [button.up] ├── [button.down] ├── trough │ ╰── slider ├── [button.up] ╰──
---  [button.down] ]|
+--     scrollbar[.fine-tune]
+--     ╰── contents
+--         ├── [button.up]
+--         ├── [button.down]
+--         ├── trough
+--         │   ╰── slider
+--         ├── [button.up]
+--         ╰── [button.down]
+--
 --
 --  GtkScrollbar has a main CSS node with name scrollbar and a subnode for its
 --  contents, with subnodes named trough and slider.

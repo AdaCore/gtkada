@@ -514,11 +514,23 @@ package Gtk.Cell_Renderer is
    --  Note that GTK+ doesn't guarantee that cell renderers will continue to
    --  use the same kind of widget for editing in future releases, therefore
    --  you should check the type of Editable before doing any specific setup,
-   --  as in the following example: |[<!-- language="C" --> static void
-   --  text_editing_started (GtkCellRenderer *cell, GtkCellEditable *editable,
-   --  const gchar *path, gpointer data) { if (GTK_IS_ENTRY (editable)) {
-   --  GtkEntry *entry = GTK_ENTRY (editable); // ... create a
-   --  GtkEntryCompletion gtk_entry_set_completion (entry, completion); } } ]|
+   --  as in the following example:
+   --
+   --     static void
+   --     text_editing_started (GtkCellRenderer *cell,
+   --                           GtkCellEditable *editable,
+   --                           const gchar     *path,
+   --                           gpointer         data)
+   --     {
+   --       if (GTK_IS_ENTRY (editable))
+   --         {
+   --           GtkEntry *entry = GTK_ENTRY (editable);
+   --
+   --           // ... create a GtkEntryCompletion
+   --
+   --           gtk_entry_set_completion (entry, completion);
+   --         }
+   --     }
    -- 
    --  Callback parameters:
    --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable

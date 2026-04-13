@@ -33,12 +33,18 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> checkbutton ├── check ╰── <child> ]|
+--     checkbutton
+--     ├── check
+--     ╰── <child>
+--
 --
 --  A GtkCheckButton with indicator (see Gtk.Toggle_Button.Set_Mode) has a
 --  main CSS node with name checkbutton and a subnode with name check.
 --
---  |[<!-- language="plain" --> button.check ├── check ╰── <child> ]|
+--     button.check
+--     ├── check
+--     ╰── <child>
+--
 --
 --  A GtkCheckButton without indicator changes the name of its main node to
 --  button and adds a .check style class to it. The subnode is invisible in

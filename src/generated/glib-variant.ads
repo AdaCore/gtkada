@@ -1123,16 +1123,27 @@ package Glib.Variant is
    --  is returned.
    --  Use Glib.Variant.Unref to drop your reference on the return value when
    --  you no longer need it.
-   --  Here is an example for iterating with Glib.Variant.Next_Value: |[<!--
-   --  language="C" --> // recursively iterate a container void
-   --  iterate_container_recursive (GVariant *container) { GVariantIter iter;
-   --  GVariant *child;
-   --  g_variant_iter_init (&iter, container); while ((child =
-   --  g_variant_iter_next_value (&iter))) { g_print ("type '%s'\n",
-   --  g_variant_get_type_string (child));
-   --  if (g_variant_is_container (child)) iterate_container_recursive
-   --  (child);
-   --  g_variant_unref (child); } } ]|
+   --  Here is an example for iterating with Glib.Variant.Next_Value:
+   --
+   --     // recursively iterate a container
+   --     void
+   --     iterate_container_recursive (GVariant *container)
+   --     {
+   --       GVariantIter iter;
+   --       GVariant *child;
+   --
+   --       g_variant_iter_init (&iter, container);
+   --       while ((child = g_variant_iter_next_value (&iter)))
+   --         {
+   --           g_print ("type '%s'\n", g_variant_get_type_string (child));
+   --
+   --           if (g_variant_is_container (child))
+   --             iterate_container_recursive (child);
+   --
+   --           g_variant_unref (child);
+   --         }
+   --     }
+   --
    --  Since: gtk+ 2.24
 
    function Copy (Self : Gvariant_Type) return Gvariant_Type;
@@ -1351,9 +1362,17 @@ package Glib.Variant is
    --  The resulting string is suitable for output to the console or other
    --  monospace media where newlines are treated in the usual way.
    --  The message will typically look something like one of the following:
-   --  |[ unterminated string constant: (1, 2, 3, 'abc ^^^^ ]|
+   --
+   --     unterminated string constant:
+   --       (1, 2, 3, 'abc
+   --                 ^^^^
+   --
    --  or
-   --  |[ unable to find a common type: [1, 2, 3, 'str'] ^ ^^^^^ ]|
+   --
+   --     unable to find a common type:
+   --       [1, 2, 3, 'str']
+   --        ^        ^^^^^
+   --
    --  The format of the message may change in a future version.
    --  Error must have come from a failed attempt to Glib.Variant.Parse and
    --  Source_Str must be exactly the same string that caused the error. If

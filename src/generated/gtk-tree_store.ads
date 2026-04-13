@@ -37,10 +37,15 @@
 --  may contain multiple <column> elements, each specifying one model column.
 --  The "type" attribute specifies the data type for the column.
 --
---  An example of a UI Definition fragment for a tree store: |[ <object
---  class="GtkTreeStore"> <columns> <column type="gchararray"/> <column
---  type="gchararray"/> <column type="gint"/> </columns> </object> ]|
+--  An example of a UI Definition fragment for a tree store:
 --
+--     <object class="GtkTreeStore">
+--       <columns>
+--         <column type="gchararray"/>
+--         <column type="gchararray"/>
+--         <column type="gint"/>
+--       </columns>
+--     </object>
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");

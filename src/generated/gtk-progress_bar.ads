@@ -47,8 +47,11 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> progressbar[.osd] ├── [text] ╰──
---  trough[.empty][.full] ╰── progress[.pulse] ]|
+--     progressbar[.osd]
+--     ├── [text]
+--     ╰── trough[.empty][.full]
+--         ╰── progress[.pulse]
+--
 --
 --  GtkProgressBar has a main CSS node with name progressbar and subnodes with
 --  names text and trough, of which the latter has a subnode named progress.

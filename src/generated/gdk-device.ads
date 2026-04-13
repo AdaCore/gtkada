@@ -238,15 +238,25 @@ package Gdk.Device is
    --  constant for it.
    --  This function, together with Gdk.Device.Get_Product_Id, can be used to
    --  eg. compose Gsettings.Gsettings paths to store settings for this device.
-   --  |[<!-- language="C" --> static GSettings * get_device_settings
-   --  (GdkDevice *device) { const gchar *vendor, *product; GSettings
-   --  *settings; GdkDevice *device; gchar *path;
-   --  vendor = gdk_device_get_vendor_id (device); product =
-   --  gdk_device_get_product_id (device);
-   --  path = g_strdup_printf ("/org/example/app/devices/%s:%s/", vendor,
-   --  product); settings = g_settings_new_with_path (DEVICE_SCHEMA, path);
-   --  g_free (path);
-   --  return settings; } ]|
+   --
+   --     static GSettings *
+   --     get_device_settings (GdkDevice *device)
+   --     {
+   --       const gchar *vendor, *product;
+   --       GSettings *settings;
+   --       GdkDevice *device;
+   --       gchar *path;
+   --
+   --       vendor = gdk_device_get_vendor_id (device);
+   --       product = gdk_device_get_product_id (device);
+   --
+   --       path = g_strdup_printf ("/org/example/app/devices/%s:%s/", vendor, product);
+   --       settings = g_settings_new_with_path (DEVICE_SCHEMA, path);
+   --       g_free (path);
+   --
+   --       return settings;
+   --     }
+   --
    --  Since: gtk+ 3.16
 
    function Get_Window_At_Position_Double

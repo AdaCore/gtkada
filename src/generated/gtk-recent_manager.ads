@@ -39,10 +39,11 @@
 --
 --  Adding a new recently used file is as simple as:
 --
---  |[<!-- language="C" --> GtkRecentManager *manager;
+--     GtkRecentManager *manager;
 --
---  manager = gtk_recent_manager_get_default (); gtk_recent_manager_add_item
---  (manager, file_uri); ]|
+--     manager = gtk_recent_manager_get_default ();
+--     gtk_recent_manager_add_item (manager, file_uri);
+--
 --
 --  The Gtk.Recent_Manager.Gtk_Recent_Manager will try to gather all the
 --  needed information from the file itself through GIO.
@@ -50,13 +51,23 @@
 --  Looking up the meta-data associated with a recently used file given its
 --  URI requires calling Gtk.Recent_Manager.Lookup_Item:
 --
---  |[<!-- language="C" --> GtkRecentManager *manager; GtkRecentInfo *info;
---  GError *error = NULL;
+--     GtkRecentManager *manager;
+--     GtkRecentInfo *info;
+--     GError *error = NULL;
 --
---  manager = gtk_recent_manager_get_default (); info =
---  gtk_recent_manager_lookup_item (manager, file_uri, &error); if (error) {
---  g_warning ("Could not find the file: %s", error->message); g_error_free
---  (error); } else { // Use the info object gtk_recent_info_unref (info); } ]|
+--     manager = gtk_recent_manager_get_default ();
+--     info = gtk_recent_manager_lookup_item (manager, file_uri, &error);
+--     if (error)
+--       {
+--         g_warning ("Could not find the file: %s", error->message);
+--         g_error_free (error);
+--       }
+--     else
+--      {
+--        // Use the info object
+--        gtk_recent_info_unref (info);
+--      }
+--
 --
 --  In order to retrieve the list of recently used files, you can use
 --  Gtk.Recent_Manager.Get_Items, which returns a list of
@@ -76,32 +87,31 @@
 --  In case the default screen is being used, adding a new recently used file
 --  is as simple as:
 --
--- 
---      declare
---         Manager : constant Gtk_Recent_Manager := Get_Default;
---      begin
---         Add_Item (Manager, File_URI);
---      end;
+--     declare
+--        Manager : constant Gtk_Recent_Manager := Get_Default;
+--     begin
+--        Add_Item (Manager, File_URI);
+--     end;
+--
 --
 --  While looking up a recently used file is as simple as using:
 --
--- 
---      declare
---         Manager : constant Gtk_Recent_Manager := Get_Default;
---         Info    : Gtk_Recent_Info;
---         Error   : Glib.Error.GError;
---      begin
---         Lookup_Item (Info, Manager, File_URI, Error);
---         if Error /= null then
---            --  Use the info object
---            Unref (Info);
---         else
---            Put_Line
---              ("Could not find the file: " & Glib.Error.Get_Message (Error));
---            Glib.Error.Error_Free (Error);
---         end if;
---      end;
---      
+--     declare
+--        Manager : constant Gtk_Recent_Manager := Get_Default;
+--        Info    : Gtk_Recent_Info;
+--        Error   : Glib.Error.GError;
+--     begin
+--        Lookup_Item (Info, Manager, File_URI, Error);
+--        if Error /= null then
+--           --  Use the info object
+--           Unref (Info);
+--        else
+--           Put_Line
+--             ("Could not find the file: " & Glib.Error.Get_Message (Error));
+--           Glib.Error.Error_Free (Error);
+--        end if;
+--     end;
+--
 --
 --  </description>
 

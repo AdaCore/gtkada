@@ -55,28 +55,34 @@
 --
 --  ## Creating a simple menu item with an accelerator key.
 --
---  |[<!-- language="C" --> GtkWidget *window = gtk_window_new
---  (GTK_WINDOW_TOPLEVEL); GtkWidget *menu = gtk_menu_new (); GtkWidget
---  *save_item; GtkAccelGroup *accel_group;
+--     GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+--     GtkWidget *menu = gtk_menu_new ();
+--     GtkWidget *save_item;
+--     GtkAccelGroup *accel_group;
 --
---  // Create a GtkAccelGroup and add it to the window. accel_group =
---  gtk_accel_group_new (); gtk_window_add_accel_group (GTK_WINDOW (window),
---  accel_group);
+--     // Create a GtkAccelGroup and add it to the window.
+--     accel_group = gtk_accel_group_new ();
+--     gtk_window_add_accel_group (GTK_WINDOW (window), accel_group);
 --
---  // Create the menu item using the convenience function. save_item =
---  gtk_menu_item_new_with_label ("Save"); gtk_widget_show (save_item);
---  gtk_container_add (GTK_CONTAINER (menu), save_item);
+--     // Create the menu item using the convenience function.
+--     save_item = gtk_menu_item_new_with_label ("Save");
+--     gtk_widget_show (save_item);
+--     gtk_container_add (GTK_CONTAINER (menu), save_item);
 --
---  // Now add the accelerator to the GtkMenuItem. Note that since we //
---  called Gtk.Menu_Item.Gtk_New_With_Label to create the GtkMenuItem // the
---  GtkAccelLabel is automatically set up to display the // GtkMenuItem
---  accelerators. We just need to make sure we use // GTK_ACCEL_VISIBLE here.
---  gtk_widget_add_accelerator (save_item, "activate", accel_group, GDK_KEY_s,
---  GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE); ]|
+--     // Now add the accelerator to the GtkMenuItem. Note that since we
+--     // called Gtk.Menu_Item.Gtk_New_With_Label to create the GtkMenuItem
+--     // the GtkAccelLabel is automatically set up to display the
+--     // GtkMenuItem accelerators. We just need to make sure we use
+--     // GTK_ACCEL_VISIBLE here.
+--     gtk_widget_add_accelerator (save_item, "activate", accel_group,
+--                                 GDK_KEY_s, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+--
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> label ╰── accelerator ]|
+--     label
+--     ╰── accelerator
+--
 --
 --  Like Gtk.Label.Gtk_Label, GtkAccelLabel has a main CSS node with the name
 --  label. It adds a subnode with name accelerator.

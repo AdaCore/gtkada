@@ -278,7 +278,7 @@ package Gtk.Theming_Engine is
    --  properties, for a theming engine named "Clearlooks" registering a
    --  "glossy" custom property, it could be referenced in the CSS file as
    --
-   --  |[ -Clearlooks-glossy: true; ]|
+   --     -Clearlooks-glossy: true;
 
 private
    Name_Property : constant Glib.Properties.Property_String :=

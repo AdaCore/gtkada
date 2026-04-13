@@ -35,14 +35,17 @@
 --  Gtk.Tool_Item_Group.Gtk_Tool_Item_Group to a
 --  Gtk.Tool_Palette.Gtk_Tool_Palette, use Gtk.Container.Add.
 --
---  |[<!-- language="C" --> GtkWidget *palette, *group; GtkToolItem *item;
+--     GtkWidget *palette, *group;
+--     GtkToolItem *item;
 --
---  palette = gtk_tool_palette_new (); group = gtk_tool_item_group_new
---  (_("Test Category")); gtk_container_add (GTK_CONTAINER (palette), group);
+--     palette = gtk_tool_palette_new ();
+--     group = gtk_tool_item_group_new (_("Test Category"));
+--     gtk_container_add (GTK_CONTAINER (palette), group);
 --
---  item = gtk_tool_button_new (NULL, _("_Open"));
---  gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (item), "document-open");
---  gtk_tool_item_group_insert (GTK_TOOL_ITEM_GROUP (group), item, -1); ]|
+--     item = gtk_tool_button_new (NULL, _("_Open"));
+--     gtk_tool_button_set_icon_name (GTK_TOOL_BUTTON (item), "document-open");
+--     gtk_tool_item_group_insert (GTK_TOOL_ITEM_GROUP (group), item, -1);
+--
 --
 --  The easiest way to use drag and drop with
 --  Gtk.Tool_Palette.Gtk_Tool_Palette is to call Gtk.Tool_Palette.Add_Drag_Dest
@@ -51,26 +54,41 @@
 --  the Gtk.Widget.Gtk_Widget::drag-data-received signal handler of the drag
 --  target.
 --
---  |[<!-- language="C" --> static void passive_canvas_drag_data_received
---  (GtkWidget *widget, GdkDragContext *context, gint x, gint y,
---  GtkSelectionData *selection, guint info, guint time, gpointer data) {
---  GtkWidget *palette; GtkWidget *item;
+--     static void
+--     passive_canvas_drag_data_received (GtkWidget        *widget,
+--                                        GdkDragContext   *context,
+--                                        gint              x,
+--                                        gint              y,
+--                                        GtkSelectionData *selection,
+--                                        guint             info,
+--                                        guint             time,
+--                                        gpointer          data)
+--     {
+--       GtkWidget *palette;
+--       GtkWidget *item;
 --
---  // Get the dragged item palette = gtk_widget_get_ancestor
---  (gtk_drag_get_source_widget (context), GTK_TYPE_TOOL_PALETTE); if (palette
---  != NULL) item = gtk_tool_palette_get_drag_item (GTK_TOOL_PALETTE (palette),
---  selection);
+--       // Get the dragged item
+--       palette = gtk_widget_get_ancestor (gtk_drag_get_source_widget (context),
+--                                          GTK_TYPE_TOOL_PALETTE);
+--       if (palette != NULL)
+--         item = gtk_tool_palette_get_drag_item (GTK_TOOL_PALETTE (palette),
+--                                                selection);
 --
---  // Do something with item }
+--       // Do something with item
+--     }
 --
---  GtkWidget *target, palette;
+--     GtkWidget *target, palette;
 --
---  palette = gtk_tool_palette_new (); target = gtk_drawing_area_new ();
+--     palette = gtk_tool_palette_new ();
+--     target = gtk_drawing_area_new ();
 --
---  g_signal_connect (G_OBJECT (target), "drag-data-received", G_CALLBACK
---  (passive_canvas_drag_data_received), NULL); gtk_tool_palette_add_drag_dest
---  (GTK_TOOL_PALETTE (palette), target, GTK_DEST_DEFAULT_ALL,
---  GTK_TOOL_PALETTE_DRAG_ITEMS, GDK_ACTION_COPY); ]|
+--     g_signal_connect (G_OBJECT (target), "drag-data-received",
+--                       G_CALLBACK (passive_canvas_drag_data_received), NULL);
+--     gtk_tool_palette_add_drag_dest (GTK_TOOL_PALETTE (palette), target,
+--                                     GTK_DEST_DEFAULT_ALL,
+--                                     GTK_TOOL_PALETTE_DRAG_ITEMS,
+--                                     GDK_ACTION_COPY);
+--
 --
 --  # CSS nodes
 --

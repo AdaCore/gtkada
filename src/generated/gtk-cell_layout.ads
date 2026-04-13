@@ -48,11 +48,16 @@
 --  property of the cell renderer; the content of the element is the attribute
 --  value.
 --
---  This is an example of a UI definition fragment specifying attributes: |[
---  <object class="GtkCellView"> <child> <object class="GtkCellRendererText"/>
---  <attributes> <attribute name="text">0</attribute> </attributes> </child>"
---  </object> ]|
+--  This is an example of a UI definition fragment specifying attributes:
 --
+--     <object class="GtkCellView">
+--       <child>
+--         <object class="GtkCellRendererText"/>
+--         <attributes>
+--           <attribute name="text">0</attribute>
+--         </attributes>
+--       </child>"
+--     </object>
 --  Furthermore for implementations of GtkCellLayout that use a
 --  Gtk.Cell_Area.Gtk_Cell_Area to lay out cells (all GtkCellLayouts in GTK+
 --  use a GtkCellArea) [cell properties][cell-properties] can also be defined
@@ -61,11 +66,15 @@
 --
 --  Here is a UI definition fragment specifying cell properties:
 --
---  |[ <object class="GtkTreeViewColumn"> <child> <object
---  class="GtkCellRendererText"/> <cell-packing> <property
---  name="align">True</property> <property name="expand">False</property>
---  </cell-packing> </child>" </object> ]|
---
+--     <object class="GtkTreeViewColumn">
+--       <child>
+--         <object class="GtkCellRendererText"/>
+--         <cell-packing>
+--           <property name="align">True</property>
+--           <property name="expand">False</property>
+--         </cell-packing>
+--       </child>"
+--     </object>
 --  # Subclassing GtkCellLayout implementations
 --
 --  When subclassing a widget that implements Gtk.Cell_Layout.Gtk_Cell_Layout
@@ -74,8 +83,8 @@
 --  Gtk.Cell_Area.Gtk_Cell_Area. The cell area is exposed as a construct-only
 --  property by these widgets. This means that it is possible to e.g. do
 --
---  |[<!-- language="C" --> combo = g_object_new (GTK_TYPE_COMBO_BOX,
---  "cell-area", my_cell_area, NULL); ]|
+--     combo = g_object_new (GTK_TYPE_COMBO_BOX, "cell-area", my_cell_area, NULL);
+--
 --
 --  to use a custom cell area with a combo box. But construct properties are
 --  only initialized after instance init functions have run, which means that
@@ -84,16 +93,25 @@
 --  instantiated. In this case, a provided construct property value will be
 --  ignored (with a warning, to alert you to the problem).
 --
---  |[<!-- language="C" --> static void my_combo_box_init (MyComboBox *b) {
---  GtkCellRenderer *cell;
+--     static void
+--     my_combo_box_init (MyComboBox *b)
+--     {
+--       GtkCellRenderer *cell;
 --
---  cell = gtk_cell_renderer_pixbuf_new (); // The following call causes the
---  default cell area for combo boxes, // a GtkCellAreaBox, to be instantiated
---  gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (b), cell, FALSE); ... }
+--       cell = gtk_cell_renderer_pixbuf_new ();
+--       // The following call causes the default cell area for combo boxes,
+--       // a GtkCellAreaBox, to be instantiated
+--       gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (b), cell, FALSE);
+--       ...
+--     }
 --
---  GtkWidget * my_combo_box_new (GtkCellArea *area) { // This call is going
---  to cause a warning about area being ignored return g_object_new
---  (MY_TYPE_COMBO_BOX, "cell-area", area, NULL); } ]|
+--     GtkWidget *
+--     my_combo_box_new (GtkCellArea *area)
+--     {
+--       // This call is going to cause a warning about area being ignored
+--       return g_object_new (MY_TYPE_COMBO_BOX, "cell-area", area, NULL);
+--     }
+--
 --
 --  If supporting alternative cell areas with your derived widget is not
 --  important, then this does not have to concern you. If you want to support

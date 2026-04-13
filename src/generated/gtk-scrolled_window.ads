@@ -41,18 +41,21 @@
 --  can remove both your added child widget from the Gtk.Viewport.Gtk_Viewport,
 --  and the Gtk.Viewport.Gtk_Viewport from the GtkScrolledWindow, like this:
 --
---  |[<!-- language="C" --> GtkWidget *scrolled_window =
---  gtk_scrolled_window_new (NULL, NULL); GtkWidget *child_widget =
---  gtk_button_new ();
+--     GtkWidget *scrolled_window = gtk_scrolled_window_new (NULL, NULL);
+--     GtkWidget *child_widget = gtk_button_new ();
 --
---  // GtkButton is not a GtkScrollable, so GtkScrolledWindow will
---  automatically // add a GtkViewport. gtk_container_add (GTK_CONTAINER
---  (scrolled_window), child_widget);
+--     // GtkButton is not a GtkScrollable, so GtkScrolledWindow will automatically
+--     // add a GtkViewport.
+--     gtk_container_add (GTK_CONTAINER (scrolled_window),
+--                        child_widget);
 --
---  // Either of these will result in child_widget being unparented:
---  gtk_container_remove (GTK_CONTAINER (scrolled_window), child_widget); // or
---  gtk_container_remove (GTK_CONTAINER (scrolled_window), gtk_bin_get_child
---  (GTK_BIN (scrolled_window))); ]|
+--     // Either of these will result in child_widget being unparented:
+--     gtk_container_remove (GTK_CONTAINER (scrolled_window),
+--                           child_widget);
+--     // or
+--     gtk_container_remove (GTK_CONTAINER (scrolled_window),
+--                           gtk_bin_get_child (GTK_BIN (scrolled_window)));
+--
 --
 --  Unless Gtk.Scrolled_Window.Gtk_Scrolled_Window:policy is GTK_POLICY_NEVER
 --  or GTK_POLICY_EXTERNAL, GtkScrolledWindow adds internal

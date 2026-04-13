@@ -70,16 +70,20 @@
 --  In order to request the width of all the rows at the root level of a
 --  Gtk.Tree_Model.Gtk_Tree_Model one would do the following:
 --
---  |[<!-- language="C" --> GtkTreeIter iter; gint minimum_width; gint
---  natural_width;
+--     GtkTreeIter iter;
+--     gint        minimum_width;
+--     gint        natural_width;
 --
---  valid = gtk_tree_model_get_iter_first (model, &iter); while (valid) {
---  gtk_cell_area_apply_attributes (area, model, &iter, FALSE, FALSE);
---  gtk_cell_area_get_preferred_width (area, context, widget, NULL, NULL);
+--     valid = gtk_tree_model_get_iter_first (model, &iter);
+--     while (valid)
+--       {
+--         gtk_cell_area_apply_attributes (area, model, &iter, FALSE, FALSE);
+--         gtk_cell_area_get_preferred_width (area, context, widget, NULL, NULL);
 --
---  valid = gtk_tree_model_iter_next (model, &iter); }
---  gtk_cell_area_context_get_preferred_width (context, &minimum_width,
---  &natural_width); ]|
+--         valid = gtk_tree_model_iter_next (model, &iter);
+--       }
+--     gtk_cell_area_context_get_preferred_width (context, &minimum_width, &natural_width);
+--
 --
 --  Note that in this example it's not important to observe the returned
 --  minimum and natural width of the area for each row unless the
@@ -100,14 +104,19 @@
 --  A simple example where rows are rendered from top to bottom and take up
 --  the full width of the layouting widget would look like:
 --
---  |[<!-- language="C" --> static void foo_get_preferred_width (GtkWidget
---  *widget, gint *minimum_size, gint *natural_size) { Foo *foo = FOO (widget);
---  FooPrivate *priv = foo->priv;
+--     static void
+--     foo_get_preferred_width (GtkWidget       *widget,
+--                              gint            *minimum_size,
+--                              gint            *natural_size)
+--     {
+--       Foo        *foo  = FOO (widget);
+--       FooPrivate *priv = foo->priv;
 --
---  foo_ensure_at_least_one_handfull_of_rows_have_been_requested (foo);
+--       foo_ensure_at_least_one_handfull_of_rows_have_been_requested (foo);
 --
---  gtk_cell_area_context_get_preferred_width (priv->context, minimum_size,
---  natural_size); } ]|
+--       gtk_cell_area_context_get_preferred_width (priv->context, minimum_size, natural_size);
+--     }
+--
 --
 --  In the above example the Foo widget has to make sure that some row sizes
 --  have been calculated (the amount of rows that Foo judged was appropriate to
@@ -126,21 +135,28 @@
 --  In order to request the height for width of all the rows at the root level
 --  of a Gtk.Tree_Model.Gtk_Tree_Model one would do the following:
 --
---  |[<!-- language="C" --> GtkTreeIter iter; gint minimum_height; gint
---  natural_height; gint full_minimum_height = 0; gint full_natural_height = 0;
+--     GtkTreeIter iter;
+--     gint        minimum_height;
+--     gint        natural_height;
+--     gint        full_minimum_height = 0;
+--     gint        full_natural_height = 0;
 --
---  valid = gtk_tree_model_get_iter_first (model, &iter); while (valid) {
---  gtk_cell_area_apply_attributes (area, model, &iter, FALSE, FALSE);
---  gtk_cell_area_get_preferred_height_for_width (area, context, widget, width,
---  &minimum_height, &natural_height);
+--     valid = gtk_tree_model_get_iter_first (model, &iter);
+--     while (valid)
+--       {
+--         gtk_cell_area_apply_attributes (area, model, &iter, FALSE, FALSE);
+--         gtk_cell_area_get_preferred_height_for_width (area, context, widget,
+--                                                       width, &minimum_height, &natural_height);
 --
---  if (width_is_for_allocation) cache_row_height (&iter, minimum_height,
---  natural_height);
+--         if (width_is_for_allocation)
+--            cache_row_height (&iter, minimum_height, natural_height);
 --
---  full_minimum_height += minimum_height; full_natural_height +=
---  natural_height;
+--         full_minimum_height += minimum_height;
+--         full_natural_height += natural_height;
 --
---  valid = gtk_tree_model_iter_next (model, &iter); } ]|
+--         valid = gtk_tree_model_iter_next (model, &iter);
+--       }
+--
 --
 --  Note that in the above example we would need to cache the heights returned
 --  for each row so that we would know what sizes to render the areas for each
@@ -170,22 +186,29 @@
 --  A crude example of how to render all the rows at the root level runs as
 --  follows:
 --
---  |[<!-- language="C" --> GtkAllocation allocation; GdkRectangle cell_area =
---  { 0, }; GtkTreeIter iter; gint minimum_width; gint natural_width;
+--     GtkAllocation allocation;
+--     GdkRectangle  cell_area = { 0, };
+--     GtkTreeIter   iter;
+--     gint          minimum_width;
+--     gint          natural_width;
 --
---  gtk_widget_get_allocation (widget, &allocation); cell_area.width =
---  allocation.width;
+--     gtk_widget_get_allocation (widget, &allocation);
+--     cell_area.width = allocation.width;
 --
---  valid = gtk_tree_model_get_iter_first (model, &iter); while (valid) {
---  cell_area.height = get_cached_height_for_row (&iter);
+--     valid = gtk_tree_model_get_iter_first (model, &iter);
+--     while (valid)
+--       {
+--         cell_area.height = get_cached_height_for_row (&iter);
 --
---  gtk_cell_area_apply_attributes (area, model, &iter, FALSE, FALSE);
---  gtk_cell_area_render (area, context, widget, cr, &cell_area, &cell_area,
---  state_flags, FALSE);
+--         gtk_cell_area_apply_attributes (area, model, &iter, FALSE, FALSE);
+--         gtk_cell_area_render (area, context, widget, cr,
+--                               &cell_area, &cell_area, state_flags, FALSE);
 --
---  cell_area.y += cell_area.height;
+--         cell_area.y += cell_area.height;
 --
---  valid = gtk_tree_model_iter_next (model, &iter); } ]|
+--         valid = gtk_tree_model_iter_next (model, &iter);
+--       }
+--
 --
 --  Note that the cached height in this example really depends on how the
 --  layouting widget works. The layouting widget might decide to give every row
@@ -225,26 +248,62 @@
 --  A basic example of how the Gtk.Widget.GObject_Class.focus virtual method
 --  should be implemented:
 --
---  |[<!-- language="C" --> static gboolean foo_focus (GtkWidget *widget,
---  GtkDirectionType direction) { Foo *foo = FOO (widget); FooPrivate *priv =
---  foo->priv; gint focus_row; gboolean have_focus = FALSE;
+--     static gboolean
+--     foo_focus (GtkWidget       *widget,
+--                GtkDirectionType direction)
+--     {
+--       Foo        *foo  = FOO (widget);
+--       FooPrivate *priv = foo->priv;
+--       gint        focus_row;
+--       gboolean    have_focus = FALSE;
 --
---  focus_row = priv->focus_row;
+--       focus_row = priv->focus_row;
 --
---  if (!gtk_widget_has_focus (widget)) gtk_widget_grab_focus (widget);
+--       if (!gtk_widget_has_focus (widget))
+--         gtk_widget_grab_focus (widget);
 --
---  valid = gtk_tree_model_iter_nth_child (priv->model, &iter, NULL,
---  priv->focus_row); while (valid) { gtk_cell_area_apply_attributes
---  (priv->area, priv->model, &iter, FALSE, FALSE);
+--       valid = gtk_tree_model_iter_nth_child (priv->model, &iter, NULL, priv->focus_row);
+--       while (valid)
+--         {
+--           gtk_cell_area_apply_attributes (priv->area, priv->model, &iter, FALSE, FALSE);
 --
---  if (gtk_cell_area_focus (priv->area, direction)) { priv->focus_row =
---  focus_row; have_focus = TRUE; break; } else { if (direction ==
---  GTK_DIR_RIGHT || direction == GTK_DIR_LEFT) break; else if (direction ==
---  GTK_DIR_UP || direction == GTK_DIR_TAB_BACKWARD) { if (focus_row == 0)
---  break; else { focus_row--; valid = gtk_tree_model_iter_nth_child
---  (priv->model, &iter, NULL, focus_row); } } else { if (focus_row ==
---  last_row) break; else { focus_row++; valid = gtk_tree_model_iter_next
---  (priv->model, &iter); } } } } return have_focus; } ]|
+--           if (gtk_cell_area_focus (priv->area, direction))
+--             {
+--                priv->focus_row = focus_row;
+--                have_focus = TRUE;
+--                break;
+--             }
+--           else
+--             {
+--               if (direction == GTK_DIR_RIGHT ||
+--                   direction == GTK_DIR_LEFT)
+--                 break;
+--               else if (direction == GTK_DIR_UP ||
+--                        direction == GTK_DIR_TAB_BACKWARD)
+--                {
+--                   if (focus_row == 0)
+--                     break;
+--                   else
+--                    {
+--                       focus_row--;
+--                       valid = gtk_tree_model_iter_nth_child (priv->model, &iter, NULL, focus_row);
+--                    }
+--                 }
+--               else
+--                 {
+--                   if (focus_row == last_row)
+--                     break;
+--                   else
+--                     {
+--                       focus_row++;
+--                       valid = gtk_tree_model_iter_next (priv->model, &iter);
+--                     }
+--                 }
+--             }
+--         }
+--         return have_focus;
+--     }
+--
 --
 --  Note that the layouting widget is responsible for matching the
 --  GtkDirectionType values to the way it lays out its cells.

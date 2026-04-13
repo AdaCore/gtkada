@@ -302,14 +302,22 @@ package Glib.Simple_Action is
    --  If the state should change then you must call
    --  Glib.Simple_Action.Set_State from the handler.
    --
-   --  An example of a 'change-state' handler: |[<!-- language="C" --> static
-   --  void change_volume_state (GSimpleAction *action, GVariant *value,
-   --  gpointer user_data) { gint requested;
+   --  An example of a 'change-state' handler:
    --
-   --  requested = g_variant_get_int32 (value);
+   --     static void
+   --     change_volume_state (GSimpleAction *action,
+   --                          GVariant      *value,
+   --                          gpointer       user_data)
+   --     {
+   --       gint requested;
    --
-   --  // Volume only goes from 0 to 10 if (0 <= requested && requested <= 10)
-   --  g_simple_action_set_state (action, value); } ]|
+   --       requested = g_variant_get_int32 (value);
+   --
+   --       // Volume only goes from 0 to 10
+   --       if (0 <= requested && requested <= 10)
+   --         g_simple_action_set_state (action, value);
+   --     }
+   --
    --
    --  The handler need not set the state to the requested value. It could set
    --  it to any value at all, or take some other action.

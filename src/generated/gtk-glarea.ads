@@ -44,29 +44,37 @@
 --  is to create a widget instance and connect to the
 --  Gtk.GLArea.Gtk_GLArea::render signal:
 --
---  |[<!-- language="C" --> // create a GtkGLArea instance GtkWidget *gl_area
---  = gtk_gl_area_new ();
+--     // create a GtkGLArea instance
+--     GtkWidget *gl_area = gtk_gl_area_new ();
 --
---  // connect to the "render" signal g_signal_connect (gl_area, "render",
---  G_CALLBACK (render), NULL); ]|
+--     // connect to the "render" signal
+--     g_signal_connect (gl_area, "render", G_CALLBACK (render), NULL);
+--
 --
 --  The `render` function will be called when the Gtk.GLArea.Gtk_GLArea is
 --  ready for you to draw its content:
 --
---  |[<!-- language="C" --> static gboolean render (GtkGLArea *area,
---  GdkGLContext *context) { // inside this function it's safe to use GL; the
---  given // Gdk.GLContext.Gdk_GLContext has been made current to the drawable
---  // surface used by the Gtk.GLArea.Gtk_GLArea and the viewport has //
---  already been set to be the size of the allocation
+--     static gboolean
+--     render (GtkGLArea *area, GdkGLContext *context)
+--     {
+--       // inside this function it's safe to use GL; the given
+--       // Gdk.GLContext.Gdk_GLContext has been made current to the drawable
+--       // surface used by the Gtk.GLArea.Gtk_GLArea and the viewport has
+--       // already been set to be the size of the allocation
 --
---  // we can start by clearing the buffer glClearColor (0, 0, 0, 0); glClear
---  (GL_COLOR_BUFFER_BIT);
+--       // we can start by clearing the buffer
+--       glClearColor (0, 0, 0, 0);
+--       glClear (GL_COLOR_BUFFER_BIT);
 --
---  // draw your object draw_an_object ();
+--       // draw your object
+--       draw_an_object ();
 --
---  // we completed our drawing; the draw commands will be // flushed at the
---  end of the signal emission chain, and // the buffers will be drawn on the
---  window return TRUE; } ]|
+--       // we completed our drawing; the draw commands will be
+--       // flushed at the end of the signal emission chain, and
+--       // the buffers will be drawn on the window
+--       return TRUE;
+--     }
+--
 --
 --  If you need to initialize OpenGL state, e.g. buffer objects or shaders,
 --  you should use the Gtk.Widget.Gtk_Widget::realize signal; you can use the
@@ -75,21 +83,40 @@
 --  need to check for errors, using Gtk.GLArea.Get_Error. An example of how to
 --  safely initialize the GL state is:
 --
---  |[<!-- language="C" --> static void on_realize (GtkGLarea *area) { // We
---  need to make the context current if we want to // call GL API
---  gtk_gl_area_make_current (area);
+--     static void
+--     on_realize (GtkGLarea *area)
+--     {
+--       // We need to make the context current if we want to
+--       // call GL API
+--       gtk_gl_area_make_current (area);
 --
---  // If there were errors during the initialization or // when trying to
---  make the context current, this // function will return a Gerror.Gerror for
---  you to catch if (gtk_gl_area_get_error (area) != NULL) return;
+--       // If there were errors during the initialization or
+--       // when trying to make the context current, this
+--       // function will return a Gerror.Gerror for you to catch
+--       if (gtk_gl_area_get_error (area) != NULL)
+--         return;
 --
---  // You can also use Gtk.GLArea.Set_Error in order // to show eventual
---  initialization errors on the // GtkGLArea widget itself GError
---  *internal_error = NULL; init_buffer_objects (&error); if (error != NULL) {
---  gtk_gl_area_set_error (area, error); g_error_free (error); return; }
+--       // You can also use Gtk.GLArea.Set_Error in order
+--       // to show eventual initialization errors on the
+--       // GtkGLArea widget itself
+--       GError *internal_error = NULL;
+--       init_buffer_objects (&error);
+--       if (error != NULL)
+--         {
+--           gtk_gl_area_set_error (area, error);
+--           g_error_free (error);
+--           return;
+--         }
 --
---  init_shaders (&error); if (error != NULL) { gtk_gl_area_set_error (area,
---  error); g_error_free (error); return; } } ]|
+--       init_shaders (&error);
+--       if (error != NULL)
+--         {
+--           gtk_gl_area_set_error (area, error);
+--           g_error_free (error);
+--           return;
+--         }
+--     }
+--
 --
 --  If you need to change the options for creating the
 --  Gdk.GLContext.Gdk_GLContext you should use the

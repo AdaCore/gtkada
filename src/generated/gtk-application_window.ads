@@ -63,21 +63,28 @@
 --
 --  ## A GtkApplicationWindow with a menubar
 --
---  |[<!-- language="C" --> GtkApplication *app = gtk_application_new
---  ("org.gtk.test", 0);
+--     GtkApplication *app = gtk_application_new ("org.gtk.test", 0);
 --
---  GtkBuilder *builder = gtk_builder_new_from_string ( "<interface>" " <menu
---  id='menubar'>" " <submenu label='_Edit'>" " <item label='_Copy'
---  action='win.copy'/>" " <item label='_Paste' action='win.paste'/>" "
---  </submenu>" " </menu>" "</interface>", -1);
+--     GtkBuilder *builder = gtk_builder_new_from_string (
+--         "<interface>"
+--         "  <menu id='menubar'>"
+--         "    <submenu label='_Edit'>"
+--         "      <item label='_Copy' action='win.copy'/>"
+--         "      <item label='_Paste' action='win.paste'/>"
+--         "    </submenu>"
+--         "  </menu>"
+--         "</interface>",
+--         -1);
 --
---  GMenuModel *menubar = G_MENU_MODEL (gtk_builder_get_object (builder,
---  "menubar")); gtk_application_set_menubar (GTK_APPLICATION (app), menubar);
---  g_object_unref (builder);
+--     GMenuModel *menubar = G_MENU_MODEL (gtk_builder_get_object (builder,
+--                                                                 "menubar"));
+--     gtk_application_set_menubar (GTK_APPLICATION (app), menubar);
+--     g_object_unref (builder);
 --
---  // ...
+--     // ...
 --
---  GtkWidget *window = gtk_application_window_new (app); ]|
+--     GtkWidget *window = gtk_application_window_new (app);
+--
 --
 --  ## Handling fallback yourself
 --

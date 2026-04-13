@@ -100,20 +100,31 @@
 --
 --  ## Acquiring a Gtk.Tree_Model.Gtk_Tree_Iter-struct
 --
---  |[<!-- language="C" --> // Three ways of getting the iter pointing to the
---  location GtkTreePath *path; GtkTreeIter iter; GtkTreeIter parent_iter;
+--     // Three ways of getting the iter pointing to the location
+--     GtkTreePath *path;
+--     GtkTreeIter iter;
+--     GtkTreeIter parent_iter;
 --
---  // get the iterator from a string gtk_tree_model_get_iter_from_string
---  (model, &iter, "3:2:5");
+--     // get the iterator from a string
+--     gtk_tree_model_get_iter_from_string (model,
+--                                          &iter,
+--                                          "3:2:5");
 --
---  // get the iterator from a path path = gtk_tree_path_new_from_string
---  ("3:2:5"); gtk_tree_model_get_iter (model, &iter, path); gtk_tree_path_free
---  (path);
+--     // get the iterator from a path
+--     path = gtk_tree_path_new_from_string ("3:2:5");
+--     gtk_tree_model_get_iter (model, &iter, path);
+--     gtk_tree_path_free (path);
 --
---  // walk the tree to find the iterator gtk_tree_model_iter_nth_child
---  (model, &iter, NULL, 3); parent_iter = iter; gtk_tree_model_iter_nth_child
---  (model, &iter, &parent_iter, 2); parent_iter = iter;
---  gtk_tree_model_iter_nth_child (model, &iter, &parent_iter, 5); ]|
+--     // walk the tree to find the iterator
+--     gtk_tree_model_iter_nth_child (model, &iter,
+--                                    NULL, 3);
+--     parent_iter = iter;
+--     gtk_tree_model_iter_nth_child (model, &iter,
+--                                    &parent_iter, 2);
+--     parent_iter = iter;
+--     gtk_tree_model_iter_nth_child (model, &iter,
+--                                    &parent_iter, 5);
+--
 --
 --  This second example shows a quick way of iterating through a list and
 --  getting a string and an integer from each row. The populate_model function
@@ -123,32 +134,54 @@
 --
 --  ## Reading data from a Gtk.Tree_Model.Gtk_Tree_Model
 --
---  |[<!-- language="C" --> enum { STRING_COLUMN, INT_COLUMN, N_COLUMNS };
+--     enum
+--     {
+--       STRING_COLUMN,
+--       INT_COLUMN,
+--       N_COLUMNS
+--     };
 --
---  ...
+--     ...
 --
---  GtkTreeModel *list_store; GtkTreeIter iter; gboolean valid; gint row_count
---  = 0;
+--     GtkTreeModel *list_store;
+--     GtkTreeIter iter;
+--     gboolean valid;
+--     gint row_count = 0;
 --
---  // make a new list_store list_store = gtk_list_store_new (N_COLUMNS,
---  G_TYPE_STRING, G_TYPE_INT);
+--     // make a new list_store
+--     list_store = gtk_list_store_new (N_COLUMNS,
+--                                      G_TYPE_STRING,
+--                                      G_TYPE_INT);
 --
---  // Fill the list store with data populate_model (list_store);
+--     // Fill the list store with data
+--     populate_model (list_store);
 --
---  // Get the first iter in the list, check it is valid and walk // through
---  the list, reading each row.
+--     // Get the first iter in the list, check it is valid and walk
+--     // through the list, reading each row.
 --
---  valid = gtk_tree_model_get_iter_first (list_store, &iter); while (valid) {
---  gchar *str_data; gint int_data;
+--     valid = gtk_tree_model_get_iter_first (list_store,
+--                                            &iter);
+--     while (valid)
+--      {
+--        gchar *str_data;
+--        gint   int_data;
 --
---  // Make sure you terminate calls to gtk_tree_model_get with a "-1" value
---  gtk_tree_model_get (list_store, &iter, STRING_COLUMN, &str_data,
---  INT_COLUMN, &int_data, -1);
+--        // Make sure you terminate calls to gtk_tree_model_get with a "-1" value
+--        gtk_tree_model_get (list_store, &iter,
+--                            STRING_COLUMN, &str_data,
+--                            INT_COLUMN, &int_data,
+--                            -1);
 --
---  // Do something with the data g_print ("Row %d: (%s,%d)\n", row_count,
---  str_data, int_data); g_free (str_data);
+--        // Do something with the data
+--        g_print ("Row %d: (%s,%d)\n",
+--                 row_count, str_data, int_data);
+--        g_free (str_data);
 --
---  valid = gtk_tree_model_iter_next (list_store, &iter); row_count++; } ]|
+--        valid = gtk_tree_model_iter_next (list_store,
+--                                          &iter);
+--        row_count++;
+--      }
+--
 --
 --  The Gtk.Tree_Model.Gtk_Tree_Model interface contains two methods for
 --  reference counting: Gtk.Tree_Model.Ref_Node and Gtk.Tree_Model.Unref_Node.

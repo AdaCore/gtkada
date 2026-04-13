@@ -47,12 +47,18 @@
 --  same effect as as calling Gtk.File_Filter.Add_Mime_Type or
 --  Gtk.File_Filter.Add_Pattern.
 --
---  An example of a UI definition fragment specifying GtkFileFilter rules: |[
---  <object class="GtkFileFilter"> <mime-types>
---  <mime-type>text/plain</mime-type> <mime-type>image/ *</mime-type>
---  </mime-types> <patterns> <pattern>*.txt</pattern> <pattern>*.png</pattern>
---  </patterns> </object> ]|
+--  An example of a UI definition fragment specifying GtkFileFilter rules:
 --
+--     <object class="GtkFileFilter">
+--       <mime-types>
+--         <mime-type>text/plain</mime-type>
+--         <mime-type>image/ *</mime-type>
+--       </mime-types>
+--       <patterns>
+--         <pattern>*.txt</pattern>
+--         <pattern>*.png</pattern>
+--       </patterns>
+--     </object>
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -123,9 +129,11 @@ package Gtk.File_Filter is
    --  it. Such a filter doesn't accept any files, so is not particularly
    --  useful until you add rules with Gtk.File_Filter.Add_Mime_Type,
    --  Gtk.File_Filter.Add_Pattern, or Gtk.File_Filter.Add_Custom. To create a
-   --  filter that accepts any file, use: |[<!-- language="C" --> GtkFileFilter
-   --  *filter = gtk_file_filter_new (); gtk_file_filter_add_pattern (filter,
-   --  "*"); ]|
+   --  filter that accepts any file, use:
+   --
+   --     GtkFileFilter *filter = gtk_file_filter_new ();
+   --     gtk_file_filter_add_pattern (filter, "*");
+   --
    --  Since: gtk+ 2.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
@@ -135,9 +143,11 @@ package Gtk.File_Filter is
    --  it. Such a filter doesn't accept any files, so is not particularly
    --  useful until you add rules with Gtk.File_Filter.Add_Mime_Type,
    --  Gtk.File_Filter.Add_Pattern, or Gtk.File_Filter.Add_Custom. To create a
-   --  filter that accepts any file, use: |[<!-- language="C" --> GtkFileFilter
-   --  *filter = gtk_file_filter_new (); gtk_file_filter_add_pattern (filter,
-   --  "*"); ]|
+   --  filter that accepts any file, use:
+   --
+   --     GtkFileFilter *filter = gtk_file_filter_new ();
+   --     gtk_file_filter_add_pattern (filter, "*");
+   --
    --  Since: gtk+ 2.4
 
    procedure Gtk_New_From_Gvariant
