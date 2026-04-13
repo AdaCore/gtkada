@@ -226,7 +226,7 @@ class GIR(object):
             pkg = self.packages[name.lower()]
 
         if doc:
-            pkg.doc = ["<description>", doc, "</description>"] + pkg.doc
+            pkg.doc = [doc] + pkg.doc
 
         return pkg
 

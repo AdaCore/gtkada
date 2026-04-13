@@ -370,7 +370,7 @@ class GtkAdaPackage(object):
 
         txt = docnode.text or ""
         if txt:
-            doc = ["<description>", txt, "</description>"]
+            doc = [txt]
 
         n = docnode.get("screenshot")
         if n is not None:
