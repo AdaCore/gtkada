@@ -382,8 +382,6 @@ package body Gtk.UI_Manager is
       Internal (Get_Object (Self), Boolean'Pos (Add_Tearoffs));
    end Set_Add_Tearoffs;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_UI_Manager_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

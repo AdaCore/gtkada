@@ -197,8 +197,6 @@ package body Gtk.Radio_Action is
       Internal (Get_Object (Action), Gtk.Widget.Widget_SList.Get_Object (Group));
    end Set_Group;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Radio_Action_Gtk_Radio_Action_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

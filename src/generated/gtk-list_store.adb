@@ -526,7 +526,7 @@ package body Gtk.List_Store is
       (List_Store : not null access Gtk_List_Store_Record;
        Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter)
    is
-            procedure Internal
+      procedure Internal
          (List_Store : System.Address;
           Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
       pragma Import (C, Internal, "gtk_list_store_remove");

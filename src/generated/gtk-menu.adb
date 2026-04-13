@@ -910,8 +910,6 @@ package body Gtk.Menu is
       return Tmp_Return;
    end Get_For_Attach_Widget;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Menu_Gtk_Scroll_Type_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

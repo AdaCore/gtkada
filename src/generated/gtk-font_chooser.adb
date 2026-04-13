@@ -326,8 +326,6 @@ package body Gtk.Font_Chooser is
       Internal (Self, Boolean'Pos (Show_Preview_Entry));
    end Set_Show_Preview_Entry;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Font_Chooser_UTF8_String_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

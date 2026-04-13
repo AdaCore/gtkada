@@ -760,8 +760,6 @@ package body Gtk.Spin_Button is
       Internal (Get_Object (Cell_Editable), Event);
    end Start_Editing;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Spin_Button_Gtk_Scroll_Type_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -424,8 +424,6 @@ package body Gtk.Scale_Button is
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Action)));
    end Sync_Action_Properties;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Scale_Button_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

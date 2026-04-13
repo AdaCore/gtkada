@@ -1312,8 +1312,6 @@ package body Gtk.Cell_Area is
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);
    end Reorder;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Gdk_Rectangle_UTF8_String_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

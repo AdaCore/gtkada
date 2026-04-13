@@ -424,8 +424,6 @@ package body Gtk.Accel_Map is
       Free (Tmp_Accel_Path);
    end Unlock_Path;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Accel_Map_UTF8_String_Gdk_Key_Type_Gdk_Modifier_Type_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

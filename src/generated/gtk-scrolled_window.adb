@@ -581,8 +581,6 @@ package body Gtk.Scrolled_Window is
       Internal (Get_Object (Scrolled_Window));
    end Unset_Placement;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Scrolled_Window_Gtk_Position_Type_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -406,8 +406,6 @@ package body Gtk.Calendar is
       Internal (Get_Object (Calendar), Day);
    end Unmark_Day;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Calendar_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

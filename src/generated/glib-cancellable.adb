@@ -316,8 +316,6 @@ package body Glib.Cancellable is
       return Glib.Cancellable.Gcancellable (Get_User_Data (Internal, Stub_Gcancellable));
    end Get_Current;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gcancellable_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -399,8 +399,6 @@ package body Gtk.Gesture is
       Internal (Get_Object (Self));
    end Ungroup;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Gesture_Gdk_Event_Sequence_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

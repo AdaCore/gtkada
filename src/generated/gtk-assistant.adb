@@ -606,8 +606,6 @@ package body Gtk.Assistant is
       Internal (Get_Object (Assistant));
    end Update_Buttons_State;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Assistant_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

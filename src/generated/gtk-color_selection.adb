@@ -418,8 +418,6 @@ package body Gtk.Color_Selection is
       Internal (Func'Address);
    end Set_Change_Palette_With_Screen_Hook;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Color_Selection_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -361,8 +361,6 @@ package body Gtk.Level_Bar is
       Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Level_Bar_UTF8_String_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

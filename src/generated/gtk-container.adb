@@ -627,8 +627,6 @@ package body Gtk.Container is
       Internal (Get_Object (Container));
    end Unset_Focus_Chain;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Container_Gtk_Widget_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

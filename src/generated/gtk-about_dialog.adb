@@ -605,8 +605,6 @@ package body Gtk.About_Dialog is
       Internal (Get_Object (About), Boolean'Pos (Wrap_License));
    end Set_Wrap_License;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_About_Dialog_UTF8_String_Boolean, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

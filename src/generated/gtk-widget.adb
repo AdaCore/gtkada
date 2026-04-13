@@ -4368,8 +4368,6 @@ package body Gtk.Widget is
       Internal (Cr, Get_Object (Widget), Window);
    end Transform_To_Window;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Widget_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

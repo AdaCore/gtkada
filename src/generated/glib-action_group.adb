@@ -331,8 +331,6 @@ package body Glib.Action_Group is
       return Tmp_Return /= 0;
    end Query_Action;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gaction_Group_UTF8_String_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

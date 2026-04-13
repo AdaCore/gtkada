@@ -422,8 +422,6 @@ package body Gtk.Accel_Group is
       Internal (Default_Mod_Mask);
    end Set_Default_Mod_Mask;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Accel_Group_GObject_Guint_Gdk_Modifier_Type_Boolean, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

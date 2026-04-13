@@ -35,8 +35,6 @@ package body Gtk.Shortcuts_Window is
      (Get_Type'Access, Gtk_Shortcuts_Window_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Shortcuts_Window);
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Shortcuts_Window_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
