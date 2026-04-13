@@ -1071,9 +1071,10 @@ def cleanup_doc(doc):
         return replace_programlisting_content(match.group(1))
 
     def replace_gtkdoc_programlisting(match):
-        content = re.sub(r'^\s*<!--\s*language\s*=\s*["\'][^"\']*["\']\s*-->\s*\n?',
-                         "",
-                         match.group(1))
+        content = re.sub(
+            r'^[ \t]*<!--\s*language\s*=\s*["\'][^"\']*["\']\s*-->[ \t]*\n?',
+            "",
+            match.group(1))
         return replace_programlisting_content(content)
 
     def replace_type(x):
