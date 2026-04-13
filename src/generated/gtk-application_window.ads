@@ -161,14 +161,14 @@ package Gtk.Application_Window is
    --  Since: gtk+ 3.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "application": a Gtk.Application.Gtk_Application
+   --  @param Application a Gtk.Application.Gtk_Application
 
    function Gtk_Application_Window_New
       (Application : not null access Gtk.Application.Gtk_Application_Record'Class)
        return Gtk_Application_Window;
    --  Creates a new Gtk.Application_Window.Gtk_Application_Window.
    --  Since: gtk+ 3.4
-   --  "application": a Gtk.Application.Gtk_Application
+   --  @param Application a Gtk.Application.Gtk_Application
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_application_window_get_type");
@@ -191,7 +191,7 @@ package Gtk.Application_Window is
    --  an action with the name win.show-help-overlay to present it.
    --  Window takes resposibility for destroying Help_Overlay.
    --  Since: gtk+ 3.20
-   --  "help_overlay": a Gtk.Shortcuts_Window.Gtk_Shortcuts_Window
+   --  @param Help_Overlay a Gtk.Shortcuts_Window.Gtk_Shortcuts_Window
 
    function Get_Id
       (Self : not null access Gtk_Application_Window_Record) return Guint;
@@ -211,7 +211,7 @@ package Gtk.Application_Window is
    --  Sets whether the window will display a menubar for the app menu and
    --  menubar as needed.
    --  Since: gtk+ 3.4
-   --  "show_menubar": whether to show a menubar when needed
+   --  @param Show_Menubar whether to show a menubar when needed
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

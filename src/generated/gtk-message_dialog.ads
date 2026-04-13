@@ -157,11 +157,11 @@ package Gtk.Message_Dialog is
    --  Gtk.Dialog.Gtk_Dialog for more details.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "parent": transient parent, or null for none
-   --  "flags": flags
-   --  "type": type of message
-   --  "buttons": set of buttons to use
-   --  "message": printf-style format string, or null
+   --  @param Parent transient parent, or null for none
+   --  @param Flags flags
+   --  @param The_Type type of message
+   --  @param Buttons set of buttons to use
+   --  @param Message printf-style format string, or null
 
    function Gtk_Message_Dialog_New
       (Parent   : access Gtk.Window.Gtk_Window_Record'Class;
@@ -173,11 +173,11 @@ package Gtk.Message_Dialog is
    --  the user may want to see. When the user clicks a button a "response"
    --  signal is emitted with response IDs from Gtk_Response_Type. See
    --  Gtk.Dialog.Gtk_Dialog for more details.
-   --  "parent": transient parent, or null for none
-   --  "flags": flags
-   --  "type": type of message
-   --  "buttons": set of buttons to use
-   --  "message": printf-style format string, or null
+   --  @param Parent transient parent, or null for none
+   --  @param Flags flags
+   --  @param The_Type type of message
+   --  @param Buttons set of buttons to use
+   --  @param Message printf-style format string, or null
 
    procedure Gtk_New_With_Markup
       (Dialog   : out Gtk_Message_Dialog;
@@ -219,11 +219,11 @@ package Gtk.Message_Dialog is
    --  Since: gtk+ 2.4
    --  Initialize_With_Markup does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "parent": transient parent, or null for none
-   --  "flags": flags
-   --  "type": type of message
-   --  "buttons": set of buttons to use
-   --  "message": printf-style format string, or null
+   --  @param Parent transient parent, or null for none
+   --  @param Flags flags
+   --  @param The_Type type of message
+   --  @param Buttons set of buttons to use
+   --  @param Message printf-style format string, or null
 
    function Gtk_Message_Dialog_New_With_Markup
       (Parent   : access Gtk.Window.Gtk_Window_Record'Class;
@@ -255,11 +255,11 @@ package Gtk.Message_Dialog is
    --                                    markup);
    --
    --  Since: gtk+ 2.4
-   --  "parent": transient parent, or null for none
-   --  "flags": flags
-   --  "type": type of message
-   --  "buttons": set of buttons to use
-   --  "message": printf-style format string, or null
+   --  @param Parent transient parent, or null for none
+   --  @param Flags flags
+   --  @param The_Type type of message
+   --  @param Buttons set of buttons to use
+   --  @param Message printf-style format string, or null
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_message_dialog_get_type");
@@ -287,7 +287,7 @@ package Gtk.Message_Dialog is
    --     g_free (msg);
    --
    --  Since: gtk+ 2.6
-   --  "message": printf-style markup string (see [Pango markup
+   --  @param Message printf-style markup string (see [Pango markup
    --  format][PangoMarkupFormat]), or null
 
    function Get_Image
@@ -305,7 +305,7 @@ package Gtk.Message_Dialog is
    --  Sets the dialog's image to Image.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.12, 1
-   --  "image": the image
+   --  @param Image the image
 
    function Get_Message_Area
       (Dialog : not null access Gtk_Message_Dialog_Record)
@@ -323,7 +323,7 @@ package Gtk.Message_Dialog is
    --  Sets the text of the message dialog to be Str, which is marked up with
    --  the [Pango text markup language][PangoMarkupFormat].
    --  Since: gtk+ 2.4
-   --  "str": markup string (see [Pango markup format][PangoMarkupFormat])
+   --  @param Str markup string (see [Pango markup format][PangoMarkupFormat])
 
    ----------------
    -- Properties --

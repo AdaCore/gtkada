@@ -95,7 +95,7 @@ package Gtk.Stack_Switcher is
        Stack : access Gtk.Stack.Gtk_Stack_Record'Class);
    --  Sets the stack to control.
    --  Since: gtk+ 3.10
-   --  "stack": a Gtk.Stack.Gtk_Stack
+   --  @param Stack a Gtk.Stack.Gtk_Stack
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

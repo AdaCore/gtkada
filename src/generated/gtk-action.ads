@@ -113,10 +113,10 @@ package Gtk.Action is
    --  Since: gtk+ 2.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "name": A unique name for the action
-   --  "label": the label displayed in menu items and on buttons, or null
-   --  "tooltip": a tooltip for the action, or null
-   --  "stock_id": the stock icon to display in widgets representing the
+   --  @param Name A unique name for the action
+   --  @param Label the label displayed in menu items and on buttons, or null
+   --  @param Tooltip a tooltip for the action, or null
+   --  @param Stock_Id the stock icon to display in widgets representing the
    --  action, or null
 
    function Gtk_Action_New
@@ -129,10 +129,10 @@ package Gtk.Action is
    --  action, call Gtk.Action_Group.Add_Action_With_Accel. See the [UI
    --  Definition section][XML-UI] for information on allowed action names.
    --  Since: gtk+ 2.4
-   --  "name": A unique name for the action
-   --  "label": the label displayed in menu items and on buttons, or null
-   --  "tooltip": a tooltip for the action, or null
-   --  "stock_id": the stock icon to display in widgets representing the
+   --  @param Name A unique name for the action
+   --  @param Label the label displayed in menu items and on buttons, or null
+   --  @param Tooltip a tooltip for the action, or null
+   --  @param Stock_Id the stock icon to display in widgets representing the
    --  action, or null
 
    function Get_Type return Glib.GType;
@@ -181,8 +181,8 @@ package Gtk.Action is
    --  icons displayed in the proxy widgets.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "icon_size": the size of the icon (Gtk.Enums.Gtk_Icon_Size) that should
-   --  be created.
+   --  @param Icon_Size the size of the icon (Gtk.Enums.Gtk_Icon_Size) that
+   --  should be created.
 
    function Create_Menu
       (Action : not null access Gtk_Action_Record)
@@ -236,7 +236,7 @@ package Gtk.Action is
    --  first with g_intern_static_string.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "accel_path": the accelerator path
+   --  @param Accel_Path the accelerator path
 
    function Get_Always_Show_Image
       (Action : not null access Gtk_Action_Record) return Boolean;
@@ -257,7 +257,8 @@ package Gtk.Action is
    --  image.
    --  Since: gtk+ 2.20
    --  Deprecated since 3.10, 1
-   --  "always_show": True if menuitem proxies should always show their image
+   --  @param Always_Show True if menuitem proxies should always show their
+   --  image
 
    function Get_Gicon
       (Action : not null access Gtk_Action_Record) return Glib.G_Icon.G_Icon;
@@ -273,7 +274,7 @@ package Gtk.Action is
    --  Sets the icon of Action.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "icon": the Glib.G_Icon.G_Icon to set
+   --  @param Icon the Glib.G_Icon.G_Icon to set
 
    function Get_Icon_Name
       (Action : not null access Gtk_Action_Record) return UTF8_String;
@@ -289,7 +290,7 @@ package Gtk.Action is
    --  Sets the icon name on Action
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "icon_name": the icon name to set
+   --  @param Icon_Name the icon name to set
 
    function Get_Is_Important
       (Action : not null access Gtk_Action_Record) return Boolean;
@@ -306,7 +307,7 @@ package Gtk.Action is
    --  by toolbar items to decide whether to show a label or not.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "is_important": True to make the action important
+   --  @param Is_Important True to make the action important
 
    function Get_Label
       (Action : not null access Gtk_Action_Record) return UTF8_String;
@@ -322,7 +323,7 @@ package Gtk.Action is
    --  Sets the label of Action.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "label": the label text to set
+   --  @param Label the label text to set
 
    function Get_Name
       (Action : not null access Gtk_Action_Record) return UTF8_String;
@@ -358,7 +359,7 @@ package Gtk.Action is
    --  Gtk.Action.Is_Sensitive for that.
    --  Since: gtk+ 2.6
    --  Deprecated since 3.10, 1
-   --  "sensitive": True to make the action sensitive
+   --  @param Sensitive True to make the action sensitive
 
    function Get_Short_Label
       (Action : not null access Gtk_Action_Record) return UTF8_String;
@@ -374,7 +375,7 @@ package Gtk.Action is
    --  Sets a shorter label text on Action.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "short_label": the label text to set
+   --  @param Short_Label the label text to set
 
    function Get_Stock_Id
       (Action : not null access Gtk_Action_Record) return UTF8_String;
@@ -390,7 +391,7 @@ package Gtk.Action is
    --  Sets the stock id on Action
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "stock_id": the stock id
+   --  @param Stock_Id the stock id
 
    function Get_Tooltip
       (Action : not null access Gtk_Action_Record) return UTF8_String;
@@ -406,7 +407,7 @@ package Gtk.Action is
    --  Sets the tooltip text on Action
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "tooltip": the tooltip text
+   --  @param Tooltip the tooltip text
 
    function Get_Visible
       (Action : not null access Gtk_Action_Record) return Boolean;
@@ -426,7 +427,7 @@ package Gtk.Action is
    --  for that.
    --  Since: gtk+ 2.6
    --  Deprecated since 3.10, 1
-   --  "visible": True to make the action visible
+   --  @param Visible True to make the action visible
 
    function Get_Visible_Horizontal
       (Action : not null access Gtk_Action_Record) return Boolean;
@@ -442,7 +443,7 @@ package Gtk.Action is
    --  Sets whether Action is visible when horizontal
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "visible_horizontal": whether the action is visible horizontally
+   --  @param Visible_Horizontal whether the action is visible horizontally
 
    function Get_Visible_Vertical
       (Action : not null access Gtk_Action_Record) return Boolean;
@@ -458,7 +459,7 @@ package Gtk.Action is
    --  Sets whether Action is visible when vertical
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "visible_vertical": whether the action is visible vertically
+   --  @param Visible_Vertical whether the action is visible vertically
 
    function Is_Sensitive
       (Action : not null access Gtk_Action_Record) return Boolean;
@@ -482,7 +483,7 @@ package Gtk.Action is
    --  this action will be installed.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "accel_group": a Gtk.Accel_Group.Gtk_Accel_Group or null
+   --  @param Accel_Group a Gtk.Accel_Group.Gtk_Accel_Group or null
 
    procedure Unblock_Activate (Action : not null access Gtk_Action_Record);
    pragma Obsolescent (Unblock_Activate);

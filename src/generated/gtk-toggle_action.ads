@@ -63,10 +63,10 @@ package Gtk.Toggle_Action is
    --  Since: gtk+ 2.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "name": A unique name for the action
-   --  "label": The label displayed in menu items and on buttons, or null
-   --  "tooltip": A tooltip for the action, or null
-   --  "stock_id": The stock icon to display in widgets representing the
+   --  @param Name A unique name for the action
+   --  @param Label The label displayed in menu items and on buttons, or null
+   --  @param Tooltip A tooltip for the action, or null
+   --  @param Stock_Id The stock icon to display in widgets representing the
    --  action, or null
 
    function Gtk_Toggle_Action_New
@@ -78,10 +78,10 @@ package Gtk.Toggle_Action is
    --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
    --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
    --  Since: gtk+ 2.4
-   --  "name": A unique name for the action
-   --  "label": The label displayed in menu items and on buttons, or null
-   --  "tooltip": A tooltip for the action, or null
-   --  "stock_id": The stock icon to display in widgets representing the
+   --  @param Name A unique name for the action
+   --  @param Label The label displayed in menu items and on buttons, or null
+   --  @param Tooltip A tooltip for the action, or null
+   --  @param Stock_Id The stock icon to display in widgets representing the
    --  action, or null
 
    function Get_Type return Glib.GType;
@@ -105,7 +105,7 @@ package Gtk.Toggle_Action is
    --  Sets the checked state on the toggle action.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "is_active": whether the action should be checked or not
+   --  @param Is_Active whether the action should be checked or not
 
    function Get_Draw_As_Radio
       (Action : not null access Gtk_Toggle_Action_Record) return Boolean;
@@ -121,8 +121,8 @@ package Gtk.Toggle_Action is
    --  Sets whether the action should have proxies like a radio action.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "draw_as_radio": whether the action should have proxies like a radio
-   --  action
+   --  @param Draw_As_Radio whether the action should have proxies like a
+   --  radio action
 
    procedure Toggled (Action : not null access Gtk_Toggle_Action_Record);
    pragma Obsolescent (Toggled);

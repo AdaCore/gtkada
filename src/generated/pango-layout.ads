@@ -109,7 +109,7 @@ package Pango.Layout is
    --  Create a new Pango.Layout.Pango_Layout object with attributes
    --  initialized to default values for a particular
    --  Pango.Context.Pango_Context.
-   --  "context": a Pango.Context.Pango_Context
+   --  @param Context a Pango.Context.Pango_Context
 
    procedure Initialize
       (Layout  : not null access Pango_Layout_Record'Class;
@@ -119,7 +119,7 @@ package Pango.Layout is
    --  Pango.Context.Pango_Context.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "context": a Pango.Context.Pango_Context
+   --  @param Context a Pango.Context.Pango_Context
 
    function Pango_Layout_New
       (Context : not null access Pango.Context.Pango_Context_Record'Class)
@@ -127,7 +127,7 @@ package Pango.Layout is
    --  Create a new Pango.Layout.Pango_Layout object with attributes
    --  initialized to default values for a particular
    --  Pango.Context.Pango_Context.
-   --  "context": a Pango.Context.Pango_Context
+   --  @param Context a Pango.Context.Pango_Context
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "pango_layout_get_type");
@@ -167,7 +167,7 @@ package Pango.Layout is
        Alignment : Pango.Enums.Alignment);
    --  Sets the alignment for the layout: how partial lines are positioned
    --  within the horizontal space available.
-   --  "alignment": the alignment
+   --  @param Alignment the alignment
 
    function Get_Attributes
       (Layout : not null access Pango_Layout_Record)
@@ -179,7 +179,7 @@ package Pango.Layout is
        Attrs  : Pango.Attributes.Pango_Attr_List);
    --  Sets the text attributes for a layout object. References Attrs, so the
    --  caller can unref its reference.
-   --  "attrs": a Pango.Attributes.Pango_Attr_List, can be null
+   --  @param Attrs a Pango.Attributes.Pango_Attr_List, can be null
 
    function Get_Auto_Dir
       (Layout : not null access Pango_Layout_Record) return Boolean;
@@ -206,8 +206,8 @@ package Pango.Layout is
    --  Pango.Enums.Pango_Align_Left and Pango.Enums.Pango_Align_Right are
    --  swapped.
    --  Since: gtk+ 1.4
-   --  "auto_dir": if True, compute the bidirectional base direction from the
-   --  layout's contents.
+   --  @param Auto_Dir if True, compute the bidirectional base direction from
+   --  the layout's contents.
 
    function Get_Baseline
       (Layout : not null access Pango_Layout_Record) return Glib.Gint;
@@ -240,10 +240,11 @@ package Pango.Layout is
    --  equal to the base direction of the layout are inserted. The weak cursor
    --  location is the location where characters of the directionality opposite
    --  to the base direction of the layout are inserted.
-   --  "index_": the byte index of the cursor
-   --  "strong_pos": location to store the strong cursor position (may be
+   --  @param Index the byte index of the cursor
+   --  @param Strong_Pos location to store the strong cursor position (may be
    --  null)
-   --  "weak_pos": location to store the weak cursor position (may be null)
+   --  @param Weak_Pos location to store the weak cursor position (may be
+   --  null)
 
    function Get_Ellipsize
       (Layout : not null access Pango_Layout_Record)
@@ -265,7 +266,7 @@ package Pango.Layout is
    --  depends on the set height of the layout. See Pango.Layout.Set_Height for
    --  details.
    --  Since: gtk+ 1.6
-   --  "ellipsize": the new ellipsization mode for Layout
+   --  @param Ellipsize the new ellipsization mode for Layout
 
    procedure Get_Extents
       (Layout       : not null access Pango_Layout_Record;
@@ -279,9 +280,9 @@ package Pango.Layout is
    --  set width.
    --  The extents are given in layout coordinates and in Pango units; layout
    --  coordinates begin at the top left corner of the layout.
-   --  "ink_rect": rectangle used to store the extents of the layout as drawn
-   --  or null to indicate that the result is not needed.
-   --  "logical_rect": rectangle used to store the logical extents of the
+   --  @param Ink_Rect rectangle used to store the extents of the layout as
+   --  drawn or null to indicate that the result is not needed.
+   --  @param Logical_Rect rectangle used to store the logical extents of the
    --  layout or null to indicate that the result is not needed.
 
    function Get_Font_Description
@@ -296,8 +297,8 @@ package Pango.Layout is
    --  Sets the default font description for the layout. If no font
    --  description is set on the layout, the font description from the layout's
    --  context is used.
-   --  "desc": the new Pango.Font.Pango_Font_Description, or null to unset the
-   --  current font description
+   --  @param Desc the new Pango.Font.Pango_Font_Description, or null to unset
+   --  the current font description
 
    function Get_Height
       (Layout : not null access Pango_Layout_Record) return Glib.Gint;
@@ -330,8 +331,8 @@ package Pango.Layout is
    --  mode is set to Pango.Layout.Ellipsize_None, and may change in the
    --  future.
    --  Since: gtk+ 1.20
-   --  "height": the desired height of the layout in Pango units if positive,
-   --  or desired number of lines if negative.
+   --  @param Height the desired height of the layout in Pango units if
+   --  positive, or desired number of lines if negative.
 
    function Get_Indent
       (Layout : not null access Pango_Layout_Record) return Glib.Gint;
@@ -347,7 +348,7 @@ package Pango.Layout is
    --  the absolute value of Indent.
    --  The indent setting is ignored if layout alignment is set to
    --  Pango.Enums.Pango_Align_Center.
-   --  "indent": the amount by which to indent.
+   --  @param Indent the amount by which to indent.
 
    function Get_Iter
       (Layout : not null access Pango_Layout_Record'Class)
@@ -368,7 +369,7 @@ package Pango.Layout is
    --  be done in more complex ways, like extending the characters.
    --  Note that this setting is not implemented and so is ignored in Pango
    --  older than 1.18.
-   --  "justify": whether the lines in the layout should be justified.
+   --  @param Justify whether the lines in the layout should be justified.
 
    function Get_Line
       (Layout : not null access Pango_Layout_Record;
@@ -376,7 +377,7 @@ package Pango.Layout is
    --  Retrieves a particular line from a Pango.Layout.Pango_Layout.
    --  Use the faster Pango.Layout.Get_Line_Readonly if you do not plan to
    --  modify the contents of the line (glyphs, glyph widths, etc.).
-   --  "line": the index of a line, which must be between 0 and
+   --  @param Line the index of a line, which must be between 0 and
    --  `pango_layout_get_line_count(layout) - 1`, inclusive.
 
    function Get_Line (Self : Pango_Layout_Iter) return Pango_Layout_Line;
@@ -396,7 +397,7 @@ package Pango.Layout is
    --  not expected to modify the contents of the line (glyphs, glyph widths,
    --  etc.).
    --  Since: gtk+ 1.16
-   --  "line": the index of a line, which must be between 0 and
+   --  @param Line the index of a line, which must be between 0 and
    --  `pango_layout_get_line_count(layout) - 1`, inclusive.
 
    function Get_Line_Readonly
@@ -416,9 +417,9 @@ package Pango.Layout is
    --  pango_extents_to_pixels calls, rounding Ink_Rect and Logical_Rect such
    --  that the rounded rectangles fully contain the unrounded one (that is,
    --  passes them as first argument to pango_extents_to_pixels).
-   --  "ink_rect": rectangle used to store the extents of the layout as drawn
-   --  or null to indicate that the result is not needed.
-   --  "logical_rect": rectangle used to store the logical extents of the
+   --  @param Ink_Rect rectangle used to store the extents of the layout as
+   --  drawn or null to indicate that the result is not needed.
+   --  @param Logical_Rect rectangle used to store the logical extents of the
    --  layout or null to indicate that the result is not needed.
 
    procedure Get_Pixel_Size
@@ -429,8 +430,8 @@ package Pango.Layout is
    --  in device units. (pango_layout_get_size returns the width and height
    --  scaled by PANGO_SCALE.) This is simply a convenience function around
    --  Pango.Layout.Get_Pixel_Extents.
-   --  "width": location to store the logical width, or null
-   --  "height": location to store the logical height, or null
+   --  @param Width location to store the logical width, or null
+   --  @param Height location to store the logical height, or null
 
    function Get_Serial
       (Layout : not null access Pango_Layout_Record) return Guint;
@@ -457,7 +458,7 @@ package Pango.Layout is
    --  paragraph separators; instead, keep all text in a single paragraph, and
    --  display a glyph for paragraph separator characters. Used when you want
    --  to allow editing of newlines on a single text line.
-   --  "setting": new setting
+   --  @param Setting new setting
 
    procedure Get_Size
       (Layout : not null access Pango_Layout_Record;
@@ -466,8 +467,8 @@ package Pango.Layout is
    --  Determines the logical width and height of a Pango.Layout.Pango_Layout
    --  in Pango units (device units scaled by PANGO_SCALE). This is simply a
    --  convenience function around Pango.Layout.Get_Extents.
-   --  "width": location to store the logical width, or null
-   --  "height": location to store the logical height, or null
+   --  @param Width location to store the logical width, or null
+   --  @param Height location to store the logical height, or null
 
    function Get_Spacing
       (Layout : not null access Pango_Layout_Record) return Glib.Gint;
@@ -483,7 +484,7 @@ package Pango.Layout is
    --  determined by the font) for placing lines. The Spacing set with this
    --  function is only taken into account when the line-height factor is set
    --  to zero with pango_layout_set_line_spacing.
-   --  "spacing": the amount of spacing
+   --  @param Spacing the amount of spacing
 
    function Get_Tabs
       (Layout : not null access Pango_Layout_Record)
@@ -500,7 +501,7 @@ package Pango.Layout is
    --  default, tabs are every 8 spaces). If Tabs is null, the default tabs are
    --  reinstated. Tabs is copied into the layout; you must free your copy of
    --  Tabs yourself.
-   --  "tabs": a Pango.Tabs.Pango_Tab_Array, or null
+   --  @param Tabs a Pango.Tabs.Pango_Tab_Array, or null
 
    function Get_Text
       (Layout : not null access Pango_Layout_Record) return UTF8_String;
@@ -517,7 +518,7 @@ package Pango.Layout is
    --  Pango.Layout.Set_Markup_With_Accel on Layout before, you may want to
    --  call Pango.Layout.Set_Attributes to clear the attributes set on the
    --  layout from the markup as this function does not clear attributes.
-   --  "text": the text
+   --  @param Text the text
 
    function Get_Unknown_Glyphs_Count
       (Layout : not null access Pango_Layout_Record) return Glib.Gint;
@@ -540,8 +541,8 @@ package Pango.Layout is
        Width  : Glib.Gint);
    --  Sets the width to which the lines of the Pango.Layout.Pango_Layout
    --  should wrap or ellipsized. The default value is -1: no width set.
-   --  "width": the desired width in Pango units, or -1 to indicate that no
-   --  wrapping or ellipsization should be performed.
+   --  @param Width the desired width in Pango units, or -1 to indicate that
+   --  no wrapping or ellipsization should be performed.
 
    function Get_Wrap
       (Layout : not null access Pango_Layout_Record)
@@ -556,7 +557,7 @@ package Pango.Layout is
    --  Sets the wrap mode; the wrap mode only has effect if a width is set on
    --  the layout with Pango.Layout.Set_Width. To turn off wrapping, set the
    --  width to -1.
-   --  "wrap": the wrap mode
+   --  @param Wrap the wrap mode
 
    procedure Index_To_Line_X
       (Layout   : not null access Pango_Layout_Record;
@@ -566,14 +567,14 @@ package Pango.Layout is
        X_Pos    : out Glib.Gint);
    --  Converts from byte Index_ within the Layout to line and X position. (X
    --  position is measured from the left edge of the line)
-   --  "index_": the byte index of a grapheme within the layout.
-   --  "trailing": an integer indicating the edge of the grapheme to retrieve
-   --  the position of. If > 0, the trailing edge of the grapheme, if 0, the
-   --  leading of the grapheme.
-   --  "line": location to store resulting line index. (which will between 0
-   --  and pango_layout_get_line_count(layout) - 1), or null
-   --  "x_pos": location to store resulting position within line (PANGO_SCALE
-   --  units per device unit), or null
+   --  @param Index the byte index of a grapheme within the layout.
+   --  @param Trailing an integer indicating the edge of the grapheme to
+   --  retrieve the position of. If > 0, the trailing edge of the grapheme, if
+   --  0, the leading of the grapheme.
+   --  @param Line location to store resulting line index. (which will between
+   --  0 and pango_layout_get_line_count(layout) - 1), or null
+   --  @param X_Pos location to store resulting position within line
+   --  (PANGO_SCALE units per device unit), or null
 
    procedure Index_To_Pos
       (Layout : not null access Pango_Layout_Record;
@@ -585,8 +586,8 @@ package Pango.Layout is
    --  of the grapheme and `pos->x + pos->width` the trailing edge of the
    --  grapheme. If the directionality of the grapheme is right-to-left, then
    --  `pos->width` will be negative.
-   --  "index_": byte index within Layout
-   --  "pos": rectangle in which to store the position of the grapheme
+   --  @param Index byte index within Layout
+   --  @param Pos rectangle in which to store the position of the grapheme
 
    function Is_Ellipsized
       (Layout : not null access Pango_Layout_Record) return Boolean;
@@ -624,31 +625,32 @@ package Pango.Layout is
    --  Motion here is in cursor positions, not in characters, so a single call
    --  to Pango.Layout.Move_Cursor_Visually may move the cursor over multiple
    --  characters when multiple characters combine to form a single grapheme.
-   --  "strong": whether the moving cursor is the strong cursor or the weak
-   --  cursor. The strong cursor is the cursor corresponding to text insertion
-   --  in the base direction for the layout.
-   --  "old_index": the byte index of the grapheme for the old index
-   --  "old_trailing": if 0, the cursor was at the leading edge of the
+   --  @param Strong whether the moving cursor is the strong cursor or the
+   --  weak cursor. The strong cursor is the cursor corresponding to text
+   --  insertion in the base direction for the layout.
+   --  @param Old_Index the byte index of the grapheme for the old index
+   --  @param Old_Trailing if 0, the cursor was at the leading edge of the
    --  grapheme indicated by Old_Index, if > 0, the cursor was at the trailing
    --  edge.
-   --  "direction": direction to move cursor. A negative value indicates
+   --  @param Direction direction to move cursor. A negative value indicates
    --  motion to the left.
-   --  "new_index": location to store the new cursor byte index. A value of -1
-   --  indicates that the cursor has been moved off the beginning of the
+   --  @param New_Index location to store the new cursor byte index. A value
+   --  of -1 indicates that the cursor has been moved off the beginning of the
    --  layout. A value of G_MAXINT indicates that the cursor has been moved off
    --  the end of the layout.
-   --  "new_trailing": number of characters to move forward from the location
-   --  returned for New_Index to get the position where the cursor should be
-   --  displayed. This allows distinguishing the position at the beginning of
-   --  one line from the position at the end of the preceding line. New_Index
-   --  is always on the line where the cursor should be displayed.
+   --  @param New_Trailing number of characters to move forward from the
+   --  location returned for New_Index to get the position where the cursor
+   --  should be displayed. This allows distinguishing the position at the
+   --  beginning of one line from the position at the end of the preceding
+   --  line. New_Index is always on the line where the cursor should be
+   --  displayed.
 
    procedure Set_Markup
       (Layout : not null access Pango_Layout_Record;
        Markup : UTF8_String);
    --  Same as Pango.Layout.Set_Markup_With_Accel, but the markup text isn't
    --  scanned for accelerators.
-   --  "markup": marked-up text
+   --  @param Markup marked-up text
 
    procedure Set_Markup_With_Accel
       (Layout       : not null access Pango_Layout_Record;
@@ -666,12 +668,13 @@ package Pango.Layout is
    --  character so marked will be returned in Accel_Char. Two Accel_Marker
    --  characters following each other produce a single literal Accel_Marker
    --  character.
-   --  "markup": marked-up text (see <link linkend="PangoMarkupFormat">markup
-   --  format</link>)
-   --  "length": length of marked-up text in bytes, or -1 if Markup is
+   --  @param Markup marked-up text (see <link
+   --  linkend="PangoMarkupFormat">markup format</link>)
+   --  @param Length length of marked-up text in bytes, or -1 if Markup is
    --  null-terminated
-   --  "accel_marker": marker for accelerators in the text
-   --  "accel_char": return location for first located accelerator, or null
+   --  @param Accel_Marker marker for accelerators in the text
+   --  @param Accel_Char return location for first located accelerator, or
+   --  null
 
    procedure Xy_To_Index
       (Layout   : not null access Pango_Layout_Record;
@@ -688,10 +691,11 @@ package Pango.Layout is
    --  pango_layout_line_x_to_index. If either the X or Y positions were not
    --  inside the layout, then the function returns False; on an exact hit, it
    --  returns True.
-   --  "x": the X offset (in Pango units) from the left edge of the layout.
-   --  "y": the Y offset (in Pango units) from the top edge of the layout
-   --  "index_": location to store calculated byte index
-   --  "trailing": location to store a integer indicating where in the
+   --  @param X the X offset (in Pango units) from the left edge of the
+   --  layout.
+   --  @param Y the Y offset (in Pango units) from the top edge of the layout
+   --  @param Index location to store calculated byte index
+   --  @param Trailing location to store a integer indicating where in the
    --  grapheme the user clicked. It will either be zero, or the number of
    --  characters in the grapheme. 0 represents the leading edge of the
    --  grapheme.
@@ -709,7 +713,7 @@ package Pango.Layout is
    --  (origin is the top left of the entire layout). Only logical extents can
    --  sensibly be obtained for characters; ink extents make sense only down to
    --  the level of clusters.
-   --  "logical_rect": rectangle to fill with logical extents
+   --  @param Logical_Rect rectangle to fill with logical extents
 
    procedure Get_Cluster_Extents
       (Self         : Pango_Layout_Iter;
@@ -717,8 +721,8 @@ package Pango.Layout is
        Logical_Rect : out Pango_Rectangle);
    --  Gets the extents of the current cluster, in layout coordinates (origin
    --  is the top left of the entire layout).
-   --  "ink_rect": rectangle to fill with ink extents, or null
-   --  "logical_rect": rectangle to fill with logical extents, or null
+   --  @param Ink_Rect rectangle to fill with ink extents, or null
+   --  @param Logical_Rect rectangle to fill with logical extents, or null
 
    function Get_Index (Self : Pango_Layout_Iter) return Glib.Gint;
    --  Gets the current byte index. Note that iterating forward by char moves
@@ -737,8 +741,8 @@ package Pango.Layout is
    --  Obtains the extents of the Pango.Layout.Pango_Layout being iterated
    --  over. Ink_Rect or Logical_Rect can be null if you aren't interested in
    --  them.
-   --  "ink_rect": rectangle to fill with ink extents, or null
-   --  "logical_rect": rectangle to fill with logical extents, or null
+   --  @param Ink_Rect rectangle to fill with ink extents, or null
+   --  @param Logical_Rect rectangle to fill with logical extents, or null
 
    procedure Get_Line_Extents
       (Self         : Pango_Layout_Iter;
@@ -750,8 +754,8 @@ package Pango.Layout is
    --  Pango.Layout.Pango_Layout). Thus the extents returned by this function
    --  will be the same width/height but not at the same x/y as the extents
    --  returned from pango_layout_line_get_extents.
-   --  "ink_rect": rectangle to fill with ink extents, or null
-   --  "logical_rect": rectangle to fill with logical extents, or null
+   --  @param Ink_Rect rectangle to fill with ink extents, or null
+   --  @param Logical_Rect rectangle to fill with logical extents, or null
 
    procedure Get_Line_Yrange
       (Self : Pango_Layout_Iter;
@@ -766,8 +770,8 @@ package Pango.Layout is
    --  layout).
    --  Note: Since 1.44, Pango uses line heights for placing lines, and there
    --  may be gaps between the ranges returned by this function.
-   --  "y0_": start of line, or null
-   --  "y1_": end of line, or null
+   --  @param Y0 start of line, or null
+   --  @param Y1 end of line, or null
 
    procedure Get_Run_Extents
       (Self         : Pango_Layout_Iter;
@@ -775,8 +779,8 @@ package Pango.Layout is
        Logical_Rect : out Pango_Rectangle);
    --  Gets the extents of the current run in layout coordinates (origin is
    --  the top left of the entire layout).
-   --  "ink_rect": rectangle to fill with ink extents, or null
-   --  "logical_rect": rectangle to fill with logical extents, or null
+   --  @param Ink_Rect rectangle to fill with ink extents, or null
+   --  @param Logical_Rect rectangle to fill with logical extents, or null
 
    function Next_Char (Self : Pango_Layout_Iter) return Boolean;
    --  Moves Iter forward to the next character in visual order. If Iter was

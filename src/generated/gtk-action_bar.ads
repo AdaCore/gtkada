@@ -81,7 +81,7 @@ package Gtk.Action_Bar is
        Center_Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Sets the center widget for the Gtk.Action_Bar.Gtk_Action_Bar.
    --  Since: gtk+ 3.12
-   --  "center_widget": a widget to use for the center
+   --  @param Center_Widget a widget to use for the center
 
    procedure Pack_End
       (Self  : not null access Gtk_Action_Bar_Record;
@@ -89,7 +89,7 @@ package Gtk.Action_Bar is
    --  Adds Child to Action_Bar, packed with reference to the end of the
    --  Action_Bar.
    --  Since: gtk+ 3.12
-   --  "child": the Gtk.Widget.Gtk_Widget to be added to Action_Bar
+   --  @param Child the Gtk.Widget.Gtk_Widget to be added to Action_Bar
 
    procedure Pack_Start
       (Self  : not null access Gtk_Action_Bar_Record;
@@ -97,7 +97,7 @@ package Gtk.Action_Bar is
    --  Adds Child to Action_Bar, packed with reference to the start of the
    --  Action_Bar.
    --  Since: gtk+ 3.12
-   --  "child": the Gtk.Widget.Gtk_Widget to be added to Action_Bar
+   --  @param Child the Gtk.Widget.Gtk_Widget to be added to Action_Bar
 
    ----------------
    -- Interfaces --

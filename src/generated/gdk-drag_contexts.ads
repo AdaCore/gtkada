@@ -115,7 +115,7 @@ package Gdk.Drag_Contexts is
        Device : not null access Gdk.Device.Gdk_Device_Record'Class);
    --  Associates a Gdk.Device.Gdk_Device to Context, so all Drag and Drop
    --  events for Context are emitted as if they came from this device.
-   --  "device": a Gdk.Device.Gdk_Device
+   --  @param Device a Gdk.Device.Gdk_Device
 
    function Get_Drag_Window
       (Self : not null access Drag_Context_Record) return Gdk.Gdk_Window;
@@ -167,8 +167,8 @@ package Gdk.Drag_Contexts is
    --  and drop operation is finished but doesn't happen over an accepting
    --  destination, or is cancelled through other means.
    --  Since: gtk+ 3.20
-   --  "ipc_window": Window to use for IPC messaging/events
-   --  "actions": the actions supported by the drag source
+   --  @param Ipc_Window Window to use for IPC messaging/events
+   --  @param Actions the actions supported by the drag source
 
    procedure Set_Hotspot
       (Self  : not null access Drag_Context_Record;
@@ -178,8 +178,8 @@ package Gdk.Drag_Contexts is
    --  hotspot. Initially, the hotspot is at the top left corner of the drag
    --  window.
    --  Since: gtk+ 3.20
-   --  "hot_x": x coordinate of the drag window hotspot
-   --  "hot_y": y coordinate of the drag window hotspot
+   --  @param Hot_X x coordinate of the drag window hotspot
+   --  @param Hot_Y y coordinate of the drag window hotspot
 
    -------------
    -- Signals --

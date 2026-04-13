@@ -66,7 +66,7 @@ package Gtk.Invisible is
    --  Since: gtk+ 2.2
    --  Initialize_For_Screen does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "screen": a Gdk.Screen.Gdk_Screen which identifies on which the new
+   --  @param Screen a Gdk.Screen.Gdk_Screen which identifies on which the new
    --  Gtk.Invisible.Gtk_Invisible will be created.
 
    function Gtk_Invisible_New_For_Screen
@@ -74,7 +74,7 @@ package Gtk.Invisible is
        return Gtk_Invisible;
    --  Creates a new Gtk.Invisible.Gtk_Invisible object for a specified screen
    --  Since: gtk+ 2.2
-   --  "screen": a Gdk.Screen.Gdk_Screen which identifies on which the new
+   --  @param Screen a Gdk.Screen.Gdk_Screen which identifies on which the new
    --  Gtk.Invisible.Gtk_Invisible will be created.
 
    function Get_Type return Glib.GType;
@@ -96,7 +96,7 @@ package Gtk.Invisible is
    --  Sets the Gdk.Screen.Gdk_Screen where the Gtk.Invisible.Gtk_Invisible
    --  object will be displayed.
    --  Since: gtk+ 2.2
-   --  "screen": a Gdk.Screen.Gdk_Screen.
+   --  @param Screen a Gdk.Screen.Gdk_Screen.
 
    ----------------
    -- Properties --

@@ -45,9 +45,9 @@ package body Gtk.Tree_Sortable is
    --  back to the default state. In this case, when the current sort column id
    --  of Sortable is GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, the model will
    --  be unsorted.
-   --  "sort_func": The comparison function
-   --  "user_data": User data to pass to Sort_Func, or null
-   --  "destroy": Destroy notifier of User_Data, or null
+   --  @param Sort_Func The comparison function
+   --  @param User_Data User data to pass to Sort_Func, or null
+   --  @param Destroy Destroy notifier of User_Data, or null
 
    procedure C_Gtk_Tree_Sortable_Set_Sort_Func
       (Sortable       : Gtk_Tree_Sortable;
@@ -59,10 +59,10 @@ package body Gtk.Tree_Sortable is
    --  Sets the comparison function used when sorting to be Sort_Func. If the
    --  current sort column id of Sortable is the same as Sort_Column_Id, then
    --  the model will sort using this function.
-   --  "sort_column_id": the sort column id to set the function for
-   --  "sort_func": The comparison function
-   --  "user_data": User data to pass to Sort_Func, or null
-   --  "destroy": Destroy notifier of User_Data, or null
+   --  @param Sort_Column_Id the sort column id to set the function for
+   --  @param Sort_Func The comparison function
+   --  @param User_Data User data to pass to Sort_Func, or null
+   --  @param Destroy Destroy notifier of User_Data, or null
 
    function To_Gtk_Tree_Iter_Compare_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Tree_Iter_Compare_Func);
@@ -76,10 +76,10 @@ package body Gtk.Tree_Sortable is
        B         : access Gtk.Tree_Model.Gtk_Tree_Iter;
        User_Data : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_Tree_Iter_Compare_Func);
-   --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
-   --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
-   --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
-   --  "user_data": Data passed when the compare func is assigned e.g. by
+   --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
+   --  @param A A Gtk.Tree_Model.Gtk_Tree_Iter in Model
+   --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
+   --  @param User_Data Data passed when the compare func is assigned e.g. by
    --  Gtk.Tree_Sortable.Set_Sort_Func
 
    -----------------------------------------
@@ -153,11 +153,12 @@ package body Gtk.Tree_Sortable is
       --  For example, if Model is a product catalogue, then a compare
       --  function for the "price" column could be one which returns
       --  `price_of(A) - price_of(B)`.
-      --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
-      --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
-      --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
-      --  "user_data": Data passed when the compare func is assigned e.g. by
-      --  Gtk.Tree_Sortable.Set_Sort_Func
+      --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model the comparison is
+      --  within
+      --  @param A A Gtk.Tree_Model.Gtk_Tree_Iter in Model
+      --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
+      --  @param User_Data Data passed when the compare func is assigned e.g.
+      --  by Gtk.Tree_Sortable.Set_Sort_Func
 
       -----------------
       -- Internal_Cb --
@@ -239,11 +240,12 @@ package body Gtk.Tree_Sortable is
       --  For example, if Model is a product catalogue, then a compare
       --  function for the "price" column could be one which returns
       --  `price_of(A) - price_of(B)`.
-      --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
-      --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
-      --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
-      --  "user_data": Data passed when the compare func is assigned e.g. by
-      --  Gtk.Tree_Sortable.Set_Sort_Func
+      --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model the comparison is
+      --  within
+      --  @param A A Gtk.Tree_Model.Gtk_Tree_Iter in Model
+      --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
+      --  @param User_Data Data passed when the compare func is assigned e.g.
+      --  by Gtk.Tree_Sortable.Set_Sort_Func
 
       -----------------
       -- Internal_Cb --

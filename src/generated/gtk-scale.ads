@@ -137,9 +137,9 @@ package Gtk.Scale is
    --  Since: gtk+ 3.0
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "orientation": the scale's orientation.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
-   --  the scale, or null to create a new adjustment.
+   --  @param Orientation the scale's orientation.
+   --  @param Adjustment the Gtk.Adjustment.Gtk_Adjustment which sets the
+   --  range of the scale, or null to create a new adjustment.
 
    function Gtk_Scale_New
       (Orientation : Gtk.Enums.Gtk_Orientation;
@@ -147,9 +147,9 @@ package Gtk.Scale is
        return Gtk_Scale;
    --  Creates a new Gtk.Scale.Gtk_Scale.
    --  Since: gtk+ 3.0
-   --  "orientation": the scale's orientation.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
-   --  the scale, or null to create a new adjustment.
+   --  @param Orientation the scale's orientation.
+   --  @param Adjustment the Gtk.Adjustment.Gtk_Adjustment which sets the
+   --  range of the scale, or null to create a new adjustment.
 
    procedure Gtk_New_With_Range
       (Scale       : out Gtk_Scale;
@@ -173,10 +173,10 @@ package Gtk.Scale is
    --  Since: gtk+ 3.0
    --  Initialize_With_Range does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "orientation": the scale's orientation.
-   --  "min": minimum value
-   --  "max": maximum value
-   --  "step": step increment (tick size) used with keyboard shortcuts
+   --  @param Orientation the scale's orientation.
+   --  @param Min minimum value
+   --  @param Max maximum value
+   --  @param Step step increment (tick size) used with keyboard shortcuts
 
    function Gtk_Scale_New_With_Range
       (Orientation : Gtk.Enums.Gtk_Orientation;
@@ -191,10 +191,10 @@ package Gtk.Scale is
    --  is a power of ten. If the resulting precision is not suitable for your
    --  needs, use Gtk.Scale.Set_Digits to correct it.
    --  Since: gtk+ 3.0
-   --  "orientation": the scale's orientation.
-   --  "min": minimum value
-   --  "max": maximum value
-   --  "step": step increment (tick size) used with keyboard shortcuts
+   --  @param Orientation the scale's orientation.
+   --  @param Min minimum value
+   --  @param Max maximum value
+   --  @param Step step increment (tick size) used with keyboard shortcuts
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_scale_get_type");
@@ -208,8 +208,8 @@ package Gtk.Scale is
    --  Creates a new Gtk.Scale.Gtk_Hscale.
    --  Initialize_Hscale does nothing if the object was already created with
    --  another call to Initialize* or G_New.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
-   --  the scale.
+   --  @param Adjustment the Gtk.Adjustment.Gtk_Adjustment which sets the
+   --  range of the scale.
 
    procedure Gtk_New_Hscale
       (Scale : out Gtk_Hscale;
@@ -230,15 +230,15 @@ package Gtk.Scale is
    --  needs, use Gtk.Scale.Set_Digits to correct it.
    --  Initialize_Hscale does nothing if the object was already created with
    --  another call to Initialize* or G_New.
-   --  "min": minimum value
-   --  "max": maximum value
-   --  "step": step increment (tick size) used with keyboard shortcuts
+   --  @param Min minimum value
+   --  @param Max maximum value
+   --  @param Step step increment (tick size) used with keyboard shortcuts
 
    function Gtk_Hscale_New
       (Adjustment : Gtk.Adjustment.Gtk_Adjustment := null) return Gtk_Hscale;
    --  Creates a new Gtk.Scale.Gtk_Hscale.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
-   --  the scale.
+   --  @param Adjustment the Gtk.Adjustment.Gtk_Adjustment which sets the
+   --  range of the scale.
 
    function Gtk_Hscale_New_With_Range
       (Min  : Gdouble;
@@ -251,9 +251,9 @@ package Gtk.Scale is
    --  Note that the way in which the precision is derived works best if Step
    --  is a power of ten. If the resulting precision is not suitable for your
    --  needs, use Gtk.Scale.Set_Digits to correct it.
-   --  "min": minimum value
-   --  "max": maximum value
-   --  "step": step increment (tick size) used with keyboard shortcuts
+   --  @param Min minimum value
+   --  @param Max maximum value
+   --  @param Step step increment (tick size) used with keyboard shortcuts
 
    function Hscale_Get_Type return Glib.GType;
    pragma Import (C, Hscale_Get_Type, "gtk_hscale_get_type");
@@ -267,8 +267,8 @@ package Gtk.Scale is
    --  Creates a new Gtk.Scale.Gtk_Vscale.
    --  Initialize_Vscale does nothing if the object was already created with
    --  another call to Initialize* or G_New.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
-   --  the scale.
+   --  @param Adjustment the Gtk.Adjustment.Gtk_Adjustment which sets the
+   --  range of the scale.
 
    procedure Gtk_New_Vscale
       (Scale : out Gtk_Vscale;
@@ -289,15 +289,15 @@ package Gtk.Scale is
    --  needs, use Gtk.Scale.Set_Digits to correct it.
    --  Initialize_Vscale does nothing if the object was already created with
    --  another call to Initialize* or G_New.
-   --  "min": minimum value
-   --  "max": maximum value
-   --  "step": step increment (tick size) used with keyboard shortcuts
+   --  @param Min minimum value
+   --  @param Max maximum value
+   --  @param Step step increment (tick size) used with keyboard shortcuts
 
    function Gtk_Vscale_New
       (Adjustment : Gtk.Adjustment.Gtk_Adjustment := null) return Gtk_Vscale;
    --  Creates a new Gtk.Scale.Gtk_Vscale.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment which sets the range of
-   --  the scale.
+   --  @param Adjustment the Gtk.Adjustment.Gtk_Adjustment which sets the
+   --  range of the scale.
 
    function Gtk_Vscale_New_With_Range
       (Min  : Gdouble;
@@ -310,9 +310,9 @@ package Gtk.Scale is
    --  Note that the way in which the precision is derived works best if Step
    --  is a power of ten. If the resulting precision is not suitable for your
    --  needs, use Gtk.Scale.Set_Digits to correct it.
-   --  "min": minimum value
-   --  "max": maximum value
-   --  "step": step increment (tick size) used with keyboard shortcuts
+   --  @param Min minimum value
+   --  @param Max maximum value
+   --  @param Step step increment (tick size) used with keyboard shortcuts
 
    function Vscale_Get_Type return Glib.GType;
    pragma Import (C, Vscale_Get_Type, "gtk_vscale_get_type");
@@ -333,13 +333,13 @@ package Gtk.Scale is
    --  If Markup is not null, text is shown next to the tick mark.
    --  To remove marks from a scale, use Gtk.Scale.Clear_Marks.
    --  Since: gtk+ 2.16
-   --  "value": the value at which the mark is placed, must be between the
+   --  @param Value the value at which the mark is placed, must be between the
    --  lower and upper limits of the scales' adjustment
-   --  "position": where to draw the mark. For a horizontal scale, GTK_POS_TOP
-   --  and Gtk.Enums.Pos_Left are drawn above the scale, anything else below.
-   --  For a vertical scale, GTK_POS_LEFT and Gtk.Enums.Pos_Top are drawn to
-   --  the left of the scale, anything else to the right.
-   --  "markup": Text to be shown at the mark, using [Pango
+   --  @param Position where to draw the mark. For a horizontal scale,
+   --  GTK_POS_TOP and Gtk.Enums.Pos_Left are drawn above the scale, anything
+   --  else below. For a vertical scale, GTK_POS_LEFT and Gtk.Enums.Pos_Top are
+   --  drawn to the left of the scale, anything else to the right.
+   --  @param Markup Text to be shown at the mark, using [Pango
    --  markup][PangoMarkupFormat], or null
 
    procedure Clear_Marks (Scale : not null access Gtk_Scale_Record);
@@ -363,8 +363,8 @@ package Gtk.Scale is
    --  smooth autoscrolling that is built into Gtk.Scale.Gtk_Scale. As an
    --  alternative, you can use the Gtk.Scale.Gtk_Scale::format-value signal to
    --  format the displayed value yourself.
-   --  "digits": the number of decimal places to display, e.g. use 1 to
-   --  display 1.0, 2 to display 1.00, etc
+   --  @param The_Digits the number of decimal places to display, e.g. use 1
+   --  to display 1.0, 2 to display 1.00, etc
 
    function Get_Draw_Value
       (Scale : not null access Gtk_Scale_Record) return Boolean;
@@ -376,7 +376,7 @@ package Gtk.Scale is
        Draw_Value : Boolean);
    --  Specifies whether the current value is displayed as a string next to
    --  the slider.
-   --  "draw_value": True to draw the value
+   --  @param Draw_Value True to draw the value
 
    function Get_Has_Origin
       (Scale : not null access Gtk_Scale_Record) return Boolean;
@@ -390,7 +390,7 @@ package Gtk.Scale is
    --  scale will highlight the part of the trough between the origin (bottom
    --  or left side) and the current value.
    --  Since: gtk+ 3.4
-   --  "has_origin": True if the scale has an origin
+   --  @param Has_Origin True if the scale has an origin
 
    function Get_Layout
       (Scale : not null access Gtk_Scale_Record)
@@ -411,8 +411,8 @@ package Gtk.Scale is
    --  If the Gtk.Scale.Gtk_Scale:draw-value property is False, the return
    --  values are undefined.
    --  Since: gtk+ 2.4
-   --  "x": location to store X offset of layout, or null
-   --  "y": location to store Y offset of layout, or null
+   --  @param X location to store X offset of layout, or null
+   --  @param Y location to store Y offset of layout, or null
 
    function Get_Value_Pos
       (Scale : not null access Gtk_Scale_Record)
@@ -423,7 +423,7 @@ package Gtk.Scale is
       (Scale : not null access Gtk_Scale_Record;
        Pos   : Gtk.Enums.Gtk_Position_Type);
    --  Sets the position in which the current value is displayed.
-   --  "pos": the position in which the current value is displayed
+   --  @param Pos the position in which the current value is displayed
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -496,7 +496,7 @@ package Gtk.Scale is
    --      }
    -- 
    --  Callback parameters:
-   --    --  "value": the value to format
+   --    --  @param Value the value to format
    --    --  Returns allocated string representing Value
 
    ----------------

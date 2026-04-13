@@ -193,7 +193,7 @@ package Gtk.Gesture is
    --  these will look as if constrained in an infinitely small area, Rect
    --  width and height will thus be 0 regardless of the number of touchpoints.
    --  Since: gtk+ 3.14
-   --  "rect": bounding box containing all active touches.
+   --  @param Rect bounding box containing all active touches.
 
    function Get_Bounding_Box_Center
       (Self : not null access Gtk_Gesture_Record;
@@ -204,8 +204,8 @@ package Gtk.Gesture is
    --  bounding box containing all active touches. Otherwise, False will be
    --  returned.
    --  Since: gtk+ 3.14
-   --  "x": X coordinate for the bounding box center
-   --  "y": Y coordinate for the bounding box center
+   --  @param X X coordinate for the bounding box center
+   --  @param Y Y coordinate for the bounding box center
 
    function Get_Device
       (Self : not null access Gtk_Gesture_Record)
@@ -233,7 +233,7 @@ package Gtk.Gesture is
    --  Gtk.Widget.Gtk_Widget will switch the state for that sequence to
    --  GTK_EVENT_SEQUENCE_DENIED.
    --  Since: gtk+ 3.14
-   --  "gesture": a Gtk.Gesture.Gtk_Gesture
+   --  @param Gesture a Gtk.Gesture.Gtk_Gesture
 
    function Get_Last_Event
       (Self     : not null access Gtk_Gesture_Record;
@@ -242,7 +242,7 @@ package Gtk.Gesture is
    --  Note that the returned pointer is only valid as long as the Sequence is
    --  still interpreted by the Gesture. If in doubt, you should make a copy of
    --  the event.
-   --  "sequence": a Gdk.Event.Gdk_Event_Sequence
+   --  @param Sequence a Gdk.Event.Gdk_Event_Sequence
 
    function Get_Last_Updated_Sequence
       (Self : not null access Gtk_Gesture_Record)
@@ -261,9 +261,10 @@ package Gtk.Gesture is
    --  that event sequence. The coordinates are always relative to the widget
    --  allocation.
    --  Since: gtk+ 3.14
-   --  "sequence": a Gdk.Event.Gdk_Event_Sequence, or null for pointer events
-   --  "x": return location for X axis of the sequence coordinates
-   --  "y": return location for Y axis of the sequence coordinates
+   --  @param Sequence a Gdk.Event.Gdk_Event_Sequence, or null for pointer
+   --  events
+   --  @param X return location for X axis of the sequence coordinates
+   --  @param Y return location for Y axis of the sequence coordinates
 
    function Get_Sequence_State
       (Self     : not null access Gtk_Gesture_Record;
@@ -271,7 +272,7 @@ package Gtk.Gesture is
        return Gtk.Enums.Gtk_Event_Sequence_State;
    --  Returns the Sequence state, as seen by Gesture.
    --  Since: gtk+ 3.14
-   --  "sequence": a Gdk.Event.Gdk_Event_Sequence
+   --  @param Sequence a Gdk.Event.Gdk_Event_Sequence
 
    function Set_Sequence_State
       (Self     : not null access Gtk_Gesture_Record;
@@ -311,8 +312,8 @@ package Gtk.Gesture is
    --  gesture emitting the event, the sequence will be already be initialized
    --  to the group's global state when the second gesture processes the event.
    --  Since: gtk+ 3.14
-   --  "sequence": a Gdk.Event.Gdk_Event_Sequence
-   --  "state": the sequence state
+   --  @param Sequence a Gdk.Event.Gdk_Event_Sequence
+   --  @param State the sequence state
 
    function Get_Sequences
       (Self : not null access Gtk_Gesture_Record)
@@ -334,7 +335,7 @@ package Gtk.Gesture is
    --  effectively handle only events targeting Window, or a child of it.
    --  Window must pertain to Gtk.Event_Controller.Get_Widget.
    --  Since: gtk+ 3.14
-   --  "window": a Gdk.Gdk_Window, or null
+   --  @param Window a Gdk.Gdk_Window, or null
 
    function Handles_Sequence
       (Self     : not null access Gtk_Gesture_Record;
@@ -342,7 +343,7 @@ package Gtk.Gesture is
    --  Returns True if Gesture is currently handling events corresponding to
    --  Sequence.
    --  Since: gtk+ 3.14
-   --  "sequence": a Gdk.Event.Gdk_Event_Sequence or null
+   --  @param Sequence a Gdk.Event.Gdk_Event_Sequence or null
 
    function Is_Active
       (Self : not null access Gtk_Gesture_Record) return Boolean;
@@ -355,7 +356,7 @@ package Gtk.Gesture is
        Other : not null access Gtk_Gesture_Record'Class) return Boolean;
    --  Returns True if both gestures pertain to the same group.
    --  Since: gtk+ 3.14
-   --  "other": another Gtk.Gesture.Gtk_Gesture
+   --  @param Other another Gtk.Gesture.Gtk_Gesture
 
    function Is_Recognized
       (Self : not null access Gtk_Gesture_Record) return Boolean;
@@ -372,7 +373,7 @@ package Gtk.Gesture is
    --  with. See Gtk.Gesture.Set_Sequence_State for more details on sequence
    --  states.
    --  Since: gtk+ 3.14
-   --  "state": the sequence state
+   --  @param State the sequence state
 
    procedure Ungroup (Self : not null access Gtk_Gesture_Record);
    --  Separates Gesture into an isolated group.
@@ -511,8 +512,8 @@ package Gtk.Gesture is
    --  sequence lifetimes.
    -- 
    --  Callback parameters:
-   --    --  "sequence": the Gdk.Event.Gdk_Event_Sequence that was cancelled
-   --    --  "state": the new sequence state
+   --    --  @param Sequence the Gdk.Event.Gdk_Event_Sequence that was cancelled
+   --    --  @param State the new sequence state
 
    Signal_Update : constant Glib.Signal_Name := "update";
    procedure On_Update

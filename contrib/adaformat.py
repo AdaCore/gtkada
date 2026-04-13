@@ -1113,7 +1113,7 @@ def cleanup_doc(doc):
     types = re.compile(r"#([\w_]+)")
     doc = types.sub(replace_type, doc)
 
-    params = re.compile(r"@([\w_]+)")
+    params = re.compile(r"@(?!param\b|return\b)([\w_]+)")
     doc = params.sub(lambda x: x.group(1).title(), doc)
 
     enums = re.compile(r"%([A-Z][\w_]+)")
@@ -1657,10 +1657,19 @@ class Subprogram(object):
 
     def formatted_doc(self, indent="   "):
         if self.showdoc:
-            doc = [d for d in self.doc]
+            doc = []
+            returns = []
+
+            for d in self.doc:
+                if isinstance(d, str) and d.lstrip().startswith("@return "):
+                    returns.append(d)
+                else:
+                    doc.append(d)
+
             if self._deprecated[0]:
                 doc += [self._deprecated[1]]
             doc += [p.doc for p in self.plist]
+            doc += returns
         else:
             doc = []
 

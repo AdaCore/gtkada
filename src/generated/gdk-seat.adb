@@ -74,22 +74,22 @@ package body Gdk.Seat is
    --  Gdk.Event.Gdk_Event_Grab_Broken events that are emitted when the grab
    --  ends unvoluntarily.
    --  Since: gtk+ 3.20
-   --  "window": the Gdk.Gdk_Window which will own the grab
-   --  "capabilities": capabilities that will be grabbed
-   --  "owner_events": if False then all device events are reported with
+   --  @param Window the Gdk.Gdk_Window which will own the grab
+   --  @param Capabilities capabilities that will be grabbed
+   --  @param Owner_Events if False then all device events are reported with
    --  respect to Window and are only reported if selected by Event_Mask. If
    --  True then pointer events for this application are reported as normal,
    --  but pointer events outside this application are reported with respect to
    --  Window and only if selected by Event_Mask. In either mode, unreported
    --  events are discarded.
-   --  "cursor": the cursor to display while the grab is active. If this is
-   --  null then the normal cursors are used for Window and its descendants,
+   --  @param Cursor the cursor to display while the grab is active. If this
+   --  is null then the normal cursors are used for Window and its descendants,
    --  and the cursor for Window is used elsewhere.
-   --  "event": the event that is triggering the grab, or null if none is
+   --  @param Event the event that is triggering the grab, or null if none is
    --  available.
-   --  "prepare_func": function to prepare the window to be grabbed, it can be
-   --  null if Window is visible before this call.
-   --  "prepare_func_data": user data to pass to Prepare_Func
+   --  @param Prepare_Func function to prepare the window to be grabbed, it
+   --  can be null if Window is visible before this call.
+   --  @param Prepare_Func_Data user data to pass to Prepare_Func
 
    function To_Gdk_Seat_Grab_Prepare_Func is new Ada.Unchecked_Conversion
      (System.Address, Gdk_Seat_Grab_Prepare_Func);
@@ -102,9 +102,9 @@ package body Gdk.Seat is
        Window    : Gdk.Gdk_Window;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gdk_Seat_Grab_Prepare_Func);
-   --  "seat": the Gdk.Seat.Gdk_Seat being grabbed
-   --  "window": the Gdk.Gdk_Window being grabbed
-   --  "user_data": user data passed in Gdk.Seat.Grab
+   --  @param Seat the Gdk.Seat.Gdk_Seat being grabbed
+   --  @param Window the Gdk.Gdk_Window being grabbed
+   --  @param User_Data user data passed in Gdk.Seat.Grab
 
    -----------------------------------------
    -- Internal_Gdk_Seat_Grab_Prepare_Func --

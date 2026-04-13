@@ -67,8 +67,8 @@ package Gtk.Font_Button is
    --  The type of function that is used for deciding what fonts get shown in
    --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
    --  Gtk.Font_Chooser.Set_Filter_Func.
-   --  "family": a Pango.Font_Family.Pango_Font_Family
-   --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
+   --  @param Family a Pango.Font_Family.Pango_Font_Family
+   --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
 
    ------------------
    -- Constructors --
@@ -96,13 +96,13 @@ package Gtk.Font_Button is
    --  Since: gtk+ 2.4
    --  Initialize_With_Font does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "fontname": Name of font to display in font chooser dialog
+   --  @param Fontname Name of font to display in font chooser dialog
 
    function Gtk_Font_Button_New_With_Font
       (Fontname : UTF8_String) return Gtk_Font_Button;
    --  Creates a new font picker widget.
    --  Since: gtk+ 2.4
-   --  "fontname": Name of font to display in font chooser dialog
+   --  @param Fontname Name of font to display in font chooser dialog
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_font_button_get_type");
@@ -131,7 +131,7 @@ package Gtk.Font_Button is
    --  Sets or updates the currently-displayed font in font picker dialog.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.22, 1
-   --  "fontname": Name of font to display in font chooser dialog
+   --  @param Fontname Name of font to display in font chooser dialog
 
    function Get_Show_Size
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean;
@@ -144,7 +144,7 @@ package Gtk.Font_Button is
    --  If Show_Size is True, the font size will be displayed along with the
    --  name of the selected font.
    --  Since: gtk+ 2.4
-   --  "show_size": True if font size should be displayed in dialog.
+   --  @param Show_Size True if font size should be displayed in dialog.
 
    function Get_Show_Style
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean;
@@ -157,7 +157,7 @@ package Gtk.Font_Button is
    --  If Show_Style is True, the font style will be displayed along with name
    --  of the selected font.
    --  Since: gtk+ 2.4
-   --  "show_style": True if font style should be displayed in label.
+   --  @param Show_Style True if font style should be displayed in label.
 
    function Get_Title
       (Font_Button : not null access Gtk_Font_Button_Record)
@@ -170,7 +170,7 @@ package Gtk.Font_Button is
        Title       : UTF8_String);
    --  Sets the title for the font chooser dialog.
    --  Since: gtk+ 2.4
-   --  "title": a string containing the font chooser dialog title
+   --  @param Title a string containing the font chooser dialog title
 
    function Get_Use_Font
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean;
@@ -183,7 +183,7 @@ package Gtk.Font_Button is
    --  If Use_Font is True, the font name will be written using the selected
    --  font.
    --  Since: gtk+ 2.4
-   --  "use_font": If True, font name will be written using font chosen.
+   --  @param Use_Font If True, font name will be written using font chosen.
 
    function Get_Use_Size
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean;
@@ -196,7 +196,8 @@ package Gtk.Font_Button is
    --  If Use_Size is True, the font name will be written using the selected
    --  size.
    --  Since: gtk+ 2.4
-   --  "use_size": If True, font name will be written using the selected size.
+   --  @param Use_Size If True, font name will be written using the selected
+   --  size.
 
    procedure Set_Filter_Func
       (Self   : not null access Gtk_Font_Button_Record;
@@ -204,7 +205,7 @@ package Gtk.Font_Button is
    --  Adds a filter function that decides which fonts to display in the font
    --  chooser.
    --  Since: gtk+ 3.2
-   --  "filter": a Gtk_Font_Filter_Func, or null
+   --  @param Filter a Gtk_Font_Filter_Func, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -218,9 +219,9 @@ package Gtk.Font_Button is
       --  The type of function that is used for deciding what fonts get shown in
       --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
       --  Gtk.Font_Chooser.Set_Filter_Func.
-      --  "family": a Pango.Font_Family.Pango_Font_Family
-      --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
-      --  "data": user data passed to Gtk.Font_Chooser.Set_Filter_Func
+      --  @param Family a Pango.Font_Family.Pango_Font_Family
+      --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
+      --  @param Data user data passed to Gtk.Font_Chooser.Set_Filter_Func
 
       procedure Set_Filter_Func
          (Self      : not null access Gtk.Font_Button.Gtk_Font_Button_Record'Class;
@@ -229,8 +230,8 @@ package Gtk.Font_Button is
       --  Adds a filter function that decides which fonts to display in the
       --  font chooser.
       --  Since: gtk+ 3.2
-      --  "filter": a Gtk_Font_Filter_Func, or null
-      --  "user_data": data to pass to Filter
+      --  @param Filter a Gtk_Font_Filter_Func, or null
+      --  @param User_Data data to pass to Filter
 
    end Set_Filter_Func_User_Data;
 

@@ -87,11 +87,11 @@ package Gtk.Grid is
    --  Adds a widget to the grid.
    --  The position of Child is determined by Left and Top. The number of
    --  "cells" that Child will occupy is determined by Width and Height.
-   --  "child": the widget to add
-   --  "left": the column number to attach the left side of Child to
-   --  "top": the row number to attach the top side of Child to
-   --  "width": the number of columns that Child will span
-   --  "height": the number of rows that Child will span
+   --  @param Child the widget to add
+   --  @param Left the column number to attach the left side of Child to
+   --  @param Top the row number to attach the top side of Child to
+   --  @param Width the number of columns that Child will span
+   --  @param Height the number of rows that Child will span
 
    procedure Attach_Next_To
       (Self    : not null access Gtk_Grid_Record;
@@ -107,12 +107,12 @@ package Gtk.Grid is
    --  indicated by Side.
    --  Attaching widgets labeled [1], [2], [3] with Sibling == null and Side
    --  == Gtk.Enums.Pos_Left yields a layout of [3][2][1].
-   --  "child": the widget to add
-   --  "sibling": the child of Grid that Child will be placed next to, or null
-   --  to place Child at the beginning or end
-   --  "side": the side of Sibling that Child is positioned next to
-   --  "width": the number of columns that Child will span
-   --  "height": the number of rows that Child will span
+   --  @param Child the widget to add
+   --  @param Sibling the child of Grid that Child will be placed next to, or
+   --  null to place Child at the beginning or end
+   --  @param Side the side of Sibling that Child is positioned next to
+   --  @param Width the number of columns that Child will span
+   --  @param Height the number of rows that Child will span
 
    function Get_Baseline_Row
       (Self : not null access Gtk_Grid_Record) return Glib.Gint;
@@ -126,7 +126,7 @@ package Gtk.Grid is
    --  row in the grid can have its own local baseline, but only one of those
    --  is global, meaning it will be the baseline in the parent of the Grid.
    --  Since: gtk+ 3.10
-   --  "row": the row index
+   --  @param Row the row index
 
    function Get_Child_At
       (Self : not null access Gtk_Grid_Record;
@@ -135,8 +135,8 @@ package Gtk.Grid is
    --  Gets the child of Grid whose area covers the grid cell whose upper left
    --  corner is at Left, Top.
    --  Since: gtk+ 3.2
-   --  "left": the left edge of the cell
-   --  "top": the top edge of the cell
+   --  @param Left the left edge of the cell
+   --  @param Top the top edge of the cell
 
    function Get_Column_Homogeneous
       (Self : not null access Gtk_Grid_Record) return Boolean;
@@ -146,7 +146,7 @@ package Gtk.Grid is
       (Self        : not null access Gtk_Grid_Record;
        Homogeneous : Boolean);
    --  Sets whether all columns of Grid will have the same width.
-   --  "homogeneous": True to make columns homogeneous
+   --  @param Homogeneous True to make columns homogeneous
 
    function Get_Column_Spacing
       (Self : not null access Gtk_Grid_Record) return Guint;
@@ -156,7 +156,7 @@ package Gtk.Grid is
       (Self    : not null access Gtk_Grid_Record;
        Spacing : Guint);
    --  Sets the amount of space between columns of Grid.
-   --  "spacing": the amount of space to insert between columns
+   --  @param Spacing the amount of space to insert between columns
 
    function Get_Row_Baseline_Position
       (Self : not null access Gtk_Grid_Record;
@@ -165,7 +165,7 @@ package Gtk.Grid is
    --  Gtk.Grid.Set_Row_Baseline_Position or the default value
    --  Gtk.Enums.Baseline_Position_Center.
    --  Since: gtk+ 3.10
-   --  "row": a row index
+   --  @param Row a row index
 
    procedure Set_Row_Baseline_Position
       (Self : not null access Gtk_Grid_Record;
@@ -174,8 +174,8 @@ package Gtk.Grid is
    --  Sets how the baseline should be positioned on Row of the grid, in case
    --  that row is assigned more space than is requested.
    --  Since: gtk+ 3.10
-   --  "row": a row index
-   --  "pos": a Gtk.Enums.Gtk_Baseline_Position
+   --  @param Row a row index
+   --  @param Pos a Gtk.Enums.Gtk_Baseline_Position
 
    function Get_Row_Homogeneous
       (Self : not null access Gtk_Grid_Record) return Boolean;
@@ -185,7 +185,7 @@ package Gtk.Grid is
       (Self        : not null access Gtk_Grid_Record;
        Homogeneous : Boolean);
    --  Sets whether all rows of Grid will have the same height.
-   --  "homogeneous": True to make rows homogeneous
+   --  @param Homogeneous True to make rows homogeneous
 
    function Get_Row_Spacing
       (Self : not null access Gtk_Grid_Record) return Guint;
@@ -195,7 +195,7 @@ package Gtk.Grid is
       (Self    : not null access Gtk_Grid_Record;
        Spacing : Guint);
    --  Sets the amount of space between rows of Grid.
-   --  "spacing": the amount of space to insert between rows
+   --  @param Spacing the amount of space to insert between rows
 
    procedure Insert_Column
       (Self     : not null access Gtk_Grid_Record;
@@ -205,7 +205,7 @@ package Gtk.Grid is
    --  moved one column to the right. Children which span across this position
    --  are grown to span the new column.
    --  Since: gtk+ 3.2
-   --  "position": the position to insert the column at
+   --  @param Position the position to insert the column at
 
    procedure Insert_Next_To
       (Self    : not null access Gtk_Grid_Record;
@@ -217,9 +217,9 @@ package Gtk.Grid is
    --  inserted. If Side is Gtk.Enums.Pos_Left of Gtk.Enums.Pos_Right, a column
    --  is inserted.
    --  Since: gtk+ 3.2
-   --  "sibling": the child of Grid that the new row or column will be placed
-   --  next to
-   --  "side": the side of Sibling that Child is positioned next to
+   --  @param Sibling the child of Grid that the new row or column will be
+   --  placed next to
+   --  @param Side the side of Sibling that Child is positioned next to
 
    procedure Insert_Row
       (Self     : not null access Gtk_Grid_Record;
@@ -229,7 +229,7 @@ package Gtk.Grid is
    --  down. Children which span across this position are grown to span the new
    --  row.
    --  Since: gtk+ 3.2
-   --  "position": the position to insert the row at
+   --  @param Position the position to insert the row at
 
    procedure Remove_Column
       (Self     : not null access Gtk_Grid_Record;
@@ -239,7 +239,7 @@ package Gtk.Grid is
    --  that overlap this column have their width reduced by one, and children
    --  after the column are moved to the left.
    --  Since: gtk+ 3.10
-   --  "position": the position of the column to remove
+   --  @param Position the position of the column to remove
 
    procedure Remove_Row
       (Self     : not null access Gtk_Grid_Record;
@@ -249,7 +249,7 @@ package Gtk.Grid is
    --  that overlap this row have their height reduced by one, and children
    --  below the row are moved up.
    --  Since: gtk+ 3.10
-   --  "position": the position of the row to remove
+   --  @param Position the position of the row to remove
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

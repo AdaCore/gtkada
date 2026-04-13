@@ -79,7 +79,7 @@ package Gtk.Toggle_Tool_Button is
    --  Since: gtk+ 2.4
    --  Initialize_From_Stock does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "stock_id": the name of the stock item
+   --  @param Stock_Id the name of the stock item
 
    function Gtk_Toggle_Tool_Button_New_From_Stock
       (Stock_Id : UTF8_String) return Gtk_Toggle_Tool_Button;
@@ -88,7 +88,7 @@ package Gtk.Toggle_Tool_Button is
    --  macros like GTK_STOCK_OK and GTK_STOCK_APPLY.
    --  It is an error if Stock_Id is not a name of a stock item.
    --  Since: gtk+ 2.4
-   --  "stock_id": the name of the stock item
+   --  @param Stock_Id the name of the stock item
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_toggle_tool_button_get_type");
@@ -112,7 +112,7 @@ package Gtk.Toggle_Tool_Button is
    --  GtkToggleButton to be "pressed in", and False to raise it. This action
    --  causes the toggled signal to be emitted.
    --  Since: gtk+ 2.4
-   --  "is_active": whether Button should be active
+   --  @param Is_Active whether Button should be active
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

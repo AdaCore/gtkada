@@ -85,7 +85,7 @@ package Gtk.Color_Selection is
    --  Sets the current opacity to be Alpha.
    --  The first time this is called, it will also set the original opacity to
    --  be Alpha too.
-   --  "alpha": an integer between 0 and 65535
+   --  @param Alpha an integer between 0 and 65535
 
    procedure Get_Current_Color
       (Colorsel : not null access Gtk_Color_Selection_Record;
@@ -93,7 +93,7 @@ package Gtk.Color_Selection is
    pragma Obsolescent (Get_Current_Color);
    --  Sets Color to be the current color in the GtkColorSelection widget.
    --  Deprecated since 3.4, 1
-   --  "color": a Gdk.Color.Gdk_Color to fill in with the current color
+   --  @param Color a Gdk.Color.Gdk_Color to fill in with the current color
 
    procedure Set_Current_Color
       (Colorsel : not null access Gtk_Color_Selection_Record;
@@ -103,14 +103,14 @@ package Gtk.Color_Selection is
    --  The first time this is called, it will also set the original color to
    --  be Color too.
    --  Deprecated since 3.4, 1
-   --  "color": a Gdk.Color.Gdk_Color to set the current color with
+   --  @param Color a Gdk.Color.Gdk_Color to set the current color with
 
    procedure Get_Current_Rgba
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Rgba     : out Gdk.RGBA.Gdk_RGBA);
    --  Sets Rgba to be the current color in the GtkColorSelection widget.
    --  Since: gtk+ 3.0
-   --  "rgba": a Gdk.RGBA.Gdk_RGBA to fill in with the current color
+   --  @param Rgba a Gdk.RGBA.Gdk_RGBA to fill in with the current color
 
    procedure Set_Current_Rgba
       (Colorsel : not null access Gtk_Color_Selection_Record;
@@ -119,7 +119,7 @@ package Gtk.Color_Selection is
    --  The first time this is called, it will also set the original color to
    --  be Rgba too.
    --  Since: gtk+ 3.0
-   --  "rgba": A Gdk.RGBA.Gdk_RGBA to set the current color with
+   --  @param Rgba A Gdk.RGBA.Gdk_RGBA to set the current color with
 
    function Get_Has_Opacity_Control
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean;
@@ -129,7 +129,8 @@ package Gtk.Color_Selection is
       (Colorsel    : not null access Gtk_Color_Selection_Record;
        Has_Opacity : Boolean);
    --  Sets the Colorsel to use or not use opacity.
-   --  "has_opacity": True if Colorsel can set the opacity, False otherwise
+   --  @param Has_Opacity True if Colorsel can set the opacity, False
+   --  otherwise
 
    function Get_Has_Palette
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean;
@@ -139,7 +140,7 @@ package Gtk.Color_Selection is
       (Colorsel    : not null access Gtk_Color_Selection_Record;
        Has_Palette : Boolean);
    --  Shows and hides the palette based upon the value of Has_Palette.
-   --  "has_palette": True if palette is to be visible, False otherwise
+   --  @param Has_Palette True if palette is to be visible, False otherwise
 
    function Get_Previous_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record) return Guint16;
@@ -151,7 +152,7 @@ package Gtk.Color_Selection is
    --  Sets the "previous" alpha to be Alpha.
    --  This function should be called with some hesitations, as it might seem
    --  confusing to have that alpha change.
-   --  "alpha": an integer between 0 and 65535
+   --  @param Alpha an integer between 0 and 65535
 
    procedure Get_Previous_Color
       (Colorsel : not null access Gtk_Color_Selection_Record;
@@ -159,7 +160,8 @@ package Gtk.Color_Selection is
    pragma Obsolescent (Get_Previous_Color);
    --  Fills Color in with the original color value.
    --  Deprecated since 3.4, 1
-   --  "color": a Gdk.Color.Gdk_Color to fill in with the original color value
+   --  @param Color a Gdk.Color.Gdk_Color to fill in with the original color
+   --  value
 
    procedure Set_Previous_Color
       (Colorsel : not null access Gtk_Color_Selection_Record;
@@ -171,14 +173,15 @@ package Gtk.Color_Selection is
    --  Gtk.Color_Selection.Set_Current_Color will also set this color the first
    --  time it is called.
    --  Deprecated since 3.4, 1
-   --  "color": a Gdk.Color.Gdk_Color to set the previous color with
+   --  @param Color a Gdk.Color.Gdk_Color to set the previous color with
 
    procedure Get_Previous_Rgba
       (Colorsel : not null access Gtk_Color_Selection_Record;
        Rgba     : out Gdk.RGBA.Gdk_RGBA);
    --  Fills Rgba in with the original color value.
    --  Since: gtk+ 3.0
-   --  "rgba": a Gdk.RGBA.Gdk_RGBA to fill in with the original color value
+   --  @param Rgba a Gdk.RGBA.Gdk_RGBA to fill in with the original color
+   --  value
 
    procedure Set_Previous_Rgba
       (Colorsel : not null access Gtk_Color_Selection_Record;
@@ -189,7 +192,7 @@ package Gtk.Color_Selection is
    --  Gtk.Color_Selection.Set_Current_Rgba will also set this color the first
    --  time it is called.
    --  Since: gtk+ 3.0
-   --  "rgba": a Gdk.RGBA.Gdk_RGBA to set the previous color with
+   --  @param Rgba a Gdk.RGBA.Gdk_RGBA to set the previous color with
 
    function Is_Adjusting
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean;
@@ -248,7 +251,7 @@ package Gtk.Color_Selection is
    --  Gtk.Settings.Gtk_Settings:gtk-color-palette GtkSettings property so all
    --  GtkColorSelection widgets will be modified.
    --  Since: gtk+ 2.2
-   --  "func": a function to call when the custom palette needs saving
+   --  @param Func a function to call when the custom palette needs saving
 
    ----------------
    -- Properties --

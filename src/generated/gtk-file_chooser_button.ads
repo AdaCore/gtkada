@@ -96,8 +96,8 @@ package Gtk.File_Chooser_Button is
    --  Since: gtk+ 2.6
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "title": the title of the browse dialog.
-   --  "action": the open mode for the widget.
+   --  @param Title the title of the browse dialog.
+   --  @param Action the open mode for the widget.
 
    function Gtk_File_Chooser_Button_New
       (Title  : UTF8_String;
@@ -105,8 +105,8 @@ package Gtk.File_Chooser_Button is
        return Gtk_File_Chooser_Button;
    --  Creates a new file-selecting button widget.
    --  Since: gtk+ 2.6
-   --  "title": the title of the browse dialog.
-   --  "action": the open mode for the widget.
+   --  @param Title the title of the browse dialog.
+   --  @param Action the open mode for the widget.
 
    procedure Gtk_New_With_Dialog
       (Button : out Gtk_File_Chooser_Button;
@@ -125,7 +125,7 @@ package Gtk.File_Chooser_Button is
    --  Since: gtk+ 2.6
    --  Initialize_With_Dialog does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "dialog": the widget to use as dialog
+   --  @param Dialog the widget to use as dialog
 
    function Gtk_File_Chooser_Button_New_With_Dialog
       (Dialog : not null access Gtk.Widget.Gtk_Widget_Record'Class)
@@ -139,7 +139,7 @@ package Gtk.File_Chooser_Button is
    --  with response GTK_RESPONSE_ACCEPT or GTK_RESPONSE_OK in order for the
    --  button to take over the file selected in the dialog.
    --  Since: gtk+ 2.6
-   --  "dialog": the widget to use as dialog
+   --  @param Dialog the widget to use as dialog
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_file_chooser_button_get_type");
@@ -167,8 +167,8 @@ package Gtk.File_Chooser_Button is
    --  area of the application.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.20, 1
-   --  "focus_on_click": whether the button grabs focus when clicked with the
-   --  mouse
+   --  @param Focus_On_Click whether the button grabs focus when clicked with
+   --  the mouse
 
    function Get_Title
       (Button : not null access Gtk_File_Chooser_Button_Record)
@@ -182,7 +182,7 @@ package Gtk.File_Chooser_Button is
        Title  : UTF8_String);
    --  Modifies the Title of the browse dialog used by Button.
    --  Since: gtk+ 2.6
-   --  "title": the new browse dialog title.
+   --  @param Title the new browse dialog title.
 
    function Get_Width_Chars
       (Button : not null access Gtk_File_Chooser_Button_Record)
@@ -196,7 +196,7 @@ package Gtk.File_Chooser_Button is
        N_Chars : Glib.Gint);
    --  Sets the width (in characters) that Button will use to N_Chars.
    --  Since: gtk+ 2.6
-   --  "n_chars": the new width, in characters.
+   --  @param N_Chars the new width, in characters.
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

@@ -72,12 +72,12 @@ package Gtk.Check_Menu_Item is
    --  Creates a new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item with a label.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "label": the string to use for the label.
+   --  @param Label the string to use for the label.
 
    function Gtk_Check_Menu_Item_New_With_Label
       (Label : UTF8_String := "") return Gtk_Check_Menu_Item;
    --  Creates a new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item with a label.
-   --  "label": the string to use for the label.
+   --  @param Label the string to use for the label.
 
    procedure Gtk_New_With_Mnemonic
       (Check_Menu_Item : out Gtk_Check_Menu_Item;
@@ -90,7 +90,7 @@ package Gtk.Check_Menu_Item is
    --  so underscores in Label indicate the mnemonic for the menu item.
    --  Initialize_With_Mnemonic does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "label": The text of the button, with an underscore in front of the
+   --  @param Label The text of the button, with an underscore in front of the
    --  character
 
    function Gtk_Check_Menu_Item_New_With_Mnemonic
@@ -98,7 +98,7 @@ package Gtk.Check_Menu_Item is
    --  Creates a new Gtk.Check_Menu_Item.Gtk_Check_Menu_Item containing a
    --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
    --  so underscores in Label indicate the mnemonic for the menu item.
-   --  "label": The text of the button, with an underscore in front of the
+   --  @param Label The text of the button, with an underscore in front of the
    --  character
 
    function Get_Type return Glib.GType;
@@ -118,7 +118,8 @@ package Gtk.Check_Menu_Item is
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record;
        Is_Active       : Boolean);
    --  Sets the active state of the menu item's check box.
-   --  "is_active": boolean value indicating whether the check box is active.
+   --  @param Is_Active boolean value indicating whether the check box is
+   --  active.
 
    function Get_Draw_As_Radio
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record)
@@ -133,7 +134,7 @@ package Gtk.Check_Menu_Item is
    --  Sets whether Check_Menu_Item is drawn like a
    --  Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item
    --  Since: gtk+ 2.4
-   --  "draw_as_radio": whether Check_Menu_Item is drawn like a
+   --  @param Draw_As_Radio whether Check_Menu_Item is drawn like a
    --  Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item
 
    function Get_Inconsistent
@@ -152,7 +153,7 @@ package Gtk.Check_Menu_Item is
    --  user explicitly selects a setting. This has to be done manually,
    --  Gtk.Check_Menu_Item.Set_Inconsistent only affects visual appearance, it
    --  doesn't affect the semantics of the widget.
-   --  "setting": True to display an "inconsistent" third state check
+   --  @param Setting True to display an "inconsistent" third state check
 
    procedure Toggled
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record);

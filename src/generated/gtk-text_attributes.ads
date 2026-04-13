@@ -117,7 +117,7 @@ package Gtk.Text_Attributes is
    pragma Import (C, Copy_Values, "gtk_text_attributes_copy_values");
    --  Copies the values from Src to Dest so that Dest has the same values as
    --  Src. Frees existing values in Dest.
-   --  "dest": another Gtk.Text_Attributes.Gtk_Text_Attributes
+   --  @param Dest another Gtk.Text_Attributes.Gtk_Text_Attributes
 
    function Ref (Text_Attr : Gtk_Text_Attributes) return Gtk_Text_Attributes;
    pragma Import (C, Ref, "gtk_text_attributes_ref");

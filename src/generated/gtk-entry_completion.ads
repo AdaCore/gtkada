@@ -102,9 +102,9 @@ package Gtk.Entry_Completion is
    --  g_utf8_casefold). If this is not appropriate, match functions have
    --  access to the unmodified key via `gtk_entry_get_text (GTK_ENTRY
    --  (gtk_entry_completion_get_entry ()))`.
-   --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
-   --  "key": the string to match, normalized and case-folded
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
+   --  @param Completion the Gtk.Entry_Completion.Gtk_Entry_Completion
+   --  @param Key the string to match, normalized and case-folded
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
 
    type Gtk_Cell_Layout_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
@@ -113,11 +113,11 @@ package Gtk.Entry_Completion is
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
 
    ------------------
    -- Constructors --
@@ -147,7 +147,7 @@ package Gtk.Entry_Completion is
    --  Since: gtk+ 3.0
    --  Initialize_With_Area does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area used to layout cells
+   --  @param Area the Gtk.Cell_Area.Gtk_Cell_Area used to layout cells
 
    function Gtk_Entry_Completion_New_With_Area
       (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
@@ -156,7 +156,7 @@ package Gtk.Entry_Completion is
    --  the specified Area to layout cells in the underlying
    --  Gtk.Tree_View_Column.Gtk_Tree_View_Column for the drop-down menu.
    --  Since: gtk+ 3.0
-   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area used to layout cells
+   --  @param Area the Gtk.Cell_Area.Gtk_Cell_Area used to layout cells
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_entry_completion_get_type");
@@ -180,7 +180,7 @@ package Gtk.Entry_Completion is
    --  that a text column must have been set for this function to work, see
    --  Gtk.Entry_Completion.Set_Text_Column for details.
    --  Since: gtk+ 3.4
-   --  "key": The text to complete for
+   --  @param Key The text to complete for
 
    procedure Delete_Action
       (Completion : not null access Gtk_Entry_Completion_Record;
@@ -189,7 +189,7 @@ package Gtk.Entry_Completion is
    --  Note that Index_ is a relative position and the position of an action
    --  may have changed since it was inserted.
    --  Since: gtk+ 2.4
-   --  "index_": the index of the item to delete
+   --  @param Index the index of the item to delete
 
    function Get_Completion_Prefix
       (Completion : not null access Gtk_Entry_Completion_Record)
@@ -217,7 +217,7 @@ package Gtk.Entry_Completion is
    --  Sets whether the common prefix of the possible completions should be
    --  automatically inserted in the entry.
    --  Since: gtk+ 2.6
-   --  "inline_completion": True to do inline completion
+   --  @param Inline_Completion True to do inline completion
 
    function Get_Inline_Selection
       (Completion : not null access Gtk_Entry_Completion_Record)
@@ -231,7 +231,7 @@ package Gtk.Entry_Completion is
    --  Sets whether it is possible to cycle through the possible completions
    --  inside the entry.
    --  Since: gtk+ 2.12
-   --  "inline_selection": True to do inline selection
+   --  @param Inline_Selection True to do inline selection
 
    function Get_Minimum_Key_Length
       (Completion : not null access Gtk_Entry_Completion_Record)
@@ -247,7 +247,8 @@ package Gtk.Entry_Completion is
    --  key takes a lot of time and will come up with meaningless results anyway
    --  (ie, a too large dataset).
    --  Since: gtk+ 2.4
-   --  "length": the minimum length of the key in order to start completing
+   --  @param Length the minimum length of the key in order to start
+   --  completing
 
    function Get_Model
       (Completion : not null access Gtk_Entry_Completion_Record)
@@ -263,7 +264,7 @@ package Gtk.Entry_Completion is
    --  Completion already has a model set, it will remove it before setting the
    --  new model. If model is null, then it will unset the model.
    --  Since: gtk+ 2.4
-   --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model
 
    function Get_Popup_Completion
       (Completion : not null access Gtk_Entry_Completion_Record)
@@ -276,7 +277,7 @@ package Gtk.Entry_Completion is
        Popup_Completion : Boolean);
    --  Sets whether the completions should be presented in a popup window.
    --  Since: gtk+ 2.6
-   --  "popup_completion": True to do popup completion
+   --  @param Popup_Completion True to do popup completion
 
    function Get_Popup_Set_Width
       (Completion : not null access Gtk_Entry_Completion_Record)
@@ -291,8 +292,8 @@ package Gtk.Entry_Completion is
    --  Sets whether the completion popup window will be resized to be the same
    --  width as the entry.
    --  Since: gtk+ 2.8
-   --  "popup_set_width": True to make the width of the popup the same as the
-   --  entry
+   --  @param Popup_Set_Width True to make the width of the popup the same as
+   --  the entry
 
    function Get_Popup_Single_Match
       (Completion : not null access Gtk_Entry_Completion_Record)
@@ -308,8 +309,8 @@ package Gtk.Entry_Completion is
    --  only a single match. You may want to set this to False if you are using
    --  [inline completion][GtkEntryCompletion--inline-completion].
    --  Since: gtk+ 2.8
-   --  "popup_single_match": True if the popup should appear even for a single
-   --  match
+   --  @param Popup_Single_Match True if the popup should appear even for a
+   --  single match
 
    function Get_Text_Column
       (Completion : not null access Gtk_Entry_Completion_Record)
@@ -330,7 +331,7 @@ package Gtk.Entry_Completion is
    --  use g_object_set to set the
    --  Gtk.Entry_Completion.Gtk_Entry_Completion:text-column property directly.
    --  Since: gtk+ 2.4
-   --  "column": the column in the model of Completion to get strings from
+   --  @param Column the column in the model of Completion to get strings from
 
    procedure Insert_Action_Markup
       (Completion : not null access Gtk_Entry_Completion_Record;
@@ -339,8 +340,8 @@ package Gtk.Entry_Completion is
    --  Inserts an action in Completion's action item list at position Index_
    --  with markup Markup.
    --  Since: gtk+ 2.4
-   --  "index_": the index of the item to insert
-   --  "markup": markup of the item to insert
+   --  @param Index the index of the item to insert
+   --  @param Markup markup of the item to insert
 
    procedure Insert_Action_Text
       (Completion : not null access Gtk_Entry_Completion_Record;
@@ -352,8 +353,8 @@ package Gtk.Entry_Completion is
    --  Note that Index_ is a relative position in the list of actions and the
    --  position of an action can change when deleting a different action.
    --  Since: gtk+ 2.4
-   --  "index_": the index of the item to insert
-   --  "text": text of the item to insert
+   --  @param Index the index of the item to insert
+   --  @param Text text of the item to insert
 
    procedure Insert_Prefix
       (Completion : not null access Gtk_Entry_Completion_Record);
@@ -367,7 +368,7 @@ package Gtk.Entry_Completion is
    --  is used to determine if a row should or should not be in the completion
    --  list.
    --  Since: gtk+ 2.4
-   --  "func": the Gtk_Entry_Completion_Match_Func to use
+   --  @param Func the Gtk_Entry_Completion_Match_Func to use
 
    generic
       type User_Data_Type (<>) is private;
@@ -385,10 +386,10 @@ package Gtk.Entry_Completion is
       --  g_utf8_casefold). If this is not appropriate, match functions have
       --  access to the unmodified key via `gtk_entry_get_text (GTK_ENTRY
       --  (gtk_entry_completion_get_entry ()))`.
-      --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
-      --  "key": the string to match, normalized and case-folded
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
-      --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
+      --  @param Completion the Gtk.Entry_Completion.Gtk_Entry_Completion
+      --  @param Key the string to match, normalized and case-folded
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
+      --  @param User_Data user data given to Gtk.Entry_Completion.Set_Match_Func
 
       procedure Set_Match_Func
          (Completion : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
@@ -398,8 +399,8 @@ package Gtk.Entry_Completion is
       --  function is used to determine if a row should or should not be in the
       --  completion list.
       --  Since: gtk+ 2.4
-      --  "func": the Gtk_Entry_Completion_Match_Func to use
-      --  "func_data": user data for Func
+      --  @param Func the Gtk_Entry_Completion_Match_Func to use
+      --  @param Func_Data user data for Func
 
    end Set_Match_Func_User_Data;
 
@@ -413,8 +414,8 @@ package Gtk.Entry_Completion is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -429,12 +430,12 @@ package Gtk.Entry_Completion is
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
       --  as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : not null access Gtk.Entry_Completion.Gtk_Entry_Completion_Record'Class;
@@ -447,9 +448,9 @@ package Gtk.Entry_Completion is
       --  cell renderer(s) as appropriate.
       --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
-      --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-      --  "func_data": user data for Func
+      --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+      --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+      --  @param Func_Data user data for Func
 
    end Set_Cell_Data_Func_User_Data;
 
@@ -590,8 +591,9 @@ package Gtk.Entry_Completion is
    --  Gtk.Entry_Completion.Set_Model.
    -- 
    --  Callback parameters:
-   --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
-   --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
+   --    --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
+   --    --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected
+   --    --  match
    --    --  Returns True if the signal has been handled
 
    type Cb_Gtk_Entry_Completion_UTF8_String_Boolean is not null access function
@@ -622,7 +624,7 @@ package Gtk.Entry_Completion is
    --  to the next '/'.
    -- 
    --  Callback parameters:
-   --    --  "prefix": the common prefix of all possible completions
+   --    --  @param Prefix the common prefix of all possible completions
    --    --  Returns True if the signal has been handled
 
    Signal_Match_Selected : constant Glib.Signal_Name := "match-selected";
@@ -643,8 +645,9 @@ package Gtk.Entry_Completion is
    --  Gtk.Entry_Completion.Set_Model.
    -- 
    --  Callback parameters:
-   --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
-   --    --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected match
+   --    --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model containing the matches
+   --    --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter positioned at the selected
+   --    --  match
    --    --  Returns True if the signal has been handled
 
    type Cb_Gtk_Entry_Completion_Void is not null access procedure

@@ -189,7 +189,7 @@ package Gdk.Device_Manager is
    --  Device_Manager.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.20, 1
-   --  "type": device type to get.
+   --  @param The_Type device type to get.
 
    ----------------------
    -- GtkAda additions --

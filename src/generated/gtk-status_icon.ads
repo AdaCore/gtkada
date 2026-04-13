@@ -107,7 +107,7 @@ package Gtk.Status_Icon is
    --  Since: gtk+ 2.10
    --  Initialize_From_File does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "filename": a filename
+   --  @param Filename a filename
 
    function Gtk_Status_Icon_New_From_File
       (Filename : UTF8_String) return Gtk_Status_Icon;
@@ -115,7 +115,7 @@ package Gtk.Status_Icon is
    --  The image will be scaled down to fit in the available space in the
    --  notification area, if necessary.
    --  Since: gtk+ 2.10
-   --  "filename": a filename
+   --  @param Filename a filename
 
    procedure Gtk_New_From_Gicon
       (Status_Icon : out Gtk_Status_Icon;
@@ -128,14 +128,14 @@ package Gtk.Status_Icon is
    --  Since: gtk+ 2.14
    --  Initialize_From_Gicon does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "icon": a Glib.G_Icon.G_Icon
+   --  @param Icon a Glib.G_Icon.G_Icon
 
    function Gtk_Status_Icon_New_From_Gicon
       (Icon : Glib.G_Icon.G_Icon) return Gtk_Status_Icon;
    --  Creates a status icon displaying a Glib.G_Icon.G_Icon. If the icon is a
    --  themed icon, it will be updated when the theme changes.
    --  Since: gtk+ 2.14
-   --  "icon": a Glib.G_Icon.G_Icon
+   --  @param Icon a Glib.G_Icon.G_Icon
 
    procedure Gtk_New_From_Icon_Name
       (Status_Icon : out Gtk_Status_Icon;
@@ -149,7 +149,7 @@ package Gtk.Status_Icon is
    --  Since: gtk+ 2.10
    --  Initialize_From_Icon_Name does nothing if the object was already
    --  created with another call to Initialize* or G_New.
-   --  "icon_name": an icon name
+   --  @param Icon_Name an icon name
 
    function Gtk_Status_Icon_New_From_Icon_Name
       (Icon_Name : UTF8_String) return Gtk_Status_Icon;
@@ -157,7 +157,7 @@ package Gtk.Status_Icon is
    --  If the current icon theme is changed, the icon will be updated
    --  appropriately.
    --  Since: gtk+ 2.10
-   --  "icon_name": an icon name
+   --  @param Icon_Name an icon name
 
    procedure Gtk_New_From_Pixbuf
       (Status_Icon : out Gtk_Status_Icon;
@@ -171,7 +171,7 @@ package Gtk.Status_Icon is
    --  Since: gtk+ 2.10
    --  Initialize_From_Pixbuf does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf
+   --  @param Pixbuf a Gdk.Pixbuf.Gdk_Pixbuf
 
    function Gtk_Status_Icon_New_From_Pixbuf
       (Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
@@ -180,7 +180,7 @@ package Gtk.Status_Icon is
    --  The image will be scaled down to fit in the available space in the
    --  notification area, if necessary.
    --  Since: gtk+ 2.10
-   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf
+   --  @param Pixbuf a Gdk.Pixbuf.Gdk_Pixbuf
 
    procedure Gtk_New_From_Stock
       (Status_Icon : out Gtk_Status_Icon;
@@ -194,7 +194,7 @@ package Gtk.Status_Icon is
    --  Since: gtk+ 2.10
    --  Initialize_From_Stock does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "stock_id": a stock icon id
+   --  @param Stock_Id a stock icon id
 
    function Gtk_Status_Icon_New_From_Stock
       (Stock_Id : UTF8_String) return Gtk_Status_Icon;
@@ -202,7 +202,7 @@ package Gtk.Status_Icon is
    --  are GTK_STOCK_OPEN, GTK_STOCK_QUIT. You can register your own stock icon
    --  names, see Gtk.Icon_Factory.Add_Default and Gtk.Icon_Factory.Add.
    --  Since: gtk+ 2.10
-   --  "stock_id": a stock icon id
+   --  @param Stock_Id a stock icon id
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_status_icon_get_type");
@@ -232,7 +232,7 @@ package Gtk.Status_Icon is
    --  Gtk.Status_Icon.Gtk_New_From_Gicon for details.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.14, 1
-   --  "icon": a GIcon
+   --  @param Icon a GIcon
 
    function Get_Has_Tooltip
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Boolean;
@@ -250,7 +250,7 @@ package Gtk.Status_Icon is
    --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip for more information.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.14, 1
-   --  "has_tooltip": whether or not Status_Icon has a tooltip
+   --  @param Has_Tooltip whether or not Status_Icon has a tooltip
 
    function Get_Icon_Name
       (Status_Icon : not null access Gtk_Status_Icon_Record)
@@ -272,7 +272,7 @@ package Gtk.Status_Icon is
    --  icon theme. See Gtk.Status_Icon.Gtk_New_From_Icon_Name for details.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.14, 1
-   --  "icon_name": an icon name
+   --  @param Icon_Name an icon name
 
    function Get_Pixbuf
       (Status_Icon : not null access Gtk_Status_Icon_Record)
@@ -294,7 +294,7 @@ package Gtk.Status_Icon is
    --  Gtk.Status_Icon.Gtk_New_From_Pixbuf for details.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.14, 1
-   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf or null
+   --  @param Pixbuf a Gdk.Pixbuf.Gdk_Pixbuf or null
 
    function Get_Screen
       (Status_Icon : not null access Gtk_Status_Icon_Record)
@@ -313,7 +313,7 @@ package Gtk.Status_Icon is
    --  new screen.
    --  Since: gtk+ 2.12
    --  Deprecated since 3.14, 1
-   --  "screen": a Gdk.Screen.Gdk_Screen
+   --  @param Screen a Gdk.Screen.Gdk_Screen
 
    function Get_Size
       (Status_Icon : not null access Gtk_Status_Icon_Record)
@@ -348,7 +348,7 @@ package Gtk.Status_Icon is
    --  Gtk.Status_Icon.Gtk_New_From_Stock for details.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.10, 1
-   --  "stock_id": a stock icon id
+   --  @param Stock_Id a stock icon id
 
    function Get_Storage_Type
       (Status_Icon : not null access Gtk_Status_Icon_Record)
@@ -378,7 +378,7 @@ package Gtk.Status_Icon is
    --  used by tools like screen readers to render the tray icon.
    --  Since: gtk+ 2.18
    --  Deprecated since 3.14, 1
-   --  "title": the title
+   --  @param Title the title
 
    function Get_Tooltip_Markup
       (Status_Icon : not null access Gtk_Status_Icon_Record)
@@ -401,7 +401,7 @@ package Gtk.Status_Icon is
    --  and Gtk.Tooltip.Set_Markup.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.14, 1
-   --  "markup": the contents of the tooltip for Status_Icon, or null
+   --  @param Markup the contents of the tooltip for Status_Icon, or null
 
    function Get_Tooltip_Text
       (Status_Icon : not null access Gtk_Status_Icon_Record)
@@ -423,7 +423,7 @@ package Gtk.Status_Icon is
    --  Gtk.Tooltip.Set_Text.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.14, 1
-   --  "text": the contents of the tooltip for Status_Icon
+   --  @param Text the contents of the tooltip for Status_Icon
 
    function Get_Visible
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Boolean;
@@ -441,7 +441,7 @@ package Gtk.Status_Icon is
    --  Shows or hides a status icon.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.14, 1
-   --  "visible": True to show the status icon, False to hide it
+   --  @param Visible True to show the status icon, False to hide it
 
    function Get_X11_Window_Id
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Guint32;
@@ -472,7 +472,7 @@ package Gtk.Status_Icon is
    --  Gtk.Status_Icon.Gtk_New_From_File for details.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.14, 1
-   --  "filename": a filename
+   --  @param Filename a filename
 
    procedure Set_Name
       (Status_Icon : not null access Gtk_Status_Icon_Record;
@@ -483,7 +483,7 @@ package Gtk.Status_Icon is
    --  not be shown to the user.
    --  Since: gtk+ 2.20
    --  Deprecated since 3.14, 1
-   --  "name": the name
+   --  @param Name the name
 
    ---------------
    -- Functions --
@@ -500,12 +500,13 @@ package Gtk.Status_Icon is
    --  aligned to the status icon User_Data.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.14, 1
-   --  "menu": the Gtk.Menu.Gtk_Menu
-   --  "x": return location for the x position
-   --  "y": return location for the y position
-   --  "push_in": whether the first menu item should be offset (pushed in) to
-   --  be aligned with the menu popup position (only useful for GtkOptionMenu).
-   --  "Icon": the status icon to position the menu on
+   --  @param Menu the Gtk.Menu.Gtk_Menu
+   --  @param X return location for the x position
+   --  @param Y return location for the y position
+   --  @param Push_In whether the first menu item should be offset (pushed in)
+   --  to be aligned with the menu popup position (only useful for
+   --  GtkOptionMenu).
+   --  @param Icon the status icon to position the menu on
 
    ----------------
    -- Properties --
@@ -648,7 +649,7 @@ package Gtk.Status_Icon is
    --  and ::popup-menu signals in preference.
    -- 
    --  Callback parameters:
-   --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal
+   --    --  @param Event the Gdk.Event.Gdk_Event_Button which triggered this signal
    --    --  Returns True to stop other handlers from being invoked
    -- for the event. False to propagate the event further.
 
@@ -669,7 +670,7 @@ package Gtk.Status_Icon is
    --  and ::popup-menu signals in preference.
    -- 
    --  Callback parameters:
-   --    --  "event": the Gdk.Event.Gdk_Event_Button which triggered this signal
+   --    --  @param Event the Gdk.Event.Gdk_Event_Button which triggered this signal
    --    --  Returns True to stop other handlers from being invoked
    -- for the event. False to propagate the event further.
 
@@ -704,10 +705,10 @@ package Gtk.Status_Icon is
    --  applications and should be wrapped by language bindings.
    -- 
    --  Callback parameters:
-   --    --  "button": the button that was pressed, or 0 if the signal is not
+   --    --  @param Button the button that was pressed, or 0 if the signal is not
    --    --  emitted in response to a button press event
-   --    --  "activate_time": the timestamp of the event that triggered the signal
-   --    --  emission
+   --    --  @param Activate_Time the timestamp of the event that triggered the
+   --    --  signal emission
 
    type Cb_Gtk_Status_Icon_Gint_Gint_Boolean_Gtk_Tooltip_Boolean is not null access function
      (Self          : access Gtk_Status_Icon_Record'Class;
@@ -752,12 +753,12 @@ package Gtk.Status_Icon is
    --  preference.
    -- 
    --  Callback parameters:
-   --    --  "x": the x coordinate of the cursor position where the request has been
-   --    --  emitted, relative to Status_Icon
-   --    --  "y": the y coordinate of the cursor position where the request has been
-   --    --  emitted, relative to Status_Icon
-   --    --  "keyboard_mode": True if the tooltip was trigged using the keyboard
-   --    --  "tooltip": a Gtk.Tooltip.Gtk_Tooltip
+   --    --  @param X the x coordinate of the cursor position where the request has
+   --    --  been emitted, relative to Status_Icon
+   --    --  @param Y the y coordinate of the cursor position where the request has
+   --    --  been emitted, relative to Status_Icon
+   --    --  @param Keyboard_Mode True if the tooltip was trigged using the keyboard
+   --    --  @param Tooltip a Gtk.Tooltip.Gtk_Tooltip
    --    --  Returns True if Tooltip should be shown right now, False otherwise.
 
    type Cb_Gtk_Status_Icon_Gdk_Event_Scroll_Boolean is not null access function
@@ -785,7 +786,7 @@ package Gtk.Status_Icon is
    --  Whether this event is emitted is platform-dependent.
    -- 
    --  Callback parameters:
-   --    --  "event": the Gdk.Event.Gdk_Event_Scroll which triggered this signal
+   --    --  @param Event the Gdk.Event.Gdk_Event_Scroll which triggered this signal
    --    --  Returns True to stop other handlers from being invoked for the event.
    --   False to propagate the event further.
 
@@ -811,7 +812,7 @@ package Gtk.Status_Icon is
    --  because the notification area got resized.
    -- 
    --  Callback parameters:
-   --    --  "size": the new size
+   --    --  @param Size the new size
    --    --  Returns True if the icon was updated for the new
    -- size. Otherwise, GTK+ will scale the icon as necessary.
 

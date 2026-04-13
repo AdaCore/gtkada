@@ -73,7 +73,7 @@ package Gtk.Gesture_Single is
    --  from a different button number will be ignored. Touch events implicitly
    --  match with button 1.
    --  Since: gtk+ 3.14
-   --  "button": button number to listen to, or 0 for any button
+   --  @param Button button number to listen to, or 0 for any button
 
    function Get_Current_Button
       (Self : not null access Gtk_Gesture_Single_Record) return Guint;
@@ -101,7 +101,7 @@ package Gtk.Gesture_Single is
    --  handle pointer and "pointer emulated" touch events, so at any given
    --  time, there is only one sequence able to interact with those.
    --  Since: gtk+ 3.14
-   --  "exclusive": True to make Gesture exclusive
+   --  @param Exclusive True to make Gesture exclusive
 
    function Get_Touch_Only
       (Self : not null access Gtk_Gesture_Single_Record) return Boolean;
@@ -115,7 +115,7 @@ package Gtk.Gesture_Single is
    --  GDK_TOUCH_BEGIN, GDK_TOUCH_UPDATE or GDK_TOUCH_END. If False, mouse
    --  events will be handled too.
    --  Since: gtk+ 3.14
-   --  "touch_only": whether Gesture handles only touch events
+   --  @param Touch_Only whether Gesture handles only touch events
 
    ----------------
    -- Properties --

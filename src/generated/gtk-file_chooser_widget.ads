@@ -68,7 +68,7 @@ package Gtk.File_Chooser_Widget is
    --  Since: gtk+ 2.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "action": Open or save mode for the widget
+   --  @param Action Open or save mode for the widget
 
    function Gtk_File_Chooser_Widget_New
       (Action : Gtk.File_Chooser.Gtk_File_Chooser_Action)
@@ -78,7 +78,7 @@ package Gtk.File_Chooser_Widget is
    --  the same widget that is used by
    --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog.
    --  Since: gtk+ 2.4
-   --  "action": Open or save mode for the widget
+   --  @param Action Open or save mode for the widget
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_file_chooser_widget_get_type");

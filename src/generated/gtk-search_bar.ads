@@ -97,7 +97,7 @@ package Gtk.Search_Bar is
    --  This is only required if the entry isn't the direct child of the search
    --  bar (as in our main example).
    --  Since: gtk+ 3.10
-   --  "entry": a Gtk.GEntry.Gtk_Entry
+   --  @param GEntry a Gtk.GEntry.Gtk_Entry
 
    function Get_Search_Mode
       (Self : not null access Gtk_Search_Bar_Record) return Boolean;
@@ -109,7 +109,7 @@ package Gtk.Search_Bar is
        Search_Mode : Boolean);
    --  Switches the search mode on or off.
    --  Since: gtk+ 3.10
-   --  "search_mode": the new state of the search mode
+   --  @param Search_Mode the new state of the search mode
 
    function Get_Show_Close_Button
       (Self : not null access Gtk_Search_Bar_Record) return Boolean;
@@ -123,7 +123,7 @@ package Gtk.Search_Bar is
    --  "search" toggle button should not show a close button in their search
    --  bar, as it duplicates the role of the toggle button.
    --  Since: gtk+ 3.10
-   --  "visible": whether the close button will be shown or not
+   --  @param Visible whether the close button will be shown or not
 
    function Handle_Event
       (Self  : not null access Gtk_Search_Bar_Record;
@@ -163,7 +163,7 @@ package Gtk.Search_Bar is
    --     }
    --
    --  Since: gtk+ 3.10
-   --  "event": a Gdk.Event.Gdk_Event containing key press events
+   --  @param Event a Gdk.Event.Gdk_Event containing key press events
 
    ----------------
    -- Properties --

@@ -167,8 +167,8 @@ package Gtk.Icon_Factory is
    --  Factory for Stock_Id, it is unreferenced and replaced with the new
    --  Icon_Set.
    --  Deprecated since 3.10, 1
-   --  "stock_id": icon name
-   --  "icon_set": icon set
+   --  @param Stock_Id icon name
+   --  @param Icon_Set icon set
 
    procedure Add_Default (Self : not null access Gtk_Icon_Factory_Record);
    pragma Obsolescent (Add_Default);
@@ -190,7 +190,7 @@ package Gtk.Icon_Factory is
    --  will display the icon, instead of using this function directly, so that
    --  themes are taken into account.
    --  Deprecated since 3.10, 1
-   --  "stock_id": an icon name
+   --  @param Stock_Id an icon name
 
    procedure Remove_Default (Self : not null access Gtk_Icon_Factory_Record);
    pragma Obsolescent (Remove_Default);
@@ -223,7 +223,7 @@ package Gtk.Icon_Factory is
    --  Gtk.Style.Gtk_Style for the widget that will display the icon, instead
    --  of using this function directly, so that themes are taken into account.
    --  Deprecated since 3.10, 1
-   --  "stock_id": an icon name
+   --  @param Stock_Id an icon name
 
    procedure Icon_Size_Lookup
       (Size   : Gtk.Enums.Gtk_Icon_Size;
@@ -237,9 +237,9 @@ package Gtk.Icon_Factory is
    --  The rendered pixbuf may not even correspond to the width/height returned
    --  by Gtk.Icon_Factory.Icon_Size_Lookup, because themes are free to render
    --  the pixbuf however they like, including changing the usual size.
-   --  "size": an icon size (Gtk.Enums.Gtk_Icon_Size)
-   --  "width": location to store icon width
-   --  "height": location to store icon height
+   --  @param Size an icon size (Gtk.Enums.Gtk_Icon_Size)
+   --  @param Width location to store icon width
+   --  @param Height location to store icon height
 
    procedure Icon_Size_Lookup_For_Settings
       (Settings : not null access Gtk.Settings.Gtk_Settings_Record'Class;
@@ -259,11 +259,11 @@ package Gtk.Icon_Factory is
    --  changing the usual size.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.10, 1
-   --  "settings": a Gtk.Settings.Gtk_Settings object, used to determine which
-   --  set of user preferences to used.
-   --  "size": an icon size (Gtk.Enums.Gtk_Icon_Size)
-   --  "width": location to store icon width
-   --  "height": location to store icon height
+   --  @param Settings a Gtk.Settings.Gtk_Settings object, used to determine
+   --  which set of user preferences to used.
+   --  @param Size an icon size (Gtk.Enums.Gtk_Icon_Size)
+   --  @param Width location to store icon width
+   --  @param Height location to store icon height
 
    function Icon_Size_Register
       (Name   : UTF8_String;
@@ -273,9 +273,9 @@ package Gtk.Icon_Factory is
    --  Registers a new icon size, along the same lines as GTK_ICON_SIZE_MENU,
    --  etc. Returns the integer value for the size.
    --  Deprecated since 3.10, 1
-   --  "name": name of the icon size
-   --  "width": the icon width
-   --  "height": the icon height
+   --  @param Name name of the icon size
+   --  @param Width the icon width
+   --  @param Height the icon height
 
    procedure Icon_Size_Register_Alias
       (Alias  : UTF8_String;
@@ -284,8 +284,8 @@ package Gtk.Icon_Factory is
    --  Registers Alias as another name for Target. So calling
    --  gtk_icon_size_from_name with Alias as argument will return Target.
    --  Deprecated since 3.10, 1
-   --  "alias": an alias for Target
-   --  "target": an existing icon size (Gtk.Enums.Gtk_Icon_Size)
+   --  @param Alias an alias for Target
+   --  @param Target an existing icon size (Gtk.Enums.Gtk_Icon_Size)
 
    ----------------
    -- Interfaces --

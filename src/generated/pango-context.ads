@@ -120,7 +120,7 @@ package Pango.Context is
    --  Pango.Enums.Pango_Direction_Weak_Ltr or
    --  Pango.Enums.Pango_Direction_Weak_Rtl is used only for paragraphs that do
    --  not contain any strong characters themselves.
-   --  "direction": the new base direction
+   --  @param Direction the new base direction
 
    function Get_Base_Gravity
       (Self : not null access Pango_Context_Record)
@@ -135,7 +135,7 @@ package Pango.Context is
    --  Sets the base gravity for the context.
    --  The base gravity is used in laying vertical text out.
    --  Since: gtk+ 1.16
-   --  "gravity": the new base gravity
+   --  @param Gravity the new base gravity
 
    function Get_Font_Description
       (Self : not null access Pango_Context_Record)
@@ -146,7 +146,7 @@ package Pango.Context is
       (Self : not null access Pango_Context_Record;
        Desc : Pango.Font.Pango_Font_Description);
    --  Set the default font description for the context
-   --  "desc": the new pango font description
+   --  @param Desc the new pango font description
 
    function Get_Gravity
       (Self : not null access Pango_Context_Record)
@@ -173,7 +173,7 @@ package Pango.Context is
    --  Pango.Context.Get_Gravity is set Pango.Enums.Pango_Gravity_East or
    --  Pango.Enums.Pango_Gravity_West.
    --  Since: gtk+ 1.16
-   --  "hint": the new gravity hint
+   --  @param Hint the new gravity hint
 
    function Get_Language
       (Self : not null access Pango_Context_Record)
@@ -186,7 +186,7 @@ package Pango.Context is
    --  Sets the global language tag for the context. The default language for
    --  the locale of the running process can be found using
    --  Pango.Language.Get_Default.
-   --  "language": the new language tag.
+   --  @param Language the new language tag.
 
    function Get_Matrix
       (Self : not null access Pango_Context_Record)
@@ -205,8 +205,9 @@ package Pango.Context is
    --  with the matrix, though they may change slightly for different matrices,
    --  depending on how the text is fit to the pixel grid.
    --  Since: gtk+ 1.6
-   --  "matrix": a Pango.Matrix.Pango_Matrix, or null to unset any existing
-   --  matrix. (No matrix set is the same as setting the identity matrix.)
+   --  @param Matrix a Pango.Matrix.Pango_Matrix, or null to unset any
+   --  existing matrix. (No matrix set is the same as setting the identity
+   --  matrix.)
 
    function Get_Metrics
       (Self     : not null access Pango_Context_Record;
@@ -222,9 +223,9 @@ package Pango.Context is
    --  figures. If characters from multiple of these families would be used to
    --  render the string, then the returned fonts would be a composite of the
    --  metrics for the fonts loaded for the individual families.
-   --  "desc": a Pango.Font.Pango_Font_Description structure. null means that
-   --  the font description from the context will be used.
-   --  "language": language tag used to determine which script to get the
+   --  @param Desc a Pango.Font.Pango_Font_Description structure. null means
+   --  that the font description from the context will be used.
+   --  @param Language language tag used to determine which script to get the
    --  metrics for. null means that the language tag from the context will be
    --  used. If no language tag is set on the context, metrics for the default
    --  language (as determined by Pango.Language.Get_Default) will be returned.
@@ -245,7 +246,7 @@ package Pango.Context is
    --  The default value is to round glyph positions, to remain compatible
    --  with previous Pango behavior.
    --  Since: gtk+ 1.44
-   --  "round_positions": whether to round glyph positions
+   --  @param Round_Positions whether to round glyph positions
 
    function Get_Serial
       (Self : not null access Pango_Context_Record) return Guint;
@@ -273,7 +274,8 @@ package Pango.Context is
        return Pango.Font.Pango_Font;
    --  Loads the font in one of the fontmaps in the context that is the
    --  closest match for Desc.
-   --  "desc": a Pango.Font.Pango_Font_Description describing the font to load
+   --  @param Desc a Pango.Font.Pango_Font_Description describing the font to
+   --  load
 
    function Load_Fontset
       (Self     : not null access Pango_Context_Record;
@@ -282,8 +284,9 @@ package Pango.Context is
        return Pango.Fontset.Pango_Fontset;
    --  Load a set of fonts in the context that can be used to render a font
    --  matching Desc.
-   --  "desc": a Pango.Font.Pango_Font_Description describing the fonts to
+   --  @param Desc a Pango.Font.Pango_Font_Description describing the fonts to
    --  load
-   --  "language": a Pango.Language.Pango_Language the fonts will be used for
+   --  @param Language a Pango.Language.Pango_Language the fonts will be used
+   --  for
 
 end Pango.Context;

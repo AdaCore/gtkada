@@ -102,7 +102,7 @@ package Gtk.Search_Entry is
    --  a search, GDK_EVENT_STOP will be returned. The caller should ensure that
    --  the entry is shown in this case, and not propagate the event further.
    --  Since: gtk+ 3.16
-   --  "event": a key event
+   --  @param Event a key event
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

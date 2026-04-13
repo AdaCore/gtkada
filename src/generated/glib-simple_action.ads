@@ -55,10 +55,10 @@ package Glib.Simple_Action is
    --  The created action is stateless. See Glib.Simple_Action.G_New_Stateful
    --  to create an action that has state.
    --  Since: gtk+ 2.28
-   --  "name": the name of the action
-   --  "parameter_type": the type of parameter that will be passed to handlers
-   --  for the Glib.Simple_Action.Gsimple_Action::activate signal, or null for
-   --  no parameter
+   --  @param Name the name of the action
+   --  @param Parameter_Type the type of parameter that will be passed to
+   --  handlers for the Glib.Simple_Action.Gsimple_Action::activate signal, or
+   --  null for no parameter
 
    procedure Initialize
       (Self           : not null access Gsimple_Action_Record'Class;
@@ -70,10 +70,10 @@ package Glib.Simple_Action is
    --  Since: gtk+ 2.28
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "name": the name of the action
-   --  "parameter_type": the type of parameter that will be passed to handlers
-   --  for the Glib.Simple_Action.Gsimple_Action::activate signal, or null for
-   --  no parameter
+   --  @param Name the name of the action
+   --  @param Parameter_Type the type of parameter that will be passed to
+   --  handlers for the Glib.Simple_Action.Gsimple_Action::activate signal, or
+   --  null for no parameter
 
    function Gsimple_Action_New
       (Name           : UTF8_String;
@@ -82,10 +82,10 @@ package Glib.Simple_Action is
    --  The created action is stateless. See Glib.Simple_Action.G_New_Stateful
    --  to create an action that has state.
    --  Since: gtk+ 2.28
-   --  "name": the name of the action
-   --  "parameter_type": the type of parameter that will be passed to handlers
-   --  for the Glib.Simple_Action.Gsimple_Action::activate signal, or null for
-   --  no parameter
+   --  @param Name the name of the action
+   --  @param Parameter_Type the type of parameter that will be passed to
+   --  handlers for the Glib.Simple_Action.Gsimple_Action::activate signal, or
+   --  null for no parameter
 
    procedure G_New_Stateful
       (Self           : out Gsimple_Action;
@@ -97,11 +97,11 @@ package Glib.Simple_Action is
    --  as the initial State.
    --  If the State Glib.Variant.Gvariant is floating, it is consumed.
    --  Since: gtk+ 2.28
-   --  "name": the name of the action
-   --  "parameter_type": the type of the parameter that will be passed to
+   --  @param Name the name of the action
+   --  @param Parameter_Type the type of the parameter that will be passed to
    --  handlers for the Glib.Simple_Action.Gsimple_Action::activate signal, or
    --  null for no parameter
-   --  "state": the initial state of the action
+   --  @param State the initial state of the action
 
    procedure Initialize_Stateful
       (Self           : not null access Gsimple_Action_Record'Class;
@@ -115,11 +115,11 @@ package Glib.Simple_Action is
    --  Since: gtk+ 2.28
    --  Initialize_Stateful does nothing if the object was already created with
    --  another call to Initialize* or G_New.
-   --  "name": the name of the action
-   --  "parameter_type": the type of the parameter that will be passed to
+   --  @param Name the name of the action
+   --  @param Parameter_Type the type of the parameter that will be passed to
    --  handlers for the Glib.Simple_Action.Gsimple_Action::activate signal, or
    --  null for no parameter
-   --  "state": the initial state of the action
+   --  @param State the initial state of the action
 
    function Gsimple_Action_New_Stateful
       (Name           : UTF8_String;
@@ -130,11 +130,11 @@ package Glib.Simple_Action is
    --  as the initial State.
    --  If the State Glib.Variant.Gvariant is floating, it is consumed.
    --  Since: gtk+ 2.28
-   --  "name": the name of the action
-   --  "parameter_type": the type of the parameter that will be passed to
+   --  @param Name the name of the action
+   --  @param Parameter_Type the type of the parameter that will be passed to
    --  handlers for the Glib.Simple_Action.Gsimple_Action::activate signal, or
    --  null for no parameter
-   --  "state": the initial state of the action
+   --  @param State the initial state of the action
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "g_simple_action_get_type");
@@ -152,7 +152,7 @@ package Glib.Simple_Action is
    --  This should only be called by the implementor of the action. Users of
    --  the action should not attempt to modify its enabled flag.
    --  Since: gtk+ 2.28
-   --  "enabled": whether the action is enabled
+   --  @param Enabled whether the action is enabled
 
    procedure Set_State
       (Self  : not null access Gsimple_Action_Record;
@@ -165,7 +165,7 @@ package Glib.Simple_Action is
    --  change.
    --  If the Value GVariant is floating, it is consumed.
    --  Since: gtk+ 2.30
-   --  "value": the new Glib.Variant.Gvariant for the state
+   --  @param Value the new Glib.Variant.Gvariant for the state
 
    procedure Set_State_Hint
       (Self       : not null access Gsimple_Action_Record;
@@ -174,7 +174,7 @@ package Glib.Simple_Action is
    --  See Glib.Action.Get_State_Hint for more information about action state
    --  hints.
    --  Since: gtk+ 2.44
-   --  "state_hint": a Glib.Variant.Gvariant representing the state hint
+   --  @param State_Hint a Glib.Variant.Gvariant representing the state hint
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

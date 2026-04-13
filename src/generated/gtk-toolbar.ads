@@ -100,8 +100,8 @@ package Gtk.Toolbar is
    --  the position a new item should be inserted.
    --  X and Y are in Toolbar coordinates.
    --  Since: gtk+ 2.4
-   --  "x": x coordinate of a point on the toolbar
-   --  "y": y coordinate of a point on the toolbar
+   --  @param X x coordinate of a point on the toolbar
+   --  @param Y y coordinate of a point on the toolbar
 
    function Get_Icon_Size
       (Toolbar : not null access Gtk_Toolbar_Record)
@@ -117,7 +117,7 @@ package Gtk.Toolbar is
    --  This should only be used for special-purpose toolbars, normal
    --  application toolbars should respect the user preferences for the size of
    --  icons.
-   --  "icon_size": The Gtk.Enums.Gtk_Icon_Size that stock icons in the
+   --  @param Icon_Size The Gtk.Enums.Gtk_Icon_Size that stock icons in the
    --  toolbar shall have.
 
    function Get_Item_Index
@@ -127,7 +127,7 @@ package Gtk.Toolbar is
    --  Returns the position of Item on the toolbar, starting from 0. It is an
    --  error if Item is not a child of the toolbar.
    --  Since: gtk+ 2.4
-   --  "item": a Gtk.Tool_Item.Gtk_Tool_Item that is a child of Toolbar
+   --  @param Item a Gtk.Tool_Item.Gtk_Tool_Item that is a child of Toolbar
 
    function Get_N_Items
       (Toolbar : not null access Gtk_Toolbar_Record) return Glib.Gint;
@@ -140,7 +140,7 @@ package Gtk.Toolbar is
    --  Returns the N'th item on Toolbar, or null if the toolbar does not
    --  contain an N'th item.
    --  Since: gtk+ 2.4
-   --  "n": A position on the toolbar
+   --  @param N A position on the toolbar
 
    function Get_Relief_Style
       (Toolbar : not null access Gtk_Toolbar_Record)
@@ -167,7 +167,7 @@ package Gtk.Toolbar is
    --  Toolbar will request enough size to fit all of its child items without
    --  any overflow.
    --  Since: gtk+ 2.4
-   --  "show_arrow": Whether to show an overflow menu
+   --  @param Show_Arrow Whether to show an overflow menu
 
    function Get_Style
       (Toolbar : not null access Gtk_Toolbar_Record)
@@ -180,7 +180,7 @@ package Gtk.Toolbar is
        Style   : Gtk.Enums.Gtk_Toolbar_Style);
    --  Alters the view of Toolbar to display either icons only, text only, or
    --  both.
-   --  "style": the new style for Toolbar.
+   --  @param Style the new style for Toolbar.
 
    procedure Insert
       (Toolbar : not null access Gtk_Toolbar_Record;
@@ -190,8 +190,8 @@ package Gtk.Toolbar is
    --  If Pos is 0 the item is prepended to the start of the toolbar. If Pos is
    --  negative, the item is appended to the end of the toolbar.
    --  Since: gtk+ 2.4
-   --  "item": a Gtk.Tool_Item.Gtk_Tool_Item
-   --  "pos": the position of the new item
+   --  @param Item a Gtk.Tool_Item.Gtk_Tool_Item
+   --  @param Pos the position of the new item
 
    procedure Set_Drop_Highlight_Item
       (Toolbar   : not null access Gtk_Toolbar_Record;
@@ -204,9 +204,9 @@ package Gtk.Toolbar is
    --  hierarchy. When an item is set as drop highlight item it can not added
    --  to any widget hierarchy or used as highlight item for another toolbar.
    --  Since: gtk+ 2.4
-   --  "tool_item": a Gtk.Tool_Item.Gtk_Tool_Item, or null to turn of
+   --  @param Tool_Item a Gtk.Tool_Item.Gtk_Tool_Item, or null to turn of
    --  highlighting
-   --  "index_": a position on Toolbar
+   --  @param Index a position on Toolbar
 
    procedure Unset_Icon_Size (Toolbar : not null access Gtk_Toolbar_Record);
    --  Unsets toolbar icon size set with Gtk.Toolbar.Set_Icon_Size, so that
@@ -296,7 +296,7 @@ package Gtk.Toolbar is
    --  in application code
    -- 
    --  Callback parameters:
-   --    --  "focus_home": True if the first item should be focused
+   --    --  @param Focus_Home True if the first item should be focused
    --    --  Returns True if the signal was handled, False if not
 
    type Cb_Gtk_Toolbar_Gtk_Orientation_Void is not null access procedure
@@ -351,9 +351,9 @@ package Gtk.Toolbar is
    --  Button is -1.
    -- 
    --  Callback parameters:
-   --    --  "x": the x coordinate of the point where the menu should appear
-   --    --  "y": the y coordinate of the point where the menu should appear
-   --    --  "button": the mouse button the user pressed, or -1
+   --    --  @param X the x coordinate of the point where the menu should appear
+   --    --  @param Y the y coordinate of the point where the menu should appear
+   --    --  @param Button the mouse button the user pressed, or -1
    --    --  Returns return True if the signal was handled, False if not
 
    type Cb_Gtk_Toolbar_Gtk_Toolbar_Style_Void is not null access procedure

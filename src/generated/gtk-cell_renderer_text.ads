@@ -96,7 +96,7 @@ package Gtk.Cell_Renderer_Text is
    --  massive number of cells displayed). If Number_Of_Rows is -1, then the
    --  fixed height is unset, and the height is determined by the properties
    --  again.
-   --  "number_of_rows": Number of rows of text each cell renderer is
+   --  @param Number_Of_Rows Number of rows of text each cell renderer is
    --  allocated, or -1
 
    ----------------
@@ -298,8 +298,8 @@ package Gtk.Cell_Renderer_Text is
    --  store New_Text at the position indicated by Path.
    -- 
    --  Callback parameters:
-   --    --  "path": the path identifying the edited cell
-   --    --  "new_text": the new text
+   --    --  @param Path the path identifying the edited cell
+   --    --  @param New_Text the new text
 
 private
    Wrap_Width_Property : constant Glib.Properties.Property_Int :=

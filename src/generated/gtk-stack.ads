@@ -117,8 +117,8 @@ package Gtk.Stack is
        Name  : UTF8_String);
    --  Adds a child to Stack. The child is identified by the Name.
    --  Since: gtk+ 3.10
-   --  "child": the widget to add
-   --  "name": the name for Child
+   --  @param Child the widget to add
+   --  @param Name the name for Child
 
    procedure Add_Titled
       (Self  : not null access Gtk_Stack_Record;
@@ -129,9 +129,9 @@ package Gtk.Stack is
    --  will be used by Gtk.Stack_Switcher.Gtk_Stack_Switcher to represent Child
    --  in a tab bar, so it should be short.
    --  Since: gtk+ 3.10
-   --  "child": the widget to add
-   --  "name": the name for Child
-   --  "title": a human-readable title for Child
+   --  @param Child the widget to add
+   --  @param Name the name for Child
+   --  @param Title a human-readable title for Child
 
    function Get_Child_By_Name
       (Self : not null access Gtk_Stack_Record;
@@ -139,7 +139,7 @@ package Gtk.Stack is
    --  Finds the child of the Gtk.Stack.Gtk_Stack with the name given as the
    --  argument. Returns null if there is no child with this name.
    --  Since: gtk+ 3.12
-   --  "name": the name of the child to find
+   --  @param Name the name of the child to find
 
    function Get_Hhomogeneous
       (Self : not null access Gtk_Stack_Record) return Boolean;
@@ -155,7 +155,7 @@ package Gtk.Stack is
    --  for all its children. If it isn't, the stack may change width when a
    --  different child becomes visible.
    --  Since: gtk+ 3.16
-   --  "hhomogeneous": True to make Stack horizontally homogeneous
+   --  @param Hhomogeneous True to make Stack horizontally homogeneous
 
    function Get_Homogeneous
       (Self : not null access Gtk_Stack_Record) return Boolean;
@@ -173,7 +173,7 @@ package Gtk.Stack is
    --  vertical size, with the Gtk.Stack.Gtk_Stack:hhomogeneous and
    --  Gtk.Stack.Gtk_Stack:vhomogeneous.
    --  Since: gtk+ 3.10
-   --  "homogeneous": True to make Stack homogeneous
+   --  @param Homogeneous True to make Stack homogeneous
 
    function Get_Interpolate_Size
       (Self : not null access Gtk_Stack_Record) return Boolean;
@@ -190,7 +190,7 @@ package Gtk.Stack is
    --  the one it'll take after changing the visible child, according to the
    --  set transition duration.
    --  Since: gtk+ 3.18
-   --  "interpolate_size": the new value
+   --  @param Interpolate_Size the new value
 
    function Get_Transition_Duration
       (Self : not null access Gtk_Stack_Record) return Guint;
@@ -203,7 +203,7 @@ package Gtk.Stack is
        Duration : Guint);
    --  Sets the duration that transitions between pages in Stack will take.
    --  Since: gtk+ 3.10
-   --  "duration": the new duration, in milliseconds
+   --  @param Duration the new duration, in milliseconds
 
    function Get_Transition_Running
       (Self : not null access Gtk_Stack_Record) return Boolean;
@@ -228,7 +228,7 @@ package Gtk.Stack is
    --  is possible to change the animation based on the page that is about to
    --  become current.
    --  Since: gtk+ 3.10
-   --  "transition": the new transition type
+   --  @param Transition the new transition type
 
    function Get_Vhomogeneous
       (Self : not null access Gtk_Stack_Record) return Boolean;
@@ -244,7 +244,7 @@ package Gtk.Stack is
    --  all its children. If it isn't, the stack may change height when a
    --  different child becomes visible.
    --  Since: gtk+ 3.16
-   --  "vhomogeneous": True to make Stack vertically homogeneous
+   --  @param Vhomogeneous True to make Stack vertically homogeneous
 
    function Get_Visible_Child
       (Self : not null access Gtk_Stack_Record) return Gtk.Widget.Gtk_Widget;
@@ -262,7 +262,7 @@ package Gtk.Stack is
    --  Note that the Child widget has to be visible itself (see
    --  Gtk.Widget.Show) in order to become the visible child of Stack.
    --  Since: gtk+ 3.10
-   --  "child": a child of Stack
+   --  @param Child a child of Stack
 
    function Get_Visible_Child_Name
       (Self : not null access Gtk_Stack_Record) return UTF8_String;
@@ -280,7 +280,7 @@ package Gtk.Stack is
    --  Note that the child widget has to be visible itself (see
    --  Gtk.Widget.Show) in order to become the visible child of Stack.
    --  Since: gtk+ 3.10
-   --  "name": the name of the child to make visible
+   --  @param Name the name of the child to make visible
 
    procedure Set_Visible_Child_Full
       (Self       : not null access Gtk_Stack_Record;
@@ -290,8 +290,8 @@ package Gtk.Stack is
    --  Note that the child widget has to be visible itself (see
    --  Gtk.Widget.Show) in order to become the visible child of Stack.
    --  Since: gtk+ 3.10
-   --  "name": the name of the child to make visible
-   --  "transition": the transition type to use
+   --  @param Name the name of the child to make visible
+   --  @param Transition the transition type to use
 
    ----------------
    -- Properties --

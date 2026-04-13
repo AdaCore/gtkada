@@ -75,7 +75,7 @@ package Gtk.Text_Tag is
    --  convenient way of creating a tag.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "name": tag name, or null
+   --  @param Name tag name, or null
 
    function Gtk_Text_Tag_New (Name : UTF8_String := "") return Gtk_Text_Tag;
    --  Creates a Gtk.Text_Tag.Gtk_Text_Tag. Configure the tag using object
@@ -84,7 +84,7 @@ package Gtk.Text_Tag is
    --  intend to use them in, as in: "Gtk.Text_Tag_Table.Add (Get_Tag_Table
    --  (Buffer), Tag)". See also Gtk.Text_Buffer.Create_Tag which is a more
    --  convenient way of creating a tag.
-   --  "name": tag name, or null
+   --  @param Name tag name, or null
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_text_tag_get_type");
@@ -102,7 +102,7 @@ package Gtk.Text_Tag is
    --  property. This function is useful for a Gtk.Text_Tag.Gtk_Text_Tag
    --  subclass.
    --  Since: gtk+ 3.20
-   --  "size_changed": whether the change affects the
+   --  @param Size_Changed whether the change affects the
    --  Gtk.Text_View.Gtk_Text_View layout.
 
    function Get_Priority
@@ -122,7 +122,7 @@ package Gtk.Text_Tag is
    --  precedence of a set of tags is the order in which they were added to the
    --  table, or created with gtk_text_buffer_create_tag, which adds the tag to
    --  the buffer's table automatically.
-   --  "priority": the new priority
+   --  @param Priority the new priority
 
    ----------------
    -- Properties --
@@ -357,10 +357,10 @@ package Gtk.Text_Tag is
    --        Iter   : Gtk.Text_Iter.Gtk_Text_Iter) return Boolean
    -- 
    --  Callback parameters:
-   --    --  "object": the object the event was fired from (typically a
+   --    --  @param Object the object the event was fired from (typically a
    --    --  Gtk.Text_View.Gtk_Text_View)
-   --    --  "event": the event which triggered the signal
-   --    --  "iter": a Gtk.Text_Iter.Gtk_Text_Iter pointing at the location the
+   --    --  @param Event the event which triggered the signal
+   --    --  @param Iter a Gtk.Text_Iter.Gtk_Text_Iter pointing at the location the
    --    --  event occurred
    --    --  Returns True to stop other handlers from being invoked for the
    -- event. False to propagate the event further.

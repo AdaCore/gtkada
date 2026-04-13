@@ -82,7 +82,7 @@ package Glib.Action_Map is
    --  Action then the old action is dropped from the action map.
    --  The action map takes its own reference on Action.
    --  Since: gtk+ 2.32
-   --  "action": a Glib.Action.Gaction
+   --  @param Action a Glib.Action.Gaction
 
    procedure Add_Action_Entries
       (Self      : Gaction_Map;
@@ -125,9 +125,9 @@ package Glib.Action_Map is
    --     }
    --
    --  Since: gtk+ 2.32
-   --  "entries": a pointer to the first item in an array of
+   --  @param Entries a pointer to the first item in an array of
    --  Glib.Action_Map.GAction_Entry structs
-   --  "user_data": the user data for signal connections
+   --  @param User_Data the user data for signal connections
 
    function Lookup_Action
       (Self        : Gaction_Map;
@@ -135,13 +135,13 @@ package Glib.Action_Map is
    --  Looks up the action with the name Action_Name in Action_Map.
    --  If no such action exists, returns null.
    --  Since: gtk+ 2.32
-   --  "action_name": the name of an action
+   --  @param Action_Name the name of an action
 
    procedure Remove_Action (Self : Gaction_Map; Action_Name : UTF8_String);
    --  Removes the named action from the action map.
    --  If no action of this name is in the map then nothing happens.
    --  Since: gtk+ 2.32
-   --  "action_name": the name of the action
+   --  @param Action_Name the name of the action
 
    ----------------------
    -- GtkAda additions --
@@ -201,7 +201,7 @@ package Glib.Action_Map is
    --  Action then the old action is dropped from the action map.
    --  The action map takes its own reference on Action.
    --  Since: gtk+ 2.32
-   --  "action": a Glib.Action.Gaction
+   --  @param Action a Glib.Action.Gaction
 
    type Virtual_Lookup_Action is access function
      (Self        : Gaction_Map;
@@ -210,14 +210,14 @@ package Glib.Action_Map is
    --  Looks up the action with the name Action_Name in Action_Map.
    --  If no such action exists, returns null.
    --  Since: gtk+ 2.32
-   --  "action_name": the name of an action
+   --  @param Action_Name the name of an action
 
    type Virtual_Remove_Action is access procedure (Self : Gaction_Map; Action_Name : Gtkada.Types.Chars_Ptr);
    pragma Convention (C, Virtual_Remove_Action);
    --  Removes the named action from the action map.
    --  If no action of this name is in the map then nothing happens.
    --  Since: gtk+ 2.32
-   --  "action_name": the name of the action
+   --  @param Action_Name the name of the action
 
    subtype Action_Map_Interface_Descr is Glib.Object.Interface_Description;
 

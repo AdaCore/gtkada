@@ -310,23 +310,23 @@ package Glib.Variant is
    --  Creates a new boolean Glib.Variant.Gvariant instance -- either True or
    --  False.
    --  Since: gtk+ 2.24
-   --  "value": a Boolean value
+   --  @param Value a Boolean value
 
    function Gvariant_New_Boolean (Value : Boolean) return Gvariant;
    --  Creates a new boolean Glib.Variant.Gvariant instance -- either True or
    --  False.
    --  Since: gtk+ 2.24
-   --  "value": a Boolean value
+   --  @param Value a Boolean value
 
    procedure G_New_Byte (Self : out Gvariant; Value : Guchar);
    --  Creates a new byte Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Guint8 value
+   --  @param Value a Guint8 value
 
    function Gvariant_New_Byte (Value : Guchar) return Gvariant;
    --  Creates a new byte Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Guint8 value
+   --  @param Value a Guint8 value
 
    procedure G_New_Bytestring (Self : out Gvariant; String : Gint_Array);
    --  Creates an array-of-bytes Glib.Variant.Gvariant with the contents of
@@ -335,7 +335,7 @@ package Glib.Variant is
    --  The nul terminator character at the end of the string is stored in the
    --  array.
    --  Since: gtk+ 2.26
-   --  "string": a normal nul-terminated string in no particular encoding
+   --  @param String a normal nul-terminated string in no particular encoding
 
    function Gvariant_New_Bytestring (String : Gint_Array) return Gvariant;
    --  Creates an array-of-bytes Glib.Variant.Gvariant with the contents of
@@ -344,7 +344,7 @@ package Glib.Variant is
    --  The nul terminator character at the end of the string is stored in the
    --  array.
    --  Since: gtk+ 2.26
-   --  "string": a normal nul-terminated string in no particular encoding
+   --  @param String a normal nul-terminated string in no particular encoding
 
    procedure G_New_Bytestring_Array
       (Self   : out Gvariant;
@@ -354,8 +354,8 @@ package Glib.Variant is
    --  array of strings.
    --  If Length is -1 then Strv is null-terminated.
    --  Since: gtk+ 2.26
-   --  "strv": an array of strings
-   --  "length": the length of Strv, or -1
+   --  @param Strv an array of strings
+   --  @param Length the length of Strv, or -1
 
    function Gvariant_New_Bytestring_Array
       (Strv   : GNAT.Strings.String_List;
@@ -364,8 +364,8 @@ package Glib.Variant is
    --  array of strings.
    --  If Length is -1 then Strv is null-terminated.
    --  Since: gtk+ 2.26
-   --  "strv": an array of strings
-   --  "length": the length of Strv, or -1
+   --  @param Strv an array of strings
+   --  @param Length the length of Strv, or -1
 
    procedure G_New_Dict_Entry
       (Self  : out Gvariant;
@@ -378,8 +378,8 @@ package Glib.Variant is
    --  Glib.Variant.Ref_Sink), the new instance takes ownership of them as if
    --  via Glib.Variant.Ref_Sink.
    --  Since: gtk+ 2.24
-   --  "key": a basic Glib.Variant.Gvariant, the key
-   --  "value": a Glib.Variant.Gvariant, the value
+   --  @param Key a basic Glib.Variant.Gvariant, the key
+   --  @param Value a Glib.Variant.Gvariant, the value
 
    procedure G_New_Dict_Entry
       (Self  : out Gvariant_Type;
@@ -388,8 +388,8 @@ package Glib.Variant is
    --  Constructs the type corresponding to a dictionary entry with a key of
    --  type Key and a value of type Value.
    --  It is appropriate to call Glib.Variant.Free on the return value.
-   --  "key": a basic Glib.Variant.Gvariant_Type
-   --  "value": a Glib.Variant.Gvariant_Type
+   --  @param Key a basic Glib.Variant.Gvariant_Type
+   --  @param Value a Glib.Variant.Gvariant_Type
 
    function Gvariant_New_Dict_Entry
       (Key   : Gvariant;
@@ -401,18 +401,18 @@ package Glib.Variant is
    --  Glib.Variant.Ref_Sink), the new instance takes ownership of them as if
    --  via Glib.Variant.Ref_Sink.
    --  Since: gtk+ 2.24
-   --  "key": a basic Glib.Variant.Gvariant, the key
-   --  "value": a Glib.Variant.Gvariant, the value
+   --  @param Key a basic Glib.Variant.Gvariant, the key
+   --  @param Value a Glib.Variant.Gvariant, the value
 
    procedure G_New_Double (Self : out Gvariant; Value : Gdouble);
    --  Creates a new double Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Gdouble floating point value
+   --  @param Value a Gdouble floating point value
 
    function Gvariant_New_Double (Value : Gdouble) return Gvariant;
    --  Creates a new double Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Gdouble floating point value
+   --  @param Value a Gdouble floating point value
 
    procedure G_New_Handle (Self : out Gvariant; Value : Gint32);
    --  Creates a new handle Glib.Variant.Gvariant instance.
@@ -420,7 +420,7 @@ package Glib.Variant is
    --  that are sent alongside a D-Bus message. If you're not interacting with
    --  D-Bus, you probably don't need them.
    --  Since: gtk+ 2.24
-   --  "value": a Gint32 value
+   --  @param Value a Gint32 value
 
    function Gvariant_New_Handle (Value : Gint32) return Gvariant;
    --  Creates a new handle Glib.Variant.Gvariant instance.
@@ -428,37 +428,37 @@ package Glib.Variant is
    --  that are sent alongside a D-Bus message. If you're not interacting with
    --  D-Bus, you probably don't need them.
    --  Since: gtk+ 2.24
-   --  "value": a Gint32 value
+   --  @param Value a Gint32 value
 
    procedure G_New_Int16 (Self : out Gvariant; Value : Gint16);
    --  Creates a new int16 Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Gint16 value
+   --  @param Value a Gint16 value
 
    function Gvariant_New_Int16 (Value : Gint16) return Gvariant;
    --  Creates a new int16 Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Gint16 value
+   --  @param Value a Gint16 value
 
    procedure G_New_Int32 (Self : out Gvariant; Value : Gint32);
    --  Creates a new int32 Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Gint32 value
+   --  @param Value a Gint32 value
 
    function Gvariant_New_Int32 (Value : Gint32) return Gvariant;
    --  Creates a new int32 Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Gint32 value
+   --  @param Value a Gint32 value
 
    procedure G_New_Int64 (Self : out Gvariant; Value : Gint64);
    --  Creates a new int64 Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Gint64 value
+   --  @param Value a Gint64 value
 
    function Gvariant_New_Int64 (Value : Gint64) return Gvariant;
    --  Creates a new int64 Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Gint64 value
+   --  @param Value a Gint64 value
 
    procedure G_New_Object_Path
       (Self        : out Gvariant;
@@ -467,7 +467,7 @@ package Glib.Variant is
    --  String. String must be a valid D-Bus object path. Use
    --  Glib.Variant.Is_Object_Path if you're not sure.
    --  Since: gtk+ 2.24
-   --  "object_path": a normal C nul-terminated string
+   --  @param Object_Path a normal C nul-terminated string
 
    function Gvariant_New_Object_Path
       (Object_Path : UTF8_String) return Gvariant;
@@ -475,7 +475,7 @@ package Glib.Variant is
    --  String. String must be a valid D-Bus object path. Use
    --  Glib.Variant.Is_Object_Path if you're not sure.
    --  Since: gtk+ 2.24
-   --  "object_path": a normal C nul-terminated string
+   --  @param Object_Path a normal C nul-terminated string
 
    procedure G_New_Objv
       (Self   : out Gvariant;
@@ -487,8 +487,8 @@ package Glib.Variant is
    --  Glib.Variant.Is_Object_Path.
    --  If Length is -1 then Strv is null-terminated.
    --  Since: gtk+ 2.30
-   --  "strv": an array of strings
-   --  "length": the length of Strv, or -1
+   --  @param Strv an array of strings
+   --  @param Length the length of Strv, or -1
 
    function Gvariant_New_Objv
       (Strv   : GNAT.Strings.String_List;
@@ -499,34 +499,34 @@ package Glib.Variant is
    --  Glib.Variant.Is_Object_Path.
    --  If Length is -1 then Strv is null-terminated.
    --  Since: gtk+ 2.30
-   --  "strv": an array of strings
-   --  "length": the length of Strv, or -1
+   --  @param Strv an array of strings
+   --  @param Length the length of Strv, or -1
 
    procedure G_New_Signature (Self : out Gvariant; Signature : UTF8_String);
    --  Creates a D-Bus type signature Glib.Variant.Gvariant with the contents
    --  of String. String must be a valid D-Bus type signature. Use
    --  Glib.Variant.Is_Signature if you're not sure.
    --  Since: gtk+ 2.24
-   --  "signature": a normal C nul-terminated string
+   --  @param Signature a normal C nul-terminated string
 
    function Gvariant_New_Signature (Signature : UTF8_String) return Gvariant;
    --  Creates a D-Bus type signature Glib.Variant.Gvariant with the contents
    --  of String. String must be a valid D-Bus type signature. Use
    --  Glib.Variant.Is_Signature if you're not sure.
    --  Since: gtk+ 2.24
-   --  "signature": a normal C nul-terminated string
+   --  @param Signature a normal C nul-terminated string
 
    procedure G_New_String (Self : out Gvariant; String : UTF8_String);
    --  Creates a string Glib.Variant.Gvariant with the contents of String.
    --  String must be valid utf8.
    --  Since: gtk+ 2.24
-   --  "string": a normal utf8 nul-terminated string
+   --  @param String a normal utf8 nul-terminated string
 
    function Gvariant_New_String (String : UTF8_String) return Gvariant;
    --  Creates a string Glib.Variant.Gvariant with the contents of String.
    --  String must be valid utf8.
    --  Since: gtk+ 2.24
-   --  "string": a normal utf8 nul-terminated string
+   --  @param String a normal utf8 nul-terminated string
 
    procedure G_New_Strv
       (Self   : out Gvariant;
@@ -536,8 +536,8 @@ package Glib.Variant is
    --  array of strings.
    --  If Length is -1 then Strv is null-terminated.
    --  Since: gtk+ 2.24
-   --  "strv": an array of strings
-   --  "length": the length of Strv, or -1
+   --  @param Strv an array of strings
+   --  @param Length the length of Strv, or -1
 
    function Gvariant_New_Strv
       (Strv   : GNAT.Strings.String_List;
@@ -546,8 +546,8 @@ package Glib.Variant is
    --  array of strings.
    --  If Length is -1 then Strv is null-terminated.
    --  Since: gtk+ 2.24
-   --  "strv": an array of strings
-   --  "length": the length of Strv, or -1
+   --  @param Strv an array of strings
+   --  @param Length the length of Strv, or -1
 
    procedure G_New_Take_String (Self : out Gvariant; String : UTF8_String);
    --  Creates a string Glib.Variant.Gvariant with the contents of String.
@@ -557,7 +557,7 @@ package Glib.Variant is
    --  You must not modify or access String in any other way after passing it
    --  to this function. It is even possible that String is immediately freed.
    --  Since: gtk+ 2.38
-   --  "string": a normal utf8 nul-terminated string
+   --  @param String a normal utf8 nul-terminated string
 
    function Gvariant_New_Take_String (String : UTF8_String) return Gvariant;
    --  Creates a string Glib.Variant.Gvariant with the contents of String.
@@ -567,37 +567,37 @@ package Glib.Variant is
    --  You must not modify or access String in any other way after passing it
    --  to this function. It is even possible that String is immediately freed.
    --  Since: gtk+ 2.38
-   --  "string": a normal utf8 nul-terminated string
+   --  @param String a normal utf8 nul-terminated string
 
    procedure G_New_Uint16 (Self : out Gvariant; Value : Guint16);
    --  Creates a new uint16 Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Guint16 value
+   --  @param Value a Guint16 value
 
    function Gvariant_New_Uint16 (Value : Guint16) return Gvariant;
    --  Creates a new uint16 Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Guint16 value
+   --  @param Value a Guint16 value
 
    procedure G_New_Uint32 (Self : out Gvariant; Value : Guint32);
    --  Creates a new uint32 Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Guint32 value
+   --  @param Value a Guint32 value
 
    function Gvariant_New_Uint32 (Value : Guint32) return Gvariant;
    --  Creates a new uint32 Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Guint32 value
+   --  @param Value a Guint32 value
 
    procedure G_New_Uint64 (Self : out Gvariant; Value : Guint64);
    --  Creates a new uint64 Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Guint64 value
+   --  @param Value a Guint64 value
 
    function Gvariant_New_Uint64 (Value : Guint64) return Gvariant;
    --  Creates a new uint64 Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
-   --  "value": a Guint64 value
+   --  @param Value a Guint64 value
 
    procedure G_New_Variant (Self : out Gvariant; Value : Gvariant);
    --  Boxes Value. The result is a Glib.Variant.Gvariant instance
@@ -605,7 +605,7 @@ package Glib.Variant is
    --  If Child is a floating reference (see Glib.Variant.Ref_Sink), the new
    --  instance takes ownership of Child.
    --  Since: gtk+ 2.24
-   --  "value": a Glib.Variant.Gvariant instance
+   --  @param Value a Glib.Variant.Gvariant instance
 
    function Gvariant_New_Variant (Value : Gvariant) return Gvariant;
    --  Boxes Value. The result is a Glib.Variant.Gvariant instance
@@ -613,7 +613,7 @@ package Glib.Variant is
    --  If Child is a floating reference (see Glib.Variant.Ref_Sink), the new
    --  instance takes ownership of Child.
    --  Since: gtk+ 2.24
-   --  "value": a Glib.Variant.Gvariant instance
+   --  @param Value a Glib.Variant.Gvariant instance
 
    procedure G_New (Self : out Gvariant_Type; Type_String : UTF8_String);
    --  Creates a new Glib.Variant.Gvariant_Type corresponding to the type
@@ -622,7 +622,7 @@ package Glib.Variant is
    --  It is a programmer error to call this function with an invalid type
    --  string. Use Glib.Variant.String_Is_Valid if you are unsure.
    --  Since: gtk+ 2.24
-   --  "type_string": a valid GVariant type string
+   --  @param Type_String a valid GVariant type string
 
    function Gvariant_Type_New
       (Type_String : UTF8_String) return Gvariant_Type;
@@ -632,7 +632,7 @@ package Glib.Variant is
    --  It is a programmer error to call this function with an invalid type
    --  string. Use Glib.Variant.String_Is_Valid if you are unsure.
    --  Since: gtk+ 2.24
-   --  "type_string": a valid GVariant type string
+   --  @param Type_String a valid GVariant type string
 
    function Gvariant_Type_New_Dict_Entry
       (Key   : Gvariant_Type;
@@ -640,8 +640,8 @@ package Glib.Variant is
    --  Constructs the type corresponding to a dictionary entry with a key of
    --  type Key and a value of type Value.
    --  It is appropriate to call Glib.Variant.Free on the return value.
-   --  "key": a basic Glib.Variant.Gvariant_Type
-   --  "value": a Glib.Variant.Gvariant_Type
+   --  @param Key a basic Glib.Variant.Gvariant_Type
+   --  @param Value a Glib.Variant.Gvariant_Type
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "g_variant_type_get_gtype");
@@ -678,8 +678,8 @@ package Glib.Variant is
    --  varargs accessors to Glib.Variant.Gvariant values of uncertain values
    --  (eg: g_variant_lookup or g_menu_model_get_item_attribute).
    --  Since: gtk+ 2.34
-   --  "format_string": a valid Glib.Variant.Gvariant format string
-   --  "copy_only": True to ensure the format string makes deep copies
+   --  @param Format_String a valid Glib.Variant.Gvariant format string
+   --  @param Copy_Only True to ensure the format string makes deep copies
 
    function Classify (Self : Gvariant) return GVariant_Class;
    --  Classifies Value according to its top-level type.
@@ -696,7 +696,7 @@ package Glib.Variant is
    --  For an empty array, Length will be set to 0 and a pointer to a null
    --  pointer will be returned.
    --  Since: gtk+ 2.26
-   --  "length": the length of the result, or null
+   --  @param Length the length of the result, or null
 
    function Dup_Objv
       (Self   : Gvariant;
@@ -709,7 +709,7 @@ package Glib.Variant is
    --  For an empty array, Length will be set to 0 and a pointer to a null
    --  pointer will be returned.
    --  Since: gtk+ 2.30
-   --  "length": the length of the result, or null
+   --  @param Length the length of the result, or null
 
    function Dup_String
       (Self   : Gvariant;
@@ -719,7 +719,7 @@ package Glib.Variant is
    --  The string will always be utf8 encoded.
    --  The return value must be freed using g_free.
    --  Since: gtk+ 2.24
-   --  "length": a pointer to a Gsize, to store the length
+   --  @param Length a pointer to a Gsize, to store the length
 
    function Dup_String (Self : Gvariant_Type) return UTF8_String;
    --  Returns a newly-allocated copy of the type string corresponding to
@@ -737,7 +737,7 @@ package Glib.Variant is
    --  For an empty array, Length will be set to 0 and a pointer to a null
    --  pointer will be returned.
    --  Since: gtk+ 2.24
-   --  "length": the length of the result, or null
+   --  @param Length the length of the result, or null
 
    function Get_Boolean (Self : Gvariant) return Boolean;
    --  Returns the boolean value of Value.
@@ -762,7 +762,7 @@ package Glib.Variant is
    --  For an empty array, Length will be set to 0 and a pointer to a null
    --  pointer will be returned.
    --  Since: gtk+ 2.26
-   --  "length": the length of the result, or null
+   --  @param Length the length of the result, or null
 
    function Get_Child_Value (Self : Gvariant; Index : Gsize) return Gvariant;
    --  Reads a child item out of a container Glib.Variant.Gvariant instance.
@@ -775,7 +775,7 @@ package Glib.Variant is
    --  Glib.Variant.Unref when you're done with it.
    --  This function is O(1).
    --  Since: gtk+ 2.24
-   --  "index_": the index of the child to fetch
+   --  @param Index the index of the child to fetch
 
    function Get_Double (Self : Gvariant) return Gdouble;
    --  Returns the double precision floating point value of Value.
@@ -841,7 +841,7 @@ package Glib.Variant is
    --  For an empty array, Length will be set to 0 and a pointer to a null
    --  pointer will be returned.
    --  Since: gtk+ 2.30
-   --  "length": the length of the result, or null
+   --  @param Length the length of the result, or null
 
    function Get_Size (Self : Gvariant) return Gsize;
    --  Determines the number of bytes that would be required to store Value
@@ -868,7 +868,7 @@ package Glib.Variant is
    --  than those three.
    --  The return value remains valid as long as Value exists.
    --  Since: gtk+ 2.24
-   --  "length": a pointer to a Gsize, to store the length
+   --  @param Length a pointer to a Gsize, to store the length
 
    function Get_Strv
       (Self   : Gvariant;
@@ -881,7 +881,7 @@ package Glib.Variant is
    --  For an empty array, Length will be set to 0 and a pointer to a null
    --  pointer will be returned.
    --  Since: gtk+ 2.24
-   --  "length": the length of the result, or null
+   --  @param Length the length of the result, or null
 
    function Get_Type (Self : Gvariant) return Gvariant_Type;
    --  Determines the type of Value.
@@ -964,7 +964,7 @@ package Glib.Variant is
        The_Type : Gvariant_Type) return Boolean;
    --  Checks if a value has a type matching the provided type.
    --  Since: gtk+ 2.24
-   --  "type": a Glib.Variant.Gvariant_Type
+   --  @param The_Type a Glib.Variant.Gvariant_Type
 
    function Iter_New (Self : Gvariant) return Gvariant_Iter;
    --  Creates a heap-allocated Glib.Variant.Gvariant_Iter for iterating over
@@ -997,8 +997,8 @@ package Glib.Variant is
    --  to do many lookups then Gvariant.Dict.Gvariant_Dict may be more
    --  efficient.
    --  Since: gtk+ 2.28
-   --  "key": the key to lookup in the dictionary
-   --  "expected_type": a Glib.Variant.Gvariant_Type, or null
+   --  @param Key the key to lookup in the dictionary
+   --  @param Expected_Type a Glib.Variant.Gvariant_Type, or null
 
    function N_Children (Self : Gvariant) return Gsize;
    --  Determines the number of children in a container Glib.Variant.Gvariant
@@ -1020,7 +1020,7 @@ package Glib.Variant is
    --  If Type_Annotate is True, then type information is included in the
    --  output.
    --  Since: gtk+ 2.24
-   --  "type_annotate": True if type information should be included in the
+   --  @param Type_Annotate True if type information should be included in the
    --  output
 
    function Print_String
@@ -1031,8 +1031,8 @@ package Glib.Variant is
    --  If String is non-null then it is appended to and returned. Else, a new
    --  empty Glib.String.Gstring is allocated and it is returned.
    --  Since: gtk+ 2.24
-   --  "string": a Glib.String.Gstring, or null
-   --  "type_annotate": True if type information should be included in the
+   --  @param String a Glib.String.Gstring, or null
+   --  @param Type_Annotate True if type information should be included in the
    --  output
 
    function Ref (Self : Gvariant) return Gvariant;
@@ -1073,7 +1073,7 @@ package Glib.Variant is
    --  different) its endianness must also be available.
    --  This function is approximately O(n) in the size of Data.
    --  Since: gtk+ 2.24
-   --  "data": the location to store the serialised data at
+   --  @param Data the location to store the serialised data at
 
    function Take_Ref (Self : Gvariant) return Gvariant;
    --  If Value is floating, sink it. Otherwise, do nothing.
@@ -1116,7 +1116,7 @@ package Glib.Variant is
    --  The iterator remains valid for as long as Value exists, and need not be
    --  freed in any way.
    --  Since: gtk+ 2.24
-   --  "value": a container Glib.Variant.Gvariant
+   --  @param Value a container Glib.Variant.Gvariant
 
    function Next_Value (Self : Gvariant_Iter) return Gvariant;
    --  Gets the next item in the container. If no more items remain then null
@@ -1225,7 +1225,7 @@ package Glib.Variant is
    --  This function returns True if Type is a subtype of Supertype. All types
    --  are considered to be subtypes of themselves. Aside from that, only
    --  indefinite types can have subtypes.
-   --  "supertype": a Glib.Variant.Gvariant_Type
+   --  @param Supertype a Glib.Variant.Gvariant_Type
 
    function Is_Tuple (Self : Gvariant_Type) return Boolean;
    --  Determines if the given Type is a tuple type. This is true if the type
@@ -1312,7 +1312,7 @@ package Glib.Variant is
    --  only the characters "[A-Z][a-z][0-9]_". No sequence (including the one
    --  following the final '/' character) may be empty.
    --  Since: gtk+ 2.24
-   --  "string": a normal C nul-terminated string
+   --  @param String a normal C nul-terminated string
 
    function Is_Signature (String : UTF8_String) return Boolean;
    --  Determines if a given string is a valid D-Bus type signature. You
@@ -1321,7 +1321,7 @@ package Glib.Variant is
    --  D-Bus type signatures consist of zero or more definite
    --  Glib.Variant.Gvariant_Type strings in sequence.
    --  Since: gtk+ 2.24
-   --  "string": a normal C nul-terminated string
+   --  @param String a normal C nul-terminated string
 
    function Parse
       (The_Type : Gvariant_Type;
@@ -1349,10 +1349,10 @@ package Glib.Variant is
    --  it will be set to reflect the error that occurred.
    --  Officially, the language understood by the parser is "any string
    --  produced by Glib.Variant.Print".
-   --  "type": a Glib.Variant.Gvariant_Type, or null
-   --  "text": a string containing a GVariant in text form
-   --  "limit": a pointer to the end of Text, or null
-   --  "endptr": a location to store the end pointer, or null
+   --  @param The_Type a Glib.Variant.Gvariant_Type, or null
+   --  @param Text a string containing a GVariant in text form
+   --  @param Limit a pointer to the end of Text, or null
+   --  @param Endptr a location to store the end pointer, or null
 
    function Parse_Error_Print_Context
       (Error      : Glib.Error.GError;
@@ -1380,8 +1380,8 @@ package Glib.Variant is
    --  Glib.Variant.Parse then you must add nul termination before using this
    --  function.
    --  Since: gtk+ 2.40
-   --  "error": a Gerror.Gerror from the GVariant_Parse_Error domain
-   --  "source_str": the string that was given to the parser
+   --  @param Error a Gerror.Gerror from the GVariant_Parse_Error domain
+   --  @param Source_Str the string that was given to the parser
 
    function Parse_Error_Quark return Glib.GQuark;
 
@@ -1394,7 +1394,7 @@ package Glib.Variant is
    --  Checks if Type_String is a valid GVariant type string. This call is
    --  equivalent to calling g_variant_type_string_scan and confirming that the
    --  following character is a nul terminator.
-   --  "type_string": a pointer to any string
+   --  @param Type_String a pointer to any string
 
 private
 

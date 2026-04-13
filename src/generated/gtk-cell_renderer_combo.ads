@@ -149,9 +149,9 @@ package Gtk.Cell_Renderer_Combo is
    --  combo cell renderer emits the edited or editing_canceled signal.
    -- 
    --  Callback parameters:
-   --    --  "path_string": a string of the path identifying the edited cell
+   --    --  @param Path_String a string of the path identifying the edited cell
    --    --  (relative to the tree view model)
-   --    --  "new_iter": the new iter selected in the combo box (relative to the
+   --    --  @param New_Iter the new iter selected in the combo box (relative to the
    --    --  combo box model)
 
 private

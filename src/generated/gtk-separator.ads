@@ -69,13 +69,13 @@ package Gtk.Separator is
    --  Since: gtk+ 3.0
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "orientation": the separator's orientation.
+   --  @param Orientation the separator's orientation.
 
    function Gtk_Separator_New
       (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Separator;
    --  Creates a new Gtk.Separator.Gtk_Separator with the given orientation.
    --  Since: gtk+ 3.0
-   --  "orientation": the separator's orientation.
+   --  @param Orientation the separator's orientation.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_separator_get_type");

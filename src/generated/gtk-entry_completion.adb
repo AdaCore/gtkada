@@ -47,10 +47,10 @@ package body Gtk.Entry_Completion is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-   --  "func_data": user data for Func
-   --  "destroy": destroy notify for Func_Data
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Func_Data user data for Func
+   --  @param Destroy destroy notify for Func_Data
 
    procedure C_Gtk_Entry_Completion_Set_Match_Func
       (Completion  : System.Address;
@@ -62,9 +62,9 @@ package body Gtk.Entry_Completion is
    --  is used to determine if a row should or should not be in the completion
    --  list.
    --  Since: gtk+ 2.4
-   --  "func": the Gtk_Entry_Completion_Match_Func to use
-   --  "func_data": user data for Func
-   --  "func_notify": destroy notify for Func_Data.
+   --  @param Func the Gtk_Entry_Completion_Match_Func to use
+   --  @param Func_Data user data for Func
+   --  @param Func_Notify destroy notify for Func_Data.
 
    function To_Gtk_Entry_Completion_Match_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Entry_Completion_Match_Func);
@@ -85,12 +85,12 @@ package body Gtk.Entry_Completion is
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Cell_Layout_Data_Func);
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
-   --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
+   --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
    function Internal_Gtk_Entry_Completion_Match_Func
       (Completion : System.Address;
@@ -98,10 +98,10 @@ package body Gtk.Entry_Completion is
        Iter       : access Gtk.Tree_Model.Gtk_Tree_Iter;
        User_Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Entry_Completion_Match_Func);
-   --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
-   --  "key": the string to match, normalized and case-folded
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
-   --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
+   --  @param Completion the Gtk.Entry_Completion.Gtk_Entry_Completion
+   --  @param Key the string to match, normalized and case-folded
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
+   --  @param User_Data user data given to Gtk.Entry_Completion.Set_Match_Func
 
    ----------------------------------------
    -- Internal_Gtk_Cell_Layout_Data_Func --
@@ -499,12 +499,12 @@ package body Gtk.Entry_Completion is
       pragma Convention (C, Internal_Cb);
       --  A function which should set the value of Cell_Layout's cell
       --  renderer(s) as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       -----------------
       -- Internal_Cb --
@@ -616,10 +616,12 @@ package body Gtk.Entry_Completion is
       --  g_utf8_casefold). If this is not appropriate, match functions have
       --  access to the unmodified key via `gtk_entry_get_text (GTK_ENTRY
       --  (gtk_entry_completion_get_entry ()))`.
-      --  "completion": the Gtk.Entry_Completion.Gtk_Entry_Completion
-      --  "key": the string to match, normalized and case-folded
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to match
-      --  "user_data": user data given to Gtk.Entry_Completion.Set_Match_Func
+      --  @param Completion the Gtk.Entry_Completion.Gtk_Entry_Completion
+      --  @param Key the string to match, normalized and case-folded
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to
+      --  match
+      --  @param User_Data user data given to
+      --  Gtk.Entry_Completion.Set_Match_Func
 
       -----------------
       -- Internal_Cb --

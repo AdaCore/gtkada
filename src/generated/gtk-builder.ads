@@ -229,13 +229,13 @@ package Gtk.Builder is
    --  connection process. Note that this function can only be called once,
    --  subsequent calls will do nothing.
    --  Since: gtk+ 2.12
-   --  "builder": a Gtk.Builder.Gtk_Builder
-   --  "object": object to connect a signal to
-   --  "signal_name": name of the signal
-   --  "handler_name": name of the handler
-   --  "connect_object": a Glib.Object.GObject, if non-null, use
+   --  @param Builder a Gtk.Builder.Gtk_Builder
+   --  @param Object object to connect a signal to
+   --  @param Signal_Name name of the signal
+   --  @param Handler_Name name of the handler
+   --  @param Connect_Object a Glib.Object.GObject, if non-null, use
    --  g_signal_connect_object
-   --  "flags": Glib.G_Connect_Flags to use
+   --  @param Flags Glib.G_Connect_Flags to use
 
    ------------------
    -- Constructors --
@@ -277,7 +277,7 @@ package Gtk.Builder is
    --  Since: gtk+ 3.10
    --  Initialize_From_File does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "filename": filename of user interface description file
+   --  @param Filename filename of user interface description file
 
    function Gtk_Builder_New_From_File
       (Filename : UTF8_String) return Gtk_Builder;
@@ -286,7 +286,7 @@ package Gtk.Builder is
    --  the program will be aborted. You should only ever attempt to parse user
    --  interface descriptions that are shipped as part of your program.
    --  Since: gtk+ 3.10
-   --  "filename": filename of user interface description file
+   --  @param Filename filename of user interface description file
 
    procedure Gtk_New_From_Resource
       (Builder       : out Gtk_Builder;
@@ -300,7 +300,7 @@ package Gtk.Builder is
    --  Since: gtk+ 3.10
    --  Initialize_From_Resource does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "resource_path": a Gresource.Gresource resource path
+   --  @param Resource_Path a Gresource.Gresource resource path
 
    function Gtk_Builder_New_From_Resource
       (Resource_Path : UTF8_String) return Gtk_Builder;
@@ -308,7 +308,7 @@ package Gtk.Builder is
    --  If there is an error locating the resource or parsing the description,
    --  then the program will be aborted.
    --  Since: gtk+ 3.10
-   --  "resource_path": a Gresource.Gresource resource path
+   --  @param Resource_Path a Gresource.Gresource resource path
 
    procedure Gtk_New_From_String
       (Builder : out Gtk_Builder;
@@ -328,8 +328,8 @@ package Gtk.Builder is
    --  Since: gtk+ 3.10
    --  Initialize_From_String does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "string": a user interface (XML) description
-   --  "length": the length of String, or -1
+   --  @param String a user interface (XML) description
+   --  @param Length the length of String, or -1
 
    function Gtk_Builder_New_From_String
       (String : UTF8_String;
@@ -342,8 +342,8 @@ package Gtk.Builder is
    --  You should not attempt to parse user interface description from
    --  untrusted sources.
    --  Since: gtk+ 3.10
-   --  "string": a user interface (XML) description
-   --  "length": the length of String, or -1
+   --  @param String a user interface (XML) description
+   --  @param Length the length of String, or -1
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_builder_get_type");
@@ -369,7 +369,7 @@ package Gtk.Builder is
    --  leading up to the reported failure. The only reasonable thing to do when
    --  an error is detected is to call g_error.
    --  Since: gtk+ 2.12
-   --  "filename": the name of the file to parse
+   --  @param Filename the name of the file to parse
 
    function Add_From_Resource
       (Builder       : not null access Gtk_Builder_Record;
@@ -386,7 +386,7 @@ package Gtk.Builder is
    --  The only reasonable thing to do when an error is detected is to call
    --  g_error.
    --  Since: gtk+ 3.4
-   --  "resource_path": the path of the resource file to parse
+   --  @param Resource_Path the path of the resource file to parse
 
    function Add_From_String
       (Builder : not null access Gtk_Builder_Record;
@@ -402,7 +402,7 @@ package Gtk.Builder is
    --  The only reasonable thing to do when an error is detected is to call
    --  g_error.
    --  Since: gtk+ 2.12
-   --  "buffer": the string to parse
+   --  @param Buffer the string to parse
 
    function Add_Objects_From_File
       (Builder    : not null access Gtk_Builder_Record;
@@ -420,8 +420,8 @@ package Gtk.Builder is
    --  Gtk.Tree_Model.Gtk_Tree_Model), you have to explicitly list all of them
    --  in Object_Ids.
    --  Since: gtk+ 2.14
-   --  "filename": the name of the file to parse
-   --  "object_ids": nul-terminated array of objects to build
+   --  @param Filename the name of the file to parse
+   --  @param Object_Ids nul-terminated array of objects to build
 
    function Add_Objects_From_Resource
       (Builder       : not null access Gtk_Builder_Record;
@@ -439,8 +439,8 @@ package Gtk.Builder is
    --  Gtk.Tree_Model.Gtk_Tree_Model), you have to explicitly list all of them
    --  in Object_Ids.
    --  Since: gtk+ 3.4
-   --  "resource_path": the path of the resource file to parse
-   --  "object_ids": nul-terminated array of objects to build
+   --  @param Resource_Path the path of the resource file to parse
+   --  @param Object_Ids nul-terminated array of objects to build
 
    function Add_Objects_From_String
       (Builder    : not null access Gtk_Builder_Record;
@@ -458,9 +458,10 @@ package Gtk.Builder is
    --  Gtk.Tree_Model.Gtk_Tree_Model), you have to explicitly list all of them
    --  in Object_Ids.
    --  Since: gtk+ 2.14
-   --  "buffer": the string to parse
-   --  "length": the length of Buffer (may be -1 if Buffer is nul-terminated)
-   --  "object_ids": nul-terminated array of objects to build
+   --  @param Buffer the string to parse
+   --  @param Length the length of Buffer (may be -1 if Buffer is
+   --  nul-terminated)
+   --  @param Object_Ids nul-terminated array of objects to build
 
    procedure Connect_Signals
       (Builder   : not null access Gtk_Builder_Record;
@@ -485,7 +486,7 @@ package Gtk.Builder is
    --  instead be compiled with the -Wl,--export-dynamic CFLAGS, and linked
    --  against gmodule-export-2.0.
    --  Since: gtk+ 2.12
-   --  "user_data": user data to pass back with all signals
+   --  @param User_Data user data to pass back with all signals
 
    procedure Connect_Signals_Full
       (Builder : not null access Gtk_Builder_Record;
@@ -494,7 +495,7 @@ package Gtk.Builder is
    --  version of Gtk.Builder.Connect_Signals, except that it does not require
    --  GModule to function correctly.
    --  Since: gtk+ 2.12
-   --  "func": the function used to connect the signals
+   --  @param Func the function used to connect the signals
 
    procedure Expose_Object
       (Builder : not null access Gtk_Builder_Record;
@@ -503,8 +504,8 @@ package Gtk.Builder is
    --  Add Object to the Builder object pool so it can be referenced just like
    --  any other object built by builder.
    --  Since: gtk+ 3.8
-   --  "name": the name of the object exposed to the builder
-   --  "object": the object to expose
+   --  @param Name the name of the object exposed to the builder
+   --  @param Object the object to expose
 
    function Get_Object
       (Builder : not null access Gtk_Builder_Record;
@@ -512,7 +513,7 @@ package Gtk.Builder is
    --  Gets the object named Name. Note that this function does not increment
    --  the reference count of the returned object.
    --  Since: gtk+ 2.12
-   --  "name": name of object to get
+   --  @param Name name of object to get
 
    function Get_Objects
       (Builder : not null access Gtk_Builder_Record)
@@ -533,7 +534,7 @@ package Gtk.Builder is
    --  Sets the translation domain of Builder. See
    --  Gtk.Builder.Gtk_Builder:translation-domain.
    --  Since: gtk+ 2.12
-   --  "domain": the translation domain or null
+   --  @param Domain the translation domain or null
 
    function Get_Type_From_Name
       (Builder   : not null access Gtk_Builder_Record;
@@ -542,7 +543,7 @@ package Gtk.Builder is
    --  Gtk.Builder.Gtk_Builder has for that purpose. This is mainly used when
    --  implementing the Gtk.Buildable.Gtk_Buildable interface on a type.
    --  Since: gtk+ 2.12
-   --  "type_name": type name to lookup
+   --  @param Type_Name type name to lookup
 
    procedure Lookup_Callback_Symbol
       (Builder       : not null access Gtk_Builder_Record;
@@ -553,7 +554,7 @@ package Gtk.Builder is
    --  any case that one might be cusomizing signal connections using
    --  Gtk.Builder.Connect_Signals_Full
    --  Since: gtk+ 3.10
-   --  "callback_name": The name of the callback
+   --  @param Callback_Name The name of the callback
 
    procedure Value_From_String
       (Builder : not null access Gtk_Builder_Record;
@@ -571,9 +572,9 @@ package Gtk.Builder is
    --  Upon errors False will be returned and Error will be assigned a
    --  Gerror.Gerror from the GTK_BUILDER_ERROR domain.
    --  Since: gtk+ 2.12
-   --  "pspec": the Glib.Param_Spec for the property
-   --  "string": the string representation of the value
-   --  "value": the Glib.Values.GValue to store the result in
+   --  @param Pspec the Glib.Param_Spec for the property
+   --  @param String the string representation of the value
+   --  @param Value the Glib.Values.GValue to store the result in
 
    function Value_From_String_Type
       (Builder  : not null access Gtk_Builder_Record;
@@ -587,9 +588,9 @@ package Gtk.Builder is
    --  Upon errors False will be returned and Error will be assigned a
    --  Gerror.Gerror from the GTK_BUILDER_ERROR domain.
    --  Since: gtk+ 2.12
-   --  "type": the GType of the value
-   --  "string": the string representation of the value
-   --  "value": the Glib.Values.GValue to store the result in
+   --  @param The_Type the GType of the value
+   --  @param String the string representation of the value
+   --  @param Value the Glib.Values.GValue to store the result in
 
    ----------------
    -- Properties --

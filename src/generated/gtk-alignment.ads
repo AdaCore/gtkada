@@ -75,17 +75,17 @@ package Gtk.Alignment is
    --  Creates a new Gtk.Alignment.Gtk_Alignment.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "xalign": the horizontal alignment of the child widget, from 0 (left)
-   --  to 1 (right).
-   --  "yalign": the vertical alignment of the child widget, from 0 (top) to 1
-   --  (bottom).
-   --  "xscale": the amount that the child widget expands horizontally to fill
-   --  up unused space, from 0 to 1. A value of 0 indicates that the child
+   --  @param Xalign the horizontal alignment of the child widget, from 0
+   --  (left) to 1 (right).
+   --  @param Yalign the vertical alignment of the child widget, from 0 (top)
+   --  to 1 (bottom).
+   --  @param Xscale the amount that the child widget expands horizontally to
+   --  fill up unused space, from 0 to 1. A value of 0 indicates that the child
    --  widget should never expand. A value of 1 indicates that the child widget
    --  will expand to fill all of the space allocated for the
    --  Gtk.Alignment.Gtk_Alignment.
-   --  "yscale": the amount that the child widget expands vertically to fill
-   --  up unused space, from 0 to 1. The values are similar to Xscale.
+   --  @param Yscale the amount that the child widget expands vertically to
+   --  fill up unused space, from 0 to 1. The values are similar to Xscale.
 
    function Gtk_Alignment_New
       (Xalign : Gfloat;
@@ -93,17 +93,17 @@ package Gtk.Alignment is
        Xscale : Gfloat;
        Yscale : Gfloat) return Gtk_Alignment;
    --  Creates a new Gtk.Alignment.Gtk_Alignment.
-   --  "xalign": the horizontal alignment of the child widget, from 0 (left)
-   --  to 1 (right).
-   --  "yalign": the vertical alignment of the child widget, from 0 (top) to 1
-   --  (bottom).
-   --  "xscale": the amount that the child widget expands horizontally to fill
-   --  up unused space, from 0 to 1. A value of 0 indicates that the child
+   --  @param Xalign the horizontal alignment of the child widget, from 0
+   --  (left) to 1 (right).
+   --  @param Yalign the vertical alignment of the child widget, from 0 (top)
+   --  to 1 (bottom).
+   --  @param Xscale the amount that the child widget expands horizontally to
+   --  fill up unused space, from 0 to 1. A value of 0 indicates that the child
    --  widget should never expand. A value of 1 indicates that the child widget
    --  will expand to fill all of the space allocated for the
    --  Gtk.Alignment.Gtk_Alignment.
-   --  "yscale": the amount that the child widget expands vertically to fill
-   --  up unused space, from 0 to 1. The values are similar to Xscale.
+   --  @param Yscale the amount that the child widget expands vertically to
+   --  fill up unused space, from 0 to 1. The values are similar to Xscale.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_alignment_get_type");
@@ -123,13 +123,13 @@ package Gtk.Alignment is
    --  gtk_alignment_set_padding ().
    --  Since: gtk+ 2.4
    --  Deprecated since 3.14, 1
-   --  "padding_top": location to store the padding for the top of the widget,
-   --  or null
-   --  "padding_bottom": location to store the padding for the bottom of the
+   --  @param Padding_Top location to store the padding for the top of the
    --  widget, or null
-   --  "padding_left": location to store the padding for the left of the
+   --  @param Padding_Bottom location to store the padding for the bottom of
+   --  the widget, or null
+   --  @param Padding_Left location to store the padding for the left of the
    --  widget, or null
-   --  "padding_right": location to store the padding for the right of the
+   --  @param Padding_Right location to store the padding for the right of the
    --  widget, or null
 
    procedure Set_Padding
@@ -145,10 +145,10 @@ package Gtk.Alignment is
    --  left.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.14, 1
-   --  "padding_top": the padding at the top of the widget
-   --  "padding_bottom": the padding at the bottom of the widget
-   --  "padding_left": the padding at the left of the widget
-   --  "padding_right": the padding at the right of the widget.
+   --  @param Padding_Top the padding at the top of the widget
+   --  @param Padding_Bottom the padding at the bottom of the widget
+   --  @param Padding_Left the padding at the left of the widget
+   --  @param Padding_Right the padding at the right of the widget.
 
    procedure Set
       (Alignment : not null access Gtk_Alignment_Record;
@@ -159,17 +159,17 @@ package Gtk.Alignment is
    pragma Obsolescent (Set);
    --  Sets the Gtk.Alignment.Gtk_Alignment values.
    --  Deprecated since 3.14, 1
-   --  "xalign": the horizontal alignment of the child widget, from 0 (left)
-   --  to 1 (right).
-   --  "yalign": the vertical alignment of the child widget, from 0 (top) to 1
-   --  (bottom).
-   --  "xscale": the amount that the child widget expands horizontally to fill
-   --  up unused space, from 0 to 1. A value of 0 indicates that the child
+   --  @param Xalign the horizontal alignment of the child widget, from 0
+   --  (left) to 1 (right).
+   --  @param Yalign the vertical alignment of the child widget, from 0 (top)
+   --  to 1 (bottom).
+   --  @param Xscale the amount that the child widget expands horizontally to
+   --  fill up unused space, from 0 to 1. A value of 0 indicates that the child
    --  widget should never expand. A value of 1 indicates that the child widget
    --  will expand to fill all of the space allocated for the
    --  Gtk.Alignment.Gtk_Alignment.
-   --  "yscale": the amount that the child widget expands vertically to fill
-   --  up unused space, from 0 to 1. The values are similar to Xscale.
+   --  @param Yscale the amount that the child widget expands vertically to
+   --  fill up unused space, from 0 to 1. The values are similar to Xscale.
 
    ----------------
    -- Properties --

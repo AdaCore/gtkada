@@ -93,16 +93,16 @@ package Gtk.Radio_Menu_Item is
    --  simple Gtk.Label.Gtk_Label.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "group": group the radio menu item is inside, or null
-   --  "label": the text for the label
+   --  @param Group group the radio menu item is inside, or null
+   --  @param Label the text for the label
 
    function Gtk_Radio_Menu_Item_New_With_Label
       (Group : Gtk.Widget.Widget_SList.GSlist;
        Label : UTF8_String := "") return Gtk_Radio_Menu_Item;
    --  Creates a new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item whose child is a
    --  simple Gtk.Label.Gtk_Label.
-   --  "group": group the radio menu item is inside, or null
-   --  "label": the text for the label
+   --  @param Group group the radio menu item is inside, or null
+   --  @param Label the text for the label
 
    procedure Gtk_New_With_Mnemonic
       (Radio_Menu_Item : out Gtk_Radio_Menu_Item;
@@ -117,8 +117,8 @@ package Gtk.Radio_Menu_Item is
    --  so underscores in Label indicate the mnemonic for the menu item.
    --  Initialize_With_Mnemonic does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "group": group the radio menu item is inside, or null
-   --  "label": the text of the button, with an underscore in front of the
+   --  @param Group group the radio menu item is inside, or null
+   --  @param Label the text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Gtk_Radio_Menu_Item_New_With_Mnemonic
@@ -127,8 +127,8 @@ package Gtk.Radio_Menu_Item is
    --  Creates a new Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item containing a
    --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
    --  so underscores in Label indicate the mnemonic for the menu item.
-   --  "group": group the radio menu item is inside, or null
-   --  "label": the text of the button, with an underscore in front of the
+   --  @param Group group the radio menu item is inside, or null
+   --  @param Label the text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Get_Type return Glib.GType;
@@ -149,7 +149,7 @@ package Gtk.Radio_Menu_Item is
       (Radio_Menu_Item : not null access Gtk_Radio_Menu_Item_Record;
        Group           : Gtk.Widget.Widget_SList.GSlist);
    --  Sets the group of a radio menu item, or changes it.
-   --  "group": the new group, or null.
+   --  @param Group the new group, or null.
 
    procedure Join_Group
       (Radio_Menu_Item : not null access Gtk_Radio_Menu_Item_Record;
@@ -175,9 +175,9 @@ package Gtk.Radio_Menu_Item is
    --       }
    --
    --  Since: gtk+ 3.18
-   --  "group_source": a Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item whose group
-   --  we are joining, or null to remove the Radio_Menu_Item from its current
-   --  group
+   --  @param Group_Source a Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item whose
+   --  group we are joining, or null to remove the Radio_Menu_Item from its
+   --  current group
 
    ----------------------
    -- GtkAda additions --

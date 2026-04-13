@@ -79,11 +79,11 @@ package Gtk.Cell_View is
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
 
    ------------------
    -- Constructors --
@@ -118,9 +118,9 @@ package Gtk.Cell_View is
    --  Since: gtk+ 2.6
    --  Initialize_With_Context does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to layout cells
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context in which to
-   --  calculate cell geometry
+   --  @param Area the Gtk.Cell_Area.Gtk_Cell_Area to layout cells
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context in which
+   --  to calculate cell geometry
 
    function Gtk_Cell_View_New_With_Context
       (Area    : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
@@ -133,9 +133,9 @@ package Gtk.Cell_View is
    --  area synchronize the geometry for those cells, in this way alignments
    --  with cellviews for other rows are possible.
    --  Since: gtk+ 2.6
-   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to layout cells
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context in which to
-   --  calculate cell geometry
+   --  @param Area the Gtk.Cell_Area.Gtk_Cell_Area to layout cells
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context in which
+   --  to calculate cell geometry
 
    procedure Gtk_New_With_Markup
       (Cell_View : out Gtk_Cell_View;
@@ -150,7 +150,7 @@ package Gtk.Cell_View is
    --  Since: gtk+ 2.6
    --  Initialize_With_Markup does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "markup": the text to display in the cell view
+   --  @param Markup the text to display in the cell view
 
    function Gtk_Cell_View_New_With_Markup
       (Markup : UTF8_String) return Gtk_Cell_View;
@@ -159,7 +159,7 @@ package Gtk.Cell_View is
    --  Markup. The text can be marked up with the [Pango text markup
    --  language][PangoMarkupFormat].
    --  Since: gtk+ 2.6
-   --  "markup": the text to display in the cell view
+   --  @param Markup the text to display in the cell view
 
    procedure Gtk_New_With_Pixbuf
       (Cell_View : out Gtk_Cell_View;
@@ -173,7 +173,7 @@ package Gtk.Cell_View is
    --  Since: gtk+ 2.6
    --  Initialize_With_Pixbuf does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "pixbuf": the image to display in the cell view
+   --  @param Pixbuf the image to display in the cell view
 
    function Gtk_Cell_View_New_With_Pixbuf
       (Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
@@ -182,7 +182,7 @@ package Gtk.Cell_View is
    --  Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf to it, and makes it
    --  show Pixbuf.
    --  Since: gtk+ 2.6
-   --  "pixbuf": the image to display in the cell view
+   --  @param Pixbuf the image to display in the cell view
 
    procedure Gtk_New_With_Text
       (Cell_View : out Gtk_Cell_View;
@@ -196,7 +196,7 @@ package Gtk.Cell_View is
    --  Since: gtk+ 2.6
    --  Initialize_With_Text does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "text": the text to display in the cell view
+   --  @param Text the text to display in the cell view
 
    function Gtk_Cell_View_New_With_Text
       (Text : UTF8_String) return Gtk_Cell_View;
@@ -204,7 +204,7 @@ package Gtk.Cell_View is
    --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text to it, and makes it show
    --  Text.
    --  Since: gtk+ 2.6
-   --  "text": the text to display in the cell view
+   --  @param Text the text to display in the cell view
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_cell_view_get_type");
@@ -229,7 +229,7 @@ package Gtk.Cell_View is
    --  result, but may be a needed intermediate state if say, the model for the
    --  Gtk.Cell_View.Gtk_Cell_View becomes temporarily empty.
    --  Since: gtk+ 2.6
-   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path or null to unset.
+   --  @param Path a Gtk.Tree_Model.Gtk_Tree_Path or null to unset.
 
    function Get_Draw_Sensitive
       (Cell_View : not null access Gtk_Cell_View_Record) return Boolean;
@@ -245,7 +245,7 @@ package Gtk.Cell_View is
    --  rows with insensitive cells that contain children appear sensitive in
    --  the parent menu item.
    --  Since: gtk+ 3.0
-   --  "draw_sensitive": whether to draw all cells in a sensitive state.
+   --  @param Draw_Sensitive whether to draw all cells in a sensitive state.
 
    function Get_Fit_Model
       (Cell_View : not null access Gtk_Cell_View_Record) return Boolean;
@@ -262,7 +262,7 @@ package Gtk.Cell_View is
    --  view displayed on the combo box's button always gets enough space and
    --  does not resize when selection changes.
    --  Since: gtk+ 3.0
-   --  "fit_model": whether Cell_View should request space for the whole
+   --  @param Fit_Model whether Cell_View should request space for the whole
    --  model.
 
    function Get_Model
@@ -278,7 +278,7 @@ package Gtk.Cell_View is
    --  will remove it before setting the new model. If Model is null, then it
    --  will unset the old model.
    --  Since: gtk+ 2.6
-   --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Model a Gtk.Tree_Model.Gtk_Tree_Model
 
    function Get_Size_Of_Row
       (Cell_View   : not null access Gtk_Cell_View_Record;
@@ -289,8 +289,8 @@ package Gtk.Cell_View is
    --  row pointed to by Path.
    --  Since: gtk+ 2.6
    --  Deprecated since 3.0, 1
-   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path
-   --  "requisition": return location for the size
+   --  @param Path a Gtk.Tree_Model.Gtk_Tree_Path
+   --  @param Requisition return location for the size
 
    procedure Set_Background_Color
       (Cell_View : not null access Gtk_Cell_View_Record;
@@ -299,14 +299,14 @@ package Gtk.Cell_View is
    --  Sets the background color of View.
    --  Since: gtk+ 2.6
    --  Deprecated since 3.4, 1
-   --  "color": the new background color
+   --  @param Color the new background color
 
    procedure Set_Background_Rgba
       (Cell_View : not null access Gtk_Cell_View_Record;
        Rgba      : Gdk.RGBA.Gdk_RGBA);
    --  Sets the background color of Cell_View.
    --  Since: gtk+ 3.0
-   --  "rgba": the new background color
+   --  @param Rgba the new background color
 
    procedure Set_Cell_Data_Func
       (Cell_Layout : not null access Gtk_Cell_View_Record;
@@ -318,8 +318,8 @@ package Gtk.Cell_View is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -334,12 +334,12 @@ package Gtk.Cell_View is
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
       --  as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : not null access Gtk.Cell_View.Gtk_Cell_View_Record'Class;
@@ -352,9 +352,9 @@ package Gtk.Cell_View is
       --  cell renderer(s) as appropriate.
       --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
-      --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-      --  "func_data": user data for Func
+      --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+      --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+      --  @param Func_Data user data for Func
 
    end Set_Cell_Data_Func_User_Data;
 

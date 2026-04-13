@@ -46,10 +46,10 @@ package body Gtk.Assistant is
    --  the assistant to use the default forward function, which just goes to
    --  the next visible page.
    --  Since: gtk+ 2.10
-   --  "page_func": the Gtk_Assistant_Page_Func, or null to use the default
-   --  one
-   --  "data": user data for Page_Func
-   --  "destroy": destroy notifier for Data
+   --  @param Page_Func the Gtk_Assistant_Page_Func, or null to use the
+   --  default one
+   --  @param Data user data for Page_Func
+   --  @param Destroy destroy notifier for Data
 
    function To_Gtk_Assistant_Page_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Assistant_Page_Func);
@@ -61,8 +61,8 @@ package body Gtk.Assistant is
       (Current_Page : Glib.Gint;
        Data         : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_Assistant_Page_Func);
-   --  "current_page": The page number used to calculate the next page.
-   --  "data": user data.
+   --  @param Current_Page The page number used to calculate the next page.
+   --  @param Data user data.
 
    --------------------------------------
    -- Internal_Gtk_Assistant_Page_Func --
@@ -446,8 +446,8 @@ package body Gtk.Assistant is
       --  is the next page given a current one. It's called both for computing
       --  the next page when the user presses the "forward" button and for
       --  handling the behavior of the "last" button.
-      --  "current_page": The page number used to calculate the next page.
-      --  "data": user data.
+      --  @param Current_Page The page number used to calculate the next page.
+      --  @param Data user data.
 
       -----------------
       -- Internal_Cb --

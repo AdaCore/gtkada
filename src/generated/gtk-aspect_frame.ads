@@ -70,16 +70,16 @@ package Gtk.Aspect_Frame is
    --  Create a new Gtk.Aspect_Frame.Gtk_Aspect_Frame.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "label": Label text.
-   --  "xalign": Horizontal alignment of the child within the allocation of
-   --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left
+   --  @param Label Label text.
+   --  @param Xalign Horizontal alignment of the child within the allocation
+   --  of the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left
    --  aligned) to 1.0 (right aligned)
-   --  "yalign": Vertical alignment of the child within the allocation of the
-   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (top aligned) to
-   --  1.0 (bottom aligned)
-   --  "ratio": The desired aspect ratio.
-   --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
-   --  from the requistion of the child.
+   --  @param Yalign Vertical alignment of the child within the allocation of
+   --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (top
+   --  aligned) to 1.0 (bottom aligned)
+   --  @param Ratio The desired aspect ratio.
+   --  @param Obey_Child If True, Ratio is ignored, and the aspect ratio is
+   --  taken from the requistion of the child.
 
    function Gtk_Aspect_Frame_New
       (Label      : UTF8_String := "";
@@ -88,16 +88,16 @@ package Gtk.Aspect_Frame is
        Ratio      : Gfloat;
        Obey_Child : Boolean) return Gtk_Aspect_Frame;
    --  Create a new Gtk.Aspect_Frame.Gtk_Aspect_Frame.
-   --  "label": Label text.
-   --  "xalign": Horizontal alignment of the child within the allocation of
-   --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left
+   --  @param Label Label text.
+   --  @param Xalign Horizontal alignment of the child within the allocation
+   --  of the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left
    --  aligned) to 1.0 (right aligned)
-   --  "yalign": Vertical alignment of the child within the allocation of the
-   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (top aligned) to
-   --  1.0 (bottom aligned)
-   --  "ratio": The desired aspect ratio.
-   --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
-   --  from the requistion of the child.
+   --  @param Yalign Vertical alignment of the child within the allocation of
+   --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (top
+   --  aligned) to 1.0 (bottom aligned)
+   --  @param Ratio The desired aspect ratio.
+   --  @param Obey_Child If True, Ratio is ignored, and the aspect ratio is
+   --  taken from the requistion of the child.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_aspect_frame_get_type");
@@ -113,15 +113,15 @@ package Gtk.Aspect_Frame is
        Ratio        : Gfloat;
        Obey_Child   : Boolean);
    --  Set parameters for an existing Gtk.Aspect_Frame.Gtk_Aspect_Frame.
-   --  "xalign": Horizontal alignment of the child within the allocation of
-   --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left
+   --  @param Xalign Horizontal alignment of the child within the allocation
+   --  of the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (left
    --  aligned) to 1.0 (right aligned)
-   --  "yalign": Vertical alignment of the child within the allocation of the
-   --  Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (top aligned) to
-   --  1.0 (bottom aligned)
-   --  "ratio": The desired aspect ratio.
-   --  "obey_child": If True, Ratio is ignored, and the aspect ratio is taken
-   --  from the requistion of the child.
+   --  @param Yalign Vertical alignment of the child within the allocation of
+   --  the Gtk.Aspect_Frame.Gtk_Aspect_Frame. This ranges from 0.0 (top
+   --  aligned) to 1.0 (bottom aligned)
+   --  @param Ratio The desired aspect ratio.
+   --  @param Obey_Child If True, Ratio is ignored, and the aspect ratio is
+   --  taken from the requistion of the child.
 
    ----------------
    -- Properties --

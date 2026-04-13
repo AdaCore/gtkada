@@ -107,8 +107,8 @@ package body Gtk.Cell_Area is
    pragma Import (C, C_Gtk_Cell_Area_Foreach, "gtk_cell_area_foreach");
    --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area.
    --  Since: gtk+ 3.0
-   --  "callback": the Gtk_Cell_Callback to call
-   --  "callback_data": user provided data pointer
+   --  @param Callback the Gtk_Cell_Callback to call
+   --  @param Callback_Data user provided data pointer
 
    procedure C_Gtk_Cell_Area_Foreach_Alloc
       (Self            : System.Address;
@@ -122,14 +122,14 @@ package body Gtk.Cell_Area is
    --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area
    --  with the allocated rectangle inside Cell_Area.
    --  Since: gtk+ 3.0
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this row
-   --  of data.
-   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering to
-   --  "cell_area": the Widget relative coordinates and size for Area
-   --  "background_area": the Widget relative coordinates of the background
-   --  area
-   --  "callback": the Gtk_Cell_Alloc_Callback to call
-   --  "callback_data": user provided data pointer
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this
+   --  row of data.
+   --  @param Widget the Gtk.Widget.Gtk_Widget that Area is rendering to
+   --  @param Cell_Area the Widget relative coordinates and size for Area
+   --  @param Background_Area the Widget relative coordinates of the
+   --  background area
+   --  @param Callback the Gtk_Cell_Alloc_Callback to call
+   --  @param Callback_Data user provided data pointer
 
    procedure C_Gtk_Cell_Layout_Set_Cell_Data_Func
       (Cell_Layout : System.Address;
@@ -144,10 +144,10 @@ package body Gtk.Cell_Area is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-   --  "func_data": user data for Func
-   --  "destroy": destroy notify for Func_Data
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Func_Data user data for Func
+   --  @param Destroy destroy notify for Func_Data
 
    function To_Gtk_Cell_Callback is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Cell_Callback);
@@ -173,19 +173,19 @@ package body Gtk.Cell_Area is
        Cell_Background : Gdk.Rectangle.Gdk_Rectangle;
        Data            : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Cell_Alloc_Callback);
-   --  "renderer": the cell renderer to operate on
-   --  "cell_area": the area allocated to Renderer inside the rectangle
+   --  @param Renderer the cell renderer to operate on
+   --  @param Cell_Area the area allocated to Renderer inside the rectangle
    --  provided to Gtk.Cell_Area.Foreach_Alloc.
-   --  "cell_background": the background area for Renderer inside the
+   --  @param Cell_Background the background area for Renderer inside the
    --  background area provided to Gtk.Cell_Area.Foreach_Alloc.
-   --  "data": user-supplied data
+   --  @param Data user-supplied data
 
    function Internal_Gtk_Cell_Callback
       (Renderer : System.Address;
        Data     : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Cell_Callback);
-   --  "renderer": the cell renderer to operate on
-   --  "data": user-supplied data
+   --  @param Renderer the cell renderer to operate on
+   --  @param Data user-supplied data
 
    procedure Internal_Gtk_Cell_Layout_Data_Func
       (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
@@ -194,12 +194,12 @@ package body Gtk.Cell_Area is
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Cell_Layout_Data_Func);
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
-   --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
+   --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
    --------------------------------------
    -- Internal_Gtk_Cell_Alloc_Callback --
@@ -594,12 +594,12 @@ package body Gtk.Cell_Area is
       --  The type of the callback functions used for iterating over the cell
       --  renderers and their allocated areas inside a
       --  Gtk.Cell_Area.Gtk_Cell_Area, see Gtk.Cell_Area.Foreach_Alloc.
-      --  "renderer": the cell renderer to operate on
-      --  "cell_area": the area allocated to Renderer inside the rectangle
+      --  @param Renderer the cell renderer to operate on
+      --  @param Cell_Area the area allocated to Renderer inside the rectangle
       --  provided to Gtk.Cell_Area.Foreach_Alloc.
-      --  "cell_background": the background area for Renderer inside the
+      --  @param Cell_Background the background area for Renderer inside the
       --  background area provided to Gtk.Cell_Area.Foreach_Alloc.
-      --  "data": user-supplied data
+      --  @param Data user-supplied data
 
       -------------------
       -- Foreach_Alloc --
@@ -661,8 +661,8 @@ package body Gtk.Cell_Area is
       --  The type of the callback functions used for iterating over the cell
       --  renderers of a Gtk.Cell_Area.Gtk_Cell_Area, see
       --  Gtk.Cell_Area.Foreach.
-      --  "renderer": the cell renderer to operate on
-      --  "data": user-supplied data
+      --  @param Renderer the cell renderer to operate on
+      --  @param Data user-supplied data
 
       -------------
       -- Foreach --
@@ -1119,12 +1119,12 @@ package body Gtk.Cell_Area is
       pragma Convention (C, Internal_Cb);
       --  A function which should set the value of Cell_Layout's cell
       --  renderer(s) as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       -----------------
       -- Internal_Cb --

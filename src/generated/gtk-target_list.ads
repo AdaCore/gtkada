@@ -75,9 +75,9 @@ package Gtk.Target_List is
        Flags  : Guint;
        Info   : Guint);
    --  Appends another target to a Gtk.Target_List.Gtk_Target_List.
-   --  "target": the interned atom representing the target
-   --  "flags": the flags for this target
-   --  "info": an ID that will be passed back to the application
+   --  @param Target the interned atom representing the target
+   --  @param Flags the flags for this target
+   --  @param Info an ID that will be passed back to the application
 
    procedure Add_Image_Targets
       (List     : Gtk_Target_List;
@@ -87,8 +87,8 @@ package Gtk.Target_List is
    --  Gtk.Selection_Data.Gtk_Selection_Data to the target list. All targets
    --  are added with the same Info.
    --  Since: gtk+ 2.6
-   --  "info": an ID that will be passed back to the application
-   --  "writable": whether to add only targets for which GTK+ knows how to
+   --  @param Info an ID that will be passed back to the application
+   --  @param Writable whether to add only targets for which GTK+ knows how to
    --  convert a pixbuf into the format
 
    procedure Add_Text_Targets (List : Gtk_Target_List; Info : Guint);
@@ -96,14 +96,14 @@ package Gtk.Target_List is
    --  Gtk.Selection_Data.Gtk_Selection_Data to the target list. All targets
    --  are added with the same Info.
    --  Since: gtk+ 2.6
-   --  "info": an ID that will be passed back to the application
+   --  @param Info an ID that will be passed back to the application
 
    procedure Add_Uri_Targets (List : Gtk_Target_List; Info : Guint);
    --  Appends the URI targets supported by
    --  Gtk.Selection_Data.Gtk_Selection_Data to the target list. All targets
    --  are added with the same Info.
    --  Since: gtk+ 2.6
-   --  "info": an ID that will be passed back to the application
+   --  @param Info an ID that will be passed back to the application
 
    procedure Find
       (List   : Gtk_Target_List;
@@ -111,9 +111,9 @@ package Gtk.Target_List is
        Info   : out Guint;
        Found  : out Boolean);
    --  Looks up a given target in a Gtk.Target_List.Gtk_Target_List.
-   --  "target": an interned atom representing the target to search for
-   --  "info": a pointer to the location to store application info for target,
-   --  or null
+   --  @param Target an interned atom representing the target to search for
+   --  @param Info a pointer to the location to store application info for
+   --  target, or null
 
    function Ref (List : Gtk_Target_List) return Gtk_Target_List;
    --  Increases the reference count of a Gtk.Target_List.Gtk_Target_List by
@@ -121,7 +121,7 @@ package Gtk.Target_List is
 
    procedure Remove (List : Gtk_Target_List; Target : Gdk.Types.Gdk_Atom);
    --  Removes a target from a target list.
-   --  "target": the interned atom representing the target
+   --  @param Target the interned atom representing the target
 
    procedure Unref (List : Gtk_Target_List);
    --  Decreases the reference count of a Gtk.Target_List.Gtk_Target_List by

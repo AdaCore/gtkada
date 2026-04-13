@@ -109,8 +109,8 @@ package Gtk.Combo_Box is
    --  be rendered as a separator. A common way to implement this is to have a
    --  boolean column in the model, whose values the
    --  Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func returns.
-   --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
+   --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
 
    type Gtk_Cell_Layout_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
@@ -119,11 +119,11 @@ package Gtk.Combo_Box is
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
 
    ------------------
    -- Constructors --
@@ -151,14 +151,16 @@ package Gtk.Combo_Box is
    --  cells.
    --  Initialize_With_Area does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
+   --  @param Area the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell
+   --  renderers
 
    function Gtk_Combo_Box_New_With_Area
       (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
        return Gtk_Combo_Box;
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box using Area to layout
    --  cells.
-   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
+   --  @param Area the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell
+   --  renderers
 
    procedure Gtk_New_With_Area_And_Entry
       (Combo_Box : out Gtk_Combo_Box;
@@ -170,14 +172,16 @@ package Gtk.Combo_Box is
    --  The new combo box will use Area to layout cells.
    --  Initialize_With_Area_And_Entry does nothing if the object was already
    --  created with another call to Initialize* or G_New.
-   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
+   --  @param Area the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell
+   --  renderers
 
    function Gtk_Combo_Box_New_With_Area_And_Entry
       (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
        return Gtk_Combo_Box;
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry.
    --  The new combo box will use Area to layout cells.
-   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell renderers
+   --  @param Area the Gtk.Cell_Area.Gtk_Cell_Area to use to layout cell
+   --  renderers
 
    procedure Gtk_New_With_Entry (Combo_Box : out Gtk_Combo_Box);
    procedure Initialize_With_Entry
@@ -202,14 +206,14 @@ package Gtk.Combo_Box is
    --  Since: gtk+ 2.4
    --  Initialize_With_Model does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "model": A Gtk.Tree_Model.Gtk_Tree_Model.
+   --  @param Model A Gtk.Tree_Model.Gtk_Tree_Model.
 
    function Gtk_Combo_Box_New_With_Model
       (Model : Gtk.Tree_Model.Gtk_Tree_Model) return Gtk_Combo_Box;
    --  Creates a new Gtk.Combo_Box.Gtk_Combo_Box with the model initialized to
    --  Model.
    --  Since: gtk+ 2.4
-   --  "model": A Gtk.Tree_Model.Gtk_Tree_Model.
+   --  @param Model A Gtk.Tree_Model.Gtk_Tree_Model.
 
    procedure Gtk_New_With_Model_And_Entry
       (Combo_Box : out Gtk_Combo_Box;
@@ -222,14 +226,14 @@ package Gtk.Combo_Box is
    --  Since: gtk+ 2.24
    --  Initialize_With_Model_And_Entry does nothing if the object was already
    --  created with another call to Initialize* or G_New.
-   --  "model": A Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Model A Gtk.Tree_Model.Gtk_Tree_Model
 
    function Gtk_Combo_Box_New_With_Model_And_Entry
       (Model : Gtk.Tree_Model.Gtk_Tree_Model) return Gtk_Combo_Box;
    --  Creates a new empty Gtk.Combo_Box.Gtk_Combo_Box with an entry and with
    --  the model initialized to Model.
    --  Since: gtk+ 2.24
-   --  "model": A Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Model A Gtk.Tree_Model.Gtk_Tree_Model
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_combo_box_get_type");
@@ -252,7 +256,7 @@ package Gtk.Combo_Box is
        Index     : Glib.Gint);
    --  Sets the active item of Combo_Box to be the item at Index.
    --  Since: gtk+ 2.4
-   --  "index_": An index in the model passed during construction, or -1 to
+   --  @param Index An index in the model passed during construction, or -1 to
    --  have no active item
 
    function Get_Active_Id
@@ -279,7 +283,7 @@ package Gtk.Combo_Box is
    --  unset or if no row has the given ID then the function does nothing and
    --  returns False.
    --  Since: gtk+ 3.0
-   --  "active_id": the ID of the row to select, or null
+   --  @param Active_Id the ID of the row to select, or null
 
    function Get_Add_Tearoffs
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean;
@@ -294,7 +298,7 @@ package Gtk.Combo_Box is
    --  Sets whether the popup menu should have a tearoff menu item.
    --  Since: gtk+ 2.6
    --  Deprecated since 3.10, 1
-   --  "add_tearoffs": True to add tearoff menu items
+   --  @param Add_Tearoffs True to add tearoff menu items
 
    function Get_Button_Sensitivity
       (Combo_Box : not null access Gtk_Combo_Box_Record)
@@ -311,7 +315,7 @@ package Gtk.Combo_Box is
    --  (Gtk.Enums.Sensitivity_Off) or only if there is at least one item to
    --  display (Gtk.Enums.Sensitivity_Auto).
    --  Since: gtk+ 2.14
-   --  "sensitivity": specify the sensitivity of the dropdown button
+   --  @param Sensitivity specify the sensitivity of the dropdown button
 
    function Get_Column_Span_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint;
@@ -325,7 +329,7 @@ package Gtk.Combo_Box is
    --  Column_Span. The column span column contains integers which indicate how
    --  many columns an item should span.
    --  Since: gtk+ 2.4
-   --  "column_span": A column in the model passed during construction
+   --  @param Column_Span A column in the model passed during construction
 
    function Get_Entry_Text_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint;
@@ -342,7 +346,7 @@ package Gtk.Combo_Box is
    --  This is only relevant if Combo_Box has been created with
    --  Gtk.Combo_Box.Gtk_Combo_Box:has-entry as True.
    --  Since: gtk+ 2.24
-   --  "text_column": A column in Model to get the strings from for the
+   --  @param Text_Column A column in Model to get the strings from for the
    --  internal entry
 
    function Get_Focus_On_Click
@@ -363,8 +367,8 @@ package Gtk.Combo_Box is
    --  area of the application.
    --  Since: gtk+ 2.6
    --  Deprecated since 3.20, 1
-   --  "focus_on_click": whether the combo box grabs focus when clicked with
-   --  the mouse
+   --  @param Focus_On_Click whether the combo box grabs focus when clicked
+   --  with the mouse
 
    function Get_Has_Entry
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean;
@@ -384,7 +388,7 @@ package Gtk.Combo_Box is
    --  values from. The column Id_Column in the model of Combo_Box must be of
    --  type G_TYPE_STRING.
    --  Since: gtk+ 3.0
-   --  "id_column": A column in Model to get string IDs for values from
+   --  @param Id_Column A column in Model to get string IDs for values from
 
    function Get_Model
       (Combo_Box : not null access Gtk_Combo_Box_Record)
@@ -403,7 +407,7 @@ package Gtk.Combo_Box is
    --  call Gtk.Cell_Layout.Clear yourself if you need to set up different cell
    --  renderers for the new model.
    --  Since: gtk+ 2.4
-   --  "model": A Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Model A Gtk.Tree_Model.Gtk_Tree_Model
 
    function Get_Popup_Fixed_Width
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Boolean;
@@ -417,7 +421,7 @@ package Gtk.Combo_Box is
    --  Specifies whether the popup's width should be a fixed width matching
    --  the allocated width of the combo box.
    --  Since: gtk+ 3.0
-   --  "fixed": whether to use a fixed popup width
+   --  @param Fixed whether to use a fixed popup width
 
    procedure Get_Row_Separator_Func
       (Combo_Box : not null access Gtk_Combo_Box_Record);
@@ -431,7 +435,7 @@ package Gtk.Combo_Box is
    --  row should be drawn as a separator. If the row separator function is
    --  null, no separators are drawn. This is the default value.
    --  Since: gtk+ 2.6
-   --  "func": a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
+   --  @param Func a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
 
    function Get_Row_Span_Column
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint;
@@ -445,7 +449,7 @@ package Gtk.Combo_Box is
    --  The row span column contains integers which indicate how many rows an
    --  item should span.
    --  Since: gtk+ 2.4
-   --  "row_span": A column in the model passed during construction.
+   --  @param Row_Span A column in the model passed during construction.
 
    function Get_Title
       (Combo_Box : not null access Gtk_Combo_Box_Record) return UTF8_String;
@@ -462,7 +466,7 @@ package Gtk.Combo_Box is
    --  Sets the menu's title in tearoff mode.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.10, 1
-   --  "title": a title for the menu in tearoff mode
+   --  @param Title a title for the menu in tearoff mode
 
    function Get_Wrap_Width
       (Combo_Box : not null access Gtk_Combo_Box_Record) return Glib.Gint;
@@ -478,7 +482,7 @@ package Gtk.Combo_Box is
    --  basically the preferred number of columns when you want the popup to be
    --  layed out in a table.
    --  Since: gtk+ 2.4
-   --  "width": Preferred number of columns
+   --  @param Width Preferred number of columns
 
    procedure Popdown (Combo_Box : not null access Gtk_Combo_Box_Record);
    --  Hides the menu or dropdown list of Combo_Box.
@@ -499,7 +503,7 @@ package Gtk.Combo_Box is
    --  Sets the current active item to be the one referenced by Iter, or
    --  unsets the active item if Iter is null.
    --  Since: gtk+ 2.4
-   --  "iter": The Gtk.Tree_Model.Gtk_Tree_Iter, or null
+   --  @param Iter The Gtk.Tree_Model.Gtk_Tree_Iter, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -514,9 +518,9 @@ package Gtk.Combo_Box is
       --  be rendered as a separator. A common way to implement this is to have a
       --  boolean column in the model, whose values the
       --  Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func returns.
-      --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
-      --  "data": user data
+      --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
+      --  @param Data user data
 
       procedure Set_Row_Separator_Func
          (Combo_Box : not null access Gtk.Combo_Box.Gtk_Combo_Box_Record'Class;
@@ -526,8 +530,8 @@ package Gtk.Combo_Box is
       --  a row should be drawn as a separator. If the row separator function
       --  is null, no separators are drawn. This is the default value.
       --  Since: gtk+ 2.6
-      --  "func": a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
-      --  "data": user data to pass to Func, or null
+      --  @param Func a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
+      --  @param Data user data to pass to Func, or null
 
    end Set_Row_Separator_Func_User_Data;
 
@@ -541,8 +545,8 @@ package Gtk.Combo_Box is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -557,12 +561,12 @@ package Gtk.Combo_Box is
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
       --  as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : not null access Gtk.Combo_Box.Gtk_Combo_Box_Record'Class;
@@ -575,9 +579,9 @@ package Gtk.Combo_Box is
       --  cell renderer(s) as appropriate.
       --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
-      --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-      --  "func_data": user data for Func
+      --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+      --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+      --  @param Func_Data user data for Func
 
    end Set_Cell_Data_Func_User_Data;
 
@@ -805,8 +809,8 @@ package Gtk.Combo_Box is
    --     }
    -- 
    --  Callback parameters:
-   --    --  "path": the GtkTreePath string from the combo box's current model to
-   --    --  format text for
+   --    --  @param Path the GtkTreePath string from the combo box's current model
+   --    --  to format text for
    --    --  Returns a newly allocated string representing Path
    -- for the current GtkComboBox model.
 

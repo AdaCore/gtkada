@@ -89,7 +89,7 @@ package Gtk.Scrollable is
    --  this information to display overlayed graphics, like the overshoot
    --  indication, at the right position.
    --  Since: gtk+ 3.16
-   --  "border": return location for the results
+   --  @param Border return location for the results
 
    function Get_Hadjustment
       (Self : Gtk_Scrollable) return Gtk.Adjustment.Gtk_Adjustment;
@@ -102,7 +102,7 @@ package Gtk.Scrollable is
        Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the horizontal adjustment of the Gtk.Scrollable.Gtk_Scrollable.
    --  Since: gtk+ 3.0
-   --  "hadjustment": a Gtk.Adjustment.Gtk_Adjustment
+   --  @param Hadjustment a Gtk.Adjustment.Gtk_Adjustment
 
    function Get_Hscroll_Policy
       (Self : Gtk_Scrollable) return Gtk.Enums.Gtk_Scrollable_Policy;
@@ -118,7 +118,7 @@ package Gtk.Scrollable is
    --  horizontal scrolling should start below the minimum width or below the
    --  natural width.
    --  Since: gtk+ 3.0
-   --  "policy": the horizontal Gtk.Enums.Gtk_Scrollable_Policy
+   --  @param Policy the horizontal Gtk.Enums.Gtk_Scrollable_Policy
 
    function Get_Vadjustment
       (Self : Gtk_Scrollable) return Gtk.Adjustment.Gtk_Adjustment;
@@ -131,7 +131,7 @@ package Gtk.Scrollable is
        Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Sets the vertical adjustment of the Gtk.Scrollable.Gtk_Scrollable.
    --  Since: gtk+ 3.0
-   --  "vadjustment": a Gtk.Adjustment.Gtk_Adjustment
+   --  @param Vadjustment a Gtk.Adjustment.Gtk_Adjustment
 
    function Get_Vscroll_Policy
       (Self : Gtk_Scrollable) return Gtk.Enums.Gtk_Scrollable_Policy;
@@ -147,7 +147,7 @@ package Gtk.Scrollable is
    --  scrolling should start below the minimum height or below the natural
    --  height.
    --  Since: gtk+ 3.0
-   --  "policy": the vertical Gtk.Enums.Gtk_Scrollable_Policy
+   --  @param Policy the vertical Gtk.Enums.Gtk_Scrollable_Policy
 
    ----------------
    -- Properties --
@@ -198,7 +198,7 @@ package Gtk.Scrollable is
    --  this information to display overlayed graphics, like the overshoot
    --  indication, at the right position.
    --  Since: gtk+ 3.16
-   --  "border": return location for the results
+   --  @param Border return location for the results
 
    subtype Scrollable_Interface_Descr is Glib.Object.Interface_Description;
 

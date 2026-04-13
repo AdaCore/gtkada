@@ -86,7 +86,7 @@ package Gtk.Actionable is
    --  same form used for actions in the Glib.Menu.Gmenu associated with the
    --  window.
    --  Since: gtk+ 3.4
-   --  "action_name": an action name, or null
+   --  @param Action_Name an action name, or null
 
    function Get_Action_Target_Value
       (Self : Gtk_Actionable) return Glib.Variant.Gvariant;
@@ -114,8 +114,8 @@ package Gtk.Actionable is
    --  button will now be rendered as active (and the other buttons, with
    --  different targets, rendered inactive).
    --  Since: gtk+ 3.4
-   --  "target_value": a Glib.Variant.Gvariant to set as the target value, or
-   --  null
+   --  @param Target_Value a Glib.Variant.Gvariant to set as the target value,
+   --  or null
 
    procedure Set_Detailed_Action_Name
       (Self                 : Gtk_Actionable;
@@ -129,7 +129,7 @@ package Gtk.Actionable is
    --  the form `"action::target"` where `action` is the action name and
    --  `target` is the string to use as the target.)
    --  Since: gtk+ 3.4
-   --  "detailed_action_name": the detailed action name
+   --  @param Detailed_Action_Name the detailed action name
 
    ----------------
    -- Properties --
@@ -184,7 +184,7 @@ package Gtk.Actionable is
    --  same form used for actions in the Glib.Menu.Gmenu associated with the
    --  window.
    --  Since: gtk+ 3.4
-   --  "action_name": an action name, or null
+   --  @param Action_Name an action name, or null
 
    type Virtual_Set_Action_Target_Value is access procedure (Self : Gtk_Actionable; Target_Value : System.Address);
    pragma Convention (C, Virtual_Set_Action_Target_Value);
@@ -205,8 +205,8 @@ package Gtk.Actionable is
    --  button will now be rendered as active (and the other buttons, with
    --  different targets, rendered inactive).
    --  Since: gtk+ 3.4
-   --  "target_value": a Glib.Variant.Gvariant to set as the target value, or
-   --  null
+   --  @param Target_Value a Glib.Variant.Gvariant to set as the target value,
+   --  or null
 
    subtype Actionable_Interface_Descr is Glib.Object.Interface_Description;
 

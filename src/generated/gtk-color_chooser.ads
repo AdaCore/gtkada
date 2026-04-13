@@ -77,11 +77,11 @@ package Gtk.Color_Chooser is
    --  removing the default color and gray palettes from the color chooser.
    --  If Colors is null, removes all previously added palettes.
    --  Since: gtk+ 3.4
-   --  "orientation": Gtk.Enums.Orientation_Horizontal if the palette should
-   --  be displayed in rows, Gtk.Enums.Orientation_Vertical for columns
-   --  "colors_per_line": the number of colors to show in each row/column
-   --  "n_colors": the total number of elements in Colors
-   --  "colors": the colors of the palette, or null
+   --  @param Orientation Gtk.Enums.Orientation_Horizontal if the palette
+   --  should be displayed in rows, Gtk.Enums.Orientation_Vertical for columns
+   --  @param Colors_Per_Line the number of colors to show in each row/column
+   --  @param N_Colors the total number of elements in Colors
+   --  @param Colors the colors of the palette, or null
 
    procedure Get_Rgba
       (Self  : Gtk_Color_Chooser;
@@ -89,13 +89,13 @@ package Gtk.Color_Chooser is
    pragma Import (C, Get_Rgba, "gtk_color_chooser_get_rgba");
    --  Gets the currently-selected color.
    --  Since: gtk+ 3.4
-   --  "color": a Gdk.RGBA.Gdk_RGBA to fill in with the current color
+   --  @param Color a Gdk.RGBA.Gdk_RGBA to fill in with the current color
 
    procedure Set_Rgba (Self : Gtk_Color_Chooser; Color : Gdk.RGBA.Gdk_RGBA);
    pragma Import (C, Set_Rgba, "gtk_color_chooser_set_rgba");
    --  Sets the color.
    --  Since: gtk+ 3.4
-   --  "color": the new color
+   --  @param Color the new color
 
    function Get_Use_Alpha (Self : Gtk_Color_Chooser) return Boolean;
    --  Returns whether the color chooser shows the alpha channel.
@@ -104,8 +104,8 @@ package Gtk.Color_Chooser is
    procedure Set_Use_Alpha (Self : Gtk_Color_Chooser; Use_Alpha : Boolean);
    --  Sets whether or not the color chooser should use the alpha channel.
    --  Since: gtk+ 3.4
-   --  "use_alpha": True if color chooser should use alpha channel, False if
-   --  not
+   --  @param Use_Alpha True if color chooser should use alpha channel, False
+   --  if not
 
    ----------------
    -- Properties --
@@ -188,11 +188,11 @@ package Gtk.Color_Chooser is
    --  removing the default color and gray palettes from the color chooser.
    --  If Colors is null, removes all previously added palettes.
    --  Since: gtk+ 3.4
-   --  "orientation": Gtk.Enums.Orientation_Horizontal if the palette should
-   --  be displayed in rows, Gtk.Enums.Orientation_Vertical for columns
-   --  "colors_per_line": the number of colors to show in each row/column
-   --  "n_colors": the total number of elements in Colors
-   --  "colors": the colors of the palette, or null
+   --  @param Orientation Gtk.Enums.Orientation_Horizontal if the palette
+   --  should be displayed in rows, Gtk.Enums.Orientation_Vertical for columns
+   --  @param Colors_Per_Line the number of colors to show in each row/column
+   --  @param N_Colors the total number of elements in Colors
+   --  @param Colors the colors of the palette, or null
 
    type Virtual_Color_Activated is access procedure (Self : Gtk_Color_Chooser; Color : Gdk.RGBA.Gdk_RGBA);
    pragma Convention (C, Virtual_Color_Activated);
@@ -201,13 +201,13 @@ package Gtk.Color_Chooser is
    pragma Convention (C, Virtual_Get_Rgba);
    --  Gets the currently-selected color.
    --  Since: gtk+ 3.4
-   --  "color": a Gdk.RGBA.Gdk_RGBA to fill in with the current color
+   --  @param Color a Gdk.RGBA.Gdk_RGBA to fill in with the current color
 
    type Virtual_Set_Rgba is access procedure (Self : Gtk_Color_Chooser; Color : Gdk.RGBA.Gdk_RGBA);
    pragma Convention (C, Virtual_Set_Rgba);
    --  Sets the color.
    --  Since: gtk+ 3.4
-   --  "color": the new color
+   --  @param Color the new color
 
    subtype Color_Chooser_Interface_Descr is Glib.Object.Interface_Description;
 

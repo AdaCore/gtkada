@@ -85,9 +85,9 @@ package Gtk.IM_Context_Simple is
    --  The table must be sorted in dictionary order on the numeric value of
    --  the key symbol fields. (Values beyond the length of the sequence should
    --  be zero.)
-   --  "data": the table
-   --  "max_seq_len": Maximum length of a sequence in the table (cannot be
+   --  @param Data the table
+   --  @param Max_Seq_Len Maximum length of a sequence in the table (cannot be
    --  greater than GTK_MAX_COMPOSE_LEN)
-   --  "n_seqs": number of sequences in the table
+   --  @param N_Seqs number of sequences in the table
 
 end Gtk.IM_Context_Simple;

@@ -116,12 +116,12 @@ package Gtk.Accel_Label is
    --  Creates a new Gtk.Accel_Label.Gtk_Accel_Label.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "string": the label string. Must be non-null.
+   --  @param String the label string. Must be non-null.
 
    function Gtk_Accel_Label_New
       (String : UTF8_String) return Gtk_Accel_Label;
    --  Creates a new Gtk.Accel_Label.Gtk_Accel_Label.
-   --  "string": the label string. Must be non-null.
+   --  @param String the label string. Must be non-null.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_accel_label_get_type");
@@ -136,8 +136,8 @@ package Gtk.Accel_Label is
        Accelerator_Mods : out Gdk.Types.Gdk_Modifier_Type);
    --  Gets the keyval and modifier mask set with Gtk.Accel_Label.Set_Accel.
    --  Since: gtk+ 3.12
-   --  "accelerator_key": return location for the keyval
-   --  "accelerator_mods": return location for the modifier mask
+   --  @param Accelerator_Key return location for the keyval
+   --  @param Accelerator_Mods return location for the modifier mask
 
    procedure Set_Accel
       (Accel_Label      : not null access Gtk_Accel_Label_Record;
@@ -149,8 +149,8 @@ package Gtk.Accel_Label is
    --  regardless of any associated accel closure or widget.
    --  Providing an Accelerator_Key of 0 removes the manual setting.
    --  Since: gtk+ 3.6
-   --  "accelerator_key": a keyval, or 0
-   --  "accelerator_mods": the modifier mask for the accel
+   --  @param Accelerator_Key a keyval, or 0
+   --  @param Accelerator_Mods the modifier mask for the accel
 
    function Get_Accel_Widget
       (Accel_Label : not null access Gtk_Accel_Label_Record)
@@ -164,7 +164,7 @@ package Gtk.Accel_Label is
    --  Sets the widget to be monitored by this accelerator label. Passing null
    --  for Accel_Widget will dissociate Accel_Label from its current widget, if
    --  any.
-   --  "accel_widget": the widget to be monitored, or null
+   --  @param Accel_Widget the widget to be monitored, or null
 
    function Get_Accel_Width
       (Accel_Label : not null access Gtk_Accel_Label_Record) return Guint;
@@ -185,7 +185,7 @@ package Gtk.Accel_Label is
    --  must be connected to an accelerator group; see Gtk.Accel_Group.Connect.
    --  Passing null for Accel_Closure will dissociate Accel_Label from its
    --  current closure, if any.
-   --  "accel_closure": the closure to monitor for accelerator changes, or
+   --  @param Accel_Closure the closure to monitor for accelerator changes, or
    --  null
 
    ----------------

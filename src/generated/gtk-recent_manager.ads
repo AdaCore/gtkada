@@ -197,7 +197,7 @@ package Gtk.Recent_Manager is
    --  See gtk_recent_manager_add_full if you want to explicitly define the
    --  metadata for the resource pointed by Uri.
    --  Since: gtk+ 2.10
-   --  "uri": a valid URI
+   --  @param URI a valid URI
 
    function Get_Items
       (Self : not null access Gtk_Recent_Manager_Record)
@@ -211,7 +211,7 @@ package Gtk.Recent_Manager is
    --  Checks whether there is a recently used resource registered with Uri
    --  inside the recent manager.
    --  Since: gtk+ 2.10
-   --  "uri": a URI
+   --  @param URI a URI
 
    function Lookup_Item
       (Self : not null access Gtk_Recent_Manager_Record;
@@ -220,7 +220,7 @@ package Gtk.Recent_Manager is
    --  a Gtk.Recent_Info.Gtk_Recent_Info-struct containing informations about
    --  the resource like its MIME type, or its display name.
    --  Since: gtk+ 2.10
-   --  "uri": a URI
+   --  @param URI a URI
 
    function Move_Item
       (Self    : not null access Gtk_Recent_Manager_Record;
@@ -230,9 +230,9 @@ package Gtk.Recent_Manager is
    --  Please note that this function will not affect the resource pointed by
    --  the URIs, but only the URI used in the recently used resources list.
    --  Since: gtk+ 2.10
-   --  "uri": the URI of a recently used resource
-   --  "new_uri": the new URI of the recently used resource, or null to remove
-   --  the item pointed by Uri in the list
+   --  @param URI the URI of a recently used resource
+   --  @param New_Uri the new URI of the recently used resource, or null to
+   --  remove the item pointed by Uri in the list
 
    function Purge_Items
       (Self : not null access Gtk_Recent_Manager_Record) return Glib.Gint;
@@ -245,7 +245,7 @@ package Gtk.Recent_Manager is
    --  Removes a resource pointed by Uri from the recently used resources list
    --  handled by a recent manager.
    --  Since: gtk+ 2.10
-   --  "uri": the URI of the item you wish to remove
+   --  @param URI the URI of the item you wish to remove
 
    ----------------------
    -- GtkAda additions --

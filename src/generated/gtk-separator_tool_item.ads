@@ -92,7 +92,7 @@ package Gtk.Separator_Tool_Item is
    --  to False along with Gtk.Tool_Item.Set_Expand is useful to create an item
    --  that forces following items to the end of the toolbar.
    --  Since: gtk+ 2.4
-   --  "draw": whether Item is drawn as a vertical line
+   --  @param Draw whether Item is drawn as a vertical line
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

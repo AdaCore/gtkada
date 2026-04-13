@@ -362,7 +362,7 @@ package Pango.Language is
    --  probably is not useful for applications in most circumstances.
    --  This function uses Pango.Language.Get_Scripts internally.
    --  Since: gtk+ 1.4
-   --  "script": a Pango.Language.Pango_Script
+   --  @param Script a Pango.Language.Pango_Script
 
    function Matches
       (Self       : Pango_Language;
@@ -371,8 +371,8 @@ package Pango.Language is
    --  language ranges. A language tag is considered to match a range in the
    --  list if the range is '*', the range is exactly the tag, or the range is
    --  a prefix of the tag, and the character after it in the tag is '-'.
-   --  "range_list": a list of language ranges, separated by ';', ':', ',', or
-   --  space characters. Each element must either be '*', or a RFC 3066
+   --  @param Range_List a list of language ranges, separated by ';', ':',
+   --  ',', or space characters. Each element must either be '*', or a RFC 3066
    --  language range canonicalized as by Pango.Language.From_String
 
    function To_String (Self : Pango_Language) return UTF8_String;
@@ -392,7 +392,7 @@ package Pango.Language is
    --  letters and '-'.
    --  Use Pango.Language.Get_Default if you want to get the
    --  Pango.Language.Pango_Language for the current locale of the process.
-   --  "language": a string representing a language tag, or null
+   --  @param Language a string representing a language tag, or null
 
    function Get_Default return Pango_Language;
    --  Returns the Pango.Language.Pango_Language for the current locale of the

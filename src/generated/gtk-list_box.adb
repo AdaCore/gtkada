@@ -50,11 +50,11 @@ package body Gtk.List_Box is
    --  functionality in GtkListBox. When using a model, filtering and sorting
    --  should be implemented by the model.
    --  Since: gtk+ 3.16
-   --  "model": the Glib.List_Model.Glist_Model to be bound to Box
-   --  "create_widget_func": a function that creates widgets for items or null
-   --  in case you also passed null as Model
-   --  "user_data": user data passed to Create_Widget_Func
-   --  "user_data_free_func": function for freeing User_Data
+   --  @param Model the Glib.List_Model.Glist_Model to be bound to Box
+   --  @param Create_Widget_Func a function that creates widgets for items or
+   --  null in case you also passed null as Model
+   --  @param User_Data user data passed to Create_Widget_Func
+   --  @param User_Data_Free_Func function for freeing User_Data
 
    procedure C_Gtk_List_Box_Selected_Foreach
       (Self : System.Address;
@@ -64,8 +64,8 @@ package body Gtk.List_Box is
    --  Calls a function for each selected child.
    --  Note that the selection cannot be modified from within this function.
    --  Since: gtk+ 3.14
-   --  "func": the function to call for each selected child
-   --  "data": user data to pass to the function
+   --  @param Func the function to call for each selected child
+   --  @param Data user data to pass to the function
 
    procedure C_Gtk_List_Box_Set_Filter_Func
       (Self        : System.Address;
@@ -83,9 +83,9 @@ package body Gtk.List_Box is
    --  Note that using a filter function is incompatible with using a model
    --  (see Gtk.List_Box.Bind_Model).
    --  Since: gtk+ 3.10
-   --  "filter_func": callback that lets you filter which rows to show
-   --  "user_data": user data passed to Filter_Func
-   --  "destroy": destroy notifier for User_Data
+   --  @param Filter_Func callback that lets you filter which rows to show
+   --  @param User_Data user data passed to Filter_Func
+   --  @param Destroy destroy notifier for User_Data
 
    procedure C_Gtk_List_Box_Set_Header_Func
       (Self          : System.Address;
@@ -112,9 +112,9 @@ package body Gtk.List_Box is
    --  becomes a different row). It is also called for all rows when
    --  Gtk.List_Box.Invalidate_Headers is called.
    --  Since: gtk+ 3.10
-   --  "update_header": callback that lets you add row headers
-   --  "user_data": user data passed to Update_Header
-   --  "destroy": destroy notifier for User_Data
+   --  @param Update_Header callback that lets you add row headers
+   --  @param User_Data user data passed to Update_Header
+   --  @param Destroy destroy notifier for User_Data
 
    procedure C_Gtk_List_Box_Set_Sort_Func
       (Self      : System.Address;
@@ -131,9 +131,9 @@ package body Gtk.List_Box is
    --  Note that using a sort function is incompatible with using a model (see
    --  Gtk.List_Box.Bind_Model).
    --  Since: gtk+ 3.10
-   --  "sort_func": the sort function
-   --  "user_data": user data passed to Sort_Func
-   --  "destroy": destroy notifier for User_Data
+   --  @param Sort_Func the sort function
+   --  @param User_Data user data passed to Sort_Func
+   --  @param Destroy destroy notifier for User_Data
 
    function To_Gtk_List_Box_Create_Widget_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_List_Box_Create_Widget_Func);
@@ -169,42 +169,42 @@ package body Gtk.List_Box is
       (Item      : System.Address;
        User_Data : System.Address) return System.Address;
    pragma Convention (C, Internal_Gtk_List_Box_Create_Widget_Func);
-   --  "item": the item from the model for which to create a widget for
-   --  "user_data": user data
+   --  @param Item the item from the model for which to create a widget for
+   --  @param User_Data user data
 
    function Internal_Gtk_List_Box_Filter_Func
       (Row       : System.Address;
        User_Data : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_List_Box_Filter_Func);
-   --  "row": the row that may be filtered
-   --  "user_data": user data
+   --  @param Row the row that may be filtered
+   --  @param User_Data user data
 
    procedure Internal_Gtk_List_Box_Foreach_Func
       (Box       : System.Address;
        Row       : System.Address;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gtk_List_Box_Foreach_Func);
-   --  "box": a Gtk.List_Box.Gtk_List_Box
-   --  "row": a Gtk.List_Box_Row.Gtk_List_Box_Row
-   --  "user_data": user data
+   --  @param Box a Gtk.List_Box.Gtk_List_Box
+   --  @param Row a Gtk.List_Box_Row.Gtk_List_Box_Row
+   --  @param User_Data user data
 
    function Internal_Gtk_List_Box_Sort_Func
       (Row1      : System.Address;
        Row2      : System.Address;
        User_Data : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_List_Box_Sort_Func);
-   --  "row1": the first row
-   --  "row2": the second row
-   --  "user_data": user data
+   --  @param Row1 the first row
+   --  @param Row2 the second row
+   --  @param User_Data user data
 
    procedure Internal_Gtk_List_Box_Update_Header_Func
       (Row       : System.Address;
        Before    : System.Address;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gtk_List_Box_Update_Header_Func);
-   --  "row": the row to update
-   --  "before": the row before Row, or null if it is first
-   --  "user_data": user data
+   --  @param Row the row to update
+   --  @param Before the row before Row, or null if it is first
+   --  @param User_Data user data
 
    ----------------------------------------------
    -- Internal_Gtk_List_Box_Create_Widget_Func --
@@ -358,8 +358,8 @@ package body Gtk.List_Box is
       --  widgets inside the row to be shown, and is no longer the case.
       --  Applications should be updated to show the desired row widgets.
       --  Since: gtk+ 3.16
-      --  "item": the item from the model for which to create a widget for
-      --  "user_data": user data
+      --  @param Item the item from the model for which to create a widget for
+      --  @param User_Data user data
 
       ----------------
       -- Bind_Model --
@@ -657,9 +657,9 @@ package body Gtk.List_Box is
       --  A function used by Gtk.List_Box.Selected_Foreach. It will be called
       --  on every selected child of the Box.
       --  Since: gtk+ 3.14
-      --  "box": a Gtk.List_Box.Gtk_List_Box
-      --  "row": a Gtk.List_Box_Row.Gtk_List_Box_Row
-      --  "user_data": user data
+      --  @param Box a Gtk.List_Box.Gtk_List_Box
+      --  @param Row a Gtk.List_Box_Row.Gtk_List_Box_Row
+      --  @param User_Data user data
 
       -----------------
       -- Internal_Cb --
@@ -763,8 +763,8 @@ package body Gtk.List_Box is
       --  Will be called whenever the row changes or is added and lets you
       --  control if the row should be visible or not.
       --  Since: gtk+ 3.10
-      --  "row": the row that may be filtered
-      --  "user_data": user data
+      --  @param Row the row that may be filtered
+      --  @param User_Data user data
 
       -----------------
       -- Internal_Cb --
@@ -838,9 +838,9 @@ package body Gtk.List_Box is
       --  set a new one via Gtk.List_Box_Row.Set_Header or just change the
       --  state of the current header widget.
       --  Since: gtk+ 3.10
-      --  "row": the row to update
-      --  "before": the row before Row, or null if it is first
-      --  "user_data": user data
+      --  @param Row the row to update
+      --  @param Before the row before Row, or null if it is first
+      --  @param User_Data user data
 
       -----------------
       -- Internal_Cb --
@@ -944,9 +944,9 @@ package body Gtk.List_Box is
       pragma Convention (C, Internal_Cb);
       --  Compare two rows to determine which should be first.
       --  Since: gtk+ 3.10
-      --  "row1": the first row
-      --  "row2": the second row
-      --  "user_data": user data
+      --  @param Row1 the first row
+      --  @param Row2 the second row
+      --  @param User_Data user data
 
       -----------------
       -- Internal_Cb --

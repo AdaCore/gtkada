@@ -94,8 +94,8 @@ package Gtk.Button is
    --  Since: gtk+ 3.10
    --  Initialize_From_Icon_Name does nothing if the object was already
    --  created with another call to Initialize* or G_New.
-   --  "icon_name": an icon name or null
-   --  "size": an icon size (Gtk.Enums.Gtk_Icon_Size)
+   --  @param Icon_Name an icon name or null
+   --  @param Size an icon size (Gtk.Enums.Gtk_Icon_Size)
 
    function Gtk_Button_New_From_Icon_Name
       (Icon_Name : UTF8_String := "";
@@ -107,8 +107,8 @@ package Gtk.Button is
    --  This function is a convenience wrapper around gtk_button_new and
    --  Gtk.Button.Set_Image.
    --  Since: gtk+ 3.10
-   --  "icon_name": an icon name or null
-   --  "size": an icon size (Gtk.Enums.Gtk_Icon_Size)
+   --  @param Icon_Name an icon name or null
+   --  @param Size an icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Gtk_New_From_Stock
       (Button   : out Gtk_Button;
@@ -123,7 +123,7 @@ package Gtk.Button is
    --  for Gtk.Button.Gtk_New_With_Mnemonic).
    --  Initialize_From_Stock does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "stock_id": the name of the stock item
+   --  @param Stock_Id the name of the stock item
 
    function Gtk_Button_New_From_Stock
       (Stock_Id : UTF8_String) return Gtk_Button;
@@ -132,7 +132,7 @@ package Gtk.Button is
    --  GTK_STOCK_OK and GTK_STOCK_APPLY.
    --  If Stock_Id is unknown, then it will be treated as a mnemonic label (as
    --  for Gtk.Button.Gtk_New_With_Mnemonic).
-   --  "stock_id": the name of the stock item
+   --  @param Stock_Id the name of the stock item
 
    procedure Gtk_New (Button : out Gtk_Button; Label : UTF8_String := "");
    procedure Initialize
@@ -142,13 +142,13 @@ package Gtk.Button is
    --  containing the given text.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "label": The text you want the Gtk.Label.Gtk_Label to hold.
+   --  @param Label The text you want the Gtk.Label.Gtk_Label to hold.
 
    function Gtk_Button_New_With_Label
       (Label : UTF8_String := "") return Gtk_Button;
    --  Creates a Gtk.Button.Gtk_Button widget with a Gtk.Label.Gtk_Label child
    --  containing the given text.
-   --  "label": The text you want the Gtk.Label.Gtk_Label to hold.
+   --  @param Label The text you want the Gtk.Label.Gtk_Label to hold.
 
    procedure Gtk_New_With_Mnemonic
       (Button : out Gtk_Button;
@@ -163,7 +163,7 @@ package Gtk.Button is
    --  a mnemonic. Pressing Alt and that key activates the button.
    --  Initialize_With_Mnemonic does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "label": The text of the button, with an underscore in front of the
+   --  @param Label The text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Gtk_Button_New_With_Mnemonic
@@ -173,7 +173,7 @@ package Gtk.Button is
    --  a literal underscore character in a label, use "__" (two underscores).
    --  The first underlined character represents a keyboard accelerator called
    --  a mnemonic. Pressing Alt and that key activates the button.
-   --  "label": The text of the button, with an underscore in front of the
+   --  @param Label The text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Get_Type return Glib.GType;
@@ -201,8 +201,8 @@ package Gtk.Button is
    --  Gets the alignment of the child in the button.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.14, 1
-   --  "xalign": return location for horizontal alignment
-   --  "yalign": return location for vertical alignment
+   --  @param Xalign return location for horizontal alignment
+   --  @param Yalign return location for vertical alignment
 
    procedure Set_Alignment
       (Button : not null access Gtk_Button_Record;
@@ -213,10 +213,10 @@ package Gtk.Button is
    --  child is a Gtk.Misc.Gtk_Misc or a Gtk.Alignment.Gtk_Alignment.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.14, 1
-   --  "xalign": the horizontal position of the child, 0.0 is left aligned,
-   --  1.0 is right aligned
-   --  "yalign": the vertical position of the child, 0.0 is top aligned, 1.0
-   --  is bottom aligned
+   --  @param Xalign the horizontal position of the child, 0.0 is left
+   --  aligned, 1.0 is right aligned
+   --  @param Yalign the vertical position of the child, 0.0 is top aligned,
+   --  1.0 is bottom aligned
 
    function Get_Always_Show_Image
       (Button : not null access Gtk_Button_Record) return Boolean;
@@ -234,7 +234,7 @@ package Gtk.Button is
    --  Use this property if the button would be useless or hard to use without
    --  the image.
    --  Since: gtk+ 3.6
-   --  "always_show": True if the menuitem should always show the image
+   --  @param Always_Show True if the menuitem should always show the image
 
    function Get_Event_Window
       (Button : not null access Gtk_Button_Record) return Gdk.Gdk_Window;
@@ -260,8 +260,8 @@ package Gtk.Button is
    --  area of the application.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.20, 1
-   --  "focus_on_click": whether the button grabs focus when clicked with the
-   --  mouse
+   --  @param Focus_On_Click whether the button grabs focus when clicked with
+   --  the mouse
 
    function Get_Image
       (Button : not null access Gtk_Button_Record)
@@ -279,7 +279,8 @@ package Gtk.Button is
    --  Gtk.Button.Gtk_Button:always-show-image is True. You don't have to call
    --  Gtk.Widget.Show on Image yourself.
    --  Since: gtk+ 2.6
-   --  "image": a widget to set as the image for the button, or null to unset
+   --  @param Image a widget to set as the image for the button, or null to
+   --  unset
 
    function Get_Image_Position
       (Button : not null access Gtk_Button_Record)
@@ -292,7 +293,7 @@ package Gtk.Button is
        Position : Gtk.Enums.Gtk_Position_Type);
    --  Sets the position of the image relative to the text inside the button.
    --  Since: gtk+ 2.10
-   --  "position": the position
+   --  @param Position the position
 
    function Get_Label
       (Button : not null access Gtk_Button_Record) return UTF8_String;
@@ -307,7 +308,7 @@ package Gtk.Button is
    --  Sets the text of the label of the button to Str. This text is also used
    --  to select the stock item if Gtk.Button.Set_Use_Stock is used.
    --  This will also clear any previously set labels.
-   --  "label": a string
+   --  @param Label a string
 
    function Get_Relief
       (Button : not null access Gtk_Button_Record)
@@ -322,7 +323,7 @@ package Gtk.Button is
    --  Gtk.Enums.Relief_None. The default style is, as one can guess,
    --  Gtk.Enums.Relief_Normal. The deprecated value Gtk.Enums.Relief_Half
    --  behaves the same as Gtk.Enums.Relief_Normal.
-   --  "relief": The GtkReliefStyle as described above
+   --  @param Relief The GtkReliefStyle as described above
 
    function Get_Use_Stock
       (Button : not null access Gtk_Button_Record) return Boolean;
@@ -337,7 +338,7 @@ package Gtk.Button is
    --  If True, the label set on the button is used as a stock id to select
    --  the stock item for the button.
    --  Deprecated since 3.10, 1
-   --  "use_stock": True if the button should use a stock item
+   --  @param Use_Stock True if the button should use a stock item
 
    function Get_Use_Underline
       (Button : not null access Gtk_Button_Record) return Boolean;
@@ -349,7 +350,7 @@ package Gtk.Button is
        Use_Underline : Boolean);
    --  If true, an underline in the text of the button label indicates the
    --  next character should be used for the mnemonic accelerator key.
-   --  "use_underline": True if underlines in the text indicate mnemonics
+   --  @param Use_Underline True if underlines in the text indicate mnemonics
 
    procedure Leave (Button : not null access Gtk_Button_Record);
    pragma Obsolescent (Leave);

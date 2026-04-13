@@ -92,7 +92,7 @@ package Gtk.Recent_Chooser is
    --  If no previous filter objects were defined, this function will call
    --  Gtk.Recent_Chooser.Set_Filter.
    --  Since: gtk+ 2.10
-   --  "filter": a Gtk.Recent_Filter.Gtk_Recent_Filter
+   --  @param Filter a Gtk.Recent_Filter.Gtk_Recent_Filter
 
    function Get_Current_Item
       (Chooser : Gtk_Recent_Chooser) return Gtk.Recent_Info.Gtk_Recent_Info;
@@ -109,7 +109,7 @@ package Gtk.Recent_Chooser is
        URI     : UTF8_String) return Boolean;
    --  Sets Uri as the current URI for Chooser.
    --  Since: gtk+ 2.10
-   --  "uri": a URI
+   --  @param URI a URI
 
    function Get_Filter
       (Chooser : Gtk_Recent_Chooser)
@@ -124,7 +124,7 @@ package Gtk.Recent_Chooser is
    --  Sets Filter as the current Gtk.Recent_Filter.Gtk_Recent_Filter object
    --  used by Chooser to affect the displayed recently used resources.
    --  Since: gtk+ 2.10
-   --  "filter": a Gtk.Recent_Filter.Gtk_Recent_Filter
+   --  @param Filter a Gtk.Recent_Filter.Gtk_Recent_Filter
 
    function Get_Items
       (Chooser : Gtk_Recent_Chooser)
@@ -146,7 +146,7 @@ package Gtk.Recent_Chooser is
    --  Sets the number of items that should be returned by
    --  Gtk.Recent_Chooser.Get_Items and gtk_recent_chooser_get_uris.
    --  Since: gtk+ 2.10
-   --  "limit": a positive integer, or -1 for all items
+   --  @param Limit a positive integer, or -1 for all items
 
    function Get_Local_Only (Chooser : Gtk_Recent_Chooser) return Boolean;
    --  Gets whether only local resources should be shown in the recently used
@@ -161,7 +161,7 @@ package Gtk.Recent_Chooser is
    --  Local_Only is True (the default) then the shown resources are guaranteed
    --  to be accessible through the operating system native file system.
    --  Since: gtk+ 2.10
-   --  "local_only": True if only local files can be shown
+   --  @param Local_Only True if only local files can be shown
 
    function Get_Select_Multiple
       (Chooser : Gtk_Recent_Chooser) return Boolean;
@@ -173,7 +173,7 @@ package Gtk.Recent_Chooser is
        Select_Multiple : Boolean);
    --  Sets whether Chooser can select multiple items.
    --  Since: gtk+ 2.10
-   --  "select_multiple": True if Chooser can select more than one item
+   --  @param Select_Multiple True if Chooser can select more than one item
 
    function Get_Show_Icons (Chooser : Gtk_Recent_Chooser) return Boolean;
    --  Retrieves whether Chooser should show an icon near the resource.
@@ -185,7 +185,7 @@ package Gtk.Recent_Chooser is
    --  Sets whether Chooser should show an icon near the resource when
    --  displaying it.
    --  Since: gtk+ 2.10
-   --  "show_icons": whether to show an icon near the resource
+   --  @param Show_Icons whether to show an icon near the resource
 
    function Get_Show_Not_Found (Chooser : Gtk_Recent_Chooser) return Boolean;
    --  Retrieves whether Chooser should show the recently used resources that
@@ -198,7 +198,7 @@ package Gtk.Recent_Chooser is
    --  Sets whether Chooser should display the recently used resources that it
    --  didn't find. This only applies to local resources.
    --  Since: gtk+ 2.10
-   --  "show_not_found": whether to show the local items we didn't find
+   --  @param Show_Not_Found whether to show the local items we didn't find
 
    function Get_Show_Private (Chooser : Gtk_Recent_Chooser) return Boolean;
    --  Returns whether Chooser should display recently used resources
@@ -210,7 +210,7 @@ package Gtk.Recent_Chooser is
        Show_Private : Boolean);
    --  Whether to show recently used resources marked registered as private.
    --  Since: gtk+ 2.10
-   --  "show_private": True to show private items, False otherwise
+   --  @param Show_Private True to show private items, False otherwise
 
    function Get_Show_Tips (Chooser : Gtk_Recent_Chooser) return Boolean;
    --  Gets whether Chooser should display tooltips containing the full path
@@ -224,7 +224,7 @@ package Gtk.Recent_Chooser is
    --  recently used resource in a Gtk.Recent_Chooser.Gtk_Recent_Chooser
    --  widget.
    --  Since: gtk+ 2.10
-   --  "show_tips": True if tooltips should be shown
+   --  @param Show_Tips True if tooltips should be shown
 
    function Get_Sort_Type
       (Chooser : Gtk_Recent_Chooser) return Gtk_Recent_Sort_Type;
@@ -239,7 +239,7 @@ package Gtk.Recent_Chooser is
    --  Changes the sorting order of the recently used resources list displayed
    --  by Chooser.
    --  Since: gtk+ 2.10
-   --  "sort_type": sort order that the chooser should use
+   --  @param Sort_Type sort order that the chooser should use
 
    function List_Filters
       (Chooser : Gtk_Recent_Chooser)
@@ -253,7 +253,7 @@ package Gtk.Recent_Chooser is
    --  Removes Filter from the list of Gtk.Recent_Filter.Gtk_Recent_Filter
    --  objects held by Chooser.
    --  Since: gtk+ 2.10
-   --  "filter": a Gtk.Recent_Filter.Gtk_Recent_Filter
+   --  @param Filter a Gtk.Recent_Filter.Gtk_Recent_Filter
 
    procedure Select_All (Chooser : Gtk_Recent_Chooser);
    pragma Import (C, Select_All, "gtk_recent_chooser_select_all");
@@ -266,7 +266,7 @@ package Gtk.Recent_Chooser is
        URI     : UTF8_String) return Boolean;
    --  Selects Uri inside Chooser.
    --  Since: gtk+ 2.10
-   --  "uri": a URI
+   --  @param URI a URI
 
    procedure Set_Sort_Func
       (Chooser      : Gtk_Recent_Chooser;
@@ -281,8 +281,8 @@ package Gtk.Recent_Chooser is
    --  zero if the two items are equal and a negative integer if the first item
    --  comes after the second.
    --  Since: gtk+ 2.10
-   --  "sort_func": the comparison function
-   --  "data_destroy": destroy notifier for Sort_Data, or null
+   --  @param Sort_Func the comparison function
+   --  @param Data_Destroy destroy notifier for Sort_Data, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -308,9 +308,9 @@ package Gtk.Recent_Chooser is
       --  second, zero if the two items are equal and a negative integer if the
       --  first item comes after the second.
       --  Since: gtk+ 2.10
-      --  "sort_func": the comparison function
-      --  "sort_data": user data to pass to Sort_Func, or null
-      --  "data_destroy": destroy notifier for Sort_Data, or null
+      --  @param Sort_Func the comparison function
+      --  @param Sort_Data user data to pass to Sort_Func, or null
+      --  @param Data_Destroy destroy notifier for Sort_Data, or null
 
    end Set_Sort_Func_User_Data;
 
@@ -322,7 +322,7 @@ package Gtk.Recent_Chooser is
    procedure Unselect_Uri (Chooser : Gtk_Recent_Chooser; URI : UTF8_String);
    --  Unselects Uri inside Chooser.
    --  Since: gtk+ 2.10
-   --  "uri": a URI
+   --  @param URI a URI
 
    ----------------
    -- Properties --

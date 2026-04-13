@@ -125,7 +125,7 @@ package Gtk.Style is
    --  Since this function may return a new object, you have to use it in the
    --  following way: `style = gtk_style_attach (style, window)`
    --  Deprecated since 3.0, 1
-   --  "window": a Gdk.Gdk_Window.
+   --  @param Window a Gdk.Gdk_Window.
 
    function Copy (Style : not null access Gtk_Style_Record) return Gtk_Style;
    pragma Obsolescent (Copy);
@@ -146,9 +146,9 @@ package Gtk.Style is
    --  Queries the value of a style property corresponding to a widget class
    --  is in the given style.
    --  Since: gtk+ 2.16
-   --  "widget_type": the GType of a descendant of Gtk.Widget.Gtk_Widget
-   --  "property_name": the name of the style property to get
-   --  "value": a Glib.Values.GValue where the value of the property being
+   --  @param Widget_Type the GType of a descendant of Gtk.Widget.Gtk_Widget
+   --  @param Property_Name the name of the style property to get
+   --  @param Value a Glib.Values.GValue where the value of the property being
    --  queried will be stored
 
    function Has_Context
@@ -169,8 +169,8 @@ package Gtk.Style is
    --  and might change when a theme switch occurs.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.0, 1
-   --  "color_name": the name of the logical color to look up
-   --  "color": the Gdk.Color.Gdk_Color to fill in
+   --  @param Color_Name the name of the logical color to look up
+   --  @param Color the Gdk.Color.Gdk_Color to fill in
 
    procedure Set_Background
       (Style      : not null access Gtk_Style_Record;
@@ -180,8 +180,8 @@ package Gtk.Style is
    --  Sets the background of Window to the background color or pixmap
    --  specified by Style for the given state.
    --  Deprecated since 3.0, 1
-   --  "window": a Gdk.Gdk_Window
-   --  "state_type": a state
+   --  @param Window a Gdk.Gdk_Window
+   --  @param State_Type a state
 
    ----------------
    -- Properties --

@@ -49,11 +49,10 @@ package body Gtk.Tree_Model_Filter is
    --  Note that Gtk.Tree_Model_Filter.Set_Modify_Func can only be called once
    --  for a given filter model.
    --  Since: gtk+ 2.4
-   --  "n_columns": The number of columns in the filter model.
-   --  "types": The GTypes of the columns.
-   --  "func": A Gtk_Tree_Model_Filter_Modify_Func
-   --  "data": User data to pass to the modify function, or null.
-   --  "destroy": Destroy notifier of Data, or null.
+   --  @param Types The GTypes of the columns.
+   --  @param Func A Gtk_Tree_Model_Filter_Modify_Func
+   --  @param Data User data to pass to the modify function, or null.
+   --  @param Destroy Destroy notifier of Data, or null.
 
    procedure C_Gtk_Tree_Model_Filter_Set_Visible_Func
       (Self    : System.Address;
@@ -93,9 +92,9 @@ package body Gtk.Tree_Model_Filter is
    --  Gtk.Tree_Model_Filter.Set_Visible_Column can only be called once for a
    --  given filter model.
    --  Since: gtk+ 2.4
-   --  "func": A Gtk_Tree_Model_Filter_Visible_Func, the visible function
-   --  "data": User data to pass to the visible function, or null
-   --  "destroy": Destroy notifier of Data, or null
+   --  @param Func A Gtk_Tree_Model_Filter_Visible_Func, the visible function
+   --  @param Data User data to pass to the visible function, or null
+   --  @param Destroy Destroy notifier of Data, or null
 
    procedure C_Gtk_Tree_Model_Foreach
       (Tree_Model : System.Address;
@@ -105,8 +104,8 @@ package body Gtk.Tree_Model_Filter is
    --  Calls func on each node in model in a depth-first fashion.
    --  If Func returns True, then the tree ceases to be walked, and
    --  Gtk.Tree_Model.Foreach returns.
-   --  "func": a function to be called on each row
-   --  "user_data": user data to passed to Func
+   --  @param Func a function to be called on each row
+   --  @param User_Data user data to passed to Func
 
    function To_Gtk_Tree_Model_Filter_Modify_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Tree_Model_Filter_Modify_Func);
@@ -133,24 +132,24 @@ package body Gtk.Tree_Model_Filter is
        Column : Glib.Gint;
        Data   : System.Address);
    pragma Convention (C, Internal_Gtk_Tree_Model_Filter_Modify_Func);
-   --  "model": the Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing to the row whose
+   --  @param Model the Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing to the row whose
    --  display values are determined
-   --  "value": A Glib.Values.GValue which is already initialized for with the
-   --  correct type for the column Column.
-   --  "column": the column whose display value is determined
-   --  "data": user data given to Gtk.Tree_Model_Filter.Set_Modify_Func
+   --  @param Value A Glib.Values.GValue which is already initialized for with
+   --  the correct type for the column Column.
+   --  @param Column the column whose display value is determined
+   --  @param Data user data given to Gtk.Tree_Model_Filter.Set_Modify_Func
 
    function Internal_Gtk_Tree_Model_Filter_Visible_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_Model_Filter_Visible_Func);
-   --  "model": the child model of the
+   --  @param Model the child model of the
    --  Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing to the row in Model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing to the row in Model
    --  whose visibility is determined
-   --  "data": user data given to Gtk.Tree_Model_Filter.Set_Visible_Func
+   --  @param Data user data given to Gtk.Tree_Model_Filter.Set_Visible_Func
 
    function Internal_Gtk_Tree_Model_Foreach_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -158,10 +157,10 @@ package body Gtk.Tree_Model_Filter is
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_Model_Foreach_Func);
-   --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being iterated
-   --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path
-   --  "iter": the current Gtk.Tree_Model.Gtk_Tree_Iter
-   --  "data": The user data passed to Gtk.Tree_Model.Foreach
+   --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being iterated
+   --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
+   --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @param Data The user data passed to Gtk.Tree_Model.Foreach
 
    ------------------------------------------------
    -- Internal_Gtk_Tree_Model_Filter_Modify_Func --
@@ -382,10 +381,10 @@ package body Gtk.Tree_Model_Filter is
       pragma Convention (C, Internal_Cb);
       --  Type of the callback passed to Gtk.Tree_Model.Foreach to iterate
       --  over the rows in a tree model.
-      --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being iterated
-      --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path
-      --  "iter": the current Gtk.Tree_Model.Gtk_Tree_Iter
-      --  "data": The user data passed to Gtk.Tree_Model.Foreach
+      --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being iterated
+      --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
+      --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
+      --  @param Data The user data passed to Gtk.Tree_Model.Foreach
 
       -------------
       -- Foreach --
@@ -490,13 +489,13 @@ package body Gtk.Tree_Model_Filter is
       --  Column in the row indicated by Iter.
       --  Since this function is called for each data access, it's not a
       --  particularly efficient operation.
-      --  "model": the Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing to the row whose
+      --  @param Model the Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing to the row whose
       --  display values are determined
-      --  "value": A Glib.Values.GValue which is already initialized for with
-      --  the correct type for the column Column.
-      --  "column": the column whose display value is determined
-      --  "data": user data given to Gtk.Tree_Model_Filter.Set_Modify_Func
+      --  @param Value A Glib.Values.GValue which is already initialized for
+      --  with the correct type for the column Column.
+      --  @param Column the column whose display value is determined
+      --  @param Data user data given to Gtk.Tree_Model_Filter.Set_Modify_Func
 
       -----------------
       -- Internal_Cb --
@@ -584,11 +583,12 @@ package body Gtk.Tree_Model_Filter is
       pragma Convention (C, Internal_Cb);
       --  A function which decides whether the row indicated by Iter is
       --  visible.
-      --  "model": the child model of the
+      --  @param Model the child model of the
       --  Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing to the row in Model
-      --  whose visibility is determined
-      --  "data": user data given to Gtk.Tree_Model_Filter.Set_Visible_Func
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing to the row in
+      --  Model whose visibility is determined
+      --  @param Data user data given to
+      --  Gtk.Tree_Model_Filter.Set_Visible_Func
 
       -----------------
       -- Internal_Cb --

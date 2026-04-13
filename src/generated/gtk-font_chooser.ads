@@ -76,8 +76,8 @@ package Gtk.Font_Chooser is
    --  The type of function that is used for deciding what fonts get shown in
    --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
    --  Gtk.Font_Chooser.Set_Filter_Func.
-   --  "family": a Pango.Font_Family.Pango_Font_Family
-   --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
+   --  @param Family a Pango.Font_Family.Pango_Font_Family
+   --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
 
    ----------------------------
    -- Enumeration Properties --
@@ -111,7 +111,7 @@ package Gtk.Font_Chooser is
    procedure Set_Font (Self : Gtk_Font_Chooser; Fontname : UTF8_String);
    --  Sets the currently-selected font.
    --  Since: gtk+ 3.2
-   --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
+   --  @param Fontname a font name like "Helvetica 12" or "Times Bold 18"
 
    function Get_Font_Desc
       (Self : Gtk_Font_Chooser) return Pango.Font.Pango_Font_Description;
@@ -131,7 +131,7 @@ package Gtk.Font_Chooser is
    pragma Import (C, Set_Font_Desc, "gtk_font_chooser_set_font_desc");
    --  Sets the currently-selected font from Font_Desc.
    --  Since: gtk+ 3.2
-   --  "font_desc": a Pango.Font.Pango_Font_Description
+   --  @param Font_Desc a Pango.Font.Pango_Font_Description
 
    function Get_Font_Face
       (Self : Gtk_Font_Chooser) return Pango.Font_Face.Pango_Font_Face;
@@ -182,7 +182,7 @@ package Gtk.Font_Chooser is
    --     pango_context_set_font_map (context, fontmap);
    --
    --  Since: gtk+ 3.18
-   --  "fontmap": a Pango.Font_Map.Pango_Font_Map
+   --  @param Fontmap a Pango.Font_Map.Pango_Font_Map
 
    function Get_Font_Size (Self : Gtk_Font_Chooser) return Glib.Gint;
    pragma Import (C, Get_Font_Size, "gtk_font_chooser_get_font_size");
@@ -196,7 +196,7 @@ package Gtk.Font_Chooser is
    procedure Set_Language (Self : Gtk_Font_Chooser; Language : UTF8_String);
    --  Sets the language to use for font features.
    --  Since: gtk+ 3.24
-   --  "language": a language
+   --  @param Language a language
 
    function Get_Level
       (Self : Gtk_Font_Chooser) return Gtk_Font_Chooser_Level;
@@ -210,7 +210,7 @@ package Gtk.Font_Chooser is
    pragma Import (C, Set_Level, "gtk_font_chooser_set_level");
    --  Sets the desired level of granularity for selecting fonts.
    --  Since: gtk+ 3.24
-   --  "level": the desired level of granularity
+   --  @param Level the desired level of granularity
 
    function Get_Preview_Text (Self : Gtk_Font_Chooser) return UTF8_String;
    --  Gets the text displayed in the preview area.
@@ -220,7 +220,7 @@ package Gtk.Font_Chooser is
    --  Sets the text displayed in the preview area. The Text is used to show
    --  how the selected font looks.
    --  Since: gtk+ 3.2
-   --  "text": the text to display in the preview area
+   --  @param Text the text to display in the preview area
 
    function Get_Show_Preview_Entry (Self : Gtk_Font_Chooser) return Boolean;
    --  Returns whether the preview entry is shown or not.
@@ -231,7 +231,8 @@ package Gtk.Font_Chooser is
        Show_Preview_Entry : Boolean);
    --  Shows or hides the editable preview entry.
    --  Since: gtk+ 3.2
-   --  "show_preview_entry": whether to show the editable preview entry or not
+   --  @param Show_Preview_Entry whether to show the editable preview entry or
+   --  not
 
    procedure Set_Filter_Func
       (Self   : Gtk_Font_Chooser;
@@ -239,7 +240,7 @@ package Gtk.Font_Chooser is
    --  Adds a filter function that decides which fonts to display in the font
    --  chooser.
    --  Since: gtk+ 3.2
-   --  "filter": a Gtk_Font_Filter_Func, or null
+   --  @param Filter a Gtk_Font_Filter_Func, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -253,9 +254,9 @@ package Gtk.Font_Chooser is
       --  The type of function that is used for deciding what fonts get shown in
       --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
       --  Gtk.Font_Chooser.Set_Filter_Func.
-      --  "family": a Pango.Font_Family.Pango_Font_Family
-      --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
-      --  "data": user data passed to Gtk.Font_Chooser.Set_Filter_Func
+      --  @param Family a Pango.Font_Family.Pango_Font_Family
+      --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
+      --  @param Data user data passed to Gtk.Font_Chooser.Set_Filter_Func
 
       procedure Set_Filter_Func
          (Self      : Gtk.Font_Chooser.Gtk_Font_Chooser;
@@ -264,8 +265,8 @@ package Gtk.Font_Chooser is
       --  Adds a filter function that decides which fonts to display in the
       --  font chooser.
       --  Since: gtk+ 3.2
-      --  "filter": a Gtk_Font_Filter_Func, or null
-      --  "user_data": data to pass to Filter
+      --  @param Filter a Gtk_Font_Filter_Func, or null
+      --  @param User_Data data to pass to Filter
 
    end Set_Filter_Func_User_Data;
 
@@ -380,9 +381,10 @@ package Gtk.Font_Chooser is
    --  Adds a filter function that decides which fonts to display in the font
    --  chooser.
    --  Since: gtk+ 3.2
-   --  "filter": a Gtk_Font_Filter_Func, or null
-   --  "user_data": data to pass to Filter
-   --  "destroy": function to call to free Data when it is no longer needed
+   --  @param Filter a Gtk_Font_Filter_Func, or null
+   --  @param User_Data data to pass to Filter
+   --  @param Destroy function to call to free Data when it is no longer
+   --  needed
 
    type Virtual_Set_Font_Map is access procedure (Self : Gtk_Font_Chooser; Fontmap : System.Address);
    pragma Convention (C, Virtual_Set_Font_Map);
@@ -408,7 +410,7 @@ package Gtk.Font_Chooser is
    --     pango_context_set_font_map (context, fontmap);
    --
    --  Since: gtk+ 3.18
-   --  "fontmap": a Pango.Font_Map.Pango_Font_Map
+   --  @param Fontmap a Pango.Font_Map.Pango_Font_Map
 
    subtype Font_Chooser_Interface_Descr is Glib.Object.Interface_Description;
 

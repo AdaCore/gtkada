@@ -296,7 +296,7 @@ package Gtk.Activatable is
    --  Gtk.Activatable.Get_Related_Action to retrieve the > previous action.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "action": the Gtk.Action.Gtk_Action to set
+   --  @param Action the Gtk.Action.Gtk_Action to set
 
    function Get_Related_Action
       (Self : Gtk_Activatable) return Gtk.Action.Gtk_Action;
@@ -315,7 +315,7 @@ package Gtk.Activatable is
    --  Gtk.Activatable.Do_Set_Related_Action when it changes.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "action": the Gtk.Action.Gtk_Action to set
+   --  @param Action the Gtk.Action.Gtk_Action to set
 
    function Get_Use_Action_Appearance
       (Self : Gtk_Activatable) return Boolean;
@@ -337,7 +337,7 @@ package Gtk.Activatable is
    --  needed.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "use_appearance": whether to use the actions appearance
+   --  @param Use_Appearance whether to use the actions appearance
 
    procedure Sync_Action_Properties
       (Self   : Gtk_Activatable;
@@ -349,7 +349,7 @@ package Gtk.Activatable is
    --  Gtk.Activatable.Gtk_Activatable:use-action-appearance changes.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "action": the related Gtk.Action.Gtk_Action or null
+   --  @param Action the related Gtk.Action.Gtk_Action or null
 
    ----------------
    -- Properties --

@@ -76,7 +76,7 @@ package Gtk.Cell_Editable is
    --  Note that the Cell_Editable is created on-demand for the current edit;
    --  its lifetime is temporary and does not persist across other edits and/or
    --  cells.
-   --  "event": The Gdk.Event.Gdk_Event that began the editing process, or
+   --  @param Event The Gdk.Event.Gdk_Event that began the editing process, or
    --  null if editing was initiated programmatically
 
    ----------------
@@ -180,7 +180,7 @@ package Gtk.Cell_Editable is
    --  Note that the Cell_Editable is created on-demand for the current edit;
    --  its lifetime is temporary and does not persist across other edits and/or
    --  cells.
-   --  "event": The Gdk.Event.Gdk_Event that began the editing process, or
+   --  @param Event The Gdk.Event.Gdk_Event that began the editing process, or
    --  null if editing was initiated programmatically
 
    subtype Cell_Editable_Interface_Descr is Glib.Object.Interface_Description;

@@ -151,8 +151,8 @@ package Gtk.Recent_Chooser_Dialog is
    --  zero if the two items are equal and a negative integer if the first item
    --  comes after the second.
    --  Since: gtk+ 2.10
-   --  "sort_func": the comparison function
-   --  "data_destroy": destroy notifier for Sort_Data, or null
+   --  @param Sort_Func the comparison function
+   --  @param Data_Destroy destroy notifier for Sort_Data, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -178,9 +178,9 @@ package Gtk.Recent_Chooser_Dialog is
       --  second, zero if the two items are equal and a negative integer if the
       --  first item comes after the second.
       --  Since: gtk+ 2.10
-      --  "sort_func": the comparison function
-      --  "sort_data": user data to pass to Sort_Func, or null
-      --  "data_destroy": destroy notifier for Sort_Data, or null
+      --  @param Sort_Func the comparison function
+      --  @param Sort_Data user data to pass to Sort_Func, or null
+      --  @param Data_Destroy destroy notifier for Sort_Data, or null
 
    end Set_Sort_Func_User_Data;
 

@@ -67,7 +67,7 @@ package Gtk.Orientable is
    pragma Import (C, Set_Orientation, "gtk_orientable_set_orientation");
    --  Sets the orientation of the Orientable.
    --  Since: gtk+ 2.16
-   --  "orientation": the orientable's new orientation.
+   --  @param Orientation the orientable's new orientation.
 
    ----------------
    -- Properties --

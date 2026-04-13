@@ -108,7 +108,8 @@ package Gtk.Handle_Box is
    pragma Obsolescent (Set_Handle_Position);
    --  Sets the side of the handlebox where the handle is drawn.
    --  Deprecated since 3.4, 1
-   --  "position": the side of the handlebox where the handle should be drawn.
+   --  @param Position the side of the handlebox where the handle should be
+   --  drawn.
 
    function Get_Shadow_Type
       (Handle_Box : not null access Gtk_Handle_Box_Record)
@@ -125,7 +126,7 @@ package Gtk.Handle_Box is
    --  Sets the type of shadow to be drawn around the border of the handle
    --  box.
    --  Deprecated since 3.4, 1
-   --  "type": the shadow type.
+   --  @param The_Type the shadow type.
 
    function Get_Snap_Edge
       (Handle_Box : not null access Gtk_Handle_Box_Record)
@@ -149,7 +150,7 @@ package Gtk.Handle_Box is
    --  or Gtk.Enums.Pos_Left, then the snap edge will be Gtk.Enums.Pos_Top,
    --  otherwise it will be Gtk.Enums.Pos_Left.
    --  Deprecated since 3.4, 1
-   --  "edge": the snap edge, or -1 to unset the value; in which case GTK+
+   --  @param Edge the snap edge, or -1 to unset the value; in which case GTK+
    --  will try to guess an appropriate value in the future.
 
    ----------------

@@ -176,8 +176,8 @@ package Gtk.Application is
    --  Since: gtk+ 3.0
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "application_id": The application ID.
-   --  "flags": the application flags
+   --  @param Application_Id The application ID.
+   --  @param Flags the application flags
 
    function Gtk_Application_New
       (Application_Id : UTF8_String := "";
@@ -204,8 +204,8 @@ package Gtk.Application is
    --  application uniqueness) will be disabled. A null application ID is only
    --  allowed with GTK+ 3.6 or later.
    --  Since: gtk+ 3.0
-   --  "application_id": The application ID.
-   --  "flags": the application flags
+   --  @param Application_Id The application ID.
+   --  @param Flags the application flags
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_application_get_type");
@@ -235,10 +235,10 @@ package Gtk.Application is
    --  calling this function for each accelerator.
    --  Since: gtk+ 3.4
    --  Deprecated since 3.14, 1
-   --  "accelerator": accelerator string
-   --  "action_name": the name of the action to activate
-   --  "parameter": parameter to pass when activating the action, or null if
-   --  the action does not accept an activation parameter
+   --  @param Accelerator accelerator string
+   --  @param Action_Name the name of the action to activate
+   --  @param Parameter parameter to pass when activating the action, or null
+   --  if the action does not accept an activation parameter
 
    procedure Add_Window
       (Self   : not null access Gtk_Application_Record;
@@ -254,7 +254,7 @@ package Gtk.Application is
    --  with Gtk.Application.Remove_Window.
    --  GTK+ will keep the Application running as long as it has any windows.
    --  Since: gtk+ 3.0
-   --  "window": a Gtk.Window.Gtk_Window
+   --  @param Window a Gtk.Window.Gtk_Window
 
    function Get_Accels_For_Action
       (Self                 : not null access Gtk_Application_Record;
@@ -262,8 +262,8 @@ package Gtk.Application is
    --  Gets the accelerators that are currently associated with the given
    --  action.
    --  Since: gtk+ 3.12
-   --  "detailed_action_name": a detailed action name, specifying an action
-   --  and target to obtain accelerators for
+   --  @param Detailed_Action_Name a detailed action name, specifying an
+   --  action and target to obtain accelerators for
 
    procedure Set_Accels_For_Action
       (Self                 : not null access Gtk_Application_Record;
@@ -277,9 +277,9 @@ package Gtk.Application is
    --  For the Detailed_Action_Name, see g_action_parse_detailed_name and
    --  Glib.Action.Print_Detailed_Name.
    --  Since: gtk+ 3.12
-   --  "detailed_action_name": a detailed action name, specifying an action
-   --  and target to associate accelerators with
-   --  "accels": a list of accelerators in the format understood by
+   --  @param Detailed_Action_Name a detailed action name, specifying an
+   --  action and target to associate accelerators with
+   --  @param Accels a list of accelerators in the format understood by
    --  Gtk.Accel_Group.Accelerator_Parse
 
    function Get_Actions_For_Accel
@@ -297,7 +297,7 @@ package Gtk.Application is
    --  It is a programmer error to pass an invalid accelerator string. If you
    --  are unsure, check it with Gtk.Accel_Group.Accelerator_Parse first.
    --  Since: gtk+ 3.14
-   --  "accel": an accelerator that can be parsed by
+   --  @param Accel an accelerator that can be parsed by
    --  Gtk.Accel_Group.Accelerator_Parse
 
    function Get_Active_Window
@@ -333,7 +333,7 @@ package Gtk.Application is
    --  Use the base Glib.Action_Map.Gaction_Map interface to add actions, to
    --  respond to the user selecting these menu items.
    --  Since: gtk+ 3.4
-   --  "app_menu": a Glib.Menu_Model.Gmenu_Model, or null
+   --  @param App_Menu a Glib.Menu_Model.Gmenu_Model, or null
 
    function Get_Menu_By_Id
       (Self : not null access Gtk_Application_Record;
@@ -341,7 +341,7 @@ package Gtk.Application is
    --  Gets a menu from automatically loaded resources. See [Automatic
    --  resources][automatic-resources] for more information.
    --  Since: gtk+ 3.14
-   --  "id": the id of the menu to look up
+   --  @param Id the id of the menu to look up
 
    function Get_Menubar
       (Self : not null access Gtk_Application_Record)
@@ -368,7 +368,7 @@ package Gtk.Application is
    --  Use the base Glib.Action_Map.Gaction_Map interface to add actions, to
    --  respond to the user selecting these menu items.
    --  Since: gtk+ 3.4
-   --  "menubar": a Glib.Menu_Model.Gmenu_Model, or null
+   --  @param Menubar a Glib.Menu_Model.Gmenu_Model, or null
 
    function Get_Window_By_Id
       (Self : not null access Gtk_Application_Record;
@@ -378,7 +378,7 @@ package Gtk.Application is
    --  The ID of a Gtk.Application_Window.Gtk_Application_Window can be
    --  retrieved with Gtk.Application_Window.Get_Id.
    --  Since: gtk+ 3.6
-   --  "id": an identifier number
+   --  @param Id an identifier number
 
    function Get_Windows
       (Self : not null access Gtk_Application_Record)
@@ -415,9 +415,9 @@ package Gtk.Application is
    --  If Window is given, the session manager may point the user to this
    --  window to find out more about why the action is inhibited.
    --  Since: gtk+ 3.4
-   --  "window": a Gtk.Window.Gtk_Window, or null
-   --  "flags": what types of actions should be inhibited
-   --  "reason": a short, human-readable string that explains why these
+   --  @param Window a Gtk.Window.Gtk_Window, or null
+   --  @param Flags what types of actions should be inhibited
+   --  @param Reason a short, human-readable string that explains why these
    --  operations are inhibited
 
    function Is_Inhibited
@@ -428,7 +428,7 @@ package Gtk.Application is
    --  Note that this information may not be available (for example when the
    --  application is running in a sandbox).
    --  Since: gtk+ 3.4
-   --  "flags": what types of actions should be queried
+   --  @param Flags what types of actions should be queried
 
    function List_Action_Descriptions
       (Self : not null access Gtk_Application_Record)
@@ -476,9 +476,9 @@ package Gtk.Application is
    --  Gtk.Application.Add_Accelerator.
    --  Since: gtk+ 3.4
    --  Deprecated since 3.14, 1
-   --  "action_name": the name of the action to activate
-   --  "parameter": parameter to pass when activating the action, or null if
-   --  the action does not accept an activation parameter
+   --  @param Action_Name the name of the action to activate
+   --  @param Parameter parameter to pass when activating the action, or null
+   --  if the action does not accept an activation parameter
 
    procedure Remove_Window
       (Self   : not null access Gtk_Application_Record;
@@ -490,7 +490,7 @@ package Gtk.Application is
    --  The application may stop running as a result of a call to this
    --  function.
    --  Since: gtk+ 3.0
-   --  "window": a Gtk.Window.Gtk_Window
+   --  @param Window a Gtk.Window.Gtk_Window
 
    procedure Uninhibit
       (Self   : not null access Gtk_Application_Record;
@@ -499,7 +499,7 @@ package Gtk.Application is
    --  Gtk.Application.Inhibit. Inhibitors are also cleared when the
    --  application exits.
    --  Since: gtk+ 3.4
-   --  "cookie": a cookie that was returned by Gtk.Application.Inhibit
+   --  @param Cookie a cookie that was returned by Gtk.Application.Inhibit
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

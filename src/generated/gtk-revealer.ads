@@ -115,7 +115,7 @@ package Gtk.Revealer is
    --  The transition will be animated with the current transition type of
    --  Revealer.
    --  Since: gtk+ 3.10
-   --  "reveal_child": True to reveal the child
+   --  @param Reveal_Child True to reveal the child
 
    function Get_Transition_Duration
       (Self : not null access Gtk_Revealer_Record) return Guint;
@@ -128,7 +128,7 @@ package Gtk.Revealer is
        Duration : Guint);
    --  Sets the duration that transitions will take.
    --  Since: gtk+ 3.10
-   --  "duration": the new duration, in milliseconds
+   --  @param Duration the new duration, in milliseconds
 
    function Get_Transition_Type
       (Self : not null access Gtk_Revealer_Record)
@@ -143,7 +143,7 @@ package Gtk.Revealer is
    --  Sets the type of animation that will be used for transitions in
    --  Revealer. Available types include various kinds of fades and slides.
    --  Since: gtk+ 3.10
-   --  "transition": the new transition type
+   --  @param Transition the new transition type
 
    ----------------
    -- Properties --

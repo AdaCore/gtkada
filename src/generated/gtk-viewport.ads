@@ -80,8 +80,8 @@ package Gtk.Viewport is
    --  with default adjustments if none are given.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "hadjustment": horizontal adjustment
-   --  "vadjustment": vertical adjustment
+   --  @param Hadjustment horizontal adjustment
+   --  @param Vadjustment vertical adjustment
 
    function Gtk_Viewport_New
       (Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
@@ -89,8 +89,8 @@ package Gtk.Viewport is
        return Gtk_Viewport;
    --  Creates a new Gtk.Viewport.Gtk_Viewport with the given adjustments, or
    --  with default adjustments if none are given.
-   --  "hadjustment": horizontal adjustment
-   --  "vadjustment": vertical adjustment
+   --  @param Hadjustment horizontal adjustment
+   --  @param Vadjustment vertical adjustment
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_viewport_get_type");
@@ -114,7 +114,7 @@ package Gtk.Viewport is
       (Viewport : not null access Gtk_Viewport_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type);
    --  Sets the shadow type of the viewport.
-   --  "type": the new shadow type.
+   --  @param The_Type the new shadow type.
 
    function Get_View_Window
       (Viewport : not null access Gtk_Viewport_Record) return Gdk.Gdk_Window;

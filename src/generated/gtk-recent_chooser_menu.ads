@@ -123,7 +123,7 @@ package Gtk.Recent_Chooser_Menu is
    --  Since: gtk+ 2.10
    --  Initialize_For_Manager does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "manager": a Gtk.Recent_Manager.Gtk_Recent_Manager
+   --  @param Manager a Gtk.Recent_Manager.Gtk_Recent_Manager
 
    function Gtk_Recent_Chooser_Menu_New_For_Manager
       (Manager : not null access Gtk.Recent_Manager.Gtk_Recent_Manager_Record'Class)
@@ -136,7 +136,7 @@ package Gtk.Recent_Chooser_Menu is
    --  common Gtk.Recent_Manager.Gtk_Recent_Manager object among multiple
    --  Gtk.Recent_Chooser.Gtk_Recent_Chooser widgets.
    --  Since: gtk+ 2.10
-   --  "manager": a Gtk.Recent_Manager.Gtk_Recent_Manager
+   --  @param Manager a Gtk.Recent_Manager.Gtk_Recent_Manager
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_recent_chooser_menu_get_type");
@@ -158,7 +158,7 @@ package Gtk.Recent_Chooser_Menu is
    --  ten menu item's label. Only the first the items get a number to avoid
    --  clashes.
    --  Since: gtk+ 2.10
-   --  "show_numbers": whether to show numbers
+   --  @param Show_Numbers whether to show numbers
 
    procedure Set_Sort_Func
       (Chooser      : not null access Gtk_Recent_Chooser_Menu_Record;
@@ -173,8 +173,8 @@ package Gtk.Recent_Chooser_Menu is
    --  zero if the two items are equal and a negative integer if the first item
    --  comes after the second.
    --  Since: gtk+ 2.10
-   --  "sort_func": the comparison function
-   --  "data_destroy": destroy notifier for Sort_Data, or null
+   --  @param Sort_Func the comparison function
+   --  @param Data_Destroy destroy notifier for Sort_Data, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -200,9 +200,9 @@ package Gtk.Recent_Chooser_Menu is
       --  second, zero if the two items are equal and a negative integer if the
       --  first item comes after the second.
       --  Since: gtk+ 2.10
-      --  "sort_func": the comparison function
-      --  "sort_data": user data to pass to Sort_Func, or null
-      --  "data_destroy": destroy notifier for Sort_Data, or null
+      --  @param Sort_Func the comparison function
+      --  @param Sort_Data user data to pass to Sort_Func, or null
+      --  @param Data_Destroy destroy notifier for Sort_Data, or null
 
    end Set_Sort_Func_User_Data;
 

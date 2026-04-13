@@ -65,8 +65,8 @@ package Pango.Tabs is
    --  Creates an array of Initial_Size tab stops. Tab stops are specified in
    --  pixel units if Positions_In_Pixels is True, otherwise in Pango units.
    --  All stops are initially at position 0.
-   --  "initial_size": Initial number of tab stops to allocate, can be 0
-   --  "positions_in_pixels": whether positions are in pixel units
+   --  @param Initial_Size Initial number of tab stops to allocate, can be 0
+   --  @param Positions_In_Pixels whether positions are in pixel units
 
    function Pango_Tab_Array_New
       (Initial_Size        : Glib.Gint;
@@ -74,8 +74,8 @@ package Pango.Tabs is
    --  Creates an array of Initial_Size tab stops. Tab stops are specified in
    --  pixel units if Positions_In_Pixels is True, otherwise in Pango units.
    --  All stops are initially at position 0.
-   --  "initial_size": Initial number of tab stops to allocate, can be 0
-   --  "positions_in_pixels": whether positions are in pixel units
+   --  @param Initial_Size Initial number of tab stops to allocate, can be 0
+   --  @param Positions_In_Pixels whether positions are in pixel units
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "pango_tab_array_get_type");
@@ -103,9 +103,9 @@ package Pango.Tabs is
        Alignment : out Pango_Tab_Align;
        Location  : out Glib.Gint);
    --  Gets the alignment and position of a tab stop.
-   --  "tab_index": tab stop index
-   --  "alignment": location to store alignment, or null
-   --  "location": location to store tab position, or null
+   --  @param Tab_Index tab stop index
+   --  @param Alignment location to store alignment, or null
+   --  @param Location location to store tab position, or null
 
    procedure Set_Tab
       (Self      : Pango_Tab_Array;
@@ -114,14 +114,14 @@ package Pango.Tabs is
        Location  : Glib.Gint);
    --  Sets the alignment and location of a tab stop. Alignment must always be
    --  PANGO_TAB_LEFT in the current implementation.
-   --  "tab_index": the index of a tab stop
-   --  "alignment": tab alignment
-   --  "location": tab location in Pango units
+   --  @param Tab_Index the index of a tab stop
+   --  @param Alignment tab alignment
+   --  @param Location tab location in Pango units
 
    procedure Resize (Self : Pango_Tab_Array; New_Size : Glib.Gint);
    --  Resizes a tab array. You must subsequently initialize any tabs that
    --  were added as a result of growing the array.
-   --  "new_size": new size of the array
+   --  @param New_Size new size of the array
 
 private
 

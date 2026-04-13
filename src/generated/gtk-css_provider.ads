@@ -91,7 +91,7 @@ package Gtk.Css_Provider is
        Error : access Glib.Error.GError) return Boolean;
    --  Loads Data into Css_Provider, and by doing so clears any previously
    --  loaded information.
-   --  "data": CSS data loaded in memory
+   --  @param Data CSS data loaded in memory
 
    function Load_From_Path
       (Self  : not null access Gtk_Css_Provider_Record;
@@ -99,7 +99,8 @@ package Gtk.Css_Provider is
        Error : access Glib.Error.GError) return Boolean;
    --  Loads the data contained in Path into Css_Provider, making it clear any
    --  previously loaded information.
-   --  "path": the path of a filename to load, in the GLib filename encoding
+   --  @param Path the path of a filename to load, in the GLib filename
+   --  encoding
 
    procedure Load_From_Resource
       (Self          : not null access Gtk_Css_Provider_Record;
@@ -110,7 +111,7 @@ package Gtk.Css_Provider is
    --  To track errors while loading CSS, connect to the
    --  Gtk.Css_Provider.Gtk_Css_Provider::parsing-error signal.
    --  Since: gtk+ 3.16
-   --  "resource_path": a Gresource.Gresource resource path
+   --  @param Resource_Path a Gresource.Gresource resource path
 
    function To_String
       (Self : not null access Gtk_Css_Provider_Record) return UTF8_String;
@@ -146,8 +147,8 @@ package Gtk.Css_Provider is
       (Name    : UTF8_String;
        Variant : UTF8_String := "") return Gtk_Css_Provider;
    --  Loads a theme from the usual theme paths
-   --  "name": A theme name
-   --  "variant": variant to load, for example, "dark", or null for the
+   --  @param Name A theme name
+   --  @param Variant variant to load, for example, "dark", or null for the
    --  default
 
    -------------
@@ -172,8 +173,8 @@ package Gtk.Css_Provider is
    --        Error   : GLib.Error)
    -- 
    --  Callback parameters:
-   --    --  "section": section the error happened in
-   --    --  "error": The parsing error
+   --    --  @param Section section the error happened in
+   --    --  @param Error The parsing error
 
    ----------------
    -- Interfaces --

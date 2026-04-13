@@ -225,13 +225,13 @@ package Gdk.Cursor is
    --  Creates a new cursor from the set of builtin cursors for the default
    --  display. See gdk_cursor_new_for_display.
    --  To make the cursor invisible, use Gdk.Blank_Cursor.
-   --  "cursor_type": cursor to create
+   --  @param Cursor_Type cursor to create
 
    function Gdk_Cursor_New (Cursor_Type : Gdk_Cursor_Type) return Gdk_Cursor;
    --  Creates a new cursor from the set of builtin cursors for the default
    --  display. See gdk_cursor_new_for_display.
    --  To make the cursor invisible, use Gdk.Blank_Cursor.
-   --  "cursor_type": cursor to create
+   --  @param Cursor_Type cursor to create
 
    procedure Gdk_New_For_Display
       (Self        : out Gdk_Cursor;
@@ -239,18 +239,18 @@ package Gdk.Cursor is
        Cursor_Type : Gdk_Cursor_Type);
    --  Creates a new cursor from the set of builtin cursors.
    --  Since: gtk+ 2.2
-   --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
+   --  @param Display the Gdk.Display.Gdk_Display for which the cursor will be
    --  created
-   --  "cursor_type": cursor to create
+   --  @param Cursor_Type cursor to create
 
    function Gdk_Cursor_New_For_Display
       (Display     : not null access Gdk.Display.Gdk_Display_Record'Class;
        Cursor_Type : Gdk_Cursor_Type) return Gdk_Cursor;
    --  Creates a new cursor from the set of builtin cursors.
    --  Since: gtk+ 2.2
-   --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
+   --  @param Display the Gdk.Display.Gdk_Display for which the cursor will be
    --  created
-   --  "cursor_type": cursor to create
+   --  @param Cursor_Type cursor to create
 
    procedure Gdk_New_From_Name
       (Self    : out Gdk_Cursor;
@@ -281,9 +281,9 @@ package Gdk.Cursor is
    --  "nwse-resize" - ![](zoom_in_cursor.png) "zoom-in" -
    --  ![](zoom_out_cursor.png) "zoom-out"
    --  Since: gtk+ 2.8
-   --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
+   --  @param Display the Gdk.Display.Gdk_Display for which the cursor will be
    --  created
-   --  "name": the name of the cursor
+   --  @param Name the name of the cursor
 
    function Gdk_Cursor_New_From_Name
       (Display : not null access Gdk.Display.Gdk_Display_Record'Class;
@@ -313,9 +313,9 @@ package Gdk.Cursor is
    --  "nwse-resize" - ![](zoom_in_cursor.png) "zoom-in" -
    --  ![](zoom_out_cursor.png) "zoom-out"
    --  Since: gtk+ 2.8
-   --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
+   --  @param Display the Gdk.Display.Gdk_Display for which the cursor will be
    --  created
-   --  "name": the name of the cursor
+   --  @param Name the name of the cursor
 
    procedure Gdk_New_From_Surface
       (Self    : out Gdk_Cursor;
@@ -333,11 +333,11 @@ package Gdk.Cursor is
    --  On the X backend, support for RGBA cursors requires a sufficently new
    --  version of the X Render extension.
    --  Since: gtk+ 3.10
-   --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
+   --  @param Display the Gdk.Display.Gdk_Display for which the cursor will be
    --  created
-   --  "surface": the cairo image surface containing the cursor pixel data
-   --  "x": the horizontal offset of the "hotspot" of the cursor
-   --  "y": the vertical offset of the "hotspot" of the cursor
+   --  @param Surface the cairo image surface containing the cursor pixel data
+   --  @param X the horizontal offset of the "hotspot" of the cursor
+   --  @param Y the vertical offset of the "hotspot" of the cursor
 
    function Gdk_Cursor_New_From_Surface
       (Display : not null access Gdk.Display.Gdk_Display_Record'Class;
@@ -354,11 +354,11 @@ package Gdk.Cursor is
    --  On the X backend, support for RGBA cursors requires a sufficently new
    --  version of the X Render extension.
    --  Since: gtk+ 3.10
-   --  "display": the Gdk.Display.Gdk_Display for which the cursor will be
+   --  @param Display the Gdk.Display.Gdk_Display for which the cursor will be
    --  created
-   --  "surface": the cairo image surface containing the cursor pixel data
-   --  "x": the horizontal offset of the "hotspot" of the cursor
-   --  "y": the vertical offset of the "hotspot" of the cursor
+   --  @param Surface the cairo image surface containing the cursor pixel data
+   --  @param X the horizontal offset of the "hotspot" of the cursor
+   --  @param Y the vertical offset of the "hotspot" of the cursor
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gdk_cursor_get_type");
@@ -388,8 +388,8 @@ package Gdk.Cursor is
    --  the cursor, GDK may not be able to obtain the image data. In this case,
    --  null is returned.
    --  Since: gtk+ 3.10
-   --  "x_hot": Location to store the hotspot x position, or null
-   --  "y_hot": Location to store the hotspot y position, or null
+   --  @param X_Hot Location to store the hotspot x position, or null
+   --  @param Y_Hot Location to store the hotspot y position, or null
 
    ----------------------
    -- GtkAda additions --

@@ -72,9 +72,9 @@ package body Pango.Attributes is
    --  any elements of List for which Func returns True and inserts them into a
    --  new list.
    --  Since: gtk+ 1.2
-   --  "func": callback function; returns True if an attribute should be
+   --  @param Func callback function; returns True if an attribute should be
    --  filtered out.
-   --  "data": Data to be passed to Func
+   --  @param Data Data to be passed to Func
 
    function To_Pango_Attr_Filter_Func is new Ada.Unchecked_Conversion
      (System.Address, Pango_Attr_Filter_Func);
@@ -86,8 +86,8 @@ package body Pango.Attributes is
       (Attribute : Pango.Attributes.Pango_Attribute;
        User_Data : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Pango_Attr_Filter_Func);
-   --  "attribute": a Pango attribute
-   --  "user_data": user data passed to the function
+   --  @param Attribute a Pango attribute
+   --  @param User_Data user data passed to the function
 
    -------------------------------------
    -- Internal_Pango_Attr_Filter_Func --

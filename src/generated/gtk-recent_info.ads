@@ -66,7 +66,7 @@ package Gtk.Recent_Info is
        App_Name : UTF8_String := "") return Glib.GApp_Info;
    --  Creates a Glib.GApp_Info for the specified
    --  Gtk.Recent_Info.Gtk_Recent_Info
-   --  "app_name": the name of the application that should be mapped to a
+   --  @param App_Name the name of the application that should be mapped to a
    --  Glib.GApp_Info; if null is used then the default application for the
    --  MIME type is used
 
@@ -103,7 +103,7 @@ package Gtk.Recent_Info is
        Size : Glib.Gint) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Retrieves the icon of size Size associated to the resource MIME type.
    --  Since: gtk+ 2.10
-   --  "size": the size of the icon in pixels
+   --  @param Size the size of the icon in pixels
 
    function Get_Mime_Type (Self : Gtk_Recent_Info) return UTF8_String;
    --  Gets the MIME type of the resource.
@@ -146,7 +146,7 @@ package Gtk.Recent_Info is
        App_Name : UTF8_String) return Boolean;
    --  Checks whether an application registered this resource using App_Name.
    --  Since: gtk+ 2.10
-   --  "app_name": a string containing an application name
+   --  @param App_Name a string containing an application name
 
    function Has_Group
       (Self       : Gtk_Recent_Info;
@@ -154,7 +154,7 @@ package Gtk.Recent_Info is
    --  Checks whether Group_Name appears inside the groups registered for the
    --  recently used item Info.
    --  Since: gtk+ 2.10
-   --  "group_name": name of a group
+   --  @param Group_Name name of a group
 
    function Is_Local (Self : Gtk_Recent_Info) return Boolean;
    --  Checks whether the resource is local or not by looking at the scheme of
@@ -172,7 +172,7 @@ package Gtk.Recent_Info is
    --  Checks whether two Gtk.Recent_Info.Gtk_Recent_Info-struct point to the
    --  same resource.
    --  Since: gtk+ 2.10
-   --  "info_b": a Gtk.Recent_Info.Gtk_Recent_Info
+   --  @param Info_B a Gtk.Recent_Info.Gtk_Recent_Info
 
    procedure Ref (Self : Gtk_Recent_Info);
    --  Increases the reference count of Recent_Info by one.

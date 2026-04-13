@@ -59,7 +59,7 @@ package Gtk.Text_Tag_Table is
 
    type Gtk_Text_Tag_Table_Foreach is access procedure
      (Tag : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class);
-   --  "tag": the Gtk.Text_Tag.Gtk_Text_Tag
+   --  @param Tag the Gtk.Text_Tag.Gtk_Text_Tag
 
    ------------------
    -- Constructors --
@@ -91,7 +91,7 @@ package Gtk.Text_Tag_Table is
    --  table.
    --  Tag must not be in a tag table already, and may not have the same name
    --  as an already-added tag.
-   --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag
+   --  @param Tag a Gtk.Text_Tag.Gtk_Text_Tag
 
    procedure Foreach
       (Table : not null access Gtk_Text_Tag_Table_Record;
@@ -99,7 +99,7 @@ package Gtk.Text_Tag_Table is
    --  Calls Func on each tag in Table, with user data Data. Note that the
    --  table may not be modified while iterating over it (you can't add/remove
    --  tags).
-   --  "func": a function to call on each tag
+   --  @param Func a function to call on each tag
 
    generic
       type User_Data_Type (<>) is private;
@@ -109,8 +109,8 @@ package Gtk.Text_Tag_Table is
       type Gtk_Text_Tag_Table_Foreach is access procedure
         (Tag  : not null access Gtk.Text_Tag.Gtk_Text_Tag_Record'Class;
          Data : User_Data_Type);
-      --  "tag": the Gtk.Text_Tag.Gtk_Text_Tag
-      --  "data": data passed to Gtk.Text_Tag_Table.Foreach
+      --  @param Tag the Gtk.Text_Tag.Gtk_Text_Tag
+      --  @param Data data passed to Gtk.Text_Tag_Table.Foreach
 
       procedure Foreach
          (Table : not null access Gtk.Text_Tag_Table.Gtk_Text_Tag_Table_Record'Class;
@@ -119,8 +119,8 @@ package Gtk.Text_Tag_Table is
       --  Calls Func on each tag in Table, with user data Data. Note that the
       --  table may not be modified while iterating over it (you can't
       --  add/remove tags).
-      --  "func": a function to call on each tag
-      --  "data": user data
+      --  @param Func a function to call on each tag
+      --  @param Data user data
 
    end Foreach_User_Data;
 
@@ -132,7 +132,7 @@ package Gtk.Text_Tag_Table is
       (Table : not null access Gtk_Text_Tag_Table_Record;
        Name  : UTF8_String) return Gtk.Text_Tag.Gtk_Text_Tag;
    --  Look up a named tag.
-   --  "name": name of a tag
+   --  @param Name name of a tag
 
    procedure Remove
       (Table : not null access Gtk_Text_Tag_Table_Record;
@@ -141,7 +141,7 @@ package Gtk.Text_Tag_Table is
    --  Table as its tag table, the tag is removed from the buffer. The table's
    --  reference to the tag is removed, so the tag will end up destroyed if you
    --  don't have a reference to it.
-   --  "tag": a Gtk.Text_Tag.Gtk_Text_Tag
+   --  @param Tag a Gtk.Text_Tag.Gtk_Text_Tag
 
    -------------
    -- Signals --
@@ -188,8 +188,8 @@ package Gtk.Text_Tag_Table is
        After : Boolean := False);
    -- 
    --  Callback parameters:
-   --    --  "tag": the changed tag.
-   --    --  "size_changed": whether the change affects the
+   --    --  @param Tag the changed tag.
+   --    --  @param Size_Changed whether the change affects the
    --    --  Gtk.Text_View.Gtk_Text_View layout.
 
    Signal_Tag_Removed : constant Glib.Signal_Name := "tag-removed";

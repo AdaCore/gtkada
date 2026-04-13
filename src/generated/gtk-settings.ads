@@ -93,7 +93,7 @@ package Gtk.Settings is
    --  application-specific value for a setting. After this call, the setting
    --  will again follow the session-wide value for this setting.
    --  Since: gtk+ 3.20
-   --  "name": the name of the setting to reset
+   --  @param Name the name of the setting to reset
 
    procedure Set_Double_Property
       (Self     : not null access Gtk_Settings_Record;
@@ -164,7 +164,7 @@ package Gtk.Settings is
    --  Gets the Gtk.Settings.Gtk_Settings object for Screen, creating it if
    --  necessary.
    --  Since: gtk+ 2.2
-   --  "screen": a Gdk.Screen.Gdk_Screen.
+   --  @param Screen a Gdk.Screen.Gdk_Screen.
 
    procedure Install_Property (Pspec : in out Glib.Param_Spec);
    pragma Obsolescent (Install_Property);

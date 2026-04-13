@@ -78,10 +78,10 @@ package body Gtk.Combo_Box is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-   --  "func_data": user data for Func
-   --  "destroy": destroy notify for Func_Data
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Func_Data user data for Func
+   --  @param Destroy destroy notify for Func_Data
 
    procedure C_Gtk_Combo_Box_Set_Row_Separator_Func
       (Combo_Box : System.Address;
@@ -93,9 +93,9 @@ package body Gtk.Combo_Box is
    --  row should be drawn as a separator. If the row separator function is
    --  null, no separators are drawn. This is the default value.
    --  Since: gtk+ 2.6
-   --  "func": a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
-   --  "data": user data to pass to Func, or null
-   --  "destroy": destroy notifier for Data, or null
+   --  @param Func a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
+   --  @param Data user data to pass to Func, or null
+   --  @param Destroy destroy notifier for Data, or null
 
    function To_Gtk_Tree_View_Row_Separator_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Tree_View_Row_Separator_Func);
@@ -116,21 +116,21 @@ package body Gtk.Combo_Box is
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Cell_Layout_Data_Func);
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
-   --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
+   --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
    function Internal_Gtk_Tree_View_Row_Separator_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_View_Row_Separator_Func);
-   --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
-   --  "data": user data
+   --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
+   --  @param Data user data
 
    ----------------------------------------
    -- Internal_Gtk_Cell_Layout_Data_Func --
@@ -756,12 +756,12 @@ package body Gtk.Combo_Box is
       pragma Convention (C, Internal_Cb);
       --  A function which should set the value of Cell_Layout's cell
       --  renderer(s) as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       -----------------
       -- Internal_Cb --
@@ -930,9 +930,10 @@ package body Gtk.Combo_Box is
       --  should be rendered as a separator. A common way to implement this is
       --  to have a boolean column in the model, whose values the
       --  Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func returns.
-      --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
-      --  "data": user data
+      --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in
+      --  Model
+      --  @param Data user data
 
       -----------------
       -- Internal_Cb --

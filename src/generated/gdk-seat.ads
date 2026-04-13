@@ -69,8 +69,8 @@ package Gdk.Seat is
    --  typical action would be ensuring the window is visible, although there's
    --  room for other initialization actions.
    --  Since: gtk+ 3.20
-   --  "seat": the Gdk.Seat.Gdk_Seat being grabbed
-   --  "window": the Gdk.Gdk_Window being grabbed
+   --  @param Seat the Gdk.Seat.Gdk_Seat being grabbed
+   --  @param Window the Gdk.Gdk_Window being grabbed
 
    ----------------------------
    -- Enumeration Properties --
@@ -116,7 +116,7 @@ package Gdk.Seat is
        return Gdk.Device.Device_List.Glist;
    --  Returns the slave devices that match the given capabilities.
    --  Since: gtk+ 3.20
-   --  "capabilities": capabilities to get devices for
+   --  @param Capabilities capabilities to get devices for
 
    function Grab
       (Self         : not null access Gdk_Seat_Record;
@@ -149,21 +149,21 @@ package Gdk.Seat is
    --  Gdk.Event.Gdk_Event_Grab_Broken events that are emitted when the grab
    --  ends unvoluntarily.
    --  Since: gtk+ 3.20
-   --  "window": the Gdk.Gdk_Window which will own the grab
-   --  "capabilities": capabilities that will be grabbed
-   --  "owner_events": if False then all device events are reported with
+   --  @param Window the Gdk.Gdk_Window which will own the grab
+   --  @param Capabilities capabilities that will be grabbed
+   --  @param Owner_Events if False then all device events are reported with
    --  respect to Window and are only reported if selected by Event_Mask. If
    --  True then pointer events for this application are reported as normal,
    --  but pointer events outside this application are reported with respect to
    --  Window and only if selected by Event_Mask. In either mode, unreported
    --  events are discarded.
-   --  "cursor": the cursor to display while the grab is active. If this is
-   --  null then the normal cursors are used for Window and its descendants,
+   --  @param Cursor the cursor to display while the grab is active. If this
+   --  is null then the normal cursors are used for Window and its descendants,
    --  and the cursor for Window is used elsewhere.
-   --  "event": the event that is triggering the grab, or null if none is
+   --  @param Event the event that is triggering the grab, or null if none is
    --  available.
-   --  "prepare_func": function to prepare the window to be grabbed, it can be
-   --  null if Window is visible before this call.
+   --  @param Prepare_Func function to prepare the window to be grabbed, it
+   --  can be null if Window is visible before this call.
 
    procedure Ungrab (Self : not null access Gdk_Seat_Record);
    --  Releases a grab added through Gdk.Seat.Grab.

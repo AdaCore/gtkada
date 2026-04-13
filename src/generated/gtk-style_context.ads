@@ -171,7 +171,7 @@ package Gtk.Style_Context is
    --     .search { ... }
    --
    --  Since: gtk+ 3.0
-   --  "class_name": class name to use in styling
+   --  @param Class_Name class name to use in styling
 
    procedure Add_Provider
       (Self     : not null access Gtk_Style_Context_Record;
@@ -186,10 +186,10 @@ package Gtk.Style_Context is
    --  precedence over another added through
    --  Gtk.Style_Context.Add_Provider_For_Screen.
    --  Since: gtk+ 3.0
-   --  "provider": a Gtk.Style_Provider.Gtk_Style_Provider
-   --  "priority": the priority of the style provider. The lower it is, the
-   --  earlier it will be used in the style construction. Typically this will
-   --  be in the range between GTK_STYLE_PROVIDER_PRIORITY_FALLBACK and
+   --  @param Provider a Gtk.Style_Provider.Gtk_Style_Provider
+   --  @param Priority the priority of the style provider. The lower it is,
+   --  the earlier it will be used in the style construction. Typically this
+   --  will be in the range between GTK_STYLE_PROVIDER_PRIORITY_FALLBACK and
    --  GTK_STYLE_PROVIDER_PRIORITY_USER
 
    procedure Add_Region
@@ -215,8 +215,8 @@ package Gtk.Style_Context is
    --  always with a lowercase letter.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "region_name": region name to use in styling
-   --  "flags": flags that apply to the region
+   --  @param Region_Name region name to use in styling
+   --  @param Flags flags that apply to the region
 
    procedure Cancel_Animations
       (Self      : not null access Gtk_Style_Context_Record;
@@ -231,7 +231,7 @@ package Gtk.Style_Context is
    --  be only used in complex widgets with different animatable regions.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.6, 1
-   --  "region_id": animatable region to stop, or null. See
+   --  @param Region_Id animatable region to stop, or null. See
    --  Gtk.Style_Context.Push_Animatable_Region
 
    procedure Get_Background_Color
@@ -251,8 +251,8 @@ package Gtk.Style_Context is
    --  classes to modify the color to be rendered.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.16, 1
-   --  "state": state to retrieve the color for
-   --  "color": return value for the background color
+   --  @param State state to retrieve the color for
+   --  @param Color return value for the background color
 
    procedure Get_Border
       (Self   : not null access Gtk_Style_Context_Record;
@@ -262,8 +262,8 @@ package Gtk.Style_Context is
    --  See Gtk.Style_Context.Get_Property and GTK_STYLE_PROPERTY_BORDER_WIDTH
    --  for details.
    --  Since: gtk+ 3.0
-   --  "state": state to retrieve the border for
-   --  "border": return value for the border settings
+   --  @param State state to retrieve the border for
+   --  @param Border return value for the border settings
 
    procedure Get_Border_Color
       (Self  : not null access Gtk_Style_Context_Record;
@@ -273,8 +273,8 @@ package Gtk.Style_Context is
    --  Gets the border color for a given state.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.16, 1
-   --  "state": state to retrieve the color for
-   --  "color": return value for the border color
+   --  @param State state to retrieve the color for
+   --  @param Color return value for the border color
 
    procedure Get_Color
       (Self  : not null access Gtk_Style_Context_Record;
@@ -284,8 +284,8 @@ package Gtk.Style_Context is
    --  See Gtk.Style_Context.Get_Property and GTK_STYLE_PROPERTY_COLOR for
    --  details.
    --  Since: gtk+ 3.0
-   --  "state": state to retrieve the color for
-   --  "color": return value for the foreground color
+   --  @param State state to retrieve the color for
+   --  @param Color return value for the foreground color
 
    function Get_Direction
       (Self : not null access Gtk_Style_Context_Record)
@@ -304,7 +304,7 @@ package Gtk.Style_Context is
    --  gtk_widget_get_style_context, you do not need to call this yourself.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
-   --  "direction": the new direction.
+   --  @param Direction the new direction.
 
    function Get_Font
       (Self  : not null access Gtk_Style_Context_Record;
@@ -316,7 +316,7 @@ package Gtk.Style_Context is
    --  Gtk.Style_Context.Gtk_Style_Context::changed signal happens.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
-   --  "state": state to retrieve the font for
+   --  @param State state to retrieve the font for
 
    function Get_Frame_Clock
       (Self : not null access Gtk_Style_Context_Record)
@@ -333,7 +333,7 @@ package Gtk.Style_Context is
    --  If you are using a Gtk.Style_Context.Gtk_Style_Context returned from
    --  gtk_widget_get_style_context, you do not need to call this yourself.
    --  Since: gtk+ 3.8
-   --  "frame_clock": a Gdk.Frame_Clock.Gdk_Frame_Clock
+   --  @param Frame_Clock a Gdk.Frame_Clock.Gdk_Frame_Clock
 
    function Get_Junction_Sides
       (Self : not null access Gtk_Style_Context_Record)
@@ -352,8 +352,8 @@ package Gtk.Style_Context is
    --  their children, so it should not normally be necessary to call this
    --  function manually.
    --  Since: gtk+ 3.0
-   --  "sides": sides where rendered elements are visually connected to other
-   --  elements
+   --  @param Sides sides where rendered elements are visually connected to
+   --  other elements
 
    procedure Get_Margin
       (Self   : not null access Gtk_Style_Context_Record;
@@ -362,8 +362,8 @@ package Gtk.Style_Context is
    --  Gets the margin for a given state as a Gtk.Style.Gtk_Border. See
    --  gtk_style_property_get and GTK_STYLE_PROPERTY_MARGIN for details.
    --  Since: gtk+ 3.0
-   --  "state": state to retrieve the border for
-   --  "margin": return value for the margin settings
+   --  @param State state to retrieve the border for
+   --  @param Margin return value for the margin settings
 
    procedure Get_Padding
       (Self    : not null access Gtk_Style_Context_Record;
@@ -372,8 +372,8 @@ package Gtk.Style_Context is
    --  Gets the padding for a given state as a Gtk.Style.Gtk_Border. See
    --  gtk_style_context_get and GTK_STYLE_PROPERTY_PADDING for details.
    --  Since: gtk+ 3.0
-   --  "state": state to retrieve the padding for
-   --  "padding": return value for the padding settings
+   --  @param State state to retrieve the padding for
+   --  @param Padding return value for the padding settings
 
    function Get_Parent
       (Self : not null access Gtk_Style_Context_Record)
@@ -392,7 +392,7 @@ package Gtk.Style_Context is
    --  If you are using a Gtk.Style_Context.Gtk_Style_Context returned from
    --  gtk_widget_get_style_context, the parent will be set for you.
    --  Since: gtk+ 3.4
-   --  "parent": the new parent or null
+   --  @param Parent the new parent or null
 
    function Get_Path
       (Self : not null access Gtk_Style_Context_Record)
@@ -408,7 +408,7 @@ package Gtk.Style_Context is
    --  If you are using a Gtk.Style_Context.Gtk_Style_Context returned from
    --  gtk_widget_get_style_context, you do not need to call this yourself.
    --  Since: gtk+ 3.0
-   --  "path": a Gtk.Widget.Gtk_Widget_Path
+   --  @param Path a Gtk.Widget.Gtk_Widget_Path
 
    procedure Get_Property
       (Self     : not null access Gtk_Style_Context_Record;
@@ -426,9 +426,9 @@ package Gtk.Style_Context is
    --  When Value is no longer needed, g_value_unset must be called to free
    --  any allocated memory.
    --  Since: gtk+ 3.0
-   --  "property": style property name
-   --  "state": state to retrieve the property value for
-   --  "value": return location for the style property value
+   --  @param Property style property name
+   --  @param State state to retrieve the property value for
+   --  @param Value return location for the style property value
 
    function Get_Scale
       (Self : not null access Gtk_Style_Context_Record) return Glib.Gint;
@@ -440,7 +440,7 @@ package Gtk.Style_Context is
        Scale : Glib.Gint);
    --  Sets the scale to use when getting image assets for the style.
    --  Since: gtk+ 3.10
-   --  "scale": scale
+   --  @param Scale scale
 
    function Get_Screen
       (Self : not null access Gtk_Style_Context_Record)
@@ -456,7 +456,7 @@ package Gtk.Style_Context is
    --  If you are using a Gtk.Style_Context.Gtk_Style_Context returned from
    --  gtk_widget_get_style_context, you do not need to call this yourself.
    --  Since: gtk+ 3.0
-   --  "screen": a Gdk.Screen.Gdk_Screen
+   --  @param Screen a Gdk.Screen.Gdk_Screen
 
    function Get_Section
       (Self     : not null access Gtk_Style_Context_Record;
@@ -470,7 +470,7 @@ package Gtk.Style_Context is
    --  definitions being disabled for performance reasons.
    --  Shorthand CSS properties cannot be queried for a location and will
    --  always return null.
-   --  "property": style property name
+   --  @param Property style property name
 
    function Get_State
       (Self : not null access Gtk_Style_Context_Record)
@@ -488,7 +488,7 @@ package Gtk.Style_Context is
        Flags : Gtk.Enums.Gtk_State_Flags);
    --  Sets the state to be used for style matching.
    --  Since: gtk+ 3.0
-   --  "flags": state to represent
+   --  @param Flags state to represent
 
    procedure Get_Style_Property
       (Self          : not null access Gtk_Style_Context_Record;
@@ -497,15 +497,15 @@ package Gtk.Style_Context is
    --  Gets the value for a widget style property.
    --  When Value is no longer needed, g_value_unset must be called to free
    --  any allocated memory.
-   --  "property_name": the name of the widget style property
-   --  "value": Return location for the property value
+   --  @param Property_Name the name of the widget style property
+   --  @param Value Return location for the property value
 
    function Has_Class
       (Self       : not null access Gtk_Style_Context_Record;
        Class_Name : UTF8_String) return Boolean;
    --  Returns True if Context currently has defined the given class name.
    --  Since: gtk+ 3.0
-   --  "class_name": a class name
+   --  @param Class_Name a class name
 
    procedure Has_Region
       (Self         : not null access Gtk_Style_Context_Record;
@@ -517,8 +517,8 @@ package Gtk.Style_Context is
    --  null, it is set to the flags affecting the region.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "region_name": a region name
-   --  "flags_return": return location for region flags
+   --  @param Region_Name a region name
+   --  @param Flags_Return return location for region flags
 
    procedure Invalidate (Self : not null access Gtk_Style_Context_Record);
    pragma Obsolescent (Invalidate);
@@ -548,8 +548,8 @@ package Gtk.Style_Context is
        Color      : out Gdk.RGBA.Gdk_RGBA;
        Found      : out Boolean);
    --  Looks up and resolves a color name in the Context color map.
-   --  "color_name": color name to lookup
-   --  "color": Return location for the looked up color
+   --  @param Color_Name color name to lookup
+   --  @param Color Return location for the looked up color
 
    procedure Notify_State_Change
       (Self        : not null access Gtk_Style_Context_Record;
@@ -594,12 +594,12 @@ package Gtk.Style_Context is
    --  is why the style places the transition under the :hover pseudo-class.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.6, 1
-   --  "window": a Gdk.Gdk_Window
-   --  "region_id": animatable region to notify on, or null. See
+   --  @param Window a Gdk.Gdk_Window
+   --  @param Region_Id animatable region to notify on, or null. See
    --  Gtk.Style_Context.Push_Animatable_Region
-   --  "state": state to trigger transition for
-   --  "state_value": True if State is the state we are changing to, False if
-   --  we are changing away from it
+   --  @param State state to trigger transition for
+   --  @param State_Value True if State is the state we are changing to, False
+   --  if we are changing away from it
 
    procedure Pop_Animatable_Region
       (Self : not null access Gtk_Style_Context_Record);
@@ -622,21 +622,21 @@ package Gtk.Style_Context is
    --  identify rendered elements subject to a state transition.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.6, 1
-   --  "region_id": unique identifier for the animatable region
+   --  @param Region_Id unique identifier for the animatable region
 
    procedure Remove_Class
       (Self       : not null access Gtk_Style_Context_Record;
        Class_Name : UTF8_String);
    --  Removes Class_Name from Context.
    --  Since: gtk+ 3.0
-   --  "class_name": class name to remove
+   --  @param Class_Name class name to remove
 
    procedure Remove_Provider
       (Self     : not null access Gtk_Style_Context_Record;
        Provider : Gtk.Style_Provider.Gtk_Style_Provider);
    --  Removes Provider from the style providers list in Context.
    --  Since: gtk+ 3.0
-   --  "provider": a Gtk.Style_Provider.Gtk_Style_Provider
+   --  @param Provider a Gtk.Style_Provider.Gtk_Style_Provider
 
    procedure Remove_Region
       (Self        : not null access Gtk_Style_Context_Record;
@@ -645,7 +645,7 @@ package Gtk.Style_Context is
    --  Removes a region from Context.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "region_name": region name to unset
+   --  @param Region_Name region name to unset
 
    procedure Restore (Self : not null access Gtk_Style_Context_Record);
    --  Restores Context state to a previous stage. See Gtk.Style_Context.Save.
@@ -671,10 +671,10 @@ package Gtk.Style_Context is
    --  scrolled together with it.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.6, 1
-   --  "window": a Gdk.Gdk_Window used previously in
+   --  @param Window a Gdk.Gdk_Window used previously in
    --  Gtk.Style_Context.Notify_State_Change
-   --  "dx": Amount to scroll in the X axis
-   --  "dy": Amount to scroll in the Y axis
+   --  @param Dx Amount to scroll in the X axis
+   --  @param Dy Amount to scroll in the Y axis
 
    procedure Set_Background
       (Self   : not null access Gtk_Style_Context_Record;
@@ -684,7 +684,7 @@ package Gtk.Style_Context is
    --  specified in Context for its current state.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.18, 1
-   --  "window": a Gdk.Gdk_Window
+   --  @param Window a Gdk.Gdk_Window
 
    procedure State_Is_Running
       (Self       : not null access Gtk_Style_Context_Record;
@@ -700,8 +700,8 @@ package Gtk.Style_Context is
    --  1 when State is being set and from 1 to 0 when it's being unset.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.6, 1
-   --  "state": a widget state
-   --  "progress": return location for the transition progress
+   --  @param State a widget state
+   --  @param Progress return location for the transition progress
 
    function To_String
       (Self  : not null access Gtk_Style_Context_Record;
@@ -714,7 +714,7 @@ package Gtk.Style_Context is
    --  implementation in GTK+. There are no guarantees about the format of the
    --  returned string, it may change.
    --  Since: gtk+ 3.20
-   --  "flags": Flags that determine what to print
+   --  @param Flags Flags that determine what to print
 
    ----------------------
    -- GtkAda additions --
@@ -743,11 +743,11 @@ package Gtk.Style_Context is
    --  Gtk.Style_Context.Add_Provider takes precedence over another added
    --  through this function.
    --  Since: gtk+ 3.0
-   --  "screen": a Gdk.Screen.Gdk_Screen
-   --  "provider": a Gtk.Style_Provider.Gtk_Style_Provider
-   --  "priority": the priority of the style provider. The lower it is, the
-   --  earlier it will be used in the style construction. Typically this will
-   --  be in the range between GTK_STYLE_PROVIDER_PRIORITY_FALLBACK and
+   --  @param Screen a Gdk.Screen.Gdk_Screen
+   --  @param Provider a Gtk.Style_Provider.Gtk_Style_Provider
+   --  @param Priority the priority of the style provider. The lower it is,
+   --  the earlier it will be used in the style construction. Typically this
+   --  will be in the range between GTK_STYLE_PROVIDER_PRIORITY_FALLBACK and
    --  GTK_STYLE_PROVIDER_PRIORITY_USER
 
    procedure Remove_Provider_For_Screen
@@ -755,8 +755,8 @@ package Gtk.Style_Context is
        Provider : Gtk.Style_Provider.Gtk_Style_Provider);
    --  Removes Provider from the global style providers list in Screen.
    --  Since: gtk+ 3.0
-   --  "screen": a Gdk.Screen.Gdk_Screen
-   --  "provider": a Gtk.Style_Provider.Gtk_Style_Provider
+   --  @param Screen a Gdk.Screen.Gdk_Screen
+   --  @param Provider a Gtk.Style_Provider.Gtk_Style_Provider
 
    procedure Reset_Widgets
       (Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class);
@@ -767,7 +767,7 @@ package Gtk.Style_Context is
    --  information about its appearance. As an example, it is used when the
    --  color scheme changes in the related Gtk.Settings.Gtk_Settings object.
    --  Since: gtk+ 3.0
-   --  "screen": a Gdk.Screen.Gdk_Screen
+   --  @param Screen a Gdk.Screen.Gdk_Screen
 
    procedure Render_Handle
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -782,12 +782,12 @@ package Gtk.Style_Context is
    --  Handles rendered for the paned and grip classes:
    --  ![](handles.png)
    --  Since: gtk+ 3.0
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x": X origin of the rectangle
-   --  "y": Y origin of the rectangle
-   --  "width": rectangle width
-   --  "height": rectangle height
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
 
    procedure Render_Check
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -803,12 +803,12 @@ package Gtk.Style_Context is
    --  Typical checkmark rendering:
    --  ![](checks.png)
    --  Since: gtk+ 3.0
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x": X origin of the rectangle
-   --  "y": Y origin of the rectangle
-   --  "width": rectangle width
-   --  "height": rectangle height
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
 
    procedure Render_Option
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -824,12 +824,12 @@ package Gtk.Style_Context is
    --  Typical option mark rendering:
    --  ![](options.png)
    --  Since: gtk+ 3.0
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x": X origin of the rectangle
-   --  "y": Y origin of the rectangle
-   --  "width": rectangle width
-   --  "height": rectangle height
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
 
    procedure Render_Arrow
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -842,13 +842,13 @@ package Gtk.Style_Context is
    --  Typical arrow rendering at 0, 1⁄2 π;, π; and 3⁄2 π:
    --  ![](arrows.png)
    --  Since: gtk+ 3.0
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "angle": arrow angle from 0 to 2 * G_PI, being 0 the arrow pointing to
-   --  the north
-   --  "x": X origin of the render area
-   --  "y": Y origin of the render area
-   --  "size": square side for render area
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param Angle arrow angle from 0 to 2 * G_PI, being 0 the arrow pointing
+   --  to the north
+   --  @param X X origin of the render area
+   --  @param Y Y origin of the render area
+   --  @param Size square side for render area
 
    procedure Render_Background
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -862,12 +862,12 @@ package Gtk.Style_Context is
    --  `border-width` and `border-radius`:
    --  ![](background.png)
    --  Since: gtk+ 3.0.
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x": X origin of the rectangle
-   --  "y": Y origin of the rectangle
-   --  "width": rectangle width
-   --  "height": rectangle height
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
 
    procedure Render_Frame
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -881,12 +881,12 @@ package Gtk.Style_Context is
    --  `border-color`, `border-width`, `border-radius` and junctions:
    --  ![](frames.png)
    --  Since: gtk+ 3.0
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x": X origin of the rectangle
-   --  "y": Y origin of the rectangle
-   --  "width": rectangle width
-   --  "height": rectangle height
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
 
    procedure Render_Expander
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -902,12 +902,12 @@ package Gtk.Style_Context is
    --  Typical expander rendering:
    --  ![](expanders.png)
    --  Since: gtk+ 3.0
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x": X origin of the rectangle
-   --  "y": Y origin of the rectangle
-   --  "width": rectangle width
-   --  "height": rectangle height
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
 
    procedure Render_Focus
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -921,12 +921,12 @@ package Gtk.Style_Context is
    --  Typical focus rendering:
    --  ![](focus.png)
    --  Since: gtk+ 3.0
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x": X origin of the rectangle
-   --  "y": Y origin of the rectangle
-   --  "width": rectangle width
-   --  "height": rectangle height
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
 
    procedure Render_Layout
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -936,11 +936,11 @@ package Gtk.Style_Context is
        Layout  : not null access Pango.Layout.Pango_Layout_Record'Class);
    --  Renders Layout on the coordinates X, Y
    --  Since: gtk+ 3.0
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x": X origin
-   --  "y": Y origin
-   --  "layout": the Pango.Layout.Pango_Layout to render
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X X origin
+   --  @param Y Y origin
+   --  @param Layout the Pango.Layout.Pango_Layout to render
 
    procedure Render_Line
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -951,12 +951,12 @@ package Gtk.Style_Context is
        Y1      : Gdouble);
    --  Renders a line from (x0, y0) to (x1, y1).
    --  Since: gtk+ 3.0
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x0": X coordinate for the origin of the line
-   --  "y0": Y coordinate for the origin of the line
-   --  "x1": X coordinate for the end of the line
-   --  "y1": Y coordinate for the end of the line
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X0 X coordinate for the origin of the line
+   --  @param Y0 Y coordinate for the origin of the line
+   --  @param X1 X coordinate for the end of the line
+   --  @param Y1 Y coordinate for the end of the line
 
    procedure Render_Slider
       (Context     : not null access Gtk_Style_Context_Record'Class;
@@ -972,13 +972,13 @@ package Gtk.Style_Context is
    --  Typical slider rendering:
    --  ![](sliders.png)
    --  Since: gtk+ 3.0
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x": X origin of the rectangle
-   --  "y": Y origin of the rectangle
-   --  "width": rectangle width
-   --  "height": rectangle height
-   --  "orientation": orientation of the slider
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
+   --  @param Orientation orientation of the slider
 
    procedure Render_Frame_Gap
       (Context  : not null access Gtk_Style_Context_Record'Class;
@@ -999,16 +999,17 @@ package Gtk.Style_Context is
    --  ![](frame-gap.png)
    --  Since: gtk+ 3.0
    --  Deprecated since 3.24, 1
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x": X origin of the rectangle
-   --  "y": Y origin of the rectangle
-   --  "width": rectangle width
-   --  "height": rectangle height
-   --  "gap_side": side where the gap is
-   --  "xy0_gap": initial coordinate (X or Y depending on Gap_Side) for the
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
+   --  @param Gap_Side side where the gap is
+   --  @param Xy0_Gap initial coordinate (X or Y depending on Gap_Side) for
+   --  the gap
+   --  @param Xy1_Gap end coordinate (X or Y depending on Gap_Side) for the
    --  gap
-   --  "xy1_gap": end coordinate (X or Y depending on Gap_Side) for the gap
 
    procedure Render_Extension
       (Context  : not null access Gtk_Style_Context_Record'Class;
@@ -1024,13 +1025,13 @@ package Gtk.Style_Context is
    --  Typical extension rendering:
    --  ![](extensions.png)
    --  Since: gtk+ 3.0
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x": X origin of the rectangle
-   --  "y": Y origin of the rectangle
-   --  "width": rectangle width
-   --  "height": rectangle height
-   --  "gap_side": side where the gap is
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
+   --  @param Gap_Side side where the gap is
 
    procedure Render_Activity
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -1043,12 +1044,12 @@ package Gtk.Style_Context is
    --  state Gtk.Enums.Gtk_State_Flag_Checked determines whether there is
    --  activity going on.
    --  Since: gtk+ 3.0
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "x": X origin of the rectangle
-   --  "y": Y origin of the rectangle
-   --  "width": rectangle width
-   --  "height": rectangle height
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
 
    procedure Render_Icon
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -1063,11 +1064,11 @@ package Gtk.Style_Context is
    --  You probably want to use Gtk.Style_Context.Render_Icon_Surface instead,
    --  if you already have a Cairo surface.
    --  Since: gtk+ 3.2
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf containing the icon to draw
-   --  "x": X position for the Pixbuf
-   --  "y": Y position for the Pixbuf
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param Pixbuf a Gdk.Pixbuf.Gdk_Pixbuf containing the icon to draw
+   --  @param X X position for the Pixbuf
+   --  @param Y Y position for the Pixbuf
 
    procedure Render_Icon_Surface
       (Context : not null access Gtk_Style_Context_Record'Class;
@@ -1077,11 +1078,11 @@ package Gtk.Style_Context is
        Y       : Gdouble);
    --  Renders the icon in Surface at the specified X and Y coordinates.
    --  Since: gtk+ 3.10
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "cr": a cairo_t
-   --  "surface": a cairo_surface_t containing the icon to draw
-   --  "x": X position for the Icon
-   --  "y": Y position for the Incon
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Cr a cairo_t
+   --  @param Surface a cairo_surface_t containing the icon to draw
+   --  @param X X position for the Icon
+   --  @param Y Y position for the Incon
 
    ----------------
    -- Properties --

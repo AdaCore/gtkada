@@ -87,10 +87,10 @@ package Gtk.Calendar is
    --  appointments. The function returns null when no information is
    --  available.
    --  Since: gtk+ 2.14
-   --  "calendar": a Gtk.Calendar.Gtk_Calendar.
-   --  "year": the year for which details are needed.
-   --  "month": the month for which details are needed.
-   --  "day": the day of Month for which details are needed.
+   --  @param Calendar a Gtk.Calendar.Gtk_Calendar.
+   --  @param Year the year for which details are needed.
+   --  @param Month the month for which details are needed.
+   --  @param Day the day of Month for which details are needed.
 
    ----------------------------
    -- Enumeration Properties --
@@ -130,17 +130,18 @@ package Gtk.Calendar is
        Month    : out Guint;
        Day      : out Guint);
    --  Obtains the selected date from a Gtk.Calendar.Gtk_Calendar.
-   --  "year": location to store the year as a decimal number (e.g. 2011), or
+   --  @param Year location to store the year as a decimal number (e.g. 2011),
+   --  or null
+   --  @param Month location to store the month number (between 0 and 11), or
    --  null
-   --  "month": location to store the month number (between 0 and 11), or null
-   --  "day": location to store the day number (between 1 and 31), or null
+   --  @param Day location to store the day number (between 1 and 31), or null
 
    function Get_Day_Is_Marked
       (Calendar : not null access Gtk_Calendar_Record;
        Day      : Guint) return Boolean;
    --  Returns if the Day of the Calendar is already marked.
    --  Since: gtk+ 3.0
-   --  "day": the day number between 1 and 31.
+   --  @param Day the day number between 1 and 31.
 
    function Get_Detail_Height_Rows
       (Calendar : not null access Gtk_Calendar_Record) return Glib.Gint;
@@ -154,7 +155,7 @@ package Gtk.Calendar is
    --  Updates the height of detail cells. See
    --  Gtk.Calendar.Gtk_Calendar:detail-height-rows.
    --  Since: gtk+ 2.14
-   --  "rows": detail height in rows.
+   --  @param Rows detail height in rows.
 
    function Get_Detail_Width_Chars
       (Calendar : not null access Gtk_Calendar_Record) return Glib.Gint;
@@ -168,7 +169,7 @@ package Gtk.Calendar is
    --  Updates the width of detail cells. See
    --  Gtk.Calendar.Gtk_Calendar:detail-width-chars.
    --  Since: gtk+ 2.14
-   --  "chars": detail width in characters.
+   --  @param Chars detail width in characters.
 
    function Get_Display_Options
       (Calendar : not null access Gtk_Calendar_Record)
@@ -182,28 +183,28 @@ package Gtk.Calendar is
    --  Sets display options (whether to display the heading and the month
    --  headings).
    --  Since: gtk+ 2.4
-   --  "flags": the display options to set
+   --  @param Flags the display options to set
 
    procedure Mark_Day
       (Calendar : not null access Gtk_Calendar_Record;
        Day      : Guint);
    --  Places a visual marker on a particular day.
-   --  "day": the day number to mark between 1 and 31.
+   --  @param Day the day number to mark between 1 and 31.
 
    procedure Select_Day
       (Calendar : not null access Gtk_Calendar_Record;
        Day      : Guint);
    --  Selects a day from the current month.
-   --  "day": the day number between 1 and 31, or 0 to unselect the currently
-   --  selected day.
+   --  @param Day the day number between 1 and 31, or 0 to unselect the
+   --  currently selected day.
 
    procedure Select_Month
       (Calendar : not null access Gtk_Calendar_Record;
        Month    : Guint;
        Year     : Guint);
    --  Shifts the calendar to a different month.
-   --  "month": a month number between 0 and 11.
-   --  "year": the year the month is in.
+   --  @param Month a month number between 0 and 11.
+   --  @param Year the year the month is in.
 
    procedure Set_Detail_Func
       (Calendar : not null access Gtk_Calendar_Record;
@@ -219,7 +220,7 @@ package Gtk.Calendar is
    --  Gtk.Calendar.Gtk_Calendar:detail-width-chars and
    --  Gtk.Calendar.Gtk_Calendar:detail-height-rows properties.
    --  Since: gtk+ 2.14
-   --  "func": a function providing details for each day.
+   --  @param Func a function providing details for each day.
 
    generic
       type User_Data_Type (<>) is private;
@@ -237,11 +238,11 @@ package Gtk.Calendar is
       --  appointments. The function returns null when no information is
       --  available.
       --  Since: gtk+ 2.14
-      --  "calendar": a Gtk.Calendar.Gtk_Calendar.
-      --  "year": the year for which details are needed.
-      --  "month": the month for which details are needed.
-      --  "day": the day of Month for which details are needed.
-      --  "user_data": the data passed with Gtk.Calendar.Set_Detail_Func.
+      --  @param Calendar a Gtk.Calendar.Gtk_Calendar.
+      --  @param Year the year for which details are needed.
+      --  @param Month the month for which details are needed.
+      --  @param Day the day of Month for which details are needed.
+      --  @param User_Data the data passed with Gtk.Calendar.Set_Detail_Func.
 
       procedure Set_Detail_Func
          (Calendar : not null access Gtk.Calendar.Gtk_Calendar_Record'Class;
@@ -258,8 +259,8 @@ package Gtk.Calendar is
       --  Gtk.Calendar.Gtk_Calendar:detail-width-chars and
       --  Gtk.Calendar.Gtk_Calendar:detail-height-rows properties.
       --  Since: gtk+ 2.14
-      --  "func": a function providing details for each day.
-      --  "data": data to pass to Func invokations.
+      --  @param Func a function providing details for each day.
+      --  @param Data data to pass to Func invokations.
 
    end Set_Detail_Func_User_Data;
 
@@ -267,7 +268,7 @@ package Gtk.Calendar is
       (Calendar : not null access Gtk_Calendar_Record;
        Day      : Guint);
    --  Removes the visual marker from a particular day.
-   --  "day": the day number to unmark between 1 and 31.
+   --  @param Day the day number to unmark between 1 and 31.
 
    ----------------
    -- Properties --

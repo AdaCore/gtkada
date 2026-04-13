@@ -44,8 +44,8 @@ package body Gtk.Container is
    --  the container, but were added by the container implementation itself.
    --  Most applications should use Gtk.Container.Foreach, rather than
    --  Gtk.Container.Forall.
-   --  "callback": a callback
-   --  "callback_data": callback user data
+   --  @param Callback a callback
+   --  @param Callback_Data callback user data
 
    procedure C_Gtk_Container_Foreach
       (Container     : System.Address;
@@ -60,8 +60,8 @@ package body Gtk.Container is
    --  It is permissible to remove the child from the Callback handler.
    --  Most applications should use Gtk.Container.Foreach, rather than
    --  Gtk.Container.Forall.
-   --  "callback": a callback
-   --  "callback_data": callback user data
+   --  @param Callback a callback
+   --  @param Callback_Data callback user data
 
    function To_Gtk_Callback is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Callback);
@@ -73,8 +73,8 @@ package body Gtk.Container is
       (Widget : System.Address;
        Data   : System.Address);
    pragma Convention (C, Internal_Gtk_Callback);
-   --  "widget": the widget to operate on
-   --  "data": user-supplied data
+   --  @param Widget the widget to operate on
+   --  @param Data user-supplied data
 
    ---------------------------
    -- Internal_Gtk_Callback --
@@ -247,8 +247,8 @@ package body Gtk.Container is
       pragma Convention (C, Internal_Cb);
       --  The type of the callback functions used for e.g. iterating over the
       --  children of a container, see Gtk.Container.Foreach.
-      --  "widget": the widget to operate on
-      --  "data": user-supplied data
+      --  @param Widget the widget to operate on
+      --  @param Data user-supplied data
 
       ------------
       -- Forall --
@@ -314,8 +314,8 @@ package body Gtk.Container is
       pragma Convention (C, Internal_Cb);
       --  The type of the callback functions used for e.g. iterating over the
       --  children of a container, see Gtk.Container.Foreach.
-      --  "widget": the widget to operate on
-      --  "data": user-supplied data
+      --  @param Widget the widget to operate on
+      --  @param Data user-supplied data
 
       -------------
       -- Foreach --

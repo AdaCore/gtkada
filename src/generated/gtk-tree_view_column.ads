@@ -78,11 +78,11 @@ package Gtk.Tree_View_Column is
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
 
    ----------------------------
    -- Enumeration Properties --
@@ -117,8 +117,8 @@ package Gtk.Tree_View_Column is
    --  Since: gtk+ 3.0
    --  Initialize_With_Area does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area that the newly created column
-   --  should use to layout cells.
+   --  @param Area the Gtk.Cell_Area.Gtk_Cell_Area that the newly created
+   --  column should use to layout cells.
 
    function Gtk_Tree_View_Column_New_With_Area
       (Area : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class)
@@ -126,8 +126,8 @@ package Gtk.Tree_View_Column is
    --  Creates a new Gtk.Tree_View_Column.Gtk_Tree_View_Column using Area to
    --  render its cells.
    --  Since: gtk+ 3.0
-   --  "area": the Gtk.Cell_Area.Gtk_Cell_Area that the newly created column
-   --  should use to layout cells.
+   --  @param Area the Gtk.Cell_Area.Gtk_Cell_Area that the newly created
+   --  column should use to layout cells.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_view_column_get_type");
@@ -145,10 +145,10 @@ package Gtk.Tree_View_Column is
    --  Obtains the horizontal position and size of a cell in a column. If the
    --  cell is not found in the column, Start_Pos and Width are not changed and
    --  False is returned.
-   --  "cell_renderer": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "x_offset": return location for the horizontal position of Cell within
-   --  Tree_Column, may be null
-   --  "width": return location for the width of Cell, may be null
+   --  @param Cell_Renderer a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param X_Offset return location for the horizontal position of Cell
+   --  within Tree_Column, may be null
+   --  @param Width return location for the width of Cell, may be null
 
    procedure Cell_Get_Size
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -159,13 +159,15 @@ package Gtk.Tree_View_Column is
        Height      : out Glib.Gint);
    --  Obtains the width and height needed to render the column. This is used
    --  primarily by the Gtk.Tree_View.Gtk_Tree_View.
-   --  "cell_area": The area a cell in the column will be allocated, or null
-   --  "x_offset": location to return x offset of a cell relative to
+   --  @param Cell_Area The area a cell in the column will be allocated, or
+   --  null
+   --  @param X_Offset location to return x offset of a cell relative to
    --  Cell_Area, or null
-   --  "y_offset": location to return y offset of a cell relative to
+   --  @param Y_Offset location to return y offset of a cell relative to
    --  Cell_Area, or null
-   --  "width": location to return width needed to render a cell, or null
-   --  "height": location to return height needed to render a cell, or null
+   --  @param Width location to return width needed to render a cell, or null
+   --  @param Height location to return height needed to render a cell, or
+   --  null
 
    function Cell_Is_Visible
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -184,12 +186,12 @@ package Gtk.Tree_View_Column is
    --  every attribute mapping in Tree_Column, it will get a value from the set
    --  column on the Iter, and use that value to set the attribute on the cell
    --  renderer. This is used primarily by the Gtk.Tree_View.Gtk_Tree_View.
-   --  "tree_model": The Gtk.Tree_Model.Gtk_Tree_Model to to get the cell
+   --  @param Tree_Model The Gtk.Tree_Model.Gtk_Tree_Model to to get the cell
    --  renderers attributes from.
-   --  "iter": The Gtk.Tree_Model.Gtk_Tree_Iter to to get the cell renderer's
-   --  attributes from.
-   --  "is_expander": True, if the row has children
-   --  "is_expanded": True, if the row has visible children
+   --  @param Iter The Gtk.Tree_Model.Gtk_Tree_Iter to to get the cell
+   --  renderer's attributes from.
+   --  @param Is_Expander True, if the row has children
+   --  @param Is_Expanded True, if the row has visible children
 
    procedure Clicked
       (Tree_Column : not null access Gtk_Tree_View_Column_Record);
@@ -202,7 +204,7 @@ package Gtk.Tree_View_Column is
    --  Sets the current keyboard focus to be at Cell, if the column contains 2
    --  or more editable and activatable cells.
    --  Since: gtk+ 2.2
-   --  "cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Cell A Gtk.Cell_Renderer.Gtk_Cell_Renderer
 
    function Get_Alignment
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -216,7 +218,7 @@ package Gtk.Tree_View_Column is
    --  Sets the alignment of the title or custom widget inside the column
    --  header. The alignment determines its location inside the button -- 0.0
    --  for left, 0.5 for center, 1.0 for right.
-   --  "xalign": The alignment, which is between [0.0 and 1.0] inclusive.
+   --  @param Xalign The alignment, which is between [0.0 and 1.0] inclusive.
 
    function Get_Button
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -234,7 +236,7 @@ package Gtk.Tree_View_Column is
        Clickable   : Boolean);
    --  Sets the header to be active if Clickable is True. When the header is
    --  active, then it can take keyboard focus, and can be clicked.
-   --  "clickable": True if the header is active.
+   --  @param Clickable True if the header is active.
 
    function Get_Expand
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -252,7 +254,7 @@ package Gtk.Tree_View_Column is
    --  Along with "fixed-width", the "expand" property changes when the column
    --  is resized by the user.
    --  Since: gtk+ 2.4
-   --  "expand": True if the column should expand to fill available space.
+   --  @param Expand True if the column should expand to fill available space.
 
    function Get_Fixed_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -275,7 +277,7 @@ package Gtk.Tree_View_Column is
    --  than requested.
    --  Along with "expand", the "fixed-width" property changes when the column
    --  is resized by the user.
-   --  "fixed_width": The new fixed width, in pixels, or -1.
+   --  @param Fixed_Width The new fixed width, in pixels, or -1.
 
    function Get_Max_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -290,7 +292,7 @@ package Gtk.Tree_View_Column is
    --  maximum width is unset. Note, the column can actually be wider than max
    --  width if it's the last column in a view. In this case, the column
    --  expands to fill any extra space.
-   --  "max_width": The maximum width of the column in pixels, or -1.
+   --  @param Max_Width The maximum width of the column in pixels, or -1.
 
    function Get_Min_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -303,7 +305,7 @@ package Gtk.Tree_View_Column is
        Min_Width   : Glib.Gint);
    --  Sets the minimum width of the Tree_Column. If Min_Width is -1, then the
    --  minimum width is unset.
-   --  "min_width": The minimum width of the column in pixels, or -1.
+   --  @param Min_Width The minimum width of the column in pixels, or -1.
 
    function Get_Reorderable
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -315,7 +317,7 @@ package Gtk.Tree_View_Column is
        Reorderable : Boolean);
    --  If Reorderable is True, then the column can be reordered by the end
    --  user dragging the header.
-   --  "reorderable": True, if the column can be reordered.
+   --  @param Reorderable True, if the column can be reordered.
 
    function Get_Resizable
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -329,7 +331,7 @@ package Gtk.Tree_View_Column is
    --  grabbing the outer edge of the column button. If resizable is True and
    --  sizing mode of the column is GTK_TREE_VIEW_COLUMN_AUTOSIZE, then the
    --  sizing mode is changed to GTK_TREE_VIEW_COLUMN_GROW_ONLY.
-   --  "resizable": True, if the column can be resized
+   --  @param Resizable True, if the column can be resized
 
    function Get_Sizing
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -340,7 +342,7 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        The_Type    : Gtk_Tree_View_Column_Sizing);
    --  Sets the growth behavior of Tree_Column to Type.
-   --  "type": The Gtk.Tree_View_Column.Gtk_Tree_View_Column_Sizing.
+   --  @param The_Type The Gtk.Tree_View_Column.Gtk_Tree_View_Column_Sizing.
 
    function Get_Sort_Column_Id
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -355,7 +357,7 @@ package Gtk.Tree_View_Column is
    --  Sets the logical Sort_Column_Id that this column sorts on when this
    --  column is selected for sorting. Doing so makes the column header
    --  clickable.
-   --  "sort_column_id": The Sort_Column_Id of the model to sort on.
+   --  @param Sort_Column_Id The Sort_Column_Id of the model to sort on.
 
    function Get_Sort_Indicator
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -369,7 +371,7 @@ package Gtk.Tree_View_Column is
    --  header button indicating the column is sorted. Call
    --  Gtk.Tree_View_Column.Set_Sort_Order to change the direction of the
    --  arrow.
-   --  "setting": True to display an indicator that the column is sorted
+   --  @param Setting True to display an indicator that the column is sorted
 
    function Get_Sort_Order
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -388,7 +390,7 @@ package Gtk.Tree_View_Column is
    --  The sort indicator changes direction to indicate normal sort or reverse
    --  sort. Note that you must have the sort indicator enabled to see anything
    --  when calling this function; see Gtk.Tree_View_Column.Set_Sort_Indicator.
-   --  "order": sort order that the sort indicator should indicate
+   --  @param Order sort order that the sort indicator should indicate
 
    function Get_Spacing
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -400,7 +402,7 @@ package Gtk.Tree_View_Column is
        Spacing     : Glib.Gint);
    --  Sets the spacing field of Tree_Column, which is the number of pixels to
    --  place between cell renderers packed into it.
-   --  "spacing": distance between cell renderers in pixels.
+   --  @param Spacing distance between cell renderers in pixels.
 
    function Get_Title
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -412,7 +414,7 @@ package Gtk.Tree_View_Column is
        Title       : UTF8_String);
    --  Sets the title of the Tree_Column. If a custom widget has been set,
    --  then this value is ignored.
-   --  "title": The title of the Tree_Column.
+   --  @param Title The title of the Tree_Column.
 
    function Get_Tree_View
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -431,7 +433,7 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
        Visible     : Boolean);
    --  Sets the visibility of Tree_Column.
-   --  "visible": True if the Tree_Column is visible.
+   --  @param Visible True if the Tree_Column is visible.
 
    function Get_Widget
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -445,7 +447,7 @@ package Gtk.Tree_View_Column is
    --  Sets the widget in the header to be Widget. If widget is null, then the
    --  header button is set with a Gtk.Label.Gtk_Label set to the title of
    --  Tree_Column.
-   --  "widget": A child Gtk.Widget.Gtk_Widget, or null.
+   --  @param Widget A child Gtk.Widget.Gtk_Widget, or null.
 
    function Get_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
@@ -474,8 +476,8 @@ package Gtk.Tree_View_Column is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -490,12 +492,12 @@ package Gtk.Tree_View_Column is
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
       --  as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class;
@@ -508,9 +510,9 @@ package Gtk.Tree_View_Column is
       --  cell renderer(s) as appropriate.
       --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
-      --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-      --  "func_data": user data for Func
+      --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+      --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+      --  @param Func_Data user data for Func
 
    end Set_Cell_Data_Func_User_Data;
 

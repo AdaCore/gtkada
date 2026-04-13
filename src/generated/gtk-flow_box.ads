@@ -94,7 +94,7 @@ package Gtk.Flow_Box is
    --  Called for flow boxes that are bound to a Glib.List_Model.Glist_Model
    --  with Gtk.Flow_Box.Bind_Model for each item that gets added to the model.
    --  Since: gtk+ 3.18
-   --  "item": the item from the model for which to create a widget for
+   --  @param Item the item from the model for which to create a widget for
 
    type Gtk_Flow_Box_Foreach_Func is access procedure
      (Box   : not null access Gtk_Flow_Box_Record'Class;
@@ -102,8 +102,8 @@ package Gtk.Flow_Box is
    --  A function used by Gtk.Flow_Box.Selected_Foreach. It will be called on
    --  every selected child of the Box.
    --  Since: gtk+ 3.12
-   --  "box": a Gtk.Flow_Box.Gtk_Flow_Box
-   --  "child": a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
+   --  @param Box a Gtk.Flow_Box.Gtk_Flow_Box
+   --  @param Child a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
 
    type Gtk_Flow_Box_Filter_Func is access function
      (Child : not null access Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record'Class)
@@ -111,7 +111,8 @@ package Gtk.Flow_Box is
    --  A function that will be called whenrever a child changes or is added.
    --  It lets you control if the child should be visible or not.
    --  Since: gtk+ 3.12
-   --  "child": a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child that may be filtered
+   --  @param Child a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child that may be
+   --  filtered
 
    type Gtk_Flow_Box_Sort_Func is access function
      (Child1 : not null access Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record'Class;
@@ -120,8 +121,8 @@ package Gtk.Flow_Box is
    --  A function to compare two children to determine which should come
    --  first.
    --  Since: gtk+ 3.12
-   --  "child1": the first child
-   --  "child2": the second child
+   --  @param Child1 the first child
+   --  @param Child2 the second child
 
    ------------------
    -- Constructors --
@@ -162,9 +163,9 @@ package Gtk.Flow_Box is
    --  functionality in GtkFlowBox. When using a model, filtering and sorting
    --  should be implemented by the model.
    --  Since: gtk+ 3.18
-   --  "model": the Glib.List_Model.Glist_Model to be bound to Box
-   --  "create_widget_func": a function that creates widgets for items
-   --  "user_data_free_func": function for freeing User_Data
+   --  @param Model the Glib.List_Model.Glist_Model to be bound to Box
+   --  @param Create_Widget_Func a function that creates widgets for items
+   --  @param User_Data_Free_Func function for freeing User_Data
 
    generic
       type User_Data_Type (<>) is private;
@@ -177,8 +178,8 @@ package Gtk.Flow_Box is
       --  Called for flow boxes that are bound to a Glib.List_Model.Glist_Model
       --  with Gtk.Flow_Box.Bind_Model for each item that gets added to the model.
       --  Since: gtk+ 3.18
-      --  "item": the item from the model for which to create a widget for
-      --  "user_data": user data from Gtk.Flow_Box.Bind_Model
+      --  @param Item the item from the model for which to create a widget for
+      --  @param User_Data user data from Gtk.Flow_Box.Bind_Model
 
       procedure Bind_Model
          (Self                : not null access Gtk.Flow_Box.Gtk_Flow_Box_Record'Class;
@@ -199,10 +200,10 @@ package Gtk.Flow_Box is
       --  sorting functionality in GtkFlowBox. When using a model, filtering
       --  and sorting should be implemented by the model.
       --  Since: gtk+ 3.18
-      --  "model": the Glib.List_Model.Glist_Model to be bound to Box
-      --  "create_widget_func": a function that creates widgets for items
-      --  "user_data": user data passed to Create_Widget_Func
-      --  "user_data_free_func": function for freeing User_Data
+      --  @param Model the Glib.List_Model.Glist_Model to be bound to Box
+      --  @param Create_Widget_Func a function that creates widgets for items
+      --  @param User_Data user data passed to Create_Widget_Func
+      --  @param User_Data_Free_Func function for freeing User_Data
 
    end Bind_Model_User_Data;
 
@@ -217,14 +218,14 @@ package Gtk.Flow_Box is
    --  If Single is True, children will be activated when you click on them,
    --  otherwise you need to double-click.
    --  Since: gtk+ 3.12
-   --  "single": True to emit child-activated on a single click
+   --  @param Single True to emit child-activated on a single click
 
    function Get_Child_At_Index
       (Self : not null access Gtk_Flow_Box_Record;
        Idx  : Glib.Gint) return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child;
    --  Gets the nth child in the Box.
    --  Since: gtk+ 3.12
-   --  "idx": the position of the child
+   --  @param Idx the position of the child
 
    function Get_Child_At_Pos
       (Self : not null access Gtk_Flow_Box_Record;
@@ -232,8 +233,8 @@ package Gtk.Flow_Box is
        Y    : Glib.Gint) return Gtk.Flow_Box_Child.Gtk_Flow_Box_Child;
    --  Gets the child in the (X, Y) position.
    --  Since: gtk+ 3.22.6
-   --  "x": the x coordinate of the child
-   --  "y": the y coordinate of the child
+   --  @param X the x coordinate of the child
+   --  @param Y the y coordinate of the child
 
    function Get_Column_Spacing
       (Self : not null access Gtk_Flow_Box_Record) return Guint;
@@ -246,7 +247,7 @@ package Gtk.Flow_Box is
    --  Sets the horizontal space to add between children. See the
    --  Gtk.Flow_Box.Gtk_Flow_Box:column-spacing property.
    --  Since: gtk+ 3.12
-   --  "spacing": the spacing to use
+   --  @param Spacing the spacing to use
 
    function Get_Homogeneous
       (Self : not null access Gtk_Flow_Box_Record) return Boolean;
@@ -261,7 +262,7 @@ package Gtk.Flow_Box is
    --  controlling whether or not all children of Box are given equal space in
    --  the box.
    --  Since: gtk+ 3.12
-   --  "homogeneous": True to create equal allotments, False for variable
+   --  @param Homogeneous True to create equal allotments, False for variable
    --  allotments
 
    function Get_Max_Children_Per_Line
@@ -278,7 +279,7 @@ package Gtk.Flow_Box is
    --  natural size request to be no more than N_Children children long in the
    --  given orientation.
    --  Since: gtk+ 3.12
-   --  "n_children": the maximum number of children per line
+   --  @param N_Children the maximum number of children per line
 
    function Get_Min_Children_Per_Line
       (Self : not null access Gtk_Flow_Box_Record) return Guint;
@@ -291,7 +292,7 @@ package Gtk.Flow_Box is
    --  Sets the minimum number of children to line up in Box's orientation
    --  before flowing.
    --  Since: gtk+ 3.12
-   --  "n_children": the minimum number of children per line
+   --  @param N_Children the minimum number of children per line
 
    function Get_Row_Spacing
       (Self : not null access Gtk_Flow_Box_Record) return Guint;
@@ -304,7 +305,7 @@ package Gtk.Flow_Box is
    --  Sets the vertical space to add between children. See the
    --  Gtk.Flow_Box.Gtk_Flow_Box:row-spacing property.
    --  Since: gtk+ 3.12
-   --  "spacing": the spacing to use
+   --  @param Spacing the spacing to use
 
    function Get_Selected_Children
       (Self : not null access Gtk_Flow_Box_Record)
@@ -324,7 +325,7 @@ package Gtk.Flow_Box is
    --  Sets how selection works in Box. See Gtk.Enums.Gtk_Selection_Mode for
    --  details.
    --  Since: gtk+ 3.12
-   --  "mode": the new selection mode
+   --  @param Mode the new selection mode
 
    procedure Insert
       (Self     : not null access Gtk_Flow_Box_Record;
@@ -337,8 +338,8 @@ package Gtk.Flow_Box is
    --  If Position is -1, or larger than the total number of children in the
    --  Box, then the Widget will be appended to the end.
    --  Since: gtk+ 3.12
-   --  "widget": the Gtk.Widget.Gtk_Widget to add
-   --  "position": the position to insert Child in
+   --  @param Widget the Gtk.Widget.Gtk_Widget to add
+   --  @param Position the position to insert Child in
 
    procedure Invalidate_Filter (Self : not null access Gtk_Flow_Box_Record);
    --  Updates the filtering for all children.
@@ -363,7 +364,7 @@ package Gtk.Flow_Box is
        Child : not null access Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record'Class);
    --  Selects a single child of Box, if the selection mode allows it.
    --  Since: gtk+ 3.12
-   --  "child": a child of Box
+   --  @param Child a child of Box
 
    procedure Selected_Foreach
       (Self : not null access Gtk_Flow_Box_Record;
@@ -371,7 +372,7 @@ package Gtk.Flow_Box is
    --  Calls a function for each selected child.
    --  Note that the selection cannot be modified from within this function.
    --  Since: gtk+ 3.12
-   --  "func": the function to call for each selected child
+   --  @param Func the function to call for each selected child
 
    generic
       type User_Data_Type (<>) is private;
@@ -385,9 +386,9 @@ package Gtk.Flow_Box is
       --  A function used by Gtk.Flow_Box.Selected_Foreach. It will be called on
       --  every selected child of the Box.
       --  Since: gtk+ 3.12
-      --  "box": a Gtk.Flow_Box.Gtk_Flow_Box
-      --  "child": a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
-      --  "user_data": user data
+      --  @param Box a Gtk.Flow_Box.Gtk_Flow_Box
+      --  @param Child a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
+      --  @param User_Data user data
 
       procedure Selected_Foreach
          (Self : not null access Gtk.Flow_Box.Gtk_Flow_Box_Record'Class;
@@ -397,8 +398,8 @@ package Gtk.Flow_Box is
       --  Note that the selection cannot be modified from within this
       --  function.
       --  Since: gtk+ 3.12
-      --  "func": the function to call for each selected child
-      --  "data": user data to pass to the function
+      --  @param Func the function to call for each selected child
+      --  @param Data user data to pass to the function
 
    end Selected_Foreach_User_Data;
 
@@ -415,7 +416,7 @@ package Gtk.Flow_Box is
    --  Note that using a filter function is incompatible with using a model
    --  (see Gtk.Flow_Box.Bind_Model).
    --  Since: gtk+ 3.12
-   --  "filter_func": callback that lets you filter which children to show
+   --  @param Filter_Func callback that lets you filter which children to show
 
    generic
       type User_Data_Type (<>) is private;
@@ -428,8 +429,9 @@ package Gtk.Flow_Box is
       --  A function that will be called whenrever a child changes or is added.
       --  It lets you control if the child should be visible or not.
       --  Since: gtk+ 3.12
-      --  "child": a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child that may be filtered
-      --  "user_data": user data
+      --  @param Child a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child that may be
+      --  filtered
+      --  @param User_Data user data
 
       procedure Set_Filter_Func
          (Self        : not null access Gtk.Flow_Box.Gtk_Flow_Box_Record'Class;
@@ -445,8 +447,9 @@ package Gtk.Flow_Box is
       --  Note that using a filter function is incompatible with using a model
       --  (see Gtk.Flow_Box.Bind_Model).
       --  Since: gtk+ 3.12
-      --  "filter_func": callback that lets you filter which children to show
-      --  "user_data": user data passed to Filter_Func
+      --  @param Filter_Func callback that lets you filter which children to
+      --  show
+      --  @param User_Data user data passed to Filter_Func
 
    end Set_Filter_Func_User_Data;
 
@@ -461,8 +464,8 @@ package Gtk.Flow_Box is
    --  The adjustments have to be in pixel units and in the same coordinate
    --  system as the allocation for immediate children of the box.
    --  Since: gtk+ 3.12
-   --  "adjustment": an adjustment which should be adjusted when the focus is
-   --  moved among the descendents of Container
+   --  @param Adjustment an adjustment which should be adjusted when the focus
+   --  is moved among the descendents of Container
 
    procedure Set_Sort_Func
       (Self      : not null access Gtk_Flow_Box_Record;
@@ -476,7 +479,7 @@ package Gtk.Flow_Box is
    --  Note that using a sort function is incompatible with using a model (see
    --  Gtk.Flow_Box.Bind_Model).
    --  Since: gtk+ 3.12
-   --  "sort_func": the sort function
+   --  @param Sort_Func the sort function
 
    generic
       type User_Data_Type (<>) is private;
@@ -490,9 +493,9 @@ package Gtk.Flow_Box is
       --  A function to compare two children to determine which should come
       --  first.
       --  Since: gtk+ 3.12
-      --  "child1": the first child
-      --  "child2": the second child
-      --  "user_data": user data
+      --  @param Child1 the first child
+      --  @param Child2 the second child
+      --  @param User_Data user data
 
       procedure Set_Sort_Func
          (Self      : not null access Gtk.Flow_Box.Gtk_Flow_Box_Record'Class;
@@ -507,8 +510,8 @@ package Gtk.Flow_Box is
       --  Note that using a sort function is incompatible with using a model
       --  (see Gtk.Flow_Box.Bind_Model).
       --  Since: gtk+ 3.12
-      --  "sort_func": the sort function
-      --  "user_data": user data passed to Sort_Func
+      --  @param Sort_Func the sort function
+      --  @param User_Data user data passed to Sort_Func
 
    end Set_Sort_Func_User_Data;
 
@@ -523,8 +526,8 @@ package Gtk.Flow_Box is
    --  The adjustments have to be in pixel units and in the same coordinate
    --  system as the allocation for immediate children of the box.
    --  Since: gtk+ 3.12
-   --  "adjustment": an adjustment which should be adjusted when the focus is
-   --  moved among the descendents of Container
+   --  @param Adjustment an adjustment which should be adjusted when the focus
+   --  is moved among the descendents of Container
 
    procedure Unselect_All (Self : not null access Gtk_Flow_Box_Record);
    --  Unselect all children of Box, if the selection mode allows it.
@@ -535,7 +538,7 @@ package Gtk.Flow_Box is
        Child : not null access Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record'Class);
    --  Unselects a single child of Box, if the selection mode allows it.
    --  Since: gtk+ 3.12
-   --  "child": a child of Box
+   --  @param Child a child of Box
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -663,8 +666,9 @@ package Gtk.Flow_Box is
    --  to the ends of the box - PageUp/PageDown keys move vertically by pages
    -- 
    --  Callback parameters:
-   --    --  "step": the granularity fo the move, as a Gtk.Enums.Gtk_Movement_Step
-   --    --  "count": the number of Step units to move
+   --    --  @param Step the granularity fo the move, as a
+   --    --  Gtk.Enums.Gtk_Movement_Step
+   --    --  @param Count the number of Step units to move
    --    --  Returns True to stop other handlers from being invoked for the event.
    -- False to propagate the event further.
 

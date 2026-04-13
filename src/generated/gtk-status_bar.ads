@@ -104,7 +104,7 @@ package Gtk.Status_Bar is
        Context_Description : UTF8_String) return Context_Id;
    --  Returns a new context identifier, given a description of the actual
    --  context. Note that the description is not shown in the UI.
-   --  "context_description": textual description of what context the new
+   --  @param Context_Description textual description of what context the new
    --  message is being used in
 
    function Get_Message_Area
@@ -120,16 +120,16 @@ package Gtk.Status_Bar is
    --  with the given context id.
    --  Note that this may not change the displayed message, if the message at
    --  the top of the stack has a different context id.
-   --  "context": a context identifier
+   --  @param Context a context identifier
 
    function Push
       (Statusbar : not null access Gtk_Status_Bar_Record;
        Context   : Context_Id;
        Text      : UTF8_String) return Message_Id;
    --  Pushes a new message onto a statusbar's stack.
-   --  "context": the message's context id, as returned by
+   --  @param Context the message's context id, as returned by
    --  Gtk.Status_Bar.Get_Context_Id
-   --  "text": the message to add to the statusbar
+   --  @param Text the message to add to the statusbar
 
    procedure Remove
       (Statusbar : not null access Gtk_Status_Bar_Record;
@@ -137,8 +137,8 @@ package Gtk.Status_Bar is
        Message   : Message_Id);
    --  Forces the removal of a message from a statusbar's stack. The exact
    --  Context_Id and Message_Id must be specified.
-   --  "context": a context identifier
-   --  "Message": a message identifier, as returned by Gtk.Status_Bar.Push
+   --  @param Context a context identifier
+   --  @param Message a message identifier, as returned by Gtk.Status_Bar.Push
 
    procedure Remove_All
       (Statusbar : not null access Gtk_Status_Bar_Record;
@@ -146,7 +146,7 @@ package Gtk.Status_Bar is
    --  Forces the removal of all messages from a statusbar's stack with the
    --  exact Context_Id.
    --  Since: gtk+ 2.22
-   --  "context": a context identifier
+   --  @param Context a context identifier
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -190,8 +190,8 @@ package Gtk.Status_Bar is
    --  Is emitted whenever a new message is popped off a statusbar's stack.
    -- 
    --  Callback parameters:
-   --    --  "context": the context id of the relevant message/statusbar
-   --    --  "text": the message that was just popped
+   --    --  @param Context the context id of the relevant message/statusbar
+   --    --  @param Text the message that was just popped
 
    Signal_Text_Pushed : constant Glib.Signal_Name := "text-pushed";
    procedure On_Text_Pushed
@@ -206,8 +206,8 @@ package Gtk.Status_Bar is
    --  Is emitted whenever a new message gets pushed onto a statusbar's stack.
    -- 
    --  Callback parameters:
-   --    --  "context": the context id of the relevant message/statusbar
-   --    --  "text": the message that was pushed
+   --    --  @param Context the context id of the relevant message/statusbar
+   --    --  @param Text the message that was pushed
 
    ----------------
    -- Interfaces --

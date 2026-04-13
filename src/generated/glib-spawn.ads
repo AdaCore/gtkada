@@ -497,6 +497,6 @@ package Glib.Spawn is
    --  which must be closed to prevent resource leaking.
    --  Glib.Spawn.Spawn_Close_Pid is provided for this purpose. It should be
    --  used on all platforms, even though it doesn't do anything under UNIX.
-   --  "pid": The process reference to close
+   --  @param Pid The process reference to close
 
 end Glib.Spawn;

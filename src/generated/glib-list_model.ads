@@ -98,7 +98,7 @@ package Glib.List_Model is
    --  null is never returned for an index that is smaller than the length of
    --  the list. See Glib.List_Model.Get_N_Items.
    --  Since: gtk+ 2.44
-   --  "position": the position of the item to fetch
+   --  @param Position the position of the item to fetch
 
    function Get_Item_Type (Self : Glist_Model) return GType;
    pragma Import (C, Get_Item_Type, "g_list_model_get_item_type");
@@ -125,7 +125,7 @@ package Glib.List_Model is
    --  null is never returned for an index that is smaller than the length of
    --  the list. See Glib.List_Model.Get_N_Items.
    --  Since: gtk+ 2.44
-   --  "position": the position of the item to fetch
+   --  @param Position the position of the item to fetch
 
    procedure Items_Changed
       (Self     : Glist_Model;
@@ -151,9 +151,9 @@ package Glib.List_Model is
    --  and without calling other code, will continue to view the same contents
    --  of the model.
    --  Since: gtk+ 2.44
-   --  "position": the position at which List changed
-   --  "removed": the number of items removed
-   --  "added": the number of items added
+   --  @param Position the position at which List changed
+   --  @param Removed the number of items removed
+   --  @param Added the number of items added
 
    -------------
    -- Signals --
@@ -189,9 +189,9 @@ package Glib.List_Model is
    --  model change.
    -- 
    --  Callback parameters:
-   --    --  "position": the position at which List changed
-   --    --  "removed": the number of items removed
-   --    --  "added": the number of items added
+   --    --  @param Position the position at which List changed
+   --    --  @param Removed the number of items removed
+   --    --  @param Added the number of items added
 
    ----------------
    -- Interfaces --
@@ -214,7 +214,7 @@ package Glib.List_Model is
    --  null is never returned for an index that is smaller than the length of
    --  the list. See Glib.List_Model.Get_N_Items.
    --  Since: gtk+ 2.44
-   --  "position": the position of the item to fetch
+   --  @param Position the position of the item to fetch
 
    type Virtual_Get_Item_Type is access function (Self : Glist_Model) return GType;
    pragma Convention (C, Virtual_Get_Item_Type);

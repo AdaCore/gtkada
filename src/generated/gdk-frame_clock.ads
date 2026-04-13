@@ -159,11 +159,11 @@ package Gdk.Frame_Clock is
    --  time that is a multiple of the refresh interval after the last
    --  presentation time, and later than Base_Time.
    --  Since: gtk+ 3.8
-   --  "base_time": base time for determining a presentaton time
-   --  "refresh_interval_return": a location to store the determined refresh
-   --  interval, or null. A default refresh interval of 1/60th of a second will
-   --  be stored if no history is present.
-   --  "presentation_time_return": a location to store the next candidate
+   --  @param Base_Time base time for determining a presentaton time
+   --  @param Refresh_Interval_Return a location to store the determined
+   --  refresh interval, or null. A default refresh interval of 1/60th of a
+   --  second will be stored if no history is present.
+   --  @param Presentation_Time_Return a location to store the next candidate
    --  presentation time after the given base time. 0 will be will be stored if
    --  no history is present.
 
@@ -175,8 +175,8 @@ package Gdk.Frame_Clock is
    --  Gdk.Frame_Timings.Gdk_Frame_Timings object may not yet be complete: see
    --  Gdk.Frame_Timings.Get_Complete.
    --  Since: gtk+ 3.8
-   --  "frame_counter": the frame counter value identifying the frame to be
-   --  received.
+   --  @param Frame_Counter the frame counter value identifying the frame to
+   --  be received.
 
    procedure Request_Phase
       (Self  : not null access Gdk_Frame_Clock_Record;
@@ -190,7 +190,7 @@ package Gdk.Frame_Clock is
    --  you should use Gdk.Frame_Clock.Begin_Updating instead, since this allows
    --  GTK+ to adjust system parameters to get maximally smooth animations.
    --  Since: gtk+ 3.8
-   --  "phase": the phase that is requested
+   --  @param Phase the phase that is requested
 
    -------------
    -- Signals --

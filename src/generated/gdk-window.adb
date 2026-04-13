@@ -86,10 +86,10 @@ package body Gdk.Window is
    --  The Child_Func parameter controls whether the region of each child
    --  window that intersects Region will also be invalidated. Only children
    --  for which Child_Func returns TRUE will have the area invalidated.
-   --  "region": a cairo_region_t
-   --  "child_func": function to use to decide if to recurse to a child, null
-   --  means never recurse.
-   --  "user_data": data passed to Child_Func
+   --  @param Region a cairo_region_t
+   --  @param Child_Func function to use to decide if to recurse to a child,
+   --  null means never recurse.
+   --  @param User_Data data passed to Child_Func
 
    procedure C_Gdk_Window_Set_Invalidate_Handler
       (Self    : Gdk.Gdk_Window;
@@ -102,7 +102,7 @@ package body Gdk.Window is
    --  to date. You can also modify the invalidated region in case you're doing
    --  some effect where e.g. a child widget appears in multiple places.
    --  Since: gtk+ 3.10
-   --  "handler": a Gdk_Window_Invalidate_Handler_Func callback function
+   --  @param Handler a Gdk_Window_Invalidate_Handler_Func callback function
 
    function To_Gdk_Window_Child_Func is new Ada.Unchecked_Conversion
      (System.Address, Gdk_Window_Child_Func);
@@ -117,8 +117,8 @@ package body Gdk.Window is
       (Window    : Gdk.Gdk_Window;
        User_Data : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gdk_Window_Child_Func);
-   --  "window": a Gdk.Gdk_Window
-   --  "user_data": user data
+   --  @param Window a Gdk.Gdk_Window
+   --  @param User_Data user data
 
    ------------------------------------
    -- Internal_Gdk_Window_Child_Func --
@@ -611,8 +611,8 @@ package body Gdk.Window is
       --  A function of this type is passed to
       --  Gdk.Window.Invalidate_Maybe_Recurse. It gets called for each child of
       --  the window to determine whether to recursively invalidate it or now.
-      --  "window": a Gdk.Gdk_Window
-      --  "user_data": user data
+      --  @param Window a Gdk.Gdk_Window
+      --  @param User_Data user data
 
       -----------------
       -- Internal_Cb --

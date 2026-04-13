@@ -46,8 +46,8 @@ package body Gtk.Accel_Group is
    pragma Import (C, C_Gtk_Accel_Group_Find, "gtk_accel_group_find");
    --  Finds the first entry in an accelerator group for which Find_Func
    --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
-   --  "find_func": a function to filter the entries of Accel_Group with
-   --  "data": data to pass to Find_Func
+   --  @param Find_Func a function to filter the entries of Accel_Group with
+   --  @param Data data to pass to Find_Func
 
    function To_Gtk_Accel_Group_Find_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Accel_Group_Find_Func);

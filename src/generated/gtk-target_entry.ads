@@ -58,18 +58,18 @@ package Gtk.Target_Entry is
        Flags        : Gtk.Enums.Gtk_Target_Flags;
        Info         : Guint);
    --  Makes a new Gtk.Target_Entry.Gtk_Target_Entry.
-   --  "target": String identifier for target
-   --  "flags": Set of flags, see Gtk.Enums.Gtk_Target_Flags
-   --  "info": an ID that will be passed back to the application
+   --  @param Target String identifier for target
+   --  @param Flags Set of flags, see Gtk.Enums.Gtk_Target_Flags
+   --  @param Info an ID that will be passed back to the application
 
    function Gtk_Target_Entry_New
       (Target : UTF8_String;
        Flags  : Gtk.Enums.Gtk_Target_Flags;
        Info   : Guint) return Gtk_Target_Entry;
    --  Makes a new Gtk.Target_Entry.Gtk_Target_Entry.
-   --  "target": String identifier for target
-   --  "flags": Set of flags, see Gtk.Enums.Gtk_Target_Flags
-   --  "info": an ID that will be passed back to the application
+   --  @param Target String identifier for target
+   --  @param Flags Set of flags, see Gtk.Enums.Gtk_Target_Flags
+   --  @param Info an ID that will be passed back to the application
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_target_entry_get_type");

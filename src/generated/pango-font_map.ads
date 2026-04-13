@@ -112,8 +112,10 @@ package Pango.Font_Map is
        Desc    : Pango.Font.Pango_Font_Description)
        return Pango.Font.Pango_Font;
    --  Load the font in the fontmap that is the closest match for Desc.
-   --  "context": the Pango.Context.Pango_Context the font will be used with
-   --  "desc": a Pango.Font.Pango_Font_Description describing the font to load
+   --  @param Context the Pango.Context.Pango_Context the font will be used
+   --  with
+   --  @param Desc a Pango.Font.Pango_Font_Description describing the font to
+   --  load
 
    function Load_Fontset
       (Self     : not null access Pango_Font_Map_Record;
@@ -123,8 +125,11 @@ package Pango.Font_Map is
        return Pango.Fontset.Pango_Fontset;
    --  Load a set of fonts in the fontmap that can be used to render a font
    --  matching Desc.
-   --  "context": the Pango.Context.Pango_Context the font will be used with
-   --  "desc": a Pango.Font.Pango_Font_Description describing the font to load
-   --  "language": a Pango.Language.Pango_Language the fonts will be used for
+   --  @param Context the Pango.Context.Pango_Context the font will be used
+   --  with
+   --  @param Desc a Pango.Font.Pango_Font_Description describing the font to
+   --  load
+   --  @param Language a Pango.Language.Pango_Language the fonts will be used
+   --  for
 
 end Pango.Font_Map;

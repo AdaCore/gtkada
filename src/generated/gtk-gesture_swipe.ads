@@ -62,14 +62,14 @@ package Gtk.Gesture_Swipe is
    --  Since: gtk+ 3.14
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Gtk_Gesture_Swipe_New
       (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk_Gesture_Swipe;
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes swipes.
    --  Since: gtk+ 3.14
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_gesture_swipe_get_type");
@@ -86,9 +86,9 @@ package Gtk.Gesture_Swipe is
    --  Velocity_X and Velocity_Y with the recorded velocity, as per the last
    --  event(s) processed.
    --  Since: gtk+ 3.14
-   --  "velocity_x": return value for the velocity in the X axis, in
+   --  @param Velocity_X return value for the velocity in the X axis, in
    --  pixels/sec
-   --  "velocity_y": return value for the velocity in the Y axis, in
+   --  @param Velocity_Y return value for the velocity in the Y axis, in
    --  pixels/sec
 
    -------------
@@ -119,7 +119,7 @@ package Gtk.Gesture_Swipe is
    --  velocity and direction are a product of previously recorded events.
    -- 
    --  Callback parameters:
-   --    --  "velocity_x": velocity in the X axis, in pixels/sec
-   --    --  "velocity_y": velocity in the Y axis, in pixels/sec
+   --    --  @param Velocity_X velocity in the X axis, in pixels/sec
+   --    --  @param Velocity_Y velocity in the Y axis, in pixels/sec
 
 end Gtk.Gesture_Swipe;

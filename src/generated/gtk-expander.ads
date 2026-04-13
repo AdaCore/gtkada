@@ -134,12 +134,12 @@ package Gtk.Expander is
    --  Since: gtk+ 2.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "label": the text of the label
+   --  @param Label the text of the label
 
    function Gtk_Expander_New (Label : UTF8_String := "") return Gtk_Expander;
    --  Creates a new expander using Label as the text of the label.
    --  Since: gtk+ 2.4
-   --  "label": the text of the label
+   --  @param Label the text of the label
 
    procedure Gtk_New_With_Mnemonic
       (Expander : out Gtk_Expander;
@@ -156,7 +156,7 @@ package Gtk.Expander is
    --  Since: gtk+ 2.4
    --  Initialize_With_Mnemonic does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "label": the text of the label with an underscore in front of the
+   --  @param Label the text of the label with an underscore in front of the
    --  mnemonic character
 
    function Gtk_Expander_New_With_Mnemonic
@@ -168,7 +168,7 @@ package Gtk.Expander is
    --  accelerator called a mnemonic. Pressing Alt and that key activates the
    --  button.
    --  Since: gtk+ 2.4
-   --  "label": the text of the label with an underscore in front of the
+   --  @param Label the text of the label with an underscore in front of the
    --  mnemonic character
 
    function Get_Type return Glib.GType;
@@ -192,7 +192,7 @@ package Gtk.Expander is
    --  widget to be revealed, and False if you want the child widget to be
    --  hidden.
    --  Since: gtk+ 2.4
-   --  "expanded": whether the child widget is revealed
+   --  @param Expanded whether the child widget is revealed
 
    function Get_Label
       (Expander : not null access Gtk_Expander_Record) return UTF8_String;
@@ -213,7 +213,7 @@ package Gtk.Expander is
    --  Sets the text of the label of the expander to Label.
    --  This will also clear any previously set labels.
    --  Since: gtk+ 2.4
-   --  "label": a string
+   --  @param Label a string
 
    function Get_Label_Fill
       (Expander : not null access Gtk_Expander_Record) return Boolean;
@@ -228,7 +228,7 @@ package Gtk.Expander is
    --  space allocated to Expander.
    --  Note that this function has no effect since 3.20.
    --  Since: gtk+ 2.22
-   --  "label_fill": True if the label should should fill all available
+   --  @param Label_Fill True if the label should should fill all available
    --  horizontal space
 
    function Get_Label_Widget
@@ -244,7 +244,7 @@ package Gtk.Expander is
    --  Set the label widget for the expander. This is the widget that will
    --  appear embedded alongside the expander arrow.
    --  Since: gtk+ 2.4
-   --  "label_widget": the new label widget
+   --  @param Label_Widget the new label widget
 
    function Get_Resize_Toplevel
       (Expander : not null access Gtk_Expander_Record) return Boolean;
@@ -258,7 +258,7 @@ package Gtk.Expander is
    --  Sets whether the expander will resize the toplevel widget containing
    --  the expander upon resizing and collpasing.
    --  Since: gtk+ 3.2
-   --  "resize_toplevel": whether to resize the toplevel
+   --  @param Resize_Toplevel whether to resize the toplevel
 
    function Get_Spacing
       (Expander : not null access Gtk_Expander_Record) return Glib.Gint;
@@ -275,7 +275,7 @@ package Gtk.Expander is
    --  place between expander and the child.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.20, 1
-   --  "spacing": distance between the expander and child in pixels
+   --  @param Spacing distance between the expander and child in pixels
 
    function Get_Use_Markup
       (Expander : not null access Gtk_Expander_Record) return Boolean;
@@ -290,7 +290,7 @@ package Gtk.Expander is
    --  Sets whether the text of the label contains markup in [Pango's text
    --  markup language][PangoMarkupFormat]. See Gtk.Label.Set_Markup.
    --  Since: gtk+ 2.4
-   --  "use_markup": True if the label's text should be parsed for markup
+   --  @param Use_Markup True if the label's text should be parsed for markup
 
    function Get_Use_Underline
       (Expander : not null access Gtk_Expander_Record) return Boolean;
@@ -304,7 +304,7 @@ package Gtk.Expander is
    --  If true, an underline in the text of the expander label indicates the
    --  next character should be used for the mnemonic accelerator key.
    --  Since: gtk+ 2.4
-   --  "use_underline": True if underlines in the text indicate mnemonics
+   --  @param Use_Underline True if underlines in the text indicate mnemonics
 
    ----------------
    -- Properties --

@@ -89,7 +89,7 @@ package Gtk.Switch is
        Is_Active : Boolean);
    --  Changes the state of Sw to the desired one.
    --  Since: gtk+ 3.0
-   --  "is_active": True if Sw should be active, and False otherwise
+   --  @param Is_Active True if Sw should be active, and False otherwise
 
    function Get_State
       (Self : not null access Gtk_Switch_Record) return Boolean;
@@ -105,7 +105,7 @@ package Gtk.Switch is
    --  called from a Gtk.Switch.Gtk_Switch::state-set signal handler.
    --  See Gtk.Switch.Gtk_Switch::state-set for details.
    --  Since: gtk+ 3.14
-   --  "state": the new state
+   --  @param State the new state
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -232,7 +232,7 @@ package Gtk.Switch is
    --  represented by the position of the switch.
    -- 
    --  Callback parameters:
-   --    --  "state": the new state of the switch
+   --    --  @param State the new state of the switch
    --    --  Returns True to stop the signal emission
 
    ----------------

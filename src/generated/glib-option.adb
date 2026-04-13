@@ -173,9 +173,10 @@ package body Glib.Option is
    --  If you are using gettext, you only need to set the translation domain,
    --  see Glib.Option.Set_Translation_Domain.
    --  Since: gtk+ 2.12
-   --  "func": the Gtranslate_Func, or null
-   --  "data": user data to pass to Func, or null
-   --  "destroy_notify": a function which gets called to free Data, or null
+   --  @param Func the Gtranslate_Func, or null
+   --  @param Data user data to pass to Func, or null
+   --  @param Destroy_Notify a function which gets called to free Data, or
+   --  null
 
    function To_Gtranslate_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtranslate_Func);
@@ -187,8 +188,8 @@ package body Glib.Option is
       (Str  : Gtkada.Types.Chars_Ptr;
        Data : System.Address) return Gtkada.Types.Chars_Ptr;
    pragma Convention (C, Internal_Gtranslate_Func);
-   --  "str": the untranslated string
-   --  "data": user data specified when installing the function, e.g. in
+   --  @param Str the untranslated string
+   --  @param Data user data specified when installing the function, e.g. in
    --  g_option_group_set_translate_func
 
    ------------------------------
@@ -451,9 +452,9 @@ package body Glib.Option is
       pragma Convention (C, Internal_Cb);
       --  The type of functions which are used to translate user-visible
       --  strings, for <option>--help</option> output.
-      --  "str": the untranslated string
-      --  "data": user data specified when installing the function, e.g. in
-      --  g_option_group_set_translate_func
+      --  @param Str the untranslated string
+      --  @param Data user data specified when installing the function, e.g.
+      --  in g_option_group_set_translate_func
 
       -----------------
       -- Internal_Cb --

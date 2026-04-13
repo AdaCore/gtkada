@@ -83,7 +83,7 @@ package Glib.Notification is
    --  properties after this call will not have any effect until resending
    --  Notification.
    --  Since: gtk+ 2.40
-   --  "title": the title of the notification
+   --  @param Title the title of the notification
 
    procedure Initialize
       (Self  : not null access Gnotification_Record'Class;
@@ -96,7 +96,7 @@ package Glib.Notification is
    --  Since: gtk+ 2.40
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "title": the title of the notification
+   --  @param Title the title of the notification
 
    function Gnotification_New (Title : UTF8_String) return Gnotification;
    --  Creates a new Glib.Notification.Gnotification with Title as its title.
@@ -105,7 +105,7 @@ package Glib.Notification is
    --  properties after this call will not have any effect until resending
    --  Notification.
    --  Since: gtk+ 2.40
-   --  "title": the title of the notification
+   --  @param Title the title of the notification
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "g_notification_get_type");
@@ -125,8 +125,8 @@ package Glib.Notification is
    --  See g_action_parse_detailed_name for a description of the format for
    --  Detailed_Action.
    --  Since: gtk+ 2.40
-   --  "label": label of the button
-   --  "detailed_action": a detailed action name
+   --  @param Label label of the button
+   --  @param Detailed_Action a detailed action name
 
    procedure Add_Button_With_Target_Value
       (Self   : not null access Gnotification_Record;
@@ -138,16 +138,17 @@ package Glib.Notification is
    --  If Target is non-null, Action will be activated with Target as its
    --  parameter.
    --  Since: gtk+ 2.40
-   --  "label": label of the button
-   --  "action": an action name
-   --  "target": a Glib.Variant.Gvariant to use as Action's parameter, or null
+   --  @param Label label of the button
+   --  @param Action an action name
+   --  @param Target a Glib.Variant.Gvariant to use as Action's parameter, or
+   --  null
 
    procedure Set_Body
       (Self     : not null access Gnotification_Record;
        The_Body : UTF8_String := "");
    --  Sets the body of Notification to Body.
    --  Since: gtk+ 2.40
-   --  "the_body": the new body for Notification, or null
+   --  @param The_Body the new body for Notification, or null
 
    procedure Set_Default_Action
       (Self            : not null access Gnotification_Record;
@@ -162,7 +163,7 @@ package Glib.Notification is
    --  When no default action is set, the application that the notification
    --  was sent on is activated.
    --  Since: gtk+ 2.40
-   --  "detailed_action": a detailed action name
+   --  @param Detailed_Action a detailed action name
 
    procedure Set_Default_Action_And_Target_Value
       (Self   : not null access Gnotification_Record;
@@ -176,29 +177,31 @@ package Glib.Notification is
    --  When no default action is set, the application that the notification
    --  was sent on is activated.
    --  Since: gtk+ 2.40
-   --  "action": an action name
-   --  "target": a Glib.Variant.Gvariant to use as Action's parameter, or null
+   --  @param Action an action name
+   --  @param Target a Glib.Variant.Gvariant to use as Action's parameter, or
+   --  null
 
    procedure Set_Icon
       (Self : not null access Gnotification_Record;
        Icon : Glib.G_Icon.G_Icon);
    --  Sets the icon of Notification to Icon.
    --  Since: gtk+ 2.40
-   --  "icon": the icon to be shown in Notification, as a Glib.G_Icon.G_Icon
+   --  @param Icon the icon to be shown in Notification, as a
+   --  Glib.G_Icon.G_Icon
 
    procedure Set_Priority
       (Self     : not null access Gnotification_Record;
        Priority : GNotification_Priority);
    --  Sets the priority of Notification to Priority. See
    --  Glib.Notification.GNotification_Priority for possible values.
-   --  "priority": a Glib.Notification.GNotification_Priority
+   --  @param Priority a Glib.Notification.GNotification_Priority
 
    procedure Set_Title
       (Self  : not null access Gnotification_Record;
        Title : UTF8_String);
    --  Sets the title of Notification to Title.
    --  Since: gtk+ 2.40
-   --  "title": the new title for Notification
+   --  @param Title the new title for Notification
 
    procedure Set_Urgent
       (Self   : not null access Gnotification_Record;
@@ -207,6 +210,6 @@ package Glib.Notification is
    --  Deprecated in favor of Glib.Notification.Set_Priority.
    --  Since: gtk+ 2.40
    --  Deprecated since 2.42, 1
-   --  "urgent": True if Notification is urgent
+   --  @param Urgent True if Notification is urgent
 
 end Glib.Notification;

@@ -141,15 +141,15 @@ package Gtk.Cell_Renderer is
    --  Some cell renderers may use events; for example,
    --  Gtk.Cell_Renderer_Toggle.Gtk_Cell_Renderer_Toggle toggles when it gets a
    --  mouse click.
-   --  "event": a Gdk.Event.Gdk_Event
-   --  "widget": widget that received the event
-   --  "path": widget-dependent string representation of the event location;
-   --  e.g. for Gtk.Tree_View.Gtk_Tree_View, a string representation of
-   --  Gtk.Tree_Model.Gtk_Tree_Path
-   --  "background_area": background area as passed to
+   --  @param Event a Gdk.Event.Gdk_Event
+   --  @param Widget widget that received the event
+   --  @param Path widget-dependent string representation of the event
+   --  location; e.g. for Gtk.Tree_View.Gtk_Tree_View, a string representation
+   --  of Gtk.Tree_Model.Gtk_Tree_Path
+   --  @param Background_Area background area as passed to
    --  Gtk.Cell_Renderer.Render
-   --  "cell_area": cell area as passed to Gtk.Cell_Renderer.Render
-   --  "flags": render flags
+   --  @param Cell_Area cell area as passed to Gtk.Cell_Renderer.Render
+   --  @param Flags render flags
 
    procedure Get_Aligned_Area
       (Cell         : not null access Gtk_Cell_Renderer_Record;
@@ -160,12 +160,12 @@ package Gtk.Cell_Renderer is
    --  Gets the aligned area used by Cell inside Cell_Area. Used for finding
    --  the appropriate edit and focus rectangle.
    --  Since: gtk+ 3.0
-   --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
-   --  "flags": render flags
-   --  "cell_area": cell area which would be passed to
+   --  @param Widget the Gtk.Widget.Gtk_Widget this cell will be rendering to
+   --  @param Flags render flags
+   --  @param Cell_Area cell area which would be passed to
    --  Gtk.Cell_Renderer.Render
-   --  "aligned_area": the return location for the space inside Cell_Area that
-   --  would acually be used to render.
+   --  @param Aligned_Area the return location for the space inside Cell_Area
+   --  that would acually be used to render.
 
    procedure Get_Alignment
       (Cell   : not null access Gtk_Cell_Renderer_Record;
@@ -173,8 +173,10 @@ package Gtk.Cell_Renderer is
        Yalign : out Gfloat);
    --  Fills in Xalign and Yalign with the appropriate values of Cell.
    --  Since: gtk+ 2.18
-   --  "xalign": location to fill in with the x alignment of the cell, or null
-   --  "yalign": location to fill in with the y alignment of the cell, or null
+   --  @param Xalign location to fill in with the x alignment of the cell, or
+   --  null
+   --  @param Yalign location to fill in with the y alignment of the cell, or
+   --  null
 
    procedure Set_Alignment
       (Cell   : not null access Gtk_Cell_Renderer_Record;
@@ -182,16 +184,17 @@ package Gtk.Cell_Renderer is
        Yalign : Gfloat);
    --  Sets the renderer's alignment within its available space.
    --  Since: gtk+ 2.18
-   --  "xalign": the x alignment of the cell renderer
-   --  "yalign": the y alignment of the cell renderer
+   --  @param Xalign the x alignment of the cell renderer
+   --  @param Yalign the y alignment of the cell renderer
 
    procedure Get_Fixed_Size
       (Cell   : not null access Gtk_Cell_Renderer_Record;
        Width  : out Glib.Gint;
        Height : out Glib.Gint);
    --  Fills in Width and Height with the appropriate size of Cell.
-   --  "width": location to fill in with the fixed width of the cell, or null
-   --  "height": location to fill in with the fixed height of the cell, or
+   --  @param Width location to fill in with the fixed width of the cell, or
+   --  null
+   --  @param Height location to fill in with the fixed height of the cell, or
    --  null
 
    procedure Set_Fixed_Size
@@ -200,8 +203,8 @@ package Gtk.Cell_Renderer is
        Height : Glib.Gint);
    --  Sets the renderer size to be explicit, independent of the properties
    --  set.
-   --  "width": the width of the cell renderer, or -1
-   --  "height": the height of the cell renderer, or -1
+   --  @param Width the width of the cell renderer, or -1
+   --  @param Height the height of the cell renderer, or -1
 
    procedure Get_Padding
       (Cell : not null access Gtk_Cell_Renderer_Record;
@@ -209,8 +212,8 @@ package Gtk.Cell_Renderer is
        Ypad : out Glib.Gint);
    --  Fills in Xpad and Ypad with the appropriate values of Cell.
    --  Since: gtk+ 2.18
-   --  "xpad": location to fill in with the x padding of the cell, or null
-   --  "ypad": location to fill in with the y padding of the cell, or null
+   --  @param Xpad location to fill in with the x padding of the cell, or null
+   --  @param Ypad location to fill in with the y padding of the cell, or null
 
    procedure Set_Padding
       (Cell : not null access Gtk_Cell_Renderer_Record;
@@ -218,8 +221,8 @@ package Gtk.Cell_Renderer is
        Ypad : Glib.Gint);
    --  Sets the renderer's padding.
    --  Since: gtk+ 2.18
-   --  "xpad": the x padding of the cell renderer
-   --  "ypad": the y padding of the cell renderer
+   --  @param Xpad the x padding of the cell renderer
+   --  @param Ypad the y padding of the cell renderer
 
    procedure Get_Preferred_Height
       (Cell         : not null access Gtk_Cell_Renderer_Record;
@@ -228,9 +231,9 @@ package Gtk.Cell_Renderer is
        Natural_Size : out Glib.Gint);
    --  Retreives a renderer's natural size when rendered to Widget.
    --  Since: gtk+ 3.0
-   --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
-   --  "minimum_size": location to store the minimum size, or null
-   --  "natural_size": location to store the natural size, or null
+   --  @param Widget the Gtk.Widget.Gtk_Widget this cell will be rendering to
+   --  @param Minimum_Size location to store the minimum size, or null
+   --  @param Natural_Size location to store the natural size, or null
 
    procedure Get_Preferred_Height_For_Width
       (Cell           : not null access Gtk_Cell_Renderer_Record;
@@ -241,10 +244,10 @@ package Gtk.Cell_Renderer is
    --  Retreives a cell renderers's minimum and natural height if it were
    --  rendered to Widget with the specified Width.
    --  Since: gtk+ 3.0
-   --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
-   --  "width": the size which is available for allocation
-   --  "minimum_height": location for storing the minimum size, or null
-   --  "natural_height": location for storing the preferred size, or null
+   --  @param Widget the Gtk.Widget.Gtk_Widget this cell will be rendering to
+   --  @param Width the size which is available for allocation
+   --  @param Minimum_Height location for storing the minimum size, or null
+   --  @param Natural_Height location for storing the preferred size, or null
 
    procedure Get_Preferred_Size
       (Cell         : not null access Gtk_Cell_Renderer_Record;
@@ -254,9 +257,9 @@ package Gtk.Cell_Renderer is
    --  Retrieves the minimum and natural size of a cell taking into account
    --  the widget's preference for height-for-width management.
    --  Since: gtk+ 3.0
-   --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
-   --  "minimum_size": location for storing the minimum size, or null
-   --  "natural_size": location for storing the natural size, or null
+   --  @param Widget the Gtk.Widget.Gtk_Widget this cell will be rendering to
+   --  @param Minimum_Size location for storing the minimum size, or null
+   --  @param Natural_Size location for storing the natural size, or null
 
    procedure Get_Preferred_Width
       (Cell         : not null access Gtk_Cell_Renderer_Record;
@@ -265,9 +268,9 @@ package Gtk.Cell_Renderer is
        Natural_Size : out Glib.Gint);
    --  Retreives a renderer's natural size when rendered to Widget.
    --  Since: gtk+ 3.0
-   --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
-   --  "minimum_size": location to store the minimum size, or null
-   --  "natural_size": location to store the natural size, or null
+   --  @param Widget the Gtk.Widget.Gtk_Widget this cell will be rendering to
+   --  @param Minimum_Size location to store the minimum size, or null
+   --  @param Natural_Size location to store the natural size, or null
 
    procedure Get_Preferred_Width_For_Height
       (Cell          : not null access Gtk_Cell_Renderer_Record;
@@ -278,10 +281,10 @@ package Gtk.Cell_Renderer is
    --  Retreives a cell renderers's minimum and natural width if it were
    --  rendered to Widget with the specified Height.
    --  Since: gtk+ 3.0
-   --  "widget": the Gtk.Widget.Gtk_Widget this cell will be rendering to
-   --  "height": the size which is available for allocation
-   --  "minimum_width": location for storing the minimum size, or null
-   --  "natural_width": location for storing the preferred size, or null
+   --  @param Widget the Gtk.Widget.Gtk_Widget this cell will be rendering to
+   --  @param Height the size which is available for allocation
+   --  @param Minimum_Width location for storing the minimum size, or null
+   --  @param Natural_Width location for storing the preferred size, or null
 
    function Get_Request_Mode
       (Cell : not null access Gtk_Cell_Renderer_Record)
@@ -300,7 +303,7 @@ package Gtk.Cell_Renderer is
        Sensitive : Boolean);
    --  Sets the cell renderer's sensitivity.
    --  Since: gtk+ 2.18
-   --  "sensitive": the sensitivity of the cell
+   --  @param Sensitive the sensitivity of the cell
 
    procedure Get_Size
       (Cell      : not null access Gtk_Cell_Renderer_Record;
@@ -318,14 +321,15 @@ package Gtk.Cell_Renderer is
    --  Please note that the values set in Width and Height, as well as those
    --  in X_Offset and Y_Offset are inclusive of the xpad and ypad properties.
    --  Deprecated since 3.0, 1
-   --  "widget": the widget the renderer is rendering to
-   --  "cell_area": The area a cell will be allocated, or null
-   --  "x_offset": location to return x offset of cell relative to Cell_Area,
-   --  or null
-   --  "y_offset": location to return y offset of cell relative to Cell_Area,
-   --  or null
-   --  "width": location to return width needed to render a cell, or null
-   --  "height": location to return height needed to render a cell, or null
+   --  @param Widget the widget the renderer is rendering to
+   --  @param Cell_Area The area a cell will be allocated, or null
+   --  @param X_Offset location to return x offset of cell relative to
+   --  Cell_Area, or null
+   --  @param Y_Offset location to return y offset of cell relative to
+   --  Cell_Area, or null
+   --  @param Width location to return width needed to render a cell, or null
+   --  @param Height location to return height needed to render a cell, or
+   --  null
 
    function Get_State
       (Cell       : not null access Gtk_Cell_Renderer_Record;
@@ -336,8 +340,8 @@ package Gtk.Cell_Renderer is
    --  on the cell renderer and widget sensitivity, and the given
    --  Gtk.Cell_Renderer.Gtk_Cell_Renderer_State.
    --  Since: gtk+ 3.0
-   --  "widget": a Gtk.Widget.Gtk_Widget, or null
-   --  "cell_state": cell renderer state
+   --  @param Widget a Gtk.Widget.Gtk_Widget, or null
+   --  @param Cell_State cell renderer state
 
    function Get_Visible
       (Cell : not null access Gtk_Cell_Renderer_Record) return Boolean;
@@ -349,7 +353,7 @@ package Gtk.Cell_Renderer is
        Visible : Boolean);
    --  Sets the cell renderer's visibility.
    --  Since: gtk+ 2.18
-   --  "visible": the visibility of the cell
+   --  @param Visible the visibility of the cell
 
    function Is_Activatable
       (Cell : not null access Gtk_Cell_Renderer_Record) return Boolean;
@@ -371,12 +375,12 @@ package Gtk.Cell_Renderer is
    --  the blank space around the cell, and also the area containing the tree
    --  expander; so the Background_Area rectangles for all cells tile to cover
    --  the entire Window.
-   --  "cr": a cairo context to draw to
-   --  "widget": the widget owning Window
-   --  "background_area": entire cell area (including tree expanders and maybe
-   --  padding on the sides)
-   --  "cell_area": area normally rendered by a cell renderer
-   --  "flags": flags that affect rendering
+   --  @param Cr a cairo context to draw to
+   --  @param Widget the widget owning Window
+   --  @param Background_Area entire cell area (including tree expanders and
+   --  maybe padding on the sides)
+   --  @param Cell_Area area normally rendered by a cell renderer
+   --  @param Flags flags that affect rendering
 
    function Start_Editing
       (Cell            : not null access Gtk_Cell_Renderer_Record;
@@ -391,15 +395,15 @@ package Gtk.Cell_Renderer is
    --  Gtk.Cell_Editable.Gtk_Cell_Editable widget created by the
    --  Gtk.Cell_Renderer_Class.Gtk_Cell_Renderer_Class.start_editing virtual
    --  function.
-   --  "event": a Gdk.Event.Gdk_Event
-   --  "widget": widget that received the event
-   --  "path": widget-dependent string representation of the event location;
-   --  e.g. for Gtk.Tree_View.Gtk_Tree_View, a string representation of
-   --  Gtk.Tree_Model.Gtk_Tree_Path
-   --  "background_area": background area as passed to
+   --  @param Event a Gdk.Event.Gdk_Event
+   --  @param Widget widget that received the event
+   --  @param Path widget-dependent string representation of the event
+   --  location; e.g. for Gtk.Tree_View.Gtk_Tree_View, a string representation
+   --  of Gtk.Tree_Model.Gtk_Tree_Path
+   --  @param Background_Area background area as passed to
    --  Gtk.Cell_Renderer.Render
-   --  "cell_area": cell area as passed to Gtk.Cell_Renderer.Render
-   --  "flags": render flags
+   --  @param Cell_Area cell area as passed to Gtk.Cell_Renderer.Render
+   --  @param Flags render flags
 
    procedure Stop_Editing
       (Cell     : not null access Gtk_Cell_Renderer_Record;
@@ -411,7 +415,7 @@ package Gtk.Cell_Renderer is
    --  response to the Gtk.Cell_Editable.Gtk_Cell_Editable::editing-done signal
    --  of Gtk.Cell_Editable.Gtk_Cell_Editable.
    --  Since: gtk+ 2.6
-   --  "canceled": True if the editing has been canceled
+   --  @param Canceled True if the editing has been canceled
 
    ----------------
    -- Properties --
@@ -533,8 +537,8 @@ package Gtk.Cell_Renderer is
    --     }
    -- 
    --  Callback parameters:
-   --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable
-   --    --  "path": the path identifying the edited cell
+   --    --  @param Editable the Gtk.Cell_Editable.Gtk_Cell_Editable
+   --    --  @param Path the path identifying the edited cell
 
 private
    Ypad_Property : constant Glib.Properties.Property_Uint :=

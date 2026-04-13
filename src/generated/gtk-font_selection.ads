@@ -117,7 +117,7 @@ package Gtk.Font_Selection is
    --  for this to work; this can be guaranteed by simply making sure that the
    --  Fontsel is inserted in a toplevel window before you call this function.
    --  Deprecated since 3.2, 1
-   --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
+   --  @param Fontname a font name like "Helvetica 12" or "Times Bold 18"
 
    function Get_Preview_Entry
       (Fontsel : not null access Gtk_Font_Selection_Record)
@@ -142,7 +142,7 @@ package Gtk.Font_Selection is
    --  Sets the text displayed in the preview area. The Text is used to show
    --  how the selected font looks.
    --  Deprecated since 3.2, 1
-   --  "text": the text to display in the preview area
+   --  @param Text the text to display in the preview area
 
    function Get_Size
       (Fontsel : not null access Gtk_Font_Selection_Record) return Glib.Gint;

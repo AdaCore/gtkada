@@ -121,8 +121,8 @@ package Glib.Cancellable is
    --  versions which now makes it easier to write cleanup code that
    --  unconditionally invokes e.g. Glib.Cancellable.Cancel.
    --  Since: gtk+ 2.22
-   --  "callback": The Gcallback to connect.
-   --  "data_destroy_func": Free function for Data or null.
+   --  @param Callback The Gcallback to connect.
+   --  @param Data_Destroy_Func Free function for Data or null.
 
    generic
       type User_Data_Type (<>) is private;
@@ -158,9 +158,9 @@ package Glib.Cancellable is
       --  GLib versions which now makes it easier to write cleanup code that
       --  unconditionally invokes e.g. Glib.Cancellable.Cancel.
       --  Since: gtk+ 2.22
-      --  "callback": The Gcallback to connect.
-      --  "data": Data to pass to Callback.
-      --  "data_destroy_func": Free function for Data or null.
+      --  @param Callback The Gcallback to connect.
+      --  @param Data Data to pass to Callback.
+      --  @param Data_Destroy_Func Free function for Data or null.
 
    end Connect_User_Data;
 
@@ -179,7 +179,7 @@ package Glib.Cancellable is
    --  this.
    --  If Cancellable is null or Handler_Id is `0` this function does nothing.
    --  Since: gtk+ 2.22
-   --  "handler_id": Handler id of the handler to be disconnected, or `0`.
+   --  @param Handler_Id Handler id of the handler to be disconnected, or `0`.
 
    function Get_Fd
       (Self : not null access Gcancellable_Record) return Glib.Gint;

@@ -133,9 +133,9 @@ package Gtk.IM_Context is
    --  This function is used by an input method that wants to make
    --  subsitutions in the existing text in response to new input. It is not
    --  useful for applications.
-   --  "offset": offset from cursor position in chars; a negative value means
-   --  start before the cursor.
-   --  "n_chars": number of characters to delete.
+   --  @param Offset offset from cursor position in chars; a negative value
+   --  means start before the cursor.
+   --  @param N_Chars number of characters to delete.
 
    function Filter_Keypress
       (Self  : not null access Gtk_IM_Context_Record;
@@ -143,7 +143,7 @@ package Gtk.IM_Context is
    --  Allow an input method to internally handle key press and release
    --  events. If this function returns True, then no further processing should
    --  be done for this key event.
-   --  "event": the key event
+   --  @param Event the key event
 
    procedure Focus_In (Self : not null access Gtk_IM_Context_Record);
    --  Notify the input method that the widget to which this input context
@@ -168,7 +168,7 @@ package Gtk.IM_Context is
    --  in which the input appears. This window is used in order to correctly
    --  position status windows, and may also be used for purposes internal to
    --  the input method.
-   --  "window": the client window. This may be null to indicate that the
+   --  @param Window the client window. This may be null to indicate that the
    --  previous client window no longer exists.
 
    procedure Set_Cursor_Location
@@ -176,7 +176,7 @@ package Gtk.IM_Context is
        Area : Gdk.Rectangle.Gdk_Rectangle);
    --  Notify the input method that a change in cursor position has been made.
    --  The location is relative to the client window.
-   --  "area": new location
+   --  @param Area new location
 
    procedure Set_Surrounding
       (Self         : not null access Gtk_IM_Context_Record;
@@ -187,10 +187,10 @@ package Gtk.IM_Context is
    --  This function is expected to be called in response to the
    --  GtkIMContext::retrieve_surrounding signal, and will likely have no
    --  effect if called at other times.
-   --  "text": text surrounding the insertion point, as UTF-8. the preedit
+   --  @param Text text surrounding the insertion point, as UTF-8. the preedit
    --  string should not be included within Text.
-   --  "len": the length of Text, or -1 if Text is nul-terminated
-   --  "cursor_index": the byte index of the insertion cursor within Text.
+   --  @param Len the length of Text, or -1 if Text is nul-terminated
+   --  @param Cursor_Index the byte index of the insertion cursor within Text.
 
    procedure Set_Use_Preedit
       (Self        : not null access Gtk_IM_Context_Record;
@@ -199,7 +199,8 @@ package Gtk.IM_Context is
    --  feedback. If Use_Preedit is FALSE (default is TRUE), then the IM context
    --  may use some other method to display feedback, such as displaying it in
    --  a child of the root window.
-   --  "use_preedit": whether the IM context should use the preedit string.
+   --  @param Use_Preedit whether the IM context should use the preedit
+   --  string.
 
    ----------------
    -- Properties --
@@ -261,9 +262,9 @@ package Gtk.IM_Context is
    --  to delete all or part of the context surrounding the cursor.
    -- 
    --  Callback parameters:
-   --    --  "offset": the character offset from the cursor position of the text to
-   --    --  be deleted. A negative value indicates a position before the cursor.
-   --    --  "n_chars": the number of characters to be deleted
+   --    --  @param Offset the character offset from the cursor position of the text
+   --    --  to be deleted. A negative value indicates a position before the cursor.
+   --    --  @param N_Chars the number of characters to be deleted
    --    --  Returns True if the signal was handled.
 
    type Cb_Gtk_IM_Context_Void is not null access procedure (Self : access Gtk_IM_Context_Record'Class);

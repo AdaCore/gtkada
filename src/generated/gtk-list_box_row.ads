@@ -96,7 +96,7 @@ package Gtk.List_Box_Row is
    --  Set the Gtk.List_Box_Row.Gtk_List_Box_Row:activatable property for this
    --  row.
    --  Since: gtk+ 3.14
-   --  "activatable": True to mark the row as activatable
+   --  @param Activatable True to mark the row as activatable
 
    function Get_Header
       (Self : not null access Gtk_List_Box_Row_Record)
@@ -113,7 +113,7 @@ package Gtk.List_Box_Row is
    --  from a Gtk_List_Box_Update_Header_Func. It will replace any existing
    --  header in the row, and be shown in front of the row in the listbox.
    --  Since: gtk+ 3.10
-   --  "header": the header, or null
+   --  @param Header the header, or null
 
    function Get_Index
       (Self : not null access Gtk_List_Box_Row_Record) return Glib.Gint;
@@ -133,7 +133,7 @@ package Gtk.List_Box_Row is
    --  Set the Gtk.List_Box_Row.Gtk_List_Box_Row:selectable property for this
    --  row.
    --  Since: gtk+ 3.14
-   --  "selectable": True to mark the row as selectable
+   --  @param Selectable True to mark the row as selectable
 
    function Is_Selected
       (Self : not null access Gtk_List_Box_Row_Record) return Boolean;

@@ -117,15 +117,15 @@ package Gdk.Device is
        Index : Guint) return Gdk_Axis_Use;
    --  Returns the axis use for Index_.
    --  Since: gtk+ 2.20
-   --  "index_": the index of the axis.
+   --  @param Index the index of the axis.
 
    procedure Set_Axis_Use
       (Self  : not null access Gdk_Device_Record;
        Index : Guint;
        GUse  : Gdk_Axis_Use);
    --  Specifies how an axis of a device is used.
-   --  "index_": the index of the axis
-   --  "use": specifies how the axis is used
+   --  @param Index the index of the axis
+   --  @param GUse specifies how the axis is used
 
    function Get_Device_Type
       (Self : not null access Gdk_Device_Record) return Gdk_Device_Type;
@@ -167,7 +167,7 @@ package Gdk.Device is
    --  Note: This is only meaningful for floating devices, master devices (and
    --  slaves connected to these) drive the pointer cursor, which is not
    --  limited by the input mode.
-   --  "mode": the input mode.
+   --  @param Mode the input mode.
 
    function Get_N_Axes
       (Self : not null access Gdk_Device_Record) return Glib.Gint;
@@ -194,10 +194,10 @@ package Gdk.Device is
    --  not be called on devices of type Gdk.Device.Gdk_Device_Type_Slave,
    --  unless there is an ongoing grab on them. See Gdk.Device.Grab.
    --  Since: gtk+ 3.10
-   --  "screen": location to store the Gdk.Screen.Gdk_Screen the Device is on,
-   --  or null.
-   --  "x": location to store root window X coordinate of Device, or null.
-   --  "y": location to store root window Y coordinate of Device, or null.
+   --  @param Screen location to store the Gdk.Screen.Gdk_Screen the Device is
+   --  on, or null.
+   --  @param X location to store root window X coordinate of Device, or null.
+   --  @param Y location to store root window Y coordinate of Device, or null.
 
    function Get_Product_Id
       (Self : not null access Gdk_Device_Record) return UTF8_String;
@@ -226,10 +226,10 @@ package Gdk.Device is
    --  function may not be called on devices of type
    --  Gdk.Device.Gdk_Device_Type_Slave, unless there is an ongoing grab on
    --  them. See Gdk.Device.Grab.
-   --  "window": a Gdk.Gdk_Window.
-   --  "axes": an array of doubles to store the values of the axes of Device
-   --  in, or null.
-   --  "mask": location to store the modifiers, or null.
+   --  @param Window a Gdk.Gdk_Window.
+   --  @param Axes an array of doubles to store the values of the axes of
+   --  Device in, or null.
+   --  @param Mask location to store the modifiers, or null.
 
    function Get_Vendor_Id
       (Self : not null access Gdk_Device_Record) return UTF8_String;
@@ -272,10 +272,10 @@ package Gdk.Device is
    --  Gdk.Device.Gdk_Device_Type_Slave, unless there is an ongoing grab on
    --  them, see Gdk.Device.Grab.
    --  Since: gtk+ 3.0
-   --  "win_x": return location for the X coordinate of the device location,
-   --  relative to the window origin, or null.
-   --  "win_y": return location for the Y coordinate of the device location,
-   --  relative to the window origin, or null.
+   --  @param Win_X return location for the X coordinate of the device
+   --  location, relative to the window origin, or null.
+   --  @param Win_Y return location for the Y coordinate of the device
+   --  location, relative to the window origin, or null.
 
    function Grab
       (Self           : not null access Gdk_Device_Record;
@@ -306,20 +306,22 @@ package Gdk.Device is
    --  ends unvoluntarily.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.20., 1
-   --  "window": the Gdk.Gdk_Window which will own the grab (the grab window)
-   --  "grab_ownership": specifies the grab ownership.
-   --  "owner_events": if False then all device events are reported with
+   --  @param Window the Gdk.Gdk_Window which will own the grab (the grab
+   --  window)
+   --  @param Grab_Ownership specifies the grab ownership.
+   --  @param Owner_Events if False then all device events are reported with
    --  respect to Window and are only reported if selected by Event_Mask. If
    --  True then pointer events for this application are reported as normal,
    --  but pointer events outside this application are reported with respect to
    --  Window and only if selected by Event_Mask. In either mode, unreported
    --  events are discarded.
-   --  "event_mask": specifies the event mask, which is used in accordance
+   --  @param Event_Mask specifies the event mask, which is used in accordance
    --  with Owner_Events.
-   --  "cursor": the cursor to display while the grab is active if the device
-   --  is a pointer. If this is null then the normal cursors are used for
-   --  Window and its descendants, and the cursor for Window is used elsewhere.
-   --  "time_": the timestamp of the event which led to this pointer grab.
+   --  @param Cursor the cursor to display while the grab is active if the
+   --  device is a pointer. If this is null then the normal cursors are used
+   --  for Window and its descendants, and the cursor for Window is used
+   --  elsewhere.
+   --  @param Time the timestamp of the event which led to this pointer grab.
    --  This usually comes from the Gdk.Event.Gdk_Event struct, though
    --  GDK_CURRENT_TIME can be used if the time isn't known.
 
@@ -330,9 +332,9 @@ package Gdk.Device is
        Modifiers : Gdk.Types.Gdk_Modifier_Type);
    --  Specifies the X key event to generate when a macro button of a device
    --  is pressed.
-   --  "index_": the index of the macro button to set
-   --  "keyval": the keyval to generate
-   --  "modifiers": the modifiers to set
+   --  @param Index the index of the macro button to set
+   --  @param Keyval the keyval to generate
+   --  @param Modifiers the modifiers to set
 
    procedure Ungrab
       (Self : not null access Gdk_Device_Record;
@@ -341,7 +343,7 @@ package Gdk.Device is
    --  Release any grab on Device.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.20., 1
-   --  "time_": a timestap (e.g. GDK_CURRENT_TIME).
+   --  @param Time a timestap (e.g. GDK_CURRENT_TIME).
 
    procedure Warp
       (Self   : not null access Gdk_Device_Record;
@@ -357,9 +359,9 @@ package Gdk.Device is
    --  navigation support for the color picker in the
    --  Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog.
    --  Since: gtk+ 3.0
-   --  "screen": the screen to warp Device to.
-   --  "x": the X coordinate of the destination.
-   --  "y": the Y coordinate of the destination.
+   --  @param Screen the screen to warp Device to.
+   --  @param X the X coordinate of the destination.
+   --  @param Y the Y coordinate of the destination.
 
    ----------------------
    -- GtkAda additions --

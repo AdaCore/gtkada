@@ -87,8 +87,8 @@ package Gdk.Monitor is
    --  display coordinate space. The returned geometry is in "application
    --  pixels", not in "device pixels" (see Gdk.Monitor.Get_Scale_Factor).
    --  Since: gtk+ 3.22
-   --  "geometry": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
-   --  geometry
+   --  @param Geometry a Gdk.Rectangle.Gdk_Rectangle to be filled with the
+   --  monitor geometry
 
    function Get_Height_Mm
       (Self : not null access Gdk_Monitor_Record) return Glib.Gint;
@@ -147,8 +147,8 @@ package Gdk.Monitor is
    --  function will return the monitor geometry if a workarea is not
    --  available, or does not apply.
    --  Since: gtk+ 3.22
-   --  "workarea": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
-   --  workarea
+   --  @param Workarea a Gdk.Rectangle.Gdk_Rectangle to be filled with the
+   --  monitor workarea
 
    function Is_Primary
       (Self : not null access Gdk_Monitor_Record) return Boolean;

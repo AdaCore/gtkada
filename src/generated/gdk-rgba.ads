@@ -67,7 +67,7 @@ package Gdk.RGBA is
    function Equal (Self : Gdk_RGBA; P2 : Gdk_RGBA) return Boolean;
    --  Compares two RGBA colors.
    --  Since: gtk+ 3.0
-   --  "p2": another Gdk.RGBA.Gdk_RGBA pointer
+   --  @param P2 another Gdk.RGBA.Gdk_RGBA pointer
 
    procedure Free (Self : Gdk_RGBA);
    pragma Import (C, Free, "gdk_rgba_free");
@@ -96,7 +96,7 @@ package Gdk.RGBA is
    --  integers in the range 0 to 255 or percentage values in the range 0% to
    --  100%, and a is a floating point value in the range 0 to 1.
    --  Since: gtk+ 3.0
-   --  "spec": the string specifying the color
+   --  @param Spec the string specifying the color
 
    function To_String (Self : Gdk_RGBA) return UTF8_String;
    --  Returns a textual specification of Rgba in the form `rgb(r,g,b)` or

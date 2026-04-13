@@ -71,9 +71,9 @@ package Gtk.Buildable is
    --  Adds a child to Buildable. Type is an optional string describing how
    --  the child should be added.
    --  Since: gtk+ 2.12
-   --  "builder": a Gtk.Builder.Gtk_Builder
-   --  "child": child to add
-   --  "type": kind of child or null
+   --  @param Builder a Gtk.Builder.Gtk_Builder
+   --  @param Child child to add
+   --  @param The_Type kind of child or null
 
    function Construct_Child
       (Self    : Gtk_Buildable;
@@ -83,8 +83,8 @@ package Gtk.Buildable is
    --  Gtk.Builder.Gtk_Builder calls this function if a "constructor" has been
    --  specified in the UI definition.
    --  Since: gtk+ 2.12
-   --  "builder": Gtk.Builder.Gtk_Builder used to construct this object
-   --  "name": name of child to construct
+   --  @param Builder Gtk.Builder.Gtk_Builder used to construct this object
+   --  @param Name name of child to construct
 
    procedure Custom_Finished
       (Self    : Gtk_Buildable;
@@ -95,10 +95,10 @@ package Gtk.Buildable is
    --  This is similar to Gtk.Buildable.Parser_Finished but is called once for
    --  each custom tag handled by the Buildable.
    --  Since: gtk+ 2.12
-   --  "builder": a Gtk.Builder.Gtk_Builder
-   --  "child": child object or null for non-child tags
-   --  "tagname": the name of the tag
-   --  "data": user data created in custom_tag_start
+   --  @param Builder a Gtk.Builder.Gtk_Builder
+   --  @param Child child object or null for non-child tags
+   --  @param Tagname the name of the tag
+   --  @param Data user data created in custom_tag_start
 
    procedure Custom_Tag_End
       (Self    : Gtk_Buildable;
@@ -109,10 +109,10 @@ package Gtk.Buildable is
    --  This is called at the end of each custom element handled by the
    --  buildable.
    --  Since: gtk+ 2.12
-   --  "builder": Gtk.Builder.Gtk_Builder used to construct this object
-   --  "child": child object or null for non-child tags
-   --  "tagname": name of tag
-   --  "data": user data that will be passed in to parser functions
+   --  @param Builder Gtk.Builder.Gtk_Builder used to construct this object
+   --  @param Child child object or null for non-child tags
+   --  @param Tagname name of tag
+   --  @param Data user data that will be passed in to parser functions
 
    function Get_Internal_Child
       (Self      : Gtk_Buildable;
@@ -120,8 +120,8 @@ package Gtk.Buildable is
        Childname : UTF8_String) return Glib.Object.GObject;
    --  Get the internal child called Childname of the Buildable object.
    --  Since: gtk+ 2.12
-   --  "builder": a Gtk.Builder.Gtk_Builder
-   --  "childname": name of child
+   --  @param Builder a Gtk.Builder.Gtk_Builder
+   --  @param Childname name of child
 
    function Get_Name (Self : Gtk_Buildable) return UTF8_String;
    --  Gets the name of the Buildable object.
@@ -132,7 +132,7 @@ package Gtk.Buildable is
    procedure Set_Name (Self : Gtk_Buildable; Name : UTF8_String);
    --  Sets the name of the Buildable object.
    --  Since: gtk+ 2.12
-   --  "name": name to set
+   --  @param Name name to set
 
    procedure Parser_Finished
       (Self    : Gtk_Buildable;
@@ -142,7 +142,7 @@ package Gtk.Buildable is
    --  time Gtk.Builder.Add_From_File or Gtk.Builder.Add_From_String is called
    --  on a builder.
    --  Since: gtk+ 2.12
-   --  "builder": a Gtk.Builder.Gtk_Builder
+   --  @param Builder a Gtk.Builder.Gtk_Builder
 
    procedure Set_Buildable_Property
       (Self    : Gtk_Buildable;
@@ -151,9 +151,9 @@ package Gtk.Buildable is
        Value   : in out Glib.Values.GValue);
    --  Sets the property name Name to Value on the Buildable object.
    --  Since: gtk+ 2.12
-   --  "builder": a Gtk.Builder.Gtk_Builder
-   --  "name": name of property
-   --  "value": value of property
+   --  @param Builder a Gtk.Builder.Gtk_Builder
+   --  @param Name name of property
+   --  @param Value value of property
 
    ----------------
    -- Interfaces --

@@ -55,8 +55,8 @@ package Gtk.Tree_Row_Reference is
    --  long as it exists. Any changes that occur on Model are propagated, and
    --  the path is updated appropriately. If Path isn't a valid path in Model,
    --  then null is returned.
-   --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
-   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path-struct to monitor
+   --  @param Model a Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Path a valid Gtk.Tree_Model.Gtk_Tree_Path-struct to monitor
 
    function Gtk_Tree_Row_Reference_New
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -66,8 +66,8 @@ package Gtk.Tree_Row_Reference is
    --  long as it exists. Any changes that occur on Model are propagated, and
    --  the path is updated appropriately. If Path isn't a valid path in Model,
    --  then null is returned.
-   --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
-   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path-struct to monitor
+   --  @param Model a Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Path a valid Gtk.Tree_Model.Gtk_Tree_Path-struct to monitor
 
    procedure Gtk_New_Proxy
       (Reference : out Gtk_Tree_Row_Reference;
@@ -93,9 +93,9 @@ package Gtk.Tree_Row_Reference is
    --  This type of row reference is primarily meant by structures that need
    --  to carefully monitor exactly when a row reference updates itself, and is
    --  not generally needed by most applications.
-   --  "proxy": a proxy Glib.Object.GObject
-   --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
-   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path-struct to monitor
+   --  @param Proxy a proxy Glib.Object.GObject
+   --  @param Model a Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Path a valid Gtk.Tree_Model.Gtk_Tree_Path-struct to monitor
 
    function Gtk_Tree_Row_Reference_New_Proxy
       (Proxy : not null access Glib.Object.GObject_Record'Class;
@@ -120,9 +120,9 @@ package Gtk.Tree_Row_Reference is
    --  This type of row reference is primarily meant by structures that need
    --  to carefully monitor exactly when a row reference updates itself, and is
    --  not generally needed by most applications.
-   --  "proxy": a proxy Glib.Object.GObject
-   --  "model": a Gtk.Tree_Model.Gtk_Tree_Model
-   --  "path": a valid Gtk.Tree_Model.Gtk_Tree_Path-struct to monitor
+   --  @param Proxy a proxy Glib.Object.GObject
+   --  @param Model a Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Path a valid Gtk.Tree_Model.Gtk_Tree_Path-struct to monitor
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_row_reference_get_type");
@@ -165,8 +165,8 @@ package Gtk.Tree_Row_Reference is
    --  Lets a set of row reference created by gtk_tree_row_reference_new_proxy
    --  know that the model emitted the
    --  Gtk.Tree_Model.Gtk_Tree_Model::row-deleted signal.
-   --  "proxy": a Glib.Object.GObject
-   --  "path": the path position that was deleted
+   --  @param Proxy a Glib.Object.GObject
+   --  @param Path the path position that was deleted
 
    procedure Inserted
       (Proxy : not null access Glib.Object.GObject_Record'Class;
@@ -174,8 +174,8 @@ package Gtk.Tree_Row_Reference is
    --  Lets a set of row reference created by gtk_tree_row_reference_new_proxy
    --  know that the model emitted the
    --  Gtk.Tree_Model.Gtk_Tree_Model::row-inserted signal.
-   --  "proxy": a Glib.Object.GObject
-   --  "path": the row position that was inserted
+   --  @param Proxy a Glib.Object.GObject
+   --  @param Path the row position that was inserted
 
    procedure Reordered
       (Proxy     : not null access Glib.Object.GObject_Record'Class;
@@ -185,10 +185,10 @@ package Gtk.Tree_Row_Reference is
    --  Lets a set of row reference created by gtk_tree_row_reference_new_proxy
    --  know that the model emitted the
    --  Gtk.Tree_Model.Gtk_Tree_Model::rows-reordered signal.
-   --  "proxy": a Glib.Object.GObject
-   --  "path": the parent path of the reordered signal
-   --  "iter": the iter pointing to the parent of the reordered
-   --  "new_order": the new order of rows
+   --  @param Proxy a Glib.Object.GObject
+   --  @param Path the parent path of the reordered signal
+   --  @param Iter the iter pointing to the parent of the reordered
+   --  @param New_Order the new order of rows
 
 private
 

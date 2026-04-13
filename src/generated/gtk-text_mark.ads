@@ -88,8 +88,8 @@ package Gtk.Text_Mark is
    --  Since: gtk+ 2.12
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "name": mark name or null
-   --  "left_gravity": whether the mark should have left gravity
+   --  @param Name mark name or null
+   --  @param Left_Gravity whether the mark should have left gravity
 
    function Gtk_Text_Mark_New
       (Name         : UTF8_String := "";
@@ -104,8 +104,8 @@ package Gtk.Text_Mark is
    --  right gravity (when you type, the cursor stays on the right side of the
    --  text you're typing).
    --  Since: gtk+ 2.12
-   --  "name": mark name or null
-   --  "left_gravity": whether the mark should have left gravity
+   --  @param Name mark name or null
+   --  @param Left_Gravity whether the mark should have left gravity
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_text_mark_get_type");
@@ -141,7 +141,7 @@ package Gtk.Text_Mark is
    --  visible mark to indicate where a drop will occur when
    --  dragging-and-dropping text. Most other marks are not visible. Marks are
    --  not visible by default.
-   --  "setting": visibility of mark
+   --  @param Setting visibility of mark
 
    ----------------------
    -- GtkAda additions --

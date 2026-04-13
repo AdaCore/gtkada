@@ -101,7 +101,7 @@ package Gtk.Action_Group is
    type Gtk_Translate_Func is access function (Path : UTF8_String) return UTF8_String;
    --  The function used to translate messages in e.g.
    --  Gtk.Icon_Factory.Gtk_Icon_Factory and Gtk.Action_Group.Gtk_Action_Group.
-   --  "path": The id of the message. In Gtk.Action_Group.Gtk_Action_Group
+   --  @param Path The id of the message. In Gtk.Action_Group.Gtk_Action_Group
    --  this will be a label or tooltip from a Gtk_Action_Entry.
 
    ------------------
@@ -120,7 +120,7 @@ package Gtk.Action_Group is
    --  Since: gtk+ 2.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "name": the name of the action group.
+   --  @param Name the name of the action group.
 
    function Gtk_Action_Group_New
       (Name : UTF8_String) return Gtk_Action_Group;
@@ -128,7 +128,7 @@ package Gtk.Action_Group is
    --  action group is used when associating [keybindings][Action-Accel] with
    --  the actions.
    --  Since: gtk+ 2.4
-   --  "name": the name of the action group.
+   --  @param Name the name of the action group.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_action_group_get_type");
@@ -149,7 +149,7 @@ package Gtk.Action_Group is
    --  `gtk_action_group_add_action_with_accel (..., NULL)`.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "action": an action
+   --  @param Action an action
 
    procedure Add_Action_With_Accel
       (Action_Group : not null access Gtk_Action_Group_Record;
@@ -162,10 +162,10 @@ package Gtk.Action_Group is
    --  Accel paths are set to `<Actions>/group-name/action-name`.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "action": the action to add
-   --  "accelerator": the accelerator for the action, in the format understood
-   --  by Gtk.Accel_Group.Accelerator_Parse, or "" for no accelerator, or null
-   --  to use the stock accelerator
+   --  @param Action the action to add
+   --  @param Accelerator the accelerator for the action, in the format
+   --  understood by Gtk.Accel_Group.Accelerator_Parse, or "" for no
+   --  accelerator, or null to use the stock accelerator
 
    function Get_Accel_Group
       (Action_Group : not null access Gtk_Action_Group_Record)
@@ -182,7 +182,7 @@ package Gtk.Action_Group is
    --  Sets the accelerator group to be used by every action in this group.
    --  Since: gtk+ 3.6
    --  Deprecated since 3.10, 1
-   --  "accel_group": a Gtk.Accel_Group.Gtk_Accel_Group to set or null
+   --  @param Accel_Group a Gtk.Accel_Group.Gtk_Accel_Group to set or null
 
    function Get_Action
       (Action_Group : not null access Gtk_Action_Group_Record;
@@ -191,7 +191,7 @@ package Gtk.Action_Group is
    --  Looks up an action in the action group by name.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "action_name": the name of the action
+   --  @param Action_Name the name of the action
 
    function Get_Name
       (Action_Group : not null access Gtk_Action_Group_Record)
@@ -218,7 +218,7 @@ package Gtk.Action_Group is
    --  Changes the sensitivity of Action_Group
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "sensitive": new sensitivity
+   --  @param Sensitive new sensitivity
 
    function Get_Visible
       (Action_Group : not null access Gtk_Action_Group_Record)
@@ -237,7 +237,7 @@ package Gtk.Action_Group is
    --  Changes the visible of Action_Group.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "visible": new visiblity
+   --  @param Visible new visiblity
 
    function List_Actions
       (Action_Group : not null access Gtk_Action_Group_Record)
@@ -254,7 +254,7 @@ package Gtk.Action_Group is
    --  Removes an action object from the action group.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "action": an action
+   --  @param Action an action
 
    procedure Set_Translate_Func
       (Action_Group : not null access Gtk_Action_Group_Record;
@@ -266,7 +266,7 @@ package Gtk.Action_Group is
    --  with Gtk.Action_Group.Set_Translation_Domain.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "func": a Gtk_Translate_Func
+   --  @param Func a Gtk_Translate_Func
 
    generic
       type User_Data_Type (<>) is private;
@@ -278,9 +278,9 @@ package Gtk.Action_Group is
          Func_Data : User_Data_Type) return UTF8_String;
       --  The function used to translate messages in e.g.
       --  Gtk.Icon_Factory.Gtk_Icon_Factory and Gtk.Action_Group.Gtk_Action_Group.
-      --  "path": The id of the message. In Gtk.Action_Group.Gtk_Action_Group
+      --  @param Path The id of the message. In Gtk.Action_Group.Gtk_Action_Group
       --  this will be a label or tooltip from a Gtk_Action_Entry.
-      --  "func_data": user data passed in when registering the function
+      --  @param Func_Data user data passed in when registering the function
 
       procedure Set_Translate_Func
          (Action_Group : not null access Gtk.Action_Group.Gtk_Action_Group_Record'Class;
@@ -293,8 +293,8 @@ package Gtk.Action_Group is
       --  with Gtk.Action_Group.Set_Translation_Domain.
       --  Since: gtk+ 2.4
       --  Deprecated since 3.10, 1
-      --  "func": a Gtk_Translate_Func
-      --  "data": data to be passed to Func and Notify
+      --  @param Func a Gtk_Translate_Func
+      --  @param Data data to be passed to Func and Notify
 
    end Set_Translate_Func_User_Data;
 
@@ -309,8 +309,8 @@ package Gtk.Action_Group is
    --  Gtk.Action_Group.Set_Translate_Func.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "domain": the translation domain to use for g_dgettext calls, or null
-   --  to use the domain set with textdomain
+   --  @param Domain the translation domain to use for g_dgettext calls, or
+   --  null to use the domain set with textdomain
 
    function Translate_String
       (Action_Group : not null access Gtk_Action_Group_Record;
@@ -321,7 +321,7 @@ package Gtk.Action_Group is
    --  language bindings.
    --  Since: gtk+ 2.6
    --  Deprecated since 3.10, 1
-   --  "string": a string
+   --  @param String a string
 
    ----------------------
    -- GtkAda additions --
@@ -515,8 +515,8 @@ package Gtk.Action_Group is
    --  probably more convenient to use.
    -- 
    --  Callback parameters:
-   --    --  "action": the action
-   --    --  "proxy": the proxy
+   --    --  @param Action the action
+   --    --  @param Proxy the proxy
 
    Signal_Disconnect_Proxy : constant Glib.Signal_Name := "disconnect-proxy";
    procedure On_Disconnect_Proxy
@@ -536,8 +536,8 @@ package Gtk.Action_Group is
    --  probably more convenient to use.
    -- 
    --  Callback parameters:
-   --    --  "action": the action
-   --    --  "proxy": the proxy
+   --    --  @param Action the action
+   --    --  @param Proxy the proxy
 
    type Cb_Gtk_Action_Group_Gtk_Action_Void is not null access procedure
      (Self   : access Gtk_Action_Group_Record'Class;

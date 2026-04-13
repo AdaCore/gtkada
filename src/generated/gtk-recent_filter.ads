@@ -124,7 +124,7 @@ package Gtk.Recent_Filter is
    type Gtk_Recent_Filter_Func is access function (Filter_Info : Gtk_Recent_Filter_Info) return Boolean;
    --  The type of function that is used with custom filters, see
    --  Gtk.Recent_Filter.Add_Custom.
-   --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
+   --  @param Filter_Info a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
    --  filled according to the Needed flags passed to
    --  Gtk.Recent_Filter.Add_Custom
 
@@ -183,7 +183,7 @@ package Gtk.Recent_Filter is
    --  Adds a rule that allows resources based on their age - that is, the
    --  number of days elapsed since they were last modified.
    --  Since: gtk+ 2.10
-   --  "days": number of days
+   --  @param Days number of days
 
    procedure Add_Application
       (Filter      : not null access Gtk_Recent_Filter_Record;
@@ -191,7 +191,7 @@ package Gtk.Recent_Filter is
    --  Adds a rule that allows resources based on the name of the application
    --  that has registered them.
    --  Since: gtk+ 2.10
-   --  "application": an application name
+   --  @param Application an application name
 
    procedure Add_Custom
       (Filter       : not null access Gtk_Recent_Filter_Record;
@@ -204,11 +204,11 @@ package Gtk.Recent_Filter is
    --  needs; this allows GTK+ to avoid retrieving expensive information when
    --  it isn't needed by the filter.
    --  Since: gtk+ 2.10
-   --  "needed": bitfield of flags indicating the information that the custom
-   --  filter function needs.
-   --  "func": callback function; if the function returns True, then the file
-   --  will be displayed.
-   --  "data_destroy": function to call to free Data when it is no longer
+   --  @param Needed bitfield of flags indicating the information that the
+   --  custom filter function needs.
+   --  @param Func callback function; if the function returns True, then the
+   --  file will be displayed.
+   --  @param Data_Destroy function to call to free Data when it is no longer
    --  needed.
 
    generic
@@ -221,10 +221,10 @@ package Gtk.Recent_Filter is
          User_Data   : User_Data_Type) return Boolean;
       --  The type of function that is used with custom filters, see
       --  Gtk.Recent_Filter.Add_Custom.
-      --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
+      --  @param Filter_Info a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
       --  filled according to the Needed flags passed to
       --  Gtk.Recent_Filter.Add_Custom
-      --  "user_data": user data passed to Gtk.Recent_Filter.Add_Custom
+      --  @param User_Data user data passed to Gtk.Recent_Filter.Add_Custom
 
       procedure Add_Custom
          (Filter       : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class;
@@ -238,13 +238,13 @@ package Gtk.Recent_Filter is
       --  needs; this allows GTK+ to avoid retrieving expensive information
       --  when it isn't needed by the filter.
       --  Since: gtk+ 2.10
-      --  "needed": bitfield of flags indicating the information that the
+      --  @param Needed bitfield of flags indicating the information that the
       --  custom filter function needs.
-      --  "func": callback function; if the function returns True, then the
-      --  file will be displayed.
-      --  "data": data to pass to Func
-      --  "data_destroy": function to call to free Data when it is no longer
-      --  needed.
+      --  @param Func callback function; if the function returns True, then
+      --  the file will be displayed.
+      --  @param Data data to pass to Func
+      --  @param Data_Destroy function to call to free Data when it is no
+      --  longer needed.
 
    end Add_Custom_User_Data;
 
@@ -254,14 +254,14 @@ package Gtk.Recent_Filter is
    --  Adds a rule that allows resources based on the name of the group to
    --  which they belong
    --  Since: gtk+ 2.10
-   --  "group": a group name
+   --  @param Group a group name
 
    procedure Add_Mime_Type
       (Filter    : not null access Gtk_Recent_Filter_Record;
        Mime_Type : UTF8_String);
    --  Adds a rule that allows resources based on their registered MIME type.
    --  Since: gtk+ 2.10
-   --  "mime_type": a MIME type
+   --  @param Mime_Type a MIME type
 
    procedure Add_Pattern
       (Filter  : not null access Gtk_Recent_Filter_Record;
@@ -269,7 +269,7 @@ package Gtk.Recent_Filter is
    --  Adds a rule that allows resources based on a pattern matching their
    --  display name.
    --  Since: gtk+ 2.10
-   --  "pattern": a file pattern
+   --  @param Pattern a file pattern
 
    procedure Add_Pixbuf_Formats
       (Filter : not null access Gtk_Recent_Filter_Record);
@@ -288,8 +288,8 @@ package Gtk.Recent_Filter is
    --  intended principally for use in the implementation of
    --  Gtk.Recent_Chooser.Gtk_Recent_Chooser.
    --  Since: gtk+ 2.10
-   --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info containing
-   --  information about a recently used resource
+   --  @param Filter_Info a Gtk.Recent_Filter.Gtk_Recent_Filter_Info
+   --  containing information about a recently used resource
 
    function Get_Name
       (Filter : not null access Gtk_Recent_Filter_Record) return UTF8_String;
@@ -304,7 +304,7 @@ package Gtk.Recent_Filter is
    --  will be displayed in the recently used resources selector user interface
    --  if there is a selectable list of filters.
    --  Since: gtk+ 2.10
-   --  "name": then human readable name of Filter
+   --  @param Name then human readable name of Filter
 
    function Get_Needed
       (Filter : not null access Gtk_Recent_Filter_Record)

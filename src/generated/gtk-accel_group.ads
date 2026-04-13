@@ -133,11 +133,11 @@ package Gtk.Accel_Group is
        Accel_Mods    : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Finds the first accelerator in Accel_Group that matches Accel_Key and
    --  Accel_Mods, and activates it.
-   --  "accel_quark": the quark for the accelerator name
-   --  "acceleratable": the Glib.Object.GObject, usually a
+   --  @param Accel_Quark the quark for the accelerator name
+   --  @param Acceleratable the Glib.Object.GObject, usually a
    --  Gtk.Window.Gtk_Window, on which to activate the accelerator
-   --  "accel_key": accelerator keyval from a key event
-   --  "accel_mods": keyboard state mask from a key event
+   --  @param Accel_Key accelerator keyval from a key event
+   --  @param Accel_Mods keyboard state mask from a key event
 
    procedure Connect
       (Accel_Group : not null access Gtk_Accel_Group_Record;
@@ -153,10 +153,10 @@ package Gtk.Accel_Group is
    --  The signature used for the Closure is that of Gtk_Accel_Group_Activate.
    --  Note that, due to implementation details, a single closure can only be
    --  connected to one accelerator group.
-   --  "accel_key": key value of the accelerator
-   --  "accel_mods": modifier combination of the accelerator
-   --  "accel_flags": a flag mask to configure this accelerator
-   --  "closure": closure to be executed upon accelerator activation
+   --  @param Accel_Key key value of the accelerator
+   --  @param Accel_Mods modifier combination of the accelerator
+   --  @param Accel_Flags a flag mask to configure this accelerator
+   --  @param Closure closure to be executed upon accelerator activation
 
    procedure Connect_By_Path
       (Accel_Group : not null access Gtk_Accel_Group_Record;
@@ -172,8 +172,8 @@ package Gtk.Accel_Group is
    --  Note that Accel_Path string will be stored in a Glib.GQuark. Therefore,
    --  if you pass a static string, you can save some memory by interning it
    --  first with g_intern_static_string.
-   --  "accel_path": path used for determining key and modifiers
-   --  "closure": closure to be executed upon accelerator activation
+   --  @param Accel_Path path used for determining key and modifiers
+   --  @param Closure closure to be executed upon accelerator activation
 
    function Disconnect
       (Accel_Group : not null access Gtk_Accel_Group_Record;
@@ -181,8 +181,8 @@ package Gtk.Accel_Group is
    --  Removes an accelerator previously installed through
    --  Gtk.Accel_Group.Connect.
    --  Since 2.20 Closure can be null.
-   --  "closure": the closure to remove from this accelerator group, or null
-   --  to remove all closures
+   --  @param Closure the closure to remove from this accelerator group, or
+   --  null to remove all closures
 
    function Disconnect_Key
       (Accel_Group : not null access Gtk_Accel_Group_Record;
@@ -190,15 +190,15 @@ package Gtk.Accel_Group is
        Accel_Mods  : Gdk.Types.Gdk_Modifier_Type) return Boolean;
    --  Removes an accelerator previously installed through
    --  Gtk.Accel_Group.Connect.
-   --  "accel_key": key value of the accelerator
-   --  "accel_mods": modifier combination of the accelerator
+   --  @param Accel_Key key value of the accelerator
+   --  @param Accel_Mods modifier combination of the accelerator
 
    function Find
       (Accel_Group : not null access Gtk_Accel_Group_Record;
        Find_Func   : Gtk_Accel_Group_Find_Func) return Gtk_Accel_Key;
    --  Finds the first entry in an accelerator group for which Find_Func
    --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
-   --  "find_func": a function to filter the entries of Accel_Group with
+   --  @param Find_Func a function to filter the entries of Accel_Group with
 
    function Get_Is_Locked
       (Accel_Group : not null access Gtk_Accel_Group_Record) return Boolean;
@@ -232,7 +232,7 @@ package Gtk.Accel_Group is
       (Closure : C_Gtk_Accel_Group_Activate) return Gtk_Accel_Group;
    --  Finds the Gtk.Accel_Group.Gtk_Accel_Group to which Closure is
    --  connected; see Gtk.Accel_Group.Connect.
-   --  "closure": a GClosure
+   --  @param Closure a GClosure
 
    function Accel_Groups_Activate
       (Object     : not null access Glib.Object.GObject_Record'Class;
@@ -241,16 +241,16 @@ package Gtk.Accel_Group is
    --  Finds the first accelerator in any Gtk.Accel_Group.Gtk_Accel_Group
    --  attached to Object that matches Accel_Key and Accel_Mods, and activates
    --  that accelerator.
-   --  "object": the Glib.Object.GObject, usually a Gtk.Window.Gtk_Window, on
-   --  which to activate the accelerator
-   --  "accel_key": accelerator keyval from a key event
-   --  "accel_mods": keyboard state mask from a key event
+   --  @param Object the Glib.Object.GObject, usually a Gtk.Window.Gtk_Window,
+   --  on which to activate the accelerator
+   --  @param Accel_Key accelerator keyval from a key event
+   --  @param Accel_Mods keyboard state mask from a key event
 
    function From_Object
       (Object : not null access Glib.Object.GObject_Record'Class)
        return Glib.Object.Object_List.GSlist;
    --  Gets a list of all accel groups which are attached to Object.
-   --  "object": a Glib.Object.GObject, usually a Gtk.Window.Gtk_Window
+   --  @param Object a Glib.Object.GObject, usually a Gtk.Window.Gtk_Window
 
    function Accelerator_Valid
       (Keyval    : Gdk.Types.Gdk_Key_Type;
@@ -259,8 +259,8 @@ package Gtk.Accel_Group is
    --  keyboard accelerator. For example, the GDK_KEY_a keyval plus
    --  GDK_CONTROL_MASK is valid - this is a "Ctrl+a" accelerator. But, you
    --  can't, for instance, use the GDK_KEY_Control_L keyval as an accelerator.
-   --  "keyval": a GDK keyval
-   --  "modifiers": modifier mask
+   --  @param Keyval a GDK keyval
+   --  @param Modifiers modifier mask
 
    procedure Accelerator_Parse
       (Accelerator      : UTF8_String;
@@ -276,9 +276,10 @@ package Gtk.Accel_Group is
    --  "<Ctrl>-".
    --  If the parse fails, Accelerator_Key and Accelerator_Mods will be set to
    --  0 (zero).
-   --  "accelerator": string representing an accelerator
-   --  "accelerator_key": return location for accelerator keyval, or null
-   --  "accelerator_mods": return location for accelerator modifier mask, null
+   --  @param Accelerator string representing an accelerator
+   --  @param Accelerator_Key return location for accelerator keyval, or null
+   --  @param Accelerator_Mods return location for accelerator modifier mask,
+   --  null
 
    function Accelerator_Name
       (Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
@@ -288,8 +289,8 @@ package Gtk.Accel_Group is
    --  in GDK_KEY_q and GDK_CONTROL_MASK, this function returns "<Control>q".
    --  If you need to display accelerators in the user interface, see
    --  Gtk.Accel_Group.Accelerator_Get_Label.
-   --  "accelerator_key": accelerator keyval
-   --  "accelerator_mods": accelerator modifier mask
+   --  @param Accelerator_Key accelerator keyval
+   --  @param Accelerator_Mods accelerator modifier mask
 
    function Accelerator_Get_Label
       (Accelerator_Key  : Gdk.Types.Gdk_Key_Type;
@@ -297,8 +298,8 @@ package Gtk.Accel_Group is
    --  Converts an accelerator keyval and modifier mask into a string which
    --  can be used to represent the accelerator to the user.
    --  Since: gtk+ 2.6
-   --  "accelerator_key": accelerator keyval
-   --  "accelerator_mods": accelerator modifier mask
+   --  @param Accelerator_Key accelerator keyval
+   --  @param Accelerator_Mods accelerator modifier mask
 
    procedure Set_Default_Mod_Mask
       (Default_Mod_Mask : Gdk.Types.Gdk_Modifier_Type);
@@ -312,7 +313,7 @@ package Gtk.Accel_Group is
    --  any value you pass to this function.
    --  The default mod mask should be changed on application startup, before
    --  using any accelerator groups.
-   --  "default_mod_mask": accelerator modifier mask
+   --  @param Default_Mod_Mask accelerator modifier mask
 
    function Get_Default_Mod_Mask return Gdk.Types.Gdk_Modifier_Type;
    --  Gets the modifier mask.
@@ -361,9 +362,9 @@ package Gtk.Accel_Group is
    --  applications.
    -- 
    --  Callback parameters:
-   --    --  "acceleratable": the object on which the accelerator was activated
-   --    --  "keyval": the accelerator keyval
-   --    --  "modifier": the modifier combination of the accelerator
+   --    --  @param Acceleratable the object on which the accelerator was activated
+   --    --  @param Keyval the accelerator keyval
+   --    --  @param Modifier the modifier combination of the accelerator
    --    --  Returns True if the accelerator was activated
 
    type Cb_Gtk_Accel_Group_Guint_Gdk_Modifier_Type_Address_Void is not null access procedure
@@ -396,9 +397,9 @@ package Gtk.Accel_Group is
    --  visual representation if the Accel_Closure is theirs.
    -- 
    --  Callback parameters:
-   --    --  "keyval": the accelerator keyval
-   --    --  "modifier": the modifier combination of the accelerator
-   --    --  "accel_closure": the GClosure of the accelerator
+   --    --  @param Keyval the accelerator keyval
+   --    --  @param Modifier the modifier combination of the accelerator
+   --    --  @param Accel_Closure the GClosure of the accelerator
 
 private
    Modifier_Mask_Property : constant Glib.Properties.Property_Boxed :=

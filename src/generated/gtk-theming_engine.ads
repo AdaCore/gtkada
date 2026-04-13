@@ -70,8 +70,8 @@ package Gtk.Theming_Engine is
    --  Gets the background color for a given state.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "state": state to retrieve the color for
-   --  "color": return value for the background color
+   --  @param State state to retrieve the color for
+   --  @param Color return value for the background color
 
    procedure Get_Border
       (Self   : not null access Gtk_Theming_Engine_Record;
@@ -81,8 +81,8 @@ package Gtk.Theming_Engine is
    --  Gets the border for a given state as a Gtk.Style.Gtk_Border.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "state": state to retrieve the border for
-   --  "border": return value for the border settings
+   --  @param State state to retrieve the border for
+   --  @param Border return value for the border settings
 
    procedure Get_Border_Color
       (Self  : not null access Gtk_Theming_Engine_Record;
@@ -92,8 +92,8 @@ package Gtk.Theming_Engine is
    --  Gets the border color for a given state.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "state": state to retrieve the color for
-   --  "color": return value for the border color
+   --  @param State state to retrieve the color for
+   --  @param Color return value for the border color
 
    procedure Get_Color
       (Self  : not null access Gtk_Theming_Engine_Record;
@@ -103,8 +103,8 @@ package Gtk.Theming_Engine is
    --  Gets the foreground color for a given state.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "state": state to retrieve the color for
-   --  "color": return value for the foreground color
+   --  @param State state to retrieve the color for
+   --  @param Color return value for the foreground color
 
    function Get_Direction
       (Self : not null access Gtk_Theming_Engine_Record)
@@ -122,7 +122,7 @@ package Gtk.Theming_Engine is
    --  Returns the font description for a given state.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
-   --  "state": state to retrieve the font for
+   --  @param State state to retrieve the font for
 
    function Get_Junction_Sides
       (Self : not null access Gtk_Theming_Engine_Record)
@@ -140,8 +140,8 @@ package Gtk.Theming_Engine is
    --  Gets the margin for a given state as a Gtk.Style.Gtk_Border.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "state": state to retrieve the border for
-   --  "margin": return value for the margin settings
+   --  @param State state to retrieve the border for
+   --  @param Margin return value for the margin settings
 
    procedure Get_Padding
       (Self    : not null access Gtk_Theming_Engine_Record;
@@ -151,8 +151,8 @@ package Gtk.Theming_Engine is
    --  Gets the padding for a given state as a Gtk.Style.Gtk_Border.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "state": state to retrieve the padding for
-   --  "padding": return value for the padding settings
+   --  @param State state to retrieve the padding for
+   --  @param Padding return value for the padding settings
 
    function Get_Path
       (Self : not null access Gtk_Theming_Engine_Record)
@@ -172,9 +172,9 @@ package Gtk.Theming_Engine is
    --  to the currently rendered element.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "property": the property name
-   --  "state": state to retrieve the value for
-   --  "value": return location for the property value, you must free this
+   --  @param Property the property name
+   --  @param State state to retrieve the value for
+   --  @param Value return location for the property value, you must free this
    --  memory using g_value_unset once you are done with it.
 
    function Get_Screen
@@ -201,8 +201,8 @@ package Gtk.Theming_Engine is
    --  Gets the value for a widget style property.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "property_name": the name of the widget style property
-   --  "value": Return location for the property value, free with
+   --  @param Property_Name the name of the widget style property
+   --  @param Value Return location for the property value, free with
    --  g_value_unset after use.
 
    function Has_Class
@@ -213,7 +213,7 @@ package Gtk.Theming_Engine is
    --  class name.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "style_class": class name to look up
+   --  @param Style_Class class name to look up
 
    function Has_Region
       (Self         : not null access Gtk_Theming_Engine_Record;
@@ -225,8 +225,8 @@ package Gtk.Theming_Engine is
    --  the region.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "style_region": a region name
-   --  "flags": return location for region flags
+   --  @param Style_Region a region name
+   --  @param Flags return location for region flags
 
    function Lookup_Color
       (Self       : not null access Gtk_Theming_Engine_Record;
@@ -236,8 +236,8 @@ package Gtk.Theming_Engine is
    --  Looks up and resolves a color name in the current style's color map.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
-   --  "color_name": color name to lookup
-   --  "color": Return location for the looked up color
+   --  @param Color_Name color name to lookup
+   --  @param Color Return location for the looked up color
 
    function State_Is_Running
       (Self     : not null access Gtk_Theming_Engine_Record;
@@ -253,8 +253,8 @@ package Gtk.Theming_Engine is
    --  to False.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.6, 1
-   --  "state": a widget state
-   --  "progress": return location for the transition progress
+   --  @param State a widget state
+   --  @param Progress return location for the transition progress
 
    ---------------
    -- Functions --
@@ -265,7 +265,7 @@ package Gtk.Theming_Engine is
    --  Loads and initializes a theming engine module from the standard
    --  directories.
    --  Deprecated since 3.14, 1
-   --  "name": Theme engine name to load
+   --  @param Name Theme engine name to load
 
    ----------------
    -- Properties --

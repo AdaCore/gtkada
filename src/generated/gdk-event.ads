@@ -929,7 +929,7 @@ package Gdk.Event is
    type Gdk_Event_Func is access procedure (Event : Gdk_Event);
    --  Specifies the type of function passed to Gdk.Event.Handler_Set to
    --  handle all GDK events.
-   --  "event": the Gdk.Event.Gdk_Event to process.
+   --  @param Event the Gdk.Event.Gdk_Event to process.
 
    ----------------------------
    -- Enumeration Properties --
@@ -982,12 +982,12 @@ package Gdk.Event is
    procedure Gdk_New (Event : out Gdk_Event; The_Type : Gdk_Event_Type);
    --  Creates a new event of the given type. All fields are set to 0.
    --  Since: gtk+ 2.2
-   --  "type": a Gdk.Event.Gdk_Event_Type
+   --  @param The_Type a Gdk.Event.Gdk_Event_Type
 
    function Gdk_Event_New (The_Type : Gdk_Event_Type) return Gdk_Event;
    --  Creates a new event of the given type. All fields are set to 0.
    --  Since: gtk+ 2.2
-   --  "type": a Gdk.Event.Gdk_Event_Type
+   --  @param The_Type a Gdk.Event.Gdk_Event_Type
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gdk_event_get_type");
@@ -1005,8 +1005,8 @@ package Gdk.Event is
    --  rotation direction for positive angles is from the positive X axis
    --  towards the positive Y axis.
    --  Since: gtk+ 3.0
-   --  "event2": second Gdk.Event.Gdk_Event
-   --  "angle": return location for the relative angle between both events
+   --  @param Event2 second Gdk.Event.Gdk_Event
+   --  @param Angle return location for the relative angle between both events
 
    function Get_Center
       (Event  : Gdk_Event;
@@ -1016,9 +1016,9 @@ package Gdk.Event is
    --  If both events contain X/Y information, the center of both coordinates
    --  will be returned in X and Y.
    --  Since: gtk+ 3.0
-   --  "event2": second Gdk.Event.Gdk_Event
-   --  "x": return location for the X coordinate of the center
-   --  "y": return location for the Y coordinate of the center
+   --  @param Event2 second Gdk.Event.Gdk_Event
+   --  @param X return location for the X coordinate of the center
+   --  @param Y return location for the Y coordinate of the center
 
    function Get_Distance
       (Event    : Gdk_Event;
@@ -1028,8 +1028,8 @@ package Gdk.Event is
    --  coordinates (as in a straight line going from Event1 to Event2) will be
    --  returned.
    --  Since: gtk+ 3.0
-   --  "event2": second Gdk.Event.Gdk_Event
-   --  "distance": return location for the distance
+   --  @param Event2 second Gdk.Event.Gdk_Event
+   --  @param Distance return location for the distance
 
    function Copy (Event : Gdk_Event) return Gdk_Event;
    pragma Import (C, Copy, "gdk_event_copy");
@@ -1051,8 +1051,8 @@ package Gdk.Event is
    pragma Import (C, Get_Axis, "gdk_event_get_axis");
    --  Extract the axis value for a particular axis use from an event
    --  structure.
-   --  "axis_use": the axis use to look for
-   --  "value": location to store the value found
+   --  @param Axis_Use the axis use to look for
+   --  @param Value location to store the value found
 
    procedure Get_Coords
       (Event : Gdk_Event;
@@ -1060,8 +1060,8 @@ package Gdk.Event is
        Y_Win : out Gdouble);
    pragma Import (C, Get_Coords, "gdk_event_get_coords");
    --  Extract the event window relative x/y coordinates from an event.
-   --  "x_win": location to put event window x coordinate
-   --  "y_win": location to put event window y coordinate
+   --  @param X_Win location to put event window x coordinate
+   --  @param Y_Win location to put event window y coordinate
 
    function Get_Device_Tool
       (Event : Gdk_Event) return Gdk.Device_Tool.Gdk_Device_Tool;
@@ -1079,7 +1079,7 @@ package Gdk.Event is
        Tool  : access Gdk.Device_Tool.Gdk_Device_Tool_Record'Class);
    --  Sets the device tool for this event, should be rarely used.
    --  Since: gtk+ 3.22
-   --  "tool": tool to set on the event, or null
+   --  @param Tool tool to set on the event, or null
 
    function Get_Event_Sequence (Event : Gdk_Event) return Gdk_Event_Sequence;
    pragma Import (C, Get_Event_Sequence, "gdk_event_get_event_sequence");
@@ -1106,8 +1106,8 @@ package Gdk.Event is
        Y_Root : out Gdouble);
    pragma Import (C, Get_Root_Coords, "gdk_event_get_root_coords");
    --  Extract the root window relative x/y coordinates from an event.
-   --  "x_root": location to put root window x coordinate
-   --  "y_root": location to put root window y coordinate
+   --  @param X_Root location to put root window x coordinate
+   --  @param Y_Root location to put root window y coordinate
 
    function Get_Scancode (Event : Gdk_Event) return Glib.Gint;
    pragma Import (C, Get_Scancode, "gdk_event_get_scancode");
@@ -1125,8 +1125,8 @@ package Gdk.Event is
    --  Retrieves the scroll deltas from a Gdk.Event.Gdk_Event
    --  See also: Gdk.Event.Get_Scroll_Direction
    --  Since: gtk+ 3.4
-   --  "delta_x": return location for X delta
-   --  "delta_y": return location for Y delta
+   --  @param Delta_X return location for X delta
+   --  @param Delta_Y return location for Y delta
 
    procedure Get_Scroll_Direction
       (Event     : Gdk_Event;
@@ -1168,7 +1168,7 @@ package Gdk.Event is
    --       }
    --
    --  Since: gtk+ 3.2
-   --  "direction": location to store the scroll direction
+   --  @param Direction location to store the scroll direction
 
    function Get_Seat (Event : Gdk_Event) return Glib.Object.GObject;
    --  Returns the Gdk.Seat.Gdk_Seat this event was generated for.
@@ -1232,7 +1232,7 @@ package Gdk.Event is
    --  usually not useful for GTK+ applications. (Although an application can
    --  call this function then call Gtk.Main.Main_Do_Event to pass events to
    --  GTK+.)
-   --  "func": the function to call to handle events from GDK.
+   --  @param Func the function to call to handle events from GDK.
 
    generic
       type User_Data_Type (<>) is private;
@@ -1242,8 +1242,8 @@ package Gdk.Event is
       type Gdk_Event_Func is access procedure (Event : Gdk.Event.Gdk_Event; Data : User_Data_Type);
       --  Specifies the type of function passed to Gdk.Event.Handler_Set to
       --  handle all GDK events.
-      --  "event": the Gdk.Event.Gdk_Event to process.
-      --  "data": user data set when the event handler was installed with
+      --  @param Event the Gdk.Event.Gdk_Event to process.
+      --  @param Data user data set when the event handler was installed with
       --  Gdk.Event.Handler_Set.
 
       procedure Handler_Set (Func : Gdk_Event_Func; Data : User_Data_Type);
@@ -1252,8 +1252,8 @@ package Gdk.Event is
       --  usually not useful for GTK+ applications. (Although an application
       --  can call this function then call Gtk.Main.Main_Do_Event to pass
       --  events to GTK+.)
-      --  "func": the function to call to handle events from GDK.
-      --  "data": user data to pass to the function.
+      --  @param Func the function to call to handle events from GDK.
+      --  @param Data user data to pass to the function.
 
    end Handler_Set_User_Data;
 
@@ -1340,7 +1340,7 @@ package Gdk.Event is
    --     }
    --
    --  Since: gtk+ 2.12
-   --  "event": a valid Gdk.Event.Gdk_Event
+   --  @param Event a valid Gdk.Event.Gdk_Event
 
    function Events_Pending return Boolean;
    --  Checks if any events are ready to be processed for any display.
@@ -1349,7 +1349,7 @@ package Gdk.Event is
    --  Sets whether a trace of received events is output. Note that GTK+ must
    --  be compiled with debugging (that is, configured using the
    --  `--enable-debug` option) to use this option.
-   --  "show_events": True to output event debugging information.
+   --  @param Show_Events True to output event debugging information.
 
    function Get_Show_Events return Boolean;
    --  Gets whether event debugging output is enabled.

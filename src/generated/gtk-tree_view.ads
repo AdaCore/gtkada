@@ -152,18 +152,18 @@ package Gtk.Tree_View is
    --  integer from the Tree_Model, and render it to the "text" attribute of
    --  "cell" by converting it to its written equivalent. This is set by
    --  calling gtk_tree_view_column_set_cell_data_func
-   --  "tree_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column
-   --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being rendered
-   --  by Tree_Column
-   --  "tree_model": The Gtk.Tree_Model.Gtk_Tree_Model being rendered
-   --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter of the current row rendered
+   --  @param Tree_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column
+   --  @param Cell The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being
+   --  rendered by Tree_Column
+   --  @param Tree_Model The Gtk.Tree_Model.Gtk_Tree_Model being rendered
+   --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter of the current row rendered
 
    type Gtk_Tree_View_Mapping_Func is access procedure
      (Tree_View : not null access Gtk_Tree_View_Record'Class;
       Path      : Gtk.Tree_Model.Gtk_Tree_Path);
    --  Function used for Gtk.Tree_View.Map_Expanded_Rows.
-   --  "tree_view": A Gtk.Tree_View.Gtk_Tree_View
-   --  "path": The path that's expanded
+   --  @param Tree_View A Gtk.Tree_View.Gtk_Tree_View
+   --  @param Path The path that's expanded
 
    type Gtk_Tree_View_Column_Drop_Func is access function
      (Tree_View   : not null access Gtk_Tree_View_Record'Class;
@@ -179,12 +179,13 @@ package Gtk.Tree_View is
    --  spot. Please note that returning True does not actually indicate that
    --  the column drop was made, but is meant only to indicate a possible drop
    --  spot to the user.
-   --  "tree_view": A Gtk.Tree_View.Gtk_Tree_View
-   --  "column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column being dragged
-   --  "prev_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column on one side
-   --  of Column
-   --  "next_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column on the other
+   --  @param Tree_View A Gtk.Tree_View.Gtk_Tree_View
+   --  @param Column The Gtk.Tree_View_Column.Gtk_Tree_View_Column being
+   --  dragged
+   --  @param Prev_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column on one
    --  side of Column
+   --  @param Next_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column on the
+   --  other side of Column
 
    type Gtk_Tree_Destroy_Count_Func is access procedure
      (Tree_View : not null access Gtk_Tree_View_Record'Class;
@@ -198,8 +199,8 @@ package Gtk.Tree_View is
    --  be rendered as a separator. A common way to implement this is to have a
    --  boolean column in the model, whose values the
    --  Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func returns.
-   --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
+   --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
 
    type Gtk_Tree_View_Search_Equal_Func is access function
      (Model  : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -210,11 +211,11 @@ package Gtk.Tree_View is
    --  key string entered by the user. Note the return value is reversed from
    --  what you would normally expect, though it has some similarity to strcmp
    --  returning 0 for equal strings.
-   --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being searched
-   --  "column": the search column set by Gtk.Tree_View.Set_Search_Column
-   --  "key": the key string to compare with
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing the row of Model that
-   --  should be compared with Key.
+   --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being searched
+   --  @param Column the search column set by Gtk.Tree_View.Set_Search_Column
+   --  @param Key the key string to compare with
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing the row of Model
+   --  that should be compared with Key.
 
    type Gtk_Tree_View_Search_Position_Func is access procedure
      (Tree_View     : not null access Gtk_Tree_View_Record'Class;
@@ -252,13 +253,13 @@ package Gtk.Tree_View is
    --  initialized to Model.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "model": the model.
+   --  @param Model the model.
 
    function Gtk_Tree_View_New_With_Model
       (Model : Gtk.Tree_Model.Gtk_Tree_Model) return Gtk_Tree_View;
    --  Creates a new Gtk.Tree_View.Gtk_Tree_View widget with the model
    --  initialized to Model.
-   --  "model": the model.
+   --  @param Model the model.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_view_get_type");
@@ -274,7 +275,7 @@ package Gtk.Tree_View is
    --  Appends Column to the list of columns. If Tree_View has "fixed_height"
    --  mode enabled, then Column must have its "sizing" property set to be
    --  GTK_TREE_VIEW_COLUMN_FIXED.
-   --  "column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column to add.
+   --  @param Column The Gtk.Tree_View_Column.Gtk_Tree_View_Column to add.
 
    procedure Collapse_All (Tree_View : not null access Gtk_Tree_View_Record);
    --  Recursively collapses all visible, expanded nodes in Tree_View.
@@ -283,7 +284,7 @@ package Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
    --  Collapses a row (hides its child rows, if they exist).
-   --  "path": path to a row in the Tree_View
+   --  @param Path path to a row in the Tree_View
 
    procedure Columns_Autosize
       (Tree_View : not null access Gtk_Tree_View_Record);
@@ -299,10 +300,10 @@ package Gtk.Tree_View is
    --  Converts bin_window coordinates to coordinates for the tree (the full
    --  scrollable area of the tree).
    --  Since: gtk+ 2.12
-   --  "bx": X coordinate relative to bin_window
-   --  "by": Y coordinate relative to bin_window
-   --  "tx": return location for tree X coordinate
-   --  "ty": return location for tree Y coordinate
+   --  @param Bx X coordinate relative to bin_window
+   --  @param By Y coordinate relative to bin_window
+   --  @param Tx return location for tree X coordinate
+   --  @param Ty return location for tree Y coordinate
 
    procedure Convert_Bin_Window_To_Widget_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -313,10 +314,10 @@ package Gtk.Tree_View is
    --  Converts bin_window coordinates (see Gtk.Tree_View.Get_Bin_Window) to
    --  widget relative coordinates.
    --  Since: gtk+ 2.12
-   --  "bx": bin_window X coordinate
-   --  "by": bin_window Y coordinate
-   --  "wx": return location for widget X coordinate
-   --  "wy": return location for widget Y coordinate
+   --  @param Bx bin_window X coordinate
+   --  @param By bin_window Y coordinate
+   --  @param Wx return location for widget X coordinate
+   --  @param Wy return location for widget Y coordinate
 
    procedure Convert_Tree_To_Bin_Window_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -327,10 +328,10 @@ package Gtk.Tree_View is
    --  Converts tree coordinates (coordinates in full scrollable area of the
    --  tree) to bin_window coordinates.
    --  Since: gtk+ 2.12
-   --  "tx": tree X coordinate
-   --  "ty": tree Y coordinate
-   --  "bx": return location for X coordinate relative to bin_window
-   --  "by": return location for Y coordinate relative to bin_window
+   --  @param Tx tree X coordinate
+   --  @param Ty tree Y coordinate
+   --  @param Bx return location for X coordinate relative to bin_window
+   --  @param By return location for Y coordinate relative to bin_window
 
    procedure Convert_Tree_To_Widget_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -341,10 +342,10 @@ package Gtk.Tree_View is
    --  Converts tree coordinates (coordinates in full scrollable area of the
    --  tree) to widget coordinates.
    --  Since: gtk+ 2.12
-   --  "tx": X coordinate relative to the tree
-   --  "ty": Y coordinate relative to the tree
-   --  "wx": return location for widget X coordinate
-   --  "wy": return location for widget Y coordinate
+   --  @param Tx X coordinate relative to the tree
+   --  @param Ty Y coordinate relative to the tree
+   --  @param Wx return location for widget X coordinate
+   --  @param Wy return location for widget Y coordinate
 
    procedure Convert_Widget_To_Bin_Window_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -355,10 +356,10 @@ package Gtk.Tree_View is
    --  Converts widget coordinates to coordinates for the bin_window (see
    --  Gtk.Tree_View.Get_Bin_Window).
    --  Since: gtk+ 2.12
-   --  "wx": X coordinate relative to the widget
-   --  "wy": Y coordinate relative to the widget
-   --  "bx": return location for bin_window X coordinate
-   --  "by": return location for bin_window Y coordinate
+   --  @param Wx X coordinate relative to the widget
+   --  @param Wy Y coordinate relative to the widget
+   --  @param Bx return location for bin_window X coordinate
+   --  @param By return location for bin_window Y coordinate
 
    procedure Convert_Widget_To_Tree_Coords
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -369,17 +370,17 @@ package Gtk.Tree_View is
    --  Converts widget coordinates to coordinates for the tree (the full
    --  scrollable area of the tree).
    --  Since: gtk+ 2.12
-   --  "wx": X coordinate relative to the widget
-   --  "wy": Y coordinate relative to the widget
-   --  "tx": return location for tree X coordinate
-   --  "ty": return location for tree Y coordinate
+   --  @param Wx X coordinate relative to the widget
+   --  @param Wy Y coordinate relative to the widget
+   --  @param Tx return location for tree X coordinate
+   --  @param Ty return location for tree Y coordinate
 
    function Create_Row_Drag_Icon
       (Tree_View : not null access Gtk_Tree_View_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Cairo.Cairo_Surface;
    --  Creates a cairo_surface_t representation of the row at Path. This image
    --  is used for a drag icon.
-   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path in Tree_View
+   --  @param Path a Gtk.Tree_Model.Gtk_Tree_Path in Tree_View
 
    procedure Enable_Model_Drag_Dest
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -387,8 +388,9 @@ package Gtk.Tree_View is
        Actions   : Gdk.Drag_Contexts.Gdk_Drag_Action);
    --  Turns Tree_View into a drop destination for automatic DND. Calling this
    --  method sets Gtk.Tree_View.Gtk_Tree_View:reorderable to False.
-   --  "targets": the table of targets that the drag will support
-   --  "actions": the bitmask of possible actions for a drag from this widget
+   --  @param Targets the table of targets that the drag will support
+   --  @param Actions the bitmask of possible actions for a drag from this
+   --  widget
 
    procedure Enable_Model_Drag_Source
       (Tree_View         : not null access Gtk_Tree_View_Record;
@@ -397,9 +399,10 @@ package Gtk.Tree_View is
        Actions           : Gdk.Drag_Contexts.Gdk_Drag_Action);
    --  Turns Tree_View into a drag source for automatic DND. Calling this
    --  method sets Gtk.Tree_View.Gtk_Tree_View:reorderable to False.
-   --  "start_button_mask": Mask of allowed buttons to start drag
-   --  "targets": the table of targets that the drag will support
-   --  "actions": the bitmask of possible actions for a drag from this widget
+   --  @param Start_Button_Mask Mask of allowed buttons to start drag
+   --  @param Targets the table of targets that the drag will support
+   --  @param Actions the bitmask of possible actions for a drag from this
+   --  widget
 
    procedure Expand_All (Tree_View : not null access Gtk_Tree_View_Record);
    --  Recursively expands all nodes in the Tree_View.
@@ -409,8 +412,8 @@ package Gtk.Tree_View is
        Path      : Gtk.Tree_Model.Gtk_Tree_Path;
        Open_All  : Boolean) return Boolean;
    --  Opens the row so its children are visible.
-   --  "path": path to a row
-   --  "open_all": whether to recursively expand, or just expand immediate
+   --  @param Path path to a row
+   --  @param Open_All whether to recursively expand, or just expand immediate
    --  children
 
    procedure Expand_To_Path
@@ -419,7 +422,7 @@ package Gtk.Tree_View is
    --  Expands the row at Path. This will also expand all parent rows of Path
    --  as necessary.
    --  Since: gtk+ 2.2
-   --  "path": path to a row.
+   --  @param Path path to a row.
 
    function Get_Activate_On_Single_Click
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
@@ -432,7 +435,7 @@ package Gtk.Tree_View is
    --  Cause the Gtk.Tree_View.Gtk_Tree_View::row-activated signal to be
    --  emitted on a single click instead of a double click.
    --  Since: gtk+ 3.8
-   --  "single": True to emit row-activated on a single click
+   --  @param Single True to emit row-activated on a single click
 
    procedure Get_Background_Area
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -449,11 +452,11 @@ package Gtk.Tree_View is
    --  Cell_Area, returned by Gtk.Tree_View.Get_Cell_Area, which returns only
    --  the cell itself, excluding surrounding borders and the tree expander
    --  area.
-   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path for the row, or null to get only
-   --  horizontal coordinates
-   --  "column": a Gtk.Tree_View_Column.Gtk_Tree_View_Column for the column,
-   --  or null to get only vertical coordiantes
-   --  "rect": rectangle to fill with cell background rect
+   --  @param Path a Gtk.Tree_Model.Gtk_Tree_Path for the row, or null to get
+   --  only horizontal coordinates
+   --  @param Column a Gtk.Tree_View_Column.Gtk_Tree_View_Column for the
+   --  column, or null to get only vertical coordiantes
+   --  @param Rect rectangle to fill with cell background rect
 
    function Get_Bin_Window
       (Tree_View : not null access Gtk_Tree_View_Record)
@@ -476,11 +479,11 @@ package Gtk.Tree_View is
    --  example. The returned rectangle is equivalent to the Cell_Area passed to
    --  Gtk.Cell_Renderer.Render. This function is only valid if Tree_View is
    --  realized.
-   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path for the row, or null to get only
-   --  horizontal coordinates
-   --  "column": a Gtk.Tree_View_Column.Gtk_Tree_View_Column for the column,
-   --  or null to get only vertical coordinates
-   --  "rect": rectangle to fill with cell rect
+   --  @param Path a Gtk.Tree_Model.Gtk_Tree_Path for the row, or null to get
+   --  only horizontal coordinates
+   --  @param Column a Gtk.Tree_View_Column.Gtk_Tree_View_Column for the
+   --  column, or null to get only vertical coordinates
+   --  @param Rect rectangle to fill with cell rect
 
    function Get_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -488,7 +491,7 @@ package Gtk.Tree_View is
        return Gtk.Tree_View_Column.Gtk_Tree_View_Column;
    --  Gets the Gtk.Tree_View_Column.Gtk_Tree_View_Column at the given
    --  position in the tree_view.
-   --  "n": The position of the column, counting from 0.
+   --  @param N The position of the column, counting from 0.
 
    function Get_Columns
       (Tree_View : not null access Gtk_Tree_View_Record)
@@ -506,9 +509,10 @@ package Gtk.Tree_View is
    --  currently has focus, then *Focus_Column will be null.
    --  The returned Gtk.Tree_Model.Gtk_Tree_Path must be freed with
    --  Gtk.Tree_Model.Path_Free when you are done with it.
-   --  "path": A pointer to be filled with the current cursor path, or null
-   --  "focus_column": A pointer to be filled with the current focus column,
-   --  or null
+   --  @param Path A pointer to be filled with the current cursor path, or
+   --  null
+   --  @param Focus_Column A pointer to be filled with the current focus
+   --  column, or null
 
    procedure Set_Cursor
       (Tree_View     : not null access Gtk_Tree_View_Record;
@@ -525,9 +529,11 @@ package Gtk.Tree_View is
    --  happen when the widget is realized.
    --  If Path is invalid for Model, the current cursor (if any) will be unset
    --  and the function will return without failing.
-   --  "path": A Gtk.Tree_Model.Gtk_Tree_Path
-   --  "focus_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column, or null
-   --  "start_editing": True if the specified cell should start being edited.
+   --  @param Path A Gtk.Tree_Model.Gtk_Tree_Path
+   --  @param Focus_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column, or
+   --  null
+   --  @param Start_Editing True if the specified cell should start being
+   --  edited.
 
    function Get_Dest_Row_At_Pos
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -539,18 +545,20 @@ package Gtk.Tree_View is
    --  are expected to be in widget coordinates. This function is only
    --  meaningful if Tree_View is realized. Therefore this function will always
    --  return False if Tree_View is not realized or does not have a model.
-   --  "drag_x": the position to determine the destination row for
-   --  "drag_y": the position to determine the destination row for
-   --  "path": Return location for the path of the highlighted row, or null.
-   --  "pos": Return location for the drop position, or null
+   --  @param Drag_X the position to determine the destination row for
+   --  @param Drag_Y the position to determine the destination row for
+   --  @param Path Return location for the path of the highlighted row, or
+   --  null.
+   --  @param Pos Return location for the drop position, or null
 
    procedure Get_Drag_Dest_Row
       (Tree_View : not null access Gtk_Tree_View_Record;
        Path      : out Gtk.Tree_Model.Gtk_Tree_Path;
        Pos       : out Gtk_Tree_View_Drop_Position);
    --  Gets information about the row that is highlighted for feedback.
-   --  "path": Return location for the path of the highlighted row, or null.
-   --  "pos": Return location for the drop position, or null
+   --  @param Path Return location for the path of the highlighted row, or
+   --  null.
+   --  @param Pos Return location for the drop position, or null
 
    procedure Set_Drag_Dest_Row
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -558,8 +566,8 @@ package Gtk.Tree_View is
        Pos       : Gtk_Tree_View_Drop_Position);
    --  Sets the row that is highlighted for feedback. If Path is null, an
    --  existing highlight is removed.
-   --  "path": The path of the row to highlight, or null
-   --  "pos": Specifies whether to drop before, after or into the row
+   --  @param Path The path of the row to highlight, or null
+   --  @param Pos Specifies whether to drop before, after or into the row
 
    function Get_Enable_Search
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
@@ -574,7 +582,7 @@ package Gtk.Tree_View is
    --  find").
    --  Note that even if this is False, the user can still initiate a search
    --  using the "start-interactive-search" key binding.
-   --  "enable_search": True, if the user can search interactively
+   --  @param Enable_Search True, if the user can search interactively
 
    function Get_Enable_Tree_Lines
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
@@ -587,7 +595,7 @@ package Gtk.Tree_View is
    --  Sets whether to draw lines interconnecting the expanders in Tree_View.
    --  This does not have any visible effects for lists.
    --  Since: gtk+ 2.10
-   --  "enabled": True to enable tree line drawing, False otherwise.
+   --  @param Enabled True to enable tree line drawing, False otherwise.
 
    function Get_Expander_Column
       (Tree_View : not null access Gtk_Tree_View_Record)
@@ -603,7 +611,7 @@ package Gtk.Tree_View is
    --  visible column.
    --  If you do not want expander arrow to appear in your tree, set the
    --  expander column to a hidden column.
-   --  "column": null, or the column to draw the expander arrow at.
+   --  @param Column null, or the column to draw the expander arrow at.
 
    function Get_Fixed_Height_Mode
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
@@ -619,7 +627,7 @@ package Gtk.Tree_View is
    --  height and all columns are of type
    --  Gtk.Tree_View_Column.Tree_View_Column_Fixed.
    --  Since: gtk+ 2.6
-   --  "enable": True to enable fixed height mode
+   --  @param Enable True to enable fixed height mode
 
    function Get_Grid_Lines
       (Tree_View : not null access Gtk_Tree_View_Record)
@@ -632,7 +640,7 @@ package Gtk.Tree_View is
        Grid_Lines : Gtk.Enums.Gtk_Tree_View_Grid_Lines);
    --  Sets which grid lines to draw in Tree_View.
    --  Since: gtk+ 2.10
-   --  "grid_lines": a Gtk.Enums.Gtk_Tree_View_Grid_Lines value indicating
+   --  @param Grid_Lines a Gtk.Enums.Gtk_Tree_View_Grid_Lines value indicating
    --  which grid lines to enable.
 
    function Get_Headers_Clickable
@@ -644,7 +652,7 @@ package Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Setting   : Boolean);
    --  Allow the column title buttons to be clicked.
-   --  "setting": True if the columns are clickable.
+   --  @param Setting True if the columns are clickable.
 
    function Get_Headers_Visible
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
@@ -654,7 +662,7 @@ package Gtk.Tree_View is
       (Tree_View       : not null access Gtk_Tree_View_Record;
        Headers_Visible : Boolean);
    --  Sets the visibility state of the headers.
-   --  "headers_visible": True if the headers are visible
+   --  @param Headers_Visible True if the headers are visible
 
    function Get_Hover_Expand
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
@@ -667,7 +675,7 @@ package Gtk.Tree_View is
    --  Enables or disables the hover expansion mode of Tree_View. Hover
    --  expansion makes rows expand or collapse if the pointer moves over them.
    --  Since: gtk+ 2.6
-   --  "expand": True to enable hover selection mode
+   --  @param Expand True to enable hover selection mode
 
    function Get_Hover_Selection
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
@@ -682,7 +690,7 @@ package Gtk.Tree_View is
    --  works only for the selection modes Gtk.Enums.Selection_Single and
    --  Gtk.Enums.Selection_Browse.
    --  Since: gtk+ 2.6
-   --  "hover": True to enable hover selection mode
+   --  @param Hover True to enable hover selection mode
 
    function Get_Level_Indentation
       (Tree_View : not null access Gtk_Tree_View_Record) return Glib.Gint;
@@ -699,7 +707,7 @@ package Gtk.Tree_View is
    --  only the default indentation will be used. This does not have any
    --  visible effects for lists.
    --  Since: gtk+ 2.12
-   --  "indentation": the amount, in pixels, of extra indentation in
+   --  @param Indentation the amount, in pixels, of extra indentation in
    --  Tree_View.
 
    function Get_Model
@@ -714,7 +722,7 @@ package Gtk.Tree_View is
    --  Sets the model for a Gtk.Tree_View.Gtk_Tree_View. If the Tree_View
    --  already has a model set, it will remove it before setting the new model.
    --  If Model is null, then it will unset the old model.
-   --  "model": The model.
+   --  @param Model The model.
 
    function Get_N_Columns
       (Tree_View : not null access Gtk_Tree_View_Record) return Guint;
@@ -746,16 +754,16 @@ package Gtk.Tree_View is
    --  For converting widget coordinates (eg. the ones you get from
    --  GtkWidget::query-tooltip), please see
    --  Gtk.Tree_View.Convert_Widget_To_Bin_Window_Coords.
-   --  "x": The x position to be identified (relative to bin_window).
-   --  "y": The y position to be identified (relative to bin_window).
-   --  "path": A pointer to a Gtk.Tree_Model.Gtk_Tree_Path pointer to be
+   --  @param X The x position to be identified (relative to bin_window).
+   --  @param Y The y position to be identified (relative to bin_window).
+   --  @param Path A pointer to a Gtk.Tree_Model.Gtk_Tree_Path pointer to be
    --  filled in, or null
-   --  "column": A pointer to a Gtk.Tree_View_Column.Gtk_Tree_View_Column
+   --  @param Column A pointer to a Gtk.Tree_View_Column.Gtk_Tree_View_Column
    --  pointer to be filled in, or null
-   --  "cell_x": A pointer where the X coordinate relative to the cell can be
-   --  placed, or null
-   --  "cell_y": A pointer where the Y coordinate relative to the cell can be
-   --  placed, or null
+   --  @param Cell_X A pointer where the X coordinate relative to the cell can
+   --  be placed, or null
+   --  @param Cell_Y A pointer where the Y coordinate relative to the cell can
+   --  be placed, or null
 
    function Get_Reorderable
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
@@ -779,7 +787,7 @@ package Gtk.Tree_View is
    --  This function does not give you any degree of control over the order --
    --  any reordering is allowed. If more control is needed, you should
    --  probably handle drag and drop manually.
-   --  "reorderable": True, if the tree can be reordered.
+   --  @param Reorderable True, if the tree can be reordered.
 
    procedure Get_Row_Separator_Func
       (Tree_View : not null access Gtk_Tree_View_Record);
@@ -793,7 +801,7 @@ package Gtk.Tree_View is
    --  row should be drawn as a separator. If the row separator function is
    --  null, no separators are drawn. This is the default value.
    --  Since: gtk+ 2.6
-   --  "func": a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
+   --  @param Func a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
 
    function Get_Rubber_Banding
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
@@ -809,7 +817,7 @@ package Gtk.Tree_View is
    --  is GTK_SELECTION_MULTIPLE, rubber banding will allow the user to select
    --  multiple rows by dragging the mouse.
    --  Since: gtk+ 2.10
-   --  "enable": True to enable rubber banding
+   --  @param Enable True to enable rubber banding
 
    function Get_Rules_Hint
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
@@ -834,7 +842,7 @@ package Gtk.Tree_View is
    --  makes alternating colors useful from a functional standpoint (since it
    --  has lots of columns, generally).
    --  Deprecated since 3.14, 1
-   --  "setting": True if the tree requires reading across rows
+   --  @param Setting True if the tree requires reading across rows
 
    function Get_Search_Column
       (Tree_View : not null access Gtk_Tree_View_Record) return Glib.Gint;
@@ -851,7 +859,7 @@ package Gtk.Tree_View is
    --  start an interactive search.
    --  Note that Column refers to a column of the current model. The search
    --  column is reset to -1 when the model is changed.
-   --  "column": the column of the model to search in, or -1 to disable
+   --  @param Column the column of the model to search in, or -1 to disable
    --  searching
 
    function Get_Search_Entry
@@ -870,8 +878,8 @@ package Gtk.Tree_View is
    --  interface at all time at a fixed position. Passing null for Entry will
    --  make the interactive search code use the built-in popup entry again.
    --  Since: gtk+ 2.10
-   --  "entry": the entry the interactive search code of Tree_View should use
-   --  or null
+   --  @param GEntry the entry the interactive search code of Tree_View should
+   --  use or null
 
    procedure Get_Search_Equal_Func
       (Tree_View : not null access Gtk_Tree_View_Record);
@@ -884,8 +892,8 @@ package Gtk.Tree_View is
    --  Sets the compare function for the interactive search capabilities; note
    --  that somewhat like strcmp returning 0 for equality
    --  Gtk_Tree_View_Search_Equal_Func returns False on matches.
-   --  "search_equal_func": the compare function to use during the search
-   --  "search_destroy": Destroy notifier for Search_User_Data, or null
+   --  @param Search_Equal_Func the compare function to use during the search
+   --  @param Search_Destroy Destroy notifier for Search_User_Data, or null
 
    procedure Get_Search_Position_Func
       (Tree_View : not null access Gtk_Tree_View_Record);
@@ -897,8 +905,8 @@ package Gtk.Tree_View is
        Func      : Gtk_Tree_View_Search_Position_Func);
    --  Sets the function to use when positioning the search dialog.
    --  Since: gtk+ 2.10
-   --  "func": the function to use to position the search dialog, or null to
-   --  use the default search position function
+   --  @param Func the function to use to position the search dialog, or null
+   --  to use the default search position function
 
    function Get_Selection
       (Tree_View : not null access Gtk_Tree_View_Record)
@@ -922,7 +930,7 @@ package Gtk.Tree_View is
    --  Gtk.Tree_View.Set_Level_Indentation. This does not have any visible
    --  effects for lists.
    --  Since: gtk+ 2.12
-   --  "enabled": True to enable expander drawing, False otherwise.
+   --  @param Enabled True to enable expander drawing, False otherwise.
 
    function Get_Tooltip_Column
       (Tree_View : not null access Gtk_Tree_View_Record) return Glib.Gint;
@@ -943,8 +951,8 @@ package Gtk.Tree_View is
    --  Note that the signal handler sets the text with Gtk.Tooltip.Set_Markup,
    --  so &, <, etc have to be escaped in the text.
    --  Since: gtk+ 2.12
-   --  "column": an integer, which is a valid column number for Tree_View's
-   --  model
+   --  @param Column an integer, which is a valid column number for
+   --  Tree_View's model
 
    procedure Get_Tooltip_Context
       (Tree_View    : not null access Gtk_Tree_View_Record;
@@ -967,12 +975,13 @@ package Gtk.Tree_View is
    --  that row and the corresponding model. X and Y will always be converted
    --  to be relative to Tree_View's bin_window if Keyboard_Tooltip is False.
    --  Since: gtk+ 2.12
-   --  "x": the x coordinate (relative to widget coordinates)
-   --  "y": the y coordinate (relative to widget coordinates)
-   --  "keyboard_tip": whether this is a keyboard tooltip or not
-   --  "model": a pointer to receive a Gtk.Tree_Model.Gtk_Tree_Model or null
-   --  "path": a pointer to receive a Gtk.Tree_Model.Gtk_Tree_Path or null
-   --  "iter": a pointer to receive a Gtk.Tree_Model.Gtk_Tree_Iter or null
+   --  @param X the x coordinate (relative to widget coordinates)
+   --  @param Y the y coordinate (relative to widget coordinates)
+   --  @param Keyboard_Tip whether this is a keyboard tooltip or not
+   --  @param Model a pointer to receive a Gtk.Tree_Model.Gtk_Tree_Model or
+   --  null
+   --  @param Path a pointer to receive a Gtk.Tree_Model.Gtk_Tree_Path or null
+   --  @param Iter a pointer to receive a Gtk.Tree_Model.Gtk_Tree_Iter or null
 
    procedure Get_Visible_Range
       (Tree_View  : not null access Gtk_Tree_View_Record;
@@ -983,8 +992,8 @@ package Gtk.Tree_View is
    --  Note that there may be invisible paths in between.
    --  The paths should be freed with Gtk.Tree_Model.Path_Free after use.
    --  Since: gtk+ 2.8
-   --  "start_path": Return location for start of region, or null.
-   --  "end_path": Return location for end of region, or null.
+   --  @param Start_Path Return location for start of region, or null.
+   --  @param End_Path Return location for end of region, or null.
 
    procedure Get_Visible_Rect
       (Tree_View    : not null access Gtk_Tree_View_Record;
@@ -994,7 +1003,7 @@ package Gtk.Tree_View is
    --  Gtk.Tree_View.Convert_Tree_To_Bin_Window_Coords. Tree coordinates start
    --  at 0,0 for row 0 of the tree, and cover the entire scrollable area of
    --  the tree.
-   --  "visible_rect": rectangle to fill
+   --  @param Visible_Rect rectangle to fill
 
    function Insert_Column
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -1004,8 +1013,9 @@ package Gtk.Tree_View is
    --  -1, then the column is inserted at the end. If Tree_View has
    --  "fixed_height" mode enabled, then Column must have its "sizing" property
    --  set to be GTK_TREE_VIEW_COLUMN_FIXED.
-   --  "column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column to be inserted.
-   --  "position": The position to insert Column in.
+   --  @param Column The Gtk.Tree_View_Column.Gtk_Tree_View_Column to be
+   --  inserted.
+   --  @param Position The position to insert Column in.
 
    function Insert_Column_With_Data_Func
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -1021,11 +1031,11 @@ package Gtk.Tree_View is
    --  gtk_tree_view_column_pack_start. If Tree_View has "fixed_height" mode
    --  enabled, then the new column will have its "sizing" property set to be
    --  GTK_TREE_VIEW_COLUMN_FIXED.
-   --  "position": Position to insert, -1 for append
-   --  "title": column title
-   --  "cell": cell renderer for column
-   --  "func": function to set attributes of cell renderer
-   --  "dnotify": destroy notifier for Data
+   --  @param Position Position to insert, -1 for append
+   --  @param Title column title
+   --  @param Cell cell renderer for column
+   --  @param Func function to set attributes of cell renderer
+   --  @param Dnotify destroy notifier for Data
 
    generic
       type User_Data_Type (<>) is private;
@@ -1044,12 +1054,12 @@ package Gtk.Tree_View is
       --  integer from the Tree_Model, and render it to the "text" attribute of
       --  "cell" by converting it to its written equivalent. This is set by
       --  calling gtk_tree_view_column_set_cell_data_func
-      --  "tree_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column
-      --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being rendered
-      --  by Tree_Column
-      --  "tree_model": The Gtk.Tree_Model.Gtk_Tree_Model being rendered
-      --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter of the current row rendered
-      --  "data": user data
+      --  @param Tree_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column
+      --  @param Cell The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being
+      --  rendered by Tree_Column
+      --  @param Tree_Model The Gtk.Tree_Model.Gtk_Tree_Model being rendered
+      --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter of the current row rendered
+      --  @param Data user data
 
       function Insert_Column_With_Data_Func
          (Tree_View : not null access Gtk.Tree_View.Gtk_Tree_View_Record'Class;
@@ -1067,12 +1077,12 @@ package Gtk.Tree_View is
       --  gtk_tree_view_column_pack_start. If Tree_View has "fixed_height" mode
       --  enabled, then the new column will have its "sizing" property set to
       --  be GTK_TREE_VIEW_COLUMN_FIXED.
-      --  "position": Position to insert, -1 for append
-      --  "title": column title
-      --  "cell": cell renderer for column
-      --  "func": function to set attributes of cell renderer
-      --  "data": data for Func
-      --  "dnotify": destroy notifier for Data
+      --  @param Position Position to insert, -1 for append
+      --  @param Title column title
+      --  @param Cell cell renderer for column
+      --  @param Func function to set attributes of cell renderer
+      --  @param Data data for Func
+      --  @param Dnotify destroy notifier for Data
 
    end Insert_Column_With_Data_Func_User_Data;
 
@@ -1099,16 +1109,16 @@ package Gtk.Tree_View is
    --  likewise as for Gtk.Tree_View.Get_Path_At_Pos. Please see
    --  Gtk.Tree_View.Get_Path_At_Pos for more information.
    --  Since: gtk+ 3.0
-   --  "x": The x position to be identified (relative to bin_window)
-   --  "y": The y position to be identified (relative to bin_window)
-   --  "path": A pointer to a Gtk.Tree_Model.Gtk_Tree_Path pointer to be
+   --  @param X The x position to be identified (relative to bin_window)
+   --  @param Y The y position to be identified (relative to bin_window)
+   --  @param Path A pointer to a Gtk.Tree_Model.Gtk_Tree_Path pointer to be
    --  filled in, or null
-   --  "column": A pointer to a Gtk.Tree_View_Column.Gtk_Tree_View_Column
+   --  @param Column A pointer to a Gtk.Tree_View_Column.Gtk_Tree_View_Column
    --  pointer to be filled in, or null
-   --  "cell_x": A pointer where the X coordinate relative to the cell can be
-   --  placed, or null
-   --  "cell_y": A pointer where the Y coordinate relative to the cell can be
-   --  placed, or null
+   --  @param Cell_X A pointer where the X coordinate relative to the cell can
+   --  be placed, or null
+   --  @param Cell_Y A pointer where the Y coordinate relative to the cell can
+   --  be placed, or null
 
    function Is_Rubber_Banding_Active
       (Tree_View : not null access Gtk_Tree_View_Record) return Boolean;
@@ -1120,7 +1130,7 @@ package Gtk.Tree_View is
       (Tree_View : not null access Gtk_Tree_View_Record;
        Func      : Gtk_Tree_View_Mapping_Func);
    --  Calls Func on all expanded rows.
-   --  "func": A function to be called
+   --  @param Func A function to be called
 
    generic
       type User_Data_Type (<>) is private;
@@ -1132,17 +1142,17 @@ package Gtk.Tree_View is
          Path      : Gtk.Tree_Model.Gtk_Tree_Path;
          User_Data : User_Data_Type);
       --  Function used for Gtk.Tree_View.Map_Expanded_Rows.
-      --  "tree_view": A Gtk.Tree_View.Gtk_Tree_View
-      --  "path": The path that's expanded
-      --  "user_data": user data
+      --  @param Tree_View A Gtk.Tree_View.Gtk_Tree_View
+      --  @param Path The path that's expanded
+      --  @param User_Data user data
 
       procedure Map_Expanded_Rows
          (Tree_View : not null access Gtk.Tree_View.Gtk_Tree_View_Record'Class;
           Func      : Gtk_Tree_View_Mapping_Func;
           Data      : User_Data_Type);
       --  Calls Func on all expanded rows.
-      --  "func": A function to be called
-      --  "data": User data to be passed to the function.
+      --  @param Func A function to be called
+      --  @param Data User data to be passed to the function.
 
    end Map_Expanded_Rows_User_Data;
 
@@ -1152,8 +1162,9 @@ package Gtk.Tree_View is
        Base_Column : access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class);
    --  Moves Column to be after to Base_Column. If Base_Column is null, then
    --  Column is placed in the first position.
-   --  "column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column to be moved.
-   --  "base_column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column to be
+   --  @param Column The Gtk.Tree_View_Column.Gtk_Tree_View_Column to be
+   --  moved.
+   --  @param Base_Column The Gtk.Tree_View_Column.Gtk_Tree_View_Column to be
    --  moved relative to, or null.
 
    function Remove_Column
@@ -1161,22 +1172,22 @@ package Gtk.Tree_View is
        Column    : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class)
        return Glib.Gint;
    --  Removes Column from Tree_View.
-   --  "column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column to remove.
+   --  @param Column The Gtk.Tree_View_Column.Gtk_Tree_View_Column to remove.
 
    procedure Row_Activated
       (Tree_View : not null access Gtk_Tree_View_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path;
        Column    : not null access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class);
    --  Activates the cell determined by Path and Column.
-   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path to be activated.
-   --  "column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column to be
+   --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path to be activated.
+   --  @param Column The Gtk.Tree_View_Column.Gtk_Tree_View_Column to be
    --  activated.
 
    function Row_Expanded
       (Tree_View : not null access Gtk_Tree_View_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
    --  Returns True if the node pointed to by Path is expanded in Tree_View.
-   --  "path": A Gtk.Tree_Model.Gtk_Tree_Path to test expansion state.
+   --  @param Path A Gtk.Tree_Model.Gtk_Tree_Path to test expansion state.
 
    procedure Scroll_To_Cell
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -1200,12 +1211,12 @@ package Gtk.Tree_View is
    --  This function only works if the model is set, and Path is a valid row
    --  on the model. If the model changes before the Tree_View is realized, the
    --  centered path will be modified to reflect this change.
-   --  "path": The path of the row to move to, or null.
-   --  "column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column to move
+   --  @param Path The path of the row to move to, or null.
+   --  @param Column The Gtk.Tree_View_Column.Gtk_Tree_View_Column to move
    --  horizontally to, or null.
-   --  "use_align": whether to use alignment arguments, or False.
-   --  "row_align": The vertical alignment of the row specified by Path.
-   --  "col_align": The horizontal alignment of the column specified by
+   --  @param Use_Align whether to use alignment arguments, or False.
+   --  @param Row_Align The vertical alignment of the row specified by Path.
+   --  @param Col_Align The horizontal alignment of the column specified by
    --  Column.
 
    procedure Scroll_To_Point
@@ -1218,8 +1229,8 @@ package Gtk.Tree_View is
    --  called. If it isn't, you probably want to be using
    --  Gtk.Tree_View.Scroll_To_Cell.
    --  If either Tree_X or Tree_Y are -1, then that direction isn't scrolled.
-   --  "tree_x": X coordinate of new top-left pixel of visible area, or -1
-   --  "tree_y": Y coordinate of new top-left pixel of visible area, or -1
+   --  @param Tree_X X coordinate of new top-left pixel of visible area, or -1
+   --  @param Tree_Y Y coordinate of new top-left pixel of visible area, or -1
 
    procedure Set_Column_Drag_Function
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -1235,7 +1246,8 @@ package Gtk.Tree_View is
    --  are null, then they indicate an edge. If Func is set to be null, then
    --  Tree_View reverts to the default behavior of allowing all columns to be
    --  dropped everywhere.
-   --  "func": A function to determine which columns are reorderable, or null.
+   --  @param Func A function to determine which columns are reorderable, or
+   --  null.
 
    generic
       type User_Data_Type (<>) is private;
@@ -1256,13 +1268,14 @@ package Gtk.Tree_View is
       --  spot. Please note that returning True does not actually indicate that
       --  the column drop was made, but is meant only to indicate a possible drop
       --  spot to the user.
-      --  "tree_view": A Gtk.Tree_View.Gtk_Tree_View
-      --  "column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column being dragged
-      --  "prev_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column on one side
-      --  of Column
-      --  "next_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column on the other
+      --  @param Tree_View A Gtk.Tree_View.Gtk_Tree_View
+      --  @param Column The Gtk.Tree_View_Column.Gtk_Tree_View_Column being
+      --  dragged
+      --  @param Prev_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column on one
       --  side of Column
-      --  "data": user data
+      --  @param Next_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column on the
+      --  other side of Column
+      --  @param Data user data
 
       procedure Set_Column_Drag_Function
          (Tree_View : not null access Gtk.Tree_View.Gtk_Tree_View_Record'Class;
@@ -1279,9 +1292,9 @@ package Gtk.Tree_View is
       --  are null, then they indicate an edge. If Func is set to be null, then
       --  Tree_View reverts to the default behavior of allowing all columns to
       --  be dropped everywhere.
-      --  "func": A function to determine which columns are reorderable, or
-      --  null.
-      --  "user_data": User data to be passed to Func, or null
+      --  @param Func A function to determine which columns are reorderable,
+      --  or null.
+      --  @param User_Data User data to be passed to Func, or null
 
    end Set_Column_Drag_Function_User_Data;
 
@@ -1305,10 +1318,12 @@ package Gtk.Tree_View is
    --  If Path is invalid for Model, the current cursor (if any) will be unset
    --  and the function will return without failing.
    --  Since: gtk+ 2.2
-   --  "path": A Gtk.Tree_Model.Gtk_Tree_Path
-   --  "focus_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column, or null
-   --  "focus_cell": A Gtk.Cell_Renderer.Gtk_Cell_Renderer, or null
-   --  "start_editing": True if the specified cell should start being edited.
+   --  @param Path A Gtk.Tree_Model.Gtk_Tree_Path
+   --  @param Focus_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column, or
+   --  null
+   --  @param Focus_Cell A Gtk.Cell_Renderer.Gtk_Cell_Renderer, or null
+   --  @param Start_Editing True if the specified cell should start being
+   --  edited.
 
    procedure Set_Destroy_Count_Func
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -1318,7 +1333,7 @@ package Gtk.Tree_View is
    --  by ATK for determining the number of visible children that are removed
    --  when the user collapses a row, or a row is deleted.
    --  Deprecated since 3.4, 1
-   --  "func": Function to be called when a view row is destroyed, or null
+   --  @param Func Function to be called when a view row is destroyed, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -1340,8 +1355,9 @@ package Gtk.Tree_View is
       --  use by ATK for determining the number of visible children that are
       --  removed when the user collapses a row, or a row is deleted.
       --  Deprecated since 3.4, 1
-      --  "func": Function to be called when a view row is destroyed, or null
-      --  "data": User data to be passed to Func, or null
+      --  @param Func Function to be called when a view row is destroyed, or
+      --  null
+      --  @param Data User data to be passed to Func, or null
 
    end Set_Destroy_Count_Func_User_Data;
 
@@ -1358,9 +1374,9 @@ package Gtk.Tree_View is
       --  be rendered as a separator. A common way to implement this is to have a
       --  boolean column in the model, whose values the
       --  Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func returns.
-      --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
-      --  "data": user data
+      --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
+      --  @param Data user data
 
       procedure Set_Row_Separator_Func
          (Tree_View : not null access Gtk.Tree_View.Gtk_Tree_View_Record'Class;
@@ -1370,8 +1386,8 @@ package Gtk.Tree_View is
       --  a row should be drawn as a separator. If the row separator function
       --  is null, no separators are drawn. This is the default value.
       --  Since: gtk+ 2.6
-      --  "func": a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
-      --  "data": user data to pass to Func, or null
+      --  @param Func a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
+      --  @param Data user data to pass to Func, or null
 
    end Set_Row_Separator_Func_User_Data;
 
@@ -1390,12 +1406,12 @@ package Gtk.Tree_View is
       --  key string entered by the user. Note the return value is reversed from
       --  what you would normally expect, though it has some similarity to strcmp
       --  returning 0 for equal strings.
-      --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being searched
-      --  "column": the search column set by Gtk.Tree_View.Set_Search_Column
-      --  "key": the key string to compare with
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing the row of Model that
-      --  should be compared with Key.
-      --  "search_data": user data from Gtk.Tree_View.Set_Search_Equal_Func
+      --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being searched
+      --  @param Column the search column set by Gtk.Tree_View.Set_Search_Column
+      --  @param Key the key string to compare with
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing the row of Model
+      --  that should be compared with Key.
+      --  @param Search_Data user data from Gtk.Tree_View.Set_Search_Equal_Func
 
       procedure Set_Search_Equal_Func
          (Tree_View         : not null access Gtk.Tree_View.Gtk_Tree_View_Record'Class;
@@ -1405,9 +1421,11 @@ package Gtk.Tree_View is
       --  Sets the compare function for the interactive search capabilities;
       --  note that somewhat like strcmp returning 0 for equality
       --  Gtk_Tree_View_Search_Equal_Func returns False on matches.
-      --  "search_equal_func": the compare function to use during the search
-      --  "search_user_data": user data to pass to Search_Equal_Func, or null
-      --  "search_destroy": Destroy notifier for Search_User_Data, or null
+      --  @param Search_Equal_Func the compare function to use during the
+      --  search
+      --  @param Search_User_Data user data to pass to Search_Equal_Func, or
+      --  null
+      --  @param Search_Destroy Destroy notifier for Search_User_Data, or null
 
    end Set_Search_Equal_Func_User_Data;
 
@@ -1427,9 +1445,9 @@ package Gtk.Tree_View is
           Data      : User_Data_Type);
       --  Sets the function to use when positioning the search dialog.
       --  Since: gtk+ 2.10
-      --  "func": the function to use to position the search dialog, or null
-      --  to use the default search position function
-      --  "data": user data to pass to Func, or null
+      --  @param Func the function to use to position the search dialog, or
+      --  null to use the default search position function
+      --  @param Data user data to pass to Func, or null
 
    end Set_Search_Position_Func_User_Data;
 
@@ -1449,10 +1467,10 @@ package Gtk.Tree_View is
    --  under the mouse cursor for this function to operate correctly.
    --  See also Gtk.Tree_View.Set_Tooltip_Column for a simpler alternative.
    --  Since: gtk+ 2.12
-   --  "tooltip": a Gtk.Tooltip.Gtk_Tooltip
-   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path or null
-   --  "column": a Gtk.Tree_View_Column.Gtk_Tree_View_Column or null
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer or null
+   --  @param Tooltip a Gtk.Tooltip.Gtk_Tooltip
+   --  @param Path a Gtk.Tree_Model.Gtk_Tree_Path or null
+   --  @param Column a Gtk.Tree_View_Column.Gtk_Tree_View_Column or null
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer or null
 
    procedure Set_Tooltip_Row
       (Tree_View : not null access Gtk_Tree_View_Record;
@@ -1462,8 +1480,8 @@ package Gtk.Tree_View is
    --  See also Gtk.Tree_View.Set_Tooltip_Column for a simpler alternative. See
    --  also Gtk.Tooltip.Set_Tip_Area.
    --  Since: gtk+ 2.12
-   --  "tooltip": a Gtk.Tooltip.Gtk_Tooltip
-   --  "path": a Gtk.Tree_Model.Gtk_Tree_Path
+   --  @param Tooltip a Gtk.Tooltip.Gtk_Tooltip
+   --  @param Path a Gtk.Tree_Model.Gtk_Tree_Path
 
    procedure Unset_Rows_Drag_Dest
       (Tree_View : not null access Gtk_Tree_View_Record);
@@ -1686,13 +1704,13 @@ package Gtk.Tree_View is
    --  selection.
    -- 
    --  Callback parameters:
-   --    --  "step": the granularity of the move, as a Gtk.Enums.Gtk_Movement_Step.
-   --    --  Gtk.Enums.Movement_Logical_Positions,
+   --    --  @param Step the granularity of the move, as a
+   --    --  Gtk.Enums.Gtk_Movement_Step. Gtk.Enums.Movement_Logical_Positions,
    --    --  Gtk.Enums.Movement_Visual_Positions, Gtk.Enums.Movement_Display_Lines,
    --    --  Gtk.Enums.Movement_Pages and Gtk.Enums.Movement_Buffer_Ends are
    --    --  supported. Gtk.Enums.Movement_Logical_Positions and
    --    --  Gtk.Enums.Movement_Visual_Positions are treated identically.
-   --    --  "direction": the direction to move: +1 to move forwards; -1 to move
+   --    --  @param Direction the direction to move: +1 to move forwards; -1 to move
    --    --  backwards. The resulting movement is undefined for all other values.
    --    --  Returns True if Step is supported, False otherwise.
 
@@ -1728,9 +1746,9 @@ package Gtk.Tree_View is
    --  overview][TreeWidget] as well as Gtk.Tree_Selection.Gtk_Tree_Selection.
    -- 
    --  Callback parameters:
-   --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path for the activated row
-   --    --  "column": the Gtk.Tree_View_Column.Gtk_Tree_View_Column in which the
-   --    --  activation occurred
+   --    --  @param Path the Gtk.Tree_Model.Gtk_Tree_Path for the activated row
+   --    --  @param Column the Gtk.Tree_View_Column.Gtk_Tree_View_Column in which
+   --    --  the activation occurred
 
    type Cb_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void is not null access procedure
      (Self : access Gtk_Tree_View_Record'Class;
@@ -1755,8 +1773,8 @@ package Gtk.Tree_View is
    --  The given row has been collapsed (child nodes are hidden).
    -- 
    --  Callback parameters:
-   --    --  "iter": the tree iter of the collapsed row
-   --    --  "path": a tree path that points to the row
+   --    --  @param Iter the tree iter of the collapsed row
+   --    --  @param Path a tree path that points to the row
 
    Signal_Row_Expanded : constant Glib.Signal_Name := "row-expanded";
    procedure On_Row_Expanded
@@ -1771,8 +1789,8 @@ package Gtk.Tree_View is
    --  The given row has been expanded (child nodes are shown).
    -- 
    --  Callback parameters:
-   --    --  "iter": the tree iter of the expanded row
-   --    --  "path": a tree path that points to the row
+   --    --  @param Iter the tree iter of the expanded row
+   --    --  @param Path a tree path that points to the row
 
    type Cb_Gtk_Tree_View_Boolean is not null access function
      (Self : access Gtk_Tree_View_Record'Class) return Boolean;
@@ -1858,8 +1876,8 @@ package Gtk.Tree_View is
    --  rows.
    -- 
    --  Callback parameters:
-   --    --  "iter": the tree iter of the row to collapse
-   --    --  "path": a tree path that points to the row
+   --    --  @param Iter the tree iter of the row to collapse
+   --    --  @param Path a tree path that points to the row
    --    --  Returns False to allow collapsing, True to reject
 
    Signal_Test_Expand_Row : constant Glib.Signal_Name := "test-expand-row";
@@ -1876,8 +1894,8 @@ package Gtk.Tree_View is
    --  this signal if you need to control the expandability of individual rows.
    -- 
    --  Callback parameters:
-   --    --  "iter": the tree iter of the row to expand
-   --    --  "path": a tree path that points to the row
+   --    --  @param Iter the tree iter of the row to expand
+   --    --  @param Path a tree path that points to the row
    --    --  Returns False to allow expansion, True to reject
 
    Signal_Toggle_Cursor_Row : constant Glib.Signal_Name := "toggle-cursor-row";

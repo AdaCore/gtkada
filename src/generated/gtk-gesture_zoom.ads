@@ -56,7 +56,7 @@ package Gtk.Gesture_Zoom is
    --  Since: gtk+ 3.14
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Gtk_Gesture_Zoom_New
       (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
@@ -64,7 +64,7 @@ package Gtk.Gesture_Zoom is
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes zoom
    --  in/out gestures (usually known as pinch/zoom).
    --  Since: gtk+ 3.14
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_gesture_zoom_get_type");

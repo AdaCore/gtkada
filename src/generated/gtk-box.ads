@@ -116,16 +116,18 @@ package Gtk.Box is
    --  Since: gtk+ 3.0
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "orientation": the box's orientation.
-   --  "spacing": the number of pixels to place by default between children.
+   --  @param Orientation the box's orientation.
+   --  @param Spacing the number of pixels to place by default between
+   --  children.
 
    function Gtk_Box_New
       (Orientation : Gtk.Enums.Gtk_Orientation;
        Spacing     : Glib.Gint) return Gtk_Box;
    --  Creates a new Gtk.Box.Gtk_Box.
    --  Since: gtk+ 3.0
-   --  "orientation": the box's orientation.
-   --  "spacing": the number of pixels to place by default between children.
+   --  @param Orientation the box's orientation.
+   --  @param Spacing the number of pixels to place by default between
+   --  children.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_box_get_type");
@@ -142,17 +144,19 @@ package Gtk.Box is
    --  Creates a new Gtk.Box.Gtk_Hbox.
    --  Initialize_Hbox does nothing if the object was already created with
    --  another call to Initialize* or G_New.
-   --  "homogeneous": True if all children are to be given equal space
+   --  @param Homogeneous True if all children are to be given equal space
    --  allotments.
-   --  "spacing": the number of pixels to place by default between children.
+   --  @param Spacing the number of pixels to place by default between
+   --  children.
 
    function Gtk_Hbox_New
       (Homogeneous : Boolean := False;
        Spacing     : Glib.Gint := 0) return Gtk_Hbox;
    --  Creates a new Gtk.Box.Gtk_Hbox.
-   --  "homogeneous": True if all children are to be given equal space
+   --  @param Homogeneous True if all children are to be given equal space
    --  allotments.
-   --  "spacing": the number of pixels to place by default between children.
+   --  @param Spacing the number of pixels to place by default between
+   --  children.
 
    function Get_Hbox_Type return Glib.GType;
    pragma Import (C, Get_Hbox_Type, "gtk_hbox_get_type");
@@ -168,17 +172,19 @@ package Gtk.Box is
    --  Creates a new Gtk.Box.Gtk_Vbox.
    --  Initialize_Vbox does nothing if the object was already created with
    --  another call to Initialize* or G_New.
-   --  "homogeneous": True if all children are to be given equal space
+   --  @param Homogeneous True if all children are to be given equal space
    --  allotments.
-   --  "spacing": the number of pixels to place by default between children.
+   --  @param Spacing the number of pixels to place by default between
+   --  children.
 
    function Gtk_Vbox_New
       (Homogeneous : Boolean := False;
        Spacing     : Glib.Gint := 0) return Gtk_Vbox;
    --  Creates a new Gtk.Box.Gtk_Vbox.
-   --  "homogeneous": True if all children are to be given equal space
+   --  @param Homogeneous True if all children are to be given equal space
    --  allotments.
-   --  "spacing": the number of pixels to place by default between children.
+   --  @param Spacing the number of pixels to place by default between
+   --  children.
 
    function Get_Vbox_Type return Glib.GType;
    pragma Import (C, Get_Vbox_Type, "gtk_vbox_get_type");
@@ -202,7 +208,7 @@ package Gtk.Box is
    --  parent then Position is used to allocate the baseline wrt the extra
    --  space available.
    --  Since: gtk+ 3.10
-   --  "position": a Gtk.Enums.Gtk_Baseline_Position
+   --  @param Position a Gtk.Enums.Gtk_Baseline_Position
 
    function Get_Center_Widget
       (Box : not null access Gtk_Box_Record) return Gtk.Widget.Gtk_Widget;
@@ -216,7 +222,7 @@ package Gtk.Box is
    --  respect to the full width of the box, even if the children at either
    --  side take up different amounts of space.
    --  Since: gtk+ 3.12
-   --  "widget": the widget to center
+   --  @param Widget the widget to center
 
    function Get_Homogeneous
       (Box : not null access Gtk_Box_Record) return Boolean;
@@ -228,8 +234,8 @@ package Gtk.Box is
        Homogeneous : Boolean);
    --  Sets the Gtk.Box.Gtk_Box:homogeneous property of Box, controlling
    --  whether or not all children of Box are given equal space in the box.
-   --  "homogeneous": a boolean value, True to create equal allotments, False
-   --  for variable allotments
+   --  @param Homogeneous a boolean value, True to create equal allotments,
+   --  False for variable allotments
 
    function Get_Spacing
       (Box : not null access Gtk_Box_Record) return Glib.Gint;
@@ -240,7 +246,7 @@ package Gtk.Box is
        Spacing : Glib.Gint);
    --  Sets the Gtk.Box.Gtk_Box:spacing property of Box, which is the number
    --  of pixels to place between children of Box.
-   --  "spacing": the number of pixels to put between children
+   --  @param Spacing the number of pixels to put between children
 
    procedure Pack_End
       (In_Box  : not null access Gtk_Box_Record;
@@ -251,16 +257,16 @@ package Gtk.Box is
    --  Adds Child to Box, packed with reference to the end of Box. The Child
    --  is packed after (away from end of) any other child packed with reference
    --  to the end of Box.
-   --  "child": the Gtk.Widget.Gtk_Widget to be added to Box
-   --  "expand": True if the new child is to be given extra space allocated to
-   --  Box. The extra space will be divided evenly between all children of Box
-   --  that use this option
-   --  "fill": True if space given to Child by the Expand option is actually
-   --  allocated to Child, rather than just padding it. This parameter has no
-   --  effect if Expand is set to False. A child is always allocated the full
-   --  height of a horizontal Gtk.Box.Gtk_Box and the full width of a vertical
-   --  Gtk.Box.Gtk_Box. This option affects the other dimension
-   --  "padding": extra space in pixels to put between this child and its
+   --  @param Child the Gtk.Widget.Gtk_Widget to be added to Box
+   --  @param Expand True if the new child is to be given extra space
+   --  allocated to Box. The extra space will be divided evenly between all
+   --  children of Box that use this option
+   --  @param Fill True if space given to Child by the Expand option is
+   --  actually allocated to Child, rather than just padding it. This parameter
+   --  has no effect if Expand is set to False. A child is always allocated the
+   --  full height of a horizontal Gtk.Box.Gtk_Box and the full width of a
+   --  vertical Gtk.Box.Gtk_Box. This option affects the other dimension
+   --  @param Padding extra space in pixels to put between this child and its
    --  neighbors, over and above the global amount specified by
    --  Gtk.Box.Gtk_Box:spacing property. If Child is a widget at one of the
    --  reference ends of Box, then Padding pixels are also put between Child
@@ -275,16 +281,16 @@ package Gtk.Box is
    --  Adds Child to Box, packed with reference to the start of Box. The Child
    --  is packed after any other child packed with reference to the start of
    --  Box.
-   --  "child": the Gtk.Widget.Gtk_Widget to be added to Box
-   --  "expand": True if the new child is to be given extra space allocated to
-   --  Box. The extra space will be divided evenly between all children that
-   --  use this option
-   --  "fill": True if space given to Child by the Expand option is actually
-   --  allocated to Child, rather than just padding it. This parameter has no
-   --  effect if Expand is set to False. A child is always allocated the full
-   --  height of a horizontal Gtk.Box.Gtk_Box and the full width of a vertical
-   --  Gtk.Box.Gtk_Box. This option affects the other dimension
-   --  "padding": extra space in pixels to put between this child and its
+   --  @param Child the Gtk.Widget.Gtk_Widget to be added to Box
+   --  @param Expand True if the new child is to be given extra space
+   --  allocated to Box. The extra space will be divided evenly between all
+   --  children that use this option
+   --  @param Fill True if space given to Child by the Expand option is
+   --  actually allocated to Child, rather than just padding it. This parameter
+   --  has no effect if Expand is set to False. A child is always allocated the
+   --  full height of a horizontal Gtk.Box.Gtk_Box and the full width of a
+   --  vertical Gtk.Box.Gtk_Box. This option affects the other dimension
+   --  @param Padding extra space in pixels to put between this child and its
    --  neighbors, over and above the global amount specified by
    --  Gtk.Box.Gtk_Box:spacing property. If Child is a widget at one of the
    --  reference ends of Box, then Padding pixels are also put between Child
@@ -298,11 +304,12 @@ package Gtk.Box is
        Padding   : out Guint;
        Pack_Type : out Gtk.Enums.Gtk_Pack_Type);
    --  Obtains information about how Child is packed into Box.
-   --  "child": the Gtk.Widget.Gtk_Widget of the child to query
-   --  "expand": pointer to return location for expand child property
-   --  "fill": pointer to return location for fill child property
-   --  "padding": pointer to return location for padding child property
-   --  "pack_type": pointer to return location for pack-type child property
+   --  @param Child the Gtk.Widget.Gtk_Widget of the child to query
+   --  @param Expand pointer to return location for expand child property
+   --  @param Fill pointer to return location for fill child property
+   --  @param Padding pointer to return location for padding child property
+   --  @param Pack_Type pointer to return location for pack-type child
+   --  property
 
    procedure Set_Child_Packing
       (Box       : not null access Gtk_Box_Record;
@@ -312,11 +319,11 @@ package Gtk.Box is
        Padding   : Guint;
        Pack_Type : Gtk.Enums.Gtk_Pack_Type);
    --  Sets the way Child is packed into Box.
-   --  "child": the Gtk.Widget.Gtk_Widget of the child to set
-   --  "expand": the new value of the expand child property
-   --  "fill": the new value of the fill child property
-   --  "padding": the new value of the padding child property
-   --  "pack_type": the new value of the pack-type child property
+   --  @param Child the Gtk.Widget.Gtk_Widget of the child to set
+   --  @param Expand the new value of the expand child property
+   --  @param Fill the new value of the fill child property
+   --  @param Padding the new value of the padding child property
+   --  @param Pack_Type the new value of the pack-type child property
 
    procedure Reorder_Child
       (Box      : not null access Gtk_Box_Record;
@@ -329,9 +336,9 @@ package Gtk.Box is
    --  widget is packed into Box. A child widget at some position in the list
    --  will be packed just after all other widgets of the same packing type
    --  that appear earlier in the list.
-   --  "child": the Gtk.Widget.Gtk_Widget to move
-   --  "position": the new position for Child in the list of children of Box,
-   --  starting from 0. If negative, indicates the end of the list
+   --  @param Child the Gtk.Widget.Gtk_Widget to move
+   --  @param Position the new position for Child in the list of children of
+   --  Box, starting from 0. If negative, indicates the end of the list
 
    function Get_Child
       (Box : not null access Gtk_Box_Record;

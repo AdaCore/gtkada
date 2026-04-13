@@ -91,7 +91,7 @@ package Gtk.Selection_Data is
    --  Sets the contents of the selection from a Gdk.Pixbuf.Gdk_Pixbuf The
    --  pixbuf is converted to the form determined by Selection_Data->target.
    --  Since: gtk+ 2.6
-   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf
+   --  @param Pixbuf a Gdk.Pixbuf.Gdk_Pixbuf
 
    function Get_Selection
       (Selection : Gtk_Selection_Data) return Gdk.Types.Gdk_Atom;
@@ -112,8 +112,8 @@ package Gtk.Selection_Data is
        Len       : Glib.Gint) return Boolean;
    --  Sets the contents of the selection from a UTF-8 encoded string. The
    --  string is converted to the form determined by Selection_Data->target.
-   --  "str": a UTF-8 string
-   --  "len": the length of Str, or -1 if Str is nul-terminated.
+   --  @param Str a UTF-8 string
+   --  @param Len the length of Str, or -1 if Str is nul-terminated.
 
    function Get_Uris
       (Selection : Gtk_Selection_Data) return GNAT.Strings.String_List;
@@ -126,7 +126,7 @@ package Gtk.Selection_Data is
    --  Sets the contents of the selection from a list of URIs. The string is
    --  converted to the form determined by Selection_Data->target.
    --  Since: gtk+ 2.6
-   --  "uris": a null-terminated array of strings holding URIs
+   --  @param Uris a null-terminated array of strings holding URIs
 
    function Targets_Include_Image
       (Selection : Gtk_Selection_Data;
@@ -135,8 +135,8 @@ package Gtk.Selection_Data is
    --  targets, determines if any of the targets in Targets can be used to
    --  provide a Gdk.Pixbuf.Gdk_Pixbuf.
    --  Since: gtk+ 2.6
-   --  "writable": whether to accept only targets for which GTK+ knows how to
-   --  convert a pixbuf into the format
+   --  @param Writable whether to accept only targets for which GTK+ knows how
+   --  to convert a pixbuf into the format
 
    function Targets_Include_Text
       (Selection : Gtk_Selection_Data) return Boolean;

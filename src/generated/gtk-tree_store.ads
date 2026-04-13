@@ -75,9 +75,9 @@ package Gtk.Tree_Store is
       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
    --  Type of the callback passed to Gtk.Tree_Model.Foreach to iterate over
    --  the rows in a tree model.
-   --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being iterated
-   --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path
-   --  "iter": the current Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being iterated
+   --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
+   --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
 
    type Gtk_Tree_Iter_Compare_Func is access function
      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -93,9 +93,9 @@ package Gtk.Tree_Store is
    --  For example, if Model is a product catalogue, then a compare function
    --  for the "price" column could be one which returns `price_of(A) -
    --  price_of(B)`.
-   --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
-   --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
-   --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
+   --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
+   --  @param A A Gtk.Tree_Model.Gtk_Tree_Iter in Model
+   --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
 
    ------------------
    -- Constructors --
@@ -108,11 +108,13 @@ package Gtk.Tree_Store is
    --  Non vararg creation function. Used primarily by language bindings.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "types": an array of GType types for the columns, from first to last
+   --  @param Types an array of GType types for the columns, from first to
+   --  last
 
    function Gtk_Tree_Store_Newv (Types : GType_Array) return Gtk_Tree_Store;
    --  Non vararg creation function. Used primarily by language bindings.
-   --  "types": an array of GType types for the columns, from first to last
+   --  @param Types an array of GType types for the columns, from first to
+   --  last
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_store_get_type");
@@ -130,9 +132,9 @@ package Gtk.Tree_Store is
    --  append a row to the top level. Iter will be changed to point to this new
    --  row. The row will be empty after this function is called. To fill in
    --  values, you need to call gtk_tree_store_set or Gtk.Tree_Store.Set_Value.
-   --  "iter": An unset Gtk.Tree_Model.Gtk_Tree_Iter to set to the appended
-   --  row
-   --  "parent": A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
+   --  @param Iter An unset Gtk.Tree_Model.Gtk_Tree_Iter to set to the
+   --  appended row
+   --  @param Parent A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
 
    procedure Clear (Tree_Store : not null access Gtk_Tree_Store_Record);
    --  Removes all rows from Tree_Store
@@ -149,9 +151,9 @@ package Gtk.Tree_Store is
    --  will be changed to point to this new row. The row will be empty after
    --  this function is called. To fill in values, you need to call
    --  gtk_tree_store_set or Gtk.Tree_Store.Set_Value.
-   --  "iter": An unset Gtk.Tree_Model.Gtk_Tree_Iter to set to the new row
-   --  "parent": A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
-   --  "position": position to insert the new row, or -1 for last
+   --  @param Iter An unset Gtk.Tree_Model.Gtk_Tree_Iter to set to the new row
+   --  @param Parent A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
+   --  @param Position position to insert the new row, or -1 for last
 
    procedure Insert_After
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -166,9 +168,9 @@ package Gtk.Tree_Store is
    --  Iter will be changed to point to this new row. The row will be empty
    --  after this function is called. To fill in values, you need to call
    --  gtk_tree_store_set or Gtk.Tree_Store.Set_Value.
-   --  "iter": An unset Gtk.Tree_Model.Gtk_Tree_Iter to set to the new row
-   --  "parent": A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
-   --  "sibling": A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
+   --  @param Iter An unset Gtk.Tree_Model.Gtk_Tree_Iter to set to the new row
+   --  @param Parent A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
+   --  @param Sibling A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
 
    procedure Insert_Before
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -183,9 +185,9 @@ package Gtk.Tree_Store is
    --  Iter will be changed to point to this new row. The row will be empty
    --  after this function is called. To fill in values, you need to call
    --  gtk_tree_store_set or Gtk.Tree_Store.Set_Value.
-   --  "iter": An unset Gtk.Tree_Model.Gtk_Tree_Iter to set to the new row
-   --  "parent": A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
-   --  "sibling": A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
+   --  @param Iter An unset Gtk.Tree_Model.Gtk_Tree_Iter to set to the new row
+   --  @param Parent A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
+   --  @param Sibling A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
 
    function Is_Ancestor
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -193,15 +195,15 @@ package Gtk.Tree_Store is
        Descendant : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
    --  Returns True if Iter is an ancestor of Descendant. That is, Iter is the
    --  parent (or grandparent or great-grandparent) of Descendant.
-   --  "iter": A valid Gtk.Tree_Model.Gtk_Tree_Iter
-   --  "descendant": A valid Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @param Iter A valid Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @param Descendant A valid Gtk.Tree_Model.Gtk_Tree_Iter
 
    function Iter_Depth
       (Tree_Store : not null access Gtk_Tree_Store_Record;
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gint;
    --  Returns the depth of Iter. This will be 0 for anything on the root
    --  level, 1 for anything down a level, etc.
-   --  "iter": A valid Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @param Iter A valid Gtk.Tree_Model.Gtk_Tree_Iter
 
    function Iter_Is_Valid
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -211,7 +213,7 @@ package Gtk.Tree_Store is
    --  Checks if the given iter is a valid iter for this
    --  Gtk.Tree_Store.Gtk_Tree_Store.
    --  Since: gtk+ 2.2
-   --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter.
+   --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter.
 
    procedure Move_After
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -222,8 +224,8 @@ package Gtk.Tree_Store is
    --  with unsorted stores. If Position is null, Iter will be moved to the
    --  start of the level.
    --  Since: gtk+ 2.2
-   --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter.
-   --  "position": A Gtk.Tree_Model.Gtk_Tree_Iter.
+   --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter.
+   --  @param Position A Gtk.Tree_Model.Gtk_Tree_Iter.
 
    procedure Move_Before
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -234,8 +236,8 @@ package Gtk.Tree_Store is
    --  with unsorted stores. If Position is null, Iter will be moved to the end
    --  of the level.
    --  Since: gtk+ 2.2
-   --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter.
-   --  "position": A Gtk.Tree_Model.Gtk_Tree_Iter or null.
+   --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter.
+   --  @param Position A Gtk.Tree_Model.Gtk_Tree_Iter or null.
 
    procedure Prepend
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -246,9 +248,9 @@ package Gtk.Tree_Store is
    --  prepend a row to the top level. Iter will be changed to point to this
    --  new row. The row will be empty after this function is called. To fill in
    --  values, you need to call gtk_tree_store_set or Gtk.Tree_Store.Set_Value.
-   --  "iter": An unset Gtk.Tree_Model.Gtk_Tree_Iter to set to the prepended
-   --  row
-   --  "parent": A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
+   --  @param Iter An unset Gtk.Tree_Model.Gtk_Tree_Iter to set to the
+   --  prepended row
+   --  @param Parent A valid Gtk.Tree_Model.Gtk_Tree_Iter, or null
 
    procedure Remove
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -256,7 +258,7 @@ package Gtk.Tree_Store is
    --  Removes Iter from Tree_Store. After being removed, Iter is set to the
    --  next valid row at that level, or invalidated if it previously pointed to
    --  the last one.
-   --  "iter": A valid Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @param Iter A valid Gtk.Tree_Model.Gtk_Tree_Iter
 
    procedure Reorder
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -266,8 +268,8 @@ package Gtk.Tree_Store is
    --  indicated by New_Order. Note that this function only works with unsorted
    --  stores.
    --  Since: gtk+ 2.2
-   --  "parent": A Gtk.Tree_Model.Gtk_Tree_Iter, or null
-   --  "new_order": an array of integers mapping the new position of each
+   --  @param Parent A Gtk.Tree_Model.Gtk_Tree_Iter, or null
+   --  @param New_Order an array of integers mapping the new position of each
    --  child to its old position before the re-ordering, i.e.
    --  New_Order`[newpos] = oldpos`.
 
@@ -279,7 +281,7 @@ package Gtk.Tree_Store is
    --  a new Gtk.Tree_Store.Gtk_Tree_Store. It will not function after a row
    --  has been added, or a method on the Gtk.Tree_Model.Gtk_Tree_Model
    --  interface is called.
-   --  "types": An array of GType types, one for each column
+   --  @param Types An array of GType types, one for each column
 
    procedure Set_Value
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -288,9 +290,10 @@ package Gtk.Tree_Store is
        Value      : Glib.Values.GValue);
    --  Sets the data in the cell specified by Iter and Column. The type of
    --  Value must be convertible to the type of the column.
-   --  "iter": A valid Gtk.Tree_Model.Gtk_Tree_Iter for the row being modified
-   --  "column": column number to modify
-   --  "value": new value for the cell
+   --  @param Iter A valid Gtk.Tree_Model.Gtk_Tree_Iter for the row being
+   --  modified
+   --  @param Column column number to modify
+   --  @param Value new value for the cell
 
    procedure Swap
       (Tree_Store : not null access Gtk_Tree_Store_Record;
@@ -299,8 +302,8 @@ package Gtk.Tree_Store is
    --  Swaps A and B in the same level of Tree_Store. Note that this function
    --  only works with unsorted stores.
    --  Since: gtk+ 2.2
-   --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter.
-   --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter.
+   --  @param A A Gtk.Tree_Model.Gtk_Tree_Iter.
+   --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter.
 
    procedure Foreach
       (Tree_Model : not null access Gtk_Tree_Store_Record;
@@ -308,7 +311,7 @@ package Gtk.Tree_Store is
    --  Calls func on each node in model in a depth-first fashion.
    --  If Func returns True, then the tree ceases to be walked, and
    --  Gtk.Tree_Model.Foreach returns.
-   --  "func": a function to be called on each row
+   --  @param Func a function to be called on each row
 
    generic
       type User_Data_Type (<>) is private;
@@ -322,10 +325,10 @@ package Gtk.Tree_Store is
          Data  : User_Data_Type) return Boolean;
       --  Type of the callback passed to Gtk.Tree_Model.Foreach to iterate over
       --  the rows in a tree model.
-      --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being iterated
-      --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path
-      --  "iter": the current Gtk.Tree_Model.Gtk_Tree_Iter
-      --  "data": The user data passed to Gtk.Tree_Model.Foreach
+      --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being iterated
+      --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
+      --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
+      --  @param Data The user data passed to Gtk.Tree_Model.Foreach
 
       procedure Foreach
          (Tree_Model : not null access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class;
@@ -334,8 +337,8 @@ package Gtk.Tree_Store is
       --  Calls func on each node in model in a depth-first fashion.
       --  If Func returns True, then the tree ceases to be walked, and
       --  Gtk.Tree_Model.Foreach returns.
-      --  "func": a function to be called on each row
-      --  "user_data": user data to passed to Func
+      --  @param Func a function to be called on each row
+      --  @param User_Data user data to passed to Func
 
    end Foreach_User_Data;
 
@@ -351,7 +354,7 @@ package Gtk.Tree_Store is
    --  back to the default state. In this case, when the current sort column id
    --  of Sortable is GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, the model will
    --  be unsorted.
-   --  "sort_func": The comparison function
+   --  @param Sort_Func The comparison function
 
    generic
       type User_Data_Type (<>) is private;
@@ -373,10 +376,10 @@ package Gtk.Tree_Store is
       --  For example, if Model is a product catalogue, then a compare function
       --  for the "price" column could be one which returns `price_of(A) -
       --  price_of(B)`.
-      --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
-      --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
-      --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
-      --  "user_data": Data passed when the compare func is assigned e.g. by
+      --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
+      --  @param A A Gtk.Tree_Model.Gtk_Tree_Iter in Model
+      --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
+      --  @param User_Data Data passed when the compare func is assigned e.g. by
       --  Gtk.Tree_Sortable.Set_Sort_Func
 
       procedure Set_Default_Sort_Func
@@ -392,8 +395,8 @@ package Gtk.Tree_Store is
       --  back to the default state. In this case, when the current sort column
       --  id of Sortable is GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, the model
       --  will be unsorted.
-      --  "sort_func": The comparison function
-      --  "user_data": User data to pass to Sort_Func, or null
+      --  @param Sort_Func The comparison function
+      --  @param User_Data User data to pass to Sort_Func, or null
 
    end Set_Default_Sort_Func_User_Data;
 
@@ -404,8 +407,8 @@ package Gtk.Tree_Store is
    --  Sets the comparison function used when sorting to be Sort_Func. If the
    --  current sort column id of Sortable is the same as Sort_Column_Id, then
    --  the model will sort using this function.
-   --  "sort_column_id": the sort column id to set the function for
-   --  "sort_func": The comparison function
+   --  @param Sort_Column_Id the sort column id to set the function for
+   --  @param Sort_Func The comparison function
 
    generic
       type User_Data_Type (<>) is private;
@@ -427,10 +430,10 @@ package Gtk.Tree_Store is
       --  For example, if Model is a product catalogue, then a compare function
       --  for the "price" column could be one which returns `price_of(A) -
       --  price_of(B)`.
-      --  "model": The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
-      --  "a": A Gtk.Tree_Model.Gtk_Tree_Iter in Model
-      --  "b": Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
-      --  "user_data": Data passed when the compare func is assigned e.g. by
+      --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
+      --  @param A A Gtk.Tree_Model.Gtk_Tree_Iter in Model
+      --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
+      --  @param User_Data Data passed when the compare func is assigned e.g. by
       --  Gtk.Tree_Sortable.Set_Sort_Func
 
       procedure Set_Sort_Func
@@ -441,9 +444,9 @@ package Gtk.Tree_Store is
       --  Sets the comparison function used when sorting to be Sort_Func. If
       --  the current sort column id of Sortable is the same as Sort_Column_Id,
       --  then the model will sort using this function.
-      --  "sort_column_id": the sort column id to set the function for
-      --  "sort_func": The comparison function
-      --  "user_data": User data to pass to Sort_Func, or null
+      --  @param Sort_Column_Id the sort column id to set the function for
+      --  @param Sort_Func The comparison function
+      --  @param User_Data User data to pass to Sort_Func, or null
 
    end Set_Sort_Func_User_Data;
 

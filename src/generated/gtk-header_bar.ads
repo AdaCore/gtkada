@@ -94,7 +94,7 @@ package Gtk.Header_Bar is
    --  You should set the custom title to null, for the header title label to
    --  be visible again.
    --  Since: gtk+ 3.10
-   --  "title_widget": a custom widget to use for a title
+   --  @param Title_Widget a custom widget to use for a title
 
    function Get_Decoration_Layout
       (Self : not null access Gtk_Header_Bar_Record) return UTF8_String;
@@ -118,7 +118,7 @@ package Gtk.Header_Bar is
    --  For example, "menu:minimize,maximize,close" specifies a menu on the
    --  left, and minimize, maximize and close buttons on the right.
    --  Since: gtk+ 3.12
-   --  "layout": a decoration layout, or null to unset the layout
+   --  @param Layout a decoration layout, or null to unset the layout
 
    function Get_Has_Subtitle
       (Self : not null access Gtk_Header_Bar_Record) return Boolean;
@@ -132,7 +132,7 @@ package Gtk.Header_Bar is
    --  Sets whether the header bar should reserve space for a subtitle, even
    --  if none is currently set.
    --  Since: gtk+ 3.12
-   --  "setting": True to reserve space for a subtitle
+   --  @param Setting True to reserve space for a subtitle
 
    function Get_Show_Close_Button
       (Self : not null access Gtk_Header_Bar_Record) return Boolean;
@@ -145,7 +145,7 @@ package Gtk.Header_Bar is
    --  Sets whether this header bar shows the standard window decorations,
    --  including close, maximize, and minimize.
    --  Since: gtk+ 3.10
-   --  "setting": True to show standard window decorations
+   --  @param Setting True to show standard window decorations
 
    function Get_Subtitle
       (Self : not null access Gtk_Header_Bar_Record) return UTF8_String;
@@ -162,7 +162,7 @@ package Gtk.Header_Bar is
    --  if none is currently set. If this is not desired, set the
    --  Gtk.Header_Bar.Gtk_Header_Bar:has-subtitle property to False.
    --  Since: gtk+ 3.10
-   --  "subtitle": a subtitle, or null
+   --  @param Subtitle a subtitle, or null
 
    function Get_Title
       (Self : not null access Gtk_Header_Bar_Record) return UTF8_String;
@@ -176,21 +176,21 @@ package Gtk.Header_Bar is
    --  help a user identify the current view. A good title should not include
    --  the application name.
    --  Since: gtk+ 3.10
-   --  "title": a title, or null
+   --  @param Title a title, or null
 
    procedure Pack_End
       (Self  : not null access Gtk_Header_Bar_Record;
        Child : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Adds Child to Bar, packed with reference to the end of the Bar.
    --  Since: gtk+ 3.10
-   --  "child": the Gtk.Widget.Gtk_Widget to be added to Bar
+   --  @param Child the Gtk.Widget.Gtk_Widget to be added to Bar
 
    procedure Pack_Start
       (Self  : not null access Gtk_Header_Bar_Record;
        Child : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Adds Child to Bar, packed with reference to the start of the Bar.
    --  Since: gtk+ 3.10
-   --  "child": the Gtk.Widget.Gtk_Widget to be added to Bar
+   --  @param Child the Gtk.Widget.Gtk_Widget to be added to Bar
 
    ----------------
    -- Properties --

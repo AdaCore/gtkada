@@ -276,8 +276,8 @@ package Gtk.Dialog is
    --  activated. The widget is appended to the end of the dialog's action
    --  area. If you want to add a non-activatable widget, simply pack it into
    --  the Action_Area field of the Gtk.Dialog.Gtk_Dialog struct.
-   --  "child": an activatable widget
-   --  "response_id": response ID for Child
+   --  @param Child an activatable widget
+   --  @param Response_Id response ID for Child
 
    function Add_Button
       (Dialog      : not null access Gtk_Dialog_Record;
@@ -288,8 +288,8 @@ package Gtk.Dialog is
    --  given Response_Id. The button is appended to the end of the dialog's
    --  action area. The button widget is returned, but usually you don't need
    --  it.
-   --  "text": text of button
-   --  "response_id": response ID for the button
+   --  @param Text text of button
+   --  @param Response_Id response ID for the button
 
    function Get_Action_Area
       (Dialog : not null access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
@@ -317,7 +317,7 @@ package Gtk.Dialog is
        return Gtk_Response_Type;
    --  Gets the response id of a widget in the action area of a dialog.
    --  Since: gtk+ 2.8
-   --  "widget": a widget in the action area of Dialog
+   --  @param Widget a widget in the action area of Dialog
 
    function Get_Widget_For_Response
       (Dialog      : not null access Gtk_Dialog_Record;
@@ -325,7 +325,7 @@ package Gtk.Dialog is
    --  Gets the widget button that uses the given response ID in the action
    --  area of a dialog.
    --  Since: gtk+ 2.20
-   --  "response_id": the response ID used by the Dialog widget
+   --  @param Response_Id the response ID used by the Dialog widget
 
    procedure Response
       (Dialog      : not null access Gtk_Dialog_Record;
@@ -334,7 +334,7 @@ package Gtk.Dialog is
    --  response ID. Used to indicate that the user has responded to the dialog
    --  in some way; typically either you or Gtk.Dialog.Run will be monitoring
    --  the ::response signal and take appropriate action.
-   --  "response_id": response ID
+   --  @param Response_Id response ID
 
    function Run
       (Dialog : not null access Gtk_Dialog_Record) return Gtk_Response_Type;
@@ -386,7 +386,7 @@ package Gtk.Dialog is
    --  Sets the last widget in the dialog's action area with the given
    --  Response_Id as the default widget for the dialog. Pressing "Enter"
    --  normally activates the default widget.
-   --  "response_id": a response ID
+   --  @param Response_Id a response ID
 
    procedure Set_Response_Sensitive
       (Dialog      : not null access Gtk_Dialog_Record;
@@ -395,8 +395,8 @@ package Gtk.Dialog is
    --  Calls `gtk_widget_set_sensitive (widget, Setting)` for each widget in
    --  the dialog's action area with the given Response_Id. A convenient way to
    --  sensitize/desensitize dialog buttons.
-   --  "response_id": a response ID
-   --  "setting": True for sensitive
+   --  @param Response_Id a response ID
+   --  @param Setting True for sensitive
 
    ----------------------
    -- GtkAda additions --

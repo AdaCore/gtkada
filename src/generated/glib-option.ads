@@ -118,7 +118,7 @@ package Glib.Option is
    type Gtranslate_Func is access function (Str : UTF8_String) return UTF8_String;
    --  The type of functions which are used to translate user-visible strings,
    --  for <option>--help</option> output.
-   --  "str": the untranslated string
+   --  @param Str the untranslated string
 
    ----------------------------
    -- Enumeration Properties --
@@ -146,7 +146,7 @@ package Glib.Option is
    --  will be freed together with the context when Glib.Option.Free is called,
    --  so you must not free the group yourself after adding it to a context.
    --  Since: gtk+ 2.6
-   --  "group": the group to add
+   --  @param Group the group to add
 
    procedure Add_Main_Entries
       (Self               : Goption_Context;
@@ -155,9 +155,9 @@ package Glib.Option is
    --  A convenience function which creates a main group if it doesn't exist,
    --  adds the Entries to it and sets the translation domain.
    --  Since: gtk+ 2.6
-   --  "entries": a null-terminated array of GOption_Entrys
-   --  "translation_domain": a translation domain to use for translating the
-   --  `--help` output for the options in Entries with gettext, or null
+   --  @param Entries a null-terminated array of GOption_Entrys
+   --  @param Translation_Domain a translation domain to use for translating
+   --  the `--help` output for the options in Entries with gettext, or null
 
    procedure Free (Self : Goption_Context);
    --  Frees context and all the groups which have been added to it.
@@ -177,8 +177,8 @@ package Glib.Option is
    --  Note that the summary is translated (see
    --  Glib.Option.Set_Translate_Func).
    --  Since: gtk+ 2.12
-   --  "description": a string to be shown in `--help` output after the list
-   --  of options, or null
+   --  @param Description a string to be shown in `--help` output after the
+   --  list of options, or null
 
    function Get_Help
       (Self      : Goption_Context;
@@ -191,8 +191,8 @@ package Glib.Option is
    --  help text for an option group, call `g_option_context_get_help (context,
    --  FALSE, group)`.
    --  Since: gtk+ 2.14
-   --  "main_help": if True, only include the main group
-   --  "group": the Glib.Option.GOption_Group to create help for, or null
+   --  @param Main_Help if True, only include the main group
+   --  @param Group the Glib.Option.GOption_Group to create help for, or null
 
    function Get_Help_Enabled (Self : Goption_Context) return Boolean;
    --  Returns whether automatic `--help` generation is turned on for Context.
@@ -207,7 +207,7 @@ package Glib.Option is
    --  `--help-all` and `--help-groupname` and creates suitable output to
    --  stdout.
    --  Since: gtk+ 2.6
-   --  "help_enabled": True to enable `--help`, False to disable it
+   --  @param Help_Enabled True to enable `--help`, False to disable it
 
    function Get_Ignore_Unknown_Options
       (Self : Goption_Context) return Boolean;
@@ -225,8 +225,8 @@ package Glib.Option is
    --  don't start with a dash). But note that GOption cannot reliably
    --  determine whether a non-option belongs to a preceding unknown option.
    --  Since: gtk+ 2.6
-   --  "ignore_unknown": True to ignore unknown options, False to produce an
-   --  error when unknown options are met
+   --  @param Ignore_Unknown True to ignore unknown options, False to produce
+   --  an error when unknown options are met
 
    function Get_Main_Group (Self : Goption_Context) return GOption_Group;
    --  Returns a pointer to the main group of Context.
@@ -238,7 +238,7 @@ package Glib.Option is
    --  that the options in the main group are treated differently when
    --  generating `--help` output.
    --  Since: gtk+ 2.6
-   --  "group": the group to set as main group
+   --  @param Group the group to set as main group
 
    function Get_Summary (Self : Goption_Context) return UTF8_String;
    --  Returns the summary. See Glib.Option.Set_Summary.
@@ -252,8 +252,8 @@ package Glib.Option is
    --  Note that the summary is translated (see Glib.Option.Set_Translate_Func
    --  and Glib.Option.Set_Translation_Domain).
    --  Since: gtk+ 2.12
-   --  "summary": a string to be shown in `--help` output before the list of
-   --  options, or null
+   --  @param Summary a string to be shown in `--help` output before the list
+   --  of options, or null
 
    procedure Set_Translate_Func
       (Self           : Goption_Context;
@@ -269,8 +269,9 @@ package Glib.Option is
    --  If you are using gettext, you only need to set the translation domain,
    --  see Glib.Option.Set_Translation_Domain.
    --  Since: gtk+ 2.12
-   --  "func": the Gtranslate_Func, or null
-   --  "destroy_notify": a function which gets called to free Data, or null
+   --  @param Func the Gtranslate_Func, or null
+   --  @param Destroy_Notify a function which gets called to free Data, or
+   --  null
 
    generic
       type User_Data_Type (<>) is private;
@@ -282,8 +283,8 @@ package Glib.Option is
          Data : User_Data_Type) return UTF8_String;
       --  The type of functions which are used to translate user-visible strings,
       --  for <option>--help</option> output.
-      --  "str": the untranslated string
-      --  "data": user data specified when installing the function, e.g. in
+      --  @param Str the untranslated string
+      --  @param Data user data specified when installing the function, e.g. in
       --  g_option_group_set_translate_func
 
       procedure Set_Translate_Func
@@ -301,9 +302,10 @@ package Glib.Option is
       --  If you are using gettext, you only need to set the translation
       --  domain, see Glib.Option.Set_Translation_Domain.
       --  Since: gtk+ 2.12
-      --  "func": the Gtranslate_Func, or null
-      --  "data": user data to pass to Func, or null
-      --  "destroy_notify": a function which gets called to free Data, or null
+      --  @param Func the Gtranslate_Func, or null
+      --  @param Data user data to pass to Func, or null
+      --  @param Destroy_Notify a function which gets called to free Data, or
+      --  null
 
    end Set_Translate_Func_User_Data;
 
@@ -313,7 +315,7 @@ package Glib.Option is
    --  A convenience function to use gettext for translating user-visible
    --  strings.
    --  Since: gtk+ 2.12
-   --  "domain": the domain to use
+   --  @param Domain the domain to use
 
    ----------------------
    -- GtkAda additions --
@@ -363,8 +365,8 @@ package Glib.Option is
    --  with Glib.Option.Set_Translate_Func, so it should normally be passed
    --  untranslated.
    --  Since: gtk+ 2.6
-   --  "parameter_string": a string which is displayed in the first line of
-   --  `--help` output, after the usage summary `programname [OPTION...]`
+   --  @param Parameter_String a string which is displayed in the first line
+   --  of `--help` output, after the usage summary `programname [OPTION...]`
 
 private
 

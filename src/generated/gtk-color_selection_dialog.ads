@@ -55,12 +55,12 @@ package Gtk.Color_Selection_Dialog is
    --  Creates a new Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "title": a string containing the title text for the dialog.
+   --  @param Title a string containing the title text for the dialog.
 
    function Gtk_Color_Selection_Dialog_New
       (Title : UTF8_String) return Gtk_Color_Selection_Dialog;
    --  Creates a new Gtk.Color_Selection_Dialog.Gtk_Color_Selection_Dialog.
-   --  "title": a string containing the title text for the dialog.
+   --  @param Title a string containing the title text for the dialog.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_color_selection_dialog_get_type");

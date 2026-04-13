@@ -57,8 +57,8 @@ package Pango.Fontset is
    --  A callback function used by Pango.Fontset.Foreach when enumerating the
    --  fonts in a fontset.
    --  Since: gtk+ 1.4
-   --  "fontset": a Pango.Fontset.Pango_Fontset
-   --  "font": a font from Fontset
+   --  @param Fontset a Pango.Fontset.Pango_Fontset
+   --  @param Font a font from Fontset
 
    ------------------
    -- Constructors --
@@ -77,7 +77,7 @@ package Pango.Fontset is
    --  Iterates through all the fonts in a fontset, calling Func for each one.
    --  If Func returns True, that stops the iteration.
    --  Since: gtk+ 1.4
-   --  "func": Callback function
+   --  @param Func Callback function
 
    generic
       type User_Data_Type (<>) is private;
@@ -91,9 +91,9 @@ package Pango.Fontset is
       --  A callback function used by Pango.Fontset.Foreach when enumerating the
       --  fonts in a fontset.
       --  Since: gtk+ 1.4
-      --  "fontset": a Pango.Fontset.Pango_Fontset
-      --  "font": a font from Fontset
-      --  "user_data": callback data
+      --  @param Fontset a Pango.Fontset.Pango_Fontset
+      --  @param Font a font from Fontset
+      --  @param User_Data callback data
 
       procedure Foreach
          (Self : not null access Pango.Fontset.Pango_Fontset_Record'Class;
@@ -102,8 +102,8 @@ package Pango.Fontset is
       --  Iterates through all the fonts in a fontset, calling Func for each
       --  one. If Func returns True, that stops the iteration.
       --  Since: gtk+ 1.4
-      --  "func": Callback function
-      --  "data": data to pass to the callback function
+      --  @param Func Callback function
+      --  @param Data data to pass to the callback function
 
    end Foreach_User_Data;
 
@@ -112,7 +112,7 @@ package Pango.Fontset is
        Wc   : Guint) return Pango.Font.Pango_Font;
    --  Returns the font in the fontset that contains the best glyph for the
    --  Unicode character Wc.
-   --  "wc": a Unicode character
+   --  @param Wc a Unicode character
 
    function Get_Metrics
       (Self : not null access Pango_Fontset_Record)

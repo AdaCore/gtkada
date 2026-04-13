@@ -50,10 +50,10 @@ package body Gtk.Flow_Box is
    --  functionality in GtkFlowBox. When using a model, filtering and sorting
    --  should be implemented by the model.
    --  Since: gtk+ 3.18
-   --  "model": the Glib.List_Model.Glist_Model to be bound to Box
-   --  "create_widget_func": a function that creates widgets for items
-   --  "user_data": user data passed to Create_Widget_Func
-   --  "user_data_free_func": function for freeing User_Data
+   --  @param Model the Glib.List_Model.Glist_Model to be bound to Box
+   --  @param Create_Widget_Func a function that creates widgets for items
+   --  @param User_Data user data passed to Create_Widget_Func
+   --  @param User_Data_Free_Func function for freeing User_Data
 
    procedure C_Gtk_Flow_Box_Selected_Foreach
       (Self : System.Address;
@@ -63,8 +63,8 @@ package body Gtk.Flow_Box is
    --  Calls a function for each selected child.
    --  Note that the selection cannot be modified from within this function.
    --  Since: gtk+ 3.12
-   --  "func": the function to call for each selected child
-   --  "data": user data to pass to the function
+   --  @param Func the function to call for each selected child
+   --  @param Data user data to pass to the function
 
    procedure C_Gtk_Flow_Box_Set_Filter_Func
       (Self        : System.Address;
@@ -82,9 +82,9 @@ package body Gtk.Flow_Box is
    --  Note that using a filter function is incompatible with using a model
    --  (see Gtk.Flow_Box.Bind_Model).
    --  Since: gtk+ 3.12
-   --  "filter_func": callback that lets you filter which children to show
-   --  "user_data": user data passed to Filter_Func
-   --  "destroy": destroy notifier for User_Data
+   --  @param Filter_Func callback that lets you filter which children to show
+   --  @param User_Data user data passed to Filter_Func
+   --  @param Destroy destroy notifier for User_Data
 
    procedure C_Gtk_Flow_Box_Set_Sort_Func
       (Self      : System.Address;
@@ -101,9 +101,9 @@ package body Gtk.Flow_Box is
    --  Note that using a sort function is incompatible with using a model (see
    --  Gtk.Flow_Box.Bind_Model).
    --  Since: gtk+ 3.12
-   --  "sort_func": the sort function
-   --  "user_data": user data passed to Sort_Func
-   --  "destroy": destroy notifier for User_Data
+   --  @param Sort_Func the sort function
+   --  @param User_Data user data passed to Sort_Func
+   --  @param Destroy destroy notifier for User_Data
 
    function To_Gtk_Flow_Box_Create_Widget_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Flow_Box_Create_Widget_Func);
@@ -133,33 +133,34 @@ package body Gtk.Flow_Box is
       (Item      : System.Address;
        User_Data : System.Address) return System.Address;
    pragma Convention (C, Internal_Gtk_Flow_Box_Create_Widget_Func);
-   --  "item": the item from the model for which to create a widget for
-   --  "user_data": user data from Gtk.Flow_Box.Bind_Model
+   --  @param Item the item from the model for which to create a widget for
+   --  @param User_Data user data from Gtk.Flow_Box.Bind_Model
 
    function Internal_Gtk_Flow_Box_Filter_Func
       (Child     : System.Address;
        User_Data : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Flow_Box_Filter_Func);
-   --  "child": a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child that may be filtered
-   --  "user_data": user data
+   --  @param Child a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child that may be
+   --  filtered
+   --  @param User_Data user data
 
    procedure Internal_Gtk_Flow_Box_Foreach_Func
       (Box       : System.Address;
        Child     : System.Address;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gtk_Flow_Box_Foreach_Func);
-   --  "box": a Gtk.Flow_Box.Gtk_Flow_Box
-   --  "child": a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
-   --  "user_data": user data
+   --  @param Box a Gtk.Flow_Box.Gtk_Flow_Box
+   --  @param Child a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
+   --  @param User_Data user data
 
    function Internal_Gtk_Flow_Box_Sort_Func
       (Child1    : System.Address;
        Child2    : System.Address;
        User_Data : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_Flow_Box_Sort_Func);
-   --  "child1": the first child
-   --  "child2": the second child
-   --  "user_data": user data
+   --  @param Child1 the first child
+   --  @param Child2 the second child
+   --  @param User_Data user data
 
    ----------------------------------------------
    -- Internal_Gtk_Flow_Box_Create_Widget_Func --
@@ -294,8 +295,8 @@ package body Gtk.Flow_Box is
       --  Glib.List_Model.Glist_Model with Gtk.Flow_Box.Bind_Model for each
       --  item that gets added to the model.
       --  Since: gtk+ 3.18
-      --  "item": the item from the model for which to create a widget for
-      --  "user_data": user data from Gtk.Flow_Box.Bind_Model
+      --  @param Item the item from the model for which to create a widget for
+      --  @param User_Data user data from Gtk.Flow_Box.Bind_Model
 
       ----------------
       -- Bind_Model --
@@ -578,9 +579,9 @@ package body Gtk.Flow_Box is
       --  A function used by Gtk.Flow_Box.Selected_Foreach. It will be called
       --  on every selected child of the Box.
       --  Since: gtk+ 3.12
-      --  "box": a Gtk.Flow_Box.Gtk_Flow_Box
-      --  "child": a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
-      --  "user_data": user data
+      --  @param Box a Gtk.Flow_Box.Gtk_Flow_Box
+      --  @param Child a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child
+      --  @param User_Data user data
 
       -----------------
       -- Internal_Cb --
@@ -682,9 +683,9 @@ package body Gtk.Flow_Box is
       --  A function that will be called whenrever a child changes or is
       --  added. It lets you control if the child should be visible or not.
       --  Since: gtk+ 3.12
-      --  "child": a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child that may be
+      --  @param Child a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child that may be
       --  filtered
-      --  "user_data": user data
+      --  @param User_Data user data
 
       -----------------
       -- Internal_Cb --
@@ -846,9 +847,9 @@ package body Gtk.Flow_Box is
       --  A function to compare two children to determine which should come
       --  first.
       --  Since: gtk+ 3.12
-      --  "child1": the first child
-      --  "child2": the second child
-      --  "user_data": user data
+      --  @param Child1 the first child
+      --  @param Child2 the second child
+      --  @param User_Data user data
 
       -----------------
       -- Internal_Cb --

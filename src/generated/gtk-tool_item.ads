@@ -102,7 +102,7 @@ package Gtk.Tool_Item is
    --  gets bigger when the toolbar gets bigger and smaller when the toolbar
    --  gets smaller.
    --  Since: gtk+ 2.4
-   --  "expand": Whether Tool_Item is allocated extra space
+   --  @param Expand Whether Tool_Item is allocated extra space
 
    function Get_Homogeneous
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
@@ -117,8 +117,8 @@ package Gtk.Tool_Item is
    --  homogeneous items. The effect is that all homogeneous items will have
    --  the same width as the widest of the items.
    --  Since: gtk+ 2.4
-   --  "homogeneous": whether Tool_Item is the same size as other homogeneous
-   --  items
+   --  @param Homogeneous whether Tool_Item is the same size as other
+   --  homogeneous items
 
    function Get_Icon_Size
       (Tool_Item : not null access Gtk_Tool_Item_Record)
@@ -144,7 +144,8 @@ package Gtk.Tool_Item is
    --  the "is_important" property set have labels, an effect known as
    --  "priority text"
    --  Since: gtk+ 2.4
-   --  "is_important": whether the tool item should be considered important
+   --  @param Is_Important whether the tool item should be considered
+   --  important
 
    function Get_Orientation
       (Tool_Item : not null access Gtk_Tool_Item_Record)
@@ -166,7 +167,7 @@ package Gtk.Tool_Item is
    --  Gtk.Tool_Item.Gtk_Tool_Item will not inadvertently change a menu item
    --  that they did not create.
    --  Since: gtk+ 2.4
-   --  "menu_item_id": a string used to identify the menu item
+   --  @param Menu_Item_Id a string used to identify the menu item
 
    procedure Set_Proxy_Menu_Item
       (Tool_Item    : not null access Gtk_Tool_Item_Record;
@@ -177,9 +178,9 @@ package Gtk.Tool_Item is
    --  should also be used with Gtk.Tool_Item.Get_Proxy_Menu_Item.
    --  See also Gtk.Tool_Item.Gtk_Tool_Item::create-menu-proxy.
    --  Since: gtk+ 2.4
-   --  "menu_item_id": a string used to identify Menu_Item
-   --  "menu_item": a Gtk.Menu_Item.Gtk_Menu_Item to use in the overflow menu,
-   --  or null
+   --  @param Menu_Item_Id a string used to identify Menu_Item
+   --  @param Menu_Item a Gtk.Menu_Item.Gtk_Menu_Item to use in the overflow
+   --  menu, or null
 
    function Get_Relief_Style
       (Tool_Item : not null access Gtk_Tool_Item_Record)
@@ -243,7 +244,7 @@ package Gtk.Tool_Item is
    --  drag window it will intercept all events, even those that would
    --  otherwise be sent to a child of Tool_Item.
    --  Since: gtk+ 2.4
-   --  "use_drag_window": Whether Tool_Item has a drag window.
+   --  @param Use_Drag_Window Whether Tool_Item has a drag window.
 
    function Get_Visible_Horizontal
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
@@ -257,8 +258,8 @@ package Gtk.Tool_Item is
    --  Sets whether Tool_Item is visible when the toolbar is docked
    --  horizontally.
    --  Since: gtk+ 2.4
-   --  "visible_horizontal": Whether Tool_Item is visible when in horizontal
-   --  mode
+   --  @param Visible_Horizontal Whether Tool_Item is visible when in
+   --  horizontal mode
 
    function Get_Visible_Vertical
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
@@ -274,8 +275,8 @@ package Gtk.Tool_Item is
    --  useful on a vertically docked toolbar. If Visible_Vertical is False
    --  Tool_Item will not appear on toolbars that are docked vertically.
    --  Since: gtk+ 2.4
-   --  "visible_vertical": whether Tool_Item is visible when the toolbar is in
-   --  vertical mode
+   --  @param Visible_Vertical whether Tool_Item is visible when the toolbar
+   --  is in vertical mode
 
    procedure Rebuild_Menu (Tool_Item : not null access Gtk_Tool_Item_Record);
    --  Calling this function signals to the toolbar that the overflow menu
@@ -300,7 +301,7 @@ package Gtk.Tool_Item is
    --  Sets the markup text to be displayed as tooltip on the item. See
    --  Gtk.Widget.Set_Tooltip_Markup.
    --  Since: gtk+ 2.12
-   --  "markup": markup text to be used as tooltip for Tool_Item
+   --  @param Markup markup text to be used as tooltip for Tool_Item
 
    procedure Set_Tooltip_Text
       (Tool_Item : not null access Gtk_Tool_Item_Record;
@@ -308,7 +309,7 @@ package Gtk.Tool_Item is
    --  Sets the text to be displayed as tooltip on the item. See
    --  Gtk.Widget.Set_Tooltip_Text.
    --  Since: gtk+ 2.12
-   --  "text": text to be used as tooltip for Tool_Item
+   --  @param Text text to be used as tooltip for Tool_Item
 
    procedure Toolbar_Reconfigured
       (Tool_Item : not null access Gtk_Tool_Item_Record);

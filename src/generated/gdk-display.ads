@@ -115,15 +115,15 @@ package Gdk.Display is
        Height : out Guint);
    --  Gets the maximal size to use for cursors on Display.
    --  Since: gtk+ 2.4
-   --  "width": the return location for the maximal cursor width
-   --  "height": the return location for the maximal cursor height
+   --  @param Width the return location for the maximal cursor width
+   --  @param Height the return location for the maximal cursor height
 
    function Get_Monitor
       (Self        : not null access Gdk_Display_Record;
        Monitor_Num : Glib.Gint) return Gdk.Monitor.Gdk_Monitor;
    --  Gets a monitor associated with this display.
    --  Since: gtk+ 3.22
-   --  "monitor_num": number of the monitor
+   --  @param Monitor_Num number of the monitor
 
    function Get_Monitor_At_Point
       (Self : not null access Gdk_Display_Record;
@@ -132,8 +132,8 @@ package Gdk.Display is
    --  Gets the monitor in which the point (X, Y) is located, or a nearby
    --  monitor if the point is not in any monitor.
    --  Since: gtk+ 3.22
-   --  "x": the x coordinate of the point
-   --  "y": the y coordinate of the point
+   --  @param X the x coordinate of the point
+   --  @param Y the y coordinate of the point
 
    function Get_Monitor_At_Window
       (Self   : not null access Gdk_Display_Record;
@@ -141,7 +141,7 @@ package Gdk.Display is
    --  Gets the monitor in which the largest area of Window resides, or a
    --  monitor close to Window if it is outside of all monitors.
    --  Since: gtk+ 3.22
-   --  "window": a Gdk.Gdk_Window
+   --  @param Window a Gdk.Gdk_Window
 
    function Get_N_Monitors
       (Self : not null access Gdk_Display_Record) return Glib.Gint;
@@ -191,7 +191,7 @@ package Gdk.Display is
    --  Release any keyboard grab
    --  Since: gtk+ 2.2
    --  Deprecated since 3.0, 1
-   --  "time_": a timestap (e.g GDK_CURRENT_TIME).
+   --  @param Time a timestap (e.g GDK_CURRENT_TIME).
 
    function List_Seats
       (Self : not null access Gdk_Display_Record)
@@ -209,8 +209,8 @@ package Gdk.Display is
    --  Gtk.Window.Set_Auto_Startup_Notification is called to disable that
    --  feature.
    --  Since: gtk+ 3.0
-   --  "startup_id": a startup-notification identifier, for which notification
-   --  process should be completed
+   --  @param Startup_Id a startup-notification identifier, for which
+   --  notification process should be completed
 
    function Peek_Event
       (Self : not null access Gdk_Display_Record) return Gdk.Event.Gdk_Event;
@@ -234,7 +234,7 @@ package Gdk.Display is
    --  Release any pointer grab.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.0, 1
-   --  "time_": a timestap (e.g. GDK_CURRENT_TIME).
+   --  @param Time a timestap (e.g. GDK_CURRENT_TIME).
 
    procedure Put_Event
       (Self  : not null access Gdk_Display_Record;
@@ -242,7 +242,7 @@ package Gdk.Display is
    --  Appends a copy of the given event onto the front of the event queue for
    --  Display.
    --  Since: gtk+ 2.2
-   --  "event": a Gdk.Event.Gdk_Event.
+   --  @param Event a Gdk.Event.Gdk_Event.
 
    function Request_Selection_Notification
       (Self      : not null access Gdk_Display_Record;
@@ -250,7 +250,7 @@ package Gdk.Display is
    --  Request Gdk.Event.Gdk_Event_Owner_Change events for ownership changes
    --  of the selection named by the given atom.
    --  Since: gtk+ 2.6
-   --  "selection": the Gdk.Types.Gdk_Atom naming the selection for which
+   --  @param Selection the Gdk.Types.Gdk_Atom naming the selection for which
    --  ownership change notification is requested
 
    procedure Set_Double_Click_Distance
@@ -261,7 +261,7 @@ package Gdk.Display is
    --  Gdk.Display.Set_Double_Click_Time. Applications should not set this, it
    --  is a global user-configured setting.
    --  Since: gtk+ 2.4
-   --  "distance": distance in pixels
+   --  @param Distance distance in pixels
 
    procedure Set_Double_Click_Time
       (Self : not null access Gdk_Display_Record;
@@ -271,7 +271,7 @@ package Gdk.Display is
    --  Applications should not set this, it is a global user-configured
    --  setting.
    --  Since: gtk+ 2.2
-   --  "msec": double click time in milliseconds (thousandths of a second)
+   --  @param Msec double click time in milliseconds (thousandths of a second)
 
    function Supports_Clipboard_Persistence
       (Self : not null access Gdk_Display_Record) return Boolean;
@@ -379,7 +379,7 @@ package Gdk.Display is
    function Open (Display_Name : UTF8_String) return Gdk_Display;
    --  Opens a display.
    --  Since: gtk+ 2.2
-   --  "display_name": the name of the display to open
+   --  @param Display_Name the name of the display to open
 
    function Open_Default_Libgtk_Only return Gdk_Display;
    pragma Obsolescent (Open_Default_Libgtk_Only);

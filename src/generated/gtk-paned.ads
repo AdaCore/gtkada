@@ -124,13 +124,13 @@ package Gtk.Paned is
    --  Since: gtk+ 3.0
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "orientation": the paned's orientation.
+   --  @param Orientation the paned's orientation.
 
    function Gtk_Paned_New
       (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Paned;
    --  Creates a new Gtk.Paned.Gtk_Paned widget.
    --  Since: gtk+ 3.0
-   --  "orientation": the paned's orientation.
+   --  @param Orientation the paned's orientation.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_paned_get_type");
@@ -172,7 +172,7 @@ package Gtk.Paned is
    --  either in the top or in the left pane, depending on the orientation of
    --  the container. This is equivalent to using the Pack1 procedure with its
    --  default parameters.
-   --  "child": the child to add
+   --  @param Child the child to add
 
    procedure Add2
       (Paned : not null access Gtk_Paned_Record;
@@ -180,7 +180,7 @@ package Gtk.Paned is
    --  Add the second child of the container. It will be displayed in the
    --  bottom or right pane, depending on the container's orientation. This is
    --  equivalent to using Pack2 with its default parameters.
-   --  "child": the child to add
+   --  @param Child the child to add
 
    function Get_Child1
       (Paned : not null access Gtk_Paned_Record)
@@ -209,8 +209,8 @@ package Gtk.Paned is
       (Paned    : not null access Gtk_Paned_Record;
        Position : Glib.Gint);
    --  Sets the position of the divider between the two panes.
-   --  "position": pixel position of divider, a negative value means that the
-   --  position is unset.
+   --  @param Position pixel position of divider, a negative value means that
+   --  the position is unset.
 
    function Get_Wide_Handle
       (Paned : not null access Gtk_Paned_Record) return Boolean;
@@ -222,7 +222,8 @@ package Gtk.Paned is
        Wide  : Boolean);
    --  Sets the Gtk.Paned.Gtk_Paned:wide-handle property.
    --  Since: gtk+ 3.16
-   --  "wide": the new value for the Gtk.Paned.Gtk_Paned:wide-handle property
+   --  @param Wide the new value for the Gtk.Paned.Gtk_Paned:wide-handle
+   --  property
 
    procedure Pack1
       (Paned  : not null access Gtk_Paned_Record;
@@ -235,9 +236,10 @@ package Gtk.Paned is
    --  should also first call Glib.Object.Ref on the child so as to be sure it
    --  is not destroyed when you remove it, and Glib.Object.Unref it at the
    --  end. See the example in testgtk/ in the GtkAda distribution.
-   --  "child": the child to add
-   --  "resize": should this child expand when the paned widget is resized.
-   --  "shrink": can this child be made smaller than its requisition.
+   --  @param Child the child to add
+   --  @param Resize should this child expand when the paned widget is
+   --  resized.
+   --  @param Shrink can this child be made smaller than its requisition.
 
    procedure Pack2
       (Paned  : not null access Gtk_Paned_Record;
@@ -245,9 +247,10 @@ package Gtk.Paned is
        Resize : Boolean := False;
        Shrink : Boolean := False);
    --  Adds a child to the bottom or right pane.
-   --  "child": the child to add
-   --  "resize": should this child expand when the paned widget is resized.
-   --  "shrink": can this child be made smaller than its requisition.
+   --  @param Child the child to add
+   --  @param Resize should this child expand when the paned widget is
+   --  resized.
+   --  @param Shrink can this child be made smaller than its requisition.
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

@@ -70,7 +70,7 @@ package Pango.Coverage is
       (Self  : not null access Pango_Coverage_Record;
        Index : Glib.Gint) return Pango.Enums.Coverage_Level;
    --  Determine whether a particular index is covered by Coverage
-   --  "index_": the index to check
+   --  @param Index the index to check
 
    procedure Max
       (Self  : not null access Pango_Coverage_Record;
@@ -80,7 +80,7 @@ package Pango.Coverage is
    --  value of the current coverage for the index and the coverage for the
    --  corresponding index in Other.
    --  Deprecated since 1.44, 1
-   --  "other": another Pango.Coverage.Pango_Coverage
+   --  @param Other another Pango.Coverage.Pango_Coverage
 
    function Ref
       (Self : not null access Pango_Coverage_Record) return Pango_Coverage;
@@ -92,8 +92,8 @@ package Pango.Coverage is
        Index : Glib.Gint;
        Level : Pango.Enums.Coverage_Level);
    --  Modify a particular index within Coverage
-   --  "index_": the index to modify
-   --  "level": the new level for Index_
+   --  @param Index the index to modify
+   --  @param Level the new level for Index_
 
    procedure Unref (Self : not null access Pango_Coverage_Record);
    --  Decrease the reference count on the Pango.Coverage.Pango_Coverage by

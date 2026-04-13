@@ -73,9 +73,9 @@ package Gtk.Tree_Selection is
       Iter  : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function used by Gtk.Tree_Selection.Selected_Foreach to map all
    --  selected rows. It will be called on every selected row in the view.
-   --  "model": The Gtk.Tree_Model.Gtk_Tree_Model being viewed
-   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
-   --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter pointing to a selected row
+   --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model being viewed
+   --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
+   --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter pointing to a selected row
 
    type Gtk_Tree_Selection_Func is access function
      (Selection               : not null access Gtk_Tree_Selection_Record'Class;
@@ -86,10 +86,10 @@ package Gtk.Tree_Selection is
    --  whether or not a row may be selected. It is called whenever a row's
    --  state might change. A return value of True indicates to Selection that
    --  it is okay to change the selection.
-   --  "selection": A Gtk.Tree_Selection.Gtk_Tree_Selection
-   --  "model": A Gtk.Tree_Model.Gtk_Tree_Model being viewed
-   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of the row in question
-   --  "path_currently_selected": True, if the path is currently selected
+   --  @param Selection A Gtk.Tree_Selection.Gtk_Tree_Selection
+   --  @param Model A Gtk.Tree_Model.Gtk_Tree_Model being viewed
+   --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path of the row in question
+   --  @param Path_Currently_Selected True, if the path is currently selected
 
    ------------------
    -- Constructors --
@@ -119,7 +119,7 @@ package Gtk.Tree_Selection is
    --  Sets the selection mode of the Selection. If the previous type was
    --  GTK_SELECTION_MULTIPLE, then the anchor is kept selected, if it was
    --  previously selected.
-   --  "type": The selection mode
+   --  @param The_Type The selection mode
 
    procedure Get_Select_Function
       (Selection : not null access Gtk_Tree_Selection_Record);
@@ -134,7 +134,7 @@ package Gtk.Tree_Selection is
    --  unselected, giving some control over which nodes are selected. The
    --  select function should return True if the state of the node may be
    --  toggled, and False if the state of the node should be left unchanged.
-   --  "func": The selection function. May be null
+   --  @param Func The selection function. May be null
 
    procedure Get_Selected
       (Selection : not null access Gtk_Tree_Selection_Record;
@@ -145,9 +145,9 @@ package Gtk.Tree_Selection is
    --  just want to test if Selection has any selected nodes. Model is filled
    --  with the current model as a convenience. This function will not work if
    --  you use Selection is GTK_SELECTION_MULTIPLE.
-   --  "model": A pointer to set to the Gtk.Tree_Model.Gtk_Tree_Model, or
+   --  @param Model A pointer to set to the Gtk.Tree_Model.Gtk_Tree_Model, or
    --  NULL.
-   --  "iter": The Gtk.Tree_Model.Gtk_Tree_Iter, or NULL.
+   --  @param Iter The Gtk.Tree_Model.Gtk_Tree_Iter, or NULL.
 
    function Get_Tree_View
       (Selection : not null access Gtk_Tree_Selection_Record)
@@ -163,14 +163,14 @@ package Gtk.Tree_Selection is
       (Selection : not null access Gtk_Tree_Selection_Record;
        Iter      : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
    --  Returns True if the row at Iter is currently selected.
-   --  "iter": A valid Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @param Iter A valid Gtk.Tree_Model.Gtk_Tree_Iter
 
    function Path_Is_Selected
       (Selection : not null access Gtk_Tree_Selection_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
    --  Returns True if the row pointed to by Path is currently selected. If
    --  Path does not point to a valid location, False is returned
-   --  "path": A Gtk.Tree_Model.Gtk_Tree_Path to check selection on.
+   --  @param Path A Gtk.Tree_Model.Gtk_Tree_Path to check selection on.
 
    procedure Select_All
       (Selection : not null access Gtk_Tree_Selection_Record);
@@ -181,13 +181,13 @@ package Gtk.Tree_Selection is
       (Selection : not null access Gtk_Tree_Selection_Record;
        Iter      : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  Selects the specified iterator.
-   --  "iter": The Gtk.Tree_Model.Gtk_Tree_Iter to be selected.
+   --  @param Iter The Gtk.Tree_Model.Gtk_Tree_Iter to be selected.
 
    procedure Select_Path
       (Selection : not null access Gtk_Tree_Selection_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path);
    --  Select the row at Path.
-   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path to be selected.
+   --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path to be selected.
 
    procedure Select_Range
       (Selection  : not null access Gtk_Tree_Selection_Record;
@@ -195,8 +195,8 @@ package Gtk.Tree_Selection is
        End_Path   : Gtk.Tree_Model.Gtk_Tree_Path);
    --  Selects a range of nodes, determined by Start_Path and End_Path
    --  inclusive. Selection must be set to GTK_SELECTION_MULTIPLE mode.
-   --  "start_path": The initial node of the range.
-   --  "end_path": The final node of the range.
+   --  @param Start_Path The initial node of the range.
+   --  @param End_Path The final node of the range.
 
    procedure Selected_Foreach
       (Selection : not null access Gtk_Tree_Selection_Record;
@@ -204,7 +204,7 @@ package Gtk.Tree_Selection is
    --  Calls a function for each selected node. Note that you cannot modify
    --  the tree or selection from within this function. As a result,
    --  gtk_tree_selection_get_selected_rows might be more useful.
-   --  "func": The function to call for each selected node.
+   --  @param Func The function to call for each selected node.
 
    generic
       type User_Data_Type (<>) is private;
@@ -218,10 +218,10 @@ package Gtk.Tree_Selection is
          Data  : User_Data_Type);
       --  A function used by Gtk.Tree_Selection.Selected_Foreach to map all
       --  selected rows. It will be called on every selected row in the view.
-      --  "model": The Gtk.Tree_Model.Gtk_Tree_Model being viewed
-      --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
-      --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter pointing to a selected row
-      --  "data": user data
+      --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model being viewed
+      --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
+      --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter pointing to a selected row
+      --  @param Data user data
 
       procedure Selected_Foreach
          (Selection : not null access Gtk.Tree_Selection.Gtk_Tree_Selection_Record'Class;
@@ -230,8 +230,8 @@ package Gtk.Tree_Selection is
       --  Calls a function for each selected node. Note that you cannot modify
       --  the tree or selection from within this function. As a result,
       --  gtk_tree_selection_get_selected_rows might be more useful.
-      --  "func": The function to call for each selected node.
-      --  "data": user data to pass to the function.
+      --  @param Func The function to call for each selected node.
+      --  @param Data user data to pass to the function.
 
    end Selected_Foreach_User_Data;
 
@@ -250,11 +250,11 @@ package Gtk.Tree_Selection is
       --  whether or not a row may be selected. It is called whenever a row's
       --  state might change. A return value of True indicates to Selection that
       --  it is okay to change the selection.
-      --  "selection": A Gtk.Tree_Selection.Gtk_Tree_Selection
-      --  "model": A Gtk.Tree_Model.Gtk_Tree_Model being viewed
-      --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of the row in question
-      --  "path_currently_selected": True, if the path is currently selected
-      --  "data": user data
+      --  @param Selection A Gtk.Tree_Selection.Gtk_Tree_Selection
+      --  @param Model A Gtk.Tree_Model.Gtk_Tree_Model being viewed
+      --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path of the row in question
+      --  @param Path_Currently_Selected True, if the path is currently selected
+      --  @param Data user data
 
       procedure Set_Select_Function
          (Selection : not null access Gtk.Tree_Selection.Gtk_Tree_Selection_Record'Class;
@@ -265,8 +265,8 @@ package Gtk.Tree_Selection is
       --  unselected, giving some control over which nodes are selected. The
       --  select function should return True if the state of the node may be
       --  toggled, and False if the state of the node should be left unchanged.
-      --  "func": The selection function. May be null
-      --  "data": The selection function's data. May be null
+      --  @param Func The selection function. May be null
+      --  @param Data The selection function's data. May be null
 
    end Set_Select_Function_User_Data;
 
@@ -278,13 +278,13 @@ package Gtk.Tree_Selection is
       (Selection : not null access Gtk_Tree_Selection_Record;
        Iter      : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  Unselects the specified iterator.
-   --  "iter": The Gtk.Tree_Model.Gtk_Tree_Iter to be unselected.
+   --  @param Iter The Gtk.Tree_Model.Gtk_Tree_Iter to be unselected.
 
    procedure Unselect_Path
       (Selection : not null access Gtk_Tree_Selection_Record;
        Path      : Gtk.Tree_Model.Gtk_Tree_Path);
    --  Unselects the row at Path.
-   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path to be unselected.
+   --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path to be unselected.
 
    procedure Unselect_Range
       (Selection  : not null access Gtk_Tree_Selection_Record;
@@ -293,8 +293,8 @@ package Gtk.Tree_Selection is
    --  Unselects a range of nodes, determined by Start_Path and End_Path
    --  inclusive.
    --  Since: gtk+ 2.2
-   --  "start_path": The initial node of the range.
-   --  "end_path": The initial node of the range.
+   --  @param Start_Path The initial node of the range.
+   --  @param End_Path The initial node of the range.
 
    ----------------------
    -- GtkAda additions --

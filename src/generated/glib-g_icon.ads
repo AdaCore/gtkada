@@ -77,7 +77,7 @@ package Glib.G_Icon is
 
    function Equal (Self : G_Icon; Icon2 : G_Icon) return Boolean;
    --  Checks if two icons are equal.
-   --  "icon2": pointer to the second Glib.G_Icon.G_Icon.
+   --  @param Icon2 pointer to the second Glib.G_Icon.G_Icon.
 
    function Serialize (Self : G_Icon) return Glib.Variant.Gvariant;
    --  Serializes a Glib.G_Icon.G_Icon into a Glib.Variant.Gvariant. An
@@ -112,12 +112,12 @@ package Glib.G_Icon is
    --  Deserializes a Glib.G_Icon.G_Icon previously serialized using
    --  Glib.G_Icon.Serialize.
    --  Since: gtk+ 2.38
-   --  "value": a Glib.Variant.Gvariant created with Glib.G_Icon.Serialize
+   --  @param Value a Glib.Variant.Gvariant created with Glib.G_Icon.Serialize
 
    function Hash (Icon : G_Icon) return Guint;
    pragma Import (C, Hash, "g_icon_hash");
    --  Gets a hash for an icon.
-   --  "icon": gconstpointer to an icon object.
+   --  @param Icon gconstpointer to an icon object.
 
    function New_For_String (Str : UTF8_String) return G_Icon;
    --  Generate a Glib.G_Icon.G_Icon instance from Str. This function can fail
@@ -126,7 +126,7 @@ package Glib.G_Icon is
    --  implementations you need to ensure that each GType is registered with
    --  the type system prior to calling Glib.G_Icon.New_For_String.
    --  Since: gtk+ 2.20
-   --  "str": A string obtained via Glib.G_Icon.To_String.
+   --  @param Str A string obtained via Glib.G_Icon.To_String.
 
    ----------------
    -- Interfaces --

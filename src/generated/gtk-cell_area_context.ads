@@ -74,10 +74,10 @@ package Gtk.Cell_Area_Context is
    --  generally the case for Gtk.Tree_View.Gtk_Tree_View when
    --  Gtk.Tree_View.Gtk_Tree_View:fixed-height-mode is enabled.
    --  Since 3.0
-   --  "width": the allocated width for all Gtk.Tree_Model.Gtk_Tree_Model rows
-   --  rendered with Context, or -1.
-   --  "height": the allocated height for all Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Width the allocated width for all Gtk.Tree_Model.Gtk_Tree_Model
    --  rows rendered with Context, or -1.
+   --  @param Height the allocated height for all
+   --  Gtk.Tree_Model.Gtk_Tree_Model rows rendered with Context, or -1.
 
    procedure Get_Allocation
       (Self   : not null access Gtk_Cell_Area_Context_Record;
@@ -88,8 +88,8 @@ package Gtk.Cell_Area_Context is
    --  was recently reset with Gtk.Cell_Area_Context.Reset, the returned value
    --  will be -1.
    --  Since: gtk+ 3.0
-   --  "width": location to store the allocated width, or null
-   --  "height": location to store the allocated height, or null
+   --  @param Width location to store the allocated width, or null
+   --  @param Height location to store the allocated height, or null
 
    procedure Get_Preferred_Height
       (Self           : not null access Gtk_Cell_Area_Context_Record;
@@ -101,8 +101,8 @@ package Gtk.Cell_Area_Context is
    --  requesting the size of a Gtk.Cell_Area.Gtk_Cell_Area, the returned
    --  values are 0.
    --  Since: gtk+ 3.0
-   --  "minimum_height": location to store the minimum height, or null
-   --  "natural_height": location to store the natural height, or null
+   --  @param Minimum_Height location to store the minimum height, or null
+   --  @param Natural_Height location to store the natural height, or null
 
    procedure Get_Preferred_Height_For_Width
       (Self           : not null access Gtk_Cell_Area_Context_Record;
@@ -115,9 +115,9 @@ package Gtk.Cell_Area_Context is
    --  requesting the size of a Gtk.Cell_Area.Gtk_Cell_Area, the returned
    --  values are -1.
    --  Since: gtk+ 3.0
-   --  "width": a proposed width for allocation
-   --  "minimum_height": location to store the minimum height, or null
-   --  "natural_height": location to store the natural height, or null
+   --  @param Width a proposed width for allocation
+   --  @param Minimum_Height location to store the minimum height, or null
+   --  @param Natural_Height location to store the natural height, or null
 
    procedure Get_Preferred_Width
       (Self          : not null access Gtk_Cell_Area_Context_Record;
@@ -129,8 +129,8 @@ package Gtk.Cell_Area_Context is
    --  requesting the size of a Gtk.Cell_Area.Gtk_Cell_Area, the returned
    --  values are 0.
    --  Since: gtk+ 3.0
-   --  "minimum_width": location to store the minimum width, or null
-   --  "natural_width": location to store the natural width, or null
+   --  @param Minimum_Width location to store the minimum width, or null
+   --  @param Natural_Width location to store the natural width, or null
 
    procedure Get_Preferred_Width_For_Height
       (Self          : not null access Gtk_Cell_Area_Context_Record;
@@ -143,9 +143,9 @@ package Gtk.Cell_Area_Context is
    --  requesting the size of a Gtk.Cell_Area.Gtk_Cell_Area, the returned
    --  values are -1.
    --  Since: gtk+ 3.0
-   --  "height": a proposed height for allocation
-   --  "minimum_width": location to store the minimum width, or null
-   --  "natural_width": location to store the natural width, or null
+   --  @param Height a proposed height for allocation
+   --  @param Minimum_Width location to store the minimum width, or null
+   --  @param Natural_Width location to store the natural width, or null
 
    procedure Push_Preferred_Height
       (Self           : not null access Gtk_Cell_Area_Context_Record;
@@ -158,8 +158,8 @@ package Gtk.Cell_Area_Context is
    --  Gtk.Tree_Model.Gtk_Tree_Model rows to progressively push the requested
    --  height over a series of Gtk.Cell_Area.Get_Preferred_Height requests.
    --  Since: gtk+ 3.0
-   --  "minimum_height": the proposed new minimum height for Context
-   --  "natural_height": the proposed new natural height for Context
+   --  @param Minimum_Height the proposed new minimum height for Context
+   --  @param Natural_Height the proposed new natural height for Context
 
    procedure Push_Preferred_Width
       (Self          : not null access Gtk_Cell_Area_Context_Record;
@@ -172,8 +172,8 @@ package Gtk.Cell_Area_Context is
    --  Gtk.Tree_Model.Gtk_Tree_Model rows to progressively push the requested
    --  width over a series of Gtk.Cell_Area.Get_Preferred_Width requests.
    --  Since: gtk+ 3.0
-   --  "minimum_width": the proposed new minimum width for Context
-   --  "natural_width": the proposed new natural width for Context
+   --  @param Minimum_Width the proposed new minimum width for Context
+   --  @param Natural_Width the proposed new natural width for Context
 
    procedure Reset (Self : not null access Gtk_Cell_Area_Context_Record);
    --  Resets any previously cached request and allocation data.

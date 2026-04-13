@@ -83,10 +83,10 @@ package body Gtk.Icon_View is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-   --  "func_data": user data for Func
-   --  "destroy": destroy notify for Func_Data
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Func_Data user data for Func
+   --  @param Destroy destroy notify for Func_Data
 
    procedure C_Gtk_Icon_View_Selected_Foreach
       (Icon_View : System.Address;
@@ -96,8 +96,8 @@ package body Gtk.Icon_View is
    --  Calls a function for each selected icon. Note that the model or
    --  selection cannot be modified from within this function.
    --  Since: gtk+ 2.6
-   --  "func": The function to call for each selected icon.
-   --  "data": User data to pass to the function.
+   --  @param Func The function to call for each selected icon.
+   --  @param Data User data to pass to the function.
 
    function To_Gtk_Icon_View_Foreach_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Icon_View_Foreach_Func);
@@ -118,21 +118,21 @@ package body Gtk.Icon_View is
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Cell_Layout_Data_Func);
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
-   --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
+   --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
    procedure Internal_Gtk_Icon_View_Foreach_Func
       (Icon_View : System.Address;
        Path      : System.Address;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Icon_View_Foreach_Func);
-   --  "icon_view": a Gtk.Icon_View.Gtk_Icon_View
-   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
-   --  "data": user data
+   --  @param Icon_View a Gtk.Icon_View.Gtk_Icon_View
+   --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
+   --  @param Data user data
 
    ----------------------------------------
    -- Internal_Gtk_Cell_Layout_Data_Func --
@@ -928,9 +928,9 @@ package body Gtk.Icon_View is
       pragma Convention (C, Internal_Cb);
       --  A function used by Gtk.Icon_View.Selected_Foreach to map all
       --  selected rows. It will be called on every selected row in the view.
-      --  "icon_view": a Gtk.Icon_View.Gtk_Icon_View
-      --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
-      --  "data": user data
+      --  @param Icon_View a Gtk.Icon_View.Gtk_Icon_View
+      --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
+      --  @param Data user data
 
       -----------------
       -- Internal_Cb --
@@ -1022,12 +1022,12 @@ package body Gtk.Icon_View is
       pragma Convention (C, Internal_Cb);
       --  A function which should set the value of Cell_Layout's cell
       --  renderer(s) as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       -----------------
       -- Internal_Cb --

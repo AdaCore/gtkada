@@ -85,7 +85,7 @@ package Glib.Action is
    --  null then Parameter must also be null.
    --  If the Parameter GVariant is floating, it is consumed.
    --  Since: gtk+ 2.28
-   --  "parameter": the parameter to the activation
+   --  @param Parameter the parameter to the activation
 
    procedure Change_State (Self : Gaction; Value : Glib.Variant.Gvariant);
    --  Request for the state of Action to be changed to Value.
@@ -96,7 +96,7 @@ package Glib.Action is
    --  Glib.Action.Get_State_Hint.
    --  If the Value GVariant is floating, it is consumed.
    --  Since: gtk+ 2.30
-   --  "value": the new state
+   --  @param Value the new state
 
    function Get_Enabled (Self : Gaction) return Boolean;
    --  Checks if Action is currently enabled.
@@ -173,7 +173,7 @@ package Glib.Action is
    --  It is an error to call this function with a non-utf8 Action_Name.
    --  Action_Name must not be null.
    --  Since: gtk+ 2.38
-   --  "action_name": a potential action name
+   --  @param Action_Name a potential action name
 
    function Print_Detailed_Name
       (Action_Name  : UTF8_String;
@@ -186,8 +186,8 @@ package Glib.Action is
    --  See that function for the types of strings that will be printed by this
    --  function.
    --  Since: gtk+ 2.38
-   --  "action_name": a valid action name
-   --  "target_value": a Glib.Variant.Gvariant target value, or null
+   --  @param Action_Name a valid action name
+   --  @param Target_Value a Glib.Variant.Gvariant target value, or null
 
    ----------------
    -- Properties --
@@ -243,7 +243,7 @@ package Glib.Action is
    --  null then Parameter must also be null.
    --  If the Parameter GVariant is floating, it is consumed.
    --  Since: gtk+ 2.28
-   --  "parameter": the parameter to the activation
+   --  @param Parameter the parameter to the activation
 
    type Virtual_Change_State is access procedure (Self : Gaction; Value : System.Address);
    pragma Convention (C, Virtual_Change_State);
@@ -255,7 +255,7 @@ package Glib.Action is
    --  Glib.Action.Get_State_Hint.
    --  If the Value GVariant is floating, it is consumed.
    --  Since: gtk+ 2.30
-   --  "value": the new state
+   --  @param Value the new state
 
    type Virtual_Get_Enabled is access function (Self : Gaction) return Glib.Gboolean;
    pragma Convention (C, Virtual_Get_Enabled);

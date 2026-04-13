@@ -61,7 +61,7 @@ package Gtk.IM_Multi_Context is
    --  menuitems, when selected, will switch the input method for the context
    --  and the global default input method.
    --  Deprecated since 3.10, 1
-   --  "menushell": a Gtk.Menu_Shell.Gtk_Menu_Shell
+   --  @param Menushell a Gtk.Menu_Shell.Gtk_Menu_Shell
 
    function Get_Context_Id
       (Self : not null access Gtk_IM_Multi_Context_Record)
@@ -76,6 +76,6 @@ package Gtk.IM_Multi_Context is
    --  This causes the currently active slave of Context to be replaced by the
    --  slave corresponding to the new context id.
    --  Since: gtk+ 2.16
-   --  "context_id": the id to use
+   --  @param Context_Id the id to use
 
 end Gtk.IM_Multi_Context;

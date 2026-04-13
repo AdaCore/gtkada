@@ -203,7 +203,7 @@ package Glib.IOChannel is
    --  argument you pass to this function happens to be both a valid file
    --  descriptor and socket. If that happens a warning is issued, and GLib
    --  assumes that it is the file descriptor you mean.
-   --  "fd": a file descriptor.
+   --  @param Fd a file descriptor.
 
    function Giochannel_Unix_New (Fd : Glib.Gint) return Giochannel;
    --  Creates a new Glib.IOChannel.Giochannel given a file descriptor. On
@@ -222,7 +222,7 @@ package Glib.IOChannel is
    --  argument you pass to this function happens to be both a valid file
    --  descriptor and socket. If that happens a warning is issued, and GLib
    --  assumes that it is the file descriptor you mean.
-   --  "fd": a file descriptor.
+   --  @param Fd a file descriptor.
 
    -------------
    -- Methods --
@@ -242,7 +242,7 @@ package Glib.IOChannel is
    procedure Set_Buffer_Size (Self : Giochannel; Size : Gsize);
    pragma Import (C, Set_Buffer_Size, "g_io_channel_set_buffer_size");
    --  Sets the buffer size.
-   --  "size": the size of the buffer, or 0 to let GLib pick a good size
+   --  @param Size the size of the buffer, or 0 to let GLib pick a good size
 
    function Get_Buffered (Self : Giochannel) return Boolean;
    --  Returns whether Channel is buffered.
@@ -262,7 +262,7 @@ package Glib.IOChannel is
    --  On unbuffered channels, it is safe to mix read and write calls from the
    --  new and old APIs, if this is necessary for maintaining old code.
    --  The default state of the channel is buffered.
-   --  "buffered": whether to set the channel buffered or unbuffered
+   --  @param Buffered whether to set the channel buffered or unbuffered
 
    function Get_Close_On_Unref (Self : Giochannel) return Boolean;
    --  Returns whether the file/socket/whatever associated with Channel will
@@ -273,7 +273,7 @@ package Glib.IOChannel is
    procedure Set_Close_On_Unref (Self : Giochannel; Do_Close : Boolean);
    --  Setting this flag to True for a channel you have already closed can
    --  cause problems.
-   --  "do_close": Whether to close the channel on the final unref of the
+   --  @param Do_Close Whether to close the channel on the final unref of the
    --  GIOChannel data structure. The default value of this is True for
    --  channels created by g_io_channel_new_file (), and False for all other
    --  channels.
@@ -300,7 +300,7 @@ package Glib.IOChannel is
    --  This returns the string that Glib.IOChannel.Giochannel uses to
    --  determine where in the file a line break occurs. A value of null
    --  indicates autodetection.
-   --  "length": a location to return the length of the line terminator
+   --  @param Length a location to return the length of the line terminator
 
    procedure Set_Line_Term
       (Self      : Giochannel;
@@ -308,13 +308,13 @@ package Glib.IOChannel is
        Length    : Glib.Gint);
    --  This sets the string that Glib.IOChannel.Giochannel uses to determine
    --  where in the file a line break occurs.
-   --  "line_term": The line termination string. Use null for autodetect.
+   --  @param Line_Term The line termination string. Use null for autodetect.
    --  Autodetection breaks on "\n", "\r\n", "\r", "\0", and the Unicode
    --  paragraph separator. Autodetection should not be used for anything other
    --  than file-based channels.
-   --  "length": The length of the termination string. If -1 is passed, the
-   --  string is assumed to be nul-terminated. This option allows termination
-   --  strings with embedded nuls.
+   --  @param Length The length of the termination string. If -1 is passed,
+   --  the string is assumed to be nul-terminated. This option allows
+   --  termination strings with embedded nuls.
 
    procedure Init (Self : Giochannel);
    pragma Import (C, Init, "g_io_channel_init");
@@ -334,11 +334,11 @@ package Glib.IOChannel is
        The_Type : GSeek_Type) return GIOStatus;
    pragma Import (C, Seek_Position, "g_io_channel_seek_position");
    --  Replacement for g_io_channel_seek with the new API.
-   --  "offset": The offset in bytes from the position specified by Type
-   --  "type": a Glib.IOChannel.GSeek_Type. The type Glib.IOChannel.G_Seek_Cur
-   --  is only allowed in those cases where a call to g_io_channel_set_encoding
-   --  () is allowed. See the documentation for g_io_channel_set_encoding ()
-   --  for details.
+   --  @param Offset The offset in bytes from the position specified by Type
+   --  @param The_Type a Glib.IOChannel.GSeek_Type. The type
+   --  Glib.IOChannel.G_Seek_Cur is only allowed in those cases where a call to
+   --  g_io_channel_set_encoding () is allowed. See the documentation for
+   --  g_io_channel_set_encoding () for details.
 
    function Unix_Get_Fd (Self : Giochannel) return Glib.Gint;
    pragma Import (C, Unix_Get_Fd, "g_io_channel_unix_get_fd");
@@ -499,7 +499,7 @@ package Glib.IOChannel is
    function Error_From_Errno (En : Glib.Gint) return GIOChannel_Error;
    pragma Import (C, Error_From_Errno, "g_io_channel_error_from_errno");
    --  Converts an `errno` error number to a Glib.IOChannel.GIOChannel_Error.
-   --  "en": an `errno` error number, e.g. `EINVAL`
+   --  @param En an `errno` error number, e.g. `EINVAL`
 
    function Error_Quark return Glib.GQuark;
    pragma Import (C, Error_Quark, "g_io_channel_error_quark");
@@ -517,7 +517,7 @@ package Glib.IOChannel is
    --  On Windows, polling a Glib.Main.G_Source created to watch a channel for
    --  a socket puts the socket in non-blocking mode. This is a side-effect of
    --  the implementation and unavoidable.
-   --  "channel": a Glib.IOChannel.Giochannel to watch
-   --  "condition": conditions to watch for
+   --  @param Channel a Glib.IOChannel.Giochannel to watch
+   --  @param Condition conditions to watch for
 
 end Glib.IOChannel;

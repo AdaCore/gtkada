@@ -92,13 +92,13 @@ package Gtk.Color_Button is
    --  Since: gtk+ 2.4
    --  Initialize_With_Color does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "color": A Gdk.Color.Gdk_Color to set the current color with
+   --  @param Color A Gdk.Color.Gdk_Color to set the current color with
 
    function Gtk_Color_Button_New_With_Color
       (Color : Gdk.Color.Gdk_Color) return Gtk_Color_Button;
    --  Creates a new color button.
    --  Since: gtk+ 2.4
-   --  "color": A Gdk.Color.Gdk_Color to set the current color with
+   --  @param Color A Gdk.Color.Gdk_Color to set the current color with
 
    procedure Gtk_New_With_Rgba
       (Button : out Gtk_Color_Button;
@@ -110,13 +110,13 @@ package Gtk.Color_Button is
    --  Since: gtk+ 3.0
    --  Initialize_With_Rgba does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "rgba": A Gdk.RGBA.Gdk_RGBA to set the current color with
+   --  @param Rgba A Gdk.RGBA.Gdk_RGBA to set the current color with
 
    function Gtk_Color_Button_New_With_Rgba
       (Rgba : Gdk.RGBA.Gdk_RGBA) return Gtk_Color_Button;
    --  Creates a new color button.
    --  Since: gtk+ 3.0
-   --  "rgba": A Gdk.RGBA.Gdk_RGBA to set the current color with
+   --  @param Rgba A Gdk.RGBA.Gdk_RGBA to set the current color with
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_color_button_get_type");
@@ -139,7 +139,7 @@ package Gtk.Color_Button is
    --  Sets the current opacity to be Alpha.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.4, 1
-   --  "alpha": an integer between 0 and 65535
+   --  @param Alpha an integer between 0 and 65535
 
    procedure Get_Color
       (Button : not null access Gtk_Color_Button_Record;
@@ -149,7 +149,7 @@ package Gtk.Color_Button is
    --  Gtk.Color_Button.Gtk_Color_Button widget.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.4, 1
-   --  "color": a Gdk.Color.Gdk_Color to fill in with the current color
+   --  @param Color a Gdk.Color.Gdk_Color to fill in with the current color
 
    procedure Set_Color
       (Button : not null access Gtk_Color_Button_Record;
@@ -158,7 +158,7 @@ package Gtk.Color_Button is
    --  Sets the current color to be Color.
    --  Since: gtk+ 2.4
    --  Deprecated since None, 1
-   --  "color": A Gdk.Color.Gdk_Color to set the current color with
+   --  @param Color A Gdk.Color.Gdk_Color to set the current color with
 
    function Get_Title
       (Button : not null access Gtk_Color_Button_Record) return UTF8_String;
@@ -170,7 +170,7 @@ package Gtk.Color_Button is
        Title  : UTF8_String);
    --  Sets the title for the color selection dialog.
    --  Since: gtk+ 2.4
-   --  "title": String containing new window title
+   --  @param Title String containing new window title
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

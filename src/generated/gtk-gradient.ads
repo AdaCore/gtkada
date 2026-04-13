@@ -70,10 +70,10 @@ package Gtk.Gradient is
    --  (x1, y1). Before using the gradient a number of stop colors must be
    --  added through Gtk.Gradient.Add_Color_Stop.
    --  Since: gtk+ 3.0
-   --  "x0": X coordinate of the starting point
-   --  "y0": Y coordinate of the starting point
-   --  "x1": X coordinate of the end point
-   --  "y1": Y coordinate of the end point
+   --  @param X0 X coordinate of the starting point
+   --  @param Y0 Y coordinate of the starting point
+   --  @param X1 X coordinate of the end point
+   --  @param Y1 Y coordinate of the end point
 
    function Gtk_Gradient_New_Linear
       (X0 : Gdouble;
@@ -84,10 +84,10 @@ package Gtk.Gradient is
    --  (x1, y1). Before using the gradient a number of stop colors must be
    --  added through Gtk.Gradient.Add_Color_Stop.
    --  Since: gtk+ 3.0
-   --  "x0": X coordinate of the starting point
-   --  "y0": Y coordinate of the starting point
-   --  "x1": X coordinate of the end point
-   --  "y1": Y coordinate of the end point
+   --  @param X0 X coordinate of the starting point
+   --  @param Y0 Y coordinate of the starting point
+   --  @param X1 X coordinate of the end point
+   --  @param Y1 Y coordinate of the end point
 
    procedure Gtk_New_Radial
       (Self    : out Gtk_Gradient;
@@ -101,12 +101,12 @@ package Gtk.Gradient is
    --  radius0) and (x1, y1, radius1). Before using the gradient a number of
    --  stop colors must be added through Gtk.Gradient.Add_Color_Stop.
    --  Since: gtk+ 3.0
-   --  "x0": X coordinate of the start circle
-   --  "y0": Y coordinate of the start circle
-   --  "radius0": radius of the start circle
-   --  "x1": X coordinate of the end circle
-   --  "y1": Y coordinate of the end circle
-   --  "radius1": radius of the end circle
+   --  @param X0 X coordinate of the start circle
+   --  @param Y0 Y coordinate of the start circle
+   --  @param Radius0 radius of the start circle
+   --  @param X1 X coordinate of the end circle
+   --  @param Y1 Y coordinate of the end circle
+   --  @param Radius1 radius of the end circle
 
    function Gtk_Gradient_New_Radial
       (X0      : Gdouble;
@@ -119,12 +119,12 @@ package Gtk.Gradient is
    --  radius0) and (x1, y1, radius1). Before using the gradient a number of
    --  stop colors must be added through Gtk.Gradient.Add_Color_Stop.
    --  Since: gtk+ 3.0
-   --  "x0": X coordinate of the start circle
-   --  "y0": Y coordinate of the start circle
-   --  "radius0": radius of the start circle
-   --  "x1": X coordinate of the end circle
-   --  "y1": Y coordinate of the end circle
-   --  "radius1": radius of the end circle
+   --  @param X0 X coordinate of the start circle
+   --  @param Y0 Y coordinate of the start circle
+   --  @param Radius0 radius of the start circle
+   --  @param X1 X coordinate of the end circle
+   --  @param Y1 Y coordinate of the end circle
+   --  @param Radius1 radius of the end circle
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_gradient_get_type");
@@ -141,8 +141,8 @@ package Gtk.Gradient is
    --  Adds a stop color to Gradient.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
-   --  "offset": offset for the color stop
-   --  "color": color to use
+   --  @param Offset offset for the color stop
+   --  @param Color color to use
 
    function Ref (Self : Gtk_Gradient) return Gtk_Gradient;
    pragma Obsolescent (Ref);
@@ -161,9 +161,9 @@ package Gtk.Gradient is
    --  on top of a named color that doesn't exist in Props.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
-   --  "props": Gtk.Style_Properties.Gtk_Style_Properties to use when
+   --  @param Props Gtk.Style_Properties.Gtk_Style_Properties to use when
    --  resolving named colors
-   --  "resolved_gradient": return location for the resolved pattern
+   --  @param Resolved_Gradient return location for the resolved pattern
 
    function Resolve_For_Context
       (Self    : Gtk_Gradient;

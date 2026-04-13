@@ -70,7 +70,7 @@ package Pango.Matrix is
    --  transformation given by first applying transformation given by
    --  New_Matrix then applying the original transformation.
    --  Since: gtk+ 1.6
-   --  "new_matrix": a Pango.Matrix.Pango_Matrix
+   --  @param New_Matrix a Pango.Matrix.Pango_Matrix
 
    function Copy (Self : Pango_Matrix) return Pango_Matrix;
    pragma Import (C, Copy, "pango_matrix_copy");
@@ -101,8 +101,9 @@ package Pango.Matrix is
    --  perpendicular to the vector that the X coordinate is mapped to.
    --  Note that output numbers will always be non-negative.
    --  Since: gtk+ 1.38
-   --  "xscale": output scale factor in the x direction, or null
-   --  "yscale": output scale factor perpendicular to the x direction, or null
+   --  @param Xscale output scale factor in the x direction, or null
+   --  @param Yscale output scale factor perpendicular to the x direction, or
+   --  null
 
    procedure Rotate (Self : in out Pango_Matrix; Degrees : Gdouble);
    pragma Import (C, Rotate, "pango_matrix_rotate");
@@ -110,7 +111,7 @@ package Pango.Matrix is
    --  transformation given by first rotating by Degrees degrees
    --  counter-clockwise then applying the original transformation.
    --  Since: gtk+ 1.6
-   --  "degrees": degrees to rotate counter-clockwise
+   --  @param Degrees degrees to rotate counter-clockwise
 
    procedure Scale
       (Self    : in out Pango_Matrix;
@@ -121,8 +122,8 @@ package Pango.Matrix is
    --  transformation given by first scaling by Sx in the X direction and Sy in
    --  the Y direction then applying the original transformation.
    --  Since: gtk+ 1.6
-   --  "scale_x": amount to scale by in X direction
-   --  "scale_y": amount to scale by in Y direction
+   --  @param Scale_X amount to scale by in X direction
+   --  @param Scale_Y amount to scale by in Y direction
 
    procedure Transform_Distance
       (Self : Pango_Matrix;
@@ -142,8 +143,8 @@ package Pango.Matrix is
    --  then (X1+Dx1,Y1+Dy1) will transform to (X1+Dx2,Y1+Dy2) for all values of
    --  X1 and X2.
    --  Since: gtk+ 1.16
-   --  "dx": in/out X component of a distance vector
-   --  "dy": in/out Y component of a distance vector
+   --  @param Dx in/out X component of a distance vector
+   --  @param Dy in/out Y component of a distance vector
 
    procedure Transform_Pixel_Rectangle
       (Self : Pango_Matrix;
@@ -159,7 +160,7 @@ package Pango.Matrix is
    --  original rectangle in Pango units and convert to pixels afterward using
    --  pango_extents_to_pixels's first argument.
    --  Since: gtk+ 1.16
-   --  "rect": in/out bounding box in device units, or null
+   --  @param Rect in/out bounding box in device units, or null
 
    procedure Transform_Point
       (Self : Pango_Matrix;
@@ -168,8 +169,8 @@ package Pango.Matrix is
    pragma Import (C, Transform_Point, "pango_matrix_transform_point");
    --  Transforms the point (X, Y) by Matrix.
    --  Since: gtk+ 1.16
-   --  "x": in/out X position
-   --  "y": in/out Y position
+   --  @param X in/out X position
+   --  @param Y in/out Y position
 
    procedure Transform_Rectangle
       (Self : Pango_Matrix;
@@ -191,7 +192,7 @@ package Pango.Matrix is
    --  coordinates may overflow in Pango units (large matrix translation for
    --  example).
    --  Since: gtk+ 1.16
-   --  "rect": in/out bounding box in Pango units, or null
+   --  @param Rect in/out bounding box in Pango units, or null
 
    procedure Translate
       (Self : in out Pango_Matrix;
@@ -202,7 +203,7 @@ package Pango.Matrix is
    --  transformation given by first translating by (Tx, Ty) then applying the
    --  original transformation.
    --  Since: gtk+ 1.6
-   --  "tx": amount to translate in the X direction
-   --  "ty": amount to translate in the Y direction
+   --  @param Tx amount to translate in the X direction
+   --  @param Ty amount to translate in the Y direction
 
 end Pango.Matrix;

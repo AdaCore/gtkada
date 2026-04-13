@@ -66,7 +66,7 @@ package Gtk.Event_Controller is
    --  performed, but other additional gesture maintenance will. In that phase,
    --  the events can be managed by calling Gtk.Event_Controller.Handle_Event.
    --  Since: gtk+ 3.14
-   --  "phase": a propagation phase
+   --  @param Phase a propagation phase
 
    function Get_Widget
       (Self : not null access Gtk_Event_Controller_Record)
@@ -80,7 +80,7 @@ package Gtk.Event_Controller is
    --  Feeds an events into Controller, so it can be interpreted and the
    --  controller actions triggered.
    --  Since: gtk+ 3.14
-   --  "event": a Gdk.Event.Gdk_Event
+   --  @param Event a Gdk.Event.Gdk_Event
 
    procedure Reset (Self : not null access Gtk_Event_Controller_Record);
    --  Resets the Controller to a clean state. Every interaction the

@@ -99,8 +99,8 @@ package Gdk.Screen is
    --  gdk_pango_context_get_for_screen. Changing the default set of font
    --  options does not affect contexts that have already been created.
    --  Since: gtk+ 2.10
-   --  "options": a Cairo.Cairo_Font_Options, or null to unset any previously
-   --  set default font options.
+   --  @param Options a Cairo.Cairo_Font_Options, or null to unset any
+   --  previously set default font options.
 
    function Get_Height
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
@@ -129,8 +129,8 @@ package Gdk.Screen is
    --  Returns the monitor number in which the point (X,Y) is located.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
-   --  "x": the x coordinate in the virtual screen.
-   --  "y": the y coordinate in the virtual screen.
+   --  @param X the x coordinate in the virtual screen.
+   --  @param Y the y coordinate in the virtual screen.
 
    function Get_Monitor_At_Window
       (Screen : not null access Gdk_Screen_Record;
@@ -140,7 +140,7 @@ package Gdk.Screen is
    --  bounding rectangle of Window resides.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
-   --  "window": a Gdk.Gdk_Window
+   --  @param Window a Gdk.Gdk_Window
 
    procedure Get_Monitor_Geometry
       (Screen      : not null access Gdk_Screen_Record;
@@ -157,8 +157,8 @@ package Gdk.Screen is
    --  Gdk.Screen.Get_Width and Gdk.Screen.Get_Height.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
-   --  "monitor_num": the monitor number
-   --  "dest": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
+   --  @param Monitor_Num the monitor number
+   --  @param Dest a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
    --  geometry
 
    function Get_Monitor_Height_Mm
@@ -168,7 +168,7 @@ package Gdk.Screen is
    --  Gets the height in millimeters of the specified monitor.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.22, 1
-   --  "monitor_num": number of the monitor, between 0 and
+   --  @param Monitor_Num number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
 
    function Get_Monitor_Plug_Name
@@ -179,7 +179,7 @@ package Gdk.Screen is
    --  like VGA, DVI, or TV, not the actual product name of the display device.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.22, 1
-   --  "monitor_num": number of the monitor, between 0 and
+   --  @param Monitor_Num number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
 
    function Get_Monitor_Scale_Factor
@@ -194,7 +194,7 @@ package Gdk.Screen is
    --  where it is better to use Gdk.Window.Get_Scale_Factor instead.
    --  Since: gtk+ 3.10
    --  Deprecated since 3.22, 1
-   --  "monitor_num": number of the monitor, between 0 and
+   --  @param Monitor_Num number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
 
    function Get_Monitor_Width_Mm
@@ -204,7 +204,7 @@ package Gdk.Screen is
    --  Gets the width in millimeters of the specified monitor, if available.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.22, 1
-   --  "monitor_num": number of the monitor, between 0 and
+   --  @param Monitor_Num number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
 
    procedure Get_Monitor_Workarea
@@ -226,8 +226,8 @@ package Gdk.Screen is
    --  use Gdk.Screen.Get_N_Monitors.
    --  Since: gtk+ 3.4
    --  Deprecated since 3.22, 1
-   --  "monitor_num": the monitor number
-   --  "dest": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
+   --  @param Monitor_Num the monitor number
+   --  @param Dest a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
    --  workarea
 
    function Get_N_Monitors
@@ -272,7 +272,7 @@ package Gdk.Screen is
    --  and cairo units. The default value is 96, meaning that a 10 point font
    --  will be 13 units high. (10 * 96. / 72. = 13.3).
    --  Since: gtk+ 2.10
-   --  "dpi": the resolution in "dots per inch". (Physical inches aren't
+   --  @param Dpi the resolution in "dots per inch". (Physical inches aren't
    --  actually involved; the terminology is conventional.)
 
    function Get_Rgba_Visual

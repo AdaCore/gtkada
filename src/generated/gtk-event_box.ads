@@ -80,7 +80,7 @@ package Gtk.Event_Box is
    --  its parents.
    --  The default is to keep the window below the child.
    --  Since: gtk+ 2.4
-   --  "above_child": True if the event box window is above its child
+   --  @param Above_Child True if the event box window is above its child
 
    function Get_Visible_Window
       (Event_Box : not null access Gtk_Event_Box_Record) return Boolean;
@@ -117,7 +117,7 @@ package Gtk.Event_Box is
    --  case, the event box window is actually the ancestor of the descendant
    --  windows, not just at the same place on the screen.
    --  Since: gtk+ 2.4
-   --  "visible_window": True to make the event box have a visible window
+   --  @param Visible_Window True to make the event box have a visible window
 
    ----------------
    -- Properties --
