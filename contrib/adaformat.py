@@ -1033,7 +1033,9 @@ def fill_text(text, prefix, length, firstLineLength=0):
 
 
 def cleanup_doc(doc):
-    """Replaces C features in the doc with appropriate Ada equivalents"""
+    """Replaces gtk-doc features in the doc with appropriate Ada
+    equivalents.
+    """
 
     def replace_type(x):
         t = naming.type(x.group(1))
@@ -1057,82 +1059,26 @@ def cleanup_doc(doc):
     doc = enums.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
 
     doc = doc.replace("<emphasis>", "*") \
-        .replace("</emphasis>", "*") \
-        .replace("<literal>", "'") \
-        .replace("</literal>", "'") \
-        .replace("<firstterm>", "'") \
-        .replace("</firstterm>", "'") \
-        .replace("<![CDATA[", "") \
-        .replace("]]>", "") \
-        .replace("&nbsp;", " ") \
-        .replace("<parameter>", "'") \
-        .replace("</parameter>", "'") \
-        .replace("<filename>", "'") \
-        .replace("</filename>", "'") \
-        .replace("<footnote>", "[") \
-        .replace("</footnote>", "]") \
-        .replace("<keycap>", "'") \
-        .replace("</keycap>", "'") \
-        .replace("<keycombo>", "[") \
-        .replace("</keycombo>", "]") \
-        .replace("<entry>", "\n\n") \
-        .replace("</entry>", "") \
-        .replace("<row>", "") \
-        .replace("</row>", "") \
-        .replace("<tbody>", "") \
-        .replace("</tbody>", "") \
-        .replace("</tgroup>", "") \
-        .replace("<informaltable>", "") \
-        .replace("</informaltable>", "") \
-        .replace("<note>", "\nNote: ") \
-        .replace("</note>", "")
-
-    doc = re.sub("<tgroup[^>]*>", "", doc)
-    doc = re.sub("<term><parameter>(.*?)</parameter>&nbsp;:</term>",
-                 r"\1:", doc)
-
-    # Lists
-
-    doc = re.sub("<listitem>(\n?<simpara>|\n?<para>)?", "\n\n   * ", doc)
-
-    doc = doc.replace("</para></listitem>", "") \
-        .replace("</listitem>", "") \
-        .replace("<simpara>", "") \
-        .replace("</simpara>", "") \
-        .replace("<para>", "\n\n") \
-        .replace("</para>", "")
-
-    # Definition of terms (variablelists)
-
-    doc = doc.replace("<variablelist>", "") \
-        .replace("</variablelist>", "") \
-        .replace("<varlistentry>", "") \
-        .replace("</varlistentry>", "") \
-        .replace("<term>", "'") \
-        .replace("</term>", "'")
-
-    doc = re.sub(r"<variablelist[^>]*>", "", doc)
-    doc = re.sub(r"<title>(.*?)</title>", r"\n\n== \1 ==\n\n", doc)
-    doc = re.sub(r"<refsect\d[^>]*>", "", doc)
-    doc = re.sub(r"</refsect\d>", "", doc)
-
-    doc = doc.replace("<example>", "") \
-             .replace("</example>", "") \
-             .replace("<informalexample>", "") \
-             .replace("</informalexample>", "") \
-             .replace("<itemizedlist>", "").replace("</itemizedlist>", "") \
-             .replace("<orderedlist>", "").replace("</orderedlist>", "") \
+             .replace("</emphasis>", "*") \
+             .replace("<literal>", "`") \
+             .replace("</literal>", "`") \
+             .replace("&nbsp;", " ") \
              .replace("&percnt;", "%") \
              .replace("&lt;", "<").replace("&gt;", ">") \
-             .replace("&ast;", "*") \
-             .replace("<programlisting>", "\n\n__PRE__<programlisting>")
+             .replace("&ast;", "*")
+
+    doc = re.sub("<informalexample>\s*(<programlisting>.*?</programlisting>)"
+                 "\s*</informalexample>",
+                 r"\1",
+                 doc,
+                 flags=re.DOTALL | re.MULTILINE)
 
     doc = re.sub("<programlisting>(.*?)</programlisting>",
-                 lambda m: re.sub(
+                 lambda m: "\n\n__PROGRAMLISTING__" + re.sub(
                      "\n\n+", "\n",
                      indent_code(m.group(1), addnewlines=False)),
                  doc,
-                 flags=re.DOTALL or re.MULTILINE)
+                 flags=re.DOTALL | re.MULTILINE)
 
     doc = re.sub("\n\n\n+", "\n\n", doc)
 
@@ -1164,7 +1110,7 @@ def format_doc(doc, indent, separate_paragraphs=True, fill=True):
 
     prefix = "\n" + indent + "--"
 
-    for d in cleaned:
+    for index, d in enumerate(cleaned):
 
         # Separate paragraphs with an empty line, unless it is a markup
         # or we are at the end
@@ -1176,6 +1122,13 @@ def format_doc(doc, indent, separate_paragraphs=True, fill=True):
             if d.lstrip().startswith("__PRE__"):
                 d = d.lstrip()[7:]
                 result += "".join(prefix + " " + p for p in d.splitlines())
+            elif d.lstrip().startswith("__PROGRAMLISTING__"):
+                if prev != "" and not separate_paragraphs:
+                    result += prefix
+                d = d.lstrip()[18:]
+                result += "".join(prefix + "   " + p for p in d.splitlines())
+                if index + 1 < len(cleaned) and not separate_paragraphs:
+                    result += prefix
             elif fill:
                 result += prefix + " "
                 result += fill_text(d, indent + "--  ", 79)
