@@ -1071,10 +1071,31 @@ def cleanup_doc(doc):
         return replace_programlisting_content(match.group(1))
 
     def replace_gtkdoc_programlisting(match):
-        content = re.sub(
-            r'^[ \t]*<!--\s*language\s*=\s*["\'][^"\']*["\']\s*-->[ \t]*\n?',
-            "",
-            match.group(1))
+        content = match.group(1)
+        lines = content.splitlines()
+
+        if lines:
+            language_match = re.match(
+                r'^[ \t]*<!--\s*language\s*=\s*["\'][^"\']*["\']\s*-->[ \t]*(.*)$',
+                lines[0])
+            if language_match:
+                inline = language_match.group(1)
+                rest = lines[1:]
+
+                if inline:
+                    next_indent = ""
+                    for line in rest:
+                        if line.strip():
+                            next_indent = re.match(r"[ \t]*", line).group(0)
+                            break
+                    if next_indent:
+                        inline = next_indent + inline.lstrip(" \t")
+                    lines = [inline] + rest
+                else:
+                    lines = rest
+
+                content = "\n".join(lines)
+
         return replace_programlisting_content(content)
 
     def replace_type(x):
