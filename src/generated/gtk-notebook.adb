@@ -823,8 +823,6 @@ package body Gtk.Notebook is
       Internal (Get_Object (Notebook), Get_Object (Child), Boolean'Pos (Reorderable));
    end Set_Tab_Reorderable;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Notebook_Gint_Boolean, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

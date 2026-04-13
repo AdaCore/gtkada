@@ -113,8 +113,6 @@ package body Gtk.Gesture_Pan is
       Internal (Get_Object (Self), Orientation);
    end Set_Orientation;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Gesture_Pan_Gtk_Pan_Direction_Gdouble_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -126,8 +126,6 @@ package body Gtk.Gesture_Drag is
       return Tmp_Return /= 0;
    end Get_Start_Point;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Gesture_Drag_Gdouble_Gdouble_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

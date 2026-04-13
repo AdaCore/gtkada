@@ -191,8 +191,6 @@ package body Gdk.Drag_Contexts is
       Internal (Get_Object (Self), Hot_X, Hot_Y);
    end Set_Hotspot;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Drag_Context_Gdk_Drag_Action_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

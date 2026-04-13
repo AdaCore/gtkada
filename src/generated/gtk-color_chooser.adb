@@ -54,8 +54,6 @@ package body Gtk.Color_Chooser is
       Internal (Self, Boolean'Pos (Use_Alpha));
    end Set_Use_Alpha;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Color_Chooser_Gdk_RGBA_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

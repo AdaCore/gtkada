@@ -91,8 +91,6 @@ package body Gtk.Gesture_Rotate is
       return Internal (Get_Object (Self));
    end Get_Angle_Delta;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Gesture_Rotate_Gdouble_Gdouble_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

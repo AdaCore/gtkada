@@ -255,8 +255,6 @@ package body Glib.Menu_Model is
       return Internal (Get_Object (Self)) /= 0;
    end Next;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gmenu_Model_Gint_Gint_Gint_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

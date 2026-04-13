@@ -988,8 +988,6 @@ package body Gtk.Icon_Theme is
       return Gtk.Icon_Theme.Gtk_Icon_Theme (Get_User_Data (Internal (Get_Object (Screen)), Stub_Gtk_Icon_Theme));
    end Get_For_Screen;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Icon_Theme_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

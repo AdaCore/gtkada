@@ -187,8 +187,6 @@ package body Gtk.Toggle_Action is
       Internal (Get_Object (Action));
    end Toggled;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Toggle_Action_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

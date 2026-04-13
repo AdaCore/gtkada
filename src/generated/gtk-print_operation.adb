@@ -548,8 +548,6 @@ package body Gtk.Print_Operation is
       Internal (Get_Object (Preview), Page_Nr);
    end Render_Page;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Print_Operation_Gtk_Print_Context_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

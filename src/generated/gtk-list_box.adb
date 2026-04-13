@@ -1009,8 +1009,6 @@ package body Gtk.List_Box is
       Internal (Get_Object (Self), Get_Object (Row));
    end Unselect_Row;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_List_Box_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

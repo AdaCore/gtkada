@@ -852,8 +852,6 @@ package body Gtk.Label is
       Internal (Get_Object (Label), Yalign);
    end Set_Yalign;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Label_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -1170,8 +1170,6 @@ package body Gtk.File_Chooser_Button is
       Free (Tmp_URI);
    end Unselect_Uri;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_File_Chooser_Button_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

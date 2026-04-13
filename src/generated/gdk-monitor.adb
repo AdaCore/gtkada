@@ -188,8 +188,6 @@ package body Gdk.Monitor is
       return Internal (Get_Object (Self)) /= 0;
    end Is_Primary;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gdk_Monitor_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

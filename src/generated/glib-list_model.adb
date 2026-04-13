@@ -47,8 +47,6 @@ package body Glib.List_Model is
       return Get_User_Data (Internal (Self, Position), Stub_GObject);
    end Get_Object;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Glist_Model_Guint_Guint_Guint_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

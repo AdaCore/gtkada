@@ -7287,8 +7287,15 @@ direction, widget state, or icon size.
      <method id="gtk_list_store_set_valuesv" bind="False"/> <!-- manually -->
      <method id="gtk_list_store_remove" return="void">
        <parameter name="iter" direction="inout"/>
-       <body>%(auto)s
-Iter := Gtk.Tree_Model.Null_Iter;
+       <body>
+      procedure Internal
+         (List_Store : System.Address;
+          Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
+      pragma Import (C, Internal, "gtk_list_store_remove");
+      Tmp_Iter : aliased Gtk.Tree_Model.Gtk_Tree_Iter := Iter;
+   begin
+      Internal (Get_Object (List_Store), Tmp_Iter);
+      Iter := Gtk.Tree_Model.Null_Iter;
        </body>
      </method>
      <extra>

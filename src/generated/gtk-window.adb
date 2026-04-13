@@ -1896,8 +1896,6 @@ package body Gtk.Window is
       Internal (Boolean'Pos (Enable));
    end Set_Interactive_Debugging;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Window_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

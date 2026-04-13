@@ -366,8 +366,6 @@ package body Gtk.Dialog is
       Internal (Get_Object (Dialog), Response_Id, Boolean'Pos (Setting));
    end Set_Response_Sensitive;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Dialog_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -282,8 +282,6 @@ package body Gtk.Tree_Sortable is
 
    end Set_Sort_Func_User_Data;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Tree_Sortable_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -1686,8 +1686,6 @@ package body Gtk.Icon_View is
       Internal (Get_Object (Self), Policy);
    end Set_Vscroll_Policy;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Icon_View_Boolean, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

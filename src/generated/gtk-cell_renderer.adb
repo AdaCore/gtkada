@@ -514,8 +514,6 @@ package body Gtk.Cell_Renderer is
       Internal (Get_Object (Cell), Boolean'Pos (Canceled));
    end Stop_Editing;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Cell_Renderer_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

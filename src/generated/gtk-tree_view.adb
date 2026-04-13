@@ -2699,8 +2699,6 @@ package body Gtk.Tree_View is
       Internal (Get_Object (Self), Policy);
    end Set_Vscroll_Policy;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Tree_View_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

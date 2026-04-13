@@ -177,8 +177,6 @@ package body Gtk.Handle_Box is
       Internal (Get_Object (Handle_Box), Edge);
    end Set_Snap_Edge;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Handle_Box_Gtk_Widget_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

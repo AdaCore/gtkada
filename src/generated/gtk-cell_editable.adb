@@ -30,8 +30,6 @@ with Gtkada.Bindings;          use Gtkada.Bindings;
 
 package body Gtk.Cell_Editable is
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Cell_Editable_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
