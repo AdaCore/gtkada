@@ -1037,6 +1037,11 @@ def cleanup_doc(doc):
     equivalents.
     """
 
+    def replace_programlisting(match):
+        return "\n\n__PROGRAMLISTING__" + re.sub(
+            "\n\n+", "\n",
+            indent_code(match.group(1), addnewlines=False))
+
     def replace_type(x):
         t = naming.type(x.group(1))
         t.userecord = False
@@ -1073,10 +1078,13 @@ def cleanup_doc(doc):
                  doc,
                  flags=re.DOTALL | re.MULTILINE)
 
+    doc = re.sub(r"\|\[(.*?)\]\|",
+                 replace_programlisting,
+                 doc,
+                 flags=re.DOTALL | re.MULTILINE)
+
     doc = re.sub("<programlisting>(.*?)</programlisting>",
-                 lambda m: "\n\n__PROGRAMLISTING__" + re.sub(
-                     "\n\n+", "\n",
-                     indent_code(m.group(1), addnewlines=False)),
+                 replace_programlisting,
                  doc,
                  flags=re.DOTALL | re.MULTILINE)
 
