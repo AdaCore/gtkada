@@ -25,8 +25,8 @@
 --  A structure specifying a transformation between user-space coordinates and
 --  device coordinates. The transformation is given by
 --
---    x_device = x_user * matrix->xx + y_user * matrix->xy + matrix->x0;
---    y_device = x_user * matrix->yx + y_user * matrix->yy + matrix->y0;
+--      x_device = x_user * matrix->xx + y_user * matrix->xy + matrix->x0;
+--      y_device = x_user * matrix->yx + y_user * matrix->yy + matrix->y0;
 --
 --  </description>
 
@@ -50,8 +50,8 @@ package Pango.Matrix is
    --  A structure specifying a transformation between user-space coordinates
    --  and device coordinates. The transformation is given by
    --
-   --    x_device = x_user * matrix->xx + y_user * matrix->xy + matrix->x0;
-   --    y_device = x_user * matrix->yx + y_user * matrix->yy + matrix->y0;
+   --      x_device = x_user * matrix->xx + y_user * matrix->xy + matrix->x0;
+   --      y_device = x_user * matrix->yx + y_user * matrix->yy + matrix->y0;
 
    ------------------
    -- Constructors --
@@ -133,8 +133,10 @@ package Pango.Matrix is
    --  Pango.Matrix.Transform_Point except that the translation components of
    --  the transformation are ignored. The calculation of the returned vector
    --  is as follows:
-   --    dx2 = dx1 * xx + dy1 * xy;
-   --    dy2 = dx1 * yx + dy1 * yy;
+   --
+   --      dx2 = dx1 * xx + dy1 * xy;
+   --      dy2 = dx1 * yx + dy1 * yy;
+   --
    --  Affine transformations are position invariant, so the same vector
    --  always transforms to the same vector. If (X1,Y1) transforms to (X2,Y2)
    --  then (X1+Dx1,Y1+Dy1) will transform to (X1+Dx2,Y1+Dy2) for all values of

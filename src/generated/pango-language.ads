@@ -328,7 +328,9 @@ package Pango.Language is
    --  quick brown fox..." is returned. This can be detected by comparing the
    --  returned pointer value to that returned for (non-existent) language code
    --  "xx". That is, compare to:
-   --    pango_language_get_sample_string (pango_language_from_string ("xx"))
+   --
+   --      pango_language_get_sample_string (pango_language_from_string ("xx"))
+   --
 
    function Get_Scripts (Self : Pango_Language) return Pango_Script_Array;
    --  Determines the scripts used to to write Language. If nothing is known
@@ -397,7 +399,7 @@ package Pango.Language is
    --  Returns the Pango.Language.Pango_Language for the current locale of the
    --  process. Note that this can change over the life of an application.
    --  On Unix systems, this is the return value is derived from
-   --  'setlocale(LC_CTYPE, NULL)', and the user can affect this through the
+   --  `setlocale(LC_CTYPE, NULL)`, and the user can affect this through the
    --  environment variables LC_ALL, LC_CTYPE or LANG (checked in that order).
    --  The locale string typically is in the form lang_COUNTRY, where lang is
    --  an ISO-639 language code, and COUNTRY is an ISO-3166 country code. For
@@ -411,9 +413,9 @@ package Pango.Language is
    --  However, this function does check the above environment variables, and
    --  does return a Unix-style locale string based on either said environment
    --  variables or the thread's current locale.
-   --  Your application should call 'setlocale(LC_ALL, "");' for the user
+   --  Your application should call `setlocale(LC_ALL, "");` for the user
    --  settings to take effect. Gtk+ does this in its initialization functions
-   --  automatically (by calling gtk_set_locale). See 'man setlocale' for more
+   --  automatically (by calling gtk_set_locale). See `man setlocale` for more
    --  details.
    --  Since: gtk+ 1.16
 

@@ -102,9 +102,9 @@
 --  attribute specifies the data type for the column.
 --
 --  Additionally, it is possible to specify content for the list store in the
---  UI definition, with the <data> element. It can contain multiple elements,
---  each specifying to content for one row of the list model. Inside a , the
---  <col> elements specify the content for individual cells.
+--  UI definition, with the <data> element. It can contain multiple <row>
+--  elements, each specifying to content for one row of the list model. Inside
+--  a <row>, the <col> elements specify the content for individual cells.
 --
 --  Note that it is probably more common to define your models in the code,
 --  and one might consider it a layering violation to specify the content of a
@@ -114,9 +114,9 @@
 --  An example of a UI Definition fragment for a list store: |[<!--
 --  language="C" --> <object class="GtkListStore"> <columns> <column
 --  type="gchararray"/> <column type="gchararray"/> <column type="gint"/>
---  </columns> <data> <col id="0">John</col> <col id="1">Doe</col> <col
---  id="2">25</col> <col id="0">Johan</col> <col id="1">Dahlin</col> <col
---  id="2">50</col> </data> </object> ]|
+--  </columns> <data> <row> <col id="0">John</col> <col id="1">Doe</col> <col
+--  id="2">25</col> </row> <row> <col id="0">Johan</col> <col
+--  id="1">Dahlin</col> <col id="2">50</col> </row> </data> </object> ]|
 --
 --  </description>
 
