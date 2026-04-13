@@ -1157,7 +1157,7 @@ def format_doc(doc, indent, separate_paragraphs=True, fill=True):
                 if section.startswith("__PROGRAMLISTING__"):
                     cleaned.append(section)
                 else:
-                    cleaned.extend(section.split("\n\n"))
+                    cleaned.extend(section.rstrip().split("\n\n"))
         else:
             cleaned.append(d)
 
@@ -1171,13 +1171,16 @@ def format_doc(doc, indent, separate_paragraphs=True, fill=True):
             if prev != "" and not prev.lstrip().startswith("<"):
                 result += prefix
 
+        # d = d.rstrip()
+
         if d:
             if d.lstrip().startswith("__PROGRAMLISTING__"):
                 if prev != "" and not separate_paragraphs:
                     result += prefix
                 d = d.lstrip()[18:]
                 d = re.sub(r"\n?__END_PROGRAMLISTING__\s*$", "", d)
-                result += "".join(prefix + "   " + p for p in d.splitlines())
+                result += "".join(
+                    (prefix + "  " + p).rstrip() for p in d.splitlines())
                 if index + 1 < len(cleaned) and not separate_paragraphs:
                     result += prefix
             elif fill:
