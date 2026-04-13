@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Check_Button.Gtk_Check_Button places a discrete
 --  Gtk.Toggle_Button.Gtk_Toggle_Button next to a widget, (usually a
 --  Gtk.Label.Gtk_Label). See the section on
@@ -50,7 +49,6 @@
 --  button and adds a .check style class to it. The subnode is invisible in
 --  this case.
 --
---  </description>
 --  <screenshot>gtk-check_button</screenshot>
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_check_buttons.adb</testgtk>

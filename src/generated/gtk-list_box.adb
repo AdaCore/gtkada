@@ -360,6 +360,7 @@ package body Gtk.List_Box is
       --  Since: gtk+ 3.16
       --  @param Item the item from the model for which to create a widget for
       --  @param User_Data user data
+      --  @return a Gtk.Widget.Gtk_Widget that represents Item
 
       ----------------
       -- Bind_Model --
@@ -765,6 +766,7 @@ package body Gtk.List_Box is
       --  Since: gtk+ 3.10
       --  @param Row the row that may be filtered
       --  @param User_Data user data
+      --  @return True if the row should be visible, False otherwise
 
       -----------------
       -- Internal_Cb --
@@ -947,6 +949,8 @@ package body Gtk.List_Box is
       --  @param Row1 the first row
       --  @param Row2 the second row
       --  @param User_Data user data
+      --  @return < 0 if Row1 should be before Row2, 0 if they are equal and >
+      --  0 otherwise
 
       -----------------
       -- Internal_Cb --

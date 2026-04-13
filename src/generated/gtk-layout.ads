@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Layout.Gtk_Layout is similar to Gtk.Drawing_Area.Gtk_Drawing_Area in
 --  that it's a "blank slate" and doesn't do anything except paint a blank
 --  background by default. It's different in that it supports scrolling
@@ -38,8 +37,6 @@
 --  the one returned by Gtk.Widget.Get_Window as you would for a
 --  Gtk.Drawing_Area.Gtk_Drawing_Area.
 --
---  </description>
---  <description>
 --  A Gtk_Layout is a widget that can have an almost infinite size, without
 --  occupying a lot of memory. Its children can be located anywhere within it,
 --  but will only appear on the screen if the visible area of the layout
@@ -56,7 +53,6 @@
 --  systematically call Set_Size before calling Put, and make sure you specify
 --  a size big enough for the layout.
 --
---  </description>
 --  <screenshot>gtk-layout</screenshot>
 --  <group>Layout containers</group>
 --  <testgtk>create_layout.adb</testgtk>
@@ -120,6 +116,7 @@ package Gtk.Layout is
       (Layout : not null access Gtk_Layout_Record) return Gdk.Gdk_Window;
    --  Retrieve the bin window of the layout used for drawing operations.
    --  Since: gtk+ 2.14
+   --  @return a Gdk.Gdk_Window
 
    procedure Get_Size
       (Layout : not null access Gtk_Layout_Record;

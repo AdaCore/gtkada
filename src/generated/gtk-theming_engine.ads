@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Theming_Engine.Gtk_Theming_Engine was the object used for rendering
 --  themed content in GTK+ widgets. It used to allow overriding GTK+'s default
 --  implementation of rendering functions by allowing engines to be loaded as
@@ -31,8 +30,6 @@
 --  will be ignored for rendering. The advancements in CSS theming are good
 --  enough to allow themers to achieve their goals without the need to modify
 --  source code.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.RGBA;        use Gdk.RGBA;
@@ -113,6 +110,7 @@ package Gtk.Theming_Engine is
    --  Returns the widget direction used for rendering.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
+   --  @return the widget direction
 
    function Get_Font
       (Self  : not null access Gtk_Theming_Engine_Record;
@@ -123,6 +121,8 @@ package Gtk.Theming_Engine is
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
    --  @param State state to retrieve the font for
+   --  @return the Pango.Font.Pango_Font_Description for the given state. This
+   --  object is owned by GTK+ and should not be freed.
 
    function Get_Junction_Sides
       (Self : not null access Gtk_Theming_Engine_Record)
@@ -131,6 +131,7 @@ package Gtk.Theming_Engine is
    --  Returns the widget direction used for rendering.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
+   --  @return the widget direction
 
    procedure Get_Margin
       (Self   : not null access Gtk_Theming_Engine_Record;
@@ -161,6 +162,7 @@ package Gtk.Theming_Engine is
    --  Returns the widget path used for style matching.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
+   --  @return A Gtk.Widget.Gtk_Widget_Path
 
    procedure Get_Property
       (Self     : not null access Gtk_Theming_Engine_Record;
@@ -184,6 +186,7 @@ package Gtk.Theming_Engine is
    --  Returns the Gdk.Screen.Gdk_Screen to which Engine currently rendering
    --  to.
    --  Deprecated since 3.14, 1
+   --  @return a Gdk.Screen.Gdk_Screen, or null.
 
    function Get_State
       (Self : not null access Gtk_Theming_Engine_Record)
@@ -192,6 +195,7 @@ package Gtk.Theming_Engine is
    --  returns the state used when rendering.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
+   --  @return the state flags
 
    procedure Get_Style_Property
       (Self          : not null access Gtk_Theming_Engine_Record;
@@ -214,6 +218,7 @@ package Gtk.Theming_Engine is
    --  Since: gtk+ 3.0
    --  Deprecated since 3.14, 1
    --  @param Style_Class class name to look up
+   --  @return True if Engine has Class_Name defined
 
    function Has_Region
       (Self         : not null access Gtk_Theming_Engine_Record;
@@ -227,6 +232,7 @@ package Gtk.Theming_Engine is
    --  Deprecated since 3.14, 1
    --  @param Style_Region a region name
    --  @param Flags return location for region flags
+   --  @return True if region is defined
 
    function Lookup_Color
       (Self       : not null access Gtk_Theming_Engine_Record;
@@ -238,6 +244,7 @@ package Gtk.Theming_Engine is
    --  Deprecated since 3.14, 1
    --  @param Color_Name color name to lookup
    --  @param Color Return location for the looked up color
+   --  @return True if Color_Name was found and resolved, False otherwise
 
    function State_Is_Running
       (Self     : not null access Gtk_Theming_Engine_Record;
@@ -255,6 +262,7 @@ package Gtk.Theming_Engine is
    --  Deprecated since 3.6, 1
    --  @param State a widget state
    --  @param Progress return location for the transition progress
+   --  @return True if there is a running transition animation for State.
 
    ---------------
    -- Functions --
@@ -266,6 +274,7 @@ package Gtk.Theming_Engine is
    --  directories.
    --  Deprecated since 3.14, 1
    --  @param Name Theme engine name to load
+   --  @return A theming engine, or null if the engine Name doesn't exist.
 
    ----------------
    -- Properties --

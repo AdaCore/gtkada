@@ -21,15 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A binding set maintains a list of activatable key bindings. A single
 --  binding set can match multiple types of widgets. Similar to style contexts,
 --  can be matched by any information contained in a widgets
 --  Gtk.Widget.Gtk_Widget_Path. When a binding within a set is matched upon
 --  activation, an action signal is emitted on the target widget to carry out
 --  the actual activation.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;    use Gdk.Types;
@@ -69,12 +66,14 @@ package Gtk.Binding_Set is
    --  GTK+ maintains a global list of binding sets. Each binding set has a
    --  unique name which needs to be specified upon creation.
    --  @param Set_Name unique name of this binding set
+   --  @return new binding set
 
    function Gtk_Binding_Set_New
       (Set_Name : UTF8_String) return Gtk_Binding_Set;
    --  GTK+ maintains a global list of binding sets. Each binding set has a
    --  unique name which needs to be specified upon creation.
    --  @param Set_Name unique name of this binding set
+   --  @return new binding set
 
    -------------
    -- Methods --
@@ -91,6 +90,7 @@ package Gtk.Binding_Set is
    --  @param Keyval key value of the binding
    --  @param Modifiers key modifier of the binding
    --  @param Object object to activate when binding found
+   --  @return True if a binding was found and activated
 
    procedure Add_Path
       (Self         : Gtk_Binding_Set;
@@ -116,11 +116,13 @@ package Gtk.Binding_Set is
    --  passed in class structure. New binding sets are created on demand by
    --  this function.
    --  @param Object_Class a valid Glib.Object.GObject class
+   --  @return the binding set corresponding to Object_Class
 
    function Find (Set_Name : UTF8_String) return Gtk_Binding_Set;
    --  Find a binding set by its globally unique name.
    --  The Set_Name can either be a name used for Gtk.Binding_Set.Gtk_New or
    --  the type name of a class used in Gtk.Binding_Set.By_Class.
    --  @param Set_Name unique binding set name
+   --  @return null or the specified binding set
 
 end Gtk.Binding_Set;

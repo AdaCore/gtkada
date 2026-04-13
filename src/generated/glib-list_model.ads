@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Glib.List_Model.Glist_Model is an interface that represents a mutable list
 --  of GObjects. Its main intention is as a model for various widgets in user
 --  interfaces, such as list views, but it can also be used as a convenient
@@ -66,8 +65,6 @@
 --  implementation, but typically it will be from the thread that owns the
 --  [thread-default main context][g-main-context-push-thread-default] in effect
 --  at the time that the model was created.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Object; use Glib.Object;
@@ -99,6 +96,7 @@ package Glib.List_Model is
    --  the list. See Glib.List_Model.Get_N_Items.
    --  Since: gtk+ 2.44
    --  @param Position the position of the item to fetch
+   --  @return the item at Position.
 
    function Get_Item_Type (Self : Glist_Model) return GType;
    pragma Import (C, Get_Item_Type, "g_list_model_get_item_type");
@@ -108,6 +106,7 @@ package Glib.List_Model is
    --  The item type of a Glib.List_Model.Glist_Model can not change during
    --  the life of the model.
    --  Since: gtk+ 2.44
+   --  @return the GType of the items contained in List.
 
    function Get_N_Items (Self : Glist_Model) return Guint;
    pragma Import (C, Get_N_Items, "g_list_model_get_n_items");
@@ -116,6 +115,7 @@ package Glib.List_Model is
    --  less efficient than iterating the list with increasing values for
    --  Position until Glib.List_Model.Get_Item returns null.
    --  Since: gtk+ 2.44
+   --  @return the number of items in List.
 
    function Get_Object
       (Self     : Glist_Model;
@@ -126,6 +126,7 @@ package Glib.List_Model is
    --  the list. See Glib.List_Model.Get_N_Items.
    --  Since: gtk+ 2.44
    --  @param Position the position of the item to fetch
+   --  @return the object at Position.
 
    procedure Items_Changed
       (Self     : Glist_Model;
@@ -215,6 +216,7 @@ package Glib.List_Model is
    --  the list. See Glib.List_Model.Get_N_Items.
    --  Since: gtk+ 2.44
    --  @param Position the position of the item to fetch
+   --  @return the object at Position.
 
    type Virtual_Get_Item_Type is access function (Self : Glist_Model) return GType;
    pragma Convention (C, Virtual_Get_Item_Type);
@@ -224,6 +226,7 @@ package Glib.List_Model is
    --  The item type of a Glib.List_Model.Glist_Model can not change during
    --  the life of the model.
    --  Since: gtk+ 2.44
+   --  @return the GType of the items contained in List.
 
    type Virtual_Get_N_Items is access function (Self : Glist_Model) return Guint;
    pragma Convention (C, Virtual_Get_N_Items);
@@ -232,6 +235,7 @@ package Glib.List_Model is
    --  less efficient than iterating the list with increasing values for
    --  Position until Glib.List_Model.Get_Item returns null.
    --  Since: gtk+ 2.44
+   --  @return the number of items in List.
 
    subtype List_Model_Interface_Descr is Glib.Object.Interface_Description;
 

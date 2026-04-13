@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Paned.Gtk_Paned has two panes, arranged either horizontally or
 --  vertically. The division between the two panes is adjustable by the user by
 --  dragging a handle.
@@ -82,7 +81,6 @@
 --     gtk_paned_pack2 (GTK_PANED (hpaned), frame2, FALSE, FALSE);
 --     gtk_widget_set_size_request (frame2, 50, -1);
 --
---  </description>
 --  <screenshot>gtk-paned</screenshot>
 --  <group>Layout container</group>
 --  <testgtk>create_paned.adb</testgtk>
@@ -187,12 +185,14 @@ package Gtk.Paned is
        return Gtk.Widget.Gtk_Widget;
    --  Obtains the first child of the paned widget.
    --  Since: gtk+ 2.4
+   --  @return first child, or null if it is not set.
 
    function Get_Child2
       (Paned : not null access Gtk_Paned_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Obtains the second child of the paned widget.
    --  Since: gtk+ 2.4
+   --  @return second child, or null if it is not set.
 
    function Get_Handle_Window
       (Paned : not null access Gtk_Paned_Record) return Gdk.Gdk_Window;
@@ -200,10 +200,12 @@ package Gtk.Paned is
    --  handling button or motion events because it enables the callback to
    --  distinguish between the window of the paned, a child and the handle.
    --  Since: gtk+ 2.20
+   --  @return the paned's handle window.
 
    function Get_Position
       (Paned : not null access Gtk_Paned_Record) return Glib.Gint;
    --  Obtains the position of the divider between the two panes.
+   --  @return position of the divider
 
    procedure Set_Position
       (Paned    : not null access Gtk_Paned_Record;
@@ -216,6 +218,7 @@ package Gtk.Paned is
       (Paned : not null access Gtk_Paned_Record) return Boolean;
    --  Gets the Gtk.Paned.Gtk_Paned:wide-handle property.
    --  Since: gtk+ 3.16
+   --  @return True if the paned should have a wide handle
 
    procedure Set_Wide_Handle
       (Paned : not null access Gtk_Paned_Record;

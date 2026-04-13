@@ -21,11 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Pango.Tabs.Pango_Tab_Array struct contains an array of tab stops. Each
 --  tab stop has an alignment and a position.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -86,6 +83,8 @@ package Pango.Tabs is
 
    function Copy (Self : Pango_Tab_Array) return Pango_Tab_Array;
    --  Copies a Pango.Tabs.Pango_Tab_Array
+   --  @return the newly allocated Pango.Tabs.Pango_Tab_Array, which should be
+   --  freed with Pango.Tabs.Free.
 
    procedure Free (Self : Pango_Tab_Array);
    --  Frees a tab array and associated resources.
@@ -93,9 +92,11 @@ package Pango.Tabs is
    function Get_Positions_In_Pixels (Self : Pango_Tab_Array) return Boolean;
    --  Returns True if the tab positions are in pixels, False if they are in
    --  Pango units.
+   --  @return whether positions are in pixels.
 
    function Get_Size (Self : Pango_Tab_Array) return Glib.Gint;
    --  Gets the number of tab stops in Tab_Array.
+   --  @return the number of tab stops in the array.
 
    procedure Get_Tab
       (Self      : Pango_Tab_Array;

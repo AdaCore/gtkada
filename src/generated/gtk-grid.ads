@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkGrid is a container which arranges its child widgets in rows and
 --  columns, with arbitrary positions and horizontal/vertical spans.
 --
@@ -39,8 +38,6 @@
 --  # CSS nodes
 --
 --  GtkGrid uses a single CSS node with name grid.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -118,6 +115,7 @@ package Gtk.Grid is
       (Self : not null access Gtk_Grid_Record) return Glib.Gint;
    --  Returns which row defines the global baseline of Grid.
    --  Since: gtk+ 3.10
+   --  @return the row index defining the global baseline
 
    procedure Set_Baseline_Row
       (Self : not null access Gtk_Grid_Record;
@@ -137,10 +135,12 @@ package Gtk.Grid is
    --  Since: gtk+ 3.2
    --  @param Left the left edge of the cell
    --  @param Top the top edge of the cell
+   --  @return the child at the given position, or null
 
    function Get_Column_Homogeneous
       (Self : not null access Gtk_Grid_Record) return Boolean;
    --  Returns whether all columns of Grid have the same width.
+   --  @return whether all columns of Grid have the same width.
 
    procedure Set_Column_Homogeneous
       (Self        : not null access Gtk_Grid_Record;
@@ -151,6 +151,7 @@ package Gtk.Grid is
    function Get_Column_Spacing
       (Self : not null access Gtk_Grid_Record) return Guint;
    --  Returns the amount of space between the columns of Grid.
+   --  @return the column spacing of Grid
 
    procedure Set_Column_Spacing
       (Self    : not null access Gtk_Grid_Record;
@@ -166,6 +167,7 @@ package Gtk.Grid is
    --  Gtk.Enums.Baseline_Position_Center.
    --  Since: gtk+ 3.10
    --  @param Row a row index
+   --  @return the baseline position of Row
 
    procedure Set_Row_Baseline_Position
       (Self : not null access Gtk_Grid_Record;
@@ -180,6 +182,7 @@ package Gtk.Grid is
    function Get_Row_Homogeneous
       (Self : not null access Gtk_Grid_Record) return Boolean;
    --  Returns whether all rows of Grid have the same height.
+   --  @return whether all rows of Grid have the same height.
 
    procedure Set_Row_Homogeneous
       (Self        : not null access Gtk_Grid_Record;
@@ -190,6 +193,7 @@ package Gtk.Grid is
    function Get_Row_Spacing
       (Self : not null access Gtk_Grid_Record) return Guint;
    --  Returns the amount of space between the rows of Grid.
+   --  @return the row spacing of Grid
 
    procedure Set_Row_Spacing
       (Self    : not null access Gtk_Grid_Record;

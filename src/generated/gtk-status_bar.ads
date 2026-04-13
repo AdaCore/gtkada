@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Status_Bar.Gtk_Status_Bar is usually placed along the bottom of an
 --  application's main Gtk.Window.Gtk_Window. It may provide a regular
 --  commentary of the application's status (as is usually the case in a web
@@ -55,7 +54,6 @@
 --
 --  GtkStatusbar has a single CSS node with name statusbar.
 --
---  </description>
 --  <screenshot>gtk-status_bar</screenshot>
 --  <group>Display widgets</group>
 --  <testgtk>create_status.adb</testgtk>
@@ -112,6 +110,7 @@ package Gtk.Status_Bar is
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the box containing the label widget.
    --  Since: gtk+ 2.20
+   --  @return a Gtk.Box.Gtk_Box
 
    procedure Pop
       (Statusbar : not null access Gtk_Status_Bar_Record;

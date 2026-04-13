@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Color_Chooser_Widget.Gtk_Color_Chooser_Widget widget lets the user
 --  select a color. By default, the chooser presents a predefined palette of
 --  colors, plus a small number of settable custom colors. It is also possible
@@ -42,8 +41,6 @@
 --  # CSS names
 --
 --  GtkColorChooserWidget has a single CSS node with name colorchooser.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.RGBA;          use Gdk.RGBA;

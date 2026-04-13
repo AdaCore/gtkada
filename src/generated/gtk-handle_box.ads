@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Handle_Box.Gtk_Handle_Box widget allows a portion of a window to
 --  be "torn off". It is a bin widget which displays its child and a handle
 --  that the user can drag to tear off a separate window (the "float window")
@@ -46,8 +45,6 @@
 --  specialized, lacks features > to make it useful and most importantly does
 --  not fit well into modern > application design. Do not use it. There is no
 --  replacement.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -93,6 +90,7 @@ package Gtk.Handle_Box is
    --  Whether the handlebox's child is currently detached.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.4, 1
+   --  @return True if the child is currently detached, otherwise False
 
    function Get_Handle_Position
       (Handle_Box : not null access Gtk_Handle_Box_Record)
@@ -101,6 +99,7 @@ package Gtk.Handle_Box is
    --  Gets the handle position of the handle box. See
    --  Gtk.Handle_Box.Set_Handle_Position.
    --  Deprecated since 3.4, 1
+   --  @return the current handle position.
 
    procedure Set_Handle_Position
       (Handle_Box : not null access Gtk_Handle_Box_Record;
@@ -118,6 +117,7 @@ package Gtk.Handle_Box is
    --  Gets the type of shadow drawn around the handle box. See
    --  Gtk.Handle_Box.Set_Shadow_Type.
    --  Deprecated since 3.4, 1
+   --  @return the type of shadow currently drawn around the handle box.
 
    procedure Set_Shadow_Type
       (Handle_Box : not null access Gtk_Handle_Box_Record;
@@ -135,6 +135,9 @@ package Gtk.Handle_Box is
    --  Gets the edge used for determining reattachment of the handle box. See
    --  Gtk.Handle_Box.Set_Snap_Edge.
    --  Deprecated since 3.4, 1
+   --  @return the edge used for determining reattachment, or
+   --  (GtkPositionType)-1 if this is determined (as per default) from the
+   --  handle position.
 
    procedure Set_Snap_Edge
       (Handle_Box : not null access Gtk_Handle_Box_Record;

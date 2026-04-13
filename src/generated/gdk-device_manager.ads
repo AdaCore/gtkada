@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  In addition to a single pointer and keyboard for user interface input, GDK
 --  contains support for a variety of input devices, including graphics
 --  tablets, touchscreens and multiple pointers/keyboards interacting
@@ -134,8 +133,6 @@
 --  In GTK+ 3.20, a new Gdk.Seat.Gdk_Seat object has been introduced that
 --  supersedes Gdk.Device_Manager.Gdk_Device_Manager and should be preferred in
 --  newly written code.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Device;      use Gdk.Device;
@@ -173,12 +170,17 @@ package Gdk.Device_Manager is
    --  meaningful Gdk.Device.Gdk_Device to operate on.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.20, 1
+   --  @return The client pointer. This memory is owned by GDK and must not be
+   --  freed or unreferenced.
 
    function Get_Display
       (Self : not null access Gdk_Device_Manager_Record)
        return Gdk.Display.Gdk_Display;
    --  Gets the Gdk.Display.Gdk_Display associated to Device_Manager.
    --  Since: gtk+ 3.0
+   --  @return the Gdk.Display.Gdk_Display to which Device_Manager is
+   --  associated to, or null. This memory is owned by GDK and must not be
+   --  freed or unreferenced.
 
    function List_Devices
       (Self     : not null access Gdk_Device_Manager_Record;

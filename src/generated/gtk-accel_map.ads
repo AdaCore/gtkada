@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Accelerator maps are used to define runtime configurable accelerators.
 --  Functions for manipulating them are are usually used by higher level
 --  convenience mechanisms like Gtk.UI_Manager.Gtk_UI_Manager and are thus
@@ -71,8 +70,6 @@
 --  signal, one can monitor changes of all accelerators. It is also possible to
 --  monitor only single accelerator path by using it as a detail of the
 --  Gtk.Accel_Map.Gtk_Accel_Map::changed signal.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;       use Gdk.Types;
@@ -246,6 +243,7 @@ package Gtk.Accel_Map is
    --  @param Accel_Key the new accelerator key
    --  @param Accel_Mods the new accelerator modifiers
    --  @param Replace True if other accelerators may be deleted upon conflicts
+   --  @return True if the accelerator could be changed, False otherwise
 
    function Get return Gtk_Accel_Map;
    --  Gets the singleton global Gtk.Accel_Map.Gtk_Accel_Map object. This
@@ -253,6 +251,7 @@ package Gtk.Accel_Map is
    --  via the ::changed signal; it isn't a parameter to the other accelerator
    --  map functions.
    --  Since: gtk+ 2.4
+   --  @return the global Gtk.Accel_Map.Gtk_Accel_Map object
 
    procedure Load (File_Name : UTF8_String);
    --  Parses a file previously saved with Gtk.Accel_Map.Save for accelerator
@@ -288,6 +287,7 @@ package Gtk.Accel_Map is
    --  Looks up the accelerator entry for Accel_Path and fills in Key.
    --  @param Accel_Path a valid accelerator path
    --  @param Key the accelerator key to be filled in (optional)
+   --  @return True if Accel_Path is known, False otherwise
 
    procedure Save (File_Name : UTF8_String);
    --  Saves current accelerator specifications (accelerator path, key and

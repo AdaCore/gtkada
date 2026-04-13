@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Accel_Label.Gtk_Accel_Label widget is a subclass of
 --  Gtk.Label.Gtk_Label that also displays an accelerator key on the right of
 --  the label text, e.g. "Ctrl+S". It is commonly used in menus to show the
@@ -86,8 +85,6 @@
 --
 --  Like Gtk.Label.Gtk_Label, GtkAccelLabel has a main CSS node with the name
 --  label. It adds a subnode with name accelerator.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;       use Gdk.Types;
@@ -157,6 +154,7 @@ package Gtk.Accel_Label is
        return Gtk.Widget.Gtk_Widget;
    --  Fetches the widget monitored by this accelerator label. See
    --  Gtk.Accel_Label.Set_Accel_Widget.
+   --  @return the object monitored by the accelerator label, or null.
 
    procedure Set_Accel_Widget
       (Accel_Label  : not null access Gtk_Accel_Label_Record;
@@ -171,12 +169,14 @@ package Gtk.Accel_Label is
    --  Returns the width needed to display the accelerator key(s). This is
    --  used by menus to align all of the Gtk.Menu_Item.Gtk_Menu_Item widgets,
    --  and shouldn't be needed by applications.
+   --  @return the width needed to display the accelerator key(s).
 
    function Refetch
       (Accel_Label : not null access Gtk_Accel_Label_Record) return Boolean;
    --  Recreates the string representing the accelerator keys. This should not
    --  be needed since the string is automatically updated whenever
    --  accelerators are added or removed from the associated widget.
+   --  @return always returns False.
 
    procedure Set_Accel_Closure
       (Accel_Label   : not null access Gtk_Accel_Label_Record;

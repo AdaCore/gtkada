@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog widget is a dialog for
 --  selecting a font. It implements the Gtk.Font_Chooser.Gtk_Font_Chooser
 --  interface.
@@ -31,8 +30,6 @@
 --  The GtkFontChooserDialog implementation of the Gtk.Buildable.Gtk_Buildable
 --  interface exposes the buttons with the names "select_button" and
 --  "cancel_button".
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
@@ -64,6 +61,7 @@ package Gtk.Font_Chooser_Dialog is
    --  Gtk.Font_Chooser.Set_Filter_Func.
    --  @param Family a Pango.Font_Family.Pango_Font_Family
    --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
+   --  @return True if the font should be displayed
 
    ------------------
    -- Constructors --
@@ -123,6 +121,7 @@ package Gtk.Font_Chooser_Dialog is
       --  @param Family a Pango.Font_Family.Pango_Font_Family
       --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
       --  @param Data user data passed to Gtk.Font_Chooser.Set_Filter_Func
+      --  @return True if the font should be displayed
 
       procedure Set_Filter_Func
          (Self      : not null access Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog_Record'Class;

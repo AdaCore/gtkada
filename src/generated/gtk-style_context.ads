@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Style_Context.Gtk_Style_Context is an object that stores styling
 --  information affecting a widget defined by Gtk.Widget.Gtk_Widget_Path.
 --
@@ -77,8 +76,6 @@
 --  user settings in `XDG_CONFIG_HOME/gtk-3.0/gtk.css` will still take
 --  precedence over your changes, as it uses the
 --  GTK_STYLE_PROVIDER_PRIORITY_USER priority.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;
@@ -294,6 +291,7 @@ package Gtk.Style_Context is
    --  Returns the widget direction used for rendering.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
+   --  @return the widget direction
 
    procedure Set_Direction
       (Self      : not null access Gtk_Style_Context_Record;
@@ -317,6 +315,8 @@ package Gtk.Style_Context is
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
    --  @param State state to retrieve the font for
+   --  @return the Pango.Font.Pango_Font_Description for the given state. This
+   --  object is owned by GTK+ and should not be freed.
 
    function Get_Frame_Clock
       (Self : not null access Gtk_Style_Context_Record)
@@ -324,6 +324,8 @@ package Gtk.Style_Context is
    --  Returns the Gdk.Frame_Clock.Gdk_Frame_Clock to which Context is
    --  attached.
    --  Since: gtk+ 3.8
+   --  @return a Gdk.Frame_Clock.Gdk_Frame_Clock, or null if Context does not
+   --  have an attached frame clock.
 
    procedure Set_Frame_Clock
       (Self        : not null access Gtk_Style_Context_Record;
@@ -340,6 +342,7 @@ package Gtk.Style_Context is
        return Gtk.Enums.Gtk_Junction_Sides;
    --  Returns the sides where rendered elements connect visually with others.
    --  Since: gtk+ 3.0
+   --  @return the junction sides
 
    procedure Set_Junction_Sides
       (Self  : not null access Gtk_Style_Context_Record;
@@ -381,6 +384,7 @@ package Gtk.Style_Context is
    --  Gets the parent context set via Gtk.Style_Context.Set_Parent. See that
    --  function for details.
    --  Since: gtk+ 3.4
+   --  @return the parent context or null
 
    procedure Set_Parent
       (Self   : not null access Gtk_Style_Context_Record;
@@ -399,6 +403,7 @@ package Gtk.Style_Context is
        return Gtk.Widget.Gtk_Widget_Path;
    --  Returns the widget path used for style matching.
    --  Since: gtk+ 3.0
+   --  @return A Gtk.Widget.Gtk_Widget_Path
 
    procedure Set_Path
       (Self : not null access Gtk_Style_Context_Record;
@@ -434,6 +439,7 @@ package Gtk.Style_Context is
       (Self : not null access Gtk_Style_Context_Record) return Glib.Gint;
    --  Returns the scale used for assets.
    --  Since: gtk+ 3.10
+   --  @return the scale
 
    procedure Set_Scale
       (Self  : not null access Gtk_Style_Context_Record;
@@ -446,6 +452,7 @@ package Gtk.Style_Context is
       (Self : not null access Gtk_Style_Context_Record)
        return Gdk.Screen.Gdk_Screen;
    --  Returns the Gdk.Screen.Gdk_Screen to which Context is attached.
+   --  @return a Gdk.Screen.Gdk_Screen.
 
    procedure Set_Screen
       (Self   : not null access Gtk_Style_Context_Record;
@@ -471,6 +478,7 @@ package Gtk.Style_Context is
    --  Shorthand CSS properties cannot be queried for a location and will
    --  always return null.
    --  @param Property style property name
+   --  @return null or the section where a value for Property was defined
 
    function Get_State
       (Self : not null access Gtk_Style_Context_Record)
@@ -482,6 +490,7 @@ package Gtk.Style_Context is
    --  current state of a Gtk.Widget.Gtk_Widget, use
    --  Gtk.Widget.Get_State_Flags.
    --  Since: gtk+ 3.0
+   --  @return the state flags
 
    procedure Set_State
       (Self  : not null access Gtk_Style_Context_Record;
@@ -506,6 +515,7 @@ package Gtk.Style_Context is
    --  Returns True if Context currently has defined the given class name.
    --  Since: gtk+ 3.0
    --  @param Class_Name a class name
+   --  @return True if Context has Class_Name defined
 
    procedure Has_Region
       (Self         : not null access Gtk_Style_Context_Record;
@@ -519,6 +529,7 @@ package Gtk.Style_Context is
    --  Deprecated since 3.14, 1
    --  @param Region_Name a region name
    --  @param Flags_Return return location for region flags
+   --  @return True if region is defined
 
    procedure Invalidate (Self : not null access Gtk_Style_Context_Record);
    pragma Obsolescent (Invalidate);
@@ -550,6 +561,7 @@ package Gtk.Style_Context is
    --  Looks up and resolves a color name in the Context color map.
    --  @param Color_Name color name to lookup
    --  @param Color Return location for the looked up color
+   --  @return True if Color_Name was found and resolved, False otherwise
 
    procedure Notify_State_Change
       (Self        : not null access Gtk_Style_Context_Record;
@@ -702,6 +714,7 @@ package Gtk.Style_Context is
    --  Deprecated since 3.6, 1
    --  @param State a widget state
    --  @param Progress return location for the transition progress
+   --  @return True if there is a running transition animation for State.
 
    function To_String
       (Self  : not null access Gtk_Style_Context_Record;
@@ -715,6 +728,7 @@ package Gtk.Style_Context is
    --  returned string, it may change.
    --  Since: gtk+ 3.20
    --  @param Flags Flags that determine what to print
+   --  @return a newly allocated string representing Context
 
    ----------------------
    -- GtkAda additions --

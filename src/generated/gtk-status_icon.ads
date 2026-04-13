@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The "system tray" or notification area is normally used for transient
 --  icons that indicate some special state. For example, a system tray icon
 --  might appear to tell the user that they have new mail, or have an incoming
@@ -58,8 +57,6 @@
 --  should be the preferred mechanism to notify the users of transient status
 --  updates. See this [HowDoI](https://wiki.gnome.org/HowDoI/GNotification) for
 --  code examples.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;       use Gdk.Event;
@@ -223,6 +220,7 @@ package Gtk.Status_Icon is
    --  If this function fails, Icon is left unchanged;
    --  Since: gtk+ 2.14
    --  Deprecated since 3.14, 1
+   --  @return the displayed icon, or null if the image is empty
 
    procedure Set_From_Gicon
       (Status_Icon : not null access Gtk_Status_Icon_Record;
@@ -241,6 +239,7 @@ package Gtk.Status_Icon is
    --  Gtk.Status_Icon.Gtk_Status_Icon:has-tooltip for more information.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.14, 1
+   --  @return current value of has-tooltip on Status_Icon.
 
    procedure Set_Has_Tooltip
       (Status_Icon : not null access Gtk_Status_Icon_Record;
@@ -263,6 +262,7 @@ package Gtk.Status_Icon is
    --  Gtk.Status_Icon.Gtk_Status_Icon and should not be freed or modified.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.14, 1
+   --  @return name of the displayed icon, or null if the image is empty.
 
    procedure Set_From_Icon_Name
       (Status_Icon : not null access Gtk_Status_Icon_Record;
@@ -285,6 +285,7 @@ package Gtk.Status_Icon is
    --  own a reference to the returned pixbuf.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.14, 1
+   --  @return the displayed pixbuf, or null if the image is empty.
 
    procedure Set_From_Pixbuf
       (Status_Icon : not null access Gtk_Status_Icon_Record;
@@ -303,6 +304,7 @@ package Gtk.Status_Icon is
    --  Returns the Gdk.Screen.Gdk_Screen associated with Status_Icon.
    --  Since: gtk+ 2.12
    --  Deprecated since 3.14, 1
+   --  @return a Gdk.Screen.Gdk_Screen.
 
    procedure Set_Screen
       (Status_Icon : not null access Gtk_Status_Icon_Record;
@@ -327,6 +329,7 @@ package Gtk.Status_Icon is
    --  embedded (see Gtk.Status_Icon.Is_Embedded).
    --  Since: gtk+ 2.10
    --  Deprecated since 3.14, 1
+   --  @return the size that is available for the image
 
    function Get_Stock
       (Status_Icon : not null access Gtk_Status_Icon_Record)
@@ -339,6 +342,8 @@ package Gtk.Status_Icon is
    --  Gtk.Status_Icon.Gtk_Status_Icon and should not be freed or modified.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.10, 1
+   --  @return stock id of the displayed stock icon, or null if the image is
+   --  empty.
 
    procedure Set_From_Stock
       (Status_Icon : not null access Gtk_Status_Icon_Record;
@@ -360,6 +365,7 @@ package Gtk.Status_Icon is
    --  be Gtk.Image.Image_Empty.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.14, 1
+   --  @return the image representation being used
 
    function Get_Title
       (Status_Icon : not null access Gtk_Status_Icon_Record)
@@ -368,6 +374,7 @@ package Gtk.Status_Icon is
    --  Gets the title of this tray icon. See Gtk.Status_Icon.Set_Title.
    --  Since: gtk+ 2.18
    --  Deprecated since 3.14, 1
+   --  @return the title of the status icon
 
    procedure Set_Title
       (Status_Icon : not null access Gtk_Status_Icon_Record;
@@ -387,6 +394,8 @@ package Gtk.Status_Icon is
    --  Gets the contents of the tooltip for Status_Icon.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.14, 1
+   --  @return the tooltip text, or null. You should free the returned string
+   --  with g_free when done.
 
    procedure Set_Tooltip_Markup
       (Status_Icon : not null access Gtk_Status_Icon_Record;
@@ -410,6 +419,8 @@ package Gtk.Status_Icon is
    --  Gets the contents of the tooltip for Status_Icon.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.14, 1
+   --  @return the tooltip text, or null. You should free the returned string
+   --  with g_free when done.
 
    procedure Set_Tooltip_Text
       (Status_Icon : not null access Gtk_Status_Icon_Record;
@@ -433,6 +444,7 @@ package Gtk.Status_Icon is
    --  also Gtk.Status_Icon.Is_Embedded.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.14, 1
+   --  @return True if the status icon is visible
 
    procedure Set_Visible
       (Status_Icon : not null access Gtk_Status_Icon_Record;
@@ -456,6 +468,8 @@ package Gtk.Status_Icon is
    --  Gtk.Status_Icon.Position_Menu.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.14, 1
+   --  @return An 32 bit unsigned integer identifier for the underlying X11
+   --  Window
 
    function Is_Embedded
       (Status_Icon : not null access Gtk_Status_Icon_Record) return Boolean;
@@ -463,6 +477,7 @@ package Gtk.Status_Icon is
    --  Returns whether the status icon is embedded in a notification area.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.14, 1
+   --  @return True if the status icon is embedded in a notification area.
 
    procedure Set_From_File
       (Status_Icon : not null access Gtk_Status_Icon_Record;
@@ -650,8 +665,6 @@ package Gtk.Status_Icon is
    -- 
    --  Callback parameters:
    --    --  @param Event the Gdk.Event.Gdk_Event_Button which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked
-   -- for the event. False to propagate the event further.
 
    Signal_Button_Release_Event : constant Glib.Signal_Name := "button-release-event";
    procedure On_Button_Release_Event
@@ -671,8 +684,6 @@ package Gtk.Status_Icon is
    -- 
    --  Callback parameters:
    --    --  @param Event the Gdk.Event.Gdk_Event_Button which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked
-   -- for the event. False to propagate the event further.
 
    type Cb_Gtk_Status_Icon_Guint_Guint_Void is not null access procedure
      (Self          : access Gtk_Status_Icon_Record'Class;
@@ -759,7 +770,6 @@ package Gtk.Status_Icon is
    --    --  been emitted, relative to Status_Icon
    --    --  @param Keyboard_Mode True if the tooltip was trigged using the keyboard
    --    --  @param Tooltip a Gtk.Tooltip.Gtk_Tooltip
-   --    --  Returns True if Tooltip should be shown right now, False otherwise.
 
    type Cb_Gtk_Status_Icon_Gdk_Event_Scroll_Boolean is not null access function
      (Self  : access Gtk_Status_Icon_Record'Class;
@@ -787,8 +797,6 @@ package Gtk.Status_Icon is
    -- 
    --  Callback parameters:
    --    --  @param Event the Gdk.Event.Gdk_Event_Scroll which triggered this signal
-   --    --  Returns True to stop other handlers from being invoked for the event.
-   --   False to propagate the event further.
 
    type Cb_Gtk_Status_Icon_Gint_Boolean is not null access function
      (Self : access Gtk_Status_Icon_Record'Class;
@@ -813,8 +821,6 @@ package Gtk.Status_Icon is
    -- 
    --  Callback parameters:
    --    --  @param Size the new size
-   --    --  Returns True if the icon was updated for the new
-   -- size. Otherwise, GTK+ will scale the icon as necessary.
 
 private
    Visible_Property : constant Glib.Properties.Property_Boolean :=

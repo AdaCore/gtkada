@@ -622,6 +622,8 @@ package body Gtk.Entry_Completion is
       --  match
       --  @param User_Data user data given to
       --  Gtk.Entry_Completion.Set_Match_Func
+      --  @return True if Iter should be displayed as a possible completion
+      --  for Key
 
       -----------------
       -- Internal_Cb --

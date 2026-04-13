@@ -58,6 +58,7 @@ package Gtk.Print_Operation_Preview is
    --  have been selected for printing.
    --  Since: gtk+ 2.10
    --  @param Page_Nr a page number
+   --  @return True if the page has been selected for printing
 
    procedure Render_Page
       (Preview : Gtk_Print_Operation_Preview;
@@ -166,6 +167,7 @@ package Gtk.Print_Operation_Preview is
    --  have been selected for printing.
    --  Since: gtk+ 2.10
    --  @param Page_Nr a page number
+   --  @return True if the page has been selected for printing
 
    type Virtual_Ready is access procedure
      (Preview : Gtk_Print_Operation_Preview;

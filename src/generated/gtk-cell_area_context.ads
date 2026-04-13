@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Cell_Area_Context.Gtk_Cell_Area_Context object is created by a
 --  given Gtk.Cell_Area.Gtk_Cell_Area implementation via its
 --  Gtk.Cell_Area_Class.Gtk_Cell_Area_Class.create_context virtual method and
@@ -36,7 +35,6 @@
 --  calling other Gtk.Cell_Area.Gtk_Cell_Area APIs such as Gtk.Cell_Area.Render
 --  and Gtk.Cell_Area.Event.
 --
---  </description>
 --  <group>Layout Containers</group>
 
 pragma Warnings (Off, "*is already use-visible*");

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkPrintSettings object represents the settings of a print dialog in a
 --  system-independent way. The main use for this object is that once you've
 --  printed you can get a settings object that represents the settings the user
@@ -34,8 +33,6 @@
 --  so that moving such a document between systems still works.
 --
 --  Printing support was added in GTK+ 2.10.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
@@ -170,6 +167,7 @@ package Gtk.Print_Settings is
        return Gtk_Print_Settings;
    --  Copies a Gtk.Print_Settings.Gtk_Print_Settings object.
    --  Since: gtk+ 2.10
+   --  @return a newly allocated copy of Other
 
    procedure Foreach
       (Self : not null access Gtk_Print_Settings_Record;
@@ -205,6 +203,7 @@ package Gtk.Print_Settings is
    --  Looks up the string value associated with Key.
    --  Since: gtk+ 2.10
    --  @param Key a key
+   --  @return the string value for Key
 
    function Get_Bool
       (Self : not null access Gtk_Print_Settings_Record;
@@ -214,6 +213,7 @@ package Gtk.Print_Settings is
    --  The string "true" represents True, any other string False.
    --  Since: gtk+ 2.10
    --  @param Key a key
+   --  @return True, if Key maps to a true value.
 
    procedure Set_Bool
       (Self  : not null access Gtk_Print_Settings_Record;
@@ -228,6 +228,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return Boolean;
    --  Gets the value of GTK_PRINT_SETTINGS_COLLATE.
    --  Since: gtk+ 2.10
+   --  @return whether to collate the printed pages
 
    procedure Set_Collate
       (Self    : not null access Gtk_Print_Settings_Record;
@@ -240,6 +241,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return UTF8_String;
    --  Gets the value of GTK_PRINT_SETTINGS_DEFAULT_SOURCE.
    --  Since: gtk+ 2.10
+   --  @return the default source
 
    procedure Set_Default_Source
       (Self           : not null access Gtk_Print_Settings_Record;
@@ -252,6 +254,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return UTF8_String;
    --  Gets the value of GTK_PRINT_SETTINGS_DITHER.
    --  Since: gtk+ 2.10
+   --  @return the dithering that is used
 
    procedure Set_Dither
       (Self   : not null access Gtk_Print_Settings_Record;
@@ -266,6 +269,7 @@ package Gtk.Print_Settings is
    --  Returns the double value associated with Key, or 0.
    --  Since: gtk+ 2.10
    --  @param Key a key
+   --  @return the double value of Key
 
    procedure Set_Double
       (Self  : not null access Gtk_Print_Settings_Record;
@@ -287,12 +291,14 @@ package Gtk.Print_Settings is
    --  Since: gtk+ 2.10
    --  @param Key a key
    --  @param Def the default value
+   --  @return the floating point number associated with Key
 
    function Get_Duplex
       (Self : not null access Gtk_Print_Settings_Record)
        return Gtk.Enums.Gtk_Print_Duplex;
    --  Gets the value of GTK_PRINT_SETTINGS_DUPLEX.
    --  Since: gtk+ 2.10
+   --  @return whether to print the output in duplex.
 
    procedure Set_Duplex
       (Self   : not null access Gtk_Print_Settings_Record;
@@ -305,6 +311,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return UTF8_String;
    --  Gets the value of GTK_PRINT_SETTINGS_FINISHINGS.
    --  Since: gtk+ 2.10
+   --  @return the finishings
 
    procedure Set_Finishings
       (Self       : not null access Gtk_Print_Settings_Record;
@@ -319,6 +326,7 @@ package Gtk.Print_Settings is
    --  Returns the integer value of Key, or 0.
    --  Since: gtk+ 2.10
    --  @param Key a key
+   --  @return the integer value of Key
 
    procedure Set_Int
       (Self  : not null access Gtk_Print_Settings_Record;
@@ -338,6 +346,7 @@ package Gtk.Print_Settings is
    --  Since: gtk+ 2.10
    --  @param Key a key
    --  @param Def the default value
+   --  @return the integer value of Key
 
    function Get_Length
       (Self : not null access Gtk_Print_Settings_Record;
@@ -348,6 +357,7 @@ package Gtk.Print_Settings is
    --  Since: gtk+ 2.10
    --  @param Key a key
    --  @param Unit the unit of the return value
+   --  @return the length value of Key, converted to Unit
 
    procedure Set_Length
       (Self  : not null access Gtk_Print_Settings_Record;
@@ -365,6 +375,7 @@ package Gtk.Print_Settings is
    --  Gets the value of GTK_PRINT_SETTINGS_MEDIA_TYPE.
    --  The set of media types is defined in PWG 5101.1-2002 PWG.
    --  Since: gtk+ 2.10
+   --  @return the media type
 
    procedure Set_Media_Type
       (Self       : not null access Gtk_Print_Settings_Record;
@@ -378,6 +389,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint;
    --  Gets the value of GTK_PRINT_SETTINGS_N_COPIES.
    --  Since: gtk+ 2.10
+   --  @return the number of copies to print
 
    procedure Set_N_Copies
       (Self       : not null access Gtk_Print_Settings_Record;
@@ -390,6 +402,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint;
    --  Gets the value of GTK_PRINT_SETTINGS_NUMBER_UP.
    --  Since: gtk+ 2.10
+   --  @return the number of pages per sheet
 
    procedure Set_Number_Up
       (Self      : not null access Gtk_Print_Settings_Record;
@@ -403,6 +416,7 @@ package Gtk.Print_Settings is
        return Gtk.Enums.Gtk_Number_Up_Layout;
    --  Gets the value of GTK_PRINT_SETTINGS_NUMBER_UP_LAYOUT.
    --  Since: gtk+ 2.14
+   --  @return layout of page in number-up mode
 
    procedure Set_Number_Up_Layout
       (Self             : not null access Gtk_Print_Settings_Record;
@@ -417,6 +431,7 @@ package Gtk.Print_Settings is
    --  Get the value of GTK_PRINT_SETTINGS_ORIENTATION, converted to a
    --  Gtk.Enums.Gtk_Page_Orientation.
    --  Since: gtk+ 2.10
+   --  @return the orientation
 
    procedure Set_Orientation
       (Self        : not null access Gtk_Print_Settings_Record;
@@ -429,6 +444,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return UTF8_String;
    --  Gets the value of GTK_PRINT_SETTINGS_OUTPUT_BIN.
    --  Since: gtk+ 2.10
+   --  @return the output bin
 
    procedure Set_Output_Bin
       (Self       : not null access Gtk_Print_Settings_Record;
@@ -455,6 +471,7 @@ package Gtk.Print_Settings is
        return Gtk.Enums.Gtk_Page_Set;
    --  Gets the value of GTK_PRINT_SETTINGS_PAGE_SET.
    --  Since: gtk+ 2.10
+   --  @return the set of pages to print
 
    procedure Set_Page_Set
       (Self     : not null access Gtk_Print_Settings_Record;
@@ -469,6 +486,7 @@ package Gtk.Print_Settings is
    --  Gets the value of GTK_PRINT_SETTINGS_PAPER_HEIGHT, converted to Unit.
    --  Since: gtk+ 2.10
    --  @param Unit the unit for the return value
+   --  @return the paper height, in units of Unit
 
    procedure Set_Paper_Height
       (Self   : not null access Gtk_Print_Settings_Record;
@@ -485,6 +503,7 @@ package Gtk.Print_Settings is
    --  Gets the value of GTK_PRINT_SETTINGS_PAPER_FORMAT, converted to a
    --  Gtk.Paper_Size.Gtk_Paper_Size.
    --  Since: gtk+ 2.10
+   --  @return the paper size
 
    procedure Set_Paper_Size
       (Self       : not null access Gtk_Print_Settings_Record;
@@ -500,6 +519,7 @@ package Gtk.Print_Settings is
    --  Gets the value of GTK_PRINT_SETTINGS_PAPER_WIDTH, converted to Unit.
    --  Since: gtk+ 2.10
    --  @param Unit the unit for the return value
+   --  @return the paper width, in units of Unit
 
    procedure Set_Paper_Width
       (Self  : not null access Gtk_Print_Settings_Record;
@@ -515,6 +535,7 @@ package Gtk.Print_Settings is
        return Gtk.Enums.Gtk_Print_Pages;
    --  Gets the value of GTK_PRINT_SETTINGS_PRINT_PAGES.
    --  Since: gtk+ 2.10
+   --  @return which pages to print
 
    procedure Set_Print_Pages
       (Self  : not null access Gtk_Print_Settings_Record;
@@ -527,6 +548,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return UTF8_String;
    --  Convenience function to obtain the value of GTK_PRINT_SETTINGS_PRINTER.
    --  Since: gtk+ 2.10
+   --  @return the printer name
 
    procedure Set_Printer
       (Self    : not null access Gtk_Print_Settings_Record;
@@ -539,6 +561,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return Gdouble;
    --  Gets the value of GTK_PRINT_SETTINGS_PRINTER_LPI.
    --  Since: gtk+ 2.16
+   --  @return the resolution in lpi (lines per inch)
 
    procedure Set_Printer_Lpi
       (Self : not null access Gtk_Print_Settings_Record;
@@ -552,6 +575,7 @@ package Gtk.Print_Settings is
        return Gtk.Enums.Gtk_Print_Quality;
    --  Gets the value of GTK_PRINT_SETTINGS_QUALITY.
    --  Since: gtk+ 2.10
+   --  @return the print quality
 
    procedure Set_Quality
       (Self    : not null access Gtk_Print_Settings_Record;
@@ -564,6 +588,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint;
    --  Gets the value of GTK_PRINT_SETTINGS_RESOLUTION.
    --  Since: gtk+ 2.10
+   --  @return the resolution in dpi
 
    procedure Set_Resolution
       (Self       : not null access Gtk_Print_Settings_Record;
@@ -577,16 +602,19 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint;
    --  Gets the value of GTK_PRINT_SETTINGS_RESOLUTION_X.
    --  Since: gtk+ 2.16
+   --  @return the horizontal resolution in dpi
 
    function Get_Resolution_Y
       (Self : not null access Gtk_Print_Settings_Record) return Glib.Gint;
    --  Gets the value of GTK_PRINT_SETTINGS_RESOLUTION_Y.
    --  Since: gtk+ 2.16
+   --  @return the vertical resolution in dpi
 
    function Get_Reverse
       (Self : not null access Gtk_Print_Settings_Record) return Boolean;
    --  Gets the value of GTK_PRINT_SETTINGS_REVERSE.
    --  Since: gtk+ 2.10
+   --  @return whether to reverse the order of the printed pages
 
    procedure Set_Reverse
       (Self        : not null access Gtk_Print_Settings_Record;
@@ -599,6 +627,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return Gdouble;
    --  Gets the value of GTK_PRINT_SETTINGS_SCALE.
    --  Since: gtk+ 2.10
+   --  @return the scale in percent
 
    procedure Set_Scale
       (Self  : not null access Gtk_Print_Settings_Record;
@@ -611,6 +640,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record) return Boolean;
    --  Gets the value of GTK_PRINT_SETTINGS_USE_COLOR.
    --  Since: gtk+ 2.10
+   --  @return whether to use color
 
    procedure Set_Use_Color
       (Self      : not null access Gtk_Print_Settings_Record;
@@ -625,6 +655,7 @@ package Gtk.Print_Settings is
    --  Returns True, if a value is associated with Key.
    --  Since: gtk+ 2.10
    --  @param Key a key
+   --  @return True, if Key has a value
 
    function Load_File
       (Self      : not null access Gtk_Print_Settings_Record;
@@ -634,6 +665,7 @@ package Gtk.Print_Settings is
    --  Gtk.Print_Settings.To_File.
    --  Since: gtk+ 2.14
    --  @param File_Name the filename to read the settings from
+   --  @return True on success
 
    function Load_Key_File
       (Self       : not null access Gtk_Print_Settings_Record;
@@ -646,6 +678,7 @@ package Gtk.Print_Settings is
    --  @param Key_File the Gkey.File.Gkey_File to retrieve the settings from
    --  @param Group_Name the name of the group to use, or null to use the
    --  default "Print Settings"
+   --  @return True on success
 
    procedure Set
       (Self  : not null access Gtk_Print_Settings_Record;
@@ -674,12 +707,14 @@ package Gtk.Print_Settings is
    --  or GKey_File_Error.
    --  Since: gtk+ 2.12
    --  @param File_Name the file to save to
+   --  @return True on success
 
    function To_Gvariant
       (Self : not null access Gtk_Print_Settings_Record)
        return Glib.Variant.Gvariant;
    --  Serialize print settings to an a{sv} variant.
    --  Since: gtk+ 3.22
+   --  @return a new, floating, Glib.Variant.Gvariant
 
    procedure To_Key_File
       (Self       : not null access Gtk_Print_Settings_Record;

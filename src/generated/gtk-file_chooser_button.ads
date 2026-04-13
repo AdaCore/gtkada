@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.File_Chooser_Button.Gtk_File_Chooser_Button is a widget that lets
 --  the user select a file. It implements the Gtk.File_Chooser.Gtk_File_Chooser
 --  interface. Visually, it is a file name with a button to bring up a
@@ -58,7 +57,6 @@
 --  containing a subnode for the internal button with name "button" and style
 --  class ".file".
 --
---  </description>
 --  <group>Buttons and Toggles</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -156,6 +154,8 @@ package Gtk.File_Chooser_Button is
    --  mouse. See Gtk.File_Chooser_Button.Set_Focus_On_Click.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.20, 1
+   --  @return True if the button grabs focus when it is clicked with the
+   --  mouse.
 
    procedure Set_Focus_On_Click
       (Button         : not null access Gtk_File_Chooser_Button_Record;
@@ -176,6 +176,7 @@ package Gtk.File_Chooser_Button is
    --  Retrieves the title of the browse dialog used by Button. The returned
    --  value should not be modified or freed.
    --  Since: gtk+ 2.6
+   --  @return a pointer to the browse dialog's title.
 
    procedure Set_Title
       (Button : not null access Gtk_File_Chooser_Button_Record;
@@ -190,6 +191,8 @@ package Gtk.File_Chooser_Button is
    --  Retrieves the width in characters of the Button widget's entry and/or
    --  label.
    --  Since: gtk+ 2.6
+   --  @return an integer width (in characters) that the button will use to
+   --  size itself.
 
    procedure Set_Width_Chars
       (Button  : not null access Gtk_File_Chooser_Button_Record;

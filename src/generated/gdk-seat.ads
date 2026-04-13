@@ -21,11 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gdk.Seat.Gdk_Seat object represents a collection of input devices that
 --  belong to a user.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Device;              use Gdk.Device;
@@ -95,6 +92,7 @@ package Gdk.Seat is
       (Self : not null access Gdk_Seat_Record) return Gdk_Seat_Capabilities;
    --  Returns the capabilities this Gdk.Seat.Gdk_Seat currently has.
    --  Since: gtk+ 3.20
+   --  @return the seat capabilities
 
    function Get_Display
       (Self : not null access Gdk_Seat_Record) return Glib.Object.GObject;
@@ -104,11 +102,15 @@ package Gdk.Seat is
       (Self : not null access Gdk_Seat_Record) return Gdk.Device.Gdk_Device;
    --  Returns the master device that routes keyboard events.
    --  Since: gtk+ 3.20
+   --  @return a master Gdk.Device.Gdk_Device with keyboard capabilities. This
+   --  object is owned by GTK+ and must not be freed.
 
    function Get_Pointer
       (Self : not null access Gdk_Seat_Record) return Gdk.Device.Gdk_Device;
    --  Returns the master device that routes pointer events.
    --  Since: gtk+ 3.20
+   --  @return a master Gdk.Device.Gdk_Device with pointer capabilities. This
+   --  object is owned by GTK+ and must not be freed.
 
    function Get_Slaves
       (Self         : not null access Gdk_Seat_Record;
@@ -164,6 +166,7 @@ package Gdk.Seat is
    --  available.
    --  @param Prepare_Func function to prepare the window to be grabbed, it
    --  can be null if Window is visible before this call.
+   --  @return GDK_GRAB_SUCCESS if the grab was successful.
 
    procedure Ungrab (Self : not null access Gdk_Seat_Record);
    --  Releases a grab added through Gdk.Seat.Grab.

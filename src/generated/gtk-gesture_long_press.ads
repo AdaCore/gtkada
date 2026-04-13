@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Gesture_Long_Press.Gtk_Gesture_Long_Press is a Gtk.Gesture.Gtk_Gesture
 --  implementation able to recognize long presses, triggering the
 --  Gtk.Gesture_Long_Press.Gtk_Gesture_Long_Press::pressed after the timeout is
@@ -31,8 +30,6 @@
 --  far of the initial press point, the
 --  Gtk.Gesture_Long_Press.Gtk_Gesture_Long_Press::cancelled signal will be
 --  emitted.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;

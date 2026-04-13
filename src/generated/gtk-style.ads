@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Style.Gtk_Style object encapsulates the information that provides
 --  the look and feel for a widget.
 --
@@ -38,8 +37,6 @@
 --
 --  Usually applications should not need to use or modify the
 --  Gtk.Style.Gtk_Style of their widgets.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;           use Cairo;
@@ -126,11 +123,15 @@ package Gtk.Style is
    --  following way: `style = gtk_style_attach (style, window)`
    --  Deprecated since 3.0, 1
    --  @param Window a Gdk.Gdk_Window.
+   --  @return Either Style, or a newly-created Gtk.Style.Gtk_Style. If the
+   --  style is newly created, the style parameter will be unref'ed, and the
+   --  new style will have a reference count belonging to the caller.
 
    function Copy (Style : not null access Gtk_Style_Record) return Gtk_Style;
    pragma Obsolescent (Copy);
    --  Creates a copy of the passed in Gtk.Style.Gtk_Style object.
    --  Deprecated since 3.0, 1
+   --  @return a copy of Style
 
    procedure Detach (Style : not null access Gtk_Style_Record);
    pragma Obsolescent (Detach);
@@ -156,6 +157,7 @@ package Gtk.Style is
    --  Returns whether Style has an associated
    --  Gtk.Style_Context.Gtk_Style_Context.
    --  Since: gtk+ 3.0
+   --  @return True if Style has a Gtk.Style_Context.Gtk_Style_Context
 
    procedure Lookup_Color
       (Style      : not null access Gtk_Style_Record;
@@ -171,6 +173,7 @@ package Gtk.Style is
    --  Deprecated since 3.0, 1
    --  @param Color_Name the name of the logical color to look up
    --  @param Color the Gdk.Color.Gdk_Color to fill in
+   --  @return True if the mapping was found.
 
    procedure Set_Background
       (Style      : not null access Gtk_Style_Record;

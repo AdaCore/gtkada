@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Drawing_Area.Gtk_Drawing_Area widget is used for creating custom
 --  user interface elements. It's essentially a blank widget; you can draw on
 --  it. After creating a drawing area, the application may want to connect to:
@@ -102,13 +101,10 @@
 --  the focus indicator. See Gtk.Style_Context.Render_Focus for one way to draw
 --  focus.
 --
---  </description>
---  <description>
 --  See also the Double_Buffer widget provided in the GtkAda examples for an
 --  advanced example that demonstrates how to use double buffering, to avoid
 --  flickering in your drawings.
 --
---  </description>
 --  <group>Drawing</group>
 --  <testgtk>libart_demo.adb</testgtk>
 

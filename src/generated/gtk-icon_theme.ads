@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Icon_Theme.Gtk_Icon_Theme provides a facility for looking up icons by
 --  name and size. The main reason for using a name rather than simply
 --  providing a filename is to allow different icons to be used depending on
@@ -85,8 +84,6 @@
 --         // Use the pixbuf
 --         g_object_unref (pixbuf);
 --       }
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;
@@ -231,6 +228,8 @@ package Gtk.Icon_Theme is
    --  @param Icon_Names null-terminated array of icon names to lookup
    --  @param Size desired icon size
    --  @param Flags flags modifying the behavior of the icon lookup
+   --  @return a Gtk.Icon_Theme.Gtk_Icon_Info object containing information
+   --  about the icon, or null if the icon wasn't found.
 
    function Choose_Icon_For_Scale
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
@@ -250,6 +249,8 @@ package Gtk.Icon_Theme is
    --  @param Size desired icon size
    --  @param Scale desired scale
    --  @param Flags flags modifying the behavior of the icon lookup
+   --  @return a Gtk.Icon_Theme.Gtk_Icon_Info object containing information
+   --  about the icon, or null if the icon wasn't found.
 
    function Get_Example_Icon_Name
       (Icon_Theme : not null access Gtk_Icon_Theme_Record)
@@ -257,6 +258,7 @@ package Gtk.Icon_Theme is
    --  Gets the name of an icon that is representative of the current theme
    --  (for instance, to use when presenting a list of themes to the user.)
    --  Since: gtk+ 2.4
+   --  @return the name of an example icon or null. Free with g_free.
 
    function Get_Icon_Sizes
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
@@ -266,6 +268,9 @@ package Gtk.Icon_Theme is
    --  in a scalable format. The array is zero-terminated.
    --  Since: gtk+ 2.6
    --  @param Icon_Name the name of an icon
+   --  @return An newly allocated array describing the sizes at which the icon
+   --  is available. The array should be freed with g_free when it is no longer
+   --  needed.
 
    function Get_Search_Path
       (Icon_Theme : not null access Gtk_Icon_Theme_Record)
@@ -297,6 +302,7 @@ package Gtk.Icon_Theme is
    --  Checks whether an icon theme includes an icon for a particular name.
    --  Since: gtk+ 2.4
    --  @param Icon_Name the name of an icon
+   --  @return True if Icon_Theme includes an icon for Icon_Name.
 
    function List_Contexts
       (Icon_Theme : not null access Gtk_Icon_Theme_Record)
@@ -343,6 +349,10 @@ package Gtk.Icon_Theme is
    --  @param Size the desired icon size. The resulting icon may not be
    --  exactly this size; see Gtk.Icon_Theme.Load_Icon.
    --  @param Flags flags modifying the behavior of the icon lookup
+   --  @return the rendered icon; this may be a newly created icon or a new
+   --  reference to an internal icon, so you must not modify the icon. Use
+   --  g_object_unref to release your reference to the icon. null if the icon
+   --  isn't found.
 
    function Load_Icon
       (Icon_Info : not null access Gtk_Icon_Info_Record)
@@ -359,6 +369,9 @@ package Gtk.Icon_Theme is
    --  Gtk.Icon_Theme.Gtk_Icon_Info. If this flag has been specified, the
    --  pixbuf returned by this function will be scaled to the exact size.
    --  Since: gtk+ 2.4
+   --  @return the rendered icon; this may be a newly created icon or a new
+   --  reference to an internal icon, so you must not modify the icon. Use
+   --  g_object_unref to release your reference to the icon.
 
    function Load_Icon_For_Scale
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
@@ -384,6 +397,10 @@ package Gtk.Icon_Theme is
    --  exactly this size; see Gtk.Icon_Theme.Load_Icon.
    --  @param Scale desired scale
    --  @param Flags flags modifying the behavior of the icon lookup
+   --  @return the rendered icon; this may be a newly created icon or a new
+   --  reference to an internal icon, so you must not modify the icon. Use
+   --  g_object_unref to release your reference to the icon. null if the icon
+   --  isn't found.
 
    function Load_Surface
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
@@ -407,6 +424,10 @@ package Gtk.Icon_Theme is
    --  @param Scale desired scale
    --  @param For_Window Gdk.Gdk_Window to optimize drawing for, or null
    --  @param Flags flags modifying the behavior of the icon lookup
+   --  @return the rendered icon; this may be a newly created icon or a new
+   --  reference to an internal icon, so you must not modify the icon. Use
+   --  cairo_surface_destroy to release your reference to the icon. null if the
+   --  icon isn't found.
 
    function Load_Surface
       (Icon_Info  : not null access Gtk_Icon_Info_Record;
@@ -424,6 +445,9 @@ package Gtk.Icon_Theme is
    --  pixbuf returned by this function will be scaled to the exact size.
    --  Since: gtk+ 3.10
    --  @param For_Window Gdk.Gdk_Window to optimize drawing for, or null
+   --  @return the rendered icon; this may be a newly created icon or a new
+   --  reference to an internal icon, so you must not modify the icon. Use
+   --  cairo_surface_destroy to release your reference to the icon.
 
    function Lookup_By_Gicon
       (Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
@@ -442,6 +466,8 @@ package Gtk.Icon_Theme is
    --  @param Icon the Glib.G_Icon.G_Icon to look up
    --  @param Size desired icon size
    --  @param Flags flags modifying the behavior of the icon lookup
+   --  @return a Gtk.Icon_Theme.Gtk_Icon_Info containing information about the
+   --  icon, or null if the icon wasn't found. Unref with g_object_unref
 
    function Lookup_By_Gicon_For_Scale
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
@@ -457,6 +483,8 @@ package Gtk.Icon_Theme is
    --  @param Size desired icon size
    --  @param Scale the desired scale
    --  @param Flags flags modifying the behavior of the icon lookup
+   --  @return a Gtk.Icon_Theme.Gtk_Icon_Info containing information about the
+   --  icon, or null if the icon wasn't found. Unref with g_object_unref
 
    function Lookup_Icon
       (Icon_Theme : not null access Gtk_Icon_Theme_Record'Class;
@@ -477,6 +505,8 @@ package Gtk.Icon_Theme is
    --  @param Icon_Name the name of the icon to lookup
    --  @param Size desired icon size
    --  @param Flags flags modifying the behavior of the icon lookup
+   --  @return a Gtk.Icon_Theme.Gtk_Icon_Info object containing information
+   --  about the icon, or null if the icon wasn't found.
 
    function Lookup_Icon_For_Scale
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
@@ -494,6 +524,8 @@ package Gtk.Icon_Theme is
    --  @param Size desired icon size
    --  @param Scale the desired scale
    --  @param Flags flags modifying the behavior of the icon lookup
+   --  @return a Gtk.Icon_Theme.Gtk_Icon_Info object containing information
+   --  about the icon, or null if the icon wasn't found.
 
    procedure Prepend_Search_Path
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
@@ -509,6 +541,7 @@ package Gtk.Icon_Theme is
    --  cached information is discarded and will be reloaded next time
    --  Icon_Theme is accessed.
    --  Since: gtk+ 2.4
+   --  @return True if the icon theme has changed and needed to be reloaded.
 
    procedure Set_Custom_Theme
       (Icon_Theme : not null access Gtk_Icon_Theme_Record;
@@ -537,6 +570,7 @@ package Gtk.Icon_Theme is
    --  Make a copy of a Gtk.Icon_Theme.Gtk_Icon_Info.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.8, 1
+   --  @return the new GtkIconInfo
 
    procedure Free (Icon_Info : not null access Gtk_Icon_Info_Record);
    pragma Obsolescent (Free);
@@ -559,6 +593,7 @@ package Gtk.Icon_Theme is
    --  drawn for a high-dpi screen with window scale 2 for a base size of 32
    --  will be 64 pixels tall and have a base scale of 2.
    --  Since: gtk+ 3.10
+   --  @return the base scale
 
    function Get_Base_Size
       (Icon_Info : not null access Gtk_Icon_Info_Record) return Glib.Gint;
@@ -570,6 +605,7 @@ package Gtk.Icon_Theme is
    --  Note that for scaled icons the base size does not include the base
    --  scale.
    --  Since: gtk+ 2.4
+   --  @return the base size, or 0, if no base size is known for the icon.
 
    function Get_Builtin_Pixbuf
       (Icon_Info : not null access Gtk_Icon_Info_Record)
@@ -580,6 +616,9 @@ package Gtk.Icon_Theme is
    --  Gtk.Icon_Theme.Icon_Lookup_Use_Builtin to Gtk.Icon_Theme.Lookup_Icon.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.14, 1
+   --  @return the built-in image pixbuf, or null. No extra reference is added
+   --  to the returned pixbuf, so if you want to keep it around, you must use
+   --  g_object_ref. The returned image must not be modified.
 
    function Get_Display_Name
       (Icon_Info : not null access Gtk_Icon_Info_Record) return UTF8_String;
@@ -587,6 +626,7 @@ package Gtk.Icon_Theme is
    --  This function is deprecated and always returns null.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.14, 1
+   --  @return null
 
    procedure Get_Embedded_Rect
       (Icon_Info              : not null access Gtk_Icon_Info_Record;
@@ -599,6 +639,7 @@ package Gtk.Icon_Theme is
    --  @param Rectangle Gdk.Rectangle.Gdk_Rectangle in which to store embedded
    --  rectangle coordinates; coordinates are only stored when this function
    --  returns True.
+   --  @return False
 
    function Get_Filename
       (Icon_Info : not null access Gtk_Icon_Info_Record) return UTF8_String;
@@ -608,6 +649,9 @@ package Gtk.Icon_Theme is
    --  is returned; in this case, you should use
    --  Gtk.Icon_Theme.Get_Builtin_Pixbuf.
    --  Since: gtk+ 2.4
+   --  @return the filename for the icon, or null if
+   --  Gtk.Icon_Theme.Get_Builtin_Pixbuf should be used instead. The return
+   --  value is owned by GTK+ and should not be modified or freed.
 
    function Is_Symbolic
       (Icon_Info : not null access Gtk_Icon_Info_Record) return Boolean;
@@ -615,6 +659,7 @@ package Gtk.Icon_Theme is
    --  file name and not the file contents for determining this. This behaviour
    --  may change in the future.
    --  Since: gtk+ 3.12
+   --  @return True if the icon is symbolic, False otherwise
 
    function Load_Symbolic
       (Icon_Info     : not null access Gtk_Icon_Info_Record;
@@ -650,6 +695,7 @@ package Gtk.Icon_Theme is
    --  the icon or null to use the default color (allow-none)
    --  @param Was_Symbolic a Boolean, returns whether the loaded icon was a
    --  symbolic one and whether the Fg color was applied to it.
+   --  @return a Gdk.Pixbuf.Gdk_Pixbuf representing the loaded icon
 
    function Load_Symbolic_For_Context
       (Icon_Info    : not null access Gtk_Icon_Info_Record;
@@ -668,6 +714,7 @@ package Gtk.Icon_Theme is
    --  @param Context a Gtk.Style_Context.Gtk_Style_Context
    --  @param Was_Symbolic a Boolean, returns whether the loaded icon was a
    --  symbolic one and whether the Fg color was applied to it.
+   --  @return a Gdk.Pixbuf.Gdk_Pixbuf representing the loaded icon
 
    function Load_Symbolic_For_Style
       (Icon_Info    : not null access Gtk_Icon_Info_Record;
@@ -688,6 +735,7 @@ package Gtk.Icon_Theme is
    --  @param State the widget state to use for colors
    --  @param Was_Symbolic a Boolean, returns whether the loaded icon was a
    --  symbolic one and whether the Fg color was applied to it.
+   --  @return a Gdk.Pixbuf.Gdk_Pixbuf representing the loaded icon
 
    procedure Set_Raw_Coordinates
       (Icon_Info       : not null access Gtk_Icon_Info_Record;
@@ -743,6 +791,9 @@ package Gtk.Icon_Theme is
    --  Gets the icon theme for the default screen. See
    --  Gtk.Icon_Theme.Get_For_Screen.
    --  Since: gtk+ 2.4
+   --  @return A unique Gtk.Icon_Theme.Gtk_Icon_Theme associated with the
+   --  default screen. This icon theme is associated with the screen and can be
+   --  used as long as the screen is open. Do not ref or unref it.
 
    function Get_For_Screen
       (Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class)
@@ -756,6 +807,9 @@ package Gtk.Icon_Theme is
    --  shared between users.
    --  Since: gtk+ 2.4
    --  @param Screen a Gdk.Screen.Gdk_Screen
+   --  @return A unique Gtk.Icon_Theme.Gtk_Icon_Theme associated with the
+   --  given screen. This icon theme is associated with the screen and can be
+   --  used as long as the screen is open. Do not ref or unref it.
 
    -------------
    -- Signals --

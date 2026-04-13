@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  You may wish to begin by reading the [text widget conceptual
 --  overview][TextWidget] which gives an overview of all the objects and data
 --  types related to the text widget and how they work together.
@@ -47,8 +46,6 @@
 --
 --  If a context menu is opened, the window node will appear as a subnode of
 --  the main node.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;
@@ -201,6 +198,7 @@ package Gtk.Text_View is
    --  same in all views, since they depend on the contents of the
    --  Gtk.Text_Buffer.Gtk_Text_Buffer.
    --  @param Iter a Gtk.Text_Iter.Gtk_Text_Iter
+   --  @return True if Iter was moved and is not on the end iterator
 
    function Backward_Display_Line_Start
       (View : not null access Gtk_Text_View_Record;
@@ -214,6 +212,7 @@ package Gtk.Text_View is
    --  same in all views, since they depend on the contents of the
    --  Gtk.Text_Buffer.Gtk_Text_Buffer.
    --  @param Iter a Gtk.Text_Iter.Gtk_Text_Iter
+   --  @return True if Iter was moved and is not on the end iterator
 
    procedure Buffer_To_Window_Coords
       (View     : not null access Gtk_Text_View_Record;
@@ -245,6 +244,7 @@ package Gtk.Text_View is
    --  same in all views, since they depend on the contents of the
    --  Gtk.Text_Buffer.Gtk_Text_Buffer.
    --  @param Iter a Gtk.Text_Iter.Gtk_Text_Iter
+   --  @return True if Iter was moved and is not on the end iterator
 
    function Forward_Display_Line_End
       (View : not null access Gtk_Text_View_Record;
@@ -258,12 +258,15 @@ package Gtk.Text_View is
    --  same in all views, since they depend on the contents of the
    --  Gtk.Text_Buffer.Gtk_Text_Buffer.
    --  @param Iter a Gtk.Text_Iter.Gtk_Text_Iter
+   --  @return True if Iter was moved and is not on the end iterator
 
    function Get_Accepts_Tab
       (View : not null access Gtk_Text_View_Record) return Boolean;
    --  Returns whether pressing the Tab key inserts a tab characters.
    --  Gtk.Text_View.Set_Accepts_Tab.
    --  Since: gtk+ 2.4
+   --  @return True if pressing the Tab key inserts a tab character, False if
+   --  pressing the Tab key moves the keyboard focus.
 
    procedure Set_Accepts_Tab
       (View        : not null access Gtk_Text_View_Record;
@@ -282,6 +285,7 @@ package Gtk.Text_View is
    --  Gets the width of the specified border window. See
    --  Gtk.Text_View.Set_Border_Window_Size.
    --  @param The_Type window to return size from
+   --  @return width of window
 
    procedure Set_Border_Window_Size
       (View     : not null access Gtk_Text_View_Record;
@@ -301,6 +305,7 @@ package Gtk.Text_View is
       (View : not null access Gtk_Text_View_Record) return Glib.Gint;
    --  Gets the bottom margin for text in the Text_View.
    --  Since: gtk+ 3.18
+   --  @return bottom margin in pixels
 
    procedure Set_Bottom_Margin
       (View          : not null access Gtk_Text_View_Record;
@@ -317,6 +322,7 @@ package Gtk.Text_View is
    --  Returns the Gtk.Text_Buffer.Gtk_Text_Buffer being displayed by this
    --  text view. The reference count on the buffer is not incremented; the
    --  caller of this function won't own a new reference.
+   --  @return a Gtk.Text_Buffer.Gtk_Text_Buffer
 
    procedure Set_Buffer
       (View   : not null access Gtk_Text_View_Record;
@@ -357,6 +363,7 @@ package Gtk.Text_View is
    function Get_Cursor_Visible
       (View : not null access Gtk_Text_View_Record) return Boolean;
    --  Find out whether the cursor should be displayed.
+   --  @return whether the insertion mark is visible
 
    procedure Set_Cursor_Visible
       (View    : not null access Gtk_Text_View_Record;
@@ -377,11 +384,13 @@ package Gtk.Text_View is
    --  the attributes in effect at a given text position.
    --  The return value is a copy owned by the caller of this function, and
    --  should be freed with Gtk.Text_Attributes.Unref.
+   --  @return a new Gtk.Text_Attributes.Gtk_Text_Attributes
 
    function Get_Editable
       (View : not null access Gtk_Text_View_Record) return Boolean;
    --  Returns the default editability of the Gtk.Text_View.Gtk_Text_View.
    --  Tags in the buffer may override this setting for some ranges of text.
+   --  @return whether text is editable by default
 
    procedure Set_Editable
       (View    : not null access Gtk_Text_View_Record;
@@ -395,6 +404,7 @@ package Gtk.Text_View is
       (View : not null access Gtk_Text_View_Record) return Glib.Gint;
    --  Gets the default indentation of paragraphs in Text_View. Tags in the
    --  view's buffer may override the default. The indentation may be negative.
+   --  @return number of pixels of indentation
 
    procedure Set_Indent
       (View   : not null access Gtk_Text_View_Record;
@@ -446,6 +456,7 @@ package Gtk.Text_View is
    --  @param Iter a Gtk.Text_Iter.Gtk_Text_Iter
    --  @param X x position, in buffer coordinates
    --  @param Y y position, in buffer coordinates
+   --  @return True if the position is over text
 
    function Get_Iter_At_Position
       (View     : not null access Gtk_Text_View_Record;
@@ -468,6 +479,7 @@ package Gtk.Text_View is
    --  the grapheme.
    --  @param X x position, in buffer coordinates
    --  @param Y y position, in buffer coordinates
+   --  @return True if the position is over text
 
    procedure Get_Iter_Location
       (View     : not null access Gtk_Text_View_Record;
@@ -485,6 +497,7 @@ package Gtk.Text_View is
        return Gtk.Enums.Gtk_Justification;
    --  Gets the default justification of paragraphs in Text_View. Tags in the
    --  buffer may override the default.
+   --  @return default justification
 
    procedure Set_Justification
       (View          : not null access Gtk_Text_View_Record;
@@ -497,6 +510,7 @@ package Gtk.Text_View is
       (View : not null access Gtk_Text_View_Record) return Glib.Gint;
    --  Gets the default left margin size of paragraphs in the Text_View. Tags
    --  in the buffer may override the default.
+   --  @return left margin in pixels
 
    procedure Set_Left_Margin
       (View        : not null access Gtk_Text_View_Record;
@@ -537,6 +551,7 @@ package Gtk.Text_View is
       (View : not null access Gtk_Text_View_Record) return Boolean;
    --  Gets the value of the Gtk.Text_View.Gtk_Text_View:monospace property.
    --  Since: gtk+ 3.16
+   --  @return True if monospace fonts are desired
 
    procedure Set_Monospace
       (View      : not null access Gtk_Text_View_Record;
@@ -551,6 +566,7 @@ package Gtk.Text_View is
    --  Returns whether the Gtk.Text_View.Gtk_Text_View is in overwrite mode or
    --  not.
    --  Since: gtk+ 2.4
+   --  @return whether Text_View is in overwrite mode or not.
 
    procedure Set_Overwrite
       (View      : not null access Gtk_Text_View_Record;
@@ -564,6 +580,7 @@ package Gtk.Text_View is
    --  Gets the default number of pixels to put above paragraphs. Adding this
    --  function with Gtk.Text_View.Get_Pixels_Below_Lines is equal to the line
    --  space between each paragraph.
+   --  @return default number of pixels above paragraphs
 
    procedure Set_Pixels_Above_Lines
       (View               : not null access Gtk_Text_View_Record;
@@ -577,6 +594,7 @@ package Gtk.Text_View is
    --  Gets the value set by Gtk.Text_View.Set_Pixels_Below_Lines.
    --  The line space is the sum of the value returned by this function and
    --  the value returned by Gtk.Text_View.Get_Pixels_Above_Lines.
+   --  @return default number of blank pixels below paragraphs
 
    procedure Set_Pixels_Below_Lines
       (View               : not null access Gtk_Text_View_Record;
@@ -589,6 +607,7 @@ package Gtk.Text_View is
    function Get_Pixels_Inside_Wrap
       (View : not null access Gtk_Text_View_Record) return Glib.Gint;
    --  Gets the value set by Gtk.Text_View.Set_Pixels_Inside_Wrap.
+   --  @return default number of pixels of blank space between wrapped lines
 
    procedure Set_Pixels_Inside_Wrap
       (View               : not null access Gtk_Text_View_Record;
@@ -603,6 +622,7 @@ package Gtk.Text_View is
       (View : not null access Gtk_Text_View_Record) return Glib.Gint;
    --  Gets the default right margin for text in Text_View. Tags in the buffer
    --  may override the default.
+   --  @return right margin in pixels
 
    procedure Set_Right_Margin
       (View         : not null access Gtk_Text_View_Record;
@@ -619,6 +639,8 @@ package Gtk.Text_View is
    --  Gets the default tabs for Text_View. Tags in the buffer may override
    --  the defaults. The returned array will be null if "standard" (8-space)
    --  tabs are used. Free the return value with Pango.Tabs.Free.
+   --  @return copy of default tab array, or null if "standard" tabs are used;
+   --  must be freed with Pango.Tabs.Free.
 
    procedure Set_Tabs
       (View : not null access Gtk_Text_View_Record;
@@ -631,6 +653,7 @@ package Gtk.Text_View is
       (View : not null access Gtk_Text_View_Record) return Glib.Gint;
    --  Gets the top margin for text in the Text_View.
    --  Since: gtk+ 3.18
+   --  @return top margin in pixels
 
    procedure Set_Top_Margin
       (View       : not null access Gtk_Text_View_Record;
@@ -658,6 +681,7 @@ package Gtk.Text_View is
    --  Windows are null and nonexistent if their width or height is 0, and are
    --  nonexistent before the widget has been realized.
    --  @param Win window to get
+   --  @return a Gdk.Gdk_Window, or null
 
    function Get_Window_Type
       (View   : not null access Gtk_Text_View_Record;
@@ -666,11 +690,13 @@ package Gtk.Text_View is
    --  If you connect to an event signal on Text_View, this function should be
    --  called on `event->window` to see which window it was.
    --  @param Window a window type
+   --  @return the window type.
 
    function Get_Wrap_Mode
       (View : not null access Gtk_Text_View_Record)
        return Gtk.Enums.Gtk_Wrap_Mode;
    --  Gets the line wrapping for the view.
+   --  @return the line wrap setting
 
    procedure Set_Wrap_Mode
       (View      : not null access Gtk_Text_View_Record;
@@ -711,6 +737,7 @@ package Gtk.Text_View is
    --
    --  Since: gtk+ 2.22
    --  @param Event the key event
+   --  @return True if the input method handled the key event.
 
    procedure Move_Child
       (View  : not null access Gtk_Text_View_Record;
@@ -730,6 +757,7 @@ package Gtk.Text_View is
    --  Moves a mark within the buffer so that it's located within the
    --  currently-visible text area.
    --  @param Mark a Gtk.Text_Mark.Gtk_Text_Mark
+   --  @return True if the mark moved (wasn't already onscreen)
 
    function Move_Visually
       (View  : not null access Gtk_Text_View_Record;
@@ -747,11 +775,13 @@ package Gtk.Text_View is
    --  @param Iter a Gtk.Text_Iter.Gtk_Text_Iter
    --  @param Count number of characters to move (negative moves left,
    --  positive moves right)
+   --  @return True if Iter moved and is not on the end iterator
 
    function Place_Cursor_Onscreen
       (View : not null access Gtk_Text_View_Record) return Boolean;
    --  Moves the cursor to the currently visible region of the buffer, it it
    --  isn't there already.
+   --  @return True if the cursor had to be moved.
 
    procedure Reset_Cursor_Blink
       (View : not null access Gtk_Text_View_Record);
@@ -801,6 +831,7 @@ package Gtk.Text_View is
    --  the mark onscreen)
    --  @param Xalign horizontal alignment of mark within visible area
    --  @param Yalign vertical alignment of mark within visible area
+   --  @return True if scrolling occurred
 
    procedure Scroll_To_Mark
       (View          : not null access Gtk_Text_View_Record;
@@ -829,6 +860,7 @@ package Gtk.Text_View is
    --  Gtk.Text_View.Forward_Display_Line for an explanation of display lines
    --  vs. paragraphs.
    --  @param Iter a Gtk.Text_Iter.Gtk_Text_Iter
+   --  @return True if Iter begins a wrapped line
 
    procedure Window_To_Buffer_Coords
       (View     : not null access Gtk_Text_View_Record;
@@ -1108,8 +1140,6 @@ package Gtk.Text_View is
    --    --  @param Location the location where to extend the selection
    --    --  @param Start where the selection should start
    --    --  @param The_End where the selection should end
-   --    --  Returns GDK_EVENT_STOP to stop other handlers from being invoked for the
-   --   event. GDK_EVENT_PROPAGATE to propagate the event further.
 
    type Cb_Gtk_Text_View_UTF8_String_Void is not null access procedure
      (Self   : access Gtk_Text_View_Record'Class;

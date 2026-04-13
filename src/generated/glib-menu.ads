@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Glib.Menu.Gmenu is a simple implementation of Glib.Menu_Model.Gmenu_Model.
 --  You populate a Glib.Menu.Gmenu by adding Glib.Menu.Gmenu_Item instances to
 --  it.
@@ -30,8 +29,6 @@
 --  (avoiding Glib.Menu.Gmenu_Item) for the common cases. To add a regular
 --  item, use Glib.Menu.Insert. To add a section, use Glib.Menu.Insert_Section.
 --  To add a submenu, use Glib.Menu.Insert_Submenu.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.G_Icon;     use Glib.G_Icon;
@@ -569,6 +566,7 @@ package Glib.Menu is
    --  Since: gtk+ 2.34
    --  @param Attribute the attribute name to query
    --  @param Expected_Type the expected type of the attribute
+   --  @return the attribute value, or null
 
    procedure Set_Attribute_Value
       (Self      : not null access Gmenu_Item_Record;
@@ -597,6 +595,7 @@ package Glib.Menu is
    --  Queries the named Link on Menu_Item.
    --  Since: gtk+ 2.34
    --  @param Link the link name to query
+   --  @return the link, or null
 
    procedure Set_Link
       (Self  : not null access Gmenu_Item_Record;

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This interface provides a convenient way of associating widgets with
 --  actions on a Gtk.Application_Window.Gtk_Application_Window or
 --  Gtk.Application.Gtk_Application.
@@ -37,8 +36,6 @@
 --  Gtk.Application_Window.Gtk_Application_Window or
 --  Gtk.Application.Gtk_Application, but other action groups that are added
 --  with gtk_widget_insert_action_group will be consulted as well.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -70,6 +67,7 @@ package Gtk.Actionable is
    --  Gets the action name for Actionable.
    --  See Gtk.Actionable.Set_Action_Name for more information.
    --  Since: gtk+ 3.4
+   --  @return the action name, or null if none is set
 
    procedure Set_Action_Name
       (Self        : Gtk_Actionable;
@@ -93,6 +91,7 @@ package Gtk.Actionable is
    --  Gets the current target value of Actionable.
    --  See Gtk.Actionable.Set_Action_Target_Value for more information.
    --  Since: gtk+ 3.4
+   --  @return the current target value
 
    procedure Set_Action_Target_Value
       (Self         : Gtk_Actionable;
@@ -161,12 +160,14 @@ package Gtk.Actionable is
    --  Gets the action name for Actionable.
    --  See Gtk.Actionable.Set_Action_Name for more information.
    --  Since: gtk+ 3.4
+   --  @return the action name, or null if none is set
 
    type Virtual_Get_Action_Target_Value is access function (Self : Gtk_Actionable) return System.Address;
    pragma Convention (C, Virtual_Get_Action_Target_Value);
    --  Gets the current target value of Actionable.
    --  See Gtk.Actionable.Set_Action_Target_Value for more information.
    --  Since: gtk+ 3.4
+   --  @return the current target value
 
    type Virtual_Set_Action_Name is access procedure
      (Self        : Gtk_Actionable;

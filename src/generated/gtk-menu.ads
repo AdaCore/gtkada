@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Menu.Gtk_Menu is a Gtk.Menu_Shell.Gtk_Menu_Shell that implements a
 --  drop down menu consisting of a list of Gtk.Menu_Item.Gtk_Menu_Item objects
 --  which can be navigated and activated by the user to perform application
@@ -90,8 +89,6 @@
 --  The main CSS node of GtkMenu has name menu, and there are two subnodes
 --  with name arrow, for scrolling menu arrows. These subnodes get the .top and
 --  .bottom style classes.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;             use Gdk;
@@ -260,6 +257,7 @@ package Gtk.Menu is
        return Gtk.Accel_Group.Gtk_Accel_Group;
    --  Gets the Gtk.Accel_Group.Gtk_Accel_Group which holds global
    --  accelerators for the menu. See Gtk.Menu.Set_Accel_Group.
+   --  @return the Gtk.Accel_Group.Gtk_Accel_Group associated with the menu
 
    procedure Set_Accel_Group
       (Menu        : not null access Gtk_Menu_Record;
@@ -276,6 +274,7 @@ package Gtk.Menu is
       (Menu : not null access Gtk_Menu_Record) return UTF8_String;
    --  Retrieves the accelerator path set on the menu.
    --  Since: gtk+ 2.14
+   --  @return the accelerator path set on the menu.
 
    procedure Set_Accel_Path
       (Menu       : not null access Gtk_Menu_Record;
@@ -317,11 +316,14 @@ package Gtk.Menu is
    function Get_Attach_Widget
       (Menu : not null access Gtk_Menu_Record) return Gtk.Widget.Gtk_Widget;
    --  Returns the Gtk.Widget.Gtk_Widget that the menu is attached to.
+   --  @return the Gtk.Widget.Gtk_Widget that the menu is attached to
 
    function Get_Monitor
       (Menu : not null access Gtk_Menu_Record) return Glib.Gint;
    --  Retrieves the number of the monitor on which to show the menu.
    --  Since: gtk+ 2.14
+   --  @return the number of the monitor on which the menu should be popped up
+   --  or -1, if no monitor has been set
 
    procedure Set_Monitor
       (Menu        : not null access Gtk_Menu_Record;
@@ -342,6 +344,7 @@ package Gtk.Menu is
    --  Returns whether the menu reserves space for toggles and icons,
    --  regardless of their actual presence.
    --  Since: gtk+ 2.18
+   --  @return Whether the menu reserves toggle space
 
    procedure Set_Reserve_Toggle_Size
       (Menu                : not null access Gtk_Menu_Record;
@@ -356,6 +359,7 @@ package Gtk.Menu is
    pragma Obsolescent (Get_Tearoff_State);
    --  Returns whether the menu is torn off. See Gtk.Menu.Set_Tearoff_State.
    --  Deprecated since 3.10, 1
+   --  @return True if the menu is currently torn off.
 
    procedure Set_Tearoff_State
       (Menu     : not null access Gtk_Menu_Record;
@@ -373,6 +377,8 @@ package Gtk.Menu is
    pragma Obsolescent (Get_Title);
    --  Returns the title of the menu. See Gtk.Menu.Set_Title.
    --  Deprecated since 3.10, 1
+   --  @return the title of the menu, or null if the menu has no title set on
+   --  it. This string is owned by GTK+ and should not be modified or freed.
 
    procedure Set_Title
       (Menu  : not null access Gtk_Menu_Record;

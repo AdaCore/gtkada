@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkOverlay is a container which contains a single main child, on top of
 --  which it can place "overlay" widgets. The position of each overlay widget
 --  is determined by its Gtk.Widget.Gtk_Widget:halign and
@@ -52,8 +51,6 @@
 --  whose alignments cause them to be positioned at an edge get the style
 --  classes ".left", ".right", ".top", and/or ".bottom" according to their
 --  position.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle; use Gdk.Rectangle;
@@ -111,6 +108,7 @@ package Gtk.Overlay is
    --  Gtk.Overlay.Gtk_Overlay:pass-through child property for Widget.
    --  Since: gtk+ 3.18
    --  @param Widget an overlay child of Gtk.Overlay.Gtk_Overlay
+   --  @return whether the widget is a pass through child.
 
    procedure Set_Overlay_Pass_Through
       (Self         : not null access Gtk_Overlay_Record;
@@ -178,7 +176,6 @@ package Gtk.Overlay is
    --  Callback parameters:
    --    --  @param Widget the child widget to position
    --    --  @param Allocation return location for the allocation
-   --    --  Returns True if the Allocation has been filled
 
    ----------------
    -- Interfaces --

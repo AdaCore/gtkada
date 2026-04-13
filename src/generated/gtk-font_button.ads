@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Font_Button.Gtk_Font_Button is a button which displays the
 --  currently selected font an allows to open a font chooser dialog to change
 --  the font. It is suitable widget for selecting a font in a preference
@@ -31,8 +30,6 @@
 --
 --  GtkFontButton has a single CSS node with name button and style class
 --  .font.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
@@ -69,6 +66,7 @@ package Gtk.Font_Button is
    --  Gtk.Font_Chooser.Set_Filter_Func.
    --  @param Family a Pango.Font_Family.Pango_Font_Family
    --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
+   --  @return True if the font should be displayed
 
    ------------------
    -- Constructors --
@@ -123,6 +121,7 @@ package Gtk.Font_Button is
    --  object.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.22, 1
+   --  @return an internal copy of the font name which must not be freed.
 
    function Set_Font_Name
       (Font_Button : not null access Gtk_Font_Button_Record;
@@ -132,11 +131,13 @@ package Gtk.Font_Button is
    --  Since: gtk+ 2.4
    --  Deprecated since 3.22, 1
    --  @param Fontname Name of font to display in font chooser dialog
+   --  @return True
 
    function Get_Show_Size
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean;
    --  Returns whether the font size will be shown in the label.
    --  Since: gtk+ 2.4
+   --  @return whether the font size will be shown in the label.
 
    procedure Set_Show_Size
       (Font_Button : not null access Gtk_Font_Button_Record;
@@ -150,6 +151,7 @@ package Gtk.Font_Button is
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean;
    --  Returns whether the name of the font style will be shown in the label.
    --  Since: gtk+ 2.4
+   --  @return whether the font style will be shown in the label.
 
    procedure Set_Show_Style
       (Font_Button : not null access Gtk_Font_Button_Record;
@@ -164,6 +166,7 @@ package Gtk.Font_Button is
        return UTF8_String;
    --  Retrieves the title of the font chooser dialog.
    --  Since: gtk+ 2.4
+   --  @return an internal copy of the title string which must not be freed.
 
    procedure Set_Title
       (Font_Button : not null access Gtk_Font_Button_Record;
@@ -176,6 +179,7 @@ package Gtk.Font_Button is
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean;
    --  Returns whether the selected font is used in the label.
    --  Since: gtk+ 2.4
+   --  @return whether the selected font is used in the label.
 
    procedure Set_Use_Font
       (Font_Button : not null access Gtk_Font_Button_Record;
@@ -189,6 +193,7 @@ package Gtk.Font_Button is
       (Font_Button : not null access Gtk_Font_Button_Record) return Boolean;
    --  Returns whether the selected size is used in the label.
    --  Since: gtk+ 2.4
+   --  @return whether the selected size is used in the label.
 
    procedure Set_Use_Size
       (Font_Button : not null access Gtk_Font_Button_Record;
@@ -222,6 +227,7 @@ package Gtk.Font_Button is
       --  @param Family a Pango.Font_Family.Pango_Font_Family
       --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
       --  @param Data user data passed to Gtk.Font_Chooser.Set_Filter_Func
+      --  @return True if the font should be displayed
 
       procedure Set_Filter_Func
          (Self      : not null access Gtk.Font_Button.Gtk_Font_Button_Record'Class;

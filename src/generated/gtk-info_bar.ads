@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Info_Bar.Gtk_Info_Bar is a widget that can be used to show messages to
 --  the user without showing a dialog. It is often temporarily shown at the top
 --  or bottom of a document. In contrast to Gtk.Dialog.Gtk_Dialog, which has a
@@ -93,8 +92,6 @@
 --  GtkInfoBar has a single CSS node with name infobar. The node may get one
 --  of the style classes .info, .warning, .error or .question, depending on the
 --  message type.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -159,24 +156,28 @@ package Gtk.Info_Bar is
    --  Since: gtk+ 2.18
    --  @param Button_Text text of button
    --  @param Response_Id response ID for the button
+   --  @return the Gtk.Button.Gtk_Button widget that was added
 
    function Get_Action_Area
       (Self : not null access Gtk_Info_Bar_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Returns the action area of Info_Bar.
    --  Since: gtk+ 2.18
+   --  @return the action area
 
    function Get_Content_Area
       (Self : not null access Gtk_Info_Bar_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Returns the content area of Info_Bar.
    --  Since: gtk+ 2.18
+   --  @return the content area
 
    function Get_Message_Type
       (Self : not null access Gtk_Info_Bar_Record)
        return Gtk.Message_Dialog.Gtk_Message_Type;
    --  Returns the message type of the message area.
    --  Since: gtk+ 2.18
+   --  @return the message type of the message area.
 
    procedure Set_Message_Type
       (Self         : not null access Gtk_Info_Bar_Record;
@@ -189,6 +190,7 @@ package Gtk.Info_Bar is
    function Get_Revealed
       (Self : not null access Gtk_Info_Bar_Record) return Boolean;
    --  Since: gtk+ 3.22.29
+   --  @return the current value of the GtkInfoBar:revealed property.
 
    procedure Set_Revealed
       (Self     : not null access Gtk_Info_Bar_Record;
@@ -204,6 +206,7 @@ package Gtk.Info_Bar is
       (Self : not null access Gtk_Info_Bar_Record) return Boolean;
    --  Returns whether the widget will display a standard close button.
    --  Since: gtk+ 3.10
+   --  @return True if the widget displays standard close button
 
    procedure Set_Show_Close_Button
       (Self    : not null access Gtk_Info_Bar_Record;

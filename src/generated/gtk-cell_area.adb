@@ -600,6 +600,7 @@ package body Gtk.Cell_Area is
       --  @param Cell_Background the background area for Renderer inside the
       --  background area provided to Gtk.Cell_Area.Foreach_Alloc.
       --  @param Data user-supplied data
+      --  @return True to stop iterating over cells.
 
       -------------------
       -- Foreach_Alloc --
@@ -663,6 +664,7 @@ package body Gtk.Cell_Area is
       --  Gtk.Cell_Area.Foreach.
       --  @param Renderer the cell renderer to operate on
       --  @param Data user-supplied data
+      --  @return True to stop iterating over cells.
 
       -------------
       -- Foreach --

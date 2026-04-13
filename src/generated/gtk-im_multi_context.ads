@@ -68,6 +68,7 @@ package Gtk.IM_Multi_Context is
        return UTF8_String;
    --  Gets the id of the currently active slave of the Context.
    --  Since: gtk+ 2.16
+   --  @return the id of the currently active slave
 
    procedure Set_Context_Id
       (Self       : not null access Gtk_IM_Multi_Context_Record;

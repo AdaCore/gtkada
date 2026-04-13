@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Cell_Area_Box.Gtk_Cell_Area_Box renders cell renderers into a row
 --  or a column depending on its Gtk.Enums.Gtk_Orientation.
 --
@@ -39,8 +38,6 @@
 --  child cell property with Gtk.Cell_Area.Cell_Set_Property or by specifying
 --  the "align" argument to Gtk.Cell_Area_Box.Pack_Start and
 --  Gtk.Cell_Area_Box.Pack_End.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
@@ -103,6 +100,7 @@ package Gtk.Cell_Area_Box is
       (Self : not null access Gtk_Cell_Area_Box_Record) return Glib.Gint;
    --  Gets the spacing added between cell renderers.
    --  Since: gtk+ 3.0
+   --  @return the space added between cell renderers in Box.
 
    procedure Set_Spacing
       (Self    : not null access Gtk_Cell_Area_Box_Record;

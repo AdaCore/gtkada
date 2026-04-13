@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Button.Gtk_Button widget is generally used to trigger a callback
 --  function that is called when the button is pressed. The various signals and
 --  how to use them are outlined below.
@@ -48,7 +47,6 @@
 --  .toggle, .popup, .scale, .lock, .color, .font, .file to differentiate
 --  themselves from a plain GtkButton.
 --
---  </description>
 --  <screenshot>gtk-button</screenshot>
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_buttons.adb</testgtk>
@@ -224,6 +222,7 @@ package Gtk.Button is
    --  Gtk.Settings.Gtk_Settings:gtk-button-images setting and always show the
    --  image, if available.
    --  Since: gtk+ 3.6
+   --  @return True if the button will always show the image
 
    procedure Set_Always_Show_Image
       (Button      : not null access Gtk_Button_Record;
@@ -241,6 +240,7 @@ package Gtk.Button is
    --  Returns the button's event window if it is realized, null otherwise.
    --  This function should be rarely needed.
    --  Since: gtk+ 2.22
+   --  @return Button's event window.
 
    function Get_Focus_On_Click
       (Button : not null access Gtk_Button_Record) return Boolean;
@@ -249,6 +249,8 @@ package Gtk.Button is
    --  mouse. See Gtk.Button.Set_Focus_On_Click.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.20, 1
+   --  @return True if the button grabs focus when it is clicked with the
+   --  mouse.
 
    procedure Set_Focus_On_Click
       (Button         : not null access Gtk_Button_Record;
@@ -270,6 +272,7 @@ package Gtk.Button is
    --  have been explicitly set by Gtk.Button.Set_Image or constructed by
    --  Gtk.Button.Gtk_New_From_Stock.
    --  Since: gtk+ 2.6
+   --  @return a Gtk.Widget.Gtk_Widget or null in case there is no image
 
    procedure Set_Image
       (Button : not null access Gtk_Button_Record;
@@ -287,6 +290,7 @@ package Gtk.Button is
        return Gtk.Enums.Gtk_Position_Type;
    --  Gets the position of the image relative to the text inside the button.
    --  Since: gtk+ 2.10
+   --  @return the position
 
    procedure Set_Image_Position
       (Button   : not null access Gtk_Button_Record;
@@ -301,6 +305,8 @@ package Gtk.Button is
    --  Gtk.Button.Set_Label. If the label text has not been set the return
    --  value will be null. This will be the case if you create an empty button
    --  with gtk_button_new to use as a container.
+   --  @return The text of the label widget. This string is owned by the
+   --  widget and must not be modified or freed.
 
    procedure Set_Label
       (Button : not null access Gtk_Button_Record;
@@ -314,6 +320,7 @@ package Gtk.Button is
       (Button : not null access Gtk_Button_Record)
        return Gtk.Enums.Gtk_Relief_Style;
    --  Returns the current relief style of the given Gtk.Button.Gtk_Button.
+   --  @return The current Gtk.Enums.Gtk_Relief_Style
 
    procedure Set_Relief
       (Button : not null access Gtk_Button_Record;
@@ -330,6 +337,8 @@ package Gtk.Button is
    pragma Obsolescent (Get_Use_Stock);
    --  Returns whether the button label is a stock item.
    --  Deprecated since 3.10, 1
+   --  @return True if the button label is used to select a stock item instead
+   --  of being used directly as the label text.
 
    procedure Set_Use_Stock
       (Button    : not null access Gtk_Button_Record;
@@ -344,6 +353,8 @@ package Gtk.Button is
       (Button : not null access Gtk_Button_Record) return Boolean;
    --  Returns whether an embedded underline in the button label indicates a
    --  mnemonic. See gtk_button_set_use_underline ().
+   --  @return True if an embedded underline in the button label indicates the
+   --  mnemonic accelerator keys.
 
    procedure Set_Use_Underline
       (Button        : not null access Gtk_Button_Record;

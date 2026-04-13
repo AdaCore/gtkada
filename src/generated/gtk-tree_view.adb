@@ -62,6 +62,7 @@ package body Gtk.Tree_View is
    --  @param Func function to set attributes of cell renderer
    --  @param Data data for Func
    --  @param Dnotify destroy notifier for Data
+   --  @return number of columns in the tree view post-insert
 
    procedure C_Gtk_Tree_View_Map_Expanded_Rows
       (Tree_View : System.Address;
@@ -1808,6 +1809,7 @@ package body Gtk.Tree_View is
       --  @param Next_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column on
       --  the other side of Column
       --  @param Data user data
+      --  @return True, if Column can be dropped in this spot
 
       -----------------
       -- Internal_Cb --
@@ -2209,6 +2211,7 @@ package body Gtk.Tree_View is
       --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in
       --  Model
       --  @param Data user data
+      --  @return True if the row is a separator
 
       -----------------
       -- Internal_Cb --
@@ -2354,6 +2357,7 @@ package body Gtk.Tree_View is
       --  that should be compared with Key.
       --  @param Search_Data user data from
       --  Gtk.Tree_View.Set_Search_Equal_Func
+      --  @return False if the row matches, True otherwise.
 
       -----------------
       -- Internal_Cb --

@@ -385,6 +385,7 @@ package body Gtk.Tree_Model_Filter is
       --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
       --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
       --  @param Data The user data passed to Gtk.Tree_Model.Foreach
+      --  @return True to stop iterating, False to continue
 
       -------------
       -- Foreach --
@@ -589,6 +590,7 @@ package body Gtk.Tree_Model_Filter is
       --  Model whose visibility is determined
       --  @param Data user data given to
       --  Gtk.Tree_Model_Filter.Set_Visible_Func
+      --  @return Whether the row indicated by Iter is visible.
 
       -----------------
       -- Internal_Cb --

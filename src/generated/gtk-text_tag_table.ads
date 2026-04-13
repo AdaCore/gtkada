@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  You may wish to begin by reading the [text widget conceptual
 --  overview][TextWidget] which gives an overview of all the objects and data
 --  types related to the text widget and how they work together.
@@ -39,7 +38,6 @@
 --        <object class="GtkTextTag"/>
 --      </child>
 --     </object>
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;          use Glib;
@@ -127,12 +125,14 @@ package Gtk.Text_Tag_Table is
    function Get_Size
       (Table : not null access Gtk_Text_Tag_Table_Record) return Glib.Gint;
    --  Returns the size of the table (number of tags)
+   --  @return number of tags in Table
 
    function Lookup
       (Table : not null access Gtk_Text_Tag_Table_Record;
        Name  : UTF8_String) return Gtk.Text_Tag.Gtk_Text_Tag;
    --  Look up a named tag.
    --  @param Name name of a tag
+   --  @return The tag, or null if none by that name is in the table.
 
    procedure Remove
       (Table : not null access Gtk_Text_Tag_Table_Record;

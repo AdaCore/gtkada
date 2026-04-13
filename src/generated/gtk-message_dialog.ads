@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Message_Dialog.Gtk_Message_Dialog presents a dialog with some message
 --  text. It's simply a convenience widget; you could construct the equivalent
 --  of Gtk.Message_Dialog.Gtk_Message_Dialog from Gtk.Dialog.Gtk_Dialog without
@@ -76,8 +75,6 @@
 --
 --  The GtkMessageDialog implementation of the GtkBuildable interface exposes
 --  the message area as an internal child with the name "message_area".
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -297,6 +294,7 @@ package Gtk.Message_Dialog is
    --  Gets the dialog's image.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.12, 1
+   --  @return the dialog's image
 
    procedure Set_Image
       (Dialog : not null access Gtk_Message_Dialog_Record;
@@ -316,6 +314,8 @@ package Gtk.Message_Dialog is
    --  Gtk.Dialog.Get_Content_Area for the corresponding function in the parent
    --  Gtk.Dialog.Gtk_Dialog.
    --  Since: gtk+ 2.22
+   --  @return A Gtk.Box.Gtk_Box corresponding to the "message area" in the
+   --  Message_Dialog.
 
    procedure Set_Markup
       (Dialog : not null access Gtk_Message_Dialog_Record;

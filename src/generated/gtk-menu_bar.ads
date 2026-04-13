@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Menu_Bar.Gtk_Menu_Bar is a subclass of
 --  Gtk.Menu_Shell.Gtk_Menu_Shell which contains one or more Gtk_Menu_Items.
 --  The result is a standard menu bar which can hold many menu items.
@@ -29,8 +28,6 @@
 --  # CSS nodes
 --
 --  GtkMenuBar has a single CSS node with name menubar.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -101,6 +98,7 @@ package Gtk.Menu_Bar is
    --  Retrieves the current child pack direction of the menubar. See
    --  Gtk.Menu_Bar.Set_Child_Pack_Direction.
    --  Since: gtk+ 2.8
+   --  @return the child pack direction
 
    procedure Set_Child_Pack_Direction
       (Menu_Bar       : not null access Gtk_Menu_Bar_Record;
@@ -115,6 +113,7 @@ package Gtk.Menu_Bar is
    --  Retrieves the current pack direction of the menubar. See
    --  Gtk.Menu_Bar.Set_Pack_Direction.
    --  Since: gtk+ 2.8
+   --  @return the pack direction
 
    procedure Set_Pack_Direction
       (Menu_Bar : not null access Gtk_Menu_Bar_Record;

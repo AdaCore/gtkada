@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Tree_Model.Gtk_Tree_Model interface defines a generic tree
 --  interface for use by the Gtk.Tree_View.Gtk_Tree_View widget. It is an
 --  abstract interface, and is designed to be usable with any appropriate data
@@ -212,8 +211,6 @@
 --  required for levels in which nodes are referenced. For the root level
 --  however, signals must be emitted at all times (however the root level is
 --  always referenced when any view is attached).
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -271,6 +268,7 @@ package Gtk.Tree_Model is
    --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being iterated
    --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
    --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @return True to stop iterating, False to continue
 
    ----------------------------
    -- Enumeration Properties --
@@ -388,6 +386,7 @@ package Gtk.Tree_Model is
       --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
       --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
       --  @param Data The user data passed to Gtk.Tree_Model.Foreach
+      --  @return True to stop iterating, False to continue
 
       procedure Foreach
          (Tree_Model : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -407,6 +406,7 @@ package Gtk.Tree_Model is
    pragma Import (C, Get_Column_Type, "gtk_tree_model_get_column_type");
    --  Returns the type of the column.
    --  @param Index the column index
+   --  @return the type of the column
 
    function Get_Flags (Tree_Model : Gtk_Tree_Model) return Tree_Model_Flags;
    pragma Import (C, Get_Flags, "gtk_tree_model_get_flags");
@@ -414,6 +414,7 @@ package Gtk.Tree_Model is
    --  The flags are a bitwise combination of Gtk.Tree_Model.Tree_Model_Flags.
    --  The flags supported should not change during the lifetime of the
    --  Tree_Model.
+   --  @return the flags supported by this interface
 
    function Get_Iter
       (Tree_Model : Gtk_Tree_Model;
@@ -438,6 +439,7 @@ package Gtk.Tree_Model is
    function Get_N_Columns (Tree_Model : Gtk_Tree_Model) return Glib.Gint;
    pragma Import (C, Get_N_Columns, "gtk_tree_model_get_n_columns");
    --  Returns the number of columns supported by Tree_Model.
+   --  @return the number of columns
 
    function Get_Path
       (Tree_Model : Gtk_Tree_Model;
@@ -446,6 +448,7 @@ package Gtk.Tree_Model is
    --  by Iter.
    --  This path should be freed with Gtk.Tree_Model.Path_Free.
    --  @param Iter the Gtk.Tree_Model.Gtk_Tree_Iter-struct
+   --  @return a newly-created Gtk.Tree_Model.Gtk_Tree_Path-struct
 
    function Get_String_From_Iter
       (Tree_Model : Gtk_Tree_Model;
@@ -455,6 +458,7 @@ package Gtk.Tree_Model is
    --  would be an acceptable return value for this string.
    --  Since: gtk+ 2.2
    --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter-struct
+   --  @return a newly-allocated string. Must be freed with g_free.
 
    procedure Get_Value
       (Tree_Model : Gtk_Tree_Model;
@@ -486,6 +490,7 @@ package Gtk.Tree_Model is
    --  Returns True if Iter has children, False otherwise.
    --  @param Iter the Gtk.Tree_Model.Gtk_Tree_Iter-struct to test for
    --  children
+   --  @return True if Iter has children
 
    function N_Children
       (Tree_Model : Gtk_Tree_Model;
@@ -495,6 +500,7 @@ package Gtk.Tree_Model is
    --  As a special case, if Iter is null, then the number of toplevel nodes
    --  is returned.
    --  @param Iter the Gtk.Tree_Model.Gtk_Tree_Iter-struct, or null
+   --  @return the number of children of Iter
 
    procedure Next (Tree_Model : Gtk_Tree_Model; Iter : in out Gtk_Tree_Iter);
    --  Sets Iter to point to the node following it at the current level.
@@ -653,6 +659,7 @@ package Gtk.Tree_Model is
    --  This function is not intended for use in applications, because you can
    --  just copy the structs by value (`GtkTreeIter new_iter = iter;`). You
    --  must free this iter with Gtk.Tree_Model.Free.
+   --  @return a newly-allocated copy of Iter
 
    procedure Free (Self : Gtk_Tree_Iter);
    pragma Import (C, Free, "gtk_tree_iter_free");
@@ -672,9 +679,11 @@ package Gtk.Tree_Model is
    --  before A, then 1 is returned. If the two nodes are equal, then 0 is
    --  returned.
    --  @param B a Gtk.Tree_Model.Gtk_Tree_Path-struct to compare with
+   --  @return the relative positions of A and B
 
    function Copy (Path : Gtk_Tree_Path) return Gtk_Tree_Path;
    --  Creates a new Gtk.Tree_Model.Gtk_Tree_Path-struct as a copy of Path.
+   --  @return a new Gtk.Tree_Model.Gtk_Tree_Path-struct
 
    procedure Down (Path : Gtk_Tree_Path);
    --  Moves Path to point to the first child of the current path.
@@ -684,6 +693,7 @@ package Gtk.Tree_Model is
 
    function Get_Depth (Path : Gtk_Tree_Path) return Glib.Gint;
    --  Returns the current depth of Path.
+   --  @return The depth of Path
 
    function Get_Indices (Path : Gtk_Tree_Path) return Glib.Gint_Array;
    --  Returns the current indices of Path.
@@ -696,12 +706,14 @@ package Gtk.Tree_Model is
        Descendant : Gtk_Tree_Path) return Boolean;
    --  Returns True if Descendant is a descendant of Path.
    --  @param Descendant another Gtk.Tree_Model.Gtk_Tree_Path-struct
+   --  @return True if Descendant is contained inside Path
 
    function Is_Descendant
       (Path     : Gtk_Tree_Path;
        Ancestor : Gtk_Tree_Path) return Boolean;
    --  Returns True if Path is a descendant of Ancestor.
    --  @param Ancestor another Gtk.Tree_Model.Gtk_Tree_Path-struct
+   --  @return True if Ancestor contains Path somewhere below it
 
    procedure Prepend_Index (Path : Gtk_Tree_Path; Index : Glib.Gint);
    --  Prepends a new index to a path.
@@ -711,14 +723,17 @@ package Gtk.Tree_Model is
    function Prev (Path : Gtk_Tree_Path) return Boolean;
    --  Moves the Path to point to the previous node at the current depth, if
    --  it exists.
+   --  @return True if Path has a previous node, and the move was made
 
    function To_String (Path : Gtk_Tree_Path) return UTF8_String;
    --  Generates a string representation of the path.
    --  This string is a ":" separated list of numbers. For example, "4:10:0:3"
    --  would be an acceptable return value for this string.
+   --  @return A newly-allocated string. Must be freed with g_free.
 
    function Up (Path : Gtk_Tree_Path) return Boolean;
    --  Moves the Path to point to its parent node, if it has a parent.
+   --  @return True if Path has a parent, and the move was made
 
    ----------------------
    -- GtkAda additions --
@@ -1002,6 +1017,7 @@ package Gtk.Tree_Model is
    pragma Convention (C, Virtual_Get_Column_Type);
    --  Returns the type of the column.
    --  @param Index the column index
+   --  @return the type of the column
 
    type Virtual_Get_Flags is access function (Tree_Model : Gtk_Tree_Model) return Tree_Model_Flags;
    pragma Convention (C, Virtual_Get_Flags);
@@ -1009,6 +1025,7 @@ package Gtk.Tree_Model is
    --  The flags are a bitwise combination of Gtk.Tree_Model.Tree_Model_Flags.
    --  The flags supported should not change during the lifetime of the
    --  Tree_Model.
+   --  @return the flags supported by this interface
 
    type Virtual_Get_Iter is access function
      (Tree_Model : Gtk_Tree_Model;
@@ -1019,10 +1036,12 @@ package Gtk.Tree_Model is
    --  Iter is set to an invalid iterator and False is returned.
    --  @param Iter the uninitialized Gtk.Tree_Model.Gtk_Tree_Iter-struct
    --  @param Path the Gtk.Tree_Model.Gtk_Tree_Path-struct
+   --  @return True, if Iter was set
 
    type Virtual_Get_N_Columns is access function (Tree_Model : Gtk_Tree_Model) return Glib.Gint;
    pragma Convention (C, Virtual_Get_N_Columns);
    --  Returns the number of columns supported by Tree_Model.
+   --  @return the number of columns
 
    type Virtual_Get_Path is access function
      (Tree_Model : Gtk_Tree_Model;
@@ -1032,6 +1051,7 @@ package Gtk.Tree_Model is
    --  by Iter.
    --  This path should be freed with gtk_tree_path_free.
    --  @param Iter the Gtk.Tree_Model.Gtk_Tree_Iter-struct
+   --  @return a newly-created Gtk.Tree_Model.Gtk_Tree_Path-struct
 
    type Virtual_Get_Value is access procedure
      (Tree_Model : Gtk_Tree_Model;
@@ -1060,6 +1080,7 @@ package Gtk.Tree_Model is
    --  @param Iter the new Gtk.Tree_Model.Gtk_Tree_Iter-struct to be set to
    --  the child
    --  @param Parent the Gtk.Tree_Model.Gtk_Tree_Iter-struct, or null
+   --  @return True, if Iter has been set to the first child
 
    type Virtual_Iter_Has_Child is access function
      (Tree_Model : Gtk_Tree_Model;
@@ -1068,6 +1089,7 @@ package Gtk.Tree_Model is
    --  Returns True if Iter has children, False otherwise.
    --  @param Iter the Gtk.Tree_Model.Gtk_Tree_Iter-struct to test for
    --  children
+   --  @return True if Iter has children
 
    type Virtual_Iter_N_Children is access function
      (Tree_Model : Gtk_Tree_Model;
@@ -1077,6 +1099,7 @@ package Gtk.Tree_Model is
    --  As a special case, if Iter is null, then the number of toplevel nodes
    --  is returned.
    --  @param Iter the Gtk.Tree_Model.Gtk_Tree_Iter-struct, or null
+   --  @return the number of children of Iter
 
    type Virtual_Iter_Next is access function
      (Tree_Model : Gtk_Tree_Model;
@@ -1086,6 +1109,7 @@ package Gtk.Tree_Model is
    --  If there is no next Iter, False is returned and Iter is set to be
    --  invalid.
    --  @param Iter the Gtk.Tree_Model.Gtk_Tree_Iter-struct
+   --  @return True if Iter has been changed to the next node
 
    type Virtual_Iter_Nth_Child is access function
      (Tree_Model : Gtk_Tree_Model;
@@ -1103,6 +1127,7 @@ package Gtk.Tree_Model is
    --  @param Parent the Gtk.Tree_Model.Gtk_Tree_Iter-struct to get the child
    --  from, or null.
    --  @param N the index of the desired child
+   --  @return True, if Parent has an N-th child
 
    type Virtual_Iter_Parent is access function
      (Tree_Model : Gtk_Tree_Model;
@@ -1118,6 +1143,7 @@ package Gtk.Tree_Model is
    --  @param Iter the new Gtk.Tree_Model.Gtk_Tree_Iter-struct to set to the
    --  parent
    --  @param Child the Gtk.Tree_Model.Gtk_Tree_Iter-struct
+   --  @return True, if Iter is set to the parent of Child
 
    type Virtual_Iter_Previous is access function
      (Tree_Model : Gtk_Tree_Model;
@@ -1128,6 +1154,7 @@ package Gtk.Tree_Model is
    --  invalid.
    --  Since: gtk+ 3.0
    --  @param Iter the Gtk.Tree_Model.Gtk_Tree_Iter-struct
+   --  @return True if Iter has been changed to the previous node
 
    type Virtual_Ref_Node is access procedure (Tree_Model : Gtk_Tree_Model; Iter : Gtk_Tree_Iter);
    pragma Convention (C, Virtual_Ref_Node);

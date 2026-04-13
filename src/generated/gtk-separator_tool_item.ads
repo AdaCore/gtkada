@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item is a
 --  Gtk.Tool_Item.Gtk_Tool_Item that separates groups of other Gtk_Tool_Items.
 --  Depending on the theme, a Gtk.Separator_Tool_Item.Gtk_Separator_Tool_Item
@@ -39,7 +38,6 @@
 --
 --  GtkSeparatorToolItem has a single CSS node with name separator.
 --
---  </description>
 --  <group>Menus and Toolbars</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -84,6 +82,7 @@ package Gtk.Separator_Tool_Item is
    --  Returns whether Item is drawn as a line, or just blank. See
    --  Gtk.Separator_Tool_Item.Set_Draw.
    --  Since: gtk+ 2.4
+   --  @return True if Item is drawn as a line, or just blank.
 
    procedure Set_Draw
       (Item : not null access Gtk_Separator_Tool_Item_Record;

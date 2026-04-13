@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Application_Window.Gtk_Application_Window is a Gtk.Window.Gtk_Window
 --  subclass that offers some extra functionality for better integration with
 --  Gtk.Application.Gtk_Application features. Notably, it can handle both the
@@ -125,8 +124,6 @@
 --
 --  The following attributes are used when constructing submenus: - "label": a
 --  user-visible string to display - "icon": icon name to display
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;         use GNAT.Strings;
@@ -183,6 +180,7 @@ package Gtk.Application_Window is
    --  Gets the Gtk.Shortcuts_Window.Gtk_Shortcuts_Window that has been set up
    --  with a prior call to Gtk.Application_Window.Set_Help_Overlay.
    --  Since: gtk+ 3.20
+   --  @return the help overlay associated with Window, or null
 
    procedure Set_Help_Overlay
       (Self         : not null access Gtk_Application_Window_Record;
@@ -198,12 +196,15 @@ package Gtk.Application_Window is
    --  Returns the unique ID of the window. If the window has not yet been
    --  added to a Gtk.Application.Gtk_Application, returns `0`.
    --  Since: gtk+ 3.6
+   --  @return the unique ID for Window, or `0` if the window has not yet been
+   --  added to a Gtk.Application.Gtk_Application
 
    function Get_Show_Menubar
       (Self : not null access Gtk_Application_Window_Record) return Boolean;
    --  Returns whether the window will display a menubar for the app menu and
    --  menubar as needed.
    --  Since: gtk+ 3.4
+   --  @return True if Window will display a menubar when needed
 
    procedure Set_Show_Menubar
       (Self         : not null access Gtk_Application_Window_Record;

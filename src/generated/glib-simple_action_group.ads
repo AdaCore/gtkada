@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Glib.Simple_Action_Group.Gsimple_Action_Group is a hash table filled with
 --  Glib.Action.Gaction objects, implementing the
 --  Glib.Action_Group.Gaction_Group and Glib.Action_Map.Gaction_Map interfaces.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;      use GNAT.Strings;
@@ -103,6 +100,7 @@ package Glib.Simple_Action_Group is
    --  Since: gtk+ 2.28
    --  Deprecated since 2.38, 1
    --  @param Action_Name the name of an action
+   --  @return a Glib.Action.Gaction, or null
 
    procedure Remove
       (Self        : not null access Gsimple_Action_Group_Record;

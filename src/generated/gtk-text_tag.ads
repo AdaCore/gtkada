@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  You may wish to begin by reading the [text widget conceptual
 --  overview][TextWidget] which gives an overview of all the objects and data
 --  types related to the text widget and how they work together.
@@ -36,8 +35,6 @@
 --  e.g. "font-set" corresponds to "font". These "set" properties reflect
 --  whether a property has been set or not. They are maintained by GTK+ and you
 --  should not set them independently.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Color;       use Gdk.Color;
@@ -108,6 +105,7 @@ package Gtk.Text_Tag is
    function Get_Priority
       (Tag : not null access Gtk_Text_Tag_Record) return Glib.Gint;
    --  Get the tag priority.
+   --  @return The tag's priority.
 
    procedure Set_Priority
       (Tag      : not null access Gtk_Text_Tag_Record;
@@ -362,8 +360,6 @@ package Gtk.Text_Tag is
    --    --  @param Event the event which triggered the signal
    --    --  @param Iter a Gtk.Text_Iter.Gtk_Text_Iter pointing at the location the
    --    --  event occurred
-   --    --  Returns True to stop other handlers from being invoked for the
-   -- event. False to propagate the event further.
 
 private
    Wrap_Mode_Set_Property : constant Glib.Properties.Property_Boolean :=

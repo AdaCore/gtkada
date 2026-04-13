@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Gesture_Swipe.Gtk_Gesture_Swipe is a Gtk.Gesture.Gtk_Gesture
 --  implementation able to recognize swipes, after a
 --  press/move/.../move/release sequence happens, the
@@ -34,8 +33,6 @@
 --  Gtk.Gesture.Gtk_Gesture::update handler.
 --
 --  All velocities are reported in pixels/sec units.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -90,6 +87,7 @@ package Gtk.Gesture_Swipe is
    --  pixels/sec
    --  @param Velocity_Y return value for the velocity in the Y axis, in
    --  pixels/sec
+   --  @return whether velocity could be calculated
 
    -------------
    -- Signals --

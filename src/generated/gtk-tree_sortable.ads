@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Tree_Sortable.Gtk_Tree_Sortable is an interface to be implemented by
 --  tree models which support sorting. The Gtk.Tree_View.Gtk_Tree_View uses the
 --  methods provided by this interface to sort the model.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
@@ -61,6 +58,8 @@ package Gtk.Tree_Sortable is
    --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
    --  @param A A Gtk.Tree_Model.Gtk_Tree_Iter in Model
    --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
+   --  @return a negative integer, zero or a positive integer depending on
+   --  whether A sorts before, with or after B
 
    ------------------
    -- Constructors --
@@ -106,6 +105,7 @@ package Gtk.Tree_Sortable is
    --  Returns True if the model has a default sort function. This is used
    --  primarily by GtkTreeViewColumns in order to determine if a model can go
    --  back to the default state, or not.
+   --  @return True, if the model has a default sort function
 
    procedure Set_Default_Sort_Func
       (Sortable  : Gtk_Tree_Sortable;
@@ -146,6 +146,8 @@ package Gtk.Tree_Sortable is
       --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  @param User_Data Data passed when the compare func is assigned e.g. by
       --  gtk_tree_sortable_set_sort_func
+      --  @return a negative integer, zero or a positive integer depending on
+      --  whether A sorts before, with or after B
 
       procedure Set_Default_Sort_Func
          (Sortable  : Gtk.Tree_Sortable.Gtk_Tree_Sortable;
@@ -200,6 +202,8 @@ package Gtk.Tree_Sortable is
       --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  @param User_Data Data passed when the compare func is assigned e.g. by
       --  Gtk.Tree_Sortable.Set_Sort_Func
+      --  @return a negative integer, zero or a positive integer depending on
+      --  whether A sorts before, with or after B
 
       procedure Set_Sort_Func
          (Sortable       : Gtk.Tree_Sortable.Gtk_Tree_Sortable;
@@ -276,12 +280,15 @@ package Gtk.Tree_Sortable is
    --  GTK_TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID.
    --  @param Sort_Column_Id The sort column id to be filled in
    --  @param Order The Gtk.Enums.Gtk_Sort_Type to be filled in
+   --  @return True if the sort column is not one of the special sort column
+   --  ids.
 
    type Virtual_Has_Default_Sort_Func is access function (Sortable : Gtk_Tree_Sortable) return Glib.Gboolean;
    pragma Convention (C, Virtual_Has_Default_Sort_Func);
    --  Returns True if the model has a default sort function. This is used
    --  primarily by GtkTreeViewColumns in order to determine if a model can go
    --  back to the default state, or not.
+   --  @return True, if the model has a default sort function
 
    type Virtual_Set_Default_Sort_Func is access procedure
      (Sortable  : Gtk_Tree_Sortable;

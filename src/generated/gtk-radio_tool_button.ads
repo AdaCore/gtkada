@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button is a
 --  Gtk.Tool_Item.Gtk_Tool_Item that contains a radio button, that is, a button
 --  that is part of a group of toggle buttons where only one button can be
@@ -34,8 +33,6 @@
 --  # CSS nodes
 --
 --  GtkRadioToolButton has a single CSS node with name toolbutton.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                   use Glib;

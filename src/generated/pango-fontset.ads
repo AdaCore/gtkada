@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Pango.Fontset.Pango_Fontset represents a set of Pango.Font.Pango_Font to
 --  use when rendering text. It is the result of resolving a
 --  Pango.Font.Pango_Font_Description against a particular
@@ -29,11 +28,7 @@
 --  font for a particular Unicode character, and for finding a composite set of
 --  metrics for the entire fontset.
 --
---  </description>
---  <description>
 --  an object containing a set of pango.Font objects
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -59,6 +54,7 @@ package Pango.Fontset is
    --  Since: gtk+ 1.4
    --  @param Fontset a Pango.Fontset.Pango_Fontset
    --  @param Font a font from Fontset
+   --  @return if True, stop iteration and return immediately.
 
    ------------------
    -- Constructors --
@@ -94,6 +90,7 @@ package Pango.Fontset is
       --  @param Fontset a Pango.Fontset.Pango_Fontset
       --  @param Font a font from Fontset
       --  @param User_Data callback data
+      --  @return if True, stop iteration and return immediately.
 
       procedure Foreach
          (Self : not null access Pango.Fontset.Pango_Fontset_Record'Class;
@@ -113,10 +110,14 @@ package Pango.Fontset is
    --  Returns the font in the fontset that contains the best glyph for the
    --  Unicode character Wc.
    --  @param Wc a Unicode character
+   --  @return a Pango.Font.Pango_Font. The caller must call g_object_unref
+   --  when finished with the font.
 
    function Get_Metrics
       (Self : not null access Pango_Fontset_Record)
        return Pango.Font_Metrics.Pango_Font_Metrics;
    --  Get overall metric information for the fonts in the fontset.
+   --  @return a Pango.Font_Metrics.Pango_Font_Metrics object. The caller must
+   --  call Pango.Font_Metrics.Unref when finished using the object.
 
 end Pango.Fontset;

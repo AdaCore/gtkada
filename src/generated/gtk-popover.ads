@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkPopover is a bubble-like context window, primarily meant to provide
 --  context-dependent information or options. Popovers are attached to a
 --  widget, passed at construction time on Gtk.Popover.Gtk_New, or updated
@@ -80,8 +79,6 @@
 --  magnifiers in Gtk.GEntry.Gtk_Entry or Gtk.Text_View.Gtk_Text_View get style
 --  classes like .touch-selection or .magnifier to differentiate from plain
 --  popovers.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle;   use Gdk.Rectangle;
@@ -204,6 +201,7 @@ package Gtk.Popover is
    --  Returns the constraint for placing this popover. See
    --  Gtk.Popover.Set_Constrain_To.
    --  Since: gtk+ 3.20
+   --  @return the constraint for placing this popover.
 
    procedure Set_Constrain_To
       (Self       : not null access Gtk_Popover_Record;
@@ -220,6 +218,7 @@ package Gtk.Popover is
    --  Gets the widget that should be set as the default while the popover is
    --  shown.
    --  Since: gtk+ 3.18
+   --  @return the default widget, or null if there is none
 
    procedure Set_Default_Widget
       (Self   : not null access Gtk_Popover_Record;
@@ -236,6 +235,7 @@ package Gtk.Popover is
    --  Returns whether the popover is modal, see gtk_popover_set_modal to see
    --  the implications of this.
    --  Since: gtk+ 3.12
+   --  @return TRUE if Popover is modal
 
    procedure Set_Modal
       (Self  : not null access Gtk_Popover_Record;
@@ -254,6 +254,7 @@ package Gtk.Popover is
    --  and fill in Rect with such rectangle, otherwise it will return False and
    --  fill in Rect with the attached widget coordinates.
    --  @param Rect location to store the rectangle
+   --  @return True if a rectangle to point to was set.
 
    procedure Set_Pointing_To
       (Self : not null access Gtk_Popover_Record;
@@ -267,6 +268,7 @@ package Gtk.Popover is
       (Self : not null access Gtk_Popover_Record)
        return Gtk.Enums.Gtk_Position_Type;
    --  Returns the preferred position of Popover.
+   --  @return The preferred position.
 
    procedure Set_Position
       (Self     : not null access Gtk_Popover_Record;
@@ -284,6 +286,7 @@ package Gtk.Popover is
        return Gtk.Widget.Gtk_Widget;
    --  Returns the widget Popover is currently attached to
    --  Since: gtk+ 3.12
+   --  @return a Gtk.Widget.Gtk_Widget
 
    procedure Set_Relative_To
       (Self        : not null access Gtk_Popover_Record;
@@ -303,6 +306,8 @@ package Gtk.Popover is
    --  Returns whether show/hide transitions are enabled on this popover.
    --  Since: gtk+ 3.16
    --  Deprecated since 3.22, 1
+   --  @return TRUE if the show and hide transitions of the given popover are
+   --  enabled, FALSE otherwise.
 
    procedure Set_Transitions_Enabled
       (Self                : not null access Gtk_Popover_Record;

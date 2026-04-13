@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Recent_Chooser_Dialog.Gtk_Recent_Chooser_Dialog is a dialog box
 --  suitable for displaying the recently used documents. This widgets works by
 --  putting a Gtk.Recent_Chooser_Widget.Gtk_Recent_Chooser_Widget inside a
@@ -65,8 +64,6 @@
 --
 --
 --  Recently used files are supported since GTK+ 2.10.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;

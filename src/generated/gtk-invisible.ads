@@ -21,14 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Invisible.Gtk_Invisible widget is used internally in GTK+, and is
 --  probably not very useful for application developers.
 --
 --  It is used for reliable pointer grabs and selection handling in the code
 --  for drag-and-drop.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Screen;      use Gdk.Screen;
@@ -89,6 +86,7 @@ package Gtk.Invisible is
        return Gdk.Screen.Gdk_Screen;
    --  Returns the Gdk.Screen.Gdk_Screen object associated with Invisible
    --  Since: gtk+ 2.2
+   --  @return the associated Gdk.Screen.Gdk_Screen.
 
    procedure Set_Screen
       (Self   : not null access Gtk_Invisible_Record;

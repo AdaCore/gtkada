@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Notebook.Gtk_Notebook widget is a Gtk.Container.Gtk_Container
 --  whose children are pages that can be switched between using tab labels
 --  along one edge.
@@ -100,7 +99,6 @@
 --  The nodes are always arranged from left-to-right, regarldess of text
 --  direction.
 --
---  </description>
 --  <screenshot>gtk-notebook</screenshot>
 --  <group>Layout containers</group>
 --  <testgtk>create_notebook.adb</testgtk>
@@ -165,6 +163,8 @@ package Gtk.Notebook is
    --  page
    --  @param Tab_Label the Gtk.Widget.Gtk_Widget to be used as the label for
    --  the page, or null to use the default label, "page N"
+   --  @return the index (starting from 0) of the appended page in the
+   --  notebook, or -1 if function fails
 
    procedure Append_Page_Menu
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -200,6 +200,8 @@ package Gtk.Notebook is
    --  Gets one of the action widgets. See Gtk.Notebook.Set_Action_Widget.
    --  Since: gtk+ 2.20
    --  @param Pack_Type pack type of the action widget to receive
+   --  @return The action widget with the given Pack_Type or null when this
+   --  action widget has not been set
 
    procedure Set_Action_Widget
       (Notebook  : not null access Gtk_Notebook_Record;
@@ -218,6 +220,8 @@ package Gtk.Notebook is
    function Get_Current_Page
       (Notebook : not null access Gtk_Notebook_Record) return Glib.Gint;
    --  Returns the page number of the current page.
+   --  @return the index (starting from 0) of the current page in the
+   --  notebook. If the notebook has no pages, then -1 will be returned.
 
    procedure Set_Current_Page
       (Notebook : not null access Gtk_Notebook_Record;
@@ -234,6 +238,7 @@ package Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record) return UTF8_String;
    --  Gets the current group name for Notebook.
    --  Since: gtk+ 2.24
+   --  @return the group name, or null if none is set
 
    procedure Set_Group_Name
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -251,6 +256,8 @@ package Gtk.Notebook is
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the menu label widget of the page containing Child.
    --  @param Child a widget contained in a page of Notebook
+   --  @return the menu label, or null if the notebook page does not have a
+   --  menu label other than the default (the tab label).
 
    procedure Set_Menu_Label
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -266,6 +273,10 @@ package Gtk.Notebook is
        return UTF8_String;
    --  Retrieves the text of the menu label for the page containing Child.
    --  @param Child the child widget of a page of the notebook.
+   --  @return the text of the tab label, or null if the widget does not have
+   --  a menu label other than the default menu label, or the menu label widget
+   --  is not a Gtk.Label.Gtk_Label. The string is owned by the widget and must
+   --  not be freed.
 
    procedure Set_Menu_Label_Text
       (Notebook  : not null access Gtk_Notebook_Record;
@@ -279,6 +290,7 @@ package Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record) return Glib.Gint;
    --  Gets the number of pages in a notebook.
    --  Since: gtk+ 2.2
+   --  @return the number of pages in the notebook
 
    function Get_Nth_Page
       (Notebook : not null access Gtk_Notebook_Record;
@@ -286,11 +298,13 @@ package Gtk.Notebook is
    --  Returns the child widget contained in page number Page_Num.
    --  @param Page_Num the index of a page in the notebook, or -1 to get the
    --  last page
+   --  @return the child widget, or null if Page_Num is out of bounds
 
    function Get_Scrollable
       (Notebook : not null access Gtk_Notebook_Record) return Boolean;
    --  Returns whether the tab label area has arrows for scrolling. See
    --  Gtk.Notebook.Set_Scrollable.
+   --  @return True if arrows for scrolling are present
 
    procedure Set_Scrollable
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -303,6 +317,7 @@ package Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record) return Boolean;
    --  Returns whether a bevel will be drawn around the notebook pages. See
    --  Gtk.Notebook.Set_Show_Border.
+   --  @return True if the bevel is drawn
 
    procedure Set_Show_Border
       (Notebook    : not null access Gtk_Notebook_Record;
@@ -316,6 +331,7 @@ package Gtk.Notebook is
       (Notebook : not null access Gtk_Notebook_Record) return Boolean;
    --  Returns whether the tabs of the notebook are shown. See
    --  Gtk.Notebook.Set_Show_Tabs.
+   --  @return True if the tabs are shown
 
    procedure Set_Show_Tabs
       (Notebook  : not null access Gtk_Notebook_Record;
@@ -330,6 +346,7 @@ package Gtk.Notebook is
    --  Returns whether the tab contents can be detached from Notebook.
    --  Since: gtk+ 2.10
    --  @param Child a child Gtk.Widget.Gtk_Widget
+   --  @return True if the tab is detachable.
 
    procedure Set_Tab_Detachable
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -384,6 +401,7 @@ package Gtk.Notebook is
    --  Returns the horizontal width of a tab border.
    --  Since: gtk+ 2.22
    --  Deprecated since 3.4, 1
+   --  @return horizontal width of a tab border
 
    function Get_Tab_Label
       (Notebook : not null access Gtk_Notebook_Record;
@@ -393,6 +411,7 @@ package Gtk.Notebook is
    --  Child is not in Notebook or if no tab label has specifically been set
    --  for Child.
    --  @param Child the page
+   --  @return the tab label
 
    procedure Set_Tab_Label
       (Notebook  : not null access Gtk_Notebook_Record;
@@ -410,6 +429,9 @@ package Gtk.Notebook is
        return UTF8_String;
    --  Retrieves the text of the tab label for the page containing Child.
    --  @param Child a widget contained in a page of Notebook
+   --  @return the text of the tab label, or null if the tab label widget is
+   --  not a Gtk.Label.Gtk_Label. The string is owned by the widget and must
+   --  not be freed.
 
    procedure Set_Tab_Label_Text
       (Notebook : not null access Gtk_Notebook_Record;
@@ -425,6 +447,7 @@ package Gtk.Notebook is
        return Gtk.Enums.Gtk_Position_Type;
    --  Gets the edge at which the tabs for switching pages in the notebook are
    --  drawn.
+   --  @return the edge at which the tabs are drawn
 
    procedure Set_Tab_Pos
       (Notebook : not null access Gtk_Notebook_Record;
@@ -440,6 +463,7 @@ package Gtk.Notebook is
    --  Gets whether the tab can be reordered via drag and drop or not.
    --  Since: gtk+ 2.10
    --  @param Child a child Gtk.Widget.Gtk_Widget
+   --  @return True if the tab is reorderable.
 
    procedure Set_Tab_Reorderable
       (Notebook    : not null access Gtk_Notebook_Record;
@@ -457,6 +481,7 @@ package Gtk.Notebook is
    --  Returns the vertical width of a tab border.
    --  Since: gtk+ 2.22
    --  Deprecated since 3.4, 1
+   --  @return vertical width of a tab border
 
    function Insert_Page
       (Notebook  : not null access Gtk_Notebook_Record;
@@ -470,6 +495,8 @@ package Gtk.Notebook is
    --  the page, or null to use the default label, "page N"
    --  @param Position the index (starting at 0) at which to insert the page,
    --  or -1 to append the page after all other pages
+   --  @return the index (starting from 0) of the inserted page in the
+   --  notebook, or -1 if function fails
 
    function Insert_Page_Menu
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -491,6 +518,8 @@ package Gtk.Notebook is
    --  menu is to be used.
    --  @param Position the index (starting at 0) at which to insert the page,
    --  or -1 to append the page after all other pages.
+   --  @return the index (starting from 0) of the inserted page in the
+   --  notebook
 
    procedure Next_Page (Notebook : not null access Gtk_Notebook_Record);
    --  Switches to the next page. Nothing happens if the current page is the
@@ -502,6 +531,8 @@ package Gtk.Notebook is
        return Glib.Gint;
    --  Finds the index of the page which contains the given child widget.
    --  @param Child a Gtk.Widget.Gtk_Widget
+   --  @return the index of the page containing Child, or -1 if Child is not
+   --  in the notebook
 
    procedure Popup_Disable (Notebook : not null access Gtk_Notebook_Record);
    --  Disables the popup menu.
@@ -520,6 +551,8 @@ package Gtk.Notebook is
    --  page
    --  @param Tab_Label the Gtk.Widget.Gtk_Widget to be used as the label for
    --  the page, or null to use the default label, "page N"
+   --  @return the index (starting from 0) of the prepended page in the
+   --  notebook, or -1 if function fails
 
    function Prepend_Page_Menu
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -539,6 +572,8 @@ package Gtk.Notebook is
    --  label with the same text as Tab_Label; if Tab_Label is not a
    --  Gtk.Label.Gtk_Label, Menu_Label must be specified if the page-switch
    --  menu is to be used.
+   --  @return the index (starting from 0) of the prepended page in the
+   --  notebook, or -1 if function fails
 
    procedure Prev_Page (Notebook : not null access Gtk_Notebook_Record);
    --  Switches to the previous page. Nothing happens if the current page is
@@ -656,8 +691,6 @@ package Gtk.Notebook is
    --    --  @param Page the tab of Notebook that is being detached
    --    --  @param X the X coordinate where the drop happens
    --    --  @param Y the Y coordinate where the drop happens
-   --    --  Returns a Gtk.Notebook.Gtk_Notebook that Page should be
-   --     added to, or null.
 
    type Cb_Gtk_Notebook_Gtk_Notebook_Tab_Boolean is not null access function
      (Self   : access Gtk_Notebook_Record'Class;

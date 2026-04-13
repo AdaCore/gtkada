@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Target_Entry.Gtk_Target_Entry represents a single type of data than
 --  can be supplied for by a widget for a selection or for supplied or received
 --  during drag-and-drop.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;         use Glib;

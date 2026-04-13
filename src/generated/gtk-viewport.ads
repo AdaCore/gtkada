@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Viewport.Gtk_Viewport widget acts as an adaptor class,
 --  implementing scrollability for child widgets that lack their own scrolling
 --  capabilities. Use GtkViewport to scroll child widgets such as
@@ -45,7 +44,6 @@
 --
 --  GtkViewport has a single CSS node with name viewport.
 --
---  </description>
 --  <group>Scrolling</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -103,12 +101,14 @@ package Gtk.Viewport is
       (Viewport : not null access Gtk_Viewport_Record) return Gdk.Gdk_Window;
    --  Gets the bin window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.20
+   --  @return a Gdk.Gdk_Window
 
    function Get_Shadow_Type
       (Viewport : not null access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Shadow_Type;
    --  Gets the shadow type of the Gtk.Viewport.Gtk_Viewport. See
    --  Gtk.Viewport.Set_Shadow_Type.
+   --  @return the shadow type
 
    procedure Set_Shadow_Type
       (Viewport : not null access Gtk_Viewport_Record;
@@ -120,6 +120,7 @@ package Gtk.Viewport is
       (Viewport : not null access Gtk_Viewport_Record) return Gdk.Gdk_Window;
    --  Gets the view window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.22
+   --  @return a Gdk.Gdk_Window
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

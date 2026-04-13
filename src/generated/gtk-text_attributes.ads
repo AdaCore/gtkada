@@ -21,13 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Using Gtk.Text_Attributes.Gtk_Text_Attributes directly should rarely be
 --  necessary. It's primarily useful with Gtk.Text_Iter.Get_Attributes. As with
 --  most GTK+ structs, the fields in this struct should only be read, never
 --  modified directly.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Color;  use Gdk.Color;
@@ -110,6 +107,7 @@ package Gtk.Text_Attributes is
       (Text_Attr : Gtk_Text_Attributes) return Gtk_Text_Attributes;
    pragma Import (C, Copy, "gtk_text_attributes_copy");
    --  Copies Src and returns a new Gtk.Text_Attributes.Gtk_Text_Attributes.
+   --  @return a copy of Src, free with Gtk.Text_Attributes.Unref
 
    procedure Copy_Values
       (Text_Attr : Gtk_Text_Attributes;
@@ -122,6 +120,7 @@ package Gtk.Text_Attributes is
    function Ref (Text_Attr : Gtk_Text_Attributes) return Gtk_Text_Attributes;
    pragma Import (C, Ref, "gtk_text_attributes_ref");
    --  Increments the reference count on Values.
+   --  @return the Gtk.Text_Attributes.Gtk_Text_Attributes that were passed in
 
    procedure Unref (Text_Attr : Gtk_Text_Attributes);
    pragma Import (C, Unref, "gtk_text_attributes_unref");

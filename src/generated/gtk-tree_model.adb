@@ -592,6 +592,7 @@ package body Gtk.Tree_Model is
       --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
       --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
       --  @param Data The user data passed to Gtk.Tree_Model.Foreach
+      --  @return True to stop iterating, False to continue
 
       -------------
       -- Foreach --

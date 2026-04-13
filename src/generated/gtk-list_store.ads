@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.List_Store.Gtk_List_Store object is a list model for use with a
 --  Gtk.Tree_View.Gtk_Tree_View widget. It implements the
 --  Gtk.Tree_Model.Gtk_Tree_Model interface, and consequentialy, can use all of
@@ -159,7 +158,6 @@
 --         </row>
 --       </data>
 --     </object>
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Pixbuf;           use Gdk.Pixbuf;
@@ -192,6 +190,7 @@ package Gtk.List_Store is
    --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being iterated
    --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
    --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @return True to stop iterating, False to continue
 
    type Gtk_Tree_Iter_Compare_Func is access function
      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -210,6 +209,8 @@ package Gtk.List_Store is
    --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
    --  @param A A Gtk.Tree_Model.Gtk_Tree_Iter in Model
    --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
+   --  @return a negative integer, zero or a positive integer depending on
+   --  whether A sorts before, with or after B
 
    ------------------
    -- Constructors --
@@ -294,6 +295,7 @@ package Gtk.List_Store is
    --  Gtk.List_Store.Gtk_List_Store.
    --  Since: gtk+ 2.2
    --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter.
+   --  @return True if the iter is valid, False if the iter is invalid.
 
    procedure Move_After
       (List_Store : not null access Gtk_List_Store_Record;
@@ -401,6 +403,7 @@ package Gtk.List_Store is
       --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
       --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
       --  @param Data The user data passed to Gtk.Tree_Model.Foreach
+      --  @return True to stop iterating, False to continue
 
       procedure Foreach
          (Tree_Model : not null access Gtk.List_Store.Gtk_List_Store_Record'Class;
@@ -453,6 +456,8 @@ package Gtk.List_Store is
       --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  @param User_Data Data passed when the compare func is assigned e.g. by
       --  Gtk.Tree_Sortable.Set_Sort_Func
+      --  @return a negative integer, zero or a positive integer depending on
+      --  whether A sorts before, with or after B
 
       procedure Set_Default_Sort_Func
          (Sortable  : not null access Gtk.List_Store.Gtk_List_Store_Record'Class;
@@ -507,6 +512,8 @@ package Gtk.List_Store is
       --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  @param User_Data Data passed when the compare func is assigned e.g. by
       --  Gtk.Tree_Sortable.Set_Sort_Func
+      --  @return a negative integer, zero or a positive integer depending on
+      --  whether A sorts before, with or after B
 
       procedure Set_Sort_Func
          (Sortable       : not null access Gtk.List_Store.Gtk_List_Store_Record'Class;

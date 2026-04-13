@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  An icon factory manages a collection of Gtk.Icon_Set.Gtk_Icon_Set; a
 --  Gtk.Icon_Set.Gtk_Icon_Set manages a set of variants of a particular icon
 --  (i.e. a Gtk.Icon_Set.Gtk_Icon_Set contains variants for different sizes and
@@ -88,7 +87,6 @@
 --         </object>
 --       </child>
 --     </object>
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -191,6 +189,7 @@ package Gtk.Icon_Factory is
    --  themes are taken into account.
    --  Deprecated since 3.10, 1
    --  @param Stock_Id an icon name
+   --  @return icon set of Stock_Id.
 
    procedure Remove_Default (Self : not null access Gtk_Icon_Factory_Record);
    pragma Obsolescent (Remove_Default);
@@ -224,6 +223,7 @@ package Gtk.Icon_Factory is
    --  of using this function directly, so that themes are taken into account.
    --  Deprecated since 3.10, 1
    --  @param Stock_Id an icon name
+   --  @return a Gtk.Icon_Set.Gtk_Icon_Set, or null
 
    procedure Icon_Size_Lookup
       (Size   : Gtk.Enums.Gtk_Icon_Size;
@@ -240,6 +240,7 @@ package Gtk.Icon_Factory is
    --  @param Size an icon size (Gtk.Enums.Gtk_Icon_Size)
    --  @param Width location to store icon width
    --  @param Height location to store icon height
+   --  @return True if Size was a valid size
 
    procedure Icon_Size_Lookup_For_Settings
       (Settings : not null access Gtk.Settings.Gtk_Settings_Record'Class;
@@ -264,6 +265,7 @@ package Gtk.Icon_Factory is
    --  @param Size an icon size (Gtk.Enums.Gtk_Icon_Size)
    --  @param Width location to store icon width
    --  @param Height location to store icon height
+   --  @return True if Size was a valid size
 
    function Icon_Size_Register
       (Name   : UTF8_String;
@@ -276,6 +278,7 @@ package Gtk.Icon_Factory is
    --  @param Name name of the icon size
    --  @param Width the icon width
    --  @param Height the icon height
+   --  @return integer value representing the size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Icon_Size_Register_Alias
       (Alias  : UTF8_String;

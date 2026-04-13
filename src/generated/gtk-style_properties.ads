@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkStyleProperties provides the storage for style information that is used
 --  by Gtk.Style_Context.Gtk_Style_Context and other
 --  Gtk.Style_Provider.Gtk_Style_Provider implementations.
@@ -39,8 +38,6 @@
 --  Gtk.Style_Properties.Gtk_Style_Properties has been deprecated in GTK 3.16.
 --  The CSS machinery does not use it anymore and all users of this object have
 --  been deprecated.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -97,6 +94,7 @@ package Gtk.Style_Properties is
    --  @param Property style property name
    --  @param State state to retrieve the property value for
    --  @param Value return location for the style property value.
+   --  @return True if the property exists in Props, False otherwise
 
    procedure Set_Property
       (Self     : not null access Gtk_Style_Properties_Record;
@@ -119,6 +117,7 @@ package Gtk.Style_Properties is
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
    --  @param Name color name to lookup
+   --  @return The mapped color
 
    procedure Map_Color
       (Self  : not null access Gtk_Style_Properties_Record;

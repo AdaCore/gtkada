@@ -21,10 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gdk.Gdk_Cursor represents a cursor. Its contents are private.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;
@@ -371,11 +368,13 @@ package Gdk.Cursor is
    pragma Import (C, Get_Cursor_Type, "gdk_cursor_get_cursor_type");
    --  Returns the cursor type for this cursor.
    --  Since: gtk+ 2.22
+   --  @return a Gdk.Cursor.Gdk_Cursor_Type
 
    function Get_Display
       (Self : Gdk.Gdk_Cursor) return Gdk.Display.Gdk_Display;
    --  Returns the display on which the Gdk.Gdk_Cursor is defined.
    --  Since: gtk+ 2.2
+   --  @return the Gdk.Display.Gdk_Display associated to Cursor
 
    procedure Get_Surface
       (Self    : Gdk.Gdk_Cursor;
@@ -390,6 +389,7 @@ package Gdk.Cursor is
    --  Since: gtk+ 3.10
    --  @param X_Hot Location to store the hotspot x position, or null
    --  @param Y_Hot Location to store the hotspot y position, or null
+   --  @return a cairo_surface_t representing Cursor, or null
 
    ----------------------
    -- GtkAda additions --

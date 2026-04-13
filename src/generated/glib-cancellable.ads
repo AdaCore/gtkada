@@ -21,11 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GCancellable is a thread-safe operation cancellation stack used throughout
 --  GIO to allow for cancellation of synchronous and asynchronous operations.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Main;   use Glib.Main;
@@ -123,6 +120,8 @@ package Glib.Cancellable is
    --  Since: gtk+ 2.22
    --  @param Callback The Gcallback to connect.
    --  @param Data_Destroy_Func Free function for Data or null.
+   --  @return The id of the signal handler or 0 if Cancellable has already
+   --  been cancelled.
 
    generic
       type User_Data_Type (<>) is private;
@@ -161,6 +160,8 @@ package Glib.Cancellable is
       --  @param Callback The Gcallback to connect.
       --  @param Data Data to pass to Callback.
       --  @param Data_Destroy_Func Free function for Data or null.
+      --  @return The id of the signal handler or 0 if Cancellable has already
+      --  been cancelled.
 
    end Connect_User_Data;
 
@@ -193,10 +194,14 @@ package Glib.Cancellable is
    --  Glib.Cancellable.Release_Fd to free up resources allocated for the
    --  returned file descriptor.
    --  See also g_cancellable_make_pollfd.
+   --  @return A valid file descriptor. `-1` if the file descriptor is not
+   --  supported, or on errors.
 
    function Is_Cancelled
       (Self : not null access Gcancellable_Record) return Boolean;
    --  Checks if a cancellable job has been cancelled.
+   --  @return True if Cancellable is cancelled, FALSE if called with null or
+   --  if item is not cancelled.
 
    procedure Pop_Current (Self : not null access Gcancellable_Record);
    --  Pops Cancellable off the cancellable stack (verifying that Cancellable
@@ -236,6 +241,7 @@ package Glib.Cancellable is
       (Self : not null access Gcancellable_Record) return Boolean;
    --  If the Cancellable is cancelled, sets the error to notify that the
    --  operation was cancelled.
+   --  @return True if Cancellable was cancelled, False if it was not
 
    function Source_New
       (Self : not null access Gcancellable_Record) return Glib.Main.G_Source;
@@ -249,6 +255,7 @@ package Glib.Cancellable is
    --  The new Glib.Main.G_Source will hold a reference to the
    --  Glib.Cancellable.Gcancellable.
    --  Since: gtk+ 2.28
+   --  @return the new Glib.Main.G_Source.
 
    ---------------
    -- Functions --
@@ -256,6 +263,8 @@ package Glib.Cancellable is
 
    function Get_Current return Gcancellable;
    --  Gets the top cancellable from the stack.
+   --  @return a Glib.Cancellable.Gcancellable from the top of the stack, or
+   --  null if the stack is empty.
 
    -------------
    -- Signals --

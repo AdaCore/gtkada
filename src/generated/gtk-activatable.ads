@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Activatable widgets can be connected to a Gtk.Action.Gtk_Action and
 --  reflects the state of its action. A Gtk.Activatable.Gtk_Activatable can
 --  also provide feedback through its action, as they are responsible for
@@ -252,8 +251,6 @@
 --
 --       ...
 --     }
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -304,6 +301,7 @@ package Gtk.Activatable is
    --  Gets the related Gtk.Action.Gtk_Action for Activatable.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return the related Gtk.Action.Gtk_Action if one is set.
 
    procedure Set_Related_Action
       (Self   : Gtk_Activatable;
@@ -324,6 +322,7 @@ package Gtk.Activatable is
    --  when setting the related action or when the action changes appearance.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return whether Activatable uses its actions appearance.
 
    procedure Set_Use_Action_Appearance
       (Self           : Gtk_Activatable;

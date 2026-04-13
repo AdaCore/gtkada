@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Actions are organised into groups. An action group is essentially a map
 --  from names to Gtk.Action.Gtk_Action objects.
 --
@@ -71,7 +70,6 @@
 --           <accelerator key="F1" modifiers="GDK_CONTROL_MASK | GDK_SHIFT_MASK"/>
 --       </child>
 --     </object>
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -103,6 +101,7 @@ package Gtk.Action_Group is
    --  Gtk.Icon_Factory.Gtk_Icon_Factory and Gtk.Action_Group.Gtk_Action_Group.
    --  @param Path The id of the message. In Gtk.Action_Group.Gtk_Action_Group
    --  this will be a label or tooltip from a Gtk_Action_Entry.
+   --  @return the translated message
 
    ------------------
    -- Constructors --
@@ -174,6 +173,8 @@ package Gtk.Action_Group is
    --  Gets the accelerator group.
    --  Since: gtk+ 3.6
    --  Deprecated since 3.10, 1
+   --  @return the accelerator group associated with this action group or null
+   --  if there is none.
 
    procedure Set_Accel_Group
       (Action_Group : not null access Gtk_Action_Group_Record;
@@ -192,6 +193,7 @@ package Gtk.Action_Group is
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
    --  @param Action_Name the name of the action
+   --  @return the action, or null if no action by that name exists
 
    function Get_Name
       (Action_Group : not null access Gtk_Action_Group_Record)
@@ -200,6 +202,7 @@ package Gtk.Action_Group is
    --  Gets the name of the action group.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return the name of the action group.
 
    function Get_Sensitive
       (Action_Group : not null access Gtk_Action_Group_Record)
@@ -210,6 +213,7 @@ package Gtk.Action_Group is
    --  sensitive (see Gtk.Action.Get_Sensitive) and their group is sensitive.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return True if the group is sensitive.
 
    procedure Set_Sensitive
       (Action_Group : not null access Gtk_Action_Group_Record;
@@ -229,6 +233,7 @@ package Gtk.Action_Group is
    --  (see Gtk.Action.Get_Visible) and their group is visible.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return True if the group is visible.
 
    procedure Set_Visible
       (Action_Group : not null access Gtk_Action_Group_Record;
@@ -281,6 +286,7 @@ package Gtk.Action_Group is
       --  @param Path The id of the message. In Gtk.Action_Group.Gtk_Action_Group
       --  this will be a label or tooltip from a Gtk_Action_Entry.
       --  @param Func_Data user data passed in when registering the function
+      --  @return the translated message
 
       procedure Set_Translate_Func
          (Action_Group : not null access Gtk.Action_Group.Gtk_Action_Group_Record'Class;
@@ -322,6 +328,7 @@ package Gtk.Action_Group is
    --  Since: gtk+ 2.6
    --  Deprecated since 3.10, 1
    --  @param String a string
+   --  @return the translation of String
 
    ----------------------
    -- GtkAda additions --

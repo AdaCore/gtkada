@@ -56,6 +56,8 @@ package body Glib.Cancellable is
    --  @param Callback The Gcallback to connect.
    --  @param Data Data to pass to Callback.
    --  @param Data_Destroy_Func Free function for Data or null.
+   --  @return The id of the signal handler or 0 if Cancellable has already
+   --  been cancelled.
 
    function To_Gcallback is new Ada.Unchecked_Conversion
      (System.Address, Gcallback);

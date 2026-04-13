@@ -21,10 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The GString struct contains the public fields of a GString.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gtkada.Types; use Gtkada.Types;
@@ -57,12 +54,14 @@ package Glib.String is
    --  Adds a string onto the end of a Glib.String.Gstring, expanding it if
    --  necessary.
    --  @param Val the string to append onto the end of String
+   --  @return String
 
    function Append_C (Self : Gstring; C : Gchar) return Gstring;
    pragma Import (C, Append_C, "g_string_append_c");
    --  Adds a byte onto the end of a Glib.String.Gstring, expanding it if
    --  necessary.
    --  @param C the byte to append onto the end of String
+   --  @return String
 
    function Append_Len
       (Self : Gstring;
@@ -74,11 +73,13 @@ package Glib.String is
    --  responsibility to ensure that Val has at least Len addressable bytes.
    --  @param Val bytes to append
    --  @param Len number of bytes of Val to use
+   --  @return String
 
    function Append_Unichar (Self : Gstring; Wc : Gunichar) return Gstring;
    pragma Import (C, Append_Unichar, "g_string_append_unichar");
    --  Converts a Unicode character into UTF-8, and appends it to the string.
    --  @param Wc a Unicode character
+   --  @return String
 
    function Append_Uri_Escaped
       (Self                   : Gstring;
@@ -93,14 +94,21 @@ package Glib.String is
    --  to be used, or null
    --  @param Allow_Utf8 set True if the escaped string may include UTF8
    --  characters
+   --  @return String
 
    function Ascii_Down (Self : Gstring) return Gstring;
    pragma Import (C, Ascii_Down, "g_string_ascii_down");
    --  Converts all uppercase ASCII letters to lowercase ASCII letters.
+   --  @return passed-in String pointer, with all the uppercase characters
+   --  converted to lowercase in place, with semantics that exactly match
+   --  g_ascii_tolower.
 
    function Ascii_Up (Self : Gstring) return Gstring;
    pragma Import (C, Ascii_Up, "g_string_ascii_up");
    --  Converts all lowercase ASCII letters to uppercase ASCII letters.
+   --  @return passed-in String pointer, with all the lowercase characters
+   --  converted to uppercase in place, with semantics that exactly match
+   --  g_ascii_toupper.
 
    function Assign (Self : Gstring; Rval : UTF8_String) return Gstring;
    --  Copies the bytes from a string into a Glib.String.Gstring, destroying
@@ -108,17 +116,21 @@ package Glib.String is
    --  except that you do not have to worry about having enough space to copy
    --  the string.
    --  @param Rval the string to copy into String
+   --  @return String
 
    function Down (Self : Gstring) return Gstring;
    pragma Import (C, Down, "g_string_down");
    pragma Obsolescent (Down);
    --  Converts a Glib.String.Gstring to lowercase.
    --  Deprecated since 2.2, 1
+   --  @return the Glib.String.Gstring
 
    function Equal (Self : Gstring; V2 : Gstring) return Boolean;
    --  Compares two strings for equality, returning True if they are equal.
    --  For use with GHash_Table.
    --  @param V2 another Glib.String.Gstring
+   --  @return True if the strings are the same length and contain the same
+   --  bytes
 
    function Erase
       (Self : Gstring;
@@ -130,16 +142,20 @@ package Glib.String is
    --  @param Pos the position of the content to remove
    --  @param Len the number of bytes to remove, or -1 to remove all following
    --  bytes
+   --  @return String
 
    function Free (Self : Gstring; Free_Segment : Boolean) return UTF8_String;
    --  Frees the memory allocated for the Glib.String.Gstring. If Free_Segment
    --  is True it also frees the character data. If it's False, the caller
    --  gains ownership of the buffer and must free it after use with g_free.
    --  @param Free_Segment if True, the actual character data is freed as well
+   --  @return the character data of String (i.e. null if Free_Segment is
+   --  True)
 
    function Hash (Self : Gstring) return Guint;
    pragma Import (C, Hash, "g_string_hash");
    --  Creates a hash code for Str; for use with GHash_Table.
+   --  @return hash code for Str
 
    function Insert
       (Self : Gstring;
@@ -149,6 +165,7 @@ package Glib.String is
    --  necessary.
    --  @param Pos the position to insert the copy of the string
    --  @param Val the string to insert
+   --  @return String
 
    function Insert_C
       (Self : Gstring;
@@ -158,6 +175,7 @@ package Glib.String is
    --  Inserts a byte into a Glib.String.Gstring, expanding it if necessary.
    --  @param Pos the position to insert the byte
    --  @param C the byte to insert
+   --  @return String
 
    function Insert_Len
       (Self : Gstring;
@@ -173,6 +191,7 @@ package Glib.String is
    --  at the end
    --  @param Val bytes to insert
    --  @param Len number of bytes of Val to insert
+   --  @return String
 
    function Insert_Unichar
       (Self : Gstring;
@@ -184,6 +203,7 @@ package Glib.String is
    --  @param Pos the position at which to insert character, or -1 to append
    --  at the end of the string
    --  @param Wc a Unicode character
+   --  @return String
 
    function Overwrite
       (Self : Gstring;
@@ -193,6 +213,7 @@ package Glib.String is
    --  Since: gtk+ 2.14
    --  @param Pos the position at which to start overwriting
    --  @param Val the string that will overwrite the String starting at Pos
+   --  @return String
 
    function Overwrite_Len
       (Self : Gstring;
@@ -205,17 +226,20 @@ package Glib.String is
    --  @param Pos the position at which to start overwriting
    --  @param Val the string that will overwrite the String starting at Pos
    --  @param Len the number of bytes to write from Val
+   --  @return String
 
    function Prepend (Self : Gstring; Val : UTF8_String) return Gstring;
    --  Adds a string on to the start of a Glib.String.Gstring, expanding it if
    --  necessary.
    --  @param Val the string to prepend on the start of String
+   --  @return String
 
    function Prepend_C (Self : Gstring; C : Gchar) return Gstring;
    pragma Import (C, Prepend_C, "g_string_prepend_c");
    --  Adds a byte onto the start of a Glib.String.Gstring, expanding it if
    --  necessary.
    --  @param C the byte to prepend on the start of the Glib.String.Gstring
+   --  @return String
 
    function Prepend_Len
       (Self : Gstring;
@@ -227,11 +251,13 @@ package Glib.String is
    --  responsibility to ensure that Val has at least Len addressable bytes.
    --  @param Val bytes to prepend
    --  @param Len number of bytes in Val to prepend
+   --  @return String
 
    function Prepend_Unichar (Self : Gstring; Wc : Gunichar) return Gstring;
    pragma Import (C, Prepend_Unichar, "g_string_prepend_unichar");
    --  Converts a Unicode character into UTF-8, and prepends it to the string.
    --  @param Wc a Unicode character
+   --  @return String
 
    function Set_Size (Self : Gstring; Len : Gsize) return Gstring;
    pragma Import (C, Set_Size, "g_string_set_size");
@@ -241,16 +267,19 @@ package Glib.String is
    --  are undefined. (However, as always, string->str[string->len] will be a
    --  nul byte.)
    --  @param Len the new length
+   --  @return String
 
    function Truncate (Self : Gstring; Len : Gsize) return Gstring;
    pragma Import (C, Truncate, "g_string_truncate");
    --  Cuts off the end of the GString, leaving the first Len bytes.
    --  @param Len the new size of String
+   --  @return String
 
    function Up (Self : Gstring) return Gstring;
    pragma Import (C, Up, "g_string_up");
    pragma Obsolescent (Up);
    --  Converts a Glib.String.Gstring to uppercase.
    --  Deprecated since 2.2, 1
+   --  @return String
 
 end Glib.String;

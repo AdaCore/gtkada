@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Editable.Gtk_Editable interface is an interface which should be
 --  implemented by text editing widgets, such as Gtk.GEntry.Gtk_Entry and
 --  Gtk.Spin_Button.Gtk_Spin_Button. It contains functions for generically
@@ -56,8 +55,6 @@
 --
 --       g_free (result);
 --     }
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;         use Glib;
@@ -122,9 +119,13 @@ package Gtk.Editable is
    --  Note that positions are specified in characters, not bytes.
    --  @param Start_Pos start of text
    --  @param End_Pos end of text
+   --  @return a pointer to the contents of the widget as a string. This
+   --  string is allocated by the Gtk.Editable.Gtk_Editable implementation and
+   --  should be freed by the caller.
 
    function Get_Editable (Editable : Gtk_Editable) return Boolean;
    --  Retrieves whether Editable is editable. See Gtk.Editable.Set_Editable.
+   --  @return True if Editable is editable.
 
    procedure Set_Editable (Editable : Gtk_Editable; Is_Editable : Boolean);
    --  Determines if the user can edit the text in the editable widget or not.
@@ -136,6 +137,7 @@ package Gtk.Editable is
    --  Retrieves the current position of the cursor relative to the start of
    --  the content of the editable.
    --  Note that this position is in characters, not in bytes.
+   --  @return the cursor position
 
    procedure Set_Position (Editable : Gtk_Editable; Position : Glib.Gint);
    pragma Import (C, Set_Position, "gtk_editable_set_position");
@@ -158,6 +160,7 @@ package Gtk.Editable is
    --  Note that positions are specified in characters, not bytes.
    --  @param Start_Pos location to store the starting position, or null
    --  @param End_Pos location to store the end position, or null
+   --  @return True if an area is selected, False otherwise
 
    procedure Insert_Text
       (Editable        : Gtk_Editable;
@@ -365,12 +368,16 @@ package Gtk.Editable is
    --  Note that positions are specified in characters, not bytes.
    --  @param Start_Pos start of text
    --  @param End_Pos end of text
+   --  @return a pointer to the contents of the widget as a string. This
+   --  string is allocated by the Gtk.Editable.Gtk_Editable implementation and
+   --  should be freed by the caller.
 
    type Virtual_Get_Position is access function (Editable : Gtk_Editable) return Glib.Gint;
    pragma Convention (C, Virtual_Get_Position);
    --  Retrieves the current position of the cursor relative to the start of
    --  the content of the editable.
    --  Note that this position is in characters, not in bytes.
+   --  @return the cursor position
 
    type Virtual_Get_Selection_Bounds is access function
      (Editable  : Gtk_Editable;
@@ -383,6 +390,7 @@ package Gtk.Editable is
    --  Note that positions are specified in characters, not bytes.
    --  @param Start_Pos location to store the starting position, or null
    --  @param End_Pos location to store the end position, or null
+   --  @return True if an area is selected, False otherwise
 
    type Virtual_Insert_Text is access procedure
      (Editable        : Gtk_Editable;

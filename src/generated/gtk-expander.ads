@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Expander.Gtk_Expander allows the user to hide or show its child by
 --  clicking on an expander triangle similar to the triangles used in a
 --  Gtk.Tree_View.Gtk_Tree_View.
@@ -102,7 +101,6 @@
 --  expander that is showing its child gets the :checked pseudoclass added to
 --  it.
 --
---  </description>
 --  <screenshot>gtk-expanded</screenshot>
 --  <group>Layout containers</group>
 
@@ -184,6 +182,7 @@ package Gtk.Expander is
    --  Returns True if the child widget is revealed.
    --  See Gtk.Expander.Set_Expanded.
    --  Since: gtk+ 2.4
+   --  @return the current state of the expander
 
    procedure Set_Expanded
       (Expander : not null access Gtk_Expander_Record;
@@ -206,6 +205,8 @@ package Gtk.Expander is
    --  indicating mnemonics and Pango markup. This problem can be avoided by
    --  fetching the label text directly from the label widget.
    --  Since: gtk+ 2.4
+   --  @return The text of the label widget. This string is owned by the
+   --  widget and must not be modified or freed.
 
    procedure Set_Label
       (Expander : not null access Gtk_Expander_Record;
@@ -220,6 +221,8 @@ package Gtk.Expander is
    --  Returns whether the label widget will fill all available horizontal
    --  space allocated to Expander.
    --  Since: gtk+ 2.22
+   --  @return True if the label widget will fill all available horizontal
+   --  space
 
    procedure Set_Label_Fill
       (Expander   : not null access Gtk_Expander_Record;
@@ -237,6 +240,7 @@ package Gtk.Expander is
    --  Retrieves the label widget for the frame. See
    --  Gtk.Expander.Set_Label_Widget.
    --  Since: gtk+ 2.4
+   --  @return the label widget, or null if there is none
 
    procedure Set_Label_Widget
       (Expander     : not null access Gtk_Expander_Record;
@@ -251,6 +255,7 @@ package Gtk.Expander is
    --  Returns whether the expander will resize the toplevel widget containing
    --  the expander upon resizing and collpasing.
    --  Since: gtk+ 3.2
+   --  @return the "resize toplevel" setting.
 
    procedure Set_Resize_Toplevel
       (Expander        : not null access Gtk_Expander_Record;
@@ -266,6 +271,7 @@ package Gtk.Expander is
    --  Gets the value set by Gtk.Expander.Set_Spacing.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.20, 1
+   --  @return spacing between the expander and child
 
    procedure Set_Spacing
       (Expander : not null access Gtk_Expander_Record;
@@ -283,6 +289,7 @@ package Gtk.Expander is
    --  [Pango text markup language][PangoMarkupFormat]. See
    --  Gtk.Expander.Set_Use_Markup.
    --  Since: gtk+ 2.4
+   --  @return True if the label's text will be parsed for markup
 
    procedure Set_Use_Markup
       (Expander   : not null access Gtk_Expander_Record;
@@ -297,6 +304,8 @@ package Gtk.Expander is
    --  Returns whether an embedded underline in the expander label indicates a
    --  mnemonic. See Gtk.Expander.Set_Use_Underline.
    --  Since: gtk+ 2.4
+   --  @return True if an embedded underline in the expander label indicates
+   --  the mnemonic accelerator keys
 
    procedure Set_Use_Underline
       (Expander      : not null access Gtk_Expander_Record;

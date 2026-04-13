@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The GtkTreeViewColumn object represents a visible column in a
 --  Gtk.Tree_View.Gtk_Tree_View widget. It allows to set properties of the
 --  column header, and functions as a holding pen for the cell renderers which
@@ -30,8 +29,6 @@
 --  Please refer to the [tree widget conceptual overview][TreeWidget] for an
 --  overview of all the objects and data types related to the tree widget and
 --  how they work together.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle;           use Gdk.Rectangle;
@@ -149,6 +146,7 @@ package Gtk.Tree_View_Column is
    --  @param X_Offset return location for the horizontal position of Cell
    --  within Tree_Column, may be null
    --  @param Width return location for the width of Cell, may be null
+   --  @return True if Cell belongs to Tree_Column.
 
    procedure Cell_Get_Size
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -175,6 +173,8 @@ package Gtk.Tree_View_Column is
    --  Returns True if any of the cells packed into the Tree_Column are
    --  visible. For this to be meaningful, you must first initialize the cells
    --  with Gtk.Tree_View_Column.Cell_Set_Cell_Data
+   --  @return True, if any of the cells packed into the Tree_Column are
+   --  currently visible
 
    procedure Cell_Set_Cell_Data
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -211,6 +211,7 @@ package Gtk.Tree_View_Column is
        return Gfloat;
    --  Returns the current x alignment of Tree_Column. This value can range
    --  between 0.0 and 1.0.
+   --  @return The current alignent of Tree_Column.
 
    procedure Set_Alignment
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -225,11 +226,13 @@ package Gtk.Tree_View_Column is
        return Gtk.Widget.Gtk_Widget;
    --  Returns the button used in the treeview column header
    --  Since: gtk+ 3.0
+   --  @return The button for the column header.
 
    function Get_Clickable
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean;
    --  Returns True if the user can click on the header for the column.
+   --  @return True if user can click the column header.
 
    procedure Set_Clickable
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -243,6 +246,7 @@ package Gtk.Tree_View_Column is
        return Boolean;
    --  Returns True if the column expands to fill available space.
    --  Since: gtk+ 2.4
+   --  @return True if the column expands to fill available space.
 
    procedure Set_Expand
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -262,6 +266,7 @@ package Gtk.Tree_View_Column is
    --  Gets the fixed width of the column. This may not be the actual
    --  displayed width of the column; for that, use
    --  Gtk.Tree_View_Column.Get_Width.
+   --  @return The fixed width of the column.
 
    procedure Set_Fixed_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -284,6 +289,7 @@ package Gtk.Tree_View_Column is
        return Glib.Gint;
    --  Returns the maximum width in pixels of the Tree_Column, or -1 if no
    --  maximum width is set.
+   --  @return The maximum width of the Tree_Column.
 
    procedure Set_Max_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -299,6 +305,7 @@ package Gtk.Tree_View_Column is
        return Glib.Gint;
    --  Returns the minimum width in pixels of the Tree_Column, or -1 if no
    --  minimum width is set.
+   --  @return The minimum width of the Tree_Column.
 
    procedure Set_Min_Width
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -311,6 +318,7 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean;
    --  Returns True if the Tree_Column can be reordered by the user.
+   --  @return True if the Tree_Column can be reordered by the user.
 
    procedure Set_Reorderable
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -323,6 +331,7 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean;
    --  Returns True if the Tree_Column can be resized by the end user.
+   --  @return True, if the Tree_Column can be resized.
 
    procedure Set_Resizable
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -337,6 +346,7 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Gtk_Tree_View_Column_Sizing;
    --  Returns the current type of Tree_Column.
+   --  @return The type of Tree_Column.
 
    procedure Set_Sizing
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -350,6 +360,8 @@ package Gtk.Tree_View_Column is
    --  Gets the logical Sort_Column_Id that the model sorts on when this
    --  column is selected for sorting. See
    --  Gtk.Tree_View_Column.Set_Sort_Column_Id.
+   --  @return the current Sort_Column_Id for this column, or -1 if this
+   --  column can't be used for sorting.
 
    procedure Set_Sort_Column_Id
       (Tree_Column    : not null access Gtk_Tree_View_Column_Record;
@@ -363,6 +375,7 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean;
    --  Gets the value set by Gtk.Tree_View_Column.Set_Sort_Indicator.
+   --  @return whether the sort indicator arrow is displayed
 
    procedure Set_Sort_Indicator
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -377,6 +390,7 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Gtk.Enums.Gtk_Sort_Type;
    --  Gets the value set by Gtk.Tree_View_Column.Set_Sort_Order.
+   --  @return the sort order the sort indicator is indicating
 
    procedure Set_Sort_Order
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -396,6 +410,7 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Glib.Gint;
    --  Returns the spacing of Tree_Column.
+   --  @return the spacing of Tree_Column.
 
    procedure Set_Spacing
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -408,6 +423,8 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return UTF8_String;
    --  Returns the title of the widget.
+   --  @return the title of the column. This string should not be modified or
+   --  freed.
 
    procedure Set_Title
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -423,11 +440,15 @@ package Gtk.Tree_View_Column is
    --  inserted. If Column is currently not inserted in any tree view, null is
    --  returned.
    --  Since: gtk+ 2.12
+   --  @return The tree view wherein Column has been inserted if any, null
+   --  otherwise.
 
    function Get_Visible
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Boolean;
    --  Returns True if Tree_Column is visible.
+   --  @return whether the column is visible or not. If it is visible, then
+   --  the tree will show the column.
 
    procedure Set_Visible
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -440,6 +461,7 @@ package Gtk.Tree_View_Column is
        return Gtk.Widget.Gtk_Widget;
    --  Returns the Gtk.Widget.Gtk_Widget in the button on the column header.
    --  If a custom widget has not been set then null is returned.
+   --  @return The Gtk.Widget.Gtk_Widget in the column header, or null
 
    procedure Set_Widget
       (Tree_Column : not null access Gtk_Tree_View_Column_Record;
@@ -453,12 +475,14 @@ package Gtk.Tree_View_Column is
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Glib.Gint;
    --  Returns the current size of Tree_Column in pixels.
+   --  @return The current width of Tree_Column.
 
    function Get_X_Offset
       (Tree_Column : not null access Gtk_Tree_View_Column_Record)
        return Glib.Gint;
    --  Returns the current X offset of Tree_Column in pixels.
    --  Since: gtk+ 3.2
+   --  @return The current X offset of Tree_Column.
 
    procedure Queue_Resize
       (Tree_Column : not null access Gtk_Tree_View_Column_Record);

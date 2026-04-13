@@ -613,6 +613,7 @@ package body Gdk.Window is
       --  the window to determine whether to recursively invalidate it or now.
       --  @param Window a Gdk.Gdk_Window
       --  @param User_Data user data
+      --  @return True to invalidate Window recursively
 
       -----------------
       -- Internal_Cb --

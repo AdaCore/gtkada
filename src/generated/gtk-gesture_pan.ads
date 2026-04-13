@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Gesture_Pan.Gtk_Gesture_Pan is a Gtk.Gesture.Gtk_Gesture
 --  implementation able to recognize pan gestures, those are drags that are
 --  locked to happen along one axis. The axis that a
@@ -36,8 +35,6 @@
 --  Once a panning gesture along the expected axis is recognized, the
 --  Gtk.Gesture_Pan.Gtk_Gesture_Pan::pan signal will be emitted as input events
 --  are received, containing the offset in the given axis.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
@@ -92,6 +89,7 @@ package Gtk.Gesture_Pan is
        return Gtk.Enums.Gtk_Orientation;
    --  Returns the orientation of the pan gestures that this Gesture expects.
    --  Since: gtk+ 3.14
+   --  @return the expected orientation for pan gestures
 
    procedure Set_Orientation
       (Self        : not null access Gtk_Gesture_Pan_Record;

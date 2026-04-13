@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Recent_Action.Gtk_Recent_Action represents a list of recently used
 --  files, which can be shown by widgets such as
 --  Gtk.Recent_Chooser_Dialog.Gtk_Recent_Chooser_Dialog or
@@ -32,8 +31,6 @@
 --  construct a menu toolbutton showing the recently used files in the popup
 --  menu, use a Gtk.Recent_Action.Gtk_Recent_Action as the action for a
 --  <toolitem> element.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -162,6 +159,7 @@ package Gtk.Recent_Action is
    --  Returns the value set by Gtk.Recent_Chooser_Menu.Set_Show_Numbers.
    --  Since: gtk+ 2.12
    --  Deprecated since 3.10, 1
+   --  @return True if numbers should be shown.
 
    procedure Set_Show_Numbers
       (Widget       : not null access Gtk_Recent_Action_Record;

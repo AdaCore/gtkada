@@ -90,6 +90,7 @@ package body Gdk.Seat is
    --  @param Prepare_Func function to prepare the window to be grabbed, it
    --  can be null if Window is visible before this call.
    --  @param Prepare_Func_Data user data to pass to Prepare_Func
+   --  @return GDK_GRAB_SUCCESS if the grab was successful.
 
    function To_Gdk_Seat_Grab_Prepare_Func is new Ada.Unchecked_Conversion
      (System.Address, Gdk_Seat_Grab_Prepare_Func);

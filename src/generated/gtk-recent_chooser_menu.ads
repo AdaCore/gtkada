@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu is a widget suitable for
 --  displaying recently used files inside a menu. It can be used to set a
 --  sub-menu of a Gtk.Menu_Item.Gtk_Menu_Item using Gtk.Menu_Item.Set_Submenu,
@@ -44,8 +43,6 @@
 --  a list containing a single Gtk.Recent_Filter.Gtk_Recent_Filter object.
 --
 --  Recently used files are supported since GTK+ 2.10.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -149,6 +146,7 @@ package Gtk.Recent_Chooser_Menu is
       (Self : not null access Gtk_Recent_Chooser_Menu_Record) return Boolean;
    --  Returns the value set by Gtk.Recent_Chooser_Menu.Set_Show_Numbers.
    --  Since: gtk+ 2.10
+   --  @return True if numbers should be shown.
 
    procedure Set_Show_Numbers
       (Self         : not null access Gtk_Recent_Chooser_Menu_Record;

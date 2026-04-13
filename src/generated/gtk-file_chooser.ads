@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.File_Chooser.Gtk_File_Chooser is an interface that can be implemented
 --  by file selection widgets. In GTK+, the main objects that implement this
 --  interface are Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget,
@@ -140,7 +139,6 @@
 --  a container such as a Gtk.Box.Gtk_Box or a Gtk.Grid.Gtk_Grid and include
 --  your widgets in it. Then, set the container as the whole extra widget.
 --
---  </description>
 --  <group></group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -255,6 +253,8 @@ package Gtk.File_Chooser is
    --  "/usr/share/mydrawprogram/Clipart" folder to the volume list.
    --  Since: gtk+ 2.4
    --  @param Folder filename of the folder to add
+   --  @return True if the folder could be added successfully, False
+   --  otherwise. In the latter case, the Error will be set as appropriate.
 
    function Add_Shortcut_Folder_Uri
       (Chooser : Gtk_File_Chooser;
@@ -265,6 +265,8 @@ package Gtk.File_Chooser is
    --  "file:///usr/share/mydrawprogram/Clipart" folder to the volume list.
    --  Since: gtk+ 2.4
    --  @param URI URI of the folder to add
+   --  @return True if the folder could be added successfully, False
+   --  otherwise. In the latter case, the Error will be set as appropriate.
 
    function Get_Action
       (Chooser : Gtk_File_Chooser) return Gtk_File_Chooser_Action;
@@ -272,6 +274,7 @@ package Gtk.File_Chooser is
    --  Gets the type of operation that the file chooser is performing; see
    --  Gtk.File_Chooser.Set_Action.
    --  Since: gtk+ 2.4
+   --  @return the action that the file selector is performing
 
    procedure Set_Action
       (Chooser : Gtk_File_Chooser;
@@ -291,6 +294,7 @@ package Gtk.File_Chooser is
    --  Gets the currently selected option in the 'choice' with the given ID.
    --  Since: gtk+ 3.22
    --  @param Id the ID of the choice to get
+   --  @return the ID of the currenly selected option
 
    procedure Set_Choice
       (Chooser : Gtk_File_Chooser;
@@ -307,6 +311,7 @@ package Gtk.File_Chooser is
    --  Gets whether file choser will offer to create new folders. See
    --  Gtk.File_Chooser.Set_Create_Folders.
    --  Since: gtk+ 2.18
+   --  @return True if the Create Folder button should be displayed.
 
    procedure Set_Create_Folders
       (Chooser        : Gtk_File_Chooser;
@@ -329,6 +334,11 @@ package Gtk.File_Chooser is
    --  currently-selected folder in that mode, use Gtk.File_Chooser.Get_Uri as
    --  the usual way to get the selection.
    --  Since: gtk+ 2.4
+   --  @return the full path of the current folder, or null if the current
+   --  path cannot be represented as a local filename. Free with g_free. This
+   --  function will also return null if the file chooser was unable to load
+   --  the last folder that was requested from it; for example, as would be for
+   --  calling Gtk.File_Chooser.Set_Current_Folder on a nonexistent folder.
 
    function Set_Current_Folder
       (Chooser  : Gtk_File_Chooser;
@@ -341,6 +351,7 @@ package Gtk.File_Chooser is
    --  the rationale behind this.
    --  Since: gtk+ 2.4
    --  @param Filename the full path of the new current folder
+   --  @return Not useful.
 
    function Get_Current_Folder_Uri
       (Chooser : Gtk_File_Chooser) return UTF8_String;
@@ -354,6 +365,10 @@ package Gtk.File_Chooser is
    --  currently-selected folder in that mode, use Gtk.File_Chooser.Get_Uri as
    --  the usual way to get the selection.
    --  Since: gtk+ 2.4
+   --  @return the URI for the current folder. Free with g_free. This function
+   --  will also return null if the file chooser was unable to load the last
+   --  folder that was requested from it; for example, as would be for calling
+   --  Gtk.File_Chooser.Set_Current_Folder_Uri on a nonexistent folder.
 
    function Set_Current_Folder_Uri
       (Chooser : Gtk_File_Chooser;
@@ -366,6 +381,8 @@ package Gtk.File_Chooser is
    --  the rationale behind this.
    --  Since: gtk+ 2.4
    --  @param URI the URI for the new current folder
+   --  @return True if the folder could be changed successfully, False
+   --  otherwise.
 
    function Get_Current_Name (Chooser : Gtk_File_Chooser) return UTF8_String;
    --  Gets the current name in the file selector, as entered by the user in
@@ -376,6 +393,11 @@ package Gtk.File_Chooser is
    --  "file format" may want to change the extension of the typed filename
    --  based on the chosen format, say, from ".jpg" to ".png".
    --  Since: gtk+ 3.10
+   --  @return The raw text from the file chooser's "Name" entry. Free this
+   --  with g_free. Note that this string is not a full pathname or URI; it is
+   --  whatever the contents of the entry are. Note also that this string is in
+   --  UTF-8 encoding, which is not necessarily the system's encoding for
+   --  filenames.
 
    procedure Set_Current_Name
       (Chooser : Gtk_File_Chooser;
@@ -397,6 +419,8 @@ package Gtk.File_Chooser is
    --  Queries whether a file chooser is set to confirm for overwriting when
    --  the user types a file name that already exists.
    --  Since: gtk+ 2.8
+   --  @return True if the file chooser will present a confirmation dialog;
+   --  False otherwise.
 
    procedure Set_Do_Overwrite_Confirmation
       (Chooser                   : Gtk_File_Chooser;
@@ -419,6 +443,7 @@ package Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser) return Gtk.Widget.Gtk_Widget;
    --  Gets the current extra widget; see Gtk.File_Chooser.Set_Extra_Widget.
    --  Since: gtk+ 2.4
+   --  @return the current extra widget, or null
 
    procedure Set_Extra_Widget
       (Chooser      : Gtk_File_Chooser;
@@ -435,6 +460,9 @@ package Gtk.File_Chooser is
    --  If the file chooser is in folder mode, this function returns the
    --  selected folder.
    --  Since: gtk+ 2.4
+   --  @return The currently selected filename, or null if no file is
+   --  selected, or the selected file can't be represented with a local
+   --  filename. Free with g_free.
 
    function Set_Filename
       (Chooser  : Gtk_File_Chooser;
@@ -471,6 +499,7 @@ package Gtk.File_Chooser is
    --  it.
    --  Since: gtk+ 2.4
    --  @param Filename the filename to set as current
+   --  @return Not useful.
 
    function Get_Filenames
       (Chooser : Gtk_File_Chooser) return Gtk.Enums.String_SList.GSlist;
@@ -484,6 +513,7 @@ package Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser) return Gtk.File_Filter.Gtk_File_Filter;
    --  Gets the current filter; see Gtk.File_Chooser.Set_Filter.
    --  Since: gtk+ 2.4
+   --  @return the current filter, or null
 
    procedure Set_Filter
       (Chooser : Gtk_File_Chooser;
@@ -500,6 +530,7 @@ package Gtk.File_Chooser is
    --  Gets whether only local files can be selected in the file selector. See
    --  Gtk.File_Chooser.Set_Local_Only
    --  Since: gtk+ 2.4
+   --  @return True if only local files can be selected.
 
    procedure Set_Local_Only
       (Chooser    : Gtk_File_Chooser;
@@ -521,17 +552,23 @@ package Gtk.File_Chooser is
    --  Gets the filename that should be previewed in a custom preview widget.
    --  See Gtk.File_Chooser.Set_Preview_Widget.
    --  Since: gtk+ 2.4
+   --  @return the filename to preview, or null if no file is selected, or if
+   --  the selected file cannot be represented as a local filename. Free with
+   --  g_free
 
    function Get_Preview_Uri (Chooser : Gtk_File_Chooser) return UTF8_String;
    --  Gets the URI that should be previewed in a custom preview widget. See
    --  Gtk.File_Chooser.Set_Preview_Widget.
    --  Since: gtk+ 2.4
+   --  @return the URI for the file to preview, or null if no file is
+   --  selected. Free with g_free.
 
    function Get_Preview_Widget
       (Chooser : Gtk_File_Chooser) return Gtk.Widget.Gtk_Widget;
    --  Gets the current preview widget; see
    --  Gtk.File_Chooser.Set_Preview_Widget.
    --  Since: gtk+ 2.4
+   --  @return the current preview widget, or null
 
    procedure Set_Preview_Widget
       (Chooser        : Gtk_File_Chooser;
@@ -557,6 +594,7 @@ package Gtk.File_Chooser is
    --  Gtk.File_Chooser.Set_Preview_Widget should be shown for the current
    --  filename. See Gtk.File_Chooser.Set_Preview_Widget_Active.
    --  Since: gtk+ 2.4
+   --  @return True if the preview widget is active for the current filename.
 
    procedure Set_Preview_Widget_Active
       (Chooser : Gtk_File_Chooser;
@@ -574,6 +612,7 @@ package Gtk.File_Chooser is
    --  Gets whether multiple files can be selected in the file selector. See
    --  Gtk.File_Chooser.Set_Select_Multiple.
    --  Since: gtk+ 2.4
+   --  @return True if multiple files can be selected.
 
    procedure Set_Select_Multiple
       (Chooser         : Gtk_File_Chooser;
@@ -588,6 +627,7 @@ package Gtk.File_Chooser is
    --  Gets whether hidden files and folders are displayed in the file
    --  selector. See Gtk.File_Chooser.Set_Show_Hidden.
    --  Since: gtk+ 2.6
+   --  @return True if hidden files and folders are displayed.
 
    procedure Set_Show_Hidden
       (Chooser     : Gtk_File_Chooser;
@@ -605,6 +645,9 @@ package Gtk.File_Chooser is
    --  If the file chooser is in folder mode, this function returns the
    --  selected folder.
    --  Since: gtk+ 2.4
+   --  @return The currently selected URI, or null if no file is selected. If
+   --  Gtk.File_Chooser.Set_Local_Only is set to True (the default) a local URI
+   --  will be returned for any FUSE locations. Free with g_free
 
    function Set_Uri
       (Chooser : Gtk_File_Chooser;
@@ -641,6 +684,7 @@ package Gtk.File_Chooser is
    --  it.
    --  Since: gtk+ 2.4
    --  @param URI the URI to set as current
+   --  @return Not useful.
 
    function Get_Uris
       (Chooser : Gtk_File_Chooser) return Gtk.Enums.String_SList.GSlist;
@@ -652,6 +696,8 @@ package Gtk.File_Chooser is
       (Chooser : Gtk_File_Chooser) return Boolean;
    --  Gets whether a stock label should be drawn with the name of the
    --  previewed file. See Gtk.File_Chooser.Set_Use_Preview_Label.
+   --  @return True if the file chooser is set to display a label with the
+   --  name of the previewed file, False otherwise.
 
    procedure Set_Use_Preview_Label
       (Chooser   : Gtk_File_Chooser;
@@ -704,6 +750,9 @@ package Gtk.File_Chooser is
    --  Removes a folder from a file chooser's list of shortcut folders.
    --  Since: gtk+ 2.4
    --  @param Folder filename of the folder to remove
+   --  @return True if the operation succeeds, False otherwise. In the latter
+   --  case, the Error will be set as appropriate.
+   --  See also: Gtk.File_Chooser.Add_Shortcut_Folder
 
    function Remove_Shortcut_Folder_Uri
       (Chooser : Gtk_File_Chooser;
@@ -711,6 +760,9 @@ package Gtk.File_Chooser is
    --  Removes a folder URI from a file chooser's list of shortcut folders.
    --  Since: gtk+ 2.4
    --  @param URI URI of the folder to remove
+   --  @return True if the operation succeeds, False otherwise. In the latter
+   --  case, the Error will be set as appropriate.
+   --  See also: Gtk.File_Chooser.Add_Shortcut_Folder_Uri
 
    procedure Select_All (Chooser : Gtk_File_Chooser);
    pragma Import (C, Select_All, "gtk_file_chooser_select_all");
@@ -725,6 +777,8 @@ package Gtk.File_Chooser is
    --  folder containing Filename.
    --  Since: gtk+ 2.4
    --  @param Filename the filename to select
+   --  @return Not useful.
+   --  See also: Gtk.File_Chooser.Set_Filename
 
    function Select_Uri
       (Chooser : Gtk_File_Chooser;
@@ -734,6 +788,7 @@ package Gtk.File_Chooser is
    --  changed to the folder containing Filename.
    --  Since: gtk+ 2.4
    --  @param URI the URI to select
+   --  @return Not useful.
 
    procedure Unselect_All (Chooser : Gtk_File_Chooser);
    pragma Import (C, Unselect_All, "gtk_file_chooser_unselect_all");
@@ -871,8 +926,6 @@ package Gtk.File_Chooser is
    --     gtk_widget_destroy (chooser);
    -- 
    --  Callback parameters:
-   --    --  Returns a Gtk.File_Chooser.Gtk_File_Chooser_Confirmation value that indicates which
-   --  action to take after emitting the signal.
 
    type Cb_Gtk_File_Chooser_Void is not null access procedure (Self : Gtk_File_Chooser);
 

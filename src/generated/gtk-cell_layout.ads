@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Cell_Layout.Gtk_Cell_Layout is an interface to be implemented by all
 --  objects which want to provide a Gtk.Tree_View_Column.Gtk_Tree_View_Column
 --  like API for packing cells, setting attributes and data funcs.
@@ -118,7 +117,6 @@
 --  alternative cell areas, you can do so by moving the problematic calls out
 --  of init and into a constructor for your class.
 --
---  </description>
 --  <group>Trees and Lists</group>
 --  <testgtk>create_cell_view.adb</testgtk>
 

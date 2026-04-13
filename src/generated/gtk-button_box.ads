@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk_Button_Box is a special type of Gtk_Box specially tailored to
 --  contain buttons.
 --
@@ -30,7 +29,6 @@
 --  You can not instantiate a Gtk_Button_Box directly, and have to use one the
 --  above two instead.
 --
---  </description>
 --  <screenshot>gtk-button_box</screenshot>
 --  <group>Layout containers</group>
 --  <testgtk>create_button_box.adb</testgtk>
@@ -85,6 +83,7 @@ package Gtk.Button_Box is
    --  Returns whether the child is exempted from homogenous sizing.
    --  Since: gtk+ 3.2
    --  @param Child a child of Widget
+   --  @return True if the child is not subject to homogenous sizing
 
    procedure Set_Child_Non_Homogeneous
       (Widget          : not null access Gtk_Button_Box_Record;
@@ -102,6 +101,7 @@ package Gtk.Button_Box is
    --  Returns whether Child should appear in a secondary group of children.
    --  Since: gtk+ 2.4
    --  @param Child a child of Widget
+   --  @return whether Child should appear in a secondary group of children.
 
    procedure Set_Child_Secondary
       (Widget       : not null access Gtk_Button_Box_Record;
@@ -126,6 +126,7 @@ package Gtk.Button_Box is
       (Widget : not null access Gtk_Button_Box_Record)
        return Gtk.Enums.Gtk_Button_Box_Style;
    --  Retrieves the method being used to arrange the buttons in a button box.
+   --  @return the method used to lay out buttons in Widget.
 
    procedure Set_Layout
       (Widget       : not null access Gtk_Button_Box_Record;

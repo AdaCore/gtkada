@@ -309,6 +309,8 @@ package body Gtk.Calendar is
       --  @param Month the month for which details are needed.
       --  @param Day the day of Month for which details are needed.
       --  @param User_Data the data passed with Gtk.Calendar.Set_Detail_Func.
+      --  @return Newly allocated string with Pango markup with details for
+      --  the specified day or null.
 
       -----------------
       -- Internal_Cb --

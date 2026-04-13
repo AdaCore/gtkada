@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A toolbar is created with a call to Gtk.Toolbar.Gtk_New.
 --
 --  A toolbar can contain instances of a subclass of
@@ -49,8 +48,6 @@
 --  # CSS nodes
 --
 --  GtkToolbar has a single CSS node with name toolbar.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -102,11 +99,13 @@ package Gtk.Toolbar is
    --  Since: gtk+ 2.4
    --  @param X x coordinate of a point on the toolbar
    --  @param Y y coordinate of a point on the toolbar
+   --  @return The position corresponding to the point (X, Y) on the toolbar.
 
    function Get_Icon_Size
       (Toolbar : not null access Gtk_Toolbar_Record)
        return Gtk.Enums.Gtk_Icon_Size;
    --  Retrieves the icon size for the toolbar. See Gtk.Toolbar.Set_Icon_Size.
+   --  @return the current icon size for the icons on the toolbar.
 
    procedure Set_Icon_Size
       (Toolbar   : not null access Gtk_Toolbar_Record;
@@ -128,11 +127,13 @@ package Gtk.Toolbar is
    --  error if Item is not a child of the toolbar.
    --  Since: gtk+ 2.4
    --  @param Item a Gtk.Tool_Item.Gtk_Tool_Item that is a child of Toolbar
+   --  @return the position of item on the toolbar.
 
    function Get_N_Items
       (Toolbar : not null access Gtk_Toolbar_Record) return Glib.Gint;
    --  Returns the number of items on the toolbar.
    --  Since: gtk+ 2.4
+   --  @return the number of items on the toolbar
 
    function Get_Nth_Item
       (Toolbar : not null access Gtk_Toolbar_Record;
@@ -141,6 +142,8 @@ package Gtk.Toolbar is
    --  contain an N'th item.
    --  Since: gtk+ 2.4
    --  @param N A position on the toolbar
+   --  @return The N'th Gtk.Tool_Item.Gtk_Tool_Item on Toolbar, or null if
+   --  there isn't an N'th item.
 
    function Get_Relief_Style
       (Toolbar : not null access Gtk_Toolbar_Record)
@@ -148,12 +151,14 @@ package Gtk.Toolbar is
    --  Returns the relief style of buttons on Toolbar. See
    --  Gtk.Button.Set_Relief.
    --  Since: gtk+ 2.4
+   --  @return The relief style of buttons on Toolbar.
 
    function Get_Show_Arrow
       (Toolbar : not null access Gtk_Toolbar_Record) return Boolean;
    --  Returns whether the toolbar has an overflow menu. See
    --  Gtk.Toolbar.Set_Show_Arrow.
    --  Since: gtk+ 2.4
+   --  @return True if the toolbar has an overflow menu.
 
    procedure Set_Show_Arrow
       (Toolbar    : not null access Gtk_Toolbar_Record;
@@ -174,6 +179,7 @@ package Gtk.Toolbar is
        return Gtk.Enums.Gtk_Toolbar_Style;
    --  Retrieves whether the toolbar has text, icons, or both . See
    --  Gtk.Toolbar.Set_Style.
+   --  @return the current style of Toolbar
 
    procedure Set_Style
       (Toolbar : not null access Gtk_Toolbar_Record;
@@ -297,7 +303,6 @@ package Gtk.Toolbar is
    -- 
    --  Callback parameters:
    --    --  @param Focus_Home True if the first item should be focused
-   --    --  Returns True if the signal was handled, False if not
 
    type Cb_Gtk_Toolbar_Gtk_Orientation_Void is not null access procedure
      (Self        : access Gtk_Toolbar_Record'Class;
@@ -354,7 +359,6 @@ package Gtk.Toolbar is
    --    --  @param X the x coordinate of the point where the menu should appear
    --    --  @param Y the y coordinate of the point where the menu should appear
    --    --  @param Button the mouse button the user pressed, or -1
-   --    --  Returns return True if the signal was handled, False if not
 
    type Cb_Gtk_Toolbar_Gtk_Toolbar_Style_Void is not null access procedure
      (Self  : access Gtk_Toolbar_Record'Class;

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  > In GTK+ 3.10, GtkAction has been deprecated. Use Glib.Action.Gaction >
 --  instead, and associate actions with Gtk.Actionable.Gtk_Actionable widgets.
 --  Use > Glib.Menu_Model.Gmenu_Model for creating menus with
@@ -71,8 +70,6 @@
 --  True.
 --
 --  When the proxy is activated, it should activate its action.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -183,6 +180,7 @@ package Gtk.Action is
    --  Deprecated since 3.10, 1
    --  @param Icon_Size the size of the icon (Gtk.Enums.Gtk_Icon_Size) that
    --  should be created.
+   --  @return a widget that displays the icon for this action.
 
    function Create_Menu
       (Action : not null access Gtk_Action_Record)
@@ -193,6 +191,7 @@ package Gtk.Action is
    --  of that menu.
    --  Since: gtk+ 2.12
    --  Deprecated since 3.10, 1
+   --  @return the menu item provided by the action, or null.
 
    function Create_Menu_Item
       (Action : not null access Gtk_Action_Record)
@@ -201,6 +200,7 @@ package Gtk.Action is
    --  Creates a menu item widget that proxies for the given action.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return a menu item connected to the action.
 
    function Create_Tool_Item
       (Action : not null access Gtk_Action_Record)
@@ -209,6 +209,7 @@ package Gtk.Action is
    --  Creates a toolbar item widget that proxies for the given action.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return a toolbar item connected to the action.
 
    procedure Disconnect_Accelerator
       (Action : not null access Gtk_Action_Record);
@@ -223,6 +224,8 @@ package Gtk.Action is
    --  Returns the accel path for this action.
    --  Since: gtk+ 2.6
    --  Deprecated since 3.10, 1
+   --  @return the accel path for this action, or null if none is set. The
+   --  returned string is owned by GTK+ and must not be freed or modified.
 
    procedure Set_Accel_Path
       (Action     : not null access Gtk_Action_Record;
@@ -245,6 +248,7 @@ package Gtk.Action is
    --  image, if available.
    --  Since: gtk+ 2.20
    --  Deprecated since 3.10, 1
+   --  @return True if the menu item proxies will always show their image
 
    procedure Set_Always_Show_Image
       (Action      : not null access Gtk_Action_Record;
@@ -266,6 +270,7 @@ package Gtk.Action is
    --  Gets the gicon of Action.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return The action's Glib.G_Icon.G_Icon if one is set.
 
    procedure Set_Gicon
       (Action : not null access Gtk_Action_Record;
@@ -282,6 +287,7 @@ package Gtk.Action is
    --  Gets the icon name of Action.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return the icon name
 
    procedure Set_Icon_Name
       (Action    : not null access Gtk_Action_Record;
@@ -298,6 +304,7 @@ package Gtk.Action is
    --  Checks whether Action is important or not
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return whether Action is important
 
    procedure Set_Is_Important
       (Action       : not null access Gtk_Action_Record;
@@ -315,6 +322,7 @@ package Gtk.Action is
    --  Gets the label text of Action.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return the label text
 
    procedure Set_Label
       (Action : not null access Gtk_Action_Record;
@@ -331,6 +339,8 @@ package Gtk.Action is
    --  Returns the name of the action.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return the name of the action. The string belongs to GTK+ and should
+   --  not be freed.
 
    function Get_Proxies
       (Action : not null access Gtk_Action_Record)
@@ -349,6 +359,7 @@ package Gtk.Action is
    --  that.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return True if the action itself is sensitive.
 
    procedure Set_Sensitive
       (Action    : not null access Gtk_Action_Record;
@@ -367,6 +378,7 @@ package Gtk.Action is
    --  Gets the short label text of Action.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return the short label text.
 
    procedure Set_Short_Label
       (Action      : not null access Gtk_Action_Record;
@@ -383,6 +395,7 @@ package Gtk.Action is
    --  Gets the stock id of Action.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return the stock id
 
    procedure Set_Stock_Id
       (Action   : not null access Gtk_Action_Record;
@@ -399,6 +412,7 @@ package Gtk.Action is
    --  Gets the tooltip text of Action.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return the tooltip text
 
    procedure Set_Tooltip
       (Action  : not null access Gtk_Action_Record;
@@ -417,6 +431,7 @@ package Gtk.Action is
    --  that.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return True if the action itself is visible.
 
    procedure Set_Visible
       (Action  : not null access Gtk_Action_Record;
@@ -435,6 +450,7 @@ package Gtk.Action is
    --  Checks whether Action is visible when horizontal
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return whether Action is visible when horizontal
 
    procedure Set_Visible_Horizontal
       (Action             : not null access Gtk_Action_Record;
@@ -451,6 +467,7 @@ package Gtk.Action is
    --  Checks whether Action is visible when horizontal
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return whether Action is visible when horizontal
 
    procedure Set_Visible_Vertical
       (Action           : not null access Gtk_Action_Record;
@@ -467,6 +484,8 @@ package Gtk.Action is
    --  Returns whether the action is effectively sensitive.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return True if the action and its associated action group are both
+   --  sensitive.
 
    function Is_Visible
       (Action : not null access Gtk_Action_Record) return Boolean;
@@ -474,6 +493,8 @@ package Gtk.Action is
    --  Returns whether the action is effectively visible.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return True if the action and its associated action group are both
+   --  visible.
 
    procedure Set_Accel_Group
       (Action      : not null access Gtk_Action_Record;

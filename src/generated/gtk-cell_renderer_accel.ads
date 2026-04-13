@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Cell_Renderer_Accel.Gtk_Cell_Renderer_Accel displays a keyboard
 --  accelerator (i.e. a key combination like `Control + a`). If the cell
 --  renderer is editable, the accelerator can be changed by simply typing the
@@ -29,8 +28,6 @@
 --
 --  The Gtk.Cell_Renderer_Accel.Gtk_Cell_Renderer_Accel cell renderer was
 --  added in GTK+ 2.10.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;              use Gdk.Types;

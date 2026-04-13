@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Tree_Model_Sort.Gtk_Tree_Model_Sort is a model which implements
 --  the Gtk.Tree_Sortable.Gtk_Tree_Sortable interface. It does not hold any
 --  data itself, but rather is created with a child model and proxies its data.
@@ -115,8 +114,6 @@
 --                           -1);
 --       g_free (modified_data);
 --     }
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                 use Glib;
@@ -147,6 +144,7 @@ package Gtk.Tree_Model_Sort is
    --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being iterated
    --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
    --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @return True to stop iterating, False to continue
 
    type Gtk_Tree_Iter_Compare_Func is access function
      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -165,6 +163,8 @@ package Gtk.Tree_Model_Sort is
    --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model the comparison is within
    --  @param A A Gtk.Tree_Model.Gtk_Tree_Iter in Model
    --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
+   --  @return a negative integer, zero or a positive integer depending on
+   --  whether A sorts before, with or after B
 
    ------------------
    -- Constructors --
@@ -214,6 +214,8 @@ package Gtk.Tree_Model_Sort is
    --  @param Sort_Iter An uninitialized Gtk.Tree_Model.Gtk_Tree_Iter.
    --  @param Child_Iter A valid Gtk.Tree_Model.Gtk_Tree_Iter pointing to a
    --  row on the child model
+   --  @return True, if Sort_Iter was set, i.e. if Sort_Iter is a valid
+   --  iterator pointer to a visible row in the child model.
 
    function Convert_Child_Path_To_Path
       (Self       : not null access Gtk_Tree_Model_Sort_Record;
@@ -224,6 +226,7 @@ package Gtk.Tree_Model_Sort is
    --  point to the same row in the sorted model. If Child_Path isn't a valid
    --  path on the child model, then null is returned.
    --  @param Child_Path A Gtk.Tree_Model.Gtk_Tree_Path to convert
+   --  @return A newly allocated Gtk.Tree_Model.Gtk_Tree_Path, or null
 
    procedure Convert_Iter_To_Child_Iter
       (Self        : not null access Gtk_Tree_Model_Sort_Record;
@@ -244,12 +247,14 @@ package Gtk.Tree_Model_Sort is
    --  sorted. If Sorted_Path does not point to a location in the child model,
    --  null is returned.
    --  @param Sorted_Path A Gtk.Tree_Model.Gtk_Tree_Path to convert
+   --  @return A newly allocated Gtk.Tree_Model.Gtk_Tree_Path, or null
 
    function Get_Model
       (Self : not null access Gtk_Tree_Model_Sort_Record)
        return Gtk.Tree_Model.Gtk_Tree_Model;
    --  Returns the model the Gtk.Tree_Model_Sort.Gtk_Tree_Model_Sort is
    --  sorting.
+   --  @return the "child model" being sorted
 
    function Iter_Is_Valid
       (Self : not null access Gtk_Tree_Model_Sort_Record;
@@ -260,6 +265,7 @@ package Gtk.Tree_Model_Sort is
    --  Gtk.Tree_Model_Sort.Gtk_Tree_Model_Sort.
    --  Since: gtk+ 2.2
    --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter.
+   --  @return True if the iter is valid, False if the iter is invalid.
 
    procedure Reset_Default_Sort_Func
       (Self : not null access Gtk_Tree_Model_Sort_Record);
@@ -292,6 +298,7 @@ package Gtk.Tree_Model_Sort is
       --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
       --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
       --  @param Data The user data passed to Gtk.Tree_Model.Foreach
+      --  @return True to stop iterating, False to continue
 
       procedure Foreach
          (Tree_Model : not null access Gtk.Tree_Model_Sort.Gtk_Tree_Model_Sort_Record'Class;
@@ -344,6 +351,8 @@ package Gtk.Tree_Model_Sort is
       --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  @param User_Data Data passed when the compare func is assigned e.g. by
       --  Gtk.Tree_Sortable.Set_Sort_Func
+      --  @return a negative integer, zero or a positive integer depending on
+      --  whether A sorts before, with or after B
 
       procedure Set_Default_Sort_Func
          (Sortable  : not null access Gtk.Tree_Model_Sort.Gtk_Tree_Model_Sort_Record'Class;
@@ -398,6 +407,8 @@ package Gtk.Tree_Model_Sort is
       --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  @param User_Data Data passed when the compare func is assigned e.g. by
       --  Gtk.Tree_Sortable.Set_Sort_Func
+      --  @return a negative integer, zero or a positive integer depending on
+      --  whether A sorts before, with or after B
 
       procedure Set_Sort_Func
          (Sortable       : not null access Gtk.Tree_Model_Sort.Gtk_Tree_Model_Sort_Record'Class;

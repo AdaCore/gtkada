@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkSpinner widget displays an icon-size spinning animation. It is often
 --  used as an alternative to a Gtk.Progress_Bar.Gtk_Progress_Bar for
 --  displaying indefinite activity, instead of actual progress.
@@ -34,7 +33,6 @@
 --  GtkSpinner has a single CSS node with the name spinner. When the animation
 --  is active, the :checked pseudoclass is added to this node.
 --
---  </description>
 --  <group>Ornaments</group>
 
 pragma Warnings (Off, "*is already use-visible*");

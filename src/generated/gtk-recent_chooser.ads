@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Recent_Chooser.Gtk_Recent_Chooser is an interface that can be
 --  implemented by widgets displaying the list of recently used files. In GTK+,
 --  the main objects that implement this interface are
@@ -30,8 +29,6 @@
 --  Gtk.Recent_Chooser_Menu.Gtk_Recent_Chooser_Menu.
 --
 --  Recently used files are supported since GTK+ 2.10.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -98,11 +95,14 @@ package Gtk.Recent_Chooser is
       (Chooser : Gtk_Recent_Chooser) return Gtk.Recent_Info.Gtk_Recent_Info;
    --  Gets the Gtk.Recent_Info.Gtk_Recent_Info currently selected by Chooser.
    --  Since: gtk+ 2.10
+   --  @return a Gtk.Recent_Info.Gtk_Recent_Info. Use Gtk.Recent_Info.Unref
+   --  when when you have finished using it.
 
    function Get_Current_Uri
       (Chooser : Gtk_Recent_Chooser) return UTF8_String;
    --  Gets the URI currently selected by Chooser.
    --  Since: gtk+ 2.10
+   --  @return a newly allocated string holding a URI.
 
    function Set_Current_Uri
       (Chooser : Gtk_Recent_Chooser;
@@ -110,6 +110,7 @@ package Gtk.Recent_Chooser is
    --  Sets Uri as the current URI for Chooser.
    --  Since: gtk+ 2.10
    --  @param URI a URI
+   --  @return True if the URI was found.
 
    function Get_Filter
       (Chooser : Gtk_Recent_Chooser)
@@ -117,6 +118,7 @@ package Gtk.Recent_Chooser is
    --  Gets the Gtk.Recent_Filter.Gtk_Recent_Filter object currently used by
    --  Chooser to affect the display of the recently used resources.
    --  Since: gtk+ 2.10
+   --  @return a Gtk.Recent_Filter.Gtk_Recent_Filter object.
 
    procedure Set_Filter
       (Chooser : Gtk_Recent_Chooser;
@@ -140,6 +142,7 @@ package Gtk.Recent_Chooser is
    --  Gets the number of items returned by Gtk.Recent_Chooser.Get_Items and
    --  gtk_recent_chooser_get_uris.
    --  Since: gtk+ 2.10
+   --  @return A positive integer, or -1 meaning that all items are returned.
 
    procedure Set_Limit (Chooser : Gtk_Recent_Chooser; Limit : Glib.Gint);
    pragma Import (C, Set_Limit, "gtk_recent_chooser_set_limit");
@@ -152,6 +155,7 @@ package Gtk.Recent_Chooser is
    --  Gets whether only local resources should be shown in the recently used
    --  resources selector. See Gtk.Recent_Chooser.Set_Local_Only
    --  Since: gtk+ 2.10
+   --  @return True if only local resources should be shown.
 
    procedure Set_Local_Only
       (Chooser    : Gtk_Recent_Chooser;
@@ -167,6 +171,7 @@ package Gtk.Recent_Chooser is
       (Chooser : Gtk_Recent_Chooser) return Boolean;
    --  Gets whether Chooser can select multiple items.
    --  Since: gtk+ 2.10
+   --  @return True if Chooser can select more than one item.
 
    procedure Set_Select_Multiple
       (Chooser         : Gtk_Recent_Chooser;
@@ -178,6 +183,7 @@ package Gtk.Recent_Chooser is
    function Get_Show_Icons (Chooser : Gtk_Recent_Chooser) return Boolean;
    --  Retrieves whether Chooser should show an icon near the resource.
    --  Since: gtk+ 2.10
+   --  @return True if the icons should be displayed, False otherwise.
 
    procedure Set_Show_Icons
       (Chooser    : Gtk_Recent_Chooser;
@@ -191,6 +197,8 @@ package Gtk.Recent_Chooser is
    --  Retrieves whether Chooser should show the recently used resources that
    --  were not found.
    --  Since: gtk+ 2.10
+   --  @return True if the resources not found should be displayed, and False
+   --  otheriwse.
 
    procedure Set_Show_Not_Found
       (Chooser        : Gtk_Recent_Chooser;
@@ -204,6 +212,8 @@ package Gtk.Recent_Chooser is
    --  Returns whether Chooser should display recently used resources
    --  registered as private.
    --  Since: gtk+ 2.10
+   --  @return True if the recent chooser should show private items, False
+   --  otherwise.
 
    procedure Set_Show_Private
       (Chooser      : Gtk_Recent_Chooser;
@@ -216,6 +226,8 @@ package Gtk.Recent_Chooser is
    --  Gets whether Chooser should display tooltips containing the full path
    --  of a recently user resource.
    --  Since: gtk+ 2.10
+   --  @return True if the recent chooser should show tooltips, False
+   --  otherwise.
 
    procedure Set_Show_Tips
       (Chooser   : Gtk_Recent_Chooser;
@@ -231,6 +243,7 @@ package Gtk.Recent_Chooser is
    pragma Import (C, Get_Sort_Type, "gtk_recent_chooser_get_sort_type");
    --  Gets the value set by Gtk.Recent_Chooser.Set_Sort_Type.
    --  Since: gtk+ 2.10
+   --  @return the sorting order of the Chooser.
 
    procedure Set_Sort_Type
       (Chooser   : Gtk_Recent_Chooser;
@@ -267,6 +280,7 @@ package Gtk.Recent_Chooser is
    --  Selects Uri inside Chooser.
    --  Since: gtk+ 2.10
    --  @param URI a URI
+   --  @return True if Uri was found.
 
    procedure Set_Sort_Func
       (Chooser      : Gtk_Recent_Chooser;

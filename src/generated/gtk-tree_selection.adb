@@ -478,6 +478,7 @@ package body Gtk.Tree_Selection is
       --  @param Path_Currently_Selected True, if the path is currently
       --  selected
       --  @param Data user data
+      --  @return True, if the selection state of the row can be toggled
 
       -----------------
       -- Internal_Cb --

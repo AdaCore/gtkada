@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkHeaderBar is similar to a horizontal Gtk.Box.Gtk_Box. It allows
 --  children to be placed at the start or the end. In addition, it allows a
 --  title and subtitle to be displayed. The title will be centered with respect
@@ -38,8 +37,6 @@
 --  custom titlebar widget of a Gtk.Window.Gtk_Window (see
 --  Gtk.Window.Set_Titlebar), as it gives features typical of titlebars while
 --  allowing the addition of child widgets.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -82,6 +79,8 @@ package Gtk.Header_Bar is
    --  Retrieves the custom title widget of the header. See
    --  Gtk.Header_Bar.Set_Custom_Title.
    --  Since: gtk+ 3.10
+   --  @return the custom title widget of the header, or null if none has been
+   --  set explicitly.
 
    procedure Set_Custom_Title
       (Self         : not null access Gtk_Header_Bar_Record;
@@ -101,6 +100,7 @@ package Gtk.Header_Bar is
    --  Gets the decoration layout set with
    --  Gtk.Header_Bar.Set_Decoration_Layout.
    --  Since: gtk+ 3.12
+   --  @return the decoration layout
 
    procedure Set_Decoration_Layout
       (Self   : not null access Gtk_Header_Bar_Record;
@@ -125,6 +125,7 @@ package Gtk.Header_Bar is
    --  Retrieves whether the header bar reserves space for a subtitle,
    --  regardless if one is currently set or not.
    --  Since: gtk+ 3.12
+   --  @return True if the header bar reserves space for a subtitle
 
    procedure Set_Has_Subtitle
       (Self    : not null access Gtk_Header_Bar_Record;
@@ -138,6 +139,7 @@ package Gtk.Header_Bar is
       (Self : not null access Gtk_Header_Bar_Record) return Boolean;
    --  Returns whether this header bar shows the standard window decorations.
    --  Since: gtk+ 3.10
+   --  @return True if the decorations are shown
 
    procedure Set_Show_Close_Button
       (Self    : not null access Gtk_Header_Bar_Record;
@@ -151,6 +153,9 @@ package Gtk.Header_Bar is
       (Self : not null access Gtk_Header_Bar_Record) return UTF8_String;
    --  Retrieves the subtitle of the header. See Gtk.Header_Bar.Set_Subtitle.
    --  Since: gtk+ 3.10
+   --  @return the subtitle of the header, or null if none has been set
+   --  explicitly. The returned string is owned by the widget and must not be
+   --  modified or freed.
 
    procedure Set_Subtitle
       (Self     : not null access Gtk_Header_Bar_Record;
@@ -168,6 +173,9 @@ package Gtk.Header_Bar is
       (Self : not null access Gtk_Header_Bar_Record) return UTF8_String;
    --  Retrieves the title of the header. See Gtk.Header_Bar.Set_Title.
    --  Since: gtk+ 3.10
+   --  @return the title of the header, or null if none has been set
+   --  explicitly. The returned string is owned by the widget and must not be
+   --  modified or freed.
 
    procedure Set_Title
       (Self  : not null access Gtk_Header_Bar_Record;

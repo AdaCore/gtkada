@@ -21,15 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gdk.Device.Gdk_Device object represents a single input device, such as
 --  a keyboard, a mouse, a touchpad, etc.
 --
 --  See the Gdk.Device_Manager.Gdk_Device_Manager documentation for more
 --  information about the various kinds of master and slave devices, and their
 --  relationships.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Display;             use Gdk.Display;
@@ -106,6 +103,7 @@ package Gdk.Device is
    --  If Device is of type Gdk.Device.Gdk_Device_Type_Floating, null will be
    --  returned, as there is no associated device.
    --  Since: gtk+ 3.0
+   --  @return The associated device, or null
 
    function Get_Axes
       (Self : not null access Gdk_Device_Record) return Gdk_Axis_Flags;
@@ -118,6 +116,7 @@ package Gdk.Device is
    --  Returns the axis use for Index_.
    --  Since: gtk+ 2.20
    --  @param Index the index of the axis.
+   --  @return a Gdk_Axis_Use specifying how the axis is used.
 
    procedure Set_Axis_Use
       (Self  : not null access Gdk_Device_Record;
@@ -131,18 +130,22 @@ package Gdk.Device is
       (Self : not null access Gdk_Device_Record) return Gdk_Device_Type;
    --  Returns the device type for Device.
    --  Since: gtk+ 3.0
+   --  @return the Gdk.Device.Gdk_Device_Type for Device.
 
    function Get_Display
       (Self : not null access Gdk_Device_Record)
        return Gdk.Display.Gdk_Display;
    --  Returns the Gdk.Display.Gdk_Display to which Device pertains.
    --  Since: gtk+ 3.0
+   --  @return a Gdk.Display.Gdk_Display. This memory is owned by GTK+, and
+   --  must not be freed or unreffed.
 
    function Get_Has_Cursor
       (Self : not null access Gdk_Device_Record) return Boolean;
    --  Determines whether the pointer follows device motion. This is not
    --  meaningful for keyboard devices, which don't have a pointer.
    --  Since: gtk+ 2.20
+   --  @return True if the pointer follows device motion
 
    function Get_Last_Event_Window
       (Self : not null access Gdk_Device_Record) return Gdk.Gdk_Window;
@@ -152,11 +155,13 @@ package Gdk.Device is
    --  grab with owner_events = False, null may be returned even if the pointer
    --  is physically over one of this application's windows.
    --  Since: gtk+ 3.12
+   --  @return the last window the device
 
    function Get_Mode
       (Self : not null access Gdk_Device_Record) return Gdk_Input_Mode;
    --  Determines the mode of the device.
    --  Since: gtk+ 2.20
+   --  @return a Gdk_Input_Source
 
    function Set_Mode
       (Self : not null access Gdk_Device_Record;
@@ -168,21 +173,25 @@ package Gdk.Device is
    --  slaves connected to these) drive the pointer cursor, which is not
    --  limited by the input mode.
    --  @param Mode the input mode.
+   --  @return True if the mode was successfully changed.
 
    function Get_N_Axes
       (Self : not null access Gdk_Device_Record) return Glib.Gint;
    --  Returns the number of axes the device currently has.
    --  Since: gtk+ 3.0
+   --  @return the number of axes.
 
    function Get_N_Keys
       (Self : not null access Gdk_Device_Record) return Glib.Gint;
    --  Returns the number of keys the device currently has.
    --  Since: gtk+ 2.24
+   --  @return the number of keys.
 
    function Get_Name
       (Self : not null access Gdk_Device_Record) return UTF8_String;
    --  Determines the name of the device.
    --  Since: gtk+ 2.20
+   --  @return a name
 
    procedure Get_Position_Double
       (Self   : not null access Gdk_Device_Record;
@@ -205,6 +214,7 @@ package Gdk.Device is
    --  couldn't be obtained. This ID is retrieved from the device, and is thus
    --  constant for it. See Gdk.Device.Get_Vendor_Id for more information.
    --  Since: gtk+ 3.16
+   --  @return the product ID, or null
 
    function Get_Seat
       (Self : not null access Gdk_Device_Record) return Glib.Object.GObject;
@@ -215,6 +225,7 @@ package Gdk.Device is
       (Self : not null access Gdk_Device_Record) return Gdk_Input_Source;
    --  Determines the type of the device.
    --  Since: gtk+ 2.20
+   --  @return a Gdk_Input_Source
 
    procedure Get_State
       (Self   : not null access Gdk_Device_Record;
@@ -258,6 +269,7 @@ package Gdk.Device is
    --     }
    --
    --  Since: gtk+ 3.16
+   --  @return the vendor ID, or null
 
    function Get_Window_At_Position_Double
       (Self  : not null access Gdk_Device_Record;
@@ -276,6 +288,7 @@ package Gdk.Device is
    --  location, relative to the window origin, or null.
    --  @param Win_Y return location for the Y coordinate of the device
    --  location, relative to the window origin, or null.
+   --  @return the Gdk.Gdk_Window under the device position, or null.
 
    function Grab
       (Self           : not null access Gdk_Device_Record;
@@ -324,6 +337,7 @@ package Gdk.Device is
    --  @param Time the timestamp of the event which led to this pointer grab.
    --  This usually comes from the Gdk.Event.Gdk_Event struct, though
    --  GDK_CURRENT_TIME can be used if the time isn't known.
+   --  @return GDK_GRAB_SUCCESS if the grab was successful.
 
    procedure Set_Key
       (Self      : not null access Gdk_Device_Record;

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog is a dialog box suitable
 --  for use with "File/Open" or "File/Save as" commands. This widget works by
 --  putting a Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget inside a
@@ -173,8 +172,6 @@
 --  To summarize, make sure you use a [stock response
 --  code][gtkfilechooserdialog-responses] when you use
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog to ensure proper operation.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;     use GNAT.Strings;

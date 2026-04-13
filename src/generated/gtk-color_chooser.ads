@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Color_Chooser.Gtk_Color_Chooser is an interface that is implemented by
 --  widgets for choosing colors. Depending on the situation, colors may be
 --  allowed to have alpha (translucency).
@@ -30,8 +29,6 @@
 --  Gtk.Color_Chooser_Widget.Gtk_Color_Chooser_Widget,
 --  Gtk.Color_Chooser_Dialog.Gtk_Color_Chooser_Dialog and
 --  Gtk.Color_Button.Gtk_Color_Button.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.RGBA;        use Gdk.RGBA;
@@ -100,6 +97,7 @@ package Gtk.Color_Chooser is
    function Get_Use_Alpha (Self : Gtk_Color_Chooser) return Boolean;
    --  Returns whether the color chooser shows the alpha channel.
    --  Since: gtk+ 3.4
+   --  @return True if the color chooser uses the alpha channel, False if not
 
    procedure Set_Use_Alpha (Self : Gtk_Color_Chooser; Use_Alpha : Boolean);
    --  Sets whether or not the color chooser should use the alpha channel.

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Recent_Manager.Gtk_Recent_Manager provides a facility for adding,
 --  removing and looking up recently used files. Each recently used file is
 --  identified by its URI, and has meta-data associated to it, like the names
@@ -82,8 +81,6 @@
 --
 --  Recently used files are supported since GTK+ 2.10.
 --
---  </description>
---  <description>
 --  In case the default screen is being used, adding a new recently used file
 --  is as simple as:
 --
@@ -112,8 +109,6 @@
 --        end if;
 --     end;
 --
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;    use GNAT.Strings;
@@ -198,6 +193,8 @@ package Gtk.Recent_Manager is
    --  metadata for the resource pointed by Uri.
    --  Since: gtk+ 2.10
    --  @param URI a valid URI
+   --  @return True if the new item was successfully added to the recently
+   --  used resources list
 
    function Get_Items
       (Self : not null access Gtk_Recent_Manager_Record)
@@ -212,6 +209,7 @@ package Gtk.Recent_Manager is
    --  inside the recent manager.
    --  Since: gtk+ 2.10
    --  @param URI a URI
+   --  @return True if the resource was found, False otherwise
 
    function Lookup_Item
       (Self : not null access Gtk_Recent_Manager_Record;
@@ -221,6 +219,9 @@ package Gtk.Recent_Manager is
    --  the resource like its MIME type, or its display name.
    --  Since: gtk+ 2.10
    --  @param URI a URI
+   --  @return a Gtk.Recent_Info.Gtk_Recent_Info-struct containing information
+   --  about the resource pointed by Uri, or null if the URI was not registered
+   --  in the recently used resources list. Free with Gtk.Recent_Info.Unref.
 
    function Move_Item
       (Self    : not null access Gtk_Recent_Manager_Record;
@@ -233,11 +234,14 @@ package Gtk.Recent_Manager is
    --  @param URI the URI of a recently used resource
    --  @param New_Uri the new URI of the recently used resource, or null to
    --  remove the item pointed by Uri in the list
+   --  @return True on success
 
    function Purge_Items
       (Self : not null access Gtk_Recent_Manager_Record) return Glib.Gint;
    --  Purges every item from the recently used resources list.
    --  Since: gtk+ 2.10
+   --  @return the number of items that have been removed from the recently
+   --  used resources list
 
    function Remove_Item
       (Self : not null access Gtk_Recent_Manager_Record;
@@ -246,6 +250,8 @@ package Gtk.Recent_Manager is
    --  handled by a recent manager.
    --  Since: gtk+ 2.10
    --  @param URI the URI of the item you wish to remove
+   --  @return True if the item pointed by Uri has been successfully removed
+   --  by the recently used resources list, and False otherwise
 
    ----------------------
    -- GtkAda additions --
@@ -309,6 +315,8 @@ package Gtk.Recent_Manager is
    --  you can share in your application without caring about memory
    --  management.
    --  Since: gtk+ 2.10
+   --  @return A unique Gtk.Recent_Manager.Gtk_Recent_Manager. Do not ref or
+   --  unref it.
 
    ----------------
    -- Properties --

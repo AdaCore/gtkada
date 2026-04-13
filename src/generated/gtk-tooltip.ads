@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Basic tooltips can be realized simply by using Gtk.Widget.Set_Tooltip_Text
 --  or Gtk.Widget.Set_Tooltip_Markup without any explicit tooltip object.
 --
@@ -59,8 +58,6 @@
 --  window using Gtk.Widget.Get_Tooltip_Window and manipulate as you wish. The
 --  semantics of the return value are exactly as before, return True to show
 --  the window, False to not show it.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Display;   use Gdk.Display;

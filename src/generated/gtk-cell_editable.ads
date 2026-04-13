@@ -21,13 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Cell_Editable.Gtk_Cell_Editable interface must be implemented for
 --  widgets to be usable to edit the contents of a Gtk.Tree_View.Gtk_Tree_View
 --  cell. It provides a way to specify how temporary widgets should be
 --  configured for editing, get the new value, etc.
 --
---  </description>
 --  <group>Trees and Lists</group>
 
 pragma Warnings (Off, "*is already use-visible*");

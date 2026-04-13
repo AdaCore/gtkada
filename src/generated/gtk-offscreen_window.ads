@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkOffscreenWindow is strictly intended to be used for obtaining snapshots
 --  of widgets that are not part of a normal widget hierarchy. Since
 --  Gtk.Offscreen_Window.Gtk_Offscreen_Window is a toplevel widget you cannot
@@ -39,8 +38,6 @@
 --
 --  When contained offscreen widgets are redrawn, GtkOffscreenWindow will emit
 --  a Gtk.Widget.Gtk_Widget::damage-event signal.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;         use Cairo;
@@ -87,6 +84,7 @@ package Gtk.Offscreen_Window is
    --  Gdk.Pixbuf.Gdk_Pixbuf. This is a new pixbuf with a reference count of 1,
    --  and the application should unreference it once it is no longer needed.
    --  Since: gtk+ 2.20
+   --  @return A Gdk.Pixbuf.Gdk_Pixbuf pointer, or null.
 
    function Get_Surface
       (Self : not null access Gtk_Offscreen_Window_Record)
@@ -95,6 +93,7 @@ package Gtk.Offscreen_Window is
    --  cairo_surface_t. If you need to keep this around over window resizes
    --  then you should add a reference to it.
    --  Since: gtk+ 2.20
+   --  @return A cairo_surface_t pointer to the offscreen surface, or null.
 
    ----------------
    -- Interfaces --

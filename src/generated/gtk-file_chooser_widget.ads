@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget is a widget for choosing
 --  files. It exposes the Gtk.File_Chooser.Gtk_File_Chooser interface, and you
 --  should use the methods of this interface to interact with the widget.
@@ -29,8 +28,6 @@
 --  # CSS nodes
 --
 --  GtkFileChooserWidget has a single CSS node with name filechooser.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;     use GNAT.Strings;

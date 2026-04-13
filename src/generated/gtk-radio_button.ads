@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A single radio button performs the same basic function as a
 --  Gtk.Check_Button.Gtk_Check_Button, as its position in the object hierarchy
 --  reflects. It is only when multiple radio buttons are grouped together that
@@ -106,7 +105,6 @@
 --  Gtk.Toggle_Button.Get_Active can be used to determine if the button has
 --  been selected or deselected.
 --
---  </description>
 --  <screenshot>gtk-radio_button</screenshot>
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_radio_button.adb</testgtk>

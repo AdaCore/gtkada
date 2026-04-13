@@ -456,6 +456,7 @@ package body Gtk.Tree_Store is
       --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
       --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
       --  @param Data The user data passed to Gtk.Tree_Model.Foreach
+      --  @return True to stop iterating, False to continue
 
       -------------
       -- Foreach --
@@ -768,6 +769,8 @@ package body Gtk.Tree_Store is
       --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  @param User_Data Data passed when the compare func is assigned e.g.
       --  by Gtk.Tree_Sortable.Set_Sort_Func
+      --  @return a negative integer, zero or a positive integer depending on
+      --  whether A sorts before, with or after B
 
       -----------------
       -- Internal_Cb --
@@ -855,6 +858,8 @@ package body Gtk.Tree_Store is
       --  @param B Another Gtk.Tree_Model.Gtk_Tree_Iter in Model
       --  @param User_Data Data passed when the compare func is assigned e.g.
       --  by Gtk.Tree_Sortable.Set_Sort_Func
+      --  @return a negative integer, zero or a positive integer depending on
+      --  whether A sorts before, with or after B
 
       -----------------
       -- Internal_Cb --

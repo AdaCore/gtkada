@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Scrollable.Gtk_Scrollable is an interface that is implemented by
 --  widgets with native scrolling ability.
 --
@@ -53,7 +52,6 @@
 --  Gtk.Adjustment.Gtk_Adjustment::value-changed signal, the scrollable widget
 --  should scroll its contents.
 --
---  </description>
 --  <group>Interfaces</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -90,12 +88,14 @@ package Gtk.Scrollable is
    --  indication, at the right position.
    --  Since: gtk+ 3.16
    --  @param Border return location for the results
+   --  @return True if Border has been set
 
    function Get_Hadjustment
       (Self : Gtk_Scrollable) return Gtk.Adjustment.Gtk_Adjustment;
    --  Retrieves the Gtk.Adjustment.Gtk_Adjustment used for horizontal
    --  scrolling.
    --  Since: gtk+ 3.0
+   --  @return horizontal Gtk.Adjustment.Gtk_Adjustment.
 
    procedure Set_Hadjustment
       (Self        : Gtk_Scrollable;
@@ -109,6 +109,7 @@ package Gtk.Scrollable is
    pragma Import (C, Get_Hscroll_Policy, "gtk_scrollable_get_hscroll_policy");
    --  Gets the horizontal Gtk.Enums.Gtk_Scrollable_Policy.
    --  Since: gtk+ 3.0
+   --  @return The horizontal Gtk.Enums.Gtk_Scrollable_Policy.
 
    procedure Set_Hscroll_Policy
       (Self   : Gtk_Scrollable;
@@ -125,6 +126,7 @@ package Gtk.Scrollable is
    --  Retrieves the Gtk.Adjustment.Gtk_Adjustment used for vertical
    --  scrolling.
    --  Since: gtk+ 3.0
+   --  @return vertical Gtk.Adjustment.Gtk_Adjustment.
 
    procedure Set_Vadjustment
       (Self        : Gtk_Scrollable;
@@ -138,6 +140,7 @@ package Gtk.Scrollable is
    pragma Import (C, Get_Vscroll_Policy, "gtk_scrollable_get_vscroll_policy");
    --  Gets the vertical Gtk.Enums.Gtk_Scrollable_Policy.
    --  Since: gtk+ 3.0
+   --  @return The vertical Gtk.Enums.Gtk_Scrollable_Policy.
 
    procedure Set_Vscroll_Policy
       (Self   : Gtk_Scrollable;
@@ -199,6 +202,7 @@ package Gtk.Scrollable is
    --  indication, at the right position.
    --  Since: gtk+ 3.16
    --  @param Border return location for the results
+   --  @return True if Border has been set
 
    subtype Scrollable_Interface_Descr is Glib.Object.Interface_Description;
 

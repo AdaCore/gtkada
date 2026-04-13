@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A radio menu item is a check menu item that belongs to a group. At each
 --  instant exactly one of the radio menu items from a group is selected.
 --
@@ -56,8 +55,6 @@
 --
 --  GtkRadioMenuItem has a main CSS node with name menuitem, and a subnode
 --  with name radio, which gets the .left or .right style class.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                use Glib;

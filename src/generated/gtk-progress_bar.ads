@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Progress_Bar.Gtk_Progress_Bar is typically used to display the
 --  progress of a long running operation. It provides a visual clue that
 --  processing is underway. The GtkProgressBar can be used in two different
@@ -62,7 +61,6 @@
 --  node is for use in overlays like the one Epiphany has for page loading
 --  progress.
 --
---  </description>
 --  <screenshot>gtk-progress_bar</screenshot>
 --  <group>Display widgets</group>
 --  <testgtk>create_progress.adb</testgtk>
@@ -109,6 +107,7 @@ package Gtk.Progress_Bar is
    --  Returns the ellipsizing position of the progress bar. See
    --  Gtk.Progress_Bar.Set_Ellipsize.
    --  Since: gtk+ 2.6
+   --  @return Pango.Layout.Pango_Ellipsize_Mode
 
    procedure Set_Ellipsize
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
@@ -122,6 +121,7 @@ package Gtk.Progress_Bar is
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Gdouble;
    --  Returns the current fraction of the task that's been completed.
+   --  @return a fraction from 0.0 to 1.0
 
    procedure Set_Fraction
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
@@ -134,6 +134,7 @@ package Gtk.Progress_Bar is
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Boolean;
    --  Gets the value set by Gtk.Progress_Bar.Set_Inverted.
+   --  @return True if the progress bar is inverted
 
    procedure Set_Inverted
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
@@ -146,6 +147,7 @@ package Gtk.Progress_Bar is
       (Progress_Bar : not null access Gtk_Progress_Bar_Record)
        return Gdouble;
    --  Retrieves the pulse step set with Gtk.Progress_Bar.Set_Pulse_Step.
+   --  @return a fraction from 0.0 to 1.0
 
    procedure Set_Pulse_Step
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
@@ -160,6 +162,7 @@ package Gtk.Progress_Bar is
    --  Gets the value of the Gtk.Progress_Bar.Gtk_Progress_Bar:show-text
    --  property. See Gtk.Progress_Bar.Set_Show_Text.
    --  Since: gtk+ 3.0
+   --  @return True if text is shown in the progress bar
 
    procedure Set_Show_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;
@@ -182,6 +185,8 @@ package Gtk.Progress_Bar is
    --  otherwise null. The return value is a reference to the text, not a copy
    --  of it, so will become invalid if you change the text in the progress
    --  bar.
+   --  @return text, or null; this string is owned by the widget and should
+   --  not be modified or freed.
 
    procedure Set_Text
       (Progress_Bar : not null access Gtk_Progress_Bar_Record;

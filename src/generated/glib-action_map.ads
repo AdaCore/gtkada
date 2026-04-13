@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The GActionMap interface is implemented by Glib.Action_Group.Gaction_Group
 --  implementations that operate by containing a number of named
 --  Glib.Action.Gaction instances, such as
@@ -31,8 +30,6 @@
 --  from various action groups to unique, prefixed names (e.g. by prepending
 --  "app." or "win."). This is the motivation for the 'Map' part of the
 --  interface name.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Action;        use Glib.Action;
@@ -136,6 +133,7 @@ package Glib.Action_Map is
    --  If no such action exists, returns null.
    --  Since: gtk+ 2.32
    --  @param Action_Name the name of an action
+   --  @return a Glib.Action.Gaction, or null
 
    procedure Remove_Action (Self : Gaction_Map; Action_Name : UTF8_String);
    --  Removes the named action from the action map.
@@ -211,6 +209,7 @@ package Glib.Action_Map is
    --  If no such action exists, returns null.
    --  Since: gtk+ 2.32
    --  @param Action_Name the name of an action
+   --  @return a Glib.Action.Gaction, or null
 
    type Virtual_Remove_Action is access procedure (Self : Gaction_Map; Action_Name : Gtkada.Types.Chars_Ptr);
    pragma Convention (C, Virtual_Remove_Action);

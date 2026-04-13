@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkStyleProvider is an interface used to provide style information to a
 --  Gtk.Style_Context.Gtk_Style_Context. See Gtk.Style_Context.Add_Provider and
 --  Gtk.Style_Context.Add_Provider_For_Screen.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;
@@ -65,6 +62,7 @@ package Gtk.Style_Provider is
    --  @param State state to query the style property for
    --  @param Pspec The Glib.Param_Spec to query
    --  @param Value return location for the property value
+   --  @return True if the property was found and has a value, False otherwise
 
    ----------------------
    -- GtkAda additions --

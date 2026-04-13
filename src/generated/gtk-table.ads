@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Table.Gtk_Table functions allow the programmer to arrange widgets
 --  in rows and columns, making it easy to align many widgets next to each
 --  other, horizontally and vertically.
@@ -47,7 +46,6 @@
 --  It provides the same > capabilities as GtkTable for arranging widgets in a
 --  rectangular grid, but > does support height-for-width geometry management.
 --
---  </description>
 --  <group>Layout containers</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -178,6 +176,7 @@ package Gtk.Table is
    --  Gtk.Table.Set_Col_Spacing.
    --  Deprecated since 3.4, 1
    --  @param Column a column in the table, 0 indicates the first column
+   --  @return the column spacing
 
    procedure Set_Col_Spacing
       (Table   : not null access Gtk_Table_Record;
@@ -195,6 +194,7 @@ package Gtk.Table is
    --  Gets the default column spacing for the table. This is the spacing that
    --  will be used for newly added columns. (See Gtk.Table.Set_Col_Spacings)
    --  Deprecated since 3.4, 1
+   --  @return the default column spacing
 
    function Get_Default_Row_Spacing
       (Table : not null access Gtk_Table_Record) return Guint;
@@ -202,6 +202,7 @@ package Gtk.Table is
    --  Gets the default row spacing for the table. This is the spacing that
    --  will be used for newly added rows. (See Gtk.Table.Set_Row_Spacings)
    --  Deprecated since 3.4, 1
+   --  @return the default row spacing
 
    function Get_Homogeneous
       (Table : not null access Gtk_Table_Record) return Boolean;
@@ -209,6 +210,7 @@ package Gtk.Table is
    --  Returns whether the table cells are all constrained to the same width
    --  and height. (See gtk_table_set_homogeneous ())
    --  Deprecated since 3.4, 1
+   --  @return True if the cells are all constrained to the same size
 
    procedure Set_Homogeneous
       (Table       : not null access Gtk_Table_Record;
@@ -229,6 +231,7 @@ package Gtk.Table is
    --  Gtk.Table.Set_Row_Spacing.
    --  Deprecated since 3.4, 1
    --  @param Row a row in the table, 0 indicates the first row
+   --  @return the row spacing
 
    procedure Set_Row_Spacing
       (Table   : not null access Gtk_Table_Record;

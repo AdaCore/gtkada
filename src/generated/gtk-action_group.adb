@@ -581,6 +581,7 @@ package body Gtk.Action_Group is
       --  Gtk.Action_Group.Gtk_Action_Group this will be a label or tooltip
       --  from a Gtk_Action_Entry.
       --  @param Func_Data user data passed in when registering the function
+      --  @return the translated message
 
       -----------------
       -- Internal_Cb --

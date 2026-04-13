@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gdk.Frame_Timings.Gdk_Frame_Timings object holds timing information for
 --  a single frame of the application's displays. To retrieve
 --  Gdk.Frame_Timings.Gdk_Frame_Timings objects, use
@@ -29,8 +28,6 @@
 --  information in Gdk.Frame_Timings.Gdk_Frame_Timings is useful for precise
 --  synchronization of video with the event or audio streams, and for measuring
 --  quality metrics for the application's display, such as latency and jitter.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib; use Glib;
@@ -66,16 +63,21 @@ package Gdk.Frame_Timings is
    --  certain that no further values will become available and be stored in
    --  the Gdk.Frame_Timings.Gdk_Frame_Timings.
    --  Since: gtk+ 3.8
+   --  @return True if all information that will be available for the frame
+   --  has been filled in.
 
    function Get_Frame_Counter (Self : Gdk_Frame_Timings) return Gint64;
    --  Gets the frame counter value of the Gdk.Frame_Clock.Gdk_Frame_Clock
    --  when this this frame was drawn.
    --  Since: gtk+ 3.8
+   --  @return the frame counter value for this frame
 
    function Get_Frame_Time (Self : Gdk_Frame_Timings) return Gint64;
    --  Returns the frame time for the frame. This is the time value that is
    --  typically used to time animations for the frame. See
    --  Gdk.Frame_Clock.Get_Frame_Time.
+   --  @return the frame time for the frame, in the timescale of
+   --  g_get_monotonic_time
 
    function Get_Predicted_Presentation_Time
       (Self : Gdk_Frame_Timings) return Gint64;
@@ -89,21 +91,31 @@ package Gdk.Frame_Timings is
    --  over latency. For example, a movie player may want this information for
    --  Audio/Video synchronization.
    --  Since: gtk+ 3.8
+   --  @return The predicted time at which the frame will be presented, in the
+   --  timescale of g_get_monotonic_time, or 0 if no predicted presentation
+   --  time is available.
 
    function Get_Presentation_Time (Self : Gdk_Frame_Timings) return Gint64;
    --  Reurns the presentation time. This is the time at which the frame
    --  became visible to the user.
    --  Since: gtk+ 3.8
+   --  @return the time the frame was displayed to the user, in the timescale
+   --  of g_get_monotonic_time, or 0 if no presentation time is available. See
+   --  Gdk.Frame_Timings.Get_Complete
 
    function Get_Refresh_Interval (Self : Gdk_Frame_Timings) return Gint64;
    --  Gets the natural interval between presentation times for the display
    --  that this frame was displayed on. Frame presentation usually happens
    --  during the "vertical blanking interval".
    --  Since: gtk+ 3.8
+   --  @return the refresh interval of the display, in microseconds, or 0 if
+   --  the refresh interval is not available. See
+   --  Gdk.Frame_Timings.Get_Complete.
 
    function Ref (Self : Gdk_Frame_Timings) return Gdk_Frame_Timings;
    --  Increases the reference count of Timings.
    --  Since: gtk+ 3.8
+   --  @return Timings
 
    procedure Unref (Self : Gdk_Frame_Timings);
    --  Decreases the reference count of Timings. If Timings is no longer

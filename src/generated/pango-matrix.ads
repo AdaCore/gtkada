@@ -21,14 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A structure specifying a transformation between user-space coordinates and
 --  device coordinates. The transformation is given by
 --
 --     x_device = x_user * matrix->xx + y_user * matrix->xy + matrix->x0;
 --     y_device = x_user * matrix->yx + y_user * matrix->yy + matrix->y0;
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib; use Glib;
@@ -76,6 +73,8 @@ package Pango.Matrix is
    pragma Import (C, Copy, "pango_matrix_copy");
    --  Copies a Pango.Matrix.Pango_Matrix.
    --  Since: gtk+ 1.6
+   --  @return the newly allocated Pango.Matrix.Pango_Matrix, which should be
+   --  freed with Pango.Matrix.Free, or null if Matrix was null.
 
    procedure Free (Self : Pango_Matrix);
    pragma Import (C, Free, "pango_matrix_free");
@@ -89,6 +88,8 @@ package Pango.Matrix is
    --  the X coordinate is mapped to. If the scale in the X coordinate is
    --  needed as well, use Pango.Matrix.Get_Font_Scale_Factors.
    --  Since: gtk+ 1.12
+   --  @return the scale factor of Matrix on the height of the font, or 1.0 if
+   --  Matrix is null.
 
    procedure Get_Font_Scale_Factors
       (Self   : Pango_Matrix;

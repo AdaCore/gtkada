@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Cell_Renderer_Spin.Gtk_Cell_Renderer_Spin renders text in a cell like
 --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text from which it is derived. But
 --  while Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text offers a simple entry
@@ -40,8 +39,6 @@
 --
 --  The Gtk.Cell_Renderer_Spin.Gtk_Cell_Renderer_Spin cell renderer was added
 --  in GTK+ 2.10.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                   use Glib;

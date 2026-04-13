@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Image.Gtk_Image widget displays an image. Various kinds of object
 --  can be displayed as an image; most typically, you would load a
 --  Gdk.Pixbuf.Gdk_Pixbuf ("pixel buffer") from a file, and then display that.
@@ -105,7 +104,6 @@
 --  GtkImage has a single CSS node with the name image. The style classes may
 --  appear on image CSS nodes: .icon-dropshadow, .lowres-icon.
 --
---  </description>
 --  <screenshot>gtk-image</screenshot>
 --  <group>Display widgets</group>
 
@@ -467,6 +465,7 @@ package Gtk.Image is
    --  Gtk.Image.Image_Empty or Gtk.Image.Image_Animation (see
    --  Gtk.Image.Get_Storage_Type). The caller of this function does not own a
    --  reference to the returned animation.
+   --  @return the displayed animation, or null if the image is empty
 
    procedure Get
       (Image  : not null access Gtk_Image_Record;
@@ -503,11 +502,13 @@ package Gtk.Image is
    --  Gtk.Image.Image_Empty or Gtk.Image.Image_Pixbuf (see
    --  Gtk.Image.Get_Storage_Type). The caller of this function does not own a
    --  reference to the returned pixbuf.
+   --  @return the displayed pixbuf, or null if the image is empty
 
    function Get_Pixel_Size
       (Image : not null access Gtk_Image_Record) return Glib.Gint;
    --  Gets the pixel size used for named icons.
    --  Since: gtk+ 2.6
+   --  @return the pixel size used for named icons.
 
    procedure Set_Pixel_Size
       (Image      : not null access Gtk_Image_Record;
@@ -523,6 +524,7 @@ package Gtk.Image is
    --  Gets the type of representation being used by the Gtk.Image.Gtk_Image
    --  to store image data. If the Gtk.Image.Gtk_Image has no image data, the
    --  return value will be Gtk.Image.Image_Empty.
+   --  @return image representation being used
 
    procedure Set
       (Image     : not null access Gtk_Image_Record;

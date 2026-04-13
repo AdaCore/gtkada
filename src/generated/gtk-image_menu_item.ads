@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkImageMenuItem is a menu item which has an icon next to the text
 --  label.
 --
@@ -83,8 +82,6 @@
 --     gtk_container_add (GTK_CONTAINER (menu_item), box);
 --
 --     gtk_widget_show_all (menu_item);
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -211,6 +208,7 @@ package Gtk.Image_Menu_Item is
    --  image, if available.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return True if the menu item will always show the image
 
    procedure Set_Always_Show_Image
       (Self        : not null access Gtk_Image_Menu_Item_Record;
@@ -232,6 +230,7 @@ package Gtk.Image_Menu_Item is
    --  Gets the widget that is currently set as the image of Image_Menu_Item.
    --  See Gtk.Image_Menu_Item.Set_Image.
    --  Deprecated since 3.10, 1
+   --  @return the widget set as image of Image_Menu_Item
 
    procedure Set_Image
       (Self  : not null access Gtk_Image_Menu_Item_Record;
@@ -250,6 +249,8 @@ package Gtk.Image_Menu_Item is
    --  select the stock item for the item.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return True if the label set in the menuitem is used as a stock id to
+   --  select the stock item for the item
 
    procedure Set_Use_Stock
       (Self      : not null access Gtk_Image_Menu_Item_Record;

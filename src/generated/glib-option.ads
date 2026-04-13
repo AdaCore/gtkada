@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A `GOptionContext` struct defines which options are accepted by the
 --  commandline option parser. The struct has only private fields and should
 --  not be directly accessed.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Application;        use Glib.Application;
@@ -119,6 +116,8 @@ package Glib.Option is
    --  The type of functions which are used to translate user-visible strings,
    --  for <option>--help</option> output.
    --  @param Str the untranslated string
+   --  @return a translation of the string for the current locale. The
+   --  returned string is owned by GLib and must not be freed.
 
    ----------------------------
    -- Enumeration Properties --
@@ -168,6 +167,7 @@ package Glib.Option is
    function Get_Description (Self : Goption_Context) return UTF8_String;
    --  Returns the description. See Glib.Option.Set_Description.
    --  Since: gtk+ 2.12
+   --  @return the description
 
    procedure Set_Description
       (Self        : Goption_Context;
@@ -193,11 +193,13 @@ package Glib.Option is
    --  Since: gtk+ 2.14
    --  @param Main_Help if True, only include the main group
    --  @param Group the Glib.Option.GOption_Group to create help for, or null
+   --  @return A newly allocated string containing the help text
 
    function Get_Help_Enabled (Self : Goption_Context) return Boolean;
    --  Returns whether automatic `--help` generation is turned on for Context.
    --  See Glib.Option.Set_Help_Enabled.
    --  Since: gtk+ 2.6
+   --  @return True if automatic help generation is turned on.
 
    procedure Set_Help_Enabled
       (Self         : Goption_Context;
@@ -214,6 +216,7 @@ package Glib.Option is
    --  Returns whether unknown options are ignored or not. See
    --  Glib.Option.Set_Ignore_Unknown_Options.
    --  Since: gtk+ 2.6
+   --  @return True if unknown options are ignored.
 
    procedure Set_Ignore_Unknown_Options
       (Self           : Goption_Context;
@@ -231,6 +234,9 @@ package Glib.Option is
    function Get_Main_Group (Self : Goption_Context) return GOption_Group;
    --  Returns a pointer to the main group of Context.
    --  Since: gtk+ 2.6
+   --  @return the main group of Context, or null if Context doesn't have a
+   --  main group. Note that group belongs to Context and should not be
+   --  modified or freed.
 
    procedure Set_Main_Group (Self : Goption_Context; Group : GOption_Group);
    --  Sets a Glib.Option.GOption_Group as main group of the Context. This has
@@ -243,6 +249,7 @@ package Glib.Option is
    function Get_Summary (Self : Goption_Context) return UTF8_String;
    --  Returns the summary. See Glib.Option.Set_Summary.
    --  Since: gtk+ 2.12
+   --  @return the summary
 
    procedure Set_Summary
       (Self    : Goption_Context;
@@ -286,6 +293,8 @@ package Glib.Option is
       --  @param Str the untranslated string
       --  @param Data user data specified when installing the function, e.g. in
       --  g_option_group_set_translate_func
+      --  @return a translation of the string for the current locale. The
+      --  returned string is owned by GLib and must not be freed.
 
       procedure Set_Translate_Func
          (Self           : Glib.Option.Goption_Context;
@@ -367,6 +376,8 @@ package Glib.Option is
    --  Since: gtk+ 2.6
    --  @param Parameter_String a string which is displayed in the first line
    --  of `--help` output, after the usage summary `programname [OPTION...]`
+   --  @return a newly created Glib.Option.Goption_Context, which must be
+   --  freed with Glib.Option.Free after use.
 
 private
 

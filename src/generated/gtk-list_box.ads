@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkListBox is a vertical container that contains GtkListBoxRow children.
 --  These rows can by dynamically sorted and filtered, and headers can be added
 --  dynamically depending on the row content. It also allows keyboard and mouse
@@ -60,8 +59,6 @@
 --  GtkListBox uses a single CSS node named list. Each GtkListBoxRow uses a
 --  single CSS node named row. The row nodes get the .activatable style class
 --  added when appropriate.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
@@ -94,6 +91,7 @@ package Gtk.List_Box is
    --  should be updated to show the desired row widgets.
    --  Since: gtk+ 3.16
    --  @param Item the item from the model for which to create a widget for
+   --  @return a Gtk.Widget.Gtk_Widget that represents Item
 
    type Gtk_List_Box_Foreach_Func is access procedure
      (Box : not null access Gtk_List_Box_Record'Class;
@@ -111,6 +109,7 @@ package Gtk.List_Box is
    --  control if the row should be visible or not.
    --  Since: gtk+ 3.10
    --  @param Row the row that may be filtered
+   --  @return True if the row should be visible, False otherwise
 
    type Gtk_List_Box_Update_Header_Func is access procedure
      (Row    : not null access Gtk.List_Box_Row.Gtk_List_Box_Row_Record'Class;
@@ -131,6 +130,8 @@ package Gtk.List_Box is
    --  Since: gtk+ 3.10
    --  @param Row1 the first row
    --  @param Row2 the second row
+   --  @return < 0 if Row1 should be before Row2, 0 if they are equal and > 0
+   --  otherwise
 
    ------------------
    -- Constructors --
@@ -193,6 +194,7 @@ package Gtk.List_Box is
       --  Since: gtk+ 3.16
       --  @param Item the item from the model for which to create a widget for
       --  @param User_Data user data
+      --  @return a Gtk.Widget.Gtk_Widget that represents Item
 
       procedure Bind_Model
          (Self                : not null access Gtk.List_Box.Gtk_List_Box_Record'Class;
@@ -243,6 +245,7 @@ package Gtk.List_Box is
       (Self : not null access Gtk_List_Box_Record) return Boolean;
    --  Returns whether rows activate on single clicks.
    --  Since: gtk+ 3.10
+   --  @return True if rows are activated on single click, False otherwise
 
    procedure Set_Activate_On_Single_Click
       (Self   : not null access Gtk_List_Box_Record;
@@ -258,6 +261,7 @@ package Gtk.List_Box is
    --  Gets the adjustment (if any) that the widget uses to for vertical
    --  scrolling.
    --  Since: gtk+ 3.10
+   --  @return the adjustment
 
    procedure Set_Adjustment
       (Self       : not null access Gtk_List_Box_Record;
@@ -279,6 +283,7 @@ package Gtk.List_Box is
    --  returned.
    --  Since: gtk+ 3.10
    --  @param Index the index of the row
+   --  @return the child Gtk.Widget.Gtk_Widget or null
 
    function Get_Row_At_Y
       (Self : not null access Gtk_List_Box_Record;
@@ -286,6 +291,8 @@ package Gtk.List_Box is
    --  Gets the row at the Y position.
    --  Since: gtk+ 3.10
    --  @param Y position
+   --  @return the row or null in case no row exists for the given y
+   --  coordinate.
 
    function Get_Selected_Row
       (Self : not null access Gtk_List_Box_Record)
@@ -294,6 +301,7 @@ package Gtk.List_Box is
    --  Note that the box may allow multiple selection, in which case you
    --  should use Gtk.List_Box.Selected_Foreach to find all selected rows.
    --  Since: gtk+ 3.10
+   --  @return the selected row
 
    function Get_Selected_Rows
       (Self : not null access Gtk_List_Box_Record)
@@ -306,6 +314,7 @@ package Gtk.List_Box is
        return Gtk.Enums.Gtk_Selection_Mode;
    --  Gets the selection mode of the listbox.
    --  Since: gtk+ 3.10
+   --  @return a Gtk.Enums.Gtk_Selection_Mode
 
    procedure Set_Selection_Mode
       (Self : not null access Gtk_List_Box_Record;
@@ -430,6 +439,7 @@ package Gtk.List_Box is
       --  Since: gtk+ 3.10
       --  @param Row the row that may be filtered
       --  @param User_Data user data
+      --  @return True if the row should be visible, False otherwise
 
       procedure Set_Filter_Func
          (Self        : not null access Gtk.List_Box.Gtk_List_Box_Record'Class;
@@ -558,6 +568,8 @@ package Gtk.List_Box is
       --  @param Row1 the first row
       --  @param Row2 the second row
       --  @param User_Data user data
+      --  @return < 0 if Row1 should be before Row2, 0 if they are equal and > 0
+      --  otherwise
 
       procedure Set_Sort_Func
          (Self      : not null access Gtk.List_Box.Gtk_List_Box_Record'Class;

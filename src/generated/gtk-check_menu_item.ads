@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Check_Menu_Item.Gtk_Check_Menu_Item is a menu item that maintains
 --  the state of a boolean value in addition to a Gtk.Menu_Item.Gtk_Menu_Item
 --  usual role in activating application code.
@@ -39,8 +38,6 @@
 --
 --  GtkCheckMenuItem has a main CSS node with name menuitem, and a subnode
 --  with name check, which gets the .left or .right style class.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -113,6 +110,7 @@ package Gtk.Check_Menu_Item is
        return Boolean;
    --  Returns whether the check menu item is active. See
    --  gtk_check_menu_item_set_active ().
+   --  @return True if the menu item is checked.
 
    procedure Set_Active
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record;
@@ -127,6 +125,8 @@ package Gtk.Check_Menu_Item is
    --  Returns whether Check_Menu_Item looks like a
    --  Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item
    --  Since: gtk+ 2.4
+   --  @return Whether Check_Menu_Item looks like a
+   --  Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item
 
    procedure Set_Draw_As_Radio
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record;
@@ -141,6 +141,7 @@ package Gtk.Check_Menu_Item is
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record)
        return Boolean;
    --  Retrieves the value set by Gtk.Check_Menu_Item.Set_Inconsistent.
+   --  @return True if inconsistent
 
    procedure Set_Inconsistent
       (Check_Menu_Item : not null access Gtk_Check_Menu_Item_Record;

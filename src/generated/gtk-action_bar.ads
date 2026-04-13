@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkActionBar is designed to present contextual actions. It is expected to
 --  be displayed below the content and expand horizontally to fill the area.
 --
@@ -33,8 +32,6 @@
 --  # CSS nodes
 --
 --  GtkActionBar has a single CSS node with name actionbar.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;          use Glib;
@@ -75,6 +72,7 @@ package Gtk.Action_Bar is
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the center bar widget of the bar.
    --  Since: gtk+ 3.12
+   --  @return the center Gtk.Widget.Gtk_Widget or null.
 
    procedure Set_Center_Widget
       (Self          : not null access Gtk_Action_Bar_Record;

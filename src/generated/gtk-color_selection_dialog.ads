@@ -21,12 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk_Color_Selection_Dialog provides a standard dialog which allows the
 --  user to select a color much like the Gtk_File_Selection provides a standard
 --  dialog for file selection.
 --
---  </description>
 --  <group>Drawing</group>
 
 pragma Warnings (Off, "*is already use-visible*");

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The GtkBox widget arranges child widgets into a single row or column,
 --  depending upon the value of its Gtk.Orientable.Gtk_Orientable:orientation
 --  property. Within the other dimension, all children are allocated the same
@@ -69,12 +68,9 @@
 --  from left to right. So :first-child will always select the leftmost child,
 --  regardless of text direction.
 --
---  </description>
---  <description>
 --  See the testgtk example in the GtkAda distribution to see concrete
 --  examples on how all the parameters for the boxes work.
 --
---  </description>
 --  <screenshot>gtk-box</screenshot>
 --  <group>Layout containers</group>
 --  <testgtk>create_box.adb</testgtk>
@@ -198,6 +194,7 @@ package Gtk.Box is
        return Gtk.Enums.Gtk_Baseline_Position;
    --  Gets the value set by Gtk.Box.Set_Baseline_Position.
    --  Since: gtk+ 3.10
+   --  @return the baseline position
 
    procedure Set_Baseline_Position
       (Box      : not null access Gtk_Box_Record;
@@ -214,6 +211,7 @@ package Gtk.Box is
       (Box : not null access Gtk_Box_Record) return Gtk.Widget.Gtk_Widget;
    --  Retrieves the center widget of the box.
    --  Since: gtk+ 3.12
+   --  @return the center widget or null in case no center widget is set.
 
    procedure Set_Center_Widget
       (Box    : not null access Gtk_Box_Record;
@@ -228,6 +226,7 @@ package Gtk.Box is
       (Box : not null access Gtk_Box_Record) return Boolean;
    --  Returns whether the box is homogeneous (all children are the same
    --  size). See Gtk.Box.Set_Homogeneous.
+   --  @return True if the box is homogeneous.
 
    procedure Set_Homogeneous
       (Box         : not null access Gtk_Box_Record;
@@ -240,6 +239,7 @@ package Gtk.Box is
    function Get_Spacing
       (Box : not null access Gtk_Box_Record) return Glib.Gint;
    --  Gets the value set by Gtk.Box.Set_Spacing.
+   --  @return spacing between children
 
    procedure Set_Spacing
       (Box     : not null access Gtk_Box_Record;

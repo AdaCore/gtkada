@@ -75,6 +75,8 @@ package body Pango.Attributes is
    --  @param Func callback function; returns True if an attribute should be
    --  filtered out.
    --  @param Data Data to be passed to Func
+   --  @return the new Pango.Attributes.Pango_Attr_List or null if no
+   --  attributes of the given types were found.
 
    function To_Pango_Attr_Filter_Func is new Ada.Unchecked_Conversion
      (System.Address, Pango_Attr_Filter_Func);

@@ -48,6 +48,8 @@ package body Gtk.Accel_Group is
    --  returns True and returns its Gtk.Accel_Group.Gtk_Accel_Key.
    --  @param Find_Func a function to filter the entries of Accel_Group with
    --  @param Data data to pass to Find_Func
+   --  @return the key of the first entry passing Find_Func. The key is owned
+   --  by GTK+ and must not be freed.
 
    function To_Gtk_Accel_Group_Find_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Accel_Group_Find_Func);

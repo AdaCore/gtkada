@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkLinkButton is a Gtk.Button.Gtk_Button with a hyperlink, similar to
 --  the one used by web browsers, which triggers an action when clicked. It is
 --  useful to show quick links to resources.
@@ -43,7 +42,6 @@
 --  GtkLinkButton has a single CSS node with name button. To differentiate it
 --  from a plain Gtk.Button.Gtk_Button, it gets the .link style class.
 --
---  </description>
 --  <group>Buttons and Toggles</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -116,6 +114,8 @@ package Gtk.Link_Button is
       (Widget : not null access Gtk_Link_Button_Record) return UTF8_String;
    --  Retrieves the URI set using Gtk.Link_Button.Set_Uri.
    --  Since: gtk+ 2.10
+   --  @return a valid URI. The returned string is owned by the link button
+   --  and should not be modified or freed.
 
    procedure Set_Uri
       (Widget : not null access Gtk_Link_Button_Record;
@@ -133,6 +133,7 @@ package Gtk.Link_Button is
    --  is unset again.
    --  The state may also be changed using Gtk.Link_Button.Set_Visited.
    --  Since: gtk+ 2.14
+   --  @return True if the link has been visited, False otherwise
 
    procedure Set_Visited
       (Widget  : not null access Gtk_Link_Button_Record;

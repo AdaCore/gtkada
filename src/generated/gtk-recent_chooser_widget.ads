@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Recent_Chooser_Widget.Gtk_Recent_Chooser_Widget is a widget suitable
 --  for selecting recently used files. It is the main building block of a
 --  Gtk.Recent_Chooser_Dialog.Gtk_Recent_Chooser_Dialog. Most applications will
@@ -34,8 +33,6 @@
 --  work on a Gtk.Recent_Chooser.Gtk_Recent_Chooser.
 --
 --  Recently used files are supported since GTK+ 2.10.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;

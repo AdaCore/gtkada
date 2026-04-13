@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkArrow should be used to draw simple arrows that need to point in one of
 --  the four cardinal directions (up, down, left, or right). The style of the
 --  arrow can be one of shadow in, shadow out, etched in, or etched out. Note
@@ -43,7 +42,6 @@
 --  names "pan-start-symbolic" and "pan-end-symbolic", which react to the text
 --  direction.
 --
---  </description>
 --  <screenshot>gtk-arrow</screenshot>
 --  <testgtk>create_arrow.adb</testgtk>
 

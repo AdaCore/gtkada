@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkSymbolicColor is a boxed type that represents a symbolic color. It is
 --  the result of parsing a [color expression][gtkcssprovider-symbolic-colors].
 --  To obtain the color represented by a GtkSymbolicColor, it has to be
@@ -35,8 +34,6 @@
 --
 --  Gtk.Symbolic_Color.Gtk_Symbolic_Color is deprecated. Symbolic colors are
 --  considered an implementation detail of GTK+.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.RGBA; use Gdk.RGBA;
@@ -183,6 +180,7 @@ package Gtk.Symbolic_Color is
    --  Increases the reference count of Color
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
+   --  @return the same Color
 
    function To_String (Self : Gtk_Symbolic_Color) return UTF8_String;
    pragma Obsolescent (To_String);
@@ -192,6 +190,7 @@ package Gtk.Symbolic_Color is
    --  guaranteed that the GTK css parser is able to read the string and create
    --  the same symbolic color from it.
    --  Deprecated since 3.8, 1
+   --  @return a new string representing Color
 
    procedure Unref (Self : Gtk_Symbolic_Color);
    pragma Obsolescent (Unref);

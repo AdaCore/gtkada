@@ -455,6 +455,8 @@ package body Glib.Option is
       --  @param Str the untranslated string
       --  @param Data user data specified when installing the function, e.g.
       --  in g_option_group_set_translate_func
+      --  @return a translation of the string for the current locale. The
+      --  returned string is owned by GLib and must not be freed.
 
       -----------------
       -- Internal_Cb --

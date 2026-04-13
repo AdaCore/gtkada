@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk_Tool_Items are widgets that can appear on a toolbar. To create a
 --  toolbar item that contain something else than a button, use
 --  Gtk.Tool_Item.Gtk_New. Use Gtk.Container.Add to add a child widget to the
@@ -35,8 +34,6 @@
 --  See the Gtk.Toolbar.Gtk_Toolbar class for a description of the toolbar
 --  widget, and Gtk.Tool_Shell.Gtk_Tool_Shell for a description of the tool
 --  shell interface.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -87,12 +84,15 @@ package Gtk.Tool_Item is
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out how
    --  text should be ellipsized.
    --  Since: gtk+ 2.20
+   --  @return a Pango.Layout.Pango_Ellipsize_Mode indicating how text in
+   --  Tool_Item should be ellipsized.
 
    function Get_Expand
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
    --  Returns whether Tool_Item is allocated extra space. See
    --  Gtk.Tool_Item.Set_Expand.
    --  Since: gtk+ 2.4
+   --  @return True if Tool_Item is allocated extra space.
 
    procedure Set_Expand
       (Tool_Item : not null access Gtk_Tool_Item_Record;
@@ -109,6 +109,7 @@ package Gtk.Tool_Item is
    --  Returns whether Tool_Item is the same size as other homogeneous items.
    --  See Gtk.Tool_Item.Set_Homogeneous.
    --  Since: gtk+ 2.4
+   --  @return True if the item is the same size as other homogeneous items.
 
    procedure Set_Homogeneous
       (Tool_Item   : not null access Gtk_Tool_Item_Record;
@@ -127,12 +128,15 @@ package Gtk.Tool_Item is
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out what
    --  size icons they should use.
    --  Since: gtk+ 2.4
+   --  @return a Gtk.Enums.Gtk_Icon_Size indicating the icon size used for
+   --  Tool_Item
 
    function Get_Is_Important
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
    --  Returns whether Tool_Item is considered important. See
    --  Gtk.Tool_Item.Set_Is_Important
    --  Since: gtk+ 2.4
+   --  @return True if Tool_Item is considered important.
 
    procedure Set_Is_Important
       (Tool_Item    : not null access Gtk_Tool_Item_Record;
@@ -154,6 +158,8 @@ package Gtk.Tool_Item is
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out what
    --  size icons they should use.
    --  Since: gtk+ 2.4
+   --  @return a Gtk.Enums.Gtk_Orientation indicating the orientation used for
+   --  Tool_Item
 
    function Get_Proxy_Menu_Item
       (Tool_Item    : not null access Gtk_Tool_Item_Record;
@@ -191,6 +197,8 @@ package Gtk.Tool_Item is
    --  Gtk.Tool_Item.Gtk_Tool_Item::toolbar_reconfigured signal to find out the
    --  relief style of buttons.
    --  Since: gtk+ 2.4
+   --  @return a Gtk.Enums.Gtk_Relief_Style indicating the relief style used
+   --  for Tool_Item.
 
    function Get_Text_Alignment
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Gfloat;
@@ -198,6 +206,8 @@ package Gtk.Tool_Item is
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out how
    --  text should be aligned.
    --  Since: gtk+ 2.20
+   --  @return a Gfloat indicating the horizontal text alignment used for
+   --  Tool_Item
 
    function Get_Text_Orientation
       (Tool_Item : not null access Gtk_Tool_Item_Record)
@@ -206,6 +216,8 @@ package Gtk.Tool_Item is
    --  Gtk.Tool_Item.Gtk_Tool_Item should call this function to find out how
    --  text should be orientated.
    --  Since: gtk+ 2.20
+   --  @return a Gtk.Enums.Gtk_Orientation indicating the text orientation
+   --  used for Tool_Item
 
    function Get_Text_Size_Group
       (Tool_Item : not null access Gtk_Tool_Item_Record)
@@ -214,6 +226,7 @@ package Gtk.Tool_Item is
    --  of Gtk.Tool_Item.Gtk_Tool_Item should call this function and use the
    --  size group for labels.
    --  Since: gtk+ 2.20
+   --  @return a Gtk.Size_Group.Gtk_Size_Group
 
    function Get_Toolbar_Style
       (Tool_Item : not null access Gtk_Tool_Item_Record)
@@ -229,12 +242,15 @@ package Gtk.Tool_Item is
    --  Gtk.Enums.Toolbar_Both_Horiz, meaning the tool item should show both an
    --  icon and a label, arranged horizontally
    --  Since: gtk+ 2.4
+   --  @return A Gtk.Enums.Gtk_Toolbar_Style indicating the toolbar style used
+   --  for Tool_Item.
 
    function Get_Use_Drag_Window
       (Tool_Item : not null access Gtk_Tool_Item_Record) return Boolean;
    --  Returns whether Tool_Item has a drag window. See
    --  Gtk.Tool_Item.Set_Use_Drag_Window.
    --  Since: gtk+ 2.4
+   --  @return True if Tool_Item uses a drag window.
 
    procedure Set_Use_Drag_Window
       (Tool_Item       : not null access Gtk_Tool_Item_Record;
@@ -251,6 +267,8 @@ package Gtk.Tool_Item is
    --  Returns whether the Tool_Item is visible on toolbars that are docked
    --  horizontally.
    --  Since: gtk+ 2.4
+   --  @return True if Tool_Item is visible on toolbars that are docked
+   --  horizontally.
 
    procedure Set_Visible_Horizontal
       (Tool_Item          : not null access Gtk_Tool_Item_Record;
@@ -266,6 +284,8 @@ package Gtk.Tool_Item is
    --  Returns whether Tool_Item is visible when the toolbar is docked
    --  vertically. See Gtk.Tool_Item.Set_Visible_Vertical.
    --  Since: gtk+ 2.4
+   --  @return Whether Tool_Item is visible when the toolbar is docked
+   --  vertically
 
    procedure Set_Visible_Vertical
       (Tool_Item        : not null access Gtk_Tool_Item_Record;
@@ -408,7 +428,6 @@ package Gtk.Tool_Item is
    --  toolbar rebuilds its overflow menu.
    -- 
    --  Callback parameters:
-   --    --  Returns True if the signal was handled, False if not
 
    type Cb_Gtk_Tool_Item_Void is not null access procedure (Self : access Gtk_Tool_Item_Record'Class);
 

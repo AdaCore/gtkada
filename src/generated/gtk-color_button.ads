@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Color_Button.Gtk_Color_Button is a button which displays the
 --  currently selected color and allows to open a color selection dialog to
 --  change the color. It is suitable widget for selecting a color in a
@@ -32,7 +31,6 @@
 --  GtkColorButton has a single CSS node with name button. To differentiate it
 --  from a plain Gtk.Button.Gtk_Button, it gets the .color style class.
 --
---  </description>
 --  <group>Buttons and Toggles</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -131,6 +129,7 @@ package Gtk.Color_Button is
    --  Returns the current alpha value.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.4, 1
+   --  @return an integer between 0 and 65535
 
    procedure Set_Alpha
       (Button : not null access Gtk_Color_Button_Record;
@@ -164,6 +163,7 @@ package Gtk.Color_Button is
       (Button : not null access Gtk_Color_Button_Record) return UTF8_String;
    --  Gets the title of the color selection dialog.
    --  Since: gtk+ 2.4
+   --  @return An internal string, do not free the return value
 
    procedure Set_Title
       (Button : not null access Gtk_Color_Button_Record;

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Search_Bar.Gtk_Search_Bar is a container made to have a search entry
 --  (possibly with additional connex widgets, such as drop-down menus, or
 --  buttons) built-in. The search bar would appear when a search is started
@@ -46,8 +45,6 @@
 --
 --  [A simple
 --  example](https://gitlab.gnome.org/GNOME/gtk/blob/gtk-3-24/examples/search-bar.c)
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;       use Gdk.Event;
@@ -103,6 +100,7 @@ package Gtk.Search_Bar is
       (Self : not null access Gtk_Search_Bar_Record) return Boolean;
    --  Returns whether the search mode is on or off.
    --  Since: gtk+ 3.10
+   --  @return whether search mode is toggled on
 
    procedure Set_Search_Mode
       (Self        : not null access Gtk_Search_Bar_Record;
@@ -115,6 +113,7 @@ package Gtk.Search_Bar is
       (Self : not null access Gtk_Search_Bar_Record) return Boolean;
    --  Returns whether the close button is shown.
    --  Since: gtk+ 3.10
+   --  @return whether the close button is shown
 
    procedure Set_Show_Close_Button
       (Self    : not null access Gtk_Search_Bar_Record;
@@ -164,6 +163,9 @@ package Gtk.Search_Bar is
    --
    --  Since: gtk+ 3.10
    --  @param Event a Gdk.Event.Gdk_Event containing key press events
+   --  @return GDK_EVENT_STOP if the key press event resulted in text being
+   --  entered in the search entry (and revealing the search bar if necessary),
+   --  GDK_EVENT_PROPAGATE otherwise.
 
    ----------------
    -- Properties --

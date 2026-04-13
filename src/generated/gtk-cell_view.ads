@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Cell_View.Gtk_Cell_View displays a single row of a
 --  Gtk.Tree_Model.Gtk_Tree_Model using a Gtk.Cell_Area.Gtk_Cell_Area and
 --  Gtk.Cell_Area_Context.Gtk_Cell_Area_Context. A
@@ -43,8 +42,6 @@
 --  # CSS nodes
 --
 --  GtkCellView has a single CSS node with name cellview.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Color;             use Gdk.Color;
@@ -219,6 +216,7 @@ package Gtk.Cell_View is
    --  Returns a Gtk.Tree_Model.Gtk_Tree_Path referring to the currently
    --  displayed row. If no row is currently displayed, null is returned.
    --  Since: gtk+ 2.6
+   --  @return the currently displayed row or null
 
    procedure Set_Displayed_Row
       (Cell_View : not null access Gtk_Cell_View_Record;
@@ -236,6 +234,7 @@ package Gtk.Cell_View is
    --  Gets whether Cell_View is configured to draw all of its cells in a
    --  sensitive state.
    --  Since: gtk+ 3.0
+   --  @return whether Cell_View draws all of its cells in a sensitive state
 
    procedure Set_Draw_Sensitive
       (Cell_View      : not null access Gtk_Cell_View_Record;
@@ -252,6 +251,8 @@ package Gtk.Cell_View is
    --  Gets whether Cell_View is configured to request space to fit the entire
    --  Gtk.Tree_Model.Gtk_Tree_Model.
    --  Since: gtk+ 3.0
+   --  @return whether Cell_View requests space to fit the entire
+   --  Gtk.Tree_Model.Gtk_Tree_Model.
 
    procedure Set_Fit_Model
       (Cell_View : not null access Gtk_Cell_View_Record;
@@ -270,6 +271,7 @@ package Gtk.Cell_View is
        return Gtk.Tree_Model.Gtk_Tree_Model;
    --  Returns the model for Cell_View. If no model is used null is returned.
    --  Since: gtk+ 2.16
+   --  @return a Gtk.Tree_Model.Gtk_Tree_Model used or null
 
    procedure Set_Model
       (Cell_View : not null access Gtk_Cell_View_Record;
@@ -291,6 +293,7 @@ package Gtk.Cell_View is
    --  Deprecated since 3.0, 1
    --  @param Path a Gtk.Tree_Model.Gtk_Tree_Path
    --  @param Requisition return location for the size
+   --  @return True
 
    procedure Set_Background_Color
       (Cell_View : not null access Gtk_Cell_View_Record;

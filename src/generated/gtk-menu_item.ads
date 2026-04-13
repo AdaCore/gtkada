@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Menu_Item.Gtk_Menu_Item widget and the derived widgets are the
 --  only valid children for menus. Their function is to correctly handle
 --  highlighting, alignment, events and submenus.
@@ -66,8 +65,6 @@
 --  GtkMenuItem has a single CSS node with name menuitem. If the menuitem has
 --  a submenu, it gets another CSS node with name arrow, which has the .left or
 --  .right style class.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -161,6 +158,8 @@ package Gtk.Menu_Item is
    --  Retrieve the accelerator path that was previously set on Menu_Item.
    --  See Gtk.Menu_Item.Set_Accel_Path for details.
    --  Since: gtk+ 2.14
+   --  @return the accelerator path corresponding to this menu item's
+   --  functionality, or null if not set
 
    procedure Set_Accel_Path
       (Menu_Item  : not null access Gtk_Menu_Item_Record;
@@ -187,6 +186,8 @@ package Gtk.Menu_Item is
       (Menu_Item : not null access Gtk_Menu_Item_Record) return UTF8_String;
    --  Sets Text on the Menu_Item label
    --  Since: gtk+ 2.16
+   --  @return The text in the Menu_Item label. This is the internal string
+   --  used by the label, and must not be modified.
 
    procedure Set_Label
       (Menu_Item : not null access Gtk_Menu_Item_Record;
@@ -200,6 +201,8 @@ package Gtk.Menu_Item is
    --  Returns whether the Menu_Item reserves space for the submenu indicator,
    --  regardless if it has a submenu or not.
    --  Since: gtk+ 3.0
+   --  @return True if Menu_Item always reserves space for the submenu
+   --  indicator
 
    procedure Set_Reserve_Indicator
       (Menu_Item : not null access Gtk_Menu_Item_Record;
@@ -216,6 +219,8 @@ package Gtk.Menu_Item is
    --  Gets whether the menu item appears justified at the right side of the
    --  menu bar.
    --  Deprecated since 3.2, 1
+   --  @return True if the menu item will appear at the far right if added to
+   --  a menu bar.
 
    procedure Set_Right_Justified
       (Menu_Item       : not null access Gtk_Menu_Item_Record;
@@ -235,6 +240,7 @@ package Gtk.Menu_Item is
        return Gtk.Widget.Gtk_Widget;
    --  Gets the submenu underneath this menu item, if any. See
    --  Gtk.Menu_Item.Set_Submenu.
+   --  @return submenu for this menu item, or null if none
 
    procedure Set_Submenu
       (Menu_Item : not null access Gtk_Menu_Item_Record;
@@ -248,6 +254,8 @@ package Gtk.Menu_Item is
    --  Checks if an underline in the text indicates the next character should
    --  be used for the mnemonic accelerator key.
    --  Since: gtk+ 2.16
+   --  @return True if an embedded underline in the label indicates the
+   --  mnemonic accelerator key.
 
    procedure Set_Use_Underline
       (Menu_Item : not null access Gtk_Menu_Item_Record;

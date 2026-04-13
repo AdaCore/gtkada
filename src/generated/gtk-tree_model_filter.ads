@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter is a tree model which wraps
 --  another tree model, and can do the following things:
 --
@@ -90,8 +89,6 @@
 --  because it does not implement reference counting, or for models that do
 --  implement reference counting, obtain references on these child levels
 --  yourself.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                 use Glib;
@@ -136,6 +133,7 @@ package Gtk.Tree_Model_Filter is
    --  Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter
    --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing to the row in Model
    --  whose visibility is determined
+   --  @return Whether the row indicated by Iter is visible.
 
    type Gtk_Tree_Model_Foreach_Func is access function
      (Model : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -146,6 +144,7 @@ package Gtk.Tree_Model_Filter is
    --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being iterated
    --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
    --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @return True to stop iterating, False to continue
 
    ------------------
    -- Constructors --
@@ -217,6 +216,7 @@ package Gtk.Tree_Model_Filter is
    --  null is returned.
    --  Since: gtk+ 2.4
    --  @param Child_Path A Gtk.Tree_Model.Gtk_Tree_Path to convert.
+   --  @return A newly allocated Gtk.Tree_Model.Gtk_Tree_Path, or null.
 
    procedure Convert_Iter_To_Child_Iter
       (Self        : not null access Gtk_Tree_Model_Filter_Record;
@@ -238,12 +238,14 @@ package Gtk.Tree_Model_Filter is
    --  does not point to a location in the child model, null is returned.
    --  Since: gtk+ 2.4
    --  @param Filter_Path A Gtk.Tree_Model.Gtk_Tree_Path to convert.
+   --  @return A newly allocated Gtk.Tree_Model.Gtk_Tree_Path, or null.
 
    function Get_Model
       (Self : not null access Gtk_Tree_Model_Filter_Record)
        return Gtk.Tree_Model.Gtk_Tree_Model;
    --  Returns a pointer to the child model of Filter.
    --  Since: gtk+ 2.4
+   --  @return A pointer to a Gtk.Tree_Model.Gtk_Tree_Model.
 
    procedure Refilter (Self : not null access Gtk_Tree_Model_Filter_Record);
    --  Emits ::row_changed for each row in the child model, which causes the
@@ -378,6 +380,7 @@ package Gtk.Tree_Model_Filter is
       --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing to the row in Model
       --  whose visibility is determined
       --  @param Data user data given to Gtk.Tree_Model_Filter.Set_Visible_Func
+      --  @return Whether the row indicated by Iter is visible.
 
       procedure Set_Visible_Func
          (Self : not null access Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter_Record'Class;
@@ -445,6 +448,7 @@ package Gtk.Tree_Model_Filter is
       --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
       --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
       --  @param Data The user data passed to Gtk.Tree_Model.Foreach
+      --  @return True to stop iterating, False to continue
 
       procedure Foreach
          (Tree_Model : not null access Gtk.Tree_Model_Filter.Gtk_Tree_Model_Filter_Record'Class;

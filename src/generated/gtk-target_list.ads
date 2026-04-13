@@ -21,11 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Target_List.Gtk_Target_List-struct is a reference counted list of
 --  Gtk_Target_Pair and should be treated as opaque.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;               use Gdk.Types;
@@ -114,10 +111,12 @@ package Gtk.Target_List is
    --  @param Target an interned atom representing the target to search for
    --  @param Info a pointer to the location to store application info for
    --  target, or null
+   --  @return True if the target was found, otherwise False
 
    function Ref (List : Gtk_Target_List) return Gtk_Target_List;
    --  Increases the reference count of a Gtk.Target_List.Gtk_Target_List by
    --  one.
+   --  @return the passed in Gtk.Target_List.Gtk_Target_List.
 
    procedure Remove (List : Gtk_Target_List; Target : Gdk.Types.Gdk_Atom);
    --  Removes a target from a target list.

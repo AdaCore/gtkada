@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The GtkStack widget is a container which only shows one of its children at
 --  a time. In contrast to GtkNotebook, GtkStack does not provide a means for
 --  users to change the visible child. Instead, the
@@ -37,8 +36,6 @@
 --  # CSS nodes
 --
 --  GtkStack has a single CSS node named stack.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -140,12 +137,14 @@ package Gtk.Stack is
    --  argument. Returns null if there is no child with this name.
    --  Since: gtk+ 3.12
    --  @param Name the name of the child to find
+   --  @return the requested child of the Gtk.Stack.Gtk_Stack
 
    function Get_Hhomogeneous
       (Self : not null access Gtk_Stack_Record) return Boolean;
    --  Gets whether Stack is horizontally homogeneous. See
    --  Gtk.Stack.Set_Hhomogeneous.
    --  Since: gtk+ 3.16
+   --  @return whether Stack is horizontally homogeneous.
 
    procedure Set_Hhomogeneous
       (Self         : not null access Gtk_Stack_Record;
@@ -161,6 +160,7 @@ package Gtk.Stack is
       (Self : not null access Gtk_Stack_Record) return Boolean;
    --  Gets whether Stack is homogeneous. See Gtk.Stack.Set_Homogeneous.
    --  Since: gtk+ 3.10
+   --  @return whether Stack is homogeneous.
 
    procedure Set_Homogeneous
       (Self        : not null access Gtk_Stack_Record;
@@ -180,6 +180,7 @@ package Gtk.Stack is
    --  Returns wether the Gtk.Stack.Gtk_Stack is set up to interpolate between
    --  the sizes of children on page switch.
    --  Since: gtk+ 3.18
+   --  @return True if child sizes are interpolated
 
    procedure Set_Interpolate_Size
       (Self             : not null access Gtk_Stack_Record;
@@ -197,6 +198,7 @@ package Gtk.Stack is
    --  Returns the amount of time (in milliseconds) that transitions between
    --  pages in Stack will take.
    --  Since: gtk+ 3.10
+   --  @return the transition duration
 
    procedure Set_Transition_Duration
       (Self     : not null access Gtk_Stack_Record;
@@ -210,6 +212,7 @@ package Gtk.Stack is
    --  Returns whether the Stack is currently in a transition from one page to
    --  another.
    --  Since: gtk+ 3.12
+   --  @return True if the transition is currently running, False otherwise.
 
    function Get_Transition_Type
       (Self : not null access Gtk_Stack_Record)
@@ -217,6 +220,7 @@ package Gtk.Stack is
    --  Gets the type of animation that will be used for transitions between
    --  pages in Stack.
    --  Since: gtk+ 3.10
+   --  @return the current transition type of Stack
 
    procedure Set_Transition_Type
       (Self       : not null access Gtk_Stack_Record;
@@ -235,6 +239,7 @@ package Gtk.Stack is
    --  Gets whether Stack is vertically homogeneous. See
    --  Gtk.Stack.Set_Vhomogeneous.
    --  Since: gtk+ 3.16
+   --  @return whether Stack is vertically homogeneous.
 
    procedure Set_Vhomogeneous
       (Self         : not null access Gtk_Stack_Record;
@@ -251,6 +256,7 @@ package Gtk.Stack is
    --  Gets the currently visible child of Stack, or null if there are no
    --  visible children.
    --  Since: gtk+ 3.10
+   --  @return the visible child of the Gtk.Stack.Gtk_Stack
 
    procedure Set_Visible_Child
       (Self  : not null access Gtk_Stack_Record;
@@ -269,6 +275,7 @@ package Gtk.Stack is
    --  Returns the name of the currently visible child of Stack, or null if
    --  there is no visible child.
    --  Since: gtk+ 3.10
+   --  @return the name of the visible child of the Gtk.Stack.Gtk_Stack
 
    procedure Set_Visible_Child_Name
       (Self : not null access Gtk_Stack_Record;

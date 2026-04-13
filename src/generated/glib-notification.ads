@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Glib.Notification.Gnotification is a mechanism for creating a notification
 --  to be shown to the user -- typically as a pop-up notification presented by
 --  the desktop environment shell.
@@ -42,8 +41,6 @@
 --  is autostarted as a result of a notification being clicked.
 --
 --  A notification can be sent with Glib.Application.Send_Notification.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.G_Icon;             use Glib.G_Icon;

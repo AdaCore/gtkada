@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk_Color_Selection widget is a complex dialog that allows the user to
 --  select a color based either on its (Red, Green, Blue) or its (Hue,
 --  Saturation, Value). An additional field is provided to select the opacity
@@ -32,7 +31,6 @@
 --
 --  See Gtk.Extra.Color_Combo for a different way to select colors.
 --
---  </description>
 --  <screenshot>gtk-colorsel</screenshot>
 --  <group>Drawing</group>
 --  <testgtk>create_color_selection.adb</testgtk>
@@ -78,6 +76,7 @@ package Gtk.Color_Selection is
    function Get_Current_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record) return Guint16;
    --  Returns the current alpha value.
+   --  @return an integer between 0 and 65535
 
    procedure Set_Current_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record;
@@ -124,6 +123,7 @@ package Gtk.Color_Selection is
    function Get_Has_Opacity_Control
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean;
    --  Determines whether the colorsel has an opacity control.
+   --  @return True if the Colorsel has an opacity control, False if it does't
 
    procedure Set_Has_Opacity_Control
       (Colorsel    : not null access Gtk_Color_Selection_Record;
@@ -135,6 +135,7 @@ package Gtk.Color_Selection is
    function Get_Has_Palette
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean;
    --  Determines whether the color selector has a color palette.
+   --  @return True if the selector has a palette, False if it hasn't
 
    procedure Set_Has_Palette
       (Colorsel    : not null access Gtk_Color_Selection_Record;
@@ -145,6 +146,7 @@ package Gtk.Color_Selection is
    function Get_Previous_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record) return Guint16;
    --  Returns the previous alpha value.
+   --  @return an integer between 0 and 65535
 
    procedure Set_Previous_Alpha
       (Colorsel : not null access Gtk_Color_Selection_Record;
@@ -197,6 +199,8 @@ package Gtk.Color_Selection is
    function Is_Adjusting
       (Colorsel : not null access Gtk_Color_Selection_Record) return Boolean;
    --  Gets the current state of the Colorsel.
+   --  @return True if the user is currently dragging a color around, and
+   --  False if the selection has stopped
 
    ----------------------
    -- GtkAda additions --
@@ -252,6 +256,7 @@ package Gtk.Color_Selection is
    --  GtkColorSelection widgets will be modified.
    --  Since: gtk+ 2.2
    --  @param Func a function to call when the custom palette needs saving
+   --  @return the previous change palette hook (that was replaced)
 
    ----------------
    -- Properties --

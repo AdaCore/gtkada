@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Pango.Coverage.Pango_Coverage structure represents a map from Unicode
 --  characters to Pango.Enums.Coverage_Level. It is an opaque structure with no
 --  public fields.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;
@@ -65,12 +62,15 @@ package Pango.Coverage is
    --  Copy an existing Pango.Coverage.Pango_Coverage. (This function may now
    --  be unnecessary since we refcount the structure. File a bug if you use
    --  it.)
+   --  @return the newly allocated Pango.Coverage.Pango_Coverage, with a
+   --  reference count of one, which should be freed with Pango.Coverage.Unref.
 
    function Get
       (Self  : not null access Pango_Coverage_Record;
        Index : Glib.Gint) return Pango.Enums.Coverage_Level;
    --  Determine whether a particular index is covered by Coverage
    --  @param Index the index to check
+   --  @return the coverage level of Coverage for character Index_.
 
    procedure Max
       (Self  : not null access Pango_Coverage_Record;
@@ -86,6 +86,7 @@ package Pango.Coverage is
       (Self : not null access Pango_Coverage_Record) return Pango_Coverage;
    --  Increase the reference count on the Pango.Coverage.Pango_Coverage by
    --  one
+   --  @return Coverage
 
    procedure Set
       (Self  : not null access Pango_Coverage_Record;

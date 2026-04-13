@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Size_Group.Gtk_Size_Group provides a mechanism for grouping a number
 --  of widgets together so they all request the same amount of space. This is
 --  typically useful when you want a column of widgets to have the same size,
@@ -88,7 +87,6 @@
 --         <widget name="radio2"/>
 --       </widgets>
 --     </object>
---  </description>
 --  <testgtk>create_size_groups.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -167,6 +165,7 @@ package Gtk.Size_Group is
    --  Returns if invisible widgets are ignored when calculating the size.
    --  Since: gtk+ 2.8
    --  Deprecated since 3.22, 1
+   --  @return True if invisible widgets are ignored.
 
    procedure Set_Ignore_Hidden
       (Size_Group    : not null access Gtk_Size_Group_Record;
@@ -183,6 +182,7 @@ package Gtk.Size_Group is
       (Size_Group : not null access Gtk_Size_Group_Record)
        return Size_Group_Mode;
    --  Gets the current mode of the size group. See Gtk.Size_Group.Set_Mode.
+   --  @return the current mode of the size group.
 
    procedure Set_Mode
       (Size_Group : not null access Gtk_Size_Group_Record;

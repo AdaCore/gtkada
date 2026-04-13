@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Menu_Shell.Gtk_Menu_Shell is the abstract base class used to derive
 --  the Gtk.Menu.Gtk_Menu and Gtk.Menu_Bar.Gtk_Menu_Bar subclasses.
 --
@@ -48,8 +47,6 @@
 --  contain a selected menu item.) The current menu is the menu that contains
 --  the current menu item. It will always have a GTK grab and receive all key
 --  presses.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -152,17 +149,20 @@ package Gtk.Menu_Shell is
    --  The parent menu shell of a submenu is the Gtk.Menu.Gtk_Menu or
    --  Gtk.Menu_Bar.Gtk_Menu_Bar from which it was opened up.
    --  Since: gtk+ 3.0
+   --  @return the parent Gtk.Menu_Shell.Gtk_Menu_Shell
 
    function Get_Selected_Item
       (Menu_Shell : not null access Gtk_Menu_Shell_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the currently selected item.
    --  Since: gtk+ 3.0
+   --  @return the currently selected item
 
    function Get_Take_Focus
       (Menu_Shell : not null access Gtk_Menu_Shell_Record) return Boolean;
    --  Returns True if the menu shell will take the keyboard focus on popup.
    --  Since: gtk+ 2.8
+   --  @return True if the menu shell will take the keyboard focus on popup.
 
    procedure Set_Take_Focus
       (Menu_Shell : not null access Gtk_Menu_Shell_Record;
@@ -385,7 +385,6 @@ package Gtk.Menu_Shell is
    -- 
    --  Callback parameters:
    --    --  @param Distance +1 to move to the next item, -1 to move to the previous
-   --    --  Returns True to stop the signal emission, False to continue
 
    Signal_Selection_Done : constant Glib.Signal_Name := "selection-done";
    procedure On_Selection_Done

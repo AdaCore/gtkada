@@ -177,6 +177,7 @@ package body Gtk.Font_Chooser_Dialog is
       --  @param Family a Pango.Font_Family.Pango_Font_Family
       --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
       --  @param Data user data passed to Gtk.Font_Chooser.Set_Filter_Func
+      --  @return True if the font should be displayed
 
       -----------------
       -- Internal_Cb --

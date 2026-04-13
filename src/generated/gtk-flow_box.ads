@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkFlowBox positions child widgets in sequence according to its
 --  orientation.
 --
@@ -64,8 +63,6 @@
 --  GtkFlowBox uses a single CSS node with name flowbox. GtkFlowBoxChild uses
 --  a single CSS node with name flowboxchild. For rubberband selection, a
 --  subnode with name rubberband is used.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -95,6 +92,7 @@ package Gtk.Flow_Box is
    --  with Gtk.Flow_Box.Bind_Model for each item that gets added to the model.
    --  Since: gtk+ 3.18
    --  @param Item the item from the model for which to create a widget for
+   --  @return a Gtk.Widget.Gtk_Widget that represents Item
 
    type Gtk_Flow_Box_Foreach_Func is access procedure
      (Box   : not null access Gtk_Flow_Box_Record'Class;
@@ -113,6 +111,7 @@ package Gtk.Flow_Box is
    --  Since: gtk+ 3.12
    --  @param Child a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child that may be
    --  filtered
+   --  @return True if the row should be visible, False otherwise
 
    type Gtk_Flow_Box_Sort_Func is access function
      (Child1 : not null access Gtk.Flow_Box_Child.Gtk_Flow_Box_Child_Record'Class;
@@ -123,6 +122,8 @@ package Gtk.Flow_Box is
    --  Since: gtk+ 3.12
    --  @param Child1 the first child
    --  @param Child2 the second child
+   --  @return < 0 if Child1 should be before Child2, 0 if the are equal, and
+   --  > 0 otherwise
 
    ------------------
    -- Constructors --
@@ -180,6 +181,7 @@ package Gtk.Flow_Box is
       --  Since: gtk+ 3.18
       --  @param Item the item from the model for which to create a widget for
       --  @param User_Data user data from Gtk.Flow_Box.Bind_Model
+      --  @return a Gtk.Widget.Gtk_Widget that represents Item
 
       procedure Bind_Model
          (Self                : not null access Gtk.Flow_Box.Gtk_Flow_Box_Record'Class;
@@ -211,6 +213,7 @@ package Gtk.Flow_Box is
       (Self : not null access Gtk_Flow_Box_Record) return Boolean;
    --  Returns whether children activate on single clicks.
    --  Since: gtk+ 3.12
+   --  @return True if children are activated on single click, False otherwise
 
    procedure Set_Activate_On_Single_Click
       (Self   : not null access Gtk_Flow_Box_Record;
@@ -226,6 +229,9 @@ package Gtk.Flow_Box is
    --  Gets the nth child in the Box.
    --  Since: gtk+ 3.12
    --  @param Idx the position of the child
+   --  @return the child widget, which will always be a
+   --  Gtk.Flow_Box_Child.Gtk_Flow_Box_Child or null in case no child widget
+   --  with the given index exists.
 
    function Get_Child_At_Pos
       (Self : not null access Gtk_Flow_Box_Record;
@@ -235,11 +241,15 @@ package Gtk.Flow_Box is
    --  Since: gtk+ 3.22.6
    --  @param X the x coordinate of the child
    --  @param Y the y coordinate of the child
+   --  @return the child widget, which will always be a
+   --  Gtk.Flow_Box_Child.Gtk_Flow_Box_Child or null in case no child widget
+   --  exists for the given x and y coordinates.
 
    function Get_Column_Spacing
       (Self : not null access Gtk_Flow_Box_Record) return Guint;
    --  Gets the horizontal spacing.
    --  Since: gtk+ 3.12
+   --  @return the horizontal spacing
 
    procedure Set_Column_Spacing
       (Self    : not null access Gtk_Flow_Box_Record;
@@ -254,6 +264,7 @@ package Gtk.Flow_Box is
    --  Returns whether the box is homogeneous (all children are the same
    --  size). See Gtk.Box.Set_Homogeneous.
    --  Since: gtk+ 3.12
+   --  @return True if the box is homogeneous.
 
    procedure Set_Homogeneous
       (Self        : not null access Gtk_Flow_Box_Record;
@@ -269,6 +280,7 @@ package Gtk.Flow_Box is
       (Self : not null access Gtk_Flow_Box_Record) return Guint;
    --  Gets the maximum number of children per line.
    --  Since: gtk+ 3.12
+   --  @return the maximum number of children per line
 
    procedure Set_Max_Children_Per_Line
       (Self       : not null access Gtk_Flow_Box_Record;
@@ -285,6 +297,7 @@ package Gtk.Flow_Box is
       (Self : not null access Gtk_Flow_Box_Record) return Guint;
    --  Gets the minimum number of children per line.
    --  Since: gtk+ 3.12
+   --  @return the minimum number of children per line
 
    procedure Set_Min_Children_Per_Line
       (Self       : not null access Gtk_Flow_Box_Record;
@@ -298,6 +311,7 @@ package Gtk.Flow_Box is
       (Self : not null access Gtk_Flow_Box_Record) return Guint;
    --  Gets the vertical spacing.
    --  Since: gtk+ 3.12
+   --  @return the vertical spacing
 
    procedure Set_Row_Spacing
       (Self    : not null access Gtk_Flow_Box_Record;
@@ -318,6 +332,7 @@ package Gtk.Flow_Box is
        return Gtk.Enums.Gtk_Selection_Mode;
    --  Gets the selection mode of Box.
    --  Since: gtk+ 3.12
+   --  @return the Gtk.Enums.Gtk_Selection_Mode
 
    procedure Set_Selection_Mode
       (Self : not null access Gtk_Flow_Box_Record;
@@ -432,6 +447,7 @@ package Gtk.Flow_Box is
       --  @param Child a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child that may be
       --  filtered
       --  @param User_Data user data
+      --  @return True if the row should be visible, False otherwise
 
       procedure Set_Filter_Func
          (Self        : not null access Gtk.Flow_Box.Gtk_Flow_Box_Record'Class;
@@ -496,6 +512,8 @@ package Gtk.Flow_Box is
       --  @param Child1 the first child
       --  @param Child2 the second child
       --  @param User_Data user data
+      --  @return < 0 if Child1 should be before Child2, 0 if the are equal, and
+      --  > 0 otherwise
 
       procedure Set_Sort_Func
          (Self      : not null access Gtk.Flow_Box.Gtk_Flow_Box_Record'Class;
@@ -669,8 +687,6 @@ package Gtk.Flow_Box is
    --    --  @param Step the granularity fo the move, as a
    --    --  Gtk.Enums.Gtk_Movement_Step
    --    --  @param Count the number of Step units to move
-   --    --  Returns True to stop other handlers from being invoked for the event.
-   -- False to propagate the event further.
 
    Signal_Select_All : constant Glib.Signal_Name := "select-all";
    procedure On_Select_All

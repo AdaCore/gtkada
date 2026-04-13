@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Dialog boxes are a convenient way to prompt the user for a small amount of
 --  input, e.g. to display a message, ask a question, or anything else that
 --  does not require extensive effort on the user's part.
@@ -139,11 +138,8 @@
 --         <action-widget response="ok" default="true">button_ok</action-widget>
 --       </action-widgets>
 --     </object>
---  </description>
---  <description>
 --  See Gtkada.Dialogs for a higher level dialog interface.
 --
---  </description>
 --  <screenshot>gtk-dialog</screenshot>
 --  <group>Windows</group>
 --  <testgtk>create_dialog.adb</testgtk>
@@ -290,6 +286,7 @@ package Gtk.Dialog is
    --  it.
    --  @param Text text of button
    --  @param Response_Id response ID for the button
+   --  @return the Gtk.Button.Gtk_Button widget that was added
 
    function Get_Action_Area
       (Dialog : not null access Gtk_Dialog_Record) return Gtk.Box.Gtk_Box;
@@ -310,6 +307,7 @@ package Gtk.Dialog is
    --  by the dialog if the Gtk.Dialog.Gtk_Dialog:use-header-bar property is
    --  True.
    --  Since: gtk+ 3.12
+   --  @return the header bar
 
    function Get_Response_For_Widget
       (Dialog : not null access Gtk_Dialog_Record;
@@ -326,6 +324,7 @@ package Gtk.Dialog is
    --  area of a dialog.
    --  Since: gtk+ 2.20
    --  @param Response_Id the response ID used by the Dialog widget
+   --  @return the Widget button that uses the given Response_Id, or null.
 
    procedure Response
       (Dialog      : not null access Gtk_Dialog_Record;

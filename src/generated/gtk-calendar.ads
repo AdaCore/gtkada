@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Calendar.Gtk_Calendar is a widget that displays a Gregorian calendar,
 --  one month at a time. It can be created with Gtk.Calendar.Gtk_New.
 --
@@ -43,7 +42,6 @@
 --  calendar in most countries, it was adopted progressively between 1582 and
 --  1929. Display before these dates is likely to be historically incorrect.
 --
---  </description>
 --  <screenshot>gtk-calendar</screenshot>
 --  <group>Selectors</group>
 --  <testgtk>create_calendar.adb</testgtk>
@@ -91,6 +89,8 @@ package Gtk.Calendar is
    --  @param Year the year for which details are needed.
    --  @param Month the month for which details are needed.
    --  @param Day the day of Month for which details are needed.
+   --  @return Newly allocated string with Pango markup with details for the
+   --  specified day or null.
 
    ----------------------------
    -- Enumeration Properties --
@@ -142,12 +142,14 @@ package Gtk.Calendar is
    --  Returns if the Day of the Calendar is already marked.
    --  Since: gtk+ 3.0
    --  @param Day the day number between 1 and 31.
+   --  @return whether the day is marked.
 
    function Get_Detail_Height_Rows
       (Calendar : not null access Gtk_Calendar_Record) return Glib.Gint;
    --  Queries the height of detail cells, in rows. See
    --  Gtk.Calendar.Gtk_Calendar:detail-width-chars.
    --  Since: gtk+ 2.14
+   --  @return The height of detail cells, in rows.
 
    procedure Set_Detail_Height_Rows
       (Calendar : not null access Gtk_Calendar_Record;
@@ -162,6 +164,7 @@ package Gtk.Calendar is
    --  Queries the width of detail cells, in characters. See
    --  Gtk.Calendar.Gtk_Calendar:detail-width-chars.
    --  Since: gtk+ 2.14
+   --  @return The width of detail cells, in characters.
 
    procedure Set_Detail_Width_Chars
       (Calendar : not null access Gtk_Calendar_Record;
@@ -176,6 +179,7 @@ package Gtk.Calendar is
        return Gtk_Calendar_Display_Options;
    --  Returns the current display options of Calendar.
    --  Since: gtk+ 2.4
+   --  @return the display options.
 
    procedure Set_Display_Options
       (Calendar : not null access Gtk_Calendar_Record;
@@ -243,6 +247,8 @@ package Gtk.Calendar is
       --  @param Month the month for which details are needed.
       --  @param Day the day of Month for which details are needed.
       --  @param User_Data the data passed with Gtk.Calendar.Set_Detail_Func.
+      --  @return Newly allocated string with Pango markup with details for the
+      --  specified day or null.
 
       procedure Set_Detail_Func
          (Calendar : not null access Gtk.Calendar.Gtk_Calendar_Record'Class;

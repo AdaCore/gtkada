@@ -112,6 +112,7 @@ package body Pango.Fontset is
       --  @param Fontset a Pango.Fontset.Pango_Fontset
       --  @param Font a font from Fontset
       --  @param User_Data callback data
+      --  @return if True, stop iteration and return immediately.
 
       -------------
       -- Foreach --

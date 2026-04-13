@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Glib.Action_Group.Gaction_Group represents a group of actions. Actions can
 --  be used to expose functionality in a structured way, either from one part
 --  of a program to another, or to the outside world. Action groups are often
@@ -66,8 +65,6 @@
 --  and Glib.Action_Group.Query_Action. The other virtual functions should not
 --  be implemented - their "wrappers" are actually implemented with calls to
 --  Glib.Action_Group.Query_Action.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;    use GNAT.Strings;
@@ -174,6 +171,7 @@ package Glib.Action_Group is
    --  its state changed from outside callers.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
+   --  @return whether or not the action is currently enabled
 
    function Get_Action_Parameter_Type
       (Self        : Gaction_Group;
@@ -190,6 +188,7 @@ package Glib.Action_Group is
    --  with the same name but a different parameter type.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
+   --  @return the parameter type
 
    function Get_Action_State
       (Self        : Gaction_Group;
@@ -202,6 +201,7 @@ package Glib.Action_Group is
    --  when it is no longer required.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
+   --  @return the current state of the action
 
    function Get_Action_State_Hint
       (Self        : Gaction_Group;
@@ -222,6 +222,7 @@ package Glib.Action_Group is
    --  when it is no longer required.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
+   --  @return the state range hint
 
    function Get_Action_State_Type
       (Self        : Gaction_Group;
@@ -240,6 +241,7 @@ package Glib.Action_Group is
    --  with the same name but a different state type.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
+   --  @return the state type, if the action is stateful
 
    function Has_Action
       (Self        : Gaction_Group;
@@ -247,6 +249,7 @@ package Glib.Action_Group is
    --  Checks if the named action exists within Action_Group.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to check for
+   --  @return whether the named action exists
 
    function List_Actions
       (Self : Gaction_Group) return GNAT.Strings.String_List;
@@ -254,6 +257,8 @@ package Glib.Action_Group is
    --  The caller is responsible for freeing the list with g_strfreev when it
    --  is no longer required.
    --  Since: gtk+ 2.28
+   --  @return a null-terminated array of the names of the actions in the
+   --  group
 
    function Query_Action
       (Self           : Gaction_Group;
@@ -292,6 +297,7 @@ package Glib.Action_Group is
    --  @param State_Type the state type, or null if stateless
    --  @param State_Hint the state hint, or null if none
    --  @param State the current state, or null if stateless
+   --  @return True if the action exists, else False
 
    -------------
    -- Signals --
@@ -486,6 +492,7 @@ package Glib.Action_Group is
    --  its state changed from outside callers.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
+   --  @return whether or not the action is currently enabled
 
    type Virtual_Get_Action_Parameter_Type is access function
      (Self        : Gaction_Group;
@@ -504,6 +511,7 @@ package Glib.Action_Group is
    --  with the same name but a different parameter type.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
+   --  @return the parameter type
 
    type Virtual_Get_Action_State is access function
      (Self        : Gaction_Group;
@@ -517,6 +525,7 @@ package Glib.Action_Group is
    --  when it is no longer required.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
+   --  @return the current state of the action
 
    type Virtual_Get_Action_State_Hint is access function
      (Self        : Gaction_Group;
@@ -538,6 +547,7 @@ package Glib.Action_Group is
    --  when it is no longer required.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
+   --  @return the state range hint
 
    type Virtual_Get_Action_State_Type is access function
      (Self        : Gaction_Group;
@@ -558,6 +568,7 @@ package Glib.Action_Group is
    --  with the same name but a different state type.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
+   --  @return the state type, if the action is stateful
 
    type Virtual_Has_Action is access function
      (Self        : Gaction_Group;
@@ -566,6 +577,7 @@ package Glib.Action_Group is
    --  Checks if the named action exists within Action_Group.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to check for
+   --  @return whether the named action exists
 
    type Virtual_List_Actions is access function (Self : Gaction_Group) return chars_ptr_array_access;
    pragma Convention (C, Virtual_List_Actions);
@@ -573,6 +585,8 @@ package Glib.Action_Group is
    --  The caller is responsible for freeing the list with g_strfreev when it
    --  is no longer required.
    --  Since: gtk+ 2.28
+   --  @return a null-terminated array of the names of the actions in the
+   --  group
 
    type Virtual_Query_Action is access function
      (Self           : Gaction_Group;
@@ -612,6 +626,7 @@ package Glib.Action_Group is
    --  @param State_Type the state type, or null if stateless
    --  @param State_Hint the state hint, or null if none
    --  @param State the current state, or null if stateless
+   --  @return True if the action exists, else False
 
    subtype Action_Group_Interface_Descr is Glib.Object.Interface_Description;
 

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Toggle_Tool_Button.Gtk_Toggle_Tool_Button is a
 --  Gtk.Tool_Item.Gtk_Tool_Item that contains a toggle button.
 --
@@ -30,8 +29,6 @@
 --  # CSS nodes
 --
 --  GtkToggleToolButton has a single CSS node with name togglebutton.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -104,6 +101,7 @@ package Gtk.Toggle_Tool_Button is
    --  current state. Returns True if the toggle button is pressed in and False
    --  if it is raised.
    --  Since: gtk+ 2.4
+   --  @return True if the toggle tool button is pressed in, False if not
 
    procedure Set_Active
       (Button    : not null access Gtk_Toggle_Tool_Button_Record;

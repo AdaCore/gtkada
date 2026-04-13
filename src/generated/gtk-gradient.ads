@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkGradient is a boxed type that represents a gradient. It is the result
 --  of parsing a [gradient expression][gtkcssprovider-gradients]. To obtain the
 --  gradient represented by a GtkGradient, it has to be resolved with
@@ -37,8 +36,6 @@
 --  CSS engine to represent gradients. As its handling is not conforming to
 --  modern web standards, it is not used anymore. If you want to use gradients
 --  in your own code, please use Cairo directly.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                use Cairo;
@@ -149,6 +146,7 @@ package Gtk.Gradient is
    --  Increases the reference count of Gradient.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
+   --  @return The same Gradient
 
    function Resolve
       (Self              : Gtk_Gradient;
@@ -164,6 +162,7 @@ package Gtk.Gradient is
    --  @param Props Gtk.Style_Properties.Gtk_Style_Properties to use when
    --  resolving named colors
    --  @param Resolved_Gradient return location for the resolved pattern
+   --  @return True if the gradient has been resolved
 
    function Resolve_For_Context
       (Self    : Gtk_Gradient;
@@ -175,6 +174,7 @@ package Gtk.Gradient is
    --  Creates a string representation for Gradient that is suitable for using
    --  in GTK CSS files.
    --  Deprecated since 3.8, 1
+   --  @return A string representation for Gradient
 
    procedure Unref (Self : Gtk_Gradient);
    pragma Obsolescent (Unref);

@@ -21,15 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Glib.Simple_Action.Gsimple_Action is the obvious simple implementation
 --  of the Glib.Action.Gaction interface. This is the easiest way to create an
 --  action for purposes of adding it to a
 --  Glib.Simple_Action_Group.Gsimple_Action_Group.
 --
 --  See also Gtk.Action.Gtk_Action.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Action;     use Glib.Action;

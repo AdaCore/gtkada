@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.GRange.Gtk_Range is the common base class for widgets which visualize
 --  an adjustment, e.g Gtk.Scale.Gtk_Scale or Gtk.Scrollbar.Gtk_Scrollbar.
 --
@@ -30,7 +29,6 @@
 --  sensitivity of the "steppers". It also provides properties and methods for
 --  setting a "fill level" on range widgets. See Gtk.GRange.Set_Fill_Level.
 --
---  </description>
 --  <screenshot>gtk-range</screenshot>
 --  <testgtk>create_range.adb</testgtk>
 
@@ -69,6 +67,7 @@ package Gtk.GRange is
    --  Gtk.GRange.Gtk_Range. See Gtk.GRange.Set_Adjustment for details. The
    --  return value does not have a reference added, so should not be
    --  unreferenced.
+   --  @return a Gtk.Adjustment.Gtk_Adjustment
 
    procedure Set_Adjustment
       (The_Range  : not null access Gtk_Range_Record;
@@ -86,6 +85,7 @@ package Gtk.GRange is
       (The_Range : not null access Gtk_Range_Record) return Gdouble;
    --  Gets the current position of the fill level indicator.
    --  Since: gtk+ 2.12
+   --  @return The current fill level
 
    procedure Set_Fill_Level
       (The_Range  : not null access Gtk_Range_Record;
@@ -110,6 +110,7 @@ package Gtk.GRange is
       (The_Range : not null access Gtk_Range_Record) return Boolean;
    --  Gets the value set by Gtk.GRange.Set_Flippable.
    --  Since: gtk+ 2.18
+   --  @return True if the range is flippable
 
    procedure Set_Flippable
       (The_Range : not null access Gtk_Range_Record;
@@ -123,6 +124,7 @@ package Gtk.GRange is
    function Get_Inverted
       (The_Range : not null access Gtk_Range_Record) return Boolean;
    --  Gets the value set by Gtk.GRange.Set_Inverted.
+   --  @return True if the range is inverted
 
    procedure Set_Inverted
       (The_Range : not null access Gtk_Range_Record;
@@ -138,6 +140,7 @@ package Gtk.GRange is
    --  Gets the sensitivity policy for the stepper that points to the 'lower'
    --  end of the GtkRange's adjustment.
    --  Since: gtk+ 2.10
+   --  @return The lower stepper's sensitivity policy.
 
    procedure Set_Lower_Stepper_Sensitivity
       (The_Range   : not null access Gtk_Range_Record;
@@ -154,6 +157,7 @@ package Gtk.GRange is
    --  See Gtk.GRange.Set_Min_Slider_Size.
    --  Since: gtk+ 2.20
    --  Deprecated since 3.20, 1
+   --  @return The minimum size of the range's slider.
 
    procedure Set_Min_Slider_Size
       (The_Range : not null access Gtk_Range_Record;
@@ -178,6 +182,7 @@ package Gtk.GRange is
       (The_Range : not null access Gtk_Range_Record) return Boolean;
    --  Gets whether the range is restricted to the fill level.
    --  Since: gtk+ 2.12
+   --  @return True if Range is restricted to the fill level.
 
    procedure Set_Restrict_To_Fill_Level
       (The_Range              : not null access Gtk_Range_Record;
@@ -194,6 +199,7 @@ package Gtk.GRange is
    --  Gets the number of digits to round the value to when it changes. See
    --  Gtk.GRange.Gtk_Range::change-value.
    --  Since: gtk+ 2.24
+   --  @return the number of digits to round to
 
    procedure Set_Round_Digits
       (The_Range    : not null access Gtk_Range_Record;
@@ -207,6 +213,7 @@ package Gtk.GRange is
       (The_Range : not null access Gtk_Range_Record) return Boolean;
    --  Gets whether the range displays the fill level graphically.
    --  Since: gtk+ 2.12
+   --  @return True if Range shows the fill level.
 
    procedure Set_Show_Fill_Level
       (The_Range       : not null access Gtk_Range_Record;
@@ -234,6 +241,7 @@ package Gtk.GRange is
    --  This function is useful mainly for Gtk.GRange.Gtk_Range subclasses.
    --  See Gtk.GRange.Set_Slider_Size_Fixed.
    --  Since: gtk+ 2.20
+   --  @return whether the range's slider has a fixed size.
 
    procedure Set_Slider_Size_Fixed
       (The_Range  : not null access Gtk_Range_Record;
@@ -250,6 +258,7 @@ package Gtk.GRange is
    --  Gets the sensitivity policy for the stepper that points to the 'upper'
    --  end of the GtkRange's adjustment.
    --  Since: gtk+ 2.10
+   --  @return The upper stepper's sensitivity policy.
 
    procedure Set_Upper_Stepper_Sensitivity
       (The_Range   : not null access Gtk_Range_Record;
@@ -262,6 +271,7 @@ package Gtk.GRange is
    function Get_Value
       (The_Range : not null access Gtk_Range_Record) return Gdouble;
    --  Gets the current value of the range.
+   --  @return current value of the range.
 
    procedure Set_Value
       (The_Range : not null access Gtk_Range_Record;
@@ -402,8 +412,6 @@ package Gtk.GRange is
    --  Callback parameters:
    --    --  @param Scroll the type of scroll action that was performed
    --    --  @param Value the new value resulting from the scroll action
-   --    --  Returns True to prevent other handlers from being invoked for
-   --     the signal, False to propagate the signal further
 
    type Cb_Gtk_Range_Gtk_Scroll_Type_Void is not null access procedure
      (Self : access Gtk_Range_Record'Class;

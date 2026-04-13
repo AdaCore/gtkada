@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This widget provides a nice way for the user of your application to select
 --  fonts. It first searches on your system for the list of fonts available,
 --  and displays a set of boxes to select them based on their name, their
@@ -36,7 +35,6 @@
 --  your application and that the user can not change; a user filter that can
 --  be modified interactively by the user.
 --
---  </description>
 --  <screenshot>gtk-fontsel</screenshot>
 --  <group>Selectors</group>
 --  <testgtk>create_font_selection.adb</testgtk>
@@ -85,6 +83,7 @@ package Gtk.Font_Selection is
    --  available for the selected font. For example, "Regular", "Bold", etc.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, 1
+   --  @return A Gtk.Widget.Gtk_Widget that is part of Fontsel
 
    function Get_Family_List
       (Fontsel : not null access Gtk_Font_Selection_Record)
@@ -94,6 +93,7 @@ package Gtk.Font_Selection is
    --  for example, "Sans", "Serif", etc.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, 1
+   --  @return A Gtk.Widget.Gtk_Widget that is part of Fontsel
 
    function Get_Font_Name
       (Fontsel : not null access Gtk_Font_Selection_Record)
@@ -107,6 +107,8 @@ package Gtk.Font_Selection is
    --  to "Helvetica Bold Italic 12". Use Pango.Font.Equal if you want to
    --  compare two font descriptions.
    --  Deprecated since 3.2, 1
+   --  @return A string with the name of the current font, or null if no font
+   --  is selected. You must free this string with g_free.
 
    function Set_Font_Name
       (Fontsel  : not null access Gtk_Font_Selection_Record;
@@ -118,6 +120,8 @@ package Gtk.Font_Selection is
    --  Fontsel is inserted in a toplevel window before you call this function.
    --  Deprecated since 3.2, 1
    --  @param Fontname a font name like "Helvetica 12" or "Times Bold 18"
+   --  @return True if the font could be set successfully; False if no such
+   --  font exists or if the Fontsel doesn't belong to a particular screen yet.
 
    function Get_Preview_Entry
       (Fontsel : not null access Gtk_Font_Selection_Record)
@@ -127,6 +131,7 @@ package Gtk.Font_Selection is
    --  preview.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, 1
+   --  @return A Gtk.Widget.Gtk_Widget that is part of Fontsel
 
    function Get_Preview_Text
       (Fontsel : not null access Gtk_Font_Selection_Record)
@@ -134,6 +139,8 @@ package Gtk.Font_Selection is
    pragma Obsolescent (Get_Preview_Text);
    --  Gets the text displayed in the preview area.
    --  Deprecated since 3.2, 1
+   --  @return the text displayed in the preview area. This string is owned by
+   --  the widget and should not be modified or freed
 
    procedure Set_Preview_Text
       (Fontsel : not null access Gtk_Font_Selection_Record;
@@ -150,6 +157,8 @@ package Gtk.Font_Selection is
    --  The selected font size.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, 1
+   --  @return A n integer representing the selected font size, or -1 if no
+   --  font size is selected.
 
    function Get_Size_Entry
       (Fontsel : not null access Gtk_Font_Selection_Record)
@@ -160,6 +169,7 @@ package Gtk.Font_Selection is
    --  sizes.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, 1
+   --  @return A Gtk.Widget.Gtk_Widget that is part of Fontsel
 
    function Get_Size_List
       (Fontsel : not null access Gtk_Font_Selection_Record)
@@ -168,6 +178,7 @@ package Gtk.Font_Selection is
    --  This returns the Gtk.Tree_View.Gtk_Tree_View used to list font sizes.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, 1
+   --  @return A Gtk.Widget.Gtk_Widget that is part of Fontsel
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

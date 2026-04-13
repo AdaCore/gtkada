@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkComboBoxText is a simple variant of Gtk.Combo_Box.Gtk_Combo_Box that
 --  hides the model-view complexity for simple text-only use cases.
 --
@@ -70,7 +69,6 @@
 --  style class .combo to the main CSS nodes of its entry and button children,
 --  and the .linked class to the node of its internal box.
 --
---  </description>
 --  <group>Numeric/Text Data Entry</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -174,6 +172,8 @@ package Gtk.Combo_Box_Text is
    --  selected. If Combo_Box contains an entry, this function will return its
    --  contents (which will not necessarily be an item from the list).
    --  Since: gtk+ 2.24
+   --  @return a newly allocated string containing the currently active text.
+   --  Must be freed with g_free.
 
    procedure Insert
       (Self     : not null access Gtk_Combo_Box_Text_Record;

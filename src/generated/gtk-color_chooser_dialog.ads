@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Color_Chooser_Dialog.Gtk_Color_Chooser_Dialog widget is a dialog
 --  for choosing a color. It implements the Gtk.Color_Chooser.Gtk_Color_Chooser
 --  interface.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.RGBA;          use Gdk.RGBA;

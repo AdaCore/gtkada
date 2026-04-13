@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkScale is a slider control used to select a numeric value. To use it,
 --  you'll probably want to investigate the methods on its base class,
 --  Gtk.GRange.Gtk_Range, in addition to the methods for GtkScale itself. To
@@ -94,7 +93,6 @@
 --  If the scale is displaying the value (see Gtk.Scale.Gtk_Scale:draw-value),
 --  there is subnode with name value.
 --
---  </description>
 --  <screenshot>gtk-scale.png</screenshot>
 --  <group>Numeric/Text Data Entry</group>
 
@@ -349,6 +347,7 @@ package Gtk.Scale is
    function Get_Digits
       (Scale : not null access Gtk_Scale_Record) return Glib.Gint;
    --  Gets the number of decimal places that are displayed in the value.
+   --  @return the number of decimal places that are displayed
 
    procedure Set_Digits
       (Scale      : not null access Gtk_Scale_Record;
@@ -370,6 +369,7 @@ package Gtk.Scale is
       (Scale : not null access Gtk_Scale_Record) return Boolean;
    --  Returns whether the current value is displayed as a string next to the
    --  slider.
+   --  @return whether the current value is displayed as a string
 
    procedure Set_Draw_Value
       (Scale      : not null access Gtk_Scale_Record;
@@ -382,6 +382,7 @@ package Gtk.Scale is
       (Scale : not null access Gtk_Scale_Record) return Boolean;
    --  Returns whether the scale has an origin.
    --  Since: gtk+ 3.4
+   --  @return True if the scale has an origin.
 
    procedure Set_Has_Origin
       (Scale      : not null access Gtk_Scale_Record;
@@ -399,6 +400,8 @@ package Gtk.Scale is
    --  returned object is owned by the scale so does not need to be freed by
    --  the caller.
    --  Since: gtk+ 2.4
+   --  @return the Pango.Layout.Pango_Layout for this scale, or null if the
+   --  Gtk.Scale.Gtk_Scale:draw-value property is False.
 
    procedure Get_Layout_Offsets
       (Scale : not null access Gtk_Scale_Record;
@@ -418,6 +421,7 @@ package Gtk.Scale is
       (Scale : not null access Gtk_Scale_Record)
        return Gtk.Enums.Gtk_Position_Type;
    --  Gets the position in which the current value is displayed.
+   --  @return the position in which the current value is displayed
 
    procedure Set_Value_Pos
       (Scale : not null access Gtk_Scale_Record;
@@ -497,7 +501,6 @@ package Gtk.Scale is
    -- 
    --  Callback parameters:
    --    --  @param Value the value to format
-   --    --  Returns allocated string representing Value
 
    ----------------
    -- Interfaces --

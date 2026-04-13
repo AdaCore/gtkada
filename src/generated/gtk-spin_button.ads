@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Spin_Button.Gtk_Spin_Button is an ideal way to allow the user to set
 --  the value of some attribute. Rather than having to directly type a number
 --  into a Gtk.GEntry.Gtk_Entry, GtkSpinButton allows the user to click on one
@@ -125,8 +124,6 @@
 --
 --       gtk_widget_show_all (window);
 --     }
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;               use Gdk.Event;
@@ -281,6 +278,7 @@ package Gtk.Spin_Button is
       (Spin_Button : not null access Gtk_Spin_Button_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
    --  Get the adjustment associated with a Gtk.Spin_Button.Gtk_Spin_Button
+   --  @return the Gtk.Adjustment.Gtk_Adjustment of Spin_Button
 
    procedure Set_Adjustment
       (Spin_Button : not null access Gtk_Spin_Button_Record;
@@ -292,6 +290,7 @@ package Gtk.Spin_Button is
    function Get_Digits
       (Spin_Button : not null access Gtk_Spin_Button_Record) return Guint;
    --  Fetches the precision of Spin_Button. See Gtk.Spin_Button.Set_Digits.
+   --  @return the current precision
 
    procedure Set_Digits
       (Spin_Button : not null access Gtk_Spin_Button_Record;
@@ -323,6 +322,7 @@ package Gtk.Spin_Button is
       (Spin_Button : not null access Gtk_Spin_Button_Record) return Boolean;
    --  Returns whether non-numeric text can be typed into the spin button. See
    --  Gtk.Spin_Button.Set_Numeric.
+   --  @return True if only numeric text can be entered
 
    procedure Set_Numeric
       (Spin_Button : not null access Gtk_Spin_Button_Record;
@@ -353,6 +353,7 @@ package Gtk.Spin_Button is
       (Spin_Button : not null access Gtk_Spin_Button_Record) return Boolean;
    --  Returns whether the values are corrected to the nearest step. See
    --  Gtk.Spin_Button.Set_Snap_To_Ticks.
+   --  @return True if values are snapped to the nearest step
 
    procedure Set_Snap_To_Ticks
       (Spin_Button   : not null access Gtk_Spin_Button_Record;
@@ -368,6 +369,7 @@ package Gtk.Spin_Button is
        return Gtk_Spin_Button_Update_Policy;
    --  Gets the update behavior of a spin button. See
    --  Gtk.Spin_Button.Set_Update_Policy.
+   --  @return the current update policy
 
    procedure Set_Update_Policy
       (Spin_Button : not null access Gtk_Spin_Button_Record;
@@ -379,6 +381,7 @@ package Gtk.Spin_Button is
    function Get_Value
       (Spin_Button : not null access Gtk_Spin_Button_Record) return Gdouble;
    --  Get the value in the Spin_Button.
+   --  @return the value of Spin_Button
 
    procedure Set_Value
       (Spin_Button : not null access Gtk_Spin_Button_Record;
@@ -390,12 +393,14 @@ package Gtk.Spin_Button is
       (Spin_Button : not null access Gtk_Spin_Button_Record)
        return Glib.Gint;
    --  Get the value Spin_Button represented as an integer.
+   --  @return the value of Spin_Button
 
    function Get_Wrap
       (Spin_Button : not null access Gtk_Spin_Button_Record) return Boolean;
    --  Returns whether the spin button's value wraps around to the opposite
    --  limit when the upper or lower limit of the range is exceeded. See
    --  Gtk.Spin_Button.Set_Wrap.
+   --  @return True if the spin button wraps around
 
    procedure Set_Wrap
       (Spin_Button : not null access Gtk_Spin_Button_Record;
@@ -581,8 +586,6 @@ package Gtk.Spin_Button is
    -- 
    --  Callback parameters:
    --    --  @param New_Value return location for the new value
-   --    --  Returns True for a successful conversion, False if the input
-   --     was not handled, and GTK_INPUT_ERROR if the conversion failed.
 
    type Cb_Gtk_Spin_Button_Boolean is not null access function
      (Self : access Gtk_Spin_Button_Record'Class) return Boolean;
@@ -623,7 +626,6 @@ package Gtk.Spin_Button is
    --     }
    -- 
    --  Callback parameters:
-   --    --  Returns True if the value has been displayed
 
    type Cb_Gtk_Spin_Button_Void is not null access procedure
      (Self : access Gtk_Spin_Button_Record'Class);

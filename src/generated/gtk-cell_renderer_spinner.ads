@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkCellRendererSpinner renders a spinning animation in a cell, very
 --  similar to Gtk.Spinner.Gtk_Spinner. It can often be used as an alternative
 --  to a Gtk.Cell_Renderer_Progress.Gtk_Cell_Renderer_Progress for displaying
@@ -33,8 +32,6 @@
 --  property at regular intervals. The usual way to set the cell renderer
 --  properties for each cell is to bind them to columns in your tree model
 --  using e.g. gtk_tree_view_column_add_attribute.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;

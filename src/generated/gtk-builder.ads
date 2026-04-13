@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkBuilder is an auxiliary object that reads textual descriptions of a
 --  user interface and instantiates the described objects. To create a
 --  GtkBuilder from a user interface description, call
@@ -195,8 +194,6 @@
 --  Additionally, since 3.10 a special <template> tag has been added to the
 --  format allowing one to define a widget class's components. See the
 --  [GtkWidget documentation][composite-templates] for details.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;    use GNAT.Strings;
@@ -370,6 +367,7 @@ package Gtk.Builder is
    --  an error is detected is to call g_error.
    --  Since: gtk+ 2.12
    --  @param Filename the name of the file to parse
+   --  @return A positive value on success, 0 if an error occurred
 
    function Add_From_Resource
       (Builder       : not null access Gtk_Builder_Record;
@@ -387,6 +385,7 @@ package Gtk.Builder is
    --  g_error.
    --  Since: gtk+ 3.4
    --  @param Resource_Path the path of the resource file to parse
+   --  @return A positive value on success, 0 if an error occurred
 
    function Add_From_String
       (Builder : not null access Gtk_Builder_Record;
@@ -403,6 +402,7 @@ package Gtk.Builder is
    --  g_error.
    --  Since: gtk+ 2.12
    --  @param Buffer the string to parse
+   --  @return A positive value on success, 0 if an error occurred
 
    function Add_Objects_From_File
       (Builder    : not null access Gtk_Builder_Record;
@@ -422,6 +422,7 @@ package Gtk.Builder is
    --  Since: gtk+ 2.14
    --  @param Filename the name of the file to parse
    --  @param Object_Ids nul-terminated array of objects to build
+   --  @return A positive value on success, 0 if an error occurred
 
    function Add_Objects_From_Resource
       (Builder       : not null access Gtk_Builder_Record;
@@ -441,6 +442,7 @@ package Gtk.Builder is
    --  Since: gtk+ 3.4
    --  @param Resource_Path the path of the resource file to parse
    --  @param Object_Ids nul-terminated array of objects to build
+   --  @return A positive value on success, 0 if an error occurred
 
    function Add_Objects_From_String
       (Builder    : not null access Gtk_Builder_Record;
@@ -462,6 +464,7 @@ package Gtk.Builder is
    --  @param Length the length of Buffer (may be -1 if Buffer is
    --  nul-terminated)
    --  @param Object_Ids nul-terminated array of objects to build
+   --  @return A positive value on success, 0 if an error occurred
 
    procedure Connect_Signals
       (Builder   : not null access Gtk_Builder_Record;
@@ -514,6 +517,8 @@ package Gtk.Builder is
    --  the reference count of the returned object.
    --  Since: gtk+ 2.12
    --  @param Name name of object to get
+   --  @return the object named Name or null if it could not be found in the
+   --  object tree.
 
    function Get_Objects
       (Builder : not null access Gtk_Builder_Record)
@@ -527,6 +532,8 @@ package Gtk.Builder is
       (Builder : not null access Gtk_Builder_Record) return UTF8_String;
    --  Gets the translation domain of Builder.
    --  Since: gtk+ 2.12
+   --  @return the translation domain. This string is owned by the builder
+   --  object and must not be modified or freed.
 
    procedure Set_Translation_Domain
       (Builder : not null access Gtk_Builder_Record;
@@ -544,6 +551,8 @@ package Gtk.Builder is
    --  implementing the Gtk.Buildable.Gtk_Buildable interface on a type.
    --  Since: gtk+ 2.12
    --  @param Type_Name type name to lookup
+   --  @return the GType found for Type_Name or G_TYPE_INVALID if no type was
+   --  found
 
    procedure Lookup_Callback_Symbol
       (Builder       : not null access Gtk_Builder_Record;
@@ -555,6 +564,7 @@ package Gtk.Builder is
    --  Gtk.Builder.Connect_Signals_Full
    --  Since: gtk+ 3.10
    --  @param Callback_Name The name of the callback
+   --  @return The callback symbol in Builder for Callback_Name, or null
 
    procedure Value_From_String
       (Builder : not null access Gtk_Builder_Record;
@@ -575,6 +585,7 @@ package Gtk.Builder is
    --  @param Pspec the Glib.Param_Spec for the property
    --  @param String the string representation of the value
    --  @param Value the Glib.Values.GValue to store the result in
+   --  @return True on success
 
    function Value_From_String_Type
       (Builder  : not null access Gtk_Builder_Record;
@@ -591,6 +602,7 @@ package Gtk.Builder is
    --  @param The_Type the GType of the value
    --  @param String the string representation of the value
    --  @param Value the Glib.Values.GValue to store the result in
+   --  @return True on success
 
    ----------------
    -- Properties --

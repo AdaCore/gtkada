@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkIMContextSimple is a simple input method context supporting table-based
 --  input methods. It has a built-in table of compose sequences that is derived
 --  from the X11 Compose files.
@@ -36,8 +35,6 @@
 --  typing Ctrl-Shift-u, followed by a hexadecimal Unicode codepoint. For
 --  example, Ctrl-Shift-u 1 2 3 Enter yields U+0123 LATIN SMALL LETTER G WITH
 --  CEDILLA, i.e. ģ.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;

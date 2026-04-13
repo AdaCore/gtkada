@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Level_Bar.Gtk_Level_Bar is a bar widget that can be used as a
 --  level indicator. Typical use cases are displaying the strength of a
 --  password, or showing the charge level of a battery.
@@ -112,8 +111,6 @@
 --
 --  In horizontal orientation, the nodes are always arranged from left to
 --  right, regardless of text direction.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -195,6 +192,7 @@ package Gtk.Level_Bar is
       (Self : not null access Gtk_Level_Bar_Record) return Boolean;
    --  Return the value of the Gtk.Level_Bar.Gtk_Level_Bar:inverted property.
    --  Since: gtk+ 3.8
+   --  @return True if the level bar is inverted
 
    procedure Set_Inverted
       (Self     : not null access Gtk_Level_Bar_Record;
@@ -208,6 +206,7 @@ package Gtk.Level_Bar is
    --  Returns the value of the Gtk.Level_Bar.Gtk_Level_Bar:max-value
    --  property.
    --  Since: gtk+ 3.6
+   --  @return a positive value
 
    procedure Set_Max_Value
       (Self  : not null access Gtk_Level_Bar_Record;
@@ -223,6 +222,7 @@ package Gtk.Level_Bar is
    --  Returns the value of the Gtk.Level_Bar.Gtk_Level_Bar:min-value
    --  property.
    --  Since: gtk+ 3.6
+   --  @return a positive value
 
    procedure Set_Min_Value
       (Self  : not null access Gtk_Level_Bar_Record;
@@ -238,6 +238,7 @@ package Gtk.Level_Bar is
        return Gtk.Enums.Gtk_Level_Bar_Mode;
    --  Returns the value of the Gtk.Level_Bar.Gtk_Level_Bar:mode property.
    --  Since: gtk+ 3.6
+   --  @return a Gtk.Enums.Gtk_Level_Bar_Mode
 
    procedure Set_Mode
       (Self : not null access Gtk_Level_Bar_Record;
@@ -255,11 +256,15 @@ package Gtk.Level_Bar is
    --  Since: gtk+ 3.6
    --  @param Name the name of an offset in the bar
    --  @param Value location where to store the value
+   --  @return True if the specified offset is found
 
    function Get_Value
       (Self : not null access Gtk_Level_Bar_Record) return Gdouble;
    --  Returns the value of the Gtk.Level_Bar.Gtk_Level_Bar:value property.
    --  Since: gtk+ 3.6
+   --  @return a value in the interval between
+   --  Gtk.Level_Bar.Gtk_Level_Bar:min-value and
+   --  Gtk.Level_Bar.Gtk_Level_Bar:max-value
 
    procedure Set_Value
       (Self  : not null access Gtk_Level_Bar_Record;

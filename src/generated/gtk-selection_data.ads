@@ -52,6 +52,7 @@ package Gtk.Selection_Data is
    function Copy (Selection : Gtk_Selection_Data) return Gtk_Selection_Data;
    --  Makes a copy of a Gtk.Selection_Data.Gtk_Selection_Data-struct and its
    --  data.
+   --  @return a pointer to a copy of Data.
 
    procedure Free (Selection : Gtk_Selection_Data);
    --  Frees a Gtk.Selection_Data.Gtk_Selection_Data-struct returned from
@@ -65,24 +66,32 @@ package Gtk.Selection_Data is
       (Selection : Gtk_Selection_Data) return Gdk.Types.Gdk_Atom;
    --  Retrieves the data type of the selection.
    --  Since: gtk+ 2.14
+   --  @return the data type of the selection.
 
    function Get_Display
       (Selection : Gtk_Selection_Data) return Gdk.Display.Gdk_Display;
    --  Retrieves the display of the selection.
    --  Since: gtk+ 2.14
+   --  @return the display of the selection.
 
    function Get_Format (Selection : Gtk_Selection_Data) return Glib.Gint;
    --  Retrieves the format of the selection.
    --  Since: gtk+ 2.14
+   --  @return the format of the selection.
 
    function Get_Length (Selection : Gtk_Selection_Data) return Glib.Gint;
    --  Retrieves the length of the raw data of the selection.
    --  Since: gtk+ 2.14
+   --  @return the length of the data of the selection.
 
    function Get_Pixbuf
       (Selection : Gtk_Selection_Data) return Gdk.Pixbuf.Gdk_Pixbuf;
    --  Gets the contents of the selection data as a Gdk.Pixbuf.Gdk_Pixbuf.
    --  Since: gtk+ 2.6
+   --  @return if the selection data contained a recognized image type and it
+   --  could be converted to a Gdk.Pixbuf.Gdk_Pixbuf, a newly allocated pixbuf
+   --  is returned, otherwise null. If the result is non-null it must be freed
+   --  with g_object_unref.
 
    function Set_Pixbuf
       (Selection : Gtk_Selection_Data;
@@ -92,19 +101,26 @@ package Gtk.Selection_Data is
    --  pixbuf is converted to the form determined by Selection_Data->target.
    --  Since: gtk+ 2.6
    --  @param Pixbuf a Gdk.Pixbuf.Gdk_Pixbuf
+   --  @return True if the selection was successfully set, otherwise False.
 
    function Get_Selection
       (Selection : Gtk_Selection_Data) return Gdk.Types.Gdk_Atom;
    --  Retrieves the selection Gdk.Types.Gdk_Atom of the selection data.
    --  Since: gtk+ 2.16
+   --  @return the selection Gdk.Types.Gdk_Atom of the selection data.
 
    function Get_Target
       (Selection : Gtk_Selection_Data) return Gdk.Types.Gdk_Atom;
    --  Retrieves the target of the selection.
    --  Since: gtk+ 2.14
+   --  @return the target of the selection.
 
    function Get_Text (Selection : Gtk_Selection_Data) return UTF8_String;
    --  Gets the contents of the selection data as a UTF-8 string.
+   --  @return if the selection data contained a recognized text type and it
+   --  could be converted to UTF-8, a newly allocated string containing the
+   --  converted text, otherwise null. If the result is non-null it must be
+   --  freed with g_free.
 
    function Set_Text
       (Selection : Gtk_Selection_Data;
@@ -114,11 +130,15 @@ package Gtk.Selection_Data is
    --  string is converted to the form determined by Selection_Data->target.
    --  @param Str a UTF-8 string
    --  @param Len the length of Str, or -1 if Str is nul-terminated.
+   --  @return True if the selection was successfully set, otherwise False.
 
    function Get_Uris
       (Selection : Gtk_Selection_Data) return GNAT.Strings.String_List;
    --  Gets the contents of the selection data as array of URIs.
    --  Since: gtk+ 2.6
+   --  @return if the selection data contains a list of URIs, a newly
+   --  allocated null-terminated string array containing the URIs, otherwise
+   --  null. If the result is non-null it must be freed with g_strfreev.
 
    function Set_Uris
       (Selection : Gtk_Selection_Data;
@@ -127,6 +147,7 @@ package Gtk.Selection_Data is
    --  converted to the form determined by Selection_Data->target.
    --  Since: gtk+ 2.6
    --  @param Uris a null-terminated array of strings holding URIs
+   --  @return True if the selection was successfully set, otherwise False.
 
    function Targets_Include_Image
       (Selection : Gtk_Selection_Data;
@@ -137,12 +158,16 @@ package Gtk.Selection_Data is
    --  Since: gtk+ 2.6
    --  @param Writable whether to accept only targets for which GTK+ knows how
    --  to convert a pixbuf into the format
+   --  @return True if Selection_Data holds a list of targets, and a suitable
+   --  target for images is included, otherwise False.
 
    function Targets_Include_Text
       (Selection : Gtk_Selection_Data) return Boolean;
    --  Given a Gtk.Selection_Data.Gtk_Selection_Data object holding a list of
    --  targets, determines if any of the targets in Targets can be used to
    --  provide text.
+   --  @return True if Selection_Data holds a list of targets, and a suitable
+   --  target for text is included, otherwise False.
 
    function Targets_Include_Uri
       (Selection : Gtk_Selection_Data) return Boolean;
@@ -150,6 +175,8 @@ package Gtk.Selection_Data is
    --  targets, determines if any of the targets in Targets can be used to
    --  provide a list or URIs.
    --  Since: gtk+ 2.10
+   --  @return True if Selection_Data holds a list of targets, and a suitable
+   --  target for URI lists is included, otherwise False.
 
    ----------------------
    -- GtkAda additions --

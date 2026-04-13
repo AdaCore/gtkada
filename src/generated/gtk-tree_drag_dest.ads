@@ -58,6 +58,7 @@ package Gtk.Tree_Drag_Dest is
    --  Dest no longer found in the model!
    --  @param Dest row to drop in front of
    --  @param Selection_Data data to drop
+   --  @return whether a new row was created before position Dest
 
    function Row_Drop_Possible
       (Self           : Gtk_Tree_Drag_Dest;
@@ -71,6 +72,7 @@ package Gtk.Tree_Drag_Dest is
    --  doesn't exist, though.
    --  @param Dest_Path destination row
    --  @param Selection_Data the data being dragged
+   --  @return True if a drop is possible before Dest_Path
 
    ----------------
    -- Interfaces --
@@ -99,6 +101,7 @@ package Gtk.Tree_Drag_Dest is
    --  Dest no longer found in the model!
    --  @param Dest row to drop in front of
    --  @param Selection_Data data to drop
+   --  @return whether a new row was created before position Dest
 
    type Virtual_Row_Drop_Possible is access function
      (Self           : Gtk_Tree_Drag_Dest;
@@ -112,6 +115,7 @@ package Gtk.Tree_Drag_Dest is
    --  doesn't exist, though.
    --  @param Dest_Path destination row
    --  @param Selection_Data the data being dragged
+   --  @return True if a drop is possible before Dest_Path
 
    subtype Tree_Drag_Dest_Interface_Descr is Glib.Object.Interface_Description;
 

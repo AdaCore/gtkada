@@ -21,12 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Radio_Action.Gtk_Radio_Action is similar to
 --  Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item. A number of radio actions can be
 --  linked together so that only one may be active at any one time.
 --
---  </description>
 --  <group>Action-based menus</group>
 --  <see>Gtk_Action</see>
 
@@ -108,6 +106,7 @@ package Gtk.Radio_Action is
    --  to which Action belongs.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return The value of the currently active group member
 
    procedure Set_Current_Value
       (Action        : not null access Gtk_Radio_Action_Record;

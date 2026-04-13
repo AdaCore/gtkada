@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Pango.Layout.Pango_Layout structure represents an entire paragraph of
 --  text. It is initialized with a Pango.Context.Pango_Context, UTF-8 string
 --  and set of attributes for that string. Once that is done, the set of
@@ -41,8 +40,6 @@
 --  fileref="layout.png" format="PNG"></graphic> </figure>
 --  The Pango.Layout.Pango_Layout structure is opaque, and has no user-visible
 --  fields.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -151,16 +148,21 @@ package Pango.Layout is
       (Layout : not null access Pango_Layout_Record) return Pango_Layout;
    --  Does a deep copy-by-value of the Src layout. The attribute list, tab
    --  array, and text from the original layout are all copied by value.
+   --  @return the newly allocated Pango.Layout.Pango_Layout, with a reference
+   --  count of one, which should be freed with g_object_unref.
 
    function Copy (Self : Pango_Layout_Iter) return Pango_Layout_Iter;
    --  Copies a Pango.Layout.Pango_Layout_Iter.
    --  Since: gtk+ 1.20
+   --  @return the newly allocated Pango.Layout.Pango_Layout_Iter, which
+   --  should be freed with Pango.Layout.Free, or null if Iter was null.
 
    function Get_Alignment
       (Layout : not null access Pango_Layout_Record)
        return Pango.Enums.Alignment;
    --  Gets the alignment for the layout: how partial lines are positioned
    --  within the horizontal space available.
+   --  @return the alignment.
 
    procedure Set_Alignment
       (Layout    : not null access Pango_Layout_Record;
@@ -173,6 +175,7 @@ package Pango.Layout is
       (Layout : not null access Pango_Layout_Record)
        return Pango.Attributes.Pango_Attr_List;
    --  Gets the attribute list for the layout, if any.
+   --  @return a Pango.Attributes.Pango_Attr_List or null if none was set.
 
    procedure Set_Attributes
       (Layout : not null access Pango_Layout_Record;
@@ -187,6 +190,8 @@ package Pango.Layout is
    --  layout according to the contents of the layout. See
    --  Pango.Layout.Set_Auto_Dir.
    --  Since: gtk+ 1.4
+   --  @return True if the bidirectional base direction is computed from the
+   --  layout's contents, False otherwise.
 
    procedure Set_Auto_Dir
       (Layout   : not null access Pango_Layout_Record;
@@ -213,20 +218,26 @@ package Pango.Layout is
       (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Gets the Y position of baseline of the first line in Layout.
    --  Since: gtk+ 1.22
+   --  @return baseline of first line, from top of Layout.
 
    function Get_Baseline (Self : Pango_Layout_Iter) return Glib.Gint;
    --  Gets the Y position of the current line's baseline, in layout
    --  coordinates (origin at top left of the entire layout).
+   --  @return baseline of current line.
 
    function Get_Character_Count
       (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Returns the number of Unicode characters in the the text of Layout.
    --  Since: gtk+ 1.30
+   --  @return the number of Unicode characters in the text of Layout
 
    function Get_Context
       (Layout : not null access Pango_Layout_Record)
        return Pango.Context.Pango_Context;
    --  Retrieves the Pango.Context.Pango_Context used for this layout.
+   --  @return the Pango.Context.Pango_Context for the layout. This does not
+   --  have an additional refcount added, so if you want to keep a copy of this
+   --  around, you must reference it yourself.
 
    procedure Get_Cursor_Pos
       (Layout     : not null access Pango_Layout_Record;
@@ -252,6 +263,9 @@ package Pango.Layout is
    --  Gets the type of ellipsization being performed for Layout. See
    --  Pango.Layout.Set_Ellipsize
    --  Since: gtk+ 1.6
+   --  @return the current ellipsization mode for Layout.
+   --  Use Pango.Layout.Is_Ellipsized to query whether any paragraphs were
+   --  actually ellipsized.
 
    procedure Set_Ellipsize
       (Layout    : not null access Pango_Layout_Record;
@@ -290,6 +304,9 @@ package Pango.Layout is
        return Pango.Font.Pango_Font_Description;
    --  Gets the font description for the layout, if any.
    --  Since: gtk+ 1.8
+   --  @return a pointer to the layout's font description, or null if the font
+   --  description from the layout's context is inherited. This value is owned
+   --  by the layout and must not be modified or freed.
 
    procedure Set_Font_Description
       (Layout : not null access Pango_Layout_Record;
@@ -305,6 +322,8 @@ package Pango.Layout is
    --  Gets the height of layout used for ellipsization. See
    --  Pango.Layout.Set_Height for details.
    --  Since: gtk+ 1.20
+   --  @return the height, in Pango units if positive, or number of lines if
+   --  negative.
 
    procedure Set_Height
       (Layout : not null access Pango_Layout_Record;
@@ -338,6 +357,7 @@ package Pango.Layout is
       (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Gets the paragraph indent width in Pango units. A negative value
    --  indicates a hanging indentation.
+   --  @return the indent in Pango units.
 
    procedure Set_Indent
       (Layout : not null access Pango_Layout_Record;
@@ -354,11 +374,14 @@ package Pango.Layout is
       (Layout : not null access Pango_Layout_Record'Class)
        return Pango_Layout_Iter;
    --  Returns an iterator to iterate over the visual extents of the layout.
+   --  @return the new Pango.Layout.Pango_Layout_Iter that should be freed
+   --  using Pango.Layout.Free.
 
    function Get_Justify
       (Layout : not null access Pango_Layout_Record) return Boolean;
    --  Gets whether each complete line should be stretched to fill the entire
    --  width of the layout.
+   --  @return the justify.
 
    procedure Set_Justify
       (Layout  : not null access Pango_Layout_Record;
@@ -379,15 +402,21 @@ package Pango.Layout is
    --  modify the contents of the line (glyphs, glyph widths, etc.).
    --  @param Line the index of a line, which must be between 0 and
    --  `pango_layout_get_line_count(layout) - 1`, inclusive.
+   --  @return the requested Pango.Layout.Pango_Layout_Line, or null if the
+   --  index is out of range. This layout line can be ref'ed and retained, but
+   --  will become invalid if changes are made to the
+   --  Pango.Layout.Pango_Layout.
 
    function Get_Line (Self : Pango_Layout_Iter) return Pango_Layout_Line;
    --  Gets the current line.
    --  Use the faster Pango.Layout.Get_Line_Readonly if you do not plan to
    --  modify the contents of the line (glyphs, glyph widths, etc.).
+   --  @return the current line.
 
    function Get_Line_Count
       (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Retrieves the count of lines for the Layout.
+   --  @return the line count.
 
    function Get_Line_Readonly
       (Layout : not null access Pango_Layout_Record;
@@ -399,6 +428,10 @@ package Pango.Layout is
    --  Since: gtk+ 1.16
    --  @param Line the index of a line, which must be between 0 and
    --  `pango_layout_get_line_count(layout) - 1`, inclusive.
+   --  @return the requested Pango.Layout.Pango_Layout_Line, or null if the
+   --  index is out of range. This layout line can be ref'ed and retained, but
+   --  will become invalid if changes are made to the
+   --  Pango.Layout.Pango_Layout. No changes should be made to the line.
 
    function Get_Line_Readonly
       (Self : Pango_Layout_Iter) return Pango_Layout_Line;
@@ -407,6 +440,7 @@ package Pango.Layout is
    --  not expected to modify the contents of the line (glyphs, glyph widths,
    --  etc.).
    --  Since: gtk+ 1.16
+   --  @return the current line, that should not be modified.
 
    procedure Get_Pixel_Extents
       (Layout       : not null access Pango_Layout_Record;
@@ -446,10 +480,13 @@ package Pango.Layout is
    --  layout needs redrawing. To force the serial to be increased, use
    --  Pango.Layout.Context_Changed.
    --  Since: gtk+ 1.32.4
+   --  @return The current serial number of Layout.
 
    function Get_Single_Paragraph_Mode
       (Layout : not null access Pango_Layout_Record) return Boolean;
    --  Obtains the value set by Pango.Layout.Set_Single_Paragraph_Mode.
+   --  @return True if the layout does not break paragraphs at paragraph
+   --  separator characters, False otherwise.
 
    procedure Set_Single_Paragraph_Mode
       (Layout  : not null access Pango_Layout_Record;
@@ -473,6 +510,7 @@ package Pango.Layout is
    function Get_Spacing
       (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Gets the amount of spacing between the lines of the layout.
+   --  @return the spacing in Pango units.
 
    procedure Set_Spacing
       (Layout  : not null access Pango_Layout_Record;
@@ -493,6 +531,7 @@ package Pango.Layout is
    --  Pango.Tabs.Pango_Tab_Array has been set, then the default tabs are in
    --  use and null is returned. Default tabs are every 8 spaces. The return
    --  value should be freed with Pango.Tabs.Free.
+   --  @return a copy of the tabs for this layout, or null.
 
    procedure Set_Tabs
       (Layout : not null access Pango_Layout_Record;
@@ -507,6 +546,7 @@ package Pango.Layout is
       (Layout : not null access Pango_Layout_Record) return UTF8_String;
    --  Gets the text in the layout. The returned text should not be freed or
    --  modified.
+   --  @return the text in the Layout.
 
    procedure Set_Text
       (Layout : not null access Pango_Layout_Record;
@@ -530,11 +570,13 @@ package Pango.Layout is
    --  combination with Pango.Enums.Pango_Attr_Fallback, to check if a certain
    --  font supports all the characters in the string.
    --  Since: gtk+ 1.16
+   --  @return The number of unknown glyphs in Layout.
 
    function Get_Width
       (Layout : not null access Pango_Layout_Record) return Glib.Gint;
    --  Gets the width to which the lines of the Pango.Layout.Pango_Layout
    --  should wrap.
+   --  @return the width in Pango units, or -1 if no width set.
 
    procedure Set_Width
       (Layout : not null access Pango_Layout_Record;
@@ -550,6 +592,7 @@ package Pango.Layout is
    --  Gets the wrap mode for the layout.
    --  Use Pango.Layout.Is_Wrapped to query whether any paragraphs were
    --  actually wrapped.
+   --  @return active wrap mode.
 
    procedure Set_Wrap
       (Layout : not null access Pango_Layout_Record;
@@ -596,6 +639,7 @@ package Pango.Layout is
    --  Pango.Layout.Ellipsize_None, a positive width is set on Layout, and
    --  there are paragraphs exceeding that width that have to be ellipsized.
    --  Since: gtk+ 1.16
+   --  @return True if any paragraphs had to be ellipsized, False otherwise.
 
    function Is_Wrapped
       (Layout : not null access Pango_Layout_Record) return Boolean;
@@ -604,6 +648,7 @@ package Pango.Layout is
    --  mode of Layout is set to Pango.Layout.Ellipsize_None, and there are
    --  paragraphs exceeding the layout width that have to be wrapped.
    --  Since: gtk+ 1.16
+   --  @return True if any paragraphs had to be wrapped, False otherwise.
 
    procedure Move_Cursor_Visually
       (Layout       : not null access Pango_Layout_Record;
@@ -699,9 +744,11 @@ package Pango.Layout is
    --  grapheme the user clicked. It will either be zero, or the number of
    --  characters in the grapheme. 0 represents the leading edge of the
    --  grapheme.
+   --  @return True if the coordinates were inside text, False otherwise.
 
    function At_Last_Line (Self : Pango_Layout_Iter) return Boolean;
    --  Determines whether Iter is on the last line of the layout.
+   --  @return True if Iter is on the last line.
 
    procedure Free (Self : Pango_Layout_Iter);
    --  Frees an iterator that's no longer in use.
@@ -729,10 +776,12 @@ package Pango.Layout is
    --  in visual order, not logical order, so indexes may not be sequential.
    --  Also, the index may be equal to the length of the text in the layout, if
    --  on the null run (see pango_layout_iter_get_run).
+   --  @return current byte index.
 
    function Get_Layout (Self : Pango_Layout_Iter) return Pango_Layout;
    --  Gets the layout associated with a Pango.Layout.Pango_Layout_Iter.
    --  Since: gtk+ 1.20
+   --  @return the layout associated with Iter.
 
    procedure Get_Layout_Extents
       (Self         : Pango_Layout_Iter;
@@ -785,18 +834,22 @@ package Pango.Layout is
    function Next_Char (Self : Pango_Layout_Iter) return Boolean;
    --  Moves Iter forward to the next character in visual order. If Iter was
    --  already at the end of the layout, returns False.
+   --  @return whether motion was possible.
 
    function Next_Cluster (Self : Pango_Layout_Iter) return Boolean;
    --  Moves Iter forward to the next cluster in visual order. If Iter was
    --  already at the end of the layout, returns False.
+   --  @return whether motion was possible.
 
    function Next_Line (Self : Pango_Layout_Iter) return Boolean;
    --  Moves Iter forward to the start of the next line. If Iter is already on
    --  the last line, returns False.
+   --  @return whether motion was possible.
 
    function Next_Run (Self : Pango_Layout_Iter) return Boolean;
    --  Moves Iter forward to the next run in visual order. If Iter was already
    --  at the end of the layout, returns False.
+   --  @return whether motion was possible.
 
    ----------------------
    -- GtkAda additions --

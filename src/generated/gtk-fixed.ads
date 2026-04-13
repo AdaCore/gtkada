@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Fixed.Gtk_Fixed widget is a container which can place child
 --  widgets at fixed positions and with fixed sizes, given in pixels.
 --  Gtk.Fixed.Gtk_Fixed performs no automatic layout management.
@@ -62,7 +61,6 @@
 --  positioning of child widgets and additionally adds custom drawing and
 --  scrollability.
 --
---  </description>
 --  <screenshot>gtk-fixed</screenshot>
 --  <group>Layout containers</group>
 --  <testgtk>create_fixed.adb</testgtk>

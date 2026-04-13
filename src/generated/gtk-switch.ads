@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Switch.Gtk_Switch is a widget that has two states: on or off. The user
 --  can control which state should be active by clicking the empty area, or by
 --  dragging the handle.
@@ -37,8 +36,6 @@
 --
 --  GtkSwitch has two css nodes, the main node with the name switch and a
 --  subnode named slider. Neither of them is using any style classes.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -83,6 +80,8 @@ package Gtk.Switch is
       (Self : not null access Gtk_Switch_Record) return Boolean;
    --  Gets whether the Gtk.Switch.Gtk_Switch is in its "on" or "off" state.
    --  Since: gtk+ 3.0
+   --  @return True if the Gtk.Switch.Gtk_Switch is active, and False
+   --  otherwise
 
    procedure Set_Active
       (Self      : not null access Gtk_Switch_Record;
@@ -95,6 +94,7 @@ package Gtk.Switch is
       (Self : not null access Gtk_Switch_Record) return Boolean;
    --  Gets the underlying state of the Gtk.Switch.Gtk_Switch.
    --  Since: gtk+ 3.14
+   --  @return the underlying state
 
    procedure Set_State
       (Self  : not null access Gtk_Switch_Record;
@@ -233,7 +233,6 @@ package Gtk.Switch is
    -- 
    --  Callback parameters:
    --    --  @param State the new state of the switch
-   --    --  Returns True to stop the signal emission
 
    ----------------
    -- Interfaces --

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.GLArea.Gtk_GLArea is a widget that allows drawing with OpenGL.
 --
 --  Gtk.GLArea.Gtk_GLArea sets up its own Gdk.GLContext.Gdk_GLContext for the
@@ -121,8 +120,6 @@
 --  If you need to change the options for creating the
 --  Gdk.GLContext.Gdk_GLContext you should use the
 --  Gtk.GLArea.Gtk_GLArea::create-context signal.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.GLContext;   use Gdk.GLContext;
@@ -174,6 +171,7 @@ package Gtk.GLArea is
       (Self : not null access Gtk_GLArea_Record) return Boolean;
    --  Returns whether the area is in auto render mode or not.
    --  Since: gtk+ 3.16
+   --  @return True if the Area is auto rendering, False otherwise
 
    procedure Set_Auto_Render
       (Self        : not null access Gtk_GLArea_Record;
@@ -194,11 +192,13 @@ package Gtk.GLArea is
        return Gdk.GLContext.Gdk_GLContext;
    --  Retrieves the Gdk.GLContext.Gdk_GLContext used by Area.
    --  Since: gtk+ 3.16
+   --  @return the Gdk.GLContext.Gdk_GLContext
 
    function Get_Error
       (Self : not null access Gtk_GLArea_Record) return Glib.Error.GError;
    --  Gets the current error set on the Area.
    --  Since: gtk+ 3.16
+   --  @return the Gerror.Gerror or null
 
    procedure Set_Error
       (Self  : not null access Gtk_GLArea_Record;
@@ -213,6 +213,7 @@ package Gtk.GLArea is
       (Self : not null access Gtk_GLArea_Record) return Boolean;
    --  Returns whether the area has an alpha component.
    --  Since: gtk+ 3.16
+   --  @return True if the Area has an alpha component, False otherwise
 
    procedure Set_Has_Alpha
       (Self      : not null access Gtk_GLArea_Record;
@@ -229,6 +230,7 @@ package Gtk.GLArea is
       (Self : not null access Gtk_GLArea_Record) return Boolean;
    --  Returns whether the area has a depth buffer.
    --  Since: gtk+ 3.16
+   --  @return True if the Area has a depth buffer, False otherwise
 
    procedure Set_Has_Depth_Buffer
       (Self             : not null access Gtk_GLArea_Record;
@@ -242,6 +244,7 @@ package Gtk.GLArea is
       (Self : not null access Gtk_GLArea_Record) return Boolean;
    --  Returns whether the area has a stencil buffer.
    --  Since: gtk+ 3.16
+   --  @return True if the Area has a stencil buffer, False otherwise
 
    procedure Set_Has_Stencil_Buffer
       (Self               : not null access Gtk_GLArea_Record;
@@ -276,6 +279,8 @@ package Gtk.GLArea is
       (Self : not null access Gtk_GLArea_Record) return Boolean;
    --  Retrieves the value set by Gtk.GLArea.Set_Use_Es.
    --  Since: gtk+ 3.22
+   --  @return True if the Gtk.GLArea.Gtk_GLArea should create an OpenGL ES
+   --  context and False otherwise
 
    procedure Set_Use_Es
       (Self   : not null access Gtk_GLArea_Record;
@@ -383,8 +388,6 @@ package Gtk.GLArea is
    --  construction failed.
    -- 
    --  Callback parameters:
-   --    --  Returns a newly created Gdk.GLContext.Gdk_GLContext;
-   --     the Gtk.GLArea.Gtk_GLArea widget will take ownership of the returned value.
 
    type Cb_Gtk_GLArea_Gdk_GLContext_Boolean is not null access function
      (Self    : access Gtk_GLArea_Record'Class;
@@ -414,8 +417,6 @@ package Gtk.GLArea is
    -- 
    --  Callback parameters:
    --    --  @param Context the Gdk.GLContext.Gdk_GLContext used by Area
-   --    --  Returns True to stop other handlers from being invoked for the event.
-   --   False to propagate the event further.
 
    type Cb_Gtk_GLArea_Gint_Gint_Void is not null access procedure
      (Self   : access Gtk_GLArea_Record'Class;

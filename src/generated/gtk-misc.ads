@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Misc.Gtk_Misc widget is an abstract widget which is not useful
 --  itself, but is used to derive subclasses which have alignment and padding
 --  attributes.
@@ -40,7 +39,6 @@
 --  should not be used in new code. To reflect this fact, all Gtk.Misc.Gtk_Misc
 --  API has been deprecated.
 --
---  </description>
 --  <group>Abstract base classes</group>
 
 pragma Warnings (Off, "*is already use-visible*");

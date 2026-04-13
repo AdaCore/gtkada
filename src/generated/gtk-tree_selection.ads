@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Tree_Selection.Gtk_Tree_Selection object is a helper object to
 --  manage the selection for a Gtk.Tree_View.Gtk_Tree_View widget. The
 --  Gtk.Tree_Selection.Gtk_Tree_Selection object is automatically created when
@@ -48,8 +47,6 @@
 --  Gtk.Tree_Selection.Gtk_Tree_Selection::changed signal when nothing has
 --  happened (mostly as a result of programmers calling select_row on an
 --  already selected row).
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
@@ -90,6 +87,7 @@ package Gtk.Tree_Selection is
    --  @param Model A Gtk.Tree_Model.Gtk_Tree_Model being viewed
    --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path of the row in question
    --  @param Path_Currently_Selected True, if the path is currently selected
+   --  @return True, if the selection state of the row can be toggled
 
    ------------------
    -- Constructors --
@@ -107,11 +105,13 @@ package Gtk.Tree_Selection is
        return Glib.Gint;
    --  Returns the number of rows that have been selected in Tree.
    --  Since: gtk+ 2.2
+   --  @return The number of rows selected.
 
    function Get_Mode
       (Selection : not null access Gtk_Tree_Selection_Record)
        return Gtk.Enums.Gtk_Selection_Mode;
    --  Gets the selection mode for Selection. See Gtk.Tree_Selection.Set_Mode.
+   --  @return the current selection mode
 
    procedure Set_Mode
       (Selection : not null access Gtk_Tree_Selection_Record;
@@ -125,6 +125,7 @@ package Gtk.Tree_Selection is
       (Selection : not null access Gtk_Tree_Selection_Record);
    --  Returns the current selection function.
    --  Since: gtk+ 2.14
+   --  @return The function.
 
    procedure Set_Select_Function
       (Selection : not null access Gtk_Tree_Selection_Record;
@@ -158,12 +159,14 @@ package Gtk.Tree_Selection is
       (Selection : not null access Gtk_Tree_Selection_Record)
        return System.Address;
    --  Returns the user data for the selection function.
+   --  @return The user data.
 
    function Iter_Is_Selected
       (Selection : not null access Gtk_Tree_Selection_Record;
        Iter      : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
    --  Returns True if the row at Iter is currently selected.
    --  @param Iter A valid Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @return True, if Iter is selected
 
    function Path_Is_Selected
       (Selection : not null access Gtk_Tree_Selection_Record;
@@ -171,6 +174,7 @@ package Gtk.Tree_Selection is
    --  Returns True if the row pointed to by Path is currently selected. If
    --  Path does not point to a valid location, False is returned
    --  @param Path A Gtk.Tree_Model.Gtk_Tree_Path to check selection on.
+   --  @return True if Path is selected.
 
    procedure Select_All
       (Selection : not null access Gtk_Tree_Selection_Record);
@@ -255,6 +259,7 @@ package Gtk.Tree_Selection is
       --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path of the row in question
       --  @param Path_Currently_Selected True, if the path is currently selected
       --  @param Data user data
+      --  @return True, if the selection state of the row can be toggled
 
       procedure Set_Select_Function
          (Selection : not null access Gtk.Tree_Selection.Gtk_Tree_Selection_Record'Class;

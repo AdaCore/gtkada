@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Cell_Renderer.Gtk_Cell_Renderer is a base class of a set of
 --  objects used for rendering a cell to a cairo_t. These objects are used
 --  primarily by the Gtk.Tree_View.Gtk_Tree_View widget, though they aren't
@@ -60,8 +59,6 @@
 --  have a corresponding "set" property, e.g. "cell-background-set" corresponds
 --  to "cell-background". These "set" properties reflect whether a property has
 --  been set or not. You should not set them independently.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;
@@ -150,6 +147,7 @@ package Gtk.Cell_Renderer is
    --  Gtk.Cell_Renderer.Render
    --  @param Cell_Area cell area as passed to Gtk.Cell_Renderer.Render
    --  @param Flags render flags
+   --  @return True if the event was consumed/handled
 
    procedure Get_Aligned_Area
       (Cell         : not null access Gtk_Cell_Renderer_Record;
@@ -292,11 +290,13 @@ package Gtk.Cell_Renderer is
    --  Gets whether the cell renderer prefers a height-for-width layout or a
    --  width-for-height layout.
    --  Since: gtk+ 3.0
+   --  @return The Gtk.Enums.Gtk_Size_Request_Mode preferred by this renderer.
 
    function Get_Sensitive
       (Cell : not null access Gtk_Cell_Renderer_Record) return Boolean;
    --  Returns the cell renderer's sensitivity.
    --  Since: gtk+ 2.18
+   --  @return True if the cell renderer is sensitive
 
    procedure Set_Sensitive
       (Cell      : not null access Gtk_Cell_Renderer_Record;
@@ -342,11 +342,13 @@ package Gtk.Cell_Renderer is
    --  Since: gtk+ 3.0
    --  @param Widget a Gtk.Widget.Gtk_Widget, or null
    --  @param Cell_State cell renderer state
+   --  @return the widget state flags applying to Cell
 
    function Get_Visible
       (Cell : not null access Gtk_Cell_Renderer_Record) return Boolean;
    --  Returns the cell renderer's visibility.
    --  Since: gtk+ 2.18
+   --  @return True if the cell renderer is visible
 
    procedure Set_Visible
       (Cell    : not null access Gtk_Cell_Renderer_Record;
@@ -359,6 +361,7 @@ package Gtk.Cell_Renderer is
       (Cell : not null access Gtk_Cell_Renderer_Record) return Boolean;
    --  Checks whether the cell renderer can do something when activated.
    --  Since: gtk+ 3.0
+   --  @return True if the cell renderer can do anything when activated
 
    procedure Render
       (Cell            : not null access Gtk_Cell_Renderer_Record;
@@ -404,6 +407,8 @@ package Gtk.Cell_Renderer is
    --  Gtk.Cell_Renderer.Render
    --  @param Cell_Area cell area as passed to Gtk.Cell_Renderer.Render
    --  @param Flags render flags
+   --  @return A new Gtk.Cell_Editable.Gtk_Cell_Editable for editing this
+   --  Cell, or null if editing is not possible
 
    procedure Stop_Editing
       (Cell     : not null access Gtk_Cell_Renderer_Record;

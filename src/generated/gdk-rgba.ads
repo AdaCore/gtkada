@@ -21,11 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gdk.RGBA.Gdk_RGBA is used to represent a (possibly translucent) color,
 --  in a way that is compatible with cairo's notion of color.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;
@@ -63,11 +60,14 @@ package Gdk.RGBA is
    --  Makes a copy of a Gdk.RGBA.Gdk_RGBA.
    --  The result must be freed through Gdk.RGBA.Free.
    --  Since: gtk+ 3.0
+   --  @return A newly allocated Gdk.RGBA.Gdk_RGBA, with the same contents as
+   --  Rgba
 
    function Equal (Self : Gdk_RGBA; P2 : Gdk_RGBA) return Boolean;
    --  Compares two RGBA colors.
    --  Since: gtk+ 3.0
    --  @param P2 another Gdk.RGBA.Gdk_RGBA pointer
+   --  @return True if the two colors compare equal
 
    procedure Free (Self : Gdk_RGBA);
    pragma Import (C, Free, "gdk_rgba_free");
@@ -79,6 +79,7 @@ package Gdk.RGBA is
    --  A hash function suitable for using for a hash table that stores
    --  Gdk_RGBAs.
    --  Since: gtk+ 3.0
+   --  @return The hash value for P
 
    procedure Parse
       (Self    : out Gdk_RGBA;
@@ -97,6 +98,7 @@ package Gdk.RGBA is
    --  100%, and a is a floating point value in the range 0 to 1.
    --  Since: gtk+ 3.0
    --  @param Spec the string specifying the color
+   --  @return True if the parsing succeeded
 
    function To_String (Self : Gdk_RGBA) return UTF8_String;
    --  Returns a textual specification of Rgba in the form `rgb(r,g,b)` or
@@ -110,6 +112,7 @@ package Gdk.RGBA is
    --  "r", "g" and "b" are represented as 8-bit integers. If this is a
    --  concern, you should use a different representation.
    --  Since: gtk+ 3.0
+   --  @return A newly allocated text string
 
    ----------------------
    -- GtkAda additions --

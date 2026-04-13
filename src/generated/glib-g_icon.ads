@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Glib.G_Icon.G_Icon is a very minimal interface for icons. It provides
 --  functions for checking the equality of two icons, hashing of icons and
 --  serializing an icon to and from strings.
@@ -52,8 +51,6 @@
 --  implementation of Glib.G_Icon.Serialize that gives a result that is
 --  understood by Glib.G_Icon.Deserialize, yielding one of the built-in icon
 --  types.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Types;   use Glib.Types;
@@ -78,6 +75,7 @@ package Glib.G_Icon is
    function Equal (Self : G_Icon; Icon2 : G_Icon) return Boolean;
    --  Checks if two icons are equal.
    --  @param Icon2 pointer to the second Glib.G_Icon.G_Icon.
+   --  @return True if Icon1 is equal to Icon2. False otherwise.
 
    function Serialize (Self : G_Icon) return Glib.Variant.Gvariant;
    --  Serializes a Glib.G_Icon.G_Icon into a Glib.Variant.Gvariant. An
@@ -87,6 +85,8 @@ package Glib.G_Icon is
    --  the Glib.Variant.Gvariant between processes on the same machine, (as
    --  opposed to over the network), and within the same file system namespace.
    --  Since: gtk+ 2.38
+   --  @return a Glib.Variant.Gvariant, or null when serialization fails. The
+   --  Glib.Variant.Gvariant will not be floating.
 
    function To_String (Self : G_Icon) return UTF8_String;
    --  Generates a textual representation of Icon that can be used for
@@ -103,6 +103,8 @@ package Glib.G_Icon is
    --  - If Icon is a Gthemed.Icon.Gthemed_Icon with exactly one name and no
    --  fallbacks, the encoding is simply the name (such as `network-server`).
    --  Since: gtk+ 2.20
+   --  @return An allocated NUL-terminated UTF8 string or null if Icon can't
+   --  be serialized. Use g_free to free.
 
    ---------------
    -- Functions --
@@ -113,11 +115,14 @@ package Glib.G_Icon is
    --  Glib.G_Icon.Serialize.
    --  Since: gtk+ 2.38
    --  @param Value a Glib.Variant.Gvariant created with Glib.G_Icon.Serialize
+   --  @return a Glib.G_Icon.G_Icon, or null when deserialization fails.
 
    function Hash (Icon : G_Icon) return Guint;
    pragma Import (C, Hash, "g_icon_hash");
    --  Gets a hash for an icon.
    --  @param Icon gconstpointer to an icon object.
+   --  @return a Guint containing a hash for the Icon, suitable for use in a
+   --  GHash_Table or similar data structure.
 
    function New_For_String (Str : UTF8_String) return G_Icon;
    --  Generate a Glib.G_Icon.G_Icon instance from Str. This function can fail
@@ -127,6 +132,8 @@ package Glib.G_Icon is
    --  the type system prior to calling Glib.G_Icon.New_For_String.
    --  Since: gtk+ 2.20
    --  @param Str A string obtained via Glib.G_Icon.To_String.
+   --  @return An object implementing the Glib.G_Icon.G_Icon interface or null
+   --  if Error is set.
 
    ----------------
    -- Interfaces --

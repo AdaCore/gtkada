@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkFileFilter can be used to restrict the files being shown in a
 --  Gtk.File_Chooser.Gtk_File_Chooser. Files can be filtered based on their
 --  name (with Gtk.File_Filter.Add_Pattern), on their mime type (with
@@ -59,7 +58,6 @@
 --         <pattern>*.png</pattern>
 --       </patterns>
 --     </object>
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -110,6 +108,7 @@ package Gtk.File_Filter is
    --  @param Filter_Info a Gtk.File_Filter.Gtk_File_Filter_Info that is
    --  filled according to the Needed flags passed to
    --  Gtk.File_Filter.Add_Custom
+   --  @return True if the file should be displayed
 
    ----------------------------
    -- Enumeration Properties --
@@ -207,6 +206,7 @@ package Gtk.File_Filter is
       --  filled according to the Needed flags passed to
       --  Gtk.File_Filter.Add_Custom
       --  @param Data user data passed to Gtk.File_Filter.Add_Custom
+      --  @return True if the file should be displayed
 
       procedure Add_Custom
          (Self   : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class;
@@ -258,12 +258,15 @@ package Gtk.File_Filter is
    --  Since: gtk+ 2.4
    --  @param Filter_Info a Gtk.File_Filter.Gtk_File_Filter_Info containing
    --  information about a file.
+   --  @return True if the file should be displayed
 
    function Get_Name
       (Self : not null access Gtk_File_Filter_Record) return UTF8_String;
    --  Gets the human-readable name for the filter. See
    --  Gtk.File_Filter.Set_Name.
    --  Since: gtk+ 2.4
+   --  @return The human-readable name of the filter, or null. This value is
+   --  owned by GTK+ and must not be modified or freed.
 
    procedure Set_Name
       (Self : not null access Gtk_File_Filter_Record;
@@ -284,12 +287,15 @@ package Gtk.File_Filter is
    --  intended principally for use in the implementation of
    --  Gtk.File_Chooser.Gtk_File_Chooser.
    --  Since: gtk+ 2.4
+   --  @return bitfield of flags indicating needed fields when calling
+   --  Gtk.File_Filter.Filter
 
    function To_Gvariant
       (Self : not null access Gtk_File_Filter_Record)
        return Glib.Variant.Gvariant;
    --  Serialize a file filter to an a{sv} variant.
    --  Since: gtk+ 3.22
+   --  @return a new, floating, Glib.Variant.Gvariant
 
    ----------------
    -- Interfaces --

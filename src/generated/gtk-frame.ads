@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The frame widget is a bin that surrounds its child with a decorative frame
 --  and an optional label. If present, the label is drawn in a gap in the top
 --  side of the frame. The position of the label can be controlled with
@@ -62,8 +61,6 @@
 --  Gtk.Frame.Set_Shadow_Type with Gtk.Enums.Shadow_None to add the ".flat"
 --  class or any other shadow type to remove it.
 --
---  </description>
---  <description>
 --  This is a very convenient widget to visually group related widgets (like
 --  groups of buttons for instance), possibly with a title to explain the
 --  purpose of this group.
@@ -72,7 +69,6 @@
 --  instance a Gtk_Box inside if you want the frame to surround multiple
 --  widgets.
 --
---  </description>
 --  <screenshot>gtk-frame</screenshot>
 --  <group>Ornaments</group>
 --  <testgtk>create_frame.adb</testgtk>
@@ -122,6 +118,9 @@ package Gtk.Frame is
    --  If the frame's label widget is a Gtk.Label.Gtk_Label, returns the text
    --  in the label widget. (The frame will have a Gtk.Label.Gtk_Label for the
    --  label widget if a non-null argument was passed to Gtk.Frame.Gtk_New.)
+   --  @return the text in the label, or null if there was no label widget or
+   --  the lable widget was not a Gtk.Label.Gtk_Label. This string is owned by
+   --  GTK+ and must not be modified or freed.
 
    procedure Set_Label
       (Frame : not null access Gtk_Frame_Record;
@@ -159,6 +158,7 @@ package Gtk.Frame is
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the label widget for the frame. See
    --  Gtk.Frame.Set_Label_Widget.
+   --  @return the label widget, or null if there is none.
 
    procedure Set_Label_Widget
       (Frame        : not null access Gtk_Frame_Record;
@@ -172,6 +172,7 @@ package Gtk.Frame is
       (Frame : not null access Gtk_Frame_Record)
        return Gtk.Enums.Gtk_Shadow_Type;
    --  Retrieves the shadow type of the frame. See Gtk.Frame.Set_Shadow_Type.
+   --  @return the current shadow type of the frame.
 
    procedure Set_Shadow_Type
       (Frame    : not null access Gtk_Frame_Record;

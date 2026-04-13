@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Glib.Variant.Gvariant is a variant datatype; it stores a value along with
 --  information about the type of that value. The range of possible values is
 --  determined by the type. The type system used by Glib.Variant.Gvariant is
@@ -229,8 +228,6 @@
 --  same type, we would use more memory for the serialised data and buffer
 --  management for those dictionaries, but the type information would be
 --  shared.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
@@ -660,6 +657,7 @@ package Glib.Variant is
    --  containers containing only these things (recursively).
    --  The returned value is always in normal form and is marked as trusted.
    --  Since: gtk+ 2.24
+   --  @return the byteswapped form of Value
 
    function Check_Format_String
       (Self          : Gvariant;
@@ -680,10 +678,12 @@ package Glib.Variant is
    --  Since: gtk+ 2.34
    --  @param Format_String a valid Glib.Variant.Gvariant format string
    --  @param Copy_Only True to ensure the format string makes deep copies
+   --  @return True if Format_String is safe to use
 
    function Classify (Self : Gvariant) return GVariant_Class;
    --  Classifies Value according to its top-level type.
    --  Since: gtk+ 2.24
+   --  @return the Glib.Variant.GVariant_Class of Value
 
    function Dup_Bytestring_Array
       (Self   : Gvariant;
@@ -697,6 +697,7 @@ package Glib.Variant is
    --  pointer will be returned.
    --  Since: gtk+ 2.26
    --  @param Length the length of the result, or null
+   --  @return an array of strings
 
    function Dup_Objv
       (Self   : Gvariant;
@@ -710,6 +711,7 @@ package Glib.Variant is
    --  pointer will be returned.
    --  Since: gtk+ 2.30
    --  @param Length the length of the result, or null
+   --  @return an array of strings
 
    function Dup_String
       (Self   : Gvariant;
@@ -720,11 +722,14 @@ package Glib.Variant is
    --  The return value must be freed using g_free.
    --  Since: gtk+ 2.24
    --  @param Length a pointer to a Gsize, to store the length
+   --  @return a newly allocated string, utf8 encoded
 
    function Dup_String (Self : Gvariant_Type) return UTF8_String;
    --  Returns a newly-allocated copy of the type string corresponding to
    --  Type. The returned string is nul-terminated. It is appropriate to call
    --  g_free on the return value.
+   --  @return the corresponding type string
+   --  Since 2.24
 
    function Dup_Strv
       (Self   : Gvariant;
@@ -738,18 +743,21 @@ package Glib.Variant is
    --  pointer will be returned.
    --  Since: gtk+ 2.24
    --  @param Length the length of the result, or null
+   --  @return an array of strings
 
    function Get_Boolean (Self : Gvariant) return Boolean;
    --  Returns the boolean value of Value.
    --  It is an error to call this function with a Value of any type other
    --  than G_VARIANT_TYPE_BOOLEAN.
    --  Since: gtk+ 2.24
+   --  @return True or False
 
    function Get_Byte (Self : Gvariant) return Guchar;
    --  Returns the byte value of Value.
    --  It is an error to call this function with a Value of any type other
    --  than G_VARIANT_TYPE_BYTE.
    --  Since: gtk+ 2.24
+   --  @return a Guchar
 
    function Get_Bytestring_Array
       (Self   : Gvariant;
@@ -763,6 +771,7 @@ package Glib.Variant is
    --  pointer will be returned.
    --  Since: gtk+ 2.26
    --  @param Length the length of the result, or null
+   --  @return an array of constant strings
 
    function Get_Child_Value (Self : Gvariant; Index : Gsize) return Gvariant;
    --  Reads a child item out of a container Glib.Variant.Gvariant instance.
@@ -776,12 +785,14 @@ package Glib.Variant is
    --  This function is O(1).
    --  Since: gtk+ 2.24
    --  @param Index the index of the child to fetch
+   --  @return the child at the specified index
 
    function Get_Double (Self : Gvariant) return Gdouble;
    --  Returns the double precision floating point value of Value.
    --  It is an error to call this function with a Value of any type other
    --  than G_VARIANT_TYPE_DOUBLE.
    --  Since: gtk+ 2.24
+   --  @return a Gdouble
 
    function Get_Handle (Self : Gvariant) return Gint32;
    --  Returns the 32-bit signed integer value of Value.
@@ -791,29 +802,34 @@ package Glib.Variant is
    --  that are sent alongside a D-Bus message. If you're not interacting with
    --  D-Bus, you probably don't need them.
    --  Since: gtk+ 2.24
+   --  @return a Gint32
 
    function Get_Int16 (Self : Gvariant) return Gint16;
    --  Returns the 16-bit signed integer value of Value.
    --  It is an error to call this function with a Value of any type other
    --  than G_VARIANT_TYPE_INT16.
    --  Since: gtk+ 2.24
+   --  @return a Gint16
 
    function Get_Int32 (Self : Gvariant) return Gint32;
    --  Returns the 32-bit signed integer value of Value.
    --  It is an error to call this function with a Value of any type other
    --  than G_VARIANT_TYPE_INT32.
    --  Since: gtk+ 2.24
+   --  @return a Gint32
 
    function Get_Int64 (Self : Gvariant) return Gint64;
    --  Returns the 64-bit signed integer value of Value.
    --  It is an error to call this function with a Value of any type other
    --  than G_VARIANT_TYPE_INT64.
    --  Since: gtk+ 2.24
+   --  @return a Gint64
 
    function Get_Maybe (Self : Gvariant) return Gvariant;
    --  Given a maybe-typed Glib.Variant.Gvariant instance, extract its value.
    --  If the value is Nothing, then this function returns null.
    --  Since: gtk+ 2.24
+   --  @return the contents of Value, or null
 
    function Get_Normal_Form (Self : Gvariant) return Gvariant;
    --  Gets a Glib.Variant.Gvariant instance that has the same value as Value
@@ -829,6 +845,7 @@ package Glib.Variant is
    --  Glib.Variant.Gvariant data from untrusted sources and you want to ensure
    --  your serialised output is definitely in normal form.
    --  Since: gtk+ 2.24
+   --  @return a trusted Glib.Variant.Gvariant
 
    function Get_Objv
       (Self   : Gvariant;
@@ -842,6 +859,7 @@ package Glib.Variant is
    --  pointer will be returned.
    --  Since: gtk+ 2.30
    --  @param Length the length of the result, or null
+   --  @return an array of constant strings
 
    function Get_Size (Self : Gvariant) return Gsize;
    --  Determines the number of bytes that would be required to store Value
@@ -853,6 +871,7 @@ package Glib.Variant is
    --  this function is O(1). Otherwise, the size is calculated, an operation
    --  which is approximately O(n) in the number of values involved.
    --  Since: gtk+ 2.24
+   --  @return the serialised size of Value
 
    function Get_String
       (Self   : Gvariant;
@@ -869,6 +888,7 @@ package Glib.Variant is
    --  The return value remains valid as long as Value exists.
    --  Since: gtk+ 2.24
    --  @param Length a pointer to a Gsize, to store the length
+   --  @return the constant string, utf8 encoded
 
    function Get_Strv
       (Self   : Gvariant;
@@ -882,41 +902,48 @@ package Glib.Variant is
    --  pointer will be returned.
    --  Since: gtk+ 2.24
    --  @param Length the length of the result, or null
+   --  @return an array of constant strings
 
    function Get_Type (Self : Gvariant) return Gvariant_Type;
    --  Determines the type of Value.
    --  The return value is valid for the lifetime of Value and must not be
    --  freed.
    --  Since: gtk+ 2.24
+   --  @return a Glib.Variant.Gvariant_Type
 
    function Get_Type_String (Self : Gvariant) return UTF8_String;
    --  Returns the type string of Value. Unlike the result of calling
    --  Glib.Variant.Peek_String, this string is nul-terminated. This string
    --  belongs to Glib.Variant.Gvariant and must not be freed.
    --  Since: gtk+ 2.24
+   --  @return the type string for the type of Value
 
    function Get_Uint16 (Self : Gvariant) return Guint16;
    --  Returns the 16-bit unsigned integer value of Value.
    --  It is an error to call this function with a Value of any type other
    --  than G_VARIANT_TYPE_UINT16.
    --  Since: gtk+ 2.24
+   --  @return a Guint16
 
    function Get_Uint32 (Self : Gvariant) return Guint32;
    --  Returns the 32-bit unsigned integer value of Value.
    --  It is an error to call this function with a Value of any type other
    --  than G_VARIANT_TYPE_UINT32.
    --  Since: gtk+ 2.24
+   --  @return a Guint32
 
    function Get_Uint64 (Self : Gvariant) return Guint64;
    --  Returns the 64-bit unsigned integer value of Value.
    --  It is an error to call this function with a Value of any type other
    --  than G_VARIANT_TYPE_UINT64.
    --  Since: gtk+ 2.24
+   --  @return a Guint64
 
    function Get_Variant (Self : Gvariant) return Gvariant;
    --  Unboxes Value. The result is the Glib.Variant.Gvariant instance that
    --  was contained in Value.
    --  Since: gtk+ 2.24
+   --  @return the item contained in the variant
 
    function Hash (Self : Gvariant) return Guint;
    --  Generates a hash value for a Glib.Variant.Gvariant instance.
@@ -927,10 +954,12 @@ package Glib.Variant is
    --  The type of Value is gconstpointer only to allow use of this function
    --  with GHash_Table. Value must be a Glib.Variant.Gvariant.
    --  Since: gtk+ 2.24
+   --  @return a hash value corresponding to Value
 
    function Is_Container (Self : Gvariant) return Boolean;
    --  Checks if Value is a container.
    --  Since: gtk+ 2.24
+   --  @return True if Value is a container
 
    function Is_Container (Self : Gvariant_Type) return Boolean;
    --  Determines if the given Type is a container type.
@@ -938,6 +967,8 @@ package Glib.Variant is
    --  plus the variant type.
    --  This function returns True for any indefinite type for which every
    --  definite subtype is a container -- G_VARIANT_TYPE_ARRAY, for example.
+   --  @return True if Type is a container type
+   --  Since 2.24
 
    function Is_Floating (Self : Gvariant) return Boolean;
    --  Checks whether Value has a floating reference count.
@@ -948,6 +979,7 @@ package Glib.Variant is
    --  See Glib.Variant.Ref_Sink for more information about floating reference
    --  counts.
    --  Since: gtk+ 2.26
+   --  @return whether Value is floating
 
    function Is_Normal_Form (Self : Gvariant) return Boolean;
    --  Checks if Value is in normal form.
@@ -958,6 +990,7 @@ package Glib.Variant is
    --  trusted. If the value was already marked as being trusted then this
    --  function will immediately return True.
    --  Since: gtk+ 2.24
+   --  @return True if Value is in normal form
 
    function Is_Of_Type
       (Self     : Gvariant;
@@ -965,6 +998,7 @@ package Glib.Variant is
    --  Checks if a value has a type matching the provided type.
    --  Since: gtk+ 2.24
    --  @param The_Type a Glib.Variant.Gvariant_Type
+   --  @return True if the type of Value matches Type
 
    function Iter_New (Self : Gvariant) return Gvariant_Iter;
    --  Creates a heap-allocated Glib.Variant.Gvariant_Iter for iterating over
@@ -974,6 +1008,7 @@ package Glib.Variant is
    --  A reference is taken to Value and will be released only when
    --  g_variant_iter_free is called.
    --  Since: gtk+ 2.24
+   --  @return a new heap-allocated Glib.Variant.Gvariant_Iter
 
    function Lookup_Value
       (Self          : Gvariant;
@@ -999,6 +1034,7 @@ package Glib.Variant is
    --  Since: gtk+ 2.28
    --  @param Key the key to lookup in the dictionary
    --  @param Expected_Type a Glib.Variant.Gvariant_Type, or null
+   --  @return the value of the dictionary key, or null
 
    function N_Children (Self : Gvariant) return Gsize;
    --  Determines the number of children in a container Glib.Variant.Gvariant
@@ -1011,6 +1047,7 @@ package Glib.Variant is
    --  the type). For dictionary entries, it is always 2
    --  This function is O(1).
    --  Since: gtk+ 2.24
+   --  @return the number of children in the container
 
    function Print
       (Self          : Gvariant;
@@ -1022,6 +1059,7 @@ package Glib.Variant is
    --  Since: gtk+ 2.24
    --  @param Type_Annotate True if type information should be included in the
    --  output
+   --  @return a newly-allocated string holding the result.
 
    function Print_String
       (Self          : Gvariant;
@@ -1034,10 +1072,12 @@ package Glib.Variant is
    --  @param String a Glib.String.Gstring, or null
    --  @param Type_Annotate True if type information should be included in the
    --  output
+   --  @return a Glib.String.Gstring containing the string
 
    function Ref (Self : Gvariant) return Gvariant;
    --  Increases the reference count of Value.
    --  Since: gtk+ 2.24
+   --  @return the same Value
 
    function Ref_Sink (Self : Gvariant) return Gvariant;
    --  Glib.Variant.Gvariant uses a floating reference count system. All
@@ -1061,6 +1101,7 @@ package Glib.Variant is
    --  maintaining normal refcounting semantics in situations where values are
    --  not floating.
    --  Since: gtk+ 2.24
+   --  @return the same Value
 
    procedure Store (Self : Gvariant; Data : System.Address);
    --  Stores the serialised form of Value at Data. Data should be large
@@ -1103,6 +1144,7 @@ package Glib.Variant is
    --  be that the floating reference is converted to a hard reference and an
    --  additional reference on top of that one is added. It is best to avoid
    --  this situation.
+   --  @return the same Value
 
    procedure Unref (Self : Gvariant);
    --  Decreases the reference count of Value. When its reference count drops
@@ -1117,6 +1159,7 @@ package Glib.Variant is
    --  freed in any way.
    --  Since: gtk+ 2.24
    --  @param Value a container Glib.Variant.Gvariant
+   --  @return the number of items in Value
 
    function Next_Value (Self : Gvariant_Iter) return Gvariant;
    --  Gets the next item in the container. If no more items remain then null
@@ -1145,16 +1188,21 @@ package Glib.Variant is
    --     }
    --
    --  Since: gtk+ 2.24
+   --  @return a Glib.Variant.Gvariant, or null
 
    function Copy (Self : Gvariant_Type) return Gvariant_Type;
    pragma Import (C, Copy, "g_variant_type_copy");
    --  Makes a copy of a Glib.Variant.Gvariant_Type. It is appropriate to call
    --  Glib.Variant.Free on the return value. Type may not be null.
+   --  @return a new Glib.Variant.Gvariant_Type
+   --  Since 2.24
 
    function Element (Self : Gvariant_Type) return Gvariant_Type;
    pragma Import (C, Element, "g_variant_type_element");
    --  Determines the element type of an array or maybe type.
    --  This function may only be used with array or maybe types.
+   --  @return the element type of Type
+   --  Since 2.24
 
    function First (Self : Gvariant_Type) return Gvariant_Type;
    pragma Import (C, First, "g_variant_type_first");
@@ -1166,6 +1214,8 @@ package Glib.Variant is
    --  null is returned in case of Type being G_VARIANT_TYPE_UNIT.
    --  This call, together with Glib.Variant.Next provides an iterator
    --  interface over tuple and dictionary entry types.
+   --  @return the first item type of Type, or null
+   --  Since 2.24
 
    procedure Free (Self : Gvariant_Type);
    pragma Import (C, Free, "g_variant_type_free");
@@ -1180,12 +1230,16 @@ package Glib.Variant is
    --  Returns the length of the type string corresponding to the given Type.
    --  This function must be used to determine the valid extent of the memory
    --  region returned by Glib.Variant.Peek_String.
+   --  @return the length of the corresponding type string
+   --  Since 2.24
 
    function Is_Array (Self : Gvariant_Type) return Boolean;
    --  Determines if the given Type is an array type. This is true if the type
    --  string for Type starts with an 'a'.
    --  This function returns True for any indefinite type for which every
    --  definite subtype is an array type -- G_VARIANT_TYPE_ARRAY, for example.
+   --  @return True if Type is an array type
+   --  Since 2.24
 
    function Is_Basic (Self : Gvariant_Type) return Boolean;
    --  Determines if the given Type is a basic type.
@@ -1194,6 +1248,8 @@ package Glib.Variant is
    --  Only a basic type may be used as the key of a dictionary entry.
    --  This function returns False for all indefinite types except
    --  G_VARIANT_TYPE_BASIC.
+   --  @return True if Type is a basic type
+   --  Since 2.24
 
    function Is_Definite (Self : Gvariant_Type) return Boolean;
    --  Determines if the given Type is definite (ie: not indefinite).
@@ -1204,6 +1260,8 @@ package Glib.Variant is
    --  result in True being returned. Calling this function on an indefinite
    --  type like G_VARIANT_TYPE_ARRAY, however, will result in False being
    --  returned.
+   --  @return True if Type is definite
+   --  Since 2.24
 
    function Is_Dict_Entry (Self : Gvariant_Type) return Boolean;
    --  Determines if the given Type is a dictionary entry type. This is true
@@ -1211,12 +1269,16 @@ package Glib.Variant is
    --  This function returns True for any indefinite type for which every
    --  definite subtype is a dictionary entry type --
    --  G_VARIANT_TYPE_DICT_ENTRY, for example.
+   --  @return True if Type is a dictionary entry type
+   --  Since 2.24
 
    function Is_Maybe (Self : Gvariant_Type) return Boolean;
    --  Determines if the given Type is a maybe type. This is true if the type
    --  string for Type starts with an 'm'.
    --  This function returns True for any indefinite type for which every
    --  definite subtype is a maybe type -- G_VARIANT_TYPE_MAYBE, for example.
+   --  @return True if Type is a maybe type
+   --  Since 2.24
 
    function Is_Subtype_Of
       (Self      : Gvariant_Type;
@@ -1226,15 +1288,21 @@ package Glib.Variant is
    --  are considered to be subtypes of themselves. Aside from that, only
    --  indefinite types can have subtypes.
    --  @param Supertype a Glib.Variant.Gvariant_Type
+   --  @return True if Type is a subtype of Supertype
+   --  Since 2.24
 
    function Is_Tuple (Self : Gvariant_Type) return Boolean;
    --  Determines if the given Type is a tuple type. This is true if the type
    --  string for Type starts with a '(' or if Type is G_VARIANT_TYPE_TUPLE.
    --  This function returns True for any indefinite type for which every
    --  definite subtype is a tuple type -- G_VARIANT_TYPE_TUPLE, for example.
+   --  @return True if Type is a tuple type
+   --  Since 2.24
 
    function Is_Variant (Self : Gvariant_Type) return Boolean;
    --  Determines if the given Type is the variant type.
+   --  @return True if Type is the variant type
+   --  Since 2.24
 
    function Key (Self : Gvariant_Type) return Gvariant_Type;
    pragma Import (C, Key, "g_variant_type_key");
@@ -1242,6 +1310,8 @@ package Glib.Variant is
    --  This function may only be used with a dictionary entry type. Other than
    --  the additional restriction, this call is equivalent to
    --  Glib.Variant.First.
+   --  @return the key type of the dictionary entry
+   --  Since 2.24
 
    function N_Items (Self : Gvariant_Type) return Gsize;
    pragma Import (C, N_Items, "g_variant_type_n_items");
@@ -1251,6 +1321,8 @@ package Glib.Variant is
    --  but must not be used with the generic tuple type G_VARIANT_TYPE_TUPLE.
    --  In the case of a dictionary entry type, this function will always
    --  return 2.
+   --  @return the number of items in Type
+   --  Since 2.24
 
    function Next (Self : Gvariant_Type) return Gvariant_Type;
    pragma Import (C, Next, "g_variant_type_next");
@@ -1261,17 +1333,23 @@ package Glib.Variant is
    --  the value type. If called on the value type of a dictionary entry then
    --  this call returns null.
    --  For tuples, null is returned when Type is the last item in a tuple.
+   --  @return the next Glib.Variant.Gvariant_Type after Type, or null
+   --  Since 2.24
 
    function Peek_String (Self : Gvariant_Type) return UTF8_String;
    --  Returns the type string corresponding to the given Type. The result is
    --  not nul-terminated; in order to determine its length you must call
    --  Glib.Variant.Get_String_Length.
    --  To get a nul-terminated string, see Glib.Variant.Dup_String.
+   --  @return the corresponding type string (not nul-terminated)
+   --  Since 2.24
 
    function Value (Self : Gvariant_Type) return Gvariant_Type;
    pragma Import (C, Value, "g_variant_type_value");
    --  Determines the value type of a dictionary entry type.
    --  This function may only be used with a dictionary entry type.
+   --  @return the value type of the dictionary entry
+   --  Since 2.24
 
    ----------------------
    -- GtkAda additions --
@@ -1313,6 +1391,7 @@ package Glib.Variant is
    --  following the final '/' character) may be empty.
    --  Since: gtk+ 2.24
    --  @param String a normal C nul-terminated string
+   --  @return True if String is a D-Bus object path
 
    function Is_Signature (String : UTF8_String) return Boolean;
    --  Determines if a given string is a valid D-Bus type signature. You
@@ -1322,6 +1401,7 @@ package Glib.Variant is
    --  Glib.Variant.Gvariant_Type strings in sequence.
    --  Since: gtk+ 2.24
    --  @param String a normal C nul-terminated string
+   --  @return True if String is a D-Bus type signature
 
    function Parse
       (The_Type : Gvariant_Type;
@@ -1353,6 +1433,7 @@ package Glib.Variant is
    --  @param Text a string containing a GVariant in text form
    --  @param Limit a pointer to the end of Text, or null
    --  @param Endptr a location to store the end pointer, or null
+   --  @return a reference to a Glib.Variant.Gvariant, or null
 
    function Parse_Error_Print_Context
       (Error      : Glib.Error.GError;
@@ -1382,6 +1463,7 @@ package Glib.Variant is
    --  Since: gtk+ 2.40
    --  @param Error a Gerror.Gerror from the GVariant_Parse_Error domain
    --  @param Source_Str the string that was given to the parser
+   --  @return the printed message
 
    function Parse_Error_Quark return Glib.GQuark;
 
@@ -1395,6 +1477,8 @@ package Glib.Variant is
    --  equivalent to calling g_variant_type_string_scan and confirming that the
    --  following character is a nul terminator.
    --  @param Type_String a pointer to any string
+   --  @return True if Type_String is exactly one valid type string
+   --  Since 2.24
 
 private
 

@@ -297,6 +297,7 @@ package body Gtk.Flow_Box is
       --  Since: gtk+ 3.18
       --  @param Item the item from the model for which to create a widget for
       --  @param User_Data user data from Gtk.Flow_Box.Bind_Model
+      --  @return a Gtk.Widget.Gtk_Widget that represents Item
 
       ----------------
       -- Bind_Model --
@@ -686,6 +687,7 @@ package body Gtk.Flow_Box is
       --  @param Child a Gtk.Flow_Box_Child.Gtk_Flow_Box_Child that may be
       --  filtered
       --  @param User_Data user data
+      --  @return True if the row should be visible, False otherwise
 
       -----------------
       -- Internal_Cb --
@@ -850,6 +852,8 @@ package body Gtk.Flow_Box is
       --  @param Child1 the first child
       --  @param Child2 the second child
       --  @param User_Data user data
+      --  @return < 0 if Child1 should be before Child2, 0 if the are equal,
+      --  and > 0 otherwise
 
       -----------------
       -- Internal_Cb --

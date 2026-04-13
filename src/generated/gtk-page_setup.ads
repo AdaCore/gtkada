@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkPageSetup object stores the page size, orientation and margins. The
 --  idea is that you can get one of these from the page setup dialog and then
 --  pass it to the Gtk.Print_Operation.Gtk_Print_Operation when printing. The
@@ -63,8 +62,6 @@
 --
 --
 --  Printing support was added in GTK+ 2.10.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
@@ -176,6 +173,7 @@ package Gtk.Page_Setup is
       (Self : not null access Gtk_Page_Setup_Record) return Gtk_Page_Setup;
    --  Copies a Gtk.Page_Setup.Gtk_Page_Setup.
    --  Since: gtk+ 2.10
+   --  @return a copy of Other
 
    function Get_Bottom_Margin
       (Self : not null access Gtk_Page_Setup_Record;
@@ -183,6 +181,7 @@ package Gtk.Page_Setup is
    --  Gets the bottom margin in units of Unit.
    --  Since: gtk+ 2.10
    --  @param Unit the unit for the return value
+   --  @return the bottom margin
 
    procedure Set_Bottom_Margin
       (Self   : not null access Gtk_Page_Setup_Record;
@@ -199,6 +198,7 @@ package Gtk.Page_Setup is
    --  Gets the left margin in units of Unit.
    --  Since: gtk+ 2.10
    --  @param Unit the unit for the return value
+   --  @return the left margin
 
    procedure Set_Left_Margin
       (Self   : not null access Gtk_Page_Setup_Record;
@@ -214,6 +214,7 @@ package Gtk.Page_Setup is
        return Gtk.Enums.Gtk_Page_Orientation;
    --  Gets the page orientation of the Gtk.Page_Setup.Gtk_Page_Setup.
    --  Since: gtk+ 2.10
+   --  @return the page orientation
 
    procedure Set_Orientation
       (Self        : not null access Gtk_Page_Setup_Record;
@@ -230,6 +231,7 @@ package Gtk.Page_Setup is
    --  consideration. See Gtk.Page_Setup.Get_Paper_Height.
    --  Since: gtk+ 2.10
    --  @param Unit the unit for the return value
+   --  @return the page height.
 
    function Get_Page_Width
       (Self : not null access Gtk_Page_Setup_Record;
@@ -239,6 +241,7 @@ package Gtk.Page_Setup is
    --  consideration. See Gtk.Page_Setup.Get_Paper_Width.
    --  Since: gtk+ 2.10
    --  @param Unit the unit for the return value
+   --  @return the page width.
 
    function Get_Paper_Height
       (Self : not null access Gtk_Page_Setup_Record;
@@ -248,12 +251,14 @@ package Gtk.Page_Setup is
    --  consideration. See Gtk.Page_Setup.Get_Page_Height.
    --  Since: gtk+ 2.10
    --  @param Unit the unit for the return value
+   --  @return the paper height.
 
    function Get_Paper_Size
       (Self : not null access Gtk_Page_Setup_Record)
        return Gtk.Paper_Size.Gtk_Paper_Size;
    --  Gets the paper size of the Gtk.Page_Setup.Gtk_Page_Setup.
    --  Since: gtk+ 2.10
+   --  @return the paper size
 
    procedure Set_Paper_Size
       (Self : not null access Gtk_Page_Setup_Record;
@@ -272,6 +277,7 @@ package Gtk.Page_Setup is
    --  consideration. See Gtk.Page_Setup.Get_Page_Width.
    --  Since: gtk+ 2.10
    --  @param Unit the unit for the return value
+   --  @return the paper width.
 
    function Get_Right_Margin
       (Self : not null access Gtk_Page_Setup_Record;
@@ -279,6 +285,7 @@ package Gtk.Page_Setup is
    --  Gets the right margin in units of Unit.
    --  Since: gtk+ 2.10
    --  @param Unit the unit for the return value
+   --  @return the right margin
 
    procedure Set_Right_Margin
       (Self   : not null access Gtk_Page_Setup_Record;
@@ -295,6 +302,7 @@ package Gtk.Page_Setup is
    --  Gets the top margin in units of Unit.
    --  Since: gtk+ 2.10
    --  @param Unit the unit for the return value
+   --  @return the top margin
 
    procedure Set_Top_Margin
       (Self   : not null access Gtk_Page_Setup_Record;
@@ -312,6 +320,7 @@ package Gtk.Page_Setup is
    --  Gtk.Page_Setup.To_File.
    --  Since: gtk+ 2.14
    --  @param File_Name the filename to read the page setup from
+   --  @return True on success
 
    function Load_Key_File
       (Self       : not null access Gtk_Page_Setup_Record;
@@ -323,6 +332,7 @@ package Gtk.Page_Setup is
    --  @param Key_File the Gkey.File.Gkey_File to retrieve the page_setup from
    --  @param Group_Name the name of the group in the key_file to read, or
    --  null to use the default name "Page Setup"
+   --  @return True on success
 
    procedure Set_Paper_Size_And_Default_Margins
       (Self : not null access Gtk_Page_Setup_Record;
@@ -338,12 +348,14 @@ package Gtk.Page_Setup is
    --  This function saves the information from Setup to File_Name.
    --  Since: gtk+ 2.12
    --  @param File_Name the file to save to
+   --  @return True on success
 
    function To_Gvariant
       (Self : not null access Gtk_Page_Setup_Record)
        return Glib.Variant.Gvariant;
    --  Serialize page setup to an a{sv} variant.
    --  Since: gtk+ 3.22
+   --  @return a new, floating, Glib.Variant.Gvariant
 
    procedure To_Key_File
       (Self       : not null access Gtk_Page_Setup_Record;

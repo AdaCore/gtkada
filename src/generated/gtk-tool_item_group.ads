@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Tool_Item_Group.Gtk_Tool_Item_Group is used together with
 --  Gtk.Tool_Palette.Gtk_Tool_Palette to add Gtk_Tool_Items to a palette like
 --  container with different categories and drag and drop support.
@@ -29,8 +28,6 @@
 --  # CSS nodes
 --
 --  GtkToolItemGroup has a single CSS node named toolitemgroup.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -81,6 +78,7 @@ package Gtk.Tool_Item_Group is
       (Self : not null access Gtk_Tool_Item_Group_Record) return Boolean;
    --  Gets whether Group is collapsed or expanded.
    --  Since: gtk+ 2.20
+   --  @return True if Group is collapsed, False if it is expanded
 
    procedure Set_Collapsed
       (Self      : not null access Gtk_Tool_Item_Group_Record;
@@ -97,12 +95,14 @@ package Gtk.Tool_Item_Group is
    --  Since: gtk+ 2.20
    --  @param X the x position
    --  @param Y the y position
+   --  @return the Gtk.Tool_Item.Gtk_Tool_Item at position (x, y)
 
    function Get_Ellipsize
       (Self : not null access Gtk_Tool_Item_Group_Record)
        return Pango.Layout.Pango_Ellipsize_Mode;
    --  Gets the ellipsization mode of Group.
    --  Since: gtk+ 2.20
+   --  @return the Pango.Layout.Pango_Ellipsize_Mode of Group
 
    procedure Set_Ellipsize
       (Self      : not null access Gtk_Tool_Item_Group_Record;
@@ -117,6 +117,7 @@ package Gtk.Tool_Item_Group is
        return Gtk.Enums.Gtk_Relief_Style;
    --  Gets the relief mode of the header button of Group.
    --  Since: gtk+ 2.20
+   --  @return the Gtk.Enums.Gtk_Relief_Style
 
    procedure Set_Header_Relief
       (Self  : not null access Gtk_Tool_Item_Group_Record;
@@ -133,6 +134,7 @@ package Gtk.Tool_Item_Group is
    --  Gets the position of Item in Group as index.
    --  Since: gtk+ 2.20
    --  @param Item a Gtk.Tool_Item.Gtk_Tool_Item
+   --  @return the index of Item in Group or -1 if Item is no child of Group
 
    procedure Set_Item_Position
       (Self     : not null access Gtk_Tool_Item_Group_Record;
@@ -149,6 +151,9 @@ package Gtk.Tool_Item_Group is
       (Self : not null access Gtk_Tool_Item_Group_Record) return UTF8_String;
    --  Gets the label of Group.
    --  Since: gtk+ 2.20
+   --  @return the label of Group. The label is an internal string of Group
+   --  and must not be modified. Note that null is returned if a custom label
+   --  has been set with Gtk.Tool_Item_Group.Set_Label_Widget
 
    procedure Set_Label
       (Self  : not null access Gtk_Tool_Item_Group_Record;
@@ -164,6 +169,7 @@ package Gtk.Tool_Item_Group is
    --  Gets the label widget of Group. See
    --  Gtk.Tool_Item_Group.Set_Label_Widget.
    --  Since: gtk+ 2.20
+   --  @return the label widget of Group
 
    procedure Set_Label_Widget
       (Self         : not null access Gtk_Tool_Item_Group_Record;
@@ -178,6 +184,7 @@ package Gtk.Tool_Item_Group is
       (Self : not null access Gtk_Tool_Item_Group_Record) return Guint;
    --  Gets the number of tool items in Group.
    --  Since: gtk+ 2.20
+   --  @return the number of tool items in Group
 
    function Get_Nth_Item
       (Self  : not null access Gtk_Tool_Item_Group_Record;
@@ -185,6 +192,7 @@ package Gtk.Tool_Item_Group is
    --  Gets the tool item at Index in group.
    --  Since: gtk+ 2.20
    --  @param Index the index
+   --  @return the Gtk.Tool_Item.Gtk_Tool_Item at index
 
    procedure Insert
       (Self     : not null access Gtk_Tool_Item_Group_Record;

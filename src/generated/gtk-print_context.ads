@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkPrintContext encapsulates context information that is required when
 --  drawing pages for printing, such as the cairo context and important
 --  parameters like page size and resolution. It also lets you easily create
@@ -92,8 +91,6 @@
 --
 --
 --  Printing support was added in GTK+ 2.10.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;          use Cairo;
@@ -126,6 +123,7 @@ package Gtk.Print_Context is
    --  Creates a new Pango.Context.Pango_Context that can be used with the
    --  Gtk.Print_Context.Gtk_Print_Context.
    --  Since: gtk+ 2.10
+   --  @return a new Pango context for Context
 
    function Create_Pango_Layout
       (Context : not null access Gtk_Print_Context_Record)
@@ -133,6 +131,7 @@ package Gtk.Print_Context is
    --  Creates a new Pango.Layout.Pango_Layout that is suitable for use with
    --  the Gtk.Print_Context.Gtk_Print_Context.
    --  Since: gtk+ 2.10
+   --  @return a new Pango layout for Context
 
    function Get_Cairo_Context
       (Context : not null access Gtk_Print_Context_Record)
@@ -140,6 +139,7 @@ package Gtk.Print_Context is
    --  Obtains the cairo context that is associated with the
    --  Gtk.Print_Context.Gtk_Print_Context.
    --  Since: gtk+ 2.10
+   --  @return the cairo context of Context
 
    procedure Set_Cairo_Context
       (Context : not null access Gtk_Print_Context_Record;
@@ -160,12 +160,14 @@ package Gtk.Print_Context is
    --  Obtains the horizontal resolution of the
    --  Gtk.Print_Context.Gtk_Print_Context, in dots per inch.
    --  Since: gtk+ 2.10
+   --  @return the horizontal resolution of Context
 
    function Get_Dpi_Y
       (Context : not null access Gtk_Print_Context_Record) return Gdouble;
    --  Obtains the vertical resolution of the
    --  Gtk.Print_Context.Gtk_Print_Context, in dots per inch.
    --  Since: gtk+ 2.10
+   --  @return the vertical resolution of Context
 
    function Get_Hard_Margins
       (Context : not null access Gtk_Print_Context_Record;
@@ -180,12 +182,14 @@ package Gtk.Print_Context is
    --  @param Bottom bottom hardware printer margin
    --  @param Left left hardware printer margin
    --  @param Right right hardware printer margin
+   --  @return True if the hard margins were retrieved
 
    function Get_Height
       (Context : not null access Gtk_Print_Context_Record) return Gdouble;
    --  Obtains the height of the Gtk.Print_Context.Gtk_Print_Context, in
    --  pixels.
    --  Since: gtk+ 2.10
+   --  @return the height of Context
 
    function Get_Page_Setup
       (Context : not null access Gtk_Print_Context_Record)
@@ -193,6 +197,7 @@ package Gtk.Print_Context is
    --  Obtains the Gtk.Page_Setup.Gtk_Page_Setup that determines the page
    --  dimensions of the Gtk.Print_Context.Gtk_Print_Context.
    --  Since: gtk+ 2.10
+   --  @return the page setup of Context
 
    function Get_Pango_Fontmap
       (Context : not null access Gtk_Print_Context_Record)
@@ -200,11 +205,13 @@ package Gtk.Print_Context is
    --  Returns a Pango.Font_Map.Pango_Font_Map that is suitable for use with
    --  the Gtk.Print_Context.Gtk_Print_Context.
    --  Since: gtk+ 2.10
+   --  @return the font map of Context
 
    function Get_Width
       (Context : not null access Gtk_Print_Context_Record) return Gdouble;
    --  Obtains the width of the Gtk.Print_Context.Gtk_Print_Context, in
    --  pixels.
    --  Since: gtk+ 2.10
+   --  @return the width of Context
 
 end Gtk.Print_Context;

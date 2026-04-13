@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Tool_Palette.Gtk_Tool_Palette allows you to add Gtk_Tool_Items to a
 --  palette-like container with different categories and drag and drop support.
 --
@@ -93,8 +92,6 @@
 --  # CSS nodes
 --
 --  GtkToolPalette has a single CSS node named toolpalette.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Drag_Contexts;       use Gdk.Drag_Contexts;
@@ -200,6 +197,7 @@ package Gtk.Tool_Palette is
    --  Gtk.Tool_Item_Group.Gtk_Tool_Item_Group.
    --  Since: gtk+ 2.20
    --  @param Selection a Gtk.Selection_Data.Gtk_Selection_Data
+   --  @return the dragged item in selection
 
    function Get_Drop_Group
       (Self : not null access Gtk_Tool_Palette_Record;
@@ -209,6 +207,8 @@ package Gtk.Tool_Palette is
    --  Since: gtk+ 2.20
    --  @param X the x position
    --  @param Y the y position
+   --  @return the Gtk.Tool_Item_Group.Gtk_Tool_Item_Group at position or null
+   --  if there is no such group
 
    function Get_Drop_Item
       (Self : not null access Gtk_Tool_Palette_Record;
@@ -218,6 +218,8 @@ package Gtk.Tool_Palette is
    --  Since: gtk+ 2.20
    --  @param X the x position
    --  @param Y the y position
+   --  @return the Gtk.Tool_Item.Gtk_Tool_Item at position or null if there is
+   --  no such item
 
    function Get_Exclusive
       (Self  : not null access Gtk_Tool_Palette_Record;
@@ -228,6 +230,7 @@ package Gtk.Tool_Palette is
    --  Since: gtk+ 2.20
    --  @param Group a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which is a child
    --  of palette
+   --  @return True if Group is exclusive
 
    procedure Set_Exclusive
       (Self      : not null access Gtk_Tool_Palette_Record;
@@ -249,6 +252,7 @@ package Gtk.Tool_Palette is
    --  Since: gtk+ 2.20
    --  @param Group a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which is a child
    --  of palette
+   --  @return True if group should be given extra space, False otherwise
 
    procedure Set_Expand
       (Self   : not null access Gtk_Tool_Palette_Record;
@@ -268,6 +272,7 @@ package Gtk.Tool_Palette is
    --  Gtk.Tool_Palette.Set_Group_Position.
    --  Since: gtk+ 2.20
    --  @param Group a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group
+   --  @return the index of group or -1 if Group is not a child of Palette
 
    procedure Set_Group_Position
       (Self     : not null access Gtk_Tool_Palette_Record;
@@ -287,6 +292,7 @@ package Gtk.Tool_Palette is
    --  Gets the size of icons in the tool palette. See
    --  Gtk.Tool_Palette.Set_Icon_Size.
    --  Since: gtk+ 2.20
+   --  @return the Gtk.Enums.Gtk_Icon_Size of icons in the tool palette
 
    procedure Set_Icon_Size
       (Self      : not null access Gtk_Tool_Palette_Record;
@@ -301,6 +307,7 @@ package Gtk.Tool_Palette is
        return Gtk.Enums.Gtk_Toolbar_Style;
    --  Gets the style (icons, text or both) of items in the tool palette.
    --  Since: gtk+ 2.20
+   --  @return the Gtk.Enums.Gtk_Toolbar_Style of items in the tool palette.
 
    procedure Set_Style
       (Self  : not null access Gtk_Tool_Palette_Record;
@@ -391,10 +398,12 @@ package Gtk.Tool_Palette is
    --  Get the target entry for a dragged
    --  Gtk.Tool_Item_Group.Gtk_Tool_Item_Group.
    --  Since: gtk+ 2.20
+   --  @return the Gtk.Target_Entry.Gtk_Target_Entry for a dragged group
 
    function Get_Drag_Target_Item return Gtk.Target_Entry.Gtk_Target_Entry;
    --  Gets the target entry for a dragged Gtk.Tool_Item.Gtk_Tool_Item.
    --  Since: gtk+ 2.20
+   --  @return the Gtk.Target_Entry.Gtk_Target_Entry for a dragged item.
 
    ----------------
    -- Properties --

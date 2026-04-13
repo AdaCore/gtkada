@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Gesture_Multi_Press.Gtk_Gesture_Multi_Press is a
 --  Gtk.Gesture.Gtk_Gesture implementation able to recognize multiple clicks on
 --  a nearby zone, which can be listened for through the
@@ -33,8 +32,6 @@
 --  Callers may also restrict the area that is considered valid for a >1
 --  touch/button press through Gtk.Gesture_Multi_Press.Set_Area, so any click
 --  happening outside that area is considered to be a first click of its own.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle;      use Gdk.Rectangle;
@@ -89,6 +86,7 @@ package Gtk.Gesture_Multi_Press is
    --  represents.
    --  Since: gtk+ 3.14
    --  @param Rect return location for the press area
+   --  @return True if Rect was filled with the press area
 
    procedure Set_Area
       (Self : not null access Gtk_Gesture_Multi_Press_Record;

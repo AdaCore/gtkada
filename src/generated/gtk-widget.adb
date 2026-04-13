@@ -232,6 +232,8 @@ package body Gtk.Widget is
    --  @param User_Data data to pass to Callback
    --  @param Notify function to call to free User_Data when the callback is
    --  removed.
+   --  @return an id for the connection of this callback. Remove the callback
+   --  by passing it to Gtk.Widget.Remove_Tick_Callback
 
    procedure C_Gtk_Widget_Class_Set_Connect_Func
       (Self                 : Glib.Object.GObject_Class;
@@ -458,6 +460,8 @@ package body Gtk.Widget is
       --  @param Frame_Clock the frame clock for the widget (same as calling
       --  Gtk.Widget.Get_Frame_Clock)
       --  @param User_Data user data passed to Gtk.Widget.Add_Tick_Callback.
+      --  @return G_SOURCE_CONTINUE if the tick callback should continue to be
+      --  called, G_SOURCE_REMOVE if the tick callback should be removed.
 
       -----------------------
       -- Add_Tick_Callback --

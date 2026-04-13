@@ -448,6 +448,7 @@ package body Gtk.Assistant is
       --  handling the behavior of the "last" button.
       --  @param Current_Page The page number used to calculate the next page.
       --  @param Data user data.
+      --  @return The next page number.
 
       -----------------
       -- Internal_Cb --

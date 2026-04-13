@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Recent_Filter.Gtk_Recent_Filter can be used to restrict the files
 --  being shown in a Gtk.Recent_Chooser.Gtk_Recent_Chooser. Files can be
 --  filtered based on their name (with Gtk.Recent_Filter.Add_Pattern), on their
@@ -68,7 +67,6 @@
 --         <application>glade</application>
 --       </applications>
 --     </object>
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -127,6 +125,7 @@ package Gtk.Recent_Filter is
    --  @param Filter_Info a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
    --  filled according to the Needed flags passed to
    --  Gtk.Recent_Filter.Add_Custom
+   --  @return True if the file should be displayed
 
    ----------------------------
    -- Enumeration Properties --
@@ -225,6 +224,7 @@ package Gtk.Recent_Filter is
       --  filled according to the Needed flags passed to
       --  Gtk.Recent_Filter.Add_Custom
       --  @param User_Data user data passed to Gtk.Recent_Filter.Add_Custom
+      --  @return True if the file should be displayed
 
       procedure Add_Custom
          (Filter       : not null access Gtk.Recent_Filter.Gtk_Recent_Filter_Record'Class;
@@ -290,12 +290,15 @@ package Gtk.Recent_Filter is
    --  Since: gtk+ 2.10
    --  @param Filter_Info a Gtk.Recent_Filter.Gtk_Recent_Filter_Info
    --  containing information about a recently used resource
+   --  @return True if the file should be displayed
 
    function Get_Name
       (Filter : not null access Gtk_Recent_Filter_Record) return UTF8_String;
    --  Gets the human-readable name for the filter. See
    --  Gtk.Recent_Filter.Set_Name.
    --  Since: gtk+ 2.10
+   --  @return the name of the filter, or null. The returned string is owned
+   --  by the filter object and should not be freed.
 
    procedure Set_Name
       (Filter : not null access Gtk_Recent_Filter_Record;
@@ -316,6 +319,8 @@ package Gtk.Recent_Filter is
    --  intended principally for use in the implementation of
    --  Gtk.Recent_Chooser.Gtk_Recent_Chooser.
    --  Since: gtk+ 2.10
+   --  @return bitfield of flags indicating needed fields when calling
+   --  Gtk.Recent_Filter.Filter
 
    ----------------
    -- Interfaces --

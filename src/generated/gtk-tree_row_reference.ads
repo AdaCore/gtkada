@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkTreeRowReference tracks model changes so that it always refers to the
 --  same row (a Gtk.Tree_Model.Gtk_Tree_Path refers to a position, not a fixed
 --  row). Create a new GtkTreeRowReference with gtk_tree_row_reference_new.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
@@ -135,6 +132,7 @@ package Gtk.Tree_Row_Reference is
       (Reference : Gtk_Tree_Row_Reference) return Gtk_Tree_Row_Reference;
    --  Copies a Gtk.Tree_Row_Reference.Gtk_Tree_Row_Reference.
    --  Since: gtk+ 2.2
+   --  @return a copy of Reference
 
    procedure Free (Reference : Gtk_Tree_Row_Reference);
    --  Free's Reference. Reference may be null
@@ -144,16 +142,19 @@ package Gtk.Tree_Row_Reference is
        return Gtk.Tree_Model.Gtk_Tree_Model;
    --  Returns the model that the row reference is monitoring.
    --  Since: gtk+ 2.8
+   --  @return the model
 
    function Get_Path
       (Reference : Gtk_Tree_Row_Reference)
        return Gtk.Tree_Model.Gtk_Tree_Path;
    --  Returns a path that the row reference currently points to, or null if
    --  the path pointed to is no longer valid.
+   --  @return a current path, or null
 
    function Valid (Reference : Gtk_Tree_Row_Reference) return Boolean;
    --  Returns True if the Reference is non-null and refers to a current valid
    --  path.
+   --  @return True if Reference points to a valid path
 
    ---------------
    -- Functions --

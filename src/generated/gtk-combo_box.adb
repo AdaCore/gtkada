@@ -934,6 +934,7 @@ package body Gtk.Combo_Box is
       --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in
       --  Model
       --  @param Data user data
+      --  @return True if the row is a separator
 
       -----------------
       -- Internal_Cb --

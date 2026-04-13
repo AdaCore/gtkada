@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Aspect_Frame.Gtk_Aspect_Frame is useful when you want pack a
 --  widget so that it can resize but always retains the same aspect ratio. For
 --  instance, one might be drawing a small preview of a larger image.
@@ -33,7 +32,6 @@
 --
 --  GtkAspectFrame uses a CSS node with name frame.
 --
---  </description>
 --  <group>Layout Containers</group>
 --  <testgtk>create_frame.adb</testgtk>
 

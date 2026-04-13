@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Alignment.Gtk_Alignment widget controls the alignment and size of
 --  its child widget. It has four settings: xscale, yscale, xalign, and yalign.
 --
@@ -40,7 +39,6 @@
 --  Gtk.Widget.Gtk_Widget:halign, Gtk.Widget.Gtk_Widget:valign and
 --  Gtk.Widget.Gtk_Widget:margin properties on the child widget.
 --
---  </description>
 --  <screenshot>gtk-alignment</screenshot>
 --  <testgtk>create_alignment.adb</testgtk>
 

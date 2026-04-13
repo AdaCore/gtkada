@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Toggle_Action.Gtk_Toggle_Action corresponds roughly to a
 --  Gtk.Check_Menu_Item.Gtk_Check_Menu_Item. It has an "active" state
 --  specifying whether the action has been checked or not.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -97,6 +94,7 @@ package Gtk.Toggle_Action is
    --  Returns the checked state of the toggle action.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return the checked state of the toggle action
 
    procedure Set_Active
       (Action    : not null access Gtk_Toggle_Action_Record;
@@ -113,6 +111,7 @@ package Gtk.Toggle_Action is
    --  Returns whether the action should have proxies like a radio action.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return whether the action should have proxies like a radio action.
 
    procedure Set_Draw_As_Radio
       (Action        : not null access Gtk_Toggle_Action_Record;

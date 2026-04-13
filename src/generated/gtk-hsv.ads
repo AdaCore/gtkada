@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Hsv.Gtk_Hsv is the "color wheel" part of a complete color selector
 --  widget. It allows to select a color by determining its HSV components in an
 --  intuitive way. Moving the selection around the outer ring changes the hue,
@@ -30,8 +29,6 @@
 --
 --  Gtk.Hsv.Gtk_Hsv has been deprecated together with
 --  Gtk.Color_Selection.Gtk_Color_Selection, where it was used.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;          use Glib;
@@ -117,6 +114,9 @@ package Gtk.Hsv is
    --  adjusting the value with the mouse. This function queries whether the
    --  HSV color selector is being adjusted or not.
    --  Since: gtk+ 2.14
+   --  @return True if clients can ignore changes to the color value, since
+   --  they may be transitory, or False if they should consider the color value
+   --  status to be final.
 
    ---------------
    -- Functions --

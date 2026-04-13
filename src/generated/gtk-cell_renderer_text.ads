@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text renders a given text in
 --  its cell, using the font, color and style information provided by its
 --  properties. The text will be ellipsized if it is too long and the
@@ -31,8 +30,6 @@
 --  Gtk.Cell_Renderer.Cell_Renderer_Mode_Editable, the
 --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text allows to edit its text using
 --  an entry.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Color;         use Gdk.Color;

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The GtkRevealer widget is a container which animates the transition of its
 --  child from invisible to visible.
 --
@@ -36,8 +35,6 @@
 --  GtkRevealer has a single CSS node with name revealer.
 --
 --  The GtkRevealer widget was added in GTK+ 3.10.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -98,6 +95,7 @@ package Gtk.Revealer is
    --  Returns whether the child is fully revealed, in other words whether the
    --  transition to the revealed state is completed.
    --  Since: gtk+ 3.10
+   --  @return True if the child is fully revealed
 
    function Get_Reveal_Child
       (Self : not null access Gtk_Revealer_Record) return Boolean;
@@ -107,6 +105,7 @@ package Gtk.Revealer is
    --  state is started. To learn whether the child is fully revealed (ie the
    --  transition is completed), use Gtk.Revealer.Get_Child_Revealed.
    --  Since: gtk+ 3.10
+   --  @return True if the child is revealed.
 
    procedure Set_Reveal_Child
       (Self         : not null access Gtk_Revealer_Record;
@@ -122,6 +121,7 @@ package Gtk.Revealer is
    --  Returns the amount of time (in milliseconds) that transitions will
    --  take.
    --  Since: gtk+ 3.10
+   --  @return the transition duration
 
    procedure Set_Transition_Duration
       (Self     : not null access Gtk_Revealer_Record;
@@ -136,6 +136,7 @@ package Gtk.Revealer is
    --  Gets the type of animation that will be used for transitions in
    --  Revealer.
    --  Since: gtk+ 3.10
+   --  @return the current transition type of Revealer
 
    procedure Set_Transition_Type
       (Self       : not null access Gtk_Revealer_Record;

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkBuildable allows objects to extend and customize their deserialization
 --  from [GtkBuilder UI descriptions][BUILDER-UI]. The interface includes
 --  methods for setting names and properties of objects, parsing custom tags
@@ -35,8 +34,6 @@
 --  An object only needs to implement this interface if it needs to extend the
 --  Gtk.Builder.Gtk_Builder format or run any extra routines at deserialization
 --  time.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;
@@ -85,6 +82,7 @@ package Gtk.Buildable is
    --  Since: gtk+ 2.12
    --  @param Builder Gtk.Builder.Gtk_Builder used to construct this object
    --  @param Name name of child to construct
+   --  @return the constructed child
 
    procedure Custom_Finished
       (Self    : Gtk_Buildable;
@@ -122,12 +120,14 @@ package Gtk.Buildable is
    --  Since: gtk+ 2.12
    --  @param Builder a Gtk.Builder.Gtk_Builder
    --  @param Childname name of child
+   --  @return the internal child of the buildable object
 
    function Get_Name (Self : Gtk_Buildable) return UTF8_String;
    --  Gets the name of the Buildable object.
    --  Gtk.Builder.Gtk_Builder sets the name based on the [GtkBuilder UI
    --  definition][BUILDER-UI] used to construct the Buildable.
    --  Since: gtk+ 2.12
+   --  @return the name set with Gtk.Buildable.Set_Name
 
    procedure Set_Name (Self : Gtk_Buildable; Name : UTF8_String);
    --  Sets the name of the Buildable object.

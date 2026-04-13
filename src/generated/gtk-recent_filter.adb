@@ -206,6 +206,7 @@ package body Gtk.Recent_Filter is
       --  is filled according to the Needed flags passed to
       --  Gtk.Recent_Filter.Add_Custom
       --  @param User_Data user data passed to Gtk.Recent_Filter.Add_Custom
+      --  @return True if the file should be displayed
 
       ----------------
       -- Add_Custom --

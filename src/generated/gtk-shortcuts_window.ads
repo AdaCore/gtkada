@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkShortcutsWindow shows brief information about the keyboard shortcuts
 --  and gestures of an application. The shortcuts can be grouped, and you can
 --  have multiple sections in this window, corresponding to the major modes of
@@ -68,8 +67,6 @@
 --
 --  The .ui file for this example can be found
 --  [here](https://git.gnome.org/browse/gtk+/tree/demos/gtk-demo/shortcuts-builder.ui).
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

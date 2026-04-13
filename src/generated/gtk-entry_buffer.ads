@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Entry_Buffer.Gtk_Entry_Buffer class contains the actual text
 --  displayed in a Gtk.GEntry.Gtk_Entry widget.
 --
@@ -33,8 +32,6 @@
 --  class might allow text to be stored in an alternate location, such as
 --  non-pageable memory, useful in the case of important passwords. Or a
 --  derived class could integrate with an application's concept of undo/redo.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -95,6 +92,7 @@ package Gtk.Entry_Buffer is
    --  Since: gtk+ 2.18
    --  @param Position position at which to delete text
    --  @param N_Chars number of characters to delete
+   --  @return The number of characters deleted.
 
    procedure Emit_Deleted_Text
       (Self     : not null access Gtk_Entry_Buffer_Record;
@@ -121,17 +119,21 @@ package Gtk.Entry_Buffer is
    --  Retrieves the length in bytes of the buffer. See
    --  Gtk.Entry_Buffer.Get_Length.
    --  Since: gtk+ 2.18
+   --  @return The byte length of the buffer.
 
    function Get_Length
       (Self : not null access Gtk_Entry_Buffer_Record) return Guint;
    --  Retrieves the length in characters of the buffer.
    --  Since: gtk+ 2.18
+   --  @return The number of characters in the buffer.
 
    function Get_Max_Length
       (Self : not null access Gtk_Entry_Buffer_Record) return Glib.Gint;
    --  Retrieves the maximum allowed length of the text in Buffer. See
    --  Gtk.Entry_Buffer.Set_Max_Length.
    --  Since: gtk+ 2.18
+   --  @return the maximum allowed number of characters in
+   --  Gtk.Entry_Buffer.Gtk_Entry_Buffer, or 0 if there is no maximum.
 
    procedure Set_Max_Length
       (Self       : not null access Gtk_Entry_Buffer_Record;
@@ -150,6 +152,9 @@ package Gtk.Entry_Buffer is
    --  The memory pointer returned by this call will not change unless this
    --  object emits a signal, or is finalized.
    --  Since: gtk+ 2.18
+   --  @return a pointer to the contents of the widget as a string. This
+   --  string points to internally allocated storage in the buffer and must not
+   --  be freed, modified or stored.
 
    procedure Set_Text
       (Self    : not null access Gtk_Entry_Buffer_Record;
@@ -179,6 +184,7 @@ package Gtk.Entry_Buffer is
    --  @param Position the position at which to insert text.
    --  @param Chars the text to insert into the buffer.
    --  @param N_Chars the length of the text in characters, or -1
+   --  @return The number of characters actually inserted.
 
    ----------------
    -- Properties --

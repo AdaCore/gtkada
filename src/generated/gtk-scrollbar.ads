@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Scrollbar.Gtk_Scrollbar widget is a horizontal or vertical
 --  scrollbar, depending on the value of the
 --  Gtk.Orientable.Gtk_Orientable:orientation property.
@@ -65,8 +64,6 @@
 --  Gtk.Scrolled_Window.Gtk_Scrolled_Window include the positional classes
 --  (.left, .right, .top, .bottom) and style classes related to overlay
 --  scrolling (.overlay-indicator, .dragging, .hovering).
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;

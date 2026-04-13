@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkPrintOperation is the high-level, portable printing API. It looks a bit
 --  different than other GTK+ dialogs such as the
 --  Gtk.File_Chooser.Gtk_File_Chooser, since some platforms don't expose enough
@@ -83,8 +82,6 @@
 --  Gtk.Print_Operation_Preview.End_Preview and
 --  Gtk.Print_Operation_Preview.Is_Selected are useful when implementing a
 --  print preview.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                        use Glib;
@@ -211,6 +208,7 @@ package Gtk.Print_Operation is
    --  Returns the default page setup, see
    --  Gtk.Print_Operation.Set_Default_Page_Setup.
    --  Since: gtk+ 2.10
+   --  @return the default page setup
 
    procedure Set_Default_Page_Setup
       (Self               : not null access Gtk_Print_Operation_Record;
@@ -227,6 +225,7 @@ package Gtk.Print_Operation is
    --  Gets the value of
    --  Gtk.Print_Operation.Gtk_Print_Operation:embed-page-setup property.
    --  Since: gtk+ 2.18
+   --  @return whether page setup selection combos are embedded
 
    procedure Set_Embed_Page_Setup
       (Self  : not null access Gtk_Print_Operation_Record;
@@ -251,6 +250,7 @@ package Gtk.Print_Operation is
    --  Gets the value of Gtk.Print_Operation.Gtk_Print_Operation:has-selection
    --  property.
    --  Since: gtk+ 2.18
+   --  @return whether there is a selection
 
    procedure Set_Has_Selection
       (Self          : not null access Gtk_Print_Operation_Record;
@@ -274,6 +274,7 @@ package Gtk.Print_Operation is
    --  Gtk.Print_Operation.Status_Generating_Data. This is typically used to
    --  track the progress of print operation.
    --  Since: gtk+ 2.18
+   --  @return the number of pages that will be printed
 
    function Get_Print_Settings
       (Self : not null access Gtk_Print_Operation_Record)
@@ -283,6 +284,7 @@ package Gtk.Print_Operation is
    --  Gtk.Print_Operation.Set_Print_Settings or Gtk.Print_Operation.Run have
    --  been called.
    --  Since: gtk+ 2.10
+   --  @return the current print settings of Op.
 
    procedure Set_Print_Settings
       (Self           : not null access Gtk_Print_Operation_Record;
@@ -299,6 +301,7 @@ package Gtk.Print_Operation is
    --  Returns the status of the print operation. Also see
    --  Gtk.Print_Operation.Get_Status_String.
    --  Since: gtk+ 2.10
+   --  @return the status of the print operation
 
    function Get_Status_String
       (Self : not null access Gtk_Print_Operation_Record) return UTF8_String;
@@ -308,12 +311,14 @@ package Gtk.Print_Operation is
    --  Use Gtk.Print_Operation.Get_Status to obtain a status value that is
    --  suitable for programmatic use.
    --  Since: gtk+ 2.10
+   --  @return a string representation of the status of the print operation
 
    function Get_Support_Selection
       (Self : not null access Gtk_Print_Operation_Record) return Boolean;
    --  Gets the value of
    --  Gtk.Print_Operation.Gtk_Print_Operation:support-selection property.
    --  Since: gtk+ 2.18
+   --  @return whether the application supports print of selection
 
    procedure Set_Support_Selection
       (Self              : not null access Gtk_Print_Operation_Record;
@@ -332,6 +337,7 @@ package Gtk.Print_Operation is
    --  in a non-finished state even after done has been called, as the
    --  operation status then tracks the print job status on the printer.
    --  Since: gtk+ 2.10
+   --  @return True, if the print operation is finished.
 
    function Run
       (Self   : not null access Gtk_Print_Operation_Record;
@@ -393,6 +399,14 @@ package Gtk.Print_Operation is
    --  Since: gtk+ 2.10
    --  @param Action the action to start
    --  @param Parent Transient parent of the dialog
+   --  @return the result of the print operation. A return value of
+   --  Gtk.Print_Operation.Result_Apply indicates that the printing was
+   --  completed successfully. In this case, it is a good idea to obtain the
+   --  used print settings with Gtk.Print_Operation.Get_Print_Settings and
+   --  store them for reuse with the next print operation. A value of
+   --  Gtk.Print_Operation.Result_In_Progress means the operation is running
+   --  asynchronously, and will emit the
+   --  Gtk.Print_Operation.Gtk_Print_Operation::done signal when done.
 
    procedure Set_Allow_Async
       (Self        : not null access Gtk_Print_Operation_Record;
@@ -724,8 +738,6 @@ package Gtk.Print_Operation is
    --  from the widgets.
    -- 
    --  Callback parameters:
-   --    --  Returns A custom widget that gets embedded in
-   --          the print dialog, or null
 
    type Cb_Gtk_Print_Operation_Gtk_Widget_Void is not null access procedure
      (Self   : access Gtk_Print_Operation_Record'Class;
@@ -904,7 +916,6 @@ package Gtk.Print_Operation is
    --  Callback parameters:
    --    --  @param Context the Gtk.Print_Context.Gtk_Print_Context for the current
    --    --  operation
-   --    --  Returns True if pagination is complete
 
    type Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean is not null access function
      (Self    : access Gtk_Print_Operation_Record'Class;
@@ -955,7 +966,6 @@ package Gtk.Print_Operation is
    --    --  used
    --    --  @param Parent the Gtk.Window.Gtk_Window to use as window parent, or
    --    --  null
-   --    --  Returns True if the listener wants to take over control of the preview
 
    type Cb_Gtk_Print_Operation_Gtk_Print_Context_Gint_Gtk_Page_Setup_Void is not null access procedure
      (Self    : access Gtk_Print_Operation_Record'Class;

@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  You may wish to begin by reading the [text widget conceptual
 --  overview][TextWidget] which gives an overview of all the objects and data
 --  types related to the text widget and how they work together.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Pixbuf;            use Gdk.Pixbuf;
@@ -139,6 +136,7 @@ package Gtk.Text_Buffer is
    --  @param Iter a position in Buffer
    --  @param Interactive whether the deletion is caused by user interaction
    --  @param Default_Editable whether the buffer is editable by default
+   --  @return True if the buffer was modified
 
    procedure Begin_User_Action
       (Buffer : not null access Gtk_Text_Buffer_Record);
@@ -174,6 +172,7 @@ package Gtk.Text_Buffer is
    --  buffer; no reference count is returned to the caller of
    --  Gtk.Text_Buffer.Create_Child_Anchor.
    --  @param Iter location in the buffer
+   --  @return the created child anchor
 
    function Create_Mark
       (Buffer       : not null access Gtk_Text_Buffer_Record;
@@ -197,6 +196,7 @@ package Gtk.Text_Buffer is
    --  @param Mark_Name name for mark, or null
    --  @param Where location to place mark
    --  @param Left_Gravity whether the mark has left gravity
+   --  @return the new Gtk.Text_Mark.Gtk_Text_Mark object
 
    procedure Cut_Clipboard
       (Buffer           : not null access Gtk_Text_Buffer_Record;
@@ -234,6 +234,7 @@ package Gtk.Text_Buffer is
    --  @param Start_Iter start of range to delete
    --  @param End_Iter end of range
    --  @param Default_Editable whether the buffer is editable by default
+   --  @return whether some text was actually deleted
 
    procedure Delete_Mark
       (Buffer : not null access Gtk_Text_Buffer_Record;
@@ -265,6 +266,7 @@ package Gtk.Text_Buffer is
    --  uneditable text).
    --  @param Interactive whether the deletion is caused by user interaction
    --  @param Default_Editable whether the buffer is editable by default
+   --  @return whether there was a non-empty selection to delete
 
    function Deserialize_Get_Can_Create_Tags
       (Buffer : not null access Gtk_Text_Buffer_Record;
@@ -274,6 +276,7 @@ package Gtk.Text_Buffer is
    --  Since: gtk+ 2.10
    --  @param Format a Gdk.Types.Gdk_Atom representing a registered rich text
    --  format
+   --  @return whether deserializing this format may create tags
 
    procedure Deserialize_Set_Can_Create_Tags
       (Buffer          : not null access Gtk_Text_Buffer_Record;
@@ -320,6 +323,7 @@ package Gtk.Text_Buffer is
    --  bytes are not the same, you can't e.g. expect the contents of the buffer
    --  in string form to be this many bytes long. The character count is
    --  cached, so this function is very fast.
+   --  @return number of characters in the buffer
 
    function Get_Copy_Target_List
       (Buffer : not null access Gtk_Text_Buffer_Record)
@@ -330,6 +334,7 @@ package Gtk.Text_Buffer is
    --  gtk_target_list_add_rich_text_targets and
    --  Gtk.Target_List.Add_Text_Targets.
    --  Since: gtk+ 2.10
+   --  @return the Gtk.Target_List.Gtk_Target_List
 
    procedure Get_End_Iter
       (Buffer : not null access Gtk_Text_Buffer_Record;
@@ -346,6 +351,7 @@ package Gtk.Text_Buffer is
       (Buffer : not null access Gtk_Text_Buffer_Record) return Boolean;
    --  Indicates whether the buffer has some text currently selected.
    --  Since: gtk+ 2.10
+   --  @return True if the there is text selected
 
    function Get_Insert
       (Buffer : not null access Gtk_Text_Buffer_Record)
@@ -353,6 +359,7 @@ package Gtk.Text_Buffer is
    --  Returns the mark that represents the cursor (insertion point).
    --  Equivalent to calling Gtk.Text_Buffer.Get_Mark to get the mark named
    --  "insert", but very slightly more efficient, and involves less typing.
+   --  @return insertion point mark
 
    procedure Insert
       (Buffer : not null access Gtk_Text_Buffer_Record;
@@ -444,6 +451,7 @@ package Gtk.Text_Buffer is
       (Buffer : not null access Gtk_Text_Buffer_Record) return Glib.Gint;
    --  Obtains the number of lines in the buffer. This value is cached, so the
    --  function is very fast.
+   --  @return number of lines in the buffer
 
    function Get_Mark
       (Buffer : not null access Gtk_Text_Buffer_Record;
@@ -451,12 +459,14 @@ package Gtk.Text_Buffer is
    --  Returns the mark named Name in buffer Buffer, or null if no such mark
    --  exists in the buffer.
    --  @param Name a mark name
+   --  @return a Gtk.Text_Mark.Gtk_Text_Mark, or null
 
    function Get_Modified
       (Buffer : not null access Gtk_Text_Buffer_Record) return Boolean;
    --  Indicates whether the buffer has been modified since the last call to
    --  Gtk.Text_Buffer.Set_Modified set the modification flag to False. Used
    --  for example to enable a "save" function in a text editor.
+   --  @return True if the buffer has been modified
 
    procedure Set_Modified
       (Buffer  : not null access Gtk_Text_Buffer_Record;
@@ -478,6 +488,7 @@ package Gtk.Text_Buffer is
    --  gtk_target_list_add_rich_text_targets and
    --  Gtk.Target_List.Add_Text_Targets.
    --  Since: gtk+ 2.10
+   --  @return the Gtk.Target_List.Gtk_Target_List
 
    function Get_Selection_Bound
       (Buffer : not null access Gtk_Text_Buffer_Record)
@@ -492,6 +503,7 @@ package Gtk.Text_Buffer is
    --  Gtk.Text_Buffer.Get_Selection_Bounds is another convenient function for
    --  handling the selection, if you just want to know whether there's a
    --  selection and what its bounds are.
+   --  @return selection bound mark
 
    procedure Get_Selection_Bounds
       (Buffer  : not null access Gtk_Text_Buffer_Record;
@@ -505,6 +517,7 @@ package Gtk.Text_Buffer is
    --  but the return value still indicates whether text is selected.
    --  @param Start iterator to initialize with selection start
    --  @param The_End iterator to initialize with selection end
+   --  @return whether the selection has nonzero length
 
    function Get_Slice
       (Buffer               : not null access Gtk_Text_Buffer_Record;
@@ -523,6 +536,7 @@ package Gtk.Text_Buffer is
    --  @param Start start of a range
    --  @param The_End end of a range
    --  @param Include_Hidden_Chars whether to include invisible text
+   --  @return an allocated UTF-8 string
 
    procedure Get_Start_Iter
       (Buffer : not null access Gtk_Text_Buffer_Record;
@@ -537,6 +551,7 @@ package Gtk.Text_Buffer is
        return Gtk.Text_Tag_Table.Gtk_Text_Tag_Table;
    --  Get the Gtk.Text_Tag_Table.Gtk_Text_Tag_Table associated with this
    --  buffer.
+   --  @return the buffer's tag table
 
    function Get_Text
       (Buffer               : not null access Gtk_Text_Buffer_Record;
@@ -552,6 +567,7 @@ package Gtk.Text_Buffer is
    --  @param Start start of a range
    --  @param The_End end of a range
    --  @param Include_Hidden_Chars whether to include invisible text
+   --  @return an allocated UTF-8 string
 
    procedure Set_Text
       (Buffer : not null access Gtk_Text_Buffer_Record;
@@ -599,6 +615,7 @@ package Gtk.Text_Buffer is
    --  @param Iter a position in Buffer
    --  @param Text some UTF-8 text
    --  @param Default_Editable default editability of buffer
+   --  @return whether text was actually inserted
 
    function Insert_Interactive_At_Cursor
       (Buffer           : not null access Gtk_Text_Buffer_Record;
@@ -610,6 +627,7 @@ package Gtk.Text_Buffer is
    --  Gtk.Text_View.Get_Editable is appropriate here.
    --  @param Text text in UTF-8 format
    --  @param Default_Editable default editability of buffer
+   --  @return whether text was actually inserted
 
    procedure Insert_Markup
       (Buffer : not null access Gtk_Text_Buffer_Record;
@@ -672,6 +690,7 @@ package Gtk.Text_Buffer is
    --  @param Start a position in a Gtk.Text_Buffer.Gtk_Text_Buffer
    --  @param The_End another position in the same buffer as Start
    --  @param Default_Editable default editability of the buffer
+   --  @return whether an insertion was possible at Iter
 
    procedure Move_Mark
       (Buffer : not null access Gtk_Text_Buffer_Record;
@@ -725,6 +744,8 @@ package Gtk.Text_Buffer is
    --  for details.
    --  Since: gtk+ 2.10
    --  @param Tagset_Name an optional tagset name, on null
+   --  @return the Gdk.Types.Gdk_Atom that corresponds to the newly registered
+   --  format's mime-type.
 
    function Register_Serialize_Tagset
       (Buffer      : not null access Gtk_Text_Buffer_Record;
@@ -746,6 +767,8 @@ package Gtk.Text_Buffer is
    --  deal with with pasting of arbitrary tags.
    --  Since: gtk+ 2.10
    --  @param Tagset_Name an optional tagset name, on null
+   --  @return the Gdk.Types.Gdk_Atom that corresponds to the newly registered
+   --  format's mime-type.
 
    procedure Remove_All_Tags
       (Buffer  : not null access Gtk_Text_Buffer_Record;

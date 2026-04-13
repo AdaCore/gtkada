@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Adjustment.Gtk_Adjustment object represents a value which has an
 --  associated lower and upper bound, together with step and page increments,
 --  and a page size. It is used within several GTK+ widgets, including
@@ -33,8 +32,6 @@
 --  Instead it is left up to the owner of the Gtk.Adjustment.Gtk_Adjustment to
 --  control the value.
 --
---  </description>
---  <description>
 --  The meaning of the most important fields can be explained on the following
 --  figure (imagine this is a scrollbar):
 --
@@ -42,7 +39,6 @@
 --
 --  lower value value + page_size upper
 --
---  </description>
 --  <group>Scrolling</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -164,6 +160,7 @@ package Gtk.Adjustment is
       (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    --  Retrieves the minimum value of the adjustment.
    --  Since: gtk+ 2.14
+   --  @return The current minimum value of the adjustment
 
    procedure Set_Lower
       (Adjustment : not null access Gtk_Adjustment_Record;
@@ -187,11 +184,13 @@ package Gtk.Adjustment is
       (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    --  Gets the smaller of step increment and page increment.
    --  Since: gtk+ 3.2
+   --  @return the minimum increment of Adjustment
 
    function Get_Page_Increment
       (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    --  Retrieves the page increment of the adjustment.
    --  Since: gtk+ 2.14
+   --  @return The current page increment of the adjustment
 
    procedure Set_Page_Increment
       (Adjustment     : not null access Gtk_Adjustment_Record;
@@ -207,6 +206,7 @@ package Gtk.Adjustment is
       (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    --  Retrieves the page size of the adjustment.
    --  Since: gtk+ 2.14
+   --  @return The current page size of the adjustment
 
    procedure Set_Page_Size
       (Adjustment : not null access Gtk_Adjustment_Record;
@@ -222,6 +222,7 @@ package Gtk.Adjustment is
       (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    --  Retrieves the step increment of the adjustment.
    --  Since: gtk+ 2.14
+   --  @return The current step increment of the adjustment.
 
    procedure Set_Step_Increment
       (Adjustment     : not null access Gtk_Adjustment_Record;
@@ -237,6 +238,7 @@ package Gtk.Adjustment is
       (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    --  Retrieves the maximum value of the adjustment.
    --  Since: gtk+ 2.14
+   --  @return The current maximum value of the adjustment
 
    procedure Set_Upper
       (Adjustment : not null access Gtk_Adjustment_Record;
@@ -253,6 +255,7 @@ package Gtk.Adjustment is
    function Get_Value
       (Adjustment : not null access Gtk_Adjustment_Record) return Gdouble;
    --  Gets the current value of the adjustment. See Gtk.Adjustment.Set_Value.
+   --  @return The current value of the adjustment
 
    procedure Set_Value
       (Adjustment : not null access Gtk_Adjustment_Record;

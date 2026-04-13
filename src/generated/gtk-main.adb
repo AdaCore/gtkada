@@ -62,6 +62,8 @@ package body Gtk.Main is
    --  Deprecated since 3.4, 1
    --  @param Snooper a Gtk_Key_Snoop_Func
    --  @param Func_Data data to pass to Snooper
+   --  @return a unique id for this key snooper for use with
+   --  Gtk.Main.Key_Snooper_Remove.
 
    function To_Gtk_Key_Snoop_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Key_Snoop_Func);

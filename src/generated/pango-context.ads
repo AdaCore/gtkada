@@ -21,11 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Pango.Context.Pango_Context structure stores global information used
 --  to control the itemization process.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -108,6 +105,7 @@ package Pango.Context is
        return Pango.Enums.Direction;
    --  Retrieves the base direction for the context. See
    --  Pango.Context.Set_Base_Dir.
+   --  @return the base direction for the context.
 
    procedure Set_Base_Dir
       (Self      : not null access Pango_Context_Record;
@@ -128,6 +126,7 @@ package Pango.Context is
    --  Retrieves the base gravity for the context. See
    --  Pango.Context.Set_Base_Gravity.
    --  Since: gtk+ 1.16
+   --  @return the base gravity for the context.
 
    procedure Set_Base_Gravity
       (Self    : not null access Pango_Context_Record;
@@ -141,6 +140,8 @@ package Pango.Context is
       (Self : not null access Pango_Context_Record)
        return Pango.Font.Pango_Font_Description;
    --  Retrieve the default font description for the context.
+   --  @return a pointer to the context's default font description. This value
+   --  must not be modified or freed.
 
    procedure Set_Font_Description
       (Self : not null access Pango_Context_Record;
@@ -156,6 +157,7 @@ package Pango.Context is
    --  Pango.Enums.Pango_Gravity_Auto for which pango_gravity_get_for_matrix is
    --  used to return the gravity from the current context matrix.
    --  Since: gtk+ 1.16
+   --  @return the resolved gravity for the context.
 
    function Get_Gravity_Hint
       (Self : not null access Pango_Context_Record)
@@ -163,6 +165,7 @@ package Pango.Context is
    --  Retrieves the gravity hint for the context. See
    --  Pango.Context.Set_Gravity_Hint for details.
    --  Since: gtk+ 1.16
+   --  @return the gravity hint for the context.
 
    procedure Set_Gravity_Hint
       (Self : not null access Pango_Context_Record;
@@ -179,6 +182,7 @@ package Pango.Context is
       (Self : not null access Pango_Context_Record)
        return Pango.Language.Pango_Language;
    --  Retrieves the global language tag for the context.
+   --  @return the global language tag.
 
    procedure Set_Language
       (Self     : not null access Pango_Context_Record;
@@ -194,6 +198,9 @@ package Pango.Context is
    --  Gets the transformation matrix that will be applied when rendering with
    --  this context. See Pango.Context.Set_Matrix.
    --  Since: gtk+ 1.6
+   --  @return the matrix, or null if no matrix has been set (which is the
+   --  same as the identity matrix). The returned matrix is owned by Pango and
+   --  must not be modified or freed.
 
    procedure Set_Matrix
       (Self   : not null access Pango_Context_Record;
@@ -229,6 +236,8 @@ package Pango.Context is
    --  metrics for. null means that the language tag from the context will be
    --  used. If no language tag is set on the context, metrics for the default
    --  language (as determined by Pango.Language.Get_Default) will be returned.
+   --  @return a Pango.Font_Metrics.Pango_Font_Metrics object. The caller must
+   --  call Pango.Font_Metrics.Unref when finished using the object.
 
    function Get_Round_Glyph_Positions
       (Self : not null access Pango_Context_Record) return Boolean;
@@ -262,6 +271,7 @@ package Pango.Context is
    --  objects that need update when their Pango.Context.Pango_Context changes,
    --  like Pango.Layout.Pango_Layout.
    --  Since: gtk+ 1.32.4
+   --  @return The current serial number of Context.
 
    function List_Families
       (Self : not null access Pango_Context_Record)
@@ -276,6 +286,8 @@ package Pango.Context is
    --  closest match for Desc.
    --  @param Desc a Pango.Font.Pango_Font_Description describing the font to
    --  load
+   --  @return the newly allocated Pango.Font.Pango_Font that was loaded, or
+   --  null if no font matched.
 
    function Load_Fontset
       (Self     : not null access Pango_Context_Record;
@@ -288,5 +300,7 @@ package Pango.Context is
    --  load
    --  @param Language a Pango.Language.Pango_Language the fonts will be used
    --  for
+   --  @return the newly allocated Pango.Fontset.Pango_Fontset loaded, or null
+   --  if no font matched.
 
 end Pango.Context;

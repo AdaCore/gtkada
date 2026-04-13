@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkSeparator is a horizontal or vertical separator widget, depending on
 --  the value of the Gtk.Orientable.Gtk_Orientable:orientation property, used
 --  to group the widgets within a window. It displays a line with a shadow to
@@ -32,7 +31,6 @@
 --  GtkSeparator has a single CSS node with name separator. The node gets one
 --  of the .horizontal or .vertical style classes.
 --
---  </description>
 --  <screenshot>gtk-separator</screenshot>
 --  <group>Ornaments</group>
 

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Toggle_Button.Gtk_Toggle_Button is a Gtk.Button.Gtk_Button which
 --  will remain "pressed-in" when clicked. Clicking again will cause the toggle
 --  button to return to its normal state.
@@ -83,12 +82,9 @@
 --       gtk_widget_show_all (window);
 --     }
 --
---  </description>
---  <description>
 --  You should consider using a Gtk_Check_Button instead, since it looks nicer
 --  and provides more visual clues that the button can be toggled.
 --
---  </description>
 --  <screenshot>gtk-toggle_button</screenshot>
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_toggle_buttons.adb</testgtk>
@@ -173,6 +169,7 @@ package Gtk.Toggle_Button is
    --  Queries a Gtk.Toggle_Button.Gtk_Toggle_Button and returns its current
    --  state. Returns True if the toggle button is pressed in and False if it
    --  is raised.
+   --  @return a Boolean value.
 
    procedure Set_Active
       (Toggle_Button : not null access Gtk_Toggle_Button_Record;
@@ -185,6 +182,8 @@ package Gtk.Toggle_Button is
       (Toggle_Button : not null access Gtk_Toggle_Button_Record)
        return Boolean;
    --  Gets the value set by Gtk.Toggle_Button.Set_Inconsistent.
+   --  @return True if the button is displayed as inconsistent, False
+   --  otherwise
 
    procedure Set_Inconsistent
       (Toggle_Button : not null access Gtk_Toggle_Button_Record;
@@ -204,6 +203,8 @@ package Gtk.Toggle_Button is
        return Boolean;
    --  Retrieves whether the button is displayed as a separate indicator and
    --  label. See Gtk.Toggle_Button.Set_Mode.
+   --  @return True if the togglebutton is drawn as a separate indicator and
+   --  label.
 
    procedure Set_Mode
       (Toggle_Button  : not null access Gtk_Toggle_Button_Record;

@@ -360,6 +360,7 @@ package Gtk.Stock is
    --  Copies a stock item, mostly useful for language bindings and not in
    --  applications.
    --  Deprecated since 3.10, 1
+   --  @return a new Gtk.Stock.Gtk_Stock_Item
 
    ----------------------
    -- GtkAda additions --
@@ -416,6 +417,7 @@ package Gtk.Stock is
    --  Deprecated since 3.10, 1
    --  @param Stock_Id a stock item name
    --  @param Item stock item to initialize with values
+   --  @return True if Item was initialized
 
 private
 type Gtk_Stock_Item is record

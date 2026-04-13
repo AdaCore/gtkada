@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf can be used to render
 --  an image in a cell. It allows to render either a given
 --  Gdk.Pixbuf.Gdk_Pixbuf (set via the
@@ -39,8 +38,6 @@
 --  Gtk.Cell_Renderer.Gtk_Cell_Renderer:is-expanded property is False and the
 --  Gtk.Cell_Renderer_Pixbuf.Gtk_Cell_Renderer_Pixbuf:pixbuf-expander-closed
 --  property is set to a pixbuf, it renders that one.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
