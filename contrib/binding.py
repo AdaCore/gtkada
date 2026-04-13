@@ -372,7 +372,7 @@ class SubprogramProfile(object):
     @staticmethod
     def parse(node, gtkmethod, pkg=None, ignore_return=False):
         """Parse the parameter info and return type info from the XML
-           GIR node, overriding with binding.xml.
+           GIR node, overriding with binding.toml.
            gtkmethod is the GtkAdaMethod that contains the overriding for the
            various method attributes.
            If pkg is specified, with statements are added as necessary.
@@ -931,7 +931,7 @@ class GIRClass(object):
            This returns None if no binding was made, an instance of Subprogram
            otherwise.
            `adaname' is the name of the generated Ada subprograms. By default,
-           it is computed automatically from either binding.xml or the "name"
+           it is computed automatically from either binding.toml or the "name"
            attribute of `node'.
            `profile' is an instance of SubprogramProfile
         """
@@ -1645,7 +1645,7 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
             self.pkg.add_with('Glib.Object')
 
     def _globals(self):
-        funcs = self.gtkpkg.get_global_functions()  # List of binding.xml nodes
+        funcs = self.gtkpkg.get_global_functions()  # List of binding.toml entries
         if funcs:
             section = self.pkg.section("Functions")  # Make sure section exists
             for f in funcs:
@@ -2912,9 +2912,9 @@ parser.add_option(
     dest="gir_file",
     metavar="FILE")
 parser.add_option(
-    "--xml-file",
-    help="input GtkAda binding.xml file",
-    dest="xml_file",
+    "--toml-file",
+    help="input GtkAda binding.toml file",
+    dest="toml_file",
     metavar="FILE")
 parser.add_option(
     "--ada-output",
@@ -2933,8 +2933,8 @@ parser.add_option(
 missing_files = []
 if options.gir_file is None:
     missing_files.append("GIR file")
-if options.xml_file is None:
-    missing_files.append("binding.xml file")
+if options.toml_file is None:
+    missing_files.append("binding.toml file")
 if options.ada_outfile is None:
     missing_files.append("Ada output file")
 if options.c_outfile is None:
@@ -2942,7 +2942,7 @@ if options.c_outfile is None:
 if missing_files:
     parser.error('Must specify files:\n\t' + ', '.join(missing_files))
 
-gtkada = GtkAda(options.xml_file)
+gtkada = GtkAda(options.toml_file)
 gir = GIR(options.gir_file)
 
 Package.copyright_header = \

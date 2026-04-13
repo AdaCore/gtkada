@@ -2,227 +2,232 @@
 See annotations documentation at:
     https://live.gnome.org/GObjectIntrospection/Annotations
 
-Parses the file binding.xml, which is used to override some aspects of
+Parses the file binding.toml, which is used to override some aspects of
 the automatically generated code.
 The syntax of that file is as follows:
-    <?xml version="1.0"?>
-    <GIR>
-       <package />   <!--  repeated as often as needed
-    </GIR>
 
-Where the package node is defined as follows:
-    <package id="..."       <!-- mandatory, ctype -->
-             obsolescent="..." <!--  Whether this package is obsolete -->
-             bindtype="..."  <!-- False if the type should not be bound, only
-                                  its methods -->
-             into="..."      <!-- optional, the package to bind types and
-                                  methods into -->
-             ada="..."       <!-- optional, the package's ada name -->
-             parent="..."    <!-- Override the parent type for the widget type
-                                  in this package -->
-    >
-       <doc screenshot="..." <!-- optional -->
-            group="..."      <!-- optional -->
-            testgtk="..."    <!-- optional -->
-            see="..."        <!-- optional -->
-       >
-       package-level documentation
-       </doc>
+    # Each package is a top-level table section
+    [PackageId]
+      obsolescent = true   # optional, whether this package is obsolete
+      bindtype = false     # optional, false if the type should not be bound,
+                           #   only its methods
+      into = "..."         # optional, the package to bind types and methods
+                           #   into
+      ada = "..."          # optional, the package's Ada name
+      parent = "..."       # override the parent type for the widget type in
+                           #   this package
 
-       <type               <!-- repeated as needed ->
-           name="..."      <!-- mandatory, Ada type name -->
-           subtype="True"  <!-- optional, if True generate a subtype -->
-       />
+      [PackageId.doc]
+        screenshot = "..."   # optional
+        group = "..."        # optional
+        testgtk = "..."      # optional
+        see = "..."          # optional
+        text = '''...'''     # package-level documentation
 
-       <parameter
-           name="..."
-           ada="..."       <!-- Override default naming for all methods.
-                                In particular used for "Self" -->
-           type="..."      <!-- Override Ada types for all methods -->
-           ctype="..."     <!-- Override C type (to better qualify it) -->
-           direction="..." <!-- Override direction (see <parameter> below) -->
-       />
+      [[PackageId.parameter]]  # repeated as often as needed
+        name = "..."
+        ada = "..."       # override default naming for all methods;
+                          #   in particular used for "Self"
+        type = "..."      # override Ada types for all methods
+        ctype = "..."     # override C type (to better qualify it)
+        direction = "..."  # override direction (see [[...parameter]] below)
 
-       <!-- By default, virtual methods are bound for interfaces, but not for
-            other classes. You should use the following to control which
-            methods should be bound.
-       -->
-       <virtual-method  <!--  list of virtual methods to bind -->
-           id='...'     <!--  the name of the virtual method, or '*'  -->
-           bind=True    <!--  by default, all methods bound for interfaces -->
-       />
+      # By default, virtual methods are bound for interfaces, but not for
+      # other classes. Use the following to control which methods are bound.
+      [[PackageId.virtual_method]]
+        id = "..."         # name of the virtual method, or "*"
+        bind = false       # by default, all methods bound for interfaces
 
-       <!-- The following tag can be used to override various properties from
-            the GIR file.
+      # The following can be used to override various properties from the
+      # GIR file. It is also possible to indicate that a method should not
+      # be bound (or that a method inherited from an interface should not be
+      # repeated in the binding) by setting bind = false.
+      [[PackageId.method]]   # repeated as needed
+        id = "..."           # mandatory, name of the C method
+                             # fields are not bound by default, but are
+                             #   associated with
+                             #     "gtkada_%s_get_%s" % (adapkg, field_name)
+                             #   methods
+                             #   for signals, use "::signal-name"
+        ada = "..."          # optional, name of the Ada subprogram
+        bind = false         # optional, if false no binding generated
+        obsolescent = true   # optional, whether this method is obsolete
+        transfer_ownership = "full"  # set to "full" to indicate the return
+                             #   value must be freed by the caller
+        return_as_param = "..."  # optional, replace return parameter with an
+                             #   out parameter with this name; used to avoid
+                             #   functions with out parameters
+        return = "..."       # override C type for the returned value, or
+                             #   "void" to change into procedure
+        classwide = true     # classwide, not a primitive operation
+        body = '''...'''     # optional body of subprogram (after "is");
+                             #   use "%(auto)s" to use the automatic body
+                             #   and append to it
 
-            It is also possible to indicate that a method should not be bound
-            (or that a method inherited from an interface should not be
-            repeated in the binding, by setting the "bind" attribute to False.
-       -->
+        [PackageId.method.doc]
+          extend = true      # if true, append to doc from GIR
+          text = '''...'''   # "\n" forces a newline; paragraphs are created
+                             #   on empty lines
 
-       <method             <!-- repeated as needed -->
-           id="..."        <!-- mandatory, name of the C method -->
-                           <!-- fields are not bound by default, but are
-                                associated with
-                                    "gtkada_%s_get_%s" % (adapkg, field_name)
-                                methods
-                                For signals, we use "::signal-name"
-                           -->
-           ada="..."       <!-- optional, name of the Ada subprogram -->
-           bind="true"     <!-- optional, if false no binding generated -->
-           obsolescent=".." <!--  Whether this method is obsolete" -->
-           transfer-ownership='none'  <!-- set to 'full' to indicate the return
-                                value must be freed by the caller -->
-           return_as_param="..." <!-- optional, replace return parameter with
-                                an out parameter with this name. Used to avoid
-                                functions with out parameters. -->
-           return="..."    <!-- Override C type for the returned value, or
-                                "void" to change into procedure. -->
-           classwide="False"  <!-- classwide, not a primitive operation -->
-       >
-         <doc extend="..."> <!-- if extend is true, append to doc from GIR -->
-            ...            <!-- "\n" forces a newline, paragraphs are created
-                                          on empty lines. -->
-         </doc>
-         <parameter        <!-- repeated as needed -->
-            name="..."     <!-- mandatory, lower-cased name of param,
-                             use "varargs" to replace the varargs parameter -->
-            ada="..."      <!-- optional, name to use in Ada. If empty, the
-                                parameter will be omitted in the Ada profile,
-                                but kept in the C profile.
-                           -->
-            type="..."     <!-- optional, override Ada type.
-                                The value will be passed as is to C, unless
-                                it is "Glib.Object.GObject", in which
-                                case the value is processed as a GObject -->
-            ctype="..."    <!-- Override C type (to better qualify it) -->
-            default="..."  <!-- optional, the default value for the param-->
-            direction=".." <!-- optional, "in", "out", "access" or "inout" -->
-            allow-none="0" <!-- If C accepts a NULL value (an empty string
-                                is mapped to the null pointer -->
-         />
-         <body>...</body>  <!-- optional, body of subprogram (after "is")
-                             If the subprogram is defined for an interface,
-                             it will automatically be duplicated on each type
-                             that implements that interface. As such, you
-                             should use "+Self" to pass the parameter to
-                             C, where the type of the C parameter should be
-                             the interface type itself. See GtkTreeModel.
+        [[PackageId.method.parameter]]  # repeated as needed
+          name = "..."       # mandatory, lower-cased name of param;
+                             #   use "varargs" to replace the varargs parameter
+          ada = "..."        # optional, name to use in Ada; if empty, the
+                             #   parameter will be omitted in the Ada profile
+                             #   but kept in the C profile
+          type = "..."       # optional, override Ada type; the value will be
+                             #   passed as is to C, unless it is
+                             #   "Glib.Object.GObject", in which case the
+                             #   value is processed as a GObject
+          ctype = "..."      # override C type (to better qualify it)
+          default = "..."    # optional, the default value for the param
+          direction = "..."  # optional, "in", "out", "access" or "inout"
+          allow_none = "1"   # if C accepts a NULL value (an empty string
+                             #   is mapped to the null pointer)
 
-                             You can use "%(auto)s" to use the automatic
-                             body and append to it.  -->
-         />
+      [[PackageId.function]]  # repeated as needed, for global functions
+                              # (same content as [[...method]])
 
-       <function id="...">   <!--  repeated as needed, for global functions -->
-                             <!--  content is same as <method> -->
-       </function>
+      [[PackageId.callback]]  # repeated as needed (same content as method)
 
-       <constant
-             prefix_regexp="..."  <!--  maps all constants whose C type matches
-                                        the regexp -->
-             prefix="..."         <!--  omit this prefix from the C name, to
-                                        generate the Ada name -->
-       />
+      [[PackageId.constant]]
+        prefix_regexp = "..."  # maps all constants whose C type matches
+                               #   the regexp
+        prefix = "..."         # omit this prefix from the C name, to
+                               #   generate the Ada name
 
-       <!-- The following statement indicates that the binding for the
-            enumeration should be added in the current package.
-            This automatically generates the naming exceptions for the type
-            and its values, but you can override the mapping by:
-              * adding entries in data.py (cname_to_adaname)
-                For instance:    "GTK_SIZE_GROUP_NONE": "None"
-              * or setting the prefix attribute, for instance
-                 prefix="GTK_SIZE_GROUP_"
-       -->
-       <enum ctype="..."
-             ada="..."     <!-- optional Ada name (no package info needed) -->
-             prefix="GTK_" <!-- remove prefix from values to get Ada name -->
-             asbitfield="false" <!--  forces a bitfield -->
-             ignore="value1 value2..."  <!-- values that should not be bound-->
-       />
+      # The following indicates that the binding for the enumeration should
+      # be added in the current package. This automatically generates the
+      # naming exceptions for the type and its values, but you can override
+      # the mapping by adding entries in data.py (cname_to_adaname) or by
+      # setting the prefix attribute.
+      [[PackageId.enum]]
+        ctype = "..."
+        ada = "..."        # optional Ada name (no package info needed)
+        prefix = "GTK_"   # remove prefix from values to get Ada name
+        asbitfield = false # forces a bitfield
+        ignore = "value1 value2..."  # values that should not be bound
 
-       <!-- Support for <record> types -->
-       <record ctype="..."
-             ada="..."     <!-- optional Ada name (no package info needed) -->
-             private="False"  <!--  whether to make it "private" -->
-       >
-          <field name="..." type="..."/>   <!--  override ctype -->
-          <union value="..." field="..."/>  <!--  once for each value of
-                                                  discriminant, mapping to
-                                                  relevant field --
-       </record>
+      [[PackageId.record]]
+        ctype = "..."
+        ada = "..."        # optional Ada name (no package info needed)
+        private = true     # whether to make it "private"
 
-       <!-- Instantiates a list of elements. These statements automatically
-            define new ctypes which are the concatenation of the ctype given
-            as attribute and a suffix (resp. "List" and "SList"), so that you
-            can then use these lists as parameter types in methods.
-       -->
+        [[PackageId.record.field]]
+          name = "..."
+          ctype = "..."    # override ctype
 
-       <list ada="Ada name for the list type"
-             section="..."  <!--  Where should the list be declared -->
-             ctype="..."/>  <!--  Name of the element contained in the list -->
-       <slist ada="Ada name for the list type"  <!-- single-linked list -->
-             section="..."  <!--  Where should the list be declared -->
-             ctype="..."/>  <!--  Name of the element contained in the list -->
+        [[PackageId.record.union]]  # once for each value of discriminant,
+                                    #   mapping to the relevant field
+          value = "..."
+          field = "..."
 
-       <extra>
-          <gir:method>...  <!-- optional, same nodes as in the .gir file -->
-          <with_spec pkg="..." use="true"/>
-                           <!-- extra with clauses for spec -->
-          <with_body pkg="..." use="true"/>
-                           <!-- extra with clauses for body -->
+      # Instantiates a list of elements. These automatically define new
+      # ctypes which are the concatenation of the ctype given as attribute
+      # and a suffix (resp. "List" and "SList"), so that you can then use
+      # these lists as parameter types in methods.
+      [[PackageId.list]]    # double-linked list
+        ada = "..."         # Ada name for the list type
+        ctype = "..."       # name of the element contained in the list
+        section = "..."     # optional, where should the list be declared
 
-          <!-- Code will be put after generated subprograms-->
-          <spec>...     <!-- optional, code to insert in spec -->
-          <body before="true">...     <!-- optional, code to insert in body
-                By default, it is inserted before the generated code,
-                unless 'before' is set to "false" -->
+      [[PackageId.slist]]   # single-linked list
+        ada = "..."
+        ctype = "..."
+        section = "..."     # optional
 
-          <type            <!-- Maps a C type to an Ada type -->
-             ctype="..."   <!-- Mandatory: c type name -->
-             ada="..."     <!-- Mandatory: ada type name -->
-          >
-             code          <!-- Optional, the type declaration, will be put
-                                after generated types but before subprograms-->
-          </type>
-       </extra>
-    </package>
+      [[PackageId.type]]
+        name = "..."
+        subtype = true      # optional, if true generate a subtype
+
+      [PackageId.extra]
+        body = '''...'''    # code inserted in body (before generated
+                            #   subprograms by default)
+
+        [[PackageId.extra.with_spec]]
+          pkg = "..."       # extra with clause for spec
+          use = false       # default true
+
+        [[PackageId.extra.with_body]]
+          pkg = "..."       # extra with clause for body
+          use = false       # default true
+
+        [[PackageId.extra.spec]]
+          text = '''...'''  # code to insert in spec
+          private = true    # optional, whether to add to private part
+
+        [[PackageId.extra.type]]   # maps a C type to an Ada type
+          ctype = "..."     # mandatory: C type name
+          ada = "..."       # mandatory: Ada type name
+          text = '''...'''  # optional, type declaration code (placed after
+                            #   generated types but before subprograms)
+
+        [[PackageId.extra.gir_method]]
+          xml = "..."       # XML string of the GIR method element
 """
 
-from xml.etree.cElementTree import parse, SubElement
+try:
+    import tomllib
+except ImportError:
+    import tomli as tomllib
+
+import xml.etree.ElementTree as ET
+
 from adaformat import AdaType, GObject, List, naming, Enum, Record
 
 
 class GtkAda(object):
 
     def __init__(self, filename):
-        self._tree = parse(filename)
-        self.root = self._tree.getroot()
-        self.packages = dict()
-        for node in self.root:
-            if node.tag == "package":
-                self.packages[node.get("id")] = GtkAdaPackage(node)
+        with open(filename, "rb") as f:
+            self._data = tomllib.load(f)
+        self.packages = {
+            pkg_id: GtkAdaPackage(pkg_id, pkg_data)
+            for pkg_id, pkg_data in self._data.items()
+        }
 
     def get_pkg(self, pkg):
         """Return the GtkAdaPackage for a given package"""
-        return self.packages.get(pkg, GtkAdaPackage(None))
+        return self.packages.get(pkg, GtkAdaPackage(None, None))
+
+
+_CONTENT_KEYS = frozenset({
+    'doc', 'parameter', 'type', 'enum', 'record', 'list', 'slist',
+    'constant', 'method', 'function', 'virtual_method', 'callback', 'extra',
+})
+"""Keys in a package dict that correspond to child elements in the XML.
+
+In the original XML reader, an ElementTree element with no children evaluated
+as falsy (``bool(elem) == False``).  Methods that used ``if self.node:`` would
+therefore be skipped for packages that had only attributes (e.g. just
+``into="..."``) and no child elements.  We replicate this behaviour by
+checking for the presence of at least one content key.
+"""
 
 
 class GtkAdaPackage(object):
 
-    """A <package> node in the binding.xml file"""
+    """A package section in the binding.toml file"""
 
-    def __init__(self, node):
+    def __init__(self, pkg_id, node):
+        self.pkg_id = pkg_id
         self.node = node
-        self.doc = []
 
-        if node:
-            self.bindtype = node.get("bindtype", "t").lower() != "false"
+        if node is not None:
+            self.bindtype = node.get("bindtype", True)
         else:
             self.bindtype = True
 
     def __repr__(self):
-        return "<GtkAdaPackage name=%s>" % (
-            self.node.get("id") if self.node else "")
+        return "<GtkAdaPackage name=%s>" % (self.pkg_id or "")
+
+    def _has_children(self):
+        """True if the package has content beyond direct attributes.
+
+        Replicates the XML ElementTree falsy-element behaviour: a node with no
+        child elements (even if it has attributes) evaluated as False.
+        """
+        return self.node is not None and bool(self.node.keys() & _CONTENT_KEYS)
 
     def register_types(self, adapkg):
         """If we are going to generate some enumerations in the package, we
@@ -232,32 +237,32 @@ class GtkAdaPackage(object):
            adapkg is the name of the Ada package.
         """
 
-        if self.node:
-            for enum in self.node.findall("enum"):
+        if self._has_children():
+            for enum in self.node.get("enum", []):
                 Enum.register_ada_decl(pkg=adapkg,
-                                       ctype=enum.get("ctype"),
-                                       ada=enum.get("ada", None))
-            for rec in self.node.findall("record"):
+                                       ctype=enum["ctype"],
+                                       ada=enum.get("ada"))
+            for rec in self.node.get("record", []):
                 Record.register_ada_record(
                     pkg=adapkg,
-                    ctype=rec.get("ctype"),
-                    ada=rec.get("ada", None))
-            for rec in self.node.findall("list"):
+                    ctype=rec["ctype"],
+                    ada=rec.get("ada"))
+            for lst in self.node.get("list", []):
                 List.register_ada_list(
                     pkg=adapkg,
-                    ctype=rec.get("ctype"),
-                    ada=rec.get("ada", None))
-            for rec in self.node.findall("slist"):
+                    ctype=lst["ctype"],
+                    ada=lst.get("ada"))
+            for slst in self.node.get("slist", []):
                 List.register_ada_list(
                     pkg=adapkg,
-                    ctype=rec.get("ctype"),
-                    ada=rec.get("ada", None),
+                    ctype=slst["ctype"],
+                    ada=slst.get("ada"),
                     single=True)
 
     def parent_type(self):
         """Override the parent type for the main widget type in this package"""
-        if self.node:
-            return self.node.get("parent", None)
+        if self._has_children():
+            return self.node.get("parent")
         return None
 
     def enumerations(self):
@@ -265,13 +270,12 @@ class GtkAdaPackage(object):
            package. The result is a list of tuples.
         """
         result = []
-        if self.node:
-            for enum in self.node.findall("enum"):
-                result.append((enum.get("ctype"),
-                               naming.type(name="", cname=enum.get("ctype")),
+        if self._has_children():
+            for enum in self.node.get("enum", []):
+                result.append((enum["ctype"],
+                               naming.type(name="", cname=enum["ctype"]),
                                enum.get("prefix", "GTK_"),
-                               enum.get(
-                                   "asbitfield", "false").lower() == "true",
+                               enum.get("asbitfield", False),
                                enum.get("ignore", "")
                                ))
         return result
@@ -282,7 +286,7 @@ class GtkAdaPackage(object):
         """
         if self.node is not None:
             return [(c.get("prefix_regexp", ""), c.get("prefix", ""))
-                    for c in self.node.findall("constant")]
+                    for c in self.node.get("constant", [])]
         return []
 
     def lists(self):
@@ -293,31 +297,31 @@ class GtkAdaPackage(object):
                 ...]
         """
         result = []
-        if self.node:
-            for l_inst in self.node.findall("list"):
-                result.append((l_inst.get("ada"),
-                               naming.type(name="", cname=l_inst.get("ctype")),
+        if self._has_children():
+            for lst in self.node.get("list", []):
+                result.append((lst.get("ada"),
+                               naming.type(name="", cname=lst["ctype"]),
                                False,
-                               l_inst.get("section", "")))
-            for s_l in self.node.findall("slist"):
-                result.append((s_l.get("ada"),
-                               naming.type(name="", cname=s_l.get("ctype")),
+                               lst.get("section", "")))
+            for slst in self.node.get("slist", []):
+                result.append((slst.get("ada"),
+                               naming.type(name="", cname=slst["ctype"]),
                                True,
-                               s_l.get("section", "")))
+                               slst.get("section", "")))
 
         return result
 
     def add_record_type(self, ctype):
         """Add explicit record to bind, unless it is already mentioned
-           explictly in the <record> nodes.
+           explicitly in the [[...record]] entries.
         """
 
-        if self.node:
-            for rec in self.node.findall("record"):
+        if self._has_children():
+            for rec in self.node.get("record", []):
                 if rec.get("ctype") == ctype:
                     return
 
-            SubElement(self.node, "record", {"ctype": ctype})
+            self.node.setdefault("record", []).append({"ctype": ctype})
 
     def records(self):
         """Returns the list of record types, as a list of tuples:
@@ -327,48 +331,48 @@ class GtkAdaPackage(object):
            overridden:
                { name: CType, ... }
            and union is a list of tuples (value, field) associating
-           a field of a <union> with the corresponding value of the
-           discriminant.
+           a field of a [[...record.union]] with the corresponding value of
+           the discriminant.
 
            The returned list includes records added via add_record_type
         """
 
         result = []
-        if self.node:
-            for rec in self.node.findall("record"):
+        if self._has_children():
+            for rec in self.node.get("record", []):
                 override_fields = {}
 
-                for field in rec.findall("field"):
-                    override_fields[field.get("name")] = \
-                        naming.type(name="", cname=field.get("ctype"))
+                for field in rec.get("field", []):
+                    override_fields[field["name"]] = \
+                        naming.type(name="", cname=field["ctype"])
 
                 unions = []
-                for field in rec.findall("union"):
-                    unions.append((field.get("value"), field.get("field")))
+                for union in rec.get("union", []):
+                    unions.append((union["value"], union["field"]))
 
-                result.append((rec.get("ctype"),
+                result.append((rec["ctype"],
                                naming.type(name="",
-                                           cname=rec.get("ctype")),
+                                           cname=rec["ctype"]),
                                rec.get("ada"),
                                override_fields, unions,
-                               rec.get("private", "false").lower() == "true"))
+                               rec.get("private", False)))
 
         return result
 
     def get_doc(self):
-        """Return the overridden doc for for the package, as a list of
-           string. Each string is a paragraph
+        """Return the overridden doc for the package, as a list of
+           strings. Each string is a paragraph.
         """
         if self.node is None:
             return []
 
-        docnode = self.node.find("doc")
+        docnode = self.node.get("doc")
         if docnode is None:
             return []
 
         doc = []
 
-        txt = docnode.text or ""
+        txt = docnode.get("text", "")
         if txt:
             doc = ["<description>", txt, "</description>"]
 
@@ -392,13 +396,13 @@ class GtkAdaPackage(object):
 
     def get_method(self, cname):
         if self.node is not None:
-            for f in self.node.findall("method"):
+            for f in self.node.get("method", []):
                 if f.get("id") == cname:
                     return GtkAdaMethod(f, self)
-            for f in self.node.findall("virtual-method"):
+            for f in self.node.get("virtual_method", []):
                 if f.get("id") == cname:
                     return GtkAdaMethod(f, self)
-            for cb in self.node.findall("callback"):
+            for cb in self.node.get("callback", []):
                 if cb.get("id") == cname:
                     return GtkAdaMethod(cb, self)
 
@@ -407,37 +411,92 @@ class GtkAdaPackage(object):
     def get_type(self, name):
         if self.node is not None:
             name = name.lower()
-            for f in self.node.findall("type"):
-                if f.get("name").lower() == name:
+            for f in self.node.get("type", []):
+                if f.get("name", "").lower() == name:
                     return GtkAdaType(f)
         return GtkAdaType(None)
 
     def into(self):
         if self.node is not None:
-            return self.node.get("into", None)
+            return self.node.get("into")
         return None
 
     def ada_name(self):
         if self.node is not None:
-            return self.node.get("ada", None)
+            return self.node.get("ada")
         return None
 
     def is_obsolete(self):
         if self.node is not None:
-            return self.node.get("obsolescent", "False").lower() == "true"
+            return self.node.get("obsolescent", False)
         return False
 
     def extra(self):
         if self.node is not None:
-            extra = self.node.find("extra")
-            if extra is not None:
-                return list(extra)
+            extra_dict = self.node.get("extra")
+            if extra_dict is not None:
+                return self._extra_to_elements(extra_dict)
         return None
+
+    def _extra_to_elements(self, extra_dict):
+        """Convert the TOML extra dict to XML elements.
+
+           The result is extended into a GIR XML node by callers, so the
+           elements must use the same tags and attributes that binding.py
+           expects to find via ElementTree searches.
+        """
+        GIR_NS = "http://www.gtk.org/introspection/core/1.0"
+        elements = []
+
+        body_text = extra_dict.get("body")
+        if body_text:
+            elem = ET.Element("body")
+            elem.text = body_text
+            elements.append(elem)
+
+        for ws in extra_dict.get("with_spec", []):
+            elem = ET.Element("with_spec")
+            elem.set("pkg", ws.get("pkg", ""))
+            use = ws.get("use", True)
+            elem.set("use", "true" if use else "false")
+            elements.append(elem)
+
+        for wb in extra_dict.get("with_body", []):
+            elem = ET.Element("with_body")
+            elem.set("pkg", wb.get("pkg", ""))
+            use = wb.get("use", True)
+            elem.set("use", "true" if use else "false")
+            elements.append(elem)
+
+        for spec in extra_dict.get("spec", []):
+            elem = ET.Element("spec")
+            elem.text = spec.get("text", "")
+            if spec.get("private", False):
+                elem.set("private", "True")
+            elements.append(elem)
+
+        for type_entry in extra_dict.get("type", []):
+            elem = ET.Element("type")
+            elem.set("ctype", type_entry.get("ctype", ""))
+            ada = type_entry.get("ada")
+            if ada:
+                elem.set("ada", ada)
+            elem.text = type_entry.get("text", "")
+            elements.append(elem)
+
+        for gir_entry in extra_dict.get("gir_element", []):
+            xml_str = gir_entry.get("xml", "")
+            if xml_str:
+                ET.register_namespace("gir", GIR_NS)
+                gir_elem = ET.fromstring(xml_str)
+                elements.append(gir_elem)
+
+        return elements or None
 
     def get_default_param_node(self, name):
         if name and self.node is not None:
             name = name.lower()
-            for p in self.node.findall("parameter"):
+            for p in self.node.get("parameter", []):
                 if p.get("name") == name:
                     return p
         return None
@@ -448,8 +507,8 @@ class GtkAdaPackage(object):
         """
         if self.node is not None:
             return [GtkAdaMethod(c, self)
-                    for c in self.node.findall("function")
-                    if c.get("bind", "true").lower() != "false"]
+                    for c in self.node.get("function", [])
+                    if c.get("bind", True)]
         return []
 
     def bind_virtual_method(self, name, default):
@@ -459,9 +518,8 @@ class GtkAdaPackage(object):
         if not hasattr(self, 'virtual_methods'):
             self.virtual_methods = {'*': default}
             if self.node is not None:
-                for c in self.node.findall("virtual-method"):
-                    self.virtual_methods[c.get('id')] = (
-                        c.get("bind", "true").lower() == "true")
+                for c in self.node.get("virtual_method", []):
+                    self.virtual_methods[c.get('id')] = c.get('bind', True)
 
         v = self.virtual_methods.get(name, None)
         if v is None:
@@ -483,77 +541,76 @@ class GtkAdaMethod(object):
         default = self.pkg.get_default_param_node(name)
         if self.node is not None:
             name = name.lower()
-            for p in self.node.findall("parameter"):
-                if p.get("name").lower() == name:
+            for p in self.node.get("parameter", []):
+                if p.get("name", "").lower() == name:
                     return GtkAdaParameter(p, default=default)
 
         return GtkAdaParameter(None, default=default)
 
     def is_class_wide(self):
-        return self.node is not None \
-            and self.node.get("classwide", "False").lower() != "false"
+        return self.node is not None and self.node.get("classwide", False)
 
     def bind(self, default="true"):
         """Whether to bind"""
         if self.node is not None:
-            return self.node.get("bind", default).lower() != "false"
+            return self.node.get("bind", default != "false")
         return default != "false"
 
     def ada_name(self):
         if self.node is not None:
-            return self.node.get("ada", None)
+            return self.node.get("ada")
         return None
 
     def returned_c_type(self):
         if self.node is not None:
-            return self.node.get("return", None)
+            return self.node.get("return")
         return None
 
     def is_obsolete(self):
         if self.node is not None:
-            return self.node.get("obsolescent", "False").lower() == "true"
+            return self.node.get("obsolescent", False)
         return False
 
     def convention(self):
         if self.node is not None:
-            return self.node.get("convention", None)
+            return self.node.get("convention")
         return None
 
     def return_as_param(self):
         if self.node is not None:
-            return self.node.get("return_as_param", None)
+            return self.node.get("return_as_param")
         return None
 
     def transfer_ownership(self, return_girnode):
-        """Whether the value returned by this method needs to be free by the
+        """Whether the value returned by this method needs to be freed by the
            caller.
            return_girnode is the XML node from the gir file for the return
            value of the method.
         """
         default = return_girnode.get('transfer-ownership', 'none')
         if self.node is not None:
-            return self.node.get('transfer-ownership', default) != 'none'
+            return self.node.get('transfer_ownership', default) != 'none'
         else:
             return default != 'none'
 
     def get_body(self):
         if self.node is not None:
-            return self.node.findtext("body")
+            return self.node.get("body")
         return None
 
     def get_doc(self, default):
         """Return the doc, as a list of lines"""
         if self.node is not None:
-            d = self.node.find("doc")
+            d = self.node.get("doc")
             if d is not None:
-                txt = d.text
+                txt = d.get("text", "")
                 doc = []
                 for paragraph in txt.split("\n\n"):
                     for p in paragraph.split("\\n\n"):
                         doc.append(p)
                     doc.append("")
 
-                if d.get("extend", "false").lower() == "true":
+                if d.get("extend", False):
                     return [default, ""] + doc
                 return doc
         return [default]
@@ -567,61 +624,61 @@ class GtkAdaParameter(object):
 
     def get_default(self):
         if self.node is not None:
-            return self.node.get("default", None)
+            return self.node.get("default")
         return None
 
     def get_direction(self):
         if self.node is not None:
-            return self.node.get("direction", None)
+            return self.node.get("direction")
         if self.default is not None:
-            return self.default.get("direction", None)
+            return self.default.get("direction")
         return None
 
     def get_caller_allocates(self):
         value = None
         if self.node is not None:
-            value = self.node.get("caller-allocates", None)
+            value = self.node.get("caller_allocates")
         if self.default is not None:
-            value = self.default.get("caller-allocates", None)
+            value = self.default.get("caller_allocates")
         return value
 
     def get_transfer_ownership(self):
         value = None
         if self.node is not None:
-            value = self.node.get("transfer-ownership", None)
+            value = self.node.get("transfer_ownership")
         if self.default is not None:
-            value = self.default.get("transfer-ownership", None)
+            value = self.default.get("transfer_ownership")
         return value
 
     def ada_name(self):
         name = None
         if self.node is not None:
-            name = self.node.get("ada", None)
+            name = self.node.get("ada")
         if name is None and self.default is not None:
-            name = self.default.get("ada", None)
+            name = self.default.get("ada")
         return name
 
     def get_type(self, pkg):
         """pkg is used to set the with statements.
-           This returned the locally overridden type, or the one from the
+           This returns the locally overridden type, or the one from the
            default node for this parameter, or None if the type isn't
            overridden.
         """
 
         if self.node is not None:
-            t = self.node.get("type", None)
+            t = self.node.get("type")
             if t:
                 if t == "Glib.Object.GObject":
                     return GObject(t, userecord=False)
 
                 return AdaType(t, pkg=pkg)  # An instance of CType
 
-            t = self.node.get("ctype", None)
+            t = self.node.get("ctype")
             if t:
-                return t   # An XML node
+                return t   # The C type string
 
         if self.default is not None:
-            t = self.default.get("type", None)
+            t = self.default.get("type")
             if t:
                 return AdaType(t, pkg=pkg)
 
@@ -630,7 +687,7 @@ class GtkAdaParameter(object):
     def allow_none(self, girnode):
         default = girnode.get('allow-none', '0')
         if self.node is not None:
-            return self.node.get('allow-none', default) == '1'
+            return self.node.get('allow_none', default) == '1'
         else:
             return default == '1'
 
@@ -642,5 +699,5 @@ class GtkAdaType(object):
 
     def is_subtype(self):
         if self.node is not None:
-            return self.node.get("subtype", "false").lower() == "true"
+            return self.node.get("subtype", False)
         return False

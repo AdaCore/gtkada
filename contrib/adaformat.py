@@ -1105,7 +1105,7 @@ def cleanup_doc(doc):
 
     # get_package might have been called before we had the XML node
     # from the Gir file, and therefore no doc for the package. We can
-    # now override it, unless it came from binding.xml
+    # now override it, unless it came from binding.toml
 
     subp = re.compile(r"([\S_]+)\(\)")
     doc = subp.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
