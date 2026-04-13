@@ -158,9 +158,13 @@ package Gtk.Main is
    --  This can be used to update the UI and invoke timeouts etc. while doing
    --  some time intensive computation.
    --  ## Updating the UI during a long computation
-   --  |[<!-- language="C" --> // computation going on...
-   --  while (gtk_events_pending ()) gtk_main_iteration ();
-   --  // ...computation continued ]|
+   --
+   --     // computation going on...
+   --
+   --     while (gtk_events_pending ())
+   --       gtk_main_iteration ();
+   --
+   --     // ...computation continued
 
    procedure Main_Do_Event (Event : Gdk.Event.Gdk_Event);
    --  Processes a single GDK event.
@@ -224,19 +228,38 @@ package Gtk.Main is
    --  window. Of course you should not do this as the user expects a reaction
    --  from clicking the close icon of the window...
    --  ## A persistent window
-   --  |[<!-- language="C" --> include <gtk/gtk.h>
-   --  int main (int argc, char **argv) { GtkWidget *win, *but; const char
-   --  *text = "Close yourself. I mean it!";
-   --  gtk_init (&argc, &argv);
-   --  win = gtk_window_new (GTK_WINDOW_TOPLEVEL); g_signal_connect (win,
-   --  "delete-event", G_CALLBACK (gtk_true), NULL); g_signal_connect (win,
-   --  "destroy", G_CALLBACK (gtk_main_quit), NULL);
-   --  but = gtk_button_new_with_label (text); g_signal_connect_swapped (but,
-   --  "clicked", G_CALLBACK (gtk_object_destroy), win); gtk_container_add
-   --  (GTK_CONTAINER (win), but);
-   --  gtk_widget_show_all (win);
-   --  gtk_main ();
-   --  return 0; } ]|
+   --
+   --     include <gtk/gtk.h>
+   --
+   --     int
+   --     main (int argc, char **argv)
+   --     {
+   --       GtkWidget *win, *but;
+   --       const char *text = "Close yourself. I mean it!";
+   --
+   --       gtk_init (&argc, &argv);
+   --
+   --       win = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+   --       g_signal_connect (win,
+   --                         "delete-event",
+   --                         G_CALLBACK (gtk_true),
+   --                         NULL);
+   --       g_signal_connect (win, "destroy",
+   --                         G_CALLBACK (gtk_main_quit),
+   --                         NULL);
+   --
+   --       but = gtk_button_new_with_label (text);
+   --       g_signal_connect_swapped (but, "clicked",
+   --                                 G_CALLBACK (gtk_object_destroy),
+   --                                 win);
+   --       gtk_container_add (GTK_CONTAINER (win), but);
+   --
+   --       gtk_widget_show_all (win);
+   --
+   --       gtk_main ();
+   --
+   --       return 0;
+   --     }
 
    function False return Boolean;
    --  Analogical to Gtk.Main.True, this function does nothing but always

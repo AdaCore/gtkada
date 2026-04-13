@@ -52,13 +52,22 @@
 --  Gtk.Recent_Filter.Add_Application.
 --
 --  An example of a UI definition fragment specifying GtkRecentFilter rules:
---  |[ <object class="GtkRecentFilter"> <mime-types>
---  <mime-type>text/plain</mime-type> <mime-type>image/png</mime-type>
---  </mime-types> <patterns> <pattern>*.txt</pattern> <pattern>*.png</pattern>
---  </patterns> <applications> <application>gimp</application>
---  <application>gedit</application> <application>glade</application>
---  </applications> </object> ]|
 --
+--     <object class="GtkRecentFilter">
+--       <mime-types>
+--         <mime-type>text/plain</mime-type>
+--         <mime-type>image/png</mime-type>
+--       </mime-types>
+--       <patterns>
+--         <pattern>*.txt</pattern>
+--         <pattern>*.png</pattern>
+--       </patterns>
+--       <applications>
+--         <application>gimp</application>
+--         <application>gedit</application>
+--         <application>glade</application>
+--       </applications>
+--     </object>
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -139,9 +148,11 @@ package Gtk.Recent_Filter is
    --  not particularly useful until you add rules with
    --  Gtk.Recent_Filter.Add_Pattern, Gtk.Recent_Filter.Add_Mime_Type,
    --  Gtk.Recent_Filter.Add_Application, Gtk.Recent_Filter.Add_Age. To create
-   --  a filter that accepts any recently used resource, use: |[<!--
-   --  language="C" --> GtkRecentFilter *filter = gtk_recent_filter_new ();
-   --  gtk_recent_filter_add_pattern (filter, "*"); ]|
+   --  a filter that accepts any recently used resource, use:
+   --
+   --     GtkRecentFilter *filter = gtk_recent_filter_new ();
+   --     gtk_recent_filter_add_pattern (filter, "*");
+   --
    --  Since: gtk+ 2.10
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
@@ -152,9 +163,11 @@ package Gtk.Recent_Filter is
    --  not particularly useful until you add rules with
    --  Gtk.Recent_Filter.Add_Pattern, Gtk.Recent_Filter.Add_Mime_Type,
    --  Gtk.Recent_Filter.Add_Application, Gtk.Recent_Filter.Add_Age. To create
-   --  a filter that accepts any recently used resource, use: |[<!--
-   --  language="C" --> GtkRecentFilter *filter = gtk_recent_filter_new ();
-   --  gtk_recent_filter_add_pattern (filter, "*"); ]|
+   --  a filter that accepts any recently used resource, use:
+   --
+   --     GtkRecentFilter *filter = gtk_recent_filter_new ();
+   --     gtk_recent_filter_add_pattern (filter, "*");
+   --
    --  Since: gtk+ 2.10
 
    function Get_Type return Glib.GType;

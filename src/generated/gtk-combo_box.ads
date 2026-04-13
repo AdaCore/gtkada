@@ -48,14 +48,26 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> combobox ├── box.linked │ ╰── button.combo │
---  ╰── box │ ├── cellview │ ╰── arrow ╰── window.popup ]|
+--     combobox
+--     ├── box.linked
+--     │   ╰── button.combo
+--     │       ╰── box
+--     │           ├── cellview
+--     │           ╰── arrow
+--     ╰── window.popup
+--
 --
 --  A normal combobox contains a box with the .linked class, a button with the
 --  .combo class and inside those buttons, there are a cellview and an arrow.
 --
---  |[<!-- language="plain" --> combobox ├── box.linked │ ├── entry.combo │
---  ╰── button.combo │ ╰── box │ ╰── arrow ╰── window.popup ]|
+--     combobox
+--     ├── box.linked
+--     │   ├── entry.combo
+--     │   ╰── button.combo
+--     │       ╰── box
+--     │           ╰── arrow
+--     ╰── window.popup
+--
 --
 --  A GtkComboBox with an entry has a single CSS node with name combobox. It
 --  contains a box with the .linked class. That box contains an entry and a
@@ -771,17 +783,26 @@ package Gtk.Combo_Box is
    --  GtkComboBox::entry-text-column model column.
    --
    --  Here's an example signal handler which fetches data from the model and
-   --  displays it in the entry. |[<!-- language="C" --> static gchar*
-   --  format_entry_text_callback (GtkComboBox *combo, const gchar *path,
-   --  gpointer user_data) { GtkTreeIter iter; GtkTreeModel model; gdouble
-   --  value;
+   --  displays it in the entry.
    --
-   --  model = gtk_combo_box_get_model (combo);
+   --     static gchar*
+   --     format_entry_text_callback (GtkComboBox *combo,
+   --                                 const gchar *path,
+   --                                 gpointer     user_data)
+   --     {
+   --       GtkTreeIter iter;
+   --       GtkTreeModel model;
+   --       gdouble      value;
    --
-   --  gtk_tree_model_get_iter_from_string (model, &iter, path);
-   --  gtk_tree_model_get (model, &iter, THE_DOUBLE_VALUE_COLUMN, &value, -1);
+   --       model = gtk_combo_box_get_model (combo);
    --
-   --  return g_strdup_printf ("%g", value); } ]|
+   --       gtk_tree_model_get_iter_from_string (model, &iter, path);
+   --       gtk_tree_model_get (model, &iter,
+   --                           THE_DOUBLE_VALUE_COLUMN, &value,
+   --                           -1);
+   --
+   --       return g_strdup_printf ("%g", value);
+   --     }
    -- 
    --  Callback parameters:
    --    --  "path": the GtkTreePath string from the combo box's current model to

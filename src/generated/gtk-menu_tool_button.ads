@@ -36,10 +36,13 @@
 --  supports adding a menu by specifying "menu" as the "type" attribute of a
 --  <child> element.
 --
---  An example for a UI definition fragment with menus: |[ <object
---  class="GtkMenuToolButton"> <child type="menu"> <object class="GtkMenu"/>
---  </child> </object> ]|
+--  An example for a UI definition fragment with menus:
 --
+--     <object class="GtkMenuToolButton">
+--       <child type="menu">
+--         <object class="GtkMenu"/>
+--       </child>
+--     </object>
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");

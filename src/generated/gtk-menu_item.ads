@@ -34,14 +34,14 @@
 --  For more advanced label settings, you can fetch the child widget from the
 --  GtkBin.
 --
---  An example for setting markup and accelerator on a MenuItem: |[<!--
---  language="C" --> GtkWidget *menu_item = gtk_menu_item_new_with_label
---  ("Example Menu Item");
+--  An example for setting markup and accelerator on a MenuItem:
 --
---  GtkWidget *child = gtk_bin_get_child (GTK_BIN (menu_item));
---  gtk_label_set_markup (GTK_LABEL (child), "<i>new label</i> with
---  <b>markup</b>"); gtk_accel_label_set_accel (GTK_ACCEL_LABEL (child),
---  GDK_KEY_1, 0); ]|
+--     GtkWidget *menu_item = gtk_menu_item_new_with_label ("Example Menu Item");
+--
+--     GtkWidget *child = gtk_bin_get_child (GTK_BIN (menu_item));
+--     gtk_label_set_markup (GTK_LABEL (child), "<i>new label</i> with <b>markup</b>");
+--     gtk_accel_label_set_accel (GTK_ACCEL_LABEL (child), GDK_KEY_1, 0);
+--
 --
 --  # GtkMenuItem as GtkBuildable
 --
@@ -49,13 +49,19 @@
 --  interface supports adding a submenu by specifying "submenu" as the "type"
 --  attribute of a <child> element.
 --
---  An example of UI definition fragment with submenus: |[ <object
---  class="GtkMenuItem"> <child type="submenu"> <object class="GtkMenu"/>
---  </child> </object> ]|
+--  An example of UI definition fragment with submenus:
 --
+--     <object class="GtkMenuItem">
+--       <child type="submenu">
+--         <object class="GtkMenu"/>
+--       </child>
+--     </object>
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> menuitem ├── <child> ╰── [arrow.right] ]|
+--     menuitem
+--     ├── <child>
+--     ╰── [arrow.right]
+--
 --
 --  GtkMenuItem has a single CSS node with name menuitem. If the menuitem has
 --  a submenu, it gets another CSS node with name arrow, which has the .left or

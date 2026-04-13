@@ -51,16 +51,24 @@
 --  "horizontal-buttons" and set the icons of your items with the "verb-icon"
 --  attribute.
 --
---  |[ <section> <attribute name="display-hint">horizontal-buttons</attribute>
---  <item> <attribute name="label">Cut</attribute> <attribute
---  name="action">app.cut</attribute> <attribute
---  name="verb-icon">edit-cut-symbolic</attribute> </item> <item> <attribute
---  name="label">Copy</attribute> <attribute name="action">app.copy</attribute>
---  <attribute name="verb-icon">edit-copy-symbolic</attribute> </item> <item>
---  <attribute name="label">Paste</attribute> <attribute
---  name="action">app.paste</attribute> <attribute
---  name="verb-icon">edit-paste-symbolic</attribute> </item> </section> ]|
---
+--     <section>
+--       <attribute name="display-hint">horizontal-buttons</attribute>
+--       <item>
+--         <attribute name="label">Cut</attribute>
+--         <attribute name="action">app.cut</attribute>
+--         <attribute name="verb-icon">edit-cut-symbolic</attribute>
+--       </item>
+--       <item>
+--         <attribute name="label">Copy</attribute>
+--         <attribute name="action">app.copy</attribute>
+--         <attribute name="verb-icon">edit-copy-symbolic</attribute>
+--       </item>
+--       <item>
+--         <attribute name="label">Paste</attribute>
+--         <attribute name="action">app.paste</attribute>
+--         <attribute name="verb-icon">edit-paste-symbolic</attribute>
+--       </item>
+--     </section>
 --  # CSS nodes
 --
 --  GtkPopover has a single css node called popover. It always gets the

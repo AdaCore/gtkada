@@ -46,33 +46,42 @@
 --
 --  ## Creating two Gtk.Toggle_Button.Gtk_Toggle_Button widgets.
 --
---  |[<!-- language="C" --> static void output_state (GtkToggleButton *source,
---  gpointer user_data) { printf ("Active: %d\n", gtk_toggle_button_get_active
---  (source)); }
+--     static void output_state (GtkToggleButton *source, gpointer user_data) {
+--       printf ("Active: %d\n", gtk_toggle_button_get_active (source));
+--     }
 --
---  void make_toggles (void) { GtkWidget *window, *toggle1, *toggle2;
---  GtkWidget *box; const char *text;
+--     void make_toggles (void) {
+--       GtkWidget *window, *toggle1, *toggle2;
+--       GtkWidget *box;
+--       const char *text;
 --
---  window = gtk_window_new (GTK_WINDOW_TOPLEVEL); box = gtk_box_new
---  (GTK_ORIENTATION_VERTICAL, 12);
+--       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+--       box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
 --
---  text = "Hi, I'm a toggle button."; toggle1 =
---  gtk_toggle_button_new_with_label (text);
+--       text = "Hi, I'm a toggle button.";
+--       toggle1 = gtk_toggle_button_new_with_label (text);
 --
---  // Makes this toggle button invisible gtk_toggle_button_set_mode
---  (GTK_TOGGLE_BUTTON (toggle1), TRUE);
+--       // Makes this toggle button invisible
+--       gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (toggle1),
+--                                   TRUE);
 --
---  g_signal_connect (toggle1, "toggled", G_CALLBACK (output_state), NULL);
---  gtk_container_add (GTK_CONTAINER (box), toggle1);
+--       g_signal_connect (toggle1, "toggled",
+--                         G_CALLBACK (output_state),
+--                         NULL);
+--       gtk_container_add (GTK_CONTAINER (box), toggle1);
 --
---  text = "Hi, I'm a toggle button."; toggle2 =
---  gtk_toggle_button_new_with_label (text); gtk_toggle_button_set_mode
---  (GTK_TOGGLE_BUTTON (toggle2), FALSE); g_signal_connect (toggle2, "toggled",
---  G_CALLBACK (output_state), NULL); gtk_container_add (GTK_CONTAINER (box),
---  toggle2);
+--       text = "Hi, I'm a toggle button.";
+--       toggle2 = gtk_toggle_button_new_with_label (text);
+--       gtk_toggle_button_set_mode (GTK_TOGGLE_BUTTON (toggle2),
+--                                   FALSE);
+--       g_signal_connect (toggle2, "toggled",
+--                         G_CALLBACK (output_state),
+--                         NULL);
+--       gtk_container_add (GTK_CONTAINER (box), toggle2);
 --
---  gtk_container_add (GTK_CONTAINER (window), box); gtk_widget_show_all
---  (window); } ]|
+--       gtk_container_add (GTK_CONTAINER (window), box);
+--       gtk_widget_show_all (window);
+--     }
 --
 --  </description>
 --  <description>

@@ -41,25 +41,41 @@
 --  informational message, etc, by using Gtk.Info_Bar.Set_Message_Type. GTK+
 --  may use the message type to determine how the message is displayed.
 --
---  A simple example for using a Gtk.Info_Bar.Gtk_Info_Bar: |[<!--
---  language="C" --> GtkWidget *widget, *message_label, *content_area;
---  GtkWidget *grid; GtkInfoBar *bar;
+--  A simple example for using a Gtk.Info_Bar.Gtk_Info_Bar:
 --
---  // set up info bar widget = gtk_info_bar_new (); bar = GTK_INFO_BAR
---  (widget); grid = gtk_grid_new ();
+--     GtkWidget *widget, *message_label, *content_area;
+--     GtkWidget *grid;
+--     GtkInfoBar *bar;
 --
---  gtk_widget_set_no_show_all (widget, TRUE); message_label = gtk_label_new
---  (""); content_area = gtk_info_bar_get_content_area (bar); gtk_container_add
---  (GTK_CONTAINER (content_area), message_label); gtk_info_bar_add_button
---  (bar, _("_OK"), GTK_RESPONSE_OK); g_signal_connect (bar, "response",
---  G_CALLBACK (gtk_widget_hide), NULL); gtk_grid_attach (GTK_GRID (grid),
---  widget, 0, 2, 1, 1);
+--     // set up info bar
+--     widget = gtk_info_bar_new ();
+--     bar = GTK_INFO_BAR (widget);
+--     grid = gtk_grid_new ();
 --
---  // ...
+--     gtk_widget_set_no_show_all (widget, TRUE);
+--     message_label = gtk_label_new ("");
+--     content_area = gtk_info_bar_get_content_area (bar);
+--     gtk_container_add (GTK_CONTAINER (content_area),
+--                        message_label);
+--     gtk_info_bar_add_button (bar,
+--                              _("_OK"),
+--                              GTK_RESPONSE_OK);
+--     g_signal_connect (bar,
+--                       "response",
+--                       G_CALLBACK (gtk_widget_hide),
+--                       NULL);
+--     gtk_grid_attach (GTK_GRID (grid),
+--                      widget,
+--                      0, 2, 1, 1);
 --
---  // show an error message gtk_label_set_text (GTK_LABEL (message_label),
---  "An error occurred!"); gtk_info_bar_set_message_type (bar,
---  GTK_MESSAGE_ERROR); gtk_widget_show (bar); ]|
+--     // ...
+--
+--     // show an error message
+--     gtk_label_set_text (GTK_LABEL (message_label), "An error occurred!");
+--     gtk_info_bar_set_message_type (bar,
+--                                    GTK_MESSAGE_ERROR);
+--     gtk_widget_show (bar);
+--
 --
 --  # GtkInfoBar as GtkBuildable
 --

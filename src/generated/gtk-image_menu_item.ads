@@ -27,18 +27,18 @@
 --
 --  This is functionally equivalent to:
 --
---  |[<!-- language="C" --> GtkWidget *box = gtk_box_new
---  (GTK_ORIENTATION_HORIZONTAL, 6); GtkWidget *icon =
---  gtk_image_new_from_icon_name ("folder-music-symbolic", GTK_ICON_SIZE_MENU);
---  GtkWidget *label = gtk_label_new ("Music"); GtkWidget *menu_item =
---  gtk_menu_item_new ();
+--     GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+--     GtkWidget *icon = gtk_image_new_from_icon_name ("folder-music-symbolic", GTK_ICON_SIZE_MENU);
+--     GtkWidget *label = gtk_label_new ("Music");
+--     GtkWidget *menu_item = gtk_menu_item_new ();
 --
---  gtk_container_add (GTK_CONTAINER (box), icon); gtk_container_add
---  (GTK_CONTAINER (box), label);
+--     gtk_container_add (GTK_CONTAINER (box), icon);
+--     gtk_container_add (GTK_CONTAINER (box), label);
 --
---  gtk_container_add (GTK_CONTAINER (menu_item), box);
+--     gtk_container_add (GTK_CONTAINER (menu_item), box);
 --
---  gtk_widget_show_all (menu_item); ]|
+--     gtk_widget_show_all (menu_item);
+--
 --
 --  Note that the user may disable display of menu icons using the
 --  Gtk.Settings.Gtk_Settings:gtk-menu-images setting, so make sure to still
@@ -63,26 +63,26 @@
 --  code snippet adds a keyboard accelerator to the menu item, with a key
 --  binding of Ctrl+M:
 --
---  |[<!-- language="C" --> GtkWidget *box = gtk_box_new
---  (GTK_ORIENTATION_HORIZONTAL, 6); GtkWidget *icon =
---  gtk_image_new_from_icon_name ("folder-music-symbolic", GTK_ICON_SIZE_MENU);
---  GtkWidget *label = gtk_accel_label_new ("Music"); GtkWidget *menu_item =
---  gtk_menu_item_new (); GtkAccelGroup *accel_group = gtk_accel_group_new ();
+--     GtkWidget *box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+--     GtkWidget *icon = gtk_image_new_from_icon_name ("folder-music-symbolic", GTK_ICON_SIZE_MENU);
+--     GtkWidget *label = gtk_accel_label_new ("Music");
+--     GtkWidget *menu_item = gtk_menu_item_new ();
+--     GtkAccelGroup *accel_group = gtk_accel_group_new ();
 --
---  gtk_container_add (GTK_CONTAINER (box), icon);
+--     gtk_container_add (GTK_CONTAINER (box), icon);
 --
---  gtk_label_set_use_underline (GTK_LABEL (label), TRUE);
---  gtk_label_set_xalign (GTK_LABEL (label), 0.0);
+--     gtk_label_set_use_underline (GTK_LABEL (label), TRUE);
+--     gtk_label_set_xalign (GTK_LABEL (label), 0.0);
 --
---  gtk_widget_add_accelerator (menu_item, "activate", accel_group, GDK_KEY_m,
---  GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE); gtk_accel_label_set_accel_widget
---  (GTK_ACCEL_LABEL (label), menu_item);
+--     gtk_widget_add_accelerator (menu_item, "activate", accel_group,
+--                                 GDK_KEY_m, GDK_CONTROL_MASK, GTK_ACCEL_VISIBLE);
+--     gtk_accel_label_set_accel_widget (GTK_ACCEL_LABEL (label), menu_item);
 --
---  gtk_box_pack_end (GTK_BOX (box), label, TRUE, TRUE, 0);
+--     gtk_box_pack_end (GTK_BOX (box), label, TRUE, TRUE, 0);
 --
---  gtk_container_add (GTK_CONTAINER (menu_item), box);
+--     gtk_container_add (GTK_CONTAINER (menu_item), box);
 --
---  gtk_widget_show_all (menu_item); ]|
+--     gtk_widget_show_all (menu_item);
 --
 --  </description>
 

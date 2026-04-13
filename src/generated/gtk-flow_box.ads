@@ -52,8 +52,14 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> flowbox ├── flowboxchild │ ╰── <child> ├──
---  flowboxchild │ ╰── <child> ┊ ╰── [rubberband] ]|
+--     flowbox
+--     ├── flowboxchild
+--     │   ╰── <child>
+--     ├── flowboxchild
+--     │   ╰── <child>
+--     ┊
+--     ╰── [rubberband]
+--
 --
 --  GtkFlowBox uses a single CSS node with name flowbox. GtkFlowBoxChild uses
 --  a single CSS node with name flowboxchild. For rubberband selection, a

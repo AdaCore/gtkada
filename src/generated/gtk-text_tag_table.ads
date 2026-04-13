@@ -32,10 +32,13 @@
 --  adding tags by specifying "tag" as the "type" attribute of a <child>
 --  element.
 --
---  An example of a UI definition fragment specifying tags: |[ <object
---  class="GtkTextTagTable"> <child type="tag"> <object class="GtkTextTag"/>
---  </child> </object> ]|
+--  An example of a UI definition fragment specifying tags:
 --
+--     <object class="GtkTextTagTable">
+--      <child type="tag">
+--        <object class="GtkTextTag"/>
+--      </child>
+--     </object>
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");

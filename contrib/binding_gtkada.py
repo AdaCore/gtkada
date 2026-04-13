@@ -82,9 +82,7 @@ Where the package node is defined as follows:
        >
          <doc extend="..."> <!-- if extend is true, append to doc from GIR -->
             ...            <!-- "\n" forces a newline, paragraphs are created
-                                on empty lines. A paragraph that starts with
-                                '__PRE__' will be displayed exactly as is, no
-                                line wrapping is done.-->
+                                          on empty lines. -->
          </doc>
          <parameter        <!-- repeated as needed -->
             name="..."     <!-- mandatory, lower-cased name of param,

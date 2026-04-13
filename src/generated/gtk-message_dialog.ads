@@ -37,24 +37,40 @@
 --  automatically makes the dialog modal and waits for the user to respond to
 --  it. Gtk.Dialog.Run returns when any dialog button is clicked.
 --
---  An example for using a modal dialog: |[<!-- language="C" -->
---  GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT; dialog =
---  gtk_message_dialog_new (parent_window, flags, GTK_MESSAGE_ERROR,
---  GTK_BUTTONS_CLOSE, "Error reading "%s": %s", filename, g_strerror (errno));
---  gtk_dialog_run (GTK_DIALOG (dialog)); gtk_widget_destroy (dialog); ]|
+--  An example for using a modal dialog:
+--
+--     GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+--     dialog = gtk_message_dialog_new (parent_window,
+--                                      flags,
+--                                      GTK_MESSAGE_ERROR,
+--                                      GTK_BUTTONS_CLOSE,
+--                                      "Error reading "%s": %s",
+--                                      filename,
+--                                      g_strerror (errno));
+--     gtk_dialog_run (GTK_DIALOG (dialog));
+--     gtk_widget_destroy (dialog);
+--
 --
 --  You might do a non-modal Gtk.Message_Dialog.Gtk_Message_Dialog as follows:
 --
---  An example for a non-modal dialog: |[<!-- language="C" --> GtkDialogFlags
---  flags = GTK_DIALOG_DESTROY_WITH_PARENT; dialog = gtk_message_dialog_new
---  (parent_window, flags, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, "Error reading
---  "%s": %s", filename, g_strerror (errno));
+--  An example for a non-modal dialog:
 --
---  // Destroy the dialog when the user responds to it // (e.g. clicks a
---  button)
+--     GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+--     dialog = gtk_message_dialog_new (parent_window,
+--                                      flags,
+--                                      GTK_MESSAGE_ERROR,
+--                                      GTK_BUTTONS_CLOSE,
+--                                      "Error reading "%s": %s",
+--                                      filename,
+--                                      g_strerror (errno));
 --
---  g_signal_connect_swapped (dialog, "response", G_CALLBACK
---  (gtk_widget_destroy), dialog); ]|
+--     // Destroy the dialog when the user responds to it
+--     // (e.g. clicks a button)
+--
+--     g_signal_connect_swapped (dialog, "response",
+--                               G_CALLBACK (gtk_widget_destroy),
+--                               dialog);
+--
 --
 --  # GtkMessageDialog as GtkBuildable
 --
@@ -188,11 +204,18 @@ package Gtk.Message_Dialog is
    --  have an existing Pango markup string that you want to use literally as
    --  the label, then you need to use Gtk.Message_Dialog.Set_Markup instead,
    --  since you can't pass the markup string either as the format (it might
-   --  contain "%" characters) or as a string argument. |[<!-- language="C" -->
-   --  GtkWidget *dialog; GtkDialogFlags flags =
-   --  GTK_DIALOG_DESTROY_WITH_PARENT; dialog = gtk_message_dialog_new
-   --  (parent_window, flags, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, NULL);
-   --  gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog), markup); ]|
+   --  contain "%" characters) or as a string argument.
+   --
+   --     GtkWidget *dialog;
+   --     GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+   --     dialog = gtk_message_dialog_new (parent_window,
+   --                                      flags,
+   --                                      GTK_MESSAGE_ERROR,
+   --                                      GTK_BUTTONS_CLOSE,
+   --                                      NULL);
+   --     gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog),
+   --                                    markup);
+   --
    --  Since: gtk+ 2.4
    --  Initialize_With_Markup does nothing if the object was already created
    --  with another call to Initialize* or G_New.
@@ -219,11 +242,18 @@ package Gtk.Message_Dialog is
    --  have an existing Pango markup string that you want to use literally as
    --  the label, then you need to use Gtk.Message_Dialog.Set_Markup instead,
    --  since you can't pass the markup string either as the format (it might
-   --  contain "%" characters) or as a string argument. |[<!-- language="C" -->
-   --  GtkWidget *dialog; GtkDialogFlags flags =
-   --  GTK_DIALOG_DESTROY_WITH_PARENT; dialog = gtk_message_dialog_new
-   --  (parent_window, flags, GTK_MESSAGE_ERROR, GTK_BUTTONS_CLOSE, NULL);
-   --  gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog), markup); ]|
+   --  contain "%" characters) or as a string argument.
+   --
+   --     GtkWidget *dialog;
+   --     GtkDialogFlags flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+   --     dialog = gtk_message_dialog_new (parent_window,
+   --                                      flags,
+   --                                      GTK_MESSAGE_ERROR,
+   --                                      GTK_BUTTONS_CLOSE,
+   --                                      NULL);
+   --     gtk_message_dialog_set_markup (GTK_MESSAGE_DIALOG (dialog),
+   --                                    markup);
+   --
    --  Since: gtk+ 2.4
    --  "parent": transient parent, or null for none
    --  "flags": flags
@@ -248,10 +278,14 @@ package Gtk.Message_Dialog is
    --  characters like Gtk.Message_Dialog.Gtk_New_With_Markup does. Thus, if
    --  the arguments may contain special XML characters, you should use
    --  g_markup_printf_escaped to escape it.
-   --  |[<!-- language="C" --> gchar *msg;
-   --  msg = g_markup_printf_escaped (message_format, ...);
-   --  gtk_message_dialog_format_secondary_markup (message_dialog, "%s", msg);
-   --  g_free (msg); ]|
+   --
+   --     gchar *msg;
+   --
+   --     msg = g_markup_printf_escaped (message_format, ...);
+   --     gtk_message_dialog_format_secondary_markup (message_dialog,
+   --                                                 "%s", msg);
+   --     g_free (msg);
+   --
    --  Since: gtk+ 2.6
    --  "message": printf-style markup string (see [Pango markup
    --  format][PangoMarkupFormat]), or null

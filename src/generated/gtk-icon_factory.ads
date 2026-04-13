@@ -75,12 +75,19 @@
 --
 --  ## A Gtk.Icon_Factory.Gtk_Icon_Factory UI definition fragment. ##
 --
---  |[ <object class="GtkIconFactory" id="iconfactory1"> <sources> <source
---  stock-id="apple-red" filename="apple-red.png"/> </sources> </object>
---  <object class="GtkWindow" id="window1"> <child> <object class="GtkButton"
---  id="apple_button"> <property name="label">apple-red</property> <property
---  name="use-stock">True</property> </object> </child> </object> ]|
---
+--     <object class="GtkIconFactory" id="iconfactory1">
+--       <sources>
+--         <source stock-id="apple-red" filename="apple-red.png"/>
+--       </sources>
+--     </object>
+--     <object class="GtkWindow" id="window1">
+--       <child>
+--         <object class="GtkButton" id="apple_button">
+--           <property name="label">apple-red</property>
+--           <property name="use-stock">True</property>
+--         </object>
+--       </child>
+--     </object>
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");

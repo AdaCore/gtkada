@@ -288,16 +288,25 @@ package Gtk.Gesture is
    --  on another gesture within a Gtk.Gesture.Gtk_Gesture::begin signal
    --  handler, as the callback might be executed before the other gesture
    --  knows about the sequence. A safe way to perform this could be:
-   --  |[ static void first_gesture_begin_cb (GtkGesture *first_gesture,
-   --  GdkEventSequence *sequence, gpointer user_data) {
-   --  gtk_gesture_set_sequence_state (first_gesture, sequence,
-   --  GTK_EVENT_SEQUENCE_CLAIMED); gtk_gesture_set_sequence_state
-   --  (second_gesture, sequence, GTK_EVENT_SEQUENCE_DENIED); }
-   --  static void second_gesture_begin_cb (GtkGesture *second_gesture,
-   --  GdkEventSequence *sequence, gpointer user_data) { if
-   --  (gtk_gesture_get_sequence_state (first_gesture, sequence) ==
-   --  GTK_EVENT_SEQUENCE_CLAIMED) gtk_gesture_set_sequence_state
-   --  (second_gesture, sequence, GTK_EVENT_SEQUENCE_DENIED); } ]|
+   --
+   --     static void
+   --     first_gesture_begin_cb (GtkGesture       *first_gesture,
+   --                             GdkEventSequence *sequence,
+   --                             gpointer          user_data)
+   --     {
+   --       gtk_gesture_set_sequence_state (first_gesture, sequence, GTK_EVENT_SEQUENCE_CLAIMED);
+   --       gtk_gesture_set_sequence_state (second_gesture, sequence, GTK_EVENT_SEQUENCE_DENIED);
+   --     }
+   --
+   --     static void
+   --     second_gesture_begin_cb (GtkGesture       *second_gesture,
+   --                              GdkEventSequence *sequence,
+   --                              gpointer          user_data)
+   --     {
+   --       if (gtk_gesture_get_sequence_state (first_gesture, sequence) == GTK_EVENT_SEQUENCE_CLAIMED)
+   --         gtk_gesture_set_sequence_state (second_gesture, sequence, GTK_EVENT_SEQUENCE_DENIED);
+   --     }
+   --
    --  If both gestures are in the same group, just set the state on the
    --  gesture emitting the event, the sequence will be already be initialized
    --  to the group's global state when the second gesture processes the event.

@@ -34,15 +34,23 @@
 --  of a <child> element. A normal content child can be specified without
 --  specifying a <child> type attribute.
 --
---  An example of a UI definition fragment with GtkFrame: |[ <object
---  class="GtkFrame"> <child type="label"> <object class="GtkLabel"
---  id="frame-label"/> </child> <child> <object class="GtkEntry"
---  id="frame-content"/> </child> </object> ]|
+--  An example of a UI definition fragment with GtkFrame:
 --
+--     <object class="GtkFrame">
+--       <child type="label">
+--         <object class="GtkLabel" id="frame-label"/>
+--       </child>
+--       <child>
+--         <object class="GtkEntry" id="frame-content"/>
+--       </child>
+--     </object>
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> frame ├── border[.flat] ├── <label widget> ╰──
---  <child> ]|
+--     frame
+--     ├── border[.flat]
+--     ├── <label widget>
+--     ╰── <child>
+--
 --
 --  GtkFrame has a main CSS node named "frame" and a subnode named "border".
 --  The "border" node is used to draw the visible border. You can set the

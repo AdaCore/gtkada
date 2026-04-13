@@ -40,29 +40,56 @@
 --  Gtk.Tree_Model.Gtk_Tree_Model::row_changed signal. This most commonly
 --  affects lists with Gdk_Pixbufs stored.
 --
---  An example for creating a simple list store: |[<!-- language="C" --> enum
---  { COLUMN_STRING, COLUMN_INT, COLUMN_BOOLEAN, N_COLUMNS };
+--  An example for creating a simple list store:
 --
---  { GtkListStore *list_store; GtkTreePath *path; GtkTreeIter iter; gint i;
+--     enum {
+--       COLUMN_STRING,
+--       COLUMN_INT,
+--       COLUMN_BOOLEAN,
+--       N_COLUMNS
+--     };
 --
---  list_store = gtk_list_store_new (N_COLUMNS, G_TYPE_STRING, G_TYPE_INT,
---  G_TYPE_BOOLEAN);
+--     {
+--       GtkListStore *list_store;
+--       GtkTreePath *path;
+--       GtkTreeIter iter;
+--       gint i;
 --
---  for (i = 0; i < 10; i++) { gchar *some_data;
+--       list_store = gtk_list_store_new (N_COLUMNS,
+--                                        G_TYPE_STRING,
+--                                        G_TYPE_INT,
+--                                        G_TYPE_BOOLEAN);
 --
---  some_data = get_some_data (i);
+--       for (i = 0; i < 10; i++)
+--         {
+--           gchar *some_data;
 --
---  // Add a new row to the model gtk_list_store_append (list_store, &iter);
---  gtk_list_store_set (list_store, &iter, COLUMN_STRING, some_data,
---  COLUMN_INT, i, COLUMN_BOOLEAN, FALSE, -1);
+--           some_data = get_some_data (i);
 --
---  // As the store will keep a copy of the string internally, // we free
---  some_data. g_free (some_data); }
+--           // Add a new row to the model
+--           gtk_list_store_append (list_store, &iter);
+--           gtk_list_store_set (list_store, &iter,
+--                               COLUMN_STRING, some_data,
+--                               COLUMN_INT, i,
+--                               COLUMN_BOOLEAN,  FALSE,
+--                               -1);
 --
---  // Modify a particular row path = gtk_tree_path_new_from_string ("4");
---  gtk_tree_model_get_iter (GTK_TREE_MODEL (list_store), &iter, path);
---  gtk_tree_path_free (path); gtk_list_store_set (list_store, &iter,
---  COLUMN_BOOLEAN, TRUE, -1); } ]|
+--           // As the store will keep a copy of the string internally,
+--           // we free some_data.
+--           g_free (some_data);
+--         }
+--
+--       // Modify a particular row
+--       path = gtk_tree_path_new_from_string ("4");
+--       gtk_tree_model_get_iter (GTK_TREE_MODEL (list_store),
+--                                &iter,
+--                                path);
+--       gtk_tree_path_free (path);
+--       gtk_list_store_set (list_store, &iter,
+--                           COLUMN_BOOLEAN, TRUE,
+--                           -1);
+--     }
+--
 --
 --  # Performance Considerations
 --
@@ -102,22 +129,36 @@
 --  attribute specifies the data type for the column.
 --
 --  Additionally, it is possible to specify content for the list store in the
---  UI definition, with the <data> element. It can contain multiple elements,
---  each specifying to content for one row of the list model. Inside a , the
---  <col> elements specify the content for individual cells.
+--  UI definition, with the <data> element. It can contain multiple <row>
+--  elements, each specifying to content for one row of the list model. Inside
+--  a <row>, the <col> elements specify the content for individual cells.
 --
 --  Note that it is probably more common to define your models in the code,
 --  and one might consider it a layering violation to specify the content of a
 --  list store in a UI definition, data, not presentation, and common wisdom is
 --  to separate the two, as far as possible.
 --
---  An example of a UI Definition fragment for a list store: |[<!--
---  language="C" --> <object class="GtkListStore"> <columns> <column
---  type="gchararray"/> <column type="gchararray"/> <column type="gint"/>
---  </columns> <data> <col id="0">John</col> <col id="1">Doe</col> <col
---  id="2">25</col> <col id="0">Johan</col> <col id="1">Dahlin</col> <col
---  id="2">50</col> </data> </object> ]|
+--  An example of a UI Definition fragment for a list store:
 --
+--     <object class="GtkListStore">
+--       <columns>
+--         <column type="gchararray"/>
+--         <column type="gchararray"/>
+--         <column type="gint"/>
+--       </columns>
+--       <data>
+--         <row>
+--           <col id="0">John</col>
+--           <col id="1">Doe</col>
+--           <col id="2">25</col>
+--         </row>
+--         <row>
+--           <col id="0">Johan</col>
+--           <col id="1">Dahlin</col>
+--           <col id="2">50</col>
+--         </row>
+--       </data>
+--     </object>
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");

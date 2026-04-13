@@ -26,13 +26,16 @@
 --  can be displayed as an image; most typically, you would load a
 --  Gdk.Pixbuf.Gdk_Pixbuf ("pixel buffer") from a file, and then display that.
 --  There's a convenience function to do this, Gtk.Image.Gtk_New, used as
---  follows: |[<!-- language="C" --> GtkWidget *image; image =
---  gtk_image_new_from_file ("myfile.png"); ]| If the file isn't loaded
---  successfully, the image will contain a "broken image" icon similar to that
---  used in many web browsers. If you want to handle errors in loading the file
---  yourself, for example by displaying an error message, then load the image
---  with Gdk.Pixbuf.Gdk_New_From_File, then create the Gtk.Image.Gtk_Image with
---  Gtk.Image.Gtk_New.
+--  follows:
+--
+--     GtkWidget *image;
+--     image = gtk_image_new_from_file ("myfile.png");
+--
+--  If the file isn't loaded successfully, the image will contain a "broken
+--  image" icon similar to that used in many web browsers. If you want to
+--  handle errors in loading the file yourself, for example by displaying an
+--  error message, then load the image with Gdk.Pixbuf.Gdk_New_From_File, then
+--  create the Gtk.Image.Gtk_Image with Gtk.Image.Gtk_New.
 --
 --  The image file may contain an animation, if so the Gtk.Image.Gtk_Image
 --  will display an animation (Gdk_Pixbuf_Animation) instead of a static image.
@@ -49,27 +52,40 @@
 --
 --  ## Handling button press events on a Gtk.Image.Gtk_Image.
 --
---  |[<!-- language="C" --> static gboolean button_press_callback (GtkWidget
---  *event_box, GdkEventButton *event, gpointer data) { g_print ("Event box
---  clicked at coordinates %f,%f\n", event->x, event->y);
+--     static gboolean
+--     button_press_callback (GtkWidget      *event_box,
+--                            GdkEventButton *event,
+--                            gpointer        data)
+--     {
+--       g_print ("Event box clicked at coordinates %f,%f\n",
+--                event->x, event->y);
 --
---  // Returning TRUE means we handled the event, so the signal // emission
---  should be stopped (don't call any further callbacks // that may be
---  connected). Return FALSE to continue invoking callbacks. return TRUE; }
+--       // Returning TRUE means we handled the event, so the signal
+--       // emission should be stopped (don't call any further callbacks
+--       // that may be connected). Return FALSE to continue invoking callbacks.
+--       return TRUE;
+--     }
 --
---  static GtkWidget* create_image (void) { GtkWidget *image; GtkWidget
---  *event_box;
+--     static GtkWidget*
+--     create_image (void)
+--     {
+--       GtkWidget *image;
+--       GtkWidget *event_box;
 --
---  image = gtk_image_new_from_file ("myfile.png");
+--       image = gtk_image_new_from_file ("myfile.png");
 --
---  event_box = gtk_event_box_new ();
+--       event_box = gtk_event_box_new ();
 --
---  gtk_container_add (GTK_CONTAINER (event_box), image);
+--       gtk_container_add (GTK_CONTAINER (event_box), image);
 --
---  g_signal_connect (G_OBJECT (event_box), "button_press_event", G_CALLBACK
---  (button_press_callback), image);
+--       g_signal_connect (G_OBJECT (event_box),
+--                         "button_press_event",
+--                         G_CALLBACK (button_press_callback),
+--                         image);
 --
---  return image; } ]|
+--       return image;
+--     }
+--
 --
 --  When handling events on the event box, keep in mind that coordinates in
 --  the image may be different from event box coordinates due to the alignment

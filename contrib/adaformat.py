@@ -1033,7 +1033,70 @@ def fill_text(text, prefix, length, firstLineLength=0):
 
 
 def cleanup_doc(doc):
-    """Replaces C features in the doc with appropriate Ada equivalents"""
+    """Replaces gtk-doc features in the doc with appropriate Ada
+    equivalents.
+    """
+
+    def remargin_programlisting(content, margin=3):
+        lines = content.splitlines()
+
+        # Drop artificial outer blank lines from block delimiters.
+        while lines and not lines[0].strip():
+            lines.pop(0)
+        while lines and not lines[-1].strip():
+            lines.pop()
+
+        if not lines:
+            return ""
+
+        common_indent = min(
+            len(re.match(r" *", line).group(0))
+            for line in lines
+            if line.strip())
+
+        remargined = []
+        for line in lines:
+            if line.strip():
+                remargined.append((" " * margin + line[common_indent:]).rstrip())
+            else:
+                remargined.append("")
+
+        return "\n".join(remargined)
+
+    def replace_programlisting_content(content):
+        return "\n\n__PROGRAMLISTING__" + remargin_programlisting(
+            content) + "__END_PROGRAMLISTING__"
+
+    def replace_programlisting(match):
+        return replace_programlisting_content(match.group(1))
+
+    def replace_gtkdoc_programlisting(match):
+        content = match.group(1)
+        lines = content.splitlines()
+
+        if lines:
+            language_match = re.match(
+                r'^[ \t]*<!--\s*language\s*=\s*["\'][^"\']*["\']\s*-->[ \t]*(.*)$',
+                lines[0])
+            if language_match:
+                inline = language_match.group(1)
+                rest = lines[1:]
+
+                if inline:
+                    next_indent = ""
+                    for line in rest:
+                        if line.strip():
+                            next_indent = re.match(r"[ \t]*", line).group(0)
+                            break
+                    if next_indent:
+                        inline = next_indent + inline.lstrip(" \t")
+                    lines = [inline] + rest
+                else:
+                    lines = rest
+
+                content = "\n".join(lines)
+
+        return replace_programlisting_content(content)
 
     def replace_type(x):
         t = naming.type(x.group(1))
@@ -1057,84 +1120,31 @@ def cleanup_doc(doc):
     doc = enums.sub(lambda x: naming.adamethod_name(x.group(1)), doc)
 
     doc = doc.replace("<emphasis>", "*") \
-        .replace("</emphasis>", "*") \
-        .replace("<literal>", "'") \
-        .replace("</literal>", "'") \
-        .replace("<firstterm>", "'") \
-        .replace("</firstterm>", "'") \
-        .replace("<![CDATA[", "") \
-        .replace("]]>", "") \
-        .replace("&nbsp;", " ") \
-        .replace("<parameter>", "'") \
-        .replace("</parameter>", "'") \
-        .replace("<filename>", "'") \
-        .replace("</filename>", "'") \
-        .replace("<footnote>", "[") \
-        .replace("</footnote>", "]") \
-        .replace("<keycap>", "'") \
-        .replace("</keycap>", "'") \
-        .replace("<keycombo>", "[") \
-        .replace("</keycombo>", "]") \
-        .replace("<entry>", "\n\n") \
-        .replace("</entry>", "") \
-        .replace("<row>", "") \
-        .replace("</row>", "") \
-        .replace("<tbody>", "") \
-        .replace("</tbody>", "") \
-        .replace("</tgroup>", "") \
-        .replace("<informaltable>", "") \
-        .replace("</informaltable>", "") \
-        .replace("<note>", "\nNote: ") \
-        .replace("</note>", "")
-
-    doc = re.sub("<tgroup[^>]*>", "", doc)
-    doc = re.sub("<term><parameter>(.*?)</parameter>&nbsp;:</term>",
-                 r"\1:", doc)
-
-    # Lists
-
-    doc = re.sub("<listitem>(\n?<simpara>|\n?<para>)?", "\n\n   * ", doc)
-
-    doc = doc.replace("</para></listitem>", "") \
-        .replace("</listitem>", "") \
-        .replace("<simpara>", "") \
-        .replace("</simpara>", "") \
-        .replace("<para>", "\n\n") \
-        .replace("</para>", "")
-
-    # Definition of terms (variablelists)
-
-    doc = doc.replace("<variablelist>", "") \
-        .replace("</variablelist>", "") \
-        .replace("<varlistentry>", "") \
-        .replace("</varlistentry>", "") \
-        .replace("<term>", "'") \
-        .replace("</term>", "'")
-
-    doc = re.sub(r"<variablelist[^>]*>", "", doc)
-    doc = re.sub(r"<title>(.*?)</title>", r"\n\n== \1 ==\n\n", doc)
-    doc = re.sub(r"<refsect\d[^>]*>", "", doc)
-    doc = re.sub(r"</refsect\d>", "", doc)
-
-    doc = doc.replace("<example>", "") \
-             .replace("</example>", "") \
-             .replace("<informalexample>", "") \
-             .replace("</informalexample>", "") \
-             .replace("<itemizedlist>", "").replace("</itemizedlist>", "") \
-             .replace("<orderedlist>", "").replace("</orderedlist>", "") \
+             .replace("</emphasis>", "*") \
+             .replace("<literal>", "`") \
+             .replace("</literal>", "`") \
+             .replace("&nbsp;", " ") \
              .replace("&percnt;", "%") \
              .replace("&lt;", "<").replace("&gt;", ">") \
-             .replace("&ast;", "*") \
-             .replace("<programlisting>", "\n\n__PRE__<programlisting>")
-
-    doc = re.sub("<programlisting>(.*?)</programlisting>",
-                 lambda m: re.sub(
-                     "\n\n+", "\n",
-                     indent_code(m.group(1), addnewlines=False)),
-                 doc,
-                 flags=re.DOTALL or re.MULTILINE)
+             .replace("&ast;", "*")
 
     doc = re.sub("\n\n\n+", "\n\n", doc)
+
+    doc = re.sub("<informalexample>\s*(<programlisting>.*?</programlisting>)"
+                 "\s*</informalexample>",
+                 r"\1",
+                 doc,
+                 flags=re.DOTALL | re.MULTILINE)
+
+    doc = re.sub(r"\|\[(.*?)\]\|",
+                 replace_gtkdoc_programlisting,
+                 doc,
+                 flags=re.DOTALL | re.MULTILINE)
+
+    doc = re.sub("<programlisting>(.*?)</programlisting>",
+                 replace_programlisting,
+                 doc,
+                 flags=re.DOTALL | re.MULTILINE)
 
     return doc
 
@@ -1158,13 +1168,23 @@ def format_doc(doc, indent, separate_paragraphs=True, fill=True):
     for d in doc:
         d = cleanup_doc(d)
         if fill:
-            cleaned.extend(d.split("\n\n"))
+            sections = re.split(
+                r"(__PROGRAMLISTING__.*?__END_PROGRAMLISTING__)",
+                d,
+                flags=re.DOTALL)
+            for section in sections:
+                if not section:
+                    continue
+                if section.startswith("__PROGRAMLISTING__"):
+                    cleaned.append(section)
+                else:
+                    cleaned.extend(section.rstrip().split("\n\n"))
         else:
             cleaned.append(d)
 
     prefix = "\n" + indent + "--"
 
-    for d in cleaned:
+    for index, d in enumerate(cleaned):
 
         # Separate paragraphs with an empty line, unless it is a markup
         # or we are at the end
@@ -1172,10 +1192,18 @@ def format_doc(doc, indent, separate_paragraphs=True, fill=True):
             if prev != "" and not prev.lstrip().startswith("<"):
                 result += prefix
 
+        # d = d.rstrip()
+
         if d:
-            if d.lstrip().startswith("__PRE__"):
-                d = d.lstrip()[7:]
-                result += "".join(prefix + " " + p for p in d.splitlines())
+            if d.lstrip().startswith("__PROGRAMLISTING__"):
+                if prev != "" and not separate_paragraphs:
+                    result += prefix
+                d = d.lstrip()[18:]
+                d = re.sub(r"\n?__END_PROGRAMLISTING__\s*$", "", d)
+                result += "".join(
+                    (prefix + "  " + p).rstrip() for p in d.splitlines())
+                if index + 1 < len(cleaned) and not separate_paragraphs:
+                    result += prefix
             elif fill:
                 result += prefix + " "
                 result += fill_text(d, indent + "--  ", 79)

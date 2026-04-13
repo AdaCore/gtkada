@@ -163,16 +163,24 @@ package Gtk.Font_Chooser is
    --  Sets a custom font map to use for this font chooser widget. A custom
    --  font map can be used to present application-specific fonts instead of or
    --  in addition to the normal system fonts.
-   --  |[<!-- language="C" --> FcConfig *config; PangoFontMap *fontmap;
-   --  config = FcInitLoadConfigAndFonts (); FcConfigAppFontAddFile (config,
-   --  my_app_font_file);
-   --  fontmap = pango_cairo_font_map_new_for_font_type (CAIRO_FONT_TYPE_FT);
-   --  pango_fc_font_map_set_config (PANGO_FC_FONT_MAP (fontmap), config);
-   --  gtk_font_chooser_set_font_map (font_chooser, fontmap); ]|
+   --
+   --     FcConfig *config;
+   --     PangoFontMap *fontmap;
+   --
+   --     config = FcInitLoadConfigAndFonts ();
+   --     FcConfigAppFontAddFile (config, my_app_font_file);
+   --
+   --     fontmap = pango_cairo_font_map_new_for_font_type (CAIRO_FONT_TYPE_FT);
+   --     pango_fc_font_map_set_config (PANGO_FC_FONT_MAP (fontmap), config);
+   --
+   --     gtk_font_chooser_set_font_map (font_chooser, fontmap);
+   --
    --  Note that other GTK+ widgets will only be able to use the
    --  application-specific font if it is present in the font map they use:
-   --  |[ context = gtk_widget_get_pango_context (label);
-   --  pango_context_set_font_map (context, fontmap); ]|
+   --
+   --     context = gtk_widget_get_pango_context (label);
+   --     pango_context_set_font_map (context, fontmap);
+   --
    --  Since: gtk+ 3.18
    --  "fontmap": a Pango.Font_Map.Pango_Font_Map
 
@@ -381,16 +389,24 @@ package Gtk.Font_Chooser is
    --  Sets a custom font map to use for this font chooser widget. A custom
    --  font map can be used to present application-specific fonts instead of or
    --  in addition to the normal system fonts.
-   --  |[<!-- language="C" --> FcConfig *config; PangoFontMap *fontmap;
-   --  config = FcInitLoadConfigAndFonts (); FcConfigAppFontAddFile (config,
-   --  my_app_font_file);
-   --  fontmap = pango_cairo_font_map_new_for_font_type (CAIRO_FONT_TYPE_FT);
-   --  pango_fc_font_map_set_config (PANGO_FC_FONT_MAP (fontmap), config);
-   --  gtk_font_chooser_set_font_map (font_chooser, fontmap); ]|
+   --
+   --     FcConfig *config;
+   --     PangoFontMap *fontmap;
+   --
+   --     config = FcInitLoadConfigAndFonts ();
+   --     FcConfigAppFontAddFile (config, my_app_font_file);
+   --
+   --     fontmap = pango_cairo_font_map_new_for_font_type (CAIRO_FONT_TYPE_FT);
+   --     pango_fc_font_map_set_config (PANGO_FC_FONT_MAP (fontmap), config);
+   --
+   --     gtk_font_chooser_set_font_map (font_chooser, fontmap);
+   --
    --  Note that other GTK+ widgets will only be able to use the
    --  application-specific font if it is present in the font map they use:
-   --  |[ context = gtk_widget_get_pango_context (label);
-   --  pango_context_set_font_map (context, fontmap); ]|
+   --
+   --     context = gtk_widget_get_pango_context (label);
+   --     pango_context_set_font_map (context, fontmap);
+   --
    --  Since: gtk+ 3.18
    --  "fontmap": a Pango.Font_Map.Pango_Font_Map
 

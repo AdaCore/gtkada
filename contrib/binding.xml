@@ -1904,13 +1904,16 @@ Remember to call Gtk.Window.Add_Accel_Group to active the group.</doc>
         <parameter name="group" ctype="WidgetSList"/>
         <doc extend="true">A common way to set up a group of radio group is the following:
 
-__PRE__      Group  : GSlist := null;
+|[
+      Group  : GSlist := null;
       Action : Gtk_Radio_Action;
       while ... loop
          Gtk_New (Action, ...);
          Set_Group (Action, Group);
          Group := Get_Group (Action);
-      end loop;</doc>
+      end loop;
+]|
+</doc>
      </method>
      <method id="gtk_radio_action_get_group" return="WidgetSList"/>
   </package>
@@ -1995,7 +1998,8 @@ This package provides an interface implemented by Gtk.File_Chooser_Widget and Gt
 
 Gtk_File_Chooser allows for shortcuts to various places in the filesystem.  In the default implementation these are displayed in the left pane. It may be a bit confusing at first that these shortcuts come from various sources and in various flavours, so lets explain the terminology here:
 
-__PRE__  - Bookmarks
+|[
+  - Bookmarks
     are created by the user, by dragging folders from the right pane to the
     left pane, or by using the "Add". Bookmarks can be renamed and deleted
     by the user.
@@ -2006,6 +2010,7 @@ __PRE__  - Bookmarks
   - Volumes
     are provided by the underlying filesystem abstraction. They are the
     "roots" of the filesystem.
+]|
 
 File Names and Encodings
 
@@ -2032,7 +2037,7 @@ Key bindings
 
 The following default key bindings are provided, but you can use a gtkrc file to override them if you need (see gtk-rc.ads).
 
-__PRE__
+|[
    Signal name    | Key binding
    location-popup | Control-L  (empty path)
                   | /          (path of "/")
@@ -2042,6 +2047,7 @@ __PRE__
    home-folder    | Alt-Home
    desktop-folder | Alt-D
    quick-bookmark | Alt-1 through Alt-0
+]|
      </doc>
   </package>
 
@@ -2322,16 +2328,17 @@ __PRE__
 In case the default screen is being used, adding a new recently used file is as
 simple as:
 
-__PRE__
+|[
      declare
         Manager : constant Gtk_Recent_Manager := Get_Default;
      begin
         Add_Item (Manager, File_URI);
      end;
+]|
 
 While looking up a recently used file is as simple as using:
 
-__PRE__
+|[
      declare
         Manager : constant Gtk_Recent_Manager := Get_Default;
         Info    : Gtk_Recent_Info;
@@ -2347,6 +2354,7 @@ __PRE__
            Glib.Error.Error_Free (Error);
         end if;
      end;
+]|
      </doc>
      <param name="self" ada="Manager" />
      <record ctype="GtkRecentData" />

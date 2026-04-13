@@ -45,18 +45,40 @@
 --  To add a child widget in the notebooks action area, specify "action-start"
 --  or "action-end" as the "type" attribute of the <child> element.
 --
---  An example of a UI definition fragment with GtkNotebook: |[ <object
---  class="GtkNotebook"> <child> <object class="GtkLabel"
---  id="notebook-content"> <property name="label">Content</property> </object>
---  </child> <child type="tab"> <object class="GtkLabel" id="notebook-tab">
---  <property name="label">Tab</property> </object> </child> </object> ]|
+--  An example of a UI definition fragment with GtkNotebook:
 --
+--     <object class="GtkNotebook">
+--       <child>
+--         <object class="GtkLabel" id="notebook-content">
+--           <property name="label">Content</property>
+--         </object>
+--       </child>
+--       <child type="tab">
+--         <object class="GtkLabel" id="notebook-tab">
+--           <property name="label">Tab</property>
+--         </object>
+--       </child>
+--     </object>
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> notebook ├── header.top │ ├── [<action
---  widget>] │ ├── tabs │ │ ├── [arrow] │ │ ├── tab │ │ │ ╰── <tab label> ┊ ┊ ┊
---  │ │ ├── tab[.reorderable-page] │ │ │ ╰── <tab label> │ │ ╰── [arrow] │ ╰──
---  [<action widget>] │ ╰── stack ├── <child> ┊ ╰── <child> ]|
+--     notebook
+--     ├── header.top
+--     │   ├── [<action widget>]
+--     │   ├── tabs
+--     │   │   ├── [arrow]
+--     │   │   ├── tab
+--     │   │   │   ╰── <tab label>
+--     ┊   ┊   ┊
+--     │   │   ├── tab[.reorderable-page]
+--     │   │   │   ╰── <tab label>
+--     │   │   ╰── [arrow]
+--     │   ╰── [<action widget>]
+--     │
+--     ╰── stack
+--         ├── <child>
+--         ┊
+--         ╰── <child>
+--
 --
 --  GtkNotebook has a main CSS node with name notebook, a subnode with name
 --  header and below that a subnode with name tabs which contains one subnode
@@ -325,14 +347,28 @@ package Gtk.Notebook is
    --  notebook as part of accepting a drop. Otherwise, the source notebook
    --  will think that the dragged tab was removed from underneath the ongoing
    --  drag operation, and will initiate a drag cancel animation.
-   --  |[<!-- language="C" --> static void on_drag_data_received (GtkWidget
-   --  *widget, GdkDragContext *context, gint x, gint y, GtkSelectionData
-   --  *data, guint info, guint time, gpointer user_data) { GtkWidget
-   --  *notebook; GtkWidget **child;
-   --  notebook = gtk_drag_get_source_widget (context); child = (void*)
-   --  gtk_selection_data_get_data (data);
-   --  // process_widget (*child);
-   --  gtk_notebook_detach_tab (GTK_NOTEBOOK (notebook), *child); } ]|
+   --
+   --     static void
+   --     on_drag_data_received (GtkWidget        *widget,
+   --                            GdkDragContext   *context,
+   --                            gint              x,
+   --                            gint              y,
+   --                            GtkSelectionData *data,
+   --                            guint             info,
+   --                            guint             time,
+   --                            gpointer          user_data)
+   --     {
+   --       GtkWidget *notebook;
+   --       GtkWidget **child;
+   --
+   --       notebook = gtk_drag_get_source_widget (context);
+   --       child = (void*) gtk_selection_data_get_data (data);
+   --
+   --       // process_widget (*child);
+   --
+   --       gtk_notebook_detach_tab (GTK_NOTEBOOK (notebook), *child);
+   --     }
+   --
    --  If you want a notebook to accept drags from other widgets, you will
    --  have to set your own DnD code to do it.
    --  Since: gtk+ 2.10

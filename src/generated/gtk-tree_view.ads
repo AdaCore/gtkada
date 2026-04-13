@@ -59,21 +59,37 @@
 --  exposes the internal Gtk.Tree_Selection.Gtk_Tree_Selection in UI
 --  definitions.
 --
---  An example of a UI definition fragment with GtkTreeView: |[ <object
---  class="GtkTreeView" id="treeview"> <property
---  name="model">liststore1</property> <child> <object
---  class="GtkTreeViewColumn" id="test-column"> <property
---  name="title">Test</property> <child> <object class="GtkCellRendererText"
---  id="test-renderer"/> <attributes> <attribute name="text">1</attribute>
---  </attributes> </child> </object> </child> <child
---  internal-child="selection"> <object class="GtkTreeSelection"
---  id="selection"> <signal name="changed"
---  handler="on_treeview_selection_changed"/> </object> </child> </object> ]|
+--  An example of a UI definition fragment with GtkTreeView:
 --
+--     <object class="GtkTreeView" id="treeview">
+--       <property name="model">liststore1</property>
+--       <child>
+--         <object class="GtkTreeViewColumn" id="test-column">
+--           <property name="title">Test</property>
+--           <child>
+--             <object class="GtkCellRendererText" id="test-renderer"/>
+--             <attributes>
+--               <attribute name="text">1</attribute>
+--             </attributes>
+--           </child>
+--         </object>
+--       </child>
+--       <child internal-child="selection">
+--         <object class="GtkTreeSelection" id="selection">
+--           <signal name="changed" handler="on_treeview_selection_changed"/>
+--         </object>
+--       </child>
+--     </object>
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> treeview.view ├── header │ ├── <column header>
---  ┊ ┊ │ ╰── <column header> │ ╰── [rubberband] ]|
+--     treeview.view
+--     ├── header
+--     │   ├── <column header>
+--     ┊   ┊
+--     │   ╰── <column header>
+--     │
+--     ╰── [rubberband]
+--
 --
 --  GtkTreeView has a main CSS node with name treeview and style class .view.
 --  It has a subnode with name header, which is the parent for all the column

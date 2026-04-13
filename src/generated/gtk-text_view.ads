@@ -28,9 +28,15 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> textview.view ├── border.top ├── border.left
---  ├── text │ ╰── [selection] ├── border.right ├── border.bottom ╰──
---  [window.popup] ]|
+--     textview.view
+--     ├── border.top
+--     ├── border.left
+--     ├── text
+--     │   ╰── [selection]
+--     ├── border.right
+--     ├── border.bottom
+--     ╰── [window.popup]
+--
 --
 --  GtkTextView has a main css node with name textview and style class .view,
 --  and subnodes for each of the border windows, and the main text area, with
@@ -681,15 +687,26 @@ package Gtk.Text_View is
    --  overriding key event handling. This is needed in the case when you need
    --  to insert your own key handling between the input method and the default
    --  key event handling of the Gtk.Text_View.Gtk_Text_View.
-   --  |[<!-- language="C" --> static gboolean gtk_foo_bar_key_press_event
-   --  (GtkWidget *widget, GdkEventKey *event) { guint keyval;
-   --  gdk_event_get_keyval ((GdkEvent*)event, &keyval);
-   --  if (keyval == GDK_KEY_Return || keyval == GDK_KEY_KP_Enter) { if
-   --  (gtk_text_view_im_context_filter_keypress (GTK_TEXT_VIEW (widget),
-   --  event)) return TRUE; }
-   --  // Do some stuff
-   --  return GTK_WIDGET_CLASS (gtk_foo_bar_parent_class)->key_press_event
-   --  (widget, event); } ]|
+   --
+   --     static gboolean
+   --     gtk_foo_bar_key_press_event (GtkWidget   *widget,
+   --                                  GdkEventKey *event)
+   --     {
+   --       guint keyval;
+   --
+   --       gdk_event_get_keyval ((GdkEvent*)event, &keyval);
+   --
+   --       if (keyval == GDK_KEY_Return || keyval == GDK_KEY_KP_Enter)
+   --         {
+   --           if (gtk_text_view_im_context_filter_keypress (GTK_TEXT_VIEW (widget), event))
+   --             return TRUE;
+   --         }
+   --
+   --       // Do some stuff
+   --
+   --       return GTK_WIDGET_CLASS (gtk_foo_bar_parent_class)->key_press_event (widget, event);
+   --     }
+   --
    --  Since: gtk+ 2.22
    --  "event": the key event
 

@@ -79,11 +79,15 @@
 --  that may contain multiple <widget> elements, one for each member of the
 --  size group. The "name" attribute gives the id of the widget.
 --
---  An example of a UI definition fragment with GtkSizeGroup: |[ <object
---  class="GtkSizeGroup"> <property
---  name="mode">GTK_SIZE_GROUP_HORIZONTAL</property> <widgets> <widget
---  name="radio1"/> <widget name="radio2"/> </widgets> </object> ]|
+--  An example of a UI definition fragment with GtkSizeGroup:
 --
+--     <object class="GtkSizeGroup">
+--       <property name="mode">GTK_SIZE_GROUP_HORIZONTAL</property>
+--       <widgets>
+--         <widget name="radio1"/>
+--         <widget name="radio2"/>
+--       </widgets>
+--     </object>
 --  </description>
 --  <testgtk>create_size_groups.adb</testgtk>
 

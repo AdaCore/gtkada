@@ -45,10 +45,25 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> scale[.fine-tune][.marks-before][.marks-after]
---  ├── marks.top │ ├── mark │ ┊ ├── [label] │ ┊ ╰── indicator ┊ ┊ │ ╰── mark
---  ├── [value] ├── contents │ ╰── trough │ ├── slider │ ├── [highlight] │ ╰──
---  [fill] ╰── marks.bottom ├── mark ┊ ├── indicator ┊ ╰── [label] ╰── mark ]|
+--     scale[.fine-tune][.marks-before][.marks-after]
+--     ├── marks.top
+--     │   ├── mark
+--     │   ┊    ├── [label]
+--     │   ┊    ╰── indicator
+--     ┊   ┊
+--     │   ╰── mark
+--     ├── [value]
+--     ├── contents
+--     │   ╰── trough
+--     │       ├── slider
+--     │       ├── [highlight]
+--     │       ╰── [fill]
+--     ╰── marks.bottom
+--         ├── mark
+--         ┊    ├── indicator
+--         ┊    ╰── [label]
+--         ╰── mark
+--
 --
 --  GtkScale has a main CSS node with name scale and a subnode for its
 --  contents, with subnodes named trough and slider.
@@ -470,9 +485,15 @@ package Gtk.Scale is
    --  Gtk.Scale.Gtk_Scale:digits property.
    --
    --  Here's an example signal handler which displays a value 1.0 as with
-   --  "-->1.0<--". |[<!-- language="C" --> static gchar* format_value_callback
-   --  (GtkScale *scale, gdouble value) { return g_strdup_printf
-   --  ("-->\%0.*g<--", gtk_scale_get_digits (scale), value); } ]|
+   --  "-->1.0<--".
+   --
+   --     static gchar*
+   --     format_value_callback (GtkScale *scale,
+   --                            gdouble   value)
+   --     {
+   --       return g_strdup_printf ("-->\%0.*g<--",
+   --                               gtk_scale_get_digits (scale), value);
+   --      }
    -- 
    --  Callback parameters:
    --    --  "value": the value to format

@@ -27,20 +27,30 @@
 --
 --  The event type is always the first field in all of the event types, and
 --  can always be accessed with the following code, no matter what type of
---  event it is: |[<!-- language="C" --> GdkEvent *event; GdkEventType type;
+--  event it is:
 --
---  type = event->type; ]|
+--     GdkEvent *event;
+--     GdkEventType type;
+--
+--     type = event->type;
+--
 --
 --  To access other fields of the event, the pointer to the event can be cast
 --  to the appropriate event type, or the union member name can be used. For
 --  example if the event type is Gdk.Event.Button_Press then the x coordinate
---  of the button press can be accessed with: |[<!-- language="C" --> GdkEvent
---  *event; gdouble x;
+--  of the button press can be accessed with:
 --
---  x = ((GdkEventButton*)event)->x; ]| or: |[<!-- language="C" --> GdkEvent
---  *event; gdouble x;
+--     GdkEvent *event;
+--     gdouble x;
 --
---  x = event->button.x; ]|
+--     x = ((GdkEventButton*)event)->x;
+--
+--  or:
+--
+--     GdkEvent *event;
+--     gdouble x;
+--
+--     x = event->button.x;
 --
 --  </description>
 --  <group>Gdk, the low-level API</group>
@@ -884,20 +894,30 @@ package Gdk.Event is
    --
    --  The event type is always the first field in all of the event types, and
    --  can always be accessed with the following code, no matter what type of
-   --  event it is: |[<!-- language="C" --> GdkEvent *event; GdkEventType type;
+   --  event it is:
    --
-   --  type = event->type; ]|
+   --     GdkEvent *event;
+   --     GdkEventType type;
+   --
+   --     type = event->type;
+   --
    --
    --  To access other fields of the event, the pointer to the event can be
    --  cast to the appropriate event type, or the union member name can be
    --  used. For example if the event type is Gdk.Event.Button_Press then the x
-   --  coordinate of the button press can be accessed with: |[<!-- language="C"
-   --  --> GdkEvent *event; gdouble x;
+   --  coordinate of the button press can be accessed with:
    --
-   --  x = ((GdkEventButton*)event)->x; ]| or: |[<!-- language="C" -->
-   --  GdkEvent *event; gdouble x;
+   --     GdkEvent *event;
+   --     gdouble x;
    --
-   --  x = event->button.x; ]|
+   --     x = ((GdkEventButton*)event)->x;
+   --
+   --  or:
+   --
+   --     GdkEvent *event;
+   --     gdouble x;
+   --
+   --     x = event->button.x;
 
    type Gdk_Event is access all Gdk_Event_Record;
    pragma No_Strict_Aliasing (Gdk_Event);
@@ -1118,16 +1138,35 @@ package Gdk.Event is
    --  If you wish to handle both discrete and smooth scrolling, you should
    --  check the return value of this function, or of
    --  Gdk.Event.Get_Scroll_Deltas; for instance:
-   --  |[<!-- language="C" --> GdkScrollDirection direction; double
-   --  vscroll_factor = 0.0; double x_scroll, y_scroll;
-   --  if (gdk_event_get_scroll_direction (event, &direction)) { // Handle
-   --  discrete scrolling with a known constant delta; const double delta =
-   --  12.0;
-   --  switch (direction) { case GDK_SCROLL_UP: vscroll_factor = -delta;
-   --  break; case GDK_SCROLL_DOWN: vscroll_factor = delta; break; default: //
-   --  no scrolling break; } } else if (gdk_event_get_scroll_deltas (event,
-   --  &x_scroll, &y_scroll)) { // Handle smooth scrolling directly
-   --  vscroll_factor = y_scroll; } ]|
+   --
+   --     GdkScrollDirection direction;
+   --     double vscroll_factor = 0.0;
+   --     double x_scroll, y_scroll;
+   --
+   --     if (gdk_event_get_scroll_direction (event, &direction))
+   --       {
+   --         // Handle discrete scrolling with a known constant delta;
+   --         const double delta = 12.0;
+   --
+   --         switch (direction)
+   --           {
+   --           case GDK_SCROLL_UP:
+   --             vscroll_factor = -delta;
+   --             break;
+   --           case GDK_SCROLL_DOWN:
+   --             vscroll_factor = delta;
+   --             break;
+   --           default:
+   --             // no scrolling
+   --             break;
+   --           }
+   --       }
+   --     else if (gdk_event_get_scroll_deltas (event, &x_scroll, &y_scroll))
+   --       {
+   --         // Handle smooth scrolling directly
+   --         vscroll_factor = y_scroll;
+   --       }
+   --
    --  Since: gtk+ 3.2
    --  "direction": location to store the scroll direction
 
@@ -1291,9 +1330,15 @@ package Gdk.Event is
    --  core pointer. Coordinate extraction, processing and requesting more
    --  motion events from a Gdk.Event.Motion_Notify event usually works like
    --  this:
-   --  |[<!-- language="C" --> { // motion_event handler x = motion_event->x;
-   --  y = motion_event->y; // handle (x,y) motion gdk_event_request_motions
-   --  (motion_event); // handles is_hint events } ]|
+   --
+   --     {
+   --       // motion_event handler
+   --       x = motion_event->x;
+   --       y = motion_event->y;
+   --       // handle (x,y) motion
+   --       gdk_event_request_motions (motion_event); // handles is_hint events
+   --     }
+   --
    --  Since: gtk+ 2.12
    --  "event": a valid Gdk.Event.Gdk_Event
 
