@@ -1119,10 +1119,7 @@ def format_doc(doc, indent, separate_paragraphs=True, fill=True):
                 result += prefix
 
         if d:
-            if d.lstrip().startswith("__PRE__"):
-                d = d.lstrip()[7:]
-                result += "".join(prefix + " " + p for p in d.splitlines())
-            elif d.lstrip().startswith("__PROGRAMLISTING__"):
+            if d.lstrip().startswith("__PROGRAMLISTING__"):
                 if prev != "" and not separate_paragraphs:
                     result += prefix
                 d = d.lstrip()[18:]
