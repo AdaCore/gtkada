@@ -79,32 +79,42 @@
 --  boolean flag that indicates whether your callback could successfully
 --  generate a preview.
 --
---  ## Example: Using a Preview Widget ## {gtkfilechooser-preview} |[<!--
---  language="C" --> { GtkImage *preview;
+--  ## Example: Using a Preview Widget ## {gtkfilechooser-preview}
 --
---  ...
+--     {
+--       GtkImage *preview;
 --
---  preview = gtk_image_new ();
+--       ...
 --
---  gtk_file_chooser_set_preview_widget (my_file_chooser, preview);
---  g_signal_connect (my_file_chooser, "update-preview", G_CALLBACK
---  (update_preview_cb), preview); }
+--       preview = gtk_image_new ();
 --
---  static void update_preview_cb (GtkFileChooser *file_chooser, gpointer
---  data) { GtkWidget *preview; char *filename; GdkPixbuf *pixbuf; gboolean
---  have_preview;
+--       gtk_file_chooser_set_preview_widget (my_file_chooser, preview);
+--       g_signal_connect (my_file_chooser, "update-preview",
+--     		    G_CALLBACK (update_preview_cb), preview);
+--     }
 --
---  preview = GTK_WIDGET (data); filename =
---  gtk_file_chooser_get_preview_filename (file_chooser);
+--     static void
+--     update_preview_cb (GtkFileChooser *file_chooser, gpointer data)
+--     {
+--       GtkWidget *preview;
+--       char *filename;
+--       GdkPixbuf *pixbuf;
+--       gboolean have_preview;
 --
---  pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
---  have_preview = (pixbuf != NULL); g_free (filename);
+--       preview = GTK_WIDGET (data);
+--       filename = gtk_file_chooser_get_preview_filename (file_chooser);
 --
---  gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf); if (pixbuf)
---  g_object_unref (pixbuf);
+--       pixbuf = gdk_pixbuf_new_from_file_at_size (filename, 128, 128, NULL);
+--       have_preview = (pixbuf != NULL);
+--       g_free (filename);
 --
---  gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview); }
---  ]|
+--       gtk_image_set_from_pixbuf (GTK_IMAGE (preview), pixbuf);
+--       if (pixbuf)
+--         g_object_unref (pixbuf);
+--
+--       gtk_file_chooser_set_preview_widget_active (file_chooser, have_preview);
+--     }
+--
 --
 --  # Adding Extra Widgets
 --
@@ -114,15 +124,17 @@
 --  Gtk.File_Chooser.Set_Extra_Widget to insert additional widgets in a file
 --  chooser.
 --
---  An example for adding extra widgets: |[<!-- language="C" -->
+--  An example for adding extra widgets:
 --
---  GtkWidget *toggle;
+--       GtkWidget *toggle;
 --
---  ...
+--       ...
 --
---  toggle = gtk_check_button_new_with_label ("Open file read-only");
---  gtk_widget_show (toggle); gtk_file_chooser_set_extra_widget
---  (my_file_chooser, toggle); } ]|
+--       toggle = gtk_check_button_new_with_label ("Open file read-only");
+--       gtk_widget_show (toggle);
+--       gtk_file_chooser_set_extra_widget (my_file_chooser, toggle);
+--     }
+--
 --
 --  If you want to set more than one extra widget in the file chooser, you can
 --  a container such as a Gtk.Box.Gtk_Box or a Gtk.Grid.Gtk_Grid and include
@@ -439,11 +451,19 @@ package Gtk.File_Chooser is
    --  to save a copy or a modified version. If you don't have a file name
    --  already — for example, if the user just created a new file and is saving
    --  it for the first time, do not call this function. Instead, use something
-   --  similar to this: |[<!-- language="C" --> if (document_is_new) { // the
-   --  user just created a new document gtk_file_chooser_set_current_name
-   --  (chooser, "Untitled document"); } else { // the user edited an existing
-   --  document gtk_file_chooser_set_filename (chooser, existing_filename); }
-   --  ]|
+   --  similar to this:
+   --
+   --     if (document_is_new)
+   --       {
+   --         // the user just created a new document
+   --         gtk_file_chooser_set_current_name (chooser, "Untitled document");
+   --       }
+   --     else
+   --       {
+   --         // the user edited an existing document
+   --         gtk_file_chooser_set_filename (chooser, existing_filename);
+   --       }
+   --
    --  In the first case, the file chooser will present the user with useful
    --  suggestions as to where to save his new file. In the second case, the
    --  file's existing location is already known, so the file chooser will use
@@ -600,10 +620,19 @@ package Gtk.File_Chooser is
    --  to save a copy or a modified version. If you don't have a file name
    --  already — for example, if the user just created a new file and is saving
    --  it for the first time, do not call this function. Instead, use something
-   --  similar to this: |[<!-- language="C" --> if (document_is_new) { // the
-   --  user just created a new document gtk_file_chooser_set_current_name
-   --  (chooser, "Untitled document"); } else { // the user edited an existing
-   --  document gtk_file_chooser_set_uri (chooser, existing_uri); } ]|
+   --  similar to this:
+   --
+   --     if (document_is_new)
+   --       {
+   --         // the user just created a new document
+   --         gtk_file_chooser_set_current_name (chooser, "Untitled document");
+   --       }
+   --     else
+   --       {
+   --         // the user edited an existing document
+   --         gtk_file_chooser_set_uri (chooser, existing_uri);
+   --       }
+   --
    --  In the first case, the file chooser will present the user with useful
    --  suggestions as to where to save his new file. In the second case, the
    --  file's existing location is already known, so the file chooser will use
@@ -809,30 +838,35 @@ package Gtk.File_Chooser is
    --
    --  ## Custom confirmation ## {gtkfilechooser-confirmation}
    --
-   --  |[<!-- language="C" --> static GtkFileChooserConfirmation
-   --  confirm_overwrite_callback (GtkFileChooser *chooser, gpointer data) {
-   --  char *uri;
+   --     static GtkFileChooserConfirmation
+   --     confirm_overwrite_callback (GtkFileChooser *chooser, gpointer data)
+   --     {
+   --       char *uri;
    --
-   --  uri = gtk_file_chooser_get_uri (chooser);
+   --       uri = gtk_file_chooser_get_uri (chooser);
    --
-   --  if (is_uri_read_only (uri)) { if (user_wants_to_replace_read_only_file
-   --  (uri)) return GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME; else return
-   --  GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN; } else return
-   --  GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM; // fall back to the default
-   --  dialog }
+   --       if (is_uri_read_only (uri))
+   --         {
+   --           if (user_wants_to_replace_read_only_file (uri))
+   --             return GTK_FILE_CHOOSER_CONFIRMATION_ACCEPT_FILENAME;
+   --           else
+   --             return GTK_FILE_CHOOSER_CONFIRMATION_SELECT_AGAIN;
+   --         } else
+   --           return GTK_FILE_CHOOSER_CONFIRMATION_CONFIRM; // fall back to the default dialog
+   --     }
    --
-   --  ...
+   --     ...
    --
-   --  chooser = gtk_file_chooser_dialog_new (...);
+   --     chooser = gtk_file_chooser_dialog_new (...);
    --
-   --  gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER
-   --  (dialog), TRUE); g_signal_connect (chooser, "confirm-overwrite",
-   --  G_CALLBACK (confirm_overwrite_callback), NULL);
+   --     gtk_file_chooser_set_do_overwrite_confirmation (GTK_FILE_CHOOSER (dialog), TRUE);
+   --     g_signal_connect (chooser, "confirm-overwrite",
+   --                       G_CALLBACK (confirm_overwrite_callback), NULL);
    --
-   --  if (gtk_dialog_run (chooser) == GTK_RESPONSE_ACCEPT) save_to_file
-   --  (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
+   --     if (gtk_dialog_run (chooser) == GTK_RESPONSE_ACCEPT)
+   --             save_to_file (gtk_file_chooser_get_filename (GTK_FILE_CHOOSER (chooser));
    --
-   --  gtk_widget_destroy (chooser); ]|
+   --     gtk_widget_destroy (chooser);
    -- 
    --  Callback parameters:
    --    --  Returns a Gtk.File_Chooser.Gtk_File_Chooser_Confirmation value that indicates which

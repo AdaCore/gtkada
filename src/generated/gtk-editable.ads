@@ -35,20 +35,27 @@
 --
 --  ## Forcing entry to uppercase.
 --
---  |[<!-- language="C" --> include <ctype.h>;
+--     include <ctype.h>;
 --
---  void insert_text_handler (GtkEditable *editable, const gchar *text, gint
---  length, gint *position, gpointer data) { gchar *result = g_utf8_strup
---  (text, length);
+--     void
+--     insert_text_handler (GtkEditable *editable,
+--                          const gchar *text,
+--                          gint         length,
+--                          gint        *position,
+--                          gpointer     data)
+--     {
+--       gchar *result = g_utf8_strup (text, length);
 --
---  g_signal_handlers_block_by_func (editable, (gpointer) insert_text_handler,
---  data); gtk_editable_insert_text (editable, result, length, position);
---  g_signal_handlers_unblock_by_func (editable, (gpointer)
---  insert_text_handler, data);
+--       g_signal_handlers_block_by_func (editable,
+--                                    (gpointer) insert_text_handler, data);
+--       gtk_editable_insert_text (editable, result, length, position);
+--       g_signal_handlers_unblock_by_func (editable,
+--                                          (gpointer) insert_text_handler, data);
 --
---  g_signal_stop_emission_by_name (editable, "insert_text");
+--       g_signal_stop_emission_by_name (editable, "insert_text");
 --
---  g_free (result); } ]|
+--       g_free (result);
+--     }
 --
 --  </description>
 

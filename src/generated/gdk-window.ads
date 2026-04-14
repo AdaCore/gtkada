@@ -288,16 +288,22 @@ package Gdk.Window is
    --  assuming a terminal area widget called "terminal" and a toplevel window
    --  "toplevel":
    --
-   --  |[<!-- language="C" --> GdkGeometry hints;
+   --     	GdkGeometry hints;
    --
-   --  hints.base_width = terminal->char_width; hints.base_height =
-   --  terminal->char_height; hints.min_width = terminal->char_width;
-   --  hints.min_height = terminal->char_height; hints.width_inc =
-   --  terminal->char_width; hints.height_inc = terminal->char_height;
+   --     	hints.base_width = terminal->char_width;
+   --             hints.base_height = terminal->char_height;
+   --             hints.min_width = terminal->char_width;
+   --             hints.min_height = terminal->char_height;
+   --             hints.width_inc = terminal->char_width;
+   --             hints.height_inc = terminal->char_height;
    --
-   --  gtk_window_set_geometry_hints (GTK_WINDOW (toplevel), GTK_WIDGET
-   --  (terminal), &hints, GDK_HINT_RESIZE_INC | GDK_HINT_MIN_SIZE |
-   --  GDK_HINT_BASE_SIZE); ]|
+   --      gtk_window_set_geometry_hints (GTK_WINDOW (toplevel),
+   --                                     GTK_WIDGET (terminal),
+   --                                     &hints,
+   --                                     GDK_HINT_RESIZE_INC |
+   --                                     GDK_HINT_MIN_SIZE |
+   --                                     GDK_HINT_BASE_SIZE);
+   --
    --
    --  The other useful fields are the Min_Aspect and Max_Aspect fields; these
    --  contain a width/height ratio as a floating point number. If a geometry
@@ -675,12 +681,18 @@ package Gdk.Window is
    --  factor of the Window, or by the Scale argument; they are the size of the
    --  surface in device pixels. If you wish to create an image surface capable
    --  of holding the contents of Window you can use:
-   --  |[<!-- language="C" --> int scale = gdk_window_get_scale_factor
-   --  (window); int width = gdk_window_get_width (window) * scale; int height
-   --  = gdk_window_get_height (window) * scale;
-   --  // format is set elsewhere cairo_surface_t *surface =
-   --  gdk_window_create_similar_image_surface (window, format, width, height,
-   --  scale); ]|
+   --
+   --     int scale = gdk_window_get_scale_factor (window);
+   --     int width = gdk_window_get_width (window) * scale;
+   --     int height = gdk_window_get_height (window) * scale;
+   --
+   --     // format is set elsewhere
+   --     cairo_surface_t *surface =
+   --       gdk_window_create_similar_image_surface (window,
+   --                                                format,
+   --                                                width, height,
+   --                                                scale);
+   --
    --  Note that unlike cairo_surface_create_similar_image, the new surface's
    --  device scale is set to Scale, or to the scale factor of Window if Scale
    --  is 0.

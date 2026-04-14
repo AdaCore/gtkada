@@ -1055,8 +1055,6 @@ package body Gtk.Tree_View_Column is
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);
    end Reorder;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Tree_View_Column_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

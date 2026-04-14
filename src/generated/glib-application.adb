@@ -1111,8 +1111,6 @@ package body Glib.Application is
       return Tmp_Return /= 0;
    end Id_Is_Valid;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gapplication_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

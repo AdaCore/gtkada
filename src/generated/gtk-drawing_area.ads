@@ -49,28 +49,40 @@
 --
 --  ## Simple GtkDrawingArea usage
 --
---  |[<!-- language="C" --> gboolean draw_callback (GtkWidget *widget, cairo_t
---  *cr, gpointer data) { guint width, height; GdkRGBA color; GtkStyleContext
---  *context;
+--     gboolean
+--     draw_callback (GtkWidget *widget, cairo_t *cr, gpointer data)
+--     {
+--       guint width, height;
+--       GdkRGBA color;
+--       GtkStyleContext *context;
 --
---  context = gtk_widget_get_style_context (widget);
+--       context = gtk_widget_get_style_context (widget);
 --
---  width = gtk_widget_get_allocated_width (widget); height =
---  gtk_widget_get_allocated_height (widget);
+--       width = gtk_widget_get_allocated_width (widget);
+--       height = gtk_widget_get_allocated_height (widget);
 --
---  gtk_render_background (context, cr, 0, 0, width, height);
+--       gtk_render_background (context, cr, 0, 0, width, height);
 --
---  cairo_arc (cr, width / 2.0, height / 2.0, MIN (width, height) / 2.0, 0, 2
---  * G_PI);
+--       cairo_arc (cr,
+--                  width / 2.0, height / 2.0,
+--                  MIN (width, height) / 2.0,
+--                  0, 2 * G_PI);
 --
---  gtk_style_context_get_color (context, gtk_style_context_get_state
---  (context), &color); gdk_cairo_set_source_rgba (cr, &color);
+--       gtk_style_context_get_color (context,
+--                                    gtk_style_context_get_state (context),
+--                                    &color);
+--       gdk_cairo_set_source_rgba (cr, &color);
 --
---  cairo_fill (cr);
+--       cairo_fill (cr);
 --
---  return FALSE; } [...] GtkWidget *drawing_area = gtk_drawing_area_new ();
---  gtk_widget_set_size_request (drawing_area, 100, 100); g_signal_connect
---  (G_OBJECT (drawing_area), "draw", G_CALLBACK (draw_callback), NULL); ]|
+--      return FALSE;
+--     }
+--     [...]
+--       GtkWidget *drawing_area = gtk_drawing_area_new ();
+--       gtk_widget_set_size_request (drawing_area, 100, 100);
+--       g_signal_connect (G_OBJECT (drawing_area), "draw",
+--                         G_CALLBACK (draw_callback), NULL);
+--
 --
 --  Draw signals are normally delivered when a drawing area first comes
 --  onscreen, or when it's covered by another window and then uncovered. You

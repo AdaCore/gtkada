@@ -774,8 +774,6 @@ package body Gtk.Clipboard is
       return Gtk.Clipboard.Gtk_Clipboard (Get_User_Data (Internal (Get_Object (Display), Selection), Stub_Gtk_Clipboard));
    end Get_For_Display;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Clipboard_Gdk_Event_Owner_Change_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

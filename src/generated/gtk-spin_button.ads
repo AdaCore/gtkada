@@ -40,11 +40,23 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> spinbutton.horizontal ├── undershoot.left ├──
---  undershoot.right ├── entry │ ╰── ... ├── button.down ╰── button.up ]|
+--     spinbutton.horizontal
+--     ├── undershoot.left
+--     ├── undershoot.right
+--     ├── entry
+--     │   ╰── ...
+--     ├── button.down
+--     ╰── button.up
 --
---  |[<!-- language="plain" --> spinbutton.vertical ├── undershoot.left ├──
---  undershoot.right ├── button.up ├── entry │ ╰── ... ╰── button.down ]|
+--
+--     spinbutton.vertical
+--     ├── undershoot.left
+--     ├── undershoot.right
+--     ├── button.up
+--     ├── entry
+--     │   ╰── ...
+--     ╰── button.down
+--
 --
 --  GtkSpinButtons main CSS node has the name spinbutton. It creates subnodes
 --  for the entry and the two buttons, with these names. The button nodes have
@@ -54,50 +66,65 @@
 --
 --  ## Using a GtkSpinButton to get an integer
 --
---  |[<!-- language="C" --> // Provides a function to retrieve an integer
---  value from a GtkSpinButton // and creates a spin button to model percentage
---  values.
+--     // Provides a function to retrieve an integer value from a GtkSpinButton
+--     // and creates a spin button to model percentage values.
 --
---  gint grab_int_value (GtkSpinButton *button, gpointer user_data) { return
---  gtk_spin_button_get_value_as_int (button); }
+--     gint
+--     grab_int_value (GtkSpinButton *button,
+--                     gpointer       user_data)
+--     {
+--       return gtk_spin_button_get_value_as_int (button);
+--     }
 --
---  void create_integer_spin_button (void) {
+--     void
+--     create_integer_spin_button (void)
+--     {
 --
---  GtkWidget *window, *button; GtkAdjustment *adjustment;
+--       GtkWidget *window, *button;
+--       GtkAdjustment *adjustment;
 --
---  adjustment = gtk_adjustment_new (50.0, 0.0, 100.0, 1.0, 5.0, 0.0);
+--       adjustment = gtk_adjustment_new (50.0, 0.0, 100.0, 1.0, 5.0, 0.0);
 --
---  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
---  gtk_container_set_border_width (GTK_CONTAINER (window), 5);
+--       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+--       gtk_container_set_border_width (GTK_CONTAINER (window), 5);
 --
---  // creates the spinbutton, with no decimal places button =
---  gtk_spin_button_new (adjustment, 1.0, 0); gtk_container_add (GTK_CONTAINER
---  (window), button);
+--       // creates the spinbutton, with no decimal places
+--       button = gtk_spin_button_new (adjustment, 1.0, 0);
+--       gtk_container_add (GTK_CONTAINER (window), button);
 --
---  gtk_widget_show_all (window); } ]|
+--       gtk_widget_show_all (window);
+--     }
+--
 --
 --  ## Using a GtkSpinButton to get a floating point value
 --
---  |[<!-- language="C" --> // Provides a function to retrieve a floating
---  point value from a // GtkSpinButton, and creates a high precision spin
---  button.
+--     // Provides a function to retrieve a floating point value from a
+--     // GtkSpinButton, and creates a high precision spin button.
 --
---  gfloat grab_float_value (GtkSpinButton *button, gpointer user_data) {
---  return gtk_spin_button_get_value (button); }
+--     gfloat
+--     grab_float_value (GtkSpinButton *button,
+--                       gpointer       user_data)
+--     {
+--       return gtk_spin_button_get_value (button);
+--     }
 --
---  void create_floating_spin_button (void) { GtkWidget *window, *button;
---  GtkAdjustment *adjustment;
+--     void
+--     create_floating_spin_button (void)
+--     {
+--       GtkWidget *window, *button;
+--       GtkAdjustment *adjustment;
 --
---  adjustment = gtk_adjustment_new (2.500, 0.0, 5.0, 0.001, 0.1, 0.0);
+--       adjustment = gtk_adjustment_new (2.500, 0.0, 5.0, 0.001, 0.1, 0.0);
 --
---  window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
---  gtk_container_set_border_width (GTK_CONTAINER (window), 5);
+--       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+--       gtk_container_set_border_width (GTK_CONTAINER (window), 5);
 --
---  // creates the spinbutton, with three decimal places button =
---  gtk_spin_button_new (adjustment, 0.001, 3); gtk_container_add
---  (GTK_CONTAINER (window), button);
+--       // creates the spinbutton, with three decimal places
+--       button = gtk_spin_button_new (adjustment, 0.001, 3);
+--       gtk_container_add (GTK_CONTAINER (window), button);
 --
---  gtk_widget_show_all (window); } ]|
+--       gtk_widget_show_all (window);
+--     }
 --
 --  </description>
 
@@ -574,16 +601,25 @@ package Gtk.Spin_Button is
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The ::output signal can be used to change to formatting of the value
-   --  that is displayed in the spin buttons entry. |[<!-- language="C" --> //
-   --  show leading zeros static gboolean on_output (GtkSpinButton *spin,
-   --  gpointer data) { GtkAdjustment *adjustment; gchar *text; int value;
+   --  that is displayed in the spin buttons entry.
    --
-   --  adjustment = gtk_spin_button_get_adjustment (spin); value =
-   --  (int)gtk_adjustment_get_value (adjustment); text = g_strdup_printf
-   --  ("%02d", value); gtk_entry_set_text (GTK_ENTRY (spin), text); g_free
-   --  (text);
+   --     // show leading zeros
+   --     static gboolean
+   --     on_output (GtkSpinButton *spin,
+   --                gpointer       data)
+   --     {
+   --        GtkAdjustment *adjustment;
+   --        gchar *text;
+   --        int value;
    --
-   --  return TRUE; } ]|
+   --        adjustment = gtk_spin_button_get_adjustment (spin);
+   --        value = (int)gtk_adjustment_get_value (adjustment);
+   --        text = g_strdup_printf ("%02d", value);
+   --        gtk_entry_set_text (GTK_ENTRY (spin), text);
+   --        g_free (text);
+   --
+   --        return TRUE;
+   --     }
    -- 
    --  Callback parameters:
    --    --  Returns True if the value has been displayed

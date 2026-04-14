@@ -263,8 +263,6 @@ package body Gtk.Entry_Buffer is
       Free (Tmp_Chars);
    end Set_Text;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Entry_Buffer_Guint_Guint_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -136,8 +136,6 @@ package body Gtk.Overlay is
       Internal (Get_Object (Self), Get_Object (Widget), Boolean'Pos (Pass_Through));
    end Set_Overlay_Pass_Through;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Overlay_Gtk_Widget_Gdk_Rectangle_Boolean, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

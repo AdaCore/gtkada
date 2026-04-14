@@ -37,7 +37,9 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> iconview.view ╰── [rubberband] ]|
+--     iconview.view
+--     ╰── [rubberband]
+--
 --
 --  GtkIconView has a single CSS node with name iconview and style class
 --  .view. For rubberband selection, a subnode with name rubberband is used.
@@ -511,8 +513,10 @@ package Gtk.Icon_View is
    --  want to convert the returned list into a list of
    --  Gtk_Tree_Row_References. To do this, you can use
    --  gtk_tree_row_reference_new.
-   --  To free the return value, use: |[<!-- language="C" --> g_list_free_full
-   --  (list, (GDestroyNotify) gtk_tree_path_free); ]|
+   --  To free the return value, use:
+   --
+   --     g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
+   --
    --  Since: gtk+ 2.6
 
    function Get_Selection_Mode

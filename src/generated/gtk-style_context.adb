@@ -1333,8 +1333,6 @@ package body Gtk.Style_Context is
       Internal (Get_Object (Screen));
    end Reset_Widgets;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Style_Context_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

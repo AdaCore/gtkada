@@ -163,9 +163,13 @@ package Gtk.Style_Context is
    --  of this new class for styling.
    --  In the CSS file format, a Gtk.GEntry.Gtk_Entry defining a "search"
    --  class, would be matched by:
-   --  |[ <!-- language="CSS" --> entry.search { ... } ]|
-   --  While any widget defining a "search" class would be matched by: |[ <!--
-   --  language="CSS" --> .search { ... } ]|
+   --
+   --     entry.search { ... }
+   --
+   --  While any widget defining a "search" class would be matched by:
+   --
+   --     .search { ... }
+   --
    --  Since: gtk+ 3.0
    --  "class_name": class name to use in styling
 
@@ -198,10 +202,14 @@ package Gtk.Style_Context is
    --  for styling.
    --  In the CSS file format, a Gtk.Tree_View.Gtk_Tree_View defining a "row"
    --  region, would be matched by:
-   --  |[ <!-- language="CSS" --> treeview row { ... } ]|
+   --
+   --     treeview row { ... }
+   --
    --  Pseudo-classes are used for matching Flags, so the two following rules:
-   --  |[ <!-- language="CSS" --> treeview row:nth-child(even) { ... } treeview
-   --  row:nth-child(odd) { ... } ]|
+   --
+   --     treeview row:nth-child(even) { ... }
+   --     treeview row:nth-child(odd) { ... }
+   --
    --  would apply to even and odd rows, respectively.
    --  Region names must only contain lowercase letters and "-", starting
    --  always with a lowercase letter.
@@ -560,12 +568,25 @@ package Gtk.Style_Context is
    --  If Region_Id is null, all rendered elements using Context will be
    --  affected by this state transition.
    --  As a practical example, a Gtk.Button.Gtk_Button notifying a state
-   --  transition on the prelight state: |[ <!-- language="C" -->
-   --  gtk_style_context_notify_state_change (context, gtk_widget_get_window
-   --  (widget), NULL, GTK_STATE_PRELIGHT, button->in_button); ]|
-   --  Can be handled in the CSS file like this: |[ <!-- language="CSS" -->
-   --  button { background-color: f00 }
-   --  button:hover { background-color: fff; transition: 200ms linear } ]|
+   --  transition on the prelight state:
+   --
+   --     gtk_style_context_notify_state_change (context,
+   --                                            gtk_widget_get_window (widget),
+   --                                            NULL,
+   --                                            GTK_STATE_PRELIGHT,
+   --                                            button->in_button);
+   --
+   --  Can be handled in the CSS file like this:
+   --
+   --     button {
+   --         background-color: f00
+   --     }
+   --
+   --     button:hover {
+   --         background-color: fff;
+   --         transition: 200ms linear
+   --     }
+   --
    --  This combination will animate the button background from red to white
    --  if a pointer enters the button, and back to red if the pointer leaves
    --  the button.

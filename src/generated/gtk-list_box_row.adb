@@ -291,8 +291,6 @@ package body Gtk.List_Box_Row is
       Free (Tmp_Detailed_Action_Name);
    end Set_Detailed_Action_Name;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_List_Box_Row_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

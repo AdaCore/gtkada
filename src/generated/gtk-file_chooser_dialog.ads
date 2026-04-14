@@ -45,41 +45,70 @@
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog to select a file for
 --  opening:
 --
---  |[ GtkWidget *dialog; GtkFileChooserAction action =
---  GTK_FILE_CHOOSER_ACTION_OPEN; gint res;
+--     GtkWidget *dialog;
+--     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
+--     gint res;
 --
---  dialog = gtk_file_chooser_dialog_new ("Open File", parent_window, action,
---  _("_Cancel"), GTK_RESPONSE_CANCEL, _("_Open"), GTK_RESPONSE_ACCEPT, NULL);
+--     dialog = gtk_file_chooser_dialog_new ("Open File",
+--                                           parent_window,
+--                                           action,
+--                                           _("_Cancel"),
+--                                           GTK_RESPONSE_CANCEL,
+--                                           _("_Open"),
+--                                           GTK_RESPONSE_ACCEPT,
+--                                           NULL);
 --
---  res = gtk_dialog_run (GTK_DIALOG (dialog)); if (res ==
---  GTK_RESPONSE_ACCEPT) { char *filename; GtkFileChooser *chooser =
---  GTK_FILE_CHOOSER (dialog); filename = gtk_file_chooser_get_filename
---  (chooser); open_file (filename); g_free (filename); }
+--     res = gtk_dialog_run (GTK_DIALOG (dialog));
+--     if (res == GTK_RESPONSE_ACCEPT)
+--       {
+--         char *filename;
+--         GtkFileChooser *chooser = GTK_FILE_CHOOSER (dialog);
+--         filename = gtk_file_chooser_get_filename (chooser);
+--         open_file (filename);
+--         g_free (filename);
+--       }
 --
---  gtk_widget_destroy (dialog); ]|
+--     gtk_widget_destroy (dialog);
+--
 --
 --  To use a dialog for saving, you can use this:
 --
---  |[ GtkWidget *dialog; GtkFileChooser *chooser; GtkFileChooserAction action
---  = GTK_FILE_CHOOSER_ACTION_SAVE; gint res;
+--     GtkWidget *dialog;
+--     GtkFileChooser *chooser;
+--     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_SAVE;
+--     gint res;
 --
---  dialog = gtk_file_chooser_dialog_new ("Save File", parent_window, action,
---  _("_Cancel"), GTK_RESPONSE_CANCEL, _("_Save"), GTK_RESPONSE_ACCEPT, NULL);
---  chooser = GTK_FILE_CHOOSER (dialog);
+--     dialog = gtk_file_chooser_dialog_new ("Save File",
+--                                           parent_window,
+--                                           action,
+--                                           _("_Cancel"),
+--                                           GTK_RESPONSE_CANCEL,
+--                                           _("_Save"),
+--                                           GTK_RESPONSE_ACCEPT,
+--                                           NULL);
+--     chooser = GTK_FILE_CHOOSER (dialog);
 --
---  gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
+--     gtk_file_chooser_set_do_overwrite_confirmation (chooser, TRUE);
 --
---  if (user_edited_a_new_document) gtk_file_chooser_set_current_name
---  (chooser, _("Untitled document")); else gtk_file_chooser_set_filename
---  (chooser, existing_filename);
+--     if (user_edited_a_new_document)
+--       gtk_file_chooser_set_current_name (chooser,
+--                                          _("Untitled document"));
+--     else
+--       gtk_file_chooser_set_filename (chooser,
+--                                      existing_filename);
 --
---  res = gtk_dialog_run (GTK_DIALOG (dialog)); if (res ==
---  GTK_RESPONSE_ACCEPT) { char *filename;
+--     res = gtk_dialog_run (GTK_DIALOG (dialog));
+--     if (res == GTK_RESPONSE_ACCEPT)
+--       {
+--         char *filename;
 --
---  filename = gtk_file_chooser_get_filename (chooser); save_to_file
---  (filename); g_free (filename); }
+--         filename = gtk_file_chooser_get_filename (chooser);
+--         save_to_file (filename);
+--         g_free (filename);
+--       }
 --
---  gtk_widget_destroy (dialog); ]|
+--     gtk_widget_destroy (dialog);
+--
 --
 --  ## Setting up a file chooser dialog ## {gtkfilechooserdialog-setting-up}
 --
@@ -113,12 +142,18 @@
 --  codes such as GTK_RESPONSE_ACCEPT and GTK_RESPONSE_CANCEL. For example, you
 --  could call Gtk_New as follows:
 --
---  |[ GtkWidget *dialog; GtkFileChooserAction action =
---  GTK_FILE_CHOOSER_ACTION_OPEN;
+--     GtkWidget *dialog;
+--     GtkFileChooserAction action = GTK_FILE_CHOOSER_ACTION_OPEN;
 --
---  dialog = gtk_file_chooser_dialog_new ("Open File", parent_window, action,
---  _("_Cancel"), GTK_RESPONSE_CANCEL, _("_Open"), GTK_RESPONSE_ACCEPT, NULL);
---  ]|
+--     dialog = gtk_file_chooser_dialog_new ("Open File",
+--                                           parent_window,
+--                                           action,
+--                                           _("_Cancel"),
+--                                           GTK_RESPONSE_CANCEL,
+--                                           _("_Open"),
+--                                           GTK_RESPONSE_ACCEPT,
+--                                           NULL);
+--
 --
 --  This will create buttons for "Cancel" and "Open" that use stock response
 --  identifiers from Gtk_Response_Type. For most dialog boxes you can use your

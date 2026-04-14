@@ -71,12 +71,24 @@ package body Gtk.Tree_Model_Filter is
    --  Note that Func is called whenever a row is inserted, when it may still
    --  be empty. The visible function should therefore take special care of
    --  empty rows, like in the example below.
-   --  |[<!-- language="C" --> static gboolean visible_func (GtkTreeModel
-   --  *model, GtkTreeIter *iter, gpointer data) { // Visible if row is
-   --  non-empty and first column is "HI" gchar *str; gboolean visible = FALSE;
-   --  gtk_tree_model_get (model, iter, 0, &str, -1); if (str && strcmp (str,
-   --  "HI") == 0) visible = TRUE; g_free (str);
-   --  return visible; } ]|
+   --
+   --     static gboolean
+   --     visible_func (GtkTreeModel *model,
+   --                   GtkTreeIter  *iter,
+   --                   gpointer      data)
+   --     {
+   --       // Visible if row is non-empty and first column is "HI"
+   --       gchar *str;
+   --       gboolean visible = FALSE;
+   --
+   --       gtk_tree_model_get (model, iter, 0, &str, -1);
+   --       if (str && strcmp (str, "HI") == 0)
+   --         visible = TRUE;
+   --       g_free (str);
+   --
+   --       return visible;
+   --     }
+   --
    --  Note that Gtk.Tree_Model_Filter.Set_Visible_Func or
    --  Gtk.Tree_Model_Filter.Set_Visible_Column can only be called once for a
    --  given filter model.

@@ -36,11 +36,9 @@
 --  and simply treat the results of a Pango.Layout.Pango_Layout as a list of
 --  lines.
 --
---  <figure id="parameters">
---  == Adjustable parameters (on the left) and font metrics (on the right) for
---  a PangoLayout ==
---
---  <graphic fileref="layout.png" format="PNG"></graphic> </figure>
+--  <figure id="parameters"> <title>Adjustable parameters (on the left) and
+--  font metrics (on the right) for a PangoLayout</title> <graphic
+--  fileref="layout.png" format="PNG"></graphic> </figure>
 --  The Pango.Layout.Pango_Layout structure is opaque, and has no user-visible
 --  fields.
 --
@@ -379,7 +377,7 @@ package Pango.Layout is
    --  Use the faster Pango.Layout.Get_Line_Readonly if you do not plan to
    --  modify the contents of the line (glyphs, glyph widths, etc.).
    --  "line": the index of a line, which must be between 0 and
-   --  'pango_layout_get_line_count(layout) - 1', inclusive.
+   --  `pango_layout_get_line_count(layout) - 1`, inclusive.
 
    function Get_Line (Self : Pango_Layout_Iter) return Pango_Layout_Line;
    --  Gets the current line.
@@ -399,7 +397,7 @@ package Pango.Layout is
    --  etc.).
    --  Since: gtk+ 1.16
    --  "line": the index of a line, which must be between 0 and
-   --  'pango_layout_get_line_count(layout) - 1', inclusive.
+   --  `pango_layout_get_line_count(layout) - 1`, inclusive.
 
    function Get_Line_Readonly
       (Self : Pango_Layout_Iter) return Pango_Layout_Line;
@@ -583,10 +581,10 @@ package Pango.Layout is
        Pos    : out Pango_Rectangle);
    --  Converts from an index within a Pango.Layout.Pango_Layout to the
    --  onscreen position corresponding to the grapheme at that index, which is
-   --  represented as rectangle. Note that 'pos->x' is always the leading edge
-   --  of the grapheme and 'pos->x + pos->width' the trailing edge of the
+   --  represented as rectangle. Note that `pos->x` is always the leading edge
+   --  of the grapheme and `pos->x + pos->width` the trailing edge of the
    --  grapheme. If the directionality of the grapheme is right-to-left, then
-   --  'pos->width' will be negative.
+   --  `pos->width` will be negative.
    --  "index_": byte index within Layout
    --  "pos": rectangle in which to store the position of the grapheme
 

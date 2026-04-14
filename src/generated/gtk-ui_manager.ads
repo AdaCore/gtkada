@@ -42,24 +42,40 @@
 --  > Do not confuse the GtkUIManager UI Definitions described here with > the
 --  similarly named [GtkBuilder UI Definitions][BUILDER-UI].
 --
---  |[ <!ELEMENT ui (menubar|toolbar|popup|accelerator)* > <!ELEMENT menubar
---  (menuitem|separator|placeholder|menu)* > <!ELEMENT menu
---  (menuitem|separator|placeholder|menu)* > <!ELEMENT popup
---  (menuitem|separator|placeholder|menu)* > <!ELEMENT toolbar
---  (toolitem|separator|placeholder)* > <!ELEMENT placeholder
---  (menuitem|toolitem|separator|placeholder|menu)* > <!ELEMENT menuitem EMPTY
---  > <!ELEMENT toolitem (menu?) > <!ELEMENT separator EMPTY > <!ELEMENT
---  accelerator EMPTY > <!ATTLIST menubar name IMPLIED action IMPLIED >
---  <!ATTLIST toolbar name IMPLIED action IMPLIED > <!ATTLIST popup name
---  IMPLIED action IMPLIED accelerators (true|false) IMPLIED > <!ATTLIST
---  placeholder name IMPLIED action IMPLIED > <!ATTLIST separator name IMPLIED
---  action IMPLIED expand (true|false) IMPLIED > <!ATTLIST menu name IMPLIED
---  action REQUIRED position (top|bot) IMPLIED > <!ATTLIST menuitem name
---  IMPLIED action REQUIRED position (top|bot) IMPLIED always-show-image
---  (true|false) IMPLIED > <!ATTLIST toolitem name IMPLIED action REQUIRED
---  position (top|bot) IMPLIED > <!ATTLIST accelerator name IMPLIED action
---  REQUIRED > ]|
---
+--     <!ELEMENT ui          (menubar|toolbar|popup|accelerator)* >
+--     <!ELEMENT menubar     (menuitem|separator|placeholder|menu)* >
+--     <!ELEMENT menu        (menuitem|separator|placeholder|menu)* >
+--     <!ELEMENT popup       (menuitem|separator|placeholder|menu)* >
+--     <!ELEMENT toolbar     (toolitem|separator|placeholder)* >
+--     <!ELEMENT placeholder (menuitem|toolitem|separator|placeholder|menu)* >
+--     <!ELEMENT menuitem     EMPTY >
+--     <!ELEMENT toolitem     (menu?) >
+--     <!ELEMENT separator    EMPTY >
+--     <!ELEMENT accelerator  EMPTY >
+--     <!ATTLIST menubar      name                      IMPLIED
+--                            action                    IMPLIED >
+--     <!ATTLIST toolbar      name                      IMPLIED
+--                            action                    IMPLIED >
+--     <!ATTLIST popup        name                      IMPLIED
+--                            action                    IMPLIED
+--                            accelerators (true|false) IMPLIED >
+--     <!ATTLIST placeholder  name                      IMPLIED
+--                            action                    IMPLIED >
+--     <!ATTLIST separator    name                      IMPLIED
+--                            action                    IMPLIED
+--                            expand       (true|false) IMPLIED >
+--     <!ATTLIST menu         name                      IMPLIED
+--                            action                    REQUIRED
+--                            position     (top|bot)    IMPLIED >
+--     <!ATTLIST menuitem     name                      IMPLIED
+--                            action                    REQUIRED
+--                            position     (top|bot)    IMPLIED
+--                            always-show-image (true|false) IMPLIED >
+--     <!ATTLIST toolitem     name                      IMPLIED
+--                            action                    REQUIRED
+--                            position     (top|bot)    IMPLIED >
+--     <!ATTLIST accelerator  name                      IMPLIED
+--                            action                    REQUIRED >
 --  There are some additional restrictions beyond those specified in the DTD,
 --  e.g. every toolitem must have a toolbar in its anchestry and every menuitem
 --  must have a menubar or popup in its anchestry. Since a GMarkup_Parser is
@@ -75,18 +91,30 @@
 --
 --  # A UI definition #
 --
---  |[ <ui> <menubar> <menu name="FileMenu" action="FileMenuAction"> <menuitem
---  name="New" action="New2Action" /> <placeholder name="FileMenuAdditions" />
---  </menu> <menu name="JustifyMenu" action="JustifyMenuAction"> <menuitem
---  name="Left" action="justify-left"/> <menuitem name="Centre"
---  action="justify-center"/> <menuitem name="Right" action="justify-right"/>
---  <menuitem name="Fill" action="justify-fill"/> </menu> </menubar> <toolbar
---  action="toolbar1"> <placeholder name="JustifyToolItems"> <separator/>
---  <toolitem name="Left" action="justify-left"/> <toolitem name="Centre"
---  action="justify-center"/> <toolitem name="Right" action="justify-right"/>
---  <toolitem name="Fill" action="justify-fill"/> <separator/> </placeholder>
---  </toolbar> </ui> ]|
---
+--     <ui>
+--       <menubar>
+--         <menu name="FileMenu" action="FileMenuAction">
+--           <menuitem name="New" action="New2Action" />
+--           <placeholder name="FileMenuAdditions" />
+--         </menu>
+--         <menu name="JustifyMenu" action="JustifyMenuAction">
+--           <menuitem name="Left" action="justify-left"/>
+--           <menuitem name="Centre" action="justify-center"/>
+--           <menuitem name="Right" action="justify-right"/>
+--           <menuitem name="Fill" action="justify-fill"/>
+--         </menu>
+--       </menubar>
+--       <toolbar action="toolbar1">
+--         <placeholder name="JustifyToolItems">
+--           <separator/>
+--           <toolitem name="Left" action="justify-left"/>
+--           <toolitem name="Centre" action="justify-center"/>
+--           <toolitem name="Right" action="justify-right"/>
+--           <toolitem name="Fill" action="justify-fill"/>
+--           <separator/>
+--         </placeholder>
+--       </toolbar>
+--     </ui>
 --  The constructed widget hierarchy is very similar to the element tree of
 --  the XML, with the exception that placeholders are merged into their
 --  parents. The correspondence of XML elements to widgets should be almost
@@ -195,14 +223,28 @@
 --
 --  ## An embedded GtkUIManager UI definition
 --
---  |[ <object class="GtkUIManager" id="uiman"> <child> <object
---  class="GtkActionGroup" id="actiongroup"> <child> <object class="GtkAction"
---  id="file"> <property name="label">_File</property> </object> </child>
---  </object> </child> <ui> <menubar name="menubar1"> <menu action="file">
---  </menu> </menubar> </ui> </object> <object class="GtkWindow"
---  id="main-window"> <child> <object class="GtkMenuBar" id="menubar1"
---  constructor="uiman"/> </child> </object> ]|
---
+--     <object class="GtkUIManager" id="uiman">
+--       <child>
+--         <object class="GtkActionGroup" id="actiongroup">
+--           <child>
+--             <object class="GtkAction" id="file">
+--               <property name="label">_File</property>
+--             </object>
+--           </child>
+--         </object>
+--       </child>
+--       <ui>
+--         <menubar name="menubar1">
+--           <menu action="file">
+--           </menu>
+--         </menubar>
+--       </ui>
+--     </object>
+--     <object class="GtkWindow" id="main-window">
+--       <child>
+--         <object class="GtkMenuBar" id="menubar1" constructor="uiman"/>
+--       </child>
+--     </object>
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -336,12 +378,16 @@ package Gtk.UI_Manager is
    --  This may occasionally be necessary, since Gtk.UI_Manager.Gtk_UI_Manager
    --  updates the UI in an idle function. A typical example where this
    --  function is useful is to enforce that the menubar and toolbar have been
-   --  added to the main window before showing it: |[<!-- language="C" -->
-   --  gtk_container_add (GTK_CONTAINER (window), vbox); g_signal_connect
-   --  (merge, "add-widget", G_CALLBACK (add_widget), vbox);
-   --  gtk_ui_manager_add_ui_from_file (merge, "my-menus");
-   --  gtk_ui_manager_add_ui_from_file (merge, "my-toolbars");
-   --  gtk_ui_manager_ensure_update (merge); gtk_widget_show (window); ]|
+   --  added to the main window before showing it:
+   --
+   --     gtk_container_add (GTK_CONTAINER (window), vbox);
+   --     g_signal_connect (merge, "add-widget",
+   --                       G_CALLBACK (add_widget), vbox);
+   --     gtk_ui_manager_add_ui_from_file (merge, "my-menus");
+   --     gtk_ui_manager_add_ui_from_file (merge, "my-toolbars");
+   --     gtk_ui_manager_ensure_update (merge);
+   --     gtk_widget_show (window);
+   --
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
 

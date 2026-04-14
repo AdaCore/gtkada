@@ -675,8 +675,6 @@ package body Gtk.Action_Group is
       return Gtkada.Bindings.Value_Allowing_Null (Tmp_Return);
    end Translate_String;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Action_Group_Gtk_Action_Gtk_Widget_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

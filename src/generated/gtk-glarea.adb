@@ -321,8 +321,6 @@ package body Gtk.GLArea is
       Internal (Get_Object (Self), Boolean'Pos (Use_Es));
    end Set_Use_Es;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_GLArea_Gdk_GLContext, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

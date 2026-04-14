@@ -576,8 +576,6 @@ package body Gtk.Tree_Selection is
       Internal (Get_Object (Selection), Get_Object (Start_Path), Get_Object (End_Path));
    end Unselect_Range;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Tree_Selection_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

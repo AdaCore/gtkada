@@ -239,8 +239,6 @@ package body Gtk.Text_Tag_Table is
       Internal (Get_Object (Table), Get_Object (Tag));
    end Remove;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

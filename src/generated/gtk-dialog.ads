@@ -70,25 +70,39 @@
 --  you'd need to create the dialog contents manually if you had more than a
 --  simple message in the dialog.
 --
---  An example for simple GtkDialog usage: |[<!-- language="C" --> // Function
---  to open a dialog box with a message void quick_message (GtkWindow *parent,
---  gchar *message) { GtkWidget *dialog, *label, *content_area; GtkDialogFlags
---  flags;
+--  An example for simple GtkDialog usage:
 --
---  // Create the widgets flags = GTK_DIALOG_DESTROY_WITH_PARENT; dialog =
---  gtk_dialog_new_with_buttons ("Message", parent, flags, _("_OK"),
---  GTK_RESPONSE_NONE, NULL); content_area = gtk_dialog_get_content_area
---  (GTK_DIALOG (dialog)); label = gtk_label_new (message);
+--     // Function to open a dialog box with a message
+--     void
+--     quick_message (GtkWindow *parent, gchar *message)
+--     {
+--      GtkWidget *dialog, *label, *content_area;
+--      GtkDialogFlags flags;
 --
---  // Ensure that the dialog box is destroyed when the user responds
+--      // Create the widgets
+--      flags = GTK_DIALOG_DESTROY_WITH_PARENT;
+--      dialog = gtk_dialog_new_with_buttons ("Message",
+--                                            parent,
+--                                            flags,
+--                                            _("_OK"),
+--                                            GTK_RESPONSE_NONE,
+--                                            NULL);
+--      content_area = gtk_dialog_get_content_area (GTK_DIALOG (dialog));
+--      label = gtk_label_new (message);
 --
---  g_signal_connect_swapped (dialog, "response", G_CALLBACK
---  (gtk_widget_destroy), dialog);
+--      // Ensure that the dialog box is destroyed when the user responds
 --
---  // Add the label, and show everything we've added
+--      g_signal_connect_swapped (dialog,
+--                                "response",
+--                                G_CALLBACK (gtk_widget_destroy),
+--                                dialog);
 --
---  gtk_container_add (GTK_CONTAINER (content_area), label);
---  gtk_widget_show_all (dialog); } ]|
+--      // Add the label, and show everything we've added
+--
+--      gtk_container_add (GTK_CONTAINER (content_area), label);
+--      gtk_widget_show_all (dialog);
+--     }
+--
 --
 --  # GtkDialog as GtkBuildable
 --
@@ -109,15 +123,22 @@
 --  "use-header-bar" property. The response id has to be associated with the
 --  action widget using the <action-widgets> element.
 --
---  An example of a Gtk.Dialog.Gtk_Dialog UI definition fragment: |[ <object
---  class="GtkDialog" id="dialog1"> <child type="action"> <object
---  class="GtkButton" id="button_cancel"/> </child> <child type="action">
---  <object class="GtkButton" id="button_ok"> <property
---  name="can-default">True</property> </object> </child> <action-widgets>
---  <action-widget response="cancel">button_cancel</action-widget>
---  <action-widget response="ok" default="true">button_ok</action-widget>
---  </action-widgets> </object> ]|
+--  An example of a Gtk.Dialog.Gtk_Dialog UI definition fragment:
 --
+--     <object class="GtkDialog" id="dialog1">
+--       <child type="action">
+--         <object class="GtkButton" id="button_cancel"/>
+--       </child>
+--       <child type="action">
+--         <object class="GtkButton" id="button_ok">
+--           <property name="can-default">True</property>
+--         </object>
+--       </child>
+--       <action-widgets>
+--         <action-widget response="cancel">button_cancel</action-widget>
+--         <action-widget response="ok" default="true">button_ok</action-widget>
+--       </action-widgets>
+--     </object>
 --  </description>
 --  <description>
 --  See Gtkada.Dialogs for a higher level dialog interface.
@@ -336,12 +357,23 @@ package Gtk.Dialog is
    --  or not.
    --  After Gtk.Dialog.Run returns, you are responsible for hiding or
    --  destroying the dialog if you wish to do so.
-   --  Typical usage of this function might be: |[<!-- language="C" -->
-   --  GtkWidget *dialog = gtk_dialog_new (); // Set up dialog...
-   --  int result = gtk_dialog_run (GTK_DIALOG (dialog)); switch (result) {
-   --  case GTK_RESPONSE_ACCEPT: // do_application_specific_something ();
-   --  break; default: // do_nothing_since_dialog_was_cancelled (); break; }
-   --  gtk_widget_destroy (dialog); ]|
+   --  Typical usage of this function might be:
+   --
+   --     GtkWidget *dialog = gtk_dialog_new ();
+   --     // Set up dialog...
+   --
+   --     int result = gtk_dialog_run (GTK_DIALOG (dialog));
+   --     switch (result)
+   --       {
+   --         case GTK_RESPONSE_ACCEPT:
+   --            // do_application_specific_something ();
+   --            break;
+   --         default:
+   --            // do_nothing_since_dialog_was_cancelled ();
+   --            break;
+   --       }
+   --     gtk_widget_destroy (dialog);
+   --
    --  Note that even though the recursive main loop gives the effect of a
    --  modal dialog (it prevents the user from interacting with other windows
    --  in the same window group while the dialog is run), callbacks such as

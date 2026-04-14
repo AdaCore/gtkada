@@ -115,8 +115,6 @@ package body Gtk.Gesture_Multi_Press is
       Internal (Get_Object (Self), Rect);
    end Set_Area;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Gesture_Multi_Press_Gint_Gdouble_Gdouble_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -63,15 +63,28 @@
 --  the icons in the current theme. You can create new
 --  Gtk.Icon_Theme.Gtk_Icon_Theme objects, but it's much more efficient to use
 --  the standard icon theme for the Gdk.Screen.Gdk_Screen so that the icon
---  information is shared with other people looking up icons. |[<!--
---  language="C" --> GError *error = NULL; GtkIconTheme *icon_theme; GdkPixbuf
---  *pixbuf;
+--  information is shared with other people looking up icons.
 --
---  icon_theme = gtk_icon_theme_get_default (); pixbuf =
---  gtk_icon_theme_load_icon (icon_theme, "my-icon-name", // icon name 48, //
---  icon size 0, // flags &error); if (!pixbuf) { g_warning ("Couldn't load
---  icon: %s", error->message); g_error_free (error); } else { // Use the
---  pixbuf g_object_unref (pixbuf); } ]|
+--     GError *error = NULL;
+--     GtkIconTheme *icon_theme;
+--     GdkPixbuf *pixbuf;
+--
+--     icon_theme = gtk_icon_theme_get_default ();
+--     pixbuf = gtk_icon_theme_load_icon (icon_theme,
+--                                        "my-icon-name", // icon name
+--                                        48, // icon size
+--                                        0,  // flags
+--                                        &error);
+--     if (!pixbuf)
+--       {
+--         g_warning ("Couldn't load icon: %s", error->message);
+--         g_error_free (error);
+--       }
+--     else
+--       {
+--         // Use the pixbuf
+--         g_object_unref (pixbuf);
+--       }
 --
 --  </description>
 

@@ -125,11 +125,19 @@ package Gtk.Radio_Action is
    pragma Obsolescent (Get_Group);
    --  Returns the list representing the radio group for this object. Note
    --  that the returned list is only valid until the next change to the group.
-   --  A common way to set up a group of radio group is the following: |[<!--
-   --  language="C" --> GSList *group = NULL; GtkRadioAction *action; while (
-   --  ...more actions to add... /) { action = gtk_radio_action_new (...);
-   --  gtk_radio_action_set_group (action, group); group =
-   --  gtk_radio_action_get_group (action); } ]|
+   --  A common way to set up a group of radio group is the following:
+   --
+   --     GSList *group = NULL;
+   --     GtkRadioAction *action;
+   --
+   --     while ( ...more actions to add... /)
+   --       {
+   --          action = gtk_radio_action_new (...);
+   --
+   --          gtk_radio_action_set_group (action, group);
+   --          group = gtk_radio_action_get_group (action);
+   --       }
+   --
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
 
@@ -139,13 +147,15 @@ package Gtk.Radio_Action is
    pragma Obsolescent (Set_Group);
    --  Sets the radio group for the radio action object.
    --  A common way to set up a group of radio group is the following:
-   --       Group  : GSlist := null;
-   --       Action : Gtk_Radio_Action;
-   --       while ... loop
-   --          Gtk_New (Action, ...);
-   --          Set_Group (Action, Group);
-   --          Group := Get_Group (Action);
-   --       end loop;
+   --
+   --     Group  : GSlist := null;
+   --     Action : Gtk_Radio_Action;
+   --     while ... loop
+   --        Gtk_New (Action, ...);
+   --        Set_Group (Action, Group);
+   --        Group := Get_Group (Action);
+   --     end loop;
+   --
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
    --  "group": a list representing a radio group, or null
@@ -159,10 +169,18 @@ package Gtk.Radio_Action is
    --  Use this in language bindings instead of the Gtk.Radio_Action.Get_Group
    --  and Gtk.Radio_Action.Set_Group methods
    --  A common way to set up a group of radio actions is the following:
-   --  |[<!-- language="C" --> GtkRadioAction *action; GtkRadioAction
-   --  *last_action; while ( ...more actions to add... /) { action =
-   --  gtk_radio_action_new (...); gtk_radio_action_join_group (action,
-   --  last_action); last_action = action; } ]|
+   --
+   --     GtkRadioAction *action;
+   --     GtkRadioAction *last_action;
+   --
+   --     while ( ...more actions to add... /)
+   --       {
+   --          action = gtk_radio_action_new (...);
+   --
+   --          gtk_radio_action_join_group (action, last_action);
+   --          last_action = action;
+   --       }
+   --
    --  Since: gtk+ 3.0
    --  Deprecated since 3.10, 1
    --  "group_source": a radio action object whos group we are joining, or

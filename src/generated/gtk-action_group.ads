@@ -59,13 +59,18 @@
 --  <accelerator> element of Gtk.Widget.Gtk_Widget, the main difference is that
 --  it doesn't allow you to specify a signal.
 --
---  ## A Gtk.Dialog.Gtk_Dialog UI definition fragment. ## |[ <object
---  class="GtkActionGroup" id="actiongroup"> <child> <object class="GtkAction"
---  id="About"> <property name="name">About</property> <property
---  name="stock_id">gtk-about</property> <signal handler="about_activate"
---  name="activate"/> </object> <accelerator key="F1"
---  modifiers="GDK_CONTROL_MASK | GDK_SHIFT_MASK"/> </child> </object> ]|
+--  ## A Gtk.Dialog.Gtk_Dialog UI definition fragment. ##
 --
+--     <object class="GtkActionGroup" id="actiongroup">
+--       <child>
+--           <object class="GtkAction" id="About">
+--               <property name="name">About</property>
+--               <property name="stock_id">gtk-about</property>
+--               <signal handler="about_activate" name="activate"/>
+--           </object>
+--           <accelerator key="F1" modifiers="GDK_CONTROL_MASK | GDK_SHIFT_MASK"/>
+--       </child>
+--     </object>
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");

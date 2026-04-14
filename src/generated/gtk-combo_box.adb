@@ -1176,8 +1176,6 @@ package body Gtk.Combo_Box is
       Internal (Get_Object (Cell_Editable), Event);
    end Start_Editing;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Combo_Box_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

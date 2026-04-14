@@ -871,8 +871,6 @@ package body Gtk.Entry_Completion is
       Internal (Get_Object (Cell_Layout), Get_Object (Cell), Position);
    end Reorder;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Entry_Completion_Gint_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

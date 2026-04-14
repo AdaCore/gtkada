@@ -74,8 +74,6 @@ package body Gtk.Cell_Renderer_Accel is
       end if;
    end Initialize;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

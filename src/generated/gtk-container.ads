@@ -89,29 +89,59 @@
 --  width. This is easily achieved by simply calling the reverse apis
 --  implemented for itself as follows:
 --
---  |[<!-- language="C" --> static void foo_container_get_preferred_height
---  (GtkWidget *widget, gint *min_height, gint *nat_height) { if
---  (i_am_in_height_for_width_mode) { gint min_width;
+--     static void
+--     foo_container_get_preferred_height (GtkWidget *widget,
+--                                         gint *min_height,
+--                                         gint *nat_height)
+--     {
+--        if (i_am_in_height_for_width_mode)
+--          {
+--            gint min_width;
 --
---  GTK_WIDGET_GET_CLASS (widget)->get_preferred_width (widget, &min_width,
---  NULL); GTK_WIDGET_GET_CLASS (widget)->get_preferred_height_for_width
---  (widget, min_width, min_height, nat_height); } else { ... many containers
---  support both request modes, execute the real width-for-height request here
---  by returning the collective heights of all widgets that are stacked
---  vertically (or whatever is appropriate for this container) ... } } ]|
+--            GTK_WIDGET_GET_CLASS (widget)->get_preferred_width (widget,
+--                                                                &min_width,
+--                                                                NULL);
+--            GTK_WIDGET_GET_CLASS (widget)->get_preferred_height_for_width
+--                                                               (widget,
+--                                                                min_width,
+--                                                                min_height,
+--                                                                nat_height);
+--          }
+--        else
+--          {
+--            ... many containers support both request modes, execute the
+--            real width-for-height request here by returning the
+--            collective heights of all widgets that are stacked
+--            vertically (or whatever is appropriate for this container)
+--            ...
+--          }
+--     }
+--
 --
 --  Similarly, when Gtk.Widget.Get_Preferred_Width_For_Height is called for a
 --  container or widget that is height-for-width, it then only needs to return
 --  the base minimum width like so:
 --
---  |[<!-- language="C" --> static void
---  foo_container_get_preferred_width_for_height (GtkWidget *widget, gint
---  for_height, gint *min_width, gint *nat_width) { if
---  (i_am_in_height_for_width_mode) { GTK_WIDGET_GET_CLASS
---  (widget)->get_preferred_width (widget, min_width, nat_width); } else { ...
---  execute the real width-for-height request here based on the required width
---  of the children collectively if the container were to be allocated the said
---  height ... } } ]|
+--     static void
+--     foo_container_get_preferred_width_for_height (GtkWidget *widget,
+--                                                   gint for_height,
+--                                                   gint *min_width,
+--                                                   gint *nat_width)
+--     {
+--        if (i_am_in_height_for_width_mode)
+--          {
+--            GTK_WIDGET_GET_CLASS (widget)->get_preferred_width (widget,
+--                                                                min_width,
+--                                                                nat_width);
+--          }
+--        else
+--          {
+--            ... execute the real width-for-height request here based on
+--            the required width of the children collectively if the
+--            container were to be allocated the said height ...
+--          }
+--     }
+--
 --
 --  Height for width requests are generally implemented in terms of a virtual
 --  allocation of widgets in the input orientation. Assuming an
@@ -185,12 +215,23 @@
 --  multiple <widget> elements, one for each child that should be added to the
 --  focus chain. The "name" attribute gives the id of the widget.
 --
---  An example of these properties in UI definitions: |[ <object
---  class="GtkBox"> <child> <object class="GtkEntry" id="entry1"/> <packing>
---  <property name="pack-type">start</property> </packing> </child> <child>
---  <object class="GtkEntry" id="entry2"/> </child> <focus-chain> <widget
---  name="entry1"/> <widget name="entry2"/> </focus-chain> </object> ]|
+--  An example of these properties in UI definitions:
 --
+--     <object class="GtkBox">
+--       <child>
+--         <object class="GtkEntry" id="entry1"/>
+--         <packing>
+--           <property name="pack-type">start</property>
+--         </packing>
+--       </child>
+--       <child>
+--         <object class="GtkEntry" id="entry2"/>
+--       </child>
+--       <focus-chain>
+--         <widget name="entry1"/>
+--         <widget name="entry2"/>
+--       </focus-chain>
+--     </object>
 --  </description>
 
 pragma Warnings (Off, "*is already use-visible*");

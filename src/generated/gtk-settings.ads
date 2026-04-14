@@ -42,14 +42,15 @@
 --  configuration facility. When doing so, you need to be aware that settings
 --  that are specific to individual widgets may not be available before the
 --  widget type has been realized at least once. The following example
---  demonstrates a way to do this: |[<!-- language="C" --> gtk_init (&argc,
---  &argv);
+--  demonstrates a way to do this:
 --
---  // make sure the type is realized g_type_class_unref (g_type_class_ref
---  (GTK_TYPE_IMAGE_MENU_ITEM));
+--     gtk_init (&argc, &argv);
 --
---  g_object_set (gtk_settings_get_default (), "gtk-enable-animations", FALSE,
---  NULL); ]|
+--     // make sure the type is realized
+--     g_type_class_unref (g_type_class_ref (GTK_TYPE_IMAGE_MENU_ITEM));
+--
+--     g_object_set (gtk_settings_get_default (), "gtk-enable-animations", FALSE, NULL);
+--
 --
 --  There is one GtkSettings instance per screen. It can be obtained with
 --  Gtk.Settings.Get_For_Screen, but in many cases, it is more convenient to
@@ -218,16 +219,24 @@ package Gtk.Settings is
 
    Gtk_Color_Scheme_Property : constant Glib.Properties.Property_String;
    --  A palette of named colors for use in themes. The format of the string
-   --  is |[ name1: color1 name2: color2 ... ]| Color names must be acceptable
-   --  as identifiers in the [gtkrc][gtk3-Resource-Files] syntax, and color
-   --  specifications must be in the format accepted by gdk_color_parse.
+   --  is
+   --
+   --     name1: color1
+   --     name2: color2
+   --     ...
+   --
+   --  Color names must be acceptable as identifiers in the
+   --  [gtkrc][gtk3-Resource-Files] syntax, and color specifications must be in
+   --  the format accepted by gdk_color_parse.
    --
    --  Note that due to the way the color tables from different sources are
    --  merged, color specifications will be converted to hexadecimal form when
    --  getting this property.
    --
    --  Starting with GTK+ 2.12, the entries can alternatively be separated by
-   --  ';' instead of newlines: |[ name1: color1; name2: color2; ... ]|
+   --  ';' instead of newlines:
+   --
+   --     name1: color1; name2: color2; ...
 
    Gtk_Cursor_Aspect_Ratio_Property : constant Glib.Properties.Property_Float;
 

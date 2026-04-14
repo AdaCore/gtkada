@@ -138,15 +138,30 @@ package Gtk.Search_Bar is
    --  Gtk.Search_Bar.Connect_Entry, this function will return immediately with
    --  a warning.
    --  ## Showing the search bar on key presses
-   --  |[<!-- language="C" --> static gboolean on_key_press_event (GtkWidget
-   --  *widget, GdkEvent *event, gpointer user_data) { GtkSearchBar *bar =
-   --  GTK_SEARCH_BAR (user_data); return gtk_search_bar_handle_event (bar,
-   --  event); }
-   --  static void create_toplevel (void) { GtkWidget *window = gtk_window_new
-   --  (GTK_WINDOW_TOPLEVEL); GtkWindow *search_bar = gtk_search_bar_new ();
-   --  // Add more widgets to the window...
-   --  g_signal_connect (window, "key-press-event", G_CALLBACK
-   --  (on_key_press_event), search_bar); } ]|
+   --
+   --     static gboolean
+   --     on_key_press_event (GtkWidget *widget,
+   --                         GdkEvent  *event,
+   --                         gpointer   user_data)
+   --     {
+   --       GtkSearchBar *bar = GTK_SEARCH_BAR (user_data);
+   --       return gtk_search_bar_handle_event (bar, event);
+   --     }
+   --
+   --     static void
+   --     create_toplevel (void)
+   --     {
+   --       GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+   --       GtkWindow *search_bar = gtk_search_bar_new ();
+   --
+   --      // Add more widgets to the window...
+   --
+   --       g_signal_connect (window,
+   --                        "key-press-event",
+   --                         G_CALLBACK (on_key_press_event),
+   --                         search_bar);
+   --     }
+   --
    --  Since: gtk+ 3.10
    --  "event": a Gdk.Event.Gdk_Event containing key press events
 

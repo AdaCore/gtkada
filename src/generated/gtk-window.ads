@@ -37,21 +37,29 @@
 --  It also supports the <initial-focus> element, whose name property names
 --  the widget to receive the focus when the window is mapped.
 --
---  An example of a UI definition fragment with accel groups: |[ <object
---  class="GtkWindow"> <accel-groups> <group name="accelgroup1"/>
---  </accel-groups> <initial-focus name="thunderclap"/> </object>
+--  An example of a UI definition fragment with accel groups:
 --
---  ...
+--     <object class="GtkWindow">
+--       <accel-groups>
+--         <group name="accelgroup1"/>
+--       </accel-groups>
+--       <initial-focus name="thunderclap"/>
+--     </object>
 --
---  <object class="GtkAccelGroup" id="accelgroup1"/> ]|
+--     ...
+--
+--     <object class="GtkAccelGroup" id="accelgroup1"/>
 --  The GtkWindow implementation of the Gtk.Buildable.Gtk_Buildable interface
 --  supports setting a child as the titlebar by specifying "titlebar" as the
 --  "type" attribute of a <child> element.
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> window.background ├── decoration ├── <titlebar
---  child>.titlebar [.default-decoration] ╰── <child> ]|
+--     window.background
+--     ├── decoration
+--     ├── <titlebar child>.titlebar [.default-decoration]
+--     ╰── <child>
+--
 --
 --  GtkWindow has a main CSS node with name window and style class
 --  .background, and a subnode with name decoration.
@@ -764,10 +772,13 @@ package Gtk.Window is
    --  Gtk.Window.Resize; additionally, since Gtk.Window.Resize may be
    --  implemented as an asynchronous operation, GTK+ cannot guarantee in any
    --  way that this code:
-   --  |[<!-- language="C" --> // width and height are set elsewhere
-   --  gtk_window_resize (window, width, height);
-   --  int new_width, new_height; gtk_window_get_size (window, &new_width,
-   --  &new_height); ]|
+   --
+   --     // width and height are set elsewhere
+   --     gtk_window_resize (window, width, height);
+   --
+   --     int new_width, new_height;
+   --     gtk_window_get_size (window, &new_width, &new_height);
+   --
    --  will result in `new_width` and `new_height` matching `width` and
    --  `height`, respectively.
    --  This function will return the logical size of the
@@ -783,10 +794,17 @@ package Gtk.Window is
    --  in response to a size change notification, for instance inside a handler
    --  for the Gtk.Widget.Gtk_Widget::size-allocate signal, or inside a handler
    --  for the Gtk.Widget.Gtk_Widget::configure-event signal:
-   --  |[<!-- language="C" --> static void on_size_allocate (GtkWidget
-   --  *widget, GtkAllocation *allocation) { int new_width, new_height;
-   --  gtk_window_get_size (GTK_WINDOW (widget), &new_width, &new_height);
-   --  ... } ]|
+   --
+   --     static void
+   --     on_size_allocate (GtkWidget *widget, GtkAllocation *allocation)
+   --     {
+   --       int new_width, new_height;
+   --
+   --       gtk_window_get_size (GTK_WINDOW (widget), &new_width, &new_height);
+   --
+   --       ...
+   --     }
+   --
    --  Note that, if you connect to the Gtk.Widget.Gtk_Widget::size-allocate
    --  signal, you should not use the dimensions of the Gtk_Allocation passed
    --  to the signal handler, as the allocation may contain client side
@@ -1050,24 +1068,58 @@ package Gtk.Window is
    --  Note that for Gtk.Window.Parse_Geometry to work as expected, it has to
    --  be called when the window has its "final" size, i.e. after calling
    --  Gtk.Widget.Show_All on the contents and Gtk.Window.Set_Geometry_Hints on
-   --  the window. |[<!-- language="C" --> include <gtk/gtk.h>
-   --  static void fill_with_content (GtkWidget *vbox) { // fill with
-   --  content... }
-   --  int main (int argc, char *argv[]) { GtkWidget *window, *vbox;
-   --  GdkGeometry size_hints = { 100, 50, 0, 0, 100, 50, 10, 10, 0.0, 0.0,
-   --  GDK_GRAVITY_NORTH_WEST };
-   --  gtk_init (&argc, &argv);
-   --  window = gtk_window_new (GTK_WINDOW_TOPLEVEL); vbox = gtk_box_new
-   --  (GTK_ORIENTATION_VERTICAL, 0);
-   --  gtk_container_add (GTK_CONTAINER (window), vbox); fill_with_content
-   --  (vbox); gtk_widget_show_all (vbox);
-   --  gtk_window_set_geometry_hints (GTK_WINDOW (window), NULL, &size_hints,
-   --  GDK_HINT_MIN_SIZE | GDK_HINT_BASE_SIZE | GDK_HINT_RESIZE_INC);
-   --  if (argc > 1) { gboolean res; res = gtk_window_parse_geometry
-   --  (GTK_WINDOW (window), argv[1]); if (! res) fprintf (stderr, "Failed to
-   --  parse "%s"\n", argv[1]); }
-   --  gtk_widget_show_all (window); gtk_main ();
-   --  return 0; } ]|
+   --  the window.
+   --
+   --     include <gtk/gtk.h>
+   --
+   --     static void
+   --     fill_with_content (GtkWidget *vbox)
+   --     {
+   --       // fill with content...
+   --     }
+   --
+   --     int
+   --     main (int argc, char *argv[])
+   --     {
+   --       GtkWidget *window, *vbox;
+   --       GdkGeometry size_hints = {
+   --         100, 50, 0, 0, 100, 50, 10,
+   --         10, 0.0, 0.0, GDK_GRAVITY_NORTH_WEST
+   --       };
+   --
+   --       gtk_init (&argc, &argv);
+   --
+   --       window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+   --       vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+   --
+   --       gtk_container_add (GTK_CONTAINER (window), vbox);
+   --       fill_with_content (vbox);
+   --       gtk_widget_show_all (vbox);
+   --
+   --       gtk_window_set_geometry_hints (GTK_WINDOW (window),
+   --     	  			    NULL,
+   --     				    &size_hints,
+   --     				    GDK_HINT_MIN_SIZE |
+   --     				    GDK_HINT_BASE_SIZE |
+   --     				    GDK_HINT_RESIZE_INC);
+   --
+   --       if (argc > 1)
+   --         {
+   --           gboolean res;
+   --           res = gtk_window_parse_geometry (GTK_WINDOW (window),
+   --                                            argv[1]);
+   --           if (! res)
+   --             fprintf (stderr,
+   --                      "Failed to parse "%s"\n",
+   --                      argv[1]);
+   --         }
+   --
+   --       gtk_widget_show_all (window);
+   --       gtk_main ();
+   --
+   --       return 0;
+   --     }
+   --
    --  Deprecated since 3.20, 1
    --  "geometry": geometry string
 

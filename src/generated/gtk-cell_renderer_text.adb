@@ -88,8 +88,6 @@ package body Gtk.Cell_Renderer_Text is
       Internal (Get_Object (Self), Number_Of_Rows);
    end Set_Fixed_Height_From_Font;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Cell_Renderer_Text_UTF8_String_UTF8_String_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -315,8 +315,6 @@ package body Gtk.Recent_Manager is
       return Gtk.Recent_Manager.Gtk_Recent_Manager (Get_User_Data (Internal, Stub_Gtk_Recent_Manager));
    end Get_Default;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Recent_Manager_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

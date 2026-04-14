@@ -66,7 +66,8 @@
 --  need to ensure that the one which you want to draw with is the current one
 --  before issuing commands:
 --
---  |[<!-- language="C" --> gdk_gl_context_make_current (context); ]|
+--     gdk_gl_context_make_current (context);
+--
 --
 --  You can now perform your drawing using OpenGL commands.
 --

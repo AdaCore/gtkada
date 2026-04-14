@@ -603,8 +603,6 @@ package body Gdk.Display is
       return Gdk.Display.Gdk_Display (Get_User_Data (Internal, Stub_Gdk_Display));
    end Open_Default_Libgtk_Only;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gdk_Display_Boolean_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

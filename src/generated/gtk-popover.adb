@@ -391,8 +391,6 @@ package body Gtk.Popover is
       Internal (Get_Object (Self), Boolean'Pos (Transitions_Enabled));
    end Set_Transitions_Enabled;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Popover_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

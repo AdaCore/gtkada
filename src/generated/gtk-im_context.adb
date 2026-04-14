@@ -173,8 +173,6 @@ package body Gtk.IM_Context is
       Internal (Get_Object (Self), Boolean'Pos (Use_Preedit));
    end Set_Use_Preedit;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_IM_Context_UTF8_String_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -158,8 +158,6 @@ package body Gtk.Cell_Renderer_Toggle is
       Internal (Get_Object (Self), Boolean'Pos (Radio));
    end Set_Radio;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Cell_Renderer_Toggle_UTF8_String_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

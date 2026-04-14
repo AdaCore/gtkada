@@ -99,25 +99,56 @@
 --  generally deals with width-for-height requests, for
 --  Gtk.Widget.GObject_Class.get_preferred_height it will do:
 --
---  |[<!-- language="C" --> static void foo_widget_get_preferred_height
---  (GtkWidget *widget, gint *min_height, gint *nat_height) { if
---  (i_am_in_height_for_width_mode) { gint min_width, nat_width;
+--     static void
+--     foo_widget_get_preferred_height (GtkWidget *widget,
+--                                      gint *min_height,
+--                                      gint *nat_height)
+--     {
+--        if (i_am_in_height_for_width_mode)
+--          {
+--            gint min_width, nat_width;
 --
---  GTK_WIDGET_GET_CLASS (widget)->get_preferred_width (widget, &min_width,
---  &nat_width); GTK_WIDGET_GET_CLASS (widget)->get_preferred_height_for_width
---  (widget, min_width, min_height, nat_height); } else { ... some widgets do
---  both. For instance, if a GtkLabel is rotated to 90 degrees it will return
---  the minimum and natural height for the rotated label here. } } ]|
+--            GTK_WIDGET_GET_CLASS (widget)->get_preferred_width (widget,
+--                                                                &min_width,
+--                                                                &nat_width);
+--            GTK_WIDGET_GET_CLASS (widget)->get_preferred_height_for_width
+--                                                               (widget,
+--                                                                min_width,
+--                                                                min_height,
+--                                                                nat_height);
+--          }
+--        else
+--          {
+--             ... some widgets do both. For instance, if a GtkLabel is
+--             rotated to 90 degrees it will return the minimum and
+--             natural height for the rotated label here.
+--          }
+--     }
+--
 --
 --  And in Gtk.Widget.GObject_Class.get_preferred_width_for_height it will
---  simply return the minimum and natural width: |[<!-- language="C" --> static
---  void foo_widget_get_preferred_width_for_height (GtkWidget *widget, gint
---  for_height, gint *min_width, gint *nat_width) { if
---  (i_am_in_height_for_width_mode) { GTK_WIDGET_GET_CLASS
---  (widget)->get_preferred_width (widget, min_width, nat_width); } else { ...
---  again if a widget is sometimes operating in width-for-height mode (like a
---  rotated GtkLabel) it can go ahead and do its real width for height
---  calculation here. } } ]|
+--  simply return the minimum and natural width:
+--
+--     static void
+--     foo_widget_get_preferred_width_for_height (GtkWidget *widget,
+--                                                gint for_height,
+--                                                gint *min_width,
+--                                                gint *nat_width)
+--     {
+--        if (i_am_in_height_for_width_mode)
+--          {
+--            GTK_WIDGET_GET_CLASS (widget)->get_preferred_width (widget,
+--                                                                min_width,
+--                                                                nat_width);
+--          }
+--        else
+--          {
+--             ... again if a widget is sometimes operating in
+--             width-for-height mode (like a rotated GtkLabel) it can go
+--             ahead and do its real width for height calculation here.
+--          }
+--     }
+--
 --
 --  Often a widget needs to get its own request during size request or
 --  allocation. For example, when computing height it may need to also compute
@@ -125,8 +156,10 @@
 --  know its natural size. In these cases, the widget should be careful to call
 --  its virtual methods directly, like this:
 --
---  |[<!-- language="C" --> GTK_WIDGET_GET_CLASS(widget)->get_preferred_width
---  (widget, &min, &natural); ]|
+--     GTK_WIDGET_GET_CLASS(widget)->get_preferred_width (widget,
+--                                                        &min,
+--                                                        &natural);
+--
 --
 --  It will not work to use the wrapper functions, such as
 --  Gtk.Widget.Get_Preferred_Width inside your own size request implementation.
@@ -185,31 +218,41 @@
 --  custom <accelerator> element, which has attributes named "key", "modifiers"
 --  and "signal" and allows to specify accelerators.
 --
---  An example of a UI definition fragment specifying an accelerator: |[
---  <object class="GtkButton"> <accelerator key="q"
---  modifiers="GDK_CONTROL_MASK" signal="clicked"/> </object> ]|
+--  An example of a UI definition fragment specifying an accelerator:
 --
+--     <object class="GtkButton">
+--       <accelerator key="q" modifiers="GDK_CONTROL_MASK" signal="clicked"/>
+--     </object>
 --  In addition to accelerators, GtkWidget also support a custom <accessible>
 --  element, which supports actions and relations. Properties on the accessible
 --  implementation of an object can be set by accessing the internal child
 --  "accessible" of a Gtk.Widget.Gtk_Widget.
 --
---  An example of a UI definition fragment specifying an accessible: |[
---  <object class="GtkLabel" id="label1"/> <property name="label">I am a Label
---  for a Button</property> </object> <object class="GtkButton" id="button1">
---  <accessibility> <action action_name="click" translatable="yes">Click the
---  button.</action> <relation target="label1" type="labelled-by"/>
---  </accessibility> <child internal-child="accessible"> <object
---  class="AtkObject" id="a11y-button1"> <property
---  name="accessible-name">Clickable Button</property> </object> </child>
---  </object> ]|
+--  An example of a UI definition fragment specifying an accessible:
 --
+--     <object class="GtkLabel" id="label1"/>
+--       <property name="label">I am a Label for a Button</property>
+--     </object>
+--     <object class="GtkButton" id="button1">
+--       <accessibility>
+--         <action action_name="click" translatable="yes">Click the button.</action>
+--         <relation target="label1" type="labelled-by"/>
+--       </accessibility>
+--       <child internal-child="accessible">
+--         <object class="AtkObject" id="a11y-button1">
+--           <property name="accessible-name">Clickable Button</property>
+--         </object>
+--       </child>
+--     </object>
 --  Finally, GtkWidget allows style information such as style classes to be
---  associated with widgets, using the custom <style> element: |[ <object
---  class="GtkButton" id="button1"> <style> <class
---  name="my-special-button-class"/> <class name="dark-button"/> </style>
---  </object> ]|
+--  associated with widgets, using the custom <style> element:
 --
+--     <object class="GtkButton" id="button1">
+--       <style>
+--         <class name="my-special-button-class"/>
+--         <class name="dark-button"/>
+--       </style>
+--     </object>
 --  # Building composite widgets from template XML ## {composite-templates}
 --
 --  GtkWidget exposes some facilities to automate the procedure of creating
@@ -244,32 +287,50 @@
 --  which might be referenced by other widgets declared as children of the
 --  <template> tag.
 --
---  An example of a GtkBuilder Template Definition: |[ <interface> <template
---  class="FooWidget" parent="GtkBox"> <property
---  name="orientation">GTK_ORIENTATION_HORIZONTAL</property> <property
---  name="spacing">4</property> <child> <object class="GtkButton"
---  id="hello_button"> <property name="label">Hello World</property> <signal
---  name="clicked" handler="hello_button_clicked" object="FooWidget"
---  swapped="yes"/> </object> </child> <child> <object class="GtkButton"
---  id="goodbye_button"> <property name="label">Goodbye World</property>
---  </object> </child> </template> </interface> ]|
+--  An example of a GtkBuilder Template Definition:
 --
+--     <interface>
+--       <template class="FooWidget" parent="GtkBox">
+--         <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+--         <property name="spacing">4</property>
+--         <child>
+--           <object class="GtkButton" id="hello_button">
+--             <property name="label">Hello World</property>
+--             <signal name="clicked" handler="hello_button_clicked" object="FooWidget" swapped="yes"/>
+--           </object>
+--         </child>
+--         <child>
+--           <object class="GtkButton" id="goodbye_button">
+--             <property name="label">Goodbye World</property>
+--           </object>
+--         </child>
+--       </template>
+--     </interface>
 --  Typically, you'll place the template fragment into a file that is bundled
 --  with your project, using Gresource.Gresource. In order to load the
 --  template, you need to call gtk_widget_class_set_template_from_resource from
 --  the class initialization of your Gtk.Widget.Gtk_Widget type:
 --
---  |[<!-- language="C" --> static void foo_widget_class_init (FooWidgetClass
---  *klass) { // ...
+--     static void
+--     foo_widget_class_init (FooWidgetClass *klass)
+--     {
+--       // ...
 --
---  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
---  "/com/example/ui/foowidget.ui"); } ]|
+--       gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
+--                                                    "/com/example/ui/foowidget.ui");
+--     }
+--
 --
 --  You will also need to call Gtk.Widget.Init_Template from the instance
 --  initialization function:
 --
---  |[<!-- language="C" --> static void foo_widget_init (FooWidget *self) { //
---  ... gtk_widget_init_template (GTK_WIDGET (self)); } ]|
+--     static void
+--     foo_widget_init (FooWidget *self)
+--     {
+--       // ...
+--       gtk_widget_init_template (GTK_WIDGET (self));
+--     }
+--
 --
 --  You can access widgets defined in the template using the
 --  Gtk.Widget.Get_Template_Child function, but you will typically declare a
@@ -277,35 +338,53 @@
 --  name as the widget in the template definition, and call
 --  gtk_widget_class_bind_template_child_private with that name, e.g.
 --
---  |[<!-- language="C" --> typedef struct { GtkWidget *hello_button;
---  GtkWidget *goodbye_button; } FooWidgetPrivate;
+--     typedef struct {
+--       GtkWidget *hello_button;
+--       GtkWidget *goodbye_button;
+--     } FooWidgetPrivate;
 --
---  G_DEFINE_TYPE_WITH_PRIVATE (FooWidget, foo_widget, GTK_TYPE_BOX)
+--     G_DEFINE_TYPE_WITH_PRIVATE (FooWidget, foo_widget, GTK_TYPE_BOX)
 --
---  static void foo_widget_class_init (FooWidgetClass *klass) { // ...
---  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
---  "/com/example/ui/foowidget.ui");
---  gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
---  FooWidget, hello_button); gtk_widget_class_bind_template_child_private
---  (GTK_WIDGET_CLASS (klass), FooWidget, goodbye_button); }
+--     static void
+--     foo_widget_class_init (FooWidgetClass *klass)
+--     {
+--       // ...
+--       gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
+--                                                    "/com/example/ui/foowidget.ui");
+--       gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
+--                                                     FooWidget, hello_button);
+--       gtk_widget_class_bind_template_child_private (GTK_WIDGET_CLASS (klass),
+--                                                     FooWidget, goodbye_button);
+--     }
 --
---  static void foo_widget_init (FooWidget *widget) {
+--     static void
+--     foo_widget_init (FooWidget *widget)
+--     {
 --
---  } ]|
+--     }
+--
 --
 --  You can also use gtk_widget_class_bind_template_callback to connect a
 --  signal callback defined in the template with a function visible in the
 --  scope of the class, e.g.
 --
---  |[<!-- language="C" --> // the signal handler has the instance and user
---  data swapped // because of the swapped="yes" attribute in the template XML
---  static void hello_button_clicked (FooWidget *self, GtkButton *button) {
---  g_print ("Hello, world!\n"); }
+--     // the signal handler has the instance and user data swapped
+--     // because of the swapped="yes" attribute in the template XML
+--     static void
+--     hello_button_clicked (FooWidget *self,
+--                           GtkButton *button)
+--     {
+--       g_print ("Hello, world!\n");
+--     }
 --
---  static void foo_widget_class_init (FooWidgetClass *klass) { // ...
---  gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
---  "/com/example/ui/foowidget.ui"); gtk_widget_class_bind_template_callback
---  (GTK_WIDGET_CLASS (klass), hello_button_clicked); } ]|
+--     static void
+--     foo_widget_class_init (FooWidgetClass *klass)
+--     {
+--       // ...
+--       gtk_widget_class_set_template_from_resource (GTK_WIDGET_CLASS (klass),
+--                                                    "/com/example/ui/foowidget.ui");
+--       gtk_widget_class_bind_template_callback (GTK_WIDGET_CLASS (klass), hello_button_clicked);
+--     }
 --
 --  </description>
 
@@ -409,11 +488,14 @@ package Gtk.Widget is
    --
    --  ## Defining a button within a window
    --
-   --  |[<!-- language="C" --> { GtkWidgetPath *path;
+   --     {
+   --       GtkWidgetPath *path;
    --
-   --  path = gtk_widget_path_new (); gtk_widget_path_append_type (path,
-   --  GTK_TYPE_WINDOW); gtk_widget_path_append_type (path, GTK_TYPE_BUTTON); }
-   --  ]|
+   --       path = gtk_widget_path_new ();
+   --       gtk_widget_path_append_type (path, GTK_TYPE_WINDOW);
+   --       gtk_widget_path_append_type (path, GTK_TYPE_BUTTON);
+   --     }
+   --
    --
    --  Although more complex information, such as widget names, or different
    --  classes (property that may be used by other widget types) and
@@ -421,16 +503,19 @@ package Gtk.Widget is
    --
    --  ## Defining the first tab widget in a notebook
    --
-   --  |[<!-- language="C" --> { GtkWidgetPath *path; guint pos;
+   --     {
+   --       GtkWidgetPath *path;
+   --       guint pos;
    --
-   --  path = gtk_widget_path_new ();
+   --       path = gtk_widget_path_new ();
    --
-   --  pos = gtk_widget_path_append_type (path, GTK_TYPE_NOTEBOOK);
-   --  gtk_widget_path_iter_add_region (path, pos, "tab", GTK_REGION_EVEN |
-   --  GTK_REGION_FIRST);
+   --       pos = gtk_widget_path_append_type (path, GTK_TYPE_NOTEBOOK);
+   --       gtk_widget_path_iter_add_region (path, pos, "tab", GTK_REGION_EVEN | GTK_REGION_FIRST);
    --
-   --  pos = gtk_widget_path_append_type (path, GTK_TYPE_LABEL);
-   --  gtk_widget_path_iter_set_name (path, pos, "first tab label"); } ]|
+   --       pos = gtk_widget_path_append_type (path, GTK_TYPE_LABEL);
+   --       gtk_widget_path_iter_set_name (path, pos, "first tab label");
+   --     }
+   --
    --
    --  All this information will be used to match the style information that
    --  applies to the described widget.
@@ -2236,11 +2321,18 @@ package Gtk.Widget is
    --  To reliably find the toplevel Gtk.Window.Gtk_Window, use
    --  Gtk.Widget.Get_Toplevel and call GTK_IS_WINDOW on the result. For
    --  instance, to get the title of a widget's toplevel window, one might use:
-   --  |[<!-- language="C" --> static const char * get_widget_toplevel_title
-   --  (GtkWidget *widget) { GtkWidget *toplevel = gtk_widget_get_toplevel
-   --  (widget); if (GTK_IS_WINDOW (toplevel)) { return gtk_window_get_title
-   --  (GTK_WINDOW (toplevel)); }
-   --  return NULL; } ]|
+   --
+   --     static const char *
+   --     get_widget_toplevel_title (GtkWidget *widget)
+   --     {
+   --       GtkWidget *toplevel = gtk_widget_get_toplevel (widget);
+   --       if (GTK_IS_WINDOW (toplevel))
+   --         {
+   --           return gtk_window_get_title (GTK_WINDOW (toplevel));
+   --         }
+   --
+   --       return NULL;
+   --     }
 
    function Get_Valign
       (Widget : not null access Gtk_Widget_Record) return Gtk_Align;
@@ -3026,14 +3118,19 @@ package Gtk.Widget is
    --  floating window similar to the quick search in
    --  Gtk.Tree_View.Gtk_Tree_View.
    --  An example of its usage is:
-   --  |[<!-- language="C" --> GdkEvent *fevent = gdk_event_new
-   --  (GDK_FOCUS_CHANGE);
-   --  fevent->focus_change.type = GDK_FOCUS_CHANGE; fevent->focus_change.in =
-   --  TRUE; fevent->focus_change.window = _gtk_widget_get_window (widget); if
-   --  (fevent->focus_change.window != NULL) g_object_ref
-   --  (fevent->focus_change.window);
-   --  gtk_widget_send_focus_change (widget, fevent);
-   --  gdk_event_free (event); ]|
+   --
+   --     GdkEvent *fevent = gdk_event_new (GDK_FOCUS_CHANGE);
+   --
+   --     fevent->focus_change.type = GDK_FOCUS_CHANGE;
+   --     fevent->focus_change.in = TRUE;
+   --     fevent->focus_change.window = _gtk_widget_get_window (widget);
+   --     if (fevent->focus_change.window != NULL)
+   --       g_object_ref (fevent->focus_change.window);
+   --
+   --     gtk_widget_send_focus_change (widget, fevent);
+   --
+   --     gdk_event_free (event);
+   --
    --  Since: gtk+ 2.20
    --  "event": a Gdk.Event.Gdk_Event of type GDK_FOCUS_CHANGE
 
@@ -3150,7 +3247,9 @@ package Gtk.Widget is
    pragma Obsolescent (Style_Attach);
    --  This function attaches the widget's Gtk.Style.Gtk_Style to the widget's
    --  Gdk.Gdk_Window. It is a replacement for
-   --  |[ widget->style = gtk_style_attach (widget->style, widget->window); ]|
+   --
+   --     widget->style = gtk_style_attach (widget->style, widget->window);
+   --
    --  and should only ever be called in a derived widget's "realize"
    --  implementation which does not chain up to its parent class' "realize"
    --  implementation, because one of the parent classes (finally
@@ -4184,26 +4283,49 @@ package Gtk.Widget is
    --  The handler may inspect the selected action with
    --  Gdk.Drag_Contexts.Get_Selected_Action before calling Gtk.Dnd.Finish,
    --  e.g. to implement Gdk.Drag_Contexts.Action_Ask as shown in the following
-   --  example: |[<!-- language="C" --> void drag_data_received (GtkWidget
-   --  *widget, GdkDragContext *context, gint x, gint y, GtkSelectionData
-   --  *data, guint info, guint time) { if ((data->length >= 0) &&
-   --  (data->format == 8)) { GdkDragAction action;
+   --  example:
    --
-   --  // handle data here
+   --     void
+   --     drag_data_received (GtkWidget          *widget,
+   --                         GdkDragContext     *context,
+   --                         gint                x,
+   --                         gint                y,
+   --                         GtkSelectionData   *data,
+   --                         guint               info,
+   --                         guint               time)
+   --     {
+   --       if ((data->length >= 0) && (data->format == 8))
+   --         {
+   --           GdkDragAction action;
    --
-   --  action = gdk_drag_context_get_selected_action (context); if (action ==
-   --  GDK_ACTION_ASK) { GtkWidget *dialog; gint response;
+   --           // handle data here
    --
-   --  dialog = gtk_message_dialog_new (NULL, GTK_DIALOG_MODAL |
-   --  GTK_DIALOG_DESTROY_WITH_PARENT, GTK_MESSAGE_INFO, GTK_BUTTONS_YES_NO,
-   --  "Move the data ?\n"); response = gtk_dialog_run (GTK_DIALOG (dialog));
-   --  gtk_widget_destroy (dialog);
+   --           action = gdk_drag_context_get_selected_action (context);
+   --           if (action == GDK_ACTION_ASK)
+   --             {
+   --               GtkWidget *dialog;
+   --               gint response;
    --
-   --  if (response == GTK_RESPONSE_YES) action = GDK_ACTION_MOVE; else action
-   --  = GDK_ACTION_COPY; }
+   --               dialog = gtk_message_dialog_new (NULL,
+   --                                                GTK_DIALOG_MODAL |
+   --                                                GTK_DIALOG_DESTROY_WITH_PARENT,
+   --                                                GTK_MESSAGE_INFO,
+   --                                                GTK_BUTTONS_YES_NO,
+   --                                                "Move the data ?\n");
+   --               response = gtk_dialog_run (GTK_DIALOG (dialog));
+   --               gtk_widget_destroy (dialog);
    --
-   --  gtk_drag_finish (context, TRUE, action == GDK_ACTION_MOVE, time); }
-   --  else gtk_drag_finish (context, FALSE, FALSE, time); } ]|
+   --               if (response == GTK_RESPONSE_YES)
+   --                 action = GDK_ACTION_MOVE;
+   --               else
+   --                 action = GDK_ACTION_COPY;
+   --              }
+   --
+   --           gtk_drag_finish (context, TRUE, action == GDK_ACTION_MOVE, time);
+   --         }
+   --       else
+   --         gtk_drag_finish (context, FALSE, FALSE, time);
+   --      }
    -- 
    --  Callback parameters:
    --    --  "context": the drag context
@@ -4366,37 +4488,71 @@ package Gtk.Widget is
    --  keep track of whether he has received any drag-motion signals since the
    --  last Gtk.Widget.Gtk_Widget::drag-leave and if not, treat the drag-motion
    --  signal as an "enter" signal. Upon an "enter", the handler will typically
-   --  highlight the drop site with Gtk.Widget.Drag_Highlight. |[<!--
-   --  language="C" --> static void drag_motion (GtkWidget *widget,
-   --  GdkDragContext *context, gint x, gint y, guint time) { GdkAtom target;
+   --  highlight the drop site with Gtk.Widget.Drag_Highlight.
    --
-   --  PrivateData *private_data = GET_PRIVATE_DATA (widget);
+   --     static void
+   --     drag_motion (GtkWidget      *widget,
+   --                  GdkDragContext *context,
+   --                  gint            x,
+   --                  gint            y,
+   --                  guint           time)
+   --     {
+   --       GdkAtom target;
    --
-   --  if (!private_data->drag_highlight) { private_data->drag_highlight = 1;
-   --  gtk_drag_highlight (widget); }
+   --       PrivateData *private_data = GET_PRIVATE_DATA (widget);
    --
-   --  target = gtk_drag_dest_find_target (widget, context, NULL); if (target
-   --  == GDK_NONE) gdk_drag_status (context, 0, time); else {
-   --  private_data->pending_status = gdk_drag_context_get_suggested_action
-   --  (context); gtk_drag_get_data (widget, context, target, time); }
+   --       if (!private_data->drag_highlight)
+   --        {
+   --          private_data->drag_highlight = 1;
+   --          gtk_drag_highlight (widget);
+   --        }
    --
-   --  return TRUE; }
+   --       target = gtk_drag_dest_find_target (widget, context, NULL);
+   --       if (target == GDK_NONE)
+   --         gdk_drag_status (context, 0, time);
+   --       else
+   --        {
+   --          private_data->pending_status
+   --             = gdk_drag_context_get_suggested_action (context);
+   --          gtk_drag_get_data (widget, context, target, time);
+   --        }
    --
-   --  static void drag_data_received (GtkWidget *widget, GdkDragContext
-   --  *context, gint x, gint y, GtkSelectionData *selection_data, guint info,
-   --  guint time) { PrivateData *private_data = GET_PRIVATE_DATA (widget);
+   --       return TRUE;
+   --     }
    --
-   --  if (private_data->suggested_action) { private_data->suggested_action =
-   --  0;
+   --     static void
+   --     drag_data_received (GtkWidget        *widget,
+   --                         GdkDragContext   *context,
+   --                         gint              x,
+   --                         gint              y,
+   --                         GtkSelectionData *selection_data,
+   --                         guint             info,
+   --                         guint             time)
+   --     {
+   --       PrivateData *private_data = GET_PRIVATE_DATA (widget);
    --
-   --  // We are getting this data due to a request in drag_motion, // rather
-   --  than due to a request in drag_drop, so we are just // supposed to call
-   --  gdk_drag_status, not actually paste in // the data.
+   --       if (private_data->suggested_action)
+   --        {
+   --          private_data->suggested_action = 0;
    --
-   --  str = gtk_selection_data_get_text (selection_data); if
-   --  (!data_is_acceptable (str)) gdk_drag_status (context, 0, time); else
-   --  gdk_drag_status (context, private_data->suggested_action, time); } else
-   --  { // accept the drop } } ]|
+   --          // We are getting this data due to a request in drag_motion,
+   --          // rather than due to a request in drag_drop, so we are just
+   --          // supposed to call gdk_drag_status, not actually paste in
+   --          // the data.
+   --
+   --          str = gtk_selection_data_get_text (selection_data);
+   --          if (!data_is_acceptable (str))
+   --            gdk_drag_status (context, 0, time);
+   --          else
+   --            gdk_drag_status (context,
+   --                             private_data->suggested_action,
+   --                             time);
+   --        }
+   --       else
+   --        {
+   --          // accept the drop
+   --        }
+   --     }
    -- 
    --  Callback parameters:
    --    --  "context": the drag context

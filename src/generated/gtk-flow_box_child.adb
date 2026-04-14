@@ -108,8 +108,6 @@ package body Gtk.Flow_Box_Child is
       return Internal (Get_Object (Self)) /= 0;
    end Is_Selected;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Flow_Box_Child_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

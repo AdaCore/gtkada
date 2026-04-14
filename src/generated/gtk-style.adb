@@ -248,8 +248,6 @@ package body Gtk.Style is
       Internal (Get_Object (Style), Window, State_Type);
    end Set_Background;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Style_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

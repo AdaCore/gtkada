@@ -656,9 +656,9 @@ package body Glib.XML is
    -----------
 
    procedure Print (N : Node_Ptr; File_Name : String := "") is
-      Success : Boolean;
+      Unused : Boolean;
    begin
-      Print (N, File_Name, Success);
+      Print (N, File_Name, Unused);
    end Print;
 
    -----------

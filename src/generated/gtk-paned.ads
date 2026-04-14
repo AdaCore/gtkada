@@ -52,8 +52,11 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> paned ├── <child> ├── separator[.wide] ╰──
---  <child> ]|
+--     paned
+--     ├── <child>
+--     ├── separator[.wide]
+--     ╰── <child>
+--
 --
 --  GtkPaned has a main CSS node with name paned, and a subnode for the
 --  separator with name separator. The subnode gets a .wide style class when
@@ -65,19 +68,19 @@
 --
 --  ## Creating a paned widget with minimum sizes.
 --
---  |[<!-- language="C" --> GtkWidget *hpaned = gtk_paned_new
---  (GTK_ORIENTATION_HORIZONTAL); GtkWidget *frame1 = gtk_frame_new (NULL);
---  GtkWidget *frame2 = gtk_frame_new (NULL); gtk_frame_set_shadow_type
---  (GTK_FRAME (frame1), GTK_SHADOW_IN); gtk_frame_set_shadow_type (GTK_FRAME
---  (frame2), GTK_SHADOW_IN);
+--     GtkWidget *hpaned = gtk_paned_new (GTK_ORIENTATION_HORIZONTAL);
+--     GtkWidget *frame1 = gtk_frame_new (NULL);
+--     GtkWidget *frame2 = gtk_frame_new (NULL);
+--     gtk_frame_set_shadow_type (GTK_FRAME (frame1), GTK_SHADOW_IN);
+--     gtk_frame_set_shadow_type (GTK_FRAME (frame2), GTK_SHADOW_IN);
 --
---  gtk_widget_set_size_request (hpaned, 200, -1);
+--     gtk_widget_set_size_request (hpaned, 200, -1);
 --
---  gtk_paned_pack1 (GTK_PANED (hpaned), frame1, TRUE, FALSE);
---  gtk_widget_set_size_request (frame1, 50, -1);
+--     gtk_paned_pack1 (GTK_PANED (hpaned), frame1, TRUE, FALSE);
+--     gtk_widget_set_size_request (frame1, 50, -1);
 --
---  gtk_paned_pack2 (GTK_PANED (hpaned), frame2, FALSE, FALSE);
---  gtk_widget_set_size_request (frame2, 50, -1); ]|
+--     gtk_paned_pack2 (GTK_PANED (hpaned), frame2, FALSE, FALSE);
+--     gtk_widget_set_size_request (frame2, 50, -1);
 --
 --  </description>
 --  <screenshot>gtk-paned</screenshot>

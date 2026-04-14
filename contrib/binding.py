@@ -2102,8 +2102,6 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
             for s in signals:
                 if self.gtkpkg.get_method(
                    cname="::%s" % s.get("name")).bind():
-                    section.add(
-                        Code("use type System.Address;"), in_spec=False)
                     self.pkg.add_with("Gtkada.Bindings", specs=False)
                     self.pkg.add_with("Glib.Values", specs=False)
                     self.pkg.add_with("Gtk.Arguments", specs=False)

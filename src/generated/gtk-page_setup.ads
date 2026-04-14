@@ -41,19 +41,26 @@
 --
 --  ## A page setup dialog
 --
---  |[<!-- language="C" --> static GtkPrintSettings *settings = NULL; static
---  GtkPageSetup *page_setup = NULL;
+--     static GtkPrintSettings *settings = NULL;
+--     static GtkPageSetup *page_setup = NULL;
 --
---  static void do_page_setup (void) { GtkPageSetup *new_page_setup;
+--     static void
+--     do_page_setup (void)
+--     {
+--       GtkPageSetup *new_page_setup;
 --
---  if (settings == NULL) settings = gtk_print_settings_new ();
+--       if (settings == NULL)
+--         settings = gtk_print_settings_new ();
 --
---  new_page_setup = gtk_print_run_page_setup_dialog (GTK_WINDOW
---  (main_window), page_setup, settings);
+--       new_page_setup = gtk_print_run_page_setup_dialog (GTK_WINDOW (main_window),
+--                                                         page_setup, settings);
 --
---  if (page_setup) g_object_unref (page_setup);
+--       if (page_setup)
+--         g_object_unref (page_setup);
 --
---  page_setup = new_page_setup; } ]|
+--       page_setup = new_page_setup;
+--     }
+--
 --
 --  Printing support was added in GTK+ 2.10.
 --

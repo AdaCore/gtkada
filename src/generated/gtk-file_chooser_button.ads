@@ -32,11 +32,15 @@
 --
 --  ## Create a button to let the user select a file in /etc
 --
---  |[<!-- language="C" --> { GtkWidget *button;
+--     {
+--       GtkWidget *button;
 --
---  button = gtk_file_chooser_button_new (_("Select a file"),
---  GTK_FILE_CHOOSER_ACTION_OPEN); gtk_file_chooser_set_current_folder
---  (GTK_FILE_CHOOSER (button), "/etc"); } ]|
+--       button = gtk_file_chooser_button_new (_("Select a file"),
+--                                             GTK_FILE_CHOOSER_ACTION_OPEN);
+--       gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (button),
+--                                            "/etc");
+--     }
+--
 --
 --  The Gtk.File_Chooser_Button.Gtk_File_Chooser_Button supports the
 --  Gtk_File_Chooser_Actions Gtk.File_Chooser.Action_Open and

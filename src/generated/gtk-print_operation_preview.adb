@@ -46,8 +46,6 @@ package body Gtk.Print_Operation_Preview is
       return Internal (Preview, Page_Nr) /= 0;
    end Is_Selected;
 
-   use type System.Address;
-
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Page_Setup_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

@@ -29,8 +29,12 @@
 --
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> label ├── [selection] ├── [link] ┊ ╰── [link]
---  ]|
+--     label
+--     ├── [selection]
+--     ├── [link]
+--     ┊
+--     ╰── [link]
+--
 --
 --  GtkLabel has a single CSS node with the name label. A wide variety of
 --  style classes may be applied to labels, such as .title, .subtitle,
@@ -51,11 +55,14 @@
 --  "start" and "end" and allows you to specify
 --  Pango.Attributes.Pango_Attribute values for this label.
 --
---  An example of a UI definition fragment specifying Pango attributes: |[
---  <object class="GtkLabel"> <attributes> <attribute name="weight"
---  value="PANGO_WEIGHT_BOLD"/> <attribute name="background" value="red"
---  start="5" end="10"/> </attributes> </object> ]|
+--  An example of a UI definition fragment specifying Pango attributes:
 --
+--     <object class="GtkLabel">
+--       <attributes>
+--         <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
+--         <attribute name="background" value="red" start="5" end="10"/>
+--       </attributes>
+--     </object>
 --  The start and end attributes specify the range of characters to which the
 --  Pango attribute applies. If start and end are not specified, the attribute
 --  is applied to the whole text. Note that specifying ranges does not make
@@ -76,33 +83,39 @@
 --  Gtk.Label.Set_Mnemonic_Widget. Here's a simple example where the label is
 --  inside a button:
 --
---  |[<!-- language="C" --> // Pressing Alt+H will activate this button
---  GtkWidget *button = gtk_button_new (); GtkWidget *label =
---  gtk_label_new_with_mnemonic ("_Hello"); gtk_container_add (GTK_CONTAINER
---  (button), label); ]|
+--     // Pressing Alt+H will activate this button
+--     GtkWidget *button = gtk_button_new ();
+--     GtkWidget *label = gtk_label_new_with_mnemonic ("_Hello");
+--     gtk_container_add (GTK_CONTAINER (button), label);
+--
 --
 --  There's a convenience function to create buttons with a mnemonic label
 --  already inside:
 --
---  |[<!-- language="C" --> // Pressing Alt+H will activate this button
---  GtkWidget *button = gtk_button_new_with_mnemonic ("_Hello"); ]|
+--     // Pressing Alt+H will activate this button
+--     GtkWidget *button = gtk_button_new_with_mnemonic ("_Hello");
+--
 --
 --  To create a mnemonic for a widget alongside the label, such as a
 --  Gtk.GEntry.Gtk_Entry, you have to point the label at the entry with
 --  Gtk.Label.Set_Mnemonic_Widget:
 --
---  |[<!-- language="C" --> // Pressing Alt+H will focus the entry GtkWidget
---  *entry = gtk_entry_new (); GtkWidget *label = gtk_label_new_with_mnemonic
---  ("_Hello"); gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry); ]|
+--     // Pressing Alt+H will focus the entry
+--     GtkWidget *entry = gtk_entry_new ();
+--     GtkWidget *label = gtk_label_new_with_mnemonic ("_Hello");
+--     gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
+--
 --
 --  # Markup (styled text)
 --
 --  To make it easy to format text in a label (changing colors, fonts, etc.),
 --  label text can be provided in a simple [markup format][PangoMarkupFormat].
 --
---  Here's how to create a label with a small font: |[<!-- language="C" -->
---  GtkWidget *label = gtk_label_new (NULL); gtk_label_set_markup (GTK_LABEL
---  (label), "<small>Small text</small>"); ]|
+--  Here's how to create a label with a small font:
+--
+--     GtkWidget *label = gtk_label_new (NULL);
+--     gtk_label_set_markup (GTK_LABEL (label), "<small>Small text</small>");
+--
 --
 --  (See [complete documentation][PangoMarkupFormat] of available tags in the
 --  Pango manual.)
@@ -167,10 +180,13 @@
 --
 --  An example looks like this:
 --
---  |[<!-- language="C" --> const gchar *text = "Go to the" "<a
---  href=\"http://www.gtk.org title=\"<i>Our</i> website\">" "GTK+ website</a>
---  for more..."; GtkWidget *label = gtk_label_new (NULL); gtk_label_set_markup
---  (GTK_LABEL (label), text); ]|
+--     const gchar *text =
+--     "Go to the"
+--     "<a href=\"http://www.gtk.org title=\"<i>Our</i> website\">"
+--     "GTK+ website</a> for more...";
+--     GtkWidget *label = gtk_label_new (NULL);
+--     gtk_label_set_markup (GTK_LABEL (label), text);
+--
 --
 --  It is possible to implement custom handling for links and their tooltips
 --  with the Gtk.Label.Gtk_Label::activate-link signal and the
@@ -625,11 +641,16 @@ package Gtk.Label is
    --  list based on the parse results.
    --  If the Str is external data, you may need to escape it with
    --  g_markup_escape_text or g_markup_printf_escaped:
-   --  |[<!-- language="C" --> GtkWidget *label = gtk_label_new (NULL); const
-   --  char *str = "some text"; const char *format = "<span
-   --  style=\"italic\">\%s</span>"; char *markup;
-   --  markup = g_markup_printf_escaped (format, str); gtk_label_set_markup
-   --  (GTK_LABEL (label), markup); g_free (markup); ]|
+   --
+   --     GtkWidget *label = gtk_label_new (NULL);
+   --     const char *str = "some text";
+   --     const char *format = "<span style=\"italic\">\%s</span>";
+   --     char *markup;
+   --
+   --     markup = g_markup_printf_escaped (format, str);
+   --     gtk_label_set_markup (GTK_LABEL (label), markup);
+   --     g_free (markup);
+   --
    --  This function will set the Gtk.Label.Gtk_Label:use-markup property to
    --  True as a side effect.
    --  If you set the label contents using the Gtk.Label.Gtk_Label:label

@@ -41,19 +41,35 @@
 --  its expansion state. You should watch this property with a signal
 --  connection as follows:
 --
---  |[<!-- language="C" --> static void expander_callback (GObject *object,
---  GParamSpec *param_spec, gpointer user_data) { GtkExpander *expander;
+--     static void
+--     expander_callback (GObject    *object,
+--                        GParamSpec *param_spec,
+--                        gpointer    user_data)
+--     {
+--       GtkExpander *expander;
 --
---  expander = GTK_EXPANDER (object);
+--       expander = GTK_EXPANDER (object);
 --
---  if (gtk_expander_get_expanded (expander)) { // Show or create widgets }
---  else { // Hide or destroy widgets } }
+--       if (gtk_expander_get_expanded (expander))
+--         {
+--           // Show or create widgets
+--         }
+--       else
+--         {
+--           // Hide or destroy widgets
+--         }
+--     }
 --
---  static void create_expander (void) { GtkWidget *expander =
---  gtk_expander_new_with_mnemonic ("_More Options"); g_signal_connect
---  (expander, "notify::expanded", G_CALLBACK (expander_callback), NULL);
+--     static void
+--     create_expander (void)
+--     {
+--       GtkWidget *expander = gtk_expander_new_with_mnemonic ("_More Options");
+--       g_signal_connect (expander, "notify::expanded",
+--                         G_CALLBACK (expander_callback), NULL);
 --
---  // ... } ]|
+--       // ...
+--     }
+--
 --
 --  # GtkExpander as GtkBuildable
 --
@@ -62,15 +78,24 @@
 --  attribute of a <child> element. A normal content child can be specified
 --  without specifying a <child> type attribute.
 --
---  An example of a UI definition fragment with GtkExpander: |[ <object
---  class="GtkExpander"> <child type="label"> <object class="GtkLabel"
---  id="expander-label"/> </child> <child> <object class="GtkEntry"
---  id="expander-content"/> </child> </object> ]|
+--  An example of a UI definition fragment with GtkExpander:
 --
+--     <object class="GtkExpander">
+--       <child type="label">
+--         <object class="GtkLabel" id="expander-label"/>
+--       </child>
+--       <child>
+--         <object class="GtkEntry" id="expander-content"/>
+--       </child>
+--     </object>
 --  # CSS nodes
 --
---  |[<!-- language="plain" --> expander ├── title │ ├── arrow │ ╰── <label
---  widget> ╰── <child> ]|
+--     expander
+--     ├── title
+--     │   ├── arrow
+--     │   ╰── <label widget>
+--     ╰── <child>
+--
 --
 --  GtkExpander has three CSS nodes, the main node with the name expander, a
 --  subnode with name title and node below it with name arrow. The arrow of an
