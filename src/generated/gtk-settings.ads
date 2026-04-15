@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkSettings provide a mechanism to share global settings between
 --  applications.
 --
@@ -56,8 +55,6 @@
 --  Gtk.Settings.Get_For_Screen, but in many cases, it is more convenient to
 --  use gtk_widget_get_settings. Gtk.Settings.Get_Default returns the
 --  GtkSettings instance for the default screen.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Screen;         use Gdk.Screen;
@@ -93,7 +90,7 @@ package Gtk.Settings is
    --  application-specific value for a setting. After this call, the setting
    --  will again follow the session-wide value for this setting.
    --  Since: gtk+ 3.20
-   --  "name": the name of the setting to reset
+   --  @param Name the name of the setting to reset
 
    procedure Set_Double_Property
       (Self     : not null access Gtk_Settings_Record;
@@ -157,6 +154,8 @@ package Gtk.Settings is
    function Get_Default return Gtk_Settings;
    --  Gets the Gtk.Settings.Gtk_Settings object for the default GDK screen,
    --  creating it if necessary. See Gtk.Settings.Get_For_Screen.
+   --  @return a Gtk.Settings.Gtk_Settings object. If there is no default
+   --  screen, then returns null.
 
    function Get_For_Screen
       (Screen : not null access Gdk.Screen.Gdk_Screen_Record'Class)
@@ -164,7 +163,8 @@ package Gtk.Settings is
    --  Gets the Gtk.Settings.Gtk_Settings object for Screen, creating it if
    --  necessary.
    --  Since: gtk+ 2.2
-   --  "screen": a Gdk.Screen.Gdk_Screen.
+   --  @param Screen a Gdk.Screen.Gdk_Screen.
+   --  @return a Gtk.Settings.Gtk_Settings object.
 
    procedure Install_Property (Pspec : in out Glib.Param_Spec);
    pragma Obsolescent (Install_Property);

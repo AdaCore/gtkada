@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Gesture_Single.Gtk_Gesture_Single is a subclass of
 --  Gtk.Gesture.Gtk_Gesture, optimized (although not restricted) for dealing
 --  with mouse and single-touch gestures. Under interaction, these gestures
@@ -35,8 +34,6 @@
 --  through Gtk.Gesture_Single.Set_Button, or react to any mouse button by
 --  setting 0. While the gesture is active, the button being currently pressed
 --  can be known through Gtk.Gesture_Single.Get_Current_Button.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;       use Gdk.Event;
@@ -65,6 +62,7 @@ package Gtk.Gesture_Single is
    --  Returns the button number Gesture listens for, or 0 if Gesture reacts
    --  to any button press.
    --  Since: gtk+ 3.14
+   --  @return The button number, or 0 for any button
 
    procedure Set_Button
       (Self   : not null access Gtk_Gesture_Single_Record;
@@ -73,13 +71,14 @@ package Gtk.Gesture_Single is
    --  from a different button number will be ignored. Touch events implicitly
    --  match with button 1.
    --  Since: gtk+ 3.14
-   --  "button": button number to listen to, or 0 for any button
+   --  @param Button button number to listen to, or 0 for any button
 
    function Get_Current_Button
       (Self : not null access Gtk_Gesture_Single_Record) return Guint;
    --  Returns the button number currently interacting with Gesture, or 0 if
    --  there is none.
    --  Since: gtk+ 3.14
+   --  @return The current button number
 
    function Get_Current_Sequence
       (Self : not null access Gtk_Gesture_Single_Record)
@@ -87,12 +86,14 @@ package Gtk.Gesture_Single is
    --  Returns the event sequence currently interacting with Gesture. This is
    --  only meaningful if Gtk.Gesture.Is_Active returns True.
    --  Since: gtk+ 3.14
+   --  @return the current sequence
 
    function Get_Exclusive
       (Self : not null access Gtk_Gesture_Single_Record) return Boolean;
    --  Gets whether a gesture is exclusive. For more information, see
    --  Gtk.Gesture_Single.Set_Exclusive.
    --  Since: gtk+ 3.14
+   --  @return Whether the gesture is exclusive
 
    procedure Set_Exclusive
       (Self      : not null access Gtk_Gesture_Single_Record;
@@ -101,12 +102,13 @@ package Gtk.Gesture_Single is
    --  handle pointer and "pointer emulated" touch events, so at any given
    --  time, there is only one sequence able to interact with those.
    --  Since: gtk+ 3.14
-   --  "exclusive": True to make Gesture exclusive
+   --  @param Exclusive True to make Gesture exclusive
 
    function Get_Touch_Only
       (Self : not null access Gtk_Gesture_Single_Record) return Boolean;
    --  Returns True if the gesture is only triggered by touch events.
    --  Since: gtk+ 3.14
+   --  @return True if the gesture only handles touch events
 
    procedure Set_Touch_Only
       (Self       : not null access Gtk_Gesture_Single_Record;
@@ -115,7 +117,7 @@ package Gtk.Gesture_Single is
    --  GDK_TOUCH_BEGIN, GDK_TOUCH_UPDATE or GDK_TOUCH_END. If False, mouse
    --  events will be handled too.
    --  Since: gtk+ 3.14
-   --  "touch_only": whether Gesture handles only touch events
+   --  @param Touch_Only whether Gesture handles only touch events
 
    ----------------
    -- Properties --

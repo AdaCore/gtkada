@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Accelerator maps are used to define runtime configurable accelerators.
 --  Functions for manipulating them are are usually used by higher level
 --  convenience mechanisms like Gtk.UI_Manager.Gtk_UI_Manager and are thus
@@ -71,8 +70,6 @@
 --  signal, one can monitor changes of all accelerators. It is also possible to
 --  monitor only single accelerator path by using it as a detail of the
 --  Gtk.Accel_Map.Gtk_Accel_Map::changed signal.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;       use Gdk.Types;
@@ -94,12 +91,12 @@ package Gtk.Accel_Map is
       Accel_Key  : Gdk.Types.Gdk_Key_Type;
       Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
       Changed    : Boolean);
-   --  "accel_path": Accel path of the current accelerator
-   --  "accel_key": Key of the current accelerator
-   --  "accel_mods": Modifiers of the current accelerator
-   --  "changed": Changed flag of the accelerator (if True, accelerator has
-   --  changed during runtime and would need to be saved during an accelerator
-   --  dump)
+   --  @param Accel_Path Accel path of the current accelerator
+   --  @param Accel_Key Key of the current accelerator
+   --  @param Accel_Mods Modifiers of the current accelerator
+   --  @param Changed Changed flag of the accelerator (if True, accelerator
+   --  has changed during runtime and would need to be saved during an
+   --  accelerator dump)
 
    ------------------
    -- Constructors --
@@ -119,8 +116,8 @@ package Gtk.Accel_Map is
    --  Gtk_Accel_Map_Foreach, the Changed parameter indicates whether this
    --  accelerator was changed during runtime (thus, would need saving during
    --  an accelerator map dump).
-   --  "foreach_func": function to be executed for each accel map entry which
-   --  is not filtered out
+   --  @param Foreach_Func function to be executed for each accel map entry
+   --  which is not filtered out
 
    generic
       type User_Data_Type (<>) is private;
@@ -133,14 +130,14 @@ package Gtk.Accel_Map is
          Accel_Key  : Gdk.Types.Gdk_Key_Type;
          Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
          Changed    : Boolean);
-      --  "data": User data passed to Gtk.Accel_Map.Foreach or
+      --  @param Data User data passed to Gtk.Accel_Map.Foreach or
       --  gtk_accel_map_foreach_unfiltered
-      --  "accel_path": Accel path of the current accelerator
-      --  "accel_key": Key of the current accelerator
-      --  "accel_mods": Modifiers of the current accelerator
-      --  "changed": Changed flag of the accelerator (if True, accelerator has
-      --  changed during runtime and would need to be saved during an accelerator
-      --  dump)
+      --  @param Accel_Path Accel path of the current accelerator
+      --  @param Accel_Key Key of the current accelerator
+      --  @param Accel_Mods Modifiers of the current accelerator
+      --  @param Changed Changed flag of the accelerator (if True, accelerator
+      --  has changed during runtime and would need to be saved during an
+      --  accelerator dump)
 
       procedure Foreach
          (Data         : User_Data_Type;
@@ -151,8 +148,8 @@ package Gtk.Accel_Map is
       --  that of Gtk_Accel_Map_Foreach, the Changed parameter indicates
       --  whether this accelerator was changed during runtime (thus, would need
       --  saving during an accelerator map dump).
-      --  "data": data to be passed into Foreach_Func
-      --  "foreach_func": function to be executed for each accel map entry
+      --  @param Data data to be passed into Foreach_Func
+      --  @param Foreach_Func function to be executed for each accel map entry
       --  which is not filtered out
 
    end Foreach_User_Data;
@@ -162,7 +159,7 @@ package Gtk.Accel_Map is
    --  on each. The signature of Foreach_Func is that of Gtk_Accel_Map_Foreach,
    --  the Changed parameter indicates whether this accelerator was changed
    --  during runtime (thus, would need saving during an accelerator map dump).
-   --  "foreach_func": function to be executed for each accel map entry
+   --  @param Foreach_Func function to be executed for each accel map entry
 
    generic
       type User_Data_Type (<>) is private;
@@ -175,14 +172,14 @@ package Gtk.Accel_Map is
          Accel_Key  : Gdk.Types.Gdk_Key_Type;
          Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
          Changed    : Boolean);
-      --  "data": User data passed to Gtk.Accel_Map.Foreach or
+      --  @param Data User data passed to Gtk.Accel_Map.Foreach or
       --  Gtk.Accel_Map.Foreach_Unfiltered
-      --  "accel_path": Accel path of the current accelerator
-      --  "accel_key": Key of the current accelerator
-      --  "accel_mods": Modifiers of the current accelerator
-      --  "changed": Changed flag of the accelerator (if True, accelerator has
-      --  changed during runtime and would need to be saved during an accelerator
-      --  dump)
+      --  @param Accel_Path Accel path of the current accelerator
+      --  @param Accel_Key Key of the current accelerator
+      --  @param Accel_Mods Modifiers of the current accelerator
+      --  @param Changed Changed flag of the accelerator (if True, accelerator
+      --  has changed during runtime and would need to be saved during an
+      --  accelerator dump)
 
       procedure Foreach_Unfiltered
          (Data         : User_Data_Type;
@@ -192,8 +189,8 @@ package Gtk.Accel_Map is
       --  Gtk_Accel_Map_Foreach, the Changed parameter indicates whether this
       --  accelerator was changed during runtime (thus, would need saving
       --  during an accelerator map dump).
-      --  "data": data to be passed into Foreach_Func
-      --  "foreach_func": function to be executed for each accel map entry
+      --  @param Data data to be passed into Foreach_Func
+      --  @param Foreach_Func function to be executed for each accel map entry
 
    end Foreach_Unfiltered_User_Data;
 
@@ -214,9 +211,9 @@ package Gtk.Accel_Map is
    --  Note that Accel_Path string will be stored in a Glib.GQuark. Therefore,
    --  if you pass a static string, you can save some memory by interning it
    --  first with g_intern_static_string.
-   --  "accel_path": valid accelerator path
-   --  "accel_key": the accelerator key
-   --  "accel_mods": the accelerator modifiers
+   --  @param Accel_Path valid accelerator path
+   --  @param Accel_Key the accelerator key
+   --  @param Accel_Mods the accelerator modifiers
 
    procedure Add_Filter (Filter_Pattern : UTF8_String);
    --  Adds a filter to the global list of accel path filters.
@@ -225,7 +222,7 @@ package Gtk.Accel_Map is
    --  This function is intended for GTK+ modules that create their own menus,
    --  but don't want them to be saved into the applications accelerator map
    --  dump.
-   --  "filter_pattern": a pattern (see Gpattern.Spec.Gpattern_Spec)
+   --  @param Filter_Pattern a pattern (see Gpattern.Spec.Gpattern_Spec)
 
    function Change_Entry
       (Accel_Path : UTF8_String;
@@ -242,10 +239,11 @@ package Gtk.Accel_Map is
    --  Note that Accel_Path string will be stored in a Glib.GQuark. Therefore,
    --  if you pass a static string, you can save some memory by interning it
    --  first with g_intern_static_string.
-   --  "accel_path": a valid accelerator path
-   --  "accel_key": the new accelerator key
-   --  "accel_mods": the new accelerator modifiers
-   --  "replace": True if other accelerators may be deleted upon conflicts
+   --  @param Accel_Path a valid accelerator path
+   --  @param Accel_Key the new accelerator key
+   --  @param Accel_Mods the new accelerator modifiers
+   --  @param Replace True if other accelerators may be deleted upon conflicts
+   --  @return True if the accelerator could be changed, False otherwise
 
    function Get return Gtk_Accel_Map;
    --  Gets the singleton global Gtk.Accel_Map.Gtk_Accel_Map object. This
@@ -253,17 +251,18 @@ package Gtk.Accel_Map is
    --  via the ::changed signal; it isn't a parameter to the other accelerator
    --  map functions.
    --  Since: gtk+ 2.4
+   --  @return the global Gtk.Accel_Map.Gtk_Accel_Map object
 
    procedure Load (File_Name : UTF8_String);
    --  Parses a file previously saved with Gtk.Accel_Map.Save for accelerator
    --  specifications, and propagates them accordingly.
-   --  "file_name": a file containing accelerator specifications, in the GLib
-   --  file name encoding
+   --  @param File_Name a file containing accelerator specifications, in the
+   --  GLib file name encoding
 
    procedure Load_Fd (Fd : Glib.Gint);
    --  Filedescriptor variant of Gtk.Accel_Map.Load.
    --  Note that the file descriptor will not be closed by this function.
-   --  "fd": a valid readable file descriptor
+   --  @param Fd a valid readable file descriptor
 
    procedure Lock_Path (Accel_Path : UTF8_String);
    --  Locks the given accelerator path. If the accelerator map doesn't yet
@@ -279,34 +278,35 @@ package Gtk.Accel_Map is
    --  accelerator changes to be possible, both the accelerator path and its
    --  Gtk.Accel_Group.Gtk_Accel_Group have to be unlocked.
    --  Since: gtk+ 2.4
-   --  "accel_path": a valid accelerator path
+   --  @param Accel_Path a valid accelerator path
 
    procedure Lookup_Entry
       (Accel_Path : UTF8_String;
        Key        : out Gtk.Accel_Group.Gtk_Accel_Key;
        Found      : out Boolean);
    --  Looks up the accelerator entry for Accel_Path and fills in Key.
-   --  "accel_path": a valid accelerator path
-   --  "key": the accelerator key to be filled in (optional)
+   --  @param Accel_Path a valid accelerator path
+   --  @param Key the accelerator key to be filled in (optional)
+   --  @return True if Accel_Path is known, False otherwise
 
    procedure Save (File_Name : UTF8_String);
    --  Saves current accelerator specifications (accelerator path, key and
    --  modifiers) to File_Name. The file is written in a format suitable to be
    --  read back in by Gtk.Accel_Map.Load.
-   --  "file_name": the name of the file to contain accelerator
+   --  @param File_Name the name of the file to contain accelerator
    --  specifications, in the GLib file name encoding
 
    procedure Save_Fd (Fd : Glib.Gint);
    --  Filedescriptor variant of Gtk.Accel_Map.Save.
    --  Note that the file descriptor will not be closed by this function.
-   --  "fd": a valid writable file descriptor
+   --  @param Fd a valid writable file descriptor
 
    procedure Unlock_Path (Accel_Path : UTF8_String);
    --  Undoes the last call to Gtk.Accel_Map.Lock_Path on this Accel_Path.
    --  Refer to Gtk.Accel_Map.Lock_Path for information about accelerator path
    --  locking.
    --  Since: gtk+ 2.4
-   --  "accel_path": a valid accelerator path
+   --  @param Accel_Path a valid accelerator path
 
    -------------
    -- Signals --
@@ -339,8 +339,8 @@ package Gtk.Accel_Map is
    --  changed::`accel_path`.
    -- 
    --  Callback parameters:
-   --    --  "accel_path": the path of the accelerator that changed
-   --    --  "accel_key": the key value for the new accelerator
-   --    --  "accel_mods": the modifier mask for the new accelerator
+   --    --  @param Accel_Path the path of the accelerator that changed
+   --    --  @param Accel_Key the key value for the new accelerator
+   --    --  @param Accel_Mods the modifier mask for the new accelerator
 
 end Gtk.Accel_Map;

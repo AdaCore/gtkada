@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GdkMonitor objects represent the individual outputs that are associated
 --  with a Gdk.Display.Gdk_Display. GdkDisplay has APIs to enumerate monitors
 --  with Gdk.Display.Get_N_Monitors and Gdk.Display.Get_Monitor, and to find
@@ -30,8 +29,6 @@
 --
 --  GdkMonitor was introduced in GTK+ 3.22 and supersedes earlier APIs in
 --  GdkScreen to obtain monitor-related information.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle;           use Gdk.Rectangle;
@@ -87,13 +84,14 @@ package Gdk.Monitor is
    --  display coordinate space. The returned geometry is in "application
    --  pixels", not in "device pixels" (see Gdk.Monitor.Get_Scale_Factor).
    --  Since: gtk+ 3.22
-   --  "geometry": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
-   --  geometry
+   --  @param Geometry a Gdk.Rectangle.Gdk_Rectangle to be filled with the
+   --  monitor geometry
 
    function Get_Height_Mm
       (Self : not null access Gdk_Monitor_Record) return Glib.Gint;
    --  Gets the height in millimeters of the monitor.
    --  Since: gtk+ 3.22
+   --  @return the physical height of the monitor
 
    function Get_Manufacturer
       (Self : not null access Gdk_Monitor_Record) return UTF8_String;
@@ -101,10 +99,12 @@ package Gdk.Monitor is
    --  Note that this value might also vary depending on actual display
    --  backend.
    --  PNP ID registry is located at https://uefi.org/pnp_id_list
+   --  @return the name of the manufacturer, or null
 
    function Get_Model
       (Self : not null access Gdk_Monitor_Record) return UTF8_String;
    --  Gets the a string identifying the monitor model, if available.
+   --  @return the monitor model, or null
 
    function Get_Refresh_Rate
       (Self : not null access Gdk_Monitor_Record) return Glib.Gint;
@@ -112,6 +112,7 @@ package Gdk.Monitor is
    --  The value is in milli-Hertz, so a refresh rate of 60Hz is returned as
    --  60000.
    --  Since: gtk+ 3.22
+   --  @return the refresh rate in milli-Hertz, or 0
 
    function Get_Scale_Factor
       (Self : not null access Gdk_Monitor_Record) return Glib.Gint;
@@ -122,17 +123,20 @@ package Gdk.Monitor is
    --  particular monitor, but most of the time you're drawing to a window
    --  where it is better to use Gdk.Window.Get_Scale_Factor instead.
    --  Since: gtk+ 3.22
+   --  @return the scale factor
 
    function Get_Subpixel_Layout
       (Self : not null access Gdk_Monitor_Record) return Gdk_Subpixel_Layout;
    --  Gets information about the layout of red, green and blue primaries for
    --  each pixel in this monitor, if available.
    --  Since: gtk+ 3.22
+   --  @return the subpixel layout
 
    function Get_Width_Mm
       (Self : not null access Gdk_Monitor_Record) return Glib.Gint;
    --  Gets the width in millimeters of the monitor.
    --  Since: gtk+ 3.22
+   --  @return the physical width of the monitor
 
    procedure Get_Workarea
       (Self     : not null access Gdk_Monitor_Record;
@@ -147,14 +151,15 @@ package Gdk.Monitor is
    --  function will return the monitor geometry if a workarea is not
    --  available, or does not apply.
    --  Since: gtk+ 3.22
-   --  "workarea": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
-   --  workarea
+   --  @param Workarea a Gdk.Rectangle.Gdk_Rectangle to be filled with the
+   --  monitor workarea
 
    function Is_Primary
       (Self : not null access Gdk_Monitor_Record) return Boolean;
    --  Gets whether this monitor should be considered primary (see
    --  Gdk.Display.Get_Primary_Monitor).
    --  Since: gtk+ 3.22
+   --  @return True if Monitor is primary
 
    ----------------
    -- Properties --

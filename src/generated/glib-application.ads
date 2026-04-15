@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Glib.Application.Gapplication is the foundation of an application. It
 --  wraps some low-level platform-specific services and is intended to act as
 --  the foundation for higher-level application classes such as
@@ -135,8 +134,6 @@
 --
 --  For an example of using extra D-Bus hooks with GApplication, see
 --  [gapplication-example-dbushooks.c](https://git.gnome.org/browse/glib/tree/gio/tests/gapplication-example-dbushooks.c).
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
@@ -197,8 +194,8 @@ package Glib.Application is
    --  If no application ID is given then some features of
    --  Glib.Application.Gapplication (most notably application uniqueness) will
    --  be disabled.
-   --  "application_id": the application id
-   --  "flags": the application flags
+   --  @param Application_Id the application id
+   --  @param Flags the application flags
 
    procedure Initialize
       (Self           : not null access Gapplication_Record'Class;
@@ -212,8 +209,8 @@ package Glib.Application is
    --  be disabled.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "application_id": the application id
-   --  "flags": the application flags
+   --  @param Application_Id the application id
+   --  @param Flags the application flags
 
    function Gapplication_New
       (Application_Id : UTF8_String := "";
@@ -224,8 +221,8 @@ package Glib.Application is
    --  If no application ID is given then some features of
    --  Glib.Application.Gapplication (most notably application uniqueness) will
    --  be disabled.
-   --  "application_id": the application id
-   --  "flags": the application flags
+   --  @param Application_Id the application id
+   --  @param Flags the application flags
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "g_application_get_type");
@@ -254,13 +251,14 @@ package Glib.Application is
    --  not to Object. Instead, the binding is destroyed when Object is
    --  finalized.
    --  Since: gtk+ 2.44
-   --  "object": a Glib.Object.GObject
-   --  "property": the name of a boolean property of Object
+   --  @param Object a Glib.Object.GObject
+   --  @param Property the name of a boolean property of Object
 
    function Get_Application_Id
       (Self : not null access Gapplication_Record) return UTF8_String;
    --  Gets the unique identifier for Application.
    --  Since: gtk+ 2.28
+   --  @return the identifier for Application, owned by Application
 
    procedure Set_Application_Id
       (Self           : not null access Gapplication_Record;
@@ -271,7 +269,7 @@ package Glib.Application is
    --  If non-null, the application id must be valid. See
    --  Glib.Application.Id_Is_Valid.
    --  Since: gtk+ 2.28
-   --  "application_id": the identifier for Application
+   --  @param Application_Id the identifier for Application
 
    function Get_Dbus_Object_Path
       (Self : not null access Gapplication_Record) return UTF8_String;
@@ -288,12 +286,14 @@ package Glib.Application is
    --  This function must not be called before the application has been
    --  registered. See Glib.Application.Get_Is_Registered.
    --  Since: gtk+ 2.34
+   --  @return the object path, or null
 
    function Get_Flags
       (Self : not null access Gapplication_Record) return GApplication_Flags;
    --  Gets the flags for Application.
    --  See Glib.Application.GApplication_Flags.
    --  Since: gtk+ 2.28
+   --  @return the flags for Application
 
    procedure Set_Flags
       (Self  : not null access Gapplication_Record;
@@ -303,7 +303,7 @@ package Glib.Application is
    --  registered.
    --  See Glib.Application.GApplication_Flags.
    --  Since: gtk+ 2.28
-   --  "flags": the flags for Application
+   --  @param Flags the flags for Application
 
    function Get_Inactivity_Timeout
       (Self : not null access Gapplication_Record) return Guint;
@@ -311,6 +311,7 @@ package Glib.Application is
    --  This is the amount of time (in milliseconds) after the last call to
    --  Glib.Application.Release before the application stops running.
    --  Since: gtk+ 2.28
+   --  @return the timeout, in milliseconds
 
    procedure Set_Inactivity_Timeout
       (Self               : not null access Gapplication_Record;
@@ -322,13 +323,14 @@ package Glib.Application is
    --  used for next time Glib.Application.Release drops the use count to zero.
    --  Any timeouts currently in progress are not impacted.
    --  Since: gtk+ 2.28
-   --  "inactivity_timeout": the timeout, in milliseconds
+   --  @param Inactivity_Timeout the timeout, in milliseconds
 
    function Get_Is_Busy
       (Self : not null access Gapplication_Record) return Boolean;
    --  Gets the application's current busy state, as set through
    --  Glib.Application.Mark_Busy or Glib.Application.Bind_Busy_Property.
    --  Since: gtk+ 2.44
+   --  @return True if Application is currently marked as busy
 
    function Get_Is_Registered
       (Self : not null access Gapplication_Record) return Boolean;
@@ -336,6 +338,7 @@ package Glib.Application is
    --  An application is registered if g_application_register has been
    --  successfully called.
    --  Since: gtk+ 2.28
+   --  @return True if Application is registered
 
    function Get_Is_Remote
       (Self : not null access Gapplication_Record) return Boolean;
@@ -348,18 +351,21 @@ package Glib.Application is
    --  g_application_register has been called. See
    --  Glib.Application.Get_Is_Registered.
    --  Since: gtk+ 2.28
+   --  @return True if Application is remote
 
    function Get_Is_Remote
       (Self : not null access Gapplication_Command_Line_Record)
        return Boolean;
    --  Determines if Cmdline represents a remote invocation.
    --  Since: gtk+ 2.28
+   --  @return True if the invocation was remote
 
    function Get_Resource_Base_Path
       (Self : not null access Gapplication_Record) return UTF8_String;
    --  Gets the resource base path of Application.
    --  See Glib.Application.Set_Resource_Base_Path for more information.
    --  Since: gtk+ 2.42
+   --  @return the base resource path, if one is set
 
    procedure Set_Resource_Base_Path
       (Self          : not null access Gapplication_Record;
@@ -393,7 +399,7 @@ package Glib.Application is
    --  GApplication_Class.startup virtual function, before chaining up to the
    --  parent implementation.
    --  Since: gtk+ 2.42
-   --  "resource_path": the resource path to use
+   --  @param Resource_Path the resource path to use
 
    procedure Hold (Self : not null access Gapplication_Record);
    --  Increases the use count of Application.
@@ -503,8 +509,9 @@ package Glib.Application is
    --  processes invoked via the commandline will exit and what their exit
    --  status will be.
    --  Since: gtk+ 2.28
-   --  "argc": the argc from main (or 0 if Argv is null)
-   --  "argv": the argv from main, or null
+   --  @param Argc the argc from main (or 0 if Argv is null)
+   --  @param Argv the argv from main, or null
+   --  @return the exit status
 
    procedure Send_Notification
       (Self         : not null access Gapplication_Record;
@@ -531,8 +538,8 @@ package Glib.Application is
    --  If Notification is no longer relevant, it can be withdrawn with
    --  Glib.Application.Withdraw_Notification.
    --  Since: gtk+ 2.40
-   --  "id": id of the notification, or null
-   --  "notification": the Glib.Notification.Gnotification to send
+   --  @param Id id of the notification, or null
+   --  @param Notification the Glib.Notification.Gnotification to send
 
    procedure Set_Action_Group
       (Self         : not null access Gapplication_Record;
@@ -543,7 +550,7 @@ package Glib.Application is
    --  for that.
    --  Since: gtk+ 2.28
    --  Deprecated since 2.32, 1
-   --  "action_group": a Glib.Action_Group.Gaction_Group, or null
+   --  @param Action_Group a Glib.Action_Group.Gaction_Group, or null
 
    procedure Set_Default (Self : not null access Gapplication_Record);
    --  Sets or unsets the default application for the process, as returned by
@@ -559,8 +566,8 @@ package Glib.Application is
    --  Adds a description to the Application option context.
    --  See Glib.Option.Set_Description for more information.
    --  Since: gtk+ 2.56
-   --  "description": a string to be shown in `--help` output after the list
-   --  of options, or null
+   --  @param Description a string to be shown in `--help` output after the
+   --  list of options, or null
 
    procedure Set_Option_Context_Parameter_String
       (Self             : not null access Gapplication_Record;
@@ -571,8 +578,8 @@ package Glib.Application is
    --  when the internal Glib.Option.Goption_Context of Application is created.
    --  See Glib.Option.G_New for more information about Parameter_String.
    --  Since: gtk+ 2.56
-   --  "parameter_string": a string which is displayed in the first line of
-   --  `--help` output, after the usage summary `programname [OPTION...]`.
+   --  @param Parameter_String a string which is displayed in the first line
+   --  of `--help` output, after the usage summary `programname [OPTION...]`.
 
    procedure Set_Option_Context_Summary
       (Self    : not null access Gapplication_Record;
@@ -580,8 +587,8 @@ package Glib.Application is
    --  Adds a summary to the Application option context.
    --  See Glib.Option.Set_Summary for more information.
    --  Since: gtk+ 2.56
-   --  "summary": a string to be shown in `--help` output before the list of
-   --  options, or null
+   --  @param Summary a string to be shown in `--help` output before the list
+   --  of options, or null
 
    procedure Unbind_Busy_Property
       (Self     : not null access Gapplication_Record;
@@ -590,8 +597,8 @@ package Glib.Application is
    --  Destroys a binding between Property and the busy state of Application
    --  that was previously created with Glib.Application.Bind_Busy_Property.
    --  Since: gtk+ 2.44
-   --  "object": a Glib.Object.GObject
-   --  "property": the name of a boolean property of Object
+   --  @param Object a Glib.Object.GObject
+   --  @param Property the name of a boolean property of Object
 
    procedure Unmark_Busy (Self : not null access Gapplication_Record);
    --  Decreases the busy count of Application.
@@ -615,7 +622,7 @@ package Glib.Application is
    --  the buttons in a notification or triggers its default action, so there
    --  is no need to explicitly withdraw the notification in that case.
    --  Since: gtk+ 2.40
-   --  "id": id of a previously sent notification
+   --  @param Id id of a previously sent notification
 
    function Get_Arguments
       (Self : not null access Gapplication_Command_Line_Record)
@@ -629,6 +636,7 @@ package Glib.Application is
    --  The return value is null-terminated and should be freed using
    --  g_strfreev.
    --  Since: gtk+ 2.28
+   --  @return the string array containing the arguments (the argv)
 
    function Get_Cwd
       (Self : not null access Gapplication_Command_Line_Record)
@@ -640,6 +648,7 @@ package Glib.Application is
    --  The return value should not be modified or freed and is valid for as
    --  long as Cmdline exists.
    --  Since: gtk+ 2.28
+   --  @return the current directory, or null
 
    function Get_Environ
       (Self : not null access Gapplication_Command_Line_Record)
@@ -657,6 +666,7 @@ package Glib.Application is
    --  See Glib.Application.Getenv if you are only interested in the value of
    --  a single environment variable.
    --  Since: gtk+ 2.28
+   --  @return the environment strings, or null if they were not sent
 
    function Get_Exit_Status
       (Self : not null access Gapplication_Command_Line_Record)
@@ -664,6 +674,7 @@ package Glib.Application is
    --  Gets the exit status of Cmdline. See Glib.Application.Set_Exit_Status
    --  for more information.
    --  Since: gtk+ 2.28
+   --  @return the exit status
 
    procedure Set_Exit_Status
       (Self        : not null access Gapplication_Command_Line_Record;
@@ -686,7 +697,7 @@ package Glib.Application is
    --  the application use count is zero, though, the exit status of the local
    --  Glib.Application.Gapplication_Command_Line is used.
    --  Since: gtk+ 2.28
-   --  "exit_status": the exit status
+   --  @param Exit_Status the exit status
 
    function Get_Platform_Data
       (Self : not null access Gapplication_Command_Line_Record)
@@ -698,6 +709,7 @@ package Glib.Application is
    --  notification ID.
    --  For local invocation, it will be null.
    --  Since: gtk+ 2.28
+   --  @return the platform data, or null
 
    function Getenv
       (Self : not null access Gapplication_Command_Line_Record;
@@ -712,7 +724,8 @@ package Glib.Application is
    --  The return value should not be modified or freed and is valid for as
    --  long as Cmdline exists.
    --  Since: gtk+ 2.28
-   --  "name": the environment variable to get
+   --  @param Name the environment variable to get
+   --  @return the value of the variable, or null if unset or unsent
 
    ----------------------
    -- GtkAda additions --
@@ -851,6 +864,7 @@ package Glib.Application is
    --  control over this by using Glib.Application.Set_Default.
    --  If there is no default application then null is returned.
    --  Since: gtk+ 2.32
+   --  @return the default application for this process, or null
 
    function Id_Is_Valid (Application_Id : UTF8_String) return Boolean;
    --  Checks if Application_Id is a valid application identifier.
@@ -892,7 +906,8 @@ package Glib.Application is
    --  underscore. For example, if the owner of 7-zip.org used an application
    --  identifier for an archiving application, it might be named
    --  `org._7_zip.Archiver`.
-   --  "application_id": a potential application identifier
+   --  @param Application_Id a potential application identifier
+   --  @return True if Application_Id is valid
 
    ----------------
    -- Properties --
@@ -983,10 +998,8 @@ package Glib.Application is
    --  information.
    -- 
    --  Callback parameters:
-   --    --  "command_line": a Glib.Application.Gapplication_Command_Line
+   --    --  @param Command_Line a Glib.Application.Gapplication_Command_Line
    --    --  representing the passed commandline
-   --    --  Returns An integer that is set as the exit status for the calling
-   --   process. See Glib.Application.Set_Exit_Status.
 
    Signal_Handle_Local_Options : constant Glib.Signal_Name := "handle-local-options";
    --  The ::handle-local-options signal is emitted on the local instance
@@ -1035,11 +1048,7 @@ package Glib.Application is
    --        Options : GLib.Variant_Dict) return Glib.Gint
    -- 
    --  Callback parameters:
-   --    --  "options": the options dictionary
-   --    --  Returns an exit code. If you have handled your options and want
-   -- to exit the process, return a non-negative option, 0 for success,
-   -- and a positive value for failure. To continue, return -1 to let
-   -- the default option processing continue.
+   --    --  @param Options the options dictionary
 
    type Cb_Gapplication_Boolean is not null access function
      (Self : access Gapplication_Record'Class) return Boolean;
@@ -1066,7 +1075,6 @@ package Glib.Application is
    --  The default handler for this signal calls Glib.Application.Quit.
    -- 
    --  Callback parameters:
-   --    --  Returns True if the signal has been handled
 
    Signal_Open : constant Glib.Signal_Name := "open";
    --  The ::open signal is emitted on the primary instance when there are
@@ -1078,9 +1086,9 @@ package Glib.Application is
    --        Hint    : UTF8_String)
    -- 
    --  Callback parameters:
-   --    --  "files": an array of GFiles
-   --    --  "n_files": the length of Files
-   --    --  "hint": a hint provided by the calling instance
+   --    --  @param Files an array of GFiles
+   --    --  @param N_Files the length of Files
+   --    --  @param Hint a hint provided by the calling instance
 
    Signal_Shutdown : constant Glib.Signal_Name := "shutdown";
    procedure On_Shutdown
@@ -1161,8 +1169,10 @@ package Glib.Application is
    --  Glib.Application.Run.
    --  See Glib.Application.Run for more details on
    --  Glib.Application.Gapplication startup.
-   --  "arguments": array of command line arguments
-   --  "exit_status": exit status to fill after processing the command line.
+   --  @param Arguments array of command line arguments
+   --  @param Exit_Status exit status to fill after processing the command
+   --  line.
+   --  @return True if the commandline has been completely handled
 
    subtype Application_Interface_Descr is Glib.Object.Interface_Description;
 

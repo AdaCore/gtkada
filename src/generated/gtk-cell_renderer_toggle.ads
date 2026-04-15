@@ -21,14 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Cell_Renderer_Toggle.Gtk_Cell_Renderer_Toggle renders a toggle button
 --  in a cell. The button is drawn as a radio or a checkbutton, depending on
 --  the Gtk.Cell_Renderer_Toggle.Gtk_Cell_Renderer_Toggle:radio property. When
 --  activated, it emits the
 --  Gtk.Cell_Renderer_Toggle.Gtk_Cell_Renderer_Toggle::toggled signal.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
@@ -80,30 +77,33 @@ package Gtk.Cell_Renderer_Toggle is
    --  Returns whether the cell renderer is activatable. See
    --  Gtk.Cell_Renderer_Toggle.Set_Activatable.
    --  Since: gtk+ 2.18
+   --  @return True if the cell renderer is activatable.
 
    procedure Set_Activatable
       (Self    : not null access Gtk_Cell_Renderer_Toggle_Record;
        Setting : Boolean);
    --  Makes the cell renderer activatable.
    --  Since: gtk+ 2.18
-   --  "setting": the value to set.
+   --  @param Setting the value to set.
 
    function Get_Active
       (Self : not null access Gtk_Cell_Renderer_Toggle_Record)
        return Boolean;
    --  Returns whether the cell renderer is active. See
    --  Gtk.Cell_Renderer_Toggle.Set_Active.
+   --  @return True if the cell renderer is active.
 
    procedure Set_Active
       (Self    : not null access Gtk_Cell_Renderer_Toggle_Record;
        Setting : Boolean);
    --  Activates or deactivates a cell renderer.
-   --  "setting": the value to set.
+   --  @param Setting the value to set.
 
    function Get_Radio
       (Self : not null access Gtk_Cell_Renderer_Toggle_Record)
        return Boolean;
    --  Returns whether we're rendering radio toggles rather than checkboxes.
+   --  @return True if we're rendering radio toggles rather than checkboxes
 
    procedure Set_Radio
       (Self  : not null access Gtk_Cell_Renderer_Toggle_Record;
@@ -115,7 +115,7 @@ package Gtk.Cell_Renderer_Toggle is
    --  model (for Gtk.Tree_View.Gtk_Tree_View, you set up a per-row setting
    --  using Gtk.Tree_View_Column.Gtk_Tree_View_Column to associate model
    --  columns with cell renderer properties).
-   --  "radio": True to make the toggle look like a radio button
+   --  @param Radio True to make the toggle look like a radio button
 
    ----------------
    -- Properties --

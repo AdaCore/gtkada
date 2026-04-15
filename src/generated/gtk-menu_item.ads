@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Menu_Item.Gtk_Menu_Item widget and the derived widgets are the
 --  only valid children for menus. Their function is to correctly handle
 --  highlighting, alignment, events and submenus.
@@ -66,8 +65,6 @@
 --  GtkMenuItem has a single CSS node with name menuitem. If the menuitem has
 --  a submenu, it gets another CSS node with name arrow, which has the .left or
 --  .right style class.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -111,13 +108,13 @@ package Gtk.Menu_Item is
    --  Gtk.Label.Gtk_Label.
    --  Initialize_With_Label does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "label": the text for the label
+   --  @param Label the text for the label
 
    function Gtk_Menu_Item_New_With_Label
       (Label : UTF8_String) return Gtk_Menu_Item;
    --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item whose child is a
    --  Gtk.Label.Gtk_Label.
-   --  "label": the text for the label
+   --  @param Label the text for the label
 
    procedure Gtk_New_With_Mnemonic
       (Menu_Item : out Gtk_Menu_Item;
@@ -130,7 +127,7 @@ package Gtk.Menu_Item is
    --  underscores in Label indicate the mnemonic for the menu item.
    --  Initialize_With_Mnemonic does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "label": The text of the button, with an underscore in front of the
+   --  @param Label The text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Gtk_Menu_Item_New_With_Mnemonic
@@ -138,7 +135,7 @@ package Gtk.Menu_Item is
    --  Creates a new Gtk.Menu_Item.Gtk_Menu_Item containing a label.
    --  The label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
    --  underscores in Label indicate the mnemonic for the menu item.
-   --  "label": The text of the button, with an underscore in front of the
+   --  @param Label The text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Get_Type return Glib.GType;
@@ -161,6 +158,8 @@ package Gtk.Menu_Item is
    --  Retrieve the accelerator path that was previously set on Menu_Item.
    --  See Gtk.Menu_Item.Set_Accel_Path for details.
    --  Since: gtk+ 2.14
+   --  @return the accelerator path corresponding to this menu item's
+   --  functionality, or null if not set
 
    procedure Set_Accel_Path
       (Menu_Item  : not null access Gtk_Menu_Item_Record;
@@ -180,26 +179,30 @@ package Gtk.Menu_Item is
    --  Note that Accel_Path string will be stored in a Glib.GQuark. Therefore,
    --  if you pass a static string, you can save some memory by interning it
    --  first with g_intern_static_string.
-   --  "accel_path": accelerator path, corresponding to this menu item's
+   --  @param Accel_Path accelerator path, corresponding to this menu item's
    --  functionality, or null to unset the current path.
 
    function Get_Label
       (Menu_Item : not null access Gtk_Menu_Item_Record) return UTF8_String;
    --  Sets Text on the Menu_Item label
    --  Since: gtk+ 2.16
+   --  @return The text in the Menu_Item label. This is the internal string
+   --  used by the label, and must not be modified.
 
    procedure Set_Label
       (Menu_Item : not null access Gtk_Menu_Item_Record;
        Label     : UTF8_String);
    --  Sets Text on the Menu_Item label
    --  Since: gtk+ 2.16
-   --  "label": the text you want to set
+   --  @param Label the text you want to set
 
    function Get_Reserve_Indicator
       (Menu_Item : not null access Gtk_Menu_Item_Record) return Boolean;
    --  Returns whether the Menu_Item reserves space for the submenu indicator,
    --  regardless if it has a submenu or not.
    --  Since: gtk+ 3.0
+   --  @return True if Menu_Item always reserves space for the submenu
+   --  indicator
 
    procedure Set_Reserve_Indicator
       (Menu_Item : not null access Gtk_Menu_Item_Record;
@@ -208,7 +211,7 @@ package Gtk.Menu_Item is
    --  indicator, regardless if it actually has a submenu or not.
    --  There should be little need for applications to call this functions.
    --  Since: gtk+ 3.0
-   --  "reserve": the new value
+   --  @param Reserve the new value
 
    function Get_Right_Justified
       (Menu_Item : not null access Gtk_Menu_Item_Record) return Boolean;
@@ -216,6 +219,8 @@ package Gtk.Menu_Item is
    --  Gets whether the menu item appears justified at the right side of the
    --  menu bar.
    --  Deprecated since 3.2, 1
+   --  @return True if the menu item will appear at the far right if added to
+   --  a menu bar.
 
    procedure Set_Right_Justified
       (Menu_Item       : not null access Gtk_Menu_Item_Record;
@@ -227,27 +232,30 @@ package Gtk.Menu_Item is
    --  right-to-left language like Hebrew or Arabic, right-justified-menu-items
    --  appear at the left.)
    --  Deprecated since 3.2, 1
-   --  "right_justified": if True the menu item will appear at the far right
-   --  if added to a menu bar
+   --  @param Right_Justified if True the menu item will appear at the far
+   --  right if added to a menu bar
 
    function Get_Submenu
       (Menu_Item : not null access Gtk_Menu_Item_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the submenu underneath this menu item, if any. See
    --  Gtk.Menu_Item.Set_Submenu.
+   --  @return submenu for this menu item, or null if none
 
    procedure Set_Submenu
       (Menu_Item : not null access Gtk_Menu_Item_Record;
        Submenu   : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Sets or replaces the menu item's submenu, or removes it when a null
    --  submenu is passed.
-   --  "submenu": the submenu, or null
+   --  @param Submenu the submenu, or null
 
    function Get_Use_Underline
       (Menu_Item : not null access Gtk_Menu_Item_Record) return Boolean;
    --  Checks if an underline in the text indicates the next character should
    --  be used for the mnemonic accelerator key.
    --  Since: gtk+ 2.16
+   --  @return True if an embedded underline in the label indicates the
+   --  mnemonic accelerator key.
 
    procedure Set_Use_Underline
       (Menu_Item : not null access Gtk_Menu_Item_Record;
@@ -255,7 +263,7 @@ package Gtk.Menu_Item is
    --  If true, an underline in the text indicates the next character should
    --  be used for the mnemonic accelerator key.
    --  Since: gtk+ 2.16
-   --  "setting": True if underlines in the text indicate mnemonics
+   --  @param Setting True if underlines in the text indicate mnemonics
 
    procedure Gtk_Select (Menu_Item : not null access Gtk_Menu_Item_Record);
    --  Emits the Gtk.Menu_Item.Gtk_Menu_Item::select signal on the given item.
@@ -265,14 +273,14 @@ package Gtk.Menu_Item is
        Allocation : Glib.Gint);
    --  Emits the Gtk.Menu_Item.Gtk_Menu_Item::toggle-size-allocate signal on
    --  the given item.
-   --  "allocation": the allocation to use as signal data.
+   --  @param Allocation the allocation to use as signal data.
 
    procedure Toggle_Size_Request
       (Menu_Item   : not null access Gtk_Menu_Item_Record;
        Requisition : in out Glib.Gint);
    --  Emits the Gtk.Menu_Item.Gtk_Menu_Item::toggle-size-request signal on
    --  the given item.
-   --  "requisition": the requisition to use as signal data.
+   --  @param Requisition the requisition to use as signal data.
 
    ----------------------
    -- GtkAda additions --

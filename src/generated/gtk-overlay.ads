@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkOverlay is a container which contains a single main child, on top of
 --  which it can place "overlay" widgets. The position of each overlay widget
 --  is determined by its Gtk.Widget.Gtk_Widget:halign and
@@ -52,8 +51,6 @@
 --  whose alignments cause them to be positioned at an edge get the style
 --  classes ".left", ".right", ".top", and/or ".bottom" according to their
 --  position.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle; use Gdk.Rectangle;
@@ -101,7 +98,7 @@ package Gtk.Overlay is
    --  Gtk.Widget.Gtk_Widget:halign and Gtk.Widget.Gtk_Widget:valign
    --  properties.
    --  Since: gtk+ 3.2
-   --  "widget": a Gtk.Widget.Gtk_Widget to be added to the container
+   --  @param Widget a Gtk.Widget.Gtk_Widget to be added to the container
 
    function Get_Overlay_Pass_Through
       (Self   : not null access Gtk_Overlay_Record;
@@ -110,7 +107,8 @@ package Gtk.Overlay is
    --  Convenience function to get the value of the
    --  Gtk.Overlay.Gtk_Overlay:pass-through child property for Widget.
    --  Since: gtk+ 3.18
-   --  "widget": an overlay child of Gtk.Overlay.Gtk_Overlay
+   --  @param Widget an overlay child of Gtk.Overlay.Gtk_Overlay
+   --  @return whether the widget is a pass through child.
 
    procedure Set_Overlay_Pass_Through
       (Self         : not null access Gtk_Overlay_Record;
@@ -119,8 +117,8 @@ package Gtk.Overlay is
    --  Convenience function to set the value of the
    --  Gtk.Overlay.Gtk_Overlay:pass-through child property for Widget.
    --  Since: gtk+ 3.18
-   --  "widget": an overlay child of Gtk.Overlay.Gtk_Overlay
-   --  "pass_through": whether the child should pass the input through
+   --  @param Widget an overlay child of Gtk.Overlay.Gtk_Overlay
+   --  @param Pass_Through whether the child should pass the input through
 
    procedure Reorder_Overlay
       (Self  : not null access Gtk_Overlay_Record;
@@ -133,8 +131,8 @@ package Gtk.Overlay is
    --  the children are drawn if they overlap. The first child is drawn at the
    --  bottom. It also affects the default focus chain order.
    --  Since: gtk+ 3.18
-   --  "child": the overlaid Gtk.Widget.Gtk_Widget to move
-   --  "index_": the new index for Child in the list of overlay children of
+   --  @param Child the overlaid Gtk.Widget.Gtk_Widget to move
+   --  @param Index the new index for Child in the list of overlay children of
    --  Overlay, starting from 0. If negative, indicates the end of the list
 
    -------------
@@ -176,9 +174,8 @@ package Gtk.Overlay is
    --  relative to its contents.
    -- 
    --  Callback parameters:
-   --    --  "widget": the child widget to position
-   --    --  "allocation": return location for the allocation
-   --    --  Returns True if the Allocation has been filled
+   --    --  @param Widget the child widget to position
+   --    --  @param Allocation return location for the allocation
 
    ----------------
    -- Interfaces --

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkSymbolicColor is a boxed type that represents a symbolic color. It is
 --  the result of parsing a [color expression][gtkcssprovider-symbolic-colors].
 --  To obtain the color represented by a GtkSymbolicColor, it has to be
@@ -35,8 +34,6 @@
 --
 --  Gtk.Symbolic_Color.Gtk_Symbolic_Color is deprecated. Symbolic colors are
 --  considered an implementation detail of GTK+.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.RGBA; use Gdk.RGBA;
@@ -63,8 +60,8 @@ package Gtk.Symbolic_Color is
    --  Color. A factor < 1.0 would resolve to a more transparent color, while >
    --  1.0 would resolve to a more opaque color.
    --  Since: gtk+ 3.0
-   --  "color": another Gtk.Symbolic_Color.Gtk_Symbolic_Color
-   --  "factor": factor to apply to Color alpha
+   --  @param Color another Gtk.Symbolic_Color.Gtk_Symbolic_Color
+   --  @param Factor factor to apply to Color alpha
 
    function Gtk_Symbolic_Color_New_Alpha
       (Color  : Gtk_Symbolic_Color;
@@ -73,21 +70,21 @@ package Gtk.Symbolic_Color is
    --  Color. A factor < 1.0 would resolve to a more transparent color, while >
    --  1.0 would resolve to a more opaque color.
    --  Since: gtk+ 3.0
-   --  "color": another Gtk.Symbolic_Color.Gtk_Symbolic_Color
-   --  "factor": factor to apply to Color alpha
+   --  @param Color another Gtk.Symbolic_Color.Gtk_Symbolic_Color
+   --  @param Factor factor to apply to Color alpha
 
    procedure Gtk_New_Literal
       (Self  : out Gtk_Symbolic_Color;
        Color : Gdk.RGBA.Gdk_RGBA);
    --  Creates a symbolic color pointing to a literal color.
    --  Since: gtk+ 3.0
-   --  "color": a Gdk.RGBA.Gdk_RGBA
+   --  @param Color a Gdk.RGBA.Gdk_RGBA
 
    function Gtk_Symbolic_Color_New_Literal
       (Color : Gdk.RGBA.Gdk_RGBA) return Gtk_Symbolic_Color;
    --  Creates a symbolic color pointing to a literal color.
    --  Since: gtk+ 3.0
-   --  "color": a Gdk.RGBA.Gdk_RGBA
+   --  @param Color a Gdk.RGBA.Gdk_RGBA
 
    procedure Gtk_New_Mix
       (Self   : out Gtk_Symbolic_Color;
@@ -98,9 +95,9 @@ package Gtk.Symbolic_Color is
    --  factor of 0 would resolve to Color1, while a factor of 1 would resolve
    --  to Color2.
    --  Since: gtk+ 3.0
-   --  "color1": color to mix
-   --  "color2": another color to mix
-   --  "factor": mix factor
+   --  @param Color1 color to mix
+   --  @param Color2 another color to mix
+   --  @param Factor mix factor
 
    function Gtk_Symbolic_Color_New_Mix
       (Color1 : Gtk_Symbolic_Color;
@@ -110,9 +107,9 @@ package Gtk.Symbolic_Color is
    --  factor of 0 would resolve to Color1, while a factor of 1 would resolve
    --  to Color2.
    --  Since: gtk+ 3.0
-   --  "color1": color to mix
-   --  "color2": another color to mix
-   --  "factor": mix factor
+   --  @param Color1 color to mix
+   --  @param Color2 another color to mix
+   --  @param Factor mix factor
 
    procedure Gtk_New_Name
       (Self : out Gtk_Symbolic_Color;
@@ -120,14 +117,14 @@ package Gtk.Symbolic_Color is
    --  Creates a symbolic color pointing to an unresolved named color. See
    --  Gtk.Style_Context.Lookup_Color and Gtk.Style_Properties.Lookup_Color.
    --  Since: gtk+ 3.0
-   --  "name": color name
+   --  @param Name color name
 
    function Gtk_Symbolic_Color_New_Name
       (Name : UTF8_String) return Gtk_Symbolic_Color;
    --  Creates a symbolic color pointing to an unresolved named color. See
    --  Gtk.Style_Context.Lookup_Color and Gtk.Style_Properties.Lookup_Color.
    --  Since: gtk+ 3.0
-   --  "name": color name
+   --  @param Name color name
 
    procedure Gtk_New_Shade
       (Self   : out Gtk_Symbolic_Color;
@@ -137,8 +134,8 @@ package Gtk.Symbolic_Color is
    --  > 1.0 would resolve to a brighter color, while < 1.0 would resolve to a
    --  darker color.
    --  Since: gtk+ 3.0
-   --  "color": another Gtk.Symbolic_Color.Gtk_Symbolic_Color
-   --  "factor": shading factor to apply to Color
+   --  @param Color another Gtk.Symbolic_Color.Gtk_Symbolic_Color
+   --  @param Factor shading factor to apply to Color
 
    function Gtk_Symbolic_Color_New_Shade
       (Color  : Gtk_Symbolic_Color;
@@ -147,8 +144,8 @@ package Gtk.Symbolic_Color is
    --  > 1.0 would resolve to a brighter color, while < 1.0 would resolve to a
    --  darker color.
    --  Since: gtk+ 3.0
-   --  "color": another Gtk.Symbolic_Color.Gtk_Symbolic_Color
-   --  "factor": shading factor to apply to Color
+   --  @param Color another Gtk.Symbolic_Color.Gtk_Symbolic_Color
+   --  @param Factor shading factor to apply to Color
 
    procedure Gtk_New_Win32
       (Self        : out Gtk_Symbolic_Color;
@@ -158,8 +155,8 @@ package Gtk.Symbolic_Color is
    --  Note that while this call is available on all platforms the actual
    --  value returned is not reliable on non-win32 platforms.
    --  Since: gtk+ 3.4
-   --  "theme_class": The theme class to pull color from
-   --  "id": The color id
+   --  @param Theme_Class The theme class to pull color from
+   --  @param Id The color id
 
    function Gtk_Symbolic_Color_New_Win32
       (Theme_Class : UTF8_String;
@@ -168,8 +165,8 @@ package Gtk.Symbolic_Color is
    --  Note that while this call is available on all platforms the actual
    --  value returned is not reliable on non-win32 platforms.
    --  Since: gtk+ 3.4
-   --  "theme_class": The theme class to pull color from
-   --  "id": The color id
+   --  @param Theme_Class The theme class to pull color from
+   --  @param Id The color id
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_symbolic_color_get_type");
@@ -183,6 +180,7 @@ package Gtk.Symbolic_Color is
    --  Increases the reference count of Color
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
+   --  @return the same Color
 
    function To_String (Self : Gtk_Symbolic_Color) return UTF8_String;
    pragma Obsolescent (To_String);
@@ -192,6 +190,7 @@ package Gtk.Symbolic_Color is
    --  guaranteed that the GTK css parser is able to read the string and create
    --  the same symbolic color from it.
    --  Deprecated since 3.8, 1
+   --  @return a new string representing Color
 
    procedure Unref (Self : Gtk_Symbolic_Color);
    pragma Obsolescent (Unref);

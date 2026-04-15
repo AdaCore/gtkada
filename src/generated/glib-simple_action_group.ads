@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Glib.Simple_Action_Group.Gsimple_Action_Group is a hash table filled with
 --  Glib.Action.Gaction objects, implementing the
 --  Glib.Action_Group.Gaction_Group and Glib.Action_Map.Gaction_Map interfaces.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;      use GNAT.Strings;
@@ -78,9 +75,9 @@ package Glib.Simple_Action_Group is
    --  action group.
    --  Since: gtk+ 2.30
    --  Deprecated since 2.38, 1
-   --  "entries": a pointer to the first item in an array of
+   --  @param Entries a pointer to the first item in an array of
    --  Glib.Action_Map.GAction_Entry structs
-   --  "user_data": the user data for signal connections
+   --  @param User_Data the user data for signal connections
 
    procedure Insert
       (Self   : not null access Gsimple_Action_Group_Record;
@@ -92,7 +89,7 @@ package Glib.Simple_Action_Group is
    --  The action group takes its own reference on Action.
    --  Since: gtk+ 2.28
    --  Deprecated since 2.38, 1
-   --  "action": a Glib.Action.Gaction
+   --  @param Action a Glib.Action.Gaction
 
    function Lookup
       (Self        : not null access Gsimple_Action_Group_Record;
@@ -102,7 +99,8 @@ package Glib.Simple_Action_Group is
    --  If no such action exists, returns null.
    --  Since: gtk+ 2.28
    --  Deprecated since 2.38, 1
-   --  "action_name": the name of an action
+   --  @param Action_Name the name of an action
+   --  @return a Glib.Action.Gaction, or null
 
    procedure Remove
       (Self        : not null access Gsimple_Action_Group_Record;
@@ -112,7 +110,7 @@ package Glib.Simple_Action_Group is
    --  If no action of this name is in the group then nothing happens.
    --  Since: gtk+ 2.28
    --  Deprecated since 2.38, 1
-   --  "action_name": the name of the action
+   --  @param Action_Name the name of the action
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

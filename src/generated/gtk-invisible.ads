@@ -21,14 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Invisible.Gtk_Invisible widget is used internally in GTK+, and is
 --  probably not very useful for application developers.
 --
 --  It is used for reliable pointer grabs and selection handling in the code
 --  for drag-and-drop.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Screen;      use Gdk.Screen;
@@ -66,7 +63,7 @@ package Gtk.Invisible is
    --  Since: gtk+ 2.2
    --  Initialize_For_Screen does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "screen": a Gdk.Screen.Gdk_Screen which identifies on which the new
+   --  @param Screen a Gdk.Screen.Gdk_Screen which identifies on which the new
    --  Gtk.Invisible.Gtk_Invisible will be created.
 
    function Gtk_Invisible_New_For_Screen
@@ -74,7 +71,7 @@ package Gtk.Invisible is
        return Gtk_Invisible;
    --  Creates a new Gtk.Invisible.Gtk_Invisible object for a specified screen
    --  Since: gtk+ 2.2
-   --  "screen": a Gdk.Screen.Gdk_Screen which identifies on which the new
+   --  @param Screen a Gdk.Screen.Gdk_Screen which identifies on which the new
    --  Gtk.Invisible.Gtk_Invisible will be created.
 
    function Get_Type return Glib.GType;
@@ -89,6 +86,7 @@ package Gtk.Invisible is
        return Gdk.Screen.Gdk_Screen;
    --  Returns the Gdk.Screen.Gdk_Screen object associated with Invisible
    --  Since: gtk+ 2.2
+   --  @return the associated Gdk.Screen.Gdk_Screen.
 
    procedure Set_Screen
       (Self   : not null access Gtk_Invisible_Record;
@@ -96,7 +94,7 @@ package Gtk.Invisible is
    --  Sets the Gdk.Screen.Gdk_Screen where the Gtk.Invisible.Gtk_Invisible
    --  object will be displayed.
    --  Since: gtk+ 2.2
-   --  "screen": a Gdk.Screen.Gdk_Screen.
+   --  @param Screen a Gdk.Screen.Gdk_Screen.
 
    ----------------
    -- Properties --

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Editable.Gtk_Editable interface is an interface which should be
 --  implemented by text editing widgets, such as Gtk.GEntry.Gtk_Entry and
 --  Gtk.Spin_Button.Gtk_Spin_Button. It contains functions for generically
@@ -56,8 +55,6 @@
 --
 --       g_free (result);
 --     }
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;         use Glib;
@@ -108,8 +105,8 @@ package Gtk.Editable is
    --  End_Pos. If End_Pos is negative, then the characters deleted are those
    --  from Start_Pos to the end of the text.
    --  Note that the positions are specified in characters, not bytes.
-   --  "start_pos": start position
-   --  "end_pos": end position
+   --  @param Start_Pos start position
+   --  @param End_Pos end position
 
    function Get_Chars
       (Editable  : Gtk_Editable;
@@ -120,15 +117,19 @@ package Gtk.Editable is
    --  including End_Pos. If End_Pos is negative, then the characters retrieved
    --  are those characters from Start_Pos to the end of the text.
    --  Note that positions are specified in characters, not bytes.
-   --  "start_pos": start of text
-   --  "end_pos": end of text
+   --  @param Start_Pos start of text
+   --  @param End_Pos end of text
+   --  @return a pointer to the contents of the widget as a string. This
+   --  string is allocated by the Gtk.Editable.Gtk_Editable implementation and
+   --  should be freed by the caller.
 
    function Get_Editable (Editable : Gtk_Editable) return Boolean;
    --  Retrieves whether Editable is editable. See Gtk.Editable.Set_Editable.
+   --  @return True if Editable is editable.
 
    procedure Set_Editable (Editable : Gtk_Editable; Is_Editable : Boolean);
    --  Determines if the user can edit the text in the editable widget or not.
-   --  "is_editable": True if the user is allowed to edit the text in the
+   --  @param Is_Editable True if the user is allowed to edit the text in the
    --  widget
 
    function Get_Position (Editable : Gtk_Editable) return Glib.Gint;
@@ -136,6 +137,7 @@ package Gtk.Editable is
    --  Retrieves the current position of the cursor relative to the start of
    --  the content of the editable.
    --  Note that this position is in characters, not in bytes.
+   --  @return the cursor position
 
    procedure Set_Position (Editable : Gtk_Editable; Position : Glib.Gint);
    pragma Import (C, Set_Position, "gtk_editable_set_position");
@@ -145,7 +147,7 @@ package Gtk.Editable is
    --  equal to the number of characters in the editable. A value of -1
    --  indicates that the position should be set after the last character of
    --  the editable. Note that Position is in characters, not in bytes.
-   --  "position": the position of the cursor
+   --  @param Position the position of the cursor
 
    procedure Get_Selection_Bounds
       (Editable      : Gtk_Editable;
@@ -156,8 +158,9 @@ package Gtk.Editable is
    --  with the start of the selection and End_Pos with end. If no text was
    --  selected both will be identical and False will be returned.
    --  Note that positions are specified in characters, not bytes.
-   --  "start_pos": location to store the starting position, or null
-   --  "end_pos": location to store the end position, or null
+   --  @param Start_Pos location to store the starting position, or null
+   --  @param End_Pos location to store the end position, or null
+   --  @return True if an area is selected, False otherwise
 
    procedure Insert_Text
       (Editable        : Gtk_Editable;
@@ -168,9 +171,9 @@ package Gtk.Editable is
    --  widget, at position Position.
    --  Note that the position is in characters, not in bytes. The function
    --  updates Position to point after the newly inserted text.
-   --  "new_text": the text to append
-   --  "new_text_length": the length of the text in bytes, or -1
-   --  "position": location of the position text will be inserted at
+   --  @param New_Text the text to append
+   --  @param New_Text_Length the length of the text in bytes, or -1
+   --  @param Position location of the position text will be inserted at
 
    procedure Paste_Clipboard (Editable : Gtk_Editable);
    pragma Import (C, Paste_Clipboard, "gtk_editable_paste_clipboard");
@@ -187,8 +190,8 @@ package Gtk.Editable is
    --  If End_Pos is negative, then the characters selected are those
    --  characters from Start_Pos to the end of the text.
    --  Note that positions are specified in characters, not bytes.
-   --  "start_pos": start of region
-   --  "end_pos": end of region
+   --  @param Start_Pos start of region
+   --  @param End_Pos end of region
 
    ----------------------
    -- GtkAda additions --
@@ -257,8 +260,8 @@ package Gtk.Editable is
    --  Gtk.Editable.Delete_Text.
    -- 
    --  Callback parameters:
-   --    --  "start_pos": the starting position
-   --    --  "end_pos": the end position
+   --    --  @param Start_Pos the starting position
+   --    --  @param End_Pos the end position
 
    type Cb_Gtk_Editable_UTF8_String_Gint_Gint_Void is not null access procedure
      (Self            : Gtk_Editable;
@@ -289,10 +292,10 @@ package Gtk.Editable is
    --  modify the inserted text, or prevent it from being inserted entirely.
    -- 
    --  Callback parameters:
-   --    --  "new_text": the new text to insert
-   --    --  "new_text_length": the length of the new text, in bytes, or -1 if
+   --    --  @param New_Text the new text to insert
+   --    --  @param New_Text_Length the length of the new text, in bytes, or -1 if
    --    --  new_text is nul-terminated
-   --    --  "position": the position, in characters, at which to insert the new
+   --    --  @param Position the position, in characters, at which to insert the new
    --    --  text. this is an in-out parameter. After the signal emission is
    --    --  finished, it should point after the newly inserted text.
 
@@ -323,8 +326,8 @@ package Gtk.Editable is
    --  End_Pos. If End_Pos is negative, then the characters deleted are those
    --  from Start_Pos to the end of the text.
    --  Note that the positions are specified in characters, not bytes.
-   --  "start_pos": start position
-   --  "end_pos": end position
+   --  @param Start_Pos start position
+   --  @param End_Pos end position
 
    type Virtual_Do_Delete_Text is access procedure
      (Editable  : Gtk_Editable;
@@ -336,8 +339,8 @@ package Gtk.Editable is
    --  End_Pos. If End_Pos is negative, then the characters deleted are those
    --  from Start_Pos to the end of the text.
    --  Note that the positions are specified in characters, not bytes.
-   --  "start_pos": start position
-   --  "end_pos": end position
+   --  @param Start_Pos start position
+   --  @param End_Pos end position
 
    type Virtual_Do_Insert_Text is access procedure
      (Editable        : Gtk_Editable;
@@ -349,9 +352,9 @@ package Gtk.Editable is
    --  widget, at position Position.
    --  Note that the position is in characters, not in bytes. The function
    --  updates Position to point after the newly inserted text.
-   --  "new_text": the text to append
-   --  "new_text_length": the length of the text in bytes, or -1
-   --  "position": location of the position text will be inserted at
+   --  @param New_Text the text to append
+   --  @param New_Text_Length the length of the text in bytes, or -1
+   --  @param Position location of the position text will be inserted at
 
    type Virtual_Get_Chars is access function
      (Editable  : Gtk_Editable;
@@ -363,14 +366,18 @@ package Gtk.Editable is
    --  including End_Pos. If End_Pos is negative, then the characters retrieved
    --  are those characters from Start_Pos to the end of the text.
    --  Note that positions are specified in characters, not bytes.
-   --  "start_pos": start of text
-   --  "end_pos": end of text
+   --  @param Start_Pos start of text
+   --  @param End_Pos end of text
+   --  @return a pointer to the contents of the widget as a string. This
+   --  string is allocated by the Gtk.Editable.Gtk_Editable implementation and
+   --  should be freed by the caller.
 
    type Virtual_Get_Position is access function (Editable : Gtk_Editable) return Glib.Gint;
    pragma Convention (C, Virtual_Get_Position);
    --  Retrieves the current position of the cursor relative to the start of
    --  the content of the editable.
    --  Note that this position is in characters, not in bytes.
+   --  @return the cursor position
 
    type Virtual_Get_Selection_Bounds is access function
      (Editable  : Gtk_Editable;
@@ -381,8 +388,9 @@ package Gtk.Editable is
    --  with the start of the selection and End_Pos with end. If no text was
    --  selected both will be identical and False will be returned.
    --  Note that positions are specified in characters, not bytes.
-   --  "start_pos": location to store the starting position, or null
-   --  "end_pos": location to store the end position, or null
+   --  @param Start_Pos location to store the starting position, or null
+   --  @param End_Pos location to store the end position, or null
+   --  @return True if an area is selected, False otherwise
 
    type Virtual_Insert_Text is access procedure
      (Editable        : Gtk_Editable;
@@ -394,9 +402,9 @@ package Gtk.Editable is
    --  widget, at position Position.
    --  Note that the position is in characters, not in bytes. The function
    --  updates Position to point after the newly inserted text.
-   --  "new_text": the text to append
-   --  "new_text_length": the length of the text in bytes, or -1
-   --  "position": location of the position text will be inserted at
+   --  @param New_Text the text to append
+   --  @param New_Text_Length the length of the text in bytes, or -1
+   --  @param Position location of the position text will be inserted at
 
    type Virtual_Set_Position is access procedure (Editable : Gtk_Editable; Position : Glib.Gint);
    pragma Convention (C, Virtual_Set_Position);
@@ -406,7 +414,7 @@ package Gtk.Editable is
    --  equal to the number of characters in the editable. A value of -1
    --  indicates that the position should be set after the last character of
    --  the editable. Note that Position is in characters, not in bytes.
-   --  "position": the position of the cursor
+   --  @param Position the position of the cursor
 
    type Virtual_Set_Selection_Bounds is access procedure
      (Editable  : Gtk_Editable;
@@ -418,8 +426,8 @@ package Gtk.Editable is
    --  If End_Pos is negative, then the characters selected are those
    --  characters from Start_Pos to the end of the text.
    --  Note that positions are specified in characters, not bytes.
-   --  "start_pos": start of region
-   --  "end_pos": end of region
+   --  @param Start_Pos start of region
+   --  @param End_Pos end of region
 
    subtype Editable_Interface_Descr is Glib.Object.Interface_Description;
 

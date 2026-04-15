@@ -42,8 +42,8 @@ package body Gtk.Text_Tag_Table is
    --  Calls Func on each tag in Table, with user data Data. Note that the
    --  table may not be modified while iterating over it (you can't add/remove
    --  tags).
-   --  "func": a function to call on each tag
-   --  "data": user data
+   --  @param Func a function to call on each tag
+   --  @param Data user data
 
    function To_Gtk_Text_Tag_Table_Foreach is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Text_Tag_Table_Foreach);
@@ -55,8 +55,8 @@ package body Gtk.Text_Tag_Table is
       (Tag  : System.Address;
        Data : System.Address);
    pragma Convention (C, Internal_Gtk_Text_Tag_Table_Foreach);
-   --  "tag": the Gtk.Text_Tag.Gtk_Text_Tag
-   --  "data": data passed to Gtk.Text_Tag_Table.Foreach
+   --  @param Tag the Gtk.Text_Tag.Gtk_Text_Tag
+   --  @param Data data passed to Gtk.Text_Tag_Table.Foreach
 
    -----------------------------------------
    -- Internal_Gtk_Text_Tag_Table_Foreach --
@@ -155,8 +155,8 @@ package body Gtk.Text_Tag_Table is
 
       procedure Internal_Cb (Tag : System.Address; Data : System.Address);
       pragma Convention (C, Internal_Cb);
-      --  "tag": the Gtk.Text_Tag.Gtk_Text_Tag
-      --  "data": data passed to Gtk.Text_Tag_Table.Foreach
+      --  @param Tag the Gtk.Text_Tag.Gtk_Text_Tag
+      --  @param Data data passed to Gtk.Text_Tag_Table.Foreach
 
       -------------
       -- Foreach --

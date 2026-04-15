@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Layout.Gtk_Layout is similar to Gtk.Drawing_Area.Gtk_Drawing_Area in
 --  that it's a "blank slate" and doesn't do anything except paint a blank
 --  background by default. It's different in that it supports scrolling
@@ -38,8 +37,6 @@
 --  the one returned by Gtk.Widget.Get_Window as you would for a
 --  Gtk.Drawing_Area.Gtk_Drawing_Area.
 --
---  </description>
---  <description>
 --  A Gtk_Layout is a widget that can have an almost infinite size, without
 --  occupying a lot of memory. Its children can be located anywhere within it,
 --  but will only appear on the screen if the visible area of the layout
@@ -56,7 +53,6 @@
 --  systematically call Set_Size before calling Put, and make sure you specify
 --  a size big enough for the layout.
 --
---  </description>
 --  <screenshot>gtk-layout</screenshot>
 --  <group>Layout containers</group>
 --  <testgtk>create_layout.adb</testgtk>
@@ -96,8 +92,8 @@ package Gtk.Layout is
    --  Hadjustment and Vadjustment.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "hadjustment": horizontal scroll adjustment, or null
-   --  "vadjustment": vertical scroll adjustment, or null
+   --  @param Hadjustment horizontal scroll adjustment, or null
+   --  @param Vadjustment vertical scroll adjustment, or null
 
    function Gtk_Layout_New
       (Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
@@ -106,8 +102,8 @@ package Gtk.Layout is
    --  Creates a new Gtk.Layout.Gtk_Layout. Unless you have a specific
    --  adjustment you'd like the layout to use for scrolling, pass null for
    --  Hadjustment and Vadjustment.
-   --  "hadjustment": horizontal scroll adjustment, or null
-   --  "vadjustment": vertical scroll adjustment, or null
+   --  @param Hadjustment horizontal scroll adjustment, or null
+   --  @param Vadjustment vertical scroll adjustment, or null
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_layout_get_type");
@@ -120,6 +116,7 @@ package Gtk.Layout is
       (Layout : not null access Gtk_Layout_Record) return Gdk.Gdk_Window;
    --  Retrieve the bin window of the layout used for drawing operations.
    --  Since: gtk+ 2.14
+   --  @return a Gdk.Gdk_Window
 
    procedure Get_Size
       (Layout : not null access Gtk_Layout_Record;
@@ -128,16 +125,16 @@ package Gtk.Layout is
    --  Gets the size that has been set on the layout, and that determines the
    --  total extents of the layout's scrollbar area. See gtk_layout_set_size
    --  ().
-   --  "width": location to store the width set on Layout, or null
-   --  "height": location to store the height set on Layout, or null
+   --  @param Width location to store the width set on Layout, or null
+   --  @param Height location to store the height set on Layout, or null
 
    procedure Set_Size
       (Layout : not null access Gtk_Layout_Record;
        Width  : Guint;
        Height : Guint);
    --  Sets the size of the scrollable area of the layout.
-   --  "width": width of entire scrollable area
-   --  "height": height of entire scrollable area
+   --  @param Width width of entire scrollable area
+   --  @param Height height of entire scrollable area
 
    procedure Move
       (Layout       : not null access Gtk_Layout_Record;
@@ -145,9 +142,9 @@ package Gtk.Layout is
        X            : Glib.Gint;
        Y            : Glib.Gint);
    --  Moves a current child of Layout to a new position.
-   --  "child_widget": a current child of Layout
-   --  "x": X position to move to
-   --  "y": Y position to move to
+   --  @param Child_Widget a current child of Layout
+   --  @param X X position to move to
+   --  @param Y Y position to move to
 
    procedure Put
       (Layout       : not null access Gtk_Layout_Record;
@@ -159,9 +156,9 @@ package Gtk.Layout is
    --  itself to automatically show the widget. You also need to call Set_Size,
    --  if the size you initially defined is smaller than (X, Y), or the child
    --  will never be visible even if the layout is scrolled.
-   --  "child_widget": child widget
-   --  "x": X position of child widget
-   --  "y": Y position of child widget
+   --  @param Child_Widget child widget
+   --  @param X X position of child widget
+   --  @param Y Y position of child widget
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

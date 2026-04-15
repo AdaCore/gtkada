@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Gesture.Gtk_Gesture is the base object for gesture recognition,
 --  although this object is quite generalized to serve as a base for
 --  multi-touch gestures, it is suitable to implement single-touch and
@@ -116,8 +115,6 @@
 --  Gtk.Enums.Phase_None, ensuring events of type Gdk.Event.Touchpad_Swipe and
 --  Gdk.Event.Touchpad_Pinch are handled by the Gtk.Gesture.Gtk_Gesture
 --
---  </description>
---  <description>
 --  GtkAda
 --
 --  Gesture events are meant to replace low-level handling in most cases. For
@@ -143,8 +140,6 @@
 --
 --  Without the call to Watch, Gesture would be kept in memory for ever, ready
 --  to be attached to some other widget.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;                  use Gdk;
@@ -193,7 +188,8 @@ package Gtk.Gesture is
    --  these will look as if constrained in an infinitely small area, Rect
    --  width and height will thus be 0 regardless of the number of touchpoints.
    --  Since: gtk+ 3.14
-   --  "rect": bounding box containing all active touches.
+   --  @param Rect bounding box containing all active touches.
+   --  @return True if there are active touches, False otherwise
 
    function Get_Bounding_Box_Center
       (Self : not null access Gtk_Gesture_Record;
@@ -204,8 +200,9 @@ package Gtk.Gesture is
    --  bounding box containing all active touches. Otherwise, False will be
    --  returned.
    --  Since: gtk+ 3.14
-   --  "x": X coordinate for the bounding box center
-   --  "y": Y coordinate for the bounding box center
+   --  @param X X coordinate for the bounding box center
+   --  @param Y Y coordinate for the bounding box center
+   --  @return False if no active touches are present, True otherwise
 
    function Get_Device
       (Self : not null access Gtk_Gesture_Record)
@@ -213,6 +210,7 @@ package Gtk.Gesture is
    --  Returns the master Gdk.Device.Gdk_Device that is currently operating on
    --  Gesture, or null if the gesture is not being interacted.
    --  Since: gtk+ 3.14
+   --  @return a Gdk.Device.Gdk_Device, or null
 
    function Get_Group
       (Self : not null access Gtk_Gesture_Record) return Gesture_List.Glist;
@@ -233,7 +231,7 @@ package Gtk.Gesture is
    --  Gtk.Widget.Gtk_Widget will switch the state for that sequence to
    --  GTK_EVENT_SEQUENCE_DENIED.
    --  Since: gtk+ 3.14
-   --  "gesture": a Gtk.Gesture.Gtk_Gesture
+   --  @param Gesture a Gtk.Gesture.Gtk_Gesture
 
    function Get_Last_Event
       (Self     : not null access Gtk_Gesture_Record;
@@ -242,7 +240,8 @@ package Gtk.Gesture is
    --  Note that the returned pointer is only valid as long as the Sequence is
    --  still interpreted by the Gesture. If in doubt, you should make a copy of
    --  the event.
-   --  "sequence": a Gdk.Event.Gdk_Event_Sequence
+   --  @param Sequence a Gdk.Event.Gdk_Event_Sequence
+   --  @return The last event from Sequence
 
    function Get_Last_Updated_Sequence
       (Self : not null access Gtk_Gesture_Record)
@@ -250,6 +249,7 @@ package Gtk.Gesture is
    --  Returns the Gdk.Event.Gdk_Event_Sequence that was last updated on
    --  Gesture.
    --  Since: gtk+ 3.14
+   --  @return The last updated sequence
 
    function Get_Point
       (Self     : not null access Gtk_Gesture_Record;
@@ -261,9 +261,11 @@ package Gtk.Gesture is
    --  that event sequence. The coordinates are always relative to the widget
    --  allocation.
    --  Since: gtk+ 3.14
-   --  "sequence": a Gdk.Event.Gdk_Event_Sequence, or null for pointer events
-   --  "x": return location for X axis of the sequence coordinates
-   --  "y": return location for Y axis of the sequence coordinates
+   --  @param Sequence a Gdk.Event.Gdk_Event_Sequence, or null for pointer
+   --  events
+   --  @param X return location for X axis of the sequence coordinates
+   --  @param Y return location for Y axis of the sequence coordinates
+   --  @return True if Sequence is currently interpreted
 
    function Get_Sequence_State
       (Self     : not null access Gtk_Gesture_Record;
@@ -271,7 +273,8 @@ package Gtk.Gesture is
        return Gtk.Enums.Gtk_Event_Sequence_State;
    --  Returns the Sequence state, as seen by Gesture.
    --  Since: gtk+ 3.14
-   --  "sequence": a Gdk.Event.Gdk_Event_Sequence
+   --  @param Sequence a Gdk.Event.Gdk_Event_Sequence
+   --  @return The sequence state in Gesture
 
    function Set_Sequence_State
       (Self     : not null access Gtk_Gesture_Record;
@@ -311,8 +314,10 @@ package Gtk.Gesture is
    --  gesture emitting the event, the sequence will be already be initialized
    --  to the group's global state when the second gesture processes the event.
    --  Since: gtk+ 3.14
-   --  "sequence": a Gdk.Event.Gdk_Event_Sequence
-   --  "state": the sequence state
+   --  @param Sequence a Gdk.Event.Gdk_Event_Sequence
+   --  @param State the sequence state
+   --  @return True if Sequence is handled by Gesture, and the state is
+   --  changed successfully
 
    function Get_Sequences
       (Self : not null access Gtk_Gesture_Record)
@@ -326,6 +331,7 @@ package Gtk.Gesture is
    --  Returns the user-defined window that receives the events handled by
    --  Gesture. See Gtk.Gesture.Set_Window for more information.
    --  Since: gtk+ 3.14
+   --  @return the user defined window, or null if none
 
    procedure Set_Window
       (Self   : not null access Gtk_Gesture_Record;
@@ -334,7 +340,7 @@ package Gtk.Gesture is
    --  effectively handle only events targeting Window, or a child of it.
    --  Window must pertain to Gtk.Event_Controller.Get_Widget.
    --  Since: gtk+ 3.14
-   --  "window": a Gdk.Gdk_Window, or null
+   --  @param Window a Gdk.Gdk_Window, or null
 
    function Handles_Sequence
       (Self     : not null access Gtk_Gesture_Record;
@@ -342,20 +348,23 @@ package Gtk.Gesture is
    --  Returns True if Gesture is currently handling events corresponding to
    --  Sequence.
    --  Since: gtk+ 3.14
-   --  "sequence": a Gdk.Event.Gdk_Event_Sequence or null
+   --  @param Sequence a Gdk.Event.Gdk_Event_Sequence or null
+   --  @return True if Gesture is handling Sequence, False otherwise
 
    function Is_Active
       (Self : not null access Gtk_Gesture_Record) return Boolean;
    --  Returns True if the gesture is currently active. A gesture is active
    --  meanwhile there are touch sequences interacting with it.
    --  Since: gtk+ 3.14
+   --  @return True if gesture is active
 
    function Is_Grouped_With
       (Self  : not null access Gtk_Gesture_Record;
        Other : not null access Gtk_Gesture_Record'Class) return Boolean;
    --  Returns True if both gestures pertain to the same group.
    --  Since: gtk+ 3.14
-   --  "other": another Gtk.Gesture.Gtk_Gesture
+   --  @param Other another Gtk.Gesture.Gtk_Gesture
+   --  @return whether the gestures are grouped
 
    function Is_Recognized
       (Self : not null access Gtk_Gesture_Record) return Boolean;
@@ -364,6 +373,7 @@ package Gtk.Gesture is
    --  by Gesture, and Gtk.Gesture.Gtk_Gesture::check returned True for the
    --  sequences being currently interpreted.
    --  Since: gtk+ 3.14
+   --  @return True if gesture is recognized
 
    function Set_State
       (Self  : not null access Gtk_Gesture_Record;
@@ -372,7 +382,9 @@ package Gtk.Gesture is
    --  with. See Gtk.Gesture.Set_Sequence_State for more details on sequence
    --  states.
    --  Since: gtk+ 3.14
-   --  "state": the sequence state
+   --  @param State the sequence state
+   --  @return True if the state of at least one sequence was changed
+   --  successfully
 
    procedure Ungroup (Self : not null access Gtk_Gesture_Record);
    --  Separates Gesture into an isolated group.
@@ -511,8 +523,8 @@ package Gtk.Gesture is
    --  sequence lifetimes.
    -- 
    --  Callback parameters:
-   --    --  "sequence": the Gdk.Event.Gdk_Event_Sequence that was cancelled
-   --    --  "state": the new sequence state
+   --    --  @param Sequence the Gdk.Event.Gdk_Event_Sequence that was cancelled
+   --    --  @param State the new sequence state
 
    Signal_Update : constant Glib.Signal_Name := "update";
    procedure On_Update

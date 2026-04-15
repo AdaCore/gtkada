@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Glib.Action.Gaction represents a single named action.
 --
 --  The main interface to an action is that it can be activated with
@@ -50,8 +49,6 @@
 --
 --  Probably the only useful thing to do with a Glib.Action.Gaction is to put
 --  it inside of a Glib.Simple_Action_Group.Gsimple_Action_Group.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Object;     use Glib.Object;
@@ -85,7 +82,7 @@ package Glib.Action is
    --  null then Parameter must also be null.
    --  If the Parameter GVariant is floating, it is consumed.
    --  Since: gtk+ 2.28
-   --  "parameter": the parameter to the activation
+   --  @param Parameter the parameter to the activation
 
    procedure Change_State (Self : Gaction; Value : Glib.Variant.Gvariant);
    --  Request for the state of Action to be changed to Value.
@@ -96,17 +93,19 @@ package Glib.Action is
    --  Glib.Action.Get_State_Hint.
    --  If the Value GVariant is floating, it is consumed.
    --  Since: gtk+ 2.30
-   --  "value": the new state
+   --  @param Value the new state
 
    function Get_Enabled (Self : Gaction) return Boolean;
    --  Checks if Action is currently enabled.
    --  An action must be enabled in order to be activated or in order to have
    --  its state changed from outside callers.
    --  Since: gtk+ 2.28
+   --  @return whether the action is enabled
 
    function Get_Name (Self : Gaction) return UTF8_String;
    --  Queries the name of Action.
    --  Since: gtk+ 2.28
+   --  @return the name of the action
 
    function Get_Parameter_Type
       (Self : Gaction) return Glib.Variant.Gvariant_Type;
@@ -119,6 +118,7 @@ package Glib.Action is
    --  In the case that this function returns null, you must not give any
    --  Glib.Variant.Gvariant, but null instead.
    --  Since: gtk+ 2.28
+   --  @return the parameter type
 
    function Get_State (Self : Gaction) return Glib.Variant.Gvariant;
    --  Queries the current state of Action.
@@ -128,6 +128,7 @@ package Glib.Action is
    --  The return value (if non-null) should be freed with Glib.Variant.Unref
    --  when it is no longer required.
    --  Since: gtk+ 2.28
+   --  @return the current state of the action
 
    function Get_State_Hint (Self : Gaction) return Glib.Variant.Gvariant;
    --  Requests a hint about the valid range of values for the state of
@@ -145,6 +146,7 @@ package Glib.Action is
    --  The return value (if non-null) should be freed with Glib.Variant.Unref
    --  when it is no longer required.
    --  Since: gtk+ 2.28
+   --  @return the state range hint
 
    function Get_State_Type
       (Self : Gaction) return Glib.Variant.Gvariant_Type;
@@ -161,6 +163,7 @@ package Glib.Action is
    --  case, Glib.Action.Get_State will return null and you must not call
    --  Glib.Action.Change_State.
    --  Since: gtk+ 2.28
+   --  @return the state type, if the action is stateful
 
    ---------------
    -- Functions --
@@ -173,7 +176,8 @@ package Glib.Action is
    --  It is an error to call this function with a non-utf8 Action_Name.
    --  Action_Name must not be null.
    --  Since: gtk+ 2.38
-   --  "action_name": a potential action name
+   --  @param Action_Name a potential action name
+   --  @return True if Action_Name is valid
 
    function Print_Detailed_Name
       (Action_Name  : UTF8_String;
@@ -186,8 +190,9 @@ package Glib.Action is
    --  See that function for the types of strings that will be printed by this
    --  function.
    --  Since: gtk+ 2.38
-   --  "action_name": a valid action name
-   --  "target_value": a Glib.Variant.Gvariant target value, or null
+   --  @param Action_Name a valid action name
+   --  @param Target_Value a Glib.Variant.Gvariant target value, or null
+   --  @return a detailed format string
 
    ----------------
    -- Properties --
@@ -243,7 +248,7 @@ package Glib.Action is
    --  null then Parameter must also be null.
    --  If the Parameter GVariant is floating, it is consumed.
    --  Since: gtk+ 2.28
-   --  "parameter": the parameter to the activation
+   --  @param Parameter the parameter to the activation
 
    type Virtual_Change_State is access procedure (Self : Gaction; Value : System.Address);
    pragma Convention (C, Virtual_Change_State);
@@ -255,7 +260,7 @@ package Glib.Action is
    --  Glib.Action.Get_State_Hint.
    --  If the Value GVariant is floating, it is consumed.
    --  Since: gtk+ 2.30
-   --  "value": the new state
+   --  @param Value the new state
 
    type Virtual_Get_Enabled is access function (Self : Gaction) return Glib.Gboolean;
    pragma Convention (C, Virtual_Get_Enabled);
@@ -263,11 +268,13 @@ package Glib.Action is
    --  An action must be enabled in order to be activated or in order to have
    --  its state changed from outside callers.
    --  Since: gtk+ 2.28
+   --  @return whether the action is enabled
 
    type Virtual_Get_Name is access function (Self : Gaction) return Gtkada.Types.Chars_Ptr;
    pragma Convention (C, Virtual_Get_Name);
    --  Queries the name of Action.
    --  Since: gtk+ 2.28
+   --  @return the name of the action
 
    type Virtual_Get_Parameter_Type is access function (Self : Gaction) return Glib.Variant.Gvariant_Type;
    pragma Convention (C, Virtual_Get_Parameter_Type);
@@ -279,6 +286,7 @@ package Glib.Action is
    --  In the case that this function returns null, you must not give any
    --  Glib.Variant.Gvariant, but null instead.
    --  Since: gtk+ 2.28
+   --  @return the parameter type
 
    type Virtual_Get_State is access function (Self : Gaction) return System.Address;
    pragma Convention (C, Virtual_Get_State);
@@ -289,6 +297,7 @@ package Glib.Action is
    --  The return value (if non-null) should be freed with g_variant_unref
    --  when it is no longer required.
    --  Since: gtk+ 2.28
+   --  @return the current state of the action
 
    type Virtual_Get_State_Hint is access function (Self : Gaction) return System.Address;
    pragma Convention (C, Virtual_Get_State_Hint);
@@ -307,6 +316,7 @@ package Glib.Action is
    --  The return value (if non-null) should be freed with g_variant_unref
    --  when it is no longer required.
    --  Since: gtk+ 2.28
+   --  @return the state range hint
 
    type Virtual_Get_State_Type is access function (Self : Gaction) return Glib.Variant.Gvariant_Type;
    pragma Convention (C, Virtual_Get_State_Type);
@@ -321,6 +331,7 @@ package Glib.Action is
    --  then this function will return null. In that case, Glib.Action.Get_State
    --  will return null and you must not call Glib.Action.Change_State.
    --  Since: gtk+ 2.28
+   --  @return the state type, if the action is stateful
 
    subtype Action_Interface_Descr is Glib.Object.Interface_Description;
 

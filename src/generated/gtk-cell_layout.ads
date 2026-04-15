@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Cell_Layout.Gtk_Cell_Layout is an interface to be implemented by all
 --  objects which want to provide a Gtk.Tree_View_Column.Gtk_Tree_View_Column
 --  like API for packing cells, setting attributes and data funcs.
@@ -118,7 +117,6 @@
 --  alternative cell areas, you can do so by moving the problematic calls out
 --  of init and into a constructor for your class.
 --
---  </description>
 --  <group>Trees and Lists</group>
 --  <testgtk>create_cell_view.adb</testgtk>
 
@@ -144,11 +142,11 @@ package Gtk.Cell_Layout is
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
 
    ------------------
    -- Constructors --
@@ -173,9 +171,10 @@ package Gtk.Cell_Layout is
    --  "text" attribute of a Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text get
    --  its values from column 2.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "attribute": an attribute on the renderer
-   --  "column": the column position on the model to get the attribute from
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Attribute an attribute on the renderer
+   --  @param Column the column position on the model to get the attribute
+   --  from
 
    procedure Clear (Cell_Layout : Gtk_Cell_Layout);
    pragma Import (C, Clear, "gtk_cell_layout_clear");
@@ -189,8 +188,8 @@ package Gtk.Cell_Layout is
    --  Clears all existing attributes previously set with
    --  gtk_cell_layout_set_attributes.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer to clear the attribute
-   --  mapping on
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer to clear the
+   --  attribute mapping on
 
    function Get_Cells
       (Cell_Layout : Gtk_Cell_Layout)
@@ -207,8 +206,8 @@ package Gtk.Cell_Layout is
    --  divided evenly between cells for which Expand is True.
    --  Note that reusing the same cell renderer is not supported.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "expand": True if Cell is to be given extra space allocated to
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Expand True if Cell is to be given extra space allocated to
    --  Cell_Layout
 
    procedure Pack_Start
@@ -220,8 +219,8 @@ package Gtk.Cell_Layout is
    --  is divided evenly between cells for which Expand is True.
    --  Note that reusing the same cell renderer is not supported.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "expand": True if Cell is to be given extra space allocated to
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Expand True if Cell is to be given extra space allocated to
    --  Cell_Layout
 
    procedure Reorder
@@ -232,8 +231,8 @@ package Gtk.Cell_Layout is
    --  Note that Cell has already to be packed into Cell_Layout for this to
    --  function properly.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer to reorder
-   --  "position": new position to insert Cell at
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer to reorder
+   --  @param Position new position to insert Cell at
 
    procedure Set_Cell_Data_Func
       (Cell_Layout : Gtk_Cell_Layout;
@@ -245,8 +244,8 @@ package Gtk.Cell_Layout is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -261,12 +260,12 @@ package Gtk.Cell_Layout is
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
       --  as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
@@ -279,9 +278,9 @@ package Gtk.Cell_Layout is
       --  cell renderer(s) as appropriate.
       --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
-      --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-      --  "func_data": user data for Func
+      --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+      --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+      --  @param Func_Data user data for Func
 
    end Set_Cell_Data_Func_User_Data;
 

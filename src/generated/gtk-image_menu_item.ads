@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkImageMenuItem is a menu item which has an icon next to the text
 --  label.
 --
@@ -83,8 +82,6 @@
 --     gtk_container_add (GTK_CONTAINER (menu_item), box);
 --
 --     gtk_widget_show_all (menu_item);
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -138,8 +135,8 @@ package Gtk.Image_Menu_Item is
    --  Gtk.Accel_Map.Add_Entry to register it.
    --  Initialize_From_Stock does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "stock_id": the name of the stock item.
-   --  "accel_group": the Gtk.Accel_Group.Gtk_Accel_Group to add the menu
+   --  @param Stock_Id the name of the stock item.
+   --  @param Accel_Group the Gtk.Accel_Group.Gtk_Accel_Group to add the menu
    --  items accelerator to, or null.
 
    function Gtk_Image_Menu_Item_New_From_Stock
@@ -154,8 +151,8 @@ package Gtk.Image_Menu_Item is
    --  appropriate path for the menu item, use Gtk.Stock.Lookup to look up the
    --  standard accelerator for the stock item, and if one is found, call
    --  Gtk.Accel_Map.Add_Entry to register it.
-   --  "stock_id": the name of the stock item.
-   --  "accel_group": the Gtk.Accel_Group.Gtk_Accel_Group to add the menu
+   --  @param Stock_Id the name of the stock item.
+   --  @param Accel_Group the Gtk.Accel_Group.Gtk_Accel_Group to add the menu
    --  items accelerator to, or null.
 
    procedure Gtk_New (Self : out Gtk_Image_Menu_Item; Label : UTF8_String);
@@ -166,13 +163,13 @@ package Gtk.Image_Menu_Item is
    --  label.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "label": the text of the menu item.
+   --  @param Label the text of the menu item.
 
    function Gtk_Image_Menu_Item_New_With_Label
       (Label : UTF8_String) return Gtk_Image_Menu_Item;
    --  Creates a new Gtk.Image_Menu_Item.Gtk_Image_Menu_Item containing a
    --  label.
-   --  "label": the text of the menu item.
+   --  @param Label the text of the menu item.
 
    procedure Gtk_New_With_Mnemonic
       (Self  : out Gtk_Image_Menu_Item;
@@ -185,16 +182,16 @@ package Gtk.Image_Menu_Item is
    --  so underscores in Label indicate the mnemonic for the menu item.
    --  Initialize_With_Mnemonic does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "label": the text of the menu item, with an underscore in front of the
-   --  mnemonic character
+   --  @param Label the text of the menu item, with an underscore in front of
+   --  the mnemonic character
 
    function Gtk_Image_Menu_Item_New_With_Mnemonic
       (Label : UTF8_String) return Gtk_Image_Menu_Item;
    --  Creates a new Gtk.Image_Menu_Item.Gtk_Image_Menu_Item containing a
    --  label. The label will be created using Gtk.Label.Gtk_New_With_Mnemonic,
    --  so underscores in Label indicate the mnemonic for the menu item.
-   --  "label": the text of the menu item, with an underscore in front of the
-   --  mnemonic character
+   --  @param Label the text of the menu item, with an underscore in front of
+   --  the mnemonic character
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_image_menu_item_get_type");
@@ -211,6 +208,7 @@ package Gtk.Image_Menu_Item is
    --  image, if available.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return True if the menu item will always show the image
 
    procedure Set_Always_Show_Image
       (Self        : not null access Gtk_Image_Menu_Item_Record;
@@ -223,7 +221,7 @@ package Gtk.Image_Menu_Item is
    --  without the image.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "always_show": True if the menuitem should always show the image
+   --  @param Always_Show True if the menuitem should always show the image
 
    function Get_Image
       (Self : not null access Gtk_Image_Menu_Item_Record)
@@ -232,6 +230,7 @@ package Gtk.Image_Menu_Item is
    --  Gets the widget that is currently set as the image of Image_Menu_Item.
    --  See Gtk.Image_Menu_Item.Set_Image.
    --  Deprecated since 3.10, 1
+   --  @return the widget set as image of Image_Menu_Item
 
    procedure Set_Image
       (Self  : not null access Gtk_Image_Menu_Item_Record;
@@ -241,7 +240,7 @@ package Gtk.Image_Menu_Item is
    --  depends on the show-menu-images setting whether the image will be
    --  displayed or not.
    --  Deprecated since 3.10, 1
-   --  "image": a widget to set as the image for the menu item.
+   --  @param Image a widget to set as the image for the menu item.
 
    function Get_Use_Stock
       (Self : not null access Gtk_Image_Menu_Item_Record) return Boolean;
@@ -250,6 +249,8 @@ package Gtk.Image_Menu_Item is
    --  select the stock item for the item.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return True if the label set in the menuitem is used as a stock id to
+   --  select the stock item for the item
 
    procedure Set_Use_Stock
       (Self      : not null access Gtk_Image_Menu_Item_Record;
@@ -259,7 +260,7 @@ package Gtk.Image_Menu_Item is
    --  the stock item for the item.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "use_stock": True if the menuitem should use a stock item
+   --  @param Use_Stock True if the menuitem should use a stock item
 
    procedure Set_Accel_Group
       (Self        : not null access Gtk_Image_Menu_Item_Record;
@@ -273,7 +274,7 @@ package Gtk.Image_Menu_Item is
    --  shouldnt need this (see Gtk.Image_Menu_Item.Gtk_New_From_Stock).
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "accel_group": the Gtk.Accel_Group.Gtk_Accel_Group
+   --  @param Accel_Group the Gtk.Accel_Group.Gtk_Accel_Group
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

@@ -39,8 +39,8 @@ package body Gtk.Print_Settings is
    pragma Import (C, C_Gtk_Print_Settings_Foreach, "gtk_print_settings_foreach");
    --  Calls Func for each key-value pair of Settings.
    --  Since: gtk+ 2.10
-   --  "func": the function to call
-   --  "user_data": user data for Func
+   --  @param Func the function to call
+   --  @param User_Data user data for Func
 
    function To_Gtk_Print_Settings_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Print_Settings_Func);

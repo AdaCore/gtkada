@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Pango.Font_Family.Pango_Font_Family structure is used to represent a
 --  family of related font faces. The faces in a family share a common design,
 --  but differ in slant, weight, width and other aspects.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -56,6 +53,8 @@ package Pango.Font_Family is
    --  Gets the name of the family. The name is unique among all fonts for the
    --  font backend and can be used in a Pango.Font.Pango_Font_Description to
    --  specify that a face from this family is desired.
+   --  @return the name of the family. This string is owned by the family
+   --  object and must not be modified or freed.
 
    function Is_Monospace
       (Self : not null access Pango_Font_Family_Record) return Boolean;
@@ -71,12 +70,14 @@ package Pango.Font_Family is
    --  Pango.Font_Metrics.Get_Approximate_Char_Width may be affected by
    --  double-width characters.
    --  Since: gtk+ 1.4
+   --  @return True if the family is monospace.
 
    function Is_Variable
       (Self : not null access Pango_Font_Family_Record) return Boolean;
    --  A variable font is a font which has axes that can be modified to
    --  produce different faces.
    --  Since: gtk+ 1.44
+   --  @return True if the family is variable
 
    function List_Faces
       (Self : not null access Pango_Font_Family_Record)

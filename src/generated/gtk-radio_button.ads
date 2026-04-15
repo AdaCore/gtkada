@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A single radio button performs the same basic function as a
 --  Gtk.Check_Button.Gtk_Check_Button, as its position in the object hierarchy
 --  reflects. It is only when multiple radio buttons are grouped together that
@@ -106,7 +105,6 @@
 --  Gtk.Toggle_Button.Get_Active can be used to determine if the button has
 --  been selected or deselected.
 --
---  </description>
 --  <screenshot>gtk-radio_button</screenshot>
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_radio_button.adb</testgtk>
@@ -149,9 +147,9 @@ package Gtk.Radio_Button is
    --  call to the Get_Group subprogram below.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "group": an existing radio button group, or null if you are creating a
-   --  new group.
-   --  "label": the text label to display next to the radio button.
+   --  @param Group an existing radio button group, or null if you are
+   --  creating a new group.
+   --  @param Label the text label to display next to the radio button.
 
    function Gtk_Radio_Button_New_With_Label
       (Group : Gtk.Widget.Widget_SList.GSlist := Widget_SList.Null_List;
@@ -162,9 +160,9 @@ package Gtk.Radio_Button is
    --  initialize the group (when creating the first button), leave Group to
    --  the Null_List. You can later get the new group that is created with a
    --  call to the Get_Group subprogram below.
-   --  "group": an existing radio button group, or null if you are creating a
-   --  new group.
-   --  "label": the text label to display next to the radio button.
+   --  @param Group an existing radio button group, or null if you are
+   --  creating a new group.
+   --  @param Label the text label to display next to the radio button.
 
    procedure Gtk_New
       (Radio_Button : out Gtk_Radio_Button;
@@ -178,16 +176,16 @@ package Gtk.Radio_Button is
    --  adding it to the same group as Radio_Group_Member.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "Group": widget to get radio group from or null
-   --  "label": a text string to display next to the radio button.
+   --  @param Group widget to get radio group from or null
+   --  @param Label a text string to display next to the radio button.
 
    function Gtk_Radio_Button_New_With_Label_From_Widget
       (Group : access Gtk_Radio_Button_Record'Class;
        Label : UTF8_String := "") return Gtk_Radio_Button;
    --  Creates a new Gtk.Radio_Button.Gtk_Radio_Button with a text label,
    --  adding it to the same group as Radio_Group_Member.
-   --  "Group": widget to get radio group from or null
-   --  "label": a text string to display next to the radio button.
+   --  @param Group widget to get radio group from or null
+   --  @param Label a text string to display next to the radio button.
 
    procedure Gtk_New_With_Mnemonic
       (Radio_Button : out Gtk_Radio_Button;
@@ -203,8 +201,8 @@ package Gtk.Radio_Button is
    --  mnemonic for the button.
    --  Initialize_With_Mnemonic does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "group": the radio button group, or null
-   --  "label": the text of the button, with an underscore in front of the
+   --  @param Group the radio button group, or null
+   --  @param Label the text of the button, with an underscore in front of the
    --  mnemonic character
 
    procedure Gtk_New_With_Mnemonic
@@ -223,8 +221,8 @@ package Gtk.Radio_Button is
    --  the example below.
    --  Initialize_With_Mnemonic does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "Group": widget to get radio group from or null
-   --  "label": the text of the button, with an underscore in front of the
+   --  @param Group widget to get radio group from or null
+   --  @param Label the text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Gtk_Radio_Button_New_With_Mnemonic
@@ -234,8 +232,8 @@ package Gtk.Radio_Button is
    --  adding it to the same group as Group. The label will be created using
    --  Gtk.Label.Gtk_New_With_Mnemonic, so underscores in Label indicate the
    --  mnemonic for the button.
-   --  "group": the radio button group, or null
-   --  "label": the text of the button, with an underscore in front of the
+   --  @param Group the radio button group, or null
+   --  @param Label the text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Gtk_Radio_Button_New_With_Mnemonic_From_Widget
@@ -247,8 +245,8 @@ package Gtk.Radio_Button is
    --  To initialize a new group (when creating the first button), you should
    --  pass it null or a button that has not been created with Gtk_New, as in
    --  the example below.
-   --  "Group": widget to get radio group from or null
-   --  "label": the text of the button, with an underscore in front of the
+   --  @param Group widget to get radio group from or null
+   --  @param Label the text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Get_Type return Glib.GType;
@@ -270,7 +268,7 @@ package Gtk.Radio_Button is
    --  that this does not change the layout of your interface in any way, so if
    --  you are changing the group, it is likely you will need to re-arrange the
    --  user interface to reflect these changes.
-   --  "group": an existing radio button group, such as one returned from
+   --  @param Group an existing radio button group, such as one returned from
    --  Gtk.Radio_Button.Get_Group, or null.
 
    procedure Join_Group
@@ -294,7 +292,7 @@ package Gtk.Radio_Button is
    --       }
    --
    --  Since: gtk+ 3.0
-   --  "group_source": a radio button object whos group we are joining, or
+   --  @param Group_Source a radio button object whos group we are joining, or
    --  null to remove the radio button from its group
 
    ---------------------------------------------

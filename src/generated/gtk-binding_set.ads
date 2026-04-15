@@ -21,15 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A binding set maintains a list of activatable key bindings. A single
 --  binding set can match multiple types of widgets. Similar to style contexts,
 --  can be matched by any information contained in a widgets
 --  Gtk.Widget.Gtk_Widget_Path. When a binding within a set is matched upon
 --  activation, an action signal is emitted on the target widget to carry out
 --  the actual activation.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;    use Gdk.Types;
@@ -68,13 +65,15 @@ package Gtk.Binding_Set is
    procedure Gtk_New (Self : out Gtk_Binding_Set; Set_Name : UTF8_String);
    --  GTK+ maintains a global list of binding sets. Each binding set has a
    --  unique name which needs to be specified upon creation.
-   --  "set_name": unique name of this binding set
+   --  @param Set_Name unique name of this binding set
+   --  @return new binding set
 
    function Gtk_Binding_Set_New
       (Set_Name : UTF8_String) return Gtk_Binding_Set;
    --  GTK+ maintains a global list of binding sets. Each binding set has a
    --  unique name which needs to be specified upon creation.
-   --  "set_name": unique name of this binding set
+   --  @param Set_Name unique name of this binding set
+   --  @return new binding set
 
    -------------
    -- Methods --
@@ -88,9 +87,10 @@ package Gtk.Binding_Set is
        return Boolean;
    --  Find a key binding matching Keyval and Modifiers within Binding_Set and
    --  activate the binding on Object.
-   --  "keyval": key value of the binding
-   --  "modifiers": key modifier of the binding
-   --  "object": object to activate when binding found
+   --  @param Keyval key value of the binding
+   --  @param Modifiers key modifier of the binding
+   --  @param Object object to activate when binding found
+   --  @return True if a binding was found and activated
 
    procedure Add_Path
       (Self         : Gtk_Binding_Set;
@@ -102,9 +102,9 @@ package Gtk.Binding_Set is
    --  assign match patterns to Gtk.Binding_Set.Gtk_Binding_Set structures.
    --  In GTK+ 3, these match patterns are unused.
    --  Deprecated since 3.0, 1
-   --  "path_type": path type the pattern applies to
-   --  "path_pattern": the actual match pattern
-   --  "priority": binding priority
+   --  @param Path_Type path type the pattern applies to
+   --  @param Path_Pattern the actual match pattern
+   --  @param Priority binding priority
 
    ---------------
    -- Functions --
@@ -115,12 +115,14 @@ package Gtk.Binding_Set is
    --  This function returns the binding set named after the type name of the
    --  passed in class structure. New binding sets are created on demand by
    --  this function.
-   --  "object_class": a valid Glib.Object.GObject class
+   --  @param Object_Class a valid Glib.Object.GObject class
+   --  @return the binding set corresponding to Object_Class
 
    function Find (Set_Name : UTF8_String) return Gtk_Binding_Set;
    --  Find a binding set by its globally unique name.
    --  The Set_Name can either be a name used for Gtk.Binding_Set.Gtk_New or
    --  the type name of a class used in Gtk.Binding_Set.By_Class.
-   --  "set_name": unique binding set name
+   --  @param Set_Name unique binding set name
+   --  @return null or the specified binding set
 
 end Gtk.Binding_Set;

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkArrow should be used to draw simple arrows that need to point in one of
 --  the four cardinal directions (up, down, left, or right). The style of the
 --  arrow can be one of shadow in, shadow out, etched in, or etched out. Note
@@ -43,7 +42,6 @@
 --  names "pan-start-symbolic" and "pan-end-symbolic", which react to the text
 --  direction.
 --
---  </description>
 --  <screenshot>gtk-arrow</screenshot>
 --  <testgtk>create_arrow.adb</testgtk>
 
@@ -74,15 +72,15 @@ package Gtk.Arrow is
    --  Creates a new Gtk.Arrow.Gtk_Arrow widget.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "arrow_type": a valid Gtk.Enums.Gtk_Arrow_Type.
-   --  "shadow_type": a valid Gtk.Enums.Gtk_Shadow_Type.
+   --  @param Arrow_Type a valid Gtk.Enums.Gtk_Arrow_Type.
+   --  @param Shadow_Type a valid Gtk.Enums.Gtk_Shadow_Type.
 
    function Gtk_Arrow_New
       (Arrow_Type  : Gtk.Enums.Gtk_Arrow_Type;
        Shadow_Type : Gtk.Enums.Gtk_Shadow_Type) return Gtk_Arrow;
    --  Creates a new Gtk.Arrow.Gtk_Arrow widget.
-   --  "arrow_type": a valid Gtk.Enums.Gtk_Arrow_Type.
-   --  "shadow_type": a valid Gtk.Enums.Gtk_Shadow_Type.
+   --  @param Arrow_Type a valid Gtk.Enums.Gtk_Arrow_Type.
+   --  @param Shadow_Type a valid Gtk.Enums.Gtk_Shadow_Type.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_arrow_get_type");
@@ -98,8 +96,8 @@ package Gtk.Arrow is
    pragma Obsolescent (Set);
    --  Sets the direction and style of the Gtk.Arrow.Gtk_Arrow, Arrow.
    --  Deprecated since 3.14, 1
-   --  "arrow_type": a valid Gtk.Enums.Gtk_Arrow_Type.
-   --  "shadow_type": a valid Gtk.Enums.Gtk_Shadow_Type.
+   --  @param Arrow_Type a valid Gtk.Enums.Gtk_Arrow_Type.
+   --  @param Shadow_Type a valid Gtk.Enums.Gtk_Shadow_Type.
 
    ----------------
    -- Properties --

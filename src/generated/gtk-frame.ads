@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The frame widget is a bin that surrounds its child with a decorative frame
 --  and an optional label. If present, the label is drawn in a gap in the top
 --  side of the frame. The position of the label can be controlled with
@@ -62,8 +61,6 @@
 --  Gtk.Frame.Set_Shadow_Type with Gtk.Enums.Shadow_None to add the ".flat"
 --  class or any other shadow type to remove it.
 --
---  </description>
---  <description>
 --  This is a very convenient widget to visually group related widgets (like
 --  groups of buttons for instance), possibly with a title to explain the
 --  purpose of this group.
@@ -72,7 +69,6 @@
 --  instance a Gtk_Box inside if you want the frame to surround multiple
 --  widgets.
 --
---  </description>
 --  <screenshot>gtk-frame</screenshot>
 --  <group>Ornaments</group>
 --  <testgtk>create_frame.adb</testgtk>
@@ -103,12 +99,12 @@ package Gtk.Frame is
    --  is null, the label is omitted.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "label": the text to use as the label of the frame
+   --  @param Label the text to use as the label of the frame
 
    function Gtk_Frame_New (Label : UTF8_String := "") return Gtk_Frame;
    --  Creates a new Gtk.Frame.Gtk_Frame, with optional label Label. If Label
    --  is null, the label is omitted.
-   --  "label": the text to use as the label of the frame
+   --  @param Label the text to use as the label of the frame
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_frame_get_type");
@@ -122,6 +118,9 @@ package Gtk.Frame is
    --  If the frame's label widget is a Gtk.Label.Gtk_Label, returns the text
    --  in the label widget. (The frame will have a Gtk.Label.Gtk_Label for the
    --  label widget if a non-null argument was passed to Gtk.Frame.Gtk_New.)
+   --  @return the text in the label, or null if there was no label widget or
+   --  the lable widget was not a Gtk.Label.Gtk_Label. This string is owned by
+   --  GTK+ and must not be modified or freed.
 
    procedure Set_Label
       (Frame : not null access Gtk_Frame_Record;
@@ -129,7 +128,7 @@ package Gtk.Frame is
    --  Removes the current Gtk.Frame.Gtk_Frame:label-widget. If Label is not
    --  null, creates a new Gtk.Label.Gtk_Label with that text and adds it as
    --  the Gtk.Frame.Gtk_Frame:label-widget.
-   --  "label": the text to use as the label of the frame
+   --  @param Label the text to use as the label of the frame
 
    procedure Get_Label_Align
       (Frame  : not null access Gtk_Frame_Record;
@@ -137,8 +136,8 @@ package Gtk.Frame is
        Yalign : out Gfloat);
    --  Retrieves the X and Y alignment of the frame's label. See
    --  Gtk.Frame.Set_Label_Align.
-   --  "xalign": location to store X alignment of frame's label, or null
-   --  "yalign": location to store X alignment of frame's label, or null
+   --  @param Xalign location to store X alignment of frame's label, or null
+   --  @param Yalign location to store X alignment of frame's label, or null
 
    procedure Set_Label_Align
       (Frame  : not null access Gtk_Frame_Record;
@@ -146,11 +145,12 @@ package Gtk.Frame is
        Yalign : Gfloat);
    --  Sets the alignment of the frame widget's label. The default values for
    --  a newly created frame are 0.0 and 0.5.
-   --  "xalign": The position of the label along the top edge of the widget. A
-   --  value of 0.0 represents left alignment; 1.0 represents right alignment.
-   --  "yalign": The y alignment of the label. A value of 0.0 aligns under the
-   --  frame; 1.0 aligns above the frame. If the values are exactly 0.0 or 1.0
-   --  the gap in the frame won't be painted because the label will be
+   --  @param Xalign The position of the label along the top edge of the
+   --  widget. A value of 0.0 represents left alignment; 1.0 represents right
+   --  alignment.
+   --  @param Yalign The y alignment of the label. A value of 0.0 aligns under
+   --  the frame; 1.0 aligns above the frame. If the values are exactly 0.0 or
+   --  1.0 the gap in the frame won't be painted because the label will be
    --  completely above or below the frame.
 
    function Get_Label_Widget
@@ -158,6 +158,7 @@ package Gtk.Frame is
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the label widget for the frame. See
    --  Gtk.Frame.Set_Label_Widget.
+   --  @return the label widget, or null if there is none.
 
    procedure Set_Label_Widget
       (Frame        : not null access Gtk_Frame_Record;
@@ -165,12 +166,13 @@ package Gtk.Frame is
    --  Sets the Gtk.Frame.Gtk_Frame:label-widget for the frame. This is the
    --  widget that will appear embedded in the top edge of the frame as a
    --  title.
-   --  "label_widget": the new label widget
+   --  @param Label_Widget the new label widget
 
    function Get_Shadow_Type
       (Frame : not null access Gtk_Frame_Record)
        return Gtk.Enums.Gtk_Shadow_Type;
    --  Retrieves the shadow type of the frame. See Gtk.Frame.Set_Shadow_Type.
+   --  @return the current shadow type of the frame.
 
    procedure Set_Shadow_Type
       (Frame    : not null access Gtk_Frame_Record;
@@ -180,7 +182,7 @@ package Gtk.Frame is
    --  border. Values other than Gtk.Enums.Shadow_None are treated identically
    --  by GtkFrame. The chosen type is applied by removing or adding the .flat
    --  class to the CSS node named border.
-   --  "type": the new Gtk.Enums.Gtk_Shadow_Type
+   --  @param The_Type the new Gtk.Enums.Gtk_Shadow_Type
 
    ----------------
    -- Properties --

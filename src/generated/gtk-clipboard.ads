@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Clipboard.Gtk_Clipboard object represents a clipboard of data
 --  shared between different processes or between different widgets in the same
 --  process. Each clipboard is identified by a name encoded as a
@@ -73,8 +72,6 @@
 --  provider, asking for the clipboard in the best available format and
 --  converting the results into the UTF-8 encoding. (The standard form for
 --  representing strings in GTK+.)
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;       use GNAT.Strings;
@@ -101,10 +98,10 @@ package Gtk.Clipboard is
       Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data);
    --  A function to be called when the results of
    --  Gtk.Clipboard.Request_Contents are received, or when the request fails.
-   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-   --  "selection_data": a Gtk.Selection_Data.Gtk_Selection_Data containing
-   --  the data was received. If retrieving the data failed, then then length
-   --  field of Selection_Data will be negative.
+   --  @param Clipboard the Gtk.Clipboard.Gtk_Clipboard
+   --  @param Selection_Data a Gtk.Selection_Data.Gtk_Selection_Data
+   --  containing the data was received. If retrieving the data failed, then
+   --  then length field of Selection_Data will be negative.
 
    type Gtk_Clipboard_Image_Received_Func is access procedure
      (Clipboard : not null access Gtk_Clipboard_Record'Class;
@@ -112,8 +109,8 @@ package Gtk.Clipboard is
    --  A function to be called when the results of Gtk.Clipboard.Request_Image
    --  are received, or when the request fails.
    --  Since: gtk+ 2.6
-   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-   --  "pixbuf": the received image
+   --  @param Clipboard the Gtk.Clipboard.Gtk_Clipboard
+   --  @param Pixbuf the received image
 
    type Gtk_Clipboard_Rich_Text_Received_Func is access procedure
      (Clipboard : not null access Gtk_Clipboard_Record'Class;
@@ -123,11 +120,11 @@ package Gtk.Clipboard is
    --  A function to be called when the results of
    --  Gtk.Clipboard.Request_Rich_Text are received, or when the request fails.
    --  Since: gtk+ 2.10
-   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-   --  "format": The format of the rich text
-   --  "text": the rich text received, as a UTF-8 encoded string, or null if
-   --  retrieving the data failed.
-   --  "length": Length of the text.
+   --  @param Clipboard the Gtk.Clipboard.Gtk_Clipboard
+   --  @param Format The format of the rich text
+   --  @param Text the rich text received, as a UTF-8 encoded string, or null
+   --  if retrieving the data failed.
+   --  @param Length Length of the text.
 
    type Gtk_Clipboard_Targets_Received_Func is access procedure
      (Clipboard : not null access Gtk_Clipboard_Record'Class;
@@ -136,18 +133,18 @@ package Gtk.Clipboard is
    --  A function to be called when the results of
    --  Gtk.Clipboard.Request_Targets are received, or when the request fails.
    --  Since: gtk+ 2.4
-   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-   --  "atoms": the supported targets, as array of Gdk.Types.Gdk_Atom, or null
-   --  if retrieving the data failed.
-   --  "n_atoms": the length of the Atoms array.
+   --  @param Clipboard the Gtk.Clipboard.Gtk_Clipboard
+   --  @param Atoms the supported targets, as array of Gdk.Types.Gdk_Atom, or
+   --  null if retrieving the data failed.
+   --  @param N_Atoms the length of the Atoms array.
 
    type Gtk_Clipboard_Text_Received_Func is access procedure
      (Clipboard : not null access Gtk_Clipboard_Record'Class;
       Text      : UTF8_String := "");
    --  A function to be called when the results of Gtk.Clipboard.Request_Text
    --  are received, or when the request fails.
-   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-   --  "text": the text received, as a UTF-8 encoded string, or null if
+   --  @param Clipboard the Gtk.Clipboard.Gtk_Clipboard
+   --  @param Text the text received, as a UTF-8 encoded string, or null if
    --  retrieving the data failed.
 
    type Gtk_Clipboard_Urireceived_Func is access procedure
@@ -156,8 +153,8 @@ package Gtk.Clipboard is
    --  A function to be called when the results of Gtk.Clipboard.Request_Uris
    --  are received, or when the request fails.
    --  Since: gtk+ 2.14
-   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-   --  "uris": the received URIs
+   --  @param Clipboard the Gtk.Clipboard.Gtk_Clipboard
+   --  @param Uris the received URIs
 
    ------------------
    -- Constructors --
@@ -181,6 +178,7 @@ package Gtk.Clipboard is
        return Gdk.Display.Gdk_Display;
    --  Gets the Gdk.Display.Gdk_Display associated with Clipboard
    --  Since: gtk+ 2.2
+   --  @return the Gdk.Display.Gdk_Display associated with Clipboard
 
    function Get_Owner
       (Clipboard : not null access Gtk_Clipboard_Record)
@@ -189,12 +187,14 @@ package Gtk.Clipboard is
    --  gtk_clipboard_set_with_owner, and the gtk_clipboard_set_with_data or
    --  Gtk.Clipboard.Clear has not subsequently called, returns the owner set
    --  by gtk_clipboard_set_with_owner.
+   --  @return the owner of the clipboard, if any; otherwise null.
 
    function Get_Selection
       (Clipboard : not null access Gtk_Clipboard_Record)
        return Gdk.Types.Gdk_Atom;
    --  Gets the selection that this clipboard is for.
    --  Since: gtk+ 3.22
+   --  @return the selection
 
    procedure Request_Contents
       (Clipboard : not null access Gtk_Clipboard_Record;
@@ -203,10 +203,10 @@ package Gtk.Clipboard is
    --  Requests the contents of clipboard as the given target. When the
    --  results of the result are later received the supplied callback will be
    --  called.
-   --  "target": an atom representing the form into which the clipboard owner
-   --  should convert the selection.
-   --  "callback": A function to call when the results are received (or the
-   --  retrieval fails). If the retrieval fails the length field of
+   --  @param Target an atom representing the form into which the clipboard
+   --  owner should convert the selection.
+   --  @param Callback A function to call when the results are received (or
+   --  the retrieval fails). If the retrieval fails the length field of
    --  Selection_Data will be negative.
 
    procedure Request_Image
@@ -221,7 +221,7 @@ package Gtk.Clipboard is
    --  was empty or if the contents of the clipboard could not be converted
    --  into an image.
    --  Since: gtk+ 2.6
-   --  "callback": a function to call when the image is received, or the
+   --  @param Callback a function to call when the image is received, or the
    --  retrieval fails. (It will always be called one way or the other.)
 
    procedure Request_Rich_Text
@@ -236,8 +236,8 @@ package Gtk.Clipboard is
    --  particular if the clipboard was empty or if the contents of the
    --  clipboard could not be converted into rich text form.
    --  Since: gtk+ 2.10
-   --  "buffer": a Gtk.Text_Buffer.Gtk_Text_Buffer
-   --  "callback": a function to call when the text is received, or the
+   --  @param Buffer a Gtk.Text_Buffer.Gtk_Text_Buffer
+   --  @param Callback a function to call when the text is received, or the
    --  retrieval fails. (It will always be called one way or the other.)
 
    procedure Request_Targets
@@ -248,8 +248,8 @@ package Gtk.Clipboard is
    --  The Targets parameter to Callback will contain the resulting targets if
    --  the request succeeded, or null if it failed.
    --  Since: gtk+ 2.4
-   --  "callback": a function to call when the targets are received, or the
-   --  retrieval fails. (It will always be called one way or the other.)
+   --  @param Callback a function to call when the targets are received, or
+   --  the retrieval fails. (It will always be called one way or the other.)
 
    procedure Request_Text
       (Clipboard : not null access Gtk_Clipboard_Record;
@@ -261,7 +261,7 @@ package Gtk.Clipboard is
    --  request succeeded, or null if it failed. This could happen for various
    --  reasons, in particular if the clipboard was empty or if the contents of
    --  the clipboard could not be converted into text form.
-   --  "callback": a function to call when the text is received, or the
+   --  @param Callback a function to call when the text is received, or the
    --  retrieval fails. (It will always be called one way or the other.)
 
    procedure Request_Uris
@@ -274,7 +274,7 @@ package Gtk.Clipboard is
    --  various reasons, in particular if the clipboard was empty or if the
    --  contents of the clipboard could not be converted into URI form.
    --  Since: gtk+ 2.14
-   --  "callback": a function to call when the URIs are received, or the
+   --  @param Callback a function to call when the URIs are received, or the
    --  retrieval fails. (It will always be called one way or the other.)
 
    procedure Set_Can_Store
@@ -287,9 +287,9 @@ package Gtk.Clipboard is
    --  clipboard data is stored is platform dependent, see
    --  gdk_display_store_clipboard () for more information.
    --  Since: gtk+ 2.6
-   --  "targets": array containing information about which forms should be
+   --  @param Targets array containing information about which forms should be
    --  stored or null to indicate that all forms should be stored.
-   --  "n_targets": number of elements in Targets
+   --  @param N_Targets number of elements in Targets
 
    procedure Set_Image
       (Clipboard : not null access Gtk_Clipboard_Record;
@@ -298,7 +298,7 @@ package Gtk.Clipboard is
    --  GTK+ will take responsibility for responding for requests for the image,
    --  and for converting the image into the requested format.
    --  Since: gtk+ 2.6
-   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf
+   --  @param Pixbuf a Gdk.Pixbuf.Gdk_Pixbuf
 
    procedure Set_Text
       (Clipboard : not null access Gtk_Clipboard_Record;
@@ -307,7 +307,7 @@ package Gtk.Clipboard is
    --  make a copy of the text and take responsibility for responding for
    --  requests for the text, and for converting the text into the requested
    --  format.
-   --  "text": a UTF-8 string.
+   --  @param Text a UTF-8 string.
 
    procedure Store (Clipboard : not null access Gtk_Clipboard_Record);
    --  Stores the current clipboard data somewhere so that it will stay around
@@ -321,8 +321,12 @@ package Gtk.Clipboard is
    --  Requests the contents of the clipboard using the given target. This
    --  function waits for the data to be received using the main loop, so
    --  events, timeouts, etc, may be dispatched during the wait.
-   --  "target": an atom representing the form into which the clipboard owner
-   --  should convert the selection.
+   --  @param Target an atom representing the form into which the clipboard
+   --  owner should convert the selection.
+   --  @return a newly-allocated Gtk.Selection_Data.Gtk_Selection_Data object
+   --  or null if retrieving the given target failed. If non-null, this value
+   --  must be freed with Gtk.Selection_Data.Free when you are finished with
+   --  it.
 
    function Wait_For_Image
       (Clipboard : not null access Gtk_Clipboard_Record)
@@ -332,6 +336,11 @@ package Gtk.Clipboard is
    --  received using the main loop, so events, timeouts, etc, may be
    --  dispatched during the wait.
    --  Since: gtk+ 2.6
+   --  @return a newly-allocated Gdk.Pixbuf.Gdk_Pixbuf object which must be
+   --  disposed with g_object_unref, or null if retrieving the selection data
+   --  failed. (This could happen for various reasons, in particular if the
+   --  clipboard was empty or if the contents of the clipboard could not be
+   --  converted into an image.)
 
    function Wait_For_Text
       (Clipboard : not null access Gtk_Clipboard_Record) return UTF8_String;
@@ -339,6 +348,10 @@ package Gtk.Clipboard is
    --  to UTF-8 if necessary. This function waits for the data to be received
    --  using the main loop, so events, timeouts, etc, may be dispatched during
    --  the wait.
+   --  @return a newly-allocated UTF-8 string which must be freed with g_free,
+   --  or null if retrieving the selection data failed. (This could happen for
+   --  various reasons, in particular if the clipboard was empty or if the
+   --  contents of the clipboard could not be converted into text form.)
 
    function Wait_For_Uris
       (Clipboard : not null access Gtk_Clipboard_Record)
@@ -347,6 +360,11 @@ package Gtk.Clipboard is
    --  the data to be received using the main loop, so events, timeouts, etc,
    --  may be dispatched during the wait.
    --  Since: gtk+ 2.14
+   --  @return a newly-allocated null-terminated array of strings which must
+   --  be freed with g_strfreev, or null if retrieving the selection data
+   --  failed. (This could happen for various reasons, in particular if the
+   --  clipboard was empty or if the contents of the clipboard could not be
+   --  converted into URI form.)
 
    function Wait_Is_Image_Available
       (Clipboard : not null access Gtk_Clipboard_Record) return Boolean;
@@ -359,6 +377,7 @@ package Gtk.Clipboard is
    --  Gtk.Clipboard.Wait_For_Image since it doesn't need to retrieve the
    --  actual image data.
    --  Since: gtk+ 2.6
+   --  @return True is there is an image available, False otherwise.
 
    function Wait_Is_Rich_Text_Available
       (Clipboard : not null access Gtk_Clipboard_Record;
@@ -373,7 +392,8 @@ package Gtk.Clipboard is
    --  gtk_clipboard_wait_for_rich_text since it doesn't need to retrieve the
    --  actual text.
    --  Since: gtk+ 2.10
-   --  "buffer": a Gtk.Text_Buffer.Gtk_Text_Buffer
+   --  @param Buffer a Gtk.Text_Buffer.Gtk_Text_Buffer
+   --  @return True is there is rich text available, False otherwise.
 
    function Wait_Is_Target_Available
       (Clipboard : not null access Gtk_Clipboard_Record;
@@ -384,7 +404,8 @@ package Gtk.Clipboard is
    --  If you want to see if there's text available on the clipboard, use
    --  gtk_clipboard_wait_is_text_available () instead.
    --  Since: gtk+ 2.6
-   --  "target": A Gdk.Types.Gdk_Atom indicating which target to look for.
+   --  @param Target A Gdk.Types.Gdk_Atom indicating which target to look for.
+   --  @return True if the target is available, False otherwise.
 
    function Wait_Is_Text_Available
       (Clipboard : not null access Gtk_Clipboard_Record) return Boolean;
@@ -396,6 +417,7 @@ package Gtk.Clipboard is
    --  This function is a little faster than calling
    --  Gtk.Clipboard.Wait_For_Text since it doesn't need to retrieve the actual
    --  text.
+   --  @return True is there is text available, False otherwise.
 
    function Wait_Is_Uris_Available
       (Clipboard : not null access Gtk_Clipboard_Record) return Boolean;
@@ -407,6 +429,7 @@ package Gtk.Clipboard is
    --  Gtk.Clipboard.Wait_For_Uris since it doesn't need to retrieve the actual
    --  URI data.
    --  Since: gtk+ 2.14
+   --  @return True is there is an URI list available, False otherwise.
 
    ----------------------
    -- GtkAda additions --
@@ -429,7 +452,12 @@ package Gtk.Clipboard is
        return Gtk_Clipboard;
    --  Returns the clipboard object for the given selection. See
    --  Gtk.Clipboard.Get_For_Display for complete details.
-   --  "selection": a Gdk.Types.Gdk_Atom which identifies the clipboard to use
+   --  @param Selection a Gdk.Types.Gdk_Atom which identifies the clipboard to
+   --  use
+   --  @return the appropriate clipboard object. If no clipboard already
+   --  exists, a new one will be created. Once a clipboard object has been
+   --  created, it is persistent and, since it is owned by GTK+, must not be
+   --  freed or unreffed.
 
    function Get_Default
       (Display : not null access Gdk.Display.Gdk_Display_Record'Class)
@@ -437,8 +465,9 @@ package Gtk.Clipboard is
    --  Returns the default clipboard object for use with cut/copy/paste menu
    --  items and keyboard shortcuts.
    --  Since: gtk+ 3.16
-   --  "display": the Gdk.Display.Gdk_Display for which the clipboard is to be
-   --  retrieved.
+   --  @param Display the Gdk.Display.Gdk_Display for which the clipboard is
+   --  to be retrieved.
+   --  @return the default clipboard object.
 
    function Get_For_Display
       (Display   : not null access Gdk.Display.Gdk_Display_Record'Class;
@@ -467,10 +496,14 @@ package Gtk.Clipboard is
    --  application called "Foo" has a special-purpose clipboard, you might call
    --  it "_FOO_SPECIAL_CLIPBOARD".
    --  Since: gtk+ 2.2
-   --  "display": the Gdk.Display.Gdk_Display for which the clipboard is to be
-   --  retrieved or created.
-   --  "selection": a Gdk.Types.Gdk_Atom which identifies the clipboard to
+   --  @param Display the Gdk.Display.Gdk_Display for which the clipboard is
+   --  to be retrieved or created.
+   --  @param Selection a Gdk.Types.Gdk_Atom which identifies the clipboard to
    --  use.
+   --  @return the appropriate clipboard object. If no clipboard already
+   --  exists, a new one will be created. Once a clipboard object has been
+   --  created, it is persistent and, since it is owned by GTK+, must not be
+   --  freed or unrefd.
 
    -------------
    -- Signals --

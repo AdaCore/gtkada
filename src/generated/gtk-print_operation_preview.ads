@@ -57,7 +57,8 @@ package Gtk.Print_Operation_Preview is
    --  Returns whether the given page is included in the set of pages that
    --  have been selected for printing.
    --  Since: gtk+ 2.10
-   --  "page_nr": a page number
+   --  @param Page_Nr a page number
+   --  @return True if the page has been selected for printing
 
    procedure Render_Page
       (Preview : Gtk_Print_Operation_Preview;
@@ -71,7 +72,7 @@ package Gtk.Print_Operation_Preview is
    --  Note that this function requires a suitable cairo context to be
    --  associated with the print context.
    --  Since: gtk+ 2.10
-   --  "page_nr": the page to render
+   --  @param Page_Nr the page to render
 
    -------------
    -- Signals --
@@ -105,8 +106,9 @@ package Gtk.Print_Operation_Preview is
    --  Gtk.Print_Context.Set_Cairo_Context.
    -- 
    --  Callback parameters:
-   --    --  "context": the current Gtk.Print_Context.Gtk_Print_Context
-   --    --  "page_setup": the Gtk.Page_Setup.Gtk_Page_Setup for the current page
+   --    --  @param Context the current Gtk.Print_Context.Gtk_Print_Context
+   --    --  @param Page_Setup the Gtk.Page_Setup.Gtk_Page_Setup for the current
+   --    --  page
 
    type Cb_Gtk_Print_Operation_Preview_Gtk_Print_Context_Void is not null access procedure
      (Self    : Gtk_Print_Operation_Preview;
@@ -164,7 +166,8 @@ package Gtk.Print_Operation_Preview is
    --  Returns whether the given page is included in the set of pages that
    --  have been selected for printing.
    --  Since: gtk+ 2.10
-   --  "page_nr": a page number
+   --  @param Page_Nr a page number
+   --  @return True if the page has been selected for printing
 
    type Virtual_Ready is access procedure
      (Preview : Gtk_Print_Operation_Preview;
@@ -183,7 +186,7 @@ package Gtk.Print_Operation_Preview is
    --  Note that this function requires a suitable cairo context to be
    --  associated with the print context.
    --  Since: gtk+ 2.10
-   --  "page_nr": the page to render
+   --  @param Page_Nr the page to render
 
    subtype Print_Operation_Preview_Interface_Descr is Glib.Object.Interface_Description;
 

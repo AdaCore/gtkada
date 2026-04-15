@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gdk.Display.Gdk_Display objects purpose are two fold:
 --
 --  - To manage and provide information about input devices (pointers and
@@ -39,8 +38,6 @@
 --  Most of the input device handling has been factored out into the separate
 --  Gdk.Device_Manager.Gdk_Device_Manager object. Every display has a device
 --  manager, which you can obtain using gdk_display_get_device_manager.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;   use Gdk.Event;
@@ -90,6 +87,7 @@ package Gdk.Display is
       (Self : not null access Gdk_Display_Record) return Guint;
    --  Returns the default size to use for cursors on Display.
    --  Since: gtk+ 2.4
+   --  @return the default cursor size.
 
    function Get_Default_Group
       (Self : not null access Gdk_Display_Record) return Gdk.Gdk_Window;
@@ -97,6 +95,7 @@ package Gdk.Display is
    --  Display. This window is implicitly created by GDK. See
    --  Gdk.Window.Set_Group.
    --  Since: gtk+ 2.4
+   --  @return The default group leader window for Display
 
    function Get_Default_Seat
       (Self : not null access Gdk_Display_Record) return Glib.Object.GObject;
@@ -108,6 +107,9 @@ package Gdk.Display is
    --  Gets the next Gdk.Event.Gdk_Event to be processed for Display, fetching
    --  events from the windowing system if necessary.
    --  Since: gtk+ 2.2
+   --  @return the next Gdk.Event.Gdk_Event to be processed, or null if no
+   --  events are pending. The returned Gdk.Event.Gdk_Event should be freed
+   --  with Gdk.Event.Free.
 
    procedure Get_Maximal_Cursor_Size
       (Self   : not null access Gdk_Display_Record;
@@ -115,15 +117,17 @@ package Gdk.Display is
        Height : out Guint);
    --  Gets the maximal size to use for cursors on Display.
    --  Since: gtk+ 2.4
-   --  "width": the return location for the maximal cursor width
-   --  "height": the return location for the maximal cursor height
+   --  @param Width the return location for the maximal cursor width
+   --  @param Height the return location for the maximal cursor height
 
    function Get_Monitor
       (Self        : not null access Gdk_Display_Record;
        Monitor_Num : Glib.Gint) return Gdk.Monitor.Gdk_Monitor;
    --  Gets a monitor associated with this display.
    --  Since: gtk+ 3.22
-   --  "monitor_num": number of the monitor
+   --  @param Monitor_Num number of the monitor
+   --  @return the Gdk.Monitor.Gdk_Monitor, or null if Monitor_Num is not a
+   --  valid monitor number
 
    function Get_Monitor_At_Point
       (Self : not null access Gdk_Display_Record;
@@ -132,8 +136,9 @@ package Gdk.Display is
    --  Gets the monitor in which the point (X, Y) is located, or a nearby
    --  monitor if the point is not in any monitor.
    --  Since: gtk+ 3.22
-   --  "x": the x coordinate of the point
-   --  "y": the y coordinate of the point
+   --  @param X the x coordinate of the point
+   --  @param Y the y coordinate of the point
+   --  @return the monitor containing the point
 
    function Get_Monitor_At_Window
       (Self   : not null access Gdk_Display_Record;
@@ -141,7 +146,8 @@ package Gdk.Display is
    --  Gets the monitor in which the largest area of Window resides, or a
    --  monitor close to Window if it is outside of all monitors.
    --  Since: gtk+ 3.22
-   --  "window": a Gdk.Gdk_Window
+   --  @param Window a Gdk.Gdk_Window
+   --  @return the monitor with the largest overlap with Window
 
    function Get_N_Monitors
       (Self : not null access Gdk_Display_Record) return Glib.Gint;
@@ -150,6 +156,7 @@ package Gdk.Display is
    --  Gdk.Display.Gdk_Display::monitor-added or
    --  Gdk.Display.Gdk_Display::monitor-removed signal.
    --  Since: gtk+ 3.22
+   --  @return the number of monitors
 
    function Get_N_Screens
       (Self : not null access Gdk_Display_Record) return Glib.Gint;
@@ -157,11 +164,14 @@ package Gdk.Display is
    --  Gets the number of screen managed by the Display.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.10, 1
+   --  @return number of screens.
 
    function Get_Name
       (Self : not null access Gdk_Display_Record) return UTF8_String;
    --  Gets the name of the display.
    --  Since: gtk+ 2.2
+   --  @return a string representing the display name. This string is owned by
+   --  GDK and should not be modified or freed.
 
    function Get_Primary_Monitor
       (Self : not null access Gdk_Display_Record)
@@ -172,17 +182,21 @@ package Gdk.Display is
    --  manager to place the windows, specialized desktop applications such as
    --  panels should place themselves on the primary monitor.
    --  Since: gtk+ 3.22
+   --  @return the primary monitor, or null if no primary monitor is
+   --  configured by the user
 
    function Has_Pending
       (Self : not null access Gdk_Display_Record) return Boolean;
    --  Returns whether the display has events that are waiting to be
    --  processed.
    --  Since: gtk+ 3.0
+   --  @return True if there are events ready to be processed.
 
    function Is_Closed
       (Self : not null access Gdk_Display_Record) return Boolean;
    --  Finds out if the display has been closed.
    --  Since: gtk+ 2.22
+   --  @return True if the display is closed.
 
    procedure Keyboard_Ungrab
       (Self : not null access Gdk_Display_Record;
@@ -191,7 +205,7 @@ package Gdk.Display is
    --  Release any keyboard grab
    --  Since: gtk+ 2.2
    --  Deprecated since 3.0, 1
-   --  "time_": a timestap (e.g GDK_CURRENT_TIME).
+   --  @param Time a timestap (e.g GDK_CURRENT_TIME).
 
    function List_Seats
       (Self : not null access Gdk_Display_Record)
@@ -209,8 +223,8 @@ package Gdk.Display is
    --  Gtk.Window.Set_Auto_Startup_Notification is called to disable that
    --  feature.
    --  Since: gtk+ 3.0
-   --  "startup_id": a startup-notification identifier, for which notification
-   --  process should be completed
+   --  @param Startup_Id a startup-notification identifier, for which
+   --  notification process should be completed
 
    function Peek_Event
       (Self : not null access Gdk_Display_Record) return Gdk.Event.Gdk_Event;
@@ -219,6 +233,9 @@ package Gdk.Display is
    --  function will not get more events from the windowing system. It only
    --  checks the events that have already been moved to the GDK event queue.)
    --  Since: gtk+ 2.2
+   --  @return a copy of the first Gdk.Event.Gdk_Event on the event queue, or
+   --  null if no events are in the queue. The returned Gdk.Event.Gdk_Event
+   --  should be freed with Gdk.Event.Free.
 
    function Pointer_Is_Grabbed
       (Self : not null access Gdk_Display_Record) return Boolean;
@@ -226,6 +243,7 @@ package Gdk.Display is
    --  Test if the pointer is grabbed.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.0, 1
+   --  @return True if an active X pointer grab is in effect
 
    procedure Pointer_Ungrab
       (Self : not null access Gdk_Display_Record;
@@ -234,7 +252,7 @@ package Gdk.Display is
    --  Release any pointer grab.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.0, 1
-   --  "time_": a timestap (e.g. GDK_CURRENT_TIME).
+   --  @param Time a timestap (e.g. GDK_CURRENT_TIME).
 
    procedure Put_Event
       (Self  : not null access Gdk_Display_Record;
@@ -242,7 +260,7 @@ package Gdk.Display is
    --  Appends a copy of the given event onto the front of the event queue for
    --  Display.
    --  Since: gtk+ 2.2
-   --  "event": a Gdk.Event.Gdk_Event.
+   --  @param Event a Gdk.Event.Gdk_Event.
 
    function Request_Selection_Notification
       (Self      : not null access Gdk_Display_Record;
@@ -250,8 +268,9 @@ package Gdk.Display is
    --  Request Gdk.Event.Gdk_Event_Owner_Change events for ownership changes
    --  of the selection named by the given atom.
    --  Since: gtk+ 2.6
-   --  "selection": the Gdk.Types.Gdk_Atom naming the selection for which
+   --  @param Selection the Gdk.Types.Gdk_Atom naming the selection for which
    --  ownership change notification is requested
+   --  @return whether Gdk.Event.Gdk_Event_Owner_Change events will be sent.
 
    procedure Set_Double_Click_Distance
       (Self     : not null access Gdk_Display_Record;
@@ -261,7 +280,7 @@ package Gdk.Display is
    --  Gdk.Display.Set_Double_Click_Time. Applications should not set this, it
    --  is a global user-configured setting.
    --  Since: gtk+ 2.4
-   --  "distance": distance in pixels
+   --  @param Distance distance in pixels
 
    procedure Set_Double_Click_Time
       (Self : not null access Gdk_Display_Record;
@@ -271,7 +290,7 @@ package Gdk.Display is
    --  Applications should not set this, it is a global user-configured
    --  setting.
    --  Since: gtk+ 2.2
-   --  "msec": double click time in milliseconds (thousandths of a second)
+   --  @param Msec double click time in milliseconds (thousandths of a second)
 
    function Supports_Clipboard_Persistence
       (Self : not null access Gdk_Display_Record) return Boolean;
@@ -279,6 +298,7 @@ package Gdk.Display is
    --  i.e. if it's possible to store the clipboard data after an application
    --  has quit. On X11 this checks if a clipboard daemon is running.
    --  Since: gtk+ 2.6
+   --  @return True if the display supports clipboard persistance.
 
    function Supports_Composite
       (Self : not null access Gdk_Display_Record) return Boolean;
@@ -289,36 +309,42 @@ package Gdk.Display is
    --  available.
    --  Since: gtk+ 2.12
    --  Deprecated since 3.16, 1
+   --  @return True if windows may be composited.
 
    function Supports_Cursor_Alpha
       (Self : not null access Gdk_Display_Record) return Boolean;
    --  Returns True if cursors can use an 8bit alpha channel on Display.
    --  Otherwise, cursors are restricted to bilevel alpha (i.e. a mask).
    --  Since: gtk+ 2.4
+   --  @return whether cursors can have alpha channels.
 
    function Supports_Cursor_Color
       (Self : not null access Gdk_Display_Record) return Boolean;
    --  Returns True if multicolored cursors are supported on Display.
    --  Otherwise, cursors have only a forground and a background color.
    --  Since: gtk+ 2.4
+   --  @return whether cursors can have multiple colors.
 
    function Supports_Input_Shapes
       (Self : not null access Gdk_Display_Record) return Boolean;
    --  Returns True if gdk_window_input_shape_combine_mask can be used to
    --  modify the input shape of windows on Display.
    --  Since: gtk+ 2.10
+   --  @return True if windows with modified input shape are supported
 
    function Supports_Selection_Notification
       (Self : not null access Gdk_Display_Record) return Boolean;
    --  Returns whether Gdk.Event.Gdk_Event_Owner_Change events will be sent
    --  when the owner of a selection changes.
    --  Since: gtk+ 2.6
+   --  @return whether Gdk.Event.Gdk_Event_Owner_Change events will be sent.
 
    function Supports_Shapes
       (Self : not null access Gdk_Display_Record) return Boolean;
    --  Returns True if gdk_window_shape_combine_mask can be used to create
    --  shaped windows on Display.
    --  Since: gtk+ 2.10
+   --  @return True if shaped windows are supported
 
    procedure Sync (Self : not null access Gdk_Display_Record);
    --  Flushes any requests queued for the windowing system and waits until
@@ -375,11 +401,15 @@ package Gdk.Display is
    --  function for: `gdk_display_manager_get_default_display
    --  (gdk_display_manager_get ())`.
    --  Since: gtk+ 2.2
+   --  @return a Gdk.Display.Gdk_Display, or null if there is no default
+   --  display.
 
    function Open (Display_Name : UTF8_String) return Gdk_Display;
    --  Opens a display.
    --  Since: gtk+ 2.2
-   --  "display_name": the name of the display to open
+   --  @param Display_Name the name of the display to open
+   --  @return a Gdk.Display.Gdk_Display, or null if the display could not be
+   --  opened
 
    function Open_Default_Libgtk_Only return Gdk_Display;
    pragma Obsolescent (Open_Default_Libgtk_Only);
@@ -389,6 +419,7 @@ package Gdk.Display is
    --  previously been set, simply returns that. An internal function that
    --  should not be used by applications.
    --  Deprecated since 3.16, 1
+   --  @return the default display, if it could be opened, otherwise null.
 
    -------------
    -- Signals --

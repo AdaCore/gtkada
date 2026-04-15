@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  You may wish to begin by reading the [text widget conceptual
 --  overview][TextWidget] which gives an overview of all the objects and data
 --  types related to the text widget and how they work together.
@@ -50,8 +49,6 @@
 --
 --  Marks are typically created using the Gtk.Text_Buffer.Create_Mark
 --  function.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -88,8 +85,8 @@ package Gtk.Text_Mark is
    --  Since: gtk+ 2.12
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "name": mark name or null
-   --  "left_gravity": whether the mark should have left gravity
+   --  @param Name mark name or null
+   --  @param Left_Gravity whether the mark should have left gravity
 
    function Gtk_Text_Mark_New
       (Name         : UTF8_String := "";
@@ -104,8 +101,8 @@ package Gtk.Text_Mark is
    --  right gravity (when you type, the cursor stays on the right side of the
    --  text you're typing).
    --  Since: gtk+ 2.12
-   --  "name": mark name or null
-   --  "left_gravity": whether the mark should have left gravity
+   --  @param Name mark name or null
+   --  @param Left_Gravity whether the mark should have left gravity
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_text_mark_get_type");
@@ -119,19 +116,23 @@ package Gtk.Text_Mark is
    --  Returns True if the mark has been removed from its buffer with
    --  Gtk.Text_Buffer.Delete_Mark. See Gtk.Text_Buffer.Add_Mark for a way to
    --  add it to a buffer again.
+   --  @return whether the mark is deleted
 
    function Get_Left_Gravity
       (Mark : not null access Gtk_Text_Mark_Record) return Boolean;
    --  Determines whether the mark has left gravity.
+   --  @return True if the mark has left gravity, False otherwise
 
    function Get_Name
       (Mark : not null access Gtk_Text_Mark_Record) return UTF8_String;
    --  Returns the mark name; returns NULL for anonymous marks.
+   --  @return mark name
 
    function Get_Visible
       (Mark : not null access Gtk_Text_Mark_Record) return Boolean;
    --  Returns True if the mark is visible (i.e. a cursor is displayed for
    --  it).
+   --  @return True if visible
 
    procedure Set_Visible
       (Mark    : not null access Gtk_Text_Mark_Record;
@@ -141,7 +142,7 @@ package Gtk.Text_Mark is
    --  visible mark to indicate where a drop will occur when
    --  dragging-and-dropping text. Most other marks are not visible. Marks are
    --  not visible by default.
-   --  "setting": visibility of mark
+   --  @param Setting visibility of mark
 
    ----------------------
    -- GtkAda additions --

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Size_Group.Gtk_Size_Group provides a mechanism for grouping a number
 --  of widgets together so they all request the same amount of space. This is
 --  typically useful when you want a column of widgets to have the same size,
@@ -88,7 +87,6 @@
 --         <widget name="radio2"/>
 --       </widgets>
 --     </object>
---  </description>
 --  <testgtk>create_size_groups.adb</testgtk>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -135,12 +133,12 @@ package Gtk.Size_Group is
    --  Create a new Gtk.Size_Group.Gtk_Size_Group.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "mode": the mode for the new size group.
+   --  @param Mode the mode for the new size group.
 
    function Gtk_Size_Group_New
       (Mode : Size_Group_Mode := Both) return Gtk_Size_Group;
    --  Create a new Gtk.Size_Group.Gtk_Size_Group.
-   --  "mode": the mode for the new size group.
+   --  @param Mode the mode for the new size group.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_size_group_get_type");
@@ -159,7 +157,7 @@ package Gtk.Size_Group is
    --  depends on the mode of the size group. See Gtk.Size_Group.Set_Mode.
    --  When the widget is destroyed or no longer referenced elsewhere, it will
    --  be removed from the size group.
-   --  "widget": the Gtk.Widget.Gtk_Widget to add
+   --  @param Widget the Gtk.Widget.Gtk_Widget to add
 
    function Get_Ignore_Hidden
       (Size_Group : not null access Gtk_Size_Group_Record) return Boolean;
@@ -167,6 +165,7 @@ package Gtk.Size_Group is
    --  Returns if invisible widgets are ignored when calculating the size.
    --  Since: gtk+ 2.8
    --  Deprecated since 3.22, 1
+   --  @return True if invisible widgets are ignored.
 
    procedure Set_Ignore_Hidden
       (Size_Group    : not null access Gtk_Size_Group_Record;
@@ -176,13 +175,14 @@ package Gtk.Size_Group is
    --  size.
    --  Since: gtk+ 2.8
    --  Deprecated since 3.22, 1
-   --  "ignore_hidden": whether unmapped widgets should be ignored when
+   --  @param Ignore_Hidden whether unmapped widgets should be ignored when
    --  calculating the size
 
    function Get_Mode
       (Size_Group : not null access Gtk_Size_Group_Record)
        return Size_Group_Mode;
    --  Gets the current mode of the size group. See Gtk.Size_Group.Set_Mode.
+   --  @return the current mode of the size group.
 
    procedure Set_Mode
       (Size_Group : not null access Gtk_Size_Group_Record;
@@ -192,7 +192,7 @@ package Gtk.Size_Group is
    --  all have the same horizontal requisition (Gtk.Size_Group.Horizontal) all
    --  have the same vertical requisition (Gtk.Size_Group.Vertical), or should
    --  all have the same requisition in both directions (Gtk.Size_Group.Both).
-   --  "mode": the mode to set for the size group.
+   --  @param Mode the mode to set for the size group.
 
    function Get_Widgets
       (Size_Group : not null access Gtk_Size_Group_Record)
@@ -204,7 +204,7 @@ package Gtk.Size_Group is
       (Size_Group : not null access Gtk_Size_Group_Record;
        Widget     : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Removes a widget from a Gtk.Size_Group.Gtk_Size_Group.
-   --  "widget": the Gtk.Widget.Gtk_Widget to remove
+   --  @param Widget the Gtk.Widget.Gtk_Widget to remove
 
    ----------------
    -- Properties --

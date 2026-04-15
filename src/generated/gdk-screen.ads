@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gdk.Screen.Gdk_Screen objects are the GDK representation of the screen on
 --  which windows can be displayed and on which the pointer moves. X originally
 --  identified screens with physical screens, but nowadays it is more common to
@@ -34,7 +33,6 @@
 --  (gdk_screen_get_system_visual), the dimensions of the physical monitors
 --  (gdk_screen_get_monitor_geometry), etc.
 --
---  </description>
 --  <group>Gdk, the low-level API</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -78,18 +76,22 @@ package Gdk.Screen is
    --  longer needed.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.22, 1
+   --  @return the currently active window, or null.
 
    function Get_Display
       (Screen : not null access Gdk_Screen_Record)
        return Gdk.Display.Gdk_Display;
    --  Gets the display to which the Screen belongs.
    --  Since: gtk+ 2.2
+   --  @return the display to which Screen belongs
 
    function Get_Font_Options
       (Screen : not null access Gdk_Screen_Record)
        return Cairo.Cairo_Font_Options;
    --  Gets any options previously set with Gdk.Screen.Set_Font_Options.
    --  Since: gtk+ 2.10
+   --  @return the current font options, or null if no default font options
+   --  have been set.
 
    procedure Set_Font_Options
       (Screen  : not null access Gdk_Screen_Record;
@@ -99,8 +101,8 @@ package Gdk.Screen is
    --  gdk_pango_context_get_for_screen. Changing the default set of font
    --  options does not affect contexts that have already been created.
    --  Since: gtk+ 2.10
-   --  "options": a Cairo.Cairo_Font_Options, or null to unset any previously
-   --  set default font options.
+   --  @param Options a Cairo.Cairo_Font_Options, or null to unset any
+   --  previously set default font options.
 
    function Get_Height
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
@@ -110,6 +112,7 @@ package Gdk.Screen is
    --  Gdk.Screen.Get_Monitor_Scale_Factor).
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
+   --  @return the height of Screen in pixels.
 
    function Get_Height_Mm
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
@@ -120,6 +123,7 @@ package Gdk.Screen is
    --  monitor dimensions instead.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
+   --  @return the heigth of Screen in millimeters.
 
    function Get_Monitor_At_Point
       (Screen : not null access Gdk_Screen_Record;
@@ -129,8 +133,10 @@ package Gdk.Screen is
    --  Returns the monitor number in which the point (X,Y) is located.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
-   --  "x": the x coordinate in the virtual screen.
-   --  "y": the y coordinate in the virtual screen.
+   --  @param X the x coordinate in the virtual screen.
+   --  @param Y the y coordinate in the virtual screen.
+   --  @return the monitor number in which the point (X,Y) lies, or a monitor
+   --  close to (X,Y) if the point is not in any monitor.
 
    function Get_Monitor_At_Window
       (Screen : not null access Gdk_Screen_Record;
@@ -140,7 +146,9 @@ package Gdk.Screen is
    --  bounding rectangle of Window resides.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
-   --  "window": a Gdk.Gdk_Window
+   --  @param Window a Gdk.Gdk_Window
+   --  @return the monitor number in which most of Window is located, or if
+   --  Window does not intersect any monitors, a monitor, close to Window.
 
    procedure Get_Monitor_Geometry
       (Screen      : not null access Gdk_Screen_Record;
@@ -157,8 +165,8 @@ package Gdk.Screen is
    --  Gdk.Screen.Get_Width and Gdk.Screen.Get_Height.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
-   --  "monitor_num": the monitor number
-   --  "dest": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
+   --  @param Monitor_Num the monitor number
+   --  @param Dest a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
    --  geometry
 
    function Get_Monitor_Height_Mm
@@ -168,8 +176,9 @@ package Gdk.Screen is
    --  Gets the height in millimeters of the specified monitor.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.22, 1
-   --  "monitor_num": number of the monitor, between 0 and
+   --  @param Monitor_Num number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
+   --  @return the height of the monitor, or -1 if not available
 
    function Get_Monitor_Plug_Name
       (Screen      : not null access Gdk_Screen_Record;
@@ -179,8 +188,10 @@ package Gdk.Screen is
    --  like VGA, DVI, or TV, not the actual product name of the display device.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.22, 1
-   --  "monitor_num": number of the monitor, between 0 and
+   --  @param Monitor_Num number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
+   --  @return a newly-allocated string containing the name of the monitor, or
+   --  null if the name cannot be determined
 
    function Get_Monitor_Scale_Factor
       (Screen      : not null access Gdk_Screen_Record;
@@ -194,8 +205,9 @@ package Gdk.Screen is
    --  where it is better to use Gdk.Window.Get_Scale_Factor instead.
    --  Since: gtk+ 3.10
    --  Deprecated since 3.22, 1
-   --  "monitor_num": number of the monitor, between 0 and
+   --  @param Monitor_Num number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
+   --  @return the scale factor
 
    function Get_Monitor_Width_Mm
       (Screen      : not null access Gdk_Screen_Record;
@@ -204,8 +216,9 @@ package Gdk.Screen is
    --  Gets the width in millimeters of the specified monitor, if available.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.22, 1
-   --  "monitor_num": number of the monitor, between 0 and
+   --  @param Monitor_Num number of the monitor, between 0 and
    --  gdk_screen_get_n_monitors (screen)
+   --  @return the width of the monitor, or -1 if not available
 
    procedure Get_Monitor_Workarea
       (Screen      : not null access Gdk_Screen_Record;
@@ -226,8 +239,8 @@ package Gdk.Screen is
    --  use Gdk.Screen.Get_N_Monitors.
    --  Since: gtk+ 3.4
    --  Deprecated since 3.22, 1
-   --  "monitor_num": the monitor number
-   --  "dest": a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
+   --  @param Monitor_Num the monitor number
+   --  @param Dest a Gdk.Rectangle.Gdk_Rectangle to be filled with the monitor
    --  workarea
 
    function Get_N_Monitors
@@ -236,6 +249,7 @@ package Gdk.Screen is
    --  Returns the number of monitors which Screen consists of.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
+   --  @return number of monitors which Screen consists of
 
    function Get_Number
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
@@ -244,6 +258,7 @@ package Gdk.Screen is
    --  belongs. (See Gdk.Screen.Get_Display)
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
+   --  @return the index
 
    function Get_Primary_Monitor
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
@@ -257,12 +272,15 @@ package Gdk.Screen is
    --  be 0, defaulting to the first monitor.
    --  Since: gtk+ 2.20
    --  Deprecated since 3.22, 1
+   --  @return An integer index for the primary monitor, or 0 if none is
+   --  configured.
 
    function Get_Resolution
       (Screen : not null access Gdk_Screen_Record) return Gdouble;
    --  Gets the resolution for font handling on the screen; see
    --  Gdk.Screen.Set_Resolution for full details.
    --  Since: gtk+ 2.10
+   --  @return the current resolution, or -1 if no resolution has been set.
 
    procedure Set_Resolution
       (Screen : not null access Gdk_Screen_Record;
@@ -272,7 +290,7 @@ package Gdk.Screen is
    --  and cairo units. The default value is 96, meaning that a 10 point font
    --  will be 13 units high. (10 * 96. / 72. = 13.3).
    --  Since: gtk+ 2.10
-   --  "dpi": the resolution in "dots per inch". (Physical inches aren't
+   --  @param Dpi the resolution in "dots per inch". (Physical inches aren't
    --  actually involved; the terminology is conventional.)
 
    function Get_Rgba_Visual
@@ -289,11 +307,14 @@ package Gdk.Screen is
    --  For setting an overall opacity for a top-level window, see
    --  Gdk.Window.Set_Opacity.
    --  Since: gtk+ 2.8
+   --  @return a visual to use for windows with an alpha channel or null if
+   --  the capability is not available.
 
    function Get_Root_Window
       (Screen : not null access Gdk_Screen_Record) return Gdk.Gdk_Window;
    --  Gets the root window of Screen.
    --  Since: gtk+ 2.2
+   --  @return the root window
 
    function Get_System_Visual
       (Screen : not null access Gdk_Screen_Record)
@@ -301,6 +322,7 @@ package Gdk.Screen is
    --  Get the system's default visual for Screen. This is the visual for the
    --  root window of the display. The return value should not be freed.
    --  Since: gtk+ 2.2
+   --  @return the system visual
 
    function Get_Width
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
@@ -310,6 +332,7 @@ package Gdk.Screen is
    --  Gdk.Screen.Get_Monitor_Scale_Factor).
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
+   --  @return the width of Screen in pixels.
 
    function Get_Width_Mm
       (Screen : not null access Gdk_Screen_Record) return Glib.Gint;
@@ -320,6 +343,7 @@ package Gdk.Screen is
    --  monitor dimensions instead.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
+   --  @return the width of Screen in millimeters.
 
    function Is_Composited
       (Screen : not null access Gdk_Screen_Record) return Boolean;
@@ -328,6 +352,8 @@ package Gdk.Screen is
    --  On X11 this function returns whether a compositing manager is
    --  compositing Screen.
    --  Since: gtk+ 2.10
+   --  @return Whether windows with RGBA visuals can reasonably be expected to
+   --  have their alpha channels drawn correctly on the screen.
 
    function Make_Display_Name
       (Screen : not null access Gdk_Screen_Record) return UTF8_String;
@@ -336,6 +362,7 @@ package Gdk.Screen is
    --  Gdk.Display.Gdk_Display with this screen as the default screen.
    --  Since: gtk+ 2.2
    --  Deprecated since 3.22, 1
+   --  @return a newly allocated string, free with g_free
 
    ----------------------
    -- GtkAda additions --
@@ -392,6 +419,8 @@ package Gdk.Screen is
    --  Gets the default screen for the default display. (See
    --  gdk_display_get_default ()).
    --  Since: gtk+ 2.2
+   --  @return a Gdk.Screen.Gdk_Screen, or null if there is no default
+   --  display.
 
    function Height return Glib.Gint;
    pragma Obsolescent (Height);
@@ -399,12 +428,15 @@ package Gdk.Screen is
    --  in "application pixels", not in "device pixels" (see
    --  Gdk.Screen.Get_Monitor_Scale_Factor).
    --  Deprecated since 3.22, 1
+   --  @return the height of the default screen in pixels.
 
    function Height_Mm return Glib.Gint;
    pragma Obsolescent (Height_Mm);
    --  Returns the height of the default screen in millimeters. Note that on
    --  many X servers this value will not be correct.
    --  Deprecated since 3.22, 1
+   --  @return the height of the default screen in millimeters, though it is
+   --  not always correct.
 
    function Width return Glib.Gint;
    pragma Obsolescent (Width);
@@ -412,12 +444,15 @@ package Gdk.Screen is
    --  "application pixels", not in "device pixels" (see
    --  Gdk.Screen.Get_Monitor_Scale_Factor).
    --  Deprecated since 3.22, 1
+   --  @return the width of the default screen in pixels.
 
    function Width_Mm return Glib.Gint;
    pragma Obsolescent (Width_Mm);
    --  Returns the width of the default screen in millimeters. Note that on
    --  many X servers this value will not be correct.
    --  Deprecated since 3.22, 1
+   --  @return the width of the default screen in millimeters, though it is
+   --  not always correct.
 
    ----------------
    -- Properties --

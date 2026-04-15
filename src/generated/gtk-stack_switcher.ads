@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The GtkStackSwitcher widget acts as a controller for a
 --  Gtk.Stack.Gtk_Stack; it shows a row of buttons to switch between the
 --  various pages of the associated stack widget.
@@ -43,8 +42,6 @@
 --
 --  When circumstances require it, GtkStackSwitcher adds the .needs-attention
 --  style class to the widgets representing the stack pages.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -89,13 +86,14 @@ package Gtk.Stack_Switcher is
        return Gtk.Stack.Gtk_Stack;
    --  Retrieves the stack. See Gtk.Stack_Switcher.Set_Stack.
    --  Since: gtk+ 3.10
+   --  @return the stack, or null if none has been set explicitly.
 
    procedure Set_Stack
       (Self  : not null access Gtk_Stack_Switcher_Record;
        Stack : access Gtk.Stack.Gtk_Stack_Record'Class);
    --  Sets the stack to control.
    --  Since: gtk+ 3.10
-   --  "stack": a Gtk.Stack.Gtk_Stack
+   --  @param Stack a Gtk.Stack.Gtk_Stack
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

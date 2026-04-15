@@ -49,12 +49,13 @@ package body Gtk.File_Filter is
    --  allows GTK+ to avoid retrieving expensive information when it isn't
    --  needed by the filter.
    --  Since: gtk+ 2.4
-   --  "needed": bitfield of flags indicating the information that the custom
-   --  filter function needs.
-   --  "func": callback function; if the function returns True, then the file
-   --  will be displayed.
-   --  "data": data to pass to Func
-   --  "notify": function to call to free Data when it is no longer needed.
+   --  @param Needed bitfield of flags indicating the information that the
+   --  custom filter function needs.
+   --  @param Func callback function; if the function returns True, then the
+   --  file will be displayed.
+   --  @param Data data to pass to Func
+   --  @param Notify function to call to free Data when it is no longer
+   --  needed.
 
    function To_Gtk_File_Filter_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_File_Filter_Func);
@@ -66,9 +67,10 @@ package body Gtk.File_Filter is
       (Filter_Info : access Gtk.File_Filter.Gtk_File_Filter_Info;
        Data        : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_File_Filter_Func);
-   --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info that is filled
-   --  according to the Needed flags passed to Gtk.File_Filter.Add_Custom
-   --  "data": user data passed to Gtk.File_Filter.Add_Custom
+   --  @param Filter_Info a Gtk.File_Filter.Gtk_File_Filter_Info that is
+   --  filled according to the Needed flags passed to
+   --  Gtk.File_Filter.Add_Custom
+   --  @param Data user data passed to Gtk.File_Filter.Add_Custom
 
    -----------------------------------
    -- Internal_Gtk_File_Filter_Func --
@@ -199,9 +201,11 @@ package body Gtk.File_Filter is
       pragma Convention (C, Internal_Cb);
       --  The type of function that is used with custom filters, see
       --  Gtk.File_Filter.Add_Custom.
-      --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info that is filled
-      --  according to the Needed flags passed to Gtk.File_Filter.Add_Custom
-      --  "data": user data passed to Gtk.File_Filter.Add_Custom
+      --  @param Filter_Info a Gtk.File_Filter.Gtk_File_Filter_Info that is
+      --  filled according to the Needed flags passed to
+      --  Gtk.File_Filter.Add_Custom
+      --  @param Data user data passed to Gtk.File_Filter.Add_Custom
+      --  @return True if the file should be displayed
 
       ----------------
       -- Add_Custom --

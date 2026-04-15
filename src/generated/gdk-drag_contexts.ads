@@ -99,23 +99,26 @@ package Gdk.Drag_Contexts is
    --  Gdk.Drag_Contexts.Get_Suggested_Action returns
    --  Gdk.Drag_Contexts.Action_Ask.
    --  Since: gtk+ 2.22
+   --  @return the Gdk.Drag_Contexts.Gdk_Drag_Action flags
 
    function Get_Dest_Window
       (Self : not null access Drag_Context_Record) return Gdk.Gdk_Window;
    --  Returns the destination window for the DND operation.
    --  Since: gtk+ 3.0
+   --  @return a Gdk.Gdk_Window
 
    function Get_Device
       (Self : not null access Drag_Context_Record)
        return Gdk.Device.Gdk_Device;
    --  Returns the Gdk.Device.Gdk_Device associated to the drag context.
+   --  @return The Gdk.Device.Gdk_Device associated to Context.
 
    procedure Set_Device
       (Self   : not null access Drag_Context_Record;
        Device : not null access Gdk.Device.Gdk_Device_Record'Class);
    --  Associates a Gdk.Device.Gdk_Device to Context, so all Drag and Drop
    --  events for Context are emitted as if they came from this device.
-   --  "device": a Gdk.Device.Gdk_Device
+   --  @param Device a Gdk.Device.Gdk_Device
 
    function Get_Drag_Window
       (Self : not null access Drag_Context_Record) return Gdk.Gdk_Window;
@@ -125,26 +128,31 @@ package Gdk.Drag_Contexts is
    --  ongoing drag operation. The window is owned by Context and will be
    --  destroyed when the drag operation is over.
    --  Since: gtk+ 3.20
+   --  @return the drag window, or null
 
    function Get_Protocol
       (Self : not null access Drag_Context_Record) return Gdk_Drag_Protocol;
    --  Returns the drag protocol that is used by this context.
    --  Since: gtk+ 3.0
+   --  @return the drag protocol
 
    function Get_Selected_Action
       (Self : not null access Drag_Context_Record) return Gdk_Drag_Action;
    --  Determines the action chosen by the drag destination.
    --  Since: gtk+ 2.22
+   --  @return a Gdk.Drag_Contexts.Gdk_Drag_Action value
 
    function Get_Source_Window
       (Self : not null access Drag_Context_Record) return Gdk.Gdk_Window;
    --  Returns the Gdk.Gdk_Window where the DND operation started.
    --  Since: gtk+ 2.22
+   --  @return a Gdk.Gdk_Window
 
    function Get_Suggested_Action
       (Self : not null access Drag_Context_Record) return Gdk_Drag_Action;
    --  Determines the suggested drag action of the context.
    --  Since: gtk+ 2.22
+   --  @return a Gdk.Drag_Contexts.Gdk_Drag_Action value
 
    function Manage_Dnd
       (Self       : not null access Drag_Context_Record;
@@ -167,8 +175,9 @@ package Gdk.Drag_Contexts is
    --  and drop operation is finished but doesn't happen over an accepting
    --  destination, or is cancelled through other means.
    --  Since: gtk+ 3.20
-   --  "ipc_window": Window to use for IPC messaging/events
-   --  "actions": the actions supported by the drag source
+   --  @param Ipc_Window Window to use for IPC messaging/events
+   --  @param Actions the actions supported by the drag source
+   --  @return TRUE if the drag and drop operation is managed.
 
    procedure Set_Hotspot
       (Self  : not null access Drag_Context_Record;
@@ -178,8 +187,8 @@ package Gdk.Drag_Contexts is
    --  hotspot. Initially, the hotspot is at the top left corner of the drag
    --  window.
    --  Since: gtk+ 3.20
-   --  "hot_x": x coordinate of the drag window hotspot
-   --  "hot_y": y coordinate of the drag window hotspot
+   --  @param Hot_X x coordinate of the drag window hotspot
+   --  @param Hot_Y y coordinate of the drag window hotspot
 
    -------------
    -- Signals --

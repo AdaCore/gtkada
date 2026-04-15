@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Tool_Shell.Gtk_Tool_Shell interface allows container widgets to
 --  provide additional information when embedding Gtk.Tool_Item.Gtk_Tool_Item
 --  widgets.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
@@ -59,6 +56,7 @@ package Gtk.Tool_Shell is
    --  must not call this function directly, but rely on
    --  Gtk.Tool_Item.Get_Ellipsize_Mode instead.
    --  Since: gtk+ 2.20
+   --  @return the current ellipsize mode of Shell
 
    function Get_Icon_Size
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Icon_Size;
@@ -66,6 +64,7 @@ package Gtk.Tool_Shell is
    --  Retrieves the icon size for the tool shell. Tool items must not call
    --  this function directly, but rely on Gtk.Tool_Item.Get_Icon_Size instead.
    --  Since: gtk+ 2.14
+   --  @return the current size (Gtk.Enums.Gtk_Icon_Size) for icons of Shell
 
    function Get_Orientation
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation;
@@ -74,6 +73,7 @@ package Gtk.Tool_Shell is
    --  not call this function directly, but rely on
    --  Gtk.Tool_Item.Get_Orientation instead.
    --  Since: gtk+ 2.14
+   --  @return the current orientation of Shell
 
    function Get_Relief_Style
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Relief_Style;
@@ -82,6 +82,7 @@ package Gtk.Tool_Shell is
    --  this function directly, but rely on Gtk.Tool_Item.Get_Relief_Style
    --  instead.
    --  Since: gtk+ 2.14
+   --  @return The relief style of buttons on Shell.
 
    function Get_Style
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Toolbar_Style;
@@ -90,6 +91,7 @@ package Gtk.Tool_Shell is
    --  must not call this function directly, but rely on
    --  Gtk.Tool_Item.Get_Toolbar_Style instead.
    --  Since: gtk+ 2.14
+   --  @return the current style of Shell
 
    function Get_Text_Alignment (Self : Gtk_Tool_Shell) return Gfloat;
    pragma Import (C, Get_Text_Alignment, "gtk_tool_shell_get_text_alignment");
@@ -97,6 +99,7 @@ package Gtk.Tool_Shell is
    --  must not call this function directly, but rely on
    --  Gtk.Tool_Item.Get_Text_Alignment instead.
    --  Since: gtk+ 2.20
+   --  @return the current text alignment of Shell
 
    function Get_Text_Orientation
       (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation;
@@ -105,6 +108,7 @@ package Gtk.Tool_Shell is
    --  must not call this function directly, but rely on
    --  Gtk.Tool_Item.Get_Text_Orientation instead.
    --  Since: gtk+ 2.20
+   --  @return the current text orientation of Shell
 
    function Get_Text_Size_Group
       (Self : Gtk_Tool_Shell) return Gtk.Size_Group.Gtk_Size_Group;
@@ -112,6 +116,7 @@ package Gtk.Tool_Shell is
    --  must not call this function directly, but rely on
    --  Gtk.Tool_Item.Get_Text_Size_Group instead.
    --  Since: gtk+ 2.20
+   --  @return the current text size group of Shell
 
    procedure Rebuild_Menu (Self : Gtk_Tool_Shell);
    pragma Import (C, Rebuild_Menu, "gtk_tool_shell_rebuild_menu");
@@ -143,6 +148,7 @@ package Gtk.Tool_Shell is
    --  must not call this function directly, but rely on
    --  gtk_tool_item_get_ellipsize_mode instead.
    --  Since: gtk+ 2.20
+   --  @return the current ellipsize mode of Shell
 
    type Virtual_Get_Icon_Size is access function (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Icon_Size;
    pragma Convention (C, Virtual_Get_Icon_Size);
@@ -153,6 +159,7 @@ package Gtk.Tool_Shell is
    --  not call this function directly, but rely on
    --  gtk_tool_item_get_orientation instead.
    --  Since: gtk+ 2.14
+   --  @return the current orientation of Shell
 
    type Virtual_Get_Relief_Style is access function (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Relief_Style;
    pragma Convention (C, Virtual_Get_Relief_Style);
@@ -160,6 +167,7 @@ package Gtk.Tool_Shell is
    --  this function directly, but rely on gtk_tool_item_get_relief_style
    --  instead.
    --  Since: gtk+ 2.14
+   --  @return The relief style of buttons on Shell.
 
    type Virtual_Get_Style is access function (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Toolbar_Style;
    pragma Convention (C, Virtual_Get_Style);
@@ -167,6 +175,7 @@ package Gtk.Tool_Shell is
    --  must not call this function directly, but rely on
    --  gtk_tool_item_get_toolbar_style instead.
    --  Since: gtk+ 2.14
+   --  @return the current style of Shell
 
    type Virtual_Get_Text_Alignment is access function (Self : Gtk_Tool_Shell) return Gfloat;
    pragma Convention (C, Virtual_Get_Text_Alignment);
@@ -174,6 +183,7 @@ package Gtk.Tool_Shell is
    --  must not call this function directly, but rely on
    --  gtk_tool_item_get_text_alignment instead.
    --  Since: gtk+ 2.20
+   --  @return the current text alignment of Shell
 
    type Virtual_Get_Text_Orientation is access function (Self : Gtk_Tool_Shell) return Gtk.Enums.Gtk_Orientation;
    pragma Convention (C, Virtual_Get_Text_Orientation);
@@ -181,6 +191,7 @@ package Gtk.Tool_Shell is
    --  must not call this function directly, but rely on
    --  gtk_tool_item_get_text_orientation instead.
    --  Since: gtk+ 2.20
+   --  @return the current text orientation of Shell
 
    type Virtual_Get_Text_Size_Group is access function (Self : Gtk_Tool_Shell) return System.Address;
    pragma Convention (C, Virtual_Get_Text_Size_Group);
@@ -188,6 +199,7 @@ package Gtk.Tool_Shell is
    --  must not call this function directly, but rely on
    --  gtk_tool_item_get_text_size_group instead.
    --  Since: gtk+ 2.20
+   --  @return the current text size group of Shell
 
    type Virtual_Rebuild_Menu is access procedure (Self : Gtk_Tool_Shell);
    pragma Convention (C, Virtual_Rebuild_Menu);

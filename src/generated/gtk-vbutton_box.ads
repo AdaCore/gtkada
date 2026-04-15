@@ -21,13 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk_Vbutton_Box is a specific Gtk_Button_Box that organizes its children
 --  vertically. The beginning of the box (when you add children with
 --  Gtk.Box.Pack_Start) is on the top of the box. Its end (for
 --  Gtk.Box.Pack_End) is on the bottom.
 --
---  </description>
 --  <group>Layout containers</group>
 
 pragma Warnings (Off, "*is already use-visible*");

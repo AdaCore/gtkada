@@ -41,8 +41,9 @@ package Gtk.Main is
       Event       : Gdk.Event.Gdk_Event_Key) return Glib.Gint;
    --  Key snooper functions are called before normal event delivery. They can
    --  be used to implement custom key event handling.
-   --  "grab_widget": the widget to which the event will be delivered
-   --  "event": the key event
+   --  @param Grab_Widget the widget to which the event will be delivered
+   --  @param Event the key event
+   --  @return True to stop further processing of Event, False to continue.
 
    -------------
    -- Methods --
@@ -53,7 +54,9 @@ package Gtk.Main is
    --  Installs a key snooper function, which will get called on all key
    --  events before delivering them normally.
    --  Deprecated since 3.4, 1
-   --  "snooper": a Gtk_Key_Snoop_Func
+   --  @param Snooper a Gtk_Key_Snoop_Func
+   --  @return a unique id for this key snooper for use with
+   --  Gtk.Main.Key_Snooper_Remove.
 
    ----------------------
    -- GtkAda additions --
@@ -81,6 +84,7 @@ package Gtk.Main is
    --  which represents the major version of the GTK+ headers you have included
    --  when compiling your code.
    --  Since: gtk+ 3.0
+   --  @return the major version number of the GTK+ library
 
    function Get_Minor_Version return Guint;
    --  Returns the minor version number of the GTK+ library. (e.g. in GTK+
@@ -90,6 +94,7 @@ package Gtk.Main is
    --  which represents the minor version of the GTK+ headers you have included
    --  when compiling your code.
    --  Since: gtk+ 3.0
+   --  @return the minor version number of the GTK+ library
 
    function Get_Micro_Version return Guint;
    --  Returns the micro version number of the GTK+ library. (e.g. in GTK+
@@ -99,18 +104,21 @@ package Gtk.Main is
    --  which represents the micro version of the GTK+ headers you have included
    --  when compiling your code.
    --  Since: gtk+ 3.0
+   --  @return the micro version number of the GTK+ library
 
    function Get_Binary_Age return Guint;
    --  Returns the binary age as passed to `libtool` when building the GTK+
    --  library the process is running against. If `libtool` means nothing to
    --  you, don't worry about it.
    --  Since: gtk+ 3.0
+   --  @return the binary age of the GTK+ library
 
    function Get_Interface_Age return Guint;
    --  Returns the interface age as passed to `libtool` when building the GTK+
    --  library the process is running against. If `libtool` means nothing to
    --  you, don't worry about it.
    --  Since: gtk+ 3.0
+   --  @return the interface age of the GTK+ library
 
    function Check_Version
       (Required_Major : Guint;
@@ -132,9 +140,12 @@ package Gtk.Main is
    --  may be linked against an old version of GTK+ and calling the old version
    --  of Gtk.Main.Check_Version, but still get loaded into an application
    --  using a newer version of GTK+.
-   --  "required_major": the required major version
-   --  "required_minor": the required minor version
-   --  "required_micro": the required micro version
+   --  @param Required_Major the required major version
+   --  @param Required_Minor the required minor version
+   --  @param Required_Micro the required micro version
+   --  @return null if the GTK+ library is compatible with the given version,
+   --  or a string describing the version mismatch. The returned string is
+   --  owned by GTK+ and should not be modified or freed.
 
    procedure Disable_Setlocale;
    --  Prevents gtk_init, gtk_init_check, gtk_init_with_args and
@@ -152,6 +163,8 @@ package Gtk.Main is
    --  left-to-right text direction.
    --  This function is equivalent to Pango.Language.Get_Default. See that
    --  function for details.
+   --  @return the default language as a Pango.Language.Pango_Language, must
+   --  not be freed
 
    function Events_Pending return Boolean;
    --  Checks if any events are pending.
@@ -165,6 +178,8 @@ package Gtk.Main is
    --       gtk_main_iteration ();
    --
    --     // ...computation continued
+   --
+   --  @return True if any events are pending, False otherwise
 
    procedure Main_Do_Event (Event : Gdk.Event.Gdk_Event);
    --  Processes a single GDK event.
@@ -196,7 +211,7 @@ package Gtk.Main is
    --  feature.
    --  5. After finishing the delivery the event is popped from the event
    --  stack.
-   --  "event": An event to process (normally passed by GDK)
+   --  @param Event An event to process (normally passed by GDK)
 
    procedure Main;
    --  Runs the main loop until Gtk.Main.Main_Quit is called.
@@ -205,6 +220,7 @@ package Gtk.Main is
 
    function Main_Level return Guint;
    --  Asks for the current nesting level of the main loop.
+   --  @return the nesting level of the current invocation of the main loop
 
    procedure Main_Quit;
    --  Makes the innermost invocation of the main loop return when it regains
@@ -216,11 +232,15 @@ package Gtk.Main is
    --  event is noticed. If you don't want to block look at
    --  Gtk.Main.Main_Iteration_Do or check if any events are pending with
    --  Gtk.Main.Events_Pending first.
+   --  @return True if Gtk.Main.Main_Quit has been called for the innermost
+   --  mainloop
 
    function Main_Iteration_Do (Blocking : Boolean) return Boolean;
    --  Runs a single iteration of the mainloop. If no events are available
    --  either return or block depending on the value of Blocking.
-   --  "blocking": True if you want GTK+ to block if no events are pending
+   --  @param Blocking True if you want GTK+ to block if no events are pending
+   --  @return True if Gtk.Main.Main_Quit has been called for the innermost
+   --  mainloop
 
    function True return Boolean;
    --  All this function does it to return True.
@@ -260,13 +280,18 @@ package Gtk.Main is
    --
    --       return 0;
    --     }
+   --
+   --  @return True
 
    function False return Boolean;
    --  Analogical to Gtk.Main.True, this function does nothing but always
    --  returns False.
+   --  @return False
 
    function Grab_Get_Current return Gtk.Widget.Gtk_Widget;
    --  Queries the current grab of the default window group.
+   --  @return The widget which currently has the grab or null if no grab is
+   --  active
 
    procedure Device_Grab_Add
       (Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -277,9 +302,10 @@ package Gtk.Main is
    --  Block_Others parameter is True, any other devices will be unable to
    --  interact with Widget during the grab.
    --  Since: gtk+ 3.0
-   --  "widget": a Gtk.Widget.Gtk_Widget
-   --  "device": a Gdk.Device.Gdk_Device to grab on.
-   --  "block_others": True to prevent other devices to interact with Widget.
+   --  @param Widget a Gtk.Widget.Gtk_Widget
+   --  @param Device a Gdk.Device.Gdk_Device to grab on.
+   --  @param Block_Others True to prevent other devices to interact with
+   --  Widget.
 
    procedure Device_Grab_Remove
       (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -288,42 +314,48 @@ package Gtk.Main is
    --  You have to pair calls to Gtk.Main.Device_Grab_Add and
    --  Gtk.Main.Device_Grab_Remove.
    --  Since: gtk+ 3.0
-   --  "widget": a Gtk.Widget.Gtk_Widget
-   --  "device": a Gdk.Device.Gdk_Device
+   --  @param Widget a Gtk.Widget.Gtk_Widget
+   --  @param Device a Gdk.Device.Gdk_Device
 
    procedure Key_Snooper_Remove (Snooper_Handler_Id : Guint);
    pragma Obsolescent (Key_Snooper_Remove);
    --  Removes the key snooper function with the given id.
    --  Deprecated since 3.4, 1
-   --  "snooper_handler_id": Identifies the key snooper to remove
+   --  @param Snooper_Handler_Id Identifies the key snooper to remove
 
    function Get_Current_Event return Gdk.Event.Gdk_Event;
    --  Obtains a copy of the event currently being processed by GTK+.
    --  For example, if you are handling a Gtk.Button.Gtk_Button::clicked
    --  signal, the current event will be the Gdk.Event.Gdk_Event_Button that
    --  triggered the ::clicked signal.
+   --  @return a copy of the current event, or null if there is no current
+   --  event. The returned event must be freed with Gdk.Event.Free.
 
    function Get_Current_Event_Time return Guint32;
    --  If there is a current event and it has a timestamp, return that
    --  timestamp, otherwise return GDK_CURRENT_TIME.
+   --  @return the timestamp from the current event, or GDK_CURRENT_TIME.
 
    procedure Get_Current_Event_State
       (State             : out Gdk.Types.Gdk_Modifier_Type;
        Has_Current_Event : out Boolean);
    --  If there is a current event and it has a state field, place that state
    --  field in State and return True, otherwise return False.
-   --  "state": a location to store the state of the current event
+   --  @param State a location to store the state of the current event
+   --  @return True if there was a current event and it had a state field
 
    function Get_Current_Event_Device return Gdk.Device.Gdk_Device;
    --  If there is a current event and it has a device, return that device,
    --  otherwise return null.
+   --  @return a Gdk.Device.Gdk_Device, or null
 
    function Get_Event_Widget
       (Event : Gdk.Event.Gdk_Event) return Gtk.Widget.Gtk_Widget;
    --  If Event is null or the event was not associated with any widget,
    --  returns null, otherwise returns the widget that received the event
    --  originally.
-   --  "event": a Gdk.Event.Gdk_Event
+   --  @param Event a Gdk.Event.Gdk_Event
+   --  @return the widget that originally received Event, or null
 
    procedure Propagate_Event
       (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -344,7 +376,7 @@ package Gtk.Main is
    --  certainly better ways to achieve your goals. For example, use
    --  Gdk.Window.Invalidate_Rect or Gtk.Widget.Queue_Draw instead of making up
    --  expose events.
-   --  "widget": a Gtk.Widget.Gtk_Widget
-   --  "event": an event
+   --  @param Widget a Gtk.Widget.Gtk_Widget
+   --  @param Event an event
 
 end Gtk.Main;

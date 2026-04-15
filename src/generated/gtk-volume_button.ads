@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Volume_Button.Gtk_Volume_Button is a subclass of
 --  Gtk.Scale_Button.Gtk_Scale_Button that has been tailored for use as a
 --  volume control widget with suitable icons, tooltips and accessible labels.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;

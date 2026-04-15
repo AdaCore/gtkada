@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog is a dialog box suitable
 --  for use with "File/Open" or "File/Save as" commands. This widget works by
 --  putting a Gtk.File_Chooser_Widget.Gtk_File_Chooser_Widget inside a
@@ -173,8 +172,6 @@
 --  To summarize, make sure you use a [stock response
 --  code][gtkfilechooserdialog-responses] when you use
 --  Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog to ensure proper operation.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;     use GNAT.Strings;
@@ -213,9 +210,9 @@ package Gtk.File_Chooser_Dialog is
    --  Since: gtk+ 2.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "title": Title of the dialog, or null
-   --  "parent": Transient parent of the dialog, or null
-   --  "action": Open or save mode for the dialog
+   --  @param Title Title of the dialog, or null
+   --  @param Parent Transient parent of the dialog, or null
+   --  @param Action Open or save mode for the dialog
 
    function Gtk_File_Chooser_Dialog_New
       (Title  : UTF8_String := "";
@@ -225,9 +222,9 @@ package Gtk.File_Chooser_Dialog is
    --  Creates a new Gtk.File_Chooser_Dialog.Gtk_File_Chooser_Dialog. This
    --  function is analogous to gtk_dialog_new_with_buttons.
    --  Since: gtk+ 2.4
-   --  "title": Title of the dialog, or null
-   --  "parent": Transient parent of the dialog, or null
-   --  "action": Open or save mode for the dialog
+   --  @param Title Title of the dialog, or null
+   --  @param Parent Transient parent of the dialog, or null
+   --  @param Action Open or save mode for the dialog
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_file_chooser_dialog_get_type");

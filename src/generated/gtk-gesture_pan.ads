@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Gesture_Pan.Gtk_Gesture_Pan is a Gtk.Gesture.Gtk_Gesture
 --  implementation able to recognize pan gestures, those are drags that are
 --  locked to happen along one axis. The axis that a
@@ -36,8 +35,6 @@
 --  Once a panning gesture along the expected axis is recognized, the
 --  Gtk.Gesture_Pan.Gtk_Gesture_Pan::pan signal will be emitted as input events
 --  are received, containing the offset in the given axis.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;
@@ -68,8 +65,8 @@ package Gtk.Gesture_Pan is
    --  Since: gtk+ 3.14
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "widget": a Gtk.Widget.Gtk_Widget
-   --  "orientation": expected orientation
+   --  @param Widget a Gtk.Widget.Gtk_Widget
+   --  @param Orientation expected orientation
 
    function Gtk_Gesture_Pan_New
       (Widget      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -77,8 +74,8 @@ package Gtk.Gesture_Pan is
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes pan
    --  gestures.
    --  Since: gtk+ 3.14
-   --  "widget": a Gtk.Widget.Gtk_Widget
-   --  "orientation": expected orientation
+   --  @param Widget a Gtk.Widget.Gtk_Widget
+   --  @param Orientation expected orientation
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_gesture_pan_get_type");
@@ -92,13 +89,14 @@ package Gtk.Gesture_Pan is
        return Gtk.Enums.Gtk_Orientation;
    --  Returns the orientation of the pan gestures that this Gesture expects.
    --  Since: gtk+ 3.14
+   --  @return the expected orientation for pan gestures
 
    procedure Set_Orientation
       (Self        : not null access Gtk_Gesture_Pan_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
    --  Sets the orientation to be expected on pan gestures.
    --  Since: gtk+ 3.14
-   --  "orientation": expected orientation
+   --  @param Orientation expected orientation
 
    ----------------
    -- Properties --
@@ -137,8 +135,8 @@ package Gtk.Gesture_Pan is
    --  is detected.
    -- 
    --  Callback parameters:
-   --    --  "direction": current direction of the pan gesture
-   --    --  "offset": Offset along the gesture orientation
+   --    --  @param Direction current direction of the pan gesture
+   --    --  @param Offset Offset along the gesture orientation
 
 private
    Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation :=

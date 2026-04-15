@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Color_Chooser_Dialog.Gtk_Color_Chooser_Dialog widget is a dialog
 --  for choosing a color. It implements the Gtk.Color_Chooser.Gtk_Color_Chooser
 --  interface.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.RGBA;          use Gdk.RGBA;
@@ -60,8 +57,8 @@ package Gtk.Color_Chooser_Dialog is
    --  Since: gtk+ 3.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "title": Title of the dialog, or null
-   --  "parent": Transient parent of the dialog, or null
+   --  @param Title Title of the dialog, or null
+   --  @param Parent Transient parent of the dialog, or null
 
    function Gtk_Color_Chooser_Dialog_New
       (Title  : UTF8_String := "";
@@ -69,8 +66,8 @@ package Gtk.Color_Chooser_Dialog is
        return Gtk_Color_Chooser_Dialog;
    --  Creates a new Gtk.Color_Chooser_Dialog.Gtk_Color_Chooser_Dialog.
    --  Since: gtk+ 3.4
-   --  "title": Title of the dialog, or null
-   --  "parent": Transient parent of the dialog, or null
+   --  @param Title Title of the dialog, or null
+   --  @param Parent Transient parent of the dialog, or null
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_color_chooser_dialog_get_type");

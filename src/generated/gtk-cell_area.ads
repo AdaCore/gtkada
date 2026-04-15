@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Cell_Area.Gtk_Cell_Area is an abstract class for
 --  Gtk.Cell_Layout.Gtk_Cell_Layout widgets (also referred to as "layouting
 --  widgets") to interface with an arbitrary number of Gtk_Cell_Renderers and
@@ -330,7 +329,6 @@
 --  value of a cell property, use Gtk.Cell_Area.Cell_Get_Property,
 --  gtk_cell_area_cell_get or gtk_cell_area_cell_get_valist.
 --
---  </description>
 --  <group>Layout Containers</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -365,7 +363,8 @@ package Gtk.Cell_Area is
    return Boolean;
    --  The type of the callback functions used for iterating over the cell
    --  renderers of a Gtk.Cell_Area.Gtk_Cell_Area, see Gtk.Cell_Area.Foreach.
-   --  "renderer": the cell renderer to operate on
+   --  @param Renderer the cell renderer to operate on
+   --  @return True to stop iterating over cells.
 
    type Gtk_Cell_Alloc_Callback is access function
      (Renderer        : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class;
@@ -374,11 +373,12 @@ package Gtk.Cell_Area is
    --  The type of the callback functions used for iterating over the cell
    --  renderers and their allocated areas inside a
    --  Gtk.Cell_Area.Gtk_Cell_Area, see Gtk.Cell_Area.Foreach_Alloc.
-   --  "renderer": the cell renderer to operate on
-   --  "cell_area": the area allocated to Renderer inside the rectangle
+   --  @param Renderer the cell renderer to operate on
+   --  @param Cell_Area the area allocated to Renderer inside the rectangle
    --  provided to Gtk.Cell_Area.Foreach_Alloc.
-   --  "cell_background": the background area for Renderer inside the
+   --  @param Cell_Background the background area for Renderer inside the
    --  background area provided to Gtk.Cell_Area.Foreach_Alloc.
+   --  @return True to stop iterating over cells.
 
    type Gtk_Cell_Layout_Data_Func is access procedure
      (Cell_Layout : Gtk.Cell_Layout.Gtk_Cell_Layout;
@@ -387,11 +387,11 @@ package Gtk.Cell_Area is
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
 
    ------------------
    -- Constructors --
@@ -415,15 +415,16 @@ package Gtk.Cell_Area is
    --  however some subclasses which embed widgets in the area can also
    --  activate a widget if it currently has the focus.
    --  Since: gtk+ 3.0
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context in context
-   --  with the current row data
-   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering on
-   --  "cell_area": the size and location of Area relative to Widget's
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context in
+   --  context with the current row data
+   --  @param Widget the Gtk.Widget.Gtk_Widget that Area is rendering on
+   --  @param Cell_Area the size and location of Area relative to Widget's
    --  allocation
-   --  "flags": the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State flags for Area
-   --  for this row of data.
-   --  "edit_only": if True then only cell renderers that are
+   --  @param Flags the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State flags for
+   --  Area for this row of data.
+   --  @param Edit_Only if True then only cell renderers that are
    --  Gtk.Cell_Renderer.Cell_Renderer_Mode_Editable will be activated.
+   --  @return Whether Area was successfully activated.
 
    function Activate_Cell
       (Self      : not null access Gtk_Cell_Area_Record;
@@ -437,19 +438,22 @@ package Gtk.Cell_Area is
    --  activates cells for keyboard events for free in its own
    --  GtkCellArea->activate implementation.
    --  Since: gtk+ 3.0
-   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering onto
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area to activate
-   --  "event": the Gdk.Event.Gdk_Event for which cell activation should occur
-   --  "cell_area": the Gdk.Rectangle.Gdk_Rectangle in Widget relative
+   --  @param Widget the Gtk.Widget.Gtk_Widget that Area is rendering onto
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area to
+   --  activate
+   --  @param Event the Gdk.Event.Gdk_Event for which cell activation should
+   --  occur
+   --  @param Cell_Area the Gdk.Rectangle.Gdk_Rectangle in Widget relative
    --  coordinates of Renderer for the current row.
-   --  "flags": the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State for Renderer
+   --  @param Flags the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State for Renderer
+   --  @return whether cell activation was successful
 
    procedure Add
       (Self     : not null access Gtk_Cell_Area_Record;
        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
    --  Adds Renderer to Area with the default child cell properties.
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to add to Area
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer to add to Area
 
    procedure Add_Focus_Sibling
       (Self     : not null access Gtk_Cell_Area_Record;
@@ -460,10 +464,10 @@ package Gtk.Cell_Area is
    --  Events handled by focus siblings can also activate the given focusable
    --  Renderer.
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer expected to have
-   --  focus
-   --  "sibling": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to add to Renderer's
-   --  focus area
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer expected to
+   --  have focus
+   --  @param Sibling the Gtk.Cell_Renderer.Gtk_Cell_Renderer to add to
+   --  Renderer's focus area
 
    procedure Apply_Attributes
       (Self        : not null access Gtk_Cell_Area_Record;
@@ -474,12 +478,12 @@ package Gtk.Cell_Area is
    --  Applies any connected attributes to the renderers in Area by pulling
    --  the values from Tree_Model.
    --  Since: gtk+ 3.0
-   --  "tree_model": the Gtk.Tree_Model.Gtk_Tree_Model to pull values from
-   --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter in Tree_Model to apply values
-   --  for
-   --  "is_expander": whether Iter has children
-   --  "is_expanded": whether Iter is expanded in the view and children are
-   --  visible
+   --  @param Tree_Model the Gtk.Tree_Model.Gtk_Tree_Model to pull values from
+   --  @param Iter the Gtk.Tree_Model.Gtk_Tree_Iter in Tree_Model to apply
+   --  values for
+   --  @param Is_Expander whether Iter has children
+   --  @param Is_Expanded whether Iter is expanded in the view and children
+   --  are visible
 
    procedure Attribute_Connect
       (Self      : not null access Gtk_Cell_Area_Record;
@@ -489,11 +493,11 @@ package Gtk.Cell_Area is
    --  Connects an Attribute to apply values from Column for the
    --  Gtk.Tree_Model.Gtk_Tree_Model in use.
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to connect an
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer to connect an
    --  attribute for
-   --  "attribute": the attribute name
-   --  "column": the Gtk.Tree_Model.Gtk_Tree_Model column to fetch attribute
-   --  values from
+   --  @param Attribute the attribute name
+   --  @param Column the Gtk.Tree_Model.Gtk_Tree_Model column to fetch
+   --  attribute values from
 
    procedure Attribute_Disconnect
       (Self      : not null access Gtk_Cell_Area_Record;
@@ -502,9 +506,9 @@ package Gtk.Cell_Area is
    --  Disconnects Attribute for the Renderer in Area so that attribute will
    --  no longer be updated with values from the model.
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to disconnect an
-   --  attribute for
-   --  "attribute": the attribute name
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer to disconnect
+   --  an attribute for
+   --  @param Attribute the attribute name
 
    function Attribute_Get_Column
       (Self      : not null access Gtk_Cell_Area_Record;
@@ -513,8 +517,9 @@ package Gtk.Cell_Area is
    --  Returns the model column that an attribute has been mapped to, or -1 if
    --  the attribute is not mapped.
    --  Since: gtk+ 3.14
-   --  "renderer": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "attribute": an attribute on the renderer
+   --  @param Renderer a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Attribute an attribute on the renderer
+   --  @return the model column, or -1
 
    procedure Cell_Get_Property
       (Self          : not null access Gtk_Cell_Area_Record;
@@ -523,9 +528,9 @@ package Gtk.Cell_Area is
        Value         : in out Glib.Values.GValue);
    --  Gets the value of a cell property for Renderer in Area.
    --  Since: gtk+ 3.0
-   --  "renderer": a Gtk.Cell_Renderer.Gtk_Cell_Renderer inside Area
-   --  "property_name": the name of the property to get
-   --  "value": a location to return the value
+   --  @param Renderer a Gtk.Cell_Renderer.Gtk_Cell_Renderer inside Area
+   --  @param Property_Name the name of the property to get
+   --  @param Value a location to return the value
 
    procedure Cell_Set_Property
       (Self          : not null access Gtk_Cell_Area_Record;
@@ -534,9 +539,9 @@ package Gtk.Cell_Area is
        Value         : in out Glib.Values.GValue);
    --  Sets a cell property for Renderer in Area.
    --  Since: gtk+ 3.0
-   --  "renderer": a Gtk.Cell_Renderer.Gtk_Cell_Renderer inside Area
-   --  "property_name": the name of the cell property to set
-   --  "value": the value to set the cell property to
+   --  @param Renderer a Gtk.Cell_Renderer.Gtk_Cell_Renderer inside Area
+   --  @param Property_Name the name of the cell property to set
+   --  @param Value the value to set the cell property to
 
    function Copy_Context
       (Self    : not null access Gtk_Cell_Area_Record;
@@ -552,7 +557,9 @@ package Gtk.Cell_Area is
    --  each row based on a context which was already used to request all the
    --  row widths that are to be displayed.
    --  Since: gtk+ 3.0
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context to copy
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context to copy
+   --  @return a newly created Gtk.Cell_Area_Context.Gtk_Cell_Area_Context
+   --  copy of Context.
 
    function Create_Context
       (Self : not null access Gtk_Cell_Area_Record)
@@ -565,6 +572,8 @@ package Gtk.Cell_Area is
    --  Gtk.Cell_Area_Context.Gtk_Cell_Area_Context which was used to request
    --  the size of those rows of data).
    --  Since: gtk+ 3.0
+   --  @return a newly created Gtk.Cell_Area_Context.Gtk_Cell_Area_Context
+   --  which can be used with Area.
 
    function Event
       (Self      : not null access Gtk_Cell_Area_Record;
@@ -576,13 +585,14 @@ package Gtk.Cell_Area is
        return Glib.Gint;
    --  Delegates event handling to a Gtk.Cell_Area.Gtk_Cell_Area.
    --  Since: gtk+ 3.0
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this row
-   --  of data.
-   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering to
-   --  "event": the Gdk.Event.Gdk_Event to handle
-   --  "cell_area": the Widget relative coordinates for Area
-   --  "flags": the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State for Area in this
-   --  row.
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this
+   --  row of data.
+   --  @param Widget the Gtk.Widget.Gtk_Widget that Area is rendering to
+   --  @param Event the Gdk.Event.Gdk_Event to handle
+   --  @param Cell_Area the Widget relative coordinates for Area
+   --  @param Flags the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State for Area in
+   --  this row.
+   --  @return True if the event was handled by Area.
 
    function Focus
       (Self      : not null access Gtk_Cell_Area_Record;
@@ -594,14 +604,15 @@ package Gtk.Cell_Area is
    --  method to receive and navigate focus in its own way particular to how it
    --  lays out cells.
    --  Since: gtk+ 3.0
-   --  "direction": the Gtk.Enums.Gtk_Direction_Type
+   --  @param Direction the Gtk.Enums.Gtk_Direction_Type
+   --  @return True if focus remains inside Area as a result of this call.
 
    procedure Foreach
       (Self     : not null access Gtk_Cell_Area_Record;
        Callback : Gtk_Cell_Callback);
    --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area.
    --  Since: gtk+ 3.0
-   --  "callback": the Gtk_Cell_Callback to call
+   --  @param Callback the Gtk_Cell_Callback to call
 
    generic
       type User_Data_Type (<>) is private;
@@ -613,8 +624,9 @@ package Gtk.Cell_Area is
          Data     : User_Data_Type) return Boolean;
       --  The type of the callback functions used for iterating over the cell
       --  renderers of a Gtk.Cell_Area.Gtk_Cell_Area, see Gtk.Cell_Area.Foreach.
-      --  "renderer": the cell renderer to operate on
-      --  "data": user-supplied data
+      --  @param Renderer the cell renderer to operate on
+      --  @param Data user-supplied data
+      --  @return True to stop iterating over cells.
 
       procedure Foreach
          (Self          : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
@@ -623,8 +635,8 @@ package Gtk.Cell_Area is
       --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in
       --  Area.
       --  Since: gtk+ 3.0
-      --  "callback": the Gtk_Cell_Callback to call
-      --  "callback_data": user provided data pointer
+      --  @param Callback the Gtk_Cell_Callback to call
+      --  @param Callback_Data user provided data pointer
 
    end Foreach_User_Data;
 
@@ -638,13 +650,13 @@ package Gtk.Cell_Area is
    --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area
    --  with the allocated rectangle inside Cell_Area.
    --  Since: gtk+ 3.0
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this row
-   --  of data.
-   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering to
-   --  "cell_area": the Widget relative coordinates and size for Area
-   --  "background_area": the Widget relative coordinates of the background
-   --  area
-   --  "callback": the Gtk_Cell_Alloc_Callback to call
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this
+   --  row of data.
+   --  @param Widget the Gtk.Widget.Gtk_Widget that Area is rendering to
+   --  @param Cell_Area the Widget relative coordinates and size for Area
+   --  @param Background_Area the Widget relative coordinates of the
+   --  background area
+   --  @param Callback the Gtk_Cell_Alloc_Callback to call
 
    generic
       type User_Data_Type (<>) is private;
@@ -659,12 +671,13 @@ package Gtk.Cell_Area is
       --  The type of the callback functions used for iterating over the cell
       --  renderers and their allocated areas inside a
       --  Gtk.Cell_Area.Gtk_Cell_Area, see Gtk.Cell_Area.Foreach_Alloc.
-      --  "renderer": the cell renderer to operate on
-      --  "cell_area": the area allocated to Renderer inside the rectangle
+      --  @param Renderer the cell renderer to operate on
+      --  @param Cell_Area the area allocated to Renderer inside the rectangle
       --  provided to Gtk.Cell_Area.Foreach_Alloc.
-      --  "cell_background": the background area for Renderer inside the
+      --  @param Cell_Background the background area for Renderer inside the
       --  background area provided to Gtk.Cell_Area.Foreach_Alloc.
-      --  "data": user-supplied data
+      --  @param Data user-supplied data
+      --  @return True to stop iterating over cells.
 
       procedure Foreach_Alloc
          (Self            : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
@@ -677,14 +690,14 @@ package Gtk.Cell_Area is
       --  Calls Callback for every Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area
       --  with the allocated rectangle inside Cell_Area.
       --  Since: gtk+ 3.0
-      --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this
-      --  row of data.
-      --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering to
-      --  "cell_area": the Widget relative coordinates and size for Area
-      --  "background_area": the Widget relative coordinates of the background
-      --  area
-      --  "callback": the Gtk_Cell_Alloc_Callback to call
-      --  "callback_data": user provided data pointer
+      --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for
+      --  this row of data.
+      --  @param Widget the Gtk.Widget.Gtk_Widget that Area is rendering to
+      --  @param Cell_Area the Widget relative coordinates and size for Area
+      --  @param Background_Area the Widget relative coordinates of the
+      --  background area
+      --  @param Callback the Gtk_Cell_Alloc_Callback to call
+      --  @param Callback_Data user provided data pointer
 
    end Foreach_Alloc_User_Data;
 
@@ -698,13 +711,14 @@ package Gtk.Cell_Area is
    --  Derives the allocation of Renderer inside Area if Area were to be
    --  renderered in Cell_Area.
    --  Since: gtk+ 3.0
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context used to hold
-   --  sizes for Area.
-   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering on
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to get the
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context used to
+   --  hold sizes for Area.
+   --  @param Widget the Gtk.Widget.Gtk_Widget that Area is rendering on
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer to get the
    --  allocation for
-   --  "cell_area": the whole allocated area for Area in Widget for this row
-   --  "allocation": where to store the allocation for Renderer
+   --  @param Cell_Area the whole allocated area for Area in Widget for this
+   --  row
+   --  @param Allocation where to store the allocation for Renderer
 
    function Get_Current_Path_String
       (Self : not null access Gtk_Cell_Area_Record) return UTF8_String;
@@ -713,6 +727,9 @@ package Gtk.Cell_Area is
    --  Gtk.Cell_Area.Apply_Attributes is called and can be used to interact
    --  with renderers from Gtk.Cell_Area.Gtk_Cell_Area subclasses.
    --  Since: gtk+ 3.0
+   --  @return The current Gtk.Tree_Model.Gtk_Tree_Path string for the current
+   --  attributes applied to Area. This string belongs to the area and should
+   --  not be freed.
 
    function Get_Edit_Widget
       (Self : not null access Gtk_Cell_Area_Record)
@@ -720,6 +737,7 @@ package Gtk.Cell_Area is
    --  Gets the Gtk.Cell_Editable.Gtk_Cell_Editable widget currently used to
    --  edit the currently edited cell.
    --  Since: gtk+ 3.0
+   --  @return The currently active Gtk.Cell_Editable.Gtk_Cell_Editable widget
 
    function Get_Edited_Cell
       (Self : not null access Gtk_Cell_Area_Record)
@@ -727,12 +745,14 @@ package Gtk.Cell_Area is
    --  Gets the Gtk.Cell_Renderer.Gtk_Cell_Renderer in Area that is currently
    --  being edited.
    --  Since: gtk+ 3.0
+   --  @return The currently edited Gtk.Cell_Renderer.Gtk_Cell_Renderer
 
    function Get_Focus_Cell
       (Self : not null access Gtk_Cell_Area_Record)
        return Gtk.Cell_Renderer.Gtk_Cell_Renderer;
    --  Retrieves the currently focused cell for Area
    --  Since: gtk+ 3.0
+   --  @return the currently focused cell in Area.
 
    procedure Set_Focus_Cell
       (Self     : not null access Gtk_Cell_Area_Record;
@@ -743,7 +763,8 @@ package Gtk.Cell_Area is
    --  Gtk.Cell_Area_Class.Gtk_Cell_Area_Class.event, however it can also be
    --  used to implement functions such as Gtk.Tree_View.Set_Cursor_On_Cell.
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to give focus to
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer to give focus
+   --  to
 
    function Get_Focus_From_Sibling
       (Self     : not null access Gtk_Cell_Area_Record;
@@ -756,7 +777,9 @@ package Gtk.Cell_Area is
    --  chose to activate the focus cell for which the event cell may have been
    --  a sibling.
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @return the Gtk.Cell_Renderer.Gtk_Cell_Renderer for which Renderer is a
+   --  sibling, or null.
 
    function Get_Focus_Siblings
       (Self     : not null access Gtk_Cell_Area_Record;
@@ -764,8 +787,8 @@ package Gtk.Cell_Area is
        return Glib.Object.Object_Simple_List.Glist;
    --  Gets the focus sibling cell renderers for Renderer.
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer expected to have
-   --  focus
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer expected to
+   --  have focus
 
    procedure Get_Preferred_Height
       (Self           : not null access Gtk_Cell_Area_Record;
@@ -780,11 +803,11 @@ package Gtk.Cell_Area is
    --  but rather to consult Gtk.Cell_Area_Context.Get_Preferred_Height after a
    --  series of requests.
    --  Since: gtk+ 3.0
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context to perform
-   --  this request with
-   --  "widget": the Gtk.Widget.Gtk_Widget where Area will be rendering
-   --  "minimum_height": location to store the minimum height, or null
-   --  "natural_height": location to store the natural height, or null
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context to
+   --  perform this request with
+   --  @param Widget the Gtk.Widget.Gtk_Widget where Area will be rendering
+   --  @param Minimum_Height location to store the minimum height, or null
+   --  @param Natural_Height location to store the natural height, or null
 
    procedure Get_Preferred_Height_For_Width
       (Self           : not null access Gtk_Cell_Area_Record;
@@ -806,12 +829,12 @@ package Gtk.Cell_Area is
    --  width of the requested rows checked again with
    --  Gtk.Cell_Area_Context.Get_Preferred_Width.
    --  Since: gtk+ 3.0
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context which has
-   --  already been requested for widths.
-   --  "widget": the Gtk.Widget.Gtk_Widget where Area will be rendering
-   --  "width": the width for which to check the height of this area
-   --  "minimum_height": location to store the minimum height, or null
-   --  "natural_height": location to store the natural height, or null
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context which
+   --  has already been requested for widths.
+   --  @param Widget the Gtk.Widget.Gtk_Widget where Area will be rendering
+   --  @param Width the width for which to check the height of this area
+   --  @param Minimum_Height location to store the minimum height, or null
+   --  @param Natural_Height location to store the natural height, or null
 
    procedure Get_Preferred_Width
       (Self          : not null access Gtk_Cell_Area_Record;
@@ -826,11 +849,11 @@ package Gtk.Cell_Area is
    --  rather to consult Gtk.Cell_Area_Context.Get_Preferred_Width after a
    --  series of requests.
    --  Since: gtk+ 3.0
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context to perform
-   --  this request with
-   --  "widget": the Gtk.Widget.Gtk_Widget where Area will be rendering
-   --  "minimum_width": location to store the minimum width, or null
-   --  "natural_width": location to store the natural width, or null
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context to
+   --  perform this request with
+   --  @param Widget the Gtk.Widget.Gtk_Widget where Area will be rendering
+   --  @param Minimum_Width location to store the minimum width, or null
+   --  @param Natural_Width location to store the natural width, or null
 
    procedure Get_Preferred_Width_For_Height
       (Self          : not null access Gtk_Cell_Area_Record;
@@ -852,12 +875,12 @@ package Gtk.Cell_Area is
    --  full height of the requested rows checked again with
    --  Gtk.Cell_Area_Context.Get_Preferred_Height.
    --  Since: gtk+ 3.0
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context which has
-   --  already been requested for widths.
-   --  "widget": the Gtk.Widget.Gtk_Widget where Area will be rendering
-   --  "height": the height for which to check the width of this area
-   --  "minimum_width": location to store the minimum width, or null
-   --  "natural_width": location to store the natural width, or null
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context which
+   --  has already been requested for widths.
+   --  @param Widget the Gtk.Widget.Gtk_Widget where Area will be rendering
+   --  @param Height the height for which to check the width of this area
+   --  @param Minimum_Width location to store the minimum width, or null
+   --  @param Natural_Width location to store the natural width, or null
 
    function Get_Request_Mode
       (Self : not null access Gtk_Cell_Area_Record)
@@ -865,6 +888,7 @@ package Gtk.Cell_Area is
    --  Gets whether the area prefers a height-for-width layout or a
    --  width-for-height layout.
    --  Since: gtk+ 3.0
+   --  @return The Gtk.Enums.Gtk_Size_Request_Mode preferred by Area.
 
    function Has_Renderer
       (Self     : not null access Gtk_Cell_Area_Record;
@@ -872,7 +896,8 @@ package Gtk.Cell_Area is
        return Boolean;
    --  Checks if Area contains Renderer.
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to check
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer to check
+   --  @return True if Renderer is in the Area.
 
    procedure Inner_Cell_Area
       (Self       : not null access Gtk_Cell_Area_Record;
@@ -884,16 +909,17 @@ package Gtk.Cell_Area is
    --  Gtk.Cell_Renderer.Gtk_Cell_Renderer will be rendered. It removes any
    --  padding previously added by Gtk.Cell_Area.Request_Renderer.
    --  Since: gtk+ 3.0
-   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering onto
-   --  "cell_area": the Widget relative coordinates where one of Area's cells
-   --  is to be placed
-   --  "inner_area": the return location for the inner cell area
+   --  @param Widget the Gtk.Widget.Gtk_Widget that Area is rendering onto
+   --  @param Cell_Area the Widget relative coordinates where one of Area's
+   --  cells is to be placed
+   --  @param Inner_Area the return location for the inner cell area
 
    function Is_Activatable
       (Self : not null access Gtk_Cell_Area_Record) return Boolean;
    --  Returns whether the area can do anything when activated, after applying
    --  new attributes to Area.
    --  Since: gtk+ 3.0
+   --  @return whether Area can do anything when activated.
 
    function Is_Focus_Sibling
       (Self     : not null access Gtk_Cell_Area_Record;
@@ -903,17 +929,19 @@ package Gtk.Cell_Area is
    --  Returns whether Sibling is one of Renderer's focus siblings (see
    --  Gtk.Cell_Area.Add_Focus_Sibling).
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer expected to have
-   --  focus
-   --  "sibling": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to check against
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer expected to
+   --  have focus
+   --  @param Sibling the Gtk.Cell_Renderer.Gtk_Cell_Renderer to check against
    --  Renderer's sibling list
+   --  @return True if Sibling is a focus sibling of Renderer
 
    procedure Remove
       (Self     : not null access Gtk_Cell_Area_Record;
        Renderer : not null access Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record'Class);
    --  Removes Renderer from Area.
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to remove from Area
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer to remove from
+   --  Area
 
    procedure Remove_Focus_Sibling
       (Self     : not null access Gtk_Cell_Area_Record;
@@ -922,9 +950,9 @@ package Gtk.Cell_Area is
    --  Removes Sibling from Renderer's focus sibling list (see
    --  Gtk.Cell_Area.Add_Focus_Sibling).
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer expected to have
-   --  focus
-   --  "sibling": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to remove from
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer expected to
+   --  have focus
+   --  @param Sibling the Gtk.Cell_Renderer.Gtk_Cell_Renderer to remove from
    --  Renderer's focus area
 
    procedure Render
@@ -939,16 +967,16 @@ package Gtk.Cell_Area is
    --  Renders Area's cells according to Area's layout onto Widget at the
    --  given coordinates.
    --  Since: gtk+ 3.0
-   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this row
-   --  of data.
-   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering to
-   --  "cr": the cairo_t to render with
-   --  "background_area": the Widget relative coordinates for Area's
+   --  @param Context the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context for this
+   --  row of data.
+   --  @param Widget the Gtk.Widget.Gtk_Widget that Area is rendering to
+   --  @param Cr the cairo_t to render with
+   --  @param Background_Area the Widget relative coordinates for Area's
    --  background
-   --  "cell_area": the Widget relative coordinates for Area
-   --  "flags": the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State for Area in this
-   --  row.
-   --  "paint_focus": whether Area should paint focus on focused cells for
+   --  @param Cell_Area the Widget relative coordinates for Area
+   --  @param Flags the Gtk.Cell_Renderer.Gtk_Cell_Renderer_State for Area in
+   --  this row.
+   --  @param Paint_Focus whether Area should paint focus on focused cells for
    --  focused rows or not.
 
    procedure Request_Renderer
@@ -965,13 +993,15 @@ package Gtk.Cell_Area is
    --  Gtk.Cell_Area.Inner_Cell_Area at render and event time since this
    --  function will add padding around the cell for focus painting.
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to request size for
-   --  "orientation": the Gtk.Enums.Gtk_Orientation in which to request size
-   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering onto
-   --  "for_size": the allocation contextual size to request for, or -1 if the
-   --  base request for the orientation is to be returned.
-   --  "minimum_size": location to store the minimum size, or null
-   --  "natural_size": location to store the natural size, or null
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer to request size
+   --  for
+   --  @param Orientation the Gtk.Enums.Gtk_Orientation in which to request
+   --  size
+   --  @param Widget the Gtk.Widget.Gtk_Widget that Area is rendering onto
+   --  @param For_Size the allocation contextual size to request for, or -1 if
+   --  the base request for the orientation is to be returned.
+   --  @param Minimum_Size location to store the minimum size, or null
+   --  @param Natural_Size location to store the natural size, or null
 
    procedure Stop_Editing
       (Self     : not null access Gtk_Cell_Area_Record;
@@ -982,7 +1012,7 @@ package Gtk.Cell_Area is
    --  be emitted on the current edit widget.
    --  See Gtk.Cell_Area.Get_Edited_Cell and Gtk.Cell_Area.Get_Edit_Widget.
    --  Since: gtk+ 3.0
-   --  "canceled": whether editing was canceled.
+   --  @param Canceled whether editing was canceled.
 
    procedure Set_Cell_Data_Func
       (Cell_Layout : not null access Gtk_Cell_Area_Record;
@@ -994,8 +1024,8 @@ package Gtk.Cell_Area is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -1010,12 +1040,12 @@ package Gtk.Cell_Area is
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
       --  as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : not null access Gtk.Cell_Area.Gtk_Cell_Area_Record'Class;
@@ -1028,9 +1058,9 @@ package Gtk.Cell_Area is
       --  cell renderer(s) as appropriate.
       --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
-      --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-      --  "func_data": user data for Func
+      --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+      --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+      --  @param Func_Data user data for Func
 
    end Set_Cell_Data_Func_User_Data;
 
@@ -1174,13 +1204,13 @@ package Gtk.Cell_Area is
    --  be added to the owning cell-layouting widget at Cell_Area.
    -- 
    --  Callback parameters:
-   --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that started the
-   --    --  edited
-   --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable widget to add
-   --    --  "cell_area": the Gtk.Widget.Gtk_Widget relative
+   --    --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer that started
+   --    --  the edited
+   --    --  @param Editable the Gtk.Cell_Editable.Gtk_Cell_Editable widget to add
+   --    --  @param Cell_Area the Gtk.Widget.Gtk_Widget relative
    --    --  Gdk.Rectangle.Gdk_Rectangle coordinates where Editable should be added
-   --    --  "path": the Gtk.Tree_Model.Gtk_Tree_Path string this edit was initiated
-   --    --  for
+   --    --  @param Path the Gtk.Tree_Model.Gtk_Tree_Path string this edit was
+   --    --  initiated for
 
    type Cb_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void is not null access procedure
      (Self        : access Gtk_Cell_Area_Record'Class;
@@ -1209,12 +1239,13 @@ package Gtk.Cell_Area is
    --  This signal is emitted whenever applying attributes to Area from Model
    -- 
    --  Callback parameters:
-   --    --  "model": the Gtk.Tree_Model.Gtk_Tree_Model to apply the attributes from
-   --    --  "iter": the Gtk.Tree_Model.Gtk_Tree_Iter indicating which row to apply
-   --    --  the attributes of
-   --    --  "is_expander": whether the view shows children for this row
-   --    --  "is_expanded": whether the view is currently showing the children of
-   --    --  this row
+   --    --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model to apply the attributes
+   --    --  from
+   --    --  @param Iter the Gtk.Tree_Model.Gtk_Tree_Iter indicating which row to
+   --    --  apply the attributes of
+   --    --  @param Is_Expander whether the view shows children for this row
+   --    --  @param Is_Expanded whether the view is currently showing the children
+   --    --  of this row
 
    type Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void is not null access procedure
      (Self     : access Gtk_Cell_Area_Record'Class;
@@ -1244,8 +1275,9 @@ package Gtk.Cell_Area is
    --  renderer in the same cell area for a different row of data.
    -- 
    --  Callback parameters:
-   --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that has focus
-   --    --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path string set for Area
+   --    --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer that has focus
+   --    --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path string set for
+   --    --  Area
 
    type Cb_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void is not null access procedure
      (Self     : access Gtk_Cell_Area_Record'Class;
@@ -1271,9 +1303,10 @@ package Gtk.Cell_Area is
    --  removed from the owning cell-layouting widget.
    -- 
    --  Callback parameters:
-   --    --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer that finished
+   --    --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer that finished
    --    --  editeding
-   --    --  "editable": the Gtk.Cell_Editable.Gtk_Cell_Editable widget to remove
+   --    --  @param Editable the Gtk.Cell_Editable.Gtk_Cell_Editable widget to
+   --    --  remove
 
    ----------------
    -- Interfaces --

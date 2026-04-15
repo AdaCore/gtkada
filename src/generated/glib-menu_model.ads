@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Glib.Menu_Model.Gmenu_Model represents the contents of a menu -- an
 --  ordered list of menu items. The items are associated with actions, which
 --  can be activated through them. Items can be grouped in sections, and may
@@ -133,8 +132,6 @@
 --  the action with the target value as the parameter. The menu item should be
 --  rendered as "selected" when the state of the action is equal to the target
 --  value of the menu item.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Object;  use Glib.Object;
@@ -183,9 +180,10 @@ package Glib.Menu_Model is
    --  If the attribute does not exist, or does not match the expected type
    --  then null is returned.
    --  Since: gtk+ 2.32
-   --  "item_index": the index of the item
-   --  "attribute": the attribute to query
-   --  "expected_type": the expected type of the attribute, or null
+   --  @param Item_Index the index of the item
+   --  @param Attribute the attribute to query
+   --  @param Expected_Type the expected type of the attribute, or null
+   --  @return the value of the attribute
 
    function Get_Item_Link
       (Self       : not null access Gmenu_Model_Record;
@@ -196,13 +194,15 @@ package Glib.Menu_Model is
    --  If the link exists, the linked Glib.Menu_Model.Gmenu_Model is returned.
    --  If the link does not exist, null is returned.
    --  Since: gtk+ 2.32
-   --  "item_index": the index of the item
-   --  "link": the link to query
+   --  @param Item_Index the index of the item
+   --  @param Link the link to query
+   --  @return the linked Glib.Menu_Model.Gmenu_Model, or null
 
    function Get_N_Items
       (Self : not null access Gmenu_Model_Record) return Glib.Gint;
    --  Query the number of items in Model.
    --  Since: gtk+ 2.32
+   --  @return the number of items
 
    function Is_Mutable
       (Self : not null access Gmenu_Model_Record) return Boolean;
@@ -211,6 +211,8 @@ package Glib.Menu_Model is
    --  Glib.Menu_Model.Gmenu_Model::items-changed signal. Consumers of the
    --  model may make optimisations accordingly.
    --  Since: gtk+ 2.32
+   --  @return True if the model is mutable (ie: "items-changed" may be
+   --  emitted).
 
    procedure Items_Changed
       (Self     : not null access Gmenu_Model_Record;
@@ -231,9 +233,9 @@ package Glib.Menu_Model is
    --  Glib.Menu_Model.Gmenu_Model API. Said another way: the menu must not
    --  change while user code is running without returning to the mainloop.
    --  Since: gtk+ 2.32
-   --  "position": the position of the change
-   --  "removed": the number of items removed
-   --  "added": the number of items added
+   --  @param Position the position of the change
+   --  @param Removed the number of items removed
+   --  @param Added the number of items added
 
    function Iterate_Item_Attributes
       (Self       : not null access Gmenu_Model_Record;
@@ -242,7 +244,8 @@ package Glib.Menu_Model is
    --  attributes of the item at position Item_Index in Model.
    --  You must free the iterator with g_object_unref when you are done.
    --  Since: gtk+ 2.32
-   --  "item_index": the index of the item
+   --  @param Item_Index the index of the item
+   --  @return a new Glib.Menu_Model.Gmenu_Attribute_Iter
 
    function Iterate_Item_Links
       (Self       : not null access Gmenu_Model_Record;
@@ -251,7 +254,8 @@ package Glib.Menu_Model is
    --  the item at position Item_Index in Model.
    --  You must free the iterator with g_object_unref when you are done.
    --  Since: gtk+ 2.32
-   --  "item_index": the index of the item
+   --  @param Item_Index the index of the item
+   --  @return a new Glib.Menu_Model.Gmenu_Link_Iter
 
    function Get_Name
       (Self : not null access Gmenu_Attribute_Iter_Record)
@@ -260,12 +264,14 @@ package Glib.Menu_Model is
    --  string.
    --  The iterator is not advanced.
    --  Since: gtk+ 2.32
+   --  @return the name of the attribute
 
    function Get_Name
       (Self : not null access Gmenu_Link_Iter_Record) return UTF8_String;
    --  Gets the name of the link at the current iterator position.
    --  The iterator is not advanced.
    --  Since: gtk+ 2.32
+   --  @return the type of the link
 
    function Get_Value
       (Self : not null access Gmenu_Attribute_Iter_Record)
@@ -273,6 +279,7 @@ package Glib.Menu_Model is
    --  Gets the value of the attribute at the current iterator position.
    --  The iterator is not advanced.
    --  Since: gtk+ 2.32
+   --  @return the value of the current attribute
 
    function Get_Value
       (Self : not null access Gmenu_Link_Iter_Record) return Gmenu_Model;
@@ -280,6 +287,7 @@ package Glib.Menu_Model is
    --  position.
    --  The iterator is not advanced.
    --  Since: gtk+ 2.32
+   --  @return the Glib.Menu_Model.Gmenu_Model that is linked to
 
    function Next
       (Self : not null access Gmenu_Attribute_Iter_Record) return Boolean;
@@ -290,6 +298,7 @@ package Glib.Menu_Model is
    --  advance it to the first attribute (and determine if the first attribute
    --  exists at all).
    --  Since: gtk+ 2.32
+   --  @return True on success, or False when there are no more attributes
 
    function Next
       (Self : not null access Gmenu_Link_Iter_Record) return Boolean;
@@ -299,6 +308,7 @@ package Glib.Menu_Model is
    --  advance it to the first link (and determine if the first link exists at
    --  all).
    --  Since: gtk+ 2.32
+   --  @return True on success, or False when there are no more links
 
    -------------
    -- Signals --
@@ -347,8 +357,8 @@ package Glib.Menu_Model is
    --  The signal is emitted after the modification.
    -- 
    --  Callback parameters:
-   --    --  "position": the position of the change
-   --    --  "removed": the number of items removed
-   --    --  "added": the number of items added
+   --    --  @param Position the position of the change
+   --    --  @param Removed the number of items removed
+   --    --  @param Added the number of items added
 
 end Glib.Menu_Model;

@@ -43,9 +43,10 @@ package body Gtk.Font_Button is
    --  Adds a filter function that decides which fonts to display in the font
    --  chooser.
    --  Since: gtk+ 3.2
-   --  "filter": a Gtk_Font_Filter_Func, or null
-   --  "user_data": data to pass to Filter
-   --  "destroy": function to call to free Data when it is no longer needed
+   --  @param Filter a Gtk_Font_Filter_Func, or null
+   --  @param User_Data data to pass to Filter
+   --  @param Destroy function to call to free Data when it is no longer
+   --  needed
 
    function To_Gtk_Font_Filter_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Font_Filter_Func);
@@ -58,9 +59,9 @@ package body Gtk.Font_Button is
        Face   : System.Address;
        Data   : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Font_Filter_Func);
-   --  "family": a Pango.Font_Family.Pango_Font_Family
-   --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
-   --  "data": user data passed to Gtk.Font_Chooser.Set_Filter_Func
+   --  @param Family a Pango.Font_Family.Pango_Font_Family
+   --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
+   --  @param Data user data passed to Gtk.Font_Chooser.Set_Filter_Func
 
    -----------------------------------
    -- Internal_Gtk_Font_Filter_Func --
@@ -282,9 +283,10 @@ package body Gtk.Font_Button is
       --  The type of function that is used for deciding what fonts get shown
       --  in a Gtk.Font_Chooser.Gtk_Font_Chooser. See
       --  Gtk.Font_Chooser.Set_Filter_Func.
-      --  "family": a Pango.Font_Family.Pango_Font_Family
-      --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
-      --  "data": user data passed to Gtk.Font_Chooser.Set_Filter_Func
+      --  @param Family a Pango.Font_Family.Pango_Font_Family
+      --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
+      --  @param Data user data passed to Gtk.Font_Chooser.Set_Filter_Func
+      --  @return True if the font should be displayed
 
       -----------------
       -- Internal_Cb --

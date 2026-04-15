@@ -48,9 +48,9 @@ package body Gtk.Recent_Chooser is
    --  zero if the two items are equal and a negative integer if the first item
    --  comes after the second.
    --  Since: gtk+ 2.10
-   --  "sort_func": the comparison function
-   --  "sort_data": user data to pass to Sort_Func, or null
-   --  "data_destroy": destroy notifier for Sort_Data, or null
+   --  @param Sort_Func the comparison function
+   --  @param Sort_Data user data to pass to Sort_Func, or null
+   --  @param Data_Destroy destroy notifier for Sort_Data, or null
 
    function To_Gtk_Recent_Sort_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Recent_Sort_Func);

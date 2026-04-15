@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Check_Button.Gtk_Check_Button places a discrete
 --  Gtk.Toggle_Button.Gtk_Toggle_Button next to a widget, (usually a
 --  Gtk.Label.Gtk_Label). See the section on
@@ -50,7 +49,6 @@
 --  button and adds a .check style class to it. The subnode is invisible in
 --  this case.
 --
---  </description>
 --  <screenshot>gtk-check_button</screenshot>
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_check_buttons.adb</testgtk>
@@ -85,14 +83,14 @@ package Gtk.Check_Button is
    --  Gtk.Container.Add).
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "label": the text for the check button.
+   --  @param Label the text for the check button.
 
    function Gtk_Check_Button_New_With_Label
       (Label : UTF8_String := "") return Gtk_Check_Button;
    --  Create a check button. if Label is null, then no widget is associated
    --  with the button, and any widget can be added to the button (with
    --  Gtk.Container.Add).
-   --  "label": the text for the check button.
+   --  @param Label the text for the check button.
 
    procedure Gtk_New_With_Mnemonic
       (Check_Button : out Gtk_Check_Button;
@@ -105,7 +103,7 @@ package Gtk.Check_Button is
    --  underscores in Label indicate the mnemonic for the check button.
    --  Initialize_With_Mnemonic does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "label": The text of the button, with an underscore in front of the
+   --  @param Label The text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Gtk_Check_Button_New_With_Mnemonic
@@ -113,7 +111,7 @@ package Gtk.Check_Button is
    --  Creates a new Gtk.Check_Button.Gtk_Check_Button containing a label. The
    --  label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
    --  underscores in Label indicate the mnemonic for the check button.
-   --  "label": The text of the button, with an underscore in front of the
+   --  @param Label The text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Get_Type return Glib.GType;

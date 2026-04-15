@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Info_Bar.Gtk_Info_Bar is a widget that can be used to show messages to
 --  the user without showing a dialog. It is often temporarily shown at the top
 --  or bottom of a document. In contrast to Gtk.Dialog.Gtk_Dialog, which has a
@@ -93,8 +92,6 @@
 --  GtkInfoBar has a single CSS node with name infobar. The node may get one
 --  of the style classes .info, .warning, .error or .question, depending on the
 --  message type.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -145,8 +142,8 @@ package Gtk.Info_Bar is
    --  the widget is activated. The widget is appended to the end of the
    --  message areas action area.
    --  Since: gtk+ 2.18
-   --  "child": an activatable widget
-   --  "response_id": response ID for Child
+   --  @param Child an activatable widget
+   --  @param Response_Id response ID for Child
 
    function Add_Button
       (Self        : not null access Gtk_Info_Bar_Record;
@@ -157,26 +154,30 @@ package Gtk.Info_Bar is
    --  The button is appended to the end of the info bars's action area. The
    --  button widget is returned, but usually you don't need it.
    --  Since: gtk+ 2.18
-   --  "button_text": text of button
-   --  "response_id": response ID for the button
+   --  @param Button_Text text of button
+   --  @param Response_Id response ID for the button
+   --  @return the Gtk.Button.Gtk_Button widget that was added
 
    function Get_Action_Area
       (Self : not null access Gtk_Info_Bar_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Returns the action area of Info_Bar.
    --  Since: gtk+ 2.18
+   --  @return the action area
 
    function Get_Content_Area
       (Self : not null access Gtk_Info_Bar_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Returns the content area of Info_Bar.
    --  Since: gtk+ 2.18
+   --  @return the content area
 
    function Get_Message_Type
       (Self : not null access Gtk_Info_Bar_Record)
        return Gtk.Message_Dialog.Gtk_Message_Type;
    --  Returns the message type of the message area.
    --  Since: gtk+ 2.18
+   --  @return the message type of the message area.
 
    procedure Set_Message_Type
       (Self         : not null access Gtk_Info_Bar_Record;
@@ -184,11 +185,12 @@ package Gtk.Info_Bar is
    --  Sets the message type of the message area.
    --  GTK+ uses this type to determine how the message is displayed.
    --  Since: gtk+ 2.18
-   --  "message_type": a Gtk.Message_Dialog.Gtk_Message_Type
+   --  @param Message_Type a Gtk.Message_Dialog.Gtk_Message_Type
 
    function Get_Revealed
       (Self : not null access Gtk_Info_Bar_Record) return Boolean;
    --  Since: gtk+ 3.22.29
+   --  @return the current value of the GtkInfoBar:revealed property.
 
    procedure Set_Revealed
       (Self     : not null access Gtk_Info_Bar_Record;
@@ -198,12 +200,13 @@ package Gtk.Info_Bar is
    --  Note that this property does not automatically show Info_Bar and thus
    --  won't have any effect if it is invisible.
    --  Since: gtk+ 3.22.29
-   --  "revealed": The new value of the property
+   --  @param Revealed The new value of the property
 
    function Get_Show_Close_Button
       (Self : not null access Gtk_Info_Bar_Record) return Boolean;
    --  Returns whether the widget will display a standard close button.
    --  Since: gtk+ 3.10
+   --  @return True if the widget displays standard close button
 
    procedure Set_Show_Close_Button
       (Self    : not null access Gtk_Info_Bar_Record;
@@ -211,14 +214,14 @@ package Gtk.Info_Bar is
    --  If true, a standard close button is shown. When clicked it emits the
    --  response GTK_RESPONSE_CLOSE.
    --  Since: gtk+ 3.10
-   --  "setting": True to include a close button
+   --  @param Setting True to include a close button
 
    procedure Response
       (Self        : not null access Gtk_Info_Bar_Record;
        Response_Id : Glib.Gint);
    --  Emits the "response" signal with the given Response_Id.
    --  Since: gtk+ 2.18
-   --  "response_id": a response ID
+   --  @param Response_Id a response ID
 
    procedure Set_Default_Response
       (Self        : not null access Gtk_Info_Bar_Record;
@@ -229,7 +232,7 @@ package Gtk.Info_Bar is
    --  Note that this function currently requires Info_Bar to be added to a
    --  widget hierarchy.
    --  Since: gtk+ 2.18
-   --  "response_id": a response ID
+   --  @param Response_Id a response ID
 
    procedure Set_Response_Sensitive
       (Self        : not null access Gtk_Info_Bar_Record;
@@ -239,8 +242,8 @@ package Gtk.Info_Bar is
    --  info bars's action area with the given response_id. A convenient way to
    --  sensitize/desensitize dialog buttons.
    --  Since: gtk+ 2.18
-   --  "response_id": a response ID
-   --  "setting": TRUE for sensitive
+   --  @param Response_Id a response ID
+   --  @param Setting TRUE for sensitive
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

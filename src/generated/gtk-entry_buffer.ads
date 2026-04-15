@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Entry_Buffer.Gtk_Entry_Buffer class contains the actual text
 --  displayed in a Gtk.GEntry.Gtk_Entry widget.
 --
@@ -33,8 +32,6 @@
 --  class might allow text to be stored in an alternate location, such as
 --  non-pageable memory, useful in the case of important passwords. Or a
 --  derived class could integrate with an application's concept of undo/redo.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -63,8 +60,8 @@ package Gtk.Entry_Buffer is
    --  Since: gtk+ 2.18
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "initial_chars": initial buffer text, or null
-   --  "n_initial_chars": number of characters in Initial_Chars, or -1
+   --  @param Initial_Chars initial buffer text, or null
+   --  @param N_Initial_Chars number of characters in Initial_Chars, or -1
 
    function Gtk_Entry_Buffer_New
       (Initial_Chars   : UTF8_String := "";
@@ -72,8 +69,8 @@ package Gtk.Entry_Buffer is
    --  Create a new GtkEntryBuffer object.
    --  Optionally, specify initial text to set in the buffer.
    --  Since: gtk+ 2.18
-   --  "initial_chars": initial buffer text, or null
-   --  "n_initial_chars": number of characters in Initial_Chars, or -1
+   --  @param Initial_Chars initial buffer text, or null
+   --  @param N_Initial_Chars number of characters in Initial_Chars, or -1
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_entry_buffer_get_type");
@@ -93,8 +90,9 @@ package Gtk.Entry_Buffer is
    --  values.
    --  Note that the positions are specified in characters, not bytes.
    --  Since: gtk+ 2.18
-   --  "position": position at which to delete text
-   --  "n_chars": number of characters to delete
+   --  @param Position position at which to delete text
+   --  @param N_Chars number of characters to delete
+   --  @return The number of characters deleted.
 
    procedure Emit_Deleted_Text
       (Self     : not null access Gtk_Entry_Buffer_Record;
@@ -102,8 +100,8 @@ package Gtk.Entry_Buffer is
        N_Chars  : Guint);
    --  Used when subclassing Gtk.Entry_Buffer.Gtk_Entry_Buffer
    --  Since: gtk+ 2.18
-   --  "position": position at which text was deleted
-   --  "n_chars": number of characters deleted
+   --  @param Position position at which text was deleted
+   --  @param N_Chars number of characters deleted
 
    procedure Emit_Inserted_Text
       (Self     : not null access Gtk_Entry_Buffer_Record;
@@ -112,26 +110,30 @@ package Gtk.Entry_Buffer is
        N_Chars  : Guint);
    --  Used when subclassing Gtk.Entry_Buffer.Gtk_Entry_Buffer
    --  Since: gtk+ 2.18
-   --  "position": position at which text was inserted
-   --  "chars": text that was inserted
-   --  "n_chars": number of characters inserted
+   --  @param Position position at which text was inserted
+   --  @param Chars text that was inserted
+   --  @param N_Chars number of characters inserted
 
    function Get_Bytes
       (Self : not null access Gtk_Entry_Buffer_Record) return Gsize;
    --  Retrieves the length in bytes of the buffer. See
    --  Gtk.Entry_Buffer.Get_Length.
    --  Since: gtk+ 2.18
+   --  @return The byte length of the buffer.
 
    function Get_Length
       (Self : not null access Gtk_Entry_Buffer_Record) return Guint;
    --  Retrieves the length in characters of the buffer.
    --  Since: gtk+ 2.18
+   --  @return The number of characters in the buffer.
 
    function Get_Max_Length
       (Self : not null access Gtk_Entry_Buffer_Record) return Glib.Gint;
    --  Retrieves the maximum allowed length of the text in Buffer. See
    --  Gtk.Entry_Buffer.Set_Max_Length.
    --  Since: gtk+ 2.18
+   --  @return the maximum allowed number of characters in
+   --  Gtk.Entry_Buffer.Gtk_Entry_Buffer, or 0 if there is no maximum.
 
    procedure Set_Max_Length
       (Self       : not null access Gtk_Entry_Buffer_Record;
@@ -140,7 +142,7 @@ package Gtk.Entry_Buffer is
    --  current contents are longer than the given length, then they will be
    --  truncated to fit.
    --  Since: gtk+ 2.18
-   --  "max_length": the maximum length of the entry buffer, or 0 for no
+   --  @param Max_Length the maximum length of the entry buffer, or 0 for no
    --  maximum. (other than the maximum length of entries.) The value passed in
    --  will be clamped to the range 0-65536.
 
@@ -150,6 +152,9 @@ package Gtk.Entry_Buffer is
    --  The memory pointer returned by this call will not change unless this
    --  object emits a signal, or is finalized.
    --  Since: gtk+ 2.18
+   --  @return a pointer to the contents of the widget as a string. This
+   --  string points to internally allocated storage in the buffer and must not
+   --  be freed, modified or stored.
 
    procedure Set_Text
       (Self    : not null access Gtk_Entry_Buffer_Record;
@@ -160,8 +165,8 @@ package Gtk.Entry_Buffer is
    --  Gtk.Entry_Buffer.Insert_Text.
    --  Note that N_Chars is in characters, not in bytes.
    --  Since: gtk+ 2.18
-   --  "chars": the new text
-   --  "n_chars": the number of characters in Text, or -1
+   --  @param Chars the new text
+   --  @param N_Chars the number of characters in Text, or -1
 
    function Insert_Text
       (Self     : not null access Gtk_Entry_Buffer_Record;
@@ -176,9 +181,10 @@ package Gtk.Entry_Buffer is
    --  coerced to sane values.
    --  Note that the position and length are in characters, not in bytes.
    --  Since: gtk+ 2.18
-   --  "position": the position at which to insert text.
-   --  "chars": the text to insert into the buffer.
-   --  "n_chars": the length of the text in characters, or -1
+   --  @param Position the position at which to insert text.
+   --  @param Chars the text to insert into the buffer.
+   --  @param N_Chars the length of the text in characters, or -1
+   --  @return The number of characters actually inserted.
 
    ----------------
    -- Properties --
@@ -222,8 +228,8 @@ package Gtk.Entry_Buffer is
    --  This signal is emitted after text is deleted from the buffer.
    -- 
    --  Callback parameters:
-   --    --  "position": the position the text was deleted at.
-   --    --  "n_chars": The number of characters that were deleted.
+   --    --  @param Position the position the text was deleted at.
+   --    --  @param N_Chars The number of characters that were deleted.
 
    type Cb_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void is not null access procedure
      (Self     : access Gtk_Entry_Buffer_Record'Class;
@@ -250,9 +256,9 @@ package Gtk.Entry_Buffer is
    --  This signal is emitted after text is inserted into the buffer.
    -- 
    --  Callback parameters:
-   --    --  "position": the position the text was inserted at.
-   --    --  "chars": The text that was inserted.
-   --    --  "n_chars": The number of characters that were inserted.
+   --    --  @param Position the position the text was inserted at.
+   --    --  @param Chars The text that was inserted.
+   --    --  @param N_Chars The number of characters that were inserted.
 
 private
    Text_Property : constant Glib.Properties.Property_String :=

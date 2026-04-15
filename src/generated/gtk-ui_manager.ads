@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  > GtkUIManager is deprecated since GTK+ 3.10. To construct user interfaces
 --  > from XML definitions, you should use Gtk.Builder.Gtk_Builder,
 --  Glib.Menu_Model.Gmenu_Model, et al. To > work with actions, use
@@ -245,7 +244,6 @@
 --         <object class="GtkMenuBar" id="menubar1" constructor="uiman"/>
 --       </child>
 --     </object>
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -330,15 +328,15 @@ package Gtk.UI_Manager is
    --  inserted before or after this item, depending on Top.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "merge_id": the merge id for the merged UI, see
+   --  @param Merge_Id the merge id for the merged UI, see
    --  Gtk.UI_Manager.New_Merge_Id
-   --  "path": a path
-   --  "name": the name for the added UI element
-   --  "action": the name of the action to be proxied, or null to add a
+   --  @param Path a path
+   --  @param Name the name for the added UI element
+   --  @param Action the name of the action to be proxied, or null to add a
    --  separator
-   --  "type": the type of UI element to add.
-   --  "top": if True, the UI element is added before its siblings, otherwise
-   --  it is added after its siblings.
+   --  @param The_Type the type of UI element to add.
+   --  @param Top if True, the UI element is added before its siblings,
+   --  otherwise it is added after its siblings.
 
    function Add_UI_From_File
       (Self     : not null access Gtk_UI_Manager_Record;
@@ -348,7 +346,10 @@ package Gtk.UI_Manager is
    --  the current contents of Manager.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "filename": the name of the file to parse
+   --  @param Filename the name of the file to parse
+   --  @return The merge id for the merged UI. The merge id can be used to
+   --  unmerge the UI with Gtk.UI_Manager.Remove_UI. If an error occurred, the
+   --  return value is 0.
 
    function Add_UI_From_Resource
       (Self          : not null access Gtk_UI_Manager_Record;
@@ -358,7 +359,10 @@ package Gtk.UI_Manager is
    --  it with the current contents of Manager.
    --  Since: gtk+ 3.4
    --  Deprecated since 3.10, 1
-   --  "resource_path": the resource path of the file to parse
+   --  @param Resource_Path the resource path of the file to parse
+   --  @return The merge id for the merged UI. The merge id can be used to
+   --  unmerge the UI with Gtk.UI_Manager.Remove_UI. If an error occurred, the
+   --  return value is 0.
 
    function Add_UI_From_String
       (Self   : not null access Gtk_UI_Manager_Record;
@@ -370,7 +374,10 @@ package Gtk.UI_Manager is
    --  it is missing.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "buffer": the string to parse
+   --  @param Buffer the string to parse
+   --  @return The merge id for the merged UI. The merge id can be used to
+   --  unmerge the UI with Gtk.UI_Manager.Remove_UI. If an error occurred, the
+   --  return value is 0.
 
    procedure Ensure_Update (Self : not null access Gtk_UI_Manager_Record);
    pragma Obsolescent (Ensure_Update);
@@ -398,6 +405,7 @@ package Gtk.UI_Manager is
    --  Returns the Gtk.Accel_Group.Gtk_Accel_Group associated with Manager.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return the Gtk.Accel_Group.Gtk_Accel_Group.
 
    function Get_Action
       (Self : not null access Gtk_UI_Manager_Record;
@@ -407,7 +415,9 @@ package Gtk.UI_Manager is
    --  for more information about paths.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "path": a path
+   --  @param Path a path
+   --  @return the action whose proxy widget is found by following the path,
+   --  or null if no widget was found.
 
    function Get_Action_Groups
       (Self : not null access Gtk_UI_Manager_Record)
@@ -424,6 +434,7 @@ package Gtk.UI_Manager is
    --  will have tearoff menu items.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.4, 1
+   --  @return whether tearoff menu items are added
 
    procedure Set_Add_Tearoffs
       (Self         : not null access Gtk_UI_Manager_Record;
@@ -436,7 +447,7 @@ package Gtk.UI_Manager is
    --  have tearoff menu items.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.4, 1
-   --  "add_tearoffs": whether tearoff menu items are added
+   --  @param Add_Tearoffs whether tearoff menu items are added
 
    function Get_Toplevels
       (Self  : not null access Gtk_UI_Manager_Record;
@@ -445,8 +456,8 @@ package Gtk.UI_Manager is
    --  Obtains a list of all toplevel widgets of the requested types.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "types": specifies the types of toplevel widgets to include. Allowed
-   --  types are GTK_UI_MANAGER_MENUBAR, GTK_UI_MANAGER_TOOLBAR and
+   --  @param Types specifies the types of toplevel widgets to include.
+   --  Allowed types are GTK_UI_MANAGER_MENUBAR, GTK_UI_MANAGER_TOOLBAR and
    --  GTK_UI_MANAGER_POPUP.
 
    function Get_Ui
@@ -455,6 +466,8 @@ package Gtk.UI_Manager is
    --  Creates a [UI definition][XML-UI] of the merged UI.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return A newly allocated string containing an XML representation of
+   --  the merged UI.
 
    function Get_Widget
       (Self : not null access Gtk_UI_Manager_Record;
@@ -474,7 +487,9 @@ package Gtk.UI_Manager is
    --  destruction of the ui manager.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "path": a path
+   --  @param Path a path
+   --  @return the widget found by following the path, or null if no widget
+   --  was found
 
    procedure Insert_Action_Group
       (Self         : not null access Gtk_UI_Manager_Record;
@@ -488,8 +503,8 @@ package Gtk.UI_Manager is
    --  negative, Action_Group will be inserted at the end of the internal list.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "action_group": the action group to be inserted
-   --  "pos": the position at which the group will be inserted.
+   --  @param Action_Group the action group to be inserted
+   --  @param Pos the position at which the group will be inserted.
 
    function New_Merge_Id
       (Self : not null access Gtk_UI_Manager_Record) return Guint;
@@ -498,6 +513,7 @@ package Gtk.UI_Manager is
    --  Gtk.UI_Manager.Add_UI.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return an unused merge id.
 
    procedure Remove_Action_Group
       (Self         : not null access Gtk_UI_Manager_Record;
@@ -507,7 +523,7 @@ package Gtk.UI_Manager is
    --  Manager.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "action_group": the action group to be removed
+   --  @param Action_Group the action group to be removed
 
    procedure Remove_UI
       (Self     : not null access Gtk_UI_Manager_Record;
@@ -516,7 +532,8 @@ package Gtk.UI_Manager is
    --  Unmerges the part of Manager's content identified by Merge_Id.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "merge_id": a merge id as returned by Gtk.UI_Manager.Add_UI_From_String
+   --  @param Merge_Id a merge id as returned by
+   --  Gtk.UI_Manager.Add_UI_From_String
 
    ----------------
    -- Properties --
@@ -605,8 +622,8 @@ package Gtk.UI_Manager is
    --  statusbar.
    -- 
    --  Callback parameters:
-   --    --  "action": the action
-   --    --  "proxy": the proxy
+   --    --  @param Action the action
+   --    --  @param Proxy the proxy
 
    Signal_Disconnect_Proxy : constant Glib.Signal_Name := "disconnect-proxy";
    procedure On_Disconnect_Proxy
@@ -622,8 +639,8 @@ package Gtk.UI_Manager is
    --  from an action in the group.
    -- 
    --  Callback parameters:
-   --    --  "action": the action
-   --    --  "proxy": the proxy
+   --    --  @param Action the action
+   --    --  @param Proxy the proxy
 
    type Cb_Gtk_UI_Manager_Gtk_Action_Void is not null access procedure
      (Self   : access Gtk_UI_Manager_Record'Class;

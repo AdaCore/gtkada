@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkComboBoxText is a simple variant of Gtk.Combo_Box.Gtk_Combo_Box that
 --  hides the model-view complexity for simple text-only use cases.
 --
@@ -70,7 +69,6 @@
 --  style class .combo to the main CSS nodes of its entry and button children,
 --  and the .linked class to the node of its internal box.
 --
---  </description>
 --  <group>Numeric/Text Data Entry</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -100,11 +98,11 @@ package Gtk.Combo_Box_Text is
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
 
    ------------------
    -- Constructors --
@@ -156,8 +154,8 @@ package Gtk.Combo_Box_Text is
    --  This is the same as calling Gtk.Combo_Box_Text.Insert with a position
    --  of -1.
    --  Since: gtk+ 2.24
-   --  "id": a string ID for this value, or null
-   --  "text": A string
+   --  @param Id a string ID for this value, or null
+   --  @param Text A string
 
    procedure Append_Text
       (Self : not null access Gtk_Combo_Box_Text_Record;
@@ -166,7 +164,7 @@ package Gtk.Combo_Box_Text is
    --  This is the same as calling Gtk.Combo_Box_Text.Insert_Text with a
    --  position of -1.
    --  Since: gtk+ 2.24
-   --  "text": A string
+   --  @param Text A string
 
    function Get_Active_Text
       (Self : not null access Gtk_Combo_Box_Text_Record) return UTF8_String;
@@ -174,6 +172,8 @@ package Gtk.Combo_Box_Text is
    --  selected. If Combo_Box contains an entry, this function will return its
    --  contents (which will not necessarily be an item from the list).
    --  Since: gtk+ 2.24
+   --  @return a newly allocated string containing the currently active text.
+   --  Must be freed with g_free.
 
    procedure Insert
       (Self     : not null access Gtk_Combo_Box_Text_Record;
@@ -185,9 +185,9 @@ package Gtk.Combo_Box_Text is
    --  Gtk.Combo_Box.Gtk_Combo_Box:id-column.
    --  If Position is negative then Text is appended.
    --  Since: gtk+ 3.0
-   --  "position": An index to insert Text
-   --  "id": a string ID for this value, or null
-   --  "text": A string to display
+   --  @param Position An index to insert Text
+   --  @param Id a string ID for this value, or null
+   --  @param Text A string to display
 
    procedure Insert_Text
       (Self     : not null access Gtk_Combo_Box_Text_Record;
@@ -198,8 +198,8 @@ package Gtk.Combo_Box_Text is
    --  This is the same as calling Gtk.Combo_Box_Text.Insert with a null ID
    --  string.
    --  Since: gtk+ 2.24
-   --  "position": An index to insert Text
-   --  "text": A string
+   --  @param Position An index to insert Text
+   --  @param Text A string
 
    procedure Prepend
       (Self : not null access Gtk_Combo_Box_Text_Record;
@@ -210,8 +210,8 @@ package Gtk.Combo_Box_Text is
    --  This is the same as calling Gtk.Combo_Box_Text.Insert with a position
    --  of 0.
    --  Since: gtk+ 2.24
-   --  "id": a string ID for this value, or null
-   --  "text": a string
+   --  @param Id a string ID for this value, or null
+   --  @param Text a string
 
    procedure Prepend_Text
       (Self : not null access Gtk_Combo_Box_Text_Record;
@@ -220,14 +220,14 @@ package Gtk.Combo_Box_Text is
    --  This is the same as calling Gtk.Combo_Box_Text.Insert_Text with a
    --  position of 0.
    --  Since: gtk+ 2.24
-   --  "text": A string
+   --  @param Text A string
 
    procedure Remove
       (Self     : not null access Gtk_Combo_Box_Text_Record;
        Position : Glib.Gint);
    --  Removes the string at Position from Combo_Box.
    --  Since: gtk+ 2.24
-   --  "position": Index of the item to remove
+   --  @param Position Index of the item to remove
 
    procedure Remove_All (Self : not null access Gtk_Combo_Box_Text_Record);
    --  Removes all the text entries from the combo box.
@@ -243,8 +243,8 @@ package Gtk.Combo_Box_Text is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -259,12 +259,12 @@ package Gtk.Combo_Box_Text is
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
       --  as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : not null access Gtk.Combo_Box_Text.Gtk_Combo_Box_Text_Record'Class;
@@ -277,9 +277,9 @@ package Gtk.Combo_Box_Text is
       --  cell renderer(s) as appropriate.
       --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
-      --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-      --  "func_data": user data for Func
+      --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+      --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+      --  @param Func_Data user data for Func
 
    end Set_Cell_Data_Func_User_Data;
 

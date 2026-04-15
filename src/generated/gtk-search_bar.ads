@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Search_Bar.Gtk_Search_Bar is a container made to have a search entry
 --  (possibly with additional connex widgets, such as drop-down menus, or
 --  buttons) built-in. The search bar would appear when a search is started
@@ -46,8 +45,6 @@
 --
 --  [A simple
 --  example](https://gitlab.gnome.org/GNOME/gtk/blob/gtk-3-24/examples/search-bar.c)
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;       use Gdk.Event;
@@ -97,24 +94,26 @@ package Gtk.Search_Bar is
    --  This is only required if the entry isn't the direct child of the search
    --  bar (as in our main example).
    --  Since: gtk+ 3.10
-   --  "entry": a Gtk.GEntry.Gtk_Entry
+   --  @param GEntry a Gtk.GEntry.Gtk_Entry
 
    function Get_Search_Mode
       (Self : not null access Gtk_Search_Bar_Record) return Boolean;
    --  Returns whether the search mode is on or off.
    --  Since: gtk+ 3.10
+   --  @return whether search mode is toggled on
 
    procedure Set_Search_Mode
       (Self        : not null access Gtk_Search_Bar_Record;
        Search_Mode : Boolean);
    --  Switches the search mode on or off.
    --  Since: gtk+ 3.10
-   --  "search_mode": the new state of the search mode
+   --  @param Search_Mode the new state of the search mode
 
    function Get_Show_Close_Button
       (Self : not null access Gtk_Search_Bar_Record) return Boolean;
    --  Returns whether the close button is shown.
    --  Since: gtk+ 3.10
+   --  @return whether the close button is shown
 
    procedure Set_Show_Close_Button
       (Self    : not null access Gtk_Search_Bar_Record;
@@ -123,7 +122,7 @@ package Gtk.Search_Bar is
    --  "search" toggle button should not show a close button in their search
    --  bar, as it duplicates the role of the toggle button.
    --  Since: gtk+ 3.10
-   --  "visible": whether the close button will be shown or not
+   --  @param Visible whether the close button will be shown or not
 
    function Handle_Event
       (Self  : not null access Gtk_Search_Bar_Record;
@@ -163,7 +162,10 @@ package Gtk.Search_Bar is
    --     }
    --
    --  Since: gtk+ 3.10
-   --  "event": a Gdk.Event.Gdk_Event containing key press events
+   --  @param Event a Gdk.Event.Gdk_Event containing key press events
+   --  @return GDK_EVENT_STOP if the key press event resulted in text being
+   --  entered in the search entry (and revealing the search bar if necessary),
+   --  GDK_EVENT_PROPAGATE otherwise.
 
    ----------------
    -- Properties --

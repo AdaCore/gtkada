@@ -299,8 +299,8 @@ package body Gtk.Tree_Model is
    --  Calls func on each node in model in a depth-first fashion.
    --  If Func returns True, then the tree ceases to be walked, and
    --  Gtk.Tree_Model.Foreach returns.
-   --  "func": a function to be called on each row
-   --  "user_data": user data to passed to Func
+   --  @param Func a function to be called on each row
+   --  @param User_Data user data to passed to Func
 
    function To_Gtk_Tree_Model_Foreach_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Tree_Model_Foreach_Func);
@@ -314,10 +314,10 @@ package body Gtk.Tree_Model is
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_Model_Foreach_Func);
-   --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being iterated
-   --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path
-   --  "iter": the current Gtk.Tree_Model.Gtk_Tree_Iter
-   --  "data": The user data passed to Gtk.Tree_Model.Foreach
+   --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being iterated
+   --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
+   --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
+   --  @param Data The user data passed to Gtk.Tree_Model.Foreach
 
    ------------------------------------------
    -- Internal_Gtk_Tree_Model_Foreach_Func --
@@ -588,10 +588,11 @@ package body Gtk.Tree_Model is
       pragma Convention (C, Internal_Cb);
       --  Type of the callback passed to Gtk.Tree_Model.Foreach to iterate
       --  over the rows in a tree model.
-      --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being iterated
-      --  "path": the current Gtk.Tree_Model.Gtk_Tree_Path
-      --  "iter": the current Gtk.Tree_Model.Gtk_Tree_Iter
-      --  "data": The user data passed to Gtk.Tree_Model.Foreach
+      --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being iterated
+      --  @param Path the current Gtk.Tree_Model.Gtk_Tree_Path
+      --  @param Iter the current Gtk.Tree_Model.Gtk_Tree_Iter
+      --  @param Data The user data passed to Gtk.Tree_Model.Foreach
+      --  @return True to stop iterating, False to continue
 
       -------------
       -- Foreach --

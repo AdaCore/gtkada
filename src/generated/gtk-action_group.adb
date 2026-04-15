@@ -269,11 +269,11 @@ package body Gtk.Action_Group is
    --  with Gtk.Action_Group.Set_Translation_Domain.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "func": a Gtk_Translate_Func
-   --  "data": data to be passed to Func and Notify
-   --  "notify": a Glib.G_Destroy_Notify_Address function to be called when
-   --  Action_Group is destroyed and when the translation function is changed
-   --  again
+   --  @param Func a Gtk_Translate_Func
+   --  @param Data data to be passed to Func and Notify
+   --  @param Notify a Glib.G_Destroy_Notify_Address function to be called
+   --  when Action_Group is destroyed and when the translation function is
+   --  changed again
 
    function To_Gtk_Translate_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Translate_Func);
@@ -287,9 +287,9 @@ package body Gtk.Action_Group is
    pragma Obsolescent (Internal_Gtk_Translate_Func);
    pragma Convention (C, Internal_Gtk_Translate_Func);
    --  Deprecated since 3.10, 1
-   --  "path": The id of the message. In Gtk.Action_Group.Gtk_Action_Group
+   --  @param Path The id of the message. In Gtk.Action_Group.Gtk_Action_Group
    --  this will be a label or tooltip from a Gtk_Action_Entry.
-   --  "func_data": user data passed in when registering the function
+   --  @param Func_Data user data passed in when registering the function
 
    ---------------------------------
    -- Internal_Gtk_Translate_Func --
@@ -577,9 +577,11 @@ package body Gtk.Action_Group is
       --  Gtk.Icon_Factory.Gtk_Icon_Factory and
       --  Gtk.Action_Group.Gtk_Action_Group.
       --  Deprecated since 3.10, 1
-      --  "path": The id of the message. In Gtk.Action_Group.Gtk_Action_Group
-      --  this will be a label or tooltip from a Gtk_Action_Entry.
-      --  "func_data": user data passed in when registering the function
+      --  @param Path The id of the message. In
+      --  Gtk.Action_Group.Gtk_Action_Group this will be a label or tooltip
+      --  from a Gtk_Action_Entry.
+      --  @param Func_Data user data passed in when registering the function
+      --  @return the translated message
 
       -----------------
       -- Internal_Cb --

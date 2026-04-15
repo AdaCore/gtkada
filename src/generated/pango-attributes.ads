@@ -21,15 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Pango.Attributes.Pango_Attribute structure represents the common
 --  portions of all attributes. Particular types of attributes include this
 --  structure as their initial portion. The common portion of the attribute
 --  holds the range to which the value in the type-specific part of the
 --  attribute applies and should be initialized using pango_attribute_init. By
 --  default an attribute will have an all-inclusive range of [0,G_MAXUINT].
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;
@@ -66,7 +63,9 @@ package Pango.Attributes is
 
    type Pango_Attr_Filter_Func is access function (Attribute : Pango_Attribute) return Boolean;
    --  Type of a function filtering a list of attributes.
-   --  "attribute": a Pango attribute
+   --  @param Attribute a Pango attribute
+   --  @return True if the attribute should be selected for filtering, False
+   --  otherwise.
 
    ------------------
    -- Constructors --
@@ -91,9 +90,14 @@ package Pango.Attributes is
    function Copy (Self : Pango_Attribute) return Pango_Attribute;
    pragma Import (C, Copy, "pango_attribute_copy");
    --  Make a copy of an attribute.
+   --  @return the newly allocated Pango.Attributes.Pango_Attribute, which
+   --  should be freed with Pango.Attributes.Destroy.
 
    function Copy (Self : Pango_Attr_List) return Pango_Attr_List;
    --  Copy List and return an identical new list.
+   --  @return the newly allocated Pango.Attributes.Pango_Attr_List, with a
+   --  reference count of one, which should be freed with
+   --  Pango.Attributes.Unref. Returns null if List was null.
 
    procedure Destroy (Self : Pango_Attribute);
    pragma Import (C, Destroy, "pango_attribute_destroy");
@@ -106,7 +110,8 @@ package Pango.Attributes is
    --  Compare two attributes for equality. This compares only the actual
    --  value of the two attributes and not the ranges that the attributes apply
    --  to.
-   --  "attr2": another Pango.Attributes.Pango_Attribute
+   --  @param Attr2 another Pango.Attributes.Pango_Attribute
+   --  @return True if the two attributes have the same value.
 
    procedure Change (Self : Pango_Attr_List; Attr : Pango_Attribute);
    --  Insert the given attribute into the Pango.Attributes.Pango_Attr_List.
@@ -117,8 +122,8 @@ package Pango.Attributes is
    --  However, Pango.Attributes.Insert is not suitable for continually
    --  changing a set of attributes since it never removes or combines existing
    --  attributes.
-   --  "attr": the attribute to insert. Ownership of this value is assumed by
-   --  the list.
+   --  @param Attr the attribute to insert. Ownership of this value is assumed
+   --  by the list.
 
    function Filter
       (Self : Pango_Attr_List;
@@ -127,26 +132,29 @@ package Pango.Attributes is
    --  any elements of List for which Func returns True and inserts them into a
    --  new list.
    --  Since: gtk+ 1.2
-   --  "func": callback function; returns True if an attribute should be
+   --  @param Func callback function; returns True if an attribute should be
    --  filtered out.
+   --  @return the new Pango.Attributes.Pango_Attr_List or null if no
+   --  attributes of the given types were found.
 
    procedure Insert (Self : Pango_Attr_List; Attr : Pango_Attribute);
    --  Insert the given attribute into the Pango.Attributes.Pango_Attr_List.
    --  It will be inserted after all other attributes with a matching
    --  Start_Index.
-   --  "attr": the attribute to insert. Ownership of this value is assumed by
-   --  the list.
+   --  @param Attr the attribute to insert. Ownership of this value is assumed
+   --  by the list.
 
    procedure Insert_Before (Self : Pango_Attr_List; Attr : Pango_Attribute);
    --  Insert the given attribute into the Pango.Attributes.Pango_Attr_List.
    --  It will be inserted before all other attributes with a matching
    --  Start_Index.
-   --  "attr": the attribute to insert. Ownership of this value is assumed by
-   --  the list.
+   --  @param Attr the attribute to insert. Ownership of this value is assumed
+   --  by the list.
 
    function Ref (Self : Pango_Attr_List) return Pango_Attr_List;
    --  Increase the reference count of the given attribute list by one.
    --  Since: gtk+ 1.10
+   --  @return The attribute list passed in
 
    procedure Splice
       (Self  : Pango_Attr_List;
@@ -161,9 +169,9 @@ package Pango.Attributes is
    --  sequence (offset in position by Pos).
    --  This operation proves useful for, for instance, inserting a pre-edit
    --  string in the middle of an edit buffer.
-   --  "other": another Pango.Attributes.Pango_Attr_List
-   --  "pos": the position in List at which to insert Other
-   --  "len": the length of the spliced segment. (Note that this must be
+   --  @param Other another Pango.Attributes.Pango_Attr_List
+   --  @param Pos the position in List at which to insert Other
+   --  @param Len the length of the spliced segment. (Note that this must be
    --  specified since the attributes in Other may only be present at some
    --  subsection of this range)
 
@@ -187,9 +195,9 @@ package Pango.Attributes is
    --  Attributes start and end positions are updated if they are behind Pos +
    --  Remove.
    --  Since: gtk+ 1.44
-   --  "pos": the position of the change
-   --  "remove": the number of removed bytes
-   --  "add": the number of added bytes
+   --  @param Pos the position of the change
+   --  @param Remove the number of removed bytes
+   --  @param Add the number of added bytes
 
    ---------------
    -- Functions --
@@ -199,7 +207,9 @@ package Pango.Attributes is
       (Underline : Pango.Enums.Underline) return Pango_Attribute;
    pragma Import (C, Attr_Underline_New, "pango_attr_underline_new");
    --  Create a new underline-style attribute.
-   --  "underline": the underline style.
+   --  @param Underline the underline style.
+   --  @return the newly allocated Pango.Attributes.Pango_Attribute, which
+   --  should be freed with Pango.Attributes.Destroy.
 
    function Attr_Background_New
       (Red   : Guint16;
@@ -207,9 +217,11 @@ package Pango.Attributes is
        Blue  : Guint16) return Pango_Attribute;
    pragma Import (C, Attr_Background_New, "pango_attr_background_new");
    --  Create a new background color attribute.
-   --  "red": the red value (ranging from 0 to 65535)
-   --  "green": the green value
-   --  "blue": the blue value
+   --  @param Red the red value (ranging from 0 to 65535)
+   --  @param Green the green value
+   --  @param Blue the blue value
+   --  @return the newly allocated Pango.Attributes.Pango_Attribute, which
+   --  should be freed with Pango.Attributes.Destroy.
 
    function Attr_Foreground_New
       (Red   : Guint16;
@@ -217,56 +229,74 @@ package Pango.Attributes is
        Blue  : Guint16) return Pango_Attribute;
    pragma Import (C, Attr_Foreground_New, "pango_attr_foreground_new");
    --  Create a new foreground color attribute.
-   --  "red": the red value (ranging from 0 to 65535)
-   --  "green": the green value
-   --  "blue": the blue value
+   --  @param Red the red value (ranging from 0 to 65535)
+   --  @param Green the green value
+   --  @param Blue the blue value
+   --  @return the newly allocated Pango.Attributes.Pango_Attribute, which
+   --  should be freed with Pango.Attributes.Destroy.
 
    function Attr_Family_New (Family : UTF8_String) return Pango_Attribute;
    --  Create a new font family attribute.
-   --  "family": the family or comma separated list of families
+   --  @param Family the family or comma separated list of families
+   --  @return the newly allocated Pango.Attributes.Pango_Attribute, which
+   --  should be freed with Pango.Attributes.Destroy.
 
    function Attr_Strikethrough_New
       (Strikethrough : Boolean) return Pango_Attribute;
    --  Create a new strike-through attribute.
-   --  "strikethrough": True if the text should be struck-through.
+   --  @param Strikethrough True if the text should be struck-through.
+   --  @return the newly allocated Pango.Attributes.Pango_Attribute, which
+   --  should be freed with Pango.Attributes.Destroy.
 
    function Attr_Variant_New
       (Variant : Pango.Enums.Variant) return Pango_Attribute;
    pragma Import (C, Attr_Variant_New, "pango_attr_variant_new");
    --  Create a new font variant attribute (normal or small caps)
-   --  "variant": the variant
+   --  @param Variant the variant
+   --  @return the newly allocated Pango.Attributes.Pango_Attribute, which
+   --  should be freed with Pango.Attributes.Destroy.
 
    function Attr_Weight_New
       (Weight : Pango.Enums.Weight) return Pango_Attribute;
    pragma Import (C, Attr_Weight_New, "pango_attr_weight_new");
    --  Create a new font weight attribute.
-   --  "weight": the weight
+   --  @param Weight the weight
+   --  @return the newly allocated Pango.Attributes.Pango_Attribute, which
+   --  should be freed with Pango.Attributes.Destroy.
 
    function Attr_Stretch_New
       (Stretch : Pango.Enums.Stretch) return Pango_Attribute;
    pragma Import (C, Attr_Stretch_New, "pango_attr_stretch_new");
    --  Create a new font stretch attribute
-   --  "stretch": the stretch
+   --  @param Stretch the stretch
+   --  @return the newly allocated Pango.Attributes.Pango_Attribute, which
+   --  should be freed with Pango.Attributes.Destroy.
 
    function Attr_Scale_New (Scale_Factor : Gdouble) return Pango_Attribute;
    pragma Import (C, Attr_Scale_New, "pango_attr_scale_new");
    --  Create a new font size scale attribute. The base font for the affected
    --  text will have its size multiplied by Scale_Factor.
-   --  "scale_factor": factor to scale the font
+   --  @param Scale_Factor factor to scale the font
+   --  @return the newly allocated Pango.Attributes.Pango_Attribute, which
+   --  should be freed with Pango.Attributes.Destroy.
 
    function Attr_Rise_New (Rise : Glib.Gint) return Pango_Attribute;
    pragma Import (C, Attr_Rise_New, "pango_attr_rise_new");
    --  Create a new baseline displacement attribute.
-   --  "rise": the amount that the text should be displaced vertically, in
+   --  @param Rise the amount that the text should be displaced vertically, in
    --  Pango units. Positive values displace the text upwards.
+   --  @return the newly allocated Pango.Attributes.Pango_Attribute, which
+   --  should be freed with Pango.Attributes.Destroy.
 
    function Attr_Gravity_New
       (Gravity : Pango.Enums.Gravity) return Pango_Attribute;
    pragma Import (C, Attr_Gravity_New, "pango_attr_gravity_new");
    --  Create a new gravity attribute.
    --  Since: gtk+ 1.16
-   --  "gravity": the gravity value; should not be
+   --  @param Gravity the gravity value; should not be
    --  Pango.Enums.Pango_Gravity_Auto.
+   --  @return the newly allocated Pango.Attributes.Pango_Attribute, which
+   --  should be freed with Pango.Attributes.Destroy.
 
 private
 

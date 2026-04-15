@@ -53,9 +53,11 @@ package body Glib.Cancellable is
    --  versions which now makes it easier to write cleanup code that
    --  unconditionally invokes e.g. Glib.Cancellable.Cancel.
    --  Since: gtk+ 2.22
-   --  "callback": The Gcallback to connect.
-   --  "data": Data to pass to Callback.
-   --  "data_destroy_func": Free function for Data or null.
+   --  @param Callback The Gcallback to connect.
+   --  @param Data Data to pass to Callback.
+   --  @param Data_Destroy_Func Free function for Data or null.
+   --  @return The id of the signal handler or 0 if Cancellable has already
+   --  been cancelled.
 
    function To_Gcallback is new Ada.Unchecked_Conversion
      (System.Address, Gcallback);

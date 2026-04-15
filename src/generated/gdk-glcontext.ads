@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gdk.GLContext.Gdk_GLContext is an object representing the
 --  platform-specific OpenGL drawing context.
 --
@@ -75,8 +74,6 @@
 --  using Gdk.GLContext.Get_Current; you can also unset any
 --  Gdk.GLContext.Gdk_GLContext that is currently set by calling
 --  Gdk.GLContext.Clear_Current.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Display;     use Gdk.Display;
@@ -104,6 +101,7 @@ package Gdk.GLContext is
       (Self : not null access Gdk_GLContext_Record) return Boolean;
    --  Retrieves the value set using Gdk.GLContext.Set_Debug_Enabled.
    --  Since: gtk+ 3.16
+   --  @return True if debugging is enabled
 
    procedure Set_Debug_Enabled
       (Self    : not null access Gdk_GLContext_Record;
@@ -114,18 +112,20 @@ package Gdk.GLContext is
    --  The Gdk.GLContext.Gdk_GLContext must not be realized or made current
    --  prior to calling this function.
    --  Since: gtk+ 3.16
-   --  "enabled": whether to enable debugging in the context
+   --  @param Enabled whether to enable debugging in the context
 
    function Get_Display
       (Self : not null access Gdk_GLContext_Record)
        return Gdk.Display.Gdk_Display;
    --  Retrieves the Gdk.Display.Gdk_Display the Context is created for
    --  Since: gtk+ 3.16
+   --  @return a Gdk.Display.Gdk_Display or null
 
    function Get_Forward_Compatible
       (Self : not null access Gdk_GLContext_Record) return Boolean;
    --  Retrieves the value set using Gdk.GLContext.Set_Forward_Compatible.
    --  Since: gtk+ 3.16
+   --  @return True if the context should be forward compatible
 
    procedure Set_Forward_Compatible
       (Self       : not null access Gdk_GLContext_Record;
@@ -139,7 +139,7 @@ package Gdk.GLContext is
    --  The Gdk.GLContext.Gdk_GLContext must not be realized or made current
    --  prior to calling this function.
    --  Since: gtk+ 3.16
-   --  "compatible": whether the context should be forward compatible
+   --  @param Compatible whether the context should be forward compatible
 
    procedure Get_Required_Version
       (Self  : not null access Gdk_GLContext_Record;
@@ -148,8 +148,8 @@ package Gdk.GLContext is
    --  Retrieves the major and minor version requested by calling
    --  Gdk.GLContext.Set_Required_Version.
    --  Since: gtk+ 3.16
-   --  "major": return location for the major version to request
-   --  "minor": return location for the minor version to request
+   --  @param Major return location for the major version to request
+   --  @param Minor return location for the minor version to request
 
    procedure Set_Required_Version
       (Self  : not null access Gdk_GLContext_Record;
@@ -160,19 +160,22 @@ package Gdk.GLContext is
    --  The Gdk.GLContext.Gdk_GLContext must not be realized or made current
    --  prior to calling this function.
    --  Since: gtk+ 3.16
-   --  "major": the major version to request
-   --  "minor": the minor version to request
+   --  @param Major the major version to request
+   --  @param Minor the minor version to request
 
    function Get_Shared_Context
       (Self : not null access Gdk_GLContext_Record) return Gdk_GLContext;
    --  Retrieves the Gdk.GLContext.Gdk_GLContext that this Context share data
    --  with.
    --  Since: gtk+ 3.16
+   --  @return a Gdk.GLContext.Gdk_GLContext or null
 
    function Get_Use_Es
       (Self : not null access Gdk_GLContext_Record) return Boolean;
    --  Checks whether the Context is using an OpenGL or OpenGL ES profile.
    --  Since: gtk+ 3.22
+   --  @return True if the Gdk.GLContext.Gdk_GLContext is using an OpenGL ES
+   --  profile
 
    procedure Set_Use_Es
       (Self   : not null access Gdk_GLContext_Record;
@@ -187,8 +190,8 @@ package Gdk.GLContext is
    --  calling Gdk.GLContext.Realize to decide whether to use the OpenGL or
    --  OpenGL ES API, extensions, or shaders.
    --  Since: gtk+ 3.22
-   --  "use_es": whether the context should use OpenGL ES instead of OpenGL,
-   --  or -1 to allow auto-detection
+   --  @param Use_Es whether the context should use OpenGL ES instead of
+   --  OpenGL, or -1 to allow auto-detection
 
    procedure Get_Version
       (Self  : not null access Gdk_GLContext_Record;
@@ -197,13 +200,14 @@ package Gdk.GLContext is
    --  Retrieves the OpenGL version of the Context.
    --  The Context must be realized prior to calling this function.
    --  Since: gtk+ 3.16
-   --  "major": return location for the major version
-   --  "minor": return location for the minor version
+   --  @param Major return location for the major version
+   --  @param Minor return location for the minor version
 
    function Get_Window
       (Self : not null access Gdk_GLContext_Record) return Gdk.Gdk_Window;
    --  Retrieves the Gdk.Gdk_Window used by the Context.
    --  Since: gtk+ 3.16
+   --  @return a Gdk.Gdk_Window or null
 
    function Is_Legacy
       (Self : not null access Gdk_GLContext_Record) return Boolean;
@@ -221,6 +225,7 @@ package Gdk.GLContext is
    --  OpenGL API to use, or whether to do extension discovery, or what kind of
    --  shader programs to load.
    --  Since: gtk+ 3.20
+   --  @return True if the GL context is in legacy mode
 
    procedure Make_Current (Self : not null access Gdk_GLContext_Record);
    --  Makes the Context the current one.
@@ -232,6 +237,7 @@ package Gdk.GLContext is
    --  It is safe to call this function on a realized
    --  Gdk.GLContext.Gdk_GLContext.
    --  Since: gtk+ 3.16
+   --  @return True if the context is realized
 
    ---------------
    -- Functions --
@@ -246,6 +252,7 @@ package Gdk.GLContext is
    function Get_Current return Gdk_GLContext;
    --  Retrieves the current Gdk.GLContext.Gdk_GLContext.
    --  Since: gtk+ 3.16
+   --  @return the current Gdk.GLContext.Gdk_GLContext, or null
 
    ----------------
    -- Properties --

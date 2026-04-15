@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Cell_Area_Box.Gtk_Cell_Area_Box renders cell renderers into a row
 --  or a column depending on its Gtk.Enums.Gtk_Orientation.
 --
@@ -39,8 +38,6 @@
 --  child cell property with Gtk.Cell_Area.Cell_Set_Property or by specifying
 --  the "align" argument to Gtk.Cell_Area_Box.Pack_Start and
 --  Gtk.Cell_Area_Box.Pack_End.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
@@ -70,11 +67,11 @@ package Gtk.Cell_Area_Box is
       Iter        : Gtk.Tree_Model.Gtk_Tree_Iter);
    --  A function which should set the value of Cell_Layout's cell renderer(s)
    --  as appropriate.
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
 
    ------------------
    -- Constructors --
@@ -103,13 +100,14 @@ package Gtk.Cell_Area_Box is
       (Self : not null access Gtk_Cell_Area_Box_Record) return Glib.Gint;
    --  Gets the spacing added between cell renderers.
    --  Since: gtk+ 3.0
+   --  @return the space added between cell renderers in Box.
 
    procedure Set_Spacing
       (Self    : not null access Gtk_Cell_Area_Box_Record;
        Spacing : Glib.Gint);
    --  Sets the spacing to add between cell renderers in Box.
    --  Since: gtk+ 3.0
-   --  "spacing": the space to add between Gtk_Cell_Renderers
+   --  @param Spacing the space to add between Gtk_Cell_Renderers
 
    procedure Pack_End
       (Self     : not null access Gtk_Cell_Area_Box_Record;
@@ -122,11 +120,11 @@ package Gtk.Cell_Area_Box is
    --  Gtk.Cell_Renderer.Gtk_Cell_Renderer packed with reference to the end of
    --  Box.
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to add
-   --  "expand": whether Renderer should receive extra space when the area
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer to add
+   --  @param Expand whether Renderer should receive extra space when the area
    --  receives more than its natural size
-   --  "align": whether Renderer should be aligned in adjacent rows
-   --  "fixed": whether Renderer should have the same size in all rows
+   --  @param Align whether Renderer should be aligned in adjacent rows
+   --  @param Fixed whether Renderer should have the same size in all rows
 
    procedure Pack_Start
       (Self     : not null access Gtk_Cell_Area_Box_Record;
@@ -139,11 +137,11 @@ package Gtk.Cell_Area_Box is
    --  Gtk.Cell_Renderer.Gtk_Cell_Renderer packed with reference to the start
    --  of Box.
    --  Since: gtk+ 3.0
-   --  "renderer": the Gtk.Cell_Renderer.Gtk_Cell_Renderer to add
-   --  "expand": whether Renderer should receive extra space when the area
+   --  @param Renderer the Gtk.Cell_Renderer.Gtk_Cell_Renderer to add
+   --  @param Expand whether Renderer should receive extra space when the area
    --  receives more than its natural size
-   --  "align": whether Renderer should be aligned in adjacent rows
-   --  "fixed": whether Renderer should have the same size in all rows
+   --  @param Align whether Renderer should be aligned in adjacent rows
+   --  @param Fixed whether Renderer should have the same size in all rows
 
    procedure Set_Cell_Data_Func
       (Cell_Layout : not null access Gtk_Cell_Area_Box_Record;
@@ -155,8 +153,8 @@ package Gtk.Cell_Area_Box is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -171,12 +169,12 @@ package Gtk.Cell_Area_Box is
          Data        : User_Data_Type);
       --  A function which should set the value of Cell_Layout's cell renderer(s)
       --  as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       procedure Set_Cell_Data_Func
          (Cell_Layout : not null access Gtk.Cell_Area_Box.Gtk_Cell_Area_Box_Record'Class;
@@ -189,9 +187,9 @@ package Gtk.Cell_Area_Box is
       --  cell renderer(s) as appropriate.
       --  Func may be null to remove a previously set function.
       --  Since: gtk+ 2.4
-      --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-      --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-      --  "func_data": user data for Func
+      --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+      --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+      --  @param Func_Data user data for Func
 
    end Set_Cell_Data_Func_User_Data;
 
