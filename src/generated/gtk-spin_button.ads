@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Spin_Button.Gtk_Spin_Button is an ideal way to allow the user to set
 --  the value of some attribute. Rather than having to directly type a number
 --  into a Gtk.GEntry.Gtk_Entry, GtkSpinButton allows the user to click on one
@@ -125,8 +124,6 @@
 --
 --       gtk_widget_show_all (window);
 --     }
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;               use Gdk.Event;
@@ -197,24 +194,24 @@ package Gtk.Spin_Button is
    --  Creates a new Gtk.Spin_Button.Gtk_Spin_Button.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment object that this spin
-   --  button should use, or null
-   --  "climb_rate": specifies by how much the rate of change in the value
+   --  @param Adjustment the Gtk.Adjustment.Gtk_Adjustment object that this
+   --  spin button should use, or null
+   --  @param Climb_Rate specifies by how much the rate of change in the value
    --  will accelerate if you continue to hold down an up/down button or arrow
    --  key
-   --  "digits": the number of decimal places to display
+   --  @param The_Digits the number of decimal places to display
 
    function Gtk_Spin_Button_New
       (Adjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class;
        Climb_Rate : Gdouble;
        The_Digits : Guint := 0) return Gtk_Spin_Button;
    --  Creates a new Gtk.Spin_Button.Gtk_Spin_Button.
-   --  "adjustment": the Gtk.Adjustment.Gtk_Adjustment object that this spin
-   --  button should use, or null
-   --  "climb_rate": specifies by how much the rate of change in the value
+   --  @param Adjustment the Gtk.Adjustment.Gtk_Adjustment object that this
+   --  spin button should use, or null
+   --  @param Climb_Rate specifies by how much the rate of change in the value
    --  will accelerate if you continue to hold down an up/down button or arrow
    --  key
-   --  "digits": the number of decimal places to display
+   --  @param The_Digits the number of decimal places to display
 
    procedure Gtk_New
       (Spin_Button : out Gtk_Spin_Button;
@@ -236,9 +233,9 @@ package Gtk.Spin_Button is
    --  needs, use Gtk.Spin_Button.Set_Digits to correct it.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "min": Minimum allowable value
-   --  "max": Maximum allowable value
-   --  "step": Increment added or subtracted by spinning the widget
+   --  @param Min Minimum allowable value
+   --  @param Max Maximum allowable value
+   --  @param Step Increment added or subtracted by spinning the widget
 
    function Gtk_Spin_Button_New_With_Range
       (Min  : Gdouble;
@@ -252,9 +249,9 @@ package Gtk.Spin_Button is
    --  Note that the way in which the precision is derived works best if Step
    --  is a power of ten. If the resulting precision is not suitable for your
    --  needs, use Gtk.Spin_Button.Set_Digits to correct it.
-   --  "min": Minimum allowable value
-   --  "max": Maximum allowable value
-   --  "step": Increment added or subtracted by spinning the widget
+   --  @param Min Minimum allowable value
+   --  @param Max Maximum allowable value
+   --  @param Step Increment added or subtracted by spinning the widget
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_spin_button_get_type");
@@ -270,35 +267,38 @@ package Gtk.Spin_Button is
        The_Digits  : Guint);
    --  Changes the properties of an existing spin button. The adjustment,
    --  climb rate, and number of decimal places are updated accordingly.
-   --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment to replace the spin
+   --  @param Adjustment a Gtk.Adjustment.Gtk_Adjustment to replace the spin
    --  button's existing adjustment, or null to leave its current adjustment
    --  unchanged
-   --  "climb_rate": the new climb rate
-   --  "digits": the number of decimal places to display in the spin button
+   --  @param Climb_Rate the new climb rate
+   --  @param The_Digits the number of decimal places to display in the spin
+   --  button
 
    function Get_Adjustment
       (Spin_Button : not null access Gtk_Spin_Button_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
    --  Get the adjustment associated with a Gtk.Spin_Button.Gtk_Spin_Button
+   --  @return the Gtk.Adjustment.Gtk_Adjustment of Spin_Button
 
    procedure Set_Adjustment
       (Spin_Button : not null access Gtk_Spin_Button_Record;
        Adjustment  : not null access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
    --  Replaces the Gtk.Adjustment.Gtk_Adjustment associated with Spin_Button.
-   --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment to replace the existing
-   --  adjustment
+   --  @param Adjustment a Gtk.Adjustment.Gtk_Adjustment to replace the
+   --  existing adjustment
 
    function Get_Digits
       (Spin_Button : not null access Gtk_Spin_Button_Record) return Guint;
    --  Fetches the precision of Spin_Button. See Gtk.Spin_Button.Set_Digits.
+   --  @return the current precision
 
    procedure Set_Digits
       (Spin_Button : not null access Gtk_Spin_Button_Record;
        The_Digits  : Guint);
    --  Set the precision to be displayed by Spin_Button. Up to 20 digit
    --  precision is allowed.
-   --  "digits": the number of digits after the decimal point to be displayed
-   --  for the spin button's value
+   --  @param The_Digits the number of digits after the decimal point to be
+   --  displayed for the spin button's value
 
    procedure Get_Increments
       (Spin_Button : not null access Gtk_Spin_Button_Record;
@@ -306,8 +306,8 @@ package Gtk.Spin_Button is
        Page        : out Gdouble);
    --  Gets the current step and page the increments used by Spin_Button. See
    --  Gtk.Spin_Button.Set_Increments.
-   --  "step": location to store step increment, or null
-   --  "page": location to store page increment, or null
+   --  @param Step location to store step increment, or null
+   --  @param Page location to store page increment, or null
 
    procedure Set_Increments
       (Spin_Button : not null access Gtk_Spin_Button_Record;
@@ -315,28 +315,29 @@ package Gtk.Spin_Button is
        Page        : Gdouble);
    --  Sets the step and page increments for spin_button. This affects how
    --  quickly the value changes when the spin button's arrows are activated.
-   --  "step": increment applied for a button 1 press.
-   --  "page": increment applied for a button 2 press.
+   --  @param Step increment applied for a button 1 press.
+   --  @param Page increment applied for a button 2 press.
 
    function Get_Numeric
       (Spin_Button : not null access Gtk_Spin_Button_Record) return Boolean;
    --  Returns whether non-numeric text can be typed into the spin button. See
    --  Gtk.Spin_Button.Set_Numeric.
+   --  @return True if only numeric text can be entered
 
    procedure Set_Numeric
       (Spin_Button : not null access Gtk_Spin_Button_Record;
        Numeric     : Boolean);
    --  Sets the flag that determines if non-numeric text can be typed into the
    --  spin button.
-   --  "numeric": flag indicating if only numeric entry is allowed
+   --  @param Numeric flag indicating if only numeric entry is allowed
 
    procedure Get_Range
       (Spin_Button : not null access Gtk_Spin_Button_Record;
        Min         : out Gdouble;
        Max         : out Gdouble);
    --  Gets the range allowed for Spin_Button. See Gtk.Spin_Button.Set_Range.
-   --  "min": location to store minimum allowed value, or null
-   --  "max": location to store maximum allowed value, or null
+   --  @param Min location to store minimum allowed value, or null
+   --  @param Max location to store maximum allowed value, or null
 
    procedure Set_Range
       (Spin_Button : not null access Gtk_Spin_Button_Record;
@@ -345,13 +346,14 @@ package Gtk.Spin_Button is
    --  Sets the minimum and maximum allowable values for Spin_Button.
    --  If the current value is outside this range, it will be adjusted to fit
    --  within the range, otherwise it will remain unchanged.
-   --  "min": minimum allowable value
-   --  "max": maximum allowable value
+   --  @param Min minimum allowable value
+   --  @param Max maximum allowable value
 
    function Get_Snap_To_Ticks
       (Spin_Button : not null access Gtk_Spin_Button_Record) return Boolean;
    --  Returns whether the values are corrected to the nearest step. See
    --  Gtk.Spin_Button.Set_Snap_To_Ticks.
+   --  @return True if values are snapped to the nearest step
 
    procedure Set_Snap_To_Ticks
       (Spin_Button   : not null access Gtk_Spin_Button_Record;
@@ -359,7 +361,7 @@ package Gtk.Spin_Button is
    --  Sets the policy as to whether values are corrected to the nearest step
    --  increment when a spin button is activated after providing an invalid
    --  value.
-   --  "snap_to_ticks": a flag indicating if invalid values should be
+   --  @param Snap_To_Ticks a flag indicating if invalid values should be
    --  corrected
 
    function Get_Update_Policy
@@ -367,34 +369,38 @@ package Gtk.Spin_Button is
        return Gtk_Spin_Button_Update_Policy;
    --  Gets the update behavior of a spin button. See
    --  Gtk.Spin_Button.Set_Update_Policy.
+   --  @return the current update policy
 
    procedure Set_Update_Policy
       (Spin_Button : not null access Gtk_Spin_Button_Record;
        Policy      : Gtk_Spin_Button_Update_Policy);
    --  Sets the update behavior of a spin button. This determines whether the
    --  spin button is always updated or only when a valid value is set.
-   --  "policy": a Gtk.Spin_Button.Gtk_Spin_Button_Update_Policy value
+   --  @param Policy a Gtk.Spin_Button.Gtk_Spin_Button_Update_Policy value
 
    function Get_Value
       (Spin_Button : not null access Gtk_Spin_Button_Record) return Gdouble;
    --  Get the value in the Spin_Button.
+   --  @return the value of Spin_Button
 
    procedure Set_Value
       (Spin_Button : not null access Gtk_Spin_Button_Record;
        Value       : Gdouble);
    --  Sets the value of Spin_Button.
-   --  "value": the new value
+   --  @param Value the new value
 
    function Get_Value_As_Int
       (Spin_Button : not null access Gtk_Spin_Button_Record)
        return Glib.Gint;
    --  Get the value Spin_Button represented as an integer.
+   --  @return the value of Spin_Button
 
    function Get_Wrap
       (Spin_Button : not null access Gtk_Spin_Button_Record) return Boolean;
    --  Returns whether the spin button's value wraps around to the opposite
    --  limit when the upper or lower limit of the range is exceeded. See
    --  Gtk.Spin_Button.Set_Wrap.
+   --  @return True if the spin button wraps around
 
    procedure Set_Wrap
       (Spin_Button : not null access Gtk_Spin_Button_Record;
@@ -402,7 +408,7 @@ package Gtk.Spin_Button is
    --  Sets the flag that determines if a spin button value wraps around to
    --  the opposite limit when the upper or lower limit of the range is
    --  exceeded.
-   --  "wrap": a flag indicating if wrapping behavior is performed
+   --  @param Wrap a flag indicating if wrapping behavior is performed
 
    procedure Spin
       (Spin_Button : not null access Gtk_Spin_Button_Record;
@@ -410,9 +416,9 @@ package Gtk.Spin_Button is
        Increment   : Gdouble);
    --  Increment or decrement a spin button's value in a specified direction
    --  by a specified amount.
-   --  "direction": a Gtk.Spin_Button.Gtk_Spin_Type indicating the direction
-   --  to spin
-   --  "increment": step increment to apply in the specified direction
+   --  @param Direction a Gtk.Spin_Button.Gtk_Spin_Type indicating the
+   --  direction to spin
+   --  @param Increment step increment to apply in the specified direction
 
    procedure Update (Spin_Button : not null access Gtk_Spin_Button_Record);
    --  Manually force an update of the spin button.
@@ -579,9 +585,7 @@ package Gtk.Spin_Button is
    --  The default conversion uses g_strtod.
    -- 
    --  Callback parameters:
-   --    --  "new_value": return location for the new value
-   --    --  Returns True for a successful conversion, False if the input
-   --     was not handled, and GTK_INPUT_ERROR if the conversion failed.
+   --    --  @param New_Value return location for the new value
 
    type Cb_Gtk_Spin_Button_Boolean is not null access function
      (Self : access Gtk_Spin_Button_Record'Class) return Boolean;
@@ -622,7 +626,6 @@ package Gtk.Spin_Button is
    --     }
    -- 
    --  Callback parameters:
-   --    --  Returns True if the value has been displayed
 
    type Cb_Gtk_Spin_Button_Void is not null access procedure
      (Self : access Gtk_Spin_Button_Record'Class);

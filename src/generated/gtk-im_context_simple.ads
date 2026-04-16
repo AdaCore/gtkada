@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkIMContextSimple is a simple input method context supporting table-based
 --  input methods. It has a built-in table of compose sequences that is derived
 --  from the X11 Compose files.
@@ -36,8 +35,6 @@
 --  typing Ctrl-Shift-u, followed by a hexadecimal Unicode codepoint. For
 --  example, Ctrl-Shift-u 1 2 3 Enter yields U+0123 LATIN SMALL LETTER G WITH
 --  CEDILLA, i.e. ģ.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;
@@ -85,9 +82,9 @@ package Gtk.IM_Context_Simple is
    --  The table must be sorted in dictionary order on the numeric value of
    --  the key symbol fields. (Values beyond the length of the sequence should
    --  be zero.)
-   --  "data": the table
-   --  "max_seq_len": Maximum length of a sequence in the table (cannot be
+   --  @param Data the table
+   --  @param Max_Seq_Len Maximum length of a sequence in the table (cannot be
    --  greater than GTK_MAX_COMPOSE_LEN)
-   --  "n_seqs": number of sequences in the table
+   --  @param N_Seqs number of sequences in the table
 
 end Gtk.IM_Context_Simple;

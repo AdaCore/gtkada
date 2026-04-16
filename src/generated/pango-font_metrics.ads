@@ -21,14 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Pango.Font_Metrics.Pango_Font_Metrics structure holds the overall metric
 --  information for a font (possibly restricted to a script). The fields of
 --  this structure are private to implementations of a font backend. See the
 --  documentation of the corresponding getters for documentation of their
 --  meaning.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib; use Glib;
@@ -59,6 +56,7 @@ package Pango.Font_Metrics is
    --  is merely a representative value useful, for example, for determining
    --  the initial size for a window. Actual characters in text will be wider
    --  and narrower than this.
+   --  @return the character width, in Pango units.
 
    function Get_Approximate_Digit_Width
       (Self : Pango_Font_Metrics) return Glib.Gint;
@@ -68,24 +66,28 @@ package Pango.Font_Metrics is
    --  narrower than this, though this value is generally somewhat more
    --  accurate than the result of
    --  Pango.Font_Metrics.Get_Approximate_Char_Width for digits.
+   --  @return the digit width, in Pango units.
 
    function Get_Ascent (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the ascent from a font metrics structure. The ascent is the
    --  distance from the baseline to the logical top of a line of text. (The
    --  logical top may be above or below the top of the actual drawn ink. It is
    --  necessary to lay out the text to figure where the ink will be.)
+   --  @return the ascent, in Pango units.
 
    function Get_Descent (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the descent from a font metrics structure. The descent is the
    --  distance from the baseline to the logical bottom of a line of text. (The
    --  logical bottom may be above or below the bottom of the actual drawn ink.
    --  It is necessary to lay out the text to figure where the ink will be.)
+   --  @return the descent, in Pango units.
 
    function Get_Height (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the line height from a font metrics structure. The line height is
    --  the distance between successive baselines in wrapped text.
    --  If the line height is not available, 0 is returned.
    --  Since: gtk+ 1.44
+   --  @return the height, in Pango units
 
    function Get_Strikethrough_Position
       (Self : Pango_Font_Metrics) return Glib.Gint;
@@ -93,11 +95,13 @@ package Pango.Font_Metrics is
    --  returned is the distance *above* the baseline of the top of the
    --  strikethrough.
    --  Since: gtk+ 1.6
+   --  @return the suggested strikethrough position, in Pango units.
 
    function Get_Strikethrough_Thickness
       (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the suggested thickness to draw for the strikethrough.
    --  Since: gtk+ 1.6
+   --  @return the suggested strikethrough thickness, in Pango units.
 
    function Get_Underline_Position
       (Self : Pango_Font_Metrics) return Glib.Gint;
@@ -106,14 +110,17 @@ package Pango.Font_Metrics is
    --  most fonts have underline positions beneath the baseline, this value is
    --  typically negative.
    --  Since: gtk+ 1.6
+   --  @return the suggested underline position, in Pango units.
 
    function Get_Underline_Thickness
       (Self : Pango_Font_Metrics) return Glib.Gint;
    --  Gets the suggested thickness to draw for the underline.
    --  Since: gtk+ 1.6
+   --  @return the suggested underline thickness, in Pango units.
 
    function Ref (Self : Pango_Font_Metrics) return Pango_Font_Metrics;
    --  Increase the reference count of a font metrics structure by one.
+   --  @return Metrics
 
    procedure Unref (Self : Pango_Font_Metrics);
    --  Decrease the reference count of a font metrics structure by one. If the

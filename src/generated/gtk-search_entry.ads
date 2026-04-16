@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Search_Entry.Gtk_Search_Entry is a subclass of Gtk.GEntry.Gtk_Entry
 --  that has been tailored for use as a search entry.
 --
@@ -47,8 +46,6 @@
 --  Often, GtkSearchEntry will be fed events by means of being placed inside a
 --  Gtk.Search_Bar.Gtk_Search_Bar. If that is not the case, you can use
 --  Gtk.Search_Entry.Handle_Event to pass events.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;         use Gdk.Event;
@@ -102,7 +99,9 @@ package Gtk.Search_Entry is
    --  a search, GDK_EVENT_STOP will be returned. The caller should ensure that
    --  the entry is shown in this case, and not propagate the event further.
    --  Since: gtk+ 3.16
-   --  "event": a key event
+   --  @param Event a key event
+   --  @return GDK_EVENT_STOP if the key press event resulted in a search
+   --  beginning or continuing, GDK_EVENT_PROPAGATE otherwise.
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

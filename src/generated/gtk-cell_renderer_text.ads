@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text renders a given text in
 --  its cell, using the font, color and style information provided by its
 --  properties. The text will be ellipsized if it is too long and the
@@ -31,8 +30,6 @@
 --  Gtk.Cell_Renderer.Cell_Renderer_Mode_Editable, the
 --  Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text allows to edit its text using
 --  an entry.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Color;         use Gdk.Color;
@@ -96,7 +93,7 @@ package Gtk.Cell_Renderer_Text is
    --  massive number of cells displayed). If Number_Of_Rows is -1, then the
    --  fixed height is unset, and the height is determined by the properties
    --  again.
-   --  "number_of_rows": Number of rows of text each cell renderer is
+   --  @param Number_Of_Rows Number of rows of text each cell renderer is
    --  allocated, or -1
 
    ----------------
@@ -298,8 +295,8 @@ package Gtk.Cell_Renderer_Text is
    --  store New_Text at the position indicated by Path.
    -- 
    --  Callback parameters:
-   --    --  "path": the path identifying the edited cell
-   --    --  "new_text": the new text
+   --    --  @param Path the path identifying the edited cell
+   --    --  @param New_Text the new text
 
 private
    Wrap_Width_Property : constant Glib.Properties.Property_Int :=

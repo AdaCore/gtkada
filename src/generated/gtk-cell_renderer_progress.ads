@@ -21,15 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Cell_Renderer_Progress.Gtk_Cell_Renderer_Progress renders a numeric
 --  value as a progress par in a cell. Additionally, it can display a text on
 --  top of the progress bar.
 --
 --  The Gtk.Cell_Renderer_Progress.Gtk_Cell_Renderer_Progress cell renderer
 --  was added in GTK+ 2.6.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;

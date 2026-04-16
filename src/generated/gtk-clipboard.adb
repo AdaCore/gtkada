@@ -85,12 +85,12 @@ package body Gtk.Clipboard is
    --  Requests the contents of clipboard as the given target. When the
    --  results of the result are later received the supplied callback will be
    --  called.
-   --  "target": an atom representing the form into which the clipboard owner
-   --  should convert the selection.
-   --  "callback": A function to call when the results are received (or the
-   --  retrieval fails). If the retrieval fails the length field of
+   --  @param Target an atom representing the form into which the clipboard
+   --  owner should convert the selection.
+   --  @param Callback A function to call when the results are received (or
+   --  the retrieval fails). If the retrieval fails the length field of
    --  Selection_Data will be negative.
-   --  "user_data": user data to pass to Callback
+   --  @param User_Data user data to pass to Callback
 
    procedure C_Gtk_Clipboard_Request_Image
       (Clipboard : System.Address;
@@ -106,9 +106,9 @@ package body Gtk.Clipboard is
    --  was empty or if the contents of the clipboard could not be converted
    --  into an image.
    --  Since: gtk+ 2.6
-   --  "callback": a function to call when the image is received, or the
+   --  @param Callback a function to call when the image is received, or the
    --  retrieval fails. (It will always be called one way or the other.)
-   --  "user_data": user data to pass to Callback.
+   --  @param User_Data user data to pass to Callback.
 
    procedure C_Gtk_Clipboard_Request_Rich_Text
       (Clipboard : System.Address;
@@ -124,10 +124,10 @@ package body Gtk.Clipboard is
    --  particular if the clipboard was empty or if the contents of the
    --  clipboard could not be converted into rich text form.
    --  Since: gtk+ 2.10
-   --  "buffer": a Gtk.Text_Buffer.Gtk_Text_Buffer
-   --  "callback": a function to call when the text is received, or the
+   --  @param Buffer a Gtk.Text_Buffer.Gtk_Text_Buffer
+   --  @param Callback a function to call when the text is received, or the
    --  retrieval fails. (It will always be called one way or the other.)
-   --  "user_data": user data to pass to Callback.
+   --  @param User_Data user data to pass to Callback.
 
    procedure C_Gtk_Clipboard_Request_Targets
       (Clipboard : System.Address;
@@ -139,9 +139,9 @@ package body Gtk.Clipboard is
    --  The Targets parameter to Callback will contain the resulting targets if
    --  the request succeeded, or null if it failed.
    --  Since: gtk+ 2.4
-   --  "callback": a function to call when the targets are received, or the
-   --  retrieval fails. (It will always be called one way or the other.)
-   --  "user_data": user data to pass to Callback.
+   --  @param Callback a function to call when the targets are received, or
+   --  the retrieval fails. (It will always be called one way or the other.)
+   --  @param User_Data user data to pass to Callback.
 
    procedure C_Gtk_Clipboard_Request_Text
       (Clipboard : System.Address;
@@ -155,9 +155,9 @@ package body Gtk.Clipboard is
    --  request succeeded, or null if it failed. This could happen for various
    --  reasons, in particular if the clipboard was empty or if the contents of
    --  the clipboard could not be converted into text form.
-   --  "callback": a function to call when the text is received, or the
+   --  @param Callback a function to call when the text is received, or the
    --  retrieval fails. (It will always be called one way or the other.)
-   --  "user_data": user data to pass to Callback.
+   --  @param User_Data user data to pass to Callback.
 
    procedure C_Gtk_Clipboard_Request_Uris
       (Clipboard : System.Address;
@@ -171,9 +171,9 @@ package body Gtk.Clipboard is
    --  various reasons, in particular if the clipboard was empty or if the
    --  contents of the clipboard could not be converted into URI form.
    --  Since: gtk+ 2.14
-   --  "callback": a function to call when the URIs are received, or the
+   --  @param Callback a function to call when the URIs are received, or the
    --  retrieval fails. (It will always be called one way or the other.)
-   --  "user_data": user data to pass to Callback.
+   --  @param User_Data user data to pass to Callback.
 
    function To_Gtk_Clipboard_Received_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Clipboard_Received_Func);
@@ -216,20 +216,20 @@ package body Gtk.Clipboard is
        Pixbuf    : System.Address;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Image_Received_Func);
-   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-   --  "pixbuf": the received image
-   --  "data": the User_Data supplied to Gtk.Clipboard.Request_Image.
+   --  @param Clipboard the Gtk.Clipboard.Gtk_Clipboard
+   --  @param Pixbuf the received image
+   --  @param Data the User_Data supplied to Gtk.Clipboard.Request_Image.
 
    procedure Internal_Gtk_Clipboard_Received_Func
       (Clipboard      : System.Address;
        Selection_Data : System.Address;
        Data           : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Received_Func);
-   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-   --  "selection_data": a Gtk.Selection_Data.Gtk_Selection_Data containing
-   --  the data was received. If retrieving the data failed, then then length
-   --  field of Selection_Data will be negative.
-   --  "data": the User_Data supplied to Gtk.Clipboard.Request_Contents.
+   --  @param Clipboard the Gtk.Clipboard.Gtk_Clipboard
+   --  @param Selection_Data a Gtk.Selection_Data.Gtk_Selection_Data
+   --  containing the data was received. If retrieving the data failed, then
+   --  then length field of Selection_Data will be negative.
+   --  @param Data the User_Data supplied to Gtk.Clipboard.Request_Contents.
 
    procedure Internal_Gtk_Clipboard_Rich_Text_Received_Func
       (Clipboard : System.Address;
@@ -238,12 +238,12 @@ package body Gtk.Clipboard is
        Length    : Gsize;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Rich_Text_Received_Func);
-   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-   --  "format": The format of the rich text
-   --  "text": the rich text received, as a UTF-8 encoded string, or null if
-   --  retrieving the data failed.
-   --  "length": Length of the text.
-   --  "data": the User_Data supplied to Gtk.Clipboard.Request_Rich_Text.
+   --  @param Clipboard the Gtk.Clipboard.Gtk_Clipboard
+   --  @param Format The format of the rich text
+   --  @param Text the rich text received, as a UTF-8 encoded string, or null
+   --  if retrieving the data failed.
+   --  @param Length Length of the text.
+   --  @param Data the User_Data supplied to Gtk.Clipboard.Request_Rich_Text.
 
    procedure Internal_Gtk_Clipboard_Targets_Received_Func
       (Clipboard : System.Address;
@@ -251,30 +251,30 @@ package body Gtk.Clipboard is
        N_Atoms   : Glib.Gint;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Targets_Received_Func);
-   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-   --  "atoms": the supported targets, as array of Gdk.Types.Gdk_Atom, or null
-   --  if retrieving the data failed.
-   --  "n_atoms": the length of the Atoms array.
-   --  "data": the User_Data supplied to Gtk.Clipboard.Request_Targets.
+   --  @param Clipboard the Gtk.Clipboard.Gtk_Clipboard
+   --  @param Atoms the supported targets, as array of Gdk.Types.Gdk_Atom, or
+   --  null if retrieving the data failed.
+   --  @param N_Atoms the length of the Atoms array.
+   --  @param Data the User_Data supplied to Gtk.Clipboard.Request_Targets.
 
    procedure Internal_Gtk_Clipboard_Text_Received_Func
       (Clipboard : System.Address;
        Text      : Gtkada.Types.Chars_Ptr;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Text_Received_Func);
-   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-   --  "text": the text received, as a UTF-8 encoded string, or null if
+   --  @param Clipboard the Gtk.Clipboard.Gtk_Clipboard
+   --  @param Text the text received, as a UTF-8 encoded string, or null if
    --  retrieving the data failed.
-   --  "data": the User_Data supplied to Gtk.Clipboard.Request_Text.
+   --  @param Data the User_Data supplied to Gtk.Clipboard.Request_Text.
 
    procedure Internal_Gtk_Clipboard_Urireceived_Func
       (Clipboard : System.Address;
        Uris      : chars_ptr_array_access;
        Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Clipboard_Urireceived_Func);
-   --  "clipboard": the Gtk.Clipboard.Gtk_Clipboard
-   --  "uris": the received URIs
-   --  "data": the User_Data supplied to Gtk.Clipboard.Request_Uris.
+   --  @param Clipboard the Gtk.Clipboard.Gtk_Clipboard
+   --  @param Uris the received URIs
+   --  @param Data the User_Data supplied to Gtk.Clipboard.Request_Uris.
 
    ------------------------------------------------
    -- Internal_Gtk_Clipboard_Image_Received_Func --

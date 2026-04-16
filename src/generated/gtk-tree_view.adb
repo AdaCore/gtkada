@@ -56,12 +56,13 @@ package body Gtk.Tree_View is
    --  gtk_tree_view_column_pack_start. If Tree_View has "fixed_height" mode
    --  enabled, then the new column will have its "sizing" property set to be
    --  GTK_TREE_VIEW_COLUMN_FIXED.
-   --  "position": Position to insert, -1 for append
-   --  "title": column title
-   --  "cell": cell renderer for column
-   --  "func": function to set attributes of cell renderer
-   --  "data": data for Func
-   --  "dnotify": destroy notifier for Data
+   --  @param Position Position to insert, -1 for append
+   --  @param Title column title
+   --  @param Cell cell renderer for column
+   --  @param Func function to set attributes of cell renderer
+   --  @param Data data for Func
+   --  @param Dnotify destroy notifier for Data
+   --  @return number of columns in the tree view post-insert
 
    procedure C_Gtk_Tree_View_Map_Expanded_Rows
       (Tree_View : System.Address;
@@ -69,8 +70,8 @@ package body Gtk.Tree_View is
        Data      : System.Address);
    pragma Import (C, C_Gtk_Tree_View_Map_Expanded_Rows, "gtk_tree_view_map_expanded_rows");
    --  Calls Func on all expanded rows.
-   --  "func": A function to be called
-   --  "data": User data to be passed to the function.
+   --  @param Func A function to be called
+   --  @param Data User data to be passed to the function.
 
    procedure C_Gtk_Tree_View_Set_Column_Drag_Function
       (Tree_View : System.Address;
@@ -89,9 +90,10 @@ package body Gtk.Tree_View is
    --  are null, then they indicate an edge. If Func is set to be null, then
    --  Tree_View reverts to the default behavior of allowing all columns to be
    --  dropped everywhere.
-   --  "func": A function to determine which columns are reorderable, or null.
-   --  "user_data": User data to be passed to Func, or null
-   --  "destroy": Destroy notifier for User_Data, or null
+   --  @param Func A function to determine which columns are reorderable, or
+   --  null.
+   --  @param User_Data User data to be passed to Func, or null
+   --  @param Destroy Destroy notifier for User_Data, or null
 
    procedure C_Gtk_Tree_View_Set_Destroy_Count_Func
       (Tree_View : System.Address;
@@ -104,9 +106,9 @@ package body Gtk.Tree_View is
    --  by ATK for determining the number of visible children that are removed
    --  when the user collapses a row, or a row is deleted.
    --  Deprecated since 3.4, 1
-   --  "func": Function to be called when a view row is destroyed, or null
-   --  "data": User data to be passed to Func, or null
-   --  "destroy": Destroy notifier for Data, or null
+   --  @param Func Function to be called when a view row is destroyed, or null
+   --  @param Data User data to be passed to Func, or null
+   --  @param Destroy Destroy notifier for Data, or null
 
    procedure C_Gtk_Tree_View_Set_Row_Separator_Func
       (Tree_View : System.Address;
@@ -118,9 +120,9 @@ package body Gtk.Tree_View is
    --  row should be drawn as a separator. If the row separator function is
    --  null, no separators are drawn. This is the default value.
    --  Since: gtk+ 2.6
-   --  "func": a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
-   --  "data": user data to pass to Func, or null
-   --  "destroy": destroy notifier for Data, or null
+   --  @param Func a Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func
+   --  @param Data user data to pass to Func, or null
+   --  @param Destroy destroy notifier for Data, or null
 
    procedure C_Gtk_Tree_View_Set_Search_Equal_Func
       (Tree_View         : System.Address;
@@ -131,9 +133,9 @@ package body Gtk.Tree_View is
    --  Sets the compare function for the interactive search capabilities; note
    --  that somewhat like strcmp returning 0 for equality
    --  Gtk_Tree_View_Search_Equal_Func returns False on matches.
-   --  "search_equal_func": the compare function to use during the search
-   --  "search_user_data": user data to pass to Search_Equal_Func, or null
-   --  "search_destroy": Destroy notifier for Search_User_Data, or null
+   --  @param Search_Equal_Func the compare function to use during the search
+   --  @param Search_User_Data user data to pass to Search_Equal_Func, or null
+   --  @param Search_Destroy Destroy notifier for Search_User_Data, or null
 
    procedure C_Gtk_Tree_View_Set_Search_Position_Func
       (Tree_View : System.Address;
@@ -143,10 +145,10 @@ package body Gtk.Tree_View is
    pragma Import (C, C_Gtk_Tree_View_Set_Search_Position_Func, "gtk_tree_view_set_search_position_func");
    --  Sets the function to use when positioning the search dialog.
    --  Since: gtk+ 2.10
-   --  "func": the function to use to position the search dialog, or null to
-   --  use the default search position function
-   --  "data": user data to pass to Func, or null
-   --  "destroy": Destroy notifier for Data, or null
+   --  @param Func the function to use to position the search dialog, or null
+   --  to use the default search position function
+   --  @param Data user data to pass to Func, or null
+   --  @param Destroy Destroy notifier for Data, or null
 
    function To_Gtk_Tree_Cell_Data_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Tree_Cell_Data_Func);
@@ -197,12 +199,12 @@ package body Gtk.Tree_View is
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Tree_Cell_Data_Func);
-   --  "tree_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column
-   --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being rendered
-   --  by Tree_Column
-   --  "tree_model": The Gtk.Tree_Model.Gtk_Tree_Model being rendered
-   --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter of the current row rendered
-   --  "data": user data
+   --  @param Tree_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column
+   --  @param Cell The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being
+   --  rendered by Tree_Column
+   --  @param Tree_Model The Gtk.Tree_Model.Gtk_Tree_Model being rendered
+   --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter of the current row rendered
+   --  @param Data user data
 
    procedure Internal_Gtk_Tree_Destroy_Count_Func
       (Tree_View : System.Address;
@@ -218,31 +220,32 @@ package body Gtk.Tree_View is
        Next_Column : System.Address;
        Data        : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_View_Column_Drop_Func);
-   --  "tree_view": A Gtk.Tree_View.Gtk_Tree_View
-   --  "column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column being dragged
-   --  "prev_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column on one side
-   --  of Column
-   --  "next_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column on the other
+   --  @param Tree_View A Gtk.Tree_View.Gtk_Tree_View
+   --  @param Column The Gtk.Tree_View_Column.Gtk_Tree_View_Column being
+   --  dragged
+   --  @param Prev_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column on one
    --  side of Column
-   --  "data": user data
+   --  @param Next_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column on the
+   --  other side of Column
+   --  @param Data user data
 
    procedure Internal_Gtk_Tree_View_Mapping_Func
       (Tree_View : System.Address;
        Path      : System.Address;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gtk_Tree_View_Mapping_Func);
-   --  "tree_view": A Gtk.Tree_View.Gtk_Tree_View
-   --  "path": The path that's expanded
-   --  "user_data": user data
+   --  @param Tree_View A Gtk.Tree_View.Gtk_Tree_View
+   --  @param Path The path that's expanded
+   --  @param User_Data user data
 
    function Internal_Gtk_Tree_View_Row_Separator_Func
       (Model : Gtk.Tree_Model.Gtk_Tree_Model;
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_View_Row_Separator_Func);
-   --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
-   --  "data": user data
+   --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
+   --  @param Data user data
 
    function Internal_Gtk_Tree_View_Search_Equal_Func
       (Model       : Gtk.Tree_Model.Gtk_Tree_Model;
@@ -251,12 +254,12 @@ package body Gtk.Tree_View is
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Search_Data : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_View_Search_Equal_Func);
-   --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being searched
-   --  "column": the search column set by Gtk.Tree_View.Set_Search_Column
-   --  "key": the key string to compare with
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing the row of Model that
-   --  should be compared with Key.
-   --  "search_data": user data from Gtk.Tree_View.Set_Search_Equal_Func
+   --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being searched
+   --  @param Column the search column set by Gtk.Tree_View.Set_Search_Column
+   --  @param Key the key string to compare with
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing the row of Model
+   --  that should be compared with Key.
+   --  @param Search_Data user data from Gtk.Tree_View.Set_Search_Equal_Func
 
    procedure Internal_Gtk_Tree_View_Search_Position_Func
       (Tree_View     : System.Address;
@@ -1436,12 +1439,13 @@ package body Gtk.Tree_View is
       --  integer from the Tree_Model, and render it to the "text" attribute of
       --  "cell" by converting it to its written equivalent. This is set by
       --  calling gtk_tree_view_column_set_cell_data_func
-      --  "tree_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column
-      --  "cell": The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being
+      --  @param Tree_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column
+      --  @param Cell The Gtk.Cell_Renderer.Gtk_Cell_Renderer that is being
       --  rendered by Tree_Column
-      --  "tree_model": The Gtk.Tree_Model.Gtk_Tree_Model being rendered
-      --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter of the current row rendered
-      --  "data": user data
+      --  @param Tree_Model The Gtk.Tree_Model.Gtk_Tree_Model being rendered
+      --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter of the current row
+      --  rendered
+      --  @param Data user data
 
       ----------------------------------
       -- Insert_Column_With_Data_Func --
@@ -1587,9 +1591,9 @@ package body Gtk.Tree_View is
           User_Data : System.Address);
       pragma Convention (C, Internal_Cb);
       --  Function used for Gtk.Tree_View.Map_Expanded_Rows.
-      --  "tree_view": A Gtk.Tree_View.Gtk_Tree_View
-      --  "path": The path that's expanded
-      --  "user_data": user data
+      --  @param Tree_View A Gtk.Tree_View.Gtk_Tree_View
+      --  @param Path The path that's expanded
+      --  @param User_Data user data
 
       -----------------
       -- Internal_Cb --
@@ -1797,14 +1801,15 @@ package body Gtk.Tree_View is
       --  valid drop spot. Please note that returning True does not actually
       --  indicate that the column drop was made, but is meant only to indicate
       --  a possible drop spot to the user.
-      --  "tree_view": A Gtk.Tree_View.Gtk_Tree_View
-      --  "column": The Gtk.Tree_View_Column.Gtk_Tree_View_Column being
+      --  @param Tree_View A Gtk.Tree_View.Gtk_Tree_View
+      --  @param Column The Gtk.Tree_View_Column.Gtk_Tree_View_Column being
       --  dragged
-      --  "prev_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column on one
-      --  side of Column
-      --  "next_column": A Gtk.Tree_View_Column.Gtk_Tree_View_Column on the
-      --  other side of Column
-      --  "data": user data
+      --  @param Prev_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column on
+      --  one side of Column
+      --  @param Next_Column A Gtk.Tree_View_Column.Gtk_Tree_View_Column on
+      --  the other side of Column
+      --  @param Data user data
+      --  @return True, if Column can be dropped in this spot
 
       -----------------
       -- Internal_Cb --
@@ -2202,9 +2207,11 @@ package body Gtk.Tree_View is
       --  should be rendered as a separator. A common way to implement this is
       --  to have a boolean column in the model, whose values the
       --  Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func returns.
-      --  "model": the Gtk.Tree_Model.Gtk_Tree_Model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in Model
-      --  "data": user data
+      --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing at a row in
+      --  Model
+      --  @param Data user data
+      --  @return True if the row is a separator
 
       -----------------
       -- Internal_Cb --
@@ -2342,12 +2349,15 @@ package body Gtk.Tree_View is
       --  key string entered by the user. Note the return value is reversed
       --  from what you would normally expect, though it has some similarity to
       --  strcmp returning 0 for equal strings.
-      --  "model": the Gtk.Tree_Model.Gtk_Tree_Model being searched
-      --  "column": the search column set by Gtk.Tree_View.Set_Search_Column
-      --  "key": the key string to compare with
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter pointing the row of Model
+      --  @param Model the Gtk.Tree_Model.Gtk_Tree_Model being searched
+      --  @param Column the search column set by
+      --  Gtk.Tree_View.Set_Search_Column
+      --  @param Key the key string to compare with
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter pointing the row of Model
       --  that should be compared with Key.
-      --  "search_data": user data from Gtk.Tree_View.Set_Search_Equal_Func
+      --  @param Search_Data user data from
+      --  Gtk.Tree_View.Set_Search_Equal_Func
+      --  @return False if the row matches, True otherwise.
 
       -----------------
       -- Internal_Cb --

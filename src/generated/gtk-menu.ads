@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Menu.Gtk_Menu is a Gtk.Menu_Shell.Gtk_Menu_Shell that implements a
 --  drop down menu consisting of a list of Gtk.Menu_Item.Gtk_Menu_Item objects
 --  which can be navigated and activated by the user to perform application
@@ -90,8 +89,6 @@
 --  The main CSS node of GtkMenu has name menu, and there are two subnodes
 --  with name arrow, for scrolling menu arrows. These subnodes get the .top and
 --  .bottom style classes.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;             use Gdk;
@@ -125,9 +122,9 @@ package Gtk.Menu is
    type Gtk_Menu_Detach_Func is access procedure (Attach_Widget : System.Address; Menu : System.Address);
    --  A user function supplied when calling Gtk.Menu.Attach_To_Widget which
    --  will be called when the menu is later detached from the widget.
-   --  "attach_widget": the Gtk.Widget.Gtk_Widget that the menu is being
+   --  @param Attach_Widget the Gtk.Widget.Gtk_Widget that the menu is being
    --  detached from.
-   --  "menu": the Gtk.Menu.Gtk_Menu being detached.
+   --  @param Menu the Gtk.Menu.Gtk_Menu being detached.
 
    pragma Convention (C, Gtk_Menu_Detach_Func);
 
@@ -141,20 +138,21 @@ package Gtk.Menu is
    --  and Y parameters to the coordinates where the menu is to be drawn. To
    --  make the menu appear on a different monitor than the mouse pointer,
    --  gtk_menu_set_monitor must be called.
-   --  "menu": a Gtk.Menu.Gtk_Menu.
-   --  "x": address of the Glib.Gint representing the horizontal position
+   --  @param Menu a Gtk.Menu.Gtk_Menu.
+   --  @param X address of the Glib.Gint representing the horizontal position
    --  where the menu shall be drawn.
-   --  "y": address of the Glib.Gint representing the vertical position where
-   --  the menu shall be drawn. This is an output parameter.
-   --  "push_in": This parameter controls how menus placed outside the monitor
-   --  are handled. If this is set to True and part of the menu is outside the
-   --  monitor then GTK+ pushes the window into the visible area, effectively
-   --  modifying the popup position. Note that moving and possibly resizing the
-   --  menu around will alter the scroll position to keep the menu items "in
-   --  place", i.e. at the same monitor position they would have been without
-   --  resizing. In practice, this behavior is only useful for combobox popups
-   --  or option menus and cannot be used to simply confine a menu to monitor
-   --  boundaries. In that case, changing the scroll offset is not desirable.
+   --  @param Y address of the Glib.Gint representing the vertical position
+   --  where the menu shall be drawn. This is an output parameter.
+   --  @param Push_In This parameter controls how menus placed outside the
+   --  monitor are handled. If this is set to True and part of the menu is
+   --  outside the monitor then GTK+ pushes the window into the visible area,
+   --  effectively modifying the popup position. Note that moving and possibly
+   --  resizing the menu around will alter the scroll position to keep the menu
+   --  items "in place", i.e. at the same monitor position they would have been
+   --  without resizing. In practice, this behavior is only useful for combobox
+   --  popups or option menus and cannot be used to simply confine a menu to
+   --  monitor boundaries. In that case, changing the scroll offset is not
+   --  desirable.
 
    ------------------
    -- Constructors --
@@ -187,7 +185,7 @@ package Gtk.Menu is
    --  Since: gtk+ 3.4
    --  Initialize_From_Model does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "model": a Glib.Menu_Model.Gmenu_Model
+   --  @param Model a Glib.Menu_Model.Gmenu_Model
 
    function Gtk_Menu_New_From_Model
       (Model : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
@@ -202,7 +200,7 @@ package Gtk.Menu is
    --  Actions can also be added using gtk_widget_insert_action_group on the
    --  menu's attach widget or on any of its parent widgets.
    --  Since: gtk+ 3.4
-   --  "model": a Glib.Menu_Model.Gmenu_Model
+   --  @param Model a Glib.Menu_Model.Gmenu_Model
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_menu_get_type");
@@ -225,12 +223,13 @@ package Gtk.Menu is
    --  table. (Columns and rows are indexed from zero).
    --  Note that this function is not related to Gtk.Menu.Detach.
    --  Since: gtk+ 2.4
-   --  "child": a Gtk.Menu_Item.Gtk_Menu_Item
-   --  "left_attach": The column number to attach the left side of the item to
-   --  "right_attach": The column number to attach the right side of the item
-   --  to
-   --  "top_attach": The row number to attach the top of the item to
-   --  "bottom_attach": The row number to attach the bottom of the item to
+   --  @param Child a Gtk.Menu_Item.Gtk_Menu_Item
+   --  @param Left_Attach The column number to attach the left side of the
+   --  item to
+   --  @param Right_Attach The column number to attach the right side of the
+   --  item to
+   --  @param Top_Attach The row number to attach the top of the item to
+   --  @param Bottom_Attach The row number to attach the bottom of the item to
 
    procedure Attach_To_Widget
       (Menu          : not null access Gtk_Menu_Record;
@@ -243,9 +242,9 @@ package Gtk.Menu is
    --  the widget is destroyed, as if it was a child widget. An attached menu
    --  will also move between screens correctly if the widgets moves between
    --  screens.
-   --  "attach_widget": the Gtk.Widget.Gtk_Widget that the menu will be
+   --  @param Attach_Widget the Gtk.Widget.Gtk_Widget that the menu will be
    --  attached to
-   --  "detacher": the user supplied callback function that will be called
+   --  @param Detacher the user supplied callback function that will be called
    --  when the menu calls Gtk.Menu.Detach
 
    procedure Detach (Menu : not null access Gtk_Menu_Record);
@@ -258,6 +257,7 @@ package Gtk.Menu is
        return Gtk.Accel_Group.Gtk_Accel_Group;
    --  Gets the Gtk.Accel_Group.Gtk_Accel_Group which holds global
    --  accelerators for the menu. See Gtk.Menu.Set_Accel_Group.
+   --  @return the Gtk.Accel_Group.Gtk_Accel_Group associated with the menu
 
    procedure Set_Accel_Group
       (Menu        : not null access Gtk_Menu_Record;
@@ -267,13 +267,14 @@ package Gtk.Menu is
    --  windows that this menu is being used in with Gtk.Window.Add_Accel_Group,
    --  in order for those windows to support all the accelerators contained in
    --  this group.
-   --  "accel_group": the Gtk.Accel_Group.Gtk_Accel_Group to be associated
+   --  @param Accel_Group the Gtk.Accel_Group.Gtk_Accel_Group to be associated
    --  with the menu.
 
    function Get_Accel_Path
       (Menu : not null access Gtk_Menu_Record) return UTF8_String;
    --  Retrieves the accelerator path set on the menu.
    --  Since: gtk+ 2.14
+   --  @return the accelerator path set on the menu.
 
    procedure Set_Accel_Path
       (Menu       : not null access Gtk_Menu_Record;
@@ -296,7 +297,7 @@ package Gtk.Menu is
    --  Note that Accel_Path string will be stored in a Glib.GQuark. Therefore,
    --  if you pass a static string, you can save some memory by interning it
    --  first with g_intern_static_string.
-   --  "accel_path": a valid accelerator path, or null to unset the path
+   --  @param Accel_Path a valid accelerator path, or null to unset the path
 
    function Get_Active
       (Menu : not null access Gtk_Menu_Record)
@@ -309,17 +310,20 @@ package Gtk.Menu is
        Index : Guint);
    --  Selects the specified menu item within the menu. This is used by the
    --  Gtk.Combo_Box.Gtk_Combo_Box and should not be used by anyone else.
-   --  "index": the index of the menu item to select. Index values are from 0
-   --  to n-1
+   --  @param Index the index of the menu item to select. Index values are
+   --  from 0 to n-1
 
    function Get_Attach_Widget
       (Menu : not null access Gtk_Menu_Record) return Gtk.Widget.Gtk_Widget;
    --  Returns the Gtk.Widget.Gtk_Widget that the menu is attached to.
+   --  @return the Gtk.Widget.Gtk_Widget that the menu is attached to
 
    function Get_Monitor
       (Menu : not null access Gtk_Menu_Record) return Glib.Gint;
    --  Retrieves the number of the monitor on which to show the menu.
    --  Since: gtk+ 2.14
+   --  @return the number of the monitor on which the menu should be popped up
+   --  or -1, if no monitor has been set
 
    procedure Set_Monitor
       (Menu        : not null access Gtk_Menu_Record;
@@ -332,14 +336,15 @@ package Gtk.Menu is
    --  a Gtk_Menu_Position_Func, since, for very long menus, these coordinates
    --  may extend beyond the monitor boundaries or even the screen boundaries.
    --  Since: gtk+ 2.4
-   --  "monitor_num": the number of the monitor on which the menu should be
-   --  popped up
+   --  @param Monitor_Num the number of the monitor on which the menu should
+   --  be popped up
 
    function Get_Reserve_Toggle_Size
       (Menu : not null access Gtk_Menu_Record) return Boolean;
    --  Returns whether the menu reserves space for toggles and icons,
    --  regardless of their actual presence.
    --  Since: gtk+ 2.18
+   --  @return Whether the menu reserves toggle space
 
    procedure Set_Reserve_Toggle_Size
       (Menu                : not null access Gtk_Menu_Record;
@@ -347,13 +352,14 @@ package Gtk.Menu is
    --  Sets whether the menu should reserve space for drawing toggles or
    --  icons, regardless of their actual presence.
    --  Since: gtk+ 2.18
-   --  "reserve_toggle_size": whether to reserve size for toggles
+   --  @param Reserve_Toggle_Size whether to reserve size for toggles
 
    function Get_Tearoff_State
       (Menu : not null access Gtk_Menu_Record) return Boolean;
    pragma Obsolescent (Get_Tearoff_State);
    --  Returns whether the menu is torn off. See Gtk.Menu.Set_Tearoff_State.
    --  Deprecated since 3.10, 1
+   --  @return True if the menu is currently torn off.
 
    procedure Set_Tearoff_State
       (Menu     : not null access Gtk_Menu_Record;
@@ -364,13 +370,15 @@ package Gtk.Menu is
    --  be displayed as a tearoff menu which persists until it is closed or
    --  reattached.
    --  Deprecated since 3.10, 1
-   --  "torn_off": If True, menu is displayed as a tearoff menu.
+   --  @param Torn_Off If True, menu is displayed as a tearoff menu.
 
    function Get_Title
       (Menu : not null access Gtk_Menu_Record) return UTF8_String;
    pragma Obsolescent (Get_Title);
    --  Returns the title of the menu. See Gtk.Menu.Set_Title.
    --  Deprecated since 3.10, 1
+   --  @return the title of the menu, or null if the menu has no title set on
+   --  it. This string is owned by GTK+ and should not be modified or freed.
 
    procedure Set_Title
       (Menu  : not null access Gtk_Menu_Record;
@@ -382,15 +390,15 @@ package Gtk.Menu is
    --  item, and if so it will try to use the same text as that menu item's
    --  label.
    --  Deprecated since 3.10, 1
-   --  "title": a string containing the title for the menu, or null to inherit
-   --  the title of the parent menu item, if any
+   --  @param Title a string containing the title for the menu, or null to
+   --  inherit the title of the parent menu item, if any
 
    procedure Place_On_Monitor
       (Menu    : not null access Gtk_Menu_Record;
        Monitor : not null access Gdk.Monitor.Gdk_Monitor_Record'Class);
    --  Places Menu on the given monitor.
    --  Since: gtk+ 3.22
-   --  "monitor": the monitor to place the menu on
+   --  @param Monitor the monitor to place the menu on
 
    procedure Popdown (Menu : not null access Gtk_Menu_Record);
    --  Removes the menu from the screen.
@@ -423,13 +431,13 @@ package Gtk.Menu is
    --  use one of the gtk_menu_popup_at_ variants, which do not have this
    --  problem.
    --  Deprecated since 3.22, 1
-   --  "parent_menu_shell": the menu shell containing the triggering menu
+   --  @param Parent_Menu_Shell the menu shell containing the triggering menu
    --  item, or null
-   --  "parent_menu_item": the menu item whose activation triggered the popup,
-   --  or null
-   --  "func": a user supplied function used to position the menu, or null
-   --  "button": the mouse button which was pressed to initiate the event.
-   --  "activate_time": the time at which the activation event occurred.
+   --  @param Parent_Menu_Item the menu item whose activation triggered the
+   --  popup, or null
+   --  @param Func a user supplied function used to position the menu, or null
+   --  @param Button the mouse button which was pressed to initiate the event.
+   --  @param Activate_Time the time at which the activation event occurred.
 
    generic
       type User_Data_Type (<>) is private;
@@ -447,22 +455,23 @@ package Gtk.Menu is
       --  and Y parameters to the coordinates where the menu is to be drawn. To
       --  make the menu appear on a different monitor than the mouse pointer,
       --  gtk_menu_set_monitor must be called.
-      --  "menu": a Gtk.Menu.Gtk_Menu.
-      --  "x": address of the Glib.Gint representing the horizontal position
+      --  @param Menu a Gtk.Menu.Gtk_Menu.
+      --  @param X address of the Glib.Gint representing the horizontal position
       --  where the menu shall be drawn.
-      --  "y": address of the Glib.Gint representing the vertical position where
-      --  the menu shall be drawn. This is an output parameter.
-      --  "push_in": This parameter controls how menus placed outside the monitor
-      --  are handled. If this is set to True and part of the menu is outside the
-      --  monitor then GTK+ pushes the window into the visible area, effectively
-      --  modifying the popup position. Note that moving and possibly resizing the
-      --  menu around will alter the scroll position to keep the menu items "in
-      --  place", i.e. at the same monitor position they would have been without
-      --  resizing. In practice, this behavior is only useful for combobox popups
-      --  or option menus and cannot be used to simply confine a menu to monitor
-      --  boundaries. In that case, changing the scroll offset is not desirable.
-      --  "user_data": the data supplied by the user in the Gtk.Menu.Popup Data
-      --  parameter.
+      --  @param Y address of the Glib.Gint representing the vertical position
+      --  where the menu shall be drawn. This is an output parameter.
+      --  @param Push_In This parameter controls how menus placed outside the
+      --  monitor are handled. If this is set to True and part of the menu is
+      --  outside the monitor then GTK+ pushes the window into the visible area,
+      --  effectively modifying the popup position. Note that moving and possibly
+      --  resizing the menu around will alter the scroll position to keep the menu
+      --  items "in place", i.e. at the same monitor position they would have been
+      --  without resizing. In practice, this behavior is only useful for combobox
+      --  popups or option menus and cannot be used to simply confine a menu to
+      --  monitor boundaries. In that case, changing the scroll offset is not
+      --  desirable.
+      --  @param User_Data the data supplied by the user in the Gtk.Menu.Popup
+      --  Data parameter.
 
       procedure Popup
          (Menu              : not null access Gtk.Menu.Gtk_Menu_Record'Class;
@@ -494,14 +503,17 @@ package Gtk.Menu is
       --  probably use one of the gtk_menu_popup_at_ variants, which do not
       --  have this problem.
       --  Deprecated since 3.22, 1
-      --  "parent_menu_shell": the menu shell containing the triggering menu
-      --  item, or null
-      --  "parent_menu_item": the menu item whose activation triggered the
+      --  @param Parent_Menu_Shell the menu shell containing the triggering
+      --  menu item, or null
+      --  @param Parent_Menu_Item the menu item whose activation triggered the
       --  popup, or null
-      --  "func": a user supplied function used to position the menu, or null
-      --  "data": user supplied data to be passed to Func.
-      --  "button": the mouse button which was pressed to initiate the event.
-      --  "activate_time": the time at which the activation event occurred.
+      --  @param Func a user supplied function used to position the menu, or
+      --  null
+      --  @param Data user supplied data to be passed to Func.
+      --  @param Button the mouse button which was pressed to initiate the
+      --  event.
+      --  @param Activate_Time the time at which the activation event
+      --  occurred.
 
    end Popup_User_Data;
 
@@ -519,8 +531,8 @@ package Gtk.Menu is
    --  Connect to the Gtk.Menu.Gtk_Menu::popped-up signal to find out how it
    --  was actually positioned.
    --  Since: gtk+ 3.22
-   --  "trigger_event": the Gdk.Event.Gdk_Event that initiated this request or
-   --  null if it's the current event
+   --  @param Trigger_Event the Gdk.Event.Gdk_Event that initiated this
+   --  request or null if it's the current event
 
    procedure Popup_At_Rect
       (Menu          : not null access Gtk_Menu_Record;
@@ -545,12 +557,12 @@ package Gtk.Menu is
    --  Connect to the Gtk.Menu.Gtk_Menu::popped-up signal to find out how it
    --  was actually positioned.
    --  Since: gtk+ 3.22
-   --  "rect_window": the Gdk.Gdk_Window Rect is relative to
-   --  "rect": the Gdk.Rectangle.Gdk_Rectangle to align Menu with
-   --  "rect_anchor": the point on Rect to align with Menu's anchor point
-   --  "menu_anchor": the point on Menu to align with Rect's anchor point
-   --  "trigger_event": the Gdk.Event.Gdk_Event that initiated this request or
-   --  null if it's the current event
+   --  @param Rect_Window the Gdk.Gdk_Window Rect is relative to
+   --  @param Rect the Gdk.Rectangle.Gdk_Rectangle to align Menu with
+   --  @param Rect_Anchor the point on Rect to align with Menu's anchor point
+   --  @param Menu_Anchor the point on Menu to align with Rect's anchor point
+   --  @param Trigger_Event the Gdk.Event.Gdk_Event that initiated this
+   --  request or null if it's the current event
 
    procedure Popup_At_Widget
       (Menu          : not null access Gtk_Menu_Record;
@@ -575,11 +587,13 @@ package Gtk.Menu is
    --  Connect to the Gtk.Menu.Gtk_Menu::popped-up signal to find out how it
    --  was actually positioned.
    --  Since: gtk+ 3.22
-   --  "widget": the Gtk.Widget.Gtk_Widget to align Menu with
-   --  "widget_anchor": the point on Widget to align with Menu's anchor point
-   --  "menu_anchor": the point on Menu to align with Widget's anchor point
-   --  "trigger_event": the Gdk.Event.Gdk_Event that initiated this request or
-   --  null if it's the current event
+   --  @param Widget the Gtk.Widget.Gtk_Widget to align Menu with
+   --  @param Widget_Anchor the point on Widget to align with Menu's anchor
+   --  point
+   --  @param Menu_Anchor the point on Menu to align with Widget's anchor
+   --  point
+   --  @param Trigger_Event the Gdk.Event.Gdk_Event that initiated this
+   --  request or null if it's the current event
 
    procedure Popup_For_Device
       (Menu              : not null access Gtk_Menu_Record;
@@ -612,14 +626,14 @@ package Gtk.Menu is
    --  problem.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.22, 1
-   --  "device": a Gdk.Device.Gdk_Device
-   --  "parent_menu_shell": the menu shell containing the triggering menu
+   --  @param Device a Gdk.Device.Gdk_Device
+   --  @param Parent_Menu_Shell the menu shell containing the triggering menu
    --  item, or null
-   --  "parent_menu_item": the menu item whose activation triggered the popup,
-   --  or null
-   --  "func": a user supplied function used to position the menu, or null
-   --  "button": the mouse button which was pressed to initiate the event
-   --  "activate_time": the time at which the activation event occurred
+   --  @param Parent_Menu_Item the menu item whose activation triggered the
+   --  popup, or null
+   --  @param Func a user supplied function used to position the menu, or null
+   --  @param Button the mouse button which was pressed to initiate the event
+   --  @param Activate_Time the time at which the activation event occurred
 
    generic
       type User_Data_Type (<>) is private;
@@ -637,22 +651,23 @@ package Gtk.Menu is
       --  and Y parameters to the coordinates where the menu is to be drawn. To
       --  make the menu appear on a different monitor than the mouse pointer,
       --  gtk_menu_set_monitor must be called.
-      --  "menu": a Gtk.Menu.Gtk_Menu.
-      --  "x": address of the Glib.Gint representing the horizontal position
+      --  @param Menu a Gtk.Menu.Gtk_Menu.
+      --  @param X address of the Glib.Gint representing the horizontal position
       --  where the menu shall be drawn.
-      --  "y": address of the Glib.Gint representing the vertical position where
-      --  the menu shall be drawn. This is an output parameter.
-      --  "push_in": This parameter controls how menus placed outside the monitor
-      --  are handled. If this is set to True and part of the menu is outside the
-      --  monitor then GTK+ pushes the window into the visible area, effectively
-      --  modifying the popup position. Note that moving and possibly resizing the
-      --  menu around will alter the scroll position to keep the menu items "in
-      --  place", i.e. at the same monitor position they would have been without
-      --  resizing. In practice, this behavior is only useful for combobox popups
-      --  or option menus and cannot be used to simply confine a menu to monitor
-      --  boundaries. In that case, changing the scroll offset is not desirable.
-      --  "user_data": the data supplied by the user in the Gtk.Menu.Popup Data
-      --  parameter.
+      --  @param Y address of the Glib.Gint representing the vertical position
+      --  where the menu shall be drawn. This is an output parameter.
+      --  @param Push_In This parameter controls how menus placed outside the
+      --  monitor are handled. If this is set to True and part of the menu is
+      --  outside the monitor then GTK+ pushes the window into the visible area,
+      --  effectively modifying the popup position. Note that moving and possibly
+      --  resizing the menu around will alter the scroll position to keep the menu
+      --  items "in place", i.e. at the same monitor position they would have been
+      --  without resizing. In practice, this behavior is only useful for combobox
+      --  popups or option menus and cannot be used to simply confine a menu to
+      --  monitor boundaries. In that case, changing the scroll offset is not
+      --  desirable.
+      --  @param User_Data the data supplied by the user in the Gtk.Menu.Popup
+      --  Data parameter.
 
       procedure Popup_For_Device
          (Menu              : not null access Gtk.Menu.Gtk_Menu_Record'Class;
@@ -686,15 +701,17 @@ package Gtk.Menu is
       --  have this problem.
       --  Since: gtk+ 3.0
       --  Deprecated since 3.22, 1
-      --  "device": a Gdk.Device.Gdk_Device
-      --  "parent_menu_shell": the menu shell containing the triggering menu
-      --  item, or null
-      --  "parent_menu_item": the menu item whose activation triggered the
+      --  @param Device a Gdk.Device.Gdk_Device
+      --  @param Parent_Menu_Shell the menu shell containing the triggering
+      --  menu item, or null
+      --  @param Parent_Menu_Item the menu item whose activation triggered the
       --  popup, or null
-      --  "func": a user supplied function used to position the menu, or null
-      --  "data": user supplied data to be passed to Func
-      --  "button": the mouse button which was pressed to initiate the event
-      --  "activate_time": the time at which the activation event occurred
+      --  @param Func a user supplied function used to position the menu, or
+      --  null
+      --  @param Data user supplied data to be passed to Func
+      --  @param Button the mouse button which was pressed to initiate the
+      --  event
+      --  @param Activate_Time the time at which the activation event occurred
 
    end Popup_For_Device_User_Data;
 
@@ -703,8 +720,8 @@ package Gtk.Menu is
        Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Position : Glib.Gint);
    --  Moves Child to a new Position in the list of Menu children.
-   --  "child": the Gtk.Menu_Item.Gtk_Menu_Item to move
-   --  "position": the new position to place Child. Positions are numbered
+   --  @param Child the Gtk.Menu_Item.Gtk_Menu_Item to move
+   --  @param Position the new position to place Child. Positions are numbered
    --  from 0 to n - 1
 
    procedure Reposition (Menu : not null access Gtk_Menu_Record);
@@ -715,7 +732,7 @@ package Gtk.Menu is
        Screen : access Gdk.Screen.Gdk_Screen_Record'Class);
    --  Sets the Gdk.Screen.Gdk_Screen on which the menu will be displayed.
    --  Since: gtk+ 2.2
-   --  "screen": a Gdk.Screen.Gdk_Screen, or null if the screen should be
+   --  @param Screen a Gdk.Screen.Gdk_Screen, or null if the screen should be
    --  determined by the widget the menu is attached to
 
    ---------------
@@ -728,7 +745,7 @@ package Gtk.Menu is
    --  Returns a list of the menus which are attached to this widget. This
    --  list is owned by GTK+ and must not be modified.
    --  Since: gtk+ 2.6
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    ----------------
    -- Properties --
@@ -890,12 +907,12 @@ package Gtk.Menu is
    --  Gtk.Menu.Gtk_Menu:menu-type-hint.
    -- 
    --  Callback parameters:
-   --    --  "flipped_rect": the position of Menu after any possible flipping or
+   --    --  @param Flipped_Rect the position of Menu after any possible flipping or
    --    --  null if the backend can't obtain it
-   --    --  "final_rect": the final position of Menu or null if the backend can't
-   --    --  obtain it
-   --    --  "flipped_x": True if the anchors were flipped horizontally
-   --    --  "flipped_y": True if the anchors were flipped vertically
+   --    --  @param Final_Rect the final position of Menu or null if the backend
+   --    --  can't obtain it
+   --    --  @param Flipped_X True if the anchors were flipped horizontally
+   --    --  @param Flipped_Y True if the anchors were flipped vertically
 
    ----------------
    -- Interfaces --

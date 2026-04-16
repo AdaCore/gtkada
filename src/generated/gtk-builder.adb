@@ -41,8 +41,8 @@ package body Gtk.Builder is
    --  version of Gtk.Builder.Connect_Signals, except that it does not require
    --  GModule to function correctly.
    --  Since: gtk+ 2.12
-   --  "func": the function used to connect the signals
-   --  "user_data": arbitrary data that will be passed to the connection
+   --  @param Func the function used to connect the signals
+   --  @param User_Data arbitrary data that will be passed to the connection
    --  function
 
    function To_Gtk_Builder_Connect_Func is new Ada.Unchecked_Conversion
@@ -60,14 +60,14 @@ package body Gtk.Builder is
        Flags          : Glib.G_Connect_Flags;
        User_Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Builder_Connect_Func);
-   --  "builder": a Gtk.Builder.Gtk_Builder
-   --  "object": object to connect a signal to
-   --  "signal_name": name of the signal
-   --  "handler_name": name of the handler
-   --  "connect_object": a Glib.Object.GObject, if non-null, use
+   --  @param Builder a Gtk.Builder.Gtk_Builder
+   --  @param Object object to connect a signal to
+   --  @param Signal_Name name of the signal
+   --  @param Handler_Name name of the handler
+   --  @param Connect_Object a Glib.Object.GObject, if non-null, use
    --  g_signal_connect_object
-   --  "flags": Glib.G_Connect_Flags to use
-   --  "user_data": user data
+   --  @param Flags Glib.G_Connect_Flags to use
+   --  @param User_Data user data
 
    ---------------------------------------
    -- Internal_Gtk_Builder_Connect_Func --

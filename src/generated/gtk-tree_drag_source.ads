@@ -53,7 +53,8 @@ package Gtk.Tree_Drag_Source is
    --  False if the deletion fails because Path no longer exists, or for some
    --  model-specific reason. Should robustly handle a Path no longer found in
    --  the model!
-   --  "path": row that was being dragged
+   --  @param Path row that was being dragged
+   --  @return True if the row was successfully deleted
 
    function Drag_Data_Get
       (Self           : Gtk_Tree_Drag_Source;
@@ -64,9 +65,10 @@ package Gtk.Tree_Drag_Source is
    --  Selection_Data with a representation of the row at Path.
    --  Selection_Data->target gives the required type of the data. Should
    --  robustly handle a Path no longer found in the model!
-   --  "path": row that was dragged
-   --  "selection_data": a Gtk.Selection_Data.Gtk_Selection_Data to fill with
-   --  data from the dragged row
+   --  @param Path row that was dragged
+   --  @param Selection_Data a Gtk.Selection_Data.Gtk_Selection_Data to fill
+   --  with data from the dragged row
+   --  @return True if data of the required type was provided
 
    function Row_Draggable
       (Self : Gtk_Tree_Drag_Source;
@@ -74,7 +76,8 @@ package Gtk.Tree_Drag_Source is
    --  Asks the Gtk.Tree_Drag_Source.Gtk_Tree_Drag_Source whether a particular
    --  row can be used as the source of a DND operation. If the source doesn't
    --  implement this interface, the row is assumed draggable.
-   --  "path": row on which user is initiating a drag
+   --  @param Path row on which user is initiating a drag
+   --  @return True if the row can be dragged
 
    ---------------
    -- Functions --
@@ -86,9 +89,11 @@ package Gtk.Tree_Drag_Source is
        Path           : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
    --  Sets selection data of target type GTK_TREE_MODEL_ROW. Normally used in
    --  a drag_data_get handler.
-   --  "selection_data": some Gtk.Selection_Data.Gtk_Selection_Data
-   --  "tree_model": a Gtk.Tree_Model.Gtk_Tree_Model
-   --  "path": a row in Tree_Model
+   --  @param Selection_Data some Gtk.Selection_Data.Gtk_Selection_Data
+   --  @param Tree_Model a Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Path a row in Tree_Model
+   --  @return True if the Gtk.Selection_Data.Gtk_Selection_Data had the
+   --  proper target type to allow us to set a tree row
 
    procedure Get_Row_Drag_Data
       (Selection_Data : Gtk.Selection_Data.Gtk_Selection_Data;
@@ -105,9 +110,11 @@ package Gtk.Tree_Drag_Source is
    --  can assume that selection data of type GTK_TREE_MODEL_ROW is in from the
    --  current process. The returned path must be freed with
    --  Gtk.Tree_Model.Path_Free.
-   --  "selection_data": a Gtk.Selection_Data.Gtk_Selection_Data
-   --  "tree_model": a Gtk.Tree_Model.Gtk_Tree_Model
-   --  "path": row in Tree_Model
+   --  @param Selection_Data a Gtk.Selection_Data.Gtk_Selection_Data
+   --  @param Tree_Model a Gtk.Tree_Model.Gtk_Tree_Model
+   --  @param Path row in Tree_Model
+   --  @return True if Selection_Data had target type GTK_TREE_MODEL_ROW and
+   --  is otherwise valid
 
    ----------------
    -- Interfaces --
@@ -132,7 +139,8 @@ package Gtk.Tree_Drag_Source is
    --  False if the deletion fails because Path no longer exists, or for some
    --  model-specific reason. Should robustly handle a Path no longer found in
    --  the model!
-   --  "path": row that was being dragged
+   --  @param Path row that was being dragged
+   --  @return True if the row was successfully deleted
 
    type Virtual_Drag_Data_Get is access function
      (Self           : Gtk_Tree_Drag_Source;
@@ -143,9 +151,10 @@ package Gtk.Tree_Drag_Source is
    --  Selection_Data with a representation of the row at Path.
    --  Selection_Data->target gives the required type of the data. Should
    --  robustly handle a Path no longer found in the model!
-   --  "path": row that was dragged
-   --  "selection_data": a Gtk.Selection_Data.Gtk_Selection_Data to fill with
-   --  data from the dragged row
+   --  @param Path row that was dragged
+   --  @param Selection_Data a Gtk.Selection_Data.Gtk_Selection_Data to fill
+   --  with data from the dragged row
+   --  @return True if data of the required type was provided
 
    type Virtual_Row_Draggable is access function
      (Self : Gtk_Tree_Drag_Source;
@@ -154,7 +163,8 @@ package Gtk.Tree_Drag_Source is
    --  Asks the Gtk.Tree_Drag_Source.Gtk_Tree_Drag_Source whether a particular
    --  row can be used as the source of a DND operation. If the source doesn't
    --  implement this interface, the row is assumed draggable.
-   --  "path": row on which user is initiating a drag
+   --  @param Path row on which user is initiating a drag
+   --  @return True if the row can be dragged
 
    subtype Tree_Drag_Source_Interface_Descr is Glib.Object.Interface_Description;
 

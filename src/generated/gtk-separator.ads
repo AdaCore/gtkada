@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkSeparator is a horizontal or vertical separator widget, depending on
 --  the value of the Gtk.Orientable.Gtk_Orientable:orientation property, used
 --  to group the widgets within a window. It displays a line with a shadow to
@@ -32,7 +31,6 @@
 --  GtkSeparator has a single CSS node with name separator. The node gets one
 --  of the .horizontal or .vertical style classes.
 --
---  </description>
 --  <screenshot>gtk-separator</screenshot>
 --  <group>Ornaments</group>
 
@@ -69,13 +67,13 @@ package Gtk.Separator is
    --  Since: gtk+ 3.0
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "orientation": the separator's orientation.
+   --  @param Orientation the separator's orientation.
 
    function Gtk_Separator_New
       (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Separator;
    --  Creates a new Gtk.Separator.Gtk_Separator with the given orientation.
    --  Since: gtk+ 3.0
-   --  "orientation": the separator's orientation.
+   --  @param Orientation the separator's orientation.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_separator_get_type");

@@ -36,8 +36,8 @@ package body Pango.Fontset is
    --  Iterates through all the fonts in a fontset, calling Func for each one.
    --  If Func returns True, that stops the iteration.
    --  Since: gtk+ 1.4
-   --  "func": Callback function
-   --  "data": data to pass to the callback function
+   --  @param Func Callback function
+   --  @param Data data to pass to the callback function
 
    function To_Pango_Fontset_Foreach_Func is new Ada.Unchecked_Conversion
      (System.Address, Pango_Fontset_Foreach_Func);
@@ -50,9 +50,9 @@ package body Pango.Fontset is
        Font      : System.Address;
        User_Data : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Pango_Fontset_Foreach_Func);
-   --  "fontset": a Pango.Fontset.Pango_Fontset
-   --  "font": a font from Fontset
-   --  "user_data": callback data
+   --  @param Fontset a Pango.Fontset.Pango_Fontset
+   --  @param Font a font from Fontset
+   --  @param User_Data callback data
 
    -----------------------------------------
    -- Internal_Pango_Fontset_Foreach_Func --
@@ -109,9 +109,10 @@ package body Pango.Fontset is
       --  A callback function used by Pango.Fontset.Foreach when enumerating
       --  the fonts in a fontset.
       --  Since: gtk+ 1.4
-      --  "fontset": a Pango.Fontset.Pango_Fontset
-      --  "font": a font from Fontset
-      --  "user_data": callback data
+      --  @param Fontset a Pango.Fontset.Pango_Fontset
+      --  @param Font a font from Fontset
+      --  @param User_Data callback data
+      --  @return if True, stop iteration and return immediately.
 
       -------------
       -- Foreach --

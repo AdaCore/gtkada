@@ -21,12 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Event_Box.Gtk_Event_Box widget is a subclass of Gtk.Bin.Gtk_Bin
 --  which also has its own window. It is useful since it allows you to catch
 --  events for widgets which do not have their own window.
 --
---  </description>
 --  <group>Layout Containers</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -69,6 +67,7 @@ package Gtk.Event_Box is
    --  Returns whether the event box window is above or below the windows of
    --  its child. See Gtk.Event_Box.Set_Above_Child for details.
    --  Since: gtk+ 2.4
+   --  @return True if the event box window is above the window of its child
 
    procedure Set_Above_Child
       (Event_Box   : not null access Gtk_Event_Box_Record;
@@ -80,13 +79,14 @@ package Gtk.Event_Box is
    --  its parents.
    --  The default is to keep the window below the child.
    --  Since: gtk+ 2.4
-   --  "above_child": True if the event box window is above its child
+   --  @param Above_Child True if the event box window is above its child
 
    function Get_Visible_Window
       (Event_Box : not null access Gtk_Event_Box_Record) return Boolean;
    --  Returns whether the event box has a visible window. See
    --  Gtk.Event_Box.Set_Visible_Window for details.
    --  Since: gtk+ 2.4
+   --  @return True if the event box window is visible
 
    procedure Set_Visible_Window
       (Event_Box      : not null access Gtk_Event_Box_Record;
@@ -117,7 +117,7 @@ package Gtk.Event_Box is
    --  case, the event box window is actually the ancestor of the descendant
    --  windows, not just at the same place on the screen.
    --  Since: gtk+ 2.4
-   --  "visible_window": True to make the event box have a visible window
+   --  @param Visible_Window True to make the event box have a visible window
 
    ----------------
    -- Properties --

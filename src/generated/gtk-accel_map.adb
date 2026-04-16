@@ -44,9 +44,9 @@ package body Gtk.Accel_Map is
    --  Gtk_Accel_Map_Foreach, the Changed parameter indicates whether this
    --  accelerator was changed during runtime (thus, would need saving during
    --  an accelerator map dump).
-   --  "data": data to be passed into Foreach_Func
-   --  "foreach_func": function to be executed for each accel map entry which
-   --  is not filtered out
+   --  @param Data data to be passed into Foreach_Func
+   --  @param Foreach_Func function to be executed for each accel map entry
+   --  which is not filtered out
 
    procedure C_Gtk_Accel_Map_Foreach_Unfiltered
       (Data         : System.Address;
@@ -56,8 +56,8 @@ package body Gtk.Accel_Map is
    --  on each. The signature of Foreach_Func is that of Gtk_Accel_Map_Foreach,
    --  the Changed parameter indicates whether this accelerator was changed
    --  during runtime (thus, would need saving during an accelerator map dump).
-   --  "data": data to be passed into Foreach_Func
-   --  "foreach_func": function to be executed for each accel map entry
+   --  @param Data data to be passed into Foreach_Func
+   --  @param Foreach_Func function to be executed for each accel map entry
 
    function To_Gtk_Accel_Map_Foreach is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Accel_Map_Foreach);
@@ -72,14 +72,14 @@ package body Gtk.Accel_Map is
        Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
        Changed    : Glib.Gboolean);
    pragma Convention (C, Internal_Gtk_Accel_Map_Foreach);
-   --  "data": User data passed to Gtk.Accel_Map.Foreach or
+   --  @param Data User data passed to Gtk.Accel_Map.Foreach or
    --  Gtk.Accel_Map.Foreach_Unfiltered
-   --  "accel_path": Accel path of the current accelerator
-   --  "accel_key": Key of the current accelerator
-   --  "accel_mods": Modifiers of the current accelerator
-   --  "changed": Changed flag of the accelerator (if True, accelerator has
-   --  changed during runtime and would need to be saved during an accelerator
-   --  dump)
+   --  @param Accel_Path Accel path of the current accelerator
+   --  @param Accel_Key Key of the current accelerator
+   --  @param Accel_Mods Modifiers of the current accelerator
+   --  @param Changed Changed flag of the accelerator (if True, accelerator
+   --  has changed during runtime and would need to be saved during an
+   --  accelerator dump)
 
    ------------------------------------
    -- Internal_Gtk_Accel_Map_Foreach --
@@ -145,13 +145,13 @@ package body Gtk.Accel_Map is
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Glib.Gboolean);
       pragma Convention (C, Internal_Cb);
-      --  "data": User data passed to Gtk.Accel_Map.Foreach or
+      --  @param Data User data passed to Gtk.Accel_Map.Foreach or
       --  Gtk.Accel_Map.Foreach_Unfiltered
-      --  "accel_path": Accel path of the current accelerator
-      --  "accel_key": Key of the current accelerator
-      --  "accel_mods": Modifiers of the current accelerator
-      --  "changed": Changed flag of the accelerator (if True, accelerator has
-      --  changed during runtime and would need to be saved during an
+      --  @param Accel_Path Accel path of the current accelerator
+      --  @param Accel_Key Key of the current accelerator
+      --  @param Accel_Mods Modifiers of the current accelerator
+      --  @param Changed Changed flag of the accelerator (if True, accelerator
+      --  has changed during runtime and would need to be saved during an
       --  accelerator dump)
 
       ------------------------
@@ -209,13 +209,13 @@ package body Gtk.Accel_Map is
           Accel_Mods : Gdk.Types.Gdk_Modifier_Type;
           Changed    : Glib.Gboolean);
       pragma Convention (C, Internal_Cb);
-      --  "data": User data passed to Gtk.Accel_Map.Foreach or
+      --  @param Data User data passed to Gtk.Accel_Map.Foreach or
       --  Gtk.Accel_Map.Foreach_Unfiltered
-      --  "accel_path": Accel path of the current accelerator
-      --  "accel_key": Key of the current accelerator
-      --  "accel_mods": Modifiers of the current accelerator
-      --  "changed": Changed flag of the accelerator (if True, accelerator has
-      --  changed during runtime and would need to be saved during an
+      --  @param Accel_Path Accel path of the current accelerator
+      --  @param Accel_Key Key of the current accelerator
+      --  @param Accel_Mods Modifiers of the current accelerator
+      --  @param Changed Changed flag of the accelerator (if True, accelerator
+      --  has changed during runtime and would need to be saved during an
       --  accelerator dump)
 
       -------------

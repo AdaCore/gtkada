@@ -21,14 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Gesture_Zoom.Gtk_Gesture_Zoom is a Gtk.Gesture.Gtk_Gesture
 --  implementation able to recognize pinch/zoom gestures, whenever the distance
 --  between both tracked sequences changes, the
 --  Gtk.Gesture_Zoom.Gtk_Gesture_Zoom::scale-changed signal is emitted to
 --  report the scale factor.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;
@@ -56,7 +53,7 @@ package Gtk.Gesture_Zoom is
    --  Since: gtk+ 3.14
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Gtk_Gesture_Zoom_New
       (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
@@ -64,7 +61,7 @@ package Gtk.Gesture_Zoom is
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes zoom
    --  in/out gestures (usually known as pinch/zoom).
    --  Since: gtk+ 3.14
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_gesture_zoom_get_type");
@@ -79,6 +76,7 @@ package Gtk.Gesture_Zoom is
    --  since the gesture was recognized (hence the starting point is considered
    --  1:1). If Gesture is not active, 1 is returned.
    --  Since: gtk+ 3.14
+   --  @return the scale delta
 
    -------------
    -- Signals --

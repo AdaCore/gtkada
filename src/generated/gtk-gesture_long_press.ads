@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Gesture_Long_Press.Gtk_Gesture_Long_Press is a Gtk.Gesture.Gtk_Gesture
 --  implementation able to recognize long presses, triggering the
 --  Gtk.Gesture_Long_Press.Gtk_Gesture_Long_Press::pressed after the timeout is
@@ -31,8 +30,6 @@
 --  far of the initial press point, the
 --  Gtk.Gesture_Long_Press.Gtk_Gesture_Long_Press::cancelled signal will be
 --  emitted.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -61,7 +58,7 @@ package Gtk.Gesture_Long_Press is
    --  Since: gtk+ 3.14
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Gtk_Gesture_Long_Press_New
       (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
@@ -69,7 +66,7 @@ package Gtk.Gesture_Long_Press is
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes long
    --  presses.
    --  Since: gtk+ 3.14
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_gesture_long_press_get_type");
@@ -130,10 +127,10 @@ package Gtk.Gesture_Long_Press is
    --  than what the GTK+ defaults tell.
    -- 
    --  Callback parameters:
-   --    --  "x": the X coordinate where the press happened, relative to the widget
-   --    --  allocation
-   --    --  "y": the Y coordinate where the press happened, relative to the widget
-   --    --  allocation
+   --    --  @param X the X coordinate where the press happened, relative to the
+   --    --  widget allocation
+   --    --  @param Y the Y coordinate where the press happened, relative to the
+   --    --  widget allocation
 
 private
    Delay_Factor_Property : constant Glib.Properties.Property_Double :=

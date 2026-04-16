@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  An icon set represents a single icon in various sizes and widget states.
 --  It can provide a Gdk_Pixbuf for a given size and state on request, and
 --  automatically caches some of the rendered Gdk_Pixbuf objects.
@@ -29,8 +28,6 @@
 --  Normally you would use Gtk.Widget.Render_Icon instead of using icon sets
 --  directly. The one case where you'd use an icon set is to create
 --  application-specific icon sets to place in an icon factory.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;             use Cairo;
@@ -87,7 +84,7 @@ package Gtk.Icon_Set is
    --  icon will be created from Pixbuf, using scaling, pixelation, etc. as
    --  required to adjust the icon size or make the icon look
    --  insensitive/prelighted.
-   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf
+   --  @param Pixbuf a Gdk.Pixbuf.Gdk_Pixbuf
 
    function Gtk_Icon_Set_New_From_Pixbuf
       (Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
@@ -98,7 +95,7 @@ package Gtk.Icon_Set is
    --  icon will be created from Pixbuf, using scaling, pixelation, etc. as
    --  required to adjust the icon size or make the icon look
    --  insensitive/prelighted.
-   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf
+   --  @param Pixbuf a Gdk.Pixbuf.Gdk_Pixbuf
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_icon_set_get_type");
@@ -133,12 +130,13 @@ package Gtk.Icon_Set is
    --  gtk_icon_set_new_from_pixbuf creates a new icon set with a default icon
    --  source based on the given pixbuf.
    --  Deprecated since 3.10, 1
-   --  "source": a Gtk.Icon_Source.Gtk_Icon_Source
+   --  @param Source a Gtk.Icon_Source.Gtk_Icon_Source
 
    function Copy (Self : Gtk_Icon_Set) return Gtk_Icon_Set;
    pragma Obsolescent (Copy);
    --  Copies Icon_Set by value.
    --  Deprecated since 3.10, 1
+   --  @return a new Gtk.Icon_Set.Gtk_Icon_Set identical to the first.
 
    function Get_Sizes (Self : Gtk_Icon_Set) return Gint_Array;
    pragma Obsolescent (Get_Sizes);
@@ -150,6 +148,7 @@ package Gtk.Icon_Set is
    pragma Obsolescent (Ref);
    --  Increments the reference count on Icon_Set.
    --  Deprecated since 3.10, 1
+   --  @return Icon_Set.
 
    function Render_Icon
       (Self      : Gtk_Icon_Set;
@@ -167,17 +166,18 @@ package Gtk.Icon_Set is
    --  file fails to load), a default "missing image" icon will be returned
    --  instead.
    --  Deprecated since 3.0, 1
-   --  "style": a Gtk.Style.Gtk_Style associated with Widget, or null
-   --  "direction": text direction
-   --  "state": widget state
-   --  "size": icon size (Gtk.Enums.Gtk_Icon_Size). A size of
+   --  @param Style a Gtk.Style.Gtk_Style associated with Widget, or null
+   --  @param Direction text direction
+   --  @param State widget state
+   --  @param Size icon size (Gtk.Enums.Gtk_Icon_Size). A size of
    --  `(GtkIconSize)-1` means render at the size of the source and don't
    --  scale.
-   --  "widget": widget that will display the icon, or null. The only use that
-   --  is typically made of this is to determine the appropriate
+   --  @param Widget widget that will display the icon, or null. The only use
+   --  that is typically made of this is to determine the appropriate
    --  Gdk.Screen.Gdk_Screen.
-   --  "detail": detail to pass to the theme engine, or null. Note that
+   --  @param Detail detail to pass to the theme engine, or null. Note that
    --  passing a detail of anything but null will disable caching.
+   --  @return a Gdk.Pixbuf.Gdk_Pixbuf to be displayed
 
    function Render_Icon_Pixbuf
       (Self    : Gtk_Icon_Set;
@@ -192,10 +192,11 @@ package Gtk.Icon_Set is
    --  returned instead.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.10, 1
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "size": icon size (Gtk.Enums.Gtk_Icon_Size). A size of
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Size icon size (Gtk.Enums.Gtk_Icon_Size). A size of
    --  `(GtkIconSize)-1` means render at the size of the source and don't
    --  scale.
+   --  @return a Gdk.Pixbuf.Gdk_Pixbuf to be displayed
 
    function Render_Icon_Surface
       (Self       : Gtk_Icon_Set;
@@ -211,12 +212,13 @@ package Gtk.Icon_Set is
    --  icon will be returned instead.
    --  Since: gtk+ 3.10
    --  Deprecated since 3.10, 1
-   --  "context": a Gtk.Style_Context.Gtk_Style_Context
-   --  "size": icon size (Gtk.Enums.Gtk_Icon_Size). A size of
+   --  @param Context a Gtk.Style_Context.Gtk_Style_Context
+   --  @param Size icon size (Gtk.Enums.Gtk_Icon_Size). A size of
    --  `(GtkIconSize)-1` means render at the size of the source and don't
    --  scale.
-   --  "scale": the window scale to render for
-   --  "for_window": Gdk.Gdk_Window to optimize drawing for, or null
+   --  @param Scale the window scale to render for
+   --  @param For_Window Gdk.Gdk_Window to optimize drawing for, or null
+   --  @return a cairo_surface_t to be displayed
 
    procedure Unref (Self : Gtk_Icon_Set);
    pragma Obsolescent (Unref);

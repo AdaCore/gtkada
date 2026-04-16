@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Gesture_Drag.Gtk_Gesture_Drag is a Gtk.Gesture.Gtk_Gesture
 --  implementation that recognizes drag operations. The drag operation itself
 --  can be tracked throught the Gtk.Gesture_Drag.Gtk_Gesture_Drag::drag-begin,
@@ -29,8 +28,6 @@
 --  Gtk.Gesture_Drag.Gtk_Gesture_Drag::drag-end signals, or the relevant
 --  coordinates be extracted through Gtk.Gesture_Drag.Get_Offset and
 --  Gtk.Gesture_Drag.Get_Start_Point.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -57,14 +54,14 @@ package Gtk.Gesture_Drag is
    --  Since: gtk+ 3.14
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Gtk_Gesture_Drag_New
       (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk_Gesture_Drag;
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes drags.
    --  Since: gtk+ 3.14
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_gesture_drag_get_type");
@@ -81,8 +78,9 @@ package Gtk.Gesture_Drag is
    --  Y with the coordinates of the current point, as an offset to the
    --  starting drag point.
    --  Since: gtk+ 3.14
-   --  "x": X offset for the current point
-   --  "y": Y offset for the current point
+   --  @param X X offset for the current point
+   --  @param Y Y offset for the current point
+   --  @return True if the gesture is active
 
    function Get_Start_Point
       (Self : not null access Gtk_Gesture_Drag_Record;
@@ -91,8 +89,9 @@ package Gtk.Gesture_Drag is
    --  If the Gesture is active, this function returns True and fills in X and
    --  Y with the drag start coordinates, in window-relative coordinates.
    --  Since: gtk+ 3.14
-   --  "x": X coordinate for the drag start point
-   --  "y": Y coordinate for the drag start point
+   --  @param X X coordinate for the drag start point
+   --  @param Y Y coordinate for the drag start point
+   --  @return True if the gesture is active
 
    -------------
    -- Signals --
@@ -121,8 +120,8 @@ package Gtk.Gesture_Drag is
    --  This signal is emitted whenever dragging starts.
    -- 
    --  Callback parameters:
-   --    --  "start_x": X coordinate, relative to the widget allocation
-   --    --  "start_y": Y coordinate, relative to the widget allocation
+   --    --  @param Start_X X coordinate, relative to the widget allocation
+   --    --  @param Start_Y Y coordinate, relative to the widget allocation
 
    Signal_Drag_End : constant Glib.Signal_Name := "drag-end";
    procedure On_Drag_End
@@ -137,8 +136,8 @@ package Gtk.Gesture_Drag is
    --  This signal is emitted whenever the dragging is finished.
    -- 
    --  Callback parameters:
-   --    --  "offset_x": X offset, relative to the start point
-   --    --  "offset_y": Y offset, relative to the start point
+   --    --  @param Offset_X X offset, relative to the start point
+   --    --  @param Offset_Y Y offset, relative to the start point
 
    Signal_Drag_Update : constant Glib.Signal_Name := "drag-update";
    procedure On_Drag_Update
@@ -153,7 +152,7 @@ package Gtk.Gesture_Drag is
    --  This signal is emitted whenever the dragging point moves.
    -- 
    --  Callback parameters:
-   --    --  "offset_x": X offset, relative to the start point
-   --    --  "offset_y": Y offset, relative to the start point
+   --    --  @param Offset_X X offset, relative to the start point
+   --    --  @param Offset_Y Y offset, relative to the start point
 
 end Gtk.Gesture_Drag;

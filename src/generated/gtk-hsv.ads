@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Hsv.Gtk_Hsv is the "color wheel" part of a complete color selector
 --  widget. It allows to select a color by determining its HSV components in an
 --  intuitive way. Moving the selection around the outer ring changes the hue,
@@ -30,8 +29,6 @@
 --
 --  Gtk.Hsv.Gtk_Hsv has been deprecated together with
 --  Gtk.Color_Selection.Gtk_Color_Selection, where it was used.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;          use Glib;
@@ -76,9 +73,9 @@ package Gtk.Hsv is
    --  Queries the current color in an HSV color selector. Returned values
    --  will be in the [0.0, 1.0] range.
    --  Since: gtk+ 2.14
-   --  "h": Return value for the hue
-   --  "s": Return value for the saturation
-   --  "v": Return value for the value
+   --  @param H Return value for the hue
+   --  @param S Return value for the saturation
+   --  @param V Return value for the value
 
    procedure Set_Color
       (Self : not null access Gtk_Hsv_Record;
@@ -88,9 +85,9 @@ package Gtk.Hsv is
    --  Sets the current color in an HSV color selector. Color component values
    --  must be in the [0.0, 1.0] range.
    --  Since: gtk+ 2.14
-   --  "h": Hue
-   --  "s": Saturation
-   --  "v": Value
+   --  @param H Hue
+   --  @param S Saturation
+   --  @param V Value
 
    procedure Get_Metrics
       (Self       : not null access Gtk_Hsv_Record;
@@ -98,8 +95,8 @@ package Gtk.Hsv is
        Ring_Width : out Glib.Gint);
    --  Queries the size and ring width of an HSV color selector.
    --  Since: gtk+ 2.14
-   --  "size": Return value for the diameter of the hue ring
-   --  "ring_width": Return value for the width of the hue ring
+   --  @param Size Return value for the diameter of the hue ring
+   --  @param Ring_Width Return value for the width of the hue ring
 
    procedure Set_Metrics
       (Self       : not null access Gtk_Hsv_Record;
@@ -107,8 +104,8 @@ package Gtk.Hsv is
        Ring_Width : Glib.Gint);
    --  Sets the size and ring width of an HSV color selector.
    --  Since: gtk+ 2.14
-   --  "size": Diameter for the hue ring
-   --  "ring_width": Width of the hue ring
+   --  @param Size Diameter for the hue ring
+   --  @param Ring_Width Width of the hue ring
 
    function Is_Adjusting
       (Self : not null access Gtk_Hsv_Record) return Boolean;
@@ -117,6 +114,9 @@ package Gtk.Hsv is
    --  adjusting the value with the mouse. This function queries whether the
    --  HSV color selector is being adjusted or not.
    --  Since: gtk+ 2.14
+   --  @return True if clients can ignore changes to the color value, since
+   --  they may be transitory, or False if they should consider the color value
+   --  status to be final.
 
    ---------------
    -- Functions --
@@ -133,12 +133,12 @@ package Gtk.Hsv is
    --  Input values must be in the [0.0, 1.0] range; output values will be in
    --  the same range.
    --  Since: gtk+ 2.14
-   --  "h": Hue
-   --  "s": Saturation
-   --  "v": Value
-   --  "r": Return value for the red component
-   --  "g": Return value for the green component
-   --  "b": Return value for the blue component
+   --  @param H Hue
+   --  @param S Saturation
+   --  @param V Value
+   --  @param R Return value for the red component
+   --  @param G Return value for the green component
+   --  @param B Return value for the blue component
 
    -------------
    -- Signals --

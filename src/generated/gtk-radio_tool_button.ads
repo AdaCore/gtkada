@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button is a
 --  Gtk.Tool_Item.Gtk_Tool_Item that contains a radio button, that is, a button
 --  that is part of a group of toggle buttons where only one button can be
@@ -34,8 +33,6 @@
 --  # CSS nodes
 --
 --  GtkRadioToolButton has a single CSS node with name toolbutton.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                   use Glib;
@@ -69,16 +66,16 @@ package Gtk.Radio_Tool_Button is
    --  Since: gtk+ 2.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "group": An existing radio button group, or null if you are creating a
-   --  new group
+   --  @param Group An existing radio button group, or null if you are
+   --  creating a new group
 
    function Gtk_Radio_Tool_Button_New
       (Group : Gtk.Widget.Widget_SList.GSlist) return Gtk_Radio_Tool_Button;
    --  Creates a new Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button, adding it to
    --  Group.
    --  Since: gtk+ 2.4
-   --  "group": An existing radio button group, or null if you are creating a
-   --  new group
+   --  @param Group An existing radio button group, or null if you are
+   --  creating a new group
 
    procedure Gtk_New_From_Stock
       (Self     : out Gtk_Radio_Tool_Button;
@@ -94,9 +91,9 @@ package Gtk.Radio_Tool_Button is
    --  Since: gtk+ 2.4
    --  Initialize_From_Stock does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "group": an existing radio button group, or null if you are creating a
-   --  new group
-   --  "stock_id": the name of a stock item
+   --  @param Group an existing radio button group, or null if you are
+   --  creating a new group
+   --  @param Stock_Id the name of a stock item
 
    function Gtk_Radio_Tool_Button_New_From_Stock
       (Group    : Gtk.Widget.Widget_SList.GSlist;
@@ -105,9 +102,9 @@ package Gtk.Radio_Tool_Button is
    --  Group. The new Gtk.Radio_Tool_Button.Gtk_Radio_Tool_Button will contain
    --  an icon and label from the stock item indicated by Stock_Id.
    --  Since: gtk+ 2.4
-   --  "group": an existing radio button group, or null if you are creating a
-   --  new group
-   --  "stock_id": the name of a stock item
+   --  @param Group an existing radio button group, or null if you are
+   --  creating a new group
+   --  @param Stock_Id the name of a stock item
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_radio_tool_button_get_type");
@@ -127,7 +124,7 @@ package Gtk.Radio_Tool_Button is
        Group : Gtk.Widget.Widget_SList.GSlist);
    --  Adds Button to Group, removing it from the group it belonged to before.
    --  Since: gtk+ 2.4
-   --  "group": an existing radio button group, or null
+   --  @param Group an existing radio button group, or null
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

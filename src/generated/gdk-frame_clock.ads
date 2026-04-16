@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gdk.Frame_Clock.Gdk_Frame_Clock tells the application when to update and
 --  repaint a window. This may be synced to the vertical refresh rate of the
 --  monitor, for example. Even when the frame clock uses a simple timer rather
@@ -54,8 +53,6 @@
 --  Gdk.Frame_Clock.Get_Frame_Time and the value inside the
 --  Gdk.Frame_Clock.Gdk_Frame_Clock::update signal of the clock, they will stay
 --  exactly synchronized.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Frame_Timings;       use Gdk.Frame_Timings;
@@ -122,12 +119,18 @@ package Gdk.Frame_Clock is
        return Gdk.Frame_Timings.Gdk_Frame_Timings;
    --  Gets the frame timings for the current frame.
    --  Since: gtk+ 3.8
+   --  @return the Gdk.Frame_Timings.Gdk_Frame_Timings for the frame currently
+   --  being processed, or even no frame is being processed, for the previous
+   --  frame. Before any frames have been processed, returns null.
 
    function Get_Frame_Counter
       (Self : not null access Gdk_Frame_Clock_Record) return Gint64;
    --  A Gdk.Frame_Clock.Gdk_Frame_Clock maintains a 64-bit counter that
    --  increments for each frame drawn.
    --  Since: gtk+ 3.8
+   --  @return inside frame processing, the value of the frame counter for the
+   --  current frame. Outside of frame processing, the frame counter for the
+   --  last frame.
 
    function Get_Frame_Time
       (Self : not null access Gdk_Frame_Clock_Record) return Gint64;
@@ -137,6 +140,8 @@ package Gdk.Frame_Clock is
    --  the conceptual "previous frame," which may be either the actual previous
    --  frame time, or if that's too old, an updated time.
    --  Since: gtk+ 3.8
+   --  @return a timestamp in microseconds, in the timescale of of
+   --  g_get_monotonic_time.
 
    function Get_History_Start
       (Self : not null access Gdk_Frame_Clock_Record) return Gint64;
@@ -147,6 +152,8 @@ package Gdk.Frame_Clock is
    --  Gdk.Frame_Clock.Get_History_Start and Gdk.Frame_Clock.Get_Frame_Counter,
    --  inclusive.
    --  Since: gtk+ 3.8
+   --  @return the frame counter value for the oldest frame that is available
+   --  in the internal frame history of the Gdk.Frame_Clock.Gdk_Frame_Clock.
 
    procedure Get_Refresh_Info
       (Self                     : not null access Gdk_Frame_Clock_Record;
@@ -159,11 +166,11 @@ package Gdk.Frame_Clock is
    --  time that is a multiple of the refresh interval after the last
    --  presentation time, and later than Base_Time.
    --  Since: gtk+ 3.8
-   --  "base_time": base time for determining a presentaton time
-   --  "refresh_interval_return": a location to store the determined refresh
-   --  interval, or null. A default refresh interval of 1/60th of a second will
-   --  be stored if no history is present.
-   --  "presentation_time_return": a location to store the next candidate
+   --  @param Base_Time base time for determining a presentaton time
+   --  @param Refresh_Interval_Return a location to store the determined
+   --  refresh interval, or null. A default refresh interval of 1/60th of a
+   --  second will be stored if no history is present.
+   --  @param Presentation_Time_Return a location to store the next candidate
    --  presentation time after the given base time. 0 will be will be stored if
    --  no history is present.
 
@@ -175,8 +182,11 @@ package Gdk.Frame_Clock is
    --  Gdk.Frame_Timings.Gdk_Frame_Timings object may not yet be complete: see
    --  Gdk.Frame_Timings.Get_Complete.
    --  Since: gtk+ 3.8
-   --  "frame_counter": the frame counter value identifying the frame to be
-   --  received.
+   --  @param Frame_Counter the frame counter value identifying the frame to
+   --  be received.
+   --  @return the Gdk.Frame_Timings.Gdk_Frame_Timings object for the
+   --  specified frame, or null if it is not available. See
+   --  Gdk.Frame_Clock.Get_History_Start.
 
    procedure Request_Phase
       (Self  : not null access Gdk_Frame_Clock_Record;
@@ -190,7 +200,7 @@ package Gdk.Frame_Clock is
    --  you should use Gdk.Frame_Clock.Begin_Updating instead, since this allows
    --  GTK+ to adjust system parameters to get maximally smooth animations.
    --  Since: gtk+ 3.8
-   --  "phase": the phase that is requested
+   --  @param Phase the phase that is requested
 
    -------------
    -- Signals --

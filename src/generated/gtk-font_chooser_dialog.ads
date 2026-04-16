@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog widget is a dialog for
 --  selecting a font. It implements the Gtk.Font_Chooser.Gtk_Font_Chooser
 --  interface.
@@ -31,8 +30,6 @@
 --  The GtkFontChooserDialog implementation of the Gtk.Buildable.Gtk_Buildable
 --  interface exposes the buttons with the names "select_button" and
 --  "cancel_button".
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
@@ -62,8 +59,9 @@ package Gtk.Font_Chooser_Dialog is
    --  The type of function that is used for deciding what fonts get shown in
    --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
    --  Gtk.Font_Chooser.Set_Filter_Func.
-   --  "family": a Pango.Font_Family.Pango_Font_Family
-   --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
+   --  @param Family a Pango.Font_Family.Pango_Font_Family
+   --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
+   --  @return True if the font should be displayed
 
    ------------------
    -- Constructors --
@@ -81,8 +79,8 @@ package Gtk.Font_Chooser_Dialog is
    --  Since: gtk+ 3.2
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "title": Title of the dialog, or null
-   --  "parent": Transient parent of the dialog, or null
+   --  @param Title Title of the dialog, or null
+   --  @param Parent Transient parent of the dialog, or null
 
    function Gtk_Font_Chooser_Dialog_New
       (Title  : UTF8_String := "";
@@ -90,8 +88,8 @@ package Gtk.Font_Chooser_Dialog is
        return Gtk_Font_Chooser_Dialog;
    --  Creates a new Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog.
    --  Since: gtk+ 3.2
-   --  "title": Title of the dialog, or null
-   --  "parent": Transient parent of the dialog, or null
+   --  @param Title Title of the dialog, or null
+   --  @param Parent Transient parent of the dialog, or null
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_font_chooser_dialog_get_type");
@@ -106,7 +104,7 @@ package Gtk.Font_Chooser_Dialog is
    --  Adds a filter function that decides which fonts to display in the font
    --  chooser.
    --  Since: gtk+ 3.2
-   --  "filter": a Gtk_Font_Filter_Func, or null
+   --  @param Filter a Gtk_Font_Filter_Func, or null
 
    generic
       type User_Data_Type (<>) is private;
@@ -120,9 +118,10 @@ package Gtk.Font_Chooser_Dialog is
       --  The type of function that is used for deciding what fonts get shown in
       --  a Gtk.Font_Chooser.Gtk_Font_Chooser. See
       --  Gtk.Font_Chooser.Set_Filter_Func.
-      --  "family": a Pango.Font_Family.Pango_Font_Family
-      --  "face": a Pango.Font_Face.Pango_Font_Face belonging to Family
-      --  "data": user data passed to Gtk.Font_Chooser.Set_Filter_Func
+      --  @param Family a Pango.Font_Family.Pango_Font_Family
+      --  @param Face a Pango.Font_Face.Pango_Font_Face belonging to Family
+      --  @param Data user data passed to Gtk.Font_Chooser.Set_Filter_Func
+      --  @return True if the font should be displayed
 
       procedure Set_Filter_Func
          (Self      : not null access Gtk.Font_Chooser_Dialog.Gtk_Font_Chooser_Dialog_Record'Class;
@@ -131,8 +130,8 @@ package Gtk.Font_Chooser_Dialog is
       --  Adds a filter function that decides which fonts to display in the
       --  font chooser.
       --  Since: gtk+ 3.2
-      --  "filter": a Gtk_Font_Filter_Func, or null
-      --  "user_data": data to pass to Filter
+      --  @param Filter a Gtk_Font_Filter_Func, or null
+      --  @param User_Data data to pass to Filter
 
    end Set_Filter_Func_User_Data;
 

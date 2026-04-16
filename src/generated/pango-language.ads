@@ -21,14 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Pango.Language.Pango_Language structure is used to represent a
 --  language.
 --
 --  Pango.Language.Pango_Language pointers can be efficiently copied and
 --  compared with each other.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -330,6 +327,9 @@ package Pango.Language is
    --  "xx". That is, compare to:
    --
    --     pango_language_get_sample_string (pango_language_from_string ("xx"))
+   --
+   --  @return the sample string. This value is owned by Pango and should not
+   --  be freed.
 
    function Get_Scripts (Self : Pango_Language) return Pango_Script_Array;
    --  Determines the scripts used to to write Language. If nothing is known
@@ -362,7 +362,10 @@ package Pango.Language is
    --  probably is not useful for applications in most circumstances.
    --  This function uses Pango.Language.Get_Scripts internally.
    --  Since: gtk+ 1.4
-   --  "script": a Pango.Language.Pango_Script
+   --  @param Script a Pango.Language.Pango_Script
+   --  @return True if Script is one of the scripts used to write Language or
+   --  if nothing is known about Language (including the case that Language is
+   --  null), False otherwise.
 
    function Matches
       (Self       : Pango_Language;
@@ -371,12 +374,15 @@ package Pango.Language is
    --  language ranges. A language tag is considered to match a range in the
    --  list if the range is '*', the range is exactly the tag, or the range is
    --  a prefix of the tag, and the character after it in the tag is '-'.
-   --  "range_list": a list of language ranges, separated by ';', ':', ',', or
-   --  space characters. Each element must either be '*', or a RFC 3066
+   --  @param Range_List a list of language ranges, separated by ';', ':',
+   --  ',', or space characters. Each element must either be '*', or a RFC 3066
    --  language range canonicalized as by Pango.Language.From_String
+   --  @return True if a match was found.
 
    function To_String (Self : Pango_Language) return UTF8_String;
    --  Gets the RFC-3066 format string representing the given language tag.
+   --  @return a string representing the language tag. This is owned by Pango
+   --  and should not be freed.
 
    ---------------
    -- Functions --
@@ -392,7 +398,10 @@ package Pango.Language is
    --  letters and '-'.
    --  Use Pango.Language.Get_Default if you want to get the
    --  Pango.Language.Pango_Language for the current locale of the process.
-   --  "language": a string representing a language tag, or null
+   --  @param Language a string representing a language tag, or null
+   --  @return an opaque pointer to a Pango.Language.Pango_Language structure,
+   --  or null if Language was null. The returned pointer will be valid forever
+   --  after, and should not be freed.
 
    function Get_Default return Pango_Language;
    --  Returns the Pango.Language.Pango_Language for the current locale of the
@@ -417,6 +426,8 @@ package Pango.Language is
    --  automatically (by calling gtk_set_locale). See `man setlocale` for more
    --  details.
    --  Since: gtk+ 1.16
+   --  @return the default language as a Pango.Language.Pango_Language, must
+   --  not be freed.
 
 private
 

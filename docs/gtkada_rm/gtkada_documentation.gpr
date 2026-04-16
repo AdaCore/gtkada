@@ -1,19 +1,9 @@
 project GtkAda_Documentation is
 
    for Source_Dirs use ("../../src/generated", "../../src/");
-   for Object_Dir use "doc_obj";
-
-   package Compiler is
-      for Default_Switches ("Ada") use ("-gnatc", "-gnatQ");
-   end Compiler;
-
-   package Builder is
-      for Default_Switches ("Ada") use ("-m");
-   end Builder;
 
    package Documentation is
-      for Documentation_Dir use "gtkada_rm";
-      for HTML_Custom_Dir use "html";
+      for Output_Dir ("html") use "gtkada_rm";
    end Documentation;
 
 end GtkAda_Documentation;

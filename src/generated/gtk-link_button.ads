@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkLinkButton is a Gtk.Button.Gtk_Button with a hyperlink, similar to
 --  the one used by web browsers, which triggers an action when clicked. It is
 --  useful to show quick links to resources.
@@ -43,7 +42,6 @@
 --  GtkLinkButton has a single CSS node with name button. To differentiate it
 --  from a plain Gtk.Button.Gtk_Button, it gets the .link style class.
 --
---  </description>
 --  <group>Buttons and Toggles</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -75,12 +73,12 @@ package Gtk.Link_Button is
    --  Since: gtk+ 2.10
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "uri": a valid URI
+   --  @param URI a valid URI
 
    function Gtk_Link_Button_New (URI : UTF8_String) return Gtk_Link_Button;
    --  Creates a new Gtk.Link_Button.Gtk_Link_Button with the URI as its text.
    --  Since: gtk+ 2.10
-   --  "uri": a valid URI
+   --  @param URI a valid URI
 
    procedure Gtk_New_With_Label
       (Widget : out Gtk_Link_Button;
@@ -94,16 +92,16 @@ package Gtk.Link_Button is
    --  Since: gtk+ 2.10
    --  Initialize_With_Label does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "uri": a valid URI
-   --  "label": the text of the button
+   --  @param URI a valid URI
+   --  @param Label the text of the button
 
    function Gtk_Link_Button_New_With_Label
       (URI   : UTF8_String;
        Label : UTF8_String := "") return Gtk_Link_Button;
    --  Creates a new Gtk.Link_Button.Gtk_Link_Button containing a label.
    --  Since: gtk+ 2.10
-   --  "uri": a valid URI
-   --  "label": the text of the button
+   --  @param URI a valid URI
+   --  @param Label the text of the button
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_link_button_get_type");
@@ -116,6 +114,8 @@ package Gtk.Link_Button is
       (Widget : not null access Gtk_Link_Button_Record) return UTF8_String;
    --  Retrieves the URI set using Gtk.Link_Button.Set_Uri.
    --  Since: gtk+ 2.10
+   --  @return a valid URI. The returned string is owned by the link button
+   --  and should not be modified or freed.
 
    procedure Set_Uri
       (Widget : not null access Gtk_Link_Button_Record;
@@ -123,7 +123,7 @@ package Gtk.Link_Button is
    --  Sets Uri as the URI where the Gtk.Link_Button.Gtk_Link_Button points.
    --  As a side-effect this unsets the "visited" state of the button.
    --  Since: gtk+ 2.10
-   --  "uri": a valid URI
+   --  @param URI a valid URI
 
    function Get_Visited
       (Widget : not null access Gtk_Link_Button_Record) return Boolean;
@@ -133,6 +133,7 @@ package Gtk.Link_Button is
    --  is unset again.
    --  The state may also be changed using Gtk.Link_Button.Set_Visited.
    --  Since: gtk+ 2.14
+   --  @return True if the link has been visited, False otherwise
 
    procedure Set_Visited
       (Widget  : not null access Gtk_Link_Button_Record;
@@ -141,7 +142,7 @@ package Gtk.Link_Button is
    --  Gtk.Link_Button.Gtk_Link_Button points. See Gtk.Link_Button.Get_Visited
    --  for more details.
    --  Since: gtk+ 2.14
-   --  "visited": the new "visited" state
+   --  @param Visited the new "visited" state
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

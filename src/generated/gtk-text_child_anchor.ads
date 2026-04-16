@@ -21,13 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor is a spot in the buffer
 --  where child widgets can be "anchored" (inserted inline, as if they were
 --  characters). The anchor can have multiple widgets anchored, to allow for
 --  multiple views.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;
@@ -75,6 +72,7 @@ package Gtk.Text_Child_Anchor is
    --  from the buffer, so you need to hold your own reference (with
    --  g_object_ref) if you plan to use this function — otherwise all deleted
    --  child anchors will also be finalized.
+   --  @return True if the child anchor has been deleted from its buffer
 
    function Get_Widgets
       (Anchor : not null access Gtk_Text_Child_Anchor_Record)

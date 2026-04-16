@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GtkFileFilter can be used to restrict the files being shown in a
 --  Gtk.File_Chooser.Gtk_File_Chooser. Files can be filtered based on their
 --  name (with Gtk.File_Filter.Add_Pattern), on their mime type (with
@@ -59,7 +58,6 @@
 --         <pattern>*.png</pattern>
 --       </patterns>
 --     </object>
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -107,8 +105,10 @@ package Gtk.File_Filter is
    type Gtk_File_Filter_Func is access function (Filter_Info : Gtk_File_Filter_Info) return Boolean;
    --  The type of function that is used with custom filters, see
    --  Gtk.File_Filter.Add_Custom.
-   --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info that is filled
-   --  according to the Needed flags passed to Gtk.File_Filter.Add_Custom
+   --  @param Filter_Info a Gtk.File_Filter.Gtk_File_Filter_Info that is
+   --  filled according to the Needed flags passed to
+   --  Gtk.File_Filter.Add_Custom
+   --  @return True if the file should be displayed
 
    ----------------------------
    -- Enumeration Properties --
@@ -161,14 +161,14 @@ package Gtk.File_Filter is
    --  Since: gtk+ 3.22
    --  Initialize_From_Gvariant does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "variant": an a{sv} Glib.Variant.Gvariant
+   --  @param Variant an a{sv} Glib.Variant.Gvariant
 
    function Gtk_File_Filter_New_From_Gvariant
       (Variant : Glib.Variant.Gvariant) return Gtk_File_Filter;
    --  Deserialize a file filter from an a{sv} variant in the format produced
    --  by Gtk.File_Filter.To_Gvariant.
    --  Since: gtk+ 3.22
-   --  "variant": an a{sv} Glib.Variant.Gvariant
+   --  @param Variant an a{sv} Glib.Variant.Gvariant
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_file_filter_get_type");
@@ -187,10 +187,10 @@ package Gtk.File_Filter is
    --  allows GTK+ to avoid retrieving expensive information when it isn't
    --  needed by the filter.
    --  Since: gtk+ 2.4
-   --  "needed": bitfield of flags indicating the information that the custom
-   --  filter function needs.
-   --  "func": callback function; if the function returns True, then the file
-   --  will be displayed.
+   --  @param Needed bitfield of flags indicating the information that the
+   --  custom filter function needs.
+   --  @param Func callback function; if the function returns True, then the
+   --  file will be displayed.
 
    generic
       type User_Data_Type (<>) is private;
@@ -202,9 +202,11 @@ package Gtk.File_Filter is
          Data        : User_Data_Type) return Boolean;
       --  The type of function that is used with custom filters, see
       --  Gtk.File_Filter.Add_Custom.
-      --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info that is filled
-      --  according to the Needed flags passed to Gtk.File_Filter.Add_Custom
-      --  "data": user data passed to Gtk.File_Filter.Add_Custom
+      --  @param Filter_Info a Gtk.File_Filter.Gtk_File_Filter_Info that is
+      --  filled according to the Needed flags passed to
+      --  Gtk.File_Filter.Add_Custom
+      --  @param Data user data passed to Gtk.File_Filter.Add_Custom
+      --  @return True if the file should be displayed
 
       procedure Add_Custom
          (Self   : not null access Gtk.File_Filter.Gtk_File_Filter_Record'Class;
@@ -217,11 +219,11 @@ package Gtk.File_Filter is
       --  allows GTK+ to avoid retrieving expensive information when it isn't
       --  needed by the filter.
       --  Since: gtk+ 2.4
-      --  "needed": bitfield of flags indicating the information that the
+      --  @param Needed bitfield of flags indicating the information that the
       --  custom filter function needs.
-      --  "func": callback function; if the function returns True, then the
-      --  file will be displayed.
-      --  "data": data to pass to Func
+      --  @param Func callback function; if the function returns True, then
+      --  the file will be displayed.
+      --  @param Data data to pass to Func
 
    end Add_Custom_User_Data;
 
@@ -230,14 +232,14 @@ package Gtk.File_Filter is
        Mime_Type : UTF8_String);
    --  Adds a rule allowing a given mime type to Filter.
    --  Since: gtk+ 2.4
-   --  "mime_type": name of a MIME type
+   --  @param Mime_Type name of a MIME type
 
    procedure Add_Pattern
       (Self    : not null access Gtk_File_Filter_Record;
        Pattern : UTF8_String);
    --  Adds a rule allowing a shell style glob to a filter.
    --  Since: gtk+ 2.4
-   --  "pattern": a shell style glob
+   --  @param Pattern a shell style glob
 
    procedure Add_Pixbuf_Formats
       (Self : not null access Gtk_File_Filter_Record);
@@ -254,14 +256,17 @@ package Gtk.File_Filter is
    --  intended principally for use in the implementation of
    --  Gtk.File_Chooser.Gtk_File_Chooser.
    --  Since: gtk+ 2.4
-   --  "filter_info": a Gtk.File_Filter.Gtk_File_Filter_Info containing
+   --  @param Filter_Info a Gtk.File_Filter.Gtk_File_Filter_Info containing
    --  information about a file.
+   --  @return True if the file should be displayed
 
    function Get_Name
       (Self : not null access Gtk_File_Filter_Record) return UTF8_String;
    --  Gets the human-readable name for the filter. See
    --  Gtk.File_Filter.Set_Name.
    --  Since: gtk+ 2.4
+   --  @return The human-readable name of the filter, or null. This value is
+   --  owned by GTK+ and must not be modified or freed.
 
    procedure Set_Name
       (Self : not null access Gtk_File_Filter_Record;
@@ -270,8 +275,8 @@ package Gtk.File_Filter is
    --  will be displayed in the file selector user interface if there is a
    --  selectable list of filters.
    --  Since: gtk+ 2.4
-   --  "name": the human-readable-name for the filter, or null to remove any
-   --  existing name.
+   --  @param Name the human-readable-name for the filter, or null to remove
+   --  any existing name.
 
    function Get_Needed
       (Self : not null access Gtk_File_Filter_Record)
@@ -282,12 +287,15 @@ package Gtk.File_Filter is
    --  intended principally for use in the implementation of
    --  Gtk.File_Chooser.Gtk_File_Chooser.
    --  Since: gtk+ 2.4
+   --  @return bitfield of flags indicating needed fields when calling
+   --  Gtk.File_Filter.Filter
 
    function To_Gvariant
       (Self : not null access Gtk_File_Filter_Record)
        return Glib.Variant.Gvariant;
    --  Serialize a file filter to an a{sv} variant.
    --  Since: gtk+ 3.22
+   --  @return a new, floating, Glib.Variant.Gvariant
 
    ----------------
    -- Interfaces --

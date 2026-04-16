@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Viewport.Gtk_Viewport widget acts as an adaptor class,
 --  implementing scrollability for child widgets that lack their own scrolling
 --  capabilities. Use GtkViewport to scroll child widgets such as
@@ -45,7 +44,6 @@
 --
 --  GtkViewport has a single CSS node with name viewport.
 --
---  </description>
 --  <group>Scrolling</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -80,8 +78,8 @@ package Gtk.Viewport is
    --  with default adjustments if none are given.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "hadjustment": horizontal adjustment
-   --  "vadjustment": vertical adjustment
+   --  @param Hadjustment horizontal adjustment
+   --  @param Vadjustment vertical adjustment
 
    function Gtk_Viewport_New
       (Hadjustment : Gtk.Adjustment.Gtk_Adjustment := null;
@@ -89,8 +87,8 @@ package Gtk.Viewport is
        return Gtk_Viewport;
    --  Creates a new Gtk.Viewport.Gtk_Viewport with the given adjustments, or
    --  with default adjustments if none are given.
-   --  "hadjustment": horizontal adjustment
-   --  "vadjustment": vertical adjustment
+   --  @param Hadjustment horizontal adjustment
+   --  @param Vadjustment vertical adjustment
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_viewport_get_type");
@@ -103,23 +101,26 @@ package Gtk.Viewport is
       (Viewport : not null access Gtk_Viewport_Record) return Gdk.Gdk_Window;
    --  Gets the bin window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.20
+   --  @return a Gdk.Gdk_Window
 
    function Get_Shadow_Type
       (Viewport : not null access Gtk_Viewport_Record)
        return Gtk.Enums.Gtk_Shadow_Type;
    --  Gets the shadow type of the Gtk.Viewport.Gtk_Viewport. See
    --  Gtk.Viewport.Set_Shadow_Type.
+   --  @return the shadow type
 
    procedure Set_Shadow_Type
       (Viewport : not null access Gtk_Viewport_Record;
        The_Type : Gtk.Enums.Gtk_Shadow_Type);
    --  Sets the shadow type of the viewport.
-   --  "type": the new shadow type.
+   --  @param The_Type the new shadow type.
 
    function Get_View_Window
       (Viewport : not null access Gtk_Viewport_Record) return Gdk.Gdk_Window;
    --  Gets the view window of the Gtk.Viewport.Gtk_Viewport.
    --  Since: gtk+ 2.22
+   --  @return a Gdk.Gdk_Window
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

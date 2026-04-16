@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A GTK+ user interface is constructed by nesting widgets inside widgets.
 --  Container widgets are the inner nodes in the resulting tree of widgets:
 --  they contain other widgets. So, for example, you might have a
@@ -232,7 +231,6 @@
 --         <widget name="entry2"/>
 --       </focus-chain>
 --     </object>
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;           use Cairo;
@@ -259,7 +257,7 @@ package Gtk.Container is
      (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  The type of the callback functions used for e.g. iterating over the
    --  children of a container, see gtk_container_foreach.
-   --  "widget": the widget to operate on
+   --  @param Widget the widget to operate on
 
    ------------------
    -- Constructors --
@@ -288,7 +286,7 @@ package Gtk.Container is
    --  Gtk.Scrolled_Window.Gtk_Scrolled_Window or Gtk.List_Box.Gtk_List_Box,
    --  may add intermediate children between the added widget and the
    --  container.
-   --  "widget": a widget to be placed inside Container
+   --  @param Widget a widget to be placed inside Container
 
    procedure Check_Resize (Container : not null access Gtk_Container_Record);
 
@@ -298,9 +296,9 @@ package Gtk.Container is
        Property_Name : UTF8_String;
        Value         : in out Glib.Values.GValue);
    --  Gets the value of a child property for Child and Container.
-   --  "child": a widget which is a child of Container
-   --  "property_name": the name of the property to get
-   --  "value": a location to return the value
+   --  @param Child a widget which is a child of Container
+   --  @param Property_Name the name of the property to get
+   --  @param Value a location to return the value
 
    procedure Child_Set_Property
       (Container     : not null access Gtk_Container_Record;
@@ -308,9 +306,9 @@ package Gtk.Container is
        Property_Name : UTF8_String;
        Value         : Glib.Values.GValue);
    --  Sets a child property for Child and Container.
-   --  "child": a widget which is a child of Container
-   --  "property_name": the name of the property to set
-   --  "value": the value to set the property to
+   --  @param Child a widget which is a child of Container
+   --  @param Property_Name the name of the property to set
+   --  @param Value the value to set the property to
 
    procedure Child_Notify
       (Container      : not null access Gtk_Container_Record;
@@ -321,9 +319,9 @@ package Gtk.Container is
    --  This is an analogue of g_object_notify for child properties.
    --  Also see Gtk.Widget.Child_Notify.
    --  Since: gtk+ 3.2
-   --  "child": the child widget
-   --  "child_property": the name of a child property installed on the class
-   --  of Container
+   --  @param Child the child widget
+   --  @param Child_Property the name of a child property installed on the
+   --  class of Container
 
    procedure Child_Notify_By_Pspec
       (Container : not null access Gtk_Container_Record;
@@ -333,8 +331,8 @@ package Gtk.Container is
    --  property][child-properties] specified by Pspec on the child.
    --  This is an analogue of g_object_notify_by_pspec for child properties.
    --  Since: gtk+ 3.18
-   --  "child": the child widget
-   --  "pspec": the Glib.Param_Spec of a child property instealled on the
+   --  @param Child the child widget
+   --  @param Pspec the Glib.Param_Spec of a child property instealled on the
    --  class of Container
 
    function Child_Type
@@ -343,6 +341,7 @@ package Gtk.Container is
    --  Note that this may return G_TYPE_NONE to indicate that no more children
    --  can be added, e.g. for a Gtk.Paned.Gtk_Paned which already has two
    --  children.
+   --  @return a GType.
 
    procedure Forall
       (Container : not null access Gtk_Container_Record;
@@ -353,7 +352,7 @@ package Gtk.Container is
    --  the container, but were added by the container implementation itself.
    --  Most applications should use Gtk.Container.Foreach, rather than
    --  Gtk.Container.Forall.
-   --  "callback": a callback
+   --  @param Callback a callback
 
    generic
       type User_Data_Type (<>) is private;
@@ -365,8 +364,8 @@ package Gtk.Container is
          Data   : User_Data_Type);
       --  The type of the callback functions used for e.g. iterating over the
       --  children of a container, see gtk_container_foreach.
-      --  "widget": the widget to operate on
-      --  "data": user-supplied data
+      --  @param Widget the widget to operate on
+      --  @param Data user-supplied data
 
       procedure Forall
          (Container     : not null access Gtk.Container.Gtk_Container_Record'Class;
@@ -379,8 +378,8 @@ package Gtk.Container is
       --  itself.
       --  Most applications should use Gtk.Container.Foreach, rather than
       --  Gtk.Container.Forall.
-      --  "callback": a callback
-      --  "callback_data": callback user data
+      --  @param Callback a callback
+      --  @param Callback_Data callback user data
 
    end Forall_User_Data;
 
@@ -395,7 +394,7 @@ package Gtk.Container is
    --  It is permissible to remove the child from the Callback handler.
    --  Most applications should use Gtk.Container.Foreach, rather than
    --  Gtk.Container.Forall.
-   --  "callback": a callback
+   --  @param Callback a callback
 
    generic
       type User_Data_Type (<>) is private;
@@ -407,8 +406,8 @@ package Gtk.Container is
          Data   : User_Data_Type);
       --  The type of the callback functions used for e.g. iterating over the
       --  children of a container, see Gtk.Container.Foreach.
-      --  "widget": the widget to operate on
-      --  "data": user-supplied data
+      --  @param Widget the widget to operate on
+      --  @param Data user-supplied data
 
       procedure Foreach
          (Container     : not null access Gtk.Container.Gtk_Container_Record'Class;
@@ -422,8 +421,8 @@ package Gtk.Container is
       --  It is permissible to remove the child from the Callback handler.
       --  Most applications should use Gtk.Container.Foreach, rather than
       --  Gtk.Container.Forall.
-      --  "callback": a callback
-      --  "callback_data": callback user data
+      --  @param Callback a callback
+      --  @param Callback_Data callback user data
 
    end Foreach_User_Data;
 
@@ -431,6 +430,7 @@ package Gtk.Container is
       (Container : not null access Gtk_Container_Record) return Guint;
    --  Retrieves the border width of the container. See
    --  Gtk.Container.Set_Border_Width.
+   --  @return the current border width
 
    procedure Set_Border_Width
       (Container    : not null access Gtk_Container_Record;
@@ -443,8 +443,8 @@ package Gtk.Container is
    --  of the container. To add space to only one side, use a specific
    --  Gtk.Widget.Gtk_Widget:margin property on the child widget, for example
    --  Gtk.Widget.Gtk_Widget:margin-top.
-   --  "border_width": amount of blank space to leave outside the container.
-   --  Valid values are in the range 0-65535 pixels.
+   --  @param Border_Width amount of blank space to leave outside the
+   --  container. Valid values are in the range 0-65535 pixels.
 
    function Get_Children
       (Container : not null access Gtk_Container_Record)
@@ -459,6 +459,8 @@ package Gtk.Container is
    --  the currently focused widget. That can be obtained by calling
    --  Gtk.Window.Get_Focus.
    --  Since: gtk+ 2.14
+   --  @return The child widget which will receive the focus inside Container
+   --  when the Container is focused, or null if none is set.
 
    procedure Set_Focus_Child
       (Container : not null access Gtk_Container_Record;
@@ -470,13 +472,14 @@ package Gtk.Container is
    --  This is function is mostly meant to be used by widgets. Applications
    --  can use Gtk.Widget.Grab_Focus to manually set the focus to a specific
    --  widget.
-   --  "child": a Gtk.Widget.Gtk_Widget, or null
+   --  @param Child a Gtk.Widget.Gtk_Widget, or null
 
    function Get_Focus_Hadjustment
       (Container : not null access Gtk_Container_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
    --  Retrieves the horizontal focus adjustment for the container. See
    --  gtk_container_set_focus_hadjustment ().
+   --  @return the horizontal focus adjustment, or null if none has been set.
 
    procedure Set_Focus_Hadjustment
       (Container  : not null access Gtk_Container_Record;
@@ -489,14 +492,15 @@ package Gtk.Container is
    --  vertical adjustment.
    --  The adjustments have to be in pixel units and in the same coordinate
    --  system as the allocation for immediate children of the container.
-   --  "adjustment": an adjustment which should be adjusted when the focus is
-   --  moved among the descendents of Container
+   --  @param Adjustment an adjustment which should be adjusted when the focus
+   --  is moved among the descendents of Container
 
    function Get_Focus_Vadjustment
       (Container : not null access Gtk_Container_Record)
        return Gtk.Adjustment.Gtk_Adjustment;
    --  Retrieves the vertical focus adjustment for the container. See
    --  Gtk.Container.Set_Focus_Vadjustment.
+   --  @return the vertical focus adjustment, or null if none has been set.
 
    procedure Set_Focus_Vadjustment
       (Container  : not null access Gtk_Container_Record;
@@ -509,8 +513,8 @@ package Gtk.Container is
    --  horizontal adjustment.
    --  The adjustments have to be in pixel units and in the same coordinate
    --  system as the allocation for immediate children of the container.
-   --  "adjustment": an adjustment which should be adjusted when the focus is
-   --  moved among the descendents of Container
+   --  @param Adjustment an adjustment which should be adjusted when the focus
+   --  is moved among the descendents of Container
 
    function Get_Path_For_Child
       (Container : not null access Gtk_Container_Record;
@@ -518,7 +522,8 @@ package Gtk.Container is
        return Gtk.Widget.Gtk_Widget_Path;
    --  Returns a newly created widget path representing all the widget
    --  hierarchy from the toplevel down to and including Child.
-   --  "child": a child of Container
+   --  @param Child a child of Container
+   --  @return A newly created Gtk.Widget.Gtk_Widget_Path
 
    function Get_Resize_Mode
       (Container : not null access Gtk_Container_Record)
@@ -527,6 +532,7 @@ package Gtk.Container is
    --  Returns the resize mode for the container. See
    --  gtk_container_set_resize_mode ().
    --  Deprecated since 3.12, 1
+   --  @return the current resize mode
 
    procedure Set_Resize_Mode
       (Container   : not null access Gtk_Container_Record;
@@ -537,7 +543,7 @@ package Gtk.Container is
    --  be passed to the container's parent, queued for later execution or
    --  executed immediately.
    --  Deprecated since 3.12, 1
-   --  "resize_mode": the new resize mode
+   --  @param Resize_Mode the new resize mode
 
    procedure Propagate_Draw
       (Container : not null access Gtk_Container_Record;
@@ -557,9 +563,9 @@ package Gtk.Container is
    --  Gtk.Widget.Gtk_Widget::draw implementation from
    --  Gtk.Container.Gtk_Container, or do some drawing and then chain to the
    --  ::draw implementation from Gtk.Container.Gtk_Container.
-   --  "child": a child of Container
-   --  "cr": Cairo context as passed to the container. If you want to use Cr
-   --  in container's draw function, consider using cairo_save and
+   --  @param Child a child of Container
+   --  @param Cr Cairo context as passed to the container. If you want to use
+   --  Cr in container's draw function, consider using cairo_save and
    --  cairo_restore before calling this function.
 
    procedure Remove
@@ -574,7 +580,7 @@ package Gtk.Container is
    --  simply destroy it directly using Gtk.Widget.Destroy since this will
    --  remove it from the container and help break any circular reference count
    --  cycles.
-   --  "widget": a current child of Container
+   --  @param Widget a current child of Container
 
    procedure Resize_Children
       (Container : not null access Gtk_Container_Record);
@@ -592,7 +598,7 @@ package Gtk.Container is
    --  the chain that isn't always packed. The necessary checks are done when
    --  the focus chain is actually traversed.
    --  Deprecated since 3.24, 1
-   --  "focusable_widgets": the new focus chain
+   --  @param Focusable_Widgets the new focus chain
 
    procedure Set_Reallocate_Redraws
       (Container     : not null access Gtk_Container_Record;
@@ -602,8 +608,8 @@ package Gtk.Container is
    --  Containers requesting reallocation redraws get automatically redrawn if
    --  any of their children changed allocation.
    --  Deprecated since 3.14, 1
-   --  "needs_redraws": the new value for the container's Reallocate_Redraws
-   --  flag
+   --  @param Needs_Redraws the new value for the container's
+   --  Reallocate_Redraws flag
 
    procedure Unset_Focus_Chain
       (Container : not null access Gtk_Container_Record);

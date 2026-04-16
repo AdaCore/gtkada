@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Table.Gtk_Table functions allow the programmer to arrange widgets
 --  in rows and columns, making it easy to align many widgets next to each
 --  other, horizontally and vertically.
@@ -47,7 +46,6 @@
 --  It provides the same > capabilities as GtkTable for arranging widgets in a
 --  rectangular grid, but > does support height-for-width geometry management.
 --
---  </description>
 --  <group>Layout containers</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -84,10 +82,10 @@ package Gtk.Table is
    --  contained in the table. Same behavior for the rows.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "rows": The number of rows the new table should have.
-   --  "columns": The number of columns the new table should have.
-   --  "homogeneous": If set to True, all table cells are resized to the size
-   --  of the cell containing the largest widget.
+   --  @param Rows The number of rows the new table should have.
+   --  @param Columns The number of columns the new table should have.
+   --  @param Homogeneous If set to True, all table cells are resized to the
+   --  size of the cell containing the largest widget.
 
    function Gtk_Table_New
       (Rows        : Guint;
@@ -97,10 +95,10 @@ package Gtk.Table is
    --  Columns columns, which all have the same width if Homogeneous is True.
    --  If Homogeneous is False, the width will be calculated with the children
    --  contained in the table. Same behavior for the rows.
-   --  "rows": The number of rows the new table should have.
-   --  "columns": The number of columns the new table should have.
-   --  "homogeneous": If set to True, all table cells are resized to the size
-   --  of the cell containing the largest widget.
+   --  @param Rows The number of rows the new table should have.
+   --  @param Columns The number of columns the new table should have.
+   --  @param Homogeneous If set to True, all table cells are resized to the
+   --  size of the cell containing the largest widget.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_table_get_type");
@@ -130,21 +128,22 @@ package Gtk.Table is
    --  Gtk.Box for more information on the possible values. Xpadding and
    --  Ypadding are the amount of space left around the child.
    --  Deprecated since 3.4, 1
-   --  "child": The widget to add.
-   --  "left_attach": the column number to attach the left side of a child
+   --  @param Child The widget to add.
+   --  @param Left_Attach the column number to attach the left side of a child
    --  widget to.
-   --  "right_attach": the column number to attach the right side of a child
-   --  widget to.
-   --  "top_attach": the row number to attach the top of a child widget to.
-   --  "bottom_attach": the row number to attach the bottom of a child widget
+   --  @param Right_Attach the column number to attach the right side of a
+   --  child widget to.
+   --  @param Top_Attach the row number to attach the top of a child widget
    --  to.
-   --  "xoptions": Used to specify the properties of the child widget when the
-   --  table is resized.
-   --  "yoptions": The same as xoptions, except this field determines
+   --  @param Bottom_Attach the row number to attach the bottom of a child
+   --  widget to.
+   --  @param Xoptions Used to specify the properties of the child widget when
+   --  the table is resized.
+   --  @param Yoptions The same as xoptions, except this field determines
    --  behaviour of vertical resizing.
-   --  "xpadding": An integer value specifying the padding on the left and
+   --  @param Xpadding An integer value specifying the padding on the left and
    --  right of the widget being added to the table.
-   --  "ypadding": The amount of padding above and below the child widget.
+   --  @param Ypadding The amount of padding above and below the child widget.
 
    procedure Attach_Defaults
       (Table         : not null access Gtk_Table_Record;
@@ -159,13 +158,14 @@ package Gtk.Table is
    --  call is similar to Attach with default values and is only provided for
    --  compatibility.
    --  Deprecated since 3.4, 1
-   --  "widget": The child widget to add.
-   --  "left_attach": The column number to attach the left side of the child
-   --  widget to.
-   --  "right_attach": The column number to attach the right side of the child
-   --  widget to.
-   --  "top_attach": The row number to attach the top of the child widget to.
-   --  "bottom_attach": The row number to attach the bottom of the child
+   --  @param Widget The child widget to add.
+   --  @param Left_Attach The column number to attach the left side of the
+   --  child widget to.
+   --  @param Right_Attach The column number to attach the right side of the
+   --  child widget to.
+   --  @param Top_Attach The row number to attach the top of the child widget
+   --  to.
+   --  @param Bottom_Attach The row number to attach the bottom of the child
    --  widget to.
 
    function Get_Col_Spacing
@@ -175,7 +175,8 @@ package Gtk.Table is
    --  Gets the amount of space between column Col, and column Col + 1. See
    --  Gtk.Table.Set_Col_Spacing.
    --  Deprecated since 3.4, 1
-   --  "column": a column in the table, 0 indicates the first column
+   --  @param Column a column in the table, 0 indicates the first column
+   --  @return the column spacing
 
    procedure Set_Col_Spacing
       (Table   : not null access Gtk_Table_Record;
@@ -184,8 +185,8 @@ package Gtk.Table is
    pragma Obsolescent (Set_Col_Spacing);
    --  Set the spacing in pixels between Column and the next one.
    --  Deprecated since 3.4, 1
-   --  "column": the column whose spacing should be changed.
-   --  "spacing": number of pixels that the spacing should take up.
+   --  @param Column the column whose spacing should be changed.
+   --  @param Spacing number of pixels that the spacing should take up.
 
    function Get_Default_Col_Spacing
       (Table : not null access Gtk_Table_Record) return Guint;
@@ -193,6 +194,7 @@ package Gtk.Table is
    --  Gets the default column spacing for the table. This is the spacing that
    --  will be used for newly added columns. (See Gtk.Table.Set_Col_Spacings)
    --  Deprecated since 3.4, 1
+   --  @return the default column spacing
 
    function Get_Default_Row_Spacing
       (Table : not null access Gtk_Table_Record) return Guint;
@@ -200,6 +202,7 @@ package Gtk.Table is
    --  Gets the default row spacing for the table. This is the spacing that
    --  will be used for newly added rows. (See Gtk.Table.Set_Row_Spacings)
    --  Deprecated since 3.4, 1
+   --  @return the default row spacing
 
    function Get_Homogeneous
       (Table : not null access Gtk_Table_Record) return Boolean;
@@ -207,6 +210,7 @@ package Gtk.Table is
    --  Returns whether the table cells are all constrained to the same width
    --  and height. (See gtk_table_set_homogeneous ())
    --  Deprecated since 3.4, 1
+   --  @return True if the cells are all constrained to the same size
 
    procedure Set_Homogeneous
       (Table       : not null access Gtk_Table_Record;
@@ -216,8 +220,8 @@ package Gtk.Table is
    --  the rows and columns of the table will all be allocated the same width
    --  or height.
    --  Deprecated since 3.4, 1
-   --  "homogeneous": Set to True to ensure all table cells are the same size.
-   --  Set to False if this is not your desired behaviour.
+   --  @param Homogeneous Set to True to ensure all table cells are the same
+   --  size. Set to False if this is not your desired behaviour.
 
    function Get_Row_Spacing
       (Table : not null access Gtk_Table_Record;
@@ -226,7 +230,8 @@ package Gtk.Table is
    --  Gets the amount of space between row Row, and row Row + 1. See
    --  Gtk.Table.Set_Row_Spacing.
    --  Deprecated since 3.4, 1
-   --  "row": a row in the table, 0 indicates the first row
+   --  @param Row a row in the table, 0 indicates the first row
+   --  @return the row spacing
 
    procedure Set_Row_Spacing
       (Table   : not null access Gtk_Table_Record;
@@ -235,8 +240,8 @@ package Gtk.Table is
    pragma Obsolescent (Set_Row_Spacing);
    --  Changes the space between a given table row and the subsequent row.
    --  Deprecated since 3.4, 1
-   --  "row": row number whose spacing will be changed.
-   --  "spacing": number of pixels that the spacing should take up.
+   --  @param Row row number whose spacing will be changed.
+   --  @param Spacing number of pixels that the spacing should take up.
 
    procedure Get_Size
       (Table   : not null access Gtk_Table_Record;
@@ -246,8 +251,8 @@ package Gtk.Table is
    --  Gets the number of rows and columns in the table.
    --  Since: gtk+ 2.22
    --  Deprecated since 3.4, 1
-   --  "rows": return location for the number of rows, or null
-   --  "columns": return location for the number of columns, or null
+   --  @param Rows return location for the number of rows, or null
+   --  @param Columns return location for the number of columns, or null
 
    procedure Resize
       (Table   : not null access Gtk_Table_Record;
@@ -257,8 +262,8 @@ package Gtk.Table is
    --  If you need to change a table's size after it has been created, this
    --  function allows you to do so.
    --  Deprecated since 3.4, 1
-   --  "rows": The new number of rows.
-   --  "columns": The new number of columns.
+   --  @param Rows The new number of rows.
+   --  @param Columns The new number of columns.
 
    procedure Set_Col_Spacings
       (Table   : not null access Gtk_Table_Record;
@@ -266,8 +271,8 @@ package Gtk.Table is
    pragma Obsolescent (Set_Col_Spacings);
    --  Sets the space between every column in Table equal to Spacing.
    --  Deprecated since 3.4, 1
-   --  "spacing": the number of pixels of space to place between every column
-   --  in the table.
+   --  @param Spacing the number of pixels of space to place between every
+   --  column in the table.
 
    procedure Set_Row_Spacings
       (Table   : not null access Gtk_Table_Record;
@@ -275,8 +280,8 @@ package Gtk.Table is
    pragma Obsolescent (Set_Row_Spacings);
    --  Sets the space between every row in Table equal to Spacing.
    --  Deprecated since 3.4, 1
-   --  "spacing": the number of pixels of space to place between every row in
-   --  the table.
+   --  @param Spacing the number of pixels of space to place between every row
+   --  in the table.
 
    ----------------
    -- Properties --

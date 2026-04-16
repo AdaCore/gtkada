@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button is a
 --  Gtk.Tool_Item.Gtk_Tool_Item that contains a button and a small additional
 --  button with an arrow. When clicked, the arrow button pops up a dropdown
@@ -43,7 +42,6 @@
 --         <object class="GtkMenu"/>
 --       </child>
 --     </object>
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -81,8 +79,8 @@ package Gtk.Menu_Tool_Button is
    --  Since: gtk+ 2.6
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "icon_widget": a widget that will be used as icon widget, or null
-   --  "label": a string that will be used as label, or null
+   --  @param Icon_Widget a widget that will be used as icon widget, or null
+   --  @param Label a string that will be used as label, or null
 
    function Gtk_Menu_Tool_Button_New
       (Icon_Widget : Gtk.Widget.Gtk_Widget := null;
@@ -90,8 +88,8 @@ package Gtk.Menu_Tool_Button is
    --  Creates a new Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button using
    --  Icon_Widget as icon and Label as label.
    --  Since: gtk+ 2.6
-   --  "icon_widget": a widget that will be used as icon widget, or null
-   --  "label": a string that will be used as label, or null
+   --  @param Icon_Widget a widget that will be used as icon widget, or null
+   --  @param Label a string that will be used as label, or null
 
    procedure Gtk_New_From_Stock
       (Menu     : out Gtk_Menu_Tool_Button;
@@ -105,7 +103,7 @@ package Gtk.Menu_Tool_Button is
    --  Since: gtk+ 2.6
    --  Initialize_From_Stock does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "stock_id": the name of a stock item
+   --  @param Stock_Id the name of a stock item
 
    function Gtk_Menu_Tool_Button_New_From_Stock
       (Stock_Id : UTF8_String) return Gtk_Menu_Tool_Button;
@@ -113,7 +111,7 @@ package Gtk.Menu_Tool_Button is
    --  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button will contain an icon and label
    --  from the stock item indicated by Stock_Id.
    --  Since: gtk+ 2.6
-   --  "stock_id": the name of a stock item
+   --  @param Stock_Id the name of a stock item
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_menu_tool_button_get_type");
@@ -135,7 +133,7 @@ package Gtk.Menu_Tool_Button is
    --  Sets the Gtk.Menu.Gtk_Menu that is popped up when the user clicks on
    --  the arrow. If Menu is NULL, the arrow button becomes insensitive.
    --  Since: gtk+ 2.6
-   --  "menu": the Gtk.Menu.Gtk_Menu associated with
+   --  @param Menu the Gtk.Menu.Gtk_Menu associated with
    --  Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button
 
    procedure Set_Arrow_Tooltip_Markup
@@ -145,7 +143,7 @@ package Gtk.Menu_Tool_Button is
    --  which pops up the menu. See Gtk.Tool_Item.Set_Tooltip_Text for setting a
    --  tooltip on the whole Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button.
    --  Since: gtk+ 2.12
-   --  "markup": markup text to be used as tooltip text for button's arrow
+   --  @param Markup markup text to be used as tooltip text for button's arrow
    --  button
 
    procedure Set_Arrow_Tooltip_Text
@@ -155,7 +153,7 @@ package Gtk.Menu_Tool_Button is
    --  pops up the menu. See Gtk.Tool_Item.Set_Tooltip_Text for setting a
    --  tooltip on the whole Gtk.Menu_Tool_Button.Gtk_Menu_Tool_Button.
    --  Since: gtk+ 2.12
-   --  "text": text to be used as tooltip text for button's arrow button
+   --  @param Text text to be used as tooltip text for button's arrow button
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

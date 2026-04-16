@@ -226,7 +226,7 @@ class GIR(object):
             pkg = self.packages[name.lower()]
 
         if doc:
-            pkg.doc = ["<description>", doc, "</description>"] + pkg.doc
+            pkg.doc = [doc] + pkg.doc
 
         return pkg
 
@@ -394,6 +394,8 @@ class SubprogramProfile(object):
         profile.params = profile._parameters(node, gtkmethod, pkg=pkg)
 
         profile.doc = profile._getdoc(gtkmethod, node)
+        if profile.returns_doc:
+            profile.doc.append(profile.returns_doc)
         return profile
 
     @staticmethod
@@ -687,8 +689,10 @@ class SubprogramProfile(object):
                 mode = c_mode
 
             doc = _get_clean_doc(p)
-            if doc:
-                doc = '"%s": %s' % (name, doc)
+            if doc and ada_binding:
+                doc = "@param %s %s" % (naming.case(name), doc)
+            else:
+                doc = ""
 
             result.append(
                 Parameter(name=naming.case(name),
@@ -716,7 +720,7 @@ class SubprogramProfile(object):
             else:
                 self.returns_doc = _get_clean_doc(ret)
                 if self.returns_doc:
-                    self.returns_doc = "Returns %s" % self.returns_doc
+                    self.returns_doc = "@return %s" % self.returns_doc
 
             return _get_type(
                 ret, allow_access=False, pkg=pkg,
@@ -2198,8 +2202,6 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
 
                 if profile.returns_doc or len(profile.params) > 1:
                     doc = "\n Callback parameters:" + sub.formatted_doc()
-                    if profile.returns_doc:
-                        doc += "\n   --  %s" % profile.returns_doc
                     section.add(Code(doc, fill=False, iscomment=True))
 
     def _implements(self):

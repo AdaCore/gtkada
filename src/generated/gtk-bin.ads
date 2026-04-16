@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Bin.Gtk_Bin widget is a container with just one child. It is not
 --  very useful itself, but it is useful for deriving subclasses, since it
 --  provides common code needed for handling a single child widget.
@@ -30,7 +29,6 @@
 --  Gtk.Window.Gtk_Window, Gtk.Button.Gtk_Button, Gtk.Frame.Gtk_Frame,
 --  Gtk.Handle_Box.Gtk_Handle_Box or Gtk.Scrolled_Window.Gtk_Scrolled_Window.
 --
---  </description>
 --  <group>Abstract base classes</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -61,6 +59,7 @@ package Gtk.Bin is
    --  Gets the child of the Gtk.Bin.Gtk_Bin, or null if the bin contains no
    --  child widget. The returned widget does not have a reference added, so
    --  you do not need to unref it.
+   --  @return the child of Bin, or null if it does not have a child.
 
    ----------------
    -- Interfaces --

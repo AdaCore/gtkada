@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Tool_Palette.Gtk_Tool_Palette allows you to add Gtk_Tool_Items to a
 --  palette-like container with different categories and drag and drop support.
 --
@@ -93,8 +92,6 @@
 --  # CSS nodes
 --
 --  GtkToolPalette has a single CSS node named toolpalette.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Drag_Contexts;       use Gdk.Drag_Contexts;
@@ -183,13 +180,13 @@ package Gtk.Tool_Palette is
    --  sets Widget as a drag destination for drags from Palette. See
    --  gtk_drag_dest_set.
    --  Since: gtk+ 2.20
-   --  "widget": a Gtk.Widget.Gtk_Widget which should be a drag destination
-   --  for Palette
-   --  "flags": the flags that specify what actions GTK+ should take for drops
-   --  on that widget
-   --  "targets": the Gtk.Tool_Palette.Gtk_Tool_Palette_Drag_Targets which the
-   --  widget should support
-   --  "actions": the Gdk_Drag_Actions which the widget should suppport
+   --  @param Widget a Gtk.Widget.Gtk_Widget which should be a drag
+   --  destination for Palette
+   --  @param Flags the flags that specify what actions GTK+ should take for
+   --  drops on that widget
+   --  @param Targets the Gtk.Tool_Palette.Gtk_Tool_Palette_Drag_Targets which
+   --  the widget should support
+   --  @param Actions the Gdk_Drag_Actions which the widget should suppport
 
    function Get_Drag_Item
       (Self      : not null access Gtk_Tool_Palette_Record;
@@ -199,7 +196,8 @@ package Gtk.Tool_Palette is
    --  Gtk.Tool_Item.Gtk_Tool_Item or a
    --  Gtk.Tool_Item_Group.Gtk_Tool_Item_Group.
    --  Since: gtk+ 2.20
-   --  "selection": a Gtk.Selection_Data.Gtk_Selection_Data
+   --  @param Selection a Gtk.Selection_Data.Gtk_Selection_Data
+   --  @return the dragged item in selection
 
    function Get_Drop_Group
       (Self : not null access Gtk_Tool_Palette_Record;
@@ -207,8 +205,10 @@ package Gtk.Tool_Palette is
        Y    : Glib.Gint) return Gtk.Tool_Item_Group.Gtk_Tool_Item_Group;
    --  Gets the group at position (x, y).
    --  Since: gtk+ 2.20
-   --  "x": the x position
-   --  "y": the y position
+   --  @param X the x position
+   --  @param Y the y position
+   --  @return the Gtk.Tool_Item_Group.Gtk_Tool_Item_Group at position or null
+   --  if there is no such group
 
    function Get_Drop_Item
       (Self : not null access Gtk_Tool_Palette_Record;
@@ -216,8 +216,10 @@ package Gtk.Tool_Palette is
        Y    : Glib.Gint) return Gtk.Tool_Item.Gtk_Tool_Item;
    --  Gets the item at position (x, y). See Gtk.Tool_Palette.Get_Drop_Group.
    --  Since: gtk+ 2.20
-   --  "x": the x position
-   --  "y": the y position
+   --  @param X the x position
+   --  @param Y the y position
+   --  @return the Gtk.Tool_Item.Gtk_Tool_Item at position or null if there is
+   --  no such item
 
    function Get_Exclusive
       (Self  : not null access Gtk_Tool_Palette_Record;
@@ -226,8 +228,9 @@ package Gtk.Tool_Palette is
    --  Gets whether Group is exclusive or not. See
    --  Gtk.Tool_Palette.Set_Exclusive.
    --  Since: gtk+ 2.20
-   --  "group": a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which is a child of
-   --  palette
+   --  @param Group a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which is a child
+   --  of palette
+   --  @return True if Group is exclusive
 
    procedure Set_Exclusive
       (Self      : not null access Gtk_Tool_Palette_Record;
@@ -236,9 +239,9 @@ package Gtk.Tool_Palette is
    --  Sets whether the group should be exclusive or not. If an exclusive
    --  group is expanded all other groups are collapsed.
    --  Since: gtk+ 2.20
-   --  "group": a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which is a child of
-   --  palette
-   --  "exclusive": whether the group should be exclusive or not
+   --  @param Group a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which is a child
+   --  of palette
+   --  @param Exclusive whether the group should be exclusive or not
 
    function Get_Expand
       (Self  : not null access Gtk_Tool_Palette_Record;
@@ -247,8 +250,9 @@ package Gtk.Tool_Palette is
    --  Gets whether group should be given extra space. See
    --  Gtk.Tool_Palette.Set_Expand.
    --  Since: gtk+ 2.20
-   --  "group": a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which is a child of
-   --  palette
+   --  @param Group a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which is a child
+   --  of palette
+   --  @return True if group should be given extra space, False otherwise
 
    procedure Set_Expand
       (Self   : not null access Gtk_Tool_Palette_Record;
@@ -256,9 +260,9 @@ package Gtk.Tool_Palette is
        Expand : Boolean);
    --  Sets whether the group should be given extra space.
    --  Since: gtk+ 2.20
-   --  "group": a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which is a child of
-   --  palette
-   --  "expand": whether the group should be given extra space
+   --  @param Group a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which is a child
+   --  of palette
+   --  @param Expand whether the group should be given extra space
 
    function Get_Group_Position
       (Self  : not null access Gtk_Tool_Palette_Record;
@@ -267,7 +271,8 @@ package Gtk.Tool_Palette is
    --  Gets the position of Group in Palette as index. See
    --  Gtk.Tool_Palette.Set_Group_Position.
    --  Since: gtk+ 2.20
-   --  "group": a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group
+   --  @param Group a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group
+   --  @return the index of group or -1 if Group is not a child of Palette
 
    procedure Set_Group_Position
       (Self     : not null access Gtk_Tool_Palette_Record;
@@ -277,9 +282,9 @@ package Gtk.Tool_Palette is
    --  position is 0 the group will become the first child, if position is -1
    --  it will become the last child.
    --  Since: gtk+ 2.20
-   --  "group": a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which is a child of
-   --  palette
-   --  "position": a new index for group
+   --  @param Group a Gtk.Tool_Item_Group.Gtk_Tool_Item_Group which is a child
+   --  of palette
+   --  @param Position a new index for group
 
    function Get_Icon_Size
       (Self : not null access Gtk_Tool_Palette_Record)
@@ -287,28 +292,30 @@ package Gtk.Tool_Palette is
    --  Gets the size of icons in the tool palette. See
    --  Gtk.Tool_Palette.Set_Icon_Size.
    --  Since: gtk+ 2.20
+   --  @return the Gtk.Enums.Gtk_Icon_Size of icons in the tool palette
 
    procedure Set_Icon_Size
       (Self      : not null access Gtk_Tool_Palette_Record;
        Icon_Size : Gtk.Enums.Gtk_Icon_Size);
    --  Sets the size of icons in the tool palette.
    --  Since: gtk+ 2.20
-   --  "icon_size": the Gtk.Enums.Gtk_Icon_Size that icons in the tool palette
-   --  shall have
+   --  @param Icon_Size the Gtk.Enums.Gtk_Icon_Size that icons in the tool
+   --  palette shall have
 
    function Get_Style
       (Self : not null access Gtk_Tool_Palette_Record)
        return Gtk.Enums.Gtk_Toolbar_Style;
    --  Gets the style (icons, text or both) of items in the tool palette.
    --  Since: gtk+ 2.20
+   --  @return the Gtk.Enums.Gtk_Toolbar_Style of items in the tool palette.
 
    procedure Set_Style
       (Self  : not null access Gtk_Tool_Palette_Record;
        Style : Gtk.Enums.Gtk_Toolbar_Style);
    --  Sets the style (text, icons or both) of items in the tool palette.
    --  Since: gtk+ 2.20
-   --  "style": the Gtk.Enums.Gtk_Toolbar_Style that items in the tool palette
-   --  shall have
+   --  @param Style the Gtk.Enums.Gtk_Toolbar_Style that items in the tool
+   --  palette shall have
 
    procedure Set_Drag_Source
       (Self    : not null access Gtk_Tool_Palette_Record;
@@ -317,8 +324,8 @@ package Gtk.Tool_Palette is
    --  the tool palette as drag sources on button 1 and button 3 press with
    --  copy and move actions. See gtk_drag_source_set.
    --  Since: gtk+ 2.20
-   --  "targets": the Gtk.Tool_Palette.Gtk_Tool_Palette_Drag_Targets which the
-   --  widget should support
+   --  @param Targets the Gtk.Tool_Palette.Gtk_Tool_Palette_Drag_Targets which
+   --  the widget should support
 
    procedure Unset_Icon_Size
       (Self : not null access Gtk_Tool_Palette_Record);
@@ -391,10 +398,12 @@ package Gtk.Tool_Palette is
    --  Get the target entry for a dragged
    --  Gtk.Tool_Item_Group.Gtk_Tool_Item_Group.
    --  Since: gtk+ 2.20
+   --  @return the Gtk.Target_Entry.Gtk_Target_Entry for a dragged group
 
    function Get_Drag_Target_Item return Gtk.Target_Entry.Gtk_Target_Entry;
    --  Gets the target entry for a dragged Gtk.Tool_Item.Gtk_Tool_Item.
    --  Since: gtk+ 2.20
+   --  @return the Gtk.Target_Entry.Gtk_Target_Entry for a dragged item.
 
    ----------------
    -- Properties --

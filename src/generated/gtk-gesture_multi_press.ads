@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Gesture_Multi_Press.Gtk_Gesture_Multi_Press is a
 --  Gtk.Gesture.Gtk_Gesture implementation able to recognize multiple clicks on
 --  a nearby zone, which can be listened for through the
@@ -33,8 +32,6 @@
 --  Callers may also restrict the area that is considered valid for a >1
 --  touch/button press through Gtk.Gesture_Multi_Press.Set_Area, so any click
 --  happening outside that area is considered to be a first click of its own.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle;      use Gdk.Rectangle;
@@ -63,7 +60,7 @@ package Gtk.Gesture_Multi_Press is
    --  Since: gtk+ 3.14
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Gtk_Gesture_Multi_Press_New
       (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
@@ -71,7 +68,7 @@ package Gtk.Gesture_Multi_Press is
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes single
    --  and multiple presses.
    --  Since: gtk+ 3.14
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_gesture_multi_press_get_type");
@@ -88,7 +85,8 @@ package Gtk.Gesture_Multi_Press is
    --  Gtk.Gesture_Multi_Press.Set_Area for more details on what the press area
    --  represents.
    --  Since: gtk+ 3.14
-   --  "rect": return location for the press area
+   --  @param Rect return location for the press area
+   --  @return True if Rect was filled with the press area
 
    procedure Set_Area
       (Self : not null access Gtk_Gesture_Multi_Press_Record;
@@ -101,7 +99,7 @@ package Gtk.Gesture_Multi_Press is
    --  click falls within the expected area. This is not akin to an input
    --  shape.
    --  Since: gtk+ 3.14
-   --  "rect": rectangle to receive coordinates on
+   --  @param Rect rectangle to receive coordinates on
 
    -------------
    -- Signals --
@@ -132,9 +130,9 @@ package Gtk.Gesture_Multi_Press is
    --  This signal is emitted whenever a button or touch press happens.
    -- 
    --  Callback parameters:
-   --    --  "n_press": how many touch/button presses happened with this one
-   --    --  "x": The X coordinate, in widget allocation coordinates
-   --    --  "y": The Y coordinate, in widget allocation coordinates
+   --    --  @param N_Press how many touch/button presses happened with this one
+   --    --  @param X The X coordinate, in widget allocation coordinates
+   --    --  @param Y The Y coordinate, in widget allocation coordinates
 
    Signal_Released : constant Glib.Signal_Name := "released";
    procedure On_Released
@@ -153,9 +151,9 @@ package Gtk.Gesture_Multi_Press is
    --  at the next press.
    -- 
    --  Callback parameters:
-   --    --  "n_press": number of press that is paired with this release
-   --    --  "x": The X coordinate, in widget allocation coordinates
-   --    --  "y": The Y coordinate, in widget allocation coordinates
+   --    --  @param N_Press number of press that is paired with this release
+   --    --  @param X The X coordinate, in widget allocation coordinates
+   --    --  @param Y The Y coordinate, in widget allocation coordinates
 
    type Cb_Gtk_Gesture_Multi_Press_Void is not null access procedure
      (Self : access Gtk_Gesture_Multi_Press_Record'Class);

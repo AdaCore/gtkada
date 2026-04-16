@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Glib.Menu.Gmenu is a simple implementation of Glib.Menu_Model.Gmenu_Model.
 --  You populate a Glib.Menu.Gmenu by adding Glib.Menu.Gmenu_Item instances to
 --  it.
@@ -30,8 +29,6 @@
 --  (avoiding Glib.Menu.Gmenu_Item) for the common cases. To add a regular
 --  item, use Glib.Menu.Insert. To add a section, use Glib.Menu.Insert_Section.
 --  To add a submenu, use Glib.Menu.Insert_Submenu.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.G_Icon;     use Glib.G_Icon;
@@ -82,8 +79,8 @@ package Glib.Menu is
    --  possibly the "target" attribute of the new item. See
    --  Glib.Menu.Set_Detailed_Action for more information.
    --  Since: gtk+ 2.32
-   --  "label": the section label, or null
-   --  "detailed_action": the detailed action string, or null
+   --  @param Label the section label, or null
+   --  @param Detailed_Action the detailed action string, or null
 
    procedure Initialize
       (Self            : not null access Gmenu_Item_Record'Class;
@@ -98,8 +95,8 @@ package Glib.Menu is
    --  Since: gtk+ 2.32
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "label": the section label, or null
-   --  "detailed_action": the detailed action string, or null
+   --  @param Label the section label, or null
+   --  @param Detailed_Action the detailed action string, or null
 
    function Gmenu_Item_New
       (Label           : UTF8_String := "";
@@ -111,8 +108,8 @@ package Glib.Menu is
    --  possibly the "target" attribute of the new item. See
    --  Glib.Menu.Set_Detailed_Action for more information.
    --  Since: gtk+ 2.32
-   --  "label": the section label, or null
-   --  "detailed_action": the detailed action string, or null
+   --  @param Label the section label, or null
+   --  @param Detailed_Action the detailed action string, or null
 
    procedure G_New_From_Model
       (Self       : out Gmenu_Item;
@@ -123,8 +120,8 @@ package Glib.Menu is
    --  Item_Index must be valid (ie: be sure to call
    --  Glib.Menu_Model.Get_N_Items first).
    --  Since: gtk+ 2.34
-   --  "model": a Glib.Menu_Model.Gmenu_Model
-   --  "item_index": the index of an item in Model
+   --  @param Model a Glib.Menu_Model.Gmenu_Model
+   --  @param Item_Index the index of an item in Model
 
    procedure Initialize_From_Model
       (Self       : not null access Gmenu_Item_Record'Class;
@@ -137,8 +134,8 @@ package Glib.Menu is
    --  Since: gtk+ 2.34
    --  Initialize_From_Model does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "model": a Glib.Menu_Model.Gmenu_Model
-   --  "item_index": the index of an item in Model
+   --  @param Model a Glib.Menu_Model.Gmenu_Model
+   --  @param Item_Index the index of an item in Model
 
    function Gmenu_Item_New_From_Model
       (Model      : not null access Glib.Menu_Model.Gmenu_Model_Record'Class;
@@ -148,8 +145,8 @@ package Glib.Menu is
    --  Item_Index must be valid (ie: be sure to call
    --  Glib.Menu_Model.Get_N_Items first).
    --  Since: gtk+ 2.34
-   --  "model": a Glib.Menu_Model.Gmenu_Model
-   --  "item_index": the index of an item in Model
+   --  @param Model a Glib.Menu_Model.Gmenu_Model
+   --  @param Item_Index the index of an item in Model
 
    procedure G_New_Section
       (Self    : out Gmenu_Item;
@@ -209,8 +206,9 @@ package Glib.Menu is
    --     </menu>
    --
    --  Since: gtk+ 2.32
-   --  "label": the section label, or null
-   --  "section": a Glib.Menu_Model.Gmenu_Model with the items of the section
+   --  @param Label the section label, or null
+   --  @param Section a Glib.Menu_Model.Gmenu_Model with the items of the
+   --  section
 
    procedure Initialize_Section
       (Self    : not null access Gmenu_Item_Record'Class;
@@ -272,8 +270,9 @@ package Glib.Menu is
    --  Since: gtk+ 2.32
    --  Initialize_Section does nothing if the object was already created with
    --  another call to Initialize* or G_New.
-   --  "label": the section label, or null
-   --  "section": a Glib.Menu_Model.Gmenu_Model with the items of the section
+   --  @param Label the section label, or null
+   --  @param Section a Glib.Menu_Model.Gmenu_Model with the items of the
+   --  section
 
    function Gmenu_Item_New_Section
       (Label   : UTF8_String := "";
@@ -333,8 +332,9 @@ package Glib.Menu is
    --     </menu>
    --
    --  Since: gtk+ 2.32
-   --  "label": the section label, or null
-   --  "section": a Glib.Menu_Model.Gmenu_Model with the items of the section
+   --  @param Label the section label, or null
+   --  @param Section a Glib.Menu_Model.Gmenu_Model with the items of the
+   --  section
 
    procedure G_New_Submenu
       (Self    : out Gmenu_Item;
@@ -344,8 +344,9 @@ package Glib.Menu is
    --  This is a convenience API around Glib.Menu.G_New and
    --  Glib.Menu.Set_Submenu.
    --  Since: gtk+ 2.32
-   --  "label": the section label, or null
-   --  "submenu": a Glib.Menu_Model.Gmenu_Model with the items of the submenu
+   --  @param Label the section label, or null
+   --  @param Submenu a Glib.Menu_Model.Gmenu_Model with the items of the
+   --  submenu
 
    procedure Initialize_Submenu
       (Self    : not null access Gmenu_Item_Record'Class;
@@ -357,8 +358,9 @@ package Glib.Menu is
    --  Since: gtk+ 2.32
    --  Initialize_Submenu does nothing if the object was already created with
    --  another call to Initialize* or G_New.
-   --  "label": the section label, or null
-   --  "submenu": a Glib.Menu_Model.Gmenu_Model with the items of the submenu
+   --  @param Label the section label, or null
+   --  @param Submenu a Glib.Menu_Model.Gmenu_Model with the items of the
+   --  submenu
 
    function Gmenu_Item_New_Submenu
       (Label   : UTF8_String := "";
@@ -368,8 +370,9 @@ package Glib.Menu is
    --  This is a convenience API around Glib.Menu.G_New and
    --  Glib.Menu.Set_Submenu.
    --  Since: gtk+ 2.32
-   --  "label": the section label, or null
-   --  "submenu": a Glib.Menu_Model.Gmenu_Model with the items of the submenu
+   --  @param Label the section label, or null
+   --  @param Submenu a Glib.Menu_Model.Gmenu_Model with the items of the
+   --  submenu
 
    function Get_Type_Menu_Item return Glib.GType;
    pragma Import (C, Get_Type_Menu_Item, "g_menu_item_get_type");
@@ -386,8 +389,8 @@ package Glib.Menu is
    --  Menu. Combine Glib.Menu.G_New and Glib.Menu.Insert_Item for a more
    --  flexible alternative.
    --  Since: gtk+ 2.32
-   --  "label": the section label, or null
-   --  "detailed_action": the detailed action string, or null
+   --  @param Label the section label, or null
+   --  @param Detailed_Action the detailed action string, or null
 
    procedure Append_Item
       (Self : not null access Gmenu_Record;
@@ -395,7 +398,7 @@ package Glib.Menu is
    --  Appends Item to the end of Menu.
    --  See Glib.Menu.Insert_Item for more information.
    --  Since: gtk+ 2.32
-   --  "item": a Glib.Menu.Gmenu_Item to append
+   --  @param Item a Glib.Menu.Gmenu_Item to append
 
    procedure Append_Section
       (Self    : not null access Gmenu_Record;
@@ -405,8 +408,9 @@ package Glib.Menu is
    --  Menu. Combine Glib.Menu.G_New_Section and Glib.Menu.Insert_Item for a
    --  more flexible alternative.
    --  Since: gtk+ 2.32
-   --  "label": the section label, or null
-   --  "section": a Glib.Menu_Model.Gmenu_Model with the items of the section
+   --  @param Label the section label, or null
+   --  @param Section a Glib.Menu_Model.Gmenu_Model with the items of the
+   --  section
 
    procedure Append_Submenu
       (Self    : not null access Gmenu_Record;
@@ -416,8 +420,9 @@ package Glib.Menu is
    --  Menu. Combine Glib.Menu.G_New_Submenu and Glib.Menu.Insert_Item for a
    --  more flexible alternative.
    --  Since: gtk+ 2.32
-   --  "label": the section label, or null
-   --  "submenu": a Glib.Menu_Model.Gmenu_Model with the items of the submenu
+   --  @param Label the section label, or null
+   --  @param Submenu a Glib.Menu_Model.Gmenu_Model with the items of the
+   --  submenu
 
    procedure Freeze (Self : not null access Gmenu_Record);
    --  Marks Menu as frozen.
@@ -437,9 +442,9 @@ package Glib.Menu is
    --  Combine Glib.Menu.G_New and Glib.Menu.Insert_Item for a more flexible
    --  alternative.
    --  Since: gtk+ 2.32
-   --  "position": the position at which to insert the item
-   --  "label": the section label, or null
-   --  "detailed_action": the detailed action string, or null
+   --  @param Position the position at which to insert the item
+   --  @param Label the section label, or null
+   --  @param Detailed_Action the detailed action string, or null
 
    procedure Insert_Item
       (Self     : not null access Gmenu_Record;
@@ -458,8 +463,8 @@ package Glib.Menu is
    --  Glib.Menu.Insert, Glib.Menu.Insert_Section and Glib.Menu.Insert_Submenu
    --  as well as "prepend" and "append" variants of each of these functions.
    --  Since: gtk+ 2.32
-   --  "position": the position at which to insert the item
-   --  "item": the Glib.Menu.Gmenu_Item to insert
+   --  @param Position the position at which to insert the item
+   --  @param Item the Glib.Menu.Gmenu_Item to insert
 
    procedure Insert_Section
       (Self     : not null access Gmenu_Record;
@@ -470,9 +475,10 @@ package Glib.Menu is
    --  Combine Glib.Menu.G_New_Section and Glib.Menu.Insert_Item for a more
    --  flexible alternative.
    --  Since: gtk+ 2.32
-   --  "position": the position at which to insert the item
-   --  "label": the section label, or null
-   --  "section": a Glib.Menu_Model.Gmenu_Model with the items of the section
+   --  @param Position the position at which to insert the item
+   --  @param Label the section label, or null
+   --  @param Section a Glib.Menu_Model.Gmenu_Model with the items of the
+   --  section
 
    procedure Insert_Submenu
       (Self     : not null access Gmenu_Record;
@@ -483,9 +489,10 @@ package Glib.Menu is
    --  Combine Glib.Menu.G_New_Submenu and Glib.Menu.Insert_Item for a more
    --  flexible alternative.
    --  Since: gtk+ 2.32
-   --  "position": the position at which to insert the item
-   --  "label": the section label, or null
-   --  "submenu": a Glib.Menu_Model.Gmenu_Model with the items of the submenu
+   --  @param Position the position at which to insert the item
+   --  @param Label the section label, or null
+   --  @param Submenu a Glib.Menu_Model.Gmenu_Model with the items of the
+   --  submenu
 
    procedure Prepend
       (Self            : not null access Gmenu_Record;
@@ -495,8 +502,8 @@ package Glib.Menu is
    --  Menu. Combine Glib.Menu.G_New and Glib.Menu.Insert_Item for a more
    --  flexible alternative.
    --  Since: gtk+ 2.32
-   --  "label": the section label, or null
-   --  "detailed_action": the detailed action string, or null
+   --  @param Label the section label, or null
+   --  @param Detailed_Action the detailed action string, or null
 
    procedure Prepend_Item
       (Self : not null access Gmenu_Record;
@@ -504,7 +511,7 @@ package Glib.Menu is
    --  Prepends Item to the start of Menu.
    --  See Glib.Menu.Insert_Item for more information.
    --  Since: gtk+ 2.32
-   --  "item": a Glib.Menu.Gmenu_Item to prepend
+   --  @param Item a Glib.Menu.Gmenu_Item to prepend
 
    procedure Prepend_Section
       (Self    : not null access Gmenu_Record;
@@ -514,8 +521,9 @@ package Glib.Menu is
    --  Menu. Combine Glib.Menu.G_New_Section and Glib.Menu.Insert_Item for a
    --  more flexible alternative.
    --  Since: gtk+ 2.32
-   --  "label": the section label, or null
-   --  "section": a Glib.Menu_Model.Gmenu_Model with the items of the section
+   --  @param Label the section label, or null
+   --  @param Section a Glib.Menu_Model.Gmenu_Model with the items of the
+   --  section
 
    procedure Prepend_Submenu
       (Self    : not null access Gmenu_Record;
@@ -525,8 +533,9 @@ package Glib.Menu is
    --  Menu. Combine Glib.Menu.G_New_Submenu and Glib.Menu.Insert_Item for a
    --  more flexible alternative.
    --  Since: gtk+ 2.32
-   --  "label": the section label, or null
-   --  "submenu": a Glib.Menu_Model.Gmenu_Model with the items of the submenu
+   --  @param Label the section label, or null
+   --  @param Submenu a Glib.Menu_Model.Gmenu_Model with the items of the
+   --  submenu
 
    procedure Remove
       (Self     : not null access Gmenu_Record;
@@ -539,7 +548,7 @@ package Glib.Menu is
    --  the menu simply by copying their links and attributes (ie: identity of
    --  the item itself is not preserved).
    --  Since: gtk+ 2.32
-   --  "position": the position of the item to remove
+   --  @param Position the position of the item to remove
 
    procedure Remove_All (Self : not null access Gmenu_Record);
    --  Removes all items in the menu.
@@ -555,8 +564,9 @@ package Glib.Menu is
    --  type, null is returned. null is also returned if the attribute simply
    --  does not exist.
    --  Since: gtk+ 2.34
-   --  "attribute": the attribute name to query
-   --  "expected_type": the expected type of the attribute
+   --  @param Attribute the attribute name to query
+   --  @param Expected_Type the expected type of the attribute
+   --  @return the attribute value, or null
 
    procedure Set_Attribute_Value
       (Self      : not null access Gmenu_Item_Record;
@@ -576,15 +586,16 @@ package Glib.Menu is
    --  See also g_menu_item_set_attribute for a more convenient way to do the
    --  same.
    --  Since: gtk+ 2.32
-   --  "attribute": the attribute to set
-   --  "value": a Glib.Variant.Gvariant to use as the value, or null
+   --  @param Attribute the attribute to set
+   --  @param Value a Glib.Variant.Gvariant to use as the value, or null
 
    function Get_Link
       (Self : not null access Gmenu_Item_Record;
        Link : UTF8_String) return Glib.Menu_Model.Gmenu_Model;
    --  Queries the named Link on Menu_Item.
    --  Since: gtk+ 2.34
-   --  "link": the link name to query
+   --  @param Link the link name to query
+   --  @return the link, or null
 
    procedure Set_Link
       (Self  : not null access Gmenu_Item_Record;
@@ -600,8 +611,9 @@ package Glib.Menu is
    --  Furthermore, the names must begin with a lowercase character, must not
    --  end with a '-', and must not contain consecutive dashes.
    --  Since: gtk+ 2.32
-   --  "link": type of link to establish or unset
-   --  "model": the Glib.Menu_Model.Gmenu_Model to link to (or null to unset)
+   --  @param Link type of link to establish or unset
+   --  @param Model the Glib.Menu_Model.Gmenu_Model to link to (or null to
+   --  unset)
 
    procedure Set_Action_And_Target_Value
       (Self         : not null access Gmenu_Item_Record;
@@ -636,8 +648,8 @@ package Glib.Menu is
    --  for two equivalent calls that are probably more convenient for most
    --  uses.
    --  Since: gtk+ 2.32
-   --  "action": the name of the action for this item
-   --  "target_value": a Glib.Variant.Gvariant to use as the action target
+   --  @param Action the name of the action for this item
+   --  @param Target_Value a Glib.Variant.Gvariant to use as the action target
 
    procedure Set_Detailed_Action
       (Self            : not null access Gmenu_Item_Record;
@@ -651,7 +663,7 @@ package Glib.Menu is
    --  See also Glib.Menu.Set_Action_And_Target_Value for a description of the
    --  semantics of the action and target attributes.
    --  Since: gtk+ 2.32
-   --  "detailed_action": the "detailed" action string
+   --  @param Detailed_Action the "detailed" action string
 
    procedure Set_Icon
       (Self : not null access Gmenu_Item_Record;
@@ -665,7 +677,7 @@ package Glib.Menu is
    --  items corresponding to verbs (eg: stock icons for 'Save' or 'Quit').
    --  If Icon is null then the icon is unset.
    --  Since: gtk+ 2.38
-   --  "icon": a Glib.G_Icon.G_Icon, or null
+   --  @param Icon a Glib.G_Icon.G_Icon, or null
 
    procedure Set_Label
       (Self  : not null access Gmenu_Item_Record;
@@ -674,7 +686,7 @@ package Glib.Menu is
    --  If Label is non-null it is used as the label for the menu item. If it
    --  is null then the label attribute is unset.
    --  Since: gtk+ 2.32
-   --  "label": the label to set, or null to unset
+   --  @param Label the label to set, or null to unset
 
    procedure Set_Section
       (Self    : not null access Gmenu_Item_Record;
@@ -685,7 +697,7 @@ package Glib.Menu is
    --  that Menu_Item is added to. See Glib.Menu.G_New_Section for more
    --  information about what it means for a menu item to be a section.
    --  Since: gtk+ 2.32
-   --  "section": a Glib.Menu_Model.Gmenu_Model, or null
+   --  @param Section a Glib.Menu_Model.Gmenu_Model, or null
 
    procedure Set_Submenu
       (Self    : not null access Gmenu_Item_Record;
@@ -696,6 +708,6 @@ package Glib.Menu is
    --  The effect of having one menu appear as a submenu of another is exactly
    --  as it sounds.
    --  Since: gtk+ 2.32
-   --  "submenu": a Glib.Menu_Model.Gmenu_Model, or null
+   --  @param Submenu a Glib.Menu_Model.Gmenu_Model, or null
 
 end Glib.Menu;

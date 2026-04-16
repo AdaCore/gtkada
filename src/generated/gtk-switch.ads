@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Switch.Gtk_Switch is a widget that has two states: on or off. The user
 --  can control which state should be active by clicking the empty area, or by
 --  dragging the handle.
@@ -37,8 +36,6 @@
 --
 --  GtkSwitch has two css nodes, the main node with the name switch and a
 --  subnode named slider. Neither of them is using any style classes.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -83,18 +80,21 @@ package Gtk.Switch is
       (Self : not null access Gtk_Switch_Record) return Boolean;
    --  Gets whether the Gtk.Switch.Gtk_Switch is in its "on" or "off" state.
    --  Since: gtk+ 3.0
+   --  @return True if the Gtk.Switch.Gtk_Switch is active, and False
+   --  otherwise
 
    procedure Set_Active
       (Self      : not null access Gtk_Switch_Record;
        Is_Active : Boolean);
    --  Changes the state of Sw to the desired one.
    --  Since: gtk+ 3.0
-   --  "is_active": True if Sw should be active, and False otherwise
+   --  @param Is_Active True if Sw should be active, and False otherwise
 
    function Get_State
       (Self : not null access Gtk_Switch_Record) return Boolean;
    --  Gets the underlying state of the Gtk.Switch.Gtk_Switch.
    --  Since: gtk+ 3.14
+   --  @return the underlying state
 
    procedure Set_State
       (Self  : not null access Gtk_Switch_Record;
@@ -105,7 +105,7 @@ package Gtk.Switch is
    --  called from a Gtk.Switch.Gtk_Switch::state-set signal handler.
    --  See Gtk.Switch.Gtk_Switch::state-set for details.
    --  Since: gtk+ 3.14
-   --  "state": the new state
+   --  @param State the new state
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
@@ -232,8 +232,7 @@ package Gtk.Switch is
    --  represented by the position of the switch.
    -- 
    --  Callback parameters:
-   --    --  "state": the new state of the switch
-   --    --  Returns True to stop the signal emission
+   --    --  @param State the new state of the switch
 
    ----------------
    -- Interfaces --

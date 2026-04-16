@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkStyleProperties provides the storage for style information that is used
 --  by Gtk.Style_Context.Gtk_Style_Context and other
 --  Gtk.Style_Provider.Gtk_Style_Provider implementations.
@@ -39,8 +38,6 @@
 --  Gtk.Style_Properties.Gtk_Style_Properties has been deprecated in GTK 3.16.
 --  The CSS machinery does not use it anymore and all users of this object have
 --  been deprecated.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
@@ -94,9 +91,10 @@ package Gtk.Style_Properties is
    --  Value, g_value_unset needs to be called to free any allocated memory.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.16, 1
-   --  "property": style property name
-   --  "state": state to retrieve the property value for
-   --  "value": return location for the style property value.
+   --  @param Property style property name
+   --  @param State state to retrieve the property value for
+   --  @param Value return location for the style property value.
+   --  @return True if the property exists in Props, False otherwise
 
    procedure Set_Property
       (Self     : not null access Gtk_Style_Properties_Record;
@@ -107,9 +105,9 @@ package Gtk.Style_Properties is
    --  Sets a styling property in Props.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.16, 1
-   --  "property": styling property to set
-   --  "state": state to set the value for
-   --  "value": new value for the property
+   --  @param Property styling property to set
+   --  @param State state to set the value for
+   --  @param Value new value for the property
 
    function Lookup_Color
       (Self : not null access Gtk_Style_Properties_Record;
@@ -118,7 +116,8 @@ package Gtk.Style_Properties is
    --  Returns the symbolic color that is mapped to Name.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
-   --  "name": color name to lookup
+   --  @param Name color name to lookup
+   --  @return The mapped color
 
    procedure Map_Color
       (Self  : not null access Gtk_Style_Properties_Record;
@@ -129,8 +128,8 @@ package Gtk.Style_Properties is
    --  Gtk.Style_Properties.Lookup_Color
    --  Since: gtk+ 3.0
    --  Deprecated since 3.8, 1
-   --  "name": color name
-   --  "color": Gtk.Symbolic_Color.Gtk_Symbolic_Color to map Name to
+   --  @param Name color name
+   --  @param Color Gtk.Symbolic_Color.Gtk_Symbolic_Color to map Name to
 
    procedure Merge
       (Self           : not null access Gtk_Style_Properties_Record;
@@ -142,8 +141,9 @@ package Gtk.Style_Properties is
    --  it is False, the older values will prevail.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.16, 1
-   --  "props_to_merge": a second Gtk.Style_Properties.Gtk_Style_Properties
-   --  "replace": whether to replace values or not
+   --  @param Props_To_Merge a second
+   --  Gtk.Style_Properties.Gtk_Style_Properties
+   --  @param Replace whether to replace values or not
 
    procedure Unset_Property
       (Self     : not null access Gtk_Style_Properties_Record;
@@ -153,8 +153,8 @@ package Gtk.Style_Properties is
    --  Unsets a style property in Props.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.16, 1
-   --  "property": property to unset
-   --  "state": state to unset
+   --  @param Property property to unset
+   --  @param State state to unset
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Level_Bar.Gtk_Level_Bar is a bar widget that can be used as a
 --  level indicator. Typical use cases are displaying the strength of a
 --  password, or showing the charge level of a battery.
@@ -112,8 +111,6 @@
 --
 --  In horizontal orientation, the nodes are always arranged from left to
 --  right, regardless of text direction.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -158,8 +155,8 @@ package Gtk.Level_Bar is
    --  Since: gtk+ 3.6
    --  Initialize_For_Interval does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "min_value": a positive value
-   --  "max_value": a positive value
+   --  @param Min_Value a positive value
+   --  @param Max_Value a positive value
 
    function Gtk_Level_Bar_New_For_Interval
       (Min_Value : Gdouble;
@@ -167,8 +164,8 @@ package Gtk.Level_Bar is
    --  Utility constructor that creates a new Gtk.Level_Bar.Gtk_Level_Bar for
    --  the specified interval.
    --  Since: gtk+ 3.6
-   --  "min_value": a positive value
-   --  "max_value": a positive value
+   --  @param Min_Value a positive value
+   --  @param Max_Value a positive value
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_level_bar_get_type");
@@ -188,26 +185,28 @@ package Gtk.Level_Bar is
    --  rendering the level bar fill. If another offset marker named Name
    --  exists, its value will be replaced by Value.
    --  Since: gtk+ 3.6
-   --  "name": the name of the new offset
-   --  "value": the value for the new offset
+   --  @param Name the name of the new offset
+   --  @param Value the value for the new offset
 
    function Get_Inverted
       (Self : not null access Gtk_Level_Bar_Record) return Boolean;
    --  Return the value of the Gtk.Level_Bar.Gtk_Level_Bar:inverted property.
    --  Since: gtk+ 3.8
+   --  @return True if the level bar is inverted
 
    procedure Set_Inverted
       (Self     : not null access Gtk_Level_Bar_Record;
        Inverted : Boolean);
    --  Sets the value of the Gtk.Level_Bar.Gtk_Level_Bar:inverted property.
    --  Since: gtk+ 3.8
-   --  "inverted": True to invert the level bar
+   --  @param Inverted True to invert the level bar
 
    function Get_Max_Value
       (Self : not null access Gtk_Level_Bar_Record) return Gdouble;
    --  Returns the value of the Gtk.Level_Bar.Gtk_Level_Bar:max-value
    --  property.
    --  Since: gtk+ 3.6
+   --  @return a positive value
 
    procedure Set_Max_Value
       (Self  : not null access Gtk_Level_Bar_Record;
@@ -216,13 +215,14 @@ package Gtk.Level_Bar is
    --  You probably want to update preexisting level offsets after calling
    --  this function.
    --  Since: gtk+ 3.6
-   --  "value": a positive value
+   --  @param Value a positive value
 
    function Get_Min_Value
       (Self : not null access Gtk_Level_Bar_Record) return Gdouble;
    --  Returns the value of the Gtk.Level_Bar.Gtk_Level_Bar:min-value
    --  property.
    --  Since: gtk+ 3.6
+   --  @return a positive value
 
    procedure Set_Min_Value
       (Self  : not null access Gtk_Level_Bar_Record;
@@ -231,20 +231,21 @@ package Gtk.Level_Bar is
    --  You probably want to update preexisting level offsets after calling
    --  this function.
    --  Since: gtk+ 3.6
-   --  "value": a positive value
+   --  @param Value a positive value
 
    function Get_Mode
       (Self : not null access Gtk_Level_Bar_Record)
        return Gtk.Enums.Gtk_Level_Bar_Mode;
    --  Returns the value of the Gtk.Level_Bar.Gtk_Level_Bar:mode property.
    --  Since: gtk+ 3.6
+   --  @return a Gtk.Enums.Gtk_Level_Bar_Mode
 
    procedure Set_Mode
       (Self : not null access Gtk_Level_Bar_Record;
        Mode : Gtk.Enums.Gtk_Level_Bar_Mode);
    --  Sets the value of the Gtk.Level_Bar.Gtk_Level_Bar:mode property.
    --  Since: gtk+ 3.6
-   --  "mode": a Gtk.Enums.Gtk_Level_Bar_Mode
+   --  @param Mode a Gtk.Enums.Gtk_Level_Bar_Mode
 
    function Get_Offset_Value
       (Self  : not null access Gtk_Level_Bar_Record;
@@ -253,20 +254,24 @@ package Gtk.Level_Bar is
    --  Fetches the value specified for the offset marker Name in Self,
    --  returning True in case an offset named Name was found.
    --  Since: gtk+ 3.6
-   --  "name": the name of an offset in the bar
-   --  "value": location where to store the value
+   --  @param Name the name of an offset in the bar
+   --  @param Value location where to store the value
+   --  @return True if the specified offset is found
 
    function Get_Value
       (Self : not null access Gtk_Level_Bar_Record) return Gdouble;
    --  Returns the value of the Gtk.Level_Bar.Gtk_Level_Bar:value property.
    --  Since: gtk+ 3.6
+   --  @return a value in the interval between
+   --  Gtk.Level_Bar.Gtk_Level_Bar:min-value and
+   --  Gtk.Level_Bar.Gtk_Level_Bar:max-value
 
    procedure Set_Value
       (Self  : not null access Gtk_Level_Bar_Record;
        Value : Gdouble);
    --  Sets the value of the Gtk.Level_Bar.Gtk_Level_Bar:value property.
    --  Since: gtk+ 3.6
-   --  "value": a value in the interval between
+   --  @param Value a value in the interval between
    --  Gtk.Level_Bar.Gtk_Level_Bar:min-value and
    --  Gtk.Level_Bar.Gtk_Level_Bar:max-value
 
@@ -276,7 +281,7 @@ package Gtk.Level_Bar is
    --  Removes an offset marker previously added with
    --  Gtk.Level_Bar.Add_Offset_Value.
    --  Since: gtk+ 3.6
-   --  "name": the name of an offset in the bar
+   --  @param Name the name of an offset in the bar
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

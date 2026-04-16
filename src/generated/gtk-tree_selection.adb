@@ -61,8 +61,8 @@ package body Gtk.Tree_Selection is
    --  Calls a function for each selected node. Note that you cannot modify
    --  the tree or selection from within this function. As a result,
    --  gtk_tree_selection_get_selected_rows might be more useful.
-   --  "func": The function to call for each selected node.
-   --  "data": user data to pass to the function.
+   --  @param Func The function to call for each selected node.
+   --  @param Data user data to pass to the function.
 
    procedure C_Gtk_Tree_Selection_Set_Select_Function
       (Selection : System.Address;
@@ -75,9 +75,9 @@ package body Gtk.Tree_Selection is
    --  unselected, giving some control over which nodes are selected. The
    --  select function should return True if the state of the node may be
    --  toggled, and False if the state of the node should be left unchanged.
-   --  "func": The selection function. May be null
-   --  "data": The selection function's data. May be null
-   --  "destroy": The destroy function for user data. May be null
+   --  @param Func The selection function. May be null
+   --  @param Data The selection function's data. May be null
+   --  @param Destroy The destroy function for user data. May be null
 
    function To_Gtk_Tree_Selection_Foreach_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Tree_Selection_Foreach_Func);
@@ -97,10 +97,10 @@ package body Gtk.Tree_Selection is
        Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data  : System.Address);
    pragma Convention (C, Internal_Gtk_Tree_Selection_Foreach_Func);
-   --  "model": The Gtk.Tree_Model.Gtk_Tree_Model being viewed
-   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
-   --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter pointing to a selected row
-   --  "data": user data
+   --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model being viewed
+   --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
+   --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter pointing to a selected row
+   --  @param Data user data
 
    function Internal_Gtk_Tree_Selection_Func
       (Selection               : System.Address;
@@ -109,11 +109,11 @@ package body Gtk.Tree_Selection is
        Path_Currently_Selected : Glib.Gboolean;
        Data                    : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tree_Selection_Func);
-   --  "selection": A Gtk.Tree_Selection.Gtk_Tree_Selection
-   --  "model": A Gtk.Tree_Model.Gtk_Tree_Model being viewed
-   --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of the row in question
-   --  "path_currently_selected": True, if the path is currently selected
-   --  "data": user data
+   --  @param Selection A Gtk.Tree_Selection.Gtk_Tree_Selection
+   --  @param Model A Gtk.Tree_Model.Gtk_Tree_Model being viewed
+   --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path of the row in question
+   --  @param Path_Currently_Selected True, if the path is currently selected
+   --  @param Data user data
 
    ----------------------------------------------
    -- Internal_Gtk_Tree_Selection_Foreach_Func --
@@ -375,10 +375,11 @@ package body Gtk.Tree_Selection is
       pragma Convention (C, Internal_Cb);
       --  A function used by Gtk.Tree_Selection.Selected_Foreach to map all
       --  selected rows. It will be called on every selected row in the view.
-      --  "model": The Gtk.Tree_Model.Gtk_Tree_Model being viewed
-      --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
-      --  "iter": A Gtk.Tree_Model.Gtk_Tree_Iter pointing to a selected row
-      --  "data": user data
+      --  @param Model The Gtk.Tree_Model.Gtk_Tree_Model being viewed
+      --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path of a selected row
+      --  @param Iter A Gtk.Tree_Model.Gtk_Tree_Iter pointing to a selected
+      --  row
+      --  @param Data user data
 
       -----------------
       -- Internal_Cb --
@@ -471,11 +472,13 @@ package body Gtk.Tree_Selection is
       --  whether or not a row may be selected. It is called whenever a row's
       --  state might change. A return value of True indicates to Selection
       --  that it is okay to change the selection.
-      --  "selection": A Gtk.Tree_Selection.Gtk_Tree_Selection
-      --  "model": A Gtk.Tree_Model.Gtk_Tree_Model being viewed
-      --  "path": The Gtk.Tree_Model.Gtk_Tree_Path of the row in question
-      --  "path_currently_selected": True, if the path is currently selected
-      --  "data": user data
+      --  @param Selection A Gtk.Tree_Selection.Gtk_Tree_Selection
+      --  @param Model A Gtk.Tree_Model.Gtk_Tree_Model being viewed
+      --  @param Path The Gtk.Tree_Model.Gtk_Tree_Path of the row in question
+      --  @param Path_Currently_Selected True, if the path is currently
+      --  selected
+      --  @param Data user data
+      --  @return True, if the selection state of the row can be toggled
 
       -----------------
       -- Internal_Cb --

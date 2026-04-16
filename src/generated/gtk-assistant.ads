@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Assistant.Gtk_Assistant is a widget used to represent a generally
 --  complex operation splitted in several steps, guiding the user through its
 --  pages and controlling the page flow to collect the necessary data.
@@ -50,7 +49,6 @@
 --
 --  GtkAssistant has a single CSS node with the name assistant.
 --
---  </description>
 --  <group>Windows</group>
 --  <testgtk>create_assistant.adb</testgtk>
 
@@ -99,7 +97,8 @@ package Gtk.Assistant is
    --  the next page given a current one. It's called both for computing the
    --  next page when the user presses the "forward" button and for handling
    --  the behavior of the "last" button.
-   --  "current_page": The page number used to calculate the next page.
+   --  @param Current_Page The page number used to calculate the next page.
+   --  @return The next page number.
 
    ----------------------------
    -- Enumeration Properties --
@@ -137,7 +136,7 @@ package Gtk.Assistant is
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Adds a widget to the action area of a Gtk.Assistant.Gtk_Assistant.
    --  Since: gtk+ 2.10
-   --  "child": a Gtk.Widget.Gtk_Widget
+   --  @param Child a Gtk.Widget.Gtk_Widget
 
    function Append_Page
       (Assistant : not null access Gtk_Assistant_Record;
@@ -145,7 +144,8 @@ package Gtk.Assistant is
        return Glib.Gint;
    --  Appends a page to the Assistant.
    --  Since: gtk+ 2.10
-   --  "page": a Gtk.Widget.Gtk_Widget
+   --  @param Page a Gtk.Widget.Gtk_Widget
+   --  @return the index (starting at 0) of the inserted page
 
    procedure Commit (Assistant : not null access Gtk_Assistant_Record);
    --  Erases the visited page history so the back button is not shown on the
@@ -160,6 +160,8 @@ package Gtk.Assistant is
       (Assistant : not null access Gtk_Assistant_Record) return Glib.Gint;
    --  Returns the page number of the current page.
    --  Since: gtk+ 2.10
+   --  @return The index (starting from 0) of the current page in the
+   --  Assistant, or -1 if the Assistant has no pages, or no current page.
 
    procedure Set_Current_Page
       (Assistant : not null access Gtk_Assistant_Record;
@@ -168,7 +170,7 @@ package Gtk.Assistant is
    --  Note that this will only be necessary in custom buttons, as the
    --  Assistant flow can be set with Gtk.Assistant.Set_Forward_Page_Func.
    --  Since: gtk+ 2.10
-   --  "page_num": index of the page to switch to, starting from 0. If
+   --  @param Page_Num index of the page to switch to, starting from 0. If
    --  negative, the last page will be used. If greater than the number of
    --  pages in the Assistant, nothing will be done.
 
@@ -176,14 +178,16 @@ package Gtk.Assistant is
       (Assistant : not null access Gtk_Assistant_Record) return Glib.Gint;
    --  Returns the number of pages in the Assistant
    --  Since: gtk+ 2.10
+   --  @return the number of pages in the Assistant
 
    function Get_Nth_Page
       (Assistant : not null access Gtk_Assistant_Record;
        Page_Num  : Glib.Gint) return Gtk.Widget.Gtk_Widget;
    --  Returns the child widget contained in page number Page_Num.
    --  Since: gtk+ 2.10
-   --  "page_num": the index of a page in the Assistant, or -1 to get the last
-   --  page
+   --  @param Page_Num the index of a page in the Assistant, or -1 to get the
+   --  last page
+   --  @return the child widget, or null if Page_Num is out of bounds
 
    function Get_Page_Complete
       (Assistant : not null access Gtk_Assistant_Record;
@@ -191,7 +195,8 @@ package Gtk.Assistant is
        return Boolean;
    --  Gets whether Page is complete.
    --  Since: gtk+ 2.10
-   --  "page": a page of Assistant
+   --  @param Page a page of Assistant
+   --  @return True if Page is complete.
 
    procedure Set_Page_Complete
       (Assistant : not null access Gtk_Assistant_Record;
@@ -201,8 +206,8 @@ package Gtk.Assistant is
    --  This will make Assistant update the buttons state to be able to
    --  continue the task.
    --  Since: gtk+ 2.10
-   --  "page": a page of Assistant
-   --  "complete": the completeness status of the page
+   --  @param Page a page of Assistant
+   --  @param Complete the completeness status of the page
 
    function Get_Page_Has_Padding
       (Assistant : not null access Gtk_Assistant_Record;
@@ -210,7 +215,8 @@ package Gtk.Assistant is
        return Boolean;
    --  Gets whether page has padding.
    --  Since: gtk+ 3.18
-   --  "page": a page of Assistant
+   --  @param Page a page of Assistant
+   --  @return True if Page has padding
 
    procedure Set_Page_Has_Padding
       (Assistant   : not null access Gtk_Assistant_Record;
@@ -218,8 +224,8 @@ package Gtk.Assistant is
        Has_Padding : Boolean);
    --  Sets whether the assistant is adding padding around the page.
    --  Since: gtk+ 3.18
-   --  "page": a page of Assistant
-   --  "has_padding": whether this page has padding
+   --  @param Page a page of Assistant
+   --  @param Has_Padding whether this page has padding
 
    function Get_Page_Header_Image
       (Assistant : not null access Gtk_Assistant_Record;
@@ -229,7 +235,9 @@ package Gtk.Assistant is
    --  Gets the header image for Page.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.2, 1
-   --  "page": a page of Assistant
+   --  @param Page a page of Assistant
+   --  @return the header image for Page, or null if there's no header image
+   --  for the page
 
    procedure Set_Page_Header_Image
       (Assistant : not null access Gtk_Assistant_Record;
@@ -239,8 +247,8 @@ package Gtk.Assistant is
    --  Sets a header image for Page.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.2, 1
-   --  "page": a page of Assistant
-   --  "pixbuf": the new header image Page
+   --  @param Page a page of Assistant
+   --  @param Pixbuf the new header image Page
 
    function Get_Page_Side_Image
       (Assistant : not null access Gtk_Assistant_Record;
@@ -250,7 +258,9 @@ package Gtk.Assistant is
    --  Gets the side image for Page.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.2, 1
-   --  "page": a page of Assistant
+   --  @param Page a page of Assistant
+   --  @return the side image for Page, or null if there's no side image for
+   --  the page
 
    procedure Set_Page_Side_Image
       (Assistant : not null access Gtk_Assistant_Record;
@@ -262,8 +272,8 @@ package Gtk.Assistant is
    --  Page is the current page.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.2, 1
-   --  "page": a page of Assistant
-   --  "pixbuf": the new side image Page
+   --  @param Page a page of Assistant
+   --  @param Pixbuf the new side image Page
 
    function Get_Page_Title
       (Assistant : not null access Gtk_Assistant_Record;
@@ -271,7 +281,8 @@ package Gtk.Assistant is
        return UTF8_String;
    --  Gets the title for Page.
    --  Since: gtk+ 2.10
-   --  "page": a page of Assistant
+   --  @param Page a page of Assistant
+   --  @return the title for Page
 
    procedure Set_Page_Title
       (Assistant : not null access Gtk_Assistant_Record;
@@ -281,8 +292,8 @@ package Gtk.Assistant is
    --  The title is displayed in the header area of the assistant when Page is
    --  the current page.
    --  Since: gtk+ 2.10
-   --  "page": a page of Assistant
-   --  "title": the new title for Page
+   --  @param Page a page of Assistant
+   --  @param Title the new title for Page
 
    function Get_Page_Type
       (Assistant : not null access Gtk_Assistant_Record;
@@ -290,7 +301,8 @@ package Gtk.Assistant is
        return Gtk_Assistant_Page_Type;
    --  Gets the page type of Page.
    --  Since: gtk+ 2.10
-   --  "page": a page of Assistant
+   --  @param Page a page of Assistant
+   --  @return the page type of Page
 
    procedure Set_Page_Type
       (Assistant : not null access Gtk_Assistant_Record;
@@ -299,8 +311,8 @@ package Gtk.Assistant is
    --  Sets the page type for Page.
    --  The page type determines the page behavior in the Assistant.
    --  Since: gtk+ 2.10
-   --  "page": a page of Assistant
-   --  "type": the new type for Page
+   --  @param Page a page of Assistant
+   --  @param The_Type the new type for Page
 
    function Insert_Page
       (Assistant : not null access Gtk_Assistant_Record;
@@ -308,9 +320,10 @@ package Gtk.Assistant is
        Position  : Glib.Gint) return Glib.Gint;
    --  Inserts a page in the Assistant at a given position.
    --  Since: gtk+ 2.10
-   --  "page": a Gtk.Widget.Gtk_Widget
-   --  "position": the index (starting at 0) at which to insert the page, or
-   --  -1 to append the page to the Assistant
+   --  @param Page a Gtk.Widget.Gtk_Widget
+   --  @param Position the index (starting at 0) at which to insert the page,
+   --  or -1 to append the page to the Assistant
+   --  @return the index (starting from 0) of the inserted page
 
    procedure Next_Page (Assistant : not null access Gtk_Assistant_Record);
    --  Navigate to the next page.
@@ -326,7 +339,8 @@ package Gtk.Assistant is
        return Glib.Gint;
    --  Prepends a page to the Assistant.
    --  Since: gtk+ 2.10
-   --  "page": a Gtk.Widget.Gtk_Widget
+   --  @param Page a Gtk.Widget.Gtk_Widget
+   --  @return the index (starting at 0) of the inserted page
 
    procedure Previous_Page
       (Assistant : not null access Gtk_Assistant_Record);
@@ -342,15 +356,15 @@ package Gtk.Assistant is
        Child     : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Removes a widget from the action area of a Gtk.Assistant.Gtk_Assistant.
    --  Since: gtk+ 2.10
-   --  "child": a Gtk.Widget.Gtk_Widget
+   --  @param Child a Gtk.Widget.Gtk_Widget
 
    procedure Remove_Page
       (Assistant : not null access Gtk_Assistant_Record;
        Page_Num  : Glib.Gint);
    --  Removes the Page_Num's page from Assistant.
    --  Since: gtk+ 3.2
-   --  "page_num": the index of a page in the Assistant, or -1 to remove the
-   --  last page
+   --  @param Page_Num the index of a page in the Assistant, or -1 to remove
+   --  the last page
 
    procedure Set_Forward_Page_Func
       (Assistant : not null access Gtk_Assistant_Record;
@@ -361,8 +375,8 @@ package Gtk.Assistant is
    --  the assistant to use the default forward function, which just goes to
    --  the next visible page.
    --  Since: gtk+ 2.10
-   --  "page_func": the Gtk_Assistant_Page_Func, or null to use the default
-   --  one
+   --  @param Page_Func the Gtk_Assistant_Page_Func, or null to use the
+   --  default one
 
    generic
       type User_Data_Type (<>) is private;
@@ -376,8 +390,9 @@ package Gtk.Assistant is
       --  the next page given a current one. It's called both for computing the
       --  next page when the user presses the "forward" button and for handling
       --  the behavior of the "last" button.
-      --  "current_page": The page number used to calculate the next page.
-      --  "data": user data.
+      --  @param Current_Page The page number used to calculate the next page.
+      --  @param Data user data.
+      --  @return The next page number.
 
       procedure Set_Forward_Page_Func
          (Assistant : not null access Gtk.Assistant.Gtk_Assistant_Record'Class;
@@ -389,9 +404,9 @@ package Gtk.Assistant is
       --  will make the assistant to use the default forward function, which
       --  just goes to the next visible page.
       --  Since: gtk+ 2.10
-      --  "page_func": the Gtk_Assistant_Page_Func, or null to use the default
-      --  one
-      --  "data": user data for Page_Func
+      --  @param Page_Func the Gtk_Assistant_Page_Func, or null to use the
+      --  default one
+      --  @param Data user data for Page_Func
 
    end Set_Forward_Page_Func_User_Data;
 

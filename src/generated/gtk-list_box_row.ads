@@ -89,6 +89,7 @@ package Gtk.List_Box_Row is
    --  Gets the value of the Gtk.List_Box_Row.Gtk_List_Box_Row:activatable
    --  property for this row.
    --  Since: gtk+ 3.14
+   --  @return True if the row is activatable
 
    procedure Set_Activatable
       (Self        : not null access Gtk_List_Box_Row_Record;
@@ -96,7 +97,7 @@ package Gtk.List_Box_Row is
    --  Set the Gtk.List_Box_Row.Gtk_List_Box_Row:activatable property for this
    --  row.
    --  Since: gtk+ 3.14
-   --  "activatable": True to mark the row as activatable
+   --  @param Activatable True to mark the row as activatable
 
    function Get_Header
       (Self : not null access Gtk_List_Box_Row_Record)
@@ -105,6 +106,7 @@ package Gtk.List_Box_Row is
    --  Gtk_List_Box_Update_Header_Func to see if there is a header set already,
    --  and if so to update the state of it.
    --  Since: gtk+ 3.10
+   --  @return the current header, or null if none
 
    procedure Set_Header
       (Self   : not null access Gtk_List_Box_Row_Record;
@@ -113,19 +115,21 @@ package Gtk.List_Box_Row is
    --  from a Gtk_List_Box_Update_Header_Func. It will replace any existing
    --  header in the row, and be shown in front of the row in the listbox.
    --  Since: gtk+ 3.10
-   --  "header": the header, or null
+   --  @param Header the header, or null
 
    function Get_Index
       (Self : not null access Gtk_List_Box_Row_Record) return Glib.Gint;
    --  Gets the current index of the Row in its Gtk.List_Box.Gtk_List_Box
    --  container.
    --  Since: gtk+ 3.10
+   --  @return the index of the Row, or -1 if the Row is not in a listbox
 
    function Get_Selectable
       (Self : not null access Gtk_List_Box_Row_Record) return Boolean;
    --  Gets the value of the Gtk.List_Box_Row.Gtk_List_Box_Row:selectable
    --  property for this row.
    --  Since: gtk+ 3.14
+   --  @return True if the row is selectable
 
    procedure Set_Selectable
       (Self       : not null access Gtk_List_Box_Row_Record;
@@ -133,13 +137,14 @@ package Gtk.List_Box_Row is
    --  Set the Gtk.List_Box_Row.Gtk_List_Box_Row:selectable property for this
    --  row.
    --  Since: gtk+ 3.14
-   --  "selectable": True to mark the row as selectable
+   --  @param Selectable True to mark the row as selectable
 
    function Is_Selected
       (Self : not null access Gtk_List_Box_Row_Record) return Boolean;
    --  Returns whether the child is currently selected in its
    --  Gtk.List_Box.Gtk_List_Box container.
    --  Since: gtk+ 3.14
+   --  @return True if Row is selected
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

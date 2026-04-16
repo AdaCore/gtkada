@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Misc.Gtk_Misc widget is an abstract widget which is not useful
 --  itself, but is used to derive subclasses which have alignment and padding
 --  attributes.
@@ -40,7 +39,6 @@
 --  should not be used in new code. To reflect this fact, all Gtk.Misc.Gtk_Misc
 --  API has been deprecated.
 --
---  </description>
 --  <group>Abstract base classes</group>
 
 pragma Warnings (Off, "*is already use-visible*");
@@ -74,8 +72,8 @@ package Gtk.Misc is
    --  Gets the X and Y alignment of the widget within its allocation. See
    --  Gtk.Misc.Set_Alignment.
    --  Deprecated since 3.14, 1
-   --  "xalign": location to store X alignment of Misc, or null
-   --  "yalign": location to store Y alignment of Misc, or null
+   --  @param Xalign location to store X alignment of Misc, or null
+   --  @param Yalign location to store Y alignment of Misc, or null
 
    procedure Set_Alignment
       (Misc   : not null access Gtk_Misc_Record;
@@ -90,8 +88,8 @@ package Gtk.Misc is
    --  0.0 .. 1.0 Note that if the widget fills its allocated area, these two
    --  parameters won't have any effect.
    --  Deprecated since 3.14, 1
-   --  "xalign": the horizontal alignment, from 0 (left) to 1 (right).
-   --  "yalign": the vertical alignment, from 0 (top) to 1 (bottom).
+   --  @param Xalign the horizontal alignment, from 0 (left) to 1 (right).
+   --  @param Yalign the vertical alignment, from 0 (top) to 1 (bottom).
 
    procedure Get_Padding
       (Misc : not null access Gtk_Misc_Record;
@@ -101,8 +99,8 @@ package Gtk.Misc is
    --  Gets the padding in the X and Y directions of the widget. See
    --  Gtk.Misc.Set_Padding.
    --  Deprecated since 3.14, 1
-   --  "xpad": location to store padding in the X direction, or null
-   --  "ypad": location to store padding in the Y direction, or null
+   --  @param Xpad location to store padding in the X direction, or null
+   --  @param Ypad location to store padding in the Y direction, or null
 
    procedure Set_Padding
       (Misc : not null access Gtk_Misc_Record;
@@ -111,10 +109,10 @@ package Gtk.Misc is
    pragma Obsolescent (Set_Padding);
    --  Sets the amount of space to add around the widget.
    --  Deprecated since 3.14, 1
-   --  "xpad": the amount of space to add on the left and right of the widget,
-   --  in pixels.
-   --  "ypad": the amount of space to add on the top and bottom of the widget,
-   --  in pixels.
+   --  @param Xpad the amount of space to add on the left and right of the
+   --  widget, in pixels.
+   --  @param Ypad the amount of space to add on the top and bottom of the
+   --  widget, in pixels.
 
    ----------------
    -- Properties --

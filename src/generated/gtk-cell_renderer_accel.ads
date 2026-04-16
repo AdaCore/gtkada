@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Cell_Renderer_Accel.Gtk_Cell_Renderer_Accel displays a keyboard
 --  accelerator (i.e. a key combination like `Control + a`). If the cell
 --  renderer is editable, the accelerator can be changed by simply typing the
@@ -29,8 +28,6 @@
 --
 --  The Gtk.Cell_Renderer_Accel.Gtk_Cell_Renderer_Accel cell renderer was
 --  added in GTK+ 2.10.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Types;              use Gdk.Types;
@@ -139,10 +136,10 @@ package Gtk.Cell_Renderer_Accel is
    --  Gets emitted when the user has selected a new accelerator.
    -- 
    --  Callback parameters:
-   --    --  "path_string": the path identifying the row of the edited cell
-   --    --  "accel_key": the new accelerator keyval
-   --    --  "accel_mods": the new acclerator modifier mask
-   --    --  "hardware_keycode": the keycode of the new accelerator
+   --    --  @param Path_String the path identifying the row of the edited cell
+   --    --  @param Accel_Key the new accelerator keyval
+   --    --  @param Accel_Mods the new acclerator modifier mask
+   --    --  @param Hardware_Keycode the keycode of the new accelerator
 
 private
    Keycode_Property : constant Glib.Properties.Property_Uint :=

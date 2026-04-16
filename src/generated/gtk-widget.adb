@@ -228,10 +228,12 @@ package body Gtk.Widget is
    --  Gdk.Frame_Clock.Gdk_Frame_Clock, since you don't have to worry about
    --  when a Gdk.Frame_Clock.Gdk_Frame_Clock is assigned to a widget.
    --  Since: gtk+ 3.8
-   --  "callback": function to call for updating animations
-   --  "user_data": data to pass to Callback
-   --  "notify": function to call to free User_Data when the callback is
+   --  @param Callback function to call for updating animations
+   --  @param User_Data data to pass to Callback
+   --  @param Notify function to call to free User_Data when the callback is
    --  removed.
+   --  @return an id for the connection of this callback. Remove the callback
+   --  by passing it to Gtk.Widget.Remove_Tick_Callback
 
    procedure C_Gtk_Widget_Class_Set_Connect_Func
       (Self                 : Glib.Object.GObject_Class;
@@ -245,10 +247,10 @@ package body Gtk.Widget is
    --  Note that this must be called from a composite widget classes class
    --  initializer after calling gtk_widget_class_set_template.
    --  Since: gtk+ 3.10
-   --  "connect_func": The Gtk_Builder_Connect_Func to use when connecting
+   --  @param Connect_Func The Gtk_Builder_Connect_Func to use when connecting
    --  signals in the class template
-   --  "connect_data": The data to pass to Connect_Func
-   --  "connect_data_destroy": The Glib.G_Destroy_Notify_Address to free
+   --  @param Connect_Data The data to pass to Connect_Func
+   --  @param Connect_Data_Destroy The Glib.G_Destroy_Notify_Address to free
    --  Connect_Data, this will only be used at class finalization time, when no
    --  classes of type Widget_Type are in use anymore.
 
@@ -273,24 +275,24 @@ package body Gtk.Widget is
        Flags          : Glib.G_Connect_Flags;
        User_Data      : System.Address);
    pragma Convention (C, Internal_Gtk_Builder_Connect_Func);
-   --  "builder": a Gtk.Builder.Gtk_Builder
-   --  "object": object to connect a signal to
-   --  "signal_name": name of the signal
-   --  "handler_name": name of the handler
-   --  "connect_object": a Glib.Object.GObject, if non-null, use
+   --  @param Builder a Gtk.Builder.Gtk_Builder
+   --  @param Object object to connect a signal to
+   --  @param Signal_Name name of the signal
+   --  @param Handler_Name name of the handler
+   --  @param Connect_Object a Glib.Object.GObject, if non-null, use
    --  g_signal_connect_object
-   --  "flags": Glib.G_Connect_Flags to use
-   --  "user_data": user data
+   --  @param Flags Glib.G_Connect_Flags to use
+   --  @param User_Data user data
 
    function Internal_Gtk_Tick_Callback
       (Widget      : System.Address;
        Frame_Clock : System.Address;
        User_Data   : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Tick_Callback);
-   --  "widget": the widget
-   --  "frame_clock": the frame clock for the widget (same as calling
+   --  @param Widget the widget
+   --  @param Frame_Clock the frame clock for the widget (same as calling
    --  Gtk.Widget.Get_Frame_Clock)
-   --  "user_data": user data passed to Gtk.Widget.Add_Tick_Callback.
+   --  @param User_Data user data passed to Gtk.Widget.Add_Tick_Callback.
 
    ---------------------------------------
    -- Internal_Gtk_Builder_Connect_Func --
@@ -454,10 +456,12 @@ package body Gtk.Widget is
       --  Callback type for adding a function to update animations. See
       --  Gtk.Widget.Add_Tick_Callback.
       --  Since: gtk+ 3.8
-      --  "widget": the widget
-      --  "frame_clock": the frame clock for the widget (same as calling
+      --  @param Widget the widget
+      --  @param Frame_Clock the frame clock for the widget (same as calling
       --  Gtk.Widget.Get_Frame_Clock)
-      --  "user_data": user data passed to Gtk.Widget.Add_Tick_Callback.
+      --  @param User_Data user data passed to Gtk.Widget.Add_Tick_Callback.
+      --  @return G_SOURCE_CONTINUE if the tick callback should continue to be
+      --  called, G_SOURCE_REMOVE if the tick callback should be removed.
 
       -----------------------
       -- Add_Tick_Callback --
@@ -3285,14 +3289,14 @@ package body Gtk.Widget is
       --  Note that this function can only be called once, subsequent calls
       --  will do nothing.
       --  Since: gtk+ 2.12
-      --  "builder": a Gtk.Builder.Gtk_Builder
-      --  "object": object to connect a signal to
-      --  "signal_name": name of the signal
-      --  "handler_name": name of the handler
-      --  "connect_object": a Glib.Object.GObject, if non-null, use
+      --  @param Builder a Gtk.Builder.Gtk_Builder
+      --  @param Object object to connect a signal to
+      --  @param Signal_Name name of the signal
+      --  @param Handler_Name name of the handler
+      --  @param Connect_Object a Glib.Object.GObject, if non-null, use
       --  g_signal_connect_object
-      --  "flags": Glib.G_Connect_Flags to use
-      --  "user_data": user data
+      --  @param Flags Glib.G_Connect_Flags to use
+      --  @param User_Data user data
 
       -----------------
       -- Internal_Cb --

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Menu_Shell.Gtk_Menu_Shell is the abstract base class used to derive
 --  the Gtk.Menu.Gtk_Menu and Gtk.Menu_Bar.Gtk_Menu_Bar subclasses.
 --
@@ -48,8 +47,6 @@
 --  contain a selected menu item.) The current menu is the menu that contains
 --  the current menu item. It will always have a GTK grab and receive all key
 --  presses.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -83,16 +80,16 @@ package Gtk.Menu_Shell is
        Menu_Item        : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Force_Deactivate : Boolean);
    --  Activates the menu item within the menu shell.
-   --  "menu_item": the Gtk.Menu_Item.Gtk_Menu_Item to activate
-   --  "force_deactivate": if True, force the deactivation of the menu shell
-   --  after the menu item is activated
+   --  @param Menu_Item the Gtk.Menu_Item.Gtk_Menu_Item to activate
+   --  @param Force_Deactivate if True, force the deactivation of the menu
+   --  shell after the menu item is activated
 
    procedure Append
       (Menu_Shell : not null access Gtk_Menu_Shell_Record;
        Child      : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Adds a new Gtk.Menu_Item.Gtk_Menu_Item to the end of the menu shell's
    --  item list.
-   --  "child": The Gtk.Menu_Item.Gtk_Menu_Item to add
+   --  @param Child The Gtk.Menu_Item.Gtk_Menu_Item to add
 
    procedure Bind_Model
       (Menu_Shell       : not null access Gtk_Menu_Shell_Record;
@@ -128,10 +125,10 @@ package Gtk.Menu_Shell is
    --  directly passing the Glib.Menu_Model.Gmenu_Model to
    --  Gtk.Application.Set_App_Menu or Gtk.Application.Set_Menubar.
    --  Since: gtk+ 3.6
-   --  "model": the Glib.Menu_Model.Gmenu_Model to bind to or null to remove
-   --  binding
-   --  "action_namespace": the namespace for actions in Model
-   --  "with_separators": True if toplevel items in Shell should have
+   --  @param Model the Glib.Menu_Model.Gmenu_Model to bind to or null to
+   --  remove binding
+   --  @param Action_Namespace the namespace for actions in Model
+   --  @param With_Separators True if toplevel items in Shell should have
    --  separators between them
 
    procedure Cancel (Menu_Shell : not null access Gtk_Menu_Shell_Record);
@@ -152,17 +149,20 @@ package Gtk.Menu_Shell is
    --  The parent menu shell of a submenu is the Gtk.Menu.Gtk_Menu or
    --  Gtk.Menu_Bar.Gtk_Menu_Bar from which it was opened up.
    --  Since: gtk+ 3.0
+   --  @return the parent Gtk.Menu_Shell.Gtk_Menu_Shell
 
    function Get_Selected_Item
       (Menu_Shell : not null access Gtk_Menu_Shell_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the currently selected item.
    --  Since: gtk+ 3.0
+   --  @return the currently selected item
 
    function Get_Take_Focus
       (Menu_Shell : not null access Gtk_Menu_Shell_Record) return Boolean;
    --  Returns True if the menu shell will take the keyboard focus on popup.
    --  Since: gtk+ 2.8
+   --  @return True if the menu shell will take the keyboard focus on popup.
 
    procedure Set_Take_Focus
       (Menu_Shell : not null access Gtk_Menu_Shell_Record;
@@ -187,8 +187,8 @@ package Gtk.Menu_Shell is
    --  that they will work.
    --  See also gdk_keyboard_grab
    --  Since: gtk+ 2.8
-   --  "take_focus": True if the menu shell should take the keyboard focus on
-   --  popup
+   --  @param Take_Focus True if the menu shell should take the keyboard focus
+   --  on popup
 
    procedure Insert
       (Menu_Shell : not null access Gtk_Menu_Shell_Record;
@@ -196,8 +196,8 @@ package Gtk.Menu_Shell is
        Position   : Glib.Gint);
    --  Adds a new Gtk.Menu_Item.Gtk_Menu_Item to the menu shell's item list at
    --  the position indicated by Position.
-   --  "child": The Gtk.Menu_Item.Gtk_Menu_Item to add
-   --  "position": The position in the item list where Child is added.
+   --  @param Child The Gtk.Menu_Item.Gtk_Menu_Item to add
+   --  @param Position The position in the item list where Child is added.
    --  Positions are numbered from 0 to n-1
 
    procedure Prepend
@@ -205,7 +205,7 @@ package Gtk.Menu_Shell is
        Child      : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Adds a new Gtk.Menu_Item.Gtk_Menu_Item to the beginning of the menu
    --  shell's item list.
-   --  "child": The Gtk.Menu_Item.Gtk_Menu_Item to add
+   --  @param Child The Gtk.Menu_Item.Gtk_Menu_Item to add
 
    procedure Select_First
       (Menu_Shell       : not null access Gtk_Menu_Shell_Record;
@@ -213,15 +213,15 @@ package Gtk.Menu_Shell is
    --  Select the first visible or selectable child of the menu shell; don't
    --  select tearoff items unless the only item is a tearoff item.
    --  Since: gtk+ 2.2
-   --  "search_sensitive": if True, search for the first selectable menu item,
-   --  otherwise select nothing if the first item isn't sensitive. This should
-   --  be False if the menu is being popped up initially.
+   --  @param Search_Sensitive if True, search for the first selectable menu
+   --  item, otherwise select nothing if the first item isn't sensitive. This
+   --  should be False if the menu is being popped up initially.
 
    procedure Select_Item
       (Menu_Shell : not null access Gtk_Menu_Shell_Record;
        Menu_Item  : not null access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Selects the menu item from the menu shell.
-   --  "menu_item": The Gtk.Menu_Item.Gtk_Menu_Item to select
+   --  @param Menu_Item The Gtk.Menu_Item.Gtk_Menu_Item to select
 
    ----------------
    -- Properties --
@@ -338,8 +338,8 @@ package Gtk.Menu_Shell is
    --  The inverse of this signal is the GtkContainer::removed signal.
    -- 
    --  Callback parameters:
-   --    --  "child": the Gtk.Menu_Item.Gtk_Menu_Item that is being inserted
-   --    --  "position": the position at which the insert occurs
+   --    --  @param Child the Gtk.Menu_Item.Gtk_Menu_Item that is being inserted
+   --    --  @param Position the position at which the insert occurs
 
    type Cb_Gtk_Menu_Shell_Gtk_Menu_Direction_Type_Void is not null access procedure
      (Self      : access Gtk_Menu_Shell_Record'Class;
@@ -384,8 +384,7 @@ package Gtk.Menu_Shell is
    --  item.
    -- 
    --  Callback parameters:
-   --    --  "distance": +1 to move to the next item, -1 to move to the previous
-   --    --  Returns True to stop the signal emission, False to continue
+   --    --  @param Distance +1 to move to the next item, -1 to move to the previous
 
    Signal_Selection_Done : constant Glib.Signal_Name := "selection-done";
    procedure On_Selection_Done

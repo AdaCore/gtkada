@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Menu_Bar.Gtk_Menu_Bar is a subclass of
 --  Gtk.Menu_Shell.Gtk_Menu_Shell which contains one or more Gtk_Menu_Items.
 --  The result is a standard menu bar which can hold many menu items.
@@ -29,8 +28,6 @@
 --  # CSS nodes
 --
 --  GtkMenuBar has a single CSS node with name menubar.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -74,7 +71,7 @@ package Gtk.Menu_Bar is
    --  Since: gtk+ 3.4
    --  Initialize_From_Model does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "model": a Glib.Menu_Model.Gmenu_Model
+   --  @param Model a Glib.Menu_Model.Gmenu_Model
 
    function Gtk_Menu_Bar_New_From_Model
       (Model : not null access Glib.Menu_Model.Gmenu_Model_Record'Class)
@@ -86,7 +83,7 @@ package Gtk.Menu_Bar is
    --  belongs - typically by means of being contained within the
    --  Gtk_Application_Windows widget hierarchy.
    --  Since: gtk+ 3.4
-   --  "model": a Glib.Menu_Model.Gmenu_Model
+   --  @param Model a Glib.Menu_Model.Gmenu_Model
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_menu_bar_get_type");
@@ -101,13 +98,14 @@ package Gtk.Menu_Bar is
    --  Retrieves the current child pack direction of the menubar. See
    --  Gtk.Menu_Bar.Set_Child_Pack_Direction.
    --  Since: gtk+ 2.8
+   --  @return the child pack direction
 
    procedure Set_Child_Pack_Direction
       (Menu_Bar       : not null access Gtk_Menu_Bar_Record;
        Child_Pack_Dir : Gtk.Enums.Gtk_Pack_Direction);
    --  Sets how widgets should be packed inside the children of a menubar.
    --  Since: gtk+ 2.8
-   --  "child_pack_dir": a new Gtk.Enums.Gtk_Pack_Direction
+   --  @param Child_Pack_Dir a new Gtk.Enums.Gtk_Pack_Direction
 
    function Get_Pack_Direction
       (Menu_Bar : not null access Gtk_Menu_Bar_Record)
@@ -115,13 +113,14 @@ package Gtk.Menu_Bar is
    --  Retrieves the current pack direction of the menubar. See
    --  Gtk.Menu_Bar.Set_Pack_Direction.
    --  Since: gtk+ 2.8
+   --  @return the pack direction
 
    procedure Set_Pack_Direction
       (Menu_Bar : not null access Gtk_Menu_Bar_Record;
        Pack_Dir : Gtk.Enums.Gtk_Pack_Direction);
    --  Sets how items should be packed inside a menubar.
    --  Since: gtk+ 2.8
-   --  "pack_dir": a new Gtk.Enums.Gtk_Pack_Direction
+   --  @param Pack_Dir a new Gtk.Enums.Gtk_Pack_Direction
 
    ----------------
    -- Properties --

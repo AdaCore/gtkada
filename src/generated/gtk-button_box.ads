@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk_Button_Box is a special type of Gtk_Box specially tailored to
 --  contain buttons.
 --
@@ -30,7 +29,6 @@
 --  You can not instantiate a Gtk_Button_Box directly, and have to use one the
 --  above two instead.
 --
---  </description>
 --  <screenshot>gtk-button_box</screenshot>
 --  <group>Layout containers</group>
 --  <testgtk>create_button_box.adb</testgtk>
@@ -63,13 +61,13 @@ package Gtk.Button_Box is
    --  Since: gtk+ 3.0
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "orientation": the box's orientation.
+   --  @param Orientation the box's orientation.
 
    function Gtk_Button_Box_New
       (Orientation : Gtk.Enums.Gtk_Orientation) return Gtk_Button_Box;
    --  Creates a new Gtk.Button_Box.Gtk_Button_Box.
    --  Since: gtk+ 3.0
-   --  "orientation": the box's orientation.
+   --  @param Orientation the box's orientation.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_button_box_get_type");
@@ -84,7 +82,8 @@ package Gtk.Button_Box is
        return Boolean;
    --  Returns whether the child is exempted from homogenous sizing.
    --  Since: gtk+ 3.2
-   --  "child": a child of Widget
+   --  @param Child a child of Widget
+   --  @return True if the child is not subject to homogenous sizing
 
    procedure Set_Child_Non_Homogeneous
       (Widget          : not null access Gtk_Button_Box_Record;
@@ -92,8 +91,8 @@ package Gtk.Button_Box is
        Non_Homogeneous : Boolean);
    --  Sets whether the child is exempted from homogeous sizing.
    --  Since: gtk+ 3.2
-   --  "child": a child of Widget
-   --  "non_homogeneous": the new value
+   --  @param Child a child of Widget
+   --  @param Non_Homogeneous the new value
 
    function Get_Child_Secondary
       (Widget : not null access Gtk_Button_Box_Record;
@@ -101,7 +100,8 @@ package Gtk.Button_Box is
        return Boolean;
    --  Returns whether Child should appear in a secondary group of children.
    --  Since: gtk+ 2.4
-   --  "child": a child of Widget
+   --  @param Child a child of Widget
+   --  @return whether Child should appear in a secondary group of children.
 
    procedure Set_Child_Secondary
       (Widget       : not null access Gtk_Button_Box_Record;
@@ -118,20 +118,21 @@ package Gtk.Button_Box is
    --  Gtk.Enums.Buttonbox_End, then the secondary children are aligned at the
    --  other end of the button box from the main children. For the other
    --  styles, they appear immediately next to the main children.
-   --  "child": a child of Widget
-   --  "is_secondary": if True, the Child appears in a secondary group of the
-   --  button box.
+   --  @param Child a child of Widget
+   --  @param Is_Secondary if True, the Child appears in a secondary group of
+   --  the button box.
 
    function Get_Layout
       (Widget : not null access Gtk_Button_Box_Record)
        return Gtk.Enums.Gtk_Button_Box_Style;
    --  Retrieves the method being used to arrange the buttons in a button box.
+   --  @return the method used to lay out buttons in Widget.
 
    procedure Set_Layout
       (Widget       : not null access Gtk_Button_Box_Record;
        Layout_Style : Gtk.Enums.Gtk_Button_Box_Style);
    --  Changes the way buttons are arranged in their container.
-   --  "layout_style": the new layout style
+   --  @param Layout_Style the new layout style
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

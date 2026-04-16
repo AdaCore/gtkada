@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  GtkPopover is a bubble-like context window, primarily meant to provide
 --  context-dependent information or options. Popovers are attached to a
 --  widget, passed at construction time on Gtk.Popover.Gtk_New, or updated
@@ -80,8 +79,6 @@
 --  magnifiers in Gtk.GEntry.Gtk_Entry or Gtk.Text_View.Gtk_Text_View get style
 --  classes like .touch-selection or .magnifier to differentiate from plain
 --  popovers.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Rectangle;   use Gdk.Rectangle;
@@ -114,14 +111,14 @@ package Gtk.Popover is
    --  Since: gtk+ 3.12
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "relative_to": Gtk.Widget.Gtk_Widget the popover is related to
+   --  @param Relative_To Gtk.Widget.Gtk_Widget the popover is related to
 
    function Gtk_Popover_New
       (Relative_To : access Gtk.Widget.Gtk_Widget_Record'Class)
        return Gtk_Popover;
    --  Creates a new popover to point to Relative_To
    --  Since: gtk+ 3.12
-   --  "relative_to": Gtk.Widget.Gtk_Widget the popover is related to
+   --  @param Relative_To Gtk.Widget.Gtk_Widget the popover is related to
 
    procedure Gtk_New_From_Model
       (Self        : out Gtk_Popover;
@@ -142,8 +139,8 @@ package Gtk.Popover is
    --  Since: gtk+ 3.12
    --  Initialize_From_Model does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "relative_to": Gtk.Widget.Gtk_Widget the popover is related to
-   --  "model": a Glib.Menu_Model.Gmenu_Model
+   --  @param Relative_To Gtk.Widget.Gtk_Widget the popover is related to
+   --  @param Model a Glib.Menu_Model.Gmenu_Model
 
    function Gtk_Popover_New_From_Model
       (Relative_To : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -158,8 +155,8 @@ package Gtk.Popover is
    --  Actions can also be added using gtk_widget_insert_action_group on the
    --  menus attach widget or on any of its parent widgets.
    --  Since: gtk+ 3.12
-   --  "relative_to": Gtk.Widget.Gtk_Widget the popover is related to
-   --  "model": a Glib.Menu_Model.Gmenu_Model
+   --  @param Relative_To Gtk.Widget.Gtk_Widget the popover is related to
+   --  @param Model a Glib.Menu_Model.Gmenu_Model
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_popover_get_type");
@@ -194,9 +191,9 @@ package Gtk.Popover is
    --  would use the action name "mygroup.quit" in your
    --  Glib.Menu_Model.Gmenu_Model.
    --  Since: gtk+ 3.12
-   --  "model": the Glib.Menu_Model.Gmenu_Model to bind to or null to remove
-   --  binding
-   --  "action_namespace": the namespace for actions in Model
+   --  @param Model the Glib.Menu_Model.Gmenu_Model to bind to or null to
+   --  remove binding
+   --  @param Action_Namespace the namespace for actions in Model
 
    function Get_Constrain_To
       (Self : not null access Gtk_Popover_Record)
@@ -204,6 +201,7 @@ package Gtk.Popover is
    --  Returns the constraint for placing this popover. See
    --  Gtk.Popover.Set_Constrain_To.
    --  Since: gtk+ 3.20
+   --  @return the constraint for placing this popover.
 
    procedure Set_Constrain_To
       (Self       : not null access Gtk_Popover_Record;
@@ -212,7 +210,7 @@ package Gtk.Popover is
    --  Note that not all platforms support placing popovers freely, and may
    --  already impose constraints.
    --  Since: gtk+ 3.20
-   --  "constraint": the new constraint
+   --  @param Constraint the new constraint
 
    function Get_Default_Widget
       (Self : not null access Gtk_Popover_Record)
@@ -220,6 +218,7 @@ package Gtk.Popover is
    --  Gets the widget that should be set as the default while the popover is
    --  shown.
    --  Since: gtk+ 3.18
+   --  @return the default widget, or null if there is none
 
    procedure Set_Default_Widget
       (Self   : not null access Gtk_Popover_Record;
@@ -229,13 +228,14 @@ package Gtk.Popover is
    --  the previous default widget and reestablishes it when the popover is
    --  dismissed.
    --  Since: gtk+ 3.18
-   --  "widget": the new default widget, or null
+   --  @param Widget the new default widget, or null
 
    function Get_Modal
       (Self : not null access Gtk_Popover_Record) return Boolean;
    --  Returns whether the popover is modal, see gtk_popover_set_modal to see
    --  the implications of this.
    --  Since: gtk+ 3.12
+   --  @return TRUE if Popover is modal
 
    procedure Set_Modal
       (Self  : not null access Gtk_Popover_Record;
@@ -245,7 +245,7 @@ package Gtk.Popover is
    --  displayed. Clicking outside the popover area or pressing Esc will
    --  dismiss the popover and ungrab input.
    --  Since: gtk+ 3.12
-   --  "modal": TRUE to make popover claim all input within the toplevel
+   --  @param Modal TRUE to make popover claim all input within the toplevel
 
    function Get_Pointing_To
       (Self : not null access Gtk_Popover_Record;
@@ -253,7 +253,8 @@ package Gtk.Popover is
    --  If a rectangle to point to has been set, this function will return True
    --  and fill in Rect with such rectangle, otherwise it will return False and
    --  fill in Rect with the attached widget coordinates.
-   --  "rect": location to store the rectangle
+   --  @param Rect location to store the rectangle
+   --  @return True if a rectangle to point to was set.
 
    procedure Set_Pointing_To
       (Self : not null access Gtk_Popover_Record;
@@ -261,12 +262,13 @@ package Gtk.Popover is
    --  Sets the rectangle that Popover will point to, in the coordinate space
    --  of the widget Popover is attached to, see Gtk.Popover.Set_Relative_To.
    --  Since: gtk+ 3.12
-   --  "rect": rectangle to point to
+   --  @param Rect rectangle to point to
 
    function Get_Position
       (Self : not null access Gtk_Popover_Record)
        return Gtk.Enums.Gtk_Position_Type;
    --  Returns the preferred position of Popover.
+   --  @return The preferred position.
 
    procedure Set_Position
       (Self     : not null access Gtk_Popover_Record;
@@ -277,13 +279,14 @@ package Gtk.Popover is
    --  space (eg. if close to the window edges), the Gtk.Popover.Gtk_Popover
    --  may choose to appear on the opposite side
    --  Since: gtk+ 3.12
-   --  "position": preferred popover position
+   --  @param Position preferred popover position
 
    function Get_Relative_To
       (Self : not null access Gtk_Popover_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Returns the widget Popover is currently attached to
    --  Since: gtk+ 3.12
+   --  @return a Gtk.Widget.Gtk_Widget
 
    procedure Set_Relative_To
       (Self        : not null access Gtk_Popover_Record;
@@ -295,7 +298,7 @@ package Gtk.Popover is
    --  be detached from its previous widget, and consequently destroyed unless
    --  extra references are kept.
    --  Since: gtk+ 3.12
-   --  "relative_to": a Gtk.Widget.Gtk_Widget
+   --  @param Relative_To a Gtk.Widget.Gtk_Widget
 
    function Get_Transitions_Enabled
       (Self : not null access Gtk_Popover_Record) return Boolean;
@@ -303,6 +306,8 @@ package Gtk.Popover is
    --  Returns whether show/hide transitions are enabled on this popover.
    --  Since: gtk+ 3.16
    --  Deprecated since 3.22, 1
+   --  @return TRUE if the show and hide transitions of the given popover are
+   --  enabled, FALSE otherwise.
 
    procedure Set_Transitions_Enabled
       (Self                : not null access Gtk_Popover_Record;
@@ -311,7 +316,7 @@ package Gtk.Popover is
    --  Sets whether show/hide transitions are enabled on this popover
    --  Since: gtk+ 3.16
    --  Deprecated since 3.22, 1
-   --  "transitions_enabled": Whether transitions are enabled
+   --  @param Transitions_Enabled Whether transitions are enabled
 
    procedure Popdown (Self : not null access Gtk_Popover_Record);
    --  Pops Popover down.This is different than a Gtk.Widget.Hide call in that

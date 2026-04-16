@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Event_Controller.Gtk_Event_Controller is a base, low-level
 --  implementation for event controllers. Those react to a series of
 --  Gdk_Events, and possibly trigger actions as a consequence of those.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Event;       use Gdk.Event;
@@ -57,6 +54,7 @@ package Gtk.Event_Controller is
        return Gtk.Enums.Gtk_Propagation_Phase;
    --  Gets the propagation phase at which Controller handles events.
    --  Since: gtk+ 3.14
+   --  @return the propagation phase
 
    procedure Set_Propagation_Phase
       (Self  : not null access Gtk_Event_Controller_Record;
@@ -66,13 +64,14 @@ package Gtk.Event_Controller is
    --  performed, but other additional gesture maintenance will. In that phase,
    --  the events can be managed by calling Gtk.Event_Controller.Handle_Event.
    --  Since: gtk+ 3.14
-   --  "phase": a propagation phase
+   --  @param Phase a propagation phase
 
    function Get_Widget
       (Self : not null access Gtk_Event_Controller_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Returns the Gtk.Widget.Gtk_Widget this controller relates to.
    --  Since: gtk+ 3.14
+   --  @return a Gtk.Widget.Gtk_Widget
 
    function Handle_Event
       (Self  : not null access Gtk_Event_Controller_Record;
@@ -80,7 +79,9 @@ package Gtk.Event_Controller is
    --  Feeds an events into Controller, so it can be interpreted and the
    --  controller actions triggered.
    --  Since: gtk+ 3.14
-   --  "event": a Gdk.Event.Gdk_Event
+   --  @param Event a Gdk.Event.Gdk_Event
+   --  @return True if the event was potentially useful to trigger the
+   --  controller action
 
    procedure Reset (Self : not null access Gtk_Event_Controller_Record);
    --  Resets the Controller to a clean state. Every interaction the

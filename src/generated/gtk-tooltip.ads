@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Basic tooltips can be realized simply by using Gtk.Widget.Set_Tooltip_Text
 --  or Gtk.Widget.Set_Tooltip_Markup without any explicit tooltip object.
 --
@@ -59,8 +58,6 @@
 --  window using Gtk.Widget.Get_Tooltip_Window and manipulate as you wish. The
 --  semantics of the return value are exactly as before, return True to show
 --  the window, False to not show it.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Display;   use Gdk.Display;
@@ -97,7 +94,7 @@ package Gtk.Tooltip is
    --  embedded in the tooltip, which can be configured using
    --  Gtk.Tooltip.Set_Markup and Gtk.Tooltip.Set_Icon.
    --  Since: gtk+ 2.12
-   --  "custom_widget": a Gtk.Widget.Gtk_Widget, or null to unset the old
+   --  @param Custom_Widget a Gtk.Widget.Gtk_Widget, or null to unset the old
    --  custom widget.
 
    procedure Set_Icon
@@ -106,7 +103,7 @@ package Gtk.Tooltip is
    --  Sets the icon of the tooltip (which is in front of the text) to be
    --  Pixbuf. If Pixbuf is null, the image will be hidden.
    --  Since: gtk+ 2.12
-   --  "pixbuf": a Gdk.Pixbuf.Gdk_Pixbuf, or null
+   --  @param Pixbuf a Gdk.Pixbuf.Gdk_Pixbuf, or null
 
    procedure Set_Icon_From_Gicon
       (Self   : not null access Gtk_Tooltip_Record;
@@ -116,8 +113,8 @@ package Gtk.Tooltip is
    --  icon indicated by Gicon with the size indicated by Size. If Gicon is
    --  null, the image will be hidden.
    --  Since: gtk+ 2.20
-   --  "gicon": a Glib.G_Icon.G_Icon representing the icon, or null
-   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
+   --  @param G_Icon a Glib.G_Icon.G_Icon representing the icon, or null
+   --  @param Size a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Set_Icon_From_Icon_Name
       (Self      : not null access Gtk_Tooltip_Record;
@@ -127,8 +124,8 @@ package Gtk.Tooltip is
    --  icon indicated by Icon_Name with the size indicated by Size. If
    --  Icon_Name is null, the image will be hidden.
    --  Since: gtk+ 2.14
-   --  "icon_name": an icon name, or null
-   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
+   --  @param Icon_Name an icon name, or null
+   --  @param Size a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Set_Icon_From_Stock
       (Self     : not null access Gtk_Tooltip_Record;
@@ -140,8 +137,8 @@ package Gtk.Tooltip is
    --  Stock_Id is null, the image will be hidden.
    --  Since: gtk+ 2.12
    --  Deprecated since 3.10, 1
-   --  "stock_id": a stock id, or null
-   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
+   --  @param Stock_Id a stock id, or null
+   --  @param Size a stock icon size (Gtk.Enums.Gtk_Icon_Size)
 
    procedure Set_Markup
       (Self   : not null access Gtk_Tooltip_Record;
@@ -150,7 +147,7 @@ package Gtk.Tooltip is
    --  [Pango text markup language][PangoMarkupFormat]. If Markup is null, the
    --  label will be hidden.
    --  Since: gtk+ 2.12
-   --  "markup": a markup string (see [Pango markup
+   --  @param Markup a markup string (see [Pango markup
    --  format][PangoMarkupFormat]) or null
 
    procedure Set_Text
@@ -159,7 +156,7 @@ package Gtk.Tooltip is
    --  Sets the text of the tooltip to be Text. If Text is null, the label
    --  will be hidden. See also Gtk.Tooltip.Set_Markup.
    --  Since: gtk+ 2.12
-   --  "text": a text string or null
+   --  @param Text a text string or null
 
    procedure Set_Tip_Area
       (Self : not null access Gtk_Tooltip_Record;
@@ -172,7 +169,7 @@ package Gtk.Tooltip is
    --  the convenience functions for this: Gtk.Tree_View.Set_Tooltip_Row and
    --  Gtk.Tree_View.Set_Tooltip_Cell.
    --  Since: gtk+ 2.12
-   --  "rect": a Gdk.Rectangle.Gdk_Rectangle
+   --  @param Rect a Gdk.Rectangle.Gdk_Rectangle
 
    ---------------
    -- Functions --
@@ -185,6 +182,6 @@ package Gtk.Tooltip is
    --  useful to call when, for example, the state of the widget changed by a
    --  key press.
    --  Since: gtk+ 2.12
-   --  "display": a Gdk.Display.Gdk_Display
+   --  @param Display a Gdk.Display.Gdk_Display
 
 end Gtk.Tooltip;

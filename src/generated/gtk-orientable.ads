@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Orientable.Gtk_Orientable interface is implemented by all widgets
 --  that can be oriented horizontally or vertically. Historically, such widgets
 --  have been realized as subclasses of a common base class (e.g
@@ -31,8 +30,6 @@
 --  orientation to be changed at runtime, allowing the widgets to "flip".
 --
 --  Gtk.Orientable.Gtk_Orientable was introduced in GTK+ 2.16.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;       use Glib;
@@ -60,6 +57,7 @@ package Gtk.Orientable is
    pragma Import (C, Get_Orientation, "gtk_orientable_get_orientation");
    --  Retrieves the orientation of the Orientable.
    --  Since: gtk+ 2.16
+   --  @return the orientation of the Orientable.
 
    procedure Set_Orientation
       (Self        : Gtk_Orientable;
@@ -67,7 +65,7 @@ package Gtk.Orientable is
    pragma Import (C, Set_Orientation, "gtk_orientable_set_orientation");
    --  Sets the orientation of the Orientable.
    --  Since: gtk+ 2.16
-   --  "orientation": the orientable's new orientation.
+   --  @param Orientation the orientable's new orientation.
 
    ----------------
    -- Properties --

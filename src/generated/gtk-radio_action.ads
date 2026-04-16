@@ -21,12 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Radio_Action.Gtk_Radio_Action is similar to
 --  Gtk.Radio_Menu_Item.Gtk_Radio_Menu_Item. A number of radio actions can be
 --  linked together so that only one may be active at any one time.
 --
---  </description>
 --  <group>Action-based menus</group>
 --  <see>Gtk_Action</see>
 
@@ -68,12 +66,12 @@ package Gtk.Radio_Action is
    --  Since: gtk+ 2.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "name": A unique name for the action
-   --  "label": The label displayed in menu items and on buttons, or null
-   --  "tooltip": A tooltip for this action, or null
-   --  "stock_id": The stock icon to display in widgets representing this
+   --  @param Name A unique name for the action
+   --  @param Label The label displayed in menu items and on buttons, or null
+   --  @param Tooltip A tooltip for this action, or null
+   --  @param Stock_Id The stock icon to display in widgets representing this
    --  action, or null
-   --  "value": The value which Gtk.Radio_Action.Get_Current_Value should
+   --  @param Value The value which Gtk.Radio_Action.Get_Current_Value should
    --  return if this action is selected.
 
    function Gtk_Radio_Action_New
@@ -86,12 +84,12 @@ package Gtk.Radio_Action is
    --  action to a Gtk.Action_Group.Gtk_Action_Group and set the accelerator
    --  for the action, call Gtk.Action_Group.Add_Action_With_Accel.
    --  Since: gtk+ 2.4
-   --  "name": A unique name for the action
-   --  "label": The label displayed in menu items and on buttons, or null
-   --  "tooltip": A tooltip for this action, or null
-   --  "stock_id": The stock icon to display in widgets representing this
+   --  @param Name A unique name for the action
+   --  @param Label The label displayed in menu items and on buttons, or null
+   --  @param Tooltip A tooltip for this action, or null
+   --  @param Stock_Id The stock icon to display in widgets representing this
    --  action, or null
-   --  "value": The value which Gtk.Radio_Action.Get_Current_Value should
+   --  @param Value The value which Gtk.Radio_Action.Get_Current_Value should
    --  return if this action is selected.
 
    function Get_Type return Glib.GType;
@@ -108,6 +106,7 @@ package Gtk.Radio_Action is
    --  to which Action belongs.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return The value of the currently active group member
 
    procedure Set_Current_Value
       (Action        : not null access Gtk_Radio_Action_Record;
@@ -117,7 +116,7 @@ package Gtk.Radio_Action is
    --  property Current_Value.
    --  Since: gtk+ 2.10
    --  Deprecated since 3.10, 1
-   --  "current_value": the new value
+   --  @param Current_Value the new value
 
    function Get_Group
       (Action : not null access Gtk_Radio_Action_Record)
@@ -158,7 +157,7 @@ package Gtk.Radio_Action is
    --
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "group": a list representing a radio group, or null
+   --  @param Group a list representing a radio group, or null
 
    procedure Join_Group
       (Action       : not null access Gtk_Radio_Action_Record;
@@ -183,7 +182,7 @@ package Gtk.Radio_Action is
    --
    --  Since: gtk+ 3.0
    --  Deprecated since 3.10, 1
-   --  "group_source": a radio action object whos group we are joining, or
+   --  @param Group_Source a radio action object whos group we are joining, or
    --  null to remove the radio action from its group
 
    ----------------

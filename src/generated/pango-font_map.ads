@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Pango.Font_Map.Pango_Font_Map represents the set of fonts available
 --  for a particular rendering system. This is a virtual object with
 --  implementations being specific to particular rendering systems. To create
@@ -35,12 +34,8 @@
 --  The Pango.Font_Map.Pango_Font_Map structure contains one member which the
 --  implementation fills in.
 --
---  </description>
---  <description>
 --  An object that represents the set of fonts available for a particular
 --  rendering system
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
@@ -87,6 +82,8 @@ package Pango.Font_Map is
    --  gdk_pango_context_get_for_screen, and Gtk.Widget.Get_Pango_Context. Use
    --  those instead.
    --  Since: gtk+ 1.22
+   --  @return the newly allocated Pango.Context.Pango_Context, which should
+   --  be freed with g_object_unref.
 
    function Get_Serial
       (Self : not null access Pango_Font_Map_Record) return Guint;
@@ -100,6 +97,7 @@ package Pango.Font_Map is
    --  This can be used to automatically detect changes to a
    --  Pango.Font_Map.Pango_Font_Map, like in Pango.Context.Pango_Context.
    --  Since: gtk+ 1.32.4
+   --  @return The current serial number of Fontmap.
 
    function List_Families
       (Self : not null access Pango_Font_Map_Record)
@@ -112,8 +110,12 @@ package Pango.Font_Map is
        Desc    : Pango.Font.Pango_Font_Description)
        return Pango.Font.Pango_Font;
    --  Load the font in the fontmap that is the closest match for Desc.
-   --  "context": the Pango.Context.Pango_Context the font will be used with
-   --  "desc": a Pango.Font.Pango_Font_Description describing the font to load
+   --  @param Context the Pango.Context.Pango_Context the font will be used
+   --  with
+   --  @param Desc a Pango.Font.Pango_Font_Description describing the font to
+   --  load
+   --  @return the newly allocated Pango.Font.Pango_Font loaded, or null if no
+   --  font matched.
 
    function Load_Fontset
       (Self     : not null access Pango_Font_Map_Record;
@@ -123,8 +125,13 @@ package Pango.Font_Map is
        return Pango.Fontset.Pango_Fontset;
    --  Load a set of fonts in the fontmap that can be used to render a font
    --  matching Desc.
-   --  "context": the Pango.Context.Pango_Context the font will be used with
-   --  "desc": a Pango.Font.Pango_Font_Description describing the font to load
-   --  "language": a Pango.Language.Pango_Language the fonts will be used for
+   --  @param Context the Pango.Context.Pango_Context the font will be used
+   --  with
+   --  @param Desc a Pango.Font.Pango_Font_Description describing the font to
+   --  load
+   --  @param Language a Pango.Language.Pango_Language the fonts will be used
+   --  for
+   --  @return the newly allocated Pango.Fontset.Pango_Fontset loaded, or null
+   --  if no font matched.
 
 end Pango.Font_Map;

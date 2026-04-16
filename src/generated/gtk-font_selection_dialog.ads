@@ -21,11 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This widget provides a dialog for selecting a font. See also
 --  Gtk.Font_Selection.
 --
---  </description>
 --  <screenshot>gtk-fontsel</screenshot>
 --  <group>Selectors</group>
 --  <testgtk>create_font_selection.adb</testgtk>
@@ -55,12 +53,12 @@ package Gtk.Font_Selection_Dialog is
    --  Creates a new Gtk.Font_Selection_Dialog.Gtk_Font_Selection_Dialog.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "title": the title of the dialog window
+   --  @param Title the title of the dialog window
 
    function Gtk_Font_Selection_Dialog_New
       (Title : UTF8_String) return Gtk_Font_Selection_Dialog;
    --  Creates a new Gtk.Font_Selection_Dialog.Gtk_Font_Selection_Dialog.
-   --  "title": the title of the dialog window
+   --  @param Title the title of the dialog window
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_font_selection_dialog_get_type");
@@ -76,6 +74,8 @@ package Gtk.Font_Selection_Dialog is
    --  Gets the "Cancel" button.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, 1
+   --  @return the Gtk.Widget.Gtk_Widget used in the dialog for the "Cancel"
+   --  button.
 
    function Get_Font_Name
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
@@ -89,6 +89,8 @@ package Gtk.Font_Selection_Dialog is
    --  to "Helvetica Bold Italic 12". Use Pango.Font.Equal if you want to
    --  compare two font descriptions.
    --  Deprecated since 3.2, 1
+   --  @return A string with the name of the current font, or null if no font
+   --  is selected. You must free this string with g_free.
 
    function Set_Font_Name
       (Dialog   : not null access Gtk_Font_Selection_Dialog_Record;
@@ -96,7 +98,9 @@ package Gtk.Font_Selection_Dialog is
    pragma Obsolescent (Set_Font_Name);
    --  Sets the currently selected font.
    --  Deprecated since 3.2, 1
-   --  "fontname": a font name like "Helvetica 12" or "Times Bold 18"
+   --  @param Fontname a font name like "Helvetica 12" or "Times Bold 18"
+   --  @return True if the font selected in Fsd is now the Fontname specified,
+   --  False otherwise.
 
    function Get_Font_Selection
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
@@ -106,6 +110,7 @@ package Gtk.Font_Selection_Dialog is
    --  the dialog.
    --  Since: gtk+ 2.22
    --  Deprecated since 3.2, 1
+   --  @return the embedded Gtk.Font_Selection.Gtk_Font_Selection
 
    function Get_Ok_Button
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
@@ -114,6 +119,8 @@ package Gtk.Font_Selection_Dialog is
    --  Gets the "OK" button.
    --  Since: gtk+ 2.14
    --  Deprecated since 3.2, 1
+   --  @return the Gtk.Widget.Gtk_Widget used in the dialog for the "OK"
+   --  button.
 
    function Get_Preview_Text
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record)
@@ -121,6 +128,8 @@ package Gtk.Font_Selection_Dialog is
    pragma Obsolescent (Get_Preview_Text);
    --  Gets the text displayed in the preview area.
    --  Deprecated since 3.2, 1
+   --  @return the text displayed in the preview area. This string is owned by
+   --  the widget and should not be modified or freed
 
    procedure Set_Preview_Text
       (Dialog : not null access Gtk_Font_Selection_Dialog_Record;
@@ -128,7 +137,7 @@ package Gtk.Font_Selection_Dialog is
    pragma Obsolescent (Set_Preview_Text);
    --  Sets the text displayed in the preview area.
    --  Deprecated since 3.2, 1
-   --  "text": the text to display in the preview area
+   --  @param Text the text to display in the preview area
 
    ----------------
    -- Interfaces --

@@ -360,6 +360,7 @@ package Gtk.Stock is
    --  Copies a stock item, mostly useful for language bindings and not in
    --  applications.
    --  Deprecated since 3.10, 1
+   --  @return a new Gtk.Stock.Gtk_Stock_Item
 
    ----------------------
    -- GtkAda additions --
@@ -396,14 +397,14 @@ package Gtk.Stock is
    --  and Items can be freed. Use Gtk.Stock.Add_Static if Items is persistent
    --  and GTK+ need not copy the array.
    --  Deprecated since 3.10, 1
-   --  "items": a Gtk.Stock.Gtk_Stock_Item or array of items
+   --  @param Items a Gtk.Stock.Gtk_Stock_Item or array of items
 
    procedure Add_Static (Items : Gtk_Stock_Item_Array);
    pragma Obsolescent (Add_Static);
    --  Same as Gtk.Stock.Add, but doesn't copy Items, so Items must persist
    --  until application exit.
    --  Deprecated since 3.10, 1
-   --  "items": a Gtk.Stock.Gtk_Stock_Item or array of
+   --  @param Items a Gtk.Stock.Gtk_Stock_Item or array of
    --  Gtk.Stock.Gtk_Stock_Item
 
    procedure Lookup
@@ -414,8 +415,9 @@ package Gtk.Stock is
    --  Fills Item with the registered values for Stock_Id, returning True if
    --  Stock_Id was known.
    --  Deprecated since 3.10, 1
-   --  "stock_id": a stock item name
-   --  "item": stock item to initialize with values
+   --  @param Stock_Id a stock item name
+   --  @param Item stock item to initialize with values
+   --  @return True if Item was initialized
 
 private
 type Gtk_Stock_Item is record

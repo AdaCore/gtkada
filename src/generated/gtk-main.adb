@@ -60,8 +60,10 @@ package body Gtk.Main is
    --  Installs a key snooper function, which will get called on all key
    --  events before delivering them normally.
    --  Deprecated since 3.4, 1
-   --  "snooper": a Gtk_Key_Snoop_Func
-   --  "func_data": data to pass to Snooper
+   --  @param Snooper a Gtk_Key_Snoop_Func
+   --  @param Func_Data data to pass to Snooper
+   --  @return a unique id for this key snooper for use with
+   --  Gtk.Main.Key_Snooper_Remove.
 
    function To_Gtk_Key_Snoop_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Key_Snoop_Func);
@@ -74,9 +76,9 @@ package body Gtk.Main is
        Event       : access Gdk.Event.Gdk_Event_Key;
        Func_Data   : System.Address) return Glib.Gint;
    pragma Convention (C, Internal_Gtk_Key_Snoop_Func);
-   --  "grab_widget": the widget to which the event will be delivered
-   --  "event": the key event
-   --  "func_data": data supplied to Gtk.Main.Key_Snooper_Install
+   --  @param Grab_Widget the widget to which the event will be delivered
+   --  @param Event the key event
+   --  @param Func_Data data supplied to Gtk.Main.Key_Snooper_Install
 
    ---------------------------------
    -- Internal_Gtk_Key_Snoop_Func --

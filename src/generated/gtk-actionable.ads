@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This interface provides a convenient way of associating widgets with
 --  actions on a Gtk.Application_Window.Gtk_Application_Window or
 --  Gtk.Application.Gtk_Application.
@@ -37,8 +36,6 @@
 --  Gtk.Application_Window.Gtk_Application_Window or
 --  Gtk.Application.Gtk_Application, but other action groups that are added
 --  with gtk_widget_insert_action_group will be consulted as well.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -70,6 +67,7 @@ package Gtk.Actionable is
    --  Gets the action name for Actionable.
    --  See Gtk.Actionable.Set_Action_Name for more information.
    --  Since: gtk+ 3.4
+   --  @return the action name, or null if none is set
 
    procedure Set_Action_Name
       (Self        : Gtk_Actionable;
@@ -86,13 +84,14 @@ package Gtk.Actionable is
    --  same form used for actions in the Glib.Menu.Gmenu associated with the
    --  window.
    --  Since: gtk+ 3.4
-   --  "action_name": an action name, or null
+   --  @param Action_Name an action name, or null
 
    function Get_Action_Target_Value
       (Self : Gtk_Actionable) return Glib.Variant.Gvariant;
    --  Gets the current target value of Actionable.
    --  See Gtk.Actionable.Set_Action_Target_Value for more information.
    --  Since: gtk+ 3.4
+   --  @return the current target value
 
    procedure Set_Action_Target_Value
       (Self         : Gtk_Actionable;
@@ -114,8 +113,8 @@ package Gtk.Actionable is
    --  button will now be rendered as active (and the other buttons, with
    --  different targets, rendered inactive).
    --  Since: gtk+ 3.4
-   --  "target_value": a Glib.Variant.Gvariant to set as the target value, or
-   --  null
+   --  @param Target_Value a Glib.Variant.Gvariant to set as the target value,
+   --  or null
 
    procedure Set_Detailed_Action_Name
       (Self                 : Gtk_Actionable;
@@ -129,7 +128,7 @@ package Gtk.Actionable is
    --  the form `"action::target"` where `action` is the action name and
    --  `target` is the string to use as the target.)
    --  Since: gtk+ 3.4
-   --  "detailed_action_name": the detailed action name
+   --  @param Detailed_Action_Name the detailed action name
 
    ----------------
    -- Properties --
@@ -161,12 +160,14 @@ package Gtk.Actionable is
    --  Gets the action name for Actionable.
    --  See Gtk.Actionable.Set_Action_Name for more information.
    --  Since: gtk+ 3.4
+   --  @return the action name, or null if none is set
 
    type Virtual_Get_Action_Target_Value is access function (Self : Gtk_Actionable) return System.Address;
    pragma Convention (C, Virtual_Get_Action_Target_Value);
    --  Gets the current target value of Actionable.
    --  See Gtk.Actionable.Set_Action_Target_Value for more information.
    --  Since: gtk+ 3.4
+   --  @return the current target value
 
    type Virtual_Set_Action_Name is access procedure
      (Self        : Gtk_Actionable;
@@ -184,7 +185,7 @@ package Gtk.Actionable is
    --  same form used for actions in the Glib.Menu.Gmenu associated with the
    --  window.
    --  Since: gtk+ 3.4
-   --  "action_name": an action name, or null
+   --  @param Action_Name an action name, or null
 
    type Virtual_Set_Action_Target_Value is access procedure (Self : Gtk_Actionable; Target_Value : System.Address);
    pragma Convention (C, Virtual_Set_Action_Target_Value);
@@ -205,8 +206,8 @@ package Gtk.Actionable is
    --  button will now be rendered as active (and the other buttons, with
    --  different targets, rendered inactive).
    --  Since: gtk+ 3.4
-   --  "target_value": a Glib.Variant.Gvariant to set as the target value, or
-   --  null
+   --  @param Target_Value a Glib.Variant.Gvariant to set as the target value,
+   --  or null
 
    subtype Actionable_Interface_Descr is Glib.Object.Interface_Description;
 

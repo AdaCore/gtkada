@@ -51,9 +51,9 @@ package body Gtk.Calendar is
    --  Gtk.Calendar.Gtk_Calendar:detail-width-chars and
    --  Gtk.Calendar.Gtk_Calendar:detail-height-rows properties.
    --  Since: gtk+ 2.14
-   --  "func": a function providing details for each day.
-   --  "data": data to pass to Func invokations.
-   --  "destroy": a function for releasing Data.
+   --  @param Func a function providing details for each day.
+   --  @param Data data to pass to Func invokations.
+   --  @param Destroy a function for releasing Data.
 
    function To_Gtk_Calendar_Detail_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Calendar_Detail_Func);
@@ -68,11 +68,11 @@ package body Gtk.Calendar is
        Day       : Guint;
        User_Data : System.Address) return Gtkada.Types.Chars_Ptr;
    pragma Convention (C, Internal_Gtk_Calendar_Detail_Func);
-   --  "calendar": a Gtk.Calendar.Gtk_Calendar.
-   --  "year": the year for which details are needed.
-   --  "month": the month for which details are needed.
-   --  "day": the day of Month for which details are needed.
-   --  "user_data": the data passed with Gtk.Calendar.Set_Detail_Func.
+   --  @param Calendar a Gtk.Calendar.Gtk_Calendar.
+   --  @param Year the year for which details are needed.
+   --  @param Month the month for which details are needed.
+   --  @param Day the day of Month for which details are needed.
+   --  @param User_Data the data passed with Gtk.Calendar.Set_Detail_Func.
 
    ---------------------------------------
    -- Internal_Gtk_Calendar_Detail_Func --
@@ -304,11 +304,13 @@ package body Gtk.Calendar is
       --  appointments. The function returns null when no information is
       --  available.
       --  Since: gtk+ 2.14
-      --  "calendar": a Gtk.Calendar.Gtk_Calendar.
-      --  "year": the year for which details are needed.
-      --  "month": the month for which details are needed.
-      --  "day": the day of Month for which details are needed.
-      --  "user_data": the data passed with Gtk.Calendar.Set_Detail_Func.
+      --  @param Calendar a Gtk.Calendar.Gtk_Calendar.
+      --  @param Year the year for which details are needed.
+      --  @param Month the month for which details are needed.
+      --  @param Day the day of Month for which details are needed.
+      --  @param User_Data the data passed with Gtk.Calendar.Set_Detail_Func.
+      --  @return Newly allocated string with Pango markup with details for
+      --  the specified day or null.
 
       -----------------
       -- Internal_Cb --

@@ -46,9 +46,9 @@ package body Gtk.Menu is
    --  the widget is destroyed, as if it was a child widget. An attached menu
    --  will also move between screens correctly if the widgets moves between
    --  screens.
-   --  "attach_widget": the Gtk.Widget.Gtk_Widget that the menu will be
+   --  @param Attach_Widget the Gtk.Widget.Gtk_Widget that the menu will be
    --  attached to
-   --  "detacher": the user supplied callback function that will be called
+   --  @param Detacher the user supplied callback function that will be called
    --  when the menu calls Gtk.Menu.Detach
 
    procedure C_Gtk_Menu_Popup
@@ -81,14 +81,14 @@ package body Gtk.Menu is
    --  use one of the gtk_menu_popup_at_ variants, which do not have this
    --  problem.
    --  Deprecated since 3.22, 1
-   --  "parent_menu_shell": the menu shell containing the triggering menu
+   --  @param Parent_Menu_Shell the menu shell containing the triggering menu
    --  item, or null
-   --  "parent_menu_item": the menu item whose activation triggered the popup,
-   --  or null
-   --  "func": a user supplied function used to position the menu, or null
-   --  "data": user supplied data to be passed to Func.
-   --  "button": the mouse button which was pressed to initiate the event.
-   --  "activate_time": the time at which the activation event occurred.
+   --  @param Parent_Menu_Item the menu item whose activation triggered the
+   --  popup, or null
+   --  @param Func a user supplied function used to position the menu, or null
+   --  @param Data user supplied data to be passed to Func.
+   --  @param Button the mouse button which was pressed to initiate the event.
+   --  @param Activate_Time the time at which the activation event occurred.
 
    procedure C_Gtk_Menu_Popup_For_Device
       (Menu              : System.Address;
@@ -124,16 +124,16 @@ package body Gtk.Menu is
    --  problem.
    --  Since: gtk+ 3.0
    --  Deprecated since 3.22, 1
-   --  "device": a Gdk.Device.Gdk_Device
-   --  "parent_menu_shell": the menu shell containing the triggering menu
+   --  @param Device a Gdk.Device.Gdk_Device
+   --  @param Parent_Menu_Shell the menu shell containing the triggering menu
    --  item, or null
-   --  "parent_menu_item": the menu item whose activation triggered the popup,
-   --  or null
-   --  "func": a user supplied function used to position the menu, or null
-   --  "data": user supplied data to be passed to Func
-   --  "destroy": destroy notify for Data
-   --  "button": the mouse button which was pressed to initiate the event
-   --  "activate_time": the time at which the activation event occurred
+   --  @param Parent_Menu_Item the menu item whose activation triggered the
+   --  popup, or null
+   --  @param Func a user supplied function used to position the menu, or null
+   --  @param Data user supplied data to be passed to Func
+   --  @param Destroy destroy notify for Data
+   --  @param Button the mouse button which was pressed to initiate the event
+   --  @param Activate_Time the time at which the activation event occurred
 
    function To_Address is new Ada.Unchecked_Conversion
      (Gtk_Menu_Detach_Func, System.Address);
@@ -151,22 +151,23 @@ package body Gtk.Menu is
        Push_In   : out Glib.Gboolean;
        User_Data : System.Address);
    pragma Convention (C, Internal_Gtk_Menu_Position_Func);
-   --  "menu": a Gtk.Menu.Gtk_Menu.
-   --  "x": address of the Glib.Gint representing the horizontal position
+   --  @param Menu a Gtk.Menu.Gtk_Menu.
+   --  @param X address of the Glib.Gint representing the horizontal position
    --  where the menu shall be drawn.
-   --  "y": address of the Glib.Gint representing the vertical position where
-   --  the menu shall be drawn. This is an output parameter.
-   --  "push_in": This parameter controls how menus placed outside the monitor
-   --  are handled. If this is set to True and part of the menu is outside the
-   --  monitor then GTK+ pushes the window into the visible area, effectively
-   --  modifying the popup position. Note that moving and possibly resizing the
-   --  menu around will alter the scroll position to keep the menu items "in
-   --  place", i.e. at the same monitor position they would have been without
-   --  resizing. In practice, this behavior is only useful for combobox popups
-   --  or option menus and cannot be used to simply confine a menu to monitor
-   --  boundaries. In that case, changing the scroll offset is not desirable.
-   --  "user_data": the data supplied by the user in the Gtk.Menu.Popup Data
-   --  parameter.
+   --  @param Y address of the Glib.Gint representing the vertical position
+   --  where the menu shall be drawn. This is an output parameter.
+   --  @param Push_In This parameter controls how menus placed outside the
+   --  monitor are handled. If this is set to True and part of the menu is
+   --  outside the monitor then GTK+ pushes the window into the visible area,
+   --  effectively modifying the popup position. Note that moving and possibly
+   --  resizing the menu around will alter the scroll position to keep the menu
+   --  items "in place", i.e. at the same monitor position they would have been
+   --  without resizing. In practice, this behavior is only useful for combobox
+   --  popups or option menus and cannot be used to simply confine a menu to
+   --  monitor boundaries. In that case, changing the scroll offset is not
+   --  desirable.
+   --  @param User_Data the data supplied by the user in the Gtk.Menu.Popup
+   --  Data parameter.
 
    -------------------------------------
    -- Internal_Gtk_Menu_Position_Func --
@@ -582,12 +583,12 @@ package body Gtk.Menu is
       --  the X and Y parameters to the coordinates where the menu is to be
       --  drawn. To make the menu appear on a different monitor than the mouse
       --  pointer, Gtk.Menu.Set_Monitor must be called.
-      --  "menu": a Gtk.Menu.Gtk_Menu.
-      --  "x": address of the Glib.Gint representing the horizontal position
-      --  where the menu shall be drawn.
-      --  "y": address of the Glib.Gint representing the vertical position
+      --  @param Menu a Gtk.Menu.Gtk_Menu.
+      --  @param X address of the Glib.Gint representing the horizontal
+      --  position where the menu shall be drawn.
+      --  @param Y address of the Glib.Gint representing the vertical position
       --  where the menu shall be drawn. This is an output parameter.
-      --  "push_in": This parameter controls how menus placed outside the
+      --  @param Push_In This parameter controls how menus placed outside the
       --  monitor are handled. If this is set to True and part of the menu is
       --  outside the monitor then GTK+ pushes the window into the visible
       --  area, effectively modifying the popup position. Note that moving and
@@ -597,7 +598,7 @@ package body Gtk.Menu is
       --  only useful for combobox popups or option menus and cannot be used to
       --  simply confine a menu to monitor boundaries. In that case, changing
       --  the scroll offset is not desirable.
-      --  "user_data": the data supplied by the user in the Gtk.Menu.Popup
+      --  @param User_Data the data supplied by the user in the Gtk.Menu.Popup
       --  Data parameter.
 
       -----------------
@@ -668,12 +669,12 @@ package body Gtk.Menu is
       --  the X and Y parameters to the coordinates where the menu is to be
       --  drawn. To make the menu appear on a different monitor than the mouse
       --  pointer, Gtk.Menu.Set_Monitor must be called.
-      --  "menu": a Gtk.Menu.Gtk_Menu.
-      --  "x": address of the Glib.Gint representing the horizontal position
-      --  where the menu shall be drawn.
-      --  "y": address of the Glib.Gint representing the vertical position
+      --  @param Menu a Gtk.Menu.Gtk_Menu.
+      --  @param X address of the Glib.Gint representing the horizontal
+      --  position where the menu shall be drawn.
+      --  @param Y address of the Glib.Gint representing the vertical position
       --  where the menu shall be drawn. This is an output parameter.
-      --  "push_in": This parameter controls how menus placed outside the
+      --  @param Push_In This parameter controls how menus placed outside the
       --  monitor are handled. If this is set to True and part of the menu is
       --  outside the monitor then GTK+ pushes the window into the visible
       --  area, effectively modifying the popup position. Note that moving and
@@ -683,7 +684,7 @@ package body Gtk.Menu is
       --  only useful for combobox popups or option menus and cannot be used to
       --  simply confine a menu to monitor boundaries. In that case, changing
       --  the scroll offset is not desirable.
-      --  "user_data": the data supplied by the user in the Gtk.Menu.Popup
+      --  @param User_Data the data supplied by the user in the Gtk.Menu.Popup
       --  Data parameter.
 
       -----------------

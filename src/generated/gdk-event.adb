@@ -256,10 +256,11 @@ package body Gdk.Event is
    --  usually not useful for GTK+ applications. (Although an application can
    --  call this function then call Gtk.Main.Main_Do_Event to pass events to
    --  GTK+.)
-   --  "func": the function to call to handle events from GDK.
-   --  "data": user data to pass to the function.
-   --  "notify": the function to call when the handler function is removed,
-   --  i.e. when Gdk.Event.Handler_Set is called with another event handler.
+   --  @param Func the function to call to handle events from GDK.
+   --  @param Data user data to pass to the function.
+   --  @param Notify the function to call when the handler function is
+   --  removed, i.e. when Gdk.Event.Handler_Set is called with another event
+   --  handler.
 
    function To_Gdk_Event_Func is new Ada.Unchecked_Conversion
      (System.Address, Gdk_Event_Func);
@@ -271,8 +272,8 @@ package body Gdk.Event is
       (Event : Gdk.Event.Gdk_Event;
        Data  : System.Address);
    pragma Convention (C, Internal_Gdk_Event_Func);
-   --  "event": the Gdk.Event.Gdk_Event to process.
-   --  "data": user data set when the event handler was installed with
+   --  @param Event the Gdk.Event.Gdk_Event to process.
+   --  @param Data user data set when the event handler was installed with
    --  Gdk.Event.Handler_Set.
 
    -----------------------------
@@ -449,8 +450,8 @@ package body Gdk.Event is
       pragma Convention (C, Internal_Cb);
       --  Specifies the type of function passed to Gdk.Event.Handler_Set to
       --  handle all GDK events.
-      --  "event": the Gdk.Event.Gdk_Event to process.
-      --  "data": user data set when the event handler was installed with
+      --  @param Event the Gdk.Event.Gdk_Event to process.
+      --  @param Data user data set when the event handler was installed with
       --  Gdk.Event.Handler_Set.
 
       -----------------

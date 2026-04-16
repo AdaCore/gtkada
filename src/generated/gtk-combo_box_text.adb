@@ -46,10 +46,10 @@ package body Gtk.Combo_Box_Text is
    --  renderer(s) as appropriate.
    --  Func may be null to remove a previously set function.
    --  Since: gtk+ 2.4
-   --  "cell": a Gtk.Cell_Renderer.Gtk_Cell_Renderer
-   --  "func": the Gtk_Cell_Layout_Data_Func to use, or null
-   --  "func_data": user data for Func
-   --  "destroy": destroy notify for Func_Data
+   --  @param Cell a Gtk.Cell_Renderer.Gtk_Cell_Renderer
+   --  @param Func the Gtk_Cell_Layout_Data_Func to use, or null
+   --  @param Func_Data user data for Func
+   --  @param Destroy destroy notify for Func_Data
 
    function To_Gtk_Cell_Layout_Data_Func is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Cell_Layout_Data_Func);
@@ -64,12 +64,12 @@ package body Gtk.Combo_Box_Text is
        Iter        : access Gtk.Tree_Model.Gtk_Tree_Iter;
        Data        : System.Address);
    pragma Convention (C, Internal_Gtk_Cell_Layout_Data_Func);
-   --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-   --  "cell": the cell renderer whose value is to be set
-   --  "tree_model": the model
-   --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-   --  value for
-   --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+   --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+   --  @param Cell the cell renderer whose value is to be set
+   --  @param Tree_Model the model
+   --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+   --  the value for
+   --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
    ----------------------------------------
    -- Internal_Gtk_Cell_Layout_Data_Func --
@@ -379,12 +379,12 @@ package body Gtk.Combo_Box_Text is
       pragma Convention (C, Internal_Cb);
       --  A function which should set the value of Cell_Layout's cell
       --  renderer(s) as appropriate.
-      --  "cell_layout": a Gtk.Cell_Layout.Gtk_Cell_Layout
-      --  "cell": the cell renderer whose value is to be set
-      --  "tree_model": the model
-      --  "iter": a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set the
-      --  value for
-      --  "data": user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
+      --  @param Cell_Layout a Gtk.Cell_Layout.Gtk_Cell_Layout
+      --  @param Cell the cell renderer whose value is to be set
+      --  @param Tree_Model the model
+      --  @param Iter a Gtk.Tree_Model.Gtk_Tree_Iter indicating the row to set
+      --  the value for
+      --  @param Data user data passed to Gtk.Cell_Layout.Set_Cell_Data_Func
 
       -----------------
       -- Internal_Cb --

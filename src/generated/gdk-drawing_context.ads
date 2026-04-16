@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gdk.Drawing_Context.Gdk_Drawing_Context is an object that represents the
 --  current drawing state of a Gdk.Gdk_Window.
 --
@@ -33,8 +32,6 @@
 --  Gdk.Window.End_Draw_Frame.
 --
 --  Gdk.Drawing_Context.Gdk_Drawing_Context is available since GDK 3.22
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;           use Cairo;
@@ -68,24 +65,30 @@ package Gdk.Drawing_Context is
    --  Gdk.Drawing_Context.Gdk_Drawing_Context is valid, that is between a call
    --  to Gdk.Window.Begin_Draw_Frame and Gdk.Window.End_Draw_Frame.
    --  Since: gtk+ 3.22
+   --  @return a Cairo context to be used to draw the contents of the
+   --  Gdk.Gdk_Window. The context is owned by the
+   --  Gdk.Drawing_Context.Gdk_Drawing_Context and should not be destroyed
 
    function Get_Clip
       (Self : not null access Gdk_Drawing_Context_Record)
        return Cairo.Region.Cairo_Region;
    --  Retrieves a copy of the clip region used when creating the Context.
    --  Since: gtk+ 3.22
+   --  @return a Cairo region
 
    function Get_Window
       (Self : not null access Gdk_Drawing_Context_Record)
        return Gdk.Gdk_Window;
    --  Retrieves the window that created the drawing Context.
    --  Since: gtk+ 3.22
+   --  @return a Gdk.Gdk_Window
 
    function Is_Valid
       (Self : not null access Gdk_Drawing_Context_Record) return Boolean;
    --  Checks whether the given Gdk.Drawing_Context.Gdk_Drawing_Context is
    --  valid.
    --  Since: gtk+ 3.22
+   --  @return True if the context is valid
 
    ----------------
    -- Properties --

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Scale_Button.Gtk_Scale_Button provides a button which pops up a scale
 --  widget. This kind of widget is commonly used for volume controls in
 --  multimedia applications, and GTK+ provides a
@@ -34,8 +33,6 @@
 --  from a plain Gtk.Button.Gtk_Button, it gets the .scale style class.
 --
 --  The popup widget that contains the scale has a .scale-popup style class.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;    use GNAT.Strings;
@@ -82,13 +79,13 @@ package Gtk.Scale_Button is
    --  Since: gtk+ 2.12
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
-   --  "min": the minimum value of the scale (usually 0)
-   --  "max": the maximum value of the scale (usually 100)
-   --  "step": the stepping of value when a scroll-wheel event, or up/down
+   --  @param Size a stock icon size (Gtk.Enums.Gtk_Icon_Size)
+   --  @param Min the minimum value of the scale (usually 0)
+   --  @param Max the maximum value of the scale (usually 100)
+   --  @param Step the stepping of value when a scroll-wheel event, or up/down
    --  arrow event occurs (usually 2)
-   --  "icons": a null-terminated array of icon names, or null if you want to
-   --  set the list later with Gtk.Scale_Button.Set_Icons
+   --  @param Icons a null-terminated array of icon names, or null if you want
+   --  to set the list later with Gtk.Scale_Button.Set_Icons
 
    function Gtk_Scale_Button_New
       (Size  : Gtk.Enums.Gtk_Icon_Size;
@@ -99,13 +96,13 @@ package Gtk.Scale_Button is
    --  Creates a Gtk.Scale_Button.Gtk_Scale_Button, with a range between Min
    --  and Max, with a stepping of Step.
    --  Since: gtk+ 2.12
-   --  "size": a stock icon size (Gtk.Enums.Gtk_Icon_Size)
-   --  "min": the minimum value of the scale (usually 0)
-   --  "max": the maximum value of the scale (usually 100)
-   --  "step": the stepping of value when a scroll-wheel event, or up/down
+   --  @param Size a stock icon size (Gtk.Enums.Gtk_Icon_Size)
+   --  @param Min the minimum value of the scale (usually 0)
+   --  @param Max the maximum value of the scale (usually 100)
+   --  @param Step the stepping of value when a scroll-wheel event, or up/down
    --  arrow event occurs (usually 2)
-   --  "icons": a null-terminated array of icon names, or null if you want to
-   --  set the list later with Gtk.Scale_Button.Set_Icons
+   --  @param Icons a null-terminated array of icon names, or null if you want
+   --  to set the list later with Gtk.Scale_Button.Set_Icons
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_scale_button_get_type");
@@ -121,6 +118,7 @@ package Gtk.Scale_Button is
    --  Gtk.Scale_Button.Gtk_Scale_Button's scale. See Gtk.GRange.Get_Adjustment
    --  for details.
    --  Since: gtk+ 2.12
+   --  @return the adjustment associated with the scale
 
    procedure Set_Adjustment
       (Button     : not null access Gtk_Scale_Button_Record;
@@ -129,30 +127,36 @@ package Gtk.Scale_Button is
    --  Gtk.Scale_Button.Gtk_Scale_Button's scale. See Gtk.GRange.Set_Adjustment
    --  for details.
    --  Since: gtk+ 2.12
-   --  "adjustment": a Gtk.Adjustment.Gtk_Adjustment
+   --  @param Adjustment a Gtk.Adjustment.Gtk_Adjustment
 
    function Get_Minus_Button
       (Button : not null access Gtk_Scale_Button_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the minus button of the Gtk.Scale_Button.Gtk_Scale_Button.
    --  Since: gtk+ 2.14
+   --  @return the minus button of the Gtk.Scale_Button.Gtk_Scale_Button as a
+   --  Gtk.Button.Gtk_Button
 
    function Get_Plus_Button
       (Button : not null access Gtk_Scale_Button_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the plus button of the Gtk.Scale_Button.Gtk_Scale_Button.
    --  Since: gtk+ 2.14
+   --  @return the plus button of the Gtk.Scale_Button.Gtk_Scale_Button as a
+   --  Gtk.Button.Gtk_Button
 
    function Get_Popup
       (Button : not null access Gtk_Scale_Button_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the popup of the Gtk.Scale_Button.Gtk_Scale_Button.
    --  Since: gtk+ 2.14
+   --  @return the popup of the Gtk.Scale_Button.Gtk_Scale_Button
 
    function Get_Value
       (Button : not null access Gtk_Scale_Button_Record) return Gdouble;
    --  Gets the current value of the scale button.
    --  Since: gtk+ 2.12
+   --  @return current value of the scale button
 
    procedure Set_Value
       (Button : not null access Gtk_Scale_Button_Record;
@@ -163,7 +167,7 @@ package Gtk.Scale_Button is
    --  Gtk.Scale_Button.Gtk_Scale_Button::value-changed signal if the value
    --  changes.
    --  Since: gtk+ 2.12
-   --  "value": new value of the scale button
+   --  @param Value new value of the scale button
 
    procedure Set_Icons
       (Button : not null access Gtk_Scale_Button_Record;
@@ -171,7 +175,7 @@ package Gtk.Scale_Button is
    --  Sets the icons to be used by the scale button. For details, see the
    --  Gtk.Scale_Button.Gtk_Scale_Button:icons property.
    --  Since: gtk+ 2.12
-   --  "icons": a null-terminated array of icon names
+   --  @param Icons a null-terminated array of icon names
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

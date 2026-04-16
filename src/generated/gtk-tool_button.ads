@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk_Tool_Buttons are Gtk_Tool_Items containing buttons.
 --
 --  Use Gtk.Tool_Button.Gtk_New to create a new
@@ -48,8 +47,6 @@
 --  # CSS nodes
 --
 --  GtkToolButton has a single CSS node with name toolbutton.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -86,9 +83,9 @@ package Gtk.Tool_Button is
    --  Since: gtk+ 2.4
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "icon_widget": a widget that will be used as the button contents, or
-   --  null
-   --  "label": a string that will be used as label, or null
+   --  @param Icon_Widget a widget that will be used as the button contents,
+   --  or null
+   --  @param Label a string that will be used as label, or null
 
    function Gtk_Tool_Button_New
       (Icon_Widget : Gtk.Widget.Gtk_Widget := null;
@@ -96,9 +93,9 @@ package Gtk.Tool_Button is
    --  Creates a new Gtk.Tool_Button.Gtk_Tool_Button using Icon_Widget as
    --  contents and Label as label.
    --  Since: gtk+ 2.4
-   --  "icon_widget": a widget that will be used as the button contents, or
-   --  null
-   --  "label": a string that will be used as label, or null
+   --  @param Icon_Widget a widget that will be used as the button contents,
+   --  or null
+   --  @param Label a string that will be used as label, or null
 
    procedure Gtk_New_From_Stock
       (Button   : out Gtk_Tool_Button;
@@ -113,7 +110,7 @@ package Gtk.Tool_Button is
    --  Since: gtk+ 2.4
    --  Initialize_From_Stock does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "stock_id": the name of the stock item
+   --  @param Stock_Id the name of the stock item
 
    function Gtk_Tool_Button_New_From_Stock
       (Stock_Id : UTF8_String) return Gtk_Tool_Button;
@@ -122,7 +119,7 @@ package Gtk.Tool_Button is
    --  GTK_STOCK_OK and GTK_STOCK_APPLY.
    --  It is an error if Stock_Id is not a name of a stock item.
    --  Since: gtk+ 2.4
-   --  "stock_id": the name of the stock item
+   --  @param Stock_Id the name of the stock item
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tool_button_get_type");
@@ -136,6 +133,7 @@ package Gtk.Tool_Button is
    --  Returns the name of the themed icon for the tool button, see
    --  Gtk.Tool_Button.Set_Icon_Name.
    --  Since: gtk+ 2.8
+   --  @return the icon name or null if the tool button has no themed icon
 
    procedure Set_Icon_Name
       (Button    : not null access Gtk_Tool_Button_Record;
@@ -147,7 +145,7 @@ package Gtk.Tool_Button is
    --  Gtk.Tool_Button.Gtk_Tool_Button:icon-widget and
    --  Gtk.Tool_Button.Gtk_Tool_Button:stock-id properties.
    --  Since: gtk+ 2.8
-   --  "icon_name": the name of the themed icon
+   --  @param Icon_Name the name of the themed icon
 
    function Get_Icon_Widget
       (Button : not null access Gtk_Tool_Button_Record)
@@ -155,6 +153,7 @@ package Gtk.Tool_Button is
    --  Return the widget used as icon widget on Button. See
    --  Gtk.Tool_Button.Set_Icon_Widget.
    --  Since: gtk+ 2.4
+   --  @return The widget used as icon on Button, or null.
 
    procedure Set_Icon_Widget
       (Button      : not null access Gtk_Tool_Button_Record;
@@ -164,7 +163,7 @@ package Gtk.Tool_Button is
    --  property. If the Gtk.Tool_Button.Gtk_Tool_Button:stock-id property is
    --  also null, Button will not have an icon.
    --  Since: gtk+ 2.4
-   --  "icon_widget": the widget used as icon, or null
+   --  @param Icon_Widget the widget used as icon, or null
 
    function Get_Label
       (Button : not null access Gtk_Tool_Button_Record) return UTF8_String;
@@ -172,6 +171,7 @@ package Gtk.Tool_Button is
    --  doesn't have a label. or uses a the label from a stock item. The
    --  returned string is owned by GTK+, and must not be modified or freed.
    --  Since: gtk+ 2.4
+   --  @return The label, or null
 
    procedure Set_Label
       (Button : not null access Gtk_Tool_Button_Record;
@@ -185,7 +185,7 @@ package Gtk.Tool_Button is
    --  the Gtk.Tool_Button.Gtk_Tool_Button:stock-id property is also null,
    --  Button will not have a label.
    --  Since: gtk+ 2.4
-   --  "label": a string that will be used as label, or null.
+   --  @param Label a string that will be used as label, or null.
 
    function Get_Label_Widget
       (Button : not null access Gtk_Tool_Button_Record)
@@ -193,6 +193,7 @@ package Gtk.Tool_Button is
    --  Returns the widget used as label on Button. See
    --  Gtk.Tool_Button.Set_Label_Widget.
    --  Since: gtk+ 2.4
+   --  @return The widget used as label on Button, or null.
 
    procedure Set_Label_Widget
       (Button       : not null access Gtk_Tool_Button_Record;
@@ -205,7 +206,7 @@ package Gtk.Tool_Button is
    --  property is used as label. If Gtk.Tool_Button.Gtk_Tool_Button:stock-id
    --  is also null, Button does not have a label.
    --  Since: gtk+ 2.4
-   --  "label_widget": the widget used as label, or null
+   --  @param Label_Widget the widget used as label, or null
 
    function Get_Stock_Id
       (Button : not null access Gtk_Tool_Button_Record) return UTF8_String;
@@ -214,6 +215,7 @@ package Gtk.Tool_Button is
    --  The returned string is owned by GTK+ and must not be freed or modifed.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
+   --  @return the name of the stock item for Button.
 
    procedure Set_Stock_Id
       (Button   : not null access Gtk_Tool_Button_Record;
@@ -226,7 +228,7 @@ package Gtk.Tool_Button is
    --  Gtk.Tool_Button.Gtk_Tool_Button:icon-widget properties.
    --  Since: gtk+ 2.4
    --  Deprecated since 3.10, 1
-   --  "stock_id": a name of a stock item, or null
+   --  @param Stock_Id a name of a stock item, or null
 
    function Get_Use_Underline
       (Button : not null access Gtk_Tool_Button_Record) return Boolean;
@@ -234,6 +236,8 @@ package Gtk.Tool_Button is
    --  on menu items on the overflow menu. See
    --  Gtk.Tool_Button.Set_Use_Underline.
    --  Since: gtk+ 2.4
+   --  @return True if underscores in the label property are used as mnemonics
+   --  on menu items on the overflow menu.
 
    procedure Set_Use_Underline
       (Button        : not null access Gtk_Tool_Button_Record;
@@ -246,7 +250,7 @@ package Gtk.Tool_Button is
    --  Labels shown on tool buttons never have mnemonics on them; this
    --  property only affects the menu item on the overflow menu.
    --  Since: gtk+ 2.4
-   --  "use_underline": whether the button label has the form "_Open"
+   --  @param Use_Underline whether the button label has the form "_Open"
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

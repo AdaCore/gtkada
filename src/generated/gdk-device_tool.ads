@@ -77,18 +77,22 @@ package Gdk.Device_Tool is
    --  Gdk.Device_Tool.Gdk_Device_Tool_Type, but having different hardware
    --  identificators.
    --  Since: gtk+ 3.22
+   --  @return The hardware identificator of this tool.
 
    function Get_Serial
       (Self : not null access Gdk_Device_Tool_Record) return Guint64;
    --  Gets the serial of this tool, this value can be used to identify a
    --  physical tool (eg. a tablet pen) across program executions.
    --  Since: gtk+ 3.22
+   --  @return The serial ID for this tool
 
    function Get_Tool_Type
       (Self : not null access Gdk_Device_Tool_Record)
        return Gdk_Device_Tool_Type;
    --  Gets the Gdk.Device_Tool.Gdk_Device_Tool_Type of the tool.
    --  Since: gtk+ 3.22
+   --  @return The physical type for this tool. This can be used to figure out
+   --  what sort of pen is being used, such as an airbrush or a pencil.
 
    ----------------
    -- Properties --

@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Toggle_Button.Gtk_Toggle_Button is a Gtk.Button.Gtk_Button which
 --  will remain "pressed-in" when clicked. Clicking again will cause the toggle
 --  button to return to its normal state.
@@ -83,12 +82,9 @@
 --       gtk_widget_show_all (window);
 --     }
 --
---  </description>
---  <description>
 --  You should consider using a Gtk_Check_Button instead, since it looks nicer
 --  and provides more visual clues that the button can be toggled.
 --
---  </description>
 --  <screenshot>gtk-toggle_button</screenshot>
 --  <group>Buttons and Toggles</group>
 --  <testgtk>create_toggle_buttons.adb</testgtk>
@@ -126,7 +122,7 @@ package Gtk.Toggle_Button is
    --  toggle button.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "label": a string containing the message to be placed in the toggle
+   --  @param Label a string containing the message to be placed in the toggle
    --  button.
 
    function Gtk_Toggle_Button_New_With_Label
@@ -135,7 +131,7 @@ package Gtk.Toggle_Button is
    --  the button and you will have to provide your own child through a call to
    --  Gtk.Container.Add. This is the recommended way to put a pixmap inside a
    --  toggle button.
-   --  "label": a string containing the message to be placed in the toggle
+   --  @param Label a string containing the message to be placed in the toggle
    --  button.
 
    procedure Gtk_New_With_Mnemonic
@@ -149,7 +145,7 @@ package Gtk.Toggle_Button is
    --  underscores in Label indicate the mnemonic for the button.
    --  Initialize_With_Mnemonic does nothing if the object was already created
    --  with another call to Initialize* or G_New.
-   --  "label": the text of the button, with an underscore in front of the
+   --  @param Label the text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Gtk_Toggle_Button_New_With_Mnemonic
@@ -157,7 +153,7 @@ package Gtk.Toggle_Button is
    --  Creates a new Gtk.Toggle_Button.Gtk_Toggle_Button containing a label.
    --  The label will be created using Gtk.Label.Gtk_New_With_Mnemonic, so
    --  underscores in Label indicate the mnemonic for the button.
-   --  "label": the text of the button, with an underscore in front of the
+   --  @param Label the text of the button, with an underscore in front of the
    --  mnemonic character
 
    function Get_Type return Glib.GType;
@@ -173,18 +169,21 @@ package Gtk.Toggle_Button is
    --  Queries a Gtk.Toggle_Button.Gtk_Toggle_Button and returns its current
    --  state. Returns True if the toggle button is pressed in and False if it
    --  is raised.
+   --  @return a Boolean value.
 
    procedure Set_Active
       (Toggle_Button : not null access Gtk_Toggle_Button_Record;
        Is_Active     : Boolean);
    --  Change the state of the button. When Is_Active is True, the button is
    --  drawn as a pressed button
-   --  "is_active": True or False.
+   --  @param Is_Active True or False.
 
    function Get_Inconsistent
       (Toggle_Button : not null access Gtk_Toggle_Button_Record)
        return Boolean;
    --  Gets the value set by Gtk.Toggle_Button.Set_Inconsistent.
+   --  @return True if the button is displayed as inconsistent, False
+   --  otherwise
 
    procedure Set_Inconsistent
       (Toggle_Button : not null access Gtk_Toggle_Button_Record;
@@ -197,13 +196,15 @@ package Gtk.Toggle_Button is
    --  user toggles the toggle button. This has to be done manually,
    --  Gtk.Toggle_Button.Set_Inconsistent only affects visual appearance, it
    --  doesn't affect the semantics of the button.
-   --  "setting": True if state is inconsistent
+   --  @param Setting True if state is inconsistent
 
    function Get_Mode
       (Toggle_Button : not null access Gtk_Toggle_Button_Record)
        return Boolean;
    --  Retrieves whether the button is displayed as a separate indicator and
    --  label. See Gtk.Toggle_Button.Set_Mode.
+   --  @return True if the togglebutton is drawn as a separate indicator and
+   --  label.
 
    procedure Set_Mode
       (Toggle_Button  : not null access Gtk_Toggle_Button_Record;
@@ -217,8 +218,8 @@ package Gtk.Toggle_Button is
    --  Gtk.Check_Button.Gtk_Check_Button and Gtk.Radio_Button.Gtk_Radio_Button
    --  that derive from Gtk.Toggle_Button.Gtk_Toggle_Button, not instances of
    --  Gtk.Toggle_Button.Gtk_Toggle_Button itself.
-   --  "draw_indicator": if True, draw the button as a separate indicator and
-   --  label; if False, draw the button like a normal button
+   --  @param Draw_Indicator if True, draw the button as a separate indicator
+   --  and label; if False, draw the button like a normal button
 
    procedure Toggled
       (Toggle_Button : not null access Gtk_Toggle_Button_Record);

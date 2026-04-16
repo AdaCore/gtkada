@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Gtk.Fixed.Gtk_Fixed widget is a container which can place child
 --  widgets at fixed positions and with fixed sizes, given in pixels.
 --  Gtk.Fixed.Gtk_Fixed performs no automatic layout management.
@@ -62,7 +61,6 @@
 --  positioning of child widgets and additionally adds custom drawing and
 --  scrollability.
 --
---  </description>
 --  <screenshot>gtk-fixed</screenshot>
 --  <group>Layout containers</group>
 --  <testgtk>create_fixed.adb</testgtk>
@@ -107,9 +105,9 @@ package Gtk.Fixed is
    --  Move a child of a GtkFixed container to the given position. X indicates
    --  the horizontal position to place the widget at. Y is the vertical
    --  position to place the widget at.
-   --  "widget": the child widget.
-   --  "x": the horizontal position to move the widget to.
-   --  "y": the vertical position to move the widget to.
+   --  @param Widget the child widget.
+   --  @param X the horizontal position to move the widget to.
+   --  @param Y the vertical position to move the widget to.
 
    procedure Put
       (Fixed  : not null access Gtk_Fixed_Record;
@@ -119,9 +117,9 @@ package Gtk.Fixed is
    --  Add Widget to a Fixed container at the given position. X indicates the
    --  horizontal position to place the widget at. Y is the vertical position
    --  to place the widget at.
-   --  "widget": the widget to add.
-   --  "x": the horizontal position to place the widget at.
-   --  "y": the vertical position to place the widget at.
+   --  @param Widget the widget to add.
+   --  @param X the horizontal position to place the widget at.
+   --  @param Y the vertical position to place the widget at.
 
    ----------------
    -- Interfaces --

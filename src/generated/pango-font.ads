@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  The Pango.Font.Pango_Font structure is used to represent a font in a
 --  rendering-system-independent matter. To create an implementation of a
 --  Pango.Font.Pango_Font, the rendering-system specific code should allocate a
@@ -32,8 +31,6 @@
 --
 --  The Pango.Font.Pango_Font structure contains one member which the
 --  implementation fills in.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
@@ -76,6 +73,7 @@ package Pango.Font is
    --  Returns a description of the font, with font size set in points. Use
    --  Pango.Font.Describe_With_Absolute_Size if you want the font size in
    --  device units.
+   --  @return a newly-allocated Pango.Font.Pango_Font_Description object.
 
    function Describe_With_Absolute_Size
       (Font : not null access Pango_Font_Record'Class)
@@ -84,6 +82,7 @@ package Pango.Font is
    --  device units). Use Pango.Font.Describe if you want the font size in
    --  points.
    --  Since: gtk+ 1.14
+   --  @return a newly-allocated Pango.Font.Pango_Font_Description object.
 
    procedure Get_Glyph_Extents
       (Font         : not null access Pango_Font_Record;
@@ -99,10 +98,10 @@ package Pango.Font is
    --  rectangles are in 1/PANGO_SCALE of a device unit.
    --  If Font is null, this function gracefully sets some sane values in the
    --  output variables and returns.
-   --  "glyph": the glyph index
-   --  "ink_rect": rectangle used to store the extents of the glyph as drawn
-   --  or null to indicate that the result is not needed.
-   --  "logical_rect": rectangle used to store the logical extents of the
+   --  @param Glyph the glyph index
+   --  @param Ink_Rect rectangle used to store the extents of the glyph as
+   --  drawn or null to indicate that the result is not needed.
+   --  @param Logical_Rect rectangle used to store the logical extents of the
    --  glyph or null to indicate that the result is not needed.
 
    function Get_Metrics
@@ -115,8 +114,10 @@ package Pango.Font is
    --  correspond to the script(s) used by that language.
    --  If Font is null, this function gracefully sets some sane values in the
    --  output variables and returns.
-   --  "language": language tag used to determine which script to get the
+   --  @param Language language tag used to determine which script to get the
    --  metrics for, or null to indicate to get the metrics for the entire font.
+   --  @return a Pango.Font_Metrics.Pango_Font_Metrics object. The caller must
+   --  call Pango.Font_Metrics.Unref when finished using the object.
 
    function Has_Char
       (Font : not null access Pango_Font_Record;
@@ -124,7 +125,7 @@ package Pango.Font is
    --  Returns whether the font provides a glyph for this character.
    --  Returns True if Font can render Wc
    --  Since: gtk+ 1.44
-   --  "wc": a Unicode character
+   --  @param Wc a Unicode character
 
    function Better_Match
       (Self      : Pango_Font_Description;
@@ -139,13 +140,17 @@ package Pango.Font is
    --  PANGO_STYLE_ITALIC as matches, but not as good a match as when the
    --  styles are equal.
    --  Note that Old_Match must match Desc.
-   --  "old_match": a Pango.Font.Pango_Font_Description, or null
-   --  "new_match": a Pango.Font.Pango_Font_Description
+   --  @param Old_Match a Pango.Font.Pango_Font_Description, or null
+   --  @param New_Match a Pango.Font.Pango_Font_Description
+   --  @return True if New_Match is a better match
 
    function Copy
       (Self : Pango_Font_Description) return Pango_Font_Description;
    pragma Import (C, Copy, "pango_font_description_copy");
    --  Make a copy of a Pango.Font.Pango_Font_Description.
+   --  @return the newly allocated Pango.Font.Pango_Font_Description, which
+   --  should be freed with pango_font_description_free, or null if Desc was
+   --  null.
 
    function Copy_Static
       (Self : Pango_Font_Description) return Pango_Font_Description;
@@ -154,6 +159,9 @@ package Pango.Font is
    --  name and other allocated fields. The result can only be used until Desc
    --  is modified or freed. This is meant to be used when the copy is only
    --  needed temporarily.
+   --  @return the newly allocated Pango.Font.Pango_Font_Description, which
+   --  should be freed with pango_font_description_free, or null if Desc was
+   --  null.
 
    function Equal
       (Self  : Pango_Font_Description;
@@ -163,11 +171,16 @@ package Pango.Font is
    --  means that their masks do not have to match, as long as other fields are
    --  all the same. (Two font descriptions may result in identical fonts being
    --  loaded, but still compare False.)
-   --  "desc2": another Pango.Font.Pango_Font_Description
+   --  @param Desc2 another Pango.Font.Pango_Font_Description
+   --  @return True if the two font descriptions are identical, False
+   --  otherwise.
 
    function Get_Family (Self : Pango_Font_Description) return UTF8_String;
    --  Gets the family name field of a font description. See
    --  Pango.Font.Set_Family.
+   --  @return the family name field for the font description, or null if not
+   --  previously set. This has the same life-time as the font description
+   --  itself and should not be freed.
 
    procedure Set_Family
       (Self   : Pango_Font_Description;
@@ -177,7 +190,7 @@ package Pango.Font is
    --  particular Pango.Font_Family.Pango_Font_Family. In some uses of
    --  Pango.Font.Pango_Font_Description, it is also possible to use a comma
    --  separated list of family names for this field.
-   --  "family": a string representing the family name.
+   --  @param Family a string representing the family name.
 
    function Get_Gravity
       (Self : Pango_Font_Description) return Pango.Enums.Gravity;
@@ -185,6 +198,9 @@ package Pango.Font is
    --  Gets the gravity field of a font description. See
    --  Pango.Font.Set_Gravity.
    --  Since: gtk+ 1.16
+   --  @return the gravity field for the font description. Use
+   --  Pango.Font.Get_Set_Fields to find out if the field was explicitly set or
+   --  not.
 
    procedure Set_Gravity
       (Self    : Pango_Font_Description;
@@ -197,27 +213,34 @@ package Pango.Font is
    --  This function is seldom useful to the user. Gravity should normally be
    --  set on a Pango.Context.Pango_Context.
    --  Since: gtk+ 1.16
-   --  "gravity": the gravity for the font description.
+   --  @param Gravity the gravity for the font description.
 
    function Get_Set_Fields
       (Self : Pango_Font_Description) return Pango.Enums.Font_Mask;
    pragma Import (C, Get_Set_Fields, "pango_font_description_get_set_fields");
    --  Determines which fields in a font description have been set.
+   --  @return a bitmask with bits set corresponding to the fields in Desc
+   --  that have been set.
 
    function Get_Size (Self : Pango_Font_Description) return Glib.Gint;
    pragma Import (C, Get_Size, "pango_font_description_get_size");
    --  Gets the size field of a font description. See Pango.Font.Set_Size.
+   --  @return the size field for the font description in points or device
+   --  units. You must call Pango.Font.Get_Size_Is_Absolute to find out which
+   --  is the case. Returns 0 if the size field has not previously been set or
+   --  it has been set to 0 explicitly. Use Pango.Font.Get_Set_Fields to find
+   --  out if the field was explicitly set or not.
 
    procedure Set_Size (Self : Pango_Font_Description; Size : Glib.Gint);
    pragma Import (C, Set_Size, "pango_font_description_set_size");
    --  Sets the size field of a font description in fractional points. This is
    --  mutually exclusive with Pango.Font.Set_Absolute_Size.
-   --  "size": the size of the font in points, scaled by PANGO_SCALE. (That
-   --  is, a Size value of 10 * PANGO_SCALE is a 10 point font. The conversion
-   --  factor between points and device units depends on system configuration
-   --  and the output device. For screen display, a logical DPI of 96 is
-   --  common, in which case a 10 point font corresponds to a 10 * (96 / 72) =
-   --  13.3 pixel font. Use Pango.Font.Set_Absolute_Size if you need a
+   --  @param Size the size of the font in points, scaled by PANGO_SCALE.
+   --  (That is, a Size value of 10 * PANGO_SCALE is a 10 point font. The
+   --  conversion factor between points and device units depends on system
+   --  configuration and the output device. For screen display, a logical DPI
+   --  of 96 is common, in which case a 10 point font corresponds to a 10 * (96
+   --  / 72) = 13.3 pixel font. Use Pango.Font.Set_Absolute_Size if you need a
    --  particular size in device units.
 
    function Get_Size_Is_Absolute
@@ -226,12 +249,18 @@ package Pango.Font is
    --  device units (absolute). See Pango.Font.Set_Size and
    --  Pango.Font.Set_Absolute_Size.
    --  Since: gtk+ 1.8
+   --  @return whether the size for the font description is in points or
+   --  device units. Use Pango.Font.Get_Set_Fields to find out if the size
+   --  field of the font description was explicitly set or not.
 
    function Get_Stretch
       (Self : Pango_Font_Description) return Pango.Enums.Stretch;
    pragma Import (C, Get_Stretch, "pango_font_description_get_stretch");
    --  Gets the stretch field of a font description. See
    --  Pango.Font.Set_Stretch.
+   --  @return the stretch field for the font description. Use
+   --  Pango.Font.Get_Set_Fields to find out if the field was explicitly set or
+   --  not.
 
    procedure Set_Stretch
       (Self    : Pango_Font_Description;
@@ -239,13 +268,16 @@ package Pango.Font is
    pragma Import (C, Set_Stretch, "pango_font_description_set_stretch");
    --  Sets the stretch field of a font description. The stretch field
    --  specifies how narrow or wide the font should be.
-   --  "stretch": the stretch for the font description
+   --  @param Stretch the stretch for the font description
 
    function Get_Style
       (Self : Pango_Font_Description) return Pango.Enums.Style;
    pragma Import (C, Get_Style, "pango_font_description_get_style");
    --  Gets the style field of a Pango.Font.Pango_Font_Description. See
    --  Pango.Font.Set_Style.
+   --  @return the style field for the font description. Use
+   --  Pango.Font.Get_Set_Fields to find out if the field was explicitly set or
+   --  not.
 
    procedure Set_Style
       (Self  : Pango_Font_Description;
@@ -258,13 +290,16 @@ package Pango.Font is
    --  a italic style or an oblique style, but not both, and font matching in
    --  Pango will match italic specifications with oblique fonts and vice-versa
    --  if an exact match is not found.
-   --  "style": the style for the font description
+   --  @param Style the style for the font description
 
    function Get_Variant
       (Self : Pango_Font_Description) return Pango.Enums.Variant;
    pragma Import (C, Get_Variant, "pango_font_description_get_variant");
    --  Gets the variant field of a Pango.Font.Pango_Font_Description. See
    --  Pango.Font.Set_Variant.
+   --  @return the variant field for the font description. Use
+   --  Pango.Font.Get_Set_Fields to find out if the field was explicitly set or
+   --  not.
 
    procedure Set_Variant
       (Self    : Pango_Font_Description;
@@ -273,13 +308,16 @@ package Pango.Font is
    --  Sets the variant field of a font description. The Pango.Enums.Variant
    --  can either be Pango.Enums.Pango_Variant_Normal or
    --  Pango.Enums.Pango_Variant_Small_Caps.
-   --  "variant": the variant type for the font description.
+   --  @param Variant the variant type for the font description.
 
    function Get_Variations
       (Self : Pango_Font_Description) return UTF8_String;
    --  Gets the variations field of a font description. See
    --  Pango.Font.Set_Variations.
    --  Since: gtk+ 1.42
+   --  @return the varitions field for the font description, or null if not
+   --  previously set. This has the same life-time as the font description
+   --  itself and should not be freed.
 
    procedure Set_Variations
       (Self       : Pango_Font_Description;
@@ -294,12 +332,15 @@ package Pango.Font is
    --  Pango does not currently have a way to find supported axes of a font.
    --  Both harfbuzz or freetype have API for this.
    --  Since: gtk+ 1.42
-   --  "variations": a string representing the variations
+   --  @param Variations a string representing the variations
 
    function Get_Weight
       (Self : Pango_Font_Description) return Pango.Enums.Weight;
    pragma Import (C, Get_Weight, "pango_font_description_get_weight");
    --  Gets the weight field of a font description. See Pango.Font.Set_Weight.
+   --  @return the weight field for the font description. Use
+   --  Pango.Font.Get_Set_Fields to find out if the field was explicitly set or
+   --  not.
 
    procedure Set_Weight
       (Self   : Pango_Font_Description;
@@ -309,13 +350,14 @@ package Pango.Font is
    --  how bold or light the font should be. In addition to the values of the
    --  Pango.Enums.Weight enumeration, other intermediate numeric values are
    --  possible.
-   --  "weight": the weight for the font description.
+   --  @param Weight the weight for the font description.
 
    function Hash (Self : Pango_Font_Description) return Guint;
    pragma Import (C, Hash, "pango_font_description_hash");
    --  Computes a hash of a Pango.Font.Pango_Font_Description structure
    --  suitable to be used, for example, as an argument to g_hash_table_new.
    --  The hash value is independent of Desc->mask.
+   --  @return the hash value.
 
    procedure Merge
       (Self             : Pango_Font_Description;
@@ -326,9 +368,9 @@ package Pango.Font is
    --  already set are affected. If True, then fields that are already set will
    --  be replaced as well.
    --  If Desc_To_Merge is null, this function performs nothing.
-   --  "desc_to_merge": the Pango.Font.Pango_Font_Description to merge from,
-   --  or null
-   --  "replace_existing": if True, replace fields in Desc with the
+   --  @param Desc_To_Merge the Pango.Font.Pango_Font_Description to merge
+   --  from, or null
+   --  @param Replace_Existing if True, replace fields in Desc with the
    --  corresponding values from Desc_To_Merge, even if they are already exist.
 
    procedure Merge_Static
@@ -339,8 +381,9 @@ package Pango.Font is
    --  name and other allocated fields. Desc can only be used until
    --  Desc_To_Merge is modified or freed. This is meant to be used when the
    --  merged font description is only needed temporarily.
-   --  "desc_to_merge": the Pango.Font.Pango_Font_Description to merge from
-   --  "replace_existing": if True, replace fields in Desc with the
+   --  @param Desc_To_Merge the Pango.Font.Pango_Font_Description to merge
+   --  from
+   --  @param Replace_Existing if True, replace fields in Desc with the
    --  corresponding values from Desc_To_Merge, even if they are already exist.
 
    procedure Set_Absolute_Size
@@ -351,8 +394,8 @@ package Pango.Font is
    --  mutually exclusive with Pango.Font.Set_Size which sets the font size in
    --  points.
    --  Since: gtk+ 1.8
-   --  "size": the new size, in Pango units. There are PANGO_SCALE Pango units
-   --  in one device unit. For an output backend where a device unit is a
+   --  @param Size the new size, in Pango units. There are PANGO_SCALE Pango
+   --  units in one device unit. For an output backend where a device unit is a
    --  pixel, a Size value of 10 * PANGO_SCALE gives a 10 pixel font.
 
    procedure Set_Family_Static
@@ -363,7 +406,7 @@ package Pango.Font is
    --  has been freed or the name is set again. This function can be used if
    --  Family is a static string such as a C string literal, or if Desc is only
    --  needed temporarily.
-   --  "family": a string representing the family name.
+   --  @param Family a string representing the family name.
 
    procedure Set_Variations_Static
       (Self       : Pango_Font_Description;
@@ -374,13 +417,14 @@ package Pango.Font is
    --  used if Variations is a static string such as a C string literal, or if
    --  Desc is only needed temporarily.
    --  Since: gtk+ 1.42
-   --  "variations": a string representing the variations
+   --  @param Variations a string representing the variations
 
    function To_Filename (Self : Pango_Font_Description) return UTF8_String;
    --  Creates a filename representation of a font description. The filename
    --  is identical to the result from calling Pango.Font.To_String, but with
    --  underscores instead of characters that are untypical in filenames, and
    --  in lower case only.
+   --  @return a new string that must be freed with g_free.
 
    function To_String (Self : Pango_Font_Description) return UTF8_String;
    --  Creates a string representation of a font description. See
@@ -388,6 +432,7 @@ package Pango.Font is
    --  representation. The family list in the string description will only have
    --  a terminating comma if the last word of the list is a valid style
    --  option.
+   --  @return a new string that must be freed with g_free.
 
    procedure Unset_Fields
       (Self     : Pango_Font_Description;
@@ -395,7 +440,7 @@ package Pango.Font is
    pragma Import (C, Unset_Fields, "pango_font_description_unset_fields");
    --  Unsets some of the fields in a Pango.Font.Pango_Font_Description. The
    --  unset fields will get back to their default values.
-   --  "to_unset": bitmask of fields in the Desc to unset.
+   --  @param To_Unset bitmask of fields in the Desc to unset.
 
    ----------------------
    -- GtkAda additions --
@@ -461,6 +506,7 @@ package Pango.Font is
    --  resulting font description will be set to 0.
    --  A typical example:
    --  "Cantarell Italic Light 15 \Wght=200"
-   --  "str": string representation of a font description.
+   --  @param Str string representation of a font description.
+   --  @return a new Pango.Font.Pango_Font_Description.
 
 end Pango.Font;

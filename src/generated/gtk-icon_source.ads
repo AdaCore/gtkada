@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  An icon source contains a Gdk_Pixbuf (or image filename) that serves as
 --  the base image for one or more of the icons in an icon set, along with a
 --  specification for which icons in the icon set will be based on that pixbuf
@@ -46,8 +45,6 @@
 --  By default, the icon source has all parameters wildcarded. That is, the
 --  icon source will be used as the base icon for any desired text direction,
 --  widget state, or icon size.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Pixbuf; use Gdk.Pixbuf;
@@ -132,6 +129,7 @@ package Gtk.Icon_Source is
    pragma Obsolescent (Copy);
    --  Creates a copy of Source; mostly useful for language bindings.
    --  Deprecated since 3.10, 1
+   --  @return a new Gtk.Icon_Source.Gtk_Icon_Source
 
    procedure Free (Self : Gtk_Icon_Source);
    pragma Obsolescent (Free);
@@ -145,6 +143,7 @@ package Gtk.Icon_Source is
    --  Obtains the text direction this icon source applies to. The return
    --  value is only useful/meaningful if the text direction is not wildcarded.
    --  Deprecated since 3.10, 1
+   --  @return text direction this source matches
 
    procedure Set_Direction
       (Self      : Gtk_Icon_Source;
@@ -156,12 +155,14 @@ package Gtk.Icon_Source is
    --  Gtk.Icon_Source.Set_Direction_Wildcarded to un-wildcard it in addition
    --  to calling this function.
    --  Deprecated since 3.10, 1
-   --  "direction": text direction this source applies to
+   --  @param Direction text direction this source applies to
 
    function Get_Direction_Wildcarded (Self : Gtk_Icon_Source) return Boolean;
    pragma Obsolescent (Get_Direction_Wildcarded);
    --  Gets the value set by Gtk.Icon_Source.Set_Direction_Wildcarded.
    --  Deprecated since 3.10, 1
+   --  @return True if this icon source is a base for any text direction
+   --  variant
 
    procedure Set_Direction_Wildcarded
       (Self    : Gtk_Icon_Source;
@@ -176,7 +177,7 @@ package Gtk.Icon_Source is
    --  matches) over wildcarded sources, and will use an exact match when
    --  possible.
    --  Deprecated since 3.10, 1
-   --  "setting": True to wildcard the text direction
+   --  @param Setting True to wildcard the text direction
 
    function Get_Filename (Self : Gtk_Icon_Source) return UTF8_String;
    pragma Obsolescent (Get_Filename);
@@ -184,6 +185,7 @@ package Gtk.Icon_Source is
    --  not a copy, and should not be modified or expected to persist beyond the
    --  lifetime of the icon source.
    --  Deprecated since 3.10, 1
+   --  @return image filename. This string must not be modified or freed.
 
    procedure Set_Filename (Self : Gtk_Icon_Source; Filename : UTF8_String);
    pragma Obsolescent (Set_Filename);
@@ -191,7 +193,7 @@ package Gtk.Icon_Source is
    --  icon variants for Gtk.Icon_Set.Gtk_Icon_Set. The filename must be
    --  absolute.
    --  Deprecated since 3.10, 1
-   --  "filename": image file to use
+   --  @param Filename image file to use
 
    function Get_Icon_Name (Self : Gtk_Icon_Source) return UTF8_String;
    pragma Obsolescent (Get_Icon_Name);
@@ -199,6 +201,7 @@ package Gtk.Icon_Source is
    --  is not a copy, and should not be modified or expected to persist beyond
    --  the lifetime of the icon source.
    --  Deprecated since 3.10, 1
+   --  @return icon name. This string must not be modified or freed.
 
    procedure Set_Icon_Name
       (Self      : Gtk_Icon_Source;
@@ -207,7 +210,7 @@ package Gtk.Icon_Source is
    --  Sets the name of an icon to look up in the current icon theme to use as
    --  a base image when creating icon variants for Gtk.Icon_Set.Gtk_Icon_Set.
    --  Deprecated since 3.10, 1
-   --  "icon_name": name of icon to use
+   --  @param Icon_Name name of icon to use
 
    function Get_Pixbuf (Self : Gtk_Icon_Source) return Gdk.Pixbuf.Gdk_Pixbuf;
    pragma Obsolescent (Get_Pixbuf);
@@ -217,6 +220,7 @@ package Gtk.Icon_Source is
    --  GtkIconSource passed to the Gtk.Style.Gtk_Style render_icon virtual
    --  function. The reference count on the pixbuf is not incremented.
    --  Deprecated since 3.10, 1
+   --  @return source pixbuf
 
    procedure Set_Pixbuf
       (Self   : Gtk_Icon_Source;
@@ -225,13 +229,14 @@ package Gtk.Icon_Source is
    --  Sets a pixbuf to use as a base image when creating icon variants for
    --  Gtk.Icon_Set.Gtk_Icon_Set.
    --  Deprecated since 3.10, 1
-   --  "pixbuf": pixbuf to use as a source
+   --  @param Pixbuf pixbuf to use as a source
 
    function Get_Size (Self : Gtk_Icon_Source) return Gtk.Enums.Gtk_Icon_Size;
    pragma Obsolescent (Get_Size);
    --  Obtains the icon size this source applies to. The return value is only
    --  useful/meaningful if the icon size is not wildcarded.
    --  Deprecated since 3.10, 1
+   --  @return icon size (Gtk.Enums.Gtk_Icon_Size) this source matches.
 
    procedure Set_Size
       (Self : Gtk_Icon_Source;
@@ -243,12 +248,13 @@ package Gtk.Icon_Source is
    --  Gtk.Icon_Source.Set_Size_Wildcarded to un-wildcard it in addition to
    --  calling this function.
    --  Deprecated since 3.10, 1
-   --  "size": icon size (Gtk.Enums.Gtk_Icon_Size) this source applies to
+   --  @param Size icon size (Gtk.Enums.Gtk_Icon_Size) this source applies to
 
    function Get_Size_Wildcarded (Self : Gtk_Icon_Source) return Boolean;
    pragma Obsolescent (Get_Size_Wildcarded);
    --  Gets the value set by Gtk.Icon_Source.Set_Size_Wildcarded.
    --  Deprecated since 3.10, 1
+   --  @return True if this icon source is a base for any icon size variant
 
    procedure Set_Size_Wildcarded (Self : Gtk_Icon_Source; Setting : Boolean);
    pragma Obsolescent (Set_Size_Wildcarded);
@@ -263,7 +269,7 @@ package Gtk.Icon_Source is
    --  to produce an appropriate icon at a given size, but will not change the
    --  size of source images that match exactly.
    --  Deprecated since 3.10, 1
-   --  "setting": True to wildcard the widget state
+   --  @param Setting True to wildcard the widget state
 
    function Get_State
       (Self : Gtk_Icon_Source) return Gtk.Enums.Gtk_State_Type;
@@ -271,6 +277,7 @@ package Gtk.Icon_Source is
    --  Obtains the widget state this icon source applies to. The return value
    --  is only useful/meaningful if the widget state is not wildcarded.
    --  Deprecated since 3.10, 1
+   --  @return widget state this source matches
 
    procedure Set_State
       (Self  : Gtk_Icon_Source;
@@ -282,12 +289,13 @@ package Gtk.Icon_Source is
    --  Gtk.Icon_Source.Set_State_Wildcarded to un-wildcard it in addition to
    --  calling this function.
    --  Deprecated since 3.10, 1
-   --  "state": widget state this source applies to
+   --  @param State widget state this source applies to
 
    function Get_State_Wildcarded (Self : Gtk_Icon_Source) return Boolean;
    pragma Obsolescent (Get_State_Wildcarded);
    --  Gets the value set by Gtk.Icon_Source.Set_State_Wildcarded.
    --  Deprecated since 3.10, 1
+   --  @return True if this icon source is a base for any widget state variant
 
    procedure Set_State_Wildcarded
       (Self    : Gtk_Icon_Source;
@@ -306,7 +314,7 @@ package Gtk.Icon_Source is
    --  lightening an image on prelight, but will not modify source images that
    --  match exactly.
    --  Deprecated since 3.10, 1
-   --  "setting": True to wildcard the widget state
+   --  @param Setting True to wildcard the widget state
 
 private
 

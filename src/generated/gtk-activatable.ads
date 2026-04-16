@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Activatable widgets can be connected to a Gtk.Action.Gtk_Action and
 --  reflects the state of its action. A Gtk.Activatable.Gtk_Activatable can
 --  also provide feedback through its action, as they are responsible for
@@ -252,8 +251,6 @@
 --
 --       ...
 --     }
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
@@ -296,7 +293,7 @@ package Gtk.Activatable is
    --  Gtk.Activatable.Get_Related_Action to retrieve the > previous action.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "action": the Gtk.Action.Gtk_Action to set
+   --  @param Action the Gtk.Action.Gtk_Action to set
 
    function Get_Related_Action
       (Self : Gtk_Activatable) return Gtk.Action.Gtk_Action;
@@ -304,6 +301,7 @@ package Gtk.Activatable is
    --  Gets the related Gtk.Action.Gtk_Action for Activatable.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return the related Gtk.Action.Gtk_Action if one is set.
 
    procedure Set_Related_Action
       (Self   : Gtk_Activatable;
@@ -315,7 +313,7 @@ package Gtk.Activatable is
    --  Gtk.Activatable.Do_Set_Related_Action when it changes.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "action": the Gtk.Action.Gtk_Action to set
+   --  @param Action the Gtk.Action.Gtk_Action to set
 
    function Get_Use_Action_Appearance
       (Self : Gtk_Activatable) return Boolean;
@@ -324,6 +322,7 @@ package Gtk.Activatable is
    --  when setting the related action or when the action changes appearance.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
+   --  @return whether Activatable uses its actions appearance.
 
    procedure Set_Use_Action_Appearance
       (Self           : Gtk_Activatable;
@@ -337,7 +336,7 @@ package Gtk.Activatable is
    --  needed.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "use_appearance": whether to use the actions appearance
+   --  @param Use_Appearance whether to use the actions appearance
 
    procedure Sync_Action_Properties
       (Self   : Gtk_Activatable;
@@ -349,7 +348,7 @@ package Gtk.Activatable is
    --  Gtk.Activatable.Gtk_Activatable:use-action-appearance changes.
    --  Since: gtk+ 2.16
    --  Deprecated since 3.10, 1
-   --  "action": the related Gtk.Action.Gtk_Action or null
+   --  @param Action the related Gtk.Action.Gtk_Action or null
 
    ----------------
    -- Properties --

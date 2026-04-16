@@ -491,12 +491,13 @@ package Glib.Spawn is
    --  The return value is freshly allocated and it should be freed with
    --  g_strfreev when it is no longer needed.
    --  Since: gtk+ 2.28
+   --  @return the list of environment variables
 
    procedure Spawn_Close_Pid (Pid : GPid);
    --  On some platforms, notably Windows, the GPid type represents a resource
    --  which must be closed to prevent resource leaking.
    --  Glib.Spawn.Spawn_Close_Pid is provided for this purpose. It should be
    --  used on all platforms, even though it doesn't do anything under UNIX.
-   --  "pid": The process reference to close
+   --  @param Pid The process reference to close
 
 end Glib.Spawn;

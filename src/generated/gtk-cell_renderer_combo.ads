@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Cell_Renderer_Combo.Gtk_Cell_Renderer_Combo renders text in a cell
 --  like Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text from which it is
 --  derived. But while Gtk.Cell_Renderer_Text.Gtk_Cell_Renderer_Text offers a
@@ -39,8 +38,6 @@
 --
 --  The Gtk.Cell_Renderer_Combo.Gtk_Cell_Renderer_Combo cell renderer was
 --  added in GTK+ 2.6.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                   use Glib;
@@ -149,9 +146,9 @@ package Gtk.Cell_Renderer_Combo is
    --  combo cell renderer emits the edited or editing_canceled signal.
    -- 
    --  Callback parameters:
-   --    --  "path_string": a string of the path identifying the edited cell
+   --    --  @param Path_String a string of the path identifying the edited cell
    --    --  (relative to the tree view model)
-   --    --  "new_iter": the new iter selected in the combo box (relative to the
+   --    --  @param New_Iter the new iter selected in the combo box (relative to the
    --    --  combo box model)
 
 private

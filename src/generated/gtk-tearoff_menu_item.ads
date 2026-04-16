@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Gtk.Tearoff_Menu_Item.Gtk_Tearoff_Menu_Item is a special
 --  Gtk.Menu_Item.Gtk_Menu_Item which is used to tear off and reattach its
 --  menu.
@@ -38,8 +37,6 @@
 --
 --  > Gtk.Tearoff_Menu_Item.Gtk_Tearoff_Menu_Item is deprecated and should not
 --  be used in newly > written code. Menus are not meant to be torn around.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

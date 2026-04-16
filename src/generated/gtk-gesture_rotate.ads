@@ -21,13 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk.Gesture_Rotate.Gtk_Gesture_Rotate is a Gtk.Gesture.Gtk_Gesture
 --  implementation able to recognize 2-finger rotations, whenever the angle
 --  between both handled sequences changes, the
 --  Gtk.Gesture_Rotate.Gtk_Gesture_Rotate::angle-changed signal is emitted.
---
---  </description>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;
@@ -55,7 +52,7 @@ package Gtk.Gesture_Rotate is
    --  Since: gtk+ 3.14
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Gtk_Gesture_Rotate_New
       (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class)
@@ -63,7 +60,7 @@ package Gtk.Gesture_Rotate is
    --  Returns a newly created Gtk.Gesture.Gtk_Gesture that recognizes 2-touch
    --  rotation gestures.
    --  Since: gtk+ 3.14
-   --  "widget": a Gtk.Widget.Gtk_Widget
+   --  @param Widget a Gtk.Widget.Gtk_Widget
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_gesture_rotate_get_type");
@@ -78,6 +75,7 @@ package Gtk.Gesture_Rotate is
    --  radians since the gesture was first recognized. If Gesture is not
    --  active, 0 is returned.
    --  Since: gtk+ 3.14
+   --  @return the angle delta in radians
 
    -------------
    -- Signals --
@@ -107,7 +105,7 @@ package Gtk.Gesture_Rotate is
    --  changes.
    -- 
    --  Callback parameters:
-   --    --  "angle": Current angle in radians
-   --    --  "angle_delta": Difference with the starting angle, in radians
+   --    --  @param Angle Current angle in radians
+   --    --  @param Angle_Delta Difference with the starting angle, in radians
 
 end Gtk.Gesture_Rotate;

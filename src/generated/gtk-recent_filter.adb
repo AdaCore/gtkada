@@ -59,12 +59,12 @@ package body Gtk.Recent_Filter is
    --  needs; this allows GTK+ to avoid retrieving expensive information when
    --  it isn't needed by the filter.
    --  Since: gtk+ 2.10
-   --  "needed": bitfield of flags indicating the information that the custom
-   --  filter function needs.
-   --  "func": callback function; if the function returns True, then the file
-   --  will be displayed.
-   --  "data": data to pass to Func
-   --  "data_destroy": function to call to free Data when it is no longer
+   --  @param Needed bitfield of flags indicating the information that the
+   --  custom filter function needs.
+   --  @param Func callback function; if the function returns True, then the
+   --  file will be displayed.
+   --  @param Data data to pass to Func
+   --  @param Data_Destroy function to call to free Data when it is no longer
    --  needed.
 
    function To_Gtk_Recent_Filter_Func is new Ada.Unchecked_Conversion
@@ -77,10 +77,10 @@ package body Gtk.Recent_Filter is
       (Filter_Info : access Gtk.Recent_Filter.Gtk_Recent_Filter_Info;
        User_Data   : System.Address) return Glib.Gboolean;
    pragma Convention (C, Internal_Gtk_Recent_Filter_Func);
-   --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
+   --  @param Filter_Info a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
    --  filled according to the Needed flags passed to
    --  Gtk.Recent_Filter.Add_Custom
-   --  "user_data": user data passed to Gtk.Recent_Filter.Add_Custom
+   --  @param User_Data user data passed to Gtk.Recent_Filter.Add_Custom
 
    -------------------------------------
    -- Internal_Gtk_Recent_Filter_Func --
@@ -202,10 +202,11 @@ package body Gtk.Recent_Filter is
       pragma Convention (C, Internal_Cb);
       --  The type of function that is used with custom filters, see
       --  Gtk.Recent_Filter.Add_Custom.
-      --  "filter_info": a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that is
-      --  filled according to the Needed flags passed to
+      --  @param Filter_Info a Gtk.Recent_Filter.Gtk_Recent_Filter_Info that
+      --  is filled according to the Needed flags passed to
       --  Gtk.Recent_Filter.Add_Custom
-      --  "user_data": user data passed to Gtk.Recent_Filter.Add_Custom
+      --  @param User_Data user data passed to Gtk.Recent_Filter.Add_Custom
+      --  @return True if the file should be displayed
 
       ----------------
       -- Add_Custom --

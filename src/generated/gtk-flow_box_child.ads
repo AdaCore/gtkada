@@ -81,12 +81,15 @@ package Gtk.Flow_Box_Child is
    --  Gets the current index of the Child in its Gtk.Flow_Box.Gtk_Flow_Box
    --  container.
    --  Since: gtk+ 3.12
+   --  @return the index of the Child, or -1 if the Child is not in a flow
+   --  box.
 
    function Is_Selected
       (Self : not null access Gtk_Flow_Box_Child_Record) return Boolean;
    --  Returns whether the Child is currently selected in its
    --  Gtk.Flow_Box.Gtk_Flow_Box container.
    --  Since: gtk+ 3.12
+   --  @return True if Child is selected
 
    -------------
    -- Signals --
