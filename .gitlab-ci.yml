@@ -5,7 +5,7 @@ issue-check:
   services:
     - image:e3
   stage: build
-  interruptible: true  # Cancel job if the branch is pushed
+  interruptible: true # Cancel job if the branch is pushed
   variables: # do not checkout the git repository, not needed
     GIT_STRATEGY: none
   rules: # Launch only on merge requests
@@ -15,9 +15,9 @@ issue-check:
 
 build:
   services:
-     - image:gtk-deps
-     - cpu:8
-     - mem:16
+    - image:gtk-deps
+    - cpu:8
+    - mem:16
   stage: build
   interruptible: true
   rules:
@@ -25,8 +25,15 @@ build:
     - if: $CI_PIPELINE_SOURCE == 'pipeline'
 
   script:
+    # Setup deps
     - generic_anod_ci
     - . /tmp/ci_env.sh
+
+    # Verify that "make generate" does not generate any change in the sources
+    - anod install gcc --qualifier=stable
+    - eval $(anod printenv gcc --qualifier=stable)
+    - make -f Makefile.in generate
+    - git diff --exit-code
 
     # Build
     - anod build gtkada
