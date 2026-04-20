@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2006-2018, AdaCore                     --
+--                     Copyright (C) 2006-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This package provides an interface to the type system in Glib. These types
 --  provide an object-oriented framework (through inheritance and interfaces),
 --  as well as reference-counting, signals and properties on these types.
@@ -34,7 +33,7 @@
 --  provide the base for dynamic introspection. See also Glib itself, which
 --  contains several general subprograms, and Glib.Object that provides the
 --  root object for any type hierarchy based on glib.
---  </description>
+--
 --  <group>Glib, the general-purpose library</group>
 
 with Glib.Object;

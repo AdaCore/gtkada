@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2018, AdaCore                     --
+--                     Copyright (C) 2010-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  G_Key_File lets you parse, edit or create files containing groups of
 --  key-value pairs, which we call key files for lack of a better name. Several
 --  freedesktop.org specifications use key files now, e.g the Desktop Entry
@@ -85,7 +84,7 @@
 --  files may also contain multiple groups with the same name; they are merged
 --  together. Another difference is that keys and group names in key files are
 --  not restricted to ASCII characters.
---  </description>
+--
 --  <c_version>2.16.6</c_version>
 
 with GNAT.Strings;

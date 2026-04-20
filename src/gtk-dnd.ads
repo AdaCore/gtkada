@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Like all modern GUI toolkits, GtkAda has a full support for drag-and-drop
 --  operations. This is a mechanism for interactively transferring data between
 --  two widgets, either in the same application or in two different
@@ -74,7 +73,7 @@
 --  when the user has dropped some data on the widget. The handler should
 --  call Finish, to warn the source widget that the drag and drop operation
 --  is finished, and whether it was successful or not.
---  </description>
+--
 --  <c_version>2.16.6</c_version>
 --  <group>Inter-Process communication</group>
 --  <testgtk>create_dnd.adb</testgtk>

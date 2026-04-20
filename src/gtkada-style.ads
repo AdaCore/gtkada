@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2011-2018, AdaCore                     --
+--                     Copyright (C) 2011-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,11 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Utility functions that mimic Gtk.Style drawing methods, but using Cairo
 --  instead of Gdk. This allow smooth transition to Gtk3 that will get rid
 --  of those Gdk drawing methods and only use Cairo.
---  </description>
+--
 --  <group>Configuration and Themes</group>
 
 with Ada.Finalization;

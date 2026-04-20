@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2011-2018, AdaCore                     --
+--                     Copyright (C) 2011-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,12 +22,10 @@
 ------------------------------------------------------------------------------
 
 --  Regions -- Representing a pixel-aligned area
---  <description>
 --  Bindings to the Cairo 2D graphics library.
 --  Regions are a simple graphical data type representing an area of integer-
 --  aligned rectangles. Thay are often used on raster surfaces to track areas
 --  of interest, such as change or clip areas.
---  </description>
 --
 --  <c_version>1.10</c_version>
 --  <group>Cairo</group>

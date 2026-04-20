@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,8 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This packages provides the implementation of a generic single-linked
 --  list.
 --  One instantiation is found in Gtk.Widget.Widget_Slist for a list of
@@ -34,7 +32,6 @@
 --  even though most subprograms are less efficient than their
 --  double-linked counterparts.
 --
---  </description>
 --  <c_version>1.2.6</c_version>
 --  <group>Glib, the general-purpose library</group>
 

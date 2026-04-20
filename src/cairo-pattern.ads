@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2018, AdaCore                     --
+--                     Copyright (C) 2010-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,14 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  A Cairo_Pattern is the paintbrush with which cairo draws. The primary use
 --  of patterns is as the source for all cairo drawing operations.
 --
 --  A cairo pattern is created by using one of the many constructors, of the
 --  form Cairo_Pattern.Create_<type> or implicitly through
 --  Cairo.Set_Source_<type> subprograms.
---  </description>
 --
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>

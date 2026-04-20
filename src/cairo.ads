@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2018, AdaCore                     --
+--                     Copyright (C) 2010-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Bindings to the Cairo 2D graphics library.
 --  The Cairo_Context is the main object used when drawing with cairo. To draw
 --  with Cairo, you create a Context, set the target surface, and drawing
@@ -35,18 +34,16 @@
 --
 --  When the widget has been created, connect a drawing function:
 --
---  <code>
 --     declare
 --        Area : Gtk_Drawing_Area;
 --
 --        package Event_Cb is new Gtk.Handlers.Return_Callback
---            (Gtk_Drawing_Area_Record, Boolean);
+--          (Gtk_Drawing_Area_Record, Boolean);
 --     begin
 --        Gtk_New (Area);
 --        Event_Cb.Connect (Area, "expose_event",
 --                          Event_Cb.To_Marshaller (Expose_Cb'Access));
 --     end;
---  </code>
 --
 --  In the callback, first get the context of the drawable on which you
 --  need to draw, using Gdk.Cairo.Create. Then do the drawing operations, and
@@ -59,7 +56,6 @@
 --
 --  Code samples demonstrating how to use various functionalities of Cairo
 --  can be found in the testcairo example, shipped with GtkAda.
---  </description>
 --
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>

@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,8 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package provides support for string internationalization using the
 --  libintl library.
 --
@@ -60,13 +58,14 @@
 --  A convenient shortcut is provided in the form of the "-" operator.
 --
 --  As a result, typical code would look like:
---    begin
---       Setlocale;
---       Text_Domain ("application");
---       Bind_Text_Domain ("application", "/usr/local/share/locale");
---       ...
---       Put_Line (-"I18n string");
---    end;
+--
+--     begin
+--        Setlocale;
+--        Text_Domain ("application");
+--        Bind_Text_Domain ("application", "/usr/local/share/locale");
+--        ...
+--        Put_Line (-"I18n string");
+--     end;
 --
 --  Preparing and installing the translation files
 --  ===============================================
@@ -90,15 +89,15 @@
 --  The translation files can also be created fully by hand.
 --  Here is a sample translation file that can be used as an input for msgfmt:
 --
---  # gtkada-fr.po
---  msgid  "Help"
---  msgstr "Aide"
+--     # gtkada-fr.po
+--     msgid  "Help"
+--     msgstr "Aide"
 --
---  msgid  "Yes"
---  msgstr "Oui"
+--     msgid  "Yes"
+--     msgstr "Oui"
 --
---  $ msgfmt gtkada-fr.po -o gtkada-fr.gmo
---  $ cp gtkada-fr.gmo /usr/share/locale/fr/LC_MESSAGES/gtkada.mo
+--     $ msgfmt gtkada-fr.po -o gtkada-fr.gmo
+--     $ cp gtkada-fr.gmo /usr/share/locale/fr/LC_MESSAGES/gtkada.mo
 --
 --  User setup
 --  ==========
@@ -107,7 +106,7 @@
 --  "LANG". For example, to switch to the french locale using
 --  bash:
 --
---  $ export LANG=fr_FR
+--     $ export LANG=fr_FR
 --
 --  Depending on the specific implementation of gettext, the following
 --  environment variables may be set to change the default settings of locale
@@ -129,8 +128,6 @@
 --          /usr/share/locale on Linux).
 --
 --  See the gettext documentation of your specific OS for more details.
---
---  </description>
 
 with Glib;
 

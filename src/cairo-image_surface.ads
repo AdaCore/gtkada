@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2018, AdaCore                     --
+--                     Copyright (C) 2010-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,11 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Image surfaces provide the ability to render to memory buffers either
 --  allocated by Cairo or by the calling code. The supported image formats are
 --  those defined in Cairo_Format.
---  </description>
 --
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>

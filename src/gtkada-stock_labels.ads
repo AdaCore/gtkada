@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2024, AdaCore                          --
+--                    Copyright (C) 2024-2026, AdaCore                      --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,12 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Utility package that replaces the deprecated Gtk.Stock package.
 --  Lists all the predefined labels that replace the old GTK_STOCK_* macros
 --  for stock labels.
 --  See https://docs.gtk.org/gtk3/index.html#constants for more information.
---  </description>
+--
 --  <group>Configuration and Themes</group>
 
 with Glib; use Glib;

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,14 +21,13 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This package provides an interface to generic values as used in the
 --  Glib object model.
 --
 --  The main type in this package is GValues, which is the
 --  equivalent of the C's (GValue*) array, i.e an array of unions.  This
 --  package provides functions to extract the values from this type.
---  </description>
+--
 --  <c_version>1.3.15</c_version>
 --  <group>Glib, the general-purpose library</group>
 

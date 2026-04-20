@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2003-2018, AdaCore                     --
+--                     Copyright (C) 2003-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,11 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This widget implements a multi-paned widget, similar to the standard
 --  Gtk_Paned widget, but which can contain several children side to side.
 --  This widget can mix vertical and horizontal splits
---  </description>
+--
 --  <group>Layout containers</group>
 --  <testgtk>create_splittable.adb</testgtk>
 

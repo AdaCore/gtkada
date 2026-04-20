@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2018, AdaCore                     --
+--                     Copyright (C) 2010-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This package provides a ready-to-use high level printing object.
 --  Use functionality from Gtk.Print_Operation to manipulate the
 --  printing object, and the functionality in this package to provide
@@ -41,8 +40,6 @@
 --  Note: on UNIX/Linux, Gtk+ is loading at run-time the libraries for printing
 --  support. You will need to point the environment variable GTK_EXE_PREFIX
 --  to the root directory of your Gtk+ install before calling Connect_And_Run.
---  </description>
---  <example>
 --
 --     --  Create a derived type
 --
@@ -85,7 +82,6 @@
 --          (Print_Op, Action_Print_Dialog, Gtk_Window (Get_Toplevel (Frame)));
 --     end;
 --
---  </example>
 --  <group>Miscellaneous</group>
 
 with Glib; use Glib;

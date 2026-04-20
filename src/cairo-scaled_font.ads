@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2010-2018, AdaCore                     --
+--                     Copyright (C) 2010-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,9 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Utilities for manipulating font faces.
---  </description>
 --
 --  <c_version>1.8.8</c_version>
 --  <group>Cairo</group>

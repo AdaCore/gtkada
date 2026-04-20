@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2006-2018, AdaCore                     --
+--                     Copyright (C) 2006-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Gtk_Bindings provides a mechanism for configuring Gtk+ key bindings through
 --  RC files. This eases key binding adjustments for application developers as
 --  well as users and provides Gtk+ users or administrators with high key
@@ -45,15 +44,15 @@
 --  Gtk_Entry::move-cursor signal, so movement occurs in 3 letter steps, the
 --  following binding can be used:
 --
---  binding "MoveCursor3" {
---     bind "<Control>Right" {
---       "move-cursor" (visual-positions, 3, 0)
+--     binding "MoveCursor3" {
+--        bind "<Control>Right" {
+--          "move-cursor" (visual-positions, 3, 0)
+--        }
+--        bind "<Control>Left" {
+--          "move-cursor" (visual-positions, -3, 0)
+--        }
 --     }
---     bind "<Control>Left" {
---       "move-cursor" (visual-positions, -3, 0)
---     }
---  }
---  class "GtkEntry" binding "MoveCursor3"
+--     class "GtkEntry" binding "MoveCursor3"
 --
 --  Unbinding existing key bindings
 --  ===============================
@@ -64,11 +63,11 @@
 --  demonstrated in Installing a key binding works as expected. The same
 --  mechanism can not be used to "unbind" existing bindings, however.
 --
---  binding "MoveCursor3" {
---     bind "<Control>Right" { }
---     bind "<Control>Left" { }
---  }
---  class "GtkEntry" binding "MoveCursor3"
+--     binding "MoveCursor3" {
+--        bind "<Control>Right" { }
+--        bind "<Control>Left" { }
+--     }
+--     class "GtkEntry" binding "MoveCursor3"
 --
 --  The above example will not have the desired effect of causing
 --  "<Control>Right" and "<Control>Left" key presses to be ignored by Gtk+.
@@ -80,18 +79,18 @@
 --  which implement word movement. To keep Gtk+ from activating its default
 --  bindings, the "unbind" keyword can be used like this:
 --
---  binding "MoveCursor3" {
---     unbind "<Control>Right"
---     unbind "<Control>Left"
---  }
---  class "GtkEntry" binding "MoveCursor3"
+--     binding "MoveCursor3" {
+--        unbind "<Control>Right"
+--        unbind "<Control>Left"
+--     }
+--     class "GtkEntry" binding "MoveCursor3"
 --
 --  Now, Gtk+ will find a match when looking up "<Control>Right" and
 --  "<Control>Left" key presses before it resorts to its default bindings, and
 --  the match instructs it to abort ("unbind") the search, so the key presses
 --  are not consumed by this widget. As usual, further processing of the key
 --  presses, e.g. by an entries parent widget, is now possible.
---  </description>
+--
 --  <c_version>2.14</c_version>
 --  <group>Configuration and Themes</group>
 

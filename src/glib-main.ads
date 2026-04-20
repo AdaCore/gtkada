@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2006-2018, AdaCore                     --
+--                     Copyright (C) 2006-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This package contains low-level subprograms that are used to interact or
 --  configure the main loop.
 --  This loop is responsible for processing events, monitoring input sources
@@ -75,7 +74,7 @@
 --  latter might be more complex to use in the context of a graphical
 --  application, since most of the time the windowing system doesn't support
 --  multi-threaded applications.
---  </description>
+--
 --  <c_version>glib 2.10.2</c_version>
 --  <group>Glib, the general-purpose library</group>
 --  <testgtk>create_sources.adb</testgtk>

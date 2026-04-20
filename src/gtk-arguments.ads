@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2022, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,7 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This package is obsolete and replaced by Glib.Values.
 --  Future versions of GtkAda will no longer provide this package.
 --
@@ -36,7 +35,7 @@
 --  Therefore, the main type in this package is Gtk_Args, which is the
 --  equivalent of the C's (GtkArg*) array, i.e an array of unions.  This
 --  package provides functions to extract the values from this type.
---  </description>
+--
 --  <c_version>2.8.17</c_version>
 --  <group>Signal handling</group>
 

@@ -2,7 +2,7 @@
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,8 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package provides an implementation for hooks used in
 --  Gtk.Type_Conversion. These hooks should be used when you import a new
 --  C GObject, so that GtkAda can recreate the Ada structure from the
@@ -38,7 +36,6 @@
 --  Note that this package is not thread safe. You should call the
 --  function Add_Hook from the elaboration part of your packages.
 --
---  </description>
 --  <group>Glib, the general-purpose library</group>
 
 with Glib.Object; use Glib.Object;
