@@ -132,12 +132,16 @@ package Glib.Properties is
       Value  : in out Glib.Values.GValue);
    --  Get the property. Value must have been initialized first with the
    --  expected type for the property, as in:
-   --      Value : GValue;
-   --      Init (Value, Value_Type (Pspec));
-   --      Get_Property (Object, Pspec_Name (Pspec), Value);
+   --
+   --     Value : GValue;
+   --     Init (Value, Value_Type (Pspec));
+   --     Get_Property (Object, Pspec_Name (Pspec), Value);
+   --
    --  If you do not have a Param_Spec, this can be replaced with:
-   --      Init (Value, GType_Int);
-   --      Get_Property (Object, Property_Name (Property), Value);
+   --
+   --     Init (Value, GType_Int);
+   --     Get_Property (Object, Property_Name (Property), Value);
+   --
    --  Value must be Unset by the caller to free memory
 
    --  Special handling of string properties

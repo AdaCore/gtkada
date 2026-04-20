@@ -329,8 +329,6 @@ package Cairo is
    --  content.
 
    function Create (Target : Cairo_Surface) return Cairo_Context;
-   --  Target: Target surface for the context
-   --
    --  Creates a new Cairo_Context with all graphics state parameters set to
    --  default values and with target as a target surface. The target
    --  surface should be constructed with a backend-specific function such
@@ -340,18 +338,15 @@ package Cairo is
    --  call Cairo.Surface.Destroy on it if you don't need to
    --  maintain a separate reference to it.
    --
-   --  Return value: a newly allocated Cairo_Context with a reference
-   --  count of 1. The initial reference count should be released
-   --  with Destroy when you are done using the Cairo_Context.
-   --  This function never returns NULL. If memory cannot be
-   --  allocated, a special Cairo_Context object will be returned on
-   --  which Status returns Cairo_Status_No_Memory.
-   --  You can use this object normally, but no drawing will
-   --  be done.
+   --  @param Target Target surface for the context
+   --  @return a newly allocated Cairo_Context with a reference count of 1.
+   --  The initial reference count should be released with Destroy when you
+   --  are done using the Cairo_Context. This function never returns NULL. If
+   --  memory cannot be allocated, a special Cairo_Context object will be
+   --  returned on which Status returns Cairo_Status_No_Memory. You can use
+   --  this object normally, but no drawing will be done.
 
    function Reference (Cr : Cairo_Context) return Cairo_Context;
-   --  Cr: a Cairo_Context
-   --
    --  Increases the reference count on cr by one. This prevents
    --  cr from being destroyed until a matching call to Destroy
    --  is made.
@@ -359,7 +354,8 @@ package Cairo is
    --  The number of references to a Cairo_Context can be retrieved using
    --  Get_Reference_Count.
    --
-   --  Return value: the referenced Cairo_Context.
+   --  @param Cr a Cairo_Context
+   --  @return the referenced Cairo_Context.
 
    procedure Destroy (Cr : Cairo_Context);
    pragma Import (C, Destroy, "cairo_destroy");
@@ -374,30 +370,26 @@ package Cairo is
    --  Free the memory used by the surface
 
    function Get_Reference_Count (Cr : Cairo_Context) return Guint;
-   --  Cr: a Cairo_Context
-   --
    --  Returns the current reference count of cr.
    --
-   --  Return value: the current reference count of cr.  If the
-   --  object is a nil object, 0 will be returned.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Cr a Cairo_Context
+   --  @return the current reference count of cr. If the object is a nil
+   --  object, 0 will be returned.
 
    function Get_User_Data
      (Cr   : Cairo_Context;
       Key  : access Cairo_User_Data_Key)
       return System.Address;
-   --  Cr: a Cairo_Context
-   --  Key: the address of the Cairo_User_Data_Key the user data was
-   --  attached to
-   --
    --  Return user data previously attached to cr using the specified
    --  key.  If no user data has been attached with the given key this
    --  function returns NULL.
    --
-   --  Return value: the user data previously attached or NULL.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Cr a Cairo_Context
+   --  @param Key the address of the Cairo_User_Data_Key the user data was
+   --  attached to
+   --  @return the user data previously attached or NULL.
 
    function Set_User_Data
      (Cr        : Cairo_Context;
@@ -405,25 +397,22 @@ package Cairo is
       User_Data : System.Address;
       Destroy   : Cairo_Destroy_Func)
       return      Cairo_Status;
-   --  Cr: a Cairo_Context
-   --  Key: the address of a Cairo_User_Data_Key to attach the user data to
-   --  User_Data: the user data to attach to the Cairo_Context
-   --  Destroy: a Cairo_Destroy_Func which will be called when the
-   --  Cairo_Context is destroyed or when new user data is attached using the
-   --  same key.
-   --
    --  Attach user data to cr.  To remove user data from a surface,
    --  call this function with the key that was used to set it and NULL
    --  for data.
    --
-   --  Return value: CAIRO_STATUS_SUCCESS or CAIRO_STATUS_NO_MEMORY if a
-   --  slot could not be allocated for the user data.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Cr a Cairo_Context
+   --  @param Key the address of a Cairo_User_Data_Key to attach the user data
+   --  to
+   --  @param User_Data the user data to attach to the Cairo_Context
+   --  @param Destroy a Cairo_Destroy_Func which will be called when the
+   --  Cairo_Context is destroyed or when new user data is attached using the
+   --  same key.
+   --  @return CAIRO_STATUS_SUCCESS or CAIRO_STATUS_NO_MEMORY if a slot could
+   --  not be allocated for the user data.
 
    procedure Save (Cr : Cairo_Context);
-   --  Cr: a Cairo_Context
-   --
    --  Makes a copy of the current state of cr and saves it
    --  on an internal stack of saved states for cr. When
    --  Cairo_Restore is called, cr will be restored to
@@ -435,17 +424,17 @@ package Cairo is
    --  a Cairo_Context is freed. If the reference count of a Cairo_Context
    --  drops to zero in response to a call to Cairo_Destroy,
    --  any saved states will be freed along with the Cairo_Context.
+   --
+   --  @param Cr a Cairo_Context
 
    procedure Restore (Cr : Cairo_Context);
-   --  Cr: a Cairo_Context
-   --
    --  Restores cr to the state saved by a preceding call to
    --  Cairo_Save and removes that state from the stack of
    --  saved states.
+   --
+   --  @param Cr a Cairo_Context
 
    procedure Push_Group (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  Temporarily redirects drawing to an intermediate surface known as a
    --  group. The redirection lasts until the group is completed by a call
    --  to Pop_Group or Pop_Group_To_Source.
@@ -483,15 +472,12 @@ package Cairo is
    --      Pop_Group_To_Source (Cr);
    --      Paint_With_Alpha (Cr, Alpha);
    --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Cr a cairo context
 
    procedure Push_Group_With_Content
      (Cr      : Cairo_Context;
       Content : Cairo_Content);
-   --  Cr: a cairo context
-   --  Content: a Cairo_Content indicating the type of group that
-   --            will be created
-   --
    --  Temporarily redirects drawing to an intermediate surface known as a
    --  group. The redirection lasts until the group is completed by a call to
    --  Pop_Group or Pop_Group_To_Source. These calls provide the result of any
@@ -503,11 +489,12 @@ package Cairo is
    --  Push_Group which you should see for a more detailed description of group
    --  rendering.
    --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Cr a cairo context
+   --  @param Content a Cairo_Content indicating the type of group that will
+   --  be created
 
    function Pop_Group (Cr : Cairo_Context) return Cairo_Pattern;
-   --  Cr: a cairo context
-   --
    --  Terminates the redirection begun by a call to Push_Group or
    --  Push_Group_With_Content and returns a new pattern containing the results
    --  of all drawing operations performed to the group.
@@ -516,16 +503,13 @@ package Cairo is
    --  Push_Group function), so that any changes to the graphics state will not
    --  be visible outside the group.
    --
-   --  Return value: a newly created (surface) pattern containing the
-   --  results of all drawing operations performed to the group. The
-   --  caller owns the returned object and should call
-   --  Cairo.Pattern.Destroy when finished with it.
-   --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Cr a cairo context
+   --  @return a newly created (surface) pattern containing the results of all
+   --  drawing operations performed to the group. The caller owns the returned
+   --  object and should call Cairo.Pattern.Destroy when finished with it.
 
    procedure Pop_Group_To_Source (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  Terminates the redirection begun by a call to Push_Group or
    --  Push_Group_With_Content and installs the resulting pattern as the source
    --  pattern in the given cairo context.
@@ -547,7 +531,8 @@ package Cairo is
    --  push_group function), so that any changes to the graphics state will not
    --  be visible outside the group.
    --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Cr a cairo context
 
    --  Cairo_operator is used to set the compositing operator for all cairo
    --  drawing operations.
@@ -612,14 +597,14 @@ package Cairo is
      );
 
    procedure Set_Operator (Cr : Cairo_Context; Op : Cairo_Operator);
-   --  Cr: a Cairo_Context
-   --  Op: a compositing Operator, specified as a Cairo_Operator
-   --
    --  Sets the compositing operator to be used for all drawing
    --  operations. See Cairo_Operator for details on the semantics of
    --  each available compositing operator.
    --
    --  The default operator is Cairo_Operator_Over.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Op a compositing Operator, specified as a Cairo_Operator
 
    function Pattern_Create_Rgb
      (Red, Green, Blue : Gdouble) return Cairo_Pattern;
@@ -661,10 +646,6 @@ package Cairo is
      (C, Pattern_Add_Color_Stop_Rgba, "cairo_pattern_add_color_stop_rgba");
 
    procedure Set_Source (Cr : Cairo_Context; Source : Cairo_Pattern);
-   --  Cr: a cairo context
-   --  Source: a Cairo_Pattern to be used as the Source for
-   --  subsequent drawing operations.
-   --
    --  Sets the source pattern within Cr to source. This pattern
    --  will then be used for any subsequent drawing operation until a new
    --  source pattern is set.
@@ -676,6 +657,10 @@ package Cairo is
    --
    --  The default source pattern is a solid pattern that is opaque black,
    --  (that is, it is equivalent to Set_Source_Rgb (Cr, 0.0, 0.0, 0.0)).
+   --
+   --  @param Cr a cairo context
+   --  @param Source a Cairo_Pattern to be used as the Source for subsequent
+   --  drawing operations.
 
    subtype Color_Range is Gdouble range 0.0 .. 1.0;
 
@@ -684,11 +669,6 @@ package Cairo is
       Red   : Color_Range;
       Green : Color_Range;
       Blue  : Color_Range);
-   --  Cr    : a cairo context
-   --  Red   : Red component of color
-   --  Green : Green component of color
-   --  Blue  : Blue component of color
-   --
    --  Sets the source pattern within Cr to an opaque color. This opaque
    --  color will then be used for any subsequent drawing operation until
    --  a new source pattern is set.
@@ -699,6 +679,11 @@ package Cairo is
    --
    --  The default source pattern is opaque black, (that is, it is
    --  equivalent to Set_Source_Rgb (Cr, 0.0, 0.0, 0.0)).
+   --
+   --  @param Cr a cairo context
+   --  @param Red Red component of color
+   --  @param Green Green component of color
+   --  @param Blue Blue component of color
 
    procedure Set_Source_Rgba
      (Cr    : Cairo_Context;
@@ -706,12 +691,6 @@ package Cairo is
       Green : Color_Range;
       Blue  : Color_Range;
       Alpha : Color_Range);
-   --  Cr    : a cairo context
-   --  Red   : Red component of color
-   --  Green : Green component of color
-   --  Blue  : Blue component of color
-   --  Alpha : Alpha component of color
-   --
    --  Sets the source pattern within Cr to a translucent color. This
    --  color will then be used for any subsequent drawing operation until
    --  a new source pattern is set.
@@ -722,17 +701,18 @@ package Cairo is
    --
    --  The default source pattern is opaque black, (that is, it is
    --  equivalent to Set_Source_Rgba (Cr, 0.0, 0.0, 0.0, 1.0)).
+   --
+   --  @param Cr a cairo context
+   --  @param Red Red component of color
+   --  @param Green Green component of color
+   --  @param Blue Blue component of color
+   --  @param Alpha Alpha component of color
 
    procedure Set_Source_Surface
      (Cr      : Cairo_Context;
       Surface : Cairo_Surface;
       X       : Gdouble;
       Y       : Gdouble);
-   --  Cr      : a cairo context
-   --  Surface : a Surface to be used to set the source pattern
-   --  X       : User-space X coordinate for surface origin
-   --  Y       : User-space Y coordinate for surface origin
-   --
    --  This is a convenience function for creating a pattern from surface
    --  and setting it as the source in Cr with Set_Source.
    --
@@ -748,11 +728,13 @@ package Cairo is
    --  The resulting pattern can be queried with Get_Source so that these
    --  attributes can be modified if desired, (eg. to create a
    --  repeating pattern with Cairo.Pattern.Set_Extend).
+   --
+   --  @param Cr a cairo context
+   --  @param Surface a Surface to be used to set the source pattern
+   --  @param X User-space X coordinate for surface origin
+   --  @param Y User-space Y coordinate for surface origin
 
    procedure Set_Tolerance (Cr : Cairo_Context; Tolerance : Gdouble);
-   --  Cr: a Cairo_Context
-   --  Tolerance: the Tolerance, in device units (typically pixels)
-   --
    --  Sets the tolerance used when converting paths into trapezoids.
    --  Curved segments of the path will be subdivided until the maximum
    --  deviation between the original path and the polygonal approximation
@@ -763,6 +745,9 @@ package Cairo is
    --  within Cairo is limited by the precision of its internal arithmetic, and
    --  the prescribed tolerance is restricted to the smallest
    --  representable internal value.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Tolerance the Tolerance, in device units (typically pixels)
 
    --  Specifies the type of antialiasing to do when rendering text or shapes.
    type Cairo_Antialias is
@@ -785,9 +770,6 @@ package Cairo is
    procedure Set_Antialias
      (Cr        : Cairo_Context;
       Antialias : Cairo_Antialias);
-   --  Cr: a Cairo_Context
-   --  Antialias: the new Antialiasing mode
-   --
    --  Set the antialiasing mode of the rasterizer used for drawing shapes.
    --  This value is a hint, and a particular backend may or may not support
    --  a particular value.  At the current time, no backend supports
@@ -795,6 +777,9 @@ package Cairo is
    --
    --  Note that this option does not affect text rendering, instead see
    --  Cairo.Font_Options.Set_Antialias.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Antialias the new Antialiasing mode
 
    --  Cairo_Fill_Rule is used to select how paths are filled. For both
    --  fill rules, whether or not a point is included in the fill is
@@ -825,9 +810,6 @@ package Cairo is
    procedure Set_Fill_Rule
      (Cr        : Cairo_Context;
       Fill_Rule : Cairo_Fill_Rule);
-   --  Cr: a Cairo_Context
-   --  Fill_Rule: a fill rule
-   --
    --  Set the current fill rule within the cairo context. The fill rule is
    --  used to determine which regions are inside or outside a complex
    --  (potentially self-intersecting) path. The current fill rule affects both
@@ -835,11 +817,11 @@ package Cairo is
    --  available fill rule.
    --
    --  The default fill rule is Cairo_Fill_Rule_Winding.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Fill_Rule a fill rule
 
    procedure Set_Line_Width (Cr : Cairo_Context; Width : Gdouble);
-   --  Cr: a Cairo_Context
-   --  Width: a line Width
-   --
    --  Sets the current line width within the cairo context. The line
    --  width value specifies the diameter of a pen that is circular in
    --  user space, (though device-space pen may be an ellipse in general
@@ -859,6 +841,9 @@ package Cairo is
    --  effect during path construction.
    --
    --  The default line width value is 2.0.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Width a line Width
 
    type Cairo_Line_Cap is
      (Cairo_Line_Cap_Butt,
@@ -875,9 +860,6 @@ package Cairo is
    --  The default line cap style is Cairo_Line_Cap_Butt.
 
    procedure Set_Line_Cap (Cr : Cairo_Context; Line_Cap : Cairo_Line_Cap);
-   --  Cr: a cairo context
-   --  Line_Cap: a line cap style
-   --
    --  Sets the current line cap style within the cairo context. See
    --  Cairo_Line_Cap for details about how the available line cap
    --  styles are drawn.
@@ -887,6 +869,9 @@ package Cairo is
    --  have any effect during path construction.
    --
    --  The default line cap style is Cairo_Line_Cap_Butt.
+   --
+   --  @param Cr a cairo context
+   --  @param Line_Cap a line cap style
 
    type Cairo_Line_Join is
      (Cairo_Line_Join_Miter,
@@ -906,9 +891,6 @@ package Cairo is
    procedure Set_Line_Join
      (Cr        : Cairo_Context;
       Line_Join : Cairo_Line_Join);
-   --  Cr: a cairo context
-   --  Line_Join: a line join style
-   --
    --  Sets the current line join style within the cairo context. See
    --  Cairo_Line_Join for details about how the available line join styles are
    --  drawn.
@@ -918,6 +900,9 @@ package Cairo is
    --  not have any effect during path construction.
    --
    --  The default line join style is Cairo_Line_Join_Miter.
+   --
+   --  @param Cr a cairo context
+   --  @param Line_Join a line join style
 
    type Dash_Array is array (Natural range <>) of Gdouble;
 
@@ -927,11 +912,6 @@ package Cairo is
      (Cr         : Cairo_Context;
       Dashes     : Dash_Array;
       Offset     : Gdouble);
-   --  Cr: a cairo context
-   --  Dashes: an array specifying alternate lengths of on and off stroke
-   --  portions
-   --  Offset: an Offset into the dash pattern at which the stroke should start
-   --
    --  Sets the dash pattern to be used by Stroke. A dash pattern
    --  is specified by dashes, an array of positive values. Each value
    --  provides the length of alternate "on" and "off" portions of the
@@ -956,11 +936,14 @@ package Cairo is
    --  If any value in dashes is negative, or if all values are 0, then
    --  cr will be put into an error state with a status of
    --  Cairo_Status_Invalid_Dash.
+   --
+   --  @param Cr a cairo context
+   --  @param Dashes an array specifying alternate lengths of on and off
+   --  stroke portions
+   --  @param Offset an Offset into the dash pattern at which the stroke
+   --  should start
 
    procedure Set_Miter_Limit (Cr : Cairo_Context; Limit : Gdouble);
-   --  Cr: a cairo context
-   --  Limit: miter Limit to set
-   --
    --  Sets the current miter limit within the cairo context.
    --
    --  If the current line join style is set to Cairo_Line_Join_Miter
@@ -982,135 +965,136 @@ package Cairo is
    --
    --  A miter limit for a desired angle can be computed as: miter limit =
    --  1/sin(angle/2)
+   --
+   --  @param Cr a cairo context
+   --  @param Limit miter Limit to set
 
    procedure Translate (Cr : Cairo_Context; Tx : Gdouble; Ty : Gdouble);
-   --  Cr: a cairo context
-   --  Tx: amount to translate in the X direction
-   --  Ty: amount to translate in the Y direction
-   --
    --  Modifies the current transformation matrix (CTM) by translating the
    --  user-space origin by (tx, ty). This offset is interpreted as a
    --  user-space coordinate according to the CTM in place before the new
    --  call to Translate. In other words, the translation of the
    --  user-space origin takes place after any existing transformation.
+   --
+   --  @param Cr a cairo context
+   --  @param Tx amount to translate in the X direction
+   --  @param Ty amount to translate in the Y direction
 
    procedure Scale (Cr : Cairo_Context; Sx : Gdouble; Sy : Gdouble);
-   --  Cr: a cairo context
-   --  Sx: scale factor for the X dimension
-   --  Sy: scale factor for the Y dimension
-   --
    --  Modifies the current transformation matrix (CTM) by scaling the X
    --  and Y user-space axes by sx and sy respectively. The scaling of
    --  the axes takes place after any existing transformation of user
    --  space.
+   --
+   --  @param Cr a cairo context
+   --  @param Sx scale factor for the X dimension
+   --  @param Sy scale factor for the Y dimension
 
    procedure Rotate (Cr : Cairo_Context; Angle : Gdouble);
-   --  Cr: a cairo context
-   --  Angle: Angle (in radians) by which the user-space axes will be
-   --  rotated
-   --
    --  Modifies the current transformation matrix (CTM) by rotating the
    --  user-space axes by angle radians. The rotation of the axes takes
    --  places after any existing transformation of user space. The
    --  rotation direction for positive angles is from the positive X axis
    --  toward the positive Y axis.
+   --
+   --  @param Cr a cairo context
+   --  @param Angle Angle (in radians) by which the user-space axes will be
+   --  rotated
 
    procedure Transform
      (Cr     : Cairo_Context;
       Matrix : access Cairo_Matrix);
-   --  Cr: a cairo context
-   --  Matrix: a transformation to be applied to the user-space axes
-   --
    --  Modifies the current transformation matrix (CTM) by applying
    --  matrix as an additional transformation. The new transformation of
    --  user space takes place after any existing transformation.
+   --
+   --  @param Cr a cairo context
+   --  @param Matrix a transformation to be applied to the user-space axes
 
    procedure Set_Matrix
      (Cr     : Cairo_Context;
       Matrix : access Cairo_Matrix);
-   --  Cr: a cairo context
-   --  Matrix: a transformation Matrix from user space to device space
-   --
    --  Modifies the current transformation matrix (CTM) by setting it
    --  equal to matrix.
+   --
+   --  @param Cr a cairo context
+   --  @param Matrix a transformation Matrix from user space to device space
 
    procedure Identity_Matrix (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  Resets the current transformation matrix (CTM) by setting it equal
    --  to the identity matrix. That is, the user-space and device-space
    --  axes will be aligned and one user-space unit will transform to one
    --  device-space unit.
+   --
+   --  @param Cr a cairo context
 
    procedure User_To_Device
      (Cr : Cairo_Context;
       X  : access Gdouble;
       Y  : access Gdouble);
-   --  Cr: a cairo context
-   --  X: X value of coordinate (in/out parameter)
-   --  Y: Y value of coordinate (in/out parameter)
-   --
    --  Transform a coordinate from user space to device space by
    --  multiplying the given point by the current transformation matrix
    --  (CTM).
+   --
+   --  @param Cr a cairo context
+   --  @param X X value of coordinate (in/out parameter)
+   --  @param Y Y value of coordinate (in/out parameter)
 
    procedure User_To_Device_Distance
      (Cr : Cairo_Context;
       Dx : access Gdouble;
       Dy : access Gdouble);
-   --  Cr: a cairo context
-   --  Dx: X component of a distance vector (in/out parameter)
-   --  Dy: Y component of a distance vector (in/out parameter)
-   --
    --  Transform a distance vector from user space to device space. This
    --  function is similar to User_To_Device except that the translation
    --  components of the CTM will be ignored when transforming (Dx,Dy).
+   --
+   --  @param Cr a cairo context
+   --  @param Dx X component of a distance vector (in/out parameter)
+   --  @param Dy Y component of a distance vector (in/out parameter)
 
    procedure Device_To_User
      (Cr : Cairo_Context;
       X  : access Gdouble;
       Y  : access Gdouble);
-   --  Cr: a cairo
-   --  X: X value of coordinate (in/out parameter)
-   --  Y: Y value of coordinate (in/out parameter)
-   --
    --  Transform a coordinate from device space to user space by
    --  multiplying the given point by the inverse of the current
    --  transformation matrix (CTM).
+   --
+   --  @param Cr a cairo
+   --  @param X X value of coordinate (in/out parameter)
+   --  @param Y Y value of coordinate (in/out parameter)
 
    procedure Device_To_User_Distance
      (Cr : Cairo_Context;
       Dx : access Gdouble;
       Dy : access Gdouble);
-   --  Cr: a cairo context
-   --  Dx: X component of a distance vector (in/out parameter)
-   --  Dy: Y component of a distance vector (in/out parameter)
-   --
    --  Transform a distance vector from device space to user space. This
    --  function is similar to Device_To_User except that the
    --  translation components of the inverse CTM will be ignored when
    --  transforming (Dx,dy).
+   --
+   --  @param Cr a cairo context
+   --  @param Dx X component of a distance vector (in/out parameter)
+   --  @param Dy Y component of a distance vector (in/out parameter)
 
    -------------------
    -- Path creation --
    -------------------
 
    procedure New_Path (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  Clears the current path. After this call there will be no path and
    --  no current point.
+   --
+   --  @param Cr a cairo context
 
    procedure Move_To (Cr : Cairo_Context; X : Gdouble; Y : Gdouble);
-   --  Cr: a cairo context
-   --  X: the X coordinate of the new position
-   --  Y: the Y coordinate of the new position
-   --
    --  Begin a new sub-path. After this call the current point will be (X, Y).
+   --
+   --  @param Cr a cairo context
+   --  @param X the X coordinate of the new position
+   --  @param Y the Y coordinate of the new position
 
    procedure New_Sub_Path (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  Begin a new sub-path. Note that the existing path is not
    --  affected. After this call there will be no current point.
    --
@@ -1123,19 +1107,20 @@ package Cairo is
    --  compute the arc's initial coordinates for a call to
    --  Move_To.
    --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Cr a cairo context
 
    procedure Line_To (Cr : Cairo_Context; X : Gdouble; Y : Gdouble);
-   --  Cr: a cairo context
-   --  X: the X coordinate of the end of the new line
-   --  Y: the Y coordinate of the end of the new line
-   --
    --  Adds a line to the path from the current point to position (X, Y)
    --  in user-space coordinates. After this call the current point
    --  will be (X, Y).
    --
    --  If there is no current point before the call to Line_To
    --  this function will behave as Move_To (Cr, X, Y).
+   --
+   --  @param Cr a cairo context
+   --  @param X the X coordinate of the end of the new line
+   --  @param Y the Y coordinate of the end of the new line
 
    procedure Curve_To
      (Cr : Cairo_Context;
@@ -1145,14 +1130,6 @@ package Cairo is
       Y2 : Gdouble;
       X3 : Gdouble;
       Y3 : Gdouble);
-   --  Cr: a cairo context
-   --  X1: the X coordinate of the first control point
-   --  Y1: the Y coordinate of the first control point
-   --  X2: the X coordinate of the second control point
-   --  Y2: the Y coordinate of the second control point
-   --  X3: the X coordinate of the end of the curve
-   --  Y3: the Y coordinate of the end of the curve
-   --
    --  Adds a cubic Bézier spline to the path from the current point to
    --  position (X3, Y3) in user-space coordinates, using (X1, Y1) and
    --  (X2, Y2) as the control points. After this call the current point
@@ -1161,6 +1138,14 @@ package Cairo is
    --  If there is no current point before the call to Curve_To
    --  this function will behave as if preceded by a call to
    --  Move_To (Cr, X1, Y1).
+   --
+   --  @param Cr a cairo context
+   --  @param X1 the X coordinate of the first control point
+   --  @param Y1 the Y coordinate of the first control point
+   --  @param X2 the X coordinate of the second control point
+   --  @param Y2 the Y coordinate of the second control point
+   --  @param X3 the X coordinate of the end of the curve
+   --  @param Y3 the Y coordinate of the end of the curve
 
    procedure Arc
      (Cr     : Cairo_Context;
@@ -1169,13 +1154,6 @@ package Cairo is
       Radius : Gdouble;
       Angle1 : Gdouble;
       Angle2 : Gdouble);
-   --  Cr: a cairo context
-   --  Xc: X position of the center of the arc
-   --  Yc: Y position of the center of the arc
-   --  Radius: the Radius of the arc
-   --  Angle1: the start angle, in radians
-   --  Angle2: the end angle, in radians
-   --
    --  Adds a circular arc of the given radius to the current path.  The
    --  arc is centered at (Xc, Yc), begins at Angle1 and proceeds in
    --  the direction of increasing angles to end at Angle2. If Angle2 is
@@ -1210,6 +1188,13 @@ package Cairo is
    --  Cairo_Scale (Cr, Width / 2.0, Height / 2.0);
    --  Cairo_Arc (Cr, 0.0, 0.0, 1.0, 0.0, 2 * Pi);
    --  Cairo_Restore (Cr);
+   --
+   --  @param Cr a cairo context
+   --  @param Xc X position of the center of the arc
+   --  @param Yc Y position of the center of the arc
+   --  @param Radius the Radius of the arc
+   --  @param Angle1 the start angle, in radians
+   --  @param Angle2 the end angle, in radians
 
    procedure Arc_Negative
      (Cr     : Cairo_Context;
@@ -1218,13 +1203,6 @@ package Cairo is
       Radius : Gdouble;
       Angle1 : Gdouble;
       Angle2 : Gdouble);
-   --  Cr: a cairo context
-   --  Xc: X position of the center of the arc
-   --  Yc: Y position of the center of the arc
-   --  Radius: the Radius of the arc
-   --  Angle1: the start angle, in radians
-   --  Angle2: the end angle, in radians
-   --
    --  Adds a circular arc of the given radius to the current path.  The
    --  arc is centered at (Xc, Yc), begins at Angle1 and proceeds in
    --  the direction of decreasing angles to end at Angle2. If Angle2 is
@@ -1233,12 +1211,15 @@ package Cairo is
    --
    --  See Arc for more details. This function differs only in the
    --  direction of the arc between the two angles.
+   --
+   --  @param Cr a cairo context
+   --  @param Xc X position of the center of the arc
+   --  @param Yc Y position of the center of the arc
+   --  @param Radius the Radius of the arc
+   --  @param Angle1 the start angle, in radians
+   --  @param Angle2 the end angle, in radians
 
    procedure Rel_Move_To (Cr : Cairo_Context; Dx : Gdouble; Dy : Gdouble);
-   --  Cr: a cairo context
-   --  Dx: the X offset
-   --  Dy: the Y offset
-   --
    --  Begin a new sub-path. After this call the current point will offset
    --  by (X, Y).
    --
@@ -1248,12 +1229,12 @@ package Cairo is
    --  It is an error to call this function with no current point. Doing
    --  so will cause cr to shutdown with a status of
    --  Cairo_Status_No_Current_Point.
+   --
+   --  @param Cr a cairo context
+   --  @param Dx the X offset
+   --  @param Dy the Y offset
 
    procedure Rel_Line_To (Cr : Cairo_Context; Dx : Gdouble; Dy : Gdouble);
-   --  Cr: a cairo context
-   --  Dx: the X offset to the end of the new line
-   --  Dy: the Y offset to the end of the new line
-   --
    --  Relative-coordinate version of Line_To. Adds a line to the
    --  path from the current point to a point that is offset from the
    --  current point by (Dx, Dy) in user space. After this call the
@@ -1265,6 +1246,10 @@ package Cairo is
    --  It is an error to call this function with no current point. Doing
    --  so will cause cr to shutdown with a status of
    --  Cairo_Status_No_Current_Point.
+   --
+   --  @param Cr a cairo context
+   --  @param Dx the X offset to the end of the new line
+   --  @param Dy the Y offset to the end of the new line
 
    procedure Rel_Curve_To
      (Cr  : Cairo_Context;
@@ -1274,14 +1259,6 @@ package Cairo is
       Dy2 : Gdouble;
       Dx3 : Gdouble;
       Dy3 : Gdouble);
-   --  Cr: a cairo context
-   --  Dx1: the X offset to the first control point
-   --  Dy1: the Y offset to the first control point
-   --  Dx2: the X offset to the second control point
-   --  Dy2: the Y offset to the second control point
-   --  Dx3: the X offset to the end of the curve
-   --  Dy3: the Y offset to the end of the curve
-   --
    --  Relative-coordinate version of Cairo_Curve_To. All offsets are
    --  relative to the current point. Adds a cubic Bézier spline to the
    --  path from the current point to a point offset from the current
@@ -1296,6 +1273,14 @@ package Cairo is
    --  It is an error to call this function with no current point. Doing
    --  so will cause cr to shutdown with a status of
    --  Cairo_Status_No_Current_Point.
+   --
+   --  @param Cr a cairo context
+   --  @param Dx1 the X offset to the first control point
+   --  @param Dy1 the Y offset to the first control point
+   --  @param Dx2 the X offset to the second control point
+   --  @param Dy2 the Y offset to the second control point
+   --  @param Dx3 the X offset to the end of the curve
+   --  @param Dy3 the Y offset to the end of the curve
 
    procedure Rectangle
      (Cr     : Cairo_Context;
@@ -1303,12 +1288,6 @@ package Cairo is
       Y      : Gdouble;
       Width  : Gdouble;
       Height : Gdouble);
-   --  Cr: a cairo context
-   --  X: the X coordinate of the top left corner of the rectangle
-   --  Y: the Y coordinate to the top left corner of the rectangle
-   --  Width: the Width of the rectangle
-   --  Height: the Height of the rectangle
-   --
    --  Adds a closed sub-path rectangle of the given size to the current
    --  path at position (X, Y) in user-space coordinates.
    --
@@ -1319,10 +1298,14 @@ package Cairo is
    --  Rel_Line_To (Cr, 0, Height);
    --  Rel_Line_To (Cr, -Width, 0);
    --  Close_Path (Cr);
+   --
+   --  @param Cr a cairo context
+   --  @param X the X coordinate of the top left corner of the rectangle
+   --  @param Y the Y coordinate to the top left corner of the rectangle
+   --  @param Width the Width of the rectangle
+   --  @param Height the Height of the rectangle
 
    procedure Close_Path (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  Adds a line segment to the path from the current point to the
    --  beginning of the current sub-path, (the most recent point passed to
    --  Move_To), and closes this sub-path. After this call the
@@ -1344,6 +1327,8 @@ package Cairo is
    --  not be necessary to save the "last move_to point" during processing
    --  as the MOVE_TO immediately after the CLOSE_PATH will provide that
    --  point.
+   --
+   --  @param Cr a cairo context
 
    procedure Path_Extents
      (Cr : Cairo_Context;
@@ -1351,12 +1336,6 @@ package Cairo is
       Y1 : access Gdouble;
       X2 : access Gdouble;
       Y2 : access Gdouble);
-   --  Cr: a cairo context
-   --  X1: left of the resulting extents
-   --  Y1: top of the resulting extents
-   --  X2: right of the resulting extents
-   --  Y2: bottom of the resulting extents
-   --
    --  Computes a bounding box in user-space coordinates covering the
    --  points on the current path. If the current path is empty, returns
    --  an empty rectangle ((0,0), (0,0)). Stroke parameters, fill rule,
@@ -1377,53 +1356,56 @@ package Cairo is
    --  extents. However, a lone Move_To will not contribute to the results of
    --  Path_Extents.
    --
-   --  Since: 1.6
+   --  @since 1.6
+   --  @param Cr a cairo context
+   --  @param X1 left of the resulting extents
+   --  @param Y1 top of the resulting extents
+   --  @param X2 right of the resulting extents
+   --  @param Y2 bottom of the resulting extents
 
    --------------
    -- Painting --
    --------------
 
    procedure Paint (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  A drawing operator that paints the current source everywhere within
    --  the current clip region.
+   --
+   --  @param Cr a cairo context
 
    procedure Paint_With_Alpha (Cr : Cairo_Context; Alpha : Gdouble);
-   --  Cr: a cairo context
-   --  Alpha: Alpha value, between 0 (transparent) and 1 (opaque)
-   --
    --  A drawing operator that paints the current source everywhere within the
    --  current clip region using a mask of constant alpha value alpha. The
    --  effect is similar to Paint, but the drawing is faded out using the alpha
    --  value.
+   --
+   --  @param Cr a cairo context
+   --  @param Alpha Alpha value, between 0 (transparent) and 1 (opaque)
 
    procedure Mask (Cr : Cairo_Context; Pattern : Cairo_Pattern);
-   --  Cr: a cairo context
-   --  Pattern: a Cairo_Pattern
-   --
    --  A drawing operator that paints the current source using the alpha
    --  channel of pattern as a mask. (Opaque areas of pattern are painted with
    --  the source, transparent areas are not painted.)
+   --
+   --  @param Cr a cairo context
+   --  @param Pattern a Cairo_Pattern
 
    procedure Mask_Surface
      (Cr        : Cairo_Context;
       Surface   : Cairo_Surface;
       Surface_X : Gdouble;
       Surface_Y : Gdouble);
-   --  Cr: a cairo context
-   --  Surface: a Cairo_Surface
-   --  Surface_X: X coordinate at which to place the origin of surface
-   --  Surface_Y: Y coordinate at which to place the origin of surface
-   --
    --  A drawing operator that paints the current source
    --  using the alpha channel of surface as a mask. (Opaque
    --  areas of surface are painted with the source, transparent
    --  areas are not painted.)
+   --
+   --  @param Cr a cairo context
+   --  @param Surface a Cairo_Surface
+   --  @param Surface_X X coordinate at which to place the origin of surface
+   --  @param Surface_Y Y coordinate at which to place the origin of surface
 
    procedure Stroke (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  A drawing operator that strokes the current path according to the
    --  current line width, line join, line cap, and dash settings. After
    --  Cairo_Stroke, the current path will be cleared from the cairo
@@ -1450,10 +1432,10 @@ package Cairo is
    --
    --  In no case will a cap style of Cairo_Line_Cap_Butt cause anything
    --  to be drawn in the case of either degenerate segments or sub-paths.
+   --
+   --  @param Cr a cairo context
 
    procedure Stroke_Preserve (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  A drawing operator that strokes the current path according to the
    --  current line width, line join, line cap, and dash settings. Unlike
    --  Cairo_Stroke, Cairo_Stroke_Preserve preserves the path within the
@@ -1461,28 +1443,28 @@ package Cairo is
    --
    --  See Set_Line_Width, Set_Line_Join, Set_Line_Cap, Set_Dash, and
    --  Stroke_Preserve.
+   --
+   --  @param Cr a cairo context
 
    procedure Fill (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  A drawing operator that fills the current path according to the
    --  current fill rule, (each sub-path is implicitly closed before being
    --  filled). After Fill, the current path will be cleared from
    --  the cairo context. See Set_Fill_Rule and Fill_Preserve.
+   --
+   --  @param Cr a cairo context
 
    procedure Fill_Preserve (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  A drawing operator that fills the current path according to the
    --  current fill rule, (each sub-path is implicitly closed before being
    --  filled). Unlike Fill, Fill_Preserve preserves the path within the
    --  cairo context.
    --
    --  See Set_Fill_Rule and Fill.
+   --
+   --  @param Cr a cairo context
 
    procedure Copy_Page (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  Emits the current page for backends that support multiple pages, but
    --  doesn't clear it, so, the contents of the current page will be retained
    --  for the next page too.  Use Show_Page if you want to get an
@@ -1490,15 +1472,17 @@ package Cairo is
    --
    --  This is a convenience function that simply calls
    --  Cairo.Surface.Copy_Page on Cr's target.
+   --
+   --  @param Cr a cairo context
 
    procedure Show_Page (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  Emits and clears the current page for backends that support multiple
    --  pages.  Use Copy_Page if you don't want to clear the page.
    --
    --  This is a convenience function that simply calls
    --  Cairo.Surface.Show_Page on cr's target.
+   --
+   --  @param Cr a cairo context
 
    ------------------------
    -- Insideness testing --
@@ -1509,10 +1493,6 @@ package Cairo is
       X    : Gdouble;
       Y    : Gdouble)
       return Boolean;
-   --  Cr: a cairo context
-   --  X: X coordinate of the point to test
-   --  Y: Y coordinate of the point to test
-   --
    --  Tests whether the given point is inside the area that would be
    --  affected by a Stroke operation given the current path and
    --  stroking parameters. Surface dimensions and clipping are not taken
@@ -1521,18 +1501,16 @@ package Cairo is
    --  See Stroke, Set_Line_Width, Set_Line_Join,
    --  Set_Line_Cap, Set_Dash, and Stroke_Preserve.
    --
-   --  Return value: A non-zero value if the point is inside, or zero if
-   --  outside.
+   --  @param Cr a cairo context
+   --  @param X X coordinate of the point to test
+   --  @param Y Y coordinate of the point to test
+   --  @return A non-zero value if the point is inside, or zero if outside.
 
    function In_Fill
      (Cr   : Cairo_Context;
       X    : Gdouble;
       Y    : Gdouble)
       return Boolean;
-   --  Cr: a cairo context
-   --  X: X coordinate of the point to test
-   --  Y: Y coordinate of the point to test
-   --
    --  Tests whether the given point is inside the area that would be
    --  affected by a Fill operation given the current path and
    --  filling parameters. Surface dimensions and clipping are not taken
@@ -1540,8 +1518,10 @@ package Cairo is
    --
    --  See Fill, Set_Fill_Rule and Fill_Preserve.
    --
-   --  Return value: A non-zero value if the point is inside, or zero if
-   --  outside.
+   --  @param Cr a cairo context
+   --  @param X X coordinate of the point to test
+   --  @param Y Y coordinate of the point to test
+   --  @return A non-zero value if the point is inside, or zero if outside.
 
    -------------------------
    -- Rectangular extents --
@@ -1553,12 +1533,6 @@ package Cairo is
       Y1 : access Gdouble;
       X2 : access Gdouble;
       Y2 : access Gdouble);
-   --  Cr: a cairo context
-   --  X1: left of the resulting extents
-   --  Y1: top of the resulting extents
-   --  X2: right of the resulting extents
-   --  Y2: bottom of the resulting extents
-   --
    --  Computes a bounding box in user coordinates covering the area that
    --  would be affected, (the "inked" area), by a Stroke
    --  operation given the current path and stroke parameters.
@@ -1577,6 +1551,12 @@ package Cairo is
    --
    --  See Stroke, Set_Line_Width, Set_Line_Join, Set_Line_Cap, Set_Dash, and
    --  Stroke_Preserve.
+   --
+   --  @param Cr a cairo context
+   --  @param X1 left of the resulting extents
+   --  @param Y1 top of the resulting extents
+   --  @param X2 right of the resulting extents
+   --  @param Y2 bottom of the resulting extents
 
    procedure Fill_Extents
      (Cr : Cairo_Context;
@@ -1584,12 +1564,6 @@ package Cairo is
       Y1 : access Gdouble;
       X2 : access Gdouble;
       Y2 : access Gdouble);
-   --  Cr: a cairo context
-   --  X1: left of the resulting extents
-   --  Y1: top of the resulting extents
-   --  X2: right of the resulting extents
-   --  Y2: bottom of the resulting extents
-   --
    --  Computes a bounding box in user coordinates covering the area that
    --  would be affected, (the "inked" area), by a Fill operation
    --  given the current path and fill parameters. If the current path is
@@ -1606,14 +1580,18 @@ package Cairo is
    --  if the non-inked path extents are desired.
    --
    --  See Fill, Set_Fill_Rule and Fill_Preserve.
+   --
+   --  @param Cr a cairo context
+   --  @param X1 left of the resulting extents
+   --  @param Y1 top of the resulting extents
+   --  @param X2 right of the resulting extents
+   --  @param Y2 bottom of the resulting extents
 
    --------------
    -- Clipping --
    --------------
 
    procedure Reset_Clip (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  Reset the current clip region to its original, unrestricted
    --  state. That is, set the clip region to an infinitely large shape
    --  containing the target surface. Equivalently, if infinity is too
@@ -1624,10 +1602,10 @@ package Cairo is
    --  Reset_Clip as it will cause results unexpected by higher-level code
    --  which calls Clip. Consider using Save and Restore around Clip as a more
    --  robust means of temporarily restricting the clip region.
+   --
+   --  @param Cr a cairo context
 
    procedure Clip (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  Establishes a new clip region by intersecting the current clip
    --  region with the current path as it would be filled by Fill
    --  and according to the current fill rule (see Set_Fill_Rule).
@@ -1645,10 +1623,10 @@ package Cairo is
    --  calling Clip within a Save/Restore
    --  pair. The only other means of increasing the size of the clip
    --  region is Reset_Clip.
+   --
+   --  @param Cr a cairo context
 
    procedure Clip_Preserve (Cr : Cairo_Context);
-   --  Cr: a cairo context
-   --
    --  Establishes a new clip region by intersecting the current clip
    --  region with the current path as it would be filled by Fill
    --  and according to the current fill rule (see Set_Fill_Rule).
@@ -1666,6 +1644,8 @@ package Cairo is
    --  calling Clip_Preserve within a Save/Restore
    --  pair. The only other means of increasing the size of the clip
    --  region is Reset_Clip.
+   --
+   --  @param Cr a cairo context
 
    procedure Clip_Extents
      (Cr : Cairo_Context;
@@ -1673,16 +1653,15 @@ package Cairo is
       Y1 : out Gdouble;
       X2 : out Gdouble;
       Y2 : out Gdouble);
-   --  Cr: a cairo context
-   --  X1: left of the resulting extents
-   --  Y1: top of the resulting extents
-   --  X2: right of the resulting extents
-   --  Y2: bottom of the resulting extents
-   --
    --  Computes a bounding box in user coordinates covering the area inside the
    --  current clip.
    --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Cr a cairo context
+   --  @param X1 left of the resulting extents
+   --  @param Y1 top of the resulting extents
+   --  @param X2 right of the resulting extents
+   --  @param Y2 bottom of the resulting extents
 
    type Cairo_Rectangle is record
       X      : aliased Gdouble;
@@ -1726,8 +1705,6 @@ package Cairo is
    function Copy_Clip_Rectangle_List
      (Cr   : Cairo_Context)
       return Cairo_Rectangle_List_Access;
-   --  Cr: a cairo context
-   --
    --  Gets the current clip region as a list of rectangles in user
    --  coordinates.
    --  Never returns NULL.
@@ -1737,21 +1714,20 @@ package Cairo is
    --  user-space rectangles. The status may have other values to indicate
    --  other errors.
    --
-   --  Returns: the current clip region as a list of rectangles in user
-   --  coordinates,
-   --  which should be destroyed using Rectangle_List_Destroy.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Cr a cairo context
+   --  @return the current clip region as a list of rectangles in user
+   --  coordinates, which should be destroyed using Rectangle_List_Destroy.
 
    procedure Rectangle_List_Destroy
      (Rectangle_List : access Cairo_Rectangle_List);
-   --  Rectangle_List: a rectangle list, as obtained from Copy_Clip_Rectangles
-   --
    --  Unconditionally frees Rectangle_List and all associated
    --  references. After this call, the Rectangle_List pointer must not
    --  be dereferenced.
    --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Rectangle_List a rectangle list, as obtained from
+   --  Copy_Clip_Rectangles
 
    -------------------------
    -- Font/Text functions --
@@ -2036,11 +2012,6 @@ package Cairo is
       Family : String;
       Slant  : Cairo_Font_Slant;
       Weight : Cairo_Font_Weight);
-   --  Cr: a Cairo_Context
-   --  Family: a font Family name, encoded in UTF-8
-   --  Slant: the Slant for the font
-   --  Weight: the Weight for the font
-   --
    --  Note: The Select_Font_Face function call is part of what
    --  the cairo designers call the "toy" text API. It is convenient for
    --  short demos and simple programs, but it is not expected to be
@@ -2065,11 +2036,13 @@ package Cairo is
    --
    --  This function is equivalent to a call to
    --  Cairo.Font_Face.Toy_Font_Face_Create followed by Set_Font_Face.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Family a font Family name, encoded in UTF-8
+   --  @param Slant the Slant for the font
+   --  @param Weight the Weight for the font
 
    procedure Set_Font_Size (Cr : Cairo_Context; Size : Gdouble);
-   --  Cr: a Cairo_Context
-   --  Size: the new font Size, in user space units
-   --
    --  Sets the current font matrix to a scale by a factor of size, replacing
    --  any font matrix previously set with Set_Font_Size or
    --  Set_Font_Matrix. This results in a font size of size user space
@@ -2078,72 +2051,69 @@ package Cairo is
    --
    --  If text is drawn without a call to Set_Font_Size, (nor Set_Font_Matrix
    --  nor Set_Scaled_Font), the default font size is 10.0.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Size the new font Size, in user space units
 
    procedure Set_Font_Matrix
      (Cr     : Cairo_Context;
       Matrix : access Cairo_Matrix);
-   --  Cr: a Cairo_Context
-   --  Matrix: a Cairo_Matrix describing a transform to be applied to
-   --  the current font.
-   --
    --  Sets the current font matrix to matrix. The font matrix gives a
    --  transformation from the design space of the font (in this space,
    --  the em-square is 1 unit by 1 unit) to user space. Normally, a
    --  simple scale is used (see Set_Font_Size), but a more
    --  complex font matrix can be used to shear the font
    --  or stretch it unequally along the two axes
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Matrix a Cairo_Matrix describing a transform to be applied to
+   --  the current font.
 
    procedure Get_Font_Matrix
      (Cr     : Cairo_Context;
       Matrix : access Cairo_Matrix);
-   --  Cr: a Cairo_Context
-   --  Matrix: return value for the Matrix
-   --
    --  Stores the current font matrix into matrix. See Set_Font_Matrix.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Matrix return value for the Matrix
 
    procedure Set_Font_Options
      (Cr      : Cairo_Context;
       Options : Cairo_Font_Options);
-   --  Cr: a Cairo_Context
-   --  Options: font Options to use
-   --
    --  Sets a set of custom font rendering options for the Cairo_Context.
    --  Rendering options are derived by merging these options with the
    --  options derived from underlying surface; if the value in options
    --  has a default value (like Cairo_Antialias_Default), then the value
    --  from the surface is used.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Options font Options to use
 
    procedure Get_Font_Options
      (Cr      : Cairo_Context;
       Options : Cairo_Font_Options);
-   --  Cr: a Cairo_Context
-   --  Options: a Cairo_Font_Options object into which to store
-   --    the retrieved options. All existing values are overwritten
-   --
    --  Retrieves font rendering options set via Set_Font_Options.
    --  Note that the returned options do not include any options derived
    --  from the underlying surface; they are literally the options
    --  passed to Set_Font_Options.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Options a Cairo_Font_Options object into which to store the
+   --  retrieved options. All existing values are overwritten
 
    procedure Set_Font_Face
      (Cr        : Cairo_Context;
       Font_Face : Cairo_Font_Face);
-   --  Cr: a Cairo_Context
-   --  Font_Face: a Cairo_Font_Face, or Null_Font_Face to restore to the
-   --  default font
-   --
    --  Replaces the current Cairo_Font_Face object in the Cairo_Context with
    --  font_face. The replaced font face in the Cairo_Context will be
    --  destroyed if there are no other references to it.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Font_Face a Cairo_Font_Face, or Null_Font_Face to restore to the
+   --  default font
 
    function Get_Font_Face (Cr : Cairo_Context) return Cairo_Font_Face;
-   --  Cr: a Cairo_Context
-   --
    --  Gets the current font face for a Cairo_Context.
-   --
-   --  Return value: the current font face.  This object is owned by
-   --  cairo. To keep a reference to it, you must call
-   --  Cairo.Font_Face.Reference.
    --
    --  This function never returns Null_Font_Face. If memory cannot be
    --  allocated, a special "nil" Cairo_Font_Face object will be returned on
@@ -2151,29 +2121,26 @@ package Cairo is
    --  nil object will cause its error state to propagate to other objects it
    --  is passed to, (for example, calling Set_Font_Face with a nil font
    --  will trigger an error that will shutdown the Cairo_Context object).
+   --
+   --  @param Cr a Cairo_Context
+   --  @return the current font face. This object is owned by cairo. To keep a
+   --  reference to it, you must call Cairo.Font_Face.Reference.
 
    procedure Set_Scaled_Font
      (Cr          : Cairo_Context;
       Scaled_Font : access Cairo_Scaled_Font);
-   --  Cr: a Cairo_Context
-   --  Scaled_Font: a Cairo_Scaled_Font
-   --
    --  Replaces the current font face, font matrix, and font options in
    --  the Cairo_Context with those of the Cairo_Scaled_Font.  Except for
    --  some translation, the current CTM of the Cairo_Context should be the
    --  same as that of the Cairo_Scaled_Font, which can be accessed
    --  using Cairo.Scaled_Font.Get_Ctm.
    --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Cr a Cairo_Context
+   --  @param Scaled_Font a Cairo_Scaled_Font
 
    function Get_Scaled_Font (Cr : Cairo_Context) return Cairo_Scaled_Font;
-   --  Cr: a Cairo_Context
-   --
    --  Gets the current scaled font for a Cairo_Context.
-   --
-   --  Return value: the current scaled font. This object is owned by
-   --  cairo. To keep a reference to it, you must call
-   --  Cairo.Scaled_Font.Reference.
    --
    --  This function never returns Null_Font_Face. If memory cannot be
    --  allocated, a special "nil" Cairo_Scaled_Font object will be returned on
@@ -2182,14 +2149,14 @@ package Cairo is
    --  is passed to, (for example, calling Set_Font_Face with a nil font
    --  will trigger an error that will shutdown the Cairo_Context object).
    --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Cr a Cairo_Context
+   --  @return the current scaled font. This object is owned by cairo. To keep
+   --  a reference to it, you must call Cairo.Scaled_Font.Reference.
 
    procedure Show_Text
      (Cr   : Cairo_Context;
       Utf8 : String);
-   --  Cr: a cairo context
-   --  Utf8: a NUL-terminated string of text encoded in UTF-8, or Null_Ptr
-   --
    --  A drawing operator that generates the shape from a string of UTF-8
    --  characters, rendered according to the current Font_Face, Font_Size
    --  (Font_Matrix), and Font_Options.
@@ -2211,25 +2178,26 @@ package Cairo is
    --  and simple programs, but it is not expected to be adequate for
    --  serious text-using applications. See Show_Glyphs for the
    --  "real" text display API in cairo.
+   --
+   --  @param Cr a cairo context
+   --  @param Utf8 a NUL-terminated string of text encoded in UTF-8, or
+   --  Null_Ptr
 
    procedure Show_Glyphs
      (Cr         : Cairo_Context;
       Glyphs     : access Cairo_Glyph;
       Num_Glyphs : Gint);
-   --  Cr: a cairo context
-   --  Glyphs: array of Glyphs to show
-   --  Num_Glyphs: number of glyphs to show
-   --
    --  A drawing operator that generates the shape from an array of glyphs,
    --  rendered according to the current font face, font size
    --  (font matrix), and font options.
+   --
+   --  @param Cr a cairo context
+   --  @param Glyphs array of Glyphs to show
+   --  @param Num_Glyphs number of glyphs to show
 
    procedure Text_Path
      (Cr   : Cairo_Context;
       Utf8 : String);
-   --  Cr: a cairo context
-   --  Utf8: a NUL-terminated string of text encoded in UTF-8, or Null_Ptr
-   --
    --  Adds closed paths for text to the current path.  The generated
    --  path if filled, achieves an effect similar to that of
    --  Show_Text.
@@ -2248,16 +2216,15 @@ package Cairo is
    --  and simple programs, but it is not expected to be adequate for
    --  serious text-using applications. See Glyph_Path for the
    --  "real" text path API in cairo.
+   --
+   --  @param Cr a cairo context
+   --  @param Utf8 a NUL-terminated string of text encoded in UTF-8, or
+   --  Null_Ptr
 
    procedure Text_Extents
      (Cr      : Cairo_Context;
       Utf8    : Gtkada.Types.Chars_Ptr;
       Extents : access Cairo_Text_Extents);
-   --  Cr: a Cairo_Context
-   --  Utf8: a NUL-terminated string of text encoded in UTF-8, or Null_Ptr
-   --  Extents: a Cairo_Text_Extents object into which the results
-   --  will be stored
-   --
    --  Gets the extents for a string of text. The extents describe a
    --  user-space rectangle that encloses the "inked" portion of the text,
    --  (as it would be drawn by Show_Text). Additionally, the
@@ -2270,18 +2237,18 @@ package Cairo is
    --  characters. In particular, trailing whitespace characters are
    --  likely to not affect the size of the rectangle, though they will
    --  affect the x_advance and y_advance values.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Utf8 a NUL-terminated string of text encoded in UTF-8, or
+   --  Null_Ptr
+   --  @param Extents a Cairo_Text_Extents object into which the results will
+   --  be stored
 
    procedure Glyph_Extents
      (Cr         : Cairo_Context;
       Glyphs     : access Cairo_Glyph;
       Num_Glyphs : Gint;
       Extents    : access Cairo_Text_Extents);
-   --  Cr: a Cairo_Context
-   --  Glyphs: an array of Cairo_Glyph objects
-   --  Num_Glyphs: the number of elements in glyphs
-   --  Extents: a Cairo_Text_Extents object into which the results
-   --  will be stored
-   --
    --  Gets the extents for an array of glyphs. The extents describe a
    --  user-space rectangle that encloses the "inked" portion of the
    --  glyphs, (as they would be drawn by Show_Glyphs).
@@ -2291,15 +2258,21 @@ package Cairo is
    --
    --  Note that whitespace glyphs do not contribute to the size of the
    --  rectangle (Extents.Width and Extents.Height).
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Glyphs an array of Cairo_Glyph objects
+   --  @param Num_Glyphs the number of elements in glyphs
+   --  @param Extents a Cairo_Text_Extents object into which the results will
+   --  be stored
 
    procedure Font_Extents
      (Cr      : Cairo_Context;
       Extents : access Cairo_Font_Extents);
-   --  Cr: a Cairo_Context
-   --  Extents: a Cairo_Font_Extents object into which the results
-   --  will be stored.
-   --
    --  Gets the font extents for the currently selected font.
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Extents a Cairo_Font_Extents object into which the results will
+   --  be stored.
 
    type Cairo_Font_Type is
      (Cairo_Font_Type_Toy,
@@ -2353,53 +2326,42 @@ package Cairo is
    ---------------------
 
    function Get_Operator (Cr : Cairo_Context) return Cairo_Operator;
-   --  Cr: a cairo context
-   --
    --  Gets the current compositing operator for a cairo context.
    --
-   --  Return value: the current compositing operator.
+   --  @param Cr a cairo context
+   --  @return the current compositing operator.
 
    function Get_Source (Cr : Cairo_Context) return Cairo_Pattern;
-   --  Cr: a cairo context
-   --
    --  Gets the current source pattern for Cr.
    --
-   --  Return value: the current source pattern. This object is owned by
-   --  cairo. To keep a reference to it, you must call
-   --  Cairo.Pattern.Reference.
+   --  @param Cr a cairo context
+   --  @return the current source pattern. This object is owned by cairo. To
+   --  keep a reference to it, you must call Cairo.Pattern.Reference.
 
    function Get_Tolerance (Cr : Cairo_Context) return Gdouble;
-   --  Cr: a cairo context
-   --
    --  Gets the current tolerance value, as set by Set_Tolerance.
    --
-   --  Return value: the current tolerance value.
+   --  @param Cr a cairo context
+   --  @return the current tolerance value.
 
    function Get_Antialias (Cr : Cairo_Context) return Cairo_Antialias;
-   --  Cr: a cairo context
-   --
    --  Gets the current shape antialiasing mode, as set by Set_Antialias.
    --
-   --  Return value: the current shape antialiasing mode.
+   --  @param Cr a cairo context
+   --  @return the current shape antialiasing mode.
 
    function Has_Current_Point (Cr : Cairo_Context) return Boolean;
-   --  Cr: a cairo context
-   --
    --  Returns whether a current point is defined on the current path.
    --  See Get_Current_Point for details on the current point.
    --
-   --  Return value: whether a current point is defined.
-   --
-   --  Since: 1.6
+   --  @since 1.6
+   --  @param Cr a cairo context
+   --  @return whether a current point is defined.
 
    procedure Get_Current_Point
      (Cr : Cairo_Context;
       X  : access Gdouble;
       Y  : access Gdouble);
-   --  Cr: a cairo context
-   --  X: return value for X coordinate of the current point
-   --  Y: return value for Y coordinate of the current point
-   --
    --  Gets the current point of the current path, which is
    --  conceptually the final point reached by the path so far.
    --
@@ -2419,56 +2381,53 @@ package Cairo is
    --
    --  Some functions unset the current path and as a result, current point:
    --  Fill, Stroke.
+   --
+   --  @param Cr a cairo context
+   --  @param X return value for X coordinate of the current point
+   --  @param Y return value for Y coordinate of the current point
 
    function Get_Fill_Rule (Cr : Cairo_Context) return Cairo_Fill_Rule;
-   --  Cr: a cairo context
-   --
    --  Gets the current fill rule, as set by Set_Fill_Rule.
    --
-   --  Return value: the current fill rule.
+   --  @param Cr a cairo context
+   --  @return the current fill rule.
 
    function Get_Line_Width (Cr : Cairo_Context) return Gdouble;
-   --  Cr: a cairo context
-   --
    --  This function returns the current line width value exactly as set by
    --  Set_Line_Width. Note that the value is unchanged even if
    --  the CTM has changed between the calls to Set_Line_Width and
    --  Get_Line_Width.
    --
-   --  Return value: the current line width.
+   --  @param Cr a cairo context
+   --  @return the current line width.
 
    function Get_Line_Cap (Cr : Cairo_Context) return Cairo_Line_Cap;
-   --  Cr: a cairo context
-   --
    --  Gets the current line cap style, as set by Set_Line_Cap.
    --
-   --  Return value: the current line cap style.
+   --  @param Cr a cairo context
+   --  @return the current line cap style.
 
    function Get_Line_Join (Cr : Cairo_Context) return Cairo_Line_Join;
-   --  Cr: a cairo context
-   --
    --  Gets the current line join style, as set by Set_Line_Join.
    --
-   --  Return value: the current line join style.
+   --  @param Cr a cairo context
+   --  @return the current line join style.
 
    function Get_Miter_Limit (Cr : Cairo_Context) return Gdouble;
-   --  Cr: a cairo context
-   --
    --  Gets the current miter limit, as set by Set_Miter_Limit.
    --
-   --  Return value: the current miter limit.
+   --  @param Cr a cairo context
+   --  @return the current miter limit.
 
    function Get_Dash_Count (Cr : Cairo_Context) return Gint;
-   --  Cr: a Cairo_Context
-   --
    --  This function returns the length of the dash array in cr (0 if dashing
    --  is not currently in effect).
    --
    --  See also Set_Dash and Get_Dash.
    --
-   --  Return value: the length of the dash array, or 0 if no dash array set.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Cr a Cairo_Context
+   --  @return the length of the dash array, or 0 if no dash array set.
 
    type Dash_Array_Access is access all Dash_Array;
 
@@ -2476,23 +2435,20 @@ package Cairo is
      (Cr     : Cairo_Context;
       Dashes : out Dash_Array_Access;
       Offset : out Gdouble);
-   --  Cr: a Cairo_Context
-   --  Dashes: return value for the dash array, or null
-   --  Offset: return value for the current dash Offset, or null
-   --
    --  Gets the current dash array.
    --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Cr a Cairo_Context
+   --  @param Dashes return value for the dash array, or null
+   --  @param Offset return value for the current dash Offset, or null
 
    procedure Get_Matrix (Cr : Cairo_Context; Matrix : access Cairo_Matrix);
-   --  Cr: a cairo context
-   --  Matrix: return value for the Matrix
-   --
    --  Stores the current transformation matrix (CTM) into matrix.
+   --
+   --  @param Cr a cairo context
+   --  @param Matrix return value for the Matrix
 
    function Get_Target (Cr : Cairo_Context) return Cairo_Surface;
-   --  Cr: a cairo context
-   --
    --  Gets the target surface for the cairo context as passed to Create.
    --
    --  This function will always return a valid pointer, but the result
@@ -2501,12 +2457,11 @@ package Cairo is
    --  A nil surface is indicated by
    --  Cairo.Surface.Status/= Cairo_Status_Success.
    --
-   --  Return value: the target surface. This object is owned by cairo. To
-   --  keep a reference to it, you must call Cairo.Surface.Reference.
+   --  @param Cr a cairo context
+   --  @return the target surface. This object is owned by cairo. To keep a
+   --  reference to it, you must call Cairo.Surface.Reference.
 
    function Get_Group_Target (Cr : Cairo_Context) return Cairo_Surface;
-   --  Cr: a cairo context
-   --
    --  Gets the current destination surface for the context. This is either
    --  the original target surface as passed to Create or the target
    --  surface for the current group as started by the most recent call to
@@ -2517,10 +2472,10 @@ package Cairo is
    --  (ie. Cairo_Status /= Cairo_Status_Success).
    --  A nil surface is indicated by Cairo_Status /= Cairo_Status_Success.
    --
-   --  Return value: the target surface. This object is owned by cairo. To
-   --  keep a reference to it, you must call Cairo.Surface.Reference.
-   --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Cr a cairo context
+   --  @return the target surface. This object is owned by cairo. To keep a
+   --  reference to it, you must call Cairo.Surface.Reference.
 
    type Cairo_Path_Data_Type is
      (Cairo_Path_Move_To,    --  A move-to operation
@@ -2647,8 +2602,6 @@ package Cairo is
    --  includes both headers and coordinates for each portion.
 
    function Copy_Path (Cr : Cairo_Context) return Cairo_Path_Access;
-   --  Cr: a cairo context
-   --
    --  Creates a copy of the current path and returns it to the user as a
    --  Cairo_Path. See Cairo_Path_Data for hints on how to iterate
    --  over the returned data structure.
@@ -2664,12 +2617,11 @@ package Cairo is
    --     Path.Status will contain the same status that
    --     would be returned by Status.
    --
-   --  Return value: the copy of the current path. The caller owns the
-   --  returned object and should call Path_Destroy when finished with it.
+   --  @param Cr a cairo context
+   --  @return the copy of the current path. The caller owns the returned
+   --  object and should call Path_Destroy when finished with it.
 
    function Copy_Path_Flat (Cr : Cairo_Context) return Cairo_Path_Access;
-   --  Cr: a cairo context
-   --
    --  Gets a flattened copy of the current path and returns it to the
    --  user as a Cairo_Path. See Cairo_Path_Data for hints on
    --  how to iterate over the returned data structure.
@@ -2692,25 +2644,23 @@ package Cairo is
    --     Path.Status will contain the same status that
    --     would be returned by Status.
    --
-   --  Return value: the copy of the current path. The caller owns the
-   --  returned object and should call Path_Destroy when finished
-   --  with it.
+   --  @param Cr a cairo context
+   --  @return the copy of the current path. The caller owns the returned
+   --  object and should call Path_Destroy when finished with it.
 
    procedure Append_Path
      (Cr   : Cairo_Context;
       Path : access Cairo_Path);
-   --  Cr: a cairo context
-   --  Path: Path to be appended
-   --
    --  Append the path onto the current path. The path may be either the return
    --  value from one of Copy_Path or Copy_Path_Flat or it may be constructed
    --  manually. See Cairo_Path for details on how the path data structure
    --  should be initialized, and note that Path.Status must be initialized to
    --  Cairo_Status_Success.
+   --
+   --  @param Cr a cairo context
+   --  @param Path Path to be appended
 
    procedure Path_Destroy (Path : access Cairo_Path);
-   --  Path: a path previously returned by either Copy_Path or Copy_Path_Flat.
-   --
    --  Immediately releases all memory associated with Path. After a call
    --  to Path_Destroy the Path pointer is no longer valid and should not be
    --  used further.
@@ -2718,17 +2668,19 @@ package Cairo is
    --  Note: Path_Destroy should only be called with an access to a
    --  Cairo_Path returned by a cairo function. Any path that is created
    --  manually (ie. outside of cairo) should be destroyed manually as well.
+   --
+   --  @param Path a path previously returned by either Copy_Path or
+   --  Copy_Path_Flat.
 
    --------------------------
    -- Error status queries --
    --------------------------
 
    function Status (Cr : Cairo_Context) return Cairo_Status;
-   --  Cr: a cairo context
-   --
    --  Checks whether an error has previously occurred for this context.
    --
-   --  Returns: the current status of this context, see Cairo_Status
+   --  @param Cr a cairo context
+   --  @return the current status of this context, see Cairo_Status
 
    Null_Context      : constant Cairo_Context;
    Null_Surface      : constant Cairo_Surface;

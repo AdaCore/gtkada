@@ -83,11 +83,6 @@ package Cairo.Surface is
       Width   : Gint;
       Height  : Gint)
       return    Cairo_Surface;
-   --  Other: an existing surface used to select the backend of the new surface
-   --  Content: the Content for the new surface
-   --  Width: Width of the new surface, (in device-space units)
-   --  Height: Height of the new surface (in device-space units)
-   --
    --  Create a new surface that is as compatible as possible with an
    --  existing surface. For example the new surface will have the same
    --  fallback resolution and font options as other. Generally, the new
@@ -98,17 +93,19 @@ package Cairo.Surface is
    --  Initially the surface contents are all 0 (transparent if contents
    --  have transparency, black otherwise.)
    --
-   --  Return value: a pointer to the newly allocated surface. The caller
-   --  owns the surface and should call Cairo.Surface.Destroy when done
-   --  with it.
-   --
    --  This function always returns a valid pointer, but it will return a
    --  pointer to a "nil" surface if other is already in an error state
    --  or any other error occurs.
+   --
+   --  @param Other an existing surface used to select the backend of the new
+   --  surface
+   --  @param Content the Content for the new surface
+   --  @param Width Width of the new surface, (in device-space units)
+   --  @param Height Height of the new surface (in device-space units)
+   --  @return a pointer to the newly allocated surface. The caller owns the
+   --  surface and should call Cairo.Surface.Destroy when done with it.
 
    function Reference (Surface : Cairo_Surface) return Cairo_Surface;
-   --  Surface: a Cairo_Surface
-   --
    --  Increases the reference count on surface by one. This prevents
    --  surface from being destroyed until a matching call to
    --  Cairo.Surface.Destroy is made.
@@ -116,11 +113,10 @@ package Cairo.Surface is
    --  The number of references to a Cairo_Surface can be get using
    --  Cairo.Surface.Get_Reference_Count.
    --
-   --  Return value: the referenced Cairo_Surface.
+   --  @param Surface a Cairo_Surface
+   --  @return the referenced Cairo_Surface.
 
    procedure Finish (Surface : Cairo_Surface);
-   --  Surface: the Cairo_Surface to finish
-   --
    --  This function finishes the surface and drops all references to
    --  external resources.  For example, for the Xlib backend it means
    --  that cairo will no longer access the drawable, which can be freed.
@@ -135,117 +131,111 @@ package Cairo.Surface is
    --  reference count to zero, cairo will call Cairo.Surface.Finish if
    --  it hasn't been called already, before freeing the resources
    --  associated with the surface.
+   --
+   --  @param Surface the Cairo_Surface to finish
 
    procedure Destroy (Surface : Cairo_Surface);
-   --  Surface: a Cairo_Surface
-   --
    --  Decreases the reference count on surface by one. If the result is
    --  zero, then surface and all associated resources are freed.  See
    --  Cairo.Surface.Reference.
+   --
+   --  @param Surface a Cairo_Surface
 
    function Get_Reference_Count (Surface : Cairo_Surface) return Guint;
-   --  Surface: a Cairo_Surface
-   --
    --  Returns the current reference count of surface.
    --
-   --  Return value: the current reference count of surface.  If the
-   --  object is a nil object, 0 will be returned.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Surface a Cairo_Surface
+   --  @return the current reference count of surface. If the object is a nil
+   --  object, 0 will be returned.
 
    function Status (Surface : Cairo_Surface) return Cairo_Status;
-   --  Surface: a Cairo_Surface
-   --
    --  Checks whether an error has previously occurred for this
    --  surface.
    --
-   --  Return value: Cairo_Status_Success, Cairo_Status_Null_Pointer,
-   --     Cairo_Status_No_Memory, Cairo_Status_Read_Error,
-   --     Cairo_Status_Invalid_Content, Cairo_Status_Invalid_Format, or
-   --     Cairo_Status_Invalid_Visual.
+   --  @param Surface a Cairo_Surface
+   --  @return Cairo_Status_Success, Cairo_Status_Null_Pointer,
+   --  Cairo_Status_No_Memory, Cairo_Status_Read_Error,
+   --  Cairo_Status_Invalid_Content, Cairo_Status_Invalid_Format, or
+   --  Cairo_Status_Invalid_Visual.
 
    function Get_Type (Surface : Cairo_Surface) return Cairo_Surface_Type;
-   --  Surface: a Cairo_Surface
-   --
    --  This function returns the type of the backend used to create
    --  a surface. See Cairo_Surface_Type for available types.
    --
-   --  Return value: The type of surface.
-   --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Surface a Cairo_Surface
+   --  @return The type of surface.
 
    function Get_Content (Surface : Cairo_Surface) return Cairo_Content;
-   --  Surface: a Cairo_Surface
-   --
    --  This function returns the content type of surface which indicates
    --  whether the surface contains color and/or alpha information. See
    --  Cairo_Content.
    --
-   --  Return value: The content type of surface.
-   --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Surface a Cairo_Surface
+   --  @return The content type of surface.
 
    function Get_User_Data
      (Surface : Cairo_Surface;
       Key     : access Cairo_User_Data_Key) return System.Address;
-   --  Surface: a Cairo_Surface
-   --  Key: the address of the Cairo_User_Data_Key the user data was
-   --  attached to
-   --
    --  Return user data previously attached to surface using the specified
    --  key.  If no user data has been attached with the given key this
    --  function returns null.
    --
-   --  Return value: the user data previously attached or null.
+   --  @param Surface a Cairo_Surface
+   --  @param Key the address of the Cairo_User_Data_Key the user data was
+   --  attached to
+   --  @return the user data previously attached or null.
 
    function Set_User_Data
      (Surface   : Cairo_Surface;
       Key       : access Cairo_User_Data_Key;
       User_Data : System.Address;
       Destroy   : Cairo_Destroy_Func) return Cairo_Status;
-   --  Surface: a Cairo_Surface
-   --  Key: the address of a Cairo_User_Data_Key to attach the user data to
-   --  User_Data: the user data to attach to the surface
-   --  Destroy: a Cairo_Destroy_Func which will be called when the
-   --  surface is destroyed or when new user data is attached using the
-   --  same key.
-   --
    --  Attach user data to surface.  To remove user data from a surface,
    --  call this function with the key that was used to set it and null
    --  for data.
    --
-   --  Return value: Cairo_Status_Success or Cairo_Status_No_Memory if a
-   --  slot could not be allocated for the user data.
+   --  @param Surface a Cairo_Surface
+   --  @param Key the address of a Cairo_User_Data_Key to attach the user data
+   --  to
+   --  @param User_Data the user data to attach to the surface
+   --  @param Destroy a Cairo_Destroy_Func which will be called when the
+   --  surface is destroyed or when new user data is attached using the same
+   --  key.
+   --  @return Cairo_Status_Success or Cairo_Status_No_Memory if a slot could
+   --  not be allocated for the user data.
 
    procedure Get_Font_Options
      (Surface : Cairo_Surface;
       Options : access Cairo_Font_Options);
-   --  Surface: a Cairo_Surface
-   --  Options: a Cairo_Font_Options object into which to store
-   --    the retrieved options. All existing values are overwritten
-   --
    --  Retrieves the default font rendering options for the surface.
    --  This allows display surfaces to report the correct subpixel order
    --  for rendering on them, print surfaces to disable hinting of
    --  metrics and so forth. The result can then be used with
    --  Cairo.Scaled_Font.Create.
+   --
+   --  @param Surface a Cairo_Surface
+   --  @param Options a Cairo_Font_Options object into which to store the
+   --  retrieved options. All existing values are overwritten
 
    procedure Flush (Surface : Cairo_Surface);
-   --  Surface: a Cairo_Surface
-   --
    --  Do any pending drawing for the surface and also restore any
    --  temporary modification's cairo has made to the surface's
    --  state. This function must be called before switching from
    --  drawing on the surface with cairo to drawing on it directly
    --  with native APIs. If the surface doesn't support direct access,
    --  then this function does nothing.
+   --
+   --  @param Surface a Cairo_Surface
 
    procedure Mark_Dirty (Surface : Cairo_Surface);
-   --  Surface: a Cairo_Surface
-   --
    --  Tells cairo that drawing has been done to surface using means other
    --  than cairo, and that cairo should reread any cached areas. Note
    --  that you must call Cairo.Surface.Flush before doing such drawing.
+   --
+   --  @param Surface a Cairo_Surface
 
    procedure Mark_Dirty_Rectangle
      (Surface : Cairo_Surface;
@@ -253,12 +243,6 @@ package Cairo.Surface is
       Y       : Gint;
       Width   : Gint;
       Height  : Gint);
-   --  Surface: a Cairo_Surface
-   --  X: X coordinate of dirty rectangle
-   --  Y: Y coordinate of dirtY rectangle
-   --  Width: Width of dirty rectangle
-   --  Height: Height of dirty rectangle
-   --
    --  Like Cairo.Surface.Mark_Dirty, but drawing has been done only to
    --  the specified rectangle, so that cairo can retain cached contents
    --  for other parts of the surface.
@@ -266,15 +250,17 @@ package Cairo.Surface is
    --  Any cached clip set on the surface will be reset by this function,
    --  to make sure that future cairo calls have the clip set that they
    --  expect.
+   --
+   --  @param Surface a Cairo_Surface
+   --  @param X X coordinate of dirty rectangle
+   --  @param Y Y coordinate of dirtY rectangle
+   --  @param Width Width of dirty rectangle
+   --  @param Height Height of dirty rectangle
 
    procedure Set_Device_Offset
      (Surface  : Cairo_Surface;
       X_Offset : Gdouble;
       Y_Offset : Gdouble);
-   --  Surface: a Cairo_Surface
-   --  X_Offset: the offset in the X direction, in device units
-   --  Y_Offset: the offset in the Y direction, in device units
-   --
    --  Sets an offset that is added to the device coordinates determined
    --  by the CTM when drawing to surface. One use case for this function
    --  is when we want to create a Cairo_Surface that redirects drawing
@@ -286,28 +272,27 @@ package Cairo.Surface is
    --
    --  Note that the offset affects drawing to the surface as well as
    --  using the surface in a source pattern.
+   --
+   --  @param Surface a Cairo_Surface
+   --  @param X_Offset the offset in the X direction, in device units
+   --  @param Y_Offset the offset in the Y direction, in device units
 
    procedure Get_Device_Offset
      (Surface  : Cairo_Surface;
       X_Offset : access Gdouble;
       Y_Offset : access Gdouble);
-   --  Surface: a Cairo_Surface
-   --  X_Offset: the offset in the X direction, in device units
-   --  Y_Offset: the offset in the Y direction, in device units
-   --
    --  This function returns the previous device offset set by
    --  Cairo.Surface.Set_Device_Offset.
    --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Surface a Cairo_Surface
+   --  @param X_Offset the offset in the X direction, in device units
+   --  @param Y_Offset the offset in the Y direction, in device units
 
    procedure Set_Fallback_Resolution
      (Surface           : Cairo_Surface;
       X_Pixels_Per_Inch : Gdouble;
       Y_Pixels_Per_Inch : Gdouble);
-   --  Surface: a Cairo_Surface
-   --  X_Pixels_Per_Inch: horizontal setting for pixels per inch
-   --  Y_Pixels_Per_Inch: vertical setting for pixels per inch
-   --
    --  Set the horizontal and vertical resolution for image fallbacks.
    --
    --  When certain operations aren't supported natively by a backend,
@@ -333,25 +318,25 @@ package Cairo.Surface is
    --  The default fallback resoultion is 300 pixels per inch in both
    --  dimensions.
    --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Surface a Cairo_Surface
+   --  @param X_Pixels_Per_Inch horizontal setting for pixels per inch
+   --  @param Y_Pixels_Per_Inch vertical setting for pixels per inch
 
    procedure Get_Fallback_Resolution
      (Surface           : Cairo_Surface;
       X_Pixels_Per_Inch : access Gdouble;
       Y_Pixels_Per_Inch : access Gdouble);
-   --  Surface: a Cairo_Surface
-   --  X_Pixels_Per_Inch: horizontal pixels per inch
-   --  Y_Pixels_Per_Inch: vertical pixels per inch
-   --
    --  This function returns the previous fallback resolution set by
    --  Cairo.Surface.Set_Fallback_Resolution, or default fallback
    --  resolution if never set.
    --
-   --  Since: 1.8
+   --  @since 1.8
+   --  @param Surface a Cairo_Surface
+   --  @param X_Pixels_Per_Inch horizontal pixels per inch
+   --  @param Y_Pixels_Per_Inch vertical pixels per inch
 
    procedure Copy_Page (Surface : Cairo_Surface);
-   --  Surface: a Cairo_Surface
-   --
    --  Emits the current page for backends that support multiple pages,
    --  but doesn't clear it, so that the contents of the current page will
    --  be retained for the next page.  Use Cairo.Surface.Show_Page if you
@@ -360,24 +345,22 @@ package Cairo.Surface is
    --  There is a convenience function for this that takes a Cairo_Context,
    --  namely Cairo.Copy_Page.
    --
-   --  Since: 1.6
+   --  @since 1.6
+   --  @param Surface a Cairo_Surface
 
    procedure Show_Page (Surface : Cairo_Surface);
-   --  Surface: a Cairo_Surface
-   --
    --  Emits and clears the current page for backends that support multiple
    --  pages.  Use Cairo.Surface.Copy_Page if you don't want to clear the page.
    --
    --  There is a convenience function for this that takes a Cairo_Context,
    --  namely Cairo_Show_Page.
    --
-   --  Since: 1.6
+   --  @since 1.6
+   --  @param Surface a Cairo_Surface
 
    function Has_Show_Text_Glyphs
      (Surface : Cairo_Surface)
       return Boolean;
-   --  Surface: a Cairo_Surface
-   --
    --  Returns whether the surface supports
    --  sophisticated Cairo_Show_Text_Glyphs operations.  That is,
    --  whether it actually uses the provided text and cluster data
@@ -390,10 +373,10 @@ package Cairo.Surface is
    --  function to avoid computing UTF-8 text and cluster mapping if the
    --  target surface does not use it.
    --
-   --  Return value: TRUE if surface supports
-   --                Cairo_Show_Text_Glyphs, FALSE otherwise
-   --
-   --  Since: 1.8
+   --  @since 1.8
+   --  @param Surface a Cairo_Surface
+   --  @return TRUE if surface supports Cairo_Show_Text_Glyphs, FALSE
+   --  otherwise
 
 private
 

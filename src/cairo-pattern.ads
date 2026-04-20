@@ -136,23 +136,21 @@ package Cairo.Pattern is
       Green : Gdouble;
       Blue  : Gdouble)
       return  Cairo_Pattern;
-   --  Red:   Red component of the color
-   --  Green: Green component of the color
-   --  Blue:  Blue component of the color
-   --
    --  Creates a new Cairo_Pattern corresponding to an opaque color.  The
    --  color components are floating point numbers in the range 0 to 1.
    --  If the values passed in are outside that range, they will be
    --  clamped.
    --
-   --  Return value: the newly created Cairo_Pattern if successful, or
-   --  an error pattern in case of no memory.  The caller owns the
-   --  returned object and should call Cairo.Pattern.Destroy when
-   --  finished with it.
-   --
    --  This function will always return a valid pointer, but if an error
    --  occurred the pattern status will be set to an error. To inspect
    --  the status of a pattern use Cairo.Pattern.Status.
+   --
+   --  @param Red Red component of the color
+   --  @param Green Green component of the color
+   --  @param Blue Blue component of the color
+   --  @return the newly created Cairo_Pattern if successful, or an error
+   --  pattern in case of no memory. The caller owns the returned object and
+   --  should call Cairo.Pattern.Destroy when finished with it.
 
    function Create_Rgba
      (Red   : Gdouble;
@@ -160,40 +158,36 @@ package Cairo.Pattern is
       Blue  : Gdouble;
       Alpha : Gdouble)
       return  Cairo_Pattern;
-   --  Red: Red component of the color
-   --  Green: Green component of the color
-   --  Blue: Blue component of the color
-   --  Alpha: Alpha component of the color
-   --
    --  Creates a new Cairo_Pattern corresponding to a translucent color.
    --  The color components are floating point numbers in the range 0 to
    --  1.  If the values passed in are outside that range, they will be
    --  clamped.
    --
-   --  Return value: the newly created Cairo_Pattern if successful, or
-   --  an error pattern in case of no memory.  The caller owns the
-   --  returned object and should call Cairo.Pattern.Destroy when
-   --  finished with it.
-   --
    --  This function will always return a valid pointer, but if an error
    --  occurred the pattern status will be set to an error. To inspect
    --  the status of a pattern use Cairo.Pattern.Status.
+   --
+   --  @param Red Red component of the color
+   --  @param Green Green component of the color
+   --  @param Blue Blue component of the color
+   --  @param Alpha Alpha component of the color
+   --  @return the newly created Cairo_Pattern if successful, or an error
+   --  pattern in case of no memory. The caller owns the returned object and
+   --  should call Cairo.Pattern.Destroy when finished with it.
 
    function Create_For_Surface
      (Surface : Cairo_Surface)
       return    Cairo_Pattern;
-   --  Surface: the Surface
-   --
    --  Create a new Cairo_Pattern for the given surface.
-   --
-   --  Return value: the newly created Cairo_Pattern if successful, or
-   --  an error pattern in case of no memory.  The caller owns the
-   --  returned object and should call Cairo.Pattern.Destroy when
-   --  finished with it.
    --
    --  This function will always return a valid pointer, but if an error
    --  occurred the pattern status will be set to an error. To inspect
    --  the status of a pattern use Cairo.Pattern.Status.
+   --
+   --  @param Surface the Surface
+   --  @return the newly created Cairo_Pattern if successful, or an error
+   --  pattern in case of no memory. The caller owns the returned object and
+   --  should call Cairo.Pattern.Destroy when finished with it.
 
    function Create_Linear
      (X0   : Gdouble;
@@ -201,11 +195,6 @@ package Cairo.Pattern is
       X1   : Gdouble;
       Y1   : Gdouble)
       return Cairo_Pattern;
-   --  X0: x coordinate of the start point
-   --  Y0: y coordinate of the start point
-   --  X1: x coordinate of the end point
-   --  Y1: y coordinate of the end point
-   --
    --  Create a new linear gradient Cairo_Pattern along the line defined
    --  by (X0, Y0) and (X1, Y1).  Before using the gradient pattern, a
    --  number of color stops should be defined using
@@ -216,14 +205,17 @@ package Cairo.Pattern is
    --  pattern space is identical to user space, but the relationship
    --  between the spaces can be changed with Cairo.Pattern.Set_Matrix.
    --
-   --  Return value: the newly created Cairo_Pattern if successful, or
-   --  an error pattern in case of no memory.  The caller owns the
-   --  returned object and should call Cairo.Pattern.Destroy when
-   --  finished with it.
-   --
    --  This function will always return a valid pointer, but if an error
    --  occurred the pattern status will be set to an error.  To inspect
    --  the status of a pattern use Cairo.Pattern.Status.
+   --
+   --  @param X0 x coordinate of the start point
+   --  @param Y0 y coordinate of the start point
+   --  @param X1 x coordinate of the end point
+   --  @param Y1 y coordinate of the end point
+   --  @return the newly created Cairo_Pattern if successful, or an error
+   --  pattern in case of no memory. The caller owns the returned object and
+   --  should call Cairo.Pattern.Destroy when finished with it.
 
    function Create_Radial
      (Cx0     : Gdouble;
@@ -233,13 +225,6 @@ package Cairo.Pattern is
       Cy1     : Gdouble;
       Radius1 : Gdouble)
       return    Cairo_Pattern;
-   --  Cx0: X coordinate for the center of the start circle
-   --  Cy0: Y coordinate for the center of the start circle
-   --  Radius0: radius of the start circle
-   --  Cx1: X coordinate for the center of the end circle
-   --  Cy1: Y coordinate for the center of the end circle
-   --  Radius1: radius of the end circle
-   --
    --  Creates a new radial gradient Cairo_Pattern between the two circles
    --  defined by (Cx0, Cy0, Radius0) and (Cx1, Cy1, Radius1). Before using the
    --  gradient pattern, a number of color stops should be defined using
@@ -249,18 +234,21 @@ package Cairo.Pattern is
    --  pattern space is identical to user space, but the relationship
    --  between the spaces can be changed with Cairo.Pattern.Set_Matrix.
    --
-   --  Return value: the newly created Cairo_Pattern if successful, or
-   --  an error pattern in case of no memory.  The caller owns the
-   --  returned object and should call Cairo.Pattern.Destroy when
-   --  finished with it.
-   --
    --  This function will always return a valid pointer, but if an error
    --  occurred the pattern status will be set to an error.  To inspect
    --  the status of a pattern use Cairo.Pattern.Status.
+   --
+   --  @param Cx0 X coordinate for the center of the start circle
+   --  @param Cy0 Y coordinate for the center of the start circle
+   --  @param Radius0 radius of the start circle
+   --  @param Cx1 X coordinate for the center of the end circle
+   --  @param Cy1 Y coordinate for the center of the end circle
+   --  @param Radius1 radius of the end circle
+   --  @return the newly created Cairo_Pattern if successful, or an error
+   --  pattern in case of no memory. The caller owns the returned object and
+   --  should call Cairo.Pattern.Destroy when finished with it.
 
    function Reference (Pattern : Cairo_Pattern) return Cairo_Pattern;
-   --  Pattern: a Cairo_Pattern
-   --
    --  Increases the reference count on pattern by one. This prevents
    --  pattern from being destroyed until a matching call to
    --  Cairo.Pattern.Destroy is made.
@@ -268,79 +256,72 @@ package Cairo.Pattern is
    --  The number of references to a Cairo_Pattern can be get using
    --  Cairo.Pattern.Get_Reference_Count.
    --
-   --  Return value: the referenced Cairo_Pattern.
+   --  @param Pattern a Cairo_Pattern
+   --  @return the referenced Cairo_Pattern.
 
    procedure Destroy (Pattern : Cairo_Pattern);
-   --  Pattern: a Cairo_Pattern
-   --
    --  Decreases the reference count on pattern by one. If the result is
    --  zero, then pattern and all associated resources are freed.  See
    --  Cairo.Pattern.Reference.
+   --
+   --  @param Pattern a Cairo_Pattern
 
    function Get_Reference_Count (Pattern : Cairo_Pattern) return Guint;
-   --  Pattern: a Cairo_Pattern
-   --
    --  Returns the current reference count of pattern.
    --
-   --  Return value: the current reference count of pattern.  If the
-   --  object is a nil object, 0 will be returned.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Pattern a Cairo_Pattern
+   --  @return the current reference count of pattern. If the object is a nil
+   --  object, 0 will be returned.
 
    function Status (Pattern : Cairo_Pattern) return Cairo_Status;
-   --  Pattern: a Cairo_Pattern
-   --
    --  Checks whether an error has previously occurred for this
    --  pattern.
    --
-   --  Return value: Cairo_Status_Success, Cairo_Status_No_Memory, or
+   --  @param Pattern a Cairo_Pattern
+   --  @return Cairo_Status_Success, Cairo_Status_No_Memory, or
    --  Cairo_Status_Pattern_Type_Mismatch.
 
    function Get_User_Data
      (Pattern : Cairo_Pattern;
       Key     : access Cairo_User_Data_Key) return System.Address;
-   --  Pattern: a Cairo_Pattern
-   --  Key: the address of the Cairo_User_Data_Key the user data was
-   --  attached to
-   --
    --  Return user data previously attached to pattern using the
    --  specified key.  If no user data has been attached with the given
    --  key this function returns System.Null_Address.
    --
-   --  Return value: the user data previously attached or System.Null_Address.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Pattern a Cairo_Pattern
+   --  @param Key the address of the Cairo_User_Data_Key the user data was
+   --  attached to
+   --  @return the user data previously attached or System.Null_Address.
 
    function Set_User_Data
      (Pattern   : Cairo_Pattern;
       Key       : access Cairo_User_Data_Key;
       User_Data : System.Address;
       Destroy   : Cairo_Destroy_Func) return Cairo_Status;
-   --  Pattern: a Cairo_Pattern
-   --  Key: the address of a Cairo_User_Data_Key to attach the user data to
-   --  User_Data: the user data to attach to the Cairo_Pattern
-   --  Destroy: a Cairo_Destroy_Func which will be called when the
-   --  Cairo_Context is destroyed or when new user data is attached using the
-   --  same key.
-   --
    --  Attach user data to pattern.  To remove user data from a surface,
    --  call this function with the key that was used to set it and Null_Address
    --  for data.
    --
-   --  Return value: Cairo_Status_Success or Cairo_Status_No_Memory if a
-   --  slot could not be allocated for the user data.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Pattern a Cairo_Pattern
+   --  @param Key the address of a Cairo_User_Data_Key to attach the user data
+   --  to
+   --  @param User_Data the user data to attach to the Cairo_Pattern
+   --  @param Destroy a Cairo_Destroy_Func which will be called when the
+   --  Cairo_Context is destroyed or when new user data is attached using the
+   --  same key.
+   --  @return Cairo_Status_Success or Cairo_Status_No_Memory if a slot could
+   --  not be allocated for the user data.
 
    function Get_Type (Pattern : Cairo_Pattern) return Cairo_Pattern_Type;
-   --  Pattern: a Cairo_Pattern
-   --
    --  This function returns the type a pattern.
    --  See Cairo_Pattern_Type for available types.
    --
-   --  Return value: The type of pattern.
-   --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Pattern a Cairo_Pattern
+   --  @return The type of pattern.
 
    procedure Add_Color_Stop_Rgb
      (Pattern : Cairo_Pattern;
@@ -348,12 +329,6 @@ package Cairo.Pattern is
       Red     : Gdouble;
       Green   : Gdouble;
       Blue    : Gdouble);
-   --  Pattern: a Cairo_Pattern
-   --  Offset: an Offset in the range [0.0 .. 1.0]
-   --  Red: Red component of color
-   --  Green: Green component of color
-   --  Blue: Blue component of color
-   --
    --  Adds an opaque color stop to a gradient pattern. The offset
    --  specifies the location along the gradient's control vector. For
    --  example, a linear gradient's control vector is from (X0,Y0) to
@@ -368,10 +343,15 @@ package Cairo.Pattern is
    --  later). This can be useful for reliably making sharp color
    --  transitions instead of the typical blend.
    --
-   --
    --  Note: If the pattern is not a gradient pattern, (eg. a linear or
    --  radial pattern), then the pattern will be put into an error status
    --  with a status of Cairo_Status_Pattern_Type_Mismatch.
+   --
+   --  @param Pattern a Cairo_Pattern
+   --  @param Offset an Offset in the range [0.0 .. 1.0]
+   --  @param Red Red component of color
+   --  @param Green Green component of color
+   --  @param Blue Blue component of color
 
    procedure Add_Color_Stop_Rgba
      (Pattern : Cairo_Pattern;
@@ -380,13 +360,6 @@ package Cairo.Pattern is
       Green   : Gdouble;
       Blue    : Gdouble;
       Alpha   : Gdouble);
-   --  Pattern: a Cairo_Pattern
-   --  Offset: an Offset in the range [0.0 .. 1.0]
-   --  Red: Red component of color
-   --  Green: Green component of color
-   --  Blue: Blue component of color
-   --  Alpha: Alpha component of color
-   --
    --  Adds a translucent color stop to a gradient pattern. The offset
    --  specifies the location along the gradient's control vector. For
    --  example, a linear gradient's control vector is from (x0,y0) to
@@ -404,13 +377,17 @@ package Cairo.Pattern is
    --  Note: If the pattern is not a gradient pattern, (eg. a linear or
    --  radial pattern), then the pattern will be put into an error status
    --  with a status of Cairo_Status_Pattern_Type_Mismatch.
+   --
+   --  @param Pattern a Cairo_Pattern
+   --  @param Offset an Offset in the range [0.0 .. 1.0]
+   --  @param Red Red component of color
+   --  @param Green Green component of color
+   --  @param Blue Blue component of color
+   --  @param Alpha Alpha component of color
 
    procedure Set_Matrix
      (Pattern : Cairo_Pattern;
       Matrix  : access Cairo_Matrix);
-   --  Pattern: a Cairo_Pattern
-   --  Matrix: a Cairo_Matrix
-   --
    --  Sets the pattern's transformation matrix to matrix. This matrix is
    --  a transformation from user space to pattern space.
    --
@@ -435,41 +412,38 @@ package Cairo.Pattern is
    --
    --  Also, please note the discussion of the user-space locking
    --  semantics of Cairo_Set_Source.
+   --
+   --  @param Pattern a Cairo_Pattern
+   --  @param Matrix a Cairo_Matrix
 
    procedure Get_Matrix
      (Pattern : Cairo_Pattern;
       Matrix  : access Cairo_Matrix);
-   --  Pattern: a Cairo_Pattern
-   --  Matrix: return value for the Matrix
-   --
    --  Stores the pattern's transformation matrix into matrix.
+   --
+   --  @param Pattern a Cairo_Pattern
+   --  @param Matrix return value for the Matrix
 
    procedure Set_Extend (Pattern : Cairo_Pattern; Extend : Cairo_Extend);
-   --  Pattern: a Cairo_Pattern
-   --  Extend: a Cairo_Extend describing how the area outside of the
-   --  pattern will be drawn
-   --
    --  Sets the mode to be used for drawing outside the area of a pattern.
    --  See Cairo_Extend for details on the semantics of each extend
    --  strategy.
    --
    --  The default extend mode is Cairo_Extend_None for surface patterns
    --  and Cairo_Extend_PAd for gradient patterns.
+   --
+   --  @param Pattern a Cairo_Pattern
+   --  @param Extend a Cairo_Extend describing how the area outside of the
+   --  pattern will be drawn
 
    function Get_Extend (Pattern : Cairo_Pattern) return Cairo_Extend;
-   --  Pattern: a Cairo_Pattern
-   --
    --  Gets the current extend mode for a pattern.  See Cairo_Extend
    --  for details on the semantics of each extend strategy.
    --
-   --  Return value: the current extend strategy used for drawing the
-   --  pattern.
+   --  @param Pattern a Cairo_Pattern
+   --  @return the current extend strategy used for drawing the pattern.
 
    procedure Set_Filter (Pattern : Cairo_Pattern; Filter : Cairo_Filter);
-   --  Pattern: a Cairo_Pattern
-   --  Filter: a Cairo_Filter describing the Filter to use for resizing
-   --  the pattern
-   --
    --  Sets the filter to be used for resizing when using this pattern.
    --  See Cairo_Filter for details on each filter.
    --
@@ -481,14 +455,17 @@ package Cairo.Pattern is
    --
    --  Cairo_Set_Source_Surface (Cr, Image, X, Y);
    --  Cairo.Pattern.Set_Filter (Cairo_Get_Source (Cr), Cairo_Filter_Nearest);
+   --
+   --  @param Pattern a Cairo_Pattern
+   --  @param Filter a Cairo_Filter describing the Filter to use for resizing
+   --  the pattern
 
    function Get_Filter (Pattern : Cairo_Pattern) return Cairo_Filter;
-   --  Pattern: a Cairo_Pattern
-   --
    --  Gets the current filter for a pattern.  See Cairo_Filter
    --  for details on each filter.
    --
-   --  Return value: the current filter used for resizing the pattern.
+   --  @param Pattern a Cairo_Pattern
+   --  @return the current filter used for resizing the pattern.
 
    function Get_Rgba
      (Pattern : Cairo_Pattern;
@@ -497,36 +474,30 @@ package Cairo.Pattern is
       Blue    : access Gdouble;
       Alpha   : access Gdouble)
       return    Cairo_Status;
-   --  Pattern: a Cairo_Pattern
-   --  Red: return value for Red component of color, or null
-   --  Green: return value for Green component of color, or null
-   --  Blue: return value for Blue component of color, or null
-   --  Alpha: return value for Alpha component of color, or null
-   --
    --  Gets the solid color for a solid color pattern.
    --
-   --  Return value: Cairo_Status_Success, or
-   --  Cairo_Status_Pattern_Type_Mismatch if the pattern is not a solid
-   --  color pattern.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Pattern a Cairo_Pattern
+   --  @param Red return value for Red component of color, or null
+   --  @param Green return value for Green component of color, or null
+   --  @param Blue return value for Blue component of color, or null
+   --  @param Alpha return value for Alpha component of color, or null
+   --  @return Cairo_Status_Success, or Cairo_Status_Pattern_Type_Mismatch if
+   --  the pattern is not a solid color pattern.
 
    function Get_Surface
      (Pattern : Cairo_Pattern;
       Surface : Cairo_Surface)
       return    Cairo_Status;
-   --  Pattern: a Cairo_Pattern
-   --  Surface: return value for Surface of pattern, or null
-   --
    --  Gets the surface of a surface pattern.  The reference returned in
    --  surface is owned by the pattern; the caller should call
    --  Cairo.Surface.Reference if the surface is to be retained.
    --
-   --  Return value: Cairo_Status_Success, or
-   --  Cairo_Status_Pattern_Type_Mismatch if the pattern is not a surface
-   --  pattern.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Pattern a Cairo_Pattern
+   --  @param Surface return value for Surface of pattern, or null
+   --  @return Cairo_Status_Success, or Cairo_Status_Pattern_Type_Mismatch if
+   --  the pattern is not a surface pattern.
 
    function Get_Color_Stop_Rgba
      (Pattern : Cairo_Pattern;
@@ -537,40 +508,34 @@ package Cairo.Pattern is
       Blue    : access Gdouble;
       Alpha   : access Gdouble)
       return    Cairo_Status;
-   --  Pattern: a Cairo_Pattern
-   --  Index: Index of the stop to return data for
-   --  Offset: return value for the Offset of the stop, or null
-   --  Red: return value for Red component of color, or null
-   --  Green: return value for Green component of color, or null
-   --  Blue: return value for Blue component of color, or null
-   --  Alpha: return value for Alpha component of color, or null
-   --
    --  Gets the color and offset information at the given index for a
    --  gradient pattern.  Values of index are 0 to 1 less than the number
    --  returned by Cairo.Pattern.Get_Color_Stop_Count.
    --
-   --  Return value: Cairo_Status_Success, or Cairo_Status_Invalid_Index
-   --  if index is not valid for the given pattern.  If the pattern is
-   --  not a gradient pattern, Cairo_Status_Pattern_Type_Mismatch is
-   --  returned.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Pattern a Cairo_Pattern
+   --  @param Index Index of the stop to return data for
+   --  @param Offset return value for the Offset of the stop, or null
+   --  @param Red return value for Red component of color, or null
+   --  @param Green return value for Green component of color, or null
+   --  @param Blue return value for Blue component of color, or null
+   --  @param Alpha return value for Alpha component of color, or null
+   --  @return Cairo_Status_Success, or Cairo_Status_Invalid_Index if index is
+   --  not valid for the given pattern. If the pattern is not a gradient
+   --  pattern, Cairo_Status_Pattern_Type_Mismatch is returned.
 
    function Get_Color_Stop_Count
      (Pattern : Cairo_Pattern;
       Count   : access Gint)
       return    Cairo_Status;
-   --  Pattern: a Cairo_Pattern
-   --  Count: return value for the number of color stops, or NULL
-   --
    --  Gets the number of color stops specified in the given gradient
    --  pattern.
    --
-   --  Return value: Cairo_Status_Success, or
-   --  Cairo_Status_Pattern_Type_Mismatch if pattern is not a gradient
-   --  pattern.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Pattern a Cairo_Pattern
+   --  @param Count return value for the number of color stops, or NULL
+   --  @return Cairo_Status_Success, or Cairo_Status_Pattern_Type_Mismatch if
+   --  pattern is not a gradient pattern.
 
    function Get_Linear_Points
      (Pattern : Cairo_Pattern;
@@ -579,19 +544,18 @@ package Cairo.Pattern is
       X1      : access Gdouble;
       Y1      : access Gdouble)
       return    Cairo_Status;
-   --  Pattern: a Cairo_Pattern
-   --  X0: return value for the x coordinate of the first point, or null
-   --  Y0: return value for the y coordinate of the first point, or null
-   --  X1: return value for the x coordinate of the second point, or null
-   --  Y1: return value for the y coordinate of the second point, or null
-   --
    --  Gets the gradient endpoints for a linear gradient.
    --
-   --  Return value: Cairo_Status_Success, or
-   --  Cairo_Status_Pattern_Type_Mismatch if pattern is not a linear
-   --  gradient pattern.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Pattern a Cairo_Pattern
+   --  @param X0 return value for the x coordinate of the first point, or null
+   --  @param Y0 return value for the y coordinate of the first point, or null
+   --  @param X1 return value for the x coordinate of the second point, or
+   --  null
+   --  @param Y1 return value for the y coordinate of the second point, or
+   --  null
+   --  @return Cairo_Status_Success, or Cairo_Status_Pattern_Type_Mismatch if
+   --  pattern is not a linear gradient pattern.
 
    function Get_Radial_Circles
      (Pattern : Cairo_Pattern;
@@ -602,26 +566,23 @@ package Cairo.Pattern is
       Y1      : access Gdouble;
       R1      : access Gdouble)
       return    Cairo_Status;
-   --  Pattern: a Cairo_Pattern
-   --  X0: return value for the x coordinate of the center of the first
-   --  circle, or null
-   --  Y0: return value for the y coordinate of the center of the first
-   --  circle, or null
-   --  R0: return value for the radius of the first circle, or null
-   --  X1: return value for the x coordinate of the center of the second
-   --  circle, or null
-   --  Y1: return value for the y coordinate of the center of the second
-   --  circle, or null
-   --  R1: return value for the radius of the second circle, or null
-   --
    --  Gets the gradient endpoint circles for a radial gradient, each
    --  specified as a center coordinate and a radius.
    --
-   --  Return value: Cairo_Status_Success, or
-   --  Cairo_Status_Pattern_Type_Mismatch if pattern is not a radial
-   --  gradient pattern.
-   --
-   --  Since: 1.4
+   --  @since 1.4
+   --  @param Pattern a Cairo_Pattern
+   --  @param X0 return value for the x coordinate of the center of the first
+   --  circle, or null
+   --  @param Y0 return value for the y coordinate of the center of the first
+   --  circle, or null
+   --  @param R0 return value for the radius of the first circle, or null
+   --  @param X1 return value for the x coordinate of the center of the second
+   --  circle, or null
+   --  @param Y1 return value for the y coordinate of the center of the second
+   --  circle, or null
+   --  @param R1 return value for the radius of the second circle, or null
+   --  @return Cairo_Status_Success, or Cairo_Status_Pattern_Type_Mismatch if
+   --  pattern is not a radial gradient pattern.
 
 private
 

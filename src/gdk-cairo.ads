@@ -49,14 +49,16 @@ package Gdk.Cairo is
       Pixbuf   : Gdk_Pixbuf;
       Pixbuf_X : Gdouble;
       Pixbuf_Y : Gdouble);
-   --  Cr: a Cairo_Context
-   --  Pixbuf: a Gdk_Pixbuf
-   --  Pixbuf_X: X coordinate of location to place upper left corner of Pixbuf
-   --  Pixbuf_Y: Y coordinate of location to place upper left corner of Pixbuf
-   --
    --  Sets the given pixbuf as the source pattern for the Cairo context.
    --  The pattern has an extend mode of CAIRO_EXTEND_NONE and is aligned
    --  so that the origin of Pixbuf is Pixbuf_X, Pixbuf_Y
+   --
+   --  @param Cr a Cairo_Context
+   --  @param Pixbuf a Gdk_Pixbuf
+   --  @param Pixbuf_X X coordinate of location to place upper left corner of
+   --  Pixbuf
+   --  @param Pixbuf_Y Y coordinate of location to place upper left corner of
+   --  Pixbuf
 
    function Create_From_Pixbuf
       (Pixbuf  : Gdk_Pixbuf;

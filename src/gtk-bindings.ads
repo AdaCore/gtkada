@@ -137,7 +137,8 @@ package Gtk.Bindings is
       return Boolean;
    --  Looks up key bindings for Object to find one matching
    --  Event, and if one was found, activate it.
-   --  Return value: True if a matching key binding was found
+   --
+   --  @return True if a matching key binding was found
 
    function Binding_Set_Activate
      (Binding_Set : Gtk_Binding_Set;
@@ -155,7 +156,8 @@ package Gtk.Bindings is
    --  Install a binding on Binding_Set which causes key lookups
    --  to be aborted, to prevent bindings from lower priority sets
    --  to be activated.
-   --  Since: 2.12
+   --
+   --  @since 2.12
 
    procedure Add_Signal
      (Binding_Set : Gtk_Binding_Set;

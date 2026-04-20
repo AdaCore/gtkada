@@ -94,40 +94,35 @@ package Cairo.Image_Surface is
       Width  : Gint;
       Height : Gint)
       return   Cairo_Surface;
-   --  Format: Format of pixels in the surface to create
-   --  Width: Width of the surface, in pixels
-   --  Height: Height of the surface, in pixels
-   --
    --  Creates an image surface of the specified format and
    --  dimensions. Initially the surface contents are all
    --  0. (Specifically, within each pixel, each color or alpha channel
    --  belonging to format will be 0. The contents of bits within a pixel,
    --  but not belonging to the given format are undefined).
    --
-   --  Return value: a pointer to the newly created surface. The caller
-   --  owns the surface and should call Cairo.Surface.Destroy when done
-   --  with it.
-   --
    --  This function always returns a valid pointer, but it will return a
    --  pointer to a "nil" surface if an error such as out of memory
    --  occurs. You can use Cairo.Surface.Status to check for this.
+   --
+   --  @param Format Format of pixels in the surface to create
+   --  @param Width Width of the surface, in pixels
+   --  @param Height Height of the surface, in pixels
+   --  @return a pointer to the newly created surface. The caller owns the
+   --  surface and should call Cairo.Surface.Destroy when done with it.
 
    function Cairo_Format_Stride_For_Width
      (Format : Cairo_Format;
       Width  : Gint)
       return   Gint;
-   --  Format: A Cairo_Format value
-   --  Width: The desired Width of an image surface to be created.
-   --
    --  This function provides a stride value that will respect all
    --  alignment requirements of the accelerated image-rendering code
    --  within cairo.
    --
-   --  Return value: the appropriate stride to use given the desired
-   --  format and width, or -1 if either the format is invalid or the width
-   --  too large.
-   --
-   --  Since: 1.6
+   --  @since 1.6
+   --  @param Format A Cairo_Format value
+   --  @param Width The desired Width of an image surface to be created.
+   --  @return the appropriate stride to use given the desired format and
+   --  width, or -1 if either the format is invalid or the width too large.
 
    function Create_For_Data_Generic
      (Data   : System.Address;
@@ -136,17 +131,6 @@ package Cairo.Image_Surface is
       Height : Gint;
       Stride : Gint)
       return   Cairo_Surface;
-   --  Data: a pointer to a buffer supplied by the application in which
-   --      to write contents. This pointer must be suitably aligned for any
-   --      kind of variable, (for example, a pointer returned by malloc).
-   --  Format: the Format of pixels in the buffer
-   --  Width: the Width of the image to be stored in the buffer
-   --  Height: the Height of the image to be stored in the buffer
-   --  Stride: the number of bytes between the start of rows in the
-   --      buffer as allocated. This value should always be computed by
-   --      Cairo_Format_Stride_For_Width before allocating the data
-   --      buffer.
-   --
    --  This function is a low-level binding to the C function: see also
    --  Create_For_Data_[ARGB32|RGB24|A8|A1]
    --
@@ -165,10 +149,6 @@ package Cairo.Image_Surface is
    --  stride value to allocate the data and to create the image surface. See
    --  Cairo_Format_Stride_For_Width for example code.
    --
-   --  Return value: a pointer to the newly created surface. The caller
-   --  owns the surface and should call Cairo.Surface.Destroy when done
-   --  with it.
-   --
    --  This function always returns a valid pointer, but it will return a
    --  pointer to a "nil" surface in the case of an error such as out of
    --  memory or an invalid stride value. In case of invalid stride value
@@ -178,6 +158,18 @@ package Cairo.Image_Surface is
    --
    --  See Cairo.Surface.Set_User_Data for a means of attaching a
    --  destroy-notification fallback to the surface if necessary.
+   --
+   --  @param Data a pointer to a buffer supplied by the application in which
+   --  to write contents. This pointer must be suitably aligned for any kind
+   --  of variable, (for example, a pointer returned by malloc).
+   --  @param Format the Format of pixels in the buffer
+   --  @param Width the Width of the image to be stored in the buffer
+   --  @param Height the Height of the image to be stored in the buffer
+   --  @param Stride the number of bytes between the start of rows in the
+   --  buffer as allocated. This value should always be computed by
+   --  Cairo_Format_Stride_For_Width before allocating the data buffer.
+   --  @return a pointer to the newly created surface. The caller owns the
+   --  surface and should call Cairo.Surface.Destroy when done with it.
 
    function Create_For_Data_ARGB32
      (Data   : ARGB32_Array_Access;
@@ -201,51 +193,43 @@ package Cairo.Image_Surface is
    --  Same as above, working on A8 format.
 
    function Get_Data_Generic (Surface : Cairo_Surface) return System.Address;
-   --  Surface: a Cairo_Image_Surface
-   --
    --  Get a pointer to the data of the image surface, for direct
    --  inspection or modification.
    --
-   --  Return value: a pointer to the image data of this surface or
+   --  @since 1.2
+   --  @param Surface a Cairo_Image_Surface
+   --  @return a pointer to the image data of this surface or
    --  System.Null_Address if surface is not an image surface, or if
    --  Cairo.Surface.Finish has been called.
-   --
-   --  Since: 1.2
 
    function Get_Format (Surface : Cairo_Surface) return Cairo_Format;
-   --  Surface: a Cairo_Image_Surface
-   --
    --  Get the format of the surface.
    --
-   --  Return value: the format of the surface
-   --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Surface a Cairo_Image_Surface
+   --  @return the format of the surface
 
    function Get_Width (Surface : Cairo_Surface) return Gint;
-   --  Surface: a Cairo_Image_Surface
-   --
    --  Get the width of the image surface in pixels.
    --
-   --  Return value: the width of the surface in pixels.
+   --  @param Surface a Cairo_Image_Surface
+   --  @return the width of the surface in pixels.
 
    function Get_Height (Surface : Cairo_Surface) return Gint;
-   --  Surface: a Cairo_Image_Surface
-   --
    --  Get the height of the image surface in pixels.
    --
-   --  Return value: the height of the surface in pixels.
+   --  @param Surface a Cairo_Image_Surface
+   --  @return the height of the surface in pixels.
 
    function Get_Stride (Surface : Cairo_Surface) return Gint;
-   --  Surface: a Cairo_Image_Surface
-   --
    --  Get the stride of the image surface in bytes
    --
-   --  Return value: the stride of the image surface in bytes (or 0 if
-   --  surface is not an image surface). The stride is the distance in
-   --  bytes from the beginning of one row of the image data to the
-   --  beginning of the next row.
-   --
-   --  Since: 1.2
+   --  @since 1.2
+   --  @param Surface a Cairo_Image_Surface
+   --  @return the stride of the image surface in bytes (or 0 if surface is
+   --  not an image surface). The stride is the distance in bytes from the
+   --  beginning of one row of the image data to the beginning of the next
+   --  row.
 
 private
 

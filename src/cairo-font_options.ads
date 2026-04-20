@@ -32,7 +32,7 @@ package Cairo.Font_Options is
    --  Allocates a new font options object with all options initialized
    --  to default values.
    --
-   --  Return value: a newly allocated Cairo_Font_Options. Free with
+   --  @return a newly allocated Cairo_Font_Options. Free with
    --  Cairo.Font_Options.Destroy. If memory cannot be allocated, then a
    --  special error object is returned where all operations on the object do
    --  nothing. You can check for this with Cairo.Font_Options.Status.
@@ -40,148 +40,138 @@ package Cairo.Font_Options is
    function Copy
      (Original : Cairo_Font_Options)
       return     Cairo_Font_Options;
-   --  Original: a Cairo_Font_Options
-   --
    --  Allocates a new font options object copying the option values from
    --  original.
    --
-   --  Return value: a newly allocated Cairo_Font_Options. Free with
+   --  @param Original a Cairo_Font_Options
+   --  @return a newly allocated Cairo_Font_Options. Free with
    --  Cairo.Font_Options.Destroy. If memory cannot be allocated, then a
    --  special error object is returned where all operations on the object do
    --  nothing. You can check for this with Cairo.Font_Options.Status.
 
    procedure Destroy (Options : Cairo_Font_Options);
-   --  Options: a Cairo_Font_Options
-   --
    --  Destroys a Cairo_Font_Options object created with
    --  Cairo.Font_Options.Create or Cairo.Font_Options.Copy.
+   --
+   --  @param Options a Cairo_Font_Options
 
    function Status (Options : Cairo_Font_Options) return Cairo_Status;
-   --  Options: a Cairo_Font_Options
-   --
    --  Checks whether an error has previously occurred for this
    --  font options object
    --
-   --  Return value: Cairo_Status_Success or Cairo_Status_No_Memory
+   --  @param Options a Cairo_Font_Options
+   --  @return Cairo_Status_Success or Cairo_Status_No_Memory
 
    procedure Merge
      (Options : Cairo_Font_Options;
       Other   : Cairo_Font_Options);
-   --  Options: a Cairo_Font_Options
-   --  Other: anOther Cairo_Font_Options
-   --
    --  Merges non-default options from other into options, replacing
    --  existing values. This operation can be thought of as somewhat
    --  similar to compositing other onto options with the operation
    --  of Cairo_Operation_Over.
+   --
+   --  @param Options a Cairo_Font_Options
+   --  @param Other anOther Cairo_Font_Options
 
    function Equal
      (Options : Cairo_Font_Options;
       Other   : Cairo_Font_Options)
       return    Boolean;
-   --  Options: a Cairo_Font_Options
-   --  Other: another Cairo_Font_Options
-   --
    --  Compares two font options objects for equality.
    --
-   --  Return value: True if all fields of the two font options objects match.
-   --  Note that this function will return False if either object is in
-   --  error.
+   --  @param Options a Cairo_Font_Options
+   --  @param Other another Cairo_Font_Options
+   --  @return True if all fields of the two font options objects match. Note
+   --  that this function will return False if either object is in error.
 
    function Hash
      (Options : Cairo_Font_Options)
       return    Gulong;
-   --  Options: a Cairo_Font_Options
-   --
    --  Compute a hash for the font options object; this value will
    --  be useful when storing an object containing a Cairo_Font_Options
    --  in a hash table.
    --
-   --  Return value: the hash value for the font options object.
-   --  The return value can be cast to a 32-bit type if a
-   --  32-bit hash value is needed.
+   --  @param Options a Cairo_Font_Options
+   --  @return the hash value for the font options object. The return value
+   --  can be cast to a 32-bit type if a 32-bit hash value is needed.
 
    procedure Set_Antialias
      (Options   : Cairo_Font_Options;
       Antialias : Cairo_Antialias);
-   --  Options: a Cairo_Font_Options
-   --  Antialias: the new Antialiasing mode
-   --
    --  Sets the antialiasing mode for the font options object. This
    --  specifies the type of antialiasing to do when rendering text.
+   --
+   --  @param Options a Cairo_Font_Options
+   --  @param Antialias the new Antialiasing mode
 
    function Get_Antialias
      (Options : Cairo_Font_Options)
       return    Cairo_Antialias;
-   --  Options: a Cairo_Font_Options
-   --
    --  Gets the antialiasing mode for the font options object.
    --
-   --  Return value: the antialiasing mode
+   --  @param Options a Cairo_Font_Options
+   --  @return the antialiasing mode
 
    procedure Set_Subpixel_Order
      (Options        : Cairo_Font_Options;
       Subpixel_Order : Cairo_Subpixel_Order);
-   --  Options: a Cairo_Font_Options
-   --  Subpixel_Order: the new subpixel order
-   --
    --  Sets the subpixel order for the font options object. The subpixel
    --  order specifies the order of color elements within each pixel on
    --  the display device when rendering with an antialiasing mode of
    --  Cairo_Antialias_Subpixel. See the documentation for
    --  Cairo_Subpixel_Order for full details.
+   --
+   --  @param Options a Cairo_Font_Options
+   --  @param Subpixel_Order the new subpixel order
 
    function Get_Subpixel_Order
      (Options : Cairo_Font_Options)
       return    Cairo_Subpixel_Order;
-   --  Options: a Cairo_Font_Options
-   --
    --  Gets the subpixel order for the font options object.
    --  See the documentation for Cairo_Subpixel_Order for full details.
    --
-   --  Return value: the subpixel order for the font options object
+   --  @param Options a Cairo_Font_Options
+   --  @return the subpixel order for the font options object
 
    procedure Set_Hint_Style
      (Options    : Cairo_Font_Options;
       Hint_Style : Cairo_Hint_Style);
-   --  Options: a Cairo_Font_Options
-   --  Hint_Style: the new hint style
-   --
    --  Sets the hint style for font outlines for the font options object.
    --  This controls whether to fit font outlines to the pixel grid,
    --  and if so, whether to optimize for fidelity or contrast.
    --  See the documentation for Cairo_Hint_Style for full details.
+   --
+   --  @param Options a Cairo_Font_Options
+   --  @param Hint_Style the new hint style
 
    function Get_Hint_Style
      (Options : Cairo_Font_Options)
       return    Cairo_Hint_Style;
-   --  Options: a Cairo_Font_Options
-   --
    --  Gets the hint style for font outlines for the font options object.
    --  See the documentation for Cairo_Hint_Style for full details.
    --
-   --  Return value: the hint style for the font options object
+   --  @param Options a Cairo_Font_Options
+   --  @return the hint style for the font options object
 
    procedure Set_Hint_Metrics
      (Options      : Cairo_Font_Options;
       Hint_Metrics : Cairo_Hint_Metrics);
-   --  Options: a Cairo_Font_Options
-   --  Hint_Metrics: the new metrics hinting mode
-   --
    --  Sets the metrics hinting mode for the font options object. This
    --  controls whether metrics are quantized to integer values in
    --  device units.
    --  See the documentation for Cairo_Hint_Metrics for full details.
+   --
+   --  @param Options a Cairo_Font_Options
+   --  @param Hint_Metrics the new metrics hinting mode
 
    function Get_Hint_Metrics
      (Options : Cairo_Font_Options)
       return    Cairo_Hint_Metrics;
-   --  Options: a Cairo_Font_Options
-   --
    --  Gets the metrics hinting mode for the font options object.
    --  See the documentation for Cairo_Hint_Metrics for full details.
    --
-   --  Return value: the metrics hinting mode for the font options object
+   --  @param Options a Cairo_Font_Options
+   --  @return the metrics hinting mode for the font options object
 
 private
 

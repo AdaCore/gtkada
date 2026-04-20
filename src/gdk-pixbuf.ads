@@ -350,8 +350,8 @@ package Gdk.Pixbuf is
    --  (In short, there are several ways this function can fail, and if it
    --   fails it returns Null_Pixbuf; so check the return value.)
    --
-   --  Return value: (transfer full): A newly-created pixbuf with a reference
-   --      count of 1, or Null_Pixbuf on error
+   --  @return (transfer full): A newly-created pixbuf with a reference count
+   --  of 1, or Null_Pixbuf on error
 
    -------------
    -- Scaling --

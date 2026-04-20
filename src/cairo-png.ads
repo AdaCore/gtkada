@@ -32,31 +32,22 @@ package Cairo.Png is
      (Surface  : Cairo_Surface;
       Filename : String)
       return     Cairo_Status;
-   --  Surface: a Cairo_Surface with pixel contents
-   --  Filename: the name of a file to write to
-   --
    --  Writes the contents of surface to a new file filename as a PNG
    --  image.
    --
-   --  Return value: Cairo_Status_Success if the PNG file was written
-   --  successfully. Otherwise, Cairo_Status_No_Memory if memory could not
-   --  be allocated for the operation or
-   --  Cairo_Status_Surface_Type_Mismatch if the surface does not have
-   --  pixel contents, or Cairo_Status_Write_Error if an I/O error occurs
-   --  while attempting to write the file.
+   --  @param Surface a Cairo_Surface with pixel contents
+   --  @param Filename the name of a file to write to
+   --  @return Cairo_Status_Success if the PNG file was written successfully.
+   --  Otherwise, Cairo_Status_No_Memory if memory could not be allocated for
+   --  the operation or Cairo_Status_Surface_Type_Mismatch if the surface does
+   --  not have pixel contents, or Cairo_Status_Write_Error if an I/O error
+   --  occurs while attempting to write the file.
 
    function Create_From_Png
      (Filename : String)
       return     Cairo_Surface;
-   --  Filename: name of PNG file to load
-   --
    --  Creates a new image surface and initializes the contents to the
    --  given PNG file.
-   --
-   --  Return value: a new Cairo_Surface initialized with the contents
-   --  of the PNG file, or a "nil" surface if any error occurred. A nil
-   --  surface can be checked for with Cairo.Surface.Status (Surface) which
-   --  may return one of the following values:
    --
    --  Cairo_Status_No_Memory
    --  Cairo_Status_File_Not_Found
@@ -65,5 +56,11 @@ package Cairo.Png is
    --  Alternatively, you can allow errors to propagate through the drawing
    --  operations and check the status on the context upon completion
    --  using Cairo_Status.
+   --
+   --  @param Filename name of PNG file to load
+   --  @return a new Cairo_Surface initialized with the contents of the PNG
+   --  file, or a "nil" surface if any error occurred. A nil surface can be
+   --  checked for with Cairo.Surface.Status (Surface) which may return one of
+   --  the following values:
 
 end Cairo.Png;

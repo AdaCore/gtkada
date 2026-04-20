@@ -927,10 +927,11 @@ package Gtkada.Canvas_View is
    --  Create a new view which displays the model.
    --  A new reference to the model is created (and released when the view is
    --  destroyed), so that in general the code will look like:
-   --       Model := new ....;
-   --       Initialize (Model);
-   --       Gtk_New (View, Model);
-   --       Unref (Model);  --  unless you need to keep a handle on it too
+   --
+   --     Model := new ....;
+   --     Initialize (Model);
+   --     Gtk_New (View, Model);
+   --     Unref (Model);  --  unless you need to keep a handle on it too
 
    procedure Set_Model
       (Self  : not null access Canvas_View_Record'Class;

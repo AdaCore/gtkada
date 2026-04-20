@@ -174,7 +174,6 @@ package Gtkada.Multi_Paned is
    --    | 2 |   |   |  |   | 2 |   |   |   2   |   |  |   2   |   |
    --    +---+---+---+  +---+---+---+   +-------+---+  +-------+---+
    --
-   --
    --  Ref_Pane = Get_Pane ("3")             Ref_Widget = "3"
    --  Split vertically
    --    After=True   After=False       After=True     After=False
