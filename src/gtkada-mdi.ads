@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2022, AdaCore                     --
+--                     Copyright (C) 2001-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,11 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This widget organizes its children into resizable panes. Within each
 --  pane, multiple children can be put, and they will be accessible through
 --  a notebook.
---  </description>
+--
 --  <group>Layout containers</group>
 
 with Ada.Containers.Indefinite_Hashed_Maps;

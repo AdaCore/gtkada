@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                       Copyright (C) 2013-2018, AdaCore                   --
+--                       Copyright (C) 2013-2026, AdaCore                   --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This object adds support for opening files from OS commands, using the
 --  standard Glib Application mechanism for opening those files.
 --
@@ -33,7 +32,7 @@
 --
 --  On OSX, this requires the application to be part of a bundle. This bundle
 --  needs to declare the file patterns that are supported by the application.
---  </description>
+--
 --  <group>Layout containers</group>
 
 with System;

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2022, AdaCore                     --
+--                     Copyright (C) 2001-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package provides a minimal binding to the GObject type in Glib.
 --  See Glib.Properties for information on how to manipulate properties
 --
---  </description>
 --  <group>Glib, the general-purpose library</group>
 
 with Interfaces.C.Strings;

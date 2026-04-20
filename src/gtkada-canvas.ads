@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,7 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  NOTE: this package is deprecated - prefer GtkAda.Canvas_View.
 --
 --  This package provides an interactive canvas, on which the user can put
@@ -90,7 +89,6 @@
 --  will be selected (this will replace the current selection if Control was
 --  not pressed).
 --
---  </description>
 --  <group>Drawing</group>
 --  <testgtk>create_canvas.adb</testgtk>
 --  <screenshot>gtkada-canvas</screenshot>

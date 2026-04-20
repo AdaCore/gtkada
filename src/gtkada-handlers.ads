@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,14 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package provides the most commonly used instantiations of
 --  Gtk.Handlers
 --
 --  Gate takes advantage of these pre-instantiated packages.
 --
---  </description>
 --  <group>Signal handling</group>
 
 with Gtk.Handlers;

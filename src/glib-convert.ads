@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package provides definitions for string conversions and i18n.
 --  See also Glib.Unicode.
 --
---  </description>
 --  <c_version>1.3.11</c_version>
 --  <group>Glib, the general-purpose library</group>
 
@@ -58,21 +55,18 @@ package Glib.Convert is
       Result        : out String);
    --  Convert a string from one character set to another.
    --
-   --  Str:           String to convert
-   --  Result:        String converted, if no error.
-   --  To_Codeset:    Name of character set into which to convert Str
-   --  From_Codeset:  Character set of Str.
-   --  Bytes_Read:    Number of bytes in the input string that were
-   --                 successfully converted.
-   --                 Even if the conversion was successful, this may be
-   --                 less than Len if there were partial characters
-   --                 at the end of the input. If the error
-   --                 Illegal_Sequence occurs, the value
-   --                 stored will the byte offset after the last valid
-   --                 input sequence.
-   --  Bytes_Written: Number of bytes stored in the output buffer.
-   --  Error:         Location to store the error occuring, ignored if null.
-   --                 Any of the errors in Convert_Error_Domain may occur.
+   --  @param Str String to convert
+   --  @param Result String converted, if no error.
+   --  @param To_Codeset Name of character set into which to convert Str
+   --  @param From_Codeset Character set of Str.
+   --  @param Bytes_Read Number of bytes in the input string that were
+   --  successfully converted. Even if the conversion was successful, this may
+   --  be less than Len if there were partial characters at the end of the
+   --  input. If the error Illegal_Sequence occurs, the value stored will the
+   --  byte offset after the last valid input sequence.
+   --  @param Bytes_Written Number of bytes stored in the output buffer.
+   --  @param Error Location to store the error occuring, ignored if null. Any
+   --  of the errors in Convert_Error_Domain may occur.
 
    function Convert
      (Str           : String;
@@ -100,18 +94,15 @@ package Glib.Convert is
    --  the C runtime (usually the same as that used by the operating
    --  system) in the current locale into a UTF-8 string.
    --
-   --  OS_String:     A string in the encoding of the current locale
-   --  Bytes_Read:    Number of bytes in the input string that were
-   --                 successfully converted.
-   --                 Even if the conversion was successful, this may be
-   --                 less than Len if there were partial characters
-   --                 at the end of the input. If the error
-   --                 Illegal_Sequence occurs, the value
-   --                 stored will the byte offset after the last valid
-   --                 input sequence.
-   --  Bytes_Written: Number of bytes stored in Result.
-   --  Error:         Location to store the error occuring, ignored if null.
-   --                 Any of the errors in Convert_Error_Domain may occur.
+   --  @param OS_String A string in the encoding of the current locale
+   --  @param Bytes_Read Number of bytes in the input string that were
+   --  successfully converted. Even if the conversion was successful, this may
+   --  be less than Len if there were partial characters at the end of the
+   --  input. If the error Illegal_Sequence occurs, the value stored will the
+   --  byte offset after the last valid input sequence.
+   --  @param Bytes_Written Number of bytes stored in Result.
+   --  @param Error Location to store the error occuring, ignored if null. Any
+   --  of the errors in Convert_Error_Domain may occur.
 
    function Locale_To_UTF8
      (OS_String     : String;
@@ -134,18 +125,15 @@ package Glib.Convert is
    --  the C runtime (usually the same as that used by the operating
    --  system) in the current locale.
    --
-   --  UTF8_String:   A UTF-8 encoded string
-   --  Bytes_Read:    Number of bytes in the input string that were
-   --                 successfully converted.
-   --                 Even if the conversion was successful, this may be
-   --                 less than Len if there were partial characters
-   --                 at the end of the input. If the error
-   --                 Illegal_Sequence occurs, the value
-   --                 stored will the byte offset after the last valid
-   --                 input sequence.
-   --  Bytes_Written: Number of bytes stored in the output buffer.
-   --  Error:         Location to store the error occuring, ignored if null.
-   --                 Any of the errors in Convert_Error_Domain may occur.
+   --  @param UTF8_String A UTF-8 encoded string
+   --  @param Bytes_Read Number of bytes in the input string that were
+   --  successfully converted. Even if the conversion was successful, this may
+   --  be less than Len if there were partial characters at the end of the
+   --  input. If the error Illegal_Sequence occurs, the value stored will the
+   --  byte offset after the last valid input sequence.
+   --  @param Bytes_Written Number of bytes stored in the output buffer.
+   --  @param Error Location to store the error occuring, ignored if null. Any
+   --  of the errors in Convert_Error_Domain may occur.
 
    function Locale_From_UTF8
      (UTF8_String   : String;
@@ -177,12 +165,11 @@ package Glib.Convert is
    --  Convert an escaped UTF-8 encoded URI to a local filename in the
    --  encoding used for filenames.
    --
-   --  URI:      A uri describing a filename (escaped, encoded in UTF-8).
-   --  Hostname: Location to store hostname for the URI.
-   --            If there is no hostname in the URI, null will be
-   --            stored in this location.
-   --  Error:    Location to store the error occuring, ignored if null.
-   --            Any of the errors in Convert_Error_Domain may occur.
+   --  @param URI A uri describing a filename (escaped, encoded in UTF-8).
+   --  @param Hostname Location to store hostname for the URI. If there is no
+   --  hostname in the URI, null will be stored in this location.
+   --  @param Error Location to store the error occuring, ignored if null. Any
+   --  of the errors in Convert_Error_Domain may occur.
 
    function Filename_To_URI
      (Filename : String;
@@ -190,11 +177,11 @@ package Glib.Convert is
       Error    : GError_Access := null) return String;
    --  Convert an absolute filename to an escaped UTF-8 encoded URI.
    --
-   --  Filename: An absolute filename specified in the encoding
-   --            used for filenames by the operating system.
-   --  Hostname: A UTF-8 encoded hostname, or "" for none.
-   --  Error:    Location to store the error occuring, ignored if null.
-   --            Any of the errors in Convert_Error may occur.
+   --  @param Filename An absolute filename specified in the encoding used for
+   --  filenames by the operating system.
+   --  @param Hostname A UTF-8 encoded hostname, or "" for none.
+   --  @param Error Location to store the error occuring, ignored if null. Any
+   --  of the errors in Convert_Error may occur.
 
    function Escape_Text (S : String) return String;
    --  Escape the text so that it is interpreted as-is by the Pango markup

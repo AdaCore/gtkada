@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,10 +22,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This package provides a high level support for creating file selection
 --  dialogs by handling the signals internally.
---  </description>
+--
 --  <group>Selectors</group>
 
 with Glib;

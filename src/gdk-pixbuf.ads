@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This object provides image manipulation routines.
 --
 --  The following image formats are known, but some depend on external
@@ -35,7 +34,7 @@
 --
 --  Different filters are provided, depending on the quality of output you
 --  expect and the speed you need.
---  </description>
+--
 --  <c_version>1.3.11</c_version>
 --  <group>Gdk, the low-level API</group>
 --  <testgtk>create_pixbuf.adb</testgtk>
@@ -351,8 +350,8 @@ package Gdk.Pixbuf is
    --  (In short, there are several ways this function can fail, and if it
    --   fails it returns Null_Pixbuf; so check the return value.)
    --
-   --  Return value: (transfer full): A newly-created pixbuf with a reference
-   --      count of 1, or Null_Pixbuf on error
+   --  @return (transfer full): A newly-created pixbuf with a reference count
+   --  of 1, or Null_Pixbuf on error
 
    -------------
    -- Scaling --

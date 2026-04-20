@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,8 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package provides an interface to the color handling facilities in
 --  gtk+. It is able to handle any kind of visual (monochrome, greyscale,
 --  color with different depths, ...), but provides a common and easy
@@ -33,7 +31,6 @@
 --  actually recommended, since the exact color generally depends on the
 --  visual your application is running on.
 --
---  </description>
 --  <c_version>1.3.6</c_version>
 --  <group>Gdk, the low-level API</group>
 

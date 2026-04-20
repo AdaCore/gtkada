@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,11 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package provides GtkAda specific types and their associated functions.
---
---  </description>
 
 with Interfaces.C;
 with Interfaces.C.Strings;

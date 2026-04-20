@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2011-2018, AdaCore                     --
+--                     Copyright (C) 2011-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,11 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Utility functions that mimic Gtk.Style drawing methods, but using Cairo
 --  instead of Gdk. This allow smooth transition to Gtk3 that will get rid
 --  of those Gdk drawing methods and only use Cairo.
---  </description>
+--
 --  <group>Configuration and Themes</group>
 
 with Ada.Finalization;
@@ -333,20 +332,19 @@ package Gtkada.Style is
      return Drawing_Style;
    --  Creates a new instance of drawing style.
    --
-   --  Sloppy: if true, a sort of approximate drawing is done for lines and
-   --   text, so that it looks like the drawing was done by hand.
-   --
-   --  Fill: this is generated created through the functions in Cairo.Pattern.
-   --   The pattern is adopted by the style, which will unreferenced it when
-   --   not needed. As such, if the pattern is shared between multiple
-   --   styles you need to Ref it.
-   --   When the style is used with a Gtkada.Canvas_View.Container_Item or one
-   --   of its children, and pattern is a gradient, it should be defined in
-   --   the 0.0 .. 1.0 pattern space, and will be resized automatically based
-   --   on the computed size of the item.
-   --
    --  The style will free the Font.Name object, so you will need to pass the
    --  result of either Pango.Font.Copy or Pango.Font.From_String.
+   --
+   --  @param Sloppy if true, a sort of approximate drawing is done for lines
+   --  and text, so that it looks like the drawing was done by hand.
+   --  @param Fill this is generated created through the functions in
+   --  Cairo.Pattern. The pattern is adopted by the style, which will
+   --  unreferenced it when not needed. As such, if the pattern is shared
+   --  between multiple styles you need to Ref it. When the style is used with
+   --  a Gtkada.Canvas_View.Container_Item or one of its children, and pattern
+   --  is a gradient, it should be defined in the 0.0 .. 1.0 pattern space,
+   --  and will be resized automatically based on the computed size of the
+   --  item.
 
    procedure Draw_Rect
       (Self          : Drawing_Style;

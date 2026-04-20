@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package provides definitions for the error handling mechanism used in
 --  Glib, Gdk and Gtk.
 --
---  </description>
 --  <c_version>1.3.11</c_version>
 --  <group>Glib, the general-purpose library</group>
 

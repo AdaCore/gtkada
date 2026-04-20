@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2022, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,8 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  The aim of this package is to provide some services to connect a
 --  handler to a signal emitted by a Gtk Object. To understand the
 --  services provided by this package, some definitions are necessary:
@@ -160,7 +158,7 @@
 --
 --  IMPORTANT NOTE: These packages must be instantiated at library-level
 --
---  </description>
+--  @private
 --  <c_version>2.8.17</c_version>
 --  <group>Signal handling</group>
 
@@ -179,8 +177,6 @@ with Gtk.Widget;
 with Ada.Unchecked_Conversion;
 
 package Gtk.Handlers is
-
-   --  <doc_ignore>
 
    pragma Elaborate_Body;
 
