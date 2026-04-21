@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2011-2018, AdaCore                     --
+--                     Copyright (C) 2011-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,8 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package provides a high-level API for using Gtk.Builder and
 --  user interface files produced with the GUI builder glade-3.
 --
@@ -67,7 +65,6 @@
 --             your builder should be closed, call Unref to free memory
 --             associated with the Builder.
 --
---  </description>
 --  <group>GUI Builder</group>
 
 with Ada.Containers.Hashed_Maps;

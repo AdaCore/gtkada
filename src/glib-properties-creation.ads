@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,8 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package provides all the required subprograms to create and
 --  manipulate new properties associated with new widget types.
 --
@@ -49,7 +47,6 @@
 --  is modified, a signal "property_changed" or "notify" is emitted, and
 --  it is thus easy to keep track of attributes in objects.
 --
---  </description>
 --  <group>Glib, the general-purpose library</group>
 
 with Glib.Object;

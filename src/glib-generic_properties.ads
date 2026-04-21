@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Note: this package need only be used and understood by people who
 --  want to create their own new widgets and their associated properties.
 --  Normal usage of properties doesn't require any deep understanding of
@@ -42,7 +41,7 @@
 --  As a user and creator of new widgets, you should always use the
 --  Generic_Enumeration_Property package, since it also registers the
 --  enumeration type with gtk+ for a full compatibility with C.
---  </description>
+--
 --  <group>Glib, the general-purpose library</group>
 
 with Glib.Object;

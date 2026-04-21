@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2011-2018, AdaCore                     --
+--                     Copyright (C) 2011-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,12 +22,10 @@
 ------------------------------------------------------------------------------
 
 --  Regions -- Representing a pixel-aligned area
---  <description>
 --  Bindings to the Cairo 2D graphics library.
 --  Regions are a simple graphical data type representing an area of integer-
 --  aligned rectangles. Thay are often used on raster surfaces to track areas
 --  of interest, such as change or clip areas.
---  </description>
 --
 --  <c_version>1.10</c_version>
 --  <group>Cairo</group>
@@ -62,7 +60,7 @@ package Cairo.Region is
    function Create return Cairo_Region;
    --  Allocates a new empty region object.
    --
-   --  Returns: A newly allocated Cairo_Region. Free with Destroy. This
+   --  @return A newly allocated Cairo_Region. Free with Destroy. This
    --  function always returns a valid Cairo_Region; if memory cannot be
    --  allocated, then a special error object is returned where all operations
    --  on the object do nothing. You can check for this with Status.
@@ -71,7 +69,7 @@ package Cairo.Region is
      (Rectangle : access Cairo_Rectangle_Int) return Cairo_Region;
    --  Allocates a new region object containing Rectangle.
    --
-   --  Returns: A newly allocated Cairo_Region. Free with Destroy. This
+   --  @return A newly allocated Cairo_Region. Free with Destroy. This
    --  function always returns a valid Cairo_Region; if memory cannot be
    --  allocated, then a special error object is returned where all operations
    --  on the object do nothing. You can check for this with Status.
@@ -79,7 +77,7 @@ package Cairo.Region is
    function Copy (Original : Cairo_Region) return Cairo_Region;
    --  Allocates a new Cairo_Region object copying the area from Original.
    --
-   --  Returns: A newly allocated Cairo_Region. Free with Destroy. This
+   --  @return A newly allocated Cairo_Region. Free with Destroy. This
    --  function always returns a valid Cairo_Region; if memory cannot be
    --  allocated, then a special error object is returned where all operations
    --  on the object do nothing. You can check for this with Status.
@@ -99,7 +97,7 @@ package Cairo.Region is
    function Status (Region : Cairo_Region) return Cairo_Status;
    --  Checks whether an error has occured for this region object.
    --
-   --  Returns: Cairo_Status_Success or Cairo_Status_No_Memory
+   --  @return Cairo_Status_Success or Cairo_Status_No_Memory
 
    procedure Get_Extents
      (Region  : Cairo_Region;
@@ -141,21 +139,21 @@ package Cairo.Region is
       Other : Cairo_Region) return Cairo_Status;
    --  Subtracts Other from Dst and places the result in Dst.
    --
-   --  Returns: Cairo_Status_Success or Cairo_Status_No_Memory.
+   --  @return Cairo_Status_Success or Cairo_Status_No_Memory.
 
    function Subtract_Rectangle
      (Dst       : Cairo_Region;
       Rectangle : access Cairo_Rectangle_Int) return Cairo_Status;
    --  Subtracts Rectangle from Dst and places the result in Dst.
    --
-   --  Returns: Cairo_Status_Success or Cairo_Status_No_Memory.
+   --  @return Cairo_Status_Success or Cairo_Status_No_Memory.
 
    function Intersect
      (Dst   : Cairo_Region;
       Other : Cairo_Region) return Cairo_Status;
    --  Computes the intersection of Dst with Other and places the result in Dst
    --
-   --  Returns: Cairo_Status_Success or Cairo_Status_No_Memory.
+   --  @return Cairo_Status_Success or Cairo_Status_No_Memory.
 
    function Intersect_Rectangle
      (Dst       : Cairo_Region;
@@ -163,21 +161,21 @@ package Cairo.Region is
    --  Computes the intersection of Dst with Rectangle and places the result in
    --  Dst.
    --
-   --  Returns: Cairo_Status_Success or Cairo_Status_No_Memory.
+   --  @return Cairo_Status_Success or Cairo_Status_No_Memory.
 
    function Union
      (Dst   : Cairo_Region;
       Other : Cairo_Region) return Cairo_Status;
    --  Computes the union of Dst with Other and places the result in Dst.
    --
-   --  Returns: Cairo_Status_Success or Cairo_Status_No_Memory.
+   --  @return Cairo_Status_Success or Cairo_Status_No_Memory.
 
    function Union_Rectangle
      (Dst       : Cairo_Region;
       Rectangle : access Cairo_Rectangle_Int) return Cairo_Status;
    --  Computes the union of Dst with Rectangle and places the result in Dst.
    --
-   --  Returns: Cairo_Status_Success or Cairo_Status_No_Memory.
+   --  @return Cairo_Status_Success or Cairo_Status_No_Memory.
 
    function Do_Xor
      (Dst   : Cairo_Region;
@@ -185,7 +183,7 @@ package Cairo.Region is
    --  Computes the exclusive difference of Dst with Other and places the
    --  result in Dst.
    --
-   --  Returns: Cairo_Status_Success or Cairo_Status_No_Memory.
+   --  @return Cairo_Status_Success or Cairo_Status_No_Memory.
 
    function Xor_Rectangle
      (Dst       : Cairo_Region;
@@ -193,7 +191,7 @@ package Cairo.Region is
    --  Computes the exclusive difference of Dst with Rectangle and places the
    --  result in Dst.
    --
-   --  Returns: Cairo_Status_Success or Cairo_Status_No_Memory.
+   --  @return Cairo_Status_Success or Cairo_Status_No_Memory.
 
 private
 

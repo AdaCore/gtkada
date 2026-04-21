@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,8 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package implements a generic double-linked list.
 --  Such lists are used throughout GtkAda to contain lists of widgets
 --  (for the children of containers, or for the list of selected widgets
@@ -43,7 +41,6 @@
 --  Note that the lists used in GtkAda already have associated packages, like
 --  Gtk.Enums.Gint_List, Gtk.Enums.String_List or Gtk.Widget.Widget_List.
 --
---  </description>
 --  <c_version>1.2.6</c_version>
 --  <group>Glib, the general-purpose library</group>
 

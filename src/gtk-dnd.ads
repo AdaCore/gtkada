@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Like all modern GUI toolkits, GtkAda has a full support for drag-and-drop
 --  operations. This is a mechanism for interactively transferring data between
 --  two widgets, either in the same application or in two different
@@ -74,7 +73,7 @@
 --  when the user has dropped some data on the widget. The handler should
 --  call Finish, to warn the source widget that the drag and drop operation
 --  is finished, and whether it was successful or not.
---  </description>
+--
 --  <c_version>2.16.6</c_version>
 --  <group>Inter-Process communication</group>
 --  <testgtk>create_dnd.adb</testgtk>
@@ -259,7 +258,8 @@ package Gtk.Dnd is
    --  the target list of the drag source. The targets are added with Info = 0.
    --  If you need another value, use Gtk.Selection.Target_List_Add_*_Targets,
    --  and Source_Set_Target_List
-   --  Widget: a #GtkWidget that's is a drag source
+   --
+   --  @param Widget a #GtkWidget that's is a drag source
 
    procedure Source_Set_Icon_Pixbuf
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
@@ -370,11 +370,12 @@ package Gtk.Dnd is
       Hot_X   : Gint;
       Hot_Y   : Gint);
    --  Sets Pixbuf as the icon for a given drag.
-   --  Context: the context for a drag. (This must be called
-   --             with a  context for the source side of a drag)
-   --  Pixbuf: the Gdk_Pixbuf to use as the drag icon.
-   --  Hot_x: the X offset within the pixbuf of the hotspot.
-   --  Hot_y: the Y offset within the pixbuf of the hotspot.
+   --
+   --  @param Context the context for a drag. (This must be called with a
+   --  context for the source side of a drag)
+   --  @param Pixbuf the Gdk_Pixbuf to use as the drag icon.
+   --  @param Hot_x the X offset within the pixbuf of the hotspot.
+   --  @param Hot_y the Y offset within the pixbuf of the hotspot.
 
    procedure Set_Icon_Stock
      (Context  : Drag_Context;
@@ -382,11 +383,12 @@ package Gtk.Dnd is
       Hot_X    : Gint;
       Hot_Y    : Gint);
    --  Sets the icon for a given drag from a stock ID
-   --  Context: the context for a drag. (This must be called
-   --             with a  context for the source side of a drag)
-   --  Stock: the ID of the stock icon to use for the drag.
-   --  Hot_x: the X offset within the icon of the hotspot.
-   --  Hot_y: the Y offset within the icon of the hotspot.
+   --
+   --  @param Context the context for a drag. (This must be called with a
+   --  context for the source side of a drag)
+   --  @param Stock_Id the ID of the stock icon to use for the drag.
+   --  @param Hot_x the X offset within the icon of the hotspot.
+   --  @param Hot_y the Y offset within the icon of the hotspot.
 
    procedure Set_Icon_Name
      (Context   : Drag_Context;

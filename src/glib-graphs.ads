@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,13 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  General implementation for a graph.
 --  This provides a representation for a graph structure, with nodes (vertices)
 --  connected by links (edges).
 --  It is not intended for huges, highly-connected graphs, since there are
 --  several lists provided for efficient access to ancestor and children nodes.
---  </description>
+--
 --  <group>Glib, the general-purpose library</group>
 
 package Glib.Graphs is

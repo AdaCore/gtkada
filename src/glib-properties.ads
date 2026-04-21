@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2001-2018, AdaCore                     --
+--                     Copyright (C) 2001-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,7 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  Properties are a fully general way to modify the appareance or behavior
 --  of widgets. Most of the time, there exists a faster way to modify the
 --  widget in the same fashion (for instance a direct call to a primitive
@@ -59,8 +58,7 @@
 --  When a property is modified, the signal "notify::<property>" is emitted,
 --  for instance, "notify::label" for a gtk_button. This is a standard gtk+
 --  signal to which you can connect with the subprograms in gtk-handlers.ads
-
---  </description>
+--
 --  <c_version>1.3.4</c_version>
 --  <group>Glib, the general-purpose library</group>
 
@@ -72,8 +70,6 @@ with Glib.Types;
 with Glib.Values;
 
 package Glib.Properties is
-
-   --  <doc_ignore>
 
    --  Definition of the types and subprograms.
    --  You can ignore this section.
@@ -92,8 +88,7 @@ package Glib.Properties is
      Generic_Internal_Discrete_Property (Glib.Gulong);
    package Unichar_Properties is new
      Generic_Internal_Discrete_Property (Glib.Gunichar);
-
-   --  </doc_ignore>
+   --  @private
 
    --  Predefined types of properties. Additional types are available
    --  for most of the standard enumeration types, and you can create
@@ -137,12 +132,16 @@ package Glib.Properties is
       Value  : in out Glib.Values.GValue);
    --  Get the property. Value must have been initialized first with the
    --  expected type for the property, as in:
-   --      Value : GValue;
-   --      Init (Value, Value_Type (Pspec));
-   --      Get_Property (Object, Pspec_Name (Pspec), Value);
+   --
+   --     Value : GValue;
+   --     Init (Value, Value_Type (Pspec));
+   --     Get_Property (Object, Pspec_Name (Pspec), Value);
+   --
    --  If you do not have a Param_Spec, this can be replaced with:
-   --      Init (Value, GType_Int);
-   --      Get_Property (Object, Property_Name (Property), Value);
+   --
+   --     Init (Value, GType_Int);
+   --     Get_Property (Object, Property_Name (Property), Value);
+   --
    --  Value must be Unset by the caller to free memory
 
    --  Special handling of string properties

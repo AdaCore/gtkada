@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2003-2018, AdaCore                     --
+--                     Copyright (C) 2003-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,10 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This package provides low level routines for enabling, disabling
 --  and modifying the way log messages are handled in glib/gdk/gtk.
---  </description>
+--
 --  <group>Glib, the general-purpose library</group>
 
 package Glib.Messages is

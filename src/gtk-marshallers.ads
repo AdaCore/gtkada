@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,7 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This package provides a set of generic packages to easily create
 --  some Marshallers. Although this package has been designed to be
 --  easily reusable, its primary aim is to simplify the use of callbacks.
@@ -103,7 +102,7 @@
 --  See also the example in the GtkAda distribution for how to create your
 --  own marshallers.
 --
---  </description>
+--  @private
 --  <group>Signal handling</group>
 --  <c_version>2.8.17</c_version>
 
@@ -112,8 +111,6 @@ with Gtk.Widget;
 with Glib.Values;
 
 package Gtk.Marshallers is
-
-   --  <doc_ignore>Do not create automatic documentation for this package
 
    type General_Handler is access procedure;
 

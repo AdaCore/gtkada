@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2022, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,7 +22,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
 --  This package is a rewrite of Gtkada.Canvas, with hopefully more
 --  capabilities and a cleaner API.
 --
@@ -133,7 +132,6 @@
 --  will be selected (this will replace the current selection if Control was
 --  not pressed).
 --
---  </description>
 --  <group>Drawing</group>
 --  <testgtk>create_canvas_view.adb</testgtk>
 
@@ -929,10 +927,11 @@ package Gtkada.Canvas_View is
    --  Create a new view which displays the model.
    --  A new reference to the model is created (and released when the view is
    --  destroyed), so that in general the code will look like:
-   --       Model := new ....;
-   --       Initialize (Model);
-   --       Gtk_New (View, Model);
-   --       Unref (Model);  --  unless you need to keep a handle on it too
+   --
+   --     Model := new ....;
+   --     Initialize (Model);
+   --     Gtk_New (View, Model);
+   --     Unref (Model);  --  unless you need to keep a handle on it too
 
    procedure Set_Model
       (Self  : not null access Canvas_View_Record'Class;

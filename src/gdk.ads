@@ -2,7 +2,7 @@
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,12 +22,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This is the top level package of the Gdk hierarchy.
 --  It provides the type definitions used to access underlying C structures.
 --
---  </description>
 --  <group>Gdk, the low-level API</group>
 
 with Glib;

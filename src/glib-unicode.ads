@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2003-2018, AdaCore                     --
+--                     Copyright (C) 2003-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,12 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package provides functions for handling of unicode characters and
 --  utf8 strings. See also Glib.Convert.
 --
---  </description>
 --  <c_version>2.2.1</c_version>
 --  <group>Glib, the general-purpose library</group>
 

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
---                     Copyright (C) 2017-2022, AdaCore                     --
+--                     Copyright (C) 2017-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,8 +21,6 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  <description>
---
 --  This package provides an implementation of multiline entries using
 --  the Gtk_Text_View and the Gtk_Scrolled_Window widgets.
 --
@@ -31,13 +29,12 @@
 --
 --  Gtkada_Multiline_Entry widgets can be referenced with the "entry" CSS main
 --  node: they can also be distinguished from the normal entries using the
---  "mutiline" CSS node.
+--  "multiline" CSS node.
 --
 --  Example:
 --
 --  .entry.multiline {background-color: black;}
 --
---  </description>
 --  <group>Numeric/Text Data Entry</group>
 
 with Glib;                use Glib;
