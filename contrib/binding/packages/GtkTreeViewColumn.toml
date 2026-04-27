@@ -1,0 +1,50 @@
+
+# ============================================================
+#   GtkTreeViewColumn
+# ============================================================
+[GtkTreeViewColumn]
+
+  [[GtkTreeViewColumn.parameter]]
+    name = "self"
+    ada = "Tree_Column"
+
+  [[GtkTreeViewColumn.enum]]
+    ctype = "GtkTreeViewColumnSizing"
+
+  [[GtkTreeViewColumn.list]]
+    ada = "Column_List"
+    ctype = "GtkTreeViewColumn"
+
+  [[GtkTreeViewColumn.method]]
+    id = "gtk_tree_view_column_cell_get_position"
+    return_as_param = "Success"
+
+  [[GtkTreeViewColumn.method]]
+    id = "gtk_tree_view_column_add_attribute"
+    bind = false
+    # overridden
+
+  [[GtkTreeViewColumn.method]]
+    id = "gtk_tree_view_column_clear"
+    bind = false
+    # from cell_layout
+
+  [[GtkTreeViewColumn.method]]
+    id = "gtk_tree_view_column_clear_attributes"
+    bind = false
+    # from cell_layout
+
+  [[GtkTreeViewColumn.method]]
+    id = "gtk_tree_view_column_pack_start"
+    bind = false
+    # from cell_layout
+
+  [[GtkTreeViewColumn.method]]
+    id = "gtk_tree_view_column_pack_end"
+    bind = false
+    # from cell_layout
+
+  [[GtkTreeViewColumn.method]]
+    id = "gtk_tree_view_column_set_cell_data_func"
+    bind = false
+    # from cell_layout

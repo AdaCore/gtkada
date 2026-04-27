@@ -1,0 +1,12 @@
+
+# ============================================================
+#   GtkImageMenuItem
+# ============================================================
+[GtkImageMenuItem]
+
+  [[GtkImageMenuItem.method]]
+    id = "gtk_image_menu_item_new"
+
+  [[GtkImageMenuItem.method]]
+    id = "gtk_image_menu_item_new_with_label"
+    ada = "Gtk_New"

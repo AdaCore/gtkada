@@ -1,0 +1,210 @@
+
+# ============================================================
+#   GOptionContext
+# ============================================================
+[GOptionContext]
+  ada = "Glib.Option"
+
+  [[GOptionContext.record]]
+    ctype = "GOptionGroup"
+
+  [[GOptionContext.record]]
+    ctype = "GOptionEntry"
+
+    [[GOptionContext.record.field]]
+      name = "flags"
+      ctype = "GOptionFlags"
+
+  [[GOptionContext.enum]]
+    ctype = "GOptionError"
+
+  [[GOptionContext.enum]]
+    ctype = "GOptionArg"
+
+  [[GOptionContext.enum]]
+    ctype = "GOptionFlags"
+
+  [[GOptionContext.method]]
+    id = "g_option_context_new"
+    ada = "G_New"
+
+  [[GOptionContext.method]]
+    id = "g_option_group_new"
+    ada = "G_New"
+
+  [[GOptionContext.method]]
+    id = "g_option_context_parse"
+    bind = false
+    # Invalid binding generated
+
+  [[GOptionContext.method]]
+    id = "g_option_context_parse_strv"
+    bind = false
+    # low-level
+
+  [[GOptionContext.method]]
+    id = "g_option_context_add_main_entries"
+
+    [[GOptionContext.method.parameter]]
+      name = "entries"
+      type = "GOption_Entry_Array"
+
+  [GOptionContext.extra]
+    body = '''
+
+   -----------
+   -- Parse --
+   -----------
+
+   procedure Parse
+     (Self         : Goption_Context;
+      Command_Line : not null access Glib.Application.Gapplication_Command_Line_Record'Class;
+      Filter       : Parse_Filter := null;
+      Success      : out Boolean;
+      Error        : out Glib.Error.GError)
+   is
+      function Get_Args
+         (Self : System.Address;
+          Argc : access Glib.Gint) return chars_ptr_array_access;
+      pragma Import (C, Get_Args, "g_application_command_line_get_arguments");
+
+      function Internal
+         (Self  : System.Address;
+          Argc  : access Glib.Gint;
+          Argv  : System.Address;
+          Error : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_option_context_parse");
+
+      pragma Warnings (Off, "possible aliasing problem for*");
+      function Convert is new Ada.Unchecked_Conversion
+         (System.Address, chars_ptr_array_access);
+      pragma Warnings (On, "possible aliasing problem for*");
+
+      Argc : aliased Glib.Gint;
+      Argv : chars_ptr_array_access;
+      Err  : Glib.Error.GError;
+      Ret  : Glib.Gboolean;
+   begin
+      Argv := Get_Args (Command_Line.Get_Object, Argc'Access);
+
+      if Filter = null then
+         Ret := Internal (Get_Object (Self), Argc'Access, Argv'Address, Err'Address);
+      else
+         declare
+            Args : aliased Gtkada.Types.Chars_Ptr_Array := To_Chars_Ptr (Argv);
+            Idx  : aliased Glib.Gint := 1;
+         begin
+            --  Copy command name argument
+            Args (0) := Argv (0);
+            Idx := 1;
+
+            for J in 1 .. Argc - 1 loop
+               if Filter
+                  (Gtkada.Types.Value (Argv (Interfaces.C.size_t (J))))
+               then
+                  Args (Interfaces.C.size_t (Idx)) :=
+                    Argv (Interfaces.C.size_t (J));
+                  Idx := Idx + 1;
+               end if;
+            end loop;
+
+            Argv := Convert (Args'Address);
+            Ret := Internal
+               (Get_Object (Self), Idx'Access, Argv'Address, Err'Address);
+         end;
+      end if;
+
+      Error := Err;
+      Success := Ret /= 0;
+   end Parse;
+
+   -----------
+   -- Parse --
+   -----------
+
+   procedure Parse
+     (Self         : Goption_Context;
+      Argv         : access chars_ptr_array_access;  --  Null-terminated
+      Success      : out Boolean;
+      Error        : out Glib.Error.GError)
+   is
+      use Interfaces.C;
+      function Internal
+         (Self  : System.Address;
+          Argc  : access Glib.Gint;
+          Argv  : access chars_ptr_array_access;
+          Error : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_option_context_parse");
+
+      Err  : Glib.Error.GError;
+      Ret  : Glib.Gboolean;
+      Argc : aliased Glib.Gint := 0;
+
+   begin
+      while Argv.all (size_t (Argc)) /= Gtkada.Types.Null_Ptr loop
+         Argc := Argc + 1;
+      end loop;
+
+      Ret := Internal (Get_Object (Self), Argc'Access, Argv, Err'Address);
+      Argv.all (size_t (Argc)) := Gtkada.Types.Null_Ptr;
+      Error := Err;
+      Success := Ret /= 0;
+   end Parse;
+       '''
+
+    [[GOptionContext.extra.with_spec]]
+      pkg = "Glib.Application"
+
+    [[GOptionContext.extra.with_spec]]
+      pkg = "Glib.Error"
+
+    [[GOptionContext.extra.with_spec]]
+      pkg = "Gtkada.Bindings"
+
+    [[GOptionContext.extra.with_body]]
+      pkg = "Ada.Unchecked_Conversion"
+      use = false
+
+    [[GOptionContext.extra.spec]]
+      text = '''
+
+   Null_GOption_Entry : constant GOption_Entry;
+
+   type Parse_Filter is access function (Param : String) return Boolean;
+   --  Returns True if the parameter is to be passed from Command_Line to
+   --  Goption_Context
+
+   procedure Parse
+     (Self         : Goption_Context;
+      Command_Line : not null access Glib.Application.Gapplication_Command_Line_Record'Class;
+      Filter       : Parse_Filter := null;
+      Success      : out Boolean;
+      Error        : out Glib.Error.GError);
+   --  Parses the arguments given via Command_Line, removing from the arguments
+   --  list all parsed switches.
+
+   procedure Parse
+     (Self         : Goption_Context;
+      Argv         : access chars_ptr_array_access;  --  Null-terminated
+      Success      : out Boolean;
+      Error        : out Glib.Error.GError);
+   --  This version is suitable for use from Glib.Application.Local_Command_Line
+       '''
+
+    [[GOptionContext.extra.spec]]
+      text = '''
+
+   Null_GOption_Entry : constant GOption_Entry :=
+                          (Gtkada.Types.Null_Ptr, Gchar(ASCII.NUL),
+                           0, G_Option_Arg_None, System.Null_Address,
+                           Gtkada.Types.Null_Ptr, Gtkada.Types.Null_Ptr);
+       '''
+      private = true
+
+    [[GOptionContext.extra.type]]
+      ctype = "array_of_GOptionEntry"
+      ada = "GOption_Entry_Array"
+      text = '''
+
+         type GOption_Entry_Array is array (Natural range <>) of GOption_Entry;
+       '''

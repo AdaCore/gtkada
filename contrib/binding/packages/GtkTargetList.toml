@@ -1,0 +1,98 @@
+
+# ============================================================
+#   GtkTargetList
+# ============================================================
+[GtkTargetList]
+
+  [[GtkTargetList.parameter]]
+    name = "self"
+    ada = "List"
+
+  [[GtkTargetList.enum]]
+    ctype = "GtkAccelFlags"
+    prefix = "GTK_"
+
+  [[GtkTargetList.method]]
+    id = "gtk_target_list_add_rich_text_targets"
+    bind = false
+    # circular dependency clipboard, text_buffer
+
+  [[GtkTargetList.method]]
+    id = "gtk_target_list_new"
+    bind = false
+    # manual binding below
+
+  [[GtkTargetList.method]]
+    id = "gtk_target_list_add_table"
+    bind = false
+    # manual binding below
+
+  [[GtkTargetList.method]]
+    id = "gtk_target_list_find"
+    return_as_param = "Found"
+
+  [GtkTargetList.extra]
+    body = '''
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (List   : out Gtk_Target_List;
+       Targets : Target_Entry_Array)
+   is
+      function Internal
+         (Targets  : System.Address;
+          Ntargets : Guint) return System.Address;
+      pragma Import (C, Internal, "gtk_target_list_new");
+   begin
+      List.Set_Object (Internal (Targets'Address, Targets'Length));
+   end Gtk_New;
+
+   ---------------
+   -- Add_Table --
+   ---------------
+
+   procedure Add_Table
+      (List    : Gtk_Target_List;
+       Targets : Target_Entry_Array)
+   is
+      procedure Internal
+         (List     : System.Address;
+          Targets  : System.Address;
+          Ntargets : Guint);
+      pragma Import (C, Internal, "gtk_target_list_add_table");
+   begin
+      Internal (Get_Object (List), Targets'Address, Targets'Length);
+   end Add_Table;
+       '''
+
+    [[GtkTargetList.extra.with_spec]]
+      pkg = "Gtk.Target_Entry"
+
+    [[GtkTargetList.extra.spec]]
+      text = '''
+
+   type Target_Entry_Array is array (Natural range <>) of Gtk_Target_Entry;
+
+   No_Target_Entry : Target_Entry_Array (1 .. 0);
+   --  To be used for drop sites that accept no data.
+   --  You will in general need to call Gtk.Dnd.Add_Text_Targets or some such
+
+   Any_Target_Entry : constant Target_Entry_Array := No_Target_Entry;
+   pragma Obsolescent (Any_Target_Entry);
+   --  Old name for this constant, which leads to confusion. You should use
+   --  No_Target_Entry instead.
+
+   procedure Gtk_New
+      (List   : out Gtk_Target_List;
+      Targets : Target_Entry_Array);
+   --  Creates a new Gtk.Target_List.Gtk_Target_List from an array of
+   --  Gtk.Target_Entry.Gtk_Target_Entry.
+
+   procedure Add_Table
+      (List    : Gtk_Target_List;
+       Targets : Target_Entry_Array);
+   --  Prepends a table of Gtk.Target_Entry.Gtk_Target_Entry to a target list.
+       '''

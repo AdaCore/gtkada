@@ -1,0 +1,89 @@
+
+# ============================================================
+#   GtkRadioMenuItem
+# ============================================================
+[GtkRadioMenuItem]
+
+  [[GtkRadioMenuItem.parameter]]
+    name = "self"
+    ada = "Radio_Menu_Item"
+    # Merge two Gtk_New together
+
+  [[GtkRadioMenuItem.method]]
+    id = "gtk_radio_menu_item_new"
+    bind = false
+
+  [[GtkRadioMenuItem.method]]
+    id = "gtk_radio_menu_item_new_with_label"
+    ada = "Gtk_New"
+
+    [[GtkRadioMenuItem.method.parameter]]
+      name = "label"
+      default = "\"\""
+      allow_none = "0"
+
+    [[GtkRadioMenuItem.method.parameter]]
+      name = "group"
+      ctype = "WidgetSList"
+
+  [[GtkRadioMenuItem.method]]
+    id = "gtk_radio_menu_item_new_with_mnemonic"
+
+    [[GtkRadioMenuItem.method.parameter]]
+      name = "group"
+      ctype = "WidgetSList"
+
+  [[GtkRadioMenuItem.method]]
+    id = "gtk_radio_menu_item_set_group"
+
+    [[GtkRadioMenuItem.method.parameter]]
+      name = "group"
+      ctype = "WidgetSList"
+
+  [[GtkRadioMenuItem.method]]
+    id = "gtk_radio_menu_item_get_group"
+    return = "WidgetSList"
+
+  [[GtkRadioMenuItem.method]]
+    id = "gtk_radio_menu_item_new_from_widget"
+    bind = false
+    # gir file misses Group parameter
+
+  [[GtkRadioMenuItem.method]]
+    id = "gtk_radio_menu_item_new_with_label_from_widget"
+    bind = false
+    # gir file misses Group parameter
+
+  [[GtkRadioMenuItem.method]]
+    id = "gtk_radio_menu_item_new_with_mnemonic_from_widget"
+    bind = false
+    # gir file misses Group parameter
+
+  [GtkRadioMenuItem.extra]
+    body = '''
+
+   function Selected_Button
+     (In_Group : Widget_SList.GSlist) return Natural
+   is
+      use Widget_SList;
+      J   : Natural := 0;
+      Tmp : Widget_SList.GSlist := In_Group;
+   begin
+      while Tmp /= Widget_SList.Null_List loop
+         exit when Get_Active (Gtk_Radio_Menu_Item (Get_Data (Tmp)));
+         Tmp := Next (Tmp);
+         J := J + 1;
+      end loop;
+
+      return J;
+   end Selected_Button;
+       '''
+
+    [[GtkRadioMenuItem.extra.spec]]
+      text = '''
+
+   function Selected_Button (In_Group : Widget_SList.GSlist) return Natural;
+   --  Return the button number of the selected button in the group.
+   --  Note: This function is not part of Gtk+ itself, but is provided as a
+   --  convenient function
+       '''

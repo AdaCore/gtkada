@@ -1,0 +1,34 @@
+
+# ============================================================
+#   GtkStyleProperties
+# ============================================================
+[GtkStyleProperties]
+
+  [[GtkStyleProperties.virtual_method]]
+    id = "*"
+    bind = false
+    # circular dep with StyleProvider
+
+  [[GtkStyleProperties.method]]
+    id = "gtk_style_properties_get_property"
+    return_as_param = "Exists"
+
+  [[GtkStyleProperties.method]]
+    id = "gtk_style_properties_set_valist"
+    bind = false
+    # need valist
+
+  [[GtkStyleProperties.method]]
+    id = "gtk_style_properties_get_valist"
+    bind = false
+    # need valist
+
+  [[GtkStyleProperties.method]]
+    id = "gtk_style_properties_lookup_property"
+    bind = false
+    # need StylePropertyParser
+
+  [[GtkStyleProperties.method]]
+    id = "gtk_style_properties_register_property"
+    bind = false
+    # need StylePropertyParser

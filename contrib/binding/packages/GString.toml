@@ -1,0 +1,24 @@
+
+# ============================================================
+#   GString
+# ============================================================
+[GString]
+  ada = "Glib.String"
+
+  [[GString.record]]
+    ctype = "GString"
+
+  [[GString.method]]
+    id = "g_string_append_vprintf"
+    bind = false
+    # valist
+
+  [[GString.method]]
+    id = "g_string_vprintf"
+    bind = false
+    # valist
+
+  [[GString.method]]
+    id = "g_string_free_to_bytes"
+    bind = false
+    # requires GByte

@@ -1,0 +1,80 @@
+
+# ============================================================
+#   GtkTreePath
+# ============================================================
+[GtkTreePath]
+  into = "GtkTreeModel"
+
+  [[GtkTreePath.parameter]]
+    name = "self"
+    ada = "Path"
+
+  [[GtkTreePath.list]]
+    ada = "Gtk_Tree_Path_List"
+    ctype = "GtkTreePath"
+    section = "Lists"
+
+  [[GtkTreePath.method]]
+    id = "gtk_tree_path_new_from_string"
+    ada = "Gtk_New"
+
+    [[GtkTreePath.method.parameter]]
+      name = "self"
+      ada = "Self"
+
+  [[GtkTreePath.method]]
+    id = "gtk_tree_path_get_type"
+    ada = "Path_Get_Type"
+
+  [[GtkTreePath.method]]
+    id = "gtk_tree_path_free"
+    ada = "Path_Free"
+
+  [[GtkTreePath.method]]
+    id = "gtk_tree_path_get_indices_with_depth"
+    bind = false
+    # duplicates Get_Indices, in Ada
+
+  [[GtkTreePath.method]]
+    id = "gtk_tree_path_get_indices"
+    return = "Glib.Gint_Array"
+    body = '''
+      Depth : constant Integer := Integer (Get_Depth (Path));
+
+      subtype Result_Array is Gint_Array (0 .. Depth - 1);
+      type Result_Array_Access is access all Result_Array;
+      pragma Convention (C, Result_Array_Access);
+
+      function Internal (Path : System.Address) return Result_Array_Access;
+      pragma Import (C, Internal, "gtk_tree_path_get_indices");
+
+      --  Do not free the result of gtk_tree_path_get_indices since this is
+      --  not a copy, but the currently used data.
+      Result : constant Result_Array_Access := Internal (Get_Object (Path));
+
+   begin
+      if Result = null then
+         return (0 .. -1 => 0);
+      else
+         return Result.all;
+      end if;'''
+
+  [GtkTreePath.extra]
+    body = '''
+
+   function Get_Tree_Path (Val : Glib.Values.GValue) return Gtk_Tree_Path is
+   begin
+      return From_Object (Glib.Values.Get_Address (Val));
+   end Get_Tree_Path;
+       '''
+
+    [[GtkTreePath.extra.with_body]]
+      pkg = "Glib.Values"
+
+    [[GtkTreePath.extra.spec]]
+      text = '''
+
+   function Get_Tree_Path (Val : Glib.Values.GValue) return Gtk_Tree_Path;
+   --  Extract the path from the given GValue.
+
+       '''

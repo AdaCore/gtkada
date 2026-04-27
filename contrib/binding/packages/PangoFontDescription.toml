@@ -1,0 +1,150 @@
+
+# ============================================================
+#   PangoFontDescription
+# ============================================================
+[PangoFontDescription]
+  into = "PangoFont"
+
+  [[PangoFontDescription.method]]
+    id = "pango_font_description_free"
+    bind = false
+    # manual binding below
+
+  [PangoFontDescription.extra]
+    body = '''
+
+   subtype String7 is String (1 .. 7);
+   Style_Map : constant array (Enums.Style) of String7 :=
+     (Enums.Pango_Style_Normal  => "       ",
+      Enums.Pango_Style_Oblique => "Oblique",
+      Enums.Pango_Style_Italic  => "Italic ");
+
+   subtype String10 is String (1 .. 10);
+   Variant_Map : constant array (Enums.Variant) of String10 :=
+     (Enums.Pango_Variant_Normal     => "          ",
+      Enums.Pango_Variant_Small_Caps => "Small-Caps");
+
+   subtype String15 is String (1 .. 15);
+   Stretch_Map : constant array (Enums.Stretch) of String15 :=
+     (Enums.Pango_Stretch_Ultra_Condensed => "Ultra-Condensed",
+      Enums.Pango_Stretch_Extra_Condensed => "Extra-Condensed",
+      Enums.Pango_Stretch_Condensed       => "Condensed      ",
+      Enums.Pango_Stretch_Semi_Condensed  => "Semi-Condensed ",
+      Enums.Pango_Stretch_Normal          => "               ",
+      Enums.Pango_Stretch_Semi_Expanded   => "Semi-Expanded  ",
+      Enums.Pango_Stretch_Expanded        => "Expanded       ",
+      Enums.Pango_Stretch_Extra_Expanded  => "Extra-Expanded ",
+      Enums.Pango_Stretch_Ultra_Expanded  => "Ultra-Expanded ");
+
+   --  Some of the values are not directly supported by pango.
+   --  ??? See fonts.c in pango
+
+   Weight_Map : constant array (Enums.Weight) of String10 :=
+     (Enums.Pango_Weight_Ultralight  => "Light     ",
+      Enums.Pango_Weight_Thin        => "Thin      ",
+      Enums.Pango_Weight_Light       => "Light     ",
+      Enums.Pango_Weight_Normal      => "          ",
+      Enums.Pango_Weight_Book        => "Book      ",
+      Enums.Pango_Weight_Medium      => "Medium    ",
+      Enums.Pango_Weight_Semibold    => "Semi-Bold ",
+      Enums.Pango_Weight_Bold        => "Bold      ",
+      Enums.Pango_Weight_Semilight   => "Semi-Light",
+      Enums.Pango_Weight_Ultrabold   => "Bold      ",
+      Enums.Pango_Weight_Ultraheavy  => "Ultraheavy",
+      Enums.Pango_Weight_Heavy       => "Heavy     ");
+
+   function To_Font_Description
+     (Family_Name : String := "";
+      Style       : Enums.Style := Enums.Pango_Style_Normal;
+      Variant     : Enums.Variant := Enums.Pango_Variant_Normal;
+      Weight      : Enums.Weight := Enums.Pango_Weight_Normal;
+      Stretch     : Enums.Stretch := Enums.Pango_Stretch_Normal;
+      Size        : Gint := 0) return Pango_Font_Description
+   is
+   begin
+      return From_String (Family_Name & " " &
+                     Style_Map (Style) & " " &
+                     Variant_Map (Variant) &
+                     Weight_Map (Weight) & " " &
+                     Stretch_Map (Stretch) & Gint'Image (Size));
+   end To_Font_Description;
+
+   function Get_Style_As_String
+      (Self : Pango_Font_Description) return String
+   is
+      Style : constant Pango.Enums.Style := Get_Style (Self);
+   begin
+      if Style = Pango.Enums.Pango_Style_Normal then
+         return "Normal";
+      else
+         return Style_Map (Style);
+      end if;
+   end Get_Style_As_String;
+
+   function Get_Weight_As_String
+      (Self : Pango_Font_Description) return String
+   is
+      Weight : constant Pango.Enums.Weight := Get_Weight (Self);
+   begin
+      if Weight = Pango.Enums.Pango_Weight_Normal then
+         return "Normal";
+      else
+         return Weight_Map (Weight);
+      end if;
+   end Get_Weight_As_String;
+
+   function To_Address
+      (F : Pango_Font_Description; Add : System.Address)
+      return System.Address
+   is
+      pragma Unreferenced (Add);
+   begin
+      return F.all'Address;
+   end To_Address;
+
+   ----------
+   -- Free --
+   ----------
+
+   procedure Free (Desc : in out Pango_Font_Description) is
+      procedure Internal (Desc : Pango_Font_Description);
+      pragma Import (C, Internal, "pango_font_description_free");
+
+   begin
+      Internal (Desc);
+      Desc := null;
+   end Free;
+       '''
+
+    [[PangoFontDescription.extra.with_spec]]
+      pkg = "Glib.Generic_Properties"
+
+    [[PangoFontDescription.extra.spec]]
+      text = '''
+
+   function To_Font_Description
+     (Family_Name : String := "";
+      Style       : Pango.Enums.Style := Pango.Enums.Pango_Style_Normal;
+      Variant     : Pango.Enums.Variant := Pango.Enums.Pango_Variant_Normal;
+      Weight      : Pango.Enums.Weight := Pango.Enums.Pango_Weight_Normal;
+      Stretch     : Pango.Enums.Stretch := Pango.Enums.Pango_Stretch_Normal;
+      Size        : Gint := 0) return Pango_Font_Description;
+   --  Create a new font decription from the given parameters.
+
+   function Get_Style_As_String
+     (Self : Pango_Font_Description) return String;
+   -- Return the font's style as a string (e.g: 'Oblique').
+
+   function Get_Weight_As_String
+     (Self : Pango_Font_Description) return String;
+   -- Return the font's style as a string (e.g: 'Oblique').
+
+   function To_Address
+     (F : Pango_Font_Description; Add : System.Address) return System.Address;
+   package Desc_Properties is new Generic_Internal_Boxed_Property
+     (Pango_Font_Description, Get_Type, To_Address);
+   type Property_Font_Description is new Desc_Properties.Property;
+
+   procedure Free (Desc : in out Pango_Font_Description);
+   --  Deallocate the given font description.
+       '''

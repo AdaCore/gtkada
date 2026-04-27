@@ -1,0 +1,23 @@
+
+# ============================================================
+#   GtkTreeSortable
+# ============================================================
+[GtkTreeSortable]
+
+  [[GtkTreeSortable.parameter]]
+    name = "self"
+    ada = "Sortable"
+
+  [[GtkTreeSortable.method]]
+    id = "gtk_tree_sortable_get_sort_column_id"
+    return = "void"
+
+  [GtkTreeSortable.extra]
+
+    [[GtkTreeSortable.extra.spec]]
+      text = '''
+
+   Default_Sort_Column_Id  : constant Gint := -1;
+   Unsorted_Sort_Column_Id : constant Gint := -2;
+   --  Two special values for the sort column
+       '''

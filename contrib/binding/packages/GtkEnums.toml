@@ -1,0 +1,264 @@
+
+# ============================================================
+#   GtkEnums
+# ============================================================
+[GtkEnums]
+
+  [[GtkEnums.enum]]
+    ctype = "GtkArrowType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkAttachOptions"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkButtonBoxStyle"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkCornerType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkDeleteType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkDirectionType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkDragResult"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkExpanderStyle"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkIconSize"
+    asbitfield = true
+
+  [[GtkEnums.enum]]
+    ctype = "GtkJunctionSides"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkBaselinePosition"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkJustification"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkMenuDirectionType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkMovementStep"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkInputHints"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkInputPurpose"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkNumberUpLayout"
+    prefix = "GTK_NUMBER_UP_LAYOUT_"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkOrientation"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPackDirection"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPackType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPageOrientation"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPageSet"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPanDirection"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPopoverConstraint"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPropagationPhase"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkEventSequenceState"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkLevelBarMode"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPathPriorityType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPathType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPolicyType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPositionType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPrintDuplex"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPrintPages"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkPrintQuality"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkRegionFlags"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkReliefStyle"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkResizeMode"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkScrollStep"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkScrollType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkScrollablePolicy"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkSelectionMode"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkSensitivityType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkShadowType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkSizeRequestMode"
+    prefix = "GTK_SIZE_REQUEST_"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkSortType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkStateFlags"
+    prefix = ""
+
+  [[GtkEnums.enum]]
+    ctype = "GtkStateType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkTargetFlags"
+    prefix = ""
+
+  [[GtkEnums.enum]]
+    ctype = "GtkTextDirection"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkTextWindowType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkTreeViewGridLines"
+    prefix = "GTK_TREE_VIEW_"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkToolbarSpaceStyle"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkToolbarStyle"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkUnit"
+    prefix = "GTK_UNIT_"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkWindowPosition"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkWindowType"
+
+  [[GtkEnums.enum]]
+    ctype = "GtkWrapMode"
+
+  [GtkEnums.extra]
+    body = '''
+
+   function Convert (S : String) return System.Address is
+      function Internal is new
+        Ada.Unchecked_Conversion (Gtkada.Types.Chars_Ptr, System.Address);
+   begin
+      return Internal (Gtkada.Types.New_String (S));
+   end Convert;
+
+   function Convert_Chars_Ptr is new
+     Ada.Unchecked_Conversion (System.Address, Gtkada.Types.Chars_Ptr);
+
+   function Convert (S : System.Address) return String is
+   begin
+      return Gtkada.Types.Value (Convert_Chars_Ptr (S));
+   end Convert;
+
+   procedure Free_String_List (List : in out String_List.Glist) is
+      use type String_List.Glist;
+      Tmp   : String_List.Glist := List;
+      Chars : Gtkada.Types.Chars_Ptr;
+   begin
+      while Tmp /= String_List.Null_List loop
+         Chars := Convert_Chars_Ptr (String_List.Get_Data_Address (Tmp));
+         Gtkada.Types.g_free (Chars);
+         Tmp := String_List.Next (Tmp);
+      end loop;
+
+      String_List.Free (List);
+      List := String_List.Null_List;
+   end Free_String_List;
+
+   procedure Free_String_List (List : in out String_SList.GSlist) is
+      use type String_SList.GSlist;
+
+      Tmp   : String_SList.GSlist := List;
+      Chars : Gtkada.Types.Chars_Ptr;
+   begin
+      while Tmp /= String_SList.Null_List loop
+         Chars := Convert_Chars_Ptr (String_SList.Get_Data_Address (Tmp));
+         Gtkada.Types.g_free (Chars);
+         Tmp := String_SList.Next (Tmp);
+      end loop;
+
+      String_SList.Free (List);
+      List := String_SList.Null_List;
+   end Free_String_List;
+       '''
+
+    [[GtkEnums.extra.with_spec]]
+      pkg = "Glib.Glist"
+
+    [[GtkEnums.extra.with_spec]]
+      pkg = "Glib.GSlist"
+
+    [[GtkEnums.extra.with_body]]
+      pkg = "Ada.Unchecked_Conversion"
+      use = false
+
+    [[GtkEnums.extra.with_body]]
+      pkg = "Gtkada.Types"
+      use = false
+
+    [[GtkEnums.extra.spec]]
+      text = '''
+
+   function Convert (S : String) return System.Address;
+   function Convert (S : System.Address) return String;
+   package String_List is new Glib.Glist.Generic_List (UTF8_String);
+   package String_SList is new Glib.GSlist.Generic_SList (UTF8_String);
+   --  Warning: when you create this list, new memory gets allocated for
+   --  all the strings. You should use the function Free_String_List
+   --  instead of Glib.Glist.Free to be sure to free this memory.
+
+   procedure Free_String_List (List : in out String_List.Glist);
+   procedure Free_String_List (List : in out String_SList.GSlist);
+   --  Free the memory occupied by all the strings in the list, as well
+   --  as the memory occupied by the list itself.
+       '''

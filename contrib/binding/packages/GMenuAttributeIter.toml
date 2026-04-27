@@ -1,0 +1,16 @@
+
+# ============================================================
+#   GMenuAttributeIter
+# ============================================================
+[GMenuAttributeIter]
+  into = "GMenuModel"
+  ada = "Glib.Menu_Model"
+
+  [[GMenuAttributeIter.method]]
+    id = "g_menu_attribute_iter_get_type"
+    ada = "Get_Type_Menu_Attribute_Iter"
+
+  [[GMenuAttributeIter.method]]
+    id = "g_menu_attribute_iter_get_next"
+    bind = false
+    # parameter out String

@@ -1,0 +1,59 @@
+
+# ============================================================
+#   PangoFontFace
+# ============================================================
+[PangoFontFace]
+
+  [PangoFontFace.extra]
+
+    [[PangoFontFace.extra.type]]
+      ctype = "Pango_Font_Face_Array"
+      ada = "Pango_Font_Face_Array"
+      text = '''
+
+         type Pango_Font_Face_Array is array (Natural range <>) of Pango_Font_Face;
+       '''
+
+  [[PangoFontFace.method]]
+    id = "pango_font_face_get_family"
+    bind = false
+    # circular dependency
+
+  [[PangoFontFace.method]]
+    id = "pango_font_face_list_sizes"
+    return = "gint**"
+    body = '''
+      type gint_array_bounded is array (Natural) of Gint;
+
+      procedure Internal
+         (Self        : System.Address;
+          Sizes       : System.Address;
+          Acc_N_Sizes : access Gint);
+      pragma Import (C, Internal, "pango_font_face_list_sizes");
+
+      procedure g_free (s : access gint_array_bounded);
+      pragma Import (C, g_free, "g_free");
+
+      Sizes : aliased access gint_array_bounded;
+      Size : aliased Gint;
+   begin
+      Internal (Self.Get_Object, Sizes'Address, Size'Access);
+
+      declare
+         Result : Gint_Array (1 .. Integer (Size));
+      begin
+         for R in 0 .. Integer (Size) - 1 loop
+             Result (R + 1) := Sizes (R);
+         end loop;
+         g_free (Sizes);
+
+         return Result;
+      end;'''
+
+    [[PangoFontFace.method.parameter]]
+      name = "sizes"
+      ada = ""
+
+    [[PangoFontFace.method.parameter]]
+      name = "n_sizes"
+      ada = ""

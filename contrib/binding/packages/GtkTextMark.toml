@@ -1,0 +1,58 @@
+
+# ============================================================
+#   GtkTextMark
+# ============================================================
+[GtkTextMark]
+
+  [[GtkTextMark.parameter]]
+    name = "self"
+    ada = "Mark"
+
+  [[GtkTextMark.method]]
+    id = "gtk_text_mark_get_buffer"
+    bind = false
+    # circular dependency, added manually in Gtk.Text_Buffer
+
+  [GtkTextMark.extra]
+    body = '''
+
+   -------------------
+   -- Set_Text_Mark --
+   -------------------
+
+   procedure Set_Text_Mark
+     (Val  : in out Glib.Values.GValue;
+      Mark : access Gtk_Text_Mark_Record) is
+   begin
+      Glib.Values.Set_Address (Val, Get_Object (Mark));
+   end Set_Text_Mark;
+
+   -------------------
+   -- Get_Text_Mark --
+   -------------------
+
+   function Get_Text_Mark (Val  : Glib.Values.GValue) return Gtk_Text_Mark is
+      Stub : Gtk_Text_Mark_Record;
+   begin
+      return Gtk_Text_Mark
+        (Get_User_Data_Fast (Glib.Values.Get_Address (Val), Stub));
+   end Get_Text_Mark;
+       '''
+
+    [[GtkTextMark.extra.with_spec]]
+      pkg = "Glib.Values"
+
+    [[GtkTextMark.extra.spec]]
+      text = '''
+
+   -------------------------------
+   -- Converting to/from GValue --
+   -------------------------------
+
+   procedure Set_Text_Mark
+     (Val  : in out Glib.Values.GValue;
+      Mark : access Gtk_Text_Mark_Record);
+   function Get_Text_Mark (Val : Glib.Values.GValue) return Gtk_Text_Mark;
+   --  Set the value of the given GValue to Mark.
+
+       '''

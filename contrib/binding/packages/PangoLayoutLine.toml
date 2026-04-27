@@ -1,0 +1,50 @@
+
+# ============================================================
+#   PangoLayoutLine
+# ============================================================
+[PangoLayoutLine]
+  into = "PangoLayout"
+
+  [[PangoLayoutLine.record]]
+    ctype = "PangoLayoutLine"
+    private = true
+
+  [[PangoLayoutLine.method]]
+    id = "pango_layout_line_get_type"
+    ada = "Get_Type_Layout_Line"
+
+  [[PangoLayoutLine.method]]
+    id = "pango_layout_line_get_extents"
+    bind = false
+    # forces bad pragma import on pango_layout_get_extents
+
+  [[PangoLayoutLine.method]]
+    id = "pango_layout_line_get_pixel_extents"
+    bind = false
+
+  [[PangoLayoutLine.method]]
+    id = "pango_layout_line_ref"
+    bind = false
+    # Not needed in Ada
+
+  [[PangoLayoutLine.method]]
+    id = "pango_layout_line_unref"
+    bind = false
+    # Not needed in Ada
+    # Do not bind these for now, there is an error in the generator that tries to use Get_Object on a PangoLayoutLine because it doesn't know private records are implemented as C_Proxy
+
+  [[PangoLayoutLine.method]]
+    id = "pango_layout_line_get_x_ranges"
+    bind = false
+
+  [[PangoLayoutLine.method]]
+    id = "pango_layout_line_index_to_x"
+    bind = false
+
+  [[PangoLayoutLine.method]]
+    id = "pango_layout_line_x_to_index"
+    bind = false
+
+  [[PangoLayoutLine.method]]
+    id = "pango_layout_line_get_height"
+    bind = false

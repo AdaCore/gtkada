@@ -1,0 +1,56 @@
+
+# ============================================================
+#   GtkBuilder
+# ============================================================
+[GtkBuilder]
+
+  [[GtkBuilder.parameter]]
+    name = "self"
+    ada = "Builder"
+
+  [[GtkBuilder.parameter]]
+    name = "error"
+    direction = "out"
+
+  [[GtkBuilder.callback]]
+    id = "Gtk_Builder_Connect_Func"
+
+    [[GtkBuilder.callback.parameter]]
+      name = "signal_name"
+      ctype = "SignalName"
+
+  [[GtkBuilder.method]]
+    id = "gtk_builder_add_from_string"
+
+    [[GtkBuilder.method.parameter]]
+      name = "length"
+      ada = ""
+      default = "-1"
+
+  [[GtkBuilder.method]]
+    id = "gtk_builder_get_objects"
+    return = "ObjectSList"
+
+  [[GtkBuilder.method]]
+    id = "gtk_builder_value_from_string"
+    return_as_param = "Success"
+
+  [[GtkBuilder.method]]
+    id = "gtk_builder_set_application"
+    bind = false
+    # circular dep with GtkWidget
+
+  [[GtkBuilder.method]]
+    id = "gtk_builder_get_application"
+    bind = false
+    # circular dep with GtkWidget
+
+  [[GtkBuilder.method]]
+    id = "gtk_builder_extend_with_template"
+    bind = false
+    # circular dep with GtkWidget
+
+  [[GtkBuilder.method]]
+    id = "gtk_builder_add_callback_symbol"
+    bind = false
+    # error in generated binding

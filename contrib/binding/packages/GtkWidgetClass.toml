@@ -1,0 +1,50 @@
+
+# ============================================================
+#   GtkWidgetClass
+# ============================================================
+[GtkWidgetClass]
+  bindtype = false
+  into = "GtkWidget"
+
+  [[GtkWidgetClass.method]]
+    id = "gtk_widget_class_find_style_property"
+
+  [[GtkWidgetClass.method]]
+    id = "gtk_widget_class_install_style_property"
+
+    [[GtkWidgetClass.method.parameter]]
+      name = "pspec"
+      ctype = "GParamSpec"
+
+  [[GtkWidgetClass.method]]
+    id = "gtk_widget_class_set_accessible_role"
+    bind = false
+    # needs atk
+
+  [[GtkWidgetClass.method]]
+    id = "gtk_widget_class_set_accessible_type"
+    bind = false
+    # needs atk
+
+  [[GtkWidgetClass.method]]
+    id = "gtk_widget_class_install_style_property_parser"
+    bind = false
+
+  [[GtkWidgetClass.method]]
+    id = "gtk_widget_class_list_style_properties"
+    bind = false
+
+  [[GtkWidgetClass.method]]
+    id = "gtk_widget_class_set_template"
+    bind = false
+    # needs GBytes
+
+  [[GtkWidgetClass.method]]
+    id = "gtk_widget_class_set_template_from_resource"
+    bind = false
+    # needs GBytes
+
+  [[GtkWidgetClass.method]]
+    id = "gtk_widget_class_bind_template_callback_full"
+    bind = false
+    # useless withouth gtk_widget_class_set_template

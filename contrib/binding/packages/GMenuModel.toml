@@ -1,0 +1,10 @@
+
+# ============================================================
+#   GMenuModel
+# ============================================================
+[GMenuModel]
+  ada = "Glib.Menu_Model"
+
+  [[GMenuModel.method]]
+    id = "g_menu_model_get_type"
+    ada = "Get_Type_Menu_Model"

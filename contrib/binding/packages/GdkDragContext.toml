@@ -1,0 +1,36 @@
+
+# ============================================================
+#   GdkDragContext
+# ============================================================
+[GdkDragContext]
+
+  [[GdkDragContext.enum]]
+    ctype = "GdkDragAction"
+    prefix = "GDK_"
+
+  [[GdkDragContext.enum]]
+    ctype = "GdkDragCancelReason"
+    prefix = "GDK_"
+
+  [[GdkDragContext.enum]]
+    ctype = "GdkDragProtocol"
+    prefix = "GDK_"
+
+  [[GdkDragContext.method]]
+    id = "gdk_drag_context_list_targets"
+    bind = false
+    # not supposed to be used by applications
+
+  [[GdkDragContext.method]]
+    id = "::action-changed"
+
+    [[GdkDragContext.method.parameter]]
+      name = "action"
+      ctype = "GdkDragAction"
+
+  [[GdkDragContext.method]]
+    id = "::cancel"
+
+    [[GdkDragContext.method.parameter]]
+      name = "reason"
+      ctype = "GdkDragCancelReason"

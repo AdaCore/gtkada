@@ -1,0 +1,78 @@
+
+# ============================================================
+#   GtkComboBox
+# ============================================================
+[GtkComboBox]
+
+  [GtkComboBox.doc]
+    group = "Numeric/Text Data Entry"
+
+  [[GtkComboBox.parameter]]
+    name = "self"
+    ada = "Combo_Box"
+
+  [[GtkComboBox.method]]
+    id = "gtk_combo_box_popup_for_device"
+    bind = false
+
+  [[GtkComboBox.method]]
+    id = "gtk_combo_box_get_popup_accessible"
+    bind = false
+
+  [[GtkComboBox.method]]
+    id = "gtk_combo_box_get_active_iter"
+    bind = false
+    # below
+
+  [GtkComboBox.extra]
+    body = '''
+
+   function Get_Active_Iter
+     (Combo_Box : not null access Gtk_Combo_Box_Record) return Gtk_Tree_Iter
+   is
+      function Internal
+        (Combo_Box : System.Address;
+         Iter      : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_combo_box_get_active_iter");
+      Iter : aliased Gtk_Tree_Iter;
+      Tmp  : constant Gboolean := Internal
+        (Get_Object (Combo_Box), Iter'Address);
+   begin
+      if Tmp /= 0 then
+         return Iter;
+      else
+         return Null_Iter;
+      end if;
+   end Get_Active_Iter;
+
+   function Get_Active_Text
+     (Combo_Box : not null access Gtk_Combo_Box_Record)
+      return UTF8_String is
+   begin
+      if not Combo_Box.Get_Has_Entry then
+         return "";
+      end if;
+
+      return Gtk_Entry (Combo_Box.Get_Child).Get_Text;
+   end Get_Active_Text;
+
+        '''
+
+    [[GtkComboBox.extra.with_body]]
+      pkg = "Gtk.GEntry"
+
+    [[GtkComboBox.extra.spec]]
+      text = '''
+
+   function Get_Active_Iter
+     (Combo_Box : not null access Gtk_Combo_Box_Record)
+      return Gtk.Tree_Model.Gtk_Tree_Iter;
+   --  Return the currently active iter
+
+   function Get_Active_Text
+     (Combo_Box : not null access Gtk_Combo_Box_Record)
+      return UTF8_String;
+   --  Return the text present in the entry if it has one, or the empty string
+
+        '''

@@ -1,0 +1,14 @@
+
+# ============================================================
+#   GtkDrawingArea
+# ============================================================
+[GtkDrawingArea]
+
+  [GtkDrawingArea.doc]
+    group = "Drawing"
+    testgtk = "libart_demo.adb"
+    text = "See also the Double_Buffer widget provided in the GtkAda examples for an advanced example that demonstrates how to use double buffering, to avoid flickering in your drawings."
+
+  [[GtkDrawingArea.parameter]]
+    name = "self"
+    ada = "Drawing_Area"

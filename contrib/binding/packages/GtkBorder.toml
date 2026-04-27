@@ -1,0 +1,23 @@
+
+# ============================================================
+#   GtkBorder
+# ============================================================
+[GtkBorder]
+  into = "GtkStyle"
+
+  [[GtkBorder.record]]
+    ctype = "GtkBorder"
+
+  [[GtkBorder.method]]
+    id = "gtk_border_copy"
+    bind = false
+    # not needed in Ada
+
+  [[GtkBorder.method]]
+    id = "gtk_border_free"
+    bind = false
+    # not needed in Ada
+
+  [[GtkBorder.method]]
+    id = "gtk_border_get_type"
+    ada = "Border_Get_Type"

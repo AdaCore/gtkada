@@ -1,0 +1,64 @@
+
+# ============================================================
+#   PangoFontFamily
+# ============================================================
+[PangoFontFamily]
+
+  [PangoFontFamily.extra]
+
+    [[PangoFontFamily.extra.with_spec]]
+      pkg = "Pango.Font_Face"
+
+    [[PangoFontFamily.extra.type]]
+      ctype = "Pango_Font_Family_Array"
+      ada = "Pango_Font_Family_Array"
+      text = '''
+
+         type Pango_Font_Family_Array is array (Natural range <>) of Pango_Font_Family;
+       '''
+
+  [[PangoFontFamily.method]]
+    id = "pango_font_family_get_face"
+    bind = false
+    # more recent than 1.44
+
+  [[PangoFontFamily.method]]
+    id = "pango_font_family_list_faces"
+    return = "Pango_Font_Face_Array"
+    body = '''
+      type font_face_array_bounded is array (Natural) of System.Address;
+
+      procedure Internal
+         (Self        : System.Address;
+          Faces       : System.Address;
+          Acc_N_Faces : access Gint);
+      pragma Import (C, Internal, "pango_font_family_list_faces");
+
+      procedure g_free (s : access font_face_array_bounded);
+      pragma Import (C, g_free, "g_free");
+
+      Faces : aliased access font_face_array_bounded;
+      Size : aliased Gint;
+      Tmplt : Pango_Font_Face_Record;
+   begin
+      Internal (Self.Get_Object, Faces'Address, Size'Access);
+
+      declare
+         Result : Pango_Font_Face_Array (1 .. Integer (Size));
+      begin
+         for R in 0 .. Integer (Size) - 1 loop
+             Result (R + 1) := Pango_Font_Face
+                (Get_User_Data (Faces (R), Tmplt));
+         end loop;
+         g_free (Faces);
+
+         return Result;
+      end;'''
+
+    [[PangoFontFamily.method.parameter]]
+      name = "faces"
+      ada = ""
+
+    [[PangoFontFamily.method.parameter]]
+      name = "n_faces"
+      ada = ""

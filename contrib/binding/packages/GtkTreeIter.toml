@@ -1,0 +1,122 @@
+
+# ============================================================
+#   GtkTreeIter
+# ============================================================
+[GtkTreeIter]
+  into = "GtkTreeModel"
+
+  [[GtkTreeIter.record]]
+    ctype = "GtkTreeIter"
+    private = true
+
+  [[GtkTreeIter.method]]
+    id = "gtk_tree_iter_get_type"
+    ada = "Iter_Get_Type"
+
+  [[GtkTreeIter.method]]
+    id = "gtk_tree_iter_copy"
+    ada = "Iter_Copy"
+
+  [GtkTreeIter.extra]
+    body = '''
+
+   function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean is
+      use type System.Address;
+   begin
+      if Left.Stamp = Right.Stamp then
+         if Left.Stamp = 0 then
+            --  Stamp = 0 means the iterator is null iterator, we need not to
+            --  compare other fields in this case.
+            return True;
+         else
+            return Left.User_Data = Right.User_Data
+                     and then Left.User_Data2 = Right.User_Data2
+                     and then Left.User_Data3 = Right.User_Data3;
+         end if;
+      else
+         return False;
+      end if;
+   end "=";
+
+   type Gtk_Tree_Iter_Access is access Gtk_Tree_Iter;
+   function Convert is new Ada.Unchecked_Conversion
+      (System.Address, Gtk_Tree_Iter_Access);
+   use type System.Address;
+
+   function Iter_Or_Null (Iter : System.Address) return System.Address is
+   begin
+      if Convert (Iter).Stamp = 0 then   --  null iter
+         return System.Null_Address;
+      else
+         return Iter;
+      end if;
+   end Iter_Or_Null;
+
+   procedure Get_Tree_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Tree_Iter) is
+   begin
+      Iter := Convert (Glib.Values.Get_Address (Val)).all;
+   end Get_Tree_Iter;
+
+   function Get_Tree_Iter (Val : Glib.Values.GValue) return Gtk_Tree_Iter is
+      Result : Gtk_Tree_Iter;
+   begin
+      Get_Tree_Iter (Val, Result);
+      return Result;
+   end Get_Tree_Iter;
+
+   function To_Address (Iter : Gtk_Tree_Iter) return System.Address is
+   begin
+      return Iter'Address;
+   end To_Address;
+       '''
+
+    [[GtkTreeIter.extra.spec]]
+      text = '''
+
+   function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean;
+
+   procedure Set_Tree_Iter
+     (Val  : in out Glib.Values.GValue;
+      Iter : Gtk_Tree_Iter);
+   pragma Import (C, Set_Tree_Iter, "g_value_set_pointer");
+   --  Set the value of the given GValue to Iter.
+   --  Note that Iter is stored by reference, which means no copy of Iter
+   --  is made. Iter should remain allocated as long as Val is being used.
+
+   procedure Get_Tree_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Tree_Iter);
+   --  Extract the iterator from the given GValue.
+   --  Note that the iterator returned is a copy of the iterator referenced
+   --  by the give GValue. Modifying the iterator returned does not modify
+   --  the iterator referenced by the GValue.
+
+   function Get_Tree_Iter (Val : Glib.Values.GValue) return Gtk_Tree_Iter;
+   --  Extract the iterator from the given GValue.
+
+   function To_Address (Iter : Gtk_Tree_Iter) return System.Address;
+   pragma Convention (C, To_Address);
+   --  Return address of the specified iterator.
+   --  Note: To_Address needs a pass-by-reference semantic to work properly
+   --  On some ABIs (e.g. IA64), Gtk_Tree_Iter is passed by copy, since it's
+   --  a "small enough" record.
+
+   function Iter_Or_Null (Iter : System.Address) return System.Address;
+   --  Internal function for GtkAda
+       '''
+
+    [[GtkTreeIter.extra.spec]]
+      text = '''
+
+   Null_Iter : constant Gtk_Tree_Iter :=
+     (0, System.Null_Address, System.Null_Address, System.Null_Address);
+       '''
+      private = true
+
+    [[GtkTreeIter.extra.type]]
+      text = '''
+
+   Null_Iter : constant Gtk_Tree_Iter;
+       '''

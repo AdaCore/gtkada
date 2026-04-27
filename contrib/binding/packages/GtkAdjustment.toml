@@ -1,0 +1,35 @@
+
+# ============================================================
+#   GtkAdjustment
+# ============================================================
+[GtkAdjustment]
+
+  [GtkAdjustment.doc]
+    group = "Scrolling"
+    text = '''
+The meaning of the most important fields can be explained on the following figure (imagine this is a scrollbar):
+
+[-------|=================|-------------------]
+
+lower    value        value + page_size       upper
+     '''
+
+  [[GtkAdjustment.parameter]]
+    name = "self"
+    ada = "Adjustment"
+
+  [[GtkAdjustment.method]]
+    id = "gtk_adjustment_new"
+
+    [GtkAdjustment.method.doc]
+      text = "Create a new adjustment. Value is the initial value of the adjustment. It must be in the range (Lower .. Upper) and the adjustment's value will never be outside this range. Step_Increment is the value used to make minor adjustments, such as when the user clicks on the arrows of a scrollbar. Page_Increment is used to make major adjustments, such as when the user clicks in the through on a scrollbar. Page_Size is deprecated, use the default value."
+
+    [[GtkAdjustment.method.parameter]]
+      name = "page_size"
+      default = "0.0"
+
+  [[GtkAdjustment.method]]
+    id = "gtk_adjustment_clamp_page"
+
+    [GtkAdjustment.method.doc]
+      text = "Update the Adjustment value to ensure that the range between Lower and Upper is in the current page (i.e. between value and value + page_size). If the range is larger than the page size, then only the start of it will be in the current page. A \"value_changed\" signal will be emitted if the value is changed."

@@ -1,0 +1,14 @@
+
+# ============================================================
+#   GtkTextTagTable
+# ============================================================
+[GtkTextTagTable]
+
+  [[GtkTextTagTable.parameter]]
+    name = "self"
+    ada = "Table"
+
+  [[GtkTextTagTable.method]]
+    id = "gtk_text_tag_table_add"
+    return = "void"
+    # backward compatibility

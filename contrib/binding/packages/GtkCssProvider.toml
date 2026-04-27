@@ -1,0 +1,37 @@
+
+# ============================================================
+#   GtkCssProvider
+# ============================================================
+[GtkCssProvider]
+
+  [[GtkCssProvider.method]]
+    id = "::parsing-error"
+    bind = false
+
+  [[GtkCssProvider.method]]
+    id = "gtk_css_provider_load_from_data"
+
+    [[GtkCssProvider.method.parameter]]
+      name = "data"
+      ctype = "char*"
+
+    [[GtkCssProvider.method.parameter]]
+      name = "length"
+      ada = ""
+      default = "-1"
+
+    [[GtkCssProvider.method.parameter]]
+      name = "error"
+      direction = "access"
+
+  [[GtkCssProvider.method]]
+    id = "gtk_css_provider_load_from_path"
+
+    [[GtkCssProvider.method.parameter]]
+      name = "error"
+      direction = "access"
+
+  [[GtkCssProvider.method]]
+    id = "gtk_css_provider_load_from_file"
+    bind = false
+    # needs GFile

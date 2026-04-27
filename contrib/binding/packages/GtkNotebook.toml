@@ -1,0 +1,116 @@
+
+# ============================================================
+#   GtkNotebook
+# ============================================================
+[GtkNotebook]
+
+  [[GtkNotebook.enum]]
+    ctype = "GtkNotebookTab"
+
+  [GtkNotebook.doc]
+    screenshot = "gtk-notebook"
+    group = "Layout containers"
+    testgtk = "create_notebook.adb"
+
+  [[GtkNotebook.parameter]]
+    name = "self"
+    ada = "Notebook"
+
+  [[GtkNotebook.method]]
+    id = "gtk_notebook_set_scrollable"
+
+    [[GtkNotebook.method.parameter]]
+      name = "scrollable"
+      default = "True"
+
+  [[GtkNotebook.method]]
+    id = "gtk_notebook_set_tab_reorderable"
+
+    [[GtkNotebook.method.parameter]]
+      name = "reorderable"
+      default = "True"
+
+  [[GtkNotebook.method]]
+    id = "gtk_notebook_set_current_page"
+
+    [[GtkNotebook.method.parameter]]
+      name = "page_num"
+      default = "-1"
+
+  [[GtkNotebook.method]]
+    id = "gtk_notebook_set_show_border"
+
+    [[GtkNotebook.method.parameter]]
+      name = "show_border"
+      default = "True"
+
+  [[GtkNotebook.method]]
+    id = "gtk_notebook_append_page_menu"
+    return = "void"
+
+  [[GtkNotebook.method]]
+    id = "gtk_notebook_set_show_tabs"
+
+    [[GtkNotebook.method.parameter]]
+      name = "show_tabs"
+      default = "True"
+
+  [[GtkNotebook.method]]
+    id = "gtk_notebook_set_tab_detachable"
+
+    [[GtkNotebook.method.parameter]]
+      name = "detachable"
+      default = "True"
+
+  [GtkNotebook.extra]
+    body = '''
+
+   procedure Append_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      Ignored : Gint;
+      pragma Unreferenced (Ignored);
+   begin
+      Ignored := Append_Page (Notebook, Child, null);
+   end Append_Page;
+
+   procedure Append_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      Ignored : Gint;
+      pragma Unreferenced (Ignored);
+   begin
+      Ignored := Append_Page (Notebook, Child, Tab_Label);
+   end Append_Page;
+
+   procedure Prepend_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      Ignored : Gint;
+      pragma Unreferenced (Ignored);
+   begin
+      Ignored := Append_Page (Notebook, Child, Tab_Label);
+   end Prepend_Page;
+        '''
+
+    [[GtkNotebook.extra.spec]]
+      text = '''
+
+   procedure Append_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Append_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Prepend_Page
+     (Notebook  : access Gtk_Notebook_Record;
+      Child     : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Tab_Label : access Gtk.Widget.Gtk_Widget_Record'Class);
+   --  Convenience functions, same as above but discarding the return value.
+        '''

@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python3
 
 """
 Parse a .gir file for any of the gtk+ libraries (gtk+, glib,...)
@@ -6,7 +6,7 @@ and generate Ada bindings.
 """
 
 # Issues:
-#   - Missing handling of <field> nodes (see GtkArrow for instance)
+# - Missing handling of <field> nodes (see GtkArrow for instance)
 # - Some comments contain xref like "#GtkMisc". Not sure what to do with
 #     those. Likewise for names of subprograms in comments.
 #
@@ -31,15 +31,14 @@ SHARED_SLOT_MARSHALLERS = False
 # For parsing command line options
 from optparse import OptionParser
 
-# Python interpreter version check: this script does not work with Python
-# version 3.7 or earlier!
+# Python interpreter version check:
+# this script does not work with Python version < 3.7 !
 from sys import version_info
-version_string = '.'.join(map(str, version_info[0:3]))
-if version_info[0] < 3:
-    print(('Need at least Python 3.7, got version ' + version_string))
-    quit(1)
-if version_info[0] == 3 and version_info[1] < 7:
-    print(('Need at least Python 3.7, got version ' + version_string))
+MIN_PY = (3, 7)
+if version_info < MIN_PY:
+    installed = '.'.join(map(str, version_info[0:2]))
+    required = '.'.join(map(str, MIN_PY[0:2]))
+    print((f'Need at least Python {required}, got version {installed}'))
     quit(1)
 
 uri = "http://www.gtk.org/introspection/core/1.0"
@@ -2914,9 +2913,9 @@ parser.add_option(
     dest="gir_file",
     metavar="FILE")
 parser.add_option(
-    "--toml-file",
-    help="input GtkAda binding.toml file",
-    dest="toml_file",
+    "--toml-dir",
+    help="input location of GtkAda package toml files",
+    dest="toml_dir",
     metavar="FILE")
 parser.add_option(
     "--ada-output",
@@ -2935,8 +2934,8 @@ parser.add_option(
 missing_files = []
 if options.gir_file is None:
     missing_files.append("GIR file")
-if options.toml_file is None:
-    missing_files.append("binding.toml file")
+if options.toml_dir is None:
+    missing_files.append("binding toml directory")
 if options.ada_outfile is None:
     missing_files.append("Ada output file")
 if options.c_outfile is None:
@@ -2944,7 +2943,7 @@ if options.c_outfile is None:
 if missing_files:
     parser.error('Must specify files:\n\t' + ', '.join(missing_files))
 
-gtkada = GtkAda(options.toml_file)
+gtkada = GtkAda(options.toml_dir)
 gir = GIR(options.gir_file)
 
 Package.copyright_header = \

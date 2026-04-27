@@ -1,0 +1,22 @@
+
+# ============================================================
+#   GtkVRuler
+# ============================================================
+[GtkVRuler]
+  into = "GtkRuler"
+
+  [[GtkVRuler.type]]
+    name = "Gtk_Vruler"
+    subtype = true
+
+  [[GtkVRuler.method]]
+    id = "gtk_vruler_new"
+    ada = "Gtk_New_Vruler"
+
+  [[GtkVRuler.parameter]]
+    name = "self"
+    ada = "Ruler"
+
+  [[GtkVRuler.method]]
+    id = "gtk_vruler_get_type"
+    ada = "Vruler_Get_Type"

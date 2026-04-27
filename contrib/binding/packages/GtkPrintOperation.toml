@@ -1,0 +1,21 @@
+
+# ============================================================
+#   GtkPrintOperation
+# ============================================================
+[GtkPrintOperation]
+
+  [[GtkPrintOperation.enum]]
+    ctype = "GtkPrintStatus"
+    prefix = "GTK_PRINT_"
+
+  [[GtkPrintOperation.enum]]
+    ctype = "GtkPrintOperationResult"
+    prefix = "GTK_PRINT_OPERATION_"
+
+  [[GtkPrintOperation.enum]]
+    ctype = "GtkPrintOperationAction"
+    prefix = "GTK_PRINT_OPERATION_"
+
+  [[GtkPrintOperation.enum]]
+    ctype = "GtkPrintError"
+    prefix = "GTK_PRINT_"

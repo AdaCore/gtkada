@@ -1,0 +1,48 @@
+
+# ============================================================
+#   GtkRecentChooserDialog
+# ============================================================
+[GtkRecentChooserDialog]
+
+  [[GtkRecentChooserDialog.parameter]]
+    name = "self"
+    ada = "Widget"
+
+  [GtkRecentChooserDialog.extra]
+
+    [[GtkRecentChooserDialog.extra.gir_element]]
+      xml = '''
+<gir:constructor xmlns:c="http://www.gtk.org/introspection/c/1.0" xmlns:gir="http://www.gtk.org/introspection/core/1.0" c:identifier="ada_gtk_recent_chooser_dialog_new" name="new">
+         <gir:return-value>
+           <gir:type name="GtkWidget" c:type="GtkWidget*" />
+         </gir:return-value>
+         <gir:parameters>
+           <gir:parameter name="title" allow-none="1">
+             <gir:type name="utf8" c:type="gchar*" />
+           </gir:parameter>
+           <gir:parameter name="parent" allow-none="1">
+             <gir:type name="Window" c:type="GtkWindow*" />
+           </gir:parameter>
+         </gir:parameters>
+       </gir:constructor>
+       '''
+
+    [[GtkRecentChooserDialog.extra.gir_element]]
+      xml = '''
+<gir:constructor xmlns:c="http://www.gtk.org/introspection/c/1.0" xmlns:gir="http://www.gtk.org/introspection/core/1.0" c:identifier="ada_gtk_recent_chooser_dialog_new_for_manager" name="new_for_manager">
+         <gir:return-value>
+           <gir:type name="GtkWidget" c:type="GtkWidget*" />
+         </gir:return-value>
+         <gir:parameters>
+           <gir:parameter name="title" allow-none="1">
+             <gir:type name="utf8" c:type="gchar*" />
+           </gir:parameter>
+           <gir:parameter name="parent" allow-none="1">
+             <gir:type name="Window" c:type="GtkWindow*" />
+           </gir:parameter>
+           <gir:parameter name="manager" allow-none="1">
+             <gir:type name="RecentManager" c:type="GtkRecentManager*" />
+           </gir:parameter>
+         </gir:parameters>
+       </gir:constructor>
+     '''

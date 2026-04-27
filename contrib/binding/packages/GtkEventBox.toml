@@ -1,0 +1,21 @@
+
+# ============================================================
+#   GtkEventBox
+# ============================================================
+[GtkEventBox]
+
+  [GtkEventBox.doc]
+    group = "Layout Containers"
+
+  [[GtkEventBox.parameter]]
+    name = "self"
+    ada = "Event_Box"
+
+  [[GtkEventBox.method]]
+    id = "gtk_event_box_new"
+
+    [GtkEventBox.method.doc]
+      text = '''
+Create a new box.
+
+The box's child can then be set using the Gtk.Container.Add function.'''

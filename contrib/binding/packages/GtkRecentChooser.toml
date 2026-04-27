@@ -1,0 +1,29 @@
+
+# ============================================================
+#   GtkRecentChooser
+# ============================================================
+[GtkRecentChooser]
+
+  [[GtkRecentChooser.virtual_method]]
+    id = "*"
+    bind = false
+
+  [[GtkRecentChooser.parameter]]
+    name = "self"
+    ada = "Chooser"
+
+  [[GtkRecentChooser.method]]
+    id = "gtk_recent_chooser_get_items"
+    return = "RecentInfoList"
+
+  [[GtkRecentChooser.enum]]
+    ctype = "GtkRecentSortType"
+    # These functions return the length separately, not needed in Ada
+
+  [[GtkRecentChooser.method]]
+    id = "gtk_recent_chooser_get_uris"
+    bind = false
+
+  [[GtkRecentChooser.method]]
+    id = "gtk_recent_chooser_list_filters"
+    return = "RecentFilterSList"

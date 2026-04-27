@@ -1,0 +1,40 @@
+
+# ============================================================
+#   GtkRadioToolButton
+# ============================================================
+[GtkRadioToolButton]
+
+  [[GtkRadioToolButton.method]]
+    id = "gtk_radio_tool_button_new"
+
+    [[GtkRadioToolButton.method.parameter]]
+      name = "group"
+      ctype = "WidgetSList"
+
+  [[GtkRadioToolButton.method]]
+    id = "gtk_radio_tool_button_new_from_stock"
+
+    [[GtkRadioToolButton.method.parameter]]
+      name = "group"
+      ctype = "WidgetSList"
+
+  [[GtkRadioToolButton.method]]
+    id = "gtk_radio_tool_button_set_group"
+
+    [[GtkRadioToolButton.method.parameter]]
+      name = "group"
+      ctype = "WidgetSList"
+
+  [[GtkRadioToolButton.method]]
+    id = "gtk_radio_tool_button_get_group"
+    return = "WidgetSList"
+
+  [[GtkRadioToolButton.method]]
+    id = "gtk_radio_tool_button_new_from_widget"
+    bind = false
+    # gir file misses Group parameter
+
+  [[GtkRadioToolButton.method]]
+    id = "gtk_radio_tool_button_new_with_stock_from_widget"
+    bind = false
+    # gir file misses Group parameter

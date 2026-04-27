@@ -1,0 +1,21 @@
+
+# ============================================================
+#   GtkToolPalette
+# ============================================================
+[GtkToolPalette]
+
+  [[GtkToolPalette.enum]]
+    ctype = "GtkDestDefaults"
+
+  [[GtkToolPalette.enum]]
+    ctype = "GtkToolPaletteDragTargets"
+
+  [[GtkToolPalette.method]]
+    id = "gtk_tool_palette_get_hadjustment"
+    bind = false
+    # obsolete, use interface
+
+  [[GtkToolPalette.method]]
+    id = "gtk_tool_palette_get_vadjustment"
+    bind = false
+    # obsolete, use interface

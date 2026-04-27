@@ -1,0 +1,22 @@
+
+# ============================================================
+#   GtkVScrollbar
+# ============================================================
+[GtkVScrollbar]
+  into = "GtkScrollbar"
+
+  [[GtkVScrollbar.parameter]]
+    name = "self"
+    ada = "Scrollbar"
+
+  [[GtkVScrollbar.type]]
+    name = "Gtk_Vscrollbar"
+    subtype = true
+
+  [[GtkVScrollbar.method]]
+    id = "gtk_vscrollbar_new"
+    ada = "Gtk_New_Vscrollbar"
+
+  [[GtkVScrollbar.method]]
+    id = "gtk_vscrollbar_get_type"
+    ada = "Vscrollbar_Get_Type"

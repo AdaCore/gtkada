@@ -1,0 +1,24 @@
+
+# ============================================================
+#   GtkToolItem
+# ============================================================
+[GtkToolItem]
+
+  [[GtkToolItem.parameter]]
+    name = "self"
+    ada = "Tool_Item"
+
+  [[GtkToolItem.method]]
+    id = "gtk_tool_item_retrieve_proxy_menu_item"
+    return = "GtkMenuItem"
+
+  [[GtkToolItem.method]]
+    id = "gtk_tool_item_get_proxy_menu_item"
+    return = "GtkMenuItem"
+
+  [[GtkToolItem.method]]
+    id = "gtk_tool_item_set_proxy_menu_item"
+
+    [[GtkToolItem.method.parameter]]
+      name = "menu_item"
+      ctype = "GtkMenuItem"

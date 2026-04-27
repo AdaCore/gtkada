@@ -1,0 +1,34 @@
+
+# ============================================================
+#   GtkMenuItem
+# ============================================================
+[GtkMenuItem]
+
+  [[GtkMenuItem.parameter]]
+    name = "self"
+    ada = "Menu_Item"
+
+  [[GtkMenuItem.method]]
+    id = "gtk_menu_item_select"
+    ada = "Gtk_Select"
+
+  [[GtkMenuItem.method]]
+    id = "gtk_menu_item_set_right_justified"
+
+    [[GtkMenuItem.method.parameter]]
+      name = "right_justified"
+      default = "True"
+
+  [GtkMenuItem.extra]
+
+    [[GtkMenuItem.extra.spec]]
+      text = '''
+
+   procedure Gtk_New
+      (Menu_Item : out Gtk_Menu_Item;
+       Label     : UTF8_String) renames Gtk_New_With_Label;
+   procedure Initialize
+      (Menu_Item : access Gtk_Menu_Item_Record'Class;
+       Label     : UTF8_String) renames Initialize_With_Label;
+   --  For backwards compatibility.
+         '''

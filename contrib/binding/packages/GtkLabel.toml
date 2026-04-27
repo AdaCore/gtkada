@@ -1,0 +1,56 @@
+
+# ============================================================
+#   GtkLabel
+# ============================================================
+[GtkLabel]
+
+  [GtkLabel.doc]
+    screenshot = "gtk-label"
+    group = "Display widgets"
+    testgtk = "create_label.adb"
+
+  [[GtkLabel.parameter]]
+    name = "self"
+    ada = "Label"
+
+  [[GtkLabel.method]]
+    id = "gtk_label_new"
+
+    [[GtkLabel.method.parameter]]
+      name = "str"
+      default = "\"\""
+
+  [[GtkLabel.method]]
+    id = "gtk_label_get"
+    bind = false
+
+  [[GtkLabel.method]]
+    id = "gtk_label_select_region"
+
+    [[GtkLabel.method.parameter]]
+      name = "start_offset"
+      default = "-1"
+
+    [[GtkLabel.method.parameter]]
+      name = "end_offset"
+      default = "-1"
+
+  [[GtkLabel.method]]
+    id = "gtk_label_get_selection_bounds"
+    return_as_param = "Has_Selection"
+
+  [[GtkLabel.method]]
+    id = "gtk_label_set_pattern"
+
+    [GtkLabel.method.doc]
+      text = '''
+Change the underlines pattern.
+
+Pattern is a simple string made of underscore and space characters,
+matching the ones in the string. GtkAda will underline every letter
+that matches an underscore.
+
+An empty string disables the underlines.
+
+example: If the text is FooBarBaz and the Pattern is "___   ___"
+then both "Foo" and "Baz" will be underlined, but not "Bar".'''

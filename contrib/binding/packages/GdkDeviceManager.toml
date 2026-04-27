@@ -1,0 +1,47 @@
+
+# ============================================================
+#   GdkDeviceManager
+# ============================================================
+[GdkDeviceManager]
+
+  [[GdkDeviceManager.method]]
+    id = "gdk_device_manager_list_devices"
+    return = "DeviceList"
+
+  [[GdkDeviceManager.method]]
+    id = "::device-added"
+    bind = false
+
+  [[GdkDeviceManager.method]]
+    id = "::device-changed"
+    bind = false
+
+  [[GdkDeviceManager.method]]
+    id = "::device-removed"
+    bind = false
+
+  [GdkDeviceManager.extra]
+    body = '''
+
+   function Get_Device_Manager
+      (Self : not null access Gdk.Display.Gdk_Display_Record'Class)
+       return Gdk.Device_Manager.Gdk_Device_Manager
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_display_get_device_manager");
+      Stub_Gdk_Device_Manager : Gdk.Device_Manager.Gdk_Device_Manager_Record;
+   begin
+      return Gdk.Device_Manager.Gdk_Device_Manager (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Device_Manager));
+   end Get_Device_Manager;
+         '''
+
+    [[GdkDeviceManager.extra.spec]]
+      text = '''
+
+   function Get_Device_Manager
+      (Self : not null access Gdk.Display.Gdk_Display_Record'Class)
+      return Gdk.Device_Manager.Gdk_Device_Manager;
+   --  Returns the Gdk.Device_Manager.Gdk_Device_Manager associated to
+   --  Display.
+   --  Since: gtk+ 3.0
+         '''

@@ -1,0 +1,25 @@
+
+# ============================================================
+#   GtkVPaned
+# ============================================================
+[GtkVPaned]
+  into = "GtkPaned"
+
+  [[GtkVPaned.type]]
+    name = "Gtk_Vpaned"
+    subtype = true
+
+  [[GtkVPaned.parameter]]
+    name = "self"
+    ada = "Paned"
+
+  [[GtkVPaned.method]]
+    id = "gtk_vpaned_new"
+    ada = "Gtk_New_Vpaned"
+
+    [GtkVPaned.method.doc]
+      text = "The children will be displayed one on top of the other"
+
+  [[GtkVPaned.method]]
+    id = "gtk_vpaned_get_type"
+    ada = "Get_Type_Vpaned"

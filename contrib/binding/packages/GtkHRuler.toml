@@ -1,0 +1,22 @@
+
+# ============================================================
+#   GtkHRuler
+# ============================================================
+[GtkHRuler]
+  into = "GtkRuler"
+
+  [[GtkHRuler.type]]
+    name = "Gtk_Hruler"
+    subtype = true
+
+  [[GtkHRuler.method]]
+    id = "gtk_hruler_new"
+    ada = "Gtk_New_Hruler"
+
+  [[GtkHRuler.parameter]]
+    name = "self"
+    ada = "Ruler"
+
+  [[GtkHRuler.method]]
+    id = "gtk_hruler_get_type"
+    ada = "Hruler_Get_Type"

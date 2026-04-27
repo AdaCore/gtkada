@@ -1,0 +1,30 @@
+
+# ============================================================
+#   GtkCheckButton
+# ============================================================
+[GtkCheckButton]
+
+  [GtkCheckButton.doc]
+    screenshot = "gtk-check_button"
+    group = "Buttons and Toggles"
+    testgtk = "create_check_buttons.adb"
+
+  [[GtkCheckButton.parameter]]
+    name = "self"
+    ada = "Check_Button"
+
+  [[GtkCheckButton.method]]
+    id = "gtk_check_button_new"
+    bind = false
+
+  [[GtkCheckButton.method]]
+    id = "gtk_check_button_new_with_label"
+    ada = "Gtk_New"
+
+    [GtkCheckButton.method.doc]
+      text = "Create a check button. if Label is null, then no widget is associated with the button, and any widget can be added to the button (with Gtk.Container.Add)."
+
+    [[GtkCheckButton.method.parameter]]
+      name = "label"
+      default = "\"\""
+      allow_none = "1"

@@ -1,0 +1,138 @@
+
+# ============================================================
+#   GtkClipboard
+# ============================================================
+[GtkClipboard]
+
+  [[GtkClipboard.parameter]]
+    name = "self"
+    ada = "Clipboard"
+
+  [[GtkClipboard.method]]
+    id = "gtk_clipboard_get"
+
+    [[GtkClipboard.method.parameter]]
+      name = "selection"
+      default = "Gdk.Types.Gdk_None"
+
+  [[GtkClipboard.method]]
+    id = "gtk_clipboard_get_for_display"
+
+    [[GtkClipboard.method.parameter]]
+      name = "selection"
+      default = "Gdk.Types.Gdk_None"
+
+  [[GtkClipboard.method]]
+    id = "gtk_clipboard_request_rich_text"
+
+    [[GtkClipboard.method.parameter]]
+      name = "buffer"
+      ctype = "GObject*"
+
+  [[GtkClipboard.method]]
+    id = "gtk_clipboard_wait_is_rich_text_available"
+
+    [[GtkClipboard.method.parameter]]
+      name = "buffer"
+      ctype = "GObject*"
+
+  [[GtkClipboard.method]]
+    id = "gtk_clipboard_set_can_store"
+
+    [[GtkClipboard.method.parameter]]
+      name = "targets"
+      type = "Gtk.Target_List.Target_Entry_Array"
+
+  [[GtkClipboard.method]]
+    id = "gtk_clipboard_set_text"
+
+    [[GtkClipboard.method.parameter]]
+      name = "text"
+      ctype = "char*"
+
+    [[GtkClipboard.method.parameter]]
+      name = "len"
+      ada = ""
+      default = "-1"
+
+  [[GtkClipboard.method]]
+    id = "gtk_clipboard_set_with_data"
+    bind = false
+    # low-level
+
+  [[GtkClipboard.method]]
+    id = "gtk_clipboard_set_with_owner"
+    bind = false
+    # low-level
+
+  [[GtkClipboard.method]]
+    id = "gtk_clipboard_wait_for_rich_text"
+    bind = false
+    # Returns an array, not practical
+
+  [[GtkClipboard.method]]
+    id = "gtk_clipboard_wait_for_targets"
+    bind = false
+    # bound manually below
+
+  [GtkClipboard.extra]
+    body = '''
+
+    package Atom_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Gdk.Types.Gdk_Atom, Gdk.Types.Gdk_None,
+      Natural, Gdk.Types.Gdk_Atom_Array);
+
+   ----------------------
+   -- Wait_For_Targets --
+   ----------------------
+
+   function Wait_For_Targets
+     (Clipboard : not null access Gtk_Clipboard_Record)
+     return Gdk.Types.Gdk_Atom_Array
+   is
+      use Atom_Arrays;
+      function Internal
+        (Clipboard : System.Address;
+         Targets   : access Unbounded_Array_Access;
+         N_Targets : access Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_clipboard_wait_for_targets");
+
+      Output    : aliased Unbounded_Array_Access;
+      N_Targets : aliased Gint;
+   begin
+      if Internal
+        (Get_Object (Clipboard),
+         Output'Unchecked_Access,
+         N_Targets'Unchecked_Access) = 0
+      then
+         G_Free (Output);
+         Output := null;
+      end if;
+
+      declare
+         Result : constant Gdk_Atom_Array :=
+           To_Array (Output, Integer (N_Targets));
+      begin
+         if Output /= null then
+            G_Free (Output);
+         end if;
+
+         return Result;
+      end;
+   end Wait_For_Targets;
+         '''
+
+    [[GtkClipboard.extra.with_body]]
+      pkg = "Gtkada.C"
+
+    [[GtkClipboard.extra.spec]]
+      text = '''
+
+   function Wait_For_Targets
+     (Clipboard : not null access Gtk_Clipboard_Record)
+     return Gdk.Types.Gdk_Atom_Array;
+   --  Returns a list of targets that are present on the clipboard, or an empty
+   --  array if there aren't any targets available.
+   --  This function waits for the data to be received using the main
+   --  loop, so events, timeouts, etc, may be dispatched during the wait.
+         '''

@@ -1,0 +1,29 @@
+
+# ============================================================
+#   PangoMatrix
+# ============================================================
+[PangoMatrix]
+
+  [[PangoMatrix.record]]
+    ctype = "PangoMatrix"
+
+  [[PangoMatrix.method]]
+    id = "pango_matrix_rotate"
+
+    [[PangoMatrix.method.parameter]]
+      name = "self"
+      direction = "inout"
+
+  [[PangoMatrix.method]]
+    id = "pango_matrix_scale"
+
+    [[PangoMatrix.method.parameter]]
+      name = "self"
+      direction = "inout"
+
+  [[PangoMatrix.method]]
+    id = "pango_matrix_translate"
+
+    [[PangoMatrix.method.parameter]]
+      name = "self"
+      direction = "inout"

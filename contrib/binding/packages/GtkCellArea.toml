@@ -1,0 +1,177 @@
+
+# ============================================================
+#   GtkCellArea
+# ============================================================
+[GtkCellArea]
+
+  [GtkCellArea.doc]
+    group = "Layout Containers"
+
+  [[GtkCellArea.method]]
+    id = "gtk_cell_area_cell_get_valist"
+    bind = false
+    # va_list
+
+  [[GtkCellArea.method]]
+    id = "gtk_cell_area_cell_set_valist"
+    bind = false
+    # va_list
+
+  [[GtkCellArea.method]]
+    id = "gtk_cell_area_add_with_properties"
+    bind = false
+    # varargs
+
+  [[GtkCellArea.method]]
+    id = "gtk_cell_area_cell_get"
+    bind = false
+    # varargs
+
+  [[GtkCellArea.method]]
+    id = "gtk_cell_area_cell_set"
+    bind = false
+    # varargs
+
+  [[GtkCellArea.method]]
+    id = "gtk_cell_area_get_cell_allocation"
+
+    [[GtkCellArea.method.parameter]]
+      name = "cell_area"
+      direction = "access"
+
+    [[GtkCellArea.method.parameter]]
+      name = "allocation"
+      direction = "access"
+
+  [[GtkCellArea.method]]
+    id = "gtk_cell_area_get_focus_siblings"
+    return = "ObjectList"
+
+  [[GtkCellArea.method]]
+    id = "gtk_cell_area_get_cell_at_position"
+    bind = false
+
+  [[GtkCellArea.method]]
+    id = "::add-editable"
+
+    [[GtkCellArea.method.parameter]]
+      name = "cell_area"
+      type = "Gdk.Rectangle.Gdk_Rectangle"
+    # bound manually below
+
+  [GtkCellArea.extra]
+    body = '''
+
+   --------------
+   -- Get_Area --
+   --------------
+
+   function Get_Area
+      (Context : access Gtk_Cell_Area_Context_Record)
+       return Gtk.Cell_Area.Gtk_Cell_Area
+   is
+      function Internal (Context : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_cell_area_context_get_area");
+      Stub_Gtk_Cell_Area : Gtk.Cell_Area.Gtk_Cell_Area_Record;
+   begin
+      return Gtk.Cell_Area.Gtk_Cell_Area
+        (Get_User_Data (Internal (Get_Object (Context)), Stub_Gtk_Cell_Area));
+   end Get_Area;
+
+   --------------
+   -- Get_Area --
+   --------------
+
+   function Get_Area
+      (Cell_Layout : Gtk_Cell_Layout) return Gtk.Cell_Area.Gtk_Cell_Area
+   is
+      function Internal
+         (Cell_Layout : Gtk_Cell_Layout) return System.Address;
+      pragma Import (C, Internal, "gtk_cell_layout_get_area");
+      Stub_Gtk_Cell_Area : Gtk.Cell_Area.Gtk_Cell_Area_Record;
+   begin
+      return Gtk.Cell_Area.Gtk_Cell_Area (Get_User_Data (Internal (Cell_Layout), Stub_Gtk_Cell_Area));
+   end Get_Area;
+
+   --------------------------
+   -- Get_Cell_At_Position --
+   --------------------------
+
+   procedure Get_Cell_At_Position
+      (Self       : access Gtk_Cell_Area_Record;
+       Context    : access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
+       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class;
+       Cell_Area  : Gdk.Rectangle.Gdk_Rectangle;
+       X          : Gint;
+       Y          : Gint;
+       Alloc_Area : out Gdk.Rectangle.Gdk_Rectangle;
+       Renderer   : out Gtk.Cell_Renderer.Gtk_Cell_Renderer)
+   is
+      function Internal
+         (Self           : System.Address;
+          Context        : System.Address;
+          Widget         : System.Address;
+          Cell_Area      : Gdk.Rectangle.Gdk_Rectangle;
+          X              : Gint;
+          Y              : Gint;
+          Acc_Alloc_Area : access Gdk.Rectangle.Gdk_Rectangle)
+          return System.Address;
+      pragma Import (C, Internal, "gtk_cell_area_get_cell_at_position");
+      Acc_Alloc_Area         : aliased Gdk.Rectangle.Gdk_Rectangle;
+      Stub_Gtk_Cell_Renderer : Gtk.Cell_Renderer.Gtk_Cell_Renderer_Record;
+      Tmp_Return             : System.Address;
+   begin
+      Tmp_Return := Internal
+        (Get_Object (Self), Get_Object (Context), Get_Object (Widget),
+         Cell_Area, X, Y, Acc_Alloc_Area'Access);
+      Alloc_Area := Acc_Alloc_Area;
+      Renderer := Gtk.Cell_Renderer.Gtk_Cell_Renderer
+        (Get_User_Data (Tmp_Return, Stub_Gtk_Cell_Renderer));
+   end Get_Cell_At_Position;
+        '''
+
+    [[GtkCellArea.extra.spec]]
+      text = '''
+
+   function Get_Area
+      (Context : access Gtk_Cell_Area_Context_Record)
+       return Gtk.Cell_Area.Gtk_Cell_Area;
+   --  Fetches the Gtk.Cell_Area.Gtk_Cell_Area this Context was created by.
+   --  This is generally unneeded by layouting widgets; however it is important
+   --  for the context implementation itself to fetch information about the
+   --  area it is being used for.
+   --  For instance at GtkCellAreaContextClass.allocate time its important to
+   --  know details about any cell spacing that the Gtk.Cell_Area.Gtk_Cell_Area
+   --  is configured with in order to compute a proper allocation.
+   --  Since: gtk+ 3.0
+
+   function Get_Area
+      (Cell_Layout : Gtk_Cell_Layout) return Gtk.Cell_Area.Gtk_Cell_Area;
+   --  Returns the underlying Gtk.Cell_Area.Gtk_Cell_Area which might be
+   --  Cell_Layout if called on a Gtk.Cell_Area.Gtk_Cell_Area or might be null
+   --  if no Gtk.Cell_Area.Gtk_Cell_Area is used by Cell_Layout.
+   --  Since: gtk+ 3.0
+
+   procedure Get_Cell_At_Position
+      (Self       : access Gtk_Cell_Area_Record;
+       Context    : access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
+       Widget     : access Gtk.Widget.Gtk_Widget_Record'Class;
+       Cell_Area  : Gdk.Rectangle.Gdk_Rectangle;
+       X          : Gint;
+       Y          : Gint;
+       Alloc_Area : out Gdk.Rectangle.Gdk_Rectangle;
+       Renderer   : out Gtk.Cell_Renderer.Gtk_Cell_Renderer);
+   --  Gets the Gtk.Cell_Renderer.Gtk_Cell_Renderer at X and Y coordinates
+   --  inside Area and optionally returns the full cell allocation for it
+   --  inside Cell_Area.
+   --  Since: gtk+ 3.0
+   --  "context": the Gtk.Cell_Area_Context.Gtk_Cell_Area_Context used to hold
+   --  sizes for Area.
+   --  "widget": the Gtk.Widget.Gtk_Widget that Area is rendering on
+   --  "cell_area": the whole allocated area for Area in Widget for this row
+   --  "x": the x position
+   --  "y": the y position
+   --  "alloc_area": where to store the inner allocated area of the returned
+   --  cell renderer, or null.
+   --  "renderer": the rendered that was found.
+        '''

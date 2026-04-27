@@ -1,0 +1,39 @@
+
+# ============================================================
+#   GtkFontSelection
+# ============================================================
+[GtkFontSelection]
+
+  [GtkFontSelection.doc]
+    screenshot = "gtk-fontsel"
+    group = "Selectors"
+    testgtk = "create_font_selection.adb"
+    text = '''
+This widget provides a nice way for the user of your application to
+select fonts.
+It first searches on your system for the list of fonts available, and
+displays a set of boxes to select them based on their name, their
+weight, their size, etc.
+This widget is provided in two forms, one widget that can be embedded
+in any container, a Gtk_Font_Selection, whereas the other one comes
+directly in its own separate window (to be popped up as a dialog).
+
+Some filters can be applied to the widget, when you want the user to
+select only a font only among a specific subset (like bitmap or
+true-type fonts for instance).
+There are two kinds of filters: a base filter, set in your application
+and that the user can not change; a user filter that can be modified
+interactively by the user.
+      '''
+
+  [[GtkFontSelection.parameter]]
+    name = "self"
+    ada = "Fontsel"
+
+  [[GtkFontSelection.method]]
+    id = "gtk_font_selection_get_family"
+    bind = false
+
+  [[GtkFontSelection.method]]
+    id = "gtk_font_selection_get_face"
+    bind = false

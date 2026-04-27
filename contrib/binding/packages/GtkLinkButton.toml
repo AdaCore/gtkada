@@ -1,0 +1,12 @@
+
+# ============================================================
+#   GtkLinkButton
+# ============================================================
+[GtkLinkButton]
+
+  [GtkLinkButton.doc]
+    group = "Buttons and Toggles"
+
+  [[GtkLinkButton.parameter]]
+    name = "self"
+    ada = "Widget"

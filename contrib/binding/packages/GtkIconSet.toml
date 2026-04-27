@@ -1,0 +1,84 @@
+
+# ============================================================
+#   GtkIconSet
+# ============================================================
+[GtkIconSet]
+
+  [GtkIconSet.doc]
+    text = '''
+   An icon set represents a single icon in various sizes and widget states.
+   It can provide a Gdk_Pixbuf for a given size and state on request, and
+   automatically caches some of the rendered Gdk_Pixbuf objects.
+
+   Normally you would use Gtk.Widget.Render_Icon instead of using icon sets
+   directly. The one case where you'd use an icon set is to create
+   application-specific icon sets to place in an icon factory.
+     '''
+
+  [GtkIconSet.extra]
+    body = '''
+
+   function Lookup_Icon_Set
+      (Style    : access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       Stock_Id : String)
+      return Gtk_Icon_Set
+   is
+      function Internal
+        (Style    : System.Address;
+         Stock_Id : String)
+         return System.Address;
+      pragma Import (C, Internal, "gtk_style_context_lookup_icon_set");
+   begin
+      return From_Object (Internal (Get_Object (Style), Stock_Id & ASCII.NUL));
+   end Lookup_Icon_Set;
+       '''
+
+    [[GtkIconSet.extra.spec]]
+      text = '''
+
+   function Lookup_Icon_Set
+      (Style    : access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       Stock_Id : String)
+      return Gtk_Icon_Set;
+   --  Retrieve an icon set by its name. The icon might exist in various sizes,
+   --  that can be manipulated through the result set
+       '''
+
+  [[GtkIconSet.method]]
+    id = "gtk_icon_set_get_sizes"
+    return = "Gint_Array"
+    body = '''
+      type gint_array_bounded is array (Natural) of Gint;
+
+      procedure Internal
+         (Self        : System.Address;
+          Sizes       : System.Address;
+          Acc_N_Sizes : access Gint);
+      pragma Import (C, Internal, "gtk_icon_set_get_sizes");
+
+      procedure g_free (s : access gint_array_bounded);
+      pragma Import (C, g_free, "g_free");
+
+      Sizes : aliased access gint_array_bounded;
+      Size : aliased Gint;
+   begin
+      Internal (Self.Get_Object, Sizes'Address, Size'Access);
+
+      declare
+         Result : Gint_Array (1 .. Integer (Size));
+      begin
+         for R in 0 .. Integer (Size) - 1 loop
+             Result (R + 1) := Sizes (R);
+         end loop;
+         g_free (Sizes);
+
+         return Result;
+      end;'''
+
+    [[GtkIconSet.method.parameter]]
+      name = "n_sizes"
+      ada = ""
+
+    [[GtkIconSet.method.parameter]]
+      name = "sizes"
+      ada = ""

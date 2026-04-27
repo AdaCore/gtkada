@@ -1,0 +1,13 @@
+
+# ============================================================
+#   GtkRange
+# ============================================================
+[GtkRange]
+
+  [GtkRange.doc]
+    screenshot = "gtk-range"
+    testgtk = "create_range.adb"
+
+  [[GtkRange.parameter]]
+    name = "self"
+    ada = "The_Range"

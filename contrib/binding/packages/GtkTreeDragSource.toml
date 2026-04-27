@@ -1,0 +1,14 @@
+
+# ============================================================
+#   GtkTreeDragSource
+# ============================================================
+[GtkTreeDragSource]
+
+  [[GtkTreeDragSource.function]]
+    id = "gtk_tree_set_row_drag_data"
+    ada = "Set_Row_Drag_Data"
+
+  [[GtkTreeDragSource.function]]
+    id = "gtk_tree_get_row_drag_data"
+    ada = "Get_Row_Drag_Data"
+    return_as_param = "Success"

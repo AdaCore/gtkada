@@ -1,0 +1,10 @@
+
+# ============================================================
+#   GtkTreeModelSort
+# ============================================================
+[GtkTreeModelSort]
+  parent = "Gtk.Tree_Model.Gtk_Root_Tree_Model"
+
+  [[GtkTreeModelSort.method]]
+    id = "gtk_tree_model_sort_new_with_model"
+    ada = "Gtk_New_With_Model"

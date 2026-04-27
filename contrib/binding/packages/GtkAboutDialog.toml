@@ -1,0 +1,16 @@
+
+# ============================================================
+#   GtkAboutDialog
+# ============================================================
+[GtkAboutDialog]
+
+  [GtkAboutDialog.doc]
+    group = "Windows"
+    testgtk = "create_about.adb"
+
+  [[GtkAboutDialog.parameter]]
+    name = "self"
+    ada = "About"
+
+  [[GtkAboutDialog.enum]]
+    ctype = "GtkLicense"
