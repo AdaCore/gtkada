@@ -1,0 +1,31 @@
+
+# ============================================================
+#   GtkFrame
+# ============================================================
+[GtkFrame]
+
+  [GtkFrame.doc]
+    screenshot = "gtk-frame"
+    group = "Ornaments"
+    testgtk = "create_frame.adb"
+    text = '''
+This is a very convenient widget to visually group related widgets (like
+groups of buttons for instance), possibly with a title to explain the
+purpose of this group.
+
+A Gtk_Frame has only one child, so you have to put a container like for
+instance a Gtk_Box inside if you want the frame to surround multiple
+widgets.
+      '''
+
+  [[GtkFrame.parameter]]
+    name = "self"
+    ada = "Frame"
+
+  [[GtkFrame.method]]
+    id = "gtk_frame_new"
+
+    [[GtkFrame.method.parameter]]
+      name = "label"
+      default = "\"\""
+      allow_none = "1"

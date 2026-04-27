@@ -1,0 +1,114 @@
+
+# ============================================================
+#   PangoLayout
+# ============================================================
+[PangoLayout]
+
+  [[PangoLayout.parameter]]
+    name = "self"
+    ada = "Layout"
+
+  [[PangoLayout.enum]]
+    ctype = "PangoEllipsizeMode"
+    prefix = "PANGO_"
+
+  [[PangoLayout.method]]
+    id = "pango_layout_xy_to_index"
+    return_as_param = "Exact"
+
+    [[PangoLayout.method.parameter]]
+      name = "index"
+      ada = "Byte_Index"
+      direction = "out"
+
+    [[PangoLayout.method.parameter]]
+      name = "trailing"
+      direction = "out"
+
+  [[PangoLayout.method]]
+    id = "pango_layout_get_direction"
+    bind = false
+    # more recent than 1.44
+    # Do not bind these, since they require a list of Pango_Layout_Line, which is incorrectly bound (error in From_Object)
+
+  [[PangoLayout.method]]
+    id = "pango_layout_get_lines"
+    bind = false
+    return = "PangoLayoutLineSList"
+
+  [[PangoLayout.method]]
+    id = "pango_layout_get_lines_readonly"
+    bind = false
+    return = "PangoLayoutLineSList"
+
+  [[PangoLayout.method]]
+    id = "pango_layout_get_log_attrs"
+    bind = false
+    # what is a pango_log
+
+  [[PangoLayout.method]]
+    id = "pango_layout_get_log_attrs_readonly"
+    bind = false
+    # what is a pango_log
+
+  [[PangoLayout.method]]
+    id = "pango_layout_get_line_spacing"
+    bind = false
+
+  [[PangoLayout.method]]
+    id = "pango_layout_set_line_spacing"
+    bind = false
+
+  [[PangoLayout.method]]
+    id = "pango_layout_get_iter"
+    classwide = true
+
+  [[PangoLayout.method]]
+    id = "pango_layout_set_attributes"
+
+    [[PangoLayout.method.parameter]]
+      name = "attrs"
+      ctype = "PangoAttrList"
+      direction = "in"
+
+  [[PangoLayout.method]]
+    id = "pango_layout_set_text"
+
+    [[PangoLayout.method.parameter]]
+      name = "length"
+      ada = ""
+      default = "-1"
+
+  [[PangoLayout.method]]
+    id = "pango_layout_set_markup"
+
+    [[PangoLayout.method.parameter]]
+      name = "length"
+      ada = ""
+      default = "-1"
+
+  [PangoLayout.extra]
+    body = '''
+
+   function Get_Text (Layout : access Pango_Layout_Record)
+      return Gtkada.Types.Chars_Ptr
+   is
+      function Internal (Layout : System.Address)
+         return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "pango_layout_get_text");
+   begin
+      return Internal (Get_Object (Layout));
+   end Get_Text;
+       '''
+
+    [[PangoLayout.extra.with_spec]]
+      pkg = "Gtkada.Types"
+
+    [[PangoLayout.extra.spec]]
+      text = '''
+
+   function Get_Text (Layout : access Pango_Layout_Record)
+      return Gtkada.Types.Chars_Ptr;
+   --  Same a Get_Text, but return directly the C string, which is more
+   --  efficient. The returned value should not be freed or modified.
+       '''

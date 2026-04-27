@@ -1,0 +1,30 @@
+
+# ============================================================
+#   GtkHBox
+# ============================================================
+[GtkHBox]
+  into = "GtkBox"
+
+  [[GtkHBox.type]]
+    name = "Gtk_Hbox"
+    subtype = true
+
+  [[GtkHBox.method]]
+    id = "gtk_hbox_new"
+    ada = "Gtk_New_Hbox"
+
+    [[GtkHBox.method.parameter]]
+      name = "homogeneous"
+      default = "False"
+
+    [[GtkHBox.method.parameter]]
+      name = "spacing"
+      default = "0"
+
+  [[GtkHBox.parameter]]
+    name = "self"
+    ada = "Box"
+
+  [[GtkHBox.method]]
+    id = "gtk_hbox_get_type"
+    ada = "Get_Hbox_Type"

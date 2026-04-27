@@ -1,0 +1,87 @@
+
+# ============================================================
+#   GtkRadioButton
+# ============================================================
+[GtkRadioButton]
+
+  [GtkRadioButton.doc]
+    screenshot = "gtk-radio_button"
+    group = "Buttons and Toggles"
+    testgtk = "create_radio_button.adb"
+
+  [[GtkRadioButton.parameter]]
+    name = "self"
+    ada = "Radio_Button"
+
+  [[GtkRadioButton.parameter]]
+    name = "radio_group_member"
+    ada = "Group"
+
+  [[GtkRadioButton.method]]
+    id = "gtk_radio_button_new"
+    bind = false
+
+  [[GtkRadioButton.method]]
+    id = "gtk_radio_button_new_from_widget"
+    bind = false
+
+  [[GtkRadioButton.method]]
+    id = "gtk_radio_button_new_with_label"
+    ada = "Gtk_New"
+
+    [GtkRadioButton.method.doc]
+      text = "Creates or initializes a new radio button, belonging to Group. If Label is left as the empty string, then the button will not have any child and you are free to put any thing you want in it, including a pixmap. To initialize the group (when creating the first button), leave Group to the Null_List. You can later get the new group that is created with a call to the Get_Group subprogram below."
+
+    [[GtkRadioButton.method.parameter]]
+      name = "group"
+      ctype = "WidgetSList"
+      default = "Widget_SList.Null_List"
+
+    [[GtkRadioButton.method.parameter]]
+      name = "label"
+      default = "\"\""
+      allow_none = "1"
+
+  [[GtkRadioButton.method]]
+    id = "gtk_radio_button_new_with_label_from_widget"
+    ada = "Gtk_New"
+
+    [[GtkRadioButton.method.parameter]]
+      name = "radio_group_member"
+      allow_none = "1"
+
+    [[GtkRadioButton.method.parameter]]
+      name = "label"
+      default = "\"\""
+      allow_none = "1"
+
+  [[GtkRadioButton.method]]
+    id = "gtk_radio_button_new_with_mnemonic"
+
+    [[GtkRadioButton.method.parameter]]
+      name = "group"
+      ctype = "WidgetSList"
+      default = "Widget_SList.Null_List"
+
+  [[GtkRadioButton.method]]
+    id = "gtk_radio_button_new_with_mnemonic_from_widget"
+    ada = "Gtk_New_With_Mnemonic"
+
+    [GtkRadioButton.method.doc]
+      extend = true
+      text = "To initialize a new group (when creating the first button), you should pass it null or a button that has not been created with Gtk_New, as in the example below."
+
+    [[GtkRadioButton.method.parameter]]
+      name = "radio_group_member"
+      allow_none = "1"
+
+  [[GtkRadioButton.method]]
+    id = "gtk_radio_button_get_group"
+    return = "WidgetSList"
+
+  [[GtkRadioButton.method]]
+    id = "gtk_radio_button_set_group"
+
+    [[GtkRadioButton.method.parameter]]
+      name = "group"
+      ctype = "WidgetSList"

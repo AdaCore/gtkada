@@ -1,0 +1,31 @@
+
+# ============================================================
+#   GtkCellLayout
+# ============================================================
+[GtkCellLayout]
+
+  [[GtkCellLayout.virtual_method]]
+    id = "*"
+    bind = false
+    # circular dep with Gtk.Cell_Area
+
+  [GtkCellLayout.doc]
+    group = "Trees and Lists"
+    testgtk = "create_cell_view.adb"
+
+  [[GtkCellLayout.parameter]]
+    name = "self"
+    ada = "Cell_Layout"
+
+  [[GtkCellLayout.method]]
+    id = "gtk_cell_layout_get_area"
+    bind = false
+    # in Gtk.Cell_Area
+
+  [[GtkCellLayout.method]]
+    id = "gtk_cell_layout_set_attributes"
+    bind = false
+
+  [[GtkCellLayout.method]]
+    id = "gtk_cell_layout_get_cells"
+    return = "GtkCellRendererList"

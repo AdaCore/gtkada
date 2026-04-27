@@ -1,0 +1,12 @@
+
+# ============================================================
+#   GdkMonitor
+# ============================================================
+[GdkMonitor]
+
+  [[GdkMonitor.enum]]
+    ctype = "GdkSubpixelLayout"
+
+  [[GdkMonitor.method]]
+    id = "gdk_monitor_get_display"
+    return = "GObject*"

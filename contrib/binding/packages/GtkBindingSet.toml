@@ -1,0 +1,28 @@
+
+# ============================================================
+#   GtkBindingSet
+# ============================================================
+[GtkBindingSet]
+
+  [[GtkBindingSet.method]]
+    id = "gtk_binding_set_new"
+    ada = "Gtk_New"
+
+  [[GtkBindingSet.record]]
+    ctype = "GtkBindingSet"
+
+    [[GtkBindingSet.record.field]]
+      name = "widget_path_pspecs"
+      ctype = "gpointer"
+
+    [[GtkBindingSet.record.field]]
+      name = "widget_class_pspecs"
+      ctype = "gpointer"
+
+    [[GtkBindingSet.record.field]]
+      name = "class_branch_pspecs"
+      ctype = "gpointer"
+
+    [[GtkBindingSet.record.field]]
+      name = "current"
+      ctype = "gpointer"

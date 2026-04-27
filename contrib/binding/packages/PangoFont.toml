@@ -1,0 +1,63 @@
+
+# ============================================================
+#   PangoFont
+# ============================================================
+[PangoFont]
+
+  [[PangoFont.parameter]]
+    name = "self"
+    ada = "Font"
+
+  [[PangoFont.method]]
+    id = "pango_font_get_type"
+    ada = "Font_Get_Type"
+
+  [[PangoFont.method]]
+    id = "pango_font_find_shaper"
+    bind = false
+    # internal implementation of gtk
+
+  [[PangoFont.method]]
+    id = "pango_font_describe"
+    classwide = true
+
+  [[PangoFont.method]]
+    id = "pango_font_describe_with_absolute_size"
+    classwide = true
+
+  [[PangoFont.method]]
+    id = "pango_font_descriptions_free"
+    bind = false
+    # in Ada, need iteration
+
+  [[PangoFont.method]]
+    id = "pango_font_get_coverage"
+    bind = false
+    # circular dependency
+
+  [[PangoFont.method]]
+    id = "pango_font_get_font_map"
+    bind = false
+    # circular dependency
+
+  [[PangoFont.method]]
+    id = "pango_font_get_face"
+    bind = false
+    # circular dependency
+
+  [[PangoFont.method]]
+    id = "pango_font_get_features"
+    bind = false
+    # Harfbuzz required
+
+  [[PangoFont.method]]
+    id = "pango_font_get_hb_font"
+    bind = false
+    # Harfbuzz required
+
+  [[PangoFont.method]]
+    id = "pango_font_get_metrics"
+
+    [[PangoFont.method.parameter]]
+      name = "language"
+      default = "Pango.Language.Null_Pango_Language"

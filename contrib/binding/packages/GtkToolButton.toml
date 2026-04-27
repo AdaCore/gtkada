@@ -1,0 +1,16 @@
+
+# ============================================================
+#   GtkToolButton
+# ============================================================
+[GtkToolButton]
+
+  [[GtkToolButton.parameter]]
+    name = "self"
+    ada = "Button"
+
+  [[GtkToolButton.method]]
+    id = "gtk_tool_button_new"
+
+    [[GtkToolButton.method.parameter]]
+      name = "icon_widget"
+      default = "null"

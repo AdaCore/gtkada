@@ -1,0 +1,55 @@
+
+# ============================================================
+#   GtkIconFactory
+# ============================================================
+[GtkIconFactory]
+
+  [[GtkIconFactory.function]]
+    id = "gtk_icon_size_lookup"
+    return_as_param = "Result"
+
+  [[GtkIconFactory.function]]
+    id = "gtk_icon_size_lookup_for_settings"
+    return_as_param = "Result"
+
+  [[GtkIconFactory.function]]
+    id = "gtk_icon_size_register"
+
+  [[GtkIconFactory.function]]
+    id = "gtk_icon_size_register_alias"
+
+  [GtkIconFactory.extra]
+    body = '''
+
+   function Get_Icon_Factory
+      (Self : Gtk_Style_Provider;
+       Path : Gtk.Widget.Gtk_Widget_Path)
+       return Gtk.Icon_Factory.Gtk_Icon_Factory
+   is
+      function Internal
+         (Self : Gtk_Style_Provider;
+          Path : Gtk.Widget.Gtk_Widget_Path) return System.Address;
+      pragma Import (C, Internal, "gtk_style_provider_get_icon_factory");
+      Stub_Gtk_Icon_Factory : Gtk.Icon_Factory.Gtk_Icon_Factory_Record;
+   begin
+      return Gtk.Icon_Factory.Gtk_Icon_Factory (Get_User_Data (Internal (Self, Path), Stub_Gtk_Icon_Factory));
+   end Get_Icon_Factory;
+       '''
+
+    [[GtkIconFactory.extra.with_spec]]
+      pkg = "Gtk.Style_Provider"
+
+    [[GtkIconFactory.extra.with_spec]]
+      pkg = "Gtk.Widget"
+
+    [[GtkIconFactory.extra.spec]]
+      text = '''
+
+   function Get_Icon_Factory
+      (Self : Gtk.Style_Provider.Gtk_Style_Provider;
+       Path : Gtk.Widget.Gtk_Widget_Path)
+       return Gtk_Icon_Factory;
+   --  Returns the Gtk.Icon_Factory.Gtk_Icon_Factory defined to be in use for
+   --  Path, or null if none is defined.
+   --  Since: gtk+ 3.0
+       '''

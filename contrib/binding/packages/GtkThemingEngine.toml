@@ -1,0 +1,20 @@
+
+# ============================================================
+#   GtkThemingEngine
+# ============================================================
+[GtkThemingEngine]
+
+  [[GtkThemingEngine.method]]
+    id = "gtk_theming_engine_get_style_valist"
+    bind = false
+    # valist
+
+  [[GtkThemingEngine.method]]
+    id = "gtk_theming_engine_get_valist"
+    bind = false
+    # valist
+
+  [[GtkThemingEngine.method]]
+    id = "gtk_theming_engine_register_property"
+    bind = false
+    # obsolete and requires GtkStylePropertyParser

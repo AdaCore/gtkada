@@ -1,0 +1,21 @@
+
+# ============================================================
+#   GtkAspectFrame
+# ============================================================
+[GtkAspectFrame]
+
+  [GtkAspectFrame.doc]
+    group = "Layout Containers"
+    testgtk = "create_frame.adb"
+
+  [[GtkAspectFrame.parameter]]
+    name = "self"
+    ada = "Aspect_Frame"
+
+  [[GtkAspectFrame.method]]
+    id = "gtk_aspect_frame_new"
+
+    [[GtkAspectFrame.method.parameter]]
+      name = "label"
+      default = "\"\""
+      allow_none = "1"

@@ -1,0 +1,47 @@
+
+# ============================================================
+#   GtkTextView
+# ============================================================
+[GtkTextView]
+
+  [[GtkTextView.parameter]]
+    name = "self"
+    ada = "View"
+
+  [[GtkTextView.enum]]
+    ctype = "GtkTextViewLayer"
+
+  [[GtkTextView.enum]]
+    ctype = "GtkTextExtendSelection"
+    # These are now inherited from the Scrollable interface
+
+  [[GtkTextView.method]]
+    id = "gtk_text_view_get_hadjustment"
+    bind = false
+
+  [[GtkTextView.method]]
+    id = "gtk_text_view_get_vadjustment"
+    bind = false
+
+  [[GtkTextView.method]]
+    id = "gtk_text_view_set_hadjustment"
+    bind = false
+
+  [[GtkTextView.method]]
+    id = "gtk_text_view_set_vadjustment"
+    bind = false
+
+  [[GtkTextView.method]]
+    id = "gtk_text_view_new_with_buffer"
+    ada = "Gtk_New"
+
+  [[GtkTextView.virtual_method]]
+    id = "draw_layer"
+    bind = true
+
+    [GtkTextView.virtual_method.doc]
+      text = '''
+The draw_layer virtual function is called before and after the text
+view is drawing its own text. Applications can override this vfunc
+in a subclass to draw customized content underneath or above the
+text. Since: 3.14'''

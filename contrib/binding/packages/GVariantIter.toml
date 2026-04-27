@@ -1,0 +1,22 @@
+
+# ============================================================
+#   GVariantIter
+# ============================================================
+[GVariantIter]
+  into = "GVariant"
+  ada = "Glib.Variant"
+
+  [[GVariantIter.method]]
+    id = "g_variant_iter_copy"
+    bind = false
+    # results in duplicate import
+
+  [[GVariantIter.method]]
+    id = "g_variant_iter_free"
+    bind = false
+    # results in duplicate import
+
+  [[GVariantIter.method]]
+    id = "g_variant_iter_n_children"
+    bind = false
+    # duplicate import

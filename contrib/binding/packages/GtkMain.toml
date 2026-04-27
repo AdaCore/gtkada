@@ -1,0 +1,166 @@
+
+# ============================================================
+#   GtkMain
+# ============================================================
+[GtkMain]
+
+  [[GtkMain.function]]
+    id = "gtk_get_major_version"
+
+  [[GtkMain.function]]
+    id = "gtk_get_minor_version"
+
+  [[GtkMain.function]]
+    id = "gtk_get_micro_version"
+
+  [[GtkMain.function]]
+    id = "gtk_get_binary_age"
+
+  [[GtkMain.function]]
+    id = "gtk_get_interface_age"
+
+  [[GtkMain.function]]
+    id = "gtk_check_version"
+
+  [[GtkMain.function]]
+    id = "gtk_parse_args"
+    bind = false
+    # no access to argc argv
+
+  [[GtkMain.function]]
+    id = "gtk_init"
+    bind = false
+    # custom
+
+  [[GtkMain.function]]
+    id = "gtk_init_check"
+    bind = false
+    # custom
+
+  [[GtkMain.function]]
+    id = "gtk_init_with_args"
+    bind = false
+
+  [[GtkMain.function]]
+    id = "gtk_disable_setlocale"
+
+  [[GtkMain.function]]
+    id = "gtk_get_default_language"
+
+  [[GtkMain.function]]
+    id = "gtk_events_pending"
+
+  [[GtkMain.function]]
+    id = "gtk_main_do_event"
+
+  [[GtkMain.function]]
+    id = "gtk_main"
+
+  [[GtkMain.function]]
+    id = "gtk_main_level"
+
+  [[GtkMain.function]]
+    id = "gtk_main_quit"
+
+  [[GtkMain.function]]
+    id = "gtk_main_iteration"
+
+  [[GtkMain.function]]
+    id = "gtk_main_iteration_do"
+
+  [[GtkMain.function]]
+    id = "gtk_true"
+
+  [[GtkMain.function]]
+    id = "gtk_false"
+
+  [[GtkMain.function]]
+    id = "gtk_grab_add"
+    bind = false
+    # in GtkWidget
+
+  [[GtkMain.function]]
+    id = "gtk_grab_get_current"
+
+  [[GtkMain.function]]
+    id = "gtk_grab_remove"
+    bind = false
+    # in GtkWidget
+
+  [[GtkMain.function]]
+    id = "gtk_device_grab_add"
+
+  [[GtkMain.function]]
+    id = "gtk_device_grab_remove"
+
+  [[GtkMain.function]]
+    id = "gtk_key_snooper_install"
+
+  [[GtkMain.function]]
+    id = "gtk_key_snooper_remove"
+
+  [[GtkMain.function]]
+    id = "gtk_get_current_event"
+
+  [[GtkMain.function]]
+    id = "gtk_get_current_event_time"
+
+  [[GtkMain.function]]
+    id = "gtk_get_current_event_state"
+    return_as_param = "Has_Current_Event"
+
+    [[GtkMain.function.parameter]]
+      name = "state"
+      direction = "out"
+
+  [[GtkMain.function]]
+    id = "gtk_get_current_event_device"
+
+  [[GtkMain.function]]
+    id = "gtk_get_event_widget"
+
+  [[GtkMain.function]]
+    id = "gtk_propagate_event"
+
+  [GtkMain.extra]
+    body = '''
+
+   gnat_argc : Interfaces.C.int;
+   pragma Import (C, gnat_argc);
+
+   gnat_argv : System.Address;
+   pragma Import (C, gnat_argv);
+
+   procedure Init is
+      procedure Internal (argc : System.Address; argv : System.Address);
+      pragma Import (C, Internal, "gtk_init");
+
+   begin
+      Internal (gnat_argc'Address, gnat_argv'Address);
+   end Init;
+
+   function Init_Check return Boolean is
+      function Internal
+        (argc : System.Address; argv : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_init_check");
+   begin
+      return Boolean'Val (Internal (gnat_argc'Address, gnat_argv'Address));
+   end Init_Check;
+       '''
+
+    [[GtkMain.extra.with_body]]
+      pkg = "Interfaces.C"
+
+    [[GtkMain.extra.spec]]
+      text = '''
+
+   procedure Init;
+   --  Initialize GtkAda's internal structures.
+   --  This subprogram should be called before any other one in GtkAda.
+   --  If GtkAda could not be initialized (no access to the display, etc.), the
+   --  application exits with an error
+
+   function Init_Check return Boolean;
+   --  Initialize GtkAda's internal structures.
+   --  Return False if there was an error (no access to the display, etc.)
+       '''

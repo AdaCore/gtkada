@@ -1,0 +1,49 @@
+
+# ============================================================
+#   GtkStatusbar
+# ============================================================
+[GtkStatusbar]
+
+  [GtkStatusbar.doc]
+    screenshot = "gtk-status_bar"
+    group = "Display widgets"
+    testgtk = "create_status.adb"
+
+  [[GtkStatusbar.parameter]]
+    name = "self"
+    ada = "Statusbar"
+
+  [[GtkStatusbar.parameter]]
+    name = "context"
+    type = "Context_Id"
+
+  [[GtkStatusbar.parameter]]
+    name = "context_id"
+    ada = "context"
+    type = "Context_Id"
+
+  [[GtkStatusbar.parameter]]
+    name = "message_id"
+    ada = "Message"
+    type = "Message_Id"
+
+  [[GtkStatusbar.method]]
+    id = "gtk_statusbar_get_context_id"
+    return = "Context_Id"
+
+  [[GtkStatusbar.method]]
+    id = "gtkada_GtkStatusbar_get_messages"
+    return = "MessagesList"
+
+  [[GtkStatusbar.method]]
+    id = "gtk_statusbar_push"
+    return = "Message_Id"
+
+  [GtkStatusbar.extra]
+
+    [[GtkStatusbar.extra.type]]
+      text = '''
+
+   type Context_Id is new Guint;
+   type Message_Id is new Guint;
+        '''

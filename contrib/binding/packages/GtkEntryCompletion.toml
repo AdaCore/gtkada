@@ -1,0 +1,12 @@
+
+# ============================================================
+#   GtkEntryCompletion
+# ============================================================
+[GtkEntryCompletion]
+
+  [GtkEntryCompletion.doc]
+    group = "Numeric/Text Data Entry"
+
+  [[GtkEntryCompletion.parameter]]
+    name = "self"
+    ada = "Completion"

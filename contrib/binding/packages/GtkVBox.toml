@@ -1,0 +1,30 @@
+
+# ============================================================
+#   GtkVBox
+# ============================================================
+[GtkVBox]
+  into = "GtkBox"
+
+  [[GtkVBox.type]]
+    name = "Gtk_Vbox"
+    subtype = true
+
+  [[GtkVBox.method]]
+    id = "gtk_vbox_new"
+    ada = "Gtk_New_Vbox"
+
+    [[GtkVBox.method.parameter]]
+      name = "homogeneous"
+      default = "False"
+
+    [[GtkVBox.method.parameter]]
+      name = "spacing"
+      default = "0"
+
+  [[GtkVBox.parameter]]
+    name = "self"
+    ada = "Box"
+
+  [[GtkVBox.method]]
+    id = "gtk_vbox_get_type"
+    ada = "Get_Vbox_Type"

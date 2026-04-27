@@ -1,0 +1,27 @@
+
+# ============================================================
+#   GtkButton
+# ============================================================
+[GtkButton]
+
+  [GtkButton.doc]
+    screenshot = "gtk-button"
+    group = "Buttons and Toggles"
+    testgtk = "create_buttons.adb"
+
+  [[GtkButton.parameter]]
+    name = "self"
+    ada = "Button"
+
+  [[GtkButton.method]]
+    id = "gtk_button_new"
+    bind = false
+
+  [[GtkButton.method]]
+    id = "gtk_button_new_with_label"
+    ada = "Gtk_New"
+
+    [[GtkButton.method.parameter]]
+      name = "label"
+      default = "\"\""
+      allow_none = "1"

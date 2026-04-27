@@ -1,0 +1,12 @@
+
+# ============================================================
+#   GtkTextAttributes
+# ============================================================
+[GtkTextAttributes]
+
+  [[GtkTextAttributes.parameter]]
+    name = "self"
+    ada = "Text_Attr"
+
+  [[GtkTextAttributes.record]]
+    ctype = "GtkTextAppearance"

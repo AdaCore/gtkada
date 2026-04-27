@@ -1,0 +1,46 @@
+
+# ============================================================
+#   GdkCursor
+# ============================================================
+[GdkCursor]
+  bindtype = false
+
+  [[GdkCursor.enum]]
+    ctype = "GdkCursorType"
+    prefix = "GDK_"
+
+  [[GdkCursor.method]]
+    id = "gdk_cursor_new_from_pixbuf"
+    bind = false
+    # in gdk.pixbuf
+
+  [[GdkCursor.method]]
+    id = "gdk_cursor_get_image"
+    bind = false
+    # in gdk.pixbuf
+
+  [[GdkCursor.method]]
+    id = "gdk_cursor_unref"
+    bind = false
+    # obsolete
+
+  [[GdkCursor.method]]
+    id = "gdk_cursor_ref"
+    bind = false
+    # obsolete
+
+  [[GdkCursor.method]]
+    id = "gdk_cursor_get_surface"
+    return_as_param = "Surface"
+
+  [GdkCursor.extra]
+
+    [[GdkCursor.extra.spec]]
+      text = '''
+
+   procedure Ref (Self : Gdk.Gdk_Cursor);
+   pragma Import (C, Ref, "g_object_ref");
+
+   procedure Unref (Self : Gdk.Gdk_Cursor);
+   pragma Import (C, Unref, "g_object_unref");
+       '''

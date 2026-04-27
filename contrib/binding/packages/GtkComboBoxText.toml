@@ -1,0 +1,8 @@
+
+# ============================================================
+#   GtkComboBoxText
+# ============================================================
+[GtkComboBoxText]
+
+  [GtkComboBoxText.doc]
+    group = "Numeric/Text Data Entry"

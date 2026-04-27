@@ -1,0 +1,47 @@
+
+# ============================================================
+#   GtkStyleProvider
+# ============================================================
+[GtkStyleProvider]
+
+  [[GtkStyleProvider.virtual_method]]
+    id = "*"
+    bind = false
+    # circular dep with StyleProperties
+
+  [[GtkStyleProvider.method]]
+    id = "gtk_style_provider_get_style"
+    bind = false
+    # circular dep with StyleProperties
+
+  [[GtkStyleProvider.method]]
+    id = "gtk_style_provider_get_style_property"
+    return_as_param = "Found"
+
+  [[GtkStyleProvider.method]]
+    id = "gtk_style_provider_get_icon_factory"
+    bind = false
+    # in GtkIconFactory
+
+  [GtkStyleProvider.extra]
+
+    [[GtkStyleProvider.extra.spec]]
+      text = '''
+
+         subtype Priority is Glib.Guint;
+
+         Priority_Fallback : constant Priority := 1;
+         --  Used when no theme is defined
+
+         Priority_Theme : constant Priority := 200;
+         --  Used for style information provided by the theme
+
+         Priority_Settings : constant Priority := 400;
+         --  Used for information provided via Gtk_Settings
+
+         Priority_Application : constant Priority := 600;
+         --  For application-specific information
+
+         Priority_User : constant Priority := 800;
+         --  Used for the style information from ~/.gtk-3.0.css
+       '''

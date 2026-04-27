@@ -1,0 +1,22 @@
+
+# ============================================================
+#   GtkVSeparator
+# ============================================================
+[GtkVSeparator]
+  into = "GtkSeparator"
+
+  [[GtkVSeparator.type]]
+    name = "Gtk_Vseparator"
+    subtype = true
+
+  [[GtkVSeparator.method]]
+    id = "gtk_vseparator_new"
+    ada = "Gtk_New_Vseparator"
+
+  [[GtkVSeparator.parameter]]
+    name = "self"
+    ada = "Separator"
+
+  [[GtkVSeparator.method]]
+    id = "gtk_vseparator_get_type"
+    ada = "Vseparator_Get_Type"

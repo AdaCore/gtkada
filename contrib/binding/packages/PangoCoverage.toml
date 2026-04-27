@@ -1,0 +1,15 @@
+
+# ============================================================
+#   PangoCoverage
+# ============================================================
+[PangoCoverage]
+
+  [[PangoCoverage.method]]
+    id = "pango_coverage_from_bytes"
+    bind = false
+    # not used for Ada
+
+  [[PangoCoverage.method]]
+    id = "pango_coverage_to_bytes"
+    bind = false
+    # not used for Ada

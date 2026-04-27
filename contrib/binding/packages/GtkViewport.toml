@@ -1,0 +1,40 @@
+
+# ============================================================
+#   GtkViewport
+# ============================================================
+[GtkViewport]
+
+  [GtkViewport.doc]
+    group = "Scrolling"
+
+  [[GtkViewport.parameter]]
+    name = "self"
+    ada = "Viewport"
+
+  [[GtkViewport.method]]
+    id = "gtk_viewport_new"
+
+    [[GtkViewport.method.parameter]]
+      name = "hadjustment"
+      default = "null"
+
+    [[GtkViewport.method.parameter]]
+      name = "vadjustment"
+      default = "null"
+    # These are now inherited from the Scrollable interface
+
+  [[GtkViewport.method]]
+    id = "gtk_viewport_get_hadjustment"
+    bind = false
+
+  [[GtkViewport.method]]
+    id = "gtk_viewport_get_vadjustment"
+    bind = false
+
+  [[GtkViewport.method]]
+    id = "gtk_viewport_set_hadjustment"
+    bind = false
+
+  [[GtkViewport.method]]
+    id = "gtk_viewport_set_vadjustment"
+    bind = false

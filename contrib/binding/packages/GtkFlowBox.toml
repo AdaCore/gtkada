@@ -1,0 +1,9 @@
+
+# ============================================================
+#   GtkFlowBox
+# ============================================================
+[GtkFlowBox]
+
+  [[GtkFlowBox.method]]
+    id = "gtk_flow_box_get_selected_children"
+    return = "WidgetList"

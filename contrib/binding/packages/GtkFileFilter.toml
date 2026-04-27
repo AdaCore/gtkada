@@ -1,0 +1,11 @@
+
+# ============================================================
+#   GtkFileFilter
+# ============================================================
+[GtkFileFilter]
+
+  [[GtkFileFilter.enum]]
+    ctype = "GtkFileFilterFlags"
+
+  [[GtkFileFilter.record]]
+    ctype = "GtkFileFilterInfo"

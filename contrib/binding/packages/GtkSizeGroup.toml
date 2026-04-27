@@ -1,0 +1,28 @@
+
+# ============================================================
+#   GtkSizeGroup
+# ============================================================
+[GtkSizeGroup]
+
+  [GtkSizeGroup.doc]
+    testgtk = "create_size_groups.adb"
+
+  [[GtkSizeGroup.parameter]]
+    name = "self"
+    ada = "Size_Group"
+
+  [[GtkSizeGroup.method]]
+    id = "gtk_size_group_new"
+
+    [[GtkSizeGroup.method.parameter]]
+      name = "mode"
+      default = "Both"
+
+  [[GtkSizeGroup.method]]
+    id = "gtk_size_group_get_widgets"
+    return = "WidgetSList"
+
+  [[GtkSizeGroup.enum]]
+    ctype = "GtkSizeGroupMode"
+    ada = "Size_Group_Mode"
+    prefix = "GTK_SIZE_GROUP_"

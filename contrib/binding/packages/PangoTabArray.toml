@@ -1,0 +1,14 @@
+
+# ============================================================
+#   PangoTabArray
+# ============================================================
+[PangoTabArray]
+  ada = "Pango.Tabs"
+
+  [[PangoTabArray.enum]]
+    ctype = "PangoTabAlign"
+
+  [[PangoTabArray.method]]
+    id = "pango_tab_array_get_tabs"
+    bind = false
+    # Require manual binding

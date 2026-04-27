@@ -1,0 +1,9 @@
+
+# ============================================================
+#   GtkVolumeButton
+# ============================================================
+[GtkVolumeButton]
+
+  [[GtkVolumeButton.parameter]]
+    name = "self"
+    ada = "Widget"

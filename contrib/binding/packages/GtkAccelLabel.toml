@@ -1,0 +1,9 @@
+
+# ============================================================
+#   GtkAccelLabel
+# ============================================================
+[GtkAccelLabel]
+
+  [[GtkAccelLabel.parameter]]
+    name = "self"
+    ada = "Accel_Label"

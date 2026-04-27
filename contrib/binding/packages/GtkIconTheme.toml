@@ -1,0 +1,92 @@
+
+# ============================================================
+#   GtkIconTheme
+# ============================================================
+[GtkIconTheme]
+
+  [[GtkIconTheme.parameter]]
+    name = "self"
+    ada = "Icon_Theme"
+
+  [[GtkIconTheme.enum]]
+    ctype = "GtkIconLookupFlags"
+    prefix = "GTK_"
+
+  [[GtkIconTheme.method]]
+    id = "gtk_icon_theme_lookup_by_gicon"
+    classwide = true
+
+  [[GtkIconTheme.method]]
+    id = "gtk_icon_theme_lookup_icon"
+    classwide = true
+
+  [[GtkIconTheme.method]]
+    id = "gtk_icon_theme_choose_icon"
+    classwide = true
+
+  [[GtkIconTheme.method]]
+    id = "gtk_icon_theme_set_search_path"
+
+    [[GtkIconTheme.method.parameter]]
+      name = "n_elements"
+      ada = ""
+      default = "Path'Length"
+
+  [[GtkIconTheme.method]]
+    id = "gtk_icon_theme_get_search_path"
+    return = "GNAT.Strings.String_List"
+    body = '''
+      procedure Internal
+        (Icon_Theme : System.Address;
+         Path       : out chars_ptr_array_access;
+         N_Elements : out Gint);
+      pragma Import (C, Internal, "gtk_icon_theme_get_search_path");
+
+      P : chars_ptr_array_access;
+      N : Gint;
+   begin
+      Internal (Get_Object (Icon_Theme), P, N);
+      declare
+         Result : constant GNAT.Strings.String_List :=
+           To_String_List (P.all, N);
+      begin
+         Free (P.all);
+         return Result;
+      end;'''
+
+    [[GtkIconTheme.method.parameter]]
+      name = "path"
+      ada = ""
+
+    [[GtkIconTheme.method.parameter]]
+      name = "n_elements"
+      ada = ""
+
+  [[GtkIconTheme.method]]
+    id = "gtk_icon_theme_get_icon_sizes"
+    body = '''
+      use Gint_Arrays;
+      function Internal
+        (Icon_Theme : System.Address;
+         Icon_Name  : String) return Unbounded_Array_Access;
+      pragma Import (C, Internal, "gtk_icon_theme_get_icon_sizes");
+
+      Res    : constant Unbounded_Array_Access := Internal
+        (Get_Object (Icon_Theme), Icon_Name & ASCII.NUL);
+      Result : constant Gint_Array := To_Gint_Array_Zero_Terminated (Res);
+   begin
+      G_Free (Res);
+      return Result;'''
+
+  [[GtkIconTheme.method]]
+    id = "gtk_icon_theme_list_icons"
+    return = "StringList"
+
+  [[GtkIconTheme.method]]
+    id = "gtk_icon_theme_list_contexts"
+    return = "StringList"
+
+  [GtkIconTheme.extra]
+
+    [[GtkIconTheme.extra.with_body]]
+      pkg = "Gtkada.Bindings"

@@ -1,0 +1,183 @@
+
+# ============================================================
+#   GtkSelectionData
+# ============================================================
+[GtkSelectionData]
+
+  [[GtkSelectionData.parameter]]
+    name = "self"
+    ada = "Selection"
+
+  [[GtkSelectionData.method]]
+    id = "gtk_selection_data_targets_include_rich_text"
+    bind = false
+    # circular dependency on gtk.text_buffer
+
+  [[GtkSelectionData.method]]
+    id = "gtk_selection_data_get_data_with_length"
+    bind = false
+    # not convenient, has an access gint and returns an array
+
+  [[GtkSelectionData.method]]
+    id = "gtk_selection_data_set"
+    bind = false
+    # manual binding below
+
+  [[GtkSelectionData.method]]
+    id = "gtk_selection_data_get_targets"
+    bind = false
+    # manual binding below
+
+  [[GtkSelectionData.method]]
+    id = "gtk_selection_data_get_data"
+    return = "System.Address"
+
+  [GtkSelectionData.extra]
+    body = '''
+
+   package Atom_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Gdk.Types.Gdk_Atom, Gdk.Types.Gdk_None,
+      Natural, Gdk.Types.Gdk_Atom_Array);
+
+   ------------------------
+   -- Selection_Data_Set --
+   ------------------------
+
+   procedure Selection_Data_Set
+     (Selection : Gtk_Selection_Data;
+      The_Type  : Gdk.Types.Gdk_Atom;
+      Format    : Gint;
+      Data      : System.Address;
+      Length    : Gint)
+   is
+      procedure Internal
+        (Selection : System.Address;
+         The_Type  : Gdk.Types.Gdk_Atom;
+         Format    : Gint;
+         Data      : System.Address;
+         Length    : Gint);
+      pragma Import (C, Internal, "gtk_selection_data_set");
+
+   begin
+      Internal (Get_Object (Selection), The_Type, Format, Data, Length);
+   end Selection_Data_Set;
+
+   procedure Selection_Data_Set
+     (Selection : Gtk_Selection_Data;
+      The_Type  : Gdk.Types.Gdk_Atom;
+      Format    : Gint;
+      Data      : String) is
+   begin
+      Selection_Data_Set
+        (Selection, The_Type, Format, Data'Address, Data'Length);
+   end Selection_Data_Set;
+
+   -----------------
+   -- Get_Targets --
+   -----------------
+
+   function Get_Targets
+     (Selection : Gtk_Selection_Data) return Gdk.Types.Gdk_Atom_Array
+   is
+      use Atom_Arrays;
+      function Internal
+        (Selection : System.Address;
+         Targets   : access Unbounded_Array_Access;
+         N_Atoms   : access Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_selection_data_get_targets");
+
+      Output    : aliased Unbounded_Array_Access;
+      N         : aliased Gint;
+   begin
+      if Internal
+         (Get_Object (Selection),
+          Output'Unchecked_Access,
+          N'Unchecked_Access) = 0
+      then
+         Output := null;
+      end if;
+
+      declare
+         Result : constant Gdk_Atom_Array := To_Array (Output, Integer (N));
+      begin
+         G_Free (Output);
+         return Result;
+      end;
+   end Get_Targets;
+
+   ------------------------
+   -- Get_Data_As_String --
+   ------------------------
+
+   function Get_Data_As_String
+     (Selection : Gtk_Selection_Data) return String
+   is
+      function Internal
+        (Selection : System.Address) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "gtk_selection_data_get_data");
+   begin
+      return Gtkada.Types.Value (Internal (Get_Object (Selection)));
+   end Get_Data_As_String;
+        '''
+
+    [[GtkSelectionData.extra.with_body]]
+      pkg = "Gtkada.C"
+
+    [[GtkSelectionData.extra.spec]]
+      text = '''
+
+   ---------------
+   -- Selection --
+   ---------------
+
+   function Make_Atom (Num : Gulong) return Gdk.Types.Gdk_Atom;
+   pragma Import (C, Make_Atom, "ada_make_atom");
+   --  Auxiliary subprogram
+
+   subtype Gdk_Selection is Gdk.Types.Gdk_Atom;
+   --  These are predefined atom values for several common selections.
+   --  You are of course free to create new ones, but most of the time you
+   --  should simply use Selection_Primary unless you foresee the need for
+   --  multiple simultaneous selections.
+   --  To access the clipboard on windows machines, you might need to create
+   --  a new selection with Gdk.Property.Atom_Intern ("CLIPBOARD");
+
+   Selection_Primary   : constant Gdk_Selection := Make_Atom (1);
+   Selection_Secondary : constant Gdk_Selection := Make_Atom (2);
+
+   procedure Selection_Data_Set
+     (Selection : Gtk_Selection_Data;
+      The_Type  : Gdk.Types.Gdk_Atom;
+      Format    : Gint;
+      Data      : System.Address;
+      Length    : Gint);
+   --  General form of Selection_Data_Set.
+   --  Any data can be transmitted. Length is the number of bytes in Data.
+
+   procedure Selection_Data_Set
+     (Selection : Gtk_Selection_Data;
+      The_Type  : Gdk.Types.Gdk_Atom;
+      Format    : Gint;
+      Data      : String);
+   --  Set the data for a selection (special case for strings)
+   --  This function is generally called when a drag-and-drop operation
+   --  ask the source widget for the data to be transmitted. In that case,
+   --  a Selection_Data was already transmitted and is given as a handler
+   --  parameter for the signal "drag_data_get". The_Type can simply be
+   --  extracted from the Selection_Data.
+
+   function Get_Targets
+     (Selection : Gtk_Selection_Data) return Gdk.Types.Gdk_Atom_Array;
+   --  Gets the contents of Selection_Data as an array of targets.
+   --  This can be used to interpret the results of getting
+   --  the standard TARGETS target that is always supplied for
+   --  any selection.
+   --  This is different from Get_Target, which indicate the current format
+   --  that the selection contains. Get_Targets only applies when Get_Target
+   --  is "TARGETS".
+
+   function Get_Data_As_String (Selection : Gtk_Selection_Data) return String;
+   --  Return the data as a string.
+   --  This is only a convenience function, since it simply creates a string
+   --  from the return of Get_Data.
+        '''

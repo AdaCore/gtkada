@@ -1,0 +1,9 @@
+
+# ============================================================
+#   GtkListBoxRow
+# ============================================================
+[GtkListBoxRow]
+
+  [[GtkListBoxRow.list]]
+    ada = "List_Box_Row_List"
+    ctype = "GtkListBoxRow"

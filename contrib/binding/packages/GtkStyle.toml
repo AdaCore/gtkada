@@ -1,0 +1,28 @@
+
+# ============================================================
+#   GtkStyle
+# ============================================================
+[GtkStyle]
+
+  [[GtkStyle.parameter]]
+    name = "self"
+    ada = "Style"
+
+  [[GtkStyle.method]]
+    id = "gtk_style_get_valist"
+    bind = false
+    # va_list
+
+  [[GtkStyle.method]]
+    id = "gtk_style_lookup_color"
+    return_as_param = "Found"
+
+  [[GtkStyle.method]]
+    id = "gtk_style_render_icon"
+    bind = false
+    # need icon_source
+
+  [[GtkStyle.method]]
+    id = "gtk_style_lookup_icon_set"
+    bind = false
+    # need icon_factory

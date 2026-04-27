@@ -1,0 +1,119 @@
+
+# ============================================================
+#   GtkStockItem
+# ============================================================
+[GtkStockItem]
+  ada = "Gtk.Stock"
+
+  [[GtkStockItem.record]]
+    ctype = "GtkStockItem"
+    private = true
+
+  [[GtkStockItem.constant]]
+    prefix_regexp = "GTK_STOCK_.*"
+    prefix = "GTK_"
+
+  [[GtkStockItem.function]]
+    id = "gtk_stock_add"
+    ada = "Add"
+
+    [[GtkStockItem.function.parameter]]
+      name = "items"
+      type = "Gtk_Stock_Item_Array"
+
+    [[GtkStockItem.function.parameter]]
+      name = "n_items"
+      ada = ""
+      default = "Items'Length"
+
+  [[GtkStockItem.function]]
+    id = "gtk_stock_add_static"
+    ada = "Add_Static"
+
+    [[GtkStockItem.function.parameter]]
+      name = "items"
+      type = "Gtk_Stock_Item_Array"
+
+    [[GtkStockItem.function.parameter]]
+      name = "n_items"
+      ada = ""
+      default = "Items'Length"
+
+  [[GtkStockItem.function]]
+    id = "gtk_stock_lookup"
+    ada = "Lookup"
+    return_as_param = "Success"
+
+  [[GtkStockItem.method]]
+    id = "gtk_stock_item_free"
+    bind = false
+    # see below
+
+  [GtkStockItem.extra]
+    body = '''
+
+   procedure Gtk_New
+     (Item               : out Gtk_Stock_Item;
+      Stock_Id           : String;
+      Label              : UTF8_String;
+      Modifier           : Gdk.Types.Gdk_Modifier_Type;
+      Keyval             : Gdk.Types.Gdk_Key_Type;
+      Translation_Domain : String) is
+   begin
+      Item.Stock_Id           := Gtkada.Types.New_String (Stock_Id);
+      Item.Label              := Gtkada.Types.New_String (Label);
+      Item.Modifier           := Modifier;
+      Item.Keyval             := Guint (Keyval);
+      Item.Translation_Domain := Gtkada.Types.New_String (Translation_Domain);
+   end Gtk_New;
+
+   procedure Free (Item : in out Gtk_Stock_Item) is
+   begin
+      Gtkada.Types.g_free (Item.Stock_Id);
+      Gtkada.Types.g_free (Item.Label);
+      Gtkada.Types.g_free (Item.Translation_Domain);
+   end Free;
+
+   ---------
+   -- Add --
+   ---------
+
+   procedure Add (Item : Gtk_Stock_Item) is
+      procedure Internal (Item : Gtk_Stock_Item; N_Items : Guint := 1);
+      pragma Import (C, Internal, "gtk_stock_add");
+
+   begin
+      Internal (Item);
+   end Add;
+       '''
+
+    [[GtkStockItem.extra.spec]]
+      text = '''
+
+   procedure Gtk_New
+     (Item               : out Gtk_Stock_Item;
+      Stock_Id           : String;
+      Label              : UTF8_String;
+      Modifier           : Gdk.Types.Gdk_Modifier_Type;
+      Keyval             : Gdk.Types.Gdk_Key_Type;
+      Translation_Domain : String);
+   --  Create a new stock item.
+
+   procedure Free (Item : in out Gtk_Stock_Item);
+   --  Free memory allocated in Item.
+
+   procedure Add (Item : Gtk_Stock_Item);
+   --  Register Item.
+   --  If an item already exists with the same stock ID as one of the items,
+   --  the old item gets replaced. The stock item is copied, so GtkAda does
+   --  not hold any pointer into item and item can be freed. Use
+   --  Add_Static if item is persistent and GtkAda need not copy the array.
+       '''
+
+    [[GtkStockItem.extra.type]]
+      ctype = "GtkStockItemArray"
+      ada = "Gtk_Stock_Item_Array"
+      text = '''
+
+   type Gtk_Stock_Item_Array is array (Natural range <>) of Gtk_Stock_Item;
+       '''

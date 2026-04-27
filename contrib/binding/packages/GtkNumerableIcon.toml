@@ -1,0 +1,13 @@
+
+# ============================================================
+#   GtkNumerableIcon
+# ============================================================
+[GtkNumerableIcon]
+
+  [[GtkNumerableIcon.method]]
+    id = "gtk_numerable_icon_new"
+    ada = "Gtk_New"
+
+  [[GtkNumerableIcon.method]]
+    id = "gtk_numerable_icon_new_with_style_context"
+    ada = "Gtk_New_With_Style_Context"

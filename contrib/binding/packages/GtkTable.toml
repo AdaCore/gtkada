@@ -1,0 +1,58 @@
+
+# ============================================================
+#   GtkTable
+# ============================================================
+[GtkTable]
+
+  [GtkTable.doc]
+    group = "Layout containers"
+
+  [[GtkTable.parameter]]
+    name = "self"
+    ada = "Table"
+
+  [[GtkTable.method]]
+    id = "gtk_table_new"
+
+    [GtkTable.method.doc]
+      text = "Create a new table. The width allocated to the table is divided into Columns columns, which all have the same width if Homogeneous is True. If Homogeneous is False, the width will be calculated with the children contained in the table. Same behavior for the rows."
+
+  [[GtkTable.method]]
+    id = "gtk_table_attach"
+
+    [GtkTable.method.doc]
+      text = "Insert a new widget in the table. All the attachments are relative to the separations between columns and rows (for instance, to insert a widget spanning the first two columns in the table, you should put Left_Attach=0 and Right_Attach=2). Same behavior for the rows. Xoptions and Yoptions indicate the behavior of the child when the table is resized (whether the child can shrink or expand). See the description in Gtk.Box for more information on the possible values. Xpadding and Ypadding are the amount of space left around the child."
+
+    [[GtkTable.method.parameter]]
+      name = "xoptions"
+      default = "Expand or Fill"
+
+    [[GtkTable.method.parameter]]
+      name = "yoptions"
+      default = "Expand or Fill"
+
+    [[GtkTable.method.parameter]]
+      name = "xpadding"
+      default = "0"
+
+    [[GtkTable.method.parameter]]
+      name = "ypadding"
+      default = "0"
+
+  [[GtkTable.method]]
+    id = "gtk_table_attach_defaults"
+
+    [GtkTable.method.doc]
+      text = "Insert a new widget in the table, with default values. No padding is put around the child, and the options are set to Expand and Fill. This call is similar to Attach with default values and is only provided for compatibility."
+
+  [[GtkTable.method]]
+    id = "gtk_table_set_col_spacing"
+
+    [GtkTable.method.doc]
+      text = "Set the spacing in pixels between Column and the next one."
+
+  [[GtkTable.method]]
+    id = "gtk_table_set_homogeneous"
+
+    [GtkTable.method.doc]
+      text = "Indicate the homogeneous status of the table. If Homogeneous is True, the rows and columns of the table will all be allocated the same width or height."

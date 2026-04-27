@@ -1,0 +1,94 @@
+
+# ============================================================
+#   GtkWindow
+# ============================================================
+[GtkWindow]
+
+  [[GtkWindow.parameter]]
+    name = "self"
+    ada = "Window"
+
+  [[GtkWindow.method]]
+    id = "gtk_window_new"
+
+    [[GtkWindow.method.parameter]]
+      name = "type"
+      default = "Gtk.Enums.Window_Toplevel"
+
+  [[GtkWindow.method]]
+    id = "gtk_window_set_opacity"
+    bind = false
+    # would hide Gtk.Widget.Set_Opacity
+
+  [[GtkWindow.method]]
+    id = "gtk_window_get_opacity"
+    bind = false
+    # would hide Gtk.Widget.Get_Opacity
+
+  [[GtkWindow.method]]
+    id = "gtk_window_list_toplevels"
+    return = "WidgetList"
+
+  [[GtkWindow.method]]
+    id = "gtk_window_get_icon_list"
+    return = "ObjectList"
+
+  [[GtkWindow.method]]
+    id = "gtk_window_set_icon_list"
+
+    [[GtkWindow.method.parameter]]
+      name = "list"
+      ctype = "ObjectList"
+
+  [[GtkWindow.method]]
+    id = "gtk_window_get_default_icon_list"
+    return = "ObjectList"
+
+  [[GtkWindow.method]]
+    id = "gtk_window_set_default_icon_list"
+
+    [[GtkWindow.method.parameter]]
+      name = "list"
+      ctype = "ObjectList"
+
+  [[GtkWindow.method]]
+    id = "gtk_window_add_mnemonic"
+
+    [[GtkWindow.method.parameter]]
+      name = "keyval"
+      ctype = "GdkKeyType"
+
+  [[GtkWindow.method]]
+    id = "gtk_window_remove_mnemonic"
+
+    [[GtkWindow.method.parameter]]
+      name = "keyval"
+      ctype = "GdkKeyType"
+
+  [[GtkWindow.method]]
+    id = "gtk_window_mnemonic_activate"
+
+    [[GtkWindow.method.parameter]]
+      name = "keyval"
+      ctype = "GdkKeyType"
+
+  [[GtkWindow.method]]
+    id = "gtk_window_get_resize_grip_area"
+    return_as_param = "retrieved"
+
+  [[GtkWindow.method]]
+    id = "gtk_window_set_modal"
+
+    [[GtkWindow.method.parameter]]
+      name = "modal"
+      default = "True"
+
+  [[GtkWindow.method]]
+    id = "gtk_window_get_application"
+    bind = false
+    # Circular dependency
+
+  [[GtkWindow.method]]
+    id = "gtk_window_set_application"
+    bind = false
+    # Circular dependency

@@ -1,0 +1,53 @@
+
+# ============================================================
+#   GtkMenu
+# ============================================================
+[GtkMenu]
+
+  [[GtkMenu.parameter]]
+    name = "self"
+    ada = "Menu"
+
+  [[GtkMenu.callback]]
+    id = "Gtk_Menu_Position_Func"
+
+    [[GtkMenu.callback.parameter]]
+      name = "x"
+      direction = "out"
+
+    [[GtkMenu.callback.parameter]]
+      name = "y"
+      direction = "out"
+
+  [[GtkMenu.method]]
+    id = "gtk_menu_get_active"
+    return = "GtkMenuItem"
+
+  [[GtkMenu.method]]
+    id = "gtk_menu_popup"
+
+    [[GtkMenu.method.parameter]]
+      name = "parent_menu_shell"
+      ctype = "GtkMenuShell"
+      default = "null"
+
+    [[GtkMenu.method.parameter]]
+      name = "parent_menu_item"
+      ctype = "GtkMenuItem"
+      default = "null"
+
+    [[GtkMenu.method.parameter]]
+      name = "func"
+      default = "null"
+
+    [[GtkMenu.method.parameter]]
+      name = "button"
+      default = "1"
+
+    [[GtkMenu.method.parameter]]
+      name = "activate_time"
+      default = "0"
+
+  [[GtkMenu.method]]
+    id = "gtk_menu_get_for_attach_widget"
+    return = "WidgetList*"

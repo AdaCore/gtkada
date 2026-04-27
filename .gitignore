@@ -48,3 +48,7 @@ docs/gtkada_ug/gtkada_ug.html
 docs/gtkada_ug/gtkada_ug.info
 docs/gtkada_ug/gtkada_ug.ps
 docs/gtkada_ug/gtkada_ug.txt
+
+# ancr-generated environment settings
+.env
+.vscode/

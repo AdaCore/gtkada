@@ -1,0 +1,28 @@
+
+# ============================================================
+#   GtkAccelMap
+# ============================================================
+[GtkAccelMap]
+
+  [[GtkAccelMap.method]]
+    id = "gtk_accel_map_load_scanner"
+    bind = false
+    # no binding for GScanner
+
+  [[GtkAccelMap.method]]
+    id = "gtk_accel_map_add_entry"
+
+    [[GtkAccelMap.method.parameter]]
+      name = "accel_key"
+      ctype = "GdkKeyType"
+
+  [[GtkAccelMap.method]]
+    id = "gtk_accel_map_change_entry"
+
+    [[GtkAccelMap.method.parameter]]
+      name = "accel_key"
+      ctype = "GdkKeyType"
+
+  [[GtkAccelMap.method]]
+    id = "gtk_accel_map_lookup_entry"
+    return_as_param = "Found"

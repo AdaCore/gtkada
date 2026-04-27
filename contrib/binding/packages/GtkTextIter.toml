@@ -1,0 +1,627 @@
+
+# ============================================================
+#   GtkTextIter
+# ============================================================
+[GtkTextIter]
+
+  [[GtkTextIter.parameter]]
+    name = "self"
+    ada = "Iter"
+
+  [[GtkTextIter.record]]
+    ctype = "GtkTextIter"
+    private = true
+
+  [[GtkTextIter.enum]]
+    ctype = "GtkTextSearchFlags"
+    prefix = "GTK_TEXT_SEARCH_"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_get_buffer"
+    bind = false
+    # circular dependency
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_get_child_anchor"
+    bind = false
+    # circular dependency
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_copy"
+    bind = false
+    # manual binding below
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_get_marks"
+    return = "ObjectSList"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_get_tags"
+    return = "TextTagList"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_get_toggled_tags"
+    return = "TextTagList"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_char"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_chars"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_char"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_chars"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_word_end"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_word_ends"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_visible_word_end"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_visible_word_ends"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_word_start"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_word_starts"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_visible_word_start"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_visible_word_starts"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_sentence_end"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_sentence_ends"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_sentence_start"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_sentence_starts"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_set_offset"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_set_line"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_set_line_offset"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_set_line_index"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_set_visible_line_offset"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_set_visible_line_index"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_line"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_lines"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_visible_line"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_visible_lines"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_to_line_end"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_line"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_lines"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_visible_line"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_visible_lines"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_to_end"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_to_tag_toggle"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+    [[GtkTextIter.method.parameter]]
+      name = "tag"
+      default = "null"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_to_tag_toggle"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+    [[GtkTextIter.method.parameter]]
+      name = "tag"
+      default = "null"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_cursor_position"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_cursor_positions"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_cursor_position"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_cursor_positions"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_visible_cursor_position"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_visible_cursor_positions"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_visible_cursor_position"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_visible_cursor_positions"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_search"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+    [[GtkTextIter.method.parameter]]
+      name = "limit"
+      default = "Null_Text_Iter"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_search"
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+    [[GtkTextIter.method.parameter]]
+      name = "limit"
+      default = "Null_Text_Iter"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_forward_find_char"
+    bind = false
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [[GtkTextIter.method]]
+    id = "gtk_text_iter_backward_find_char"
+    bind = false
+    return_as_param = "Result"
+
+    [[GtkTextIter.method.parameter]]
+      name = "self"
+      ada = "Iter"
+      direction = "inout"
+
+  [GtkTextIter.extra]
+    body = '''
+
+
+   type Gtk_Text_Iter_Access is access Gtk_Text_Iter;
+   function Convert is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Text_Iter_Access);
+   use type System.Address;
+
+   ------------------
+   -- Iter_Or_Null --
+   ------------------
+
+   function Iter_Or_Null (Iter : System.Address) return System.Address is
+   begin
+      if Convert (Iter).all = Null_Text_Iter then--  null iter
+         return System.Null_Address;
+      else
+         return Iter;
+      end if;
+   end Iter_Or_Null;
+
+   ----------
+   -- Copy --
+   ----------
+
+   procedure Copy (Source : Gtk_Text_Iter; Dest : out Gtk_Text_Iter) is
+   begin
+      Dest := Source;
+   end Copy;
+
+   --------------
+   -- Get_Char --
+   --------------
+
+   function Get_Char (Iter : Gtk_Text_Iter) return Character is
+      Result         : constant Gunichar := Get_Char (Iter);
+      Eight_LSB_Mask : constant := 2#1111_1111#;
+
+   begin
+      --  This function relies on the Get_Char function provided by gtk+,
+      --  which returns a gunichar value. Only the 8 least significant bits
+      --  are then kept to deduce the associated character.
+
+      return Character'Val (Result and Eight_LSB_Mask);
+   end Get_Char;
+
+   -------------------
+   -- Get_Text_Iter --
+   -------------------
+
+   package Iter_Access_Address_Conversions is
+     new System.Address_To_Access_Conversions (Gtk_Text_Iter);
+
+   procedure Get_Text_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Text_Iter) is
+   begin
+      Copy
+        (Source => Iter_Access_Address_Conversions.To_Pointer
+                     (Glib.Values.Get_Address (Val)).all,
+         Dest   => Iter);
+   end Get_Text_Iter;
+
+   ---------------
+   -- Get_Slice --
+   ---------------
+
+   function Get_Slice
+     (Start   : Gtk_Text_Iter;
+      The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr
+   is
+      function Internal
+        (Start   : Gtk_Text_Iter;
+         The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "gtk_text_iter_get_slice");
+
+   begin
+      return Internal (Start, The_End);
+   end Get_Slice;
+        '''
+
+    [[GtkTextIter.extra.with_spec]]
+      pkg = "Glib.Values"
+
+    [[GtkTextIter.extra.with_spec]]
+      pkg = "Gtkada.Types"
+
+    [[GtkTextIter.extra.with_body]]
+      pkg = "Ada.Unchecked_Conversion"
+      use = false
+
+    [[GtkTextIter.extra.with_body]]
+      pkg = "System.Address_To_Access_Conversions"
+      use = false
+
+    [[GtkTextIter.extra.spec]]
+      text = '''
+
+   Null_Text_Iter : constant Gtk_Text_Iter :=
+     (System.Null_Address, System.Null_Address, 0, 0, 0, 0, 0, 0,
+      System.Null_Address, System.Null_Address, 0, 0, 0,
+      System.Null_Address);
+        '''
+      private = true
+
+    [[GtkTextIter.extra.spec]]
+      text = '''
+
+   procedure Copy (Source : Gtk_Text_Iter; Dest : out Gtk_Text_Iter);
+   pragma Inline (Copy);
+   --  Create a copy of Source.
+
+   function Get_Char (Iter : Gtk_Text_Iter) return Character;
+   --  Return the character immediately following Iter. If Iter is at the
+   --  end of the buffer, then return ASCII.NUL.
+   --  Note that this function assumes that the text is encoded in ASCII
+   --  format. If this is not the case, use the Get_Char function that
+   --  returns a Gunichar instead.
+
+   function Iter_Or_Null (Iter : System.Address) return System.Address;
+   --  Internal function for GtkAda
+
+   -------------------------------
+   -- Converting to/from GValue --
+   -------------------------------
+
+   procedure Set_Text_Iter
+     (Val  : in out Glib.Values.GValue;
+      Iter : Gtk_Text_Iter);
+   pragma Import (C, Set_Text_Iter, "g_value_set_pointer");
+   --  Set the value of the given GValue to Iter.
+   --  Note that Iter is stored by reference, which means no copy of Iter
+   --  is made. Iter should remain allocated as long as Val is being used.
+
+   procedure Get_Text_Iter
+     (Val  : Glib.Values.GValue;
+      Iter : out Gtk_Text_Iter);
+   --  Extract the iterator from the given GValue.
+   --  Note that the iterator returned is a copy of the iterator referenced
+   --  by the give GValue. Modifying the iterator returned does not modify
+   --  the iterator referenced by the GValue.
+
+   function Get_Slice
+     (Start   : Gtk_Text_Iter;
+      The_End : Gtk_Text_Iter) return Gtkada.Types.Chars_Ptr;
+   --  Same as Get_Slice above, but returns the raw C string.
+   --  The caller is responsible for freeing the string returned,
+   --  using Gtkada.Types.g_free.
+
+        '''
+
+    [[GtkTextIter.extra.type]]
+      text = '''
+
+   Null_Text_Iter : constant Gtk_Text_Iter;
+        '''

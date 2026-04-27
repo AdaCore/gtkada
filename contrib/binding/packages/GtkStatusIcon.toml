@@ -1,0 +1,43 @@
+
+# ============================================================
+#   GtkStatusIcon
+# ============================================================
+[GtkStatusIcon]
+
+  [[GtkStatusIcon.parameter]]
+    name = "self"
+    ada = "Status_Icon"
+    # ??? inclusion of below method is pending on L117-038
+
+  [[GtkStatusIcon.method]]
+    id = "gtk_status_icon_get_geometry"
+    bind = false
+
+  [[GtkStatusIcon.method]]
+    id = "gtk_status_icon_position_menu"
+    body = '''
+      procedure Internal
+         (Menu    : System.Address;
+          X       : out Gint;
+          Y       : out Gint;
+          Push_In : out Integer;
+          Icon    : System.Address);
+      pragma Import (C, Internal, "gtk_status_icon_position_menu");
+      --  Custom body because we need to initialize to 0 here (on OSX).
+      Tmp_Push_In : aliased Integer := 0;
+   begin
+      Internal (Get_Object (Menu), X, Y, Tmp_Push_In, Get_Object (Icon));
+      Push_In := Tmp_Push_In /= 0;'''
+
+    [[GtkStatusIcon.method.parameter]]
+      name = "user_data"
+      ada = "Icon"
+      type = "Glib.Object.GObject"
+
+    [[GtkStatusIcon.method.parameter]]
+      name = "x"
+      direction = "out"
+
+    [[GtkStatusIcon.method.parameter]]
+      name = "y"
+      direction = "out"

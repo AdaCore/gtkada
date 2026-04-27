@@ -1,0 +1,10 @@
+
+# ============================================================
+#   GtkHandleBox
+# ============================================================
+[GtkHandleBox]
+  obsolescent = true
+
+  [[GtkHandleBox.parameter]]
+    name = "self"
+    ada = "Handle_Box"

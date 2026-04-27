@@ -1,0 +1,30 @@
+
+# ============================================================
+#   GtkVScale
+# ============================================================
+[GtkVScale]
+  into = "GtkScale"
+
+  [[GtkVScale.parameter]]
+    name = "self"
+    ada = "Scale"
+
+  [[GtkVScale.type]]
+    name = "Gtk_Vscale"
+    subtype = true
+
+  [[GtkVScale.method]]
+    id = "gtk_vscale_new"
+    ada = "Gtk_New_Vscale"
+
+    [[GtkVScale.method.parameter]]
+      name = "adjustment"
+      default = "null"
+
+  [[GtkVScale.method]]
+    id = "gtk_vscale_new_with_range"
+    ada = "Gtk_New_Vscale"
+
+  [[GtkVScale.method]]
+    id = "gtk_vscale_get_type"
+    ada = "Vscale_Get_Type"

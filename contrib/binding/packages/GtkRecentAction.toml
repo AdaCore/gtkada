@@ -1,0 +1,16 @@
+
+# ============================================================
+#   GtkRecentAction
+# ============================================================
+[GtkRecentAction]
+
+  [[GtkRecentAction.parameter]]
+    name = "self"
+    ada = "Widget"
+
+  [[GtkRecentAction.method]]
+    id = "gtk_recent_action_new_for_manager"
+
+    [[GtkRecentAction.method.parameter]]
+      name = "manager"
+      default = "Gtk.Recent_Manager.Get_Default"

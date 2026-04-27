@@ -1,0 +1,13 @@
+
+# ============================================================
+#   GtkCellAreaContext
+# ============================================================
+[GtkCellAreaContext]
+
+  [GtkCellAreaContext.doc]
+    group = "Layout Containers"
+
+  [[GtkCellAreaContext.method]]
+    id = "gtk_cell_area_context_get_area"
+    bind = false
+    # in Gtk.Cell_Area

@@ -1,0 +1,64 @@
+
+# ============================================================
+#   GtkContainer
+# ============================================================
+[GtkContainer]
+
+  [[GtkContainer.parameter]]
+    name = "self"
+    ada = "Container"
+
+  [[GtkContainer.method]]
+    id = "gtk_container_add_with_properties"
+    bind = false
+    # varargs
+
+  [[GtkContainer.method]]
+    id = "gtk_container_child_get"
+    bind = false
+    # varargs
+
+  [[GtkContainer.method]]
+    id = "gtk_container_child_get_valist"
+    bind = false
+    # varargs
+
+  [[GtkContainer.method]]
+    id = "gtk_container_child_set"
+    bind = false
+    # varargs
+
+  [[GtkContainer.method]]
+    id = "gtk_container_child_set_valist"
+    bind = false
+    # varargs
+
+  [[GtkContainer.method]]
+    id = "gtk_container_get_children"
+    return = "WidgetList"
+
+  [[GtkContainer.method]]
+    id = "gtk_container_set_focus_chain"
+
+    [[GtkContainer.method.parameter]]
+      name = "focusable_widgets"
+      ctype = "WidgetList"
+
+  [[GtkContainer.method]]
+    id = "gtk_container_child_set_property"
+
+    [[GtkContainer.method.parameter]]
+      name = "value"
+      ctype = "GValue"
+      direction = "in"
+    # ??? Binding needs testing
+
+  [[GtkContainer.method]]
+    id = "gtk_container_get_focus_chain"
+    bind = false
+    return_as_param = "Success"
+
+    [[GtkContainer.method.parameter]]
+      name = "focusable_widgets"
+      ctype = "WidgetList*"
+      direction = "out"

@@ -1,0 +1,34 @@
+
+# ============================================================
+#   GtkPaperSize
+# ============================================================
+[GtkPaperSize]
+
+  [[GtkPaperSize.parameter]]
+    name = "self"
+    ada = "Widget"
+
+  [[GtkPaperSize.list]]
+    ada = "Gtk_Paper_Size_Glist"
+    ctype = "GtkPaperSize"
+    section = "Functions"
+
+  [[GtkPaperSize.method]]
+    id = "gtk_paper_size_get_paper_sizes"
+    return = "GtkPaperSizeList"
+
+  [GtkPaperSize.extra]
+
+    [[GtkPaperSize.extra.spec]]
+      text = '''
+
+   --  Common names, from PWG 5101.1-2002 PWG: Standard for Media Standardized
+   --  Names
+   Gtk_Paper_Name_A3        : constant String := "iso_a3";
+   Gtk_Paper_Name_A4        : constant String := "iso_a4";
+   Gtk_Paper_Name_A5        : constant String := "iso_a5";
+   Gtk_Paper_Name_B5        : constant String := "iso_b5";
+   Gtk_Paper_Name_Letter    : constant String := "na_letter";
+   Gtk_Paper_Name_Executive : constant String := "na_executive";
+   Gtk_Paper_Name_Legal     : constant String := "na_legal";
+       '''

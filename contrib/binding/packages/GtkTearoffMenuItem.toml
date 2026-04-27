@@ -1,0 +1,9 @@
+
+# ============================================================
+#   GtkTearoffMenuItem
+# ============================================================
+[GtkTearoffMenuItem]
+
+  [[GtkTearoffMenuItem.parameter]]
+    name = "self"
+    ada = "Menu_Item"

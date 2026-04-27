@@ -1,0 +1,9 @@
+
+# ============================================================
+#   GtkPrintOperationPreview
+# ============================================================
+[GtkPrintOperationPreview]
+
+  [[GtkPrintOperationPreview.parameter]]
+    name = "self"
+    ada = "Preview"

@@ -1,1 +1,8 @@
 This directory contains various contributions or updates for GtkAda.
+
+Format documentation:
+  Each toml file contains one top-level package
+  Each package is a [PackageId] section.
+  Sub-elements are [[PackageId.method]], [[PackageId.enum]], etc.
+  Only non-default values are written.
+  Multiline Ada code uses TOML literal strings: '''...'''

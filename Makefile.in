@@ -132,7 +132,7 @@ generate:
 		--gir-file=contrib/Gdk-3.0.gir \
 		--gir-file=contrib/Pango-1.0.gir \
 		--gir-file=contrib/Gio-2.0.gir \
-		--toml-file=contrib/binding.toml \
+		--toml-dir=contrib/binding/packages \
 		--ada-output=src/generated/tmp.ada \
 		--c-output=src/misc_generated.c
 	cd src/generated; gnatchop -gnat05 -q -w tmp.ada

@@ -1,0 +1,23 @@
+
+# ============================================================
+#   GtkButtonBox
+# ============================================================
+[GtkButtonBox]
+
+  [GtkButtonBox.doc]
+    screenshot = "gtk-button_box"
+    group = "Layout containers"
+    testgtk = "create_button_box.adb"
+    text = '''
+A Gtk_Button_Box is a special type of Gtk_Box specially tailored to contain
+buttons.
+
+This is only a base class for Gtk_Hbutton_Box and Gtk_Vbutton_Box which
+provide a way to arrange their children horizontally (resp. vertically).
+You can not instantiate a Gtk_Button_Box directly, and have to use one the
+above two instead.
+      '''
+
+  [[GtkButtonBox.parameter]]
+    name = "self"
+    ada = "Widget"
