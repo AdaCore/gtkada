@@ -1,0 +1,31 @@
+
+# ============================================================
+#   GtkMenuToolButton
+# ============================================================
+[GtkMenuToolButton]
+
+  [[GtkMenuToolButton.parameter]]
+    name = "self"
+    ada = "Button"
+
+  [[GtkMenuToolButton.method]]
+    id = "gtk_menu_tool_button_new"
+
+    [[GtkMenuToolButton.method.parameter]]
+      name = "self"
+      ada = "Menu"
+
+    [[GtkMenuToolButton.method.parameter]]
+      name = "icon_widget"
+      default = "null"
+
+  [[GtkMenuToolButton.method]]
+    id = "gtk_menu_tool_button_new_from_stock"
+
+    [[GtkMenuToolButton.method.parameter]]
+      name = "self"
+      ada = "Menu"
+
+  [[GtkMenuToolButton.method]]
+    id = "gtk_menu_tool_button_get_menu"
+    return = "GtkMenu"

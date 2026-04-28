@@ -1,0 +1,75 @@
+
+# ============================================================
+#   GtkSettings
+# ============================================================
+[GtkSettings]
+
+  [[GtkSettings.method]]
+    id = "gtk_settings_install_property_parser"
+    bind = false
+    # not needed in Ada
+
+  [[GtkSettings.method]]
+    id = "gtk_settings_set_property_value"
+    bind = false
+    # see below
+
+  [GtkSettings.extra]
+    body = '''
+
+   function Get_Settings
+     (Widget   : not null access Gtk_Widget_Record'Class)
+     return Gtk_Settings
+   is
+      function Internal (W : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_settings");
+      Stub : Gtk_Settings_Record;
+   begin
+      return Gtk_Settings (Get_User_Data (Internal (Get_Object (Widget)), Stub));
+   end Get_Settings;
+
+   procedure Set_Property_Value
+     (Settings : not null access Gtk_Settings_Record;
+      Name     : String;
+      Value    : GValue;
+      Origin   : String)
+   is
+      type Property_Value is record
+         Origin : Gtkada.Types.Chars_Ptr;
+         Value  : GValue;
+      end record;
+      pragma Convention (C, Property_Value);
+
+      procedure Internal
+        (Settings : System.Address;
+         Name     : String;
+         Svalue   : System.Address);
+      pragma Import (C, Internal, "gtk_settings_set_property_value");
+
+      Val : aliased Property_Value :=
+        (Origin => New_String (Origin),
+         Value  => Value);
+   begin
+      Internal (Get_Object (Settings), Name & ASCII.NUL, Val'Address);
+      g_free (Val.Origin);
+   end Set_Property_Value;
+       '''
+
+    [[GtkSettings.extra.spec]]
+      text = '''
+
+   procedure Set_Property_Value
+     (Settings : not null access Gtk_Settings_Record;
+      Name     : String;
+      Value    : GValue;
+      Origin   : String);
+
+   function Get_Settings
+     (Widget   : not null access Gtk_Widget_Record'Class)
+     return Gtk_Settings;
+   --  Get the settings object holding the settings used for this widget.
+   --
+   --  Note that this function can only be called when the widget is
+   --  attached to a toplevel, since the settings object is specific to a
+   --  particular Gdk.Screen.Gdk_Screen.
+       '''

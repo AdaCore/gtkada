@@ -1,0 +1,28 @@
+
+# ============================================================
+#   GtkTargetEntry
+# ============================================================
+[GtkTargetEntry]
+
+  [[GtkTargetEntry.parameter]]
+    name = "self"
+    ada = "Target_Entry"
+
+  [[GtkTargetEntry.record]]
+    ctype = "GtkTargetEntry"
+
+    [[GtkTargetEntry.record.field]]
+      name = "flags"
+      ctype = "GtkTargetFlags"
+
+  [[GtkTargetEntry.method]]
+    id = "gtk_target_entry_copy"
+    bind = false
+    # requires From_Object
+
+  [[GtkTargetEntry.method]]
+    id = "gtk_target_entry_new"
+
+    [[GtkTargetEntry.method.parameter]]
+      name = "Flags"
+      ctype = "GtkTargetFlags"

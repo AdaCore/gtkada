@@ -1,0 +1,9 @@
+
+# ============================================================
+#   GtkTreeRowReference
+# ============================================================
+[GtkTreeRowReference]
+
+  [[GtkTreeRowReference.parameter]]
+    name = "self"
+    ada = "Reference"

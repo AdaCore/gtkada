@@ -1,0 +1,46 @@
+
+# ============================================================
+#   GtkToggleButton
+# ============================================================
+[GtkToggleButton]
+
+  [GtkToggleButton.doc]
+    screenshot = "gtk-toggle_button"
+    group = "Buttons and Toggles"
+    testgtk = "create_toggle_buttons.adb"
+    text = '''
+You should consider using a Gtk_Check_Button instead, since it looks nicer and provides more visual clues that the button can be toggled.
+     '''
+
+  [[GtkToggleButton.parameter]]
+    name = "self"
+    ada = "Toggle_Button"
+
+  [[GtkToggleButton.method]]
+    id = "gtk_toggle_button_new"
+    bind = false
+
+  [[GtkToggleButton.method]]
+    id = "gtk_toggle_button_new_with_label"
+    ada = "Gtk_New"
+
+    [GtkToggleButton.method.doc]
+      text = "Initialize a button. If Label is \"\", then no label is created inside the button and you will have to provide your own child through a call to Gtk.Container.Add. This is the recommended way to put a pixmap inside a toggle button."
+
+    [[GtkToggleButton.method.parameter]]
+      name = "label"
+      default = "\"\""
+      allow_none = "1"
+
+  [[GtkToggleButton.method]]
+    id = "gtk_toggle_button_set_active"
+
+    [GtkToggleButton.method.doc]
+      text = "Change the state of the button. When Is_Active is True, the button is drawn as a pressed button"
+
+  [[GtkToggleButton.method]]
+    id = "gtk_toggle_button_set_inconsistent"
+
+    [[GtkToggleButton.method.parameter]]
+      name = "Setting"
+      default = "True"

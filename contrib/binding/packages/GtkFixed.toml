@@ -1,0 +1,33 @@
+
+# ============================================================
+#   GtkFixed
+# ============================================================
+[GtkFixed]
+
+  [GtkFixed.doc]
+    screenshot = "gtk-fixed"
+    group = "Layout containers"
+    testgtk = "create_fixed.adb"
+
+  [[GtkFixed.parameter]]
+    name = "self"
+    ada = "Fixed"
+
+  [[GtkFixed.method]]
+    id = "gtk_fixed_put"
+
+    [GtkFixed.method.doc]
+      text = "Add Widget to a Fixed container at the given position. X indicates the horizontal position to place the widget at. Y is the vertical position to place the widget at."
+
+  [[GtkFixed.method]]
+    id = "gtk_fixed_move"
+
+    [GtkFixed.method.doc]
+      text = "Move a child of a GtkFixed container to the given position. X indicates the horizontal position to place the widget at. Y is the vertical position to place the widget at."
+
+  [[GtkFixed.method]]
+    id = "gtk_fixed_set_has_window"
+
+    [[GtkFixed.method.parameter]]
+      name = "has_window"
+      default = "False"

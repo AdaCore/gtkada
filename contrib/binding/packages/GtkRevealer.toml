@@ -1,0 +1,8 @@
+
+# ============================================================
+#   GtkRevealer
+# ============================================================
+[GtkRevealer]
+
+  [[GtkRevealer.enum]]
+    ctype = "GtkRevealerTransitionType"

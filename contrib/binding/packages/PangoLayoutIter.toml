@@ -1,0 +1,20 @@
+
+# ============================================================
+#   PangoLayoutIter
+# ============================================================
+[PangoLayoutIter]
+  into = "PangoLayout"
+
+  [[PangoLayoutIter.method]]
+    id = "pango_layout_iter_get_type"
+    ada = "Get_Type_Layout_Iter"
+
+  [[PangoLayoutIter.method]]
+    id = "pango_layout_iter_get_run"
+    bind = false
+    # what is a pango_run
+
+  [[PangoLayoutIter.method]]
+    id = "pango_layout_iter_get_run_readonly"
+    bind = false
+    # what is a pango_run

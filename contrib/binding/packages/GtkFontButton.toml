@@ -1,0 +1,9 @@
+
+# ============================================================
+#   GtkFontButton
+# ============================================================
+[GtkFontButton]
+
+  [[GtkFontButton.parameter]]
+    name = "self"
+    ada = "Font_Button"

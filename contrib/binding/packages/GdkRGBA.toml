@@ -1,0 +1,108 @@
+
+# ============================================================
+#   GdkRGBA
+# ============================================================
+[GdkRGBA]
+
+  [[GdkRGBA.method]]
+    id = "gdk_rgba_equal"
+
+    [[GdkRGBA.method.parameter]]
+      name = "p2"
+      ctype = "GdkRGBA*"
+
+  [[GdkRGBA.method]]
+    id = "gdk_rgba_parse"
+    return_as_param = "Success"
+
+    [[GdkRGBA.method.parameter]]
+      name = "self"
+      direction = "out"
+
+  [GdkRGBA.extra]
+    body = '''
+
+   function To_Address
+     (Val : Gdk_RGBA; Addr : System.Address) return System.Address;
+   package RGBA_Properties is new Generic_Internal_Boxed_Property
+     (Gdk_RGBA, Gdk.RGBA.Get_Type, To_Address);
+
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_RGBA;
+      Value  : Gdk_RGBA) is
+   begin
+      RGBA_Properties.Set_Property
+         (Object, RGBA_Properties.Property (Name), Value);
+   end Set_Property;
+
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_RGBA) return Gdk_RGBA is
+   begin
+      return RGBA_Properties.Get_Property
+        (Object, RGBA_Properties.Property (Name));
+   end Get_Property;
+
+   function Gdk_RGBA_Or_Null (Val : System.Address) return System.Address is
+      function Internal is new Gtkada.Bindings.Generic_To_Address_Or_Null
+        (Gdk_RGBA, Null_RGBA);
+   begin
+      return Internal (Val);
+   end Gdk_RGBA_Or_Null;
+
+   function Get_Value (Value : Glib.Values.GValue) return Gdk_RGBA
+     renames RGBA_Properties.Get_Value;
+   procedure Set_Value (Value : in out Glib.Values.GValue; Val : Gdk_RGBA)
+     renames RGBA_Properties.Set_Value;
+
+   function To_Address
+     (Val : Gdk_RGBA; Addr : System.Address) return System.Address is
+   begin
+      if Val = Null_RGBA then
+         return System.Null_Address;
+      else
+         return Addr;
+      end if;
+   end To_Address;
+       '''
+
+    [[GdkRGBA.extra.with_spec]]
+      pkg = "Glib.Values"
+
+    [[GdkRGBA.extra.with_spec]]
+      pkg = "Glib.Object"
+
+    [[GdkRGBA.extra.with_body]]
+      pkg = "Glib.Generic_Properties"
+
+    [[GdkRGBA.extra.spec]]
+      text = '''
+
+   type array_of_Gdk_RGBA is array (Natural range <>) of Gdk_RGBA;
+
+   Null_RGBA  : constant Gdk_RGBA := (0.0, 0.0, 0.0, 0.0);
+   Black_RGBA : constant Gdk_RGBA := (0.0, 0.0, 0.0, 1.0);
+   White_RGBA : constant Gdk_RGBA := (1.0, 1.0, 1.0, 1.0);
+
+   type Property_RGBA is new Glib.Property;
+   procedure Set_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_RGBA;
+      Value  : Gdk_RGBA);
+   function Get_Property
+     (Object : access Glib.Object.GObject_Record'Class;
+      Name   : Property_RGBA) return Gdk_RGBA;
+
+   function Gdk_RGBA_Or_Null (Val : System.Address) return System.Address;
+   --  Used for the GtkAda binding itself.
+   --  Return either a Null_Address or a pointer to Val, depending on
+   --  whether Val is the null value for the type.
+   --  In all cases, Val is supposed to be an access to the type mentioned in
+   --  the name of the subprogram.
+   --  In Ada2012, these could be replaced with expression functions instead.
+
+   procedure Set_Value (Value : in out Glib.Values.GValue; Val : Gdk_RGBA);
+   function  Get_Value (Value : Glib.Values.GValue) return Gdk_RGBA;
+   --  Conversion functions for storing a Gdk_RGBA as a GValue.
+       '''

@@ -1,0 +1,22 @@
+
+# ============================================================
+#   GtkCheckMenuItem
+# ============================================================
+[GtkCheckMenuItem]
+
+  [[GtkCheckMenuItem.parameter]]
+    name = "self"
+    ada = "Check_Menu_Item"
+
+  [[GtkCheckMenuItem.method]]
+    id = "gtk_check_menu_item_new"
+    bind = false
+
+  [[GtkCheckMenuItem.method]]
+    id = "gtk_check_menu_item_new_with_label"
+    ada = "Gtk_New"
+
+    [[GtkCheckMenuItem.method.parameter]]
+      name = "label"
+      default = "\"\""
+      allow_none = "1"

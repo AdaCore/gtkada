@@ -1,0 +1,17 @@
+
+# ============================================================
+#   GtkAssistant
+# ============================================================
+[GtkAssistant]
+
+  [GtkAssistant.doc]
+    group = "Windows"
+    testgtk = "create_assistant.adb"
+
+  [[GtkAssistant.parameter]]
+    name = "self"
+    ada = "Assistant"
+
+  [[GtkAssistant.enum]]
+    ctype = "GtkAssistantPageType"
+    prefix = ""

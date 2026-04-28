@@ -1,0 +1,119 @@
+
+# ============================================================
+#   GtkColorSelection
+# ============================================================
+[GtkColorSelection]
+
+  [GtkColorSelection.doc]
+    screenshot = "gtk-colorsel"
+    group = "Drawing"
+    testgtk = "create_color_selection.adb"
+    text = '''
+A Gtk_Color_Selection widget is a complex dialog that allows the user
+to select a color based either on its (Red, Green, Blue) or its
+(Hue, Saturation, Value).
+An additional field is provided to select the opacity of the color (this
+is usually called the alpha channel).
+
+See Gtk.Color_Selection_Dialog for a version of this widget that comes with
+its own dialog.
+
+See Gtk.Extra.Color_Combo for a different way to select colors.
+      '''
+
+  [[GtkColorSelection.parameter]]
+    name = "self"
+    ada = "Colorsel"
+    # Bound manually below
+
+  [[GtkColorSelection.method]]
+    id = "gtk_color_selection_palette_from_string"
+    bind = false
+
+  [[GtkColorSelection.method]]
+    id = "gtk_color_selection_palette_to_string"
+    bind = false
+
+  [GtkColorSelection.extra]
+    body = '''
+
+   package Color_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Gdk.Color.Gdk_Color, Gdk.Color.Null_Color, Natural,
+      Gdk.Color.Gdk_Color_Array);
+
+   function Palette_From_String (Str : String) return Gdk_Color_Array is
+      use Color_Arrays;
+      function Internal
+        (Str : String;
+         Colors : access Unbounded_Array_Access; N : access Gint)
+         return Gboolean;
+      pragma Import (C, Internal, "gtk_color_selection_palette_from_string");
+
+      N      : aliased Gint;
+      Output : aliased Unbounded_Array_Access;
+   begin
+      if Internal (Str & ASCII.NUL, Output'Access, N'Access) = 0 then
+         Output := null;
+      end if;
+
+      declare
+         Result : constant Gdk_Color_Array := To_Array (Output, Integer (N));
+      begin
+         g_free (Output);
+         return Result;
+      end;
+   end Palette_From_String;
+
+   function Palette_To_String (Colors : Gdk_Color_Array) return String is
+      function Internal
+        (Colors   : System.Address;
+         N_Colors : Gint)
+         return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "gtk_color_selection_palette_to_string");
+      Str : chars_ptr;
+   begin
+      if Colors'Length = 0 then
+         return "";
+      else
+         Str := Internal (Colors (Colors'First)'Address, Colors'Length);
+         declare
+            Result : constant String := Value (Str);
+         begin
+            g_free (Str);
+            return Result;
+         end;
+      end if;
+   end Palette_To_String;
+       '''
+
+    [[GtkColorSelection.extra.with_body]]
+      pkg = "Gtkada.C"
+
+    [[GtkColorSelection.extra.with_body]]
+      pkg = "Gtkada.Types"
+
+    [[GtkColorSelection.extra.spec]]
+      text = '''
+
+   type Gtk_Color_Selection_Change_Palette_With_Screen_Func is access procedure
+      (Screen   : System.Address;  --  Convert to Gdk_Screen with Get_User_Data
+       Colors   : Gdk.Color.Gdk_Color_Unconstrained_Array;
+       N_Colors : Gint);
+   pragma Convention (C, Gtk_Color_Selection_Change_Palette_With_Screen_Func);
+   --  This function should save the new palette contents, and update the
+   --  Gtk_Settings property "gtk-color-palette" so all Gtk_Color_Selection
+   --  widgets will be modified, including the current one. For instance, you
+   --  would do:
+   --    Set_String_Property
+   --      (Get_Default, Gtk_Color_Palette, Palette_To_String (Colors), "Foo");
+
+   function Palette_From_String
+     (Str : String) return Gdk.Color.Gdk_Color_Array;
+   --  Parses a color palette string. This string is a colon-separated list of
+   --  color names readable by Gdk.Color.Parse.
+   --  An empty array is returned if Str couldn't be parsed
+
+   function Palette_To_String
+     (Colors   : Gdk.Color.Gdk_Color_Array) return String;
+   --  Encodes a palette as a string, useful for persistent storage.
+        '''

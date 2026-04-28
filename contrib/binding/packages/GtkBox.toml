@@ -1,0 +1,80 @@
+
+# ============================================================
+#   GtkBox
+# ============================================================
+[GtkBox]
+
+  [GtkBox.doc]
+    screenshot = "gtk-box"
+    group = "Layout containers"
+    testgtk = "create_box.adb"
+    text = '''
+See the testgtk example in the GtkAda distribution to see concrete examples
+on how all the parameters for the boxes work.
+      '''
+
+  [[GtkBox.method]]
+    id = "gtk_box_pack_start"
+
+    [[GtkBox.method.parameter]]
+      name = "self"
+      ada = "In_Box"
+
+    [[GtkBox.method.parameter]]
+      name = "expand"
+      default = "True"
+
+    [[GtkBox.method.parameter]]
+      name = "fill"
+      default = "True"
+
+    [[GtkBox.method.parameter]]
+      name = "padding"
+      default = "0"
+
+  [[GtkBox.method]]
+    id = "gtk_box_pack_end"
+
+    [[GtkBox.method.parameter]]
+      name = "self"
+      ada = "In_Box"
+
+    [[GtkBox.method.parameter]]
+      name = "expand"
+      default = "True"
+
+    [[GtkBox.method.parameter]]
+      name = "fill"
+      default = "True"
+
+    [[GtkBox.method.parameter]]
+      name = "padding"
+      default = "0"
+
+  [[GtkBox.parameter]]
+    name = "self"
+    ada = "Box"
+
+  [[GtkBox.method]]
+    id = "gtk_box_get_type"
+
+    [GtkBox.method.doc]
+      extend = true
+      text = "Used with Glib.Object.G_New, this creates a horizontal box"
+
+  [GtkBox.extra]
+
+    [[GtkBox.extra.gir_element]]
+      xml = '''
+<gir:method xmlns:c="http://www.gtk.org/introspection/c/1.0" xmlns:gir="http://www.gtk.org/introspection/core/1.0" c:identifier="ada_box_get_child" name="Get_Child" version="GtkAda 1.0">
+            <gir:doc>Return the Num-th child of the box, or null if there is no such child</gir:doc>
+            <gir:return-value>
+               <gir:type name="GtkWidget" c:type="GtkWidget*" />
+            </gir:return-value>
+            <gir:parameters>
+               <gir:parameter name="num">
+                  <gir:type name="Gint" c:type="gint" />
+               </gir:parameter>
+            </gir:parameters>
+         </gir:method>
+      '''

@@ -1,0 +1,53 @@
+
+# ============================================================
+#   PangoLanguage
+# ============================================================
+[PangoLanguage]
+
+  [[PangoLanguage.enum]]
+    ctype = "PangoScript"
+
+  [[PangoLanguage.method]]
+    id = "pango_language_get_preferred"
+    bind = false
+    # more recent than 1.44
+
+  [PangoLanguage.extra]
+
+    [[PangoLanguage.extra.type]]
+      ctype = "Pango_Script_Array"
+      ada = "Pango_Script_Array"
+      text = '''
+
+         type Pango_Script_Array is array (Natural range <>) of Pango_Script;
+       '''
+
+  [[PangoLanguage.method]]
+    id = "pango_language_get_scripts"
+    return = "Pango_Script_Array"
+    body = '''
+      type script_array_bounded is array (Natural) of Pango_Script;
+      type script_array_access is access script_array_bounded;
+
+      function Internal
+         (Self     : System.Address;
+          Size     : access Gint) return script_array_access;
+      pragma Import (C, Internal, "pango_language_get_scripts");
+
+      Scripts : script_array_access;
+      Size : aliased Gint;
+   begin
+      Scripts := Internal (Self.Get_Object, Size'Access);
+
+      declare
+         Result : Pango_Script_Array (1 .. Integer (Size));
+      begin
+         for R in 0 .. Integer (Size) - 1 loop
+             Result (R + 1) := Scripts (R);
+         end loop;
+         return Result;
+      end;'''
+
+    [[PangoLanguage.method.parameter]]
+      name = "num_scripts"
+      ada = ""

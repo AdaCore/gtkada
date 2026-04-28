@@ -1,0 +1,10 @@
+
+# ============================================================
+#   GtkSymbolicColor
+# ============================================================
+[GtkSymbolicColor]
+
+  [[GtkSymbolicColor.method]]
+    id = "gtk_symbolic_color_resolve"
+    bind = false
+    # circular dep with StyleProperties

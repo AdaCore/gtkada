@@ -1,0 +1,111 @@
+
+# ============================================================
+#   GActionMap
+# ============================================================
+[GActionMap]
+  ada = "Glib.Action_Map"
+
+  [[GActionMap.record]]
+    ctype = "GActionEntry"
+    private = true
+
+  [[GActionMap.method]]
+    id = "g_action_map_add_action_entries"
+
+    [[GActionMap.method.parameter]]
+      name = "n_entries"
+      ada = ""
+      default = "Entries'Length"
+
+    [[GActionMap.method.parameter]]
+      name = "user_data"
+      default = "System.Null_Address"
+
+  [GActionMap.extra]
+    body = '''
+
+         function Convert is new Ada.Unchecked_Conversion
+            (Activate_Callback, System.Address);
+         function Convert is new Ada.Unchecked_Conversion
+            (Change_State_Callback, System.Address);
+
+         function Build
+            (Name           : String;
+             Activate       : Activate_Callback := null;
+             Parameter_Type : String := "";
+             State          : String := "";
+             Change_State   : Change_State_Callback := null)
+            return GAction_Entry
+         is
+            P, S : chars_ptr := null_ptr;
+         begin
+            if Parameter_Type /= "" then
+               P := New_String (Parameter_Type);
+            end if;
+            if State /= "" then
+               S := New_String (State);
+            end if;
+            return GAction_Entry'
+               (Name           => New_String (Name),
+                Activate       => Convert (Activate),
+                Parameter_Type => P,
+                State          => S,
+                Change_State   => Convert (Change_State),
+                Padding        => <>);
+         end Build;
+       '''
+
+    [[GActionMap.extra.with_spec]]
+      pkg = "Glib.Variant"
+
+    [[GActionMap.extra.with_spec]]
+      pkg = "Glib.Simple_Action"
+
+    [[GActionMap.extra.with_body]]
+      pkg = "Ada.Unchecked_Conversion"
+      use = false
+
+    [[GActionMap.extra.spec]]
+      text = '''
+
+         type Activate_Callback is access procedure
+            (Action    : access Glib.Simple_Action.Gsimple_Action;
+             Parameter : Glib.Variant.Gvariant;
+             Data      : System.Address);
+         pragma Convention (C, Activate_Callback);
+
+         type Change_State_Callback is access procedure
+            (Action    : access Glib.Simple_Action.Gsimple_Action;
+             Parameter : Glib.Variant.Gvariant;
+             Data      : System.Address);
+         pragma Convention (C, Change_State_Callback);
+
+         function Build
+            (Name           : String;
+             Activate       : Activate_Callback := null;
+             Parameter_Type : String := "";
+             State          : String := "";
+             Change_State   : Change_State_Callback := null)
+            return GAction_Entry;
+         --  Return a newly allocation action entry.
+         --  This will be freed by the the action_map when needed.
+         --
+         --  Name is the name of the action.
+         --  Activate is the callback to connect to the "activate" signal of
+         --  the action.
+         --  Parameter_Type is the type of the parameter that must be passed
+         --  to the activate function for this action, given as a single
+         --  Gvariant (or the empty string for no parameter).
+         --  State is the initial state of this action, given in Gvariant
+         --  text format. The state is parsed with no extra type information
+         --  so type tags must be added to the string if they are necessary.
+         --  Change_State is the callback for the "change-state" signal.
+       '''
+
+    [[GActionMap.extra.type]]
+      ctype = "array_of_ActionEntry"
+      ada = "GAction_Entry_Array"
+      text = '''
+
+         type GAction_Entry_Array is array (Natural range <>) of GAction_Entry;
+       '''

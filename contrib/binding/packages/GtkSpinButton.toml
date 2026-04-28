@@ -1,0 +1,26 @@
+
+# ============================================================
+#   GtkSpinButton
+# ============================================================
+[GtkSpinButton]
+
+  [[GtkSpinButton.parameter]]
+    name = "self"
+    ada = "Spin_Button"
+
+  [[GtkSpinButton.enum]]
+    ctype = "GtkSpinType"
+
+  [[GtkSpinButton.enum]]
+    ctype = "GtkSpinButtonUpdatePolicy"
+
+  [[GtkSpinButton.method]]
+    id = "gtk_spin_button_new_with_range"
+    ada = "Gtk_New"
+
+  [[GtkSpinButton.method]]
+    id = "gtk_spin_button_new"
+
+    [[GtkSpinButton.method.parameter]]
+      name = "digits"
+      default = "0"

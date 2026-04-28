@@ -2,9 +2,9 @@
 See annotations documentation at:
     https://live.gnome.org/GObjectIntrospection/Annotations
 
-Parses the file binding.toml, which is used to override some aspects of
+Parses toml files describing bindings, which are used to override some aspects of
 the automatically generated code.
-The syntax of that file is as follows:
+The syntax of these files is as follows:
 
     # Each package is a top-level table section
     [PackageId]
@@ -178,13 +178,20 @@ from adaformat import AdaType, GObject, List, naming, Enum, Record
 
 class GtkAda(object):
 
-    def __init__(self, filename):
-        with open(filename, "rb") as f:
-            self._data = tomllib.load(f)
-        self.packages = {
-            pkg_id: GtkAdaPackage(pkg_id, pkg_data)
-            for pkg_id, pkg_data in self._data.items()
-        }
+    def __init__(self, location):
+        from os import listdir
+        from os.path import join
+        from pathlib import Path
+
+        self.packages = {}
+        tomls = filter(lambda f: f.endswith('.toml'), listdir(Path(location)))
+        # Build GtkAda package from each toml file
+        for t in tomls:
+            filepath = join(location, t)
+            with open(filepath, 'rb') as f:
+                data = tomllib.load(f)
+            for id, node in data.items():
+                self.packages[id] = GtkAdaPackage(id, node)
 
     def get_pkg(self, pkg):
         """Return the GtkAdaPackage for a given package"""
@@ -207,7 +214,7 @@ checking for the presence of at least one content key.
 
 class GtkAdaPackage(object):
 
-    """A package section in the binding.toml file"""
+    """A package in a toml file"""
 
     def __init__(self, pkg_id, node):
         self.pkg_id = pkg_id

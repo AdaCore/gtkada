@@ -1,0 +1,27 @@
+
+# ============================================================
+#   GtkGrid
+# ============================================================
+[GtkGrid]
+
+  [[GtkGrid.method]]
+    id = "gtk_grid_attach"
+
+    [[GtkGrid.method.parameter]]
+      name = "width"
+      default = "1"
+
+    [[GtkGrid.method.parameter]]
+      name = "height"
+      default = "1"
+
+  [[GtkGrid.method]]
+    id = "gtk_grid_attach_next_to"
+
+    [[GtkGrid.method.parameter]]
+      name = "width"
+      default = "1"
+
+    [[GtkGrid.method.parameter]]
+      name = "height"
+      default = "1"

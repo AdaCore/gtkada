@@ -1,0 +1,90 @@
+
+# ============================================================
+#   GVariant
+# ============================================================
+[GVariant]
+  ada = "Glib.Variant"
+
+  [[GVariant.enum]]
+    ctype = "GVariantClass"
+    prefix = "G_VARIANT_"
+
+  [[GVariant.method]]
+    id = "g_variant_new_from_bytes"
+    bind = false
+    # requires GByte
+
+  [[GVariant.method]]
+    id = "g_variant_get_data_as_bytes"
+    bind = false
+    # requires GByte
+
+  [[GVariant.method]]
+    id = "g_variant_new_parsed_va"
+    bind = false
+    # va_list
+
+  [[GVariant.method]]
+    id = "g_variant_new_va"
+    bind = false
+    # va_list
+
+  [[GVariant.method]]
+    id = "g_variant_get_va"
+    bind = false
+    # va_list
+
+  [[GVariant.method]]
+    id = "g_variant_new_array"
+    bind = false
+    # c arrays
+
+  [[GVariant.method]]
+    id = "g_variant_new_fixed_array"
+    bind = false
+    # c arrays
+
+  [[GVariant.method]]
+    id = "g_variant_new_from_data"
+    bind = false
+    # c arrays
+
+  [[GVariant.method]]
+    id = "g_variant_new_maybe"
+    bind = false
+    # c arrays
+
+  [[GVariant.method]]
+    id = "g_variant_new_tuple"
+    bind = false
+    # c arrays
+
+  [[GVariant.method]]
+    id = "g_variant_get_fixed_array"
+    bind = false
+    # c arrays
+
+  [[GVariant.method]]
+    id = "g_variant_compare"
+    bind = false
+    # c arrays
+
+  [[GVariant.method]]
+    id = "g_variant_equal"
+    bind = false
+    # c arrays
+
+  [[GVariant.method]]
+    id = "g_variant_get_data"
+    bind = false
+    # c arrays
+
+  [[GVariant.method]]
+    id = "g_variant_dup_bytestring"
+    bind = false
+    # c arrays
+
+  [[GVariant.method]]
+    id = "g_variant_get_bytestring"
+    bind = false
+    # c arrays

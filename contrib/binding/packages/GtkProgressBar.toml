@@ -1,0 +1,14 @@
+
+# ============================================================
+#   GtkProgressBar
+# ============================================================
+[GtkProgressBar]
+
+  [GtkProgressBar.doc]
+    screenshot = "gtk-progress_bar"
+    group = "Display widgets"
+    testgtk = "create_progress.adb"
+
+  [[GtkProgressBar.parameter]]
+    name = "self"
+    ada = "Progress_Bar"

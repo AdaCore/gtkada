@@ -1,0 +1,61 @@
+
+# ============================================================
+#   PangoContext
+# ============================================================
+[PangoContext]
+
+  [[PangoContext.method]]
+    id = "pango_context_get_font_map"
+    bind = false
+    # circular dep
+
+  [[PangoContext.method]]
+    id = "pango_context_set_font_map"
+    bind = false
+    # circular dep
+
+  [PangoContext.extra]
+
+    [[PangoContext.extra.with_spec]]
+      pkg = "Pango.Font_Family"
+
+  [[PangoContext.method]]
+    id = "pango_context_list_families"
+    return = "Pango_Font_Family_Array"
+    body = '''
+      type font_family_array_bounded is array (Natural) of System.Address;
+
+      procedure Internal
+         (Self     : System.Address;
+          Families : System.Address;
+          Size     : access Gint);
+      pragma Import (C, Internal, "pango_context_list_families");
+
+      procedure g_free (s : access font_family_array_bounded);
+      pragma Import (C, g_free, "g_free");
+
+      Families : aliased access font_family_array_bounded;
+      Size : aliased Gint;
+      Tmplt : Pango_Font_Family_Record;
+   begin
+      Internal (Get_Object (Self), Families'Address, Size'Access);
+
+      declare
+         Result : Pango_Font_Family_Array (1 .. Integer (Size));
+      begin
+         for R in 0 .. Integer (Size) - 1 loop
+             Result (R + 1) := Pango_Font_Family
+                (Get_User_Data (Families (R), Tmplt));
+         end loop;
+         g_free (Families);
+
+         return Result;
+      end;'''
+
+    [[PangoContext.method.parameter]]
+      name = "families"
+      ada = ""
+
+    [[PangoContext.method.parameter]]
+      name = "n_families"
+      ada = ""

@@ -1,0 +1,59 @@
+
+# ============================================================
+#   GtkMessageDialog
+# ============================================================
+[GtkMessageDialog]
+
+  [[GtkMessageDialog.parameter]]
+    name = "self"
+    ada = "Dialog"
+
+  [[GtkMessageDialog.enum]]
+    ctype = "GtkMessageType"
+    prefix = "GTK_"
+
+  [[GtkMessageDialog.enum]]
+    ctype = "GtkButtonsType"
+    prefix = "GTK_"
+
+  [[GtkMessageDialog.method]]
+    id = "gtk_message_dialog_new"
+
+    [[GtkMessageDialog.method.parameter]]
+      name = "message_format"
+      ada = "message"
+      default = "\"\""
+
+    [[GtkMessageDialog.method.parameter]]
+      name = "varargs"
+      ada = ""
+      ctype = "gpointer"
+      default = "System.Null_Address"
+
+  [[GtkMessageDialog.method]]
+    id = "gtk_message_dialog_new_with_markup"
+
+    [[GtkMessageDialog.method.parameter]]
+      name = "message_format"
+      ada = "message"
+      default = "\"\""
+
+    [[GtkMessageDialog.method.parameter]]
+      name = "varargs"
+      ada = ""
+      ctype = "gpointer"
+      default = "System.Null_Address"
+
+  [[GtkMessageDialog.method]]
+    id = "gtk_message_dialog_format_secondary_markup"
+
+    [[GtkMessageDialog.method.parameter]]
+      name = "message_format"
+      ada = "message"
+      default = "\"\""
+
+    [[GtkMessageDialog.method.parameter]]
+      name = "varargs"
+      ada = ""
+      ctype = "gpointer"
+      default = "System.Null_Address"

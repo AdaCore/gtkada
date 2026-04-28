@@ -1,0 +1,54 @@
+
+# ============================================================
+#   GtkRadioAction
+# ============================================================
+[GtkRadioAction]
+
+  [GtkRadioAction.doc]
+    group = "Action-based menus"
+    see = "Gtk_Action"
+
+  [[GtkRadioAction.parameter]]
+    name = "self"
+    ada = "Action"
+
+  [[GtkRadioAction.method]]
+    id = "gtk_radio_action_new"
+
+    [[GtkRadioAction.method.parameter]]
+      name = "label"
+      default = "\"\""
+
+    [[GtkRadioAction.method.parameter]]
+      name = "tooltip"
+      default = "\"\""
+
+    [[GtkRadioAction.method.parameter]]
+      name = "stock_id"
+      default = "\"\""
+
+  [[GtkRadioAction.method]]
+    id = "gtk_radio_action_set_group"
+
+    [GtkRadioAction.method.doc]
+      extend = true
+      text = '''
+A common way to set up a group of radio group is the following:
+
+|[
+      Group  : GSlist := null;
+      Action : Gtk_Radio_Action;
+      while ... loop
+         Gtk_New (Action, ...);
+         Set_Group (Action, Group);
+         Group := Get_Group (Action);
+      end loop;
+]|'''
+
+    [[GtkRadioAction.method.parameter]]
+      name = "group"
+      ctype = "WidgetSList"
+
+  [[GtkRadioAction.method]]
+    id = "gtk_radio_action_get_group"
+    return = "WidgetSList"

@@ -1,0 +1,93 @@
+
+# ============================================================
+#   GtkIconInfo
+# ============================================================
+[GtkIconInfo]
+  into = "GtkIconTheme"
+
+  [[GtkIconInfo.parameter]]
+    name = "self"
+    ada = "Icon_Info"
+
+  [[GtkIconInfo.method]]
+    id = "gtk_icon_info_get_type"
+    ada = "Icon_Info_Get_Type"
+
+  [[GtkIconInfo.method]]
+    id = "gtk_icon_info_load_icon_async"
+    bind = false
+    # requires GAsync
+
+  [[GtkIconInfo.method]]
+    id = "gtk_icon_info_load_symbolic_async"
+    bind = false
+    # requires GAsync
+
+  [[GtkIconInfo.method]]
+    id = "gtk_icon_info_load_icon_finish"
+    bind = false
+    # requires GAsync
+
+  [[GtkIconInfo.method]]
+    id = "gtk_icon_info_load_symbolic_finish"
+    bind = false
+    # requires GAsync
+
+  [[GtkIconInfo.method]]
+    id = "gtk_icon_info_load_symbolic_for_context_async"
+    bind = false
+    # requires GAsync
+
+  [[GtkIconInfo.method]]
+    id = "gtk_icon_info_load_symbolic_for_context_finish"
+    bind = false
+    # requires GAsync
+
+  [[GtkIconInfo.method]]
+    id = "gtk_icon_info_get_embedded_rect"
+    return_as_param = "Has_Embedded_Rectangle"
+
+  [[GtkIconInfo.method]]
+    id = "gtk_icon_info_get_attach_points"
+    return = "Gdk.Types.Gdk_Points_Array"
+    body = '''
+      use Points_Arrays;
+      function Internal
+        (Icon_Info : System.Address;
+         Result    : access Unbounded_Array_Access;
+         N_Points  : access Gint) return Gboolean;
+      pragma Import (C, Internal, "gtk_icon_info_get_attach_points");
+
+      R : aliased Unbounded_Array_Access;
+      N : aliased Gint;
+   begin
+      if Internal (Icon_Info.Get_Object, R'Unchecked_Access,
+                   N'Unchecked_Access) = 0
+      then
+         R := null;
+      end if;
+
+      declare
+         Result : constant Gdk_Points_Array := To_Array (R, Integer (N));
+      begin
+         G_Free (R);
+         return Result;
+      end;'''
+
+    [[GtkIconInfo.method.parameter]]
+      name = "n_points"
+      ada = ""
+
+    [[GtkIconInfo.method.parameter]]
+      name = "points"
+      ada = ""
+
+  [GtkIconInfo.extra]
+    body = '''
+
+   package Points_Arrays is new Gtkada.C.Unbounded_Arrays
+     (Gdk.Types.Gdk_Point, (0, 0), Positive, Gdk.Types.Gdk_Points_Array);
+       '''
+
+    [[GtkIconInfo.extra.with_body]]
+      pkg = "Gtkada.C"

@@ -1,0 +1,9 @@
+
+# ============================================================
+#   GtkListBox
+# ============================================================
+[GtkListBox]
+
+  [[GtkListBox.method]]
+    id = "gtk_list_box_get_selected_rows"
+    return = "ListBoxRowList"

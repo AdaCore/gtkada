@@ -1,0 +1,18 @@
+
+# ============================================================
+#   GtkFontSelectionDialog
+# ============================================================
+[GtkFontSelectionDialog]
+
+  [GtkFontSelectionDialog.doc]
+    screenshot = "gtk-fontsel"
+    group = "Selectors"
+    testgtk = "create_font_selection.adb"
+    text = '''
+This widget provides a dialog for selecting a font.
+See also Gtk.Font_Selection.
+      '''
+
+  [[GtkFontSelectionDialog.parameter]]
+    name = "self"
+    ada = "Dialog"

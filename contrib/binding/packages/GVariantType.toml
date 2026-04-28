@@ -1,0 +1,75 @@
+
+# ============================================================
+#   GVariantType
+# ============================================================
+[GVariantType]
+  into = "GVariant"
+  ada = "Glib.Variant"
+
+  [[GVariantType.method]]
+    id = "g_variant_type_checked_"
+    bind = false
+    # implementation detail
+
+  [[GVariantType.method]]
+    id = "g_variant_type_new_from_bytes"
+    bind = false
+    # requires GByte
+
+  [[GVariantType.method]]
+    id = "g_variant_type_new_tuple"
+    bind = false
+    # c arrays
+
+  [[GVariantType.method]]
+    id = "g_variant_type_new_maybe"
+    bind = false
+    # c arrays
+
+  [[GVariantType.method]]
+    id = "g_variant_type_new_array"
+    bind = false
+    # c arrays
+
+  [[GVariantType.method]]
+    id = "g_variant_type_equal"
+    bind = false
+    # c arrays
+
+  [[GVariantType.method]]
+    id = "g_variant_type_hash"
+    bind = false
+    # duplicate import
+
+  [[GVariantType.method]]
+    id = "g_variant_type_string_scan"
+    bind = false
+    # c arrays
+
+  [GVariantType.extra]
+
+    [[GVariantType.extra.spec]]
+      text = '''
+
+      Gvariant_Type_Boolean : constant Gvariant_Type; --  value is 0 or 1
+      Gvariant_Type_Byte    : constant Gvariant_Type; --  from 0 to 255
+      Gvariant_Type_Int16   : constant Gvariant_Type; --  from -32768..32767
+      Gvariant_Type_Uint16  : constant Gvariant_Type; --  from 0 to 65535
+      Gvariant_Type_Int32   : constant Gvariant_Type;
+      Gvariant_Type_Uint32  : constant Gvariant_Type;
+      Gvariant_Type_Int64   : constant Gvariant_Type;
+      Gvariant_Type_Uint64  : constant Gvariant_Type;
+      Gvariant_Type_Double  : constant Gvariant_Type;
+      Gvariant_Type_String  : constant Gvariant_Type;
+
+      pragma Import (C, Gvariant_Type_Boolean, "ada_gvariant_type_boolean");
+      pragma Import (C, Gvariant_Type_Byte,    "ada_gvariant_type_byte");
+      pragma Import (C, Gvariant_Type_Int16,   "ada_gvariant_type_int16");
+      pragma Import (C, Gvariant_Type_Uint16,  "ada_gvariant_type_uint16");
+      pragma Import (C, Gvariant_Type_Int32,   "ada_gvariant_type_int32");
+      pragma Import (C, Gvariant_Type_Uint32,  "ada_gvariant_type_uint32");
+      pragma Import (C, Gvariant_Type_Int64,   "ada_gvariant_type_int64");
+      pragma Import (C, Gvariant_Type_Uint64,  "ada_gvariant_type_uint64");
+      pragma Import (C, Gvariant_Type_Double,  "ada_gvariant_type_double");
+      pragma Import (C, Gvariant_Type_String,  "ada_gvariant_type_string");
+        '''

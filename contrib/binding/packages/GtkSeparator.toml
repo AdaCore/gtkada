@@ -1,0 +1,13 @@
+
+# ============================================================
+#   GtkSeparator
+# ============================================================
+[GtkSeparator]
+
+  [GtkSeparator.doc]
+    screenshot = "gtk-separator"
+    group = "Ornaments"
+
+  [[GtkSeparator.parameter]]
+    name = "self"
+    ada = "Separator"

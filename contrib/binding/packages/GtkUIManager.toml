@@ -1,0 +1,63 @@
+
+# ============================================================
+#   GtkUIManager
+# ============================================================
+[GtkUIManager]
+
+  [[GtkUIManager.enum]]
+    ctype = "GtkUIManagerItemType"
+    ada = "Manager_Item_Type"
+    prefix = "GTK_UI_"
+
+  [[GtkUIManager.method]]
+    id = "gtk_ui_manager_add_ui"
+    ada = "Add_UI"
+
+    [[GtkUIManager.method.parameter]]
+      name = "type"
+      default = "Manager_Auto"
+
+    [[GtkUIManager.method.parameter]]
+      name = "top"
+      default = "False"
+
+  [[GtkUIManager.method]]
+    id = "gtk_ui_manager_remove_ui"
+    ada = "Remove_UI"
+
+  [[GtkUIManager.method]]
+    id = "gtk_ui_manager_add_ui_from_file"
+    ada = "Add_UI_From_File"
+
+    [[GtkUIManager.method.parameter]]
+      name = "error"
+      direction = "out"
+
+  [[GtkUIManager.method]]
+    id = "gtk_ui_manager_add_ui_from_resource"
+    ada = "Add_UI_From_Resource"
+
+    [[GtkUIManager.method.parameter]]
+      name = "error"
+      direction = "out"
+
+  [[GtkUIManager.method]]
+    id = "gtk_ui_manager_add_ui_from_string"
+    ada = "Add_UI_From_String"
+
+    [[GtkUIManager.method.parameter]]
+      name = "error"
+      direction = "out"
+
+    [[GtkUIManager.method.parameter]]
+      name = "length"
+      ada = ""
+      default = "-1"
+
+  [[GtkUIManager.method]]
+    id = "gtk_ui_manager_get_action_groups"
+    return = "ObjectList"
+
+  [[GtkUIManager.method]]
+    id = "gtk_ui_manager_get_toplevels"
+    return = "WidgetSList"

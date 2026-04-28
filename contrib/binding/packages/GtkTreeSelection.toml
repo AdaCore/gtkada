@@ -1,0 +1,79 @@
+
+# ============================================================
+#   GtkTreeSelection
+# ============================================================
+[GtkTreeSelection]
+
+  [[GtkTreeSelection.parameter]]
+    name = "self"
+    ada = "Selection"
+
+  [[GtkTreeSelection.method]]
+    id = "gtk_tree_selection_get_selected"
+    return = "void"
+    body = '''
+      function Internal
+        (Selection : System.Address;
+         Model     : access Gtk_Tree_Model;
+         Iter      : access Gtk_Tree_Iter) return Gboolean;
+      pragma Import (C, Internal, "gtk_tree_selection_get_selected");
+      M  : aliased Gtk_Tree_Model := Null_Gtk_Tree_Model;
+      It : aliased Gtk_Tree_Iter;
+   begin
+      if Internal (Get_Object (Selection), M'Access, It'Access) = 0 then
+         Iter  := Null_Iter;
+      else
+         Iter  := It;
+      end if;
+      Model := M;'''
+
+  [[GtkTreeSelection.method]]
+    id = "gtk_tree_selection_get_selected_rows"
+    bind = false
+    # see below
+
+  [[GtkTreeSelection.method]]
+    id = "gtk_tree_selection_get_tree_view"
+    return = "Gtk_Widget"
+    # avoid circular dep
+
+  [GtkTreeSelection.extra]
+    body = '''
+
+   procedure Get_Selected_Rows
+     (Selection : access Gtk_Tree_Selection_Record;
+      Model     : out Gtk_Tree_Model;
+      Path_List : out Gtk_Tree_Path_List.Glist)
+   is
+      use type System.Address;
+      function Internal
+        (Selection : System.Address;
+         Model     : access Gtk_Tree_Model) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_selection_get_selected_rows");
+      M        : aliased Gtk_Tree_Model;
+      Selected : System.Address;  --  list of paths
+   begin
+      Selected := Internal (Get_Object (Selection), M'Access);
+      Model := M;
+      if Selected = System.Null_Address then
+         Path_List := Gtk_Tree_Path_List.Null_List;
+      else
+         Gtk_Tree_Path_List.Set_Object (Path_List, Selected);
+      end if;
+   end Get_Selected_Rows;
+       '''
+
+    [[GtkTreeSelection.extra.spec]]
+      text = '''
+
+   procedure Get_Selected_Rows
+     (Selection : access Gtk_Tree_Selection_Record;
+      Model     : out Gtk.Tree_Model.Gtk_Tree_Model;
+      Path_List : out Gtk.Tree_Model.Gtk_Tree_Path_List.Glist);
+   --  Creates a list of path of all selected rows. Additionally, if you are
+   --  planning on modifying the model after calling this function, you may
+   --  want to convert the returned list into a list of Gtk_Tree_Row_Reference.
+   --
+   --  You must free the resulting list by calling Path_Free on each item, and
+   --  then freeing the list itself.
+       '''

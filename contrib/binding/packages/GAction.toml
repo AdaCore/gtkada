@@ -1,0 +1,11 @@
+
+# ============================================================
+#   GAction
+# ============================================================
+[GAction]
+  ada = "Glib.Action"
+
+  [[GAction.method]]
+    id = "g_action_parse_detailed_name"
+    bind = false
+    # incorrect generated binding

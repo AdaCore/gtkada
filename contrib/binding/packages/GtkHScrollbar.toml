@@ -1,0 +1,22 @@
+
+# ============================================================
+#   GtkHScrollbar
+# ============================================================
+[GtkHScrollbar]
+  into = "GtkScrollbar"
+
+  [[GtkHScrollbar.parameter]]
+    name = "self"
+    ada = "Scrollbar"
+
+  [[GtkHScrollbar.type]]
+    name = "Gtk_Hscrollbar"
+    subtype = true
+
+  [[GtkHScrollbar.method]]
+    id = "gtk_hscrollbar_new"
+    ada = "Gtk_New_Hscrollbar"
+
+  [[GtkHScrollbar.method]]
+    id = "gtk_hscrollbar_get_type"
+    ada = "Hscrollbar_Get_Type"

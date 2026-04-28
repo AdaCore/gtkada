@@ -1,0 +1,67 @@
+
+# ============================================================
+#   GApplicationCommandLine
+# ============================================================
+[GApplicationCommandLine]
+  into = "GApplication"
+  ada = "Glib.Application"
+
+  [[GApplicationCommandLine.method]]
+    id = "g_application_command_line_create_file_for_arg"
+    bind = false
+    # requires GFile
+
+  [[GApplicationCommandLine.method]]
+    id = "g_application_command_line_get_stdin"
+    bind = false
+    # requires GInputStream
+
+  [[GApplicationCommandLine.method]]
+    id = "g_application_command_line_get_type"
+    ada = "Get_Type_Command_Line"
+
+  [[GApplicationCommandLine.method]]
+    id = "g_application_command_line_get_options_dict"
+    bind = false
+    # requires GVariant
+
+  [[GApplicationCommandLine.method]]
+    id = "g_application_command_line_get_arguments"
+
+    [GApplicationCommandLine.method.return_value]
+      transfer_ownership = "full"
+
+    [[GApplicationCommandLine.method.parameter]]
+      name = "argc"
+      ada = ""
+      default = "null"
+
+  [GApplicationCommandLine.extra]
+    body = '''
+
+   gnat_argc : Interfaces.C.int;
+   pragma Import (C, gnat_argc);
+
+   gnat_argv : System.Address;
+   pragma Import (C, gnat_argv);
+
+   function Run
+      (Self : not null access Gapplication_Record) return Gint
+   is
+      function Internal
+         (Self : System.Address;
+          Argc : Gint;
+          Argv : System.Address) return Gint;
+      pragma Import (C, Internal, "g_application_run");
+   begin
+      return Internal (Self.Get_Object, Gint (gnat_argc), gnat_argv);
+   end Run;
+       '''
+
+    [[GApplicationCommandLine.extra.spec]]
+      text = '''
+
+   function Run
+      (Self : not null access Gapplication_Record) return Gint;
+   --  Same as above, but automatically sets argc argv from actual values.
+       '''

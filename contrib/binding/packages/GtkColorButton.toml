@@ -1,0 +1,32 @@
+
+# ============================================================
+#   GtkColorButton
+# ============================================================
+[GtkColorButton]
+
+  [GtkColorButton.doc]
+    group = "Buttons and Toggles"
+
+  [[GtkColorButton.parameter]]
+    name = "self"
+    ada = "Button"
+
+  [[GtkColorButton.method]]
+    id = "gtk_color_button_get_rgba"
+    bind = false
+    # from interface now
+
+  [[GtkColorButton.method]]
+    id = "gtk_color_button_set_rgba"
+    bind = false
+    # from interface now
+
+  [[GtkColorButton.method]]
+    id = "gtk_color_button_get_use_alpha"
+    bind = false
+    # from interface now
+
+  [[GtkColorButton.method]]
+    id = "gtk_color_button_set_use_alpha"
+    bind = false
+    # from interface now

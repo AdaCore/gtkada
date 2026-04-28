@@ -1,0 +1,636 @@
+
+# ============================================================
+#   GtkWidget
+# ============================================================
+[GtkWidget]
+  needs_merge = false
+
+  [[GtkWidget.parameter]]
+    name = "self"
+    ada = "Widget"
+
+  [[GtkWidget.enum]]
+    ctype = "GtkAlign"
+
+  [[GtkWidget.enum]]
+    ctype = "GtkWidgetHelpType"
+
+  [[GtkWidget.record]]
+    ctype = "GtkRequisition"
+
+  [[GtkWidget.record]]
+    ctype = "GtkWidgetPath"
+
+  [[GtkWidget.list]]
+    ada = "Widget_List"
+    ctype = "Widget"
+
+  [[GtkWidget.slist]]
+    ada = "Widget_SList"
+    ctype = "Widget"
+
+  [[GtkWidget.method]]
+    id = "::query-tooltip"
+
+    [[GtkWidget.method.parameter]]
+      name = "tooltip"
+      ctype = "GObject*"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_new"
+    bind = false
+    # varargs
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_style_get"
+    bind = false
+    # varargs
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_style_get_valist"
+    bind = false
+    # varargs
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_list_accel_closures"
+    bind = false
+    # We do not expose Closures
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_get_style_context"
+    bind = false
+    # in Gtk.Style_Context
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_get_accessible"
+    bind = false
+    # Requires ATK
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_get_clipboard"
+    bind = false
+    # in Gtk.Clipboard
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_get_settings"
+    bind = false
+    # in Gtk.Settings
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_modify_style"
+    bind = false
+    # in Gtk.RC
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_get_modifier_style"
+    bind = false
+    # in Gtk.RC
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_class_path"
+    bind = false
+    # deprecated
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_path"
+    bind = false
+    # deprecated
+
+  [[GtkWidget.method]]
+    id = "gtk_drag_source_set_icon_gicon"
+    bind = false
+    # does not exist in quartz backend
+
+  [[GtkWidget.method]]
+    id = "gtk_drag_source_get_target_list"
+    bind = false
+    # in Gtk.Dnd
+
+  [[GtkWidget.method]]
+    id = "gtk_drag_source_set_target_list"
+    bind = false
+    # in Gtk.Dnd
+
+  [[GtkWidget.method]]
+    id = "gtk_drag_begin"
+    bind = false
+    # in Gtk.Dnd
+
+  [[GtkWidget.method]]
+    id = "gtk_drag_dest_find_target"
+    bind = false
+    # in Gtk.Dnd
+
+  [[GtkWidget.method]]
+    id = "gtk_drag_dest_get_target_list"
+    bind = false
+    # in Gtk.Dnd
+
+  [[GtkWidget.method]]
+    id = "gtk_drag_dest_set_target_list"
+    bind = false
+    # in Gtk.Dnd
+
+  [[GtkWidget.method]]
+    id = "gtk_drag_dest_set"
+    bind = false
+    # in Gtk.Dnd
+
+  [[GtkWidget.method]]
+    id = "gtk_drag_source_set"
+    bind = false
+    # in Gtk.Dnd
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_modify_base"
+    obsolescent = true
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_modify_fg"
+    obsolescent = true
+
+    [GtkWidget.method.doc]
+      extend = true
+      text = "         Only states between State_Normal and State_Insensitive are valid."
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_modify_bg"
+    obsolescent = true
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_modify_text"
+    obsolescent = true
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_modify_font"
+    obsolescent = true
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_insert_action_group"
+    bind = false
+    # needs GAction
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_set_sensitive"
+
+    [[GtkWidget.method.parameter]]
+      name = "Sensitive"
+      default = "True"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_size_allocate"
+
+    [[GtkWidget.method.parameter]]
+      name = "allocation"
+      ctype = "GtkAllocation"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_set_size_request"
+
+    [[GtkWidget.method.parameter]]
+      name = "Width"
+      default = "-1"
+
+    [[GtkWidget.method.parameter]]
+      name = "Height"
+      default = "-1"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_add_accelerator"
+
+    [[GtkWidget.method.parameter]]
+      name = "Accel_Key"
+      ctype = "GdkKeyType"
+
+    [[GtkWidget.method.parameter]]
+      name = "Accel_Signal"
+      ctype = "SignalName"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_remove_accelerator"
+
+    [[GtkWidget.method.parameter]]
+      name = "Accel_Key"
+      ctype = "GdkKeyType"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_add_events"
+
+    [[GtkWidget.method.parameter]]
+      name = "Events"
+      ctype = "GdkEventMask"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_set_events"
+
+    [[GtkWidget.method.parameter]]
+      name = "Events"
+      ctype = "GdkEventMask"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_get_events"
+    return = "GdkEventMask"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_get_tooltip_window"
+    return = "GtkWidget*"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_set_tooltip_window"
+
+    [[GtkWidget.method.parameter]]
+      name = "Custom_Window"
+      ctype = "GtkWidget*"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_list_mnemonic_labels"
+    return = "WidgetList"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_render_icon"
+
+    [[GtkWidget.method.parameter]]
+      name = "Detail"
+      default = "\"\""
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_create_pango_layout"
+
+    [[GtkWidget.method.parameter]]
+      name = "Text"
+      allow_none = "1"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_intersect"
+
+    [[GtkWidget.method.parameter]]
+      name = "Intersection"
+      direction = "access"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_translate_coordinates"
+    return_as_param = "Result"
+
+  [[GtkWidget.method]]
+    id = "gtk_widget_destroy"
+    body = '''
+      procedure Internal (Widget : System.Address);
+      pragma Import (C, Internal, "gtk_widget_destroy");
+
+      procedure Unref_Internal (Widget : System.Address);
+      pragma Import (C, Unref_Internal, "g_object_unref");
+      --  External binding: g_object_unref
+
+      Ptr : constant System.Address := Get_Object (Widget);
+
+      use type System.Address;
+   begin
+      --  Keep a reference on the object, so that the Ada structure is
+      --  never automatically deleted when the C object is.
+      --  We can't reset the content of Widget to System.Null_Address before
+      --  calling the C function, because we want the user's destroy
+      --  callbacks to be called with the appropriate object.
+      Ref (Widget);
+      Internal (Ptr);
+
+      --  We then can make sure that the object won't be referenced any
+      --  more, (The Ada structure won't be free before the ref count goes
+      --  down to 0, and we don't want the user to use a deleted object...).
+      Set_Object (Widget, System.Null_Address);
+
+      --  Free the reference we had. In most cases, this results in the
+      --  object being freed. We can't use directly Unref, since the Ptr
+      --  field for Object is Null_Address.
+      Unref_Internal (Ptr);'''
+
+  [[GtkWidget.function]]
+    id = "gtk_cairo_transform_to_window"
+    ada = "Transform_To_Window"
+
+  [[GtkWidget.function]]
+    id = "gtk_cairo_should_draw_window"
+    ada = "Should_Draw_Window"
+
+  [GtkWidget.extra]
+    body = '''
+
+   function Convert is new Ada.Unchecked_Conversion
+      (Draw_Handler, System.Address);
+
+   function Proxy_Draw
+      (W  : System.Address;
+       Cr : Cairo.Cairo_Context) return Gboolean
+   is
+      Stub : Gtk_Widget_Record;
+      W2 : constant Gtk_Widget := Gtk_Widget (Get_User_Data (W, Stub));
+   begin
+      return Boolean'Pos (Draw (W2, Cr));
+   end Proxy_Draw;
+
+   function Inherited_Draw
+      (Klass  : Glib.Object.Ada_GObject_Class;
+       Widget : access Gtk_Widget_Record'Class;
+       Cr     : Cairo.Cairo_Context) return Boolean
+   is
+       function Internal (Klass : Ada_GObject_Class;
+                          Widget : System.Address;
+                          Cr : Cairo.Cairo_Context) return Gboolean;
+       pragma Import (C, Internal, "ada_inherited_WIDGET_CLASS_draw");
+   begin
+      return Internal (Klass, Widget.Get_Object, Cr) /= 0;
+   end Inherited_Draw;
+
+   procedure Inherited_Get_Preferred_Width
+      (Klass  : Glib.Object.Ada_GObject_Class;
+       Widget     : access Gtk_Widget_Record'Class;
+       Minimum_Size, Natural_Size : out Glib.Gint)
+   is
+       procedure Internal (Klass : Ada_GObject_Class;
+                           Widget : System.Address;
+                           Min, Nat : out Glib.Gint);
+       pragma Import
+          (C, Internal, "ada_inherited_WIDGET_CLASS_get_preferred_width");
+   begin
+       Internal (Klass, Widget.Get_Object, Minimum_Size, Natural_Size);
+   end Inherited_Get_Preferred_Width;
+
+   procedure Inherited_Get_Preferred_Width_For_Height
+      (Klass  : Glib.Object.Ada_GObject_Class;
+       Widget     : access Gtk_Widget_Record'Class;
+       Height     : Glib.Gint;
+       Minimum_Size, Natural_Size : out Glib.Gint)
+   is
+       procedure Internal (Klass    : Ada_GObject_Class;
+                           Widget   : System.Address;
+                           Height   : Glib.Gint;
+                           Min, Nat : out Glib.Gint);
+       pragma Import
+          (C, Internal, "ada_inherited_WIDGET_CLASS_get_preferred_width_for_height");
+   begin
+       Internal (Klass, Widget.Get_Object, Height, Minimum_Size, Natural_Size);
+   end Inherited_Get_Preferred_Width_For_Height;
+
+   procedure Inherited_Get_Preferred_Height
+      (Klass  : Glib.Object.Ada_GObject_Class;
+       Widget     : access Gtk_Widget_Record'Class;
+       Minimum_Size, Natural_Size : out Glib.Gint)
+   is
+       procedure Internal (Klass : Ada_GObject_Class;
+                           Widget : System.Address;
+                           Min, Nat : out Glib.Gint);
+       pragma Import
+          (C, Internal, "ada_inherited_WIDGET_CLASS_get_preferred_height");
+   begin
+       Internal (Klass, Widget.Get_Object, Minimum_Size, Natural_Size);
+   end Inherited_Get_Preferred_Height;
+
+   procedure Inherited_Get_Preferred_Height_For_Width
+      (Klass  : Glib.Object.Ada_GObject_Class;
+       Widget     : access Gtk_Widget_Record'Class;
+       Width      : Glib.Gint;
+       Minimum_Size, Natural_Size : out Glib.Gint)
+   is
+       procedure Internal (Klass : Ada_GObject_Class;
+                           Widget : System.Address;
+                           Width      : Glib.Gint;
+                           Min, Nat : out Glib.Gint);
+       pragma Import
+          (C, Internal, "ada_inherited_WIDGET_CLASS_get_preferred_height_for_width");
+   begin
+       Internal (Klass, Widget.Get_Object, Width, Minimum_Size, Natural_Size);
+   end Inherited_Get_Preferred_Height_For_Width;
+
+   procedure Inherited_Size_Allocate
+      (Klass      : Glib.Object.Ada_GObject_Class;
+       Widget     : access Gtk_Widget_Record'Class;
+       Allocation : Gtk_Allocation)
+   is
+       procedure Internal (Klass : Ada_GObject_Class;
+                           Widget : System.Address;
+                           Allocation : Gtk_Allocation);
+       pragma Import
+          (C, Internal, "ada_inherited_WIDGET_CLASS_size_allocate");
+   begin
+       Internal (Klass, Widget.Get_Object, Allocation);
+   end Inherited_Size_Allocate;
+
+   procedure Inherited_Realize
+      (Klass      : Glib.Object.Ada_GObject_Class;
+       Widget     : access Gtk_Widget_Record'Class)
+   is
+       procedure Internal (Klass : Ada_GObject_Class;
+                           Widget : System.Address);
+       pragma Import
+          (C, Internal, "ada_inherited_WIDGET_CLASS_realize");
+   begin
+       Internal (Klass, Widget.Get_Object);
+   end Inherited_Realize;
+
+   procedure Set_Default_Draw_Handler
+      (Klass : Glib.Object.GObject_Class; Handler : Draw_Handler)
+   is
+      procedure Internal (K : GObject_Class; H : System.Address);
+      pragma Import (C, Internal, "ada_WIDGET_CLASS_override_draw");
+   begin
+      Internal (Klass, Convert (Handler));
+   end Set_Default_Draw_Handler;
+
+   function Get_Allocation
+     (Value : Glib.Values.GValue) return Gtk_Allocation_Access
+   is
+      pragma Warnings (Off);
+      --  This UC is safe aliasing-wise, so kill warning
+      function To_Allocation is new
+        Ada.Unchecked_Conversion (System.Address, Gtk_Allocation_Access);
+      pragma Warnings (On);
+   begin
+      return To_Allocation (Glib.Values.Get_Address (Value));
+   end Get_Allocation;
+
+   function Get_Requisition
+     (Value : Glib.Values.GValue) return Gtk_Requisition_Access
+   is
+      pragma Warnings (Off);
+      --  This UC is safe aliasing-wise, so kill warning
+      function To_Requisition is new
+        Ada.Unchecked_Conversion (System.Address, Gtk_Requisition_Access);
+      pragma Warnings (On);
+   begin
+      return To_Requisition (Glib.Values.Get_Address (Value));
+   end Get_Requisition;
+       '''
+
+    [[GtkWidget.extra.with_spec]]
+      pkg = "Gdk.Rectangle"
+
+    [[GtkWidget.extra.with_body]]
+      pkg = "Ada.Unchecked_Conversion"
+      use = false
+
+    [[GtkWidget.extra.spec]]
+      text = '''
+
+   ------------------------------------
+   -- Override default size handling --
+   ------------------------------------
+
+   type Gtk_Requisition_Access is access all Gtk_Requisition;
+   type Gtk_Allocation_Access is access all Gtk_Allocation;
+   pragma Convention (C, Gtk_Requisition_Access);
+   pragma Convention (C, Gtk_Allocation_Access);
+
+   function Get_Requisition
+     (Value : Glib.Values.GValue) return Gtk_Requisition_Access;
+   function Get_Allocation
+     (Value : Glib.Values.GValue) return Gtk_Allocation_Access;
+   --  Convert values received as callback parameters
+
+   type Size_Allocate_Handler is access procedure
+     (Widget : System.Address; Allocation : Gtk_Allocation);
+   pragma Convention (C, Size_Allocate_Handler);
+   --  Widget is the gtk+ C widget, that needs to be converted to Ada through
+   --  a call to:
+   --    declare
+   --       Stub : Gtk_Widget_Record; --  or the exact type you expect
+   --    begin
+   --       My_Widget := Gtk_Widget (Glib.Object.Get_User_Data (Widget, Stub);
+   --    end;
+
+   procedure Set_Default_Size_Allocate_Handler
+     (Klass   : Glib.Object.GObject_Class;
+      Handler : Size_Allocate_Handler);
+   pragma Import (C, Set_Default_Size_Allocate_Handler,
+                  "ada_WIDGET_CLASS_override_size_allocate");
+   --  Override the default size_allocate handler for this class. This handler
+   --  is automatically called in several cases (when a widget is dynamically
+   --  resized for instance), not through a signal. Thus, if you need to
+   --  override the default behavior provided by one of the standard
+   --  containers, you can not simply use Gtk.Handlers.Emit_Stop_By_Name, and
+   --  you must override the default handler. Note also that this handler
+   --  is automatically inherited by children of this class.
+   --
+   --  This function is not needed unless you are writting your own
+   --  widgets, and should be reserved for advanced customization of the
+   --  standard widgets.
+
+   type Preferred_Size_Handler is access procedure
+      (Widget       : System.Address;
+       Minimum_Size : out Glib.Gint;
+       Natural_Size : out Glib.Gint);
+   pragma Convention (C, Preferred_Size_Handler);
+
+    type Preferred_Size_For_Handler is access procedure
+      (Widget       : System.Address;
+       Ref          : Glib.Gint;   --  known width or height
+       Minimum_Size : out Glib.Gint;
+       Natural_Size : out Glib.Gint);
+   pragma Convention (C, Preferred_Size_For_Handler);
+
+   procedure Set_Default_Get_Preferred_Width_Handler
+      (Klass   : Glib.Object.GObject_Class;
+       Handler : Preferred_Size_Handler);
+   procedure Set_Default_Get_Preferred_Height_Handler
+      (Klass   : Glib.Object.GObject_Class;
+       Handler : Preferred_Size_Handler);
+   procedure Set_Default_Get_Preferred_Height_For_Width_Handler
+      (Klass   : Glib.Object.GObject_Class;
+       Handler : Preferred_Size_For_Handler);
+   procedure Set_Default_Get_Preferred_Width_For_Height_Handler
+      (Klass   : Glib.Object.GObject_Class;
+       Handler : Preferred_Size_For_Handler);
+   pragma Import (C, Set_Default_Get_Preferred_Width_Handler,
+                  "ada_WIDGET_CLASS_override_get_preferred_width");
+   pragma Import (C, Set_Default_Get_Preferred_Height_Handler,
+                  "ada_WIDGET_CLASS_override_get_preferred_height");
+   pragma Import (C, Set_Default_Get_Preferred_Height_For_Width_Handler,
+                  "ada_WIDGET_CLASS_override_get_preferred_height_for_width");
+   pragma Import (C, Set_Default_Get_Preferred_Width_For_Height_Handler,
+                  "ada_WIDGET_CLASS_override_get_preferred_width_for_height");
+   --  Override the computation of a widget's preferred sizes.
+   --  You will only need to override this computation if you are writting
+   --  your own container widgets.
+
+   procedure Inherited_Get_Preferred_Width
+      (Klass      : Glib.Object.Ada_GObject_Class;
+       Widget     : access Gtk_Widget_Record'Class;
+       Minimum_Size, Natural_Size : out Glib.Gint);
+   procedure Inherited_Get_Preferred_Width_For_Height
+      (Klass      : Glib.Object.Ada_GObject_Class;
+       Widget     : access Gtk_Widget_Record'Class;
+       Height     : Glib.Gint;
+       Minimum_Size, Natural_Size : out Glib.Gint);
+   procedure Inherited_Get_Preferred_Height
+      (Klass      : Glib.Object.Ada_GObject_Class;
+       Widget     : access Gtk_Widget_Record'Class;
+       Minimum_Size, Natural_Size : out Glib.Gint);
+   procedure Inherited_Get_Preferred_Height_For_Width
+      (Klass      : Glib.Object.Ada_GObject_Class;
+       Widget     : access Gtk_Widget_Record'Class;
+       Width      : Glib.Gint;
+       Minimum_Size, Natural_Size : out Glib.Gint);
+   --  Call the default implementation
+
+   procedure Inherited_Size_Allocate
+      (Klass      : Glib.Object.Ada_GObject_Class;
+       Widget     : access Gtk_Widget_Record'Class;
+       Allocation : Gtk_Allocation);
+   --  Call the inherited size_allocate. This is useful if you have overloaded it in
+   --  your own class, but still need to call the standard implementation.
+
+   type Realize_Handler is access procedure (Widget : System.Address);
+   pragma Convention (C, Realize_Handler);
+   procedure Set_Default_Realize_Handler
+      (Klass   : Glib.Object.GObject_Class;
+       Handler : Realize_Handler);
+   pragma Import (C, Set_Default_Realize_Handler,
+                  "ada_WIDGET_CLASS_override_realize");
+   --  Override the handler for the "realize" signal. This handler should
+   --  create the window for the widget
+
+   procedure Inherited_Realize
+      (Klass      : Glib.Object.Ada_GObject_Class;
+       Widget     : access Gtk_Widget_Record'Class);
+   --  Call the inherited realize.
+
+   ---------------------------
+   -- Override Draw handler --
+   ---------------------------
+
+   generic
+       with function Draw
+          (W  : access Gtk_Widget_Record'Class;
+           Cr : Cairo.Cairo_Context) return Boolean;
+   function Proxy_Draw
+      (W  : System.Address; Cr : Cairo.Cairo_Context) return Gboolean;
+   pragma Convention (C, Proxy_Draw);
+
+   type Draw_Handler is access function
+     (W  : System.Address;
+      Cr : Cairo.Cairo_Context) return Gboolean;
+   pragma Convention (C, Draw_Handler);
+   --  A function responsible for drawing a widget.
+
+   procedure Set_Default_Draw_Handler
+      (Klass : Glib.Object.GObject_Class; Handler : Draw_Handler);
+   --  Override the default drawing function. This in general gives more
+   --  control than connection to Signal_Draw, however a widget is responsible
+   --  for drawing its children.
+   --  Use the generic Proxy_Draw to create a suitable callback.
+
+   function Inherited_Draw
+      (Klass  : Glib.Object.Ada_GObject_Class;
+       Widget : access Gtk_Widget_Record'Class;
+       Cr     : Cairo.Cairo_Context) return Boolean;
+   --  Call the inherited draw. This is useful if you have overloaded draw in
+   --  your own class, but still need to draw the child widgets that do not
+   --  have their own window (the others will already get their own "draw"
+   --  event.
+   --  See http://developer.gnome.org/gtk3/3.0/chap-drawing-model.html
+   --  for an explanation of the gtk+ drawing model.
+       '''
+
+    [[GtkWidget.extra.type]]
+      text = '''
+
+   subtype Gtk_Allocation is Gdk.Rectangle.Gdk_Rectangle;
+       '''

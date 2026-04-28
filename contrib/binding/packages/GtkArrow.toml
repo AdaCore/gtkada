@@ -1,0 +1,13 @@
+
+# ============================================================
+#   GtkArrow
+# ============================================================
+[GtkArrow]
+
+  [GtkArrow.doc]
+    screenshot = "gtk-arrow"
+    testgtk = "create_arrow.adb"
+
+  [[GtkArrow.parameter]]
+    name = "self"
+    ada = "Arrow"

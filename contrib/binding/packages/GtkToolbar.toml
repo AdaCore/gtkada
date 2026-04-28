@@ -1,0 +1,39 @@
+
+# ============================================================
+#   GtkToolbar
+# ============================================================
+[GtkToolbar]
+
+  [[GtkToolbar.parameter]]
+    name = "self"
+    ada = "Toolbar"
+
+  [[GtkToolbar.method]]
+    id = "gtk_toolbar_set_show_arrow"
+
+    [[GtkToolbar.method.parameter]]
+      name = "show_arrow"
+      default = "True"
+
+  [[GtkToolbar.method]]
+    id = "gtk_toolbar_insert"
+
+    [[GtkToolbar.method.parameter]]
+      name = "pos"
+      default = "-1"
+
+  [[GtkToolbar.method]]
+    id = "gtk_tool_shell_get_orientation"
+    bind = false
+
+  [[GtkToolbar.method]]
+    id = "gtk_tool_shell_get_icon_size"
+    bind = false
+
+  [[GtkToolbar.method]]
+    id = "gtk_tool_shell_get_relief_style"
+    bind = false
+
+  [[GtkToolbar.method]]
+    id = "gtk_tool_shell_get_style"
+    bind = false

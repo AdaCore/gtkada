@@ -1,0 +1,21 @@
+
+# ============================================================
+#   GtkColorSelectionDialog
+# ============================================================
+[GtkColorSelectionDialog]
+
+  [GtkColorSelectionDialog.doc]
+    group = "Drawing"
+    text = '''
+The Gtk_Color_Selection_Dialog provides a standard dialog which allows the
+user to select a color much like the Gtk_File_Selection provides a standard
+dialog for file selection.
+      '''
+
+  [[GtkColorSelectionDialog.parameter]]
+    name = "self"
+    ada = "Color_Selection_Dialog"
+
+  [[GtkColorSelectionDialog.method]]
+    id = "gtk_color_selection_dialog_get_color_selection"
+    return = "GtkColorSelection"

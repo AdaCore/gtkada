@@ -1,0 +1,77 @@
+
+# ============================================================
+#   GtkFileChooser
+# ============================================================
+[GtkFileChooser]
+
+  [GtkFileChooser.doc]
+    group = ""
+
+  [[GtkFileChooser.parameter]]
+    name = "self"
+    ada = "Chooser"
+
+  [[GtkFileChooser.enum]]
+    ctype = "GtkFileChooserAction"
+    prefix = "GTK_FILE_CHOOSER_"
+
+  [[GtkFileChooser.enum]]
+    ctype = "GtkFileChooserConfirmation"
+    prefix = "GTK_FILE_CHOOSER_"
+
+  [[GtkFileChooser.enum]]
+    ctype = "GtkFileChooserError"
+    prefix = "GTK_FILE_CHOOSER_"
+    # we won't bind any of these internal functions which pass GFile types
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_get_file"
+    bind = false
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_get_files"
+    bind = false
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_get_current_folder_file"
+    bind = false
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_get_preview_file"
+    bind = false
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_select_file"
+    bind = false
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_set_current_folder_file"
+    bind = false
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_set_file"
+    bind = false
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_unselect_file"
+    bind = false
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_get_filenames"
+    return = "StringSList"
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_get_uris"
+    return = "StringSList"
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_list_shortcut_folder_uris"
+    return = "StringSList"
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_list_shortcut_folders"
+    return = "StringSList"
+
+  [[GtkFileChooser.method]]
+    id = "gtk_file_chooser_list_filters"
+    return = "ObjectSList"

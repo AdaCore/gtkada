@@ -1,0 +1,288 @@
+
+# ============================================================
+#   GtkDialog
+# ============================================================
+[GtkDialog]
+
+  [GtkDialog.doc]
+    screenshot = "gtk-dialog"
+    group = "Windows"
+    testgtk = "create_dialog.adb"
+    text = '''
+          See Gtkada.Dialogs for a higher level dialog interface.
+     '''
+
+  [[GtkDialog.parameter]]
+    name = "self"
+    ada = "Dialog"
+
+  [[GtkDialog.parameter]]
+    name = "response_id"
+    type = "Gtk_Response_Type"
+
+  [[GtkDialog.method]]
+    id = "gtk_dialog_get_action_area"
+    return = "GtkBox*"
+
+  [[GtkDialog.method]]
+    id = "gtk_dialog_get_content_area"
+    return = "GtkBox*"
+
+  [[GtkDialog.method]]
+    id = "gtk_dialog_get_response_for_widget"
+    return = "GtkResponseType"
+
+  [[GtkDialog.method]]
+    id = "gtk_dialog_run"
+    return = "GtkResponseType"
+
+  [[GtkDialog.method]]
+    id = "gtkada_GtkDialog_get_vbox"
+    return = "GtkBox*"
+
+  [[GtkDialog.method]]
+    id = "gtk_dialog_add_button"
+
+    [[GtkDialog.method.parameter]]
+      name = "button_text"
+      ada = "text"
+    # Bound manually below
+
+  [[GtkDialog.method]]
+    id = "gtk_dialog_set_alternative_button_order_from_array"
+    bind = false
+    # Following methods have varargs
+
+  [[GtkDialog.method]]
+    id = "gtk_dialog_new_with_buttons"
+    bind = false
+
+  [[GtkDialog.method]]
+    id = "gtk_dialog_add_buttons"
+    bind = false
+
+  [[GtkDialog.method]]
+    id = "gtk_dialog_set_alternative_button_order"
+    bind = false
+
+  [[GtkDialog.method]]
+    id = "ada_gtk_dialog_new_with_buttons"
+
+    [[GtkDialog.method.parameter]]
+      name = "parent"
+      default = "null"
+
+  [GtkDialog.extra]
+    body = '''
+
+   procedure G_New_Dialog
+      (Self  : not null access Gtk_Dialog_Record'Class;
+       Flags : Gtk_Dialog_Flags;
+       Typ   : Glib.GType := Gtk.Dialog.Get_Type)
+   is
+      function Internal
+         (Typ : GType; Flags : Gtk_Dialog_Flags) return System.Address;
+      pragma Import (C, Internal, "ada_g_dialog_new");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Typ, Flags));
+      end if;
+   end G_New_Dialog;
+
+   procedure Set_Alternative_Button_Order_From_Array
+     (Dialog    : access Gtk_Dialog_Record;
+      New_Order : Response_Type_Array)
+   is
+      procedure Internal
+        (Dialog    : System.Address;
+         N_Params  : Gint;
+         New_Order : System.Address);
+      pragma Import
+        (C, Internal, "gtk_dialog_set_alternative_button_order_from_array");
+   begin
+      Internal (Get_Object (Dialog), New_Order'Length,
+                New_Order (New_Order'First)'Address);
+   end Set_Alternative_Button_Order_From_Array;
+
+   function Gtk_Alternative_Dialog_Button_Order
+     (Screen : Gdk.Screen.Gdk_Screen := null) return Boolean
+   is
+      function Internal (Screen : System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_alternative_dialog_button_order");
+   begin
+      return Boolean'Val (Internal (Get_Object (Screen)));
+   end Gtk_Alternative_Dialog_Button_Order;
+
+   function Use_Header_Bar_From_Settings
+      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class := null)
+      return Gtk_Dialog_Flags
+   is
+      S : Gtk_Settings;
+   begin
+      if Widget = null then
+         S := Gtk.Settings.Get_Default;
+      else
+         S := Get_Settings (Widget);
+      end if;
+
+      if Get_Property (S, Gtk_Dialogs_Use_Header_Property) then
+         return Use_Header_Bar;
+      else
+         return 0;
+      end if;
+   end Use_Header_Bar_From_Settings;
+        '''
+
+    [[GtkDialog.extra.with_spec]]
+      pkg = "Gdk.Screen"
+
+    [[GtkDialog.extra.with_body]]
+      pkg = "Gtk.Settings"
+
+    [[GtkDialog.extra.with_body]]
+      pkg = "Glib.Properties"
+
+    [[GtkDialog.extra.spec]]
+      text = '''
+
+   procedure Set_Alternative_Button_Order_From_Array
+     (Dialog    : access Gtk_Dialog_Record;
+      New_Order : Response_Type_Array);
+   --  Sets an alternative button order. If the gtk-alternative-button-order
+   --  setting is set to %TRUE, the dialog buttons are reordered according to
+   --  the order of the response ids passed to this function.
+   --
+   --  By default, GTK+ dialogs use the button order advocated by the Gnome
+   --  Human Interface Guidelines with the affirmative button at the far right,
+   --  and the cancel button left of it. But the builtin GTK+ dialogs and
+   --  message dialogs' do provide an alternative button order, which is more
+   --  suitable on some platforms, e.g. Windows.
+   --
+   --  Use this function after adding all the buttons to your dialog.
+
+   function Gtk_Alternative_Dialog_Button_Order
+     (Screen : Gdk.Screen.Gdk_Screen := null)  return Boolean;
+   --  Returns True if dialogs are expected to use an alternative button order
+   --  on the given screen (or current screen if null) . See
+   --  Set_Alternative_Button_Order_From_Array for more details about
+   --  alternative button order.
+   --
+   --  If you need to use this function, you should probably connect to the
+   --  ::notify:gtk-alternative-button-order signal on the Gtk_Settings object
+   --  associated to Screen, in order to be notified if the button order
+   --  setting changes.
+   --
+   --  Returns: Whether the alternative button order should be used
+
+   function Use_Header_Bar_From_Settings
+      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class := null)
+      return Gtk_Dialog_Flags;
+   --  Check in the gtk settings whether dialogs should display their action
+   --  buttons in the header bar rather than in the action area at the bottom.
+   --  Widget is used to retrieve the settings. If unspecified, the default
+   --  settings are used.
+   --  The value of the setting can be set in the file
+   --    $HOME/.config/gtk-3.0/settings.ini
+   --  with the following line:
+   --    gtk-dialogs-use-header=0
+
+   procedure G_New_Dialog
+      (Self  : not null access Gtk_Dialog_Record'Class;
+       Flags : Gtk_Dialog_Flags;
+       Typ   : Glib.GType := Gtk.Dialog.Get_Type);
+   --  Equivalent of Glib.Object.G_New for a dialog. This function should be
+   --  used when you are subclassing the dialog class (for instance to add new
+   --  signals). The Use_Header_Bar flag can only have an impact before the
+   --  dialog is created, so this function will take that into account as
+   --  appropriate. Other flags (Modal and Destroy_With_Parent) are ignored.
+        '''
+
+    [[GtkDialog.extra.type]]
+      ctype = "GtkDialogFlags"
+      ada = "Gtk_Dialog_Flags"
+      text = '''
+
+   type Gtk_Dialog_Flags is mod 8;
+   for Gtk_Dialog_Flags'Size use Gint'Size;
+   pragma Convention (C, Gtk_Dialog_Flags);
+   Modal               : constant Gtk_Dialog_Flags := 2 ** 0;
+   Destroy_With_Parent : constant Gtk_Dialog_Flags := 2 ** 1;
+   Use_Header_Bar      : constant Gtk_Dialog_Flags := 2 ** 2;
+   --  Various flags that can be set for the dialog, with the following
+   --  implications:
+   --     - Modal : the dialog is modal, see Gtk.Window.Set_Modal
+   --     - Destroy_With_Parent: The dialog is destroyed if its parent is
+   --       destroyed. See Gtk.Window.Set_Destroy_With_Parent
+   --     - Use_Header_Bar: create dialogs with actions in the header bar
+   --       instead of action area (since 3.12)
+        '''
+
+    [[GtkDialog.extra.type]]
+      ctype = "GtkResponseType"
+      ada = "Gtk_Response_Type"
+      text = '''
+
+   type Gtk_Response_Type is new Gint;
+   --  Type used for Response_Id's.
+   --  Positive values are totally user-interpreted.
+   --  GtkAda will sometimes return Gtk_Response_None if no Response_Id is
+   --  available.
+   --
+   --  Typical usage is:
+   --    if Gtk.Dialog.Run (Dialog) = Gtk_Response_Accept then
+   --       blah;
+   --    end if;
+
+   Gtk_Response_None : constant Gtk_Response_Type := -1;
+   --  GtkAda returns this if a response widget has no Response_Id,
+   --  or if the dialog gets programmatically hidden or destroyed.
+
+   Gtk_Response_Reject : constant Gtk_Response_Type := -2;
+   Gtk_Response_Accept : constant Gtk_Response_Type := -3;
+   --  GtkAda won't return these unless you pass them in
+   --  as the response for an action widget. They are
+   --  for your convenience.
+
+   Gtk_Response_Delete_Event : constant Gtk_Response_Type := -4;
+   --  If the dialog is deleted through the button in the titlebar
+
+   Gtk_Response_OK     : constant Gtk_Response_Type := -5;
+   Gtk_Response_Cancel : constant Gtk_Response_Type := -6;
+   Gtk_Response_Close  : constant Gtk_Response_Type := -7;
+   Gtk_Response_Yes    : constant Gtk_Response_Type := -8;
+   Gtk_Response_No     : constant Gtk_Response_Type := -9;
+   Gtk_Response_Apply  : constant Gtk_Response_Type := -10;
+   Gtk_Response_Help   : constant Gtk_Response_Type := -11;
+   --  These are returned from dialogs, and you can also use them
+   --  yourself if you like.
+        '''
+
+    [[GtkDialog.extra.type]]
+      ctype = "GtkResponseType*"
+      ada = "Response_Type_Array"
+      text = '''
+
+   type Response_Type_Array is array (Natural range <>) of Gtk_Response_Type;
+        '''
+
+    [[GtkDialog.extra.gir_element]]
+      xml = '''
+<gir:constructor xmlns:c="http://www.gtk.org/introspection/c/1.0" xmlns:gir="http://www.gtk.org/introspection/core/1.0" c:identifier="ada_gtk_dialog_new_with_buttons" name="new" version="GtkAda 1.0">
+             <gir:doc>Create a new dialog with a specific title, and specific attributes. Parent is the transient parent for the dialog (ie the one that is used for reference for the flag Destroy_With_Parent, or to compute the initial position of the dialog).</gir:doc>
+           <gir:return-value>
+              <gir:type name="GtkDialog" c:type="GtkDialog*" />
+           </gir:return-value>
+           <gir:parameters>
+              <gir:parameter name="title">
+                 <gir:type name="utf8" c:type="gchar*" />
+              </gir:parameter>
+              <gir:parameter name="parent">
+                 <gir:type name="Window" c:type="GtkWindow*" />
+              </gir:parameter>
+              <gir:parameter name="flags">
+                 <gir:type name="DialogFlags" c:type="GtkDialogFlags" />
+              </gir:parameter>
+           </gir:parameters>
+        </gir:constructor>
+
+        '''

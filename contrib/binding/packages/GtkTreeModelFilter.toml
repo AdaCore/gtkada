@@ -1,0 +1,30 @@
+
+# ============================================================
+#   GtkTreeModelFilter
+# ============================================================
+[GtkTreeModelFilter]
+  parent = "Gtk.Tree_Model.Gtk_Root_Tree_Model"
+
+  [[GtkTreeModelFilter.method]]
+    id = "gtk_tree_model_filter_new"
+    ada = "Gtk_New"
+
+    [[GtkTreeModelFilter.method.parameter]]
+      name = "root"
+      default = "Null_Gtk_Tree_Path"
+
+  [[GtkTreeModelFilter.method]]
+    id = "gtk_tree_model_filter_convert_child_iter_to_iter"
+    return = "void"
+
+  [[GtkTreeModelFilter.method]]
+    id = "gtk_tree_model_filter_set_modify_func"
+
+    [[GtkTreeModelFilter.method.parameter]]
+      name = "types"
+      type = "Glib.GType_Array"
+
+    [[GtkTreeModelFilter.method.parameter]]
+      name = "n_columns"
+      ada = ""
+      default = "Types'Length"

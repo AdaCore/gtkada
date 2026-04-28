@@ -1,0 +1,12 @@
+
+# ============================================================
+#   GtkCellEditable
+# ============================================================
+[GtkCellEditable]
+
+  [GtkCellEditable.doc]
+    group = "Trees and Lists"
+
+  [[GtkCellEditable.parameter]]
+    name = "self"
+    ada = "Cell_Editable"

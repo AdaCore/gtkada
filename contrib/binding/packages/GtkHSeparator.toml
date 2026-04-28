@@ -1,0 +1,22 @@
+
+# ============================================================
+#   GtkHSeparator
+# ============================================================
+[GtkHSeparator]
+  into = "GtkSeparator"
+
+  [[GtkHSeparator.type]]
+    name = "Gtk_Hseparator"
+    subtype = true
+
+  [[GtkHSeparator.method]]
+    id = "gtk_hseparator_new"
+    ada = "Gtk_New_Hseparator"
+
+  [[GtkHSeparator.parameter]]
+    name = "self"
+    ada = "Separator"
+
+  [[GtkHSeparator.method]]
+    id = "gtk_hseparator_get_type"
+    ada = "Hseparator_Get_Type"

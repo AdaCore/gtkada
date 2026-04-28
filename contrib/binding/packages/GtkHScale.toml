@@ -1,0 +1,30 @@
+
+# ============================================================
+#   GtkHScale
+# ============================================================
+[GtkHScale]
+  into = "GtkScale"
+
+  [[GtkHScale.parameter]]
+    name = "self"
+    ada = "Scale"
+
+  [[GtkHScale.type]]
+    name = "Gtk_Hscale"
+    subtype = true
+
+  [[GtkHScale.method]]
+    id = "gtk_hscale_new"
+    ada = "Gtk_New_Hscale"
+
+    [[GtkHScale.method.parameter]]
+      name = "adjustment"
+      default = "null"
+
+  [[GtkHScale.method]]
+    id = "gtk_hscale_new_with_range"
+    ada = "Gtk_New_Hscale"
+
+  [[GtkHScale.method]]
+    id = "gtk_hscale_get_type"
+    ada = "Hscale_Get_Type"

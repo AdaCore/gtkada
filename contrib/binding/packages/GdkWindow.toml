@@ -1,0 +1,198 @@
+
+# ============================================================
+#   GdkWindow
+# ============================================================
+[GdkWindow]
+  bindtype = false
+
+  [[GdkWindow.record]]
+    ctype = "GdkGeometry"
+
+  [[GdkWindow.enum]]
+    ctype = "GdkWindowWindowClass"
+    ada = "Gdk_Window_Class"
+    prefix = "GDK_"
+
+  [[GdkWindow.enum]]
+    ctype = "GdkWindowEdge"
+    prefix = "GDK_"
+
+  [[GdkWindow.enum]]
+    ctype = "GdkWindowType"
+    prefix = "GDK_"
+
+  [[GdkWindow.enum]]
+    ctype = "GdkWindowAttributesType"
+    prefix = "GDK_"
+
+  [[GdkWindow.enum]]
+    ctype = "GdkWindowHints"
+    prefix = "GDK_"
+
+  [[GdkWindow.enum]]
+    ctype = "GdkWindowTypeHint"
+    prefix = "GDK_"
+
+  [[GdkWindow.enum]]
+    ctype = "GdkWMDecoration"
+    prefix = "GDK_"
+
+  [[GdkWindow.enum]]
+    ctype = "GdkWMFunction"
+    prefix = "GDK_"
+
+  [[GdkWindow.enum]]
+    ctype = "GdkGravity"
+    prefix = "GDK_"
+
+  [[GdkWindow.enum]]
+    ctype = "GdkFullscreenMode"
+    prefix = "GDK_FULLSCREEN_"
+
+  [[GdkWindow.enum]]
+    ctype = "GdkAnchorHints"
+    prefix = "GDK_"
+
+  [[GdkWindow.list]]
+    ada = "Gdk_Window_List"
+    ctype = "GdkWindow"
+
+  [[GdkWindow.method]]
+    id = "::pick-embedded-child"
+    bind = false
+
+  [[GdkWindow.method]]
+    id = "::from-embedder"
+    bind = false
+
+  [[GdkWindow.method]]
+    id = "::to-embedder"
+    bind = false
+
+  [[GdkWindow.method]]
+    id = "::create-surface"
+    bind = false
+
+  [[GdkWindow.method]]
+    id = "::moved-to-rect"
+    bind = false
+
+  [[GdkWindow.method]]
+    id = "gdk_window_add_filter"
+    bind = false
+    # dangerous
+
+  [[GdkWindow.method]]
+    id = "gdk_window_remove_filter"
+    bind = false
+    # dangerous
+
+  [[GdkWindow.method]]
+    id = "gdk_window_get_children"
+    return = "GdkWindowList"
+
+  [[GdkWindow.method]]
+    id = "gdk_window_get_decorations"
+    return_as_param = "Has_Decorations"
+
+  [[GdkWindow.method]]
+    id = "gdk_window_get_device_position"
+    return_as_param = "Window"
+
+  [[GdkWindow.method]]
+    id = "gdk_window_get_origin"
+    return = "void"
+
+  [[GdkWindow.method]]
+    id = "gdk_window_get_pointer"
+    return_as_param = "Window"
+
+  [[GdkWindow.method]]
+    id = "gdk_window_peek_children"
+    return = "GdkWindowList"
+
+  [[GdkWindow.method]]
+    id = "gdk_window_at_pointer"
+    return_as_param = "Window"
+
+  [[GdkWindow.method]]
+    id = "gdk_window_new"
+
+    [[GdkWindow.method.parameter]]
+      name = "attributes_mask"
+      ctype = "GdkWindowAttributesType"
+    # <method id="gdk_window_get_events" bind="False" /> <!- circular dep with GdkEvent
+    # <method id="gdk_window_set_events" bind="False" /> <!- circular dep with GdkEvent
+    # <method id="gdk_window_get_device_events" bind="False" /> <!- circular dep with GdkEvent
+    # <method id="gdk_window_set_device_events" bind="False" /> <!- circular dep with GdkEvent
+    # <method id="gdk_window_get_source_events" bind="False" /> <!- circular dep with GdkEvent
+    # <method id="gdk_window_set_source_events" bind="False" /> <!- circular dep with GdkEvent
+
+  [[GdkWindow.method]]
+    id = "gdk_window_set_icon_list"
+    bind = false
+    # needs PixbufList
+
+  [[GdkWindow.method]]
+    id = "gdk_window_get_drag_protocol"
+    bind = false
+    return_as_param = "Protocol"
+    # circular dep with GdkDragContent
+
+  [[GdkWindow.method]]
+    id = "gdk_window_get_user_data"
+    bind = false
+    # see below
+
+  [[GdkWindow.method]]
+    id = "gdk_window_get_children_with_user_data"
+    bind = false
+    # low-level
+
+  [GdkWindow.extra]
+    body = '''
+
+   function Get_User_Data (Window : Gdk_Window) return Glib.Object.GObject is
+      procedure Internal (Window : Gdk_Window; Widget : System.Address);
+      pragma Import (C, Internal, "gdk_window_get_user_data");
+      Data : aliased System.Address;
+      Stub : GObject_Record;
+   begin
+      Internal (Window, Data'Address);
+      return Get_User_Data (Data, Stub);
+   end Get_User_Data;
+
+   procedure Set_User_Data
+     (Window : Gdk_Window;
+      Widget : access Glib.Object.GObject_Record'Class)
+   is
+      procedure Internal (Window : Gdk_Window; Widget : System.Address);
+      pragma Import (C, Internal, "gdk_window_set_user_data");
+   begin
+      Internal (Window, Get_Object (Widget));
+   end Set_User_Data;
+       '''
+
+    [[GdkWindow.extra.spec]]
+      text = '''
+
+   function Get_User_Data (Window : Gdk_Window) return Glib.Object.GObject;
+   --  Return the widget to which events are reported when they happen on
+   --  Window. This is the widget that was set through the call to
+   --  Set_User_data.
+
+   procedure Set_User_Data
+     (Window : Gdk_Window;
+      Widget : access Glib.Object.GObject_Record'Class);
+   --  Sets a special field in the window.
+   --  All the events reported by the Xserver (or the Windows server) for
+   --  Window will be redirected to Widget through the standard signals
+   --  "expose_event", "button_press_event", ...
+   --  You almost always need to call this function after creating a new
+   --  Gdk_Window yourself, or you won't be able to handle the events.
+
+   procedure Ref (Window : Gdk_Window);
+   procedure Unref (Window : Gdk_Window);
+   pragma Import (C, Ref, "g_object_ref");
+   pragma Import (C, Unref, "g_object_unref");
+       '''
