@@ -109,7 +109,9 @@ install: install-clean
 		--mode=usage --exec-subdir=${DESTDIR}${exampledir} \
 		-Ptestgtk.gpr -aP ../src
 ifneq ($(OS),Windows_NT)
-	ln -s ${libdir} ${DESTDIR}${datadir}/examples/gtkada --force
+	if ! ln -s ${libdir} ${DESTDIR}${datadir}/examples/gtkada 2>/dev/null; \
+	then unlink ${DESTDIR}${datadir}/examples/gtkada; \
+	ln -s ${libdir} ${DESTDIR}${datadir}/examples/gtkada 2>/dev/null; fi
 endif
 	@echo '-----------------------------------------------------------------------'
 	@echo '--  GtkAda has now been installed.                                   --'
