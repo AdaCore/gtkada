@@ -1,4 +1,4 @@
-AC_INIT(gtkada,18.0w,support@adacore.com,gtkada)
+AC_INIT([gtkada],[18.0w],[support@adacore.com],[gtkada])
 AC_CONFIG_MACRO_DIR([m4])
 AC_CANONICAL_TARGET
 PKG_PROG_PKG_CONFIG
@@ -32,7 +32,7 @@ AM_GNU_GETTEXT([external])
 #     diagnostic when some error occured.
 #  2. AM_PATH_GTK: check for low level binary interface of the libraries and
 #     create necessary variables to substitute into .gpr files.
-PKG_CHECK_MODULES([GTK], [gtk+-3.0])
+PKG_CHECK_MODULES([GTK], [gtk4])
 AM_PATH_GTK
 
 # Ignore user's choice of libdir, as well as configure's own default,
@@ -40,9 +40,9 @@ AM_PATH_GTK
 
 libdir='${prefix}/lib'
 
-AC_OUTPUT(Makefile gtkada_shared.gpr po/Makefile)
+AC_CONFIG_FILES([Makefile gtkada_shared.gpr po/Makefile])
+AC_OUTPUT
 
 AC_MSG_NOTICE([--------- Summary for Gtkada $PACKAGE_VERSION -----------------])
-AC_MSG_NOTICE(AC_HELP_STRING(
-              [Shared libraries:],[$CAN_BUILD_SHARED (default: $DEFAULT_LIBRARY_TYPE)]))
+AC_MSG_NOTICE(AS_HELP_STRING([Shared libraries:],[$CAN_BUILD_SHARED (default: $DEFAULT_LIBRARY_TYPE)]))
 AC_MSG_NOTICE([--------------------------------------------])

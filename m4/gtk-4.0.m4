@@ -5,19 +5,19 @@
 # Increment on every change.
 #serial 1
 
-dnl AM_PATH_GTK_3_0([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
+dnl AM_PATH_GTK_4_0([MINIMUM-VERSION, [ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND [, MODULES]]]])
 dnl Test for GTK+, and define GTK_CFLAGS and GTK_LIBS, if gthread is specified in MODULES, 
 dnl pass to pkg-config
 dnl
-AC_DEFUN([AM_PATH_GTK_3_0],
-[m4_warn([obsolete], [AM_PATH_GTK_3_0 is deprecated, use PKG_CHECK_MODULES([GTK], [gtk+-3.0]) instead])
+AC_DEFUN([AM_PATH_GTK_4_0],
+[m4_warn([obsolete], [AM_PATH_GTK_4_0 is deprecated, use PKG_CHECK_MODULES([GTK], [gtk4]) instead])
 dnl Get the cflags and libraries from pkg-config
 dnl
 AC_ARG_ENABLE(gtktest, [  --disable-gtktest       do not try to compile and run a test GTK+ program],
 		    , enable_gtktest=yes)
-  min_gtk_version=ifelse([$1], [], [3.0.0], [$1])
+  min_gtk_version=ifelse([$1], [], [4.0.0], [$1])
 
-  pkg_config_args="gtk+-3.0 >= $min_gtk_version"
+  pkg_config_args="gtk4 >= $min_gtk_version"
   for module in . $4
   do
       case "$module" in
@@ -53,12 +53,17 @@ AC_ARG_ENABLE(gtktest, [  --disable-gtktest       do not try to compile and run 
 
   if test x"$no_gtk" = x ; then
     GTK_CFLAGS=`$PKG_CONFIG $pkg_config_args --cflags`
-    GTK_LIBS=`$PKG_CONFIG $pkg_config_args --libs`
-    gtk_config_major_version=`$PKG_CONFIG --modversion gtk+-3.0 | \
+    dnl Prepend -L${libdir} explicitly: pkgconf strips -L paths that match
+    dnl entries in LIBRARY_PATH, but gcc searches LIBRARY_PATH after the
+    dnl system library directories, so without an explicit -L the linker
+    dnl can pick up an older system copy of e.g. libpango ahead of the
+    dnl one this gtk4 install was built against.
+    GTK_LIBS="-L`$PKG_CONFIG --variable=libdir gtk4` `$PKG_CONFIG $pkg_config_args --libs`"
+    gtk_config_major_version=`$PKG_CONFIG --modversion gtk4 | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\1/'`
-    gtk_config_minor_version=`$PKG_CONFIG --modversion gtk+-3.0 | \
+    gtk_config_minor_version=`$PKG_CONFIG --modversion gtk4 | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\2/'`
-    gtk_config_micro_version=`$PKG_CONFIG --modversion gtk+-3.0 | \
+    gtk_config_micro_version=`$PKG_CONFIG --modversion gtk4 | \
            sed 's/\([[0-9]]*\).\([[0-9]]*\).\([[0-9]]*\)/\3/'`
     if test "x$enable_gtktest" = "xyes" ; then
       ac_save_CFLAGS="$CFLAGS"
@@ -87,13 +92,13 @@ main ()
      exit(1);
    }
 
-  if ((gtk_major_version != $gtk_config_major_version) ||
-      (gtk_minor_version != $gtk_config_minor_version) ||
-      (gtk_micro_version != $gtk_config_micro_version))
+  if ((gtk_get_major_version () != $gtk_config_major_version) ||
+      (gtk_get_minor_version () != $gtk_config_minor_version) ||
+      (gtk_get_micro_version () != $gtk_config_micro_version))
     {
-      printf("\n*** 'pkg-config --modversion gtk+-3.0' returned %d.%d.%d, but GTK+ (%d.%d.%d)\n", 
+      printf("\n*** 'pkg-config --modversion gtk4' returned %d.%d.%d, but GTK+ (%d.%d.%d)\n",
              $gtk_config_major_version, $gtk_config_minor_version, $gtk_config_micro_version,
-             gtk_major_version, gtk_minor_version, gtk_micro_version);
+             gtk_get_major_version (), gtk_get_minor_version (), gtk_get_micro_version ());
       printf ("*** was found! If pkg-config was correct, then it is best\n");
       printf ("*** to remove the old version of GTK+. You may also be able to fix the error\n");
       printf("*** by modifying your LD_LIBRARY_PATH enviroment variable, or by editing\n");
@@ -101,28 +106,28 @@ main ()
       printf("*** required on your system.\n");
       printf("*** If pkg-config was wrong, set the environment variable PKG_CONFIG_PATH\n");
       printf("*** to point to the correct configuration files\n");
-    } 
-  else if ((gtk_major_version != GTK_MAJOR_VERSION) ||
-	   (gtk_minor_version != GTK_MINOR_VERSION) ||
-           (gtk_micro_version != GTK_MICRO_VERSION))
+    }
+  else if ((gtk_get_major_version () != GTK_MAJOR_VERSION) ||
+	   (gtk_get_minor_version () != GTK_MINOR_VERSION) ||
+           (gtk_get_micro_version () != GTK_MICRO_VERSION))
     {
       printf("*** GTK+ header files (version %d.%d.%d) do not match\n",
 	     GTK_MAJOR_VERSION, GTK_MINOR_VERSION, GTK_MICRO_VERSION);
       printf("*** library (version %d.%d.%d)\n",
-	     gtk_major_version, gtk_minor_version, gtk_micro_version);
+	     gtk_get_major_version (), gtk_get_minor_version (), gtk_get_micro_version ());
     }
   else
     {
-      if ((gtk_major_version > major) ||
-        ((gtk_major_version == major) && (gtk_minor_version > minor)) ||
-        ((gtk_major_version == major) && (gtk_minor_version == minor) && (gtk_micro_version >= micro)))
+      if ((gtk_get_major_version () > major) ||
+        ((gtk_get_major_version () == major) && (gtk_get_minor_version () > minor)) ||
+        ((gtk_get_major_version () == major) && (gtk_get_minor_version () == minor) && (gtk_get_micro_version () >= micro)))
       {
         return 0;
        }
      else
       {
         printf("\n*** An old version of GTK+ (%u.%u.%u) was found.\n",
-               gtk_major_version, gtk_minor_version, gtk_micro_version);
+               gtk_get_major_version (), gtk_get_minor_version (), gtk_get_micro_version ());
         printf("*** You need a version of GTK+ newer than %u.%u.%u. The latest version of\n",
 	       major, minor, micro);
         printf("*** GTK+ is always available from ftp://ftp.gtk.org.\n");
@@ -163,7 +168,7 @@ main ()
           AC_TRY_LINK([
 #include <gtk/gtk.h>
 #include <stdio.h>
-],      [ return ((gtk_major_version) || (gtk_minor_version) || (gtk_micro_version)); ],
+],      [ return ((gtk_get_major_version ()) || (gtk_get_minor_version ()) || (gtk_get_micro_version ())); ],
         [ echo "*** The test program compiled, but did not run. This usually means"
           echo "*** that the run-time linker is not finding GTK+ or finding the wrong"
           echo "*** version of GTK+. If it is not finding GTK+, you'll need to set your"
@@ -192,9 +197,9 @@ dnl GTK_CHECK_BACKEND(BACKEND-NAME [, MINIMUM-VERSION [, ACTION-IF-FOUND [, ACTI
 dnl   Tests for BACKEND-NAME in the GTK targets list
 dnl
 AC_DEFUN([GTK_CHECK_BACKEND],
-[m4_warn([obsolete], [GTK_CHECK_BACKEND is deprecated, use PKG_CHECK_MODULES([GTK_X11], [gtk+-x11-3.0]) or similar instead])
-  pkg_config_args=ifelse([$1],,gtk+-3.0, gtk+-$1-3.0)
-  min_gtk_version=ifelse([$2],,3.0.0,$2)
+[m4_warn([obsolete], [GTK_CHECK_BACKEND is deprecated, use PKG_CHECK_MODULES([GTK_X11], [gtk+-x11-4.0]) or similar instead])
+  pkg_config_args=ifelse([$1],,gtk4, gtk4)
+  min_gtk_version=ifelse([$2],,4.0.0,$2)
   pkg_config_args="$pkg_config_args >= $min_gtk_version"
 
   PKG_PROG_PKG_CONFIG([0.16])

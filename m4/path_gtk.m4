@@ -7,9 +7,9 @@
 
 AC_DEFUN([AM_PATH_GTK],
 [dnl AC_REQUIRE([AM_PATH_GTK_3_0])dnl
-  AM_PATH_GTK_3_0([3.24.24])
+  AM_PATH_GTK_4_0([4.22.2])
 
-  GTK_PREFIX=`$PKG_CONFIG gtk+-3.0 --variable=prefix`
+  GTK_PREFIX=`$PKG_CONFIG gtk4 --variable=prefix`
   AC_SUBST(GTK_PREFIX)
   AM_TO_GPR($GTK_CFLAGS, GTK_CFLAGS_GPR)
 
