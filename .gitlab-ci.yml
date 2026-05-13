@@ -21,10 +21,15 @@ build:
   stage: build
   interruptible: true
   rules:
+      # For now, only the gtk324 branch is buildable
+    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != 'gtk324'
+      when: never
+
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     - if: $CI_PIPELINE_SOURCE == 'pipeline'
 
   script:
+    - env
     # Setup deps
     - generic_anod_ci
     - . /tmp/ci_env.sh
