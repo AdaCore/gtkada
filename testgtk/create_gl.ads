@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                    Copyright (C) 2015-2022, AdaCore                      --
+--                       Copyright (C) 2026, AdaCore                        --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,31 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "../gtkada_shared";
-with "../src/gtkada";
-with "task_project/task_project";
+with Gtk.Frame;
 
-project TestGtk is
+package Create_GL is
 
-   for Languages use ("Ada");
-   for Main use ("testgtk.adb", "test_rtree.adb");
-   for Source_Dirs use ("./");
-   for Object_Dir use "obj/";
-   for Exec_Dir use ".";
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
 
-   package Compiler is
-      --  subprogram specs not required in testgtk
-      for Switches ("Ada") use ("-g", "-O0", "-gnaty-s", "-gnatwJ")
-         & GtkAda_Shared.Adaflags;
-   end Compiler;
+   function Help return String;
 
-   package Linker extends GtkAda_Shared.Linker is
-      for Switches ("testgtk.adb") use ("-lepoxy");
-   end Linker;
-
-   package Install is
-      for artifacts ("share/examples/gtkada/testgtk") use
-        ("*.ad*", "*.xpm", "*.svg", "*.png", "*.gif", "*.css", "*.ui", "*.lwo", "*.xml");
-   end Install;
-
-end TestGtk;
+end Create_GL;
