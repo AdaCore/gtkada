@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                    Copyright (C) 2015-2022, AdaCore                      --
+--                       Copyright (C) 2026, AdaCore                        --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,31 +21,25 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "../gtkada_shared";
-with "../src/gtkada";
-with "task_project/task_project";
+--  This package provides basic types declarations for OpenGL
 
-project TestGtk is
+with Interfaces;
 
-   for Languages use ("Ada");
-   for Main use ("testgtk.adb", "test_rtree.adb");
-   for Source_Dirs use ("./");
-   for Object_Dir use "obj/";
-   for Exec_Dir use ".";
+package OpenGL is
 
-   package Compiler is
-      --  subprogram specs not required in testgtk
-      for Switches ("Ada") use ("-g", "-O0", "-gnaty-s", "-gnatwJ")
-         & GtkAda_Shared.Adaflags;
-   end Compiler;
+   type GLint is new Interfaces.Integer_32;
+   subtype GLsizei is GLint range 0 .. GLint'Last;
 
-   package Linker extends GtkAda_Shared.Linker is
-      for Switches ("testgtk.adb") use ("-lepoxy");
-   end Linker;
+   type GLfloat is new Interfaces.IEEE_Float_32;
 
-   package Install is
-      for artifacts ("share/examples/gtkada/testgtk") use
-        ("*.ad*", "*.xpm", "*.svg", "*.png", "*.gif", "*.css", "*.ui", "*.lwo", "*.xml");
-   end Install;
+   type GLfloat_Vector_3 is array (Positive range 1 .. 3) of aliased GLfloat;
 
-end TestGtk;
+   type GLfloat_Matrix_4x4 is
+     array (Positive range 1 .. 4, Positive range 1 .. 4) of aliased GLfloat
+       with Convention => Fortran;
+
+   type GLbitfield is new Interfaces.Unsigned_32;
+
+   type GLenum is new Interfaces.Unsigned_32;
+
+end OpenGL;
