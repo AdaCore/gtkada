@@ -39,7 +39,9 @@ project TestGtk is
          & GtkAda_Shared.Adaflags;
    end Compiler;
 
-   package Linker renames GtkAda_Shared.Linker;
+   package Linker extends GtkAda_Shared.Linker is
+      for Switches ("testgtk.adb") use ("-lepoxy");
+   end Linker;
 
    package Install is
       for artifacts ("share/examples/gtkada/testgtk") use
