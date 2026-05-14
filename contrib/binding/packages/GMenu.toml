@@ -1,10 +1,8 @@
-
 # ============================================================
 #   GMenu
 # ============================================================
-[GMenu]
-  ada = "Glib.Menu"
+ada = "Glib.Menu"
 
-  [[GMenu.method]]
-    id = "g_menu_get_type"
-    ada = "Get_Type_Menu"
+[[method]]
+id = "g_menu_get_type"
+ada = "Get_Type_Menu"

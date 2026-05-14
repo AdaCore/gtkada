@@ -1,16 +1,14 @@
-
 # ============================================================
 #   GMenuLinkIter
 # ============================================================
-[GMenuLinkIter]
-  into = "GMenuModel"
-  ada = "Glib.Menu_Model"
+into = "GMenuModel"
+ada = "Glib.Menu_Model"
 
-  [[GMenuLinkIter.method]]
-    id = "g_menu_link_iter_get_type"
-    ada = "Get_Type_Menu_Link_Iter"
+[[method]]
+id = "g_menu_link_iter_get_type"
+ada = "Get_Type_Menu_Link_Iter"
 
-  [[GMenuLinkIter.method]]
-    id = "g_menu_link_iter_get_next"
-    bind = false
-    # parameter out String
+[[method]]
+id = "g_menu_link_iter_get_next"
+bind = false
+# parameter out String

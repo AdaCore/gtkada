@@ -1,9 +1,7 @@
-
 # ============================================================
 #   GtkActivatable
 # ============================================================
-[GtkActivatable]
 
-  [[GtkActivatable.virtual_method]]
-    id = "*"
-    bind = false
+[[virtual_method]]
+id = "*"
+bind = false

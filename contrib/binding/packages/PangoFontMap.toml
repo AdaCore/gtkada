@@ -1,28 +1,26 @@
-
 # ============================================================
 #   PangoFontMap
 # ============================================================
-[PangoFontMap]
 
-  [PangoFontMap.doc]
-    text = '''
+[doc]
+text = '''
 An object that represents the set of fonts available for a particular
      rendering system'''
 
-  [[PangoFontMap.method]]
-    id = "pango_font_map_get_family"
-    bind = false
-    # more recent than 1.44
+[[method]]
+id = "pango_font_map_get_family"
+bind = false
+# more recent than 1.44
 
-  [PangoFontMap.extra]
+[extra]
 
-    [[PangoFontMap.extra.with_spec]]
-      pkg = "Pango.Font_Family"
+[[extra.with_spec]]
+pkg = "Pango.Font_Family"
 
-  [[PangoFontMap.method]]
-    id = "pango_font_map_list_families"
-    return = "Pango_Font_Family_Array"
-    body = '''
+[[method]]
+id = "pango_font_map_list_families"
+return = "Pango_Font_Family_Array"
+body = '''
       type font_family_array_bounded is array (Natural) of System.Address;
 
       procedure Internal
@@ -52,10 +50,10 @@ An object that represents the set of fonts available for a particular
          return Result;
       end;'''
 
-    [[PangoFontMap.method.parameter]]
-      name = "families"
-      ada = ""
+[[method.parameter]]
+name = "families"
+ada = ""
 
-    [[PangoFontMap.method.parameter]]
-      name = "n_families"
-      ada = ""
+[[method.parameter]]
+name = "n_families"
+ada = ""

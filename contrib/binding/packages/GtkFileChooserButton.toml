@@ -1,12 +1,10 @@
-
 # ============================================================
 #   GtkFileChooserButton
 # ============================================================
-[GtkFileChooserButton]
 
-  [GtkFileChooserButton.doc]
-    group = "Buttons and Toggles"
+[doc]
+group = "Buttons and Toggles"
 
-  [[GtkFileChooserButton.parameter]]
-    name = "self"
-    ada = "Button"
+[[parameter]]
+name = "self"
+ada = "Button"

@@ -1,134 +1,132 @@
-
 # ============================================================
 #   GtkImage
 # ============================================================
-[GtkImage]
 
-  [GtkImage.doc]
-    screenshot = "gtk-image"
-    group = "Display widgets"
+[doc]
+screenshot = "gtk-image"
+group = "Display widgets"
 
-  [[GtkImage.parameter]]
-    name = "self"
-    ada = "Image"
+[[parameter]]
+name = "self"
+ada = "Image"
 
-  [[GtkImage.parameter]]
-    name = "image"
-    ada = "Val"
+[[parameter]]
+name = "image"
+ada = "Val"
 
-  [[GtkImage.parameter]]
-    name = "size"
-    type = "Gtk.Enums.Gtk_Icon_Size"
+[[parameter]]
+name = "size"
+type = "Gtk.Enums.Gtk_Icon_Size"
 
-  [[GtkImage.method]]
-    id = "gtk_image_new_from_animation"
-    ada = "Gtk_New"
+[[method]]
+id = "gtk_image_new_from_animation"
+ada = "Gtk_New"
 
-  [[GtkImage.method]]
-    id = "gtk_image_new_from_file"
-    ada = "Gtk_New"
+[[method]]
+id = "gtk_image_new_from_file"
+ada = "Gtk_New"
 
-  [[GtkImage.method]]
-    id = "gtk_image_new_from_image"
-    ada = "Gtk_New"
+[[method]]
+id = "gtk_image_new_from_image"
+ada = "Gtk_New"
 
-  [[GtkImage.method]]
-    id = "gtk_image_new_from_pixbuf"
-    ada = "Gtk_New"
+[[method]]
+id = "gtk_image_new_from_pixbuf"
+ada = "Gtk_New"
 
-  [[GtkImage.method]]
-    id = "gtk_image_new_from_icon_set"
-    ada = "Gtk_New"
+[[method]]
+id = "gtk_image_new_from_icon_set"
+ada = "Gtk_New"
 
-  [[GtkImage.method]]
-    id = "gtk_image_new_from_pixmap"
-    ada = "Gtk_New"
+[[method]]
+id = "gtk_image_new_from_pixmap"
+ada = "Gtk_New"
 
-  [[GtkImage.method]]
-    id = "gtk_image_new_from_stock"
-    ada = "Gtk_New"
+[[method]]
+id = "gtk_image_new_from_stock"
+ada = "Gtk_New"
 
-  [[GtkImage.method]]
-    id = "gtk_image_get_animation"
-    ada = "Get"
+[[method]]
+id = "gtk_image_get_animation"
+ada = "Get"
 
-  [[GtkImage.method]]
-    id = "gtk_image_set_from_animation"
-    ada = "Set"
+[[method]]
+id = "gtk_image_set_from_animation"
+ada = "Set"
 
-  [[GtkImage.method]]
-    id = "gtk_image_get_image"
-    ada = "Get"
+[[method]]
+id = "gtk_image_get_image"
+ada = "Get"
 
-  [[GtkImage.method]]
-    id = "gtk_image_get"
-    bind = false
-    # same as get_image
+[[method]]
+id = "gtk_image_get"
+bind = false
+# same as get_image
 
-  [[GtkImage.method]]
-    id = "gtk_image_set_from_image"
-    ada = "Set"
+[[method]]
+id = "gtk_image_set_from_image"
+ada = "Set"
 
-  [[GtkImage.method]]
-    id = "gtk_image_set"
-    bind = false
-    # same as set_from_image
+[[method]]
+id = "gtk_image_set"
+bind = false
+# same as set_from_image
 
-  [[GtkImage.method]]
-    id = "gtk_image_get_pixbuf"
-    ada = "Get"
+[[method]]
+id = "gtk_image_get_pixbuf"
+ada = "Get"
 
-  [[GtkImage.method]]
-    id = "gtk_image_set_from_pixbuf"
-    ada = "Set"
+[[method]]
+id = "gtk_image_set_from_pixbuf"
+ada = "Set"
 
-  [[GtkImage.method]]
-    id = "gtk_image_get_icon_set"
-    ada = "Get"
+[[method]]
+id = "gtk_image_get_icon_set"
+ada = "Get"
 
-  [[GtkImage.method]]
-    id = "gtk_image_set_from_icon_set"
-    ada = "Set"
+[[method]]
+id = "gtk_image_set_from_icon_set"
+ada = "Set"
 
-  [[GtkImage.method]]
-    id = "gtk_image_get_pixmap"
-    ada = "Get"
+[[method]]
+id = "gtk_image_get_pixmap"
+ada = "Get"
 
-  [[GtkImage.method]]
-    id = "gtk_image_set_from_pixmap"
-    ada = "Set"
+[[method]]
+id = "gtk_image_set_from_pixmap"
+ada = "Set"
 
-  [[GtkImage.method]]
-    id = "gtk_image_get_stock"
-    ada = "Get"
-    bind = false
+[[method]]
+id = "gtk_image_get_stock"
+ada = "Get"
+bind = false
 
-  [[GtkImage.method]]
-    id = "gtk_image_set_from_stock"
-    ada = "Set"
+[[method]]
+id = "gtk_image_set_from_stock"
+ada = "Set"
 
-  [[GtkImage.method]]
-    id = "gtk_image_get_gicon"
-    ada = "Get"
+[[method]]
+id = "gtk_image_get_gicon"
+ada = "Get"
 
-  [[GtkImage.method]]
-    id = "gtk_image_set_from_gicon"
-    ada = "Set"
+[[method]]
+id = "gtk_image_set_from_gicon"
+ada = "Set"
 
-  [[GtkImage.method]]
-    id = "gtk_image_set_from_file"
-    ada = "Set"
+[[method]]
+id = "gtk_image_set_from_file"
+ada = "Set"
 
-  [[GtkImage.method]]
-    id = "gtk_image_get_icon_name"
-    ada = "Get"
-    bind = false
+[[method]]
+id = "gtk_image_get_icon_name"
+ada = "Get"
+bind = false
 
-  [[GtkImage.enum]]
-    ctype = "GtkImageType"
+[[enum]]
+ctype = "GtkImageType"
 
-  [GtkImage.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure Get_Icon_Name
      (Image : access Gtk_Image_Record;
@@ -166,11 +164,11 @@
    end Get;
         '''
 
-    [[GtkImage.extra.with_spec]]
-      pkg = "GNAT.Strings"
+[[extra.with_spec]]
+pkg = "GNAT.Strings"
 
-    [[GtkImage.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Get
      (Image : access Gtk_Image_Record;

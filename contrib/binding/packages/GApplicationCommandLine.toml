@@ -1,43 +1,41 @@
-
 # ============================================================
 #   GApplicationCommandLine
 # ============================================================
-[GApplicationCommandLine]
-  into = "GApplication"
-  ada = "Glib.Application"
+into = "GApplication"
+ada = "Glib.Application"
 
-  [[GApplicationCommandLine.method]]
-    id = "g_application_command_line_create_file_for_arg"
-    bind = false
-    # requires GFile
+[[method]]
+id = "g_application_command_line_create_file_for_arg"
+bind = false
+# requires GFile
 
-  [[GApplicationCommandLine.method]]
-    id = "g_application_command_line_get_stdin"
-    bind = false
-    # requires GInputStream
+[[method]]
+id = "g_application_command_line_get_stdin"
+bind = false
+# requires GInputStream
 
-  [[GApplicationCommandLine.method]]
-    id = "g_application_command_line_get_type"
-    ada = "Get_Type_Command_Line"
+[[method]]
+id = "g_application_command_line_get_type"
+ada = "Get_Type_Command_Line"
 
-  [[GApplicationCommandLine.method]]
-    id = "g_application_command_line_get_options_dict"
-    bind = false
-    # requires GVariant
+[[method]]
+id = "g_application_command_line_get_options_dict"
+bind = false
+# requires GVariant
 
-  [[GApplicationCommandLine.method]]
-    id = "g_application_command_line_get_arguments"
+[[method]]
+id = "g_application_command_line_get_arguments"
 
-    [GApplicationCommandLine.method.return_value]
-      transfer_ownership = "full"
+[method.return_value]
+transfer_ownership = "full"
 
-    [[GApplicationCommandLine.method.parameter]]
-      name = "argc"
-      ada = ""
-      default = "null"
+[[method.parameter]]
+name = "argc"
+ada = ""
+default = "null"
 
-  [GApplicationCommandLine.extra]
-    body = '''
+[extra]
+body = '''
 
    gnat_argc : Interfaces.C.int;
    pragma Import (C, gnat_argc);
@@ -58,8 +56,8 @@
    end Run;
        '''
 
-    [[GApplicationCommandLine.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Run
       (Self : not null access Gapplication_Record) return Gint;

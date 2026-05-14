@@ -1,98 +1,96 @@
-
 # ============================================================
 #   GtkStyleContext
 # ============================================================
-[GtkStyleContext]
 
-  [[GtkStyleContext.enum]]
-    ctype = "GtkStyleContextPrintFlags"
+[[enum]]
+ctype = "GtkStyleContextPrintFlags"
 
-  [[GtkStyleContext.method]]
-    id = "gtk_style_context_has_region"
-    return_as_param = "Is_Defined"
+[[method]]
+id = "gtk_style_context_has_region"
+return_as_param = "Is_Defined"
 
-  [[GtkStyleContext.method]]
-    id = "gtk_style_context_list_classes"
-    return = "StringList"
+[[method]]
+id = "gtk_style_context_list_classes"
+return = "StringList"
 
-  [[GtkStyleContext.method]]
-    id = "gtk_style_context_list_regions"
-    return = "StringList"
+[[method]]
+id = "gtk_style_context_list_regions"
+return = "StringList"
 
-  [[GtkStyleContext.method]]
-    id = "gtk_style_context_get_valist"
-    bind = false
-    # needs valist
+[[method]]
+id = "gtk_style_context_get_valist"
+bind = false
+# needs valist
 
-  [[GtkStyleContext.method]]
-    id = "gtk_style_context_get_style_valist"
-    bind = false
-    # needs valist
+[[method]]
+id = "gtk_style_context_get_style_valist"
+bind = false
+# needs valist
 
-  [[GtkStyleContext.method]]
-    id = "gtk_style_context_lookup_color"
-    return_as_param = "Found"
+[[method]]
+id = "gtk_style_context_lookup_color"
+return_as_param = "Found"
 
-  [[GtkStyleContext.method]]
-    id = "gtk_style_context_state_is_running"
-    return_as_param = "Is_Running"
+[[method]]
+id = "gtk_style_context_state_is_running"
+return_as_param = "Is_Running"
 
-  [[GtkStyleContext.method]]
-    id = "gtk_style_context_lookup_icon_set"
-    bind = false
-    # in GtkIconSet
+[[method]]
+id = "gtk_style_context_lookup_icon_set"
+bind = false
+# in GtkIconSet
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_handle"
+[[function]]
+id = "gtk_render_handle"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_check"
+[[function]]
+id = "gtk_render_check"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_option"
+[[function]]
+id = "gtk_render_option"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_arrow"
+[[function]]
+id = "gtk_render_arrow"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_background"
+[[function]]
+id = "gtk_render_background"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_frame"
+[[function]]
+id = "gtk_render_frame"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_expander"
+[[function]]
+id = "gtk_render_expander"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_focus"
+[[function]]
+id = "gtk_render_focus"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_layout"
+[[function]]
+id = "gtk_render_layout"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_line"
+[[function]]
+id = "gtk_render_line"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_slider"
+[[function]]
+id = "gtk_render_slider"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_frame_gap"
+[[function]]
+id = "gtk_render_frame_gap"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_extension"
+[[function]]
+id = "gtk_render_extension"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_activity"
-    # <function id="gtk_render_icon_pixbuf" />
+[[function]]
+id = "gtk_render_activity"
+# <function id="gtk_render_icon_pixbuf" />
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_icon"
+[[function]]
+id = "gtk_render_icon"
 
-  [[GtkStyleContext.function]]
-    id = "gtk_render_icon_surface"
+[[function]]
+id = "gtk_render_icon_surface"
 
-  [GtkStyleContext.extra]
-    body = '''
+[extra]
+body = '''
 
    function Get_Style_Context
       (Widget : not null access Gtk_Widget_Record'Class)
@@ -107,8 +105,8 @@
    end Get_Style_Context;
        '''
 
-    [[GtkStyleContext.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Get_Style_Context
       (Widget : not null access Gtk_Widget_Record'Class)

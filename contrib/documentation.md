@@ -10,43 +10,43 @@ of `binding.py`.
 A package file describes how to bind one Ada package: it picks the Ada
 name, overrides the parent type, renames or hides methods, declares
 extra Ada types and constants to inject into the package, and so on.
-The on-disk filename does not have to match the package id. The
-top-level table key inside the file is the **C type name** that
-anchors the package (e.g. `[GtkButton]`, `[GIO]`).
+The **filename stem is the C type name** that anchors the package
+(e.g. `GtkButton.toml` binds `GtkButton`, `GIO.toml` binds `GIO`). All
+keys in the file therefore live at the top level — there is no
+wrapping table.
 
 ```toml
-[GtkButton]                # the C type anchoring this package
-  [GtkButton.doc]
-    screenshot = "gtk-button"
-    group      = "Buttons and Toggles"
+# GtkButton.toml — the filename gives the anchoring C type.
+[doc]
+  screenshot = "gtk-button"
+  group      = "Buttons and Toggles"
 
-  [[GtkButton.method]]
-    id  = "gtk_button_new_with_label"
-    ada = "Gtk_New"
+[[method]]
+  id  = "gtk_button_new_with_label"
+  ada = "Gtk_New"
 ```
 
 ## Conventions used below
 
-- A name in **bold** is a key that lives directly under the
-  top-level table for the package (e.g. `bindtype`).
-- A `[Pkg.<table>]` heading is a *table*, expected at most once.
-- A `[[Pkg.<table>]]` heading is an *array of tables*, repeatable.
+- A name in **bold** is a top-level key in the file (e.g. `bindtype`).
+- A `[<table>]` heading is a *table*, expected at most once.
+- A `[[<table>]]` heading is an *array of tables*, repeatable.
 - "Default" is what the generator does when the key is missing.
 
 ## Table of contents
 
 1. [Package-level attributes](#package-level-attributes)
-2. [`[Pkg.doc]` — package documentation](#pkgdoc--package-documentation)
-3. [`[[Pkg.parameter]]` — default parameter overrides](#pkgparameter--default-parameter-overrides)
-4. [`[[Pkg.method]]` / `[[Pkg.function]]` / `[[Pkg.callback]]` / `[[Pkg.virtual_method]]`](#pkgmethod--pkgfunction--pkgcallback--pkgvirtual_method--subprogram-overrides)
-5. [`[[Pkg.method.parameter]]` — per-parameter overrides](#pkgmethodparameter--per-parameter-overrides)
-6. [`[Pkg.method.doc]` — per-method documentation](#pkgmethoddoc--per-method-documentation)
+2. [`[doc]` — package documentation](#doc--package-documentation)
+3. [`[[parameter]]` — default parameter overrides](#parameter--default-parameter-overrides)
+4. [`[[method]]` / `[[function]]` / `[[callback]]` / `[[virtual_method]]`](#method--function--callback--virtual_method--subprogram-overrides)
+5. [`[[method.parameter]]` — per-parameter overrides](#methodparameter--per-parameter-overrides)
+6. [`[method.doc]` — per-method documentation](#methoddoc--per-method-documentation)
 7. [Type declarations injected into the package](#type-declarations-injected-into-the-package)
-8. [`[Pkg.extra]` — verbatim Ada/C injections](#pkgextra--verbatim-adac-injections)
+8. [`[extra]` — verbatim Ada/C injections](#extra--verbatim-adac-injections)
 
 ## Package-level attributes
 
-These keys sit directly under the package table.
+These keys sit at the top level of the file.
 
 | Key            | Type   | Meaning                                                                                                       | Default |
 |----------------|--------|---------------------------------------------------------------------------------------------------------------|---------|
@@ -57,14 +57,14 @@ These keys sit directly under the package table.
 | `obsolescent`  | bool   | When `true`, the generated package gets `pragma Obsolescent`.                                                 | `false` |
 
 ```toml
-[GtkHButtonBox]
-  into       = "GtkButtonBox"
-  ada        = "Gtk.Hbutton_Box"
-  parent     = "GtkButtonBox"
-  obsolescent = true
+# GtkHButtonBox.toml
+into        = "GtkButtonBox"
+ada         = "Gtk.Hbutton_Box"
+parent      = "GtkButtonBox"
+obsolescent = true
 ```
 
-## `[Pkg.doc]` — package documentation
+## `[doc]` — package documentation
 
 A single table holding the Ada-side documentation block for the
 package. All keys are optional.
@@ -78,13 +78,13 @@ package. All keys are optional.
 | `text`       | string | Free-form text. Use `'''...'''` for multi-line paragraphs.             |
 
 ```toml
-[GtkButton.doc]
-  screenshot = "gtk-button"
-  group      = "Buttons and Toggles"
-  testgtk    = "create_buttons.adb"
+[doc]
+screenshot = "gtk-button"
+group      = "Buttons and Toggles"
+testgtk    = "create_buttons.adb"
 ```
 
-## `[[Pkg.parameter]]` — default parameter overrides
+## `[[parameter]]` — default parameter overrides
 
 An array of *default* parameter overrides applied to every method of
 the package. The most common use is to rename the implicit `self`
@@ -99,21 +99,21 @@ parameter to a human-friendly Ada name.
 | `direction` | string | One of `"in"`, `"out"`, `"access"`, `"inout"`.                                         |
 
 ```toml
-[[GtkButton.parameter]]
-  name = "self"
-  ada  = "Button"
+[[parameter]]
+name = "self"
+ada  = "Button"
 ```
 
-## `[[Pkg.method]]` / `[[Pkg.function]]` / `[[Pkg.callback]]` / `[[Pkg.virtual_method]]` — subprogram overrides
+## `[[method]]` / `[[function]]` / `[[callback]]` / `[[virtual_method]]` — subprogram overrides
 
 These four arrays use **the same schema**; they only differ in which
 GIR node is matched.
 
-- `[[Pkg.method]]` — match a `<method>`.
-- `[[Pkg.function]]` — match a namespace-level `<function>` and add it
+- `[[method]]` — match a `<method>`.
+- `[[function]]` — match a namespace-level `<function>` and add it
   to the current Ada package.
-- `[[Pkg.callback]]` — match a `<callback>` referenced as a parameter.
-- `[[Pkg.virtual_method]]` — match a `<virtual-method>`. For
+- `[[callback]]` — match a `<callback>` referenced as a parameter.
+- `[[virtual_method]]` — match a `<virtual-method>`. For
   interfaces every virtual method is bound by default; for other
   classes none is bound. Use `bind = false` (or `true`) to override.
 
@@ -131,20 +131,20 @@ GIR node is matched.
 | `convention`         | string | Override the calling convention (e.g. `"C"`).                                                                                                              |
 
 ```toml
-[[GtkButton.method]]
-  id     = "gtk_button_new_with_label"
-  ada    = "Gtk_New"
+[[method]]
+id     = "gtk_button_new_with_label"
+ada    = "Gtk_New"
 
-[[GtkButton.method]]
-  id   = "gtk_button_new"
-  bind = false
+[[method]]
+id   = "gtk_button_new"
+bind = false
 ```
 
-### `[[Pkg.method.parameter]]` — per-parameter overrides
+### `[[method.parameter]]` — per-parameter overrides
 
 Repeat as needed *inside* a method/function/callback/virtual_method
 entry, in addition to the package-level defaults from
-`[[Pkg.parameter]]`.
+`[[parameter]]`.
 
 | Key          | Type   | Meaning                                                                                                                                |
 |--------------|--------|----------------------------------------------------------------------------------------------------------------------------------------|
@@ -159,13 +159,13 @@ entry, in addition to the package-level defaults from
 | `transfer_ownership` | string | `"full"` if the callee takes ownership.                                                                                       |
 
 ```toml
-[[GtkButton.method.parameter]]
-  name       = "label"
-  default    = "\"\""
-  allow_none = "1"
+[[method.parameter]]
+name       = "label"
+default    = "\"\""
+allow_none = "1"
 ```
 
-### `[Pkg.method.doc]` — per-method documentation
+### `[method.doc]` — per-method documentation
 
 A single table per method.
 
@@ -180,7 +180,7 @@ These arrays let a TOML file declare additional Ada types (enums,
 records, constants, lists) inside the generated package and register
 the relevant C-to-Ada naming mappings with the binder.
 
-### `[[Pkg.enum]]`
+### `[[enum]]`
 
 Bind a `<enumeration>` or `<bitfield>` as an Ada type inside this
 package. The generator also auto-derives naming exceptions for the
@@ -195,12 +195,13 @@ members (overrideable in `data.cname_to_adaname`).
 | `ignore`     | string | Space-separated list of values that must not be bound.               | `""` |
 
 ```toml
-[[GtkEnums.enum]]
-  ctype = "GtkIconSize"
-  asbitfield = true
+# GtkEnums.toml
+[[enum]]
+ctype = "GtkIconSize"
+asbitfield = true
 ```
 
-### `[[Pkg.constant]]`
+### `[[constant]]`
 
 Bind every namespace `<constant>` whose C name matches `prefix_regexp`,
 stripping `prefix` to compute the Ada identifier.
@@ -210,7 +211,7 @@ stripping `prefix` to compute the Ada identifier.
 | `prefix_regexp` | string | Python regex matching the C name.                    |
 | `prefix`        | string | Stripped from the C name to compute the Ada name.    |
 
-### `[[Pkg.record]]`
+### `[[record]]`
 
 Bind a `<record>` (or `<union>`) as an Ada record type.
 
@@ -220,14 +221,14 @@ Bind a `<record>` (or `<union>`) as an Ada record type.
 | `ada`     | string | Override the Ada record name.                                 | derived |
 | `private` | bool   | Emit the record as a private type.                            | `false` |
 
-#### `[[Pkg.record.field]]` — per-field type override
+#### `[[record.field]]` — per-field type override
 
 | Key     | Type   | Meaning                                              |
 |---------|--------|------------------------------------------------------|
 | `name`  | string | **Required.** Field name as it appears in the GIR.   |
 | `ctype` | string | Override the C type for the field.                   |
 
-#### `[[Pkg.record.union]]` — union discriminant mapping
+#### `[[record.union]]` — union discriminant mapping
 
 One entry per value of the discriminant, mapping it to the corresponding
 field.
@@ -237,7 +238,7 @@ field.
 | `value` | string | C enumerator value.                               |
 | `field` | string | Name of the field that this value selects.        |
 
-### `[[Pkg.list]]` and `[[Pkg.slist]]`
+### `[[list]]` and `[[slist]]`
 
 Instantiate `Glib.Glist.Generic_List` (resp. `Glib.GSlist.Generic_SList`)
 inside the package, registering a new C type that the rest of the file
@@ -249,7 +250,7 @@ can use as a parameter type.
 | `ctype`   | string | C type of the element contained in the list (a `List` / `SList` suffix is appended).      |
 | `section` | string | Optional section name of the generated package where the instantiation should be emitted. |
 
-### `[[Pkg.type]]`
+### `[[type]]`
 
 Declare a hand-written Ada type or subtype.
 
@@ -258,7 +259,7 @@ Declare a hand-written Ada type or subtype.
 | `name`    | string | **Required.** Ada name of the type.           |
 | `subtype` | bool   | When `true`, emit a `subtype` declaration.    |
 
-## `[Pkg.extra]` — verbatim Ada/C injections
+## `[extra]` — verbatim Ada/C injections
 
 This is the escape hatch for code that the generator cannot derive
 from GIR. Everything declared here is injected into the generated
@@ -268,25 +269,25 @@ package verbatim.
 |--------|--------|----------------------------------------------------------------------------------------------------------|
 | `body` | string | Code inserted into the package body. Inserted **before** the generated subprograms by default.            |
 
-### `[[Pkg.extra.with_spec]]` — extra `with` clauses in the spec
+### `[[extra.with_spec]]` — extra `with` clauses in the spec
 
 | Key   | Type   | Meaning                                  | Default |
 |-------|--------|------------------------------------------|---------|
 | `pkg` | string | Package to `with`.                       |         |
 | `use` | bool   | Whether to emit a `use` clause too.       | `true`  |
 
-### `[[Pkg.extra.with_body]]` — extra `with` clauses in the body
+### `[[extra.with_body]]` — extra `with` clauses in the body
 
 Same keys as `with_spec`.
 
-### `[[Pkg.extra.spec]]` — code injected into the spec
+### `[[extra.spec]]` — code injected into the spec
 
 | Key       | Type   | Meaning                                          | Default |
 |-----------|--------|--------------------------------------------------|---------|
 | `text`    | string | Code to insert.                                  |         |
 | `private` | bool   | Append to the private part rather than visible. | `false` |
 
-### `[[Pkg.extra.type]]` — map a C type to an Ada type
+### `[[extra.type]]` — map a C type to an Ada type
 
 Lets you declare ad-hoc Ada types that the generator can refer to as
 return / parameter / field types. The mapping is also registered in
@@ -298,30 +299,31 @@ the naming table.
 | `ada`   | string | Ada type name.                                                          |
 | `text`  | string | Optional Ada type declaration, placed after generated types but before subprograms. |
 
-### `[[Pkg.extra.gir_element]]` — splice raw GIR XML
+### `[[extra.gir_element]]` — splice raw GIR XML
 
 | Key   | Type   | Meaning                                                                       |
 |-------|--------|-------------------------------------------------------------------------------|
 | `xml` | string | XML element matching what would have appeared in the GIR file. Used to add a method or other GIR construct that the actual .gir does not expose. |
 
 ```toml
-[GtkEnums.extra]
-  body = '''
+# GtkEnums.toml
+[extra]
+body = '''
     function Convert (S : String) return System.Address is
     begin
        ...
     end Convert;
   '''
 
-  [[GtkEnums.extra.with_spec]]
-    pkg = "Glib.Glist"
+[[extra.with_spec]]
+pkg = "Glib.Glist"
 
-  [[GtkEnums.extra.with_body]]
-    pkg = "Ada.Unchecked_Conversion"
-    use = false
+[[extra.with_body]]
+pkg = "Ada.Unchecked_Conversion"
+use = false
 
-  [[GtkEnums.extra.spec]]
-    text = '''
+[[extra.spec]]
+text = '''
       function Convert (S : String) return System.Address;
     '''
 ```

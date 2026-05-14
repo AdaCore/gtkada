@@ -1,12 +1,10 @@
-
 # ============================================================
 #   GtkBin
 # ============================================================
-[GtkBin]
 
-  [GtkBin.doc]
-    group = "Abstract base classes"
+[doc]
+group = "Abstract base classes"
 
-  [[GtkBin.parameter]]
-    name = "self"
-    ada = "Bin"
+[[parameter]]
+name = "self"
+ada = "Bin"

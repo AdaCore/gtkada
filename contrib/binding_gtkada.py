@@ -24,18 +24,19 @@ class GtkAda(object):
 
     def __init__(self, location):
         from os import listdir
-        from os.path import join
+        from os.path import join, splitext
         from pathlib import Path
 
         self.packages = {}
         tomls = filter(lambda f: f.endswith('.toml'), listdir(Path(location)))
-        # Build GtkAda package from each toml file
+        # The C type anchoring each package is the filename stem; the parsed
+        # TOML dict is the package node itself.
         for t in tomls:
             filepath = join(location, t)
             with open(filepath, 'rb') as f:
                 data = tomllib.load(f)
-            for id, node in data.items():
-                self.packages[id] = GtkAdaPackage(id, node)
+            id = splitext(t)[0]
+            self.packages[id] = GtkAdaPackage(id, data)
 
     def get_pkg(self, pkg):
         """Return the GtkAdaPackage for a given package"""

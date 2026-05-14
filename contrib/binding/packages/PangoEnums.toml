@@ -1,63 +1,61 @@
-
 # ============================================================
 #   PangoEnums
 # ============================================================
-[PangoEnums]
 
-  [[PangoEnums.enum]]
-    ctype = "PangoAlignment"
-    ada = "Alignment"
+[[enum]]
+ctype = "PangoAlignment"
+ada = "Alignment"
 
-  [[PangoEnums.enum]]
-    ctype = "PangoAttrType"
-    ada = "Attr_Type"
+[[enum]]
+ctype = "PangoAttrType"
+ada = "Attr_Type"
 
-  [[PangoEnums.enum]]
-    ctype = "PangoCoverageLevel"
-    ada = "Coverage_Level"
+[[enum]]
+ctype = "PangoCoverageLevel"
+ada = "Coverage_Level"
 
-  [[PangoEnums.enum]]
-    ctype = "PangoDirection"
-    ada = "Direction"
+[[enum]]
+ctype = "PangoDirection"
+ada = "Direction"
 
-  [[PangoEnums.enum]]
-    ctype = "PangoFontMask"
-    ada = "Font_Mask"
+[[enum]]
+ctype = "PangoFontMask"
+ada = "Font_Mask"
 
-  [[PangoEnums.enum]]
-    ctype = "PangoGravity"
-    ada = "Gravity"
+[[enum]]
+ctype = "PangoGravity"
+ada = "Gravity"
 
-  [[PangoEnums.enum]]
-    ctype = "PangoGravityHint"
-    ada = "GravityHint"
+[[enum]]
+ctype = "PangoGravityHint"
+ada = "GravityHint"
 
-  [[PangoEnums.enum]]
-    ctype = "PangoStretch"
-    ada = "Stretch"
+[[enum]]
+ctype = "PangoStretch"
+ada = "Stretch"
 
-  [[PangoEnums.enum]]
-    ctype = "PangoStyle"
-    ada = "Style"
+[[enum]]
+ctype = "PangoStyle"
+ada = "Style"
 
-  [[PangoEnums.enum]]
-    ctype = "PangoUnderline"
-    ada = "Underline"
+[[enum]]
+ctype = "PangoUnderline"
+ada = "Underline"
 
-  [[PangoEnums.enum]]
-    ctype = "PangoVariant"
-    ada = "Variant"
+[[enum]]
+ctype = "PangoVariant"
+ada = "Variant"
 
-  [[PangoEnums.enum]]
-    ctype = "PangoWeight"
-    ada = "Weight"
+[[enum]]
+ctype = "PangoWeight"
+ada = "Weight"
 
-  [[PangoEnums.enum]]
-    ctype = "PangoWrapMode"
-    ada = "Wrap_Mode"
+[[enum]]
+ctype = "PangoWrapMode"
+ada = "Wrap_Mode"
 
-  [PangoEnums.extra]
-    body = '''
+[extra]
+body = '''
 
    function To_Pixels (Pango_Units : Gint) return Gint is
    begin
@@ -69,11 +67,11 @@
    end To_Pixels;
        '''
 
-    [[PangoEnums.extra.with_spec]]
-      pkg = "Glib"
+[[extra.with_spec]]
+pkg = "Glib"
 
-    [[PangoEnums.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    Pango_Scale : constant := 1024;
    --  All internal units in Pango are expressed in terms of this unit. A

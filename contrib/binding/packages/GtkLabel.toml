@@ -1,49 +1,47 @@
-
 # ============================================================
 #   GtkLabel
 # ============================================================
-[GtkLabel]
 
-  [GtkLabel.doc]
-    screenshot = "gtk-label"
-    group = "Display widgets"
-    testgtk = "create_label.adb"
+[doc]
+screenshot = "gtk-label"
+group = "Display widgets"
+testgtk = "create_label.adb"
 
-  [[GtkLabel.parameter]]
-    name = "self"
-    ada = "Label"
+[[parameter]]
+name = "self"
+ada = "Label"
 
-  [[GtkLabel.method]]
-    id = "gtk_label_new"
+[[method]]
+id = "gtk_label_new"
 
-    [[GtkLabel.method.parameter]]
-      name = "str"
-      default = "\"\""
+[[method.parameter]]
+name = "str"
+default = "\"\""
 
-  [[GtkLabel.method]]
-    id = "gtk_label_get"
-    bind = false
+[[method]]
+id = "gtk_label_get"
+bind = false
 
-  [[GtkLabel.method]]
-    id = "gtk_label_select_region"
+[[method]]
+id = "gtk_label_select_region"
 
-    [[GtkLabel.method.parameter]]
-      name = "start_offset"
-      default = "-1"
+[[method.parameter]]
+name = "start_offset"
+default = "-1"
 
-    [[GtkLabel.method.parameter]]
-      name = "end_offset"
-      default = "-1"
+[[method.parameter]]
+name = "end_offset"
+default = "-1"
 
-  [[GtkLabel.method]]
-    id = "gtk_label_get_selection_bounds"
-    return_as_param = "Has_Selection"
+[[method]]
+id = "gtk_label_get_selection_bounds"
+return_as_param = "Has_Selection"
 
-  [[GtkLabel.method]]
-    id = "gtk_label_set_pattern"
+[[method]]
+id = "gtk_label_set_pattern"
 
-    [GtkLabel.method.doc]
-      text = '''
+[method.doc]
+text = '''
 Change the underlines pattern.
 
 Pattern is a simple string made of underscore and space characters,

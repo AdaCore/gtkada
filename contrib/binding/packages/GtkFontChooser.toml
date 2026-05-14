@@ -1,8 +1,6 @@
-
 # ============================================================
 #   GtkFontChooser
 # ============================================================
-[GtkFontChooser]
 
-  [[GtkFontChooser.enum]]
-    ctype = "GtkFontChooserLevel"
+[[enum]]
+ctype = "GtkFontChooserLevel"

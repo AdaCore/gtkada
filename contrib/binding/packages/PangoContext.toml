@@ -1,28 +1,26 @@
-
 # ============================================================
 #   PangoContext
 # ============================================================
-[PangoContext]
 
-  [[PangoContext.method]]
-    id = "pango_context_get_font_map"
-    bind = false
-    # circular dep
+[[method]]
+id = "pango_context_get_font_map"
+bind = false
+# circular dep
 
-  [[PangoContext.method]]
-    id = "pango_context_set_font_map"
-    bind = false
-    # circular dep
+[[method]]
+id = "pango_context_set_font_map"
+bind = false
+# circular dep
 
-  [PangoContext.extra]
+[extra]
 
-    [[PangoContext.extra.with_spec]]
-      pkg = "Pango.Font_Family"
+[[extra.with_spec]]
+pkg = "Pango.Font_Family"
 
-  [[PangoContext.method]]
-    id = "pango_context_list_families"
-    return = "Pango_Font_Family_Array"
-    body = '''
+[[method]]
+id = "pango_context_list_families"
+return = "Pango_Font_Family_Array"
+body = '''
       type font_family_array_bounded is array (Natural) of System.Address;
 
       procedure Internal
@@ -52,10 +50,10 @@
          return Result;
       end;'''
 
-    [[PangoContext.method.parameter]]
-      name = "families"
-      ada = ""
+[[method.parameter]]
+name = "families"
+ada = ""
 
-    [[PangoContext.method.parameter]]
-      name = "n_families"
-      ada = ""
+[[method.parameter]]
+name = "n_families"
+ada = ""

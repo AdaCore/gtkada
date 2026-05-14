@@ -1,12 +1,10 @@
-
 # ============================================================
 #   GtkPrintSettings
 # ============================================================
-[GtkPrintSettings]
 
-  [[GtkPrintSettings.method]]
-    id = "gtk_print_settings_set_page_ranges"
-    body = '''
+[[method]]
+id = "gtk_print_settings_set_page_ranges"
+body = '''
       procedure Internal
         (Settings    : System.Address;
          Page_Ranges : System.Address;
@@ -18,19 +16,19 @@
          Page_Ranges (Page_Ranges'First)'Address,
          Page_Ranges'Length);'''
 
-    [[GtkPrintSettings.method.parameter]]
-      name = "page_ranges"
-      type = "Gtk_Page_Range_Array"
+[[method.parameter]]
+name = "page_ranges"
+type = "Gtk_Page_Range_Array"
 
-    [[GtkPrintSettings.method.parameter]]
-      name = "num_ranges"
-      ada = ""
-      default = "-1"
+[[method.parameter]]
+name = "num_ranges"
+ada = ""
+default = "-1"
 
-  [[GtkPrintSettings.method]]
-    id = "gtk_print_settings_get_page_ranges"
-    return = "Gtk_Page_Range_Array"
-    body = '''
+[[method]]
+id = "gtk_print_settings_get_page_ranges"
+return = "Gtk_Page_Range_Array"
+body = '''
       type Internal_Page_Range_Array is
         array (Natural) of Gtk_Page_Range_Record;
       pragma Convention (C, Internal_Page_Range_Array);
@@ -60,17 +58,17 @@
          return Ranges;
       end;'''
 
-    [[GtkPrintSettings.method.parameter]]
-      name = "num_ranges"
-      ada = ""
-      default = "-1"
+[[method.parameter]]
+name = "num_ranges"
+ada = ""
+default = "-1"
 
-  [GtkPrintSettings.extra]
+[extra]
 
-    [[GtkPrintSettings.extra.type]]
-      ctype = "GtkPageRange"
-      ada = "Gtk_Page_Range_Record"
-      text = '''
+[[extra.type]]
+ctype = "GtkPageRange"
+ada = "Gtk_Page_Range_Record"
+text = '''
 
    type Gtk_Page_Range_Record is record
       Range_Start : Gint;

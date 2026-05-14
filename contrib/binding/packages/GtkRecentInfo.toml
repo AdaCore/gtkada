@@ -1,33 +1,31 @@
-
 # ============================================================
 #   GtkRecentInfo
 # ============================================================
-[GtkRecentInfo]
-    # into="GtkRecentManager">
+# into="GtkRecentManager">
 
-  [[GtkRecentInfo.method]]
-    id = "gtk_recent_info_ref"
-    return = "void"
-    # ??? Disabled for now, we are creating an unconstrained local var
+[[method]]
+id = "gtk_recent_info_ref"
+return = "void"
+# ??? Disabled for now, we are creating an unconstrained local var
 
-  [[GtkRecentInfo.method]]
-    id = "gtk_recent_info_get_application_info"
-    bind = false
-    return = "void"
-    # These functions return the length separately, not needed in Ada
+[[method]]
+id = "gtk_recent_info_get_application_info"
+bind = false
+return = "void"
+# These functions return the length separately, not needed in Ada
 
-  [[GtkRecentInfo.method]]
-    id = "gtk_recent_info_get_applications"
-    bind = false
+[[method]]
+id = "gtk_recent_info_get_applications"
+bind = false
 
-  [[GtkRecentInfo.method]]
-    id = "gtk_recent_info_get_groups"
-    bind = false
+[[method]]
+id = "gtk_recent_info_get_groups"
+bind = false
 
-  [GtkRecentInfo.extra]
+[extra]
 
-    [[GtkRecentInfo.extra.type]]
-      text = '''
+[[extra.type]]
+text = '''
 
    subtype time_t is Long_Integer;
    --  Type to interface with C's time_t type.  To convert this to/from

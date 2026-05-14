@@ -1,97 +1,95 @@
-
 # ============================================================
 #   GdkDisplay
 # ============================================================
-[GdkDisplay]
 
-  [[GdkDisplay.method]]
-    id = "gdk_display_get_app_launch_context"
-    bind = false
-    # requires GdkAppLaunchContext
+[[method]]
+id = "gdk_display_get_app_launch_context"
+bind = false
+# requires GdkAppLaunchContext
 
-  [[GdkDisplay.method]]
-    id = "gdk_display_list_devices"
-    bind = false
-    # deprecated
+[[method]]
+id = "gdk_display_list_devices"
+bind = false
+# deprecated
 
-  [[GdkDisplay.method]]
-    id = "gdk_display_get_default_screen"
-    bind = false
-    # in gdk-screen.ads
+[[method]]
+id = "gdk_display_get_default_screen"
+bind = false
+# in gdk-screen.ads
 
-  [[GdkDisplay.method]]
-    id = "gdk_display_get_screen"
-    bind = false
-    # in gdk-screen.ads
+[[method]]
+id = "gdk_display_get_screen"
+bind = false
+# in gdk-screen.ads
 
-  [[GdkDisplay.method]]
-    id = "gdk_display_get_pointer"
-    bind = false
-    # deprecated by Gdk.Device.Get_Position
+[[method]]
+id = "gdk_display_get_pointer"
+bind = false
+# deprecated by Gdk.Device.Get_Position
 
-  [[GdkDisplay.method]]
-    id = "gdk_display_warp_pointer"
-    bind = false
-    # deprecated, Gdk.Device.Warp
+[[method]]
+id = "gdk_display_warp_pointer"
+bind = false
+# deprecated, Gdk.Device.Warp
 
-  [[GdkDisplay.method]]
-    id = "gdk_display_get_device_manager"
-    bind = false
-    # in gdk-device_manager.ads
+[[method]]
+id = "gdk_display_get_device_manager"
+bind = false
+# in gdk-device_manager.ads
 
-  [[GdkDisplay.method]]
-    id = "gdk_display_device_is_grabbed"
-    bind = false
-    # circular dependency
+[[method]]
+id = "gdk_display_device_is_grabbed"
+bind = false
+# circular dependency
 
-  [[GdkDisplay.method]]
-    id = "gdk_display_store_clipboard"
-    bind = false
-    # see below
+[[method]]
+id = "gdk_display_store_clipboard"
+bind = false
+# see below
 
-  [[GdkDisplay.method]]
-    id = "gdk_display_get_window_at_pointer"
-    bind = false
-    # see below
+[[method]]
+id = "gdk_display_get_window_at_pointer"
+bind = false
+# see below
 
-  [[GdkDisplay.method]]
-    id = "gdk_display_get_default_seat"
-    return = "GObject*"
+[[method]]
+id = "gdk_display_get_default_seat"
+return = "GObject*"
 
-  [[GdkDisplay.method]]
-    id = "gdk_display_list_seats"
-    return = "ObjectList"
+[[method]]
+id = "gdk_display_list_seats"
+return = "ObjectList"
 
-  [[GdkDisplay.method]]
-    id = "::monitor-added"
+[[method]]
+id = "::monitor-added"
 
-    [[GdkDisplay.method.parameter]]
-      name = "monitor"
-      ctype = "GObject*"
+[[method.parameter]]
+name = "monitor"
+ctype = "GObject*"
 
-  [[GdkDisplay.method]]
-    id = "::monitor-removed"
+[[method]]
+id = "::monitor-removed"
 
-    [[GdkDisplay.method.parameter]]
-      name = "monitor"
-      ctype = "GObject*"
+[[method.parameter]]
+name = "monitor"
+ctype = "GObject*"
 
-  [[GdkDisplay.method]]
-    id = "::seat-added"
+[[method]]
+id = "::seat-added"
 
-    [[GdkDisplay.method.parameter]]
-      name = "seat"
-      ctype = "GObject*"
+[[method.parameter]]
+name = "seat"
+ctype = "GObject*"
 
-  [[GdkDisplay.method]]
-    id = "::seat-removed"
+[[method]]
+id = "::seat-removed"
 
-    [[GdkDisplay.method.parameter]]
-      name = "seat"
-      ctype = "GObject*"
+[[method.parameter]]
+name = "seat"
+ctype = "GObject*"
 
-  [GdkDisplay.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure Store_Clipboard
      (Display          : not null access Gdk_Display_Record;
@@ -130,8 +128,8 @@
    end Get_Window_At_Pointer;
          '''
 
-    [[GdkDisplay.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Store_Clipboard
       (Display          : not null access Gdk_Display_Record;

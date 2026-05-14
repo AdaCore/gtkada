@@ -1,176 +1,174 @@
-
 # ============================================================
 #   GtkTextBuffer
 # ============================================================
-[GtkTextBuffer]
 
-  [[GtkTextBuffer.parameter]]
-    name = "self"
-    ada = "Buffer"
-    # the following involve a complex callback type and are not needed
+[[parameter]]
+name = "self"
+ada = "Buffer"
+# the following involve a complex callback type and are not needed
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_register_serialize_format"
-    bind = false
+[[method]]
+id = "gtk_text_buffer_register_serialize_format"
+bind = false
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_register_deserialize_format"
-    bind = false
+[[method]]
+id = "gtk_text_buffer_register_deserialize_format"
+bind = false
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_serialize"
-    bind = false
+[[method]]
+id = "gtk_text_buffer_serialize"
+bind = false
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_deserialize"
-    bind = false
+[[method]]
+id = "gtk_text_buffer_deserialize"
+bind = false
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_get_serialize_formats"
-    bind = false
+[[method]]
+id = "gtk_text_buffer_get_serialize_formats"
+bind = false
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_get_deserialize_formats"
-    bind = false
+[[method]]
+id = "gtk_text_buffer_get_deserialize_formats"
+bind = false
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_new"
+[[method]]
+id = "gtk_text_buffer_new"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "table"
-      default = "null"
+[[method.parameter]]
+name = "table"
+default = "null"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_create_mark"
+[[method]]
+id = "gtk_text_buffer_create_mark"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "left_gravity"
-      default = "True"
+[[method.parameter]]
+name = "left_gravity"
+default = "True"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_get_text"
+[[method]]
+id = "gtk_text_buffer_get_text"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "include_hidden_chars"
-      default = "False"
+[[method.parameter]]
+name = "include_hidden_chars"
+default = "False"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_get_slice"
+[[method]]
+id = "gtk_text_buffer_get_slice"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "include_hidden_chars"
-      default = "False"
+[[method.parameter]]
+name = "include_hidden_chars"
+default = "False"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_paste_clipboard"
+[[method]]
+id = "gtk_text_buffer_paste_clipboard"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "override_location"
-      ada = ""
-      ctype = "gpointer"
-      default = "System.Null_Address"
+[[method.parameter]]
+name = "override_location"
+ada = ""
+ctype = "gpointer"
+default = "System.Null_Address"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "default_editable"
-      default = "True"
+[[method.parameter]]
+name = "default_editable"
+default = "True"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_get_selection_bounds"
-    return_as_param = "Result"
+[[method]]
+id = "gtk_text_buffer_get_selection_bounds"
+return_as_param = "Result"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "start"
-      direction = "out"
+[[method.parameter]]
+name = "start"
+direction = "out"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "end"
-      direction = "out"
+[[method.parameter]]
+name = "end"
+direction = "out"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_delete"
+[[method]]
+id = "gtk_text_buffer_delete"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "start"
-      direction = "inout"
+[[method.parameter]]
+name = "start"
+direction = "inout"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "end"
-      direction = "inout"
+[[method.parameter]]
+name = "end"
+direction = "inout"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_delete_interactive"
-    return_as_param = "Result"
+[[method]]
+id = "gtk_text_buffer_delete_interactive"
+return_as_param = "Result"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "start"
-      direction = "inout"
+[[method.parameter]]
+name = "start"
+direction = "inout"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "end"
-      direction = "inout"
+[[method.parameter]]
+name = "end"
+direction = "inout"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_insert"
+[[method]]
+id = "gtk_text_buffer_insert"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "iter"
-      direction = "inout"
+[[method.parameter]]
+name = "iter"
+direction = "inout"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "len"
-      ada = ""
-      default = "-1"
+[[method.parameter]]
+name = "len"
+ada = ""
+default = "-1"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_insert_interactive"
+[[method]]
+id = "gtk_text_buffer_insert_interactive"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "iter"
-      direction = "inout"
+[[method.parameter]]
+name = "iter"
+direction = "inout"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "len"
-      ada = ""
-      default = "-1"
+[[method.parameter]]
+name = "len"
+ada = ""
+default = "-1"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_insert_interactive_at_cursor"
+[[method]]
+id = "gtk_text_buffer_insert_interactive_at_cursor"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "len"
-      ada = ""
-      default = "-1"
+[[method.parameter]]
+name = "len"
+ada = ""
+default = "-1"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_set_text"
+[[method]]
+id = "gtk_text_buffer_set_text"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "len"
-      ada = ""
-      default = "-1"
+[[method.parameter]]
+name = "len"
+ada = ""
+default = "-1"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_insert_at_cursor"
+[[method]]
+id = "gtk_text_buffer_insert_at_cursor"
 
-    [[GtkTextBuffer.method.parameter]]
-      name = "len"
-      ada = ""
-      default = "-1"
+[[method.parameter]]
+name = "len"
+ada = ""
+default = "-1"
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_create_tag"
-    bind = false
-    # vararg, bound manually below
+[[method]]
+id = "gtk_text_buffer_create_tag"
+bind = false
+# vararg, bound manually below
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_insert_with_tags"
-    bind = false
-    # vararg, bound manually below
-    # body bound manually to add safety check
+[[method]]
+id = "gtk_text_buffer_insert_with_tags"
+bind = false
+# vararg, bound manually below
+# body bound manually to add safety check
 
-  [[GtkTextBuffer.method]]
-    id = "gtk_text_buffer_get_iter_at_line_offset"
-    body = '''
+[[method]]
+id = "gtk_text_buffer_get_iter_at_line_offset"
+body = '''
       procedure Internal
          (Buffer      : System.Address;
           Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
@@ -190,8 +188,8 @@
          end if;
       end if;'''
 
-  [GtkTextBuffer.extra]
-    body = '''
+[extra]
+body = '''
 
    ------------
    -- Insert --
@@ -355,11 +353,11 @@
    end Create_Tag;
        '''
 
-    [[GtkTextBuffer.extra.with_spec]]
-      pkg = "Gtkada.Types"
+[[extra.with_spec]]
+pkg = "Gtkada.Types"
 
-    [[GtkTextBuffer.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Insert
      (Buffer : access Gtk_Text_Buffer_Record;

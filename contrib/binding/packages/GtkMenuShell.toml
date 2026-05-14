@@ -1,9 +1,7 @@
-
 # ============================================================
 #   GtkMenuShell
 # ============================================================
-[GtkMenuShell]
 
-  [[GtkMenuShell.parameter]]
-    name = "self"
-    ada = "Menu_Shell"
+[[parameter]]
+name = "self"
+ada = "Menu_Shell"

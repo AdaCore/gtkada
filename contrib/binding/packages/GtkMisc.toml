@@ -1,21 +1,19 @@
-
 # ============================================================
 #   GtkMisc
 # ============================================================
-[GtkMisc]
 
-  [GtkMisc.doc]
-    group = "Abstract base classes"
+[doc]
+group = "Abstract base classes"
 
-  [[GtkMisc.parameter]]
-    name = "self"
-    ada = "Misc"
+[[parameter]]
+name = "self"
+ada = "Misc"
 
-  [[GtkMisc.method]]
-    id = "gtk_misc_set_alignment"
+[[method]]
+id = "gtk_misc_set_alignment"
 
-    [GtkMisc.method.doc]
-      text = '''
+[method.doc]
+text = '''
 Modify the alignment for the widget.
 Xalign and Yalign are both values between 0.0 and 1.0 that specify the
 alignment: if Xalign is 0.0, the widget will be left aligned; if it is

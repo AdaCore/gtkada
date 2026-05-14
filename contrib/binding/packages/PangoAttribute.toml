@@ -1,52 +1,50 @@
-
 # ============================================================
 #   PangoAttribute
 # ============================================================
-[PangoAttribute]
-  ada = "Pango.Attributes"
+ada = "Pango.Attributes"
 
-  [[PangoAttribute.slist]]
-    ada = "Pango_Attribute_SList"
-    ctype = "PangoAttribute"
+[[slist]]
+ada = "Pango_Attribute_SList"
+ctype = "PangoAttribute"
 
-  [[PangoAttribute.method]]
-    id = "pango_attribute_init"
-    bind = false
-    # low-level
+[[method]]
+id = "pango_attribute_init"
+bind = false
+# low-level
 
-  [[PangoAttribute.method]]
-    id = "pango_attribute_get_type"
-    ada = "Get_Type_Attribute"
+[[method]]
+id = "pango_attribute_get_type"
+ada = "Get_Type_Attribute"
 
-  [[PangoAttribute.function]]
-    id = "pango_attr_underline_new"
+[[function]]
+id = "pango_attr_underline_new"
 
-  [[PangoAttribute.function]]
-    id = "pango_attr_background_new"
+[[function]]
+id = "pango_attr_background_new"
 
-  [[PangoAttribute.function]]
-    id = "pango_attr_foreground_new"
+[[function]]
+id = "pango_attr_foreground_new"
 
-  [[PangoAttribute.function]]
-    id = "pango_attr_family_new"
+[[function]]
+id = "pango_attr_family_new"
 
-  [[PangoAttribute.function]]
-    id = "pango_attr_strikethrough_new"
+[[function]]
+id = "pango_attr_strikethrough_new"
 
-  [[PangoAttribute.function]]
-    id = "pango_attr_variant_new"
+[[function]]
+id = "pango_attr_variant_new"
 
-  [[PangoAttribute.function]]
-    id = "pango_attr_weight_new"
+[[function]]
+id = "pango_attr_weight_new"
 
-  [[PangoAttribute.function]]
-    id = "pango_attr_stretch_new"
+[[function]]
+id = "pango_attr_stretch_new"
 
-  [[PangoAttribute.function]]
-    id = "pango_attr_scale_new"
+[[function]]
+id = "pango_attr_scale_new"
 
-  [[PangoAttribute.function]]
-    id = "pango_attr_rise_new"
+[[function]]
+id = "pango_attr_rise_new"
 
-  [[PangoAttribute.function]]
-    id = "pango_attr_gravity_new"
+[[function]]
+id = "pango_attr_gravity_new"

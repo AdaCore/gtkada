@@ -1,124 +1,122 @@
-
 # ============================================================
 #   GtkAccelGroup
 # ============================================================
-[GtkAccelGroup]
 
-  [[GtkAccelGroup.parameter]]
-    name = "self"
-    ada = "Accel_Group"
+[[parameter]]
+name = "self"
+ada = "Accel_Group"
 
-  [[GtkAccelGroup.method]]
-    id = "gtk_accel_group_new"
+[[method]]
+id = "gtk_accel_group_new"
 
-    [GtkAccelGroup.method.doc]
-      text = '''
+[method.doc]
+text = '''
 Creates a new Gtk.Accel_Group.Gtk_Accel_Group.
 Remember to call Gtk.Window.Add_Accel_Group to active the group.'''
 
-  [[GtkAccelGroup.method]]
-    id = "gtk_accel_group_connect"
+[[method]]
+id = "gtk_accel_group_connect"
 
-    [[GtkAccelGroup.method.parameter]]
-      name = "closure"
-      type = "C_Gtk_Accel_Group_Activate"
+[[method.parameter]]
+name = "closure"
+type = "C_Gtk_Accel_Group_Activate"
 
-  [[GtkAccelGroup.method]]
-    id = "gtk_accel_group_disconnect"
+[[method]]
+id = "gtk_accel_group_disconnect"
 
-    [[GtkAccelGroup.method.parameter]]
-      name = "closure"
-      type = "C_Gtk_Accel_Group_Activate"
+[[method.parameter]]
+name = "closure"
+type = "C_Gtk_Accel_Group_Activate"
 
-  [[GtkAccelGroup.method]]
-    id = "gtk_accel_group_connect_by_path"
+[[method]]
+id = "gtk_accel_group_connect_by_path"
 
-    [[GtkAccelGroup.method.parameter]]
-      name = "closure"
-      type = "C_Gtk_Accel_Group_Activate"
+[[method.parameter]]
+name = "closure"
+type = "C_Gtk_Accel_Group_Activate"
 
-  [[GtkAccelGroup.method]]
-    id = "gtk_accel_group_query"
-    bind = false
-    # ???Would be nice
+[[method]]
+id = "gtk_accel_group_query"
+bind = false
+# ???Would be nice
 
-  [[GtkAccelGroup.method]]
-    id = "gtk_accel_group_from_accel_closure"
+[[method]]
+id = "gtk_accel_group_from_accel_closure"
 
-    [[GtkAccelGroup.method.parameter]]
-      name = "closure"
-      type = "C_Gtk_Accel_Group_Activate"
+[[method.parameter]]
+name = "closure"
+type = "C_Gtk_Accel_Group_Activate"
 
-  [[GtkAccelGroup.function]]
-    id = "gtk_accel_groups_activate"
+[[function]]
+id = "gtk_accel_groups_activate"
 
-    [[GtkAccelGroup.function.parameter]]
-      name = "accel_key"
-      type = "Gdk.Types.Gdk_Key_Type"
+[[function.parameter]]
+name = "accel_key"
+type = "Gdk.Types.Gdk_Key_Type"
 
-  [[GtkAccelGroup.function]]
-    id = "gtk_accel_groups_from_object"
-    ada = "From_Object"
-    return = "ObjectSList"
+[[function]]
+id = "gtk_accel_groups_from_object"
+ada = "From_Object"
+return = "ObjectSList"
 
-  [[GtkAccelGroup.function]]
-    id = "gtk_accelerator_valid"
+[[function]]
+id = "gtk_accelerator_valid"
 
-    [[GtkAccelGroup.function.parameter]]
-      name = "keyval"
-      type = "Gdk.Types.Gdk_Key_Type"
+[[function.parameter]]
+name = "keyval"
+type = "Gdk.Types.Gdk_Key_Type"
 
-  [[GtkAccelGroup.function]]
-    id = "gtk_accelerator_parse"
+[[function]]
+id = "gtk_accelerator_parse"
 
-    [[GtkAccelGroup.function.parameter]]
-      name = "accelerator_key"
-      ctype = "GdkKeyType*"
+[[function.parameter]]
+name = "accelerator_key"
+ctype = "GdkKeyType*"
 
-  [[GtkAccelGroup.function]]
-    id = "gtk_accelerator_name"
+[[function]]
+id = "gtk_accelerator_name"
 
-    [[GtkAccelGroup.function.parameter]]
-      name = "accelerator_key"
-      type = "Gdk.Types.Gdk_Key_Type"
+[[function.parameter]]
+name = "accelerator_key"
+type = "Gdk.Types.Gdk_Key_Type"
 
-  [[GtkAccelGroup.function]]
-    id = "gtk_accelerator_get_label"
+[[function]]
+id = "gtk_accelerator_get_label"
 
-    [[GtkAccelGroup.function.parameter]]
-      name = "accelerator_key"
-      type = "Gdk.Types.Gdk_Key_Type"
+[[function.parameter]]
+name = "accelerator_key"
+type = "Gdk.Types.Gdk_Key_Type"
 
-  [[GtkAccelGroup.function]]
-    id = "gtk_accelerator_set_default_mod_mask"
-    ada = "Set_Default_Mod_Mask"
+[[function]]
+id = "gtk_accelerator_set_default_mod_mask"
+ada = "Set_Default_Mod_Mask"
 
-  [[GtkAccelGroup.function]]
-    id = "gtk_accelerator_get_default_mod_mask"
-    ada = "Get_Default_Mod_Mask"
-    return = "GdkModifierType"
+[[function]]
+id = "gtk_accelerator_get_default_mod_mask"
+ada = "Get_Default_Mod_Mask"
+return = "GdkModifierType"
 
-  [[GtkAccelGroup.enum]]
-    ctype = "GtkAccelFlags"
-    prefix = "GTK_"
+[[enum]]
+ctype = "GtkAccelFlags"
+prefix = "GTK_"
 
-  [[GtkAccelGroup.record]]
-    ctype = "GtkAccelKey"
+[[record]]
+ctype = "GtkAccelKey"
 
-    [[GtkAccelGroup.record.field]]
-      name = "accel_key"
-      ctype = "GdkKeyType"
+[[record.field]]
+name = "accel_key"
+ctype = "GdkKeyType"
 
-    [[GtkAccelGroup.record.field]]
-      name = "accel_flags"
-      ctype = "GtkAccelFlags"
+[[record.field]]
+name = "accel_flags"
+ctype = "GtkAccelFlags"
 
-  [GtkAccelGroup.extra]
+[extra]
 
-    [[GtkAccelGroup.extra.type]]
-      ctype = "GtkAccelGroupActive"
-      ada = "Gtk_Accel_Group_Activate"
-      text = '''
+[[extra.type]]
+ctype = "GtkAccelGroupActive"
+ada = "Gtk_Accel_Group_Activate"
+text = '''
 
    type Gtk_Accel_Group_Activate is access function
      (Accel_Group   : access Gtk_Accel_Group_Record'Class;

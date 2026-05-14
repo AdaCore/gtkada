@@ -1,9 +1,7 @@
-
 # ============================================================
 #   GtkScrollbar
 # ============================================================
-[GtkScrollbar]
 
-  [[GtkScrollbar.parameter]]
-    name = "self"
-    ada = "Scrollbar"
+[[parameter]]
+name = "self"
+ada = "Scrollbar"

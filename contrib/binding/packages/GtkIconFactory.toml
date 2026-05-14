@@ -1,25 +1,23 @@
-
 # ============================================================
 #   GtkIconFactory
 # ============================================================
-[GtkIconFactory]
 
-  [[GtkIconFactory.function]]
-    id = "gtk_icon_size_lookup"
-    return_as_param = "Result"
+[[function]]
+id = "gtk_icon_size_lookup"
+return_as_param = "Result"
 
-  [[GtkIconFactory.function]]
-    id = "gtk_icon_size_lookup_for_settings"
-    return_as_param = "Result"
+[[function]]
+id = "gtk_icon_size_lookup_for_settings"
+return_as_param = "Result"
 
-  [[GtkIconFactory.function]]
-    id = "gtk_icon_size_register"
+[[function]]
+id = "gtk_icon_size_register"
 
-  [[GtkIconFactory.function]]
-    id = "gtk_icon_size_register_alias"
+[[function]]
+id = "gtk_icon_size_register_alias"
 
-  [GtkIconFactory.extra]
-    body = '''
+[extra]
+body = '''
 
    function Get_Icon_Factory
       (Self : Gtk_Style_Provider;
@@ -36,14 +34,14 @@
    end Get_Icon_Factory;
        '''
 
-    [[GtkIconFactory.extra.with_spec]]
-      pkg = "Gtk.Style_Provider"
+[[extra.with_spec]]
+pkg = "Gtk.Style_Provider"
 
-    [[GtkIconFactory.extra.with_spec]]
-      pkg = "Gtk.Widget"
+[[extra.with_spec]]
+pkg = "Gtk.Widget"
 
-    [[GtkIconFactory.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Get_Icon_Factory
       (Self : Gtk.Style_Provider.Gtk_Style_Provider;

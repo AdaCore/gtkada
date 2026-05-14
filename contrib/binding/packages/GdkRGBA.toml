@@ -1,26 +1,24 @@
-
 # ============================================================
 #   GdkRGBA
 # ============================================================
-[GdkRGBA]
 
-  [[GdkRGBA.method]]
-    id = "gdk_rgba_equal"
+[[method]]
+id = "gdk_rgba_equal"
 
-    [[GdkRGBA.method.parameter]]
-      name = "p2"
-      ctype = "GdkRGBA*"
+[[method.parameter]]
+name = "p2"
+ctype = "GdkRGBA*"
 
-  [[GdkRGBA.method]]
-    id = "gdk_rgba_parse"
-    return_as_param = "Success"
+[[method]]
+id = "gdk_rgba_parse"
+return_as_param = "Success"
 
-    [[GdkRGBA.method.parameter]]
-      name = "self"
-      direction = "out"
+[[method.parameter]]
+name = "self"
+direction = "out"
 
-  [GdkRGBA.extra]
-    body = '''
+[extra]
+body = '''
 
    function To_Address
      (Val : Gdk_RGBA; Addr : System.Address) return System.Address;
@@ -67,17 +65,17 @@
    end To_Address;
        '''
 
-    [[GdkRGBA.extra.with_spec]]
-      pkg = "Glib.Values"
+[[extra.with_spec]]
+pkg = "Glib.Values"
 
-    [[GdkRGBA.extra.with_spec]]
-      pkg = "Glib.Object"
+[[extra.with_spec]]
+pkg = "Glib.Object"
 
-    [[GdkRGBA.extra.with_body]]
-      pkg = "Glib.Generic_Properties"
+[[extra.with_body]]
+pkg = "Glib.Generic_Properties"
 
-    [[GdkRGBA.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    type array_of_Gdk_RGBA is array (Natural range <>) of Gdk_RGBA;
 

@@ -1,26 +1,24 @@
-
 # ============================================================
 #   GtkCellRenderer
 # ============================================================
-[GtkCellRenderer]
 
-  [[GtkCellRenderer.parameter]]
-    name = "self"
-    ada = "Cell"
+[[parameter]]
+name = "self"
+ada = "Cell"
 
-  [[GtkCellRenderer.enum]]
-    ctype = "GtkCellRendererState"
+[[enum]]
+ctype = "GtkCellRendererState"
 
-  [[GtkCellRenderer.enum]]
-    ctype = "GtkCellRendererMode"
+[[enum]]
+ctype = "GtkCellRendererMode"
 
-  [[GtkCellRenderer.method]]
-    id = "gtk_cell_renderer_get_size"
+[[method]]
+id = "gtk_cell_renderer_get_size"
 
-    [[GtkCellRenderer.method.parameter]]
-      name = "cell_area"
-      ctype = "GdkRectangle**"
+[[method.parameter]]
+name = "cell_area"
+ctype = "GdkRectangle**"
 
-  [[GtkCellRenderer.list]]
-    ada = "Cell_Renderer_List"
-    ctype = "GtkCellRenderer"
+[[list]]
+ada = "Cell_Renderer_List"
+ctype = "GtkCellRenderer"

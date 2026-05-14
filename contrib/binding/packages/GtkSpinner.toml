@@ -1,12 +1,10 @@
-
 # ============================================================
 #   GtkSpinner
 # ============================================================
-[GtkSpinner]
 
-  [GtkSpinner.doc]
-    group = "Ornaments"
+[doc]
+group = "Ornaments"
 
-  [[GtkSpinner.parameter]]
-    name = "self"
-    ada = "Spinner"
+[[parameter]]
+name = "self"
+ada = "Spinner"

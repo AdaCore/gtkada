@@ -1,13 +1,11 @@
-
 # ============================================================
 #   GtkScale
 # ============================================================
-[GtkScale]
 
-  [GtkScale.doc]
-    screenshot = "gtk-scale.png"
-    group = "Numeric/Text Data Entry"
+[doc]
+screenshot = "gtk-scale.png"
+group = "Numeric/Text Data Entry"
 
-  [[GtkScale.parameter]]
-    name = "self"
-    ada = "Scale"
+[[parameter]]
+name = "self"
+ada = "Scale"

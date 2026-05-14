@@ -1,17 +1,15 @@
-
 # ============================================================
 #   GtkTreeSelection
 # ============================================================
-[GtkTreeSelection]
 
-  [[GtkTreeSelection.parameter]]
-    name = "self"
-    ada = "Selection"
+[[parameter]]
+name = "self"
+ada = "Selection"
 
-  [[GtkTreeSelection.method]]
-    id = "gtk_tree_selection_get_selected"
-    return = "void"
-    body = '''
+[[method]]
+id = "gtk_tree_selection_get_selected"
+return = "void"
+body = '''
       function Internal
         (Selection : System.Address;
          Model     : access Gtk_Tree_Model;
@@ -27,18 +25,18 @@
       end if;
       Model := M;'''
 
-  [[GtkTreeSelection.method]]
-    id = "gtk_tree_selection_get_selected_rows"
-    bind = false
-    # see below
+[[method]]
+id = "gtk_tree_selection_get_selected_rows"
+bind = false
+# see below
 
-  [[GtkTreeSelection.method]]
-    id = "gtk_tree_selection_get_tree_view"
-    return = "Gtk_Widget"
-    # avoid circular dep
+[[method]]
+id = "gtk_tree_selection_get_tree_view"
+return = "Gtk_Widget"
+# avoid circular dep
 
-  [GtkTreeSelection.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure Get_Selected_Rows
      (Selection : access Gtk_Tree_Selection_Record;
@@ -63,8 +61,8 @@
    end Get_Selected_Rows;
        '''
 
-    [[GtkTreeSelection.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Get_Selected_Rows
      (Selection : access Gtk_Tree_Selection_Record;

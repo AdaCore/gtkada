@@ -1,23 +1,21 @@
-
 # ============================================================
 #   GtkFileChooserDialog
 # ============================================================
-[GtkFileChooserDialog]
 
-  [[GtkFileChooserDialog.parameter]]
-    name = "self"
-    ada = "Dialog"
+[[parameter]]
+name = "self"
+ada = "Dialog"
 
-  [[GtkFileChooserDialog.method]]
-    id = "gtk_file_chooser_dialog_new"
-    ada = "Gtk_New"
-    bind = false
-    # varargs
+[[method]]
+id = "gtk_file_chooser_dialog_new"
+ada = "Gtk_New"
+bind = false
+# varargs
 
-  [GtkFileChooserDialog.extra]
+[extra]
 
-    [[GtkFileChooserDialog.extra.gir_element]]
-      xml = '''
+[[extra.gir_element]]
+xml = '''
 <gir:constructor xmlns:c="http://www.gtk.org/introspection/c/1.0" xmlns:gir="http://www.gtk.org/introspection/core/1.0" name="new" c:identifier="ada_gtk_file_chooser_dialog_new" version="2.4" introspectable="0">
             <gir:doc xml:whitespace="preserve">Creates a new #GtkFileChooserDialog.  This function is analogous to gtk_dialog_new_with_buttons().</gir:doc>
             <gir:return-value transfer-ownership="none">

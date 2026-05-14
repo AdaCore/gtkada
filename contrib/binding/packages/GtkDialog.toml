@@ -1,79 +1,77 @@
-
 # ============================================================
 #   GtkDialog
 # ============================================================
-[GtkDialog]
 
-  [GtkDialog.doc]
-    screenshot = "gtk-dialog"
-    group = "Windows"
-    testgtk = "create_dialog.adb"
-    text = '''
+[doc]
+screenshot = "gtk-dialog"
+group = "Windows"
+testgtk = "create_dialog.adb"
+text = '''
           See Gtkada.Dialogs for a higher level dialog interface.
      '''
 
-  [[GtkDialog.parameter]]
-    name = "self"
-    ada = "Dialog"
+[[parameter]]
+name = "self"
+ada = "Dialog"
 
-  [[GtkDialog.parameter]]
-    name = "response_id"
-    type = "Gtk_Response_Type"
+[[parameter]]
+name = "response_id"
+type = "Gtk_Response_Type"
 
-  [[GtkDialog.method]]
-    id = "gtk_dialog_get_action_area"
-    return = "GtkBox*"
+[[method]]
+id = "gtk_dialog_get_action_area"
+return = "GtkBox*"
 
-  [[GtkDialog.method]]
-    id = "gtk_dialog_get_content_area"
-    return = "GtkBox*"
+[[method]]
+id = "gtk_dialog_get_content_area"
+return = "GtkBox*"
 
-  [[GtkDialog.method]]
-    id = "gtk_dialog_get_response_for_widget"
-    return = "GtkResponseType"
+[[method]]
+id = "gtk_dialog_get_response_for_widget"
+return = "GtkResponseType"
 
-  [[GtkDialog.method]]
-    id = "gtk_dialog_run"
-    return = "GtkResponseType"
+[[method]]
+id = "gtk_dialog_run"
+return = "GtkResponseType"
 
-  [[GtkDialog.method]]
-    id = "gtkada_GtkDialog_get_vbox"
-    return = "GtkBox*"
+[[method]]
+id = "gtkada_GtkDialog_get_vbox"
+return = "GtkBox*"
 
-  [[GtkDialog.method]]
-    id = "gtk_dialog_add_button"
+[[method]]
+id = "gtk_dialog_add_button"
 
-    [[GtkDialog.method.parameter]]
-      name = "button_text"
-      ada = "text"
-    # Bound manually below
+[[method.parameter]]
+name = "button_text"
+ada = "text"
+# Bound manually below
 
-  [[GtkDialog.method]]
-    id = "gtk_dialog_set_alternative_button_order_from_array"
-    bind = false
-    # Following methods have varargs
+[[method]]
+id = "gtk_dialog_set_alternative_button_order_from_array"
+bind = false
+# Following methods have varargs
 
-  [[GtkDialog.method]]
-    id = "gtk_dialog_new_with_buttons"
-    bind = false
+[[method]]
+id = "gtk_dialog_new_with_buttons"
+bind = false
 
-  [[GtkDialog.method]]
-    id = "gtk_dialog_add_buttons"
-    bind = false
+[[method]]
+id = "gtk_dialog_add_buttons"
+bind = false
 
-  [[GtkDialog.method]]
-    id = "gtk_dialog_set_alternative_button_order"
-    bind = false
+[[method]]
+id = "gtk_dialog_set_alternative_button_order"
+bind = false
 
-  [[GtkDialog.method]]
-    id = "ada_gtk_dialog_new_with_buttons"
+[[method]]
+id = "ada_gtk_dialog_new_with_buttons"
 
-    [[GtkDialog.method.parameter]]
-      name = "parent"
-      default = "null"
+[[method.parameter]]
+name = "parent"
+default = "null"
 
-  [GtkDialog.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure G_New_Dialog
       (Self  : not null access Gtk_Dialog_Record'Class;
@@ -133,17 +131,17 @@
    end Use_Header_Bar_From_Settings;
         '''
 
-    [[GtkDialog.extra.with_spec]]
-      pkg = "Gdk.Screen"
+[[extra.with_spec]]
+pkg = "Gdk.Screen"
 
-    [[GtkDialog.extra.with_body]]
-      pkg = "Gtk.Settings"
+[[extra.with_body]]
+pkg = "Gtk.Settings"
 
-    [[GtkDialog.extra.with_body]]
-      pkg = "Glib.Properties"
+[[extra.with_body]]
+pkg = "Glib.Properties"
 
-    [[GtkDialog.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Set_Alternative_Button_Order_From_Array
      (Dialog    : access Gtk_Dialog_Record;
@@ -197,10 +195,10 @@
    --  appropriate. Other flags (Modal and Destroy_With_Parent) are ignored.
         '''
 
-    [[GtkDialog.extra.type]]
-      ctype = "GtkDialogFlags"
-      ada = "Gtk_Dialog_Flags"
-      text = '''
+[[extra.type]]
+ctype = "GtkDialogFlags"
+ada = "Gtk_Dialog_Flags"
+text = '''
 
    type Gtk_Dialog_Flags is mod 8;
    for Gtk_Dialog_Flags'Size use Gint'Size;
@@ -217,10 +215,10 @@
    --       instead of action area (since 3.12)
         '''
 
-    [[GtkDialog.extra.type]]
-      ctype = "GtkResponseType"
-      ada = "Gtk_Response_Type"
-      text = '''
+[[extra.type]]
+ctype = "GtkResponseType"
+ada = "Gtk_Response_Type"
+text = '''
 
    type Gtk_Response_Type is new Gint;
    --  Type used for Response_Id's.
@@ -257,16 +255,16 @@
    --  yourself if you like.
         '''
 
-    [[GtkDialog.extra.type]]
-      ctype = "GtkResponseType*"
-      ada = "Response_Type_Array"
-      text = '''
+[[extra.type]]
+ctype = "GtkResponseType*"
+ada = "Response_Type_Array"
+text = '''
 
    type Response_Type_Array is array (Natural range <>) of Gtk_Response_Type;
         '''
 
-    [[GtkDialog.extra.gir_element]]
-      xml = '''
+[[extra.gir_element]]
+xml = '''
 <gir:constructor xmlns:c="http://www.gtk.org/introspection/c/1.0" xmlns:gir="http://www.gtk.org/introspection/core/1.0" c:identifier="ada_gtk_dialog_new_with_buttons" name="new" version="GtkAda 1.0">
              <gir:doc>Create a new dialog with a specific title, and specific attributes. Parent is the transient parent for the dialog (ie the one that is used for reference for the flag Destroy_With_Parent, or to compute the initial position of the dialog).</gir:doc>
            <gir:return-value>

@@ -1,14 +1,12 @@
-
 # ============================================================
 #   PangoTabArray
 # ============================================================
-[PangoTabArray]
-  ada = "Pango.Tabs"
+ada = "Pango.Tabs"
 
-  [[PangoTabArray.enum]]
-    ctype = "PangoTabAlign"
+[[enum]]
+ctype = "PangoTabAlign"
 
-  [[PangoTabArray.method]]
-    id = "pango_tab_array_get_tabs"
-    bind = false
-    # Require manual binding
+[[method]]
+id = "pango_tab_array_get_tabs"
+bind = false
+# Require manual binding

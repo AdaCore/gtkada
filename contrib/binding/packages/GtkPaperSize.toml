@@ -1,26 +1,24 @@
-
 # ============================================================
 #   GtkPaperSize
 # ============================================================
-[GtkPaperSize]
 
-  [[GtkPaperSize.parameter]]
-    name = "self"
-    ada = "Widget"
+[[parameter]]
+name = "self"
+ada = "Widget"
 
-  [[GtkPaperSize.list]]
-    ada = "Gtk_Paper_Size_Glist"
-    ctype = "GtkPaperSize"
-    section = "Functions"
+[[list]]
+ada = "Gtk_Paper_Size_Glist"
+ctype = "GtkPaperSize"
+section = "Functions"
 
-  [[GtkPaperSize.method]]
-    id = "gtk_paper_size_get_paper_sizes"
-    return = "GtkPaperSizeList"
+[[method]]
+id = "gtk_paper_size_get_paper_sizes"
+return = "GtkPaperSizeList"
 
-  [GtkPaperSize.extra]
+[extra]
 
-    [[GtkPaperSize.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    --  Common names, from PWG 5101.1-2002 PWG: Standard for Media Standardized
    --  Names

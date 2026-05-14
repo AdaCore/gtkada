@@ -1,28 +1,26 @@
-
 # ============================================================
 #   PangoFontFace
 # ============================================================
-[PangoFontFace]
 
-  [PangoFontFace.extra]
+[extra]
 
-    [[PangoFontFace.extra.type]]
-      ctype = "Pango_Font_Face_Array"
-      ada = "Pango_Font_Face_Array"
-      text = '''
+[[extra.type]]
+ctype = "Pango_Font_Face_Array"
+ada = "Pango_Font_Face_Array"
+text = '''
 
          type Pango_Font_Face_Array is array (Natural range <>) of Pango_Font_Face;
        '''
 
-  [[PangoFontFace.method]]
-    id = "pango_font_face_get_family"
-    bind = false
-    # circular dependency
+[[method]]
+id = "pango_font_face_get_family"
+bind = false
+# circular dependency
 
-  [[PangoFontFace.method]]
-    id = "pango_font_face_list_sizes"
-    return = "gint**"
-    body = '''
+[[method]]
+id = "pango_font_face_list_sizes"
+return = "gint**"
+body = '''
       type gint_array_bounded is array (Natural) of Gint;
 
       procedure Internal
@@ -50,10 +48,10 @@
          return Result;
       end;'''
 
-    [[PangoFontFace.method.parameter]]
-      name = "sizes"
-      ada = ""
+[[method.parameter]]
+name = "sizes"
+ada = ""
 
-    [[PangoFontFace.method.parameter]]
-      name = "n_sizes"
-      ada = ""
+[[method.parameter]]
+name = "n_sizes"
+ada = ""

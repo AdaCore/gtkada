@@ -1,38 +1,36 @@
-
 # ============================================================
 #   GtkTargetList
 # ============================================================
-[GtkTargetList]
 
-  [[GtkTargetList.parameter]]
-    name = "self"
-    ada = "List"
+[[parameter]]
+name = "self"
+ada = "List"
 
-  [[GtkTargetList.enum]]
-    ctype = "GtkAccelFlags"
-    prefix = "GTK_"
+[[enum]]
+ctype = "GtkAccelFlags"
+prefix = "GTK_"
 
-  [[GtkTargetList.method]]
-    id = "gtk_target_list_add_rich_text_targets"
-    bind = false
-    # circular dependency clipboard, text_buffer
+[[method]]
+id = "gtk_target_list_add_rich_text_targets"
+bind = false
+# circular dependency clipboard, text_buffer
 
-  [[GtkTargetList.method]]
-    id = "gtk_target_list_new"
-    bind = false
-    # manual binding below
+[[method]]
+id = "gtk_target_list_new"
+bind = false
+# manual binding below
 
-  [[GtkTargetList.method]]
-    id = "gtk_target_list_add_table"
-    bind = false
-    # manual binding below
+[[method]]
+id = "gtk_target_list_add_table"
+bind = false
+# manual binding below
 
-  [[GtkTargetList.method]]
-    id = "gtk_target_list_find"
-    return_as_param = "Found"
+[[method]]
+id = "gtk_target_list_find"
+return_as_param = "Found"
 
-  [GtkTargetList.extra]
-    body = '''
+[extra]
+body = '''
 
    -------------
    -- Gtk_New --
@@ -68,11 +66,11 @@
    end Add_Table;
        '''
 
-    [[GtkTargetList.extra.with_spec]]
-      pkg = "Gtk.Target_Entry"
+[[extra.with_spec]]
+pkg = "Gtk.Target_Entry"
 
-    [[GtkTargetList.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    type Target_Entry_Array is array (Natural range <>) of Gtk_Target_Entry;
 

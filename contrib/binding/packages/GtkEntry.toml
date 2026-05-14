@@ -1,14 +1,12 @@
-
 # ============================================================
 #   GtkEntry
 # ============================================================
-[GtkEntry]
 
-  [GtkEntry.doc]
-    screenshot = "gtk-gentry"
-    group = "Numeric/Text Data Entry"
-    testgtk = "create_entry.adb"
-    text = '''
+[doc]
+screenshot = "gtk-gentry"
+group = "Numeric/Text Data Entry"
+testgtk = "create_entry.adb"
+text = '''
 A Gtk_Entry is a single line text editing widget.
 The text is automatically scrolled if it is longer than can be displayed
 on the screen, so that the cursor position is visible at all times.
@@ -16,37 +14,37 @@ on the screen, so that the cursor position is visible at all times.
 See Gtk_Text_View for a multiple-line text editing widget.
      '''
 
-  [[GtkEntry.parameter]]
-    name = "self"
-    ada = "The_Entry"
+[[parameter]]
+name = "self"
+ada = "The_Entry"
 
-  [[GtkEntry.enum]]
-    ctype = "GtkEntryIconPosition"
-    prefix = ""
+[[enum]]
+ctype = "GtkEntryIconPosition"
+prefix = ""
 
-  [[GtkEntry.method]]
-    id = "gtk_entry_set_invisible_char"
+[[method]]
+id = "gtk_entry_set_invisible_char"
 
-    [[GtkEntry.method.parameter]]
-      name = "ch"
-      ada = "Char"
+[[method.parameter]]
+name = "ch"
+ada = "Char"
 
-  [[GtkEntry.method]]
-    id = "gtk_entry_set_has_frame"
+[[method]]
+id = "gtk_entry_set_has_frame"
 
-    [[GtkEntry.method.parameter]]
-      name = "setting"
-      default = "True"
+[[method.parameter]]
+name = "setting"
+default = "True"
 
-  [[GtkEntry.method]]
-    id = "gtk_entry_set_width_chars"
+[[method]]
+id = "gtk_entry_set_width_chars"
 
-    [[GtkEntry.method.parameter]]
-      name = "n_chars"
-      ada = "Width"
+[[method.parameter]]
+name = "n_chars"
+ada = "Width"
 
-  [GtkEntry.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure Insert_Text
       (Editable : access Gtk_Entry_Record;
@@ -58,11 +56,11 @@ See Gtk_Text_View for a multiple-line text editing widget.
    end Insert_Text;
         '''
 
-    [[GtkEntry.extra.spec]]
-      text = "subtype Gtk_GEntry is Gtk_Entry;"
+[[extra.spec]]
+text = "subtype Gtk_GEntry is Gtk_Entry;"
 
-    [[GtkEntry.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Insert_Text
       (Editable : access Gtk_Entry_Record;

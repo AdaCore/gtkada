@@ -1,9 +1,7 @@
-
 # ============================================================
 #   GtkToggleAction
 # ============================================================
-[GtkToggleAction]
 
-  [[GtkToggleAction.parameter]]
-    name = "self"
-    ada = "Action"
+[[parameter]]
+name = "self"
+ada = "Action"

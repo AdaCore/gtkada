@@ -1,31 +1,29 @@
-
 # ============================================================
 #   PangoFontFamily
 # ============================================================
-[PangoFontFamily]
 
-  [PangoFontFamily.extra]
+[extra]
 
-    [[PangoFontFamily.extra.with_spec]]
-      pkg = "Pango.Font_Face"
+[[extra.with_spec]]
+pkg = "Pango.Font_Face"
 
-    [[PangoFontFamily.extra.type]]
-      ctype = "Pango_Font_Family_Array"
-      ada = "Pango_Font_Family_Array"
-      text = '''
+[[extra.type]]
+ctype = "Pango_Font_Family_Array"
+ada = "Pango_Font_Family_Array"
+text = '''
 
          type Pango_Font_Family_Array is array (Natural range <>) of Pango_Font_Family;
        '''
 
-  [[PangoFontFamily.method]]
-    id = "pango_font_family_get_face"
-    bind = false
-    # more recent than 1.44
+[[method]]
+id = "pango_font_family_get_face"
+bind = false
+# more recent than 1.44
 
-  [[PangoFontFamily.method]]
-    id = "pango_font_family_list_faces"
-    return = "Pango_Font_Face_Array"
-    body = '''
+[[method]]
+id = "pango_font_family_list_faces"
+return = "Pango_Font_Face_Array"
+body = '''
       type font_face_array_bounded is array (Natural) of System.Address;
 
       procedure Internal
@@ -55,10 +53,10 @@
          return Result;
       end;'''
 
-    [[PangoFontFamily.method.parameter]]
-      name = "faces"
-      ada = ""
+[[method.parameter]]
+name = "faces"
+ada = ""
 
-    [[PangoFontFamily.method.parameter]]
-      name = "n_faces"
-      ada = ""
+[[method.parameter]]
+name = "n_faces"
+ada = ""

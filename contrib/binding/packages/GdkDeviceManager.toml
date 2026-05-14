@@ -1,27 +1,25 @@
-
 # ============================================================
 #   GdkDeviceManager
 # ============================================================
-[GdkDeviceManager]
 
-  [[GdkDeviceManager.method]]
-    id = "gdk_device_manager_list_devices"
-    return = "DeviceList"
+[[method]]
+id = "gdk_device_manager_list_devices"
+return = "DeviceList"
 
-  [[GdkDeviceManager.method]]
-    id = "::device-added"
-    bind = false
+[[method]]
+id = "::device-added"
+bind = false
 
-  [[GdkDeviceManager.method]]
-    id = "::device-changed"
-    bind = false
+[[method]]
+id = "::device-changed"
+bind = false
 
-  [[GdkDeviceManager.method]]
-    id = "::device-removed"
-    bind = false
+[[method]]
+id = "::device-removed"
+bind = false
 
-  [GdkDeviceManager.extra]
-    body = '''
+[extra]
+body = '''
 
    function Get_Device_Manager
       (Self : not null access Gdk.Display.Gdk_Display_Record'Class)
@@ -35,8 +33,8 @@
    end Get_Device_Manager;
          '''
 
-    [[GdkDeviceManager.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Get_Device_Manager
       (Self : not null access Gdk.Display.Gdk_Display_Record'Class)

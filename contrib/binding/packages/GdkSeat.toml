@@ -1,53 +1,51 @@
-
 # ============================================================
 #   GdkSeat
 # ============================================================
-[GdkSeat]
 
-  [[GdkSeat.enum]]
-    ctype = "GdkSeatCapabilities"
+[[enum]]
+ctype = "GdkSeatCapabilities"
 
-  [[GdkSeat.list]]
-    ada = "Gdk_Seat_List"
-    ctype = "GdkSeat*"
+[[list]]
+ada = "Gdk_Seat_List"
+ctype = "GdkSeat*"
 
-  [[GdkSeat.method]]
-    id = "gdk_seat_get_slaves"
-    return = "DeviceList"
+[[method]]
+id = "gdk_seat_get_slaves"
+return = "DeviceList"
 
-  [[GdkSeat.method]]
-    id = "gdk_seat_get_display"
-    return = "GObject*"
+[[method]]
+id = "gdk_seat_get_display"
+return = "GObject*"
 
-  [[GdkSeat.method]]
-    id = "::tool-added"
+[[method]]
+id = "::tool-added"
 
-    [[GdkSeat.method.parameter]]
-      name = "tool"
-      ctype = "GObject*"
+[[method.parameter]]
+name = "tool"
+ctype = "GObject*"
 
-  [[GdkSeat.method]]
-    id = "::tool-removed"
+[[method]]
+id = "::tool-removed"
 
-    [[GdkSeat.method.parameter]]
-      name = "tool"
-      ctype = "GObject*"
+[[method.parameter]]
+name = "tool"
+ctype = "GObject*"
 
-  [[GdkSeat.method]]
-    id = "::device-added"
+[[method]]
+id = "::device-added"
 
-    [[GdkSeat.method.parameter]]
-      name = "device"
-      ctype = "GObject*"
+[[method.parameter]]
+name = "device"
+ctype = "GObject*"
 
-  [[GdkSeat.method]]
-    id = "::device-removed"
+[[method]]
+id = "::device-removed"
 
-    [[GdkSeat.method.parameter]]
-      name = "device"
-      ctype = "GObject*"
+[[method.parameter]]
+name = "device"
+ctype = "GObject*"
 
-  [GdkSeat.extra]
+[extra]
 
-    [[GdkSeat.extra.with_spec]]
-      pkg = "Gdk.Types"
+[[extra.with_spec]]
+pkg = "Gdk.Types"

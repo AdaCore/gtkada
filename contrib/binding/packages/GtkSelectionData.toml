@@ -1,39 +1,37 @@
-
 # ============================================================
 #   GtkSelectionData
 # ============================================================
-[GtkSelectionData]
 
-  [[GtkSelectionData.parameter]]
-    name = "self"
-    ada = "Selection"
+[[parameter]]
+name = "self"
+ada = "Selection"
 
-  [[GtkSelectionData.method]]
-    id = "gtk_selection_data_targets_include_rich_text"
-    bind = false
-    # circular dependency on gtk.text_buffer
+[[method]]
+id = "gtk_selection_data_targets_include_rich_text"
+bind = false
+# circular dependency on gtk.text_buffer
 
-  [[GtkSelectionData.method]]
-    id = "gtk_selection_data_get_data_with_length"
-    bind = false
-    # not convenient, has an access gint and returns an array
+[[method]]
+id = "gtk_selection_data_get_data_with_length"
+bind = false
+# not convenient, has an access gint and returns an array
 
-  [[GtkSelectionData.method]]
-    id = "gtk_selection_data_set"
-    bind = false
-    # manual binding below
+[[method]]
+id = "gtk_selection_data_set"
+bind = false
+# manual binding below
 
-  [[GtkSelectionData.method]]
-    id = "gtk_selection_data_get_targets"
-    bind = false
-    # manual binding below
+[[method]]
+id = "gtk_selection_data_get_targets"
+bind = false
+# manual binding below
 
-  [[GtkSelectionData.method]]
-    id = "gtk_selection_data_get_data"
-    return = "System.Address"
+[[method]]
+id = "gtk_selection_data_get_data"
+return = "System.Address"
 
-  [GtkSelectionData.extra]
-    body = '''
+[extra]
+body = '''
 
    package Atom_Arrays is new Gtkada.C.Unbounded_Arrays
      (Gdk.Types.Gdk_Atom, Gdk.Types.Gdk_None,
@@ -120,11 +118,11 @@
    end Get_Data_As_String;
         '''
 
-    [[GtkSelectionData.extra.with_body]]
-      pkg = "Gtkada.C"
+[[extra.with_body]]
+pkg = "Gtkada.C"
 
-    [[GtkSelectionData.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    ---------------
    -- Selection --

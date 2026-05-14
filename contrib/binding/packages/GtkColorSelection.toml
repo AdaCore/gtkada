@@ -1,14 +1,12 @@
-
 # ============================================================
 #   GtkColorSelection
 # ============================================================
-[GtkColorSelection]
 
-  [GtkColorSelection.doc]
-    screenshot = "gtk-colorsel"
-    group = "Drawing"
-    testgtk = "create_color_selection.adb"
-    text = '''
+[doc]
+screenshot = "gtk-colorsel"
+group = "Drawing"
+testgtk = "create_color_selection.adb"
+text = '''
 A Gtk_Color_Selection widget is a complex dialog that allows the user
 to select a color based either on its (Red, Green, Blue) or its
 (Hue, Saturation, Value).
@@ -21,21 +19,21 @@ its own dialog.
 See Gtk.Extra.Color_Combo for a different way to select colors.
       '''
 
-  [[GtkColorSelection.parameter]]
-    name = "self"
-    ada = "Colorsel"
-    # Bound manually below
+[[parameter]]
+name = "self"
+ada = "Colorsel"
+# Bound manually below
 
-  [[GtkColorSelection.method]]
-    id = "gtk_color_selection_palette_from_string"
-    bind = false
+[[method]]
+id = "gtk_color_selection_palette_from_string"
+bind = false
 
-  [[GtkColorSelection.method]]
-    id = "gtk_color_selection_palette_to_string"
-    bind = false
+[[method]]
+id = "gtk_color_selection_palette_to_string"
+bind = false
 
-  [GtkColorSelection.extra]
-    body = '''
+[extra]
+body = '''
 
    package Color_Arrays is new Gtkada.C.Unbounded_Arrays
      (Gdk.Color.Gdk_Color, Gdk.Color.Null_Color, Natural,
@@ -86,14 +84,14 @@ See Gtk.Extra.Color_Combo for a different way to select colors.
    end Palette_To_String;
        '''
 
-    [[GtkColorSelection.extra.with_body]]
-      pkg = "Gtkada.C"
+[[extra.with_body]]
+pkg = "Gtkada.C"
 
-    [[GtkColorSelection.extra.with_body]]
-      pkg = "Gtkada.Types"
+[[extra.with_body]]
+pkg = "Gtkada.Types"
 
-    [[GtkColorSelection.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    type Gtk_Color_Selection_Change_Palette_With_Screen_Func is access procedure
       (Screen   : System.Address;  --  Convert to Gdk_Screen with Get_User_Data

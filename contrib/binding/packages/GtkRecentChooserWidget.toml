@@ -1,9 +1,7 @@
-
 # ============================================================
 #   GtkRecentChooserWidget
 # ============================================================
-[GtkRecentChooserWidget]
 
-  [[GtkRecentChooserWidget.parameter]]
-    name = "self"
-    ada = "Widget"
+[[parameter]]
+name = "self"
+ada = "Widget"

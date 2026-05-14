@@ -1,56 +1,54 @@
-
 # ============================================================
 #   GOptionContext
 # ============================================================
-[GOptionContext]
-  ada = "Glib.Option"
+ada = "Glib.Option"
 
-  [[GOptionContext.record]]
-    ctype = "GOptionGroup"
+[[record]]
+ctype = "GOptionGroup"
 
-  [[GOptionContext.record]]
-    ctype = "GOptionEntry"
+[[record]]
+ctype = "GOptionEntry"
 
-    [[GOptionContext.record.field]]
-      name = "flags"
-      ctype = "GOptionFlags"
+[[record.field]]
+name = "flags"
+ctype = "GOptionFlags"
 
-  [[GOptionContext.enum]]
-    ctype = "GOptionError"
+[[enum]]
+ctype = "GOptionError"
 
-  [[GOptionContext.enum]]
-    ctype = "GOptionArg"
+[[enum]]
+ctype = "GOptionArg"
 
-  [[GOptionContext.enum]]
-    ctype = "GOptionFlags"
+[[enum]]
+ctype = "GOptionFlags"
 
-  [[GOptionContext.method]]
-    id = "g_option_context_new"
-    ada = "G_New"
+[[method]]
+id = "g_option_context_new"
+ada = "G_New"
 
-  [[GOptionContext.method]]
-    id = "g_option_group_new"
-    ada = "G_New"
+[[method]]
+id = "g_option_group_new"
+ada = "G_New"
 
-  [[GOptionContext.method]]
-    id = "g_option_context_parse"
-    bind = false
-    # Invalid binding generated
+[[method]]
+id = "g_option_context_parse"
+bind = false
+# Invalid binding generated
 
-  [[GOptionContext.method]]
-    id = "g_option_context_parse_strv"
-    bind = false
-    # low-level
+[[method]]
+id = "g_option_context_parse_strv"
+bind = false
+# low-level
 
-  [[GOptionContext.method]]
-    id = "g_option_context_add_main_entries"
+[[method]]
+id = "g_option_context_add_main_entries"
 
-    [[GOptionContext.method.parameter]]
-      name = "entries"
-      type = "GOption_Entry_Array"
+[[method.parameter]]
+name = "entries"
+type = "GOption_Entry_Array"
 
-  [GOptionContext.extra]
-    body = '''
+[extra]
+body = '''
 
    -----------
    -- Parse --
@@ -152,21 +150,21 @@
    end Parse;
        '''
 
-    [[GOptionContext.extra.with_spec]]
-      pkg = "Glib.Application"
+[[extra.with_spec]]
+pkg = "Glib.Application"
 
-    [[GOptionContext.extra.with_spec]]
-      pkg = "Glib.Error"
+[[extra.with_spec]]
+pkg = "Glib.Error"
 
-    [[GOptionContext.extra.with_spec]]
-      pkg = "Gtkada.Bindings"
+[[extra.with_spec]]
+pkg = "Gtkada.Bindings"
 
-    [[GOptionContext.extra.with_body]]
-      pkg = "Ada.Unchecked_Conversion"
-      use = false
+[[extra.with_body]]
+pkg = "Ada.Unchecked_Conversion"
+use = false
 
-    [[GOptionContext.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    Null_GOption_Entry : constant GOption_Entry;
 
@@ -191,20 +189,20 @@
    --  This version is suitable for use from Glib.Application.Local_Command_Line
        '''
 
-    [[GOptionContext.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    Null_GOption_Entry : constant GOption_Entry :=
                           (Gtkada.Types.Null_Ptr, Gchar(ASCII.NUL),
                            0, G_Option_Arg_None, System.Null_Address,
                            Gtkada.Types.Null_Ptr, Gtkada.Types.Null_Ptr);
        '''
-      private = true
+private = true
 
-    [[GOptionContext.extra.type]]
-      ctype = "array_of_GOptionEntry"
-      ada = "GOption_Entry_Array"
-      text = '''
+[[extra.type]]
+ctype = "array_of_GOptionEntry"
+ada = "GOption_Entry_Array"
+text = '''
 
          type GOption_Entry_Array is array (Natural range <>) of GOption_Entry;
        '''

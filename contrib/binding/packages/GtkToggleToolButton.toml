@@ -1,9 +1,7 @@
-
 # ============================================================
 #   GtkToggleToolButton
 # ============================================================
-[GtkToggleToolButton]
 
-  [[GtkToggleToolButton.parameter]]
-    name = "self"
-    ada = "Button"
+[[parameter]]
+name = "self"
+ada = "Button"

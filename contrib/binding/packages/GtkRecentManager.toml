@@ -1,11 +1,9 @@
-
 # ============================================================
 #   GtkRecentManager
 # ============================================================
-[GtkRecentManager]
 
-  [GtkRecentManager.doc]
-    text = '''
+[doc]
+text = '''
 In case the default screen is being used, adding a new recently used file is as
 simple as:
 
@@ -38,24 +36,24 @@ While looking up a recently used file is as simple as using:
 ]|
      '''
 
-  [[GtkRecentManager.record]]
-    ctype = "GtkRecentData"
+[[record]]
+ctype = "GtkRecentData"
 
-  [[GtkRecentManager.method]]
-    id = "gtk_recent_manager_get_items"
-    return = "GtkRecentInfoList"
+[[method]]
+id = "gtk_recent_manager_get_items"
+return = "GtkRecentInfoList"
 
-  [[GtkRecentManager.list]]
-    ada = "Gtk_Recent_Info_List"
-    ctype = "GtkRecentInfo"
-    # Bound below
+[[list]]
+ada = "Gtk_Recent_Info_List"
+ctype = "GtkRecentInfo"
+# Bound below
 
-  [[GtkRecentManager.method]]
-    id = "gtk_recent_manager_add_full"
-    bind = false
+[[method]]
+id = "gtk_recent_manager_add_full"
+bind = false
 
-  [GtkRecentManager.extra]
-    body = '''
+[extra]
+body = '''
 
    function Add_Full
      (Manager      : access Gtk_Recent_Manager_Record;
@@ -135,14 +133,14 @@ While looking up a recently used file is as simple as using:
    end Add_Full;
        '''
 
-    [[GtkRecentManager.extra.with_spec]]
-      pkg = "GNAT.Strings"
+[[extra.with_spec]]
+pkg = "GNAT.Strings"
 
-    [[GtkRecentManager.extra.with_body]]
-      pkg = "Gtkada.Bindings"
+[[extra.with_body]]
+pkg = "Gtkada.Bindings"
 
-    [[GtkRecentManager.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Add_Full
      (Manager      : access Gtk_Recent_Manager_Record;

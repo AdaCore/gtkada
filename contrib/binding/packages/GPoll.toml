@@ -1,9 +1,7 @@
-
 # ============================================================
 #   GPoll
 # ============================================================
-[GPoll]
-  ada = "Glib.Poll"
+ada = "Glib.Poll"
 
-  [[GPoll.record]]
-    ctype = "GPollFD"
+[[record]]
+ctype = "GPollFD"

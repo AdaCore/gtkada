@@ -1,55 +1,53 @@
-
 # ============================================================
 #   GdkScreen
 # ============================================================
-[GdkScreen]
 
-  [GdkScreen.doc]
-    group = "Gdk, the low-level API"
+[doc]
+group = "Gdk, the low-level API"
 
-  [[GdkScreen.parameter]]
-    name = "self"
-    ada = "Screen"
+[[parameter]]
+name = "self"
+ada = "Screen"
 
-  [[GdkScreen.method]]
-    id = "gdk_screen_get_setting"
-    bind = false
+[[method]]
+id = "gdk_screen_get_setting"
+bind = false
 
-  [[GdkScreen.method]]
-    id = "::composited-changed"
-    bind = false
-    # elaboration circularity
+[[method]]
+id = "::composited-changed"
+bind = false
+# elaboration circularity
 
-  [[GdkScreen.method]]
-    id = "::monitors-changed"
-    bind = false
-    # elaboration circularity
+[[method]]
+id = "::monitors-changed"
+bind = false
+# elaboration circularity
 
-  [[GdkScreen.method]]
-    id = "::size-changed"
-    bind = false
-    # elaboration circularity
+[[method]]
+id = "::size-changed"
+bind = false
+# elaboration circularity
 
-  [[GdkScreen.method]]
-    id = "gdk_screen_get_toplevel_windows"
-    bind = false
-    return = "WindowList"
-    # circular dep
+[[method]]
+id = "gdk_screen_get_toplevel_windows"
+bind = false
+return = "WindowList"
+# circular dep
 
-  [[GdkScreen.method]]
-    id = "gdk_screen_get_window_stack"
-    bind = false
-    return = "WindowList"
-    # circular dep with GdkWindow
+[[method]]
+id = "gdk_screen_get_window_stack"
+bind = false
+return = "WindowList"
+# circular dep with GdkWindow
 
-  [[GdkScreen.method]]
-    id = "gdk_screen_list_visuals"
-    bind = false
-    return = "WindowList"
-    # circular dep with GdkWindow
+[[method]]
+id = "gdk_screen_list_visuals"
+bind = false
+return = "WindowList"
+# circular dep with GdkWindow
 
-  [GdkScreen.extra]
-    body = '''
+[extra]
+body = '''
 
    function Get_Screen
      (Display    : access Gdk_Display_Record'Class;
@@ -123,11 +121,11 @@
    end Warp_Pointer;
        '''
 
-    [[GdkScreen.extra.with_spec]]
-      pkg = "Gdk.Types"
+[[extra.with_spec]]
+pkg = "Gdk.Types"
 
-    [[GdkScreen.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    -------------
    -- Display --

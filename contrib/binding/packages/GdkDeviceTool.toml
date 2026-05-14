@@ -1,8 +1,6 @@
-
 # ============================================================
 #   GdkDeviceTool
 # ============================================================
-[GdkDeviceTool]
 
-  [[GdkDeviceTool.enum]]
-    ctype = "GdkDeviceToolType"
+[[enum]]
+ctype = "GdkDeviceToolType"

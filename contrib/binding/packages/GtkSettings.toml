@@ -1,21 +1,19 @@
-
 # ============================================================
 #   GtkSettings
 # ============================================================
-[GtkSettings]
 
-  [[GtkSettings.method]]
-    id = "gtk_settings_install_property_parser"
-    bind = false
-    # not needed in Ada
+[[method]]
+id = "gtk_settings_install_property_parser"
+bind = false
+# not needed in Ada
 
-  [[GtkSettings.method]]
-    id = "gtk_settings_set_property_value"
-    bind = false
-    # see below
+[[method]]
+id = "gtk_settings_set_property_value"
+bind = false
+# see below
 
-  [GtkSettings.extra]
-    body = '''
+[extra]
+body = '''
 
    function Get_Settings
      (Widget   : not null access Gtk_Widget_Record'Class)
@@ -55,8 +53,8 @@
    end Set_Property_Value;
        '''
 
-    [[GtkSettings.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Set_Property_Value
      (Settings : not null access Gtk_Settings_Record;
