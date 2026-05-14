@@ -1,8 +1,90 @@
 #!/usr/bin/env python3
 
-"""
-Parse a .gir file for any of the gtk+ libraries (gtk+, glib,...)
-and generate Ada bindings.
+"""Generate Ada bindings for the gtk+ stack from GObject-introspection data.
+
+Overview
+--------
+
+This script is the entry point of GtkAda's binding generator. It reads
+GObject-introspection ``.gir`` XML files plus a directory of per-package
+TOML override files, and emits a single concatenated Ada source file
+(``tmp.ada``, later split by ``gnatchop``) and a small ``.c`` companion
+file containing hand-rolled C glue used to set the function pointers of
+virtual methods.
+
+Inputs (command line):
+  * ``--gir-file`` (repeatable): one ``.gir`` per GObject-introspection
+    namespace (GLib, GObject, Gtk, Gdk, Pango, Gio).
+  * ``--toml-dir``: directory containing per-package override files
+    (one ``*.toml`` per Ada package, see ``contrib/binding/README.md``).
+  * ``--ada-output``: path to the concatenated Ada output.
+  * ``--c-output``: path to the C glue output.
+
+Outputs:
+  * One Ada file containing the spec and body of every generated
+    package, separated by ``pragma Page;`` boundaries so ``gnatchop``
+    can split them.
+  * One C file with simple setters for the virtual-method function
+    pointers of the Ada-side interfaces.
+
+Pipeline
+--------
+
+The bulk of the work happens at module bottom, in three phases:
+
+1. Iterate :data:`data.enums` and emit standalone enumeration packages.
+2. Iterate :data:`data.interfaces` and emit one package per interface.
+3. Iterate :data:`data.binding` and emit one package per
+   widget/record/boxed type.
+
+Each phase delegates to :class:`GIRClass` instances created up-front
+by :class:`GIR.__init__` while parsing the ``.gir`` files.
+
+Communication protocol
+----------------------
+
+``binding.py`` reads two sources of truth and merges them in memory:
+
+* The GIR XML trees, which describe what the C library exposes (types,
+  methods, properties, signals).
+* The :class:`binding_gtkada.GtkAdaPackage` overrides loaded from the
+  ``.toml`` directory, which describe what the Ada surface should look
+  like (renames, type substitutions, hand-written bodies, extra ``with``
+  clauses, ...).
+
+The merged view is built up as :class:`adaformat.Package` objects (one
+per Ada package) populated by :class:`GIRClass`. Once every class has
+been generated, :meth:`GIR.generate` serialises every Package to disk.
+
+Top-level classes
+-----------------
+
+* :class:`GIR` --- owner of the parsed GIR trees and of the
+  ``self.packages`` dict that maps Ada package names to
+  ``adaformat.Package`` output buffers. Also holds the global
+  ``self.classes``/``self.interfaces``/``self.records``/...
+  registries used to resolve cross-references between packages.
+
+* :class:`GIRClass` --- one instance per Ada package being generated.
+  Holds the GIR XML ``<class>`` (or ``<interface>``, ``<record>``,
+  ``<union>``) node for the type being bound, the matching
+  :class:`binding_gtkada.GtkAdaPackage` override, and emits the
+  constructors / methods / properties / signals / interface impls /
+  fields / virtual methods of the corresponding Ada package.
+
+* :class:`SubprogramProfile` --- the parsed-and-overridden parameter
+  list and return type for a single subprogram. Helpers turn the
+  profile into :class:`adaformat.Subprogram` objects in any of the
+  three "languages" (``ada``, ``ada->c``, ``c->ada``) used by the
+  generator.
+
+* :class:`GlobalsBinder` --- flat dictionary mapping a C identifier to
+  the GIR XML node for the matching namespace-level ``<function>``
+  (used when a ``.toml`` requests that a global function be bound
+  inside a specific package).
+
+See ``contrib/binding/README.md`` for a reference of the TOML override
+schema that drives this generator.
 """
 
 # Issues:
@@ -23,11 +105,6 @@ from data import enums, interfaces, binding, user_data_params
 from data import destroy_data_params
 import sys
 
-# Unfortunately, generating the slot marshallers in a separate package
-# does not work since we end up with circularities in a number of
-# cases. For now, we simply duplicate them as needed
-SHARED_SLOT_MARSHALLERS = False
-
 # For parsing command line options
 from optparse import OptionParser
 
@@ -38,13 +115,20 @@ MIN_PY = (3, 7)
 if version_info < MIN_PY:
     installed = '.'.join(map(str, version_info[0:2]))
     required = '.'.join(map(str, MIN_PY[0:2]))
-    print((f'Need at least Python {required}, got version {installed}'))
+    print(f'Need at least Python {required}, got version {installed}')
     quit(1)
 
+# GIR XML namespace URIs. The .gir files use three XML namespaces: the
+# core GObject-introspection namespace (default for most tags), plus
+# extensions for glib- and C-specific attributes.
 uri = "http://www.gtk.org/introspection/core/1.0"
 glib_uri = "http://www.gtk.org/introspection/glib/1.0"
 c_uri = "http://www.gtk.org/introspection/c/1.0"
 
+# Pre-resolved ElementTree-style namespaced tag names for the GIR
+# constructs we read. Resolving them once at import time means call
+# sites can do `node.findall(nmethod)` etc. without paying the QName
+# construction cost on every lookup.
 cidentifier = QName(c_uri, "identifier").text
 cidentifier_prefix = QName(c_uri, "identifier-prefixes").text
 ctype_qname = QName(c_uri, "type").text
@@ -79,9 +163,33 @@ ninstanceparam = QName(uri, "instance-parameter").text
 
 
 class GIR(object):
+    """Owner of all parsed ``.gir`` trees and of the in-memory Ada
+    packages they map to.
+
+    A single ``GIR`` instance is created by the script's entry point
+    and shared with every :class:`GIRClass`. It plays two roles:
+
+    * **Registry of GIR XML nodes**, indexed by the identifier each
+      downstream lookup needs (``self.classes`` and
+      ``self.ctype_interfaces`` by C type; ``self.interfaces`` by GIR
+      ``name``; ``self.callbacks`` by Ada name; ``self.enums``,
+      ``self.records`` and ``self.constants`` by C name;
+      ``self.globals`` is a :class:`GlobalsBinder` holding namespace
+      ``<function>`` nodes by C identifier).
+    * **Owner of the output Ada packages**, in
+      ``self.packages`` (lower-cased Ada name to
+      :class:`adaformat.Package`). ``self.ccode`` accumulates the C
+      glue that will be written to the ``--c-output`` file.
+
+    ``self.bound`` is the set of C names that have actually been bound;
+    :meth:`show_unbound` uses it to print a summary at the end of the
+    run.
+    """
 
     def __init__(self, files):
-        """Parse filename and initializes SELF"""
+        """Parse the given list of ``.gir`` files and populate the
+        registries.
+        """
 
         self.packages = dict()  # Ada name (lower case) -> Package instance
         self.ccode = ""
@@ -96,17 +204,6 @@ class GIR(object):
         self.constants = dict()
 
         self.bound = set()  # C names for the entities that have an Ada binding
-
-        # The marshallers that have been generated when we use a slot object.
-        # These can be shared among all packages, since the profiles of the
-        # handlers are the same.
-        if SHARED_SLOT_MARSHALLERS:
-            self.slot_marshallers = set()
-            self.slot_marshaller_pkg = self.get_package(
-                name="Gtkada.Marshallers",
-                ctype=None,
-                doc="Automatically generated, used internally by GtkAda")
-            self.slot_marshaller_section = self.slot_marshaller_pkg.section("")
 
         for filename in files:
             _tree = parse(filename)
@@ -161,8 +258,8 @@ class GIR(object):
                         identifier_prefix=identifier_prefix)
                 self.records[cl.get(ctype_qname)] = cl
 
-            for enums in (nenumeration, nbitfield):
-                k = "%s/%s" % (namespace, enums)
+            for enum_tag in (nenumeration, nbitfield):
+                k = "%s/%s" % (namespace, enum_tag)
                 for cl in root.findall(k):
                     self.enums[cl.get(ctype_qname)] = cl
 
@@ -241,12 +338,22 @@ class GIR(object):
 
 
 class GlobalsBinder(object):
+    """Flat dictionary of namespace-level ``<function>`` GIR XML nodes,
+    keyed by C identifier.
+
+    GIR exposes top-level (non-method) functions under
+    ``<namespace>/<function>``. ``GlobalsBinder`` collects all of them
+    across every parsed GIR file so that a TOML ``[[Pkg.function]]``
+    entry can resolve its ``id = "g_..."`` to the matching XML node and
+    bind the function inside an arbitrary Ada package.
+    """
 
     def __init__(self, gir):
         self.gir = gir
         self.globals = dict()
 
     def add(self, node):
+        """Collect every ``<function>`` from ``node``'s namespace."""
         k = "{%(uri)s}namespace/{%(uri)s}function" % {"uri": uri}
         all = node.findall(k)
         if all is not None:
@@ -340,14 +447,46 @@ def _get_type(nodeOrType, allow_access=True, allow_none=False,
             # that the function is not bound.
             return None
 
-    print("Error: XML Node has unknown type: %s (%s)" % (nodeOrType, nodeOrType.attrib))
+    print(f"Error: XML Node has unknown type: {nodeOrType} ({nodeOrType.attrib})")
     return None
 
 
 class SubprogramProfile(object):
+    """The parsed-and-overridden profile of a single subprogram.
 
-    """A class that groups info on the parameters of a function and
-       its return type.
+    Built by :meth:`SubprogramProfile.parse` from a GIR XML node (a
+    ``<method>``, ``<function>``, ``<callback>``, ``<virtual-method>``
+    or ``<constructor>``) and the matching
+    :class:`binding_gtkada.GtkAdaMethod` override. Once parsed, the
+    profile can be turned into an :class:`adaformat.Subprogram` for any
+    of the three "languages" understood by the generator (``ada``,
+    ``ada->c`` or ``c->ada``) via :meth:`subprogram`.
+
+    Attribute reference
+    -------------------
+
+    * ``node``: the GIR XML node the profile was parsed from.
+    * ``gtkmethod``: the :class:`binding_gtkada.GtkAdaMethod` override
+      applied on top of the GIR node.
+    * ``params``: the list of :class:`adaformat.Parameter`. ``None``
+      iff the subprogram has varargs (use :meth:`has_varargs`).
+    * ``returns``: the return type, or ``None`` for a procedure.
+    * ``returns_doc``: documentation for the return value, already
+      prefixed with ``@return`` when non-empty.
+    * ``doc``: list of documentation paragraphs for the subprogram.
+
+    Sentinels for callback bindings
+    -------------------------------
+
+    A method with a callback parameter has up to three indices into
+    ``params`` that say how to connect that callback:
+
+    * ``callback_param``: list of indices of the callback parameters.
+      Empty list means "no callback".
+    * ``user_data_param``: index of the closure/user-data parameter,
+      or ``-1`` when the callback has no user-data.
+    * ``destroy_param``: index of the destroy-notify parameter, or
+      ``-1`` when there is no destroy callback.
     """
 
     def __init__(self):
@@ -444,8 +583,8 @@ class SubprogramProfile(object):
            a direct pragma Import. local variables or additional code will
            be extended as needed to handle conversions.
         """
-        assert(isinstance(localvars, list))
-        assert(isinstance(code, list))
+        assert isinstance(localvars, list)
+        assert isinstance(code, list)
 
         result = []
         for p in self.params:
@@ -539,7 +678,7 @@ class SubprogramProfile(object):
 
     def remove_param(self, names):
         """Remove the parameter with the given names from the list"""
-        assert(isinstance(names, list))
+        assert isinstance(names, list)
 
         for n in names:
             if n is not None:
@@ -730,7 +869,49 @@ class SubprogramProfile(object):
 
 class GIRClass(object):
 
-    """Represents a gtk class"""
+    """One instance per Ada package being generated from a GIR ``<class>``,
+    ``<interface>``, ``<record>`` or ``<union>``.
+
+    A :class:`GIRClass` owns the GIR XML node for the bound type, the
+    matching :class:`binding_gtkada.GtkAdaPackage` (``self.gtkpkg``) and
+    the :class:`adaformat.Package` it emits into (``self.pkg``, created
+    by :meth:`generate`). All the ``_handle_*``, ``_emit_*``,
+    ``_constructors``, ``_methods``, ``_functions``, ``_signals``,
+    ``_properties``, ``_fields``, ``_virtual_methods``,
+    ``_implements`` and ``_globals`` helpers contribute pieces of the
+    final Ada spec and body to ``self.pkg``.
+
+    Shape flags (mutually exclusive)
+    --------------------------------
+
+    The "shape" of the generated Ada type is decided once in
+    ``__init__`` and stored as boolean flags. At most one of them is
+    set on a given instance:
+
+    * ``is_interface``: this is a GIR ``<interface>``; emit a
+      ``GType_Interface`` Ada type.
+    * ``is_gobject``: a regular ``GObject``-derived class; emit a
+      tagged ``_Record`` type with an access discriminant.
+    * ``is_boxed``: an opaque ``<record>`` with a ``GBoxed`` type
+      tag --- emit an Ada tagged type built on :class:`adaformat.Tagged`.
+    * ``is_proxy``: a record forced to a :class:`adaformat.Proxy` by an
+      explicit type_exception (so we treat it as an opaque C pointer).
+    * ``is_record``: a ``<record>`` with public fields, emitted as a
+      plain Ada record.
+    * ``has_toplevel_type``: False when this instance only contributes
+      methods/functions to another package (e.g. for the global
+      ``enums`` packages); no type declaration is emitted.
+
+    Substitution helper
+    -------------------
+
+    ``self._subst`` is the dict passed to every ``"...%(name)s..." %
+    self._subst`` template in the code-generation snippets. It carries
+    the Ada type name (``typename``), the package name (``name``),
+    the original C type (``cname``) and --- once :meth:`generate` has
+    been called --- the resolved parent type (``parent`` and
+    ``parent_pkg``).
+    """
 
     def __init__(self, gir, rootNode, node, identifier_prefix,
                  is_interface=False, is_gobject=True, has_toplevel_type=True):
@@ -741,7 +922,7 @@ class GIRClass(object):
         self.rootNode = rootNode
         self.ctype = self.node.get(ctype_qname)
         if not self.ctype:
-            print("no c:type defined for %s" % (self.node.get(glib_type_name, )))
+            print(f"no c:type defined for {self.node.get(glib_type_name)}")
             return
 
         self._private = ""
@@ -847,6 +1028,15 @@ class GIRClass(object):
 
     def _handle_function(self, section, c, ismethod=False, gtkmethod=None,
                          showdoc=True, isinherited=False):
+        """Top-level entry point for binding a GIR ``<function>`` or
+           ``<method>`` node ``c``. Reads the TOML override (or honours
+           ``gtkmethod`` when one was already resolved by the caller),
+           parses the profile and delegates to
+           :meth:`_handle_function_internal` to add the corresponding
+           Ada subprogram to ``section``. If the TOML says
+           ``bind = false`` we only register the C name so warnings
+           are not raised later.
+        """
         cname = c.get(cidentifier)
 
         if gtkmethod is None:
@@ -938,12 +1128,12 @@ class GIRClass(object):
            attribute of `node'.
            `profile' is an instance of SubprogramProfile
         """
-        assert(profile is None or isinstance(profile, SubprogramProfile))
+        assert profile is None or isinstance(profile, SubprogramProfile)
 
         if profile.has_varargs() \
                 and gtkmethod.get_param("varargs").node is None:
             naming.add_cmethod(cname, cname)  # Avoid warning later on.
-            print("No binding for %s: varargs" % cname)
+            print(f"No binding for {cname}: varargs")
             return None
 
         is_import = self._func_is_direct_import(profile) \
@@ -1063,7 +1253,7 @@ class GIRClass(object):
         """
 
         if len(cb) > 1:
-            print("No binding for %s: multiple callback parameters" % cname)
+            print(f"No binding for {cname}: multiple callback parameters")
             return
         cb = cb[0]
 
@@ -1148,7 +1338,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             section = self.pkg.section("Callbacks")
 
             if cb_user_data is None:
-                print("callback has no user data: %s" % cbname)
+                print(f"callback has no user data: {cbname}")
                 # If the C function has no user data, we do not know how to
                 # generate a high-level binding, since we cannot go through an
                 # intermediate C function that transforms the parameters into
@@ -1273,100 +1463,104 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
         user_data2 = cb_profile.find_param(user_data_params)
 
-        if user_data2 is not None:
-            # If we have no "destroy" callback, so any memory we allocate via
-            # User.Build would be leaked. Better not to provide a binding
-            # in such a case.
-            # As a special case, some functions do not need to keep the data
-            # after their execution, so we can still bind those.
+        # If we have no "destroy" callback, any memory allocated by
+        # User.Build would be leaked, so we don't emit a binding in
+        # that case. Some functions however don't need to keep the
+        # data alive after they return, and are exempted from this
+        # check explicitly.
+        bind_user_data = profile.callback_destroy() is not None \
+            or '_for' in cname \
+            or cname in ('gtk_tree_view_map_expanded_rows',
+                         'pango_attributes_filter',
+                         'gdk_window_invalidate_maybe_recurse',
+                         'gtk_menu_popup')
 
-            if profile.callback_destroy() is None \
-               and '_for' not in cname \
-               and cname not in ('gtk_tree_view_map_expanded_rows',
-                                 'pango_attributes_filter',
-                                 'gdk_window_invalidate_maybe_recurse',
-                                 'gtk_menu_popup'):
-                pass
+        if user_data2 is not None and bind_user_data:
+            self.pkg.add_with("Glib.Object", do_use=False, specs=False)
 
-            else:
-                self.pkg.add_with("Glib.Object", do_use=False, specs=False)
-
-                pkg2 = Package(name="%s_User_Data" % adaname)
-                section.add(pkg2)
-                pkg2.formal_params = """type User_Data_Type (<>) is private;
+            pkg2 = Package(name="%s_User_Data" % adaname)
+            section.add(pkg2)
+            pkg2.formal_params = """type User_Data_Type (<>) is private;
       with procedure Destroy (Data : in out User_Data_Type) is null;"""
 
-                sect2 = pkg2.section("")
-                sect2.add("""package Users is new Glib.Object.User_Data_Closure
+            sect2 = pkg2.section("")
+            sect2.add("""package Users is new Glib.Object.User_Data_Closure
          (User_Data_Type, Destroy);""", in_spec=False)
 
-                sect2.add(
-                    ("function To_%s is new Ada.Unchecked_Conversion\n"
-                     + "   (System.Address, %s);\n") % (funcname, funcname),
-                    in_spec=False)
-                sect2.add(
-                    ("function To_Address is new Ada.Unchecked_Conversion\n"
-                     + "   (%s, System.Address);\n") % (funcname,),
-                    in_spec=False)
+            sect2.add(
+                ("function To_%s is new Ada.Unchecked_Conversion\n"
+                 + "   (System.Address, %s);\n") % (funcname, funcname),
+                in_spec=False)
+            sect2.add(
+                ("function To_Address is new Ada.Unchecked_Conversion\n"
+                 + "   (%s, System.Address);\n") % (funcname,),
+                in_spec=False)
 
-                cb_profile2 = copy.deepcopy(cb_profile)
-                cb_profile2.replace_param(user_data2, "User_Data_Type")
-                cb2 = cb_profile2.subprogram(name="")
-                sect2.add(
-                    "\ntype %s is %s" % (funcname, cb2.spec(pkg=pkg2)))
+            cb_profile2 = copy.deepcopy(cb_profile)
+            cb_profile2.replace_param(user_data2, "User_Data_Type")
+            cb2 = cb_profile2.subprogram(name="")
+            sect2.add(
+                "\ntype %s is %s" % (funcname, cb2.spec(pkg=pkg2)))
 
-                values = {user_data2.lower(): "D.Data.all"}
-                user_cb = cb_profile2.subprogram(
-                    name="To_%s (D.Func)" % funcname)
-                user_cb_call = user_cb.call(
-                    in_pkg=self.pkg,
-                    lang="c->ada",
-                    extra_postcall="".join(call), values=values)
+            values = {user_data2.lower(): "D.Data.all"}
+            user_cb = cb_profile2.subprogram(
+                name="To_%s (D.Func)" % funcname)
+            user_cb_call = user_cb.call(
+                in_pkg=self.pkg,
+                lang="c->ada",
+                extra_postcall="".join(call), values=values)
 
-                internal_cb = cb_profile.subprogram(
-                    name="Internal_Cb",
-                    local_vars=[
-                        Local_Var("D", "constant Users.Internal_Data_Access",
-                                  "Users.Convert (%s)" % user_data2)]
-                    + user_cb_call[2],
-                    convention="C",
-                    lang="c->ada",
-                    code=user_cb.call_to_string(user_cb_call, lang="c->ada"))
-                sect2.add(internal_cb, in_spec=False)
+            internal_cb = cb_profile.subprogram(
+                name="Internal_Cb",
+                local_vars=[
+                    Local_Var("D", "constant Users.Internal_Data_Access",
+                              "Users.Convert (%s)" % user_data2)]
+                + user_cb_call[2],
+                convention="C",
+                lang="c->ada",
+                code=user_cb.call_to_string(user_cb_call, lang="c->ada"))
+            sect2.add(internal_cb, in_spec=False)
 
-                values = {destroy: "Users.Free_Data'Address",
-                          cb.name.lower(): "%s'Address" % internal_cb.name,
-                          user_data.lower(): "D"}
+            values = {destroy: "Users.Free_Data'Address",
+                      cb.name.lower(): "%s'Address" % internal_cb.name,
+                      user_data.lower(): "D"}
 
-                full_profile = copy.deepcopy(profile)
-                full_profile.set_class_wide()
-                full_profile.remove_param(destroy_data_params)
-                full_profile.replace_param(cb.name, funcname)
-                full_profile.replace_param(user_data, "User_Data_Type")
+            full_profile = copy.deepcopy(profile)
+            full_profile.set_class_wide()
+            full_profile.remove_param(destroy_data_params)
+            full_profile.replace_param(cb.name, funcname)
+            full_profile.replace_param(user_data, "User_Data_Type")
 
-                if profile.callback_destroy() is None:
-                    c_call = call_to_c(
-                        gtk_func, values,
-                        user_data_setup=
-                            "D := Users.Build (To_Address (%s), %s);" %
-                            (cb.name, user_data),
-                        user_data_cleanup="Users.Free_Data (D);")
-                else:
-                    c_call = call_to_c(
-                        gtk_func, values,
-                        user_data_setup=
-                            "D := Users.Build (To_Address (%s), %s);" %
-                            (cb.name, user_data))
+            if profile.callback_destroy() is None:
+                c_call = call_to_c(
+                    gtk_func, values,
+                    user_data_setup=
+                        "D := Users.Build (To_Address (%s), %s);" %
+                        (cb.name, user_data),
+                    user_data_cleanup="Users.Free_Data (D);")
+            else:
+                c_call = call_to_c(
+                    gtk_func, values,
+                    user_data_setup=
+                        "D := Users.Build (To_Address (%s), %s);" %
+                        (cb.name, user_data))
 
-                subp2 = full_profile.subprogram(
-                    name=adaname,
-                    local_vars=c_call[1] + [Local_Var("D", "System.Address")],
-                    code=c_call[0])
-                sect2.add(subp2)
+            subp2 = full_profile.subprogram(
+                name=adaname,
+                local_vars=c_call[1] + [Local_Var("D", "System.Address")],
+                code=c_call[0])
+            sect2.add(subp2)
 
         return subp
 
     def _constructors(self):
+        """Iterate every ``<constructor>`` node attached to this class
+           and emit the matching Ada ``Gtk_New`` (or ``Gdk_New`` /
+           ``G_New``) procedures and functions via
+           :meth:`_handle_constructor`. Skips constructors that the
+           TOML override disables, and varargs constructors that lack
+           an explicit override.
+        """
         n = QName(uri, "constructor").text
         for c in self.node.findall(n):
             cname = c.get(cidentifier)
@@ -1383,14 +1577,21 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                     and gtkmethod.get_param("varargs").node is None:
 
                 naming.add_cmethod(cname, cname)  # Avoid warning later on.
-                print("No binding for %s: varargs" % cname)
+                print(f"No binding for {cname}: varargs")
                 continue
 
             self._handle_constructor(
                 c, gtkmethod=gtkmethod, cname=cname, profile=profile)
 
     def _handle_constructor(self, c, cname, gtkmethod, profile=None):
-        assert(profile is None or isinstance(profile, SubprogramProfile))
+        """Emit the Ada constructors for a single GIR ``<constructor>``
+           node. For ``GObject``-derived types we emit a ``Gtk_New``
+           procedure plus an ``Initialize`` primitive, and for
+           boxed/proxy types a single ``Gtk_New`` procedure. In every
+           case we also emit the equivalent function form (named
+           ``<Type>_<Suffix>``).
+        """
+        assert profile is None or isinstance(profile, SubprogramProfile)
 
         section = self.pkg.section("Constructors")
         name = c.get("name").title()
@@ -1423,7 +1624,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             returns=profile.returns).import_c(cname)
 
         call = internal.call(in_pkg=self.pkg)
-        assert(call[1] is not None)   # A function
+        assert call[1] is not None, "A function"
 
         gtk_new_prefix = "Gtk_New"
 
@@ -1468,7 +1669,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             ).add_nested(internal)
 
             call = initialize.call(in_pkg=self.pkg)
-            assert(call[1] is None)  # This is a procedure
+            assert call[1] is None, "This is a procedure"
 
             naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
             gtk_new = Subprogram(
@@ -1561,6 +1762,9 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             section.add(gtk_new)
 
     def _methods(self):
+        """Bind every GIR ``<method>`` of this class as an Ada
+           primitive operation in the ``Methods`` section.
+        """
         all = self.node.findall(nmethod)
         if all is not None:
             section = self.pkg.section("Methods")
@@ -1568,6 +1772,9 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                 self._handle_function(section, c, ismethod=True)
 
     def _functions(self):
+        """Bind every GIR ``<function>`` (non-method class-level
+           function) into the ``Functions`` section.
+        """
         all = self.node.findall(nfunction)
         if all is not None:
             section = self.pkg.section("Functions")
@@ -1575,6 +1782,12 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                 self._handle_function(section, c)
 
     def _virtual_methods(self):
+        """Emit one ``Virtual_<Method>`` access-to-subprogram type per
+           GIR ``<virtual-method>`` node, plus the matching ``Set_*``
+           helper imported from a hand-rolled C trampoline. The C
+           trampoline is appended to ``self.gir.ccode`` and will end
+           up in the ``--c-output`` file.
+        """
         all = self.node.findall(nvirtualmethod)
         has_iface = False
 
@@ -1648,6 +1861,10 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
             self.pkg.add_with('Glib.Object')
 
     def _globals(self):
+        """Bind every namespace-level function listed in this package's
+           ``[[Pkg.function]]`` TOML entries as a top-level function of
+           the Ada package.
+        """
         funcs = self.gtkpkg.get_global_functions()  # List of binding.toml entries
         if funcs:
             section = self.pkg.section("Functions")  # Make sure section exists
@@ -1657,7 +1874,10 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
                 self._handle_function(section, c, gtkmethod=f)
 
     def _method_get_type(self):
-        """Generate the Get_Type subprogram"""
+        """Emit the ``Get_Type`` function and (for ``GObject``-derived
+           classes) the matching ``Type_Conversion_*`` instantiation
+           that registers the Ada tag with the GLib type system.
+        """
 
         n = self.node.get(ggettype)
         if n is not None:
@@ -1699,6 +1919,13 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
         return None
 
     def _fields(self):
+        """Bind every GIR ``<field>`` of this class as a pair of
+           ``Get_<Field>`` / ``Set_<Field>`` Ada subprograms backed by
+           a hand-rolled C accessor appended to ``self.gir.ccode``.
+           Fields are opt-in: they are only emitted when the matching
+           ``gtkada_<ctype>_get_<name>`` method has ``bind = true`` in
+           the TOML override.
+        """
         fields = self.node.findall(nfield)
         if fields:
             section = self.pkg.section("Fields")
@@ -1764,6 +1991,13 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
 """ % {"ctype": ctype, "cname": cname, "self": self.ctype, "name": name}
 
     def _properties(self):
+        """Emit one ``<Name>_Property`` constant per GIR ``<property>``
+           in the ``Properties`` section. The actual Build call is
+           deferred to the package's private part to avoid freezing
+           issues. Properties whose type we cannot map are still
+           declared, but as ``Property_String`` with an
+           ``Unknown type:`` comment.
+        """
         n = QName(uri, "property")
 
         props = list(self.node.findall(n.text))
@@ -1909,14 +2143,8 @@ See Glib.Properties for more information on properties)""")
            Returns the name for the hander type.
         """
 
-        if SHARED_SLOT_MARSHALLERS:
-            pkg = gir.slot_marshaller_pkg
-            section = gir.slot_marshaller_section
-            existing_marshallers = gir.slot_marshallers
-        else:
-            pkg = self.pkg
-            section = section
-            existing_marshallers = self.__marshallers
+        pkg = self.pkg
+        existing_marshallers = self.__marshallers
 
         profile = SubprogramProfile.parse(
             node=node, gtkmethod=gtkmethod, pkg=pkg)
@@ -2095,6 +2323,13 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
         return name, callback, profile
 
     def _signals(self):
+        """Emit Ada bindings for every ``<signal>`` in this class:
+           one ``Signal_<Name>`` constant per signal, plus ``On_<Name>``
+           connect procedures (one taking a callback, one taking a slot
+           object). The marshallers are emitted in the body via
+           :meth:`_generate_marshaller` and
+           :meth:`_generate_slot_marshaller`.
+        """
         signals = list(self.node.findall(gsignal))
         if signals:
             adasignals = []
@@ -2108,9 +2343,6 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                     self.pkg.add_with("Gtkada.Bindings", specs=False)
                     self.pkg.add_with("Glib.Values", specs=False)
                     self.pkg.add_with("Gtk.Arguments", specs=False)
-
-                    if SHARED_SLOT_MARSHALLERS:
-                        self.pkg.add_with("Gtkada.Marshallers")
                     self.pkg.add_with(
                         "Ada.Unchecked_Conversion", specs=False, do_use=False)
                     break
@@ -2204,7 +2436,13 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                     section.add(Code(doc, fill=False, iscomment=True))
 
     def _implements(self):
-        """Bind the interfaces that a class implements"""
+        """For every GIR ``<implements>`` of this class, emit the
+           ``Implements_<Interface>`` ``Glib.Types.Implements``
+           instantiation together with the ``"+"`` (cast to interface)
+           and ``"-"`` (cast back to object) renames, and replicate
+           the inherited primitive operations in an
+           ``Inherited subprograms`` section.
+        """
 
         implements = list(self.node.findall(nimplements)) or []
 
@@ -2294,8 +2532,9 @@ end "+";""" % self._subst,
 
                 # Ignore interfaces that we haven't bound
                 if interf is not None and not hasattr(interf, "gtkpkg"):
-                    print("%s: methods for interface %s were not bound" % (
-                        self.name, impl["name"]))
+                    print(
+                        f"{self.name}: methods for interface "
+                        f"{impl['name']} were not bound")
                 elif interf is not None:
                     all = interf.node.findall(nmethod)
                     for c in all:
@@ -2321,7 +2560,11 @@ end "+";""" % self._subst,
                     section.add(impl["body"], in_spec=False)
 
     def add_list_binding(self, section, adaname, ctype, singleList):
-        """Generate a list instance"""
+        """Instantiate ``Glib.Glist.Generic_List`` (or its single-linked
+           counterpart) for the given element type, along with the
+           ``Convert`` helpers needed by the generic. The instance is
+           emitted in ``section`` under the name ``adaname``.
+        """
 
         conv = "%s->Address" % ctype.ada
         decl = ""
@@ -2444,7 +2687,7 @@ end "+";""" % self._subst,
                             "System.Address", pkg=self.pkg)
 
                 else:
-                    print("WARNING: Field '%s.%s' has no type" % (name, base))
+                    print(f"WARNING: Field '{name}.{base}' has no type")
                     print(" generated record is most certainly incorrect")
 
                 if ftype is not None:
@@ -2503,8 +2746,8 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
                             when_stmt = [enums[index][1]]
 
                         if not when_stmt:
-                            print("ERROR: no discrimant value for field %s"
-                                  % f[0])
+                            print(
+                                f"ERROR: no discrimant value for field {f[0]}")
 
                         text += "\n      when %s =>\n %s : %s;\n" % (
                             "\n          | ".join(when_stmt), f[0], f[1])
@@ -2543,7 +2786,7 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
 
         section.add(Code(_get_clean_doc(node), iscomment=True))
 
-    def get_enumeration_values(sef, enum_ctype):
+    def get_enumeration_values(self, enum_ctype):
         """Return the list of enumeration values for the given enum, as a list
            of tuples  (C identifier, ada identifier)"""
 
@@ -2552,6 +2795,12 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
                 for m in node.findall(nmember)]
 
     def constants_binding(self, section, regexp, prefix):
+        """Emit Ada string-constant declarations for every namespace
+           ``<constant>`` whose C name matches ``regexp``. ``prefix``
+           is stripped from the C name to compute the Ada identifier.
+           Constants annotated as deprecated produce an extra
+           ``pragma Obsolescent``.
+        """
         constants = []
         r = re.compile(regexp)
 
@@ -2677,6 +2926,17 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
         self.pkg.add_with("Glib.Generic_Properties")
 
     def generate(self, gir):
+        """Build the Ada package for this class.
+
+        This is the main driver of :class:`GIRClass`. It resolves the
+        parent type, picks the right type declaration depending on the
+        shape (interface / GObject / boxed / proxy / record / subtype)
+        and then delegates the per-feature work to the ``_constructors``,
+        ``_method_get_type``, ``_methods``, ``_functions``,
+        ``_globals``, ``_fields``, ``_virtual_methods``,
+        ``_implements``, ``_properties`` and ``_signals`` helpers, in
+        that order. Idempotent: a second call is a no-op.
+        """
         if self._generated:
             return
 
@@ -2904,50 +3164,16 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         self._signals()
 
 
-# Set up and invoke our command line parser
-parser = OptionParser()
-parser.add_option(
-    "--gir-file",
-    help="input GTK .gir file",
-    action="append",
-    dest="gir_file",
-    metavar="FILE")
-parser.add_option(
-    "--toml-dir",
-    help="input location of GtkAda package toml files",
-    dest="toml_dir",
-    metavar="FILE")
-parser.add_option(
-    "--ada-output",
-    help="Ada language output file",
-    dest="ada_outfile",
-    metavar="FILE")
-parser.add_option(
-    "--c-output",
-    help="C language output file",
-    dest="c_outfile",
-    metavar="FILE")
-(options, args) = parser.parse_args()
+# Module-level handles to the parsed GIR data and the TOML override
+# registry. They are assigned by :func:`main` and read from class
+# methods that need them (e.g. :meth:`GIRClass.record_binding`,
+# :meth:`GIRClass.enumeration_binding`, :meth:`GIRClass._implements`).
+gir = None
+gtkada = None
 
-# Command line argument sanity checking: make sure that all of our
-# inputs and outputs are specified.
-missing_files = []
-if options.gir_file is None:
-    missing_files.append("GIR file")
-if options.toml_dir is None:
-    missing_files.append("binding toml directory")
-if options.ada_outfile is None:
-    missing_files.append("Ada output file")
-if options.c_outfile is None:
-    missing_files.append("C output file")
-if missing_files:
-    parser.error('Must specify files:\n\t' + ', '.join(missing_files))
 
-gtkada = GtkAda(options.toml_dir)
-gir = GIR(options.gir_file)
-
-Package.copyright_header = \
-    """------------------------------------------------------------------------------
+_ADA_COPYRIGHT_HEADER = """\
+------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
 --                     Copyright (C) 2000-2022, AdaCore                     --
@@ -2971,8 +3197,8 @@ Package.copyright_header = \
 ------------------------------------------------------------------------------
 """
 
-gir.ccode = \
-    """/*****************************************************************************
+_C_COPYRIGHT_HEADER = """\
+/*****************************************************************************
  *               GtkAda - Ada95 binding for Gtk+/Gnome                       *
  *                                                                           *
  *   Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet           *
@@ -3002,49 +3228,146 @@ This file is automatically generated from the .gir files
 """
 
 
-for the_ctype in enums:
-    node = Element(
-        nclass,
-        {ctype_qname: the_ctype})
-    root = Element(nclass)
+def _parse_command_line():
+    """Parse argv and return the validated options namespace."""
+    parser = OptionParser()
+    parser.add_option(
+        "--gir-file",
+        help="input GTK .gir file",
+        action="append",
+        dest="gir_file",
+        metavar="FILE")
+    parser.add_option(
+        "--toml-dir",
+        help="input location of GtkAda package toml files",
+        dest="toml_dir",
+        metavar="FILE")
+    parser.add_option(
+        "--ada-output",
+        help="Ada language output file",
+        dest="ada_outfile",
+        metavar="FILE")
+    parser.add_option(
+        "--c-output",
+        help="C language output file",
+        dest="c_outfile",
+        metavar="FILE")
+    (options, _args) = parser.parse_args()
 
-    cl = gir._create_class(rootNode=root, node=node,
-                           identifier_prefix='',
-                           is_interface=False,
-                           is_gobject=False,
-                           has_toplevel_type=False)
-    cl.generate(gir)
+    missing_files = []
+    if options.gir_file is None:
+        missing_files.append("GIR file")
+    if options.toml_dir is None:
+        missing_files.append("binding toml directory")
+    if options.ada_outfile is None:
+        missing_files.append("Ada output file")
+    if options.c_outfile is None:
+        missing_files.append("C output file")
+    if missing_files:
+        parser.error('Must specify files:\n\t' + ', '.join(missing_files))
 
-for name in interfaces:
-    if name.startswith("--"):
-        gir.bound.add(name[2:])
-        continue
+    return options
 
-    gir.interfaces[name].generate(gir)
-    gir.bound.add(name)
 
-for the_ctype in binding:
-    if the_ctype.startswith("--"):
-        gir.bound.add(the_ctype[2:])
-        continue
+def _set_copyright_headers():
+    """Install the Ada and C copyright headers into the output classes
+    so that every generated Ada package and the C glue file get them.
+    """
+    Package.copyright_header = _ADA_COPYRIGHT_HEADER
+    gir.ccode = _C_COPYRIGHT_HEADER
 
-    try:
-        e = gir.classes[the_ctype]
-    except KeyError:
-        cl = gtkada.get_pkg(the_ctype)
-        if not cl:
-            raise
+
+def _emit_enums():
+    """Emit the standalone enumeration packages listed in
+    :data:`data.enums`. Each entry becomes a "fake" GIRClass with no
+    toplevel type, so that the enum declarations end up in a dedicated
+    package such as ``Gtk.Enums``.
+    """
+    for the_ctype in enums:
         node = Element(nclass, {ctype_qname: the_ctype})
-        e = gir.classes[the_ctype] = gir._create_class(
-            rootNode=root, node=node, is_interface=False,
-            identifier_prefix='')
+        root = Element(nclass)
 
-    e.generate(gir)
-    gir.bound.add(the_ctype)
+        cl = gir._create_class(rootNode=root, node=node,
+                               identifier_prefix='',
+                               is_interface=False,
+                               is_gobject=False,
+                               has_toplevel_type=False)
+        cl.generate(gir)
 
 
-with open(options.ada_outfile, "wb") as out:
-    with open(options.c_outfile, "wb") as cout:
-        gir.generate(out, cout)
+def _emit_interfaces():
+    """Emit one package per interface listed in :data:`data.interfaces`.
+    Names prefixed with ``--`` are not bound but still marked as
+    "covered" so they do not show up in the unbound report.
+    """
+    for name in interfaces:
+        if name.startswith("--"):
+            gir.bound.add(name[2:])
+            continue
 
-gir.show_unbound()
+        gir.interfaces[name].generate(gir)
+        gir.bound.add(name)
+
+
+def _emit_widgets():
+    """Emit one package per widget/record listed in :data:`data.binding`.
+    Names prefixed with ``--`` are skipped (but marked as covered).
+    Bindings missing from the GIR data (e.g. pure-toml glue packages
+    like ``GIO``) are fabricated on the fly from a stub XML node.
+    """
+    root = Element(nclass)
+    for the_ctype in binding:
+        if the_ctype.startswith("--"):
+            gir.bound.add(the_ctype[2:])
+            continue
+
+        try:
+            e = gir.classes[the_ctype]
+        except KeyError:
+            cl = gtkada.get_pkg(the_ctype)
+            if not cl:
+                raise
+            node = Element(nclass, {ctype_qname: the_ctype})
+            e = gir.classes[the_ctype] = gir._create_class(
+                rootNode=root, node=node, is_interface=False,
+                identifier_prefix='')
+
+        e.generate(gir)
+        gir.bound.add(the_ctype)
+
+
+def _write_outputs(ada_path, c_path):
+    """Write the generated Ada package buffer and C glue to disk."""
+    with open(ada_path, "wb") as out:
+        with open(c_path, "wb") as cout:
+            gir.generate(out, cout)
+
+
+def main():
+    """Entry point of the binding generator.
+
+    Parses the command line, builds the in-memory binding (enums,
+    interfaces and widgets in that order), writes the Ada and C output
+    files, and finally prints a summary of GIR entities that have no
+    Ada binding yet.
+    """
+    global gir, gtkada
+
+    options = _parse_command_line()
+
+    gtkada = GtkAda(options.toml_dir)
+    gir = GIR(options.gir_file)
+
+    _set_copyright_headers()
+
+    _emit_enums()
+    _emit_interfaces()
+    _emit_widgets()
+
+    _write_outputs(options.ada_outfile, options.c_outfile)
+
+    gir.show_unbound()
+
+
+if __name__ == "__main__":
+    main()
