@@ -1,66 +1,64 @@
-
 # ============================================================
 #   GtkCellArea
 # ============================================================
-[GtkCellArea]
 
-  [GtkCellArea.doc]
-    group = "Layout Containers"
+[doc]
+group = "Layout Containers"
 
-  [[GtkCellArea.method]]
-    id = "gtk_cell_area_cell_get_valist"
-    bind = false
-    # va_list
+[[method]]
+id = "gtk_cell_area_cell_get_valist"
+bind = false
+# va_list
 
-  [[GtkCellArea.method]]
-    id = "gtk_cell_area_cell_set_valist"
-    bind = false
-    # va_list
+[[method]]
+id = "gtk_cell_area_cell_set_valist"
+bind = false
+# va_list
 
-  [[GtkCellArea.method]]
-    id = "gtk_cell_area_add_with_properties"
-    bind = false
-    # varargs
+[[method]]
+id = "gtk_cell_area_add_with_properties"
+bind = false
+# varargs
 
-  [[GtkCellArea.method]]
-    id = "gtk_cell_area_cell_get"
-    bind = false
-    # varargs
+[[method]]
+id = "gtk_cell_area_cell_get"
+bind = false
+# varargs
 
-  [[GtkCellArea.method]]
-    id = "gtk_cell_area_cell_set"
-    bind = false
-    # varargs
+[[method]]
+id = "gtk_cell_area_cell_set"
+bind = false
+# varargs
 
-  [[GtkCellArea.method]]
-    id = "gtk_cell_area_get_cell_allocation"
+[[method]]
+id = "gtk_cell_area_get_cell_allocation"
 
-    [[GtkCellArea.method.parameter]]
-      name = "cell_area"
-      direction = "access"
+[[method.parameter]]
+name = "cell_area"
+direction = "access"
 
-    [[GtkCellArea.method.parameter]]
-      name = "allocation"
-      direction = "access"
+[[method.parameter]]
+name = "allocation"
+direction = "access"
 
-  [[GtkCellArea.method]]
-    id = "gtk_cell_area_get_focus_siblings"
-    return = "ObjectList"
+[[method]]
+id = "gtk_cell_area_get_focus_siblings"
+return = "ObjectList"
 
-  [[GtkCellArea.method]]
-    id = "gtk_cell_area_get_cell_at_position"
-    bind = false
+[[method]]
+id = "gtk_cell_area_get_cell_at_position"
+bind = false
 
-  [[GtkCellArea.method]]
-    id = "::add-editable"
+[[method]]
+id = "::add-editable"
 
-    [[GtkCellArea.method.parameter]]
-      name = "cell_area"
-      type = "Gdk.Rectangle.Gdk_Rectangle"
-    # bound manually below
+[[method.parameter]]
+name = "cell_area"
+type = "Gdk.Rectangle.Gdk_Rectangle"
+# bound manually below
 
-  [GtkCellArea.extra]
-    body = '''
+[extra]
+body = '''
 
    --------------
    -- Get_Area --
@@ -130,8 +128,8 @@
    end Get_Cell_At_Position;
         '''
 
-    [[GtkCellArea.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Get_Area
       (Context : access Gtk_Cell_Area_Context_Record)

@@ -1,19 +1,17 @@
-
 # ============================================================
 #   Spawn
 # ============================================================
-[Spawn]
-  ada = "Glib.Spawn"
+ada = "Glib.Spawn"
 
-  [[Spawn.enum]]
-    ctype = "GSpawnFlags"
+[[enum]]
+ctype = "GSpawnFlags"
 
-  [[Spawn.enum]]
-    ctype = "GSpawnError"
-    ignore = "G_SPAWN_ERROR_2BIG"
+[[enum]]
+ctype = "GSpawnError"
+ignore = "G_SPAWN_ERROR_2BIG"
 
-  [Spawn.extra]
-    body = '''
+[extra]
+body = '''
 
    ------------------------------
    -- Spawn_Command_Line_Async --
@@ -52,14 +50,14 @@
    end Spawn_Check_Exit_Status;
        '''
 
-    [[Spawn.extra.with_spec]]
-      pkg = "Glib.Error"
+[[extra.with_spec]]
+pkg = "Glib.Error"
 
-    [[Spawn.extra.with_spec]]
-      pkg = "Gtkada.Types"
+[[extra.with_spec]]
+pkg = "Gtkada.Types"
 
-    [[Spawn.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    generic
       type User_Data is limited private;
@@ -452,16 +450,16 @@
    --  "exit_status": An exit code as returned from Glib.Spawn.Spawn_Sync
        '''
 
-    [[Spawn.extra.type]]
-      ctype = "GPid"
-      ada = "GPid"
-      text = '''
+[[extra.type]]
+ctype = "GPid"
+ada = "GPid"
+text = '''
 
          type GPid is new Interfaces.C.ptrdiff_t;
        '''
 
-  [[Spawn.function]]
-    id = "g_get_environ"
+[[function]]
+id = "g_get_environ"
 
-  [[Spawn.function]]
-    id = "g_spawn_close_pid"
+[[function]]
+id = "g_spawn_close_pid"

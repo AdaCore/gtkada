@@ -1,32 +1,30 @@
-
 # ============================================================
 #   GtkStyleProvider
 # ============================================================
-[GtkStyleProvider]
 
-  [[GtkStyleProvider.virtual_method]]
-    id = "*"
-    bind = false
-    # circular dep with StyleProperties
+[[virtual_method]]
+id = "*"
+bind = false
+# circular dep with StyleProperties
 
-  [[GtkStyleProvider.method]]
-    id = "gtk_style_provider_get_style"
-    bind = false
-    # circular dep with StyleProperties
+[[method]]
+id = "gtk_style_provider_get_style"
+bind = false
+# circular dep with StyleProperties
 
-  [[GtkStyleProvider.method]]
-    id = "gtk_style_provider_get_style_property"
-    return_as_param = "Found"
+[[method]]
+id = "gtk_style_provider_get_style_property"
+return_as_param = "Found"
 
-  [[GtkStyleProvider.method]]
-    id = "gtk_style_provider_get_icon_factory"
-    bind = false
-    # in GtkIconFactory
+[[method]]
+id = "gtk_style_provider_get_icon_factory"
+bind = false
+# in GtkIconFactory
 
-  [GtkStyleProvider.extra]
+[extra]
 
-    [[GtkStyleProvider.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
          subtype Priority is Glib.Guint;
 

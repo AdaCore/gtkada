@@ -1,11 +1,9 @@
-
 # ============================================================
 #   GMenuItem
 # ============================================================
-[GMenuItem]
-  into = "GMenu"
-  ada = "Glib.Menu"
+into = "GMenu"
+ada = "Glib.Menu"
 
-  [[GMenuItem.method]]
-    id = "g_menu_item_get_type"
-    ada = "Get_Type_Menu_Item"
+[[method]]
+id = "g_menu_item_get_type"
+ada = "Get_Type_Menu_Item"

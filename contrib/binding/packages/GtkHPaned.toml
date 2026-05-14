@@ -1,25 +1,23 @@
-
 # ============================================================
 #   GtkHPaned
 # ============================================================
-[GtkHPaned]
-  into = "GtkPaned"
+into = "GtkPaned"
 
-  [[GtkHPaned.type]]
-    name = "Gtk_Hpaned"
-    subtype = true
+[[type]]
+name = "Gtk_Hpaned"
+subtype = true
 
-  [[GtkHPaned.parameter]]
-    name = "self"
-    ada = "Paned"
+[[parameter]]
+name = "self"
+ada = "Paned"
 
-  [[GtkHPaned.method]]
-    id = "gtk_hpaned_new"
-    ada = "Gtk_New_Hpaned"
+[[method]]
+id = "gtk_hpaned_new"
+ada = "Gtk_New_Hpaned"
 
-    [GtkHPaned.method.doc]
-      text = "The children will be displayed next to each other"
+[method.doc]
+text = "The children will be displayed next to each other"
 
-  [[GtkHPaned.method]]
-    id = "gtk_hpaned_get_type"
-    ada = "Get_Type_Hpaned"
+[[method]]
+id = "gtk_hpaned_get_type"
+ada = "Get_Type_Hpaned"

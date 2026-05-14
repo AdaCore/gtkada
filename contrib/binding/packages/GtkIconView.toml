@@ -1,53 +1,51 @@
-
 # ============================================================
 #   GtkIconView
 # ============================================================
-[GtkIconView]
 
-  [[GtkIconView.parameter]]
-    name = "self"
-    ada = "Icon_View"
+[[parameter]]
+name = "self"
+ada = "Icon_View"
 
-  [[GtkIconView.enum]]
-    ctype = "GtkIconViewDropPosition"
-    prefix = "GTK_ICON_VIEW_"
+[[enum]]
+ctype = "GtkIconViewDropPosition"
+prefix = "GTK_ICON_VIEW_"
 
-  [[GtkIconView.method]]
-    id = "gtk_icon_view_get_cursor"
-    return_as_param = "Cursor_Is_Set"
+[[method]]
+id = "gtk_icon_view_get_cursor"
+return_as_param = "Cursor_Is_Set"
 
-  [[GtkIconView.method]]
-    id = "gtk_icon_view_get_dest_item_at_pos"
-    return_as_param = "Has_Item"
+[[method]]
+id = "gtk_icon_view_get_dest_item_at_pos"
+return_as_param = "Has_Item"
 
-  [[GtkIconView.method]]
-    id = "gtk_icon_view_get_item_at_pos"
-    return_as_param = "Has_Item"
+[[method]]
+id = "gtk_icon_view_get_item_at_pos"
+return_as_param = "Has_Item"
 
-  [[GtkIconView.method]]
-    id = "gtk_icon_view_get_selected_items"
-    return = "TreePathList"
+[[method]]
+id = "gtk_icon_view_get_selected_items"
+return = "TreePathList"
 
-  [[GtkIconView.method]]
-    id = "gtk_icon_view_get_tooltip_context"
-    return_as_param = "Success"
+[[method]]
+id = "gtk_icon_view_get_tooltip_context"
+return_as_param = "Success"
 
-  [[GtkIconView.method]]
-    id = "gtk_icon_view_get_visible_range"
-    return = "void"
+[[method]]
+id = "gtk_icon_view_get_visible_range"
+return = "void"
 
-  [[GtkIconView.method]]
-    id = "gtk_icon_view_enable_model_drag_source"
-    bind = false
-    # see below
+[[method]]
+id = "gtk_icon_view_enable_model_drag_source"
+bind = false
+# see below
 
-  [[GtkIconView.method]]
-    id = "gtk_icon_view_enable_model_drag_dest"
-    bind = false
-    # see below
+[[method]]
+id = "gtk_icon_view_enable_model_drag_dest"
+bind = false
+# see below
 
-  [GtkIconView.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure Enable_Model_Drag_Dest
      (Icon_View : access Gtk_Icon_View_Record;
@@ -86,17 +84,17 @@
    end Enable_Model_Drag_Source;
        '''
 
-    [[GtkIconView.extra.with_spec]]
-      pkg = "Gtk.Target_List"
+[[extra.with_spec]]
+pkg = "Gtk.Target_List"
 
-    [[GtkIconView.extra.with_spec]]
-      pkg = "Gdk.Dnd"
+[[extra.with_spec]]
+pkg = "Gdk.Dnd"
 
-    [[GtkIconView.extra.with_spec]]
-      pkg = "Gdk.Types"
+[[extra.with_spec]]
+pkg = "Gdk.Types"
 
-    [[GtkIconView.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Enable_Model_Drag_Dest
      (Icon_View : access Gtk_Icon_View_Record;

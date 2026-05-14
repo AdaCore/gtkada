@@ -1,27 +1,25 @@
-
 # ============================================================
 #   GtkGesture
 # ============================================================
-[GtkGesture]
 
-  [[GtkGesture.list]]
-    ada = "Gesture_List"
-    ctype = "GtkGesture"
+[[list]]
+ada = "Gesture_List"
+ctype = "GtkGesture"
 
-  [[GtkGesture.list]]
-    ada = "Gdk_Event_Sequence_List"
-    ctype = "GdkEventSequence"
+[[list]]
+ada = "Gdk_Event_Sequence_List"
+ctype = "GdkEventSequence"
 
-  [[GtkGesture.method]]
-    id = "gtk_gesture_get_group"
-    return = "GestureList"
+[[method]]
+id = "gtk_gesture_get_group"
+return = "GestureList"
 
-  [[GtkGesture.method]]
-    id = "gtk_gesture_get_sequences"
-    return = "GdkEventSequenceList"
+[[method]]
+id = "gtk_gesture_get_sequences"
+return = "GdkEventSequenceList"
 
-  [GtkGesture.doc]
-    text = '''
+[doc]
+text = '''
 GtkAda
 
 Gesture events are meant to replace low-level handling in most cases. For
@@ -50,8 +48,8 @@ Without the call to Watch, Gesture would be kept in memory for ever, ready
 to be attached to some other widget.
       '''
 
-  [GtkGesture.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure Set_State
      (Self : not null access Gtk_Gesture_Record'Class;
@@ -82,8 +80,8 @@ to be attached to some other widget.
    end Watch;
          '''
 
-    [[GtkGesture.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Set_State
      (Self : not null access Gtk_Gesture_Record'Class;

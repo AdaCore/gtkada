@@ -1,189 +1,187 @@
-
 # ============================================================
 #   GtkEnums
 # ============================================================
-[GtkEnums]
 
-  [[GtkEnums.enum]]
-    ctype = "GtkArrowType"
+[[enum]]
+ctype = "GtkArrowType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkAttachOptions"
+[[enum]]
+ctype = "GtkAttachOptions"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkButtonBoxStyle"
+[[enum]]
+ctype = "GtkButtonBoxStyle"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkCornerType"
+[[enum]]
+ctype = "GtkCornerType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkDeleteType"
+[[enum]]
+ctype = "GtkDeleteType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkDirectionType"
+[[enum]]
+ctype = "GtkDirectionType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkDragResult"
+[[enum]]
+ctype = "GtkDragResult"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkExpanderStyle"
+[[enum]]
+ctype = "GtkExpanderStyle"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkIconSize"
-    asbitfield = true
+[[enum]]
+ctype = "GtkIconSize"
+asbitfield = true
 
-  [[GtkEnums.enum]]
-    ctype = "GtkJunctionSides"
+[[enum]]
+ctype = "GtkJunctionSides"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkBaselinePosition"
+[[enum]]
+ctype = "GtkBaselinePosition"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkJustification"
+[[enum]]
+ctype = "GtkJustification"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkMenuDirectionType"
+[[enum]]
+ctype = "GtkMenuDirectionType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkMovementStep"
+[[enum]]
+ctype = "GtkMovementStep"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkInputHints"
+[[enum]]
+ctype = "GtkInputHints"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkInputPurpose"
+[[enum]]
+ctype = "GtkInputPurpose"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkNumberUpLayout"
-    prefix = "GTK_NUMBER_UP_LAYOUT_"
+[[enum]]
+ctype = "GtkNumberUpLayout"
+prefix = "GTK_NUMBER_UP_LAYOUT_"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkOrientation"
+[[enum]]
+ctype = "GtkOrientation"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPackDirection"
+[[enum]]
+ctype = "GtkPackDirection"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPackType"
+[[enum]]
+ctype = "GtkPackType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPageOrientation"
+[[enum]]
+ctype = "GtkPageOrientation"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPageSet"
+[[enum]]
+ctype = "GtkPageSet"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPanDirection"
+[[enum]]
+ctype = "GtkPanDirection"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPopoverConstraint"
+[[enum]]
+ctype = "GtkPopoverConstraint"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPropagationPhase"
+[[enum]]
+ctype = "GtkPropagationPhase"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkEventSequenceState"
+[[enum]]
+ctype = "GtkEventSequenceState"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkLevelBarMode"
+[[enum]]
+ctype = "GtkLevelBarMode"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPathPriorityType"
+[[enum]]
+ctype = "GtkPathPriorityType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPathType"
+[[enum]]
+ctype = "GtkPathType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPolicyType"
+[[enum]]
+ctype = "GtkPolicyType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPositionType"
+[[enum]]
+ctype = "GtkPositionType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPrintDuplex"
+[[enum]]
+ctype = "GtkPrintDuplex"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPrintPages"
+[[enum]]
+ctype = "GtkPrintPages"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkPrintQuality"
+[[enum]]
+ctype = "GtkPrintQuality"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkRegionFlags"
+[[enum]]
+ctype = "GtkRegionFlags"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkReliefStyle"
+[[enum]]
+ctype = "GtkReliefStyle"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkResizeMode"
+[[enum]]
+ctype = "GtkResizeMode"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkScrollStep"
+[[enum]]
+ctype = "GtkScrollStep"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkScrollType"
+[[enum]]
+ctype = "GtkScrollType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkScrollablePolicy"
+[[enum]]
+ctype = "GtkScrollablePolicy"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkSelectionMode"
+[[enum]]
+ctype = "GtkSelectionMode"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkSensitivityType"
+[[enum]]
+ctype = "GtkSensitivityType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkShadowType"
+[[enum]]
+ctype = "GtkShadowType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkSizeRequestMode"
-    prefix = "GTK_SIZE_REQUEST_"
+[[enum]]
+ctype = "GtkSizeRequestMode"
+prefix = "GTK_SIZE_REQUEST_"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkSortType"
+[[enum]]
+ctype = "GtkSortType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkStateFlags"
-    prefix = ""
+[[enum]]
+ctype = "GtkStateFlags"
+prefix = ""
 
-  [[GtkEnums.enum]]
-    ctype = "GtkStateType"
+[[enum]]
+ctype = "GtkStateType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkTargetFlags"
-    prefix = ""
+[[enum]]
+ctype = "GtkTargetFlags"
+prefix = ""
 
-  [[GtkEnums.enum]]
-    ctype = "GtkTextDirection"
+[[enum]]
+ctype = "GtkTextDirection"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkTextWindowType"
+[[enum]]
+ctype = "GtkTextWindowType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkTreeViewGridLines"
-    prefix = "GTK_TREE_VIEW_"
+[[enum]]
+ctype = "GtkTreeViewGridLines"
+prefix = "GTK_TREE_VIEW_"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkToolbarSpaceStyle"
+[[enum]]
+ctype = "GtkToolbarSpaceStyle"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkToolbarStyle"
+[[enum]]
+ctype = "GtkToolbarStyle"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkUnit"
-    prefix = "GTK_UNIT_"
+[[enum]]
+ctype = "GtkUnit"
+prefix = "GTK_UNIT_"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkWindowPosition"
+[[enum]]
+ctype = "GtkWindowPosition"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkWindowType"
+[[enum]]
+ctype = "GtkWindowType"
 
-  [[GtkEnums.enum]]
-    ctype = "GtkWrapMode"
+[[enum]]
+ctype = "GtkWrapMode"
 
-  [GtkEnums.extra]
-    body = '''
+[extra]
+body = '''
 
    function Convert (S : String) return System.Address is
       function Internal is new
@@ -232,22 +230,22 @@
    end Free_String_List;
        '''
 
-    [[GtkEnums.extra.with_spec]]
-      pkg = "Glib.Glist"
+[[extra.with_spec]]
+pkg = "Glib.Glist"
 
-    [[GtkEnums.extra.with_spec]]
-      pkg = "Glib.GSlist"
+[[extra.with_spec]]
+pkg = "Glib.GSlist"
 
-    [[GtkEnums.extra.with_body]]
-      pkg = "Ada.Unchecked_Conversion"
-      use = false
+[[extra.with_body]]
+pkg = "Ada.Unchecked_Conversion"
+use = false
 
-    [[GtkEnums.extra.with_body]]
-      pkg = "Gtkada.Types"
-      use = false
+[[extra.with_body]]
+pkg = "Gtkada.Types"
+use = false
 
-    [[GtkEnums.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Convert (S : String) return System.Address;
    function Convert (S : System.Address) return String;

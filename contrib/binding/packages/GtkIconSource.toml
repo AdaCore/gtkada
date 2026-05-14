@@ -1,11 +1,9 @@
-
 # ============================================================
 #   GtkIconSource
 # ============================================================
-[GtkIconSource]
 
-  [GtkIconSource.doc]
-    text = '''
+[doc]
+text = '''
 An icon source contains a Gdk_Pixbuf (or image filename) that serves as
 the base image for one or more of the icons in an icon set, along with a
 specification for which icons in the icon set will be based on that

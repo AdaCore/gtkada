@@ -1,41 +1,39 @@
-
 # ============================================================
 #   GtkIconTheme
 # ============================================================
-[GtkIconTheme]
 
-  [[GtkIconTheme.parameter]]
-    name = "self"
-    ada = "Icon_Theme"
+[[parameter]]
+name = "self"
+ada = "Icon_Theme"
 
-  [[GtkIconTheme.enum]]
-    ctype = "GtkIconLookupFlags"
-    prefix = "GTK_"
+[[enum]]
+ctype = "GtkIconLookupFlags"
+prefix = "GTK_"
 
-  [[GtkIconTheme.method]]
-    id = "gtk_icon_theme_lookup_by_gicon"
-    classwide = true
+[[method]]
+id = "gtk_icon_theme_lookup_by_gicon"
+classwide = true
 
-  [[GtkIconTheme.method]]
-    id = "gtk_icon_theme_lookup_icon"
-    classwide = true
+[[method]]
+id = "gtk_icon_theme_lookup_icon"
+classwide = true
 
-  [[GtkIconTheme.method]]
-    id = "gtk_icon_theme_choose_icon"
-    classwide = true
+[[method]]
+id = "gtk_icon_theme_choose_icon"
+classwide = true
 
-  [[GtkIconTheme.method]]
-    id = "gtk_icon_theme_set_search_path"
+[[method]]
+id = "gtk_icon_theme_set_search_path"
 
-    [[GtkIconTheme.method.parameter]]
-      name = "n_elements"
-      ada = ""
-      default = "Path'Length"
+[[method.parameter]]
+name = "n_elements"
+ada = ""
+default = "Path'Length"
 
-  [[GtkIconTheme.method]]
-    id = "gtk_icon_theme_get_search_path"
-    return = "GNAT.Strings.String_List"
-    body = '''
+[[method]]
+id = "gtk_icon_theme_get_search_path"
+return = "GNAT.Strings.String_List"
+body = '''
       procedure Internal
         (Icon_Theme : System.Address;
          Path       : out chars_ptr_array_access;
@@ -54,17 +52,17 @@
          return Result;
       end;'''
 
-    [[GtkIconTheme.method.parameter]]
-      name = "path"
-      ada = ""
+[[method.parameter]]
+name = "path"
+ada = ""
 
-    [[GtkIconTheme.method.parameter]]
-      name = "n_elements"
-      ada = ""
+[[method.parameter]]
+name = "n_elements"
+ada = ""
 
-  [[GtkIconTheme.method]]
-    id = "gtk_icon_theme_get_icon_sizes"
-    body = '''
+[[method]]
+id = "gtk_icon_theme_get_icon_sizes"
+body = '''
       use Gint_Arrays;
       function Internal
         (Icon_Theme : System.Address;
@@ -78,15 +76,15 @@
       G_Free (Res);
       return Result;'''
 
-  [[GtkIconTheme.method]]
-    id = "gtk_icon_theme_list_icons"
-    return = "StringList"
+[[method]]
+id = "gtk_icon_theme_list_icons"
+return = "StringList"
 
-  [[GtkIconTheme.method]]
-    id = "gtk_icon_theme_list_contexts"
-    return = "StringList"
+[[method]]
+id = "gtk_icon_theme_list_contexts"
+return = "StringList"
 
-  [GtkIconTheme.extra]
+[extra]
 
-    [[GtkIconTheme.extra.with_body]]
-      pkg = "Gtkada.Bindings"
+[[extra.with_body]]
+pkg = "Gtkada.Bindings"

@@ -1,121 +1,119 @@
-
 # ============================================================
 #   GIOChannel
 # ============================================================
-[GIOChannel]
-  ada = "Glib.IOChannel"
+ada = "Glib.IOChannel"
 
-  [[GIOChannel.enum]]
-    ctype = "GIOCondition"
+[[enum]]
+ctype = "GIOCondition"
 
-  [[GIOChannel.enum]]
-    ctype = "GIOFlags"
+[[enum]]
+ctype = "GIOFlags"
 
-  [[GIOChannel.enum]]
-    ctype = "GIOStatus"
+[[enum]]
+ctype = "GIOStatus"
 
-  [[GIOChannel.enum]]
-    ctype = "GIOError"
+[[enum]]
+ctype = "GIOError"
 
-  [[GIOChannel.enum]]
-    ctype = "GIOChannelError"
+[[enum]]
+ctype = "GIOChannelError"
 
-  [[GIOChannel.enum]]
-    ctype = "GSeekType"
+[[enum]]
+ctype = "GSeekType"
 
-  [[GIOChannel.record]]
-    ctype = "GIOFuncs"
+[[record]]
+ctype = "GIOFuncs"
 
-  [[GIOChannel.record]]
-    ctype = "GIOChannel"
-    ada = "GIO_Channel_Record"
+[[record]]
+ctype = "GIOChannel"
+ada = "GIO_Channel_Record"
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_new_file"
-    bind = false
+[[method]]
+id = "g_io_channel_new_file"
+bind = false
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_read_line"
-    bind = false
-    # too complicated for generator
+[[method]]
+id = "g_io_channel_read_line"
+bind = false
+# too complicated for generator
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_read_to_end"
-    bind = false
-    # too complicated for generator
+[[method]]
+id = "g_io_channel_read_to_end"
+bind = false
+# too complicated for generator
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_get_type"
-    bind = false
-    # exists only in gir file
+[[method]]
+id = "g_io_channel_get_type"
+bind = false
+# exists only in gir file
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_shutdown"
-    bind = false
-    # gir file should be updated
+[[method]]
+id = "g_io_channel_shutdown"
+bind = false
+# gir file should be updated
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_flush"
-    bind = false
-    # gir file should be updated
+[[method]]
+id = "g_io_channel_flush"
+bind = false
+# gir file should be updated
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_set_encoding"
-    bind = false
-    # gir file should be updated
+[[method]]
+id = "g_io_channel_set_encoding"
+bind = false
+# gir file should be updated
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_set_flags"
-    bind = false
-    # gir file should be updated
+[[method]]
+id = "g_io_channel_set_flags"
+bind = false
+# gir file should be updated
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_read_chars"
-    bind = false
-    # gir file should be updated
+[[method]]
+id = "g_io_channel_read_chars"
+bind = false
+# gir file should be updated
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_read_line_string"
-    bind = false
-    # gir file should be updated
+[[method]]
+id = "g_io_channel_read_line_string"
+bind = false
+# gir file should be updated
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_read_unichar"
-    bind = false
-    # gir file should be updated
+[[method]]
+id = "g_io_channel_read_unichar"
+bind = false
+# gir file should be updated
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_write_unichar"
-    bind = false
-    # gir file should be updated
+[[method]]
+id = "g_io_channel_write_unichar"
+bind = false
+# gir file should be updated
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_write_chars"
-    bind = false
-    # gir file should be updated
-    # deprecated methods
+[[method]]
+id = "g_io_channel_write_chars"
+bind = false
+# gir file should be updated
+# deprecated methods
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_close"
-    bind = false
+[[method]]
+id = "g_io_channel_close"
+bind = false
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_read"
-    bind = false
+[[method]]
+id = "g_io_channel_read"
+bind = false
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_seek"
-    bind = false
+[[method]]
+id = "g_io_channel_seek"
+bind = false
 
-  [[GIOChannel.method]]
-    id = "g_io_channel_write"
-    bind = false
+[[method]]
+id = "g_io_channel_write"
+bind = false
 
-  [[GIOChannel.function]]
-    id = "g_io_create_watch"
+[[function]]
+id = "g_io_create_watch"
 
-  [GIOChannel.extra]
-    body = '''
+[extra]
+body = '''
 
    ------------------
    -- Set_Encoding --
@@ -198,14 +196,14 @@
 
        '''
 
-    [[GIOChannel.extra.with_spec]]
-      pkg = "Glib.Error"
+[[extra.with_spec]]
+pkg = "Glib.Error"
 
-    [[GIOChannel.extra.with_spec]]
-      pkg = "Ada.Streams"
+[[extra.with_spec]]
+pkg = "Ada.Streams"
 
-    [[GIOChannel.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Shutdown
      (Self     : Giochannel;
@@ -346,10 +344,10 @@
    --  "callback": the function to call when the condition is satisfied
        '''
 
-    [[GIOChannel.extra.type]]
-      ctype = "GIOChannel*"
-      ada = "Giochannel"
-      text = '''
+[[extra.type]]
+ctype = "GIOChannel*"
+ada = "Giochannel"
+text = '''
 
            type Giochannel is access all GIO_Channel_Record;
            pragma No_Strict_Aliasing (Giochannel);

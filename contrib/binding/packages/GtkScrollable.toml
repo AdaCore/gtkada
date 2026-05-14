@@ -1,8 +1,6 @@
-
 # ============================================================
 #   GtkScrollable
 # ============================================================
-[GtkScrollable]
 
-  [GtkScrollable.doc]
-    group = "Interfaces"
+[doc]
+group = "Interfaces"

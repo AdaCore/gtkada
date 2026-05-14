@@ -1,20 +1,18 @@
-
 # ============================================================
 #   GtkTextMark
 # ============================================================
-[GtkTextMark]
 
-  [[GtkTextMark.parameter]]
-    name = "self"
-    ada = "Mark"
+[[parameter]]
+name = "self"
+ada = "Mark"
 
-  [[GtkTextMark.method]]
-    id = "gtk_text_mark_get_buffer"
-    bind = false
-    # circular dependency, added manually in Gtk.Text_Buffer
+[[method]]
+id = "gtk_text_mark_get_buffer"
+bind = false
+# circular dependency, added manually in Gtk.Text_Buffer
 
-  [GtkTextMark.extra]
-    body = '''
+[extra]
+body = '''
 
    -------------------
    -- Set_Text_Mark --
@@ -39,11 +37,11 @@
    end Get_Text_Mark;
        '''
 
-    [[GtkTextMark.extra.with_spec]]
-      pkg = "Glib.Values"
+[[extra.with_spec]]
+pkg = "Glib.Values"
 
-    [[GtkTextMark.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    -------------------------------
    -- Converting to/from GValue --

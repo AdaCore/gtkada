@@ -1,18 +1,16 @@
-
 # ============================================================
 #   GtkCalendar
 # ============================================================
-[GtkCalendar]
 
-  [GtkCalendar.doc]
-    screenshot = "gtk-calendar"
-    group = "Selectors"
-    testgtk = "create_calendar.adb"
+[doc]
+screenshot = "gtk-calendar"
+group = "Selectors"
+testgtk = "create_calendar.adb"
 
-  [[GtkCalendar.parameter]]
-    name = "self"
-    ada = "Calendar"
+[[parameter]]
+name = "self"
+ada = "Calendar"
 
-  [[GtkCalendar.enum]]
-    ctype = "GtkCalendarDisplayOptions"
-    prefix = "GTK_CALENDAR_"
+[[enum]]
+ctype = "GtkCalendarDisplayOptions"
+prefix = "GTK_CALENDAR_"

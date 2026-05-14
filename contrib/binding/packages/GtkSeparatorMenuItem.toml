@@ -1,12 +1,10 @@
-
 # ============================================================
 #   GtkSeparatorMenuItem
 # ============================================================
-[GtkSeparatorMenuItem]
 
-  [GtkSeparatorMenuItem.doc]
-    group = "Menus and Toolbars"
+[doc]
+group = "Menus and Toolbars"
 
-  [[GtkSeparatorMenuItem.parameter]]
-    name = "self"
-    ada = "Widget"
+[[parameter]]
+name = "self"
+ada = "Widget"

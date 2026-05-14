@@ -1,8 +1,6 @@
-
 # ============================================================
 #   PangoFontset
 # ============================================================
-[PangoFontset]
 
-  [PangoFontset.doc]
-    text = "an object containing a set of pango.Font objects"
+[doc]
+text = "an object containing a set of pango.Font objects"

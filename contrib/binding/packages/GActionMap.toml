@@ -1,28 +1,26 @@
-
 # ============================================================
 #   GActionMap
 # ============================================================
-[GActionMap]
-  ada = "Glib.Action_Map"
+ada = "Glib.Action_Map"
 
-  [[GActionMap.record]]
-    ctype = "GActionEntry"
-    private = true
+[[record]]
+ctype = "GActionEntry"
+private = true
 
-  [[GActionMap.method]]
-    id = "g_action_map_add_action_entries"
+[[method]]
+id = "g_action_map_add_action_entries"
 
-    [[GActionMap.method.parameter]]
-      name = "n_entries"
-      ada = ""
-      default = "Entries'Length"
+[[method.parameter]]
+name = "n_entries"
+ada = ""
+default = "Entries'Length"
 
-    [[GActionMap.method.parameter]]
-      name = "user_data"
-      default = "System.Null_Address"
+[[method.parameter]]
+name = "user_data"
+default = "System.Null_Address"
 
-  [GActionMap.extra]
-    body = '''
+[extra]
+body = '''
 
          function Convert is new Ada.Unchecked_Conversion
             (Activate_Callback, System.Address);
@@ -55,18 +53,18 @@
          end Build;
        '''
 
-    [[GActionMap.extra.with_spec]]
-      pkg = "Glib.Variant"
+[[extra.with_spec]]
+pkg = "Glib.Variant"
 
-    [[GActionMap.extra.with_spec]]
-      pkg = "Glib.Simple_Action"
+[[extra.with_spec]]
+pkg = "Glib.Simple_Action"
 
-    [[GActionMap.extra.with_body]]
-      pkg = "Ada.Unchecked_Conversion"
-      use = false
+[[extra.with_body]]
+pkg = "Ada.Unchecked_Conversion"
+use = false
 
-    [[GActionMap.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
          type Activate_Callback is access procedure
             (Action    : access Glib.Simple_Action.Gsimple_Action;
@@ -102,10 +100,10 @@
          --  Change_State is the callback for the "change-state" signal.
        '''
 
-    [[GActionMap.extra.type]]
-      ctype = "array_of_ActionEntry"
-      ada = "GAction_Entry_Array"
-      text = '''
+[[extra.type]]
+ctype = "array_of_ActionEntry"
+ada = "GAction_Entry_Array"
+text = '''
 
          type GAction_Entry_Array is array (Natural range <>) of GAction_Entry;
        '''

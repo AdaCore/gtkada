@@ -1,44 +1,42 @@
-
 # ============================================================
 #   GtkTreePath
 # ============================================================
-[GtkTreePath]
-  into = "GtkTreeModel"
+into = "GtkTreeModel"
 
-  [[GtkTreePath.parameter]]
-    name = "self"
-    ada = "Path"
+[[parameter]]
+name = "self"
+ada = "Path"
 
-  [[GtkTreePath.list]]
-    ada = "Gtk_Tree_Path_List"
-    ctype = "GtkTreePath"
-    section = "Lists"
+[[list]]
+ada = "Gtk_Tree_Path_List"
+ctype = "GtkTreePath"
+section = "Lists"
 
-  [[GtkTreePath.method]]
-    id = "gtk_tree_path_new_from_string"
-    ada = "Gtk_New"
+[[method]]
+id = "gtk_tree_path_new_from_string"
+ada = "Gtk_New"
 
-    [[GtkTreePath.method.parameter]]
-      name = "self"
-      ada = "Self"
+[[method.parameter]]
+name = "self"
+ada = "Self"
 
-  [[GtkTreePath.method]]
-    id = "gtk_tree_path_get_type"
-    ada = "Path_Get_Type"
+[[method]]
+id = "gtk_tree_path_get_type"
+ada = "Path_Get_Type"
 
-  [[GtkTreePath.method]]
-    id = "gtk_tree_path_free"
-    ada = "Path_Free"
+[[method]]
+id = "gtk_tree_path_free"
+ada = "Path_Free"
 
-  [[GtkTreePath.method]]
-    id = "gtk_tree_path_get_indices_with_depth"
-    bind = false
-    # duplicates Get_Indices, in Ada
+[[method]]
+id = "gtk_tree_path_get_indices_with_depth"
+bind = false
+# duplicates Get_Indices, in Ada
 
-  [[GtkTreePath.method]]
-    id = "gtk_tree_path_get_indices"
-    return = "Glib.Gint_Array"
-    body = '''
+[[method]]
+id = "gtk_tree_path_get_indices"
+return = "Glib.Gint_Array"
+body = '''
       Depth : constant Integer := Integer (Get_Depth (Path));
 
       subtype Result_Array is Gint_Array (0 .. Depth - 1);
@@ -59,8 +57,8 @@
          return Result.all;
       end if;'''
 
-  [GtkTreePath.extra]
-    body = '''
+[extra]
+body = '''
 
    function Get_Tree_Path (Val : Glib.Values.GValue) return Gtk_Tree_Path is
    begin
@@ -68,11 +66,11 @@
    end Get_Tree_Path;
        '''
 
-    [[GtkTreePath.extra.with_body]]
-      pkg = "Glib.Values"
+[[extra.with_body]]
+pkg = "Glib.Values"
 
-    [[GtkTreePath.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Get_Tree_Path (Val : Glib.Values.GValue) return Gtk_Tree_Path;
    --  Extract the path from the given GValue.

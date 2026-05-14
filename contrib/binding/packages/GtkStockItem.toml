@@ -1,56 +1,54 @@
-
 # ============================================================
 #   GtkStockItem
 # ============================================================
-[GtkStockItem]
-  ada = "Gtk.Stock"
+ada = "Gtk.Stock"
 
-  [[GtkStockItem.record]]
-    ctype = "GtkStockItem"
-    private = true
+[[record]]
+ctype = "GtkStockItem"
+private = true
 
-  [[GtkStockItem.constant]]
-    prefix_regexp = "GTK_STOCK_.*"
-    prefix = "GTK_"
+[[constant]]
+prefix_regexp = "GTK_STOCK_.*"
+prefix = "GTK_"
 
-  [[GtkStockItem.function]]
-    id = "gtk_stock_add"
-    ada = "Add"
+[[function]]
+id = "gtk_stock_add"
+ada = "Add"
 
-    [[GtkStockItem.function.parameter]]
-      name = "items"
-      type = "Gtk_Stock_Item_Array"
+[[function.parameter]]
+name = "items"
+type = "Gtk_Stock_Item_Array"
 
-    [[GtkStockItem.function.parameter]]
-      name = "n_items"
-      ada = ""
-      default = "Items'Length"
+[[function.parameter]]
+name = "n_items"
+ada = ""
+default = "Items'Length"
 
-  [[GtkStockItem.function]]
-    id = "gtk_stock_add_static"
-    ada = "Add_Static"
+[[function]]
+id = "gtk_stock_add_static"
+ada = "Add_Static"
 
-    [[GtkStockItem.function.parameter]]
-      name = "items"
-      type = "Gtk_Stock_Item_Array"
+[[function.parameter]]
+name = "items"
+type = "Gtk_Stock_Item_Array"
 
-    [[GtkStockItem.function.parameter]]
-      name = "n_items"
-      ada = ""
-      default = "Items'Length"
+[[function.parameter]]
+name = "n_items"
+ada = ""
+default = "Items'Length"
 
-  [[GtkStockItem.function]]
-    id = "gtk_stock_lookup"
-    ada = "Lookup"
-    return_as_param = "Success"
+[[function]]
+id = "gtk_stock_lookup"
+ada = "Lookup"
+return_as_param = "Success"
 
-  [[GtkStockItem.method]]
-    id = "gtk_stock_item_free"
-    bind = false
-    # see below
+[[method]]
+id = "gtk_stock_item_free"
+bind = false
+# see below
 
-  [GtkStockItem.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure Gtk_New
      (Item               : out Gtk_Stock_Item;
@@ -87,8 +85,8 @@
    end Add;
        '''
 
-    [[GtkStockItem.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Gtk_New
      (Item               : out Gtk_Stock_Item;
@@ -110,10 +108,10 @@
    --  Add_Static if item is persistent and GtkAda need not copy the array.
        '''
 
-    [[GtkStockItem.extra.type]]
-      ctype = "GtkStockItemArray"
-      ada = "Gtk_Stock_Item_Array"
-      text = '''
+[[extra.type]]
+ctype = "GtkStockItemArray"
+ada = "Gtk_Stock_Item_Array"
+text = '''
 
    type Gtk_Stock_Item_Array is array (Natural range <>) of Gtk_Stock_Item;
        '''

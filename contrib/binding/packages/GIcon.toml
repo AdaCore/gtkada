@@ -1,17 +1,15 @@
-
 # ============================================================
 #   GIcon
 # ============================================================
-[GIcon]
-  ada = "Glib.G_Icon"
+ada = "Glib.G_Icon"
 
-  [[GIcon.virtual_method]]
-    id = "*"
-    bind = false
+[[virtual_method]]
+id = "*"
+bind = false
 
-  [[GIcon.method]]
-    id = "g_icon_hash"
+[[method]]
+id = "g_icon_hash"
 
-    [[GIcon.method.parameter]]
-      name = "icon"
-      type = "G_Icon"
+[[method.parameter]]
+name = "icon"
+type = "G_Icon"

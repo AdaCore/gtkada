@@ -1,28 +1,26 @@
-
 # ============================================================
 #   GtkScrolledWindow
 # ============================================================
-[GtkScrolledWindow]
 
-  [[GtkScrolledWindow.parameter]]
-    name = "self"
-    ada = "Scrolled_Window"
+[[parameter]]
+name = "self"
+ada = "Scrolled_Window"
 
-  [[GtkScrolledWindow.method]]
-    id = "gtk_scrolled_window_new"
+[[method]]
+id = "gtk_scrolled_window_new"
 
-    [[GtkScrolledWindow.method.parameter]]
-      name = "hadjustment"
-      default = "null"
+[[method.parameter]]
+name = "hadjustment"
+default = "null"
 
-    [[GtkScrolledWindow.method.parameter]]
-      name = "vadjustment"
-      default = "null"
+[[method.parameter]]
+name = "vadjustment"
+default = "null"
 
-  [[GtkScrolledWindow.method]]
-    id = "gtk_scrolled_window_get_hscrollbar"
-    return = "GtkScrollbar"
+[[method]]
+id = "gtk_scrolled_window_get_hscrollbar"
+return = "GtkScrollbar"
 
-  [[GtkScrolledWindow.method]]
-    id = "gtk_scrolled_window_get_vscrollbar"
-    return = "GtkScrollbar"
+[[method]]
+id = "gtk_scrolled_window_get_vscrollbar"
+return = "GtkScrollbar"

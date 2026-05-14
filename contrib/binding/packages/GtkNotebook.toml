@@ -1,69 +1,67 @@
-
 # ============================================================
 #   GtkNotebook
 # ============================================================
-[GtkNotebook]
 
-  [[GtkNotebook.enum]]
-    ctype = "GtkNotebookTab"
+[[enum]]
+ctype = "GtkNotebookTab"
 
-  [GtkNotebook.doc]
-    screenshot = "gtk-notebook"
-    group = "Layout containers"
-    testgtk = "create_notebook.adb"
+[doc]
+screenshot = "gtk-notebook"
+group = "Layout containers"
+testgtk = "create_notebook.adb"
 
-  [[GtkNotebook.parameter]]
-    name = "self"
-    ada = "Notebook"
+[[parameter]]
+name = "self"
+ada = "Notebook"
 
-  [[GtkNotebook.method]]
-    id = "gtk_notebook_set_scrollable"
+[[method]]
+id = "gtk_notebook_set_scrollable"
 
-    [[GtkNotebook.method.parameter]]
-      name = "scrollable"
-      default = "True"
+[[method.parameter]]
+name = "scrollable"
+default = "True"
 
-  [[GtkNotebook.method]]
-    id = "gtk_notebook_set_tab_reorderable"
+[[method]]
+id = "gtk_notebook_set_tab_reorderable"
 
-    [[GtkNotebook.method.parameter]]
-      name = "reorderable"
-      default = "True"
+[[method.parameter]]
+name = "reorderable"
+default = "True"
 
-  [[GtkNotebook.method]]
-    id = "gtk_notebook_set_current_page"
+[[method]]
+id = "gtk_notebook_set_current_page"
 
-    [[GtkNotebook.method.parameter]]
-      name = "page_num"
-      default = "-1"
+[[method.parameter]]
+name = "page_num"
+default = "-1"
 
-  [[GtkNotebook.method]]
-    id = "gtk_notebook_set_show_border"
+[[method]]
+id = "gtk_notebook_set_show_border"
 
-    [[GtkNotebook.method.parameter]]
-      name = "show_border"
-      default = "True"
+[[method.parameter]]
+name = "show_border"
+default = "True"
 
-  [[GtkNotebook.method]]
-    id = "gtk_notebook_append_page_menu"
-    return = "void"
+[[method]]
+id = "gtk_notebook_append_page_menu"
+return = "void"
 
-  [[GtkNotebook.method]]
-    id = "gtk_notebook_set_show_tabs"
+[[method]]
+id = "gtk_notebook_set_show_tabs"
 
-    [[GtkNotebook.method.parameter]]
-      name = "show_tabs"
-      default = "True"
+[[method.parameter]]
+name = "show_tabs"
+default = "True"
 
-  [[GtkNotebook.method]]
-    id = "gtk_notebook_set_tab_detachable"
+[[method]]
+id = "gtk_notebook_set_tab_detachable"
 
-    [[GtkNotebook.method.parameter]]
-      name = "detachable"
-      default = "True"
+[[method.parameter]]
+name = "detachable"
+default = "True"
 
-  [GtkNotebook.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure Append_Page
      (Notebook  : access Gtk_Notebook_Record;
@@ -98,8 +96,8 @@
    end Prepend_Page;
         '''
 
-    [[GtkNotebook.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Append_Page
      (Notebook  : access Gtk_Notebook_Record;

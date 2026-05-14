@@ -1,24 +1,22 @@
-
 # ============================================================
 #   PangoAttrList
 # ============================================================
-[PangoAttrList]
-  into = "PangoAttribute"
+into = "PangoAttribute"
 
-  [[PangoAttrList.method]]
-    id = "pango_attr_list_get_iterator"
-    bind = false
-    # Not needed ?
+[[method]]
+id = "pango_attr_list_get_iterator"
+bind = false
+# Not needed ?
 
-  [[PangoAttrList.method]]
-    id = "pango_attr_list_get_type"
-    ada = "Get_Type_Attr_List"
+[[method]]
+id = "pango_attr_list_get_type"
+ada = "Get_Type_Attr_List"
 
-  [[PangoAttrList.method]]
-    id = "pango_attr_list_get_attributes"
-    bind = false
+[[method]]
+id = "pango_attr_list_get_attributes"
+bind = false
 
-  [[PangoAttrList.method]]
-    id = "pango_attr_list_equal"
-    bind = false
-    # more recent than 1.44
+[[method]]
+id = "pango_attr_list_equal"
+bind = false
+# more recent than 1.44

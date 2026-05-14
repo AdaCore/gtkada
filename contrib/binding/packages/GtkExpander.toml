@@ -1,13 +1,11 @@
-
 # ============================================================
 #   GtkExpander
 # ============================================================
-[GtkExpander]
 
-  [GtkExpander.doc]
-    screenshot = "gtk-expanded"
-    group = "Layout containers"
+[doc]
+screenshot = "gtk-expanded"
+group = "Layout containers"
 
-  [[GtkExpander.parameter]]
-    name = "self"
-    ada = "Expander"
+[[parameter]]
+name = "self"
+ada = "Expander"

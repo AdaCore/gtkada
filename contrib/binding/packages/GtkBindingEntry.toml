@@ -1,6 +1,4 @@
-
 # ============================================================
 #   GtkBindingEntry
 # ============================================================
-[GtkBindingEntry]
-  into = "GtkBindingSet"
+into = "GtkBindingSet"

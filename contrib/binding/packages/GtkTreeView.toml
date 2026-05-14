@@ -1,96 +1,94 @@
-
 # ============================================================
 #   GtkTreeView
 # ============================================================
-[GtkTreeView]
 
-  [[GtkTreeView.parameter]]
-    name = "self"
-    ada = "Tree_View"
+[[parameter]]
+name = "self"
+ada = "Tree_View"
 
-  [[GtkTreeView.enum]]
-    ctype = "GtkTreeViewDropPosition"
+[[enum]]
+ctype = "GtkTreeViewDropPosition"
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_get_columns"
-    return = "GtkTreeViewColumnList"
+[[method]]
+id = "gtk_tree_view_get_columns"
+return = "GtkTreeViewColumnList"
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_new_with_model"
-    ada = "Gtk_New"
+[[method]]
+id = "gtk_tree_view_new_with_model"
+ada = "Gtk_New"
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_insert_column"
+[[method]]
+id = "gtk_tree_view_insert_column"
 
-    [[GtkTreeView.method.parameter]]
-      name = "position"
-      default = "-1"
+[[method.parameter]]
+name = "position"
+default = "-1"
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_get_path_at_pos"
-    return_as_param = "Row_Found"
+[[method]]
+id = "gtk_tree_view_get_path_at_pos"
+return_as_param = "Row_Found"
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_get_visible_range"
-    return_as_param = "Success"
+[[method]]
+id = "gtk_tree_view_get_visible_range"
+return_as_param = "Success"
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_get_tooltip_context"
-    return_as_param = "Success"
+[[method]]
+id = "gtk_tree_view_get_tooltip_context"
+return_as_param = "Success"
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_set_expander_column"
+[[method]]
+id = "gtk_tree_view_set_expander_column"
 
-    [[GtkTreeView.method.parameter]]
-      name = "column"
-      allow_none = "1"
+[[method.parameter]]
+name = "column"
+allow_none = "1"
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_get_hadjustment"
-    bind = false
-    # from scrollable
+[[method]]
+id = "gtk_tree_view_get_hadjustment"
+bind = false
+# from scrollable
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_get_vadjustment"
-    bind = false
-    # from scrollable
+[[method]]
+id = "gtk_tree_view_get_vadjustment"
+bind = false
+# from scrollable
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_set_hadjustment"
-    bind = false
-    # from scrollable
+[[method]]
+id = "gtk_tree_view_set_hadjustment"
+bind = false
+# from scrollable
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_set_vadjustment"
-    bind = false
-    # from scrollable
+[[method]]
+id = "gtk_tree_view_set_vadjustment"
+bind = false
+# from scrollable
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_enable_model_drag_source"
+[[method]]
+id = "gtk_tree_view_enable_model_drag_source"
 
-    [[GtkTreeView.method.parameter]]
-      name = "targets"
-      ctype = "Gtk.Target_List.Target_Entry_Array"
+[[method.parameter]]
+name = "targets"
+ctype = "Gtk.Target_List.Target_Entry_Array"
 
-    [[GtkTreeView.method.parameter]]
-      name = "n_targets"
-      ada = ""
-      default = "Targets'Length"
+[[method.parameter]]
+name = "n_targets"
+ada = ""
+default = "Targets'Length"
 
-  [[GtkTreeView.method]]
-    id = "gtk_tree_view_enable_model_drag_dest"
+[[method]]
+id = "gtk_tree_view_enable_model_drag_dest"
 
-    [[GtkTreeView.method.parameter]]
-      name = "targets"
-      ctype = "Gtk.Target_List.Target_Entry_Array"
+[[method.parameter]]
+name = "targets"
+ctype = "Gtk.Target_List.Target_Entry_Array"
 
-    [[GtkTreeView.method.parameter]]
-      name = "n_targets"
-      ada = ""
-      default = "Targets'Length"
+[[method.parameter]]
+name = "n_targets"
+ada = ""
+default = "Targets'Length"
 
-  [GtkTreeView.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure Gtk_New
       (Tree_View : out Gtk_Tree_View;
@@ -101,8 +99,8 @@
    end Gtk_New;
        '''
 
-    [[GtkTreeView.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Gtk_New
       (Tree_View : out Gtk_Tree_View;

@@ -1,14 +1,12 @@
-
 # ============================================================
 #   GtkFrame
 # ============================================================
-[GtkFrame]
 
-  [GtkFrame.doc]
-    screenshot = "gtk-frame"
-    group = "Ornaments"
-    testgtk = "create_frame.adb"
-    text = '''
+[doc]
+screenshot = "gtk-frame"
+group = "Ornaments"
+testgtk = "create_frame.adb"
+text = '''
 This is a very convenient widget to visually group related widgets (like
 groups of buttons for instance), possibly with a title to explain the
 purpose of this group.
@@ -18,14 +16,14 @@ instance a Gtk_Box inside if you want the frame to surround multiple
 widgets.
       '''
 
-  [[GtkFrame.parameter]]
-    name = "self"
-    ada = "Frame"
+[[parameter]]
+name = "self"
+ada = "Frame"
 
-  [[GtkFrame.method]]
-    id = "gtk_frame_new"
+[[method]]
+id = "gtk_frame_new"
 
-    [[GtkFrame.method.parameter]]
-      name = "label"
-      default = "\"\""
-      allow_none = "1"
+[[method.parameter]]
+name = "label"
+default = "\"\""
+allow_none = "1"

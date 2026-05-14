@@ -1,24 +1,22 @@
-
 # ============================================================
 #   GtkTreeIter
 # ============================================================
-[GtkTreeIter]
-  into = "GtkTreeModel"
+into = "GtkTreeModel"
 
-  [[GtkTreeIter.record]]
-    ctype = "GtkTreeIter"
-    private = true
+[[record]]
+ctype = "GtkTreeIter"
+private = true
 
-  [[GtkTreeIter.method]]
-    id = "gtk_tree_iter_get_type"
-    ada = "Iter_Get_Type"
+[[method]]
+id = "gtk_tree_iter_get_type"
+ada = "Iter_Get_Type"
 
-  [[GtkTreeIter.method]]
-    id = "gtk_tree_iter_copy"
-    ada = "Iter_Copy"
+[[method]]
+id = "gtk_tree_iter_copy"
+ada = "Iter_Copy"
 
-  [GtkTreeIter.extra]
-    body = '''
+[extra]
+body = '''
 
    function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean is
       use type System.Address;
@@ -72,8 +70,8 @@
    end To_Address;
        '''
 
-    [[GtkTreeIter.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean;
 
@@ -107,16 +105,16 @@
    --  Internal function for GtkAda
        '''
 
-    [[GtkTreeIter.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    Null_Iter : constant Gtk_Tree_Iter :=
      (0, System.Null_Address, System.Null_Address, System.Null_Address);
        '''
-      private = true
+private = true
 
-    [[GtkTreeIter.extra.type]]
-      text = '''
+[[extra.type]]
+text = '''
 
    Null_Iter : constant Gtk_Tree_Iter;
        '''

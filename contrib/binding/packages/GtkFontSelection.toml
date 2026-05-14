@@ -1,14 +1,12 @@
-
 # ============================================================
 #   GtkFontSelection
 # ============================================================
-[GtkFontSelection]
 
-  [GtkFontSelection.doc]
-    screenshot = "gtk-fontsel"
-    group = "Selectors"
-    testgtk = "create_font_selection.adb"
-    text = '''
+[doc]
+screenshot = "gtk-fontsel"
+group = "Selectors"
+testgtk = "create_font_selection.adb"
+text = '''
 This widget provides a nice way for the user of your application to
 select fonts.
 It first searches on your system for the list of fonts available, and
@@ -26,14 +24,14 @@ and that the user can not change; a user filter that can be modified
 interactively by the user.
       '''
 
-  [[GtkFontSelection.parameter]]
-    name = "self"
-    ada = "Fontsel"
+[[parameter]]
+name = "self"
+ada = "Fontsel"
 
-  [[GtkFontSelection.method]]
-    id = "gtk_font_selection_get_family"
-    bind = false
+[[method]]
+id = "gtk_font_selection_get_family"
+bind = false
 
-  [[GtkFontSelection.method]]
-    id = "gtk_font_selection_get_face"
-    bind = false
+[[method]]
+id = "gtk_font_selection_get_face"
+bind = false

@@ -1,43 +1,41 @@
-
 # ============================================================
 #   GtkEditable
 # ============================================================
-[GtkEditable]
 
-  [[GtkEditable.parameter]]
-    name = "self"
-    ada = "Editable"
+[[parameter]]
+name = "self"
+ada = "Editable"
 
-  [[GtkEditable.method]]
-    id = "::insert-text"
+[[method]]
+id = "::insert-text"
 
-    [[GtkEditable.method.parameter]]
-      name = "position"
-      direction = "access"
+[[method.parameter]]
+name = "position"
+direction = "access"
 
-  [[GtkEditable.method]]
-    id = "gtk_editable_select_region"
+[[method]]
+id = "gtk_editable_select_region"
 
-    [[GtkEditable.method.parameter]]
-      name = "end_pos"
-      default = "-1"
+[[method.parameter]]
+name = "end_pos"
+default = "-1"
 
-  [[GtkEditable.method]]
-    id = "gtk_editable_delete_text"
+[[method]]
+id = "gtk_editable_delete_text"
 
-    [[GtkEditable.method.parameter]]
-      name = "end_pos"
-      default = "-1"
+[[method.parameter]]
+name = "end_pos"
+default = "-1"
 
-  [[GtkEditable.method]]
-    id = "gtk_editable_get_chars"
+[[method]]
+id = "gtk_editable_get_chars"
 
-    [[GtkEditable.method.parameter]]
-      name = "end_pos"
-      default = "-1"
+[[method.parameter]]
+name = "end_pos"
+default = "-1"
 
-  [GtkEditable.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure Insert_Text
      (Editable : Gtk_Editable;
@@ -49,8 +47,8 @@
    end Insert_Text;
         '''
 
-    [[GtkEditable.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Insert_Text
      (Editable : Gtk_Editable;
@@ -60,6 +58,6 @@
    --  the requirement to supply the New_Text_Length argument.
         '''
 
-  [[GtkEditable.method]]
-    id = "gtk_editable_get_selection_bounds"
-    return_as_param = "Has_Selection"
+[[method]]
+id = "gtk_editable_get_selection_bounds"
+return_as_param = "Has_Selection"

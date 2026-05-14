@@ -1,31 +1,29 @@
-
 # ============================================================
 #   GtkComboBox
 # ============================================================
-[GtkComboBox]
 
-  [GtkComboBox.doc]
-    group = "Numeric/Text Data Entry"
+[doc]
+group = "Numeric/Text Data Entry"
 
-  [[GtkComboBox.parameter]]
-    name = "self"
-    ada = "Combo_Box"
+[[parameter]]
+name = "self"
+ada = "Combo_Box"
 
-  [[GtkComboBox.method]]
-    id = "gtk_combo_box_popup_for_device"
-    bind = false
+[[method]]
+id = "gtk_combo_box_popup_for_device"
+bind = false
 
-  [[GtkComboBox.method]]
-    id = "gtk_combo_box_get_popup_accessible"
-    bind = false
+[[method]]
+id = "gtk_combo_box_get_popup_accessible"
+bind = false
 
-  [[GtkComboBox.method]]
-    id = "gtk_combo_box_get_active_iter"
-    bind = false
-    # below
+[[method]]
+id = "gtk_combo_box_get_active_iter"
+bind = false
+# below
 
-  [GtkComboBox.extra]
-    body = '''
+[extra]
+body = '''
 
    function Get_Active_Iter
      (Combo_Box : not null access Gtk_Combo_Box_Record) return Gtk_Tree_Iter
@@ -59,11 +57,11 @@
 
         '''
 
-    [[GtkComboBox.extra.with_body]]
-      pkg = "Gtk.GEntry"
+[[extra.with_body]]
+pkg = "Gtk.GEntry"
 
-    [[GtkComboBox.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Get_Active_Iter
      (Combo_Box : not null access Gtk_Combo_Box_Record)

@@ -1,17 +1,15 @@
-
 # ============================================================
 #   PangoFontDescription
 # ============================================================
-[PangoFontDescription]
-  into = "PangoFont"
+into = "PangoFont"
 
-  [[PangoFontDescription.method]]
-    id = "pango_font_description_free"
-    bind = false
-    # manual binding below
+[[method]]
+id = "pango_font_description_free"
+bind = false
+# manual binding below
 
-  [PangoFontDescription.extra]
-    body = '''
+[extra]
+body = '''
 
    subtype String7 is String (1 .. 7);
    Style_Map : constant array (Enums.Style) of String7 :=
@@ -116,11 +114,11 @@
    end Free;
        '''
 
-    [[PangoFontDescription.extra.with_spec]]
-      pkg = "Glib.Generic_Properties"
+[[extra.with_spec]]
+pkg = "Glib.Generic_Properties"
 
-    [[PangoFontDescription.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function To_Font_Description
      (Family_Name : String := "";

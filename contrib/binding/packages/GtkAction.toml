@@ -1,18 +1,16 @@
-
 # ============================================================
 #   GtkAction
 # ============================================================
-[GtkAction]
 
-  [[GtkAction.parameter]]
-    name = "self"
-    ada = "Action"
+[[parameter]]
+name = "self"
+ada = "Action"
 
-  [[GtkAction.method]]
-    id = "gtk_action_get_accel_closure"
-    bind = false
-    # Closures not handled
+[[method]]
+id = "gtk_action_get_accel_closure"
+bind = false
+# Closures not handled
 
-  [[GtkAction.method]]
-    id = "gtk_action_get_proxies"
-    return = "WidgetSList*"
+[[method]]
+id = "gtk_action_get_proxies"
+return = "WidgetSList*"

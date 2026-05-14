@@ -1,9 +1,7 @@
-
 # ============================================================
 #   GtkPrintContext
 # ============================================================
-[GtkPrintContext]
 
-  [[GtkPrintContext.parameter]]
-    name = "self"
-    ada = "Context"
+[[parameter]]
+name = "self"
+ada = "Context"

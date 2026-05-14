@@ -1,13 +1,11 @@
-
 # ============================================================
 #   GtkTextChildAnchor
 # ============================================================
-[GtkTextChildAnchor]
 
-  [[GtkTextChildAnchor.parameter]]
-    name = "self"
-    ada = "Anchor"
+[[parameter]]
+name = "self"
+ada = "Anchor"
 
-  [[GtkTextChildAnchor.method]]
-    id = "gtk_text_child_anchor_get_widgets"
-    return = "WidgetSList"
+[[method]]
+id = "gtk_text_child_anchor_get_widgets"
+return = "WidgetSList"

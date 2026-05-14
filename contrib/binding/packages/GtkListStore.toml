@@ -1,65 +1,63 @@
-
 # ============================================================
 #   GtkListStore
 # ============================================================
-[GtkListStore]
-  parent = "Gtk.Tree_Model.Gtk_Root_Tree_Model"
+parent = "Gtk.Tree_Model.Gtk_Root_Tree_Model"
 
-  [[GtkListStore.parameter]]
-    name = "self"
-    ada = "List_Store"
+[[parameter]]
+name = "self"
+ada = "List_Store"
 
-  [[GtkListStore.method]]
-    id = "gtk_list_store_newv"
-    ada = "Gtk_New"
+[[method]]
+id = "gtk_list_store_newv"
+ada = "Gtk_New"
 
-    [[GtkListStore.method.parameter]]
-      name = "types"
-      type = "GType_Array"
+[[method.parameter]]
+name = "types"
+type = "GType_Array"
 
-    [[GtkListStore.method.parameter]]
-      name = "n_columns"
-      ada = ""
-      default = "Types'Length"
+[[method.parameter]]
+name = "n_columns"
+ada = ""
+default = "Types'Length"
 
-  [[GtkListStore.method]]
-    id = "gtk_list_store_set_column_types"
+[[method]]
+id = "gtk_list_store_set_column_types"
 
-    [[GtkListStore.method.parameter]]
-      name = "types"
-      type = "GType_Array"
+[[method.parameter]]
+name = "types"
+type = "GType_Array"
 
-    [[GtkListStore.method.parameter]]
-      name = "n_columns"
-      ada = ""
-      default = "Types'Length"
+[[method.parameter]]
+name = "n_columns"
+ada = ""
+default = "Types'Length"
 
-  [[GtkListStore.method]]
-    id = "gtk_list_store_insert_with_valuesv"
-    bind = false
-    # valist
+[[method]]
+id = "gtk_list_store_insert_with_valuesv"
+bind = false
+# valist
 
-  [[GtkListStore.method]]
-    id = "gtk_list_store_set_value"
+[[method]]
+id = "gtk_list_store_set_value"
 
-    [[GtkListStore.method.parameter]]
-      name = "value"
-      ctype = "GValue"
+[[method.parameter]]
+name = "value"
+ctype = "GValue"
 
-  [[GtkListStore.method]]
-    id = "gtk_list_store_set_valist"
-    bind = false
-    # valist
+[[method]]
+id = "gtk_list_store_set_valist"
+bind = false
+# valist
 
-  [[GtkListStore.method]]
-    id = "gtk_list_store_set_valuesv"
-    bind = false
-    # manually
+[[method]]
+id = "gtk_list_store_set_valuesv"
+bind = false
+# manually
 
-  [[GtkListStore.method]]
-    id = "gtk_list_store_remove"
-    return = "void"
-    body = '''
+[[method]]
+id = "gtk_list_store_remove"
+return = "void"
+body = '''
       procedure Internal
          (List_Store : System.Address;
           Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
@@ -69,12 +67,12 @@
       Internal (Get_Object (List_Store), Tmp_Iter);
       Iter := Gtk.Tree_Model.Null_Iter;'''
 
-    [[GtkListStore.method.parameter]]
-      name = "iter"
-      direction = "inout"
+[[method.parameter]]
+name = "iter"
+direction = "inout"
 
-  [GtkListStore.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure Set
      (Tree_Store : access Gtk_List_Store_Record;
@@ -175,11 +173,11 @@
    end Set;
        '''
 
-    [[GtkListStore.extra.with_spec]]
-      pkg = "Gdk.Pixbuf"
+[[extra.with_spec]]
+pkg = "Gdk.Pixbuf"
 
-    [[GtkListStore.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Set
      (Tree_Store : access Gtk_List_Store_Record;

@@ -1,13 +1,11 @@
-
 # ============================================================
 #   GtkCssSection
 # ============================================================
-[GtkCssSection]
 
-  [[GtkCssSection.enum]]
-    ctype = "GtkCssSectionType"
+[[enum]]
+ctype = "GtkCssSectionType"
 
-  [[GtkCssSection.method]]
-    id = "gtk_css_section_get_file"
-    bind = false
-    # needs GFile
+[[method]]
+id = "gtk_css_section_get_file"
+bind = false
+# needs GFile

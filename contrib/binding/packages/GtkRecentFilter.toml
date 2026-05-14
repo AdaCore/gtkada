@@ -1,19 +1,17 @@
-
 # ============================================================
 #   GtkRecentFilter
 # ============================================================
-[GtkRecentFilter]
 
-  [[GtkRecentFilter.parameter]]
-    name = "self"
-    ada = "Filter"
+[[parameter]]
+name = "self"
+ada = "Filter"
 
-  [[GtkRecentFilter.enum]]
-    ctype = "GtkRecentFilterFlags"
+[[enum]]
+ctype = "GtkRecentFilterFlags"
 
-  [[GtkRecentFilter.record]]
-    ctype = "GtkRecentFilterInfo"
+[[record]]
+ctype = "GtkRecentFilterInfo"
 
-  [[GtkRecentFilter.slist]]
-    ada = "Gtk_Recent_Filter_List"
-    ctype = "GtkRecentFilter"
+[[slist]]
+ada = "Gtk_Recent_Filter_List"
+ctype = "GtkRecentFilter"

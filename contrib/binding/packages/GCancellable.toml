@@ -1,11 +1,9 @@
-
 # ============================================================
 #   GCancellable
 # ============================================================
-[GCancellable]
-  ada = "Glib.Cancellable"
+ada = "Glib.Cancellable"
 
-  [[GCancellable.method]]
-    id = "g_cancellable_make_pollfd"
-    bind = false
-    # requires GPoll_FD
+[[method]]
+id = "g_cancellable_make_pollfd"
+bind = false
+# requires GPoll_FD

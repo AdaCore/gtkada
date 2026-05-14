@@ -1,9 +1,7 @@
-
 # ============================================================
 #   GtkMenuBar
 # ============================================================
-[GtkMenuBar]
 
-  [[GtkMenuBar.parameter]]
-    name = "self"
-    ada = "Menu_Bar"
+[[parameter]]
+name = "self"
+ada = "Menu_Bar"

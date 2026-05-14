@@ -1,12 +1,10 @@
-
 # ============================================================
 #   Utils
 # ============================================================
-[Utils]
-  ada = "Glib.Utils"
+ada = "Glib.Utils"
 
-  [Utils.extra]
-    body = '''
+[extra]
+body = '''
 
    ------------------
    -- Get_Home_Dir --
@@ -25,11 +23,11 @@
    end Get_Home_Dir;
        '''
 
-    [[Utils.extra.with_body]]
-      pkg = "Gtkada.Types"
+[[extra.with_body]]
+pkg = "Gtkada.Types"
 
-    [[Utils.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Get_Home_Dir return UTF8_String;
    --  Gets the current user's home directory. As with most UNIX tools, this

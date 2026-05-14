@@ -1,9 +1,7 @@
-
 # ============================================================
 #   GtkScaleButton
 # ============================================================
-[GtkScaleButton]
 
-  [[GtkScaleButton.parameter]]
-    name = "self"
-    ada = "Button"
+[[parameter]]
+name = "self"
+ada = "Button"

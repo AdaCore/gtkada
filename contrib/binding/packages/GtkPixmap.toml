@@ -1,28 +1,26 @@
-
 # ============================================================
 #   GtkPixmap
 # ============================================================
-[GtkPixmap]
 
-  [GtkPixmap.doc]
-    group = "Obsolescent widgets"
+[doc]
+group = "Obsolescent widgets"
 
-  [[GtkPixmap.parameter]]
-    name = "self"
-    ada = "Pixmap"
+[[parameter]]
+name = "self"
+ada = "Pixmap"
 
-  [[GtkPixmap.parameter]]
-    name = "pixmap"
-    ada = "Val"
+[[parameter]]
+name = "pixmap"
+ada = "Val"
 
-  [[GtkPixmap.method]]
-    id = "gtk_pixmap_set_build_insensitive"
+[[method]]
+id = "gtk_pixmap_set_build_insensitive"
 
-    [GtkPixmap.method.doc]
-      text = "Whether the pixmap should be grayed out, as is done for insensitive widgets that do not accept user interaction"
+[method.doc]
+text = "Whether the pixmap should be grayed out, as is done for insensitive widgets that do not accept user interaction"
 
-  [GtkPixmap.extra]
-    body = '''
+[extra]
+body = '''
 
    Dummy_Pixmap : constant Gtkada.Types.chars_ptr_array :=
      (New_String ("1 1 1 1"),
@@ -84,20 +82,20 @@
    end Create_Pixmap;
          '''
 
-    [[GtkPixmap.extra.with_spec]]
-      pkg = "Gtk.Widget"
+[[extra.with_spec]]
+pkg = "Gtk.Widget"
 
-    [[GtkPixmap.extra.with_spec]]
-      pkg = "Gtk.Window"
+[[extra.with_spec]]
+pkg = "Gtk.Window"
 
-    [[GtkPixmap.extra.with_spec]]
-      pkg = "Gtkada.Types"
+[[extra.with_spec]]
+pkg = "Gtkada.Types"
 
-    [[GtkPixmap.extra.with_body]]
-      pkg = "Gdk.Color"
+[[extra.with_body]]
+pkg = "Gdk.Color"
 
-    [[GtkPixmap.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Create_Pixmap
      (Filename : String;

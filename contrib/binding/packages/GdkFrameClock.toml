@@ -1,8 +1,6 @@
-
 # ============================================================
 #   GdkFrameClock
 # ============================================================
-[GdkFrameClock]
 
-  [[GdkFrameClock.enum]]
-    ctype = "GdkFrameClockPhase"
+[[enum]]
+ctype = "GdkFrameClockPhase"

@@ -1,10 +1,8 @@
-
 # ============================================================
 #   GtkHandleBox
 # ============================================================
-[GtkHandleBox]
-  obsolescent = true
+obsolescent = true
 
-  [[GtkHandleBox.parameter]]
-    name = "self"
-    ada = "Handle_Box"
+[[parameter]]
+name = "self"
+ada = "Handle_Box"

@@ -1,11 +1,9 @@
-
 # ============================================================
 #   GtkIconSet
 # ============================================================
-[GtkIconSet]
 
-  [GtkIconSet.doc]
-    text = '''
+[doc]
+text = '''
    An icon set represents a single icon in various sizes and widget states.
    It can provide a Gdk_Pixbuf for a given size and state on request, and
    automatically caches some of the rendered Gdk_Pixbuf objects.
@@ -15,8 +13,8 @@
    application-specific icon sets to place in an icon factory.
      '''
 
-  [GtkIconSet.extra]
-    body = '''
+[extra]
+body = '''
 
    function Lookup_Icon_Set
       (Style    : access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
@@ -33,8 +31,8 @@
    end Lookup_Icon_Set;
        '''
 
-    [[GtkIconSet.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Lookup_Icon_Set
       (Style    : access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
@@ -44,10 +42,10 @@
    --  that can be manipulated through the result set
        '''
 
-  [[GtkIconSet.method]]
-    id = "gtk_icon_set_get_sizes"
-    return = "Gint_Array"
-    body = '''
+[[method]]
+id = "gtk_icon_set_get_sizes"
+return = "Gint_Array"
+body = '''
       type gint_array_bounded is array (Natural) of Gint;
 
       procedure Internal
@@ -75,10 +73,10 @@
          return Result;
       end;'''
 
-    [[GtkIconSet.method.parameter]]
-      name = "n_sizes"
-      ada = ""
+[[method.parameter]]
+name = "n_sizes"
+ada = ""
 
-    [[GtkIconSet.method.parameter]]
-      name = "sizes"
-      ada = ""
+[[method.parameter]]
+name = "sizes"
+ada = ""

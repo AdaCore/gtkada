@@ -1,17 +1,15 @@
-
 # ============================================================
 #   GtkRecentChooserDialog
 # ============================================================
-[GtkRecentChooserDialog]
 
-  [[GtkRecentChooserDialog.parameter]]
-    name = "self"
-    ada = "Widget"
+[[parameter]]
+name = "self"
+ada = "Widget"
 
-  [GtkRecentChooserDialog.extra]
+[extra]
 
-    [[GtkRecentChooserDialog.extra.gir_element]]
-      xml = '''
+[[extra.gir_element]]
+xml = '''
 <gir:constructor xmlns:c="http://www.gtk.org/introspection/c/1.0" xmlns:gir="http://www.gtk.org/introspection/core/1.0" c:identifier="ada_gtk_recent_chooser_dialog_new" name="new">
          <gir:return-value>
            <gir:type name="GtkWidget" c:type="GtkWidget*" />
@@ -27,8 +25,8 @@
        </gir:constructor>
        '''
 
-    [[GtkRecentChooserDialog.extra.gir_element]]
-      xml = '''
+[[extra.gir_element]]
+xml = '''
 <gir:constructor xmlns:c="http://www.gtk.org/introspection/c/1.0" xmlns:gir="http://www.gtk.org/introspection/core/1.0" c:identifier="ada_gtk_recent_chooser_dialog_new_for_manager" name="new_for_manager">
          <gir:return-value>
            <gir:type name="GtkWidget" c:type="GtkWidget*" />

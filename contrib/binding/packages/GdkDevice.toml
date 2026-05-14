@@ -1,88 +1,86 @@
-
 # ============================================================
 #   GdkDevice
 # ============================================================
-[GdkDevice]
 
-  [[GdkDevice.enum]]
-    ctype = "GdkDeviceType"
+[[enum]]
+ctype = "GdkDeviceType"
 
-  [[GdkDevice.enum]]
-    ctype = "GdkAxisFlags"
+[[enum]]
+ctype = "GdkAxisFlags"
 
-  [[GdkDevice.list]]
-    ada = "Device_List"
-    ctype = "GdkDevice"
+[[list]]
+ada = "Device_List"
+ctype = "GdkDevice"
 
-  [[GdkDevice.method]]
-    id = "::changed"
-    bind = false
-    # elaboration circularity
+[[method]]
+id = "::changed"
+bind = false
+# elaboration circularity
 
-  [[GdkDevice.method]]
-    id = "gdk_device_get_axis"
-    bind = false
-    # need support for array of gdoubles
+[[method]]
+id = "gdk_device_get_axis"
+bind = false
+# need support for array of gdoubles
 
-  [[GdkDevice.method]]
-    id = "gdk_device_get_axis_value"
-    bind = false
-    # need support for array of gdoubles
+[[method]]
+id = "gdk_device_get_axis_value"
+bind = false
+# need support for array of gdoubles
 
-  [[GdkDevice.method]]
-    id = "gdk_device_get_history"
-    bind = false
-    # need support for array of Gdk_Time_Coord
+[[method]]
+id = "gdk_device_get_history"
+bind = false
+# need support for array of Gdk_Time_Coord
 
-  [[GdkDevice.method]]
-    id = "gdk_device_free_history"
-    bind = false
-    # no need while we don't bind get_history
+[[method]]
+id = "gdk_device_free_history"
+bind = false
+# no need while we don't bind get_history
 
-  [[GdkDevice.method]]
-    id = "gdk_device_grab_info_libgtk_only"
-    bind = false
-    # not part of library
+[[method]]
+id = "gdk_device_grab_info_libgtk_only"
+bind = false
+# not part of library
 
-  [[GdkDevice.method]]
-    id = "gdk_device_get_key"
-    bind = false
-    return = ""
-    # pending L118-010
+[[method]]
+id = "gdk_device_get_key"
+bind = false
+return = ""
+# pending L118-010
 
-  [[GdkDevice.method]]
-    id = "gdk_device_get_window_at_position"
-    bind = false
-    # below
+[[method]]
+id = "gdk_device_get_window_at_position"
+bind = false
+# below
 
-  [[GdkDevice.method]]
-    id = "gdk_device_get_position"
-    bind = false
-    # pending resolution of a problem with generating the stub object
+[[method]]
+id = "gdk_device_get_position"
+bind = false
+# pending resolution of a problem with generating the stub object
 
-  [[GdkDevice.method]]
-    id = "gdk_device_list_axes"
-    bind = false
-    # no support for atom lists
+[[method]]
+id = "gdk_device_list_axes"
+bind = false
+# no support for atom lists
 
-  [[GdkDevice.method]]
-    id = "gdk_device_list_slave_devices"
-    bind = false
-    # no support for Gdk_Device_Type_Master lists
+[[method]]
+id = "gdk_device_list_slave_devices"
+bind = false
+# no support for Gdk_Device_Type_Master lists
 
-  [[GdkDevice.method]]
-    id = "gdk_device_get_seat"
-    return = "GObject*"
+[[method]]
+id = "gdk_device_get_seat"
+return = "GObject*"
 
-  [[GdkDevice.method]]
-    id = "::tool-changed"
+[[method]]
+id = "::tool-changed"
 
-    [[GdkDevice.method.parameter]]
-      name = "tool"
-      ctype = "GObject*"
+[[method.parameter]]
+name = "tool"
+ctype = "GObject*"
 
-  [GdkDevice.extra]
-    body = '''
+[extra]
+body = '''
 
    procedure Set_Source_Device
       (Event  : Gdk.Event.Gdk_Event;
@@ -124,8 +122,8 @@
    end Get_Window_At_Position;
          '''
 
-    [[GdkDevice.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    procedure Get_Window_At_Position
       (Self   : not null access Gdk_Device_Record;

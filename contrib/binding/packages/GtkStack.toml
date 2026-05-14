@@ -1,8 +1,6 @@
-
 # ============================================================
 #   GtkStack
 # ============================================================
-[GtkStack]
 
-  [[GtkStack.enum]]
-    ctype = "GtkStackTransitionType"
+[[enum]]
+ctype = "GtkStackTransitionType"

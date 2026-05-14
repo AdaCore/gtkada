@@ -1,16 +1,14 @@
-
 # ============================================================
 #   GNotification
 # ============================================================
-[GNotification]
-  ada = "Glib.Notification"
+ada = "Glib.Notification"
 
-  [[GNotification.method]]
-    id = "g_notification_set_body"
+[[method]]
+id = "g_notification_set_body"
 
-    [[GNotification.method.parameter]]
-      name = "body"
-      ada = "the_body"
+[[method.parameter]]
+name = "body"
+ada = "the_body"
 
-  [[GNotification.enum]]
-    ctype = "GNotificationPriority"
+[[enum]]
+ctype = "GNotificationPriority"

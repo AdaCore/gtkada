@@ -1,69 +1,67 @@
-
 # ============================================================
 #   GApplication
 # ============================================================
-[GApplication]
-  ada = "Glib.Application"
+ada = "Glib.Application"
 
-  [[GApplication.virtual_method]]
-    id = "command_line"
-    bind = true
+[[virtual_method]]
+id = "command_line"
+bind = true
 
-  [[GApplication.virtual_method]]
-    id = "local_command_line"
-    bind = true
+[[virtual_method]]
+id = "local_command_line"
+bind = true
 
-    [[GApplication.virtual_method.parameter]]
-      name = "arguments"
-      type = "Gtkada.Bindings.chars_ptr_array_access"
-      direction = "access"
+[[virtual_method.parameter]]
+name = "arguments"
+type = "Gtkada.Bindings.chars_ptr_array_access"
+direction = "access"
 
-  [[GApplication.enum]]
-    ctype = "GApplicationFlags"
+[[enum]]
+ctype = "GApplicationFlags"
 
-  [[GApplication.method]]
-    id = "g_application_get_dbus_connection"
-    bind = false
-    # requires DBus
+[[method]]
+id = "g_application_get_dbus_connection"
+bind = false
+# requires DBus
 
-  [[GApplication.method]]
-    id = "g_application_open"
-    bind = false
-    # requires GFile
+[[method]]
+id = "g_application_open"
+bind = false
+# requires GFile
 
-  [[GApplication.method]]
-    id = "::open"
-    bind = false
-    # requires GFile
+[[method]]
+id = "::open"
+bind = false
+# requires GFile
 
-  [[GApplication.method]]
-    id = "g_application_add_main_option_entries"
-    bind = false
-    # requires GOptionEntry
+[[method]]
+id = "g_application_add_main_option_entries"
+bind = false
+# requires GOptionEntry
 
-  [[GApplication.method]]
-    id = "g_application_add_main_option"
-    bind = false
-    # circular dependency
+[[method]]
+id = "g_application_add_main_option"
+bind = false
+# circular dependency
 
-  [[GApplication.method]]
-    id = "g_application_add_option_group"
-    bind = false
-    # circular dependency
+[[method]]
+id = "g_application_add_option_group"
+bind = false
+# circular dependency
 
-  [[GApplication.method]]
-    id = "g_application_register"
-    bind = false
-    # bound manually
+[[method]]
+id = "g_application_register"
+bind = false
+# bound manually
 
-  [[GApplication.method]]
-    id = "::handle-local-options"
-    bind = false
-    # require GVariant
-    # bound manually below
+[[method]]
+id = "::handle-local-options"
+bind = false
+# require GVariant
+# bound manually below
 
-  [GApplication.extra]
-    body = '''
+[extra]
+body = '''
 
    --------------
    -- Register --
@@ -84,11 +82,11 @@
    end Register;
         '''
 
-    [[GApplication.extra.with_spec]]
-      pkg = "Glib.Cancellable"
+[[extra.with_spec]]
+pkg = "Glib.Cancellable"
 
-    [[GApplication.extra.spec]]
-      text = '''
+[[extra.spec]]
+text = '''
 
    function Register
       (Self        : not null access Gapplication_Record;

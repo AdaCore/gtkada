@@ -1,13 +1,11 @@
-
 # ============================================================
 #   GtkSeparator
 # ============================================================
-[GtkSeparator]
 
-  [GtkSeparator.doc]
-    screenshot = "gtk-separator"
-    group = "Ornaments"
+[doc]
+screenshot = "gtk-separator"
+group = "Ornaments"
 
-  [[GtkSeparator.parameter]]
-    name = "self"
-    ada = "Separator"
+[[parameter]]
+name = "self"
+ada = "Separator"
