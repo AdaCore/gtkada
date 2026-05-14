@@ -126,15 +126,15 @@ docs:
 generate:
 	${RM} src/generated/*.ad?
 	${PYTHON} contrib/binding.py \
-	   --gir-file=contrib/GLib-2.0.gir \
-	   --gir-file=contrib/GObject-2.0.gir \
-		--gir-file=contrib/Gtk-3.0.gir \
-		--gir-file=contrib/Gdk-3.0.gir \
-		--gir-file=contrib/Pango-1.0.gir \
-		--gir-file=contrib/Gio-2.0.gir \
-		--toml-dir=contrib/binding/packages \
-		--ada-output=src/generated/tmp.ada \
-		--c-output=src/misc_generated.c
+	   --gir-file=contrib/gtk3-gir/GLib-2.0.gir \
+	   --gir-file=contrib/gtk3-gir/GObject-2.0.gir \
+	   --gir-file=contrib/gtk3-gir/Gtk-3.0.gir \
+	   --gir-file=contrib/gtk3-gir/Gdk-3.0.gir \
+	   --gir-file=contrib/gtk3-gir/Pango-1.0.gir \
+	   --gir-file=contrib/gtk3-gir/Gio-2.0.gir \
+	   --toml-dir=contrib/binding/packages \
+	   --ada-output=src/generated/tmp.ada \
+	   --c-output=src/misc_generated.c
 	cd src/generated; gnatchop -gnat05 -q -w tmp.ada
 
 clean-generic:
