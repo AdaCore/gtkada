@@ -21,10 +21,6 @@ build:
   stage: build
   interruptible: true
   rules:
-      # For now, only the gtk324 branch is buildable
-    - if: $CI_MERGE_REQUEST_TARGET_BRANCH_NAME != 'gtk324'
-      when: never
-
     - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
     - if: $CI_PIPELINE_SOURCE == 'pipeline'
 
@@ -41,4 +37,8 @@ build:
     - git diff --exit-code
 
     # Build
-    - anod build gtkada
+    - if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "main" ]; then
+        anod build gtkada -Qgtk=4.22.2 ;
+      else
+        anod build gtkada ;
+      fi
