@@ -26,13 +26,11 @@
 --  action for purposes of adding it to a
 --  Glib.Simple_Action_Group.Gsimple_Action_Group.
 --
---  See also Gtk.Action.Gtk_Action.
+--  See also Gtk_Action.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib.Action;     use Glib.Action;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
 with Glib.Variant;    use Glib.Variant;
 
 package Glib.Simple_Action is
@@ -158,8 +156,7 @@ package Glib.Simple_Action is
    --  This directly updates the 'state' property to the given value.
    --  This should only be called by the implementor of the action. Users of
    --  the action should not attempt to directly modify the 'state' property.
-   --  Instead, they should call Glib.Action.Change_State to request the
-   --  change.
+   --  Instead, they should call g_action_change_state to request the change.
    --  If the Value GVariant is floating, it is consumed.
    --  Since: gtk+ 2.30
    --  @param Value the new Glib.Variant.Gvariant for the state
@@ -168,44 +165,10 @@ package Glib.Simple_Action is
       (Self       : not null access Gsimple_Action_Record;
        State_Hint : Glib.Variant.Gvariant);
    --  Sets the state hint for the action.
-   --  See Glib.Action.Get_State_Hint for more information about action state
+   --  See g_action_get_state_hint for more information about action state
    --  hints.
    --  Since: gtk+ 2.44
    --  @param State_Hint a Glib.Variant.Gvariant representing the state hint
-
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-
-   procedure Activate
-      (Self      : not null access Gsimple_Action_Record;
-       Parameter : Glib.Variant.Gvariant);
-
-   procedure Change_State
-      (Self  : not null access Gsimple_Action_Record;
-       Value : Glib.Variant.Gvariant);
-
-   function Get_Enabled
-      (Self : not null access Gsimple_Action_Record) return Boolean;
-
-   function Get_Name
-      (Self : not null access Gsimple_Action_Record) return UTF8_String;
-
-   function Get_Parameter_Type
-      (Self : not null access Gsimple_Action_Record)
-       return Glib.Variant.Gvariant_Type;
-
-   function Get_State
-      (Self : not null access Gsimple_Action_Record)
-       return Glib.Variant.Gvariant;
-
-   function Get_State_Hint
-      (Self : not null access Gsimple_Action_Record)
-       return Glib.Variant.Gvariant;
-
-   function Get_State_Type
-      (Self : not null access Gsimple_Action_Record)
-       return Glib.Variant.Gvariant_Type;
 
    ----------------
    -- Properties --
@@ -216,8 +179,8 @@ package Glib.Simple_Action is
    Enabled_Property : constant Glib.Properties.Property_Boolean;
    --  If Action is currently enabled.
    --
-   --  If the action is disabled then calls to Glib.Action.Activate and
-   --  Glib.Action.Change_State have no effect.
+   --  If the action is disabled then calls to g_action_activate and
+   --  g_action_change_state have no effect.
 
    Name_Property : constant Glib.Properties.Property_String;
    --  The name of the action. This is mostly meaningful for identifying the
@@ -318,24 +281,6 @@ package Glib.Simple_Action is
    --
    --  The handler need not set the state to the requested value. It could set
    --  it to any value at all, or take some other action.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Action"
-
-   package Implements_Gaction is new Glib.Types.Implements
-     (Glib.Action.Gaction, Gsimple_Action_Record, Gsimple_Action);
-   function "+"
-     (Widget : access Gsimple_Action_Record'Class)
-   return Glib.Action.Gaction
-   renames Implements_Gaction.To_Interface;
-   function "-"
-     (Interf : Glib.Action.Gaction)
-   return Gsimple_Action
-   renames Implements_Gaction.To_Object;
 
 private
    State_Type_Property : constant Glib.Properties.Property_Boxed :=

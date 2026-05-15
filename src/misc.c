@@ -47,11 +47,6 @@
 #include <ddeml.h>
 #endif
 
-// Workaround bug in gtk+ 3.14.5
-#ifndef GTK_IS_PLUG
-int GTK_IS_PLUG(void* object) { return 0; }
-#endif
-
 /********************************************************************
  *  Returns the major/minor/macro version number of Gtk+. This is
  *  needed as the windows version uses a different convention for the
@@ -626,19 +621,18 @@ ada_initialize_class_record
    }
 
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, size_allocate)
-ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, draw)
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, realize)
-ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_width)
-ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_height)
-ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_width_for_height)
-ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, get_preferred_height_for_width)
+ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, measure)
+ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, snapshot)
 
 void ada_inherited_WIDGET_CLASS_size_allocate (
-      AdaGObjectClass klass, GtkWidget* widget, GtkAllocation* rect)
+      AdaGObjectClass klass, GtkWidget* widget,
+      int width, int height, int baseline)
 {
    GObjectClass* objklass = g_type_class_ref (klass->type);
    GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   GTK_WIDGET_CLASS (parent_class)->size_allocate (widget, rect);
+   GTK_WIDGET_CLASS (parent_class)->size_allocate
+     (widget, width, height, baseline);
    g_type_class_unref (objklass);
 }
 
@@ -651,74 +645,27 @@ void ada_inherited_WIDGET_CLASS_realize (
    g_type_class_unref (objklass);
 }
 
-void ada_inherited_WIDGET_CLASS_get_preferred_width (
-      AdaGObjectClass klass, GtkWidget* widget, gint* min, gint* natural)
+void ada_inherited_WIDGET_CLASS_measure (
+      AdaGObjectClass klass, GtkWidget* widget,
+      GtkOrientation orientation, int for_size,
+      int* minimum, int* natural,
+      int* minimum_baseline, int* natural_baseline)
 {
    GObjectClass* objklass = g_type_class_ref (klass->type);
    GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   GTK_WIDGET_CLASS (parent_class)->get_preferred_width (widget, min, natural);
+   GTK_WIDGET_CLASS (parent_class)->measure
+     (widget, orientation, for_size,
+      minimum, natural, minimum_baseline, natural_baseline);
    g_type_class_unref (objklass);
 }
 
-void ada_inherited_WIDGET_CLASS_get_preferred_width_for_height (
-      AdaGObjectClass klass, GtkWidget* widget, gint height, gint* min, gint* natural)
+void ada_inherited_WIDGET_CLASS_snapshot (
+      AdaGObjectClass klass, GtkWidget* widget, GtkSnapshot* snapshot)
 {
    GObjectClass* objklass = g_type_class_ref (klass->type);
    GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   GTK_WIDGET_CLASS (parent_class)->get_preferred_width_for_height
-      (widget, height, min, natural);
+   GTK_WIDGET_CLASS (parent_class)->snapshot (widget, snapshot);
    g_type_class_unref (objklass);
-}
-
-void ada_inherited_WIDGET_CLASS_get_preferred_height (
-      AdaGObjectClass klass, GtkWidget* widget, gint* min, gint* natural)
-{
-   GObjectClass* objklass = g_type_class_ref (klass->type);
-   GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   GTK_WIDGET_CLASS (parent_class)->get_preferred_height
-     (widget, min, natural);
-   g_type_class_unref (objklass);
-}
-
-void ada_inherited_WIDGET_CLASS_get_preferred_height_for_width (
-      AdaGObjectClass klass, GtkWidget* widget, gint width, gint* min, gint* natural)
-{
-   GObjectClass* objklass = g_type_class_ref (klass->type);
-   GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   GTK_WIDGET_CLASS (parent_class)->get_preferred_height_for_width
-     (widget, width, min, natural);
-   g_type_class_unref (objklass);
-}
-
-gboolean ada_inherited_WIDGET_CLASS_draw (
-      AdaGObjectClass klass, GtkWidget* widget, cairo_t *cr)
-{
-   GObjectClass* objklass = g_type_class_ref (klass->type);
-   GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   g_type_class_unref (objklass);
-   return GTK_WIDGET_CLASS (parent_class)->draw (widget, cr);
-}
-
-/*****************************************************
- ** Gtk.Selection and Gtk.Dnd functions
- *****************************************************/
-
-guint ada_gtk_dnd_context_targets_count (GdkDragContext* context)
-{
-  return g_list_length (gdk_drag_context_list_targets (context));
-}
-
-void ada_gtk_dnd_context_get_targets (GdkDragContext* context, GdkAtom* result)
-{
-  GList *glist = gdk_drag_context_list_targets (context);
-  GdkAtom* tmp = result;
-  while (glist != NULL)
-    {
-      *tmp++ = (GdkAtom)glist->data;
-//      gchar *name = gdk_atom_name ((GdkAtom)glist->data);
-//      *tmp++ = name;
-      glist = glist->next;
-    }
 }
 
 /*
@@ -775,61 +722,45 @@ extern const guint32 ada_gdk_invalid_guint32_value;
 extern const gulong  ada_gdk_invalid_gulong_value;
 #endif
 
-GdkAtom
-ada_make_atom (gulong num)
-{
-  return _GDK_MAKE_ATOM (num);
-}
-
 GdkEventType
 ada_gdk_event_get_event_type (GdkEvent *event) {
-  return event->type;
+  return gdk_event_get_event_type (event);
 }
 
 guint
 ada_gdk_event_get_button (GdkEvent * event)
 {
-  guint button;
-  if (!gdk_event_get_button(event, &button)) {
+  GdkEventType type = gdk_event_get_event_type (event);
+  if (type != GDK_BUTTON_PRESS && type != GDK_BUTTON_RELEASE) {
     return ada_gdk_invalid_guint_value;
   }
-  return button;
+  return gdk_button_event_get_button (event);
 }
 
 GdkModifierType
 ada_gdk_event_get_state (GdkEvent * event)
 {
-  GdkModifierType state;
-  if (!gdk_event_get_state(event, &state)) {
-    return ada_gdk_invalid_guint_value;
-  }
-  return state;
+  return gdk_event_get_modifier_state (event);
 }
 
 guint
 ada_gdk_event_get_keyval (GdkEvent * event)
 {
-  guint keyval;
-  if (!gdk_event_get_keyval(event, &keyval)) {
+  GdkEventType type = gdk_event_get_event_type (event);
+  if (type != GDK_KEY_PRESS && type != GDK_KEY_RELEASE) {
     return ada_gdk_invalid_gint_value;
   }
-  return keyval;
-}
-
-GdkWindow*
-ada_gdk_event_get_window (GdkEvent * event)
-{
-  return ((GdkEventAny*)event)->window;
+  return gdk_key_event_get_keyval (event);
 }
 
 guint16
 ada_gdk_event_get_keycode (GdkEvent * event)
 {
-  guint16 keycode;
-  if (!gdk_event_get_keycode(event, &keycode)) {
+  GdkEventType type = gdk_event_get_event_type (event);
+  if (type != GDK_KEY_PRESS && type != GDK_KEY_RELEASE) {
     return 0;
   }
-  return keycode;
+  return (guint16) gdk_key_event_get_keycode (event);
 }
 
 /***************************************************
@@ -913,11 +844,12 @@ ada_gvalue_set (GValue* value, void *val)
 GtkWidget*
 ada_box_get_child (GtkBox* widget, gint num)
 {
-  GList * list;
-  list = gtk_container_get_children ((GtkContainer*)widget);
-  if (list && num < g_list_length (list))
-    return ((GtkWidget*) (g_list_nth_data (list, num)));
-  return NULL;
+  GtkWidget* child = gtk_widget_get_first_child (GTK_WIDGET (widget));
+  while (child != NULL && num > 0) {
+    child = gtk_widget_get_next_sibling (child);
+    num--;
+  }
+  return child;
 }
 
 /**********************************************
@@ -974,294 +906,6 @@ gpointer
 ada_slist_get_data (GSList* list)
 {
   return list->data;
-}
-
-
-/*
- *
- * GdkWindowAttr
- *
- */
-
-GdkWindowAttr*
-ada_gdk_window_attr_new (void)
-{
-  GdkWindowAttr *result;
-
-  result = (GdkWindowAttr*) g_new (GdkWindowAttr, 1);
-
-  if (result)
-    {
-      result->title = NULL;
-      result->visual = NULL;
-      result->cursor = NULL;
-      result->wmclass_name = NULL;
-      result->wmclass_class = NULL;
-      /*
-       * Here, we only set the pointers to NULL to avoid any dangling
-       * pointer. All the other values are left as is. It is the
-       * responsibility of the client to make sure they are properly
-       * set before they are accessed.
-       */
-    }
-
-  return result;
-}
-
-void
-ada_gdk_window_attr_destroy (GdkWindowAttr *window_attr)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  if (window_attr->title) g_free (window_attr->title);
-  if (window_attr->wmclass_name) g_free (window_attr->wmclass_name);
-  if (window_attr->wmclass_class) g_free (window_attr->wmclass_class);
-
-  g_free (window_attr);
-}
-
-void
-ada_gdk_window_attr_set_title (GdkWindowAttr *window_attr,
-			       gchar * title)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  if (window_attr->title) g_free (window_attr->title);
-  window_attr->title = g_strdup (title);
-}
-
-gchar*
-ada_gdk_window_attr_get_title (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, NULL);
-
-  return window_attr->title;
-}
-
-void
-ada_gdk_window_attr_set_event_mask (GdkWindowAttr *window_attr,
-				    gint event_mask)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  window_attr->event_mask = event_mask;
-}
-
-gint
-ada_gdk_window_attr_get_event_mask (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, 0);
-
-  return window_attr->event_mask;
-}
-
-void
-ada_gdk_window_attr_set_x (GdkWindowAttr * window_attr, gint x)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  window_attr->x = x;
-}
-
-gint
-ada_gdk_window_attr_get_x (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, 0);
-
-  return window_attr->x;
-}
-
-void
-ada_gdk_window_attr_set_y (GdkWindowAttr * window_attr, gint y)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  window_attr->y = y;
-}
-
-gint
-ada_gdk_window_attr_get_y (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, 0);
-
-  return window_attr->y;
-}
-
-void
-ada_gdk_window_attr_set_width (GdkWindowAttr * window_attr, gint width)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  window_attr->width = width;
-}
-
-gint
-ada_gdk_window_attr_get_width (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, 0);
-
-  return window_attr->width;
-}
-
-void
-ada_gdk_window_attr_set_height (GdkWindowAttr * window_attr, gint height)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  window_attr->height = height;
-}
-
-gint
-ada_gdk_window_attr_get_height (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, 0);
-
-  return window_attr->height;
-}
-
-void
-ada_gdk_window_attr_set_wclass (GdkWindowAttr *window_attr,
-				GdkWindowWindowClass wclass)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  window_attr->wclass = wclass;
-}
-
-GdkWindowWindowClass
-ada_gdk_window_attr_get_wclass (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, GDK_INPUT_OUTPUT);
-
-  return window_attr->wclass;
-}
-
-void
-ada_gdk_window_attr_set_visual (GdkWindowAttr *window_attr,
-				GdkVisual *visual)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  window_attr->visual = visual;
-}
-
-GdkVisual*
-ada_gdk_window_attr_get_visual (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, NULL);
-
-  return window_attr->visual;
-}
-
-void
-ada_gdk_window_attr_set_window_type (GdkWindowAttr *window_attr,
-				     GdkWindowType window_type)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  window_attr->window_type = window_type;
-}
-
-GdkWindowType
-ada_gdk_window_attr_get_window_type (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, GDK_WINDOW_ROOT);
-
-  return window_attr->window_type;
-}
-
-void
-ada_gdk_window_attr_set_cursor (GdkWindowAttr *window_attr,
-				GdkCursor *cursor)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  window_attr->cursor = cursor;
-}
-
-GdkCursor*
-ada_gdk_window_attr_get_cursor (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, NULL);
-
-  return window_attr->cursor;
-}
-
-void
-ada_gdk_window_attr_set_wmclass_name (GdkWindowAttr *window_attr,
-				      gchar *wmclass_name)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  if (window_attr->wmclass_name) g_free (window_attr->wmclass_name);
-  window_attr->wmclass_name = g_strdup (wmclass_name);
-}
-
-gchar*
-ada_gdk_window_attr_get_wmclass_name (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, NULL);
-
-  return window_attr->wmclass_name;
-}
-
-void
-ada_gdk_window_attr_set_wmclass_class (GdkWindowAttr *window_attr,
-				      gchar *wmclass_class)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  if (window_attr->wmclass_class) g_free (window_attr->wmclass_class);
-  window_attr->wmclass_class = g_strdup (wmclass_class);
-}
-
-gchar*
-ada_gdk_window_attr_get_wmclass_class (GdkWindowAttr *window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, NULL);
-
-  return window_attr->wmclass_class;
-}
-
-void
-ada_gdk_window_attr_set_override_redirect (GdkWindowAttr *window_attr,
-					   gboolean override_redirect)
-{
-  g_return_if_fail (window_attr != NULL);
-
-  window_attr->override_redirect = override_redirect;
-}
-
-gboolean
-ada_gdk_window_attr_get_override_redirect (GdkWindowAttr * window_attr)
-{
-  g_return_val_if_fail (window_attr != NULL, FALSE);
-
-  return window_attr->override_redirect;
-}
-
-/*
- *
- * Gdk properties
- *
- */
-
-void
-ada_gdk_property_get (GdkWindow	 *window,
-		      GdkAtom     property,
-		      GdkAtom     type,
-		      gulong      offset,
-		      gulong      length,
-		      gint        pdelete,
-		      GdkAtom    *actual_property_type,
-		      gint       *actual_format,
-		      gint       *actual_length,
-		      guchar    **data,
-		      gint       *success)
-{
-  *success = gdk_property_get (window, property, type, offset, length,
-			       pdelete, actual_property_type, actual_format,
-			       actual_length, data);
 }
 
 
@@ -1737,119 +1381,19 @@ ada_gtk_file_chooser_dialog_new
     (title, parent, action, NULL, (char *)NULL);
 }
 
-/***********************************************************
- ** Gtk_Recent_Chooser_Dialog
-***********************************************************/
-
-GtkWidget*
-ada_gtk_recent_chooser_dialog_new
-  (const gchar *title,
-   GtkWindow   *parent)
-{
-  return gtk_recent_chooser_dialog_new (title, parent, NULL, NULL);
-}
-
-GtkWidget*
-ada_gtk_recent_chooser_dialog_new_for_manager
-  (const gchar      *title,
-   GtkWindow        *parent,
-   GtkRecentManager *manager)
-{
-  return gtk_recent_chooser_dialog_new_for_manager
-    (title, parent, manager, NULL, NULL);
-}
-
 /**************************************************************
- **  Gtk_Bindings
+ **  Default accelerator modifier
 **************************************************************/
-
-void
-ada_gtk_binding_entry_add_signal_NO
-  (GtkBindingSet* set, guint keyval, GdkModifierType modifier,
-   const gchar* signal_name)
-{
-  gtk_binding_entry_add_signal (set, keyval, modifier, signal_name, 0);
-}
-
-void
-ada_gtk_binding_entry_add_signal_int
-  (GtkBindingSet* set, guint keyval, GdkModifierType modifier,
-   const gchar* signal_name, gint arg1)
-{
-  gtk_binding_entry_add_signal
-    (set, keyval, modifier, signal_name, 1,
-     G_TYPE_INT, arg1);
-}
-
-void
-ada_gtk_binding_entry_add_signal_int_int
-  (GtkBindingSet* set, guint keyval, GdkModifierType modifier,
-   const gchar* signal_name, gint arg1, gint arg2)
-{
-  gtk_binding_entry_add_signal
-    (set, keyval, modifier, signal_name, 2,
-     G_TYPE_INT, arg1, G_TYPE_INT, arg2);
-}
-
-void
-ada_gtk_binding_entry_add_signal_bool
-  (GtkBindingSet* set, guint keyval, GdkModifierType modifier,
-   const gchar* signal_name, gboolean arg1)
-{
-  gtk_binding_entry_add_signal
-    (set, keyval, modifier, signal_name, 1,
-     G_TYPE_BOOLEAN, arg1);
-}
 
 GdkModifierType
 ada_gdk_get_default_modifier ()
 {
-  static GdkModifierType primary = 0;
-
-  if (!primary)
-    {
-      GdkDisplay      *display = gdk_display_get_default ();
-      GdkKeymap       *keymap = gdk_keymap_get_for_display (display);
-      GdkModifierType real;
-
-      g_return_val_if_fail (GDK_IS_KEYMAP (keymap), 0);
-
-      /* Retrieve the real modifier mask */
-      real = gdk_keymap_get_modifier_mask
-        (keymap,
-         GDK_MODIFIER_INTENT_PRIMARY_ACCELERATOR);
-
-      primary = real;
-
-      /* We need to translate the real modifiers into a virtual modifier
-         (like Super, Meta, etc.).
-         The following call adds the virtual modifiers for each real modifier
-         defined in primary.
-      */
-      gdk_keymap_add_virtual_modifiers (keymap, &primary);
-
-      if (primary != real) {
-        /* In case the virtual and real modifiers are different, we need to
-           remove the real modifier from the result, and keep only the
-           virtual one.
-        */
-        primary &= ~real;
-      }
-    }
-
-  return primary;
-}
-
-// GtkPlug is only build on X11 backends
-
-#ifndef GDK_WINDOWING_X11
-int gtk_plug_get_type() {
-   return 0;
-}
-int gtk_socket_get_type() {
-   return 0;
-}
+#ifdef GDK_WINDOWING_QUARTZ
+  return GDK_META_MASK;
+#else
+  return GDK_CONTROL_MASK;
 #endif
+}
 
 // Application handling for opening files from the explorer/finder
 

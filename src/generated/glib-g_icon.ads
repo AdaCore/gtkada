@@ -21,132 +21,15 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Glib.G_Icon.G_Icon is a very minimal interface for icons. It provides
---  functions for checking the equality of two icons, hashing of icons and
---  serializing an icon to and from strings.
---
---  Glib.G_Icon.G_Icon does not provide the actual pixmap for the icon as this
---  is out of GIO's scope, however implementations of Glib.G_Icon.G_Icon may
---  contain the name of an icon (see Gthemed.Icon.Gthemed_Icon), or the path to
---  an icon (see Gloadable.Icon.Gloadable_Icon).
---
---  To obtain a hash of a Glib.G_Icon.G_Icon, see Glib.G_Icon.Hash.
---
---  To check if two GIcons are equal, see Glib.G_Icon.Equal.
---
---  For serializing a Glib.G_Icon.G_Icon, use Glib.G_Icon.Serialize and
---  Glib.G_Icon.Deserialize.
---
---  If you want to consume Glib.G_Icon.G_Icon (for example, in a toolkit) you
---  must be prepared to handle at least the three following cases:
---  Gloadable.Icon.Gloadable_Icon, Gthemed.Icon.Gthemed_Icon and
---  Gemblemed.Icon.Gemblemed_Icon. It may also make sense to have fast-paths
---  for other cases (like handling Gdk.Pixbuf.Gdk_Pixbuf directly, for example)
---  but all compliant Glib.G_Icon.G_Icon implementations outside of GIO must
---  implement Gloadable.Icon.Gloadable_Icon.
---
---  If your application or library provides one or more Glib.G_Icon.G_Icon
---  implementations you need to ensure that your new implementation also
---  implements Gloadable.Icon.Gloadable_Icon. Additionally, you must provide an
---  implementation of Glib.G_Icon.Serialize that gives a result that is
---  understood by Glib.G_Icon.Deserialize, yielding one of the built-in icon
---  types.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib.Types;   use Glib.Types;
-with Glib.Variant; use Glib.Variant;
 
 package Glib.G_Icon is
 
-   type G_Icon is new Glib.Types.GType_Interface;
-   Null_G_Icon : constant G_Icon;
+   type G_Icon is new Glib.C_Proxy;
+   function From_Object_Free (B : access G_Icon) return G_Icon;
+   pragma Inline (From_Object_Free);
+   --  The GIConv struct wraps an iconv conversion descriptor. It contains
+   --  private data and should only be accessed using the following functions.
 
-   ------------------
-   -- Constructors --
-   ------------------
-
-   function Get_Type return Glib.GType;
-   pragma Import (C, Get_Type, "g_icon_get_type");
-
-   -------------
-   -- Methods --
-   -------------
-
-   function Equal (Self : G_Icon; Icon2 : G_Icon) return Boolean;
-   --  Checks if two icons are equal.
-   --  @param Icon2 pointer to the second Glib.G_Icon.G_Icon.
-   --  @return True if Icon1 is equal to Icon2. False otherwise.
-
-   function Serialize (Self : G_Icon) return Glib.Variant.Gvariant;
-   --  Serializes a Glib.G_Icon.G_Icon into a Glib.Variant.Gvariant. An
-   --  equivalent Glib.G_Icon.G_Icon can be retrieved back by calling
-   --  Glib.G_Icon.Deserialize on the returned value. As serialization will
-   --  avoid using raw icon data when possible, it only makes sense to transfer
-   --  the Glib.Variant.Gvariant between processes on the same machine, (as
-   --  opposed to over the network), and within the same file system namespace.
-   --  Since: gtk+ 2.38
-   --  @return a Glib.Variant.Gvariant, or null when serialization fails. The
-   --  Glib.Variant.Gvariant will not be floating.
-
-   function To_String (Self : G_Icon) return UTF8_String;
-   --  Generates a textual representation of Icon that can be used for
-   --  serialization such as when passing Icon to a different process or saving
-   --  it to persistent storage. Use Glib.G_Icon.New_For_String to get Icon
-   --  back from the returned string.
-   --  The encoding of the returned string is proprietary to
-   --  Glib.G_Icon.G_Icon except in the following two cases
-   --  - If Icon is a Gfile.Icon.Gfile_Icon, the returned string is a native
-   --  path (such as `/path/to/my icon.png`) without escaping if the
-   --  Gfile.Gfile for Icon is a native file. If the file is not native, the
-   --  returned string is the result of g_file_get_uri (such as
-   --  `sftp://path/to/my%20icon.png`).
-   --  - If Icon is a Gthemed.Icon.Gthemed_Icon with exactly one name and no
-   --  fallbacks, the encoding is simply the name (such as `network-server`).
-   --  Since: gtk+ 2.20
-   --  @return An allocated NUL-terminated UTF8 string or null if Icon can't
-   --  be serialized. Use g_free to free.
-
-   ---------------
-   -- Functions --
-   ---------------
-
-   function Deserialize (Value : Glib.Variant.Gvariant) return G_Icon;
-   --  Deserializes a Glib.G_Icon.G_Icon previously serialized using
-   --  Glib.G_Icon.Serialize.
-   --  Since: gtk+ 2.38
-   --  @param Value a Glib.Variant.Gvariant created with Glib.G_Icon.Serialize
-   --  @return a Glib.G_Icon.G_Icon, or null when deserialization fails.
-
-   function Hash (Icon : G_Icon) return Guint;
-   pragma Import (C, Hash, "g_icon_hash");
-   --  Gets a hash for an icon.
-   --  @param Icon gconstpointer to an icon object.
-   --  @return a Guint containing a hash for the Icon, suitable for use in a
-   --  GHash_Table or similar data structure.
-
-   function New_For_String (Str : UTF8_String) return G_Icon;
-   --  Generate a Glib.G_Icon.G_Icon instance from Str. This function can fail
-   --  if Str is not valid - see Glib.G_Icon.To_String for discussion.
-   --  If your application or library provides one or more Glib.G_Icon.G_Icon
-   --  implementations you need to ensure that each GType is registered with
-   --  the type system prior to calling Glib.G_Icon.New_For_String.
-   --  Since: gtk+ 2.20
-   --  @param Str A string obtained via Glib.G_Icon.To_String.
-   --  @return An object implementing the Glib.G_Icon.G_Icon interface or null
-   --  if Error is set.
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "G_Icon"
-
-   function "+" (W : G_Icon) return G_Icon;
-   pragma Inline ("+");
-
-private
-
-Null_G_Icon : constant G_Icon :=
-   G_Icon (Glib.Types.Null_Interface);
 end Glib.G_Icon;

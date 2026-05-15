@@ -1,15 +1,8 @@
 # ============================================================
-#   GIcon
+#   GPoll
 # ============================================================
 ada = "Glib.G_Icon"
 
-[[virtual_method]]
-id = "*"
-bind = false
-
-[[method]]
-id = "g_icon_hash"
-
-[[method.parameter]]
-name = "icon"
-type = "G_Icon"
+[[record]]
+ctype = "GIConv"
+ada = "G_Icon"

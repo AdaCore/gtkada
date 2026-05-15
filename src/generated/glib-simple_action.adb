@@ -26,9 +26,10 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
-with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(Off);  --  might be unused
 with Gtkada.Types;               use Gtkada.Types;
+pragma Warnings(On);
 
 package body Glib.Simple_Action is
 
@@ -185,119 +186,6 @@ package body Glib.Simple_Action is
    begin
       Internal (Get_Object (Self), Get_Object (State_Hint));
    end Set_State_Hint;
-
-   --------------
-   -- Activate --
-   --------------
-
-   procedure Activate
-      (Self      : not null access Gsimple_Action_Record;
-       Parameter : Glib.Variant.Gvariant)
-   is
-      procedure Internal (Self : System.Address; Parameter : System.Address);
-      pragma Import (C, Internal, "g_action_activate");
-   begin
-      Internal (Get_Object (Self), Get_Object (Parameter));
-   end Activate;
-
-   ------------------
-   -- Change_State --
-   ------------------
-
-   procedure Change_State
-      (Self  : not null access Gsimple_Action_Record;
-       Value : Glib.Variant.Gvariant)
-   is
-      procedure Internal (Self : System.Address; Value : System.Address);
-      pragma Import (C, Internal, "g_action_change_state");
-   begin
-      Internal (Get_Object (Self), Get_Object (Value));
-   end Change_State;
-
-   -----------------
-   -- Get_Enabled --
-   -----------------
-
-   function Get_Enabled
-      (Self : not null access Gsimple_Action_Record) return Boolean
-   is
-      function Internal (Self : System.Address) return Glib.Gboolean;
-      pragma Import (C, Internal, "g_action_get_enabled");
-   begin
-      return Internal (Get_Object (Self)) /= 0;
-   end Get_Enabled;
-
-   --------------
-   -- Get_Name --
-   --------------
-
-   function Get_Name
-      (Self : not null access Gsimple_Action_Record) return UTF8_String
-   is
-      function Internal
-         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
-      pragma Import (C, Internal, "g_action_get_name");
-   begin
-      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
-   end Get_Name;
-
-   ------------------------
-   -- Get_Parameter_Type --
-   ------------------------
-
-   function Get_Parameter_Type
-      (Self : not null access Gsimple_Action_Record)
-       return Glib.Variant.Gvariant_Type
-   is
-      function Internal
-         (Self : System.Address) return Glib.Variant.Gvariant_Type;
-      pragma Import (C, Internal, "g_action_get_parameter_type");
-   begin
-      return Internal (Get_Object (Self));
-   end Get_Parameter_Type;
-
-   ---------------
-   -- Get_State --
-   ---------------
-
-   function Get_State
-      (Self : not null access Gsimple_Action_Record)
-       return Glib.Variant.Gvariant
-   is
-      function Internal (Self : System.Address) return System.Address;
-      pragma Import (C, Internal, "g_action_get_state");
-   begin
-      return From_Object (Internal (Get_Object (Self)));
-   end Get_State;
-
-   --------------------
-   -- Get_State_Hint --
-   --------------------
-
-   function Get_State_Hint
-      (Self : not null access Gsimple_Action_Record)
-       return Glib.Variant.Gvariant
-   is
-      function Internal (Self : System.Address) return System.Address;
-      pragma Import (C, Internal, "g_action_get_state_hint");
-   begin
-      return From_Object (Internal (Get_Object (Self)));
-   end Get_State_Hint;
-
-   --------------------
-   -- Get_State_Type --
-   --------------------
-
-   function Get_State_Type
-      (Self : not null access Gsimple_Action_Record)
-       return Glib.Variant.Gvariant_Type
-   is
-      function Internal
-         (Self : System.Address) return Glib.Variant.Gvariant_Type;
-      pragma Import (C, Internal, "g_action_get_state_type");
-   begin
-      return Internal (Get_Object (Self));
-   end Get_State_Type;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gsimple_Action_Gvariant_Void, System.Address);

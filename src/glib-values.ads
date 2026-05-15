@@ -34,6 +34,7 @@
 with System;
 
 with Glib.Object;
+with GLib.Types;
 with Gtkada.Types;
 
 package Glib.Values is
@@ -231,6 +232,28 @@ package Glib.Values is
        Typ     : GType;
        Params  : GParameter_Array);
    --  Allocate a new object and set properties.
+
+   function Unchecked_To_Boolean
+     (Args : Glib.Values.C_GValues; Num : Guint) return Boolean;
+   function Unchecked_To_Address
+     (Args : Glib.Values.C_GValues; Num : Guint) return System.Address;
+   function Unchecked_To_Object
+     (Args : Glib.Values.C_GValues; Num : Guint) return Glib.Object.GObject;
+   function Unchecked_To_Interface
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Glib.Types.GType_Interface;
+   function Unchecked_To_Gint
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gint;
+   function Unchecked_To_Gint_Access
+     (Args : Glib.Values.C_GValues; Num : Guint) return access Gint;
+   function Unchecked_To_Gdouble
+     (Args : Glib.Values.C_GValues; Num : Guint) return Gdouble;
+   function Unchecked_To_Gdouble_Access
+     (Args : Glib.Values.C_GValues; Num : Guint) return access Gdouble;
+   function Unchecked_To_Guint
+     (Args : Glib.Values.C_GValues; Num : Guint) return Guint;
+   function Unchecked_To_UTF8_String
+     (Args : Glib.Values.C_GValues; Num : Guint) return UTF8_String;
 
 private
    type GValue_Data is array (1 .. 2) of Guint64;

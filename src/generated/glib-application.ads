@@ -80,8 +80,8 @@
 --
 --  GApplication also implements the Glib.Action_Group.Gaction_Group and
 --  Glib.Action_Map.Gaction_Map interfaces and lets you easily export actions
---  by adding them with Glib.Action_Map.Add_Action. When invoking an action by
---  calling Glib.Action_Group.Activate_Action on the application, it is always
+--  by adding them with g_action_map_add_action. When invoking an action by
+--  calling g_action_group_activate_action on the application, it is always
 --  invoked in the primary instance. The actions are also exported on the
 --  session bus, and GIO provides the Gdbus.Action_Group.Gdbus_Action_Group
 --  wrapper to conveniently access them remotely. GIO provides a
@@ -137,15 +137,11 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
-with Glib.Action;             use Glib.Action;
-with Glib.Action_Group;       use Glib.Action_Group;
-with Glib.Action_Map;         use Glib.Action_Map;
 with Glib.Cancellable;        use Glib.Cancellable;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Notification;       use Glib.Notification;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
-with Glib.Types;              use Glib.Types;
 with Glib.Variant;            use Glib.Variant;
 with Gtkada.Bindings;         use Gtkada.Bindings;
 
@@ -426,7 +422,7 @@ package Glib.Application is
    --  Glib.Application.Hold on the application and is therefore still
    --  expecting it to exist. (Note that you may have called
    --  Glib.Application.Hold indirectly, for example through
-   --  Gtk.Application.Add_Window.)
+   --  gtk_application_add_window.)
    --  The result of calling Glib.Application.Run again after it returns is
    --  unspecified.
    --  Since: gtk+ 2.32
@@ -540,17 +536,6 @@ package Glib.Application is
    --  Since: gtk+ 2.40
    --  @param Id id of the notification, or null
    --  @param Notification the Glib.Notification.Gnotification to send
-
-   procedure Set_Action_Group
-      (Self         : not null access Gapplication_Record;
-       Action_Group : Glib.Action_Group.Gaction_Group);
-   pragma Obsolescent (Set_Action_Group);
-   --  This used to be how actions were associated with a
-   --  Glib.Application.Gapplication. Now there is Glib.Action_Map.Gaction_Map
-   --  for that.
-   --  Since: gtk+ 2.28
-   --  Deprecated since 2.32, 1
-   --  @param Action_Group a Glib.Action_Group.Gaction_Group, or null
 
    procedure Set_Default (Self : not null access Gapplication_Record);
    --  Sets or unsets the default application for the process, as returned by
@@ -766,92 +751,6 @@ package Glib.Application is
      (Self : not null access Gapplication_Record) return Gint;
    --  Same as above, but automatically sets argc argv from actual values.
 
-   ---------------------------------------------
-   -- Inherited subprograms (from interfaces) --
-   ---------------------------------------------
-
-   procedure Action_Added
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String);
-
-   procedure Action_Enabled_Changed
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String;
-       Enabled     : Boolean);
-
-   procedure Action_Removed
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String);
-
-   procedure Action_State_Changed
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String;
-       State       : Glib.Variant.Gvariant);
-
-   procedure Activate_Action
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String;
-       Parameter   : Glib.Variant.Gvariant);
-
-   procedure Change_Action_State
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String;
-       Value       : Glib.Variant.Gvariant);
-
-   function Get_Action_Enabled
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String) return Boolean;
-
-   function Get_Action_Parameter_Type
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String) return Glib.Variant.Gvariant_Type;
-
-   function Get_Action_State
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String) return Glib.Variant.Gvariant;
-
-   function Get_Action_State_Hint
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String) return Glib.Variant.Gvariant;
-
-   function Get_Action_State_Type
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String) return Glib.Variant.Gvariant_Type;
-
-   function Has_Action
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String) return Boolean;
-
-   function List_Actions
-      (Self : not null access Gapplication_Record)
-       return GNAT.Strings.String_List;
-
-   function Query_Action
-      (Self           : not null access Gapplication_Record;
-       Action_Name    : UTF8_String;
-       Enabled        : access Boolean;
-       Parameter_Type : access Glib.Variant.Gvariant_Type;
-       State_Type     : access Glib.Variant.Gvariant_Type;
-       State_Hint     : access Glib.Variant.Gvariant;
-       State          : access Glib.Variant.Gvariant) return Boolean;
-
-   procedure Add_Action
-      (Self   : not null access Gapplication_Record;
-       Action : Glib.Action.Gaction);
-
-   procedure Add_Action_Entries
-      (Self      : not null access Gapplication_Record;
-       Entries   : GAction_Entry_Array;
-       User_Data : System.Address := System.Null_Address);
-
-   function Lookup_Action
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String) return Glib.Action.Gaction;
-
-   procedure Remove_Action
-      (Self        : not null access Gapplication_Record;
-       Action_Name : UTF8_String);
-
    ---------------
    -- Functions --
    ---------------
@@ -917,8 +816,8 @@ package Glib.Application is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
-   Action_Group_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Action_Group.Gtk_Action_Group
+   Action_Group_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Action_Group
    --  Flags: write
 
    Application_Id_Property : constant Glib.Properties.Property_String;
@@ -1029,7 +928,7 @@ package Glib.Application is
    --
    --  If you want to handle the local commandline arguments for yourself by
    --  converting them to calls to g_application_open or
-   --  Glib.Action_Group.Activate_Action then you must be sure to register the
+   --  g_action_group_activate_action then you must be sure to register the
    --  application first. You should probably not call
    --  Glib.Application.Activate for yourself, however: just return -1 and
    --  allow the default handler to do it for you. This will ensure that the
@@ -1116,37 +1015,6 @@ package Glib.Application is
    --  The ::startup signal is emitted on the primary instance immediately
    --  after registration. See g_application_register.
 
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "ActionGroup"
-   --
-   --  - "ActionMap"
-
-   package Implements_Gaction_Group is new Glib.Types.Implements
-     (Glib.Action_Group.Gaction_Group, Gapplication_Record, Gapplication);
-   function "+"
-     (Widget : access Gapplication_Record'Class)
-   return Glib.Action_Group.Gaction_Group
-   renames Implements_Gaction_Group.To_Interface;
-   function "-"
-     (Interf : Glib.Action_Group.Gaction_Group)
-   return Gapplication
-   renames Implements_Gaction_Group.To_Object;
-
-   package Implements_Gaction_Map is new Glib.Types.Implements
-     (Glib.Action_Map.Gaction_Map, Gapplication_Record, Gapplication);
-   function "+"
-     (Widget : access Gapplication_Record'Class)
-   return Glib.Action_Map.Gaction_Map
-   renames Implements_Gaction_Map.To_Interface;
-   function "-"
-     (Interf : Glib.Action_Map.Gaction_Map)
-   return Gapplication
-   renames Implements_Gaction_Map.To_Object;
-
    ---------------------
    -- Virtual Methods --
    ---------------------
@@ -1208,6 +1076,6 @@ private
      Glib.Properties.Build ("flags");
    Application_Id_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("application-id");
-   Action_Group_Property : constant Glib.Properties.Property_Object :=
+   Action_Group_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("action-group");
 end Glib.Application;

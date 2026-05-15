@@ -1,3 +1,4 @@
+
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
@@ -21,125 +22,28 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  The GActionMap interface is implemented by Glib.Action_Group.Gaction_Group
---  implementations that operate by containing a number of named
---  Glib.Action.Gaction instances, such as
---  Glib.Simple_Action_Group.Gsimple_Action_Group.
---
---  One useful application of this interface is to map the names of actions
---  from various action groups to unique, prefixed names (e.g. by prepending
---  "app." or "win."). This is the motivation for the 'Map' part of the
---  interface name.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib.Action;        use Glib.Action;
-with Glib.Object;        use Glib.Object;
 with Glib.Simple_Action; use Glib.Simple_Action;
-with Glib.Types;         use Glib.Types;
 with Glib.Variant;       use Glib.Variant;
-pragma Warnings(Off);  --  might be unused
 with Gtkada.Types;       use Gtkada.Types;
-pragma Warnings(On);
 
 package Glib.Action_Map is
-
-   type Gaction_Map is new Glib.Types.GType_Interface;
-   Null_Gaction_Map : constant Gaction_Map;
 
    type GAction_Entry is private;
    function From_Object_Free (B : access GAction_Entry) return GAction_Entry;
    pragma Inline (From_Object_Free);
    --  This struct defines a single action. It is for use with
-   --  Glib.Action_Map.Add_Action_Entries.
+   --  g_action_map_add_action_entries.
    --
    --  The order of the items in the structure are intended to reflect
    --  frequency of use. It is permissible to use an incomplete initialiser in
    --  order to leave some of the later values as null. All values after Name
    --  are optional. Additional optional fields may be added in the future.
    --
-   --  See Glib.Action_Map.Add_Action_Entries for an example.
+   --  See g_action_map_add_action_entries for an example.
 
    type GAction_Entry_Array is array (Natural range <>) of GAction_Entry;
-
-   ------------------
-   -- Constructors --
-   ------------------
-
-   function Get_Type return Glib.GType;
-   pragma Import (C, Get_Type, "g_action_map_get_type");
-
-   -------------
-   -- Methods --
-   -------------
-
-   procedure Add_Action (Self : Gaction_Map; Action : Glib.Action.Gaction);
-   pragma Import (C, Add_Action, "g_action_map_add_action");
-   --  Adds an action to the Action_Map.
-   --  If the action map already contains an action with the same name as
-   --  Action then the old action is dropped from the action map.
-   --  The action map takes its own reference on Action.
-   --  Since: gtk+ 2.32
-   --  @param Action a Glib.Action.Gaction
-
-   procedure Add_Action_Entries
-      (Self      : Gaction_Map;
-       Entries   : GAction_Entry_Array;
-       User_Data : System.Address := System.Null_Address);
-   --  A convenience function for creating multiple
-   --  Glib.Simple_Action.Gsimple_Action instances and adding them to a
-   --  Glib.Action_Map.Gaction_Map.
-   --  Each action is constructed as per one Glib.Action_Map.GAction_Entry.
-   --
-   --     static void
-   --     activate_quit (GSimpleAction *simple,
-   --                    GVariant      *parameter,
-   --                    gpointer       user_data)
-   --     {
-   --       exit (0);
-   --     }
-   --
-   --     static void
-   --     activate_print_string (GSimpleAction *simple,
-   --                            GVariant      *parameter,
-   --                            gpointer       user_data)
-   --     {
-   --       g_print ("%s\n", g_variant_get_string (parameter, NULL));
-   --     }
-   --
-   --     static GActionGroup *
-   --     create_action_group (void)
-   --     {
-   --       const GActionEntry entries[] = {
-   --         { "quit",         activate_quit              },
-   --         { "print-string", activate_print_string, "s" }
-   --       };
-   --       GSimpleActionGroup *group;
-   --
-   --       group = g_simple_action_group_new ();
-   --       g_action_map_add_action_entries (G_ACTION_MAP (group), entries, G_N_ELEMENTS (entries), NULL);
-   --
-   --       return G_ACTION_GROUP (group);
-   --     }
-   --
-   --  Since: gtk+ 2.32
-   --  @param Entries a pointer to the first item in an array of
-   --  Glib.Action_Map.GAction_Entry structs
-   --  @param User_Data the user data for signal connections
-
-   function Lookup_Action
-      (Self        : Gaction_Map;
-       Action_Name : UTF8_String) return Glib.Action.Gaction;
-   --  Looks up the action with the name Action_Name in Action_Map.
-   --  If no such action exists, returns null.
-   --  Since: gtk+ 2.32
-   --  @param Action_Name the name of an action
-   --  @return a Glib.Action.Gaction, or null
-
-   procedure Remove_Action (Self : Gaction_Map; Action_Name : UTF8_String);
-   --  Removes the named action from the action map.
-   --  If no action of this name is in the map then nothing happens.
-   --  Since: gtk+ 2.32
-   --  @param Action_Name the name of the action
 
    ----------------------
    -- GtkAda additions --
@@ -178,64 +82,6 @@ package Glib.Action_Map is
    --  so type tags must be added to the string if they are necessary.
    --  Change_State is the callback for the "change-state" signal.
 
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Gaction_Map"
-
-   function "+" (W : Gaction_Map) return Gaction_Map;
-   pragma Inline ("+");
-
-   ---------------------
-   -- Virtual Methods --
-   ---------------------
-
-   type Virtual_Add_Action is access procedure (Self : Gaction_Map; Action : Glib.Action.Gaction);
-   pragma Convention (C, Virtual_Add_Action);
-   --  Adds an action to the Action_Map.
-   --  If the action map already contains an action with the same name as
-   --  Action then the old action is dropped from the action map.
-   --  The action map takes its own reference on Action.
-   --  Since: gtk+ 2.32
-   --  @param Action a Glib.Action.Gaction
-
-   type Virtual_Lookup_Action is access function
-     (Self        : Gaction_Map;
-      Action_Name : Gtkada.Types.Chars_Ptr) return Glib.Action.Gaction;
-   pragma Convention (C, Virtual_Lookup_Action);
-   --  Looks up the action with the name Action_Name in Action_Map.
-   --  If no such action exists, returns null.
-   --  Since: gtk+ 2.32
-   --  @param Action_Name the name of an action
-   --  @return a Glib.Action.Gaction, or null
-
-   type Virtual_Remove_Action is access procedure (Self : Gaction_Map; Action_Name : Gtkada.Types.Chars_Ptr);
-   pragma Convention (C, Virtual_Remove_Action);
-   --  Removes the named action from the action map.
-   --  If no action of this name is in the map then nothing happens.
-   --  Since: gtk+ 2.32
-   --  @param Action_Name the name of the action
-
-   subtype Action_Map_Interface_Descr is Glib.Object.Interface_Description;
-
-   procedure Set_Add_Action
-     (Self    : Action_Map_Interface_Descr;
-      Handler : Virtual_Add_Action);
-   pragma Import (C, Set_Add_Action, "gtkada_Action_Map_set_add_action");
-
-   procedure Set_Lookup_Action
-     (Self    : Action_Map_Interface_Descr;
-      Handler : Virtual_Lookup_Action);
-   pragma Import (C, Set_Lookup_Action, "gtkada_Action_Map_set_lookup_action");
-
-   procedure Set_Remove_Action
-     (Self    : Action_Map_Interface_Descr;
-      Handler : Virtual_Remove_Action);
-   pragma Import (C, Set_Remove_Action, "gtkada_Action_Map_set_remove_action");
-   --  See Glib.Object.Add_Interface
-
 private
 type GAction_Entry is record
    Name : Gtkada.Types.Chars_Ptr;
@@ -247,7 +93,4 @@ type GAction_Entry is record
 end record;
 pragma Convention (C, GAction_Entry);
 
-
-Null_Gaction_Map : constant Gaction_Map :=
-   Gaction_Map (Glib.Types.Null_Interface);
 end Glib.Action_Map;
