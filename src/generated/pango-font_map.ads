@@ -79,7 +79,7 @@ package Pango.Font_Map is
    --  If you are using Pango as part of a higher-level system, that system
    --  may have it's own way of create a Pango.Context.Pango_Context. For
    --  instance, the GTK+ toolkit has, among others,
-   --  gdk_pango_context_get_for_screen, and gtk_widget_get_pango_context. Use
+   --  gdk_pango_context_get_for_screen, and Gtk.Widget.Get_Pango_Context. Use
    --  those instead.
    --  Since: gtk+ 1.22
    --  @return the newly allocated Pango.Context.Pango_Context, which should

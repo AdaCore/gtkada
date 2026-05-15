@@ -1,0 +1,201 @@
+# ============================================================
+#   GtkEnums
+# ============================================================
+
+[[enum]]
+ctype = "GtkArrowType"
+
+[[enum]]
+ctype = "GtkCornerType"
+
+[[enum]]
+ctype = "GtkDeleteType"
+
+[[enum]]
+ctype = "GtkDirectionType"
+
+[[enum]]
+ctype = "GtkIconSize"
+asbitfield = true
+
+[[enum]]
+ctype = "GtkBaselinePosition"
+
+[[enum]]
+ctype = "GtkJustification"
+
+[[enum]]
+ctype = "GtkMovementStep"
+
+[[enum]]
+ctype = "GtkInputHints"
+
+[[enum]]
+ctype = "GtkInputPurpose"
+
+[[enum]]
+ctype = "GtkNumberUpLayout"
+prefix = "GTK_NUMBER_UP_LAYOUT_"
+
+[[enum]]
+ctype = "GtkOrientation"
+
+[[enum]]
+ctype = "GtkPackType"
+
+[[enum]]
+ctype = "GtkPageOrientation"
+
+[[enum]]
+ctype = "GtkPageSet"
+
+[[enum]]
+ctype = "GtkPanDirection"
+
+[[enum]]
+ctype = "GtkPropagationPhase"
+
+[[enum]]
+ctype = "GtkEventSequenceState"
+
+[[enum]]
+ctype = "GtkLevelBarMode"
+
+[[enum]]
+ctype = "GtkPolicyType"
+
+[[enum]]
+ctype = "GtkPositionType"
+
+[[enum]]
+ctype = "GtkPrintDuplex"
+
+[[enum]]
+ctype = "GtkPrintPages"
+
+[[enum]]
+ctype = "GtkPrintQuality"
+
+[[enum]]
+ctype = "GtkScrollStep"
+
+[[enum]]
+ctype = "GtkScrollType"
+
+[[enum]]
+ctype = "GtkScrollablePolicy"
+
+[[enum]]
+ctype = "GtkSelectionMode"
+
+[[enum]]
+ctype = "GtkSensitivityType"
+
+[[enum]]
+ctype = "GtkSizeRequestMode"
+prefix = "GTK_SIZE_REQUEST_"
+
+[[enum]]
+ctype = "GtkSortType"
+
+[[enum]]
+ctype = "GtkStateFlags"
+prefix = ""
+
+[[enum]]
+ctype = "GtkTextDirection"
+
+[[enum]]
+ctype = "GtkTextWindowType"
+
+[[enum]]
+ctype = "GtkTreeViewGridLines"
+prefix = "GTK_TREE_VIEW_"
+
+[[enum]]
+ctype = "GtkUnit"
+prefix = "GTK_UNIT_"
+
+[[enum]]
+ctype = "GtkWrapMode"
+
+[extra]
+body = '''
+
+   function Convert (S : String) return System.Address is
+      function Internal is new
+        Ada.Unchecked_Conversion (Gtkada.Types.Chars_Ptr, System.Address);
+   begin
+      return Internal (Gtkada.Types.New_String (S));
+   end Convert;
+
+   function Convert_Chars_Ptr is new
+     Ada.Unchecked_Conversion (System.Address, Gtkada.Types.Chars_Ptr);
+
+   function Convert (S : System.Address) return String is
+   begin
+      return Gtkada.Types.Value (Convert_Chars_Ptr (S));
+   end Convert;
+
+   procedure Free_String_List (List : in out String_List.Glist) is
+      use type String_List.Glist;
+      Tmp   : String_List.Glist := List;
+      Chars : Gtkada.Types.Chars_Ptr;
+   begin
+      while Tmp /= String_List.Null_List loop
+         Chars := Convert_Chars_Ptr (String_List.Get_Data_Address (Tmp));
+         Gtkada.Types.g_free (Chars);
+         Tmp := String_List.Next (Tmp);
+      end loop;
+
+      String_List.Free (List);
+      List := String_List.Null_List;
+   end Free_String_List;
+
+   procedure Free_String_List (List : in out String_SList.GSlist) is
+      use type String_SList.GSlist;
+
+      Tmp   : String_SList.GSlist := List;
+      Chars : Gtkada.Types.Chars_Ptr;
+   begin
+      while Tmp /= String_SList.Null_List loop
+         Chars := Convert_Chars_Ptr (String_SList.Get_Data_Address (Tmp));
+         Gtkada.Types.g_free (Chars);
+         Tmp := String_SList.Next (Tmp);
+      end loop;
+
+      String_SList.Free (List);
+      List := String_SList.Null_List;
+   end Free_String_List;
+       '''
+
+[[extra.with_spec]]
+pkg = "Glib.Glist"
+
+[[extra.with_spec]]
+pkg = "Glib.GSlist"
+
+[[extra.with_body]]
+pkg = "Ada.Unchecked_Conversion"
+use = false
+
+[[extra.with_body]]
+pkg = "Gtkada.Types"
+use = false
+
+[[extra.spec]]
+text = '''
+
+   function Convert (S : String) return System.Address;
+   function Convert (S : System.Address) return String;
+   package String_List is new Glib.Glist.Generic_List (UTF8_String);
+   package String_SList is new Glib.GSlist.Generic_SList (UTF8_String);
+   --  Warning: when you create this list, new memory gets allocated for
+   --  all the strings. You should use the function Free_String_List
+   --  instead of Glib.Glist.Free to be sure to free this memory.
+
+   procedure Free_String_List (List : in out String_List.Glist);
+   procedure Free_String_List (List : in out String_SList.GSlist);
+   --  Free the memory occupied by all the strings in the list, as well
+   --  as the memory occupied by the list itself.
+       '''

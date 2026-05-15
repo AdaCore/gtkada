@@ -2342,7 +2342,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                    cname="::%s" % s.get("name")).bind():
                     self.pkg.add_with("Gtkada.Bindings", specs=False)
                     self.pkg.add_with("Glib.Values", specs=False)
-                    # self.pkg.add_with("Gtk.Arguments", specs=False)
+                    self.pkg.add_with("Gtk.Arguments", specs=False)
                     self.pkg.add_with(
                         "Ada.Unchecked_Conversion", specs=False, do_use=False)
                     break

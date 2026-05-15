@@ -12,6 +12,11 @@
 - Moved some conversion functions from Gtk.Arguments to Glib.Values, to remove any
   dependency from Glib to Gtk.
 
+## To do as we translate
+
+- In case of message reporting missing "Unchecked_To_X", uncomment the
+  corresponding functions in src/gtk-arguments.ads and src/gtk-arguments.adb.
+
 ## To do
 
 Globally:

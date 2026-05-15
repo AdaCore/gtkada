@@ -154,6 +154,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GInetAddressMask",  # Not tested yet, from Gio
            "--GInetSocketAddress",  # Not tested yet, from Gio
            "--GInputStream",  # Not tested yet, from Gio
+           "GListModel",
            "--GMemoryInputStream",  # Not tested yet, from Gio
            "--GMemoryOutputStream",  # Not tested yet, from Gio
            "GMenuModel",  # Not tested yet, from Gio
@@ -545,7 +546,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkVSeparator",
            "--GtkViewport",
            "--GtkVolumeButton",
-           "--GtkWidget",
+           "GtkWidget",
            "----GtkWidgetAccessible",  # We do not support atk
            "--GtkWidgetClass",
            "--GtkWindow",
