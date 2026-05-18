@@ -39,3 +39,7 @@ GBytes.toml:
 GdkSurface.toml:
 
 - when done, Reactivate bindings in GtkNative.toml
+
+GdkDisplay.toml:
+
+- when done, Reactivate bindings in GtkRoot.toml

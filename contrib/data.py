@@ -34,6 +34,7 @@ interfaces = (
     "--Orientable",
     "--PrintOperationPreview",
     "--RecentChooser",
+    "Root",
     "--Scrollable",
     "--StyleProvider",
     "--ToolShell",
