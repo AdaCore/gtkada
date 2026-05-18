@@ -35,3 +35,7 @@
 GBytes.toml:
 
 - fix binding for functions that have gconstarray as parameters
+
+GdkSurface.toml:
+
+- when done, Reactivate bindings in GtkNative.toml

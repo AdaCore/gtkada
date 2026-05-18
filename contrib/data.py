@@ -30,6 +30,7 @@ interfaces = (
     "--FileChooser",
     "--FontChooser",
     "--Icon",
+    "Native",
     "--Orientable",
     "--PrintOperationPreview",
     "--RecentChooser",

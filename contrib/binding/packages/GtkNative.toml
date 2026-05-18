@@ -1,0 +1,14 @@
+[[method]]
+id = "gtk_native_get_renderer"
+bind = false
+# Needs Gsk_Renderer
+
+[[method]]
+id = "gtk_native_get_surface"
+bind = false
+# Needs Gdk_Surface
+
+[[method]]
+id = "gtk_native_get_for_surface"
+bind = false
+# Needs Gdk_Surface
