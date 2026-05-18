@@ -21,39 +21,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Makes it possible to use an object as source or target in a
---  [classGtk.Constraint].
---
---  Besides `GtkWidget`, it is also implemented by `GtkConstraintGuide`.
-
+pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;       use Glib;
-with Glib.Types; use Glib.Types;
 
-package Gtk.Constraint_Target is
+package body Gtk.Constraint_Target is
 
-   type Gtk_Constraint_Target is new Glib.Types.GType_Interface;
-   Null_Gtk_Constraint_Target : constant Gtk_Constraint_Target;
+   function "+" (W : Gtk_Constraint_Target) return Gtk_Constraint_Target is
+   begin
+      return W;
+   end "+";
 
-   ------------------
-   -- Constructors --
-   ------------------
-
-   function Get_Type return Glib.GType;
-   pragma Import (C, Get_Type, "gtk_constraint_target_get_type");
-
-   ----------------
-   -- Interfaces --
-   ----------------
-   --  This class implements several interfaces. See Glib.Types
-   --
-   --  - "Gtk_Constraint_Target"
-
-   function "+" (W : Gtk_Constraint_Target) return Gtk_Constraint_Target;
-   pragma Inline ("+");
-
-private
-
-Null_Gtk_Constraint_Target : constant Gtk_Constraint_Target :=
-   Gtk_Constraint_Target (Glib.Types.Null_Interface);
 end Gtk.Constraint_Target;

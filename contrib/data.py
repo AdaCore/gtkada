@@ -25,6 +25,7 @@ interfaces = (
     "--CellEditable",
     "--CellLayout",
     "--ColorChooser",
+    "ConstraintTarget",
     "--Editable",
     "--FileChooser",
     "--FontChooser",
@@ -410,7 +411,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkImageMenuItem",
            "--GtkInfoBar",
            "--GtkInvisible",
-           "--GtkLabel",
+           "GtkLabel",
            "----GtkLabelAccessible",  # We do not support atk
            "--GtkLayout",
            "--GtkLevelBar",
