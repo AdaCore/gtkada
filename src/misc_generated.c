@@ -106,6 +106,26 @@ void gtkada_Accessible_Hypertext_set_get_n_links(GtkAccessibleHypertextInterface
     iface->get_n_links = handler;
 }
 
+void gtkada_Shortcut_Manager_set_add_controller(GtkShortcutManagerInterface* iface, void* handler) {
+    iface->add_controller = handler;
+}
+
+void gtkada_Shortcut_Manager_set_remove_controller(GtkShortcutManagerInterface* iface, void* handler) {
+    iface->remove_controller = handler;
+}
+
+void gtkada_List_Model_set_get_item(GListModelInterface* iface, void* handler) {
+    iface->get_item = handler;
+}
+
+void gtkada_List_Model_set_get_item_type(GListModelInterface* iface, void* handler) {
+    iface->get_item_type = handler;
+}
+
+void gtkada_List_Model_set_get_n_items(GListModelInterface* iface, void* handler) {
+    iface->get_n_items = handler;
+}
+
 void gtkada_Application_set_command_line(GApplicationClass* iface, void* handler) {
     iface->command_line = handler;
 }

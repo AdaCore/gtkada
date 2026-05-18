@@ -1,0 +1,4 @@
+[[method]]
+id = "gtk_root_get_display"
+bind = false
+# Need Gdk_Display

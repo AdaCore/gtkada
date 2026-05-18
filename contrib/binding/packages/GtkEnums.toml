@@ -123,6 +123,9 @@ ctype = "GtkUnit"
 prefix = "GTK_UNIT_"
 
 [[enum]]
+ctype = "GtkWindowGravity"
+
+[[enum]]
 ctype = "GtkWrapMode"
 
 [extra]

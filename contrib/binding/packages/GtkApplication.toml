@@ -1,0 +1,10 @@
+# ============================================================
+#   GtkApplication
+# ============================================================
+
+[[enum]]
+ctype = "GtkApplicationInhibitFlags"
+
+[[method]]
+id = "gtk_application_get_windows"
+return = "WidgetList"

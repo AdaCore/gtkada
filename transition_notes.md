@@ -42,4 +42,12 @@ GdkSurface.toml:
 
 GdkDisplay.toml:
 
-- when done, Reactivate bindings in GtkRoot.toml
+- when done, Reactivate bindings in GtkRoot.toml, GtkWindow.toml
+
+GdkMonitor.toml:
+
+- when done, reactivate bindings in GtkWindow.toml
+
+GtkApplication.toml:
+
+- when done, reactivate bindings in GtkWindow.toml

@@ -451,6 +451,26 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Unit);
    --  See also gtk_print_settings_set_paper_width.
 
+   type Gtk_Window_Gravity is (
+      Window_Gravity_Top_Left,
+      Window_Gravity_Top,
+      Window_Gravity_Top_Right,
+      Window_Gravity_Left,
+      Window_Gravity_Center,
+      Window_Gravity_Right,
+      Window_Gravity_Bottom_Left,
+      Window_Gravity_Bottom,
+      Window_Gravity_Bottom_Right,
+      Window_Gravity_Top_Start,
+      Window_Gravity_Top_End,
+      Window_Gravity_Start,
+      Window_Gravity_End,
+      Window_Gravity_Bottom_Start,
+      Window_Gravity_Bottom_End);
+   pragma Convention (C, Gtk_Window_Gravity);
+   --  Determines which point or edge of a window is meant to remain fixed
+   --  when a window changes size.
+
    type Gtk_Wrap_Mode is (
       Wrap_None,
       Wrap_Char,
@@ -614,6 +634,10 @@ package Gtk.Enums is
    package Gtk_Unit_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Unit);
    type Property_Gtk_Unit is new Gtk_Unit_Properties.Property;
+
+   package Gtk_Window_Gravity_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Window_Gravity);
+   type Property_Gtk_Window_Gravity is new Gtk_Window_Gravity_Properties.Property;
 
    package Gtk_Wrap_Mode_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Wrap_Mode);

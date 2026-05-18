@@ -1,0 +1,33 @@
+[[method]]
+id = "gtk_window_set_display"
+bind = false
+# Need Gdk_Display
+
+[[method]]
+id = "gtk_window_fullscreen_on_monitor"
+bind = false
+# Need Gdk_Monitor
+
+[[method]]
+id = "gtk_window_get_application"
+bind = false
+# Need Gtk_Application
+
+[[method]]
+id = "gtk_window_set_application"
+bind = false
+# Need Gtk_Application
+
+[[method]]
+id = "gtk_window_set_focus"
+bind = false
+# Already in interface
+
+[[method]]
+id = "gtk_window_get_focus"
+bind = false
+# Already in interface
+
+[[method]]
+id = "gtk_window_list_toplevels"
+return = "WidgetList"

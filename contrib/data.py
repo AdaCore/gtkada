@@ -36,6 +36,7 @@ interfaces = (
     "--RecentChooser",
     "Root",
     "--Scrollable",
+    "ShortcutManager",
     "--StyleProvider",
     "--ToolShell",
     "--TreeDragDest",
@@ -46,7 +47,7 @@ interfaces = (
     "--Action",
     "--ActionGroup",
     "--ActionMap",
-    "--ListModel",
+    "ListModel",
     "--AppInfo",  # Not tested yet, from Gio
     "--AsyncInitable",  # Not tested yet, from Gio
     "--AsyncResult",  # Not tested yet, from Gio
@@ -559,9 +560,9 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "GtkWidget",
            "----GtkWidgetAccessible",  # We do not support atk
            "--GtkWidgetClass",
-           "--GtkWindow",
+           "GtkWindow",
            "----GtkWindowAccessible",  # We do not support atk
-           "--GtkWindowGroup",
+           "GtkWindowGroup",
            )
 
 # Handling of functions with user data. The names below are the likely names
