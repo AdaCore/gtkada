@@ -1,0 +1,32 @@
+[[enum]]
+ctype = "GtkAccessibleAnnouncementPriority"
+
+[[enum]]
+ctype = "GtkAccessiblePlatformState"
+
+[[enum]]
+ctype = "GtkAccessibleProperty"
+
+[[enum]]
+ctype = "GtkAccessibleRelation"
+
+[[enum]]
+ctype = "GtkAccessibleState"
+
+[[enum]]
+ctype = "GtkAccessibleRole"
+
+[[method]]
+id = "gtk_accessible_update_property_value"
+bind = false
+# Needs array_of_
+
+[[method]]
+id = "gtk_accessible_update_relation_value"
+bind = false
+# Needs array_of_
+
+[[method]]
+id = "gtk_accessible_update_state_value"
+bind = false
+# Needs array_of_

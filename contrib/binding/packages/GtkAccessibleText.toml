@@ -1,0 +1,17 @@
+[[extra.with_spec]]
+pkg = "Gtkada.Types"
+
+[[enum]]
+ctype = "GtkAccessibleTextGranularity"
+
+[[record]]
+ctype = "GtkAccessibleTextRange"
+
+[[extra.type]]
+ctype = "array_of_GtkAccessibleTextRange"
+ada   = "Gtk_Accessible_Text_Range_Array"
+text  = '''
+
+   type Gtk_Accessible_Text_Range_Array is
+      array (Natural range <>) of Gtk_Accessible_Text_Range;
+       '''

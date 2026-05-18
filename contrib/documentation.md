@@ -1,30 +1,109 @@
 # TOML override schema for the GtkAda binding generator
 
-This document is the reference for the per-package `.toml` files under
-[`contrib/binding/packages/`](packages/). Those files are loaded by
-[`contrib/binding_gtkada.py`](../binding_gtkada.py) and consumed by the
-generator in [`contrib/binding.py`](../binding.py). For an architectural
-overview of the generator pipeline see the module docstring at the top
-of `binding.py`.
+The GtkAda bindings under `src/generated/` are produced by
+`contrib/binding.py`, which merges two sources of truth:
 
-A package file describes how to bind one Ada package: it picks the Ada
-name, overrides the parent type, renames or hides methods, declares
-extra Ada types and constants to inject into the package, and so on.
-The **filename stem is the C type name** that anchors the package
-(e.g. `GtkButton.toml` binds `GtkButton`, `GIO.toml` binds `GIO`). All
-keys in the file therefore live at the top level — there is no
-wrapping table.
+* the `.gir` files under `contrib/` (one per GObject-introspection
+  namespace: GLib, GObject, Gtk, Gdk, Pango, Gio), which describe what
+  the C library exposes; and
+* per-package `.toml` override files under
+  [`contrib/binding/packages/`](packages/), which describe what the
+  Ada surface should look like.
+
+This document is the reference for those `.toml` files. For an
+architectural overview of the generator pipeline see the module
+docstring at the top of [`contrib/binding.py`](binding.py).
+
+## Pipeline at a glance
+
+```
+contrib/*.gir            ┐                ┌─► src/generated/tmp.ada ──gnatchop──► src/generated/*.ad{s,b}
+contrib/binding/packages ┴── binding.py ──┤
+                                          └─► src/misc_generated.c
+```
+
+To regenerate the bindings:
+
+```sh
+make generate
+```
+
+That target erases `src/generated/*.ad?`, runs `binding.py` over the
+GIR files and the TOML directory, then runs `gnatchop` to split the
+concatenated `tmp.ada` into one spec and one body per Ada package. The
+companion C file holds the small amount of glue needed to wire Ada
+virtual-method handlers into the GObject vtables.
+
+## Enabling a type for binding
+
+The set of types that participate in code generation lives in
+[`contrib/data.py`](data.py):
+
+* `interfaces` — GIR names of `<interface>` nodes; each gets its own
+  Ada package.
+* `binding` — C type names of `<class>`, `<record>`, `<union>` and
+  boxed types.
+
+A name prefixed with `--` is *not* bound — strip the dashes to opt
+in (or add a new entry for a type that is not yet listed). Once a
+name appears in one of these lists `binding.py` emits a default Ada
+package; you can leave it at that, or refine the surface with a
+per-package `.toml`.
+
+## Adding or refining a binding
+
+A package file describes how to bind one Ada package: it picks the
+Ada name, overrides the parent type, renames or hides methods,
+declares extra Ada types and constants to inject into the package,
+and so on. The **filename stem is the C type name** that anchors the
+package (e.g. `GtkButton.toml` binds `GtkButton`, `GIO.toml` binds
+`GIO`). All keys in the file therefore live at the top level — there
+is no wrapping table.
 
 ```toml
 # GtkButton.toml — the filename gives the anchoring C type.
 [doc]
-  screenshot = "gtk-button"
-  group      = "Buttons and Toggles"
+screenshot = "gtk-button"
+group      = "Buttons and Toggles"
 
 [[method]]
-  id  = "gtk_button_new_with_label"
-  ada = "Gtk_New"
+id  = "gtk_button_new_with_label"
+ada = "Gtk_New"
 ```
+
+Typical workflow:
+
+1. Make sure the GIR name (for interfaces) or C type (for everything
+   else) is enabled in `contrib/data.py`.
+2. Create `contrib/binding/packages/<CType>.toml`. Start empty — the
+   generator already does a reasonable job by default.
+3. Run `make generate` and inspect `src/generated/<package>.ads`.
+4. For each problem in the generated output, add an entry to the
+   TOML and regenerate. The common cases are below.
+
+### Recognising what needs an override
+
+When `binding.py` cannot map a GIR construct it falls back to a
+synthetic identifier rather than failing. Those identifiers are the
+flags pointing at the spot that needs an override:
+
+| Symptom in the generated `.ads`                          | Likely fix                                              |
+|----------------------------------------------------------|---------------------------------------------------------|
+| `array_of_<Type>` references with no matching definition | declare the array with [`[[extra.type]]`](#extratype--map-a-c-type-to-an-ada-type), and the element type with [`[[record]]`](#record) if missing |
+| Reference to an unknown record/struct type               | bind it with [`[[record]]`](#record)                    |
+| Reference to an unknown enum/bitfield                    | bind it with [`[[enum]]`](#enum)                        |
+| A method using a callback type that does not exist       | inject the access-to-subprogram via [`[[extra.spec]]`](#extraspec--code-injected-into-the-spec) and reference it from a [`[[method.parameter]]`](#methodparameter--per-parameter-overrides) `type` override |
+| A method that cannot be expressed in Ada at all          | suppress it with `bind = false` and re-expose it through `[extra]` |
+
+When in doubt, look for a similar pattern in an existing TOML — many
+of the recipes you will need are already present in
+[`contrib/binding/packages/`](packages/). The legacy gtk3 overrides
+under [`packages/gtk3/`](packages/gtk3/) are *not* loaded by the
+generator but are kept around as a quarry: when a widget that
+existed in gtk3 needs the same adjustment in gtk4, copy the
+relevant fragments over and adapt them to the current schema (in
+particular, the top-level wrapping table used in gtk3 TOMLs is no
+longer required).
 
 ## Conventions used below
 
@@ -35,14 +114,17 @@ wrapping table.
 
 ## Table of contents
 
-1. [Package-level attributes](#package-level-attributes)
-2. [`[doc]` — package documentation](#doc--package-documentation)
-3. [`[[parameter]]` — default parameter overrides](#parameter--default-parameter-overrides)
-4. [`[[method]]` / `[[function]]` / `[[callback]]` / `[[virtual_method]]`](#method--function--callback--virtual_method--subprogram-overrides)
-5. [`[[method.parameter]]` — per-parameter overrides](#methodparameter--per-parameter-overrides)
-6. [`[method.doc]` — per-method documentation](#methoddoc--per-method-documentation)
-7. [Type declarations injected into the package](#type-declarations-injected-into-the-package)
-8. [`[extra]` — verbatim Ada/C injections](#extra--verbatim-adac-injections)
+1. [Pipeline at a glance](#pipeline-at-a-glance)
+2. [Enabling a type for binding](#enabling-a-type-for-binding)
+3. [Adding or refining a binding](#adding-or-refining-a-binding)
+4. [Package-level attributes](#package-level-attributes)
+5. [`[doc]` — package documentation](#doc--package-documentation)
+6. [`[[parameter]]` — default parameter overrides](#parameter--default-parameter-overrides)
+7. [`[[method]]` / `[[function]]` / `[[callback]]` / `[[virtual_method]]`](#method--function--callback--virtual_method--subprogram-overrides)
+8. [`[[method.parameter]]` — per-parameter overrides](#methodparameter--per-parameter-overrides)
+9. [`[method.doc]` — per-method documentation](#methoddoc--per-method-documentation)
+10. [Type declarations injected into the package](#type-declarations-injected-into-the-package)
+11. [`[extra]` — verbatim Ada/C injections](#extra--verbatim-adac-injections)
 
 ## Package-level attributes
 

@@ -1,0 +1,14 @@
+[[method]]
+id = "gtk_at_context_create"
+bind = false
+# Need GdkDisplay
+
+[[method]]
+id = "gtk_at_context_get_accessible"
+bind = false
+# Circular dep with GtkAccessible
+
+[[method]]
+id = "gtk_at_context_get_accessible_role"
+bind = false
+# Circular dep with GtkAccessible

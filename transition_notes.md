@@ -17,9 +17,7 @@
 - In case of message reporting missing "Unchecked_To_X", uncomment the
   corresponding functions in src/gtk-arguments.ads and src/gtk-arguments.adb.
 
-## To do
-
-Globally:
+## To do (globally)
 
 - Reintroduce Gdk bindings
 - Reintroduce Gtk bindings
@@ -28,3 +26,12 @@ Globally:
 - Makefile.in:
   - reactivate testgtk
   - reactivate tools
+
+- Consider whether to generate the bindings for Graphene.
+  - In which case, remove the Graphene section from GtkAda.Types
+
+## To do (package by package)
+
+GBytes.toml:
+
+- fix binding for functions that have gconstarray as parameters

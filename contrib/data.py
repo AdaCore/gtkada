@@ -16,6 +16,9 @@ enums = ("GtkEnums",
 interfaces = (
     "--Actionable",
     "--Activatable",
+    "Accessible",
+    "AccessibleText",
+    "AccessibleHypertext",
     # "AppChooser",
     "--Atk.ImplementorIface",
     "--Buildable",
@@ -97,7 +100,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "GActionMap",
            "GApplication",
            "GApplicationCommandLine",
-           "--GBytes",   # Function returning arrays
+           "GBytes",   # Function returning arrays
            "--GBufferedInputStream",  # Not tested yet, from Gio
            "--GBufferedOutputStream",  # Not tested yet, from Gio
            "GCancellable",
@@ -279,7 +282,9 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkAccelGroup",
            "--GtkAccelLabel",
            "--GtkAccelMap",
-           "----GtkAccessible",  # Needs ATK
+           "GtkAccessible",  # Needs ATK
+           "GtkAccessibleHyperlink",
+           "GtkAccessibleText",
            "--GtkAction",
            "--GtkActionGroup",
            "--GtkActionBar",
@@ -294,6 +299,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "----GtkArrowAccessible",  # We do not support atk
            "--GtkAspectFrame",
            "--GtkAssistant",
+           "--GtkATContext", # Bound manually
            "--GtkBin",
            "--GtkBindingEntry",
            "--GtkBindingSet",
@@ -333,6 +339,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkComboBox",
            "----GtkComboBoxAccessible",  # We do not support atk
            "--GtkComboBoxText",
+           "GtkConstraintTarget",
            "--GtkContainer",
            "----GtkContainerAccessible",  # We do not support atk
            "----GtkContainerCellAccessible",  # We do not support atk
@@ -709,6 +716,7 @@ naming.type_exceptions = {
     "gchar":    Proxy("Gchar"),
     "guchar":   Proxy("Guchar"),
     "GAppInfo": Proxy("Glib.GApp_Info"),
+    "unsigned int": Proxy("Guint"),
 
     # These should not be necessary, but if we don't put them the gnerated
     # binding is wrong (for instance we end up passing Gdk_Event_Record as

@@ -6,6 +6,9 @@
 ctype = "GtkArrowType"
 
 [[enum]]
+ctype = "GtkAccessibleTextContentChange"
+
+[[enum]]
 ctype = "GtkCornerType"
 
 [[enum]]
@@ -32,6 +35,9 @@ ctype = "GtkInputHints"
 
 [[enum]]
 ctype = "GtkInputPurpose"
+
+[[enum]]
+ctype = "GtkNaturalWrapMode"
 
 [[enum]]
 ctype = "GtkNumberUpLayout"

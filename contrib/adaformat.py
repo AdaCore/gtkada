@@ -416,6 +416,10 @@ class GObject(CType):
 
     def __init__(self, ada, userecord=True, allow_none=False, classwide=False):
         CType.__init__(self, ada, "Glib.Properties.Property_Object")
+        # The C-side rendering is just an opaque pointer, so callers in
+        # ``ada->c`` / ``c->ada`` mode do *not* need to with the Ada
+        # package that defines ``self.ada`` (see
+        # ``Subprogram.add_withs_for_subprogram``).
         self.cparam = "System.Address"
         self.is_ptr = False
         self.classwide = classwide  # Parameter should include "'Class"
@@ -1640,20 +1644,53 @@ class Subprogram(object):
 
     def add_withs_for_subprogram(self, pkg, in_specs):
         """
-        Add required withs to the package (either in specs or body)
+        Add required withs to the package (either in specs or body).
+
+        The lang determines how the profile is rendered (see ``profile``
+        and ``Parameter._type``), which in turn dictates which withs are
+        actually needed:
+
+        * ``lang == "ada"`` -> profile uses the Ada-side type
+          (``r[0]`` / ``as_ada_param``); we need a with for the package
+          containing that type. This is what the ``else`` branch does
+          below for the return type; parameters use ``add_with`` on the
+          type, which adds the Ada-side package too.
+        * ``lang in ("ada->c", "c->ada")`` -> profile uses the C-side
+          type (``cparam``, e.g. ``System.Address`` for a GObject, but
+          potentially a qualified name like
+          ``Gtkada.Bindings.chars_ptr_array_access`` for a TOML-overridden
+          ``AdaType``). The Ada-side package is *not* what the rendered
+          spec references, so calling the generic ``add_with`` here would
+          produce a spurious -- potentially circular -- dependency (see
+          the GtkAccessibleHypertext / GtkAccessibleHyperlink case).
+          Instead we add a with for the *cparam* package (skipped for
+          ``System``, which is implicit in Ada) and let
+          ``convert_from_c_add_with`` pull in any extra withs that the
+          C-side rendering itself needs (e.g. ``Gtkada.Types`` for the
+          ``UTF8`` ``Chars_Ptr``).
         """
         if self.returns:
             r = self.returns.as_return(pkg=pkg)
-            if self.lang == "ada->c":
-                self.returns.add_with(pkg=pkg, specs=in_specs)
-            elif self.lang == "c->ada":
-                self.returns.add_with(pkg=pkg, specs=in_specs)
+            if self.lang in ("ada->c", "c->ada"):
+                pkg.add_with(package_name(r[1]), specs=in_specs)
+                self.returns.convert_from_c_add_with(
+                    pkg=pkg, specs=in_specs)
             else:
                 pkg.add_with(package_name(r[0]), specs=in_specs)
 
         if self.plist:
             for p in self.plist:
-                p.type.add_with(pkg=pkg, specs=in_specs)
+                if self.lang in ("ada->c", "c->ada"):
+                    # Same reasoning as for the return type above: the
+                    # parameter is rendered as its cparam (via
+                    # ``Parameter._type``), so we only need a with for
+                    # the cparam's package, not the Ada-side one.
+                    pkg.add_with(package_name(p.type.cparam),
+                                 specs=in_specs)
+                    p.type.convert_from_c_add_with(
+                        pkg=pkg, specs=in_specs)
+                else:
+                    p.type.add_with(pkg=pkg, specs=in_specs)
 
     def formatted_doc(self, indent="   "):
         if self.showdoc:

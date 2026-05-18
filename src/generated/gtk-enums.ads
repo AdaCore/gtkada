@@ -38,6 +38,12 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Arrow_Type);
    --  Indicates the direction in which an arrow should point.
 
+   type Gtk_Accessible_Text_Content_Change is (
+      Accessible_Text_Content_Change_Insert,
+      Accessible_Text_Content_Change_Remove);
+   pragma Convention (C, Gtk_Accessible_Text_Content_Change);
+   --  The type of contents change operation.
+
    type Gtk_Corner_Type is (
       Corner_Top_Left,
       Corner_Bottom_Left,
@@ -182,6 +188,15 @@ package Gtk.Enums is
    --
    --  This enumeration may be extended in the future; input methods should
    --  interpret unknown values as "free form".
+
+   type Gtk_Natural_Wrap_Mode is (
+      Natural_Wrap_Inherit,
+      Natural_Wrap_None,
+      Natural_Wrap_Word);
+   pragma Convention (C, Gtk_Natural_Wrap_Mode);
+   --  Options for selecting a different wrap mode for natural size requests.
+   --
+   --  See for example the [propertyGtk.Label:natural-wrap-mode] property.
 
    type Gtk_Number_Up_Layout is (
       Left_To_Right_Top_To_Bottom,
@@ -452,6 +467,10 @@ package Gtk.Enums is
       new Generic_Internal_Discrete_Property (Gtk_Arrow_Type);
    type Property_Gtk_Arrow_Type is new Gtk_Arrow_Type_Properties.Property;
 
+   package Gtk_Accessible_Text_Content_Change_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Accessible_Text_Content_Change);
+   type Property_Gtk_Accessible_Text_Content_Change is new Gtk_Accessible_Text_Content_Change_Properties.Property;
+
    package Gtk_Corner_Type_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Corner_Type);
    type Property_Gtk_Corner_Type is new Gtk_Corner_Type_Properties.Property;
@@ -487,6 +506,10 @@ package Gtk.Enums is
    package Gtk_Input_Purpose_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Input_Purpose);
    type Property_Gtk_Input_Purpose is new Gtk_Input_Purpose_Properties.Property;
+
+   package Gtk_Natural_Wrap_Mode_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Natural_Wrap_Mode);
+   type Property_Gtk_Natural_Wrap_Mode is new Gtk_Natural_Wrap_Mode_Properties.Property;
 
    package Gtk_Number_Up_Layout_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Number_Up_Layout);
