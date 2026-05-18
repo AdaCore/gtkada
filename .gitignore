@@ -52,3 +52,7 @@ docs/gtkada_ug/gtkada_ug.txt
 # ancr-generated environment settings
 .env
 .vscode/
+
+# For people who are experimenting with agents
+CLAUDE.md
+AGENTS.md

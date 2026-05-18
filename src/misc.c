@@ -686,6 +686,7 @@ ada_gnode_first_child(GNode *node)
 #define ada_gdk_invalid_guint32_value (guint32)((2LL << 32) - 1)
 #define ada_gdk_invalid_gulong_value (gulong)((2LL << 32) - 1)
 
+// TRANSITION: reactivate this when the gdk constants are available
 // #else
 // extern const gdouble ada_gdk_invalid_gdouble_value;
 // extern const gint    ada_gdk_invalid_gint_value;

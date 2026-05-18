@@ -53,3 +53,7 @@ GdkMonitor.toml:
 GtkApplication.toml:
 
 - when done, reactivate bindings in GtkWindow.toml
+
+GtkWidget.toml:
+
+- Review the commented-out code imported from the gtk3 bindings, and reactivate as needed.
