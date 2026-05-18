@@ -426,7 +426,7 @@ package Glib.Application is
    --  Glib.Application.Hold on the application and is therefore still
    --  expecting it to exist. (Note that you may have called
    --  Glib.Application.Hold indirectly, for example through
-   --  gtk_application_add_window.)
+   --  Gtk.Application.Add_Window.)
    --  The result of calling Glib.Application.Run again after it returns is
    --  unspecified.
    --  Since: gtk+ 2.32
