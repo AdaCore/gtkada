@@ -44,9 +44,9 @@ interfaces = (
     "--TreeSortable",
     "--TreeModel",
 
-    "--Action",
-    "--ActionGroup",
-    "--ActionMap",
+    "Action",
+    "ActionGroup",
+    "ActionMap",
     "ListModel",
     "--AppInfo",  # Not tested yet, from Gio
     "--AsyncInitable",  # Not tested yet, from Gio
@@ -99,9 +99,9 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GdkSeat",
            "--GdkWindow",
 
-           "GAction",
-           "GActionGroup",
-           "GActionMap",
+           "--GAction",          # bound as an interface, see interfaces tuple
+           "--GActionGroup",     # bound as an interface, see interfaces tuple
+           "--GActionMap",       # bound as an interface, see interfaces tuple
            "GApplication",
            "GApplicationCommandLine",
            "GBytes",   # Function returning arrays

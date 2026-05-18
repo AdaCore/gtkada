@@ -114,6 +114,106 @@ void gtkada_Shortcut_Manager_set_remove_controller(GtkShortcutManagerInterface* 
     iface->remove_controller = handler;
 }
 
+void gtkada_Action_set_activate(GActionInterface* iface, void* handler) {
+    iface->activate = handler;
+}
+
+void gtkada_Action_set_change_state(GActionInterface* iface, void* handler) {
+    iface->change_state = handler;
+}
+
+void gtkada_Action_set_get_enabled(GActionInterface* iface, void* handler) {
+    iface->get_enabled = handler;
+}
+
+void gtkada_Action_set_get_name(GActionInterface* iface, void* handler) {
+    iface->get_name = handler;
+}
+
+void gtkada_Action_set_get_parameter_type(GActionInterface* iface, void* handler) {
+    iface->get_parameter_type = handler;
+}
+
+void gtkada_Action_set_get_state(GActionInterface* iface, void* handler) {
+    iface->get_state = handler;
+}
+
+void gtkada_Action_set_get_state_hint(GActionInterface* iface, void* handler) {
+    iface->get_state_hint = handler;
+}
+
+void gtkada_Action_set_get_state_type(GActionInterface* iface, void* handler) {
+    iface->get_state_type = handler;
+}
+
+void gtkada_Action_Group_set_action_added(GActionGroupInterface* iface, void* handler) {
+    iface->action_added = handler;
+}
+
+void gtkada_Action_Group_set_action_enabled_changed(GActionGroupInterface* iface, void* handler) {
+    iface->action_enabled_changed = handler;
+}
+
+void gtkada_Action_Group_set_action_removed(GActionGroupInterface* iface, void* handler) {
+    iface->action_removed = handler;
+}
+
+void gtkada_Action_Group_set_action_state_changed(GActionGroupInterface* iface, void* handler) {
+    iface->action_state_changed = handler;
+}
+
+void gtkada_Action_Group_set_activate_action(GActionGroupInterface* iface, void* handler) {
+    iface->activate_action = handler;
+}
+
+void gtkada_Action_Group_set_change_action_state(GActionGroupInterface* iface, void* handler) {
+    iface->change_action_state = handler;
+}
+
+void gtkada_Action_Group_set_get_action_enabled(GActionGroupInterface* iface, void* handler) {
+    iface->get_action_enabled = handler;
+}
+
+void gtkada_Action_Group_set_get_action_parameter_type(GActionGroupInterface* iface, void* handler) {
+    iface->get_action_parameter_type = handler;
+}
+
+void gtkada_Action_Group_set_get_action_state(GActionGroupInterface* iface, void* handler) {
+    iface->get_action_state = handler;
+}
+
+void gtkada_Action_Group_set_get_action_state_hint(GActionGroupInterface* iface, void* handler) {
+    iface->get_action_state_hint = handler;
+}
+
+void gtkada_Action_Group_set_get_action_state_type(GActionGroupInterface* iface, void* handler) {
+    iface->get_action_state_type = handler;
+}
+
+void gtkada_Action_Group_set_has_action(GActionGroupInterface* iface, void* handler) {
+    iface->has_action = handler;
+}
+
+void gtkada_Action_Group_set_list_actions(GActionGroupInterface* iface, void* handler) {
+    iface->list_actions = handler;
+}
+
+void gtkada_Action_Group_set_query_action(GActionGroupInterface* iface, void* handler) {
+    iface->query_action = handler;
+}
+
+void gtkada_Action_Map_set_add_action(GActionMapInterface* iface, void* handler) {
+    iface->add_action = handler;
+}
+
+void gtkada_Action_Map_set_lookup_action(GActionMapInterface* iface, void* handler) {
+    iface->lookup_action = handler;
+}
+
+void gtkada_Action_Map_set_remove_action(GActionMapInterface* iface, void* handler) {
+    iface->remove_action = handler;
+}
+
 void gtkada_List_Model_set_get_item(GListModelInterface* iface, void* handler) {
     iface->get_item = handler;
 }
