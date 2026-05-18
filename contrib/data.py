@@ -298,7 +298,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "----GtkAppChooserDialog",  # Needs GFile
            "----GtkAppChooserWidget",  # Needs GFile
            "GtkApplication",
-           "--GtkApplicationWindow",
+           "GtkApplicationWindow",
            "--GtkArrow",
            "----GtkArrowAccessible",  # We do not support atk
            "--GtkAspectFrame",

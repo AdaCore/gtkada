@@ -1,0 +1,9 @@
+[[method]]
+id = "gtk_application_window_get_help_overlay"
+bind = false
+# Obsolescent, plus requires Gtk_Shortcuts_Window
+
+[[method]]
+id = "gtk_application_window_set_help_overlay"
+bind = false
+# Obsolescent, plus requires Gtk_Shortcuts_Window

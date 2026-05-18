@@ -30,6 +30,8 @@
 - Consider whether to generate the bindings for Graphene.
   - In which case, remove the Graphene section from GtkAda.Types
 
+- Fix misc.c (look for the "TRANSITION" string)
+
 ## To do (package by package)
 
 GBytes.toml:

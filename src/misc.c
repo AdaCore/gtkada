@@ -54,20 +54,17 @@
  *  unix version.
  ********************************************************************/
 
-guint
-ada_gtk_major_version ()
+guint ada_gtk_major_version()
 {
   return GTK_MAJOR_VERSION;
 }
 
-guint
-ada_gtk_minor_version ()
+guint ada_gtk_minor_version()
 {
   return GTK_MINOR_VERSION;
 }
 
-guint
-ada_gtk_micro_version ()
+guint ada_gtk_micro_version()
 {
   return GTK_MICRO_VERSION;
 }
@@ -77,24 +74,24 @@ ada_gtk_micro_version ()
  ********************************************************************/
 
 GdkPixbuf *
-ada_gdk_pixbuf_new_from_file (const char *filename,
-			      GError **error)
+ada_gdk_pixbuf_new_from_file(const char *filename,
+                             GError **error)
 {
 #ifdef GDK_WINDOWING_WIN32
-  return gdk_pixbuf_new_from_file_utf8 (filename, error);
+  return gdk_pixbuf_new_from_file_utf8(filename, error);
 #else
-  return gdk_pixbuf_new_from_file (filename, error);
+  return gdk_pixbuf_new_from_file(filename, error);
 #endif
 }
 
 GdkPixbufAnimation *
-ada_gdk_pixbuf_animation_new_from_file (const char *filename,
-					GError **error)
+ada_gdk_pixbuf_animation_new_from_file(const char *filename,
+                                       GError **error)
 {
 #ifdef GDK_WINDOWING_WIN32
-  return gdk_pixbuf_animation_new_from_file_utf8 (filename, error);
+  return gdk_pixbuf_animation_new_from_file_utf8(filename, error);
 #else
-  return gdk_pixbuf_animation_new_from_file (filename, error);
+  return gdk_pixbuf_animation_new_from_file(filename, error);
 #endif
 }
 
@@ -103,89 +100,89 @@ ada_gdk_pixbuf_animation_new_from_file (const char *filename,
  ********************************************************************/
 
 #ifdef GDK_WINDOWING_WIN32
-gboolean ada_g_module_supported (void) { return FALSE; };
+gboolean ada_g_module_supported(void) { return FALSE; };
 
-gchar*
-ada_g_module_build_path (const gchar *directory,
-			 const gchar *module_name)
+gchar *
+ada_g_module_build_path(const gchar *directory,
+                        const gchar *module_name)
 {
   return "";
 }
-GModule*
-ada_g_module_open (const gchar *file_name,
-	       GModuleFlags flags)
+GModule *
+ada_g_module_open(const gchar *file_name,
+                  GModuleFlags flags)
 {
   return 0;
 }
 
 gboolean
-ada_g_module_close (GModule *module)
+ada_g_module_close(GModule *module)
 {
   return TRUE;
 }
 
 gboolean
-ada_g_module_symbol (GModule *module,
-		 const gchar *symbol_name,
-		 gpointer *symbol)
+ada_g_module_symbol(GModule *module,
+                    const gchar *symbol_name,
+                    gpointer *symbol)
 {
   return FALSE;
 }
 
-const gchar*
-ada_g_module_name (GModule *module)
+const gchar *
+ada_g_module_name(GModule *module)
 {
   return "";
 }
 
-const gchar*
-ada_g_module_error (void)
+const gchar *
+ada_g_module_error(void)
 {
   return "modules not supported under Windows";
 }
 #else
-gboolean ada_g_module_supported (void)
+gboolean ada_g_module_supported(void)
 {
   return g_module_supported();
 };
 
-gchar*
-ada_g_module_build_path (const gchar *directory,
-			 const gchar *module_name)
+gchar *
+ada_g_module_build_path(const gchar *directory,
+                        const gchar *module_name)
 {
-  return g_module_build_path (directory, module_name);
+  return g_module_build_path(directory, module_name);
 }
-GModule*
-ada_g_module_open (const gchar *file_name,
-	       GModuleFlags flags)
+GModule *
+ada_g_module_open(const gchar *file_name,
+                  GModuleFlags flags)
 {
-  return g_module_open (file_name, flags);
-}
-
-gboolean
-ada_g_module_close (GModule *module)
-{
-  return g_module_close (module);
+  return g_module_open(file_name, flags);
 }
 
 gboolean
-ada_g_module_symbol (GModule *module,
-		 const gchar *symbol_name,
-		 gpointer *symbol)
+ada_g_module_close(GModule *module)
 {
-  return g_module_symbol (module, symbol_name, symbol);
+  return g_module_close(module);
 }
 
-const gchar*
-ada_g_module_name (GModule *module)
+gboolean
+ada_g_module_symbol(GModule *module,
+                    const gchar *symbol_name,
+                    gpointer *symbol)
 {
-  return g_module_name (module);
+  return g_module_symbol(module, symbol_name, symbol);
 }
 
-const gchar*
-ada_g_module_error (void)
+const gchar *
+ada_g_module_name(GModule *module)
 {
-  return g_module_error ();
+  return g_module_name(module);
+}
+
+const gchar *
+ada_g_module_error(void)
+{
+  return g_module_error();
 }
 #endif
 
@@ -194,234 +191,209 @@ ada_g_module_error (void)
  ********************************************************************/
 
 gpointer
-ada_g_object_new (GType object_type)
+ada_g_object_new(GType object_type)
 {
-  return g_object_new (object_type, NULL);
+  return g_object_new(object_type, NULL);
 }
 
 gpointer
-ada_g_dialog_new (GType object_type, GtkDialogFlags flags)
+ada_g_dialog_new(GType object_type, GtkDialogFlags flags)
 {
-   return g_object_new
-      (object_type,
-       "use-header-bar", (flags & GTK_DIALOG_USE_HEADER_BAR) != 0,
-       NULL);
+  return g_object_new(object_type,
+                      "use-header-bar", (flags & GTK_DIALOG_USE_HEADER_BAR) != 0,
+                      NULL);
 }
 
-void
-ada_g_object_get_ulong (gpointer object,
-		        const gchar *property_name,
-		        gulong *property)
+void ada_g_object_get_ulong(gpointer object,
+                            const gchar *property_name,
+                            gulong *property)
 {
-  g_object_get (object, property_name, property, NULL);
+  g_object_get(object, property_name, property, NULL);
 }
 
-
-void
-ada_g_object_set_string (gpointer object,
-			 const gchar *property_name,
-			 const gchar *property)
+void ada_g_object_set_string(gpointer object,
+                             const gchar *property_name,
+                             const gchar *property)
 {
-  g_object_set (object, property_name, property, NULL);
+  g_object_set(object, property_name, property, NULL);
 }
 
-void
-ada_g_object_set_int (gpointer object,
-		      const gchar *property_name,
-		      gint property)
+void ada_g_object_set_int(gpointer object,
+                          const gchar *property_name,
+                          gint property)
 {
-  g_object_set (object, property_name, property, NULL);
+  g_object_set(object, property_name, property, NULL);
 }
 
-void
-ada_g_object_set_ulong (gpointer object,
-		        const gchar *property_name,
-		        gulong property)
+void ada_g_object_set_ulong(gpointer object,
+                            const gchar *property_name,
+                            gulong property)
 {
-  g_object_set (object, property_name, property, NULL);
+  g_object_set(object, property_name, property, NULL);
 }
 
-void
-ada_g_object_set_ptr (gpointer object,
-		      const gchar *property_name,
-		      void *property)
+void ada_g_object_set_ptr(gpointer object,
+                          const gchar *property_name,
+                          void *property)
 {
-  g_object_set (object, property_name, property, NULL);
+  g_object_set(object, property_name, property, NULL);
 }
 
-void
-ada_g_object_set_float (gpointer object,
-			const gchar *property_name,
-			gfloat property)
+void ada_g_object_set_float(gpointer object,
+                            const gchar *property_name,
+                            gfloat property)
 {
-  g_object_set (object, property_name, property, NULL);
+  g_object_set(object, property_name, property, NULL);
 }
 
-void
-ada_g_object_set_double (gpointer object,
-			 const gchar *property_name,
-			 gdouble property)
+void ada_g_object_set_double(gpointer object,
+                             const gchar *property_name,
+                             gdouble property)
 {
-  g_object_set (object, property_name, property, NULL);
+  g_object_set(object, property_name, property, NULL);
 }
 
-void
-ada_g_signal_emit_by_name (gpointer     instance,
-			   const gchar *detailed_signal)
+void ada_g_signal_emit_by_name(gpointer instance,
+                               const gchar *detailed_signal)
 {
-  g_signal_emit_by_name (instance, detailed_signal);
+  g_signal_emit_by_name(instance, detailed_signal);
 }
 
-void
-ada_g_signal_emit_by_name_ptr (gpointer     instance,
-			       const gchar *detailed_signal,
-			       void *arg)
+void ada_g_signal_emit_by_name_ptr(gpointer instance,
+                                   const gchar *detailed_signal,
+                                   void *arg)
 {
-  g_signal_emit_by_name (instance, detailed_signal, arg);
+  g_signal_emit_by_name(instance, detailed_signal, arg);
 }
 
-void
-ada_g_signal_emit_by_name_ptr_ptr (gpointer     instance,
-			           const gchar *detailed_signal,
-			           void *arg1,
-			           void *arg2)
+void ada_g_signal_emit_by_name_ptr_ptr(gpointer instance,
+                                       const gchar *detailed_signal,
+                                       void *arg1,
+                                       void *arg2)
 {
-  g_signal_emit_by_name (instance, detailed_signal, arg1, arg2);
+  g_signal_emit_by_name(instance, detailed_signal, arg1, arg2);
 }
 
-void
-ada_g_signal_emit_by_name_int_ptr (gpointer     instance,
-			           const gchar *detailed_signal,
-			           gint arg1,
-			           void *arg2)
+void ada_g_signal_emit_by_name_int_ptr(gpointer instance,
+                                       const gchar *detailed_signal,
+                                       gint arg1,
+                                       void *arg2)
 {
-  g_signal_emit_by_name (instance, detailed_signal, arg1, arg2);
+  g_signal_emit_by_name(instance, detailed_signal, arg1, arg2);
 }
 
-void
-ada_gtk_list_store_set_ptr (GtkListStore *list_store,
-                            GtkTreeIter  *iter,
-                            gint          col,
-                            void         *val)
+void ada_gtk_list_store_set_ptr(GtkListStore *list_store,
+                                GtkTreeIter *iter,
+                                gint col,
+                                void *val)
 {
-  gtk_list_store_set (list_store, iter, col, val, -1);
+  gtk_list_store_set(list_store, iter, col, val, -1);
 }
 
-
-void
-ada_gtk_list_store_set_int (GtkListStore *list_store,
-                            GtkTreeIter  *iter,
-                            gint          col,
-                            gint          val)
+void ada_gtk_list_store_set_int(GtkListStore *list_store,
+                                GtkTreeIter *iter,
+                                gint col,
+                                gint val)
 {
-  gtk_list_store_set (list_store, iter, col, val, -1);
+  gtk_list_store_set(list_store, iter, col, val, -1);
 }
 
-void
-ada_gtk_tree_store_set_ptr (GtkTreeStore *tree_store,
-			    GtkTreeIter  *iter,
-			    gint          col,
-			    void         *val)
+void ada_gtk_tree_store_set_ptr(GtkTreeStore *tree_store,
+                                GtkTreeIter *iter,
+                                gint col,
+                                void *val)
 {
-  gtk_tree_store_set (tree_store, iter, col, val, -1);
+  gtk_tree_store_set(tree_store, iter, col, val, -1);
 }
 
-void
-ada_gtk_tree_store_set_int (GtkTreeStore *tree_store,
-			    GtkTreeIter  *iter,
-			    gint          col,
-			    gint          val)
+void ada_gtk_tree_store_set_int(GtkTreeStore *tree_store,
+                                GtkTreeIter *iter,
+                                gint col,
+                                gint val)
 {
-  gtk_tree_store_set (tree_store, iter, col, val, -1);
+  gtk_tree_store_set(tree_store, iter, col, val, -1);
 }
 
-void
-ada_gtk_tree_store_set_ulong (GtkTreeStore *list_store,
-                            GtkTreeIter  *iter,
-                            gint          col,
-                            gulong        val)
+void ada_gtk_tree_store_set_ulong(GtkTreeStore *list_store,
+                                  GtkTreeIter *iter,
+                                  gint col,
+                                  gulong val)
 {
-  gtk_tree_store_set (list_store, iter, col, val, -1);
+  gtk_tree_store_set(list_store, iter, col, val, -1);
 }
 
-
-GtkWidget*
-ada_gtk_dialog_new_with_buttons (const gchar     *title,
-                                 GtkWindow       *parent,
-                                 GtkDialogFlags   flags)
+GtkWidget *
+ada_gtk_dialog_new_with_buttons(const gchar *title,
+                                GtkWindow *parent,
+                                GtkDialogFlags flags)
 {
-  return gtk_dialog_new_with_buttons (title, parent, flags,
-                                      NULL /* first_button_text*/, NULL);
+  return gtk_dialog_new_with_buttons(title, parent, flags,
+                                     NULL /* first_button_text*/, NULL);
 }
 
 gboolean
-ada_gdk_pixbuf_save (GdkPixbuf  *pixbuf,
-		     const char *filename,
-		     const char *type,
-		     GError    **error,
-		     char       *key,
-		     char       *value)
+ada_gdk_pixbuf_save(GdkPixbuf *pixbuf,
+                    const char *filename,
+                    const char *type,
+                    GError **error,
+                    char *key,
+                    char *value)
 {
-  return gdk_pixbuf_save (pixbuf, filename, type, error, key, value, NULL);
+  return gdk_pixbuf_save(pixbuf, filename, type, error, key, value, NULL);
 }
 
-void
-ada_g_log (const gchar    *log_domain,
-	   GLogLevelFlags  log_level,
-	   const gchar    *message)
+void ada_g_log(const gchar *log_domain,
+               GLogLevelFlags log_level,
+               const gchar *message)
 {
-  g_log (log_domain, log_level, "%s", message);
+  g_log(log_domain, log_level, "%s", message);
 }
 
-void
-c_sprintf (char *s, char *format, int arg1, int arg2, int arg3)
+void c_sprintf(char *s, char *format, int arg1, int arg2, int arg3)
 {
-  sprintf (s, format, arg1, arg2, arg3);
+  sprintf(s, format, arg1, arg2, arg3);
 }
 
-void
-ada_gtk_tree_model_get (GtkTreeModel *tree_model,
-                        GtkTreeIter  *iter,
-			gint         column,
-			void         *data)
+void ada_gtk_tree_model_get(GtkTreeModel *tree_model,
+                            GtkTreeIter *iter,
+                            gint column,
+                            void *data)
 {
-   gtk_tree_model_get (tree_model, iter, column, data, -1);
+  gtk_tree_model_get(tree_model, iter, column, data, -1);
 }
 
 /********************************************************************
  **  This function should only be used for debug purposes.
  ********************************************************************/
 
-guint
-ada_gtk_debug_get_ref_count (GObject* object) {
-  return G_OBJECT (object)->ref_count;
+guint ada_gtk_debug_get_ref_count(GObject *object)
+{
+  return G_OBJECT(object)->ref_count;
 }
 
 /******************************************
  ** GSignal                              **
  ******************************************/
 
-const gchar*
-ada_gsignal_query_signal_name (GSignalQuery* query)
+const gchar *
+ada_gsignal_query_signal_name(GSignalQuery *query)
 {
   return query->signal_name;
 }
 
-const GType*
-ada_gsignal_query_params (GSignalQuery* query, guint* n_params)
+const GType *
+ada_gsignal_query_params(GSignalQuery *query, guint *n_params)
 {
   *n_params = query->n_params;
   return query->param_types;
 }
 
-guint
-ada_gsignal_query_id (GSignalQuery* query)
+guint ada_gsignal_query_id(GSignalQuery *query)
 {
   return query->signal_id;
 }
 
-GType
-ada_gsignal_query_return_type (GSignalQuery* query)
+GType ada_gsignal_query_return_type(GSignalQuery *query)
 {
   return query->return_type;
 }
@@ -445,19 +417,20 @@ ada_gsignal_query_return_type (GSignalQuery* query)
  **  };
  *********************************************************************/
 
-typedef struct {
-   GType type;            // The type. This also acts as a lock while
-                          // initializing the class record.
-   void (*class_init)(gpointer type);           // ada class init
-   GObjectSetPropertyFunc ada_property_setter;
-   GObjectGetPropertyFunc ada_property_getter;
+typedef struct
+{
+  GType type;                        // The type. This also acts as a lock while
+                                     // initializing the class record.
+  void (*class_init)(gpointer type); // ada class init
+  GObjectSetPropertyFunc ada_property_setter;
+  GObjectGetPropertyFunc ada_property_getter;
 } AdaGObjectClassRecord;
-typedef AdaGObjectClassRecord* AdaGObjectClass;
+typedef AdaGObjectClassRecord *AdaGObjectClass;
 //  Type must be synchronized with Ada.
 
-GType ada_type_from_class (GObjectClass* klass)
+GType ada_type_from_class(GObjectClass *klass)
 {
-  return G_TYPE_FROM_CLASS (klass);
+  return G_TYPE_FROM_CLASS(klass);
 }
 
 /** Reuse the dummy padding pointers set by gtk+. They are never used by
@@ -466,12 +439,12 @@ GType ada_type_from_class (GObjectClass* klass)
  */
 #define ADA_CLASS_FROM_C_CLASS(class) (AdaGObjectClass)(class->pdummy[0])
 #define SET_ADA_CLASS_FROM_C_CLASS(class, adaclass) \
-   (class->pdummy[0] = (gpointer)adaclass)
+  (class->pdummy[0] = (gpointer)adaclass)
 
-AdaGObjectClass ada_gobject_class_from_object(GObject* object) {
-   return ADA_CLASS_FROM_C_CLASS(G_OBJECT_GET_CLASS(object));
+AdaGObjectClass ada_gobject_class_from_object(GObject *object)
+{
+  return ADA_CLASS_FROM_C_CLASS(G_OBJECT_GET_CLASS(object));
 }
-
 
 /** The class_init for the gobject types created in Ada
  * The class_data is of type AdaGObjectClass, as set by
@@ -479,193 +452,192 @@ AdaGObjectClass ada_gobject_class_from_object(GObject* object) {
  **/
 
 static void
-ada_class_record_init (GObjectClass* klass, gpointer class_data)
+ada_class_record_init(GObjectClass *klass, gpointer class_data)
 {
-   GType type = G_TYPE_FROM_CLASS (klass);
-   GType parent = g_type_parent (type);
-   GTypeQuery query;
-   GTypeQuery parent_query;
-   const AdaGObjectClass ada_klass = (AdaGObjectClass)class_data;
+  GType type = G_TYPE_FROM_CLASS(klass);
+  GType parent = g_type_parent(type);
+  GTypeQuery query;
+  GTypeQuery parent_query;
+  const AdaGObjectClass ada_klass = (AdaGObjectClass)class_data;
 
-   g_type_query (type, &query);
-   g_type_query (parent, &parent_query);
+  g_type_query(type, &query);
+  g_type_query(parent, &parent_query);
 
-   /* Initialize the function pointers for the new signals to NULL */
+  /* Initialize the function pointers for the new signals to NULL */
 
-   memset ((char*)(klass) + parent_query.class_size, 0,
-           query.class_size - parent_query.class_size);
+  memset((char *)(klass) + parent_query.class_size, 0,
+         query.class_size - parent_query.class_size);
 
-   /* Set a pointer to the AdaGObjectClass, so that we can retrieve it
-    * later from a type.
-    */
-   SET_ADA_CLASS_FROM_C_CLASS(klass, ada_klass);
+  /* Set a pointer to the AdaGObjectClass, so that we can retrieve it
+   * later from a type.
+   */
+  SET_ADA_CLASS_FROM_C_CLASS(klass, ada_klass);
 
-   if (ada_klass->class_init) {
-      ada_klass->class_init (klass);
-   }
+  if (ada_klass->class_init)
+  {
+    ada_klass->class_init(klass);
+  }
 }
 
-int
-ada_initialize_class_record
-  (GType         ancestor,
-   gint          nsignals,
-   char*         signals[],
-   GType         parameters[],
-   gint          max_parameters,
-   GType         returns[],
-   gint          max_returns,
-   AdaGObjectClass klass,
-   gchar*        type_name)
+int ada_initialize_class_record(GType ancestor,
+                                gint nsignals,
+                                char *signals[],
+                                GType parameters[],
+                                gint max_parameters,
+                                GType returns[],
+                                gint max_returns,
+                                AdaGObjectClass klass,
+                                gchar *type_name)
 {
-   // Make this function thread-safe and ensure we only initialize the class
-   // once
-   if (g_once_init_enter (&klass->type)) {
-       /* Note: The memory allocated in this function is never freed. No need
-          to worry, since this is only allocated once per user's widget type,
-          and might be used until the end of the application */
+  // Make this function thread-safe and ensure we only initialize the class
+  // once
+  if (g_once_init_enter(&klass->type))
+  {
+    /* Note: The memory allocated in this function is never freed. No need
+       to worry, since this is only allocated once per user's widget type,
+       and might be used until the end of the application */
 
-       GTypeQuery query;
-       int j;
+    GTypeQuery query;
+    int j;
 
-       /* We need to know the ancestor's class/instance sizes */
-       g_type_query (ancestor, &query);
+    /* We need to know the ancestor's class/instance sizes */
+    g_type_query(ancestor, &query);
 
-       /*************************
-        * This code is the equivalent of type_name@@_get_type in C. In Ada, the
-        * type will be accessible only once at least one instance of it has
-        * been created (whereas in C the GType is created at elaboration time).
-        *************************/
+    /*************************
+     * This code is the equivalent of type_name@@_get_type in C. In Ada, the
+     * type will be accessible only once at least one instance of it has
+     * been created (whereas in C the GType is created at elaboration time).
+     *************************/
 
-       GTypeInfo info;
-       info.class_size = query.class_size
-              + nsignals * sizeof (void*);
-              //+ sizeof (AdaGObjectClass);
-       info.base_init = NULL;
-       info.base_finalize = NULL;
-       info.class_init = (GClassInitFunc)(&ada_class_record_init);
-       info.class_finalize = NULL;
-       info.class_data = (gconstpointer)klass;
-       info.instance_size = query.instance_size;
-       info.n_preallocs = 0;
-       info.instance_init = NULL;
-       info.value_table = NULL;
+    GTypeInfo info;
+    info.class_size = query.class_size + nsignals * sizeof(void *);
+    //+ sizeof (AdaGObjectClass);
+    info.base_init = NULL;
+    info.base_finalize = NULL;
+    info.class_init = (GClassInitFunc)(&ada_class_record_init);
+    info.class_finalize = NULL;
+    info.class_data = (gconstpointer)klass;
+    info.instance_size = query.instance_size;
+    info.n_preallocs = 0;
+    info.instance_init = NULL;
+    info.value_table = NULL;
 
-       GType new_type = g_type_register_static (
-             ancestor  /* parent_type */,
-             type_name /* type_name */,
-             &info     /* info */,
-             0         /* flags */);
+    GType new_type = g_type_register_static(
+        ancestor /* parent_type */,
+        type_name /* type_name */,
+        &info /* info */,
+        0 /* flags */);
 
-       /*************************
-        * This code is generally called by g_object_new (which itself is called
-        * from type_name_new() in C). Its result is to create and initialized
-        * (via class_init) the class the first time an instance of it is
-        * created. In Ada, we do not us a _class_init, so we initialize the
-        * signals immediately after creating the class.
-        *************************/
+    /*************************
+     * This code is generally called by g_object_new (which itself is called
+     * from type_name_new() in C). Its result is to create and initialized
+     * (via class_init) the class the first time an instance of it is
+     * created. In Ada, we do not us a _class_init, so we initialize the
+     * signals immediately after creating the class.
+     *************************/
 
-       for (j = 0; j < nsignals; j++) {
-          int count = 0;
-          GClosure *closure;
+    for (j = 0; j < nsignals; j++)
+    {
+      int count = 0;
+      GClosure *closure;
 
-          while (count < max_parameters &&
-                  (parameters [j * max_parameters + count] != G_TYPE_NONE))
-          {
-                count++;
-          }
+      while (count < max_parameters &&
+             (parameters[j * max_parameters + count] != G_TYPE_NONE))
+      {
+        count++;
+      }
 
-          closure = g_signal_type_cclosure_new
-              (new_type, query.class_size + j * sizeof (void*)); /* offset */
+      closure = g_signal_type_cclosure_new(new_type, query.class_size + j * sizeof(void *)); /* offset */
 
-          GType return_type = G_TYPE_NONE;
-          GSignalAccumulator acc = NULL;
+      GType return_type = G_TYPE_NONE;
+      GSignalAccumulator acc = NULL;
 
-          if (j < max_returns) {
-             return_type = returns[j];
-             if (return_type == G_TYPE_BOOLEAN) {
-                acc = g_signal_accumulator_true_handled;
-             }
-          }
+      if (j < max_returns)
+      {
+        return_type = returns[j];
+        if (return_type == G_TYPE_BOOLEAN)
+        {
+          acc = g_signal_accumulator_true_handled;
+        }
+      }
 
-          /* id = */ g_signal_newv
-            (signals[j],                       /* signal_name */
-             new_type,                         /* itype */
-             G_SIGNAL_RUN_LAST,                /* signal_flags */
-             closure,                          /* class_closure */
-             acc,                              /* accumulator */
-             NULL,                             /* accu_data */
-             g_cclosure_marshal_VOID__VOID,    /* c_marshaller, unused at the
-               Ada level ??? This probably makes the widget unusable from C */
-             return_type,                      /* return_type */
-             count,                            /* n_params */
-             parameters + j * max_parameters); /* param_types */
-       }
+      /* id = */ g_signal_newv(signals[j],                       /* signal_name */
+                               new_type,                         /* itype */
+                               G_SIGNAL_RUN_LAST,                /* signal_flags */
+                               closure,                          /* class_closure */
+                               acc,                              /* accumulator */
+                               NULL,                             /* accu_data */
+                               g_cclosure_marshal_VOID__VOID,    /* c_marshaller, unused at the
+                                 Ada level ??? This probably makes the widget unusable from C */
+                               return_type,                      /* return_type */
+                               count,                            /* n_params */
+                               parameters + j * max_parameters); /* param_types */
+    }
 
-       /* Do not call g_type_class_ref here, since that would prevent us
-        * from adding interfaces later on. Instead, rely on the class_init
-        * function
-        */
-       g_once_init_leave (&klass->type, new_type); // sets klass->type
-       return 1;
-   }
-   return 0;
+    /* Do not call g_type_class_ref here, since that would prevent us
+     * from adding interfaces later on. Instead, rely on the class_init
+     * function
+     */
+    g_once_init_leave(&klass->type, new_type); // sets klass->type
+    return 1;
+  }
+  return 0;
 }
 
 #define ADA_GTK_OVERRIDE_METHOD(TypeName, method) \
-   void \
-   ada_##TypeName##_override_##method ( \
-         GObjectClass* klass, gpointer handler) { \
-      if (handler && GTK_IS_##TypeName (klass)) { \
-          GTK_##TypeName (klass)->method = handler; \
-      } \
-   }
+  void                                            \
+  ada_##TypeName##_override_##method(             \
+      GObjectClass *klass, gpointer handler)      \
+  {                                               \
+    if (handler && GTK_IS_##TypeName(klass))      \
+    {                                             \
+      GTK_##TypeName(klass)->method = handler;    \
+    }                                             \
+  }
 
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, size_allocate)
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, realize)
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, measure)
 ADA_GTK_OVERRIDE_METHOD(WIDGET_CLASS, snapshot)
 
-void ada_inherited_WIDGET_CLASS_size_allocate (
-      AdaGObjectClass klass, GtkWidget* widget,
-      int width, int height, int baseline)
+void ada_inherited_WIDGET_CLASS_size_allocate(
+    AdaGObjectClass klass, GtkWidget *widget,
+    int width, int height, int baseline)
 {
-   GObjectClass* objklass = g_type_class_ref (klass->type);
-   GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   GTK_WIDGET_CLASS (parent_class)->size_allocate
-     (widget, width, height, baseline);
-   g_type_class_unref (objklass);
+  GObjectClass *objklass = g_type_class_ref(klass->type);
+  GObjectClass *parent_class = g_type_class_peek_parent(objklass);
+  GTK_WIDGET_CLASS(parent_class)->size_allocate(widget, width, height, baseline);
+  g_type_class_unref(objklass);
 }
 
-void ada_inherited_WIDGET_CLASS_realize (
-      AdaGObjectClass klass, GtkWidget* widget)
+void ada_inherited_WIDGET_CLASS_realize(
+    AdaGObjectClass klass, GtkWidget *widget)
 {
-   GObjectClass* objklass = g_type_class_ref (klass->type);
-   GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   GTK_WIDGET_CLASS (parent_class)->realize (widget);
-   g_type_class_unref (objklass);
+  GObjectClass *objklass = g_type_class_ref(klass->type);
+  GObjectClass *parent_class = g_type_class_peek_parent(objklass);
+  GTK_WIDGET_CLASS(parent_class)->realize(widget);
+  g_type_class_unref(objklass);
 }
 
-void ada_inherited_WIDGET_CLASS_measure (
-      AdaGObjectClass klass, GtkWidget* widget,
-      GtkOrientation orientation, int for_size,
-      int* minimum, int* natural,
-      int* minimum_baseline, int* natural_baseline)
+void ada_inherited_WIDGET_CLASS_measure(
+    AdaGObjectClass klass, GtkWidget *widget,
+    GtkOrientation orientation, int for_size,
+    int *minimum, int *natural,
+    int *minimum_baseline, int *natural_baseline)
 {
-   GObjectClass* objklass = g_type_class_ref (klass->type);
-   GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   GTK_WIDGET_CLASS (parent_class)->measure
-     (widget, orientation, for_size,
-      minimum, natural, minimum_baseline, natural_baseline);
-   g_type_class_unref (objklass);
+  GObjectClass *objklass = g_type_class_ref(klass->type);
+  GObjectClass *parent_class = g_type_class_peek_parent(objklass);
+  GTK_WIDGET_CLASS(parent_class)->measure(widget, orientation, for_size, minimum, natural, minimum_baseline, natural_baseline);
+  g_type_class_unref(objklass);
 }
 
-void ada_inherited_WIDGET_CLASS_snapshot (
-      AdaGObjectClass klass, GtkWidget* widget, GtkSnapshot* snapshot)
+void ada_inherited_WIDGET_CLASS_snapshot(
+    AdaGObjectClass klass, GtkWidget *widget, GtkSnapshot *snapshot)
 {
-   GObjectClass* objklass = g_type_class_ref (klass->type);
-   GObjectClass* parent_class = g_type_class_peek_parent (objklass);
-   GTK_WIDGET_CLASS (parent_class)->snapshot (widget, snapshot);
-   g_type_class_unref (objklass);
+  GObjectClass *objklass = g_type_class_ref(klass->type);
+  GObjectClass *parent_class = g_type_class_peek_parent(objklass);
+  GTK_WIDGET_CLASS(parent_class)->snapshot(widget, snapshot);
+  g_type_class_unref(objklass);
 }
 
 /*
@@ -674,118 +646,120 @@ void ada_inherited_WIDGET_CLASS_snapshot (
  */
 
 gboolean
-ada_gnode_is_root (GNode * node)
+ada_gnode_is_root(GNode *node)
 {
-  return G_NODE_IS_ROOT (node);
+  return G_NODE_IS_ROOT(node);
 }
 
 gboolean
-ada_gnode_is_leaf (GNode * node)
+ada_gnode_is_leaf(GNode *node)
 {
-  return G_NODE_IS_LEAF (node);
+  return G_NODE_IS_LEAF(node);
 }
 
-GNode*
-ada_gnode_prev_sibling (GNode * node)
+GNode *
+ada_gnode_prev_sibling(GNode *node)
 {
-  return g_node_prev_sibling (node);
+  return g_node_prev_sibling(node);
 }
 
-GNode*
-ada_gnode_next_sibling (GNode * node)
+GNode *
+ada_gnode_next_sibling(GNode *node)
 {
-  return g_node_next_sibling (node);
+  return g_node_next_sibling(node);
 }
 
-GNode*
-ada_gnode_first_child (GNode * node)
+GNode *
+ada_gnode_first_child(GNode *node)
 {
-  return g_node_first_child (node);
+  return g_node_first_child(node);
 }
 
 /**********************************************************
  **  Support for events
  **********************************************************/
 
-#ifdef _WIN32
+// #ifdef _WIN32
 #define ada_gdk_invalid_gdouble_value 1.79769313486232e308
-#define ada_gdk_invalid_gint_value ((2<<31) - 1)
-#define ada_gdk_invalid_guint_value (guint)((2LL<<32) - 1)
-#define ada_gdk_invalid_guint32_value (guint32)((2LL<<32) - 1)
-#define ada_gdk_invalid_gulong_value (gulong)((2LL<<32) - 1)
+#define ada_gdk_invalid_gint_value ((2 << 31) - 1)
+#define ada_gdk_invalid_guint_value (guint)((2LL << 32) - 1)
+#define ada_gdk_invalid_guint32_value (guint32)((2LL << 32) - 1)
+#define ada_gdk_invalid_gulong_value (gulong)((2LL << 32) - 1)
 
-#else
-extern const gdouble ada_gdk_invalid_gdouble_value;
-extern const gint    ada_gdk_invalid_gint_value;
-extern const guint   ada_gdk_invalid_guint_value;
-extern const guint32 ada_gdk_invalid_guint32_value;
-extern const gulong  ada_gdk_invalid_gulong_value;
-#endif
+// #else
+// extern const gdouble ada_gdk_invalid_gdouble_value;
+// extern const gint    ada_gdk_invalid_gint_value;
+// extern const guint   ada_gdk_invalid_guint_value;
+// extern const guint32 ada_gdk_invalid_guint32_value;
+// extern const gulong  ada_gdk_invalid_gulong_value;
+// #endif
 
 GdkEventType
-ada_gdk_event_get_event_type (GdkEvent *event) {
-  return gdk_event_get_event_type (event);
+ada_gdk_event_get_event_type(GdkEvent *event)
+{
+  return gdk_event_get_event_type(event);
 }
 
-guint
-ada_gdk_event_get_button (GdkEvent * event)
+guint ada_gdk_event_get_button(GdkEvent *event)
 {
-  GdkEventType type = gdk_event_get_event_type (event);
-  if (type != GDK_BUTTON_PRESS && type != GDK_BUTTON_RELEASE) {
+  GdkEventType type = gdk_event_get_event_type(event);
+  if (type != GDK_BUTTON_PRESS && type != GDK_BUTTON_RELEASE)
+  {
     return ada_gdk_invalid_guint_value;
   }
-  return gdk_button_event_get_button (event);
+  return gdk_button_event_get_button(event);
 }
 
 GdkModifierType
-ada_gdk_event_get_state (GdkEvent * event)
+ada_gdk_event_get_state(GdkEvent *event)
 {
-  return gdk_event_get_modifier_state (event);
+  return gdk_event_get_modifier_state(event);
 }
 
-guint
-ada_gdk_event_get_keyval (GdkEvent * event)
+guint ada_gdk_event_get_keyval(GdkEvent *event)
 {
-  GdkEventType type = gdk_event_get_event_type (event);
-  if (type != GDK_KEY_PRESS && type != GDK_KEY_RELEASE) {
+  GdkEventType type = gdk_event_get_event_type(event);
+  if (type != GDK_KEY_PRESS && type != GDK_KEY_RELEASE)
+  {
     return ada_gdk_invalid_gint_value;
   }
-  return gdk_key_event_get_keyval (event);
+  return gdk_key_event_get_keyval(event);
 }
 
 guint16
-ada_gdk_event_get_keycode (GdkEvent * event)
+ada_gdk_event_get_keycode(GdkEvent *event)
 {
-  GdkEventType type = gdk_event_get_event_type (event);
-  if (type != GDK_KEY_PRESS && type != GDK_KEY_RELEASE) {
+  GdkEventType type = gdk_event_get_event_type(event);
+  if (type != GDK_KEY_PRESS && type != GDK_KEY_RELEASE)
+  {
     return 0;
   }
-  return (guint16) gdk_key_event_get_keycode (event);
+  return (guint16)gdk_key_event_get_keycode(event);
 }
 
 /***************************************************
  *  Functions for Objects
  ***************************************************/
 
-GType
-ada_gobject_get_type (GObject* object)
+GType ada_gobject_get_type(GObject *object)
 {
-  return G_OBJECT_TYPE (object);
+  return G_OBJECT_TYPE(object);
 }
 
 /***************************************************
  *  Functions for GClosure
  ***************************************************/
 
-void*
-ada_gclosure_get_data (GClosure *closure)
+void *
+ada_gclosure_get_data(GClosure *closure)
 {
   return closure->data;
 }
 
-void*
-ada_cclosure_get_callback (GCClosure* closure) {
-   return closure->callback;
+void *
+ada_cclosure_get_callback(GCClosure *closure)
+{
+  return closure->callback;
 }
 
 /***************************************************
@@ -793,60 +767,58 @@ ada_cclosure_get_callback (GCClosure* closure) {
  ***************************************************/
 
 gpointer
-ada_gvalue_get_pointer (GValue* value)
+ada_gvalue_get_pointer(GValue *value)
 {
   return value->data[0].v_pointer;
 }
 
-void
-ada_gvalue_nth (GValue* value, guint num, GValue* val)
+void ada_gvalue_nth(GValue *value, guint num, GValue *val)
 {
   *val = *(value + num);
 }
 
-int
-ada_c_gvalue_size ()
+int ada_c_gvalue_size()
 {
-  return sizeof (GValue);
+  return sizeof(GValue);
 }
 
-void
-ada_gvalue_set (GValue* value, void *val)
+void ada_gvalue_set(GValue *value, void *val)
 {
   if G_VALUE_HOLDS_CHAR (value)
-    g_value_set_schar (value, *(gchar*)val);
+    g_value_set_schar(value, *(gchar *)val);
   else if G_VALUE_HOLDS_UCHAR (value)
-    g_value_set_uchar (value, *(guchar*)val);
+    g_value_set_uchar(value, *(guchar *)val);
   else if G_VALUE_HOLDS_BOOLEAN (value)
-    g_value_set_boolean (value, *(char*)val);
+    g_value_set_boolean(value, *(char *)val);
   else if G_VALUE_HOLDS_INT (value)
-    g_value_set_int (value, *(gint*)val);
+    g_value_set_int(value, *(gint *)val);
   else if G_VALUE_HOLDS_UINT (value)
-    g_value_set_uint (value, *(guint*)val);
+    g_value_set_uint(value, *(guint *)val);
   else if G_VALUE_HOLDS_LONG (value)
-    g_value_set_long (value, *(glong*)val);
+    g_value_set_long(value, *(glong *)val);
   else if G_VALUE_HOLDS_ULONG (value)
-    g_value_set_ulong (value, *(gulong*)val);
+    g_value_set_ulong(value, *(gulong *)val);
   else if G_VALUE_HOLDS_FLOAT (value)
-    g_value_set_float (value, *(gfloat*)val);
+    g_value_set_float(value, *(gfloat *)val);
   else if G_VALUE_HOLDS_DOUBLE (value)
-    g_value_set_double (value, *(gdouble*)val);
+    g_value_set_double(value, *(gdouble *)val);
   else if G_VALUE_HOLDS_POINTER (value)
-    g_value_set_pointer (value, *(gpointer*)val);
+    g_value_set_pointer(value, *(gpointer *)val);
   else
-    fprintf (stderr, "GtkAda: Return value type not supported\n");
+    fprintf(stderr, "GtkAda: Return value type not supported\n");
 }
 
 /**********************************************
  ** Functions for Box
  **********************************************/
 
-GtkWidget*
-ada_box_get_child (GtkBox* widget, gint num)
+GtkWidget *
+ada_box_get_child(GtkBox *widget, gint num)
 {
-  GtkWidget* child = gtk_widget_get_first_child (GTK_WIDGET (widget));
-  while (child != NULL && num > 0) {
-    child = gtk_widget_get_next_sibling (child);
+  GtkWidget *child = gtk_widget_get_first_child(GTK_WIDGET(widget));
+  while (child != NULL && num > 0)
+  {
+    child = gtk_widget_get_next_sibling(child);
     num--;
   }
   return child;
@@ -856,8 +828,8 @@ ada_box_get_child (GtkBox* widget, gint num)
  ** Functions for Glib.Glist
  **********************************************/
 
-GList*
-ada_list_next (GList* list)
+GList *
+ada_list_next(GList *list)
 {
   if (list)
     return list->next;
@@ -865,8 +837,8 @@ ada_list_next (GList* list)
     return NULL;
 }
 
-GList*
-ada_list_prev (GList* list)
+GList *
+ada_list_prev(GList *list)
 {
   if (list)
     return list->prev;
@@ -875,20 +847,20 @@ ada_list_prev (GList* list)
 }
 
 gpointer
-ada_list_get_data (GList* list)
+ada_list_get_data(GList *list)
 {
   if (list)
-     return list->data;
+    return list->data;
   else
-     return NULL;
+    return NULL;
 }
 
 /**********************************************
  ** Functions for Glib.GSlist
  **********************************************/
 
-GSList*
-ada_gslist_next (GSList* list)
+GSList *
+ada_gslist_next(GSList *list)
 {
   if (list)
     return list->next;
@@ -897,48 +869,45 @@ ada_gslist_next (GSList* list)
 }
 
 gpointer
-ada_gslist_get_data (GSList* list)
+ada_gslist_get_data(GSList *list)
 {
   return list->data;
 }
 
 gpointer
-ada_slist_get_data (GSList* list)
+ada_slist_get_data(GSList *list)
 {
   return list->data;
 }
-
 
 /******************************************
  ** GEnumClass                           **
  ******************************************/
 
-int
-ada_c_enum_value_size ()
+int ada_c_enum_value_size()
 {
-  return sizeof (GEnumValue);
+  return sizeof(GEnumValue);
 }
 
-GEnumValue*
-ada_genum_nth_value (GEnumClass* klass, guint nth)
+GEnumValue *
+ada_genum_nth_value(GEnumClass *klass, guint nth)
 {
   return (nth < klass->n_values) ? &(klass->values[nth]) : NULL;
 }
 
-gint
-ada_genum_get_value (GEnumValue* value)
+gint ada_genum_get_value(GEnumValue *value)
 {
   return value->value;
 }
 
-const gchar*
-ada_genum_get_name (GEnumValue* value)
+const gchar *
+ada_genum_get_name(GEnumValue *value)
 {
   return value->value_name;
 }
 
-const gchar*
-ada_genum_get_nick (GEnumValue* value)
+const gchar *
+ada_genum_get_nick(GEnumValue *value)
 {
   return value->value_nick;
 }
@@ -947,26 +916,25 @@ ada_genum_get_nick (GEnumValue* value)
  ** GFlags                               **
  ******************************************/
 
-GFlagsValue*
-ada_gflags_nth_value (GFlagsClass* klass, guint nth)
+GFlagsValue *
+ada_gflags_nth_value(GFlagsClass *klass, guint nth)
 {
   return (nth < klass->n_values) ? &(klass->values[nth]) : NULL;
 }
 
-gint
-ada_gflags_get_value (GFlagsValue* value)
+gint ada_gflags_get_value(GFlagsValue *value)
 {
   return value->value;
 }
 
-const gchar*
-ada_gflags_get_name (GFlagsValue* value)
+const gchar *
+ada_gflags_get_name(GFlagsValue *value)
 {
   return value->value_name;
 }
 
-const gchar*
-ada_gflags_get_nick (GFlagsValue* value)
+const gchar *
+ada_gflags_get_nick(GFlagsValue *value)
 {
   return value->value_nick;
 }
@@ -975,254 +943,236 @@ ada_gflags_get_nick (GFlagsValue* value)
  ** GParamSpec                           **
  ******************************************/
 
-const char*
-ada_gparam_get_name (GParamSpec* param)
+const char *
+ada_gparam_get_name(GParamSpec *param)
 {
   return param->name;
 }
 
 GParamFlags
-ada_gparam_get_flags (GParamSpec* param)
+ada_gparam_get_flags(GParamSpec *param)
 {
   return param->flags;
 }
 
-GType
-ada_gparam_get_owner_type (GParamSpec* param)
+GType ada_gparam_get_owner_type(GParamSpec *param)
 {
   return param->owner_type;
 }
 
-GType
-ada_gparam_get_value_type (GParamSpec* param)
+GType ada_gparam_get_value_type(GParamSpec *param)
 {
-  return G_PARAM_SPEC_VALUE_TYPE (param);
+  return G_PARAM_SPEC_VALUE_TYPE(param);
 }
 
-void
-ada_gparam_set_value_type (GParamSpec* param, GType value_type)
+void ada_gparam_set_value_type(GParamSpec *param, GType value_type)
 {
-  G_PARAM_SPEC_VALUE_TYPE (param) = value_type;
+  G_PARAM_SPEC_VALUE_TYPE(param) = value_type;
 }
 
-gint8
-ada_gparam_get_minimum_char (GParamSpecChar* param)
+gint8 ada_gparam_get_minimum_char(GParamSpecChar *param)
 {
   return param->minimum;
 }
 
-gint8
-ada_gparam_get_maximum_char (GParamSpecChar* param)
+gint8 ada_gparam_get_maximum_char(GParamSpecChar *param)
 {
   return param->maximum;
 }
 
-gint8
-ada_gparam_get_default_char (GParamSpecChar* param)
+gint8 ada_gparam_get_default_char(GParamSpecChar *param)
 {
   return param->default_value;
 }
 
 guint8
-ada_gparam_get_minimum_uchar (GParamSpecUChar* param)
+ada_gparam_get_minimum_uchar(GParamSpecUChar *param)
 {
   return param->minimum;
 }
 
 guint8
-ada_gparam_get_maximum_uchar (GParamSpecUChar* param)
+ada_gparam_get_maximum_uchar(GParamSpecUChar *param)
 {
   return param->maximum;
 }
 
 guint8
-ada_gparam_get_default_uchar (GParamSpecUChar* param)
+ada_gparam_get_default_uchar(GParamSpecUChar *param)
 {
   return param->default_value;
 }
 
 gboolean
-ada_gparam_get_default_boolean (GParamSpecBoolean* param)
+ada_gparam_get_default_boolean(GParamSpecBoolean *param)
 {
   return param->default_value;
 }
 
-gint
-ada_gparam_get_minimum_int (GParamSpecInt* param)
+gint ada_gparam_get_minimum_int(GParamSpecInt *param)
 {
   return param->minimum;
 }
 
-gint
-ada_gparam_get_maximum_int (GParamSpecInt* param)
+gint ada_gparam_get_maximum_int(GParamSpecInt *param)
 {
   return param->maximum;
 }
 
-gint
-ada_gparam_get_default_int (GParamSpecInt* param)
+gint ada_gparam_get_default_int(GParamSpecInt *param)
 {
   return param->default_value;
 }
 
-guint
-ada_gparam_get_minimum_uint (GParamSpecUInt* param)
+guint ada_gparam_get_minimum_uint(GParamSpecUInt *param)
 {
   return param->minimum;
 }
 
-guint
-ada_gparam_get_maximum_uint (GParamSpecUInt* param)
+guint ada_gparam_get_maximum_uint(GParamSpecUInt *param)
 {
   return param->maximum;
 }
 
-guint
-ada_gparam_get_default_uint (GParamSpecUInt* param)
+guint ada_gparam_get_default_uint(GParamSpecUInt *param)
 {
   return param->default_value;
 }
 
-glong
-ada_gparam_get_minimum_long (GParamSpecLong* param)
+glong ada_gparam_get_minimum_long(GParamSpecLong *param)
 {
   return param->minimum;
 }
 
-glong
-ada_gparam_get_maximum_long (GParamSpecLong* param)
+glong ada_gparam_get_maximum_long(GParamSpecLong *param)
 {
   return param->maximum;
 }
 
-glong
-ada_gparam_get_default_long (GParamSpecLong* param)
+glong ada_gparam_get_default_long(GParamSpecLong *param)
 {
   return param->default_value;
 }
 
 gulong
-ada_gparam_get_minimum_ulong (GParamSpecULong* param)
+ada_gparam_get_minimum_ulong(GParamSpecULong *param)
 {
   return param->minimum;
 }
 
 gulong
-ada_gparam_get_maximum_ulong (GParamSpecULong* param)
+ada_gparam_get_maximum_ulong(GParamSpecULong *param)
 {
   return param->maximum;
 }
 
 gulong
-ada_gparam_get_default_ulong (GParamSpecULong* param)
+ada_gparam_get_default_ulong(GParamSpecULong *param)
 {
   return param->default_value;
 }
 
 gunichar
-ada_gparam_get_default_unichar (GParamSpecUnichar* param)
+ada_gparam_get_default_unichar(GParamSpecUnichar *param)
 {
   return param->default_value;
 }
 
-gint
-ada_gparam_get_default_enum (GParamSpecEnum* param)
+gint ada_gparam_get_default_enum(GParamSpecEnum *param)
 {
   return param->default_value;
 }
 
-GEnumClass*
-ada_gparam_get_enum_class_enum (GParamSpecEnum* param)
+GEnumClass *
+ada_gparam_get_enum_class_enum(GParamSpecEnum *param)
 {
   return param->enum_class;
 }
 
-GFlagsClass*
-ada_gparam_get_flags_flags (GParamSpecFlags* param)
+GFlagsClass *
+ada_gparam_get_flags_flags(GParamSpecFlags *param)
 {
   return param->flags_class;
 }
 
-glong
-ada_gparam_get_default_flags (GParamSpecFlags* param)
+glong ada_gparam_get_default_flags(GParamSpecFlags *param)
 {
   return param->default_value;
 }
 
 gfloat
-ada_gparam_get_minimum_gfloat (GParamSpecFloat* param)
+ada_gparam_get_minimum_gfloat(GParamSpecFloat *param)
 {
   return param->minimum;
 }
 
 gfloat
-ada_gparam_get_maximum_gfloat (GParamSpecFloat* param)
+ada_gparam_get_maximum_gfloat(GParamSpecFloat *param)
 {
   return param->maximum;
 }
 
 gfloat
-ada_gparam_get_default_gfloat (GParamSpecFloat* param)
+ada_gparam_get_default_gfloat(GParamSpecFloat *param)
 {
   return param->default_value;
 }
 
 gfloat
-ada_gparam_get_epsilon_gfloat (GParamSpecFloat* param)
+ada_gparam_get_epsilon_gfloat(GParamSpecFloat *param)
 {
   return param->epsilon;
 }
 
 gdouble
-ada_gparam_get_minimum_gdouble (GParamSpecDouble* param)
+ada_gparam_get_minimum_gdouble(GParamSpecDouble *param)
 {
   return param->minimum;
 }
 
 gdouble
-ada_gparam_get_maximum_gdouble (GParamSpecDouble* param)
+ada_gparam_get_maximum_gdouble(GParamSpecDouble *param)
 {
   return param->maximum;
 }
 
 gdouble
-ada_gparam_get_default_gdouble (GParamSpecDouble* param)
+ada_gparam_get_default_gdouble(GParamSpecDouble *param)
 {
   return param->default_value;
 }
 
 gdouble
-ada_gparam_get_epsilon_gdouble (GParamSpecDouble* param)
+ada_gparam_get_epsilon_gdouble(GParamSpecDouble *param)
 {
   return param->epsilon;
 }
 
-gchar*
-ada_gparam_default_string (GParamSpecString* param)
+gchar *
+ada_gparam_default_string(GParamSpecString *param)
 {
   return param->default_value;
 }
 
-gchar*
-ada_gparam_cset_first_string (GParamSpecString* param)
+gchar *
+ada_gparam_cset_first_string(GParamSpecString *param)
 {
   return param->cset_first;
 }
 
-gchar*
-ada_gparam_cset_nth_string (GParamSpecString* param)
+gchar *
+ada_gparam_cset_nth_string(GParamSpecString *param)
 {
   return param->cset_nth;
 }
 
-gchar
-ada_gparam_substitutor_string (GParamSpecString* param)
+gchar ada_gparam_substitutor_string(GParamSpecString *param)
 {
   return param->substitutor;
 }
 
 gboolean
-ada_gparam_ensure_non_null_string (GParamSpecString* param)
+ada_gparam_ensure_non_null_string(GParamSpecString *param)
 {
   return param->ensure_non_null != 0;
 }
@@ -1231,84 +1181,76 @@ ada_gparam_ensure_non_null_string (GParamSpecString* param)
  ** New widgets
  ******************************************/
 
-void
-ada_install_property_handlers
-   (GObjectClass* klass,
-    GObjectSetPropertyFunc c_set_handler,
-    GObjectGetPropertyFunc c_get_handler,
-    GObjectSetPropertyFunc ada_set_handler,
-    GObjectGetPropertyFunc ada_get_handler)
+void ada_install_property_handlers(GObjectClass *klass,
+                                   GObjectSetPropertyFunc c_set_handler,
+                                   GObjectGetPropertyFunc c_get_handler,
+                                   GObjectSetPropertyFunc ada_set_handler,
+                                   GObjectGetPropertyFunc ada_get_handler)
 {
-  G_OBJECT_CLASS (klass)->set_property = c_set_handler;
-  G_OBJECT_CLASS (klass)->get_property = c_get_handler;
+  G_OBJECT_CLASS(klass)->set_property = c_set_handler;
+  G_OBJECT_CLASS(klass)->get_property = c_get_handler;
 
   AdaGObjectClass adaklass = ADA_CLASS_FROM_C_CLASS(klass);
   adaklass->ada_property_getter = ada_get_handler;
   adaklass->ada_property_setter = ada_set_handler;
 }
 
-GObjectGetPropertyFunc ada_real_get_property_handler (GObject* object) {
-   return ada_gobject_class_from_object(object)->ada_property_getter;
+GObjectGetPropertyFunc ada_real_get_property_handler(GObject *object)
+{
+  return ada_gobject_class_from_object(object)->ada_property_getter;
 }
 
-GObjectSetPropertyFunc ada_real_set_property_handler (GObject* object) {
-   return ada_gobject_class_from_object(object)->ada_property_setter;
+GObjectSetPropertyFunc ada_real_set_property_handler(GObject *object)
+{
+  return ada_gobject_class_from_object(object)->ada_property_setter;
 }
 
-void
-ada_genum_create_enum_value
-  (gint value, gchar* name, gchar* nick, GEnumValue* val)
+void ada_genum_create_enum_value(gint value, gchar *name, gchar *nick, GEnumValue *val)
 {
   val->value = value;
-  val->value_name = g_strdup (name);
-  val->value_nick = g_strdup (nick);
+  val->value_name = g_strdup(name);
+  val->value_nick = g_strdup(nick);
 }
 
 /******************************************
  ** GType                                **
  ******************************************/
 
-GType
-ada_gtype_fundamental (GType type)
+GType ada_gtype_fundamental(GType type)
 {
-  return G_TYPE_FUNDAMENTAL (type);
+  return G_TYPE_FUNDAMENTAL(type);
 }
 
 gboolean
-ada_g_type_is_interface (GType type)
+ada_g_type_is_interface(GType type)
 {
-  return G_TYPE_IS_INTERFACE (type);
+  return G_TYPE_IS_INTERFACE(type);
 }
 
 /******************************************
  ** Handling of tree Freeze/Thaw         **
  ******************************************/
 
-gint
-ada_gtk_tree_view_freeze_sort (GtkTreeStore* tree)
+gint ada_gtk_tree_view_freeze_sort(GtkTreeStore *tree)
 {
   gint save;
   GtkSortType order;
-  gtk_tree_sortable_get_sort_column_id
-    (GTK_TREE_SORTABLE (tree), &save, &order);
-  gtk_tree_sortable_set_sort_column_id (GTK_TREE_SORTABLE (tree), -2, order);
+  gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(tree), &save, &order);
+  gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(tree), -2, order);
   return save;
 }
 
-void
-ada_gtk_tree_view_thaw_sort (GtkTreeStore* tree, gint id)
+void ada_gtk_tree_view_thaw_sort(GtkTreeStore *tree, gint id)
 {
   gint save;
   GtkSortType order;
-  gtk_tree_sortable_get_sort_column_id
-    (GTK_TREE_SORTABLE (tree), &save, &order);
-  gtk_tree_sortable_set_sort_column_id
-    (GTK_TREE_SORTABLE (tree), id, order);
+  gtk_tree_sortable_get_sort_column_id(GTK_TREE_SORTABLE(tree), &save, &order);
+  gtk_tree_sortable_set_sort_column_id(GTK_TREE_SORTABLE(tree), id, order);
 }
 
 /*****************************************************
  ** Glib
-*****************************************************/
+ *****************************************************/
 
 struct CustomGSource
 {
@@ -1316,77 +1258,71 @@ struct CustomGSource
   gpointer user_data;
 };
 
-GSourceFuncs*
-ada_allocate_g_source_funcs
-  (gpointer prepare, gpointer check, gpointer dispatch, gpointer finalize)
+GSourceFuncs *
+ada_allocate_g_source_funcs(gpointer prepare, gpointer check, gpointer dispatch, gpointer finalize)
 {
-  GSourceFuncs* result;
-  result = (GSourceFuncs*) malloc (sizeof (GSourceFuncs));
+  GSourceFuncs *result;
+  result = (GSourceFuncs *)malloc(sizeof(GSourceFuncs));
 
-  result->prepare  = prepare;
-  result->check    = check;
+  result->prepare = prepare;
+  result->check = check;
   result->dispatch = dispatch;
   result->finalize = finalize;
   return result;
 }
 
-GSource*
-ada_g_source_new (GSourceFuncs* type, gpointer user_data)
+GSource *
+ada_g_source_new(GSourceFuncs *type, gpointer user_data)
 {
-  struct CustomGSource* result =
-    (struct CustomGSource*)g_source_new (type, sizeof (struct CustomGSource));
+  struct CustomGSource *result =
+      (struct CustomGSource *)g_source_new(type, sizeof(struct CustomGSource));
   result->user_data = user_data;
-  return (GSource*)result;
+  return (GSource *)result;
 }
 
 gpointer
-ada_g_source_get_user_data (GSource* source)
+ada_g_source_get_user_data(GSource *source)
 {
-  return ((struct CustomGSource*)source)->user_data;
+  return ((struct CustomGSource *)source)->user_data;
 }
 
 /***********************************************************
  ** Gtk_Text_Buffer
-***********************************************************/
+ ***********************************************************/
 
-void
-ada_gtk_text_buffer_insert_with_tags
- (GtkTextBuffer *buffer,
-  GtkTextIter   *iter,
-  const gchar   *text,
-  gint           len,
-  GtkTextTag    *tag)
+void ada_gtk_text_buffer_insert_with_tags(GtkTextBuffer *buffer,
+                                          GtkTextIter *iter,
+                                          const gchar *text,
+                                          gint len,
+                                          GtkTextTag *tag)
 {
-  gtk_text_buffer_insert_with_tags
-    (buffer, iter, text, len, tag, NULL);
+  gtk_text_buffer_insert_with_tags(buffer, iter, text, len, tag, NULL);
 }
 
-GtkTextTag*
-ada_gtk_text_buffer_create_tag (GtkTextBuffer* buffer, const gchar* name)
+GtkTextTag *
+ada_gtk_text_buffer_create_tag(GtkTextBuffer *buffer, const gchar *name)
 {
-   return gtk_text_buffer_create_tag (buffer, name, NULL);
+  return gtk_text_buffer_create_tag(buffer, name, NULL);
 }
 
 /***********************************************************
  ** Gtk_File_Chooser_Dialog
-***********************************************************/
+ ***********************************************************/
 
 GtkWidget *
-ada_gtk_file_chooser_dialog_new
-  (const gchar          *title,
-   GtkWindow            *parent,
-   GtkFileChooserAction  action)
+ada_gtk_file_chooser_dialog_new(const gchar *title,
+                                GtkWindow *parent,
+                                GtkFileChooserAction action)
 {
-  return gtk_file_chooser_dialog_new
-    (title, parent, action, NULL, (char *)NULL);
+  return gtk_file_chooser_dialog_new(title, parent, action, NULL, (char *)NULL);
 }
 
 /**************************************************************
  **  Default accelerator modifier
-**************************************************************/
+ **************************************************************/
 
 GdkModifierType
-ada_gdk_get_default_modifier ()
+ada_gdk_get_default_modifier()
 {
 #ifdef GDK_WINDOWING_QUARTZ
   return GDK_META_MASK;
@@ -1397,10 +1333,11 @@ ada_gdk_get_default_modifier ()
 
 // Application handling for opening files from the explorer/finder
 
-typedef struct {
-  GtkApplication *app;    //  The app responsible for opening the file
-  GFile          **files; //  The array of files to open
-  gint           n_files; //  The size of the above array
+typedef struct
+{
+  GtkApplication *app; //  The app responsible for opening the file
+  GFile **files;       //  The array of files to open
+  gint n_files;        //  The size of the above array
 } ada_gtk_open_data;
 
 /*
@@ -1408,33 +1345,32 @@ typedef struct {
  * proper files to open.
  */
 gboolean
-ada_gtk_application_open_files (gpointer ptr)
+ada_gtk_application_open_files(gpointer ptr)
 {
   int i;
-  ada_gtk_open_data *data = (ada_gtk_open_data*)ptr;
+  ada_gtk_open_data *data = (ada_gtk_open_data *)ptr;
 
-  g_application_open (G_APPLICATION (data->app),
-		      data->files, data->n_files, NULL);
+  g_application_open(G_APPLICATION(data->app),
+                     data->files, data->n_files, NULL);
 
   for (i = 0; i < data->n_files; i++)
-    g_object_unref (data->files[i]);
-  g_free (data->files);
-  g_free (data);
+    g_object_unref(data->files[i]);
+  g_free(data->files);
+  g_free(data);
 
   return G_SOURCE_REMOVE;
 }
 
 #ifdef GDK_WINDOWING_QUARTZ
-void ada_gtk_quartz_application_open_files
-  (GFile** files, gint n_files, gpointer user_data)
+void ada_gtk_quartz_application_open_files(GFile **files, gint n_files, gpointer user_data)
 {
-  ada_gtk_open_data *data = malloc (sizeof (ada_gtk_open_data));
+  ada_gtk_open_data *data = malloc(sizeof(ada_gtk_open_data));
 
-  data->app     = (GtkApplication*)user_data;
-  data->files   = files;
+  data->app = (GtkApplication *)user_data;
+  data->files = files;
   data->n_files = n_files;
 
-  ada_gtk_application_open_files (data);
+  ada_gtk_application_open_files(data);
 }
 #endif
 
@@ -1445,142 +1381,145 @@ void ada_gtk_quartz_application_open_files
 GtkApplication *ada_gtk_win32_app;
 DWORD ada_gtk_win32_id_instance;
 
-HDDEDATA CALLBACK ada_gtk_open_document_win32
-  (UINT uType,
-   UINT uFmt,
-   HCONV hconv,
-   HSZ hsz1,
-   HSZ hsz2,
-   HDDEDATA hData,
-   ULONG_PTR dwData1,
-   ULONG_PTR dwData2)
+HDDEDATA CALLBACK ada_gtk_open_document_win32(UINT uType,
+                                              UINT uFmt,
+                                              HCONV hconv,
+                                              HSZ hsz1,
+                                              HSZ hsz2,
+                                              HDDEDATA hData,
+                                              ULONG_PTR dwData1,
+                                              ULONG_PTR dwData2)
 {
-  switch (uType) {
-    case XTYP_ADVDATA:
-      return (HDDEDATA) DDE_FACK;
+  switch (uType)
+  {
+  case XTYP_ADVDATA:
+    return (HDDEDATA)DDE_FACK;
 
-    case XTYP_CONNECT:
-      return (HDDEDATA) TRUE;
+  case XTYP_CONNECT:
+    return (HDDEDATA)TRUE;
 
-    case XTYP_DISCONNECT:
-      return (HDDEDATA) NULL;
+  case XTYP_DISCONNECT:
+    return (HDDEDATA)NULL;
 
-    case XTYP_REGISTER:
-    case XTYP_UNREGISTER:
-      return (HDDEDATA) NULL;
+  case XTYP_REGISTER:
+  case XTYP_UNREGISTER:
+    return (HDDEDATA)NULL;
 
-    case XTYP_EXECUTE:
+  case XTYP_EXECUTE:
+  {
+    DWORD dataLen;
+    PWSTR strData = (PWSTR)DdeAccessData(hData, &dataLen);
+    DWORD j;
+    PWSTR path = NULL;
+    LPCWSTR openCmd = L"FileOpen:";
+    DWORD utfSize;
+    PSTR utfPath;
+
+    for (j = 0; j < dataLen; j++)
+    {
+      if (strData[j] == ':')
       {
-        DWORD dataLen;
-        PWSTR strData = (PWSTR) DdeAccessData (hData, &dataLen);
-        DWORD j;
-        PWSTR path = NULL;
-        LPCWSTR openCmd = L"FileOpen:";
-        DWORD utfSize;
-        PSTR utfPath;
-
-        for (j = 0; j < dataLen; j++) {
-          if (strData[j] == ':') {
-            path = &strData[j + 1];
-            break;
-          } else if (strData[j] != openCmd[j]) {
-            return (HDDEDATA) DDE_FNOTPROCESSED;
-          }
-        }
-
-        utfSize = WideCharToMultiByte
-          (CP_UTF8,
-           0,
-           path,
-           dataLen - 9,
-           NULL,
-           0, /* indicates that we want to get the size of the result */
-           NULL, NULL);
-
-        utfPath = (char*)malloc (utfSize + 1);
-
-        WideCharToMultiByte
-          (CP_UTF8,
-           0,
-           path,
-           dataLen - 9,
-           utfPath,
-           utfSize,
-           NULL, NULL);
-        utfPath[utfSize] = '\0';
-
-        ada_gtk_open_data *data = malloc (sizeof(ada_gtk_open_data));
-        data->app     = ada_gtk_win32_app;
-        data->files   = (GFile **) malloc (sizeof(GFile*));
-        data->n_files = 1;
-        data->files[0] = g_file_new_for_path ((const char *)utfPath);
-        free (utfPath);
-
-        g_idle_add (ada_gtk_application_open_files, data);
-
-        DdeUnaccessData (hData); /* Release the resource */
+        path = &strData[j + 1];
+        break;
       }
+      else if (strData[j] != openCmd[j])
+      {
+        return (HDDEDATA)DDE_FNOTPROCESSED;
+      }
+    }
 
-      return (HDDEDATA) DDE_FACK;
+    utfSize = WideCharToMultiByte(CP_UTF8,
+                                  0,
+                                  path,
+                                  dataLen - 9,
+                                  NULL,
+                                  0, /* indicates that we want to get the size of the result */
+                                  NULL, NULL);
+
+    utfPath = (char *)malloc(utfSize + 1);
+
+    WideCharToMultiByte(CP_UTF8,
+                        0,
+                        path,
+                        dataLen - 9,
+                        utfPath,
+                        utfSize,
+                        NULL, NULL);
+    utfPath[utfSize] = '\0';
+
+    ada_gtk_open_data *data = malloc(sizeof(ada_gtk_open_data));
+    data->app = ada_gtk_win32_app;
+    data->files = (GFile **)malloc(sizeof(GFile *));
+    data->n_files = 1;
+    data->files[0] = g_file_new_for_path((const char *)utfPath);
+    free(utfPath);
+
+    g_idle_add(ada_gtk_application_open_files, data);
+
+    DdeUnaccessData(hData); /* Release the resource */
+  }
+
+    return (HDDEDATA)DDE_FACK;
   };
 
-  return (HDDEDATA) DDE_FNOTPROCESSED;
+  return (HDDEDATA)DDE_FNOTPROCESSED;
 }
 
 #endif /* WIN32 */
 
 static void
-ada_gtk_application_startup (GtkApplication *application) {
-#if defined (GDK_WINDOWING_QUARTZ)
+ada_gtk_application_startup(GtkApplication *application)
+{
+#if defined(GDK_WINDOWING_QUARTZ)
 
-  init_osx_open_files_event_handler
-    (ada_gtk_quartz_application_open_files, (gpointer)application);
+  init_osx_open_files_event_handler(ada_gtk_quartz_application_open_files, (gpointer)application);
 
-#elif defined (GDK_WINDOWING_WIN32)
+#elif defined(GDK_WINDOWING_WIN32)
 
   /* On Windows, we use a DDE server to handle events from the Shell */
 
   HSZ hszAppName;
-  gchar* appName =
-    g_application_get_application_id (G_APPLICATION (application));
-  gchar* shortAppName = appName;
+  gchar *appName =
+      g_application_get_application_id(G_APPLICATION(application));
+  gchar *shortAppName = appName;
 
   /* DDE server only supports a short application name. We extract the last
      part of the full application name for that. So that for example:
      com.adacore.GPS will use GPS as DDE server name */
-  for (; *appName != '\0'; appName++) {
-    if (*appName == '.') shortAppName = appName + 1;
+  for (; *appName != '\0'; appName++)
+  {
+    if (*appName == '.')
+      shortAppName = appName + 1;
   }
 
   ada_gtk_win32_app = application;
 
   /* Initialize the DDE framework */
-  DdeInitializeW (&ada_gtk_win32_id_instance,
-                  (PFNCALLBACK) &ada_gtk_open_document_win32,
-                  APPCLASS_STANDARD |
-                  CBF_FAIL_ADVISES | CBF_FAIL_POKES | CBF_FAIL_SELFCONNECTIONS,
-                  0);
+  DdeInitializeW(&ada_gtk_win32_id_instance,
+                 (PFNCALLBACK)&ada_gtk_open_document_win32,
+                 APPCLASS_STANDARD |
+                     CBF_FAIL_ADVISES | CBF_FAIL_POKES | CBF_FAIL_SELFCONNECTIONS,
+                 0);
 
   /* And register the DDE Service to the name server */
-  hszAppName = DdeCreateStringHandleA
-    (ada_gtk_win32_id_instance, shortAppName, CP_WINANSI);
-  DdeNameService
-    (ada_gtk_win32_id_instance,   /* instance identifier */
-     hszAppName, /*  handle to service name string */
-     0, /* reserved */
-     DNS_REGISTER | DNS_FILTERON);
+  hszAppName = DdeCreateStringHandleA(ada_gtk_win32_id_instance, shortAppName, CP_WINANSI);
+  DdeNameService(ada_gtk_win32_id_instance, /* instance identifier */
+                 hszAppName,                /*  handle to service name string */
+                 0,                         /* reserved */
+                 DNS_REGISTER | DNS_FILTERON);
 #endif
 }
 
 static void
-ada_gtk_application_shutdown (GtkApplication *application) {
+ada_gtk_application_shutdown(GtkApplication *application)
+{
 #ifdef GDK_WINDOWING_WIN32
-  DdeUninitialize (ada_gtk_win32_id_instance);
+  DdeUninitialize(ada_gtk_win32_id_instance);
 #endif
 }
 
-void
-ada_gtk_app_activate (void){
+void ada_gtk_app_activate(void)
+{
 #ifdef GDK_WINDOWING_QUARTZ
   ada_activate_app();
 #endif
@@ -1589,130 +1528,127 @@ ada_gtk_app_activate (void){
 #ifdef GDK_WINDOWING_QUARTZ
 /* Enable the full-screen button on OSX for the main window */
 static void
-ada_gtk_quartz_window_added
-  (GtkApplication *application,
-   GtkWindow      *window,
-   gpointer       user_data)
+ada_gtk_quartz_window_added(GtkApplication *application,
+                            GtkWindow *window,
+                            gpointer user_data)
 {
-  ada_gtk_osx_allow_fullscreen (window);
+  ada_gtk_osx_allow_fullscreen(window);
 }
 #endif /* QUARTZ */
 
 typedef enum
-  {
-    GTKADA_APPLICATION_FLAGS_NONE,
-    GTKADA_APPLICATION_HANDLES_OPEN =   (1 << 0),
-    GTKADA_APPLICATION_OSX_FULLSCREEN = (1 << 1)
-  } GtkadaApplicationFlags;
+{
+  GTKADA_APPLICATION_FLAGS_NONE,
+  GTKADA_APPLICATION_HANDLES_OPEN = (1 << 0),
+  GTKADA_APPLICATION_OSX_FULLSCREEN = (1 << 1)
+} GtkadaApplicationFlags;
 
 /* Called by the GtkAda.Application instance during initialisation */
-void
-ada_gtk_setup_application(GtkApplication *app, GtkadaApplicationFlags flags)
+void ada_gtk_setup_application(GtkApplication *app, GtkadaApplicationFlags flags)
 {
   if ((flags & GTKADA_APPLICATION_HANDLES_OPEN) != 0)
-    {
-      g_signal_connect
-	(app, "startup", G_CALLBACK (ada_gtk_application_startup), NULL);
-      g_signal_connect
-	(app, "shutdown", G_CALLBACK (ada_gtk_application_shutdown), NULL);
-    }
+  {
+    g_signal_connect(app, "startup", G_CALLBACK(ada_gtk_application_startup), NULL);
+    g_signal_connect(app, "shutdown", G_CALLBACK(ada_gtk_application_shutdown), NULL);
+  }
 #ifdef GDK_WINDOWING_QUARTZ
   if ((flags & GTKADA_APPLICATION_OSX_FULLSCREEN) != 0)
-    {
-      g_signal_connect
-	(app, "window-added", G_CALLBACK (ada_gtk_quartz_window_added), NULL);
-    }
+  {
+    g_signal_connect(app, "window-added", G_CALLBACK(ada_gtk_quartz_window_added), NULL);
+  }
 #endif
 }
 
 /* Wrappers for gspawn */
-gboolean gnat_spawn_async (const gchar           *working_directory,
-                           gchar                **argv,
-                           gchar                **envp,
-                           GSpawnFlags            flags,
-                           GSpawnChildSetupFunc   child_setup,
-                           gpointer               user_data,
-                           GPid                  *child_pid,
-                           GError               **error) {
-  return g_spawn_async
-    (working_directory, argv, envp, flags, child_setup, user_data,
-     child_pid, error);
- }
-
-gboolean gnat_spawn_async_with_pipes (const gchar          *working_directory,
-                                      gchar               **argv,
-                                      gchar               **envp,
-                                      GSpawnFlags           flags,
-                                      GSpawnChildSetupFunc  child_setup,
-                                      gpointer              user_data,
-                                      GPid                 *child_pid,
-                                      gint                 *standard_input,
-                                      gint                 *standard_output,
-                                      gint                 *standard_error,
-                                      GError              **error) {
-  return g_spawn_async_with_pipes
-    (working_directory, argv, envp, flags, child_setup, user_data, child_pid,
-     standard_input, standard_output, standard_error, error);
+gboolean gnat_spawn_async(const gchar *working_directory,
+                          gchar **argv,
+                          gchar **envp,
+                          GSpawnFlags flags,
+                          GSpawnChildSetupFunc child_setup,
+                          gpointer user_data,
+                          GPid *child_pid,
+                          GError **error)
+{
+  return g_spawn_async(working_directory, argv, envp, flags, child_setup, user_data,
+                       child_pid, error);
 }
 
-gboolean gnat_spawn_async_with_fds (const gchar          *working_directory,
-                                    gchar               **argv,
-                                    gchar               **envp,
-                                    GSpawnFlags           flags,
-                                    GSpawnChildSetupFunc  child_setup,
-                                    gpointer              user_data,
-                                    GPid                 *child_pid,
-                                    gint                  stdin_fd,
-                                    gint                  stdout_fd,
-                                    gint                  stderr_fd,
-                                    GError              **error) {
-  return g_spawn_async_with_fds
-    (working_directory, argv, envp, flags, child_setup, user_data,
-     child_pid, stdin_fd, stdout_fd, stderr_fd, error);
+gboolean gnat_spawn_async_with_pipes(const gchar *working_directory,
+                                     gchar **argv,
+                                     gchar **envp,
+                                     GSpawnFlags flags,
+                                     GSpawnChildSetupFunc child_setup,
+                                     gpointer user_data,
+                                     GPid *child_pid,
+                                     gint *standard_input,
+                                     gint *standard_output,
+                                     gint *standard_error,
+                                     GError **error)
+{
+  return g_spawn_async_with_pipes(working_directory, argv, envp, flags, child_setup, user_data, child_pid,
+                                  standard_input, standard_output, standard_error, error);
 }
 
-gboolean gnat_spawn_sync      (const gchar          *working_directory,
-                               gchar               **argv,
-                               gchar               **envp,
-                               GSpawnFlags           flags,
-                               GSpawnChildSetupFunc  child_setup,
-                               gpointer              user_data,
-                               gchar               **standard_output,
-                               gchar               **standard_error,
-                               gint                 *exit_status,
-                               GError              **error) {
-  return g_spawn_sync
-    (working_directory, argv, envp, flags, child_setup, user_data,
-     standard_output, standard_error, exit_status, error);
+gboolean gnat_spawn_async_with_fds(const gchar *working_directory,
+                                   gchar **argv,
+                                   gchar **envp,
+                                   GSpawnFlags flags,
+                                   GSpawnChildSetupFunc child_setup,
+                                   gpointer user_data,
+                                   GPid *child_pid,
+                                   gint stdin_fd,
+                                   gint stdout_fd,
+                                   gint stderr_fd,
+                                   GError **error)
+{
+  return g_spawn_async_with_fds(working_directory, argv, envp, flags, child_setup, user_data,
+                                child_pid, stdin_fd, stdout_fd, stderr_fd, error);
 }
 
-gboolean gnat_spawn_command_line_sync (const gchar          *command_line,
-                                       gchar               **standard_output,
-                                       gchar               **standard_error,
-                                       gint                 *exit_status,
-                                       GError              **error) {
-  return g_spawn_command_line_sync
-    (command_line, standard_output, standard_error, exit_status, error);
+gboolean gnat_spawn_sync(const gchar *working_directory,
+                         gchar **argv,
+                         gchar **envp,
+                         GSpawnFlags flags,
+                         GSpawnChildSetupFunc child_setup,
+                         gpointer user_data,
+                         gchar **standard_output,
+                         gchar **standard_error,
+                         gint *exit_status,
+                         GError **error)
+{
+  return g_spawn_sync(working_directory, argv, envp, flags, child_setup, user_data,
+                      standard_output, standard_error, exit_status, error);
 }
 
-gboolean gnat_spawn_command_line_async (const gchar          *command_line,
-                                        GError              **error) {
-  return g_spawn_command_line_async (command_line, error);
+gboolean gnat_spawn_command_line_sync(const gchar *command_line,
+                                      gchar **standard_output,
+                                      gchar **standard_error,
+                                      gint *exit_status,
+                                      GError **error)
+{
+  return g_spawn_command_line_sync(command_line, standard_output, standard_error, exit_status, error);
+}
+
+gboolean gnat_spawn_command_line_async(const gchar *command_line,
+                                       GError **error)
+{
+  return g_spawn_command_line_async(command_line, error);
 }
 
 /* gutils.h */
-const gchar * glib_get_home_dir () {
-  return g_get_home_dir ();
+const gchar *glib_get_home_dir()
+{
+  return g_get_home_dir();
 }
 
 /* constants */
-const GVariantType* ada_gvariant_type_boolean = G_VARIANT_TYPE_BOOLEAN;
-const GVariantType* ada_gvariant_type_byte    = G_VARIANT_TYPE_BYTE;
-const GVariantType* ada_gvariant_type_int16   = G_VARIANT_TYPE_INT16;
-const GVariantType* ada_gvariant_type_uint16  = G_VARIANT_TYPE_UINT16;
-const GVariantType* ada_gvariant_type_int32   = G_VARIANT_TYPE_INT32;
-const GVariantType* ada_gvariant_type_uint32  = G_VARIANT_TYPE_UINT32;
-const GVariantType* ada_gvariant_type_int64   = G_VARIANT_TYPE_INT64;
-const GVariantType* ada_gvariant_type_uint64  = G_VARIANT_TYPE_UINT64;
-const GVariantType* ada_gvariant_type_double  = G_VARIANT_TYPE_DOUBLE;
-const GVariantType* ada_gvariant_type_string  = G_VARIANT_TYPE_STRING;
+const GVariantType *ada_gvariant_type_boolean = G_VARIANT_TYPE_BOOLEAN;
+const GVariantType *ada_gvariant_type_byte = G_VARIANT_TYPE_BYTE;
+const GVariantType *ada_gvariant_type_int16 = G_VARIANT_TYPE_INT16;
+const GVariantType *ada_gvariant_type_uint16 = G_VARIANT_TYPE_UINT16;
+const GVariantType *ada_gvariant_type_int32 = G_VARIANT_TYPE_INT32;
+const GVariantType *ada_gvariant_type_uint32 = G_VARIANT_TYPE_UINT32;
+const GVariantType *ada_gvariant_type_int64 = G_VARIANT_TYPE_INT64;
+const GVariantType *ada_gvariant_type_uint64 = G_VARIANT_TYPE_UINT64;
+const GVariantType *ada_gvariant_type_double = G_VARIANT_TYPE_DOUBLE;
+const GVariantType *ada_gvariant_type_string = G_VARIANT_TYPE_STRING;
