@@ -17,6 +17,7 @@ interfaces = (
     "--Actionable",
     "--Activatable",
     "Accessible",
+    "--AccessibleRange",
     "AccessibleText",
     "AccessibleHypertext",
     # "AppChooser",
@@ -448,7 +449,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "----GtkNumerableIcon",   # Requires a lot of GIO
            "--GtkOffscreenWindow",
            "--GtkOverlay",
-           "--GtkPaned",
+           "GtkPaned",
            "----GtkPanedAccessible",  # We do not support atk
            "--GtkPageSetup",
            "--GtkPaperSize",
