@@ -23,12 +23,14 @@
 
 with "../gtkada_shared";
 with "../src/gtkada";
-with "task_project/task_project";
+--  TRANSITION
+--  with "task_project/task_project";
 
 project TestGtk is
 
    for Languages use ("Ada");
-   for Main use ("testgtk.adb", "test_rtree.adb");
+   for Main use ("testgtk.adb");
+   --  TRANSITION: re-add "test_rtree.adb" aas main
    for Source_Dirs use ("./");
    for Object_Dir use "obj/";
    for Exec_Dir use ".";
@@ -36,7 +38,7 @@ project TestGtk is
    package Compiler is
       --  subprogram specs not required in testgtk
       for Switches ("Ada") use ("-g", "-O0", "-gnaty-s", "-gnatwJ")
-         & GtkAda_Shared.Adaflags;
+        & GtkAda_Shared.Adaflags;
    end Compiler;
 
    package Linker extends GtkAda_Shared.Linker is

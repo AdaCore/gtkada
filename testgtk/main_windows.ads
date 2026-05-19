@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                    Copyright (C) 1998-2026, AdaCore                      --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,22 +21,10 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gtk.Notebook;
-with Gtk.Window;
+with Glib.Application; use Glib.Application;
 
 package Main_Windows is
 
-   type Main_Window_Record is new Gtk.Window.Gtk_Window_Record with
-      record
-         Notebook       : Gtk.Notebook.Gtk_Notebook;
-      end record;
-   type Main_Window is access all Main_Window_Record'Class;
-
-   procedure Gtk_New (Win : out Main_Window);
-   procedure Initialize (Win : access Main_Window_Record'Class);
-
-   type Help_Function is access function return String;
-   procedure Set_Help (Func : Help_Function);
-   --  Set a new help function to be displayed
+   procedure On_Activate (Self : access GApplication_Record'Class);
 
 end Main_Windows;
