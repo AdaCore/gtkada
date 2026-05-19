@@ -284,6 +284,12 @@ package Gtk.Enums is
    --  Determines how the size should be computed to achieve the one of the
    --  visibility mode for the scrollbars.
 
+   type Gtk_Notebook_Tab is (
+      Notebook_Tab_First,
+      Notebook_Tab_Last);
+   pragma Convention (C, Gtk_Notebook_Tab);
+   --  The parameter used in the action signals of `GtkNotebook`.
+
    type Gtk_Position_Type is (
       Pos_Left,
       Pos_Right,
@@ -570,6 +576,10 @@ package Gtk.Enums is
    package Gtk_Policy_Type_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Policy_Type);
    type Property_Gtk_Policy_Type is new Gtk_Policy_Type_Properties.Property;
+
+   package Gtk_Notebook_Tab_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Notebook_Tab);
+   type Property_Gtk_Notebook_Tab is new Gtk_Notebook_Tab_Properties.Property;
 
    package Gtk_Position_Type_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Position_Type);

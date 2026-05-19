@@ -105,6 +105,13 @@ relevant fragments over and adapt them to the current schema (in
 particular, the top-level wrapping table used in gtk3 TOMLs is no
 longer required).
 
+Not every problem shows up in the generated `.ads`; some only surface
+at build time. One recurring case:
+
+| Symptom at build time                              | Likely fix                                                                                                                       |
+|----------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| `"Unchecked_To_<Enum>" is undefined`               | The enum is used as a signal-callback parameter and needs an `Unsafe_Enum_Nth` instantiation in the hand-maintained `src/gtk-arguments.ads`. |
+
 ## Conventions used below
 
 - A name in **bold** is a top-level key in the file (e.g. `bindtype`).

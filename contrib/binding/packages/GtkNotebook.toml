@@ -1,0 +1,11 @@
+[doc]
+group = "Layout containers"
+
+[[parameter]]
+name = "self"
+ada  = "Notebook"
+
+[[method]]
+id   = "gtk_notebook_get_page"
+bind = false
+# Returns a GtkNotebookPage, which is not bound.
