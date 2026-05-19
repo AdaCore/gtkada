@@ -32,7 +32,7 @@ interfaces = (
     "--FontChooser",
     "--Icon",
     "Native",
-    "--Orientable",
+    "Orientable",
     "--PrintOperationPreview",
     "--RecentChooser",
     "Root",
@@ -315,7 +315,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkBindingEntry",
            "--GtkBindingSet",
            "--GtkBorder",
-           "--GtkBox",
+           "GtkBox",
            "----GtkBooleanCellAccessible",  # We do not support atk
            "--GtkBuilder",
            "--GtkButton",
@@ -401,7 +401,6 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkGLArea",
            "--GtkGrid",
            "--GtkHandleBox",
-           "--GtkHBox",
            "--GtkHButtonBox",
            "--GtkHeaderBar",
            "--GtkHPaned",
@@ -561,7 +560,6 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkToolPalette",
            "----GtkToplevelAccessible",  # We do not support atk
            "--GtkUIManager",
-           "--GtkVBox",
            "--GtkVButtonBox",
            "--GtkVPaned",
            "--GtkVScale",

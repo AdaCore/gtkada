@@ -440,6 +440,21 @@ package body Gtk.Paned is
       return Internal (Get_Object (Self));
    end Get_Next_Accessible_Sibling;
 
+   ---------------------
+   -- Get_Orientation --
+   ---------------------
+
+   function Get_Orientation
+      (Self : not null access Gtk_Paned_Record)
+       return Gtk.Enums.Gtk_Orientation
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
+      pragma Import (C, Internal, "gtk_orientable_get_orientation");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Orientation;
+
    ------------------------
    -- Get_Platform_State --
    ------------------------
@@ -522,6 +537,22 @@ package body Gtk.Paned is
    begin
       Internal (Get_Object (Self), Parent, Next_Sibling);
    end Set_Accessible_Parent;
+
+   ---------------------
+   -- Set_Orientation --
+   ---------------------
+
+   procedure Set_Orientation
+      (Self        : not null access Gtk_Paned_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
+      pragma Import (C, Internal, "gtk_orientable_set_orientation");
+   begin
+      Internal (Get_Object (Self), Orientation);
+   end Set_Orientation;
 
    ------------------------------------
    -- Update_Next_Accessible_Sibling --

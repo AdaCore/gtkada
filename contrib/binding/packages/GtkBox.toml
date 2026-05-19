@@ -1,0 +1,48 @@
+# ============================================================
+#   GtkBox
+# ============================================================
+
+[doc]
+screenshot = "gtk-box"
+group = "Layout containers"
+testgtk = "create_box.adb"
+text = '''
+See the testgtk example in the GtkAda distribution to see concrete examples
+on how all the parameters for the boxes work.
+      '''
+
+[[method]]
+id = "gtk_box_get_type"
+
+[method.doc]
+extend = true
+text = "Used with Glib.Object.G_New, this creates a horizontal box"
+
+[extra]
+body = '''
+
+   function Get_Child
+      (Self : not null access Gtk_Box_Record;
+       Num  : Glib.Gint) return Gtk.Widget.Gtk_Widget
+   is
+      Current : Gtk.Widget.Gtk_Widget := Self.Get_First_Child;
+      Count   : Glib.Gint := Num;
+   begin
+      while Current /= null and then Count > 0 loop
+         Current := Current.Get_Next_Sibling;
+         Count   := Count - 1;
+      end loop;
+
+      return Current;
+   end Get_Child;
+       '''
+
+[[extra.spec]]
+text = '''
+
+   function Get_Child
+      (Self : not null access Gtk_Box_Record;
+       Num  : Glib.Gint) return Gtk.Widget.Gtk_Widget;
+   --  Return the Num-th child of the box, or null if there is no such child
+   --  Since: gtk+ GtkAda 1.0
+       '''
