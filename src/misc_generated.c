@@ -114,6 +114,86 @@ void gtkada_Shortcut_Manager_set_remove_controller(GtkShortcutManagerInterface* 
     iface->remove_controller = handler;
 }
 
+void gtkada_Tree_Model_set_get_column_type(GtkTreeModelIface* iface, void* handler) {
+    iface->get_column_type = handler;
+}
+
+void gtkada_Tree_Model_set_get_flags(GtkTreeModelIface* iface, void* handler) {
+    iface->get_flags = handler;
+}
+
+void gtkada_Tree_Model_set_get_iter(GtkTreeModelIface* iface, void* handler) {
+    iface->get_iter = handler;
+}
+
+void gtkada_Tree_Model_set_get_n_columns(GtkTreeModelIface* iface, void* handler) {
+    iface->get_n_columns = handler;
+}
+
+void gtkada_Tree_Model_set_get_path(GtkTreeModelIface* iface, void* handler) {
+    iface->get_path = handler;
+}
+
+void gtkada_Tree_Model_set_get_value(GtkTreeModelIface* iface, void* handler) {
+    iface->get_value = handler;
+}
+
+void gtkada_Tree_Model_set_iter_children(GtkTreeModelIface* iface, void* handler) {
+    iface->iter_children = handler;
+}
+
+void gtkada_Tree_Model_set_iter_has_child(GtkTreeModelIface* iface, void* handler) {
+    iface->iter_has_child = handler;
+}
+
+void gtkada_Tree_Model_set_iter_n_children(GtkTreeModelIface* iface, void* handler) {
+    iface->iter_n_children = handler;
+}
+
+void gtkada_Tree_Model_set_iter_next(GtkTreeModelIface* iface, void* handler) {
+    iface->iter_next = handler;
+}
+
+void gtkada_Tree_Model_set_iter_nth_child(GtkTreeModelIface* iface, void* handler) {
+    iface->iter_nth_child = handler;
+}
+
+void gtkada_Tree_Model_set_iter_parent(GtkTreeModelIface* iface, void* handler) {
+    iface->iter_parent = handler;
+}
+
+void gtkada_Tree_Model_set_iter_previous(GtkTreeModelIface* iface, void* handler) {
+    iface->iter_previous = handler;
+}
+
+void gtkada_Tree_Model_set_ref_node(GtkTreeModelIface* iface, void* handler) {
+    iface->ref_node = handler;
+}
+
+void gtkada_Tree_Model_set_row_changed(GtkTreeModelIface* iface, void* handler) {
+    iface->row_changed = handler;
+}
+
+void gtkada_Tree_Model_set_row_deleted(GtkTreeModelIface* iface, void* handler) {
+    iface->row_deleted = handler;
+}
+
+void gtkada_Tree_Model_set_row_has_child_toggled(GtkTreeModelIface* iface, void* handler) {
+    iface->row_has_child_toggled = handler;
+}
+
+void gtkada_Tree_Model_set_row_inserted(GtkTreeModelIface* iface, void* handler) {
+    iface->row_inserted = handler;
+}
+
+void gtkada_Tree_Model_set_rows_reordered(GtkTreeModelIface* iface, void* handler) {
+    iface->rows_reordered = handler;
+}
+
+void gtkada_Tree_Model_set_unref_node(GtkTreeModelIface* iface, void* handler) {
+    iface->unref_node = handler;
+}
+
 void gtkada_Action_set_activate(GActionInterface* iface, void* handler) {
     iface->activate = handler;
 }

@@ -42,7 +42,7 @@ interfaces = (
     "--TreeDragDest",
     "--TreeDragSource",
     "--TreeSortable",
-    "--TreeModel",
+    "TreeModel",
 
     "Action",
     "ActionGroup",
@@ -527,10 +527,10 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkTextView",
            "----GtkTextViewAccessible",  # We do not support atk
            "--GtkThemingEngine",
-           "--GtkTreeIter",
+           "GtkTreeIter",
            "--GtkTreeModelFilter",
            "--GtkTreeModelSort",
-           "--GtkTreePath",
+           "GtkTreePath",
            "--GtkTreeRowReference",
            "--GtkTreeSelection",
            "--GtkTreeStore",
