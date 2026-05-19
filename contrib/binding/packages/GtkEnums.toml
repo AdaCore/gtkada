@@ -6,10 +6,7 @@
 ctype = "GtkArrowType"
 
 [[enum]]
-ctype = "GtkAttachOptions"
-
-[[enum]]
-ctype = "GtkButtonBoxStyle"
+ctype = "GtkAccessibleTextContentChange"
 
 [[enum]]
 ctype = "GtkCornerType"
@@ -21,26 +18,14 @@ ctype = "GtkDeleteType"
 ctype = "GtkDirectionType"
 
 [[enum]]
-ctype = "GtkDragResult"
-
-[[enum]]
-ctype = "GtkExpanderStyle"
-
-[[enum]]
 ctype = "GtkIconSize"
 asbitfield = true
-
-[[enum]]
-ctype = "GtkJunctionSides"
 
 [[enum]]
 ctype = "GtkBaselinePosition"
 
 [[enum]]
 ctype = "GtkJustification"
-
-[[enum]]
-ctype = "GtkMenuDirectionType"
 
 [[enum]]
 ctype = "GtkMovementStep"
@@ -52,14 +37,14 @@ ctype = "GtkInputHints"
 ctype = "GtkInputPurpose"
 
 [[enum]]
+ctype = "GtkNaturalWrapMode"
+
+[[enum]]
 ctype = "GtkNumberUpLayout"
 prefix = "GTK_NUMBER_UP_LAYOUT_"
 
 [[enum]]
 ctype = "GtkOrientation"
-
-[[enum]]
-ctype = "GtkPackDirection"
 
 [[enum]]
 ctype = "GtkPackType"
@@ -74,9 +59,6 @@ ctype = "GtkPageSet"
 ctype = "GtkPanDirection"
 
 [[enum]]
-ctype = "GtkPopoverConstraint"
-
-[[enum]]
 ctype = "GtkPropagationPhase"
 
 [[enum]]
@@ -84,12 +66,6 @@ ctype = "GtkEventSequenceState"
 
 [[enum]]
 ctype = "GtkLevelBarMode"
-
-[[enum]]
-ctype = "GtkPathPriorityType"
-
-[[enum]]
-ctype = "GtkPathType"
 
 [[enum]]
 ctype = "GtkPolicyType"
@@ -107,15 +83,6 @@ ctype = "GtkPrintPages"
 ctype = "GtkPrintQuality"
 
 [[enum]]
-ctype = "GtkRegionFlags"
-
-[[enum]]
-ctype = "GtkReliefStyle"
-
-[[enum]]
-ctype = "GtkResizeMode"
-
-[[enum]]
 ctype = "GtkScrollStep"
 
 [[enum]]
@@ -131,9 +98,6 @@ ctype = "GtkSelectionMode"
 ctype = "GtkSensitivityType"
 
 [[enum]]
-ctype = "GtkShadowType"
-
-[[enum]]
 ctype = "GtkSizeRequestMode"
 prefix = "GTK_SIZE_REQUEST_"
 
@@ -142,13 +106,6 @@ ctype = "GtkSortType"
 
 [[enum]]
 ctype = "GtkStateFlags"
-prefix = ""
-
-[[enum]]
-ctype = "GtkStateType"
-
-[[enum]]
-ctype = "GtkTargetFlags"
 prefix = ""
 
 [[enum]]
@@ -162,20 +119,11 @@ ctype = "GtkTreeViewGridLines"
 prefix = "GTK_TREE_VIEW_"
 
 [[enum]]
-ctype = "GtkToolbarSpaceStyle"
-
-[[enum]]
-ctype = "GtkToolbarStyle"
-
-[[enum]]
 ctype = "GtkUnit"
 prefix = "GTK_UNIT_"
 
 [[enum]]
-ctype = "GtkWindowPosition"
-
-[[enum]]
-ctype = "GtkWindowType"
+ctype = "GtkWindowGravity"
 
 [[enum]]
 ctype = "GtkWrapMode"

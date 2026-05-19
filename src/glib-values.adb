@@ -26,6 +26,9 @@ with Gtkada.Types; use Gtkada.Types;
 
 package body Glib.Values is
 
+   type Gint_Access is access Gint;
+   type Gdouble_Access is access Gdouble;
+
    ----------
    -- Free --
    ----------

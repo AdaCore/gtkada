@@ -1834,10 +1834,29 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
        "iface": c_iface,
        "field": c.get('name')}
 
+                # NOTE: we deliberately parse the profile with ``pkg=None``.
+                # ``SubprogramProfile.parse`` (via ``naming.type`` and
+                # ``AdaType.__init__``) otherwise *eagerly* adds a with
+                # clause for each parameter/return type to the package
+                # being generated. But the subprogram we are about to
+                # emit is an access-to-subprogram with ``lang="ada->c"``,
+                # so the profile is rendered in C-side form (GObject
+                # returns/params become ``System.Address``, etc.) and
+                # the Ada-side packages are not actually referenced.
+                # Adding those withs would create spurious dependencies
+                # -- e.g. ``Gtk.Accessible_Hypertext`` would with-clause
+                # ``Gtk.Accessible_Hyperlink`` just because the GIR
+                # ``get_link`` virtual method returns a Hyperlink,
+                # closing a circular dependency since the Hyperlink
+                # package legitimately withs the Hypertext one.
+                #
+                # ``add_withs_for_subprogram`` below is the deferred
+                # mechanism that adds only the withs the rendered
+                # profile actually needs for the given lang.
                 profile = SubprogramProfile.parse(
                     node=c,
                     gtkmethod=gtkmethod,
-                    pkg=self.pkg)
+                    pkg=None)
                 self._add_self_param(
                     adaname=adaname, node=c, gtkmethod=gtkmethod, profile=profile,
                     inherited=False)

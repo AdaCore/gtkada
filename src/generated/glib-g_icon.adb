@@ -23,75 +23,14 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Bindings; use Gtkada.Bindings;
-pragma Warnings(Off);  --  might be unused
-with Gtkada.Types;    use Gtkada.Types;
-pragma Warnings(On);
 
 package body Glib.G_Icon is
 
-   -----------
-   -- Equal --
-   -----------
-
-   function Equal (Self : G_Icon; Icon2 : G_Icon) return Boolean is
-      function Internal (Self : G_Icon; Icon2 : G_Icon) return Glib.Gboolean;
-      pragma Import (C, Internal, "g_icon_equal");
+   function From_Object_Free (B : access G_Icon) return G_Icon is
+      Result : constant G_Icon := B.all;
    begin
-      return Internal (Self, Icon2) /= 0;
-   end Equal;
-
-   ---------------
-   -- Serialize --
-   ---------------
-
-   function Serialize (Self : G_Icon) return Glib.Variant.Gvariant is
-      function Internal (Self : G_Icon) return System.Address;
-      pragma Import (C, Internal, "g_icon_serialize");
-   begin
-      return From_Object (Internal (Self));
-   end Serialize;
-
-   ---------------
-   -- To_String --
-   ---------------
-
-   function To_String (Self : G_Icon) return UTF8_String is
-      function Internal (Self : G_Icon) return Gtkada.Types.Chars_Ptr;
-      pragma Import (C, Internal, "g_icon_to_string");
-   begin
-      return Gtkada.Bindings.Value_And_Free (Internal (Self));
-   end To_String;
-
-   -----------------
-   -- Deserialize --
-   -----------------
-
-   function Deserialize (Value : Glib.Variant.Gvariant) return G_Icon is
-      function Internal (Value : System.Address) return G_Icon;
-      pragma Import (C, Internal, "g_icon_deserialize");
-   begin
-      return Internal (Get_Object (Value));
-   end Deserialize;
-
-   --------------------
-   -- New_For_String --
-   --------------------
-
-   function New_For_String (Str : UTF8_String) return G_Icon is
-      function Internal (Str : Gtkada.Types.Chars_Ptr) return G_Icon;
-      pragma Import (C, Internal, "g_icon_new_for_string");
-      Tmp_Str    : Gtkada.Types.Chars_Ptr := New_String (Str);
-      Tmp_Return : G_Icon;
-   begin
-      Tmp_Return := Internal (Tmp_Str);
-      Free (Tmp_Str);
-      return Tmp_Return;
-   end New_For_String;
-
-   function "+" (W : G_Icon) return G_Icon is
-   begin
-      return W;
-   end "+";
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Glib.G_Icon;

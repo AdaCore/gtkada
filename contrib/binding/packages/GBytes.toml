@@ -2,3 +2,33 @@
 #   GBytes
 # ============================================================
 ada = "Glib.Bytes"
+
+[[method]]
+id = "g_bytes_new_with_free_func"
+bind = false
+# array_of_gconstpointer
+
+[[method]]
+id = "g_bytes_compare"
+bind = false
+# gconstpointer
+
+[[method]]
+id = "g_bytes_equal"
+bind = false
+# gconstpointer
+
+[[method]]
+id = "g_bytes_hash"
+bind = false
+# gconstpointer
+
+[[method]]
+id = "g_bytes_get_data"
+bind = false
+# Need to figure out how to use Atom_Arrays
+
+[[method]]
+id = "g_bytes_unref_to_array"
+bind = false
+# Need to figure out how to use Atom_Arrays

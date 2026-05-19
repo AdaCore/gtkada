@@ -37,9 +37,8 @@ with Glib.Object;        use Glib.Object;
 with Glib.Simple_Action; use Glib.Simple_Action;
 with Glib.Types;         use Glib.Types;
 with Glib.Variant;       use Glib.Variant;
-pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;    use Gtkada.Bindings;
 with Gtkada.Types;       use Gtkada.Types;
-pragma Warnings(On);
 
 package Glib.Action_Map is
 

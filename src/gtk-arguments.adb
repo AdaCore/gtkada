@@ -84,15 +84,15 @@ package body Gtk.Arguments is
    -- To_Event --
    --------------
 
-   function To_Event (Args : Gtk_Args; Num : Positive)
-      return Gdk.Event.Gdk_Event
-   is
-      function Convert is new Ada.Unchecked_Conversion
-        (C_Proxy, Gdk.Event.Gdk_Event);
-      Proxy : constant C_Proxy := Get_Proxy (Nth (Args, Guint (Num)));
-   begin
-      return Convert (Proxy);
-   end To_Event;
+--   function To_Event (Args : Gtk_Args; Num : Positive)
+--      return Gdk.Event.Gdk_Event
+--   is
+--      function Convert is new Ada.Unchecked_Conversion
+--        (C_Proxy, Gdk.Event.Gdk_Event);
+--      Proxy : constant C_Proxy := Get_Proxy (Nth (Args, Guint (Num)));
+--   begin
+--      return Convert (Proxy);
+--   end To_Event;
 
    ----------------------
    -- To_Notebook_Page --
@@ -108,15 +108,15 @@ package body Gtk.Arguments is
    -- Unchecked_To_Gdk_Event_Sequence --
    -------------------------------------
 
-   function Unchecked_To_Gdk_Event_Sequence
-     (Args : Glib.Values.C_GValues; Num : Guint)
-     return Gdk.Event.Gdk_Event_Sequence
-   is
-      Val : GValue;
-   begin
-      Unsafe_Nth (Args, Num, Val);
-      return Gdk.Event.Gdk_Event_Sequence (Get_Proxy (Val));
-   end Unchecked_To_Gdk_Event_Sequence;
+--   function Unchecked_To_Gdk_Event_Sequence
+--     (Args : Glib.Values.C_GValues; Num : Guint)
+--     return Gdk.Event.Gdk_Event_Sequence
+--   is
+--      Val : GValue;
+--   begin
+--      Unsafe_Nth (Args, Num, Val);
+--      return Gdk.Event.Gdk_Event_Sequence (Get_Proxy (Val));
+--   end Unchecked_To_Gdk_Event_Sequence;
 
    ----------------
    -- To_Address --
@@ -132,36 +132,36 @@ package body Gtk.Arguments is
    -- To_Requisition --
    --------------------
 
-   function To_Requisition
-     (Args : Gtk_Args; Num : Positive) return Gtk.Widget.Gtk_Requisition_Access
-   is
-      pragma Warnings (Off);
-      --  This UC is safe aliasing-wise, so kill warning
-      function Internal is new Ada.Unchecked_Conversion
-        (System.Address, Gtk.Widget.Gtk_Requisition_Access);
-      pragma Warnings (On);
+--   function To_Requisition
+--     (Args : Gtk_Args; Num : Positive) return Gtk.Widget.Gtk_Requisition_Access
+--   is
+--      pragma Warnings (Off);
+--      --  This UC is safe aliasing-wise, so kill warning
+--      function Internal is new Ada.Unchecked_Conversion
+--        (System.Address, Gtk.Widget.Gtk_Requisition_Access);
+--      pragma Warnings (On);
+--
+--   begin
+--      return Internal (Get_Address (Nth (Args, Guint (Num))));
+--   end To_Requisition;
 
-   begin
-      return Internal (Get_Address (Nth (Args, Guint (Num))));
-   end To_Requisition;
+   -------------------
+   -- To_Allocation --
+   -------------------
 
-   ----------------
-   -- To_Address --
-   ----------------
-
-   function To_Allocation
-     (Args : Gtk_Args; Num : Positive)
-      return Gtk.Widget.Gtk_Allocation_Access
-   is
-      pragma Warnings (Off);
-      --  This UC is safe aliasing-wise, so kill warning
-      function Internal is new Ada.Unchecked_Conversion
-        (System.Address, Gtk.Widget.Gtk_Allocation_Access);
-      pragma Warnings (On);
-
-   begin
-      return Internal (Get_Address (Nth (Args, Guint (Num))));
-   end To_Allocation;
+--   function To_Allocation
+--     (Args : Gtk_Args; Num : Positive)
+--      return Gtk.Widget.Gtk_Allocation_Access
+--   is
+--      pragma Warnings (Off);
+--      --  This UC is safe aliasing-wise, so kill warning
+--      function Internal is new Ada.Unchecked_Conversion
+--        (System.Address, Gtk.Widget.Gtk_Allocation_Access);
+--      pragma Warnings (On);
+--
+--   begin
+--      return Internal (Get_Address (Nth (Args, Guint (Num))));
+--   end To_Allocation;
 
    ---------------
    -- To_String --
@@ -254,20 +254,6 @@ package body Gtk.Arguments is
       return Get_Uint (Val);
    end Unchecked_To_Guint;
 
-   -----------------------------
-   -- Unchecked_To_Context_Id --
-   -----------------------------
-
-   function Unchecked_To_Context_Id
-     (Args : Glib.Values.C_GValues; Num : Guint)
-      return Gtk.Status_Bar.Context_Id
-   is
-      Val : GValue;
-   begin
-      Unsafe_Nth (Args, Num, Val);
-      return Gtk.Status_Bar.Context_Id (Get_Uint (Val));
-   end Unchecked_To_Context_Id;
-
    ------------------------------
    -- Unchecked_To_UTF8_String --
    ------------------------------
@@ -321,6 +307,20 @@ package body Gtk.Arguments is
       return Glib.Types.GType_Interface (Get_Address (Val));
    end Unchecked_To_Interface;
 
+--   -----------------------------
+--   -- Unchecked_To_Context_Id --
+--   -----------------------------
+--
+--   function Unchecked_To_Context_Id
+--     (Args : Glib.Values.C_GValues; Num : Guint)
+--      return Gtk.Status_Bar.Context_Id
+--   is
+--      Val : GValue;
+--   begin
+--      Unsafe_Nth (Args, Num, Val);
+--      return Gtk.Status_Bar.Context_Id (Get_Uint (Val));
+--   end Unchecked_To_Context_Id;
+--
    ---------------------------------------------
    -- Unchecked_To_Cairo_Rectangle_Int_Access --
    ---------------------------------------------
@@ -336,21 +336,21 @@ package body Gtk.Arguments is
       Unsafe_Nth (Args, Num, Val);
       return Convert (Get_Proxy (Val));
    end Unchecked_To_Cairo_Rectangle_Int_Access;
-
-   ------------------------------------------
-   -- Unchecked_To_Gtk_Entry_Icon_Position --
-   ------------------------------------------
-
-   function Unchecked_To_Gtk_Entry_Icon_Position
-     (Args : Glib.Values.C_GValues; Num : Guint)
-      return Gtk.GEntry.Gtk_Entry_Icon_Position
-   is
-      Val : GValue;
-   begin
-      Unsafe_Nth (Args, Num, Val);
-      return Gtk.GEntry.Gtk_Entry_Icon_Position'Val (Get_Enum (Val));
-   end Unchecked_To_Gtk_Entry_Icon_Position;
-
+--
+--   ------------------------------------------
+--   -- Unchecked_To_Gtk_Entry_Icon_Position --
+--   ------------------------------------------
+--
+--   function Unchecked_To_Gtk_Entry_Icon_Position
+--     (Args : Glib.Values.C_GValues; Num : Guint)
+--      return Gtk.GEntry.Gtk_Entry_Icon_Position
+--   is
+--      Val : GValue;
+--   begin
+--      Unsafe_Nth (Args, Num, Val);
+--      return Gtk.GEntry.Gtk_Entry_Icon_Position'Val (Get_Enum (Val));
+--   end Unchecked_To_Gtk_Entry_Icon_Position;
+--
    --------------------------------------
    -- Unchecked_To_Cairo_Rectangle_Int --
    --------------------------------------
@@ -380,28 +380,28 @@ package body Gtk.Arguments is
       Unsafe_Nth (Args, Num, Val);
       return Cairo.Get_Context (Val);
    end Unchecked_To_Cairo_Context;
-
-   ---------------------------
-   -- Unchecked_To_Gdk_RGBA --
-   ---------------------------
-
-   function Unchecked_To_Gdk_RGBA
-     (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.RGBA.Gdk_RGBA
-   is
-      Val : GValue;
-   begin
-      Unsafe_Nth (Args, Num, Val);
-      return Gdk.RGBA.Get_Value (Val);
-   end Unchecked_To_Gdk_RGBA;
-
-   -------------------------------
-   -- Unchecked_To_Gdk_Key_Type --
-   -------------------------------
-
-   function Unchecked_To_Gdk_Key_Type
-     (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.Types.Gdk_Key_Type
-   is
-   begin
-      return Gdk.Types.Gdk_Key_Type (Unchecked_To_Guint (Args, Num));
-   end Unchecked_To_Gdk_Key_Type;
+--
+--   ---------------------------
+--   -- Unchecked_To_Gdk_RGBA --
+--   ---------------------------
+--
+--   function Unchecked_To_Gdk_RGBA
+--     (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.RGBA.Gdk_RGBA
+--   is
+--      Val : GValue;
+--   begin
+--      Unsafe_Nth (Args, Num, Val);
+--      return Gdk.RGBA.Get_Value (Val);
+--   end Unchecked_To_Gdk_RGBA;
+--
+--   -------------------------------
+--   -- Unchecked_To_Gdk_Key_Type --
+--   -------------------------------
+--
+--   function Unchecked_To_Gdk_Key_Type
+--     (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.Types.Gdk_Key_Type
+--   is
+--   begin
+--      return Gdk.Types.Gdk_Key_Type (Unchecked_To_Guint (Args, Num));
+--   end Unchecked_To_Gdk_Key_Type;
 end Gtk.Arguments;

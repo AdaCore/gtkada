@@ -78,21 +78,6 @@ package body Gtk.Application_Window is
       end if;
    end Initialize;
 
-   ----------------------
-   -- Get_Help_Overlay --
-   ----------------------
-
-   function Get_Help_Overlay
-      (Self : not null access Gtk_Application_Window_Record)
-       return Gtk.Shortcuts_Window.Gtk_Shortcuts_Window
-   is
-      function Internal (Self : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_application_window_get_help_overlay");
-      Stub_Gtk_Shortcuts_Window : Gtk.Shortcuts_Window.Gtk_Shortcuts_Window_Record;
-   begin
-      return Gtk.Shortcuts_Window.Gtk_Shortcuts_Window (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Shortcuts_Window));
-   end Get_Help_Overlay;
-
    ------------
    -- Get_Id --
    ------------
@@ -118,22 +103,6 @@ package body Gtk.Application_Window is
    begin
       return Internal (Get_Object (Self)) /= 0;
    end Get_Show_Menubar;
-
-   ----------------------
-   -- Set_Help_Overlay --
-   ----------------------
-
-   procedure Set_Help_Overlay
-      (Self         : not null access Gtk_Application_Window_Record;
-       Help_Overlay : access Gtk.Shortcuts_Window.Gtk_Shortcuts_Window_Record'Class)
-   is
-      procedure Internal
-         (Self         : System.Address;
-          Help_Overlay : System.Address);
-      pragma Import (C, Internal, "gtk_application_window_set_help_overlay");
-   begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Help_Overlay)));
-   end Set_Help_Overlay;
 
    ----------------------
    -- Set_Show_Menubar --
@@ -282,6 +251,26 @@ package body Gtk.Application_Window is
       Internal (Get_Object (Self), Entries, Entries'Length, User_Data);
    end Add_Action_Entries;
 
+   --------------
+   -- Announce --
+   --------------
+
+   procedure Announce
+      (Self     : not null access Gtk_Application_Window_Record;
+       Message  : UTF8_String;
+       Priority : Gtk.Accessible.Gtk_Accessible_Announcement_Priority)
+   is
+      procedure Internal
+         (Self     : System.Address;
+          Message  : Gtkada.Types.Chars_Ptr;
+          Priority : Gtk.Accessible.Gtk_Accessible_Announcement_Priority);
+      pragma Import (C, Internal, "gtk_accessible_announce");
+      Tmp_Message : Gtkada.Types.Chars_Ptr := New_String (Message);
+   begin
+      Internal (Get_Object (Self), Tmp_Message, Priority);
+      Free (Tmp_Message);
+   end Announce;
+
    -------------------------
    -- Change_Action_State --
    -------------------------
@@ -301,6 +290,51 @@ package body Gtk.Application_Window is
       Internal (Get_Object (Self), Tmp_Action_Name, Get_Object (Value));
       Free (Tmp_Action_Name);
    end Change_Action_State;
+
+   -----------------------
+   -- Get_Accessible_Id --
+   -----------------------
+
+   function Get_Accessible_Id
+      (Self : not null access Gtk_Application_Window_Record)
+       return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "gtk_accessible_get_accessible_id");
+   begin
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
+   end Get_Accessible_Id;
+
+   ---------------------------
+   -- Get_Accessible_Parent --
+   ---------------------------
+
+   function Get_Accessible_Parent
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Accessible.Gtk_Accessible
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Accessible.Gtk_Accessible;
+      pragma Import (C, Internal, "gtk_accessible_get_accessible_parent");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Accessible_Parent;
+
+   -------------------------
+   -- Get_Accessible_Role --
+   -------------------------
+
+   function Get_Accessible_Role
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Accessible.Gtk_Accessible_Role
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Accessible.Gtk_Accessible_Role;
+      pragma Import (C, Internal, "gtk_accessible_get_accessible_role");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Accessible_Role;
 
    ------------------------
    -- Get_Action_Enabled --
@@ -403,6 +437,133 @@ package body Gtk.Application_Window is
       Free (Tmp_Action_Name);
       return Tmp_Return;
    end Get_Action_State_Type;
+
+   --------------------
+   -- Get_At_Context --
+   --------------------
+
+   function Get_At_Context
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Atcontext.Gtk_Atcontext
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_accessible_get_at_context");
+      Stub_Gtk_Atcontext : Gtk.Atcontext.Gtk_Atcontext_Record;
+   begin
+      return Gtk.Atcontext.Gtk_Atcontext (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Atcontext));
+   end Get_At_Context;
+
+   ----------------
+   -- Get_Bounds --
+   ----------------
+
+   function Get_Bounds
+      (Self   : not null access Gtk_Application_Window_Record;
+       X      : access Glib.Gint;
+       Y      : access Glib.Gint;
+       Width  : access Glib.Gint;
+       Height : access Glib.Gint) return Boolean
+   is
+      function Internal
+         (Self       : System.Address;
+          Acc_X      : access Glib.Gint;
+          Acc_Y      : access Glib.Gint;
+          Acc_Width  : access Glib.Gint;
+          Acc_Height : access Glib.Gint) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_accessible_get_bounds");
+      Acc_X      : aliased Glib.Gint;
+      Acc_Y      : aliased Glib.Gint;
+      Acc_Width  : aliased Glib.Gint;
+      Acc_Height : aliased Glib.Gint;
+      Tmp_Return : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Acc_X'Access, Acc_Y'Access, Acc_Width'Access, Acc_Height'Access);
+      X.all := Acc_X;
+      Y.all := Acc_Y;
+      Width.all := Acc_Width;
+      Height.all := Acc_Height;
+      return Tmp_Return /= 0;
+   end Get_Bounds;
+
+   --------------------------------
+   -- Get_First_Accessible_Child --
+   --------------------------------
+
+   function Get_First_Accessible_Child
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Accessible.Gtk_Accessible
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Accessible.Gtk_Accessible;
+      pragma Import (C, Internal, "gtk_accessible_get_first_accessible_child");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_First_Accessible_Child;
+
+   ---------------
+   -- Get_Focus --
+   ---------------
+
+   function Get_Focus
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Widget.Gtk_Widget
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_root_get_focus");
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Widget));
+   end Get_Focus;
+
+   ---------------------------------
+   -- Get_Next_Accessible_Sibling --
+   ---------------------------------
+
+   function Get_Next_Accessible_Sibling
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Accessible.Gtk_Accessible
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Accessible.Gtk_Accessible;
+      pragma Import (C, Internal, "gtk_accessible_get_next_accessible_sibling");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Next_Accessible_Sibling;
+
+   ------------------------
+   -- Get_Platform_State --
+   ------------------------
+
+   function Get_Platform_State
+      (Self  : not null access Gtk_Application_Window_Record;
+       State : Gtk.Accessible.Gtk_Accessible_Platform_State) return Boolean
+   is
+      function Internal
+         (Self  : System.Address;
+          State : Gtk.Accessible.Gtk_Accessible_Platform_State)
+          return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_accessible_get_platform_state");
+   begin
+      return Internal (Get_Object (Self), State) /= 0;
+   end Get_Platform_State;
+
+   ---------------------------
+   -- Get_Surface_Transform --
+   ---------------------------
+
+   procedure Get_Surface_Transform
+      (Self : not null access Gtk_Application_Window_Record;
+       X    : out Gdouble;
+       Y    : out Gdouble)
+   is
+      procedure Internal
+         (Self : System.Address;
+          X    : out Gdouble;
+          Y    : out Gdouble);
+      pragma Import (C, Internal, "gtk_native_get_surface_transform");
+   begin
+      Internal (Get_Object (Self), X, Y);
+   end Get_Surface_Transform;
 
    ----------------
    -- Has_Action --
@@ -513,6 +674,17 @@ package body Gtk.Application_Window is
       return Tmp_Return /= 0;
    end Query_Action;
 
+   -------------
+   -- Realize --
+   -------------
+
+   procedure Realize (Self : not null access Gtk_Application_Window_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "gtk_native_realize");
+   begin
+      Internal (Get_Object (Self));
+   end Realize;
+
    -------------------
    -- Remove_Action --
    -------------------
@@ -530,5 +702,130 @@ package body Gtk.Application_Window is
       Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
    end Remove_Action;
+
+   --------------------
+   -- Reset_Property --
+   --------------------
+
+   procedure Reset_Property
+      (Self     : not null access Gtk_Application_Window_Record;
+       Property : Gtk.Accessible.Gtk_Accessible_Property)
+   is
+      procedure Internal
+         (Self     : System.Address;
+          Property : Gtk.Accessible.Gtk_Accessible_Property);
+      pragma Import (C, Internal, "gtk_accessible_reset_property");
+   begin
+      Internal (Get_Object (Self), Property);
+   end Reset_Property;
+
+   --------------------
+   -- Reset_Relation --
+   --------------------
+
+   procedure Reset_Relation
+      (Self     : not null access Gtk_Application_Window_Record;
+       Relation : Gtk.Accessible.Gtk_Accessible_Relation)
+   is
+      procedure Internal
+         (Self     : System.Address;
+          Relation : Gtk.Accessible.Gtk_Accessible_Relation);
+      pragma Import (C, Internal, "gtk_accessible_reset_relation");
+   begin
+      Internal (Get_Object (Self), Relation);
+   end Reset_Relation;
+
+   -----------------
+   -- Reset_State --
+   -----------------
+
+   procedure Reset_State
+      (Self  : not null access Gtk_Application_Window_Record;
+       State : Gtk.Accessible.Gtk_Accessible_State)
+   is
+      procedure Internal
+         (Self  : System.Address;
+          State : Gtk.Accessible.Gtk_Accessible_State);
+      pragma Import (C, Internal, "gtk_accessible_reset_state");
+   begin
+      Internal (Get_Object (Self), State);
+   end Reset_State;
+
+   ---------------------------
+   -- Set_Accessible_Parent --
+   ---------------------------
+
+   procedure Set_Accessible_Parent
+      (Self         : not null access Gtk_Application_Window_Record;
+       Parent       : Gtk.Accessible.Gtk_Accessible;
+       Next_Sibling : Gtk.Accessible.Gtk_Accessible)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Parent       : Gtk.Accessible.Gtk_Accessible;
+          Next_Sibling : Gtk.Accessible.Gtk_Accessible);
+      pragma Import (C, Internal, "gtk_accessible_set_accessible_parent");
+   begin
+      Internal (Get_Object (Self), Parent, Next_Sibling);
+   end Set_Accessible_Parent;
+
+   ---------------
+   -- Set_Focus --
+   ---------------
+
+   procedure Set_Focus
+      (Self  : not null access Gtk_Application_Window_Record;
+       Focus : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Focus : System.Address);
+      pragma Import (C, Internal, "gtk_root_set_focus");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Focus)));
+   end Set_Focus;
+
+   ---------------
+   -- Unrealize --
+   ---------------
+
+   procedure Unrealize
+      (Self : not null access Gtk_Application_Window_Record)
+   is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "gtk_native_unrealize");
+   begin
+      Internal (Get_Object (Self));
+   end Unrealize;
+
+   ------------------------------------
+   -- Update_Next_Accessible_Sibling --
+   ------------------------------------
+
+   procedure Update_Next_Accessible_Sibling
+      (Self        : not null access Gtk_Application_Window_Record;
+       New_Sibling : Gtk.Accessible.Gtk_Accessible)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          New_Sibling : Gtk.Accessible.Gtk_Accessible);
+      pragma Import (C, Internal, "gtk_accessible_update_next_accessible_sibling");
+   begin
+      Internal (Get_Object (Self), New_Sibling);
+   end Update_Next_Accessible_Sibling;
+
+   ---------------------------
+   -- Update_Platform_State --
+   ---------------------------
+
+   procedure Update_Platform_State
+      (Self  : not null access Gtk_Application_Window_Record;
+       State : Gtk.Accessible.Gtk_Accessible_Platform_State)
+   is
+      procedure Internal
+         (Self  : System.Address;
+          State : Gtk.Accessible.Gtk_Accessible_Platform_State);
+      pragma Import (C, Internal, "gtk_accessible_update_platform_state");
+   begin
+      Internal (Get_Object (Self), State);
+   end Update_Platform_State;
 
 end Gtk.Application_Window;

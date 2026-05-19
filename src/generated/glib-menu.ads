@@ -669,9 +669,8 @@ package Glib.Menu is
       (Self : not null access Gmenu_Item_Record;
        Icon : Glib.G_Icon.G_Icon);
    --  Sets (or unsets) the icon on Menu_Item.
-   --  This call is the same as calling Glib.G_Icon.Serialize and using the
-   --  result as the value to Glib.Menu.Set_Attribute_Value for
-   --  G_MENU_ATTRIBUTE_ICON.
+   --  This call is the same as calling g_icon_serialize and using the result
+   --  as the value to Glib.Menu.Set_Attribute_Value for G_MENU_ATTRIBUTE_ICON.
    --  This API is only intended for use with "noun" menu items; things like
    --  bookmarks or applications in an "Open With" menu. Don't use it on menu
    --  items corresponding to verbs (eg: stock icons for 'Save' or 'Quit').

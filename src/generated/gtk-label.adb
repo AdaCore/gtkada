@@ -135,19 +135,6 @@ package body Gtk.Label is
       end if;
    end Initialize_With_Mnemonic;
 
-   ---------------
-   -- Get_Angle --
-   ---------------
-
-   function Get_Angle
-      (Label : not null access Gtk_Label_Record) return Gdouble
-   is
-      function Internal (Label : System.Address) return Gdouble;
-      pragma Import (C, Internal, "gtk_label_get_angle");
-   begin
-      return Internal (Get_Object (Label));
-   end Get_Angle;
-
    --------------------
    -- Get_Attributes --
    --------------------
@@ -190,6 +177,21 @@ package body Gtk.Label is
    begin
       return Internal (Get_Object (Label));
    end Get_Ellipsize;
+
+   --------------------
+   -- Get_Extra_Menu --
+   --------------------
+
+   function Get_Extra_Menu
+      (Label : not null access Gtk_Label_Record)
+       return Glib.Menu_Model.Gmenu_Model
+   is
+      function Internal (Label : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_label_get_extra_menu");
+      Stub_Gmenu_Model : Glib.Menu_Model.Gmenu_Model_Record;
+   begin
+      return Glib.Menu_Model.Gmenu_Model (Get_User_Data (Internal (Get_Object (Label)), Stub_Gmenu_Model));
+   end Get_Extra_Menu;
 
    -----------------
    -- Get_Justify --
@@ -253,34 +255,6 @@ package body Gtk.Label is
       Internal (Get_Object (Label), X, Y);
    end Get_Layout_Offsets;
 
-   -------------------
-   -- Get_Line_Wrap --
-   -------------------
-
-   function Get_Line_Wrap
-      (Label : not null access Gtk_Label_Record) return Boolean
-   is
-      function Internal (Label : System.Address) return Glib.Gboolean;
-      pragma Import (C, Internal, "gtk_label_get_line_wrap");
-   begin
-      return Internal (Get_Object (Label)) /= 0;
-   end Get_Line_Wrap;
-
-   ------------------------
-   -- Get_Line_Wrap_Mode --
-   ------------------------
-
-   function Get_Line_Wrap_Mode
-      (Label : not null access Gtk_Label_Record)
-       return Pango.Enums.Wrap_Mode
-   is
-      function Internal
-         (Label : System.Address) return Pango.Enums.Wrap_Mode;
-      pragma Import (C, Internal, "gtk_label_get_line_wrap_mode");
-   begin
-      return Internal (Get_Object (Label));
-   end Get_Line_Wrap_Mode;
-
    ---------------
    -- Get_Lines --
    ---------------
@@ -335,6 +309,21 @@ package body Gtk.Label is
       return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Label)), Stub_Gtk_Widget));
    end Get_Mnemonic_Widget;
 
+   ---------------------------
+   -- Get_Natural_Wrap_Mode --
+   ---------------------------
+
+   function Get_Natural_Wrap_Mode
+      (Label : not null access Gtk_Label_Record)
+       return Gtk.Enums.Gtk_Natural_Wrap_Mode
+   is
+      function Internal
+         (Label : System.Address) return Gtk.Enums.Gtk_Natural_Wrap_Mode;
+      pragma Import (C, Internal, "gtk_label_get_natural_wrap_mode");
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Natural_Wrap_Mode;
+
    --------------------
    -- Get_Selectable --
    --------------------
@@ -387,6 +376,20 @@ package body Gtk.Label is
    end Get_Single_Line_Mode;
 
    --------------
+   -- Get_Tabs --
+   --------------
+
+   function Get_Tabs
+      (Label : not null access Gtk_Label_Record)
+       return Pango.Tabs.Pango_Tab_Array
+   is
+      function Internal (Label : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_label_get_tabs");
+   begin
+      return From_Object (Internal (Get_Object (Label)));
+   end Get_Tabs;
+
+   --------------
    -- Get_Text --
    --------------
 
@@ -399,19 +402,6 @@ package body Gtk.Label is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Label)));
    end Get_Text;
-
-   -----------------------------
-   -- Get_Track_Visited_Links --
-   -----------------------------
-
-   function Get_Track_Visited_Links
-      (Label : not null access Gtk_Label_Record) return Boolean
-   is
-      function Internal (Label : System.Address) return Glib.Gboolean;
-      pragma Import (C, Internal, "gtk_label_get_track_visited_links");
-   begin
-      return Internal (Get_Object (Label)) /= 0;
-   end Get_Track_Visited_Links;
 
    --------------------
    -- Get_Use_Markup --
@@ -452,14 +442,42 @@ package body Gtk.Label is
       return Internal (Get_Object (Label));
    end Get_Width_Chars;
 
+   --------------
+   -- Get_Wrap --
+   --------------
+
+   function Get_Wrap
+      (Label : not null access Gtk_Label_Record) return Boolean
+   is
+      function Internal (Label : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_label_get_wrap");
+   begin
+      return Internal (Get_Object (Label)) /= 0;
+   end Get_Wrap;
+
+   -------------------
+   -- Get_Wrap_Mode --
+   -------------------
+
+   function Get_Wrap_Mode
+      (Label : not null access Gtk_Label_Record)
+       return Pango.Enums.Wrap_Mode
+   is
+      function Internal
+         (Label : System.Address) return Pango.Enums.Wrap_Mode;
+      pragma Import (C, Internal, "gtk_label_get_wrap_mode");
+   begin
+      return Internal (Get_Object (Label));
+   end Get_Wrap_Mode;
+
    ----------------
    -- Get_Xalign --
    ----------------
 
    function Get_Xalign
-      (Label : not null access Gtk_Label_Record) return Gfloat
+      (Label : not null access Gtk_Label_Record) return float
    is
-      function Internal (Label : System.Address) return Gfloat;
+      function Internal (Label : System.Address) return float;
       pragma Import (C, Internal, "gtk_label_get_xalign");
    begin
       return Internal (Get_Object (Label));
@@ -470,9 +488,9 @@ package body Gtk.Label is
    ----------------
 
    function Get_Yalign
-      (Label : not null access Gtk_Label_Record) return Gfloat
+      (Label : not null access Gtk_Label_Record) return float
    is
-      function Internal (Label : System.Address) return Gfloat;
+      function Internal (Label : System.Address) return float;
       pragma Import (C, Internal, "gtk_label_get_yalign");
    begin
       return Internal (Get_Object (Label));
@@ -495,20 +513,6 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), Start_Offset, End_Offset);
    end Select_Region;
-
-   ---------------
-   -- Set_Angle --
-   ---------------
-
-   procedure Set_Angle
-      (Label : not null access Gtk_Label_Record;
-       Angle : Gdouble)
-   is
-      procedure Internal (Label : System.Address; Angle : Gdouble);
-      pragma Import (C, Internal, "gtk_label_set_angle");
-   begin
-      Internal (Get_Object (Label), Angle);
-   end Set_Angle;
 
    --------------------
    -- Set_Attributes --
@@ -539,6 +543,20 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), Mode);
    end Set_Ellipsize;
+
+   --------------------
+   -- Set_Extra_Menu --
+   --------------------
+
+   procedure Set_Extra_Menu
+      (Label : not null access Gtk_Label_Record;
+       Model : access Glib.Menu_Model.Gmenu_Model_Record'Class)
+   is
+      procedure Internal (Label : System.Address; Model : System.Address);
+      pragma Import (C, Internal, "gtk_label_set_extra_menu");
+   begin
+      Internal (Get_Object (Label), Get_Object_Or_Null (GObject (Model)));
+   end Set_Extra_Menu;
 
    -----------------
    -- Set_Justify --
@@ -573,36 +591,6 @@ package body Gtk.Label is
       Internal (Get_Object (Label), Tmp_Str);
       Free (Tmp_Str);
    end Set_Label;
-
-   -------------------
-   -- Set_Line_Wrap --
-   -------------------
-
-   procedure Set_Line_Wrap
-      (Label : not null access Gtk_Label_Record;
-       Wrap  : Boolean)
-   is
-      procedure Internal (Label : System.Address; Wrap : Glib.Gboolean);
-      pragma Import (C, Internal, "gtk_label_set_line_wrap");
-   begin
-      Internal (Get_Object (Label), Boolean'Pos (Wrap));
-   end Set_Line_Wrap;
-
-   ------------------------
-   -- Set_Line_Wrap_Mode --
-   ------------------------
-
-   procedure Set_Line_Wrap_Mode
-      (Label     : not null access Gtk_Label_Record;
-       Wrap_Mode : Pango.Enums.Wrap_Mode)
-   is
-      procedure Internal
-         (Label     : System.Address;
-          Wrap_Mode : Pango.Enums.Wrap_Mode);
-      pragma Import (C, Internal, "gtk_label_set_line_wrap_mode");
-   begin
-      Internal (Get_Object (Label), Wrap_Mode);
-   end Set_Line_Wrap_Mode;
 
    ---------------
    -- Set_Lines --
@@ -682,23 +670,21 @@ package body Gtk.Label is
       Internal (Get_Object (Label), Get_Object_Or_Null (GObject (Widget)));
    end Set_Mnemonic_Widget;
 
-   -----------------
-   -- Set_Pattern --
-   -----------------
+   ---------------------------
+   -- Set_Natural_Wrap_Mode --
+   ---------------------------
 
-   procedure Set_Pattern
-      (Label   : not null access Gtk_Label_Record;
-       Pattern : UTF8_String)
+   procedure Set_Natural_Wrap_Mode
+      (Label     : not null access Gtk_Label_Record;
+       Wrap_Mode : Gtk.Enums.Gtk_Natural_Wrap_Mode)
    is
       procedure Internal
-         (Label   : System.Address;
-          Pattern : Gtkada.Types.Chars_Ptr);
-      pragma Import (C, Internal, "gtk_label_set_pattern");
-      Tmp_Pattern : Gtkada.Types.Chars_Ptr := New_String (Pattern);
+         (Label     : System.Address;
+          Wrap_Mode : Gtk.Enums.Gtk_Natural_Wrap_Mode);
+      pragma Import (C, Internal, "gtk_label_set_natural_wrap_mode");
    begin
-      Internal (Get_Object (Label), Tmp_Pattern);
-      Free (Tmp_Pattern);
-   end Set_Pattern;
+      Internal (Get_Object (Label), Wrap_Mode);
+   end Set_Natural_Wrap_Mode;
 
    --------------------
    -- Set_Selectable --
@@ -729,6 +715,20 @@ package body Gtk.Label is
    begin
       Internal (Get_Object (Label), Boolean'Pos (Single_Line_Mode));
    end Set_Single_Line_Mode;
+
+   --------------
+   -- Set_Tabs --
+   --------------
+
+   procedure Set_Tabs
+      (Label : not null access Gtk_Label_Record;
+       Tabs  : Pango.Tabs.Pango_Tab_Array)
+   is
+      procedure Internal (Label : System.Address; Tabs : System.Address);
+      pragma Import (C, Internal, "gtk_label_set_tabs");
+   begin
+      Internal (Get_Object (Label), Get_Object (Tabs));
+   end Set_Tabs;
 
    --------------
    -- Set_Text --
@@ -765,22 +765,6 @@ package body Gtk.Label is
       Internal (Get_Object (Label), Tmp_Str);
       Free (Tmp_Str);
    end Set_Text_With_Mnemonic;
-
-   -----------------------------
-   -- Set_Track_Visited_Links --
-   -----------------------------
-
-   procedure Set_Track_Visited_Links
-      (Label       : not null access Gtk_Label_Record;
-       Track_Links : Boolean)
-   is
-      procedure Internal
-         (Label       : System.Address;
-          Track_Links : Glib.Gboolean);
-      pragma Import (C, Internal, "gtk_label_set_track_visited_links");
-   begin
-      Internal (Get_Object (Label), Boolean'Pos (Track_Links));
-   end Set_Track_Visited_Links;
 
    --------------------
    -- Set_Use_Markup --
@@ -824,15 +808,45 @@ package body Gtk.Label is
       Internal (Get_Object (Label), N_Chars);
    end Set_Width_Chars;
 
+   --------------
+   -- Set_Wrap --
+   --------------
+
+   procedure Set_Wrap
+      (Label : not null access Gtk_Label_Record;
+       Wrap  : Boolean)
+   is
+      procedure Internal (Label : System.Address; Wrap : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_label_set_wrap");
+   begin
+      Internal (Get_Object (Label), Boolean'Pos (Wrap));
+   end Set_Wrap;
+
+   -------------------
+   -- Set_Wrap_Mode --
+   -------------------
+
+   procedure Set_Wrap_Mode
+      (Label     : not null access Gtk_Label_Record;
+       Wrap_Mode : Pango.Enums.Wrap_Mode)
+   is
+      procedure Internal
+         (Label     : System.Address;
+          Wrap_Mode : Pango.Enums.Wrap_Mode);
+      pragma Import (C, Internal, "gtk_label_set_wrap_mode");
+   begin
+      Internal (Get_Object (Label), Wrap_Mode);
+   end Set_Wrap_Mode;
+
    ----------------
    -- Set_Xalign --
    ----------------
 
    procedure Set_Xalign
       (Label  : not null access Gtk_Label_Record;
-       Xalign : Gfloat)
+       Xalign : float)
    is
-      procedure Internal (Label : System.Address; Xalign : Gfloat);
+      procedure Internal (Label : System.Address; Xalign : float);
       pragma Import (C, Internal, "gtk_label_set_xalign");
    begin
       Internal (Get_Object (Label), Xalign);
@@ -844,13 +858,313 @@ package body Gtk.Label is
 
    procedure Set_Yalign
       (Label  : not null access Gtk_Label_Record;
-       Yalign : Gfloat)
+       Yalign : float)
    is
-      procedure Internal (Label : System.Address; Yalign : Gfloat);
+      procedure Internal (Label : System.Address; Yalign : float);
       pragma Import (C, Internal, "gtk_label_set_yalign");
    begin
       Internal (Get_Object (Label), Yalign);
    end Set_Yalign;
+
+   --------------
+   -- Announce --
+   --------------
+
+   procedure Announce
+      (Self     : not null access Gtk_Label_Record;
+       Message  : UTF8_String;
+       Priority : Gtk.Accessible.Gtk_Accessible_Announcement_Priority)
+   is
+      procedure Internal
+         (Self     : System.Address;
+          Message  : Gtkada.Types.Chars_Ptr;
+          Priority : Gtk.Accessible.Gtk_Accessible_Announcement_Priority);
+      pragma Import (C, Internal, "gtk_accessible_announce");
+      Tmp_Message : Gtkada.Types.Chars_Ptr := New_String (Message);
+   begin
+      Internal (Get_Object (Self), Tmp_Message, Priority);
+      Free (Tmp_Message);
+   end Announce;
+
+   -----------------------
+   -- Get_Accessible_Id --
+   -----------------------
+
+   function Get_Accessible_Id
+      (Self : not null access Gtk_Label_Record) return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "gtk_accessible_get_accessible_id");
+   begin
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self)));
+   end Get_Accessible_Id;
+
+   ---------------------------
+   -- Get_Accessible_Parent --
+   ---------------------------
+
+   function Get_Accessible_Parent
+      (Self : not null access Gtk_Label_Record)
+       return Gtk.Accessible.Gtk_Accessible
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Accessible.Gtk_Accessible;
+      pragma Import (C, Internal, "gtk_accessible_get_accessible_parent");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Accessible_Parent;
+
+   -------------------------
+   -- Get_Accessible_Role --
+   -------------------------
+
+   function Get_Accessible_Role
+      (Self : not null access Gtk_Label_Record)
+       return Gtk.Accessible.Gtk_Accessible_Role
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Accessible.Gtk_Accessible_Role;
+      pragma Import (C, Internal, "gtk_accessible_get_accessible_role");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Accessible_Role;
+
+   --------------------
+   -- Get_At_Context --
+   --------------------
+
+   function Get_At_Context
+      (Self : not null access Gtk_Label_Record)
+       return Gtk.Atcontext.Gtk_Atcontext
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_accessible_get_at_context");
+      Stub_Gtk_Atcontext : Gtk.Atcontext.Gtk_Atcontext_Record;
+   begin
+      return Gtk.Atcontext.Gtk_Atcontext (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Atcontext));
+   end Get_At_Context;
+
+   ----------------
+   -- Get_Bounds --
+   ----------------
+
+   function Get_Bounds
+      (Self   : not null access Gtk_Label_Record;
+       X      : access Glib.Gint;
+       Y      : access Glib.Gint;
+       Width  : access Glib.Gint;
+       Height : access Glib.Gint) return Boolean
+   is
+      function Internal
+         (Self       : System.Address;
+          Acc_X      : access Glib.Gint;
+          Acc_Y      : access Glib.Gint;
+          Acc_Width  : access Glib.Gint;
+          Acc_Height : access Glib.Gint) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_accessible_get_bounds");
+      Acc_X      : aliased Glib.Gint;
+      Acc_Y      : aliased Glib.Gint;
+      Acc_Width  : aliased Glib.Gint;
+      Acc_Height : aliased Glib.Gint;
+      Tmp_Return : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Acc_X'Access, Acc_Y'Access, Acc_Width'Access, Acc_Height'Access);
+      X.all := Acc_X;
+      Y.all := Acc_Y;
+      Width.all := Acc_Width;
+      Height.all := Acc_Height;
+      return Tmp_Return /= 0;
+   end Get_Bounds;
+
+   --------------------------------
+   -- Get_First_Accessible_Child --
+   --------------------------------
+
+   function Get_First_Accessible_Child
+      (Self : not null access Gtk_Label_Record)
+       return Gtk.Accessible.Gtk_Accessible
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Accessible.Gtk_Accessible;
+      pragma Import (C, Internal, "gtk_accessible_get_first_accessible_child");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_First_Accessible_Child;
+
+   ---------------------------------
+   -- Get_Next_Accessible_Sibling --
+   ---------------------------------
+
+   function Get_Next_Accessible_Sibling
+      (Self : not null access Gtk_Label_Record)
+       return Gtk.Accessible.Gtk_Accessible
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Accessible.Gtk_Accessible;
+      pragma Import (C, Internal, "gtk_accessible_get_next_accessible_sibling");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Next_Accessible_Sibling;
+
+   ------------------------
+   -- Get_Platform_State --
+   ------------------------
+
+   function Get_Platform_State
+      (Self  : not null access Gtk_Label_Record;
+       State : Gtk.Accessible.Gtk_Accessible_Platform_State) return Boolean
+   is
+      function Internal
+         (Self  : System.Address;
+          State : Gtk.Accessible.Gtk_Accessible_Platform_State)
+          return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_accessible_get_platform_state");
+   begin
+      return Internal (Get_Object (Self), State) /= 0;
+   end Get_Platform_State;
+
+   --------------------
+   -- Reset_Property --
+   --------------------
+
+   procedure Reset_Property
+      (Self     : not null access Gtk_Label_Record;
+       Property : Gtk.Accessible.Gtk_Accessible_Property)
+   is
+      procedure Internal
+         (Self     : System.Address;
+          Property : Gtk.Accessible.Gtk_Accessible_Property);
+      pragma Import (C, Internal, "gtk_accessible_reset_property");
+   begin
+      Internal (Get_Object (Self), Property);
+   end Reset_Property;
+
+   --------------------
+   -- Reset_Relation --
+   --------------------
+
+   procedure Reset_Relation
+      (Self     : not null access Gtk_Label_Record;
+       Relation : Gtk.Accessible.Gtk_Accessible_Relation)
+   is
+      procedure Internal
+         (Self     : System.Address;
+          Relation : Gtk.Accessible.Gtk_Accessible_Relation);
+      pragma Import (C, Internal, "gtk_accessible_reset_relation");
+   begin
+      Internal (Get_Object (Self), Relation);
+   end Reset_Relation;
+
+   -----------------
+   -- Reset_State --
+   -----------------
+
+   procedure Reset_State
+      (Self  : not null access Gtk_Label_Record;
+       State : Gtk.Accessible.Gtk_Accessible_State)
+   is
+      procedure Internal
+         (Self  : System.Address;
+          State : Gtk.Accessible.Gtk_Accessible_State);
+      pragma Import (C, Internal, "gtk_accessible_reset_state");
+   begin
+      Internal (Get_Object (Self), State);
+   end Reset_State;
+
+   ---------------------------
+   -- Set_Accessible_Parent --
+   ---------------------------
+
+   procedure Set_Accessible_Parent
+      (Self         : not null access Gtk_Label_Record;
+       Parent       : Gtk.Accessible.Gtk_Accessible;
+       Next_Sibling : Gtk.Accessible.Gtk_Accessible)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Parent       : Gtk.Accessible.Gtk_Accessible;
+          Next_Sibling : Gtk.Accessible.Gtk_Accessible);
+      pragma Import (C, Internal, "gtk_accessible_set_accessible_parent");
+   begin
+      Internal (Get_Object (Self), Parent, Next_Sibling);
+   end Set_Accessible_Parent;
+
+   ---------------------------
+   -- Update_Caret_Position --
+   ---------------------------
+
+   procedure Update_Caret_Position (Self : not null access Gtk_Label_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "gtk_accessible_text_update_caret_position");
+   begin
+      Internal (Get_Object (Self));
+   end Update_Caret_Position;
+
+   ---------------------
+   -- Update_Contents --
+   ---------------------
+
+   procedure Update_Contents
+      (Self    : not null access Gtk_Label_Record;
+       Change  : Gtk.Enums.Gtk_Accessible_Text_Content_Change;
+       Start   : Guint;
+       The_End : Guint)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Change  : Gtk.Enums.Gtk_Accessible_Text_Content_Change;
+          Start   : Guint;
+          The_End : Guint);
+      pragma Import (C, Internal, "gtk_accessible_text_update_contents");
+   begin
+      Internal (Get_Object (Self), Change, Start, The_End);
+   end Update_Contents;
+
+   ------------------------------------
+   -- Update_Next_Accessible_Sibling --
+   ------------------------------------
+
+   procedure Update_Next_Accessible_Sibling
+      (Self        : not null access Gtk_Label_Record;
+       New_Sibling : Gtk.Accessible.Gtk_Accessible)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          New_Sibling : Gtk.Accessible.Gtk_Accessible);
+      pragma Import (C, Internal, "gtk_accessible_update_next_accessible_sibling");
+   begin
+      Internal (Get_Object (Self), New_Sibling);
+   end Update_Next_Accessible_Sibling;
+
+   ---------------------------
+   -- Update_Platform_State --
+   ---------------------------
+
+   procedure Update_Platform_State
+      (Self  : not null access Gtk_Label_Record;
+       State : Gtk.Accessible.Gtk_Accessible_Platform_State)
+   is
+      procedure Internal
+         (Self  : System.Address;
+          State : Gtk.Accessible.Gtk_Accessible_Platform_State);
+      pragma Import (C, Internal, "gtk_accessible_update_platform_state");
+   begin
+      Internal (Get_Object (Self), State);
+   end Update_Platform_State;
+
+   ----------------------------
+   -- Update_Selection_Bound --
+   ----------------------------
+
+   procedure Update_Selection_Bound
+      (Self : not null access Gtk_Label_Record)
+   is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "gtk_accessible_text_update_selection_bound");
+   begin
+      Internal (Get_Object (Self));
+   end Update_Selection_Bound;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Label_Void, System.Address);
@@ -882,16 +1196,6 @@ package body Gtk.Label is
    function Address_To_Cb is new Ada.Unchecked_Conversion
      (System.Address, Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void);
 
-   function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Gtk_Label_Gtk_Menu_Void, System.Address);
-   function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Gtk_Label_Gtk_Menu_Void);
-
-   function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Gtk_Menu_Void, System.Address);
-   function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Gtk_Menu_Void);
-
    procedure Connect
       (Object  : access Gtk_Label_Record'Class;
        C_Name  : Glib.Signal_Name;
@@ -908,12 +1212,6 @@ package body Gtk.Label is
       (Object  : access Gtk_Label_Record'Class;
        C_Name  : Glib.Signal_Name;
        Handler : Cb_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void;
-       After   : Boolean);
-
-   procedure Connect
-      (Object  : access Gtk_Label_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Label_Gtk_Menu_Void;
        After   : Boolean);
 
    procedure Connect_Slot
@@ -936,22 +1234,6 @@ package body Gtk.Label is
        Handler : Cb_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
-
-   procedure Connect_Slot
-      (Object  : access Gtk_Label_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gtk_Menu_Void;
-       After   : Boolean;
-       Slot    : access Glib.Object.GObject_Record'Class := null);
-
-   procedure Marsh_GObject_Gtk_Menu_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_Gtk_Menu_Void);
 
    procedure Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void
       (Closure         : GClosure;
@@ -979,15 +1261,6 @@ package body Gtk.Label is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Void);
-
-   procedure Marsh_Gtk_Label_Gtk_Menu_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address);
-   pragma Convention (C, Marsh_Gtk_Label_Gtk_Menu_Void);
 
    procedure Marsh_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void
       (Closure         : GClosure;
@@ -1073,25 +1346,6 @@ package body Gtk.Label is
          After       => After);
    end Connect;
 
-   -------------
-   -- Connect --
-   -------------
-
-   procedure Connect
-      (Object  : access Gtk_Label_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Label_Gtk_Menu_Void;
-       After   : Boolean)
-   is
-   begin
-      Unchecked_Do_Signal_Connect
-        (Object      => Object,
-         C_Name      => C_Name,
-         Marshaller  => Marsh_Gtk_Label_Gtk_Menu_Void'Access,
-         Handler     => Cb_To_Address (Handler),--  Set in the closure
-         After       => After);
-   end Connect;
-
    ------------------
    -- Connect_Slot --
    ------------------
@@ -1155,47 +1409,6 @@ package body Gtk.Label is
          After       => After);
    end Connect_Slot;
 
-   ------------------
-   -- Connect_Slot --
-   ------------------
-
-   procedure Connect_Slot
-      (Object  : access Gtk_Label_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gtk_Menu_Void;
-       After   : Boolean;
-       Slot    : access Glib.Object.GObject_Record'Class := null)
-   is
-   begin
-      Unchecked_Do_Signal_Connect
-        (Object      => Object,
-         C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_Gtk_Menu_Void'Access,
-         Handler     => Cb_To_Address (Handler),--  Set in the closure
-         Slot_Object => Slot,
-         After       => After);
-   end Connect_Slot;
-
-   ---------------------------------
-   -- Marsh_GObject_Gtk_Menu_Void --
-   ---------------------------------
-
-   procedure Marsh_GObject_Gtk_Menu_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address)
-   is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_Gtk_Menu_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-   begin
-      H (Obj, Gtk.Menu.Gtk_Menu (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
-   end Marsh_GObject_Gtk_Menu_Void;
-
    -------------------------------------------------------
    -- Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void --
    -------------------------------------------------------
@@ -1256,26 +1469,6 @@ package body Gtk.Label is
       H (Obj);
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
-
-   -----------------------------------
-   -- Marsh_Gtk_Label_Gtk_Menu_Void --
-   -----------------------------------
-
-   procedure Marsh_Gtk_Label_Gtk_Menu_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address)
-   is
-      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Gtk_Label_Gtk_Menu_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant Gtk_Label := Gtk_Label (Unchecked_To_Object (Params, 0));
-   begin
-      H (Obj, Gtk.Menu.Gtk_Menu (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
-   end Marsh_Gtk_Label_Gtk_Menu_Void;
 
    ---------------------------------------------------------
    -- Marsh_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void --
@@ -1445,32 +1638,5 @@ package body Gtk.Label is
    begin
       Connect_Slot (Self, "move-cursor" & ASCII.NUL, Call, After, Slot);
    end On_Move_Cursor;
-
-   -----------------------
-   -- On_Populate_Popup --
-   -----------------------
-
-   procedure On_Populate_Popup
-      (Self  : not null access Gtk_Label_Record;
-       Call  : Cb_Gtk_Label_Gtk_Menu_Void;
-       After : Boolean := False)
-   is
-   begin
-      Connect (Self, "populate-popup" & ASCII.NUL, Call, After);
-   end On_Populate_Popup;
-
-   -----------------------
-   -- On_Populate_Popup --
-   -----------------------
-
-   procedure On_Populate_Popup
-      (Self  : not null access Gtk_Label_Record;
-       Call  : Cb_GObject_Gtk_Menu_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False)
-   is
-   begin
-      Connect_Slot (Self, "populate-popup" & ASCII.NUL, Call, After, Slot);
-   end On_Populate_Popup;
 
 end Gtk.Label;

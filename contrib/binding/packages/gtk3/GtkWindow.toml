@@ -1,0 +1,92 @@
+# ============================================================
+#   GtkWindow
+# ============================================================
+
+[[parameter]]
+name = "self"
+ada = "Window"
+
+[[method]]
+id = "gtk_window_new"
+
+[[method.parameter]]
+name = "type"
+default = "Gtk.Enums.Window_Toplevel"
+
+[[method]]
+id = "gtk_window_set_opacity"
+bind = false
+# would hide Gtk.Widget.Set_Opacity
+
+[[method]]
+id = "gtk_window_get_opacity"
+bind = false
+# would hide Gtk.Widget.Get_Opacity
+
+[[method]]
+id = "gtk_window_list_toplevels"
+return = "WidgetList"
+
+[[method]]
+id = "gtk_window_get_icon_list"
+return = "ObjectList"
+
+[[method]]
+id = "gtk_window_set_icon_list"
+
+[[method.parameter]]
+name = "list"
+ctype = "ObjectList"
+
+[[method]]
+id = "gtk_window_get_default_icon_list"
+return = "ObjectList"
+
+[[method]]
+id = "gtk_window_set_default_icon_list"
+
+[[method.parameter]]
+name = "list"
+ctype = "ObjectList"
+
+[[method]]
+id = "gtk_window_add_mnemonic"
+
+[[method.parameter]]
+name = "keyval"
+ctype = "GdkKeyType"
+
+[[method]]
+id = "gtk_window_remove_mnemonic"
+
+[[method.parameter]]
+name = "keyval"
+ctype = "GdkKeyType"
+
+[[method]]
+id = "gtk_window_mnemonic_activate"
+
+[[method.parameter]]
+name = "keyval"
+ctype = "GdkKeyType"
+
+[[method]]
+id = "gtk_window_get_resize_grip_area"
+return_as_param = "retrieved"
+
+[[method]]
+id = "gtk_window_set_modal"
+
+[[method.parameter]]
+name = "modal"
+default = "True"
+
+[[method]]
+id = "gtk_window_get_application"
+bind = false
+# Circular dependency
+
+[[method]]
+id = "gtk_window_set_application"
+bind = false
+# Circular dependency

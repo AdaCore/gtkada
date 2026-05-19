@@ -50,6 +50,11 @@ bind = false
 # circular dependency
 
 [[method]]
+id = "g_application_set_action_group"
+bind = false
+# Obsolescent, Action_Group replaced by Action_Map
+
+[[method]]
 id = "g_application_register"
 bind = false
 # bound manually

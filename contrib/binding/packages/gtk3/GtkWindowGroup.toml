@@ -1,0 +1,16 @@
+# ============================================================
+#   GtkWindowGroup
+# ============================================================
+into = "GtkWindow"
+
+[[parameter]]
+name = "self"
+ada = "Window_Group"
+
+[[method]]
+id = "gtk_window_group_get_type"
+ada = "Group_Get_Type"
+
+[[method]]
+id = "gtk_window_group_list_windows"
+return = "WidgetList"

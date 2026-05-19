@@ -470,22 +470,6 @@ package body Glib.Application is
       Free (Tmp_Id);
    end Send_Notification;
 
-   ----------------------
-   -- Set_Action_Group --
-   ----------------------
-
-   procedure Set_Action_Group
-      (Self         : not null access Gapplication_Record;
-       Action_Group : Glib.Action_Group.Gaction_Group)
-   is
-      procedure Internal
-         (Self         : System.Address;
-          Action_Group : Glib.Action_Group.Gaction_Group);
-      pragma Import (C, Internal, "g_application_set_action_group");
-   begin
-      Internal (Get_Object (Self), Action_Group);
-   end Set_Action_Group;
-
    ------------------------
    -- Set_Application_Id --
    ------------------------

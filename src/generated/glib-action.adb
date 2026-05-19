@@ -23,7 +23,6 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Bindings; use Gtkada.Bindings;
 
 package body Glib.Action is
 

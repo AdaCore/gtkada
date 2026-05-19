@@ -96,30 +96,6 @@ package body Gtk.Application is
       end if;
    end Initialize;
 
-   ---------------------
-   -- Add_Accelerator --
-   ---------------------
-
-   procedure Add_Accelerator
-      (Self        : not null access Gtk_Application_Record;
-       Accelerator : UTF8_String;
-       Action_Name : UTF8_String;
-       Parameter   : Glib.Variant.Gvariant)
-   is
-      procedure Internal
-         (Self        : System.Address;
-          Accelerator : Gtkada.Types.Chars_Ptr;
-          Action_Name : Gtkada.Types.Chars_Ptr;
-          Parameter   : System.Address);
-      pragma Import (C, Internal, "gtk_application_add_accelerator");
-      Tmp_Accelerator : Gtkada.Types.Chars_Ptr := New_String (Accelerator);
-      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
-   begin
-      Internal (Get_Object (Self), Tmp_Accelerator, Tmp_Action_Name, Get_Object (Parameter));
-      Free (Tmp_Action_Name);
-      Free (Tmp_Accelerator);
-   end Add_Accelerator;
-
    ----------------
    -- Add_Window --
    ----------------
@@ -189,21 +165,6 @@ package body Gtk.Application is
    begin
       return Gtk.Window.Gtk_Window (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Window));
    end Get_Active_Window;
-
-   ------------------
-   -- Get_App_Menu --
-   ------------------
-
-   function Get_App_Menu
-      (Self : not null access Gtk_Application_Record)
-       return Glib.Menu_Model.Gmenu_Model
-   is
-      function Internal (Self : System.Address) return System.Address;
-      pragma Import (C, Internal, "gtk_application_get_app_menu");
-      Stub_Gmenu_Model : Glib.Menu_Model.Gmenu_Model_Record;
-   begin
-      return Glib.Menu_Model.Gmenu_Model (Get_User_Data (Internal (Get_Object (Self)), Stub_Gmenu_Model));
-   end Get_App_Menu;
 
    --------------------
    -- Get_Menu_By_Id --
@@ -303,22 +264,6 @@ package body Gtk.Application is
       return Tmp_Return;
    end Inhibit;
 
-   ------------------
-   -- Is_Inhibited --
-   ------------------
-
-   function Is_Inhibited
-      (Self  : not null access Gtk_Application_Record;
-       Flags : Gtk_Application_Inhibit_Flags) return Boolean
-   is
-      function Internal
-         (Self  : System.Address;
-          Flags : Gtk_Application_Inhibit_Flags) return Glib.Gboolean;
-      pragma Import (C, Internal, "gtk_application_is_inhibited");
-   begin
-      return Internal (Get_Object (Self), Flags) /= 0;
-   end Is_Inhibited;
-
    ------------------------------
    -- List_Action_Descriptions --
    ------------------------------
@@ -333,39 +278,6 @@ package body Gtk.Application is
    begin
       return To_String_List_And_Free (Internal (Get_Object (Self)));
    end List_Action_Descriptions;
-
-   ----------------------
-   -- Prefers_App_Menu --
-   ----------------------
-
-   function Prefers_App_Menu
-      (Self : not null access Gtk_Application_Record) return Boolean
-   is
-      function Internal (Self : System.Address) return Glib.Gboolean;
-      pragma Import (C, Internal, "gtk_application_prefers_app_menu");
-   begin
-      return Internal (Get_Object (Self)) /= 0;
-   end Prefers_App_Menu;
-
-   ------------------------
-   -- Remove_Accelerator --
-   ------------------------
-
-   procedure Remove_Accelerator
-      (Self        : not null access Gtk_Application_Record;
-       Action_Name : UTF8_String;
-       Parameter   : Glib.Variant.Gvariant)
-   is
-      procedure Internal
-         (Self        : System.Address;
-          Action_Name : Gtkada.Types.Chars_Ptr;
-          Parameter   : System.Address);
-      pragma Import (C, Internal, "gtk_application_remove_accelerator");
-      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
-   begin
-      Internal (Get_Object (Self), Tmp_Action_Name, Get_Object (Parameter));
-      Free (Tmp_Action_Name);
-   end Remove_Accelerator;
 
    -------------------
    -- Remove_Window --
@@ -402,20 +314,6 @@ package body Gtk.Application is
       Gtkada.Types.Free (Tmp_Accels);
       Free (Tmp_Detailed_Action_Name);
    end Set_Accels_For_Action;
-
-   ------------------
-   -- Set_App_Menu --
-   ------------------
-
-   procedure Set_App_Menu
-      (Self     : not null access Gtk_Application_Record;
-       App_Menu : access Glib.Menu_Model.Gmenu_Model_Record'Class)
-   is
-      procedure Internal (Self : System.Address; App_Menu : System.Address);
-      pragma Import (C, Internal, "gtk_application_set_app_menu");
-   begin
-      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (App_Menu)));
-   end Set_App_Menu;
 
    -----------------
    -- Set_Menubar --

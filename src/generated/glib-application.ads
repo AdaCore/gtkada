@@ -541,17 +541,6 @@ package Glib.Application is
    --  @param Id id of the notification, or null
    --  @param Notification the Glib.Notification.Gnotification to send
 
-   procedure Set_Action_Group
-      (Self         : not null access Gapplication_Record;
-       Action_Group : Glib.Action_Group.Gaction_Group);
-   pragma Obsolescent (Set_Action_Group);
-   --  This used to be how actions were associated with a
-   --  Glib.Application.Gapplication. Now there is Glib.Action_Map.Gaction_Map
-   --  for that.
-   --  Since: gtk+ 2.28
-   --  Deprecated since 2.32, 1
-   --  @param Action_Group a Glib.Action_Group.Gaction_Group, or null
-
    procedure Set_Default (Self : not null access Gapplication_Record);
    --  Sets or unsets the default application for the process, as returned by
    --  Glib.Application.Get_Default.
@@ -917,8 +906,8 @@ package Glib.Application is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
-   Action_Group_Property : constant Glib.Properties.Property_Object;
-   --  Type: Gtk.Action_Group.Gtk_Action_Group
+   Action_Group_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Action_Group
    --  Flags: write
 
    Application_Id_Property : constant Glib.Properties.Property_String;
@@ -1208,6 +1197,6 @@ private
      Glib.Properties.Build ("flags");
    Application_Id_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("application-id");
-   Action_Group_Property : constant Glib.Properties.Property_Object :=
+   Action_Group_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("action-group");
 end Glib.Application;
