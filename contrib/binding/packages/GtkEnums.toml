@@ -71,6 +71,9 @@ ctype = "GtkLevelBarMode"
 ctype = "GtkPolicyType"
 
 [[enum]]
+ctype = "GtkNotebookTab"
+
+[[enum]]
 ctype = "GtkPositionType"
 
 [[enum]]

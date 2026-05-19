@@ -195,8 +195,8 @@ package Gtk.Arguments is
    --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Menu_Direction_Type);
    --   function Unchecked_To_Gtk_Orientation
    --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Orientation);
-   --   function Unchecked_To_Gtk_Notebook_Tab
-   --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Notebook.Gtk_Notebook_Tab);
+   function Unchecked_To_Gtk_Notebook_Tab is new
+     Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Notebook_Tab);
    --   function Unchecked_To_Gtk_Toolbar_Style
    --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Toolbar_Style);
    --   function Unchecked_To_Gtk_Scroll_Step

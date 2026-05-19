@@ -442,7 +442,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkMenuToolButton",
            "--GtkMessageDialog",
            "----GtkMountOperation",  # Requires a lot of GIO
-           "--GtkNotebook",
+           "GtkNotebook",
            "----GtkNotebookAccessible",  # We do not support atk
            "----GtkNotebookPageAccessible",  # We do not support atk
            "----GtkNumerableIcon",   # Requires a lot of GIO
