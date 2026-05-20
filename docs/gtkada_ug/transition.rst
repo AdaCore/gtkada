@@ -472,7 +472,7 @@ Gtk.Entry_Completion
 The "match-selected" and "cursor-on-match" signals were erroneously
 given the internal filter model instead of the users model. This oversight
 has been fixed in GTK+ 3; if you have handlers for these signals, they
-will likely need slight adjustments. 
+will likely need slight adjustments.
 
 Gtk.Enums
 ---------
@@ -784,7 +784,7 @@ Gtk.Selection
 This package has been renamed ``Gtk.Selection_Data,`` for homogeneity with
 the naming conventions.
 
-``Gtk.Selection.Selection_Data`` is now called 
+``Gtk.Selection.Selection_Data`` is now called
 ``Gtk.Selection_Data.Gtk_Selection_Data.``
 
 Handling of ``Target_Lists`` has been moved to the new package ``Gtk.Target_List,``
@@ -927,7 +927,7 @@ The package ``Gtk.Tooltips`` has been removed, in favor of ``Gtk.Tooltip.``
 
 For creating simple tooltips on all GtkAda widgets, the easiest is to use
 ``Gtk.Widget.Set_Tooltip_Text`` or ``Gtk.Set_Tooltip_Markup.`` See the example
-in testgtk/create_tooltip.adb.
+in gtkada_demo/create_tooltip.adb.
 
 Gtk.Tree_View
 -------------

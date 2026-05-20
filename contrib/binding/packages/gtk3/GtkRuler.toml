@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-rulers"
 group = "Drawing"
-testgtk = "create_rulers.adb"
+gtkada_demo = "create_rulers.adb"
 text = " This widget is generally put on the sides of a drawing area to help the user measure distances. It indicates the current position of the mouse cursor within the drawing area, and can be graduated in multiple units."
 
 [[parameter]]

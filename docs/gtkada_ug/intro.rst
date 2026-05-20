@@ -58,7 +58,7 @@ this documentation instead, as well as the GtkAda sources spec files
 themselves, whose extension is :file:`.ads`.
 
 No complete example is provided in this documentation. Instead, please refer to
-the examples that you can find in the :file:`testgtk/` and :file:`examples/`
+the examples that you can find in the :file:`gtkada_demo/` and :file:`examples/`
 directory in the GtkAda distribution, since these are more up-to-date (and more
 extensive).  They are heavily commented, and are likely to contain a lot of
 information that you might find interesting.

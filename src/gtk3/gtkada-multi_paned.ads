@@ -26,18 +26,18 @@
 --  This widget can mix vertical and horizontal splits
 --
 --  <group>Layout containers</group>
---  <testgtk>create_splittable.adb</testgtk>
+--  <gtkada_demo>create_splittable.adb</gtkada_demo>
 
 with Cairo;
 with Gdk;
-with Glib;          use Glib;
+with Glib; use Glib;
 with Gtk.Enums;
 with Gtk.Fixed;
 with Gtk.Widget;
 
 package Gtkada.Multi_Paned is
-   type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record
-     with private;
+   type Gtkada_Multi_Paned_Record is
+     new Gtk.Fixed.Gtk_Fixed_Record with private;
    type Gtkada_Multi_Paned is access all Gtkada_Multi_Paned_Record'Class;
 
    type Pane is private;
@@ -108,18 +108,18 @@ package Gtkada.Multi_Paned is
      (Win              : access Gtkada_Multi_Paned_Record;
       Widget           : access Gtk.Widget.Gtk_Widget_Record'Class;
       Width, Height    : Glib.Gint := -1;
-      Fixed_Size       : Boolean   := False;
-      Force_Given_Size : Boolean   := False);
+      Fixed_Size       : Boolean := False;
+      Force_Given_Size : Boolean := False);
    --  Try to update the size of Widget considering its siblings.
    --  If Force_Given_Size is true then Widget will have the exact sizes
    --  given to this function. Thus it will ignore the actual state of the
    --  multipaned and can deform its siblings.
 
    function Splitted_Area
-     (Win           : access Gtkada_Multi_Paned_Record;
-      Ref_Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Orientation   : Gtk.Enums.Gtk_Orientation;
-      After         : Boolean := True) return Gtk.Widget.Gtk_Widget;
+     (Win         : access Gtkada_Multi_Paned_Record;
+      Ref_Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Orientation : Gtk.Enums.Gtk_Orientation;
+      After       : Boolean := True) return Gtk.Widget.Gtk_Widget;
    --  Return the widget in the splitted area next to Ref_Widget if any exist.
    --  Orientation and After define which splitted area we are looking at.
    --  null is returned if there are no such splitted area.
@@ -279,27 +279,26 @@ private
       Depth   : Natural := 0;
    end record;
 
-   type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record with
-      record
-         Frozen      : Boolean := False;
-         Children    : Child_Description_Access;
+   type Gtkada_Multi_Paned_Record is new Gtk.Fixed.Gtk_Fixed_Record with record
+      Frozen   : Boolean := False;
+      Children : Child_Description_Access;
 
-         Initial_Pos  : Gint;
-         Selected     : Child_Description_Access;
-         Selected_Pos : Gtk.Widget.Gtk_Allocation;
+      Initial_Pos  : Gint;
+      Selected     : Child_Description_Access;
+      Selected_Pos : Gtk.Widget.Gtk_Allocation;
 
-         Cursor_Double_H_Arrow : Gdk.Gdk_Cursor;
-         Cursor_Double_V_Arrow : Gdk.Gdk_Cursor;
+      Cursor_Double_H_Arrow : Gdk.Gdk_Cursor;
+      Cursor_Double_V_Arrow : Gdk.Gdk_Cursor;
 
-         Opaque_Resizing        : Boolean := False;
+      Opaque_Resizing : Boolean := False;
 
-         Overlay : Cairo.Cairo_Surface := Cairo.Null_Surface;
+      Overlay : Cairo.Cairo_Surface := Cairo.Null_Surface;
 
-         Handle_Width : Gint := 6;
-         --  Width, in pixels, of the resizing handles.
-         --  ??? Should be read from theme with
-         --     gtk_widget_style_get
-         --        (gtk_paned, "handle_size", &handle_size, NULL)
-      end record;
+      Handle_Width : Gint := 6;
+      --  Width, in pixels, of the resizing handles.
+      --  ??? Should be read from theme with
+      --     gtk_widget_style_get
+      --        (gtk_paned, "handle_size", &handle_size, NULL)
+   end record;
 
 end Gtkada.Multi_Paned;

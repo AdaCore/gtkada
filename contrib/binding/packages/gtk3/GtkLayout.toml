@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-layout"
 group = "Layout containers"
-testgtk = "create_layout.adb"
+gtkada_demo = "create_layout.adb"
 text = '''
 A Gtk_Layout is a widget that can have an almost infinite size, without
 occupying a lot of memory. Its children can be located anywhere within

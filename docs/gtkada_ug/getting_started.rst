@@ -103,9 +103,9 @@ recommend that you look at them and try to understand them, since they contain
 some examples of code that you might find interesting for your own application.
 
 
-* :file:`testgtk/` directory:
+* :file:`gtkada_demo/` directory:
 
-  This directory contains the application `testgtk` that tests all the
+  This directory contains the `GtkAda Demo` that showcases most of the
   widgets in GtkAda. It gives you a quick overview of what can be found in the
   toolkit, as well as some detailed information on the widgets and their
   parameters.
@@ -305,7 +305,7 @@ themselves.
 
 It is important to be familiar with this hierarchy. It is then easier to know
 how to build and organize your windows. Most widgets are demonstrated in the
-:file:`testgtk/` directory in the GtkAda distribution.
+:file:`gtkada_demo/` directory in the GtkAda distribution.
 
 .. _Widgets_Hierarchy:
 .. figure:: hierarchy.jpg

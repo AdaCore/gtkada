@@ -96,7 +96,7 @@ Using tagged types to extend Gtk widgets
 
 With this toolkit, it's possible to associate your own data with existing
 widgets simply by creating new types. This section will show you a simple
-example, but you should rather read the source code in the :file:`testgtk/`
+example, but you should rather read the source code in the :file:`gtkada_demo/`
 directory where we used this feature instead of using `user_data` as is used in
 the C version:::
 
@@ -212,21 +212,21 @@ provide::
       begin
          --  Set properties handler
          Set_Properties_Handlers (Self, Prop_Set'Access, Prop_Get'Access);
-   
+
          --  Override inherited properties
          Override_Property  (Self, PROP_H_ADJ, "hadjustment");
          Override_Property  (Self, PROP_V_ADJ, "vadjustment");
-   
+
          --  Install some custom style properties
          Install_Style_Property (Self, Gnew_Int (...));
-   
+
          --  Override some the inherited methods (how to draw the widget)
          Set_Default_Draw_Handler (Self, On_Draw'Access);
 
          --  Override the primitives to compute the widget size
          Set_Default_Get_Preferred_Width (Self, ...);
       end Class_Init;
-      
+
       function Get_Type return GType is
          Info : access GInterface_Info;
       begin
@@ -252,21 +252,21 @@ You should also create the usual functions ``Gtk_New`` and
       Self := new My_Widget_Record;  --  create the Ada wrapper
       Initialize (Self);
    end Gtk_New;
-   
+
    procedure Initialize (Self : not null access My_Widget_Record'Class) is
    begin
       G_New (Self, Get_Type); --  allocate the C widget, unless done
-   
+
       --  Initialize parent fields.
 
       Gtk.Button.Initialize (Self);
-   
+
       --  Initialization of the Ada types
 
       Self.Field1 := ...;
    end Initialize;
 
-  
+
 In the above example, the new part is the ``Get_Type`` subprogram. It takes
 three or four arguments:
 
@@ -278,7 +278,7 @@ three or four arguments:
   you want to create. For instance, you could create Signals with::
 
     Signals : Gtkada.Types.Chars_Ptr_Array := "bullseye" + "missed";
-    
+
   This will create two signals, named "bullseye" and "missed", whose callbacks'
   arguments can be specified with the fourth parameter.
 

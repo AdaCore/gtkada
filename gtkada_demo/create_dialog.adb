@@ -21,8 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Ada.Text_IO;               use Ada.Text_IO;
-with GNAT.Strings;              use GNAT.Strings;
+with Ada.Text_IO;  use Ada.Text_IO;
+with GNAT.Strings; use GNAT.Strings;
 
 with Glib.Types;                use Glib.Types;
 with Gtk.Box;                   use Gtk.Box;
@@ -38,23 +38,23 @@ with Gtk.Widget;                use Gtk.Widget;
 with Gtk.Window;                use Gtk.Window;
 with Gtk;                       use Gtk;
 
-with Common;                    use Common;
+with Common; use Common;
 
 package body Create_Dialog is
 
    type Gtk_Label_Access is access all Gtk_Label;
-   package Label_Destroy is new Handlers.User_Callback
-     (Gtk_Label_Record, Gtk_Label_Access);
+   package Label_Destroy is new
+     Handlers.User_Callback (Gtk_Label_Record, Gtk_Label_Access);
 
-   package Chooser_Interface_Implementation is new Glib.Types.Implements
-     (Gtk_Recent_Chooser,
-      Gtk_Recent_Chooser_Dialog_Record,
-      Gtk_Recent_Chooser_Dialog);
+   package Chooser_Interface_Implementation is new
+     Glib.Types.Implements
+       (Gtk_Recent_Chooser,
+        Gtk_Recent_Chooser_Dialog_Record,
+        Gtk_Recent_Chooser_Dialog);
    use Chooser_Interface_Implementation;
 
    procedure Destroyed
-     (Lab : access Gtk_Label_Record'Class;
-      Ptr : Gtk_Label_Access);
+     (Lab : access Gtk_Label_Record'Class; Ptr : Gtk_Label_Access);
 
    Dialog       : aliased Gtk.Dialog.Gtk_Dialog;
    RDialog      : aliased Gtk.Recent_Chooser_Dialog.Gtk_Recent_Chooser_Dialog;
@@ -66,8 +66,10 @@ package body Create_Dialog is
 
    function Help return String is
    begin
-      return "A @bGtk_Dialog@B is a separate window, usually used to print"
-        & " a message for the user, or signal an error." & ASCII.LF
+      return
+        "A @bGtk_Dialog@B is a separate window, usually used to print"
+        & " a message for the user, or signal an error."
+        & ASCII.LF
         & "A @bGtk_Dialog@B is split into two boxes, its @bVbox@B that will"
         & " contain the message, and an @bAction_Area@B that contains a"
         & " series of button, like OK, Cancel or Help.";
@@ -78,8 +80,7 @@ package body Create_Dialog is
    ---------------
 
    procedure Destroyed
-     (Lab : access Gtk_Label_Record'Class;
-      Ptr : Gtk_Label_Access)
+     (Lab : access Gtk_Label_Record'Class; Ptr : Gtk_Label_Access)
    is
       pragma Unreferenced (Lab);
    begin
@@ -113,12 +114,14 @@ package body Create_Dialog is
       Button : Gtk_Widget;
    begin
       if Dialog = null then
-         Gtk_New (Dialog,
-                  Title => "example dialog",
-                  Parent => Gtk_Window (Get_Toplevel (Widget)),
-                  Flags  => Use_Header_Bar_From_Settings (Widget));
+         Gtk_New
+           (Dialog,
+            Title  => "example dialog",
+            Parent => Gtk_Window (Get_Toplevel (Widget)),
+            Flags  => Use_Header_Bar_From_Settings (Widget));
          Destroy_Dialog_Handler.Connect
-           (Dialog, "destroy",
+           (Dialog,
+            "destroy",
             Destroy_Dialog_Handler.To_Marshaller (Destroy_Dialog'Access),
             Dialog'Access);
          Set_Title (Dialog, "Gtk_Dialog");
@@ -144,9 +147,7 @@ package body Create_Dialog is
    -- Cancel_Recent_Dialog --
    --------------------------
 
-   procedure Cancel_Recent_Dialog
-      (Widget : access Gtk_Widget_Record'Class)
-   is
+   procedure Cancel_Recent_Dialog (Widget : access Gtk_Widget_Record'Class) is
       pragma Unreferenced (Widget);
    begin
       Put_Line ("Recent dialog cancelled.");
@@ -174,34 +175,31 @@ package body Create_Dialog is
    -- Recent_Dialog --
    -------------------
 
-   procedure Recent_Dialog
-      (Widget : access Gtk_Widget_Record'Class)
-   is
+   procedure Recent_Dialog (Widget : access Gtk_Widget_Record'Class) is
       RManager : constant Gtk_Recent_Manager := Gtk.Recent_Manager.Get_Default;
       Button   : Gtk_Button;
       RChooser : Gtk_Recent_Chooser;
       Empty    : constant GNAT.Strings.String_List (1 .. 0) :=
-                  (others => null);
+        (others => null);
 
       --  Content to add to the recent list.
-      URL      : constant String := "http://www.adacore.com/";
+      URL : constant String := "http://www.adacore.com/";
    begin
       --  Before we do anything, in case the system's recent list is empty,
       --  let's make sure we have something to show.
       if Has_Item (RManager, URL) then
          Put_Line ("No need to add " & URL & " to recent list.");
       else
-         if
-           Add_Full
-             (RManager,
-              Uri          => URL,
-              Display_Name => URL,
-              Description  => "AdaCore's web site",
-              Mime_Type    => "text/plain",
-              App_Name     => "testgtk",
-              App_Exec     => "testgtk",
-              Groups       => Empty,
-              Is_Private   => True)
+         if Add_Full
+              (RManager,
+               Uri          => URL,
+               Display_Name => URL,
+               Description  => "AdaCore's web site",
+               Mime_Type    => "text/plain",
+               App_Name     => "gtkada_demo",
+               App_Exec     => "gtkada_demo",
+               Groups       => Empty,
+               Is_Private   => True)
          then
             Put_Line ("Successfuly added " & URL & " to recent list.");
          else
@@ -216,21 +214,24 @@ package body Create_Dialog is
             Gtk.Window.Gtk_Window (Get_Toplevel (Widget)));
          RChooser := Gtk_Recent_Chooser (To_Interface (RDialog));
 
-         Button := Gtk_Button (Add_Button
-           (RDialog, Stock_Cancel, Gtk_Response_Cancel));
+         Button :=
+           Gtk_Button
+             (Add_Button (RDialog, Stock_Cancel, Gtk_Response_Cancel));
          Widget_Handler.Connect
-           (Button, "clicked",
+           (Button,
+            "clicked",
             Widget_Handler.To_Marshaller (Cancel_Recent_Dialog'Access));
 
-         Button := Gtk_Button (Add_Button
-           (RDialog, Stock_Open, Gtk_Response_Accept));
+         Button :=
+           Gtk_Button (Add_Button (RDialog, Stock_Open, Gtk_Response_Accept));
          Widget_Handler.Connect
-           (Button, "clicked",
+           (Button,
+            "clicked",
             Widget_Handler.To_Marshaller (Open_File'Access));
 
-         Set_Show_Private   (RChooser, True);
-         Set_Show_Tips      (RChooser, True);
-         Set_Show_Icons     (RChooser, True);
+         Set_Show_Private (RChooser, True);
+         Set_Show_Tips (RChooser, True);
+         Set_Show_Icons (RChooser, True);
          Set_Show_Not_Found (RChooser, True);
 
          Show (RDialog);

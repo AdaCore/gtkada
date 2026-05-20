@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-gentry"
 group = "Numeric/Text Data Entry"
-testgtk = "create_entry.adb"
+gtkada_demo = "create_entry.adb"
 text = '''
 A Gtk_Entry is a single line text editing widget.
 The text is automatically scrolled if it is longer than can be displayed

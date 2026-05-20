@@ -21,24 +21,25 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Ada.Calendar;        use Ada.Calendar;
-with Glib.Main;           use Glib, Glib.Main;
-with Gtk.Box;             use Gtk.Box;
-with Gtk.Enums;           use Gtk.Enums;
-with Gtk.Frame;           use Gtk.Frame;
-with Gtk.Label;           use Gtk.Label;
-with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk.Text_Buffer;     use Gtk.Text_Buffer;
-with Gtk.Text_Iter;       use Gtk.Text_Iter;
-with Gtk.Text_View;       use Gtk.Text_View;
-with Gtk.Widget;          use Gtk.Widget;
-with Gtkada.Handlers;     use Gtkada.Handlers;
+with Ada.Calendar;              use Ada.Calendar;
+with Glib.Main;
+use Glib, Glib.Main;
+with Gtk.Box;                   use Gtk.Box;
+with Gtk.Enums;                 use Gtk.Enums;
+with Gtk.Frame;                 use Gtk.Frame;
+with Gtk.Label;                 use Gtk.Label;
+with Gtk.Scrolled_Window;       use Gtk.Scrolled_Window;
+with Gtk.Text_Buffer;           use Gtk.Text_Buffer;
+with Gtk.Text_Iter;             use Gtk.Text_Iter;
+with Gtk.Text_View;             use Gtk.Text_View;
+with Gtk.Widget;                use Gtk.Widget;
+with Gtkada.Handlers;           use Gtkada.Handlers;
 with Ada.Unchecked_Conversion;
 with Ada.Unchecked_Deallocation;
 with System;
-with GNAT.OS_Lib;         use GNAT.OS_Lib;
+with GNAT.OS_Lib;               use GNAT.OS_Lib;
 with GNAT.Directory_Operations; use GNAT.Directory_Operations;
-with Ada.Text_IO; use Ada.Text_IO;
+with Ada.Text_IO;               use Ada.Text_IO;
 
 package body Create_Sources is
 
@@ -59,8 +60,8 @@ package body Create_Sources is
    --  The user data stored in our monitor.
    --  We use it to avoid checking the file system too often
 
-   function Convert is new Ada.Unchecked_Conversion
-     (System.Address, Source_User_Data_Access);
+   function Convert is new
+     Ada.Unchecked_Conversion (System.Address, Source_User_Data_Access);
 
    procedure On_Destroy (Box : access Gtk_Widget_Record'Class);
    --  Called when this demo is closed.
@@ -74,7 +75,7 @@ package body Create_Sources is
    --  Create a new input source that monitors changes in a file.
 
    function Prepare (Source : G_Source; Timeout : access Gint) return Gboolean;
-   function Check   (Source : G_Source) return Gboolean;
+   function Check (Source : G_Source) return Gboolean;
    procedure Finalize (Source : G_Source);
    --  See the documentation in glib-main.ads for these primitive operations
    --  of G_Source
@@ -100,16 +101,21 @@ package body Create_Sources is
 
    function Help return String is
    begin
-      return "The main even loop of gtk+ is highly configurable. It monitors"
+      return
+        "The main even loop of gtk+ is highly configurable. It monitors"
         & " various event sources, including the windowing system, pipes,"
         & " running processes, timeouts... and will call user-defined"
-        & " callbacks whenever some event happens." & ASCII.LF
+        & " callbacks whenever some event happens."
+        & ASCII.LF
         & "It is possible for you to define your own source of events, as"
-        & " demonstrated here." & ASCII.LF
-        & "This demo monitors a file on the disk (""sources"" in the testgtk/"
-        & " directory. Open a text editor, create that file if necessary,"
+        & " demonstrated here."
+        & ASCII.LF
+        & "This demo monitors a file on the disk (""sources"" in the"
+        & " gtkada_demo directory)."
+        & " Open a text editor, create that file if necessary,"
         & " add some data to it, and save. You will see immediately the new"
-        & " contents of the file." & ASCII.LF
+        & " contents of the file."
+        & ASCII.LF
         & "While it certainly isn't the most efficient way to do that (having"
         & " a timeout that checks periodically might be more appropriate),"
         & " this demo shows how you can create your own event source. On"
@@ -125,17 +131,16 @@ package body Create_Sources is
 
    function Refresh_File (Filename : String) return Boolean is
       Start, Last : Gtk_Text_Iter;
-      File : File_Type;
-      Contents : String (1 .. 1024);
-      L       : Natural;
+      File        : File_Type;
+      Contents    : String (1 .. 1024);
+      L           : Natural;
    begin
       Get_Start_Iter (Buffer, Start);
-      Get_End_Iter   (Buffer, Last);
+      Get_End_Iter (Buffer, Last);
       Delete (Buffer, Start, Last);
 
       Open (File, In_File, Get_Current_Dir & Filename);
-      Insert_At_Cursor
-        (Buffer, "File name is: " & Filename & ASCII.LF);
+      Insert_At_Cursor (Buffer, "File name is: " & Filename & ASCII.LF);
 
       loop
          Get_Line (File, Contents, L);
@@ -210,12 +215,11 @@ package body Create_Sources is
    --------------
 
    procedure Finalize (Source : G_Source) is
-      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
-        (Source_User_Data, Source_User_Data_Access);
-      procedure Unchecked_Free is new Ada.Unchecked_Deallocation
-        (String, String_Access);
-      Data : Source_User_Data_Access :=
-        Convert (Get_User_Data (Source));
+      procedure Unchecked_Free is new
+        Ada.Unchecked_Deallocation (Source_User_Data, Source_User_Data_Access);
+      procedure Unchecked_Free is new
+        Ada.Unchecked_Deallocation (String, String_Access);
+      Data : Source_User_Data_Access := Convert (Get_User_Data (Source));
    begin
       Unchecked_Free (Data.File_Name);
       Unchecked_Free (Data);
@@ -230,20 +234,21 @@ package body Create_Sources is
       Data   : Source_User_Data_Access;
    begin
       if File_Monitor = Null_Source_Type then
-         File_Monitor := G_Source_Type_New
-           (Prepare  => Prepare'Access,
-            Check    => Check'Access,
-            Finalize => Finalize'Access);
+         File_Monitor :=
+           G_Source_Type_New
+             (Prepare  => Prepare'Access,
+              Check    => Check'Access,
+              Finalize => Finalize'Access);
       end if;
 
-      Data := new Source_User_Data'
-        (Last_Check     => Clock,
-         File_Name      => new String'(File_Name),
-         File_Timestamp => Invalid_Time);
+      Data :=
+        new Source_User_Data'
+          (Last_Check     => Clock,
+           File_Name      => new String'(File_Name),
+           File_Timestamp => Invalid_Time);
       Source := Source_New (File_Monitor, Data.all'Address);
 
-      String_Sources.Set_Callback
-        (Source, Refresh_File'Access, File_Name);
+      String_Sources.Set_Callback (Source, Refresh_File'Access, File_Name);
 
       --  Start executing Source
       Id := Attach (Source, null);
@@ -268,9 +273,9 @@ package body Create_Sources is
    ---------
 
    procedure Run (F : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Label  : Gtk_Label;
-      View   : Gtk_Text_View;
-      Box    : Gtk_Box;
+      Label    : Gtk_Label;
+      View     : Gtk_Text_View;
+      Box      : Gtk_Box;
       Scrolled : Gtk_Scrolled_Window;
    begin
       Gtk_New_Vbox (Box, Homogeneous => False);

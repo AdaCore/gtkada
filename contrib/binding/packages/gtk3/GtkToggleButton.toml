@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-toggle_button"
 group = "Buttons and Toggles"
-testgtk = "create_toggle_buttons.adb"
+gtkada_demo = "create_toggle_buttons.adb"
 text = '''
 You should consider using a Gtk_Check_Button instead, since it looks nicer and provides more visual clues that the button can be toggled.
      '''

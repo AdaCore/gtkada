@@ -46,7 +46,7 @@ exec_prefix=@exec_prefix@
 libdir=@libdir@
 datadir=@datadir@
 datarootdir=@datarootdir@
-exampledir=${datadir}/examples/gtkada/testgtk
+exampledir=${datadir}/examples/gtkada/gtkada_demo
 
 all:
 
@@ -89,7 +89,7 @@ src/gtkada-intl.adb: src/gtkada-intl.gpb Makefile
 
 tests:
 	@echo "====== Building tests ====="
-	cd testgtk; ${GPRBUILD_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) -Ptestgtk.gpr -aP ../src
+	cd gtkada_demo; ${GPRBUILD_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) -Pgtkada_demo.gpr -aP ../src
 
 install/%: force
 	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) --build-name=$(@F) \
@@ -106,9 +106,9 @@ endif
 install: install-clean
 	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) \
 		--mode=usage -Psrc/tools/tools.gpr
-	cd testgtk; ${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) \
+	cd gtkada_demo; ${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) \
 		--mode=usage --exec-subdir=${DESTDIR}${exampledir} \
-		-Ptestgtk.gpr -aP ../src
+		-gtkada_demo.gpr -aP ../src
 ifneq ($(OS),Windows_NT)
 	ln -s ${libdir} ${DESTDIR}${datadir}/examples/gtkada --force
 endif
@@ -144,11 +144,11 @@ clean-generic:
 
 mostlyclean-generic: clean-generic
 	-${RM} Makefile src/config.h gtkada_shared.gpr
-	-${RM} testgtk/opengl/view_gl.adb
+	-${RM} gtkada_demo/opengl/view_gl.adb
 
 clean/%: force
 	# -gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/tools/tools.gpr
-	# -gprclean -r -q -XLIBRARY_TYPE=$(@F) -Ptestgtk/testgtk.gpr
+	# -gprclean -r -q -XLIBRARY_TYPE=$(@F) -gtkada_demo/gtkada_demo.gpr
 	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/gtkada.gpr
 
 clean: clean-generic clean/static clean/static-pic clean/relocatable

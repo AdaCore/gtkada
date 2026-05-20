@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-calendar"
 group = "Selectors"
-testgtk = "create_calendar.adb"
+gtkada_demo = "create_calendar.adb"
 
 [[parameter]]
 name = "self"

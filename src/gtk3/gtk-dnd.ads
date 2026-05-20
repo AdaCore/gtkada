@@ -40,7 +40,7 @@
 --
 --  Below is a summary of what is needed to add drag-and-drop capabilities to
 --  your application. We highly recommend that you look at, and understand,
---  the example in testgtk (create_dnd.adb), before using these features in
+--  the example in gtkada_demo (create_dnd.adb), before using these features in
 --  your own application.
 --
 --  See also the package Gtk.Selection, that contains some lower subprograms
@@ -76,7 +76,7 @@
 --
 --  <c_version>2.16.6</c_version>
 --  <group>Inter-Process communication</group>
---  <testgtk>create_dnd.adb</testgtk>
+--  <gtkada_demo>create_dnd.adb</gtkada_demo>
 
 with Gdk.Dnd;           use Gdk.Dnd;
 with Gdk.Drag_Contexts; use Gdk.Drag_Contexts;
@@ -97,11 +97,11 @@ package Gtk.Dnd is
    --  Specify the various types of action that will be taken on behalf of the
    --  user for a drag destination site.
 
-   Dest_No_Default        : constant Dest_Defaults;
+   Dest_No_Default : constant Dest_Defaults;
    --  No default behavior is provided for the drop site, this is your own
    --  responsabily. You need to handler the "drag_drop" signal yourself.
 
-   Dest_Default_Motion    : constant Dest_Defaults;
+   Dest_Default_Motion : constant Dest_Defaults;
    --  If set for a widget, GtkAda, during a drag over this widget will check
    --  if the drag matches this widget's list of possible targets and
    --  actions. gdk_drag_status is called as appropriate.
@@ -111,7 +111,7 @@ package Gtk.Dnd is
    --  long as a drag is over this widget and the wiget drag format and action
    --  is acceptable.
 
-   Dest_Default_Drop      : constant Dest_Defaults;
+   Dest_Default_Drop : constant Dest_Defaults;
    --  If set for a widget, when a drop occurs, GtkAda+ will check if the drag
    --  matches this widget's list of possible targets and actions. If so,
    --  GtkAda will call Get_Data on behalf of the widget. Whether or not
@@ -119,7 +119,7 @@ package Gtk.Dnd is
    --  action was a move, then if the drag was succesful, then True will be
    --  passed for the delete parameter to Finish.
 
-   Dest_Default_All       : constant Dest_Defaults;
+   Dest_Default_All : constant Dest_Defaults;
    --  If set, specifies that all default actions should be taken.
 
    ------------------------------------------
@@ -160,8 +160,7 @@ package Gtk.Dnd is
    --  If Use_Coordinates is True, send the same coordinates to the destination
    --  because it is an embedded subwindow.
 
-   procedure Dest_Unset
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+   procedure Dest_Unset (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
    --  Clear information about a drop destination set with Dest_Set. The
    --  widget will no longer receive notification of drags.
 
@@ -199,8 +198,7 @@ package Gtk.Dnd is
    --  this function.
 
    function Dest_Get_Track_Motion
-     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
-      return Boolean;
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class) return Boolean;
    procedure Dest_Set_Track_Motion
      (Widget       : access Gtk.Widget.Gtk_Widget_Record'Class;
       Track_Motion : Boolean);
@@ -265,11 +263,9 @@ package Gtk.Dnd is
      (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
       Pixbuf : Gdk.Pixbuf.Gdk_Pixbuf);
    procedure Source_Set_Icon_Stock
-     (Widget   : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Stock_Id : String);
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class; Stock_Id : String);
    procedure Source_Set_Icon_Name
-     (Widget    : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Icon_Name : String);
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class; Icon_Name : String);
    --  Set the icon that will be used for drags from a particular widget.
    --  GtkAda retains a reference count for the arguments, and will release
    --  them when they are no longer needed.
@@ -378,10 +374,7 @@ package Gtk.Dnd is
    --  @param Hot_y the Y offset within the pixbuf of the hotspot.
 
    procedure Set_Icon_Stock
-     (Context  : Drag_Context;
-      Stock_Id : String;
-      Hot_X    : Gint;
-      Hot_Y    : Gint);
+     (Context : Drag_Context; Stock_Id : String; Hot_X : Gint; Hot_Y : Gint);
    --  Sets the icon for a given drag from a stock ID
    --
    --  @param Context the context for a drag. (This must be called with a
@@ -391,10 +384,7 @@ package Gtk.Dnd is
    --  @param Hot_y the Y offset within the icon of the hotspot.
 
    procedure Set_Icon_Name
-     (Context   : Drag_Context;
-      Icon_Name : String;
-      Hot_X     : Gint;
-      Hot_Y     : Gint);
+     (Context : Drag_Context; Icon_Name : String; Hot_X : Gint; Hot_Y : Gint);
    --  Sets the icon for a given drag from a named themed icon. See
    --  the docs for Gtk_Icon_Theme for more details. Note that the
    --  size of the icon depends on the icon theme (the icon is

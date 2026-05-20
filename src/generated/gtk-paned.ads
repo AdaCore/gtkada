@@ -91,7 +91,7 @@
 --  gtk_widget_set_size_request (frame2, 50, -1); ```
 --
 --  <group>Layout containers</group>
---  <testgtk>create_paned.adb</testgtk>
+--  <gtkada_demo>create_paned.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                  use Glib;

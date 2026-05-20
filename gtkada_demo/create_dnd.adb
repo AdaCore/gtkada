@@ -21,35 +21,35 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib;          use Glib;
-with Glib.Values;   use Glib.Values;
-with Gtk.Box;       use Gtk.Box;
-with Gtk.Dnd;       use Gtk.Dnd;
-with Gtk.Target_List; use Gtk.Target_List;
-with Gdk.Types;     use Gdk.Types;
-with Gtk.Enums;     use Gtk.Enums;
-with Gtk.Button;    use Gtk.Button;
-with Gtk.Grid;      use Gtk.Grid;
-with Gtk.Label;     use Gtk.Label;
-with Gtk.Handlers;  use Gtk.Handlers;
-with Gtk.Image;     use Gtk.Image;
-with Gtkada.Types;  use Gtkada.Types;
-with Gtk.Widget;    use Gtk.Widget;
+with Glib;               use Glib;
+with Glib.Values;        use Glib.Values;
+with Gtk.Box;            use Gtk.Box;
+with Gtk.Dnd;            use Gtk.Dnd;
+with Gtk.Target_List;    use Gtk.Target_List;
+with Gdk.Types;          use Gdk.Types;
+with Gtk.Enums;          use Gtk.Enums;
+with Gtk.Button;         use Gtk.Button;
+with Gtk.Grid;           use Gtk.Grid;
+with Gtk.Label;          use Gtk.Label;
+with Gtk.Handlers;       use Gtk.Handlers;
+with Gtk.Image;          use Gtk.Image;
+with Gtkada.Types;       use Gtkada.Types;
+with Gtk.Widget;         use Gtk.Widget;
 with Interfaces.C.Strings;
-with Gdk.Dnd;       use Gdk.Dnd;
-with Gdk.Drag_Contexts; use Gdk.Drag_Contexts;
-with Gdk.Pixbuf;    use Gdk.Pixbuf;
-with Gdk.Window;    use Gdk.Window;
-with Gtk.Frame;     use Gtk.Frame;
+with Gdk.Dnd;            use Gdk.Dnd;
+with Gdk.Drag_Contexts;  use Gdk.Drag_Contexts;
+with Gdk.Pixbuf;         use Gdk.Pixbuf;
+with Gdk.Window;         use Gdk.Window;
+with Gtk.Frame;          use Gtk.Frame;
 with Gtk.Selection_Data; use Gtk.Selection_Data;
 
 package body Create_Dnd is
 
    function "+" (S : String) return Gtkada.Types.Chars_Ptr
-                renames Gtkada.Types.New_String;
+   renames Gtkada.Types.New_String;
 
-   Drag_Icon_Xpm : constant Gtkada.Types.Chars_Ptr_Array
-     := "36 48 9 1"
+   Drag_Icon_Xpm : constant Gtkada.Types.Chars_Ptr_Array :=
+     "36 48 9 1"
      + "       c None"
      + ".      c #020204"
      + "+      c #8F8F90"
@@ -108,8 +108,8 @@ package body Create_Dnd is
      + ".&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&."
      + "....................................";
 
-   Trashcan_Closed_Xpm : constant Gtkada.Types.Chars_Ptr_Array
-     := "64 80 17 1"
+   Trashcan_Closed_Xpm : constant Gtkada.Types.Chars_Ptr_Array :=
+     "64 80 17 1"
      + "        c None"
      + ".       c #030304"
      + "+       c #5A5A5C"
@@ -312,36 +312,35 @@ package body Create_Dnd is
 
    Log : Gtk_Label;
 
-   Drag_Icon            : Gdk_Pixbuf;
-   Trashcan_Open        : Gdk_Pixbuf;
-   Trashcan_Closed      : Gdk_Pixbuf;
+   Drag_Icon       : Gdk_Pixbuf;
+   Trashcan_Open   : Gdk_Pixbuf;
+   Trashcan_Closed : Gdk_Pixbuf;
 
-   My_Target_String1  : constant Guint := 0;
-   My_Target_String2  : constant Guint := 1;
-   My_Target_Url      : constant Guint := 2;
-   My_Target_Rootwin  : constant Guint := 3;
+   My_Target_String1 : constant Guint := 0;
+   My_Target_String2 : constant Guint := 1;
+   My_Target_Url     : constant Guint := 2;
+   My_Target_Rootwin : constant Guint := 3;
 
    package Widget_Callback is new
      Gtk.Handlers.Callback (Gtk.Widget.Gtk_Widget_Record);
    package Return_Callback is new
      Gtk.Handlers.Return_Callback (Gtk.Widget.Gtk_Widget_Record, Boolean);
 
-   Target_Table : constant Target_Entry_Array
-     := ((+"STRING",        0, My_Target_String1),
-         (+"text/plain",    0, My_Target_String2),
-         (+"text/uri-list", 0, My_Target_Url),
-         (+"application/x-rootwin-drop", 0,
-          My_Target_Rootwin));
+   Target_Table : constant Target_Entry_Array :=
+     ((+"STRING", 0, My_Target_String1),
+      (+"text/plain", 0, My_Target_String2),
+      (+"text/uri-list", 0, My_Target_Url),
+      (+"application/x-rootwin-drop", 0, My_Target_Rootwin));
    --  all the known data types in this application. Any MIME type can be used,
    --  as well a strings defined in the motif protocol, like "STRING".
 
-   Target_Table_String : constant Target_Entry_Array
-     := ((+"STRING",        0, My_Target_String1),
-         (+"text/plain",    0, My_Target_String2));
+   Target_Table_String : constant Target_Entry_Array :=
+     ((+"STRING", 0, My_Target_String1),
+      (+"text/plain", 0, My_Target_String2));
    --  For a drop site that only accepts Data of type STRING or text/plain
 
-   Target_Table_Url : constant Target_Entry_Array
-     := (1 => (+"text/uri-list", 0, My_Target_Url));
+   Target_Table_Url : constant Target_Entry_Array :=
+     (1 => (+"text/uri-list", 0, My_Target_Url));
    --  For a drop site that only accepts Data of type url.
 
    ----------
@@ -350,7 +349,8 @@ package body Create_Dnd is
 
    function Help return String is
    begin
-      return "This demo demonstrates the drag-and-drop features of GtkAda."
+      return
+        "This demo demonstrates the drag-and-drop features of GtkAda."
         & " Several @bdrag-and-drop@B (dnd) protocols are supported, so that"
         & " your application can easily communicate with other external codes,"
         & " but this is mostly transparent for you."
@@ -359,7 +359,7 @@ package body Create_Dnd is
         & " difficult, it requires you to take care of several things, which"
         & " might be a little bit tricky the first time. You should look at"
         & " this demo while reading its source code, extensively documented"
-        & " in testgtk/create_dnd.adb in the GtkAda distribution."
+        & " in gtkada_demo/create_dnd.adb in the GtkAda distribution."
         & ASCII.LF
         & "Several things worth noting in this demo:"
         & ASCII.LF
@@ -423,12 +423,12 @@ package body Create_Dnd is
    --  This is the general form for handlers of "drag_drop".
 
    function Target_Drag_Drop
-     (Widget : access Gtk_Widget_Record'Class;
-      Args   : Glib.Values.GValues) return Boolean
+     (Widget : access Gtk_Widget_Record'Class; Args : Glib.Values.GValues)
+      return Boolean
    is
       Context : Drag_Context := Drag_Context (Get_Object (Nth (Args, 1)));
-      X       : constant Gint  := Get_Int (Nth (Args, 2));
-      Y       : constant Gint  := Get_Int (Nth (Args, 3));
+      X       : constant Gint := Get_Int (Nth (Args, 2));
+      Y       : constant Gint := Get_Int (Nth (Args, 3));
       Time    : constant Guint := Get_Uint (Nth (Args, 4));
       pragma Unreferenced (Context, X, Y, Time);
    begin
@@ -451,11 +451,11 @@ package body Create_Dnd is
       Args   : Glib.Values.GValues)
    is
       Context : constant Drag_Context :=
-         Drag_Context (Get_Object (Nth (Args, 1)));
-      X       : constant Gint  := Get_Int (Nth (Args, 2));
-      Y       : constant Gint  := Get_Int (Nth (Args, 3));
+        Drag_Context (Get_Object (Nth (Args, 1)));
+      X       : constant Gint := Get_Int (Nth (Args, 2));
+      Y       : constant Gint := Get_Int (Nth (Args, 3));
       Data    : constant Gtk_Selection_Data :=
-         From_Object (Get_Address (Nth (Args, 4)));
+        From_Object (Get_Address (Nth (Args, 4)));
 
       Info : constant Guint := Get_Uint (Nth (Args, 5));
       --  third item of the Target_Entry
@@ -464,9 +464,7 @@ package body Create_Dnd is
 
       pragma Unreferenced (Widget, X, Y, Info);
    begin
-      if Get_Length (Data) >= 0
-        and then Get_Format (Data) = 8
-      then
+      if Get_Length (Data) >= 0 and then Get_Format (Data) = 8 then
          Put_Log ("Received " & Get_Data_As_String (Data) & " in trashcan");
          Finish
            (Context, Success => True, Del => False, Time => Guint32 (Time));
@@ -487,14 +485,13 @@ package body Create_Dnd is
    --  This is the general form for handlers of "drag_motion".
 
    function Target_Drag_Motion
-      (Widget : access Gtk_Widget_Record'Class;
-       Args   : Glib.Values.GValues)
+     (Widget : access Gtk_Widget_Record'Class; Args : Glib.Values.GValues)
       return Boolean
    is
       Context : constant Drag_Context :=
-         Drag_Context (Get_Object (Nth (Args, 1)));
-      X       : constant Gint  := Get_Int (Nth (Args, 2));
-      Y       : constant Gint  := Get_Int (Nth (Args, 3));
+        Drag_Context (Get_Object (Nth (Args, 1)));
+      X       : constant Gint := Get_Int (Nth (Args, 2));
+      Y       : constant Gint := Get_Int (Nth (Args, 3));
       Time    : constant Guint := Get_Uint (Nth (Args, 4));
       pragma Unreferenced (X, Y);
    begin
@@ -520,8 +517,7 @@ package body Create_Dnd is
    --  This is the general form of handlers for "drag_leave".
 
    procedure Target_Drag_Leave
-      (Widget : access Gtk_Widget_Record'Class;
-       Args   : Glib.Values.GValues)
+     (Widget : access Gtk_Widget_Record'Class; Args : Glib.Values.GValues)
    is
       Context : Drag_Context := Drag_Context (Get_Object (Nth (Args, 1)));
       Time    : constant Guint := Get_Uint (Nth (Args, 2));
@@ -545,21 +541,17 @@ package body Create_Dnd is
       Args   : Glib.Values.GValues)
    is
       Context : constant Drag_Context :=
-         Drag_Context (Get_Object (Nth (Args, 1)));
-      X       : constant Gint  := Get_Int (Nth (Args, 2));
-      Y       : constant Gint  := Get_Int (Nth (Args, 3));
+        Drag_Context (Get_Object (Nth (Args, 1)));
+      X       : constant Gint := Get_Int (Nth (Args, 2));
+      Y       : constant Gint := Get_Int (Nth (Args, 3));
       Data    : constant Gtk_Selection_Data :=
-         From_Object (Get_Address (Nth (Args, 4)));
-      Info : constant Guint := Get_Uint (Nth (Args, 5));
-      Time : constant Guint := Get_Uint (Nth (Args, 6));
+        From_Object (Get_Address (Nth (Args, 4)));
+      Info    : constant Guint := Get_Uint (Nth (Args, 5));
+      Time    : constant Guint := Get_Uint (Nth (Args, 6));
       pragma Unreferenced (Widget, X, Y, Info);
    begin
-      if Get_Length (Data) >= 0
-        and then Get_Format (Data) = 8
-      then
-         Put_Log ("Received "
-                  & Get_Data_As_String (Data)
-                  & " in label");
+      if Get_Length (Data) >= 0 and then Get_Format (Data) = 8 then
+         Put_Log ("Received " & Get_Data_As_String (Data) & " in label");
          Gtk.Dnd.Finish
            (Context, Success => True, Del => False, Time => Guint32 (Time));
       else
@@ -583,23 +575,26 @@ package body Create_Dnd is
       Args   : Glib.Values.GValues)
    is
       Context : constant Drag_Context :=
-         Drag_Context (Get_Object (Nth (Args, 1)));
+        Drag_Context (Get_Object (Nth (Args, 1)));
       Data    : constant Gtk_Selection_Data :=
-         From_Object (Get_Address (Nth (Args, 2)));
-      Info : constant Guint := Get_Uint (Nth (Args, 3));
-      Time : constant Guint := Get_Uint (Nth (Args, 4));
+        From_Object (Get_Address (Nth (Args, 2)));
+      Info    : constant Guint := Get_Uint (Nth (Args, 3));
+      Time    : constant Guint := Get_Uint (Nth (Args, 4));
       pragma Unreferenced (Widget, Context, Time);
    begin
       if Info = My_Target_Rootwin then
          Put_Log ("I was dropped on the root window");
 
       elsif Info = My_Target_Url then
-         Selection_Data_Set (Data, Get_Target (Data), 8,
-                             "file://www.act-europe.fr");
+         Selection_Data_Set
+           (Data, Get_Target (Data), 8, "file://www.act-europe.fr");
 
       else
-         Selection_Data_Set (Data, Get_Target (Data), 8,
-                             "I'm Data!, Info was " & Guint'Image (Info));
+         Selection_Data_Set
+           (Data,
+            Get_Target (Data),
+            8,
+            "I'm Data!, Info was " & Guint'Image (Info));
       end if;
    end Source_Drag_Data_Get;
 
@@ -613,11 +608,11 @@ package body Create_Dnd is
    --  This is the general handler type for "drag_data_delete".
 
    procedure Source_Drag_Data_Delete
-     (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Args    : Glib.Values.GValues)
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Args   : Glib.Values.GValues)
    is
       Context : constant Drag_Context :=
-         Drag_Context (Get_Object (Nth (Args, 1)));
+        Drag_Context (Get_Object (Nth (Args, 1)));
       pragma Unreferenced (Context, Widget);
    begin
       Put_Log ("Delete the data!");
@@ -629,8 +624,8 @@ package body Create_Dnd is
    --  Called in reaction to the "drag-failed" event.
 
    function Drag_Failed
-     (Widget  : access Gtk.Widget.Gtk_Widget_Record'Class;
-      Args    : Glib.Values.GValues) return Boolean is
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class;
+      Args   : Glib.Values.GValues) return Boolean is
    begin
       Put_Log ("Drag_Failed");
       --  Returning True here means canceling the animation where the
@@ -643,11 +638,11 @@ package body Create_Dnd is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Table     : Gtk_Grid;
-      Label     : Gtk_Label;
-      Button    : Gtk_Button;
-      Pixmap    : Gtk_Image;
-      Box       : Gtk_Box;
+      Table  : Gtk_Grid;
+      Label  : Gtk_Label;
+      Button : Gtk_Button;
+      Pixmap : Gtk_Image;
+      Box    : Gtk_Box;
    begin
       Set_Label (Frame, "Drag-and-Drop");
 
@@ -667,42 +662,49 @@ package body Create_Dnd is
 
       --  First drop site: a simple label
 
-      Gtk_New (Label, "Drop plain text here." & ASCII.LF
-               & "Action_Move only" & ASCII.LF);
-      Gtk.Dnd.Dest_Set (Label,
-                        Dest_Default_All,
-                        Target_Table_String, -- only STRING or text/plain
-                        Action_Move);
+      Gtk_New
+        (Label,
+         "Drop plain text here." & ASCII.LF & "Action_Move only" & ASCII.LF);
+      Gtk.Dnd.Dest_Set
+        (Label,
+         Dest_Default_All,
+         Target_Table_String, -- only STRING or text/plain
+         Action_Move);
       Table.Attach (Label, 0, 0);
 
-      Widget_Callback.Connect (Label, "drag_data_received",
-                               Label_Drag_Data_Received'Access);
+      Widget_Callback.Connect
+        (Label, "drag_data_received", Label_Drag_Data_Received'Access);
 
       --  Second drop site: a simple label
 
-      Gtk_New (Label, "Drop Url here." & ASCII.LF
-               & "Action_Copy or Action_Move" & ASCII.LF);
-      Gtk.Dnd.Dest_Set (Label,
-                        Dest_Default_All,
-                        Target_Table_Url, -- only urls
-                        Action_Copy + Action_Move);
+      Gtk_New
+        (Label,
+         "Drop Url here."
+         & ASCII.LF
+         & "Action_Copy or Action_Move"
+         & ASCII.LF);
+      Gtk.Dnd.Dest_Set
+        (Label,
+         Dest_Default_All,
+         Target_Table_Url, -- only urls
+         Action_Copy + Action_Move);
       Table.Attach (Label, 1, 0);
 
-      Widget_Callback.Connect (Label, "drag_data_received",
-                               Label_Drag_Data_Received'Access);
+      Widget_Callback.Connect
+        (Label, "drag_data_received", Label_Drag_Data_Received'Access);
 
       --  Third drop site: a simple label
 
-      Gtk_New (Label, "Drop Anything" & ASCII.LF
-               & "only Here" & ASCII.LF);
-      Gtk.Dnd.Dest_Set (Label,
-                        Dest_Default_All,
-                        Target_Table, -- only urls
-                        Action_Copy + Action_Move);
+      Gtk_New (Label, "Drop Anything" & ASCII.LF & "only Here" & ASCII.LF);
+      Gtk.Dnd.Dest_Set
+        (Label,
+         Dest_Default_All,
+         Target_Table, -- only urls
+         Action_Copy + Action_Move);
       Table.Attach (Label, 2, 0);
 
-      Widget_Callback.Connect (Label, "drag_data_received",
-                               Label_Drag_Data_Received'Access);
+      Widget_Callback.Connect
+        (Label, "drag_data_received", Label_Drag_Data_Received'Access);
 
       -----------------
       --  Drag sites --
@@ -711,49 +713,51 @@ package body Create_Dnd is
       --  First Drag site
 
       Gtk_New (Button, "Drag String from Here" & ASCII.LF);
-      Gtk.Dnd.Source_Set (Button,
-                          Button1_Mask or Button3_Mask,
-                          Target_Table_String,
-                          Action_Copy + Action_Move);
+      Gtk.Dnd.Source_Set
+        (Button,
+         Button1_Mask or Button3_Mask,
+         Target_Table_String,
+         Action_Copy + Action_Move);
       Table.Attach (Button, 0, 1);
 
-      Widget_Callback.Connect (Button, "drag_data_get",
-                               Source_Drag_Data_Get'Access);
-      Widget_Callback.Connect (Button, "drag_data_delete",
-                               Source_Drag_Data_Delete'Access);
-      Return_Callback.Connect (Button, "drag-failed",
-                               Drag_Failed'Access);
+      Widget_Callback.Connect
+        (Button, "drag_data_get", Source_Drag_Data_Get'Access);
+      Widget_Callback.Connect
+        (Button, "drag_data_delete", Source_Drag_Data_Delete'Access);
+      Return_Callback.Connect (Button, "drag-failed", Drag_Failed'Access);
 
       Gtk.Dnd.Source_Set_Icon_Pixbuf (Button, Drag_Icon);
 
       --  Second Drag site
 
       Gtk_New (Button, "Drag Url from Here" & ASCII.LF);
-      Gtk.Dnd.Source_Set (Button,
-                          Button1_Mask or Button3_Mask,
-                          Target_Table_Url,
-                          Action_Copy + Action_Move);
+      Gtk.Dnd.Source_Set
+        (Button,
+         Button1_Mask or Button3_Mask,
+         Target_Table_Url,
+         Action_Copy + Action_Move);
       Table.Attach (Button, 1, 1);
 
-      Widget_Callback.Connect (Button, "drag_data_get",
-                               Source_Drag_Data_Get'Access);
-      Widget_Callback.Connect (Button, "drag_data_delete",
-                               Source_Drag_Data_Delete'Access);
+      Widget_Callback.Connect
+        (Button, "drag_data_get", Source_Drag_Data_Get'Access);
+      Widget_Callback.Connect
+        (Button, "drag_data_delete", Source_Drag_Data_Delete'Access);
 
       --  Third Drag site
 
-      Gtk_New (Button, "Drag String or" & ASCII.LF
-               & "Url from Here" & ASCII.LF);
-      Gtk.Dnd.Source_Set (Button,
-                          Button1_Mask or Button3_Mask,
-                          Target_Table,
-                          Action_Copy + Action_Move + Action_Ask);
+      Gtk_New
+        (Button, "Drag String or" & ASCII.LF & "Url from Here" & ASCII.LF);
+      Gtk.Dnd.Source_Set
+        (Button,
+         Button1_Mask or Button3_Mask,
+         Target_Table,
+         Action_Copy + Action_Move + Action_Ask);
       Table.Attach (Button, 2, 1);
 
-      Widget_Callback.Connect (Button, "drag_data_get",
-                               Source_Drag_Data_Get'Access);
-      Widget_Callback.Connect (Button, "drag_data_delete",
-                               Source_Drag_Data_Delete'Access);
+      Widget_Callback.Connect
+        (Button, "drag_data_get", Source_Drag_Data_Get'Access);
+      Widget_Callback.Connect
+        (Button, "drag_data_delete", Source_Drag_Data_Delete'Access);
 
       --  Special drop site
 
@@ -761,14 +765,12 @@ package body Create_Dnd is
       Gtk.Dnd.Dest_Set (Pixmap);
       Table.Attach (Pixmap, 0, 2);
 
-      Return_Callback.Connect (Pixmap, "drag_drop",
-                               Target_Drag_Drop'Access);
-      Widget_Callback.Connect (Pixmap, "drag_data_received",
-                               Target_Drag_Data_Received'Access);
-      Return_Callback.Connect (Pixmap, "drag_motion",
-                               Target_Drag_Motion'Access);
-      Widget_Callback.Connect (Pixmap, "drag_leave",
-                               Target_Drag_Leave'Access);
+      Return_Callback.Connect (Pixmap, "drag_drop", Target_Drag_Drop'Access);
+      Widget_Callback.Connect
+        (Pixmap, "drag_data_received", Target_Drag_Data_Received'Access);
+      Return_Callback.Connect
+        (Pixmap, "drag_motion", Target_Drag_Motion'Access);
+      Widget_Callback.Connect (Pixmap, "drag_leave", Target_Drag_Leave'Access);
 
       --  The log window
       Gtk_New (Log);

@@ -4,7 +4,7 @@
 
 [doc]
 screenshot = "gtk-arrow"
-testgtk = "create_arrow.adb"
+gtkada_demo = "create_arrow.adb"
 
 [[parameter]]
 name = "self"

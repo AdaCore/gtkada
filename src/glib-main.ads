@@ -77,7 +77,7 @@
 --
 --  <c_version>glib 2.10.2</c_version>
 --  <group>Glib, the general-purpose library</group>
---  <testgtk>create_sources.adb</testgtk>
+--  <gtkada_demo>create_sources.adb</gtkada_demo>
 
 with Glib.Poll;
 with Glib.Spawn;
@@ -97,7 +97,7 @@ package Glib.Main is
    function Main_Context_New return G_Main_Context;
    --  Create a new context
 
-   procedure Main_Context_Ref   (Context : G_Main_Context);
+   procedure Main_Context_Ref (Context : G_Main_Context);
    procedure Main_Context_Unref (Context : G_Main_Context);
    --  Increase or decreate the reference counting for Context. When this
    --  reaches 0, the memory is freed.
@@ -156,8 +156,9 @@ package Glib.Main is
 
    type G_Source_Func is access function return Boolean;
 
-   type Source_Prepare_Func is access
-     function (Source : G_Source; Timeout : access Gint) return Gboolean;
+   type Source_Prepare_Func is
+     access function
+       (Source : G_Source; Timeout : access Gint) return Gboolean;
    pragma Convention (C, Source_Prepare_Func);
    --  Called before all the file descriptors are polled. If the source can
    --  determine that it is ready here (without waiting for the results of the
@@ -167,25 +168,26 @@ package Glib.Main is
    --  sources returned -1, or it will be the minimum of all the timeout_
    --  values returned which were >= 0.
 
-   type Source_Check_Func is access
-     function (Source : G_Source) return Gboolean;
+   type Source_Check_Func is
+     access function (Source : G_Source) return Gboolean;
    pragma Convention (C, Source_Check_Func);
    --  Called after all the file descriptors are polled. The source should
    --  return TRUE if it is ready to be dispatched. Note that some time may
    --  have passed since the previous prepare function was called, so the
    --  source should be checked again here.
 
-   type G_Source_Func_User_Data is access
-     function (User_Data : System.Address) return Gboolean;
+   type G_Source_Func_User_Data is
+     access function (User_Data : System.Address) return Gboolean;
    pragma Convention (C, G_Source_Func_User_Data);
    --  A callback for a G_Source. If it returns False, the source will be
    --  removed and no longer executed. User_Data is the data passed to
    --  Set_Callback.
 
-   type Source_Dispatch_Func is access
-     function (Source   : G_Source;
-               Callback : G_Source_Func_User_Data;
-               Data     : System.Address) return Gboolean;
+   type Source_Dispatch_Func is
+     access function
+       (Source   : G_Source;
+        Callback : G_Source_Func_User_Data;
+        Data     : System.Address) return Gboolean;
    pragma Convention (C, Source_Dispatch_Func);
    --  Called to dispatch the event source, after it has returned TRUE in
    --  either its prepare or its check function. The dispatch function is
@@ -251,7 +253,7 @@ package Glib.Main is
    --  created through that function, and returns undefined results (or even
    --  segfaults) otherwise
 
-   procedure Source_Ref   (Source : G_Source);
+   procedure Source_Ref (Source : G_Source);
    procedure Source_Unref (Source : G_Source);
    --  Increase or decrease the reference counting for Source. When this
    --  reaches 0, the Source is destroyed
@@ -262,8 +264,7 @@ package Glib.Main is
    --  Source cannot be added to another context.
 
    function Attach
-     (Source  : G_Source;
-      Context : G_Main_Context := null) return G_Source_Id;
+     (Source : G_Source; Context : G_Main_Context := null) return G_Source_Id;
    --  Add Source to Context. The Source will be executed within that context.
    --  If context is null, the source is added to the default context.
    --  Returns the Id of the source within Context.
@@ -286,13 +287,13 @@ package Glib.Main is
    --  occurs before redrawing and avoid redrawing twice.
 
    procedure Set_Priority (Source : G_Source; Priority : G_Priority);
-   function  Get_Priority (Source : G_Source) return G_Priority;
+   function Get_Priority (Source : G_Source) return G_Priority;
    --  Sets the priority of a source. While the main loop is being run, a
    --  source will be dispatched if it is ready to be dispatched and no sources
    --  at a higher (numerically smaller) priority are ready to be dispatched.
 
    procedure Set_Can_Recurse (Source : G_Source; Can_Recurse : Boolean);
-   function  Get_Can_Recurse (Source : G_Source) return Boolean;
+   function Get_Can_Recurse (Source : G_Source) return Boolean;
    --  Sets whether a source can be called recursively. If can_recurse is TRUE,
    --  then while the source is being dispatched then this source will be
    --  processed normally. Otherwise, all processing of this source is blocked
@@ -312,15 +313,11 @@ package Glib.Main is
    --  function on a destroyed source is an error. The returned value is Null
    --  for sources that haven't been attached yet
 
-   procedure Add_Poll
-     (Source : G_Source;
-      Fd     : Glib.Poll.GPoll_FD);
+   procedure Add_Poll (Source : G_Source; Fd : Glib.Poll.GPoll_FD);
    --  Adds a file descriptor to the set of file descriptors polled for this
    --  source.
 
-   procedure Remove_Poll
-     (Source : G_Source;
-      Fd     : Glib.Poll.GPoll_FD);
+   procedure Remove_Poll (Source : G_Source; Fd : Glib.Poll.GPoll_FD);
    --  Removes a file descriptor from the set of file descriptors polled
    --  for this source.
 
@@ -328,11 +325,10 @@ package Glib.Main is
       type User_Data is limited private;
    function Generic_Child_Add_Watch
      (pid      : Glib.Spawn.GPid;
-      callback : access procedure
-        (pid    : Glib.Spawn.GPid;
-         status : Glib.Gint;
-         data   : access User_Data);
-      data   : access User_Data) return G_Source_Id;
+      callback :
+        access procedure
+          (pid : Glib.Spawn.GPid; status : Glib.Gint; data : access User_Data);
+      data     : access User_Data) return G_Source_Id;
    pragma Import (C, Generic_Child_Add_Watch, "g_child_watch_add");
    --  Sets a function to be called when the child indicated by pid exits, at a
    --  default priority, G_PRIORITY_DEFAULT.
@@ -379,8 +375,7 @@ package Glib.Main is
    --  This is implemented by using Idle_Source_New internally.
 
    function Timeout_Add
-     (Interval : Guint;
-      Func     : G_Source_Func) return G_Source_Id;
+     (Interval : Guint; Func : G_Source_Func) return G_Source_Id;
    --  Create a new function to be called periodically until it returns False.
    --
    --  Note that timeout functions may be delayed, due to the processing of
@@ -392,12 +387,11 @@ package Glib.Main is
    generic
       type Data_Type (<>) is private;
    package Generic_Sources is
-      type G_Source_Func is access
-        function (Data : Data_Type) return Boolean;
+      type G_Source_Func is access function (Data : Data_Type) return Boolean;
       --  If the function returns FALSE it is automatically
       --  removed from the list of event sources and will not be called again.
 
-      type Destroy_Notify is access  procedure (Data : in out Data_Type);
+      type Destroy_Notify is access procedure (Data : in out Data_Type);
       --  Notify is called just prior to the destruction of Data. It is also
       --  called if the idle or timeout is destroyed through a call to
       --  Remove (Id);
@@ -419,10 +413,10 @@ package Glib.Main is
       --  Adds a function to be called at regular intervals (in milliseconds).
 
       procedure Set_Callback
-        (Source   : G_Source;
-         Func     : G_Source_Func;
-         Data     : Data_Type;
-         Notify   : Destroy_Notify := null);
+        (Source : G_Source;
+         Func   : G_Source_Func;
+         Data   : Data_Type;
+         Notify : Destroy_Notify := null);
       --  Sets the callback function for a source. The callback for a source is
       --  called from the source's dispatch function.
       --
@@ -457,27 +451,27 @@ private
    Null_Source_Type : constant G_Source_Type :=
      G_Source_Type (System.Null_Address);
 
-   pragma Import (C, Main_Context_New,     "g_main_context_new");
-   pragma Import (C, Main_Context_Ref,     "g_main_context_ref");
-   pragma Import (C, Main_Context_Unref,   "g_main_context_unref");
+   pragma Import (C, Main_Context_New, "g_main_context_new");
+   pragma Import (C, Main_Context_Ref, "g_main_context_ref");
+   pragma Import (C, Main_Context_Unref, "g_main_context_unref");
    pragma Import (C, Main_Context_Default, "g_main_context_default");
-   pragma Import (C, Wakeup,               "g_main_context_wakeup");
-   pragma Import (C, Release,              "g_main_context_release");
-   pragma Import (C, Dispatch,             "g_main_context_dispatch");
-   pragma Import (C, Source_Ref,           "g_source_ref");
-   pragma Import (C, Source_Unref,         "g_source_unref");
-   pragma Import (C, Attach,               "g_source_attach");
-   pragma Import (C, Source_Destroy,       "g_source_destroy");
-   pragma Import (C, Set_Priority,         "g_source_set_priority");
-   pragma Import (C, Get_Priority,         "g_source_get_priority");
-   pragma Import (C, Get_Id,               "g_source_get_id");
-   pragma Import (C, Get_Context,          "g_source_get_context");
-   pragma Import (C, Idle_Source_New,      "g_idle_source_new");
-   pragma Import (C, Timeout_Source_New,   "g_timeout_source_new");
-   pragma Import (C, Depth,                "g_main_depth");
-   pragma Import (C, G_Source_Type_New,    "ada_allocate_g_source_funcs");
-   pragma Import (C, Source_New,           "ada_g_source_new");
-   pragma Import (C, Get_User_Data,        "ada_g_source_get_user_data");
+   pragma Import (C, Wakeup, "g_main_context_wakeup");
+   pragma Import (C, Release, "g_main_context_release");
+   pragma Import (C, Dispatch, "g_main_context_dispatch");
+   pragma Import (C, Source_Ref, "g_source_ref");
+   pragma Import (C, Source_Unref, "g_source_unref");
+   pragma Import (C, Attach, "g_source_attach");
+   pragma Import (C, Source_Destroy, "g_source_destroy");
+   pragma Import (C, Set_Priority, "g_source_set_priority");
+   pragma Import (C, Get_Priority, "g_source_get_priority");
+   pragma Import (C, Get_Id, "g_source_get_id");
+   pragma Import (C, Get_Context, "g_source_get_context");
+   pragma Import (C, Idle_Source_New, "g_idle_source_new");
+   pragma Import (C, Timeout_Source_New, "g_timeout_source_new");
+   pragma Import (C, Depth, "g_main_depth");
+   pragma Import (C, G_Source_Type_New, "ada_allocate_g_source_funcs");
+   pragma Import (C, Source_New, "ada_g_source_new");
+   pragma Import (C, Get_User_Data, "ada_g_source_get_user_data");
 
    --  No binding: g_main_context_find_source_by_user_data
    --  No binding: g_main_context_find_source_by_funcs_user_data

@@ -161,7 +161,7 @@ package body Main_Windows is
       Label   : Gtk_Label;
    begin
       Gtk_New (App_Win, Gtk_Application (Self));
-      App_Win.Set_Title ("testgtk (in transition)");
+      App_Win.Set_Title ("GtkAda Demo (in transition)");
       App_Win.Set_Default_Size (400, 200);
       Gtk_New (Label, "in transition");
       App_Win.Set_Child (Label);

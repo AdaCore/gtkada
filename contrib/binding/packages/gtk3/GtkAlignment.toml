@@ -4,7 +4,7 @@
 
 [doc]
 screenshot = "gtk-alignment"
-testgtk = "create_alignment.adb"
+gtkada_demo = "create_alignment.adb"
 
 [[parameter]]
 name = "self"

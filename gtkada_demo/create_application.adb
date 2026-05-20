@@ -43,9 +43,9 @@ with System;                 use System;
 package body Create_Application is
 
    procedure Activate_Quit
-      (Action : access Gsimple_Action;
-       Parameter : Gvariant;
-       Data      : System.Address);
+     (Action    : access Gsimple_Action;
+      Parameter : Gvariant;
+      Data      : System.Address);
    pragma Convention (C, Activate_Quit);
    --  Implements the "quit" action
 
@@ -55,17 +55,17 @@ package body Create_Application is
 
    function Help return String is
    begin
-      return "A @bGtk_Application_Window@B and @bGtk_Application@B that"
-         & " better integrates with the system";
+      return
+        "A @bGtk_Application_Window@B and @bGtk_Application@B that"
+        & " better integrates with the system";
    end Help;
 
    -------------
    -- Startup --
    -------------
 
-   procedure Startup (Self : access Gapplication_Record'Class)
-   is
-      App : constant Gtk_Application := Gtk_Application (Self);
+   procedure Startup (Self : access Gapplication_Record'Class) is
+      App     : constant Gtk_Application := Gtk_Application (Self);
       Builder : Gtk_Builder;
       Success : Guint;
       Error   : aliased GError;
@@ -91,8 +91,7 @@ package body Create_Application is
    -- Shutdown --
    --------------
 
-   procedure Shutdown (Self : access Gapplication_Record'Class)
-   is
+   procedure Shutdown (Self : access Gapplication_Record'Class) is
       pragma Unreferenced (Self);
    begin
       Put_Line ("Application shut down");
@@ -102,15 +101,14 @@ package body Create_Application is
    -- App_Activate --
    ------------------
 
-   procedure App_Activate (Self : access Gapplication_Record'Class)
-   is
-      App : constant Gtk_Application := Gtk_Application (Self);
-      Win : Gtk_Application_Window;
-      Builder : Gtk_Builder;
+   procedure App_Activate (Self : access Gapplication_Record'Class) is
+      App       : constant Gtk_Application := Gtk_Application (Self);
+      Win       : Gtk_Application_Window;
+      Builder   : Gtk_Builder;
       Menu_Tool : Gtk_Menu_Tool_Button;
       Tool_Menu : Gmenu_Model;
-      Success : Guint;
-      Error   : aliased GError;
+      Success   : Guint;
+      Error     : aliased GError;
       pragma Unreferenced (Success);
    begin
       --  Activation is when we should create the main window
@@ -142,17 +140,17 @@ package body Create_Application is
    -------------------
 
    procedure Activate_Quit
-      (Action : access Gsimple_Action;
-       Parameter : Gvariant;
-       Data      : System.Address)
+     (Action    : access Gsimple_Action;
+      Parameter : Gvariant;
+      Data      : System.Address)
    is
       pragma Unreferenced (Action, Parameter);
       use Widget_List;
-      Stub : Gtk_Application_Record;
-      App : constant Gtk_Application :=
-         Gtk_Application (Get_User_Data (Data, Stub));
+      Stub    : Gtk_Application_Record;
+      App     : constant Gtk_Application :=
+        Gtk_Application (Get_User_Data (Data, Stub));
       List, N : Widget_List.Glist;
-      Win  : Gtk_Window;
+      Win     : Gtk_Window;
    begin
       List := App.Get_Windows;
       while List /= Null_List loop
@@ -168,21 +166,22 @@ package body Create_Application is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Label : Gtk_Label;
-      App : Gtk_Application;
+      Label  : Gtk_Label;
+      App    : Gtk_Application;
       Result : Gint;
    begin
       Gtk_New (Label, "This demo creates a new standalone toplevel window");
       Frame.Add (Label);
       Frame.Show_All;
 
-      App := Gtk_Application_New
-         (Application_Id => "com.adacore.testgtk",
-          Flags          => G_Application_Flags_None);
+      App :=
+        Gtk_Application_New
+          (Application_Id => "com.adacore.gtkada_demo",
+           Flags          => G_Application_Flags_None);
 
       App.Add_Action_Entries
-         ((1 => Build ("quit", Activate_Quit'Access)),
-          User_Data => App.Get_Object);
+        ((1 => Build ("quit", Activate_Quit'Access)),
+         User_Data => App.Get_Object);
 
       App.On_Startup (Startup'Access);
       App.On_Activate (App_Activate'Access);

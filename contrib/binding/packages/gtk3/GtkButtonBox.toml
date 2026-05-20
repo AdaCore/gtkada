@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-button_box"
 group = "Layout containers"
-testgtk = "create_button_box.adb"
+gtkada_demo = "create_button_box.adb"
 text = '''
 A Gtk_Button_Box is a special type of Gtk_Box specially tailored to contain
 buttons.

@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-fixed"
 group = "Layout containers"
-testgtk = "create_fixed.adb"
+gtkada_demo = "create_fixed.adb"
 
 [[parameter]]
 name = "self"

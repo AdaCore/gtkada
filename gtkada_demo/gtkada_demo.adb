@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                    Copyright (C) 2015-2022, AdaCore                      --
+--                    Copyright (C) 1998-2026, AdaCore                      --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,33 +21,21 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "../gtkada_shared";
-with "../src/gtkada";
---  TRANSITION
---  with "task_project/task_project";
+with Glib;             use Glib;
+with Glib.Application; use Glib.Application;
+with Gtk.Application;  use Gtk.Application;
 
-project TestGtk is
+with Main_Windows;
 
-   for Languages use ("Ada");
-   for Main use ("testgtk.adb");
-   --  TRANSITION: re-add "test_rtree.adb" aas main
-   for Source_Dirs use ("./");
-   for Object_Dir use "obj/";
-   for Exec_Dir use ".";
-
-   package Compiler is
-      --  subprogram specs not required in testgtk
-      for Switches ("Ada") use ("-g", "-O0", "-gnaty-s", "-gnatwJ")
-        & GtkAda_Shared.Adaflags;
-   end Compiler;
-
-   package Linker extends GtkAda_Shared.Linker is
-      for Switches ("testgtk.adb") use ("-lepoxy");
-   end Linker;
-
-   package Install is
-      for artifacts ("share/examples/gtkada/testgtk") use
-        ("*.ad*", "*.xpm", "*.svg", "*.png", "*.gif", "*.css", "*.ui", "*.lwo", "*.xml");
-   end Install;
-
-end TestGtk;
+procedure GtkAda_Demo is
+   App    : Gtk_Application;
+   Result : Glib.Gint;
+   pragma Unreferenced (Result);
+begin
+   Gtk_New
+     (App,
+      "com.adacore.gtkada.gtkada_demo",
+      Glib.Application.G_Application_Flags_None);
+   App.On_Activate (Main_Windows.On_Activate'Access);
+   Result := App.Run;
+end GtkAda_Demo;

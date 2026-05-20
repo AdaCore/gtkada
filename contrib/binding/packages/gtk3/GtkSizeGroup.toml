@@ -3,7 +3,7 @@
 # ============================================================
 
 [doc]
-testgtk = "create_size_groups.adb"
+gtkada_demo = "create_size_groups.adb"
 
 [[parameter]]
 name = "self"

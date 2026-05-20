@@ -21,19 +21,19 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Ada.Text_IO;          use Ada.Text_IO;
-with GNAT.Strings;         use GNAT.Strings;
-with Gtk.About_Dialog;     use Gtk.About_Dialog;
-with Gtk.Dialog;           use Gtk.Dialog;
-with Gtk.Frame;            use Gtk.Frame;
-with Gtk.Window;           use Gtk.Window;
-with Gtk.Widget;           use Gtk.Widget;
+with Ada.Text_IO;      use Ada.Text_IO;
+with GNAT.Strings;     use GNAT.Strings;
+with Gtk.About_Dialog; use Gtk.About_Dialog;
+with Gtk.Dialog;       use Gtk.Dialog;
+with Gtk.Frame;        use Gtk.Frame;
+with Gtk.Window;       use Gtk.Window;
+with Gtk.Widget;       use Gtk.Widget;
 
 package body Create_About is
 
    function On_Activate_Link
-      (About : access Gtk_About_Dialog_Record'Class;
-       URI   : String) return Boolean;
+     (About : access Gtk_About_Dialog_Record'Class; URI : String)
+      return Boolean;
    --  Called when a link is clicked
 
    ----------------------
@@ -41,8 +41,8 @@ package body Create_About is
    ----------------------
 
    function On_Activate_Link
-      (About : access Gtk_About_Dialog_Record'Class;
-       URI   : String) return Boolean
+     (About : access Gtk_About_Dialog_Record'Class; URI : String)
+      return Boolean
    is
       pragma Unreferenced (About);
    begin
@@ -56,7 +56,8 @@ package body Create_About is
 
    function Help return String is
    begin
-      return "The @bGtk_About_Dialog@B is used to display information about"
+      return
+        "The @bGtk_About_Dialog@B is used to display information about"
         & " your application, like its name, version, developers, website";
    end Help;
 
@@ -77,14 +78,19 @@ package body Create_About is
       Dialog.On_Activate_Link (On_Activate_Link'Access);
 
       --  In real applications, you will need to free the allocate strings
-      Set_Artists (Dialog, (1 => new String'("Artist1 <artist1@foo.com>"),
-                            2 => new String'("Artist2 <artist2@foo.com>")));
-      Set_Authors (Dialog, (1 => new String'("Author1 <author1@foo.com>"),
-                            2 => new String'("Author2 <author2@foo.com>")));
+      Set_Artists
+        (Dialog,
+         (1 => new String'("Artist1 <artist1@foo.com>"),
+          2 => new String'("Artist2 <artist2@foo.com>")));
+      Set_Authors
+        (Dialog,
+         (1 => new String'("Author1 <author1@foo.com>"),
+          2 => new String'("Author2 <author2@foo.com>")));
       Set_Documenters
-        (Dialog, (1 => new String'("Documenter1"),
-                   2 => new String'("Documenter2 <doc@foo.com>")));
-      Set_Comments  (Dialog, "Comment about the application");
+        (Dialog,
+         (1 => new String'("Documenter1"),
+          2 => new String'("Documenter2 <doc@foo.com>")));
+      Set_Comments (Dialog, "Comment about the application");
       Set_Copyright (Dialog, "Copyright (c) 2006, AdaCore");
       Set_License
         (Dialog,
@@ -98,7 +104,7 @@ package body Create_About is
          & " MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU"
          & " General Public License for more details.");
       Set_Wrap_License (Dialog, True);
-      Set_Program_Name (Dialog, "Testgtk");
+      Set_Program_Name (Dialog, "GtkAda Demo");
       Set_Version (Dialog, "2.8.17");
       Set_Website (Dialog, "http://www.adacore.com");
       Set_Website_Label (Dialog, "AdaCore");

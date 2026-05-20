@@ -21,35 +21,34 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with System;               use System;
+with System;      use System;
 with System.Address_Image;
 with Ada.Exceptions;
-with Ada.Text_IO;          use Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 
-with Glib;                 use Glib;
-with Glib.Error;           use Glib.Error;
-with Glib.Object;          use Glib.Object;
+with Glib;        use Glib;
+with Glib.Error;  use Glib.Error;
+with Glib.Object; use Glib.Object;
 
-with Gtk.Box;              use Gtk.Box;
-with Gtk.Builder;          use Gtk.Builder;
-with Gtk.Button;           use Gtk.Button;
-with Gtk.GEntry;           use Gtk.GEntry;
-with Gtk.Frame;            use Gtk.Frame;
+with Gtk.Box;         use Gtk.Box;
+with Gtk.Builder;     use Gtk.Builder;
+with Gtk.Button;      use Gtk.Button;
+with Gtk.GEntry;      use Gtk.GEntry;
+with Gtk.Frame;       use Gtk.Frame;
 with Gtk.Handlers;
-with Gtk.Text_Buffer;      use Gtk.Text_Buffer;
-with Gtk.Text_Iter;        use Gtk.Text_Iter;
-with Gtk.Text_View;        use Gtk.Text_View;
+with Gtk.Text_Buffer; use Gtk.Text_Buffer;
+with Gtk.Text_Iter;   use Gtk.Text_Iter;
+with Gtk.Text_View;   use Gtk.Text_View;
 with Gtk.Widget;
 
-with Common;               use Common;
+with Common; use Common;
 
 package body Create_Builder is
 
    Default_Filename : constant String := "gtkbuilder_example.xml";
    --  This is the file from which we'll read our UI description.
 
-   procedure On_Button_Clicked
-      (Button : access Gtk_Button_Record'Class);
+   procedure On_Button_Clicked (Button : access Gtk_Button_Record'Class);
    --  Callback for a button click
 
    ------------------------------
@@ -64,10 +63,10 @@ package body Create_Builder is
    type Widget_Collection is access all Widget_Collection_Record'Class;
    --  Type to use as User_Data when connecting signals.
 
-   package Widget_Collection_Cb is new Gtk.Handlers.Callback
-     (Widget_Collection_Record);
-   package Widget_Collection_Return_Cb is new Gtk.Handlers.Return_Callback
-     (Widget_Collection_Record, Boolean);
+   package Widget_Collection_Cb is new
+     Gtk.Handlers.Callback (Widget_Collection_Record);
+   package Widget_Collection_Return_Cb is new
+     Gtk.Handlers.Return_Callback (Widget_Collection_Record, Boolean);
 
    type Callback_Function_Name is
      (On_Window1_Delete_Event,
@@ -99,12 +98,12 @@ package body Create_Builder is
    type Test_Builder is access all Test_Builder_Record'Class;
 
    procedure Connect_Signals
-      (Builder        : not null access Gtk_Builder_Record'Class;
-       Object         : not null access Glib.Object.GObject_Record'Class;
-       Signal_Name    : Glib.Signal_Name;
-       Handler_Name   : UTF8_String;
-       Connect_Object : access Glib.Object.GObject_Record'Class;
-       Flags          : Glib.G_Connect_Flags);
+     (Builder        : not null access Gtk_Builder_Record'Class;
+      Object         : not null access Glib.Object.GObject_Record'Class;
+      Signal_Name    : Glib.Signal_Name;
+      Handler_Name   : UTF8_String;
+      Connect_Object : access Glib.Object.GObject_Record'Class;
+      Flags          : Glib.G_Connect_Flags);
    --  Subprogram to perform signal connections.
 
    ---------------------
@@ -112,59 +111,69 @@ package body Create_Builder is
    ---------------------
 
    procedure Connect_Signals
-      (Builder        : not null access Gtk_Builder_Record'Class;
-       Object         : not null access Glib.Object.GObject_Record'Class;
-       Signal_Name    : Glib.Signal_Name;
-       Handler_Name   : UTF8_String;
-       Connect_Object : access Glib.Object.GObject_Record'Class;
-       Flags          : Glib.G_Connect_Flags)
+     (Builder        : not null access Gtk_Builder_Record'Class;
+      Object         : not null access Glib.Object.GObject_Record'Class;
+      Signal_Name    : Glib.Signal_Name;
+      Handler_Name   : UTF8_String;
+      Connect_Object : access Glib.Object.GObject_Record'Class;
+      Flags          : Glib.G_Connect_Flags)
    is
-      B : constant Test_Builder := Test_Builder (Builder);
+      B             : constant Test_Builder := Test_Builder (Builder);
       Widget        : constant GObject := GObject (Object);
       After         : constant Boolean := (Flags and G_Connect_After) /= 0;
       Function_Name : constant Callback_Function_Name :=
-                        Callback_Function_Name'Value (Handler_Name);
+        Callback_Function_Name'Value (Handler_Name);
       --  Local translations from our low-level arguments
    begin
       --  Tell the console what we are up to.
       Put_Line ("Connect_Signals callback invoked: ");
-      Put_Line ("   object " & System.Address_Image (Object.Get_Object)
-                & " emitting " & String (Signal_Name));
-      Put_Line ("   to " & Handler_Name & ", with flags:"
-                & Glib.G_Connect_Flags'Image (Flags));
+      Put_Line
+        ("   object "
+         & System.Address_Image (Object.Get_Object)
+         & " emitting "
+         & String (Signal_Name));
+      Put_Line
+        ("   to "
+         & Handler_Name
+         & ", with flags:"
+         & Glib.G_Connect_Flags'Image (Flags));
 
       if Connect_Object /= null then
-         Put_Line ("   Warning: Connect_Object parameter will be ignored"
-                   & "(replaced by Widget_Collection)");
+         Put_Line
+           ("   Warning: Connect_Object parameter will be ignored"
+            & "(replaced by Widget_Collection)");
       end if;
 
       --  Normalize the name of the handler to our Callback_Function_Name
       --  enumeration.
       case Function_Name is
-         when On_Btn_Concatenate_Clicked =>
+         when On_Btn_Concatenate_Clicked      =>
             Widget_Collection_Cb.Object_Connect
               (Widget      => Widget,
                Name        => "clicked",
-               Marsh       => Widget_Collection_Cb.To_Marshaller
-                                (On_Btn_Concatenate_Clicked'Access),
+               Marsh       =>
+                 Widget_Collection_Cb.To_Marshaller
+                   (On_Btn_Concatenate_Clicked'Access),
                Slot_Object => B.Widgets,
                After       => After);
 
-         when On_Window1_Delete_Event =>
+         when On_Window1_Delete_Event         =>
             Widget_Collection_Return_Cb.Object_Connect
               (Widget      => Widget,
                Name        => "delete_event",
-               Marsh       => Widget_Collection_Return_Cb.To_Marshaller
-                                (On_Window1_Delete_Event'Access),
+               Marsh       =>
+                 Widget_Collection_Return_Cb.To_Marshaller
+                   (On_Window1_Delete_Event'Access),
                Slot_Object => B.Widgets,
                After       => After);
 
-         when On_Window1_Destroy =>
+         when On_Window1_Destroy              =>
             Widget_Collection_Cb.Object_Connect
               (Widget      => Widget,
                Name        => "destroy",
-               Marsh       => Widget_Collection_Cb.To_Marshaller
-                                (On_Window1_Destroy'Access),
+               Marsh       =>
+                 Widget_Collection_Cb.To_Marshaller
+                   (On_Window1_Destroy'Access),
                Slot_Object => B.Widgets,
                After       => After);
 
@@ -172,17 +181,19 @@ package body Create_Builder is
             Widget_Collection_Cb.Object_Connect
               (Widget      => Widget,
                Name        => "clicked",
-               Marsh       => Widget_Collection_Cb.To_Marshaller
-                                (On_Btn_Console_Greeting_Clicked'Access),
+               Marsh       =>
+                 Widget_Collection_Cb.To_Marshaller
+                   (On_Btn_Console_Greeting_Clicked'Access),
                Slot_Object => B.Widgets,
                After       => After);
 
-         when On_Print_To_Console =>
+         when On_Print_To_Console             =>
             Widget_Collection_Cb.Object_Connect
               (Widget      => Widget,
                Name        => "clicked",
-               Marsh       => Widget_Collection_Cb.To_Marshaller
-                                (On_Print_To_Console_Clicked'Access),
+               Marsh       =>
+                 Widget_Collection_Cb.To_Marshaller
+                   (On_Print_To_Console_Clicked'Access),
                Slot_Object => B.Widgets,
                After       => After);
 
@@ -193,9 +204,7 @@ package body Create_Builder is
    -- On_Button_Clicked --
    -----------------------
 
-   procedure On_Button_Clicked
-      (Button : access Gtk_Button_Record'Class)
-   is
+   procedure On_Button_Clicked (Button : access Gtk_Button_Record'Class) is
       pragma Unreferenced (Button);
 
       Builder1 : Test_Builder;
@@ -211,19 +220,20 @@ package body Create_Builder is
 
       --  Read in our XML file
       if Builder1.Add_From_File (Default_Filename, Error'Access) = 0 then
-         Put_Line ("Error [Create_Builder.On_Button_Clicked]: "
-                   & Get_Message (Error));
+         Put_Line
+           ("Error [Create_Builder.On_Button_Clicked]: "
+            & Get_Message (Error));
          Error_Free (Error);
       end if;
 
       --  Look up widgets for which we have callbacks, and store the
       --  information in Widget_Collection_Record structure.
       Builder1.Widgets.Term1 :=
-         Gtk.GEntry.Gtk_Entry (Builder1.Get_Object ("term1"));
+        Gtk.GEntry.Gtk_Entry (Builder1.Get_Object ("term1"));
       Builder1.Widgets.Term2 :=
-         Gtk.GEntry.Gtk_Entry (Builder1.Get_Object ("term2"));
-      Builder1.Widgets.Text_Field := Gtk.Text_View.Gtk_Text_View
-        (Builder1.Get_Object ("textField"));
+        Gtk.GEntry.Gtk_Entry (Builder1.Get_Object ("term2"));
+      Builder1.Widgets.Text_Field :=
+        Gtk.Text_View.Gtk_Text_View (Builder1.Get_Object ("textField"));
 
       --  Connect signal handlers
       Builder1.Connect_Signals_Full (Connect_Signals'Access);
@@ -246,10 +256,10 @@ package body Create_Builder is
       Buffer := Get_Buffer (Object.Text_Field);
       Insert_At_Cursor
         (Buffer,
-         "Concatenated: " &
-         Get_Text (Object.Term1) &
-         Get_Text (Object.Term2) &
-         ASCII.LF);
+         "Concatenated: "
+         & Get_Text (Object.Term1)
+         & Get_Text (Object.Term2)
+         & ASCII.LF);
    exception
       when Event : others =>
          Put_Line ("Error: " & Ada.Exceptions.Exception_Information (Event));
@@ -274,7 +284,8 @@ package body Create_Builder is
    procedure On_Print_To_Console_Clicked
      (Object : access Widget_Collection_Record'Class)
    is
-      Buffer : constant Gtk_Text_Buffer := Get_Buffer (Object.Text_Field);
+      Buffer               : constant Gtk_Text_Buffer :=
+        Get_Buffer (Object.Text_Field);
       Iter_Start, Iter_End : Gtk.Text_Iter.Gtk_Text_Iter;
    begin
       Get_Bounds (Buffer, Iter_Start, Iter_End);
@@ -288,8 +299,7 @@ package body Create_Builder is
    -----------------------------
 
    function On_Window1_Delete_Event
-     (Object : access Widget_Collection_Record'Class)
-      return Boolean
+     (Object : access Widget_Collection_Record'Class) return Boolean
    is
       pragma Unreferenced (Object);
    begin
@@ -308,7 +318,7 @@ package body Create_Builder is
    is
       pragma Unreferenced (Object);
    begin
-      --  We actually don't do much here, since within testgtk, we're not
+      --  We actually don't do much here, since within gtkada_demo, we're not
       --  the main window.
       Put_Line ("On_Window1_Destroy");
    end On_Window1_Destroy;
@@ -319,7 +329,8 @@ package body Create_Builder is
 
    function Help return String is
    begin
-      return "A @bGtk_Builder@B is an auxiliary object that reads textual"
+      return
+        "A @bGtk_Builder@B is an auxiliary object that reads textual"
         & " descriptions of a user interface and instantiates the described"
         & " objects. To pass a description to a @bGtk_Builder@B, call"
         & " @bAdd_From_File@B or @bAdd_From_String@B. These functions can"

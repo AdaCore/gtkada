@@ -5,9 +5,9 @@
 [doc]
 screenshot = "gtk-box"
 group = "Layout containers"
-testgtk = "create_box.adb"
+gtkada_demo = "create_box.adb"
 text = '''
-See the testgtk example in the GtkAda distribution to see concrete examples
+See the gtkada_demo example in the GtkAda distribution to see concrete examples
 on how all the parameters for the boxes work.
       '''
 

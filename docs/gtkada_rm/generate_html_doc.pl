@@ -76,10 +76,10 @@ use strict;
 ##     Same syntax as <properties>, documents properties for children
 ##
 ## <style_properties>
-##     Same syntax as <properties>, documents style properties 
+##     Same syntax as <properties>, documents style properties
 ##
-## <testgtk>file.adb</testgtk>
-##     Specifies the name of the source file in testgtk that contains example
+## <gtkada_demo>file.adb</gtkada_demo>
+##     Specifies the name of the source file in gtkada_demo that contains example
 ##     for the widget
 ##
 ## <group>...</group>
@@ -125,7 +125,7 @@ our $keywords = join ("|", @Ada95_keywords, @Ada_keywords);
 ## List of special sections in the Ada files
 our @xml_sections = ("description", "example", "screenshot", "c_version",
                      "see", "signals", "properties", "child_properties",
-                     "style_properties", "testgtk", "group");
+                     "style_properties", "gtkada_demo", "group");
 
 ## Will contain, for each widget, the name of its parent type. The parent
 ## doesn't contain a package name.
@@ -183,7 +183,7 @@ our $subprogram_and_comment_re =
    "((?:$subprogram_re)+)\n" . $comment_block_re;
 our $widget_re =
    '\n\s*type\s+(\w+)\s+is\s+(?:abstract\s+)?(?:tagged\s+private|new\s+([\w\.]+)\s+with)';
-our $type_re = 
+our $type_re =
    '\s*(type\s+(\w+)\sis\s+((?:access\s*(?:function|procedure)\s*\([^)]+\))?[^;]*);)\n' . $comment_block_re;
 our $interface_re =
    'is\s+new\s+(?:Glib\.Types\.)?Implements\s*\(([\w\.]+),\s*([\w\.]+)';
@@ -370,7 +370,7 @@ sub process_comment() {
                /xeg;
 
    ## Highlight cross-refs to specific file names (only starting with g
-   ## so that we do not add xref to files in testgtk, since no html is
+   ## so that we do not add xref to files in gtkada_demo, since no html is
    ## generated for these)
    $comment =~ s/\b(g[\w.-]+)(\.ad[bs])/<a href='$1.html'>$1$2<\/a>/g;
 
@@ -398,14 +398,14 @@ sub process_profile() {
                     "$1<a href='$entities{$2}->[0]'>$2<\/a>$3";
                  } else {
                     "$1$2$3";
-                 } 
+                 }
                 /xeg;
    $profile =~ s/(return\s+|is\s+new\s+)([\w.]+)/
                  if (defined $entities{$2}) {
                     "$1<a href='$entities{$2}->[0]'>$2<\/a>";
                  } else {
                     "$1$2";
-                 } 
+                 }
                 /xeg;
 
    return &highlight_syntax ($profile);
@@ -438,7 +438,7 @@ our $signal_re = '--[ \t]+-[ \t]*"(\w+)"\n'  # Signal name
    . '(?:return [\w.]+)?;)\n'
    . $empty_comment_re . '?' # Optional blank line between profile and comment
    . $non_empty_comment_non_signal_block_re;  # comment
-                
+
 sub parse_signals() {
    my ($section) = shift;
    my (%signals);
@@ -626,8 +626,8 @@ sub generate_html() {
       if (defined $tags{"child_properties"});
    print OUTPUT "     <li><a href='#Examples' onclick='return switchPage(\"page4\")'>Examples</a></li>\n"
       if (defined $tags{"example"});
-   print OUTPUT "     <li><a href='#Testgtk' onclick='return switchPage(\"page5\")'>Testgtk</a></li>\n"
-      if (defined $tags{"testgtk"});
+   print OUTPUT "     <li><a href='#gtkada_demo' onclick='return switchPage(\"page5\")'>GtkAda Demo</a></li>\n"
+      if (defined $tags{"gtkada_demo"});
 
    print OUTPUT "   </ul>\n";
    print OUTPUT "  </div> <!--  navigation -->\n\n";
@@ -668,9 +668,9 @@ sub generate_html() {
    print OUTPUT "  <li id='tab_page4'><a href='#Examples' ",
                 "onclick='return !switchPage(\"page4\")'>Examples</a></li>\n"
       if (defined $tags{"example"});
-   print OUTPUT "  <li id='tab_page5'><a href='#Testgtk' ",
-                "onclick='return !switchPage(\"page5\")'>Testgtk</a></li>\n"
-      if (defined $tags{"testgtk"});
+   print OUTPUT "  <li id='tab_page5'><a href='#gtkada_demo' ",
+                "onclick='return !switchPage(\"page5\")'>GtkAda Demo</a></li>\n"
+      if (defined $tags{"gtkada_demo"});
    print OUTPUT "  </ul>  <!-- notebook --> \n\n";
 
    ## First notebook page
@@ -702,7 +702,7 @@ sub generate_html() {
                      "</div>\n";
         print OUTPUT "         <div class='comment'>",
                      &process_comment($comment, $package),
-                     "</div></li>\n"; 
+                     "</div></li>\n";
       }
 
       print OUTPUT "   </ul>\n";
@@ -819,7 +819,7 @@ sub generate_html() {
                                                $props{$_}->[2],
                                                $props{$_}->[3]);
             print OUTPUT "        <li><div class='name'>$name</div>\n";
-            print OUTPUT "            <div class='profile'>$type</div>\n"; 
+            print OUTPUT "            <div class='profile'>$type</div>\n";
             print OUTPUT "            <div class='comment'>",
                      (defined $descr ? &process_comment ($descr, $package) : ""),
                      (defined $see ? "<br><b>See:</b> " . &process_comment ($see, $package) : ""),
@@ -853,20 +853,20 @@ sub generate_html() {
       print OUTPUT "  </div> <!-- notebook_page4 -->\n\n";
    }
 
-   ## Fifth page (testgtk)
-   if (defined $tags{'testgtk'}) {
+   ## Fifth page (gtkada_demo)
+   if (defined $tags{'gtkada_demo'}) {
       print OUTPUT "  <div id='notebook_page5' class='notebookPage'>\n";
-      print OUTPUT "   <a name='Testgtk'></a>\n";
-      print OUTPUT "   <div id='testgtk'>";
-      print OUTPUT "<h2>Testgtk source code</h2>";
-      print OUTPUT "<div class='description'>This code is part of testgtk, a demo application",
-                   " packaged with GtkAda. Testgtk demonstrates the various",
+      print OUTPUT "   <a name='GtkAda Demo'></a>\n";
+      print OUTPUT "   <div id='gtkada_demo'>";
+      print OUTPUT "<h2>GtkAda Demo source code</h2>";
+      print OUTPUT "<div class='description'>This code is part of gtkada_demo, a demo application",
+                   " packaged with GtkAda. The GtkAda Demo demonstrates the various",
                    " widgets of GtkAda</div>";
-      open (TESTGTK, "../../testgtk/$tags{'testgtk'}") || print "Cannot open file testgtk file $tags{'testgtk'}\n";
-      print OUTPUT &highlight_syntax (join ("", <TESTGTK>));
-      close (TESTGTK);
-      print OUTPUT "</div> <!-- testgtk -->\n";
-      print OUTPUT "  </div> <!-- notebook_page4 -->\n\n";
+      open (GTKADA_DEMO, "../../gtkada_demo/$tags{'gtkada_demo'}") || print "Cannot open file gtkada_demo file $tags{'gtkada_demo'}\n";
+      print OUTPUT &highlight_syntax (join ("", <GTKADA_DEMO>));
+      close (GTKADA_DEMO);
+      print OUTPUT "</div> <!-- gtkada_demo -->\n";
+      print OUTPUT "  </div> <!-- notebook_page5 -->\n\n";
    }
 
    ## Finish documentation
@@ -942,7 +942,7 @@ sub generate_index() {
        print OUTPUT " <a name='$first'></a>\n";
        print OUTPUT " <h2>$first</h2>\n";
        print OUTPUT "<ul>\n";
-     } 
+     }
 
      $package =~ s/\.([^\.]+)$//;
      if ($anchor ne "") {
@@ -969,7 +969,7 @@ sub generate_table_of_contents() {
    &generate_header ("Reference Manual", *OUTPUT);
 
    foreach $group (sort keys %groups) {
-      print OUTPUT "<div class='Toc'>\n"; 
+      print OUTPUT "<div class='Toc'>\n";
       print OUTPUT "  <h2>$group</h2>\n";
       print OUTPUT "<ul>\n";
       foreach $pkg (sort @{$groups{$group}}) {

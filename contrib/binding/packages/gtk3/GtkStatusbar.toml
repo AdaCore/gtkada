@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-status_bar"
 group = "Display widgets"
-testgtk = "create_status.adb"
+gtkada_demo = "create_status.adb"
 
 [[parameter]]
 name = "self"
