@@ -56,7 +56,7 @@ with Gtk.Enums;
 --  with Gtk.Status_Bar;
 --  with Gtk.Text_Iter;
 --  with Gtk.Text_View;
---  with Gtk.Tree_Model;
+with Gtk.Tree_Model;
 --  with Gtk.Widget;
 
 package Gtk.Arguments is
@@ -216,8 +216,8 @@ package Gtk.Arguments is
    --   function Unchecked_To_Gtk_Text_Extend_Selection
    --     is new Glib.Values.Unsafe_Enum_Nth
    --              (Gtk.Text_View.Gtk_Text_Extend_Selection);
-   --   function Unchecked_To_Gtk_Tree_Iter
-   --     is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Tree_Model.Gtk_Tree_Iter);
+   function Unchecked_To_Gtk_Tree_Iter is new
+     Glib.Values.Unsafe_Proxy_Nth (Gtk.Tree_Model.Gtk_Tree_Iter);
    --   function Unchecked_To_Gtk_Tree_Model
    --     is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Tree_Model.Gtk_Tree_Model);
    --   function Unchecked_To_Param_Spec
