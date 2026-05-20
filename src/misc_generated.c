@@ -106,6 +106,14 @@ void gtkada_Accessible_Hypertext_set_get_n_links(GtkAccessibleHypertextInterface
     iface->get_n_links = handler;
 }
 
+void gtkada_Cell_Editable_set_editing_done(GtkCellEditableIface* iface, void* handler) {
+    iface->editing_done = handler;
+}
+
+void gtkada_Cell_Editable_set_remove_widget(GtkCellEditableIface* iface, void* handler) {
+    iface->remove_widget = handler;
+}
+
 void gtkada_Shortcut_Manager_set_add_controller(GtkShortcutManagerInterface* iface, void* handler) {
     iface->add_controller = handler;
 }

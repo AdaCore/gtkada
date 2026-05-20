@@ -1,0 +1,28 @@
+# ============================================================
+#   GtkCellEditable
+# ============================================================
+# GtkCellEditable has been deprecated since gtk 4.10; mark the
+# whole Ada package as obsolescent.
+
+obsolescent = true
+
+[doc]
+group = "Trees and Lists"
+
+[[parameter]]
+name = "self"
+ada  = "Cell_Editable"
+
+# `start_editing` (both the virtual method and the regular method)
+# takes a `GdkEvent*` argument. GtkAda does not yet bind the Gdk
+# layer for gtk4, so suppress both for now; revisit once GdkEvent
+# is available.
+
+[[virtual_method]]
+id   = "start_editing"
+bind = false
+
+[[method]]
+id   = "gtk_cell_editable_start_editing"
+bind = false
+# Needs GdkEvent.
