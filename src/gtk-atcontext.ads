@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2022, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -28,8 +28,8 @@
 --  changes in `GtkAccessible`.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;            use Glib;
-with Glib.Object;     use Glib.Object;
+with Glib;        use Glib;
+with Glib.Object; use Glib.Object;
 
 package Gtk.Atcontext is
 
@@ -47,21 +47,23 @@ package Gtk.Atcontext is
    -- Signals --
    -------------
 
-   type Cb_Gtk_Atcontext_Void is not null access procedure (Self : access Gtk_Atcontext_Record'Class);
+   type Cb_Gtk_Atcontext_Void is
+     not null access procedure (Self : access Gtk_Atcontext_Record'Class);
 
-   type Cb_GObject_Void is not null access procedure
-     (Self : access Glib.Object.GObject_Record'Class);
+   type Cb_GObject_Void is
+     not null access procedure
+       (Self : access Glib.Object.GObject_Record'Class);
 
    Signal_State_Change : constant Glib.Signal_Name := "state-change";
    procedure On_State_Change
-      (Self  : not null access Gtk_Atcontext_Record;
-       Call  : Cb_Gtk_Atcontext_Void;
-       After : Boolean := False);
+     (Self  : not null access Gtk_Atcontext_Record;
+      Call  : Cb_Gtk_Atcontext_Void;
+      After : Boolean := False);
    procedure On_State_Change
-      (Self  : not null access Gtk_Atcontext_Record;
-       Call  : Cb_GObject_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False);
+     (Self  : not null access Gtk_Atcontext_Record;
+      Call  : Cb_GObject_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False);
    --  Emitted when the attributes of the accessible for the `GtkATContext`
    --  instance change.
 

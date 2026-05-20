@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2022, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -31,49 +31,51 @@ with Gtkada.Bindings;            use Gtkada.Bindings;
 
 package body Gtk.Atcontext is
 
-   package Type_Conversion_Gtk_Atcontext is new Glib.Type_Conversion_Hooks.Hook_Registrator
-     (Get_Type'Access, Gtk_Atcontext_Record);
+   package Type_Conversion_Gtk_Atcontext is new
+     Glib.Type_Conversion_Hooks.Hook_Registrator
+       (Get_Type'Access,
+        Gtk_Atcontext_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Atcontext);
 
-   function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Gtk_Atcontext_Void, System.Address);
-   function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Gtk_Atcontext_Void);
+   function Cb_To_Address is new
+     Ada.Unchecked_Conversion (Cb_Gtk_Atcontext_Void, System.Address);
+   function Address_To_Cb is new
+     Ada.Unchecked_Conversion (System.Address, Cb_Gtk_Atcontext_Void);
 
-   function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Void, System.Address);
-   function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Void);
+   function Cb_To_Address is new
+     Ada.Unchecked_Conversion (Cb_GObject_Void, System.Address);
+   function Address_To_Cb is new
+     Ada.Unchecked_Conversion (System.Address, Cb_GObject_Void);
 
    procedure Connect
-      (Object  : access Gtk_Atcontext_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Atcontext_Void;
-       After   : Boolean);
+     (Object  : access Gtk_Atcontext_Record'Class;
+      C_Name  : Glib.Signal_Name;
+      Handler : Cb_Gtk_Atcontext_Void;
+      After   : Boolean);
 
    procedure Connect_Slot
-      (Object  : access Gtk_Atcontext_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Void;
-       After   : Boolean;
-       Slot    : access Glib.Object.GObject_Record'Class := null);
+     (Object  : access Gtk_Atcontext_Record'Class;
+      C_Name  : Glib.Signal_Name;
+      Handler : Cb_GObject_Void;
+      After   : Boolean;
+      Slot    : access Glib.Object.GObject_Record'Class := null);
 
    procedure Marsh_GObject_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address);
+     (Closure         : GClosure;
+      Return_Value    : Glib.Values.GValue;
+      N_Params        : Glib.Guint;
+      Params          : Glib.Values.C_GValues;
+      Invocation_Hint : System.Address;
+      User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Void);
 
    procedure Marsh_Gtk_Atcontext_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address);
+     (Closure         : GClosure;
+      Return_Value    : Glib.Values.GValue;
+      N_Params        : Glib.Guint;
+      Params          : Glib.Values.C_GValues;
+      Invocation_Hint : System.Address;
+      User_Data       : System.Address);
    pragma Convention (C, Marsh_Gtk_Atcontext_Void);
 
    -------------
@@ -81,18 +83,17 @@ package body Gtk.Atcontext is
    -------------
 
    procedure Connect
-      (Object  : access Gtk_Atcontext_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Atcontext_Void;
-       After   : Boolean)
-   is
+     (Object  : access Gtk_Atcontext_Record'Class;
+      C_Name  : Glib.Signal_Name;
+      Handler : Cb_Gtk_Atcontext_Void;
+      After   : Boolean) is
    begin
       Unchecked_Do_Signal_Connect
-        (Object      => Object,
-         C_Name      => C_Name,
-         Marshaller  => Marsh_Gtk_Atcontext_Void'Access,
-         Handler     => Cb_To_Address (Handler),--  Set in the closure
-         After       => After);
+        (Object     => Object,
+         C_Name     => C_Name,
+         Marshaller => Marsh_Gtk_Atcontext_Void'Access,
+         Handler    => Cb_To_Address (Handler),--  Set in the closure
+         After      => After);
    end Connect;
 
    ------------------
@@ -100,12 +101,11 @@ package body Gtk.Atcontext is
    ------------------
 
    procedure Connect_Slot
-      (Object  : access Gtk_Atcontext_Record'Class;
-       C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Void;
-       After   : Boolean;
-       Slot    : access Glib.Object.GObject_Record'Class := null)
-   is
+     (Object  : access Gtk_Atcontext_Record'Class;
+      C_Name  : Glib.Signal_Name;
+      Handler : Cb_GObject_Void;
+      After   : Boolean;
+      Slot    : access Glib.Object.GObject_Record'Class := null) is
    begin
       Unchecked_Do_Signal_Connect
         (Object      => Object,
@@ -121,19 +121,24 @@ package body Gtk.Atcontext is
    ------------------------
 
    procedure Marsh_GObject_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address)
+     (Closure         : GClosure;
+      Return_Value    : Glib.Values.GValue;
+      N_Params        : Glib.Guint;
+      Params          : Glib.Values.C_GValues;
+      Invocation_Hint : System.Address;
+      User_Data       : System.Address)
    is
-      pragma Unreferenced (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
+      pragma
+        Unreferenced
+          (Return_Value, N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+      Obj : constant Glib.Object.GObject :=
+        Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others =>
+         Process_Exception (E);
    end Marsh_GObject_Void;
 
    ------------------------------
@@ -141,19 +146,23 @@ package body Gtk.Atcontext is
    ------------------------------
 
    procedure Marsh_Gtk_Atcontext_Void
-      (Closure         : GClosure;
-       Return_Value    : Glib.Values.GValue;
-       N_Params        : Glib.Guint;
-       Params          : Glib.Values.C_GValues;
-       Invocation_Hint : System.Address;
-       User_Data       : System.Address)
+     (Closure         : GClosure;
+      Return_Value    : Glib.Values.GValue;
+      N_Params        : Glib.Guint;
+      Params          : Glib.Values.C_GValues;
+      Invocation_Hint : System.Address;
+      User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Gtk_Atcontext_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant Gtk_Atcontext := Gtk_Atcontext (Unchecked_To_Object (Params, 0));
+      H   : constant Cb_Gtk_Atcontext_Void :=
+        Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Atcontext :=
+        Gtk_Atcontext (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others =>
+         Process_Exception (E);
    end Marsh_Gtk_Atcontext_Void;
 
    ---------------------
@@ -161,10 +170,9 @@ package body Gtk.Atcontext is
    ---------------------
 
    procedure On_State_Change
-      (Self  : not null access Gtk_Atcontext_Record;
-       Call  : Cb_Gtk_Atcontext_Void;
-       After : Boolean := False)
-   is
+     (Self  : not null access Gtk_Atcontext_Record;
+      Call  : Cb_Gtk_Atcontext_Void;
+      After : Boolean := False) is
    begin
       Connect (Self, "state-change" & ASCII.NUL, Call, After);
    end On_State_Change;
@@ -174,11 +182,10 @@ package body Gtk.Atcontext is
    ---------------------
 
    procedure On_State_Change
-      (Self  : not null access Gtk_Atcontext_Record;
-       Call  : Cb_GObject_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False)
-   is
+     (Self  : not null access Gtk_Atcontext_Record;
+      Call  : Cb_GObject_Void;
+      Slot  : not null access Glib.Object.GObject_Record'Class;
+      After : Boolean := False) is
    begin
       Connect_Slot (Self, "state-change" & ASCII.NUL, Call, After, Slot);
    end On_State_Change;
