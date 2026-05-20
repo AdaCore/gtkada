@@ -1,0 +1,26 @@
+[doc]
+group = "Dialogs"
+
+[[parameter]]
+name = "self"
+ada  = "Self"
+
+# GtkFilter is not bound yet — suppress the filter accessors until it is.
+[[method]]
+id   = "gtk_font_dialog_get_filter"
+bind = false
+
+[[method]]
+id   = "gtk_font_dialog_set_filter"
+bind = false
+
+# choose_font_and_features returns multiple out parameters of complex types.
+# Skip it for now: the simpler choose_font / choose_face / choose_family
+# already cover the common use cases.
+[[method]]
+id   = "gtk_font_dialog_choose_font_and_features"
+bind = false
+
+[[method]]
+id   = "gtk_font_dialog_choose_font_and_features_finish"
+bind = false

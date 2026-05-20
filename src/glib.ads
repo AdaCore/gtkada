@@ -193,6 +193,26 @@ package Glib is
    --  Callback used when some named data associated with an object is
    --  destroyed.
 
+   ----------------------
+   --  Async machinery --
+   ----------------------
+
+   --  Minimal Ada surface for the GIO asynchronous-result pattern. A C
+   --  function whose name ends in ``_async`` takes a
+   --  G_Async_Ready_Callback (declared per-binding) that is invoked once
+   --  the operation finishes; the callback receives the source GObject
+   --  and an opaque G_Async_Result handle. The handle is then fed back
+   --  to the matching ``_finish`` function to retrieve the actual value
+   --  (or any error).
+   --
+   --  The full GIO GAsyncResult interface is intentionally not bound:
+   --  applications only need to forward the result pointer to a
+   --  ``_finish`` call and never poke at it directly.
+
+   type G_Async_Result is new Glib.C_Proxy;
+   --  An opaque handle on a GIO asynchronous operation result. Pass it as
+   --  received to the matching ``_finish`` subprogram.
+
    ------------
    -- Quarks --
    ------------

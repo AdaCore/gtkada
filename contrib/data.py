@@ -51,7 +51,12 @@ interfaces = (
     "ListModel",
     "--AppInfo",  # Not tested yet, from Gio
     "--AsyncInitable",  # Not tested yet, from Gio
-    "--AsyncResult",  # Not tested yet, from Gio
+    # GAsyncResult is bound as an opaque proxy in Glib.G_Async_Result.
+    # We do not need its virtual methods on the Ada side: the "_finish"
+    # subprogram of each async operation consumes the pointer directly.
+    # Leaving it commented out keeps the generator from creating an
+    # interface package with no concrete subprograms.
+    "--AsyncResult",  # Bound manually as Glib.G_Async_Result
     "--Converter",  # Not tested yet, from Gio
     "--DBusInterface",  # Not tested yet, from Gio
     "--DBusObject",  # Not tested yet, from Gio
@@ -94,7 +99,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GdkFrameClock",
            "--GdkFrameTimings",
            "--GdkGLContext",
-           "--GdkRGBA",
+           "GdkRGBA",
            "--GdkMonitor",
            "--GdkScreen",
            "--GdkSeat",
@@ -294,6 +299,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkActionGroup",
            "--GtkActionBar",
            "--GtkAdjustment",
+           "GtkAlertDialog",
            "--GtkAlignment",
            "----GtkAppChooserButton",  # Needs GFile
            "----GtkAppChooserDialog",  # Needs GFile
@@ -338,6 +344,8 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkClipboard",
            "--GtkColorButton",
            "--GtkColorChooserDialog",
+           "GtkColorDialog",
+           "GtkColorDialogButton",
            "--GtkColorChooserWidget",
            "--GtkColorSelection",
            "--GtkColorSelectionDialog",
@@ -374,6 +382,8 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkFontButton",
            "--GtkFontChooserDialog",
            "--GtkFontChooserWidget",
+           "GtkFontDialog",
+           "GtkFontDialogButton",
            "--GtkFontSelection",
            "--GtkFontSelectionDialog",
            "--GtkFrame",
@@ -443,6 +453,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkMenuToolButton",
            "--GtkMessageDialog",
            "----GtkMountOperation",  # Requires a lot of GIO
+           "GtkNativeDialog",
            "GtkNotebook",
            "----GtkNotebookAccessible",  # We do not support atk
            "----GtkNotebookPageAccessible",  # We do not support atk
@@ -619,6 +630,9 @@ naming.girname_to_ctype = {
     "Gio.ApplicationCommandLine": "GApplicationCommandLine",
     "ApplicationCommandLine": "GApplicationCommandLine",
     "Gio.Icon":            "GIcon*",
+    "Gio.AsyncReadyCallback": "GAsyncReadyCallback",
+    "Gio.AsyncResult":     "GAsyncResult*",
+    "Gio.Cancellable":     "GCancellable*",
     "GLib.Variant":        "GVariant",
     "Gdk.Event":           "GdkEvent*",
     "Gdk.EventButton":     "GdkEventButton*",
@@ -784,6 +798,12 @@ naming.type_exceptions = {
     "gpointer":       Proxy("System.Address", "",
                             default_record_field="System.Null_Address"),
     "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),
+    "GAsyncResult":   Proxy("Glib.G_Async_Result"),
+    "GAsyncResult*":  Proxy("Glib.G_Async_Result"),
+    # GAsyncReadyCallback is intentionally NOT overridden here: the
+    # generator's standard callback support emits a per-package access
+    # type and the matching closure-passing trampoline, which is much
+    # more usable than a low-level access-to-subprogram.
     "GQuark":        Proxy("Glib.GQuark"),
     "GObject":       Proxy("Glib.Object.GObject"),
     "GParamSpec":    Proxy("Glib.Param_Spec"),

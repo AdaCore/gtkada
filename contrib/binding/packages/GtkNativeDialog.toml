@@ -1,0 +1,6 @@
+[doc]
+group = "Dialogs"
+
+[[parameter]]
+name = "self"
+ada  = "Self"
