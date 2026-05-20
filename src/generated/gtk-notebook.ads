@@ -127,8 +127,6 @@ with Gtk.Widget;            use Gtk.Widget;
 
 package Gtk.Notebook is
 
-   pragma Elaborate_Body;
-
    type Gtk_Notebook_Record is new Gtk_Widget_Record with null record;
    type Gtk_Notebook is access all Gtk_Notebook_Record'Class;
 

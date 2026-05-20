@@ -112,8 +112,6 @@ with Gtk.Widget;            use Gtk.Widget;
 
 package Gtk.Window is
 
-   pragma Elaborate_Body;
-
    type Gtk_Window_Record is new Gtk_Widget_Record with null record;
    type Gtk_Window is access all Gtk_Window_Record'Class;
 

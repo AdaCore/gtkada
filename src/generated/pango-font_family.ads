@@ -32,8 +32,6 @@ with Pango.Font_Face; use Pango.Font_Face;
 
 package Pango.Font_Family is
 
-   pragma Elaborate_Body;
-
    type Pango_Font_Family_Record is new GObject_Record with null record;
    type Pango_Font_Family is access all Pango_Font_Family_Record'Class;
 

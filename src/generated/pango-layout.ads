@@ -54,8 +54,6 @@ with Pango.Tabs;              use Pango.Tabs;
 
 package Pango.Layout is
 
-   pragma Elaborate_Body;
-
    type Pango_Layout_Record is new GObject_Record with null record;
    type Pango_Layout is access all Pango_Layout_Record'Class;
 

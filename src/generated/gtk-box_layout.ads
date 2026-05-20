@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2022, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -40,12 +40,12 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
 with Glib.Properties;    use Glib.Properties;
+with Glib.Types;         use Glib.Types;
 with Gtk.Enums;          use Gtk.Enums;
 with Gtk.Layout_Manager; use Gtk.Layout_Manager;
+with Gtk.Orientable;     use Gtk.Orientable;
 
 package Gtk.Box_Layout is
-
-   pragma Elaborate_Body;
 
    type Gtk_Box_Layout_Record is new Gtk_Layout_Manager_Record with null record;
    type Gtk_Box_Layout is access all Gtk_Box_Layout_Record'Class;
@@ -132,6 +132,18 @@ package Gtk.Box_Layout is
    --  Sets how much spacing to put between children.
    --  @param Spacing the spacing to apply between children
 
+   ---------------------------------------------
+   -- Inherited subprograms (from interfaces) --
+   ---------------------------------------------
+
+   function Get_Orientation
+      (Self : not null access Gtk_Box_Layout_Record)
+       return Gtk.Enums.Gtk_Orientation;
+
+   procedure Set_Orientation
+      (Self        : not null access Gtk_Box_Layout_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation);
+
    ----------------
    -- Properties --
    ----------------
@@ -158,6 +170,24 @@ package Gtk.Box_Layout is
 
    Spacing_Property : constant Glib.Properties.Property_Int;
    --  The space to put between the children.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk.Orientable"
+
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Box_Layout_Record, Gtk_Box_Layout);
+   function "+"
+     (Widget : access Gtk_Box_Layout_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Gtk_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Box_Layout
+   renames Implements_Gtk_Orientable.To_Object;
 
 private
    Spacing_Property : constant Glib.Properties.Property_Int :=

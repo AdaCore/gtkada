@@ -2200,14 +2200,6 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
                     in_spec=False,
                 )
 
-                # The Type_Conversion package above lives in the body, so the
-                # spec must allow a body. When the class has methods of its
-                # own (constructors, regular methods) that already forces a
-                # body, but for classes with only a pragma-Import Get_Type
-                # the spec would otherwise be self-contained. pragma
-                # Elaborate_Body covers both cases.
-                self.pkg.elaborate_body = True
-
     def _get_c_type(self, node):
         t = node.find(ntype)
         if t is not None:

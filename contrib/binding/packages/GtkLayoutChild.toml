@@ -1,3 +1,5 @@
+into = "GtkLayoutManager"
+
 [doc]
 group = "Layout containers"
 
@@ -18,3 +20,7 @@ bind = false
 [[method]]
 id = "gtk_layout_child_get_layout_manager"
 bind = false
+
+[[method]]
+id = "gtk_layout_child_get_type"
+ada = "Layout_Child_Get_Type"

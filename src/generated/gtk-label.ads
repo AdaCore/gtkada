@@ -230,8 +230,6 @@ with Pango.Tabs;               use Pango.Tabs;
 
 package Gtk.Label is
 
-   pragma Elaborate_Body;
-
    type Gtk_Label_Record is new Gtk_Widget_Record with null record;
    type Gtk_Label is access all Gtk_Label_Record'Class;
 

@@ -449,7 +449,7 @@ binding = (
            "GtkCenterLayout",
            "GtkConstraintLayout",
            "GtkConstraintLayoutChild",
-           "GtkCustomLayout",
+           "--GtkCustomLayout",
            "GtkFixedLayout",
            "GtkFixedLayoutChild",
            "GtkGridLayout",

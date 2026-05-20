@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2022, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -30,6 +30,10 @@ package body Gtk.Fixed_Layout is
    package Type_Conversion_Gtk_Fixed_Layout is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Fixed_Layout_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Fixed_Layout);
+
+   package Type_Conversion_Gtk_Fixed_Layout_Child is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Fixed_Layout_Child_Get_Type'Access, Gtk_Fixed_Layout_Child_Record);
+   pragma Unreferenced (Type_Conversion_Gtk_Fixed_Layout_Child);
 
    --------------------------
    -- Gtk_Fixed_Layout_New --

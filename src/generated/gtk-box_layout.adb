@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2022, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -188,5 +188,36 @@ package body Gtk.Box_Layout is
    begin
       Internal (Get_Object (Box_Layout), Spacing);
    end Set_Spacing;
+
+   ---------------------
+   -- Get_Orientation --
+   ---------------------
+
+   function Get_Orientation
+      (Self : not null access Gtk_Box_Layout_Record)
+       return Gtk.Enums.Gtk_Orientation
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Orientation;
+      pragma Import (C, Internal, "gtk_orientable_get_orientation");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Orientation;
+
+   ---------------------
+   -- Set_Orientation --
+   ---------------------
+
+   procedure Set_Orientation
+      (Self        : not null access Gtk_Box_Layout_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Orientation : Gtk.Enums.Gtk_Orientation);
+      pragma Import (C, Internal, "gtk_orientable_set_orientation");
+   begin
+      Internal (Get_Object (Self), Orientation);
+   end Set_Orientation;
 
 end Gtk.Box_Layout;

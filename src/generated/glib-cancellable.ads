@@ -30,8 +30,6 @@ with Glib.Object; use Glib.Object;
 
 package Glib.Cancellable is
 
-   pragma Elaborate_Body;
-
    type Gcancellable_Record is new GObject_Record with null record;
    type Gcancellable is access all Gcancellable_Record'Class;
 

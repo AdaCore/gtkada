@@ -328,8 +328,6 @@ with Pango.Layout;            use Pango.Layout;
 
 package Gtk.Widget is
 
-   pragma Elaborate_Body;
-
    type Gtk_Widget_Record is new GObject_Record with null record;
    type Gtk_Widget is access all Gtk_Widget_Record'Class;
 

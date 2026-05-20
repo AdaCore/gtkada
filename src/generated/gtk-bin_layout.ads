@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2022, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -35,8 +35,6 @@ with Glib;               use Glib;
 with Gtk.Layout_Manager; use Gtk.Layout_Manager;
 
 package Gtk.Bin_Layout is
-
-   pragma Elaborate_Body;
 
    type Gtk_Bin_Layout_Record is new Gtk_Layout_Manager_Record with null record;
    type Gtk_Bin_Layout is access all Gtk_Bin_Layout_Record'Class;

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2022, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -30,6 +30,10 @@ package body Gtk.Overlay_Layout is
    package Type_Conversion_Gtk_Overlay_Layout is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Overlay_Layout_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Overlay_Layout);
+
+   package Type_Conversion_Gtk_Overlay_Layout_Child is new Glib.Type_Conversion_Hooks.Hook_Registrator
+     (Overlay_Layout_Child_Get_Type'Access, Gtk_Overlay_Layout_Child_Record);
+   pragma Unreferenced (Type_Conversion_Gtk_Overlay_Layout_Child);
 
    -------------
    -- Gtk_New --
@@ -66,5 +70,63 @@ package body Gtk.Overlay_Layout is
          Set_Object (Self, Internal);
       end if;
    end Initialize;
+
+   ----------------------
+   -- Get_Clip_Overlay --
+   ----------------------
+
+   function Get_Clip_Overlay
+      (Child : not null access Gtk_Overlay_Layout_Child_Record)
+       return Boolean
+   is
+      function Internal (Child : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_overlay_layout_child_get_clip_overlay");
+   begin
+      return Internal (Get_Object (Child)) /= 0;
+   end Get_Clip_Overlay;
+
+   -----------------
+   -- Get_Measure --
+   -----------------
+
+   function Get_Measure
+      (Child : not null access Gtk_Overlay_Layout_Child_Record)
+       return Boolean
+   is
+      function Internal (Child : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_overlay_layout_child_get_measure");
+   begin
+      return Internal (Get_Object (Child)) /= 0;
+   end Get_Measure;
+
+   ----------------------
+   -- Set_Clip_Overlay --
+   ----------------------
+
+   procedure Set_Clip_Overlay
+      (Child        : not null access Gtk_Overlay_Layout_Child_Record;
+       Clip_Overlay : Boolean)
+   is
+      procedure Internal
+         (Child        : System.Address;
+          Clip_Overlay : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_overlay_layout_child_set_clip_overlay");
+   begin
+      Internal (Get_Object (Child), Boolean'Pos (Clip_Overlay));
+   end Set_Clip_Overlay;
+
+   -----------------
+   -- Set_Measure --
+   -----------------
+
+   procedure Set_Measure
+      (Child   : not null access Gtk_Overlay_Layout_Child_Record;
+       Measure : Boolean)
+   is
+      procedure Internal (Child : System.Address; Measure : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_overlay_layout_child_set_measure");
+   begin
+      Internal (Get_Object (Child), Boolean'Pos (Measure));
+   end Set_Measure;
 
 end Gtk.Overlay_Layout;

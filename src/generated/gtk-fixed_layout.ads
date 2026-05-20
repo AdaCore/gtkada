@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2022, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -55,14 +55,16 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
+with Glib.Properties;    use Glib.Properties;
 with Gtk.Layout_Manager; use Gtk.Layout_Manager;
 
 package Gtk.Fixed_Layout is
 
-   pragma Elaborate_Body;
-
    type Gtk_Fixed_Layout_Record is new Gtk_Layout_Manager_Record with null record;
    type Gtk_Fixed_Layout is access all Gtk_Fixed_Layout_Record'Class;
+
+   type Gtk_Fixed_Layout_Child_Record is new Gtk_Layout_Child_Record with null record;
+   type Gtk_Fixed_Layout_Child is access all Gtk_Fixed_Layout_Child_Record'Class;
 
    ------------------
    -- Constructors --
@@ -81,4 +83,20 @@ package Gtk.Fixed_Layout is
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_fixed_layout_get_type");
 
+   function Fixed_Layout_Child_Get_Type return Glib.GType;
+   pragma Import (C, Fixed_Layout_Child_Get_Type, "gtk_fixed_layout_child_get_type");
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Transform_Property : constant Glib.Properties.Property_Boxed;
+   --  Type: Gsk.Transform
+   --  The transform of the child.
+
+private
+   Transform_Property : constant Glib.Properties.Property_Boxed :=
+     Glib.Properties.Build ("transform");
 end Gtk.Fixed_Layout;

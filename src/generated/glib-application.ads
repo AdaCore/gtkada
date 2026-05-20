@@ -151,8 +151,6 @@ with Gtkada.Bindings;         use Gtkada.Bindings;
 
 package Glib.Application is
 
-   pragma Elaborate_Body;
-
    type Gapplication_Record is new GObject_Record with null record;
    type Gapplication is access all Gapplication_Record'Class;
 

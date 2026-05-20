@@ -2333,7 +2333,6 @@ class Package(object):
         self.formal_params = ""  # generic formal parameters
         self.elaborate_body = False
         self.isnested = isnested
-        self.elaborate_body = False  # emit pragma Elaborate_Body in the spec
 
     def __repr__(self):
         return "<Package %s>" % self.name

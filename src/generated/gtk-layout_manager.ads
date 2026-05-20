@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 2000-2022, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -64,16 +64,18 @@
 --  <group>Layout containers</group>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;        use Glib;
-with Glib.Object; use Glib.Object;
-with Gtk.Enums;   use Gtk.Enums;
+with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
+with Glib.Properties; use Glib.Properties;
+with Gtk.Enums;       use Gtk.Enums;
 
 package Gtk.Layout_Manager is
 
-   pragma Elaborate_Body;
-
    type Gtk_Layout_Manager_Record is new GObject_Record with null record;
    type Gtk_Layout_Manager is access all Gtk_Layout_Manager_Record'Class;
+
+   type Gtk_Layout_Child_Record is new GObject_Record with null record;
+   type Gtk_Layout_Child is access all Gtk_Layout_Child_Record'Class;
 
    ------------------
    -- Constructors --
@@ -81,6 +83,9 @@ package Gtk.Layout_Manager is
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_layout_manager_get_type");
+
+   function Layout_Child_Get_Type return Glib.GType;
+   pragma Import (C, Layout_Child_Get_Type, "gtk_layout_child_get_type");
 
    -------------
    -- Methods --
@@ -98,4 +103,23 @@ package Gtk.Layout_Manager is
    --  This function should be called by subclasses of `GtkLayoutManager` in
    --  response to changes to their layout management policies.
 
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Child_Widget_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk.Widget.Gtk_Widget
+   --  The widget that is associated to the `GtkLayoutChild` instance.
+
+   Layout_Manager_Property : constant Glib.Properties.Property_Object;
+   --  Type: Gtk_Layout_Manager
+   --  The layout manager that created the `GtkLayoutChild` instance.
+
+private
+   Layout_Manager_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("layout-manager");
+   Child_Widget_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("child-widget");
 end Gtk.Layout_Manager;

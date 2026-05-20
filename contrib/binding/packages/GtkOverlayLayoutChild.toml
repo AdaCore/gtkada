@@ -1,6 +1,12 @@
+into = "GtkOverlayLayout"
+
 [doc]
 group = "Layout containers"
 
 [[parameter]]
 name = "self"
 ada = "Child"
+
+[[method]]
+id = "gtk_overlay_layout_child_get_type"
+ada = "Overlay_Layout_Child_Get_Type"

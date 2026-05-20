@@ -1,3 +1,5 @@
+into = "GtkFixedLayout"
+
 [doc]
 group = "Layout containers"
 
@@ -15,3 +17,7 @@ bind = false
 [[method]]
 id = "gtk_fixed_layout_child_set_transform"
 bind = false
+
+[[method]]
+id = "gtk_fixed_layout_child_get_type"
+ada = "Fixed_Layout_Child_Get_Type"

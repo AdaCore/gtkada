@@ -38,8 +38,6 @@ with Glib.Variant;    use Glib.Variant;
 
 package Glib.Menu is
 
-   pragma Elaborate_Body;
-
    type Gmenu_Record is new Gmenu_Model_Record with null record;
    type Gmenu is access all Gmenu_Record'Class;
 

@@ -42,8 +42,6 @@ with Pango.Language;          use Pango.Language;
 
 package Pango.Font is
 
-   pragma Elaborate_Body;
-
    type Pango_Font_Record is new GObject_Record with null record;
    type Pango_Font is access all Pango_Font_Record'Class;
 
