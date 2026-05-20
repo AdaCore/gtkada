@@ -50,6 +50,8 @@ with Glib.Variant;            use Glib.Variant;
 
 package Glib.Notification is
 
+   pragma Elaborate_Body;
+
    type Gnotification_Record is new GObject_Record with null record;
    type Gnotification is access all Gnotification_Record'Class;
 

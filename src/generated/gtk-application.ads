@@ -126,6 +126,8 @@ with Gtk.Window;              use Gtk.Window;
 
 package Gtk.Application is
 
+   pragma Elaborate_Body;
+
    type Gtk_Application_Record is new Gapplication_Record with null record;
    type Gtk_Application is access all Gtk_Application_Record'Class;
 

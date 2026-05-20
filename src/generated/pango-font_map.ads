@@ -48,6 +48,8 @@ with Pango.Language;    use Pango.Language;
 
 package Pango.Font_Map is
 
+   pragma Elaborate_Body;
+
    type Pango_Font_Map_Record is new GObject_Record with null record;
    type Pango_Font_Map is access all Pango_Font_Map_Record'Class;
 

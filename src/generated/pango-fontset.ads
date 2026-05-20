@@ -38,6 +38,8 @@ with Pango.Font_Metrics; use Pango.Font_Metrics;
 
 package Pango.Fontset is
 
+   pragma Elaborate_Body;
+
    type Pango_Fontset_Record is new GObject_Record with null record;
    type Pango_Fontset is access all Pango_Fontset_Record'Class;
 

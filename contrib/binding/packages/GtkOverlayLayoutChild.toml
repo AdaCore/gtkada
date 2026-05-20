@@ -1,0 +1,6 @@
+[doc]
+group = "Layout containers"
+
+[[parameter]]
+name = "self"
+ada = "Child"

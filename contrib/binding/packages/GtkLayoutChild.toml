@@ -1,0 +1,20 @@
+[doc]
+group = "Layout containers"
+
+[[parameter]]
+name = "self"
+ada = "Layout_Child"
+
+# Disabled to break a circular dependency: Gtk.Layout_Child cannot with
+# Gtk.Widget because Gtk.Widget already withs Gtk.Layout_Child (via
+# Gtk.Layout_Manager). And it cannot with Gtk.Layout_Manager because
+# Gtk.Layout_Manager itself withs Gtk.Layout_Child. The values are
+# accessible via the layout-manager / child-widget properties, or
+# through subclass-specific accessors.
+[[method]]
+id = "gtk_layout_child_get_child_widget"
+bind = false
+
+[[method]]
+id = "gtk_layout_child_get_layout_manager"
+bind = false

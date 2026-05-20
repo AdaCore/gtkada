@@ -1,0 +1,10 @@
+[doc]
+group = "Layout containers"
+
+[[parameter]]
+name = "self"
+ada = "Center_Layout"
+
+[[method]]
+id = "gtk_center_layout_new"
+return = "GtkCenterLayout*"

@@ -321,11 +321,14 @@ with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 with Glib.Variant;            use Glib.Variant;
 with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Layout_Manager;      use Gtk.Layout_Manager;
 with Pango.Context;           use Pango.Context;
 with Pango.Font_Map;          use Pango.Font_Map;
 with Pango.Layout;            use Pango.Layout;
 
 package Gtk.Widget is
+
+   pragma Elaborate_Body;
 
    type Gtk_Widget_Record is new GObject_Record with null record;
    type Gtk_Widget is access all Gtk_Widget_Record'Class;
@@ -870,6 +873,20 @@ package Gtk.Widget is
    --  Returns the widget's last child.
    --  This function is primarily meant for widget implementations.
    --  @return the widget's last child
+
+   function Get_Layout_Manager
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Layout_Manager.Gtk_Layout_Manager;
+   --  Retrieves the layout manager of the widget.
+   --  See [methodGtk.Widget.set_layout_manager].
+   --  @return the layout manager of Widget
+
+   procedure Set_Layout_Manager
+      (Widget         : not null access Gtk_Widget_Record;
+       Layout_Manager : access Gtk.Layout_Manager.Gtk_Layout_Manager_Record'Class);
+   --  Sets the layout manager to use for measuring and allocating children of
+   --  the widget.
+   --  @param Layout_Manager a layout manager
 
    function Get_Limit_Events
       (Widget : not null access Gtk_Widget_Record) return Boolean;

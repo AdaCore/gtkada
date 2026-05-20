@@ -32,6 +32,8 @@ with Pango.Enums; use Pango.Enums;
 
 package Pango.Coverage is
 
+   pragma Elaborate_Body;
+
    type Pango_Coverage_Record is new GObject_Record with null record;
    type Pango_Coverage is access all Pango_Coverage_Record'Class;
 

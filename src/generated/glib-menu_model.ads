@@ -139,6 +139,8 @@ with Glib.Variant; use Glib.Variant;
 
 package Glib.Menu_Model is
 
+   pragma Elaborate_Body;
+
    type Gmenu_Model_Record is new GObject_Record with null record;
    type Gmenu_Model is access all Gmenu_Model_Record'Class;
 

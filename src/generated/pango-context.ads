@@ -37,6 +37,8 @@ with Pango.Matrix;       use Pango.Matrix;
 
 package Pango.Context is
 
+   pragma Elaborate_Body;
+
    type Pango_Context_Record is new GObject_Record with null record;
    type Pango_Context is access all Pango_Context_Record'Class;
 

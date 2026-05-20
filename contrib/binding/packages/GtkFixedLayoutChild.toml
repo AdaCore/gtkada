@@ -1,0 +1,17 @@
+[doc]
+group = "Layout containers"
+
+[[parameter]]
+name = "self"
+ada = "Child"
+
+# The transform accessors take/return a GskTransform*, and GSK is not
+# bound yet (no Gsk-4.0.gir is loaded). Disable these two for now; see
+# transition_notes.md for the follow-up.
+[[method]]
+id = "gtk_fixed_layout_child_get_transform"
+bind = false
+
+[[method]]
+id = "gtk_fixed_layout_child_set_transform"
+bind = false

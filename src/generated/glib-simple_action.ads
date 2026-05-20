@@ -37,6 +37,8 @@ with Glib.Variant;    use Glib.Variant;
 
 package Glib.Simple_Action is
 
+   pragma Elaborate_Body;
+
    type Gsimple_Action_Record is new GObject_Record with null record;
    type Gsimple_Action is access all Gsimple_Action_Record'Class;
 

@@ -38,6 +38,8 @@ with Gtk.Atcontext;            use Gtk.Atcontext;
 
 package Gtk.Accessible_Hyperlink is
 
+   pragma Elaborate_Body;
+
    type Gtk_Accessible_Hyperlink_Record is new GObject_Record with null record;
    type Gtk_Accessible_Hyperlink is access all Gtk_Accessible_Hyperlink_Record'Class;
 
