@@ -328,7 +328,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkCellAreaBox",
            "----GtkCellAreaClass",
            "--GtkCellAreaContext",
-           "--GtkCellRenderer",
+           "GtkCellRenderer",
            "--GtkCellRendererAccel",
            "----GtkCellRendererClass",  # Useless in Ada
            "--GtkCellRendererCombo",
