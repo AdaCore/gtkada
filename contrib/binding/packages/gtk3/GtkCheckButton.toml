@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-check_button"
 group = "Buttons and Toggles"
-testgtk = "create_check_buttons.adb"
+gtkada_demo = "create_check_buttons.adb"
 
 [[parameter]]
 name = "self"

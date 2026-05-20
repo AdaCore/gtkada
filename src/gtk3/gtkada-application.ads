@@ -27,8 +27,8 @@
 --  This requires some support that is system-specific:
 --
 --  On windows, this registers a DDE server using the application's Id as name.
---  So for example com.adacore.TestGtk will register a DDE server whose name
---  is TestGtk.
+--  So for example com.adacore.gtkada_demo will register a DDE server whose name
+--  is gtkada_demo.
 --
 --  On OSX, this requires the application to be part of a bundle. This bundle
 --  needs to declare the file patterns that are supported by the application.
@@ -37,15 +37,14 @@
 
 with System;
 
-with Glib;             use Glib;
+with Glib; use Glib;
 with Glib.Application;
 
-with Gtk.Application;  use Gtk.Application;
+with Gtk.Application; use Gtk.Application;
 
 package Gtkada.Application is
 
-   type Gtkada_Application_Record is new Gtk_Application_Record
-     with private;
+   type Gtkada_Application_Record is new Gtk_Application_Record with private;
    type Gtkada_Application is access all Gtkada_Application_Record'Class;
 
    type Gtkada_Application_Flags is mod 2 ** Integer'Size;
@@ -57,37 +56,35 @@ package Gtkada.Application is
    Gtkada_Application_OSX_FullScreen : constant Gtkada_Application_Flags := 2;
 
    procedure Gtk_New
-      (Self           : out Gtkada_Application;
-       Application_Id : UTF8_String := "";
-       Flags          : Glib.Application.GApplication_Flags;
-       Gtkada_Flags   : Gtkada_Application_Flags);
+     (Self           : out Gtkada_Application;
+      Application_Id : UTF8_String := "";
+      Flags          : Glib.Application.GApplication_Flags;
+      Gtkada_Flags   : Gtkada_Application_Flags);
    procedure Initialize
-      (Self           : not null access Gtkada_Application_Record'Class;
-       Application_Id : UTF8_String := "";
-       Flags          : Glib.Application.GApplication_Flags;
-       Gtkada_Flags   : Gtkada_Application_Flags);
+     (Self           : not null access Gtkada_Application_Record'Class;
+      Application_Id : UTF8_String := "";
+      Flags          : Glib.Application.GApplication_Flags;
+      Gtkada_Flags   : Gtkada_Application_Flags);
    function Gtk_Application_New
-      (Application_Id : UTF8_String := "";
-       Flags          : Glib.Application.GApplication_Flags;
-       Gtkada_Flags   : Gtkada_Application_Flags)
-       return Gtkada_Application;
+     (Application_Id : UTF8_String := "";
+      Flags          : Glib.Application.GApplication_Flags;
+      Gtkada_Flags   : Gtkada_Application_Flags) return Gtkada_Application;
 
    type GFile is private;
    type GFile_Array is array (Positive range <>) of GFile;
 
    function Get_Path (File : GFile) return UTF8_String;
 
-   type Cb_Gtkada_Application_Files is access procedure
-     (Application : Gtkada_Application;
-      Files       : GFile_Array);
+   type Cb_Gtkada_Application_Files is
+     access procedure (Application : Gtkada_Application; Files : GFile_Array);
 
    procedure On_Open
-     (Self      : not null access Gtkada_Application_Record;
-      Call      : Cb_Gtkada_Application_Files);
+     (Self : not null access Gtkada_Application_Record;
+      Call : Cb_Gtkada_Application_Files);
 private
 
    type Gtkada_Application_Record is new Gtk_Application_Record
-     with null record;
+   with null record;
 
    type GFile is new System.Address;
 

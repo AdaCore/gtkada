@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-label"
 group = "Display widgets"
-testgtk = "create_label.adb"
+gtkada_demo = "create_label.adb"
 
 [[parameter]]
 name = "self"

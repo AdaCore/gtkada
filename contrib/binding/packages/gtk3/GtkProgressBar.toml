@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-progress_bar"
 group = "Display widgets"
-testgtk = "create_progress.adb"
+gtkada_demo = "create_progress.adb"
 
 [[parameter]]
 name = "self"

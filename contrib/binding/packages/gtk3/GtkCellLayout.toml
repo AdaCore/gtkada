@@ -9,7 +9,7 @@ bind = false
 
 [doc]
 group = "Trees and Lists"
-testgtk = "create_cell_view.adb"
+gtkada_demo = "create_cell_view.adb"
 
 [[parameter]]
 name = "self"

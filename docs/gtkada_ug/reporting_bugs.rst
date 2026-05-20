@@ -5,10 +5,10 @@ How to report bugs
 ******************
 
 GtkAda is a mature, stable toolkit that is heavily and widely used on a variety
-of platforms.  We test GtkAda using an Ada version of the :file:`testgtk.c`
+of platforms.  We test GtkAda using an Ada version of the :file:`gtkada_demo.c`
 file found in the gtk+ distribution.
 For code examples that demonstrate the use of this toolkit, look within the
-:file:`testgtk/` directory.
+:file:`gtkada_demo/` directory.
 
 There are two kinds of problems you can encounter:
 

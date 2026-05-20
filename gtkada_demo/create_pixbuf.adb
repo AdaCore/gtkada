@@ -64,11 +64,11 @@ package body Create_Pixbuf is
    Frame_Delay : constant Guint := 40;
    Cycle_Len   : constant := 40;
 
-   Frame : Gdk_Pixbuf;
+   Frame     : Gdk_Pixbuf;
    Frame_Num : Gint;
    --  The current frame
 
-   Background : Gdk_Pixbuf;
+   Background              : Gdk_Pixbuf;
    Back_Width, Back_Height : Gint;
    --  The background image and its size
 
@@ -83,8 +83,8 @@ package body Create_Pixbuf is
    --  Return False if one of the pixmaps could not be loaded
 
    function On_Draw
-     (Widget : access Gtk_Widget_Record'Class;
-      Cr     : Cairo_Context) return Boolean;
+     (Widget : access Gtk_Widget_Record'Class; Cr : Cairo_Context)
+      return Boolean;
    --  Expose callback for the drawing area
 
    function Timeout_Handler return Boolean;
@@ -106,7 +106,7 @@ package body Create_Pixbuf is
          return False;
       end if;
 
-      Back_Width  := Get_Width (Background);
+      Back_Width := Get_Width (Background);
       Back_Height := Get_Height (Background);
 
       for J in Images'Range loop
@@ -123,15 +123,13 @@ package body Create_Pixbuf is
    -------------
 
    function On_Draw
-     (Widget : access Gtk_Widget_Record'Class;
-      Cr     : Cairo_Context) return Boolean
+     (Widget : access Gtk_Widget_Record'Class; Cr : Cairo_Context)
+      return Boolean
    is
       pragma Unreferenced (Widget);
    begin
-      Set_Source_Pixbuf (Cr,
-                         Pixbuf => Frame,
-                         Pixbuf_X => 0.0,
-                         Pixbuf_Y => 0.0);
+      Set_Source_Pixbuf
+        (Cr, Pixbuf => Frame, Pixbuf_X => 0.0, Pixbuf_Y => 0.0);
       Cairo.Paint (Cr);
       return True;
    end On_Draw;
@@ -141,13 +139,13 @@ package body Create_Pixbuf is
    ---------------------
 
    function Timeout_Handler return Boolean is
-      Pi : constant Gdouble := 3.1415926535;
-      F, Xmid, Ymid, Radius : Gdouble;
+      Pi                      : constant Gdouble := 3.1415926535;
+      F, Xmid, Ymid, Radius   : Gdouble;
       Ang, Iw, Ih, R, K, C, S : Gdouble;
-      Xpos, Ypos : Gdouble;
-      R1, R2, Dest : Gdk_Rectangle;
-      Inter : Boolean;
-      Alpha : Gint;
+      Xpos, Ypos              : Gdouble;
+      R1, R2, Dest            : Gdk_Rectangle;
+      Inter                   : Boolean;
+      Alpha                   : Gint;
    begin
       --  Restore the background
       Copy_Area
@@ -160,25 +158,22 @@ package body Create_Pixbuf is
          Dest_X      => 0,
          Dest_Y      => 0);
 
-      R2 := (X      => 0,
-             Y      => 0,
-             Width  => Back_Width,
-             Height => Back_Height);
+      R2 := (X => 0, Y => 0, Width => Back_Width, Height => Back_Height);
 
-      F      := Gdouble (Frame_Num mod Cycle_Len) / Gdouble (Cycle_Len);
-      Xmid   := Gdouble (Back_Width) * 0.5;
-      Ymid   := Gdouble (Back_Height) * 0.5;
+      F := Gdouble (Frame_Num mod Cycle_Len) / Gdouble (Cycle_Len);
+      Xmid := Gdouble (Back_Width) * 0.5;
+      Ymid := Gdouble (Back_Height) * 0.5;
       Radius := Gdouble'Min (Xmid, Ymid) * 0.5;
-      S      := Sin (F * 2.0 * Pi);
-      C      := Cos (F * 2.0 * Pi);
-      R      := Radius + Radius / 3.0 * S;
+      S := Sin (F * 2.0 * Pi);
+      C := Cos (F * 2.0 * Pi);
+      R := Radius + Radius / 3.0 * S;
 
       --  Then draw each of the images
 
       for J in Images'Range loop
-         Ang  := 2.0 * Pi * (Gdouble (J) / Gdouble (Images'Length) - F);
-         Iw   := Gdouble (Get_Width (Images (J)));
-         Ih   := Gdouble (Get_Height (Images (J)));
+         Ang := 2.0 * Pi * (Gdouble (J) / Gdouble (Images'Length) - F);
+         Iw := Gdouble (Get_Width (Images (J)));
+         Ih := Gdouble (Get_Height (Images (J)));
          Xpos := Xmid + R * Cos (Ang) - Iw * 0.5 + 0.5;
          Ypos := Ymid + R * Sin (Ang) - Ih * 0.5 + 0.5;
 
@@ -189,10 +184,11 @@ package body Create_Pixbuf is
          end if;
          K := Gdouble'Max (0.25, 2.0 * K * K);
 
-         R1 := (X      => Gint (Xpos),
-                Y      => Gint (Ypos),
-                Width  => Gint (Iw * K),
-                Height => Gint (Ih * K));
+         R1 :=
+           (X      => Gint (Xpos),
+            Y      => Gint (Ypos),
+            Width  => Gint (Iw * K),
+            Height => Gint (Ih * K));
 
          Intersect (R1, R2, Dest, Inter);
          if Inter then
@@ -252,17 +248,17 @@ package body Create_Pixbuf is
       Gtk_New (Da);
       Add (F, Da);
 
-      Frame := Gdk.Pixbuf.Gdk_New
-        (Colorspace      => Colorspace_RGB,
-         Has_Alpha       => False,
-         Bits_Per_Sample => 8,
-         Width           => Back_Width,
-         Height          => Back_Height);
+      Frame :=
+        Gdk.Pixbuf.Gdk_New
+          (Colorspace      => Colorspace_RGB,
+           Has_Alpha       => False,
+           Bits_Per_Sample => 8,
+           Width           => Back_Width,
+           Height          => Back_Height);
 
       Widget_Callback.Connect (Da, "destroy", Destroy_Cb'Access);
       Return_Callback.Connect
-        (Da, Signal_Draw,
-         Return_Callback.To_Marshaller (On_Draw'Access));
+        (Da, Signal_Draw, Return_Callback.To_Marshaller (On_Draw'Access));
 
       Timeout_Id := Timeout_Add (Frame_Delay, Timeout_Handler'Access);
 
@@ -275,9 +271,10 @@ package body Create_Pixbuf is
 
    function Help return String is
    begin
-      return "This demo shows how one can animate several images on the"
+      return
+        "This demo shows how one can animate several images on the"
         & " screen. All the images are loaded from the disk (and thus you"
-        & " should start testgtk from the directory that contains the images."
+        & " should start gtkada_demo from the directory that contains the images."
         & ASCII.LF
         & "Note that nothing is precomputed in this demo, and all the drawing,"
         & " scaling and transparency is done in real-time."
@@ -304,11 +301,12 @@ package body Create_Pixbuf is
 
    function Help_Gif return String is
    begin
-      return "This file show how a @bGtk_Image@B can be used to display"
+      return
+        "This file show how a @bGtk_Image@B can be used to display"
         & " an animated GIF image. The whole code for this demo is only"
         & " three lines in Ada!"
         & ASCII.LF
-        & "This demo must be run from the testgtk directory itself so that"
+        & "This demo must be run from the gtkada_demo directory itself so that"
         & " the image can be loaded from the disk.";
    end Help_Gif;
 

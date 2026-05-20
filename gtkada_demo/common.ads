@@ -40,34 +40,34 @@ package Common is
    --  executable
 
    --  It also contains services that are used in 2 or more examples
-   --  of testgtk.
+   --  of gtkada_demo.
 
    package Widget_Handler is new Handlers.Callback (Gtk_Widget_Record);
-   package User_Widget_Handler is new Handlers.User_Callback
-     (Gtk_Widget_Record, Gtk_Widget);
-   package Label_Handler  is new Handlers.Callback (Gtk_Label_Record);
-   package Adj_Handler    is new Handlers.Callback (Gtk_Adjustment_Record);
-   package Check_Handler  is new Handlers.Callback (Gtk_Check_Button_Record);
+   package User_Widget_Handler is new
+     Handlers.User_Callback (Gtk_Widget_Record, Gtk_Widget);
+   package Label_Handler is new Handlers.Callback (Gtk_Label_Record);
+   package Adj_Handler is new Handlers.Callback (Gtk_Adjustment_Record);
+   package Check_Handler is new Handlers.Callback (Gtk_Check_Button_Record);
    package Button_Handler is new Handlers.Callback (Gtk_Button_Record);
 
    type Gtk_Window_Access is access all Gtk_Window;
-   package Destroy_Handler is new Handlers.User_Callback
-     (Gtk_Window_Record, Gtk_Window_Access);
+   package Destroy_Handler is new
+     Handlers.User_Callback (Gtk_Window_Record, Gtk_Window_Access);
    procedure Destroy_Window
-      (Win : access Gtk.Window.Gtk_Window_Record'Class;
-       Ptr : Gtk_Window_Access);
+     (Win : access Gtk.Window.Gtk_Window_Record'Class;
+      Ptr : Gtk_Window_Access);
 
    type Gtk_Dialog_Access is access all Gtk_Dialog;
-   package Destroy_Dialog_Handler is new Handlers.User_Callback
-     (Gtk_Dialog_Record, Gtk_Dialog_Access);
-   procedure Destroy_Dialog (Win : access Gtk_Dialog_Record'Class;
-                             Ptr : Gtk_Dialog_Access);
+   package Destroy_Dialog_Handler is new
+     Handlers.User_Callback (Gtk_Dialog_Record, Gtk_Dialog_Access);
+   procedure Destroy_Dialog
+     (Win : access Gtk_Dialog_Record'Class; Ptr : Gtk_Dialog_Access);
 
    function Image_Of (I : Gint) return String;
    --  Returns the image of the given Gint. The leading spaces are
    --  stripped.
 
-   Book_Open_Xpm    : Gtkada.Types.Chars_Ptr_Array :=
+   Book_Open_Xpm   : Gtkada.Types.Chars_Ptr_Array :=
      (Gtkada.Types.New_String ("16 16 4 1"),
       Gtkada.Types.New_String ("       c None s None"),
       Gtkada.Types.New_String (".      c black"),
@@ -89,7 +89,7 @@ package Common is
       Gtkada.Types.New_String ("    ..X.......  "),
       Gtkada.Types.New_String ("     ..         "),
       Gtkada.Types.New_String ("                "));
-   Book_Closed_Xpm  : Gtkada.Types.Chars_Ptr_Array :=
+   Book_Closed_Xpm : Gtkada.Types.Chars_Ptr_Array :=
      (Gtkada.Types.New_String ("16 16 6 1"),
       Gtkada.Types.New_String ("       c None s None"),
       Gtkada.Types.New_String (".      c black"),
@@ -114,7 +114,7 @@ package Common is
       Gtkada.Types.New_String ("      ..        "),
       Gtkada.Types.New_String ("                "));
 
-   Mini_Page_Xpm  : Gtkada.Types.Chars_Ptr_Array :=
+   Mini_Page_Xpm : Gtkada.Types.Chars_Ptr_Array :=
      (Gtkada.Types.New_String ("16 16 4 1"),
       Gtkada.Types.New_String ("       c None s None"),
       Gtkada.Types.New_String (".      c black"),
@@ -137,7 +137,7 @@ package Common is
       Gtkada.Types.New_String ("    oooooooooo  "),
       Gtkada.Types.New_String ("                "));
 
-   Gtk_Mini_Xpm  : Gtkada.Types.Chars_Ptr_Array :=
+   Gtk_Mini_Xpm : Gtkada.Types.Chars_Ptr_Array :=
      (Gtkada.Types.New_String ("15 20 17 1"),
       Gtkada.Types.New_String ("       c None"),
       Gtkada.Types.New_String (".      c #14121F"),

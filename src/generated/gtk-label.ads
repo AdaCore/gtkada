@@ -207,7 +207,7 @@
 --
 --  <screenshot>gtk-label</screenshot>
 --  <group>Display widgets</group>
---  <testgtk>create_label.adb</testgtk>
+--  <gtkada_demo>create_label.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                     use Glib;

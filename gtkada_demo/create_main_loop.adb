@@ -50,7 +50,8 @@ package body Create_Main_Loop is
 
    function Help return String is
    begin
-      return "This demo creates a second event loop. All the events are now"
+      return
+        "This demo creates a second event loop. All the events are now"
         & " processed in this second loop. You start this second loop by"
         & " calling again the @bGtk.Main.Main@B function. The interesting"
         & " side effect is that this procedure call is blocking until"
@@ -92,7 +93,7 @@ package body Create_Main_Loop is
       Ada.Text_IO.Put_Line
         ("Create_Mainloop: done (leave the initial function");
       Ada.Text_IO.Put_Line
-        ("Clicking again on the button might leave testgtk itself.");
+        ("Clicking again on the button might leave gtkada_demo itself.");
    end Run;
 
 end Create_Main_Loop;

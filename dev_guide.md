@@ -9,7 +9,7 @@ src/ # The main source directory
     generated/ # The generated bindings
     misc.c     # C code for miscellaneous functions and constants
 docs/    # The user-facing documentation
-testgtk/ # A comprehensive test showcasing the bindings
+gtkada_demo/ # A demo that can be used as an example for how to use GtkAda.
 ```
 
 Ada packages are namespaced under `Gtk`, `Gdk`, `Glib`, `Pango` and `Cairo`
@@ -31,6 +31,6 @@ The documentation for bindings is in `contrib/documentation.md`.
 
 Before submitting your work:
 
-* Add tests for your changes in `testgtk/` if applicable.
+* Add a demo for your changes in `gtkada_demo/` if applicable.
 * Update the user's guide in `docs/gtkada_ug/` if needed.
 * Update `dev_guide.md` and `contrib/documentation.md` if needed.

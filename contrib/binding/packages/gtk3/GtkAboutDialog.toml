@@ -4,7 +4,7 @@
 
 [doc]
 group = "Windows"
-testgtk = "create_about.adb"
+gtkada_demo = "create_about.adb"
 
 [[parameter]]
 name = "self"

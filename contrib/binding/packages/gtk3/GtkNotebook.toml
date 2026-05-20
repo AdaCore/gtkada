@@ -8,7 +8,7 @@ ctype = "GtkNotebookTab"
 [doc]
 screenshot = "gtk-notebook"
 group = "Layout containers"
-testgtk = "create_notebook.adb"
+gtkada_demo = "create_notebook.adb"
 
 [[parameter]]
 name = "self"

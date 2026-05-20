@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "testgtk/testgtk";
+with "gtkada_demo/gtkada_demo";
 with "src/gtkada";
 with "src/opengl/opengl";
 with "src/tools/tools";

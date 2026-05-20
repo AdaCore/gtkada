@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-dialog"
 group = "Windows"
-testgtk = "create_dialog.adb"
+gtkada_demo = "create_dialog.adb"
 text = '''
           See Gtkada.Dialogs for a higher level dialog interface.
      '''

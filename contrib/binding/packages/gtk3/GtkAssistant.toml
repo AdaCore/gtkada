@@ -4,7 +4,7 @@
 
 [doc]
 group = "Windows"
-testgtk = "create_assistant.adb"
+gtkada_demo = "create_assistant.adb"
 
 [[parameter]]
 name = "self"

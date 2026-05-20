@@ -21,19 +21,19 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib;             use Glib;
-with Gtk.Adjustment;   use Gtk.Adjustment;
-with Gtk.Box;          use Gtk.Box;
-with Gtk.Label;        use Gtk.Label;
-with Gtk.Scale;        use Gtk.Scale;
-with Gtk.Widget;       use Gtk.Widget;
-with Gtk.Window;       use Gtk.Window;
-with Common;           use Common;
+with Glib;           use Glib;
+with Gtk.Adjustment; use Gtk.Adjustment;
+with Gtk.Box;        use Gtk.Box;
+with Gtk.Label;      use Gtk.Label;
+with Gtk.Scale;      use Gtk.Scale;
+with Gtk.Widget;     use Gtk.Widget;
+with Gtk.Window;     use Gtk.Window;
+with Common;         use Common;
 
 package body Create_Opacity is
 
    Main_Window : Gtk_Window;
-   --  The main testgtk window.
+   --  The main gtkada_demo window.
 
    ----------
    -- Help --
@@ -41,7 +41,8 @@ package body Create_Opacity is
 
    function Help return String is
    begin
-      return "This demo makes the main window partially"
+      return
+        "This demo makes the main window partially"
         & " transparent, with opacity 0 being fully transparent and 1 fully"
         & " opaque.  On X11 this has effect only on X screens with a"
         & " compositing manager running.  On Windows it should always work."
@@ -53,8 +54,7 @@ package body Create_Opacity is
    -- On_Value_Changed --
    ----------------------
 
-   procedure On_Value_Changed
-     (Adjustment : access Gtk_Adjustment_Record'Class)
+   procedure On_Value_Changed (Adjustment : access Gtk_Adjustment_Record'Class)
    is
    begin
       Main_Window.Set_Opacity (Get_Value (Adjustment) / 100.0);
@@ -96,10 +96,10 @@ package body Create_Opacity is
       Gtk_New
         (Adjustment,
          Value          => Get_Opacity (Main_Window) * 100.0,
-         Lower          =>   0.0,
+         Lower          => 0.0,
          Upper          => 100.0,
-         Step_Increment =>   0.1,
-         Page_Increment =>   5.0);
+         Step_Increment => 0.1,
+         Page_Increment => 5.0);
       Gtk_New_Hscale (Scale, Adjustment);
       Pack_Start (Box2, Scale, True, True, 0);
 

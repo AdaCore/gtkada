@@ -24,32 +24,31 @@
 --  with System;               use System;
 --  with System.Address_Image;
 with Ada.Exceptions;
-with Ada.Text_IO;          use Ada.Text_IO;
+with Ada.Text_IO; use Ada.Text_IO;
 
-with Glib;                 use Glib;
-with Glib.Error;           use Glib.Error;
-with Glib.Object;          use Glib.Object;
+with Glib;        use Glib;
+with Glib.Error;  use Glib.Error;
+with Glib.Object; use Glib.Object;
 
-with Gtk.Box;              use Gtk.Box;
-with Gtk.Button;           use Gtk.Button;
-with Gtk.GEntry;           use Gtk.GEntry;
-with Gtk.Frame;            use Gtk.Frame;
+with Gtk.Box;    use Gtk.Box;
+with Gtk.Button; use Gtk.Button;
+with Gtk.GEntry; use Gtk.GEntry;
+with Gtk.Frame;  use Gtk.Frame;
 
-with Gtk.Text_Buffer;      use Gtk.Text_Buffer;
-with Gtk.Text_View;        use Gtk.Text_View;
+with Gtk.Text_Buffer; use Gtk.Text_Buffer;
+with Gtk.Text_View;   use Gtk.Text_View;
 with Gtk.Widget;
 
-with Common;               use Common;
+with Common; use Common;
 
-with Gtkada.Builder;       use Gtkada.Builder;
+with Gtkada.Builder; use Gtkada.Builder;
 
 package body Create_Gtkada_Builder is
 
    Default_Filename : constant String := "gtkbuilder_example.xml";
    --  This is the file from which we'll read our UI description.
 
-   procedure On_Button_Clicked
-      (Button : access Gtk_Button_Record'Class);
+   procedure On_Button_Clicked (Button : access Gtk_Button_Record'Class);
    --  Callback for a button click
 
    procedure On_Btn_Concatenate_Clicked
@@ -58,11 +57,9 @@ package body Create_Gtkada_Builder is
      (Builder : access Gtkada_Builder_Record'Class);
    function On_Window1_Delete_Event
      (Builder : access Gtkada_Builder_Record'Class) return Boolean;
-   procedure On_Window1_Destroy
-     (Builder : access Gtkada_Builder_Record'Class);
+   procedure On_Window1_Destroy (Builder : access Gtkada_Builder_Record'Class);
 
-   procedure On_Print_To_Console
-      (Object : access GObject_Record'Class);
+   procedure On_Print_To_Console (Object : access GObject_Record'Class);
    --  Callbacks referenced by our XML UI definition.  These match the
    --  items in the Callback_Function_Name enumeration.
 
@@ -82,11 +79,12 @@ package body Create_Gtkada_Builder is
       Gtk_New (Builder);
 
       --  Load the custom widget from the XML description
-      if Builder.Add_From_File
-         ("gtkbuilder_custom_widget.xml", Error'Access) = 0
+      if Builder.Add_From_File ("gtkbuilder_custom_widget.xml", Error'Access)
+        = 0
       then
-         Put_Line ("Error [Create_Builder.Add_Custom_Widget]: "
-                   & Get_Message (Error));
+         Put_Line
+           ("Error [Create_Builder.Add_Custom_Widget]: "
+            & Get_Message (Error));
          Error_Free (Error);
          return;
       end if;
@@ -106,9 +104,7 @@ package body Create_Gtkada_Builder is
    -- On_Print_To_Console --
    -------------------------
 
-   procedure On_Print_To_Console
-      (Object : access GObject_Record'Class)
-   is
+   procedure On_Print_To_Console (Object : access GObject_Record'Class) is
       Term1 : constant Gtk_Entry := Gtk_Entry (Object);
    begin
       Put_Line ("String 1 is: " & Get_Text (Term1));
@@ -118,9 +114,7 @@ package body Create_Gtkada_Builder is
    -- On_Button_Clicked --
    -----------------------
 
-   procedure On_Button_Clicked
-      (Button : access Gtk_Button_Record'Class)
-   is
+   procedure On_Button_Clicked (Button : access Gtk_Button_Record'Class) is
       pragma Unreferenced (Button);
 
       Builder : Gtkada_Builder;
@@ -131,8 +125,9 @@ package body Create_Gtkada_Builder is
 
       --  Read in our XML file
       if Builder.Add_From_File (Default_Filename, Error'Access) = 0 then
-         Put_Line ("Error [Create_Builder.On_Button_Clicked]: "
-                   & Get_Message (Error));
+         Put_Line
+           ("Error [Create_Builder.On_Button_Clicked]: "
+            & Get_Message (Error));
          Error_Free (Error);
       end if;
 
@@ -181,17 +176,18 @@ package body Create_Gtkada_Builder is
    procedure On_Btn_Concatenate_Clicked
      (Builder : access Gtkada_Builder_Record'Class)
    is
-      Buffer  : constant Gtk_Text_Buffer := Get_Buffer
-        (Gtk.Text_View.Gtk_Text_View (Builder.Get_Object ("textField")));
+      Buffer : constant Gtk_Text_Buffer :=
+        Get_Buffer
+          (Gtk.Text_View.Gtk_Text_View (Builder.Get_Object ("textField")));
    begin
       Put_Line ("On_Btn_Concatenate_Clicked");
 
       Insert_At_Cursor
         (Buffer,
-         "Concatenated: " &
-         Get_Text (Gtk.GEntry.Gtk_Entry (Builder.Get_Object ("term1"))) &
-         Get_Text (Gtk.GEntry.Gtk_Entry (Builder.Get_Object ("term2"))) &
-         ASCII.LF);
+         "Concatenated: "
+         & Get_Text (Gtk.GEntry.Gtk_Entry (Builder.Get_Object ("term1")))
+         & Get_Text (Gtk.GEntry.Gtk_Entry (Builder.Get_Object ("term2")))
+         & ASCII.LF);
    exception
       when Event : others =>
          Put_Line ("Error: " & Ada.Exceptions.Exception_Information (Event));
@@ -214,8 +210,7 @@ package body Create_Gtkada_Builder is
    -----------------------------
 
    function On_Window1_Delete_Event
-     (Builder : access Gtkada_Builder_Record'Class)
-      return Boolean
+     (Builder : access Gtkada_Builder_Record'Class) return Boolean
    is
       pragma Unreferenced (Builder);
    begin
@@ -229,11 +224,10 @@ package body Create_Gtkada_Builder is
    -- On_Window1_Destroy --
    ------------------------
 
-   procedure On_Window1_Destroy
-     (Builder : access Gtkada_Builder_Record'Class)
+   procedure On_Window1_Destroy (Builder : access Gtkada_Builder_Record'Class)
    is
    begin
-      --  We actually don't do much here, since within testgtk, we're not
+      --  We actually don't do much here, since within gtkada_demo, we're not
       --  the main window.
       Put_Line ("On_Window1_Destroy");
 

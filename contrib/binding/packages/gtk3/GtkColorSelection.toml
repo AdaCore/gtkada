@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-colorsel"
 group = "Drawing"
-testgtk = "create_color_selection.adb"
+gtkada_demo = "create_color_selection.adb"
 text = '''
 A Gtk_Color_Selection widget is a complex dialog that allows the user
 to select a color based either on its (Red, Green, Blue) or its

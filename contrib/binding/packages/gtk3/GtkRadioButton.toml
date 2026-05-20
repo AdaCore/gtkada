@@ -5,7 +5,7 @@
 [doc]
 screenshot = "gtk-radio_button"
 group = "Buttons and Toggles"
-testgtk = "create_radio_button.adb"
+gtkada_demo = "create_radio_button.adb"
 
 [[parameter]]
 name = "self"

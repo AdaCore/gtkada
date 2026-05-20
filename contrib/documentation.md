@@ -121,10 +121,10 @@ at build time. One recurring case:
 
 ## Conventions used below
 
-- A name in **bold** is a top-level key in the file (e.g. `bindtype`).
-- A `[<table>]` heading is a *table*, expected at most once.
-- A `[[<table>]]` heading is an *array of tables*, repeatable.
-- "Default" is what the generator does when the key is missing.
+* A name in **bold** is a top-level key in the file (e.g. `bindtype`).
+* A `[<table>]` heading is a *table*, expected at most once.
+* A `[[<table>]]` heading is an *array of tables*, repeatable.
+* "Default" is what the generator does when the key is missing.
 
 ## Table of contents
 
@@ -169,15 +169,15 @@ package. All keys are optional.
 |--------------|--------|------------------------------------------------------------------------|
 | `screenshot` | string | Generates a `<screenshot>...</screenshot>` tag.                        |
 | `group`      | string | Generates a `<group>...</group>` tag (used by the documentation tool). |
-| `testgtk`    | string | Generates a `<testgtk>...</testgtk>` tag (link to a testgtk example).  |
+| `gtkada_demo`| string | Generates a `<gtkada_demo>...</gtkada_demo>` tag (link to a gtkada_demo example).  |
 | `see`        | string | Generates a `<see>...</see>` cross-reference.                          |
 | `text`       | string | Free-form text. Use `'''...'''` for multi-line paragraphs.             |
 
 ```toml
 [doc]
-screenshot = "gtk-button"
-group      = "Buttons and Toggles"
-testgtk    = "create_buttons.adb"
+screenshot  = "gtk-button"
+group       = "Buttons and Toggles"
+gtkada_demo = "create_buttons.adb"
 ```
 
 ## `[[parameter]]` — default parameter overrides
@@ -205,11 +205,11 @@ ada  = "Button"
 These four arrays use **the same schema**; they only differ in which
 GIR node is matched.
 
-- `[[method]]` — match a `<method>`.
-- `[[function]]` — match a namespace-level `<function>` and add it
+* `[[method]]` — match a `<method>`.
+* `[[function]]` — match a namespace-level `<function>` and add it
   to the current Ada package.
-- `[[callback]]` — match a `<callback>` referenced as a parameter.
-- `[[virtual_method]]` — match a `<virtual-method>`. For
+* `[[callback]]` — match a `<callback>` referenced as a parameter.
+* `[[virtual_method]]` — match a `<virtual-method>`. For
   interfaces every virtual method is bound by default; for other
   classes none is bound. Use `bind = false` (or `true`) to override.
 

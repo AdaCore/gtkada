@@ -90,7 +90,7 @@
 --  not pressed).
 --
 --  <group>Drawing</group>
---  <testgtk>create_canvas.adb</testgtk>
+--  <gtkada_demo>create_canvas.adb</gtkada_demo>
 --  <screenshot>gtkada-canvas</screenshot>
 
 with Ada.Calendar;
@@ -115,8 +115,8 @@ with Pango.Layout;
 
 package Gtkada.Canvas is
 
-   type Interactive_Canvas_Record is new
-     Gtk.Layout.Gtk_Layout_Record with private;
+   type Interactive_Canvas_Record is
+     new Gtk.Layout.Gtk_Layout_Record with private;
    type Interactive_Canvas is access all Interactive_Canvas_Record'Class;
    --  A canvas on which items are put.
    --  Each item can be moved interactively by the user, and links can be
@@ -145,23 +145,23 @@ package Gtkada.Canvas is
    --  These are the default configuration values for the canvas. All the
    --  values can be changed by the Configure subprogram.
 
-   Default_Annotation_Font  : constant String := "Helvetica 8";
+   Default_Annotation_Font : constant String := "Helvetica 8";
    --  Font used when displaying link annotation. See Pango.Font for the
    --  format.
 
-   Default_Grid_Size        : constant := 15;
+   Default_Grid_Size : constant := 15;
    --  Number of pixels between two dots on the grid.
    --  This is used for both horizontal and vertical orientation.
 
-   Default_Arc_Link_Offset  : constant := 25;
+   Default_Arc_Link_Offset : constant := 25;
    --  Distance between two parallel arcs for two links. This is not the exact
    --  distance, and it only used to compute the control points for the bezier
    --  curves.
 
-   Default_Arrow_Angle      : constant := 30;
+   Default_Arrow_Angle : constant := 30;
    --  Half angle for the arrows in degres
 
-   Default_Arrow_Length     : constant := 6;
+   Default_Arrow_Length : constant := 6;
    --  Length of the arrows in pixels.
 
    Default_Motion_Threshold : constant := 4.0;
@@ -209,10 +209,10 @@ package Gtkada.Canvas is
    --  Return the internal type
 
    procedure Configure
-     (Canvas : access Interactive_Canvas_Record;
+     (Canvas           : access Interactive_Canvas_Record;
       Grid_Size        : Glib.Guint := Default_Grid_Size;
       Annotation_Font  : Pango.Font.Pango_Font_Description :=
-                           Pango.Font.From_String (Default_Annotation_Font);
+        Pango.Font.From_String (Default_Annotation_Font);
       Arc_Link_Offset  : Glib.Gint := Default_Arc_Link_Offset;
       Arrow_Angle      : Glib.Gint := Default_Arrow_Angle;
       Arrow_Length     : Glib.Gint := Default_Arrow_Length;
@@ -252,8 +252,7 @@ package Gtkada.Canvas is
    --  PNG surface.
 
    procedure Draw_Background
-     (Canvas : access Interactive_Canvas_Record;
-      Cr     : Cairo.Cairo_Context);
+     (Canvas : access Interactive_Canvas_Record; Cr : Cairo.Cairo_Context);
    --  Draw the background of the canvas. This procedure should be overridden
    --  if you want to draw something else on the background. It must first
    --  clear the area on the screen.
@@ -264,14 +263,12 @@ package Gtkada.Canvas is
    --  end of this file.
 
    procedure Draw_Grid
-     (Canvas : access Interactive_Canvas_Record;
-      Cr     : Cairo.Cairo_Context);
+     (Canvas : access Interactive_Canvas_Record; Cr : Cairo.Cairo_Context);
    --  Helper function that can be called from Draw_Background. It cannot be
    --  used directly as Draw_Background, since it doesn't clear the area first.
 
    procedure Set_Orthogonal_Links
-     (Canvas : access Interactive_Canvas_Record;
-      Orthogonal : Boolean);
+     (Canvas : access Interactive_Canvas_Record; Orthogonal : Boolean);
    --  If Orthogonal is True, then all the links will be drawn only with
    --  vertical and horizontal lines. This is not applied for the second or
    --  more link between two items.
@@ -281,8 +278,7 @@ package Gtkada.Canvas is
    --  Return True if the links are only drawn horizontally and vertically.
 
    procedure Align_On_Grid
-     (Canvas : access Interactive_Canvas_Record;
-      Align  : Boolean := True);
+     (Canvas : access Interactive_Canvas_Record; Align : Boolean := True);
    --  Choose whether the items should be aligned on the grid when moved.
    --  Existing items are not moved even if you set this parameter to True,
    --  this will only take effect the next time the items are moved.
@@ -302,8 +298,7 @@ package Gtkada.Canvas is
    --  canvas (it is your responsability to call Layout).
 
    procedure Set_Items
-     (Canvas : access Interactive_Canvas_Record;
-      Items  : Glib.Graphs.Graph);
+     (Canvas : access Interactive_Canvas_Record; Items : Glib.Graphs.Graph);
    --  Set the items and links to display in the canvas from Items.
    --  All items previously in the canvas are removed, and replaced by the
    --  vertices in Items.
@@ -327,8 +322,8 @@ package Gtkada.Canvas is
    --  computed immediately.
 
    function Item_At_Coordinates
-     (Canvas : access Interactive_Canvas_Record;
-      X, Y : Glib.Gint) return Canvas_Item;
+     (Canvas : access Interactive_Canvas_Record; X, Y : Glib.Gint)
+      return Canvas_Item;
    --  Return the item at world coordinates (X, Y) which is on top of all
    --  others.
    --  null is returned if there is no such item.
@@ -418,9 +413,10 @@ package Gtkada.Canvas is
    -- Iterating over items --
    --------------------------
 
-   type Item_Processor is access function
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Item   : access Canvas_Item_Record'Class) return Boolean;
+   type Item_Processor is
+     access function
+       (Canvas : access Interactive_Canvas_Record'Class;
+        Item   : access Canvas_Item_Record'Class) return Boolean;
 
    procedure For_Each_Item
      (Canvas            : access Interactive_Canvas_Record;
@@ -491,11 +487,12 @@ package Gtkada.Canvas is
    -- Layout of items --
    ---------------------
 
-   type Layout_Algorithm is access procedure
-     (Canvas          : access Interactive_Canvas_Record'Class;
-      Graph           : Glib.Graphs.Graph;
-      Force           : Boolean;
-      Vertical_Layout : Boolean);
+   type Layout_Algorithm is
+     access procedure
+       (Canvas          : access Interactive_Canvas_Record'Class;
+        Graph           : Glib.Graphs.Graph;
+        Force           : Boolean;
+        Vertical_Layout : Boolean);
    --  A general layout algorithm. It should compute the position of all the
    --  vertices of the graph, and set them directly in the graph itself.
    --  Note: all the vertices in the graph are of type Canvas_Item_Record'Class
@@ -516,8 +513,7 @@ package Gtkada.Canvas is
    --  the canvas if necessary.
 
    procedure Set_Layout_Algorithm
-     (Canvas    : access Interactive_Canvas_Record;
-      Algorithm : Layout_Algorithm);
+     (Canvas : access Interactive_Canvas_Record; Algorithm : Layout_Algorithm);
    --  Set the layout algorithm to use to compute the position of the items.
    --  Algorithm mustn't be null.
 
@@ -532,8 +528,7 @@ package Gtkada.Canvas is
    --  as space allows.
 
    procedure Set_Auto_Layout
-     (Canvas      : access Interactive_Canvas_Record;
-      Auto_Layout : Boolean);
+     (Canvas : access Interactive_Canvas_Record; Auto_Layout : Boolean);
    --  If Auto_Layout is true, then every time an item is inserted in the
    --  canvas, the layout algorithm is called. If set to False, it is the
    --  responsability of the caller to call Layout below to force a
@@ -547,8 +542,7 @@ package Gtkada.Canvas is
    --  passed as a parameter to the layout algorithm
 
    procedure Layout
-     (Canvas : access Interactive_Canvas_Record;
-      Force  : Boolean := False);
+     (Canvas : access Interactive_Canvas_Record; Force : Boolean := False);
    --  Recompute the layout of the canvas.
    --  Force can be used to control the layout algorithm, as described above
    --  for Layout_Algorithm.
@@ -624,9 +618,10 @@ package Gtkada.Canvas is
    --  It also destroys the link itself, and free the memory allocated to it.
    --  Nothing is done if Link does not belong to canvas.
 
-   type Link_Processor is access function
-     (Canvas : access Interactive_Canvas_Record'Class;
-      Link   : access Canvas_Link_Record'Class) return Boolean;
+   type Link_Processor is
+     access function
+       (Canvas : access Interactive_Canvas_Record'Class;
+        Link   : access Canvas_Link_Record'Class) return Boolean;
 
    procedure For_Each_Link
      (Canvas   : access Interactive_Canvas_Record;
@@ -675,10 +670,10 @@ package Gtkada.Canvas is
    --  selected items need to be drawn.
 
    procedure Draw_Link
-     (Canvas      : access Interactive_Canvas_Record'Class;
-      Link        : access Canvas_Link_Record;
-      Cr          : Cairo.Cairo_Context;
-      Edge_Number : Glib.Gint;
+     (Canvas          : access Interactive_Canvas_Record'Class;
+      Link            : access Canvas_Link_Record;
+      Cr              : Cairo.Cairo_Context;
+      Edge_Number     : Glib.Gint;
       Show_Annotation : Boolean := True);
    --  Redraw the link on the canvas.
    --  Note that this is a primitive procedure of Link, not of Canvas, and thus
@@ -702,15 +697,15 @@ package Gtkada.Canvas is
    --  Each side of an item, along its rectangle bounding box
 
    procedure Clip_Line
-     (Src   : access Canvas_Item_Record;
+     (Src    : access Canvas_Item_Record;
       Canvas : access Interactive_Canvas_Record'Class;
-      To_X  : Glib.Gint;
-      To_Y  : Glib.Gint;
-      X_Pos : Glib.Gfloat;
-      Y_Pos : Glib.Gfloat;
-      Side  : out Item_Side;
-      X_Out : out Glib.Gint;
-      Y_Out : out Glib.Gint);
+      To_X   : Glib.Gint;
+      To_Y   : Glib.Gint;
+      X_Pos  : Glib.Gfloat;
+      Y_Pos  : Glib.Gfloat;
+      Side   : out Item_Side;
+      X_Out  : out Glib.Gint;
+      Y_Out  : out Glib.Gint);
    --  Clip the line that goes from Src at pos (X_Pos, Y_Pos) to (To_X, To_Y)
    --  in world coordinates.
    --  The intersection between that line and the border of Rect is returned
@@ -785,8 +780,7 @@ package Gtkada.Canvas is
    --  The default is to do nothing.
 
    function Point_In_Item
-     (Item : access Canvas_Item_Record;
-      X, Y : Glib.Gint) return Boolean;
+     (Item : access Canvas_Item_Record; X, Y : Glib.Gint) return Boolean;
    --  This function should return True if (X, Y) is inside the item. X and Y
    --  are in world coordinates.
    --  This function is meant to be overridden for non-rectangular items, since
@@ -794,9 +788,7 @@ package Gtkada.Canvas is
    --  This function is never called for invisible items
 
    procedure Set_Screen_Size
-     (Item   : access Canvas_Item_Record;
-      Width  : Glib.Gint;
-      Height : Glib.Gint);
+     (Item : access Canvas_Item_Record; Width : Glib.Gint; Height : Glib.Gint);
    --  Set the size of bounding box for the item in world coordinates.
    --  The item itself needn't occupy the whole area of this bounding box,
    --  see Point_In_Item.
@@ -804,14 +796,12 @@ package Gtkada.Canvas is
    --  to refresh the screen.
 
    procedure Draw_Selected
-     (Item : access Canvas_Item_Record;
-      Cr   : Cairo.Cairo_Context);
+     (Item : access Canvas_Item_Record; Cr : Cairo.Cairo_Context);
    --  Draws a selected item. By default, this adds a semi-transparent overlay
    --  above the item, drawn using the below call to Draw
 
-   procedure Draw
-     (Item : access Canvas_Item_Record;
-      Cr   : Cairo.Cairo_Context) is abstract;
+   procedure Draw (Item : access Canvas_Item_Record; Cr : Cairo.Cairo_Context)
+   is abstract;
    --  This subprogram, that must be overridden, should draw the item on
    --  Cr. The Item is drawn from coordinates (0,0), and does not need to take
    --  care of the zoom level.
@@ -824,8 +814,8 @@ package Gtkada.Canvas is
    --  call the parent's Destroy subprogram.
 
    function On_Button_Click
-     (Item  : access Canvas_Item_Record;
-      Event : Gdk.Event.Gdk_Event_Button) return Boolean;
+     (Item : access Canvas_Item_Record; Event : Gdk.Event.Gdk_Event_Button)
+      return Boolean;
    --  Function called whenever mouse events occured.
    --  The following mouse events may be received:
    --    Mouse_Press,
@@ -847,8 +837,7 @@ package Gtkada.Canvas is
    --  of 1.
 
    procedure Set_Visibility
-     (Item    : access Canvas_Item_Record;
-      Visible : Boolean);
+     (Item : access Canvas_Item_Record; Visible : Boolean);
    --  Set the visibility status of the item. An invisible item will not be
    --  visible on the screen, and will not take part in the computation of the
    --  the scrollbars for the canvas.
@@ -883,8 +872,8 @@ package Gtkada.Canvas is
    --  finally reset the clip mask. The clip mask must take into account the
    --  current zoom level.
 
-   function Surface (Item : access Buffered_Item_Record)
-      return Cairo.Cairo_Surface;
+   function Surface
+     (Item : access Buffered_Item_Record) return Cairo.Cairo_Surface;
    --  Return the double-buffer.
 
    -------------
@@ -943,25 +932,23 @@ package Gtkada.Canvas is
    --  </signals>
 
    Signal_Background_Click       : constant Glib.Signal_Name :=
-                                     "background_click";
+     "background_click";
    Signal_Item_Selected          : constant Glib.Signal_Name :=
-                                     "item_selected";
+     "item_selected";
    Signal_Item_Unselected        : constant Glib.Signal_Name :=
-                                     "item_unselected";
-   Signal_Item_Moved             : constant Glib.Signal_Name :=
-                                     "item_moved";
-   Signal_Zoomed                 : constant Glib.Signal_Name :=
-                                     "zoomed";
+     "item_unselected";
+   Signal_Item_Moved             : constant Glib.Signal_Name := "item_moved";
+   Signal_Zoomed                 : constant Glib.Signal_Name := "zoomed";
    Signal_Set_Scroll_Adjustments : constant Glib.Signal_Name :=
-                                     "set_scroll_adjustments";
+     "set_scroll_adjustments";
 
 private
 
    type String_Access is access Glib.UTF8_String;
 
    type Canvas_Link_Record is new Glib.Graphs.Edge with record
-      Descr      : String_Access;
-      Arrow      : Arrow_Type := End_Arrow;
+      Descr : String_Access;
+      Arrow : Arrow_Type := End_Arrow;
 
       Src_X_Pos  : Glib.Gfloat := 0.5;
       Src_Y_Pos  : Glib.Gfloat := 0.5;
@@ -970,42 +957,41 @@ private
       --  Position of the link's attachment in each of the src and dest items.
    end record;
 
-   type Interactive_Canvas_Record is new
-     Gtk.Layout.Gtk_Layout_Record
+   type Interactive_Canvas_Record is new Gtk.Layout.Gtk_Layout_Record
    with record
-      Children          : Glib.Graphs.Graph;
-      World_X, World_Y  : Glib.Gdouble;
+      Children         : Glib.Graphs.Graph;
+      World_X, World_Y : Glib.Gdouble;
       --  The World coordinates at canvas (0,0)
 
-      Background_Color  : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.White_RGBA;
+      Background_Color : Gdk.RGBA.Gdk_RGBA := Gdk.RGBA.White_RGBA;
 
-      Layout            : Layout_Algorithm := Default_Layout_Algorithm'Access;
-      Auto_Layout       : Boolean := True;
-      Vertical_Layout   : Boolean := False;
+      Layout          : Layout_Algorithm := Default_Layout_Algorithm'Access;
+      Auto_Layout     : Boolean := True;
+      Vertical_Layout : Boolean := False;
       --  The algorithm to use when laying out items on the canvas.
 
-      World_X_At_Click  : Glib.Gdouble := 0.0;
-      World_Y_At_Click  : Glib.Gdouble := 0.0;
+      World_X_At_Click : Glib.Gdouble := 0.0;
+      World_Y_At_Click : Glib.Gdouble := 0.0;
       --  Coordinates of the last button_press event in the canvas.
       --  These are world-coordinates, so that even if the canvas is scrolled
       --  they remain valid
 
-      Selected_Count    : Natural := 0;
+      Selected_Count : Natural := 0;
       --  Number of selected items
 
-      Offset_X_World    : Glib.Gdouble := 0.0;
-      Offset_Y_World    : Glib.Gdouble := 0.0;
+      Offset_X_World : Glib.Gdouble := 0.0;
+      Offset_Y_World : Glib.Gdouble := 0.0;
       --  How much world-coordinates have we moved the mouse since the last
       --  button press event ?
 
-      Mouse_Has_Moved   : Boolean;
+      Mouse_Has_Moved : Boolean;
       --  True if mouse has moved while the button was clicked. This is used
       --  to distinguish between item motion and item selection.
 
-      Background_Press  : Boolean;
+      Background_Press : Boolean;
       --  True if the mouse press event occured in the background
 
-      Item_Press        : Canvas_Item;
+      Item_Press : Canvas_Item;
       --  Points to the canvas item that received the press event
 
       Show_Item                    : Canvas_Item;
@@ -1014,18 +1000,18 @@ private
       --  This is required since the canvas doesn't necessarily have a size yet
       --  when Show_Item() is called the first time.
 
-      Grid_Size         : Glib.Guint := Default_Grid_Size;
+      Grid_Size : Glib.Guint := Default_Grid_Size;
       --  The current number of pixels between each dot of the grid. If this
       --  is strictly below 2, the grid is not drawn.
 
-      Arc_Link_Offset   : Glib.Gint := Default_Arc_Link_Offset;
-      Arrow_Angle       : Glib.Gdouble;
-      Arrow_Length      : Glib.Gint := Default_Arrow_Length;
-      Motion_Threshold  : Glib.Gdouble := Default_Motion_Threshold;
-      Align_On_Grid     : Boolean := False;
+      Arc_Link_Offset  : Glib.Gint := Default_Arc_Link_Offset;
+      Arrow_Angle      : Glib.Gdouble;
+      Arrow_Length     : Glib.Gint := Default_Arrow_Length;
+      Motion_Threshold : Glib.Gdouble := Default_Motion_Threshold;
+      Align_On_Grid    : Boolean := False;
 
-      Black_Color     : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
-      Sel_Color       : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Black_Color : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
+      Sel_Color   : Gdk.Color.Gdk_Color := Gdk.Color.Null_Color;
 
       Annotation_Layout : Pango.Layout.Pango_Layout;
       --  Layout used to draw the annotations
@@ -1040,28 +1026,27 @@ private
       --  Amount of scrolling for each step while the cursor is left in the
       --  surrounding box.
 
-      Zoom                : Glib.Gdouble := 1.0;
+      Zoom : Glib.Gdouble := 1.0;
       --  Zoom level in percent (100% is normal size)
 
-      Initial_Zoom        : Glib.Gdouble := 1.0;
-      Target_Zoom         : Glib.Gdouble := 1.0;
-      Zoom_Duration       : Duration := 0.0;
-      Zoom_Start          : Ada.Calendar.Time;
-      Zoom_X              : Glib.Gdouble := 0.0;
-      Zoom_Y              : Glib.Gdouble := 0.0;
+      Initial_Zoom  : Glib.Gdouble := 1.0;
+      Target_Zoom   : Glib.Gdouble := 1.0;
+      Zoom_Duration : Duration := 0.0;
+      Zoom_Start    : Ada.Calendar.Time;
+      Zoom_X        : Glib.Gdouble := 0.0;
+      Zoom_Y        : Glib.Gdouble := 0.0;
       --  Variables used while smooth-scrolling the canvas
 
-      Freeze           : Boolean := False;
+      Freeze : Boolean := False;
    end record;
 
    type Canvas_Item_Record is abstract new Glib.Graphs.Vertex with record
-      Canvas           : Interactive_Canvas := null;
-      Coord            : aliased Cairo.Region.Cairo_Rectangle_Int :=
-        (0, 0, 0, 0);
+      Canvas : Interactive_Canvas := null;
+      Coord  : aliased Cairo.Region.Cairo_Rectangle_Int := (0, 0, 0, 0);
       --  This is the bounding box of the item
 
-      Visible          : Boolean := True;
-      Selected         : Boolean := False;
+      Visible  : Boolean := True;
+      Selected : Boolean := False;
 
       From_Auto_Layout : Boolean := True;
       --  True if the item's current location is the result of the automatic
@@ -1073,13 +1058,11 @@ private
    end record;
 
    procedure Set_Screen_Size
-     (Item   : access Buffered_Item_Record;
-      Width, Height  : Glib.Gint);
+     (Item : access Buffered_Item_Record; Width, Height : Glib.Gint);
    --  See documentation from inherited subprogram
 
    procedure Draw
-     (Item : access Buffered_Item_Record;
-      Cr   : Cairo.Cairo_Context);
+     (Item : access Buffered_Item_Record; Cr : Cairo.Cairo_Context);
    --  Draw the item's double-buffer onto Dest.
 
    procedure Destroy (Item : in out Buffered_Item_Record);

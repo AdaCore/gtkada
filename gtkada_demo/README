@@ -1,4 +1,4 @@
-This is the GtkAda version of the C testgtk program, demonstrating the
+This is the GtkAda version of the C gtk_demo program, demonstrating the
 use of most of the GtkAda widgets. Many improvements have been made compared
 to the original C implementation.
 
@@ -9,4 +9,4 @@ To build it under unix, simply type make after having configured GtkAda.
 
 To build it under windows, use the following command:
 
-gnatmake -I../lib -Iopengl -Ipixbuf testgtk -largs -llw -lopengl32 -lglu32
+gnatmake -I../lib -Iopengl -Ipixbuf gtkada_demo -largs -llw -lopengl32 -lglu32

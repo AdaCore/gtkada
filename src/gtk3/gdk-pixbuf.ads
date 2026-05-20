@@ -37,11 +37,11 @@
 --
 --  <c_version>1.3.11</c_version>
 --  <group>Gdk, the low-level API</group>
---  <testgtk>create_pixbuf.adb</testgtk>
+--  <gtkada_demo>create_pixbuf.adb</gtkada_demo>
 
 with System;
 with Cairo;
-with Glib; use Glib;
+with Glib;       use Glib;
 with Glib.Error; use Glib.Error;
 with Glib.Object;
 with Gdk.Display;
@@ -112,22 +112,22 @@ package Gdk.Pixbuf is
 
    --  Errors defined in the Pixbuf_Error domain:
 
-   Corrupt_Image         : constant := 0;
+   Corrupt_Image : constant := 0;
    --  image data hosed
 
-   Insufficient_Memory   : constant := 1;
+   Insufficient_Memory : constant := 1;
    --  no mem to load image
 
-   Bad_Option            : constant := 2;
+   Bad_Option : constant := 2;
    --  bad option passed to save routine
 
-   Unknown_Type          : constant := 3;
+   Unknown_Type : constant := 3;
    --  unsupported image type
 
    Unsupported_Operation : constant := 4;
    --  unsupported operation (load, save) for image type
 
-   Failed                : constant := 5;
+   Failed : constant := 5;
    --  Operation failed.
 
    type File_Format is (JPEG, PNG, ICO, BMP);
@@ -228,9 +228,7 @@ package Gdk.Pixbuf is
    --  Create a pixbuf which points to the pixels of another pixbuf
 
    procedure Gdk_New_From_File
-     (Pixbuf   : out Gdk_Pixbuf;
-      Filename : String;
-      Error    : out GError);
+     (Pixbuf : out Gdk_Pixbuf; Filename : String; Error : out GError);
    --  Load an image from file.
 
    function Gdk_New_From_Data
@@ -358,17 +356,17 @@ package Gdk.Pixbuf is
    -------------
 
    procedure Scale
-     (Src          : Gdk_Pixbuf;
-      Dest         : Gdk_Pixbuf;
-      Dest_X       : Gint;
-      Dest_Y       : Gint;
-      Dest_Width   : Gint;
-      Dest_Height  : Gint;
-      Offset_X     : Gdouble := 0.0;
-      Offset_Y     : Gdouble := 0.0;
-      Scale_X      : Gdouble := 1.0;
-      Scale_Y      : Gdouble := 1.0;
-      Inter_Type   : Gdk_Interp_Type := Interp_Bilinear);
+     (Src         : Gdk_Pixbuf;
+      Dest        : Gdk_Pixbuf;
+      Dest_X      : Gint;
+      Dest_Y      : Gint;
+      Dest_Width  : Gint;
+      Dest_Height : Gint;
+      Offset_X    : Gdouble := 0.0;
+      Offset_Y    : Gdouble := 0.0;
+      Scale_X     : Gdouble := 1.0;
+      Scale_Y     : Gdouble := 1.0;
+      Inter_Type  : Gdk_Interp_Type := Interp_Bilinear);
    --  Transform the source image by scaling by Scale_x and Scale_y then
    --  translating by Offset_x and Offset_y.
    --  The image is then rendered in the rectangle (Dest_x, Dest_y,
@@ -420,10 +418,10 @@ package Gdk.Pixbuf is
    --  Color1 is the color at the upper left of the check.
 
    function Scale_Simple
-     (Src           : Gdk_Pixbuf;
-      Dest_Width    : Gint;
-      Dest_Height   : Gint;
-      Inter_Type    : Gdk_Interp_Type := Interp_Bilinear) return Gdk_Pixbuf;
+     (Src         : Gdk_Pixbuf;
+      Dest_Width  : Gint;
+      Dest_Height : Gint;
+      Inter_Type  : Gdk_Interp_Type := Interp_Bilinear) return Gdk_Pixbuf;
    --  Scale the Src image to Dest_width x Dest_height and render the result
    --  into a new pixbuf.
 
@@ -488,8 +486,7 @@ package Gdk.Pixbuf is
    --  function will return null.
 
    function Get_Iter
-     (Animation  : Gdk_Pixbuf_Animation;
-      Start_Time : GTime_Val_Access := null)
+     (Animation : Gdk_Pixbuf_Animation; Start_Time : GTime_Val_Access := null)
       return Gdk_Pixbuf_Animation_Iter;
    --  Get an iterator for displaying an animation. The iterator provides
    --  the frames that should be displayed at a given time.
@@ -614,10 +611,10 @@ private
 
    pragma Import (C, Get_Type, "gdk_pixbuf_get_type");
    pragma Import (C, Get_Type_Animation, "gdk_pixbuf_animation_get_type");
-   pragma Import
-     (C, Get_Type_Animation_Iter, "gdk_pixbuf_animation_iter_get_type");
+   pragma
+     Import (C, Get_Type_Animation_Iter, "gdk_pixbuf_animation_iter_get_type");
    pragma Import (C, Get_Iter, "gdk_pixbuf_animation_get_iter");
-   pragma Import
-     (C, Get_Delay_Time, "gdk_pixbuf_animation_iter_get_delay_time");
+   pragma
+     Import (C, Get_Delay_Time, "gdk_pixbuf_animation_iter_get_delay_time");
 
 end Gdk.Pixbuf;

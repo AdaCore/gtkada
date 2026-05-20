@@ -15,10 +15,10 @@ is resized, and how it should move its children.  Thus almost everything is
 handled automatically, and you don't have to do anything to support resizing.
 
 If you really insist on moving the children to a specific position, look at the
-`Gtk_Fixed` widget and its demo in :file:`testgtk/`. But you really should not
+`Gtk_Fixed` widget and its demo in :file:`gtkada_demo/`. But you really should not
 use this container, since you will then have to do everything by hand.
 
-All the containers are demonstrated in :file:`testgtk/`, in the GtkAda
+All the containers are demonstrated in :file:`gtkada_demo/`, in the GtkAda
 distribution. This should help you understand all the parameters associated
 with the containers. It is very important to master these containers, since
 using the appropriate containers will make building interfaces a lot easier.
@@ -36,6 +36,6 @@ text of the button (like 'OK' or 'Cancel').
 
 However, it is easy to put a pixmap in a button instead. When you create the
 button, do not specify any label. Thus, no child will be added, and you can
-give it your own. See :file:`testgtk/create_pixmap.adb` for an example on how
+give it your own. See :file:`gtkada_demo/create_pixmap.adb` for an example on how
 to do that.
 

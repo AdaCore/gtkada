@@ -24,7 +24,7 @@
 - Reactivate tests
 
 - Makefile.in:
-  - reactivate testgtk
+  - reactivate the install of gtkada_demo
   - reactivate tools
 
 - Consider whether to generate the bindings for Graphene.

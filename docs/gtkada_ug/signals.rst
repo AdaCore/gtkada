@@ -138,7 +138,7 @@ of slightly more complex code:
     are hardly ever used by user-level applications.
 
 A short, annotated example of connecting signals follows; a complete
-example can be found in create_file_selection.adb (inside the :file:`testgtk/`
+example can be found in create_file_selection.adb (inside the :file:`gtkada_demo/`
 directory). In our example, an application opens a file selector to
 allow the user to select a file.  GtkAda provides a high-level widget
 called Gtk_File_Selection which can be used in this case::
@@ -249,7 +249,7 @@ callback of the form::
 
      procedure My_Callback (Widget : access Gtk_Widget_Record'Class;
                              User_Data : String);
-  
+
 and connect it with a call similar to::
 
      Connect (Button, "Clicked", To_Marshaller (My_Callback'Access),

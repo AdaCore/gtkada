@@ -21,17 +21,17 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Cairo;             use Cairo;
-with Gdk.Cairo;         use Gdk.Cairo;
-with Gtk.Frame;         use Gtk.Frame;
-with Gtk.Label;         use Gtk.Label;
-with Glib;              use Glib;
-with Glib.Error;        use Glib.Error;
-with Gtk.Box;           use Gtk.Box;
-with Gtk.Drawing_Area;  use Gtk.Drawing_Area;
-with Gdk.Pixbuf;        use Gdk.Pixbuf;
-with Gtk.Handlers;      use Gtk.Handlers;
-with Gtk.Widget;        use Gtk.Widget;
+with Cairo;            use Cairo;
+with Gdk.Cairo;        use Gdk.Cairo;
+with Gtk.Frame;        use Gtk.Frame;
+with Gtk.Label;        use Gtk.Label;
+with Glib;             use Glib;
+with Glib.Error;       use Glib.Error;
+with Gtk.Box;          use Gtk.Box;
+with Gtk.Drawing_Area; use Gtk.Drawing_Area;
+with Gdk.Pixbuf;       use Gdk.Pixbuf;
+with Gtk.Handlers;     use Gtk.Handlers;
+with Gtk.Widget;       use Gtk.Widget;
 
 package body Libart_Demo is
 
@@ -70,8 +70,8 @@ package body Libart_Demo is
    -- Callbacks packages --
    ------------------------
 
-   package Expose_Cb is new Gtk.Handlers.Return_Callback
-     (Image_Drawing_Record, Boolean);
+   package Expose_Cb is new
+     Gtk.Handlers.Return_Callback (Image_Drawing_Record, Boolean);
 
    package Destroy_Cb is new Gtk.Handlers.Callback (Image_Drawing_Record);
 
@@ -90,8 +90,8 @@ package body Libart_Demo is
    -------------
 
    function On_Draw
-      (Draw : access Image_Drawing_Record'Class;
-       Cr   : Cairo_Context) return Boolean is
+     (Draw : access Image_Drawing_Record'Class; Cr : Cairo_Context)
+      return Boolean is
    begin
       Set_Source_Pixbuf (Cr, Draw.Pix, 0.0, 0.0);
       Cairo.Paint (Cr);
@@ -103,9 +103,7 @@ package body Libart_Demo is
    -------------
 
    procedure Gtk_New
-     (Draw   : out Image_Drawing;
-      Pixbuf : Gdk_Pixbuf;
-      Title  : String)
+     (Draw : out Image_Drawing; Pixbuf : Gdk_Pixbuf; Title : String)
    is
       Label : Gtk_Label;
    begin
@@ -125,12 +123,12 @@ package body Libart_Demo is
       Pack_Start (Draw, Draw.Area);
 
       Expose_Cb.Object_Connect
-        (Draw.Area, Signal_Draw,
+        (Draw.Area,
+         Signal_Draw,
          Expose_Cb.To_Marshaller (On_Draw'Access),
          Slot_Object => Draw);
       Destroy_Cb.Connect
-        (Draw, "destroy",
-         Destroy_Cb.To_Marshaller (Destroy'Access));
+        (Draw, "destroy", Destroy_Cb.To_Marshaller (Destroy'Access));
    end Gtk_New;
 
    ---------
@@ -156,22 +154,24 @@ package body Libart_Demo is
       Gdk_New_From_File (Pix, "alps.png", Error);
 
       if Pix = Null_Pixbuf then
-         Gtk_New (Label, "Pixmaps not found. Please run testgtk from the"
-               & " testgtk/ directory itself.");
+         Gtk_New
+           (Label,
+            "Pixmaps not found. Please run gtkada_demo from the"
+            & " gtkada_demo/ directory itself.");
          Add (Frame, Label);
          Show_All (Frame);
          return;
       end if;
 
-      Pix2 := Scale_Simple
-        (Pix,
-         Gint (550) - Get_Width (Pix),
-         Get_Height (Pix) / 2);
+      Pix2 :=
+        Scale_Simple (Pix, Gint (550) - Get_Width (Pix), Get_Height (Pix) / 2);
       Gdk_New_From_File (Pix3, "lightning.png", Error);
 
       if Pix3 = Null_Pixbuf then
-         Gtk_New (Label, "Pixmaps not found. Please run testgtk from the"
-               & " testgtk/ directory itself.");
+         Gtk_New
+           (Label,
+            "Pixmaps not found. Please run gtkada_demo from the"
+            & " gtkada_demo/ directory itself.");
          Add (Frame, Label);
          Show_All (Frame);
          return;
@@ -197,9 +197,12 @@ package body Libart_Demo is
       Gtk_New (Draw, Pix2, "Scaled Image");
       Pack_Start (Hbox, Draw, Expand => False, Fill => True);
 
-      Gtk_New (Draw, Pix3, "Composite Image with Opacity"
-               & ASCII.LF
-               & "This image is the addition of two simpler images");
+      Gtk_New
+        (Draw,
+         Pix3,
+         "Composite Image with Opacity"
+         & ASCII.LF
+         & "This image is the addition of two simpler images");
       Pack_Start (VBox, Draw);
 
       Show_All (Frame);

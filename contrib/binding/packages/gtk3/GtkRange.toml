@@ -4,7 +4,7 @@
 
 [doc]
 screenshot = "gtk-range"
-testgtk = "create_range.adb"
+gtkada_demo = "create_range.adb"
 
 [[parameter]]
 name = "self"

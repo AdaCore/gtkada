@@ -236,9 +236,9 @@ class GtkAdaPackage(object):
         if n is not None:
             doc.append("<group>%s</group>" % n)
 
-        n = docnode.get("testgtk")
+        n = docnode.get("gtkada_demo")
         if n is not None:
-            doc.append("<testgtk>%s</testgtk>" % n)
+            doc.append("<gtkada_demo>%s</gtkada_demo>" % n)
 
         n = docnode.get("see")
         if n is not None:
