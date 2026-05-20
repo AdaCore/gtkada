@@ -469,7 +469,7 @@ binding = (
     "--GtkListStore",
     "----GtkLockButton",  # requires GPermission
     "----GtkLockButtonAccessible",  # We do not support atk
-    "--GtkMain",
+    "GtkMain",
     "--GtkMisc",
     "--GtkMenu",
     "----GtkMenuAccessible",  # We do not support atk

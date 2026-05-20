@@ -1,0 +1,46 @@
+# ============================================================
+#   GtkMain
+# ============================================================
+
+[[function]]
+id = "gtk_get_major_version"
+
+[[function]]
+id = "gtk_get_minor_version"
+
+[[function]]
+id = "gtk_get_micro_version"
+
+[[function]]
+id = "gtk_get_binary_age"
+
+[[function]]
+id = "gtk_get_interface_age"
+
+[[function]]
+id = "gtk_check_version"
+
+[[function]]
+id = "gtk_parse_args"
+bind = false
+# no access to argc argv
+
+[[function]]
+id = "gtk_init"
+
+[[function]]
+id = "gtk_init_check"
+
+[[function]]
+id = "gtk_init_with_args"
+bind = false
+
+[[function]]
+id = "gtk_disable_setlocale"
+
+[[function]]
+id = "gtk_get_default_language"
+
+[[function.parameter]]
+name = "state"
+direction = "out"
