@@ -100,6 +100,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GdkFrameTimings",
            "--GdkGLContext",
            "GdkRGBA",
+           "GdkRectangle",
            "--GdkMonitor",
            "--GdkScreen",
            "--GdkSeat",
@@ -835,13 +836,9 @@ naming.type_exceptions = {
     "GdkPixbuf":          GObject("Gdk.Pixbuf.Gdk_Pixbuf"),
     "GdkPixbufAnimation*": Proxy("Gdk.Pixbuf.Gdk_Pixbuf_Animation"),
 
-    "GdkRectangle*":      Proxy("Gdk.Rectangle.Gdk_Rectangle"),
+    "GdkRectangle":      Record("Gdk.Rectangle.Gdk_Rectangle"),
+    "GdkRectangle*":     Proxy("Gdk.Rectangle.Gdk_Rectangle"),
 
-    # in gdkevents.h
-    "GdkRectangle":      Proxy("Gdk.Rectangle.Gdk_Rectangle"),
-
-    # ??? The above should not be needed, we should infer it from the Gir.
-    # we need it to generate the "Stub" object in Gdk.Device.Get_Position
     "Gdk.ModifierType":   Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkModifierType":    Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkKeyType":         Proxy("Gdk.Types.Gdk_Key_Type"),

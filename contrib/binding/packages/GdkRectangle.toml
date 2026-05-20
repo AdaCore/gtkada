@@ -1,0 +1,27 @@
+# ============================================================
+#   GdkRectangle
+# ============================================================
+
+[doc]
+group = "Gdk, the low-level API"
+
+[[parameter]]
+name = "self"
+ada  = "Self"
+
+# Turn the gboolean return into an out parameter, the way the
+# gtk3 manual binding (src/gtk3/gdk-rectangle.ads) exposed it.
+[[method]]
+id              = "gdk_rectangle_intersect"
+return_as_param = "Do_Intersect"
+
+  [[method.parameter]]
+  name      = "dest"
+  direction = "out"
+
+[[method]]
+id = "gdk_rectangle_union"
+
+  [[method.parameter]]
+  name      = "dest"
+  direction = "out"
