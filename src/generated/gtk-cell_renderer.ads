@@ -61,6 +61,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.RGBA;                use Gdk.RGBA;
+with Gdk.Rectangle;           use Gdk.Rectangle;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Glist;              use Glib.Glist;
@@ -123,6 +124,23 @@ package Gtk.Cell_Renderer is
    -------------
    -- Methods --
    -------------
+
+   procedure Get_Aligned_Area
+      (Cell         : not null access Gtk_Cell_Renderer_Record;
+       Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Flags        : Gtk_Cell_Renderer_State;
+       Cell_Area    : Gdk.Rectangle.Gdk_Rectangle;
+       Aligned_Area : out Gdk.Rectangle.Gdk_Rectangle);
+   pragma Obsolescent (Get_Aligned_Area);
+   --  Gets the aligned area used by Cell inside Cell_Area. Used for finding
+   --  the appropriate edit and focus rectangle.
+   --  Deprecated since 4.10, 1
+   --  @param Widget the `GtkWidget` this cell will be rendering to
+   --  @param Flags render flags
+   --  @param Cell_Area cell area which would be passed to
+   --  gtk_cell_renderer_render
+   --  @param Aligned_Area the return location for the space inside Cell_Area
+   --  that would actually be used to render.
 
    procedure Get_Alignment
       (Cell   : not null access Gtk_Cell_Renderer_Record;

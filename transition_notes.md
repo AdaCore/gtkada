@@ -92,14 +92,13 @@ Intentionally deferred:
 ## GtkCellRenderer (work item #50)
 
 `GtkCellRenderer` is bound (and marked obsolescent since gtk 4.10).
-Four methods are suppressed in
+Three methods are suppressed in
 `contrib/binding/packages/GtkCellRenderer.toml` pending bindings for
 the following types:
 
-- `gtk_cell_renderer_activate` — needs `GdkEvent` and `GdkRectangle`.
-- `gtk_cell_renderer_get_aligned_area` — needs `GdkRectangle`.
-- `gtk_cell_renderer_snapshot` — needs `GtkSnapshot` and `GdkRectangle`.
-- `gtk_cell_renderer_start_editing` — needs `GdkEvent` and `GdkRectangle`.
+- `gtk_cell_renderer_activate` — needs `GdkEvent`.
+- `gtk_cell_renderer_snapshot` — needs `GtkSnapshot`.
+- `gtk_cell_renderer_start_editing` — needs `GdkEvent`.
 
-Revisit and re-enable these once `GdkEvent`, `GdkRectangle` and
-`GtkSnapshot` are bound for gtk4.
+Revisit and re-enable these once `GdkEvent` and `GtkSnapshot` are
+bound for gtk4.

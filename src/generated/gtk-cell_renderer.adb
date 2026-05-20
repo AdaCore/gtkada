@@ -48,6 +48,28 @@ package body Gtk.Cell_Renderer is
      (Get_Type'Access, Gtk_Cell_Renderer_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer);
 
+   ----------------------
+   -- Get_Aligned_Area --
+   ----------------------
+
+   procedure Get_Aligned_Area
+      (Cell         : not null access Gtk_Cell_Renderer_Record;
+       Widget       : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Flags        : Gtk_Cell_Renderer_State;
+       Cell_Area    : Gdk.Rectangle.Gdk_Rectangle;
+       Aligned_Area : out Gdk.Rectangle.Gdk_Rectangle)
+   is
+      procedure Internal
+         (Cell         : System.Address;
+          Widget       : System.Address;
+          Flags        : Gtk_Cell_Renderer_State;
+          Cell_Area    : Gdk.Rectangle.Gdk_Rectangle;
+          Aligned_Area : out Gdk.Rectangle.Gdk_Rectangle);
+      pragma Import (C, Internal, "gtk_cell_renderer_get_aligned_area");
+   begin
+      Internal (Get_Object (Cell), Get_Object (Widget), Flags, Cell_Area, Aligned_Area);
+   end Get_Aligned_Area;
+
    -------------------
    -- Get_Alignment --
    -------------------
