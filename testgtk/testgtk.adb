@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                    Copyright (C) 1998-2026, AdaCore                      --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,30 +21,21 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Ada.Text_IO;        use Ada.Text_IO;
-with Gtkada.Bindings;    use Gtkada.Bindings;
-with Gtkada.Style;       use Gtkada.Style;
-with Gtk.Enums;          use Gtk.Enums;
-with Gtk.Style_Provider; use Gtk.Style_Provider;
-with Gtk.Main;
+with Glib;             use Glib;
+with Glib.Application; use Glib.Application;
+with Gtk.Application;  use Gtk.Application;
 
-with Global_Exception_Handler;
 with Main_Windows;
 
 procedure Testgtk is
-   Win     : Main_Windows.Main_Window;
+   App    : Gtk_Application;
+   Result : Glib.Gint;
+   pragma Unreferenced (Result);
 begin
-   Gtk.Main.Init;
-
-   --  For debug purposes only
-   Gtkada.Bindings.Set_On_Exception
-     (Global_Exception_Handler.On_Exception'Access);
-
-   Load_Css_File
-      ("testgtk.css", Ada.Text_IO.Put_Line'Access, Priority_Application);
-
-   Main_Windows.Gtk_New (Win);
-   Win.Set_Position (Win_Pos_Center);
-   Main_Windows.Show_All (Win);
-   Gtk.Main.Main;
+   Gtk_New
+     (App,
+      "com.adacore.gtkada.testgtk",
+      Glib.Application.G_Application_Flags_None);
+   App.On_Activate (Main_Windows.On_Activate'Access);
+   Result := App.Run;
 end Testgtk;

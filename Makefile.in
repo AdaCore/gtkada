@@ -89,8 +89,7 @@ src/gtkada-intl.adb: src/gtkada-intl.gpb Makefile
 
 tests:
 	@echo "====== Building tests ====="
-	@echo "====== DEACTIVATED (TRANSITION) ====="
-	# cd testgtk; ${GPRBUILD_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) -Ptestgtk.gpr -aP ../src
+	cd testgtk; ${GPRBUILD_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) -Ptestgtk.gpr -aP ../src
 
 install/%: force
 	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) --build-name=$(@F) \
