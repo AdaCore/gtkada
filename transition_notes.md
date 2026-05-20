@@ -88,3 +88,18 @@ Intentionally deferred:
 - `Glib.G_Async_Result` (in `src/glib.ads`) is currently a hand-written
   opaque proxy. Revisit and replace it with the generated binding once
   the full `GAsyncResult` interface is reactivated.
+
+## GtkCellRenderer (work item #50)
+
+`GtkCellRenderer` is bound (and marked obsolescent since gtk 4.10).
+Four methods are suppressed in
+`contrib/binding/packages/GtkCellRenderer.toml` pending bindings for
+the following types:
+
+- `gtk_cell_renderer_activate` — needs `GdkEvent` and `GdkRectangle`.
+- `gtk_cell_renderer_get_aligned_area` — needs `GdkRectangle`.
+- `gtk_cell_renderer_snapshot` — needs `GtkSnapshot` and `GdkRectangle`.
+- `gtk_cell_renderer_start_editing` — needs `GdkEvent` and `GdkRectangle`.
+
+Revisit and re-enable these once `GdkEvent`, `GdkRectangle` and
+`GtkSnapshot` are bound for gtk4.
