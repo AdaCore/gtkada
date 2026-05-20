@@ -175,8 +175,8 @@ package Gtk.Arguments is
      Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_State_Flags);
    --   function Unchecked_To_Gtk_State_Type
    --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_State_Type);
-   --   function Unchecked_To_Gtk_Scroll_Type
-   --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Scroll_Type);
+   function Unchecked_To_Gtk_Scroll_Type is new
+     Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Scroll_Type);
    function Unchecked_To_Gtk_Text_Direction is new
      Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Text_Direction);
    --   function Unchecked_To_Gtk_Pan_Direction

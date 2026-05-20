@@ -1,0 +1,42 @@
+[doc]
+group = "Layout containers"
+testgtk = "create_paned.adb"
+
+[[parameter]]
+name = "self"
+ada  = "Paned"
+
+[[method]]
+id = "gtk_paned_new"
+
+[[method.parameter]]
+name = "orientation"
+ada  = "Orientation"
+
+[[method]]
+id = "gtk_paned_set_start_child"
+
+[method.doc]
+extend = true
+text = '''
+The start child is the top child of a vertical paned, or the left child of
+a horizontal paned.'''
+
+[[method]]
+id = "gtk_paned_set_end_child"
+
+[method.doc]
+extend = true
+text = '''
+The end child is the bottom child of a vertical paned, or the right child
+of a horizontal paned.'''
+
+[[method]]
+id = "gtk_paned_set_position"
+
+[method.doc]
+extend = true
+text = '''
+The position of the divider is expressed in pixels. A negative value
+restores the default behaviour, where the position is computed from the
+requisitions of the children.'''

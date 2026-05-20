@@ -105,6 +105,13 @@ relevant fragments over and adapt them to the current schema (in
 particular, the top-level wrapping table used in gtk3 TOMLs is no
 longer required).
 
+> **Bind cleanly to what gtk4 exposes.** When a gtk3 widget has been
+> reshaped or folded into another in gtk4 (for example `GtkHPaned` and
+> `GtkVPaned`, which gtk4 replaces with an orientation parameter on
+> `GtkPaned`), bind only the gtk4 surface. Do not add Ada
+> subtype/constructor shims to preserve the gtk3 Ada API. Source-level
+> compatibility with gtk3 is a non-goal.
+
 Not every problem shows up in the generated `.ads`; some only surface
 at build time. One recurring case:
 
