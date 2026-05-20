@@ -386,7 +386,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "GtkFontDialogButton",
            "--GtkFontSelection",
            "--GtkFontSelectionDialog",
-           "--GtkFrame",
+           "GtkFrame",
            "----GtkFrameAccessible",  # We do not support atk
            "--GtkGesture",
            "--GtkGestureDrag",
