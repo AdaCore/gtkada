@@ -85,9 +85,6 @@ Intentionally deferred:
   with `bind = false`.
 - `GdkRGBA.{equal,hash}` — use `gconstpointer`, which the generator
   cannot map yet; suppressed with `bind = false`.
-
-testgtk demos for these dialogs are deliberately not added: the rest
-of `testgtk/main_windows.adb` is still in transition (every demo is
-commented out and `On_Activate` only shows a placeholder label). New
-demos can be wired up once the surrounding framework comes back
-online.
+- `Glib.G_Async_Result` (in `src/glib.ads`) is currently a hand-written
+  opaque proxy. Revisit and replace it with the generated binding once
+  the full `GAsyncResult` interface is reactivated.

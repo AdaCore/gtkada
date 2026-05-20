@@ -475,9 +475,9 @@ package body Gtk.Label is
    ----------------
 
    function Get_Xalign
-      (Label : not null access Gtk_Label_Record) return float
+      (Label : not null access Gtk_Label_Record) return Interfaces.C.C_float
    is
-      function Internal (Label : System.Address) return float;
+      function Internal (Label : System.Address) return Interfaces.C.C_float;
       pragma Import (C, Internal, "gtk_label_get_xalign");
    begin
       return Internal (Get_Object (Label));
@@ -488,9 +488,9 @@ package body Gtk.Label is
    ----------------
 
    function Get_Yalign
-      (Label : not null access Gtk_Label_Record) return float
+      (Label : not null access Gtk_Label_Record) return Interfaces.C.C_float
    is
-      function Internal (Label : System.Address) return float;
+      function Internal (Label : System.Address) return Interfaces.C.C_float;
       pragma Import (C, Internal, "gtk_label_get_yalign");
    begin
       return Internal (Get_Object (Label));
@@ -844,9 +844,11 @@ package body Gtk.Label is
 
    procedure Set_Xalign
       (Label  : not null access Gtk_Label_Record;
-       Xalign : float)
+       Xalign : Interfaces.C.C_float)
    is
-      procedure Internal (Label : System.Address; Xalign : float);
+      procedure Internal
+         (Label  : System.Address;
+          Xalign : Interfaces.C.C_float);
       pragma Import (C, Internal, "gtk_label_set_xalign");
    begin
       Internal (Get_Object (Label), Xalign);
@@ -858,9 +860,11 @@ package body Gtk.Label is
 
    procedure Set_Yalign
       (Label  : not null access Gtk_Label_Record;
-       Yalign : float)
+       Yalign : Interfaces.C.C_float)
    is
-      procedure Internal (Label : System.Address; Yalign : float);
+      procedure Internal
+         (Label  : System.Address;
+          Yalign : Interfaces.C.C_float);
       pragma Import (C, Internal, "gtk_label_set_yalign");
    begin
       Internal (Get_Object (Label), Yalign);

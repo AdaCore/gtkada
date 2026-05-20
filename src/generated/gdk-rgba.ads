@@ -31,19 +31,20 @@
 --  Other values will be clamped to this range when drawing.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;        use Glib;
-with Glib.Object; use Glib.Object;
-with Glib.String; use Glib.String;
-with Glib.Values; use Glib.Values;
+with Glib;         use Glib;
+with Glib.Object;  use Glib.Object;
+with Glib.String;  use Glib.String;
+with Glib.Values;  use Glib.Values;
+with Interfaces.C; use Interfaces.C;
 with System;
 
 package Gdk.RGBA is
 
    type Gdk_RGBA is record
-      Red : float;
-      Green : float;
-      Blue : float;
-      Alpha : float;
+      Red : Interfaces.C.C_float;
+      Green : Interfaces.C.C_float;
+      Blue : Interfaces.C.C_float;
+      Alpha : Interfaces.C.C_float;
    end record;
    pragma Convention (C, Gdk_RGBA);
 

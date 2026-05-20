@@ -727,6 +727,8 @@ naming.type_exceptions = {
     "guint32":  Proxy("Guint32", "Glib.Properties.Property_Uint"),
     "guint64":  Proxy("Guint64", "Glib.Properties.Property_Uint"),
     "gfloat":   Proxy("Gfloat",  "Glib.Properties.Property_Float"),
+    "float":    Proxy("Interfaces.C.C_float",
+                      "Glib.Properties.Property_Float"),
     "glong":    Proxy("Glong",   "Glib.Properties.Property_Long"),
     "gulong":   Proxy("Gulong"),
     "gsize":    Proxy("Gsize"),
