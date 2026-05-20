@@ -1,0 +1,9 @@
+[doc]
+group = "Buttons and Toggles"
+
+[[parameter]]
+name = "self"
+ada  = "Self"
+
+[[enum]]
+ctype = "GtkFontLevel"

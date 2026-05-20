@@ -57,3 +57,34 @@ GtkApplication.toml:
 GtkWidget.toml:
 
 - Review the commented-out code imported from the gtk3 bindings, and reactivate as needed.
+
+## Dialog widgets (work item #46)
+
+Bound so far: `GtkNativeDialog`, `GtkAlertDialog`, `GtkFontDialog` +
+`GtkFontDialogButton`, `GtkColorDialog` + `GtkColorDialogButton`.
+`GdkRGBA` was reactivated to support `GtkColorDialog`. A minimal
+`src/gdk.ads` parent unit was reintroduced for the same reason. The
+GIO async-result pattern is supported via an opaque
+`Glib.G_Async_Result` proxy declared in `glib.ads`; per-dialog
+`Gasync_Ready_Callback` access types are emitted by the generator.
+
+Intentionally deferred:
+
+- `GtkAppChooserDialog` — deprecated since 4.10, and depends on the
+  yet-to-be-reactivated `GtkDialog`. Dropped from the work item.
+- `GtkPageSetupUnixDialog` — depends on `GtkDialog`, `GtkPageSetup`
+  and `GtkPrintSettings`. Revisit once those are bound.
+- `GtkFileDialog` — every interesting method takes or returns
+  `GFile*` / `GListModel<GFile>`. Revisit when `GFile` (Gio
+  interface) is wired up.
+- `GtkPrintDialog` — needs `GtkPageSetup`, `GtkPrintSettings`,
+  `GtkPrintSetup`, `GFile`, `GOutputStream`. Revisit after those.
+- `GtkFontDialog.choose_font_and_features` — multiple complex out
+  parameters; suppressed for now.
+- `GtkFontDialog.{get,set}_filter` — needs `GtkFilter`; suppressed
+  with `bind = false`.
+- `GdkRGBA.{equal,hash}` — use `gconstpointer`, which the generator
+  cannot map yet; suppressed with `bind = false`.
+- `Glib.G_Async_Result` (in `src/glib.ads`) is currently a hand-written
+  opaque proxy. Revisit and replace it with the generated binding once
+  the full `GAsyncResult` interface is reactivated.

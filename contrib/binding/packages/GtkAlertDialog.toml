@@ -1,0 +1,73 @@
+[doc]
+group = "Dialogs"
+
+[[parameter]]
+name = "self"
+ada  = "Self"
+
+# gtk_alert_dialog_new takes (format, ...). It is not introspectable and
+# is therefore skipped by the generator anyway; we add a constructor that
+# takes a plain message instead, mirroring the most common C usage.
+
+[[extra.with_spec]]
+pkg = "Glib.Object"
+
+[[extra.spec]]
+text = '''
+   procedure Gtk_New
+     (Self    : out Gtk_Alert_Dialog;
+      Message : UTF8_String := "");
+   procedure Initialize
+     (Self    : not null access Gtk_Alert_Dialog_Record'Class;
+      Message : UTF8_String := "");
+   --  Creates a new alert dialog. The Message text can be left empty
+   --  and later set with Set_Message.
+
+   function Gtk_Alert_Dialog_New
+     (Message : UTF8_String := "") return Gtk_Alert_Dialog;
+   --  Creates a new alert dialog with the given message.
+   '''
+
+[extra]
+body = '''
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+     (Self    : out Gtk_Alert_Dialog;
+      Message : UTF8_String := "") is
+   begin
+      Self := new Gtk_Alert_Dialog_Record;
+      Initialize (Self, Message);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+     (Self    : not null access Gtk_Alert_Dialog_Record'Class;
+      Message : UTF8_String := "") is
+   begin
+      if not Self.Is_Created then
+         Glib.Object.G_New (Self, Get_Type);
+         if Message /= "" then
+            Set_Message (Self, Message);
+         end if;
+      end if;
+   end Initialize;
+
+   --------------------------
+   -- Gtk_Alert_Dialog_New --
+   --------------------------
+
+   function Gtk_Alert_Dialog_New
+     (Message : UTF8_String := "") return Gtk_Alert_Dialog
+   is
+      Self : Gtk_Alert_Dialog;
+   begin
+      Gtk_New (Self, Message);
+      return Self;
+   end Gtk_Alert_Dialog_New;
+   '''

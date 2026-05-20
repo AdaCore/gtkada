@@ -222,6 +222,7 @@ with Gtk.Atcontext;            use Gtk.Atcontext;
 with Gtk.Constraint_Target;    use Gtk.Constraint_Target;
 with Gtk.Enums;                use Gtk.Enums;
 with Gtk.Widget;               use Gtk.Widget;
+with Interfaces.C;             use Interfaces.C;
 with Pango.Attributes;         use Pango.Attributes;
 with Pango.Enums;              use Pango.Enums;
 with Pango.Layout;             use Pango.Layout;
@@ -646,27 +647,27 @@ package Gtk.Label is
    --  @param Wrap_Mode the line wrapping mode
 
    function Get_Xalign
-      (Label : not null access Gtk_Label_Record) return float;
+      (Label : not null access Gtk_Label_Record) return Interfaces.C.C_float;
    --  Gets the `xalign` of the label.
    --  See the [propertyGtk.Label:xalign] property.
    --  @return the xalign value
 
    procedure Set_Xalign
       (Label  : not null access Gtk_Label_Record;
-       Xalign : float);
+       Xalign : Interfaces.C.C_float);
    --  Sets the `xalign` of the label.
    --  See the [propertyGtk.Label:xalign] property.
    --  @param Xalign the new xalign value, between 0 and 1
 
    function Get_Yalign
-      (Label : not null access Gtk_Label_Record) return float;
+      (Label : not null access Gtk_Label_Record) return Interfaces.C.C_float;
    --  Gets the `yalign` of the label.
    --  See the [propertyGtk.Label:yalign] property.
    --  @return the yalign value
 
    procedure Set_Yalign
       (Label  : not null access Gtk_Label_Record;
-       Yalign : float);
+       Yalign : Interfaces.C.C_float);
    --  Sets the `yalign` of the label.
    --  See the [propertyGtk.Label:yalign] property.
    --  @param Yalign the new yalign value, between 0 and 1

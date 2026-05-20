@@ -2200,7 +2200,14 @@ class Package(object):
            :param:`might_be_unused` True if the package might not be used and
               requires a pragma Warnings Off.
         """
-        if pkg in ("", "System"):
+        if pkg == "":
+            return
+        # The hand-written Glib bindings inject System types implicitly via
+        # type renamings; for those packages "with System" is redundant and
+        # would only add noise. But explicit `[[extra.with_spec]] pkg =
+        # "System"` from a TOML must be honoured — packages that expose
+        # System.Address in their spec need it.
+        if pkg == "System" and do_use:
             return
 
         if type(pkg) == str:
