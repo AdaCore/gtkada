@@ -7,7 +7,7 @@
   font-variant: inherit;
   font-weight: inherit;
   text-shadow: inherit;
-  icon-shadow: inherit;
+  -gtk-icon-shadow: inherit;
   box-shadow: initial;
   margin-top: initial;
   margin-left: initial;
@@ -51,19 +51,19 @@
   transition-duration: initial;
   transition-timing-function: initial;
   transition-delay: initial;
-  engine: initial;
-  gtk-key-bindings: initial;
 
-  -GtkWidget-focus-line-width: 0;
-  -GtkWidget-focus-padding: 0;
-  -GtkNotebook-initial-gap: 0;
+  -gtk-key-bindings: initial;
+
+
+
+
 }
 
 * {
     transition-property: color, background-color, border-color, background-image, padding, border-width;
     transition-duration: 0.2s;
 
-    font: Cantarell 20px;
+    font: 20px Cantarell;
 }
 
 GtkWindow {

@@ -171,6 +171,8 @@ package body Create_Canvas_View_Routes is
       Items        : array (Pos'Range) of Demo_Item;
 
    begin
+      Gtk.Frame.Set_Label (Frame, "Canvas View (routes)");
+
       Layout := Frame.Create_Pango_Layout;
       Layout.Set_Font_Description (From_String ("sans 8px"));
 

@@ -111,6 +111,8 @@ package body Create_Canvas_View_Animate is
       Scrolled      : Gtk_Scrolled_Window;
       Label         : Gtk_Label;
    begin
+      Gtk.Frame.Set_Label (Frame, "Canvas View (animation)");
+
       Gtk_New (Model);
 
       Gtkada.Canvas_View.Initialize (Canvas);

@@ -280,6 +280,8 @@ package body Create_Canvas_View_Composite is
       end Do_Example;
 
    begin
+      Gtk.Frame.Set_Label (Frame, "Canvas View (composite)");
+
       Red := Gtk_New
         (Stroke => Black_RGBA,
          Fill   => Create_Rgba_Pattern ((1.0, 0.0, 0.0, 0.6)));

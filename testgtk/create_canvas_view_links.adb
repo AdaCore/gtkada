@@ -355,6 +355,8 @@ package body Create_Canvas_View_Links is
       Text : Text_Item;
       Y : Gdouble;
    begin
+      Gtk.Frame.Set_Label (Frame, "Canvas View (links)");
+
       Gtk_New (Model);
 
       Black := Gtk_New;
