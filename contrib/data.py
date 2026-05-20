@@ -499,7 +499,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkSearchBar",
            "--GtkSearchEntry",
            "--GtkSelectionData",
-           "--GtkSeparator",
+           "GtkSeparator",
            "--GtkSeparatorMenuItem",
            "--GtkSeparatorToolItem",
            "--GtkShortcutsWindow",
