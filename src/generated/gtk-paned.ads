@@ -102,6 +102,7 @@ with Gtk.Accessible;        use Gtk.Accessible;
 with Gtk.Atcontext;         use Gtk.Atcontext;
 with Gtk.Constraint_Target; use Gtk.Constraint_Target;
 with Gtk.Enums;             use Gtk.Enums;
+with Gtk.Orientable;        use Gtk.Orientable;
 with Gtk.Widget;            use Gtk.Widget;
 
 package Gtk.Paned is
@@ -304,6 +305,14 @@ package Gtk.Paned is
    procedure Update_Platform_State
       (Self  : not null access Gtk_Paned_Record;
        State : Gtk.Accessible.Gtk_Accessible_Platform_State);
+
+   function Get_Orientation
+      (Self : not null access Gtk_Paned_Record)
+       return Gtk.Enums.Gtk_Orientation;
+
+   procedure Set_Orientation
+      (Self        : not null access Gtk_Paned_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation);
 
    ----------------
    -- Properties --
@@ -518,6 +527,8 @@ package Gtk.Paned is
    --  - "Accessible"
    --
    --  - "ConstraintTarget"
+   --
+   --  - "Orientable"
 
    package Implements_Gtk_Accessible is new Glib.Types.Implements
      (Gtk.Accessible.Gtk_Accessible, Gtk_Paned_Record, Gtk_Paned);
@@ -540,6 +551,17 @@ package Gtk.Paned is
      (Interf : Gtk.Constraint_Target.Gtk_Constraint_Target)
    return Gtk_Paned
    renames Implements_Gtk_Constraint_Target.To_Object;
+
+   package Implements_Gtk_Orientable is new Glib.Types.Implements
+     (Gtk.Orientable.Gtk_Orientable, Gtk_Paned_Record, Gtk_Paned);
+   function "+"
+     (Widget : access Gtk_Paned_Record'Class)
+   return Gtk.Orientable.Gtk_Orientable
+   renames Implements_Gtk_Orientable.To_Interface;
+   function "-"
+     (Interf : Gtk.Orientable.Gtk_Orientable)
+   return Gtk_Paned
+   renames Implements_Gtk_Orientable.To_Object;
 
 private
    Wide_Handle_Property : constant Glib.Properties.Property_Boolean :=
