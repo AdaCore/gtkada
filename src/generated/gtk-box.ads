@@ -57,12 +57,12 @@
 --  Starting from GTK 4.12, `GtkBox` uses the [enumGtk.AccessibleRole.generic]
 --  role.
 --
---  See the testgtk example in the GtkAda distribution to see concrete
+--  See the gtkada_demo example in the GtkAda distribution to see concrete
 --  examples on how all the parameters for the boxes work.
 --
 --  <screenshot>gtk-box</screenshot>
 --  <group>Layout containers</group>
---  <testgtk>create_box.adb</testgtk>
+--  <gtkada_demo>create_box.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                  use Glib;

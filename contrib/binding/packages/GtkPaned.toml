@@ -1,6 +1,6 @@
 [doc]
 group = "Layout containers"
-testgtk = "create_paned.adb"
+gtkada_demo = "create_paned.adb"
 
 [[parameter]]
 name = "self"
