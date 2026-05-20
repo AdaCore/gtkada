@@ -1,0 +1,176 @@
+------------------------------------------------------------------------------
+--                                                                          --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2022, AdaCore                     --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
+
+--  Interface for widgets that can be used for editing cells
+--
+--  The `GtkCellEditable` interface must be implemented for widgets to be
+--  usable to edit the contents of a `GtkTreeView` cell. It provides a way to
+--  specify how temporary widgets should be configured for editing, get the new
+--  value, etc.
+--
+--  <group>Trees and Lists</group>
+
+pragma Warnings (Off, "*is already use-visible*");
+with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
+with Glib.Properties; use Glib.Properties;
+with Glib.Types;      use Glib.Types;
+
+package Gtk.Cell_Editable is
+
+   pragma Obsolescent;
+
+   type Gtk_Cell_Editable is new Glib.Types.GType_Interface;
+   Null_Gtk_Cell_Editable : constant Gtk_Cell_Editable;
+
+   ------------------
+   -- Constructors --
+   ------------------
+
+   function Get_Type return Glib.GType;
+   pragma Import (C, Get_Type, "gtk_cell_editable_get_type");
+
+   -------------
+   -- Methods --
+   -------------
+
+   procedure Editing_Done (Cell_Editable : Gtk_Cell_Editable);
+   pragma Import (C, Editing_Done, "gtk_cell_editable_editing_done");
+   pragma Obsolescent (Editing_Done);
+   --  Emits the `GtkCellEditable::editing-done` signal.
+   --  Deprecated since 4.10, 1
+
+   procedure Remove_Widget (Cell_Editable : Gtk_Cell_Editable);
+   pragma Import (C, Remove_Widget, "gtk_cell_editable_remove_widget");
+   pragma Obsolescent (Remove_Widget);
+   --  Emits the `GtkCellEditable::remove-widget` signal.
+   --  Deprecated since 4.10, 1
+
+   ----------------
+   -- Properties --
+   ----------------
+   --  The following properties are defined for this widget. See
+   --  Glib.Properties for more information on properties)
+
+   Editing_Canceled_Property : constant Glib.Properties.Property_Boolean;
+   --  Indicates whether editing on the cell has been canceled.
+
+   -------------
+   -- Signals --
+   -------------
+
+   type Cb_Gtk_Cell_Editable_Void is not null access procedure (Self : Gtk_Cell_Editable);
+
+   type Cb_GObject_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class);
+
+   Signal_Editing_Done : constant Glib.Signal_Name := "editing-done";
+   procedure On_Editing_Done
+      (Self  : Gtk_Cell_Editable;
+       Call  : Cb_Gtk_Cell_Editable_Void;
+       After : Boolean := False);
+   procedure On_Editing_Done
+      (Self  : Gtk_Cell_Editable;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  This signal is a sign for the cell renderer to update its value from
+   --  the Cell_Editable.
+   --
+   --  Implementations of `GtkCellEditable` are responsible for emitting this
+   --  signal when they are done editing, e.g. `GtkEntry` emits this signal
+   --  when the user presses Enter. Typical things to do in a handler for
+   --  ::editing-done are to capture the edited value, disconnect the
+   --  Cell_Editable from signals on the `GtkCellRenderer`, etc.
+   --
+   --  Gtk.Cell_Editable.Editing_Done is a convenience method for emitting
+   --  `GtkCellEditable::editing-done`.
+
+   Signal_Remove_Widget : constant Glib.Signal_Name := "remove-widget";
+   procedure On_Remove_Widget
+      (Self  : Gtk_Cell_Editable;
+       Call  : Cb_Gtk_Cell_Editable_Void;
+       After : Boolean := False);
+   procedure On_Remove_Widget
+      (Self  : Gtk_Cell_Editable;
+       Call  : Cb_GObject_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
+   --  This signal is meant to indicate that the cell is finished editing, and
+   --  the Cell_Editable widget is being removed and may subsequently be
+   --  destroyed.
+   --
+   --  Implementations of `GtkCellEditable` are responsible for emitting this
+   --  signal when they are done editing. It must be emitted after the
+   --  `GtkCellEditable::editing-done` signal, to give the cell renderer a
+   --  chance to update the cell's value before the widget is removed.
+   --
+   --  Gtk.Cell_Editable.Remove_Widget is a convenience method for emitting
+   --  `GtkCellEditable::remove-widget`.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk_Cell_Editable"
+
+   function "+" (W : Gtk_Cell_Editable) return Gtk_Cell_Editable;
+   pragma Inline ("+");
+
+   ---------------------
+   -- Virtual Methods --
+   ---------------------
+
+   type Virtual_Editing_Done is access procedure (Cell_Editable : Gtk_Cell_Editable);
+   pragma Obsolescent (Virtual_Editing_Done);
+   pragma Convention (C, Virtual_Editing_Done);
+   --  Emits the `GtkCellEditable::editing-done` signal.
+   --  Deprecated since 4.10, 1
+
+   type Virtual_Remove_Widget is access procedure (Cell_Editable : Gtk_Cell_Editable);
+   pragma Obsolescent (Virtual_Remove_Widget);
+   pragma Convention (C, Virtual_Remove_Widget);
+   --  Emits the `GtkCellEditable::remove-widget` signal.
+   --  Deprecated since 4.10, 1
+
+   subtype Cell_Editable_Interface_Descr is Glib.Object.Interface_Description;
+
+   procedure Set_Editing_Done
+     (Self    : Cell_Editable_Interface_Descr;
+      Handler : Virtual_Editing_Done);
+   pragma Import (C, Set_Editing_Done, "gtkada_Cell_Editable_set_editing_done");
+
+   procedure Set_Remove_Widget
+     (Self    : Cell_Editable_Interface_Descr;
+      Handler : Virtual_Remove_Widget);
+   pragma Import (C, Set_Remove_Widget, "gtkada_Cell_Editable_set_remove_widget");
+   --  See Glib.Object.Add_Interface
+
+private
+   Editing_Canceled_Property : constant Glib.Properties.Property_Boolean :=
+     Glib.Properties.Build ("editing-canceled");
+
+Null_Gtk_Cell_Editable : constant Gtk_Cell_Editable :=
+   Gtk_Cell_Editable (Glib.Types.Null_Interface);
+end Gtk.Cell_Editable;

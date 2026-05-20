@@ -23,7 +23,7 @@ interfaces = (
     # "AppChooser",
     "--Atk.ImplementorIface",
     "--Buildable",
-    "--CellEditable",
+    "CellEditable",
     "--CellLayout",
     "--ColorChooser",
     "ConstraintTarget",
