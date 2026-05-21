@@ -38,6 +38,26 @@ GBytes.toml:
 
 - fix binding for functions that have gconstarray as parameters
 
+GdkAppLaunchContext.toml:
+
+- when done, reactivate bindings in GdkDisplay.toml
+
+GdkClipboard.toml:
+
+- when done, reactivate bindings in GdkDisplay.toml
+
+GdkDevice.toml:
+
+- when done, reactivate bindings in GdkDisplay.toml
+
+GdkEvent.toml:
+
+- when done, reactivate bindings in GtkDisplay.toml
+
+GdkGLContext.toml:
+
+- when done, reactivate bindings in GdkDisplay.toml
+
 GdkSurface.toml:
 
 - when done, Reactivate bindings in GtkNative.toml
@@ -46,9 +66,21 @@ GdkDisplay.toml:
 
 - when done, Reactivate bindings in GtkRoot.toml, GtkWindow.toml
 
+GdkKeymapKey:
+
+- when done, reactivate bindings in GdkDisplay.toml
+
+GdkModifierType:
+
+- when done, reactivate bindings in GdkDevice.toml, GtkDisplay.toml
+
 GdkMonitor.toml:
 
-- when done, reactivate bindings in GtkWindow.toml
+- when done, reactivate bindings in GdkDisplay.toml, GtkWindow.toml
+
+GdkSeat.toml:
+
+- when done, reactivate bindings in GdkDevice.toml, GdkDisplay.toml
 
 GtkApplication.toml:
 
