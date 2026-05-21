@@ -1,0 +1,13 @@
+# ============================================================
+#   GdkDeviceTool
+# ============================================================
+
+[[enum]]
+ctype = "GdkDeviceToolType"
+
+[[enum]]
+ctype = "GdkAxisFlags"
+
+[[extra.with_body]]
+pkg = "System"
+use = false
