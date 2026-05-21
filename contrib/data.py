@@ -93,6 +93,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GdkDeviceManager",
            "GdkDeviceTool",
            "--GdkDisplay",
+           "GdkDmabufFormats",
            "--GdkDragContext",
            "--GdkDrawingContext",
            "--GdkEvent",
