@@ -88,7 +88,7 @@ interfaces = (
 # Start the name with -- for objects we do not want to bind
 
 binding = ("----GdkAtom",   # No binding necessary, too low-level
-           "--GdkCursor",
+           "GdkCursor",
            "--GdkDevice",
            "--GdkDeviceManager",
            "GdkDeviceTool",
@@ -106,6 +106,8 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GdkMonitor",
            "--GdkScreen",
            "--GdkSeat",
+           "--GdkSurface",
+           "--GdkTexture",
            "--GdkWindow",
 
            "--GAction",          # bound as an interface, see interfaces tuple
@@ -847,8 +849,6 @@ naming.type_exceptions = {
     "GdkWindowAttr*":     Proxy("Gdk.Gdk_Window_Attr"),
 
     # Override type: we do not want to show they derive from GObject
-    "GdkCursor":         Proxy("Gdk.Gdk_Cursor"),
-    "GdkCursor*":        Proxy("Gdk.Gdk_Cursor"),
     "GdkWindow":         Proxy("Gdk.Gdk_Window"),
     "GdkWindow*":        Proxy("Gdk.Gdk_Window"),
 }

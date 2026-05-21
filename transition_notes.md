@@ -62,6 +62,10 @@ GdkSurface.toml:
 
 - when done, Reactivate bindings in GtkNative.toml
 
+GdkTexture.toml:
+
+- when done, reactivate bindings in GdkCursor.toml
+
 GdkDisplay.toml:
 
 - when done, Reactivate bindings in GtkRoot.toml, GtkWindow.toml
