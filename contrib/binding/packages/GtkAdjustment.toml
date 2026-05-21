@@ -1,0 +1,23 @@
+# ============================================================
+#   GtkAdjustment
+# ============================================================
+
+[doc]
+group = "Scrolling"
+text = '''
+The meaning of the most important fields can be explained on the following figure (imagine this is a scrollbar):
+
+[-------|=================|-------------------]
+
+lower    value        value + page_size       upper
+     '''
+
+[[method]]
+id = "gtk_adjustment_new"
+
+[method.doc]
+text = "Create a new adjustment. Value is the initial value of the adjustment. It must be in the range (Lower .. Upper) and the adjustment's value will never be outside this range. Step_Increment is the value used to make minor adjustments, such as when the user clicks on the arrows of a scrollbar. Page_Increment is used to make major adjustments, such as when the user clicks in the through on a scrollbar."
+
+[[method.parameter]]
+name = "page_size"
+default = "0.0"
