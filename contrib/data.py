@@ -89,7 +89,7 @@ interfaces = (
 
 binding = ("----GdkAtom",   # No binding necessary, too low-level
            "GdkCursor",
-           "--GdkDevice",
+           "GdkDevice",
            "--GdkDeviceManager",
            "GdkDeviceTool",
            "GdkDisplay",

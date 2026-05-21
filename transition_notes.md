@@ -60,7 +60,7 @@ GdkGLContext.toml:
 
 GdkSurface.toml:
 
-- when done, Reactivate bindings in GtkNative.toml
+- when done, Reactivate bindings in GdkDevice.toml, GtkNative.toml
 
 GdkTexture.toml:
 
@@ -85,6 +85,14 @@ GdkMonitor.toml:
 GdkSeat.toml:
 
 - when done, reactivate bindings in GdkDevice.toml, GdkDisplay.toml
+
+GdkModifierType:
+
+- when done, reactivate bindings in GdkDevice.toml
+
+GdkSeat.toml:
+
+- when done, reactivate bindings in GdkDevice.toml
 
 GtkApplication.toml:
 
