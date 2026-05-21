@@ -401,7 +401,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkGestureZoom",
            "--GtkGradient",
            "--GtkGLArea",
-           "--GtkGrid",
+           "GtkGrid",
            "--GtkHandleBox",
            "--GtkHButtonBox",
            "--GtkHeaderBar",
