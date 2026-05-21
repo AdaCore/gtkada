@@ -320,7 +320,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "GtkBox",
            "----GtkBooleanCellAccessible",  # We do not support atk
            "--GtkBuilder",
-           "--GtkButton",
+           "GtkButton",
            "----GtkButtonAccessible",  # We do not support atk
            "--GtkButtonBox",
            "--GtkCalendar",
