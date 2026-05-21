@@ -100,6 +100,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GdkFrameClock",
            "--GdkFrameTimings",
            "--GdkGLContext",
+           "GdkMonitor",
            "GdkRGBA",
            "GdkRectangle",
            "--GdkMonitor",
