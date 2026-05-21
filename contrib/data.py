@@ -300,7 +300,7 @@ binding = ("----GdkAtom",   # No binding necessary, too low-level
            "--GtkAction",
            "--GtkActionGroup",
            "--GtkActionBar",
-           "--GtkAdjustment",
+           "GtkAdjustment",
            "GtkAlertDialog",
            "--GtkAlignment",
            "----GtkAppChooserButton",  # Needs GFile
