@@ -26,6 +26,18 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Gtk.Native is
 
+   -----------------
+   -- Get_Surface --
+   -----------------
+
+   function Get_Surface (Self : Gtk_Native) return Gdk.Surface.Gdk_Surface is
+      function Internal (Self : Gtk_Native) return System.Address;
+      pragma Import (C, Internal, "gtk_native_get_surface");
+      Stub_Gdk_Surface : Gdk.Surface.Gdk_Surface_Record;
+   begin
+      return Gdk.Surface.Gdk_Surface (Get_User_Data (Internal (Self), Stub_Gdk_Surface));
+   end Get_Surface;
+
    function "+" (W : Gtk_Native) return Gtk_Native is
    begin
       return W;

@@ -1087,6 +1087,21 @@ package body Gtk.Window is
       return Internal (Get_Object (Self), State) /= 0;
    end Get_Platform_State;
 
+   -----------------
+   -- Get_Surface --
+   -----------------
+
+   function Get_Surface
+      (Self : not null access Gtk_Window_Record)
+       return Gdk.Surface.Gdk_Surface
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_native_get_surface");
+      Stub_Gdk_Surface : Gdk.Surface.Gdk_Surface_Record;
+   begin
+      return Gdk.Surface.Gdk_Surface (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Surface));
+   end Get_Surface;
+
    ---------------------------
    -- Get_Surface_Transform --
    ---------------------------

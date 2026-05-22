@@ -96,6 +96,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk;                   use Gdk;
 with Gdk.Display;
 with Gdk.Monitor;           use Gdk.Monitor;
+with Gdk.Surface;           use Gdk.Surface;
 with Glib;                  use Glib;
 with Glib.List_Model;       use Glib.List_Model;
 with Glib.Object;           use Glib.Object;
@@ -747,6 +748,10 @@ package Gtk.Window is
    procedure Update_Platform_State
       (Self  : not null access Gtk_Window_Record;
        State : Gtk.Accessible.Gtk_Accessible_Platform_State);
+
+   function Get_Surface
+      (Self : not null access Gtk_Window_Record)
+       return Gdk.Surface.Gdk_Surface;
 
    procedure Get_Surface_Transform
       (Self : not null access Gtk_Window_Record;

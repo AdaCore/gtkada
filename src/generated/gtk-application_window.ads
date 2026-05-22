@@ -82,6 +82,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;          use GNAT.Strings;
 with Gdk;                   use Gdk;
+with Gdk.Surface;           use Gdk.Surface;
 with Glib;                  use Glib;
 with Glib.Action;           use Glib.Action;
 with Glib.Action_Group;     use Glib.Action_Group;
@@ -303,6 +304,10 @@ package Gtk.Application_Window is
    procedure Remove_Action
       (Self        : not null access Gtk_Application_Window_Record;
        Action_Name : UTF8_String);
+
+   function Get_Surface
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gdk.Surface.Gdk_Surface;
 
    procedure Get_Surface_Transform
       (Self : not null access Gtk_Application_Window_Record;

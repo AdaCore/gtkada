@@ -37,8 +37,9 @@
 --  [methodGtk.Native.get_renderer].
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;       use Glib;
-with Glib.Types; use Glib.Types;
+with Gdk.Surface; use Gdk.Surface;
+with Glib;        use Glib;
+with Glib.Types;  use Glib.Types;
 
 package Gtk.Native is
 
@@ -55,6 +56,10 @@ package Gtk.Native is
    -------------
    -- Methods --
    -------------
+
+   function Get_Surface (Self : Gtk_Native) return Gdk.Surface.Gdk_Surface;
+   --  Returns the surface of this `GtkNative`.
+   --  @return the surface of Self
 
    procedure Get_Surface_Transform
       (Self : Gtk_Native;
