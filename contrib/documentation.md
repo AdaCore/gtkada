@@ -147,7 +147,7 @@ These keys sit at the top level of the file.
 | Key            | Type   | Meaning                                                                                                       | Default |
 |----------------|--------|---------------------------------------------------------------------------------------------------------------|---------|
 | `bindtype`        | bool   | When `false`, no Ada type is emitted; only the methods are bound (useful for namespace-only packages).        | `true`  |
-| `ada_access_root` | bool | When `true`, emit subtype aiasing access type in namepsace package instead of declaring a new access type in the class package. | `false` |
+| `ada_access_root` | bool | When `true`, emit subtype access type from namespace package instead of declaring a new access type in the class package. | `false` |
 | `into`            | string | C type of another package; the types and methods of *this* package are merged into the named package.         | unset   |
 | `ada`             | string | Override the Ada package name.                                                                                | derived from the C type |
 | `parent`          | string | Override the parent type of the widget type emitted by this package (GIR name).                               | from GIR |
