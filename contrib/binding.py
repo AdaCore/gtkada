@@ -1244,6 +1244,21 @@ class GIRClass(object):
             if body:
                 subp.set_body("   " + body.strip() + "\n")
 
+        # For ada_access_root types we keep access aliases in the namespace
+        # root package (e.g. Gdk.Gdk_Display) while some signatures still use
+        # access-to-record parameters (e.g. Gdk.Display.Gdk_Display_Record).
+        # Add the record package to specs only when such parameters are
+        # actually emitted, to avoid unnecessary circular dependencies.
+        for param in subp.plist:
+            ptype = param.type
+            if (isinstance(ptype, GObject)
+                    and ptype.record_ada is not None
+                    and ptype.userecord):
+                self.pkg.add_with(
+                    package_name(ptype.record_ada),
+                    specs=True,
+                    do_use=False)
+
         section.add(subp)
         return subp
 
