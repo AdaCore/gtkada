@@ -1,0 +1,10 @@
+# ============================================================
+#   GdkFrameClockPhase
+# ============================================================
+
+[[enum]]
+ctype = "GdkFrameClockPhase"
+
+[[extra.with_body]]
+pkg = "System"
+use = false
