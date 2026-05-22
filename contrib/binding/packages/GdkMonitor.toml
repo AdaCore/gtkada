@@ -8,3 +8,7 @@ ctype = "GdkSubpixelLayout"
 [[extra.with_body]]
 pkg = "System"
 use = false
+
+[[extra.with_body]]
+pkg = "Gdk.Display"
+use = false

@@ -28,6 +28,10 @@
 --
 --  <group>Gdk, the low-level API</group>
 
+limited with Gdk.Device;
+limited with Gdk.Display;
+
 package Gdk is
-   pragma Pure;
+   type Gdk_Device is access all Gdk.Device.Gdk_Device_Record'Class;
+   type Gdk_Display is access all Gdk.Display.Gdk_Display_Record'Class;
 end Gdk;

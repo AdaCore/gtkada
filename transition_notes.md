@@ -46,10 +46,6 @@ GdkClipboard.toml:
 
 - when done, reactivate bindings in GdkDisplay.toml
 
-GdkDevice.toml:
-
-- when done, reactivate bindings in GdkDisplay.toml
-
 GdkEvent.toml:
 
 - when done, reactivate bindings in GtkDisplay.toml

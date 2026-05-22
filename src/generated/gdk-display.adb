@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Gdk.Device;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
@@ -59,6 +60,23 @@ package body Gdk.Display is
    begin
       Internal (Get_Object (Self));
    end Close;
+
+   -----------------------
+   -- Device_Is_Grabbed --
+   -----------------------
+
+   function Device_Is_Grabbed
+      (Self   : not null access Gdk_Display_Record;
+       Device : not null access Gdk.Device.Gdk_Device_Record'Class)
+       return Boolean
+   is
+      function Internal
+         (Self   : System.Address;
+          Device : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_display_device_is_grabbed");
+   begin
+      return Internal (Get_Object (Self), Get_Object (Device)) /= 0;
+   end Device_Is_Grabbed;
 
    -----------
    -- Flush --
@@ -263,19 +281,19 @@ package body Gdk.Display is
    -- Get_Default --
    -----------------
 
-   function Get_Default return Gdk_Display is
+   function Get_Default return Gdk.Gdk_Display is
       function Internal return System.Address;
       pragma Import (C, Internal, "gdk_display_get_default");
       Stub_Gdk_Display : Gdk_Display_Record;
    begin
-      return Gdk.Display.Gdk_Display (Get_User_Data (Internal, Stub_Gdk_Display));
+      return Gdk.Gdk_Display (Get_User_Data (Internal, Stub_Gdk_Display));
    end Get_Default;
 
    ----------
    -- Open --
    ----------
 
-   function Open (Display_Name : UTF8_String := "") return Gdk_Display is
+   function Open (Display_Name : UTF8_String := "") return Gdk.Gdk_Display is
       function Internal
          (Display_Name : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gdk_display_open");
@@ -290,7 +308,7 @@ package body Gdk.Display is
       end if;
       Tmp_Return := Internal (Tmp_Display_Name);
       Free (Tmp_Display_Name);
-      return Gdk.Display.Gdk_Display (Get_User_Data (Tmp_Return, Stub_Gdk_Display));
+      return Gdk.Gdk_Display (Get_User_Data (Tmp_Return, Stub_Gdk_Display));
    end Open;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion

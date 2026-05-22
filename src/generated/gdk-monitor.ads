@@ -28,7 +28,6 @@
 --  [methodGdk.Display.get_monitor_at_surface] to find a particular monitor.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Display;             use Gdk.Display;
 with Gdk.Rectangle;           use Gdk.Rectangle;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
@@ -86,8 +85,7 @@ package Gdk.Monitor is
    --  @return the monitor description
 
    function Get_Display
-      (Self : not null access Gdk_Monitor_Record)
-       return Gdk.Display.Gdk_Display;
+      (Self : not null access Gdk_Monitor_Record) return Gdk.Gdk_Display;
    --  Gets the display that this monitor belongs to.
    --  @return the display
 
