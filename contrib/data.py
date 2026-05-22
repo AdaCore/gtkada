@@ -104,7 +104,7 @@ binding = (
     "--GdkEvent",
     "GdkFrameClock",
     "GdkFrameTimings",
-    "--GdkGLContext",
+    "GdkGLContext",
     "GdkMonitor",
     "GdkRGBA",
     "GdkRectangle",
