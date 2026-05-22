@@ -61,8 +61,6 @@ GdkGLContext.toml:
 GdkSurface.toml:
 
 - invesigate invalid code for marshaller of "::render" signal
-- when done, Reactivate bindings in GdkDevice.toml,
-  GdkDrawContext.toml, GdkGLContext.toml
 
 GdkTexture.toml:
 

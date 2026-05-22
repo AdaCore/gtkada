@@ -111,6 +111,12 @@ package Gdk.Draw_Context is
    --  Deprecated since 4.16, 1
    --  @return a Cairo region
 
+   function Get_Surface
+      (Self : not null access Gdk_Draw_Context_Record)
+       return Gdk.Gdk_Surface;
+   --  Retrieves the surface that Context is bound to.
+   --  @return a `GdkSurface`
+
    function Is_In_Frame
       (Self : not null access Gdk_Draw_Context_Record) return Boolean;
    pragma Obsolescent (Is_In_Frame);

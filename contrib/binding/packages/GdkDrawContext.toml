@@ -2,11 +2,6 @@
 #   GdkDrawContext
 # ============================================================
 
-[[method]]
-id = "gdk_draw_context_get_surface"
-bind = false
-# No GdkSurface binding
-
 [[extra.with_body]]
 pkg = "System"
 use = false

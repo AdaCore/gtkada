@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Display;
+with Gdk.Surface;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with System;
 
@@ -89,6 +90,21 @@ package body Gdk.Draw_Context is
    begin
       return Internal (Get_Object (Self));
    end Get_Frame_Region;
+
+   -----------------
+   -- Get_Surface --
+   -----------------
+
+   function Get_Surface
+      (Self : not null access Gdk_Draw_Context_Record)
+       return Gdk.Gdk_Surface
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_draw_context_get_surface");
+      Stub_Gdk_Surface : Gdk.Surface.Gdk_Surface_Record;
+   begin
+      return Gdk.Gdk_Surface (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Surface));
+   end Get_Surface;
 
    -----------------
    -- Is_In_Frame --

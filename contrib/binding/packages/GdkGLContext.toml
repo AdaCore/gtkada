@@ -5,11 +5,6 @@
 [[enum]]
 ctype = "GdkGLAPI"
 
-[[method]]
-id = "gdk_gl_context_get_surface"
-bind = false
-# No GdkSurface binding
-
 [[extra.with_body]]
 pkg = "System"
 use = false

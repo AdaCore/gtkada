@@ -156,6 +156,20 @@ package Gdk.Device is
    --  Determines the type of the device.
    --  @return a `GdkInputSource`
 
+   function Get_Surface_At_Position
+      (Self  : not null access Gdk_Device_Record;
+       Win_X : access Gdouble;
+       Win_Y : access Gdouble) return Gdk.Gdk_Surface;
+   --  Obtains the surface underneath Device, returning the location of the
+   --  device in Win_X and Win_Y.
+   --  Returns null if the surface tree under Device is not known to GDK (for
+   --  example, belongs to another application).
+   --  @param Win_X return location for the X coordinate of the device
+   --  location relative to the surface origin
+   --  @param Win_Y return location for the Y coordinate of the device
+   --  location relative to the surface origin
+   --  @return the `GdkSurface` under the device position
+
    function Get_Timestamp
       (Self : not null access Gdk_Device_Record) return Guint32;
    --  Returns the timestamp of the last activity for this device.

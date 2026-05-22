@@ -206,6 +206,11 @@ package Gdk.GLContext is
    --  Deprecated since 4.4, 1
    --  @return null
 
+   function Get_Surface
+      (Self : not null access Gdk_GLContext_Record) return Gdk.Gdk_Surface;
+   --  Retrieves the surface used by the Context.
+   --  @return a `GdkSurface`
+
    function Get_Use_Es
       (Self : not null access Gdk_GLContext_Record) return Boolean;
    --  Checks whether the Context is using an OpenGL or OpenGL ES profile.

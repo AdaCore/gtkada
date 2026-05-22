@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Display;
+with Gdk.Surface;
 with Glib.Object;                use Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with System;
@@ -131,6 +132,20 @@ package body Gdk.GLContext is
    begin
       return Gdk.GLContext.Gdk_GLContext (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_GLContext));
    end Get_Shared_Context;
+
+   -----------------
+   -- Get_Surface --
+   -----------------
+
+   function Get_Surface
+      (Self : not null access Gdk_GLContext_Record) return Gdk.Gdk_Surface
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_gl_context_get_surface");
+      Stub_Gdk_Surface : Gdk.Surface.Gdk_Surface_Record;
+   begin
+      return Gdk.Gdk_Surface (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Surface));
+   end Get_Surface;
 
    ----------------
    -- Get_Use_Es --
