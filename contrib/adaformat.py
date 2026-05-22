@@ -471,6 +471,18 @@ class GObject(CType):
 
         return super(GObject, self).as_ada_param(pkg)
 
+    def add_with(self, pkg=None, specs=False):
+        super(GObject, self).add_with(pkg=pkg, specs=specs)
+
+        # When `ada_access_root` is `true`, the access type lives in a
+        # namespace root package (e.g. Gdk.Gdk_Display) while the tagged
+        # record type stays in the child package
+        # (Gdk.Display.Gdk_Display_Record). In that case, we need to
+        # with the child package in order to reference the record type
+        # in the conversion code.
+        if pkg and self.record_ada is not None:
+            pkg.add_with(package_name(self.record_ada), specs=False, do_use=False)
+
     def copy(self):
         result = CType.copy(self)
         return result
