@@ -20,7 +20,7 @@ bind = false
 [[method]]
 id = "gdk_display_device_is_grabbed"
 bind = false
-# No GdkDevice binding
+# Circular dependency: GdkDevice
 
 [[method]]
 id = "gdk_display_create_gl_context"
