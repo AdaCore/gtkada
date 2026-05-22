@@ -54,10 +54,6 @@ GdkEvent.toml:
 
 - when done, reactivate bindings in GtkDisplay.toml
 
-GdkGLContext.toml:
-
-- when done, reactivate bindings in GdkDisplay.toml
-
 GdkSurface.toml:
 
 - invesigate invalid code for marshaller of "::render" signal

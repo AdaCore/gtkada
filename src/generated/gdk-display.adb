@@ -61,6 +61,21 @@ package body Gdk.Display is
    end Close;
 
    -----------------------
+   -- Create_Gl_Context --
+   -----------------------
+
+   function Create_Gl_Context
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.GLContext.Gdk_GLContext
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_display_create_gl_context");
+      Stub_Gdk_GLContext : Gdk.GLContext.Gdk_GLContext_Record;
+   begin
+      return Gdk.GLContext.Gdk_GLContext (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_GLContext));
+   end Create_Gl_Context;
+
+   -----------------------
    -- Device_Is_Grabbed --
    -----------------------
 

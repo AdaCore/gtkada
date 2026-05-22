@@ -41,6 +41,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Clipboard;      use Gdk.Clipboard;
 with Gdk.Device;
 with Gdk.Dmabuf_Formats; use Gdk.Dmabuf_Formats;
+with Gdk.GLContext;      use Gdk.GLContext;
 with Glib;               use Glib;
 with Glib.List_Model;    use Glib.List_Model;
 with Glib.Object;        use Glib.Object;
@@ -69,6 +70,19 @@ package Gdk.Display is
    procedure Close (Self : not null access Gdk_Display_Record);
    --  Closes the connection to the windowing system for the given display.
    --  This cleans up associated resources.
+
+   function Create_Gl_Context
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.GLContext.Gdk_GLContext;
+   --  Creates a new `GdkGLContext` for the `GdkDisplay`.
+   --  The context is disconnected from any particular surface or surface and
+   --  cannot be used to draw to any surface. It can only be used to draw to
+   --  non-surface framebuffers like textures.
+   --  If the creation of the `GdkGLContext` failed, Error will be set. Before
+   --  using the returned `GdkGLContext`, you will need to call
+   --  [methodGdk.GLContext.make_current] or [methodGdk.GLContext.realize].
+   --  Since: gtk+ 4.6
+   --  @return the newly created `GdkGLContext`
 
    function Device_Is_Grabbed
       (Self   : not null access Gdk_Display_Record;
