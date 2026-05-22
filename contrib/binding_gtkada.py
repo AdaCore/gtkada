@@ -57,6 +57,7 @@ _CONTENT_KEYS = frozenset(
         "function",
         "virtual_method",
         "callback",
+        "signal",
         "extra",
     }
 )
@@ -283,6 +284,9 @@ class GtkAdaPackage(object):
             for cb in self.node.get("callback", []):
                 if cb.get("id") == cname:
                     return GtkAdaMethod(cb, self)
+            for sig in self.node.get("signal", []):
+                if sig.get("id") == cname:
+                    return GtkAdaMethod(sig, self)
 
         return GtkAdaMethod(None, self)
 
