@@ -1,0 +1,46 @@
+# ============================================================
+#   GdkSurface
+# ============================================================
+
+[[method]]
+id = "gdk_surface_create_cairo_context"
+bind = false
+# No GdkCairoContext binding, obsolete
+
+[[method]]
+id = "gdk_surface_create_similar_surface"
+bind = false
+# No cairo_surface_t binding, obsolete
+
+[[method]]
+id = "gdk_surface_create_vulkan_context"
+bind = false
+# No GdkVulkanContext binding, obsolete
+
+[[method]]
+id = "gdk_surface_get_device_position"
+bind = false
+# No GdkModifierType binding
+
+[[method]]
+id = "::enter-monitor"
+
+[[method.parameter]]
+name = "monitor"
+ctype = "GdkMonitor*"
+
+[[method]]
+id = "::leave-monitor"
+
+[[method.parameter]]
+name = "monitor"
+ctype = "GdkMonitor*"
+
+[[method]]
+id = "::render"
+bind = false
+# An issue with handling of "cairo_region_t*" in marshaller
+
+[[extra.with_spec]]
+pkg = "System"
+use = false

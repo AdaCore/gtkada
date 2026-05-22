@@ -111,7 +111,7 @@ binding = (
     "--GdkMonitor",
     "--GdkScreen",
     "--GdkSeat",
-    "--GdkSurface",
+    "GdkSurface",
     "--GdkTexture",
     "--GdkWindow",
     "--GAction",  # bound as an interface, see interfaces tuple

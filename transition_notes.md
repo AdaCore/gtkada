@@ -60,6 +60,7 @@ GdkGLContext.toml:
 
 GdkSurface.toml:
 
+- invesigate invalid code for marshaller of "::render" signal
 - when done, Reactivate bindings in GdkDevice.toml, GtkNative.toml,
   GdkDrawContext.toml, GdkGLContext.toml
 
@@ -73,7 +74,8 @@ GdkKeymapKey:
 
 GdkModifierType:
 
-- when done, reactivate bindings in GdkDevice.toml, GtkDisplay.toml
+- when done, reactivate bindings in GdkDevice.toml, GtkDisplay.toml,
+  GdkSurface.toml
 
 GdkMonitor.toml:
 
