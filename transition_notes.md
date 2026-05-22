@@ -38,6 +38,10 @@ GBytes.toml:
 
 - fix binding for functions that have gconstarray as parameters
 
+GOutputStream.toml
+
+- when doen, reactivate bindings in GdkContentProvider.toml
+
 GdkAppLaunchContext.toml:
 
 - when done, reactivate bindings in GdkDisplay.toml

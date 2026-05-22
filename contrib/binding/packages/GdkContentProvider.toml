@@ -1,0 +1,17 @@
+# ============================================================
+#   GdkContentProvider
+# ============================================================
+
+[[method]]
+id = "gdk_content_provider_new_union"
+bind = false
+# No "array of Gdk_Content_Provider"
+
+[[method]]
+id = "gdk_content_provider_write_mime_type_async"
+bind = false
+# No GOutputStream binding
+
+[[extra.with_body]]
+pkg = "System"
+use = false
