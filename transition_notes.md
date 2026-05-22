@@ -60,7 +60,8 @@ GdkGLContext.toml:
 
 GdkSurface.toml:
 
-- when done, Reactivate bindings in GdkDevice.toml, GtkNative.toml
+- when done, Reactivate bindings in GdkDevice.toml, GtkNative.toml,
+  GdkDrawContext.toml
 
 GdkTexture.toml:
 

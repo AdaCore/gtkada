@@ -99,6 +99,7 @@ binding = (
     "GdkDisplay",
     "GdkDmabufFormats",
     "--GdkDragContext",
+    "GdkDrawContext",
     "--GdkDrawingContext",
     "--GdkEvent",
     "GdkFrameClock",
