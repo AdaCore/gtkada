@@ -3,5 +3,5 @@
 # ============================================================
 
 [doc]
-screenshot = "gtk-expanded"
+screenshot = "gtk-expander"
 group = "Layout containers"

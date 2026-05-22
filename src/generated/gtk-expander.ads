@@ -78,7 +78,7 @@
 --
 --  `GtkExpander` uses the [enumGtk.AccessibleRole.button] role.
 --
---  <screenshot>gtk-expanded</screenshot>
+--  <screenshot>gtk-expander</screenshot>
 --  <group>Layout containers</group>
 
 pragma Warnings (Off, "*is already use-visible*");
