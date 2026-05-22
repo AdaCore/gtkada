@@ -88,6 +88,21 @@ package body Gdk.Display is
       Internal (Get_Object (Self));
    end Flush;
 
+   -------------------
+   -- Get_Clipboard --
+   -------------------
+
+   function Get_Clipboard
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.Clipboard.Gdk_Clipboard
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_display_get_clipboard");
+      Stub_Gdk_Clipboard : Gdk.Clipboard.Gdk_Clipboard_Record;
+   begin
+      return Gdk.Clipboard.Gdk_Clipboard (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Clipboard));
+   end Get_Clipboard;
+
    ------------------------
    -- Get_Dmabuf_Formats --
    ------------------------
@@ -130,6 +145,21 @@ package body Gdk.Display is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Name;
+
+   ---------------------------
+   -- Get_Primary_Clipboard --
+   ---------------------------
+
+   function Get_Primary_Clipboard
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.Clipboard.Gdk_Clipboard
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_display_get_primary_clipboard");
+      Stub_Gdk_Clipboard : Gdk.Clipboard.Gdk_Clipboard_Record;
+   begin
+      return Gdk.Clipboard.Gdk_Clipboard (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Clipboard));
+   end Get_Primary_Clipboard;
 
    -----------------
    -- Get_Setting --

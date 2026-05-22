@@ -38,6 +38,7 @@
 --  accessed with [methodGdk.Display.get_monitor_at_surface] and similar APIs.
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Clipboard;      use Gdk.Clipboard;
 with Gdk.Device;
 with Gdk.Dmabuf_Formats; use Gdk.Dmabuf_Formats;
 with Glib;               use Glib;
@@ -88,6 +89,12 @@ package Gdk.Display is
    --  This is most useful for X11. On windowing systems where requests are
    --  handled synchronously, this function will do nothing.
 
+   function Get_Clipboard
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.Clipboard.Gdk_Clipboard;
+   --  Gets the clipboard used for copy/paste operations.
+   --  @return the display's clipboard
+
    function Get_Dmabuf_Formats
       (Self : not null access Gdk_Display_Record)
        return Gdk.Dmabuf_Formats.Gdk_Dmabuf_Formats;
@@ -116,6 +123,14 @@ package Gdk.Display is
    --  Gets the name of the display.
    --  @return a string representing the display name. This string is owned by
    --  GDK and should not be modified or freed.
+
+   function Get_Primary_Clipboard
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.Clipboard.Gdk_Clipboard;
+   --  Gets the clipboard used for the primary selection.
+   --  On backends where the primary clipboard is not supported natively, GDK
+   --  emulates this clipboard locally.
+   --  @return the primary clipboard
 
    function Get_Setting
       (Self  : not null access Gdk_Display_Record;

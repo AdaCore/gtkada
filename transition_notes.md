@@ -50,10 +50,6 @@ GdkAppLaunchContext.toml:
 
 - when done, reactivate bindings in GdkDisplay.toml
 
-GdkClipboard.toml:
-
-- when done, reactivate bindings in GdkDisplay.toml
-
 GdkEvent.toml:
 
 - when done, reactivate bindings in GtkDisplay.toml
