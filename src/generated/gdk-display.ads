@@ -42,6 +42,8 @@ with Gdk.Clipboard;      use Gdk.Clipboard;
 with Gdk.Device;
 with Gdk.Dmabuf_Formats; use Gdk.Dmabuf_Formats;
 with Gdk.GLContext;      use Gdk.GLContext;
+with Gdk.Monitor;        use Gdk.Monitor;
+with Gdk.Surface;
 with Glib;               use Glib;
 with Glib.List_Model;    use Glib.List_Model;
 with Glib.Object;        use Glib.Object;
@@ -121,6 +123,14 @@ package Gdk.Display is
    --  This function is threadsafe. It can be called from any thread.
    --  Since: gtk+ 4.14
    --  @return a `GdkDmabufFormats` object
+
+   function Get_Monitor_At_Surface
+      (Self    : not null access Gdk_Display_Record;
+       Surface : not null access Gdk.Surface.Gdk_Surface_Record'Class)
+       return Gdk.Monitor.Gdk_Monitor;
+   --  Gets the monitor in which the largest area of Surface resides.
+   --  @param Surface a `GdkSurface`
+   --  @return the monitor with the largest overlap with Surface
 
    function Get_Monitors
       (Self : not null access Gdk_Display_Record)

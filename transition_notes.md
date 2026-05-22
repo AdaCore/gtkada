@@ -71,10 +71,6 @@ GdkModifierType:
 - when done, reactivate bindings in GdkDevice.toml, GtkDisplay.toml,
   GdkSurface.toml
 
-GdkMonitor.toml:
-
-- when done, reactivate bindings in GdkDisplay.toml
-
 GdkSeat.toml:
 
 - when done, reactivate bindings in GdkDevice.toml, GdkDisplay.toml

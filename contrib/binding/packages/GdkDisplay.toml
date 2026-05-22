@@ -10,11 +10,6 @@ bind = false
 # No GdkAppLaunchContext binding
 
 [[method]]
-id = "gdk_display_get_monitor_at_surface"
-bind = false
-# No GdkMonitor binding
-
-[[method]]
 id = "gdk_display_get_default_seat"
 bind = false
 # No GdkSeat binding

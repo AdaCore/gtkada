@@ -132,6 +132,24 @@ package body Gdk.Display is
       return From_Object (Internal (Get_Object (Self)));
    end Get_Dmabuf_Formats;
 
+   ----------------------------
+   -- Get_Monitor_At_Surface --
+   ----------------------------
+
+   function Get_Monitor_At_Surface
+      (Self    : not null access Gdk_Display_Record;
+       Surface : not null access Gdk.Surface.Gdk_Surface_Record'Class)
+       return Gdk.Monitor.Gdk_Monitor
+   is
+      function Internal
+         (Self    : System.Address;
+          Surface : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_display_get_monitor_at_surface");
+      Stub_Gdk_Monitor : Gdk.Monitor.Gdk_Monitor_Record;
+   begin
+      return Gdk.Monitor.Gdk_Monitor (Get_User_Data (Internal (Get_Object (Self), Get_Object (Surface)), Stub_Gdk_Monitor));
+   end Get_Monitor_At_Surface;
+
    ------------------
    -- Get_Monitors --
    ------------------
