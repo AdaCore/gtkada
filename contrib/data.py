@@ -102,7 +102,7 @@ binding = (
     "--GdkDrawingContext",
     "--GdkEvent",
     "--GdkFrameClock",
-    "--GdkFrameTimings",
+    "GdkFrameTimings",
     "--GdkGLContext",
     "GdkMonitor",
     "GdkRGBA",
