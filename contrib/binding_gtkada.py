@@ -28,12 +28,12 @@ class GtkAda(object):
         from pathlib import Path
 
         self.packages = {}
-        tomls = filter(lambda f: f.endswith('.toml'), listdir(Path(location)))
+        tomls = filter(lambda f: f.endswith(".toml"), listdir(Path(location)))
         # The C type anchoring each package is the filename stem; the parsed
         # TOML dict is the package node itself.
         for t in tomls:
             filepath = join(location, t)
-            with open(filepath, 'rb') as f:
+            with open(filepath, "rb") as f:
                 data = tomllib.load(f)
             id = splitext(t)[0]
             self.packages[id] = GtkAdaPackage(id, data)
@@ -43,10 +43,23 @@ class GtkAda(object):
         return self.packages.get(pkg, GtkAdaPackage(None, None))
 
 
-_CONTENT_KEYS = frozenset({
-    'doc', 'parameter', 'type', 'enum', 'record', 'list', 'slist',
-    'constant', 'method', 'function', 'virtual_method', 'callback', 'extra',
-})
+_CONTENT_KEYS = frozenset(
+    {
+        "doc",
+        "parameter",
+        "type",
+        "enum",
+        "record",
+        "list",
+        "slist",
+        "constant",
+        "method",
+        "function",
+        "virtual_method",
+        "callback",
+        "extra",
+    }
+)
 """Keys in a package dict that correspond to child elements in the XML.
 
 In the original XML reader, an ElementTree element with no children evaluated
@@ -58,7 +71,6 @@ checking for the presence of at least one content key.
 
 
 class GtkAdaPackage(object):
-
     """A package in a toml file"""
 
     def __init__(self, pkg_id, node):
@@ -83,33 +95,29 @@ class GtkAdaPackage(object):
 
     def register_types(self, adapkg):
         """If we are going to generate some enumerations in the package, we
-           need to register them now, so that all places where the enumeration
-           is referenced have the proper full name.
+        need to register them now, so that all places where the enumeration
+        is referenced have the proper full name.
 
-           adapkg is the name of the Ada package.
+        adapkg is the name of the Ada package.
         """
 
         if self._has_children():
             for enum in self.node.get("enum", []):
-                Enum.register_ada_decl(pkg=adapkg,
-                                       ctype=enum["ctype"],
-                                       ada=enum.get("ada"))
+                Enum.register_ada_decl(
+                    pkg=adapkg, ctype=enum["ctype"], ada=enum.get("ada")
+                )
             for rec in self.node.get("record", []):
                 Record.register_ada_record(
-                    pkg=adapkg,
-                    ctype=rec["ctype"],
-                    ada=rec.get("ada"))
+                    pkg=adapkg, ctype=rec["ctype"], ada=rec.get("ada")
+                )
             for lst in self.node.get("list", []):
                 List.register_ada_list(
-                    pkg=adapkg,
-                    ctype=lst["ctype"],
-                    ada=lst.get("ada"))
+                    pkg=adapkg, ctype=lst["ctype"], ada=lst.get("ada")
+                )
             for slst in self.node.get("slist", []):
                 List.register_ada_list(
-                    pkg=adapkg,
-                    ctype=slst["ctype"],
-                    ada=slst.get("ada"),
-                    single=True)
+                    pkg=adapkg, ctype=slst["ctype"], ada=slst.get("ada"), single=True
+                )
 
     def parent_type(self):
         """Override the parent type for the main widget type in this package"""
@@ -119,53 +127,66 @@ class GtkAdaPackage(object):
 
     def enumerations(self):
         """List of all enumeration types that need to be declared in the
-           package. The result is a list of tuples.
+        package. The result is a list of tuples.
         """
         result = []
         if self._has_children():
             for enum in self.node.get("enum", []):
-                result.append((enum["ctype"],
-                               naming.type(name="", cname=enum["ctype"]),
-                               enum.get("prefix", "GTK_"),
-                               enum.get("asbitfield", False),
-                               enum.get("ignore", "")
-                               ))
+                result.append(
+                    (
+                        enum["ctype"],
+                        naming.type(name="", cname=enum["ctype"]),
+                        enum.get("prefix", "GTK_"),
+                        enum.get("asbitfield", False),
+                        enum.get("ignore", ""),
+                    )
+                )
         return result
 
     def constants(self):
         """Return the list of constants that should be bound as part
-           of this package.
+        of this package.
         """
         if self.node is not None:
-            return [(c.get("prefix_regexp", ""), c.get("prefix", ""))
-                    for c in self.node.get("constant", [])]
+            return [
+                (c.get("prefix_regexp", ""), c.get("prefix", ""))
+                for c in self.node.get("constant", [])
+            ]
         return []
 
     def lists(self):
         """Return the list of list instantiations we need to add to the
-           package. Returns a list of tuples:
-              [(adaname, CType for element,
-                  true for a single-linked list, section),
-                ...]
+        package. Returns a list of tuples:
+           [(adaname, CType for element,
+               true for a single-linked list, section),
+             ...]
         """
         result = []
         if self._has_children():
             for lst in self.node.get("list", []):
-                result.append((lst.get("ada"),
-                               naming.type(name="", cname=lst["ctype"]),
-                               False,
-                               lst.get("section", "")))
+                result.append(
+                    (
+                        lst.get("ada"),
+                        naming.type(name="", cname=lst["ctype"]),
+                        False,
+                        lst.get("section", ""),
+                    )
+                )
             for slst in self.node.get("slist", []):
-                result.append((slst.get("ada"),
-                               naming.type(name="", cname=slst["ctype"]),
-                               True,
-                               slst.get("section", "")))
+                result.append(
+                    (
+                        slst.get("ada"),
+                        naming.type(name="", cname=slst["ctype"]),
+                        True,
+                        slst.get("section", ""),
+                    )
+                )
 
         return result
 
     def add_record_type(self, ctype):
         """Add explicit record to bind, unless it is already mentioned
-           explicitly in the [[...record]] entries.
+        explicitly in the [[...record]] entries.
         """
 
         if self._has_children():
@@ -177,16 +198,16 @@ class GtkAdaPackage(object):
 
     def records(self):
         """Returns the list of record types, as a list of tuples:
-               [ (ctype name,  corresponding CType, ada name, [fields],
-                 [union], [private=False]) ...]
-           Where fields is a dict for each field whose type is
-           overridden:
-               { name: CType, ... }
-           and union is a list of tuples (value, field) associating
-           a field of a [[...record.union]] with the corresponding value of
-           the discriminant.
+            [ (ctype name,  corresponding CType, ada name, [fields],
+              [union], [private=False]) ...]
+        Where fields is a dict for each field whose type is
+        overridden:
+            { name: CType, ... }
+        and union is a list of tuples (value, field) associating
+        a field of a [[...record.union]] with the corresponding value of
+        the discriminant.
 
-           The returned list includes records added via add_record_type
+        The returned list includes records added via add_record_type
         """
 
         result = []
@@ -195,25 +216,30 @@ class GtkAdaPackage(object):
                 override_fields = {}
 
                 for field in rec.get("field", []):
-                    override_fields[field["name"]] = \
-                        naming.type(name="", cname=field["ctype"])
+                    override_fields[field["name"]] = naming.type(
+                        name="", cname=field["ctype"]
+                    )
 
                 unions = []
                 for union in rec.get("union", []):
                     unions.append((union["value"], union["field"]))
 
-                result.append((rec["ctype"],
-                               naming.type(name="",
-                                           cname=rec["ctype"]),
-                               rec.get("ada"),
-                               override_fields, unions,
-                               rec.get("private", False)))
+                result.append(
+                    (
+                        rec["ctype"],
+                        naming.type(name="", cname=rec["ctype"]),
+                        rec.get("ada"),
+                        override_fields,
+                        unions,
+                        rec.get("private", False),
+                    )
+                )
 
         return result
 
     def get_doc(self):
         """Return the overridden doc for the package, as a list of
-           strings. Each string is a paragraph.
+        strings. Each string is a paragraph.
         """
         if self.node is None:
             return []
@@ -304,9 +330,9 @@ class GtkAdaPackage(object):
     def _extra_to_elements(self, extra_dict):
         """Convert the TOML extra dict to XML elements.
 
-           The result is extended into a GIR XML node by callers, so the
-           elements must use the same tags and attributes that binding.py
-           expects to find via ElementTree searches.
+        The result is extended into a GIR XML node by callers, so the
+        elements must use the same tags and attributes that binding.py
+        expects to find via ElementTree searches.
         """
         GIR_NS = "http://www.gtk.org/introspection/core/1.0"
         elements = []
@@ -366,27 +392,29 @@ class GtkAdaPackage(object):
 
     def get_global_functions(self):
         """Return the list of global functions that should be bound as part
-           of this package.
+        of this package.
         """
         if self.node is not None:
-            return [GtkAdaMethod(c, self)
-                    for c in self.node.get("function", [])
-                    if c.get("bind", True)]
+            return [
+                GtkAdaMethod(c, self)
+                for c in self.node.get("function", [])
+                if c.get("bind", True)
+            ]
         return []
 
     def bind_virtual_method(self, name, default):
         """
         Whether to bind the given virtual method
         """
-        if not hasattr(self, 'virtual_methods'):
-            self.virtual_methods = {'*': default}
+        if not hasattr(self, "virtual_methods"):
+            self.virtual_methods = {"*": default}
             if self.node is not None:
                 for c in self.node.get("virtual_method", []):
-                    self.virtual_methods[c.get('id')] = c.get('bind', True)
+                    self.virtual_methods[c.get("id")] = c.get("bind", True)
 
         v = self.virtual_methods.get(name, None)
         if v is None:
-            v = self.virtual_methods['*']
+            v = self.virtual_methods["*"]
         return v
 
 
@@ -446,15 +474,15 @@ class GtkAdaMethod(object):
 
     def transfer_ownership(self, return_girnode):
         """Whether the value returned by this method needs to be freed by the
-           caller.
-           return_girnode is the XML node from the gir file for the return
-           value of the method.
+        caller.
+        return_girnode is the XML node from the gir file for the return
+        value of the method.
         """
-        default = return_girnode.get('transfer-ownership', 'none')
+        default = return_girnode.get("transfer-ownership", "none")
         if self.node is not None:
-            return self.node.get('transfer_ownership', default) != 'none'
+            return self.node.get("transfer_ownership", default) != "none"
         else:
-            return default != 'none'
+            return default != "none"
 
     def get_body(self):
         if self.node is not None:
@@ -523,9 +551,9 @@ class GtkAdaParameter(object):
 
     def get_type(self, pkg):
         """pkg is used to set the with statements.
-           This returns the locally overridden type, or the one from the
-           default node for this parameter, or None if the type isn't
-           overridden.
+        This returns the locally overridden type, or the one from the
+        default node for this parameter, or None if the type isn't
+        overridden.
         """
 
         if self.node is not None:
@@ -538,7 +566,7 @@ class GtkAdaParameter(object):
 
             t = self.node.get("ctype")
             if t:
-                return t   # The C type string
+                return t  # The C type string
 
         if self.default is not None:
             t = self.default.get("type")
@@ -548,11 +576,11 @@ class GtkAdaParameter(object):
         return None
 
     def allow_none(self, girnode):
-        default = girnode.get('allow-none', '0')
+        default = girnode.get("allow-none", "0")
         if self.node is not None:
-            return self.node.get('allow_none', default) == '1'
+            return self.node.get("allow_none", default) == "1"
         else:
-            return default == '1'
+            return default == "1"
 
 
 class GtkAdaType(object):

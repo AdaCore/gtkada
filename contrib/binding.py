@@ -111,11 +111,12 @@ from optparse import OptionParser
 # Python interpreter version check:
 # this script does not work with Python version < 3.7 !
 from sys import version_info
+
 MIN_PY = (3, 7)
 if version_info < MIN_PY:
-    installed = '.'.join(map(str, version_info[0:2]))
-    required = '.'.join(map(str, MIN_PY[0:2]))
-    print(f'Need at least Python {required}, got version {installed}')
+    installed = ".".join(map(str, version_info[0:2]))
+    required = ".".join(map(str, MIN_PY[0:2]))
+    print(f"Need at least Python {required}, got version {installed}")
     quit(1)
 
 # GIR XML namespace URIs. The .gir files use three XML namespaces: the
@@ -221,23 +222,29 @@ class GIR(object):
 
             k = "%s/%s" % (namespace, ninterface)
             for cl in root.findall(k):
-                self.ctype_interfaces[cl.get(ctype_qname)] = \
-                    self.interfaces[cl.get("name")] = \
-                    self._create_class(
-                    root, cl, is_interface=True, is_gobject=False,
-                    identifier_prefix=identifier_prefix)
+                self.ctype_interfaces[cl.get(ctype_qname)] = self.interfaces[
+                    cl.get("name")
+                ] = self._create_class(
+                    root,
+                    cl,
+                    is_interface=True,
+                    is_gobject=False,
+                    identifier_prefix=identifier_prefix,
+                )
 
             k = "%s/%s" % (namespace, nclass)
             for cl in root.findall(k):
                 if cl.get(ctype_qname) is not None:
                     self.classes[cl.get(ctype_qname)] = self._create_class(
-                        root, cl, is_interface=False,
-                        identifier_prefix=identifier_prefix)
+                        root,
+                        cl,
+                        is_interface=False,
+                        identifier_prefix=identifier_prefix,
+                    )
 
             k = "%s/%s" % (namespace, nconstant)
             for cl in root.findall(k):
                 self.constants[cl.get(ctype_qname)] = cl
-
 
             # Some <record> are defined with methods. They are bound the same
             # way in GtkAda, except that they do not derive from GObject
@@ -246,16 +253,24 @@ class GIR(object):
             for cl in root.findall(k):
                 if cl.findall(nmethod):
                     self.classes[cl.get(ctype_qname)] = self._create_class(
-                        root, cl, is_interface=False, is_gobject=False,
-                        identifier_prefix=identifier_prefix)
+                        root,
+                        cl,
+                        is_interface=False,
+                        is_gobject=False,
+                        identifier_prefix=identifier_prefix,
+                    )
                 self.records[cl.get(ctype_qname)] = cl
 
             k = "%s/%s" % (namespace, nunion)
             for cl in root.findall(k):
                 if cl.findall(nmethod):
                     self.classes[cl.get(ctype_qname)] = self._create_class(
-                        root, cl, is_interface=False, is_gobject=False,
-                        identifier_prefix=identifier_prefix)
+                        root,
+                        cl,
+                        is_interface=False,
+                        is_gobject=False,
+                        identifier_prefix=identifier_prefix,
+                    )
                 self.records[cl.get(ctype_qname)] = cl
 
             for enum_tag in (nenumeration, nbitfield):
@@ -267,14 +282,14 @@ class GIR(object):
 
     def show_unbound(self):
         """Display the list of entities known in the GIR files, but that have
-           no Ada binding.
+        no Ada binding.
         """
 
         print("Missing bindings:")
         count = 0
         for name in sorted(gir.interfaces.keys()):
             if name not in self.bound:
-                sys.stdout.write("%-28s" % (name + "(intf)", ))
+                sys.stdout.write("%-28s" % (name + "(intf)",))
                 count += 1
                 if (count % 4) == 0:
                     sys.stdout.write("\n")
@@ -291,7 +306,7 @@ class GIR(object):
 
     def _get_class_node(self, rootNode, girname):
         """Find the <class> node in the same XML document as node that matches
-           [girname].
+        [girname].
         """
         k = "{%(uri)s}namespace/{%(uri)s}class" % {"uri": uri}
         for cl in rootNode.findall(k):
@@ -299,14 +314,24 @@ class GIR(object):
                 return cl
         return None
 
-    def _create_class(self, rootNode, node, is_interface,
-                      identifier_prefix, is_gobject=True,
-                      has_toplevel_type=True):
-        return GIRClass(self, rootNode=rootNode, node=node,
-                        is_interface=is_interface,
-                        is_gobject=is_gobject,
-                        identifier_prefix=identifier_prefix,
-                        has_toplevel_type=has_toplevel_type)
+    def _create_class(
+        self,
+        rootNode,
+        node,
+        is_interface,
+        identifier_prefix,
+        is_gobject=True,
+        has_toplevel_type=True,
+    ):
+        return GIRClass(
+            self,
+            rootNode=rootNode,
+            node=node,
+            is_interface=is_interface,
+            is_gobject=is_gobject,
+            identifier_prefix=identifier_prefix,
+            has_toplevel_type=has_toplevel_type,
+        )
 
     def debug(self, element):
         """A debug form of element"""
@@ -316,8 +341,8 @@ class GIR(object):
         """Return a handle to an Ada package"""
         if not name.lower() in self.packages:
             pkg = self.packages[name.lower()] = Package(
-                name=name,
-                doc=gtkada.get_pkg(ctype).get_doc())
+                name=name, doc=gtkada.get_pkg(ctype).get_doc()
+            )
         else:
             pkg = self.packages[name.lower()]
 
@@ -329,9 +354,9 @@ class GIR(object):
     def generate(self, out, cout):
         """Generate Ada code for all packages"""
         for pkg in self.packages.values():
-            out.write(pkg.spec().encode('UTF-8'))
+            out.write(pkg.spec().encode("UTF-8"))
             out.write(b"\n")
-            out.write(pkg.body().encode('UTF-8'))
+            out.write(pkg.body().encode("UTF-8"))
             out.write(b"\n")
 
         cout.write(self.ccode.encode("UTF-8"))
@@ -374,34 +399,42 @@ def _get_clean_doc(node):
 
     doc = node.findtext(ndoc, "")
     if doc:
-        doc = doc.replace("\u2019", "'").replace(
-            "\u201c", '"').replace("\u201d", '"')
+        doc = doc.replace("\u2019", "'").replace("\u201c", '"').replace("\u201d", '"')
     return doc
 
 
-def _get_type(nodeOrType, allow_access=True, allow_none=False,
-              transfer_ownership=False, userecord=True, pkg=None):
+def _get_type(
+    nodeOrType,
+    allow_access=True,
+    allow_none=False,
+    transfer_ownership=False,
+    userecord=True,
+    pkg=None,
+):
     """Return the type of the GIR XML node.
-       nodeOrType can be one of:
-          * a string, given the name of the C type
-          * an instance of CType, which is returned as is.
-          * An XML node from which the information is gathered.
+    nodeOrType can be one of:
+       * a string, given the name of the C type
+       * an instance of CType, which is returned as is.
+       * An XML node from which the information is gathered.
 
-       `allow_access' should be False if "access Type" parameters should
-       not be allowed, and an explicit type is needed instead.
-       `allow_none': see doc for CType.
-       `pkg' is used to add with statements, if specified
+    `allow_access' should be False if "access Type" parameters should
+    not be allowed, and an explicit type is needed instead.
+    `allow_none': see doc for CType.
+    `pkg' is used to add with statements, if specified
     """
     if isinstance(nodeOrType, CType):
         return nodeOrType
 
     elif isinstance(nodeOrType, str):
-        return naming.type(name=nodeOrType,
-                           cname=nodeOrType,
-                           userecord=userecord,
-                           transfer_ownership=transfer_ownership,
-                           allow_access=allow_access,
-                           allow_none=allow_none, pkg=pkg)
+        return naming.type(
+            name=nodeOrType,
+            cname=nodeOrType,
+            userecord=userecord,
+            transfer_ownership=transfer_ownership,
+            allow_access=allow_access,
+            allow_none=allow_none,
+            pkg=pkg,
+        )
 
     else:
         t = nodeOrType.find(ntype)
@@ -412,12 +445,15 @@ def _get_type(nodeOrType, allow_access=True, allow_none=False,
             ctype_name = t.get(ctype_qname)
             if ctype_name:
                 ctype_name = ctype_name.replace("const ", "")
-            return naming.type(name=t.get("name"),
-                               cname=ctype_name,
-                               userecord=userecord,
-                               transfer_ownership=transfer_ownership,
-                               allow_access=allow_access,
-                               allow_none=allow_none, pkg=pkg)
+            return naming.type(
+                name=t.get("name"),
+                cname=ctype_name,
+                userecord=userecord,
+                transfer_ownership=transfer_ownership,
+                allow_access=allow_access,
+                allow_none=allow_none,
+                pkg=pkg,
+            )
 
         a = nodeOrType.find(narray)
         if a is not None:
@@ -429,16 +465,19 @@ def _get_type(nodeOrType, allow_access=True, allow_none=False,
                 size = a.get("fixed-size", None)
 
                 if type:
-                    type = "array_of_%s" % (type, )
+                    type = "array_of_%s" % (type,)
 
-                return naming.type(name="array_of_%s" % name,
-                                   cname=type,
-                                   pkg=pkg, isArray=True,
-                                   array_fixed_size=size,
-                                   transfer_ownership=transfer_ownership,
-                                   allow_none=allow_none,
-                                   userecord=userecord,
-                                   allow_access=allow_access)
+                return naming.type(
+                    name="array_of_%s" % name,
+                    cname=type,
+                    pkg=pkg,
+                    isArray=True,
+                    array_fixed_size=size,
+                    transfer_ownership=transfer_ownership,
+                    allow_none=allow_none,
+                    userecord=userecord,
+                    allow_access=allow_access,
+                )
 
         a = nodeOrType.find(nvarargs)
         if a is not None:
@@ -490,34 +529,34 @@ class SubprogramProfile(object):
     """
 
     def __init__(self):
-        self.node = None    # the XML node for this profile
+        self.node = None  # the XML node for this profile
         self.gtkmethod = None
         self.params = None  # list of parameters (None if we have varargs)
         self.returns = None  # return value (None for a procedure)
         self.returns_doc = ""  # documentation for returned value
-        self.doc = ""       # documentation for the subprogram
+        self.doc = ""  # documentation for the subprogram
 
         # The following fields are used to handle callback parameters
         # and generate an Ada generic
 
         self.callback_param = []  # indexes of the callback parameter
         self.user_data_param = -1  # index of the "user data" parameter
-        self.destroy_param = -1   # index of the parameter to destroy data
+        self.destroy_param = -1  # index of the parameter to destroy data
 
     def __repr__(self):
-        return "<SubprogramProfile %s>" % self.node.get('name')
+        return "<SubprogramProfile %s>" % self.node.get("name")
 
     @staticmethod
     def parse(node, gtkmethod, pkg=None, ignore_return=False):
         """Parse the parameter info and return type info from the XML
-           GIR node, overriding with binding.toml.
-           gtkmethod is the GtkAdaMethod that contains the overriding for the
-           various method attributes.
-           If pkg is specified, with statements are added as necessary.
+        GIR node, overriding with binding.toml.
+        gtkmethod is the GtkAdaMethod that contains the overriding for the
+        various method attributes.
+        If pkg is specified, with statements are added as necessary.
 
-           If ignore_return is True, the return type is not parsed. This is
-           used for constructors, so that we do not end up adding extra 'with'
-           statements in the generated package.
+        If ignore_return is True, the return type is not parsed. This is
+        used for constructors, so that we do not end up adding extra 'with'
+        statements in the generated package.
         """
         profile = SubprogramProfile()
         profile.node = node
@@ -546,8 +585,8 @@ class SubprogramProfile(object):
 
     def callback_param_info(self):
         """If there is one or more callback parameters in this profile, return
-           them so that we can generate the appropriate function.  Returns None
-           if there are no such parameters.
+        them so that we can generate the appropriate function.  Returns None
+        if there are no such parameters.
         """
         if not self.callback_param:
             return None
@@ -570,7 +609,7 @@ class SubprogramProfile(object):
 
     def direct_c_map(self):
         """Wether all parameters and return value can be mapped directly from
-           C to Ada.
+        C to Ada.
         """
         for p in self.params:
             # If a parameter is not mapped in Ada, we need an actual body
@@ -580,8 +619,8 @@ class SubprogramProfile(object):
 
     def c_params(self, localvars, code):
         """Returns the list of parameters for an Ada function that would be
-           a direct pragma Import. local variables or additional code will
-           be extended as needed to handle conversions.
+        a direct pragma Import. local variables or additional code will
+        be extended as needed to handle conversions.
         """
         assert isinstance(localvars, list)
         assert isinstance(code, list)
@@ -595,25 +634,32 @@ class SubprogramProfile(object):
             # because generator is not adopted for c_mode = p.c_mod and
             # generates incorrect code for example for instance parameters
             c_mode = p.mode
-            if p.type.isArray and p.c_mode == "out" \
-               and p.is_caller_allocates:
+            if p.type.isArray and p.c_mode == "out" and p.is_caller_allocates:
                 # C expects an allocated array like for "in out" mode
                 # so we will pass an address of buffer's first element
                 # and do not expect allocation in C
                 c_mode = "in"
 
             # Pass the array as is, without creating temporary variable
-            as_array = p.type.isArray and p.is_caller_allocates \
+            as_array = (
+                p.type.isArray
+                and p.is_caller_allocates
                 and p.c_mode in ("in", "in out", "out")
+            )
 
-            if self.returns is not None and p.mode != "in" and p.ada_binding \
-               and as_array is False:
+            if (
+                self.returns is not None
+                and p.mode != "in"
+                and p.ada_binding
+                and as_array is False
+            ):
                 n = "Acc_%s" % p.name
                 var = Local_Var(
                     name=n,
                     aliased=True,
                     default="" if p.mode != "in out" else p.name,
-                    type=p.type)
+                    type=p.type,
+                )
                 var.type.userecord = False
                 localvars.append(var)
 
@@ -621,7 +667,8 @@ class SubprogramProfile(object):
                     if p.type.allow_none:
                         code.append(
                             "if %s /= null then %s.all := %s; end if;"
-                            % (p.name, p.name, var.name))
+                            % (p.name, p.name, var.name)
+                        )
                     else:
                         code.append("%s.all := %s;" % (p.name, var.name))
                 else:
@@ -633,21 +680,26 @@ class SubprogramProfile(object):
             # systematically put the default value, which is in Ada. We would
             # end up with Interfaces.C.Strings.chars_ptr=""
 
-            result.append(Parameter(
-                name=n, mode=c_mode, type=p.type,
-                for_function=self.returns is not None,
-                default=p.default if not p.ada_binding else None,
-                is_temporary_variable=is_temporary,
-                ada_binding=p.ada_binding,
-                c_mode=p.c_mode,
-                ownership=p.ownership,
-                is_caller_allocates=p.is_caller_allocates))
+            result.append(
+                Parameter(
+                    name=n,
+                    mode=c_mode,
+                    type=p.type,
+                    for_function=self.returns is not None,
+                    default=p.default if not p.ada_binding else None,
+                    is_temporary_variable=is_temporary,
+                    ada_binding=p.ada_binding,
+                    c_mode=p.c_mode,
+                    ownership=p.ownership,
+                    is_caller_allocates=p.is_caller_allocates,
+                )
+            )
 
         return result
 
     def set_class_wide(self):
         """This profile is not for a primitive operation, but for a class-wide
-           operation.
+        operation.
         """
         if isinstance(self.params[0].type, GObject):
             self.params[0].type.classwide = True
@@ -656,8 +708,9 @@ class SubprogramProfile(object):
         """Add a new parameter in the list, at the given position"""
         self.params.insert(pos, param)
         if self.callback_param:
-            self.callback_param = [p + 1 if p >= pos else p
-                                   for p in self.callback_param]
+            self.callback_param = [
+                p + 1 if p >= pos else p for p in self.callback_param
+            ]
         if self.user_data_param >= 0 and self.user_data_param >= pos:
             self.user_data_param += 1
         if self.destroy_param >= 0 and self.destroy_param >= pos:
@@ -702,10 +755,11 @@ class SubprogramProfile(object):
         for p in self.params:
             p.default = None
 
-    def subprogram(self, name, showdoc=True, local_vars=[], code=[],
-                   convention=None, lang="ada"):
+    def subprogram(
+        self, name, showdoc=True, local_vars=[], code=[], convention=None, lang="ada"
+    ):
         """Return an instance of Subprogram with the corresponding profile.
-           lang is one of "ada", "c->ada" or "ada->c".
+        lang is one of "ada", "c->ada" or "ada->c".
         """
 
         params = self.params
@@ -720,7 +774,8 @@ class SubprogramProfile(object):
             doc=self.doc,
             lang=lang,
             local_vars=local_vars,
-            code=code)
+            code=code,
+        )
         subp.convention = convention or self.gtkmethod.convention()
 
         if name != "":
@@ -728,7 +783,8 @@ class SubprogramProfile(object):
             if depr is not None:
                 subp.mark_deprecated(
                     "\nDeprecated since %s, %s"
-                    % (self.node.get("deprecated-version"), depr))
+                    % (self.node.get("deprecated-version"), depr)
+                )
             elif self.gtkmethod and self.gtkmethod.is_obsolete():
                 subp.mark_deprecated("Deprecated")
 
@@ -767,15 +823,16 @@ class SubprogramProfile(object):
 
             default = gtkparam.get_default()
             allow_access = not default
-            allow_none = gtkparam.allow_none(girnode=p) or default == 'null'
+            allow_none = gtkparam.allow_none(girnode=p) or default == "null"
             nodeOrType = gtkparam.get_type(pkg=pkg) or p
 
             type = _get_type(
                 nodeOrType=nodeOrType,
                 allow_none=allow_none,
-                userecord=default != 'null',
+                userecord=default != "null",
                 allow_access=allow_access,
-                pkg=pkg)
+                pkg=pkg,
+            )
 
             if type is None:
                 if nodeOrType.find(nvarargs) is not None:
@@ -789,28 +846,35 @@ class SubprogramProfile(object):
             if not default and allow_none and isinstance(type, UTF8):
                 default = '""'
 
-            if (p.get("scope", "") in ("notified", "call", "async")
-                    or p.get("closure", "") != ""):
+            if (
+                p.get("scope", "") in ("notified", "call", "async")
+                or p.get("closure", "") != ""
+            ):
 
                 # "async" means a callback with no closure. As a special case,
                 # we ignore it for destroy callbacks, since they are already
                 # handled specially.
 
-                if p.get("scope") != "async" \
-                        or type.ada != "Glib.G_Destroy_Notify_Address":
+                if (
+                    p.get("scope") != "async"
+                    or type.ada != "Glib.G_Destroy_Notify_Address"
+                ):
                     self.callback_param.append(p_index)
                     self.user_data_param = int(p.get("closure", "-1"))
                     self.destroy_param = int(p.get("destroy", "-1")) - 1
 
             direction = gtkparam.get_direction() or p.get("direction", "in")
-            assert direction in ("in", "out", "inout", "access"), \
+            assert direction in ("in", "out", "inout", "access"), (
                 "Invalid value for direction: '%s'" % direction
+            )
 
-            is_allocated = (gtkparam.get_caller_allocates() or
-                            p.get("caller-allocates", None)) == "1"
+            is_allocated = (
+                gtkparam.get_caller_allocates() or p.get("caller-allocates", None)
+            ) == "1"
 
-            ownership = (gtkparam.get_transfer_ownership() or
-                         p.get("transfer-ownership", "none")) == "full"
+            ownership = (
+                gtkparam.get_transfer_ownership() or p.get("transfer-ownership", "none")
+            ) == "full"
 
             if direction == "inout":
                 c_mode = "in out"
@@ -833,15 +897,18 @@ class SubprogramProfile(object):
                 doc = ""
 
             result.append(
-                Parameter(name=naming.case(name),
-                          type=type,
-                          mode=mode,
-                          default=default,
-                          ada_binding=ada_binding,
-                          doc=doc,
-                          c_mode=c_mode,
-                          ownership=ownership,
-                          is_caller_allocates=is_allocated))
+                Parameter(
+                    name=naming.case(name),
+                    type=type,
+                    mode=mode,
+                    default=default,
+                    ada_binding=ada_binding,
+                    doc=doc,
+                    c_mode=c_mode,
+                    ownership=ownership,
+                    is_caller_allocates=is_allocated,
+                )
+            )
 
         return result
 
@@ -861,14 +928,16 @@ class SubprogramProfile(object):
                     self.returns_doc = "@return %s" % self.returns_doc
 
             return _get_type(
-                ret, allow_access=False, pkg=pkg,
-                transfer_ownership=gtkmethod.transfer_ownership(ret))
+                ret,
+                allow_access=False,
+                pkg=pkg,
+                transfer_ownership=gtkmethod.transfer_ownership(ret),
+            )
         else:
             return naming.type(name=None, cname=returns, pkg=pkg)
 
 
 class GIRClass(object):
-
     """One instance per Ada package being generated from a GIR ``<class>``,
     ``<interface>``, ``<record>`` or ``<union>``.
 
@@ -913,8 +982,16 @@ class GIRClass(object):
     ``parent_pkg``).
     """
 
-    def __init__(self, gir, rootNode, node, identifier_prefix,
-                 is_interface=False, is_gobject=True, has_toplevel_type=True):
+    def __init__(
+        self,
+        gir,
+        rootNode,
+        node,
+        identifier_prefix,
+        is_interface=False,
+        is_gobject=True,
+        has_toplevel_type=True,
+    ):
         """If has_toplevel_type is False, no widget type is generated"""
 
         self.gir = gir
@@ -955,14 +1032,16 @@ class GIRClass(object):
         # (self.is_record)
 
         self.is_proxy = False
-        self.is_boxed = (self.node.tag == nrecord
-                         and (not self.node.findall(nfield)
-                              or self.node.get("introspectable", "1") == "0"))
+        self.is_boxed = self.node.tag == nrecord and (
+            not self.node.findall(nfield) or self.node.get("introspectable", "1") == "0"
+        )
         self.is_record = self.node.tag == nrecord and not self.is_boxed
 
-        if (self.is_boxed
-                and naming.type_exceptions.get(self.ctype) is not None
-                and isinstance(naming.type_exceptions.get(self.ctype), Proxy)):
+        if (
+            self.is_boxed
+            and naming.type_exceptions.get(self.ctype) is not None
+            and isinstance(naming.type_exceptions.get(self.ctype), Proxy)
+        ):
             self.is_proxy = True
             self.is_boxed = False
 
@@ -1027,15 +1106,14 @@ class GIRClass(object):
                     t_root = GObject(root_ada_name)
                     # Keep the child-package record name so that _Record
                     # references strip correctly within the defining package.
-                    t_root.record_ada = pkg[: pkg.rfind(".")]  + "." + n + "_Record"
+                    t_root.record_ada = pkg[: pkg.rfind(".")] + "." + n + "_Record"
                 elif self.is_proxy:
                     t_root = Proxy(root_ada_name)
                 elif self.is_boxed:
                     t_root = Tagged(root_ada_name)
                 else:
                     t_root = Record(root_ada_name)
-                naming.add_type_exception(cname=ctype, type=t_root,
-                                          override=True)
+                naming.add_type_exception(cname=ctype, type=t_root, override=True)
 
         else:
             typename = ""
@@ -1049,18 +1127,26 @@ class GIRClass(object):
         self._subst = {  # for substitution in string templates
             "name": self.name,
             "typename": base_name(typename),
-            "cname": self.ctype or ""}
+            "cname": self.ctype or "",
+        }
 
-    def _handle_function(self, section, c, ismethod=False, gtkmethod=None,
-                         showdoc=True, isinherited=False):
+    def _handle_function(
+        self,
+        section,
+        c,
+        ismethod=False,
+        gtkmethod=None,
+        showdoc=True,
+        isinherited=False,
+    ):
         """Top-level entry point for binding a GIR ``<function>`` or
-           ``<method>`` node ``c``. Reads the TOML override (or honours
-           ``gtkmethod`` when one was already resolved by the caller),
-           parses the profile and delegates to
-           :meth:`_handle_function_internal` to add the corresponding
-           Ada subprogram to ``section``. If the TOML says
-           ``bind = false`` we only register the C name so warnings
-           are not raised later.
+        ``<method>`` node ``c``. Reads the TOML override (or honours
+        ``gtkmethod`` when one was already resolved by the caller),
+        parses the profile and delegates to
+        :meth:`_handle_function_internal` to add the corresponding
+        Ada subprogram to ``section``. If the TOML says
+        ``bind = false`` we only register the C name so warnings
+        are not raised later.
         """
         cname = c.get(cidentifier)
 
@@ -1068,36 +1154,37 @@ class GIRClass(object):
             gtkmethod = self.gtkpkg.get_method(cname=cname)
 
         if gtkmethod.bind():
-            profile = SubprogramProfile.parse(
-                node=c, gtkmethod=gtkmethod, pkg=self.pkg)
+            profile = SubprogramProfile.parse(node=c, gtkmethod=gtkmethod, pkg=self.pkg)
             self._handle_function_internal(
-                section, node=c, cname=cname,
+                section,
+                node=c,
+                cname=cname,
                 gtkmethod=gtkmethod,
                 profile=profile,
                 showdoc=showdoc,
                 ismethod=ismethod,
-                isinherited=isinherited)
+                isinherited=isinherited,
+            )
         else:
             naming.add_cmethod(
-                cname, gtkmethod.ada_name() or cname)  # Avoid warning later on
+                cname, gtkmethod.ada_name() or cname
+            )  # Avoid warning later on
 
     def _func_is_direct_import(self, profile):
         """Whether a function with this profile
-           should be implemented directly as a pragma Import, rather than
-           require its own body.
+        should be implemented directly as a pragma Import, rather than
+        require its own body.
         """
-        return not self.is_gobject \
-            and not self.is_boxed \
-            and profile.direct_c_map()
+        return not self.is_gobject and not self.is_boxed and profile.direct_c_map()
 
     def _add_self_param(self, adaname, node, gtkmethod, profile, inherited):
         """Add a Self parameter to the list of parameters in profile.
-           The exact type of the parameter depends on several criteria.
+        The exact type of the parameter depends on several criteria.
 
-           :param bool inherited: should be true if this is for a subprogram
-             inherited from an interface (in which case we force the type of
-             Self to be that of the child, not the interface type as described
-             in the gir file)
+        :param bool inherited: should be true if this is for a subprogram
+          inherited from an interface (in which case we force the type of
+          Self to be that of the child, not the interface type as described
+          in the gir file)
         """
 
         # Try to extract the type of the parameter from the instance-parameter
@@ -1110,10 +1197,12 @@ class GIRClass(object):
                 if ipt is not None:
                     ctype_name = ipt.get(ctype_qname)
                     if ctype_name:
-                        ctype_name = ctype_name.replace('const ', '')
-                    t = naming.type(name=ipt.get('name'),
-                                    cname=ctype_name,
-                                    useclass=gtkmethod.is_class_wide())
+                        ctype_name = ctype_name.replace("const ", "")
+                    t = naming.type(
+                        name=ipt.get("name"),
+                        cname=ctype_name,
+                        useclass=gtkmethod.is_class_wide(),
+                    )
             except StopIteration:
                 t = None
 
@@ -1121,9 +1210,11 @@ class GIRClass(object):
         # package name
 
         if t is None:
-            t = naming.type(self._subst["cname"],
-                            cname=self._subst["cname"],
-                            useclass=gtkmethod.is_class_wide())
+            t = naming.type(
+                self._subst["cname"],
+                cname=self._subst["cname"],
+                useclass=gtkmethod.is_class_wide(),
+            )
 
         gtkparam = gtkmethod.get_param("self")
         pname = gtkparam.ada_name() or "Self"
@@ -1138,32 +1229,38 @@ class GIRClass(object):
 
         profile.add_param(0, Parameter(name=pname, type=t, mode=mode))
 
-    def _handle_function_internal(self, section, node, cname,
-                                  gtkmethod,
-                                  profile=None,
-                                  showdoc=True,
-                                  adaname=None,
-                                  ismethod=False,
-                                  isinherited=False):
+    def _handle_function_internal(
+        self,
+        section,
+        node,
+        cname,
+        gtkmethod,
+        profile=None,
+        showdoc=True,
+        adaname=None,
+        ismethod=False,
+        isinherited=False,
+    ):
         """Generate a binding for a function.,
-           This returns None if no binding was made, an instance of Subprogram
-           otherwise.
-           `adaname' is the name of the generated Ada subprograms. By default,
-           it is computed automatically from either binding.toml or the "name"
-           attribute of `node'.
-           `profile' is an instance of SubprogramProfile
+        This returns None if no binding was made, an instance of Subprogram
+        otherwise.
+        `adaname' is the name of the generated Ada subprograms. By default,
+        it is computed automatically from either binding.toml or the "name"
+        attribute of `node'.
+        `profile' is an instance of SubprogramProfile
         """
         assert profile is None or isinstance(profile, SubprogramProfile)
 
-        if profile.has_varargs() \
-                and gtkmethod.get_param("varargs").node is None:
+        if profile.has_varargs() and gtkmethod.get_param("varargs").node is None:
             naming.add_cmethod(cname, cname)  # Avoid warning later on.
             print(f"No binding for {cname}: varargs")
             return None
 
-        is_import = self._func_is_direct_import(profile) \
-            and not gtkmethod.get_body() \
+        is_import = (
+            self._func_is_direct_import(profile)
+            and not gtkmethod.get_body()
             and not gtkmethod.return_as_param()
+        )
         adaname = adaname or gtkmethod.ada_name() or node.get("name").title()
         adaname = naming.protect_keywords(adaname)
 
@@ -1172,12 +1269,14 @@ class GIRClass(object):
 
         if ismethod:
             self._add_self_param(
-                adaname, node, gtkmethod, profile, inherited=isinherited)
+                adaname, node, gtkmethod, profile, inherited=isinherited
+            )
 
         if adaname.startswith("Gtk_New"):
             # Overrides the GIR file even if it reported a function or method
             self._handle_constructor(
-                node, gtkmethod=gtkmethod, cname=cname, profile=profile)
+                node, gtkmethod=gtkmethod, cname=cname, profile=profile
+            )
             return
 
         local_vars = []
@@ -1192,7 +1291,7 @@ class GIRClass(object):
                 name="Internal",
                 returns=profile.returns,
                 lang="ada->c",
-                plist=profile.c_params(local_vars, internal_call)
+                plist=profile.c_params(local_vars, internal_call),
             ).import_c(cname)
 
             # Should we transform the return value into a parameter ?
@@ -1200,8 +1299,8 @@ class GIRClass(object):
             ret_as_param = gtkmethod.return_as_param()
             if ret_as_param is not None:
                 profile.params.append(
-                    Parameter(name=ret_as_param,
-                              type=profile.returns, mode="out"))
+                    Parameter(name=ret_as_param, type=profile.returns, mode="out")
+                )
                 profile.returns = None
 
             # Is this a function that takes a callback parameter ?
@@ -1212,18 +1311,21 @@ class GIRClass(object):
                     # ??? We would need to change _callback_support to
                     # have additional code to set the return value. One
                     # issue is that the profile has already been changed
-                    raise Exception("Cannot bind function with callback"
-                                    + " and return value as parameter: %s"
-                                    % cname)
+                    raise Exception(
+                        "Cannot bind function with callback"
+                        + " and return value as parameter: %s" % cname
+                    )
 
                 return self._callback_support(adaname, cname, profile, cb)
 
             execute = internal.call(
-                in_pkg=self.pkg, extra_postcall="".join(internal_call))
+                in_pkg=self.pkg, extra_postcall="".join(internal_call)
+            )
 
             if ret_as_param is not None:
-                assert execute[1] is not None, \
-                    "Must have a return value in %s => %s" % (cname, execute)
+                assert (
+                    execute[1] is not None
+                ), "Must have a return value in %s => %s" % (cname, execute)
                 call = "%s%s := %s;" % (execute[0], ret_as_param, execute[1])
 
             else:
@@ -1234,8 +1336,9 @@ class GIRClass(object):
 
             local_vars += execute[2]
 
-        subp = profile.subprogram(name=adaname, showdoc=showdoc,
-                                  local_vars=local_vars, code=call)
+        subp = profile.subprogram(
+            name=adaname, showdoc=showdoc, local_vars=local_vars, code=call
+        )
 
         if is_import:
             subp.import_c(cname)
@@ -1251,45 +1354,46 @@ class GIRClass(object):
         # actually emitted, to avoid unnecessary circular dependencies.
         for param in subp.plist:
             ptype = param.type
-            if (isinstance(ptype, GObject)
-                    and ptype.record_ada is not None
-                    and ptype.userecord):
+            if (
+                isinstance(ptype, GObject)
+                and ptype.record_ada is not None
+                and ptype.userecord
+            ):
                 self.pkg.add_with(
-                    package_name(ptype.record_ada),
-                    specs=True,
-                    do_use=False)
+                    package_name(ptype.record_ada), specs=True, do_use=False
+                )
 
         section.add(subp)
         return subp
 
     def _callback_support(self, adaname, cname, profile, cb):
         """Add support for a function with a callback parameter and user data.
-           We generate multiple bindings for such a function:
-           * One version that doesn't take a user_data. This looks like:
-                type My_Callback is access function (Self, other_params);
-                procedure Gtk_Func (Self : ...; Cb : My_Callback);
+        We generate multiple bindings for such a function:
+        * One version that doesn't take a user_data. This looks like:
+             type My_Callback is access function (Self, other_params);
+             procedure Gtk_Func (Self : ...; Cb : My_Callback);
 
-             since My_Callback doesn't have exactly the same profile as
-             required by gtk+, we in fact go through an intermediate function
-             in the body, to which we pass, as user_data, a pointer to the
-             user's callback:
+          since My_Callback doesn't have exactly the same profile as
+          required by gtk+, we in fact go through an intermediate function
+          in the body, to which we pass, as user_data, a pointer to the
+          user's callback:
 
-                 function Internal_Callback (same_profile_as_c, user_data) is
-                    User_Func : My_Callback := convert (user_data);
-                 begin
-                    return User_Func (...);
-                 end Internal_Callback;
-                 pragma Convention (C, Internal_Callback);
+              function Internal_Callback (same_profile_as_c, user_data) is
+                 User_Func : My_Callback := convert (user_data);
+              begin
+                 return User_Func (...);
+              end Internal_Callback;
+              pragma Convention (C, Internal_Callback);
 
-            * Ideally we want to generate a generic package to which users
-              can pass their own user data type. We then need to generate the
-              proper Destroy callback that C will call to free that user data.
+         * Ideally we want to generate a generic package to which users
+           can pass their own user data type. We then need to generate the
+           proper Destroy callback that C will call to free that user data.
 
-           :profile: is an instance of SubprogramProfile.
-           :cname: is the name of the gtk+ C function.
-           :adaname: is the name of the corresponding Ada function.
-           :cb: is a list of Parameter instances representing the callback
-              parameters.
+        :profile: is an instance of SubprogramProfile.
+        :cname: is the name of the gtk+ C function.
+        :adaname: is the name of the corresponding Ada function.
+        :cb: is a list of Parameter instances representing the callback
+           parameters.
         """
 
         if len(cb) > 1:
@@ -1297,14 +1401,13 @@ class GIRClass(object):
             return
         cb = cb[0]
 
-        def call_to_c(gtk_func, values,
-                      user_data_setup='', user_data_cleanup=''):
+        def call_to_c(gtk_func, values, user_data_setup="", user_data_cleanup=""):
             """Implement the call to the C function.
-               If the user passes a null callback, we always want to pass null
-               to C rather than passing our Internal_Callback'Address.
+            If the user passes a null callback, we always want to pass null
+            to C rather than passing our Internal_Callback'Address.
 
-               :param values: a dictionary of the parameters to pass to call().
-               :return: the code for the Ada function's body
+            :param values: a dictionary of the parameters to pass to call().
+            :return: the code for the Ada function's body
             """
 
             values_if_null = copy.deepcopy(values)
@@ -1314,30 +1417,34 @@ class GIRClass(object):
                 values_if_null[user_data.lower()] = "System.Null_Address"
 
             exec1 = gtk_func.call(
-                in_pkg=self.pkg,
-                extra_postcall="".join(call), values=values_if_null)
+                in_pkg=self.pkg, extra_postcall="".join(call), values=values_if_null
+            )
 
             call1 = gtk_func.call_to_string(exec1, lang="ada->c")
             if not call1.endswith(";"):
                 call1 += ";"
 
             exec2 = gtk_func.call(
-                in_pkg=self.pkg,
-                extra_postcall="".join(call), values=values)
+                in_pkg=self.pkg, extra_postcall="".join(call), values=values
+            )
 
             call2 = gtk_func.call_to_string(exec2, lang="ada->c")
             if not call2.endswith(";"):
                 call2 += ";"
             if user_data_setup:
-                call2 = user_data_setup + '\n' + call2
+                call2 = user_data_setup + "\n" + call2
             if user_data_cleanup:
-                call2 += '\n' + user_data_cleanup
+                call2 += "\n" + user_data_cleanup
 
-            return ("""if %s = null then
+            return (
+                """if %s = null then
    %s
 else
    %s
-end if;""" % (cb.name, call1, call2), exec2[2])
+end if;"""
+                % (cb.name, call1, call2),
+                exec2[2],
+            )
 
         cbname = cb.type.param
 
@@ -1355,13 +1462,11 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         try:
             cb_gir_node = self.gir.callbacks[cb.type.ada]
         except:
-            raise Exception(
-                "No GIR node for %s in callback %s" % (cb.type.ada, cname))
+            raise Exception("No GIR node for %s in callback %s" % (cb.type.ada, cname))
 
         cbgtk = self.gtkpkg.get_method(cbname)
 
-        cb_profile = SubprogramProfile.parse(
-            cb_gir_node, gtkmethod=cbgtk, pkg=self.pkg)
+        cb_profile = SubprogramProfile.parse(cb_gir_node, gtkmethod=cbgtk, pkg=self.pkg)
 
         user_data = profile.callback_user_data()
         cb_user_data = cb_profile.find_param(user_data_params)
@@ -1373,7 +1478,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         # user data.
 
         if cbname not in self.callbacks:
-            self.callbacks.add(cbname)   # Prevent multiple generations
+            self.callbacks.add(cbname)  # Prevent multiple generations
 
             section = self.pkg.section("Callbacks")
 
@@ -1389,25 +1494,25 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
                 nouser_cb_profile = copy.deepcopy(cb_profile)
                 subp = nouser_cb_profile.subprogram(name="", lang="ada->c")
+                section.add("\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
+                section.add("\npragma Convention (C, %s);" % funcname)
                 section.add(
-                    "\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
-                section.add(
-                    "\npragma Convention (C, %s);" % funcname)
-                section.add(
-                    ("function To_Address is new Ada.Unchecked_Conversion\n"
-                     + "   (%s, System.Address);\n") % (cb_type_name,),
-                    in_spec=False)
+                    (
+                        "function To_Address is new Ada.Unchecked_Conversion\n"
+                        + "   (%s, System.Address);\n"
+                    )
+                    % (cb_type_name,),
+                    in_spec=False,
+                )
 
             else:
                 # Generate a simpler version of the callback, without
                 # user data, that the Ada applications can use
 
                 nouser_cb_profile = copy.deepcopy(cb_profile)
-                nouser_cb_profile.remove_param(
-                    destroy_data_params + [cb_user_data])
+                nouser_cb_profile.remove_param(destroy_data_params + [cb_user_data])
                 subp = nouser_cb_profile.subprogram(name="")
-                section.add(
-                    "\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
+                section.add("\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
 
                 # Generate a subprogram in the body to act as the C callback.
                 # This subprogram is responsible for calling the user's
@@ -1415,16 +1520,23 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                 # convert the parameters from the C values to the
                 # corresponding Ada values.
 
-                self.pkg.add_with(
-                    "Ada.Unchecked_Conversion", do_use=False, specs=False)
+                self.pkg.add_with("Ada.Unchecked_Conversion", do_use=False, specs=False)
                 section.add(
-                    ("function To_%s is new Ada.Unchecked_Conversion\n"
-                     + "   (System.Address, %s);\n") % (funcname, funcname),
-                    in_spec=False)
+                    (
+                        "function To_%s is new Ada.Unchecked_Conversion\n"
+                        + "   (System.Address, %s);\n"
+                    )
+                    % (funcname, funcname),
+                    in_spec=False,
+                )
                 section.add(
-                    ("function To_Address is new Ada.Unchecked_Conversion\n"
-                     + "   (%s, System.Address);\n") % (cb_type_name,),
-                    in_spec=False)
+                    (
+                        "function To_Address is new Ada.Unchecked_Conversion\n"
+                        + "   (%s, System.Address);\n"
+                    )
+                    % (cb_type_name,),
+                    in_spec=False,
+                )
 
                 ada_func = copy.deepcopy(subp)
 
@@ -1436,12 +1548,17 @@ end if;""" % (cb.name, call1, call2), exec2[2])
                 ada_func_call = ada_func.call(in_pkg=self.pkg, lang="c->ada")
                 body_cb = cb_profile.subprogram(
                     name="Internal_%s" % funcname,
-                    local_vars=[Local_Var(
-                        "Func", "constant %s" % funcname,
-                        "To_%s (%s)" % (funcname, cb_user_data))]
+                    local_vars=[
+                        Local_Var(
+                            "Func",
+                            "constant %s" % funcname,
+                            "To_%s (%s)" % (funcname, cb_user_data),
+                        )
+                    ]
                     + ada_func_call[2],
                     lang="c->ada",
-                    code=ada_func.call_to_string(ada_func_call, lang="c->ada"))
+                    code=ada_func.call_to_string(ada_func_call, lang="c->ada"),
+                )
                 body_cb.convention = "C"
                 body_cb.doc = []
                 section.add(body_cb, in_spec=False)
@@ -1460,7 +1577,8 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             gtk_func_profile.replace_param(destroy, "System.Address")
 
         gtk_func = gtk_func_profile.subprogram(
-            name=naming.case("C_%s" % cname), lang="ada->c").import_c(cname)
+            name=naming.case("C_%s" % cname), lang="ada->c"
+        ).import_c(cname)
 
         # This function is shared both by the version without user_data and by
         # the generic package, so we need to put it directly in the package,
@@ -1475,23 +1593,29 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         nouser_profile = copy.deepcopy(profile)
 
         if user_data is None:
-            values = {destroy: "System.Null_Address",
-                      cb.name.lower(): "To_Address (%s)" % cb.name}
+            values = {
+                destroy: "System.Null_Address",
+                cb.name.lower(): "To_Address (%s)" % cb.name,
+            }
         elif cb_user_data is None:
-            values = {destroy: "System.Null_Address",
-                      cb.name.lower(): "Internal_%s'Address" % funcname,
-                      user_data.lower(): "To_Address (%s)" % cb.name}
+            values = {
+                destroy: "System.Null_Address",
+                cb.name.lower(): "Internal_%s'Address" % funcname,
+                user_data.lower(): "To_Address (%s)" % cb.name,
+            }
         else:
             nouser_profile.remove_param(destroy_data_params + [user_data])
-            values = {destroy: "System.Null_Address",
-                      cb.name.lower(): "Internal_%s'Address" % funcname,
-                      user_data.lower(): "To_Address (%s)" % cb.name}
+            values = {
+                destroy: "System.Null_Address",
+                cb.name.lower(): "Internal_%s'Address" % funcname,
+                user_data.lower(): "To_Address (%s)" % cb.name,
+            }
 
         c_call = call_to_c(gtk_func, values)
 
         subp = nouser_profile.subprogram(
-            name=adaname, local_vars=c_call[1],
-            code=c_call[0])
+            name=adaname, local_vars=c_call[1], code=c_call[0]
+        )
         section.add(subp)
 
         # Now create a generic package that will provide access to
@@ -1508,12 +1632,17 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         # that case. Some functions however don't need to keep the
         # data alive after they return, and are exempted from this
         # check explicitly.
-        bind_user_data = profile.callback_destroy() is not None \
-            or '_for' in cname \
-            or cname in ('gtk_tree_view_map_expanded_rows',
-                         'pango_attributes_filter',
-                         'gdk_window_invalidate_maybe_recurse',
-                         'gtk_menu_popup')
+        bind_user_data = (
+            profile.callback_destroy() is not None
+            or "_for" in cname
+            or cname
+            in (
+                "gtk_tree_view_map_expanded_rows",
+                "pango_attributes_filter",
+                "gdk_window_invalidate_maybe_recurse",
+                "gtk_menu_popup",
+            )
+        )
 
         if user_data2 is not None and bind_user_data:
             self.pkg.add_with("Glib.Object", do_use=False, specs=False)
@@ -1524,46 +1653,64 @@ end if;""" % (cb.name, call1, call2), exec2[2])
       with procedure Destroy (Data : in out User_Data_Type) is null;"""
 
             sect2 = pkg2.section("")
-            sect2.add("""package Users is new Glib.Object.User_Data_Closure
-         (User_Data_Type, Destroy);""", in_spec=False)
+            sect2.add(
+                """package Users is new Glib.Object.User_Data_Closure
+         (User_Data_Type, Destroy);""",
+                in_spec=False,
+            )
 
             sect2.add(
-                ("function To_%s is new Ada.Unchecked_Conversion\n"
-                 + "   (System.Address, %s);\n") % (funcname, funcname),
-                in_spec=False)
+                (
+                    "function To_%s is new Ada.Unchecked_Conversion\n"
+                    + "   (System.Address, %s);\n"
+                )
+                % (funcname, funcname),
+                in_spec=False,
+            )
             sect2.add(
-                ("function To_Address is new Ada.Unchecked_Conversion\n"
-                 + "   (%s, System.Address);\n") % (funcname,),
-                in_spec=False)
+                (
+                    "function To_Address is new Ada.Unchecked_Conversion\n"
+                    + "   (%s, System.Address);\n"
+                )
+                % (funcname,),
+                in_spec=False,
+            )
 
             cb_profile2 = copy.deepcopy(cb_profile)
             cb_profile2.replace_param(user_data2, "User_Data_Type")
             cb2 = cb_profile2.subprogram(name="")
-            sect2.add(
-                "\ntype %s is %s" % (funcname, cb2.spec(pkg=pkg2)))
+            sect2.add("\ntype %s is %s" % (funcname, cb2.spec(pkg=pkg2)))
 
             values = {user_data2.lower(): "D.Data.all"}
-            user_cb = cb_profile2.subprogram(
-                name="To_%s (D.Func)" % funcname)
+            user_cb = cb_profile2.subprogram(name="To_%s (D.Func)" % funcname)
             user_cb_call = user_cb.call(
                 in_pkg=self.pkg,
                 lang="c->ada",
-                extra_postcall="".join(call), values=values)
+                extra_postcall="".join(call),
+                values=values,
+            )
 
             internal_cb = cb_profile.subprogram(
                 name="Internal_Cb",
                 local_vars=[
-                    Local_Var("D", "constant Users.Internal_Data_Access",
-                              "Users.Convert (%s)" % user_data2)]
+                    Local_Var(
+                        "D",
+                        "constant Users.Internal_Data_Access",
+                        "Users.Convert (%s)" % user_data2,
+                    )
+                ]
                 + user_cb_call[2],
                 convention="C",
                 lang="c->ada",
-                code=user_cb.call_to_string(user_cb_call, lang="c->ada"))
+                code=user_cb.call_to_string(user_cb_call, lang="c->ada"),
+            )
             sect2.add(internal_cb, in_spec=False)
 
-            values = {destroy: "Users.Free_Data'Address",
-                      cb.name.lower(): "%s'Address" % internal_cb.name,
-                      user_data.lower(): "D"}
+            values = {
+                destroy: "Users.Free_Data'Address",
+                cb.name.lower(): "%s'Address" % internal_cb.name,
+                user_data.lower(): "D",
+            }
 
             full_profile = copy.deepcopy(profile)
             full_profile.set_class_wide()
@@ -1573,33 +1720,36 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
             if profile.callback_destroy() is None:
                 c_call = call_to_c(
-                    gtk_func, values,
-                    user_data_setup=
-                        "D := Users.Build (To_Address (%s), %s);" %
-                        (cb.name, user_data),
-                    user_data_cleanup="Users.Free_Data (D);")
+                    gtk_func,
+                    values,
+                    user_data_setup="D := Users.Build (To_Address (%s), %s);"
+                    % (cb.name, user_data),
+                    user_data_cleanup="Users.Free_Data (D);",
+                )
             else:
                 c_call = call_to_c(
-                    gtk_func, values,
-                    user_data_setup=
-                        "D := Users.Build (To_Address (%s), %s);" %
-                        (cb.name, user_data))
+                    gtk_func,
+                    values,
+                    user_data_setup="D := Users.Build (To_Address (%s), %s);"
+                    % (cb.name, user_data),
+                )
 
             subp2 = full_profile.subprogram(
                 name=adaname,
                 local_vars=c_call[1] + [Local_Var("D", "System.Address")],
-                code=c_call[0])
+                code=c_call[0],
+            )
             sect2.add(subp2)
 
         return subp
 
     def _constructors(self):
         """Iterate every ``<constructor>`` node attached to this class
-           and emit the matching Ada ``Gtk_New`` (or ``Gdk_New`` /
-           ``G_New``) procedures and functions via
-           :meth:`_handle_constructor`. Skips constructors that the
-           TOML override disables, and varargs constructors that lack
-           an explicit override.
+        and emit the matching Ada ``Gtk_New`` (or ``Gdk_New`` /
+        ``G_New``) procedures and functions via
+        :meth:`_handle_constructor`. Skips constructors that the
+        TOML override disables, and varargs constructors that lack
+        an explicit override.
         """
         n = QName(uri, "constructor").text
         for c in self.node.findall(n):
@@ -1607,29 +1757,30 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             gtkmethod = self.gtkpkg.get_method(cname=cname)
             if not gtkmethod.bind():
                 naming.add_cmethod(
-                    cname, gtkmethod.ada_name() or cname)  # Avoid warning
+                    cname, gtkmethod.ada_name() or cname
+                )  # Avoid warning
                 continue
 
             profile = SubprogramProfile.parse(
-                node=c, gtkmethod=gtkmethod, pkg=self.pkg,
-                ignore_return=True)
-            if profile.has_varargs() \
-                    and gtkmethod.get_param("varargs").node is None:
+                node=c, gtkmethod=gtkmethod, pkg=self.pkg, ignore_return=True
+            )
+            if profile.has_varargs() and gtkmethod.get_param("varargs").node is None:
 
                 naming.add_cmethod(cname, cname)  # Avoid warning later on.
                 print(f"No binding for {cname}: varargs")
                 continue
 
             self._handle_constructor(
-                c, gtkmethod=gtkmethod, cname=cname, profile=profile)
+                c, gtkmethod=gtkmethod, cname=cname, profile=profile
+            )
 
     def _handle_constructor(self, c, cname, gtkmethod, profile=None):
         """Emit the Ada constructors for a single GIR ``<constructor>``
-           node. For ``GObject``-derived types we emit a ``Gtk_New``
-           procedure plus an ``Initialize`` primitive, and for
-           boxed/proxy types a single ``Gtk_New`` procedure. In every
-           case we also emit the equivalent function form (named
-           ``<Type>_<Suffix>``).
+        node. For ``GObject``-derived types we emit a ``Gtk_New``
+        procedure plus an ``Initialize`` primitive, and for
+        boxed/proxy types a single ``Gtk_New`` procedure. In every
+        case we also emit the equivalent function form (named
+        ``<Type>_<Suffix>``).
         """
         assert profile is None or isinstance(profile, SubprogramProfile)
 
@@ -1648,12 +1799,11 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             self._subst["internal_params"] = ""
 
         if self.is_gobject or self.is_boxed:
-            profile.returns = AdaType(
-                "System.Address", pkg=self.pkg, in_spec=False)
+            profile.returns = AdaType("System.Address", pkg=self.pkg, in_spec=False)
         else:
             profile.returns = AdaType(
-                "%(typename)s" % self._subst,
-                pkg=self.pkg, in_spec=False)
+                "%(typename)s" % self._subst, pkg=self.pkg, in_spec=False
+            )
 
         local_vars = []
         code = []
@@ -1661,7 +1811,8 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             name="Internal",
             lang="ada->c",
             plist=profile.c_params(local_vars, code),
-            returns=profile.returns).import_c(cname)
+            returns=profile.returns,
+        ).import_c(cname)
 
         call = internal.call(in_pkg=self.pkg)
         assert call[1] is not None, "A function"
@@ -1672,12 +1823,12 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         if not adaname:
             if cname.startswith("gdk_") or cname.startswith("pango_"):
                 gtk_new_prefix = "Gdk_New"
-                adaname = "Gdk_%s" % name    # e.g.  Gdk_New
+                adaname = "Gdk_%s" % name  # e.g.  Gdk_New
             elif cname.startswith("g_"):
                 gtk_new_prefix = "G_New"
-                adaname = "G_%s" % name      # e.g.  G_New
+                adaname = "G_%s" % name  # e.g.  G_New
             else:
-                adaname = "Gtk_%s" % name    # e.g.  Gtk_New
+                adaname = "Gtk_%s" % name  # e.g.  Gtk_New
 
         selfname = gtkmethod.get_param("self").ada_name() or "Self"
 
@@ -1689,23 +1840,31 @@ end if;""" % (cb.name, call1, call2), exec2[2])
         if self.is_gobject:
             filtered_params = [p for p in profile.params if p.ada_binding]
 
-            initialize_name=adaname.replace(
-                gtk_new_prefix, "%s.Initialize" % self.pkg.name)
+            initialize_name = adaname.replace(
+                gtk_new_prefix, "%s.Initialize" % self.pkg.name
+            )
 
-            initialize_params = [Parameter(
-                name=selfname,
-                type=AdaType(selftype, pkg=self.pkg, in_spec=True),
-                mode="not null access")] + filtered_params
+            initialize_params = [
+                Parameter(
+                    name=selfname,
+                    type=AdaType(selftype, pkg=self.pkg, in_spec=True),
+                    mode="not null access",
+                )
+            ] + filtered_params
             initialize = Subprogram(
                 name=initialize_name,
                 plist=initialize_params,
                 local_vars=local_vars + call[2],
-                doc=profile.doc +
-                    [('\n%s does nothing if the object was already' +
-                     ' created with another call to Initialize* or G_New.') % (
-                         base_name(initialize_name), )],
-                code="if not %s.Is_Created then %sSet_Object (%s, %s); end if" % (
-                    selfname, call[0], selfname, call[1]),
+                doc=profile.doc
+                + [
+                    (
+                        "\n%s does nothing if the object was already"
+                        + " created with another call to Initialize* or G_New."
+                    )
+                    % (base_name(initialize_name),)
+                ],
+                code="if not %s.Is_Created then %sSet_Object (%s, %s); end if"
+                % (selfname, call[0], selfname, call[1]),
             ).add_nested(internal)
 
             call = initialize.call(in_pkg=self.pkg)
@@ -1714,15 +1873,20 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
             gtk_new = Subprogram(
                 name=adaname,
-                plist=[Parameter(
-                    name=selfname,
-                    type=AdaType("%(typename)s" % self._subst,
-                                 pkg=self.pkg, in_spec=True),
-                    mode="out")] + filtered_params,
+                plist=[
+                    Parameter(
+                        name=selfname,
+                        type=AdaType(
+                            "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
+                        ),
+                        mode="out",
+                    )
+                ]
+                + filtered_params,
                 local_vars=call[2],
-                code=selfname + " := new %(typename)s_Record;" % self._subst
-                + call[0],
-                doc=profile.doc)
+                code=selfname + " := new %(typename)s_Record;" % self._subst + call[0],
+                doc=profile.doc,
+            )
 
             section.add(gtk_new)
             section.add(initialize)
@@ -1730,28 +1894,40 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             # Gtk_New as a function
             gtk_new = Subprogram(
                 name="%s_%s" % (self._subst["typename"], name),
-                returns=AdaType("%(typename)s" % self._subst,
-                                pkg=self.pkg, in_spec=True),
+                returns=AdaType(
+                    "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
+                ),
                 plist=filtered_params,
-                local_vars=call[2] +
-                [Local_Var(selfname,
-                           "constant %(typename)s" % self._subst,
-                           "new %(typename)s_Record" % self._subst)],
+                local_vars=call[2]
+                + [
+                    Local_Var(
+                        selfname,
+                        "constant %(typename)s" % self._subst,
+                        "new %(typename)s_Record" % self._subst,
+                    )
+                ],
                 code=call[0] + "return %s;" % selfname,
-                doc=profile.doc)
+                doc=profile.doc,
+            )
             section.add(gtk_new)
 
         elif self.is_boxed:
             gtk_new = Subprogram(
                 name=adaname,
-                plist=[Parameter(
-                    name=selfname,
-                    type=AdaType("%(typename)s" % self._subst,
-                                 pkg=self.pkg, in_spec=True),
-                    mode="out")] + profile.params,
+                plist=[
+                    Parameter(
+                        name=selfname,
+                        type=AdaType(
+                            "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
+                        ),
+                        mode="out",
+                    )
+                ]
+                + profile.params,
                 local_vars=local_vars + call[2],
                 code="%s%s.Set_Object (%s)" % (call[0], selfname, call[1]),
-                doc=profile.doc)
+                doc=profile.doc,
+            )
 
             gtk_new.add_nested(internal)
             section.add(gtk_new)
@@ -1759,15 +1935,17 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             # Now as a function
             gtk_new = Subprogram(
                 name="%s_%s" % (self._subst["typename"], name),
-                returns=AdaType("%(typename)s" % self._subst,
-                                pkg=self.pkg, in_spec=True),
+                returns=AdaType(
+                    "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
+                ),
                 plist=profile.params,
-                local_vars=local_vars + call[2] +
-                [Local_Var(selfname,
-                           "%(typename)s" % self._subst)],
-                code="%s%s.Set_Object (%s); return %s" % (
-                    call[0], selfname, call[1], selfname),
-                doc=profile.doc)
+                local_vars=local_vars
+                + call[2]
+                + [Local_Var(selfname, "%(typename)s" % self._subst)],
+                code="%s%s.Set_Object (%s); return %s"
+                % (call[0], selfname, call[1], selfname),
+                doc=profile.doc,
+            )
             gtk_new.add_nested(internal)
             section.add(gtk_new)
 
@@ -1775,35 +1953,42 @@ end if;""" % (cb.name, call1, call2), exec2[2])
             # likely a Proxy
             gtk_new = Subprogram(
                 name=adaname,
-                plist=[Parameter(
-                    name=selfname,
-                    type=AdaType("%(typename)s" % self._subst,
-                                 pkg=self.pkg, in_spec=True),
-                    mode="out")] + profile.params,
+                plist=[
+                    Parameter(
+                        name=selfname,
+                        type=AdaType(
+                            "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
+                        ),
+                        mode="out",
+                    )
+                ]
+                + profile.params,
                 local_vars=local_vars + call[2],
                 code="%s%s := %s" % (call[0], selfname, call[1]),
-                doc=profile.doc)
+                doc=profile.doc,
+            )
             gtk_new.add_nested(internal)
             section.add(gtk_new)
 
             # Now as a function
             gtk_new = Subprogram(
                 name="%s_%s" % (self._subst["typename"], name),
-                returns=AdaType("%(typename)s" % self._subst,
-                                pkg=self.pkg, in_spec=True),
+                returns=AdaType(
+                    "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
+                ),
                 plist=profile.params,
-                local_vars=local_vars + call[2] +
-                [Local_Var(selfname,
-                           "%(typename)s" % self._subst)],
-                code="%s%s := %s; return %s;" % (
-                    call[0], selfname, call[1], selfname),
-                doc=profile.doc)
+                local_vars=local_vars
+                + call[2]
+                + [Local_Var(selfname, "%(typename)s" % self._subst)],
+                code="%s%s := %s; return %s;" % (call[0], selfname, call[1], selfname),
+                doc=profile.doc,
+            )
             gtk_new.add_nested(internal)
             section.add(gtk_new)
 
     def _methods(self):
         """Bind every GIR ``<method>`` of this class as an Ada
-           primitive operation in the ``Methods`` section.
+        primitive operation in the ``Methods`` section.
         """
         all = self.node.findall(nmethod)
         if all is not None:
@@ -1813,7 +1998,7 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
     def _functions(self):
         """Bind every GIR ``<function>`` (non-method class-level
-           function) into the ``Functions`` section.
+        function) into the ``Functions`` section.
         """
         all = self.node.findall(nfunction)
         if all is not None:
@@ -1823,25 +2008,26 @@ end if;""" % (cb.name, call1, call2), exec2[2])
 
     def _virtual_methods(self):
         """Emit one ``Virtual_<Method>`` access-to-subprogram type per
-           GIR ``<virtual-method>`` node, plus the matching ``Set_*``
-           helper imported from a hand-rolled C trampoline. The C
-           trampoline is appended to ``self.gir.ccode`` and will end
-           up in the ``--c-output`` file.
+        GIR ``<virtual-method>`` node, plus the matching ``Set_*``
+        helper imported from a hand-rolled C trampoline. The C
+        trampoline is appended to ``self.gir.ccode`` and will end
+        up in the ``--c-output`` file.
         """
         all = self.node.findall(nvirtualmethod)
         has_iface = False
 
         if all is not None:
             ifacename = base_name(self.name)
-            info = ''
+            info = ""
 
             for c in all:
                 if not self.gtkpkg.bind_virtual_method(
-                   c.get('name'), default=self.is_interface):
+                    c.get("name"), default=self.is_interface
+                ):
                     continue
 
-                gtkmethod = self.gtkpkg.get_method(cname=c.get('name'))
-                basename = gtkmethod.ada_name() or c.get('name').title()
+                gtkmethod = self.gtkpkg.get_method(cname=c.get("name"))
+                basename = gtkmethod.ada_name() or c.get("name").title()
                 adaname = "Virtual_%s" % basename
 
                 if not has_iface:
@@ -1853,26 +2039,33 @@ end if;""" % (cb.name, call1, call2), exec2[2])
       (Self    : %(type)s;
        Handler : %(adaname)s);
    pragma Import (C, Set_%(basename)s, "gtkada_%(ifacename)s_set_%(method)s");
-""" % {"basename": basename,
-       "type": "%s_Interface_Descr" % ifacename
-               if self.is_interface
-               else "Glib.Object.GObject_Class",
-       "adaname": adaname,
-       "ifacename": ifacename,
-       "method": basename.lower()}
+""" % {
+                    "basename": basename,
+                    "type": (
+                        "%s_Interface_Descr" % ifacename
+                        if self.is_interface
+                        else "Glib.Object.GObject_Class"
+                    ),
+                    "adaname": adaname,
+                    "ifacename": ifacename,
+                    "method": basename.lower(),
+                }
 
-                c_iface = '%s%s' % (
+                c_iface = "%s%s" % (
                     self.identifier_prefix,
-                    self.node.get(glib_type_struct))
+                    self.node.get(glib_type_struct),
+                )
 
                 self.gir.ccode += """
 void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
     iface->%(field)s = handler;
 }
-""" % {"type": ifacename,
-       "method": basename.lower(),
-       "iface": c_iface,
-       "field": c.get('name')}
+""" % {
+                    "type": ifacename,
+                    "method": basename.lower(),
+                    "iface": c_iface,
+                    "field": c.get("name"),
+                }
 
                 # NOTE: we deliberately parse the profile with ``pkg=None``.
                 # ``SubprogramProfile.parse`` (via ``naming.type`` and
@@ -1893,49 +2086,48 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
                 # ``add_withs_for_subprogram`` below is the deferred
                 # mechanism that adds only the withs the rendered
                 # profile actually needs for the given lang.
-                profile = SubprogramProfile.parse(
+                profile = SubprogramProfile.parse(node=c, gtkmethod=gtkmethod, pkg=None)
+                self._add_self_param(
+                    adaname=adaname,
                     node=c,
                     gtkmethod=gtkmethod,
-                    pkg=None)
-                self._add_self_param(
-                    adaname=adaname, node=c, gtkmethod=gtkmethod, profile=profile,
-                    inherited=False)
+                    profile=profile,
+                    inherited=False,
+                )
                 subp = profile.subprogram(
-                    name=adaname,
-                    lang="ada->c",
-                    convention="C",
-                    showdoc=True)
+                    name=adaname, lang="ada->c", convention="C", showdoc=True
+                )
                 section.add(
-                    '\ntype %s is %s' % (
-                        adaname,
-                        subp.spec(pkg=self.pkg, as_type=True)))
+                    "\ntype %s is %s" % (adaname, subp.spec(pkg=self.pkg, as_type=True))
+                )
                 subp.add_withs_for_subprogram(pkg=self.pkg, in_specs=True)
 
         if has_iface:
-            info = ('subtype %s_Interface_Descr is ' % ifacename
-                    + 'Glib.Object.Interface_Description;\n'
-                    + info
-                    + '--  See Glib.Object.Add_Interface\n')
+            info = (
+                "subtype %s_Interface_Descr is " % ifacename
+                + "Glib.Object.Interface_Description;\n"
+                + info
+                + "--  See Glib.Object.Add_Interface\n"
+            )
             section.add(info)
-            self.pkg.add_with('Glib.Object')
+            self.pkg.add_with("Glib.Object")
 
     def _globals(self):
         """Bind every namespace-level function listed in this package's
-           ``[[Pkg.function]]`` TOML entries as a top-level function of
-           the Ada package.
+        ``[[Pkg.function]]`` TOML entries as a top-level function of
+        the Ada package.
         """
         funcs = self.gtkpkg.get_global_functions()  # List of binding.toml entries
         if funcs:
             section = self.pkg.section("Functions")  # Make sure section exists
             for f in funcs:
-                c = self.gir.globals.get_function(
-                    f.cname())  # Node in gir file
+                c = self.gir.globals.get_function(f.cname())  # Node in gir file
                 self._handle_function(section, c, gtkmethod=f)
 
     def _method_get_type(self):
         """Emit the ``Get_Type`` function and (for ``GObject``-derived
-           classes) the matching ``Type_Conversion_*`` instantiation
-           that registers the Ada tag with the GLib type system.
+        classes) the matching ``Type_Conversion_*`` instantiation
+        that registers the Ada tag with the GLib type system.
         """
 
         n = self.node.get(ggettype)
@@ -1951,25 +2143,33 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
             section.add(
                 Subprogram(
                     name=get_type_name,
-                    doc=gtkmethod.get_doc(default=''),
-                    returns=AdaType("Glib.GType", pkg=self.pkg, in_spec=True))
-                .import_c(n))
+                    doc=gtkmethod.get_doc(default=""),
+                    returns=AdaType("Glib.GType", pkg=self.pkg, in_spec=True),
+                ).import_c(n)
+            )
 
-            if not self.gtktype.is_subtype() \
-                    and not self.is_interface \
-                    and self.is_gobject \
-                    and self._subst["parent"] is not None:
+            if (
+                not self.gtktype.is_subtype()
+                and not self.is_interface
+                and self.is_gobject
+                and self._subst["parent"] is not None
+            ):
 
                 self.pkg.add_with("Glib.Type_Conversion_Hooks", specs=False)
 
                 self._subst["get_type"] = get_type_name
 
                 section.add(
-                    ("package Type_Conversion_%(typename)s is new"
-                     + " Glib.Type_Conversion_Hooks.Hook_Registrator\n"
-                     + "   (%(get_type)s'Access, %(typename)s_Record);\n"
-                     + "pragma Unreferenced (Type_Conversion_%(typename)s);""")
-                    % self._subst, in_spec=False)
+                    (
+                        "package Type_Conversion_%(typename)s is new"
+                        + " Glib.Type_Conversion_Hooks.Hook_Registrator\n"
+                        + "   (%(get_type)s'Access, %(typename)s_Record);\n"
+                        + "pragma Unreferenced (Type_Conversion_%(typename)s);"
+                        ""
+                    )
+                    % self._subst,
+                    in_spec=False,
+                )
 
     def _get_c_type(self, node):
         t = node.find(ntype)
@@ -1979,11 +2179,11 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
 
     def _fields(self):
         """Bind every GIR ``<field>`` of this class as a pair of
-           ``Get_<Field>`` / ``Set_<Field>`` Ada subprograms backed by
-           a hand-rolled C accessor appended to ``self.gir.ccode``.
-           Fields are opt-in: they are only emitted when the matching
-           ``gtkada_<ctype>_get_<name>`` method has ``bind = true`` in
-           the TOML override.
+        ``Get_<Field>`` / ``Set_<Field>`` Ada subprograms backed by
+        a hand-rolled C accessor appended to ``self.gir.ccode``.
+        Fields are opt-in: they are only emitted when the matching
+        ``gtkada_<ctype>_get_<name>`` method has ``bind = true`` in
+        the TOML override.
         """
         fields = self.node.findall(nfield)
         if fields:
@@ -1995,11 +2195,14 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
 
                 if f.get("readable", "1") != "0":
                     cname = "gtkada_%(cname)s_get_%(name)s" % {
-                        "cname": self._subst["cname"], "name": name}
+                        "cname": self._subst["cname"],
+                        "name": name,
+                    }
                     gtkmethod = self.gtkpkg.get_method(cname=cname)
                     if gtkmethod.bind(default="false"):
                         profile = SubprogramProfile.parse(
-                            node=f, gtkmethod=gtkmethod, pkg=self.pkg)
+                            node=f, gtkmethod=gtkmethod, pkg=self.pkg
+                        )
                         func = self._handle_function_internal(
                             section,
                             node=f,
@@ -2007,7 +2210,8 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
                             adaname="Get_%s" % name,
                             ismethod=True,
                             profile=profile,
-                            gtkmethod=gtkmethod)
+                            gtkmethod=gtkmethod,
+                        )
 
                         if func is not None:
                             ctype = self._get_c_type(f)
@@ -2018,17 +2222,23 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
 %(ctype)s %(cname)s (%(self)s* self) {
     return self->%(name)s;
 }
-""" % {"ctype": ctype, "cname": cname, "self": self.ctype, "name": name}
+""" % {
+                                "ctype": ctype,
+                                "cname": cname,
+                                "self": self.ctype,
+                                "name": name,
+                            }
 
                 # Setter
 
                 if f.get("writable", "1") != "0":
                     cname = "gtkada_%(cname)s_set_%(name)s" % {
-                        "cname": self._subst["cname"], "name": name}
+                        "cname": self._subst["cname"],
+                        "name": name,
+                    }
                     gtkmethod = self.gtkpkg.get_method(cname=cname)
                     if gtkmethod.bind("false"):
-                        profile = SubprogramProfile.setter(
-                            node=f, pkg=self.pkg)
+                        profile = SubprogramProfile.setter(node=f, pkg=self.pkg)
                         func = self._handle_function_internal(
                             section,
                             node=f,
@@ -2036,7 +2246,8 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
                             adaname="Set_%s" % name,
                             ismethod=True,
                             gtkmethod=gtkmethod,
-                            profile=profile)
+                            profile=profile,
+                        )
 
                         if func is not None:
                             ctype = self._get_c_type(f)
@@ -2047,15 +2258,20 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
 void %(cname)s (%(self)s* self, %(ctype)s val) {
     self->%(name)s = val;
 }
-""" % {"ctype": ctype, "cname": cname, "self": self.ctype, "name": name}
+""" % {
+                                "ctype": ctype,
+                                "cname": cname,
+                                "self": self.ctype,
+                                "name": name,
+                            }
 
     def _properties(self):
         """Emit one ``<Name>_Property`` constant per GIR ``<property>``
-           in the ``Properties`` section. The actual Build call is
-           deferred to the package's private part to avoid freezing
-           issues. Properties whose type we cannot map are still
-           declared, but as ``Property_String`` with an
-           ``Unknown type:`` comment.
+        in the ``Properties`` section. The actual Build call is
+        deferred to the package's private part to avoid freezing
+        issues. Properties whose type we cannot map are still
+        declared, but as ``Property_String`` with an
+        ``Unknown type:`` comment.
         """
         n = QName(uri, "property")
 
@@ -2078,106 +2294,125 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
                 tp.userecord = False
                 ptype = tp.as_property()
                 if ptype:
-                    pkg = ptype[:ptype.rfind(".")]
+                    pkg = ptype[: ptype.rfind(".")]
                     if pkg:
                         self.pkg.add_with(pkg)
                 else:
                     section = self.pkg.section("Properties")
                     section.add(
-                        ('   %(name)s_Property : constant '
-                         + 'Glib.Properties.Property_String :=\n'
-                         + '      Glib.Properties.Build ("%(cname)s");'
-                         + '  --  Unknown type: %(type)s') % {
+                        (
+                            "   %(name)s_Property : constant "
+                            + "Glib.Properties.Property_String :=\n"
+                            + '      Glib.Properties.Build ("%(cname)s");'
+                            + "  --  Unknown type: %(type)s"
+                        )
+                        % {
                             "name": naming.case(p.get("name")),
-                            "type": (p.find(ntype).get("name")
-                                     if p.find(ntype) is not None
-                                     else "unspecified"),
-                            "cname": p.get("name")})
+                            "type": (
+                                p.find(ntype).get("name")
+                                if p.find(ntype) is not None
+                                else "unspecified"
+                            ),
+                            "cname": p.get("name"),
+                        }
+                    )
                     self.pkg.add_with("Glib.Properties")
                     continue
 
-                adaprops.append({
-                    "cname": p.get("name"),
-                    "name": naming.case(p.get("name")),
-                    "flags": "-".join(flags),
-                    "doc": _get_clean_doc(p),
-                    "pkg": pkg,
-                    "ptype": ptype,
-                    "type": tp.as_ada_param(self.pkg)})
+                adaprops.append(
+                    {
+                        "cname": p.get("name"),
+                        "name": naming.case(p.get("name")),
+                        "flags": "-".join(flags),
+                        "doc": _get_clean_doc(p),
+                        "pkg": pkg,
+                        "ptype": ptype,
+                        "type": tp.as_ada_param(self.pkg),
+                    }
+                )
 
             if adaprops:
                 section = self.pkg.section("Properties")
                 section.add_comment(
                     """The following properties are defined for this widget.
-See Glib.Properties for more information on properties)""")
+See Glib.Properties for more information on properties)"""
+                )
 
                 adaprops.sort(key=lambda x: x["name"])
 
                 for p in adaprops:
-                    prop_str = '   %(name)s_Property : constant %(ptype)s;' % p
+                    prop_str = "   %(name)s_Property : constant %(ptype)s;" % p
                     if not section.add(prop_str):
                         continue
 
                     # Only display the type if it isn't obvious from the actual
                     # type of the property.
-                    if p["type"] not in ("Boolean", "UTF8_String", "Gfloat",
-                                         "Glib.Gint", "Guint") \
-                       and not p["type"].startswith("Gtk.Enums."):
-                        section.add(
-                            Code("Type:  %(type)s" % p, iscomment=True))
+                    if p["type"] not in (
+                        "Boolean",
+                        "UTF8_String",
+                        "Gfloat",
+                        "Glib.Gint",
+                        "Guint",
+                    ) and not p["type"].startswith("Gtk.Enums."):
+                        section.add(Code("Type:  %(type)s" % p, iscomment=True))
 
                     if p["flags"] != "read-write":
-                        section.add(
-                            Code("Flags: %(flags)s" % p, iscomment=True))
+                        section.add(Code("Flags: %(flags)s" % p, iscomment=True))
                     if p["doc"]:
                         section.add(Code("%s" % p["doc"], iscomment=True))
 
-                    d = '   %(name)s_Property : constant %(ptype)s' % p
+                    d = "   %(name)s_Property : constant %(ptype)s" % p
                     self.pkg.add_private(
-                        d + ' :=\n     %(pkg)s.Build ("%(cname)s");' % p)
+                        d + ' :=\n     %(pkg)s.Build ("%(cname)s");' % p
+                    )
 
     def _compute_marshaller_suffix(self, selftype, profile):
         """Computes the suffix for the connect and marshallers types based on
-           the profile of the signal.
+        the profile of the signal.
         """
         return "_".join(
             [base_name(selftype.ada)]
             + [base_name(p.type.ada) for p in profile.params]
-            + [(base_name(profile.returns.ada)
-                if profile.returns else "Void")])
+            + [base_name(profile.returns.ada) if profile.returns else "Void"]
+        )
 
     def _marshall_gvalue(self, profile):
         """Return the arguments to parse to an Ada callback, after extracting
-           them from a GValue. Returns a list of local variables for the
-           marshaller, and its body
+        them from a GValue. Returns a list of local variables for the
+        marshaller, and its body
         """
         call_params = []
         for index, p in enumerate(profile.params):
             if isinstance(p.type, Tagged):
                 call_params.append(
-                    "%s.From_Object (Unchecked_To_Address (Params, %d))" %
-                    (package_name(p.type.ada), index + 1))
+                    "%s.From_Object (Unchecked_To_Address (Params, %d))"
+                    % (package_name(p.type.ada), index + 1)
+                )
             elif isinstance(p.type, Interface):
                 call_params.append(
-                    "%s (Unchecked_To_Interface (Params, %d))" %
-                    (p.type.ada, index + 1))
+                    "%s (Unchecked_To_Interface (Params, %d))" % (p.type.ada, index + 1)
+                )
             elif isinstance(p.type, GObject):
                 if p.type.ada != "Glib.Object.GObject":
                     call_params.append(
-                        "%s (Unchecked_To_Object (Params, %d))" % (
-                            p.type.ada, index + 1))
+                        "%s (Unchecked_To_Object (Params, %d))"
+                        % (p.type.ada, index + 1)
+                    )
                 else:
                     call_params.append(
-                        "Unchecked_To_Object (Params, %d)" % (index + 1, ))
+                        "Unchecked_To_Object (Params, %d)" % (index + 1,)
+                    )
             else:
                 if p.mode != "in":
                     call_params.append(
-                        "Unchecked_To_%s_Access (Params, %d)" % (
-                            base_name(p.type.ada), index + 1))
+                        "Unchecked_To_%s_Access (Params, %d)"
+                        % (base_name(p.type.ada), index + 1)
+                    )
                 else:
                     call_params.append(
-                        "Unchecked_To_%s (Params, %d)" % (
-                            base_name(p.type.ada), index + 1))
+                        "Unchecked_To_%s (Params, %d)"
+                        % (base_name(p.type.ada), index + 1)
+                    )
 
         if call_params:
             call = "H (Obj, %s)" % ", ".join(call_params)
@@ -2185,8 +2420,7 @@ See Glib.Properties for more information on properties)""")
             call = "H (Obj)"
 
         if profile.returns:
-            marsh_local = [
-                Local_Var("V", profile.returns, aliased=True, default=call)]
+            marsh_local = [Local_Var("V", profile.returns, aliased=True, default=call)]
             marsh_body = "Set_Value (Return_Value, V'Address);"
         else:
             marsh_local = []
@@ -2198,48 +2432,51 @@ See Glib.Properties for more information on properties)""")
 
     def _generate_slot_marshaller(self, section, selftype, node, gtkmethod):
         """Generate connect+marshaller when connect takes a slot object. These
-           procedure are independent of the specific widget, and can be shared.
-           Returns the name for the hander type.
+        procedure are independent of the specific widget, and can be shared.
+        Returns the name for the hander type.
         """
 
         pkg = self.pkg
         existing_marshallers = self.__marshallers
 
-        profile = SubprogramProfile.parse(
-            node=node, gtkmethod=gtkmethod, pkg=pkg)
+        profile = SubprogramProfile.parse(node=node, gtkmethod=gtkmethod, pkg=pkg)
 
         callback_selftype = GObject(
-            "Glib.Object.GObject", classwide=True, allow_none=True)
+            "Glib.Object.GObject", classwide=True, allow_none=True
+        )
 
-        name_suffix = self._compute_marshaller_suffix(
-            callback_selftype, profile)
+        name_suffix = self._compute_marshaller_suffix(callback_selftype, profile)
         slot_name = "Cb_%s" % name_suffix
         marshname = "Marsh_%s" % name_suffix
 
         callback = Subprogram(
             name="",
-            plist=[Parameter(name="Self", type=callback_selftype)]
-            + profile.params,
+            plist=[Parameter(name="Self", type=callback_selftype)] + profile.params,
             code="null",
             allow_none=False,
-            returns=profile.returns)
+            returns=profile.returns,
+        )
 
         if slot_name not in existing_marshallers:
             existing_marshallers.add(slot_name)
 
             slot_handler_type = "type %s is %s;" % (
-                slot_name, callback.profile(
-                    pkg=pkg,
-                    maxlen=69, indent="      "))
+                slot_name,
+                callback.profile(pkg=pkg, maxlen=69, indent="      "),
+            )
             section.add(Code(slot_handler_type), in_spec=True)
 
-            section.add(Code(
-                """function Cb_To_Address is new Ada.Unchecked_Conversion
+            section.add(
+                Code(
+                    """function Cb_To_Address is new Ada.Unchecked_Conversion
    (%s, System.Address);
 function Address_To_Cb is new Ada.Unchecked_Conversion
    (System.Address, %s);
-""" % (slot_name, slot_name)),
-                in_spec=False)
+"""
+                    % (slot_name, slot_name)
+                ),
+                in_spec=False,
+            )
 
             if isinstance(selftype, Interface):
                 obj_in_body = "Glib.Types.GType_Interface (Object)"
@@ -2253,54 +2490,69 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
          Marshaller  => %s'Access,
          Handler     => Cb_To_Address (Handler),  --  Set in the closure
          Slot_Object => Slot,
-         After       => After)""" % (obj_in_body, marshname)
+         After       => After)""" % (
+                obj_in_body,
+                marshname,
+            )
 
             marsh_local, marsh_body = self._marshall_gvalue(profile)
 
             connect_slot = Subprogram(
                 name="Connect_Slot",
-                plist=[Parameter("Object", selftype),
-                       Parameter("C_Name", "Glib.Signal_Name"),
-                       Parameter("Handler", slot_name),
-                       Parameter("After", "Boolean"),
-                       Parameter("Slot", GObject(
-                           "Glib.Object.GObject", allow_none=True,
-                           classwide=True), default="null")
-                       ],
-                code=connect_slot_body)
+                plist=[
+                    Parameter("Object", selftype),
+                    Parameter("C_Name", "Glib.Signal_Name"),
+                    Parameter("Handler", slot_name),
+                    Parameter("After", "Boolean"),
+                    Parameter(
+                        "Slot",
+                        GObject("Glib.Object.GObject", allow_none=True, classwide=True),
+                        default="null",
+                    ),
+                ],
+                code=connect_slot_body,
+            )
             section.add(connect_slot, in_spec=False)
 
             addr_to_obj = "Glib.Object.Convert (Get_Data (Closure))"
 
             marsh = Subprogram(
                 name=marshname,
-                plist=[Parameter("Closure", "GClosure"),
-                       Parameter("Return_Value", "Glib.Values.GValue"),
-                       Parameter("N_Params", "Glib.Guint"),
-                       Parameter("Params", "Glib.Values.C_GValues"),
-                       Parameter("Invocation_Hint", "System.Address"),
-                       Parameter("User_Data", "System.Address")],
+                plist=[
+                    Parameter("Closure", "GClosure"),
+                    Parameter("Return_Value", "Glib.Values.GValue"),
+                    Parameter("N_Params", "Glib.Guint"),
+                    Parameter("Params", "Glib.Values.C_GValues"),
+                    Parameter("Invocation_Hint", "System.Address"),
+                    Parameter("User_Data", "System.Address"),
+                ],
                 local_vars=[
-                    Local_Var("H", "constant %s" % slot_name,
-                              "Address_To_Cb (Get_Callback (Closure))"),
-                    Local_Var("Obj", "Glib.Object.GObject", constant=True,
-                              default=addr_to_obj)
-                ] + marsh_local,
+                    Local_Var(
+                        "H",
+                        "constant %s" % slot_name,
+                        "Address_To_Cb (Get_Callback (Closure))",
+                    ),
+                    Local_Var(
+                        "Obj", "Glib.Object.GObject", constant=True, default=addr_to_obj
+                    ),
+                ]
+                + marsh_local,
                 convention="C",
-                code=marsh_body)
+                code=marsh_body,
+            )
             section.add(marsh, in_spec=False)
 
         return slot_name, callback
 
     def _generate_marshaller(self, section, selftype, node, gtkmethod):
         """Generate, if needed, a connect+marshaller for signals with this
-           profile.
-           Returns the name of the type that contains the subprogram profile
+        profile.
+        Returns the name of the type that contains the subprogram profile
         """
 
         profile = SubprogramProfile.parse(
-            node=node, gtkmethod=gtkmethod,
-            pkg=self.pkg if gtkmethod.bind() else None)
+            node=node, gtkmethod=gtkmethod, pkg=self.pkg if gtkmethod.bind() else None
+        )
 
         name_suffix = self._compute_marshaller_suffix(selftype, profile)
         marshname = "Marsh_%s" % name_suffix
@@ -2311,23 +2563,29 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
             plist=[Parameter(name="Self", type=selftype)] + profile.params,
             code="null",
             allow_none=False,
-            returns=profile.returns)
+            returns=profile.returns,
+        )
 
         if gtkmethod.bind() and name not in self.__marshallers:
             self.__marshallers.add(name)
 
             handler_type = "type %s is %s;" % (
-                name, callback.profile(
-                    pkg=self.pkg, maxlen=69, indent="      "))
+                name,
+                callback.profile(pkg=self.pkg, maxlen=69, indent="      "),
+            )
             section.add(Code(handler_type), in_spec=True)
 
-            section.add(Code(
-                """function Cb_To_Address is new Ada.Unchecked_Conversion
+            section.add(
+                Code(
+                    """function Cb_To_Address is new Ada.Unchecked_Conversion
    (%s, System.Address);
 function Address_To_Cb is new Ada.Unchecked_Conversion
    (System.Address, %s);
-""" % (name, name)),
-                in_spec=False)
+"""
+                    % (name, name)
+                ),
+                in_spec=False,
+            )
 
             if isinstance(selftype, Interface):
                 obj_in_body = "Glib.Types.GType_Interface (Object)"
@@ -2340,54 +2598,63 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
          C_Name      => C_Name,
          Marshaller  => %s'Access,
          Handler     => Cb_To_Address (Handler),  --  Set in the closure
-         After       => After)""" % (obj_in_body, marshname)
+         After       => After)""" % (
+                obj_in_body,
+                marshname,
+            )
 
             marsh_local, marsh_body = self._marshall_gvalue(profile)
 
             connect = Subprogram(
                 name="Connect",
-                plist=[Parameter("Object", selftype),
-                       Parameter("C_Name", "Glib.Signal_Name"),
-                       Parameter("Handler", name),
-                       Parameter("After", "Boolean"),
-                       ],
-                code=connect_body)
+                plist=[
+                    Parameter("Object", selftype),
+                    Parameter("C_Name", "Glib.Signal_Name"),
+                    Parameter("Handler", name),
+                    Parameter("After", "Boolean"),
+                ],
+                code=connect_body,
+            )
             section.add(connect, in_spec=False)
 
             if isinstance(selftype, Interface):
-                addr_to_obj = \
-                    "%s (Unchecked_To_Interface (Params, 0))" % selftype.ada
+                addr_to_obj = "%s (Unchecked_To_Interface (Params, 0))" % selftype.ada
             else:
-                addr_to_obj = \
-                    "%s (Unchecked_To_Object (Params, 0))" % selftype.ada
+                addr_to_obj = "%s (Unchecked_To_Object (Params, 0))" % selftype.ada
 
             marsh = Subprogram(
                 name=marshname,
-                plist=[Parameter("Closure", "GClosure"),
-                       Parameter("Return_Value", "Glib.Values.GValue"),
-                       Parameter("N_Params", "Glib.Guint"),
-                       Parameter("Params", "Glib.Values.C_GValues"),
-                       Parameter("Invocation_Hint", "System.Address"),
-                       Parameter("User_Data", "System.Address")],
+                plist=[
+                    Parameter("Closure", "GClosure"),
+                    Parameter("Return_Value", "Glib.Values.GValue"),
+                    Parameter("N_Params", "Glib.Guint"),
+                    Parameter("Params", "Glib.Values.C_GValues"),
+                    Parameter("Invocation_Hint", "System.Address"),
+                    Parameter("User_Data", "System.Address"),
+                ],
                 local_vars=[
-                    Local_Var("H", "constant %s" % name,
-                              "Address_To_Cb (Get_Callback (Closure))"),
-                    Local_Var("Obj", selftype.ada, constant=True,
-                              default=addr_to_obj)
-                ] + marsh_local,
+                    Local_Var(
+                        "H",
+                        "constant %s" % name,
+                        "Address_To_Cb (Get_Callback (Closure))",
+                    ),
+                    Local_Var("Obj", selftype.ada, constant=True, default=addr_to_obj),
+                ]
+                + marsh_local,
                 convention="C",
-                code=marsh_body)
+                code=marsh_body,
+            )
             section.add(marsh, in_spec=False)
 
         return name, callback, profile
 
     def _signals(self):
         """Emit Ada bindings for every ``<signal>`` in this class:
-           one ``Signal_<Name>`` constant per signal, plus ``On_<Name>``
-           connect procedures (one taking a callback, one taking a slot
-           object). The marshallers are emitted in the body via
-           :meth:`_generate_marshaller` and
-           :meth:`_generate_slot_marshaller`.
+        one ``Signal_<Name>`` constant per signal, plus ``On_<Name>``
+        connect procedures (one taking a callback, one taking a slot
+        object). The marshallers are emitted in the body via
+        :meth:`_generate_marshaller` and
+        :meth:`_generate_slot_marshaller`.
         """
         signals = list(self.node.findall(gsignal))
         if signals:
@@ -2397,98 +2664,104 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
 
             # If at least one signal gets a On_* procedure
             for s in signals:
-                if self.gtkpkg.get_method(
-                   cname="::%s" % s.get("name")).bind():
+                if self.gtkpkg.get_method(cname="::%s" % s.get("name")).bind():
                     self.pkg.add_with("Gtkada.Bindings", specs=False)
                     self.pkg.add_with("Glib.Values", specs=False)
                     self.pkg.add_with("Gtk.Arguments", specs=False)
                     self.pkg.add_with(
-                        "Ada.Unchecked_Conversion", specs=False, do_use=False)
+                        "Ada.Unchecked_Conversion", specs=False, do_use=False
+                    )
                     break
 
             signals.sort(key=lambda x: x.get("name"))
 
             for s in signals:
-                gtkmethod = self.gtkpkg.get_method(
-                    cname="::%s" % (s.get("name")))
+                gtkmethod = self.gtkpkg.get_method(cname="::%s" % (s.get("name")))
                 bind = gtkmethod.bind()
 
                 name = s.get("name")
 
                 if self.is_gobject:
-                    selftype = GObject("%(typename)s" % self._subst,
-                                       allow_none=True, classwide=True)
-                    on_selftype = GObject("%(typename)s" % self._subst,
-                                          allow_none=False, classwide=False)
+                    selftype = GObject(
+                        "%(typename)s" % self._subst, allow_none=True, classwide=True
+                    )
+                    on_selftype = GObject(
+                        "%(typename)s" % self._subst, allow_none=False, classwide=False
+                    )
                 elif self.is_interface:
-                    on_selftype = selftype = Interface(
-                        "%(typename)s" % self._subst)
+                    on_selftype = selftype = Interface("%(typename)s" % self._subst)
                 else:
-                    on_selftype = selftype = Proxy(
-                        "%(typename)s" % self._subst)
+                    on_selftype = selftype = Proxy("%(typename)s" % self._subst)
 
                 # We need to parse the profile twice, so that the with
                 # statements are set both in self.pkg and in
                 # gtkada.marshallers
-                handler_type_name, sub, profile = \
-                    self._generate_marshaller(
-                        section, selftype, node=s, gtkmethod=gtkmethod)
+                handler_type_name, sub, profile = self._generate_marshaller(
+                    section, selftype, node=s, gtkmethod=gtkmethod
+                )
 
                 if bind:
-                    slot_handler_type_name, obj_sub = \
-                        self._generate_slot_marshaller(
-                            section, selftype, node=s, gtkmethod=gtkmethod)
+                    slot_handler_type_name, obj_sub = self._generate_slot_marshaller(
+                        section, selftype, node=s, gtkmethod=gtkmethod
+                    )
 
                 section.add(
-                    Code('   Signal_%s : constant Glib.Signal_Name := "%s";' %
-                         (naming.case(name, protect=False), name)),
-                    add_newline=False)
+                    Code(
+                        '   Signal_%s : constant Glib.Signal_Name := "%s";'
+                        % (naming.case(name, protect=False), name)
+                    ),
+                    add_newline=False,
+                )
 
                 if bind:
                     connect = Subprogram(
                         name="On_%s" % naming.case(name, protect=False),
-                        plist=[Parameter(name="Self", type=on_selftype),
-                               Parameter(
-                            name="Call",
-                            type=Proxy(handler_type_name)),
-                            Parameter(
-                            name="After",
-                            type="Boolean",
-                            default="False")],
-                        code='Connect (Self, "%s" & ASCII.NUL, Call, After);' %
-                        name)
+                        plist=[
+                            Parameter(name="Self", type=on_selftype),
+                            Parameter(name="Call", type=Proxy(handler_type_name)),
+                            Parameter(name="After", type="Boolean", default="False"),
+                        ],
+                        code='Connect (Self, "%s" & ASCII.NUL, Call, After);' % name,
+                    )
                     section.add(connect, add_newline=False)
 
                     self.pkg.add_with("Glib.Object")
                     obj_connect = Subprogram(
                         name="On_%s" % naming.case(name, protect=False),
-                        plist=[Parameter(name="Self", type=on_selftype),
-                               Parameter(
-                            name="Call",
-                            type=Proxy(slot_handler_type_name)),
+                        plist=[
+                            Parameter(name="Self", type=on_selftype),
+                            Parameter(name="Call", type=Proxy(slot_handler_type_name)),
                             Parameter(
-                            name="Slot",
-                            type=GObject("Glib.Object.GObject",
-                                         allow_none=False,
-                                         classwide=True)),
-                            Parameter(
-                            name="After",
-                            type="Boolean",
-                            default="False")],
-                        code=('Connect_Slot (Self, "%s" & ASCII.NUL,'
-                              + ' Call, After, Slot);') % name)
+                                name="Slot",
+                                type=GObject(
+                                    "Glib.Object.GObject",
+                                    allow_none=False,
+                                    classwide=True,
+                                ),
+                            ),
+                            Parameter(name="After", type="Boolean", default="False"),
+                        ],
+                        code=(
+                            'Connect_Slot (Self, "%s" & ASCII.NUL,'
+                            + " Call, After, Slot);"
+                        )
+                        % name,
+                    )
                     section.add(obj_connect)
 
                 doc = _get_clean_doc(s)
                 if doc:
-                    section.add(Code("  %s""" % doc, iscomment=True))
+                    section.add(Code("  %s" "" % doc, iscomment=True))
 
                 if not bind:
                     sub.name = "Handler"
                     section.add(
                         Code(
                             sub.profile(pkg=self.pkg, maxlen=69),
-                            fill=False, iscomment=True))
+                            fill=False,
+                            iscomment=True,
+                        )
+                    )
 
                 if profile.returns_doc or len(profile.params) > 1:
                     doc = "\n Callback parameters:" + sub.formatted_doc()
@@ -2496,11 +2769,11 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
 
     def _implements(self):
         """For every GIR ``<implements>`` of this class, emit the
-           ``Implements_<Interface>`` ``Glib.Types.Implements``
-           instantiation together with the ``"+"`` (cast to interface)
-           and ``"-"`` (cast back to object) renames, and replicate
-           the inherited primitive operations in an
-           ``Inherited subprograms`` section.
+        ``Implements_<Interface>`` ``Glib.Types.Implements``
+        instantiation together with the ``"+"`` (cast to interface)
+        and ``"-"`` (cast back to object) renames, and replicate
+        the inherited primitive operations in an
+        ``Inherited subprograms`` section.
         """
 
         implements = list(self.node.findall(nimplements)) or []
@@ -2523,7 +2796,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
 
             type = naming.type(intf.ctype)
             if "." in type.ada:
-                self.pkg.add_with(type.ada[:type.ada.rfind(".")])
+                self.pkg.add_with(type.ada[: type.ada.rfind(".")])
                 self.pkg.add_with("Glib.Types")
 
             impl = dict(
@@ -2532,8 +2805,9 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                 impl=type.ada,
                 interface=intf,
                 body="",
-                pkg="%(typename)s" % self._subst)
-            impl["code"] = \
+                pkg="%(typename)s" % self._subst,
+            )
+            impl["code"] = (
                 """package Implements_%(adatype)s is new Glib.Types.Implements
        (%(impl)s, %(pkg)s_Record, %(pkg)s);
    function "+"
@@ -2544,7 +2818,9 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
       (Interf : %(impl)s)
       return %(pkg)s
       renames Implements_%(adatype)s.To_Object;
-""" % impl
+"""
+                % impl
+            )
 
             self.implements[name] = impl
 
@@ -2558,11 +2834,13 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                 "name": self._subst["typename"],
                 "interface": None,
                 "code": """function "+" (W : %(typename)s) return %(typename)s;
-    pragma Inline ("+"); """ % self._subst,
+    pragma Inline ("+"); """
+                % self._subst,
                 "body": """function "+" (W : %(typename)s) return %(typename)s is
 begin
    return W;
-end "+";""" % self._subst,
+end "+";"""
+                % self._subst,
             }
 
         if self.implements:
@@ -2570,8 +2848,7 @@ end "+";""" % self._subst,
             # Duplicate the subprograms from the interfaces. This doesn't
             # quite work: for instance, Gtk.About_Dialog already has a
             # Get_Name, so we can't redefine the one inherited from Buildable.
-            section = self.pkg.section(
-                "Inherited subprograms (from interfaces)")
+            section = self.pkg.section("Inherited subprograms (from interfaces)")
 
             for impl in sorted(self.implements.keys()):
                 impl = self.implements[impl]
@@ -2583,7 +2860,8 @@ end "+";""" % self._subst,
                         + " not duplicated here since they are meant to be"
                         + " used by tools, mostly. If you need to call them,"
                         + ' use an explicit cast through the "-" operator'
-                        + " below.")
+                        + " below."
+                    )
 
                     continue
 
@@ -2593,7 +2871,8 @@ end "+";""" % self._subst,
                 if interf is not None and not hasattr(interf, "gtkpkg"):
                     print(
                         f"{self.name}: methods for interface "
-                        f"{impl['name']} were not bound")
+                        f"{impl['name']} were not bound"
+                    )
                 elif interf is not None:
                     all = interf.node.findall(nmethod)
                     for c in all:
@@ -2603,12 +2882,18 @@ end "+";""" % self._subst,
 
                         if interfmethod.bind():
                             self._handle_function(
-                                section, c, showdoc=False, gtkmethod=gtkmethod,
-                                ismethod=True, isinherited=True)
+                                section,
+                                c,
+                                showdoc=False,
+                                gtkmethod=gtkmethod,
+                                ismethod=True,
+                                isinherited=True,
+                            )
 
             section = self.pkg.section("Interfaces")
             section.add_comment(
-                "This class implements several interfaces. See Glib.Types")
+                "This class implements several interfaces. See Glib.Types"
+            )
 
             for impl in sorted(self.implements.keys()):
                 impl = self.implements[impl]
@@ -2620,9 +2905,9 @@ end "+";""" % self._subst,
 
     def add_list_binding(self, section, adaname, ctype, singleList):
         """Instantiate ``Glib.Glist.Generic_List`` (or its single-linked
-           counterpart) for the given element type, along with the
-           ``Convert`` helpers needed by the generic. The instance is
-           emitted in ``section`` under the name ``adaname``.
+        counterpart) for the given element type, along with the
+        ``Convert`` helpers needed by the generic. The instance is
+        emitted in ``section`` under the name ``adaname``.
         """
 
         conv = "%s->Address" % ctype.ada
@@ -2632,10 +2917,9 @@ end "+";""" % self._subst,
         if conv not in self.conversions:
             self.conversions[conv] = True
 
-            base = "function Convert (R : %s) return System.Address" % (
-                ctype.ada)
+            base = "function Convert (R : %s) return System.Address" % (ctype.ada)
 
-            decl += base + ';\n'
+            decl += base + ";\n"
             body += base + " is\nbegin\n"
 
             if isinstance(ctype, Proxy):
@@ -2649,14 +2933,14 @@ end "+";""" % self._subst,
         if conv not in self.conversions:
             self.conversions[conv] = True
 
-            decl += "function Convert (R : System.Address) return %s;\n" % (
-                ctype.ada)
-            body += "function Convert (R : System.Address) return %s is\n" % (
-                ctype.ada)
+            decl += "function Convert (R : System.Address) return %s;\n" % (ctype.ada)
+            body += "function Convert (R : System.Address) return %s is\n" % (ctype.ada)
 
             if isinstance(ctype, Proxy):
-                body += "begin\nreturn %s" % ctype.ada \
+                body += (
+                    "begin\nreturn %s" % ctype.ada
                     + "(Glib.C_Proxy'(Glib.To_Proxy (R)));"
+                )
 
             elif isinstance(ctype, Tagged):
                 # Not a GObject ?
@@ -2665,8 +2949,7 @@ end "+";""" % self._subst,
             else:
                 body += "Stub : %s_Record;" % ctype.ada
                 body += "begin\n"
-                body += "return %s (Glib.Object.Get_User_Data (R, Stub));" % (
-                    ctype.ada)
+                body += "return %s (Glib.Object.Get_User_Data (R, Stub));" % (ctype.ada)
 
             body += "\nend Convert;"
 
@@ -2684,11 +2967,11 @@ end "+";""" % self._subst,
         section.add(body, in_spec=False)
 
     def record_binding(
-            self, section, ctype, adaname, type, override_fields,
-            unions, private):
+        self, section, ctype, adaname, type, override_fields, unions, private
+    ):
         """Create the binding for a <record> or <union> type.
-           override_fields has the same format as returned by
-           GtkAdaPackage.records()
+        override_fields has the same format as returned by
+        GtkAdaPackage.records()
         """
         base = adaname or base_name(type.ada)
 
@@ -2703,12 +2986,13 @@ end "+";""" % self._subst,
         is_union = node.tag == nunion
         first_field_ctype = None
 
-        fields = []   # array of (name,type,default) tuples
+        fields = []  # array of (name,type,default) tuples
 
         # Check if we have forced the mapping as a C proxy ?
 
-        if (naming.type_exceptions.get(ctype, None) is None
-                or not isinstance(naming.type_exceptions[ctype], Proxy)):
+        if naming.type_exceptions.get(ctype, None) is None or not isinstance(
+            naming.type_exceptions[ctype], Proxy
+        ):
 
             for field in node.findall(nfield):
                 name = field.get("name")
@@ -2729,8 +3013,7 @@ end "+";""" % self._subst,
                             if not ctype:
                                 # <type name="..."> has no c:type attribute,
                                 # so we try to map the name to a Girname
-                                ctype = naming.girname_to_ctype[
-                                    t[0].get("name")]
+                                ctype = naming.girname_to_ctype[t[0].get("name")]
 
                             first_field_ctype = ctype
 
@@ -2742,8 +3025,7 @@ end "+";""" % self._subst,
                     # record integrity
                     ftype = override_fields.get(name, None)
                     if ftype is None:
-                        ftype = AdaType(
-                            "System.Address", pkg=self.pkg)
+                        ftype = AdaType("System.Address", pkg=self.pkg)
 
                 else:
                     print(f"WARNING: Field '{name}.{base}' has no type")
@@ -2762,26 +3044,36 @@ end "+";""" % self._subst,
 
         if not fields:
             section.add(
-                ("\ntype %(typename)s is new Glib.C_Proxy;\n"
-                 + "function From_Object_Free (B : access %(typename)s) "
-                 + "return %(typename)s;\npragma Inline (From_Object_Free);")
-                 % {"typename": base})
-            section.add("""
+                (
+                    "\ntype %(typename)s is new Glib.C_Proxy;\n"
+                    + "function From_Object_Free (B : access %(typename)s) "
+                    + "return %(typename)s;\npragma Inline (From_Object_Free);"
+                )
+                % {"typename": base}
+            )
+            section.add(
+                """
 function From_Object_Free (B : access %(typename)s) return %(typename)s is
    Result : constant %(typename)s := B.all;
 begin
    Glib.g_free (B.all'Address);
    return Result;
-end From_Object_Free;""" % {"typename": base}, in_spec=False)
+end From_Object_Free;"""
+                % {"typename": base},
+                in_spec=False,
+            )
 
         else:
             if private:
                 section.add(
-                    ("\ntype %(typename)s is private;\n"
-                     + "function From_Object_Free (B : access %(typename)s)"
-                     + " return %(typename)s;\n"
-                     + "pragma Inline (From_Object_Free);")
-                    % {"typename": base})
+                    (
+                        "\ntype %(typename)s is private;\n"
+                        + "function From_Object_Free (B : access %(typename)s)"
+                        + " return %(typename)s;\n"
+                        + "pragma Inline (From_Object_Free);"
+                    )
+                    % {"typename": base}
+                )
                 adder = self.pkg.add_private
             else:
                 adder = section.add
@@ -2789,10 +3081,11 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
             if is_union:
                 enums = self.get_enumeration_values(first_field_ctype)
                 enums_dict = {ctype: adatype for ctype, adatype in enums}
-                text = "\ntype %s (%s : %s := %s) is record\n" % (
-                    base, fields[0][0], fields[0][1],
-                    enums[0][1]) + \
-                    "    case %s is\n" % fields[0][0]
+                text = (
+                    "\ntype %s (%s : %s := %s) is record\n"
+                    % (base, fields[0][0], fields[0][1], enums[0][1])
+                    + "    case %s is\n" % fields[0][0]
+                )
                 for index, f in enumerate(fields):
                     if index != 0:
                         when_stmt = []
@@ -2805,11 +3098,13 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
                             when_stmt = [enums[index][1]]
 
                         if not when_stmt:
-                            print(
-                                f"ERROR: no discrimant value for field {f[0]}")
+                            print(f"ERROR: no discrimant value for field {f[0]}")
 
                         text += "\n      when %s =>\n %s : %s;\n" % (
-                            "\n          | ".join(when_stmt), f[0], f[1])
+                            "\n          | ".join(when_stmt),
+                            f[0],
+                            f[1],
+                        )
 
                 text += "   end case;\nend record;\n"
                 text += "pragma Convention (C, %s);\n" % base
@@ -2820,45 +3115,57 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
                 c = []
                 for f in fields:
                     if f[2]:
-                        c.append('%s : %s := %s;' % (f[0], f[1], f[2]))
+                        c.append("%s : %s := %s;" % (f[0], f[1], f[2]))
                     else:
-                        c.append('%s : %s;' % (f[0], f[1]))
+                        c.append("%s : %s;" % (f[0], f[1]))
 
-                c = Code('\ntype %s is record\n' % base
-                         + '\n'.join(c)
-                         + '\nend record;\npragma Convention (C, %s);\n' % base)
+                c = Code(
+                    "\ntype %s is record\n" % base
+                    + "\n".join(c)
+                    + "\nend record;\npragma Convention (C, %s);\n" % base
+                )
                 adder(c.format())
 
             if not private:
                 section.add(
-                    ("\nfunction From_Object_Free (B : access %(type)s)"
-                     + " return %(type)s;\n"
-                     + "pragma Inline (From_Object_Free);") % {"type": base})
+                    (
+                        "\nfunction From_Object_Free (B : access %(type)s)"
+                        + " return %(type)s;\n"
+                        + "pragma Inline (From_Object_Free);"
+                    )
+                    % {"type": base}
+                )
 
-            section.add("""
+            section.add(
+                """
 function From_Object_Free (B : access %(typename)s) return %(typename)s is
    Result : constant %(typename)s := B.all;
 begin
    Glib.g_free (B.all'Address);
    return Result;
-end From_Object_Free;""" % {"typename": base}, in_spec=False)
+end From_Object_Free;"""
+                % {"typename": base},
+                in_spec=False,
+            )
 
         section.add(Code(_get_clean_doc(node), iscomment=True))
 
     def get_enumeration_values(self, enum_ctype):
         """Return the list of enumeration values for the given enum, as a list
-           of tuples  (C identifier, ada identifier)"""
+        of tuples  (C identifier, ada identifier)"""
 
         node = gir.enums[enum_ctype]
-        return [(m.get(cidentifier), naming.adamethod_name(m.get(cidentifier)))
-                for m in node.findall(nmember)]
+        return [
+            (m.get(cidentifier), naming.adamethod_name(m.get(cidentifier)))
+            for m in node.findall(nmember)
+        ]
 
     def constants_binding(self, section, regexp, prefix):
         """Emit Ada string-constant declarations for every namespace
-           ``<constant>`` whose C name matches ``regexp``. ``prefix``
-           is stripped from the C name to compute the Ada identifier.
-           Constants annotated as deprecated produce an extra
-           ``pragma Obsolescent``.
+        ``<constant>`` whose C name matches ``regexp``. ``prefix``
+        is stripped from the C name to compute the Ada identifier.
+        Constants annotated as deprecated produce an extra
+        ``pragma Obsolescent``.
         """
         constants = []
         r = re.compile(regexp)
@@ -2873,7 +3180,7 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
                 ctype = type[0].get(ctype_qname)
                 ftype = naming.type(name="", cname=ctype)
                 deprecated = node.get("deprecated")
-                deprecated_version =  node.get("deprecated-version")
+                deprecated_version = node.get("deprecated-version")
 
                 constant_str = '%s : constant %s := "%s";' % (
                     name,
@@ -2888,23 +3195,24 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
                             % (name, node.get("deprecated-version"))
                         )
                     else:
-                        constant_str += '\npragma Obsolescent (%s);\n' % (name)
+                        constant_str += "\npragma Obsolescent (%s);\n" % (name)
 
                 constants.append(constant_str)
 
         constants.sort()
         section.add("\n".join(constants))
 
-    def enumeration_binding(self, section, ctype, type, prefix,
-                            asbitfield=False, ignore=""):
+    def enumeration_binding(
+        self, section, ctype, type, prefix, asbitfield=False, ignore=""
+    ):
         """Add to the section the Ada type definition for the <enumeration>
-           ctype. type is the corresponding instance of CType().
-           This function also handles <bitfield> types.
+        ctype. type is the corresponding instance of CType().
+        This function also handles <bitfield> types.
 
-           :param prefix: is removed from the values to get the default Ada name,
-              which can be overridden in data.cname_to_adaname.
-           :param ignore: space-separated list of values that should not be
-              bound.
+        :param prefix: is removed from the values to get the default Ada name,
+           which can be overridden in data.cname_to_adaname.
+        :param ignore: space-separated list of values that should not be
+           bound.
         """
         base = base_name(type.ada)
         node = gir.enums[ctype]
@@ -2936,9 +3244,7 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
                 m = base_name(m)
 
             # For proper substitution in docs
-            naming.add_cmethod(
-                cname=cname,
-                adaname="%s.%s" % (self.name, m))
+            naming.add_cmethod(cname=cname, adaname="%s.%s" % (self.name, m))
 
             value = int(member.get("value"))
             if value != current:
@@ -2952,24 +3258,30 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
         if node.tag == nenumeration and not asbitfield:
             section.add(
                 "type %s is " % base
-                + "(\n" + ",\n".join(m[0]
-                                     for m in sorted(members, key=lambda m: m[1]))
+                + "(\n"
+                + ",\n".join(m[0] for m in sorted(members, key=lambda m: m[1]))
                 + ");\n"
-                + "pragma Convention (C, %s);\n" % base)
+                + "pragma Convention (C, %s);\n" % base
+            )
             section.add(Code(_get_clean_doc(node), iscomment=True))
 
             if not is_default_representation:
-                repr = ("   for %s use (\n" % base
-                        + ",\n".join("      %s => %s" % m
-                                     for m in sorted(members, key=lambda m: m[1]))
-                        + ");\n")
+                repr = (
+                    "   for %s use (\n" % base
+                    + ",\n".join(
+                        "      %s => %s" % m
+                        for m in sorted(members, key=lambda m: m[1])
+                    )
+                    + ");\n"
+                )
                 section.add(repr)
 
         elif node.tag == nbitfield or asbitfield:
             section.add(
                 "\ntype %s is " % base
                 + "mod 2 ** Integer'Size;\n"
-                + "pragma Convention (C, %s);\n" % base)
+                + "pragma Convention (C, %s);\n" % base
+            )
             section.add(Code(_get_clean_doc(node), iscomment=True))
 
             for m, value in members:
@@ -2979,8 +3291,8 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
         section.pkg.section("Enumeration Properties").add(
             "package %s_Properties is\n" % base
             + "   new Generic_Internal_Discrete_Property (%s);\n" % base
-            + "type Property_%s is new %s_Properties.Property;\n\n" % (
-                base, base))
+            + "type Property_%s is new %s_Properties.Property;\n\n" % (base, base)
+        )
 
         self.pkg.add_with("Glib.Generic_Properties")
 
@@ -3009,12 +3321,12 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
         # Class.
 
         parent = gir._get_class_node(
-            self.rootNode,
-            girname=self.gtkpkg.parent_type() or self.node.get("parent"))
+            self.rootNode, girname=self.gtkpkg.parent_type() or self.node.get("parent")
+        )
         parent = naming.type(
-            name=self.gtkpkg.parent_type() or self.node.get(
-                "parent"),  # GIRName
-            cname=parent and parent.get(ctype_qname)).ada
+            name=self.gtkpkg.parent_type() or self.node.get("parent"),  # GIRName
+            cname=parent and parent.get(ctype_qname),
+        ).ada
 
         if parent and parent.rfind(".") != -1:
             self._subst["parent_pkg"] = package_name(parent)
@@ -3058,16 +3370,12 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
             elif isinstance(oldtype, Record):
                 newtype = Record(typename)
             else:
-                raise Exception("Can't override %s for a package with 'into'"
-                                % oldtype)
-            naming.add_type_exception(
-                override=True,
-                cname=self.ctype,
-                type=newtype)
+                raise Exception("Can't override %s for a package with 'into'" % oldtype)
+            naming.add_type_exception(override=True, cname=self.ctype, type=newtype)
 
-        self.pkg = gir.get_package(into or self.ada_package_name,
-                                   ctype=self.ctype,
-                                   doc=girdoc)
+        self.pkg = gir.get_package(
+            into or self.ada_package_name, ctype=self.ctype, doc=girdoc
+        )
 
         if self._subst["parent_pkg"]:
             self.pkg.add_with("%(parent_pkg)s" % self._subst)
@@ -3086,44 +3394,61 @@ end From_Object_Free;""" % {"typename": base}, in_spec=False)
             self.pkg.add_with("Glib.Types")
             section.add(
                 """type %(typename)s is new Glib.Types.GType_Interface;
-Null_%(typename)s : constant %(typename)s;""" % self._subst)
+Null_%(typename)s : constant %(typename)s;"""
+                % self._subst
+            )
 
-            self.pkg.add_private("""
+            self.pkg.add_private(
+                """
 Null_%(typename)s : constant %(typename)s :=
-   %(typename)s (Glib.Types.Null_Interface);""" %
-                                 self._subst)
+   %(typename)s (Glib.Types.Null_Interface);"""
+                % self._subst
+            )
 
         elif self.gtktype.is_subtype():
             section.add(
                 """
 subtype %(typename)s_Record is %(parent)s_Record;
-subtype %(typename)s is %(parent)s;""" % self._subst)
+subtype %(typename)s is %(parent)s;"""
+                % self._subst
+            )
 
         elif self.is_proxy:
-            section.add("""
-   type %(typename)s is new Glib.C_Proxy;""" % self._subst)
+            section.add(
+                """
+   type %(typename)s is new Glib.C_Proxy;"""
+                % self._subst
+            )
 
         elif self.is_boxed:
             # The type is not private so that we can directly instantiate
             # generic packages for lists of this type.
 
-            section.add("""
+            section.add(
+                """
    type %(typename)s is new Glib.C_Boxed with null record;
    Null_%(typename)s : constant %(typename)s;
 
    function From_Object (Object : System.Address) return %(typename)s;
    function From_Object_Free (B : access %(typename)s'Class) return %(typename)s;
    pragma Inline (From_Object_Free, From_Object);
-""" % self._subst)
+"""
+                % self._subst
+            )
 
             # Insert constant declaration at the end of the package, to avoid
             # freezing issues
             self.pkg.add_private(
-                ("\n   Null_%(typename)s : constant %(typename)s :="
-                + " (Glib.C_Boxed with null record);\n") %
-                self._subst, at_end=True)
+                (
+                    "\n   Null_%(typename)s : constant %(typename)s :="
+                    + " (Glib.C_Boxed with null record);\n"
+                )
+                % self._subst,
+                at_end=True,
+            )
 
-            section.add("""
+            section.add(
+                """
    function From_Object_Free
       (B : access %(typename)s'Class) return %(typename)s
    is
@@ -3139,7 +3464,10 @@ subtype %(typename)s is %(parent)s;""" % self._subst)
       S.Set_Object (Object);
       return S;
    end From_Object;
-""" % self._subst, in_spec=False)
+"""
+                % self._subst,
+                in_spec=False,
+            )
 
         elif self._subst["parent"] is None:
             # Likely a public record type (ie with visible fields).
@@ -3150,31 +3478,32 @@ subtype %(typename)s is %(parent)s;""" % self._subst)
         else:
             if self.gtkpkg.ada_access_root() and "." in self.name:
                 namespace_pkg = self.name.split(".", 1)[0]
-                section.add("""
+                section.add(
+                    """
 type %(typename)s_Record is new %(parent)s_Record with null record;
 subtype %(typename)s is %(namespace_pkg)s.%(typename)s;"""
-                            % {**self._subst, "namespace_pkg": namespace_pkg})
+                    % {**self._subst, "namespace_pkg": namespace_pkg}
+                )
             else:
-                section.add("""
+                section.add(
+                    """
 type %(typename)s_Record is new %(parent)s_Record with null record;
 type %(typename)s is access all %(typename)s_Record'Class;"""
-                            % self._subst)
+                    % self._subst
+                )
 
-        for ctype, enum, prefix, asbitfield, ignore in \
-             self.gtkpkg.enumerations():
+        for ctype, enum, prefix, asbitfield, ignore in self.gtkpkg.enumerations():
 
             self.enumeration_binding(
-                section, ctype, enum, prefix, asbitfield=asbitfield,
-                ignore=ignore)
+                section, ctype, enum, prefix, asbitfield=asbitfield, ignore=ignore
+            )
 
         for regexp, prefix in self.gtkpkg.constants():
             self.constants_binding(section, regexp, prefix)
 
-        for ctype, enum, adaname, fields, unions, private in \
-             self.gtkpkg.records():
+        for ctype, enum, adaname, fields, unions, private in self.gtkpkg.records():
 
-            self.record_binding(
-                section, ctype, adaname, enum, fields, unions, private)
+            self.record_binding(section, ctype, adaname, enum, fields, unions, private)
 
         for ada, ctype, single, sect_name in self.gtkpkg.lists():
             sect = self.pkg.section(sect_name)
@@ -3185,15 +3514,19 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                 if p.tag == "with_spec":
                     self.pkg.add_with(
                         p.get("pkg", "Missing package name in <extra>"),
-                        do_use=p.get("use", "true").lower() == "true")
+                        do_use=p.get("use", "true").lower() == "true",
+                    )
                 elif p.tag == "with_body":
                     self.pkg.add_with(
-                        p.get("pkg"), specs=False,
-                        do_use=p.get("use", "true").lower() == "true")
+                        p.get("pkg"),
+                        specs=False,
+                        do_use=p.get("use", "true").lower() == "true",
+                    )
                 elif p.tag == "type":
                     naming.add_type_exception(
                         cname=p.get("ctype"),
-                        type=Proxy(p.get("ada"), p.get("properties", None)))
+                        type=Proxy(p.get("ada"), p.get("properties", None)),
+                    )
                     section.add(p.text)
                 elif p.tag == "body":
                     if p.get("before", "true").lower() == "true":
@@ -3214,8 +3547,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                     else:
                         s = s or self.pkg.section("GtkAda additions")
                         s.add(p.text)
-                elif p.tag == "body" \
-                        and p.get("before", "true").lower() != "true":
+                elif p.tag == "body" and p.get("before", "true").lower() != "true":
                     s.add(p.text, in_spec=False)
 
         self._functions()
@@ -3302,22 +3634,23 @@ def _parse_command_line():
         help="input GTK .gir file",
         action="append",
         dest="gir_file",
-        metavar="FILE")
+        metavar="FILE",
+    )
     parser.add_option(
         "--toml-dir",
         help="input location of GtkAda package toml files",
         dest="toml_dir",
-        metavar="FILE")
+        metavar="FILE",
+    )
     parser.add_option(
         "--ada-output",
         help="Ada language output file",
         dest="ada_outfile",
-        metavar="FILE")
+        metavar="FILE",
+    )
     parser.add_option(
-        "--c-output",
-        help="C language output file",
-        dest="c_outfile",
-        metavar="FILE")
+        "--c-output", help="C language output file", dest="c_outfile", metavar="FILE"
+    )
     (options, _args) = parser.parse_args()
 
     missing_files = []
@@ -3330,7 +3663,7 @@ def _parse_command_line():
     if options.c_outfile is None:
         missing_files.append("C output file")
     if missing_files:
-        parser.error('Must specify files:\n\t' + ', '.join(missing_files))
+        parser.error("Must specify files:\n\t" + ", ".join(missing_files))
 
     return options
 
@@ -3353,11 +3686,14 @@ def _emit_enums():
         node = Element(nclass, {ctype_qname: the_ctype})
         root = Element(nclass)
 
-        cl = gir._create_class(rootNode=root, node=node,
-                               identifier_prefix='',
-                               is_interface=False,
-                               is_gobject=False,
-                               has_toplevel_type=False)
+        cl = gir._create_class(
+            rootNode=root,
+            node=node,
+            identifier_prefix="",
+            is_interface=False,
+            is_gobject=False,
+            has_toplevel_type=False,
+        )
         cl.generate(gir)
 
 
@@ -3395,8 +3731,8 @@ def _emit_widgets():
                 raise
             node = Element(nclass, {ctype_qname: the_ctype})
             e = gir.classes[the_ctype] = gir._create_class(
-                rootNode=root, node=node, is_interface=False,
-                identifier_prefix='')
+                rootNode=root, node=node, is_interface=False, identifier_prefix=""
+            )
 
         e.generate(gir)
         gir.bound.add(the_ctype)
