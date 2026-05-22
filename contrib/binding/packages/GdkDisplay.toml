@@ -2,6 +2,8 @@
 #   GdkDisplay
 # ============================================================
 
+ada_access_root = true
+
 [[method]]
 id = "gdk_display_get_app_launch_context"
 bind = false
@@ -16,11 +18,6 @@ bind = false
 id = "gdk_display_get_primary_clipboard"
 bind = false
 # No GdkClipboard binding
-
-[[method]]
-id = "gdk_display_device_is_grabbed"
-bind = false
-# Circular dependency: GdkDevice
 
 [[method]]
 id = "gdk_display_create_gl_context"
@@ -72,4 +69,8 @@ bind = false
 
 [[extra.with_body]]
 pkg = "System"
+use = false
+
+[[extra.with_body]]
+pkg = "Gdk.Device"
 use = false

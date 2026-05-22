@@ -46,10 +46,6 @@ GdkClipboard.toml:
 
 - when done, reactivate bindings in GdkDisplay.toml
 
-GdkDevice.toml:
-
-- when done, reactivate bindings in GdkDisplay.toml
-
 GdkEvent.toml:
 
 - when done, reactivate bindings in GtkDisplay.toml
@@ -65,10 +61,6 @@ GdkSurface.toml:
 GdkTexture.toml:
 
 - when done, reactivate bindings in GdkCursor.toml
-
-GdkDisplay.toml:
-
-- when done, Reactivate bindings in GtkRoot.toml, GtkWindow.toml
 
 GdkKeymapKey:
 

@@ -645,6 +645,20 @@ package body Gtk.Window is
       Internal (Get_Object (Self), Boolean'Pos (Setting));
    end Set_Destroy_With_Parent;
 
+   -----------------
+   -- Set_Display --
+   -----------------
+
+   procedure Set_Display
+      (Self    : not null access Gtk_Window_Record;
+       Display : not null access Gdk.Display.Gdk_Display_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Display : System.Address);
+      pragma Import (C, Internal, "gtk_window_set_display");
+   begin
+      Internal (Get_Object (Self), Get_Object (Display));
+   end Set_Display;
+
    -----------------------
    -- Set_Focus_Visible --
    -----------------------
@@ -982,6 +996,20 @@ package body Gtk.Window is
       Height.all := Acc_Height;
       return Tmp_Return /= 0;
    end Get_Bounds;
+
+   -----------------
+   -- Get_Display --
+   -----------------
+
+   function Get_Display
+      (Self : not null access Gtk_Window_Record) return Gdk.Gdk_Display
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_root_get_display");
+      Stub_Gdk_Display : Gdk.Display.Gdk_Display_Record;
+   begin
+      return Gdk.Gdk_Display (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Display));
+   end Get_Display;
 
    --------------------------------
    -- Get_First_Accessible_Child --

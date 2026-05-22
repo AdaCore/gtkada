@@ -38,6 +38,7 @@
 --  accessed with [methodGdk.Display.get_monitor_at_surface] and similar APIs.
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Device;
 with Gdk.Dmabuf_Formats; use Gdk.Dmabuf_Formats;
 with Glib;               use Glib;
 with Glib.List_Model;    use Glib.List_Model;
@@ -48,7 +49,7 @@ with Glib.Values;        use Glib.Values;
 package Gdk.Display is
 
    type Gdk_Display_Record is new GObject_Record with null record;
-   type Gdk_Display is access all Gdk_Display_Record'Class;
+   subtype Gdk_Display is Gdk.Gdk_Display;
 
    ------------------
    -- Constructors --
@@ -67,6 +68,14 @@ package Gdk.Display is
    procedure Close (Self : not null access Gdk_Display_Record);
    --  Closes the connection to the windowing system for the given display.
    --  This cleans up associated resources.
+
+   function Device_Is_Grabbed
+      (Self   : not null access Gdk_Display_Record;
+       Device : not null access Gdk.Device.Gdk_Device_Record'Class)
+       return Boolean;
+   --  Returns True if there is an ongoing grab on Device for Display.
+   --  @param Device a `GdkDevice`
+   --  @return True if there is a grab in effect for Device.
 
    procedure Flush (Self : not null access Gdk_Display_Record);
    --  Flushes any requests queued for the windowing system.
@@ -221,13 +230,13 @@ package Gdk.Display is
    -- Functions --
    ---------------
 
-   function Get_Default return Gdk_Display;
+   function Get_Default return Gdk.Gdk_Display;
    --  Gets the default `GdkDisplay`.
    --  This is a convenience function for:
    --  gdk_display_manager_get_default_display (gdk_display_manager_get ())
    --  @return a `GdkDisplay`, or null if there is no default display
 
-   function Open (Display_Name : UTF8_String := "") return Gdk_Display;
+   function Open (Display_Name : UTF8_String := "") return Gdk.Gdk_Display;
    --  Opens a display.
    --  If opening the display fails, `NULL` is returned.
    --  @param Display_Name the name of the display to open

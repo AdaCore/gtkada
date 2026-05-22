@@ -23,8 +23,21 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Display;
 
 package body Gtk.Root is
+
+   -----------------
+   -- Get_Display --
+   -----------------
+
+   function Get_Display (Self : Gtk_Root) return Gdk.Gdk_Display is
+      function Internal (Self : Gtk_Root) return System.Address;
+      pragma Import (C, Internal, "gtk_root_get_display");
+      Stub_Gdk_Display : Gdk.Display.Gdk_Display_Record;
+   begin
+      return Gdk.Gdk_Display (Get_User_Data (Internal (Self), Stub_Gdk_Display));
+   end Get_Display;
 
    ---------------
    -- Get_Focus --

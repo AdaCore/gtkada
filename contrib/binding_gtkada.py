@@ -283,6 +283,17 @@ class GtkAdaPackage(object):
             return self.node.get("obsolescent", False)
         return False
 
+    def ada_access_root(self):
+        """Whether the access type in class package aliases access type in the namespace package.
+
+        When true, binding.py emits:
+            subtype <Type> is <Namespace>.<Type>;
+        instead of declaring a fresh access type for this package.
+        """
+        if self.node is not None:
+            return self.node.get("ada_access_root", False)
+        return False
+
     def extra(self):
         if self.node is not None:
             extra_dict = self.node.get("extra")

@@ -29,7 +29,6 @@
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
 with Gdk.Device_Tool;         use Gdk.Device_Tool;
-with Gdk.Display;             use Gdk.Display;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
@@ -39,7 +38,7 @@ with Pango.Enums;             use Pango.Enums;
 package Gdk.Device is
 
    type Gdk_Device_Record is new GObject_Record with null record;
-   type Gdk_Device is access all Gdk_Device_Record'Class;
+   subtype Gdk_Device is Gdk.Gdk_Device;
 
    type Gdk_Input_Source is (
       Gdk_Source_Mouse,
@@ -104,8 +103,7 @@ package Gdk.Device is
    --  Pango.Enums.Pango_Direction_Neutral otherwise
 
    function Get_Display
-      (Self : not null access Gdk_Device_Record)
-       return Gdk.Display.Gdk_Display;
+      (Self : not null access Gdk_Device_Record) return Gdk.Gdk_Display;
    --  Returns the `GdkDisplay` to which Device pertains.
    --  @return a `GdkDisplay`
 

@@ -1012,6 +1012,31 @@ class GIRClass(object):
                 # Gdk.Window.Gdk_Window.
                 self.ada_package_name = package_name(pkg)
 
+            # When ada_access_root is set the canonical Ada name for the type
+            # is the one declared in the namespace root package (e.g.
+            # Gdk.Gdk_Display instead of Gdk.Display.Gdk_Display).
+            # Re-register the type exception so that every cross-package
+            # reference resolves to that name, while self.name (the Ada child
+            # package) is left unchanged.
+            if self.gtkpkg.ada_access_root() and "." in pkg:
+                namespace_pkg = pkg.split(".", 1)[0]
+                root_ada_name = "%s.%s" % (namespace_pkg, n)
+                if is_interface:
+                    t_root = Interface(root_ada_name)
+                elif is_gobject:
+                    t_root = GObject(root_ada_name)
+                    # Keep the child-package record name so that _Record
+                    # references strip correctly within the defining package.
+                    t_root.record_ada = pkg[: pkg.rfind(".")]  + "." + n + "_Record"
+                elif self.is_proxy:
+                    t_root = Proxy(root_ada_name)
+                elif self.is_boxed:
+                    t_root = Tagged(root_ada_name)
+                else:
+                    t_root = Record(root_ada_name)
+                naming.add_type_exception(cname=ctype, type=t_root,
+                                          override=True)
+
         else:
             typename = ""
             self.name = package_name(pkg)
@@ -1218,6 +1243,21 @@ class GIRClass(object):
             subp.add_nested(internal)
             if body:
                 subp.set_body("   " + body.strip() + "\n")
+
+        # For ada_access_root types we keep access aliases in the namespace
+        # root package (e.g. Gdk.Gdk_Display) while some signatures still use
+        # access-to-record parameters (e.g. Gdk.Display.Gdk_Display_Record).
+        # Add the record package to specs only when such parameters are
+        # actually emitted, to avoid unnecessary circular dependencies.
+        for param in subp.plist:
+            ptype = param.type
+            if (isinstance(ptype, GObject)
+                    and ptype.record_ada is not None
+                    and ptype.userecord):
+                self.pkg.add_with(
+                    package_name(ptype.record_ada),
+                    specs=True,
+                    do_use=False)
 
         section.add(subp)
         return subp
@@ -3108,10 +3148,17 @@ subtype %(typename)s is %(parent)s;""" % self._subst)
             self.gtkpkg.add_record_type(self.ctype)
 
         else:
-            section.add("""
+            if self.gtkpkg.ada_access_root() and "." in self.name:
+                namespace_pkg = self.name.split(".", 1)[0]
+                section.add("""
+type %(typename)s_Record is new %(parent)s_Record with null record;
+subtype %(typename)s is %(namespace_pkg)s.%(typename)s;"""
+                            % {**self._subst, "namespace_pkg": namespace_pkg})
+            else:
+                section.add("""
 type %(typename)s_Record is new %(parent)s_Record with null record;
 type %(typename)s is access all %(typename)s_Record'Class;"""
-                        % self._subst)
+                            % self._subst)
 
         for ctype, enum, prefix, asbitfield, ignore in \
              self.gtkpkg.enumerations():

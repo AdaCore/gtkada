@@ -2,6 +2,8 @@
 #   GdkDevice
 # ============================================================
 
+ada_access_root = true
+
 [[enum]]
 ctype = "GdkInputSource"
 
@@ -29,4 +31,8 @@ ctype = "GdkDeviceTool*"
 
 [[extra.with_body]]
 pkg = "System"
+use = false
+
+[[extra.with_body]]
+pkg = "Gdk.Display"
 use = false

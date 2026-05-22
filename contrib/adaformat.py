@@ -425,9 +425,20 @@ class GObject(CType):
         self.classwide = classwide  # Parameter should include "'Class"
         self.userecord = userecord  # Parameter should be "access .._Record"
         self.allow_none = allow_none
+        # When ada_access_root is true the access type lives in a namespace
+        # root package (e.g. Gdk.Gdk_Display) while the tagged record type
+        # stays in the child package (Gdk.Display.Gdk_Display_Record).
+        # record_ada holds that child-package name so that _Record references
+        # strip correctly within the defining package body.
+        self.record_ada = None
+
+    def _record_ada_name(self):
+        """Fully-qualified Ada name to use when building '_Record' references."""
+        return self.record_ada if self.record_ada is not None else "%s_Record" % self.ada
 
     def convert_from_c(self):
         stub = "Stub_%s" % (base_name(self.ada), )
+        record_name = self._record_ada_name()
 
         if self.ada == "Glib.Object.GObject":
             conv = "Get_User_Data (%%(var)s, %s)" % stub
@@ -437,8 +448,7 @@ class GObject(CType):
         return (self.param,
                 self.cparam,
                 conv,
-                [Local_Var(
-                    stub, AdaType("%s_Record" % self.ada, in_spec=False))],
+                [Local_Var(stub, AdaType(record_name, in_spec=False))],
 
                 # for out parameters
                 self.cparam, conv)
@@ -452,13 +462,24 @@ class GObject(CType):
     def as_ada_param(self, pkg):
         if self.userecord:
             prefix = "" if self.allow_none else "not null "
+            record_name = self._record_ada_name()
 
             if self.classwide:
-                self.param = "%saccess %s_Record'Class" % (prefix, self.ada)
+                self.param = "%saccess %s'Class" % (prefix, record_name)
             else:
-                self.param = "%saccess %s_Record" % (prefix, self.ada)
+                self.param = "%saccess %s" % (prefix, record_name)
 
         return super(GObject, self).as_ada_param(pkg)
+
+    def add_with(self, pkg=None, specs=False):
+        super(GObject, self).add_with(pkg=pkg, specs=specs)
+
+        # Conversion helpers for ada_access_root types instantiate stubs of
+        # the tagged record type (e.g. Gdk.Display.Gdk_Display_Record) inside
+        # generated bodies, so the record package is needed there.
+        if pkg and self.record_ada is not None:
+            pkg.add_with(package_name(self.record_ada), specs=False,
+                         do_use=False)
 
     def copy(self):
         result = CType.copy(self)

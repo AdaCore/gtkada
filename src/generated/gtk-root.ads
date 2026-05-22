@@ -36,6 +36,7 @@
 --  hierarchy, with [methodGtk.Root.set_focus] and [methodGtk.Root.get_focus].
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk;        use Gdk;
 with Glib;       use Glib;
 with Glib.Types; use Glib.Types;
 with Gtk.Widget; use Gtk.Widget;
@@ -55,6 +56,10 @@ package Gtk.Root is
    -------------
    -- Methods --
    -------------
+
+   function Get_Display (Self : Gtk_Root) return Gdk.Gdk_Display;
+   --  Returns the display that this `GtkRoot` is on.
+   --  @return the display of Root
 
    function Get_Focus (Self : Gtk_Root) return Gtk.Widget.Gtk_Widget;
    --  Retrieves the current focused widget within the root.
