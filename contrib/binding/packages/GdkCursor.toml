@@ -1,0 +1,22 @@
+# ============================================================
+#   GdkCursor
+# ============================================================
+
+[[method]]
+id = "gdk_cursor_new_from_texture"
+bind = false
+# No GdkTexture binding
+
+[[method]]
+id = "gdk_cursor_new_from_callback"
+bind = false
+# No GdkTexture binding (GdkCursorGetTextureCallback)
+
+[[method]]
+id = "gdk_cursor_get_texture"
+bind = false
+# No GdkTexture binding
+
+[[extra.with_body]]
+pkg = "System"
+use = false
