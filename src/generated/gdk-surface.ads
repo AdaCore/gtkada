@@ -46,7 +46,7 @@ with System;
 package Gdk.Surface is
 
    type Gdk_Surface_Record is new GObject_Record with null record;
-   type Gdk_Surface is access all Gdk_Surface_Record'Class;
+   subtype Gdk_Surface is Gdk.Gdk_Surface;
 
    ------------------
    -- Constructors --

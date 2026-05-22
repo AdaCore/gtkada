@@ -2,6 +2,8 @@
 #   GdkSurface
 # ============================================================
 
+ada_access_root = true
+
 [[method]]
 id = "gdk_surface_create_cairo_context"
 bind = false

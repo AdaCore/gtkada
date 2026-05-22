@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Gdk.Surface;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
@@ -1092,14 +1093,13 @@ package body Gtk.Window is
    -----------------
 
    function Get_Surface
-      (Self : not null access Gtk_Window_Record)
-       return Gdk.Surface.Gdk_Surface
+      (Self : not null access Gtk_Window_Record) return Gdk.Gdk_Surface
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_native_get_surface");
       Stub_Gdk_Surface : Gdk.Surface.Gdk_Surface_Record;
    begin
-      return Gdk.Surface.Gdk_Surface (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Surface));
+      return Gdk.Gdk_Surface (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Surface));
    end Get_Surface;
 
    ---------------------------

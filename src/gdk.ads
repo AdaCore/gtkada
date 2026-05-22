@@ -30,8 +30,10 @@
 
 limited with Gdk.Device;
 limited with Gdk.Display;
+limited with Gdk.Surface;
 
 package Gdk is
    type Gdk_Device is access all Gdk.Device.Gdk_Device_Record'Class;
    type Gdk_Display is access all Gdk.Display.Gdk_Display_Record'Class;
+   type Gdk_Surface is access all Gdk.Surface.Gdk_Surface_Record'Class;
 end Gdk;
