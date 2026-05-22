@@ -93,6 +93,8 @@
 --  role.
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk;                   use Gdk;
+with Gdk.Display;
 with Glib;                  use Glib;
 with Glib.List_Model;       use Glib.List_Model;
 with Glib.Object;           use Glib.Object;
@@ -585,6 +587,14 @@ package Gtk.Window is
    --  @param Timestamp the timestamp of the user interaction (typically a
    --  button or key press event) which triggered this call
 
+   procedure Set_Display
+      (Self    : not null access Gtk_Window_Record;
+       Display : not null access Gdk.Display.Gdk_Display_Record'Class);
+   --  Sets the display where the window is displayed.
+   --  If the window is already mapped, it will be unmapped, and then remapped
+   --  on the new display.
+   --  @param Display a display
+
    procedure Set_Startup_Id
       (Self       : not null access Gtk_Window_Record;
        Startup_Id : UTF8_String);
@@ -733,6 +743,9 @@ package Gtk.Window is
    procedure Realize (Self : not null access Gtk_Window_Record);
 
    procedure Unrealize (Self : not null access Gtk_Window_Record);
+
+   function Get_Display
+      (Self : not null access Gtk_Window_Record) return Gdk.Gdk_Display;
 
    function Get_Focus
       (Self : not null access Gtk_Window_Record)

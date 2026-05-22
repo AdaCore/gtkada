@@ -1,7 +1,6 @@
-[[method]]
-id = "gtk_window_set_display"
-bind = false
-# Need Gdk_Display
+# ============================================================
+#   GtkWindow
+# ============================================================
 
 [[method]]
 id = "gtk_window_fullscreen_on_monitor"

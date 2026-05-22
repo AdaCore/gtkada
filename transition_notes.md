@@ -62,10 +62,6 @@ GdkTexture.toml:
 
 - when done, reactivate bindings in GdkCursor.toml
 
-GdkDisplay.toml:
-
-- when done, Reactivate bindings in GtkRoot.toml, GtkWindow.toml
-
 GdkKeymapKey:
 
 - when done, reactivate bindings in GdkDisplay.toml

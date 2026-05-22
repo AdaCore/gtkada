@@ -23,6 +23,7 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Display;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
@@ -484,6 +485,21 @@ package body Gtk.Application_Window is
       Height.all := Acc_Height;
       return Tmp_Return /= 0;
    end Get_Bounds;
+
+   -----------------
+   -- Get_Display --
+   -----------------
+
+   function Get_Display
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gdk.Gdk_Display
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_root_get_display");
+      Stub_Gdk_Display : Gdk.Display.Gdk_Display_Record;
+   begin
+      return Gdk.Gdk_Display (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Display));
+   end Get_Display;
 
    --------------------------------
    -- Get_First_Accessible_Child --

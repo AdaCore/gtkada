@@ -38,6 +38,7 @@
 --  accessed with [methodGdk.Display.get_monitor_at_surface] and similar APIs.
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Device;
 with Gdk.Dmabuf_Formats; use Gdk.Dmabuf_Formats;
 with Glib;               use Glib;
 with Glib.List_Model;    use Glib.List_Model;
