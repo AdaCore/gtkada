@@ -38,6 +38,10 @@ GBytes.toml:
 
 - fix binding for functions that have gconstarray as parameters
 
+GInputStream.toml
+
+- when done, reactivate bindings in GdkClipboard.toml
+
 GOutputStream.toml
 
 - when doen, reactivate bindings in GdkContentProvider.toml
@@ -64,7 +68,7 @@ GdkSurface.toml:
 
 GdkTexture.toml:
 
-- when done, reactivate bindings in GdkCursor.toml
+- when done, reactivate bindings in GdkClipboard.toml, GdkCursor.toml
 
 GdkKeymapKey:
 
