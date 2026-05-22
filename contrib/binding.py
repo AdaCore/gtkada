@@ -3108,10 +3108,17 @@ subtype %(typename)s is %(parent)s;""" % self._subst)
             self.gtkpkg.add_record_type(self.ctype)
 
         else:
-            section.add("""
+            if self.gtkpkg.ada_access_root() and "." in self.name:
+                namespace_pkg = self.name.split(".", 1)[0]
+                section.add("""
+type %(typename)s_Record is new %(parent)s_Record with null record;
+subtype %(typename)s is %(namespace_pkg)s.%(typename)s;"""
+                            % {**self._subst, "namespace_pkg": namespace_pkg})
+            else:
+                section.add("""
 type %(typename)s_Record is new %(parent)s_Record with null record;
 type %(typename)s is access all %(typename)s_Record'Class;"""
-                        % self._subst)
+                            % self._subst)
 
         for ctype, enum, prefix, asbitfield, ignore in \
              self.gtkpkg.enumerations():
