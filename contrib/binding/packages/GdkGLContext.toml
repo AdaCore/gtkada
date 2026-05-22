@@ -1,10 +1,13 @@
 # ============================================================
-#   GdkMonitor
+#   GdkGLContext
 # ============================================================
 
 [[enum]]
-ctype = "GdkSubpixelLayout"
+ctype = "GdkGLAPI"
 
 [[extra.with_body]]
 pkg = "System"
 use = false
+
+[[extra.with_body]]
+pkg = "Glib.Object"

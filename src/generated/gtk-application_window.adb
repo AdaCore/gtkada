@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Display;
+with Gdk.Surface;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
@@ -562,6 +563,21 @@ package body Gtk.Application_Window is
    begin
       return Internal (Get_Object (Self), State) /= 0;
    end Get_Platform_State;
+
+   -----------------
+   -- Get_Surface --
+   -----------------
+
+   function Get_Surface
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gdk.Gdk_Surface
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_native_get_surface");
+      Stub_Gdk_Surface : Gdk.Surface.Gdk_Surface_Record;
+   begin
+      return Gdk.Gdk_Surface (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Surface));
+   end Get_Surface;
 
    ---------------------------
    -- Get_Surface_Transform --

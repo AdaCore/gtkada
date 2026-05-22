@@ -95,6 +95,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;                   use Gdk;
 with Gdk.Display;
+with Gdk.Monitor;           use Gdk.Monitor;
 with Glib;                  use Glib;
 with Glib.List_Model;       use Glib.List_Model;
 with Glib.Object;           use Glib.Object;
@@ -190,6 +191,18 @@ package Gtk.Window is
    --  You can track the result of this operation via the
    --  [propertyGdk.Toplevel:state] property, or by listening to notifications
    --  of the [propertyGtk.Window:fullscreened] property.
+
+   procedure Fullscreen_On_Monitor
+      (Self    : not null access Gtk_Window_Record;
+       Monitor : not null access Gdk.Monitor.Gdk_Monitor_Record'Class);
+   --  Asks to place the window in the fullscreen state on the given monitor.
+   --  Note that you shouldn't assume the window is definitely fullscreen
+   --  afterward, or that the windowing system allows fullscreen windows on any
+   --  given monitor.
+   --  You can track the result of this operation via the
+   --  [propertyGdk.Toplevel:state] property, or by listening to notifications
+   --  of the [propertyGtk.Window:fullscreened] property.
+   --  @param Monitor which monitor to go fullscreen on
 
    function Get_Child
       (Self : not null access Gtk_Window_Record)
@@ -734,6 +747,9 @@ package Gtk.Window is
    procedure Update_Platform_State
       (Self  : not null access Gtk_Window_Record;
        State : Gtk.Accessible.Gtk_Accessible_Platform_State);
+
+   function Get_Surface
+      (Self : not null access Gtk_Window_Record) return Gdk.Gdk_Surface;
 
    procedure Get_Surface_Transform
       (Self : not null access Gtk_Window_Record;

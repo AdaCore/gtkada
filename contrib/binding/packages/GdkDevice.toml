@@ -18,11 +18,6 @@ bind = false
 # No GdkSeat binding
 
 [[method]]
-id = "gdk_device_get_surface_at_position"
-bind = false
-# No GdkSurface binding
-
-[[method]]
 id = "::tool-changed"
 
 [[method.parameter]]

@@ -304,6 +304,10 @@ package Gtk.Application_Window is
       (Self        : not null access Gtk_Application_Window_Record;
        Action_Name : UTF8_String);
 
+   function Get_Surface
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gdk.Gdk_Surface;
+
    procedure Get_Surface_Transform
       (Self : not null access Gtk_Application_Window_Record;
        X    : out Gdouble;

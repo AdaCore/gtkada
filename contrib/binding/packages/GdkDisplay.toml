@@ -10,26 +10,6 @@ bind = false
 # No GdkAppLaunchContext binding
 
 [[method]]
-id = "gdk_display_get_clipboard"
-bind = false
-# No GdkClipboard binding
-
-[[method]]
-id = "gdk_display_get_primary_clipboard"
-bind = false
-# No GdkClipboard binding
-
-[[method]]
-id = "gdk_display_create_gl_context"
-bind = false
-# No GdkGLContext binding
-
-[[method]]
-id = "gdk_display_get_monitor_at_surface"
-bind = false
-# No GdkMonitor binding
-
-[[method]]
 id = "gdk_display_get_default_seat"
 bind = false
 # No GdkSeat binding
@@ -69,8 +49,4 @@ bind = false
 
 [[extra.with_body]]
 pkg = "System"
-use = false
-
-[[extra.with_body]]
-pkg = "Gdk.Device"
 use = false

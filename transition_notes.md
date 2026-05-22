@@ -38,11 +38,15 @@ GBytes.toml:
 
 - fix binding for functions that have gconstarray as parameters
 
+GInputStream.toml
+
+- when done, reactivate bindings in GdkClipboard.toml
+
+GOutputStream.toml
+
+- when doen, reactivate bindings in GdkContentProvider.toml
+
 GdkAppLaunchContext.toml:
-
-- when done, reactivate bindings in GdkDisplay.toml
-
-GdkClipboard.toml:
 
 - when done, reactivate bindings in GdkDisplay.toml
 
@@ -50,17 +54,13 @@ GdkEvent.toml:
 
 - when done, reactivate bindings in GtkDisplay.toml
 
-GdkGLContext.toml:
-
-- when done, reactivate bindings in GdkDisplay.toml
-
 GdkSurface.toml:
 
-- when done, Reactivate bindings in GdkDevice.toml, GtkNative.toml
+- invesigate invalid code for marshaller of "::render" signal
 
 GdkTexture.toml:
 
-- when done, reactivate bindings in GdkCursor.toml
+- when done, reactivate bindings in GdkClipboard.toml, GdkCursor.toml
 
 GdkKeymapKey:
 
@@ -68,11 +68,8 @@ GdkKeymapKey:
 
 GdkModifierType:
 
-- when done, reactivate bindings in GdkDevice.toml, GtkDisplay.toml
-
-GdkMonitor.toml:
-
-- when done, reactivate bindings in GdkDisplay.toml, GtkWindow.toml
+- when done, reactivate bindings in GdkDevice.toml, GtkDisplay.toml,
+  GdkSurface.toml
 
 GdkSeat.toml:
 

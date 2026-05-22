@@ -61,6 +61,21 @@ package body Gdk.Display is
    end Close;
 
    -----------------------
+   -- Create_Gl_Context --
+   -----------------------
+
+   function Create_Gl_Context
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.GLContext.Gdk_GLContext
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_display_create_gl_context");
+      Stub_Gdk_GLContext : Gdk.GLContext.Gdk_GLContext_Record;
+   begin
+      return Gdk.GLContext.Gdk_GLContext (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_GLContext));
+   end Create_Gl_Context;
+
+   -----------------------
    -- Device_Is_Grabbed --
    -----------------------
 
@@ -88,6 +103,21 @@ package body Gdk.Display is
       Internal (Get_Object (Self));
    end Flush;
 
+   -------------------
+   -- Get_Clipboard --
+   -------------------
+
+   function Get_Clipboard
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.Clipboard.Gdk_Clipboard
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_display_get_clipboard");
+      Stub_Gdk_Clipboard : Gdk.Clipboard.Gdk_Clipboard_Record;
+   begin
+      return Gdk.Clipboard.Gdk_Clipboard (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Clipboard));
+   end Get_Clipboard;
+
    ------------------------
    -- Get_Dmabuf_Formats --
    ------------------------
@@ -101,6 +131,24 @@ package body Gdk.Display is
    begin
       return From_Object (Internal (Get_Object (Self)));
    end Get_Dmabuf_Formats;
+
+   ----------------------------
+   -- Get_Monitor_At_Surface --
+   ----------------------------
+
+   function Get_Monitor_At_Surface
+      (Self    : not null access Gdk_Display_Record;
+       Surface : not null access Gdk.Surface.Gdk_Surface_Record'Class)
+       return Gdk.Monitor.Gdk_Monitor
+   is
+      function Internal
+         (Self    : System.Address;
+          Surface : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_display_get_monitor_at_surface");
+      Stub_Gdk_Monitor : Gdk.Monitor.Gdk_Monitor_Record;
+   begin
+      return Gdk.Monitor.Gdk_Monitor (Get_User_Data (Internal (Get_Object (Self), Get_Object (Surface)), Stub_Gdk_Monitor));
+   end Get_Monitor_At_Surface;
 
    ------------------
    -- Get_Monitors --
@@ -130,6 +178,21 @@ package body Gdk.Display is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Name;
+
+   ---------------------------
+   -- Get_Primary_Clipboard --
+   ---------------------------
+
+   function Get_Primary_Clipboard
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.Clipboard.Gdk_Clipboard
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_display_get_primary_clipboard");
+      Stub_Gdk_Clipboard : Gdk.Clipboard.Gdk_Clipboard_Record;
+   begin
+      return Gdk.Clipboard.Gdk_Clipboard (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Clipboard));
+   end Get_Primary_Clipboard;
 
    -----------------
    -- Get_Setting --

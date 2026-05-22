@@ -25,6 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Gdk.Display;
+with Gdk.Surface;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
@@ -214,6 +215,35 @@ package body Gdk.Device is
    begin
       return Internal (Get_Object (Self));
    end Get_Source;
+
+   -----------------------------
+   -- Get_Surface_At_Position --
+   -----------------------------
+
+   function Get_Surface_At_Position
+      (Self  : not null access Gdk_Device_Record;
+       Win_X : access Gdouble;
+       Win_Y : access Gdouble) return Gdk.Gdk_Surface
+   is
+      function Internal
+         (Self      : System.Address;
+          Acc_Win_X : access Gdouble;
+          Acc_Win_Y : access Gdouble) return System.Address;
+      pragma Import (C, Internal, "gdk_device_get_surface_at_position");
+      Acc_Win_X        : aliased Gdouble;
+      Acc_Win_Y        : aliased Gdouble;
+      Stub_Gdk_Surface : Gdk.Surface.Gdk_Surface_Record;
+      Tmp_Return       : System.Address;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Acc_Win_X'Access, Acc_Win_Y'Access);
+      if Win_X /= null then
+         Win_X.all := Acc_Win_X;
+      end if;
+      if Win_Y /= null then
+         Win_Y.all := Acc_Win_Y;
+      end if;
+      return Gdk.Gdk_Surface (Get_User_Data (Tmp_Return, Stub_Gdk_Surface));
+   end Get_Surface_At_Position;
 
    -------------------
    -- Get_Timestamp --

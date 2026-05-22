@@ -1,10 +1,7 @@
 # ============================================================
-#   GdkMonitor
+#   GdkFrameTimings
 # ============================================================
 
-[[enum]]
-ctype = "GdkSubpixelLayout"
-
-[[extra.with_body]]
+[[extra.with_spec]]
 pkg = "System"
 use = false

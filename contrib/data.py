@@ -89,6 +89,9 @@ interfaces = (
 
 binding = (
     "----GdkAtom",  # No binding necessary, too low-level
+    "GdkClipboard",
+    "GdkContentProvider",
+    "GdkContentFormats",
     "GdkCursor",
     "GdkDevice",
     "--GdkDeviceManager",
@@ -96,18 +99,19 @@ binding = (
     "GdkDisplay",
     "GdkDmabufFormats",
     "--GdkDragContext",
+    "GdkDrawContext",
     "--GdkDrawingContext",
     "--GdkEvent",
-    "--GdkFrameClock",
-    "--GdkFrameTimings",
-    "--GdkGLContext",
+    "GdkFrameClock",
+    "GdkFrameTimings",
+    "GdkGLContext",
     "GdkMonitor",
     "GdkRGBA",
     "GdkRectangle",
     "--GdkMonitor",
     "--GdkScreen",
     "--GdkSeat",
-    "--GdkSurface",
+    "GdkSurface",
     "--GdkTexture",
     "--GdkWindow",
     "--GAction",  # bound as an interface, see interfaces tuple

@@ -1,9 +1,9 @@
 # ============================================================
-#   GdkMonitor
+#   GdkFrameClockPhase
 # ============================================================
 
 [[enum]]
-ctype = "GdkSubpixelLayout"
+ctype = "GdkFrameClockPhase"
 
 [[extra.with_body]]
 pkg = "System"

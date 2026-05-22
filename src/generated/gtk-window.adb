@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Gdk.Surface;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
@@ -158,6 +159,20 @@ package body Gtk.Window is
    begin
       Internal (Get_Object (Self));
    end Fullscreen;
+
+   ---------------------------
+   -- Fullscreen_On_Monitor --
+   ---------------------------
+
+   procedure Fullscreen_On_Monitor
+      (Self    : not null access Gtk_Window_Record;
+       Monitor : not null access Gdk.Monitor.Gdk_Monitor_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Monitor : System.Address);
+      pragma Import (C, Internal, "gtk_window_fullscreen_on_monitor");
+   begin
+      Internal (Get_Object (Self), Get_Object (Monitor));
+   end Fullscreen_On_Monitor;
 
    ---------------
    -- Get_Child --
@@ -1072,6 +1087,20 @@ package body Gtk.Window is
    begin
       return Internal (Get_Object (Self), State) /= 0;
    end Get_Platform_State;
+
+   -----------------
+   -- Get_Surface --
+   -----------------
+
+   function Get_Surface
+      (Self : not null access Gtk_Window_Record) return Gdk.Gdk_Surface
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_native_get_surface");
+      Stub_Gdk_Surface : Gdk.Surface.Gdk_Surface_Record;
+   begin
+      return Gdk.Gdk_Surface (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Surface));
+   end Get_Surface;
 
    ---------------------------
    -- Get_Surface_Transform --
