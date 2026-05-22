@@ -1,0 +1,12 @@
+# ============================================================
+#   GdkContentFormats
+# ============================================================
+
+[[method]]
+id = "gdk_content_formats_get_gtypes"
+bind = false
+# No "array of GType"
+
+[[extra.with_spec]]
+pkg = "System"
+use = false
