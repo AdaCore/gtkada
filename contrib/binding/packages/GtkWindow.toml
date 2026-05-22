@@ -3,11 +3,6 @@
 # ============================================================
 
 [[method]]
-id = "gtk_window_fullscreen_on_monitor"
-bind = false
-# Need Gdk_Monitor
-
-[[method]]
 id = "gtk_window_get_application"
 bind = false
 # Need Gtk_Application

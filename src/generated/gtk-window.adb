@@ -159,6 +159,20 @@ package body Gtk.Window is
       Internal (Get_Object (Self));
    end Fullscreen;
 
+   ---------------------------
+   -- Fullscreen_On_Monitor --
+   ---------------------------
+
+   procedure Fullscreen_On_Monitor
+      (Self    : not null access Gtk_Window_Record;
+       Monitor : not null access Gdk.Monitor.Gdk_Monitor_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Monitor : System.Address);
+      pragma Import (C, Internal, "gtk_window_fullscreen_on_monitor");
+   begin
+      Internal (Get_Object (Self), Get_Object (Monitor));
+   end Fullscreen_On_Monitor;
+
    ---------------
    -- Get_Child --
    ---------------

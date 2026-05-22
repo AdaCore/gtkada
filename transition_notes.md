@@ -76,7 +76,7 @@ GdkModifierType:
 
 GdkMonitor.toml:
 
-- when done, reactivate bindings in GdkDisplay.toml, GtkWindow.toml
+- when done, reactivate bindings in GdkDisplay.toml
 
 GdkSeat.toml:
 
