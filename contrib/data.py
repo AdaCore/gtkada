@@ -373,7 +373,7 @@ binding = (
     "----GtkEntryIconAccessible",  # We do not support atk
     "--GtkEventBox",
     "--GtkEventController",
-    "--GtkExpander",
+    "GtkExpander",
     "----GtkExpanderAccessible",  # We do not support atk
     "--GtkFileChooserButton",
     "--GtkFileChooserDialog",
