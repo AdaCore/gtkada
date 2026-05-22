@@ -70,7 +70,3 @@ bind = false
 [[extra.with_body]]
 pkg = "System"
 use = false
-
-[[extra.with_body]]
-pkg = "Gdk.Device"
-use = false
