@@ -68,7 +68,7 @@ GdkSurface.toml:
 
 GdkTexture.toml:
 
-- when done, reactivate bindings in GdkClipboard.toml, GdkCursor.toml
+- when done, reactivate bindings in GdkCursor.toml
 
 GdkKeymapKey:
 

@@ -286,6 +286,23 @@ package body Gdk.Clipboard is
       end if;
    end Read_Texture_Async;
 
+   -------------------------
+   -- Read_Texture_Finish --
+   -------------------------
+
+   function Read_Texture_Finish
+      (Self   : not null access Gdk_Clipboard_Record;
+       Result : Glib.G_Async_Result) return Gdk.Texture.Gdk_Texture
+   is
+      function Internal
+         (Self   : System.Address;
+          Result : Glib.G_Async_Result) return System.Address;
+      pragma Import (C, Internal, "gdk_clipboard_read_texture_finish");
+      Stub_Gdk_Texture : Gdk.Texture.Gdk_Texture_Record;
+   begin
+      return Gdk.Texture.Gdk_Texture (Get_User_Data (Internal (Get_Object (Self), Result), Stub_Gdk_Texture));
+   end Read_Texture_Finish;
+
    ----------------------
    -- Read_Value_Async --
    ----------------------
@@ -355,6 +372,20 @@ package body Gdk.Clipboard is
       Internal (Get_Object (Self), Tmp_Text);
       Free (Tmp_Text);
    end Set_Text;
+
+   -----------------
+   -- Set_Texture --
+   -----------------
+
+   procedure Set_Texture
+      (Self    : not null access Gdk_Clipboard_Record;
+       Texture : not null access Gdk.Texture.Gdk_Texture_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Texture : System.Address);
+      pragma Import (C, Internal, "gdk_clipboard_set_texture");
+   begin
+      Internal (Get_Object (Self), Get_Object (Texture));
+   end Set_Texture;
 
    ---------------
    -- Set_Value --

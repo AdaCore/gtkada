@@ -42,6 +42,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;         use GNAT.Strings;
 with Gdk.Content_Formats;  use Gdk.Content_Formats;
 with Gdk.Content_Provider; use Gdk.Content_Provider;
+with Gdk.Texture;          use Gdk.Texture;
 with Glib;                 use Glib;
 with Glib.Cancellable;     use Glib.Cancellable;
 with Glib.Object;          use Glib.Object;
@@ -175,6 +176,14 @@ package Gdk.Clipboard is
    --  @param Cancellable optional `GCancellable` object, null to ignore.
    --  @param Callback callback to call when the request is satisfied
 
+   function Read_Texture_Finish
+      (Self   : not null access Gdk_Clipboard_Record;
+       Result : Glib.G_Async_Result) return Gdk.Texture.Gdk_Texture;
+   --  Finishes an asynchronous clipboard read.
+   --  See [methodGdk.Clipboard.read_texture_async].
+   --  @param Result a `GAsyncResult`
+   --  @return a new `GdkTexture`
+
    procedure Read_Value_Async
       (Self        : not null access Gdk_Clipboard_Record;
        The_Type    : GType;
@@ -204,6 +213,12 @@ package Gdk.Clipboard is
        Text : UTF8_String);
    --  Puts the given Text into the clipboard.
    --  @param Text Text to put into the clipboard
+
+   procedure Set_Texture
+      (Self    : not null access Gdk_Clipboard_Record;
+       Texture : not null access Gdk.Texture.Gdk_Texture_Record'Class);
+   --  Puts the given Texture into the clipboard.
+   --  @param Texture a `GdkTexture` to put into the clipboard
 
    procedure Set_Value
       (Self  : not null access Gdk_Clipboard_Record;
