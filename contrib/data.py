@@ -113,6 +113,7 @@ binding = (
     "--GdkMonitor",
     "--GdkScreen",
     "--GdkSeat",
+    "GdkSnapshot",
     "GdkSurface",
     "--GdkTexture",
     "--GdkWindow",
