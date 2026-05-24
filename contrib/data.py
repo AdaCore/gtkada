@@ -91,6 +91,7 @@ binding = (
     "----GdkAtom",  # No binding necessary, too low-level
     "GdkCicpParams",
     "GdkClipboard",
+    "GdkColorState",
     "GdkContentProvider",
     "GdkContentFormats",
     "GdkCursor",
