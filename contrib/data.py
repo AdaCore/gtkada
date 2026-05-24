@@ -89,6 +89,7 @@ interfaces = (
 
 binding = (
     "----GdkAtom",  # No binding necessary, too low-level
+    "GdkCicpParams",
     "GdkClipboard",
     "GdkContentProvider",
     "GdkContentFormats",

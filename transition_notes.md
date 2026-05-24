@@ -50,6 +50,10 @@ GdkAppLaunchContext.toml:
 
 - when done, reactivate bindings in GdkDisplay.toml
 
+GdkColorState:
+
+- when done, reactivate bindings in GdkCicpParams.toml
+
 GdkEvent.toml:
 
 - when done, reactivate bindings in GtkDisplay.toml
