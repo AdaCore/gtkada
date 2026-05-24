@@ -2,6 +2,7 @@
 #   GdkCicpParams
 # ============================================================
 ada = "Gdk.Cicp_Params"
+ada_access_root = true
 
 [[enum]]
 ctype = "GdkCicpRange"

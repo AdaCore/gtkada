@@ -23,7 +23,8 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Glib.Object; use Glib.Object;
+with Gdk.Cicp_Params;
+with Glib.Object;     use Glib.Object;
 
 package body Gdk.Color_State is
 
@@ -48,13 +49,13 @@ package body Gdk.Color_State is
    ------------------------
 
    function Create_Cicp_Params
-      (Self : Gdk_Color_State) return Gdk.Cicp_Params.Gdk_Cicp_Params
+      (Self : Gdk_Color_State) return Gdk.Gdk_Cicp_Params
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gdk_color_state_create_cicp_params");
       Stub_Gdk_Cicp_Params : Gdk.Cicp_Params.Gdk_Cicp_Params_Record;
    begin
-      return Gdk.Cicp_Params.Gdk_Cicp_Params (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Cicp_Params));
+      return Gdk.Gdk_Cicp_Params (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Cicp_Params));
    end Create_Cicp_Params;
 
    -----------

@@ -32,8 +32,7 @@
 --  `GdkColorState` objects are immutable and therefore threadsafe.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Cicp_Params; use Gdk.Cicp_Params;
-with Glib;            use Glib;
+with Glib;   use Glib;
 with System;
 
 package Gdk.Color_State is
@@ -57,7 +56,7 @@ package Gdk.Color_State is
    -------------
 
    function Create_Cicp_Params
-      (Self : Gdk_Color_State) return Gdk.Cicp_Params.Gdk_Cicp_Params;
+      (Self : Gdk_Color_State) return Gdk.Gdk_Cicp_Params;
    --  Create a [classGdk.CicpParams] representing the colorstate.
    --  It is not guaranteed that every `GdkColorState` can be represented with
    --  Cicp parameters. If that is the case, this function returns `NULL`.

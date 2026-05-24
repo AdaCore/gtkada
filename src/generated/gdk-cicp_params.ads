@@ -49,7 +49,7 @@ with Glib.Properties;         use Glib.Properties;
 package Gdk.Cicp_Params is
 
    type Gdk_Cicp_Params_Record is new GObject_Record with null record;
-   type Gdk_Cicp_Params is access all Gdk_Cicp_Params_Record'Class;
+   subtype Gdk_Cicp_Params is Gdk.Gdk_Cicp_Params;
 
    type Gdk_Cicp_Range is (
       Gdk_Cicp_Range_Narrow,
