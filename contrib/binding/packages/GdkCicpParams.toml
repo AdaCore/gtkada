@@ -7,11 +7,6 @@ ada_access_root = true
 [[enum]]
 ctype = "GdkCicpRange"
 
-[[method]]
-id = "gdk_cicp_params_build_color_state"
-bind = false
-# No GdkColorState binding
-
 [[extra.with_body]]
 pkg = "System"
 use = false

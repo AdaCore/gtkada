@@ -68,6 +68,20 @@ package body Gdk.Cicp_Params is
       end if;
    end Initialize;
 
+   -----------------------
+   -- Build_Color_State --
+   -----------------------
+
+   function Build_Color_State
+      (Self : not null access Gdk_Cicp_Params_Record)
+       return Gdk.Color_State.Gdk_Color_State
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_cicp_params_build_color_state");
+   begin
+      return From_Object (Internal (Get_Object (Self)));
+   end Build_Color_State;
+
    -------------------------
    -- Get_Color_Primaries --
    -------------------------
