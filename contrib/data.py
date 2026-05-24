@@ -16,6 +16,7 @@ enums = (
 
 interfaces = (
     "Gdk.Paintable",
+    "--GdkPixbuf.Pixbuf",
     "--Gtk.Actionable",
     "--Gtk.Activatable",
     "Gtk.Accessible",
