@@ -2331,6 +2331,7 @@ class Package(object):
         self.private = []  # Private section
         self.language_version = ""  # a pragma to be put just after the headers
         self.formal_params = ""  # generic formal parameters
+        self.elaborate_body = False
         self.isnested = isnested
 
     def __repr__(self):
@@ -2477,6 +2478,9 @@ class Package(object):
             result.append(indent + "   %s" % self.formal_params)
         result.append(indent + "package %s is\n" % self.name)
 
+        if self.elaborate_body:
+            result.append(indent + "   pragma Elaborate_Body;\n")
+
         self.sections.sort(key=lambda x: (self.section_order(x.name)))
 
         for s in self.sections:
@@ -2507,7 +2511,7 @@ class Package(object):
             if b:
                 body += "\n" + b
 
-        if not body:
+        if not body and not self.elaborate_body:
             return ""
 
         if not self.isnested:

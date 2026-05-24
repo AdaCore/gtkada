@@ -3403,6 +3403,9 @@ end From_Object_Free;"""
             into or self.ada_package_name, ctype=self.ctype, doc=girdoc
         )
 
+        if self.gtkpkg.ada_elaborate_body():
+            self.pkg.elaborate_body = True
+
         if self._subst["parent_pkg"]:
             self.pkg.add_with("%(parent_pkg)s" % self._subst)
 
