@@ -117,7 +117,7 @@ binding = (
     "--GdkSeat",
     "GdkSnapshot",
     "GdkSurface",
-    "--GdkTexture",
+    "GdkTexture",
     "--GdkWindow",
     "--GAction",  # bound as an interface, see interfaces tuple
     "--GActionGroup",  # bound as an interface, see interfaces tuple
