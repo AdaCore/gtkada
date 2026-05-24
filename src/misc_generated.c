@@ -314,6 +314,18 @@ void gtkada_List_Model_set_get_n_items(GListModelInterface* iface, void* handler
     iface->get_n_items = handler;
 }
 
+void gtkada_Loadable_Icon_set_load(GLoadableIconIface* iface, void* handler) {
+    iface->load = handler;
+}
+
+void gtkada_Loadable_Icon_set_load_async(GLoadableIconIface* iface, void* handler) {
+    iface->load_async = handler;
+}
+
+void gtkada_Loadable_Icon_set_load_finish(GLoadableIconIface* iface, void* handler) {
+    iface->load_finish = handler;
+}
+
 void gtkada_Application_set_command_line(GApplicationClass* iface, void* handler) {
     iface->command_line = handler;
 }

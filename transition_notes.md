@@ -40,7 +40,7 @@ GBytes.toml:
 
 GInputStream.toml
 
-- when done, reactivate bindings in GdkClipboard.toml
+- when done, reactivate bindings in GdkClipboard.toml, GLoadableIcon.toml
 
 GOutputStream.toml
 

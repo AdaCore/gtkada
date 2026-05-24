@@ -66,7 +66,7 @@ interfaces = (
     "--File",  # Not tested yet, from Gio
     "--FileDescriptorBased",  # Not tested yet, from Gio
     "--Initable",  # Not tested yet, from Gio
-    "--LoadableIcon",  # Not tested yet, from Gio
+    "LoadableIcon",  # Not tested yet, from Gio
     "--Mount",  # Not tested yet, from Gio
     "--NetworkMonitor",  # Not tested yet, from Gio
     "--PollableInputStream",  # Not tested yet, from Gio

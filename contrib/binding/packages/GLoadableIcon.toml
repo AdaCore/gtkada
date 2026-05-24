@@ -1,0 +1,15 @@
+# ============================================================
+#   GLoadableIcon
+# ============================================================
+
+ada = "Glib.Loadable_Icon"
+
+[[method]]
+id = "g_loadable_icon_load"
+bind = false
+# No GInputStream binding
+
+[[method]]
+id = "g_loadable_icon_load_finish"
+bind = false
+# No GInputStream binding
