@@ -157,71 +157,6 @@ package Gtk.Application_Window is
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
 
-   procedure Announce
-      (Self     : not null access Gtk_Application_Window_Record;
-       Message  : UTF8_String;
-       Priority : Gtk.Accessible.Gtk_Accessible_Announcement_Priority);
-
-   function Get_Accessible_Id
-      (Self : not null access Gtk_Application_Window_Record)
-       return UTF8_String;
-
-   function Get_Accessible_Parent
-      (Self : not null access Gtk_Application_Window_Record)
-       return Gtk.Accessible.Gtk_Accessible;
-
-   procedure Set_Accessible_Parent
-      (Self         : not null access Gtk_Application_Window_Record;
-       Parent       : Gtk.Accessible.Gtk_Accessible;
-       Next_Sibling : Gtk.Accessible.Gtk_Accessible);
-
-   function Get_Accessible_Role
-      (Self : not null access Gtk_Application_Window_Record)
-       return Gtk.Accessible.Gtk_Accessible_Role;
-
-   function Get_At_Context
-      (Self : not null access Gtk_Application_Window_Record)
-       return Gtk.Atcontext.Gtk_Atcontext;
-
-   function Get_Bounds
-      (Self   : not null access Gtk_Application_Window_Record;
-       X      : access Glib.Gint;
-       Y      : access Glib.Gint;
-       Width  : access Glib.Gint;
-       Height : access Glib.Gint) return Boolean;
-
-   function Get_First_Accessible_Child
-      (Self : not null access Gtk_Application_Window_Record)
-       return Gtk.Accessible.Gtk_Accessible;
-
-   function Get_Next_Accessible_Sibling
-      (Self : not null access Gtk_Application_Window_Record)
-       return Gtk.Accessible.Gtk_Accessible;
-
-   function Get_Platform_State
-      (Self  : not null access Gtk_Application_Window_Record;
-       State : Gtk.Accessible.Gtk_Accessible_Platform_State) return Boolean;
-
-   procedure Reset_Property
-      (Self     : not null access Gtk_Application_Window_Record;
-       Property : Gtk.Accessible.Gtk_Accessible_Property);
-
-   procedure Reset_Relation
-      (Self     : not null access Gtk_Application_Window_Record;
-       Relation : Gtk.Accessible.Gtk_Accessible_Relation);
-
-   procedure Reset_State
-      (Self  : not null access Gtk_Application_Window_Record;
-       State : Gtk.Accessible.Gtk_Accessible_State);
-
-   procedure Update_Next_Accessible_Sibling
-      (Self        : not null access Gtk_Application_Window_Record;
-       New_Sibling : Gtk.Accessible.Gtk_Accessible);
-
-   procedure Update_Platform_State
-      (Self  : not null access Gtk_Application_Window_Record;
-       State : Gtk.Accessible.Gtk_Accessible_Platform_State);
-
    procedure Action_Added
       (Self        : not null access Gtk_Application_Window_Record;
        Action_Name : UTF8_String);
@@ -304,6 +239,71 @@ package Gtk.Application_Window is
       (Self        : not null access Gtk_Application_Window_Record;
        Action_Name : UTF8_String);
 
+   procedure Announce
+      (Self     : not null access Gtk_Application_Window_Record;
+       Message  : UTF8_String;
+       Priority : Gtk.Accessible.Gtk_Accessible_Announcement_Priority);
+
+   function Get_Accessible_Id
+      (Self : not null access Gtk_Application_Window_Record)
+       return UTF8_String;
+
+   function Get_Accessible_Parent
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Accessible.Gtk_Accessible;
+
+   procedure Set_Accessible_Parent
+      (Self         : not null access Gtk_Application_Window_Record;
+       Parent       : Gtk.Accessible.Gtk_Accessible;
+       Next_Sibling : Gtk.Accessible.Gtk_Accessible);
+
+   function Get_Accessible_Role
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Accessible.Gtk_Accessible_Role;
+
+   function Get_At_Context
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Atcontext.Gtk_Atcontext;
+
+   function Get_Bounds
+      (Self   : not null access Gtk_Application_Window_Record;
+       X      : access Glib.Gint;
+       Y      : access Glib.Gint;
+       Width  : access Glib.Gint;
+       Height : access Glib.Gint) return Boolean;
+
+   function Get_First_Accessible_Child
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Accessible.Gtk_Accessible;
+
+   function Get_Next_Accessible_Sibling
+      (Self : not null access Gtk_Application_Window_Record)
+       return Gtk.Accessible.Gtk_Accessible;
+
+   function Get_Platform_State
+      (Self  : not null access Gtk_Application_Window_Record;
+       State : Gtk.Accessible.Gtk_Accessible_Platform_State) return Boolean;
+
+   procedure Reset_Property
+      (Self     : not null access Gtk_Application_Window_Record;
+       Property : Gtk.Accessible.Gtk_Accessible_Property);
+
+   procedure Reset_Relation
+      (Self     : not null access Gtk_Application_Window_Record;
+       Relation : Gtk.Accessible.Gtk_Accessible_Relation);
+
+   procedure Reset_State
+      (Self  : not null access Gtk_Application_Window_Record;
+       State : Gtk.Accessible.Gtk_Accessible_State);
+
+   procedure Update_Next_Accessible_Sibling
+      (Self        : not null access Gtk_Application_Window_Record;
+       New_Sibling : Gtk.Accessible.Gtk_Accessible);
+
+   procedure Update_Platform_State
+      (Self  : not null access Gtk_Application_Window_Record;
+       State : Gtk.Accessible.Gtk_Accessible_Platform_State);
+
    function Get_Surface
       (Self : not null access Gtk_Application_Window_Record)
        return Gdk.Gdk_Surface;
@@ -350,41 +350,19 @@ package Gtk.Application_Window is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
-   --  - "Accessible"
-   --
-   --  - "ConstraintTarget"
-   --
    --  - "Gio.ActionGroup"
    --
    --  - "Gio.ActionMap"
    --
-   --  - "Native"
+   --  - "Gtk.Accessible"
    --
-   --  - "Root"
+   --  - "Gtk.ConstraintTarget"
    --
-   --  - "ShortcutManager"
-
-   package Implements_Gtk_Accessible is new Glib.Types.Implements
-     (Gtk.Accessible.Gtk_Accessible, Gtk_Application_Window_Record, Gtk_Application_Window);
-   function "+"
-     (Widget : access Gtk_Application_Window_Record'Class)
-   return Gtk.Accessible.Gtk_Accessible
-   renames Implements_Gtk_Accessible.To_Interface;
-   function "-"
-     (Interf : Gtk.Accessible.Gtk_Accessible)
-   return Gtk_Application_Window
-   renames Implements_Gtk_Accessible.To_Object;
-
-   package Implements_Gtk_Constraint_Target is new Glib.Types.Implements
-     (Gtk.Constraint_Target.Gtk_Constraint_Target, Gtk_Application_Window_Record, Gtk_Application_Window);
-   function "+"
-     (Widget : access Gtk_Application_Window_Record'Class)
-   return Gtk.Constraint_Target.Gtk_Constraint_Target
-   renames Implements_Gtk_Constraint_Target.To_Interface;
-   function "-"
-     (Interf : Gtk.Constraint_Target.Gtk_Constraint_Target)
-   return Gtk_Application_Window
-   renames Implements_Gtk_Constraint_Target.To_Object;
+   --  - "Gtk.Native"
+   --
+   --  - "Gtk.Root"
+   --
+   --  - "Gtk.ShortcutManager"
 
    package Implements_Gaction_Group is new Glib.Types.Implements
      (Glib.Action_Group.Gaction_Group, Gtk_Application_Window_Record, Gtk_Application_Window);
@@ -407,6 +385,28 @@ package Gtk.Application_Window is
      (Interf : Glib.Action_Map.Gaction_Map)
    return Gtk_Application_Window
    renames Implements_Gaction_Map.To_Object;
+
+   package Implements_Gtk_Accessible is new Glib.Types.Implements
+     (Gtk.Accessible.Gtk_Accessible, Gtk_Application_Window_Record, Gtk_Application_Window);
+   function "+"
+     (Widget : access Gtk_Application_Window_Record'Class)
+   return Gtk.Accessible.Gtk_Accessible
+   renames Implements_Gtk_Accessible.To_Interface;
+   function "-"
+     (Interf : Gtk.Accessible.Gtk_Accessible)
+   return Gtk_Application_Window
+   renames Implements_Gtk_Accessible.To_Object;
+
+   package Implements_Gtk_Constraint_Target is new Glib.Types.Implements
+     (Gtk.Constraint_Target.Gtk_Constraint_Target, Gtk_Application_Window_Record, Gtk_Application_Window);
+   function "+"
+     (Widget : access Gtk_Application_Window_Record'Class)
+   return Gtk.Constraint_Target.Gtk_Constraint_Target
+   renames Implements_Gtk_Constraint_Target.To_Interface;
+   function "-"
+     (Interf : Gtk.Constraint_Target.Gtk_Constraint_Target)
+   return Gtk_Application_Window
+   renames Implements_Gtk_Constraint_Target.To_Object;
 
    package Implements_Gtk_Native is new Glib.Types.Implements
      (Gtk.Native.Gtk_Native, Gtk_Application_Window_Record, Gtk_Application_Window);

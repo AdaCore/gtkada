@@ -241,9 +241,9 @@ package Gtk.Color_Dialog_Button is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
-   --  - "Accessible"
+   --  - "Gtk.Accessible"
    --
-   --  - "ConstraintTarget"
+   --  - "Gtk.ConstraintTarget"
 
    package Implements_Gtk_Accessible is new Glib.Types.Implements
      (Gtk.Accessible.Gtk_Accessible, Gtk_Color_Dialog_Button_Record, Gtk_Color_Dialog_Button);

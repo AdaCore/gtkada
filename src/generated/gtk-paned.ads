@@ -524,11 +524,11 @@ package Gtk.Paned is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
-   --  - "Accessible"
+   --  - "Gtk.Accessible"
    --
-   --  - "ConstraintTarget"
+   --  - "Gtk.ConstraintTarget"
    --
-   --  - "Orientable"
+   --  - "Gtk.Orientable"
 
    package Implements_Gtk_Accessible is new Glib.Types.Implements
      (Gtk.Accessible.Gtk_Accessible, Gtk_Paned_Record, Gtk_Paned);

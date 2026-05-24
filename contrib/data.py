@@ -15,72 +15,72 @@ enums = (
 # These are GIR names
 
 interfaces = (
-    "--Actionable",
-    "--Activatable",
-    "Accessible",
-    "--AccessibleRange",
-    "AccessibleText",
-    "AccessibleHypertext",
-    # "AppChooser",
+    "--Gtk.Actionable",
+    "--Gtk.Activatable",
+    "Gtk.Accessible",
+    "--Gtk.AccessibleRange",
+    "Gtk.AccessibleText",
+    "Gtk.AccessibleHypertext",
+    # "Gtk.AppChooser",
     "--Atk.ImplementorIface",
-    "--Buildable",
-    "CellEditable",
-    "--CellLayout",
-    "--ColorChooser",
-    "ConstraintTarget",
-    "--Editable",
-    "--FileChooser",
-    "--FontChooser",
-    "--Icon",
-    "Native",
-    "Orientable",
-    "--PrintOperationPreview",
-    "--RecentChooser",
-    "Root",
-    "--Scrollable",
-    "ShortcutManager",
-    "--StyleProvider",
-    "--ToolShell",
-    "--TreeDragDest",
-    "--TreeDragSource",
-    "--TreeSortable",
-    "TreeModel",
-    "Action",
-    "ActionGroup",
-    "ActionMap",
-    "ListModel",
-    "--AppInfo",  # Not tested yet, from Gio
-    "--AsyncInitable",  # Not tested yet, from Gio
+    "--Gtk.Buildable",
+    "Gtk.CellEditable",
+    "--Gtk.CellLayout",
+    "--Gtk.ColorChooser",
+    "Gtk.ConstraintTarget",
+    "--Gtk.Editable",
+    "--Gtk.FileChooser",
+    "--Gtk.FontChooser",
+    "--Gio.Icon",
+    "Gtk.Native",
+    "Gtk.Orientable",
+    "--Gtk.PrintOperationPreview",
+    "--Gtk.RecentChooser",
+    "Gtk.Root",
+    "--Gtk.Scrollable",
+    "Gtk.ShortcutManager",
+    "--Gtk.StyleProvider",
+    "--Gtk.ToolShell",
+    "--Gtk.TreeDragDest",
+    "--Gtk.TreeDragSource",
+    "--Gtk.TreeSortable",
+    "Gtk.TreeModel",
+    "Gio.Action",
+    "Gio.ActionGroup",
+    "Gio.ActionMap",
+    "Gio.ListModel",
+    "--Gio.AppInfo",  # Not tested yet, from Gio
+    "--Gio.AsyncInitable",  # Not tested yet, from Gio
     # GAsyncResult is bound as an opaque proxy in Glib.G_Async_Result.
     # We do not need its virtual methods on the Ada side: the "_finish"
     # subprogram of each async operation consumes the pointer directly.
     # Leaving it commented out keeps the generator from creating an
     # interface package with no concrete subprograms.
-    "--AsyncResult",  # Bound manually as Glib.G_Async_Result
-    "--Converter",  # Not tested yet, from Gio
-    "--DBusInterface",  # Not tested yet, from Gio
-    "--DBusObject",  # Not tested yet, from Gio
-    "--DBusObjectManager",  # Not tested yet, from Gio
-    "--DesktopAppInfoLookup",  # Not tested yet, from Gio
-    "--Drive",  # Not tested yet, from Gio
-    "--File",  # Not tested yet, from Gio
-    "--FileDescriptorBased",  # Not tested yet, from Gio
-    "--Initable",  # Not tested yet, from Gio
-    "LoadableIcon",  # Not tested yet, from Gio
-    "--Mount",  # Not tested yet, from Gio
-    "--NetworkMonitor",  # Not tested yet, from Gio
-    "--PollableInputStream",  # Not tested yet, from Gio
-    "--PollableOutputStream",  # Not tested yet, from Gio
-    "--Proxy",  # Not tested yet, from Gio
-    "--ProxyResolver",  # Not tested yet, from Gio
-    "--RemoteActionGroup",  # Not tested yet, from Gio
-    "--Seekable",  # Not tested yet, from Gio
-    "--SocketConnectable",  # Not tested yet, from Gio
-    "--TlsBackend",  # Not tested yet, from Gio
-    "--TlsClientConnection",  # Not tested yet, from Gio
-    "--TlsFileDatabase",  # Not tested yet, from Gio
-    "--TlsServerConnection",  # Not tested yet, from Gio
-    "--Volume",  # Not tested yet, from Gio
+    "--Gio.AsyncResult",  # Bound manually as Glib.G_Async_Result
+    "--Gio.Converter",  # Not tested yet, from Gio
+    "--Gio.DBusInterface",  # Not tested yet, from Gio
+    "--Gio.DBusObject",  # Not tested yet, from Gio
+    "--Gio.DBusObjectManager",  # Not tested yet, from Gio
+    "--Gio.DesktopAppInfoLookup",  # Not tested yet, from Gio
+    "--Gio.Drive",  # Not tested yet, from Gio
+    "--Gio.File",  # Not tested yet, from Gio
+    "--Gio.FileDescriptorBased",  # Not tested yet, from Gio
+    "--Gio.Initable",  # Not tested yet, from Gio
+    "Gio.LoadableIcon",  # Not tested yet, from Gio
+    "--Gio.Mount",  # Not tested yet, from Gio
+    "--Gio.NetworkMonitor",  # Not tested yet, from Gio
+    "--Gio.PollableInputStream",  # Not tested yet, from Gio
+    "--Gio.PollableOutputStream",  # Not tested yet, from Gio
+    "--Gio.Proxy",  # Not tested yet, from Gio
+    "--Gio.ProxyResolver",  # Not tested yet, from Gio
+    "--Gio.RemoteActionGroup",  # Not tested yet, from Gio
+    "--Gio.Seekable",  # Not tested yet, from Gio
+    "--Gio.SocketConnectable",  # Not tested yet, from Gio
+    "--Gio.TlsBackend",  # Not tested yet, from Gio
+    "--Gio.TlsClientConnection",  # Not tested yet, from Gio
+    "--Gio.TlsFileDatabase",  # Not tested yet, from Gio
+    "--Gio.TlsServerConnection",  # Not tested yet, from Gio
+    "--Gio.Volume",  # Not tested yet, from Gio
 )
 
 # List of widgets to bind.

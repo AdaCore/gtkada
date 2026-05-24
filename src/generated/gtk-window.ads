@@ -1071,15 +1071,15 @@ package Gtk.Window is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
-   --  - "Accessible"
+   --  - "Gtk.Accessible"
    --
-   --  - "ConstraintTarget"
+   --  - "Gtk.ConstraintTarget"
    --
-   --  - "Native"
+   --  - "Gtk.Native"
    --
-   --  - "Root"
+   --  - "Gtk.Root"
    --
-   --  - "ShortcutManager"
+   --  - "Gtk.ShortcutManager"
 
    package Implements_Gtk_Accessible is new Glib.Types.Implements
      (Gtk.Accessible.Gtk_Accessible, Gtk_Window_Record, Gtk_Window);

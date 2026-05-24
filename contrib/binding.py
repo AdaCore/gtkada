@@ -195,7 +195,7 @@ class GIR(object):
         self.packages = dict()  # Ada name (lower case) -> Package instance
         self.ccode = ""
         self.classes = dict()  # Maps C name to a GIRClass instance
-        self.interfaces = dict()  # Maps GIR's "name" to an interface
+        self.interfaces = dict()  # Maps qualified GIR names to interfaces
         self.ctype_interfaces = dict()  # Maps GIR's c:type to an interface
         self.callbacks = dict()  # Ada name to GIR XML node
         self.enums = dict()  # Maps C "name" to a GIR XML node
@@ -209,6 +209,7 @@ class GIR(object):
         for filename in files:
             _tree = parse(filename)
             root = _tree.getroot()
+            ns_name = root.find(namespace).get("name")
 
             identifier_prefix = root.find(namespace).get(cidentifier_prefix)
 
@@ -222,15 +223,16 @@ class GIR(object):
 
             k = "%s/%s" % (namespace, ninterface)
             for cl in root.findall(k):
-                self.ctype_interfaces[cl.get(ctype_qname)] = self.interfaces[
-                    cl.get("name")
-                ] = self._create_class(
+                qname = "%s.%s" % (ns_name, cl.get("name"))
+                intf = self._create_class(
                     root,
                     cl,
                     is_interface=True,
                     is_gobject=False,
                     identifier_prefix=identifier_prefix,
                 )
+                self.ctype_interfaces[cl.get(ctype_qname)] = intf
+                self.interfaces[qname] = intf
 
             k = "%s/%s" % (namespace, nclass)
             for cl in root.findall(k):
@@ -279,6 +281,33 @@ class GIR(object):
                     self.enums[cl.get(ctype_qname)] = cl
 
             self.globals.add(root)
+
+    def resolve_interface_name(self, name, namespace_name=None):
+        """Resolve ``name`` to a known qualified interface name.
+
+        ``name`` can be simple or qualified. For simple names, resolution is
+        only attempted in ``namespace_name``.
+        """
+
+        if "." in name and name in self.interfaces:
+            return name
+
+        if namespace_name:
+            scoped = "%s.%s" % (namespace_name, name)
+            if scoped in self.interfaces:
+                return scoped
+
+        if "." in name:
+            raise KeyError(
+                "Unknown interface '%s', check `interfaces` in `data.py`" % name
+            )
+
+        raise KeyError("Unable to resolve interface '%s' to a qualified name" % name)
+
+    def interface(self, name, namespace_name=None):
+        """Return the interface object matching ``name``."""
+
+        return self.interfaces[self.resolve_interface_name(name, namespace_name)]
 
     def show_unbound(self):
         """Display the list of entities known in the GIR files, but that have
@@ -2779,20 +2808,17 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
         implements = list(self.node.findall(nimplements)) or []
 
         for impl in implements:
+            # "name" can be either a short name (e.g. "Buildable") or a
+            # qualified name (e.g. "Gtk.Buildable").
             name = impl.get("name")
-
-            # Special case, because the GIR file are inconsistent
-            if name == "Gio.Icon":
-                name = "Icon"
+            impl_ns = self.rootNode.find(namespace).get("name")
+            qname = self.gir.resolve_interface_name(name, namespace_name=impl_ns)
 
             # If the interface is purposefully not bound
-            if "--%s" % name in interfaces:
+            if "--%s" % qname in interfaces:
                 continue
 
-            try:
-                intf = self.gir.interfaces[name]
-            except KeyError:
-                intf = self.gir.interfaces[naming.girname_to_ctype[name]]
+            intf = self.gir.interfaces[qname]
 
             type = naming.type(intf.ctype)
             if "." in type.ada:
@@ -2800,7 +2826,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                 self.pkg.add_with("Glib.Types")
 
             impl = dict(
-                name=name,
+                name=qname,
                 adatype=base_name(type.ada),
                 impl=type.ada,
                 interface=intf,
@@ -2822,7 +2848,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                 % impl
             )
 
-            self.implements[name] = impl
+            self.implements[qname] = impl
 
         # For an interface, we also define "+" to cast to itself. This is used
         # when writting custom bodies for the methods of the interface, so that
@@ -2852,7 +2878,7 @@ end "+";"""
 
             for impl in sorted(self.implements.keys()):
                 impl = self.implements[impl]
-                if impl["name"] == "Buildable":
+                if impl["name"] == "Gtk.Buildable" or impl["name"] == "Buildable":
                     # Do not repeat for buildable, that's rarely used
 
                     section.add_comment(
@@ -3704,11 +3730,19 @@ def _emit_interfaces():
     """
     for name in interfaces:
         if name.startswith("--"):
-            gir.bound.add(name[2:])
+            skipped = name[2:]
+            try:
+                skipped = gir.resolve_interface_name(skipped)
+            except KeyError:
+                # Keep unknown names as-is so the unbound report behavior
+                # stays stable when a skipped interface is not in the GIR set.
+                pass
+            gir.bound.add(skipped)
             continue
 
-        gir.interfaces[name].generate(gir)
-        gir.bound.add(name)
+        qname = gir.resolve_interface_name(name)
+        gir.interfaces[qname].generate(gir)
+        gir.bound.add(qname)
 
 
 def _emit_widgets():
