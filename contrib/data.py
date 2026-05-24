@@ -15,6 +15,7 @@ enums = (
 # These are GIR names
 
 interfaces = (
+    "Gdk.Paintable",
     "--Gtk.Actionable",
     "--Gtk.Activatable",
     "Gtk.Accessible",
