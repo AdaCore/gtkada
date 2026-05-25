@@ -577,7 +577,7 @@ binding = (
     "--GtkTreeStore",
     "--GtkTreeView",
     "----GtkTreeViewAccessible",  # We do not support atk
-    "--GtkTreeViewColumn",
+    "GtkTreeViewColumn",
     "--GtkToggleAction",
     "--GtkToggleButton",
     "----GtkToggleButtonAccessible",  # We do not support atk

@@ -1,0 +1,49 @@
+# ============================================================
+#   GtkTreeViewColumn
+# ============================================================
+
+# It has been deprecated since gtk 4.10
+
+obsolescent = true
+
+[[enum]]
+ctype = "GtkTreeViewColumnSizing"
+prefix = "GTK_TREE_VIEW_COLUMN_"
+
+[[list]]
+ada = "Column_List"
+ctype = "GtkTreeViewColumn"
+
+[[method]]
+id = "gtk_tree_view_column_cell_get_position"
+return_as_param = "Success"
+
+[[method]]
+id = "gtk_tree_view_column_add_attribute"
+bind = false
+# overridden
+
+[[method]]
+id = "gtk_tree_view_column_clear"
+bind = false
+# from cell_layout
+
+[[method]]
+id = "gtk_tree_view_column_clear_attributes"
+bind = false
+# from cell_layout
+
+[[method]]
+id = "gtk_tree_view_column_pack_start"
+bind = false
+# from cell_layout
+
+[[method]]
+id = "gtk_tree_view_column_pack_end"
+bind = false
+# from cell_layout
+
+[[method]]
+id = "gtk_tree_view_column_set_cell_data_func"
+bind = false
+# from cell_layout
