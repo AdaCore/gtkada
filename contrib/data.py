@@ -351,6 +351,7 @@ binding = (
     "--GtkCheckButton",
     "--GtkCheckMenuItem",
     "----GtkCheckMenuItemAccessible",  # We do not support atk
+    "GtkCenterBox",
     "--GtkClipboard",
     "--GtkColorButton",
     "--GtkColorChooserDialog",
