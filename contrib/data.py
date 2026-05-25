@@ -573,7 +573,7 @@ binding = (
     "--GtkTreeModelSort",
     "GtkTreePath",
     "--GtkTreeRowReference",
-    "--GtkTreeSelection",
+    "GtkTreeSelection",
     "--GtkTreeStore",
     "--GtkTreeView",
     "----GtkTreeViewAccessible",  # We do not support atk
