@@ -27,7 +27,7 @@ interfaces = (
     "--Atk.ImplementorIface",
     "--Gtk.Buildable",
     "Gtk.CellEditable",
-    "--Gtk.CellLayout",
+    "Gtk.CellLayout",
     "--Gtk.ColorChooser",
     "Gtk.ConstraintTarget",
     "--Gtk.Editable",
