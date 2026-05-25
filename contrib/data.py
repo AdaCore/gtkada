@@ -345,7 +345,7 @@ binding = (
     "--GtkCellRendererProgress",
     "--GtkCellRendererSpin",
     "--GtkCellRendererSpinner",
-    "--GtkCellRendererText",
+    "GtkCellRendererText",
     "--GtkCellRendererToggle",
     "--GtkCellView",
     "--GtkCheckButton",
