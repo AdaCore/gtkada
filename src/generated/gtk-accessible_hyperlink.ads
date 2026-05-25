@@ -173,7 +173,7 @@ package Gtk.Accessible_Hyperlink is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
-   --  - "Accessible"
+   --  - "Gtk.Accessible"
 
    package Implements_Gtk_Accessible is new Glib.Types.Implements
      (Gtk.Accessible.Gtk_Accessible, Gtk_Accessible_Hyperlink_Record, Gtk_Accessible_Hyperlink);

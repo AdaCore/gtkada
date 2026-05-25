@@ -1110,9 +1110,9 @@ package Glib.Application is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
-   --  - "ActionGroup"
+   --  - "Gio.ActionGroup"
    --
-   --  - "ActionMap"
+   --  - "Gio.ActionMap"
 
    package Implements_Gaction_Group is new Glib.Types.Implements
      (Glib.Action_Group.Gaction_Group, Gapplication_Record, Gapplication);

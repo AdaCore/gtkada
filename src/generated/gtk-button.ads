@@ -390,9 +390,9 @@ package Gtk.Button is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
-   --  - "Accessible"
+   --  - "Gtk.Accessible"
    --
-   --  - "ConstraintTarget"
+   --  - "Gtk.ConstraintTarget"
 
    package Implements_Gtk_Accessible is new Glib.Types.Implements
      (Gtk.Accessible.Gtk_Accessible, Gtk_Button_Record, Gtk_Button);

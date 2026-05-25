@@ -1,0 +1,12 @@
+# ============================================================
+#   GdkColorState
+# ============================================================
+ada = "Gdk.Color_State"
+
+[[extra.with_spec]]
+pkg = "System"
+use = false
+
+[[extra.with_body]]
+pkg = "Glib.Object"
+use = true

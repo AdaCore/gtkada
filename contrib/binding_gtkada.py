@@ -324,6 +324,12 @@ class GtkAdaPackage(object):
             return self.node.get("ada_access_root", False)
         return False
 
+    def ada_elaborate_body(self):
+        """Whether to emit ``pragma Elaborate_Body;`` for this package."""
+        if self.node is not None:
+            return self.node.get("ada_elaborate_body", False)
+        return False
+
     def extra(self):
         if self.node is not None:
             extra_dict = self.node.get("extra")

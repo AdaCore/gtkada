@@ -324,7 +324,7 @@ package Glib.Simple_Action is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
-   --  - "Action"
+   --  - "Gio.Action"
 
    package Implements_Gaction is new Glib.Types.Implements
      (Glib.Action.Gaction, Gsimple_Action_Record, Gsimple_Action);

@@ -1,16 +1,20 @@
 # ============================================================
-#   GdkClipboard
+#   GdkTexture
 # ============================================================
+ada = "Gdk.Texture"
+
+[[enum]]
+ctype = "GdkMemoryFormat"
 
 [[method]]
-id = "gdk_clipboard_read_finish"
+id = "gdk_texture_new_for_pixbuf"
 bind = false
-# No GinputStream binding
+# No GdkPixbuf binding
 
 [[method]]
-id = "gdk_clipboard_set_valist"
+id = "gdk_texture_new_from_file"
 bind = false
-# varargs API
+# No Gfile binding
 
 [[extra.with_body]]
 pkg = "System"

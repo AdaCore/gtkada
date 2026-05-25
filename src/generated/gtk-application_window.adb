@@ -26,10 +26,8 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Display;
 with Gdk.Surface;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
-pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
-pragma Warnings(On);
 
 package body Gtk.Application_Window is
 

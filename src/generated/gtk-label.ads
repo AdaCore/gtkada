@@ -1085,13 +1085,13 @@ package Gtk.Label is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
-   --  - "Accessible"
+   --  - "Gtk.Accessible"
    --
-   --  - "AccessibleHypertext"
+   --  - "Gtk.AccessibleHypertext"
    --
-   --  - "AccessibleText"
+   --  - "Gtk.AccessibleText"
    --
-   --  - "ConstraintTarget"
+   --  - "Gtk.ConstraintTarget"
 
    package Implements_Gtk_Accessible is new Glib.Types.Implements
      (Gtk.Accessible.Gtk_Accessible, Gtk_Label_Record, Gtk_Label);

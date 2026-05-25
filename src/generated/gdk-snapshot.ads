@@ -1,8 +1,7 @@
 ------------------------------------------------------------------------------
---                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
 --                                                                          --
 --      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
---                     Copyright (C) 1998-2026, AdaCore                     --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,20 +21,27 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Root package of the Gdk hierarchy. The gtk4 transition has yet to
---  reintroduce most child packages; for now this exists so that the
---  generated Gdk.RGBA child unit can compile.
+--  Base type for snapshot operations.
 --
---  <group>Gdk, the low-level API</group>
+--  The subclass of `GdkSnapshot` used by GTK is
+--  [GtkSnapshot](../gtk4/class.Snapshot.html).
 
-limited with Gdk.Cicp_Params;
-limited with Gdk.Device;
-limited with Gdk.Display;
-limited with Gdk.Surface;
+pragma Warnings (Off, "*is already use-visible*");
+with Glib;        use Glib;
+with Glib.Object; use Glib.Object;
 
-package Gdk is
-   type Gdk_Cicp_Params is access all Gdk.Cicp_Params.Gdk_Cicp_Params_Record'Class;
-   type Gdk_Device is access all Gdk.Device.Gdk_Device_Record'Class;
-   type Gdk_Display is access all Gdk.Display.Gdk_Display_Record'Class;
-   type Gdk_Surface is access all Gdk.Surface.Gdk_Surface_Record'Class;
-end Gdk;
+package Gdk.Snapshot is
+
+   pragma Elaborate_Body;
+
+   type Gdk_Snapshot_Record is new GObject_Record with null record;
+   type Gdk_Snapshot is access all Gdk_Snapshot_Record'Class;
+
+   ------------------
+   -- Constructors --
+   ------------------
+
+   function Get_Type return Glib.GType;
+   pragma Import (C, Get_Type, "gdk_snapshot_get_type");
+
+end Gdk.Snapshot;

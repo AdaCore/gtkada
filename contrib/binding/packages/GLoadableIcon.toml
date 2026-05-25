@@ -1,17 +1,15 @@
 # ============================================================
-#   GdkClipboard
+#   GLoadableIcon
 # ============================================================
 
-[[method]]
-id = "gdk_clipboard_read_finish"
-bind = false
-# No GinputStream binding
+ada = "Glib.Loadable_Icon"
 
 [[method]]
-id = "gdk_clipboard_set_valist"
+id = "g_loadable_icon_load"
 bind = false
-# varargs API
+# No GInputStream binding
 
-[[extra.with_body]]
-pkg = "System"
-use = false
+[[method]]
+id = "g_loadable_icon_load_finish"
+bind = false
+# No GInputStream binding
