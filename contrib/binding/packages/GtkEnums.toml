@@ -131,6 +131,10 @@ ctype = "GtkWindowGravity"
 [[enum]]
 ctype = "GtkWrapMode"
 
+[[enum]]
+ctype = "GtkOrdering"
+prefix = "GTK_ORDERING_"
+
 [extra]
 body = '''
 
