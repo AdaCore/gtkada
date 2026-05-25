@@ -518,6 +518,7 @@ binding = (
     "----GtkScrolledWindowAccessible",  # We do not support atk
     "--GtkSettings",
     "----GtkSocket",  # X11-specific, no binding
+    "GtkSorter",
     "--GtkSpinner",
     "----GtkSpinnerAccessible",  # We do not support atk
     "--GtkSpinButton",

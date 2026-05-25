@@ -485,6 +485,23 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Wrap_Mode);
    --  Describes a type of line wrapping.
 
+   type Gtk_Ordering is (
+      Smaller,
+      Equal,
+      Larger);
+   pragma Convention (C, Gtk_Ordering);
+   --  Describes the way two values can be compared.
+   --
+   --  These values can be used with a [callbackGlib.CompareFunc]. However, a
+   --  `GCompareFunc` is allowed to return any integer values. For converting
+   --  such a value to a `GtkOrdering` value, use
+   --  [funcGtk.Ordering.from_cmpfunc].
+
+   for Gtk_Ordering use (
+      Smaller => -1,
+      Equal => 0,
+      Larger => 1);
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -652,6 +669,10 @@ package Gtk.Enums is
    package Gtk_Wrap_Mode_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Wrap_Mode);
    type Property_Gtk_Wrap_Mode is new Gtk_Wrap_Mode_Properties.Property;
+
+   package Gtk_Ordering_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Ordering);
+   type Property_Gtk_Ordering is new Gtk_Ordering_Properties.Property;
 
    ----------------------
    -- GtkAda additions --
