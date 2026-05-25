@@ -586,7 +586,7 @@ binding = (
     "--GtkToolbar",
     "--GtkToolItem",
     "--GtkToolItemGroup",
-    "--GtkTooltip",
+    "GtkTooltip",
     "--GtkToolPalette",
     "----GtkToplevelAccessible",  # We do not support atk
     "--GtkUIManager",
