@@ -30,7 +30,7 @@ interfaces = (
     "Gtk.CellLayout",
     "--Gtk.ColorChooser",
     "Gtk.ConstraintTarget",
-    "--Gtk.Editable",
+    "Gtk.Editable",
     "--Gtk.FileChooser",
     "--Gtk.FontChooser",
     "--Gio.Icon",

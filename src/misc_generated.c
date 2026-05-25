@@ -138,6 +138,42 @@ void gtkada_Cell_Editable_set_remove_widget(GtkCellEditableIface* iface, void* h
     iface->remove_widget = handler;
 }
 
+void gtkada_Editable_set_changed(GtkEditableInterface* iface, void* handler) {
+    iface->changed = handler;
+}
+
+void gtkada_Editable_set_delete_text(GtkEditableInterface* iface, void* handler) {
+    iface->delete_text = handler;
+}
+
+void gtkada_Editable_set_do_delete_text(GtkEditableInterface* iface, void* handler) {
+    iface->do_delete_text = handler;
+}
+
+void gtkada_Editable_set_do_insert_text(GtkEditableInterface* iface, void* handler) {
+    iface->do_insert_text = handler;
+}
+
+void gtkada_Editable_set_get_delegate(GtkEditableInterface* iface, void* handler) {
+    iface->get_delegate = handler;
+}
+
+void gtkada_Editable_set_get_selection_bounds(GtkEditableInterface* iface, void* handler) {
+    iface->get_selection_bounds = handler;
+}
+
+void gtkada_Editable_set_get_text(GtkEditableInterface* iface, void* handler) {
+    iface->get_text = handler;
+}
+
+void gtkada_Editable_set_insert_text(GtkEditableInterface* iface, void* handler) {
+    iface->insert_text = handler;
+}
+
+void gtkada_Editable_set_set_selection_bounds(GtkEditableInterface* iface, void* handler) {
+    iface->set_selection_bounds = handler;
+}
+
 void gtkada_Shortcut_Manager_set_add_controller(GtkShortcutManagerInterface* iface, void* handler) {
     iface->add_controller = handler;
 }
