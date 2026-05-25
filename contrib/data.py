@@ -25,7 +25,7 @@ interfaces = (
     "Gtk.AccessibleHypertext",
     # "Gtk.AppChooser",
     "--Atk.ImplementorIface",
-    "--Gtk.Buildable",
+    "Gtk.Buildable",
     "Gtk.CellEditable",
     "Gtk.CellLayout",
     "--Gtk.ColorChooser",

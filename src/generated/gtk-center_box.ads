@@ -66,6 +66,7 @@ with Glib.Properties;       use Glib.Properties;
 with Glib.Types;            use Glib.Types;
 with Gtk.Accessible;        use Gtk.Accessible;
 with Gtk.Atcontext;         use Gtk.Atcontext;
+with Gtk.Buildable;         use Gtk.Buildable;
 with Gtk.Constraint_Target; use Gtk.Constraint_Target;
 with Gtk.Enums;             use Gtk.Enums;
 with Gtk.Orientable;        use Gtk.Orientable;
@@ -174,6 +175,9 @@ package Gtk.Center_Box is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    procedure Announce
       (Self     : not null access Gtk_Center_Box_Record;
@@ -294,6 +298,8 @@ package Gtk.Center_Box is
    --
    --  - "Gtk.Accessible"
    --
+   --  - "Gtk.Buildable"
+   --
    --  - "Gtk.ConstraintTarget"
    --
    --  - "Gtk.Orientable"
@@ -308,6 +314,17 @@ package Gtk.Center_Box is
      (Interf : Gtk.Accessible.Gtk_Accessible)
    return Gtk_Center_Box
    renames Implements_Gtk_Accessible.To_Object;
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Center_Box_Record, Gtk_Center_Box);
+   function "+"
+     (Widget : access Gtk_Center_Box_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Center_Box
+   renames Implements_Gtk_Buildable.To_Object;
 
    package Implements_Gtk_Constraint_Target is new Glib.Types.Implements
      (Gtk.Constraint_Target.Gtk_Constraint_Target, Gtk_Center_Box_Record, Gtk_Center_Box);

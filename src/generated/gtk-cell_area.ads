@@ -273,6 +273,7 @@ with Glib.Object;           use Glib.Object;
 with Glib.Properties;       use Glib.Properties;
 with Glib.Types;            use Glib.Types;
 with Glib.Values;           use Glib.Values;
+with Gtk.Buildable;         use Gtk.Buildable;
 with Gtk.Cell_Area_Context; use Gtk.Cell_Area_Context;
 with Gtk.Cell_Editable;     use Gtk.Cell_Editable;
 with Gtk.Cell_Layout;       use Gtk.Cell_Layout;
@@ -983,6 +984,9 @@ package Gtk.Cell_Area is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    procedure Add_Attribute
       (Self      : not null access Gtk_Cell_Area_Record;
@@ -1181,7 +1185,20 @@ package Gtk.Cell_Area is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Gtk.Buildable"
+   --
    --  - "Gtk.CellLayout"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Cell_Area_Record, Gtk_Cell_Area);
+   function "+"
+     (Widget : access Gtk_Cell_Area_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Cell_Area
+   renames Implements_Gtk_Buildable.To_Object;
 
    package Implements_Gtk_Cell_Layout is new Glib.Types.Implements
      (Gtk.Cell_Layout.Gtk_Cell_Layout, Gtk_Cell_Area_Record, Gtk_Cell_Area);

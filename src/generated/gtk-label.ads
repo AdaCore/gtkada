@@ -219,6 +219,7 @@ with Gtk.Accessible;           use Gtk.Accessible;
 with Gtk.Accessible_Hypertext; use Gtk.Accessible_Hypertext;
 with Gtk.Accessible_Text;      use Gtk.Accessible_Text;
 with Gtk.Atcontext;            use Gtk.Atcontext;
+with Gtk.Buildable;            use Gtk.Buildable;
 with Gtk.Constraint_Target;    use Gtk.Constraint_Target;
 with Gtk.Enums;                use Gtk.Enums;
 with Gtk.Widget;               use Gtk.Widget;
@@ -727,6 +728,9 @@ package Gtk.Label is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    procedure Announce
       (Self     : not null access Gtk_Label_Record;
@@ -1091,6 +1095,8 @@ package Gtk.Label is
    --
    --  - "Gtk.AccessibleText"
    --
+   --  - "Gtk.Buildable"
+   --
    --  - "Gtk.ConstraintTarget"
 
    package Implements_Gtk_Accessible is new Glib.Types.Implements
@@ -1125,6 +1131,17 @@ package Gtk.Label is
      (Interf : Gtk.Accessible_Text.Gtk_Accessible_Text)
    return Gtk_Label
    renames Implements_Gtk_Accessible_Text.To_Object;
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Label_Record, Gtk_Label);
+   function "+"
+     (Widget : access Gtk_Label_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Label
+   renames Implements_Gtk_Buildable.To_Object;
 
    package Implements_Gtk_Constraint_Target is new Glib.Types.Implements
      (Gtk.Constraint_Target.Gtk_Constraint_Target, Gtk_Label_Record, Gtk_Label);

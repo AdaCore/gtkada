@@ -92,6 +92,7 @@ with Glib.Variant;          use Glib.Variant;
 with Gtk.Accessible;        use Gtk.Accessible;
 with Gtk.Application;       use Gtk.Application;
 with Gtk.Atcontext;         use Gtk.Atcontext;
+with Gtk.Buildable;         use Gtk.Buildable;
 with Gtk.Constraint_Target; use Gtk.Constraint_Target;
 with Gtk.Native;            use Gtk.Native;
 with Gtk.Root;              use Gtk.Root;
@@ -156,6 +157,9 @@ package Gtk.Application_Window is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    procedure Action_Added
       (Self        : not null access Gtk_Application_Window_Record;
@@ -356,6 +360,8 @@ package Gtk.Application_Window is
    --
    --  - "Gtk.Accessible"
    --
+   --  - "Gtk.Buildable"
+   --
    --  - "Gtk.ConstraintTarget"
    --
    --  - "Gtk.Native"
@@ -396,6 +402,17 @@ package Gtk.Application_Window is
      (Interf : Gtk.Accessible.Gtk_Accessible)
    return Gtk_Application_Window
    renames Implements_Gtk_Accessible.To_Object;
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Application_Window_Record, Gtk_Application_Window);
+   function "+"
+     (Widget : access Gtk_Application_Window_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Application_Window
+   renames Implements_Gtk_Buildable.To_Object;
 
    package Implements_Gtk_Constraint_Target is new Glib.Types.Implements
      (Gtk.Constraint_Target.Gtk_Constraint_Target, Gtk_Application_Window_Record, Gtk_Application_Window);

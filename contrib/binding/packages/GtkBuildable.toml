@@ -1,0 +1,11 @@
+# ============================================================
+#   GtkBuildable
+# ============================================================
+
+[[virtual_method]]
+id = "*"
+bind = false
+
+[[method]]
+id = "gtk_buildable_custom_tag_start"
+bind = false
