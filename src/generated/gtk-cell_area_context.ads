@@ -157,7 +157,7 @@ package Gtk.Cell_Area_Context is
    --  sizes exceed the current minimum and natural height.
    --  This is used by `GtkCellAreaContext` implementations during the request
    --  process over a series of `GtkTreeModel` rows to progressively push the
-   --  requested height over a series of gtk_cell_area_get_preferred_height
+   --  requested height over a series of Gtk.Cell_Area.Get_Preferred_Height
    --  requests.
    --  Deprecated since 4.10, 1
    --  @param Minimum_Height the proposed new minimum height for Context
@@ -172,7 +172,7 @@ package Gtk.Cell_Area_Context is
    --  sizes exceed the current minimum and natural width.
    --  This is used by `GtkCellAreaContext` implementations during the request
    --  process over a series of `GtkTreeModel` rows to progressively push the
-   --  requested width over a series of gtk_cell_area_get_preferred_width
+   --  requested width over a series of Gtk.Cell_Area.Get_Preferred_Width
    --  requests.
    --  Deprecated since 4.10, 1
    --  @param Minimum_Width the proposed new minimum width for Context
@@ -186,14 +186,14 @@ package Gtk.Cell_Area_Context is
    --  only allowed to grow (this is usually an option for views rendering
    --  large data stores as a measure of optimization), then only the row that
    --  changed or was inserted needs to be (re)requested with
-   --  gtk_cell_area_get_preferred_width.
+   --  Gtk.Cell_Area.Get_Preferred_Width.
    --  When the new overall size of the context requires that the allocated
    --  size changes (or whenever this allocation changes at all), the variable
    --  row sizes need to be re-requested for every row.
    --  For instance, if the rows are displayed all with the same width from
    --  top to bottom then a change in the allocated width necessitates a
    --  recalculation of all the displayed row heights using
-   --  gtk_cell_area_get_preferred_height_for_width.
+   --  Gtk.Cell_Area.Get_Preferred_Height_For_Width.
    --  Deprecated since 4.10, 1
 
    ----------------
@@ -209,22 +209,22 @@ package Gtk.Cell_Area_Context is
    Minimum_Height_Property : constant Glib.Properties.Property_Int;
    --  The minimum height for the `GtkCellArea` in this context for all
    --  `GtkTreeModel` rows that this context was requested for using
-   --  gtk_cell_area_get_preferred_height.
+   --  Gtk.Cell_Area.Get_Preferred_Height.
 
    Minimum_Width_Property : constant Glib.Properties.Property_Int;
    --  The minimum width for the `GtkCellArea` in this context for all
    --  `GtkTreeModel` rows that this context was requested for using
-   --  gtk_cell_area_get_preferred_width.
+   --  Gtk.Cell_Area.Get_Preferred_Width.
 
    Natural_Height_Property : constant Glib.Properties.Property_Int;
    --  The natural height for the `GtkCellArea` in this context for all
    --  `GtkTreeModel` rows that this context was requested for using
-   --  gtk_cell_area_get_preferred_height.
+   --  Gtk.Cell_Area.Get_Preferred_Height.
 
    Natural_Width_Property : constant Glib.Properties.Property_Int;
    --  The natural width for the `GtkCellArea` in this context for all
    --  `GtkTreeModel` rows that this context was requested for using
-   --  gtk_cell_area_get_preferred_width.
+   --  Gtk.Cell_Area.Get_Preferred_Width.
 
 private
    Natural_Width_Property : constant Glib.Properties.Property_Int :=

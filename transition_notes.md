@@ -56,7 +56,7 @@ GdkAppLaunchContext.toml:
 
 GdkEvent.toml:
 
-- when done, reactivate bindings in GtkDisplay.toml
+- when done, reactivate bindings in GtkDisplay.toml, GtkCellArea.toml, GtkCellEditable.toml, GtkCellRenderer.toml
 
 GdkPixbuf.toml:
 
@@ -94,6 +94,10 @@ GdkSeat.toml:
 GtkApplication.toml:
 
 - when done, reactivate bindings in GtkWindow.toml
+
+GtkSnapshot.toml:
+
+- when done, reactivate bindings in GtkCellArea.toml, GtkCellRenderer.toml
 
 GtkWidget.toml:
 

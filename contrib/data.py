@@ -334,7 +334,7 @@ binding = (
     "--GtkButtonBox",
     "--GtkCalendar",
     "----GtkCellAccessible",  # We do not support atk
-    "--GtkCellArea",
+    "GtkCellArea",
     "--GtkCellAreaBox",
     "----GtkCellAreaClass",
     "GtkCellAreaContext",
