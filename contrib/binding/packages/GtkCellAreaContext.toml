@@ -1,0 +1,11 @@
+# It has been deprecated since gtk 4.10
+
+obsolescent = true
+
+[doc]
+group = "Trees and Lists"
+
+[[method]]
+id = "gtk_cell_area_context_get_area"
+bind = false
+# in Gtk.Cell_Area

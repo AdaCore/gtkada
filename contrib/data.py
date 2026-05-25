@@ -337,7 +337,7 @@ binding = (
     "--GtkCellArea",
     "--GtkCellAreaBox",
     "----GtkCellAreaClass",
-    "--GtkCellAreaContext",
+    "GtkCellAreaContext",
     "GtkCellRenderer",
     "--GtkCellRendererAccel",
     "----GtkCellRendererClass",  # Useless in Ada
