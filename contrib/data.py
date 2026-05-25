@@ -324,6 +324,7 @@ binding = (
     "--GtkBin",
     "--GtkBindingEntry",
     "--GtkBindingSet",
+    "GtkBitset",
     "--GtkBorder",
     "GtkBox",
     "----GtkBooleanCellAccessible",  # We do not support atk
