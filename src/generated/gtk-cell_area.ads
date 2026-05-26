@@ -653,7 +653,7 @@ package Gtk.Cell_Area is
    --  Explicitly sets the currently focused cell to Renderer.
    --  This is generally called by implementations of `GtkCellAreaClass.focus`
    --  or `GtkCellAreaClass.event`, however it can also be used to implement
-   --  functions such as gtk_tree_view_set_cursor_on_cell.
+   --  functions such as Gtk.Tree_View.Set_Cursor_On_Cell.
    --  Deprecated since 4.10, 1
    --  @param Renderer the `GtkCellRenderer` to give focus to
 
