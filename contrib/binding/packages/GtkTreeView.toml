@@ -1,0 +1,119 @@
+# ============================================================
+#   GtkTreeView
+# ============================================================
+
+# It has been deprecated since gtk 4.10
+
+obsolescent = true
+
+[[parameter]]
+name = "self"
+ada = "Tree_View"
+
+[[enum]]
+ctype = "GtkTreeViewDropPosition"
+prefix = "GTK_TREE_VIEW_"
+
+[[method]]
+id = "gtk_tree_view_get_columns"
+return = "GtkTreeViewColumnList"
+
+[[method]]
+id = "gtk_tree_view_new_with_model"
+ada = "Gtk_New"
+
+[[method]]
+id = "gtk_tree_view_insert_column"
+
+[[method.parameter]]
+name = "position"
+default = "-1"
+
+[[method]]
+id = "gtk_tree_view_get_path_at_pos"
+return_as_param = "Row_Found"
+
+[[method]]
+id = "gtk_tree_view_get_visible_range"
+return_as_param = "Success"
+
+[[method]]
+id = "gtk_tree_view_get_tooltip_context"
+return_as_param = "Success"
+
+[[method]]
+id = "gtk_tree_view_set_expander_column"
+
+[[method.parameter]]
+name = "column"
+allow_none = "1"
+
+[[method]]
+id = "gtk_tree_view_get_hadjustment"
+bind = false
+# from scrollable
+
+[[method]]
+id = "gtk_tree_view_get_vadjustment"
+bind = false
+# from scrollable
+
+[[method]]
+id = "gtk_tree_view_set_hadjustment"
+bind = false
+# from scrollable
+
+[[method]]
+id = "gtk_tree_view_set_vadjustment"
+bind = false
+# from scrollable
+
+[[method]]
+id = "gtk_tree_view_enable_model_drag_source"
+bind = false
+# Needs GdkModifierType
+
+[[method.parameter]]
+name = "targets"
+ctype = "Gtk.Target_List.Target_Entry_Array"
+
+[[method.parameter]]
+name = "n_targets"
+ada = ""
+default = "Targets'Length"
+
+[[method]]
+id = "gtk_tree_view_enable_model_drag_dest"
+bind = false
+# Needs Gdk.Drag_Contexts.Gdk_Drag_Action
+
+[[method.parameter]]
+name = "targets"
+ctype = "Gtk.Target_List.Target_Entry_Array"
+
+[[method.parameter]]
+name = "n_targets"
+ada = ""
+default = "Targets'Length"
+
+[extra]
+body = '''
+
+   procedure Gtk_New
+      (Tree_View : out Gtk_Tree_View;
+       Model     : access Gtk.Tree_Model.Gtk_Root_Tree_Model_Record'Class)
+   is
+   begin
+      Gtk_New (Tree_View, To_Interface (Model));
+   end Gtk_New;
+       '''
+
+[[extra.spec]]
+text = '''
+
+   procedure Gtk_New
+      (Tree_View : out Gtk_Tree_View;
+       Model     : access Gtk.Tree_Model.Gtk_Root_Tree_Model_Record'Class);
+   --  A convenience function so that one can directly pass a model, without
+   --  converting to a Gtk_Tree_Model via the "+" operator.
+       '''

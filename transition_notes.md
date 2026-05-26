@@ -54,6 +54,10 @@ GdkAppLaunchContext.toml:
 
 - when done, reactivate bindings in GdkDisplay.toml
 
+GdkDragContext.toml:
+
+- when done, reactivate bindings in GtkTreeView.toml
+
 GdkEvent.toml:
 
 - when done, reactivate bindings in GtkDisplay.toml, GtkCellArea.toml, GtkCellEditable.toml, GtkCellRenderer.toml
@@ -77,7 +81,7 @@ GdkKeymapKey:
 GdkModifierType:
 
 - when done, reactivate bindings in GdkDevice.toml, GtkDisplay.toml,
-  GdkSurface.toml
+  GdkSurface.toml, GtkTreeView.toml
 
 GdkSeat.toml:
 

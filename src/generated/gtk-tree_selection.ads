@@ -32,7 +32,7 @@
 --  `GtkTreeView` widget instead of a separate function.
 --
 --  The `GtkTreeSelection` object is gotten from a `GtkTreeView` by calling
---  gtk_tree_view_get_selection. It can be manipulated to check the selection
+--  Gtk.Tree_View.Get_Selection. It can be manipulated to check the selection
 --  status of the tree, as well as select and deselect individual rows.
 --  Selection is done completely view side. As a result, multiple views of the
 --  same model can have completely different selections. Additionally, you
