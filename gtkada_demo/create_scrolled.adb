@@ -22,10 +22,10 @@
 ------------------------------------------------------------------------------
 
 with Glib;                use Glib;
+with Gtk.Button;          use Gtk.Button;
 with Gtk.Enums;           use Gtk.Enums;
-with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk.Grid;            use Gtk.Grid;
-with Gtk.Toggle_Button;   use Gtk.Toggle_Button;
+with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
 with Gtk;                 use Gtk;
 
 package body Create_Scrolled is
@@ -38,13 +38,13 @@ package body Create_Scrolled is
    begin
       return "This demo shows how a @bGtk_Scrolled_Window@B can be used to"
         & " provide some scrolling in any other widget. In this example, the"
-        & " @bGtk_Scrolled_Window@B contains a Gtk_Table, that is"
+        & " @bGtk_Scrolled_Window@B contains a Gtk_Grid, that is"
         & " automatically scrolled when the scrollbars are moved."
         & ASCII.LF
         & "No explicit signal is required in this demo, everything is done"
         & " through @bGtk_Adjustment@Bs, that contain the current value of the"
         & " @bGtK_Scrollbar@Bs and also specify the area to display in the"
-        & " @bGtk_Table@B.";
+        & " @bGtk_Grid@B.";
    end Help;
 
    ---------
@@ -52,33 +52,28 @@ package body Create_Scrolled is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Table     : Gtk_Grid;
-      Scrolled  : Gtk_Scrolled_Window;
-      Toggle    : Gtk_Toggle_Button;
+      Table    : Gtk_Grid;
+      Scrolled : Gtk_Scrolled_Window;
+      Button   : Gtk_Button;
 
    begin
       Frame.Set_Label ("Scrolled Window");
 
       Gtk_New (Scrolled);
-      Scrolled.Set_Border_Width (Border_Width => 10);
       Scrolled.Set_Policy (Hscrollbar_Policy => Policy_Automatic,
                            Vscrollbar_Policy => Policy_Automatic);
-      Add (Frame, Scrolled);
+      Frame.Set_Child (Scrolled);
 
       Gtk_New (Table);
-      Scrolled.Add (Table);
-      Table.Set_Focus_Hadjustment (Get_Hadjustment (Scrolled));
-      Table.Set_Focus_Vadjustment (Get_Vadjustment (Scrolled));
+      Scrolled.Set_Child (Table);
 
       for I in 0 .. 19 loop
          for J in 0 .. 19 loop
-            Gtk_New (Toggle, "button (" & Integer'Image (I)
+            Gtk_New (Button, "button (" & Integer'Image (I)
                      & "," & Integer'Image (J) & ")");
-            Table.Attach (Toggle, Gint (I), Gint (J));
+            Table.Attach (Button, Gint (I), Gint (J));
          end loop;
       end loop;
-
-      Frame.Show_All;
    end Run;
 
 end Create_Scrolled;

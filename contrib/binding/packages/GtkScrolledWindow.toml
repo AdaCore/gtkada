@@ -1,0 +1,40 @@
+# ============================================================
+#   GtkScrolledWindow
+# ============================================================
+
+[doc]
+group       = "Layout containers"
+gtkada_demo = "create_scrolled.adb"
+
+[[parameter]]
+name = "self"
+ada  = "Scrolled_Window"
+
+[[method]]
+id = "gtk_scrolled_window_new"
+
+[[method]]
+id = "gtk_scrolled_window_set_hadjustment"
+
+  [[method.parameter]]
+  name    = "hadjustment"
+  default = "null"
+
+[[method]]
+id = "gtk_scrolled_window_set_vadjustment"
+
+  [[method.parameter]]
+  name    = "vadjustment"
+  default = "null"
+
+[[method]]
+id = "::edge-overshot"
+
+[[method]]
+id = "::edge-reached"
+
+[[method]]
+id = "::move-focus-out"
+
+[[method]]
+id = "::scroll-child"

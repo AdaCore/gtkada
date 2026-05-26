@@ -181,8 +181,8 @@ package Gtk.Arguments is
      Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Text_Direction);
    --   function Unchecked_To_Gtk_Pan_Direction
    --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Pan_Direction);
-   --   function Unchecked_To_Gtk_Position_Type
-   --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Position_Type);
+   function Unchecked_To_Gtk_Position_Type is new
+     Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Position_Type);
    --   function Unchecked_To_Gtk_Event_Sequence_State
    --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Event_Sequence_State);
    function Unchecked_To_Gtk_Direction_Type is new
