@@ -11,6 +11,13 @@
 - Upgraded Glib bindings
 - Moved some conversion functions from Gtk.Arguments to Glib.Values, to remove any
   dependency from Glib to Gtk.
+- Reactivated `gtkada_demo`'s `Create_Label` package: migrated from Gtk3 to Gtk4
+  (`Gtk_New (Box, Orientation_*, …)` + `Append` instead of `Pack_Start`,
+  `Set_Child` instead of `Add`, `Set_Wrap` / `Set_Wrap_Mode` instead of
+  `Set_Line_Wrap`, `Set_Markup` with `<u>...</u>` in place of the now-gone
+  `Set_Pattern`, dropped `Show_All`) and wired it into
+  `Main_Windows.On_Activate`, so the demo window now shows the `Gtk.Label`
+  test instead of the placeholder.
 
 ## To do as we translate
 

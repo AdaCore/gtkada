@@ -23,7 +23,9 @@
 
 with Gtk.Application;        use Gtk.Application;
 with Gtk.Application_Window; use Gtk.Application_Window;
-with Gtk.Label;              use Gtk.Label;
+with Gtk.Frame;              use Gtk.Frame;
+
+with Create_Label;
 
 --  TRANSITION: the original `with` clauses are preserved below as
 --  comments. Uncomment each one as the corresponding binding becomes
@@ -158,13 +160,14 @@ package body Main_Windows is
 
    procedure On_Activate (Self : access GApplication_Record'Class) is
       App_Win : Gtk_Application_Window;
-      Label   : Gtk_Label;
+      Frame   : Gtk_Frame;
    begin
       Gtk_New (App_Win, Gtk_Application (Self));
-      App_Win.Set_Title ("GtkAda Demo (in transition)");
-      App_Win.Set_Default_Size (400, 200);
-      Gtk_New (Label, "in transition");
-      App_Win.Set_Child (Label);
+      App_Win.Set_Title ("GtkAda Demo");
+      App_Win.Set_Default_Size (800, 600);
+      Gtk_New (Frame);
+      App_Win.Set_Child (Frame);
+      Create_Label.Run (Frame);
       App_Win.Present;
    end On_Activate;
 

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 2000-2018, AdaCore                     --
+--                    Copyright (C) 2000-2026, AdaCore                      --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,12 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gtk.Box;     use Gtk.Box;
-with Gtk.Enums;   use Gtk.Enums;
-with Gtk.Frame;   use Gtk.Frame;
-with Gtk.Label;   use Gtk.Label;
+with Gtk.Box;      use Gtk.Box;
+with Gtk.Enums;    use Gtk.Enums;
+with Gtk.Frame;    use Gtk.Frame;
+with Gtk.Label;    use Gtk.Label;
 with Glib.Convert; use Glib.Convert;
-with Pango.Enums; use Pango.Enums;
+with Pango.Enums;  use Pango.Enums;
 
 package body Create_Label is
 
@@ -52,15 +52,18 @@ package body Create_Label is
       Frame2     : Gtk_Frame;
    begin
       Set_Label (Frame, "Label");
-      Gtk_New_Vbox (Vbox, False, 5);
-      Gtk_New_Hbox (Hbox, False, 5);
-      Add (Frame, Hbox);
-      Pack_Start (Hbox, Vbox, False, False, 0);
+      Gtk_New (Hbox, Orientation_Horizontal, 5);
+      Hbox.Set_Homogeneous (False);
+      Frame.Set_Child (Hbox);
+
+      Gtk_New (Vbox, Orientation_Vertical, 5);
+      Vbox.Set_Homogeneous (False);
+      Hbox.Append (Vbox);
 
       Gtk_New (Frame2, "Normal Label");
       Gtk_New (Label, "This is a Normal Label");
-      Add (Frame2, Label);
-      Pack_Start (Vbox, Frame2, False, False, 0);
+      Frame2.Set_Child (Label);
+      Vbox.Append (Frame2);
 
       Gtk_New (Frame2, "Multi-line Label");
       Gtk_New (Label, "This is a Multi-line label."
@@ -68,24 +71,24 @@ package body Create_Label is
                & "Second Line"
                & ASCII.LF
                & "Third line");
-      Add (Frame2, Label);
-      Pack_Start (Vbox, Frame2, False, False, 0);
+      Frame2.Set_Child (Label);
+      Vbox.Append (Frame2);
 
       Gtk_New (Frame2, "Left Justified Label");
       Gtk_New (Label, "This is a Left-Justified"
                & ASCII.LF & "Multi-line label." & ASCII.LF
                & "Third      line");
-      Set_Justify (Label, Justify_Left);
-      Add (Frame2, Label);
-      Pack_Start (Vbox, Frame2, False, False, 0);
+      Label.Set_Justify (Justify_Left);
+      Frame2.Set_Child (Label);
+      Vbox.Append (Frame2);
 
       Gtk_New (Frame2, "Right Justified Label");
       Gtk_New (Label, "This is a Right-Justified"
                & ASCII.LF & "Multi-line label." & ASCII.LF
                & "Fourth      line");
-      Set_Justify (Label, Justify_Right);
-      Add (Frame2, Label);
-      Pack_Start (Vbox, Frame2, False, False, 0);
+      Label.Set_Justify (Justify_Right);
+      Frame2.Set_Child (Label);
+      Vbox.Append (Frame2);
 
       Gtk_New (Frame2, "Selectable Label");
       Gtk_New (Label, "This is a selectable label "
@@ -93,12 +96,13 @@ package body Create_Label is
                & "you can select the text with the "
                & ASCII.LF
                & "mouse and paste it.");
-      Set_Selectable (Label, True);
-      Add (Frame2, Label);
-      Pack_Start (Vbox, Frame2, False, False, 0);
+      Label.Set_Selectable (True);
+      Frame2.Set_Child (Label);
+      Vbox.Append (Frame2);
 
-      Gtk_New_Vbox (Vbox, False, 5);
-      Pack_Start (Hbox, Vbox, False, False, 0);
+      Gtk_New (Vbox, Orientation_Vertical, 5);
+      Vbox.Set_Homogeneous (False);
+      Hbox.Append (Vbox);
 
       Gtk_New (Frame2, "Line wrapped Label");
       Gtk_New (Label,
@@ -110,9 +114,9 @@ package body Create_Label is
                & ASCII.LF
                & "     It supports multiple paragraphs correctly, and  "
                & "correctly   adds many          extra  spaces. ");
-      Set_Line_Wrap (Label, True);
-      Add (Frame2, Label);
-      Pack_Start (Vbox, Frame2, False, False, 0);
+      Label.Set_Wrap (True);
+      Frame2.Set_Child (Label);
+      Vbox.Append (Frame2);
 
       Gtk_New (Frame2, "Character mode wrapped label");
       Gtk_New (Label,
@@ -125,10 +129,10 @@ package body Create_Label is
                & ASCII.LF
                & "     It supports multiple paragraphs correctly, and  "
                & "correctly   adds many          extra  spaces. ");
-      Set_Line_Wrap (Label, True);
-      Set_Line_Wrap_Mode (Label, Pango_Wrap_Char);
-      Add (Frame2, Label);
-      Pack_Start (Vbox, Frame2, False, False, 0);
+      Label.Set_Wrap (True);
+      Label.Set_Wrap_Mode (Pango_Wrap_Char);
+      Frame2.Set_Child (Label);
+      Vbox.Append (Frame2);
 
       Gtk_New (Frame2, "Filled, wrapped Label");
       Gtk_New (Label,
@@ -140,23 +144,26 @@ package body Create_Label is
                & ASCII.LF
                & "     It supports multiple paragraphs correctly, and  "
                & "correctly   adds many          extra  spaces. ");
-      Set_Line_Wrap (Label, True);
-      Set_Justify (Label, Justify_Fill);
-      Add (Frame2, Label);
-      Pack_Start (Vbox, Frame2, False, False, 0);
+      Label.Set_Wrap (True);
+      Label.Set_Justify (Justify_Fill);
+      Frame2.Set_Child (Label);
+      Vbox.Append (Frame2);
 
+      --  Gtk4 has dropped Gtk.Label.Set_Pattern; emulate the original
+      --  "Underlined Label" sub-frame with Pango markup instead, which is the
+      --  idiomatic Gtk4 way of underlining ranges of characters.
       Gtk_New (Frame2, "Underlined Label");
-      Gtk_New
-        (Label, Locale_To_UTF8
-         ("This label is underlined!"
-          & ASCII.LF
-          & "This one is underlined in ÆüËÜ¸ì¤ÎÆþÍÑquite a funky fashion"));
-      Set_Justify (Label, Justify_Left);
-      Set_Pattern (Label,
-                   "_________________________ _ _________ _ _____ _ __"
-                   & " __  ___ ____ _____");
-      Add (Frame2, Label);
-      Pack_Start (Vbox, Frame2, False, False, 0);
+      Gtk_New (Label);
+      Label.Set_Markup
+        (Locale_To_UTF8
+           ("<u>This label is underlined!</u>"
+            & ASCII.LF
+            & "<u>This one</u> is <u>underlined</u> <u>in</u>"
+            & " ï¿½ï¿½ï¿½Ü¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½<u>quite</u> <u>a</u> <u>funky</u>"
+            & " <u>fashion</u>"));
+      Label.Set_Justify (Justify_Left);
+      Frame2.Set_Child (Label);
+      Vbox.Append (Frame2);
 
       Gtk_New (Frame2, "Markup Label");
       Gtk_New (Label);
@@ -178,10 +185,8 @@ package body Create_Label is
           & "<sup><small>2</small></sup> "
           & "+ 3</span>"
           & " besides other things..."));
-      Add (Frame2, Label);
-      Pack_Start (Vbox, Frame2, False, False, 0);
-
-      Show_All (Frame);
+      Frame2.Set_Child (Label);
+      Vbox.Append (Frame2);
    end Run;
 
 end Create_Label;
