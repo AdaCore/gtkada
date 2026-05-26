@@ -574,7 +574,7 @@ binding = (
     "GtkTreePath",
     "--GtkTreeRowReference",
     "GtkTreeSelection",
-    "--GtkTreeStore",
+    "GtkTreeStore",
     "GtkTreeView",
     "----GtkTreeViewAccessible",  # We do not support atk
     "GtkTreeViewColumn",
