@@ -380,6 +380,20 @@ package body Gtk.Arguments is
       Unsafe_Nth (Args, Num, Val);
       return Cairo.Get_Context (Val);
    end Unchecked_To_Cairo_Context;
+
+   --------------------------------
+   -- Unchecked_To_Gdk_Rectangle --
+   --------------------------------
+
+   function Unchecked_To_Gdk_Rectangle
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Gdk.Rectangle.Gdk_Rectangle
+   is
+      Result : constant Cairo.Region.Cairo_Rectangle_Int :=
+        Unchecked_To_Cairo_Rectangle_Int (Args, Num);
+   begin
+      return (Result.X, Result.Y, Result.Width, Result.Height);
+   end Unchecked_To_Gdk_Rectangle;
 --
 --   ---------------------------
 --   -- Unchecked_To_Gdk_RGBA --

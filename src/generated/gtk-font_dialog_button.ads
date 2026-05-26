@@ -45,6 +45,7 @@ with Glib.Properties;         use Glib.Properties;
 with Glib.Types;              use Glib.Types;
 with Gtk.Accessible;          use Gtk.Accessible;
 with Gtk.Atcontext;           use Gtk.Atcontext;
+with Gtk.Buildable;           use Gtk.Buildable;
 with Gtk.Constraint_Target;   use Gtk.Constraint_Target;
 with Gtk.Font_Dialog;         use Gtk.Font_Dialog;
 with Gtk.Widget;              use Gtk.Widget;
@@ -225,6 +226,9 @@ package Gtk.Font_Dialog_Button is
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
+   --  Methods inherited from the Buildable interface are not duplicated here
+   --  since they are meant to be used by tools, mostly. If you need to call
+   --  them, use an explicit cast through the "-" operator below.
 
    procedure Announce
       (Self     : not null access Gtk_Font_Dialog_Button_Record;
@@ -373,6 +377,8 @@ package Gtk.Font_Dialog_Button is
    --
    --  - "Gtk.Accessible"
    --
+   --  - "Gtk.Buildable"
+   --
    --  - "Gtk.ConstraintTarget"
 
    package Implements_Gtk_Accessible is new Glib.Types.Implements
@@ -385,6 +391,17 @@ package Gtk.Font_Dialog_Button is
      (Interf : Gtk.Accessible.Gtk_Accessible)
    return Gtk_Font_Dialog_Button
    renames Implements_Gtk_Accessible.To_Object;
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Font_Dialog_Button_Record, Gtk_Font_Dialog_Button);
+   function "+"
+     (Widget : access Gtk_Font_Dialog_Button_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Font_Dialog_Button
+   renames Implements_Gtk_Buildable.To_Object;
 
    package Implements_Gtk_Constraint_Target is new Glib.Types.Implements
      (Gtk.Constraint_Target.Gtk_Constraint_Target, Gtk_Font_Dialog_Button_Record, Gtk_Font_Dialog_Button);

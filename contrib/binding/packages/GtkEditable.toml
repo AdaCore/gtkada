@@ -1,0 +1,65 @@
+# ============================================================
+#   GtkEditable
+# ============================================================
+
+[[method]]
+id = "::insert-text"
+
+[[method.parameter]]
+name = "position"
+direction = "access"
+ctype = "Glib.Gint"
+
+[[method]]
+id = "gtk_editable_select_region"
+
+[[method.parameter]]
+name = "end_pos"
+default = "-1"
+
+[[method]]
+id = "gtk_editable_delete_text"
+
+[[method.parameter]]
+name = "end_pos"
+default = "-1"
+
+[[method]]
+id = "gtk_editable_get_chars"
+
+[[method.parameter]]
+name = "end_pos"
+default = "-1"
+
+[[method]]
+id = "gtk_editable_install_properties"
+bind = false
+# Depends on GObjectClass 
+
+[extra]
+body = '''
+
+   procedure Insert_Text
+     (Editable : Gtk_Editable;
+      New_Text : UTF8_String;
+      Position : in out Glib.Gint) is
+   begin
+      Insert_Text
+        (Editable, New_Text & ASCII.NUL, New_Text'Length, Position);
+   end Insert_Text;
+        '''
+
+[[extra.spec]]
+text = '''
+
+   procedure Insert_Text
+     (Editable : Gtk_Editable;
+      New_Text : UTF8_String;
+      Position : in out Glib.Gint);
+   --  Convenience subprogram, identical to Insert_Text above without
+   --  the requirement to supply the New_Text_Length argument.
+        '''
+
+[[method]]
+id = "gtk_editable_get_selection_bounds"
+return_as_param = "Has_Selection"

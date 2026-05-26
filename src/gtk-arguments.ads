@@ -46,7 +46,7 @@ with Glib.Types;
 --  with Gdk.Drag_Contexts;
 --  with Gdk.Event;
 --  with Gdk.RGBA;
---  with Gdk.Rectangle;
+with Gdk.Rectangle;
 --  with Gdk.Types;
 --  with Gtk.Dialog;
 with Gtk.Enums;
@@ -230,10 +230,9 @@ package Gtk.Arguments is
    function Unchecked_To_Cairo_Rectangle_Int
      (Args : Glib.Values.C_GValues; Num : Guint)
       return Cairo.Region.Cairo_Rectangle_Int;
-   --   function Unchecked_To_Gdk_Rectangle
-   --     (Args : Glib.Values.C_GValues; Num : Guint)
-   --      return Gdk.Rectangle.Gdk_Rectangle
-   --      renames Unchecked_To_Cairo_Rectangle_Int;
+   function Unchecked_To_Gdk_Rectangle
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Gdk.Rectangle.Gdk_Rectangle;
    --   function Unchecked_To_Gtk_Allocation
    --     (Args : Glib.Values.C_GValues; Num : Guint)
    --     return Gtk.Widget.Gtk_Allocation

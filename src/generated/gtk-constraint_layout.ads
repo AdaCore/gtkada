@@ -161,6 +161,8 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
+with Glib.Types;         use Glib.Types;
+with Gtk.Buildable;      use Gtk.Buildable;
 with Gtk.Layout_Manager; use Gtk.Layout_Manager;
 
 package Gtk.Constraint_Layout is
@@ -198,5 +200,23 @@ package Gtk.Constraint_Layout is
    procedure Remove_All_Constraints
       (Layout : not null access Gtk_Constraint_Layout_Record);
    --  Removes all constraints from the layout manager.
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk.Buildable"
+
+   package Implements_Gtk_Buildable is new Glib.Types.Implements
+     (Gtk.Buildable.Gtk_Buildable, Gtk_Constraint_Layout_Record, Gtk_Constraint_Layout);
+   function "+"
+     (Widget : access Gtk_Constraint_Layout_Record'Class)
+   return Gtk.Buildable.Gtk_Buildable
+   renames Implements_Gtk_Buildable.To_Interface;
+   function "-"
+     (Interf : Gtk.Buildable.Gtk_Buildable)
+   return Gtk_Constraint_Layout
+   renames Implements_Gtk_Buildable.To_Object;
 
 end Gtk.Constraint_Layout;
