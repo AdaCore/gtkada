@@ -77,14 +77,6 @@ id = "gtk_widget_get_frame_clock"
 bind = false
 
 [[method]]
-id = "gtk_widget_get_layout_manager"
-bind = false
-
-[[method]]
-id = "gtk_widget_set_layout_manager"
-bind = false
-
-[[method]]
 id = "gtk_widget_get_primary_clipboard"
 bind = false
 

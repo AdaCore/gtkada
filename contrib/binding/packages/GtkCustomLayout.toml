@@ -1,0 +1,10 @@
+[doc]
+group = "Layout containers"
+
+# The constructor takes three callbacks (GtkCustomRequestModeFunc,
+# GtkCustomMeasureFunc, GtkCustomAllocateFunc). These callbacks are not
+# bound yet; disable the constructor for now. The class itself is still
+# emitted as an empty layout-manager subclass.
+[[method]]
+id = "gtk_custom_layout_new"
+bind = false

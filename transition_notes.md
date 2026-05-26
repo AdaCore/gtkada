@@ -99,6 +99,35 @@ GtkWidget.toml:
 
 - Review the commented-out code imported from the gtk3 bindings, and reactivate as needed.
 
+GtkFixedLayoutChild.toml:
+
+- `gtk_fixed_layout_child_get_transform` and `gtk_fixed_layout_child_set_transform`
+  are currently disabled because they take or return a `GskTransform*` and GSK
+  is not bound yet (no `Gsk-4.0.gir` is loaded). Re-enable them when GSK is
+  bound.
+
+GtkConstraintLayout.toml:
+
+- All methods that take or return a `GtkConstraint` or `GtkConstraintGuide`
+  are currently disabled (add/remove constraint, add/remove guide,
+  observe_constraints, observe_guides, add_constraints_from_description*).
+  Re-enable them once `GtkConstraint` and `GtkConstraintGuide` are bound.
+
+GtkCustomLayout.toml:
+
+- `gtk_custom_layout_new` is disabled because it takes three callback
+  parameters (`GtkCustomRequestModeFunc`, `GtkCustomMeasureFunc`,
+  `GtkCustomAllocateFunc`). Re-enable once those callback types are bound.
+
+GtkLayoutManager.toml and GtkLayoutChild.toml:
+
+- `gtk_layout_manager_get_widget`, `gtk_layout_manager_allocate`,
+  `gtk_layout_manager_measure`, `gtk_layout_manager_get_layout_child`,
+  `gtk_layout_child_get_child_widget`, `gtk_layout_child_get_layout_manager`
+  are disabled to break a circular dependency between `Gtk.Widget`,
+  `Gtk.Layout_Manager` and `Gtk.Layout_Child`. Once the generator gains
+  support for `limited with`, these can be re-enabled.
+
 ## Dialog widgets (work item #46)
 
 Bound so far: `GtkNativeDialog`, `GtkAlertDialog`, `GtkFontDialog` +

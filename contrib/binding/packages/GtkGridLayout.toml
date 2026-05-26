@@ -1,0 +1,10 @@
+[doc]
+group = "Layout containers"
+
+[[parameter]]
+name = "self"
+ada = "Grid"
+
+[[method]]
+id = "gtk_grid_layout_new"
+return = "GtkGridLayout*"

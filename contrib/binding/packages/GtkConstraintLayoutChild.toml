@@ -1,0 +1,8 @@
+into = "GtkConstraintLayout"
+
+[doc]
+group = "Layout containers"
+
+[[method]]
+id = "gtk_constraint_layout_child_get_type"
+ada = "Constraint_Layout_Child_Get_Type"

@@ -438,6 +438,25 @@ binding = (
     "GtkLabel",
     "----GtkLabelAccessible",  # We do not support atk
     "--GtkLayout",
+
+           # GtkLayoutManager and GtkLayoutChild are the abstract bases of
+           # the layout managers. They must be listed before their
+           # subclasses so the generator emits them first.
+           "GtkLayoutManager",
+           "GtkLayoutChild",
+           "GtkBinLayout",
+           "GtkBoxLayout",
+           "GtkCenterLayout",
+           "GtkConstraintLayout",
+           "GtkConstraintLayoutChild",
+           "--GtkCustomLayout",
+           "GtkFixedLayout",
+           "GtkFixedLayoutChild",
+           "GtkGridLayout",
+           "GtkGridLayoutChild",
+           "GtkOverlayLayout",
+           "GtkOverlayLayoutChild",
+
     "--GtkLevelBar",
     "----GtkLevelBarAccessible",  # We do not support atk
     "--GtkLinkButton",

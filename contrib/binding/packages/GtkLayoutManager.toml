@@ -1,0 +1,31 @@
+[doc]
+group = "Layout containers"
+
+[[parameter]]
+name = "self"
+ada = "Manager"
+
+# The following methods take or return a Gtk.Widget or Gtk.Layout_Child.
+# Because Gtk.Widget itself withs Gtk.Layout_Manager (for Get_Layout_Manager
+# / Set_Layout_Manager) and Gtk.Layout_Child withs Gtk.Layout_Manager (for
+# its accessors), exposing them here would create a circular dependency
+# between specs that cannot be expressed without `limited with`, which the
+# generator does not support. They remain available at the C level for
+# subclass implementations; expose them via Gtk.Widget or Gtk.Layout_Child
+# as needed instead.
+
+[[method]]
+id = "gtk_layout_manager_allocate"
+bind = false
+
+[[method]]
+id = "gtk_layout_manager_get_layout_child"
+bind = false
+
+[[method]]
+id = "gtk_layout_manager_get_widget"
+bind = false
+
+[[method]]
+id = "gtk_layout_manager_measure"
+bind = false

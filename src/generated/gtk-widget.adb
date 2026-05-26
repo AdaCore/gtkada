@@ -560,6 +560,21 @@ package body Gtk.Widget is
       return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Widget));
    end Get_Last_Child;
 
+   ------------------------
+   -- Get_Layout_Manager --
+   ------------------------
+
+   function Get_Layout_Manager
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Layout_Manager.Gtk_Layout_Manager
+   is
+      function Internal (Widget : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_layout_manager");
+      Stub_Gtk_Layout_Manager : Gtk.Layout_Manager.Gtk_Layout_Manager_Record;
+   begin
+      return Gtk.Layout_Manager.Gtk_Layout_Manager (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Layout_Manager));
+   end Get_Layout_Manager;
+
    ----------------------
    -- Get_Limit_Events --
    ----------------------
@@ -1497,6 +1512,22 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget), Boolean'Pos (Set));
    end Set_Hexpand_Set;
+
+   ------------------------
+   -- Set_Layout_Manager --
+   ------------------------
+
+   procedure Set_Layout_Manager
+      (Widget         : not null access Gtk_Widget_Record;
+       Layout_Manager : access Gtk.Layout_Manager.Gtk_Layout_Manager_Record'Class)
+   is
+      procedure Internal
+         (Widget         : System.Address;
+          Layout_Manager : System.Address);
+      pragma Import (C, Internal, "gtk_widget_set_layout_manager");
+   begin
+      Internal (Get_Object (Widget), Get_Object_Or_Null (GObject (Layout_Manager)));
+   end Set_Layout_Manager;
 
    ----------------------
    -- Set_Limit_Events --

@@ -1,0 +1,50 @@
+
+
+[doc]
+group = "Layout containers"
+
+[[parameter]]
+name = "self"
+ada = "Layout"
+
+[[method]]
+id = "gtk_constraint_layout_new"
+return = "GtkConstraintLayout*"
+
+# The following methods rely on GtkConstraint and GtkConstraintGuide,
+# which are not bound yet. Disable them; see transition_notes.md.
+[[method]]
+id = "gtk_constraint_layout_add_constraint"
+bind = false
+
+[[method]]
+id = "gtk_constraint_layout_add_constraints_from_description"
+bind = false
+# varargs
+
+[[method]]
+id = "gtk_constraint_layout_add_constraints_from_descriptionv"
+bind = false
+# Needs GHashTable<utf8, GtkConstraintTarget> and GError
+
+[[method]]
+id = "gtk_constraint_layout_add_guide"
+bind = false
+
+[[method]]
+id = "gtk_constraint_layout_observe_constraints"
+bind = false
+# Returns GListModel of GtkConstraint
+
+[[method]]
+id = "gtk_constraint_layout_observe_guides"
+bind = false
+# Returns GListModel of GtkConstraintGuide
+
+[[method]]
+id = "gtk_constraint_layout_remove_constraint"
+bind = false
+
+[[method]]
+id = "gtk_constraint_layout_remove_guide"
+bind = false

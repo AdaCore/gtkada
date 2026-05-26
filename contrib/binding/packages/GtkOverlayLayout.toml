@@ -1,0 +1,6 @@
+[doc]
+group = "Layout containers"
+
+[[method]]
+id = "gtk_overlay_layout_new"
+return = "GtkOverlayLayout*"

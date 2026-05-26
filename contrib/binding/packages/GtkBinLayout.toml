@@ -1,0 +1,6 @@
+[doc]
+group = "Layout containers"
+
+[[method]]
+id = "gtk_bin_layout_new"
+return = "GtkBinLayout*"
