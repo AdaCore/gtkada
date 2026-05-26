@@ -11,6 +11,19 @@
 - Upgraded Glib bindings
 - Moved some conversion functions from Gtk.Arguments to Glib.Values, to remove any
   dependency from Glib to Gtk.
+- Reactivated `gtkada_demo`'s `Create_Label` package: migrated from Gtk3 to Gtk4
+  (`Gtk_New (Box, Orientation_*, …)` + `Append` instead of `Pack_Start`,
+  `Set_Child` instead of `Add`, `Set_Wrap` / `Set_Wrap_Mode` instead of
+  `Set_Line_Wrap`, `Set_Markup` with `<u>...</u>` in place of the now-gone
+  `Set_Pattern`, dropped `Show_All`) and wired it into
+  `Main_Windows.On_Activate`, so the demo window now shows the `Gtk.Label`
+  test instead of the placeholder.
+- Reintroduced `GtkListStore` for gtk4 (re-enabled in `contrib/data.py`,
+  added `contrib/binding/packages/GtkListStore.toml`) and used it in
+  `gtkada_demo/main_windows.adb` to build a `Gtk_Paned` + `Gtk_Scrolled_Window`
+  + `Gtk_Tree_View` selector with a single "labels" entry that drives
+  the `Create_Label` demo on the right-hand side. The C glue
+  (`ada_gtk_list_store_set_*`) was already present in `src/misc.c`.
 
 ## To do as we translate
 

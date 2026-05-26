@@ -466,7 +466,7 @@ binding = (
     "----GtkListBoxAccessible",  # We do not support atk
     "--GtkListBoxRow",
     "----GtkListBoxRowAccessible",  # We do not support atk
-    "--GtkListStore",
+    "GtkListStore",
     "----GtkLockButton",  # requires GPermission
     "----GtkLockButtonAccessible",  # We do not support atk
     "GtkMain",
