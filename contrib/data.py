@@ -532,7 +532,7 @@ binding = (
     "--GtkShortcutsWindow",
     "--GtkSizeGroup",
     "--GtkScrollbar",
-    "--GtkScrolledWindow",
+    "GtkScrolledWindow",
     "----GtkScrolledWindowAccessible",  # We do not support atk
     "--GtkSettings",
     "----GtkSocket",  # X11-specific, no binding
