@@ -6,10 +6,6 @@
 
 obsolescent = true
 
-[[parameter]]
-name = "self"
-ada = "Tree_View"
-
 [[enum]]
 ctype = "GtkTreeViewDropPosition"
 prefix = "GTK_TREE_VIEW_"
