@@ -143,6 +143,7 @@ nbitfield = QName(uri, "bitfield").text
 ncallback = QName(uri, "callback").text
 nclass = QName(uri, "class").text
 ndoc = QName(uri, "doc").text
+ndocdeprecated = QName(uri, "doc-deprecated").text
 nenumeration = QName(uri, "enumeration").text
 nfield = QName(uri, "field").text
 nfunction = QName(uri, "function").text
@@ -1049,6 +1050,9 @@ class GIRClass(object):
         # Search for the GtkAda binding information
 
         self.gtkpkg = gtkada.get_pkg(self.ctype)
+        if self.node.find(ndocdeprecated) is not None:
+            self.gtkpkg.mark_obsolete_from_gir("doc-deprecated")
+
         if not self.gtkpkg.bindtype:
             self.has_toplevel_type = False
             self.is_gobject = False
