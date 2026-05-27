@@ -363,6 +363,8 @@ binding = (
     "--GtkColorChooserWidget",
     "--GtkColorSelection",
     "--GtkColorSelectionDialog",
+    "GtkColumnView",
+    "GtkColumnViewColumn",
     "--GtkComboBox",
     "----GtkComboBoxAccessible",  # We do not support atk
     "--GtkComboBoxText",

@@ -1,0 +1,8 @@
+# ============================================================
+#   GtkColumnViewColumn
+# ============================================================
+
+[[method]]
+id = "gtk_column_view_column_get_column_view"
+bind = false
+# Circular dependency with GtkColumnView
