@@ -40,6 +40,7 @@ interfaces = (
     "--Gtk.RecentChooser",
     "Gtk.Root",
     "--Gtk.Scrollable",
+    "Gtk.SelectionModel",
     "Gtk.ShortcutManager",
     "--Gtk.StyleProvider",
     "--Gtk.ToolShell",
