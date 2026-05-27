@@ -76,12 +76,16 @@ package body Create_Buttons is
    begin
       Gtk.Frame.Set_Label (Frame, "Buttons");
 
-      Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
-      Frame.Add (Box1);
+      Gtk_New
+        (Box1, Orientation => Gtk.Enums.Orientation_Horizontal, Spacing => 0);
+      Box1.Set_Homogeneous (False);
+      Frame.Set_Child (Box1);
 
       Gtk_New (Table);
-      Table.Set_Border_Width (Border_Width => 10);
-      Box1.Pack_Start (Table, Expand => False, Fill => False, Padding => 0);
+      --  Expand: False
+      Table.Set_Hexpand (False);
+      Table.Set_Vexpand (False);
+      Box1.Append (Table);
 
       for J in Button'Range loop
          Gtk_New (Button (J), Label => "Button" & Integer'Image (J));
@@ -90,10 +94,8 @@ package body Create_Buttons is
       for J in Button'Range loop
          Button (J).On_Clicked
             (Button_Window'Access, Button ((J + 1) mod Button'Length));
-         Table.Attach (Button (J), Left => Left_A (J), Top => Top_A (J));
+         Attach (Table,Button (J),Left_A (J),Top_A (J));
       end loop;
-
-      Show_All (Box1);
    end Run;
 
 end Create_Buttons;
