@@ -79,6 +79,7 @@ class GtkAdaPackage(object):
         self.node = node
         self._implicit_obsolescent = False
         self._warned_redundant_obsolescent = False
+        self._doc_deprecated = None  # Text from GIR doc-deprecated element
 
         if node is not None:
             self.bindtype = node.get("bindtype", True)
@@ -315,14 +316,24 @@ class GtkAdaPackage(object):
     def is_obsolete(self):
         return self._explicit_obsolescent or self._implicit_obsolescent
 
-    def mark_obsolete_from_gir(self, source):
+    def get_doc_deprecated(self):
+        """Return the doc-deprecated text if available, otherwise None."""
+        return self._doc_deprecated
+
+    def mark_obsolete_from_gir(self, source, doc_deprecated_text=None):
         """Mark this package as obsolescent due to GIR metadata.
 
         If TOML already sets ``obsolescent = true``, emit a warning so
         package files can be cleaned up over time.
+
+        Args:
+            source: Name of the GIR attribute/element that indicates deprecation.
+            doc_deprecated_text: Optional text from the doc-deprecated element.
         """
 
         self._implicit_obsolescent = True
+        if doc_deprecated_text:
+            self._doc_deprecated = doc_deprecated_text
 
         if self._explicit_obsolescent and not self._warned_redundant_obsolescent:
             pkg = self.pkg_id or "<unknown>"
