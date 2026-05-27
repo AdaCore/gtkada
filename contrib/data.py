@@ -538,6 +538,7 @@ binding = (
     "--GtkScrollbar",
     "GtkScrolledWindow",
     "----GtkScrolledWindowAccessible",  # We do not support atk
+    "GtkScrollInfo",
     "--GtkSettings",
     "----GtkSocket",  # X11-specific, no binding
     "GtkSorter",
