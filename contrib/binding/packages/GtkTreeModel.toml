@@ -16,6 +16,12 @@ bind = false
 # varargs
 
 [[method]]
+id = "gtk_tree_model_filter_new"
+bind = false
+# gtk4 mis-attributes this constructor of GtkTreeModelFilter to the
+# GtkTreeModel interface; it is spliced back onto GtkTreeModelFilter instead.
+
+[[method]]
 id = "gtk_tree_model_get_valist"
 bind = false
 # varargs

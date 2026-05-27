@@ -528,22 +528,6 @@ package body Gtk.Tree_Model is
       Internal (Get_Object (Path));
    end Down;
 
-   ----------------
-   -- Filter_New --
-   ----------------
-
-   function Filter_New
-      (Tree_Model : Gtk_Tree_Model;
-       Root       : Gtk_Tree_Path) return Gtk_Tree_Model
-   is
-      function Internal
-         (Tree_Model : Gtk_Tree_Model;
-          Root       : System.Address) return Gtk_Tree_Model;
-      pragma Import (C, Internal, "gtk_tree_model_filter_new");
-   begin
-      return Internal (Tree_Model, Get_Object (Root));
-   end Filter_New;
-
    -------------
    -- Foreach --
    -------------
