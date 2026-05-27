@@ -115,6 +115,7 @@ with Gtk.Tree_Model;    use Gtk.Tree_Model;
 package Gtk.Cell_Layout is
 
    pragma Obsolescent;
+   --  List views use widgets to display their contents. See [class@Gtk.LayoutManager] for layout manager delegate objects
 
    type Gtk_Cell_Layout is new Glib.Types.GType_Interface;
    Null_Gtk_Cell_Layout : constant Gtk_Cell_Layout;

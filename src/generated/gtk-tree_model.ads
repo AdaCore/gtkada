@@ -188,6 +188,7 @@ with Glib.Values;             use Glib.Values;
 package Gtk.Tree_Model is
 
    pragma Obsolescent;
+   --  Use [iface@Gio.ListModel] instead
 
    type Gtk_Tree_Model is new Glib.Types.GType_Interface;
    Null_Gtk_Tree_Model : constant Gtk_Tree_Model;

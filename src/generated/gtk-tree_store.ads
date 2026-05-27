@@ -56,6 +56,7 @@ with Gtk.Tree_Model; use Gtk.Tree_Model;
 package Gtk.Tree_Store is
 
    pragma Obsolescent;
+   --  Use [class@Gtk.TreeListModel] instead
 
    type Gtk_Tree_Store_Record is new Gtk_Root_Tree_Model_Record with null record;
    type Gtk_Tree_Store is access all Gtk_Tree_Store_Record'Class;

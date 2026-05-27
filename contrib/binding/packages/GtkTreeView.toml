@@ -2,10 +2,6 @@
 #   GtkTreeView
 # ============================================================
 
-# It has been deprecated since gtk 4.10
-
-obsolescent = true
-
 [[enum]]
 ctype = "GtkTreeViewDropPosition"
 prefix = "GTK_TREE_VIEW_"

@@ -2,10 +2,6 @@
 #   GtkCellLayout
 # ============================================================
 
-# It has been deprecated since gtk 4.10
-
-obsolescent = true
-
 [[virtual_method]]
 id = "*"
 bind = false

@@ -2,10 +2,6 @@
 #   GtkListStore
 # ============================================================
 
-# It has been deprecated since gtk 4.10
-
-obsolescent = true
-
 parent = "Gtk.Tree_Model.Gtk_Root_Tree_Model"
 
 [[method]]

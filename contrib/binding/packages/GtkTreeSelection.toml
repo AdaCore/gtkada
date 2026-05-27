@@ -2,10 +2,6 @@
 #   GtkTreeSelection
 # ============================================================
 
-# It has been deprecated since gtk 4.10
-
-obsolescent = true
-
 [[method]]
 id = "gtk_tree_selection_get_selected"
 return = "void"

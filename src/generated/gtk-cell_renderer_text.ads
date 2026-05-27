@@ -47,6 +47,7 @@ with Pango.Layout;      use Pango.Layout;
 package Gtk.Cell_Renderer_Text is
 
    pragma Obsolescent;
+   --  List views use widgets to display their contents. You should use [class@Gtk.Inscription] or [class@Gtk.Label] instead
 
    type Gtk_Cell_Renderer_Text_Record is new Gtk_Cell_Renderer_Record with null record;
    type Gtk_Cell_Renderer_Text is access all Gtk_Cell_Renderer_Text_Record'Class;

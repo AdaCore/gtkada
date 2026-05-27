@@ -132,6 +132,7 @@ with Gtk.Tree_Model; use Gtk.Tree_Model;
 package Gtk.List_Store is
 
    pragma Obsolescent;
+   --  Use [class@Gio.ListStore] instead
 
    type Gtk_List_Store_Record is new Gtk_Root_Tree_Model_Record with null record;
    type Gtk_List_Store is access all Gtk_List_Store_Record'Class;

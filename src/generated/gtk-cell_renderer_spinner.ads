@@ -45,6 +45,7 @@ with Gtk.Enums;         use Gtk.Enums;
 package Gtk.Cell_Renderer_Spinner is
 
    pragma Obsolescent;
+   --  List views use widgets to display their contents. You should use [class@Gtk.Spinner] instead
 
    type Gtk_Cell_Renderer_Spinner_Record is new Gtk_Cell_Renderer_Record with null record;
    type Gtk_Cell_Renderer_Spinner is access all Gtk_Cell_Renderer_Spinner_Record'Class;

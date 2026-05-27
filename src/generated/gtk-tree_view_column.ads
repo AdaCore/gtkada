@@ -53,6 +53,7 @@ with Interfaces.C;            use Interfaces.C;
 package Gtk.Tree_View_Column is
 
    pragma Obsolescent;
+   --  Use [class@Gtk.ColumnView] and [class@Gtk.ColumnViewColumn] instead of [class@Gtk.TreeView] to show a tabular list
 
    type Gtk_Tree_View_Column_Record is new GObject_Record with null record;
    type Gtk_Tree_View_Column is access all Gtk_Tree_View_Column_Record'Class;

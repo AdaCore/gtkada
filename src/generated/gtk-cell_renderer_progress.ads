@@ -39,6 +39,7 @@ with Gtk.Orientable;    use Gtk.Orientable;
 package Gtk.Cell_Renderer_Progress is
 
    pragma Obsolescent;
+   --  List views use widgets to display their contents. You should use [class@Gtk.ProgressBar] instead
 
    type Gtk_Cell_Renderer_Progress_Record is new Gtk_Cell_Renderer_Record with null record;
    type Gtk_Cell_Renderer_Progress is access all Gtk_Cell_Renderer_Progress_Record'Class;
