@@ -1,10 +1,6 @@
 # ============================================================
 #   GtkCellEditable
 # ============================================================
-# GtkCellEditable has been deprecated since gtk 4.10; mark the
-# whole Ada package as obsolescent.
-
-obsolescent = true
 
 [doc]
 group = "Trees and Lists"

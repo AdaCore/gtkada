@@ -143,6 +143,7 @@ nbitfield = QName(uri, "bitfield").text
 ncallback = QName(uri, "callback").text
 nclass = QName(uri, "class").text
 ndoc = QName(uri, "doc").text
+ndocdeprecated = QName(uri, "doc-deprecated").text
 nenumeration = QName(uri, "enumeration").text
 nfield = QName(uri, "field").text
 nfunction = QName(uri, "function").text
@@ -1049,6 +1050,11 @@ class GIRClass(object):
         # Search for the GtkAda binding information
 
         self.gtkpkg = gtkada.get_pkg(self.ctype)
+        doc_deprecated_elem = self.node.find(ndocdeprecated)
+        if doc_deprecated_elem is not None:
+            doc_text = doc_deprecated_elem.text or ""
+            self.gtkpkg.mark_obsolete_from_gir("doc-deprecated", doc_deprecated_text=doc_text)
+
         if not self.gtkpkg.bindtype:
             self.has_toplevel_type = False
             self.is_gobject = False
@@ -3414,7 +3420,16 @@ end From_Object_Free;"""
         section = self.pkg.section("")
 
         if self.gtkpkg.is_obsolete():
-            section.add("pragma Obsolescent;")
+            pragma_lines = ["pragma Obsolescent;"]
+            doc_deprecated = self.gtkpkg.get_doc_deprecated()
+            if doc_deprecated:
+                # Clean up the text: strip whitespace and replace newlines with spaces
+                doc_text = doc_deprecated.strip()
+                doc_text = " ".join(doc_text.split())
+                # Add doc as a comment on the next line
+                pragma_lines.append("--  " + doc_text)
+            # Combine all lines and add as a single section to avoid blank lines
+            section.add("\n".join(pragma_lines))
 
         if not self.has_toplevel_type:
             pass

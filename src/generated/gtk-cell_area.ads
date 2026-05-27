@@ -284,6 +284,9 @@ with Gtk.Widget;            use Gtk.Widget;
 
 package Gtk.Cell_Area is
 
+   pragma Obsolescent;
+   --  List views use widgets for displaying their contents
+
    type Gtk_Cell_Area_Record is new GObject_Record with null record;
    type Gtk_Cell_Area is access all Gtk_Cell_Area_Record'Class;
 

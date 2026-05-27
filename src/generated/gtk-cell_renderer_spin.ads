@@ -46,6 +46,7 @@ with Gtk.Cell_Renderer_Text; use Gtk.Cell_Renderer_Text;
 package Gtk.Cell_Renderer_Spin is
 
    pragma Obsolescent;
+   --  List views use widgets to display their contents. You should use [class@Gtk.SpinButton] instead
 
    type Gtk_Cell_Renderer_Spin_Record is new Gtk_Cell_Renderer_Text_Record with null record;
    type Gtk_Cell_Renderer_Spin is access all Gtk_Cell_Renderer_Spin_Record'Class;

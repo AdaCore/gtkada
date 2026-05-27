@@ -56,6 +56,7 @@ with Gtk.Widget;     use Gtk.Widget;
 package Gtk.Tree_Selection is
 
    pragma Obsolescent;
+   --  Use [iface@Gtk.SelectionModel] instead
 
    type Gtk_Tree_Selection_Record is new GObject_Record with null record;
    type Gtk_Tree_Selection is access all Gtk_Tree_Selection_Record'Class;

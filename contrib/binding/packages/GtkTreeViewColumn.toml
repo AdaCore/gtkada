@@ -2,10 +2,6 @@
 #   GtkTreeViewColumn
 # ============================================================
 
-# It has been deprecated since gtk 4.10
-
-obsolescent = true
-
 [[enum]]
 ctype = "GtkTreeViewColumnSizing"
 prefix = "GTK_TREE_VIEW_COLUMN_"

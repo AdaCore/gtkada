@@ -47,6 +47,7 @@ with Gtk.Tree_Model;         use Gtk.Tree_Model;
 package Gtk.Cell_Renderer_Combo is
 
    pragma Obsolescent;
+   --  List views use widgets to display their contents. You should use [class@Gtk.DropDown] instead
 
    type Gtk_Cell_Renderer_Combo_Record is new Gtk_Cell_Renderer_Text_Record with null record;
    type Gtk_Cell_Renderer_Combo is access all Gtk_Cell_Renderer_Combo_Record'Class;

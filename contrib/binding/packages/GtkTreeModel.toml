@@ -1,11 +1,6 @@
 # ============================================================
 #   GtkTreeModel
 # ============================================================
-# The GtkTreeModel family has been deprecated since gtk 4.10; mark
-# the whole Ada package as obsolescent so callers get nudged towards
-# the GListModel-based replacements.
-
-obsolescent = true
 
 [[parameter]]
 name = "self"

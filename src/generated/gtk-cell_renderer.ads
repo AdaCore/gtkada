@@ -75,6 +75,7 @@ with Interfaces.C;            use Interfaces.C;
 package Gtk.Cell_Renderer is
 
    pragma Obsolescent;
+   --  List views use widgets for displaying their contents
 
    type Gtk_Cell_Renderer_Record is new GObject_Record with null record;
    type Gtk_Cell_Renderer is access all Gtk_Cell_Renderer_Record'Class;

@@ -77,11 +77,16 @@ class GtkAdaPackage(object):
     def __init__(self, pkg_id, node):
         self.pkg_id = pkg_id
         self.node = node
+        self._implicit_obsolescent = False
+        self._warned_redundant_obsolescent = False
+        self._doc_deprecated = None  # Text from GIR doc-deprecated element
 
         if node is not None:
             self.bindtype = node.get("bindtype", True)
+            self._explicit_obsolescent = node.get("obsolescent", False)
         else:
             self.bindtype = True
+            self._explicit_obsolescent = False
 
     def __repr__(self):
         return "<GtkAdaPackage name=%s>" % (self.pkg_id or "")
@@ -309,9 +314,34 @@ class GtkAdaPackage(object):
         return None
 
     def is_obsolete(self):
-        if self.node is not None:
-            return self.node.get("obsolescent", False)
-        return False
+        return self._explicit_obsolescent or self._implicit_obsolescent
+
+    def get_doc_deprecated(self):
+        """Return the doc-deprecated text if available, otherwise None."""
+        return self._doc_deprecated
+
+    def mark_obsolete_from_gir(self, source, doc_deprecated_text=None):
+        """Mark this package as obsolescent due to GIR metadata.
+
+        If TOML already sets ``obsolescent = true``, emit a warning so
+        package files can be cleaned up over time.
+
+        Args:
+            source: Name of the GIR attribute/element that indicates deprecation.
+            doc_deprecated_text: Optional text from the doc-deprecated element.
+        """
+
+        self._implicit_obsolescent = True
+        if doc_deprecated_text:
+            self._doc_deprecated = doc_deprecated_text
+
+        if self._explicit_obsolescent and not self._warned_redundant_obsolescent:
+            pkg = self.pkg_id or "<unknown>"
+            print(
+                "Warning: %s sets obsolescent = true in TOML, "
+                "but this is now implied by GIR %s" % (pkg, source)
+            )
+            self._warned_redundant_obsolescent = True
 
     def ada_access_root(self):
         """Whether the access type in class package aliases access type in the namespace package.

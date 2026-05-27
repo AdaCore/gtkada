@@ -44,6 +44,7 @@ with Glib.Properties; use Glib.Properties;
 package Gtk.Cell_Area_Context is
 
    pragma Obsolescent;
+   --  This object will be removed in GTK 5
 
    type Gtk_Cell_Area_Context_Record is new GObject_Record with null record;
    type Gtk_Cell_Area_Context is access all Gtk_Cell_Area_Context_Record'Class;

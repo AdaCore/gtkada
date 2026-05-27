@@ -1,6 +1,6 @@
-# It has been deprecated since gtk 4.10
-
-obsolescent = true
+# ============================================================
+#   GtkCellRendererToggle
+# ============================================================
 
 [doc]
 group = "Trees and Lists"

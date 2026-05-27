@@ -119,6 +119,7 @@ with Interfaces.C;            use Interfaces.C;
 package Gtk.Tree_View is
 
    pragma Obsolescent;
+   --  Use [class@Gtk.ListView] for lists, and [class@Gtk.ColumnView] for tabular lists
 
    type Gtk_Tree_View_Record is new Gtk_Widget_Record with null record;
    type Gtk_Tree_View is access all Gtk_Tree_View_Record'Class;

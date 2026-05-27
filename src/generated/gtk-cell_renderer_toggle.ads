@@ -39,6 +39,7 @@ with Gtk.Cell_Renderer; use Gtk.Cell_Renderer;
 package Gtk.Cell_Renderer_Toggle is
 
    pragma Obsolescent;
+   --  List views use widgets to display their contents. You should use [class@Gtk.ToggleButton] instead
 
    type Gtk_Cell_Renderer_Toggle_Record is new Gtk_Cell_Renderer_Record with null record;
    type Gtk_Cell_Renderer_Toggle is access all Gtk_Cell_Renderer_Toggle_Record'Class;
