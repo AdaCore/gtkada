@@ -40,12 +40,12 @@ with Gtk.Tree_Sortable;        use Gtk.Tree_Sortable;
 with Gtk.Tree_Store;           use Gtk.Tree_Store;
 with Gtk.Tree_View_Column;     use Gtk.Tree_View_Column;
 with Gtk.Frame;                use Gtk.Frame;
-with Gtk.Handlers;             use Gtk.Handlers;
+--  with Gtk.Handlers;             use Gtk.Handlers;
 with Pango.Font;               use Pango.Font;
 
 package body Create_Tree_View is
 
-   package Object_Callback is new Gtk.Handlers.Callback (GObject_Record);
+   --  package Object_Callback is new Gtk.Handlers.Callback (GObject_Record);
 
    Text_Column       : constant := 0;
    Strike_Column     : constant := 1;
@@ -360,12 +360,12 @@ package body Create_Tree_View is
       --  In both cases, the callback should be used for validation of the
       --  input.
 
-      Object_Callback.Object_Connect
-        (Toggle_Render, "toggled", Edited_Callback'Access,
-         Slot_Object => Model);
-      Object_Callback.Object_Connect
-        (Text_Render, "edited", Text_Edited_Callback'Access,
-         Slot_Object => Model);
+      --  Object_Callback.Object_Connect
+      --    (Toggle_Render, "toggled", Edited_Callback'Access,
+      --     Slot_Object => Model);
+      --  Object_Callback.Object_Connect
+      --    (Text_Render, "edited", Text_Edited_Callback'Access,
+      --     Slot_Object => Model);
 
       --  Insert some data in the tree
 
@@ -447,10 +447,8 @@ package body Create_Tree_View is
 
       Gtk_New (Scrolled);
       Set_Policy (Scrolled, Policy_Always, Policy_Always);
-      Add (Scrolled, Tree);
-
-      Show_All (Scrolled);
-      Add (Frame, Scrolled);
+      Set_Child (Scrolled, Tree);
+      Set_Child (Frame, Scrolled);
    end Run;
 
 end Create_Tree_View;

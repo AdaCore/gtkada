@@ -47,11 +47,13 @@
 --  <column type="gchararray"/> <column type="gint"/> </columns> </object> ```
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;           use Glib;
-with Glib.Types;     use Glib.Types;
-with Glib.Values;    use Glib.Values;
-with Gtk.Buildable;  use Gtk.Buildable;
-with Gtk.Tree_Model; use Gtk.Tree_Model;
+with Glib;              use Glib;
+with Glib.Types;        use Glib.Types;
+with Glib.Values;       use Glib.Values;
+with Gtk.Buildable;     use Gtk.Buildable;
+with Gtk.Enums;         use Gtk.Enums;
+with Gtk.Tree_Model;    use Gtk.Tree_Model;
+with Gtk.Tree_Sortable; use Gtk.Tree_Sortable;
 
 package Gtk.Tree_Store is
 
@@ -75,6 +77,26 @@ package Gtk.Tree_Store is
    --  @param Path the current `GtkTreePath`
    --  @param Iter the current `GtkTreeIter`
    --  @return True to stop iterating, False to continue
+
+   type Gtk_Tree_Iter_Compare_Func is access function
+     (Model : Gtk.Tree_Model.Gtk_Tree_Model;
+      A     : Gtk.Tree_Model.Gtk_Tree_Iter;
+      B     : Gtk.Tree_Model.Gtk_Tree_Iter) return Glib.Gint;
+   --  A GtkTreeIterCompareFunc should return a negative integer, zero, or a
+   --  positive integer if A sorts before B, A sorts with B, or A sorts after B
+   --  respectively.
+   --  If two iters compare as equal, their order in the sorted model is
+   --  undefined. In order to ensure that the `GtkTreeSortable` behaves as
+   --  expected, the GtkTreeIterCompareFunc must define a partial order on the
+   --  model, i.e. it must be reflexive, antisymmetric and transitive.
+   --  For example, if Model is a product catalogue, then a compare function
+   --  for the "price" column could be one which returns `price_of(A) -
+   --  price_of(B)`.
+   --  @param Model The `GtkTreeModel` the comparison is within
+   --  @param A A `GtkTreeIter` in Model
+   --  @param B Another `GtkTreeIter` in Model
+   --  @return a negative integer, zero or a positive integer depending on
+   --  whether A sorts before, with or after B
 
    ------------------
    -- Constructors --
@@ -361,6 +383,126 @@ package Gtk.Tree_Store is
 
    end Foreach_User_Data;
 
+   procedure Set_Default_Sort_Func
+      (Self      : not null access Gtk_Tree_Store_Record;
+       Sort_Func : Gtk_Tree_Iter_Compare_Func);
+   pragma Obsolescent (Set_Default_Sort_Func);
+   --  Sets the default comparison function used when sorting to be Sort_Func.
+   --  If the current sort column id of Sortable is
+   --  GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, then the model will sort using
+   --  this function.
+   --  If Sort_Func is null, then there will be no default comparison
+   --  function. This means that once the model has been sorted, it can't go
+   --  back to the default state. In this case, when the current sort column id
+   --  of Sortable is GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, the model will
+   --  be unsorted.
+   --  Deprecated since 4.10, 1
+   --  @param Sort_Func The comparison function
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type) is null;
+   package Set_Default_Sort_Func_User_Data is
+
+      type Gtk_Tree_Iter_Compare_Func is access function
+        (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
+         A         : Gtk.Tree_Model.Gtk_Tree_Iter;
+         B         : Gtk.Tree_Model.Gtk_Tree_Iter;
+         User_Data : User_Data_Type) return Glib.Gint;
+      --  A GtkTreeIterCompareFunc should return a negative integer, zero, or a
+      --  positive integer if A sorts before B, A sorts with B, or A sorts after B
+      --  respectively.
+      --  If two iters compare as equal, their order in the sorted model is
+      --  undefined. In order to ensure that the `GtkTreeSortable` behaves as
+      --  expected, the GtkTreeIterCompareFunc must define a partial order on the
+      --  model, i.e. it must be reflexive, antisymmetric and transitive.
+      --  For example, if Model is a product catalogue, then a compare function
+      --  for the "price" column could be one which returns `price_of(A) -
+      --  price_of(B)`.
+      --  @param Model The `GtkTreeModel` the comparison is within
+      --  @param A A `GtkTreeIter` in Model
+      --  @param B Another `GtkTreeIter` in Model
+      --  @param User_Data Data passed when the compare func is assigned e.g. by
+      --  Gtk.Tree_Sortable.Set_Sort_Func
+      --  @return a negative integer, zero or a positive integer depending on
+      --  whether A sorts before, with or after B
+
+      procedure Set_Default_Sort_Func
+         (Self      : not null access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class;
+          Sort_Func : Gtk_Tree_Iter_Compare_Func;
+          User_Data : User_Data_Type);
+      pragma Obsolescent (Set_Default_Sort_Func);
+      --  Sets the default comparison function used when sorting to be
+      --  Sort_Func. If the current sort column id of Sortable is
+      --  GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, then the model will sort
+      --  using this function.
+      --  If Sort_Func is null, then there will be no default comparison
+      --  function. This means that once the model has been sorted, it can't go
+      --  back to the default state. In this case, when the current sort column
+      --  id of Sortable is GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID, the model
+      --  will be unsorted.
+      --  Deprecated since 4.10, 1
+      --  @param Sort_Func The comparison function
+      --  @param User_Data User data to pass to Sort_Func
+
+   end Set_Default_Sort_Func_User_Data;
+
+   procedure Set_Sort_Func
+      (Self           : not null access Gtk_Tree_Store_Record;
+       Sort_Column_Id : Glib.Gint;
+       Sort_Func      : Gtk_Tree_Iter_Compare_Func);
+   pragma Obsolescent (Set_Sort_Func);
+   --  Sets the comparison function used when sorting to be Sort_Func. If the
+   --  current sort column id of Sortable is the same as Sort_Column_Id, then
+   --  the model will sort using this function.
+   --  Deprecated since 4.10, 1
+   --  @param Sort_Column_Id the sort column id to set the function for
+   --  @param Sort_Func The comparison function
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type) is null;
+   package Set_Sort_Func_User_Data is
+
+      type Gtk_Tree_Iter_Compare_Func is access function
+        (Model     : Gtk.Tree_Model.Gtk_Tree_Model;
+         A         : Gtk.Tree_Model.Gtk_Tree_Iter;
+         B         : Gtk.Tree_Model.Gtk_Tree_Iter;
+         User_Data : User_Data_Type) return Glib.Gint;
+      --  A GtkTreeIterCompareFunc should return a negative integer, zero, or a
+      --  positive integer if A sorts before B, A sorts with B, or A sorts after B
+      --  respectively.
+      --  If two iters compare as equal, their order in the sorted model is
+      --  undefined. In order to ensure that the `GtkTreeSortable` behaves as
+      --  expected, the GtkTreeIterCompareFunc must define a partial order on the
+      --  model, i.e. it must be reflexive, antisymmetric and transitive.
+      --  For example, if Model is a product catalogue, then a compare function
+      --  for the "price" column could be one which returns `price_of(A) -
+      --  price_of(B)`.
+      --  @param Model The `GtkTreeModel` the comparison is within
+      --  @param A A `GtkTreeIter` in Model
+      --  @param B Another `GtkTreeIter` in Model
+      --  @param User_Data Data passed when the compare func is assigned e.g. by
+      --  Gtk.Tree_Sortable.Set_Sort_Func
+      --  @return a negative integer, zero or a positive integer depending on
+      --  whether A sorts before, with or after B
+
+      procedure Set_Sort_Func
+         (Self           : not null access Gtk.Tree_Store.Gtk_Tree_Store_Record'Class;
+          Sort_Column_Id : Glib.Gint;
+          Sort_Func      : Gtk_Tree_Iter_Compare_Func;
+          User_Data      : User_Data_Type);
+      pragma Obsolescent (Set_Sort_Func);
+      --  Sets the comparison function used when sorting to be Sort_Func. If
+      --  the current sort column id of Sortable is the same as Sort_Column_Id,
+      --  then the model will sort using this function.
+      --  Deprecated since 4.10, 1
+      --  @param Sort_Column_Id the sort column id to set the function for
+      --  @param Sort_Func The comparison function
+      --  @param User_Data User data to pass to Sort_Func
+
+   end Set_Sort_Func_User_Data;
+
    ----------------------
    -- GtkAda additions --
    ----------------------
@@ -601,6 +743,26 @@ package Gtk.Tree_Store is
        Iter       : Gtk.Tree_Model.Gtk_Tree_Iter);
    pragma Obsolescent (Unref_Node);
 
+   function Get_Sort_Column_Id
+      (Self           : not null access Gtk_Tree_Store_Record;
+       Sort_Column_Id : access Glib.Gint;
+       Order          : access Gtk.Enums.Gtk_Sort_Type) return Boolean;
+   pragma Obsolescent (Get_Sort_Column_Id);
+
+   procedure Set_Sort_Column_Id
+      (Self           : not null access Gtk_Tree_Store_Record;
+       Sort_Column_Id : Glib.Gint;
+       Order          : Gtk.Enums.Gtk_Sort_Type);
+   pragma Obsolescent (Set_Sort_Column_Id);
+
+   function Has_Default_Sort_Func
+      (Self : not null access Gtk_Tree_Store_Record) return Boolean;
+   pragma Obsolescent (Has_Default_Sort_Func);
+
+   procedure Sort_Column_Changed
+      (Self : not null access Gtk_Tree_Store_Record);
+   pragma Obsolescent (Sort_Column_Changed);
+
    ----------------
    -- Interfaces --
    ----------------
@@ -609,6 +771,8 @@ package Gtk.Tree_Store is
    --  - "Gtk.Buildable"
    --
    --  - "Gtk.TreeModel"
+   --
+   --  - "Gtk.TreeSortable"
 
    package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Tree_Store_Record, Gtk_Tree_Store);
@@ -631,5 +795,16 @@ package Gtk.Tree_Store is
      (Interf : Gtk.Tree_Model.Gtk_Tree_Model)
    return Gtk_Tree_Store
    renames Implements_Gtk_Tree_Model.To_Object;
+
+   package Implements_Gtk_Tree_Sortable is new Glib.Types.Implements
+     (Gtk.Tree_Sortable.Gtk_Tree_Sortable, Gtk_Tree_Store_Record, Gtk_Tree_Store);
+   function "+"
+     (Widget : access Gtk_Tree_Store_Record'Class)
+   return Gtk.Tree_Sortable.Gtk_Tree_Sortable
+   renames Implements_Gtk_Tree_Sortable.To_Interface;
+   function "-"
+     (Interf : Gtk.Tree_Sortable.Gtk_Tree_Sortable)
+   return Gtk_Tree_Store
+   renames Implements_Gtk_Tree_Sortable.To_Object;
 
 end Gtk.Tree_Store;

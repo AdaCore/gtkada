@@ -182,6 +182,30 @@ void gtkada_Shortcut_Manager_set_remove_controller(GtkShortcutManagerInterface* 
     iface->remove_controller = handler;
 }
 
+void gtkada_Tree_Sortable_set_get_sort_column_id(GtkTreeSortableIface* iface, void* handler) {
+    iface->get_sort_column_id = handler;
+}
+
+void gtkada_Tree_Sortable_set_has_default_sort_func(GtkTreeSortableIface* iface, void* handler) {
+    iface->has_default_sort_func = handler;
+}
+
+void gtkada_Tree_Sortable_set_set_default_sort_func(GtkTreeSortableIface* iface, void* handler) {
+    iface->set_default_sort_func = handler;
+}
+
+void gtkada_Tree_Sortable_set_set_sort_column_id(GtkTreeSortableIface* iface, void* handler) {
+    iface->set_sort_column_id = handler;
+}
+
+void gtkada_Tree_Sortable_set_set_sort_func(GtkTreeSortableIface* iface, void* handler) {
+    iface->set_sort_func = handler;
+}
+
+void gtkada_Tree_Sortable_set_sort_column_changed(GtkTreeSortableIface* iface, void* handler) {
+    iface->sort_column_changed = handler;
+}
+
 void gtkada_Tree_Model_set_get_column_type(GtkTreeModelIface* iface, void* handler) {
     iface->get_column_type = handler;
 }

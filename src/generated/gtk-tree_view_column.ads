@@ -444,7 +444,7 @@ package Gtk.Tree_View_Column is
    --  This does not actually sort the model. Use
    --  Gtk.Tree_View_Column.Set_Sort_Column_Id if you want automatic sorting
    --  support. This function is primarily for custom sorting behavior, and
-   --  should be used in conjunction with gtk_tree_sortable_set_sort_column_id
+   --  should be used in conjunction with Gtk.Tree_Sortable.Set_Sort_Column_Id
    --  to do that. For custom models, the mechanism will vary.
    --  The sort indicator changes direction to indicate normal sort or reverse
    --  sort. Note that you must have the sort indicator enabled to see anything

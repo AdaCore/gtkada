@@ -36,9 +36,6 @@ with Gtk.Tree_View;          use Gtk.Tree_View;
 with Gtk.Tree_View_Column;   use Gtk.Tree_View_Column;
 with Gtk.Widget;             use Gtk.Widget;
 
-with Create_Label;
-with Create_Tree_Filter;
-
 --  TRANSITION: the original `with` clauses are preserved below as
 --  comments. Uncomment each one as the corresponding binding becomes
 --  available again.
@@ -110,6 +107,7 @@ with Create_Tree_Filter;
 --  with Create_Gestures;
 --  with Create_Gtkada_Dialog;
 --  with Create_Icon_View;
+with Create_Label;
 --  with Create_Layout;
 --  with Create_Link_Buttons;
 --  with Create_Main_Loop;
@@ -142,7 +140,8 @@ with Create_Tree_Filter;
 --  with Create_Toggle_Buttons;
 --  with Create_Toolbar;
 --  with Create_Tooltips;
---  with Create_Tree_View;
+with Create_Tree_Filter;
+with Create_Tree_View;
 --  with Create_UI_Manager;
 --  with Common; use Common;
 --  with Create_Css_Accordion;
@@ -165,12 +164,16 @@ package body Main_Windows is
       Run   : Demo_Function;
    end record;
 
-   Labels_Name      : aliased constant String := "labels";
-   Tree_Filter_Name : aliased constant String := "tree filter";
+   package Name is
+      Labels      : aliased constant String := "labels";
+      Tree_Filter : aliased constant String := "tree filter";
+      Tree_View   : aliased constant String := "tree view";
+   end Name;
 
    Demos : constant array (Positive range <>) of Demo_Info :=
-     (1 => (Labels_Name'Access, Create_Label.Run'Access),
-      2 => (Tree_Filter_Name'Access, Create_Tree_Filter.Run'Access));
+     ((Name.Labels'Access, Create_Label.Run'Access),
+      (Name.Tree_Filter'Access, Create_Tree_Filter.Run'Access),
+      (Name.Tree_View'Access, Create_Tree_View.Run'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.
 
@@ -261,11 +264,9 @@ package body Main_Windows is
         (On_Selection_Changed'Access);
 
       --  Select the first row so the demo frame is populated on startup.
-      if Demos'Length > 0 then
-         Iter := Get_Iter_First (+Store);
-         if Iter /= Null_Iter then
-            Get_Selection (Tree).Select_Iter (Iter);
-         end if;
+      Iter := Get_Iter_First (+Store);
+      if Iter /= Null_Iter then
+         Get_Selection (Tree).Select_Iter (Iter);
       end if;
 
       App_Win.Present;

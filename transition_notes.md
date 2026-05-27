@@ -47,6 +47,10 @@
 
 ## To do (package by package)
 
+gtk-handlers.ads:
+
+- when done, fix gtkada_demo/create_tree_view.adb
+
 GBytes.toml:
 
 - fix binding for functions that have gconstarray as parameters
