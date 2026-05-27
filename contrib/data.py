@@ -415,6 +415,7 @@ binding = (
     "--GtkGradient",
     "--GtkGLArea",
     "GtkGrid",
+    "GtkGridView",
     "--GtkHandleBox",
     "--GtkHButtonBox",
     "--GtkHeaderBar",
