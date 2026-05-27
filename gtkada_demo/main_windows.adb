@@ -21,12 +21,16 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+
 with Glib;                   use Glib;
 with Gtk.Application;        use Gtk.Application;
 with Gtk.Application_Window; use Gtk.Application_Window;
+with Gtk.Box;                use Gtk.Box;
 with Gtk.Cell_Renderer_Text; use Gtk.Cell_Renderer_Text;
 with Gtk.Enums;              use Gtk.Enums;
 with Gtk.Frame;              use Gtk.Frame;
+with Gtk.Label;              use Gtk.Label;
 with Gtk.List_Store;         use Gtk.List_Store;
 with Gtk.Paned;              use Gtk.Paned;
 with Gtk.Scrolled_Window;    use Gtk.Scrolled_Window;
@@ -44,8 +48,8 @@ with Gtk.Widget;             use Gtk.Widget;
 --  with Gtk;                 use Gtk;
 --  with Gdk;                 use Gdk;
 --  with Gdk.Color;           use Gdk.Color;
-with Gtk.Box;             use Gtk.Box;
-with Gtk.Button;          use Gtk.Button;
+with Gtk.Box;    use Gtk.Box;
+with Gtk.Button; use Gtk.Button;
 --  with Gtk.Dialog;          use Gtk.Dialog;
 --  with Gtk.Handlers;        use Gtk.Handlers;
 --  with Gtkada.Handlers;     use Gtkada.Handlers;
@@ -68,7 +72,6 @@ with Ada.Strings.Unbounded;
 --  with Create_Application;
 --  with Create_Arrow;
 --  with Create_Assistant;
---  with Create_Box;
 --  with Create_Builder;
 --  with Create_GL;
 --  with Create_Gtkada_Builder;
@@ -96,7 +99,6 @@ with Create_Buttons;
 --  with Create_Dialog;
 --  with Create_Dnd;
 --  with Create_Entry;
---  with Create_Frame;
 --  with Create_File_Chooser;
 --  with Create_File_Selection;
 --  with Create_Fixed;
@@ -114,7 +116,6 @@ with Create_Label;
 --  with Create_MDI;
 --  with Create_Notebook;
 --  with Create_Opacity;
---  with Create_Paned;
 --  with Create_Pixbuf;
 --  with Create_Print;
 --  with Create_Progress;
@@ -122,7 +123,6 @@ with Create_Label;
 --  with Create_Range;
 --  with Create_Reparent;
 --  with Create_Revealer;
---  with Create_Scrolled;
 --  with Create_Selection;
 --  with Create_Size_Groups;
 --  with Create_Stack;
@@ -155,12 +155,15 @@ package body Main_Windows is
    --  Columns in the demo selector list store. Label_Column holds the text
    --  shown in the tree, Demo_Column holds the index into Demos below.
 
-   type Demo_Function is access procedure
-     (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
+   type Demo_Function is
+     access procedure (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
+
+   type Help_Function is access function return String;
 
    type Demo_Info is record
       Label : Ada.Strings.Unbounded.Unbounded_String;
       Run   : Demo_Function;
+      Help  : Help_Function;
    end record;
 
    function To_Demo (Name : String; Runner : Demo_Function) return Demo_Info
@@ -179,10 +182,58 @@ package body Main_Windows is
    --  The frame on the right-hand side of the paned, in which the currently
    --  selected demo is displayed.
 
+   Help_Label : Gtk_Label;
+   --  The label, below Demo_Frame, showing the help text of the currently
+   --  selected demo.
+
+   function To_Markup (Help : String) return String;
+   --  Translate the legacy "@b...@B" emphasis markers used by the demo Help
+   --  strings into Pango markup ("<b>...</b>"), escaping the XML-significant
+   --  characters along the way so the result is always well-formed markup.
+
    procedure On_Selection_Changed
      (Selection : access Gtk_Tree_Selection_Record'Class);
    --  Replace the contents of Demo_Frame with the demo corresponding to the
-   --  currently selected row.
+   --  currently selected row, and refresh Help_Label with its help text.
+
+   ---------------
+   -- To_Markup --
+   ---------------
+
+   function To_Markup (Help : String) return String is
+      Result : Unbounded_String;
+      I      : Positive := Help'First;
+   begin
+      while I <= Help'Last loop
+         if I < Help'Last and then Help (I) = '@' and then Help (I + 1) = 'b'
+         then
+            Append (Result, "<b>");
+            I := I + 2;
+         elsif I < Help'Last
+           and then Help (I) = '@'
+           and then Help (I + 1) = 'B'
+         then
+            Append (Result, "</b>");
+            I := I + 2;
+         else
+            case Help (I) is
+               when '&'    =>
+                  Append (Result, "&amp;");
+
+               when '<'    =>
+                  Append (Result, "&lt;");
+
+               when '>'    =>
+                  Append (Result, "&gt;");
+
+               when others =>
+                  Append (Result, Help (I));
+            end case;
+            I := I + 1;
+         end if;
+      end loop;
+      return To_String (Result);
+   end To_Markup;
 
    --------------------------
    -- On_Selection_Changed --
@@ -200,11 +251,18 @@ package body Main_Windows is
       end if;
 
       declare
-         Index : constant Integer := Integer (Get_Int (Model, Iter, Demo_Column));
+         Index : constant Integer :=
+           Integer (Get_Int (Model, Iter, Demo_Column));
       begin
          Demo_Frame.Set_Child (null);
          if Index in Demos'Range and then Demos (Index).Run /= null then
             Demos (Index).Run (Demo_Frame);
+         end if;
+
+         if Index in Demos'Range and then Demos (Index).Help /= null then
+            Help_Label.Set_Markup (To_Markup (Demos (Index).Help.all));
+         else
+            Help_Label.Set_Text ("");
          end if;
       end;
    end On_Selection_Changed;
@@ -236,7 +294,8 @@ package body Main_Windows is
       Paned.Set_Start_Child (Scrolled);
       Paned.Set_Resize_Start_Child (False);
 
-      Gtk_New (Store, (Label_Column => GType_String, Demo_Column => GType_Int));
+      Gtk_New
+        (Store, (Label_Column => GType_String, Demo_Column => GType_Int));
       for Index in Demos'Range loop
          Store.Append (Iter);
          Store.Set
@@ -256,13 +315,33 @@ package body Main_Windows is
       Col.Add_Attribute (Render, "text", Label_Column);
       Dummy := Tree.Append_Column (Col);
 
-      Gtk_New (Demo_Frame);
-      Paned.Set_End_Child (Demo_Frame);
+      declare
+         Right_Box  : Gtk_Box;
+         Help_Frame : Gtk_Frame;
+      begin
+         Gtk_New (Right_Box, Orientation_Vertical, Spacing => 0);
+         Right_Box.Set_Homogeneous (False);
+         Paned.Set_End_Child (Right_Box);
+
+         Gtk_New (Demo_Frame);
+         Demo_Frame.Set_Vexpand (True);
+         Right_Box.Append (Demo_Frame);
+
+         Gtk_New (Help_Frame, "Help");
+         Gtk_New (Help_Label);
+         Help_Label.Set_Wrap (True);
+         Help_Label.Set_Xalign (0.0);
+         Help_Label.Set_Margin_Start (5);
+         Help_Label.Set_Margin_End (5);
+         Help_Label.Set_Margin_Top (5);
+         Help_Label.Set_Margin_Bottom (5);
+         Help_Frame.Set_Child (Help_Label);
+         Right_Box.Append (Help_Frame);
+      end;
       Paned.Set_Position (170);
 
       Get_Selection (Tree).Set_Mode (Selection_Single);
-      Get_Selection (Tree).On_Changed
-        (On_Selection_Changed'Access);
+      Get_Selection (Tree).On_Changed (On_Selection_Changed'Access);
 
       --  Select the first row so the demo frame is populated on startup.
       Iter := Get_Iter_First (+Store);
