@@ -131,6 +131,8 @@ with Gtk.Tree_Model; use Gtk.Tree_Model;
 
 package Gtk.List_Store is
 
+   pragma Obsolescent;
+
    type Gtk_List_Store_Record is new Gtk_Root_Tree_Model_Record with null record;
    type Gtk_List_Store is access all Gtk_List_Store_Record'Class;
 
@@ -153,10 +155,10 @@ package Gtk.List_Store is
    -- Constructors --
    ------------------
 
-   procedure Gtk_New (List_Store : out Gtk_List_Store; Types : GType_Array);
+   procedure Gtk_New (Self : out Gtk_List_Store; Types : GType_Array);
    procedure Initialize
-      (List_Store : not null access Gtk_List_Store_Record'Class;
-       Types      : GType_Array);
+      (Self  : not null access Gtk_List_Store_Record'Class;
+       Types : GType_Array);
    --  Creates a new `GtkListStore`.
    --  This function is meant to be used by language bindings.
    --  Initialize does nothing if the object was already created with another
@@ -178,8 +180,8 @@ package Gtk.List_Store is
    -------------
 
    procedure Append
-      (List_Store : not null access Gtk_List_Store_Record;
-       Iter       : out Gtk.Tree_Model.Gtk_Tree_Iter);
+      (Self : not null access Gtk_List_Store_Record;
+       Iter : out Gtk.Tree_Model.Gtk_Tree_Iter);
    pragma Obsolescent (Append);
    --  Appends a new row to List_Store. Iter will be changed to point to this
    --  new row. The row will be empty after this function is called. To fill in
@@ -187,15 +189,15 @@ package Gtk.List_Store is
    --  Deprecated since 4.10, 1
    --  @param Iter An unset `GtkTreeIter` to set to the appended row
 
-   procedure Clear (List_Store : not null access Gtk_List_Store_Record);
+   procedure Clear (Self : not null access Gtk_List_Store_Record);
    pragma Obsolescent (Clear);
    --  Removes all rows from the list store.
    --  Deprecated since 4.10, 1
 
    procedure Insert
-      (List_Store : not null access Gtk_List_Store_Record;
-       Iter       : out Gtk.Tree_Model.Gtk_Tree_Iter;
-       Position   : Glib.Gint);
+      (Self     : not null access Gtk_List_Store_Record;
+       Iter     : out Gtk.Tree_Model.Gtk_Tree_Iter;
+       Position : Glib.Gint);
    pragma Obsolescent (Insert);
    --  Creates a new row at Position. Iter will be changed to point to this
    --  new row. If Position is -1 or is larger than the number of rows on the
@@ -207,9 +209,9 @@ package Gtk.List_Store is
    --  @param Position position to insert the new row, or -1 for last
 
    procedure Insert_After
-      (List_Store : not null access Gtk_List_Store_Record;
-       Iter       : out Gtk.Tree_Model.Gtk_Tree_Iter;
-       Sibling    : Gtk.Tree_Model.Gtk_Tree_Iter);
+      (Self    : not null access Gtk_List_Store_Record;
+       Iter    : out Gtk.Tree_Model.Gtk_Tree_Iter;
+       Sibling : Gtk.Tree_Model.Gtk_Tree_Iter);
    pragma Obsolescent (Insert_After);
    --  Inserts a new row after Sibling. If Sibling is null, then the row will
    --  be prepended to the beginning of the list. Iter will be changed to point
@@ -221,9 +223,9 @@ package Gtk.List_Store is
    --  @param Sibling A valid `GtkTreeIter`
 
    procedure Insert_Before
-      (List_Store : not null access Gtk_List_Store_Record;
-       Iter       : out Gtk.Tree_Model.Gtk_Tree_Iter;
-       Sibling    : Gtk.Tree_Model.Gtk_Tree_Iter);
+      (Self    : not null access Gtk_List_Store_Record;
+       Iter    : out Gtk.Tree_Model.Gtk_Tree_Iter;
+       Sibling : Gtk.Tree_Model.Gtk_Tree_Iter);
    pragma Obsolescent (Insert_Before);
    --  Inserts a new row before Sibling. If Sibling is null, then the row will
    --  be appended to the end of the list. Iter will be changed to point to
@@ -235,8 +237,8 @@ package Gtk.List_Store is
    --  @param Sibling A valid `GtkTreeIter`
 
    function Iter_Is_Valid
-      (List_Store : not null access Gtk_List_Store_Record;
-       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
+      (Self : not null access Gtk_List_Store_Record;
+       Iter : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
    pragma Obsolescent (Iter_Is_Valid);
    --  Checks if the given iter is a valid iter for this `GtkListStore`.
    --  This function is slow. Only use it for debugging and/or testing
@@ -246,9 +248,9 @@ package Gtk.List_Store is
    --  @return True if the iter is valid, False if the iter is invalid.
 
    procedure Move_After
-      (List_Store : not null access Gtk_List_Store_Record;
-       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       Position   : Gtk.Tree_Model.Gtk_Tree_Iter);
+      (Self     : not null access Gtk_List_Store_Record;
+       Iter     : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Position : Gtk.Tree_Model.Gtk_Tree_Iter);
    pragma Obsolescent (Move_After);
    --  Moves Iter in Store to the position after Position. Note that this
    --  function only works with unsorted stores. If Position is null, Iter will
@@ -258,9 +260,9 @@ package Gtk.List_Store is
    --  @param Position A `GtkTreeIter`
 
    procedure Move_Before
-      (List_Store : not null access Gtk_List_Store_Record;
-       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       Position   : Gtk.Tree_Model.Gtk_Tree_Iter);
+      (Self     : not null access Gtk_List_Store_Record;
+       Iter     : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Position : Gtk.Tree_Model.Gtk_Tree_Iter);
    pragma Obsolescent (Move_Before);
    --  Moves Iter in Store to the position before Position. Note that this
    --  function only works with unsorted stores. If Position is null, Iter will
@@ -270,8 +272,8 @@ package Gtk.List_Store is
    --  @param Position A `GtkTreeIter`
 
    procedure Prepend
-      (List_Store : not null access Gtk_List_Store_Record;
-       Iter       : out Gtk.Tree_Model.Gtk_Tree_Iter);
+      (Self : not null access Gtk_List_Store_Record;
+       Iter : out Gtk.Tree_Model.Gtk_Tree_Iter);
    pragma Obsolescent (Prepend);
    --  Prepends a new row to List_Store. Iter will be changed to point to this
    --  new row. The row will be empty after this function is called. To fill in
@@ -280,8 +282,8 @@ package Gtk.List_Store is
    --  @param Iter An unset `GtkTreeIter` to set to the prepend row
 
    procedure Remove
-      (List_Store : not null access Gtk_List_Store_Record;
-       Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
+      (Self : not null access Gtk_List_Store_Record;
+       Iter : in out Gtk.Tree_Model.Gtk_Tree_Iter);
    pragma Obsolescent (Remove);
    --  Removes the given row from the list store. After being removed, Iter is
    --  set to be the next valid row, or invalidated if it pointed to the last
@@ -290,8 +292,8 @@ package Gtk.List_Store is
    --  @param Iter A valid `GtkTreeIter`
 
    procedure Reorder
-      (List_Store : not null access Gtk_List_Store_Record;
-       New_Order  : Gint_Array);
+      (Self      : not null access Gtk_List_Store_Record;
+       New_Order : Gint_Array);
    pragma Obsolescent (Reorder);
    --  Reorders Store to follow the order indicated by New_Order. Note that
    --  this function only works with unsorted stores.
@@ -302,8 +304,8 @@ package Gtk.List_Store is
    --  list store's length.
 
    procedure Set_Column_Types
-      (List_Store : not null access Gtk_List_Store_Record;
-       Types      : GType_Array);
+      (Self  : not null access Gtk_List_Store_Record;
+       Types : GType_Array);
    pragma Obsolescent (Set_Column_Types);
    --  Sets the types of the columns of a list store.
    --  This function is meant primarily for objects that inherit from
@@ -315,10 +317,10 @@ package Gtk.List_Store is
    --  @param Types An array length n of `GType`s
 
    procedure Set_Value
-      (List_Store : not null access Gtk_List_Store_Record;
-       Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-       Column     : Glib.Gint;
-       Value      : Glib.Values.GValue);
+      (Self   : not null access Gtk_List_Store_Record;
+       Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+       Column : Glib.Gint;
+       Value  : Glib.Values.GValue);
    pragma Obsolescent (Set_Value);
    --  Sets the data in the cell specified by Iter and Column. The type of
    --  Value must be convertible to the type of the column.
@@ -328,9 +330,9 @@ package Gtk.List_Store is
    --  @param Value new value for the cell
 
    procedure Swap
-      (List_Store : not null access Gtk_List_Store_Record;
-       A          : Gtk.Tree_Model.Gtk_Tree_Iter;
-       B          : Gtk.Tree_Model.Gtk_Tree_Iter);
+      (Self : not null access Gtk_List_Store_Record;
+       A    : Gtk.Tree_Model.Gtk_Tree_Iter;
+       B    : Gtk.Tree_Model.Gtk_Tree_Iter);
    pragma Obsolescent (Swap);
    --  Swaps A and B in Store. Note that this function only works with
    --  unsorted stores.
@@ -385,35 +387,40 @@ package Gtk.List_Store is
    ----------------------
 
    procedure Set
-     (Tree_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Column     : Gint;
-      Value      : UTF8_String);
+     (Self   : access Gtk_List_Store_Record;
+      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column : Gint;
+      Value  : UTF8_String);
    procedure Set
-     (Tree_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Column     : Gint;
-      Value      : Boolean);
+     (Self   : access Gtk_List_Store_Record;
+      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column : Gint;
+      Value  : Boolean);
    procedure Set
-     (Tree_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Column     : Gint;
-      Value      : Gint);
+     (Self   : access Gtk_List_Store_Record;
+      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column : Gint;
+      Value  : Gint);
+   --   procedure Set
+   --     (Self   : access Gtk_List_Store_Record;
+   --      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+   --      Column : Gint;
+   --      Value  : Gdk.Pixbuf.Gdk_Pixbuf);
 
    procedure Set
-     (Self       : not null access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Columns    : Glib.Gint_Array;
-      Values     : Glib.Values.GValue_Array);
+     (Self    : not null access Gtk_List_Store_Record;
+      Iter    : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Columns : Glib.Gint_Array;
+      Values  : Glib.Values.GValue_Array);
    pragma Precondition (Columns'Length = Values'Length);
    --  A variant of Set which takes the columns and valus as two arrays.
    --  This is more efficient when changing multiple values than calling
    --  one of the Set procedures above multiple times.
 
    procedure Set
-     (Self       : not null access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Values     : Glib.Values.GValue_Array);
+     (Self   : not null access Gtk_List_Store_Record;
+      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Values : Glib.Values.GValue_Array);
    --  A variant of the above that is used to set all the columns.
 
    ---------------------------------------------

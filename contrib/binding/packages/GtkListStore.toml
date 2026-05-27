@@ -1,11 +1,12 @@
 # ============================================================
 #   GtkListStore
 # ============================================================
-parent = "Gtk.Tree_Model.Gtk_Root_Tree_Model"
 
-[[parameter]]
-name = "self"
-ada = "List_Store"
+# It has been deprecated since gtk 4.10
+
+obsolescent = true
+
+parent = "Gtk.Tree_Model.Gtk_Root_Tree_Model"
 
 [[method]]
 id = "gtk_list_store_newv"
@@ -59,12 +60,12 @@ id = "gtk_list_store_remove"
 return = "void"
 body = '''
       procedure Internal
-         (List_Store : System.Address;
-          Iter       : in out Gtk.Tree_Model.Gtk_Tree_Iter);
+         (Self : System.Address;
+          Iter : in out Gtk.Tree_Model.Gtk_Tree_Iter);
       pragma Import (C, Internal, "gtk_list_store_remove");
       Tmp_Iter : aliased Gtk.Tree_Model.Gtk_Tree_Iter := Iter;
    begin
-      Internal (Get_Object (List_Store), Tmp_Iter);
+      Internal (Get_Object (Self), Tmp_Iter);
       Iter := Gtk.Tree_Model.Null_Iter;'''
 
 [[method.parameter]]
@@ -75,65 +76,81 @@ direction = "inout"
 body = '''
 
    procedure Set
-     (Tree_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Column     : Gint;
-      Value      : UTF8_String)
+     (Self   : access Gtk_List_Store_Record;
+      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column : Gint;
+      Value  : UTF8_String)
    is
       procedure Internal
-        (Tree_Store : System.Address;
-         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-         Column     : Gint;
-         Value      : UTF8_String);
+        (Self   : System.Address;
+         Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column : Gint;
+         Value  : UTF8_String);
       pragma Import (C, Internal, "ada_gtk_list_store_set_ptr");
    begin
-      Internal (Get_Object (Tree_Store), Iter, Column, Value & ASCII.NUL);
+      Internal (Get_Object (Self), Iter, Column, Value & ASCII.NUL);
    end Set;
 
    procedure Set
-     (Tree_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Column     : Gint;
-      Value      : Gint)
+     (Self   : access Gtk_List_Store_Record;
+      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column : Gint;
+      Value  : Gint)
    is
       procedure Internal
-        (Tree_Store : System.Address;
-         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-         Column     : Gint;
-         Value      : Gint);
+        (Self   : System.Address;
+         Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column : Gint;
+         Value  : Gint);
       pragma Import (C, Internal, "ada_gtk_list_store_set_int");
    begin
-      Internal (Get_Object (Tree_Store), Iter, Column, Value);
+      Internal (Get_Object (Self), Iter, Column, Value);
    end Set;
 
    procedure Set
-     (Tree_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Column     : Gint;
-      Value      : Boolean)
+     (Self   : access Gtk_List_Store_Record;
+      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column : Gint;
+      Value  : Boolean)
    is
       procedure Internal
-        (Tree_Store : System.Address;
-         Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-         Column     : Gint;
-         Value      : Gboolean);
+        (Self   : System.Address;
+         Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+         Column : Gint;
+         Value  : Gboolean);
       pragma Import (C, Internal, "ada_gtk_list_store_set_int");
    begin
-      Internal (Get_Object (Tree_Store), Iter, Column, Boolean'Pos (Value));
+      Internal (Get_Object (Self), Iter, Column, Boolean'Pos (Value));
    end Set;
 
+--   procedure Set
+--     (Self   : access Gtk_List_Store_Record;
+--      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+--      Column : Gint;
+--      Value  : Gdk.Pixbuf.Gdk_Pixbuf)
+--   is
+--      procedure Internal
+--        (Self   : System.Address;
+--         Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+--         Column : Gint;
+--         Value  : System.Address);
+--      pragma Import (C, Internal, "ada_gtk_list_store_set_ptr");
+--   begin
+--      Internal (Get_Object (Self), Iter, Column, Get_Object (Value));
+--   end Set;
+
    procedure Set
-     (Self       : not null access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Columns    : Glib.Gint_Array;
-      Values     : Glib.Values.GValue_Array)
+     (Self    : not null access Gtk_List_Store_Record;
+      Iter    : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Columns : Glib.Gint_Array;
+      Values  : Glib.Values.GValue_Array)
    is
       procedure Internal
-         (Self       : System.Address;
-          Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-          Columns    : System.Address;
-          Values     : System.Address;
-          N_Values   : Gint);
+         (Self     : System.Address;
+          Iter     : Gtk.Tree_Model.Gtk_Tree_Iter;
+          Columns  : System.Address;
+          Values   : System.Address;
+          N_Values : Gint);
       pragma Import (C, Internal, "gtk_list_store_set_valuesv");
    begin
       if Columns'Length = Values'Length then
@@ -144,9 +161,9 @@ body = '''
    end Set;
 
    procedure Set
-     (Self       : not null access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Values     : Glib.Values.GValue_Array)
+     (Self   : not null access Gtk_List_Store_Record;
+      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Values : Glib.Values.GValue_Array)
    is
       Columns : Gint_Array (Integer (Values'First) .. Integer (Values'Last));
    begin
@@ -157,39 +174,47 @@ body = '''
    end Set;
        '''
 
+[[extra.with_spec]]
+# pkg = "Gdk.Pixbuf"
+
 [[extra.spec]]
 text = '''
 
    procedure Set
-     (Tree_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Column     : Gint;
-      Value      : UTF8_String);
+     (Self   : access Gtk_List_Store_Record;
+      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column : Gint;
+      Value  : UTF8_String);
    procedure Set
-     (Tree_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Column     : Gint;
-      Value      : Boolean);
+     (Self   : access Gtk_List_Store_Record;
+      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column : Gint;
+      Value  : Boolean);
    procedure Set
-     (Tree_Store : access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Column     : Gint;
-      Value      : Gint);
+     (Self   : access Gtk_List_Store_Record;
+      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Column : Gint;
+      Value  : Gint);
+   --   procedure Set
+   --     (Self   : access Gtk_List_Store_Record;
+   --      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+   --      Column : Gint;
+   --      Value  : Gdk.Pixbuf.Gdk_Pixbuf);
 
    procedure Set
-     (Self       : not null access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Columns    : Glib.Gint_Array;
-      Values     : Glib.Values.GValue_Array);
+     (Self    : not null access Gtk_List_Store_Record;
+      Iter    : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Columns : Glib.Gint_Array;
+      Values  : Glib.Values.GValue_Array);
    pragma Precondition (Columns'Length = Values'Length);
    --  A variant of Set which takes the columns and valus as two arrays.
    --  This is more efficient when changing multiple values than calling
    --  one of the Set procedures above multiple times.
 
    procedure Set
-     (Self       : not null access Gtk_List_Store_Record;
-      Iter       : Gtk.Tree_Model.Gtk_Tree_Iter;
-      Values     : Glib.Values.GValue_Array);
+     (Self   : not null access Gtk_List_Store_Record;
+      Iter   : Gtk.Tree_Model.Gtk_Tree_Iter;
+      Values : Glib.Values.GValue_Array);
    --  A variant of the above that is used to set all the columns.
 
        '''
