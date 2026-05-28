@@ -45,7 +45,7 @@ interfaces = (
     "--Gtk.ToolShell",
     "--Gtk.TreeDragDest",
     "--Gtk.TreeDragSource",
-    "--Gtk.TreeSortable",
+    "Gtk.TreeSortable",
     "Gtk.TreeModel",
     "Gio.Action",
     "Gio.ActionGroup",
