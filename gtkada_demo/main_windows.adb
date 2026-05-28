@@ -44,12 +44,11 @@ with Gtk.Widget;             use Gtk.Widget;
 --  with Gtk;                 use Gtk;
 --  with Gdk;                 use Gdk;
 --  with Gdk.Color;           use Gdk.Color;
---  with Gtk.Box;             use Gtk.Box;
---  with Gtk.Button;          use Gtk.Button;
+with Gtk.Box;             use Gtk.Box;
+with Gtk.Button;          use Gtk.Button;
 --  with Gtk.Dialog;          use Gtk.Dialog;
 --  with Gtk.Handlers;        use Gtk.Handlers;
 --  with Gtkada.Handlers;     use Gtkada.Handlers;
---  with Gtk.Hbutton_Box;     use Gtk.Hbutton_Box;
 --  with Gtk.Label;           use Gtk.Label;
 --  with Gtk.Main;            use Gtk.Main;
 --  with Gtk.Notebook;        use Gtk.Notebook;
@@ -74,7 +73,7 @@ with Ada.Strings.Unbounded;
 --  with Create_GL;
 --  with Create_Gtkada_Builder;
 --  with Create_Button_Box;
---  with Create_Buttons;
+with Create_Buttons;
 --  with Create_Cairo;
 --  with Create_Calendar;
 --  with Create_Canvas;
@@ -171,7 +170,8 @@ package body Main_Windows is
    Demos : constant array (Positive range <>) of Demo_Info :=
      (To_Demo ("Labels", Create_Label.Run'Access),
       To_Demo ("Tree Filter", Create_Tree_Filter.Run'Access),
-      To_Demo ("Tree View", Create_Tree_View.Run'Access));
+      To_Demo ("Tree View", Create_Tree_View.Run'Access),
+      To_Demo ("Buttons", Create_Buttons.Run'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.
 
