@@ -1,0 +1,54 @@
+# ============================================================
+#   GtkTreeModelFilter
+# ============================================================
+parent = "Gtk.Tree_Model.Gtk_Root_Tree_Model"
+
+# In the gtk4 GIR `gtk_tree_model_filter_new` has been relocated onto the
+# GtkTreeModel interface as a plain <method>, so it is no longer seen as a
+# constructor of GtkTreeModelFilter. Splice the gtk3 <constructor> node back
+# into this class so the generator restores the Gtk_New / Initialize /
+# Gtk_Tree_Model_Filter_Filter_New constructors.
+[extra]
+
+[[extra.gir_element]]
+xml = '''
+<gir:constructor xmlns:c="http://www.gtk.org/introspection/c/1.0"
+                 xmlns:gir="http://www.gtk.org/introspection/core/1.0"
+                 name="filter_new" c:identifier="gtk_tree_model_filter_new">
+  <gir:return-value transfer-ownership="full">
+    <gir:type name="TreeModel" c:type="GtkTreeModel*"/>
+  </gir:return-value>
+  <gir:parameters>
+    <gir:parameter name="child_model" transfer-ownership="none">
+      <gir:type name="TreeModel" c:type="GtkTreeModel*"/>
+    </gir:parameter>
+    <gir:parameter name="root" transfer-ownership="none" nullable="1" allow-none="1">
+      <gir:type name="TreePath" c:type="GtkTreePath*"/>
+    </gir:parameter>
+  </gir:parameters>
+</gir:constructor>
+'''
+
+[[method]]
+id = "gtk_tree_model_filter_new"
+ada = "Gtk_New"
+
+[[method.parameter]]
+name = "root"
+default = "Null_Gtk_Tree_Path"
+
+[[method]]
+id = "gtk_tree_model_filter_convert_child_iter_to_iter"
+return = "void"
+
+[[method]]
+id = "gtk_tree_model_filter_set_modify_func"
+
+[[method.parameter]]
+name = "types"
+type = "GType_Array"
+
+[[method.parameter]]
+name = "n_columns"
+ada = ""
+default = "Types'Length"

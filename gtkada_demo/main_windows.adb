@@ -37,6 +37,7 @@ with Gtk.Tree_View_Column;   use Gtk.Tree_View_Column;
 with Gtk.Widget;             use Gtk.Widget;
 
 with Create_Label;
+with Create_Tree_Filter;
 
 --  TRANSITION: the original `with` clauses are preserved below as
 --  comments. Uncomment each one as the corresponding binding becomes
@@ -141,7 +142,6 @@ with Create_Label;
 --  with Create_Toggle_Buttons;
 --  with Create_Toolbar;
 --  with Create_Tooltips;
---  with Create_Tree_Filter;
 --  with Create_Tree_View;
 --  with Create_UI_Manager;
 --  with Common; use Common;
@@ -165,10 +165,12 @@ package body Main_Windows is
       Run   : Demo_Function;
    end record;
 
-   Labels_Name : aliased constant String := "labels";
+   Labels_Name      : aliased constant String := "labels";
+   Tree_Filter_Name : aliased constant String := "tree filter";
 
    Demos : constant array (Positive range <>) of Demo_Info :=
-     (1 => (Labels_Name'Access, Create_Label.Run'Access));
+     (1 => (Labels_Name'Access, Create_Label.Run'Access),
+      2 => (Tree_Filter_Name'Access, Create_Tree_Filter.Run'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.
 

@@ -309,16 +309,6 @@ package Gtk.Tree_Model is
    -- Methods --
    -------------
 
-   function Filter_New
-      (Tree_Model : Gtk_Tree_Model;
-       Root       : Gtk_Tree_Path) return Gtk_Tree_Model;
-   pragma Obsolescent (Filter_New);
-   --  Creates a new `GtkTreeModel`, with Child_Model as the child_model and
-   --  Root as the virtual root.
-   --  Deprecated since 4.10, 1
-   --  @param Root A `GtkTreePath`
-   --  @return A new `GtkTreeModel`.
-
    procedure Foreach
       (Tree_Model : Gtk_Tree_Model;
        Func       : Gtk_Tree_Model_Foreach_Func);

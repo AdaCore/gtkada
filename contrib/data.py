@@ -569,7 +569,7 @@ binding = (
     "----GtkTextViewAccessible",  # We do not support atk
     "--GtkThemingEngine",
     "GtkTreeIter",
-    "--GtkTreeModelFilter",
+    "GtkTreeModelFilter",
     "--GtkTreeModelSort",
     "GtkTreePath",
     "--GtkTreeRowReference",

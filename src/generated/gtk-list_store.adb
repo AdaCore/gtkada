@@ -568,23 +568,6 @@ package body Gtk.List_Store is
       end if;
    end Children;
 
-   ----------------
-   -- Filter_New --
-   ----------------
-
-   function Filter_New
-      (Tree_Model : not null access Gtk_List_Store_Record;
-       Root       : Gtk.Tree_Model.Gtk_Tree_Path)
-       return Gtk.Tree_Model.Gtk_Tree_Model
-   is
-      function Internal
-         (Tree_Model : System.Address;
-          Root       : System.Address) return Gtk.Tree_Model.Gtk_Tree_Model;
-      pragma Import (C, Internal, "gtk_tree_model_filter_new");
-   begin
-      return Internal (Get_Object (Tree_Model), Get_Object (Root));
-   end Filter_New;
-
    ---------------------
    -- Get_Column_Type --
    ---------------------

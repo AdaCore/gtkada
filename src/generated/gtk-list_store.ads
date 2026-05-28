@@ -431,12 +431,6 @@ package Gtk.List_Store is
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
 
-   function Filter_New
-      (Tree_Model : not null access Gtk_List_Store_Record;
-       Root       : Gtk.Tree_Model.Gtk_Tree_Path)
-       return Gtk.Tree_Model.Gtk_Tree_Model;
-   pragma Obsolescent (Filter_New);
-
    function Get_Column_Type
       (Tree_Model : not null access Gtk_List_Store_Record;
        Index      : Glib.Gint) return GType;

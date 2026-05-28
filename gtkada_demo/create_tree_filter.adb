@@ -47,7 +47,7 @@ package body Create_Tree_Filter is
    procedure Custom_Appearance
      (Model  : Gtk_Tree_Model;
       Iter   : Gtk_Tree_Iter;
-      Value  : in out GValue;
+      Value  : out GValue;
       Column : Gint);
    --  Change the appearance of the view dynamically
 
@@ -92,7 +92,7 @@ package body Create_Tree_Filter is
    procedure Custom_Appearance
      (Model  : Gtk_Tree_Model;
       Iter   : Gtk_Tree_Iter;
-      Value  : in out GValue;
+      Value  : out GValue;
       Column : Gint)
    is
       Filter : constant Gtk_Tree_Model_Filter :=
@@ -102,7 +102,7 @@ package body Create_Tree_Filter is
    begin
       Convert_Iter_To_Child_Iter (Filter, Child_Iter, Iter);
       Val := Get_Int (Get_Model (Filter), Child_Iter, Column);
-      Set_String (Value, "This is line" & Gint'Image (Val));
+      Init_Set_String (Value, "This is line" & Gint'Image (Val));
    end Custom_Appearance;
 
    ---------
@@ -124,7 +124,7 @@ package body Create_Tree_Filter is
       Set_Label (Frame, "Tree Model Filter");
 
       Gtk_New (Scrolled);
-      Add (Frame, Scrolled);
+      Frame.Set_Child (Scrolled);
       Set_Policy (Scrolled, Policy_Automatic, Policy_Automatic);
 
       --  Create the model that contains the actual data. This model will
@@ -148,7 +148,7 @@ package body Create_Tree_Filter is
       --  And now a view that displays the filter. A single column is displayed
 
       Gtk_New (Tree, Filter);
-      Add (Scrolled, Tree);
+      Scrolled.Set_Child (Tree);
       Set_Headers_Visible (Tree, False);
 
       Gtk_New (Text);
@@ -157,8 +157,6 @@ package body Create_Tree_Filter is
       Num := Append_Column (Tree, Col);
       Pack_Start (Col, Text, True);
       Add_Attribute (Col, Text, "text", Column_0);
-
-      Show_All (Frame);
    end Run;
 
 end Create_Tree_Filter;
