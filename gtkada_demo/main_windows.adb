@@ -61,9 +61,9 @@ with Gtk.Widget;             use Gtk.Widget;
 --  with Gtk.Text_View;       use Gtk.Text_View;
 --  with Gtk.Window;          use Gtk.Window;
 --  with Pango.Font;          use Pango.Font;
---
---  with Ada.Strings.Fixed;
---
+
+with Ada.Strings.Unbounded;
+
 --  with Create_About;
 --  with Create_Alignment;
 --  with Create_Application;
@@ -160,20 +160,18 @@ package body Main_Windows is
      (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
 
    type Demo_Info is record
-      Label : access constant String;
+      Label : Ada.Strings.Unbounded.Unbounded_String;
       Run   : Demo_Function;
    end record;
 
-   package Name is
-      Labels      : aliased constant String := "labels";
-      Tree_Filter : aliased constant String := "tree filter";
-      Tree_View   : aliased constant String := "tree view";
-   end Name;
+   function To_Demo (Name : String; Runner : Demo_Function) return Demo_Info
+   is (Label => Ada.Strings.Unbounded.To_Unbounded_String (Name),
+       Run   => Runner);
 
    Demos : constant array (Positive range <>) of Demo_Info :=
-     ((Name.Labels'Access, Create_Label.Run'Access),
-      (Name.Tree_Filter'Access, Create_Tree_Filter.Run'Access),
-      (Name.Tree_View'Access, Create_Tree_View.Run'Access));
+     (To_Demo ("Labels", Create_Label.Run'Access),
+      To_Demo ("Tree Filter", Create_Tree_Filter.Run'Access),
+      To_Demo ("Tree View", Create_Tree_View.Run'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.
 
@@ -241,7 +239,10 @@ package body Main_Windows is
       Gtk_New (Store, (Label_Column => GType_String, Demo_Column => GType_Int));
       for Index in Demos'Range loop
          Store.Append (Iter);
-         Store.Set (Iter, Label_Column, Demos (Index).Label.all);
+         Store.Set
+           (Iter,
+            Label_Column,
+            Ada.Strings.Unbounded.To_String (Demos (Index).Label));
          Store.Set (Iter, Demo_Column, Gint (Index));
       end loop;
 
