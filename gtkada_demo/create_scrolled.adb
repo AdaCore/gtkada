@@ -42,7 +42,7 @@ package body Create_Scrolled is
         & ASCII.LF
         & "No explicit signal is required in this demo, everything is done"
         & " through @bGtk_Adjustment@Bs, that contain the current value of the"
-        & " @bGtK_Scrollbar@Bs and also specify the area to display in the"
+        & " @bGtk_Scrollbar@Bs and also specify the area to display in the"
         & " @bGtk_Grid@B.";
    end Help;
 

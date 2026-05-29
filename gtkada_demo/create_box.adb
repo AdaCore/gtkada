@@ -30,11 +30,12 @@ with Gtk.Widget; use Gtk.Widget;
 
 package body Create_Box is
 
-   procedure Add_Buttons (Vbox        : Gtk_Box;
-                          Message     : String;
-                          Homogeneous : Boolean;
-                          Expand      : Boolean := False;
-                          Fill        : Boolean := False);
+   procedure Add_Buttons
+     (Vbox        : Gtk_Box;
+      Message     : String;
+      Homogeneous : Boolean;
+      Expand      : Boolean := False;
+      Fill        : Boolean := False);
    --  Add a labelled row of three buttons within Vbox, packing them into a
    --  homogeneous (or not) horizontal box and applying the per-child hexpand
    --  and halign properties derived from Expand and Fill.
@@ -45,7 +46,8 @@ package body Create_Box is
 
    function Help return String is
    begin
-      return "This demo shows how you can use the @bGtk_Box@B container in"
+      return
+        "This demo shows how you can use the @bGtk_Box@B container in"
         & " Gtk4."
         & ASCII.LF
         & ASCII.LF
@@ -72,11 +74,12 @@ package body Create_Box is
    -- Add_Buttons --
    -----------------
 
-   procedure Add_Buttons (Vbox        : Gtk_Box;
-                          Message     : String;
-                          Homogeneous : Boolean;
-                          Expand      : Boolean := False;
-                          Fill        : Boolean := False)
+   procedure Add_Buttons
+     (Vbox        : Gtk_Box;
+      Message     : String;
+      Homogeneous : Boolean;
+      Expand      : Boolean := False;
+      Fill        : Boolean := False)
    is
       Box   : Gtk_Box;
       Label : Gtk_Label;
@@ -103,13 +106,11 @@ package body Create_Box is
       Label.Set_Xalign (0.0);
       Vbox.Append (Label);
 
-      Gtk_New (Box, Orientation_Horizontal, Spacing => 0);
+      Gtk_New (Box, Orientation_Vertical, Spacing => 0);
       Box.Set_Homogeneous (Homogeneous);
       Vbox.Append (Box);
 
       --  Use a function from one of the implemented interfaces.
-      --  This call is not needed, and is just here to check the binding
-      --  itself.
       Box.Set_Orientation (Gtk.Enums.Orientation_Horizontal);
 
       Add_One ("Small");
@@ -140,16 +141,34 @@ package body Create_Box is
       Box.Set_Homogeneous (False);
       Vbox.Append (Box);
 
-      Add_Buttons (Box, "Homogeneous => False, Expand => False",
-                   Homogeneous => False, Expand => False, Fill => False);
-      Add_Buttons (Box, "Homogeneous => False, Expand => True, Fill => False",
-                   Homogeneous => False, Expand => True, Fill => False);
-      Add_Buttons (Box, "Homogeneous => False, Expand => True, Fill => True",
-                   Homogeneous => False, Expand => True, Fill => True);
-      Add_Buttons (Box, "Homogeneous => True, Fill => False",
-                   Homogeneous => True, Fill => False);
-      Add_Buttons (Box, "Homogeneous => True, Fill => True",
-                   Homogeneous => True, Fill => True);
+      Add_Buttons
+        (Box,
+         "Homogeneous => False, Expand => False",
+         Homogeneous => False,
+         Expand      => False,
+         Fill        => False);
+      Add_Buttons
+        (Box,
+         "Homogeneous => False, Expand => True, Fill => False",
+         Homogeneous => False,
+         Expand      => True,
+         Fill        => False);
+      Add_Buttons
+        (Box,
+         "Homogeneous => False, Expand => True, Fill => True",
+         Homogeneous => False,
+         Expand      => True,
+         Fill        => True);
+      Add_Buttons
+        (Box,
+         "Homogeneous => True, Fill => False",
+         Homogeneous => True,
+         Fill        => False);
+      Add_Buttons
+        (Box,
+         "Homogeneous => True, Fill => True",
+         Homogeneous => True,
+         Fill        => True);
    end Run;
 
 end Create_Box;

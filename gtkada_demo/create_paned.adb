@@ -44,7 +44,7 @@ package body Create_Paned is
         & "If @bShrink@B is set to True for one of the children, then the user"
         & " can resize it to any size. If it is set to False, then the"
         & " minimum size set for the child by a call to @bSet_Size_Request@B is"
-        & " enforced, and the child can never be shrinked more than that."
+        & " enforced, and the child can never shrink more than that."
         & ASCII.LF
         & "If @bResize@B is set to True for one of the children only, then"
         & " that child gets the exact size it requested, the other gets the"

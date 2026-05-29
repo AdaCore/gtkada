@@ -173,9 +173,7 @@ package body Main_Windows is
    function To_Demo
      (Name : String; Runner : Demo_Function; Help : Help_Function)
       return Demo_Info
-   is (Label => Ada.Strings.Unbounded.To_Unbounded_String (Name),
-       Run   => Runner,
-       Help  => Help);
+   is (Label => To_Unbounded_String (Name), Run => Runner, Help => Help);
 
    Demos : constant array (Positive range <>) of Demo_Info :=
      (To_Demo ("Labels", Create_Label.Run'Access, Create_Label.Help'Access),
