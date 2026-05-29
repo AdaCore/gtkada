@@ -72,6 +72,7 @@ with Ada.Strings.Unbounded;
 --  with Create_Application;
 --  with Create_Arrow;
 --  with Create_Assistant;
+with Create_Box;
 --  with Create_Builder;
 --  with Create_GL;
 --  with Create_Gtkada_Builder;
@@ -101,6 +102,7 @@ with Create_Buttons;
 --  with Create_Entry;
 --  with Create_File_Chooser;
 --  with Create_File_Selection;
+with Create_Frame;
 --  with Create_Fixed;
 --  with Create_Flow_Box;
 --  with Create_Font_Chooser;
@@ -116,6 +118,7 @@ with Create_Label;
 --  with Create_MDI;
 --  with Create_Notebook;
 --  with Create_Opacity;
+with Create_Paned;
 --  with Create_Pixbuf;
 --  with Create_Print;
 --  with Create_Progress;
@@ -126,6 +129,7 @@ with Create_Label;
 --  with Create_Selection;
 --  with Create_Size_Groups;
 --  with Create_Stack;
+with Create_Scrolled;
 --  with Create_Sources;
 --  with Create_Spin;
 --  with Create_Spinners;
@@ -166,15 +170,32 @@ package body Main_Windows is
       Help  : Help_Function;
    end record;
 
-   function To_Demo (Name : String; Runner : Demo_Function) return Demo_Info
+   function To_Demo
+     (Name : String; Runner : Demo_Function; Help : Help_Function)
+      return Demo_Info
    is (Label => Ada.Strings.Unbounded.To_Unbounded_String (Name),
-       Run   => Runner);
+       Run   => Runner,
+       Help  => Help);
 
    Demos : constant array (Positive range <>) of Demo_Info :=
-     (To_Demo ("Labels", Create_Label.Run'Access),
-      To_Demo ("Tree Filter", Create_Tree_Filter.Run'Access),
-      To_Demo ("Tree View", Create_Tree_View.Run'Access),
-      To_Demo ("Buttons", Create_Buttons.Run'Access));
+     (To_Demo ("Labels", Create_Label.Run'Access, Create_Label.Help'Access),
+      To_Demo
+        ("Tree Filter",
+         Create_Tree_Filter.Run'Access,
+         Create_Tree_Filter.Help'Access),
+      To_Demo
+        ("Tree View",
+         Create_Tree_View.Run'Access,
+         Create_Tree_View.Help'Access),
+      To_Demo ("Boxes", Create_Box.Run'Access, Create_Box.Help'Access),
+      To_Demo ("Frames", Create_Frame.Run'Access, Create_Frame.Help'Access),
+      To_Demo ("Paned", Create_Paned.Run'Access, Create_Paned.Help'Access),
+      To_Demo
+        ("Scrolled Window",
+         Create_Scrolled.Run'Access,
+         Create_Scrolled.Help'Access),
+      To_Demo
+        ("Buttons", Create_Buttons.Run'Access, Create_Buttons.Help'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.
 
