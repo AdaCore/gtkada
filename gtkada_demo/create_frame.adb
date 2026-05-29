@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,11 +21,13 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Interfaces.C; use Interfaces.C;
+
 with Glib;         use Glib;
-with Gtk.Grid;     use Gtk.Grid;
-with Gtk.Enums;    use Gtk.Enums;
 with Gtk.Frame;    use Gtk.Frame;
+with Gtk.Grid;     use Gtk.Grid;
 with Gtk.Label;    use Gtk.Label;
+with Gtk.Widget;   use Gtk.Widget;
 
 package body Create_Frame is
 
@@ -35,15 +37,20 @@ package body Create_Frame is
 
    function Help return String is
    begin
-      return "This demo shows the different kinds of shadows that are"
-        & " available for frames, as well as the positions that the label"
-        & " of the frame can have."
+      return "This demo shows what a @bGtk_Frame@B offers in Gtk4."
         & ASCII.LF
-        & "Note that the label must be displayed at the top of the frame"
-        & " and can not be displayed elsewhere."
+        & "A frame draws a border around its single child and may carry an"
+        & " optional text label embedded in its top edge."
         & ASCII.LF
-        & "If you want to constrained the child to a specific aspect ratio"
-        & " even when the frame is resized, you should look at the"
+        & "The shadow types of Gtk3 (@bShadow_In@B, @bShadow_Out@B, ...) no"
+        & " longer exist in Gtk4, so the frames below instead illustrate the"
+        & " presence or absence of a label and the horizontal placement of"
+        & " that label, set with @bSet_Label_Align@B. An @bXalign@B of 0.0 is"
+        & " left-aligned and 1.0 is right-aligned; the vertical placement"
+        & " argument is gone, as labels always sit on the top edge."
+        & ASCII.LF
+        & "If you want to constrain the child to a specific aspect ratio even"
+        & " when the frame is resized, you should look at the"
         & " @bGtk_Aspect_Frame@B widget instead.";
    end Help;
 
@@ -52,59 +59,57 @@ package body Create_Frame is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Table  : Gtk_Grid;
-      Label  : Gtk_Label;
-      Frame2 : Gtk_Frame;
+      Table : Gtk_Grid;
+
+      procedure Add_Sub_Frame
+        (Column, Row : Gint;
+         Title       : String;
+         Xalign      : C_float;
+         Caption     : String);
+      --  Attach a labelled (when Title is not empty) sub-frame at the given
+      --  grid position, aligning its label at Xalign and showing Caption as
+      --  the frame's child.
+
+      -------------------
+      -- Add_Sub_Frame --
+      -------------------
+
+      procedure Add_Sub_Frame
+        (Column, Row : Gint;
+         Title       : String;
+         Xalign      : C_float;
+         Caption     : String)
+      is
+         Sub_Frame : Gtk_Frame;
+         Label     : Gtk_Label;
+      begin
+         Gtk_New (Sub_Frame, Title);
+         if Title /= "" then
+            Sub_Frame.Set_Label_Align (Xalign);
+         end if;
+         Gtk_New (Label, Caption);
+         Sub_Frame.Set_Child (Label);
+         Table.Attach (Sub_Frame, Column, Row);
+      end Add_Sub_Frame;
+
    begin
       Gtk.Frame.Set_Label (Frame, "Frames");
 
       Gtk_New (Table);
-      Table.Set_Border_Width (Border_Width => 10);
-      Frame.Add (Table);
+      Table.Set_Margin_Start (10);
+      Table.Set_Margin_End (10);
+      Table.Set_Margin_Top (10);
+      Table.Set_Margin_Bottom (10);
+      Table.Set_Row_Spacing (10);
+      Table.Set_Column_Spacing (10);
+      Frame.Set_Child (Table);
 
-      --  First frame
-      Gtk_New (Frame2, "");
-      Frame2.Set_Shadow_Type (Gtk.Enums.Shadow_In);
-      Table.Attach (Frame2, 0, 0);
-      Gtk_New (Label, "Shadow_In");
-      Frame2.Add (Label);
-
-      --  Second Frame
-      Gtk_New (Frame2, "");
-      Frame2.Set_Shadow_Type (Gtk.Enums.Shadow_Out);
-      Table.Attach (Frame2, 1, 0);
-      Gtk_New (Label, "Shadow_Out");
-      Frame2.Add (Label);
-
-      --  Third Frame
-      Gtk_New (Frame2, "");
-      Frame2.Set_Shadow_Type (Gtk.Enums.Shadow_Etched_In);
-      Table.Attach (Frame2, 0, 1);
-      Gtk_New (Label, "Shadow_Etched_In");
-      Frame2.Add (Label);
-
-      --  Fourth Frame
-      Gtk_New (Frame2, "");
-      Frame2.Set_Shadow_Type (Gtk.Enums.Shadow_Etched_Out);
-      Table.Attach (Frame2, 1, 1);
-      Gtk_New (Label, "Shadow_Etched_Out");
-      Frame2.Add (Label);
-
-      --  Fifth Frame
-      Gtk_New (Frame2, "Title");
-      Frame2.Set_Label_Align (Xalign => 0.2, Yalign => 0.0);
-      Table.Attach (Frame2, 0, 2);
-      Gtk_New (Label, "Label_Align: Xalign = 0.2");
-      Frame2.Add (Label);
-
-      --  Sixth Frame
-      Gtk_New (Frame2, "Title");
-      Frame2.Set_Label_Align (Xalign => 0.8, Yalign => 0.0);
-      Table.Attach (Frame2, 1, 2);
-      Gtk_New (Label, "Label_Align: Xalign = 0.8");
-      Frame2.Add (Label);
-
-      Frame.Show_All;
+      Add_Sub_Frame (0, 0, "",      0.0, "No label");
+      Add_Sub_Frame (1, 0, "Title", 0.0, "Xalign = 0.0");
+      Add_Sub_Frame (0, 1, "Title", 0.2, "Xalign = 0.2");
+      Add_Sub_Frame (1, 1, "Title", 0.5, "Xalign = 0.5");
+      Add_Sub_Frame (0, 2, "Title", 0.8, "Xalign = 0.8");
+      Add_Sub_Frame (1, 2, "Title", 1.0, "Xalign = 1.0");
    end Run;
 
 end Create_Frame;

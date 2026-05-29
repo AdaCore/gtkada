@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,23 +21,24 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib; use Glib;
-with Gtk.Box; use Gtk.Box;
+with Gtk.Box;    use Gtk.Box;
 with Gtk.Button; use Gtk.Button;
-with Gtk.Enums;
-with Gtk.Frame; use Gtk.Frame;
-with Gtk.Label; use Gtk.Label;
-with Gtk.Separator; use Gtk.Separator;
-with Gtk; use Gtk;
+with Gtk.Enums;  use Gtk.Enums;
+with Gtk.Frame;  use Gtk.Frame;
+with Gtk.Label;  use Gtk.Label;
+with Gtk.Widget; use Gtk.Widget;
 
 package body Create_Box is
 
-   procedure Add_Buttons (Vbox        : Gtk_Box;
-                          Message     : String;
-                          Homogeneous : Boolean;
-                          Expand      : Boolean := False;
-                          Fill        : Boolean := False);
-   --  Add the buttons within Vbox
+   procedure Add_Buttons
+     (Vbox        : Gtk_Box;
+      Message     : String;
+      Homogeneous : Boolean;
+      Expand      : Boolean := False;
+      Fill        : Boolean := False);
+   --  Add a labelled row of three buttons within Vbox, packing them into a
+   --  homogeneous (or not) horizontal box and applying the per-child hexpand
+   --  and halign properties derived from Expand and Fill.
 
    ----------
    -- Help --
@@ -45,68 +46,76 @@ package body Create_Box is
 
    function Help return String is
    begin
-      return "This demo show how you can efficiently use the @bGtk_Box@B " &
-        "container." &
-        ASCII.LF &
-        ASCII.LF &
-        "The upper half shows the different " &
-        "combinations of the parameters @bHomogeneous@B, @bExpand@B and " &
-        "@bFill@B. Note that for homogeneous boxes, @bExpand@B is irrelevant."
-        & ASCII.LF &
-        " - @bHomogeneous@B: If True all the widgets in the box will have the "
-        & "same size as the largest child."
-        & ASCII.LF &
-        " - @bExpand@B: If True, the widget size will be bigger than the "
-        & "minimum requested if more space is available. Its exact size "
-        & "depends on the @bFill@B parameter"
-        & ASCII.LF &
-        " - @bFill@B: If False, the widget will be surrounded by empty space,"
-        & " but its real size will be the minimum it requested."
+      return
+        "This demo shows how you can use the @bGtk_Box@B container in"
+        & " Gtk4."
         & ASCII.LF
-        & ASCII.LF &
-        "The second part of the demo shows the difference between "
-        & "@bPack_Start@B and @bPack_End@B. The two resulting groups are "
-        & "separated by a space that expands when the box is resized. This "
-        & "space of course exists only when the widgets do not expand. "
-        & "The buttons are inserted in the order specified (first button, "
-        & " second button, ...)";
+        & ASCII.LF
+        & "Each row below packs three buttons into a horizontal box with"
+        & " @bAppend@B, and illustrates how the @bHomogeneous@B box property"
+        & " combines with the per-child @bhexpand@B and @bhalign@B properties."
+        & " Gtk4 has replaced the old @bExpand@B and @bFill@B arguments of"
+        & " @bPack_Start@B with these child properties."
+        & ASCII.LF
+        & " - @bHomogeneous@B: if True, every child of the box is given the"
+        & " same size as the largest child. The per-child expand setting is"
+        & " then irrelevant."
+        & ASCII.LF
+        & " - @bhexpand@B (labelled @bExpand@B below): if True, the child"
+        & " claims any extra space available along the box's orientation."
+        & ASCII.LF
+        & " - @bhalign@B (labelled @bFill@B below): @bAlign_Fill@B stretches"
+        & " the child so it occupies all the space it was given, whereas"
+        & " @bAlign_Center@B leaves the child at its minimum requested size,"
+        & " surrounded by empty space.";
    end Help;
 
    -----------------
    -- Add_Buttons --
    -----------------
 
-   procedure Add_Buttons (Vbox        : Gtk_Box;
-                          Message     : String;
-                          Homogeneous : Boolean;
-                          Expand      : Boolean := False;
-                          Fill        : Boolean := False)
+   procedure Add_Buttons
+     (Vbox        : Gtk_Box;
+      Message     : String;
+      Homogeneous : Boolean;
+      Expand      : Boolean := False;
+      Fill        : Boolean := False)
    is
-      Button : Gtk_Button;
-      Box    : Gtk_Box;
-      Label  : Gtk_Label;
+      Box   : Gtk_Box;
+      Label : Gtk_Label;
+
+      procedure Add_One (Caption : String);
+      --  Append a single button carrying Caption, with the expand/fill
+      --  child properties common to this row.
+
+      -------------
+      -- Add_One --
+      -------------
+
+      procedure Add_One (Caption : String) is
+         Button : Gtk_Button;
+      begin
+         Gtk_New (Button, Caption);
+         Button.Set_Hexpand (Expand);
+         Button.Set_Halign (if Fill then Align_Fill else Align_Center);
+         Box.Append (Button);
+      end Add_One;
 
    begin
       Gtk_New (Label, Message);
-      Pack_Start (Vbox, Label, Expand => False, Fill => False);
+      Label.Set_Xalign (0.0);
+      Vbox.Append (Label);
 
-      Gtk_New_Hbox (Box, Homogeneous => Homogeneous);
-      Pack_Start (Vbox, Box, Expand => False, Fill => False);
+      Gtk_New (Box, Orientation_Vertical, Spacing => 0);
+      Box.Set_Homogeneous (Homogeneous);
+      Vbox.Append (Box);
 
       --  Use a function from one of the implemented interfaces.
-      --  This call is not needed, and is just here to check the binding
-      --  itself.
-      Set_Orientation (Box, Gtk.Enums.Orientation_Horizontal);
+      Box.Set_Orientation (Gtk.Enums.Orientation_Horizontal);
 
-      Gtk_New (Button, "Small");
-      Pack_Start (Box, Button, Expand => Expand, Fill => Fill);
-
-      Gtk_New (Button, "A bit longer");
-      Pack_Start (Box, Button, Expand => Expand, Fill => Fill);
-
-      Gtk_New (Button, "The longest button");
-      Pack_Start (Box, Button, Expand => Expand, Fill => Fill);
-
+      Add_One ("Small");
+      Add_One ("A bit longer");
+      Add_One ("The longest button");
    end Add_Buttons;
 
    ---------
@@ -114,55 +123,52 @@ package body Create_Box is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Vbox    : Gtk_Box;
-      Box     : Gtk_Box;
-      Button  : Gtk_Button;
-      Sep     : Gtk_Separator;
+      Vbox : Gtk_Box;
+      Box  : Gtk_Box;
 
    begin
       Gtk.Frame.Set_Label (Frame, "Boxes");
 
-      Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 25);
-      Add (Frame, Vbox);
+      Gtk_New (Vbox, Orientation_Vertical, Spacing => 25);
+      Vbox.Set_Homogeneous (False);
+      Vbox.Set_Margin_Start (10);
+      Vbox.Set_Margin_End (10);
+      Vbox.Set_Margin_Top (10);
+      Vbox.Set_Margin_Bottom (10);
+      Frame.Set_Child (Vbox);
 
-      Gtk_New_Vbox (Box, Homogeneous => True);
-      Pack_Start (Vbox, Box, Expand => False, Fill => False);
-      Add_Buttons (Box, "Homogeneous => False, Expand => False",
-                   Homogeneous => False, Expand => False, Fill => False);
-      Add_Buttons (Box, "Homogeneous => False, Expand => True, Fill => False",
-                   Homogeneous => False, Expand => True, Fill => False);
-      Add_Buttons (Box, "Homogeneous => False, Expand => True, Fill => True",
-                   Homogeneous => False, Expand => True, Fill => True);
-      Add_Buttons (Box, "Homogeneous => True, Fill => False",
-                   Homogeneous => True, Fill => False);
-      Add_Buttons (Box, "Homogeneous => True, Fill => True",
-                   Homogeneous => True, Fill => True);
+      Gtk_New (Box, Orientation_Vertical, Spacing => 0);
+      Box.Set_Homogeneous (False);
+      Vbox.Append (Box);
 
-      Gtk_New_Hseparator (Sep);
-      Pack_Start (Vbox, Sep, Expand => False, Fill => True);
-
-      Gtk_New_Vbox (Box, Homogeneous => False);
-      Pack_Start (Vbox, Box, Expand => True, Fill => True, Padding => 10);
-
-      Gtk_New (Button, "Pack_Start, First Button");
-      Pack_Start (Box, Button, Expand => False, Fill => False);
-
-      Gtk_New (Button, "Pack_Start, Second Button");
-      Pack_Start (Box, Button, Expand => False, Fill => False);
-
-      Gtk_New (Button, "Pack_Start, Third Button");
-      Pack_Start (Box, Button, Expand => False, Fill => False);
-
-      Gtk_New (Button, "Pack_End, First Button");
-      Pack_End (Box, Button, Expand => False, Fill => False);
-
-      Gtk_New (Button, "Pack_End, Second Button");
-      Pack_End (Box, Button, Expand => False, Fill => False);
-
-      Gtk_New (Button, "Pack_End, Third Button");
-      Pack_End (Box, Button, Expand => False, Fill => False);
-
-      Show_All (Frame);
+      Add_Buttons
+        (Box,
+         "Homogeneous => False, Expand => False",
+         Homogeneous => False,
+         Expand      => False,
+         Fill        => False);
+      Add_Buttons
+        (Box,
+         "Homogeneous => False, Expand => True, Fill => False",
+         Homogeneous => False,
+         Expand      => True,
+         Fill        => False);
+      Add_Buttons
+        (Box,
+         "Homogeneous => False, Expand => True, Fill => True",
+         Homogeneous => False,
+         Expand      => True,
+         Fill        => True);
+      Add_Buttons
+        (Box,
+         "Homogeneous => True, Fill => False",
+         Homogeneous => True,
+         Fill        => False);
+      Add_Buttons
+        (Box,
+         "Homogeneous => True, Fill => True",
+         Homogeneous => True,
+         Fill        => True);
    end Run;
 
 end Create_Box;

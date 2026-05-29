@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -27,7 +27,6 @@ with Gtk.Enums;        use Gtk.Enums;
 with Gtk.Frame;        use Gtk.Frame;
 with Gtk.Paned;        use Gtk.Paned;
 with Gtk.Widget;       use Gtk.Widget;
-with Gtk;              use Gtk;
 
 package body Create_Paned is
 
@@ -39,12 +38,13 @@ package body Create_Paned is
    begin
       return "A @bGtk_Paned@B splits a container in two parts, that can be"
         & " resized by the user." & ASCII.LF
-        & "They have two children, one for each side."
+        & "They have two children, one for each side, set with"
+        & " @bSet_Start_Child@B and @bSet_End_Child@B."
         & ASCII.LF
         & "If @bShrink@B is set to True for one of the children, then the user"
         & " can resize it to any size. If it is set to False, then the"
-        & " minimum size set for the child by a call to @bSet_Usize@B is"
-        & " enforced, and the child can never be shrinked more than that."
+        & " minimum size set for the child by a call to @bSet_Size_Request@B is"
+        & " enforced, and the child can never shrink more than that."
         & ASCII.LF
         & "If @bResize@B is set to True for one of the children only, then"
         & " that child gets the exact size it requested, the other gets the"
@@ -67,45 +67,53 @@ package body Create_Paned is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       VPaned : Gtk_Paned;
       HPaned : Gtk_Paned;
-      Frame2  : Gtk_Frame;
+      Frame2 : Gtk_Frame;
       Button : Gtk_Button;
       Vbox   : Gtk_Box;
 
    begin
       Set_Label (Frame, "Panes");
 
-      Gtk_New_Vbox (Vbox, False, 0);
-      Add (Frame, Vbox);
+      Gtk_New (Vbox, Orientation_Vertical, Spacing => 0);
+      Vbox.Set_Homogeneous (False);
+      Frame.Set_Child (Vbox);
 
-      Gtk_New_Vpaned (VPaned);
-      Pack_Start (Vbox, VPaned, True, True, 0);
-      Set_Border_Width (VPaned, 5);
+      Gtk_New (VPaned, Orientation_Vertical);
+      VPaned.Set_Vexpand (True);
+      VPaned.Set_Margin_Start (5);
+      VPaned.Set_Margin_End (5);
+      VPaned.Set_Margin_Top (5);
+      VPaned.Set_Margin_Bottom (5);
+      Vbox.Append (VPaned);
 
-      Gtk_New_Hpaned (HPaned);
-      Pack1 (VPaned, HPaned, Resize => False, Shrink => True);
+      Gtk_New (HPaned, Orientation_Horizontal);
+      VPaned.Set_Start_Child (HPaned);
+      VPaned.Set_Resize_Start_Child (False);
+      VPaned.Set_Shrink_Start_Child (True);
 
       Gtk_New (Frame2);
       Gtk_New (Button, "not Resize, not Shrink, minWidth=60");
-      Add (Frame2, Button);
-      Set_Shadow_Type (Frame2, Shadow_In);
-      Set_Size_Request (Frame2, 60, 60);
-      Pack1 (HPaned, Frame2, False, False);
+      Frame2.Set_Child (Button);
+      Frame2.Set_Size_Request (60, 60);
+      HPaned.Set_Start_Child (Frame2);
+      HPaned.Set_Resize_Start_Child (False);
+      HPaned.Set_Shrink_Start_Child (False);
 
       Gtk_New (Frame2);
       Gtk_New (Button, "Resize, Shrink");
-      Add (Frame2, Button);
-      Set_Shadow_Type (Frame2, Shadow_In);
-      Set_Size_Request (Frame2, 80, 60);
-      Pack2 (HPaned, Frame2, Resize => True, Shrink => True);
+      Frame2.Set_Child (Button);
+      Frame2.Set_Size_Request (80, 60);
+      HPaned.Set_End_Child (Frame2);
+      HPaned.Set_Resize_End_Child (True);
+      HPaned.Set_Shrink_End_Child (True);
 
       Gtk_New (Frame2);
       Gtk_New (Button, "not Resize, not Shrink, minHeight=280");
-      Add (Frame2, Button);
-      Set_Shadow_Type (Frame2, Shadow_In);
-      Set_Size_Request (Frame2, 60, 280);
-      Pack2 (VPaned, Frame2, Resize => False, Shrink => False);
-
-      Show_All (Frame);
+      Frame2.Set_Child (Button);
+      Frame2.Set_Size_Request (60, 280);
+      VPaned.Set_End_Child (Frame2);
+      VPaned.Set_Resize_End_Child (False);
+      VPaned.Set_Shrink_End_Child (False);
    end Run;
 
 end Create_Paned;

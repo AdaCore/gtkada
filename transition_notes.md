@@ -24,6 +24,29 @@
   + `Gtk_Tree_View` selector with a single "labels" entry that drives
   the `Create_Label` demo on the right-hand side. The C glue
   (`ada_gtk_list_store_set_*`) was already present in `src/misc.c`.
+- Reactivated `gtkada_demo`'s `Create_Box`, `Create_Frame`, `Create_Paned`
+  and `Create_Scrolled` packages: migrated their bodies from Gtk3 to Gtk4
+  and wired them (plus their `Help` text) into the `Main_Windows` selector.
+  Notable API substitutions:
+  - `Gtk_New (Box, Orientation_*, Spacing)` + `Set_Homogeneous` instead of
+    `Gtk_New_Hbox` / `Gtk_New_Vbox`, and `Append` with per-child
+    `Set_Hexpand` / `Set_Halign` instead of `Pack_Start`'s
+    `Expand` / `Fill` arguments.
+  - `Set_Child` instead of `Add`, `Set_Margin_*` instead of
+    `Set_Border_Width`, and `Gtk_New (Sep/Paned, Orientation_*)` instead of
+    the `H`/`V` constructors.
+  - `Gtk_Paned`'s `Pack1` / `Pack2` became `Set_Start_Child` /
+    `Set_End_Child` with their `Set_Resize_*_Child` / `Set_Shrink_*_Child`
+    companions; the decorative `Set_Shadow_Type` frames are gone (Gtk4
+    dropped `Gtk_Shadow_Type`).
+  - `Create_Frame` no longer demonstrates shadow types (removed in Gtk4);
+    it now showcases label presence/absence and the `Xalign` of the frame
+    label (`Set_Label_Align` lost its `Yalign` argument).
+  - Dropped the now-redundant `Show_All` calls (Gtk4 widgets are visible by
+    default).
+  The selector now also shows each demo's `Help` text in a panel below the
+  demo frame; the legacy `@b...@B` emphasis markers are converted to Pango
+  markup at display time.
 
 ## To do as we translate
 

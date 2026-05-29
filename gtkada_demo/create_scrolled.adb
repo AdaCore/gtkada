@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -26,7 +26,6 @@ with Gtk.Button;          use Gtk.Button;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Grid;            use Gtk.Grid;
 with Gtk.Scrolled_Window; use Gtk.Scrolled_Window;
-with Gtk;                 use Gtk;
 
 package body Create_Scrolled is
 
@@ -43,7 +42,7 @@ package body Create_Scrolled is
         & ASCII.LF
         & "No explicit signal is required in this demo, everything is done"
         & " through @bGtk_Adjustment@Bs, that contain the current value of the"
-        & " @bGtK_Scrollbar@Bs and also specify the area to display in the"
+        & " @bGtk_Scrollbar@Bs and also specify the area to display in the"
         & " @bGtk_Grid@B.";
    end Help;
 
