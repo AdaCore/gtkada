@@ -21,13 +21,17 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib;              use Glib;
-with Gtk;               use Gtk;
-with Gtk.Box;           use Gtk.Box;
-with Gtk.Check_Button;  use Gtk.Check_Button;
-with Gtk.Label;         use Gtk.Label;
+with Glib;             use Glib;
+with Gtk;              use Gtk;
+with Gtk.Box;          use Gtk.Box;
+with Gtk.Check_Button; use Gtk.Check_Button;
+with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Label;
+with Gtk.Widget;
 
 package body Create_Check_Buttons is
+
+   procedure Rename_Button (Self : access Gtk_Check_Button_Record'Class);
 
    ----------
    -- Help --
@@ -35,43 +39,62 @@ package body Create_Check_Buttons is
 
    function Help return String is
    begin
-      return "A @bGtk_Check_Button@B has two possible states, either activated"
-        & " or desactivated. A callback can be set each time the state is"
+      return
+        "A @bGtk_Check_Button@B has two possible states, either activated"
+        & " or deactivated. A callback can be set each time the state is"
         & " modified.";
    end Help;
+
+   -------------------
+   -- Rename_Button --
+   -------------------
+
+   procedure Rename_Button (Self : access Gtk_Check_Button_Record'Class) is
+      function Rev (S : String) return String is
+         T : String (S'Range);
+      begin
+         for I in reverse S'Range loop
+            T (S'Last - I + S'First) := S (I);
+         end loop;
+         return T;
+      end Rev;
+
+      L : constant UTF8_String := Self.Get_Label;
+   begin
+      Self.Set_Label (Rev (L));
+   end Rename_Button;
 
    ---------
    -- Run --
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Box1, Box2 : Box.Gtk_Box;
-      A_Check_Button : Check_Button.Gtk_Check_Button;
-      Label : Gtk_Label;
+      Outer_Box, Inner_Box : Gtk_Box;
+      Check                : Gtk_Check_Button;
+      Button_Labels        : constant String := "ABC";
    begin
-      Set_Label (Frame, "Check Buttons");
+      Frame.Set_Label ("Check Buttons");
 
-      Box.Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
-      Add (Container => Frame, Widget => Box1);
+      Box.Gtk_New (Outer_Box, Orientation_Vertical, Spacing => 0);
+      Outer_Box.Set_Homogeneous (False);
+      Outer_Box.Set_Hexpand (False);
+      Outer_Box.Set_Margin_Start (10);
+      Outer_Box.Set_Margin_End (10);
+      Outer_Box.Set_Margin_Top (10);
+      Outer_Box.Set_Margin_Bottom (10);
+      Frame.Set_Child (Outer_Box);
 
-      Box.Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 10);
-      Set_Border_Width (Container => Box2, Border_Width => 10);
-      Box.Pack_Start (In_Box => Box1, Child => Box2,
-                      Expand => False,
-                      Fill   => False);
+      Box.Gtk_New (Inner_Box, Orientation_Vertical, Spacing => 10);
+      Inner_Box.Set_Homogeneous (False);
+      Inner_Box.Set_Hexpand (False);
 
-      Check_Button.Gtk_New (A_Check_Button, "button1");
-      Box.Pack_Start (In_Box => Box2, Child => A_Check_Button);
-
-      Check_Button.Gtk_New (A_Check_Button, "button2");
-      Box.Pack_Start (In_Box => Box2, Child => A_Check_Button);
-
-      Check_Button.Gtk_New (A_Check_Button); --  Empty initially
-      Gtk_New (Label, "button3");
-      Add (A_Check_Button, Label);  --  Manually set the label
-      Box.Pack_Start (In_Box => Box2, Child => A_Check_Button);
-
-      Show_All (Box1);
+      for Button_Name of Button_Labels loop
+         Check_Button.Gtk_New (Check);
+         Check.Set_Label ("Button " & Button_Name);
+         Check.On_Toggled (Rename_Button'Access);
+         Inner_Box.Append (Check);
+      end loop;
+      Outer_Box.Append (Inner_Box);
    end Run;
 
 end Create_Check_Buttons;
