@@ -349,7 +349,7 @@ binding = (
     "GtkCellRendererText",
     "GtkCellRendererToggle",
     "--GtkCellView",
-    "--GtkCheckButton",
+    "GtkCheckButton",
     "--GtkCheckMenuItem",
     "----GtkCheckMenuItemAccessible",  # We do not support atk
     "GtkCenterBox",

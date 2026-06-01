@@ -91,7 +91,7 @@ with Create_Buttons;
 --  with Create_Canvas_View_Routes;
 --  with Create_Canvas_View_Rtrees;
 --  with Create_Cell_View;
---  with Create_Check_Buttons;
+with Create_Check_Buttons;
 --  with Create_Clipboard;
 --  with Create_Color_Chooser;
 --  with Create_Color_Selection;
@@ -193,7 +193,11 @@ package body Main_Windows is
          Create_Scrolled.Run'Access,
          Create_Scrolled.Help'Access),
       To_Demo
-        ("Buttons", Create_Buttons.Run'Access, Create_Buttons.Help'Access));
+        ("Buttons", Create_Buttons.Run'Access, Create_Buttons.Help'Access),
+      To_Demo
+        ("Check Buttons",
+         Create_Check_Buttons.Run'Access,
+         Create_Check_Buttons.Help'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.
 
