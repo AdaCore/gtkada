@@ -1636,6 +1636,20 @@ gboolean gnat_spawn_command_line_async(const gchar *command_line,
   return g_spawn_command_line_async(command_line, error);
 }
 
+/* Wrappers for the GLib testing framework (gtestutils.h).
+   Bury the va-list of g_test_init / g_test_message so the Ada side does
+   not have to expose them.  */
+
+void gnat_test_init(int *argc, char ***argv)
+{
+  g_test_init(argc, argv, NULL);
+}
+
+void gnat_test_message(const char *msg)
+{
+  g_test_message("%s", msg);
+}
+
 /* gutils.h */
 const gchar *glib_get_home_dir()
 {

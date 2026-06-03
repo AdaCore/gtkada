@@ -1,0 +1,149 @@
+# ============================================================
+#   GTest — GLib testing framework
+# ============================================================
+ada      = "Glib.Test"
+bindtype = false
+
+# ------------------------------------------------------------
+# Simple namespace-level functions that GIR describes cleanly.
+# ------------------------------------------------------------
+
+[[function]]
+id  = "g_test_run"
+ada = "Run"
+
+[[function]]
+id  = "g_test_fail"
+ada = "Fail"
+
+[[function]]
+id  = "g_test_failed"
+ada = "Failed"
+
+[[function]]
+id  = "g_test_skip"
+ada = "Skip"
+
+# g_test_add_func: (testpath, GTestFunc) — retype the callback to
+# the Test_Function access type declared in [[extra.spec]] below.
+
+[[function]]
+id  = "g_test_add_func"
+ada = "Add_Func"
+
+[[function.parameter]]
+name = "test_func"
+type = "Test_Function"
+
+# g_test_add_data_func: (testpath, gconstpointer, GTestDataFunc).
+# Retype both the user-data pointer and the callback.
+
+[[function]]
+id  = "g_test_add_data_func"
+ada = "Add_Data_Func"
+
+[[function.parameter]]
+name = "test_data"
+type = "System.Address"
+ctype = "gconstpointer"
+
+[[function.parameter]]
+name = "test_func"
+type = "Test_Data_Function"
+
+# ------------------------------------------------------------
+# Functions GIR cannot describe (varargs, char ***argv).
+# Bound by hand via [extra] below.
+# ------------------------------------------------------------
+
+[[function]]
+id = "g_test_init"
+bind = false
+
+[[function]]
+id = "g_test_message"
+bind = false
+
+# ------------------------------------------------------------
+# Spec and body injections
+# ------------------------------------------------------------
+
+[[extra.with_spec]]
+pkg = "System"
+use = false
+
+[[extra.with_body]]
+pkg = "Ada.Command_Line"
+use = false
+
+[[extra.with_body]]
+pkg = "Gtkada.Types"
+use = false
+
+[[extra.with_body]]
+pkg = "Interfaces.C"
+use = false
+
+[[extra.spec]]
+text = '''
+
+   type Test_Function is access procedure;
+   pragma Convention (C, Test_Function);
+   --  A test function with no fixture, registered via Add_Func.
+
+   type Test_Data_Function is access procedure (User_Data : System.Address);
+   pragma Convention (C, Test_Data_Function);
+   --  A test function that receives the user-data pointer passed to
+   --  Add_Data_Func.
+
+   procedure Init;
+   --  Initialize the GLib testing framework, parsing the test-related
+   --  command-line arguments visible through Ada.Command_Line (e.g.
+   --  `-p`, `--seed=N`, `--verbose`). Must be called before any other
+   --  subprogram in this package.
+
+   procedure Message (Msg : UTF8_String);
+   --  Add Msg to the test report.
+'''
+
+[extra]
+body = '''
+
+   ----------
+   -- Init --
+   ----------
+
+   procedure Init is
+      use Interfaces.C;
+      use Gtkada.Types;
+
+      procedure Internal
+        (Argc : access Glib.Gint;
+         Argv : System.Address);
+      pragma Import (C, Internal, "gnat_test_init");
+
+      Count : constant Natural := Ada.Command_Line.Argument_Count;
+
+      Argc  : aliased Glib.Gint := Glib.Gint (Count + 1);
+      Args  : aliased Chars_Ptr_Array (0 .. size_t (Count) + 1);
+      Argv  : aliased System.Address := Args (0)'Address;
+   begin
+      Args (0) := New_String (Ada.Command_Line.Command_Name);
+      for I in 1 .. Count loop
+         Args (size_t (I)) := New_String (Ada.Command_Line.Argument (I));
+      end loop;
+      Args (size_t (Count) + 1) := Null_Ptr;
+      Internal (Argc'Access, Argv'Address);
+   end Init;
+
+   -------------
+   -- Message --
+   -------------
+
+   procedure Message (Msg : UTF8_String) is
+      procedure Internal (S : UTF8_String);
+      pragma Import (C, Internal, "gnat_test_message");
+   begin
+      Internal (Msg & ASCII.NUL);
+   end Message;
+'''
