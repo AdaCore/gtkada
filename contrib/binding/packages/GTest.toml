@@ -11,6 +11,7 @@ bindtype = false
 [[function]]
 id  = "g_test_run"
 ada = "Run"
+return = "Ada.Command_Line.Exit_Status"
 
 [[function]]
 id  = "g_test_fail"

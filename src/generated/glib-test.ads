@@ -23,6 +23,7 @@
 
 
 pragma Warnings (Off, "*is already use-visible*");
+with Ada.Command_Line; use Ada.Command_Line;
 with System;
 
 package Glib.Test is
@@ -53,7 +54,7 @@ package Glib.Test is
    -- Functions --
    ---------------
 
-   function Run return Glib.Gint;
+   function Run return Ada.Command_Line.Exit_Status;
    pragma Import (C, Run, "g_test_run");
    --  Runs all tests under the toplevel suite which can be retrieved with
    --  g_test_get_root. Similar to g_test_run_suite, the test cases to be run
@@ -82,8 +83,6 @@ package Glib.Test is
    --  If all tests are skipped, this function will return 0 if producing TAP
    --  output, or 77 (treated as "skip test" by Automake) otherwise.
    --  Since: gtk+ 2.16
-   --  @return 0 on success, 1 on failure (assuming it returns at all), 0 or
-   --  77 if all tests were skipped with Glib.Test.Skip
 
    procedure Fail;
    pragma Import (C, Fail, "g_test_fail");

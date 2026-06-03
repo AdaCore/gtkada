@@ -23,10 +23,9 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Ada.Command_Line;
 with Interfaces.C;
 pragma Warnings(Off);  --  might be unused
-with Gtkada.Types;     use Gtkada.Types;
+with Gtkada.Types; use Gtkada.Types;
 pragma Warnings(On);
 
 package body Glib.Test is
