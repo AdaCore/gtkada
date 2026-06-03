@@ -1,0 +1,1086 @@
+# ============================================================
+#   GTest — GLib testing framework
+# ============================================================
+ada      = "Glib.Test"
+bindtype = false
+
+# ------------------------------------------------------------
+# Simple namespace-level functions that GIR describes cleanly.
+# ------------------------------------------------------------
+
+[[function]]
+id  = "g_test_run"
+ada = "Run"
+return = "Ada.Command_Line.Exit_Status"
+
+[[function]]
+id  = "g_test_fail"
+ada = "Fail"
+
+[[function]]
+id  = "g_test_failed"
+ada = "Failed"
+
+[[function]]
+id  = "g_test_skip"
+ada = "Skip"
+
+# g_test_add_func: (testpath, GTestFunc) — retype the callback to
+# the Test_Function access type declared in [[extra.spec]] below.
+
+[[function]]
+id  = "g_test_add_func"
+ada = "Add_Func"
+
+[[function.parameter]]
+name = "test_func"
+type = "Test_Function"
+
+# g_test_add_data_func: (testpath, gconstpointer, GTestDataFunc).
+# Retype both the user-data pointer and the callback.
+
+[[function]]
+id  = "g_test_add_data_func"
+ada = "Add_Data_Func"
+
+[[function.parameter]]
+name = "test_data"
+type = "System.Address"
+ctype = "gconstpointer"
+
+[[function.parameter]]
+name = "test_func"
+type = "Test_Data_Function"
+
+# ------------------------------------------------------------
+# Functions GIR cannot describe (varargs, char ***argv).
+# Bound by hand via [extra] below.
+# ------------------------------------------------------------
+
+[[function]]
+id = "g_test_init"
+bind = false
+
+[[function]]
+id = "g_test_message"
+bind = false
+
+# ------------------------------------------------------------
+# Spec and body injections
+# ------------------------------------------------------------
+
+[[extra.with_spec]]
+pkg = "System"
+use = false
+
+[[extra.with_spec]]
+pkg = "GNAT.Source_Info"
+use = false
+
+[[extra.with_spec]]
+pkg = "Glib.Error"
+use = false
+
+[[extra.with_body]]
+pkg = "Ada.Command_Line"
+use = false
+
+[[extra.with_body]]
+pkg = "Gtkada.Types"
+use = false
+
+[[extra.with_body]]
+pkg = "Interfaces.C"
+use = false
+
+[[extra.spec]]
+text = '''
+
+   type Test_Function is access procedure;
+   pragma Convention (C, Test_Function);
+   --  A test function with no fixture, registered via Add_Func.
+
+   type Test_Data_Function is access procedure (User_Data : System.Address);
+   pragma Convention (C, Test_Data_Function);
+   --  A test function that receives the user-data pointer passed to
+   --  Add_Data_Func.
+
+   procedure Init;
+   --  Initialize the GLib testing framework, parsing the test-related
+   --  command-line arguments visible through Ada.Command_Line (e.g.
+   --  `-p`, `--seed=N`, `--verbose`). Must be called before any other
+   --  subprogram in this package.
+
+   procedure Message (Msg : UTF8_String);
+   --  Add Msg to the test report.
+'''
+
+[[extra.spec]]
+text = '''
+
+   ---------------------------------------------------------------------
+   --  Assertions
+   --
+   --  These mirror the g_assert_* macros of the GLib testing framework.
+   --  Each evaluates its condition and, on failure, reports through GLib
+   --  and aborts the current test (unless non-fatal assertions have been
+   --  enabled on the C side with g_test_set_nonfatal_assertions).
+   --
+   --  The File, Line and Func parameters default to the call site through
+   --  GNAT.Source_Info and should normally be left implicit; they make the
+   --  reported failure point at the offending line in the test, exactly as
+   --  __FILE__/__LINE__ do for the C macros. Expr, where present, is an
+   --  optional textual description of the checked expression.
+   ---------------------------------------------------------------------
+
+   procedure Assert
+     (Condition : Boolean;
+      Expr      : UTF8_String := "";
+      File      : UTF8_String := GNAT.Source_Info.File;
+      Line      : Natural     := GNAT.Source_Info.Line;
+      Func      : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert: fail unless Condition is True.
+
+   procedure Assert_True
+     (Condition : Boolean;
+      Expr      : UTF8_String := "";
+      File      : UTF8_String := GNAT.Source_Info.File;
+      Line      : Natural     := GNAT.Source_Info.Line;
+      Func      : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_true: fail unless Condition is True.
+
+   procedure Assert_False
+     (Condition : Boolean;
+      Expr      : UTF8_String := "";
+      File      : UTF8_String := GNAT.Source_Info.File;
+      Line      : Natural     := GNAT.Source_Info.Line;
+      Func      : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_false: fail unless Condition is False.
+
+   procedure Assert_Null
+     (Object : System.Address;
+      Expr   : UTF8_String := "";
+      File   : UTF8_String := GNAT.Source_Info.File;
+      Line   : Natural     := GNAT.Source_Info.Line;
+      Func   : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_null: fail unless Object is the null address.
+
+   procedure Assert_Nonnull
+     (Object : System.Address;
+      Expr   : UTF8_String := "";
+      File   : UTF8_String := GNAT.Source_Info.File;
+      Line   : Natural     := GNAT.Source_Info.Line;
+      Func   : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_nonnull: fail if Object is the null address.
+
+   procedure Assert_Not_Reached
+     (File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   pragma No_Return (Assert_Not_Reached);
+   --  g_assert_not_reached: fail unconditionally; flags code that should
+   --  never be executed.
+
+   --  Signed integer comparisons (g_assert_cmpint), one per operator.
+
+   procedure Assert_Cmpint_Eq
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpint_Ne
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpint_Lt
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpint_Le
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpint_Gt
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpint_Ge
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+
+   --  Unsigned integer comparisons (g_assert_cmpuint), one per operator.
+
+   procedure Assert_Cmpuint_Eq
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpuint_Ne
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpuint_Lt
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpuint_Le
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpuint_Gt
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpuint_Ge
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+
+   --  Hexadecimal unsigned comparisons (g_assert_cmphex); identical to
+   --  Assert_Cmpuint_* but the failure message prints the operands in hex.
+
+   procedure Assert_Cmphex_Eq
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmphex_Ne
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmphex_Lt
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmphex_Le
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmphex_Gt
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmphex_Ge
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+
+   --  Floating-point comparisons (g_assert_cmpfloat), one per operator.
+
+   procedure Assert_Cmpfloat_Eq
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpfloat_Ne
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpfloat_Lt
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpfloat_Le
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpfloat_Gt
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpfloat_Ge
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+
+   procedure Assert_Cmpfloat_With_Epsilon
+     (N1, N2, Epsilon : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_cmpfloat_with_epsilon: fail unless abs (N1 - N2) < Epsilon.
+
+   --  String comparisons (g_assert_cmpstr), lexicographic, one per operator.
+
+   procedure Assert_Cmpstr_Eq
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpstr_Ne
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpstr_Lt
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpstr_Le
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpstr_Gt
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpstr_Ge
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+
+   --  Error assertions.
+
+   procedure Assert_No_Error
+     (Error : Glib.Error.GError;
+      Expr  : UTF8_String := "";
+      File  : UTF8_String := GNAT.Source_Info.File;
+      Line  : Natural     := GNAT.Source_Info.Line;
+      Func  : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_no_error: fail unless Error is null.
+
+   procedure Assert_Error
+     (Error  : Glib.Error.GError;
+      Domain : Glib.GQuark;
+      Code   : Glib.Gint;
+      Expr   : UTF8_String := "";
+      File   : UTF8_String := GNAT.Source_Info.File;
+      Line   : Natural     := GNAT.Source_Info.Line;
+      Func   : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_error: fail unless Error is non-null and matches Domain/Code.
+'''
+
+[extra]
+body = '''
+
+   ----------
+   -- Init --
+   ----------
+
+   procedure Init is
+      use Interfaces.C;
+      use Gtkada.Types;
+
+      procedure Internal
+        (Argc : access Glib.Gint;
+         Argv : System.Address);
+      pragma Import (C, Internal, "gnat_test_init");
+
+      Count : constant Natural := Ada.Command_Line.Argument_Count;
+
+      Argc  : aliased Glib.Gint := Glib.Gint (Count + 1);
+      Args  : aliased Chars_Ptr_Array (0 .. size_t (Count) + 1);
+      Argv  : aliased System.Address := Args (0)'Address;
+   begin
+      Args (0) := New_String (Ada.Command_Line.Command_Name);
+      for I in 1 .. Count loop
+         Args (size_t (I)) := New_String (Ada.Command_Line.Argument (I));
+      end loop;
+      Args (size_t (Count) + 1) := Null_Ptr;
+      Internal (Argc'Access, Argv'Address);
+   end Init;
+
+   -------------
+   -- Message --
+   -------------
+
+   procedure Message (Msg : UTF8_String) is
+      procedure Internal (S : UTF8_String);
+      pragma Import (C, Internal, "gnat_test_message");
+   begin
+      Internal (Msg & ASCII.NUL);
+   end Message;
+
+   --  GLib assertion sinks. The g_assert_* macros expand to these
+   --  exported functions; we evaluate the condition in Ada and call the
+   --  appropriate one on failure. The domain is passed as a null pointer
+   --  (System.Null_Address), matching C code compiled without G_LOG_DOMAIN.
+
+   procedure G_Assertion_Message
+     (Domain  : System.Address;
+      File    : Chars_Ptr;
+      Line    : Glib.Gint;
+      Func    : Chars_Ptr;
+      Message : Chars_Ptr);
+   pragma Import (C, G_Assertion_Message, "g_assertion_message");
+
+   procedure G_Assertion_Message_Expr
+     (Domain : System.Address;
+      File   : Chars_Ptr;
+      Line   : Glib.Gint;
+      Func   : Chars_Ptr;
+      Expr   : Chars_Ptr);
+   pragma Import (C, G_Assertion_Message_Expr, "g_assertion_message_expr");
+   pragma No_Return (G_Assertion_Message_Expr);
+
+   procedure G_Assertion_Message_Error
+     (Domain       : System.Address;
+      File         : Chars_Ptr;
+      Line         : Glib.Gint;
+      Func         : Chars_Ptr;
+      Expr         : Chars_Ptr;
+      Error        : Glib.Error.GError;
+      Error_Domain : Glib.GQuark;
+      Error_Code   : Glib.Gint);
+   pragma Import (C, G_Assertion_Message_Error, "g_assertion_message_error");
+
+   type Comparison is (Eq, Ne, Lt, Le, Gt, Ge);
+
+   function Op_Image (Op : Comparison) return UTF8_String is
+   begin
+      case Op is
+         when Eq => return "==";
+         when Ne => return "!=";
+         when Lt => return "<";
+         when Le => return "<=";
+         when Gt => return ">";
+         when Ge => return ">=";
+      end case;
+   end Op_Image;
+
+   --  Order is the sign of the comparison of the two operands.
+
+   function Holds (Op : Comparison; Order : Integer) return Boolean is
+   begin
+      case Op is
+         when Eq => return Order = 0;
+         when Ne => return Order /= 0;
+         when Lt => return Order < 0;
+         when Le => return Order <= 0;
+         when Gt => return Order > 0;
+         when Ge => return Order >= 0;
+      end case;
+   end Holds;
+
+   function Img (V : Glib.Gint) return UTF8_String is
+      S : constant String := Glib.Gint'Image (V);
+   begin
+      if S (S'First) = ' ' then
+         return S (S'First + 1 .. S'Last);
+      else
+         return S;
+      end if;
+   end Img;
+
+   function Img (V : Glib.Guint) return UTF8_String is
+      S : constant String := Glib.Guint'Image (V);
+   begin
+      return S (S'First + 1 .. S'Last);
+   end Img;
+
+   function Img (V : Glib.Gdouble) return UTF8_String is
+      S : constant String := Glib.Gdouble'Image (V);
+   begin
+      if S (S'First) = ' ' then
+         return S (S'First + 1 .. S'Last);
+      else
+         return S;
+      end if;
+   end Img;
+
+   function Hex_Image (V : Glib.Guint) return UTF8_String is
+      Hex : constant String := "0123456789abcdef";
+      Buf : String (1 .. 16);
+      N   : Glib.Guint := V;
+      Pos : Natural := Buf'Last + 1;
+   begin
+      if V = 0 then
+         return "0x0";
+      end if;
+      while N > 0 loop
+         Pos := Pos - 1;
+         Buf (Pos) := Hex (Integer (N mod 16) + 1);
+         N := N / 16;
+      end loop;
+      return "0x" & Buf (Pos .. Buf'Last);
+   end Hex_Image;
+
+   procedure Report (File, Func, Message : UTF8_String; Line : Natural) is
+      C_File : Chars_Ptr := New_String (File);
+      C_Func : Chars_Ptr := New_String (Func);
+      C_Msg  : Chars_Ptr := New_String (Message);
+   begin
+      G_Assertion_Message
+        (System.Null_Address, C_File, Glib.Gint (Line), C_Func, C_Msg);
+      Free (C_File);
+      Free (C_Func);
+      Free (C_Msg);
+   end Report;
+
+   procedure Check_Int
+     (N1 : Glib.Gint; Op : Comparison; N2 : Glib.Gint;
+      File, Func : UTF8_String; Line : Natural)
+   is
+      Order : Integer;
+   begin
+      if N1 < N2 then
+         Order := -1;
+      elsif N1 > N2 then
+         Order := 1;
+      else
+         Order := 0;
+      end if;
+      if not Holds (Op, Order) then
+         Report
+           (File, Func,
+            "assertion failed: (" & Img (N1) & " " & Op_Image (Op) & " "
+            & Img (N2) & ")",
+            Line);
+      end if;
+   end Check_Int;
+
+   procedure Check_Uint
+     (N1 : Glib.Guint; Op : Comparison; N2 : Glib.Guint;
+      File, Func : UTF8_String; Line : Natural)
+   is
+      Order : Integer;
+   begin
+      if N1 < N2 then
+         Order := -1;
+      elsif N1 > N2 then
+         Order := 1;
+      else
+         Order := 0;
+      end if;
+      if not Holds (Op, Order) then
+         Report
+           (File, Func,
+            "assertion failed: (" & Img (N1) & " " & Op_Image (Op) & " "
+            & Img (N2) & ")",
+            Line);
+      end if;
+   end Check_Uint;
+
+   procedure Check_Hex
+     (N1 : Glib.Guint; Op : Comparison; N2 : Glib.Guint;
+      File, Func : UTF8_String; Line : Natural)
+   is
+      Order : Integer;
+   begin
+      if N1 < N2 then
+         Order := -1;
+      elsif N1 > N2 then
+         Order := 1;
+      else
+         Order := 0;
+      end if;
+      if not Holds (Op, Order) then
+         Report
+           (File, Func,
+            "assertion failed: (" & Hex_Image (N1) & " " & Op_Image (Op)
+            & " " & Hex_Image (N2) & ")",
+            Line);
+      end if;
+   end Check_Hex;
+
+   procedure Check_Float
+     (N1 : Glib.Gdouble; Op : Comparison; N2 : Glib.Gdouble;
+      File, Func : UTF8_String; Line : Natural)
+   is
+      Order : Integer;
+   begin
+      if N1 < N2 then
+         Order := -1;
+      elsif N1 > N2 then
+         Order := 1;
+      else
+         Order := 0;
+      end if;
+      if not Holds (Op, Order) then
+         Report
+           (File, Func,
+            "assertion failed: (" & Img (N1) & " " & Op_Image (Op) & " "
+            & Img (N2) & ")",
+            Line);
+      end if;
+   end Check_Float;
+
+   procedure Check_Str
+     (S1 : UTF8_String; Op : Comparison; S2 : UTF8_String;
+      File, Func : UTF8_String; Line : Natural)
+   is
+      Order : Integer;
+   begin
+      if S1 < S2 then
+         Order := -1;
+      elsif S1 > S2 then
+         Order := 1;
+      else
+         Order := 0;
+      end if;
+      if not Holds (Op, Order) then
+         Report
+           (File, Func,
+            "assertion failed: (""" & S1 & """ " & Op_Image (Op) & " """
+            & S2 & """)",
+            Line);
+      end if;
+   end Check_Str;
+
+   ------------
+   -- Assert --
+   ------------
+
+   procedure Assert
+     (Condition : Boolean; Expr : UTF8_String := "";
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      if not Condition then
+         declare
+            C_File : constant Chars_Ptr := New_String (File);
+            C_Func : constant Chars_Ptr := New_String (Func);
+            C_Expr : constant Chars_Ptr := New_String (Expr);
+         begin
+            G_Assertion_Message_Expr
+              (System.Null_Address, C_File, Glib.Gint (Line), C_Func, C_Expr);
+         end;
+      end if;
+   end Assert;
+
+   procedure Assert_True
+     (Condition : Boolean; Expr : UTF8_String := "";
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      if not Condition then
+         if Expr = "" then
+            Report (File, Func, "should be TRUE", Line);
+         else
+            Report (File, Func, "'" & Expr & "' should be TRUE", Line);
+         end if;
+      end if;
+   end Assert_True;
+
+   procedure Assert_False
+     (Condition : Boolean; Expr : UTF8_String := "";
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      if Condition then
+         if Expr = "" then
+            Report (File, Func, "should be FALSE", Line);
+         else
+            Report (File, Func, "'" & Expr & "' should be FALSE", Line);
+         end if;
+      end if;
+   end Assert_False;
+
+   procedure Assert_Null
+     (Object : System.Address; Expr : UTF8_String := "";
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity)
+   is
+      use type System.Address;
+   begin
+      if Object /= System.Null_Address then
+         if Expr = "" then
+            Report (File, Func, "should be NULL", Line);
+         else
+            Report (File, Func, "'" & Expr & "' should be NULL", Line);
+         end if;
+      end if;
+   end Assert_Null;
+
+   procedure Assert_Nonnull
+     (Object : System.Address; Expr : UTF8_String := "";
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity)
+   is
+      use type System.Address;
+   begin
+      if Object = System.Null_Address then
+         if Expr = "" then
+            Report (File, Func, "should not be NULL", Line);
+         else
+            Report (File, Func, "'" & Expr & "' should not be NULL", Line);
+         end if;
+      end if;
+   end Assert_Nonnull;
+
+   procedure Assert_Not_Reached
+     (File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity)
+   is
+      C_File : constant Chars_Ptr := New_String (File);
+      C_Func : constant Chars_Ptr := New_String (Func);
+   begin
+      G_Assertion_Message_Expr
+        (System.Null_Address, C_File, Glib.Gint (Line), C_Func, Null_Ptr);
+   end Assert_Not_Reached;
+
+   --  Signed integer comparisons.
+
+   procedure Assert_Cmpint_Eq
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Int (N1, Eq, N2, File, Func, Line);
+   end Assert_Cmpint_Eq;
+
+   procedure Assert_Cmpint_Ne
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Int (N1, Ne, N2, File, Func, Line);
+   end Assert_Cmpint_Ne;
+
+   procedure Assert_Cmpint_Lt
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Int (N1, Lt, N2, File, Func, Line);
+   end Assert_Cmpint_Lt;
+
+   procedure Assert_Cmpint_Le
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Int (N1, Le, N2, File, Func, Line);
+   end Assert_Cmpint_Le;
+
+   procedure Assert_Cmpint_Gt
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Int (N1, Gt, N2, File, Func, Line);
+   end Assert_Cmpint_Gt;
+
+   procedure Assert_Cmpint_Ge
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Int (N1, Ge, N2, File, Func, Line);
+   end Assert_Cmpint_Ge;
+
+   --  Unsigned integer comparisons.
+
+   procedure Assert_Cmpuint_Eq
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Uint (N1, Eq, N2, File, Func, Line);
+   end Assert_Cmpuint_Eq;
+
+   procedure Assert_Cmpuint_Ne
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Uint (N1, Ne, N2, File, Func, Line);
+   end Assert_Cmpuint_Ne;
+
+   procedure Assert_Cmpuint_Lt
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Uint (N1, Lt, N2, File, Func, Line);
+   end Assert_Cmpuint_Lt;
+
+   procedure Assert_Cmpuint_Le
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Uint (N1, Le, N2, File, Func, Line);
+   end Assert_Cmpuint_Le;
+
+   procedure Assert_Cmpuint_Gt
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Uint (N1, Gt, N2, File, Func, Line);
+   end Assert_Cmpuint_Gt;
+
+   procedure Assert_Cmpuint_Ge
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Uint (N1, Ge, N2, File, Func, Line);
+   end Assert_Cmpuint_Ge;
+
+   --  Hexadecimal unsigned comparisons.
+
+   procedure Assert_Cmphex_Eq
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Hex (N1, Eq, N2, File, Func, Line);
+   end Assert_Cmphex_Eq;
+
+   procedure Assert_Cmphex_Ne
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Hex (N1, Ne, N2, File, Func, Line);
+   end Assert_Cmphex_Ne;
+
+   procedure Assert_Cmphex_Lt
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Hex (N1, Lt, N2, File, Func, Line);
+   end Assert_Cmphex_Lt;
+
+   procedure Assert_Cmphex_Le
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Hex (N1, Le, N2, File, Func, Line);
+   end Assert_Cmphex_Le;
+
+   procedure Assert_Cmphex_Gt
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Hex (N1, Gt, N2, File, Func, Line);
+   end Assert_Cmphex_Gt;
+
+   procedure Assert_Cmphex_Ge
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Hex (N1, Ge, N2, File, Func, Line);
+   end Assert_Cmphex_Ge;
+
+   --  Floating-point comparisons.
+
+   procedure Assert_Cmpfloat_Eq
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Float (N1, Eq, N2, File, Func, Line);
+   end Assert_Cmpfloat_Eq;
+
+   procedure Assert_Cmpfloat_Ne
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Float (N1, Ne, N2, File, Func, Line);
+   end Assert_Cmpfloat_Ne;
+
+   procedure Assert_Cmpfloat_Lt
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Float (N1, Lt, N2, File, Func, Line);
+   end Assert_Cmpfloat_Lt;
+
+   procedure Assert_Cmpfloat_Le
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Float (N1, Le, N2, File, Func, Line);
+   end Assert_Cmpfloat_Le;
+
+   procedure Assert_Cmpfloat_Gt
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Float (N1, Gt, N2, File, Func, Line);
+   end Assert_Cmpfloat_Gt;
+
+   procedure Assert_Cmpfloat_Ge
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Float (N1, Ge, N2, File, Func, Line);
+   end Assert_Cmpfloat_Ge;
+
+   procedure Assert_Cmpfloat_With_Epsilon
+     (N1, N2, Epsilon : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      if abs (N1 - N2) >= Epsilon then
+         Report
+           (File, Func,
+            "assertion failed: (" & Img (N1) & " == " & Img (N2)
+            & " (+/- " & Img (Epsilon) & "))",
+            Line);
+      end if;
+   end Assert_Cmpfloat_With_Epsilon;
+
+   --  String comparisons.
+
+   procedure Assert_Cmpstr_Eq
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Str (S1, Eq, S2, File, Func, Line);
+   end Assert_Cmpstr_Eq;
+
+   procedure Assert_Cmpstr_Ne
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Str (S1, Ne, S2, File, Func, Line);
+   end Assert_Cmpstr_Ne;
+
+   procedure Assert_Cmpstr_Lt
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Str (S1, Lt, S2, File, Func, Line);
+   end Assert_Cmpstr_Lt;
+
+   procedure Assert_Cmpstr_Le
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Str (S1, Le, S2, File, Func, Line);
+   end Assert_Cmpstr_Le;
+
+   procedure Assert_Cmpstr_Gt
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Str (S1, Gt, S2, File, Func, Line);
+   end Assert_Cmpstr_Gt;
+
+   procedure Assert_Cmpstr_Ge
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      Check_Str (S1, Ge, S2, File, Func, Line);
+   end Assert_Cmpstr_Ge;
+
+   --  Error assertions.
+
+   procedure Assert_No_Error
+     (Error : Glib.Error.GError; Expr : UTF8_String := "";
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity)
+   is
+      use type Glib.Error.GError;
+   begin
+      if Error /= null then
+         declare
+            C_File : Chars_Ptr := New_String (File);
+            C_Func : Chars_Ptr := New_String (Func);
+            C_Expr : Chars_Ptr := New_String (Expr);
+         begin
+            G_Assertion_Message_Error
+              (System.Null_Address, C_File, Glib.Gint (Line), C_Func,
+               C_Expr, Error, 0, 0);
+            Free (C_File);
+            Free (C_Func);
+            Free (C_Expr);
+         end;
+      end if;
+   end Assert_No_Error;
+
+   procedure Assert_Error
+     (Error  : Glib.Error.GError; Domain : Glib.GQuark; Code : Glib.Gint;
+      Expr   : UTF8_String := "";
+      File   : UTF8_String := GNAT.Source_Info.File;
+      Line   : Natural     := GNAT.Source_Info.Line;
+      Func   : UTF8_String := GNAT.Source_Info.Enclosing_Entity) is
+   begin
+      if not Glib.Error.Error_Matches (Error, Domain, Code) then
+         declare
+            C_File : Chars_Ptr := New_String (File);
+            C_Func : Chars_Ptr := New_String (Func);
+            C_Expr : Chars_Ptr := New_String (Expr);
+         begin
+            G_Assertion_Message_Error
+              (System.Null_Address, C_File, Glib.Gint (Line), C_Func,
+               C_Expr, Error, Domain, Code);
+            Free (C_File);
+            Free (C_Func);
+            Free (C_Expr);
+         end;
+      end if;
+   end Assert_Error;
+'''

@@ -1,0 +1,22 @@
+Transition notes
+================
+
+Items to revisit as the GtkAda bindings grow.
+
+testsuite/tests/label  (/label/markup-parse)
+---------------------------------------------
+Partial port of GTK's testsuite/gtk/label.c (test_label_markup). The original
+C test, via print_attr_list / print_attribute, compares a full stringified
+PangoAttrList dump for the label's layout. That comparison was dropped because
+Pango.Attributes (src/generated/pango-attributes.ads) currently provides no:
+
+  * attribute iterator (pango_attr_list_get_iterator and the
+    pango_attr_iterator_* family);
+  * per-attribute accessors (start_index/end_index, attribute type, and the
+    as_int / as_float / as_string / as_color / as_font_desc / as_language /
+    as_shape value getters);
+  * Pango_Color binding or pango_color_to_string.
+
+The window/mnemonic, Get_Mnemonic_Keyval, and pango_layout_get_text checks were
+ported. Revisit and complete /label/markup-parse once the Pango attribute
+introspection bindings are available.

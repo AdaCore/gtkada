@@ -198,6 +198,7 @@ binding = (
     "GOptionContext",
     "GPoll",
     "Spawn",
+    "GTest",
     "Utils",
     "--GParamSpec",  # Bound manually
     "--GParamSpecBoolean",  # Bound manually
