@@ -182,6 +182,14 @@ void gtkada_Shortcut_Manager_set_remove_controller(GtkShortcutManagerInterface* 
     iface->remove_controller = handler;
 }
 
+void gtkada_Tree_Drag_Dest_set_drag_data_received(GtkTreeDragDestIface* iface, void* handler) {
+    iface->drag_data_received = handler;
+}
+
+void gtkada_Tree_Drag_Dest_set_row_drop_possible(GtkTreeDragDestIface* iface, void* handler) {
+    iface->row_drop_possible = handler;
+}
+
 void gtkada_Tree_Drag_Source_set_drag_data_delete(GtkTreeDragSourceIface* iface, void* handler) {
     iface->drag_data_delete = handler;
 }

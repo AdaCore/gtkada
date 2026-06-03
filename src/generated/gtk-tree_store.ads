@@ -53,6 +53,7 @@ with Glib.Types;           use Glib.Types;
 with Glib.Values;          use Glib.Values;
 with Gtk.Buildable;        use Gtk.Buildable;
 with Gtk.Enums;            use Gtk.Enums;
+with Gtk.Tree_Drag_Dest;   use Gtk.Tree_Drag_Dest;
 with Gtk.Tree_Drag_Source; use Gtk.Tree_Drag_Source;
 with Gtk.Tree_Model;       use Gtk.Tree_Model;
 with Gtk.Tree_Sortable;    use Gtk.Tree_Sortable;
@@ -610,6 +611,18 @@ package Gtk.Tree_Store is
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
 
+   function Drag_Data_Received
+      (Self  : not null access Gtk_Tree_Store_Record;
+       Dest  : Gtk.Tree_Model.Gtk_Tree_Path;
+       Value : in out Glib.Values.GValue) return Boolean;
+   pragma Obsolescent (Drag_Data_Received);
+
+   function Row_Drop_Possible
+      (Self      : not null access Gtk_Tree_Store_Record;
+       Dest_Path : Gtk.Tree_Model.Gtk_Tree_Path;
+       Value     : in out Glib.Values.GValue) return Boolean;
+   pragma Obsolescent (Row_Drop_Possible);
+
    function Drag_Data_Delete
       (Self : not null access Gtk_Tree_Store_Record;
        Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
@@ -788,6 +801,8 @@ package Gtk.Tree_Store is
    --
    --  - "Gtk.Buildable"
    --
+   --  - "Gtk.TreeDragDest"
+   --
    --  - "Gtk.TreeDragSource"
    --
    --  - "Gtk.TreeModel"
@@ -804,6 +819,17 @@ package Gtk.Tree_Store is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_Tree_Store
    renames Implements_Gtk_Buildable.To_Object;
+
+   package Implements_Gtk_Tree_Drag_Dest is new Glib.Types.Implements
+     (Gtk.Tree_Drag_Dest.Gtk_Tree_Drag_Dest, Gtk_Tree_Store_Record, Gtk_Tree_Store);
+   function "+"
+     (Widget : access Gtk_Tree_Store_Record'Class)
+   return Gtk.Tree_Drag_Dest.Gtk_Tree_Drag_Dest
+   renames Implements_Gtk_Tree_Drag_Dest.To_Interface;
+   function "-"
+     (Interf : Gtk.Tree_Drag_Dest.Gtk_Tree_Drag_Dest)
+   return Gtk_Tree_Store
+   renames Implements_Gtk_Tree_Drag_Dest.To_Object;
 
    package Implements_Gtk_Tree_Drag_Source is new Glib.Types.Implements
      (Gtk.Tree_Drag_Source.Gtk_Tree_Drag_Source, Gtk_Tree_Store_Record, Gtk_Tree_Store);

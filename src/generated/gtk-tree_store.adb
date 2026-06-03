@@ -1007,6 +1007,28 @@ package body Gtk.Tree_Store is
       return Gdk.Content_Provider.Gdk_Content_Provider (Get_User_Data (Internal (Get_Object (Self), Get_Object (Path)), Stub_Gdk_Content_Provider));
    end Drag_Data_Get;
 
+   ------------------------
+   -- Drag_Data_Received --
+   ------------------------
+
+   function Drag_Data_Received
+      (Self  : not null access Gtk_Tree_Store_Record;
+       Dest  : Gtk.Tree_Model.Gtk_Tree_Path;
+       Value : in out Glib.Values.GValue) return Boolean
+   is
+      function Internal
+         (Self      : System.Address;
+          Dest      : System.Address;
+          Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_tree_drag_dest_drag_data_received");
+      Acc_Value  : aliased Glib.Values.GValue := Value;
+      Tmp_Return : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Get_Object (Dest), Acc_Value'Access);
+      Value := Acc_Value;
+      return Tmp_Return /= 0;
+   end Drag_Data_Received;
+
    ---------------------
    -- Get_Column_Type --
    ---------------------
@@ -1391,6 +1413,28 @@ package body Gtk.Tree_Store is
    begin
       return Internal (Get_Object (Self), Get_Object (Path)) /= 0;
    end Row_Draggable;
+
+   -----------------------
+   -- Row_Drop_Possible --
+   -----------------------
+
+   function Row_Drop_Possible
+      (Self      : not null access Gtk_Tree_Store_Record;
+       Dest_Path : Gtk.Tree_Model.Gtk_Tree_Path;
+       Value     : in out Glib.Values.GValue) return Boolean
+   is
+      function Internal
+         (Self      : System.Address;
+          Dest_Path : System.Address;
+          Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_tree_drag_dest_row_drop_possible");
+      Acc_Value  : aliased Glib.Values.GValue := Value;
+      Tmp_Return : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Get_Object (Dest_Path), Acc_Value'Access);
+      Value := Acc_Value;
+      return Tmp_Return /= 0;
+   end Row_Drop_Possible;
 
    ---------------------------
    -- Row_Has_Child_Toggled --

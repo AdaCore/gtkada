@@ -43,7 +43,7 @@ interfaces = (
     "Gtk.ShortcutManager",
     "--Gtk.StyleProvider",
     "--Gtk.ToolShell",
-    "--Gtk.TreeDragDest",
+    "Gtk.TreeDragDest",
     "Gtk.TreeDragSource",
     "Gtk.TreeSortable",
     "Gtk.TreeModel",
