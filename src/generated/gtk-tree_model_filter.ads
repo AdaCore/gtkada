@@ -87,11 +87,13 @@
 --  reference counting, obtain references on these child levels yourself.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;            use Glib;
-with Glib.Properties; use Glib.Properties;
-with Glib.Types;      use Glib.Types;
-with Glib.Values;     use Glib.Values;
-with Gtk.Tree_Model;  use Gtk.Tree_Model;
+with Gdk.Content_Provider; use Gdk.Content_Provider;
+with Glib;                 use Glib;
+with Glib.Properties;      use Glib.Properties;
+with Glib.Types;           use Glib.Types;
+with Glib.Values;          use Glib.Values;
+with Gtk.Tree_Drag_Source; use Gtk.Tree_Drag_Source;
+with Gtk.Tree_Model;       use Gtk.Tree_Model;
 
 package Gtk.Tree_Model_Filter is
 
@@ -441,6 +443,22 @@ package Gtk.Tree_Model_Filter is
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
 
+   function Drag_Data_Delete
+      (Self : not null access Gtk_Tree_Model_Filter_Record;
+       Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
+   pragma Obsolescent (Drag_Data_Delete);
+
+   function Drag_Data_Get
+      (Self : not null access Gtk_Tree_Model_Filter_Record;
+       Path : Gtk.Tree_Model.Gtk_Tree_Path)
+       return Gdk.Content_Provider.Gdk_Content_Provider;
+   pragma Obsolescent (Drag_Data_Get);
+
+   function Row_Draggable
+      (Self : not null access Gtk_Tree_Model_Filter_Record;
+       Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
+   pragma Obsolescent (Row_Draggable);
+
    function Get_Column_Type
       (Tree_Model : not null access Gtk_Tree_Model_Filter_Record;
        Index      : Glib.Gint) return GType;
@@ -596,7 +614,20 @@ package Gtk.Tree_Model_Filter is
    ----------------
    --  This class implements several interfaces. See Glib.Types
    --
+   --  - "Gtk.TreeDragSource"
+   --
    --  - "Gtk.TreeModel"
+
+   package Implements_Gtk_Tree_Drag_Source is new Glib.Types.Implements
+     (Gtk.Tree_Drag_Source.Gtk_Tree_Drag_Source, Gtk_Tree_Model_Filter_Record, Gtk_Tree_Model_Filter);
+   function "+"
+     (Widget : access Gtk_Tree_Model_Filter_Record'Class)
+   return Gtk.Tree_Drag_Source.Gtk_Tree_Drag_Source
+   renames Implements_Gtk_Tree_Drag_Source.To_Interface;
+   function "-"
+     (Interf : Gtk.Tree_Drag_Source.Gtk_Tree_Drag_Source)
+   return Gtk_Tree_Model_Filter
+   renames Implements_Gtk_Tree_Drag_Source.To_Object;
 
    package Implements_Gtk_Tree_Model is new Glib.Types.Implements
      (Gtk.Tree_Model.Gtk_Tree_Model, Gtk_Tree_Model_Filter_Record, Gtk_Tree_Model_Filter);

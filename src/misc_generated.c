@@ -182,6 +182,18 @@ void gtkada_Shortcut_Manager_set_remove_controller(GtkShortcutManagerInterface* 
     iface->remove_controller = handler;
 }
 
+void gtkada_Tree_Drag_Source_set_drag_data_delete(GtkTreeDragSourceIface* iface, void* handler) {
+    iface->drag_data_delete = handler;
+}
+
+void gtkada_Tree_Drag_Source_set_drag_data_get(GtkTreeDragSourceIface* iface, void* handler) {
+    iface->drag_data_get = handler;
+}
+
+void gtkada_Tree_Drag_Source_set_row_draggable(GtkTreeDragSourceIface* iface, void* handler) {
+    iface->row_draggable = handler;
+}
+
 void gtkada_Tree_Sortable_set_get_sort_column_id(GtkTreeSortableIface* iface, void* handler) {
     iface->get_sort_column_id = handler;
 }
