@@ -24,6 +24,8 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Command_Line; use Ada.Command_Line;
+with GNAT.Source_Info;
+with Glib.Error;
 with System;
 
 package Glib.Test is
@@ -49,6 +51,262 @@ package Glib.Test is
 
    procedure Message (Msg : UTF8_String);
    --  Add Msg to the test report.
+
+   ---------------------------------------------------------------------
+   --  Assertions
+   --
+   --  These mirror the g_assert_* macros of the GLib testing framework.
+   --  Each evaluates its condition and, on failure, reports through GLib
+   --  and aborts the current test (unless non-fatal assertions have been
+   --  enabled on the C side with g_test_set_nonfatal_assertions).
+   --
+   --  The File, Line and Func parameters default to the call site through
+   --  GNAT.Source_Info and should normally be left implicit; they make the
+   --  reported failure point at the offending line in the test, exactly as
+   --  __FILE__/__LINE__ do for the C macros. Expr, where present, is an
+   --  optional textual description of the checked expression.
+   ---------------------------------------------------------------------
+
+   procedure Assert
+     (Condition : Boolean;
+      Expr      : UTF8_String := "";
+      File      : UTF8_String := GNAT.Source_Info.File;
+      Line      : Natural     := GNAT.Source_Info.Line;
+      Func      : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert: fail unless Condition is True.
+
+   procedure Assert_True
+     (Condition : Boolean;
+      Expr      : UTF8_String := "";
+      File      : UTF8_String := GNAT.Source_Info.File;
+      Line      : Natural     := GNAT.Source_Info.Line;
+      Func      : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_true: fail unless Condition is True.
+
+   procedure Assert_False
+     (Condition : Boolean;
+      Expr      : UTF8_String := "";
+      File      : UTF8_String := GNAT.Source_Info.File;
+      Line      : Natural     := GNAT.Source_Info.Line;
+      Func      : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_false: fail unless Condition is False.
+
+   procedure Assert_Null
+     (Object : System.Address;
+      Expr   : UTF8_String := "";
+      File   : UTF8_String := GNAT.Source_Info.File;
+      Line   : Natural     := GNAT.Source_Info.Line;
+      Func   : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_null: fail unless Object is the null address.
+
+   procedure Assert_Nonnull
+     (Object : System.Address;
+      Expr   : UTF8_String := "";
+      File   : UTF8_String := GNAT.Source_Info.File;
+      Line   : Natural     := GNAT.Source_Info.Line;
+      Func   : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_nonnull: fail if Object is the null address.
+
+   procedure Assert_Not_Reached
+     (File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   pragma No_Return (Assert_Not_Reached);
+   --  g_assert_not_reached: fail unconditionally; flags code that should
+   --  never be executed.
+
+   --  Signed integer comparisons (g_assert_cmpint), one per operator.
+
+   procedure Assert_Cmpint_Eq
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpint_Ne
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpint_Lt
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpint_Le
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpint_Gt
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpint_Ge
+     (N1, N2 : Glib.Gint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+
+   --  Unsigned integer comparisons (g_assert_cmpuint), one per operator.
+
+   procedure Assert_Cmpuint_Eq
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpuint_Ne
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpuint_Lt
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpuint_Le
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpuint_Gt
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpuint_Ge
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+
+   --  Hexadecimal unsigned comparisons (g_assert_cmphex); identical to
+   --  Assert_Cmpuint_* but the failure message prints the operands in hex.
+
+   procedure Assert_Cmphex_Eq
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmphex_Ne
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmphex_Lt
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmphex_Le
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmphex_Gt
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmphex_Ge
+     (N1, N2 : Glib.Guint;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+
+   --  Floating-point comparisons (g_assert_cmpfloat), one per operator.
+
+   procedure Assert_Cmpfloat_Eq
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpfloat_Ne
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpfloat_Lt
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpfloat_Le
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpfloat_Gt
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpfloat_Ge
+     (N1, N2 : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+
+   procedure Assert_Cmpfloat_With_Epsilon
+     (N1, N2, Epsilon : Glib.Gdouble;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_cmpfloat_with_epsilon: fail unless abs (N1 - N2) < Epsilon.
+
+   --  String comparisons (g_assert_cmpstr), lexicographic, one per operator.
+
+   procedure Assert_Cmpstr_Eq
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpstr_Ne
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpstr_Lt
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpstr_Le
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpstr_Gt
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   procedure Assert_Cmpstr_Ge
+     (S1, S2 : UTF8_String;
+      File : UTF8_String := GNAT.Source_Info.File;
+      Line : Natural     := GNAT.Source_Info.Line;
+      Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+
+   --  Error assertions.
+
+   procedure Assert_No_Error
+     (Error : Glib.Error.GError;
+      Expr  : UTF8_String := "";
+      File  : UTF8_String := GNAT.Source_Info.File;
+      Line  : Natural     := GNAT.Source_Info.Line;
+      Func  : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_no_error: fail unless Error is null.
+
+   procedure Assert_Error
+     (Error  : Glib.Error.GError;
+      Domain : Glib.GQuark;
+      Code   : Glib.Gint;
+      Expr   : UTF8_String := "";
+      File   : UTF8_String := GNAT.Source_Info.File;
+      Line   : Natural     := GNAT.Source_Info.Line;
+      Func   : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
+   --  g_assert_error: fail unless Error is non-null and matches Domain/Code.
 
    ---------------
    -- Functions --
