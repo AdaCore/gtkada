@@ -123,13 +123,15 @@
 --  </row> </data> </object> ```
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;              use Glib;
-with Glib.Types;        use Glib.Types;
-with Glib.Values;       use Glib.Values;
-with Gtk.Buildable;     use Gtk.Buildable;
-with Gtk.Enums;         use Gtk.Enums;
-with Gtk.Tree_Model;    use Gtk.Tree_Model;
-with Gtk.Tree_Sortable; use Gtk.Tree_Sortable;
+with Gdk.Content_Provider; use Gdk.Content_Provider;
+with Glib;                 use Glib;
+with Glib.Types;           use Glib.Types;
+with Glib.Values;          use Glib.Values;
+with Gtk.Buildable;        use Gtk.Buildable;
+with Gtk.Enums;            use Gtk.Enums;
+with Gtk.Tree_Drag_Source; use Gtk.Tree_Drag_Source;
+with Gtk.Tree_Model;       use Gtk.Tree_Model;
+with Gtk.Tree_Sortable;    use Gtk.Tree_Sortable;
 
 package Gtk.List_Store is
 
@@ -573,6 +575,22 @@ package Gtk.List_Store is
    --  since they are meant to be used by tools, mostly. If you need to call
    --  them, use an explicit cast through the "-" operator below.
 
+   function Drag_Data_Delete
+      (Self : not null access Gtk_List_Store_Record;
+       Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
+   pragma Obsolescent (Drag_Data_Delete);
+
+   function Drag_Data_Get
+      (Self : not null access Gtk_List_Store_Record;
+       Path : Gtk.Tree_Model.Gtk_Tree_Path)
+       return Gdk.Content_Provider.Gdk_Content_Provider;
+   pragma Obsolescent (Drag_Data_Get);
+
+   function Row_Draggable
+      (Self : not null access Gtk_List_Store_Record;
+       Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean;
+   pragma Obsolescent (Row_Draggable);
+
    function Get_Column_Type
       (Tree_Model : not null access Gtk_List_Store_Record;
        Index      : Glib.Gint) return GType;
@@ -735,6 +753,8 @@ package Gtk.List_Store is
    --
    --  - "Gtk.Buildable"
    --
+   --  - "Gtk.TreeDragSource"
+   --
    --  - "Gtk.TreeModel"
    --
    --  - "Gtk.TreeSortable"
@@ -749,6 +769,17 @@ package Gtk.List_Store is
      (Interf : Gtk.Buildable.Gtk_Buildable)
    return Gtk_List_Store
    renames Implements_Gtk_Buildable.To_Object;
+
+   package Implements_Gtk_Tree_Drag_Source is new Glib.Types.Implements
+     (Gtk.Tree_Drag_Source.Gtk_Tree_Drag_Source, Gtk_List_Store_Record, Gtk_List_Store);
+   function "+"
+     (Widget : access Gtk_List_Store_Record'Class)
+   return Gtk.Tree_Drag_Source.Gtk_Tree_Drag_Source
+   renames Implements_Gtk_Tree_Drag_Source.To_Interface;
+   function "-"
+     (Interf : Gtk.Tree_Drag_Source.Gtk_Tree_Drag_Source)
+   return Gtk_List_Store
+   renames Implements_Gtk_Tree_Drag_Source.To_Object;
 
    package Implements_Gtk_Tree_Model is new Glib.Types.Implements
      (Gtk.Tree_Model.Gtk_Tree_Model, Gtk_List_Store_Record, Gtk_List_Store);

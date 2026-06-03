@@ -973,6 +973,40 @@ package body Gtk.Tree_Store is
       end if;
    end Children;
 
+   ----------------------
+   -- Drag_Data_Delete --
+   ----------------------
+
+   function Drag_Data_Delete
+      (Self : not null access Gtk_Tree_Store_Record;
+       Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean
+   is
+      function Internal
+         (Self : System.Address;
+          Path : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_delete");
+   begin
+      return Internal (Get_Object (Self), Get_Object (Path)) /= 0;
+   end Drag_Data_Delete;
+
+   -------------------
+   -- Drag_Data_Get --
+   -------------------
+
+   function Drag_Data_Get
+      (Self : not null access Gtk_Tree_Store_Record;
+       Path : Gtk.Tree_Model.Gtk_Tree_Path)
+       return Gdk.Content_Provider.Gdk_Content_Provider
+   is
+      function Internal
+         (Self : System.Address;
+          Path : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_tree_drag_source_drag_data_get");
+      Stub_Gdk_Content_Provider : Gdk.Content_Provider.Gdk_Content_Provider_Record;
+   begin
+      return Gdk.Content_Provider.Gdk_Content_Provider (Get_User_Data (Internal (Get_Object (Self), Get_Object (Path)), Stub_Gdk_Content_Provider));
+   end Drag_Data_Get;
+
    ---------------------
    -- Get_Column_Type --
    ---------------------
@@ -1341,6 +1375,22 @@ package body Gtk.Tree_Store is
    begin
       Internal (Get_Object (Tree_Model), Get_Object (Path));
    end Row_Deleted;
+
+   -------------------
+   -- Row_Draggable --
+   -------------------
+
+   function Row_Draggable
+      (Self : not null access Gtk_Tree_Store_Record;
+       Path : Gtk.Tree_Model.Gtk_Tree_Path) return Boolean
+   is
+      function Internal
+         (Self : System.Address;
+          Path : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_tree_drag_source_row_draggable");
+   begin
+      return Internal (Get_Object (Self), Get_Object (Path)) /= 0;
+   end Row_Draggable;
 
    ---------------------------
    -- Row_Has_Child_Toggled --
