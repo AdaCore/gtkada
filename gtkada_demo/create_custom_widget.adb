@@ -32,13 +32,13 @@ with Ada.Text_IO;  use Ada.Text_IO;
 with Interfaces.C; use Interfaces.C;
 with System;
 
-with Glib;         use Glib;
-with Glib.Object;  use Glib.Object;
-with Gdk.RGBA;     use Gdk.RGBA;
-with Gtk.Box;      use Gtk.Box;
-with Gtk.Enums;    use Gtk.Enums;
-with Gtk.Label;    use Gtk.Label;
-with Gtk.Widget;   use Gtk.Widget;
+with Glib;        use Glib;
+with Glib.Object; use Glib.Object;
+with Gdk.RGBA;    use Gdk.RGBA;
+with Gtk.Box;     use Gtk.Box;
+with Gtk.Enums;   use Gtk.Enums;
+with Gtk.Label;   use Gtk.Label;
+with Gtk.Widget;  use Gtk.Widget;
 with Gtkada.Types;
 
 package body Create_Custom_Widget is
@@ -86,9 +86,9 @@ package body Create_Custom_Widget is
      (Widget : System.Address; Snapshot : System.Address);
    pragma Convention (C, Gizmo_Snapshot);
 
-   --  The bounds rectangle reuses Gtkada.Types.graphene_rect_t. The
-   --  GtkSnapshot drawing entry point is not part of the generated binding
-   --  yet, so we import just enough here to paint a solid rectangle.
+   --  The GtkSnapshot drawing entry point is not yet part of the
+   --  generated binding, so we import just enough here to paint
+   --  a solid rectangle.
 
    procedure Snapshot_Append_Color
      (Snapshot : System.Address;
@@ -132,13 +132,15 @@ package body Create_Custom_Widget is
       Stub : Gizmo_Record;
       Self : constant Gizmo := Gizmo (Get_User_Data (Widget, Stub));
    begin
-      Self.Alloc_Width  := Width;
+      Self.Alloc_Width := Width;
       Self.Alloc_Height := Height;
       Self.Info.Set_Text
-        ("The gizmo was allocated" & Width'Image & " x" & Height'Image
+        ("The gizmo was allocated"
+         & Width'Image
+         & " x"
+         & Height'Image
          & " pixels.");
-      Put_Line
-        ("Gizmo size_allocate:" & Width'Image & " x" & Height'Image);
+      Put_Line ("Gizmo size_allocate:" & Width'Image & " x" & Height'Image);
 
       --  Chain to GtkWidget's own size_allocate so the base bookkeeping is
       --  still performed.
@@ -206,11 +208,11 @@ package body Create_Custom_Widget is
    procedure Gtk_New (Self : out Gizmo; Info : Gtk_Label) is
    begin
       Self := new Gizmo_Record;
-      Self.Min_Width  := 60;
+      Self.Min_Width := 60;
       Self.Min_Height := 40;
-      Self.Nat_Width  := 240;
+      Self.Nat_Width := 240;
       Self.Nat_Height := 150;
-      Self.Info       := Info;
+      Self.Info := Info;
       Create_Custom_Widget.Initialize (Self);
    end Gtk_New;
 
@@ -220,20 +222,25 @@ package body Create_Custom_Widget is
 
    function Help return String is
    begin
-      return "This demo shows how to write a @bcustom widget@B in Ada for"
-        & " Gtk4." & ASCII.LF
+      return
+        "This demo shows how to write a @bcustom widget@B in Ada for"
+        & " Gtk4."
+        & ASCII.LF
         & "The blue @bgizmo@B is a direct @bGtk_Widget@B subclass that"
         & " overrides three class virtual methods through the new"
-        & " @bGtk.Widget@B handlers:" & ASCII.LF
+        & " @bGtk.Widget@B handlers:"
+        & ASCII.LF
         & " - @bmeasure@B advertises a minimum size (60 x 40) that is"
         & " deliberately smaller than its natural size (240 x 150);"
         & ASCII.LF
         & " - @bsize_allocate@B records the size the gizmo is given and"
-        & " chains to the inherited implementation;" & ASCII.LF
-        & " - @bsnapshot@B paints the gizmo a solid colour." & ASCII.LF
+        & " chains to the inherited implementation;"
+        & ASCII.LF
+        & " - @bsnapshot@B paints the gizmo a solid colour."
+        & ASCII.LF
         & "Resize the window and watch the label below the gizmo report the"
-        & " size it is allocated. None of this was previously possible in"
-        & " Ada: no stock widget lets its minimum and natural sizes differ"
+        & " size it is allocated. None of this is possible without a custom"
+        & " widget: no stock widget lets its minimum and natural sizes differ"
         & " and be read back.";
    end Help;
 
