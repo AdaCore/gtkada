@@ -39,6 +39,7 @@ with Gtk.Box;      use Gtk.Box;
 with Gtk.Enums;    use Gtk.Enums;
 with Gtk.Label;    use Gtk.Label;
 with Gtk.Widget;   use Gtk.Widget;
+with Gtkada.Types;
 
 package body Create_Custom_Widget is
 
@@ -85,14 +86,9 @@ package body Create_Custom_Widget is
      (Widget : System.Address; Snapshot : System.Address);
    pragma Convention (C, Gizmo_Snapshot);
 
-   --  graphene_rect_t and the GtkSnapshot drawing entry point are not part of
-   --  the generated binding yet, so we declare just enough here to paint a
-   --  solid rectangle.
-
-   type Graphene_Rect is record
-      X, Y, Width, Height : Interfaces.C.C_float;
-   end record;
-   pragma Convention (C, Graphene_Rect);
+   --  The bounds rectangle reuses Gtkada.Types.graphene_rect_t. The
+   --  GtkSnapshot drawing entry point is not part of the generated binding
+   --  yet, so we import just enough here to paint a solid rectangle.
 
    procedure Snapshot_Append_Color
      (Snapshot : System.Address;
@@ -160,11 +156,11 @@ package body Create_Custom_Widget is
       Self   : constant Gizmo := Gizmo (Get_User_Data (Widget, Stub));
       Color  : aliased Gdk_RGBA :=
         (Red => 0.20, Green => 0.50, Blue => 0.85, Alpha => 1.0);
-      Bounds : aliased Graphene_Rect :=
-        (X      => 0.0,
-         Y      => 0.0,
-         Width  => C_float (Self.Alloc_Width),
-         Height => C_float (Self.Alloc_Height));
+      Bounds : aliased Gtkada.Types.graphene_rect_t :=
+        (origin => (x => 0.0, y => 0.0),
+         size   =>
+           (width  => C_float (Self.Alloc_Width),
+            height => C_float (Self.Alloc_Height)));
    begin
       Snapshot_Append_Color (Snapshot, Color'Address, Bounds'Address);
    end Gizmo_Snapshot;
