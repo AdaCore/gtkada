@@ -35,6 +35,45 @@ package body Gtk.Layout_Manager is
      (Layout_Child_Get_Type'Access, Gtk_Layout_Child_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Layout_Child);
 
+   --------------
+   -- Allocate --
+   --------------
+
+   procedure Allocate
+      (Manager  : not null access Gtk_Layout_Manager_Record;
+       Widget   : Glib.Object.GObject;
+       Width    : Glib.Gint;
+       Height   : Glib.Gint;
+       Baseline : Glib.Gint)
+   is
+      procedure Internal
+         (Manager  : System.Address;
+          Widget   : System.Address;
+          Width    : Glib.Gint;
+          Height   : Glib.Gint;
+          Baseline : Glib.Gint);
+      pragma Import (C, Internal, "gtk_layout_manager_allocate");
+   begin
+      Internal (Get_Object (Manager), Get_Object (Widget), Width, Height, Baseline);
+   end Allocate;
+
+   ----------------------
+   -- Get_Layout_Child --
+   ----------------------
+
+   function Get_Layout_Child
+      (Manager : not null access Gtk_Layout_Manager_Record;
+       Child   : Glib.Object.GObject) return Gtk_Layout_Child
+   is
+      function Internal
+         (Manager : System.Address;
+          Child   : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_layout_manager_get_layout_child");
+      Stub_Gtk_Layout_Child : Gtk_Layout_Child_Record;
+   begin
+      return Gtk.Layout_Manager.Gtk_Layout_Child (Get_User_Data (Internal (Get_Object (Manager), Get_Object (Child)), Stub_Gtk_Layout_Child));
+   end Get_Layout_Child;
+
    ----------------------
    -- Get_Request_Mode --
    ----------------------
@@ -50,6 +89,21 @@ package body Gtk.Layout_Manager is
       return Internal (Get_Object (Manager));
    end Get_Request_Mode;
 
+   ----------------
+   -- Get_Widget --
+   ----------------
+
+   function Get_Widget
+      (Manager : not null access Gtk_Layout_Manager_Record)
+       return Glib.Object.GObject
+   is
+      function Internal (Manager : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_layout_manager_get_widget");
+      Stub_GObject : Glib.Object.GObject_Record;
+   begin
+      return Get_User_Data (Internal (Get_Object (Manager)), Stub_GObject);
+   end Get_Widget;
+
    --------------------
    -- Layout_Changed --
    --------------------
@@ -62,5 +116,33 @@ package body Gtk.Layout_Manager is
    begin
       Internal (Get_Object (Manager));
    end Layout_Changed;
+
+   -------------
+   -- Measure --
+   -------------
+
+   procedure Measure
+      (Manager          : not null access Gtk_Layout_Manager_Record;
+       Widget           : Glib.Object.GObject;
+       Orientation      : Gtk.Enums.Gtk_Orientation;
+       For_Size         : Glib.Gint;
+       Minimum          : out Glib.Gint;
+       Natural          : out Glib.Gint;
+       Minimum_Baseline : out Glib.Gint;
+       Natural_Baseline : out Glib.Gint)
+   is
+      procedure Internal
+         (Manager          : System.Address;
+          Widget           : System.Address;
+          Orientation      : Gtk.Enums.Gtk_Orientation;
+          For_Size         : Glib.Gint;
+          Minimum          : out Glib.Gint;
+          Natural          : out Glib.Gint;
+          Minimum_Baseline : out Glib.Gint;
+          Natural_Baseline : out Glib.Gint);
+      pragma Import (C, Internal, "gtk_layout_manager_measure");
+   begin
+      Internal (Get_Object (Manager), Get_Object (Widget), Orientation, For_Size, Minimum, Natural, Minimum_Baseline, Natural_Baseline);
+   end Measure;
 
 end Gtk.Layout_Manager;

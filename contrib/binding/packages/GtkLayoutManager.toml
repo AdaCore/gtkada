@@ -5,27 +5,35 @@ group = "Layout containers"
 name = "self"
 ada = "Manager"
 
-# The following methods take or return a Gtk.Widget or Gtk.Layout_Child.
-# Because Gtk.Widget itself withs Gtk.Layout_Manager (for Get_Layout_Manager
-# / Set_Layout_Manager) and Gtk.Layout_Child withs Gtk.Layout_Manager (for
-# its accessors), exposing them here would create a circular dependency
-# between specs that cannot be expressed without `limited with`, which the
-# generator does not support. They remain available at the C level for
-# subclass implementations; expose them via Gtk.Widget or Gtk.Layout_Child
-# as needed instead.
+# Several of these methods take or return a Gtk.Widget. Binding them with
+# their natural Gtk.Widget type would make this spec `with Gtk.Widget`, but
+# Gtk.Widget already `with`s Gtk.Layout_Manager (for Get_Layout_Manager /
+# Set_Layout_Manager). That circular dependency cannot be expressed without
+# `limited with`, which the generator does not support. To break the cycle the
+# widget-typed parameters are exposed as Glib.Object.GObject (already `with`ed
+# by this package), and the caller converts them to/from the concrete widget
+# type. The layout child returned by get_layout_child is exposed as the
+# in-package Gtk_Layout_Child type (declared here via GtkLayoutChild.toml's
+# `into = "GtkLayoutManager"`), so it likewise introduces no new `with`.
 
 [[method]]
 id = "gtk_layout_manager_allocate"
-bind = false
+[[method.parameter]]
+name = "widget"
+type = "Glib.Object.GObject"
 
 [[method]]
 id = "gtk_layout_manager_get_layout_child"
-bind = false
+[[method.parameter]]
+name = "child"
+type = "Glib.Object.GObject"
 
 [[method]]
 id = "gtk_layout_manager_get_widget"
-bind = false
+return = "GObject*"
 
 [[method]]
 id = "gtk_layout_manager_measure"
-bind = false
+[[method.parameter]]
+name = "widget"
+type = "Glib.Object.GObject"
