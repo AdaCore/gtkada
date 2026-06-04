@@ -389,8 +389,10 @@ package Glib.Object is
    --      --  Install some custom style properties
    --      Install_Style_Property (Self, Gnew_Int (...));
    --
-   --      --  Override some the inherited methods
-   --      Set_Default_Draw_Handler (Self, On_Draw'Access);
+   --      --  Override some of the inherited GtkWidget virtual methods. In
+   --      --  gtk4 these are installed through the Gtk.Widget handlers, e.g.
+   --      Set_Default_Measure_Handler (Self, On_Measure'Access);
+   --      Set_Default_Size_Allocate_Handler (Self, On_Size_Allocate'Access);
    --   end Class_Init;
    --
    --   function Get_Type return GType is

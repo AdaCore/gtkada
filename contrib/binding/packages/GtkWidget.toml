@@ -465,326 +465,175 @@ return_as_param = "Result"
 #      --  field for Object is Null_Address.
 #      Unref_Internal (Ptr);'''
 #
-#[extra]
-#body = '''
-#
-#   function Convert is new Ada.Unchecked_Conversion
-#      (Draw_Handler, System.Address);
-#
-#   function Proxy_Draw
-#      (W  : System.Address;
-#       Cr : Cairo.Cairo_Context) return Gboolean
-#   is
-#      Stub : Gtk_Widget_Record;
-#      W2 : constant Gtk_Widget := Gtk_Widget (Get_User_Data (W, Stub));
-#   begin
-#      return Boolean'Pos (Draw (W2, Cr));
-#   end Proxy_Draw;
-#
-#   function Inherited_Draw
-#      (Klass  : Glib.Object.Ada_GObject_Class;
-#       Widget : access Gtk_Widget_Record'Class;
-#       Cr     : Cairo.Cairo_Context) return Boolean
-#   is
-#       function Internal (Klass : Ada_GObject_Class;
-#                          Widget : System.Address;
-#                          Cr : Cairo.Cairo_Context) return Gboolean;
-#       pragma Import (C, Internal, "ada_inherited_WIDGET_CLASS_draw");
-#   begin
-#      return Internal (Klass, Widget.Get_Object, Cr) /= 0;
-#   end Inherited_Draw;
-#
-#   procedure Inherited_Get_Preferred_Width
-#      (Klass  : Glib.Object.Ada_GObject_Class;
-#       Widget     : access Gtk_Widget_Record'Class;
-#       Minimum_Size, Natural_Size : out Glib.Gint)
-#   is
-#       procedure Internal (Klass : Ada_GObject_Class;
-#                           Widget : System.Address;
-#                           Min, Nat : out Glib.Gint);
-#       pragma Import
-#          (C, Internal, "ada_inherited_WIDGET_CLASS_get_preferred_width");
-#   begin
-#       Internal (Klass, Widget.Get_Object, Minimum_Size, Natural_Size);
-#   end Inherited_Get_Preferred_Width;
-#
-#   procedure Inherited_Get_Preferred_Width_For_Height
-#      (Klass  : Glib.Object.Ada_GObject_Class;
-#       Widget     : access Gtk_Widget_Record'Class;
-#       Height     : Glib.Gint;
-#       Minimum_Size, Natural_Size : out Glib.Gint)
-#   is
-#       procedure Internal (Klass    : Ada_GObject_Class;
-#                           Widget   : System.Address;
-#                           Height   : Glib.Gint;
-#                           Min, Nat : out Glib.Gint);
-#       pragma Import
-#          (C, Internal, "ada_inherited_WIDGET_CLASS_get_preferred_width_for_height");
-#   begin
-#       Internal (Klass, Widget.Get_Object, Height, Minimum_Size, Natural_Size);
-#   end Inherited_Get_Preferred_Width_For_Height;
-#
-#   procedure Inherited_Get_Preferred_Height
-#      (Klass  : Glib.Object.Ada_GObject_Class;
-#       Widget     : access Gtk_Widget_Record'Class;
-#       Minimum_Size, Natural_Size : out Glib.Gint)
-#   is
-#       procedure Internal (Klass : Ada_GObject_Class;
-#                           Widget : System.Address;
-#                           Min, Nat : out Glib.Gint);
-#       pragma Import
-#          (C, Internal, "ada_inherited_WIDGET_CLASS_get_preferred_height");
-#   begin
-#       Internal (Klass, Widget.Get_Object, Minimum_Size, Natural_Size);
-#   end Inherited_Get_Preferred_Height;
-#
-#   procedure Inherited_Get_Preferred_Height_For_Width
-#      (Klass  : Glib.Object.Ada_GObject_Class;
-#       Widget     : access Gtk_Widget_Record'Class;
-#       Width      : Glib.Gint;
-#       Minimum_Size, Natural_Size : out Glib.Gint)
-#   is
-#       procedure Internal (Klass : Ada_GObject_Class;
-#                           Widget : System.Address;
-#                           Width      : Glib.Gint;
-#                           Min, Nat : out Glib.Gint);
-#       pragma Import
-#          (C, Internal, "ada_inherited_WIDGET_CLASS_get_preferred_height_for_width");
-#   begin
-#       Internal (Klass, Widget.Get_Object, Width, Minimum_Size, Natural_Size);
-#   end Inherited_Get_Preferred_Height_For_Width;
-#
-#   procedure Inherited_Size_Allocate
-#      (Klass      : Glib.Object.Ada_GObject_Class;
-#       Widget     : access Gtk_Widget_Record'Class;
-#       Allocation : Gtk_Allocation)
-#   is
-#       procedure Internal (Klass : Ada_GObject_Class;
-#                           Widget : System.Address;
-#                           Allocation : Gtk_Allocation);
-#       pragma Import
-#          (C, Internal, "ada_inherited_WIDGET_CLASS_size_allocate");
-#   begin
-#       Internal (Klass, Widget.Get_Object, Allocation);
-#   end Inherited_Size_Allocate;
-#
-#   procedure Inherited_Realize
-#      (Klass      : Glib.Object.Ada_GObject_Class;
-#       Widget     : access Gtk_Widget_Record'Class)
-#   is
-#       procedure Internal (Klass : Ada_GObject_Class;
-#                           Widget : System.Address);
-#       pragma Import
-#          (C, Internal, "ada_inherited_WIDGET_CLASS_realize");
-#   begin
-#       Internal (Klass, Widget.Get_Object);
-#   end Inherited_Realize;
-#
-#   procedure Set_Default_Draw_Handler
-#      (Klass : Glib.Object.GObject_Class; Handler : Draw_Handler)
-#   is
-#      procedure Internal (K : GObject_Class; H : System.Address);
-#      pragma Import (C, Internal, "ada_WIDGET_CLASS_override_draw");
-#   begin
-#      Internal (Klass, Convert (Handler));
-#   end Set_Default_Draw_Handler;
-#
-#   function Get_Allocation
-#     (Value : Glib.Values.GValue) return Gtk_Allocation_Access
-#   is
-#      pragma Warnings (Off);
-#      --  This UC is safe aliasing-wise, so kill warning
-#      function To_Allocation is new
-#        Ada.Unchecked_Conversion (System.Address, Gtk_Allocation_Access);
-#      pragma Warnings (On);
-#   begin
-#      return To_Allocation (Glib.Values.Get_Address (Value));
-#   end Get_Allocation;
-#
-#   function Get_Requisition
-#     (Value : Glib.Values.GValue) return Gtk_Requisition_Access
-#   is
-#      pragma Warnings (Off);
-#      --  This UC is safe aliasing-wise, so kill warning
-#      function To_Requisition is new
-#        Ada.Unchecked_Conversion (System.Address, Gtk_Requisition_Access);
-#      pragma Warnings (On);
-#   begin
-#      return To_Requisition (Glib.Values.Get_Address (Value));
-#   end Get_Requisition;
-#       '''
-#
-#[[extra.with_spec]]
-#pkg = "Gdk.Rectangle"
-#
-#[[extra.with_body]]
-#pkg = "Ada.Unchecked_Conversion"
-#use = false
-#
-#[[extra.spec]]
-#text = '''
-#
-#   ------------------------------------
-#   -- Override default size handling --
-#   ------------------------------------
-#
-#   type Gtk_Requisition_Access is access all Gtk_Requisition;
-#   type Gtk_Allocation_Access is access all Gtk_Allocation;
-#   pragma Convention (C, Gtk_Requisition_Access);
-#   pragma Convention (C, Gtk_Allocation_Access);
-#
-#   function Get_Requisition
-#     (Value : Glib.Values.GValue) return Gtk_Requisition_Access;
-#   function Get_Allocation
-#     (Value : Glib.Values.GValue) return Gtk_Allocation_Access;
-#   --  Convert values received as callback parameters
-#
-#   type Size_Allocate_Handler is access procedure
-#     (Widget : System.Address; Allocation : Gtk_Allocation);
-#   pragma Convention (C, Size_Allocate_Handler);
-#   --  Widget is the gtk+ C widget, that needs to be converted to Ada through
-#   --  a call to:
-#   --    declare
-#   --       Stub : Gtk_Widget_Record; --  or the exact type you expect
-#   --    begin
-#   --       My_Widget := Gtk_Widget (Glib.Object.Get_User_Data (Widget, Stub);
-#   --    end;
-#
-#   procedure Set_Default_Size_Allocate_Handler
-#     (Klass   : Glib.Object.GObject_Class;
-#      Handler : Size_Allocate_Handler);
-#   pragma Import (C, Set_Default_Size_Allocate_Handler,
-#                  "ada_WIDGET_CLASS_override_size_allocate");
-#   --  Override the default size_allocate handler for this class. This handler
-#   --  is automatically called in several cases (when a widget is dynamically
-#   --  resized for instance), not through a signal. Thus, if you need to
-#   --  override the default behavior provided by one of the standard
-#   --  containers, you can not simply use Gtk.Handlers.Emit_Stop_By_Name, and
-#   --  you must override the default handler. Note also that this handler
-#   --  is automatically inherited by children of this class.
-#   --
-#   --  This function is not needed unless you are writting your own
-#   --  widgets, and should be reserved for advanced customization of the
-#   --  standard widgets.
-#
-#   type Preferred_Size_Handler is access procedure
-#      (Widget       : System.Address;
-#       Minimum_Size : out Glib.Gint;
-#       Natural_Size : out Glib.Gint);
-#   pragma Convention (C, Preferred_Size_Handler);
-#
-#    type Preferred_Size_For_Handler is access procedure
-#      (Widget       : System.Address;
-#       Ref          : Glib.Gint;   --  known width or height
-#       Minimum_Size : out Glib.Gint;
-#       Natural_Size : out Glib.Gint);
-#   pragma Convention (C, Preferred_Size_For_Handler);
-#
-#   procedure Set_Default_Get_Preferred_Width_Handler
-#      (Klass   : Glib.Object.GObject_Class;
-#       Handler : Preferred_Size_Handler);
-#   procedure Set_Default_Get_Preferred_Height_Handler
-#      (Klass   : Glib.Object.GObject_Class;
-#       Handler : Preferred_Size_Handler);
-#   procedure Set_Default_Get_Preferred_Height_For_Width_Handler
-#      (Klass   : Glib.Object.GObject_Class;
-#       Handler : Preferred_Size_For_Handler);
-#   procedure Set_Default_Get_Preferred_Width_For_Height_Handler
-#      (Klass   : Glib.Object.GObject_Class;
-#       Handler : Preferred_Size_For_Handler);
-#   pragma Import (C, Set_Default_Get_Preferred_Width_Handler,
-#                  "ada_WIDGET_CLASS_override_get_preferred_width");
-#   pragma Import (C, Set_Default_Get_Preferred_Height_Handler,
-#                  "ada_WIDGET_CLASS_override_get_preferred_height");
-#   pragma Import (C, Set_Default_Get_Preferred_Height_For_Width_Handler,
-#                  "ada_WIDGET_CLASS_override_get_preferred_height_for_width");
-#   pragma Import (C, Set_Default_Get_Preferred_Width_For_Height_Handler,
-#                  "ada_WIDGET_CLASS_override_get_preferred_width_for_height");
-#   --  Override the computation of a widget's preferred sizes.
-#   --  You will only need to override this computation if you are writting
-#   --  your own container widgets.
-#
-#   procedure Inherited_Get_Preferred_Width
-#      (Klass      : Glib.Object.Ada_GObject_Class;
-#       Widget     : access Gtk_Widget_Record'Class;
-#       Minimum_Size, Natural_Size : out Glib.Gint);
-#   procedure Inherited_Get_Preferred_Width_For_Height
-#      (Klass      : Glib.Object.Ada_GObject_Class;
-#       Widget     : access Gtk_Widget_Record'Class;
-#       Height     : Glib.Gint;
-#       Minimum_Size, Natural_Size : out Glib.Gint);
-#   procedure Inherited_Get_Preferred_Height
-#      (Klass      : Glib.Object.Ada_GObject_Class;
-#       Widget     : access Gtk_Widget_Record'Class;
-#       Minimum_Size, Natural_Size : out Glib.Gint);
-#   procedure Inherited_Get_Preferred_Height_For_Width
-#      (Klass      : Glib.Object.Ada_GObject_Class;
-#       Widget     : access Gtk_Widget_Record'Class;
-#       Width      : Glib.Gint;
-#       Minimum_Size, Natural_Size : out Glib.Gint);
-#   --  Call the default implementation
-#
-#   procedure Inherited_Size_Allocate
-#      (Klass      : Glib.Object.Ada_GObject_Class;
-#       Widget     : access Gtk_Widget_Record'Class;
-#       Allocation : Gtk_Allocation);
-#   --  Call the inherited size_allocate. This is useful if you have overloaded it in
-#   --  your own class, but still need to call the standard implementation.
-#
-#   type Realize_Handler is access procedure (Widget : System.Address);
-#   pragma Convention (C, Realize_Handler);
-#   procedure Set_Default_Realize_Handler
-#      (Klass   : Glib.Object.GObject_Class;
-#       Handler : Realize_Handler);
-#   pragma Import (C, Set_Default_Realize_Handler,
-#                  "ada_WIDGET_CLASS_override_realize");
-#   --  Override the handler for the "realize" signal. This handler should
-#   --  create the window for the widget
-#
-#   procedure Inherited_Realize
-#      (Klass      : Glib.Object.Ada_GObject_Class;
-#       Widget     : access Gtk_Widget_Record'Class);
-#   --  Call the inherited realize.
-#
-#   ---------------------------
-#   -- Override Draw handler --
-#   ---------------------------
-#
-#   generic
-#       with function Draw
-#          (W  : access Gtk_Widget_Record'Class;
-#           Cr : Cairo.Cairo_Context) return Boolean;
-#   function Proxy_Draw
-#      (W  : System.Address; Cr : Cairo.Cairo_Context) return Gboolean;
-#   pragma Convention (C, Proxy_Draw);
-#
-#   type Draw_Handler is access function
-#     (W  : System.Address;
-#      Cr : Cairo.Cairo_Context) return Gboolean;
-#   pragma Convention (C, Draw_Handler);
-#   --  A function responsible for drawing a widget.
-#
-#   procedure Set_Default_Draw_Handler
-#      (Klass : Glib.Object.GObject_Class; Handler : Draw_Handler);
-#   --  Override the default drawing function. This in general gives more
-#   --  control than connection to Signal_Draw, however a widget is responsible
-#   --  for drawing its children.
-#   --  Use the generic Proxy_Draw to create a suitable callback.
-#
-#   function Inherited_Draw
-#      (Klass  : Glib.Object.Ada_GObject_Class;
-#       Widget : access Gtk_Widget_Record'Class;
-#       Cr     : Cairo.Cairo_Context) return Boolean;
-#   --  Call the inherited draw. This is useful if you have overloaded draw in
-#   --  your own class, but still need to draw the child widgets that do not
-#   --  have their own window (the others will already get their own "draw"
-#   --  event.
-#   --  See http://developer.gnome.org/gtk3/3.0/chap-drawing-model.html
-#   --  for an explanation of the gtk+ drawing model.
-#       '''
-#
-#[[extra.type]]
-#text = '''
-#
-#   subtype Gtk_Allocation is Gdk.Rectangle.Gdk_Rectangle;
-#       '''
+[extra]
+body = '''
+
+   procedure Inherited_Measure
+     (Klass                              : Glib.Object.Ada_GObject_Class;
+      Widget                             : access Gtk_Widget_Record'Class;
+      Orientation                        : Gtk.Enums.Gtk_Orientation;
+      For_Size                           : Glib.Gint;
+      Minimum, Natural                   : out Glib.Gint;
+      Minimum_Baseline, Natural_Baseline : out Glib.Gint)
+   is
+      procedure Internal
+        (Klass                              : Glib.Object.Ada_GObject_Class;
+         Widget                             : System.Address;
+         Orientation                        : Gtk.Enums.Gtk_Orientation;
+         For_Size                           : Glib.Gint;
+         Minimum, Natural                   : out Glib.Gint;
+         Minimum_Baseline, Natural_Baseline : out Glib.Gint);
+      pragma Import (C, Internal, "ada_inherited_WIDGET_CLASS_measure");
+   begin
+      Internal
+        (Klass, Widget.Get_Object, Orientation, For_Size,
+         Minimum, Natural, Minimum_Baseline, Natural_Baseline);
+   end Inherited_Measure;
+
+   procedure Inherited_Size_Allocate
+     (Klass                   : Glib.Object.Ada_GObject_Class;
+      Widget                  : access Gtk_Widget_Record'Class;
+      Width, Height, Baseline : Glib.Gint)
+   is
+      procedure Internal
+        (Klass                   : Glib.Object.Ada_GObject_Class;
+         Widget                  : System.Address;
+         Width, Height, Baseline : Glib.Gint);
+      pragma Import
+        (C, Internal, "ada_inherited_WIDGET_CLASS_size_allocate");
+   begin
+      Internal (Klass, Widget.Get_Object, Width, Height, Baseline);
+   end Inherited_Size_Allocate;
+
+   procedure Inherited_Realize
+     (Klass  : Glib.Object.Ada_GObject_Class;
+      Widget : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+        (Klass  : Glib.Object.Ada_GObject_Class;
+         Widget : System.Address);
+      pragma Import (C, Internal, "ada_inherited_WIDGET_CLASS_realize");
+   begin
+      Internal (Klass, Widget.Get_Object);
+   end Inherited_Realize;
+
+   procedure Inherited_Snapshot
+     (Klass    : Glib.Object.Ada_GObject_Class;
+      Widget   : access Gtk_Widget_Record'Class;
+      Snapshot : System.Address)
+   is
+      procedure Internal
+        (Klass    : Glib.Object.Ada_GObject_Class;
+         Widget   : System.Address;
+         Snapshot : System.Address);
+      pragma Import (C, Internal, "ada_inherited_WIDGET_CLASS_snapshot");
+   begin
+      Internal (Klass, Widget.Get_Object, Snapshot);
+   end Inherited_Snapshot;
+'''
+
+[[extra.spec]]
+text = '''
+
+   --------------------------------------------
+   --  Overriding GtkWidget virtual methods  --
+   --------------------------------------------
+
+   --  The subprograms below let you write a custom widget in Ada by deriving
+   --  from Gtk_Widget_Record and overriding the GtkWidgetClass virtual
+   --  methods measure, size_allocate, realize and snapshot.
+   --
+   --  Install the handlers on the class record from the Class_Init callback
+   --  given to Glib.Object.Initialize_Class_Record (see the worked example in
+   --  glib-object.ads). Each handler receives the widget as the raw C pointer;
+   --  recover the Ada object with Glib.Object.Get_User_Data, e.g.:
+   --
+   --     declare
+   --        Stub : My_Widget_Record;  --  the exact type you expect
+   --     begin
+   --        W := My_Widget (Glib.Object.Get_User_Data (Widget, Stub));
+   --     end;
+   --
+   --  An overriding handler that still needs the parent class behaviour can
+   --  chain to it through the matching Inherited_* procedure (passing the
+   --  class record created by Initialize_Class_Record).
+
+   type Measure_Handler is access procedure
+     (Widget                             : System.Address;
+      Orientation                        : Gtk.Enums.Gtk_Orientation;
+      For_Size                           : Glib.Gint;
+      Minimum, Natural                   : out Glib.Gint;
+      Minimum_Baseline, Natural_Baseline : out Glib.Gint);
+   pragma Convention (C, Measure_Handler);
+   --  Report the widget's minimum and natural size for Orientation. For_Size
+   --  is the available size in the opposite orientation, or -1 when unknown.
+   --  Set Minimum_Baseline/Natural_Baseline to -1 when no baseline applies.
+
+   type Size_Allocate_Handler is access procedure
+     (Widget : System.Address; Width, Height, Baseline : Glib.Gint);
+   pragma Convention (C, Size_Allocate_Handler);
+   --  Position and size the widget (and its children) within the allocated
+   --  Width x Height area. Baseline is -1 when unused.
+
+   type Realize_Handler is access procedure (Widget : System.Address);
+   pragma Convention (C, Realize_Handler);
+   --  Called when the widget is realized.
+
+   type Snapshot_Handler is access procedure
+     (Widget : System.Address; Snapshot : System.Address);
+   pragma Convention (C, Snapshot_Handler);
+   --  Render the widget. Snapshot is the underlying C GtkSnapshot to draw
+   --  into.
+
+   procedure Set_Default_Measure_Handler
+     (Klass : Glib.Object.GObject_Class; Handler : Measure_Handler);
+   pragma Import (C, Set_Default_Measure_Handler,
+                  "ada_WIDGET_CLASS_override_measure");
+   --  Override the class "measure" vfunc. Only needed when writing your own
+   --  widgets.
+
+   procedure Set_Default_Size_Allocate_Handler
+     (Klass : Glib.Object.GObject_Class; Handler : Size_Allocate_Handler);
+   pragma Import (C, Set_Default_Size_Allocate_Handler,
+                  "ada_WIDGET_CLASS_override_size_allocate");
+   --  Override the class "size_allocate" vfunc.
+
+   procedure Set_Default_Realize_Handler
+     (Klass : Glib.Object.GObject_Class; Handler : Realize_Handler);
+   pragma Import (C, Set_Default_Realize_Handler,
+                  "ada_WIDGET_CLASS_override_realize");
+   --  Override the class "realize" vfunc.
+
+   procedure Set_Default_Snapshot_Handler
+     (Klass : Glib.Object.GObject_Class; Handler : Snapshot_Handler);
+   pragma Import (C, Set_Default_Snapshot_Handler,
+                  "ada_WIDGET_CLASS_override_snapshot");
+   --  Override the class "snapshot" vfunc.
+
+   procedure Inherited_Measure
+     (Klass                              : Glib.Object.Ada_GObject_Class;
+      Widget                             : access Gtk_Widget_Record'Class;
+      Orientation                        : Gtk.Enums.Gtk_Orientation;
+      For_Size                           : Glib.Gint;
+      Minimum, Natural                   : out Glib.Gint;
+      Minimum_Baseline, Natural_Baseline : out Glib.Gint);
+   --  Call the parent class "measure" implementation. Useful when an
+   --  overriding handler still needs the inherited behaviour.
+
+   procedure Inherited_Size_Allocate
+     (Klass                   : Glib.Object.Ada_GObject_Class;
+      Widget                  : access Gtk_Widget_Record'Class;
+      Width, Height, Baseline : Glib.Gint);
+   --  Call the parent class "size_allocate" implementation.
+
+   procedure Inherited_Realize
+     (Klass  : Glib.Object.Ada_GObject_Class;
+      Widget : access Gtk_Widget_Record'Class);
+   --  Call the parent class "realize" implementation.
+
+   procedure Inherited_Snapshot
+     (Klass    : Glib.Object.Ada_GObject_Class;
+      Widget   : access Gtk_Widget_Record'Class;
+      Snapshot : System.Address);
+   --  Call the parent class "snapshot" implementation.
+'''

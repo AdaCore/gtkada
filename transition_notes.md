@@ -20,8 +20,8 @@
   test instead of the placeholder.
 - Reintroduced `GtkListStore` for gtk4 (re-enabled in `contrib/data.py`,
   added `contrib/binding/packages/GtkListStore.toml`) and used it in
-  `gtkada_demo/main_windows.adb` to build a `Gtk_Paned` + `Gtk_Scrolled_Window`
-  + `Gtk_Tree_View` selector with a single "labels" entry that drives
+  `gtkada_demo/main_windows.adb` to build a `Gtk_Paned` + `Gtk_Scrolled_Window` +
+  `Gtk_Tree_View` selector with a single "labels" entry that drives
   the `Create_Label` demo on the right-hand side. The C glue
   (`ada_gtk_list_store_set_*`) was already present in `src/misc.c`.
 - Reactivated `gtkada_demo`'s `Create_Box`, `Create_Frame`, `Create_Paned`
@@ -142,6 +142,7 @@ GtkApplication.toml:
 GtkSnapshot.toml:
 
 - when done, reactivate bindings in GtkCellArea.toml, GtkCellRenderer.toml
+- when done, remove the manual binding in gtkada_demo/create_custom_widget.adb
 
 GtkWidget.toml:
 
@@ -220,3 +221,24 @@ the following types:
 
 Revisit and re-enable these once `GdkEvent` and `GtkSnapshot` are
 bound for gtk4.
+
+## Testsuite
+
+Items to revisit as the GtkAda bindings grow.
+
+## testsuite/tests/label  (/label/markup-parse)
+
+Partial port of GTK's testsuite/gtk/label.c (test_label_markup). The original
+C test, via print_attr_list / print_attribute, compares a full stringified
+PangoAttrList dump for the label's layout. That comparison was dropped because
+Pango.Attributes (src/generated/pango-attributes.ads) currently provides no:
+
+- attribute iterator (pango_attr_list_get_iterator and the
+  pango_attr_iterator_* family);
+- per-attribute accessors (start_index/end_index, attribute type, and the
+  as_int / as_float / as_string / as_color / as_font_desc / as_language /
+  as_shape value getters);
+- Pango_Color binding or pango_color_to_string.
+
+Revisit and complete /label/markup-parse once the Pango attribute
+introspection bindings are available.
