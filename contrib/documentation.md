@@ -425,3 +425,36 @@ text = '''
       function Convert (S : String) return System.Address;
     '''
 ```
+
+## Overriding GObject virtual methods (custom widgets)
+
+Some classes let you write a subclass in Ada that overrides the C
+virtual methods of the parent class. The plumbing is a small amount of
+hand-written C glue plus an `[extra]` Ada surface — there is no GIR
+construct for it, so it cannot be generated automatically.
+
+`Gtk.Widget` is the worked example. `src/misc.c` defines, through the
+`ADA_GTK_OVERRIDE_METHOD` macro, one installer and one parent-chaining
+helper per `GtkWidgetClass` vfunc:
+
+* `ada_WIDGET_CLASS_override_<vfunc>` writes a handler pointer into the
+  class vtable;
+* `ada_inherited_WIDGET_CLASS_<vfunc>` invokes the parent class's
+  implementation (so an override can chain up).
+
+`GtkWidget.toml` surfaces these as Ada through the `[extra]` blocks:
+
+* an `[[extra.spec]]` declares the C-convention handler access types
+  (`Measure_Handler`, `Size_Allocate_Handler`, ...), the
+  `Set_Default_*_Handler` procedures (`pragma Import`ed straight onto
+  the `ada_WIDGET_CLASS_override_*` installers), and the `Inherited_*`
+  procedure declarations;
+* an `[extra]` `body` provides the `Inherited_*` bodies, which `pragma
+  Import` the `ada_inherited_WIDGET_CLASS_*` helpers and pass
+  `Widget.Get_Object`.
+
+A handler receives the widget as a raw `System.Address`; recover the
+Ada object with `Glib.Object.Get_User_Data (Widget, Stub)`. Install the
+handlers from the `Class_Init` callback passed to
+`Glib.Object.Initialize_Class_Record`. See
+`gtkada_demo/create_custom_widget.adb` for a complete example.

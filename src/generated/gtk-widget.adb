@@ -52,6 +52,69 @@ package body Gtk.Widget is
       end Convert;
 
 
+   procedure Inherited_Measure
+     (Klass                              : Glib.Object.Ada_GObject_Class;
+      Widget                             : access Gtk_Widget_Record'Class;
+      Orientation                        : Gtk.Enums.Gtk_Orientation;
+      For_Size                           : Glib.Gint;
+      Minimum, Natural                   : out Glib.Gint;
+      Minimum_Baseline, Natural_Baseline : out Glib.Gint)
+   is
+      procedure Internal
+        (Klass                              : Glib.Object.Ada_GObject_Class;
+         Widget                             : System.Address;
+         Orientation                        : Gtk.Enums.Gtk_Orientation;
+         For_Size                           : Glib.Gint;
+         Minimum, Natural                   : out Glib.Gint;
+         Minimum_Baseline, Natural_Baseline : out Glib.Gint);
+      pragma Import (C, Internal, "ada_inherited_WIDGET_CLASS_measure");
+   begin
+      Internal
+        (Klass, Widget.Get_Object, Orientation, For_Size,
+         Minimum, Natural, Minimum_Baseline, Natural_Baseline);
+   end Inherited_Measure;
+
+   procedure Inherited_Size_Allocate
+     (Klass                   : Glib.Object.Ada_GObject_Class;
+      Widget                  : access Gtk_Widget_Record'Class;
+      Width, Height, Baseline : Glib.Gint)
+   is
+      procedure Internal
+        (Klass                   : Glib.Object.Ada_GObject_Class;
+         Widget                  : System.Address;
+         Width, Height, Baseline : Glib.Gint);
+      pragma Import
+        (C, Internal, "ada_inherited_WIDGET_CLASS_size_allocate");
+   begin
+      Internal (Klass, Widget.Get_Object, Width, Height, Baseline);
+   end Inherited_Size_Allocate;
+
+   procedure Inherited_Realize
+     (Klass  : Glib.Object.Ada_GObject_Class;
+      Widget : access Gtk_Widget_Record'Class)
+   is
+      procedure Internal
+        (Klass  : Glib.Object.Ada_GObject_Class;
+         Widget : System.Address);
+      pragma Import (C, Internal, "ada_inherited_WIDGET_CLASS_realize");
+   begin
+      Internal (Klass, Widget.Get_Object);
+   end Inherited_Realize;
+
+   procedure Inherited_Snapshot
+     (Klass    : Glib.Object.Ada_GObject_Class;
+      Widget   : access Gtk_Widget_Record'Class;
+      Snapshot : System.Address)
+   is
+      procedure Internal
+        (Klass    : Glib.Object.Ada_GObject_Class;
+         Widget   : System.Address;
+         Snapshot : System.Address);
+      pragma Import (C, Internal, "ada_inherited_WIDGET_CLASS_snapshot");
+   begin
+      Internal (Klass, Widget.Get_Object, Snapshot);
+   end Inherited_Snapshot;
+
    package Type_Conversion_Gtk_Widget is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Widget_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Widget);

@@ -87,6 +87,7 @@ with Create_Buttons;
 with Create_Check_Buttons;
 --  with Create_Clipboard;
 --  with Create_Color_Chooser;
+with Create_Custom_Widget;
 --  with Create_Cursors;
 --  with Create_Dnd;
 --  with Create_Entry;
@@ -179,7 +180,11 @@ package body Main_Windows is
       To_Demo
         ("Check Buttons",
          Create_Check_Buttons.Run'Access,
-         Create_Check_Buttons.Help'Access));
+         Create_Check_Buttons.Help'Access),
+      To_Demo
+        ("Custom Widget",
+         Create_Custom_Widget.Run'Access,
+         Create_Custom_Widget.Help'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.
 
