@@ -91,17 +91,75 @@ package Gtk.Layout_Manager is
    -- Methods --
    -------------
 
+   procedure Allocate
+      (Manager  : not null access Gtk_Layout_Manager_Record;
+       Widget   : Glib.Object.GObject;
+       Width    : Glib.Gint;
+       Height   : Glib.Gint;
+       Baseline : Glib.Gint);
+   --  Assigns the given Width, Height, and Baseline to a Widget, and computes
+   --  the position and sizes of the children of the Widget using the layout
+   --  management policy of Manager.
+   --  @param Widget the `GtkWidget` using Manager
+   --  @param Width the new width of the Widget
+   --  @param Height the new height of the Widget
+   --  @param Baseline the baseline position of the Widget, or -1
+
+   function Get_Layout_Child
+      (Manager : not null access Gtk_Layout_Manager_Record;
+       Child   : Glib.Object.GObject) return Gtk_Layout_Child;
+   --  Retrieves a `GtkLayoutChild` instance for the `GtkLayoutManager`,
+   --  creating one if necessary.
+   --  The Child widget must be a child of the widget using Manager.
+   --  The `GtkLayoutChild` instance is owned by the `GtkLayoutManager`, and
+   --  is guaranteed to exist as long as Child is a child of the `GtkWidget`
+   --  using the given `GtkLayoutManager`.
+   --  @param Child a `GtkWidget`
+   --  @return a `GtkLayoutChild`
+
    function Get_Request_Mode
       (Manager : not null access Gtk_Layout_Manager_Record)
        return Gtk.Enums.Gtk_Size_Request_Mode;
    --  Retrieves the request mode of Manager.
    --  @return a `GtkSizeRequestMode`
 
+   function Get_Widget
+      (Manager : not null access Gtk_Layout_Manager_Record)
+       return Glib.Object.GObject;
+   --  Retrieves the `GtkWidget` using the given `GtkLayoutManager`.
+
    procedure Layout_Changed
       (Manager : not null access Gtk_Layout_Manager_Record);
    --  Queues a resize on the `GtkWidget` using Manager, if any.
    --  This function should be called by subclasses of `GtkLayoutManager` in
    --  response to changes to their layout management policies.
+
+   procedure Measure
+      (Manager          : not null access Gtk_Layout_Manager_Record;
+       Widget           : Glib.Object.GObject;
+       Orientation      : Gtk.Enums.Gtk_Orientation;
+       For_Size         : Glib.Gint;
+       Minimum          : out Glib.Gint;
+       Natural          : out Glib.Gint;
+       Minimum_Baseline : out Glib.Gint;
+       Natural_Baseline : out Glib.Gint);
+   --  Measures the size of the Widget using Manager, for the given
+   --  Orientation and size.
+   --  See the [classGtk.Widget] documentation on layout management for more
+   --  details.
+   --  @param Widget the `GtkWidget` using Manager
+   --  @param Orientation the orientation to measure
+   --  @param For_Size Size for the opposite of Orientation; for instance, if
+   --  the Orientation is Gtk.Enums.Orientation_Horizontal, this is the height
+   --  of the widget; if the Orientation is Gtk.Enums.Orientation_Vertical,
+   --  this is the width of the widget. This allows to measure the height for
+   --  the given width, and the width for the given height. Use -1 if the size
+   --  is not known
+   --  @param Minimum the minimum size for the given size and orientation
+   --  @param Natural the natural, or preferred size for the given size and
+   --  orientation
+   --  @param Minimum_Baseline the baseline position for the minimum size
+   --  @param Natural_Baseline the baseline position for the natural size
 
    ----------------
    -- Properties --
