@@ -125,7 +125,7 @@ with Create_Scrolled;
 --  with Create_Test_Idle;
 --  with Create_Test_Timeout;
 --  with Create_Text_View;
---  with Create_Toggle_Buttons;
+with Create_Toggle_Buttons;
 --  with Create_Tooltips;
 with Create_Tree_Filter;
 with Create_Tree_View;
@@ -181,6 +181,10 @@ package body Main_Windows is
         ("Check Buttons",
          Create_Check_Buttons.Run'Access,
          Create_Check_Buttons.Help'Access),
+      To_Demo
+        ("Toggle Buttons",
+         Create_Toggle_Buttons.Run'Access,
+         Create_Toggle_Buttons.Help'Access),
       To_Demo
         ("Custom Widget",
          Create_Custom_Widget.Run'Access,
