@@ -41,6 +41,7 @@ interfaces = (
     "--Gtk.RecentChooser",
     "Gtk.Root",
     "--Gtk.Scrollable",
+    "Gtk.SectionModel",
     "Gtk.SelectionModel",
     "Gtk.ShortcutManager",
     "--Gtk.StyleProvider",
