@@ -92,6 +92,21 @@ package body Gtk.Column_View_Column is
       end if;
    end Initialize;
 
+   ---------------------
+   -- Get_Column_View --
+   ---------------------
+
+   function Get_Column_View
+      (Self : not null access Gtk_Column_View_Column_Record)
+       return Glib.Object.GObject
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_column_view_column_get_column_view");
+      Stub_GObject : Glib.Object.GObject_Record;
+   begin
+      return Get_User_Data (Internal (Get_Object (Self)), Stub_GObject);
+   end Get_Column_View;
+
    ----------------
    -- Get_Expand --
    ----------------

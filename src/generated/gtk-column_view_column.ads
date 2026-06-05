@@ -92,6 +92,15 @@ package Gtk.Column_View_Column is
    -- Methods --
    -------------
 
+   function Get_Column_View
+      (Self : not null access Gtk_Column_View_Column_Record)
+       return Glib.Object.GObject;
+   --  Gets the column view that's currently displaying this column.
+   --  If Self has not been added to a column view yet, `NULL` is returned.
+   --  Note: column view returned as a GObject to prevent circular dependency.
+   --  You can cast this to a Gtk.Column_View.Gtk_Column_View.
+   --  @return the `GtkColumnView` as a GObject
+
    function Get_Expand
       (Self : not null access Gtk_Column_View_Column_Record) return Boolean;
    --  Returns whether this column should expand.
