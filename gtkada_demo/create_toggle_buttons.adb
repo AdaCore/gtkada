@@ -21,12 +21,20 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib;               use Glib;
-with Gtk;                use Gtk;
-with Gtk.Box;            use Gtk.Box;
-with Gtk.Toggle_Button;  use Gtk.Toggle_Button;
+with Glib;              use Glib;
+with Gtk;               use Gtk;
+with Gtk.Box;           use Gtk.Box;
+with Gtk.Enums;         use Gtk.Enums;
+with Gtk.Toggle_Button; use Gtk.Toggle_Button;
+with Gtk.Widget;        use Gtk.Widget;
 
 package body Create_Toggle_Buttons is
+
+   Align_Range : constant array (1 .. 3) of Gtk_Align :=
+     (Align_Start, Align_Center, Align_End);
+
+   procedure Get_Toggled (Self : access Gtk_Toggle_Button_Record'Class);
+   --  Do something cool when pressed.
 
    ----------
    -- Help --
@@ -34,45 +42,92 @@ package body Create_Toggle_Buttons is
 
    function Help return String is
    begin
-      return "A @bGtk_Toggle_Button@B is a button with two possible states,"
-        & " on and off. Their state is modified each time the user pressed"
-        & " the button. As opposed to @bGtk_Radio_Button@B, "
-        & " @bGtk_Toggle_Button@B are not grouped, and multiple buttons can"
-        & " be selected at the same time.";
+      return
+        "A @bGtk_Toggle_Button@B is a button with two possible states: "
+        & "on (active) or off. This state switches each time the user presses "
+        & "the button."
+        & ASCII.LF
+        & "By default, multiple toggle buttons may be active at the same time. "
+        & "However, if the toggle buttons are all added to the same group "
+        & " then only one toggle button in the group may be active at a time."
+        & ASCII.LF
+        & "This behaviour mimics the @bGtk_Radio_Button@B widget, "
+        & "which has been removed in GTK4.";
    end Help;
+
+   -----------------
+   -- Get_Toggled --
+   -----------------
+
+   procedure Get_Toggled (Self : access Gtk_Toggle_Button_Record'Class) is
+      Idx : constant Positive := Positive (Self.Get_Margin_Start);
+   begin
+      if Self.Get_Active then
+         Self.Set_Label ("BOOM!");
+         Self.Set_Halign (Align_Fill);
+         Self.Set_Valign (Align_Fill);
+      else
+         Self.Set_Label ("Toggle " & Idx'Img);
+         Self.Set_Valign (Align_Range (Idx));
+         Self.Set_Halign (Align_Center);
+      end if;
+   end Get_Toggled;
 
    ---------
    -- Run --
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Box1, Box2 : Box.Gtk_Box;
-      A_Toggle_Button : Toggle_Button.Gtk_Toggle_Button;
+      Toggle : Gtk_Toggle_Button;
+      Outer, Inner : Box.Gtk_Box;
 
+      procedure Add_Toggle_Button
+        (Idx : Positive; Container : Box.Gtk_Box);
+      --  Add new Gtk_Toggle_Button to Container
+
+      -----------------------
+      -- Add_Toggle_Button --
+      -----------------------
+
+      procedure Add_Toggle_Button
+        (Idx : Positive; Container : Box.Gtk_Box) is
+      begin
+         Gtk_New_With_Label (Toggle, "Toggle " & Idx'Img);
+         --  Place buttons in a central vertical stack
+         Toggle.Set_Valign (Align_Range (Idx));
+         Toggle.Set_Halign (Align_Center);
+         --  Allow buttons to grow in size
+         Toggle.Set_Vexpand (True);
+         Toggle.Set_Hexpand (True);
+         --  This is a terrible way to encode index
+         Toggle.Set_Margin_Start (Glib.Gint (Idx));
+         Toggle.On_Toggled (Get_Toggled'Access);
+         Container.Append (Toggle);
+      end Add_Toggle_Button;
    begin
       Set_Label (Frame, "Toggle Buttons");
+      Frame.Set_Label_Align (0.5);
 
-      Box.Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
-      Add (Container => Frame, Widget => Box1);
+      Box.Gtk_New (Outer, Orientation_Vertical, Spacing => 10);
+      Outer.Set_Homogeneous (False);
+      Outer.Set_Margin_Start (10);
+      Outer.Set_Margin_End (10);
+      Outer.Set_Margin_Top (10);
+      Outer.Set_Margin_Bottom (10);
+      Frame.Set_Child (Outer);
 
-      Box.Gtk_New_Vbox (Box2, Homogeneous => False, Spacing => 10);
-      Set_Border_Width (Container => Box2, Border_Width => 10);
-      Box.Pack_Start (In_Box => Box1, Child => Box2,
-                      Expand => False, Fill => False);
+      Box.Gtk_New (Inner, Orientation_Vertical, Spacing => 10);
+      Inner.Set_Homogeneous (False);
+      Inner.Set_Margin_Start (10);
+      Inner.Set_Margin_End (10);
+      Outer.Set_Margin_Top (10);
+      Outer.Set_Margin_Bottom (10);
+      Outer.Append (Inner);
 
-      Toggle_Button.Gtk_New (A_Toggle_Button, "button1");
-      Box.Pack_Start (In_Box => Box2, Child => A_Toggle_Button,
-                      Expand => False, Fill => False);
+      for T in Align_Range'Range loop
+         Add_Toggle_Button (T, Inner);
+      end loop;
 
-      Toggle_Button.Gtk_New (A_Toggle_Button, "button2");
-      Box.Pack_Start (In_Box => Box2, Child => A_Toggle_Button,
-                      Expand => False, Fill => False);
-
-      Toggle_Button.Gtk_New (A_Toggle_Button, "button3");
-      Box.Pack_Start (In_Box => Box2, Child => A_Toggle_Button,
-                      Expand => False, Fill => False);
-
-      Show_All (Frame);
    end Run;
 
 end Create_Toggle_Buttons;

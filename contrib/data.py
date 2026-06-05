@@ -580,7 +580,7 @@ binding = (
     "----GtkTreeViewAccessible",  # We do not support atk
     "GtkTreeViewColumn",
     "--GtkToggleAction",
-    "--GtkToggleButton",
+    "GtkToggleButton",
     "----GtkToggleButtonAccessible",  # We do not support atk
     "--GtkToggleToolButton",
     "--GtkToolButton",
