@@ -36,8 +36,6 @@ class DefaultScriptDriver(ClassicTestDriver):
         env.setdefault("GSETTINGS_BACKEND", "memory")
         env.setdefault("GIO_USE_VFS", "local")
 
-        # Use gpr2 so we can use gprinspect to inspect the project
-        env["GNAT_GPR_ENGINE"] = "2"
         env["GPR_PROJECT_PATH"] = (
             str(gtkada_root / "src") + os.pathsep + env.get("GPR_PROJECT_PATH", "")
         )
@@ -57,7 +55,8 @@ class DefaultScriptDriver(ClassicTestDriver):
         # Launch "gprinspect" to find the mains
         p = subprocess.run(
             ["gprinspect", "-P", gpr.name, "--display=json", "--attributes"],
-            env=env,
+            # Use the gpr2 gprinspect to get the json dump
+            env=env | {"GNAT_GPR_ENGINE": "2"},
             cwd=working_dir,
             capture_output=True,
             text=True,
@@ -95,15 +94,66 @@ class DefaultScriptDriver(ClassicTestDriver):
         if executables_dir is None:
             executables_dir = Path(working_dir)
 
+        # The gprbuild command line
+        gprbuild_cl = ["gprbuild", "-P", str(gpr), "-j0", "-g", "-O0"]
+
+        is_coverage = "GNATCOV_TRACE_FILE" in env
+        if is_coverage:
+            gnatcov_rts_gpr = gtkada_root / "obj/gnatcov-rts/share/gpr/gnatcov_rts.gpr"
+
+            # Protection against each test wanting to rebuild an instrumented GtkAda
+            env["GTKADA_EXTERNALLY_BUILT"] = "yes"
+
+            gprbuild_cl.extend(
+                [
+                    "--src-subdirs=gnatcov-instr",
+                    f"--implicit-with={gnatcov_rts_gpr}",
+                    "-XLIBRARY_TYPE=static",
+                ]
+            )
+
+            gnatcov_instrument_cl = [
+                "gnatcov",
+                "instrument",
+                "-P",
+                str(gpr),
+                "--level=stmt",
+                "--externally-built-projects",
+                "--projects=gtkada",
+                "-XLIBRARY_TYPE=static",
+                "--runtime-project",
+                str(gnatcov_rts_gpr),
+            ]
+
+            p = subprocess.run(
+                gnatcov_instrument_cl,
+                env=env,
+                cwd=self.test_env["working_dir"],
+                capture_output=True,
+                text=True,
+            )
+            if p.returncode != 0:
+                print("Running:", " ".join(gnatcov_instrument_cl))
+                msg = (
+                    "gnatcov instrument failed with return code "
+                    f"{p.returncode}\nstdout:\n{p.stdout}\nstderr:\n{p.stderr}"
+                )
+                self.result.log += msg
+                raise TestAbortWithFailure(msg)
+
         p = subprocess.run(
-            ["gprbuild"],
+            gprbuild_cl,
             env=env,
             cwd=self.test_env["working_dir"],
             capture_output=True,
             text=True,
         )
         if p.returncode != 0:
-            msg = f"gprbuild failed with return code {p.returncode}\nstdout:\n{p.stdout}\nstderr:\n{p.stderr}"
+            print("Running:", " ".join(gprbuild_cl))
+            msg = (
+                "gprbuild failed with return code "
+                f"{p.returncode}\nstdout:\n{p.stdout}\nstderr:\n{p.stderr}"
+            )
             self.result.log += msg
             raise TestAbortWithFailure(msg)
 
@@ -146,7 +196,11 @@ class DefaultScriptDriver(ClassicTestDriver):
                 text=True,
             )
             if p.returncode != 0:
-                msg = f"Executable {main} failed with return code {p.returncode}\nstdout:\n{p.stdout}\nstderr:\n{p.stderr}"
+                msg = (
+                    f"Executable {main} failed with return code"
+                    f" {p.returncode}\nstdout:\n{p.stdout}\n"
+                    f"stderr:\n{p.stderr}"
+                )
                 if xvfb_run and xvfb_log.exists():
                     msg += f"\nXvfb log:\n{xvfb_log.read_text()}"
                 self.result.log += msg

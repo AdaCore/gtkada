@@ -31,6 +31,18 @@ library project GtkAda is
 
    Version := GtkAda_Shared.Version;
 
+   --  Allow marking this as Externally_Built, as an option. This is
+   --  for the benefit of the coverage testsuite, so the report can be
+   --  generated on the original project, without having each test
+   --  attempt to rebuild the library.
+   Externally_Built : GtkAda_Shared.Yes_No := external
+     ("GTKADA_EXTERNALLY_BUILT", "no");
+
+   case Externally_Built is
+      when "yes" => for Externally_Built use "true";
+      when "no"  => for Externally_Built use "false";
+   end case;
+
    --  Put "generated" first, so that files are preferably taken from there
    --  even if they still exist in "."
    for Source_Dirs use ("generated", ".");
@@ -38,7 +50,7 @@ library project GtkAda is
    for Library_Kind use GtkAda_Shared.Library_Kind;
    for Library_Name use "gtkada";
    for Library_Version use
-      "lib" & Project'Library_Name & GtkAda_Shared.So_Ext & "." & Version;
+     "lib" & Project'Library_Name & GtkAda_Shared.So_Ext & "." & Version;
    for Run_Path_Option use ();
 
    case GtkAda_Shared.Library_Kind is
@@ -87,5 +99,11 @@ library project GtkAda is
       for Artifacts ("share/doc/gtkada") use
         ("../docs/gtkada_rm/gtkada_rm");
    end Install;
+
+   package Coverage is
+      --  The C instrumented files do not compile at the moment. Leave
+      --  them out of coverage for now.
+      for Excluded_Source_Files use ("misc.c", "misc_generated.c");
+   end Coverage;
 
 end GtkAda;
