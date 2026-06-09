@@ -129,11 +129,11 @@ package Glib.List_Model is
    --  Implementations must only make changes to the model (as visible to its
    --  consumer) in places that will not cause problems for that consumer. For
    --  models that are driven directly by a write API (such as
-   --  Glist.Store.Glist_Store), changes can be reported in response to uses of
-   --  that API. For models that represent remote data, changes should only be
-   --  made from a fresh mainloop dispatch. It is particularly not permitted to
-   --  make changes in response to a call to the Glib.List_Model.Glist_Model
-   --  consumer API.
+   --  Glib.List_Store.Glist_Store), changes can be reported in response to
+   --  uses of that API. For models that represent remote data, changes should
+   --  only be made from a fresh mainloop dispatch. It is particularly not
+   --  permitted to make changes in response to a call to the
+   --  Glib.List_Model.Glist_Model consumer API.
    --  Stated another way: in general, it is assumed that code making a series
    --  of accesses to the model via the API, without returning to the mainloop,
    --  and without calling other code, will continue to view the same contents

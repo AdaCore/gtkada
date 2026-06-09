@@ -187,6 +187,7 @@ binding = (
     "--Gio.InetSocketAddress",  # Not tested yet, from Gio
     "--Gio.InputStream",  # Not tested yet, from Gio
     "--GListModel",  # Bound through manual_binding
+    "GListStore",
     "--Gio.MemoryInputStream",  # Not tested yet, from Gio
     "--Gio.MemoryOutputStream",  # Not tested yet, from Gio
     "Gio.MenuModel",  # Not tested yet, from Gio

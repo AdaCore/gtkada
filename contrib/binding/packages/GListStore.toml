@@ -1,0 +1,235 @@
+# ============================================================
+#   GListStore
+# ============================================================
+
+ada = "Glib.List_Store"
+
+[[extra.type]]
+ctype = "array_of_gobject"
+ada = "Array_GObject"
+text = "type Array_GObject is array (Natural range <>) of GObject;"
+
+[[parameter]]
+name = "item"
+type = "not null access GObject_Record'Class"
+
+[[parameter]]
+name = "equal_func"
+ada = "Func"
+type = "Equal_Func"
+
+[[parameter]]
+name = "compare_func"
+ada = "Func"
+type = "Compare_Data_Func"
+
+# Default to GObject type
+[[method]]
+id = "g_list_store_new"
+[[method.parameter]]
+name = "item_type"
+default = "Glib.GType_Object"
+[method.doc]
+extend = true
+text = "Default Item_Type is GObject for polymorphism"
+
+[[method]]
+id = "g_list_store_splice"
+[[method.parameter]]
+name = "additions"
+type = "Array_GObject"
+[[method.parameter]]
+name = "n_additions"
+ada = ""
+default = "Additions'Length"
+
+## Override Item type to any GObject
+## and convert internally
+
+[[method]]
+id = "g_list_store_append"
+body = '''
+      procedure Internal (Self : System.Address; Obj_Ptr : System.Address);
+      pragma Import (C, Internal, "g_list_store_append");
+   begin
+      Internal (Get_Object (Self), Get_Object (Item));
+'''
+
+[[method]]
+id = "g_list_store_find"
+body = '''
+      function Internal
+        (Self         : System.Address;
+         Obj_Ptr      : System.Address;
+         Acc_Position : access Guint) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_list_store_find");
+      Acc_Position : aliased Guint;
+      Tmp_Return   : Glib.Gboolean;
+   begin
+      Tmp_Return :=
+        Internal
+          (Get_Object (Self),
+           Get_Object (Item),
+           Acc_Position'Access);
+      if Position /= null then
+         Position.all := Acc_Position;
+      end if;
+      return Tmp_Return /= 0;
+'''
+
+[[method]]
+id = "g_list_store_find_with_equal_func"
+body = '''
+      Fn_Equal : constant System.Address :=
+        (if Func = null then System.Null_Address else To_Address (Func));
+      function Internal
+        (Self     : System.Address;
+         Obj_Ptr  : System.Address;
+         Func     : System.Address;
+         Position : access Guint) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_list_store_find_with_equal_func");
+   begin
+      return
+        Internal
+          (Get_Object (Self),
+           Get_Object (Item),
+           Fn_Equal,
+           Position)
+        /= 0;
+'''
+
+[[method]]
+id = "g_list_store_insert"
+body = '''
+      procedure Internal
+        (Self : System.Address; Position : Guint; Obj_Ptr : System.Address);
+      pragma Import (C, Internal, "g_list_store_insert");
+   begin
+      Internal
+        (Get_Object (Self),
+         Position,
+         Get_Object (Item));
+'''
+
+[[method]]
+id = "g_list_store_sort"
+body = '''
+      Func_Compare : constant System.Address :=
+        (if Func = null
+         then System.Null_Address
+         else To_Address (Func));
+      Wrapper : constant System.Address :=
+        (if Func = null
+         then System.Null_Address
+         else Internal_Compare_Data_Func'Address);
+      procedure Internal
+        (Self      : System.Address;
+         Func      : System.Address;
+         User_Data : System.Address);
+      pragma Import (C, Internal, "g_list_store_sort");
+   begin
+      Internal (Get_Object (Self),  Wrapper, Func_Compare);
+'''
+
+[[method]]
+id = "g_list_store_insert_sorted"
+body = '''
+      Func_Compare : constant System.Address :=
+        (if Func = null then System.Null_Address else To_Address (Func));
+      Wrapper      : constant System.Address :=
+        (if Func = null
+         then System.Null_Address
+         else Internal_Compare_Data_Func'Address);
+      function Internal
+        (Self      : System.Address;
+         Item      : System.Address;
+         Func      : System.Address;
+         User_Data : System.Address) return Guint;
+      pragma Import (C, Internal, "g_list_store_insert_sorted");
+   begin
+      return
+        Internal
+          (Get_Object (Self),
+           Get_Object (Item),
+           Wrapper,
+           Func_Compare);
+'''
+
+[[extra.with_body]]
+pkg = "Ada.Unchecked_Conversion"
+use = false
+
+[[extra.type]]
+ctype = "GEqualFunc"
+ada = "Equal_Func"
+text = '''
+   ---------------
+   -- Callbacks --
+   ---------------
+
+   type Equal_Func is access function
+     (A : System.Address;
+      B : System.Address) return Glib.Gboolean;
+   --  Specifies the type of a function used to test two values for equality.
+   --  The function should return True if both values are equal and False
+   --  otherwise.
+   --  @param A a value
+   --  @param B a value to compare with
+   --  @return True if A = B; False otherwise
+'''
+
+[[extra.type]]
+ctype = "Compare_Func"
+ada = "Compare_Data_Func"
+text = '''
+   type Compare_Data_Func is
+     access function (A : System.Address; B : System.Address) return Glib.Gint;
+   --  Specifies the type of a comparison function used to compare two values.
+   --  The function should return a negative integer if the first value comes
+   --  before the second, 0 if they are equal, or a positive integer if the
+   --  first value comes after the second.
+   --  @param A a value
+   --  @param B a value to compare with
+   --  @return negative value if A < B
+   --          zero if A = B
+   --          positive value if A > B
+   pragma Convention (C, Compare_Data_Func);
+'''
+
+[extra]
+body = '''
+   --  Equal_Func handling
+   function To_Address is new Ada.Unchecked_Conversion
+     (Equal_Func, System.Address);
+
+   --  Compare_Data_Func handling
+   function To_Address is new Ada.Unchecked_Conversion
+     (Compare_Data_Func, System.Address);
+
+   function To_Compare_Data_Func is new Ada.Unchecked_Conversion
+     (System.Address, Compare_Data_Func);
+
+   function Internal_Compare_Data_Func
+      (A         : System.Address;
+       B         : System.Address;
+       User_Data : System.Address) return Glib.Gint;
+   pragma Convention (C, Internal_Compare_Data_Func);
+   --  @param A a value
+   --  @param B a value to compare with
+   --  @param User_Data user data
+
+   ---------------------------------
+   -- Internal_Compare_Data_Func --
+   ---------------------------------
+
+   function Internal_Compare_Data_Func
+      (A         : System.Address;
+       B         : System.Address;
+       User_Data : System.Address) return Glib.Gint
+   is
+      Func : constant Compare_Data_Func := To_Compare_Data_Func (User_Data);
+   begin
+      return Func (A, B);
+   end Internal_Compare_Data_Func;
+
+'''
