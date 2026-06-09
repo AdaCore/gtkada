@@ -571,7 +571,7 @@ binding = (
     "--GtkThemingEngine",
     "GtkTreeIter",
     "GtkTreeModelFilter",
-    "--GtkTreeModelSort",
+    "GtkTreeModelSort",
     "GtkTreePath",
     "GtkTreeRowReference",
     "GtkTreeSelection",
