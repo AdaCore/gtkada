@@ -573,7 +573,7 @@ binding = (
     "GtkTreeModelFilter",
     "--GtkTreeModelSort",
     "GtkTreePath",
-    "--GtkTreeRowReference",
+    "GtkTreeRowReference",
     "GtkTreeSelection",
     "GtkTreeStore",
     "GtkTreeView",
