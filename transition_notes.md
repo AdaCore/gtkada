@@ -121,15 +121,11 @@ GdkKeymapKey:
 GdkModifierType:
 
 - when done, reactivate bindings in GdkDevice.toml, GtkDisplay.toml,
-  GdkSurface.toml, GtkTreeView.toml
+  GdkSurface.toml, GtkTreeView.toml, GdkDevice.toml, GtkCellRendererAccel.toml
 
 GdkSeat.toml:
 
 - when done, reactivate bindings in GdkDevice.toml, GdkDisplay.toml
-
-GdkModifierType:
-
-- when done, reactivate bindings in GdkDevice.toml
 
 GdkSeat.toml:
 
