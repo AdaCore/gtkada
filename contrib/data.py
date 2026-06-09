@@ -340,7 +340,7 @@ binding = (
     "----GtkCellAreaClass",
     "GtkCellAreaContext",
     "GtkCellRenderer",
-    "--GtkCellRendererAccel",
+    "GtkCellRendererAccel",
     "----GtkCellRendererClass",  # Useless in Ada
     "GtkCellRendererCombo",
     "--GtkCellRendererPixbuf",

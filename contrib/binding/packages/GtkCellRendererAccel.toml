@@ -1,0 +1,12 @@
+# ============================================================
+#   GtkCellRendererAccel
+# ============================================================
+
+[doc]
+group = "Trees and Lists"
+
+[[method]]
+id = "::accel-edited"
+bind = false
+# Needs GdkModifierType
+
