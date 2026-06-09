@@ -951,7 +951,7 @@ package Glib.Variant is
    --  value only per-process. It may change between different processor
    --  architectures or even different versions of GLib. Do not use this
    --  function as a basis for building protocols or file formats.
-   --  The type of Value is gconstpointer only to allow use of this function
+   --  The type of Value is System.Address only to allow use of this function
    --  with GHash_Table. Value must be a Glib.Variant.Gvariant.
    --  Since: gtk+ 2.24
    --  @return a hash value corresponding to Value

@@ -851,6 +851,7 @@ naming.type_exceptions = {
     "DeviceToolList": List("Gdk.Device_Tool.Device_Tool_List.Glist"),
     "SeatList": List("Gdk.Seat.Seat_List.Glist"),
     "gpointer": Proxy("System.Address", "", default_record_field="System.Null_Address"),
+    "gconstpointer": Proxy("System.Address", ""),
     "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),
     "GAsyncResult": Proxy("Glib.G_Async_Result"),
     "GAsyncResult*": Proxy("Glib.G_Async_Result"),
