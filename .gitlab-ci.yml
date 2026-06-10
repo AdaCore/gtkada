@@ -31,14 +31,56 @@ build:
     - . /tmp/ci_env.sh
 
     # Verify that "make generate" does not generate any change in the sources
-    - anod install gcc --qualifier=stable
-    - eval $(anod printenv gcc --qualifier=stable)
+    - anod install gnat --qualifier=stable
+    - eval $(anod printenv gnat --qualifier=stable)
     - make -f Makefile.in generate
     - git diff --exit-code
 
-    # Build
+    # Build. On main/gtk4, we have to build manually, until Anod builds of gtk4 exist
     - if [ "$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" == "main" ]; then
-        anod build gtkada -Qgtk=4.22.2 ;
+        anod install gnatcov --qualifier=stable ;
+        eval $(anod printenv gnatcov --qualifier=stable) ;
+        anod init thirdparties thirdparties ;
+        cd thirdparties ;
+        anod install gtkplus --qualifier=version=4.22.2 ;
+        anod install pkgconfig ;
+        eval $(anod printenv pkgconfig) ;
+        eval $(anod printenv gtkplus --qualifier=version=4.22.2) ;
+        cd .. ;
+        ./configure ;
+        make coverage-test ;
+        make coverage-report ;
+
       else
         anod build gtkada ;
       fi
+
+    - gnatcov_report_dir=$(pwd)/gnatcov_report/
+      # Export to GitLab pages
+    - |
+      if [[ $CI_PIPELINE_SOURCE = "merge_request_event" ]]; then
+        target_subdir=MRs/$CI_MERGE_REQUEST_IID
+      else
+        target_subdir=$CI_COMMIT_BRANCH
+      fi
+    - publish-pages $gnatcov_report_dir/html --target-subdir $target_subdir --expires 30
+
+    # Compute coverage precentage
+    - cobertura=$CI_PROJECT_DIR/gnatcov_report/cobertura/cobertura.xml
+    - line_rate=$(cat $cobertura | grep -o 'line-rate="\([^"]\+\)"' | head -1 | grep -o '[0-9.]\+' || true )
+    - line_perc=$(python -c "print($line_rate * 100)")
+    - >
+      echo "Line Coverage: $line_perc"
+
+    # Process the cobertura report - make paths relative to the CI dir
+    # TODO: not needed for now, but will be needed once we have anod generate this report.
+
+  coverage: '/^Line Coverage:\s+(\d+\.\d+)$/'
+  artifacts:
+    when: always #  Upload on errors too
+    reports:
+      coverage_report:
+        coverage_format: cobertura
+        path: gnatcov_report/cobertura/cobertura.xml
+    paths:
+      - gnatcov_report/cobertura/cobertura.xml

@@ -150,6 +150,10 @@ clean/%: force
 	# -gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/tools/tools.gpr
 	# -gprclean -r -q -XLIBRARY_TYPE=$(@F) -gtkada_demo/gtkada_demo.gpr
 	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/gtkada.gpr
+	rm -rf obj/gnatcov-rts
+	rm -rf src/obj/gtkada/static/gtkada-gnatcov-instr
+	rm -rf gnatcov_traces
+	rm -rf gnatcov_report
 
 clean: clean-generic clean/static clean/static-pic clean/relocatable
 
@@ -165,3 +169,45 @@ maintainer-clean: mostlyclean-generic
 	-${RM} configure
 
 force:
+
+####################
+# Coverage support #
+####################
+
+# Local gnatcov RTS
+obj/gnatcov-rts:
+# Create a local gnatcov RTS - do not do this in the gnatcov install prefix
+	gnatcov setup --prefix=$$(pwd)/obj/gnatcov-rts
+	rm -rf src/obj/gtkada/static/
+
+# Instrumented sources
+src/obj/gtkada/static/gtkada-gnatcov-instr: obj/gnatcov-rts
+	@echo "====== Building $(@F) libraries ====="
+	gnatcov instrument -XLIBRARY_TYPE=static -Psrc/gtkada.gpr \
+		--level=stmt \
+		--no-subprojects \
+	    --runtime-project $$(pwd)/obj/gnatcov-rts/share/gpr/gnatcov_rts.gpr
+
+coverage-build: src/gtkada-intl.adb src/obj/gtkada/static/gtkada-gnatcov-instr
+	gprbuild -j0 -p -g -O0 -Psrc/gtkada.gpr -XLIBRARY_TYPE=static \
+	    --src-subdirs=gnatcov-instr \
+	    --implicit-with=$$(pwd)/obj/gnatcov-rts/share/gpr/gnatcov_rts.gpr
+
+coverage-test: coverage-build
+# Run the testsuite with the instrumented lib; aggregate the
+# traces in a local directory.
+	rm -rf gnatcov_traces
+	mkdir -p gnatcov_traces
+	export GNATCOV_TRACE_FILE=$$(pwd)/gnatcov_traces/ && \
+	python testsuite/testsuite.py
+
+coverage-report:
+# Create a report from the traces; use the HTML and Cobertura formats for
+# the report, and place it in a local directory.
+	export GNATCOV_TRACE_FILE=$$(pwd)/gnatcov_traces/ && \
+	gnatcov coverage -P src/gtkada.gpr \
+	    --level=stmt \
+		--externally-built-projects \
+		--annotate=html,cobertura \
+		--output-dir gnatcov_report/ \
+		gnatcov_traces/
