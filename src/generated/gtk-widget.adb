@@ -1115,6 +1115,26 @@ package body Gtk.Widget is
       Internal (Get_Object (Widget));
    end Init_Template;
 
+   -------------------------
+   -- Insert_Action_Group --
+   -------------------------
+
+   procedure Insert_Action_Group
+      (Widget : not null access Gtk_Widget_Record;
+       Name   : UTF8_String;
+       Group  : Glib.Action_Group.Gaction_Group)
+   is
+      procedure Internal
+         (Widget : System.Address;
+          Name   : Gtkada.Types.Chars_Ptr;
+          Group  : Glib.Action_Group.Gaction_Group);
+      pragma Import (C, Internal, "gtk_widget_insert_action_group");
+      Tmp_Name : Gtkada.Types.Chars_Ptr := New_String (Name);
+   begin
+      Internal (Get_Object (Widget), Tmp_Name, Group);
+      Free (Tmp_Name);
+   end Insert_Action_Group;
+
    ------------------
    -- Insert_After --
    ------------------

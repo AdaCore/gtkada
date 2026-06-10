@@ -235,7 +235,7 @@ binding = (
     "--GSettingsSchema",  # Not tested yet, from Gio
     "--GSettingsSchemaSource",  # Not tested yet, from Gio
     "GSimpleAction",
-    "----GSimpleActionGroup",
+    "GSimpleActionGroup",
     "--GSimpleAsyncResult",  # Not tested yet, from Gio
     "--GSimplePermission",  # Not tested yet, from Gio
     "--GSocket",  # Not tested yet, from Gio
@@ -482,7 +482,7 @@ binding = (
     "--GtkMenu",
     "----GtkMenuAccessible",  # We do not support atk
     "--GtkMenuBar",
-    "--GtkMenuButton",
+    "GtkMenuButton",
     "----GtkMenuButtonAccessible",  # We do not support atk
     "--GtkMenuItem",
     "----GtkMenuItemAccessible",  # We do not support atk
@@ -503,8 +503,10 @@ binding = (
     "--GtkPageSetup",
     "--GtkPaperSize",
     "----GtkPlacesSidebar",  # Requires GFile
-    "--GtkPopover",
+    "GtkPopover",
     "----GtkPopoverAccessible",  # We do not support atk
+    "GtkPopoverMenu",
+    "GtkPopoverMenuBar",
     "--GtkPrintContext",
     "--GtkPrintOperation",
     "--GtkPrintSettings",

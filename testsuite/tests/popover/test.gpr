@@ -1,0 +1,6 @@
+with "gtkada";
+project Test is
+   for Main use ("popover.adb");
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+end Test;

@@ -35,6 +35,10 @@ class DefaultScriptDriver(ClassicTestDriver):
         env.setdefault("GTK_A11Y", "none")
         env.setdefault("GSETTINGS_BACKEND", "memory")
         env.setdefault("GIO_USE_VFS", "local")
+        # Xvfb has no GL stack; without this, realizing a window makes GSK
+        # probe for a GL renderer and crash inside libepoxy when no GL
+        # library can be loaded.
+        env.setdefault("GSK_RENDERER", "cairo")
 
         env["GPR_PROJECT_PATH"] = (
             str(gtkada_root / "src") + os.pathsep + env.get("GPR_PROJECT_PATH", "")

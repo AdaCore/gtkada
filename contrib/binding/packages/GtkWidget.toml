@@ -328,11 +328,6 @@ id = "gtk_widget_modify_font"
 obsolescent = true
 
 [[method]]
-id = "gtk_widget_insert_action_group"
-bind = false
-# needs GAction
-
-[[method]]
 id = "gtk_widget_set_sensitive"
 
 [[method.parameter]]

@@ -1,5 +1,7 @@
 *.ali
 *.exe
+# e3-testsuite results directory
+/out/
 *.o
 *.orig
 *.pyc

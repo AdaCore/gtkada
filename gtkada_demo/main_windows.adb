@@ -102,7 +102,7 @@ with Create_Frame;
 with Create_Label;
 --  with Create_Link_Buttons;
 --  with Create_Main_Loop;
---  with Create_Menu;
+with Create_Menu;
 --  with Create_MDI;
 --  with Create_Notebook;
 --  with Create_Opacity;
@@ -185,6 +185,7 @@ package body Main_Windows is
         ("Toggle Buttons",
          Create_Toggle_Buttons.Run'Access,
          Create_Toggle_Buttons.Help'Access),
+      To_Demo ("Menus", Create_Menu.Run'Access, Create_Menu.Help'Access),
       To_Demo
         ("Custom Widget",
          Create_Custom_Widget.Run'Access,
