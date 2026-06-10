@@ -1,0 +1,23 @@
+# ============================================================
+#   GtkTextTag
+# ============================================================
+
+[[parameter]]
+name = "self"
+ada = "Tag"
+
+[[method]]
+id = "gtk_text_tag_new"
+
+[method.doc]
+extend = true
+text = '''
+Newly created tags must be added to the tags table for the buffer you
+intend to use them in, as in:
+ "Gtk.Text_Tag_Table.Add (Get_Tag_Table (Buffer), Tag)".
+See also Gtk.Text_Buffer.Create_Tag which is a more convenient way of
+creating a tag.'''
+
+[[slist]]
+ada = "Text_Tag_List"
+ctype = "GtkTextTag"

@@ -1,0 +1,100 @@
+# ============================================================
+#   GtkTextChildAnchor
+# ============================================================
+
+[[parameter]]
+name = "self"
+ada = "Anchor"
+
+[[method]]
+id = "gtk_text_child_anchor_get_widgets"
+bind = false
+# returns a C array of widgets; bound manually below
+
+[extra]
+body = '''
+
+   -----------------
+   -- Get_Widgets --
+   -----------------
+
+   function Get_Widgets
+     (Anchor : not null access Gtk_Text_Child_Anchor_Record)
+      return Gtk_Widget_Array
+   is
+      use type Guint;
+
+      type Address_Array is array (Natural) of System.Address;
+      pragma Convention (C, Address_Array);
+      type Address_Array_Access is access all Address_Array;
+
+      function Internal
+        (Anchor  : System.Address;
+         Out_Len : access Guint) return Address_Array_Access;
+      pragma Import (C, Internal, "gtk_text_child_anchor_get_widgets");
+
+      procedure G_Free (Mem : Address_Array_Access);
+      pragma Import (C, G_Free, "g_free");
+
+      Len : aliased Guint;
+      Arr : constant Address_Array_Access :=
+        Internal (Get_Object (Anchor), Len'Access);
+   begin
+      declare
+         Result : Gtk_Widget_Array (0 .. Natural (Len) - 1);
+         Stub   : Gtk.Widget.Gtk_Widget_Record;
+      begin
+         for J in Result'Range loop
+            Result (J) :=
+              Gtk.Widget.Gtk_Widget (Get_User_Data (Arr (J), Stub));
+         end loop;
+
+         G_Free (Arr);
+         return Result;
+      end;
+   end Get_Widgets;
+
+   ----------------------
+   -- Get_Child_Anchor --
+   ----------------------
+
+   function Get_Child_Anchor
+     (Iter : Gtk.Text_Iter.Gtk_Text_Iter) return Gtk_Text_Child_Anchor
+   is
+      function Internal
+        (Iter : Gtk.Text_Iter.Gtk_Text_Iter) return System.Address;
+      pragma Import (C, Internal, "gtk_text_iter_get_child_anchor");
+      Stub : Gtk_Text_Child_Anchor_Record;
+   begin
+      return Gtk_Text_Child_Anchor
+        (Get_User_Data (Internal (Iter), Stub));
+   end Get_Child_Anchor;
+       '''
+
+[[extra.with_spec]]
+pkg = "Gtk.Widget"
+use = false
+
+[[extra.with_spec]]
+pkg = "Gtk.Text_Iter"
+use = false
+
+[[extra.spec]]
+text = '''
+
+   type Gtk_Widget_Array is
+     array (Natural range <>) of Gtk.Widget.Gtk_Widget;
+
+   function Get_Widgets
+     (Anchor : not null access Gtk_Text_Child_Anchor_Record)
+      return Gtk_Widget_Array;
+   --  Gets a list of all widgets anchored at this child anchor.
+   --  The order in which the widgets are returned is not defined.
+
+   function Get_Child_Anchor
+     (Iter : Gtk.Text_Iter.Gtk_Text_Iter) return Gtk_Text_Child_Anchor;
+   --  If the location at Iter contains a child anchor, the anchor is
+   --  returned (with no new reference count added). Otherwise, null is
+   --  returned.
+
+       '''
