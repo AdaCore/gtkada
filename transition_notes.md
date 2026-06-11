@@ -11,6 +11,12 @@
 - Upgraded Glib bindings
 - Moved some conversion functions from Gtk.Arguments to Glib.Values, to remove any
   dependency from Glib to Gtk.
+
+## gtkada_demo
+- Demos for `Create_Tree_Filter` and `Create_Tree_View` rewritten and enabled
+- Added new demo: `Create_Custom_Widget`
+- Reactivated and ported demos for simple button widgets (`GtkButton`, `GtkCheckButton`, `GtkToggleButton`, others pending)
+- Removed demos for widgets removed in GTK4 (See work item #111)
 - Reactivated `gtkada_demo`'s `Create_Label` package: migrated from Gtk3 to Gtk4
   (`Gtk_New (Box, Orientation_*, …)` + `Append` instead of `Pack_Start`,
   `Set_Child` instead of `Add`, `Set_Wrap` / `Set_Wrap_Mode` instead of
@@ -172,6 +178,13 @@ GtkLayoutManager.toml and GtkLayoutChild.toml:
   are disabled to break a circular dependency between `Gtk.Widget`,
   `Gtk.Layout_Manager` and `Gtk.Layout_Child`. Once the generator gains
   support for `limited with`, these can be re-enabled.
+
+GtkColumnView - bound but requires the following to be useable:
+  - `GtkBuilderListItemFactory` to instantiate `GtkColumnViewColumn` widgets
+    - needs `GListStore` which has the following considerations:
+      - `gconstpointer` binding
+      - `GEqualFunc` and `GCompareDateFunc` callback handling
+    - needs `Gtk.BuilderScope` and `GtkBuilderCScope` bound
 
 ## Dialog widgets (work item #46)
 

@@ -37,6 +37,13 @@ ctype = "GtkInputHints"
 ctype = "GtkInputPurpose"
 
 [[enum]]
+ctype = "GtkListTabBehavior"
+
+[[enum]]
+ctype = "GtkListScrollFlags"
+asbitfield = true
+
+[[enum]]
 ctype = "GtkNaturalWrapMode"
 
 [[enum]]

@@ -189,6 +189,23 @@ package Gtk.Enums is
    --  This enumeration may be extended in the future; input methods should
    --  interpret unknown values as "free form".
 
+   type Gtk_List_Tab_Behavior is (
+      List_Tab_All,
+      List_Tab_Item,
+      List_Tab_Cell);
+   pragma Convention (C, Gtk_List_Tab_Behavior);
+   --  Used to configure the focus behavior in the `GTK_DIR_TAB_FORWARD` and
+   --  `GTK_DIR_TAB_BACKWARD` direction, like the <kbd>Tab</kbd> key in a
+   --  [classGtk.ListView].
+
+   type Gtk_List_Scroll_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_List_Scroll_Flags);
+   --  List of actions to perform when scrolling to items in a list widget.
+
+   List_Scroll_None : constant Gtk_List_Scroll_Flags := 0;
+   List_Scroll_Focus : constant Gtk_List_Scroll_Flags := 1;
+   List_Scroll_Select : constant Gtk_List_Scroll_Flags := 2;
+
    type Gtk_Natural_Wrap_Mode is (
       Natural_Wrap_Inherit,
       Natural_Wrap_None,
@@ -549,6 +566,14 @@ package Gtk.Enums is
    package Gtk_Input_Purpose_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Input_Purpose);
    type Property_Gtk_Input_Purpose is new Gtk_Input_Purpose_Properties.Property;
+
+   package Gtk_List_Tab_Behavior_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_List_Tab_Behavior);
+   type Property_Gtk_List_Tab_Behavior is new Gtk_List_Tab_Behavior_Properties.Property;
+
+   package Gtk_List_Scroll_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_List_Scroll_Flags);
+   type Property_Gtk_List_Scroll_Flags is new Gtk_List_Scroll_Flags_Properties.Property;
 
    package Gtk_Natural_Wrap_Mode_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Natural_Wrap_Mode);

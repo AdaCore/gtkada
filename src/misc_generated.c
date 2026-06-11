@@ -174,6 +174,42 @@ void gtkada_Editable_set_set_selection_bounds(GtkEditableInterface* iface, void*
     iface->set_selection_bounds = handler;
 }
 
+void gtkada_Selection_Model_set_get_selection_in_range(GtkSelectionModelInterface* iface, void* handler) {
+    iface->get_selection_in_range = handler;
+}
+
+void gtkada_Selection_Model_set_is_selected(GtkSelectionModelInterface* iface, void* handler) {
+    iface->is_selected = handler;
+}
+
+void gtkada_Selection_Model_set_select_all(GtkSelectionModelInterface* iface, void* handler) {
+    iface->select_all = handler;
+}
+
+void gtkada_Selection_Model_set_select_item(GtkSelectionModelInterface* iface, void* handler) {
+    iface->select_item = handler;
+}
+
+void gtkada_Selection_Model_set_select_range(GtkSelectionModelInterface* iface, void* handler) {
+    iface->select_range = handler;
+}
+
+void gtkada_Selection_Model_set_set_selection(GtkSelectionModelInterface* iface, void* handler) {
+    iface->set_selection = handler;
+}
+
+void gtkada_Selection_Model_set_unselect_all(GtkSelectionModelInterface* iface, void* handler) {
+    iface->unselect_all = handler;
+}
+
+void gtkada_Selection_Model_set_unselect_item(GtkSelectionModelInterface* iface, void* handler) {
+    iface->unselect_item = handler;
+}
+
+void gtkada_Selection_Model_set_unselect_range(GtkSelectionModelInterface* iface, void* handler) {
+    iface->unselect_range = handler;
+}
+
 void gtkada_Shortcut_Manager_set_add_controller(GtkShortcutManagerInterface* iface, void* handler) {
     iface->add_controller = handler;
 }

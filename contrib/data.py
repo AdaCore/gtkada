@@ -40,6 +40,7 @@ interfaces = (
     "--Gtk.RecentChooser",
     "Gtk.Root",
     "--Gtk.Scrollable",
+    "Gtk.SelectionModel",
     "Gtk.ShortcutManager",
     "--Gtk.StyleProvider",
     "--Gtk.ToolShell",
@@ -362,6 +363,8 @@ binding = (
     "--GtkColorChooserWidget",
     "--GtkColorSelection",
     "--GtkColorSelectionDialog",
+    "GtkColumnView",
+    "GtkColumnViewColumn",
     "--GtkComboBox",
     "----GtkComboBoxAccessible",  # We do not support atk
     "--GtkComboBoxText",
@@ -414,6 +417,7 @@ binding = (
     "--GtkGradient",
     "--GtkGLArea",
     "GtkGrid",
+    "GtkGridView",
     "--GtkHandleBox",
     "--GtkHButtonBox",
     "--GtkHeaderBar",
@@ -463,10 +467,13 @@ binding = (
     "----GtkLevelBarAccessible",  # We do not support atk
     "--GtkLinkButton",
     "----GtkLinkButtonAccessible",  # We do not support atk
+    "GtkListBase",
     "--GtkListBox",
     "----GtkListBoxAccessible",  # We do not support atk
     "--GtkListBoxRow",
     "----GtkListBoxRowAccessible",  # We do not support atk
+    "GtkListItem",
+    "GtkListItemFactory",
     "GtkListStore",
     "----GtkLockButton",  # requires GPermission
     "----GtkLockButtonAccessible",  # We do not support atk
@@ -535,6 +542,7 @@ binding = (
     "--GtkScrollbar",
     "GtkScrolledWindow",
     "----GtkScrolledWindowAccessible",  # We do not support atk
+    "GtkScrollInfo",
     "--GtkSettings",
     "----GtkSocket",  # X11-specific, no binding
     "GtkSorter",

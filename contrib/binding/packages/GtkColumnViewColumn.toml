@@ -1,0 +1,23 @@
+# ============================================================
+#   GtkColumnViewColumn
+# ============================================================
+
+[[method]]
+id = "gtk_column_view_column_get_column_view"
+return = "GObject"
+body = '''
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_column_view_column_get_column_view");
+      Stub_GObject : Glib.Object.GObject_Record;
+   begin
+      return Get_User_Data (Internal (Get_Object (Self)), Stub_GObject);
+'''
+[method.doc]
+extend = true
+text = '''
+Note: column view returned as a GObject to prevent circular dependency.
+You can cast this to a Gtk.Column_View.Gtk_Column_View.\n
+@return the `GtkColumnView` as a GObject
+'''
+# GetColumnView would otherwise return a Gtk_Column_View.
+# This way we force GtkColumnViewColumn to build first.
