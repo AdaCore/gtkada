@@ -116,16 +116,16 @@ package body Create_Text_View is
 
       Parse (Color, "red", Success);
       Gtk_New (Tag, "red_tag");
-      Add (Tags, Tag);
+      Success := Add (Tags, Tag);
       Set_Property (Tag, Foreground_Rgba_Property, Color);
 
       Gtk_New (Tag, "courier_tag");
-      Add (Tags, Tag);
+      Success := Add (Tags, Tag);
       Set_Property (Tag, Font_Desc_Property, From_String ("Courier bold"));
 
       Parse (Color, "green", Success);
       Gtk_New (Tag, "green_tag");
-      Add (Tags, Tag);
+      Success := Add (Tags, Tag);
       Set_Property (Tag, Foreground_Rgba_Property, Color);
 
       --  Create the buffer and the views as appropriate
@@ -153,13 +153,13 @@ package body Create_Text_View is
 
       Gtk_New (Scrolled);
       Set_Policy (Scrolled, Policy_Always, Policy_Always);
-      Add (Scrolled, View);
+      Scrolled.Set_Child (View);
 
-      Show_All (Scrolled);
-      Add (Frame, Scrolled);
+      Frame.Set_Child (Scrolled);
 
       declare
-         Iter, Begin_Result, End_Result : Gtk_Text_Iter;
+         Iter                       : aliased Gtk_Text_Iter;
+         Begin_Result, End_Result   : Gtk_Text_Iter;
          Success : Boolean := False;
          Mark : Gtk_Text_Mark;
 
@@ -167,7 +167,7 @@ package body Create_Text_View is
          --  Create a mark referencing the first line in courier
 
          Gtk_New (Mark, "My mark", True);
-         Get_Iter_At_Line (Buffer, Iter, 12);
+         Success := Get_Iter_At_Line (Buffer, Iter'Access, 12);
          Add_Mark (Buffer, Mark, Iter);
 
          --  Replace the five first occurrences of the word "placeholder"

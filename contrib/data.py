@@ -576,7 +576,7 @@ binding = (
     "GtkTextMark",
     "GtkTextTag",
     "GtkTextTagTable",
-    "--GtkTextView",
+    "GtkTextView",
     "----GtkTextViewAccessible",  # We do not support atk
     "--GtkThemingEngine",
     "GtkTreeIter",

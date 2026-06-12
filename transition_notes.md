@@ -13,6 +13,7 @@
   dependency from Glib to Gtk.
 
 ## gtkada_demo
+
 - Demos for `Create_Tree_Filter` and `Create_Tree_View` rewritten and enabled
 - Added new demo: `Create_Custom_Widget`
 - Reactivated and ported demos for simple button widgets (`GtkButton`, `GtkCheckButton`, `GtkToggleButton`, others pending)
@@ -180,11 +181,12 @@ GtkLayoutManager.toml and GtkLayoutChild.toml:
   support for `limited with`, these can be re-enabled.
 
 GtkColumnView - bound but requires the following to be useable:
-  - `GtkBuilderListItemFactory` to instantiate `GtkColumnViewColumn` widgets
-    - needs `GListStore` which has the following considerations:
-      - `gconstpointer` binding
-      - `GEqualFunc` and `GCompareDateFunc` callback handling
-    - needs `Gtk.BuilderScope` and `GtkBuilderCScope` bound
+
+- `GtkBuilderListItemFactory` to instantiate `GtkColumnViewColumn` widgets
+  - needs `GListStore` which has the following considerations:
+    - `gconstpointer` binding
+    - `GEqualFunc` and `GCompareDateFunc` callback handling
+  - needs `Gtk.BuilderScope` and `GtkBuilderCScope` bound
 
 ## Dialog widgets (work item #46)
 
@@ -265,6 +267,41 @@ Supporting changes:
   were ported to `testsuite/tests/popover` and
   `testsuite/tests/popovermenu` (the latter builds its models with
   `Glib.Menu` instead of the unbound `GtkBuilder`).
+
+## GtkTextView (work item #89)
+
+`GtkTextView` is bound for gtk4 (re-enabled in `contrib/data.py`, with
+`contrib/binding/packages/GtkTextView.toml` quarried from the gtk3
+recipe). The bread-and-butter surface is bound cleanly — construction,
+the buffer relationship, editability / cursor / wrap-mode / margin
+properties, the iter/coordinate geometry getters, the child-anchor and
+scroll-to-mark families, and the signals (including `extend-selection`,
+whose `GtkTextIter` parameters reuse the marshaller enabled by the
+buffer work). The `extend-selection`, `move-viewport` and
+`delete-from-cursor` signals also needed `Unchecked_To_*` enum
+marshallers (`Gtk_Text_Extend_Selection`, `Gtk_Scroll_Step`,
+`Gtk_Delete_Type`), re-enabled in `src/gtk-arguments.ads`.
+
+The gtk3 `get/set_[hv]adjustment` methods are gone in gtk4 (folded into
+the unbound `Scrollable` interface) and were dropped from the quarry.
+
+Intentionally deferred, to add later on demand:
+
+- `gtk_text_view_im_context_filter_keypress` — takes a `GdkEvent`, which
+  is not bound yet; suppressed with `bind = false`.
+- The `snapshot_layer` virtual method (gtk4's replacement for the gtk3
+  `draw_layer` vfunc that the quarry overrode) — needs `GtkSnapshot`,
+  which is not bound; left unbound (class virtual methods are not bound
+  by default).
+
+The `create_text_view` demo was revived (ported to gtk4: `Set_Child`
+instead of `Add`, no `Show_All`) and wired into `main_windows.adb`. A
+new `testsuite/tests/text-view` test covers view construction, the
+buffer get/set relationship, the common properties and the scroll
+family; the deferred child-anchor cases from `textbuffer.c`
+(`test_iter_with_anchor` / `test_get_text_with_anchor`) were back-filled
+into `testsuite/tests/text-buffer`, now attaching a `Gtk_Label` at each
+anchor through the view.
 
 ## Testsuite
 

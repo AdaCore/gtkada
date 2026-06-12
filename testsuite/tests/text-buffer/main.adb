@@ -7,11 +7,11 @@
 --  selection handling, undo, and signal emission.
 --
 --  The C tests test_iter_with_anchor / test_get_text_with_anchor attach
---  child widgets through a GtkTextView; the view is not bound yet (it is
---  a follow-up work item), so the child-anchor test below keeps the
---  buffer-side assertions only, which do not need a widget. The
---  clipboard, line-separator, logical-motion and serialize tests are
---  omitted from this representative subset.
+--  child widgets through a GtkTextView; now that the view is bound, the
+--  child-anchor test below attaches a Gtk_Label at each anchor through
+--  the view, as the C tests do, in addition to the buffer-side
+--  assertions. The clipboard, line-separator, logical-motion and
+--  serialize tests are omitted from this representative subset.
 
 with Ada.Command_Line;
 with System;                use type System.Address;
@@ -27,6 +27,8 @@ with Gtk.Text_Iter;         use Gtk.Text_Iter;
 with Gtk.Text_Mark;         use Gtk.Text_Mark;
 with Gtk.Text_Tag;          use Gtk.Text_Tag;
 with Gtk.Text_Tag_Table;    use Gtk.Text_Tag_Table;
+with Gtk.Text_View;         use Gtk.Text_View;
+with Gtk.Label;             use Gtk.Label;
 
 procedure Main is
 
@@ -523,20 +525,24 @@ procedure Main is
    -- Test_Child_Anchor --
    -----------------------
 
-   --  Buffer-side port of C test_iter_with_anchor /
-   --  test_get_text_with_anchor (the child widgets, which need the
-   --  not-yet-bound GtkTextView, are omitted).
+   --  Port of C test_iter_with_anchor / test_get_text_with_anchor: a
+   --  Gtk_Label is attached at each anchor through a Gtk_Text_View, as
+   --  the C tests do, alongside the buffer-side assertions.
 
    procedure Test_Child_Anchor is
+      View    : Gtk_Text_View;
       Buffer  : Gtk_Text_Buffer;
       Iter    : aliased Gtk_Text_Iter;
       Start   : Gtk_Text_Iter;
       The_End : Gtk_Text_Iter;
       Anchor  : Gtk_Text_Child_Anchor;
       Repl    : Gtk_Text_Child_Anchor;
+      Child   : Gtk_Label;
       Chars   : Gint;
    begin
-      Gtk_New (Buffer);
+      --  The view owns the buffer, as in the C test.
+      Gtk_New (View);
+      Buffer := View.Get_Buffer;
 
       Buffer.Set_Text ("ab" & ASCII.LF & "cd" & ASCII.CR & ASCII.LF & "ef");
       Chars := Buffer.Get_Char_Count;
@@ -545,6 +551,10 @@ procedure Main is
       Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 0, 1));
       Anchor := Buffer.Create_Child_Anchor (Iter);
       Assert_Cmpint_Eq (Buffer.Get_Char_Count, Chars + 1);
+
+      --  Attach a child widget at the anchor through the view.
+      Gtk_New (Child, "text");
+      View.Add_Child_At_Anchor (Child, Anchor);
 
       --  The anchor reads back as the unknown char at its location.
       Buffer.Get_Iter_At_Child_Anchor (Iter, Anchor);
@@ -555,6 +565,9 @@ procedure Main is
       Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 1, 1));
       Gtk_New_With_Replacement (Repl, Sharp_S);
       Buffer.Insert_Child_Anchor (Iter, Repl);
+
+      Gtk_New (Child, "text");
+      View.Add_Child_At_Anchor (Child, Repl);
 
       Buffer.Get_Iter_At_Child_Anchor (Iter, Repl);
       Assert_True (Get_Char (Iter) = 16#DF#);
@@ -582,6 +595,10 @@ procedure Main is
          Assert_True (Repl.Get_Deleted);
          Repl.Unref;
       end;
+
+      --  Consume the view's floating reference (as g_object_ref_sink in
+      --  the C test) now that we are done with it.
+      View.Ref_Sink;
    end Test_Child_Anchor;
 
    --------------------

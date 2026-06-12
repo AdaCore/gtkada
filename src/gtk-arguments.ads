@@ -55,7 +55,7 @@ with Gtk.Enums;
 --  with Gtk.Print_Operation;
 --  with Gtk.Status_Bar;
 with Gtk.Text_Iter;
---  with Gtk.Text_View;
+with Gtk.Text_View;
 with Gtk.Tree_Model;
 --  with Gtk.Widget;
 
@@ -189,8 +189,8 @@ package Gtk.Arguments is
      Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Direction_Type);
    --   function Unchecked_To_Gtk_Widget_Help_Type
    --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Widget.Gtk_Widget_Help_Type);
-   --   function Unchecked_To_Gtk_Delete_Type
-   --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Delete_Type);
+   function Unchecked_To_Gtk_Delete_Type is new
+     Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Delete_Type);
    --   function Unchecked_To_Gtk_Menu_Direction_Type
    --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Menu_Direction_Type);
    --   function Unchecked_To_Gtk_Orientation
@@ -199,8 +199,8 @@ package Gtk.Arguments is
      Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Notebook_Tab);
    --   function Unchecked_To_Gtk_Toolbar_Style
    --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Toolbar_Style);
-   --   function Unchecked_To_Gtk_Scroll_Step
-   --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Scroll_Step);
+   function Unchecked_To_Gtk_Scroll_Step is new
+     Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Scroll_Step);
    --   function Unchecked_To_Gtk_Response_Type
    --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Dialog.Gtk_Response_Type);
    --   function Unchecked_To_Gtk_Print_Operation_Result
@@ -213,9 +213,8 @@ package Gtk.Arguments is
    --     return Gtk.GEntry.Gtk_Entry_Icon_Position;
    function Unchecked_To_Gtk_Text_Iter
      is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Text_Iter.Gtk_Text_Iter);
-   --   function Unchecked_To_Gtk_Text_Extend_Selection
-   --     is new Glib.Values.Unsafe_Enum_Nth
-   --              (Gtk.Text_View.Gtk_Text_Extend_Selection);
+   function Unchecked_To_Gtk_Text_Extend_Selection is new
+     Glib.Values.Unsafe_Enum_Nth (Gtk.Text_View.Gtk_Text_Extend_Selection);
    function Unchecked_To_Gtk_Tree_Iter is new
      Glib.Values.Unsafe_Proxy_Nth (Gtk.Tree_Model.Gtk_Tree_Iter);
    --   function Unchecked_To_Gtk_Tree_Model
