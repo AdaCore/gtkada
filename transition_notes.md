@@ -231,6 +231,41 @@ the following types:
 Revisit and re-enable these once `GdkEvent` and `GtkSnapshot` are
 bound for gtk4.
 
+## Menus (work item #87)
+
+In gtk4 the classic `GtkMenu` / `GtkMenuBar` / `GtkMenuItem` /
+`GtkMenuShell` widget family no longer exists, and those packages will
+not come back. Menus are now described by a *menu model* (`Glib.Menu` /
+`Glib.Menu_Model`, already bound) whose items reference named actions,
+and displayed by three widgets, all bound by this work item:
+
+- `Gtk.Popover_Menu_Bar` — the horizontal menu bar, replaces
+  `Gtk_Menu_Bar`;
+- `Gtk.Menu_Button` — a button that pops up a popover or menu model;
+- `Gtk.Popover_Menu` — the popover displaying a menu model (context
+  menus, submenus), a subclass of the also-newly-bound `Gtk.Popover`.
+
+Supporting changes:
+
+- `GSimpleActionGroup` was re-enabled (`Glib.Simple_Action_Group`) and
+  `gtk_widget_insert_action_group` re-activated in `GtkWidget.toml`
+  (its previous blocker, `GAction`, is bound): menu items are wired to
+  `Glib.Simple_Action`s through an action group inserted on a widget.
+- `gtk_menu_button_set_create_popup_func` is bound by the generator's
+  standard closure machinery (including a `Set_Create_Popup_Func_User_Data`
+  generic) — no TOML override was needed.
+- `Glib.Main.Main_Context_Iteration` was hand-bound in `src/glib-main.ads`
+  (the testsuite needs to iterate the default main context).
+- The testsuite driver now sets `GSK_RENDERER=cairo`: Xvfb has no GL
+  stack, and realizing a window otherwise crashes inside libepoxy while
+  GSK probes for a GL renderer.
+- `gtkada_demo/create_menu.adb` was rewritten for the gtk4 paradigm
+  (menu models + actions instead of menu-item widgets) and re-enabled
+  in the selector; `testsuite/c_tests/popover.c` and `popovermenu.c`
+  were ported to `testsuite/tests/popover` and
+  `testsuite/tests/popovermenu` (the latter builds its models with
+  `Glib.Menu` instead of the unbound `GtkBuilder`).
+
 ## Testsuite
 
 Items to revisit as the GtkAda bindings grow.

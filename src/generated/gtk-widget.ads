@@ -314,6 +314,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;
 with GNAT.Strings;            use GNAT.Strings;
 with Glib;                    use Glib;
+with Glib.Action_Group;       use Glib.Action_Group;
 with Glib.GSlist;             use Glib.GSlist;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Glist;              use Glib.Glist;
@@ -1348,6 +1349,23 @@ package Gtk.Widget is
    --  properties set in the private template XML
    --  A good rule of thumb is to call this function as the first thing in an
    --  instance initialization function.
+
+   procedure Insert_Action_Group
+      (Widget : not null access Gtk_Widget_Record;
+       Name   : UTF8_String;
+       Group  : Glib.Action_Group.Gaction_Group);
+   --  Inserts an action group into the widget's actions.
+   --  Children of Widget that implement [ifaceGtk.Actionable] can then be
+   --  associated with actions in Group by setting their "action-name" to
+   --  Prefix.`action-name`.
+   --  Note that inheritance is defined for individual actions. I.e. even if
+   --  you insert a group with prefix Prefix, actions with the same prefix will
+   --  still be inherited from the parent, unless the group contains an action
+   --  with the same name.
+   --  If Group is `NULL`, a previously inserted group for Name is removed
+   --  from Widget.
+   --  @param Name the prefix for actions in Group
+   --  @param Group an action group
 
    procedure Insert_After
       (Widget           : not null access Gtk_Widget_Record;

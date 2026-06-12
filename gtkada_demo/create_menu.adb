@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,144 +21,44 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib;        use Glib;
-with Glib.Object; use Glib.Object;
-with Gdk.RGBA;    use Gdk.RGBA;
-with Gtk;                   use Gtk;
-with Gtkada.Handlers;       use Gtkada.Handlers;
-with Gtk.Box;               use Gtk.Box;
-with Gtk.Button;            use Gtk.Button;
-with Gtk.Combo_Box_Text;    use Gtk.Combo_Box_Text;
-with Gtk.Menu;              use Gtk.Menu;
-with Gtk.Enums;             use Gtk.Enums;
-with Gtk.Menu_Bar;          use Gtk.Menu_Bar;
-with Gtk.Menu_Button;       use Gtk.Menu_Button;
-with Gtk.Menu_Item;         use Gtk.Menu_Item;
-with Gtk.Spin_Button;       use Gtk.Spin_Button;
-with Gtk.Radio_Menu_Item;   use Gtk.Radio_Menu_Item;
-with Gtk.Tearoff_Menu_Item; use Gtk.Tearoff_Menu_Item;
-with Gtk.Widget;            use Gtk.Widget;
+with Glib.Action;              use Glib.Action;
+with Glib.Action_Map;          use Glib.Action_Map;
+with Glib.Menu;                use Glib.Menu;
+with Glib.Object;              use Glib.Object;
+with Glib.Simple_Action;       use Glib.Simple_Action;
+with Glib.Simple_Action_Group; use Glib.Simple_Action_Group;
+with Glib.Variant;             use Glib.Variant;
 
-with Common;                use Common;
+with Gtk.Box;              use Gtk.Box;
+with Gtk.Button;           use Gtk.Button;
+with Gtk.Enums;            use Gtk.Enums;
+with Gtk.Label;            use Gtk.Label;
+with Gtk.Menu_Button;      use Gtk.Menu_Button;
+with Gtk.Popover_Menu;     use Gtk.Popover_Menu;
+with Gtk.Popover_Menu_Bar; use Gtk.Popover_Menu_Bar;
+with Gtk.Widget;           use Gtk.Widget;
 
 package body Create_Menu is
 
-   package My_Popup is new Gtk.Menu.Popup_User_Data (Gint);
-   use My_Popup;
+   Feedback : Gtk_Label;
+   --  Shows the name of the last activated action
 
-   procedure Position_At_0
-     (Menu : not null access Gtk_Menu_Record'Class;
-      X    : out Gint;
-      Y    : out Gint;
-      Push_In : out Boolean);
-   --  Position function at coordinates 0,0.
+   procedure On_Action_Activated
+     (Action : access Gsimple_Action_Record'Class; Parameter : Gvariant);
+   --  Common handler for all the stateless actions of the demo
 
-   procedure Position_At_Data
-     (Menu : not null access Gtk_Menu_Record'Class;
-      X    : out Gint;
-      Y    : out Gint;
-      Push_In : out Boolean;
-      Val  : Gint);
-   --  Position function at coordinates Val,Val.
+   procedure Add_Action
+     (Group : Gsimple_Action_Group; Name : String);
+   --  Create a stateless action called Name, connect On_Action_Activated to
+   --  it and add it to Group.
 
-   procedure Popup_At_Position (Widget : access GObject_Record'Class);
-   --  Callback for the "Popup at given coordinates" button
+   procedure On_Context_Button_Clicked
+     (Widget : access GObject_Record'Class);
+   --  Pop up the context menu attached to the button
 
-   procedure Popup (Widget : access Gtk_Button_Record'Class);
-   --  Callback for the "Popup at 0,0 coordinates" button
-
-   -------------------
-   -- Position_At_0 --
-   -------------------
-
-   procedure Position_At_0
-     (Menu : not null access Gtk_Menu_Record'Class;
-      X    : out Gint;
-      Y    : out Gint;
-      Push_In : out Boolean)
-   is
-      pragma Unreferenced (Menu);
-   begin
-      X := 0;
-      Y := 0;
-      Push_In := True;
-   end Position_At_0;
-
-   ----------------------
-   -- Position_At_Data --
-   ----------------------
-
-   procedure Position_At_Data
-     (Menu : not null access Gtk_Menu_Record'Class;
-      X    : out Gint;
-      Y    : out Gint;
-      Push_In : out Boolean;
-      Val  : Gint)
-   is
-      pragma Unreferenced (Menu);
-   begin
-      X := Val;
-      Y := Val;
-      Push_In := True;
-   end Position_At_Data;
-
-   -----------------------
-   -- Popup_At_Position --
-   -----------------------
-
-   procedure Popup_At_Position
-      (Widget : access GObject_Record'Class)
-   is
-      Spin : constant Gtk_Spin_Button := Gtk_Spin_Button (Widget);
-      Menu : Gtk_Menu;
-      Menu_Item : Gtk_Menu_Item;
-      Val : constant Gint := Get_Value_As_Int (Spin);
-   begin
-      Gtk_New (Menu);
-
-      Gtk_New (Menu_Item, "this");
-      Append (Menu, Menu_Item);
-      Gtk_New (Menu_Item, "menu");
-      Append (Menu, Menu_Item);
-      Gtk_New (Menu_Item, "should be positioned");
-      Append (Menu, Menu_Item);
-      Gtk_New (Menu_Item, "at " & Val'Img & "," & Val'Img);
-      Append (Menu, Menu_Item);
-      Show_All (Menu);
-      My_Popup.Popup
-        (Menu => Menu,
-         Func => Position_At_Data'Access,
-         Data => Val);
-   end Popup_At_Position;
-
-   -----------
-   -- Popup --
-   -----------
-
-   procedure Popup (Widget : access Gtk_Button_Record'Class) is
-      pragma Unreferenced (Widget);
-      Menu : Gtk_Menu;
-      Menu_Item : Gtk_Menu_Item;
-   begin
-      Gtk_New (Menu);
-
-      Gtk_New (Menu_Item, "this");
-      Append (Menu, Menu_Item);
-      Gtk_New (Menu_Item, "menu");
-      Append (Menu, Menu_Item);
-      Gtk_New (Menu_Item, "should be positioned");
-      Append (Menu, Menu_Item);
-      Gtk_New (Menu_Item, "in the top-left corner");
-      Append (Menu, Menu_Item);
-      Show_All (Menu);
-      Popup
-        (Menu,
-         Parent_Menu_Shell => null,
-         Parent_Menu_Item  => null,
-         Func              => Position_At_0'Access,
-         Button            => 1,
-         Activate_Time     => 0);
-   end Popup;
+   procedure On_Context_Button_Destroy
+     (Widget : access GObject_Record'Class);
+   --  Unparent the context popover when its anchor button goes away
 
    ----------
    -- Help --
@@ -167,167 +67,197 @@ package body Create_Menu is
    function Help return String is
    begin
       return
-        "There are several widgets involved in displaying menus. The"
-        & " @bGtk_Menu_Bar@B widget is a horizontal menu bar, which normally"
-        & " appears at the top of an application. The @bGtk_Menu@B widget is"
-        & " the actual menu that pops up. Both @bGtk_Menu_Bar@B and"
-        & " @bGtk_Menu@B are subclasses of @bGtk_Menu_Shell@B; a"
-        & " @bGtk_Menu_Shell@B contains menu items (@bGtk_Menu_Item@B)."
-        & " Each menu item contains text and/or images and can be selected"
-        & " by the user."
+        "In Gtk4, menus are described by a @bmenu model@B (@bGmenu@B, from"
+        & " the @bGlib.Menu@B package): a tree of items, sections and"
+        & " submenus, where each item carries a label and the name of an"
+        & " @baction@B to activate. Actions (@bGlib.Simple_Action@B) are"
+        & " collected in action groups (@bGlib.Simple_Action_Group@B), which"
+        & " are made available to a widget hierarchy with"
+        & " @bGtk.Widget.Insert_Action_Group@B."
         & ASCII.LF
-        & "This demo shows how to create a @bGtk_Menu_Bar@B, with multiple"
-        & " @bGtk_Menu@Bs. Each of this submenu is actually a @btearoff@B menu"
-        & ", which means by that clicking on the dashed line, you can simply"
-        & " glue the submenu to another place on your desktop, and keep it"
-        & " around. To hide it, simply click on the dashed line again."
+        & "Three widgets display a menu model: @bGtk_Popover_Menu_Bar@B is"
+        & " the horizontal menu bar at the top of a window;"
+        & " @bGtk_Menu_Button@B pops up a menu (or any popover) when"
+        & " clicked; and @bGtk_Popover_Menu@B is the popover that shows a"
+        & " menu model, used directly for contextual menus."
         & ASCII.LF
-        & "There are several kinds of menu item, including plain"
-        & " @bGtk_Menu_Item@B, @bGtk_Check_Menu_Item@B which can be"
-        & " checked/unchecked, @bGtk_Radio_Menu_Item@B which is a check menu"
-        & " item that's in a mutually exclusive group,"
-        & " @bGtk_Separator_Menu_Item@B which is a separator bar,"
-        & " @bGtk_Tearoff_Menu_Item@B which allows a @bGtk_Menu@B to be torn"
-        & " off, and @bGtk_Image_Menu_Item@B which can place a @bGtk_Image@B"
-        & " or other widget next to the menu text. A @bGtk_Menu_Item can have"
-        & " a submenu, which is simply a @bGtk_Menu@B to pop up when the menu"
-        & " item is selected. Typically, all menu items in a menu bar have"
-        & " submenus."
-        & ASCII.LF
-        & "This page also includes a @bGtk_Menu_Button@B (with an arrow)"
-        & " which pops up a menu when clicked on.";
+        & "In this demo, all the menu items activate actions from the same"
+        & " action group; the label at the bottom tracks the most recently"
+        & " activated action. The @bCheck me@B item is backed by a stateful"
+        & " boolean action, which is rendered as a check menu item and"
+        & " toggles itself with no handler code.";
    end Help;
 
-   -----------------
-   -- Create_Menu --
-   -----------------
+   -------------------------
+   -- On_Action_Activated --
+   -------------------------
 
-   function Create_Menu
-     (Depth : Integer; Tearoff : Boolean) return Gtk_Menu
+   procedure On_Action_Activated
+     (Action : access Gsimple_Action_Record'Class; Parameter : Gvariant)
    is
-      Menu      : Gtk_Menu;
-      Group     : Widget_SList.GSlist;
-      Menu_Item : Gtk_Radio_Menu_Item;
-      Red : constant Gdk_RGBA := (Red   => 1.0,
-                                  Green => 0.0,
-                                  Blue  => 0.0,
-                                  Alpha => 1.0);
+      pragma Unreferenced (Parameter);
    begin
-      Gtk_New (Menu);
+      Feedback.Set_Text
+        ("Action ""demo." & Get_Name (+Action) & """ activated");
+   end On_Action_Activated;
 
-      if Tearoff then
-         declare
-            Tear_Menu : Gtk_Tearoff_Menu_Item;
-         begin
-            Gtk_New (Tear_Menu);
-            Append (Menu, Tear_Menu);
-            Show (Tear_Menu);
-         end;
-      end if;
+   ----------------
+   -- Add_Action --
+   ----------------
 
-      for J in 0 .. 5 loop
-         Gtk_New (Menu_Item, Group, "Item" & Integer'Image (Depth)
-                  & " -" & Integer'Image (J + 1));
-         Group := Gtk.Radio_Menu_Item.Get_Group (Menu_Item);
-         Append (Menu, Menu_Item);
-         Show (Menu_Item);
+   procedure Add_Action
+     (Group : Gsimple_Action_Group; Name : String)
+   is
+      Action : Gsimple_Action;
+   begin
+      G_New (Action, Name, Parameter_Type => null);
+      Action.On_Activate (On_Action_Activated'Access);
+      Add_Action (+Group, +Action);
+   end Add_Action;
 
-         if J = 1 then
-            Menu_Item.Get_Child.Override_Color (0, Red);
-         end if;
+   -------------------------------
+   -- On_Context_Button_Clicked --
+   -------------------------------
 
-         if J = 3 then
-            Set_Sensitive (Menu_Item, False);
-         end if;
+   procedure On_Context_Button_Clicked
+     (Widget : access GObject_Record'Class) is
+   begin
+      Gtk_Popover_Menu (Widget).Popup;
+   end On_Context_Button_Clicked;
 
-         if Depth > 1 then
-            Set_Submenu (Menu_Item, Create_Menu (Depth - 1, Tearoff));
-         end if;
-      end loop;
-      return Menu;
-   end Create_Menu;
+   -------------------------------
+   -- On_Context_Button_Destroy --
+   -------------------------------
+
+   procedure On_Context_Button_Destroy
+     (Widget : access GObject_Record'Class) is
+   begin
+      Gtk_Popover_Menu (Widget).Unparent;
+   end On_Context_Button_Destroy;
 
    ---------
    -- Run --
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Box1 : Gtk_Box;
-      Box2 : Gtk_Box;
-      Menu_Bar  : Gtk_Menu_Bar;
-      Menu : Gtk_Menu;
+      Box       : Gtk_Box;
+      Group     : Gsimple_Action_Group;
+      Check     : Gsimple_Action;
+
+      Bar_Model    : Gmenu;
+      File_Menu    : Gmenu;
+      Edit_Menu    : Gmenu;
+      Extras       : Gmenu;
+      Button_Menu  : Gmenu;
+      Context_Menu : Gmenu;
+
+      Bar            : Gtk_Popover_Menu_Bar;
       Menu_Button    : Gtk_Menu_Button;
-      Menu_Item : Gtk_Menu_Item;
-      Combo : Gtk_Combo_Box_Text;
-
-      Button : Gtk_Button;
-      Spin   : Gtk_Spin_Button;
-
+      Context_Button : Gtk_Button;
+      Popover        : Gtk_Popover_Menu;
    begin
       Set_Label (Frame, "Menus");
-      Gtk_New_Vbox (Box1, False, 0);
-      Add (Frame, Box1);
 
-      Gtk_New (Menu_Bar);
-      Pack_Start (Box1, Menu_Bar, False, False, 0);
+      Gtk_New (Box, Orientation_Vertical, Spacing => 10);
+      Box.Set_Homogeneous (False);
+      Frame.Set_Child (Box);
 
-      Menu := Create_Menu (2, True);
+      --  The actions that the menu items activate. The group is inserted
+      --  on the demo's toplevel box with the "demo" prefix, so every
+      --  widget below it (the menu bar, the menu button, the context
+      --  popover) resolves "demo.xxx" action names against it.
 
-      Gtk_New (Menu_Item, "test" & ASCII.LF & "line2");
-      Set_Submenu (Menu_Item, Menu);
-      Append (Menu_Bar, Menu_Item);
+      G_New (Group);
+      Add_Action (Group, "new");
+      Add_Action (Group, "open");
+      Add_Action (Group, "save");
+      Add_Action (Group, "quit");
+      Add_Action (Group, "cut");
+      Add_Action (Group, "copy");
+      Add_Action (Group, "paste");
+      Add_Action (Group, "about");
 
-      Gtk_New (Menu_Item, "foo");
-      Set_Submenu (Menu_Item, Create_Menu (3, True));
-      Append (Menu_Bar, Menu_Item);
+      --  A stateful boolean action with no activate handler: activating
+      --  it toggles its state, and menu items bound to it are displayed
+      --  as check menu items.
+      G_New_Stateful
+        (Check, "check", Parameter_Type => null,
+         State => Gvariant_New_Boolean (True));
+      Add_Action (+Group, +Check);
 
-      Gtk_New (Menu_Item, "bar");
-      Set_Submenu (Menu_Item, Create_Menu (4, True));
+      Box.Insert_Action_Group ("demo", +Group);
 
-      Append (Menu_Bar, Menu_Item);
+      --  The menu bar, driven by a menu model with two submenus
 
-      Gtk_New_Vbox (Box2, False, 10);
-      Set_Border_Width (Box2, 10);
-      Pack_Start (Box1, Box2, False, False, 0);
+      G_New (File_Menu);
+      File_Menu.Append ("_New", "demo.new");
+      File_Menu.Append ("_Open", "demo.open");
+      File_Menu.Append ("_Save", "demo.save");
 
-      Gtk_New (Combo);
-      for J in 0 .. 5 loop
-         Combo.Append_Text ("Item" & Integer'Image (J));
-      end loop;
-      Pack_Start (Box2, Combo, False, False, 0);
+      declare
+         Quit_Section : Gmenu;
+      begin
+         G_New (Quit_Section);
+         Quit_Section.Append ("_Quit", "demo.quit");
+         File_Menu.Append_Section ("", Quit_Section);
+      end;
 
-      Gtk_New (Button, "Popup at 0,0 coordinates");
-      Pack_Start (Box1, Button, False, False, 3);
+      G_New (Edit_Menu);
+      Edit_Menu.Append ("Cu_t", "demo.cut");
+      Edit_Menu.Append ("_Copy", "demo.copy");
+      Edit_Menu.Append ("_Paste", "demo.paste");
 
-      Button_Handler.Connect (Button, "clicked", Popup'Access);
+      G_New (Extras);
+      Extras.Append ("Check me", "demo.check");
+      Edit_Menu.Append_Section ("", Extras);
 
-      Gtk_New_Hbox (Box2, False, 10);
-      Pack_Start (Box1, Box2, False, False, 0);
+      G_New (Bar_Model);
+      Bar_Model.Append_Submenu ("_File", File_Menu);
+      Bar_Model.Append_Submenu ("_Edit", Edit_Menu);
 
-      Gtk_New (Spin, 0.0, 800.0, 100.0);
-      Set_Value (Spin, 200.0);
-      Pack_Start (Box2, Spin, False, False, 3);
+      Bar := Gtk_Popover_Menu_Bar_New_From_Model (Bar_Model);
+      Box.Append (Bar);
 
-      Gtk_New (Button, "Popup at given coordinates");
-      Pack_Start (Box2, Button, False, False, 3);
+      --  A menu button popping up a menu built from a model
 
-      Object_Callback.Object_Connect
-        (Button, "clicked",
-         Popup_At_Position'Access,
-         Spin);
-
-      ---------------------
-      -- Gtk_Menu_Button --
-      ---------------------
+      G_New (Button_Menu);
+      Button_Menu.Append ("_About", "demo.about");
+      Button_Menu.Append ("Check me", "demo.check");
 
       Gtk_New (Menu_Button);
-      Box1.Pack_Start (Menu_Button, False, False, 10);
-      Menu_Button.Set_Tooltip_Text ("A Gtk_Menu_Button");
+      Menu_Button.Set_Label ("A Gtk_Menu_Button");
+      Menu_Button.Set_Menu_Model (Button_Menu);
+      Menu_Button.Set_Halign (Align_Start);
+      Menu_Button.Set_Margin_Start (10);
+      Box.Append (Menu_Button);
 
-      Menu := Create_Menu (2, True);
-      Menu_Button.Set_Popup (Menu);
+      --  A contextual menu: a Gtk_Popover_Menu parented to a plain button.
+      --  Real applications would typically pop it up from a right-click
+      --  gesture; the plain click keeps the demo simple.
 
-      Show_All (Frame);
+      G_New (Context_Menu);
+      Context_Menu.Append ("_Copy", "demo.copy");
+      Context_Menu.Append ("_Paste", "demo.paste");
+
+      Popover := Gtk_Popover_Menu_New_From_Model (Context_Menu);
+
+      Gtk_New (Context_Button, "Click for a contextual menu");
+      Context_Button.Set_Halign (Align_Start);
+      Context_Button.Set_Margin_Start (10);
+      Box.Append (Context_Button);
+
+      Popover.Set_Parent (Context_Button);
+      Context_Button.On_Clicked
+        (On_Context_Button_Clicked'Access, Popover);
+      Context_Button.On_Destroy
+        (On_Context_Button_Destroy'Access, Popover);
+
+      --  The feedback label
+
+      Gtk_New (Feedback, "No action activated yet");
+      Feedback.Set_Halign (Align_Start);
+      Feedback.Set_Margin_Start (10);
+      Box.Append (Feedback);
    end Run;
 
 end Create_Menu;

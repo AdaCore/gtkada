@@ -131,6 +131,15 @@ package Glib.Main is
    procedure Dispatch (Context : G_Main_Context);
    --  Dispatches all pending sources.
 
+   function Main_Context_Iteration
+     (Context   : G_Main_Context := null;
+      May_Block : Boolean := True) return Boolean;
+   --  Runs a single iteration of the given main context (the default main
+   --  context when Context is null). If no event sources are ready and
+   --  May_Block is True, wait for one to become ready, then dispatch the
+   --  highest priority event sources that are ready. Returns True if events
+   --  were dispatched.
+
    ---------------
    -- Main loop --
    ---------------
@@ -496,7 +505,6 @@ private
    --  No binding: g_main_context_add_poll
    --  No binding: g_main_context_check
    --  No binding: g_main_context_get_poll_func
-   --  No binding: g_main_context_iteration
    --  No binding: g_main_context_pending
    --  No binding: g_main_context_prepare
    --  No binding: g_main_context_query

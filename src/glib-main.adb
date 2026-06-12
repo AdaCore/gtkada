@@ -325,6 +325,21 @@ package body Glib.Main is
       return Boolean'Val (Internal (Context));
    end Is_Owner;
 
+   ----------------------------
+   -- Main_Context_Iteration --
+   ----------------------------
+
+   function Main_Context_Iteration
+     (Context   : G_Main_Context := null;
+      May_Block : Boolean := True) return Boolean
+   is
+      function Internal
+        (Context : G_Main_Context; May_Block : Gboolean) return Gboolean;
+      pragma Import (C, Internal, "g_main_context_iteration");
+   begin
+      return Boolean'Val (Internal (Context, Boolean'Pos (May_Block)));
+   end Main_Context_Iteration;
+
    ---------------------
    -- Set_Can_Recurse --
    ---------------------
