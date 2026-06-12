@@ -92,6 +92,7 @@ flags pointing at the spot that needs an override:
 | `array_of_<Type>` references with no matching definition | declare the array with [`[[extra.type]]`](#extratype--map-a-c-type-to-an-ada-type), and the element type with [`[[record]]`](#record) if missing |
 | Reference to an unknown record/struct type               | bind it with [`[[record]]`](#record)                    |
 | Reference to an unknown enum/bitfield                    | bind it with [`[[enum]]`](#enum)                        |
+| A signal callback parameter typed with a package name (e.g. `Gdk.Clipboard` instead of `Gdk.Clipboard.Gdk_Clipboard_Record'Class`) | signal parameters are matched by their GIR name, which needs an entry in `naming.girname_to_ctype` in [`data.py`](data.py) (e.g. `"Gdk.Clipboard": "GdkClipboard"`) |
 | A method using a callback type that does not exist       | inject the access-to-subprogram via [`[[extra.spec]]`](#extraspec--code-injected-into-the-spec) and reference it from a [`[[method.parameter]]`](#methodparameter--per-parameter-overrides) `type` override |
 | A method that cannot be expressed in Ada at all          | suppress it with `bind = false` and re-expose it through `[extra]` |
 

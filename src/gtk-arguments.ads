@@ -54,7 +54,7 @@ with Gtk.Enums;
 --  with Gtk.Notebook;
 --  with Gtk.Print_Operation;
 --  with Gtk.Status_Bar;
---  with Gtk.Text_Iter;
+with Gtk.Text_Iter;
 --  with Gtk.Text_View;
 with Gtk.Tree_Model;
 --  with Gtk.Widget;
@@ -211,8 +211,8 @@ package Gtk.Arguments is
    --   function Unchecked_To_Gtk_Entry_Icon_Position
    --     (Args : Glib.Values.C_GValues; Num : Guint)
    --     return Gtk.GEntry.Gtk_Entry_Icon_Position;
-   --   function Unchecked_To_Gtk_Text_Iter
-   --     is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Text_Iter.Gtk_Text_Iter);
+   function Unchecked_To_Gtk_Text_Iter
+     is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Text_Iter.Gtk_Text_Iter);
    --   function Unchecked_To_Gtk_Text_Extend_Selection
    --     is new Glib.Values.Unsafe_Enum_Nth
    --              (Gtk.Text_View.Gtk_Text_Extend_Selection);
