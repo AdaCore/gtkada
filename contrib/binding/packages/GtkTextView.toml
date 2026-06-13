@@ -1,0 +1,30 @@
+# ============================================================
+#   GtkTextView
+# ============================================================
+
+[doc]
+group       = "Multiline Text Editor"
+screenshot  = "gnome-textfile"
+gtkada_demo = "create_text_view.adb"
+
+[[parameter]]
+name = "self"
+ada  = "View"
+
+[[enum]]
+ctype = "GtkTextViewLayer"
+
+[[enum]]
+ctype = "GtkTextExtendSelection"
+
+# The parameterless constructor maps to Gtk_New / Initialize; the
+# buffer-taking one is exposed as an overloaded Gtk_New.
+[[method]]
+id  = "gtk_text_view_new_with_buffer"
+ada = "Gtk_New"
+
+# im_context_filter_keypress takes a GdkEvent, which is not bound yet
+# (see transition_notes.md); suppress it for now.
+[[method]]
+id   = "gtk_text_view_im_context_filter_keypress"
+bind = false

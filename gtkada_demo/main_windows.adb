@@ -124,7 +124,7 @@ with Create_Scrolled;
 --  with Create_Task_Monitor;
 --  with Create_Test_Idle;
 --  with Create_Test_Timeout;
---  with Create_Text_View;
+with Create_Text_View;
 with Create_Toggle_Buttons;
 --  with Create_Tooltips;
 with Create_Tree_Filter;
@@ -175,6 +175,10 @@ package body Main_Windows is
         ("Scrolled Window",
          Create_Scrolled.Run'Access,
          Create_Scrolled.Help'Access),
+      To_Demo
+        ("Text View",
+         Create_Text_View.Run'Access,
+         Create_Text_View.Help'Access),
       To_Demo
         ("Buttons", Create_Buttons.Run'Access, Create_Buttons.Help'Access),
       To_Demo
