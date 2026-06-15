@@ -143,17 +143,13 @@ package Gtk.Single_Selection is
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
 
-   function Get_Item
-      (Self     : not null access Gtk_Single_Selection_Record;
-       Position : Guint) return System.Address;
-
    function Get_Item_Type
       (Self : not null access Gtk_Single_Selection_Record) return GType;
 
    function Get_N_Items
       (Self : not null access Gtk_Single_Selection_Record) return Guint;
 
-   function Get_Object
+   function Get_Item
       (Self     : not null access Gtk_Single_Selection_Record;
        Position : Guint) return Glib.Object.GObject;
 

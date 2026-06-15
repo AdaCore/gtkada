@@ -208,14 +208,15 @@ package body Gtk.Single_Selection is
 
    function Get_Item
       (Self     : not null access Gtk_Single_Selection_Record;
-       Position : Guint) return System.Address
+       Position : Guint) return Glib.Object.GObject
    is
       function Internal
          (Self     : System.Address;
           Position : Guint) return System.Address;
-      pragma Import (C, Internal, "g_list_model_get_item");
+      pragma Import (C, Internal, "g_list_model_get_object");
+      Stub_GObject : Glib.Object.GObject_Record;
    begin
-      return Internal (Get_Object (Self), Position);
+      return Get_User_Data (Internal (Get_Object (Self), Position), Stub_GObject);
    end Get_Item;
 
    -------------------
@@ -243,23 +244,6 @@ package body Gtk.Single_Selection is
    begin
       return Internal (Get_Object (Self));
    end Get_N_Items;
-
-   ----------------
-   -- Get_Object --
-   ----------------
-
-   function Get_Object
-      (Self     : not null access Gtk_Single_Selection_Record;
-       Position : Guint) return Glib.Object.GObject
-   is
-      function Internal
-         (Self     : System.Address;
-          Position : Guint) return System.Address;
-      pragma Import (C, Internal, "g_list_model_get_object");
-      Stub_GObject : Glib.Object.GObject_Record;
-   begin
-      return Get_User_Data (Internal (Get_Object (Self), Position), Stub_GObject);
-   end Get_Object;
 
    -----------------
    -- Get_Section --

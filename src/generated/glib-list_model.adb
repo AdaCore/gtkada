@@ -30,11 +30,11 @@ with Gtkada.Bindings;          use Gtkada.Bindings;
 
 package body Glib.List_Model is
 
-   ----------------
-   -- Get_Object --
-   ----------------
+   --------------
+   -- Get_Item --
+   --------------
 
-   function Get_Object
+   function Get_Item
       (Self     : Glist_Model;
        Position : Guint) return Glib.Object.GObject
    is
@@ -45,7 +45,7 @@ package body Glib.List_Model is
       Stub_GObject : Glib.Object.GObject_Record;
    begin
       return Get_User_Data (Internal (Self, Position), Stub_GObject);
-   end Get_Object;
+   end Get_Item;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Glist_Model_Guint_Guint_Guint_Void, System.Address);

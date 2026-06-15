@@ -46,11 +46,10 @@
 --  an interface, in which case all objects in the list must implement it.
 --
 --  The semantics are close to that of an array: Glib.List_Model.Get_N_Items
---  returns the number of items in the list and Glib.List_Model.Get_Item
---  returns an item at a (0-based) position. In order to allow implementations
---  to calculate the list length lazily, you can also iterate over items:
---  starting from 0, repeatedly call Glib.List_Model.Get_Item until it returns
---  null.
+--  returns the number of items in the list and g_list_model_get_item returns
+--  an item at a (0-based) position. In order to allow implementations to
+--  calculate the list length lazily, you can also iterate over items: starting
+--  from 0, repeatedly call g_list_model_get_item until it returns null.
 --
 --  An implementation may create objects lazily, but must take care to return
 --  the same object for a given position until all references to it are gone.
@@ -86,18 +85,6 @@ package Glib.List_Model is
    -- Methods --
    -------------
 
-   function Get_Item
-      (Self     : Glist_Model;
-       Position : Guint) return System.Address;
-   pragma Import (C, Get_Item, "g_list_model_get_item");
-   --  Get the item at Position. If Position is greater than the number of
-   --  items in List, null is returned.
-   --  null is never returned for an index that is smaller than the length of
-   --  the list. See Glib.List_Model.Get_N_Items.
-   --  Since: gtk+ 2.44
-   --  @param Position the position of the item to fetch
-   --  @return the item at Position.
-
    function Get_Item_Type (Self : Glist_Model) return GType;
    pragma Import (C, Get_Item_Type, "g_list_model_get_item_type");
    --  Gets the type of the items in List. All items returned from
@@ -113,11 +100,11 @@ package Glib.List_Model is
    --  Gets the number of items in List.
    --  Depending on the model implementation, calling this function may be
    --  less efficient than iterating the list with increasing values for
-   --  Position until Glib.List_Model.Get_Item returns null.
+   --  Position until g_list_model_get_item returns null.
    --  Since: gtk+ 2.44
    --  @return the number of items in List.
 
-   function Get_Object
+   function Get_Item
       (Self     : Glist_Model;
        Position : Guint) return Glib.Object.GObject;
    --  Get the item at Position. If Position is greater than the number of
@@ -233,7 +220,7 @@ package Glib.List_Model is
    --  Gets the number of items in List.
    --  Depending on the model implementation, calling this function may be
    --  less efficient than iterating the list with increasing values for
-   --  Position until Glib.List_Model.Get_Item returns null.
+   --  Position until g_list_model_get_item returns null.
    --  Since: gtk+ 2.44
    --  @return the number of items in List.
 
