@@ -4,3 +4,10 @@ src/misc_generated.c                      no-precommit-check
 # Too much work to clean up
 contrib/binding.py                        no-precommit-check
 
+# Regenerate it with:
+# glib-compile-resources \
+# --sourcedir=testsuite/tests/gresource/ \
+#    --target=testsuite/tests/gresource/sample.gresource \
+#             testsuite/tests/gresource/sample.gresource.xml
+testsuite/tests/gresource/sample.gresource binary
+
