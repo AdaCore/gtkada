@@ -385,8 +385,8 @@ package Glib.Application is
    --  Gtk.Application.Gtk_Application (and you have not manually changed the
    --  path) then Gtk will then search for the menus of the application at
    --  "/org/example/app/gtk/menus.ui".
-   --  See Gresource.Gresource for more information about adding resources to
-   --  your application.
+   --  See Glib.Resource.Gresource for more information about adding resources
+   --  to your application.
    --  You can disable automatic resource loading functionality by setting the
    --  path to null.
    --  Changing the resource base path once the application is running is not

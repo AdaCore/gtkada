@@ -230,7 +230,7 @@ binding = (
     "--GProxyAddress",  # Not tested yet, from Gio
     "--GProxyAddressEnumerator",  # Not tested yet, from Gio
     "--GResolver",  # Not tested yet, from Gio
-    "--GResource",  # Not tested yet, from Gio
+    "GResource",
     "--GSettings",  # Not tested yet, from Gio
     "--GSettingsSchema",  # Not tested yet, from Gio
     "--GSettingsSchemaSource",  # Not tested yet, from Gio
