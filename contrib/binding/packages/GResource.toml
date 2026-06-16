@@ -1,0 +1,20 @@
+# ============================================================
+#   GResource
+# ============================================================
+ada = "Glib.Resource"
+
+[[enum]]
+ctype = "GResourceLookupFlags"
+ada = "Resource_Lookup_Flags"
+
+[[method]]
+id = "g_resources_register"
+ada = "Register"
+
+[[method]]
+id = "g_resources_unregister"
+ada = "Unregister"
+
+[[method]]
+id = "g_resource_open_stream"
+bind = false # missing Ginput_Stream
