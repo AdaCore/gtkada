@@ -9,6 +9,12 @@ ctype = "GtkArrowType"
 ctype = "GtkAccessibleTextContentChange"
 
 [[enum]]
+ctype = "GtkBuilderClosureFlags"
+
+# [[enum]]
+# ctype = "GtkBuilderError"
+
+[[enum]]
 ctype = "GtkCornerType"
 
 [[enum]]

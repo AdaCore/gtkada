@@ -44,6 +44,17 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Accessible_Text_Content_Change);
    --  The type of contents change operation.
 
+   type Gtk_Builder_Closure_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Builder_Closure_Flags);
+   --  The list of flags that can be passed to gtk_builder_create_closure.
+   --
+   --  New values may be added in the future for new features, so external
+   --  implementations of [ifaceGtk.BuilderScope] should test the flags for
+   --  unknown values and raise a GTK_BUILDER_ERROR_INVALID_ATTRIBUTE error
+   --  when they encounter one.
+
+   Builder_Closure_Swapped : constant Gtk_Builder_Closure_Flags := 1;
+
    type Gtk_Corner_Type is (
       Corner_Top_Left,
       Corner_Bottom_Left,
@@ -530,6 +541,10 @@ package Gtk.Enums is
    package Gtk_Accessible_Text_Content_Change_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Accessible_Text_Content_Change);
    type Property_Gtk_Accessible_Text_Content_Change is new Gtk_Accessible_Text_Content_Change_Properties.Property;
+
+   package Gtk_Builder_Closure_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Builder_Closure_Flags);
+   type Property_Gtk_Builder_Closure_Flags is new Gtk_Builder_Closure_Flags_Properties.Property;
 
    package Gtk_Corner_Type_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Corner_Type);

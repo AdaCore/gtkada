@@ -43,6 +43,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
 with Glib.Object;     use Glib.Object;
 with Glib.Types;      use Glib.Types;
+with Gtk.Enums;       use Gtk.Enums;
 with Gtkada.Bindings; use Gtkada.Bindings;
 with Gtkada.Types;    use Gtkada.Types;
 
@@ -76,7 +77,7 @@ package Gtk.Builder_Scope is
      (Self          : Gtk_Builder_Scope;
       Builder       : System.Address;
       Function_Name : Gtkada.Types.Chars_Ptr;
-      Flags         : Gtk_Builder_Closure_Flags;
+      Flags         : Gtk.Enums.Gtk_Builder_Closure_Flags;
       Object        : System.Address) return System.Address;
    pragma Convention (C, Virtual_Create_Closure);
    --  Create a closure with the given arguments. See
