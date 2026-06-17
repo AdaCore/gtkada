@@ -334,6 +334,7 @@ binding = (
     "GtkBox",
     "----GtkBooleanCellAccessible",  # We do not support atk
     "--GtkBuilder",
+    "GtkBuilderCScope",
     "GtkButton",
     "----GtkButtonAccessible",  # We do not support atk
     "--GtkButtonBox",
@@ -732,6 +733,7 @@ naming.exceptions = {
     "Use": "GUse",
     "Uri": "URI",
     "In": "Gtk_In",
+    # Regular renamings
     "Gtk_Imcontext": "Gtk_IM_Context",
     "Gtk_Imcontext_Simple": "Gtk_IM_Context_Simple",
     "Gtk_Immulticontext": "Gtk_IM_Multi_Context",
@@ -739,6 +741,7 @@ naming.exceptions = {
     "Gicon": "G_Icon",
     "Gtk_Glarea": "Gtk_GLArea",
     "Gdk_Glcontext": "Gdk_GLContext",
+    "Gtk_Builder_Cscope": "Gtk_Builder_C_Scope",
 }
 
 # Maps C types to type descriptions.
