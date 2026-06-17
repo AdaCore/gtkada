@@ -26,6 +26,7 @@ interfaces = (
     # "Gtk.AppChooser",
     "--Atk.ImplementorIface",
     "Gtk.Buildable",
+    "Gtk.BuilderScope",
     "Gtk.CellEditable",
     "Gtk.CellLayout",
     "--Gtk.ColorChooser",
