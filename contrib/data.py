@@ -335,6 +335,7 @@ binding = (
     "----GtkBooleanCellAccessible",  # We do not support atk
     "--GtkBuilder",
     "GtkBuilderCScope",
+    "GtkBuilderListItemFactory",
     "GtkButton",
     "----GtkButtonAccessible",  # We do not support atk
     "--GtkButtonBox",
