@@ -382,7 +382,7 @@ binding = (
     "--GtkCssSection",
     "--GtkDialog",
     "--GtkDrawingArea",
-    "--GtkEntry",
+    "GtkEntry",
     "----GtkEntryAccessible",  # We do not support atk
     "GtkEntryBuffer",
     "GtkEntryCompletion",

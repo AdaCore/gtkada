@@ -208,9 +208,8 @@ package Gtk.Arguments is
    --        (Gtk.Print_Operation.Gtk_Print_Operation_Result);
    --   function Unchecked_To_Gdk_Modifier_Type
    --     is new Glib.Values.Unsafe_Enum_Nth (Gdk.Types.Gdk_Modifier_Type);
-   --   function Unchecked_To_Gtk_Entry_Icon_Position
-   --     (Args : Glib.Values.C_GValues; Num : Guint)
-   --     return Gtk.GEntry.Gtk_Entry_Icon_Position;
+   function Unchecked_To_Gtk_Entry_Icon_Position
+      is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Enums.Gtk_Entry_Icon_Position);
    function Unchecked_To_Gtk_Text_Iter
      is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Text_Iter.Gtk_Text_Iter);
    function Unchecked_To_Gtk_Text_Extend_Selection is new

@@ -88,6 +88,12 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Direction_Type);
    --  Focus movement types.
 
+   type Gtk_Entry_Icon_Position is (
+      Entry_Icon_Primary,
+      Entry_Icon_Secondary);
+   pragma Convention (C, Gtk_Entry_Icon_Position);
+   --  Specifies the side of the entry at which an icon is placed.
+
    type Gtk_Icon_Size is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Icon_Size);
    --  Built-in icon sizes.
@@ -573,6 +579,10 @@ package Gtk.Enums is
    package Gtk_Direction_Type_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Direction_Type);
    type Property_Gtk_Direction_Type is new Gtk_Direction_Type_Properties.Property;
+
+   package Gtk_Entry_Icon_Position_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Entry_Icon_Position);
+   type Property_Gtk_Entry_Icon_Position is new Gtk_Entry_Icon_Position_Properties.Property;
 
    package Gtk_Icon_Size_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Icon_Size);

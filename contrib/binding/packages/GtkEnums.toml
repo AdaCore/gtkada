@@ -21,6 +21,9 @@ ctype = "GtkDeleteType"
 ctype = "GtkDirectionType"
 
 [[enum]]
+ctype = "GtkEntryIconPosition"
+
+[[enum]]
 ctype = "GtkIconSize"
 asbitfield = true
 
