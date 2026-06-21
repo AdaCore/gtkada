@@ -558,6 +558,7 @@ binding = (
     "Gtk.SingleSelection", # Implements Gtk.SelectionModel
     "----GtkSocket",  # X11-specific, no binding
     "Gtk.Sorter",
+    "Gtk.SortListModel",
     "--Gtk.Spinner",
     "----GtkSpinnerAccessible",  # We do not support atk
     "--Gtk.SpinButton",
