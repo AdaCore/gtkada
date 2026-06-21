@@ -371,6 +371,7 @@ binding = (
     "--GtkColorSelection",
     "--GtkColorSelectionDialog",
     "Gtk.ColumnView",
+    "Gtk.ColumnViewCell",
     "Gtk.ColumnViewColumn",
     "--Gtk.ComboBox",
     "----GtkComboBoxAccessible",  # We do not support atk
