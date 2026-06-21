@@ -333,7 +333,7 @@ binding = (
     "--GtkBorder",
     "GtkBox",
     "----GtkBooleanCellAccessible",  # We do not support atk
-    "--GtkBuilder",
+    "GtkBuilder",
     "GtkBuilderCScope",
     "GtkBuilderListItemFactory",
     "GtkButton",

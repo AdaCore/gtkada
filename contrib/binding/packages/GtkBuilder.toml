@@ -1,0 +1,10 @@
+# ============================================================
+#   GtkBuilder
+# ============================================================
+
+[[enum]]
+ctype = "GtkBuilderError"
+
+[[method]]
+id = "gtk_builder_get_objects"
+return = "ObjectList"

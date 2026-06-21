@@ -46,12 +46,12 @@ package Gtk.Enums is
 
    type Gtk_Builder_Closure_Flags is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Builder_Closure_Flags);
-   --  The list of flags that can be passed to gtk_builder_create_closure.
+   --  The list of flags that can be passed to Gtk.Builder.Create_Closure.
    --
    --  New values may be added in the future for new features, so external
    --  implementations of [ifaceGtk.BuilderScope] should test the flags for
-   --  unknown values and raise a GTK_BUILDER_ERROR_INVALID_ATTRIBUTE error
-   --  when they encounter one.
+   --  unknown values and raise a Gtk.Builder.Builder_Error_Invalid_Attribute
+   --  error when they encounter one.
 
    Builder_Closure_Swapped : constant Gtk_Builder_Closure_Flags := 1;
 
