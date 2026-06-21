@@ -553,6 +553,7 @@ binding = (
     "----GtkScrolledWindowAccessible",  # We do not support atk
     "Gtk.ScrollInfo",
     "--Gtk.Settings",
+    "Gtk.NoSelection", # Implements Gtk.SelectionModel
     "Gtk.SingleSelection", # Implements Gtk.SelectionModel
     "----GtkSocket",  # X11-specific, no binding
     "Gtk.Sorter",
