@@ -384,8 +384,8 @@ binding = (
     "--GtkDrawingArea",
     "--GtkEntry",
     "----GtkEntryAccessible",  # We do not support atk
-    "--GtkEntryBuffer",
-    "--GtkEntryCompletion",
+    "GtkEntryBuffer",
+    "GtkEntryCompletion",
     "----GtkEntryIconAccessible",  # We do not support atk
     "--GtkEventBox",
     "--GtkEventController",
