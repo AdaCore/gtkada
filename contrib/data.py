@@ -373,6 +373,7 @@ binding = (
     "Gtk.ColumnView",
     "Gtk.ColumnViewCell",
     "Gtk.ColumnViewColumn",
+    "Gtk.ColumnViewRow",
     "--Gtk.ComboBox",
     "----GtkComboBoxAccessible",  # We do not support atk
     "--Gtk.ComboBoxText",
