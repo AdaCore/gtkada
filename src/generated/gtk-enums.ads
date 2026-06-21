@@ -103,6 +103,22 @@ package Gtk.Enums is
    Icon_Size_Normal : constant Gtk_Icon_Size := 1;
    Icon_Size_Large : constant Gtk_Icon_Size := 2;
 
+   type Gtk_Image_Type is (
+      Image_Empty,
+      Image_Icon_Name,
+      Image_Gicon,
+      Image_Paintable);
+   pragma Convention (C, Gtk_Image_Type);
+   --  Describes the image data representation used by a [classGtk.Image].
+   --
+   --  If you want to get the image from the widget, you can only get the
+   --  currently-stored representation; for instance, if the
+   --  gtk_image_get_storage_type returns Gtk.Enums.Image_Paintable, then you
+   --  can call gtk_image_get_paintable.
+   --
+   --  For empty images, you can request any storage type (call any of the
+   --  "get" functions), but they will all return null values.
+
    type Gtk_Baseline_Position is (
       Baseline_Position_Top,
       Baseline_Position_Center,
@@ -561,6 +577,10 @@ package Gtk.Enums is
    package Gtk_Icon_Size_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Icon_Size);
    type Property_Gtk_Icon_Size is new Gtk_Icon_Size_Properties.Property;
+
+   package Gtk_Image_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Image_Type);
+   type Property_Gtk_Image_Type is new Gtk_Image_Type_Properties.Property;
 
    package Gtk_Baseline_Position_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Baseline_Position);

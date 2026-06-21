@@ -11,9 +11,6 @@ ctype = "GtkAccessibleTextContentChange"
 [[enum]]
 ctype = "GtkBuilderClosureFlags"
 
-# [[enum]]
-# ctype = "GtkBuilderError"
-
 [[enum]]
 ctype = "GtkCornerType"
 
@@ -26,6 +23,9 @@ ctype = "GtkDirectionType"
 [[enum]]
 ctype = "GtkIconSize"
 asbitfield = true
+
+[[enum]]
+ctype = "GtkImageType"
 
 [[enum]]
 ctype = "GtkBaselinePosition"
