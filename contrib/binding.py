@@ -83,7 +83,7 @@ Top-level classes
   (used when a ``.toml`` requests that a global function be bound
   inside a specific package).
 
-See ``contrib/binding/README.md`` for a reference of the TOML override
+See ``contrib/binding/Documentation.md`` for a reference of the TOML override
 schema that drives this generator.
 """
 
@@ -1359,10 +1359,11 @@ class GIRClass(object):
             naming.add_cmethod(cname, cname)  # Avoid warning later on.
             print(f"No binding for {cname}: varargs")
             return None
+        body = gtkmethod.get_body()
 
         is_import = (
             self._func_is_direct_import(profile)
-            and not gtkmethod.get_body()
+            and not body
             and not gtkmethod.return_as_param()
         )
         adaname = adaname or gtkmethod.ada_name() or node.get("name").title()
@@ -1376,7 +1377,11 @@ class GIRClass(object):
                 adaname, node, gtkmethod, profile, inherited=isinherited
             )
 
-        if adaname.startswith("Gtk_New"):
+        # Binding provides own body that does not wrap
+        # around generated body
+        to_override = body and "%(auto)s" not in body
+
+        if not to_override and adaname.startswith("Gtk_New"):
             # Overrides the GIR file even if it reported a function or method
             self._handle_constructor(
                 node, gtkmethod=gtkmethod, cname=cname, profile=profile
@@ -1386,7 +1391,6 @@ class GIRClass(object):
         local_vars = []
         call = ""
 
-        body = gtkmethod.get_body()
         if not is_import:
             # Prepare the Internal C function
 
@@ -1421,7 +1425,7 @@ class GIRClass(object):
             # Is this a function that takes a callback parameter ?
 
             cb = profile.callback_param_info()
-            if cb is not None:
+            if cb is not None and not to_override:
                 if ret_as_param:
                     # ??? We would need to change _callback_support to
                     # have additional code to set the return value. One
