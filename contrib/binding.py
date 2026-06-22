@@ -1072,6 +1072,15 @@ class GIRClass(object):
         )
         self.is_record = self.node.tag == nrecord and not self.is_boxed
 
+        ns_node = self.rootNode.find(namespace)
+        self.is_gdk_event_subclass = (
+            self.node.tag == nclass
+            and ns_node is not None
+            and ns_node.get("name") == "Gdk"
+            and self.node.get("parent") == "Event"
+            and self.ctype != "GdkEvent"
+        )
+
         if (
             self.is_boxed
             and naming.type_exceptions.get(self.ctype) is not None
@@ -1091,6 +1100,8 @@ class GIRClass(object):
         elif into:
             into = naming.case(into)
             pkg = naming.protect_keywords(into.replace("_", ".", 1))
+        elif self.is_gdk_event_subclass and n.startswith("Gdk_"):
+            pkg = "Gdk.Event.%s" % n[len("Gdk_") :]
         else:
             pkg = naming.protect_keywords(n.replace("_", ".", 1))
 
@@ -1322,11 +1333,22 @@ class GIRClass(object):
             # Prepare the Internal C function
 
             internal_call = []
+            c_params = profile.c_params(local_vars, internal_call)
+
+            internal_values = {}
+            if self.is_gdk_event_subclass and ismethod:
+                self.pkg.add_with("System", specs=False)
+                for p in c_params:
+                    if p.name.lower() == "self":
+                        p.type = AdaType("System.Address", pkg=self.pkg, in_spec=False)
+                        internal_values["self"] = "Get_Object (Self)"
+                        break
+
             internal = Subprogram(
                 name="Internal",
                 returns=profile.returns,
                 lang="ada->c",
-                plist=profile.c_params(local_vars, internal_call),
+                plist=c_params,
             ).import_c(cname)
 
             # Should we transform the return value into a parameter ?
@@ -1354,7 +1376,9 @@ class GIRClass(object):
                 return self._callback_support(adaname, cname, profile, cb)
 
             execute = internal.call(
-                in_pkg=self.pkg, extra_postcall="".join(internal_call)
+                in_pkg=self.pkg,
+                extra_postcall="".join(internal_call),
+                values=internal_values,
             )
 
             if ret_as_param is not None:
@@ -2188,6 +2212,7 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
                 and not self.is_interface
                 and self.is_gobject
                 and self._subst["parent"] is not None
+                and not self.is_gdk_event_subclass
             ):
 
                 self.pkg.add_with("Glib.Type_Conversion_Hooks", specs=False)
@@ -3468,6 +3493,13 @@ subtype %(typename)s is %(parent)s;"""
                 % self._subst
             )
 
+        elif self.is_gdk_event_subclass:
+            section.add(
+                """
+type %(typename)s is new %(parent)s with null record;"""
+                % self._subst
+            )
+
         elif self.is_proxy:
             section.add(
                 """
@@ -3801,6 +3833,39 @@ def _emit_widgets():
         gir.bound.add(the_ctype)
 
 
+def _emit_gdk_event_subclasses():
+    """Emit one package per GdkEvent subclass discovered in GIR.
+
+    We keep ``GdkEvent`` itself under manual control, but automatically
+    generate every ``Gdk*Event`` class whose GIR parent is ``Event``.
+    This yields dedicated Ada packages for each event subclass, each one
+    containing only the methods declared on that subclass in GIR.
+    """
+
+    explicitly_skipped = {x[2:] for x in binding if x.startswith("--")}
+
+    for ctype, klass in sorted(gir.classes.items()):
+        if ctype in explicitly_skipped:
+            continue
+
+        node = klass.node
+        if node.tag != nclass:
+            continue
+
+        ns_node = klass.rootNode.find(namespace)
+        if ns_node is None or ns_node.get("name") != "Gdk":
+            continue
+
+        if node.get("parent") != "Event":
+            continue
+
+        if ctype == "GdkEvent":
+            continue
+
+        klass.generate(gir)
+        gir.bound.add(ctype)
+
+
 def _write_outputs(ada_path, c_path):
     """Write the generated Ada package buffer and C glue to disk."""
     with open(ada_path, "wb") as out:
@@ -3828,6 +3893,7 @@ def main():
     _emit_enums()
     _emit_interfaces()
     _emit_widgets()
+    _emit_gdk_event_subclasses()
 
     _write_outputs(options.ada_outfile, options.c_outfile)
 
