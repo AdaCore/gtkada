@@ -743,6 +743,7 @@ naming.exceptions = {
     "Gtk_Glarea": "Gtk_GLArea",
     "Gdk_Glcontext": "Gdk_GLContext",
     "Gtk_Builder_Cscope": "Gtk_Builder_C_Scope",
+    "Gdk_Dndevent": "Gdk_DND_Event",
 }
 
 # Maps C types to type descriptions.

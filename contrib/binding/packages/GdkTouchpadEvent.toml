@@ -1,0 +1,7 @@
+# ============================================================
+#   GdkTouchpadEvent
+# ============================================================
+
+[[enum]]
+ctype = "GdkTouchpadGesturePhase"
+prefix = "GDK_TOUCHPAD_GESTURE_"
