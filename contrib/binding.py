@@ -2970,13 +2970,13 @@ end "+";"""
 
             if isinstance(ctype, Proxy):
                 body += (
-                    "begin\nreturn %s" % ctype.ada
+                    "begin\nreturn %s " % ctype.ada
                     + "(Glib.C_Proxy'(Glib.To_Proxy (R)));"
                 )
 
             elif isinstance(ctype, Tagged):
                 # Not a GObject ?
-                body += "begin\nreturn From_Object(R);"
+                body += "begin\nreturn From_Object (R);"
 
             else:
                 # For ada_access_root types, the access type may live in the
@@ -2988,9 +2988,11 @@ end "+";"""
                     if hasattr(ctype, "_record_ada_name")
                     else "%s_Record" % ctype.ada
                 )
-                body += "Stub : %s;\n" % record_name
-                body += "begin\n"
-                body += "return %s (Glib.Object.Get_User_Data (R, Stub));" % (ctype.ada)
+                body += "\n".join([
+                    "Stub : %s;" % record_name,
+                    "begin",
+                    "   return %s (Glib.Object.Get_User_Data (R, Stub));" % (ctype.ada)
+                ])
 
             body += "\nend Convert;"
 
@@ -3165,7 +3167,7 @@ end From_Object_Free;"""
                     + "\n".join(c)
                     + "\nend record;\npragma Convention (C, %s);\n" % base
                 )
-                adder(c.format())
+                adder(c.format("   "))
 
             if not private:
                 section.add(
@@ -3453,8 +3455,8 @@ Null_%(typename)s : constant %(typename)s;"""
 
             self.pkg.add_private(
                 """
-Null_%(typename)s : constant %(typename)s :=
-   %(typename)s (Glib.Types.Null_Interface);"""
+   Null_%(typename)s : constant %(typename)s :=
+      %(typename)s (Glib.Types.Null_Interface);"""
                 % self._subst
             )
 
@@ -3493,8 +3495,8 @@ subtype %(typename)s is %(parent)s;"""
             # freezing issues
             self.pkg.add_private(
                 (
-                    "\n   Null_%(typename)s : constant %(typename)s :="
-                    + " (Glib.C_Boxed with null record);\n"
+                    "   Null_%(typename)s : constant %(typename)s :=\n"
+                    "      (Glib.C_Boxed with null record);\n"
                 )
                 % self._subst,
                 at_end=True,
