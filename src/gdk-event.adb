@@ -21,6 +21,19 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Gdk.Event.Button_Event;
+with Gdk.Event.Crossing_Event;
+with Gdk.Event.Delete_Event;
+with Gdk.Event.DND_Event;
+with Gdk.Event.Focus_Event;
+with Gdk.Event.Grab_Broken_Event;
+with Gdk.Event.Key_Event;
+with Gdk.Event.Motion_Event;
+with Gdk.Event.Pad_Event;
+with Gdk.Event.Proximity_Event;
+with Gdk.Event.Scroll_Event;
+with Gdk.Event.Touch_Event;
+with Gdk.Event.Touchpad_Event;
 with Gdk.Seat;
 with Glib.Object; use Glib.Object;
 
@@ -68,6 +81,204 @@ package body Gdk.Event is
          Set_Object (Result, Object);
       end return;
    end From_Object;
+
+   ---------------------
+   -- As_Button_Event --
+   ---------------------
+
+   function As_Button_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Button_Event.Gdk_Button_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_button_event");
+   begin
+      return Result : Gdk.Event.Button_Event.Gdk_Button_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Button_Event;
+
+   -----------------------
+   -- As_Crossing_Event --
+   -----------------------
+
+   function As_Crossing_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Crossing_Event.Gdk_Crossing_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_crossing_event");
+   begin
+      return Result : Gdk.Event.Crossing_Event.Gdk_Crossing_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Crossing_Event;
+
+   ---------------------
+   -- As_Delete_Event --
+   ---------------------
+
+   function As_Delete_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Delete_Event.Gdk_Delete_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_delete_event");
+   begin
+      return Result : Gdk.Event.Delete_Event.Gdk_Delete_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Delete_Event;
+
+   ------------------
+   -- As_DND_Event --
+   ------------------
+
+   function As_DND_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.DND_Event.Gdk_DND_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_dnd_event");
+   begin
+      return Result : Gdk.Event.DND_Event.Gdk_DND_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_DND_Event;
+
+   --------------------
+   -- As_Focus_Event --
+   --------------------
+
+   function As_Focus_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Focus_Event.Gdk_Focus_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_focus_event");
+   begin
+      return Result : Gdk.Event.Focus_Event.Gdk_Focus_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Focus_Event;
+
+   --------------------------
+   -- As_Grab_Broken_Event --
+   --------------------------
+
+   function As_Grab_Broken_Event
+     (Self : Gdk_Event'Class)
+      return Gdk.Event.Grab_Broken_Event.Gdk_Grab_Broken_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_grab_broken_event");
+   begin
+      return Result : Gdk.Event.Grab_Broken_Event.Gdk_Grab_Broken_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Grab_Broken_Event;
+
+   ------------------
+   -- As_Key_Event --
+   ------------------
+
+   function As_Key_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Key_Event.Gdk_Key_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_key_event");
+   begin
+      return Result : Gdk.Event.Key_Event.Gdk_Key_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Key_Event;
+
+   ---------------------
+   -- As_Motion_Event --
+   ---------------------
+
+   function As_Motion_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Motion_Event.Gdk_Motion_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_motion_event");
+   begin
+      return Result : Gdk.Event.Motion_Event.Gdk_Motion_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Motion_Event;
+
+   ------------------
+   -- As_Pad_Event --
+   ------------------
+
+   function As_Pad_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Pad_Event.Gdk_Pad_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_pad_event");
+   begin
+      return Result : Gdk.Event.Pad_Event.Gdk_Pad_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Pad_Event;
+
+   ------------------------
+   -- As_Proximity_Event --
+   ------------------------
+
+   function As_Proximity_Event
+     (Self : Gdk_Event'Class)
+      return Gdk.Event.Proximity_Event.Gdk_Proximity_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_proximity_event");
+   begin
+      return Result : Gdk.Event.Proximity_Event.Gdk_Proximity_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Proximity_Event;
+
+   ---------------------
+   -- As_Scroll_Event --
+   ---------------------
+
+   function As_Scroll_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Scroll_Event.Gdk_Scroll_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_scroll_event");
+   begin
+      return Result : Gdk.Event.Scroll_Event.Gdk_Scroll_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Scroll_Event;
+
+   --------------------
+   -- As_Touch_Event --
+   --------------------
+
+   function As_Touch_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Touch_Event.Gdk_Touch_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_touch_event");
+   begin
+      return Result : Gdk.Event.Touch_Event.Gdk_Touch_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Touch_Event;
+
+   -----------------------
+   -- As_Touchpad_Event --
+   -----------------------
+
+   function As_Touchpad_Event
+     (Self : Gdk_Event'Class)
+      return Gdk.Event.Touchpad_Event.Gdk_Touchpad_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_touchpad_event");
+   begin
+      return Result : Gdk.Event.Touchpad_Event.Gdk_Touchpad_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Touchpad_Event;
 
    ---------------
    -- Get_Angle --

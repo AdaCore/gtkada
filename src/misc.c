@@ -1656,6 +1656,140 @@ const gchar *glib_get_home_dir()
   return g_get_home_dir();
 }
 
+/* GDK Event cast functions using G_TYPE_CHECK_INSTANCE_CAST */
+
+GdkButtonEvent * ada_gdk_event_cast_button_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_BUTTON_EVENT, GdkButtonEvent);
+}
+
+GdkCrossingEvent * ada_gdk_event_cast_crossing_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_CROSSING_EVENT, GdkCrossingEvent);
+}
+
+GdkDeleteEvent * ada_gdk_event_cast_delete_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_DELETE_EVENT, GdkDeleteEvent);
+}
+
+GdkDNDEvent * ada_gdk_event_cast_dnd_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_DND_EVENT, GdkDNDEvent);
+}
+
+GdkFocusEvent * ada_gdk_event_cast_focus_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_FOCUS_EVENT, GdkFocusEvent);
+}
+
+GdkGrabBrokenEvent * ada_gdk_event_cast_grab_broken_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_GRAB_BROKEN_EVENT, GdkGrabBrokenEvent);
+}
+
+GdkKeyEvent * ada_gdk_event_cast_key_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_KEY_EVENT, GdkKeyEvent);
+}
+
+GdkMotionEvent * ada_gdk_event_cast_motion_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_MOTION_EVENT, GdkMotionEvent);
+}
+
+GdkPadEvent * ada_gdk_event_cast_pad_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_PAD_EVENT, GdkPadEvent);
+}
+
+GdkProximityEvent * ada_gdk_event_cast_proximity_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_PROXIMITY_EVENT, GdkProximityEvent);
+}
+
+GdkScrollEvent * ada_gdk_event_cast_scroll_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_SCROLL_EVENT, GdkScrollEvent);
+}
+
+GdkTouchEvent * ada_gdk_event_cast_touch_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_TOUCH_EVENT, GdkTouchEvent);
+}
+
+GdkTouchpadEvent * ada_gdk_event_cast_touchpad_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_CAST(event, GDK_TYPE_TOUCHPAD_EVENT, GdkTouchpadEvent);
+}
+
+/* GDK Event type-checking functions using G_TYPE_CHECK_INSTANCE_TYPE */
+
+gboolean ada_gdk_event_is_button_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_BUTTON_EVENT);
+}
+
+gboolean ada_gdk_event_is_crossing_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_CROSSING_EVENT);
+}
+
+gboolean ada_gdk_event_is_delete_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_DELETE_EVENT);
+}
+
+gboolean ada_gdk_event_is_dnd_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_DND_EVENT);
+}
+
+gboolean ada_gdk_event_is_focus_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_FOCUS_EVENT);
+}
+
+gboolean ada_gdk_event_is_grab_broken_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_GRAB_BROKEN_EVENT);
+}
+
+gboolean ada_gdk_event_is_key_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_KEY_EVENT);
+}
+
+gboolean ada_gdk_event_is_motion_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_MOTION_EVENT);
+}
+
+gboolean ada_gdk_event_is_pad_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_PAD_EVENT);
+}
+
+gboolean ada_gdk_event_is_proximity_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_PROXIMITY_EVENT);
+}
+
+gboolean ada_gdk_event_is_scroll_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_SCROLL_EVENT);
+}
+
+gboolean ada_gdk_event_is_touch_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_TOUCH_EVENT);
+}
+
+gboolean ada_gdk_event_is_touchpad_event(GdkEvent *event)
+{
+  return G_TYPE_CHECK_INSTANCE_TYPE(event, GDK_TYPE_TOUCHPAD_EVENT);
+}
+
 /* constants */
 const GVariantType *ada_gvariant_type_boolean = G_VARIANT_TYPE_BOOLEAN;
 const GVariantType *ada_gvariant_type_byte = G_VARIANT_TYPE_BYTE;
