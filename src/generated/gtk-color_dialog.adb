@@ -148,10 +148,17 @@ package body Gtk.Color_Dialog is
    is
       function Internal
          (Self   : System.Address;
-          Result : Glib.G_Async_Result) return Gdk.RGBA.Gdk_RGBA;
+          Result : Glib.G_Async_Result) return access Gdk.RGBA.Gdk_RGBA;
       pragma Import (C, Internal, "gtk_color_dialog_choose_rgba_finish");
+      --  gtk_color_dialog_choose_rgba_finish returns a newly allocated
+      --  GdkRGBA* (transfer full), or NULL when the dialog was dismissed.
+      Color : constant access Gdk.RGBA.Gdk_RGBA :=
+        Internal (Get_Object (Self), Result);
    begin
-      return Internal (Get_Object (Self), Result);
+      if Color = null then
+         return Gdk.RGBA.Null_RGBA;
+      end if;
+      return Gdk.RGBA.From_Object_Free (Color);
    end Choose_Rgba_Finish;
 
    ---------------
