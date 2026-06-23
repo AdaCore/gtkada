@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,18 +21,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gdk.RGBA;          use Gdk.RGBA;
 with Glib;              use Glib;
 with Glib.Object;       use Glib.Object;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Check_Button;  use Gtk.Check_Button;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Label;         use Gtk.Label;
-with Gtk.Stock;         use Gtk.Stock;
 with Gtk.Tooltip;       use Gtk.Tooltip;
 with Gtk.Widget;        use Gtk.Widget;
-with Gtk.Window;        use Gtk.Window;
-with Gtk;               use Gtk;
 
 package body Create_Tooltips is
 
@@ -44,8 +40,9 @@ package body Create_Tooltips is
    begin
       return "@bGtk_Tooltips@B allow you to provide short help texts to the"
         & " user. " & ASCII.LF
-        & " Through the @bwidget_entered@B and @bwidget_selected@B signals,"
-        & " you can decide to display some extensive help.";
+        & " Through the @bquery-tooltip@B signal, you can customise the"
+        & " tooltip's contents, for instance its markup, icon or even embed"
+        & " a custom widget.";
    end Help;
 
    ----------------------
@@ -64,7 +61,7 @@ package body Create_Tooltips is
       Gtk_Tooltip (Tooltip).Set_Markup
          ("The text of the widget is <b>"""
           & Gtk_Check_Button (Check).Get_Label & """</b>");
-      Gtk_Tooltip (Tooltip).Set_Icon_From_Stock (Stock_Delete, Icon_Size_Menu);
+      Gtk_Tooltip (Tooltip).Set_Icon_From_Icon_Name ("edit-delete");
       return True;
    end Query_Tooltip_Cb;
 
@@ -79,11 +76,12 @@ package body Create_Tooltips is
        Tooltip      : not null access GObject_Record'Class)
       return Boolean
    is
-      pragma Unreferenced (X, Y, Keyboard_Tip, Tooltip);
-      Window : constant Gtk_Window := Gtk_Window (Check.Get_Tooltip_Window);
-      Color  : constant Gdk_RGBA := (0.0, 0.0, 1.0, 0.5);
+      pragma Unreferenced (Check, X, Y, Keyboard_Tip);
+      Label : Gtk_Label;
    begin
-      Window.Override_Background_Color (Gtk_State_Flag_Normal, Color);
+      Gtk_New (Label, "I am a <b>custom</b> tooltip widget");
+      Label.Set_Use_Markup (True);
+      Gtk_Tooltip (Tooltip).Set_Custom (Label);
       return True;
    end Query_Tooltip_Custom_Cb;
 
@@ -92,68 +90,60 @@ package body Create_Tooltips is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Box1       : Gtk_Box;
-      Check      : Gtk_Check_Button;
-      Vbox       : Gtk_Box;
-      Label      : Gtk_Label;
-      Tooltip_Window : Gtk_Window;
-
+      Box1  : Gtk_Box;
+      Check : Gtk_Check_Button;
+      Label : Gtk_Label;
    begin
-      Set_Label (Frame, "Tooltips");
-      Gtk_New_Vbox (Vbox, Homogeneous => False, Spacing => 0);
-      Add (Frame, Vbox);
+      Frame.Set_Label ("Tooltips");
 
-      Gtk_New_Vbox (Box1, False, 0);
-      Pack_Start (Vbox, Box1, Expand => False, Fill => False);
+      Gtk_New (Box1, Orientation_Vertical, Spacing => 0);
+      Box1.Set_Homogeneous (False);
+      Box1.Set_Margin_Start (10);
+      Box1.Set_Margin_End (10);
+      Box1.Set_Margin_Top (10);
+      Box1.Set_Margin_Bottom (10);
+      Frame.Set_Child (Box1);
 
-      --  A check button using the tooltip-markup property
+      --  A check button using the tooltip-text property
 
-      Gtk_New (Check, "Using the tooltip-markup property");
-      Box1.Pack_Start (Check, False, False, 0);
+      Gtk_New_With_Label (Check, "Using the tooltip-text property");
+      Box1.Append (Check);
       Check.Set_Tooltip_Text ("Hello, I am a static tooltip.");
 
       --  A check button using the query-tooltip signal
 
-      Gtk_New (Check, "Using the query-tooltip signal");
-      Box1.Pack_Start (Check, False, False, 0);
+      Gtk_New_With_Label (Check, "Using the query-tooltip signal");
+      Box1.Append (Check);
       Check.Set_Has_Tooltip (True);
       Check.On_Query_Tooltip (Query_Tooltip_Cb'Access);
 
       --  A label
 
       Gtk_New (Label, "A simple label");
-      Box1.Pack_Start (Label, False, False, 0);
+      Box1.Append (Label);
       Label.Set_Selectable (False);
       Label.Set_Tooltip_Text ("Label and tooltip");
 
       --  A selectable label
 
       Gtk_New (Label, "A selectable label");
-      Box1.Pack_Start (Label, False, False, 0);
+      Box1.Append (Label);
       Label.Set_Selectable (True);
-      Label.Set_Tooltip_Text ("<b>Another</b> Label tooltip");
+      Label.Set_Tooltip_Markup ("<b>Another</b> Label tooltip");
 
-      --  Another one, with a custom tooltip window
+      --  A check button with a custom tooltip widget
 
-      Gtk_New (Tooltip_Window, Window_Popup);
-      Gtk_New (Label, "in custom tooltip window");
-      Tooltip_Window.Add (Label);
-      Label.Show;
-
-      Gtk_New (Check, "Using a custom tooltip window");
-      Box1.Pack_Start (Check, False, False, 0);
-      Check.Set_Tooltip_Window (Tooltip_Window);
+      Gtk_New_With_Label (Check, "Using a custom tooltip widget");
+      Box1.Append (Check);
       Check.Set_Has_Tooltip (True);
       Check.On_Query_Tooltip (Query_Tooltip_Custom_Cb'Access);
 
       --  An insensitive button
 
-      Gtk_New (Check, "Insensitive button");
-      Box1.Pack_Start (Check, False, False, 0);
+      Gtk_New_With_Label (Check, "Insensitive button");
+      Box1.Append (Check);
       Check.Set_Sensitive (False);
       Check.Set_Tooltip_Text ("Insensitive!");
-
-      Show_All (Frame);
    end Run;
 
 end Create_Tooltips;

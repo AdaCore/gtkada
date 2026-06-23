@@ -126,7 +126,7 @@ with Create_Scrolled;
 --  with Create_Test_Timeout;
 with Create_Text_View;
 with Create_Toggle_Buttons;
---  with Create_Tooltips;
+with Create_Tooltips;
 with Create_Tree_Filter;
 with Create_Tree_View;
 --  with Common; use Common;
@@ -193,7 +193,11 @@ package body Main_Windows is
       To_Demo
         ("Custom Widget",
          Create_Custom_Widget.Run'Access,
-         Create_Custom_Widget.Help'Access));
+         Create_Custom_Widget.Help'Access),
+      To_Demo
+        ("Tooltips",
+         Create_Tooltips.Run'Access,
+         Create_Tooltips.Help'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.
 
