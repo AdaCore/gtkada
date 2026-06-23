@@ -107,7 +107,7 @@ GdkDragContext.toml:
 
 GdkEvent.toml:
 
-- when done, reactivate bindings in GtkDisplay.toml, GtkCellArea.toml, GtkCellEditable.toml
+- when done, reactivate bindings in GtkDisplay.toml, GtkCellArea.toml
 
 GdkPixbuf.toml:
 

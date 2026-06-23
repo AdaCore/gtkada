@@ -516,7 +516,7 @@ package Gtk.Cell_Renderer is
    --  `GtkEntryCompletion` or setting up additional columns in a
    --  `GtkComboBox`.
    --
-   --  See gtk_cell_editable_start_editing for information on the lifecycle of
+   --  See Gtk.Cell_Editable.Start_Editing for information on the lifecycle of
    --  the Editable and a way to do setup that doesn't depend on the Renderer.
    --
    --  Note that GTK doesn't guarantee that cell renderers will continue to

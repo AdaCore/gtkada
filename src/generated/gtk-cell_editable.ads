@@ -31,6 +31,7 @@
 --  <group>Trees and Lists</group>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Event;       use Gdk.Event;
 with Glib;            use Glib;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
@@ -66,6 +67,22 @@ package Gtk.Cell_Editable is
    pragma Obsolescent (Remove_Widget);
    --  Emits the `GtkCellEditable::remove-widget` signal.
    --  Deprecated since 4.10, 1
+
+   procedure Start_Editing
+      (Cell_Editable : Gtk_Cell_Editable;
+       Event         : Gdk.Event.Gdk_Event);
+   --  Begins editing on a Cell_Editable.
+   --  The `GtkCellRenderer` for the cell creates and returns a
+   --  `GtkCellEditable` from Gtk.Cell_Renderer.Start_Editing, configured for
+   --  the `GtkCellRenderer` type.
+   --  Gtk.Cell_Editable.Start_Editing can then set up Cell_Editable suitably
+   --  for editing a cell, e.g. making the Esc key emit
+   --  `GtkCellEditable::editing-done`.
+   --  Note that the Cell_Editable is created on-demand for the current edit;
+   --  its lifetime is temporary and does not persist across other edits and/or
+   --  cells.
+   --  @param Event The `GdkEvent` that began the editing process, or null if
+   --  editing was initiated programmatically
 
    ----------------
    -- Properties --
@@ -155,6 +172,21 @@ package Gtk.Cell_Editable is
    --  Emits the `GtkCellEditable::remove-widget` signal.
    --  Deprecated since 4.10, 1
 
+   type Virtual_Start_Editing is access procedure (Cell_Editable : Gtk_Cell_Editable; Event : System.Address);
+   pragma Convention (C, Virtual_Start_Editing);
+   --  Begins editing on a Cell_Editable.
+   --  The `GtkCellRenderer` for the cell creates and returns a
+   --  `GtkCellEditable` from gtk_cell_renderer_start_editing, configured for
+   --  the `GtkCellRenderer` type.
+   --  Gtk.Cell_Editable.Start_Editing can then set up Cell_Editable suitably
+   --  for editing a cell, e.g. making the Esc key emit
+   --  `GtkCellEditable::editing-done`.
+   --  Note that the Cell_Editable is created on-demand for the current edit;
+   --  its lifetime is temporary and does not persist across other edits and/or
+   --  cells.
+   --  @param Event The `GdkEvent` that began the editing process, or null if
+   --  editing was initiated programmatically
+
    subtype Cell_Editable_Interface_Descr is Glib.Object.Interface_Description;
 
    procedure Set_Editing_Done
@@ -166,6 +198,11 @@ package Gtk.Cell_Editable is
      (Self    : Cell_Editable_Interface_Descr;
       Handler : Virtual_Remove_Widget);
    pragma Import (C, Set_Remove_Widget, "gtkada_Cell_Editable_set_remove_widget");
+
+   procedure Set_Start_Editing
+     (Self    : Cell_Editable_Interface_Descr;
+      Handler : Virtual_Start_Editing);
+   pragma Import (C, Set_Start_Editing, "gtkada_Cell_Editable_set_start_editing");
    --  See Glib.Object.Add_Interface
 
 private

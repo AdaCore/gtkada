@@ -30,6 +30,22 @@ with Gtkada.Bindings;          use Gtkada.Bindings;
 
 package body Gtk.Cell_Editable is
 
+   -------------------
+   -- Start_Editing --
+   -------------------
+
+   procedure Start_Editing
+      (Cell_Editable : Gtk_Cell_Editable;
+       Event         : Gdk.Event.Gdk_Event)
+   is
+      procedure Internal
+         (Cell_Editable : Gtk_Cell_Editable;
+          Event         : System.Address);
+      pragma Import (C, Internal, "gtk_cell_editable_start_editing");
+   begin
+      Internal (Cell_Editable, Get_Object (Event));
+   end Start_Editing;
+
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Cell_Editable_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

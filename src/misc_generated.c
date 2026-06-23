@@ -150,6 +150,10 @@ void gtkada_Cell_Editable_set_remove_widget(GtkCellEditableIface* iface, void* h
     iface->remove_widget = handler;
 }
 
+void gtkada_Cell_Editable_set_start_editing(GtkCellEditableIface* iface, void* handler) {
+    iface->start_editing = handler;
+}
+
 void gtkada_Editable_set_changed(GtkEditableInterface* iface, void* handler) {
     iface->changed = handler;
 }
