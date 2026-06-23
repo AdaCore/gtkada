@@ -2979,7 +2979,16 @@ end "+";"""
                 body += "begin\nreturn From_Object(R);"
 
             else:
-                body += "Stub : %s_Record;" % ctype.ada
+                # For ada_access_root types, the access type may live in the
+                # namespace root package (for example Gdk.Gdk_Device) while
+                # the tagged record stays in a child package
+                # (Gdk.Device.Gdk_Device_Record).
+                record_name = (
+                    ctype._record_ada_name()
+                    if hasattr(ctype, "_record_ada_name")
+                    else "%s_Record" % ctype.ada
+                )
+                body += "Stub : %s;\n" % record_name
                 body += "begin\n"
                 body += "return %s (Glib.Object.Get_User_Data (R, Stub));" % (ctype.ada)
 
