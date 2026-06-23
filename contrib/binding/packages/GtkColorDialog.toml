@@ -4,3 +4,25 @@ group = "Dialogs"
 [[parameter]]
 name = "self"
 ada  = "Self"
+
+# gtk_color_dialog_choose_rgba_finish returns a newly allocated GdkRGBA*
+# (transfer full), or NULL when the dialog was dismissed. The default
+# binding maps it by value, which reads garbage; bind the pointer ABI by
+# hand instead.
+[[method]]
+id   = "gtk_color_dialog_choose_rgba_finish"
+body = '''
+      function Internal
+         (Self   : System.Address;
+          Result : Glib.G_Async_Result) return access Gdk.RGBA.Gdk_RGBA;
+      pragma Import (C, Internal, "gtk_color_dialog_choose_rgba_finish");
+      --  gtk_color_dialog_choose_rgba_finish returns a newly allocated
+      --  GdkRGBA* (transfer full), or NULL when the dialog was dismissed.
+      Color : constant access Gdk.RGBA.Gdk_RGBA :=
+        Internal (Get_Object (Self), Result);
+   begin
+      if Color = null then
+         return Gdk.RGBA.Null_RGBA;
+      end if;
+      return Gdk.RGBA.From_Object_Free (Color);
+'''
