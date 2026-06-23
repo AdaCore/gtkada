@@ -17,11 +17,6 @@ bind = false
 # No GdkModifierType binding
 
 [[method]]
-id = "gdk_device_get_seat"
-bind = false
-# No GdkSeat binding
-
-[[method]]
 id = "::tool-changed"
 
 [[method.parameter]]

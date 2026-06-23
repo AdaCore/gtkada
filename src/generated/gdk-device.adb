@@ -25,6 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Gdk.Display;
+with Gdk.Seat;
 with Gdk.Surface;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
@@ -212,6 +213,20 @@ package body Gdk.Device is
    begin
       return Internal (Get_Object (Self)) /= 0;
    end Get_Scroll_Lock_State;
+
+   --------------
+   -- Get_Seat --
+   --------------
+
+   function Get_Seat
+      (Self : not null access Gdk_Device_Record) return Gdk.Gdk_Seat
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_device_get_seat");
+      Stub_Gdk_Seat : Gdk.Seat.Gdk_Seat_Record;
+   begin
+      return Gdk.Gdk_Seat (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Seat));
+   end Get_Seat;
 
    ----------------
    -- Get_Source --

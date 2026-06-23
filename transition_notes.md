@@ -132,11 +132,7 @@ GdkModifierType:
 
 GdkSeat.toml:
 
-- when done, reactivate bindings in GdkDevice.toml, GdkDisplay.toml
-
-GdkSeat.toml:
-
-- when done, reactivate bindings in GdkDevice.toml
+- when done, reactivate bindings in GdkDisplay.toml
 
 GtkApplication.toml:
 

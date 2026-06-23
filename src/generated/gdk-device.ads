@@ -157,6 +157,11 @@ package Gdk.Device is
    --  This is only relevant for keyboard devices.
    --  @return True if Scroll Lock is on for Device
 
+   function Get_Seat
+      (Self : not null access Gdk_Device_Record) return Gdk.Gdk_Seat;
+   --  Returns the `GdkSeat` the device belongs to.
+   --  @return a `GdkSeat`
+
    function Get_Source
       (Self : not null access Gdk_Device_Record) return Gdk_Input_Source;
    --  Determines the type of the device.
