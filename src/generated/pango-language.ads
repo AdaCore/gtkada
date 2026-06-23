@@ -430,7 +430,7 @@ package Pango.Language is
    --  not be freed.
 
 private
-
-   Null_Pango_Language : constant Pango_Language := (Glib.C_Boxed with null record);
+   Null_Pango_Language : constant Pango_Language :=
+      (Glib.C_Boxed with null record);
 
 end Pango.Language;

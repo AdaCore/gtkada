@@ -204,7 +204,7 @@ package Gtk.Tree_Row_Reference is
    --  @param New_Order the new order of rows
 
 private
-
-   Null_Gtk_Tree_Row_Reference : constant Gtk_Tree_Row_Reference := (Glib.C_Boxed with null record);
+   Null_Gtk_Tree_Row_Reference : constant Gtk_Tree_Row_Reference :=
+      (Glib.C_Boxed with null record);
 
 end Gtk.Tree_Row_Reference;

@@ -94,7 +94,7 @@ package Gtk.Scroll_Info is
    --  Since: gtk+ 4.12
 
 private
-
-   Null_Gtk_Scroll_Info : constant Gtk_Scroll_Info := (Glib.C_Boxed with null record);
+   Null_Gtk_Scroll_Info : constant Gtk_Scroll_Info :=
+      (Glib.C_Boxed with null record);
 
 end Gtk.Scroll_Info;

@@ -700,6 +700,6 @@ private
    Cursor_Position_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("cursor-position");
 
-Null_Gtk_Editable : constant Gtk_Editable :=
-   Gtk_Editable (Glib.Types.Null_Interface);
+   Null_Gtk_Editable : constant Gtk_Editable :=
+      Gtk_Editable (Glib.Types.Null_Interface);
 end Gtk.Editable;

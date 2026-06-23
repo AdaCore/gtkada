@@ -861,17 +861,17 @@ package Pango.Layout is
    --  efficient. The returned value should not be freed or modified.
 
 private
-type Pango_Layout_Line is record
-   Layout : System.Address;
-   Start_Index : Glib.Gint := 0;
-   Length : Glib.Gint := 0;
-   Runs : System.Address := System.Null_Address;
-   Is_Paragraph_Start : Guint;
-   Resolved_Dir : Guint;
-end record;
-pragma Convention (C, Pango_Layout_Line);
+   type Pango_Layout_Line is record
+      Layout : System.Address;
+      Start_Index : Glib.Gint := 0;
+      Length : Glib.Gint := 0;
+      Runs : System.Address := System.Null_Address;
+      Is_Paragraph_Start : Guint;
+      Resolved_Dir : Guint;
+   end record;
+   pragma Convention (C, Pango_Layout_Line);
 
-
-   Null_Pango_Layout_Iter : constant Pango_Layout_Iter := (Glib.C_Boxed with null record);
+   Null_Pango_Layout_Iter : constant Pango_Layout_Iter :=
+      (Glib.C_Boxed with null record);
 
 end Pango.Layout;

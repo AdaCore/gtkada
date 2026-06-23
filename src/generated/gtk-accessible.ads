@@ -570,6 +570,6 @@ private
    Accessible_Role_Property : constant Gtk.Accessible.Property_Gtk_Accessible_Role :=
      Gtk.Accessible.Build ("accessible-role");
 
-Null_Gtk_Accessible : constant Gtk_Accessible :=
-   Gtk_Accessible (Glib.Types.Null_Interface);
+   Null_Gtk_Accessible : constant Gtk_Accessible :=
+      Gtk_Accessible (Glib.Types.Null_Interface);
 end Gtk.Accessible;

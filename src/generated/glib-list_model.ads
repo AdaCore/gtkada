@@ -257,6 +257,6 @@ package Glib.List_Model is
 
 private
 
-Null_Glist_Model : constant Glist_Model :=
-   Glist_Model (Glib.Types.Null_Interface);
+   Null_Glist_Model : constant Glist_Model :=
+      Glist_Model (Glib.Types.Null_Interface);
 end Glib.List_Model;

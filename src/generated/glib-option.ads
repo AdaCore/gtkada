@@ -380,8 +380,8 @@ package Glib.Option is
    --  freed with Glib.Option.Free after use.
 
 private
-
-   Null_Goption_Context : constant Goption_Context := (Glib.C_Boxed with null record);
+   Null_Goption_Context : constant Goption_Context :=
+      (Glib.C_Boxed with null record);
 
 
    Null_GOption_Entry : constant GOption_Entry :=

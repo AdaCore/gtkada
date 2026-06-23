@@ -142,6 +142,6 @@ package Gtk.Tree_Drag_Dest is
 
 private
 
-Null_Gtk_Tree_Drag_Dest : constant Gtk_Tree_Drag_Dest :=
-   Gtk_Tree_Drag_Dest (Glib.Types.Null_Interface);
+   Null_Gtk_Tree_Drag_Dest : constant Gtk_Tree_Drag_Dest :=
+      Gtk_Tree_Drag_Dest (Glib.Types.Null_Interface);
 end Gtk.Tree_Drag_Dest;

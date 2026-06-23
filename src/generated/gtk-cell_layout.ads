@@ -291,6 +291,6 @@ package Gtk.Cell_Layout is
 
 private
 
-Null_Gtk_Cell_Layout : constant Gtk_Cell_Layout :=
-   Gtk_Cell_Layout (Glib.Types.Null_Interface);
+   Null_Gtk_Cell_Layout : constant Gtk_Cell_Layout :=
+      Gtk_Cell_Layout (Glib.Types.Null_Interface);
 end Gtk.Cell_Layout;

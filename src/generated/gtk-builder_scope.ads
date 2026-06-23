@@ -130,6 +130,6 @@ package Gtk.Builder_Scope is
 
 private
 
-Null_Gtk_Builder_Scope : constant Gtk_Builder_Scope :=
-   Gtk_Builder_Scope (Glib.Types.Null_Interface);
+   Null_Gtk_Builder_Scope : constant Gtk_Builder_Scope :=
+      Gtk_Builder_Scope (Glib.Types.Null_Interface);
 end Gtk.Builder_Scope;

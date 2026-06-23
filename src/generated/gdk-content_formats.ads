@@ -234,7 +234,7 @@ package Gdk.Content_Formats is
    --  @return the content formats if String is valid
 
 private
-
-   Null_Gdk_Content_Formats : constant Gdk_Content_Formats := (Glib.C_Boxed with null record);
+   Null_Gdk_Content_Formats : constant Gdk_Content_Formats :=
+      (Glib.C_Boxed with null record);
 
 end Gdk.Content_Formats;

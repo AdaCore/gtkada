@@ -403,6 +403,6 @@ package Gtk.Tree_Sortable is
 
 private
 
-Null_Gtk_Tree_Sortable : constant Gtk_Tree_Sortable :=
-   Gtk_Tree_Sortable (Glib.Types.Null_Interface);
+   Null_Gtk_Tree_Sortable : constant Gtk_Tree_Sortable :=
+      Gtk_Tree_Sortable (Glib.Types.Null_Interface);
 end Gtk.Tree_Sortable;

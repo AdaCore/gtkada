@@ -72,6 +72,6 @@ package Gtk.Buildable is
 
 private
 
-Null_Gtk_Buildable : constant Gtk_Buildable :=
-   Gtk_Buildable (Glib.Types.Null_Interface);
+   Null_Gtk_Buildable : constant Gtk_Buildable :=
+      Gtk_Buildable (Glib.Types.Null_Interface);
 end Gtk.Buildable;

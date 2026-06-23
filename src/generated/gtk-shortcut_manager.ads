@@ -87,6 +87,6 @@ package Gtk.Shortcut_Manager is
 
 private
 
-Null_Gtk_Shortcut_Manager : constant Gtk_Shortcut_Manager :=
-   Gtk_Shortcut_Manager (Glib.Types.Null_Interface);
+   Null_Gtk_Shortcut_Manager : constant Gtk_Shortcut_Manager :=
+      Gtk_Shortcut_Manager (Glib.Types.Null_Interface);
 end Gtk.Shortcut_Manager;

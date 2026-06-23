@@ -157,6 +157,6 @@ package Glib.Loadable_Icon is
 
 private
 
-Null_Gloadable_Icon : constant Gloadable_Icon :=
-   Gloadable_Icon (Glib.Types.Null_Interface);
+   Null_Gloadable_Icon : constant Gloadable_Icon :=
+      Gloadable_Icon (Glib.Types.Null_Interface);
 end Glib.Loadable_Icon;

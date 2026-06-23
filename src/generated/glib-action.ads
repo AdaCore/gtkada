@@ -387,6 +387,6 @@ private
    Enabled_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("enabled");
 
-Null_Gaction : constant Gaction :=
-   Gaction (Glib.Types.Null_Interface);
+   Null_Gaction : constant Gaction :=
+      Gaction (Glib.Types.Null_Interface);
 end Glib.Action;

@@ -94,6 +94,6 @@ package Gtk.Native is
 
 private
 
-Null_Gtk_Native : constant Gtk_Native :=
-   Gtk_Native (Glib.Types.Null_Interface);
+   Null_Gtk_Native : constant Gtk_Native :=
+      Gtk_Native (Glib.Types.Null_Interface);
 end Gtk.Native;

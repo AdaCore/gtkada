@@ -121,7 +121,7 @@ package Gdk.Frame_Timings is
    --  If Timings is no longer referenced, it will be freed.
 
 private
-
-   Null_Gdk_Frame_Timings : constant Gdk_Frame_Timings := (Glib.C_Boxed with null record);
+   Null_Gdk_Frame_Timings : constant Gdk_Frame_Timings :=
+      (Glib.C_Boxed with null record);
 
 end Gdk.Frame_Timings;
