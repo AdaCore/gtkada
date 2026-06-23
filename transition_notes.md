@@ -91,7 +91,7 @@ GFile.toml:
 
 GInputStream.toml
 
-- when done, reactivate bindings in GdkClipboard.toml, GLoadableIcon.toml, GResource.toml
+- when done, reactivate bindings in GdkClipboard.toml, GLoadableIcon.toml, GResource.toml, GdkDrop.toml
 
 GOutputStream.toml
 

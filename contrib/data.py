@@ -107,6 +107,7 @@ binding = (
     "--GdkDragContext",
     "GdkDrawContext",
     "--GdkDrawingContext",
+    "GdkDrop",
     "--GdkEvent",
     "GdkFrameClock",
     "GdkFrameTimings",
