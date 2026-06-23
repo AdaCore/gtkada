@@ -1,0 +1,28 @@
+# ============================================================
+#   GdkDrag
+# ============================================================
+
+[[enum]]
+ctype = "GdkDragAction"
+ada = "Drag_Action"
+prefix = "GDK_DRAG_ACTION_"
+
+[[enum]]
+ctype = "GdkDragCancelReason"
+ada = "Drag_Cancel_Reason"
+prefix = "GDK_DRAG_CANCEL_"
+
+[[method]]
+id = "gdk_drag_begin"
+ada = "Begin_Drag"
+
+[[extra.with_body]]
+pkg = "System"
+use = false
+
+[extra]
+body = '''
+
+   function Unchecked_To_Drag_Cancel_Reason is new
+     Glib.Values.Unsafe_Enum_Nth (Drag_Cancel_Reason);
+       '''

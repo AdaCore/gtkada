@@ -1,0 +1,54 @@
+# ============================================================
+#   GdkSeat
+# ============================================================
+
+ada_access_root = true
+
+[[enum]]
+ctype = "GdkSeatCapabilities"
+ada = "Seat_Capabilities"
+prefix = "GDK_SEAT_CAPABILITY_"
+
+[[list]]
+ctype = "GdkSeat*"
+ada   = "Seat_List"
+
+[[method]]
+id = "gdk_seat_get_devices"
+return = "DeviceList"
+
+[[method]]
+id = "gdk_seat_get_tools"
+return = "DeviceToolList"
+
+[[method]]
+id = "::device-added"
+
+[[method.parameter]]
+name = "device"
+ctype = "GdkDevice*"
+
+[[method]]
+id = "::device-removed"
+
+[[method.parameter]]
+name = "device"
+ctype = "GdkDevice*"
+
+[[method]]
+id = "::tool-added"
+
+[[method.parameter]]
+name = "tool"
+ctype = "GdkDeviceTool*"
+
+[[method]]
+id = "::tool-removed"
+
+[[method.parameter]]
+name = "tool"
+ctype = "GdkDeviceTool*"
+
+[[extra.with_spec]]
+pkg = "System"
+use = false

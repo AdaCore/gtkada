@@ -1,0 +1,17 @@
+# ============================================================
+#   GdkDrop
+# ============================================================
+
+[[method]]
+id = "gdk_drop_read_async"
+bind = false
+# Array of mime types parameter
+
+[[method]]
+id = "gdk_drop_read_finish"
+bind = false
+# No GInputStream binding
+
+[[extra.with_body]]
+pkg = "System"
+use = false

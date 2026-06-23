@@ -40,9 +40,10 @@ package body Gtk.Tree_View_Column is
    end Convert;
 
    function Convert (R : System.Address) return Gtk.Tree_View_Column.Gtk_Tree_View_Column is
-      Stub : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;begin
-         return Gtk.Tree_View_Column.Gtk_Tree_View_Column (Glib.Object.Get_User_Data (R, Stub));
-      end Convert;
+      Stub : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
+   begin
+      return Gtk.Tree_View_Column.Gtk_Tree_View_Column (Glib.Object.Get_User_Data (R, Stub));
+   end Convert;
 
    procedure C_Gtk_Cell_Layout_Set_Cell_Data_Func
       (Self      : System.Address;

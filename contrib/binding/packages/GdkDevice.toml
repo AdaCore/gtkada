@@ -7,15 +7,14 @@ ada_access_root = true
 [[enum]]
 ctype = "GdkInputSource"
 
+[[list]]
+ctype = "GdkDevice*"
+ada   = "Device_List"
+
 [[method]]
 id = "gdk_device_get_modifier_state"
 bind = false
 # No GdkModifierType binding
-
-[[method]]
-id = "gdk_device_get_seat"
-bind = false
-# No GdkSeat binding
 
 [[method]]
 id = "::tool-changed"
@@ -24,7 +23,7 @@ id = "::tool-changed"
 name = "tool"
 ctype = "GdkDeviceTool*"
 
-[[extra.with_body]]
+[[extra.with_spec]]
 pkg = "System"
 use = false
 

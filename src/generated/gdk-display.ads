@@ -43,6 +43,7 @@ with Gdk.Device;
 with Gdk.Dmabuf_Formats; use Gdk.Dmabuf_Formats;
 with Gdk.GLContext;      use Gdk.GLContext;
 with Gdk.Monitor;        use Gdk.Monitor;
+with Gdk.Seat;           use Gdk.Seat;
 with Gdk.Surface;
 with Glib;               use Glib;
 with Glib.List_Model;    use Glib.List_Model;
@@ -110,6 +111,13 @@ package Gdk.Display is
        return Gdk.Clipboard.Gdk_Clipboard;
    --  Gets the clipboard used for copy/paste operations.
    --  @return the display's clipboard
+
+   function Get_Default_Seat
+      (Self : not null access Gdk_Display_Record) return Gdk.Gdk_Seat;
+   --  Returns the default `GdkSeat` for this display.
+   --  Note that a display may not have a seat. In this case, this function
+   --  will return null.
+   --  @return the default seat.
 
    function Get_Dmabuf_Formats
       (Self : not null access Gdk_Display_Record)
@@ -204,6 +212,11 @@ package Gdk.Display is
    --  On modern displays, this value is always True.
    --  @return True if surfaces are created with an alpha channel or False if
    --  the display does not support this functionality.
+
+   function List_Seats
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.Seat.Seat_List.Glist;
+   --  Returns the list of seats known to Display.
 
    procedure Notify_Startup_Complete
       (Self       : not null access Gdk_Display_Record;
@@ -346,17 +359,37 @@ package Gdk.Display is
    --  Emitted when the connection to the windowing system for Display is
    --  opened.
 
+   type Cb_Gdk_Display_Gdk_Seat_Void is not null access procedure
+     (Self : access Gdk_Display_Record'Class;
+      Seat : not null access Gdk.Seat.Gdk_Seat_Record'Class);
+
+   type Cb_GObject_Gdk_Seat_Void is not null access procedure
+     (Self : access Glib.Object.GObject_Record'Class;
+      Seat : not null access Gdk.Seat.Gdk_Seat_Record'Class);
+
    Signal_Seat_Added : constant Glib.Signal_Name := "seat-added";
+   procedure On_Seat_Added
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_Gdk_Display_Gdk_Seat_Void;
+       After : Boolean := False);
+   procedure On_Seat_Added
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_GObject_Gdk_Seat_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted whenever a new seat is made known to the windowing system.
-   --    procedure Handler
-   --       (Self : access Gdk_Display_Record'Class;
-   --        Seat : Seat)
 
    Signal_Seat_Removed : constant Glib.Signal_Name := "seat-removed";
+   procedure On_Seat_Removed
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_Gdk_Display_Gdk_Seat_Void;
+       After : Boolean := False);
+   procedure On_Seat_Removed
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_GObject_Gdk_Seat_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Emitted whenever a seat is removed by the windowing system.
-   --    procedure Handler
-   --       (Self : access Gdk_Display_Record'Class;
-   --        Seat : Seat)
 
    type Cb_Gdk_Display_UTF8_String_Void is not null access procedure
      (Self    : access Gdk_Display_Record'Class;

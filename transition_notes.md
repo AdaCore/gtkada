@@ -91,7 +91,7 @@ GFile.toml:
 
 GInputStream.toml
 
-- when done, reactivate bindings in GdkClipboard.toml, GLoadableIcon.toml, GResource.toml
+- when done, reactivate bindings in GdkClipboard.toml, GLoadableIcon.toml, GResource.toml, GdkDrop.toml
 
 GOutputStream.toml
 
@@ -129,14 +129,6 @@ GdkModifierType:
 
 - when done, reactivate bindings in GdkDevice.toml, GtkDisplay.toml,
   GdkSurface.toml, GtkTreeView.toml, GdkDevice.toml, GtkCellRendererAccel.toml
-
-GdkSeat.toml:
-
-- when done, reactivate bindings in GdkDevice.toml, GdkDisplay.toml
-
-GdkSeat.toml:
-
-- when done, reactivate bindings in GdkDevice.toml
 
 GtkApplication.toml:
 

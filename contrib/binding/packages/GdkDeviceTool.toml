@@ -8,6 +8,10 @@ ctype = "GdkDeviceToolType"
 [[enum]]
 ctype = "GdkAxisFlags"
 
-[[extra.with_body]]
+[[list]]
+ctype = "GdkDeviceTool*"
+ada   = "Device_Tool_List"
+
+[[extra.with_spec]]
 pkg = "System"
 use = false
