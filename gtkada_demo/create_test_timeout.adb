@@ -21,20 +21,20 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib;       use Glib;
-with Gtk.Box;    use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Label;  use Gtk.Label;
-with Glib.Main;  use Glib.Main;
-with Gtk.Widget; use Gtk.Widget;
-with Gtk;        use Gtk;
-with Common;     use Common;
+with Glib;        use Glib;
+with Glib.Main;   use Glib.Main;
+with Glib.Object; use Glib.Object;
+with Gtk.Box;     use Gtk.Box;
+with Gtk.Button;  use Gtk.Button;
+with Gtk.Enums;   use Gtk.Enums;
+with Gtk.Label;   use Gtk.Label;
+with Gtk.Widget;  use Gtk.Widget;
 
 package body Create_Test_Timeout is
 
    package Label_Timeout is new Glib.Main.Generic_Sources (Gtk_Label);
 
-   Timeout : G_Source_Id;
+   Timeout : G_Source_Id := 0;
    Count   : Integer := 0;
 
    ----------
@@ -55,7 +55,7 @@ package body Create_Test_Timeout is
    function Timeout_Test (Label : Gtk_Label) return Boolean is
    begin
       Count := Count + 1;
-      Set_Text (Label, "count:" & Integer'Image (Count));
+      Label.Set_Text ("count:" & Integer'Image (Count));
       return True;
    end Timeout_Test;
 
@@ -63,7 +63,7 @@ package body Create_Test_Timeout is
    -- Stop_Timeout --
    ------------------
 
-   procedure Stop_Timeout (Object : access Gtk_Widget_Record'Class) is
+   procedure Stop_Timeout (Object : access GObject_Record'Class) is
       pragma Unreferenced (Object);
    begin
       if Timeout /= 0 then
@@ -77,11 +77,11 @@ package body Create_Test_Timeout is
    -- Start_Timeout --
    -------------------
 
-   procedure Start_Timeout (Label : access Gtk_Label_Record'Class) is
+   procedure Start_Timeout (Object : access GObject_Record'Class) is
    begin
       if Timeout = 0 then
          Timeout := Label_Timeout.Timeout_Add
-           (100, Timeout_Test'Access, Gtk_Label (Label));
+           (100, Timeout_Test'Access, Gtk_Label (Object));
       end if;
    end Start_Timeout;
 
@@ -90,33 +90,34 @@ package body Create_Test_Timeout is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Button   : Gtk_Button;
-      Label    : Gtk_Label;
-      Box      : Gtk_Box;
+      Button : Gtk_Button;
+      Label  : Gtk_Label;
+      Box    : Gtk_Box;
 
    begin
       Set_Label (Frame, "Timeout Test");
-      Gtk_New_Vbox (Box, Homogeneous => False, Spacing => 0);
-      Add (Frame, Box);
+      Gtk_New (Box, Orientation_Vertical, Spacing => 0);
+      Box.Set_Homogeneous (False);
+      Frame.Set_Child (Box);
 
       Gtk_New (Label, "count : 0");
-      Set_Padding (Label, 10, 10);
-      Pack_Start (Box, Label, False, False, 0);
+      Label.Set_Margin_Start (10);
+      Label.Set_Margin_End (10);
+      Label.Set_Margin_Top (10);
+      Label.Set_Margin_Bottom (10);
+      Box.Append (Label);
 
       Gtk_New (Button, "start");
-      Label_Handler.Object_Connect
-        (Button, "clicked", Start_Timeout'Access, Slot_Object => Label);
-      Button.Set_Can_Default (True);
-      Pack_Start (Box, Button, False, False, 0);
+      Button.On_Clicked (Start_Timeout'Access, Slot => Label);
+      Box.Append (Button);
 
       Gtk_New (Button, "stop");
-      Widget_Handler.Object_Connect
-        (Button, "clicked", Stop_Timeout'Access, Slot_Object => Frame);
-      Pack_Start (Box, Button, False, False, 0);
+      Button.On_Clicked (Stop_Timeout'Access, Slot => Frame);
+      Box.Append (Button);
 
-      Widget_Handler.Connect (Box, "destroy", Stop_Timeout'Access);
-
-      Show_All (Frame);
+      --  Stop the timer when the demo is swapped out, so the periodic
+      --  callback never references a destroyed label.
+      Box.On_Destroy (Stop_Timeout'Access, Slot => Box);
    end Run;
 
 end Create_Test_Timeout;

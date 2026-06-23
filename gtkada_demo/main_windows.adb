@@ -123,7 +123,7 @@ with Create_Spin;
 --  with Create_Splittable;
 --  with Create_Task_Monitor;
 --  with Create_Test_Idle;
---  with Create_Test_Timeout;
+with Create_Test_Timeout;
 with Create_Text_View;
 with Create_Toggle_Buttons;
 with Create_Tooltips;
@@ -199,7 +199,11 @@ package body Main_Windows is
       To_Demo
         ("Reparent", Create_Reparent.Run'Access, Create_Reparent.Help'Access),
       To_Demo
-        ("Tooltips", Create_Tooltips.Run'Access, Create_Tooltips.Help'Access));
+        ("Tooltips", Create_Tooltips.Run'Access, Create_Tooltips.Help'Access),
+      To_Demo
+        ("Timeout",
+         Create_Test_Timeout.Run'Access,
+         Create_Test_Timeout.Help'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.
 
