@@ -47,9 +47,10 @@ package body Gtk.Widget is
    end Convert;
 
    function Convert (R : System.Address) return Gtk.Widget.Gtk_Widget is
-      Stub : Gtk.Widget.Gtk_Widget_Record;begin
-         return Gtk.Widget.Gtk_Widget (Glib.Object.Get_User_Data (R, Stub));
-      end Convert;
+      Stub : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget (Glib.Object.Get_User_Data (R, Stub));
+   end Convert;
 
 
    procedure Inherited_Measure
