@@ -103,6 +103,7 @@ binding = (
     "GdkDeviceTool",
     "GdkDisplay",
     "GdkDmabufFormats",
+    "GdkDrag",
     "--GdkDragContext",
     "GdkDrawContext",
     "--GdkDrawingContext",
