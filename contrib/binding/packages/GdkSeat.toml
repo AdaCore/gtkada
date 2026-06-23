@@ -9,6 +9,10 @@ ctype = "GdkSeatCapabilities"
 ada = "Seat_Capabilities"
 prefix = "GDK_SEAT_CAPABILITY_"
 
+[[list]]
+ctype = "GdkSeat*"
+ada   = "Seat_List"
+
 [[method]]
 id = "gdk_seat_get_devices"
 return = "DeviceList"
@@ -45,6 +49,6 @@ id = "::tool-removed"
 name = "tool"
 ctype = "GdkDeviceTool*"
 
-[[extra.with_body]]
+[[extra.with_spec]]
 pkg = "System"
 use = false

@@ -29,9 +29,19 @@ with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-with System;
 
 package body Gdk.Seat is
+
+   function Convert (R : Gdk.Gdk_Seat) return System.Address is
+   begin
+      return Get_Object (R);
+   end Convert;
+
+   function Convert (R : System.Address) return Gdk.Gdk_Seat is
+      Stub : Gdk.Seat.Gdk_Seat_Record;
+   begin
+      return Gdk.Gdk_Seat (Glib.Object.Get_User_Data (R, Stub));
+   end Convert;
 
    package Type_Conversion_Gdk_Seat is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gdk_Seat_Record);

@@ -28,8 +28,10 @@ with Gdk.Device;              use Gdk.Device;
 with Gdk.Device_Tool;         use Gdk.Device_Tool;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Glist;              use Glib.Glist;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
+with System;
 
 package Gdk.Seat is
 
@@ -48,6 +50,10 @@ package Gdk.Seat is
    Tablet_Pad : constant Seat_Capabilities := 16;
    All_Pointing : constant Seat_Capabilities := 7;
    All_Capabilities : constant Seat_Capabilities := 31;
+
+   function Convert (R : Gdk.Gdk_Seat) return System.Address;
+   function Convert (R : System.Address) return Gdk.Gdk_Seat;
+   package Seat_List is new Generic_List (Gdk.Gdk_Seat);
 
    ----------------------------
    -- Enumeration Properties --
