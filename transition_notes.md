@@ -130,10 +130,6 @@ GdkModifierType:
 - when done, reactivate bindings in GdkDevice.toml, GtkDisplay.toml,
   GdkSurface.toml, GtkTreeView.toml, GdkDevice.toml, GtkCellRendererAccel.toml
 
-GdkSeat.toml:
-
-- when done, reactivate bindings in GdkDisplay.toml
-
 GtkApplication.toml:
 
 - when done, reactivate bindings in GtkWindow.toml

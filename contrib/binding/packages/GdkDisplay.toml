@@ -10,14 +10,8 @@ bind = false
 # No GdkAppLaunchContext binding
 
 [[method]]
-id = "gdk_display_get_default_seat"
-bind = false
-# No GdkSeat binding
-
-[[method]]
 id = "gdk_display_list_seats"
-bind = false
-# No GdkSeat binding
+return = "SeatList"
 
 [[method]]
 id = "gdk_display_map_keycode"
@@ -36,11 +30,17 @@ bind = false
 
 [[method]]
 id = "::seat-added"
-bind = false
+
+[[method.parameter]]
+name = "seat"
+ctype = "GdkSeat*"
 
 [[method]]
 id = "::seat-removed"
-bind = false
+
+[[method.parameter]]
+name = "seat"
+ctype = "GdkSeat*"
 
 [[method]]
 id = "gdk_display_put_event"

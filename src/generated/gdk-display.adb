@@ -118,6 +118,20 @@ package body Gdk.Display is
       return Gdk.Clipboard.Gdk_Clipboard (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Clipboard));
    end Get_Clipboard;
 
+   ----------------------
+   -- Get_Default_Seat --
+   ----------------------
+
+   function Get_Default_Seat
+      (Self : not null access Gdk_Display_Record) return Gdk.Gdk_Seat
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_display_get_default_seat");
+      Stub_Gdk_Seat : Gdk.Seat.Gdk_Seat_Record;
+   begin
+      return Gdk.Gdk_Seat (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Seat));
+   end Get_Default_Seat;
+
    ------------------------
    -- Get_Dmabuf_Formats --
    ------------------------
@@ -271,6 +285,22 @@ package body Gdk.Display is
       return Internal (Get_Object (Self)) /= 0;
    end Is_Rgba;
 
+   ----------------
+   -- List_Seats --
+   ----------------
+
+   function List_Seats
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.Seat.Seat_List.Glist
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_display_list_seats");
+      Tmp_Return : Gdk.Seat.Seat_List.Glist;
+   begin
+      Gdk.Seat.Seat_List.Set_Object (Tmp_Return, Internal (Get_Object (Self)));
+      return Tmp_Return;
+   end List_Seats;
+
    -----------------------------
    -- Notify_Startup_Complete --
    -----------------------------
@@ -394,6 +424,16 @@ package body Gdk.Display is
      (System.Address, Cb_GObject_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gdk_Display_Gdk_Seat_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gdk_Display_Gdk_Seat_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gdk_Seat_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gdk_Seat_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gdk_Display_UTF8_String_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
      (System.Address, Cb_Gdk_Display_UTF8_String_Void);
@@ -413,6 +453,12 @@ package body Gdk.Display is
       (Object  : access Gdk_Display_Record'Class;
        C_Name  : Glib.Signal_Name;
        Handler : Cb_Gdk_Display_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gdk_Display_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gdk_Display_Gdk_Seat_Void;
        After   : Boolean);
 
    procedure Connect
@@ -438,6 +484,13 @@ package body Gdk.Display is
    procedure Connect_Slot
       (Object  : access Gdk_Display_Record'Class;
        C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gdk_Seat_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gdk_Display_Record'Class;
+       C_Name  : Glib.Signal_Name;
        Handler : Cb_GObject_UTF8_String_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
@@ -450,6 +503,15 @@ package body Gdk.Display is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Boolean_Void);
+
+   procedure Marsh_GObject_Gdk_Seat_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gdk_Seat_Void);
 
    procedure Marsh_GObject_UTF8_String_Void
       (Closure         : GClosure;
@@ -477,6 +539,15 @@ package body Gdk.Display is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_Gdk_Display_Boolean_Void);
+
+   procedure Marsh_Gdk_Display_Gdk_Seat_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gdk_Display_Gdk_Seat_Void);
 
    procedure Marsh_Gdk_Display_UTF8_String_Void
       (Closure         : GClosure;
@@ -530,6 +601,25 @@ package body Gdk.Display is
         (Object      => Object,
          C_Name      => C_Name,
          Marshaller  => Marsh_Gdk_Display_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gdk_Display_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gdk_Display_Gdk_Seat_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gdk_Display_Gdk_Seat_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -602,6 +692,27 @@ package body Gdk.Display is
    procedure Connect_Slot
       (Object  : access Gdk_Display_Record'Class;
        C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gdk_Seat_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gdk_Seat_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gdk_Display_Record'Class;
+       C_Name  : Glib.Signal_Name;
        Handler : Cb_GObject_UTF8_String_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
@@ -635,6 +746,26 @@ package body Gdk.Display is
       H (Obj, Unchecked_To_Boolean (Params, 1));
       exception when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean_Void;
+
+   ---------------------------------
+   -- Marsh_GObject_Gdk_Seat_Void --
+   ---------------------------------
+
+   procedure Marsh_GObject_Gdk_Seat_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gdk_Seat_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, Gdk.Gdk_Seat (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_GObject_Gdk_Seat_Void;
 
    ------------------------------------
    -- Marsh_GObject_UTF8_String_Void --
@@ -695,6 +826,26 @@ package body Gdk.Display is
       H (Obj, Unchecked_To_Boolean (Params, 1));
       exception when E : others => Process_Exception (E);
    end Marsh_Gdk_Display_Boolean_Void;
+
+   -------------------------------------
+   -- Marsh_Gdk_Display_Gdk_Seat_Void --
+   -------------------------------------
+
+   procedure Marsh_Gdk_Display_Gdk_Seat_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gdk_Display_Gdk_Seat_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gdk_Display := Gdk_Display (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Gdk.Gdk_Seat (Unchecked_To_Object (Params, 1)));
+      exception when E : others => Process_Exception (E);
+   end Marsh_Gdk_Display_Gdk_Seat_Void;
 
    ----------------------------------------
    -- Marsh_Gdk_Display_UTF8_String_Void --
@@ -789,6 +940,60 @@ package body Gdk.Display is
    begin
       Connect_Slot (Self, "opened" & ASCII.NUL, Call, After, Slot);
    end On_Opened;
+
+   -------------------
+   -- On_Seat_Added --
+   -------------------
+
+   procedure On_Seat_Added
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_Gdk_Display_Gdk_Seat_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "seat-added" & ASCII.NUL, Call, After);
+   end On_Seat_Added;
+
+   -------------------
+   -- On_Seat_Added --
+   -------------------
+
+   procedure On_Seat_Added
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_GObject_Gdk_Seat_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "seat-added" & ASCII.NUL, Call, After, Slot);
+   end On_Seat_Added;
+
+   ---------------------
+   -- On_Seat_Removed --
+   ---------------------
+
+   procedure On_Seat_Removed
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_Gdk_Display_Gdk_Seat_Void;
+       After : Boolean := False)
+   is
+   begin
+      Connect (Self, "seat-removed" & ASCII.NUL, Call, After);
+   end On_Seat_Removed;
+
+   ---------------------
+   -- On_Seat_Removed --
+   ---------------------
+
+   procedure On_Seat_Removed
+      (Self  : not null access Gdk_Display_Record;
+       Call  : Cb_GObject_Gdk_Seat_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False)
+   is
+   begin
+      Connect_Slot (Self, "seat-removed" & ASCII.NUL, Call, After, Slot);
+   end On_Seat_Removed;
 
    ------------------------
    -- On_Setting_Changed --
