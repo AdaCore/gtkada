@@ -199,7 +199,7 @@ coverage-test: coverage-build
 	rm -rf gnatcov_traces
 	mkdir -p gnatcov_traces
 	export GNATCOV_TRACE_FILE=$$(pwd)/gnatcov_traces/ && \
-	python testsuite/testsuite.py
+	${PYTHON} testsuite/testsuite.py
 
 coverage-report:
 # Create a report from the traces; use the HTML and Cobertura formats for
