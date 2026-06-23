@@ -107,7 +107,7 @@ GdkDragContext.toml:
 
 GdkEvent.toml:
 
-- when done, reactivate bindings in GtkDisplay.toml, GtkCellArea.toml, GtkCellEditable.toml, GtkCellRenderer.toml
+- when done, reactivate bindings in GtkDisplay.toml, GtkCellArea.toml, GtkCellEditable.toml
 
 GdkPixbuf.toml:
 
@@ -218,9 +218,7 @@ Three methods are suppressed in
 `contrib/binding/packages/GtkCellRenderer.toml` pending bindings for
 the following types:
 
-- `gtk_cell_renderer_activate` — needs `GdkEvent`.
 - `gtk_cell_renderer_snapshot` — needs `GtkSnapshot`.
-- `gtk_cell_renderer_start_editing` — needs `GdkEvent`.
 
 Revisit and re-enable these once `GdkEvent` and `GtkSnapshot` are
 bound for gtk4.

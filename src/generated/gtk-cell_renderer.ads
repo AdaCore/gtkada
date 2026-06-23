@@ -60,6 +60,7 @@
 --  <group>Trees and Lists</group>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Event;               use Gdk.Event;
 with Gdk.RGBA;                use Gdk.RGBA;
 with Gdk.Rectangle;           use Gdk.Rectangle;
 with Glib;                    use Glib;
@@ -125,6 +126,30 @@ package Gtk.Cell_Renderer is
    -------------
    -- Methods --
    -------------
+
+   function Activate
+      (Cell            : not null access Gtk_Cell_Renderer_Record;
+       Event           : Gdk.Event.Gdk_Event;
+       Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Path            : UTF8_String;
+       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
+       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+       Flags           : Gtk_Cell_Renderer_State) return Boolean;
+   pragma Obsolescent (Activate);
+   --  Passes an activate event to the cell renderer for possible processing.
+   --  Some cell renderers may use events; for example, `GtkCellRendererToggle`
+   --  toggles when it gets a mouse click.
+   --  Deprecated since 4.10, 1
+   --  @param Event a `GdkEvent`
+   --  @param Widget widget that received the event
+   --  @param Path widget-dependent string representation of the event
+   --  location; e.g. for `GtkTreeView`, a string representation of
+   --  `GtkTreePath`
+   --  @param Background_Area background area as passed to
+   --  gtk_cell_renderer_render
+   --  @param Cell_Area cell area as passed to gtk_cell_renderer_render
+   --  @param Flags render flags
+   --  @return True if the event was consumed/handled
 
    procedure Get_Aligned_Area
       (Cell         : not null access Gtk_Cell_Renderer_Record;
@@ -360,6 +385,32 @@ package Gtk.Cell_Renderer is
    --  Checks whether the cell renderer can do something when activated.
    --  Deprecated since 4.10, 1
    --  @return True if the cell renderer can do anything when activated
+
+   function Start_Editing
+      (Cell            : not null access Gtk_Cell_Renderer_Record;
+       Event           : Gdk.Event.Gdk_Event;
+       Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Path            : UTF8_String;
+       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
+       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+       Flags           : Gtk_Cell_Renderer_State)
+       return Gtk.Cell_Editable.Gtk_Cell_Editable;
+   pragma Obsolescent (Start_Editing);
+   --  Starts editing the contents of this Cell, through a new
+   --  `GtkCellEditable` widget created by the
+   --  `GtkCellRenderer`Class.start_editing virtual function.
+   --  Deprecated since 4.10, 1
+   --  @param Event a `GdkEvent`
+   --  @param Widget widget that received the event
+   --  @param Path widget-dependent string representation of the event
+   --  location; e.g. for `GtkTreeView`, a string representation of
+   --  `GtkTreePath`
+   --  @param Background_Area background area as passed to
+   --  gtk_cell_renderer_render
+   --  @param Cell_Area cell area as passed to gtk_cell_renderer_render
+   --  @param Flags render flags
+   --  @return A new `GtkCellEditable` for editing this Cell, or null if
+   --  editing is not possible
 
    procedure Stop_Editing
       (Cell     : not null access Gtk_Cell_Renderer_Record;

@@ -49,6 +49,36 @@ package body Gtk.Cell_Renderer is
      (Get_Type'Access, Gtk_Cell_Renderer_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Cell_Renderer);
 
+   --------------
+   -- Activate --
+   --------------
+
+   function Activate
+      (Cell            : not null access Gtk_Cell_Renderer_Record;
+       Event           : Gdk.Event.Gdk_Event;
+       Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Path            : UTF8_String;
+       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
+       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+       Flags           : Gtk_Cell_Renderer_State) return Boolean
+   is
+      function Internal
+         (Cell            : System.Address;
+          Event           : System.Address;
+          Widget          : System.Address;
+          Path            : Gtkada.Types.Chars_Ptr;
+          Background_Area : Gdk.Rectangle.Gdk_Rectangle;
+          Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+          Flags           : Gtk_Cell_Renderer_State) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_cell_renderer_activate");
+      Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
+      Tmp_Return : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Cell), Get_Object (Event), Get_Object (Widget), Tmp_Path, Background_Area, Cell_Area, Flags);
+      Free (Tmp_Path);
+      return Tmp_Return /= 0;
+   end Activate;
+
    ----------------------
    -- Get_Aligned_Area --
    ----------------------
@@ -446,6 +476,38 @@ package body Gtk.Cell_Renderer is
    begin
       Internal (Get_Object (Cell), Boolean'Pos (Visible));
    end Set_Visible;
+
+   -------------------
+   -- Start_Editing --
+   -------------------
+
+   function Start_Editing
+      (Cell            : not null access Gtk_Cell_Renderer_Record;
+       Event           : Gdk.Event.Gdk_Event;
+       Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Path            : UTF8_String;
+       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
+       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+       Flags           : Gtk_Cell_Renderer_State)
+       return Gtk.Cell_Editable.Gtk_Cell_Editable
+   is
+      function Internal
+         (Cell            : System.Address;
+          Event           : System.Address;
+          Widget          : System.Address;
+          Path            : Gtkada.Types.Chars_Ptr;
+          Background_Area : Gdk.Rectangle.Gdk_Rectangle;
+          Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+          Flags           : Gtk_Cell_Renderer_State)
+          return Gtk.Cell_Editable.Gtk_Cell_Editable;
+      pragma Import (C, Internal, "gtk_cell_renderer_start_editing");
+      Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
+      Tmp_Return : Gtk.Cell_Editable.Gtk_Cell_Editable;
+   begin
+      Tmp_Return := Internal (Get_Object (Cell), Get_Object (Event), Get_Object (Widget), Tmp_Path, Background_Area, Cell_Area, Flags);
+      Free (Tmp_Path);
+      return Tmp_Return;
+   end Start_Editing;
 
    ------------------
    -- Stop_Editing --
