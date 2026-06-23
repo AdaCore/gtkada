@@ -24,9 +24,19 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
-with System;
 
 package body Gdk.Device_Tool is
+
+   function Convert (R : Gdk.Device_Tool.Gdk_Device_Tool) return System.Address is
+   begin
+      return Get_Object (R);
+   end Convert;
+
+   function Convert (R : System.Address) return Gdk.Device_Tool.Gdk_Device_Tool is
+      Stub : Gdk.Device_Tool.Gdk_Device_Tool_Record;
+   begin
+      return Gdk.Device_Tool.Gdk_Device_Tool (Glib.Object.Get_User_Data (R, Stub));
+   end Convert;
 
    package Type_Conversion_Gdk_Device_Tool is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gdk_Device_Tool_Record);

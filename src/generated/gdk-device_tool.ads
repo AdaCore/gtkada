@@ -26,8 +26,10 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Glist;              use Glib.Glist;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
+with System;
 
 package Gdk.Device_Tool is
 
@@ -62,6 +64,10 @@ package Gdk.Device_Tool is
    Gdk_Axis_Flag_Distance : constant Gdk_Axis_Flags := 512;
    Gdk_Axis_Flag_Rotation : constant Gdk_Axis_Flags := 1024;
    Gdk_Axis_Flag_Slider : constant Gdk_Axis_Flags := 2048;
+
+   function Convert (R : Gdk.Device_Tool.Gdk_Device_Tool) return System.Address;
+   function Convert (R : System.Address) return Gdk.Device_Tool.Gdk_Device_Tool;
+   package Device_Tool_List is new Generic_List (Gdk.Device_Tool.Gdk_Device_Tool);
 
    ----------------------------
    -- Enumeration Properties --
