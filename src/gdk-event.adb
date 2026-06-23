@@ -539,6 +539,94 @@ package body Gdk.Event is
       return Self.Data;
    end Get_Object;
 
+   ---------------------
+   -- Is_Button_Event --
+   ---------------------
+
+   function Is_Button_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_button_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Button_Event;
+
+   -----------------------
+   -- Is_Crossing_Event --
+   -----------------------
+
+   function Is_Crossing_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_crossing_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Crossing_Event;
+
+   ---------------------
+   -- Is_Delete_Event --
+   ---------------------
+
+   function Is_Delete_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_delete_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Delete_Event;
+
+   ------------------
+   -- Is_DND_Event --
+   ------------------
+
+   function Is_DND_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_dnd_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_DND_Event;
+
+   --------------------
+   -- Is_Focus_Event --
+   --------------------
+
+   function Is_Focus_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_focus_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Focus_Event;
+
+   --------------------------
+   -- Is_Grab_Broken_Event --
+   --------------------------
+
+   function Is_Grab_Broken_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_grab_broken_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Grab_Broken_Event;
+
+   ------------------
+   -- Is_Key_Event --
+   ------------------
+
+   function Is_Key_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_key_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Key_Event;
+
+   ---------------------
+   -- Is_Motion_Event --
+   ---------------------
+
+   function Is_Motion_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_motion_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Motion_Event;
+
    -------------
    -- Is_Null --
    -------------
@@ -547,6 +635,61 @@ package body Gdk.Event is
    begin
       return Self.Data = System.Null_Address;
    end Is_Null;
+
+   ------------------
+   -- Is_Pad_Event --
+   ------------------
+
+   function Is_Pad_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_pad_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Pad_Event;
+
+   ------------------------
+   -- Is_Proximity_Event --
+   ------------------------
+
+   function Is_Proximity_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_proximity_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Proximity_Event;
+
+   ---------------------
+   -- Is_Scroll_Event --
+   ---------------------
+
+   function Is_Scroll_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_scroll_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Scroll_Event;
+
+   --------------------
+   -- Is_Touch_Event --
+   --------------------
+
+   function Is_Touch_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_touch_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Touch_Event;
+
+   -----------------------
+   -- Is_Touchpad_Event --
+   -----------------------
+
+   function Is_Touchpad_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_touchpad_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Touchpad_Event;
 
    ---------------------------
    -- Triggers_Context_Menu --

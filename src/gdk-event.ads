@@ -149,6 +149,20 @@ package Gdk.Event is
    function As_Touchpad_Event
      (Self : Gdk_Event'Class) return Gdk.Event.Touchpad_Event.Gdk_Touchpad_Event;
 
+   function Is_Button_Event (Self : Gdk_Event'Class) return Boolean;
+   function Is_Crossing_Event (Self : Gdk_Event'Class) return Boolean;
+   function Is_Delete_Event (Self : Gdk_Event'Class) return Boolean;
+   function Is_DND_Event (Self : Gdk_Event'Class) return Boolean;
+   function Is_Focus_Event (Self : Gdk_Event'Class) return Boolean;
+   function Is_Grab_Broken_Event (Self : Gdk_Event'Class) return Boolean;
+   function Is_Key_Event (Self : Gdk_Event'Class) return Boolean;
+   function Is_Motion_Event (Self : Gdk_Event'Class) return Boolean;
+   function Is_Pad_Event (Self : Gdk_Event'Class) return Boolean;
+   function Is_Proximity_Event (Self : Gdk_Event'Class) return Boolean;
+   function Is_Scroll_Event (Self : Gdk_Event'Class) return Boolean;
+   function Is_Touch_Event (Self : Gdk_Event'Class) return Boolean;
+   function Is_Touchpad_Event (Self : Gdk_Event'Class) return Boolean;
+
    function Get_Angle
      (Event_1 : Gdk_Event'Class;
       Event_2 : Gdk_Event'Class;
