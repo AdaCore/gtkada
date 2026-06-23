@@ -117,7 +117,7 @@ binding = (
     "GdkRectangle",
     "--GdkMonitor",
     "--GdkScreen",
-    "--GdkSeat",
+    "GdkSeat",
     "GdkSnapshot",
     "GdkSurface",
     "GdkTexture",
@@ -647,6 +647,7 @@ naming.cname_to_adaname = {
     "GDK_EVENT_LAST": None,
     # ??? Doesn't exist
     "gtk_activatable_get_action": "Gtk.Activatable.Get_Action",
+    "GDK_SEAT_CAPABILITY_ALL": "All_Capabilities",
 }
 
 # Maps GIR's "name" to a "c:type". This isn't needed for the classes

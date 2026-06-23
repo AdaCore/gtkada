@@ -31,11 +31,13 @@
 limited with Gdk.Cicp_Params;
 limited with Gdk.Device;
 limited with Gdk.Display;
+limited with Gdk.Seat;
 limited with Gdk.Surface;
 
 package Gdk is
    type Gdk_Cicp_Params is access all Gdk.Cicp_Params.Gdk_Cicp_Params_Record'Class;
    type Gdk_Device is access all Gdk.Device.Gdk_Device_Record'Class;
    type Gdk_Display is access all Gdk.Display.Gdk_Display_Record'Class;
+   type Gdk_Seat is access all Gdk.Seat.Gdk_Seat_Record'Class;
    type Gdk_Surface is access all Gdk.Surface.Gdk_Surface_Record'Class;
 end Gdk;
