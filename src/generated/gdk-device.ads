@@ -31,9 +31,11 @@ with GNAT.Strings;            use GNAT.Strings;
 with Gdk.Device_Tool;         use Gdk.Device_Tool;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Glist;              use Glib.Glist;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 with Pango.Enums;             use Pango.Enums;
+with System;
 
 package Gdk.Device is
 
@@ -50,6 +52,10 @@ package Gdk.Device is
       Gdk_Source_Tablet_Pad);
    pragma Convention (C, Gdk_Input_Source);
    --  An enumeration describing the type of an input device in general terms.
+
+   function Convert (R : Gdk.Gdk_Device) return System.Address;
+   function Convert (R : System.Address) return Gdk.Gdk_Device;
+   package Device_List is new Generic_List (Gdk.Gdk_Device);
 
    ----------------------------
    -- Enumeration Properties --

@@ -31,9 +31,19 @@ with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
-with System;
 
 package body Gdk.Device is
+
+   function Convert (R : Gdk.Gdk_Device) return System.Address is
+   begin
+      return Get_Object (R);
+   end Convert;
+
+   function Convert (R : System.Address) return Gdk.Gdk_Device is
+      Stub : Gdk.Device.Gdk_Device_Record;
+   begin
+      return Gdk.Gdk_Device (Glib.Object.Get_User_Data (R, Stub));
+   end Convert;
 
    package Type_Conversion_Gdk_Device is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gdk_Device_Record);
