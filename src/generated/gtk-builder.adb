@@ -260,8 +260,7 @@ package body Gtk.Builder is
 
    function Add_From_String
       (Self   : not null access Gtk_Builder_Record;
-       Buffer : UTF8_String;
-       Length : Gssize) return Boolean
+       Buffer : UTF8_String) return Boolean
    is
       function Internal
          (Self   : System.Address;
@@ -271,7 +270,7 @@ package body Gtk.Builder is
       Tmp_Buffer : Gtkada.Types.Chars_Ptr := New_String (Buffer);
       Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Buffer, Length);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Buffer, -1);
       Free (Tmp_Buffer);
       return Tmp_Return /= 0;
    end Add_From_String;
@@ -331,7 +330,6 @@ package body Gtk.Builder is
    function Add_Objects_From_String
       (Self       : not null access Gtk_Builder_Record;
        Buffer     : UTF8_String;
-       Length     : Gssize;
        Object_Ids : GNAT.Strings.String_List) return Boolean
    is
       function Internal
@@ -344,7 +342,7 @@ package body Gtk.Builder is
       Tmp_Object_Ids : Gtkada.Types.chars_ptr_array := From_String_List (Object_Ids);
       Tmp_Return     : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Buffer, Length, Tmp_Object_Ids);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Buffer, -1, Tmp_Object_Ids);
       Gtkada.Types.Free (Tmp_Object_Ids);
       Free (Tmp_Buffer);
       return Tmp_Return /= 0;

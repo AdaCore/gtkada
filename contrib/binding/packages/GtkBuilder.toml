@@ -6,5 +6,19 @@
 ctype = "GtkBuilderError"
 
 [[method]]
+id = "gtk_builder_add_from_string"
+[[method.parameter]]
+name = "length"
+ada = ""
+default = "-1"
+
+[[method]]
+id = "gtk_builder_add_objects_from_string"
+[[method.parameter]]
+name = "length"
+ada = ""
+default = "-1"
+
+[[method]]
 id = "gtk_builder_get_objects"
 return = "ObjectList"
