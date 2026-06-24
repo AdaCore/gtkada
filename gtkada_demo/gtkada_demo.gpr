@@ -21,8 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "../gtkada_shared";
-with "../src/gtkada";
+with "gtkada";
 --  TRANSITION
 --  with "task_project/task_project";
 
@@ -37,11 +36,10 @@ project GtkAda_Demo is
 
    package Compiler is
       --  subprogram specs not required in gtkada_demo
-      for Switches ("Ada") use ("-g", "-O0", "-gnaty-s", "-gnatwJ")
-        & GtkAda_Shared.Adaflags;
+      for Switches ("Ada") use ("-g", "-O0", "-gnaty-s", "-gnatwJ");
    end Compiler;
 
-   package Linker extends GtkAda_Shared.Linker is
+   package Linker is
       for Switches ("gtkada_demo.adb") use ("-lepoxy");
    end Linker;
 

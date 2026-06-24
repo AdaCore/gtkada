@@ -88,8 +88,9 @@ src/gtkada-intl.adb: src/gtkada-intl.gpb Makefile
 	gnatprep -DGETTEXT_INTL=$(GETTEXT_INTL) -DHAVE_GETTEXT=$(HAVE_GETTEXT) src/gtkada-intl.gpb $@
 
 tests:
-	@echo "====== Building tests ====="
-	cd gtkada_demo; ${GPRBUILD_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) -Pgtkada_demo.gpr -aP ../src
+	@echo "====== Building demo ====="
+	cd gtkada_demo; GTKADA_EXTERNALLY_BUILT=yes \
+	   ${GPRBUILD_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) -Pgtkada_demo.gpr -aP ../src
 
 install/%: force
 	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) --build-name=$(@F) \
