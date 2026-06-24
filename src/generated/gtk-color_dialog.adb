@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
@@ -146,16 +147,25 @@ package body Gtk.Color_Dialog is
       (Self   : not null access Gtk_Color_Dialog_Record;
        Result : Glib.G_Async_Result) return Gdk.RGBA.Gdk_RGBA
    is
+      use type Glib.Error.GError;
       function Internal
          (Self   : System.Address;
-          Result : Glib.G_Async_Result) return access Gdk.RGBA.Gdk_RGBA;
+          Result : Glib.G_Async_Result;
+          Error  : access Glib.Error.GError) return access Gdk.RGBA.Gdk_RGBA;
       pragma Import (C, Internal, "gtk_color_dialog_choose_rgba_finish");
       --  gtk_color_dialog_choose_rgba_finish returns a newly allocated
-      --  GdkRGBA* (transfer full), or NULL when the dialog was dismissed.
+      --  GdkRGBA* (transfer full), or NULL when the dialog was dismissed,
+      --  in which case it sets Error.
+      Error : aliased Glib.Error.GError := null;
       Color : constant access Gdk.RGBA.Gdk_RGBA :=
-        Internal (Get_Object (Self), Result);
+        Internal (Get_Object (Self), Result, Error'Access);
    begin
       if Color = null then
+         --  Dismissed (or failed): free any reported error and report no
+         --  colour. The caller treats Null_RGBA as "no colour chosen".
+         if Error /= null then
+            Glib.Error.Error_Free (Error);
+         end if;
          return Gdk.RGBA.Null_RGBA;
       end if;
       return Gdk.RGBA.From_Object_Free (Color);
