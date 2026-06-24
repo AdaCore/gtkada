@@ -920,7 +920,7 @@ class AdaNaming(object):
         """
         name = self.__camel_case_to_ada(name.replace("-", "_")).title()
         # Remove trailing underscores at end
-        name = re.sub(r'[_]+$', r'', name)
+        name = name.rstrip("_")
 
         if protect:
             return self.protect_keywords(name)
