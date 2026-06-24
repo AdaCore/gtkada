@@ -160,7 +160,7 @@ package Gdk.Color_State is
    --  @return the color state object for linearized sRGB
 
 private
-
-   Null_Gdk_Color_State : constant Gdk_Color_State := (Glib.C_Boxed with null record);
+   Null_Gdk_Color_State : constant Gdk_Color_State :=
+      (Glib.C_Boxed with null record);
 
 end Gdk.Color_State;

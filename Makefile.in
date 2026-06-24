@@ -136,7 +136,7 @@ generate:
 	   --toml-dir=contrib/binding/packages \
 	   --ada-output=src/generated/tmp.ada \
 	   --c-output=src/misc_generated.c
-	cd src/generated; gnatchop -gnat05 -q -w tmp.ada
+	cd src/generated; gnatchop -gnat2012 -q -w tmp.ada
 
 clean-generic:
 	-${RM} core
@@ -199,7 +199,7 @@ coverage-test: coverage-build
 	rm -rf gnatcov_traces
 	mkdir -p gnatcov_traces
 	export GNATCOV_TRACE_FILE=$$(pwd)/gnatcov_traces/ && \
-	python testsuite/testsuite.py
+	${PYTHON} testsuite/testsuite.py
 
 coverage-report:
 # Create a report from the traces; use the HTML and Cobertura formats for

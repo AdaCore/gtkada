@@ -701,6 +701,6 @@ package Glib.Action_Group is
 
 private
 
-Null_Gaction_Group : constant Gaction_Group :=
-   Gaction_Group (Glib.Types.Null_Interface);
+   Null_Gaction_Group : constant Gaction_Group :=
+      Gaction_Group (Glib.Types.Null_Interface);
 end Glib.Action_Group;

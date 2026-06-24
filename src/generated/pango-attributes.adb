@@ -44,7 +44,7 @@ package body Pango.Attributes is
 
    function Convert (R : System.Address) return Pango.Attributes.Pango_Attribute is
    begin
-      return Pango.Attributes.Pango_Attribute(Glib.C_Proxy'(Glib.To_Proxy (R)));
+      return Pango.Attributes.Pango_Attribute (Glib.C_Proxy'(Glib.To_Proxy (R)));
    end Convert;
 
    function From_Object_Free

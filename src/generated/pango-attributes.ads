@@ -299,7 +299,7 @@ package Pango.Attributes is
    --  should be freed with Pango.Attributes.Destroy.
 
 private
-
-   Null_Pango_Attr_List : constant Pango_Attr_List := (Glib.C_Boxed with null record);
+   Null_Pango_Attr_List : constant Pango_Attr_List :=
+      (Glib.C_Boxed with null record);
 
 end Pango.Attributes;

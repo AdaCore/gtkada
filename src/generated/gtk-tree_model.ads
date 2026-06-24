@@ -1394,22 +1394,22 @@ package Gtk.Tree_Model is
    --  See Glib.Object.Add_Interface
 
 private
-type Gtk_Tree_Iter is record
-   Stamp : Glib.Gint;
-   User_Data : System.Address := System.Null_Address;
-   User_Data2 : System.Address := System.Null_Address;
-   User_Data3 : System.Address := System.Null_Address;
-end record;
-pragma Convention (C, Gtk_Tree_Iter);
+   type Gtk_Tree_Iter is record
+      Stamp : Glib.Gint;
+      User_Data : System.Address := System.Null_Address;
+      User_Data2 : System.Address := System.Null_Address;
+      User_Data3 : System.Address := System.Null_Address;
+   end record;
+   pragma Convention (C, Gtk_Tree_Iter);
 
 
-Null_Gtk_Tree_Model : constant Gtk_Tree_Model :=
-   Gtk_Tree_Model (Glib.Types.Null_Interface);
+   Null_Gtk_Tree_Model : constant Gtk_Tree_Model :=
+      Gtk_Tree_Model (Glib.Types.Null_Interface);
 
    Null_Iter : constant Gtk_Tree_Iter :=
      (0, System.Null_Address, System.Null_Address, System.Null_Address);
        
-
-   Null_Gtk_Tree_Path : constant Gtk_Tree_Path := (Glib.C_Boxed with null record);
+   Null_Gtk_Tree_Path : constant Gtk_Tree_Path :=
+      (Glib.C_Boxed with null record);
 
 end Gtk.Tree_Model;

@@ -99,6 +99,6 @@ package Gtk.Accessible_Hypertext is
 
 private
 
-Null_Gtk_Accessible_Hypertext : constant Gtk_Accessible_Hypertext :=
-   Gtk_Accessible_Hypertext (Glib.Types.Null_Interface);
+   Null_Gtk_Accessible_Hypertext : constant Gtk_Accessible_Hypertext :=
+      Gtk_Accessible_Hypertext (Glib.Types.Null_Interface);
 end Gtk.Accessible_Hypertext;

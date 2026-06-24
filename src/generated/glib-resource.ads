@@ -338,7 +338,7 @@ package Glib.Resource is
    --  @return a new Glib.Resource.Gresource, or null on error
 
 private
-
-   Null_Gresource : constant Gresource := (Glib.C_Boxed with null record);
+   Null_Gresource : constant Gresource :=
+      (Glib.C_Boxed with null record);
 
 end Glib.Resource;

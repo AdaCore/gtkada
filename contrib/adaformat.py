@@ -873,8 +873,7 @@ class AdaNaming(object):
         self.type_exceptions = {}  # C types to CType instances
 
     def add_type_exception(self, cname, type, override=False):
-        """Declares a new type exception, unless there already existed
-        one for that cname.
+        """Declares a new type exception for <cname>, unless one already exists
         """
         assert isinstance(type, CType)
         if override or cname not in self.type_exceptions:
@@ -920,8 +919,8 @@ class AdaNaming(object):
         into account. This is for packages.
         """
         name = self.__camel_case_to_ada(name.replace("-", "_")).title()
-        if name.endswith("_"):
-            name = name[:-1]
+        # Remove trailing underscores at end
+        name = name.rstrip("_")
 
         if protect:
             return self.protect_keywords(name)
@@ -937,18 +936,8 @@ class AdaNaming(object):
         if not name:
             return name
 
-        result = name[0]
-        prev = result
-
-        for r in name[1:]:
-            if prev != "_" and prev != "." and not prev.isupper() and r.isupper():
-                result += "_%s" % r
-            else:
-                result += r
-
-            prev = r
-
-        return result
+        # Insert '_' between each [lower][UPPER]
+        return re.sub(r'([a-z0-9])([A-Z])', r'\1_\2', name)
 
     def __full_type_from_girname(self, girname):
         """Return the type description from a GIR name"""

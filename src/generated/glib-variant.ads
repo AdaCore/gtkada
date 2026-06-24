@@ -1481,7 +1481,7 @@ package Glib.Variant is
    --  Since 2.24
 
 private
-
-   Null_Gvariant : constant Gvariant := (Glib.C_Boxed with null record);
+   Null_Gvariant : constant Gvariant :=
+      (Glib.C_Boxed with null record);
 
 end Glib.Variant;

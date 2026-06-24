@@ -1068,7 +1068,7 @@ package body Gtk.Tree_Model is
 
    function Convert (R : System.Address) return Gtk.Tree_Model.Gtk_Tree_Path is
    begin
-      return From_Object(R);
+      return From_Object (R);
    end Convert;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion

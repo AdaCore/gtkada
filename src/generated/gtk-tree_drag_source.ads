@@ -157,6 +157,6 @@ package Gtk.Tree_Drag_Source is
 
 private
 
-Null_Gtk_Tree_Drag_Source : constant Gtk_Tree_Drag_Source :=
-   Gtk_Tree_Drag_Source (Glib.Types.Null_Interface);
+   Null_Gtk_Tree_Drag_Source : constant Gtk_Tree_Drag_Source :=
+      Gtk_Tree_Drag_Source (Glib.Types.Null_Interface);
 end Gtk.Tree_Drag_Source;

@@ -279,7 +279,7 @@ package Gtk.Bitset is
    --  freed.
 
 private
-
-   Null_Gtk_Bitset : constant Gtk_Bitset := (Glib.C_Boxed with null record);
+   Null_Gtk_Bitset : constant Gtk_Bitset :=
+      (Glib.C_Boxed with null record);
 
 end Gtk.Bitset;

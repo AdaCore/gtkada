@@ -54,6 +54,6 @@ package Gtk.Constraint_Target is
 
 private
 
-Null_Gtk_Constraint_Target : constant Gtk_Constraint_Target :=
-   Gtk_Constraint_Target (Glib.Types.Null_Interface);
+   Null_Gtk_Constraint_Target : constant Gtk_Constraint_Target :=
+      Gtk_Constraint_Target (Glib.Types.Null_Interface);
 end Gtk.Constraint_Target;

@@ -178,7 +178,7 @@ package Glib.Bytes is
    --  g_free
 
 private
-
-   Null_Gbytes : constant Gbytes := (Glib.C_Boxed with null record);
+   Null_Gbytes : constant Gbytes :=
+      (Glib.C_Boxed with null record);
 
 end Glib.Bytes;

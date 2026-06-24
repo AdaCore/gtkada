@@ -416,6 +416,6 @@ package Gtk.Selection_Model is
 
 private
 
-Null_Gtk_Selection_Model : constant Gtk_Selection_Model :=
-   Gtk_Selection_Model (Glib.Types.Null_Interface);
+   Null_Gtk_Selection_Model : constant Gtk_Selection_Model :=
+      Gtk_Selection_Model (Glib.Types.Null_Interface);
 end Gtk.Selection_Model;

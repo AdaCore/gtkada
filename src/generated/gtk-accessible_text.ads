@@ -339,6 +339,6 @@ package Gtk.Accessible_Text is
 
 private
 
-Null_Gtk_Accessible_Text : constant Gtk_Accessible_Text :=
-   Gtk_Accessible_Text (Glib.Types.Null_Interface);
+   Null_Gtk_Accessible_Text : constant Gtk_Accessible_Text :=
+      Gtk_Accessible_Text (Glib.Types.Null_Interface);
 end Gtk.Accessible_Text;

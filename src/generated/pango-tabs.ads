@@ -125,7 +125,7 @@ package Pango.Tabs is
    --  @param New_Size new size of the array
 
 private
-
-   Null_Pango_Tab_Array : constant Pango_Tab_Array := (Glib.C_Boxed with null record);
+   Null_Pango_Tab_Array : constant Pango_Tab_Array :=
+      (Glib.C_Boxed with null record);
 
 end Pango.Tabs;

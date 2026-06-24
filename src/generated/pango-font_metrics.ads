@@ -127,7 +127,7 @@ package Pango.Font_Metrics is
    --  result is zero, frees the structure and any associated memory.
 
 private
-
-   Null_Pango_Font_Metrics : constant Pango_Font_Metrics := (Glib.C_Boxed with null record);
+   Null_Pango_Font_Metrics : constant Pango_Font_Metrics :=
+      (Glib.C_Boxed with null record);
 
 end Pango.Font_Metrics;

@@ -410,6 +410,6 @@ package Gdk.Paintable is
 
 private
 
-Null_Gdk_Paintable : constant Gdk_Paintable :=
-   Gdk_Paintable (Glib.Types.Null_Interface);
+   Null_Gdk_Paintable : constant Gdk_Paintable :=
+      Gdk_Paintable (Glib.Types.Null_Interface);
 end Gdk.Paintable;

@@ -236,17 +236,17 @@ package Glib.Action_Map is
    --  See Glib.Object.Add_Interface
 
 private
-type GAction_Entry is record
-   Name : Gtkada.Types.Chars_Ptr;
-   Activate : System.Address;
-   Parameter_Type : Gtkada.Types.Chars_Ptr;
-   State : Gtkada.Types.Chars_Ptr;
-   Change_State : System.Address;
-   Padding : array_of_gsize (1 .. 3);
-end record;
-pragma Convention (C, GAction_Entry);
+   type GAction_Entry is record
+      Name : Gtkada.Types.Chars_Ptr;
+      Activate : System.Address;
+      Parameter_Type : Gtkada.Types.Chars_Ptr;
+      State : Gtkada.Types.Chars_Ptr;
+      Change_State : System.Address;
+      Padding : array_of_gsize (1 .. 3);
+   end record;
+   pragma Convention (C, GAction_Entry);
 
 
-Null_Gaction_Map : constant Gaction_Map :=
-   Gaction_Map (Glib.Types.Null_Interface);
+   Null_Gaction_Map : constant Gaction_Map :=
+      Gaction_Map (Glib.Types.Null_Interface);
 end Glib.Action_Map;

@@ -1031,23 +1031,23 @@ package Gtk.Text_Iter is
    --  using Gtkada.Types.g_free.
 
 private
-type Gtk_Text_Iter is record
-   Dummy1 : System.Address := System.Null_Address;
-   Dummy2 : System.Address := System.Null_Address;
-   Dummy3 : Glib.Gint;
-   Dummy4 : Glib.Gint;
-   Dummy5 : Glib.Gint;
-   Dummy6 : Glib.Gint;
-   Dummy7 : Glib.Gint;
-   Dummy8 : Glib.Gint;
-   Dummy9 : System.Address := System.Null_Address;
-   Dummy10 : System.Address := System.Null_Address;
-   Dummy11 : Glib.Gint;
-   Dummy12 : Glib.Gint;
-   Dummy13 : Glib.Gint;
-   Dummy14 : System.Address := System.Null_Address;
-end record;
-pragma Convention (C, Gtk_Text_Iter);
+   type Gtk_Text_Iter is record
+      Dummy1 : System.Address := System.Null_Address;
+      Dummy2 : System.Address := System.Null_Address;
+      Dummy3 : Glib.Gint;
+      Dummy4 : Glib.Gint;
+      Dummy5 : Glib.Gint;
+      Dummy6 : Glib.Gint;
+      Dummy7 : Glib.Gint;
+      Dummy8 : Glib.Gint;
+      Dummy9 : System.Address := System.Null_Address;
+      Dummy10 : System.Address := System.Null_Address;
+      Dummy11 : Glib.Gint;
+      Dummy12 : Glib.Gint;
+      Dummy13 : Glib.Gint;
+      Dummy14 : System.Address := System.Null_Address;
+   end record;
+   pragma Convention (C, Gtk_Text_Iter);
 
 
    Null_Text_Iter : constant Gtk_Text_Iter :=

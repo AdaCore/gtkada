@@ -92,6 +92,6 @@ package Gtk.Root is
 
 private
 
-Null_Gtk_Root : constant Gtk_Root :=
-   Gtk_Root (Glib.Types.Null_Interface);
+   Null_Gtk_Root : constant Gtk_Root :=
+      Gtk_Root (Glib.Types.Null_Interface);
 end Gtk.Root;

@@ -114,7 +114,7 @@ package Gdk.Dmabuf_Formats is
    --  Since: gtk+ 4.14
 
 private
-
-   Null_Gdk_Dmabuf_Formats : constant Gdk_Dmabuf_Formats := (Glib.C_Boxed with null record);
+   Null_Gdk_Dmabuf_Formats : constant Gdk_Dmabuf_Formats :=
+      (Glib.C_Boxed with null record);
 
 end Gdk.Dmabuf_Formats;
