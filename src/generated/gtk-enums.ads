@@ -44,6 +44,17 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Accessible_Text_Content_Change);
    --  The type of contents change operation.
 
+   type Gtk_Builder_Closure_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Builder_Closure_Flags);
+   --  The list of flags that can be passed to Gtk.Builder.Create_Closure.
+   --
+   --  New values may be added in the future for new features, so external
+   --  implementations of [ifaceGtk.BuilderScope] should test the flags for
+   --  unknown values and raise a Gtk.Builder.Builder_Error_Invalid_Attribute
+   --  error when they encounter one.
+
+   Builder_Closure_Swapped : constant Gtk_Builder_Closure_Flags := 1;
+
    type Gtk_Corner_Type is (
       Corner_Top_Left,
       Corner_Bottom_Left,
@@ -77,6 +88,12 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Direction_Type);
    --  Focus movement types.
 
+   type Gtk_Entry_Icon_Position is (
+      Entry_Icon_Primary,
+      Entry_Icon_Secondary);
+   pragma Convention (C, Gtk_Entry_Icon_Position);
+   --  Specifies the side of the entry at which an icon is placed.
+
    type Gtk_Icon_Size is mod 2 ** Integer'Size;
    pragma Convention (C, Gtk_Icon_Size);
    --  Built-in icon sizes.
@@ -91,6 +108,22 @@ package Gtk.Enums is
    Icon_Size_Inherit : constant Gtk_Icon_Size := 0;
    Icon_Size_Normal : constant Gtk_Icon_Size := 1;
    Icon_Size_Large : constant Gtk_Icon_Size := 2;
+
+   type Gtk_Image_Type is (
+      Image_Empty,
+      Image_Icon_Name,
+      Image_Gicon,
+      Image_Paintable);
+   pragma Convention (C, Gtk_Image_Type);
+   --  Describes the image data representation used by a [classGtk.Image].
+   --
+   --  If you want to get the image from the widget, you can only get the
+   --  currently-stored representation; for instance, if the
+   --  gtk_image_get_storage_type returns Gtk.Enums.Image_Paintable, then you
+   --  can call gtk_image_get_paintable.
+   --
+   --  For empty images, you can request any storage type (call any of the
+   --  "get" functions), but they will all return null values.
 
    type Gtk_Baseline_Position is (
       Baseline_Position_Top,
@@ -531,6 +564,10 @@ package Gtk.Enums is
       new Generic_Internal_Discrete_Property (Gtk_Accessible_Text_Content_Change);
    type Property_Gtk_Accessible_Text_Content_Change is new Gtk_Accessible_Text_Content_Change_Properties.Property;
 
+   package Gtk_Builder_Closure_Flags_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Builder_Closure_Flags);
+   type Property_Gtk_Builder_Closure_Flags is new Gtk_Builder_Closure_Flags_Properties.Property;
+
    package Gtk_Corner_Type_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Corner_Type);
    type Property_Gtk_Corner_Type is new Gtk_Corner_Type_Properties.Property;
@@ -543,9 +580,17 @@ package Gtk.Enums is
       new Generic_Internal_Discrete_Property (Gtk_Direction_Type);
    type Property_Gtk_Direction_Type is new Gtk_Direction_Type_Properties.Property;
 
+   package Gtk_Entry_Icon_Position_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Entry_Icon_Position);
+   type Property_Gtk_Entry_Icon_Position is new Gtk_Entry_Icon_Position_Properties.Property;
+
    package Gtk_Icon_Size_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Icon_Size);
    type Property_Gtk_Icon_Size is new Gtk_Icon_Size_Properties.Property;
+
+   package Gtk_Image_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Image_Type);
+   type Property_Gtk_Image_Type is new Gtk_Image_Type_Properties.Property;
 
    package Gtk_Baseline_Position_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Baseline_Position);

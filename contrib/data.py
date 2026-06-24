@@ -26,6 +26,7 @@ interfaces = (
     # "Gtk.AppChooser",
     "--Atk.ImplementorIface",
     "Gtk.Buildable",
+    "Gtk.BuilderScope",
     "Gtk.CellEditable",
     "Gtk.CellLayout",
     "--Gtk.ColorChooser",
@@ -332,7 +333,9 @@ binding = (
     "--GtkBorder",
     "GtkBox",
     "----GtkBooleanCellAccessible",  # We do not support atk
-    "--GtkBuilder",
+    "GtkBuilder",
+    "GtkBuilderCScope",
+    "GtkBuilderListItemFactory",
     "GtkButton",
     "----GtkButtonAccessible",  # We do not support atk
     "--GtkButtonBox",
@@ -379,10 +382,10 @@ binding = (
     "--GtkCssSection",
     "--GtkDialog",
     "--GtkDrawingArea",
-    "--GtkEntry",
+    "GtkEntry",
     "----GtkEntryAccessible",  # We do not support atk
-    "--GtkEntryBuffer",
-    "--GtkEntryCompletion",
+    "GtkEntryBuffer",
+    "GtkEntryCompletion",
     "----GtkEntryIconAccessible",  # We do not support atk
     "--GtkEventBox",
     "--GtkEventController",
@@ -731,6 +734,7 @@ naming.exceptions = {
     "Use": "GUse",
     "Uri": "URI",
     "In": "Gtk_In",
+    # Regular renamings
     "Gtk_Imcontext": "Gtk_IM_Context",
     "Gtk_Imcontext_Simple": "Gtk_IM_Context_Simple",
     "Gtk_Immulticontext": "Gtk_IM_Multi_Context",
@@ -738,6 +742,7 @@ naming.exceptions = {
     "Gicon": "G_Icon",
     "Gtk_Glarea": "Gtk_GLArea",
     "Gdk_Glcontext": "Gdk_GLContext",
+    "Gtk_Builder_Cscope": "Gtk_Builder_C_Scope",
 }
 
 # Maps C types to type descriptions.

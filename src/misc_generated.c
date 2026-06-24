@@ -130,6 +130,18 @@ void gtkada_Accessible_Hypertext_set_get_n_links(GtkAccessibleHypertextInterface
     iface->get_n_links = handler;
 }
 
+void gtkada_Builder_Scope_set_create_closure(GtkBuilderScopeInterface* iface, void* handler) {
+    iface->create_closure = handler;
+}
+
+void gtkada_Builder_Scope_set_get_type_from_function(GtkBuilderScopeInterface* iface, void* handler) {
+    iface->get_type_from_function = handler;
+}
+
+void gtkada_Builder_Scope_set_get_type_from_name(GtkBuilderScopeInterface* iface, void* handler) {
+    iface->get_type_from_name = handler;
+}
+
 void gtkada_Cell_Editable_set_editing_done(GtkCellEditableIface* iface, void* handler) {
     iface->editing_done = handler;
 }

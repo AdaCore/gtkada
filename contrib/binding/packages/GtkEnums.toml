@@ -9,6 +9,9 @@ ctype = "GtkArrowType"
 ctype = "GtkAccessibleTextContentChange"
 
 [[enum]]
+ctype = "GtkBuilderClosureFlags"
+
+[[enum]]
 ctype = "GtkCornerType"
 
 [[enum]]
@@ -18,8 +21,14 @@ ctype = "GtkDeleteType"
 ctype = "GtkDirectionType"
 
 [[enum]]
+ctype = "GtkEntryIconPosition"
+
+[[enum]]
 ctype = "GtkIconSize"
 asbitfield = true
+
+[[enum]]
+ctype = "GtkImageType"
 
 [[enum]]
 ctype = "GtkBaselinePosition"

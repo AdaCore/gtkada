@@ -1,0 +1,10 @@
+# # ============================================================
+# #   GtkEntry
+# # ============================================================
+
+[[virtual_method]]
+id = "gtk_editable_get_alignment"
+bind = false
+[[virtual_method]]
+id = "gtk_editable_set_alignment"
+bind = false
