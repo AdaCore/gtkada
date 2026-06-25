@@ -100,6 +100,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Content_Provider;  use Gdk.Content_Provider;
 with Gdk.Drag;              use Gdk.Drag;
+with Gdk.Event;             use Gdk.Event;
 with Gdk.Paintable;         use Gdk.Paintable;
 with Gdk.Rectangle;         use Gdk.Rectangle;
 with Glib;                  use Glib;
@@ -758,6 +759,10 @@ package Gtk.GEntry is
    procedure Remove_Widget
       (Cell_Editable : not null access Gtk_Entry_Record);
    pragma Obsolescent (Remove_Widget);
+
+   procedure Start_Editing
+      (Cell_Editable : not null access Gtk_Entry_Record;
+       Event         : Gdk.Event.Gdk_Event);
 
    function Delegate_Get_Accessible_Platform_State
       (Self  : not null access Gtk_Entry_Record;

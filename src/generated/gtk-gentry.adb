@@ -1638,6 +1638,22 @@ package body Gtk.GEntry is
       Internal (Get_Object (Self), N_Chars);
    end Set_Width_Chars;
 
+   -------------------
+   -- Start_Editing --
+   -------------------
+
+   procedure Start_Editing
+      (Cell_Editable : not null access Gtk_Entry_Record;
+       Event         : Gdk.Event.Gdk_Event)
+   is
+      procedure Internal
+         (Cell_Editable : System.Address;
+          Event         : System.Address);
+      pragma Import (C, Internal, "gtk_cell_editable_start_editing");
+   begin
+      Internal (Get_Object (Cell_Editable), Get_Object (Event));
+   end Start_Editing;
+
    ------------------------------------
    -- Update_Next_Accessible_Sibling --
    ------------------------------------
