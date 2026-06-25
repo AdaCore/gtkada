@@ -160,12 +160,16 @@ package body Gtk.Color_Dialog is
       Color : constant access Gdk.RGBA.Gdk_RGBA :=
         Internal (Get_Object (Self), Result, Error'Access);
    begin
+      --  By the GError convention a successful call (Color /= null) leaves
+      --  Error untouched, so in practice the two are mutually exclusive.
+      --  Free it unconditionally regardless, so that should GTK ever set
+      --  both we never leak the GError.
+      if Error /= null then
+         Glib.Error.Error_Free (Error);
+      end if;
       if Color = null then
-         --  Dismissed (or failed): free any reported error and report no
-         --  colour. The caller treats Null_RGBA as "no colour chosen".
-         if Error /= null then
-            Glib.Error.Error_Free (Error);
-         end if;
+         --  Dismissed (or failed): report no colour. The caller treats
+         --  Null_RGBA as "no colour chosen".
          return Gdk.RGBA.Null_RGBA;
       end if;
       return Gdk.RGBA.From_Object_Free (Color);
