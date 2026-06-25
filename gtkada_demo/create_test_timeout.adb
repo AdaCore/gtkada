@@ -44,8 +44,8 @@ package body Create_Test_Timeout is
    function Help return String is
    begin
       return "A @btimeout@B function is a function that is run at specific"
-        & " time intervals. This is different from a @bidle@B function, since"
-        & " you know exactly when the next occurence will be.";
+        & " time intervals. This is different from an @bidle@B function, since"
+        & " you know exactly when the next occurrence will be.";
    end Help;
 
    ------------------
