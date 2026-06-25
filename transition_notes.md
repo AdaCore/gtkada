@@ -54,6 +54,22 @@
   The selector now also shows each demo's `Help` text in a panel below the
   demo frame; the legacy `@b...@B` emphasis markers are converted to Pango
   markup at display time.
+- Reactivated `gtkada_demo`'s `Create_Tooltips` package: migrated its body
+  from Gtk3 to Gtk4 and wired it (plus its `Help` text) into the
+  `Main_Windows` selector. Notable API substitutions:
+  - `Gtk_Tooltip.Set_Icon_From_Stock (Stock_Delete, …)` (and the
+    now-gone `Gtk.Stock` unit) became
+    `Gtk_Tooltip.Set_Icon_From_Icon_Name ("edit-delete")`.
+  - The custom-tooltip example no longer uses a `Window_Popup` tooltip
+    window with `Set_Tooltip_Window` / `Override_Background_Color` (all
+    removed in Gtk4); it now embeds a custom widget through the
+    `query-tooltip` handler via `Gtk.Tooltip.Set_Custom`.
+  - `Gtk_New_With_Label` + `Append` / `Set_Child` instead of `Gtk_New`
+    with a label, `Pack_Start` and `Add`; dropped `Show_All` / `Show`.
+  - The `On_Query_Tooltip` callback signatures already match the generated
+    Gtk4 binding, so they were reused unchanged.
+  Ported the corresponding C unit test (`testsuite/c_tests/tooltips.c`)
+  to `testsuite/tests/tooltips/`.
 
 ## To do as we translate
 
