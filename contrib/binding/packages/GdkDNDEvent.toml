@@ -1,10 +1,9 @@
 # ============================================================
-#   GtkCellEditable
+#   GdkDNDEvent
 # ============================================================
 
-[doc]
-group = "Trees and Lists"
+ada = "Gdk.Event.DND_Event"
 
-[[parameter]]
-name = "self"
-ada  = "Cell_Editable"
+[[extra.with_body]]
+pkg = "Glib.Object"
+use = true

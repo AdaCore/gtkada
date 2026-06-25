@@ -2,7 +2,7 @@
 bindings.
 """
 
-from adaformat import naming, Enum, Proxy, Record, GObject, List, Callback
+from adaformat import naming, Enum, Proxy, Record, GObject, Tagged, List, Callback
 
 # General packages that don't depend on others and must be processed first
 
@@ -743,6 +743,7 @@ naming.exceptions = {
     "Gtk_Glarea": "Gtk_GLArea",
     "Gdk_Glcontext": "Gdk_GLContext",
     "Gtk_Builder_Cscope": "Gtk_Builder_C_Scope",
+    "Gdk_Dndevent": "Gdk_DND_Event",
 }
 
 # Maps C types to type descriptions.
@@ -786,7 +787,7 @@ naming.type_exceptions = {
     "GdkRGBA*": Proxy(
         "Gdk.RGBA.Gdk_RGBA", "Gdk.RGBA.Property_RGBA", "Gdk.RGBA.Gdk_RGBA_Or_Null"
     ),
-    "GdkEvent*": Proxy("Gdk.Event.Gdk_Event", ""),
+    "GdkEvent*": Tagged("Gdk.Event.Gdk_Event", userecord=False),
     "GIOChannel*": Proxy("Glib.IOChannel.Giochannel", ""),
     "cairo_t*": Proxy("Cairo.Cairo_Context"),
     "cairo_format_t": Proxy("Cairo.Cairo_Format"),

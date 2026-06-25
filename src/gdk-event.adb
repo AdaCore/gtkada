@@ -1,0 +1,737 @@
+------------------------------------------------------------------------------
+--                  GtkAda - Ada95 binding for Gtk+/Gnome                   --
+--                                                                          --
+--                     Copyright (C) 2026, AdaCore                          --
+--                                                                          --
+-- This library is free software;  you can redistribute it and/or modify it --
+-- under terms of the  GNU General Public License  as published by the Free --
+-- Software  Foundation;  either version 3,  or (at your  option) any later --
+-- version. This library is distributed in the hope that it will be useful, --
+-- but WITHOUT ANY WARRANTY;  without even the implied warranty of MERCHAN- --
+-- TABILITY or FITNESS FOR A PARTICULAR PURPOSE.                            --
+--                                                                          --
+-- As a special exception under Section 7 of GPL version 3, you are granted --
+-- additional permissions described in the GCC Runtime Library Exception,   --
+-- version 3.1, as published by the Free Software Foundation.               --
+--                                                                          --
+-- You should have received a copy of the GNU General Public License and    --
+-- a copy of the GCC Runtime Library Exception along with this program;     --
+-- see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see    --
+-- <http://www.gnu.org/licenses/>.                                          --
+--                                                                          --
+------------------------------------------------------------------------------
+
+with Gdk.Event.Button_Event;
+with Gdk.Event.Crossing_Event;
+with Gdk.Event.Delete_Event;
+with Gdk.Event.DND_Event;
+with Gdk.Event.Focus_Event;
+with Gdk.Event.Grab_Broken_Event;
+with Gdk.Event.Key_Event;
+with Gdk.Event.Motion_Event;
+with Gdk.Event.Pad_Event;
+with Gdk.Event.Proximity_Event;
+with Gdk.Event.Scroll_Event;
+with Gdk.Event.Touch_Event;
+with Gdk.Event.Touchpad_Event;
+with Gdk.Seat;
+with Glib.Object; use Glib.Object;
+
+package body Gdk.Event is
+
+   use type Glib.Gboolean;
+   use type System.Address;
+
+   function Event_Ref (Event : System.Address) return System.Address;
+   pragma Import (C, Event_Ref, "gdk_event_ref");
+
+   procedure Event_Unref (Event : System.Address);
+   pragma Import (C, Event_Unref, "gdk_event_unref");
+
+   procedure Unreference (Self : in out Gdk_Event'Class);
+   pragma Inline (Unreference);
+
+   ------------
+   -- Adjust --
+   ------------
+
+   overriding procedure Adjust (Self : in out Gdk_Event) is
+   begin
+      if Self.Data /= System.Null_Address then
+         Self.Data := Event_Ref (Self.Data);
+      end if;
+   end Adjust;
+
+   --------------
+   -- Finalize --
+   --------------
+
+   overriding procedure Finalize (Self : in out Gdk_Event) is
+   begin
+      Unreference (Self);
+   end Finalize;
+
+   -----------------
+   -- From_Object --
+   -----------------
+
+   function From_Object (Object : System.Address) return Gdk_Event is
+   begin
+      return Result : Gdk_Event do
+         Set_Object (Result, Object);
+      end return;
+   end From_Object;
+
+   ---------------------
+   -- As_Button_Event --
+   ---------------------
+
+   function As_Button_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Button_Event.Gdk_Button_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_button_event");
+   begin
+      return Result : Gdk.Event.Button_Event.Gdk_Button_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Button_Event;
+
+   -----------------------
+   -- As_Crossing_Event --
+   -----------------------
+
+   function As_Crossing_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Crossing_Event.Gdk_Crossing_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_crossing_event");
+   begin
+      return Result : Gdk.Event.Crossing_Event.Gdk_Crossing_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Crossing_Event;
+
+   ---------------------
+   -- As_Delete_Event --
+   ---------------------
+
+   function As_Delete_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Delete_Event.Gdk_Delete_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_delete_event");
+   begin
+      return Result : Gdk.Event.Delete_Event.Gdk_Delete_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Delete_Event;
+
+   ------------------
+   -- As_DND_Event --
+   ------------------
+
+   function As_DND_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.DND_Event.Gdk_DND_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_dnd_event");
+   begin
+      return Result : Gdk.Event.DND_Event.Gdk_DND_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_DND_Event;
+
+   --------------------
+   -- As_Focus_Event --
+   --------------------
+
+   function As_Focus_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Focus_Event.Gdk_Focus_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_focus_event");
+   begin
+      return Result : Gdk.Event.Focus_Event.Gdk_Focus_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Focus_Event;
+
+   --------------------------
+   -- As_Grab_Broken_Event --
+   --------------------------
+
+   function As_Grab_Broken_Event
+     (Self : Gdk_Event'Class)
+      return Gdk.Event.Grab_Broken_Event.Gdk_Grab_Broken_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_grab_broken_event");
+   begin
+      return Result : Gdk.Event.Grab_Broken_Event.Gdk_Grab_Broken_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Grab_Broken_Event;
+
+   ------------------
+   -- As_Key_Event --
+   ------------------
+
+   function As_Key_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Key_Event.Gdk_Key_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_key_event");
+   begin
+      return Result : Gdk.Event.Key_Event.Gdk_Key_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Key_Event;
+
+   ---------------------
+   -- As_Motion_Event --
+   ---------------------
+
+   function As_Motion_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Motion_Event.Gdk_Motion_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_motion_event");
+   begin
+      return Result : Gdk.Event.Motion_Event.Gdk_Motion_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Motion_Event;
+
+   ------------------
+   -- As_Pad_Event --
+   ------------------
+
+   function As_Pad_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Pad_Event.Gdk_Pad_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_pad_event");
+   begin
+      return Result : Gdk.Event.Pad_Event.Gdk_Pad_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Pad_Event;
+
+   ------------------------
+   -- As_Proximity_Event --
+   ------------------------
+
+   function As_Proximity_Event
+     (Self : Gdk_Event'Class)
+      return Gdk.Event.Proximity_Event.Gdk_Proximity_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_proximity_event");
+   begin
+      return Result : Gdk.Event.Proximity_Event.Gdk_Proximity_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Proximity_Event;
+
+   ---------------------
+   -- As_Scroll_Event --
+   ---------------------
+
+   function As_Scroll_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Scroll_Event.Gdk_Scroll_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_scroll_event");
+   begin
+      return Result : Gdk.Event.Scroll_Event.Gdk_Scroll_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Scroll_Event;
+
+   --------------------
+   -- As_Touch_Event --
+   --------------------
+
+   function As_Touch_Event
+     (Self : Gdk_Event'Class) return Gdk.Event.Touch_Event.Gdk_Touch_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_touch_event");
+   begin
+      return Result : Gdk.Event.Touch_Event.Gdk_Touch_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Touch_Event;
+
+   -----------------------
+   -- As_Touchpad_Event --
+   -----------------------
+
+   function As_Touchpad_Event
+     (Self : Gdk_Event'Class)
+      return Gdk.Event.Touchpad_Event.Gdk_Touchpad_Event
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "ada_gdk_event_cast_touchpad_event");
+   begin
+      return Result : Gdk.Event.Touchpad_Event.Gdk_Touchpad_Event do
+         Set_Object (Result, Internal (Get_Object (Self)));
+      end return;
+   end As_Touchpad_Event;
+
+   ---------------
+   -- Get_Angle --
+   ---------------
+
+   function Get_Angle
+     (Event_1 : Gdk_Event'Class;
+      Event_2 : Gdk_Event'Class;
+      Angle   : out Glib.Gdouble) return Boolean
+   is
+      function Internal
+        (Event_1 : System.Address;
+         Event_2 : System.Address;
+         Angle   : out Glib.Gdouble) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_events_get_angle");
+   begin
+      return Internal (Get_Object (Event_1), Get_Object (Event_2), Angle) /= 0;
+   end Get_Angle;
+
+   ----------------
+   -- Get_Center --
+   ----------------
+
+   function Get_Center
+     (Event_1 : Gdk_Event'Class;
+      Event_2 : Gdk_Event'Class;
+      X       : out Glib.Gdouble;
+      Y       : out Glib.Gdouble) return Boolean
+   is
+      function Internal
+        (Event_1 : System.Address;
+         Event_2 : System.Address;
+         X       : out Glib.Gdouble;
+         Y       : out Glib.Gdouble) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_events_get_center");
+   begin
+      return Internal
+        (Get_Object (Event_1), Get_Object (Event_2), X, Y) /= 0;
+   end Get_Center;
+
+   ------------------
+   -- Get_Distance --
+   ------------------
+
+   function Get_Distance
+     (Event_1  : Gdk_Event'Class;
+      Event_2  : Gdk_Event'Class;
+      Distance : out Glib.Gdouble) return Boolean
+   is
+      function Internal
+        (Event_1   : System.Address;
+         Event_2   : System.Address;
+         Distance  : out Glib.Gdouble) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_events_get_distance");
+   begin
+      return Internal
+        (Get_Object (Event_1), Get_Object (Event_2), Distance) /= 0;
+   end Get_Distance;
+
+   --------------
+   -- Get_Axes --
+   --------------
+
+   --  function Get_Axes
+   --    (Self   : Gdk_Event'Class;
+   --     Axes   : out System.Address;
+   --     N_Axes : out Glib.Guint) return Boolean
+   --  is
+   --     function Internal
+   --       (Self   : System.Address;
+   --        Axes   : access System.Address;
+   --        N_Axes : access Glib.Guint) return Glib.Gboolean;
+   --     pragma Import (C, Internal, "gdk_event_get_axes");
+   --  begin
+   --     return Internal (Get_Object (Self), Axes'Access, N_Axes'Access) /= 0;
+   --  end Get_Axes;
+
+   --------------
+   -- Get_Axis --
+   --------------
+
+   function Get_Axis
+     (Self     : Gdk_Event'Class;
+      Axis_Use : Glib.Gint;
+      Value    : out Glib.Gdouble) return Boolean
+   is
+      function Internal
+        (Self     : System.Address;
+         Axis_Use : Glib.Gint;
+         Value    : out Glib.Gdouble) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_event_get_axis");
+   begin
+      return Internal (Get_Object (Self), Axis_Use, Value) /= 0;
+   end Get_Axis;
+
+   ----------------
+   -- Get_Device --
+   ----------------
+
+   function Get_Device (Self : Gdk_Event'Class) return Gdk.Device.Gdk_Device is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_event_get_device");
+      Stub_Gdk_Device : Gdk.Device.Gdk_Device_Record;
+   begin
+      return Gdk.Device.Gdk_Device
+        (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Device));
+   end Get_Device;
+
+   ---------------------
+   -- Get_Device_Tool --
+   ---------------------
+
+   function Get_Device_Tool
+     (Self : Gdk_Event'Class) return Gdk.Device_Tool.Gdk_Device_Tool
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_event_get_device_tool");
+      Stub_Gdk_Device_Tool : Gdk.Device_Tool.Gdk_Device_Tool_Record;
+   begin
+      return Gdk.Device_Tool.Gdk_Device_Tool
+        (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Device_Tool));
+   end Get_Device_Tool;
+
+   -----------------
+   -- Get_Display --
+   -----------------
+
+   function Get_Display (Self : Gdk_Event'Class) return Gdk.Display.Gdk_Display is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_event_get_display");
+      Stub_Gdk_Display : Gdk.Display.Gdk_Display_Record;
+   begin
+      return Gdk.Display.Gdk_Display
+        (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Display));
+   end Get_Display;
+
+   ------------------------
+   -- Get_Event_Sequence --
+   ------------------------
+
+   --  function Get_Event_Sequence (Self : Gdk_Event'Class) return System.Address is
+   --     function Internal (Self : System.Address) return System.Address;
+   --     pragma Import (C, Internal, "gdk_event_get_event_sequence");
+   --  begin
+   --     return Internal (Get_Object (Self));
+   --  end Get_Event_Sequence;
+
+   --------------------
+   -- Get_Event_Type --
+   --------------------
+
+   function Get_Event_Type (Self : Gdk_Event'Class) return Gdk_Event_Type is
+      function Internal (Self : System.Address) return Gdk_Event_Type;
+      pragma Import (C, Internal, "gdk_event_get_event_type");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Event_Type;
+
+   -----------------
+   -- Get_History --
+   -----------------
+
+   --  function Get_History
+   --    (Self     : Gdk_Event'Class;
+   --     N_Coords : out Glib.Guint) return System.Address
+   --  is
+   --     function Internal
+   --       (Self     : System.Address;
+   --        N_Coords : access Glib.Guint) return System.Address;
+   --     pragma Import (C, Internal, "gdk_event_get_history");
+   --  begin
+   --     return Internal (Get_Object (Self), N_Coords'Access);
+   --  end Get_History;
+
+   ------------------------
+   -- Get_Modifier_State --
+   ------------------------
+
+   --  function Get_Modifier_State (Self : Gdk_Event'Class) return Glib.Guint is
+   --     function Internal (Self : System.Address) return Glib.Guint;
+   --     pragma Import (C, Internal, "gdk_event_get_modifier_state");
+   --  begin
+   --     return Internal (Get_Object (Self));
+   --  end Get_Modifier_State;
+
+   --------------------------
+   -- Get_Pointer_Emulated --
+   --------------------------
+
+   function Get_Pointer_Emulated (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_event_get_pointer_emulated");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Get_Pointer_Emulated;
+
+   ------------------
+   -- Get_Position --
+   ------------------
+
+   function Get_Position
+     (Self : Gdk_Event'Class;
+      X    : out Glib.Gdouble;
+      Y    : out Glib.Gdouble) return Boolean
+   is
+      function Internal
+        (Self : System.Address;
+         X    : out Glib.Gdouble;
+         Y    : out Glib.Gdouble) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_event_get_position");
+   begin
+      return Internal (Get_Object (Self), X, Y) /= 0;
+   end Get_Position;
+
+   --------------
+   -- Get_Seat --
+   --------------
+
+   function Get_Seat (Self : Gdk_Event'Class) return Gdk.Gdk_Seat is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_event_get_seat");
+      Stub_Gdk_Seat : Gdk.Seat.Gdk_Seat_Record;
+   begin
+      return Gdk.Gdk_Seat
+        (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Seat));
+   end Get_Seat;
+
+   -----------------
+   -- Get_Surface --
+   -----------------
+
+   function Get_Surface (Self : Gdk_Event'Class) return Gdk.Surface.Gdk_Surface is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_event_get_surface");
+      Stub_Gdk_Surface : Gdk.Surface.Gdk_Surface_Record;
+   begin
+      return Gdk.Surface.Gdk_Surface
+        (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_Surface));
+   end Get_Surface;
+
+   --------------
+   -- Get_Time --
+   --------------
+
+   function Get_Time (Self : Gdk_Event'Class) return Glib.Guint32 is
+      function Internal (Self : System.Address) return Glib.Guint32;
+      pragma Import (C, Internal, "gdk_event_get_time");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Time;
+
+   ----------------
+   -- Get_Object --
+   ----------------
+
+   function Get_Object (Self : Gdk_Event'Class) return System.Address is
+   begin
+      return Self.Data;
+   end Get_Object;
+
+   ---------------------
+   -- Is_Button_Event --
+   ---------------------
+
+   function Is_Button_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_button_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Button_Event;
+
+   -----------------------
+   -- Is_Crossing_Event --
+   -----------------------
+
+   function Is_Crossing_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_crossing_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Crossing_Event;
+
+   ---------------------
+   -- Is_Delete_Event --
+   ---------------------
+
+   function Is_Delete_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_delete_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Delete_Event;
+
+   ------------------
+   -- Is_DND_Event --
+   ------------------
+
+   function Is_DND_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_dnd_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_DND_Event;
+
+   --------------------
+   -- Is_Focus_Event --
+   --------------------
+
+   function Is_Focus_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_focus_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Focus_Event;
+
+   --------------------------
+   -- Is_Grab_Broken_Event --
+   --------------------------
+
+   function Is_Grab_Broken_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_grab_broken_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Grab_Broken_Event;
+
+   ------------------
+   -- Is_Key_Event --
+   ------------------
+
+   function Is_Key_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_key_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Key_Event;
+
+   ---------------------
+   -- Is_Motion_Event --
+   ---------------------
+
+   function Is_Motion_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_motion_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Motion_Event;
+
+   -------------
+   -- Is_Null --
+   -------------
+
+   function Is_Null (Self : Gdk_Event'Class) return Boolean is
+   begin
+      return Self.Data = System.Null_Address;
+   end Is_Null;
+
+   ------------------
+   -- Is_Pad_Event --
+   ------------------
+
+   function Is_Pad_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_pad_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Pad_Event;
+
+   ------------------------
+   -- Is_Proximity_Event --
+   ------------------------
+
+   function Is_Proximity_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_proximity_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Proximity_Event;
+
+   ---------------------
+   -- Is_Scroll_Event --
+   ---------------------
+
+   function Is_Scroll_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_scroll_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Scroll_Event;
+
+   --------------------
+   -- Is_Touch_Event --
+   --------------------
+
+   function Is_Touch_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_touch_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Touch_Event;
+
+   -----------------------
+   -- Is_Touchpad_Event --
+   -----------------------
+
+   function Is_Touchpad_Event (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "ada_gdk_event_is_touchpad_event");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Is_Touchpad_Event;
+
+   ---------------------------
+   -- Triggers_Context_Menu --
+   ---------------------------
+
+   function Triggers_Context_Menu (Self : Gdk_Event'Class) return Boolean is
+      function Internal (Self : System.Address) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_event_triggers_context_menu");
+   begin
+      return Internal (Get_Object (Self)) /= 0;
+   end Triggers_Context_Menu;
+
+   ----------------
+   -- Set_Object --
+   ----------------
+
+   procedure Set_Object
+     (Self   : in out Gdk_Event'Class;
+      Object : System.Address)
+   is
+   begin
+      if Self.Data = Object then
+         return;
+      end if;
+
+      Unreference (Self);
+
+      if Object /= System.Null_Address then
+         Self.Data := Event_Ref (Object);
+      end if;
+   end Set_Object;
+
+   -----------------
+   -- Unreference --
+   -----------------
+
+   procedure Unreference (Self : in out Gdk_Event'Class) is
+   begin
+      if Self.Data /= System.Null_Address then
+         Event_Unref (Self.Data);
+         Self.Data := System.Null_Address;
+      end if;
+   end Unreference;
+
+end Gdk.Event;

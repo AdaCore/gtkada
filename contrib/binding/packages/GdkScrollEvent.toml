@@ -1,0 +1,15 @@
+# ============================================================
+#   GdkScrollEvent
+# ============================================================
+
+[[enum]]
+ctype = "GdkScrollUnit"
+prefix = "GDK_SCROLL_UNIT_"
+
+[[enum]]
+ctype = "GdkScrollRelativeDirection"
+prefix = "GDK_SCROLL_RELATIVE_DIRECTION_"
+
+[[enum]]
+ctype = "GdkScrollDirection"
+prefix = "GDK_SCROLL_"

@@ -1,0 +1,11 @@
+# ============================================================
+#   GdkCrossingEvent
+# ============================================================
+
+[[enum]]
+ctype = "GdkNotifyType"
+prefix = "GDK_NOTIFY_"
+
+[[enum]]
+ctype = "GdkCrossingMode"
+prefix = "GDK_CROSSING_"

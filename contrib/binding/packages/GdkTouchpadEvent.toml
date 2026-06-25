@@ -1,10 +1,7 @@
 # ============================================================
-#   GtkCellEditable
+#   GdkTouchpadEvent
 # ============================================================
 
-[doc]
-group = "Trees and Lists"
-
-[[parameter]]
-name = "self"
-ada  = "Cell_Editable"
+[[enum]]
+ctype = "GdkTouchpadGesturePhase"
+prefix = "GDK_TOUCHPAD_GESTURE_"

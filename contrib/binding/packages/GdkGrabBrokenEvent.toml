@@ -1,10 +1,7 @@
 # ============================================================
-#   GtkCellEditable
+#   GdkGrabBrokenEvent
 # ============================================================
 
-[doc]
-group = "Trees and Lists"
-
-[[parameter]]
-name = "self"
-ada  = "Cell_Editable"
+[[extra.with_body]]
+pkg = "Glib.Object"
+use = true
