@@ -3885,49 +3885,75 @@ def _emit_widgets():
             return name
         return name.rstrip("*")
 
-    root = Element(nclass)
-    for entry in binding + manual_binding:
-        skipped = entry.startswith("--")
-        lookup_name = entry[2:] if skipped else entry
-        e = None
-        interface_qname = None
-        the_ctype = lookup_name
-
-        try:
-            e = gir.klass(lookup_name)
-            the_ctype = e.ctype
-        except KeyError:
+    def _manual_ctype(name):
+        """Resolve a manual entry name to the TOML package key/ctype."""
+        if "." in name:
             try:
-                interface_qname = gir.resolve_interface_name(lookup_name)
-                the_ctype = _normalize_ctype(gir.interfaces[interface_qname].ctype)
+                qname = gir.resolve_interface_name(name)
+                return _normalize_ctype(gir.interfaces[qname].ctype)
             except KeyError:
-                mapped = naming.girname_to_ctype.get(lookup_name)
+                mapped = naming.girname_to_ctype.get(name)
                 if mapped:
-                    the_ctype = _normalize_ctype(mapped)
+                    return _normalize_ctype(mapped)
+                return _normalize_ctype(naming.ctype_from_girname(name))
+
+        return _normalize_ctype(name)
+
+    def _strip_skip_prefix(name):
+        while name.startswith("--"):
+            name = name[2:]
+        return name
+
+    root = Element(nclass)
+
+    # `binding` now contains GIR class/record/union names only.
+    for entry in binding:
+        skipped = entry.startswith("--")
+        lookup_name = _strip_skip_prefix(entry) if skipped else entry
 
         if skipped:
-            gir.bound.add(interface_qname or the_ctype)
+            try:
+                the_ctype = gir.resolve_class_name(lookup_name)
+            except KeyError:
+                the_ctype = lookup_name
+            gir.bound.add(the_ctype)
             continue
 
-        if e is None:
-            cl = gtkada.get_pkg(the_ctype)
+        the_ctype = gir.resolve_class_name(lookup_name)
 
-            if not cl:
-                cl = gtkada.get_pkg(lookup_name)
+        e = gir.classes[the_ctype]
+        e.generate(gir)
+        gir.bound.add(the_ctype)
 
-            if not cl and "." in lookup_name:
-                derived = _normalize_ctype(naming.ctype_from_girname(lookup_name))
-                if derived:
-                    the_ctype = derived
-                    cl = gtkada.get_pkg(the_ctype)
+    for entry in manual_binding:
+        skipped = entry.startswith("--")
+        lookup_name = _strip_skip_prefix(entry) if skipped else entry
+        the_ctype = _manual_ctype(lookup_name)
 
-            if not cl:
-                raise
+        if skipped:
+            gir.bound.add(the_ctype)
+            continue
 
-            node = Element(nclass, {ctype_qname: the_ctype})
-            e = gir.classes[the_ctype] = gir._create_class(
-                rootNode=root, node=node, is_interface=False, identifier_prefix=""
+        e = gir.classes.get(the_ctype)
+        if e is not None:
+            e.generate(gir)
+            gir.bound.add(the_ctype)
+            continue
+
+        cl = gtkada.get_pkg(the_ctype)
+        if not cl:
+            cl = gtkada.get_pkg(lookup_name)
+
+        if not cl:
+            raise KeyError(
+                "Unknown manual binding '%s' (resolved as '%s')" %
+                (lookup_name, the_ctype)
             )
+
+        node = Element(nclass, {ctype_qname: the_ctype})
+        e = gir.classes[the_ctype] = gir._create_class(
+            rootNode=root, node=node, is_interface=False, identifier_prefix=""
+        )
 
         e.generate(gir)
         gir.bound.add(the_ctype)
