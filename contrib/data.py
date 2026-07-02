@@ -88,7 +88,7 @@ interfaces = (
 )
 
 # List of widgets to bind.
-# Contains C type names.
+# Contains C type names or qualified GIR names.
 # Start the name with -- for objects we do not want to bind
 
 binding = (

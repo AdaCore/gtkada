@@ -885,12 +885,13 @@ class AdaNaming(object):
         with their Ada equivalent"""
         self.cname_to_adaname[cname] = adaname
 
-    def add_girname(self, girname, ctype):
+    def add_girname(self, girname, ctype, override=False):
         """Maps a GIR's "name" attribute to its matching C type.
         This is used to resolve such names in the documentation and in
         properties types.
         """
-        self.girname_to_ctype[girname] = ctype
+        if override or girname not in self.girname_to_ctype:
+            self.girname_to_ctype[girname] = ctype
 
     def ctype_from_girname(self, girname):
         """Return the C type corresponding to a GIR name"""
