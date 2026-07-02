@@ -101,7 +101,7 @@ from xml.etree.cElementTree import parse, Element, QName, tostring, fromstring
 from adaformat import *
 import copy
 from binding_gtkada import GtkAda
-from data import enums, interfaces, binding, user_data_params
+from data import enums, interfaces, binding, manual_binding, user_data_params
 from data import destroy_data_params
 import sys
 
@@ -3873,31 +3873,57 @@ def _emit_interfaces():
 
 def _emit_widgets():
     """Emit one package per widget/record listed in :data:`data.binding`.
-    Entries can be either C types or qualified GIR names. Names
+    Manual/non-class entries listed in :data:`data.manual_binding` are
+    emitted through TOML glue lookups. Names
     prefixed with ``--`` are skipped (but marked as covered).
     Bindings missing from the GIR data (e.g. pure-toml glue packages
     like ``GIO``) are fabricated on the fly from a stub XML node.
     """
+
+    def _normalize_ctype(name):
+        if not name:
+            return name
+        return name.rstrip("*")
+
     root = Element(nclass)
-    for entry in binding:
+    for entry in binding + manual_binding:
         skipped = entry.startswith("--")
         lookup_name = entry[2:] if skipped else entry
         e = None
+        interface_qname = None
+        the_ctype = lookup_name
 
         try:
             e = gir.klass(lookup_name)
             the_ctype = e.ctype
         except KeyError:
-            the_ctype = lookup_name
+            try:
+                interface_qname = gir.resolve_interface_name(lookup_name)
+                the_ctype = _normalize_ctype(gir.interfaces[interface_qname].ctype)
+            except KeyError:
+                mapped = naming.girname_to_ctype.get(lookup_name)
+                if mapped:
+                    the_ctype = _normalize_ctype(mapped)
 
         if skipped:
-            gir.bound.add(the_ctype)
+            gir.bound.add(interface_qname or the_ctype)
             continue
 
         if e is None:
             cl = gtkada.get_pkg(the_ctype)
+
+            if not cl:
+                cl = gtkada.get_pkg(lookup_name)
+
+            if not cl and "." in lookup_name:
+                derived = _normalize_ctype(naming.ctype_from_girname(lookup_name))
+                if derived:
+                    the_ctype = derived
+                    cl = gtkada.get_pkg(the_ctype)
+
             if not cl:
                 raise
+
             node = Element(nclass, {ctype_qname: the_ctype})
             e = gir.classes[the_ctype] = gir._create_class(
                 rootNode=root, node=node, is_interface=False, identifier_prefix=""

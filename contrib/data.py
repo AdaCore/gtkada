@@ -87,9 +87,8 @@ interfaces = (
     "--Gio.Volume",  # Not tested yet, from Gio
 )
 
-# List of widgets to bind.
+# List of GIR widgets to bind.
 # Prefer qualified GIR names for classes, records and unions found in GIR.
-# Keep legacy C names only for manual glue packages and other non-GIR entries.
 # Start the name with -- for objects we do not want to bind
 
 binding = (
@@ -174,7 +173,7 @@ binding = (
     "--Gio.FilenameCompleter",  # Not tested yet, from Gio
     "--Gio.FilterInputStream",  # Not tested yet, from Gio
     "--Gio.FilterOutputStream",  # Not tested yet, from Gio
-    "GIcon",
+    "--GIcon",  # Bound through manual_binding
     "--Gio.IOExtension",  # Not tested yet, from Gio
     "--Gio.IOExtensionPoint",  # Not tested yet, from Gio
     "GLib.IOChannel",
@@ -186,7 +185,7 @@ binding = (
     "--Gio.InetAddressMask",  # Not tested yet, from Gio
     "--Gio.InetSocketAddress",  # Not tested yet, from Gio
     "--Gio.InputStream",  # Not tested yet, from Gio
-    "GListModel",
+    "--GListModel",  # Bound through manual_binding
     "--Gio.MemoryInputStream",  # Not tested yet, from Gio
     "--Gio.MemoryOutputStream",  # Not tested yet, from Gio
     "Gio.MenuModel",  # Not tested yet, from Gio
@@ -201,10 +200,10 @@ binding = (
     "Gio.Notification",
     "--Gio.OutputStream",  # Not tested yet, from Gio
     "GLib.OptionContext",
-    "GPoll",
-    "Spawn",
-    "GTest",
-    "Utils",
+    "--GPoll",  # Bound through manual_binding
+    "--Spawn",  # Bound through manual_binding
+    "--GTest",  # Bound through manual_binding
+    "--Utils",  # Bound through manual_binding
     "--GObject.ParamSpec",  # Bound manually
     "--GObject.ParamSpecBoolean",  # Bound manually
     "--GObject.ParamSpecBoxed",  # Bound manually
@@ -308,9 +307,9 @@ binding = (
     "--GtkAccelGroup",
     "--GtkAccelLabel",
     "--GtkAccelMap",
-    "GtkAccessible",  # Needs ATK
+    "--GtkAccessible",  # Bound through manual_binding
     "Gtk.AccessibleHyperlink",
-    "GtkAccessibleText",
+    "--GtkAccessibleText",  # Bound through manual_binding
     "--GtkAction",
     "--GtkActionGroup",
     "--Gtk.ActionBar",
@@ -374,7 +373,7 @@ binding = (
     "--Gtk.ComboBox",
     "----GtkComboBoxAccessible",  # We do not support atk
     "--Gtk.ComboBoxText",
-    "GtkConstraintTarget",
+    "--GtkConstraintTarget",  # Bound through manual_binding
     "--GtkContainer",
     "----GtkContainerAccessible",  # We do not support atk
     "----GtkContainerCellAccessible",  # We do not support atk
@@ -483,7 +482,7 @@ binding = (
     "Gtk.ListStore",
     "----GtkLockButton",  # requires GPermission
     "----GtkLockButtonAccessible",  # We do not support atk
-    "GtkMain",
+    "--GtkMain",  # Bound through manual_binding
     "--GtkMisc",
     "--GtkMenu",
     "----GtkMenuAccessible",  # We do not support atk
@@ -619,6 +618,21 @@ binding = (
     "Gtk.Window",
     "----GtkWindowAccessible",  # We do not support atk
     "Gtk.WindowGroup",
+)
+
+# Entries that are bound through manual/TOML glue instead of GIR class lookup.
+# These may still use qualified GIR names for interfaces.
+manual_binding = (
+    "Gio.Icon",
+    "Gio.ListModel",
+    "GPoll",
+    "Spawn",
+    "GTest",
+    "Utils",
+    "Gtk.Accessible",
+    "Gtk.AccessibleText",
+    "Gtk.ConstraintTarget",
+    "GtkMain",
 )
 
 # Handling of functions with user data. The names below are the likely names
