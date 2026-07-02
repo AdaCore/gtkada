@@ -101,14 +101,6 @@ package Gtk.Builder_CScope is
    --  @param Callback_Name The name of the callback, as expected in the XML
    --  @param Callback_Symbol The callback pointer
 
-   procedure Lookup_Callback_Symbol
-      (Self          : not null access Gtk_Builder_C_Scope_Record;
-       Callback_Name : UTF8_String);
-   --  Fetches a symbol previously added with
-   --  Gtk.Builder_CScope.Add_Callback_Symbol.
-   --  @param Callback_Name The name of the callback
-   --  @return The callback symbol in Builder for Callback_Name
-
    ----------------
    -- Interfaces --
    ----------------

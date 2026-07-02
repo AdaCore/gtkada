@@ -124,22 +124,4 @@ package body Gtk.Builder_CScope is
       end if;
    end Add_Callback_Symbol;
 
-   ----------------------------
-   -- Lookup_Callback_Symbol --
-   ----------------------------
-
-   procedure Lookup_Callback_Symbol
-      (Self          : not null access Gtk_Builder_C_Scope_Record;
-       Callback_Name : UTF8_String)
-   is
-      procedure Internal
-         (Self          : System.Address;
-          Callback_Name : Gtkada.Types.Chars_Ptr);
-      pragma Import (C, Internal, "gtk_builder_cscope_lookup_callback_symbol");
-      Tmp_Callback_Name : Gtkada.Types.Chars_Ptr := New_String (Callback_Name);
-   begin
-      Internal (Get_Object (Self), Tmp_Callback_Name);
-      Free (Tmp_Callback_Name);
-   end Lookup_Callback_Symbol;
-
 end Gtk.Builder_CScope;
