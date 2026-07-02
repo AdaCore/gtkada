@@ -343,9 +343,6 @@ class GIR(object):
             return ctype
 
         if "." in name:
-            ctype = naming.ctype_from_girname(name)
-            if ctype in self.classes:
-                return ctype
             raise KeyError(
                 "Unknown class '%s', check `binding` in `data.py`" % name
             )
@@ -3885,9 +3882,11 @@ def _emit_widgets():
     for entry in binding:
         skipped = entry.startswith("--")
         lookup_name = entry[2:] if skipped else entry
+        e = None
 
         try:
-            the_ctype = gir.resolve_class_name(lookup_name)
+            e = gir.klass(lookup_name)
+            the_ctype = e.ctype
         except KeyError:
             the_ctype = lookup_name
 
@@ -3895,9 +3894,7 @@ def _emit_widgets():
             gir.bound.add(the_ctype)
             continue
 
-        try:
-            e = gir.klass(lookup_name)
-        except KeyError:
+        if e is None:
             cl = gtkada.get_pkg(the_ctype)
             if not cl:
                 raise
