@@ -3,3 +3,8 @@
 # ============================================================
 
 ada = "Gtk.Builder_CScope"
+
+[[method]]
+id = "gtk_builder_cscope_lookup_callback_symbol"
+bind = false
+# Unavailable to bindings
