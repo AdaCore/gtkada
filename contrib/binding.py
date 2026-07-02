@@ -238,15 +238,24 @@ class GIR(object):
 
             k = "%s/%s" % (namespace, nclass)
             for cl in root.findall(k):
-                if cl.get(ctype_qname) is not None:
-                    qname = "%s.%s" % (ns_name, cl.get("name"))
-                    klass = self._create_class(
-                        root,
-                        cl,
-                        is_interface=False,
-                        identifier_prefix=identifier_prefix,
-                    )
-                    self.classes[cl.get(ctype_qname)] = klass
+                qname = "%s.%s" % (ns_name, cl.get("name"))
+
+                # Some classes may not define c:type in GIR. Prefer explicit
+                # per-project overrides from data.py to recover a ctype.
+                ctype = cl.get(ctype_qname)
+                if not ctype:
+                    mapped = naming.girname_to_ctype.get(qname)
+                    if mapped:
+                        cl.set(ctype_qname, mapped.rstrip("*"))
+
+                klass = self._create_class(
+                    root,
+                    cl,
+                    is_interface=False,
+                    identifier_prefix=identifier_prefix,
+                )
+                if getattr(klass, "ctype", None):
+                    self.classes[klass.ctype] = klass
                     self.class_names[qname] = klass
 
             k = "%s/%s" % (namespace, nconstant)
@@ -339,8 +348,12 @@ class GIR(object):
                 return self.class_names[scoped].ctype
 
         ctype = naming.girname_to_ctype.get(name)
-        if ctype in self.classes:
-            return ctype
+        if ctype:
+            normalized = ctype.rstrip("*")
+            if ctype in self.classes:
+                return ctype
+            if normalized in self.classes:
+                return normalized
 
         if "." in name:
             raise KeyError(
@@ -1154,7 +1167,7 @@ class GIRClass(object):
         naming.add_girname(girname=n, ctype=self.ctype)
 
         if has_toplevel_type:
-            ctype = node.get(ctype_qname)
+            ctype = self.ctype
             if is_interface:
                 t = Interface(pkg)
             elif is_gobject:
