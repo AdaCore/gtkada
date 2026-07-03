@@ -111,7 +111,7 @@ with Create_Paned;
 --  with Create_Print;
 --  with Create_Progress;
 --  with Create_Range;
---  with Create_Reparent;
+with Create_Reparent;
 --  with Create_Revealer;
 --  with Create_Selection;
 --  with Create_Size_Groups;
@@ -195,9 +195,9 @@ package body Main_Windows is
          Create_Custom_Widget.Run'Access,
          Create_Custom_Widget.Help'Access),
       To_Demo
-        ("Tooltips",
-         Create_Tooltips.Run'Access,
-         Create_Tooltips.Help'Access));
+        ("Reparent", Create_Reparent.Run'Access, Create_Reparent.Help'Access),
+      To_Demo
+        ("Tooltips", Create_Tooltips.Run'Access, Create_Tooltips.Help'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.
 
