@@ -174,7 +174,6 @@ binding = (
     "--Gio.FilenameCompleter",  # Not tested yet, from Gio
     "--Gio.FilterInputStream",  # Not tested yet, from Gio
     "--Gio.FilterOutputStream",  # Not tested yet, from Gio
-    "--GIcon",  # Bound through manual_binding
     "--Gio.IOExtension",  # Not tested yet, from Gio
     "--Gio.IOExtensionPoint",  # Not tested yet, from Gio
     "GLib.IOChannel",
