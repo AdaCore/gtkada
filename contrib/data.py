@@ -41,6 +41,7 @@ interfaces = (
     "--Gtk.RecentChooser",
     "Gtk.Root",
     "--Gtk.Scrollable",
+    "Gtk.SectionModel",
     "Gtk.SelectionModel",
     "Gtk.ShortcutManager",
     "--Gtk.StyleProvider",
@@ -186,6 +187,7 @@ binding = (
     "--Gio.InetSocketAddress",  # Not tested yet, from Gio
     "--Gio.InputStream",  # Not tested yet, from Gio
     "--GListModel",  # Bound through manual_binding
+    "GListStore",
     "--Gio.MemoryInputStream",  # Not tested yet, from Gio
     "--Gio.MemoryOutputStream",  # Not tested yet, from Gio
     "Gio.MenuModel",  # Not tested yet, from Gio
@@ -369,7 +371,9 @@ binding = (
     "--GtkColorSelection",
     "--GtkColorSelectionDialog",
     "Gtk.ColumnView",
+    "Gtk.ColumnViewCell",
     "Gtk.ColumnViewColumn",
+    "Gtk.ColumnViewRow",
     "--Gtk.ComboBox",
     "----GtkComboBoxAccessible",  # We do not support atk
     "--Gtk.ComboBoxText",
@@ -551,8 +555,12 @@ binding = (
     "----GtkScrolledWindowAccessible",  # We do not support atk
     "Gtk.ScrollInfo",
     "--Gtk.Settings",
+    "Gtk.MultiSelection",  # Implements Gtk.SelectionModel
+    "Gtk.NoSelection",     # Implements Gtk.SelectionModel
+    "Gtk.SingleSelection", # Implements Gtk.SelectionModel
     "----GtkSocket",  # X11-specific, no binding
     "Gtk.Sorter",
+    "Gtk.SortListModel",
     "--Gtk.Spinner",
     "----GtkSpinnerAccessible",  # We do not support atk
     "--Gtk.SpinButton",
@@ -849,6 +857,7 @@ naming.type_exceptions = {
     "DeviceToolList": List("Gdk.Device_Tool.Device_Tool_List.Glist"),
     "SeatList": List("Gdk.Seat.Seat_List.Glist"),
     "gpointer": Proxy("System.Address", "", default_record_field="System.Null_Address"),
+    "gconstpointer": Proxy("System.Address", ""),
     "GDestroyNotify": Proxy("Glib.G_Destroy_Notify_Address"),
     "GAsyncResult": Proxy("Glib.G_Async_Result"),
     "GAsyncResult*": Proxy("Glib.G_Async_Result"),

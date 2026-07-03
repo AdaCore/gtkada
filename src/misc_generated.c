@@ -190,6 +190,10 @@ void gtkada_Editable_set_set_selection_bounds(GtkEditableInterface* iface, void*
     iface->set_selection_bounds = handler;
 }
 
+void gtkada_Section_Model_set_get_section(GtkSectionModelInterface* iface, void* handler) {
+    iface->get_section = handler;
+}
+
 void gtkada_Selection_Model_set_get_selection_in_range(GtkSelectionModelInterface* iface, void* handler) {
     iface->get_selection_in_range = handler;
 }

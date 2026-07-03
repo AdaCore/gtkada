@@ -223,7 +223,7 @@ GIR node is matched.
 | `bind`               | bool   | When `false`, suppress the binding for this method (or, for inherited interface methods, suppress the inherited copy).                                     |
 | `obsolescent`        | bool   | When `true`, the generated subprogram gets `pragma Obsolescent`.                                                                                            |
 | `transfer_ownership` | string | `"full"` if the return value must be freed by the caller; `"none"` if the C library owns it.                                                                |
-| `return_as_param`    | string | Replace the function's return value with an `out` parameter of this name. Used to avoid Ada functions with `out` parameters.                                |
+| `return_as_param`    | string | Replace the function's return value with an `out` parameter of this name.                    |
 | `return`             | string | Override the C type of the return value. Use `"void"` to turn a function into a procedure.                                                                  |
 | `classwide`          | bool   | When `true`, declare the subprogram class-wide rather than as a primitive operation.                                                                        |
 | `body`               | string | Hand-written body inserted after the `is` keyword (use `'''...'''`). Use `%(auto)s` inside the string to splice the automatic body in.                       |

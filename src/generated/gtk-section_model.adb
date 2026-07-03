@@ -28,81 +28,64 @@ with Glib.Values;              use Glib.Values;
 with Gtk.Arguments;            use Gtk.Arguments;
 with Gtkada.Bindings;          use Gtkada.Bindings;
 
-package body Glib.List_Model is
-
-   --------------
-   -- Get_Item --
-   --------------
-
-   function Get_Item
-      (Self     : Glist_Model;
-       Position : Guint) return Glib.Object.GObject
-   is
-      function Internal
-         (Self     : Glist_Model;
-          Position : Guint) return System.Address;
-      pragma Import (C, Internal, "g_list_model_get_object");
-      Stub_GObject : Glib.Object.GObject_Record;
-   begin
-      return Get_User_Data (Internal (Self, Position), Stub_GObject);
-   end Get_Item;
+package body Gtk.Section_Model is
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Glist_Model_Guint_Guint_Guint_Void, System.Address);
+     (Cb_Gtk_Section_Model_Guint_Guint_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Glist_Model_Guint_Guint_Guint_Void);
+     (System.Address, Cb_Gtk_Section_Model_Guint_Guint_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Guint_Guint_Guint_Void, System.Address);
+     (Cb_GObject_Guint_Guint_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Guint_Guint_Guint_Void);
+     (System.Address, Cb_GObject_Guint_Guint_Void);
 
    procedure Connect
-      (Object  : Glist_Model;
+      (Object  : Gtk_Section_Model;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Glist_Model_Guint_Guint_Guint_Void;
+       Handler : Cb_Gtk_Section_Model_Guint_Guint_Void;
        After   : Boolean);
 
    procedure Connect_Slot
-      (Object  : Glist_Model;
+      (Object  : Gtk_Section_Model;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Guint_Guint_Guint_Void;
+       Handler : Cb_GObject_Guint_Guint_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
-   procedure Marsh_GObject_Guint_Guint_Guint_Void
+   procedure Marsh_GObject_Guint_Guint_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_Guint_Guint_Guint_Void);
+   pragma Convention (C, Marsh_GObject_Guint_Guint_Void);
 
-   procedure Marsh_Glist_Model_Guint_Guint_Guint_Void
+   procedure Marsh_Gtk_Section_Model_Guint_Guint_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_Glist_Model_Guint_Guint_Guint_Void);
+   pragma Convention (C, Marsh_Gtk_Section_Model_Guint_Guint_Void);
 
    -------------
    -- Connect --
    -------------
 
    procedure Connect
-      (Object  : Glist_Model;
+      (Object  : Gtk_Section_Model;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Glist_Model_Guint_Guint_Guint_Void;
+       Handler : Cb_Gtk_Section_Model_Guint_Guint_Void;
        After   : Boolean)
    is
    begin
       Unchecked_Do_Signal_Connect
         (Object      => Glib.Types.GType_Interface (Object),
          C_Name      => C_Name,
-         Marshaller  => Marsh_Glist_Model_Guint_Guint_Guint_Void'Access,
+         Marshaller  => Marsh_Gtk_Section_Model_Guint_Guint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -112,9 +95,9 @@ package body Glib.List_Model is
    ------------------
 
    procedure Connect_Slot
-      (Object  : Glist_Model;
+      (Object  : Gtk_Section_Model;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Guint_Guint_Guint_Void;
+       Handler : Cb_GObject_Guint_Guint_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
    is
@@ -122,17 +105,17 @@ package body Glib.List_Model is
       Unchecked_Do_Signal_Connect
         (Object      => Glib.Types.GType_Interface (Object),
          C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_Guint_Guint_Guint_Void'Access,
+         Marshaller  => Marsh_GObject_Guint_Guint_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
-   ------------------------------------------
-   -- Marsh_GObject_Guint_Guint_Guint_Void --
-   ------------------------------------------
+   ------------------------------------
+   -- Marsh_GObject_Guint_Guint_Void --
+   ------------------------------------
 
-   procedure Marsh_GObject_Guint_Guint_Guint_Void
+   procedure Marsh_GObject_Guint_Guint_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -141,18 +124,18 @@ package body Glib.List_Model is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_Guint_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_GObject_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
-      H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2), Unchecked_To_Guint (Params, 3));
+      H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2));
       exception when E : others => Process_Exception (E);
-   end Marsh_GObject_Guint_Guint_Guint_Void;
+   end Marsh_GObject_Guint_Guint_Void;
 
    ----------------------------------------------
-   -- Marsh_Glist_Model_Guint_Guint_Guint_Void --
+   -- Marsh_Gtk_Section_Model_Guint_Guint_Void --
    ----------------------------------------------
 
-   procedure Marsh_Glist_Model_Guint_Guint_Guint_Void
+   procedure Marsh_Gtk_Section_Model_Guint_Guint_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -161,43 +144,43 @@ package body Glib.List_Model is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Glist_Model_Guint_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
-      Obj : constant Glist_Model := Glist_Model (Unchecked_To_Interface (Params, 0));
+      H   : constant Cb_Gtk_Section_Model_Guint_Guint_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gtk_Section_Model := Gtk_Section_Model (Unchecked_To_Interface (Params, 0));
    begin
-      H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2), Unchecked_To_Guint (Params, 3));
+      H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2));
       exception when E : others => Process_Exception (E);
-   end Marsh_Glist_Model_Guint_Guint_Guint_Void;
+   end Marsh_Gtk_Section_Model_Guint_Guint_Void;
 
-   ----------------------
-   -- On_Items_Changed --
-   ----------------------
+   -------------------------
+   -- On_Sections_Changed --
+   -------------------------
 
-   procedure On_Items_Changed
-      (Self  : Glist_Model;
-       Call  : Cb_Glist_Model_Guint_Guint_Guint_Void;
+   procedure On_Sections_Changed
+      (Self  : Gtk_Section_Model;
+       Call  : Cb_Gtk_Section_Model_Guint_Guint_Void;
        After : Boolean := False)
    is
    begin
-      Connect (Self, "items-changed" & ASCII.NUL, Call, After);
-   end On_Items_Changed;
+      Connect (Self, "sections-changed" & ASCII.NUL, Call, After);
+   end On_Sections_Changed;
 
-   ----------------------
-   -- On_Items_Changed --
-   ----------------------
+   -------------------------
+   -- On_Sections_Changed --
+   -------------------------
 
-   procedure On_Items_Changed
-      (Self  : Glist_Model;
-       Call  : Cb_GObject_Guint_Guint_Guint_Void;
+   procedure On_Sections_Changed
+      (Self  : Gtk_Section_Model;
+       Call  : Cb_GObject_Guint_Guint_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is
    begin
-      Connect_Slot (Self, "items-changed" & ASCII.NUL, Call, After, Slot);
-   end On_Items_Changed;
+      Connect_Slot (Self, "sections-changed" & ASCII.NUL, Call, After, Slot);
+   end On_Sections_Changed;
 
-   function "+" (W : Glist_Model) return Glist_Model is
+   function "+" (W : Gtk_Section_Model) return Gtk_Section_Model is
    begin
       return W;
    end "+";
 
-end Glib.List_Model;
+end Gtk.Section_Model;

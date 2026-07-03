@@ -2,3 +2,15 @@
 #   GListModel
 # ============================================================
 ada = "Glib.List_Model"
+
+[[method]]
+id = "g_list_model_get_item"
+bind = false
+# Unavailable to language bindings
+
+[[method]]
+id = "g_list_model_get_object"
+ada = "Get_Item"
+# Binding-friendly version of g_list_model_get_item
+# that returns object instead of pointer
+# Renamed to avoid name clash with Glib.Object.Get_Object
