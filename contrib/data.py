@@ -186,8 +186,8 @@ binding = (
     "--Gio.InetAddressMask",  # Not tested yet, from Gio
     "--Gio.InetSocketAddress",  # Not tested yet, from Gio
     "--Gio.InputStream",  # Not tested yet, from Gio
-    "--GListModel",  # Bound through manual_binding
-    "GListStore",
+    "--Gio.ListModel",  # Bound through manual_binding
+    "Gio.ListStore",
     "--Gio.MemoryInputStream",  # Not tested yet, from Gio
     "--Gio.MemoryOutputStream",  # Not tested yet, from Gio
     "Gio.MenuModel",  # Not tested yet, from Gio
@@ -633,7 +633,6 @@ binding = (
 # These may still use qualified GIR names for interfaces.
 manual_binding = (
     "Gio.Icon",
-    "Gio.ListModel",
     "GPoll",
     "Spawn",
     "GTest",
