@@ -812,8 +812,8 @@ package body Gtk.Text_Iter is
             D := Users.Build (To_Address (Pred), User_Data);
             Tmp_Return := C_Gtk_Text_Iter_Forward_Find_Char (Tmp_Iter, Internal_Cb'Address, D, Iter_Or_Null (Limit'Address));
             Iter := Tmp_Iter;
-            return Tmp_Return /= 0;
             Users.Free_Data (D);
+            return Tmp_Return /= 0;
          end if;
       end Forward_Find_Char;
 

@@ -695,7 +695,7 @@ class SubprogramProfile(object):
         return self.params is None
 
     def direct_c_map(self):
-        """Wether all parameters and return value can be mapped directly from
+        """Whether all parameters and return value can be mapped directly from
         C to Ada.
         """
         for p in self.params:
@@ -1518,7 +1518,7 @@ class GIRClass(object):
             return
         cb = cb[0]
 
-        def call_to_c(gtk_func, values, user_data_setup="", user_data_cleanup=""):
+        def call_to_c(gtk_func: Subprogram, values, user_data_setup="", user_data_cleanup=""):
             """Implement the call to the C function.
             If the user passes a null callback, we always want to pass null
             to C rather than passing our Internal_Callback'Address.
@@ -1529,38 +1529,30 @@ class GIRClass(object):
 
             values_if_null = copy.deepcopy(values)
             values_if_null[cb.name.lower()] = "System.Null_Address"
-
             if user_data is not None:
                 values_if_null[user_data.lower()] = "System.Null_Address"
+            postcall_code: str = "".join(call)
 
-            exec1 = gtk_func.call(
-                in_pkg=self.pkg, extra_postcall="".join(call), values=values_if_null
-            )
+            # Code if no user data supplied
+            null_cbk_data = gtk_func.call(in_pkg=self.pkg, extra_postcall=postcall_code, values=values_if_null)
+            null_cbk = gtk_func.call_to_string(null_cbk_data, lang="ada->c").strip()
 
-            call1 = gtk_func.call_to_string(exec1, lang="ada->c")
-            if not call1.endswith(";"):
-                call1 += ";"
-
-            exec2 = gtk_func.call(
-                in_pkg=self.pkg, extra_postcall="".join(call), values=values
-            )
-
-            call2 = gtk_func.call_to_string(exec2, lang="ada->c")
-            if not call2.endswith(";"):
-                call2 += ";"
-            if user_data_setup:
-                call2 = user_data_setup + "\n" + call2
-            if user_data_cleanup:
-                call2 += "\n" + user_data_cleanup
-
+            # Code if user data supplied
+            data_call = gtk_func.call(in_pkg=self.pkg, extra_postcall=postcall_code, values=values)
+            data_cbk_body, return_val, tmp_data = data_call
+            # include user data setup and cleanup
+            # strip() removes whitespace if user_data functions empty
+            data_cbk = "\n".join([user_data_setup, data_cbk_body, user_data_cleanup]).strip()
+            if return_val is not None:
+                data_cbk += f"return {return_val};"
             return (
                 """if %s = null then
    %s
 else
    %s
 end if;"""
-                % (cb.name, call1, call2),
-                exec2[2],
+                % (cb.name, null_cbk, data_cbk),
+                tmp_data,
             )
 
         cbname = cb.type.param

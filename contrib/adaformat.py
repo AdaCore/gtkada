@@ -2047,21 +2047,22 @@ class Subprogram(object):
 
         return result
 
-    def call_to_string(self, call, pkg=None, lang="ada"):
+    def call_to_string(self, call: tuple, pkg=None, lang="ada"):
         """CALL is the result of call() above.
         This function returns a string that contains the code for the
         subprogram.
         """
-        result = call[0]
-        if call[1]:
+        result, ada_retval, _ = call
+        if ada_retval:
             if lang == "c->ada":
-                # The return value (Ada) needs to be converted back to C (this
+                # Add code to convert ada_retval back to C (this
                 # is the returned value from a callback, for instance)
-                result += "return %s" % (
-                    self.returns.convert_to_c(pkg=pkg) % {"var": call[1]},
-                )
+                # This code block is already semicolon-terminated
+                return_val = self.returns.convert_to_c(pkg=pkg) % {"var": ada_retval}
             else:
-                result += "return %s" % call[1]
+                # ada_retval is just an identifier so we need to add a semicolon
+                return_val = ada_retval + ';'
+            result += f"return {return_val}"
         return result
 
 
