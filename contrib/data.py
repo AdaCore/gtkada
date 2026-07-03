@@ -185,7 +185,6 @@ binding = (
     "--Gio.InetAddressMask",  # Not tested yet, from Gio
     "--Gio.InetSocketAddress",  # Not tested yet, from Gio
     "--Gio.InputStream",  # Not tested yet, from Gio
-    "--Gio.ListModel",  # Bound through manual_binding
     "Gio.ListStore",
     "--Gio.MemoryInputStream",  # Not tested yet, from Gio
     "--Gio.MemoryOutputStream",  # Not tested yet, from Gio
@@ -638,7 +637,6 @@ manual_binding = (
     "Utils",
     "Gtk.Accessible",
     "Gtk.AccessibleText",
-    "Gtk.ConstraintTarget",
     "GtkMain",
 )
 
