@@ -87,345 +87,345 @@ interfaces = (
     "--Gio.Volume",  # Not tested yet, from Gio
 )
 
-# List of widgets to bind.
-# Contains C type names.
+# List of GIR widgets to bind.
+# Prefer qualified GIR names for classes, records and unions found in GIR.
 # Start the name with -- for objects we do not want to bind
 
 binding = (
     "----GdkAtom",  # No binding necessary, too low-level
-    "GdkCicpParams",
-    "GdkClipboard",
-    "GdkColorState",
-    "GdkContentProvider",
-    "GdkContentFormats",
-    "GdkCursor",
-    "GdkDevice",
+    "Gdk.CicpParams",
+    "Gdk.Clipboard",
+    "Gdk.ColorState",
+    "Gdk.ContentProvider",
+    "Gdk.ContentFormats",
+    "Gdk.Cursor",
+    "Gdk.Device",
     "--GdkDeviceManager",
-    "GdkDeviceTool",
-    "GdkDisplay",
-    "GdkDmabufFormats",
-    "GdkDrag",
+    "Gdk.DeviceTool",
+    "Gdk.Display",
+    "Gdk.DmabufFormats",
+    "Gdk.Drag",
     "--GdkDragContext",
-    "GdkDrawContext",
+    "Gdk.DrawContext",
     "--GdkDrawingContext",
-    "GdkDrop",
-    "--GdkEvent",
-    "GdkFrameClock",
-    "GdkFrameTimings",
-    "GdkGLContext",
-    "GdkMonitor",
-    "GdkRGBA",
-    "GdkRectangle",
-    "--GdkMonitor",
+    "Gdk.Drop",
+    "--Gdk.Event",
+    "Gdk.FrameClock",
+    "Gdk.FrameTimings",
+    "Gdk.GLContext",
+    "Gdk.Monitor",
+    "Gdk.RGBA",
+    "Gdk.Rectangle",
+    "--Gdk.Monitor",
     "--GdkScreen",
-    "GdkSeat",
-    "GdkSnapshot",
-    "GdkSurface",
-    "GdkTexture",
+    "Gdk.Seat",
+    "Gdk.Snapshot",
+    "Gdk.Surface",
+    "Gdk.Texture",
     "--GdkWindow",
     "--GAction",  # bound as an interface, see interfaces tuple
     "--GActionGroup",  # bound as an interface, see interfaces tuple
     "--GActionMap",  # bound as an interface, see interfaces tuple
-    "GApplication",
-    "GApplicationCommandLine",
-    "GBytes",  # Function returning arrays
-    "--GBufferedInputStream",  # Not tested yet, from Gio
-    "--GBufferedOutputStream",  # Not tested yet, from Gio
-    "GCancellable",
-    "--GCharsetConverter",  # Not tested yet, from Gio
-    "--GConverterInputStream",  # Not tested yet, from Gio
-    "--GConverterOutputStream",  # Not tested yet, from Gio
-    "--GCredentials",  # Not tested yet, from Giov
-    "--GDBusActionGroup",  # Not tested yet, from Gio
-    "--GDBusAnnotationInfo",  # Not tested yet, from Gio
-    "--GDBusArgInfo",  # Not tested yet, from Gio
-    "--GDBusAuthObserver",  # Not tested yet, from Gio
-    "--GDBusConnection",  # Not tested yet, from Gio
-    "--GDBusInterfaceInfo",  # Not tested yet, from Gio
-    "--GDBusInterfaceSkeleton",  # Not tested yet, from Gio
-    "--GDBusMenuModel",  # Not tested yet, from Gio
-    "--GDBusMessage",  # Not tested yet, from Gio
-    "--GDBusMethodInfo",  # Not tested yet, from Gio
-    "--GDBusMethodInvocation",  # Not tested yet, from Gio
-    "--GDBusNodeInfo",  # Not tested yet, from Gio
-    "--GDBusObjectManagerClient",  # Not tested yet, from Gio
-    "--GDBusObjectManagerServer",  # Not tested yet, from Gio
-    "--GDBusObjectProxy",  # Not tested yet, from Gio
-    "--GDBusObjectSkeleton",  # Not tested yet, from Gio
-    "--GDBusPropertyInfo",  # Not tested yet, from Gio
-    "--GDBusProxy",  # Not tested yet, from Gio
-    "--GDBusServer",  # Not tested yet, from Gio
-    "--GDBusSignalInfo",  # Not tested yet, from Gio
-    "--GDataInputStream",  # Not tested yet, from Gio
-    "--GDataOutputStream",  # Not tested yet, from Gio
-    "--GDesktopAppInfo",  # Not tested yet, from Gio
-    "--GEmblem",  # Not tested yet, from Gio
-    "--GEmblemedIcon",  # Not tested yet, from Gio
-    "--GFileAttributeInfoList",  # Not tested yet, from Gio
-    "--GFileAttributeMatcher",  # Not tested yet, from Gio
-    "--GFileEnumerator",  # Not tested yet, from Gio
-    "--GFileIOStream",  # Not tested yet, from Gio
-    "--GFileIcon",  # Not tested yet, from Gio
-    "--GFileInfo",  # Not tested yet, from Gio
-    "--GFileInputStream",  # Not tested yet, from Gio
-    "--GFileMonitor",  # Not tested yet, from Gio
-    "--GFileOutputStream",  # Not tested yet, from Gio
-    "--GFilenameCompleter",  # Not tested yet, from Gio
-    "--GFilterInputStream",  # Not tested yet, from Gio
-    "--GFilterOutputStream",  # Not tested yet, from Gio
-    "GIcon",
-    "--GIOExtension",  # Not tested yet, from Gio
-    "--GIOExtensionPoint",  # Not tested yet, from Gio
-    "GIOChannel",
-    "--GIOModule",  # Not tested yet, from Gio
-    "--GIOModuleScope",  # Not tested yet, from Gio
-    "--GIOSchedulerJob",  # Not tested yet, from Gio
-    "--GIOStream",  # Not tested yet, from Gio
-    "--GInetAddress",  # Not tested yet, from Gio
-    "--GInetAddressMask",  # Not tested yet, from Gio
-    "--GInetSocketAddress",  # Not tested yet, from Gio
-    "--GInputStream",  # Not tested yet, from Gio
-    "GListModel",
-    "--GMemoryInputStream",  # Not tested yet, from Gio
-    "--GMemoryOutputStream",  # Not tested yet, from Gio
-    "GMenuModel",  # Not tested yet, from Gio
-    "GMenu",  # Not tested yet, from Gio
-    "GMenuAttributeIter",  # Not tested yet, from Gio
-    "GMenuItem",  # Not tested yet, from Gio
-    "GMenuLinkIter",  # Not tested yet, from Gio
-    "--GMountOperation",  # Not tested yet, from Gio
-    "--GNativeVolumeMonitor",  # Not tested yet, from Gio
-    "--GNetworkAddress",  # Not tested yet, from Gio
-    "--GNetworkService",  # Not tested yet, from Gio
-    "GNotification",
-    "--GOutputStream",  # Not tested yet, from Gio
-    "GOptionContext",
-    "GPoll",
-    "Spawn",
-    "GTest",
-    "Utils",
-    "--GParamSpec",  # Bound manually
-    "--GParamSpecBoolean",  # Bound manually
-    "--GParamSpecBoxed",  # Bound manually
-    "--GParamSpecChar",  # Bound manually
-    "--GParamSpecDouble",  # Bound manually
-    "--GParamSpecEnum",  # Bound manually
-    "--GParamSpecFlags",  # Bound manually
-    "--GParamSpecFloat",  # Bound manually
-    "--GParamSpecGType",  # Bound manually
-    "--GParamSpecInt",  # Bound manually
-    "--GParamSpecInt64",  # Bound manually
-    "--GParamSpecLong",  # Bound manually
-    "--GParamSpecObject",  # Bound manually
-    "--GParamSpecOverride",  # Bound manually
-    "--GParamSpecParam",  # Bound manually
-    "--GParamSpecPointer",  # Bound manually
-    "--GParamSpecPool",  # Bound manually
-    "--GParamSpecString",  # Bound manually
-    "--GParamSpecUChar",  # Bound manually
-    "--GParamSpecUInt",  # Bound manually
-    "--GParamSpecUInt64",  # Bound manually
-    "--GParamSpecULong",  # Bound manually
-    "--GParamSpecUnichar",  # Bound manually
-    "--GParamSpecValueArray",  # Bound manually
-    "--GParamSpecVariant",  # Bound manually
-    "--GPermission",  # Not tested yet, from Gio
-    "--GProxyAddress",  # Not tested yet, from Gio
-    "--GProxyAddressEnumerator",  # Not tested yet, from Gio
-    "--GResolver",  # Not tested yet, from Gio
-    "GResource",
-    "--GSettings",  # Not tested yet, from Gio
-    "--GSettingsSchema",  # Not tested yet, from Gio
-    "--GSettingsSchemaSource",  # Not tested yet, from Gio
-    "GSimpleAction",
-    "GSimpleActionGroup",
-    "--GSimpleAsyncResult",  # Not tested yet, from Gio
-    "--GSimplePermission",  # Not tested yet, from Gio
-    "--GSocket",  # Not tested yet, from Gio
-    "--GSocketAddress",  # Not tested yet, from Gio
-    "--GSocketAddressEnumerator",  # Not tested yet, from Gio
-    "--GSocketClient",  # Not tested yet, from Gio
-    "--GSocketConnection",  # Not tested yet, from Gio
-    "--GSocketControlMessage",  # Not tested yet, from Gio
-    "--GSocketListener",  # Not tested yet, from Gio
-    "--GSocketService",  # Not tested yet, from Gio
-    "--GSource",  # Manually bound in Glib.Main
-    "--GSrvTarget",  # Not tested yet, from Gio
-    "--GStaticResource",  # Not tested yet, from Gio
-    "GString",
-    "--GTcpConnection",  # Not tested yet, from Gio
-    "--GTcpWrapperConnection",  # Not tested yet, from Gio
-    "--GThemedIcon",  # Not tested yet, from Gio
-    "--GThreadedSocketService",  # Not tested yet, from Gio
-    "--GTlsCertificate",  # Not tested yet, from Gio
-    "--GTlsConnection",  # Not tested yet, from Gio
-    "--GTlsDatabase",  # Not tested yet, from Gio
-    "--GTlsInteraction",  # Not tested yet, from Gio
-    "--GTlsPassword",  # Not tested yet, from Gio
-    "--GUnixConnection",  # Not tested yet, from Gio
-    "--GUnixCredentialsMessage",  # Not tested yet, from Gio
-    "--GUnixFDList",  # Not tested yet, from Gio
-    "--GUnixFDMessage",  # Not tested yet, from Gio
-    "--GUnixInputStream",  # Not tested yet, from Gio
-    "--GUnixMountMonitor",  # Not tested yet, from Gio
-    "--GUnixMountPoint",  # Not tested yet, from Gio
-    "--GUnixOutputStream",  # Not tested yet, from Gio
-    "--GUnixSocketAddress",  # Not tested yet, from Gio
-    "GVariant",
-    "GVariantIter",
-    "GVariantType",
-    "--GVfs",  # Not tested yet, from Gio
-    "--GVolumeMonitor",  # Not tested yet, from Gio
-    "--GZlibCompressor",  # Not tested yet, from Gio
-    "--GZlibDecompressor",  # Not tested yet, from Gio
-    "--PangoAttrIterator",
-    "PangoAttrList",
-    "PangoAttribute",
-    "--PangoColor",
-    "PangoContext",
-    "PangoCoverage",
-    "PangoFont",
-    "PangoFontDescription",
-    "PangoFontFace",
-    "PangoFontFamily",
-    "PangoFontMap",
-    "PangoFontMetrics",
-    "PangoFontset",
-    "--PangoGlyphItem",
-    "--PangoGlyphItemIter",
-    "--PangoGlyphString",
-    "--PangoItem",
-    "--PangoRenderer",
-    "--PangoScriptIter",
-    "PangoLanguage",
-    "PangoLayout",
-    "PangoLayoutIter",
-    "PangoLayoutLine",
-    "PangoMatrix",
-    "PangoTabArray",
-    "--GtkAboutDialog",
+    "Gio.Application",
+    "Gio.ApplicationCommandLine",
+    "GLib.Bytes",  # Function returning arrays
+    "--Gio.BufferedInputStream",  # Not tested yet, from Gio
+    "--Gio.BufferedOutputStream",  # Not tested yet, from Gio
+    "Gio.Cancellable",
+    "--Gio.CharsetConverter",  # Not tested yet, from Gio
+    "--Gio.ConverterInputStream",  # Not tested yet, from Gio
+    "--Gio.ConverterOutputStream",  # Not tested yet, from Gio
+    "--Gio.Credentials",  # Not tested yet, from Giov
+    "--Gio.DBusActionGroup",  # Not tested yet, from Gio
+    "--Gio.DBusAnnotationInfo",  # Not tested yet, from Gio
+    "--Gio.DBusArgInfo",  # Not tested yet, from Gio
+    "--Gio.DBusAuthObserver",  # Not tested yet, from Gio
+    "--Gio.DBusConnection",  # Not tested yet, from Gio
+    "--Gio.DBusInterfaceInfo",  # Not tested yet, from Gio
+    "--Gio.DBusInterfaceSkeleton",  # Not tested yet, from Gio
+    "--Gio.DBusMenuModel",  # Not tested yet, from Gio
+    "--Gio.DBusMessage",  # Not tested yet, from Gio
+    "--Gio.DBusMethodInfo",  # Not tested yet, from Gio
+    "--Gio.DBusMethodInvocation",  # Not tested yet, from Gio
+    "--Gio.DBusNodeInfo",  # Not tested yet, from Gio
+    "--Gio.DBusObjectManagerClient",  # Not tested yet, from Gio
+    "--Gio.DBusObjectManagerServer",  # Not tested yet, from Gio
+    "--Gio.DBusObjectProxy",  # Not tested yet, from Gio
+    "--Gio.DBusObjectSkeleton",  # Not tested yet, from Gio
+    "--Gio.DBusPropertyInfo",  # Not tested yet, from Gio
+    "--Gio.DBusProxy",  # Not tested yet, from Gio
+    "--Gio.DBusServer",  # Not tested yet, from Gio
+    "--Gio.DBusSignalInfo",  # Not tested yet, from Gio
+    "--Gio.DataInputStream",  # Not tested yet, from Gio
+    "--Gio.DataOutputStream",  # Not tested yet, from Gio
+    "--Gio.DesktopAppInfo",  # Not tested yet, from Gio
+    "--Gio.Emblem",  # Not tested yet, from Gio
+    "--Gio.EmblemedIcon",  # Not tested yet, from Gio
+    "--Gio.FileAttributeInfoList",  # Not tested yet, from Gio
+    "--Gio.FileAttributeMatcher",  # Not tested yet, from Gio
+    "--Gio.FileEnumerator",  # Not tested yet, from Gio
+    "--Gio.FileIOStream",  # Not tested yet, from Gio
+    "--Gio.FileIcon",  # Not tested yet, from Gio
+    "--Gio.FileInfo",  # Not tested yet, from Gio
+    "--Gio.FileInputStream",  # Not tested yet, from Gio
+    "--Gio.FileMonitor",  # Not tested yet, from Gio
+    "--Gio.FileOutputStream",  # Not tested yet, from Gio
+    "--Gio.FilenameCompleter",  # Not tested yet, from Gio
+    "--Gio.FilterInputStream",  # Not tested yet, from Gio
+    "--Gio.FilterOutputStream",  # Not tested yet, from Gio
+    "--GIcon",  # Bound through manual_binding
+    "--Gio.IOExtension",  # Not tested yet, from Gio
+    "--Gio.IOExtensionPoint",  # Not tested yet, from Gio
+    "GLib.IOChannel",
+    "--Gio.IOModule",  # Not tested yet, from Gio
+    "--Gio.IOModuleScope",  # Not tested yet, from Gio
+    "--Gio.IOSchedulerJob",  # Not tested yet, from Gio
+    "--Gio.IOStream",  # Not tested yet, from Gio
+    "--Gio.InetAddress",  # Not tested yet, from Gio
+    "--Gio.InetAddressMask",  # Not tested yet, from Gio
+    "--Gio.InetSocketAddress",  # Not tested yet, from Gio
+    "--Gio.InputStream",  # Not tested yet, from Gio
+    "--GListModel",  # Bound through manual_binding
+    "--Gio.MemoryInputStream",  # Not tested yet, from Gio
+    "--Gio.MemoryOutputStream",  # Not tested yet, from Gio
+    "Gio.MenuModel",  # Not tested yet, from Gio
+    "Gio.Menu",  # Not tested yet, from Gio
+    "Gio.MenuAttributeIter",  # Not tested yet, from Gio
+    "Gio.MenuItem",  # Not tested yet, from Gio
+    "Gio.MenuLinkIter",  # Not tested yet, from Gio
+    "--Gio.MountOperation",  # Not tested yet, from Gio
+    "--Gio.NativeVolumeMonitor",  # Not tested yet, from Gio
+    "--Gio.NetworkAddress",  # Not tested yet, from Gio
+    "--Gio.NetworkService",  # Not tested yet, from Gio
+    "Gio.Notification",
+    "--Gio.OutputStream",  # Not tested yet, from Gio
+    "GLib.OptionContext",
+    "--GPoll",  # Bound through manual_binding
+    "--Spawn",  # Bound through manual_binding
+    "--GTest",  # Bound through manual_binding
+    "--Utils",  # Bound through manual_binding
+    "--GObject.ParamSpec",  # Bound manually
+    "--GObject.ParamSpecBoolean",  # Bound manually
+    "--GObject.ParamSpecBoxed",  # Bound manually
+    "--GObject.ParamSpecChar",  # Bound manually
+    "--GObject.ParamSpecDouble",  # Bound manually
+    "--GObject.ParamSpecEnum",  # Bound manually
+    "--GObject.ParamSpecFlags",  # Bound manually
+    "--GObject.ParamSpecFloat",  # Bound manually
+    "--GObject.ParamSpecGType",  # Bound manually
+    "--GObject.ParamSpecInt",  # Bound manually
+    "--GObject.ParamSpecInt64",  # Bound manually
+    "--GObject.ParamSpecLong",  # Bound manually
+    "--GObject.ParamSpecObject",  # Bound manually
+    "--GObject.ParamSpecOverride",  # Bound manually
+    "--GObject.ParamSpecParam",  # Bound manually
+    "--GObject.ParamSpecPointer",  # Bound manually
+    "--GObject.ParamSpecPool",  # Bound manually
+    "--GObject.ParamSpecString",  # Bound manually
+    "--GObject.ParamSpecUChar",  # Bound manually
+    "--GObject.ParamSpecUInt",  # Bound manually
+    "--GObject.ParamSpecUInt64",  # Bound manually
+    "--GObject.ParamSpecULong",  # Bound manually
+    "--GObject.ParamSpecUnichar",  # Bound manually
+    "--GObject.ParamSpecValueArray",  # Bound manually
+    "--GObject.ParamSpecVariant",  # Bound manually
+    "--Gio.Permission",  # Not tested yet, from Gio
+    "--Gio.ProxyAddress",  # Not tested yet, from Gio
+    "--Gio.ProxyAddressEnumerator",  # Not tested yet, from Gio
+    "--Gio.Resolver",  # Not tested yet, from Gio
+    "Gio.Resource",
+    "--Gio.Settings",  # Not tested yet, from Gio
+    "--Gio.SettingsSchema",  # Not tested yet, from Gio
+    "--Gio.SettingsSchemaSource",  # Not tested yet, from Gio
+    "Gio.SimpleAction",
+    "Gio.SimpleActionGroup",
+    "--Gio.SimpleAsyncResult",  # Not tested yet, from Gio
+    "--Gio.SimplePermission",  # Not tested yet, from Gio
+    "--Gio.Socket",  # Not tested yet, from Gio
+    "--Gio.SocketAddress",  # Not tested yet, from Gio
+    "--Gio.SocketAddressEnumerator",  # Not tested yet, from Gio
+    "--Gio.SocketClient",  # Not tested yet, from Gio
+    "--Gio.SocketConnection",  # Not tested yet, from Gio
+    "--Gio.SocketControlMessage",  # Not tested yet, from Gio
+    "--Gio.SocketListener",  # Not tested yet, from Gio
+    "--Gio.SocketService",  # Not tested yet, from Gio
+    "--GLib.Source",  # Manually bound in Glib.Main
+    "--Gio.SrvTarget",  # Not tested yet, from Gio
+    "--Gio.StaticResource",  # Not tested yet, from Gio
+    "GLib.String",
+    "--Gio.TcpConnection",  # Not tested yet, from Gio
+    "--Gio.TcpWrapperConnection",  # Not tested yet, from Gio
+    "--Gio.ThemedIcon",  # Not tested yet, from Gio
+    "--Gio.ThreadedSocketService",  # Not tested yet, from Gio
+    "--Gio.TlsCertificate",  # Not tested yet, from Gio
+    "--Gio.TlsConnection",  # Not tested yet, from Gio
+    "--Gio.TlsDatabase",  # Not tested yet, from Gio
+    "--Gio.TlsInteraction",  # Not tested yet, from Gio
+    "--Gio.TlsPassword",  # Not tested yet, from Gio
+    "--Gio.UnixConnection",  # Not tested yet, from Gio
+    "--Gio.UnixCredentialsMessage",  # Not tested yet, from Gio
+    "--Gio.UnixFDList",  # Not tested yet, from Gio
+    "--Gio.UnixFDMessage",  # Not tested yet, from Gio
+    "--Gio.UnixInputStream",  # Not tested yet, from Gio
+    "--Gio.UnixMountMonitor",  # Not tested yet, from Gio
+    "--Gio.UnixMountPoint",  # Not tested yet, from Gio
+    "--Gio.UnixOutputStream",  # Not tested yet, from Gio
+    "--Gio.UnixSocketAddress",  # Not tested yet, from Gio
+    "GLib.Variant",
+    "GLib.VariantIter",
+    "GLib.VariantType",
+    "--Gio.Vfs",  # Not tested yet, from Gio
+    "--Gio.VolumeMonitor",  # Not tested yet, from Gio
+    "--Gio.ZlibCompressor",  # Not tested yet, from Gio
+    "--Gio.ZlibDecompressor",  # Not tested yet, from Gio
+    "--Pango.AttrIterator",
+    "Pango.AttrList",
+    "Pango.Attribute",
+    "--Pango.Color",
+    "Pango.Context",
+    "Pango.Coverage",
+    "Pango.Font",
+    "Pango.FontDescription",
+    "Pango.FontFace",
+    "Pango.FontFamily",
+    "Pango.FontMap",
+    "Pango.FontMetrics",
+    "Pango.Fontset",
+    "--Pango.GlyphItem",
+    "--Pango.GlyphItemIter",
+    "--Pango.GlyphString",
+    "--Pango.Item",
+    "--Pango.Renderer",
+    "--Pango.ScriptIter",
+    "Pango.Language",
+    "Pango.Layout",
+    "Pango.LayoutIter",
+    "Pango.LayoutLine",
+    "Pango.Matrix",
+    "Pango.TabArray",
+    "--Gtk.AboutDialog",
     "--GtkAccelGroup",
     "--GtkAccelLabel",
     "--GtkAccelMap",
-    "GtkAccessible",  # Needs ATK
-    "GtkAccessibleHyperlink",
-    "GtkAccessibleText",
+    "--GtkAccessible",  # Bound through manual_binding
+    "Gtk.AccessibleHyperlink",
+    "--GtkAccessibleText",  # Bound through manual_binding
     "--GtkAction",
     "--GtkActionGroup",
-    "--GtkActionBar",
-    "GtkAdjustment",
-    "GtkAlertDialog",
+    "--Gtk.ActionBar",
+    "Gtk.Adjustment",
+    "Gtk.AlertDialog",
     "--GtkAlignment",
     "----GtkAppChooserButton",  # Needs GFile
     "----GtkAppChooserDialog",  # Needs GFile
     "----GtkAppChooserWidget",  # Needs GFile
-    "GtkApplication",
-    "GtkApplicationWindow",
+    "Gtk.Application",
+    "Gtk.ApplicationWindow",
     "--GtkArrow",
     "----GtkArrowAccessible",  # We do not support atk
-    "--GtkAspectFrame",
-    "--GtkAssistant",
-    "--GtkATContext",  # Bound manually
+    "--Gtk.AspectFrame",
+    "--Gtk.Assistant",
+    "--Gtk.ATContext",  # Bound manually
     "--GtkBin",
     "--GtkBindingEntry",
     "--GtkBindingSet",
-    "GtkBitset",
-    "--GtkBorder",
-    "GtkBox",
+    "Gtk.Bitset",
+    "--Gtk.Border",
+    "Gtk.Box",
     "----GtkBooleanCellAccessible",  # We do not support atk
-    "GtkBuilder",
-    "GtkBuilderCScope",
-    "GtkBuilderListItemFactory",
-    "GtkButton",
+    "Gtk.Builder",
+    "Gtk.BuilderCScope",
+    "Gtk.BuilderListItemFactory",
+    "Gtk.Button",
     "----GtkButtonAccessible",  # We do not support atk
     "--GtkButtonBox",
-    "--GtkCalendar",
+    "--Gtk.Calendar",
     "----GtkCellAccessible",  # We do not support atk
-    "GtkCellArea",
-    "GtkCellAreaBox",
+    "Gtk.CellArea",
+    "Gtk.CellAreaBox",
     "----GtkCellAreaClass",
-    "GtkCellAreaContext",
-    "GtkCellRenderer",
-    "GtkCellRendererAccel",
+    "Gtk.CellAreaContext",
+    "Gtk.CellRenderer",
+    "Gtk.CellRendererAccel",
     "----GtkCellRendererClass",  # Useless in Ada
-    "GtkCellRendererCombo",
-    "--GtkCellRendererPixbuf",
-    "GtkCellRendererProgress",
-    "GtkCellRendererSpin",
-    "GtkCellRendererSpinner",
-    "GtkCellRendererText",
-    "GtkCellRendererToggle",
-    "GtkCellView",
-    "GtkCheckButton",
+    "Gtk.CellRendererCombo",
+    "--Gtk.CellRendererPixbuf",
+    "Gtk.CellRendererProgress",
+    "Gtk.CellRendererSpin",
+    "Gtk.CellRendererSpinner",
+    "Gtk.CellRendererText",
+    "Gtk.CellRendererToggle",
+    "Gtk.CellView",
+    "Gtk.CheckButton",
     "--GtkCheckMenuItem",
     "----GtkCheckMenuItemAccessible",  # We do not support atk
-    "GtkCenterBox",
+    "Gtk.CenterBox",
     "--GtkClipboard",
-    "--GtkColorButton",
-    "--GtkColorChooserDialog",
-    "GtkColorDialog",
-    "GtkColorDialogButton",
-    "--GtkColorChooserWidget",
+    "--Gtk.ColorButton",
+    "--Gtk.ColorChooserDialog",
+    "Gtk.ColorDialog",
+    "Gtk.ColorDialogButton",
+    "--Gtk.ColorChooserWidget",
     "--GtkColorSelection",
     "--GtkColorSelectionDialog",
-    "GtkColumnView",
-    "GtkColumnViewColumn",
-    "--GtkComboBox",
+    "Gtk.ColumnView",
+    "Gtk.ColumnViewColumn",
+    "--Gtk.ComboBox",
     "----GtkComboBoxAccessible",  # We do not support atk
-    "--GtkComboBoxText",
-    "GtkConstraintTarget",
+    "--Gtk.ComboBoxText",
+    "--GtkConstraintTarget",  # Bound through manual_binding
     "--GtkContainer",
     "----GtkContainerAccessible",  # We do not support atk
     "----GtkContainerCellAccessible",  # We do not support atk
     "----GtkContainerClass",
-    "--GtkCssProvider",
-    "--GtkCssSection",
-    "--GtkDialog",
-    "--GtkDrawingArea",
-    "GtkEntry",
+    "--Gtk.CssProvider",
+    "--Gtk.CssSection",
+    "--Gtk.Dialog",
+    "--Gtk.DrawingArea",
+    "Gtk.Entry",
     "----GtkEntryAccessible",  # We do not support atk
-    "GtkEntryBuffer",
-    "GtkEntryCompletion",
+    "Gtk.EntryBuffer",
+    "Gtk.EntryCompletion",
     "----GtkEntryIconAccessible",  # We do not support atk
     "--GtkEventBox",
-    "--GtkEventController",
-    "GtkExpander",
+    "--Gtk.EventController",
+    "Gtk.Expander",
     "----GtkExpanderAccessible",  # We do not support atk
     "--GtkFileChooserButton",
-    "--GtkFileChooserDialog",
-    "--GtkFileChooserWidget",
-    "--GtkFileFilter",
-    "GtkFilter",
-    "--GtkFixed",
-    "--GtkFlowBox",
+    "--Gtk.FileChooserDialog",
+    "--Gtk.FileChooserWidget",
+    "--Gtk.FileFilter",
+    "Gtk.Filter",
+    "--Gtk.Fixed",
+    "--Gtk.FlowBox",
     "----GtkFlowBoxAccessible",  # We do not support atk
-    "--GtkFlowBoxChild",
+    "--Gtk.FlowBoxChild",
     "----GtkFlowBoxChildAccessible",  # We do not support atk
-    "--GtkFontButton",
-    "--GtkFontChooserDialog",
-    "--GtkFontChooserWidget",
-    "GtkFontDialog",
-    "GtkFontDialogButton",
+    "--Gtk.FontButton",
+    "--Gtk.FontChooserDialog",
+    "--Gtk.FontChooserWidget",
+    "Gtk.FontDialog",
+    "Gtk.FontDialogButton",
     "--GtkFontSelection",
     "--GtkFontSelectionDialog",
-    "GtkFrame",
+    "Gtk.Frame",
     "----GtkFrameAccessible",  # We do not support atk
-    "--GtkGesture",
-    "--GtkGestureDrag",
-    "--GtkGestureLongPress",
+    "--Gtk.Gesture",
+    "--Gtk.GestureDrag",
+    "--Gtk.GestureLongPress",
     "--GtkGestureMultiPress",
-    "--GtkGesturePan",
-    "--GtkGestureRotate",
-    "--GtkGestureSingle",
-    "--GtkGestureSwipe",
-    "--GtkGestureZoom",
+    "--Gtk.GesturePan",
+    "--Gtk.GestureRotate",
+    "--Gtk.GestureSingle",
+    "--Gtk.GestureSwipe",
+    "--Gtk.GestureZoom",
     "--GtkGradient",
-    "--GtkGLArea",
-    "GtkGrid",
-    "GtkGridView",
+    "--Gtk.GLArea",
+    "Gtk.Grid",
+    "Gtk.GridView",
     "--GtkHandleBox",
     "--GtkHButtonBox",
-    "--GtkHeaderBar",
+    "--Gtk.HeaderBar",
     "--GtkHPaned",
     "--GtkHScale",
     "--GtkHScrollbar",
@@ -434,89 +434,89 @@ binding = (
     "--GtkIconInfo",
     "--GtkIconSet",
     "--GtkIconSource",
-    "--GtkIconTheme",
-    "--GtkIconView",
+    "--Gtk.IconTheme",
+    "--Gtk.IconView",
     "----GtkIconViewAccessible",  # We do not support atk
-    "--GtkIMContext",
-    "--GtkIMContextSimple",
-    "--GtkIMMulticontext",
-    "--GtkImage",
+    "--Gtk.IMContext",
+    "--Gtk.IMContextSimple",
+    "--Gtk.IMMulticontext",
+    "--Gtk.Image",
     "----GtkImageAccessible",  # We do not support atk
     "----GtkImageCellAccessible",  # We do not support atk
     "--GtkImageMenuItem",
-    "--GtkInfoBar",
+    "--Gtk.InfoBar",
     "--GtkInvisible",
-    "GtkLabel",
+    "Gtk.Label",
     "----GtkLabelAccessible",  # We do not support atk
     "--GtkLayout",
 
            # GtkLayoutManager and GtkLayoutChild are the abstract bases of
            # the layout managers. They must be listed before their
            # subclasses so the generator emits them first.
-           "GtkLayoutManager",
-           "GtkLayoutChild",
-           "GtkBinLayout",
-           "GtkBoxLayout",
-           "GtkCenterLayout",
-           "GtkConstraintLayout",
-           "GtkConstraintLayoutChild",
-           "--GtkCustomLayout",
-           "GtkFixedLayout",
-           "GtkFixedLayoutChild",
-           "GtkGridLayout",
-           "GtkGridLayoutChild",
-           "GtkOverlayLayout",
-           "GtkOverlayLayoutChild",
+           "Gtk.LayoutManager",
+           "Gtk.LayoutChild",
+           "Gtk.BinLayout",
+           "Gtk.BoxLayout",
+           "Gtk.CenterLayout",
+           "Gtk.ConstraintLayout",
+           "Gtk.ConstraintLayoutChild",
+           "--Gtk.CustomLayout",
+           "Gtk.FixedLayout",
+           "Gtk.FixedLayoutChild",
+           "Gtk.GridLayout",
+           "Gtk.GridLayoutChild",
+           "Gtk.OverlayLayout",
+           "Gtk.OverlayLayoutChild",
 
-    "--GtkLevelBar",
+    "--Gtk.LevelBar",
     "----GtkLevelBarAccessible",  # We do not support atk
-    "--GtkLinkButton",
+    "--Gtk.LinkButton",
     "----GtkLinkButtonAccessible",  # We do not support atk
-    "GtkListBase",
-    "--GtkListBox",
+    "Gtk.ListBase",
+    "--Gtk.ListBox",
     "----GtkListBoxAccessible",  # We do not support atk
-    "--GtkListBoxRow",
+    "--Gtk.ListBoxRow",
     "----GtkListBoxRowAccessible",  # We do not support atk
-    "GtkListItem",
-    "GtkListItemFactory",
-    "GtkListStore",
+    "Gtk.ListItem",
+    "Gtk.ListItemFactory",
+    "Gtk.ListStore",
     "----GtkLockButton",  # requires GPermission
     "----GtkLockButtonAccessible",  # We do not support atk
-    "GtkMain",
+    "--GtkMain",  # Bound through manual_binding
     "--GtkMisc",
     "--GtkMenu",
     "----GtkMenuAccessible",  # We do not support atk
     "--GtkMenuBar",
-    "GtkMenuButton",
+    "Gtk.MenuButton",
     "----GtkMenuButtonAccessible",  # We do not support atk
     "--GtkMenuItem",
     "----GtkMenuItemAccessible",  # We do not support atk
     "--GtkMenuShell",
     "----GtkMenuShellAccessible",  # We do not support atk
     "--GtkMenuToolButton",
-    "--GtkMessageDialog",
+    "--Gtk.MessageDialog",
     "----GtkMountOperation",  # Requires a lot of GIO
-    "GtkNativeDialog",
-    "GtkNotebook",
+    "Gtk.NativeDialog",
+    "Gtk.Notebook",
     "----GtkNotebookAccessible",  # We do not support atk
     "----GtkNotebookPageAccessible",  # We do not support atk
     "----GtkNumerableIcon",  # Requires a lot of GIO
     "--GtkOffscreenWindow",
-    "--GtkOverlay",
-    "GtkPaned",
+    "--Gtk.Overlay",
+    "Gtk.Paned",
     "----GtkPanedAccessible",  # We do not support atk
-    "--GtkPageSetup",
-    "--GtkPaperSize",
+    "--Gtk.PageSetup",
+    "--Gtk.PaperSize",
     "----GtkPlacesSidebar",  # Requires GFile
-    "GtkPopover",
+    "Gtk.Popover",
     "----GtkPopoverAccessible",  # We do not support atk
-    "GtkPopoverMenu",
-    "GtkPopoverMenuBar",
-    "--GtkPrintContext",
-    "--GtkPrintOperation",
-    "--GtkPrintSettings",
+    "Gtk.PopoverMenu",
+    "Gtk.PopoverMenuBar",
+    "--Gtk.PrintContext",
+    "--Gtk.PrintOperation",
+    "--Gtk.PrintSettings",
     "----GtkPlug",  # X11-specific, no binding
-    "--GtkProgressBar",
+    "--Gtk.ProgressBar",
     "----GtkProgressBarAccessible",  # We do not support atk
     "--GtkRadioAction",
     "--GtkRadioButton",
@@ -524,7 +524,7 @@ binding = (
     "--GtkRadioMenuItem",
     "----GtkRadioMenuItemAccessible",  # We do not support atk
     "--GtkRadioToolButton",
-    "--GtkRange",
+    "--Gtk.Range",
     "----GtkRangeAccessible",  # We do not support atk
     "----GtkRcStyle",  # manual binding for these deprecated routines
     "--GtkRecentAction",
@@ -532,41 +532,41 @@ binding = (
     "--GtkRecentChooserMenu",
     "--GtkRecentChooserWidget",
     "--GtkRecentFilter",
-    "--GtkRecentInfo",
-    "--GtkRecentManager",
+    "--Gtk.RecentInfo",
+    "--Gtk.RecentManager",
     "----GtkRendererCellAccessible",  # We do not support atk
-    "--GtkRevealer",
-    "--GtkScale",
+    "--Gtk.Revealer",
+    "--Gtk.Scale",
     "----GtkScaleAccessible",  # We do not support atk
-    "--GtkScaleButton",
+    "--Gtk.ScaleButton",
     "----GtkScaleButtonAccessible",  # We do not support atk
-    "--GtkSearchBar",
-    "--GtkSearchEntry",
+    "--Gtk.SearchBar",
+    "--Gtk.SearchEntry",
     "--GtkSelectionData",
-    "GtkSeparator",
-    "--GtkShortcutsWindow",
-    "--GtkSizeGroup",
-    "--GtkScrollbar",
-    "GtkScrolledWindow",
+    "Gtk.Separator",
+    "--Gtk.ShortcutsWindow",
+    "--Gtk.SizeGroup",
+    "--Gtk.Scrollbar",
+    "Gtk.ScrolledWindow",
     "----GtkScrolledWindowAccessible",  # We do not support atk
-    "GtkScrollInfo",
-    "--GtkSettings",
+    "Gtk.ScrollInfo",
+    "--Gtk.Settings",
     "----GtkSocket",  # X11-specific, no binding
-    "GtkSorter",
-    "--GtkSpinner",
+    "Gtk.Sorter",
+    "--Gtk.Spinner",
     "----GtkSpinnerAccessible",  # We do not support atk
-    "--GtkSpinButton",
+    "--Gtk.SpinButton",
     "----GtkSpinButtonAccessible",  # We do not support atk
-    "--GtkStack",
-    "--GtkStackSwitcher",
-    "--GtkStatusbar",
+    "--Gtk.Stack",
+    "--Gtk.StackSwitcher",
+    "--Gtk.Statusbar",
     "----GtkStatusbarAccessible",  # We do not support atk
     "--GtkStatusIcon",
     "--GtkStockItem",
     "--GtkStyle",
-    "--GtkStyleContext",
+    "--Gtk.StyleContext",
     "--GtkStyleProperties",
-    "--GtkSwitch",
+    "--Gtk.Switch",
     "----GtkSwitchAccessible",  # We do not support atk
     "--GtkSymbolicColor",
     "--GtkTable",
@@ -574,35 +574,35 @@ binding = (
     "--GtkTargetList",
     "--GtkTearoffMenuItem",
     "--GtkTextAttributes",  # Removed upstream in GTK 4
-    "GtkTextBuffer",
+    "Gtk.TextBuffer",
     "----GtkTextCellAccessible",  # We do not support atk
-    "GtkTextChildAnchor",
-    "GtkTextIter",
-    "GtkTextMark",
-    "GtkTextTag",
-    "GtkTextTagTable",
-    "GtkTextView",
+    "Gtk.TextChildAnchor",
+    "Gtk.TextIter",
+    "Gtk.TextMark",
+    "Gtk.TextTag",
+    "Gtk.TextTagTable",
+    "Gtk.TextView",
     "----GtkTextViewAccessible",  # We do not support atk
     "--GtkThemingEngine",
-    "GtkTreeIter",
-    "GtkTreeModelFilter",
-    "GtkTreeModelSort",
-    "GtkTreePath",
-    "GtkTreeRowReference",
-    "GtkTreeSelection",
-    "GtkTreeStore",
-    "GtkTreeView",
+    "Gtk.TreeIter",
+    "Gtk.TreeModelFilter",
+    "Gtk.TreeModelSort",
+    "Gtk.TreePath",
+    "Gtk.TreeRowReference",
+    "Gtk.TreeSelection",
+    "Gtk.TreeStore",
+    "Gtk.TreeView",
     "----GtkTreeViewAccessible",  # We do not support atk
-    "GtkTreeViewColumn",
+    "Gtk.TreeViewColumn",
     "--GtkToggleAction",
-    "GtkToggleButton",
+    "Gtk.ToggleButton",
     "----GtkToggleButtonAccessible",  # We do not support atk
     "--GtkToggleToolButton",
     "--GtkToolButton",
     "--GtkToolbar",
     "--GtkToolItem",
     "--GtkToolItemGroup",
-    "GtkTooltip",
+    "Gtk.Tooltip",
     "--GtkToolPalette",
     "----GtkToplevelAccessible",  # We do not support atk
     "--GtkUIManager",
@@ -610,14 +610,29 @@ binding = (
     "--GtkVPaned",
     "--GtkVScale",
     "--GtkVScrollbar",
-    "--GtkViewport",
-    "--GtkVolumeButton",
-    "GtkWidget",
+    "--Gtk.Viewport",
+    "--Gtk.VolumeButton",
+    "Gtk.Widget",
     "----GtkWidgetAccessible",  # We do not support atk
-    "--GtkWidgetClass",
-    "GtkWindow",
+    "--Gtk.WidgetClass",
+    "Gtk.Window",
     "----GtkWindowAccessible",  # We do not support atk
-    "GtkWindowGroup",
+    "Gtk.WindowGroup",
+)
+
+# Entries that are bound through manual/TOML glue instead of GIR class lookup.
+# These may still use qualified GIR names for interfaces.
+manual_binding = (
+    "Gio.Icon",
+    "Gio.ListModel",
+    "GPoll",
+    "Spawn",
+    "GTest",
+    "Utils",
+    "Gtk.Accessible",
+    "Gtk.AccessibleText",
+    "Gtk.ConstraintTarget",
+    "GtkMain",
 )
 
 # Handling of functions with user data. The names below are the likely names

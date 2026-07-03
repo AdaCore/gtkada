@@ -101,7 +101,7 @@ from xml.etree.cElementTree import parse, Element, QName, tostring, fromstring
 from adaformat import *
 import copy
 from binding_gtkada import GtkAda
-from data import enums, interfaces, binding, user_data_params
+from data import enums, interfaces, binding, manual_binding, user_data_params
 from data import destroy_data_params
 import sys
 
@@ -196,6 +196,7 @@ class GIR(object):
         self.packages = dict()  # Ada name (lower case) -> Package instance
         self.ccode = ""
         self.classes = dict()  # Maps C name to a GIRClass instance
+        self.class_names = dict()  # Maps qualified GIR names to GIRClass
         self.interfaces = dict()  # Maps qualified GIR names to interfaces
         self.ctype_interfaces = dict()  # Maps GIR's c:type to an interface
         self.callbacks = dict()  # Ada name to GIR XML node
@@ -237,13 +238,25 @@ class GIR(object):
 
             k = "%s/%s" % (namespace, nclass)
             for cl in root.findall(k):
-                if cl.get(ctype_qname) is not None:
-                    self.classes[cl.get(ctype_qname)] = self._create_class(
-                        root,
-                        cl,
-                        is_interface=False,
-                        identifier_prefix=identifier_prefix,
-                    )
+                qname = "%s.%s" % (ns_name, cl.get("name"))
+
+                # Some classes may not define c:type in GIR. Prefer explicit
+                # per-project overrides from data.py to recover a ctype.
+                ctype = cl.get(ctype_qname)
+                if not ctype:
+                    mapped = naming.girname_to_ctype.get(qname)
+                    if mapped:
+                        cl.set(ctype_qname, mapped.rstrip("*"))
+
+                klass = self._create_class(
+                    root,
+                    cl,
+                    is_interface=False,
+                    identifier_prefix=identifier_prefix,
+                )
+                if getattr(klass, "ctype", None):
+                    self.classes[klass.ctype] = klass
+                    self.class_names[qname] = klass
 
             k = "%s/%s" % (namespace, nconstant)
             for cl in root.findall(k):
@@ -255,25 +268,31 @@ class GIR(object):
             k = "%s/%s" % (namespace, nrecord)
             for cl in root.findall(k):
                 if cl.findall(nmethod):
-                    self.classes[cl.get(ctype_qname)] = self._create_class(
+                    qname = "%s.%s" % (ns_name, cl.get("name"))
+                    klass = self._create_class(
                         root,
                         cl,
                         is_interface=False,
                         is_gobject=False,
                         identifier_prefix=identifier_prefix,
                     )
+                    self.classes[cl.get(ctype_qname)] = klass
+                    self.class_names[qname] = klass
                 self.records[cl.get(ctype_qname)] = cl
 
             k = "%s/%s" % (namespace, nunion)
             for cl in root.findall(k):
                 if cl.findall(nmethod):
-                    self.classes[cl.get(ctype_qname)] = self._create_class(
+                    qname = "%s.%s" % (ns_name, cl.get("name"))
+                    klass = self._create_class(
                         root,
                         cl,
                         is_interface=False,
                         is_gobject=False,
                         identifier_prefix=identifier_prefix,
                     )
+                    self.classes[cl.get(ctype_qname)] = klass
+                    self.class_names[qname] = klass
                 self.records[cl.get(ctype_qname)] = cl
 
             for enum_tag in (nenumeration, nbitfield):
@@ -309,6 +328,44 @@ class GIR(object):
         """Return the interface object matching ``name``."""
 
         return self.interfaces[self.resolve_interface_name(name, namespace_name)]
+
+    def resolve_class_name(self, name, namespace_name=None):
+        """Resolve ``name`` to the C type of a known class-like entity.
+
+        ``name`` can be a C type, a qualified GIR name, or a simple GIR name
+        scoped by ``namespace_name``.
+        """
+
+        if name in self.classes:
+            return name
+
+        if "." in name and name in self.class_names:
+            return self.class_names[name].ctype
+
+        if namespace_name:
+            scoped = "%s.%s" % (namespace_name, name)
+            if scoped in self.class_names:
+                return self.class_names[scoped].ctype
+
+        ctype = naming.girname_to_ctype.get(name)
+        if ctype:
+            normalized = ctype.rstrip("*")
+            if ctype in self.classes:
+                return ctype
+            if normalized in self.classes:
+                return normalized
+
+        if "." in name:
+            raise KeyError(
+                "Unknown class '%s', check `binding` in `data.py`" % name
+            )
+
+        raise KeyError("Unable to resolve class '%s' to a known type" % name)
+
+    def klass(self, name, namespace_name=None):
+        """Return the class-like object matching ``name``."""
+
+        return self.classes[self.resolve_class_name(name, namespace_name)]
 
     def show_unbound(self):
         """Display the list of entities known in the GIR files, but that have
@@ -1073,6 +1130,7 @@ class GIRClass(object):
         self.is_record = self.node.tag == nrecord and not self.is_boxed
 
         ns_node = self.rootNode.find(namespace)
+        self.namespace_name = ns_node.get("name") if ns_node is not None else None
         self.is_gdk_event_subclass = (
             self.node.tag == nclass
             and ns_node is not None
@@ -1109,7 +1167,7 @@ class GIRClass(object):
         naming.add_girname(girname=n, ctype=self.ctype)
 
         if has_toplevel_type:
-            ctype = node.get(ctype_qname)
+            ctype = self.ctype
             if is_interface:
                 t = Interface(pkg)
             elif is_gobject:
@@ -3388,12 +3446,27 @@ end From_Object_Free;"""
         # define "Window". So we first look in the same file as the current
         # Class.
 
-        parent = gir._get_class_node(
-            self.rootNode, girname=self.gtkpkg.parent_type() or self.node.get("parent")
-        )
+        parent_name = self.gtkpkg.parent_type() or self.node.get("parent")
+        parent = None
+        parent_ctype = None
+        if parent_name:
+            parent_ctype = naming.girname_to_ctype.get(parent_name)
+
+            if parent_ctype is None and "." in parent_name:
+                try:
+                    parent = gir.klass(
+                        parent_name, namespace_name=self.namespace_name
+                    ).node
+                except KeyError:
+                    parent = gir._get_class_node(self.rootNode, girname=parent_name)
+            else:
+                parent = gir._get_class_node(self.rootNode, girname=parent_name)
+
+            if parent_ctype is None and parent is not None:
+                parent_ctype = parent.get(ctype_qname)
         parent = naming.type(
-            name=self.gtkpkg.parent_type() or self.node.get("parent"),  # GIRName
-            cname=parent and parent.get(ctype_qname),
+            name=parent_name,  # GIRName
+            cname=parent_ctype,
         ).ada
 
         if parent and parent.rfind(".") != -1:
@@ -3411,7 +3484,12 @@ end From_Object_Free;"""
         if into:
             # Make sure we have already generated the other package, so that
             # its types go first.
-            klass = gir.classes.get(into, None) or gir.ctype_interfaces[into]
+            try:
+                klass = gir.klass(into, namespace_name=self.namespace_name)
+            except KeyError:
+                klass = gir.ctype_interfaces.get(into, None)
+                if klass is None:
+                    klass = gir.interface(into, namespace_name=self.namespace_name)
             klass.generate(gir)
             into = klass.name  # from now on, we want the Ada name
 
@@ -3808,26 +3886,87 @@ def _emit_interfaces():
 
 def _emit_widgets():
     """Emit one package per widget/record listed in :data:`data.binding`.
-    Names prefixed with ``--`` are skipped (but marked as covered).
+    Manual/non-class entries listed in :data:`data.manual_binding` are
+    emitted through TOML glue lookups. Names
+    prefixed with ``--`` are skipped (but marked as covered).
     Bindings missing from the GIR data (e.g. pure-toml glue packages
     like ``GIO``) are fabricated on the fly from a stub XML node.
     """
+
+    def _normalize_ctype(name):
+        if not name:
+            return name
+        return name.rstrip("*")
+
+    def _manual_ctype(name):
+        """Resolve a manual entry name to the TOML package key/ctype."""
+        if "." in name:
+            try:
+                qname = gir.resolve_interface_name(name)
+                return _normalize_ctype(gir.interfaces[qname].ctype)
+            except KeyError:
+                mapped = naming.girname_to_ctype.get(name)
+                if mapped:
+                    return _normalize_ctype(mapped)
+                return _normalize_ctype(naming.ctype_from_girname(name))
+
+        return _normalize_ctype(name)
+
+    def _strip_skip_prefix(name):
+        while name.startswith("--"):
+            name = name[2:]
+        return name
+
     root = Element(nclass)
-    for the_ctype in binding:
-        if the_ctype.startswith("--"):
-            gir.bound.add(the_ctype[2:])
+
+    # `binding` now contains GIR class/record/union names only.
+    for entry in binding:
+        skipped = entry.startswith("--")
+        lookup_name = _strip_skip_prefix(entry) if skipped else entry
+
+        if skipped:
+            try:
+                the_ctype = gir.resolve_class_name(lookup_name)
+            except KeyError:
+                the_ctype = lookup_name
+            gir.bound.add(the_ctype)
             continue
 
-        try:
-            e = gir.classes[the_ctype]
-        except KeyError:
-            cl = gtkada.get_pkg(the_ctype)
-            if not cl:
-                raise
-            node = Element(nclass, {ctype_qname: the_ctype})
-            e = gir.classes[the_ctype] = gir._create_class(
-                rootNode=root, node=node, is_interface=False, identifier_prefix=""
+        the_ctype = gir.resolve_class_name(lookup_name)
+
+        e = gir.classes[the_ctype]
+        e.generate(gir)
+        gir.bound.add(the_ctype)
+
+    for entry in manual_binding:
+        skipped = entry.startswith("--")
+        lookup_name = _strip_skip_prefix(entry) if skipped else entry
+        the_ctype = _manual_ctype(lookup_name)
+
+        if skipped:
+            gir.bound.add(the_ctype)
+            continue
+
+        e = gir.classes.get(the_ctype)
+        if e is not None:
+            e.generate(gir)
+            gir.bound.add(the_ctype)
+            continue
+
+        cl = gtkada.get_pkg(the_ctype)
+        if not cl:
+            cl = gtkada.get_pkg(lookup_name)
+
+        if not cl:
+            raise KeyError(
+                "Unknown manual binding '%s' (resolved as '%s')" %
+                (lookup_name, the_ctype)
             )
+
+        node = Element(nclass, {ctype_qname: the_ctype})
+        e = gir.classes[the_ctype] = gir._create_class(
+            rootNode=root, node=node, is_interface=False, identifier_prefix=""
+        )
 
         e.generate(gir)
         gir.bound.add(the_ctype)
