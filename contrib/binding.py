@@ -1535,11 +1535,11 @@ class GIRClass(object):
 
             # Code if no user data supplied
             null_cbk_data = gtk_func.call(in_pkg=self.pkg, extra_postcall=postcall_code, values=values_if_null)
-            null_cbk = gtk_func.call_to_string(null_cbk_data, "ada->c").strip()
+            null_cbk = gtk_func.call_to_string(null_cbk_data, lang="ada->c").strip()
 
             # Code if user data supplied
             data_call = gtk_func.call(in_pkg=self.pkg, extra_postcall=postcall_code, values=values)
-            [data_cbk_body,return_val, tmp_data] = data_call
+            data_cbk_body, return_val, tmp_data = data_call
             # include user data setup and cleanup
             # strip() removes whitespace if user_data functions empty
             data_cbk = "\n".join([user_data_setup, data_cbk_body, user_data_cleanup]).strip()

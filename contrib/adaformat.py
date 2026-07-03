@@ -2047,7 +2047,7 @@ class Subprogram(object):
 
         return result
 
-    def call_to_string(self, call: list[any], pkg=None, lang="ada"):
+    def call_to_string(self, call: tuple, pkg=None, lang="ada"):
         """CALL is the result of call() above.
         This function returns a string that contains the code for the
         subprogram.
