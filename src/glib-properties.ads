@@ -92,7 +92,7 @@ package Glib.Properties is
 
    --  Predefined types of properties. Additional types are available
    --  for most of the standard enumeration types, and you can create
-   --  your own types (see Glib.Properties).
+   --  your own types (see Glib.Properties.Creation).
 
    type Property_Char      is new Char_Properties.Property;
    type Property_Char_RO   is new Char_Properties.Property_RO;

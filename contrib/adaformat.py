@@ -867,10 +867,10 @@ class AdaTypeArray(CType):
 class AdaNaming(object):
 
     def __init__(self):
-        self.cname_to_adaname = {}  # c methods to Ada subprograms
-        self.girname_to_ctype = {}  # gir names to C types
-        self.exceptions = {}  # naming exceptions
-        self.type_exceptions = {}  # C types to CType instances
+        self.cname_to_adaname: dict[str, str] = {}  # c methods to Ada subprograms
+        self.girname_to_ctype: dict[str, str] = {}  # gir names to C types
+        self.exceptions: dict[str, str] = {}  # naming exceptions
+        self.type_exceptions: dict[str, CType] = {}  # C types to CType instances
 
     def add_type_exception(self, cname, type, override=False):
         """Declares a new type exception for <cname>, unless one already exists
