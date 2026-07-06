@@ -118,7 +118,7 @@ with Create_Reparent;
 --  with Create_Stack;
 with Create_Scrolled;
 --  with Create_Sources;
---  with Create_Spin;
+with Create_Spin;
 --  with Create_Spinners;
 --  with Create_Splittable;
 --  with Create_Task_Monitor;
@@ -189,6 +189,8 @@ package body Main_Windows is
         ("Toggle Buttons",
          Create_Toggle_Buttons.Run'Access,
          Create_Toggle_Buttons.Help'Access),
+      To_Demo
+        ("Spin Buttons", Create_Spin.Run'Access, Create_Spin.Help'Access),
       To_Demo ("Menus", Create_Menu.Run'Access, Create_Menu.Help'Access),
       To_Demo
         ("Custom Widget",
