@@ -18,12 +18,3 @@ ctype = "GtkCellRendererMode"
 [[list]]
 ada   = "Cell_Renderer_List"
 ctype = "GtkCellRenderer"
-
-# The methods below take GtkSnapshot parameters.
-# GtkAda does not yet bind these types for gtk4, so suppress them
-# for now; revisit once those types are available.
-
-[[method]]
-id   = "gtk_cell_renderer_snapshot"
-bind = false
-# Needs GtkSnapshot.

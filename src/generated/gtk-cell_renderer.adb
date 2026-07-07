@@ -477,6 +477,30 @@ package body Gtk.Cell_Renderer is
       Internal (Get_Object (Cell), Boolean'Pos (Visible));
    end Set_Visible;
 
+   --------------
+   -- Snapshot --
+   --------------
+
+   procedure Snapshot
+      (Cell            : not null access Gtk_Cell_Renderer_Record;
+       Snapshot        : not null access Gtk.Snapshot.Gtk_Snapshot_Record'Class;
+       Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
+       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+       Flags           : Gtk_Cell_Renderer_State)
+   is
+      procedure Internal
+         (Cell            : System.Address;
+          Snapshot        : System.Address;
+          Widget          : System.Address;
+          Background_Area : Gdk.Rectangle.Gdk_Rectangle;
+          Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+          Flags           : Gtk_Cell_Renderer_State);
+      pragma Import (C, Internal, "gtk_cell_renderer_snapshot");
+   begin
+      Internal (Get_Object (Cell), Get_Object (Snapshot), Get_Object (Widget), Background_Area, Cell_Area, Flags);
+   end Snapshot;
+
    -------------------
    -- Start_Editing --
    -------------------

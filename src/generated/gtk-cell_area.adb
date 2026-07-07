@@ -1111,6 +1111,34 @@ package body Gtk.Cell_Area is
       Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Renderer)));
    end Set_Focus_Cell;
 
+   --------------
+   -- Snapshot --
+   --------------
+
+   procedure Snapshot
+      (Self            : not null access Gtk_Cell_Area_Record;
+       Context         : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
+       Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Snapshot        : not null access Gtk.Snapshot.Gtk_Snapshot_Record'Class;
+       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
+       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+       Flags           : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State;
+       Paint_Focus     : Boolean)
+   is
+      procedure Internal
+         (Self            : System.Address;
+          Context         : System.Address;
+          Widget          : System.Address;
+          Snapshot        : System.Address;
+          Background_Area : Gdk.Rectangle.Gdk_Rectangle;
+          Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+          Flags           : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State;
+          Paint_Focus     : Glib.Gboolean);
+      pragma Import (C, Internal, "gtk_cell_area_snapshot");
+   begin
+      Internal (Get_Object (Self), Get_Object (Context), Get_Object (Widget), Get_Object (Snapshot), Background_Area, Cell_Area, Flags, Boolean'Pos (Paint_Focus));
+   end Snapshot;
+
    ------------------
    -- Stop_Editing --
    ------------------

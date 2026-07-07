@@ -35,7 +35,7 @@
 --  keep any permanent state around. Instead, any state is set just prior to
 --  use using `GObject`s property system. Then, the cell is measured using
 --  Gtk.Cell_Renderer.Get_Preferred_Size. Finally, the cell is rendered in the
---  correct location using gtk_cell_renderer_snapshot.
+--  correct location using Gtk.Cell_Renderer.Snapshot.
 --
 --  There are a number of rules that must be followed when writing a new
 --  `GtkCellRenderer`. First and foremost, it's important that a certain set of
@@ -70,6 +70,7 @@ with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 with Gtk.Cell_Editable;       use Gtk.Cell_Editable;
 with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Snapshot;            use Gtk.Snapshot;
 with Gtk.Widget;              use Gtk.Widget;
 with Interfaces.C;            use Interfaces.C;
 
@@ -385,6 +386,29 @@ package Gtk.Cell_Renderer is
    --  Checks whether the cell renderer can do something when activated.
    --  Deprecated since 4.10, 1
    --  @return True if the cell renderer can do anything when activated
+
+   procedure Snapshot
+      (Cell            : not null access Gtk_Cell_Renderer_Record;
+       Snapshot        : not null access Gtk.Snapshot.Gtk_Snapshot_Record'Class;
+       Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
+       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+       Flags           : Gtk_Cell_Renderer_State);
+   pragma Obsolescent (Snapshot);
+   --  Invokes the virtual render function of the `GtkCellRenderer`. The three
+   --  passed-in rectangles are areas in Cr. Most renderers will draw within
+   --  Cell_Area; the xalign, yalign, xpad, and ypad fields of the
+   --  `GtkCellRenderer` should be honored with respect to Cell_Area.
+   --  Background_Area includes the blank space around the cell, and also the
+   --  area containing the tree expander; so the Background_Area rectangles for
+   --  all cells tile to cover the entire Window.
+   --  Deprecated since 4.10, 1
+   --  @param Snapshot a `GtkSnapshot` to draw to
+   --  @param Widget the widget owning Window
+   --  @param Background_Area entire cell area (including tree expanders and
+   --  maybe padding on the sides)
+   --  @param Cell_Area area normally rendered by a cell renderer
+   --  @param Flags flags that affect rendering
 
    function Start_Editing
       (Cell            : not null access Gtk_Cell_Renderer_Record;
