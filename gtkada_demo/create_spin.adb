@@ -31,7 +31,7 @@ with Gtk.Check_Button;  use Gtk.Check_Button;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Label;         use Gtk.Label;
 with Gtk.Spin_Button;   use Gtk.Spin_Button;
-with Gtk.Check_Button; use Gtk.Check_Button;
+with Gtk.Widget;
 with Gtk;               use Gtk;
 
 package body Create_Spin is
@@ -43,7 +43,7 @@ package body Create_Spin is
    type My_Button is access all My_Button_Record;
    --  This is a basic Gtk_Check_Button with extra internal data.
 
-   Spinner1 : Gtk_Spin_Button;
+   Value_Spinner : Gtk_Spin_Button;
 
    ----------
    -- Help --
@@ -67,7 +67,7 @@ package body Create_Spin is
    procedure Change_Digits (Spin : access GObject_Record'Class) is
       S : constant Gtk_Spin_Button := Gtk_Spin_Button (Spin);
    begin
-      Set_Digits (Spinner1, Guint (S.Get_Value_As_Int));
+      Set_Digits (Value_Spinner, Guint (S.Get_Value_As_Int));
    end Change_Digits;
 
    -----------------
@@ -78,7 +78,7 @@ package body Create_Spin is
      (Toggle : access Gtk_Check_Button_Record'Class)
    is
    begin
-      Set_Snap_To_Ticks (Spinner1, Toggle.Get_Active);
+      Set_Snap_To_Ticks (Value_Spinner, Toggle.Get_Active);
    end Toggle_Snap;
 
    --------------------
@@ -89,7 +89,7 @@ package body Create_Spin is
      (Toggle : access Gtk_Check_Button_Record'Class)
    is
    begin
-      Set_Numeric (Spinner1, Toggle.Get_Active);
+      Set_Numeric (Value_Spinner, Toggle.Get_Active);
    end Toggle_Numeric;
 
    ---------------
@@ -100,7 +100,7 @@ package body Create_Spin is
    with Pre => Widget /= null and then Widget.all in My_Button_Record'Class;
    procedure Get_Value (Widget : access GObject_Record'Class)
    is
-      Spin  : constant Gtk_Spin_Button := Spinner1;
+      Spin  : constant Gtk_Spin_Button := Value_Spinner;
       My_B  : My_Button_Record'Class := My_Button_Record (Widget.all);
    begin
       if My_B.Data = 1 then
@@ -115,22 +115,18 @@ package body Create_Spin is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Main_Box : Gtk_Box;
-      VBox     : Gtk_Box;
-      Hbox     : Gtk_Box;
-      Vbox2    : Gtk_Box;
-      Label    : Gtk_Label;
-      Adj      : Gtk_Adjustment;
-      Spinner  : Gtk_Spin_Button;
-      Spinner2 : Gtk_Spin_Button;
-      Frame2   : Gtk_Frame;
-      Check    : Gtk_Check_Button;
-      Myb      : My_Button;
+      Main_Box, VBox, Hbox, Vbox2 : Gtk_Box;
+      Label                       : Gtk_Label;
+      Adj                         : Gtk_Adjustment;
+      Spinner, Spinner2           : Gtk_Spin_Button;
+      Frame2                      : Gtk_Frame;
+      Check                       : Gtk_Check_Button;
+      As_Int, As_Float            : My_Button;
 
    begin
       Set_Label (Frame, "Spin Buttons");
 
-      Gtk_New (Main_Box, Orientation_Vertical, 5);
+      Gtk_New (Main_Box, Orientation_Vertical, 10);
       Main_Box.Set_Homogeneous (False);
       Main_Box.Set_Margin_Start (10);
       Main_Box.Set_Margin_End (10);
@@ -149,30 +145,30 @@ package body Create_Spin is
       Frame2.Set_Child (VBox);
 
       --  Day, month, year spinners
-      Gtk_New (Hbox, Orientation_Horizontal, 5);
+      Gtk_New (Hbox, Orientation_Horizontal, 10);
       VBox.Append (Hbox);
 
-      Gtk_New (Vbox2, Orientation_Vertical, 5);
+      Gtk_New (Vbox2, Orientation_Vertical, 10);
       Hbox.Append (Vbox2);
       Gtk_New (Label, "Day:");
       Label.Set_Yalign (0.5);
       Vbox2.Append (Label);
-      Gtk_New (Adj, 1.0, 1.0, 31.0, 1.0, 5.0, 0.0);
+      Gtk_New (Adj, 1.0, 1.0, 31.0, 1.0, 10.0, 0.0);
       Gtk_New (Spinner, Adj, 0.0, 0);
       Set_Wrap (Spinner, True);
       Vbox2.Append (Spinner);
 
-      Gtk_New (Vbox2, Orientation_Vertical, 5);
+      Gtk_New (Vbox2, Orientation_Vertical, 10);
       Hbox.Append (Vbox2);
       Gtk_New (Label, "Month:");
       Label.Set_Yalign (0.5);
       Vbox2.Append (Label);
-      Gtk_New (Adj, 1.0, 1.0, 12.0, 1.0, 5.0, 0.0);
+      Gtk_New (Adj, 1.0, 1.0, 12.0, 1.0, 10.0, 0.0);
       Gtk_New (Spinner, Adj, 0.0, 0);
       Set_Wrap (Spinner, True);
       Vbox2.Append (Spinner);
 
-      Gtk_New (Vbox2, Orientation_Vertical, 5);
+      Gtk_New (Vbox2, Orientation_Vertical, 10);
       Hbox.Append (Vbox2);
       Gtk_New (Label, "Year:");
       Label.Set_Yalign (0.5);
@@ -180,9 +176,10 @@ package body Create_Spin is
       Gtk_New (Adj, 1998.0, 0.0, 2100.0, 1.0, 100.0, 0.0);
       Gtk_New (Spinner, Adj, 0.0, 0);
       Set_Wrap (Spinner, True);
-      Set_Size_Request (Spinner, 55, 0);
+      Set_Size_Request (Spinner, 105, 0);
       Vbox2.Append (Spinner);
 
+      --  Numeric counters with adjustable precision
       Gtk_New (Frame2, "Accelerated");
       Main_Box.Append (Frame2);
 
@@ -193,65 +190,74 @@ package body Create_Spin is
       Vbox.Set_Margin_Bottom (5);
       Frame2.Set_Child (VBox);
 
-      Gtk_New (Hbox, Orientation_Horizontal, 5);
+      Gtk_New (Hbox, Orientation_Horizontal, 10);
       VBox.Append (Hbox);
 
-      Gtk_New (Vbox2, Orientation_Vertical, 5);
+      Gtk_New (Vbox2, Orientation_Vertical, 10);
       Hbox.Append (Vbox2);
       Gtk_New (Label, "Value:");
       Label.Set_Yalign (0.5);
       Vbox2.Append (Label);
       Gtk_New (Adj, 0.0, -10000.0, 10000.0, 0.5, 100.0, 0.0);
-      Gtk_New (Spinner1, Adj, 1.0, 2);
-      Set_Wrap (Spinner1, True);
-      Set_Size_Request (Spinner1, 100, 0);
-      Set_Update_Policy (Spinner1, Update_Always);
-      Vbox2.Append (Spinner1);
+      Gtk_New (Value_Spinner, Adj, 1.0, 2);
+      Set_Wrap (Value_Spinner, True);
+      Set_Size_Request (Value_Spinner, 100, 0);
+      Set_Update_Policy (Value_Spinner, Update_Always);
+      Vbox2.Append (Value_Spinner);
 
-      Gtk_New (Vbox2, Orientation_Vertical, 5);
+      Gtk_New (Vbox2, Orientation_Vertical, 10);
       Hbox.Append (Vbox2);
       Gtk_New (Label, "Digits:");
       Label.Set_Yalign (0.5);
       Vbox2.Append (Label);
-      Gtk_New (Adj, 2.0, 1.0, 5.0, 1.0, 1.0, 0.0);
+      Gtk_New (Adj, 2.0, 1.0, 10.0, 1.0, 1.0, 0.0);
       Gtk_New (Spinner2, Adj, 0.0, 0);
       Set_Wrap (Spinner2, True);
       Adj.On_Value_Changed (Change_Digits'Access, Spinner2);
 
       Vbox2.Append (Spinner2);
 
-      Gtk_New (Hbox, Orientation_Horizontal, 5);
+      Gtk_New (Hbox, Orientation_Horizontal, 10);
       VBox.Append (Hbox);
 
       Gtk_New_With_Label (Check, "Snap to 0.5-ticks");
       Check.On_Toggled (Toggle_Snap'Access);
       VBox.Append (Check);
-      Set_Active (Check, True);
+      Check.Set_Halign (Gtk.Widget.Align_Start);
+      Check.Set_Active (True);
 
       Gtk_New_With_Label (Check, "Snap Numeric only input mode");
       Check.On_Toggled (Toggle_Numeric'Access);
       VBox.Append (Check);
-      Set_Active (Check, True);
+      Check.Set_Halign (Gtk.Widget.Align_Start);
+      Check.Set_Active (True);
 
       Gtk_New (Label, "");
-      Gtk_New (Hbox, Orientation_Horizontal, 5);
+      Gtk_New (Hbox, Orientation_Horizontal, 10);
+      Hbox.Set_Homogeneous (True);
+      Hbox.Set_Hexpand (True);
       VBox.Append (Hbox);
 
-      Myb := new My_Button_Record;
-      Gtk.Check_Button.Initialize_With_Label (Myb, "Value as Int");
-      Myb.Label := Label;
-      Myb.Data := 1;
-      Myb.On_Toggled (Get_Value'Access, Slot => Myb);
-      Hbox.Append (Myb);
+      As_Int := new My_Button_Record;
+      Gtk.Check_Button.Initialize_With_Label (As_Int, "Value as Int");
+      As_Int.Label := Label;
+      As_Int.Data := 1;
+      As_Int.On_Toggled (Get_Value'Access, Slot => As_Int);
+      Hbox.Append (As_Int);
+      As_Int.Set_Group (null);
 
-      Myb := new My_Button_Record;
-      Gtk.Check_Button.Initialize_With_Label (Myb, "Value as Float");
-      Myb.Label := Label;
-      Myb.Data := 2;
-      Myb.On_Toggled (Get_Value'Access, Slot => Myb);
-      Hbox.Append (Myb);
+      As_Float := new My_Button_Record;
+      Gtk.Check_Button.Initialize_With_Label (As_Float, "Value as Float");
+      As_Float.Label := Label;
+      As_Float.Data := 2;
+      As_Float.On_Toggled (Get_Value'Access, Slot => As_Float);
+      Hbox.Append (As_Float);
+      As_Float.Set_Group (As_Int);
 
-      VBox.Append (Label);
+      Gtk_New (Frame2, "Display");
+      Hbox.Append (Frame2);
+      Frame2.Set_Child (Label);
+      Frame2.Set_Halign (Gtk.Widget.Align_Fill);
       Label.Set_Text ("0");
    end Run;
 
