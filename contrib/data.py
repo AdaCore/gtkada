@@ -558,6 +558,7 @@ binding = (
     "Gtk.MultiSelection",  # Implements Gtk.SelectionModel
     "Gtk.NoSelection",     # Implements Gtk.SelectionModel
     "Gtk.SingleSelection", # Implements Gtk.SelectionModel
+    "Gtk.Snapshot",
     "----GtkSocket",  # X11-specific, no binding
     "Gtk.Sorter",
     "Gtk.SortListModel",
@@ -699,6 +700,7 @@ naming.girname_to_ctype = {
     "GLib.Variant": "GVariant",
     "Gdk.Clipboard": "GdkClipboard",
     "Gdk.Paintable": "GdkPaintable",
+    "Gtk.Snapshot": "GtkSnapshot",
     "Gdk.Event": "GdkEvent*",
     "Gdk.EventButton": "GdkEventButton*",
     "Gdk.EventMotion": "GdkEventMotion*",

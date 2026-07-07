@@ -150,11 +150,6 @@ GtkApplication.toml:
 
 - when done, reactivate bindings in GtkWindow.toml
 
-GtkSnapshot.toml:
-
-- when done, reactivate bindings in GtkCellArea.toml, GtkCellRenderer.toml
-- when done, remove the manual binding in gtkada_demo/create_custom_widget.adb
-
 GtkWidget.toml:
 
 - Review the commented-out code imported from the gtk3 bindings, and reactivate as needed.
@@ -227,18 +222,6 @@ Intentionally deferred:
   opaque proxy. Revisit and replace it with the generated binding once
   the full `GAsyncResult` interface is reactivated.
 
-## GtkCellRenderer (work item #50)
-
-`GtkCellRenderer` is bound (and marked obsolescent since gtk 4.10).
-Three methods are suppressed in
-`contrib/binding/packages/GtkCellRenderer.toml` pending bindings for
-the following types:
-
-- `gtk_cell_renderer_snapshot` — needs `GtkSnapshot`.
-
-Revisit and re-enable these once `GdkEvent` and `GtkSnapshot` are
-bound for gtk4.
-
 ## Menus (work item #87)
 
 In gtk4 the classic `GtkMenu` / `GtkMenuBar` / `GtkMenuItem` /
@@ -308,6 +291,29 @@ family; the deferred child-anchor cases from `textbuffer.c`
 (`test_iter_with_anchor` / `test_get_text_with_anchor`) were back-filled
 into `testsuite/tests/text-buffer`, now attaching a `Gtk_Label` at each
 anchor through the view.
+
+## GtkSnapshot
+
+Re-enable the matching `bind = false` entries in
+`GtkSnapshot.toml` once the required type is bound:
+
+- gradient nodes (`append_conic/linear/radial_gradient`,
+  `append_repeating_linear/radial_gradient`) — need `Gsk.ColorStop`.
+- `append_border` / `append_inset_shadow` / `append_outset_shadow` /
+  `push_rounded_clip` — need `Gsk.RoundedRect`.
+- `append_fill` / `append_stroke` / `push_fill` / `push_stroke` — need
+  `Gsk.Path`, `Gsk.FillRule`, `Gsk.Stroke`.
+- `append_node` / `to_node` / `transform` — need `Gsk.RenderNode` /
+  `Gsk.Transform`.
+- `append_scaled_texture` — needs `Gsk.ScalingFilter`.
+- `push_blend` / `push_mask` / `push_composite` / `push_isolation` /
+  `push_component_transfer` / `push_shadow` / `push_gl_shader` — need the
+  corresponding Gsk enums / types.
+- `push_color_matrix` / `transform_matrix` / `rotate_3d` / `translate_3d`
+  — need the richer Graphene value types (`graphene_matrix_t`,
+  `graphene_vec3_t`, `graphene_vec4_t`, `graphene_point3d_t`), not yet in
+  `Gtkada.Types`. Revisit alongside the "generate the bindings for
+  Graphene" item above.
 
 ## Testsuite
 

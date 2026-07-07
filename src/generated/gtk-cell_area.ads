@@ -279,6 +279,7 @@ with Gtk.Cell_Editable;     use Gtk.Cell_Editable;
 with Gtk.Cell_Layout;       use Gtk.Cell_Layout;
 with Gtk.Cell_Renderer;     use Gtk.Cell_Renderer;
 with Gtk.Enums;             use Gtk.Enums;
+with Gtk.Snapshot;          use Gtk.Snapshot;
 with Gtk.Tree_Model;        use Gtk.Tree_Model;
 with Gtk.Widget;            use Gtk.Widget;
 
@@ -874,6 +875,29 @@ package Gtk.Cell_Area is
    --  the base request for the orientation is to be returned.
    --  @param Minimum_Size location to store the minimum size
    --  @param Natural_Size location to store the natural size
+
+   procedure Snapshot
+      (Self            : not null access Gtk_Cell_Area_Record;
+       Context         : not null access Gtk.Cell_Area_Context.Gtk_Cell_Area_Context_Record'Class;
+       Widget          : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+       Snapshot        : not null access Gtk.Snapshot.Gtk_Snapshot_Record'Class;
+       Background_Area : Gdk.Rectangle.Gdk_Rectangle;
+       Cell_Area       : Gdk.Rectangle.Gdk_Rectangle;
+       Flags           : Gtk.Cell_Renderer.Gtk_Cell_Renderer_State;
+       Paint_Focus     : Boolean);
+   pragma Obsolescent (Snapshot);
+   --  Snapshots Area's cells according to Area's layout onto at the given
+   --  coordinates.
+   --  Deprecated since 4.10, 1
+   --  @param Context the `GtkCellArea`Context for this row of data.
+   --  @param Widget the `GtkWidget` that Area is rendering to
+   --  @param Snapshot the `GtkSnapshot` to draw to
+   --  @param Background_Area the Widget relative coordinates for Area's
+   --  background
+   --  @param Cell_Area the Widget relative coordinates for Area
+   --  @param Flags the `GtkCellRenderer`State for Area in this row.
+   --  @param Paint_Focus whether Area should paint focus on focused cells for
+   --  focused rows or not.
 
    procedure Stop_Editing
       (Self     : not null access Gtk_Cell_Area_Record;

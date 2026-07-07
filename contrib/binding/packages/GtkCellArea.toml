@@ -16,11 +16,6 @@ bind = false
 # Needs GdkEvent.
 
 [[method]]
-id   = "gtk_cell_area_snapshot"
-bind = false
-# Needs GtkSnapshot.
-
-[[method]]
 id = "gtk_cell_area_cell_get_valist"
 bind = false
 # va_list

@@ -1,0 +1,178 @@
+# ============================================================
+#   GtkSnapshot
+# ============================================================
+#
+# Phase 1 of the Gtk.Snapshot binding: only the subprograms that rely on
+# types GtkAda already provides (the three Graphene records in
+# Gtkada.Types, Gdk.RGBA, Gdk.Texture, Pango, Gtk.Style_Context, Cairo and
+# the plain scalar types) are bound here. Everything that transitively
+# needs a Gsk type or one of the richer Graphene value types
+# (graphene_matrix_t, graphene_vec3/4_t, graphene_point3d_t) is suppressed
+# with `bind = false` until those bindings exist (see the Gsk/Graphene
+# follow-ups).
+
+# The parent (Gdk.Snapshot) lives in a different .gir file, so the
+# generator cannot resolve its Ada name on its own and emits a bare,
+# unqualified `Snapshot_Record`. Spell out the fully-qualified parent so
+# the derivation and the `with Gdk.Snapshot` clause are generated.
+parent = "Gdk.Snapshot.Gdk_Snapshot"
+
+# Makes the three Graphene records (graphene_rect_t, graphene_point_t,
+# graphene_size_t) visible to the generated body.
+[[extra.with_spec]]
+pkg = "Gtkada.Types"
+
+# --- Gradient nodes: need Gsk.ColorStop -----------------------------------
+[[method]]
+id   = "gtk_snapshot_append_conic_gradient"
+bind = false  # needs Gsk.ColorStop
+
+[[method]]
+id   = "gtk_snapshot_append_linear_gradient"
+bind = false  # needs Gsk.ColorStop
+
+[[method]]
+id   = "gtk_snapshot_append_radial_gradient"
+bind = false  # needs Gsk.ColorStop
+
+[[method]]
+id   = "gtk_snapshot_append_repeating_linear_gradient"
+bind = false  # needs Gsk.ColorStop
+
+[[method]]
+id   = "gtk_snapshot_append_repeating_radial_gradient"
+bind = false  # needs Gsk.ColorStop
+
+# --- Border / shadow nodes: need Gsk.RoundedRect --------------------------
+[[method]]
+id   = "gtk_snapshot_append_border"
+bind = false  # needs Gsk.RoundedRect
+
+[[method]]
+id   = "gtk_snapshot_append_inset_shadow"
+bind = false  # needs Gsk.RoundedRect
+
+[[method]]
+id   = "gtk_snapshot_append_outset_shadow"
+bind = false  # needs Gsk.RoundedRect
+
+# --- Path fill / stroke: need Gsk.Path, Gsk.FillRule, Gsk.Stroke ----------
+[[method]]
+id   = "gtk_snapshot_append_fill"
+bind = false  # needs Gsk.Path / Gsk.FillRule
+
+[[method]]
+id   = "gtk_snapshot_append_stroke"
+bind = false  # needs Gsk.Path / Gsk.Stroke
+
+[[method]]
+id   = "gtk_snapshot_push_fill"
+bind = false  # needs Gsk.Path / Gsk.FillRule
+
+[[method]]
+id   = "gtk_snapshot_push_stroke"
+bind = false  # needs Gsk.Path / Gsk.Stroke
+
+# --- Render-node returns: need Gsk.RenderNode -----------------------------
+[[method]]
+id   = "gtk_snapshot_append_node"
+bind = false  # needs Gsk.RenderNode
+
+[[method]]
+id   = "gtk_snapshot_to_node"
+bind = false  # returns Gsk.RenderNode
+
+[[method]]
+id   = "gtk_snapshot_transform"
+bind = false  # needs Gsk.Transform
+
+# --- Scaled texture: needs Gsk.ScalingFilter ------------------------------
+[[method]]
+id   = "gtk_snapshot_append_scaled_texture"
+bind = false  # needs Gsk.ScalingFilter
+
+# --- Clip / blend / mask / composite pushes: need Gsk enums & types -------
+[[method]]
+id   = "gtk_snapshot_push_rounded_clip"
+bind = false  # needs Gsk.RoundedRect
+
+[[method]]
+id   = "gtk_snapshot_push_blend"
+bind = false  # needs Gsk.BlendMode
+
+[[method]]
+id   = "gtk_snapshot_push_mask"
+bind = false  # needs Gsk.MaskMode
+
+[[method]]
+id   = "gtk_snapshot_push_composite"
+bind = false  # needs Gsk.PorterDuff
+
+[[method]]
+id   = "gtk_snapshot_push_isolation"
+bind = false  # needs Gsk.Isolation
+
+[[method]]
+id   = "gtk_snapshot_push_component_transfer"
+bind = false  # needs Gsk.ComponentTransfer
+
+[[method]]
+id   = "gtk_snapshot_push_shadow"
+bind = false  # needs Gsk.Shadow
+
+[[method]]
+id   = "gtk_snapshot_push_gl_shader"
+bind = false  # needs Gsk.GLShader
+
+# --- Deprecated CSS render helpers: need Gtk.Style_Context ----------------
+# Gtk.Style_Context is not bound in the gtk4 tree ("--GtkStyleContext" in
+# data.py), and these entry points are obsolescent (deprecated since 4.10)
+# in any case.
+[[method]]
+id   = "gtk_snapshot_render_background"
+bind = false  # needs Gtk.Style_Context (unbound, deprecated)
+
+[[method]]
+id   = "gtk_snapshot_render_focus"
+bind = false  # needs Gtk.Style_Context (unbound, deprecated)
+
+[[method]]
+id   = "gtk_snapshot_render_frame"
+bind = false  # needs Gtk.Style_Context (unbound, deprecated)
+
+[[method]]
+id   = "gtk_snapshot_render_insertion_cursor"
+bind = false  # needs Gtk.Style_Context (unbound, deprecated)
+
+[[method]]
+id   = "gtk_snapshot_render_layout"
+bind = false  # needs Gtk.Style_Context (unbound, deprecated)
+
+# --- Extended Graphene value types ----------------------------------------
+[[method]]
+id   = "gtk_snapshot_push_color_matrix"
+bind = false  # needs graphene_matrix_t / graphene_vec4_t
+
+[[method]]
+id   = "gtk_snapshot_transform_matrix"
+bind = false  # needs graphene_matrix_t
+
+[[method]]
+id   = "gtk_snapshot_rotate_3d"
+bind = false  # needs graphene_vec3_t
+
+[[method]]
+id   = "gtk_snapshot_translate_3d"
+bind = false  # needs graphene_point3d_t
+
+# --- not directly available ----------------------------------------
+# For next methods the documentation says:
+# This method is not directly available to language bindings.
+
+[[method]]
+id   = "gtk_snapshot_free_to_node"
+bind = false
+
+[[method]]
+id   = "gtk_snapshot_free_to_paintable"
+bind = false
