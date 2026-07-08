@@ -130,6 +130,9 @@ body = '''
    begin
       Internal (Get_Object (Self),  Wrapper, Func_Compare);
 '''
+[[method.parameter]]
+name = "user_data"
+ada = ""
 
 [[method]]
 id = "g_list_store_insert_sorted"
@@ -154,6 +157,9 @@ body = '''
            Wrapper,
            Func_Compare);
 '''
+[[method.parameter]]
+name = "user_data"
+ada = ""
 
 [[extra.with_body]]
 pkg = "Ada.Unchecked_Conversion"
@@ -167,9 +173,8 @@ text = '''
    -- Callbacks --
    ---------------
 
-   type Equal_Func is
-     access function
-       (A, B : not null access GObject_Record'Class) return Glib.Gboolean;
+   type Equal_Func is access function
+     (A, B : not null access GObject_Record'Class) return Glib.Gboolean;
    --  Specifies the type of a function used to test two values for equality.
    --  The function should return True if both values are equal and False
    --  otherwise.
@@ -182,9 +187,8 @@ text = '''
 ctype = "Compare_Func"
 ada = "Compare_Data_Func"
 text = '''
-   type Compare_Data_Func is
-     access function
-       (A, B : not null access GObject_Record'Class) return Glib.Gint;
+   type Compare_Data_Func is access function
+     (A, B : not null access GObject_Record'Class) return Glib.Gint;
    --  Specifies the type of a comparison function used to compare two values.
    --  The function should return a negative integer if the first value comes
    --  before the second, 0 if they are equal, or a positive integer if the

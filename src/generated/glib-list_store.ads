@@ -44,29 +44,27 @@ package Glib.List_Store is
    -- Callbacks --
    ---------------
 
-   type Equal_Func is
-      access function
-        (A, B : not null access GObject_Record'Class) return Glib.Gboolean;
-      --  Specifies the type of a function used to test two values for equality.
-      --  The function should return True if both values are equal and False
-      --  otherwise.
-      --  @param A a value
-      --  @param B a value to compare with
-      --  @return True if A = B; False otherwise
+   type Equal_Func is access function
+     (A, B : not null access GObject_Record'Class) return Glib.Gboolean;
+   --  Specifies the type of a function used to test two values for equality.
+   --  The function should return True if both values are equal and False
+   --  otherwise.
+   --  @param A a value
+   --  @param B a value to compare with
+   --  @return True if A = B; False otherwise
 
-   type Compare_Data_Func is
-      access function
-        (A, B : not null access GObject_Record'Class) return Glib.Gint;
-      --  Specifies the type of a comparison function used to compare two values.
-      --  The function should return a negative integer if the first value comes
-      --  before the second, 0 if they are equal, or a positive integer if the
-      --  first value comes after the second.
-      --  @param A a value
-      --  @param B a value to compare with
-      --  @return negative value if A < B
-      --          zero if A = B
-      --          positive value if A > B
-      pragma Convention (C, Compare_Data_Func);
+   type Compare_Data_Func is access function
+     (A, B : not null access GObject_Record'Class) return Glib.Gint;
+   --  Specifies the type of a comparison function used to compare two values.
+   --  The function should return a negative integer if the first value comes
+   --  before the second, 0 if they are equal, or a positive integer if the
+   --  first value comes after the second.
+   --  @param A a value
+   --  @param B a value to compare with
+   --  @return negative value if A < B
+   --          zero if A = B
+   --          positive value if A > B
+   pragma Convention (C, Compare_Data_Func);
 
    ------------------
    -- Constructors --
@@ -165,10 +163,9 @@ package Glib.List_Store is
    --  @param Item the new item
 
    function Insert_Sorted
-      (Self      : not null access Glist_Store_Record;
-       Item      : not null access GObject_Record'Class;
-       Func      : Compare_Data_Func;
-       User_Data : System.Address) return Guint;
+      (Self : not null access Glist_Store_Record;
+       Item : not null access GObject_Record'Class;
+       Func : Compare_Data_Func) return Guint;
    --  Inserts Item into Store at a position to be determined by the
    --  Compare_Func.
    --  The list must already be sorted before calling this function or the
@@ -178,7 +175,6 @@ package Glib.List_Store is
    --  Since: gtk+ 2.44
    --  @param Item the new item
    --  @param Func pairwise comparison function for sorting
-   --  @param User_Data user data for Compare_Func
    --  @return the position at which Item was inserted
 
    procedure Remove
@@ -196,13 +192,11 @@ package Glib.List_Store is
    --  Since: gtk+ 2.44
 
    procedure Sort
-      (Self      : not null access Glist_Store_Record;
-       Func      : Compare_Data_Func;
-       User_Data : System.Address);
+      (Self : not null access Glist_Store_Record;
+       Func : Compare_Data_Func);
    --  Sort the items in Store according to Compare_Func.
    --  Since: gtk+ 2.46
    --  @param Func pairwise comparison function for sorting
-   --  @param User_Data user data for Compare_Func
 
    procedure Splice
       (Self       : not null access Glist_Store_Record;
