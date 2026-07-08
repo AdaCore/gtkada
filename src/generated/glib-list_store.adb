@@ -58,8 +58,12 @@ package body Glib.List_Store is
       User_Data : System.Address) return Glib.Gint
    is
       Func : constant Compare_Data_Func := To_Compare_Data_Func (User_Data);
+      Stub_A, Stub_B : GObject_Record;
    begin
-      return Func (A, B);
+      return
+      Func
+        (Glib.Object.Get_User_Data (A, Stub_A),
+         Glib.Object.Get_User_Data (B, Stub_B));
    end Internal_Compare_Data_Func;
 
    package Type_Conversion_Glist_Store is new Glib.Type_Conversion_Hooks.Hook_Registrator

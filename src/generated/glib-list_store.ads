@@ -44,18 +44,19 @@ package Glib.List_Store is
    -- Callbacks --
    ---------------
 
-   type Equal_Func is access function
-     (A : System.Address;
-      B : System.Address) return Glib.Gboolean;
-   --  Specifies the type of a function used to test two values for equality.
-   --  The function should return True if both values are equal and False
-   --  otherwise.
-   --  @param A a value
-   --  @param B a value to compare with
-   --  @return True if A = B; False otherwise
+   type Equal_Func is
+      access function
+        (A, B : not null access GObject_Record'Class) return Glib.Gboolean;
+      --  Specifies the type of a function used to test two values for equality.
+      --  The function should return True if both values are equal and False
+      --  otherwise.
+      --  @param A a value
+      --  @param B a value to compare with
+      --  @return True if A = B; False otherwise
 
    type Compare_Data_Func is
-      access function (A : System.Address; B : System.Address) return Glib.Gint;
+      access function
+        (A, B : not null access GObject_Record'Class) return Glib.Gint;
       --  Specifies the type of a comparison function used to compare two values.
       --  The function should return a negative integer if the first value comes
       --  before the second, 0 if they are equal, or a positive integer if the
