@@ -29,6 +29,18 @@ library project GtkAda is
       when "no"  => for Languages use ("C", "Ada");
    end case;
 
+    --  Allow marking this as Externally_Built, as an option. This is
+    --  for the benefit of the coverage testsuite, so the report can be
+    --  generated on the original project, without having each test
+    --  attempt to rebuild the library.
+   Externally_Built : GtkAda_Shared.Yes_No := external
+     ("GTKADA_EXTERNALLY_BUILT", "no");
+ 
+   case Externally_Built is
+      when "yes" => for Externally_Built use "true";
+      when "no"  => for Externally_Built use "false";
+   end case;
+
    Version := GtkAda_Shared.Version;
 
    --  Put "generated" first, so that files are preferably taken from there
@@ -87,5 +99,11 @@ library project GtkAda is
       for Artifacts ("share/doc/gtkada") use
         ("../docs/gtkada_rm/gtkada_rm");
    end Install;
+
+   package Coverage is
+       --  The C instrumented files do not compile at the moment. Leave
+       --  them out of coverage for now.
+       for Excluded_Source_Files use ("misc.c", "misc_generated.c");
+   end Coverage;
 
 end GtkAda;
