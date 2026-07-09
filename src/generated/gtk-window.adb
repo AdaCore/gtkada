@@ -1585,7 +1585,8 @@ package body Gtk.Window is
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean;
 
    -----------------------------------
@@ -1606,7 +1607,8 @@ package body Gtk.Window is
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean_Boolean;
 
    ------------------------
@@ -1626,7 +1628,8 @@ package body Gtk.Window is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ------------------------------
@@ -1647,7 +1650,8 @@ package body Gtk.Window is
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Window_Boolean;
 
    --------------------------------------
@@ -1668,7 +1672,8 @@ package body Gtk.Window is
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Window_Boolean_Boolean;
 
    ---------------------------
@@ -1688,7 +1693,8 @@ package body Gtk.Window is
       Obj : constant Gtk_Window := Gtk_Window (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Window_Void;
 
    -------------------------

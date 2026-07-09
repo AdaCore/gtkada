@@ -1356,7 +1356,8 @@ package body Glib.Application is
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean;
 
    --------------------------------------------------
@@ -1377,7 +1378,8 @@ package body Glib.Application is
       V   : aliased Glib.Gint := H (Obj, Glib.Application.Gapplication_Command_Line (Unchecked_To_Object (Params, 1)));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gapplication_Command_Line_Gint;
 
    ------------------------
@@ -1397,7 +1399,8 @@ package body Glib.Application is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    --------------------------------
@@ -1418,7 +1421,8 @@ package body Glib.Application is
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gapplication_Boolean;
 
    -------------------------------------------------------
@@ -1439,7 +1443,8 @@ package body Glib.Application is
       V   : aliased Glib.Gint := H (Obj, Glib.Application.Gapplication_Command_Line (Unchecked_To_Object (Params, 1)));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gapplication_Gapplication_Command_Line_Gint;
 
    -----------------------------
@@ -1459,7 +1464,8 @@ package body Glib.Application is
       Obj : constant Gapplication := Gapplication (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gapplication_Void;
 
    -----------------

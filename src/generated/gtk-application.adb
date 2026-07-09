@@ -902,7 +902,8 @@ package body Gtk.Application is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Window.Gtk_Window (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Window_Void;
 
    ------------------------
@@ -922,7 +923,8 @@ package body Gtk.Application is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    -------------------------------------------
@@ -942,7 +944,8 @@ package body Gtk.Application is
       Obj : constant Gtk_Application := Gtk_Application (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Window.Gtk_Window (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Application_Gtk_Window_Void;
 
    --------------------------------
@@ -962,7 +965,8 @@ package body Gtk.Application is
       Obj : constant Gtk_Application := Gtk_Application (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Application_Void;
 
    ------------------

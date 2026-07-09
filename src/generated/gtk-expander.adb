@@ -698,7 +698,8 @@ package body Gtk.Expander is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    -----------------------------
@@ -718,7 +719,8 @@ package body Gtk.Expander is
       Obj : constant Gtk_Expander := Gtk_Expander (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Expander_Void;
 
    -----------------

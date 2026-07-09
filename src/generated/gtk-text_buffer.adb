@@ -2240,7 +2240,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gdk.Clipboard.Gdk_Clipboard (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gdk_Clipboard_Void;
 
    ----------------------------------------------------
@@ -2260,7 +2261,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gdk.Paintable.Gdk_Paintable (Unchecked_To_Interface (Params, 2)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Text_Iter_Gdk_Paintable_Void;
 
    ------------------------------------------------------------
@@ -2280,7 +2282,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor (Unchecked_To_Object (Params, 2)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void;
 
    ----------------------------------------------------
@@ -2300,7 +2303,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Unchecked_To_Gtk_Text_Iter (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Iter_Void;
 
    ----------------------------------------------------
@@ -2320,7 +2324,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gtk.Text_Mark.Gtk_Text_Mark (Unchecked_To_Object (Params, 2)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Text_Iter_Gtk_Text_Mark_Void;
 
    -------------------------------------------------------
@@ -2340,7 +2345,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Unchecked_To_UTF8_String (Params, 2), Unchecked_To_Gint (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Text_Iter_UTF8_String_Gint_Void;
 
    --------------------------------------
@@ -2360,7 +2366,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Text_Mark.Gtk_Text_Mark (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Text_Mark_Void;
 
    -----------------------------------------------------------------
@@ -2380,7 +2387,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)), Unchecked_To_Gtk_Text_Iter (Params, 2), Unchecked_To_Gtk_Text_Iter (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void;
 
    ------------------------
@@ -2400,7 +2408,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ----------------------------------------------
@@ -2420,7 +2429,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gdk.Clipboard.Gdk_Clipboard (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_Buffer_Gdk_Clipboard_Void;
 
    ------------------------------------------------------------
@@ -2440,7 +2450,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gdk.Paintable.Gdk_Paintable (Unchecked_To_Interface (Params, 2)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gdk_Paintable_Void;
 
    --------------------------------------------------------------------
@@ -2460,7 +2471,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gtk.Text_Child_Anchor.Gtk_Text_Child_Anchor (Unchecked_To_Object (Params, 2)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Child_Anchor_Void;
 
    ------------------------------------------------------------
@@ -2480,7 +2492,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Unchecked_To_Gtk_Text_Iter (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Iter_Void;
 
    ------------------------------------------------------------
@@ -2500,7 +2513,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Gtk.Text_Mark.Gtk_Text_Mark (Unchecked_To_Object (Params, 2)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_Gtk_Text_Mark_Void;
 
    ---------------------------------------------------------------
@@ -2520,7 +2534,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Iter (Params, 1), Unchecked_To_UTF8_String (Params, 2), Unchecked_To_Gint (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_Buffer_Gtk_Text_Iter_UTF8_String_Gint_Void;
 
    ----------------------------------------------
@@ -2540,7 +2555,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Text_Mark.Gtk_Text_Mark (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_Buffer_Gtk_Text_Mark_Void;
 
    -------------------------------------------------------------------------
@@ -2560,7 +2576,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)), Unchecked_To_Gtk_Text_Iter (Params, 2), Unchecked_To_Gtk_Text_Iter (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_Buffer_Gtk_Text_Tag_Gtk_Text_Iter_Gtk_Text_Iter_Void;
 
    --------------------------------
@@ -2580,7 +2597,8 @@ package body Gtk.Text_Buffer is
       Obj : constant Gtk_Text_Buffer := Gtk_Text_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_Buffer_Void;
 
    ------------------

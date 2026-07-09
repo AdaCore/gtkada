@@ -501,7 +501,8 @@ package body Gtk.Editable is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gint_Gint_Void;
 
    ----------------------------------------------
@@ -521,7 +522,8 @@ package body Gtk.Editable is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Gint_Access (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_UTF8_String_Gint_Gint_Void;
 
    ------------------------
@@ -541,7 +543,8 @@ package body Gtk.Editable is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ---------------------------------------
@@ -561,7 +564,8 @@ package body Gtk.Editable is
       Obj : constant Gtk_Editable := Gtk_Editable (Unchecked_To_Interface (Params, 0));
    begin
       H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Editable_Gint_Gint_Void;
 
    ---------------------------------------------------
@@ -581,7 +585,8 @@ package body Gtk.Editable is
       Obj : constant Gtk_Editable := Gtk_Editable (Unchecked_To_Interface (Params, 0));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Gint_Access (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Editable_UTF8_String_Gint_Gint_Void;
 
    -----------------------------
@@ -601,7 +606,8 @@ package body Gtk.Editable is
       Obj : constant Gtk_Editable := Gtk_Editable (Unchecked_To_Interface (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Editable_Void;
 
    ----------------

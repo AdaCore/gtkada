@@ -172,7 +172,8 @@ package body Gtk.Cell_Renderer_Accel is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_UTF8_String_Void;
 
    ----------------------------------------------------
@@ -192,7 +193,8 @@ package body Gtk.Cell_Renderer_Accel is
       Obj : constant Gtk_Cell_Renderer_Accel := Gtk_Cell_Renderer_Accel (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Cell_Renderer_Accel_UTF8_String_Void;
 
    ----------------------

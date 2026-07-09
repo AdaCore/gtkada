@@ -771,7 +771,8 @@ package body Gtk.Popover is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ----------------------------
@@ -791,7 +792,8 @@ package body Gtk.Popover is
       Obj : constant Gtk_Popover := Gtk_Popover (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Popover_Void;
 
    -------------------------

@@ -387,7 +387,8 @@ package body Gdk.Drag is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Drag_Cancel_Reason (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Drag_Cancel_Reason_Void;
 
    ------------------------
@@ -407,7 +408,8 @@ package body Gdk.Drag is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    --------------------------------------------
@@ -427,7 +429,8 @@ package body Gdk.Drag is
       Obj : constant Gdk_Drag := Gdk_Drag (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Drag_Cancel_Reason (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Drag_Drag_Cancel_Reason_Void;
 
    -------------------------
@@ -447,7 +450,8 @@ package body Gdk.Drag is
       Obj : constant Gdk_Drag := Gdk_Drag (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Drag_Void;
 
    ---------------

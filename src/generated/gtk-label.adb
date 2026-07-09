@@ -1430,7 +1430,8 @@ package body Gtk.Label is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
 
    ---------------------------------------
@@ -1451,7 +1452,8 @@ package body Gtk.Label is
       V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_UTF8_String_Boolean;
 
    ------------------------
@@ -1471,7 +1473,8 @@ package body Gtk.Label is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ---------------------------------------------------------
@@ -1491,7 +1494,8 @@ package body Gtk.Label is
       Obj : constant Gtk_Label := Gtk_Label (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Label_Gtk_Movement_Step_Gint_Boolean_Void;
 
    -----------------------------------------
@@ -1512,7 +1516,8 @@ package body Gtk.Label is
       V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Label_UTF8_String_Boolean;
 
    --------------------------
@@ -1532,7 +1537,8 @@ package body Gtk.Label is
       Obj : constant Gtk_Label := Gtk_Label (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Label_Void;
 
    ------------------------------

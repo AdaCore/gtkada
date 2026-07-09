@@ -1071,7 +1071,8 @@ package body Gtk.Scrolled_Window is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Direction_Type_Void;
 
    ------------------------------------------
@@ -1091,7 +1092,8 @@ package body Gtk.Scrolled_Window is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Position_Type (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Position_Type_Void;
 
    ---------------------------------------------------
@@ -1112,7 +1114,8 @@ package body Gtk.Scrolled_Window is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Scroll_Type (Params, 1), Unchecked_To_Boolean (Params, 2));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Scroll_Type_Boolean_Boolean;
 
    -------------------------------------------------------
@@ -1132,7 +1135,8 @@ package body Gtk.Scrolled_Window is
       Obj : constant Gtk_Scrolled_Window := Gtk_Scrolled_Window (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Scrolled_Window_Gtk_Direction_Type_Void;
 
    ------------------------------------------------------
@@ -1152,7 +1156,8 @@ package body Gtk.Scrolled_Window is
       Obj : constant Gtk_Scrolled_Window := Gtk_Scrolled_Window (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Position_Type (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Scrolled_Window_Gtk_Position_Type_Void;
 
    ---------------------------------------------------------------
@@ -1173,7 +1178,8 @@ package body Gtk.Scrolled_Window is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Scroll_Type (Params, 1), Unchecked_To_Boolean (Params, 2));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Scrolled_Window_Gtk_Scroll_Type_Boolean_Boolean;
 
    ----------------------

@@ -148,7 +148,8 @@ package body Gdk.Paintable is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ------------------------------
@@ -168,7 +169,8 @@ package body Gdk.Paintable is
       Obj : constant Gdk_Paintable := Gdk_Paintable (Unchecked_To_Interface (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Paintable_Void;
 
    ----------------------------

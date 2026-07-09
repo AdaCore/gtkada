@@ -353,7 +353,8 @@ package body Glib.Menu_Model is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Gint (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gint_Gint_Gint_Void;
 
    -------------------------------------------
@@ -373,7 +374,8 @@ package body Glib.Menu_Model is
       Obj : constant Gmenu_Model := Gmenu_Model (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Gint (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gmenu_Model_Gint_Gint_Gint_Void;
 
    ----------------------

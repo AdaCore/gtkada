@@ -423,7 +423,8 @@ package body Gtk.Text_Tag_Table is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)), Unchecked_To_Boolean (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Text_Tag_Boolean_Void;
 
    -------------------------------------
@@ -443,7 +444,8 @@ package body Gtk.Text_Tag_Table is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Text_Tag_Void;
 
    --------------------------------------------------------
@@ -463,7 +465,8 @@ package body Gtk.Text_Tag_Table is
       Obj : constant Gtk_Text_Tag_Table := Gtk_Text_Tag_Table (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)), Unchecked_To_Boolean (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Boolean_Void;
 
    ------------------------------------------------
@@ -483,7 +486,8 @@ package body Gtk.Text_Tag_Table is
       Obj : constant Gtk_Text_Tag_Table := Gtk_Text_Tag_Table (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Text_Tag.Gtk_Text_Tag (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_Tag_Table_Gtk_Text_Tag_Void;
 
    ------------------

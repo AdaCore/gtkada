@@ -270,7 +270,8 @@ package body Gtk.Native_Dialog is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gint (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gint_Void;
 
    ---------------------------------------
@@ -290,7 +291,8 @@ package body Gtk.Native_Dialog is
       Obj : constant Gtk_Native_Dialog := Gtk_Native_Dialog (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gint (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Native_Dialog_Gint_Void;
 
    -----------------

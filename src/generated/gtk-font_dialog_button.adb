@@ -642,7 +642,8 @@ package body Gtk.Font_Dialog_Button is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ---------------------------------------
@@ -662,7 +663,8 @@ package body Gtk.Font_Dialog_Button is
       Obj : constant Gtk_Font_Dialog_Button := Gtk_Font_Dialog_Button (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Font_Dialog_Button_Void;
 
    -----------------

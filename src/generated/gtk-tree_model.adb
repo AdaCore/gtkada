@@ -1331,7 +1331,8 @@ package body Gtk.Tree_Model is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2), Unchecked_To_Address (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void;
 
    ----------------------------------------------------
@@ -1351,7 +1352,8 @@ package body Gtk.Tree_Model is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Void;
 
    --------------------------------------
@@ -1371,7 +1373,8 @@ package body Gtk.Tree_Model is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Tree_Path_Void;
 
    -------------------------------------------------------------------
@@ -1391,7 +1394,8 @@ package body Gtk.Tree_Model is
       Obj : constant Gtk_Tree_Model := Gtk_Tree_Model (Unchecked_To_Interface (Params, 0));
    begin
       H (Obj, Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2), Unchecked_To_Address (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void;
 
    -----------------------------------------------------------
@@ -1411,7 +1415,8 @@ package body Gtk.Tree_Model is
       Obj : constant Gtk_Tree_Model := Gtk_Tree_Model (Unchecked_To_Interface (Params, 0));
    begin
       H (Obj, Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Void;
 
    ---------------------------------------------
@@ -1431,7 +1436,8 @@ package body Gtk.Tree_Model is
       Obj : constant Gtk_Tree_Model := Gtk_Tree_Model (Unchecked_To_Interface (Params, 0));
    begin
       H (Obj, Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Void;
 
    --------------------

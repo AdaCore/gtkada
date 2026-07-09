@@ -1076,7 +1076,8 @@ package body Gtk.Entry_Completion is
       V   : aliased Boolean := H (Obj, Gtk.Tree_Model.Gtk_Tree_Model (Unchecked_To_Interface (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
 
    ---------------------------------------
@@ -1097,7 +1098,8 @@ package body Gtk.Entry_Completion is
       V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_UTF8_String_Boolean;
 
    ------------------------
@@ -1117,7 +1119,8 @@ package body Gtk.Entry_Completion is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ---------------------------------------------------------------------
@@ -1138,7 +1141,8 @@ package body Gtk.Entry_Completion is
       V   : aliased Boolean := H (Obj, Gtk.Tree_Model.Gtk_Tree_Model (Unchecked_To_Interface (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Entry_Completion_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean;
 
    ----------------------------------------------------
@@ -1159,7 +1163,8 @@ package body Gtk.Entry_Completion is
       V   : aliased Boolean := H (Obj, Unchecked_To_UTF8_String (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Entry_Completion_UTF8_String_Boolean;
 
    -------------------------------------
@@ -1179,7 +1184,8 @@ package body Gtk.Entry_Completion is
       Obj : constant Gtk_Entry_Completion := Gtk_Entry_Completion (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Entry_Completion_Void;
 
    ------------------------
