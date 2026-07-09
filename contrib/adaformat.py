@@ -1326,6 +1326,7 @@ def indent_code(code, indent=3, addnewlines=True):
         body = re.sub(r"(?<!and )then(?!\s*\n)", "then\n", body)
         body = re.sub(r"(?<!or )else(?!\s*\n)", "else\n", body)
         body = re.sub(r"declare", "\ndeclare", body)
+        body = re.sub(r"exception when", "exception\nwhen", body)
         body = re.sub(r"\bdo\b", "do\n", body)
         body = re.sub(r"\n\s*\n+", "\n\n", body)
 
@@ -1346,6 +1347,7 @@ def indent_code(code, indent=3, addnewlines=True):
             or line.startswith("elsif")
             or line.startswith("else")
             or line.startswith("begin")
+            or line.startswith("exception")
             or line.startswith("}")
         ):  # for C
             indent -= 3
@@ -1385,6 +1387,7 @@ def indent_code(code, indent=3, addnewlines=True):
             or line.endswith("is")
             or line.endswith("do")
             or line.endswith("declare")
+            or line.startswith("exception")
         ):
             indent += 3
 
