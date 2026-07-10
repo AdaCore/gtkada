@@ -914,10 +914,12 @@ GtkWidget*
 ada_box_get_child (GtkBox* widget, gint num)
 {
   GList * list;
+  GtkWidget * child = NULL;
   list = gtk_container_get_children ((GtkContainer*)widget);
   if (list && num < g_list_length (list))
-    return ((GtkWidget*) (g_list_nth_data (list, num)));
-  return NULL;
+    child = ((GtkWidget*) (g_list_nth_data (list, num)));
+  g_list_free (list);
+  return child;
 }
 
 /**********************************************
