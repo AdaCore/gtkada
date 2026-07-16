@@ -128,6 +128,7 @@ binding = (
     "Gdk.Snapshot",
     "Gdk.Surface",
     "Gdk.Texture",
+    "--Gdk.VulkanContext", # deprecated since 4.14
     "--GdkWindow",
     "--GAction",  # bound as an interface, see interfaces tuple
     "--GActionGroup",  # bound as an interface, see interfaces tuple
