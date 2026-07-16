@@ -99,13 +99,17 @@ gtk-handlers.ads:
 
 - when done, fix gtkada_demo/create_tree_view.adb
 
+GAppInfo.toml:
+
+- when done, reactivate bindings in GAppLaunchContext.toml\
+
 GBytes.toml:
 
 - fix binding for functions that have gconstarray as parameters
 
 GFile.toml:
 
-- when done, reactivate bindings in GdkTexture.toml
+- when done, reactivate bindings in GdkTexture.toml, GAppLaunchContext.toml
 
 GInputStream.toml
 

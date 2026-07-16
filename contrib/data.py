@@ -128,6 +128,7 @@ binding = (
     "--GActionGroup",  # bound as an interface, see interfaces tuple
     "--GActionMap",  # bound as an interface, see interfaces tuple
     "Gio.Application",
+    "Gio.AppLaunchContext",
     "Gio.ApplicationCommandLine",
     "GLib.Bytes",  # Function returning arrays
     "--Gio.BufferedInputStream",  # Not tested yet, from Gio
