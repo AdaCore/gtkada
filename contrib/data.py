@@ -94,6 +94,7 @@ interfaces = (
 
 binding = (
     "----GdkAtom",  # No binding necessary, too low-level
+    "Gdk.AppLaunchContext",
     "Gdk.CicpParams",
     "Gdk.Clipboard",
     "Gdk.ColorState",

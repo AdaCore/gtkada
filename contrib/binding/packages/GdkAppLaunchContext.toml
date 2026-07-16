@@ -1,0 +1,12 @@
+# ============================================================
+#   GdkAppLaunchContext
+# ============================================================
+ada = "Gdk.App_Launch_Context"
+
+[[extra.with_body]]
+pkg = "Glib.Object"
+use = true
+
+[[extra.with_body]]
+pkg = "System"
+use = false
