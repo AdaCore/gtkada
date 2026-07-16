@@ -860,6 +860,7 @@ naming.type_exceptions = {
     "TextTagList": List("Gtk.Text_Tag.Text_Tag_List.GSlist"),
     "DeviceList": List("Gdk.Device.Device_List.Glist"),
     "DeviceToolList": List("Gdk.Device_Tool.Device_Tool_List.Glist"),
+    "DisplayList": List("Gdk.Display.Display_List.Glist"),
     "SeatList": List("Gdk.Seat.Seat_List.Glist"),
     "gpointer": Proxy("System.Address", "", default_record_field="System.Null_Address"),
     "gconstpointer": Proxy("System.Address", ""),

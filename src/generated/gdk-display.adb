@@ -27,12 +27,22 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
-with System;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
 package body Gdk.Display is
+
+   function Convert (R : Gdk.Gdk_Display) return System.Address is
+   begin
+      return Get_Object (R);
+   end Convert;
+
+   function Convert (R : System.Address) return Gdk.Gdk_Display is
+      Stub : Gdk.Display.Gdk_Display_Record;
+   begin
+      return Gdk.Gdk_Display (Glib.Object.Get_User_Data (R, Stub));
+   end Convert;
 
    package Type_Conversion_Gdk_Display is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gdk_Display_Record);

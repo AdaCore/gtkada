@@ -4,6 +4,10 @@
 
 ada_access_root = true
 
+[[list]]
+ctype = "GdkDisplay*"
+ada   = "Display_List"
+
 [[method]]
 id = "gdk_display_get_app_launch_context"
 bind = false
@@ -47,6 +51,6 @@ id = "gdk_display_put_event"
 bind = false
 # No GdkEvent binding
 
-[[extra.with_body]]
+[[extra.with_spec]]
 pkg = "System"
 use = false
