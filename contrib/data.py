@@ -106,6 +106,7 @@ binding = (
     "Gdk.DeviceTool",
     "Gdk.Display",
     "Gdk.DmabufFormats",
+    "Gdk.DmabufTexture",
     "Gdk.Drag",
     "--GdkDragContext",
     "Gdk.DrawContext",
