@@ -174,7 +174,6 @@ binding = (
     "--Gio.FilenameCompleter",  # Not tested yet, from Gio
     "--Gio.FilterInputStream",  # Not tested yet, from Gio
     "--Gio.FilterOutputStream",  # Not tested yet, from Gio
-    "--GIcon",  # Bound through manual_binding
     "--Gio.IOExtension",  # Not tested yet, from Gio
     "--Gio.IOExtensionPoint",  # Not tested yet, from Gio
     "GLib.IOChannel",
@@ -186,8 +185,7 @@ binding = (
     "--Gio.InetAddressMask",  # Not tested yet, from Gio
     "--Gio.InetSocketAddress",  # Not tested yet, from Gio
     "--Gio.InputStream",  # Not tested yet, from Gio
-    "--GListModel",  # Bound through manual_binding
-    "GListStore",
+    "Gio.ListStore",
     "--Gio.MemoryInputStream",  # Not tested yet, from Gio
     "--Gio.MemoryOutputStream",  # Not tested yet, from Gio
     "Gio.MenuModel",  # Not tested yet, from Gio
@@ -633,14 +631,12 @@ binding = (
 # These may still use qualified GIR names for interfaces.
 manual_binding = (
     "Gio.Icon",
-    "Gio.ListModel",
     "GPoll",
     "Spawn",
     "GTest",
     "Utils",
     "Gtk.Accessible",
     "Gtk.AccessibleText",
-    "Gtk.ConstraintTarget",
     "GtkMain",
 )
 
