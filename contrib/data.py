@@ -117,6 +117,7 @@ binding = (
     "Gdk.FrameClock",
     "Gdk.FrameTimings",
     "Gdk.GLContext",
+    "Gdk.MemoryTexture",
     "Gdk.Monitor",
     "Gdk.RGBA",
     "Gdk.Rectangle",
