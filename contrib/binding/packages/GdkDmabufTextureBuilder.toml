@@ -1,0 +1,8 @@
+# ============================================================
+#   GdkDmabufTextureBuilder
+# ============================================================
+ada = "Gdk.Dmabuf_Texture_Builder"
+
+[[extra.with_spec]]
+pkg = "System"
+use = false
