@@ -105,6 +105,7 @@ binding = (
     "--GdkDeviceManager",
     "Gdk.DeviceTool",
     "Gdk.Display",
+    "Gdk.DisplayManager",
     "Gdk.DmabufFormats",
     "Gdk.DmabufTexture",
     "Gdk.DmabufTextureBuilder",

@@ -1,0 +1,19 @@
+# ============================================================
+#   GdkDisplayManager
+# ============================================================
+ada = "Gdk.Display_Manager"
+
+[[method]]
+id = "gdk_display_manager_list_displays"
+return = "DisplayList"
+
+[[method]]
+id = "::display-opened"
+
+[[method.parameter]]
+name = "display"
+ctype = "GdkDisplay*"
+
+[[extra.with_body]]
+pkg = "System"
+use = false
