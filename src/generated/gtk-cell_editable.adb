@@ -144,7 +144,8 @@ package body Gtk.Cell_Editable is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ----------------------------------
@@ -164,7 +165,8 @@ package body Gtk.Cell_Editable is
       Obj : constant Gtk_Cell_Editable := Gtk_Cell_Editable (Unchecked_To_Interface (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Cell_Editable_Void;
 
    ---------------------

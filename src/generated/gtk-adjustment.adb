@@ -415,7 +415,8 @@ package body Gtk.Adjustment is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    -------------------------------
@@ -435,7 +436,8 @@ package body Gtk.Adjustment is
       Obj : constant Gtk_Adjustment := Gtk_Adjustment (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Adjustment_Void;
 
    ----------------

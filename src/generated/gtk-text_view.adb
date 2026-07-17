@@ -2141,7 +2141,8 @@ package body Gtk.Text_View is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Boolean (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean_Void;
 
    ---------------------------------------------
@@ -2161,7 +2162,8 @@ package body Gtk.Text_View is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Delete_Type (Params, 1), Unchecked_To_Gint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Delete_Type_Gint_Void;
 
    -------------------------------------------------------
@@ -2181,7 +2183,8 @@ package body Gtk.Text_View is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Void;
 
    ---------------------------------------------
@@ -2201,7 +2204,8 @@ package body Gtk.Text_View is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Scroll_Step (Params, 1), Unchecked_To_Gint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Scroll_Step_Gint_Void;
 
    -----------------------------------------------------------------------------------------------
@@ -2222,7 +2226,8 @@ package body Gtk.Text_View is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Text_Extend_Selection (Params, 1), Unchecked_To_Gtk_Text_Iter (Params, 2), Unchecked_To_Gtk_Text_Iter (Params, 3), Unchecked_To_Gtk_Text_Iter (Params, 4));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
 
    ------------------------------------
@@ -2242,7 +2247,8 @@ package body Gtk.Text_View is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_UTF8_String_Void;
 
    ------------------------
@@ -2262,7 +2268,8 @@ package body Gtk.Text_View is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    --------------------------------------
@@ -2282,7 +2289,8 @@ package body Gtk.Text_View is
       Obj : constant Gtk_Text_View := Gtk_Text_View (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Boolean (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_View_Boolean_Void;
 
    ---------------------------------------------------
@@ -2302,7 +2310,8 @@ package body Gtk.Text_View is
       Obj : constant Gtk_Text_View := Gtk_Text_View (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Delete_Type (Params, 1), Unchecked_To_Gint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_View_Gtk_Delete_Type_Gint_Void;
 
    -------------------------------------------------------------
@@ -2322,7 +2331,8 @@ package body Gtk.Text_View is
       Obj : constant Gtk_Text_View := Gtk_Text_View (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_View_Gtk_Movement_Step_Gint_Boolean_Void;
 
    ---------------------------------------------------
@@ -2342,7 +2352,8 @@ package body Gtk.Text_View is
       Obj : constant Gtk_Text_View := Gtk_Text_View (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Scroll_Step (Params, 1), Unchecked_To_Gint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_View_Gtk_Scroll_Step_Gint_Void;
 
    -----------------------------------------------------------------------------------------------------
@@ -2363,7 +2374,8 @@ package body Gtk.Text_View is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Text_Extend_Selection (Params, 1), Unchecked_To_Gtk_Text_Iter (Params, 2), Unchecked_To_Gtk_Text_Iter (Params, 3), Unchecked_To_Gtk_Text_Iter (Params, 4));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_View_Gtk_Text_Extend_Selection_Gtk_Text_Iter_Gtk_Text_Iter_Gtk_Text_Iter_Boolean;
 
    ------------------------------------------
@@ -2383,7 +2395,8 @@ package body Gtk.Text_View is
       Obj : constant Gtk_Text_View := Gtk_Text_View (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_View_UTF8_String_Void;
 
    ------------------------------
@@ -2403,7 +2416,8 @@ package body Gtk.Text_View is
       Obj : constant Gtk_Text_View := Gtk_Text_View (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Text_View_Void;
 
    ------------------

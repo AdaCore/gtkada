@@ -308,7 +308,8 @@ package body Gdk.Content_Provider is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    -------------------------------------
@@ -328,7 +329,8 @@ package body Gdk.Content_Provider is
       Obj : constant Gdk_Content_Provider := Gdk_Content_Provider (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Content_Provider_Void;
 
    ------------------------

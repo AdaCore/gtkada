@@ -847,7 +847,8 @@ package body Gtk.Paned is
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean;
 
    -----------------------------------
@@ -868,7 +869,8 @@ package body Gtk.Paned is
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean_Boolean;
 
    -------------------------------------------
@@ -889,7 +891,8 @@ package body Gtk.Paned is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Scroll_Type (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Scroll_Type_Boolean;
 
    -----------------------------
@@ -910,7 +913,8 @@ package body Gtk.Paned is
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Paned_Boolean;
 
    -------------------------------------
@@ -931,7 +935,8 @@ package body Gtk.Paned is
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Paned_Boolean_Boolean;
 
    ---------------------------------------------
@@ -952,7 +957,8 @@ package body Gtk.Paned is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Scroll_Type (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Paned_Gtk_Scroll_Type_Boolean;
 
    ------------------------

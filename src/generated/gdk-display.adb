@@ -744,7 +744,8 @@ package body Gdk.Display is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Boolean (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean_Void;
 
    ---------------------------------
@@ -764,7 +765,8 @@ package body Gdk.Display is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gdk.Gdk_Seat (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gdk_Seat_Void;
 
    ------------------------------------
@@ -784,7 +786,8 @@ package body Gdk.Display is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_UTF8_String_Void;
 
    ------------------------
@@ -804,7 +807,8 @@ package body Gdk.Display is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ------------------------------------
@@ -824,7 +828,8 @@ package body Gdk.Display is
       Obj : constant Gdk_Display := Gdk_Display (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Boolean (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Display_Boolean_Void;
 
    -------------------------------------
@@ -844,7 +849,8 @@ package body Gdk.Display is
       Obj : constant Gdk_Display := Gdk_Display (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gdk.Gdk_Seat (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Display_Gdk_Seat_Void;
 
    ----------------------------------------
@@ -864,7 +870,8 @@ package body Gdk.Display is
       Obj : constant Gdk_Display := Gdk_Display (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Display_UTF8_String_Void;
 
    ----------------------------
@@ -884,7 +891,8 @@ package body Gdk.Display is
       Obj : constant Gdk_Display := Gdk_Display (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Display_Void;
 
    ---------------

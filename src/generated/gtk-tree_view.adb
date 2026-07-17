@@ -3154,7 +3154,8 @@ package body Gtk.Tree_View is
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean;
 
    -----------------------------------
@@ -3175,7 +3176,8 @@ package body Gtk.Tree_View is
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean_Boolean;
 
    ---------------------------------------------------
@@ -3196,7 +3198,8 @@ package body Gtk.Tree_View is
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1), Unchecked_To_Boolean (Params, 2), Unchecked_To_Boolean (Params, 3));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean_Boolean_Boolean_Boolean;
 
    ------------------------------------------------------------------
@@ -3217,7 +3220,8 @@ package body Gtk.Tree_View is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Boolean (Params, 4));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Movement_Step_Gint_Boolean_Boolean_Boolean;
 
    -------------------------------------------------------
@@ -3238,7 +3242,8 @@ package body Gtk.Tree_View is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Tree_Iter (Params, 1), Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 2)));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
 
    ----------------------------------------------------
@@ -3258,7 +3263,8 @@ package body Gtk.Tree_View is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Tree_Iter (Params, 1), Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 2)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
 
    -----------------------------------------------------------
@@ -3278,7 +3284,8 @@ package body Gtk.Tree_View is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 1)), Gtk.Tree_View_Column.Gtk_Tree_View_Column (Unchecked_To_Object (Params, 2)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
 
    ------------------------
@@ -3298,7 +3305,8 @@ package body Gtk.Tree_View is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ---------------------------------
@@ -3319,7 +3327,8 @@ package body Gtk.Tree_View is
       V   : aliased Boolean := H (Obj);
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Tree_View_Boolean;
 
    -----------------------------------------
@@ -3340,7 +3349,8 @@ package body Gtk.Tree_View is
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Tree_View_Boolean_Boolean;
 
    ---------------------------------------------------------
@@ -3361,7 +3371,8 @@ package body Gtk.Tree_View is
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1), Unchecked_To_Boolean (Params, 2), Unchecked_To_Boolean (Params, 3));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Tree_View_Boolean_Boolean_Boolean_Boolean;
 
    ------------------------------------------------------------------------
@@ -3382,7 +3393,8 @@ package body Gtk.Tree_View is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Movement_Step (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Boolean (Params, 4));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Tree_View_Gtk_Movement_Step_Gint_Boolean_Boolean_Boolean;
 
    -------------------------------------------------------------
@@ -3403,7 +3415,8 @@ package body Gtk.Tree_View is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Tree_Iter (Params, 1), Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 2)));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Boolean;
 
    ----------------------------------------------------------
@@ -3423,7 +3436,8 @@ package body Gtk.Tree_View is
       Obj : constant Gtk_Tree_View := Gtk_Tree_View (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Tree_Iter (Params, 1), Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 2)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Tree_View_Gtk_Tree_Iter_Gtk_Tree_Path_Void;
 
    -----------------------------------------------------------------
@@ -3443,7 +3457,8 @@ package body Gtk.Tree_View is
       Obj : constant Gtk_Tree_View := Gtk_Tree_View (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 1)), Gtk.Tree_View_Column.Gtk_Tree_View_Column (Unchecked_To_Object (Params, 2)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
 
    ------------------------------
@@ -3463,7 +3478,8 @@ package body Gtk.Tree_View is
       Obj : constant Gtk_Tree_View := Gtk_Tree_View (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Tree_View_Void;
 
    ------------------------

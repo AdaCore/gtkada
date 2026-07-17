@@ -1611,7 +1611,8 @@ package body Gtk.Cell_Area is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Unchecked_To_Object (Params, 1)), Gtk.Cell_Editable.Gtk_Cell_Editable (Unchecked_To_Interface (Params, 2)), Unchecked_To_Gdk_Rectangle (Params, 3), Unchecked_To_UTF8_String (Params, 4));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Gdk_Rectangle_UTF8_String_Void;
 
    ------------------------------------------------------------
@@ -1631,7 +1632,8 @@ package body Gtk.Cell_Area is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Unchecked_To_Object (Params, 1)), Gtk.Cell_Editable.Gtk_Cell_Editable (Unchecked_To_Interface (Params, 2)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void;
 
    ------------------------------------------------------
@@ -1651,7 +1653,8 @@ package body Gtk.Cell_Area is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Unchecked_To_Object (Params, 1)), Unchecked_To_UTF8_String (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Cell_Renderer_UTF8_String_Void;
 
    ---------------------------------------------------------------------
@@ -1671,7 +1674,8 @@ package body Gtk.Cell_Area is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Tree_Model.Gtk_Tree_Model (Unchecked_To_Interface (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Boolean (Params, 4));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void;
 
    --------------------------------------------------------------------------------------------
@@ -1691,7 +1695,8 @@ package body Gtk.Cell_Area is
       Obj : constant Gtk_Cell_Area := Gtk_Cell_Area (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Unchecked_To_Object (Params, 1)), Gtk.Cell_Editable.Gtk_Cell_Editable (Unchecked_To_Interface (Params, 2)), Unchecked_To_Gdk_Rectangle (Params, 3), Unchecked_To_UTF8_String (Params, 4));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Gdk_Rectangle_UTF8_String_Void;
 
    ------------------------------------------------------------------
@@ -1711,7 +1716,8 @@ package body Gtk.Cell_Area is
       Obj : constant Gtk_Cell_Area := Gtk_Cell_Area (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Unchecked_To_Object (Params, 1)), Gtk.Cell_Editable.Gtk_Cell_Editable (Unchecked_To_Interface (Params, 2)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_Gtk_Cell_Editable_Void;
 
    ------------------------------------------------------------
@@ -1731,7 +1737,8 @@ package body Gtk.Cell_Area is
       Obj : constant Gtk_Cell_Area := Gtk_Cell_Area (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Cell_Renderer.Gtk_Cell_Renderer (Unchecked_To_Object (Params, 1)), Unchecked_To_UTF8_String (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Cell_Area_Gtk_Cell_Renderer_UTF8_String_Void;
 
    ---------------------------------------------------------------------------
@@ -1751,7 +1758,8 @@ package body Gtk.Cell_Area is
       Obj : constant Gtk_Cell_Area := Gtk_Cell_Area (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Tree_Model.Gtk_Tree_Model (Unchecked_To_Interface (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Boolean (Params, 4));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Cell_Area_Gtk_Tree_Model_Gtk_Tree_Iter_Boolean_Boolean_Void;
 
    ---------------------

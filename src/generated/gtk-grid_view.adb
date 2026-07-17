@@ -693,7 +693,8 @@ package body Gtk.Grid_View is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Guint_Void;
 
    ------------------------------------
@@ -713,7 +714,8 @@ package body Gtk.Grid_View is
       Obj : constant Gtk_Grid_View := Gtk_Grid_View (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Grid_View_Guint_Void;
 
    -----------------

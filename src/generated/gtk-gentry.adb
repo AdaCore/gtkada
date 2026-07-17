@@ -1865,7 +1865,8 @@ package body Gtk.GEntry is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Entry_Icon_Position (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Entry_Icon_Position_Void;
 
    ------------------------
@@ -1885,7 +1886,8 @@ package body Gtk.GEntry is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    --------------------------------------------------
@@ -1905,7 +1907,8 @@ package body Gtk.GEntry is
       Obj : constant Gtk_Entry := Gtk_Entry (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Entry_Icon_Position (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Entry_Gtk_Entry_Icon_Position_Void;
 
    --------------------------
@@ -1925,7 +1928,8 @@ package body Gtk.GEntry is
       Obj : constant Gtk_Entry := Gtk_Entry (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Entry_Void;
 
    -----------------

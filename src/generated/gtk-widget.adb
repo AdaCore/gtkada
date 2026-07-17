@@ -2569,7 +2569,8 @@ package body Gtk.Widget is
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean_Boolean;
 
    -----------------------------------------------------
@@ -2590,7 +2591,8 @@ package body Gtk.Widget is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Object (Params, 4));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gint_Gint_Boolean_GObject_Boolean;
 
    ----------------------------------------------
@@ -2611,7 +2613,8 @@ package body Gtk.Widget is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Direction_Type_Boolean;
 
    -------------------------------------------
@@ -2631,7 +2634,8 @@ package body Gtk.Widget is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Direction_Type_Void;
 
    ----------------------------------------
@@ -2651,7 +2655,8 @@ package body Gtk.Widget is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_State_Flags (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_State_Flags_Void;
 
    -------------------------------------------
@@ -2671,7 +2676,8 @@ package body Gtk.Widget is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Direction (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Text_Direction_Void;
 
    ------------------------
@@ -2691,7 +2697,8 @@ package body Gtk.Widget is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    --------------------------------------
@@ -2712,7 +2719,8 @@ package body Gtk.Widget is
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Widget_Boolean_Boolean;
 
    --------------------------------------------------------
@@ -2733,7 +2741,8 @@ package body Gtk.Widget is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2), Unchecked_To_Boolean (Params, 3), Unchecked_To_Object (Params, 4));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Widget_Gint_Gint_Boolean_GObject_Boolean;
 
    -------------------------------------------------
@@ -2754,7 +2763,8 @@ package body Gtk.Widget is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Widget_Gtk_Direction_Type_Boolean;
 
    ----------------------------------------------
@@ -2774,7 +2784,8 @@ package body Gtk.Widget is
       Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Widget_Gtk_Direction_Type_Void;
 
    -------------------------------------------
@@ -2794,7 +2805,8 @@ package body Gtk.Widget is
       Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_State_Flags (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Widget_Gtk_State_Flags_Void;
 
    ----------------------------------------------
@@ -2814,7 +2826,8 @@ package body Gtk.Widget is
       Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Text_Direction (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Widget_Gtk_Text_Direction_Void;
 
    ---------------------------
@@ -2834,7 +2847,8 @@ package body Gtk.Widget is
       Obj : constant Gtk_Widget := Gtk_Widget (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Widget_Void;
 
    ----------------

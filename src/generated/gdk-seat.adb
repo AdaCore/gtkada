@@ -315,7 +315,8 @@ package body Gdk.Seat is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gdk.Device_Tool.Gdk_Device_Tool (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gdk_Device_Tool_Void;
 
    -----------------------------------
@@ -335,7 +336,8 @@ package body Gdk.Seat is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gdk.Gdk_Device (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gdk_Device_Void;
 
    -----------------------------------------
@@ -355,7 +357,8 @@ package body Gdk.Seat is
       Obj : constant Gdk_Seat := Gdk_Seat (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gdk.Device_Tool.Gdk_Device_Tool (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Seat_Gdk_Device_Tool_Void;
 
    ------------------------------------
@@ -375,7 +378,8 @@ package body Gdk.Seat is
       Obj : constant Gdk_Seat := Gdk_Seat (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gdk.Gdk_Device (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Seat_Gdk_Device_Void;
 
    ---------------------

@@ -687,7 +687,8 @@ package body Gdk.Surface is
       V   : aliased Boolean := H (Obj, Unchecked_To_Address (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Address_Boolean;
 
    ------------------------------------
@@ -707,7 +708,8 @@ package body Gdk.Surface is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gdk.Monitor.Gdk_Monitor (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gdk_Monitor_Void;
 
    ----------------------------------
@@ -727,7 +729,8 @@ package body Gdk.Surface is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gint_Gint_Void;
 
    ---------------------------------------
@@ -748,7 +751,8 @@ package body Gdk.Surface is
       V   : aliased Boolean := H (Obj, Unchecked_To_Address (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Surface_Address_Boolean;
 
    ----------------------------------------
@@ -768,7 +772,8 @@ package body Gdk.Surface is
       Obj : constant Gdk_Surface := Gdk_Surface (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gdk.Monitor.Gdk_Monitor (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Surface_Gdk_Monitor_Void;
 
    --------------------------------------
@@ -788,7 +793,8 @@ package body Gdk.Surface is
       Obj : constant Gdk_Surface := Gdk_Surface (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gint (Params, 1), Unchecked_To_Gint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Surface_Gint_Gint_Void;
 
    ----------------------

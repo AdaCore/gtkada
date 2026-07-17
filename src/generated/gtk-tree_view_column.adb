@@ -1115,7 +1115,8 @@ package body Gtk.Tree_View_Column is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    -------------------------------------
@@ -1135,7 +1136,8 @@ package body Gtk.Tree_View_Column is
       Obj : constant Gtk_Tree_View_Column := Gtk_Tree_View_Column (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Tree_View_Column_Void;
 
    ----------------

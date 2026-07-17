@@ -182,7 +182,8 @@ package body Gtk.Sorter is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Sorter_Change (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Sorter_Change_Void;
 
    ---------------------------------------------
@@ -202,7 +203,8 @@ package body Gtk.Sorter is
       Obj : constant Gtk_Sorter := Gtk_Sorter (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Sorter_Change (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Sorter_Gtk_Sorter_Change_Void;
 
    ----------------

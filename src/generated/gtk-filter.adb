@@ -180,7 +180,8 @@ package body Gtk.Filter is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Filter_Change (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Filter_Change_Void;
 
    ---------------------------------------------
@@ -200,7 +201,8 @@ package body Gtk.Filter is
       Obj : constant Gtk_Filter := Gtk_Filter (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Filter_Change (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Filter_Gtk_Filter_Change_Void;
 
    ----------------

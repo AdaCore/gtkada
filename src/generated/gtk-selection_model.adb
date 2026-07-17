@@ -287,7 +287,8 @@ package body Gtk.Selection_Model is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Guint_Guint_Void;
 
    ------------------------------------------------
@@ -307,7 +308,8 @@ package body Gtk.Selection_Model is
       Obj : constant Gtk_Selection_Model := Gtk_Selection_Model (Unchecked_To_Interface (Params, 0));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Selection_Model_Guint_Guint_Void;
 
    --------------------------

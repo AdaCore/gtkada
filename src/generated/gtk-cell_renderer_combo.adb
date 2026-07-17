@@ -172,7 +172,8 @@ package body Gtk.Cell_Renderer_Combo is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1), Unchecked_To_Gtk_Tree_Iter (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_UTF8_String_Gtk_Tree_Iter_Void;
 
    ------------------------------------------------------------------
@@ -192,7 +193,8 @@ package body Gtk.Cell_Renderer_Combo is
       Obj : constant Gtk_Cell_Renderer_Combo := Gtk_Cell_Renderer_Combo (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1), Unchecked_To_Gtk_Tree_Iter (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Cell_Renderer_Combo_UTF8_String_Gtk_Tree_Iter_Void;
 
    ----------------

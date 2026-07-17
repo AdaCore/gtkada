@@ -442,7 +442,8 @@ package body Gtk.Entry_Buffer is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Guint_Guint_Void;
 
    ------------------------------------------------
@@ -462,7 +463,8 @@ package body Gtk.Entry_Buffer is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_UTF8_String (Params, 2), Unchecked_To_Guint (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Guint_UTF8_String_Guint_Void;
 
    ---------------------------------------------
@@ -482,7 +484,8 @@ package body Gtk.Entry_Buffer is
       Obj : constant Gtk_Entry_Buffer := Gtk_Entry_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Entry_Buffer_Guint_Guint_Void;
 
    ---------------------------------------------------------
@@ -502,7 +505,8 @@ package body Gtk.Entry_Buffer is
       Obj : constant Gtk_Entry_Buffer := Gtk_Entry_Buffer (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_UTF8_String (Params, 2), Unchecked_To_Guint (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Entry_Buffer_Guint_UTF8_String_Guint_Void;
 
    ---------------------

@@ -535,7 +535,8 @@ package body Gdk.Clipboard is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ------------------------------
@@ -555,7 +556,8 @@ package body Gdk.Clipboard is
       Obj : constant Gdk_Clipboard := Gdk_Clipboard (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Clipboard_Void;
 
    ----------------

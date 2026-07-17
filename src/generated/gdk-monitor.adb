@@ -313,7 +313,8 @@ package body Gdk.Monitor is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    ----------------------------
@@ -333,7 +334,8 @@ package body Gdk.Monitor is
       Obj : constant Gdk_Monitor := Gdk_Monitor (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Monitor_Void;
 
    -------------------

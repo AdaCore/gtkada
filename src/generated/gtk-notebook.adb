@@ -1620,7 +1620,8 @@ package body Gtk.Notebook is
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Boolean_Boolean;
 
    --------------------------------
@@ -1641,7 +1642,8 @@ package body Gtk.Notebook is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gint_Boolean;
 
    ------------------------------------------------------
@@ -1662,7 +1664,8 @@ package body Gtk.Notebook is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1), Unchecked_To_Boolean (Params, 2));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Direction_Type_Boolean_Boolean;
 
    -------------------------------------------
@@ -1682,7 +1685,8 @@ package body Gtk.Notebook is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Direction_Type_Void;
 
    --------------------------------------------
@@ -1703,7 +1707,8 @@ package body Gtk.Notebook is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Notebook_Tab (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Notebook_Tab_Boolean;
 
    -------------------------------------------
@@ -1724,7 +1729,8 @@ package body Gtk.Notebook is
       V   : aliased not null access Gtk_Notebook_Record'Class := H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Widget_Gtk_Notebook;
 
    -----------------------------------------
@@ -1744,7 +1750,8 @@ package body Gtk.Notebook is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)), Unchecked_To_Guint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Widget_Guint_Void;
 
    ----------------------------------------
@@ -1765,7 +1772,8 @@ package body Gtk.Notebook is
       V   : aliased Boolean := H (Obj, Unchecked_To_Boolean (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Notebook_Boolean_Boolean;
 
    -------------------------------------
@@ -1786,7 +1794,8 @@ package body Gtk.Notebook is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gint (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Notebook_Gint_Boolean;
 
    -----------------------------------------------------------
@@ -1807,7 +1816,8 @@ package body Gtk.Notebook is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1), Unchecked_To_Boolean (Params, 2));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Notebook_Gtk_Direction_Type_Boolean_Boolean;
 
    ------------------------------------------------
@@ -1827,7 +1837,8 @@ package body Gtk.Notebook is
       Obj : constant Gtk_Notebook := Gtk_Notebook (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gtk_Direction_Type (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Notebook_Gtk_Direction_Type_Void;
 
    -------------------------------------------------
@@ -1848,7 +1859,8 @@ package body Gtk.Notebook is
       V   : aliased Boolean := H (Obj, Unchecked_To_Gtk_Notebook_Tab (Params, 1));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Notebook_Gtk_Notebook_Tab_Boolean;
 
    ------------------------------------------------
@@ -1869,7 +1881,8 @@ package body Gtk.Notebook is
       V   : aliased not null access Gtk_Notebook_Record'Class := H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
    begin
       Set_Value (Return_Value, V'Address);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Notebook_Gtk_Widget_Gtk_Notebook;
 
    ----------------------------------------------
@@ -1889,7 +1902,8 @@ package body Gtk.Notebook is
       Obj : constant Gtk_Notebook := Gtk_Notebook (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)), Unchecked_To_Guint (Params, 2));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gtk_Notebook_Gtk_Widget_Guint_Void;
 
    ----------------------------

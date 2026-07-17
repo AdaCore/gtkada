@@ -397,7 +397,8 @@ package body Glib.Simple_Action is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Glib.Variant.From_Object (Unchecked_To_Address (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gvariant_Void;
 
    ----------------------------------------
@@ -417,7 +418,8 @@ package body Glib.Simple_Action is
       Obj : constant Gsimple_Action := Gsimple_Action (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Glib.Variant.From_Object (Unchecked_To_Address (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gsimple_Action_Gvariant_Void;
 
    -----------------

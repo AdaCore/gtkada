@@ -145,7 +145,8 @@ package body Glib.List_Model is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2), Unchecked_To_Guint (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Guint_Guint_Guint_Void;
 
    ----------------------------------------------
@@ -165,7 +166,8 @@ package body Glib.List_Model is
       Obj : constant Glist_Model := Glist_Model (Unchecked_To_Interface (Params, 0));
    begin
       H (Obj, Unchecked_To_Guint (Params, 1), Unchecked_To_Guint (Params, 2), Unchecked_To_Guint (Params, 3));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Glist_Model_Guint_Guint_Guint_Void;
 
    ----------------------

@@ -274,7 +274,8 @@ package body Gdk.Frame_Clock is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Void;
 
    --------------------------------
@@ -294,7 +295,8 @@ package body Gdk.Frame_Clock is
       Obj : constant Gdk_Frame_Clock := Gdk_Frame_Clock (Unchecked_To_Object (Params, 0));
    begin
       H (Obj);
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Frame_Clock_Void;
 
    --------------------
