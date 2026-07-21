@@ -130,6 +130,9 @@ body = '''
    begin
       Internal (Get_Object (Self),  Wrapper, Func_Compare);
 '''
+[[method.parameter]]
+name = "user_data"
+ada = ""
 
 [[method]]
 id = "g_list_store_insert_sorted"
@@ -154,6 +157,9 @@ body = '''
            Wrapper,
            Func_Compare);
 '''
+[[method.parameter]]
+name = "user_data"
+ada = ""
 
 [[extra.with_body]]
 pkg = "Ada.Unchecked_Conversion"
@@ -168,8 +174,7 @@ text = '''
    ---------------
 
    type Equal_Func is access function
-     (A : System.Address;
-      B : System.Address) return Glib.Gboolean;
+     (A, B : not null access GObject_Record'Class) return Glib.Gboolean;
    --  Specifies the type of a function used to test two values for equality.
    --  The function should return True if both values are equal and False
    --  otherwise.
@@ -182,8 +187,8 @@ text = '''
 ctype = "Compare_Func"
 ada = "Compare_Data_Func"
 text = '''
-   type Compare_Data_Func is
-     access function (A : System.Address; B : System.Address) return Glib.Gint;
+   type Compare_Data_Func is access function
+     (A, B : not null access GObject_Record'Class) return Glib.Gint;
    --  Specifies the type of a comparison function used to compare two values.
    --  The function should return a negative integer if the first value comes
    --  before the second, 0 if they are equal, or a positive integer if the
@@ -223,13 +228,17 @@ body = '''
    ---------------------------------
 
    function Internal_Compare_Data_Func
-      (A         : System.Address;
-       B         : System.Address;
-       User_Data : System.Address) return Glib.Gint
+     (A         : System.Address;
+      B         : System.Address;
+      User_Data : System.Address) return Glib.Gint
    is
       Func : constant Compare_Data_Func := To_Compare_Data_Func (User_Data);
+      Stub_A, Stub_B : GObject_Record;
    begin
-      return Func (A, B);
+      return
+        Func
+          (Glib.Object.Get_User_Data (A, Stub_A),
+           Glib.Object.Get_User_Data (B, Stub_B));
    end Internal_Compare_Data_Func;
 
 '''

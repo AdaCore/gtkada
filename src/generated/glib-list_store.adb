@@ -58,8 +58,12 @@ package body Glib.List_Store is
       User_Data : System.Address) return Glib.Gint
    is
       Func : constant Compare_Data_Func := To_Compare_Data_Func (User_Data);
+      Stub_A, Stub_B : GObject_Record;
    begin
-      return Func (A, B);
+      return
+      Func
+        (Glib.Object.Get_User_Data (A, Stub_A),
+         Glib.Object.Get_User_Data (B, Stub_B));
    end Internal_Compare_Data_Func;
 
    package Type_Conversion_Glist_Store is new Glib.Type_Conversion_Hooks.Hook_Registrator
@@ -202,10 +206,9 @@ package body Glib.List_Store is
    -------------------
 
    function Insert_Sorted
-      (Self      : not null access Glist_Store_Record;
-       Item      : not null access GObject_Record'Class;
-       Func      : Compare_Data_Func;
-       User_Data : System.Address) return Guint
+      (Self : not null access Glist_Store_Record;
+       Item : not null access GObject_Record'Class;
+       Func : Compare_Data_Func) return Guint
    is
       Func_Compare : constant System.Address :=
         (if Func = null then System.Null_Address else To_Address (Func));
@@ -258,9 +261,8 @@ package body Glib.List_Store is
    ----------
 
    procedure Sort
-      (Self      : not null access Glist_Store_Record;
-       Func      : Compare_Data_Func;
-       User_Data : System.Address)
+      (Self : not null access Glist_Store_Record;
+       Func : Compare_Data_Func)
    is
       Func_Compare : constant System.Address :=
         (if Func = null

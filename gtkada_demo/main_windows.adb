@@ -100,6 +100,7 @@ with Create_Frame;
 --  with Create_Gestures;
 --  with Create_Gtkada_Dialog;
 with Create_Label;
+with Create_List_Store;
 --  with Create_Link_Buttons;
 --  with Create_Main_Loop;
 with Create_Menu;
@@ -203,7 +204,11 @@ package body Main_Windows is
       To_Demo
         ("Timeout",
          Create_Test_Timeout.Run'Access,
-         Create_Test_Timeout.Help'Access));
+         Create_Test_Timeout.Help'Access),
+      To_Demo
+        ("List Store",
+         Create_List_Store.Run'Access,
+         Create_List_Store.Help'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.
 
