@@ -92,6 +92,9 @@ tests:
 	cd gtkada_demo; GTKADA_EXTERNALLY_BUILT=yes \
 	   ${GPRBUILD_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) -Pgtkada_demo.gpr -aP ../src
 
+demo: tests
+	cd gtkada_demo && ./gtkada_demo
+
 install/%: force
 	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) --build-name=$(@F) \
 		--sources-subdir=include/gtkada/gtkada.$(@F) \

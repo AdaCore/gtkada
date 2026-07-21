@@ -618,7 +618,7 @@ class SubprogramProfile(object):
     def __init__(self):
         self.node = None  # the XML node for this profile
         self.gtkmethod = None
-        self.params = None  # list of parameters (None if we have varargs)
+        self.params = (list[Parameter] | None)  # list of parameters (None if we have varargs)
         self.returns = None  # return value (None for a procedure)
         self.returns_doc = ""  # documentation for returned value
         self.doc = ""  # documentation for the subprogram
@@ -2490,7 +2490,7 @@ See Glib.Properties for more information on properties)"""
             + [base_name(profile.returns.ada) if profile.returns else "Void"]
         )
 
-    def _marshall_gvalue(self, profile):
+    def _marshall_gvalue(self, profile: SubprogramProfile) -> tuple[list[Local_Var], str]:
         """Return the arguments to parse to an Ada callback, after extracting
         them from a GValue. Returns a list of local variables for the
         marshaller, and its body
@@ -2544,10 +2544,11 @@ See Glib.Properties for more information on properties)"""
 
         return marsh_local, marsh_body
 
-    def _generate_slot_marshaller(self, section, selftype, node, gtkmethod):
+    def _generate_slot_marshaller(self, section, selftype, node, gtkmethod) -> tuple[str, Subprogram]:
         """Generate connect+marshaller when connect takes a slot object. These
         procedure are independent of the specific widget, and can be shared.
-        Returns the name for the hander type.
+        Writes the generated code to section.
+        Returns the handler type name and the generated marshaller.
         """
 
         pkg = self.pkg
@@ -2658,7 +2659,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
 
         return slot_name, callback
 
-    def _generate_marshaller(self, section, selftype, node, gtkmethod):
+    def _generate_marshaller(self, section, selftype, node, gtkmethod) -> tuple[str, Subprogram, SubprogramProfile]:
         """Generate, if needed, a connect+marshaller for signals with this
         profile.
         Returns the name of the type that contains the subprogram profile

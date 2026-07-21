@@ -1,0 +1,22 @@
+# ============================================================
+#   GtkSpinButton
+# ============================================================
+
+[[enum]]
+ctype = "GtkSpinType"
+
+[[enum]]
+ctype = "GtkSpinButtonUpdatePolicy"
+
+[[method]]
+id = "gtk_spin_button_new"
+[[method.parameter]]
+name = "digits"
+default = "0"
+
+[[method]]
+id = "::input"
+[[method.parameter]]
+name = "new_value"
+type = "Glib.Gdouble"
+direction = "out"
