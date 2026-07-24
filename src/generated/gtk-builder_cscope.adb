@@ -31,39 +31,6 @@ pragma Warnings(On);
 
 package body Gtk.Builder_CScope is
 
-   procedure C_Gtk_Builder_Cscope_Add_Callback_Symbol
-      (Self            : System.Address;
-       Callback_Name   : Gtkada.Types.Chars_Ptr;
-       Callback_Symbol : System.Address);
-   pragma Import (C, C_Gtk_Builder_Cscope_Add_Callback_Symbol, "gtk_builder_cscope_add_callback_symbol");
-   --  Adds the Callback_Symbol to the scope of Builder under the given
-   --  Callback_Name.
-   --  Using this function overrides the behavior of
-   --  [methodGtk.Builder.create_closure] for any callback symbols that are
-   --  added. Using this method allows for better encapsulation as it does not
-   --  require that callback symbols be declared in the global namespace.
-   --  @param Callback_Name The name of the callback, as expected in the XML
-   --  @param Callback_Symbol The callback pointer
-
-   function To_Gcallback is new Ada.Unchecked_Conversion
-     (System.Address, Gcallback);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gcallback, System.Address);
-
-   procedure Internal_Gcallback (Data : System.Address);
-   pragma Convention (C, Internal_Gcallback);
-
-   ------------------------
-   -- Internal_Gcallback --
-   ------------------------
-
-   procedure Internal_Gcallback (Data : System.Address) is
-      Func : constant Gcallback := To_Gcallback (Data);
-   begin
-      Func.all;
-   end Internal_Gcallback;
-
    package Type_Conversion_Gtk_Builder_C_Scope is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Builder_C_Scope_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Builder_C_Scope);
@@ -111,17 +78,25 @@ package body Gtk.Builder_CScope is
    procedure Add_Callback_Symbol
       (Self            : not null access Gtk_Builder_C_Scope_Record;
        Callback_Name   : UTF8_String;
-       Callback_Symbol : Gcallback)
+       Callback_Symbol : G_Callback)
    is
+      function To_Address is new
+        Ada.Unchecked_Conversion (G_Callback, System.Address);
+
+      procedure Internal
+        (Self            : System.Address;
+         Callback_Name   : Gtkada.Types.Chars_Ptr;
+         Callback_Symbol : System.Address);
+      pragma Import (C, Internal, "gtk_builder_cscope_add_callback_symbol");
+
       Tmp_Callback_Name : Gtkada.Types.Chars_Ptr := New_String (Callback_Name);
+      Cbk_Symbol        : constant System.Address :=
+        (if Callback_Symbol = null
+         then System.Null_Address
+         else To_Address (Callback_Symbol));
    begin
-      if Callback_Symbol = null then
-         C_Gtk_Builder_Cscope_Add_Callback_Symbol (Get_Object (Self), Tmp_Callback_Name, System.Null_Address);
-         Free (Tmp_Callback_Name);
-      else
-         C_Gtk_Builder_Cscope_Add_Callback_Symbol (Get_Object (Self), Tmp_Callback_Name, Internal_Gcallback'Address);
-         Free (Tmp_Callback_Name);
-      end if;
+      Internal (Get_Object (Self), Tmp_Callback_Name, Cbk_Symbol);
+      Free (Tmp_Callback_Name);
    end Add_Callback_Symbol;
 
 end Gtk.Builder_CScope;

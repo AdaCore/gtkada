@@ -34,7 +34,6 @@
 with System;
 
 with Glib.Object;
-with GLib.Types;
 with Gtkada.Types;
 
 package Glib.Values is
