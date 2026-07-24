@@ -25,8 +25,10 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Surface;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
-with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(On);
 
 package body Gtk.Popover_Menu is
 

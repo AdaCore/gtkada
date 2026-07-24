@@ -28,8 +28,10 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib.Cancellable; use Glib.Cancellable;
 with Glib.Object;      use Glib.Object;
 with Glib.Types;       use Glib.Types;
-with Gtkada.Bindings;  use Gtkada.Bindings;
 with Gtkada.Types;     use Gtkada.Types;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;  use Gtkada.Bindings;
+pragma Warnings(On);
 
 package Glib.Loadable_Icon is
 

@@ -116,9 +116,11 @@ with Glib.Properties; use Glib.Properties;
 with Glib.Types;      use Glib.Types;
 with Glib.Values;     use Glib.Values;
 with Gtk.Accessible;  use Gtk.Accessible;
-with Gtkada.Bindings; use Gtkada.Bindings;
 with Gtkada.Types;    use Gtkada.Types;
 with Interfaces.C;    use Interfaces.C;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings; use Gtkada.Bindings;
+pragma Warnings(On);
 
 package Gtk.Editable is
 

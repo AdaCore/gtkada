@@ -60,8 +60,10 @@ with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
 with Glib.Types;              use Glib.Types;
 with Gtk.Atcontext;           use Gtk.Atcontext;
-with Gtkada.Bindings;         use Gtkada.Bindings;
 with Gtkada.Types;            use Gtkada.Types;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;         use Gtkada.Bindings;
+pragma Warnings(On);
 
 package Gtk.Accessible is
 

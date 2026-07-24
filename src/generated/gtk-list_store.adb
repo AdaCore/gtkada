@@ -26,8 +26,10 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
-with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(On);
 
 package body Gtk.List_Store is
 

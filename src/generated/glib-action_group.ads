@@ -71,8 +71,10 @@ with GNAT.Strings;    use GNAT.Strings;
 with Glib.Object;     use Glib.Object;
 with Glib.Types;      use Glib.Types;
 with Glib.Variant;    use Glib.Variant;
-with Gtkada.Bindings; use Gtkada.Bindings;
 with Gtkada.Types;    use Gtkada.Types;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings; use Gtkada.Bindings;
+pragma Warnings(On);
 
 package Glib.Action_Group is
 

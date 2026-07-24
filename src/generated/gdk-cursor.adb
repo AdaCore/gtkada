@@ -24,9 +24,11 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
-with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
 with System;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;            use Gtkada.Bindings;
+pragma Warnings(On);
 
 package body Gdk.Cursor is
 

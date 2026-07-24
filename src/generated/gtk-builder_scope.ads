@@ -44,8 +44,10 @@ with Glib;            use Glib;
 with Glib.Object;     use Glib.Object;
 with Glib.Types;      use Glib.Types;
 with Gtk.Enums;       use Gtk.Enums;
-with Gtkada.Bindings; use Gtkada.Bindings;
 with Gtkada.Types;    use Gtkada.Types;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings; use Gtkada.Bindings;
+pragma Warnings(On);
 
 package Gtk.Builder_Scope is
 
