@@ -24,8 +24,10 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
-with Gtkada.Bindings;                      use Gtkada.Bindings;
 with System.Address_To_Access_Conversions;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;                      use Gtkada.Bindings;
+pragma Warnings(On);
 
 package body Gtk.Text_Iter is
 

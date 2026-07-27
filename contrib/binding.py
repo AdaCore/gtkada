@@ -1609,14 +1609,6 @@ end if;"""
                 subp = nouser_cb_profile.subprogram(name="", lang="ada->c")
                 section.add("\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
                 section.add("\npragma Convention (C, %s);" % funcname)
-                section.add(
-                    (
-                        "function To_Address is new Ada.Unchecked_Conversion\n"
-                        + "   (%s, System.Address);\n"
-                    )
-                    % (cb_type_name,),
-                    in_spec=False,
-                )
 
             else:
                 # Generate a simpler version of the callback, without
@@ -1676,7 +1668,7 @@ end if;"""
                 body_cb.doc = []
                 section.add(body_cb, in_spec=False)
 
-        # The gtk C function, will all parameters.
+        # The gtk C function, with all parameters.
         # This will be used to generate the "Internal" nested subprogram.
 
         local_vars = []

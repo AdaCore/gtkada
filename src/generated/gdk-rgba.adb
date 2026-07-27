@@ -24,8 +24,10 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Generic_Properties; use Glib.Generic_Properties;
-with Gtkada.Bindings;         use Gtkada.Bindings;
 with Gtkada.Types;            use Gtkada.Types;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;         use Gtkada.Bindings;
+pragma Warnings(On);
 
 package body Gdk.RGBA is
 

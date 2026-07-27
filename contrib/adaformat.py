@@ -557,7 +557,7 @@ class UTF8(CType):
 
     def convert_from_c_add_with(self, pkg, specs=False):
         if pkg:
-            pkg.add_with("Gtkada.Bindings", specs=specs)
+            pkg.add_with("Gtkada.Bindings", specs=specs, might_be_unused=True)
             pkg.add_with("Gtkada.Types", specs=specs)
 
     def convert_to_c(self, pkg=None):

@@ -38,8 +38,6 @@ package body Gtk.Text_Child_Anchor is
      (Anchor : not null access Gtk_Text_Child_Anchor_Record)
    return Gtk_Widget_Array
    is
-      use type Guint;
-
       type Address_Array is array (Natural) of System.Address;
       pragma Convention (C, Address_Array);
       type Address_Array_Access is access all Address_Array;

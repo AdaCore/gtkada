@@ -8,3 +8,49 @@ ada = "Gtk.Builder_CScope"
 id = "gtk_builder_cscope_lookup_callback_symbol"
 bind = false
 # Unavailable to bindings
+
+[[callback]]
+id = "gtk_builder_cscope_add_callback_symbol"
+body = '''
+      function To_Address is new
+        Ada.Unchecked_Conversion (G_Callback, System.Address);
+
+      procedure Internal
+        (Self            : System.Address;
+         Callback_Name   : Gtkada.Types.Chars_Ptr;
+         Callback_Symbol : System.Address);
+      pragma Import (C, Internal, "gtk_builder_cscope_add_callback_symbol");
+
+      Tmp_Callback_Name : Gtkada.Types.Chars_Ptr := New_String (Callback_Name);
+      Cbk_Symbol        : constant System.Address :=
+        (if Callback_Symbol = null
+         then System.Null_Address
+         else To_Address (Callback_Symbol));
+   begin
+      Internal (Get_Object (Self), Tmp_Callback_Name, Cbk_Symbol);
+      Free (Tmp_Callback_Name);
+'''
+
+[[callback.parameter]]
+name = "callback_symbol"
+type = "G_Callback"
+
+[[extra.with_body]]
+pkg = "Ada.Unchecked_Conversion"
+use = false
+
+[[extra.type]]
+ctype = "Gcallback"
+ada = "G_Callback"
+text = '''
+  ---------------
+  -- Callbacks --
+  ---------------
+
+  type G_Callback is access procedure;
+  --  The type used for callback functions in structure definitions and
+  --  function signatures. This doesn't mean that all callback functions must
+  --  take no parameters and return void. The required signature of a callback
+  --  function is determined by the context in which is used (e.g. the signal
+  --  to which it is connected).
+'''

@@ -62,7 +62,9 @@ project GtkAda_Shared is
       case Build is
          when "Debug" =>
              for Switches ("Ada") use
-                ("-gnatQ", "-gnatwae", "-gnatayM200", "-g", "-O0");
+                ("-gnatQ", "-gnatwae", "-gnatwJ", "-gnatayM200", "-g", "-O0");
+                --  TODO: gnatwJ disables warnings for obsolescent features
+                --  Suppress these temporarily until we drop support for deprecated classes
              for Switches ("C") use ("-g", "-O0", "-Wformat", "-Werror=format-security");
          when "Production" =>
              for Switches ("Ada") use
