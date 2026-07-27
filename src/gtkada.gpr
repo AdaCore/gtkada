@@ -92,7 +92,6 @@ library project GtkAda is
    end Linker;
 
    package Install is
-      for Artifacts ("share/gps/plug-ins") use ("../xml/gtkada.xml");
       for Artifacts ("share/doc/gtkada/gtkada_ug") use
         ("../docs/gtkada_ug/_build/html/*",
          "../docs/gtkada_ug/_build/latex/GtkAda.pdf");
