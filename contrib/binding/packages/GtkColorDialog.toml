@@ -17,6 +17,10 @@ ada  = "Self"
 # the window is destroyed) GTK reports the cancellation through it with
 # g_propagate_error. Omitting it lets g_propagate_error write through an
 # uninitialised pointer, segfaulting; so we must pass a real GError**.
+#
+# This hand-written GError** handling is a stopgap: once the generator
+# models GError out-parameters uniformly (work item #93) this override
+# should be reverted in favour of the generated binding.
 [[method]]
 id   = "gtk_color_dialog_choose_rgba_finish"
 body = '''
