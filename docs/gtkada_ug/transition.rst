@@ -437,22 +437,24 @@ Gtk.Editable
 ------------
 
 The type representing a ``Gtk_Editable_Record`` has been changed from a
-``Widget`` (which is a ``GObject)`` to an interface (a ``System.Address).``
+``Widget`` (which is a ``GObject``) to an interface (a ``System.Address``).
 Therefore the ``Gtk_Editable_Record`` type has been eliminated.  User code
 referencing only the ``Gtk_Editable`` type should function unchanged.
 
 Code using the tag as a test before converting a widget to a ``Gtk.Editable``
 can now work using the ``Implements_Editable`` package.
 
-For instance, if ``Widget`` is a ``GObject_Record,`` the following code::
+For instance, if ``Widget`` is a ``GObject_Record,`` the following code
+::
 
       if Widget.all in Gtk_Editable_Record'Class then
          Cut_Clipboard (Gtk_Editable (Widget));
 
-becomes::
+becomes
+::
 
       if Is_A (Widget.Get_Type, Gtk.Editable.Get_Type) then
-         Cut_Clipboard`` (+Widget);
+         Cut_Clipboard (+Widget);
 
 where the function "+" is defined by instantiating ``Implements_Editable``::
 
@@ -477,20 +479,20 @@ will likely need slight adjustments.
 Gtk.Enums
 ---------
 
-The following types were removed::
+The following types were removed
 
-  ``GtkAnchorType``
-  ``GtkCurveType``
-  ``GtkMetricType``
-  ``GtkGridLines``
-  ``GtkUpdateType``
-  ``GtkVisibility``
-  ``GtkSideType``
-  ``GtkMatchType``
-  ``GtkPreviewType``
-  ``GtkSubmenuDirection``
-  ``GtkSubmenuPlacement``
-  ``GtkTreeViewMode``
+- ``GtkAnchorType``
+- ``GtkCurveType``
+- ``GtkMetricType``
+- ``GtkGridLines``
+- ``GtkUpdateType``
+- ``GtkVisibility``
+- ``GtkSideType``
+- ``GtkMatchType``
+- ``GtkPreviewType``
+- ``GtkSubmenuDirection``
+- ``GtkSubmenuPlacement``
+- ``GtkTreeViewMode``
 
 ``Gtk_Icon_Size`` is no longer an enumeration type, but an integer, so that
 new sizes can be defined through ``Gtk.Icon_Factory.Icon_Size_Register``.
@@ -683,15 +685,13 @@ Gtk.Object
 
 ``Gtk.Object`` has been removed in gtk+-3.
 
-The following subprograms and declarations are now in ``Gtk.Widget``::
+The following subprograms and declarations are now in ``Gtk.Widget``:
 
-    ``Flags``
-    ``Unset_Flags``
-
-    ``Floating``
-    ``In_Destruction_Is_Set``
-
-    ``Signal_Destroy``
+-   ``Flags``
+-   ``Unset_Flags``
+-   ``Floating``
+-   ``In_Destruction_Is_Set``
+-   ``Signal_Destroy``
 
 The subprogram ``Gtk.Object.Sink`` has been removed: use ``Glib.Object.Ref_Sink``
  instead.
@@ -875,7 +875,7 @@ Gtk.Tree_Model
 --------------
 
 A ``Gtk_Tree_Model`` is now an interface (implemented by ``Gtk_List_Store``
-and ``Gtk_Tree_Store),`` no longer a tagged type. It means that in callbacks
+and ``Gtk_Tree_Store``), no longer a tagged type. It means that in callbacks
 that receive a ``Gtk_Tree_Model`` parameter, you can no longer cast this
 parameter to a ``Gtk_Tree_Store`` for instance. ``Instead,`` you need to do
 the following::
@@ -989,7 +989,7 @@ the drawing (including the clip area that is used to speed up the rendering).
 ``Activate`` is now a function.
 
 ``Child_Focus:`` removed default value for ``Direction`` parameter
-(was ``Dir_Tab_Forward)``
+(was ``Dir_Tab_Forward``)
 
 ``Get_Allocation_Height`` and ``Get_Allocation_Width`` are now named
 ``Get_Allocated_Height`` and ``Get_Allocated_Width.``
@@ -997,20 +997,20 @@ the drawing (including the clip area that is used to speed up the rendering).
 ``Get_Allocation_X`` and ``Get_Allocation_Y`` were removed, and can be accessed
 through ``Get_Allocation.X`` and ``Get_Allocation.Y`` instead.
 
-A lot of flags (``Can_Focus,`` ``Can_Default,...)`` now have explicit setters and
-getters. This removed a number of subprograms, like::
+A lot of flags (``Can_Focus,`` ``Can_Default,...``) now have explicit setters and
+getters. This removed a number of subprograms, like:
 
-   ``Double_Buffered_Is_Set`` (see ``Get_Double_Buffered)``
-   ``Can_Focus_Is_Set`` (see ``Get_Can_Focus)``
-   ``Mapped_Is_Set`` (see ``Get_Mapped)``
-   ``Realized_Is_Set`` (see ``Get_Realized)``
-   ``Has_Default_Is_Set`` (see ``Has_Default)``
-   ``Has_Focus_Is_Set`` (see ``Has_Focus)``
-   ``Has_Grab_Is_Set`` (see ``Has_Grab)``
-   ``Rc_Style_Is_Set`` (see ``Has_Rc_Style)``
-   ``In_Destruction_Is_Set`` (see ``In_Destruction)``
-   ``Drawable_Is_Set`` (see ``Is_Drawable)``
-   ``No_Window_Is_Set`` (see ``Has_Window)``
+- ``Double_Buffered_Is_Set`` (see ``Get_Double_Buffered``)
+- ``Can_Focus_Is_Set`` (see ``Get_Can_Focus``)
+- ``Mapped_Is_Set`` (see ``Get_Mapped``)
+- ``Realized_Is_Set`` (see ``Get_Realized``)
+- ``Has_Default_Is_Set`` (see ``Has_Default``)
+- ``Has_Focus_Is_Set`` (see ``Has_Focus``)
+- ``Has_Grab_Is_Set`` (see ``Has_Grab``)
+- ``Rc_Style_Is_Set`` (see ``Has_Rc_Style``)
+- ``In_Destruction_Is_Set`` (see ``In_Destruction``)
+- ``Drawable_Is_Set`` (see ``Is_Drawable``)
+- ``No_Window_Is_Set`` (see ``Has_Window``)
 
 ``Size_Allocate`` now takes an "in out" parameter for the allocation
 
