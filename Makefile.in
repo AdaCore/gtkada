@@ -108,8 +108,11 @@ ifneq (,$(wildcard $(prefix)/lib/gnat/manifests/gtkada))
 endif
 
 install: install-clean
-	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) \
-		--mode=usage -Psrc/tools/tools.gpr
+	@echo "====== Installing tools ====="
+	@echo "====== DEACTIVATED (TRANSITION) ====="
+# 	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) \
+# 		--mode=usage -Psrc/tools/tools.gpr
+	@echo "====== Installing demo ====="
 	cd gtkada_demo; ${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) \
 		--mode=usage --exec-subdir=${DESTDIR}${exampledir} \
 		-Pgtkada_demo.gpr -aP ../src
