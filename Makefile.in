@@ -112,7 +112,7 @@ install: install-clean
 		--mode=usage -Psrc/tools/tools.gpr
 	cd gtkada_demo; ${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) \
 		--mode=usage --exec-subdir=${DESTDIR}${exampledir} \
-		-gtkada_demo.gpr -aP ../src
+		-Pgtkada_demo.gpr -aP ../src
 ifneq ($(OS),Windows_NT)
 	ln -s ${libdir} ${DESTDIR}${datadir}/examples/gtkada --force
 endif
