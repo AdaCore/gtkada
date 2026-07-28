@@ -158,7 +158,7 @@ package body Create_Text_View is
       Frame.Set_Child (Scrolled);
 
       declare
-         Iter                       : aliased Gtk_Text_Iter;
+         Iter                       : Gtk_Text_Iter;
          Begin_Result, End_Result   : Gtk_Text_Iter;
          Success : Boolean := False;
          Mark : Gtk_Text_Mark;
@@ -167,7 +167,7 @@ package body Create_Text_View is
          --  Create a mark referencing the first line in courier
 
          Gtk_New (Mark, "My mark", True);
-         Success := Get_Iter_At_Line (Buffer, Iter'Access, 12);
+         Success := Get_Iter_At_Line (Buffer, Iter, 12);
          Add_Mark (Buffer, Mark, Iter);
 
          --  Replace the five first occurrences of the word "placeholder"

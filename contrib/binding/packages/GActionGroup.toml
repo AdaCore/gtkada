@@ -2,3 +2,26 @@
 #   GActionGroup
 # ============================================================
 ada = "Glib.Action_Group"
+
+# Every output of query_action but "enabled" is optional: C passes NULL for
+# the ones the caller is not interested in, so a handler must be able to test
+# the pointer.
+
+[[virtual_method]]
+id = "query_action"
+
+[[virtual_method.parameter]]
+name = "parameter_type"
+direction = "access"
+
+[[virtual_method.parameter]]
+name = "state_type"
+direction = "access"
+
+[[virtual_method.parameter]]
+name = "state_hint"
+direction = "access"
+
+[[virtual_method.parameter]]
+name = "state"
+direction = "access"

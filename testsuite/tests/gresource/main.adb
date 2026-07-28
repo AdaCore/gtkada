@@ -109,8 +109,8 @@ procedure Main is
 
    procedure Test_Load_And_Get_Info is
       Resource : Gresource := Load ("sample.gresource");
-      Size     : aliased Gsize;
-      Flags    : aliased Guint32;
+      Size     : Gsize;
+      Flags    : Guint32;
       Found    : Boolean;
    begin
       Assert_True (Resource /= Null_Gresource);
@@ -119,8 +119,8 @@ procedure Main is
         (Self         => Resource,
          Path         => "/org/gtkada/test/alpha.txt",
          Lookup_Flags => G_Resource_Lookup_Flags_None,
-         Size         => Size'Access,
-         Flags        => Flags'Access);
+         Size         => Size,
+         Flags        => Flags);
 
       Assert_True (Found);
       Assert_Cmpint_Eq (Gint (Size), Gint (Alpha_Text'Length));
@@ -188,7 +188,10 @@ procedure Main is
    procedure Test_New_From_Data is
       Bundle   : Gbytes := Read_File_As_Gbytes ("sample.gresource");
       Resource : Gresource := Gresource_New_From_Data (Bundle);
-      Size     : aliased Gsize;
+      Size     : Gsize;
+      Flags    : Guint32;
+      --  Not checked here; Get_Info has no way of saying "I do not want it"
+      --  now that Flags is an "out" parameter.
       Found    : Boolean;
    begin
       Assert_True (Bundle /= Null_Gbytes);
@@ -198,8 +201,8 @@ procedure Main is
         (Self         => Resource,
          Path         => "/org/gtkada/test/beta.txt",
          Lookup_Flags => G_Resource_Lookup_Flags_None,
-         Size         => Size'Access,
-         Flags        => null);
+         Size         => Size,
+         Flags        => Flags);
 
       Assert_True (Found);
       Assert_Cmpint_Eq (Gint (Size), Gint (Beta_Text'Length));

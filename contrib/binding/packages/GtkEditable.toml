@@ -63,3 +63,17 @@ text = '''
 [[method]]
 id = "gtk_editable_get_selection_bounds"
 return_as_param = "Has_Selection"
+
+# Both bounds are optional: C passes NULL for the one it does not want, so a
+# handler must be able to test the pointer.
+
+[[virtual_method]]
+id = "get_selection_bounds"
+
+[[virtual_method.parameter]]
+name = "start_pos"
+direction = "access"
+
+[[virtual_method.parameter]]
+name = "end_pos"
+direction = "access"
