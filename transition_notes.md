@@ -83,13 +83,15 @@
 - Reactivate tests
 
 - Makefile.in:
-  - reactivate the install of gtkada_demo
   - reactivate tools
+  - reactivate docs (once updated)
 
 - Consider whether to generate the bindings for Graphene.
   - In which case, remove the Graphene section from GtkAda.Types
 
 - Fix misc.c (look for the "TRANSITION" string)
+
+- Re-enable warnings for obsolescent packages (disabled in Debug mode for now)
 
 ## To do (package by package)
 
