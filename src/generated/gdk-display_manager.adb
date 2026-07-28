@@ -220,7 +220,8 @@ package body Gdk.Display_Manager is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gdk.Gdk_Display (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_Gdk_Display_Void;
 
    ------------------------------------------------
@@ -240,7 +241,8 @@ package body Gdk.Display_Manager is
       Obj : constant Gdk_Display_Manager := Gdk_Display_Manager (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Gdk.Gdk_Display (Unchecked_To_Object (Params, 1)));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gdk_Display_Manager_Gdk_Display_Void;
 
    -----------------------

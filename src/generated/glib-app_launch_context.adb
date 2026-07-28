@@ -245,7 +245,8 @@ package body Glib.App_Launch_Context is
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_GObject_UTF8_String_Void;
 
    ------------------------------------------------
@@ -265,7 +266,8 @@ package body Glib.App_Launch_Context is
       Obj : constant Gapp_Launch_Context := Gapp_Launch_Context (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_UTF8_String (Params, 1));
-      exception when E : others => Process_Exception (E);
+   exception
+      when E : others => Process_Exception (E);
    end Marsh_Gapp_Launch_Context_UTF8_String_Void;
 
    ----------------------
