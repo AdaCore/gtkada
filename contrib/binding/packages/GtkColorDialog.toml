@@ -4,3 +4,54 @@ group = "Dialogs"
 [[parameter]]
 name = "self"
 ada  = "Self"
+
+# gtk_color_dialog_choose_rgba_finish returns a newly allocated GdkRGBA*
+# (transfer full), or NULL when the dialog was dismissed. The default
+# binding maps it by value, which reads garbage; bind the pointer ABI by
+# hand instead.
+#
+# The C function is
+#   GdkRGBA *gtk_color_dialog_choose_rgba_finish
+#     (GtkColorDialog *self, GAsyncResult *result, GError **error);
+# The GError** out-parameter is mandatory: on a dismissed dialog (e.g.
+# the window is destroyed) GTK reports the cancellation through it with
+# g_propagate_error. Omitting it lets g_propagate_error write through an
+# uninitialised pointer, segfaulting; so we must pass a real GError**.
+#
+# This hand-written GError** handling is a stopgap: once the generator
+# models GError out-parameters uniformly (work item #93) this override
+# should be reverted in favour of the generated binding.
+[[method]]
+id   = "gtk_color_dialog_choose_rgba_finish"
+body = '''
+      use type Glib.Error.GError;
+      function Internal
+         (Self   : System.Address;
+          Result : Glib.G_Async_Result;
+          Error  : access Glib.Error.GError) return access Gdk.RGBA.Gdk_RGBA;
+      pragma Import (C, Internal, "gtk_color_dialog_choose_rgba_finish");
+      --  gtk_color_dialog_choose_rgba_finish returns a newly allocated
+      --  GdkRGBA* (transfer full), or NULL when the dialog was dismissed,
+      --  in which case it sets Error.
+      Error : aliased Glib.Error.GError := null;
+      Color : constant access Gdk.RGBA.Gdk_RGBA :=
+        Internal (Get_Object (Self), Result, Error'Access);
+   begin
+      --  By the GError convention a successful call (Color /= null) leaves
+      --  Error untouched, so in practice the two are mutually exclusive.
+      --  Free it unconditionally regardless, so that should GTK ever set
+      --  both we never leak the GError.
+      if Error /= null then
+         Glib.Error.Error_Free (Error);
+      end if;
+      if Color = null then
+         --  Dismissed (or failed): report no colour. The caller treats
+         --  Null_RGBA as "no colour chosen".
+         return Gdk.RGBA.Null_RGBA;
+      end if;
+      return Gdk.RGBA.From_Object_Free (Color);
+'''
+
+[[extra.with_body]]
+pkg = "Glib.Error"
+use = false

@@ -86,7 +86,7 @@ with Create_Buttons;
 --  with Create_Canvas_View_Rtrees;
 with Create_Check_Buttons;
 --  with Create_Clipboard;
---  with Create_Color_Chooser;
+with Create_Color_Chooser;
 with Create_Custom_Widget;
 --  with Create_Cursors;
 --  with Create_Dnd;
@@ -193,6 +193,10 @@ package body Main_Windows is
       To_Demo
         ("Spin Buttons", Create_Spin.Run'Access, Create_Spin.Help'Access),
       To_Demo ("Menus", Create_Menu.Run'Access, Create_Menu.Help'Access),
+      To_Demo
+        ("Color Chooser",
+         Create_Color_Chooser.Run'Access,
+         Create_Color_Chooser.Help'Access),
       To_Demo
         ("Custom Widget",
          Create_Custom_Widget.Run'Access,

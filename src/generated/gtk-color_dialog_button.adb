@@ -102,10 +102,18 @@ package body Gtk.Color_Dialog_Button is
       (Self : not null access Gtk_Color_Dialog_Button_Record)
        return Gdk.RGBA.Gdk_RGBA
    is
-      function Internal (Self : System.Address) return Gdk.RGBA.Gdk_RGBA;
+      function Internal
+         (Self : System.Address) return access Gdk.RGBA.Gdk_RGBA;
       pragma Import (C, Internal, "gtk_color_dialog_button_get_rgba");
+      --  gtk_color_dialog_button_get_rgba returns a const GdkRGBA* owned by
+      --  the button (transfer none): dereference, do not free.
+      Result : constant access Gdk.RGBA.Gdk_RGBA :=
+        Internal (Get_Object (Self));
    begin
-      return Internal (Get_Object (Self));
+      if Result = null then
+         return Gdk.RGBA.Null_RGBA;
+      end if;
+      return Result.all;
    end Get_Rgba;
 
    ----------------
@@ -130,10 +138,13 @@ package body Gtk.Color_Dialog_Button is
       (Self  : not null access Gtk_Color_Dialog_Button_Record;
        Color : Gdk.RGBA.Gdk_RGBA)
    is
-      procedure Internal (Self : System.Address; Color : Gdk.RGBA.Gdk_RGBA);
+      procedure Internal (Self : System.Address; Color : System.Address);
       pragma Import (C, Internal, "gtk_color_dialog_button_set_rgba");
+      --  gtk_color_dialog_button_set_rgba takes a const GdkRGBA*: pass the
+      --  address of a local copy.
+      Tmp_Color : aliased Gdk.RGBA.Gdk_RGBA := Color;
    begin
-      Internal (Get_Object (Self), Color);
+      Internal (Get_Object (Self), Tmp_Color'Address);
    end Set_Rgba;
 
    --------------
