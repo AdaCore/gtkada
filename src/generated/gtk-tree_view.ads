@@ -528,8 +528,8 @@ package Gtk.Tree_View is
       (Self   : not null access Gtk_Tree_View_Record;
        Drag_X : Glib.Gint;
        Drag_Y : Glib.Gint;
-       Path   : access Gtk.Tree_Model.Gtk_Tree_Path;
-       Pos    : access Gtk_Tree_View_Drop_Position) return Boolean;
+       Path   : out Gtk.Tree_Model.Gtk_Tree_Path;
+       Pos    : out Gtk_Tree_View_Drop_Position) return Boolean;
    pragma Obsolescent (Get_Dest_Row_At_Pos);
    --  Determines the destination row for a given position. Drag_X and Drag_Y
    --  are expected to be in widget coordinates. This function is only
@@ -1136,10 +1136,10 @@ package Gtk.Tree_View is
       (Self   : not null access Gtk_Tree_View_Record;
        X      : Glib.Gint;
        Y      : Glib.Gint;
-       Path   : access Gtk.Tree_Model.Gtk_Tree_Path;
-       Column : access Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-       Cell_X : access Glib.Gint;
-       Cell_Y : access Glib.Gint) return Boolean;
+       Path   : out Gtk.Tree_Model.Gtk_Tree_Path;
+       Column : out Gtk.Tree_View_Column.Gtk_Tree_View_Column;
+       Cell_X : out Glib.Gint;
+       Cell_Y : out Glib.Gint) return Boolean;
    pragma Obsolescent (Is_Blank_At_Pos);
    --  Determine whether the point (X, Y) in Tree_View is blank, that is no
    --  cell content nor an expander arrow is drawn at the location. If so, the
@@ -1551,10 +1551,10 @@ package Gtk.Tree_View is
 
    function Get_Bounds
       (Self   : not null access Gtk_Tree_View_Record;
-       X      : access Glib.Gint;
-       Y      : access Glib.Gint;
-       Width  : access Glib.Gint;
-       Height : access Glib.Gint) return Boolean;
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint) return Boolean;
 
    function Get_First_Accessible_Child
       (Self : not null access Gtk_Tree_View_Record)

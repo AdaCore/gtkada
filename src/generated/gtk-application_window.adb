@@ -461,10 +461,10 @@ package body Gtk.Application_Window is
 
    function Get_Bounds
       (Self   : not null access Gtk_Application_Window_Record;
-       X      : access Glib.Gint;
-       Y      : access Glib.Gint;
-       Width  : access Glib.Gint;
-       Height : access Glib.Gint) return Boolean
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint) return Boolean
    is
       function Internal
          (Self       : System.Address;
@@ -480,10 +480,10 @@ package body Gtk.Application_Window is
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_X'Access, Acc_Y'Access, Acc_Width'Access, Acc_Height'Access);
-      X.all := Acc_X;
-      Y.all := Acc_Y;
-      Width.all := Acc_Width;
-      Height.all := Acc_Height;
+      X := Acc_X;
+      Y := Acc_Y;
+      Width := Acc_Width;
+      Height := Acc_Height;
       return Tmp_Return /= 0;
    end Get_Bounds;
 
@@ -659,11 +659,11 @@ package body Gtk.Application_Window is
    function Query_Action
       (Self           : not null access Gtk_Application_Window_Record;
        Action_Name    : UTF8_String;
-       Enabled        : access Boolean;
-       Parameter_Type : access Glib.Variant.Gvariant_Type;
-       State_Type     : access Glib.Variant.Gvariant_Type;
-       State_Hint     : access Glib.Variant.Gvariant;
-       State          : access Glib.Variant.Gvariant) return Boolean
+       Enabled        : out Boolean;
+       Parameter_Type : out Glib.Variant.Gvariant_Type;
+       State_Type     : out Glib.Variant.Gvariant_Type;
+       State_Hint     : out Glib.Variant.Gvariant;
+       State          : out Glib.Variant.Gvariant) return Boolean
    is
       function Internal
          (Self               : System.Address;
@@ -690,19 +690,11 @@ package body Gtk.Application_Window is
       Acc_State_Hint := From_Object (Tmp_Acc_State_Hint);
       Acc_Enabled := Tmp_Acc_Enabled /= 0;
       Free (Tmp_Action_Name);
-      Enabled.all := Acc_Enabled;
-      if Parameter_Type /= null then
-         Parameter_Type.all := Acc_Parameter_Type;
-      end if;
-      if State_Type /= null then
-         State_Type.all := Acc_State_Type;
-      end if;
-      if State_Hint /= null then
-         State_Hint.all := Acc_State_Hint;
-      end if;
-      if State /= null then
-         State.all := Acc_State;
-      end if;
+      Enabled := Acc_Enabled;
+      Parameter_Type := Acc_Parameter_Type;
+      State_Type := Acc_State_Type;
+      State_Hint := Acc_State_Hint;
+      State := Acc_State;
       return Tmp_Return /= 0;
    end Query_Action;
 

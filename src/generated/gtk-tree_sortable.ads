@@ -81,8 +81,8 @@ package Gtk.Tree_Sortable is
 
    function Get_Sort_Column_Id
       (Self           : Gtk_Tree_Sortable;
-       Sort_Column_Id : access Glib.Gint;
-       Order          : access Gtk.Enums.Gtk_Sort_Type) return Boolean;
+       Sort_Column_Id : out Glib.Gint;
+       Order          : out Gtk.Enums.Gtk_Sort_Type) return Boolean;
    pragma Obsolescent (Get_Sort_Column_Id);
    --  Fills in Sort_Column_Id and Order with the current sort column and the
    --  order. It returns True unless the Sort_Column_Id is
@@ -284,8 +284,8 @@ package Gtk.Tree_Sortable is
 
    type Virtual_Get_Sort_Column_Id is access function
      (Self           : Gtk_Tree_Sortable;
-      Sort_Column_Id : access Glib.Gint;
-      Order          : access Gtk.Enums.Gtk_Sort_Type) return Glib.Gboolean;
+      Sort_Column_Id : out Glib.Gint;
+      Order          : out Gtk.Enums.Gtk_Sort_Type) return Glib.Gboolean;
    pragma Obsolescent (Virtual_Get_Sort_Column_Id);
    pragma Convention (C, Virtual_Get_Sort_Column_Id);
    --  Fills in Sort_Column_Id and Order with the current sort column and the

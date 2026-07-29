@@ -160,7 +160,7 @@ package body Gdk.Content_Formats is
 
    function Get_Mime_Types
       (Self         : Gdk_Content_Formats;
-       N_Mime_Types : access Gsize) return GNAT.Strings.String_List
+       N_Mime_Types : out Gsize) return GNAT.Strings.String_List
    is
       function Internal
          (Self             : System.Address;
@@ -170,9 +170,7 @@ package body Gdk.Content_Formats is
       Tmp_Return       : chars_ptr_array_access;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_N_Mime_Types'Access);
-      if N_Mime_Types /= null then
-         N_Mime_Types.all := Acc_N_Mime_Types;
-      end if;
+      N_Mime_Types := Acc_N_Mime_Types;
       return To_String_List (Tmp_Return.all);
    end Get_Mime_Types;
 

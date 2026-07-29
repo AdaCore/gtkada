@@ -731,7 +731,7 @@ package body Gtk.Text_Buffer is
 
    function Get_Iter_At_Line
       (Buffer      : not null access Gtk_Text_Buffer_Record;
-       Iter        : access Gtk.Text_Iter.Gtk_Text_Iter;
+       Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
        Line_Number : Glib.Gint) return Boolean
    is
       function Internal
@@ -745,7 +745,7 @@ package body Gtk.Text_Buffer is
    begin
       Tmp_Return := Internal (Get_Object (Buffer), Tmp_Acc_Iter'Access, Line_Number);
       Acc_Iter := Tmp_Acc_Iter;
-      Iter.all := Acc_Iter;
+      Iter := Acc_Iter;
       return Tmp_Return /= 0;
    end Get_Iter_At_Line;
 
@@ -755,7 +755,7 @@ package body Gtk.Text_Buffer is
 
    function Get_Iter_At_Line_Index
       (Buffer      : not null access Gtk_Text_Buffer_Record;
-       Iter        : access Gtk.Text_Iter.Gtk_Text_Iter;
+       Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
        Line_Number : Glib.Gint;
        Byte_Index  : Glib.Gint) return Boolean
    is
@@ -771,7 +771,7 @@ package body Gtk.Text_Buffer is
    begin
       Tmp_Return := Internal (Get_Object (Buffer), Tmp_Acc_Iter'Access, Line_Number, Byte_Index);
       Acc_Iter := Tmp_Acc_Iter;
-      Iter.all := Acc_Iter;
+      Iter := Acc_Iter;
       return Tmp_Return /= 0;
    end Get_Iter_At_Line_Index;
 
@@ -781,7 +781,7 @@ package body Gtk.Text_Buffer is
 
    function Get_Iter_At_Line_Offset
       (Buffer      : not null access Gtk_Text_Buffer_Record;
-       Iter        : access Gtk.Text_Iter.Gtk_Text_Iter;
+       Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
        Line_Number : Glib.Gint;
        Char_Offset : Glib.Gint) return Boolean
    is
@@ -797,7 +797,7 @@ package body Gtk.Text_Buffer is
    begin
       Tmp_Return := Internal (Get_Object (Buffer), Tmp_Acc_Iter'Access, Line_Number, Char_Offset);
       Acc_Iter := Tmp_Acc_Iter;
-      Iter.all := Acc_Iter;
+      Iter := Acc_Iter;
       return Tmp_Return /= 0;
    end Get_Iter_At_Line_Offset;
 
@@ -1104,7 +1104,7 @@ package body Gtk.Text_Buffer is
 
    function Insert_Interactive
       (Buffer           : not null access Gtk_Text_Buffer_Record;
-       Iter             : access Gtk.Text_Iter.Gtk_Text_Iter;
+       Iter             : in out Gtk.Text_Iter.Gtk_Text_Iter;
        Text             : UTF8_String;
        Default_Editable : Boolean := True) return Boolean
    is
@@ -1115,15 +1115,13 @@ package body Gtk.Text_Buffer is
           Len              : Glib.Gint;
           Default_Editable : Glib.Gboolean) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_buffer_insert_interactive");
-      Acc_Iter     : aliased Gtk.Text_Iter.Gtk_Text_Iter;
-      Tmp_Acc_Iter : aliased Gtk.Text_Iter.Gtk_Text_Iter;
-      Tmp_Text     : Gtkada.Types.Chars_Ptr := New_String (Text);
-      Tmp_Return   : Glib.Gboolean;
+      Acc_Iter   : aliased Gtk.Text_Iter.Gtk_Text_Iter := Iter;
+      Tmp_Text   : Gtkada.Types.Chars_Ptr := New_String (Text);
+      Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Buffer), Tmp_Acc_Iter'Access, Tmp_Text, -1, Boolean'Pos (Default_Editable));
+      Tmp_Return := Internal (Get_Object (Buffer), Acc_Iter'Access, Tmp_Text, -1, Boolean'Pos (Default_Editable));
       Free (Tmp_Text);
-      Acc_Iter := Tmp_Acc_Iter;
-      Iter.all := Acc_Iter;
+      Iter := Acc_Iter;
       return Tmp_Return /= 0;
    end Insert_Interactive;
 

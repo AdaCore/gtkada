@@ -654,10 +654,10 @@ package body Gtk.Menu_Button is
 
    function Get_Bounds
       (Self   : not null access Gtk_Menu_Button_Record;
-       X      : access Glib.Gint;
-       Y      : access Glib.Gint;
-       Width  : access Glib.Gint;
-       Height : access Glib.Gint) return Boolean
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint) return Boolean
    is
       function Internal
          (Self       : System.Address;
@@ -673,10 +673,10 @@ package body Gtk.Menu_Button is
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_X'Access, Acc_Y'Access, Acc_Width'Access, Acc_Height'Access);
-      X.all := Acc_X;
-      Y.all := Acc_Y;
-      Width.all := Acc_Width;
-      Height.all := Acc_Height;
+      X := Acc_X;
+      Y := Acc_Y;
+      Width := Acc_Width;
+      Height := Acc_Height;
       return Tmp_Return /= 0;
    end Get_Bounds;
 

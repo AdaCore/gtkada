@@ -158,10 +158,10 @@ package Gtk.Popover_Menu_Bar is
 
    function Get_Bounds
       (Self   : not null access Gtk_Popover_Menu_Bar_Record;
-       X      : access Glib.Gint;
-       Y      : access Glib.Gint;
-       Width  : access Glib.Gint;
-       Height : access Glib.Gint) return Boolean;
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint) return Boolean;
 
    function Get_First_Accessible_Child
       (Self : not null access Gtk_Popover_Menu_Bar_Record)

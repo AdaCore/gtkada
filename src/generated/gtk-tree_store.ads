@@ -776,8 +776,8 @@ package Gtk.Tree_Store is
 
    function Get_Sort_Column_Id
       (Self           : not null access Gtk_Tree_Store_Record;
-       Sort_Column_Id : access Glib.Gint;
-       Order          : access Gtk.Enums.Gtk_Sort_Type) return Boolean;
+       Sort_Column_Id : out Glib.Gint;
+       Order          : out Gtk.Enums.Gtk_Sort_Type) return Boolean;
    pragma Obsolescent (Get_Sort_Column_Id);
 
    procedure Set_Sort_Column_Id

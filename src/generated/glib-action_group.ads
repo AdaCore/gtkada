@@ -263,11 +263,11 @@ package Glib.Action_Group is
    function Query_Action
       (Self           : Gaction_Group;
        Action_Name    : UTF8_String;
-       Enabled        : access Boolean;
-       Parameter_Type : access Glib.Variant.Gvariant_Type;
-       State_Type     : access Glib.Variant.Gvariant_Type;
-       State_Hint     : access Glib.Variant.Gvariant;
-       State          : access Glib.Variant.Gvariant) return Boolean;
+       Enabled        : out Boolean;
+       Parameter_Type : out Glib.Variant.Gvariant_Type;
+       State_Type     : out Glib.Variant.Gvariant_Type;
+       State_Hint     : out Glib.Variant.Gvariant;
+       State          : out Glib.Variant.Gvariant) return Boolean;
    --  Queries all aspects of the named action within an Action_Group.
    --  This function acquires the information available from
    --  Glib.Action_Group.Has_Action, Glib.Action_Group.Get_Action_Enabled,
@@ -591,7 +591,7 @@ package Glib.Action_Group is
    type Virtual_Query_Action is access function
      (Self           : Gaction_Group;
       Action_Name    : Gtkada.Types.Chars_Ptr;
-      Enabled        : access Glib.Gboolean;
+      Enabled        : out Glib.Gboolean;
       Parameter_Type : access Glib.Variant.Gvariant_Type;
       State_Type     : access Glib.Variant.Gvariant_Type;
       State_Hint     : access System.Address;

@@ -220,11 +220,11 @@ package Gtk.Application_Window is
    function Query_Action
       (Self           : not null access Gtk_Application_Window_Record;
        Action_Name    : UTF8_String;
-       Enabled        : access Boolean;
-       Parameter_Type : access Glib.Variant.Gvariant_Type;
-       State_Type     : access Glib.Variant.Gvariant_Type;
-       State_Hint     : access Glib.Variant.Gvariant;
-       State          : access Glib.Variant.Gvariant) return Boolean;
+       Enabled        : out Boolean;
+       Parameter_Type : out Glib.Variant.Gvariant_Type;
+       State_Type     : out Glib.Variant.Gvariant_Type;
+       State_Hint     : out Glib.Variant.Gvariant;
+       State          : out Glib.Variant.Gvariant) return Boolean;
 
    procedure Add_Action
       (Self   : not null access Gtk_Application_Window_Record;
@@ -271,10 +271,10 @@ package Gtk.Application_Window is
 
    function Get_Bounds
       (Self   : not null access Gtk_Application_Window_Record;
-       X      : access Glib.Gint;
-       Y      : access Glib.Gint;
-       Width  : access Glib.Gint;
-       Height : access Glib.Gint) return Boolean;
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint) return Boolean;
 
    function Get_First_Accessible_Child
       (Self : not null access Gtk_Application_Window_Record)

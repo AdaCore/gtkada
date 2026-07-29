@@ -152,7 +152,7 @@ package body Gdk.Content_Provider is
 
    function Get_Value
       (Self  : not null access Gdk_Content_Provider_Record;
-       Value : access Glib.Values.GValue) return Boolean
+       Value : out Glib.Values.GValue) return Boolean
    is
       function Internal
          (Self      : System.Address;
@@ -162,7 +162,7 @@ package body Gdk.Content_Provider is
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Value'Access);
-      Value.all := Acc_Value;
+      Value := Acc_Value;
       return Tmp_Return /= 0;
    end Get_Value;
 

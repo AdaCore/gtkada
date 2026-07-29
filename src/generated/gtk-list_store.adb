@@ -1012,8 +1012,8 @@ package body Gtk.List_Store is
 
    function Get_Sort_Column_Id
       (Self           : not null access Gtk_List_Store_Record;
-       Sort_Column_Id : access Glib.Gint;
-       Order          : access Gtk.Enums.Gtk_Sort_Type) return Boolean
+       Sort_Column_Id : out Glib.Gint;
+       Order          : out Gtk.Enums.Gtk_Sort_Type) return Boolean
    is
       function Internal
          (Self               : System.Address;
@@ -1026,8 +1026,8 @@ package body Gtk.List_Store is
       Tmp_Return         : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Sort_Column_Id'Access, Acc_Order'Access);
-      Sort_Column_Id.all := Acc_Sort_Column_Id;
-      Order.all := Acc_Order;
+      Sort_Column_Id := Acc_Sort_Column_Id;
+      Order := Acc_Order;
       return Tmp_Return /= 0;
    end Get_Sort_Column_Id;
 

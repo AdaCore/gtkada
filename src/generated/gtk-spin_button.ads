@@ -470,10 +470,10 @@ package Gtk.Spin_Button is
 
    function Get_Bounds
       (Self   : not null access Gtk_Spin_Button_Record;
-       X      : access Glib.Gint;
-       Y      : access Glib.Gint;
-       Width  : access Glib.Gint;
-       Height : access Glib.Gint) return Boolean;
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint) return Boolean;
 
    function Get_First_Accessible_Child
       (Self : not null access Gtk_Spin_Button_Record)
@@ -720,11 +720,11 @@ package Gtk.Spin_Button is
 
    type Cb_Gtk_Spin_Button_Gdouble_Gint is not null access function
      (Self      : access Gtk_Spin_Button_Record'Class;
-      New_Value : access Glib.Gdouble) return Glib.Gint;
+      New_Value : out Glib.Gdouble) return Glib.Gint;
 
    type Cb_GObject_Gdouble_Gint is not null access function
      (Self      : access Glib.Object.GObject_Record'Class;
-      New_Value : access Glib.Gdouble) return Glib.Gint;
+      New_Value : out Glib.Gdouble) return Glib.Gint;
 
    Signal_Input : constant Glib.Signal_Name := "input";
    procedure On_Input
