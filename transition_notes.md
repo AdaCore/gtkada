@@ -13,14 +13,25 @@
   dependency from Glib to Gtk.
 - Functions now take Ada 2012 `out` / `in out` parameters where they used to take
   `access` (work item #127). **This breaks downstream sources**: callers must pass
-  a variable and drop the `'Access`, and a caller that passed `null` to mean "I do
-  not need this output" must now supply a dummy variable. Roughly 30 subprograms
-  are concerned, among them `Gtk.Text_Buffer.Get_Iter_At_Line{,_Index,_Offset}`,
-  `Gtk.Text_View.Get_Iter_At_{Location,Position}`, `Gtk.Tree_View.Get_Dest_Row_At_Pos`,
-  `Gtk.Accessible.Get_Bounds` (inherited by every widget), `Glib.Resource.Get_Info`
-  and `Glib.List_Store.Find{,_With_Equal_Func}`. Handler types (`Virtual_*`, `Cb_*`)
-  follow suit, except where the C contract documents the output as optional — those
-  keep `access` so the handler can still test for `NULL`.
+  a variable and drop the `'Access`. Roughly 30 subprograms are concerned, among
+  them `Gtk.Text_Buffer.Get_Iter_At_Line{,_Index,_Offset}`,
+  `Gtk.Text_View.Get_Iter_At_{Location,Position}` (the `Iter`) and
+  `Gtk.Accessible.Get_Bounds` (inherited by every widget). Handler types
+  (`Virtual_*`, `Cb_*`) follow suit.
+- An output the C side documents as optional keeps `access`, now with a `:= null`
+  default (work item #128). These are the outputs C accepts a `NULL` for, and the
+  default lets an Ada caller decline them just as easily — passing a dummy variable
+  is never needed. Concerned are `Glib.Resource.Get_Info`,
+  `Glib.List_Store.Find{,_With_Equal_Func}`, `Glib.Action_Group.Query_Action`,
+  `Glib.Variant.{Dup,Get}_{String,Strv,Objv,Bytestring_Array}`,
+  `Gdk.Content_Formats.Get_Mime_Types`, `Gtk.Text_View.Get_Iter_At_Position`
+  (the `Trailing`) and `Gtk.Tree_View.{Get_Dest_Row_At_Pos,Is_Blank_At_Pos}`.
+  Relative to the released API this is a restoration: those parameters were
+  `access` before #127. The rule applies to functions only; procedures that
+  already exposed such an output as `out` are left alone.
+- `Gdk.Content_Provider.Get_Value` takes its `Value` `in out`: the caller
+  initialises it with the `GType` the value is to be provided in.
+- `Gtk.Builder.Value_From_String` takes its `Pspec` `in`; C never writes to it.
 
 ## gtkada_demo
 

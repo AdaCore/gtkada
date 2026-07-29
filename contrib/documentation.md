@@ -278,12 +278,32 @@ output as a pointer:
 | `"inout"`   | `in out`  | `T *` (RM B.3)                                      |
 | `"access"`  | `access`  | `T *`                                               |
 
-Use `"access"` only when the C side genuinely accepts `NULL` for that
-output *and* the caller has to be able to say so — that is, for a
-`Virtual_*` or `Cb_*` handler type, where the Ada subprogram is the
-callee and must be able to test the pointer before writing through it.
-GIR spells this `optional="1"`, and
-`contrib/binding/packages/GLoadableIcon.toml` shows the idiom:
+Without a `direction` the mode comes from the GIR. A parameter with no
+`direction` there is an input, except that an Ada type which is itself a
+pointer is passed `in out` so the wrapper can copy the value back; write
+`direction = "in"` for a C input that merely happens to be a pointer,
+such as the `GParamSpec *` of `gtk_builder_value_from_string`.
+
+#### Optional outputs
+
+An output that the C side documents as optional — GIR `optional="1"`,
+meaning C accepts `NULL` for it — is generated as `access T := null`
+rather than `out T`, so that an Ada caller can decline it in the same
+way. This is automatic for **functions**; procedures keep `out`, since
+they have carried that profile since before Ada 2012 and changing them
+would break existing callers for no gain. The body then guards the
+copy-back:
+
+```ada
+      if Length /= null then
+         Length.all := Acc_Length;
+      end if;
+```
+
+The same reasoning applies to a `Virtual_*` or `Cb_*` handler type,
+where the Ada subprogram is the callee and must be able to test the
+pointer before writing through it; `contrib/binding/packages/GLoadableIcon.toml`
+shows the idiom:
 
 ```toml
 [[virtual_method]]
@@ -294,9 +314,20 @@ name = "type"
 direction = "access"
 ```
 
-For an ordinary method there is nothing to gain: the generated wrapper
-allocates an `aliased Acc_<name>` temporary, passes its address to C and
-copies the result back, so C never sees a null pointer.
+A `direction` pinned in the TOML always wins over the GIR, which is the
+escape hatch for the cases upstream annotates wrongly. Such a pin needs
+`default = "null"` as well — that is what turns on the null guard above,
+rather than an unconditional assignment:
+
+```toml
+[[method]]
+id = "g_variant_dup_string"
+
+[[method.parameter]]
+name = "length"
+direction = "access"
+default = "null"
+```
 
 ### `[method.doc]` — per-method documentation
 

@@ -71,7 +71,9 @@ body = '''
           (Get_Object (Self),
            Get_Object (Item),
            Acc_Position'Access);
-      Position := Acc_Position;
+      if Position /= null then
+         Position.all := Acc_Position;
+      end if;
       return Tmp_Return /= 0;
 '''
 
@@ -95,7 +97,9 @@ body = '''
            Get_Object (Item),
            Fn_Equal,
            Acc_Position'Access);
-      Position := Acc_Position;
+      if Position /= null then
+         Position.all := Acc_Position;
+      end if;
       return Tmp_Return /= 0;
 '''
 

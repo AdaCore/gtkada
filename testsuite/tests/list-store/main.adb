@@ -1,7 +1,8 @@
 --  Exercises Glib.List_Store.Find, whose body is hand-written in
---  contrib/binding/packages/GListStore.toml. Position is an Ada 2012 "out"
---  parameter of a function, so the point of interest is that the value C
---  wrote into the wrapper's temporary really is copied back to the caller.
+--  contrib/binding/packages/GListStore.toml. Position is an optional output,
+--  so the points of interest are that the value C wrote into the wrapper's
+--  temporary really is copied back to the caller, and that passing null to
+--  decline the output is accepted.
 --
 --  No widget is created, so this test needs no display.
 
@@ -17,6 +18,9 @@ procedure Main is
    with Convention => C;
 
    procedure Test_Find_Absent
+   with Convention => C;
+
+   procedure Test_Find_No_Position
    with Convention => C;
 
    function New_Action (Name : String) return Gsimple_Action;
@@ -39,7 +43,7 @@ procedure Main is
    procedure Test_Find is
       Store    : Glist_Store;
       Items    : array (0 .. 2) of Gsimple_Action;
-      Position : Guint;
+      Position : aliased Guint;
    begin
       G_New (Store);
 
@@ -52,7 +56,7 @@ procedure Main is
 
       for J in Items'Range loop
          Position := Guint'Last;
-         Assert_True (Store.Find (Items (J), Position));
+         Assert_True (Store.Find (Items (J), Position'Access));
          Assert_Cmpuint_Eq (Position, Guint (J));
       end loop;
 
@@ -67,15 +71,34 @@ procedure Main is
       Store    : Glist_Store;
       Item     : constant Gsimple_Action := New_Action ("in-store");
       Absent   : constant Gsimple_Action := New_Action ("not-in-store");
-      Position : Guint := Guint'Last;
+      Position : aliased Guint := Guint'Last;
    begin
       G_New (Store);
       Store.Append (Item);
 
-      Assert_False (Store.Find (Absent, Position));
+      Assert_False (Store.Find (Absent, Position'Access));
 
       Unref (Store);
    end Test_Find_Absent;
+
+   ----------------------------
+   -- Test_Find_No_Position --
+   ----------------------------
+
+   procedure Test_Find_No_Position is
+      Store : Glist_Store;
+      Item  : constant Gsimple_Action := New_Action ("in-store");
+   begin
+      G_New (Store);
+      Store.Append (Item);
+
+      --  Position is optional: C accepts a NULL, and so must we.
+
+      Assert_True (Store.Find (Item, null));
+      Assert_True (Store.Find (Item));
+
+      Unref (Store);
+   end Test_Find_No_Position;
 
 begin
    Glib.Test.Init;
@@ -84,6 +107,9 @@ begin
      ("/list-store/find", Test_Find'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/list-store/find-absent", Test_Find_Absent'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/list-store/find-no-position",
+      Test_Find_No_Position'Unrestricted_Access);
 
    --  Return with the exit code
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);

@@ -12,6 +12,16 @@ id = "gdk_content_provider_write_mime_type_async"
 bind = false
 # No GOutputStream binding
 
+# "The value will have been initialized to the GType the value should be
+# provided in" -- the caller initialises Value, so it is an input as much
+# as an output. Generated as "out" it would hand GDK a garbage GType.
+[[method]]
+id = "gdk_content_provider_get_value"
+
+[[method.parameter]]
+name = "value"
+direction = "inout"
+
 [[extra.with_body]]
 pkg = "System"
 use = false
