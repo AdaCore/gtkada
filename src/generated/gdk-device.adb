@@ -251,23 +251,13 @@ package body Gdk.Device is
        Win_Y : access Gdouble := null) return Gdk.Gdk_Surface
    is
       function Internal
-         (Self      : System.Address;
-          Acc_Win_X : access Gdouble;
-          Acc_Win_Y : access Gdouble) return System.Address;
+         (Self  : System.Address;
+          Win_X : access Gdouble;
+          Win_Y : access Gdouble) return System.Address;
       pragma Import (C, Internal, "gdk_device_get_surface_at_position");
-      Acc_Win_X        : aliased Gdouble;
-      Acc_Win_Y        : aliased Gdouble;
       Stub_Gdk_Surface : Gdk.Surface.Gdk_Surface_Record;
-      Tmp_Return       : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Acc_Win_X'Access, Acc_Win_Y'Access);
-      if Win_X /= null then
-         Win_X.all := Acc_Win_X;
-      end if;
-      if Win_Y /= null then
-         Win_Y.all := Acc_Win_Y;
-      end if;
-      return Gdk.Gdk_Surface (Get_User_Data (Tmp_Return, Stub_Gdk_Surface));
+      return Gdk.Gdk_Surface (Get_User_Data (Internal (Get_Object (Self), Win_X, Win_Y), Stub_Gdk_Surface));
    end Get_Surface_At_Position;
 
    -------------------

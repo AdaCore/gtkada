@@ -113,22 +113,14 @@ package body Glib.Resource is
          (Self         : System.Address;
           Path         : Gtkada.Types.Chars_Ptr;
           Lookup_Flags : Resource_Lookup_Flags;
-          Acc_Size     : access Gsize;
-          Acc_Flags    : access Guint32) return Glib.Gboolean;
+          Size         : access Gsize;
+          Flags        : access Guint32) return Glib.Gboolean;
       pragma Import (C, Internal, "g_resource_get_info");
-      Acc_Size   : aliased Gsize;
-      Acc_Flags  : aliased Guint32;
       Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
       Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Acc_Size'Access, Acc_Flags'Access);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Size, Flags);
       Free (Tmp_Path);
-      if Size /= null then
-         Size.all := Acc_Size;
-      end if;
-      if Flags /= null then
-         Flags.all := Acc_Flags;
-      end if;
       return Tmp_Return /= 0;
    end Get_Info;
 
