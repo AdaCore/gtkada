@@ -218,7 +218,7 @@ package body Gtk.Tree_Model_Sort is
 
    function Convert_Child_Iter_To_Iter
       (Self       : not null access Gtk_Tree_Model_Sort_Record;
-       Sort_Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
+       Sort_Iter  : out Gtk.Tree_Model.Gtk_Tree_Iter;
        Child_Iter : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean
    is
       function Internal
@@ -232,7 +232,7 @@ package body Gtk.Tree_Model_Sort is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Acc_Sort_Iter'Access, Child_Iter);
       Acc_Sort_Iter := Tmp_Acc_Sort_Iter;
-      Sort_Iter.all := Acc_Sort_Iter;
+      Sort_Iter := Acc_Sort_Iter;
       return Tmp_Return /= 0;
    end Convert_Child_Iter_To_Iter;
 
@@ -785,8 +785,8 @@ package body Gtk.Tree_Model_Sort is
 
    function Get_Sort_Column_Id
       (Self           : not null access Gtk_Tree_Model_Sort_Record;
-       Sort_Column_Id : access Glib.Gint;
-       Order          : access Gtk.Enums.Gtk_Sort_Type) return Boolean
+       Sort_Column_Id : out Glib.Gint;
+       Order          : out Gtk.Enums.Gtk_Sort_Type) return Boolean
    is
       function Internal
          (Self               : System.Address;
@@ -799,8 +799,8 @@ package body Gtk.Tree_Model_Sort is
       Tmp_Return         : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Sort_Column_Id'Access, Acc_Order'Access);
-      Sort_Column_Id.all := Acc_Sort_Column_Id;
-      Order.all := Acc_Order;
+      Sort_Column_Id := Acc_Sort_Column_Id;
+      Order := Acc_Order;
       return Tmp_Return /= 0;
    end Get_Sort_Column_Id;
 

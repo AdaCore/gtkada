@@ -140,7 +140,7 @@ package Gtk.Accessible_Text is
    type Virtual_Get_Attributes is access function
      (Self             : Gtk_Accessible_Text;
       Offset           : Guint;
-      N_Ranges         : access Gsize;
+      N_Ranges         : out Gsize;
       Ranges           : access Gtk_Accessible_Text_Range_Array;
       Attribute_Names  : access Gtkada.Types.chars_ptr_array;
       Attribute_Values : access Gtkada.Types.chars_ptr_array)
@@ -192,8 +192,8 @@ package Gtk.Accessible_Text is
      (Self        : Gtk_Accessible_Text;
       Offset      : Guint;
       Granularity : Gtk_Accessible_Text_Granularity;
-      Start       : access Guint;
-      The_End     : access Guint) return System.Address;
+      Start       : out Guint;
+      The_End     : out Guint) return System.Address;
    pragma Convention (C, Virtual_Get_Contents_At);
    --  Retrieve the current contents of the accessible object starting from
    --  the given offset, and using the given granularity.
@@ -240,7 +240,7 @@ package Gtk.Accessible_Text is
    type Virtual_Get_Offset is access function
      (Self   : Gtk_Accessible_Text;
       Point  : in out graphene_point_t;
-      Offset : access Guint) return Glib.Gboolean;
+      Offset : out Guint) return Glib.Gboolean;
    pragma Convention (C, Virtual_Get_Offset);
    --  Gets the text offset at a given point.
    --  Since: gtk+ 4.16
@@ -250,7 +250,7 @@ package Gtk.Accessible_Text is
 
    type Virtual_Get_Selection is access function
      (Self     : Gtk_Accessible_Text;
-      N_Ranges : access Gsize;
+      N_Ranges : out Gsize;
       Ranges   : access Gtk_Accessible_Text_Range_Array)
    return Glib.Gboolean;
    pragma Convention (C, Virtual_Get_Selection);

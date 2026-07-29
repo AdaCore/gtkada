@@ -231,7 +231,7 @@ package Gtk.Popover is
 
    function Get_Pointing_To
       (Self : not null access Gtk_Popover_Record;
-       Rect : access Gdk.Rectangle.Gdk_Rectangle) return Boolean;
+       Rect : out Gdk.Rectangle.Gdk_Rectangle) return Boolean;
    --  Gets the rectangle that the popover points to.
    --  If a rectangle to point to has been set, this function will return True
    --  and fill in Rect with such rectangle, otherwise it will return False and
@@ -321,10 +321,10 @@ package Gtk.Popover is
 
    function Get_Bounds
       (Self   : not null access Gtk_Popover_Record;
-       X      : access Glib.Gint;
-       Y      : access Glib.Gint;
-       Width  : access Glib.Gint;
-       Height : access Glib.Gint) return Boolean;
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint) return Boolean;
 
    function Get_First_Accessible_Child
       (Self : not null access Gtk_Popover_Record)

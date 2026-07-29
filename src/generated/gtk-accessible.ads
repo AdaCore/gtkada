@@ -359,10 +359,10 @@ package Gtk.Accessible is
 
    function Get_Bounds
       (Self   : Gtk_Accessible;
-       X      : access Glib.Gint;
-       Y      : access Glib.Gint;
-       Width  : access Glib.Gint;
-       Height : access Glib.Gint) return Boolean;
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint) return Boolean;
    --  Queries the coordinates and dimensions of this accessible
    --  This functionality can be overridden by `GtkAccessible`
    --  implementations, e.g. to get the bounds from an ignored child widget.
@@ -491,10 +491,10 @@ package Gtk.Accessible is
 
    type Virtual_Get_Bounds is access function
      (Self   : Gtk_Accessible;
-      X      : access Glib.Gint;
-      Y      : access Glib.Gint;
-      Width  : access Glib.Gint;
-      Height : access Glib.Gint) return Glib.Gboolean;
+      X      : out Glib.Gint;
+      Y      : out Glib.Gint;
+      Width  : out Glib.Gint;
+      Height : out Glib.Gint) return Glib.Gboolean;
    pragma Convention (C, Virtual_Get_Bounds);
    --  Queries the coordinates and dimensions of this accessible
    --  This functionality can be overridden by `GtkAccessible`

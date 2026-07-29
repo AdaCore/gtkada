@@ -15,3 +15,28 @@ text  = '''
    type Gtk_Accessible_Text_Range_Array is
       array (Natural range <>) of Gtk_Accessible_Text_Range;
        '''
+
+# The array outputs are optional: C passes NULL when it does not want them, so
+# a handler must be able to test the pointer.
+
+[[virtual_method]]
+id = "get_attributes"
+
+[[virtual_method.parameter]]
+name = "ranges"
+direction = "access"
+
+[[virtual_method.parameter]]
+name = "attribute_names"
+direction = "access"
+
+[[virtual_method.parameter]]
+name = "attribute_values"
+direction = "access"
+
+[[virtual_method]]
+id = "get_selection"
+
+[[virtual_method.parameter]]
+name = "ranges"
+direction = "access"

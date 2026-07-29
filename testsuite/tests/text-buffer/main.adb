@@ -212,7 +212,7 @@ procedure Main is
 
    procedure Test_Get_Iter is
       Buffer : Gtk_Text_Buffer;
-      Iter   : aliased Gtk_Text_Iter;
+      Iter   : Gtk_Text_Iter;
    begin
       Gtk_New (Buffer);
 
@@ -220,75 +220,75 @@ procedure Main is
                        & "ef");
 
       --  Get_Iter_At_Line
-      Assert_True (Buffer.Get_Iter_At_Line (Iter'Access, 0));
+      Assert_True (Buffer.Get_Iter_At_Line (Iter, 0));
       Assert_True (Is_Start (Iter));
 
-      Assert_True (Buffer.Get_Iter_At_Line (Iter'Access, 1));
+      Assert_True (Buffer.Get_Iter_At_Line (Iter, 1));
       Assert_Cmpint_Eq (Get_Offset (Iter), 3);
 
-      Assert_True (Buffer.Get_Iter_At_Line (Iter'Access, 2));
+      Assert_True (Buffer.Get_Iter_At_Line (Iter, 2));
       Assert_Cmpint_Eq (Get_Offset (Iter), 7);
 
-      Assert_False (Buffer.Get_Iter_At_Line (Iter'Access, 3));
+      Assert_False (Buffer.Get_Iter_At_Line (Iter, 3));
       Assert_True (Is_End (Iter));
 
       --  Get_Iter_At_Line_Offset
-      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 0, 0));
+      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter, 0, 0));
       Assert_True (Is_Start (Iter));
 
-      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 0, 1));
+      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter, 0, 1));
       Assert_Cmpint_Eq (Get_Offset (Iter), 1);
 
-      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 0, 2));
+      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter, 0, 2));
       Assert_Cmpint_Eq (Get_Offset (Iter), 2);
 
-      Assert_False (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 0, 3));
+      Assert_False (Buffer.Get_Iter_At_Line_Offset (Iter, 0, 3));
       Assert_Cmpint_Eq (Get_Offset (Iter), 2);
 
-      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 1, 1));
+      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter, 1, 1));
       Assert_Cmpint_Eq (Get_Offset (Iter), 4);
 
-      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 2, 1));
+      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter, 2, 1));
       Assert_Cmpint_Eq (Get_Offset (Iter), 8);
 
-      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 2, 2));
+      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter, 2, 2));
       Assert_True (Is_End (Iter));
 
-      Assert_False (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 2, 3));
+      Assert_False (Buffer.Get_Iter_At_Line_Offset (Iter, 2, 3));
       Assert_True (Is_End (Iter));
 
-      Assert_False (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 3, 1));
+      Assert_False (Buffer.Get_Iter_At_Line_Offset (Iter, 3, 1));
       Assert_True (Is_End (Iter));
 
       --  Get_Iter_At_Line_Index ("ß" takes 2 bytes in UTF-8)
-      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter'Access, 0, 0));
+      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter, 0, 0));
       Assert_True (Is_Start (Iter));
 
-      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter'Access, 0, 1));
+      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter, 0, 1));
       Assert_Cmpint_Eq (Get_Offset (Iter), 1);
 
-      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter'Access, 0, 2));
+      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter, 0, 2));
       Assert_Cmpint_Eq (Get_Offset (Iter), 2);
 
-      Assert_False (Buffer.Get_Iter_At_Line_Index (Iter'Access, 0, 3));
+      Assert_False (Buffer.Get_Iter_At_Line_Index (Iter, 0, 3));
       Assert_Cmpint_Eq (Get_Offset (Iter), 2);
 
-      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter'Access, 1, 0));
+      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter, 1, 0));
       Assert_Cmpint_Eq (Get_Offset (Iter), 3);
 
-      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter'Access, 1, 2));
+      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter, 1, 2));
       Assert_Cmpint_Eq (Get_Offset (Iter), 4);
 
-      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter'Access, 1, 3));
+      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter, 1, 3));
       Assert_Cmpint_Eq (Get_Offset (Iter), 5);
 
-      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter'Access, 2, 2));
+      Assert_True (Buffer.Get_Iter_At_Line_Index (Iter, 2, 2));
       Assert_True (Is_End (Iter));
 
-      Assert_False (Buffer.Get_Iter_At_Line_Index (Iter'Access, 2, 3));
+      Assert_False (Buffer.Get_Iter_At_Line_Index (Iter, 2, 3));
       Assert_True (Is_End (Iter));
 
-      Assert_False (Buffer.Get_Iter_At_Line_Index (Iter'Access, 3, 1));
+      Assert_False (Buffer.Get_Iter_At_Line_Index (Iter, 3, 1));
       Assert_True (Is_End (Iter));
 
       --  Get_Iter_At_Offset
@@ -532,7 +532,7 @@ procedure Main is
    procedure Test_Child_Anchor is
       View    : Gtk_Text_View;
       Buffer  : Gtk_Text_Buffer;
-      Iter    : aliased Gtk_Text_Iter;
+      Iter    : Gtk_Text_Iter;
       Start   : Gtk_Text_Iter;
       The_End : Gtk_Text_Iter;
       Anchor  : Gtk_Text_Child_Anchor;
@@ -548,7 +548,7 @@ procedure Main is
       Chars := Buffer.Get_Char_Count;
 
       --  An anchor counts as one character.
-      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 0, 1));
+      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter, 0, 1));
       Anchor := Buffer.Create_Child_Anchor (Iter);
       Assert_Cmpint_Eq (Buffer.Get_Char_Count, Chars + 1);
 
@@ -562,7 +562,7 @@ procedure Main is
       Assert_False (Anchor.Get_Deleted);
 
       --  An anchor with a replacement character ("ß" takes 2 bytes).
-      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter'Access, 1, 1));
+      Assert_True (Buffer.Get_Iter_At_Line_Offset (Iter, 1, 1));
       Gtk_New_With_Replacement (Repl, Sharp_S);
       Buffer.Insert_Child_Anchor (Iter, Repl);
 

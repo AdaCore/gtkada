@@ -473,7 +473,7 @@ package Gtk.Text_View is
 
    function Get_Iter_At_Location
       (View : not null access Gtk_Text_View_Record;
-       Iter : access Gtk.Text_Iter.Gtk_Text_Iter;
+       Iter : out Gtk.Text_Iter.Gtk_Text_Iter;
        X    : Glib.Gint;
        Y    : Glib.Gint) return Boolean;
    --  Retrieves the iterator at buffer coordinates X and Y.
@@ -488,8 +488,8 @@ package Gtk.Text_View is
 
    function Get_Iter_At_Position
       (View     : not null access Gtk_Text_View_Record;
-       Iter     : access Gtk.Text_Iter.Gtk_Text_Iter;
-       Trailing : access Glib.Gint;
+       Iter     : out Gtk.Text_Iter.Gtk_Text_Iter;
+       Trailing : out Glib.Gint;
        X        : Glib.Gint;
        Y        : Glib.Gint) return Boolean;
    --  Retrieves the iterator pointing to the character at buffer coordinates
@@ -921,10 +921,10 @@ package Gtk.Text_View is
 
    function Get_Bounds
       (Self   : not null access Gtk_Text_View_Record;
-       X      : access Glib.Gint;
-       Y      : access Glib.Gint;
-       Width  : access Glib.Gint;
-       Height : access Glib.Gint) return Boolean;
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint) return Boolean;
 
    function Get_First_Accessible_Child
       (Self : not null access Gtk_Text_View_Record)

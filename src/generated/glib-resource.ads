@@ -273,8 +273,8 @@ package Glib.Resource is
       (Self         : Gresource;
        Path         : UTF8_String;
        Lookup_Flags : Resource_Lookup_Flags;
-       Size         : access Gsize;
-       Flags        : access Guint32) return Boolean;
+       Size         : out Gsize;
+       Flags        : out Guint32) return Boolean;
    --  Looks for a file at the specified Path in the resource and if found
    --  returns information about it.
    --  Lookup_Flags controls the behaviour of the lookup.

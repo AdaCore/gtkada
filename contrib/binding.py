@@ -892,9 +892,6 @@ class SubprogramProfile(object):
         if params is None:
             return []
 
-        # Check whether we'll bind to a procedure or to a function
-        is_function = self.returns and not gtkmethod.return_as_param()
-
         result = []
 
         for p_index, p in enumerate(params.findall(nparam)):
@@ -972,10 +969,11 @@ class SubprogramProfile(object):
             else:
                 c_mode = "in"
 
-            if is_function and direction not in ("in", "access"):
-                mode = "access"
-            else:
-                mode = c_mode
+            # Ada 2012 allows "out"/"in out" parameters for functions, so the
+            # Ada mode is always the mode C asks for. A parameter that the C
+            # side genuinely allows to be NULL must say so with
+            # direction = "access" in its TOML.
+            mode = c_mode
 
             doc = _get_clean_doc(p)
             if doc and ada_binding:
@@ -2509,7 +2507,16 @@ See Glib.Properties for more information on properties)"""
                         "Unchecked_To_Object (Params, %d)" % (index + 1,)
                     )
             else:
-                if p.mode != "in":
+                if p.mode in ("out", "in out"):
+                    # An access value is not a legal actual for an "out" or
+                    # "in out" formal, so dereference it. Ptr.all is a
+                    # variable, and for "in out" it also reads the incoming
+                    # value.
+                    call_params.append(
+                        "Unchecked_To_%s_Access (Params, %d).all"
+                        % (base_name(p.type.ada), index + 1)
+                    )
+                elif p.mode != "in":
                     call_params.append(
                         "Unchecked_To_%s_Access (Params, %d)"
                         % (base_name(p.type.ada), index + 1)

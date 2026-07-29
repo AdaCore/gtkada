@@ -1045,7 +1045,7 @@ package Gtk.Tree_Model is
 
    type Virtual_Get_Iter is access function
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk_Tree_Iter;
+      Iter       : out Gtk_Tree_Iter;
       Path       : System.Address) return Glib.Gboolean;
    pragma Obsolescent (Virtual_Get_Iter);
    pragma Convention (C, Virtual_Get_Iter);
@@ -1092,7 +1092,7 @@ package Gtk.Tree_Model is
 
    type Virtual_Iter_Children is access function
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk_Tree_Iter;
+      Iter       : out Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter) return Glib.Gboolean;
    pragma Obsolescent (Virtual_Iter_Children);
    pragma Convention (C, Virtual_Iter_Children);
@@ -1143,7 +1143,7 @@ package Gtk.Tree_Model is
 
    type Virtual_Iter_Nth_Child is access function
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk_Tree_Iter;
+      Iter       : out Gtk_Tree_Iter;
       Parent     : Gtk_Tree_Iter;
       N          : Glib.Gint) return Glib.Gboolean;
    pragma Obsolescent (Virtual_Iter_Nth_Child);
@@ -1161,7 +1161,7 @@ package Gtk.Tree_Model is
 
    type Virtual_Iter_Parent is access function
      (Tree_Model : Gtk_Tree_Model;
-      Iter       : access Gtk_Tree_Iter;
+      Iter       : out Gtk_Tree_Iter;
       Child      : Gtk_Tree_Iter) return Glib.Gboolean;
    pragma Obsolescent (Virtual_Iter_Parent);
    pragma Convention (C, Virtual_Iter_Parent);

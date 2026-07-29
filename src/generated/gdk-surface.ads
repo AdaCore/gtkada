@@ -301,8 +301,8 @@ package Gdk.Surface is
    function Translate_Coordinates
       (Self : not null access Gdk_Surface_Record;
        To   : not null access Gdk_Surface_Record'Class;
-       X    : access Gdouble;
-       Y    : access Gdouble) return Boolean;
+       X    : in out Gdouble;
+       Y    : in out Gdouble) return Boolean;
    --  Translates coordinates between two surfaces.
    --  Note that this only works if To and From are popups or transient-for to
    --  the same toplevel (directly or indirectly).

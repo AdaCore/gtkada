@@ -681,7 +681,7 @@ package Gtk.Builder is
       (Self   : not null access Gtk_Builder_Record;
        Pspec  : in out Glib.Param_Spec;
        String : UTF8_String;
-       Value  : access Glib.Values.GValue) return Boolean;
+       Value  : out Glib.Values.GValue) return Boolean;
    --  Demarshals a value from a string.
    --  This function calls g_value_init on the Value argument, so it need not
    --  be initialised beforehand.
@@ -698,7 +698,7 @@ package Gtk.Builder is
       (Self     : not null access Gtk_Builder_Record;
        The_Type : GType;
        String   : UTF8_String;
-       Value    : access Glib.Values.GValue) return Boolean;
+       Value    : out Glib.Values.GValue) return Boolean;
    --  Demarshals a value from a string.
    --  Unlike [methodGtk.Builder.value_from_string], this function takes a
    --  `GType` instead of `GParamSpec`.

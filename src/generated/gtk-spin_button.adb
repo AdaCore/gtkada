@@ -700,10 +700,10 @@ package body Gtk.Spin_Button is
 
    function Get_Bounds
       (Self   : not null access Gtk_Spin_Button_Record;
-       X      : access Glib.Gint;
-       Y      : access Glib.Gint;
-       Width  : access Glib.Gint;
-       Height : access Glib.Gint) return Boolean
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint) return Boolean
    is
       function Internal
          (Self       : System.Address;
@@ -719,10 +719,10 @@ package body Gtk.Spin_Button is
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_X'Access, Acc_Y'Access, Acc_Width'Access, Acc_Height'Access);
-      X.all := Acc_X;
-      Y.all := Acc_Y;
-      Width.all := Acc_Width;
-      Height.all := Acc_Height;
+      X := Acc_X;
+      Y := Acc_Y;
+      Width := Acc_Width;
+      Height := Acc_Height;
       return Tmp_Return /= 0;
    end Get_Bounds;
 
@@ -1588,7 +1588,7 @@ package body Gtk.Spin_Button is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gdouble_Gint := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased Glib.Gint := H (Obj, Unchecked_To_Gdouble_Access (Params, 1));
+      V   : aliased Glib.Gint := H (Obj, Unchecked_To_Gdouble_Access (Params, 1).all);
    begin
       Set_Value (Return_Value, V'Address);
    exception
@@ -1674,7 +1674,7 @@ package body Gtk.Spin_Button is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Spin_Button_Gdouble_Gint := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Spin_Button := Gtk_Spin_Button (Unchecked_To_Object (Params, 0));
-      V   : aliased Glib.Gint := H (Obj, Unchecked_To_Gdouble_Access (Params, 1));
+      V   : aliased Glib.Gint := H (Obj, Unchecked_To_Gdouble_Access (Params, 1).all);
    begin
       Set_Value (Return_Value, V'Address);
    exception

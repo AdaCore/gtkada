@@ -11,6 +11,16 @@
 - Upgraded Glib bindings
 - Moved some conversion functions from Gtk.Arguments to Glib.Values, to remove any
   dependency from Glib to Gtk.
+- Functions now take Ada 2012 `out` / `in out` parameters where they used to take
+  `access` (work item #127). **This breaks downstream sources**: callers must pass
+  a variable and drop the `'Access`, and a caller that passed `null` to mean "I do
+  not need this output" must now supply a dummy variable. Roughly 30 subprograms
+  are concerned, among them `Gtk.Text_Buffer.Get_Iter_At_Line{,_Index,_Offset}`,
+  `Gtk.Text_View.Get_Iter_At_{Location,Position}`, `Gtk.Tree_View.Get_Dest_Row_At_Pos`,
+  `Gtk.Accessible.Get_Bounds` (inherited by every widget), `Glib.Resource.Get_Info`
+  and `Glib.List_Store.Find{,_With_Equal_Func}`. Handler types (`Virtual_*`, `Cb_*`)
+  follow suit, except where the C contract documents the output as optional — those
+  keep `access` so the handler can still test for `NULL`.
 
 ## gtkada_demo
 

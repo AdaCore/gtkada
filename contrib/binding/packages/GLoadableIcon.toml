@@ -13,3 +13,20 @@ bind = false
 id = "g_loadable_icon_load_finish"
 bind = false
 # No GInputStream binding
+
+# C passes NULL for "type" when it does not want the icon type back, so the
+# handler must be able to test the pointer. Keep the pointer for these.
+
+[[virtual_method]]
+id = "load"
+
+[[virtual_method.parameter]]
+name = "type"
+direction = "access"
+
+[[virtual_method]]
+id = "load_finish"
+
+[[virtual_method.parameter]]
+name = "type"
+direction = "access"

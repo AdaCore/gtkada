@@ -409,7 +409,7 @@ package body Gtk.Text_View is
 
    function Get_Iter_At_Location
       (View : not null access Gtk_Text_View_Record;
-       Iter : access Gtk.Text_Iter.Gtk_Text_Iter;
+       Iter : out Gtk.Text_Iter.Gtk_Text_Iter;
        X    : Glib.Gint;
        Y    : Glib.Gint) return Boolean
    is
@@ -425,7 +425,7 @@ package body Gtk.Text_View is
    begin
       Tmp_Return := Internal (Get_Object (View), Tmp_Acc_Iter'Access, X, Y);
       Acc_Iter := Tmp_Acc_Iter;
-      Iter.all := Acc_Iter;
+      Iter := Acc_Iter;
       return Tmp_Return /= 0;
    end Get_Iter_At_Location;
 
@@ -435,8 +435,8 @@ package body Gtk.Text_View is
 
    function Get_Iter_At_Position
       (View     : not null access Gtk_Text_View_Record;
-       Iter     : access Gtk.Text_Iter.Gtk_Text_Iter;
-       Trailing : access Glib.Gint;
+       Iter     : out Gtk.Text_Iter.Gtk_Text_Iter;
+       Trailing : out Glib.Gint;
        X        : Glib.Gint;
        Y        : Glib.Gint) return Boolean
    is
@@ -454,10 +454,8 @@ package body Gtk.Text_View is
    begin
       Tmp_Return := Internal (Get_Object (View), Tmp_Acc_Iter'Access, Acc_Trailing'Access, X, Y);
       Acc_Iter := Tmp_Acc_Iter;
-      Iter.all := Acc_Iter;
-      if Trailing /= null then
-         Trailing.all := Acc_Trailing;
-      end if;
+      Iter := Acc_Iter;
+      Trailing := Acc_Trailing;
       return Tmp_Return /= 0;
    end Get_Iter_At_Position;
 
@@ -1340,10 +1338,10 @@ package body Gtk.Text_View is
 
    function Get_Bounds
       (Self   : not null access Gtk_Text_View_Record;
-       X      : access Glib.Gint;
-       Y      : access Glib.Gint;
-       Width  : access Glib.Gint;
-       Height : access Glib.Gint) return Boolean
+       X      : out Glib.Gint;
+       Y      : out Glib.Gint;
+       Width  : out Glib.Gint;
+       Height : out Glib.Gint) return Boolean
    is
       function Internal
          (Self       : System.Address;
@@ -1359,10 +1357,10 @@ package body Gtk.Text_View is
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_X'Access, Acc_Y'Access, Acc_Width'Access, Acc_Height'Access);
-      X.all := Acc_X;
-      Y.all := Acc_Y;
-      Width.all := Acc_Width;
-      Height.all := Acc_Height;
+      X := Acc_X;
+      Y := Acc_Y;
+      Width := Acc_Width;
+      Height := Acc_Height;
       return Tmp_Return /= 0;
    end Get_Bounds;
 

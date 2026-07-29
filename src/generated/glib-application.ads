@@ -818,11 +818,11 @@ package Glib.Application is
    function Query_Action
       (Self           : not null access Gapplication_Record;
        Action_Name    : UTF8_String;
-       Enabled        : access Boolean;
-       Parameter_Type : access Glib.Variant.Gvariant_Type;
-       State_Type     : access Glib.Variant.Gvariant_Type;
-       State_Hint     : access Glib.Variant.Gvariant;
-       State          : access Glib.Variant.Gvariant) return Boolean;
+       Enabled        : out Boolean;
+       Parameter_Type : out Glib.Variant.Gvariant_Type;
+       State_Type     : out Glib.Variant.Gvariant_Type;
+       State_Hint     : out Glib.Variant.Gvariant;
+       State          : out Glib.Variant.Gvariant) return Boolean;
 
    procedure Add_Action
       (Self   : not null access Gapplication_Record;
@@ -1148,7 +1148,7 @@ package Glib.Application is
    type Virtual_Local_Command_Line is access function
      (Self        : System.Address;
       Arguments   : access Gtkada.Bindings.chars_ptr_array_access;
-      Exit_Status : access Glib.Gint) return Glib.Gboolean;
+      Exit_Status : out Glib.Gint) return Glib.Gboolean;
    pragma Convention (C, Virtual_Local_Command_Line);
    --  This virtual function is always invoked in the local instance. It gets
    --  passed a pointer to a null-terminated copy of Argv and is expected to

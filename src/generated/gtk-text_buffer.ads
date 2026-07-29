@@ -402,7 +402,7 @@ package Gtk.Text_Buffer is
 
    function Get_Iter_At_Line
       (Buffer      : not null access Gtk_Text_Buffer_Record;
-       Iter        : access Gtk.Text_Iter.Gtk_Text_Iter;
+       Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
        Line_Number : Glib.Gint) return Boolean;
    --  Initializes Iter to the start of the given line.
    --  If Line_Number is greater than or equal to the number of lines in the
@@ -413,7 +413,7 @@ package Gtk.Text_Buffer is
 
    function Get_Iter_At_Line_Index
       (Buffer      : not null access Gtk_Text_Buffer_Record;
-       Iter        : access Gtk.Text_Iter.Gtk_Text_Iter;
+       Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
        Line_Number : Glib.Gint;
        Byte_Index  : Glib.Gint) return Boolean;
    --  Obtains an iterator pointing to Byte_Index within the given line.
@@ -429,7 +429,7 @@ package Gtk.Text_Buffer is
 
    function Get_Iter_At_Line_Offset
       (Buffer      : not null access Gtk_Text_Buffer_Record;
-       Iter        : access Gtk.Text_Iter.Gtk_Text_Iter;
+       Iter        : out Gtk.Text_Iter.Gtk_Text_Iter;
        Line_Number : Glib.Gint;
        Char_Offset : Glib.Gint) return Boolean;
    --  Obtains an iterator pointing to Char_Offset within the given line.
@@ -639,7 +639,7 @@ package Gtk.Text_Buffer is
 
    function Insert_Interactive
       (Buffer           : not null access Gtk_Text_Buffer_Record;
-       Iter             : access Gtk.Text_Iter.Gtk_Text_Iter;
+       Iter             : in out Gtk.Text_Iter.Gtk_Text_Iter;
        Text             : UTF8_String;
        Default_Editable : Boolean := True) return Boolean;
    --  Inserts Text in Buffer.

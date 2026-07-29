@@ -186,7 +186,7 @@ package Gtk.Tree_Model_Sort is
 
    function Convert_Child_Iter_To_Iter
       (Self       : not null access Gtk_Tree_Model_Sort_Record;
-       Sort_Iter  : access Gtk.Tree_Model.Gtk_Tree_Iter;
+       Sort_Iter  : out Gtk.Tree_Model.Gtk_Tree_Iter;
        Child_Iter : Gtk.Tree_Model.Gtk_Tree_Iter) return Boolean;
    pragma Obsolescent (Convert_Child_Iter_To_Iter);
    --  Sets Sort_Iter to point to the row in Tree_Model_Sort that corresponds
@@ -583,8 +583,8 @@ package Gtk.Tree_Model_Sort is
 
    function Get_Sort_Column_Id
       (Self           : not null access Gtk_Tree_Model_Sort_Record;
-       Sort_Column_Id : access Glib.Gint;
-       Order          : access Gtk.Enums.Gtk_Sort_Type) return Boolean;
+       Sort_Column_Id : out Glib.Gint;
+       Order          : out Gtk.Enums.Gtk_Sort_Type) return Boolean;
    pragma Obsolescent (Get_Sort_Column_Id);
 
    procedure Set_Sort_Column_Id

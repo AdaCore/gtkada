@@ -407,8 +407,8 @@ package body Gdk.Surface is
    function Translate_Coordinates
       (Self : not null access Gdk_Surface_Record;
        To   : not null access Gdk_Surface_Record'Class;
-       X    : access Gdouble;
-       Y    : access Gdouble) return Boolean
+       X    : in out Gdouble;
+       Y    : in out Gdouble) return Boolean
    is
       function Internal
          (Self  : System.Address;
@@ -416,13 +416,13 @@ package body Gdk.Surface is
           Acc_X : access Gdouble;
           Acc_Y : access Gdouble) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_surface_translate_coordinates");
-      Acc_X      : aliased Gdouble;
-      Acc_Y      : aliased Gdouble;
+      Acc_X      : aliased Gdouble := X;
+      Acc_Y      : aliased Gdouble := Y;
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Get_Object (To), Acc_X'Access, Acc_Y'Access);
-      X.all := Acc_X;
-      Y.all := Acc_Y;
+      X := Acc_X;
+      Y := Acc_Y;
       return Tmp_Return /= 0;
    end Translate_Coordinates;
 

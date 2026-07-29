@@ -106,8 +106,8 @@ package body Glib.Resource is
       (Self         : Gresource;
        Path         : UTF8_String;
        Lookup_Flags : Resource_Lookup_Flags;
-       Size         : access Gsize;
-       Flags        : access Guint32) return Boolean
+       Size         : out Gsize;
+       Flags        : out Guint32) return Boolean
    is
       function Internal
          (Self         : System.Address;
@@ -123,12 +123,8 @@ package body Glib.Resource is
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Acc_Size'Access, Acc_Flags'Access);
       Free (Tmp_Path);
-      if Size /= null then
-         Size.all := Acc_Size;
-      end if;
-      if Flags /= null then
-         Flags.all := Acc_Flags;
-      end if;
+      Size := Acc_Size;
+      Flags := Acc_Flags;
       return Tmp_Return /= 0;
    end Get_Info;
 

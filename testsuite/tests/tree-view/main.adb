@@ -102,8 +102,8 @@ procedure Main is
    procedure Test_Bug_539377 is
       View      : constant Gtk_Tree_View := Gtk_Tree_View_New;
       Store     : Gtk_List_Store;
-      Path      : aliased Gtk_Tree_Path;
-      Pos       : aliased Gtk_Tree_View_Drop_Position;
+      Path      : Gtk_Tree_Path;
+      Pos       : Gtk_Tree_View_Drop_Position;
       Column    : Gtk.Tree_View_Column.Gtk_Tree_View_Column;
       Cell_X    : Gint;
       Cell_Y    : Gint;
@@ -114,7 +114,7 @@ procedure Main is
         (10, 10, Path, Column, Cell_X, Cell_Y, Row_Found);
       Assert_False (Row_Found);
       Assert_False
-        (View.Get_Dest_Row_At_Pos (10, 10, Path'Access, Pos'Access));
+        (View.Get_Dest_Row_At_Pos (10, 10, Path, Pos));
 
       --  Non-realized view, with an empty model.
       Gtk_New (Store, (0 => GType_String));
@@ -124,7 +124,7 @@ procedure Main is
         (10, 10, Path, Column, Cell_X, Cell_Y, Row_Found);
       Assert_False (Row_Found);
       Assert_False
-        (View.Get_Dest_Row_At_Pos (10, 10, Path'Access, Pos'Access));
+        (View.Get_Dest_Row_At_Pos (10, 10, Path, Pos));
    end Test_Bug_539377;
 
    --------------------------------

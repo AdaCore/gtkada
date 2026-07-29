@@ -582,7 +582,7 @@ package body Gtk.Builder is
       (Self   : not null access Gtk_Builder_Record;
        Pspec  : in out Glib.Param_Spec;
        String : UTF8_String;
-       Value  : access Glib.Values.GValue) return Boolean
+       Value  : out Glib.Values.GValue) return Boolean
    is
       function Internal
          (Self      : System.Address;
@@ -598,7 +598,7 @@ package body Gtk.Builder is
       Tmp_Return := Internal (Get_Object (Self), Acc_Pspec'Access, Tmp_String, Acc_Value'Access);
       Free (Tmp_String);
       Pspec := Acc_Pspec;
-      Value.all := Acc_Value;
+      Value := Acc_Value;
       return Tmp_Return /= 0;
    end Value_From_String;
 
@@ -610,7 +610,7 @@ package body Gtk.Builder is
       (Self     : not null access Gtk_Builder_Record;
        The_Type : GType;
        String   : UTF8_String;
-       Value    : access Glib.Values.GValue) return Boolean
+       Value    : out Glib.Values.GValue) return Boolean
    is
       function Internal
          (Self      : System.Address;
@@ -624,7 +624,7 @@ package body Gtk.Builder is
    begin
       Tmp_Return := Internal (Get_Object (Self), The_Type, Tmp_String, Acc_Value'Access);
       Free (Tmp_String);
-      Value.all := Acc_Value;
+      Value := Acc_Value;
       return Tmp_Return /= 0;
    end Value_From_String_Type;
 

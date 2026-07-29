@@ -247,8 +247,8 @@ package body Gdk.Device is
 
    function Get_Surface_At_Position
       (Self  : not null access Gdk_Device_Record;
-       Win_X : access Gdouble;
-       Win_Y : access Gdouble) return Gdk.Gdk_Surface
+       Win_X : access Gdouble := null;
+       Win_Y : access Gdouble := null) return Gdk.Gdk_Surface
    is
       function Internal
          (Self      : System.Address;

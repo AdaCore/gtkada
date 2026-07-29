@@ -760,7 +760,7 @@ package body Glib.Variant is
 
    function Dup_Bytestring_Array
       (Self   : Gvariant;
-       Length : access Gsize) return GNAT.Strings.String_List
+       Length : out Gsize) return GNAT.Strings.String_List
    is
       function Internal
          (Self       : System.Address;
@@ -770,9 +770,7 @@ package body Glib.Variant is
       Tmp_Return : chars_ptr_array_access;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Length'Access);
-      if Length /= null then
-         Length.all := Acc_Length;
-      end if;
+      Length := Acc_Length;
       return To_String_List_And_Free (Tmp_Return);
    end Dup_Bytestring_Array;
 
@@ -782,7 +780,7 @@ package body Glib.Variant is
 
    function Dup_Objv
       (Self   : Gvariant;
-       Length : access Gsize) return GNAT.Strings.String_List
+       Length : out Gsize) return GNAT.Strings.String_List
    is
       function Internal
          (Self       : System.Address;
@@ -792,9 +790,7 @@ package body Glib.Variant is
       Tmp_Return : chars_ptr_array_access;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Length'Access);
-      if Length /= null then
-         Length.all := Acc_Length;
-      end if;
+      Length := Acc_Length;
       return To_String_List_And_Free (Tmp_Return);
    end Dup_Objv;
 
@@ -804,7 +800,7 @@ package body Glib.Variant is
 
    function Dup_String
       (Self   : Gvariant;
-       Length : access Gsize) return UTF8_String
+       Length : out Gsize) return UTF8_String
    is
       function Internal
          (Self       : System.Address;
@@ -814,7 +810,7 @@ package body Glib.Variant is
       Tmp_Return : Gtkada.Types.Chars_Ptr;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Length'Access);
-      Length.all := Acc_Length;
+      Length := Acc_Length;
       return Gtkada.Bindings.Value_And_Free (Tmp_Return);
    end Dup_String;
 
@@ -835,7 +831,7 @@ package body Glib.Variant is
 
    function Dup_Strv
       (Self   : Gvariant;
-       Length : access Gsize) return GNAT.Strings.String_List
+       Length : out Gsize) return GNAT.Strings.String_List
    is
       function Internal
          (Self       : System.Address;
@@ -845,9 +841,7 @@ package body Glib.Variant is
       Tmp_Return : chars_ptr_array_access;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Length'Access);
-      if Length /= null then
-         Length.all := Acc_Length;
-      end if;
+      Length := Acc_Length;
       return To_String_List_And_Free (Tmp_Return);
    end Dup_Strv;
 
@@ -879,7 +873,7 @@ package body Glib.Variant is
 
    function Get_Bytestring_Array
       (Self   : Gvariant;
-       Length : access Gsize) return GNAT.Strings.String_List
+       Length : out Gsize) return GNAT.Strings.String_List
    is
       function Internal
          (Self       : System.Address;
@@ -889,9 +883,7 @@ package body Glib.Variant is
       Tmp_Return : chars_ptr_array_access;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Length'Access);
-      if Length /= null then
-         Length.all := Acc_Length;
-      end if;
+      Length := Acc_Length;
       return To_String_List_And_Free (Tmp_Return);
    end Get_Bytestring_Array;
 
@@ -991,7 +983,7 @@ package body Glib.Variant is
 
    function Get_Objv
       (Self   : Gvariant;
-       Length : access Gsize) return GNAT.Strings.String_List
+       Length : out Gsize) return GNAT.Strings.String_List
    is
       function Internal
          (Self       : System.Address;
@@ -1001,9 +993,7 @@ package body Glib.Variant is
       Tmp_Return : chars_ptr_array_access;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Length'Access);
-      if Length /= null then
-         Length.all := Acc_Length;
-      end if;
+      Length := Acc_Length;
       return To_String_List_And_Free (Tmp_Return);
    end Get_Objv;
 
@@ -1024,7 +1014,7 @@ package body Glib.Variant is
 
    function Get_String
       (Self   : Gvariant;
-       Length : access Gsize) return UTF8_String
+       Length : out Gsize) return UTF8_String
    is
       function Internal
          (Self       : System.Address;
@@ -1034,9 +1024,7 @@ package body Glib.Variant is
       Tmp_Return : Gtkada.Types.Chars_Ptr;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Length'Access);
-      if Length /= null then
-         Length.all := Acc_Length;
-      end if;
+      Length := Acc_Length;
       return Gtkada.Bindings.Value_Allowing_Null (Tmp_Return);
    end Get_String;
 
@@ -1046,7 +1034,7 @@ package body Glib.Variant is
 
    function Get_Strv
       (Self   : Gvariant;
-       Length : access Gsize) return GNAT.Strings.String_List
+       Length : out Gsize) return GNAT.Strings.String_List
    is
       function Internal
          (Self       : System.Address;
@@ -1056,9 +1044,7 @@ package body Glib.Variant is
       Tmp_Return : chars_ptr_array_access;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Length'Access);
-      if Length /= null then
-         Length.all := Acc_Length;
-      end if;
+      Length := Acc_Length;
       return To_String_List_And_Free (Tmp_Return);
    end Get_Strv;
 

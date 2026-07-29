@@ -195,7 +195,7 @@ parameter to a human-friendly Ada name.
 | `ada`     | string | Ada name to use everywhere this parameter appears.                                       |
 | `type`    | string | Override the Ada type.                                                                   |
 | `ctype`   | string | Override the C type used in the `pragma Import` wrapper.                                 |
-| `direction` | string | One of `"in"`, `"out"`, `"access"`, `"inout"`.                                         |
+| `direction` | string | One of `"in"`, `"out"`, `"access"`, `"inout"`. See [Parameter modes](#parameter-modes). |
 
 ```toml
 [[parameter]]
@@ -252,7 +252,7 @@ entry, in addition to the package-level defaults from
 | `type`       | string | Override the Ada type. The value is passed to C unchanged unless it is `Glib.Object.GObject`, in which case it is treated as a GObject. |
 | `ctype`      | string | Override the C type.                                                                                                                  |
 | `default`    | string | Default value (Ada syntax).                                                                                                            |
-| `direction`  | string | `"in"`, `"out"`, `"access"` or `"inout"`.                                                                                              |
+| `direction`  | string | `"in"`, `"out"`, `"access"` or `"inout"`. See [Parameter modes](#parameter-modes).                                                     |
 | `allow_none` | string | `"1"` if the C side accepts a NULL value; an empty Ada string is then mapped to the null pointer.                                     |
 | `caller_allocates` | string | `"1"` if the caller is responsible for allocating the value.                                                                    |
 | `transfer_ownership` | string | `"full"` if the callee takes ownership.                                                                                       |
@@ -263,6 +263,40 @@ name       = "label"
 default    = "\"\""
 allow_none = "1"
 ```
+
+### Parameter modes
+
+`direction` selects the Ada mode of the parameter, for procedures and
+functions alike — Ada 2012 allows a function to have `out` and
+`in out` parameters, so there is no longer any reason to expose a C
+output as a pointer:
+
+| `direction` | Ada mode | C profile |
+|-------------|----------|-----------|
+| `"in"` (default) | `in`      | by copy, or `access` when the Ada type is a pointer |
+| `"out"`     | `out`     | `T *` (RM B.3)                                      |
+| `"inout"`   | `in out`  | `T *` (RM B.3)                                      |
+| `"access"`  | `access`  | `T *`                                               |
+
+Use `"access"` only when the C side genuinely accepts `NULL` for that
+output *and* the caller has to be able to say so — that is, for a
+`Virtual_*` or `Cb_*` handler type, where the Ada subprogram is the
+callee and must be able to test the pointer before writing through it.
+GIR spells this `optional="1"`, and
+`contrib/binding/packages/GLoadableIcon.toml` shows the idiom:
+
+```toml
+[[virtual_method]]
+id = "load"
+
+[[virtual_method.parameter]]
+name = "type"
+direction = "access"
+```
+
+For an ordinary method there is nothing to gain: the generated wrapper
+allocates an `aliased Acc_<name>` temporary, passes its address to C and
+copies the result back, so C never sees a null pointer.
 
 ### `[method.doc]` — per-method documentation
 
