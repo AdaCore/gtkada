@@ -734,9 +734,17 @@ class SubprogramProfile(object):
                 and p.c_mode in ("in", "in out", "out")
             )
 
+            # An "access" parameter is already a pointer to the caller's
+            # variable, and C documents null as "I do not want this output".
+            # It is therefore passed to C as it is, exactly like for a
+            # procedure: no local copy, and a null reaches C unchanged so
+            # that C does not compute a value nobody will read. The copy
+            # back, if the type needs a conversion, is emitted (guarded)
+            # by CType.as_call.
+
             if (
                 self.returns is not None
-                and p.mode != "in"
+                and p.mode not in ("in", "access")
                 and p.ada_binding
                 and as_array is False
             ):
@@ -750,17 +758,8 @@ class SubprogramProfile(object):
                 var.type.userecord = False
                 localvars.append(var)
 
-                if p.mode == "access":
-                    if p.type.allow_none:
-                        code.append(
-                            "if %s /= null then %s.all := %s; end if;"
-                            % (p.name, p.name, var.name)
-                        )
-                    else:
-                        code.append("%s.all := %s;" % (p.name, var.name))
-                else:
-                    is_temporary = p.mode != "out"
-                    code.append("%s := %s;" % (p.name, var.name))
+                is_temporary = p.mode != "out"
+                code.append("%s := %s;" % (p.name, var.name))
 
             # If we do not bind the parameter in the Ada profile, we will need
             # to substitute its default value instead. But we don't want to

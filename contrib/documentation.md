@@ -291,12 +291,38 @@ meaning C accepts `NULL` for it — is generated as `access T := null`
 rather than `out T`, so that an Ada caller can decline it in the same
 way. This is automatic for **functions**; procedures keep `out`, since
 they have carried that profile since before Ada 2012 and changing them
-would break existing callers for no gain. The body then guards the
-copy-back:
+would break existing callers for no gain.
+
+An `access` parameter is a pointer to the caller's own variable, so the
+body hands it to C as it is — no local copy, and the null the caller
+passed reaches C unchanged. That is what makes declining an output mean
+in Ada what C says it means: C computes nothing, and a `transfer-full`
+result the caller never asked for is never leaked.
 
 ```ada
-      if Length /= null then
-         Length.all := Acc_Length;
+      function Internal
+         (Self  : System.Address;
+          Size  : access Gsize;
+          Flags : access Guint32) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_resource_get_info");
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Size, Flags);
+```
+
+Only when the Ada and the C type differ — an object or a boxed type,
+which C sees as an address — is a temporary unavoidable. Its address is
+then given to C only when the caller did ask for the output, and the
+conversion back is guarded likewise; the temporary starts out null, as C
+need not write it at all (a function returning `False`, typically):
+
+```ada
+      Tmp_Path : aliased System.Address := System.Null_Address;
+      Acc_Path : constant access System.Address :=
+        (if Path /= null then Tmp_Path'Access else null);
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Drag_X, Drag_Y, Acc_Path, Pos);
+      if Path /= null then
+         Path.all := From_Object (Tmp_Path);
       end if;
 ```
 
@@ -315,9 +341,9 @@ direction = "access"
 ```
 
 A `direction` pinned in the TOML always wins over the GIR, which is the
-escape hatch for the cases upstream annotates wrongly. Such a pin needs
-`default = "null"` as well — that is what turns on the null guard above,
-rather than an unconditional assignment:
+escape hatch for the cases upstream annotates wrongly. Such a pin should
+carry `default = "null"` as well, so that the caller can leave the
+parameter out entirely:
 
 ```toml
 [[method]]
