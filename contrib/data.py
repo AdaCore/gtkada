@@ -94,6 +94,7 @@ interfaces = (
 
 binding = (
     "----GdkAtom",  # No binding necessary, too low-level
+    "Gdk.AppLaunchContext",
     "Gdk.CicpParams",
     "Gdk.Clipboard",
     "Gdk.ColorState",
@@ -104,7 +105,10 @@ binding = (
     "--GdkDeviceManager",
     "Gdk.DeviceTool",
     "Gdk.Display",
+    "Gdk.DisplayManager",
     "Gdk.DmabufFormats",
+    "Gdk.DmabufTexture",
+    "Gdk.DmabufTextureBuilder",
     "Gdk.Drag",
     "--GdkDragContext",
     "Gdk.DrawContext",
@@ -114,6 +118,10 @@ binding = (
     "Gdk.FrameClock",
     "Gdk.FrameTimings",
     "Gdk.GLContext",
+    "Gdk.GLTexture",
+    "Gdk.GLTextureBuilder",
+    "Gdk.MemoryTexture",
+    "Gdk.MemoryTextureBuilder",
     "Gdk.Monitor",
     "Gdk.RGBA",
     "Gdk.Rectangle",
@@ -123,11 +131,13 @@ binding = (
     "Gdk.Snapshot",
     "Gdk.Surface",
     "Gdk.Texture",
+    "--Gdk.VulkanContext", # deprecated since 4.14
     "--GdkWindow",
     "--GAction",  # bound as an interface, see interfaces tuple
     "--GActionGroup",  # bound as an interface, see interfaces tuple
     "--GActionMap",  # bound as an interface, see interfaces tuple
     "Gio.Application",
+    "Gio.AppLaunchContext",
     "Gio.ApplicationCommandLine",
     "GLib.Bytes",  # Function returning arrays
     "--Gio.BufferedInputStream",  # Not tested yet, from Gio
@@ -853,6 +863,7 @@ naming.type_exceptions = {
     "TextTagList": List("Gtk.Text_Tag.Text_Tag_List.GSlist"),
     "DeviceList": List("Gdk.Device.Device_List.Glist"),
     "DeviceToolList": List("Gdk.Device_Tool.Device_Tool_List.Glist"),
+    "DisplayList": List("Gdk.Display.Display_List.Glist"),
     "SeatList": List("Gdk.Seat.Seat_List.Glist"),
     "gpointer": Proxy("System.Address", "", default_record_field="System.Null_Address"),
     "gconstpointer": Proxy("System.Address", ""),

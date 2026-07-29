@@ -46,15 +46,21 @@ with Gdk.Monitor;        use Gdk.Monitor;
 with Gdk.Seat;           use Gdk.Seat;
 with Gdk.Surface;
 with Glib;               use Glib;
+with Glib.Glist;         use Glib.Glist;
 with Glib.List_Model;    use Glib.List_Model;
 with Glib.Object;        use Glib.Object;
 with Glib.Properties;    use Glib.Properties;
 with Glib.Values;        use Glib.Values;
+with System;
 
 package Gdk.Display is
 
    type Gdk_Display_Record is new GObject_Record with null record;
    subtype Gdk_Display is Gdk.Gdk_Display;
+
+   function Convert (R : Gdk.Gdk_Display) return System.Address;
+   function Convert (R : System.Address) return Gdk.Gdk_Display;
+   package Display_List is new Generic_List (Gdk.Gdk_Display);
 
    ------------------
    -- Constructors --

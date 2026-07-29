@@ -1,0 +1,19 @@
+# ============================================================
+#   GAppLaunchContext
+# ============================================================
+ada = "Glib.App_Launch_Context"
+
+[[method]]
+id = "g_app_launch_context_get_display"
+bind = false
+# requires Gio.AppInfo and Gio.File bindings
+
+[[method]]
+id = "g_app_launch_context_get_startup_notify_id"
+bind = false
+# requires Gio.AppInfo and Gio.File bindings
+
+[[method]]
+id = "::launched"
+bind = false
+# signal payload includes Gio.AppInfo

@@ -1,0 +1,8 @@
+# ============================================================
+#   GdkGLTextureBuilder
+# ============================================================
+ada = "Gdk.GLTexture_Builder"
+
+[[extra.with_spec]]
+pkg = "System"
+use = false
