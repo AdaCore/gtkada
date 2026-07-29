@@ -119,7 +119,7 @@ package Glib.List_Store is
    function Find
       (Self     : not null access Glist_Store_Record;
        Item     : not null access GObject_Record'Class;
-       Position : out Guint) return Boolean;
+       Position : access Guint := null) return Boolean;
    --  Looks up the given Item in the list store by looping over the items
    --  until the first occurrence of Item. If Item was not found, then Position
    --  will not be set, and this method will return False.
@@ -136,7 +136,7 @@ package Glib.List_Store is
       (Self     : not null access Glist_Store_Record;
        Item     : not null access GObject_Record'Class;
        Func     : Equal_Func;
-       Position : out Guint) return Boolean;
+       Position : access Guint := null) return Boolean;
    --  Looks up the given Item in the list store by looping over the items and
    --  comparing them with Compare_Func until the first occurrence of Item
    --  which matches. If Item was not found, then Position will not be set, and

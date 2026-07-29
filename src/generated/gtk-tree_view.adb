@@ -752,8 +752,8 @@ package body Gtk.Tree_View is
       (Self   : not null access Gtk_Tree_View_Record;
        Drag_X : Glib.Gint;
        Drag_Y : Glib.Gint;
-       Path   : out Gtk.Tree_Model.Gtk_Tree_Path;
-       Pos    : out Gtk_Tree_View_Drop_Position) return Boolean
+       Path   : access Gtk.Tree_Model.Gtk_Tree_Path := null;
+       Pos    : access Gtk_Tree_View_Drop_Position := null) return Boolean
    is
       function Internal
          (Self     : System.Address;
@@ -770,8 +770,12 @@ package body Gtk.Tree_View is
    begin
       Tmp_Return := Internal (Get_Object (Self), Drag_X, Drag_Y, Tmp_Acc_Path'Access, Acc_Pos'Access);
       Acc_Path := From_Object (Tmp_Acc_Path);
-      Path := Acc_Path;
-      Pos := Acc_Pos;
+      if Path /= null then
+         Path.all := Acc_Path;
+      end if;
+      if Pos /= null then
+         Pos.all := Acc_Pos;
+      end if;
       return Tmp_Return /= 0;
    end Get_Dest_Row_At_Pos;
 
@@ -1340,10 +1344,10 @@ package body Gtk.Tree_View is
       (Self   : not null access Gtk_Tree_View_Record;
        X      : Glib.Gint;
        Y      : Glib.Gint;
-       Path   : out Gtk.Tree_Model.Gtk_Tree_Path;
-       Column : out Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-       Cell_X : out Glib.Gint;
-       Cell_Y : out Glib.Gint) return Boolean
+       Path   : access Gtk.Tree_Model.Gtk_Tree_Path := null;
+       Column : access Gtk.Tree_View_Column.Gtk_Tree_View_Column := null;
+       Cell_X : access Glib.Gint := null;
+       Cell_Y : access Glib.Gint := null) return Boolean
    is
       function Internal
          (Self       : System.Address;
@@ -1366,10 +1370,18 @@ package body Gtk.Tree_View is
       Tmp_Return := Internal (Get_Object (Self), X, Y, Tmp_Acc_Path'Access, Tmp_Acc_Column'Access, Acc_Cell_X'Access, Acc_Cell_Y'Access);
       Acc_Column := Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tmp_Acc_Column, Stub_Gtk_Tree_View_Column));
       Acc_Path := From_Object (Tmp_Acc_Path);
-      Path := Acc_Path;
-      Column := Acc_Column;
-      Cell_X := Acc_Cell_X;
-      Cell_Y := Acc_Cell_Y;
+      if Path /= null then
+         Path.all := Acc_Path;
+      end if;
+      if Column /= null then
+         Column.all := Acc_Column;
+      end if;
+      if Cell_X /= null then
+         Cell_X.all := Acc_Cell_X;
+      end if;
+      if Cell_Y /= null then
+         Cell_Y.all := Acc_Cell_Y;
+      end if;
       return Tmp_Return /= 0;
    end Is_Blank_At_Pos;
 

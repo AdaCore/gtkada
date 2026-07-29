@@ -127,7 +127,7 @@ package Gdk.Content_Formats is
 
    function Get_Mime_Types
       (Self         : Gdk_Content_Formats;
-       N_Mime_Types : out Gsize) return GNAT.Strings.String_List;
+       N_Mime_Types : access Gsize := null) return GNAT.Strings.String_List;
    --  Gets the mime types included in Formats.
    --  Note that Formats may not contain any mime types, in particular when
    --  they are empty. In that case null will be returned.

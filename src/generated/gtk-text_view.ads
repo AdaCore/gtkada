@@ -489,7 +489,7 @@ package Gtk.Text_View is
    function Get_Iter_At_Position
       (View     : not null access Gtk_Text_View_Record;
        Iter     : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Trailing : out Glib.Gint;
+       Trailing : access Glib.Gint := null;
        X        : Glib.Gint;
        Y        : Glib.Gint) return Boolean;
    --  Retrieves the iterator pointing to the character at buffer coordinates

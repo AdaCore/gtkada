@@ -285,10 +285,10 @@ package body Glib.Action_Group is
       (Self           : Gaction_Group;
        Action_Name    : UTF8_String;
        Enabled        : out Boolean;
-       Parameter_Type : out Glib.Variant.Gvariant_Type;
-       State_Type     : out Glib.Variant.Gvariant_Type;
-       State_Hint     : out Glib.Variant.Gvariant;
-       State          : out Glib.Variant.Gvariant) return Boolean
+       Parameter_Type : access Glib.Variant.Gvariant_Type := null;
+       State_Type     : access Glib.Variant.Gvariant_Type := null;
+       State_Hint     : access Glib.Variant.Gvariant := null;
+       State          : access Glib.Variant.Gvariant := null) return Boolean
    is
       function Internal
          (Self               : Gaction_Group;
@@ -316,10 +316,18 @@ package body Glib.Action_Group is
       Acc_Enabled := Tmp_Acc_Enabled /= 0;
       Free (Tmp_Action_Name);
       Enabled := Acc_Enabled;
-      Parameter_Type := Acc_Parameter_Type;
-      State_Type := Acc_State_Type;
-      State_Hint := Acc_State_Hint;
-      State := Acc_State;
+      if Parameter_Type /= null then
+         Parameter_Type.all := Acc_Parameter_Type;
+      end if;
+      if State_Type /= null then
+         State_Type.all := Acc_State_Type;
+      end if;
+      if State_Hint /= null then
+         State_Hint.all := Acc_State_Hint;
+      end if;
+      if State /= null then
+         State.all := Acc_State;
+      end if;
       return Tmp_Return /= 0;
    end Query_Action;
 

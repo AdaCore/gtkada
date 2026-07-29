@@ -580,24 +580,22 @@ package body Gtk.Builder is
 
    function Value_From_String
       (Self   : not null access Gtk_Builder_Record;
-       Pspec  : in out Glib.Param_Spec;
+       Pspec  : Glib.Param_Spec;
        String : UTF8_String;
        Value  : out Glib.Values.GValue) return Boolean
    is
       function Internal
          (Self      : System.Address;
-          Acc_Pspec : access Glib.Param_Spec;
+          Pspec     : Glib.Param_Spec;
           String    : Gtkada.Types.Chars_Ptr;
           Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_value_from_string");
-      Acc_Pspec  : aliased Glib.Param_Spec := Pspec;
       Acc_Value  : aliased Glib.Values.GValue;
       Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
       Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Acc_Pspec'Access, Tmp_String, Acc_Value'Access);
+      Tmp_Return := Internal (Get_Object (Self), Pspec, Tmp_String, Acc_Value'Access);
       Free (Tmp_String);
-      Pspec := Acc_Pspec;
       Value := Acc_Value;
       return Tmp_Return /= 0;
    end Value_From_String;

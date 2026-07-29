@@ -133,7 +133,7 @@ package body Glib.List_Store is
    function Find
       (Self     : not null access Glist_Store_Record;
        Item     : not null access GObject_Record'Class;
-       Position : out Guint) return Boolean
+       Position : access Guint := null) return Boolean
    is
       function Internal
         (Self         : System.Address;
@@ -148,7 +148,9 @@ package body Glib.List_Store is
           (Get_Object (Self),
            Get_Object (Item),
            Acc_Position'Access);
-      Position := Acc_Position;
+      if Position /= null then
+         Position.all := Acc_Position;
+      end if;
       return Tmp_Return /= 0;
    end Find;
 
@@ -160,7 +162,7 @@ package body Glib.List_Store is
       (Self     : not null access Glist_Store_Record;
        Item     : not null access GObject_Record'Class;
        Func     : Equal_Func;
-       Position : out Guint) return Boolean
+       Position : access Guint := null) return Boolean
    is
       Fn_Equal : constant System.Address :=
         (if Func = null then System.Null_Address else To_Address (Func));
@@ -179,7 +181,9 @@ package body Glib.List_Store is
            Get_Object (Item),
            Fn_Equal,
            Acc_Position'Access);
-      Position := Acc_Position;
+      if Position /= null then
+         Position.all := Acc_Position;
+      end if;
       return Tmp_Return /= 0;
    end Find_With_Equal_Func;
 
