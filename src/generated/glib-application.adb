@@ -1003,41 +1003,39 @@ package body Glib.Application is
       (Self           : not null access Gapplication_Record;
        Action_Name    : UTF8_String;
        Enabled        : out Boolean;
-       Parameter_Type : out Glib.Variant.Gvariant_Type;
-       State_Type     : out Glib.Variant.Gvariant_Type;
-       State_Hint     : out Glib.Variant.Gvariant;
-       State          : out Glib.Variant.Gvariant) return Boolean
+       Parameter_Type : access Glib.Variant.Gvariant_Type := null;
+       State_Type     : access Glib.Variant.Gvariant_Type := null;
+       State_Hint     : access Glib.Variant.Gvariant := null;
+       State          : access Glib.Variant.Gvariant := null) return Boolean
    is
       function Internal
-         (Self               : System.Address;
-          Action_Name        : Gtkada.Types.Chars_Ptr;
-          Acc_Enabled        : access Glib.Gboolean;
-          Acc_Parameter_Type : access Glib.Variant.Gvariant_Type;
-          Acc_State_Type     : access Glib.Variant.Gvariant_Type;
-          Acc_State_Hint     : access System.Address;
-          Acc_State          : access System.Address) return Glib.Gboolean;
+         (Self           : System.Address;
+          Action_Name    : Gtkada.Types.Chars_Ptr;
+          Acc_Enabled    : access Glib.Gboolean;
+          Parameter_Type : access Glib.Variant.Gvariant_Type;
+          State_Type     : access Glib.Variant.Gvariant_Type;
+          State_Hint     : access System.Address;
+          State          : access System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_action_group_query_action");
-      Acc_Enabled        : aliased Boolean;
-      Acc_Parameter_Type : aliased Glib.Variant.Gvariant_Type;
-      Acc_State_Type     : aliased Glib.Variant.Gvariant_Type;
-      Acc_State_Hint     : aliased Glib.Variant.Gvariant;
-      Acc_State          : aliased Glib.Variant.Gvariant;
-      Tmp_Action_Name    : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
-      Tmp_Acc_Enabled    : aliased Glib.Gboolean;
-      Tmp_Acc_State_Hint : aliased System.Address;
-      Tmp_Acc_State      : aliased System.Address;
-      Tmp_Return         : Glib.Gboolean;
+      Acc_Enabled     : aliased Boolean;
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Action_Name);
+      Tmp_Acc_Enabled : aliased Glib.Gboolean;
+      Tmp_State_Hint  : aliased System.Address := System.Null_Address;
+      Acc_State_Hint  : constant access System.Address := (if State_Hint /= null then Tmp_State_Hint'Access else null);
+      Tmp_State       : aliased System.Address := System.Null_Address;
+      Acc_State       : constant access System.Address := (if State /= null then Tmp_State'Access else null);
+      Tmp_Return      : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Action_Name, Tmp_Acc_Enabled'Access, Acc_Parameter_Type'Access, Acc_State_Type'Access, Tmp_Acc_State_Hint'Access, Tmp_Acc_State'Access);
-      Acc_State := From_Object (Tmp_Acc_State);
-      Acc_State_Hint := From_Object (Tmp_Acc_State_Hint);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Action_Name, Tmp_Acc_Enabled'Access, Parameter_Type, State_Type, Acc_State_Hint, Acc_State);
+      if State /= null then
+         State.all := From_Object (Tmp_State);
+      end if;
+      if State_Hint /= null then
+         State_Hint.all := From_Object (Tmp_State_Hint);
+      end if;
       Acc_Enabled := Tmp_Acc_Enabled /= 0;
       Free (Tmp_Action_Name);
       Enabled := Acc_Enabled;
-      Parameter_Type := Acc_Parameter_Type;
-      State_Type := Acc_State_Type;
-      State_Hint := Acc_State_Hint;
-      State := Acc_State;
       return Tmp_Return /= 0;
    end Query_Action;
 

@@ -22,3 +22,12 @@ default = "-1"
 [[method]]
 id = "gtk_builder_get_objects"
 return = "ObjectList"
+
+# C takes the pspec as a plain input; without this the generator infers
+# "in out" from the type being a pointer and copies it back.
+[[method]]
+id = "gtk_builder_value_from_string"
+
+[[method.parameter]]
+name = "pspec"
+direction = "in"

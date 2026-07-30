@@ -198,6 +198,57 @@ class CType(object):
         else:
             return self.cparam
 
+    def _access_param_as_call(self, name, returns, tmpvars):
+        """How to pass an "access T" parameter to C.
+
+        Such a parameter is a pointer to the caller's own variable, and C
+        documents a null as "the caller does not want this output". It is
+        therefore never copied through a local variable: C is handed the
+        pointer itself, so that a null reaches C unchanged.
+        """
+
+        conv = returns and returns[5]
+
+        if not conv or conv == "%(var)s":
+            # C uses the very same type: no temporary at all.
+            return VariableCall(call=name, precall="", postcall="", tmpvars=tmpvars)
+
+        # C uses a different type, so one temporary is unavoidable. C is
+        # given its address only when the caller did ask for the output, and
+        # the conversion back is guarded likewise: C leaves the temporary
+        # untouched when it is handed a null.
+
+        assert "%(tmp)s" not in conv, "Cannot convert 'access' parameter %s" % name
+
+        tmp = "Tmp_%s" % name
+        acc = "Acc_%s" % name
+
+        return VariableCall(
+            call=acc,
+            precall="",
+            postcall="if %s /= null then %s.all := %s; end if;"
+            % (name, name, conv % {"var": tmp}),
+            tmpvars=[
+                Local_Var(
+                    name=tmp,
+                    type=returns[4],
+                    aliased=True,
+                    # C need not write the temporary at all, for instance when
+                    # the function returns False. Never convert a stale value.
+                    default=(
+                        "System.Null_Address" if returns[4] == "System.Address" else ""
+                    ),
+                ),
+                Local_Var(
+                    name=acc,
+                    type="access %s" % returns[4],
+                    constant=True,
+                    default="(if %s /= null then %s'Access else null)" % (name, tmp),
+                ),
+            ]
+            + tmpvars,
+        )
+
     def as_call(
         self,
         name,
@@ -236,6 +287,11 @@ class CType(object):
             ret = returns and returns[2]
 
             additional_tmp_vars = [] if not returns else returns[3]
+
+            if mode == "access" and not is_temporary_variable:
+                return self._access_param_as_call(
+                    name=name, returns=returns, tmpvars=additional_tmp_vars
+                )
 
             # An "out" parameter for an enumeration requires a temporary
             # variable: Internal(Enum'Pos(Param)) is invalid
@@ -1593,8 +1649,15 @@ class Parameter(Local_Var):
             # 'Access. In the call to as_call() below, though, we still pass
             # the original mode ("in out") not "access", so that as_call()
             # knows whether we need to make a copy of the parameter or not.
+            # An "access" parameter is a pointer already: it is passed as it
+            # is, and only a conversion temporary needs a 'Access, which
+            # as_call() adds itself.
 
-            if lang == "ada->c" and self.mode != "in" and self.for_function:
+            if (
+                lang == "ada->c"
+                and self.mode not in ("in", "access")
+                and self.for_function
+            ):
                 wrapper = "%s'Access"
 
             if isinstance(self.type, CType):

@@ -679,7 +679,7 @@ package Gtk.Builder is
 
    function Value_From_String
       (Self   : not null access Gtk_Builder_Record;
-       Pspec  : in out Glib.Param_Spec;
+       Pspec  : Glib.Param_Spec;
        String : UTF8_String;
        Value  : out Glib.Values.GValue) return Boolean;
    --  Demarshals a value from a string.

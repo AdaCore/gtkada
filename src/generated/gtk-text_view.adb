@@ -436,26 +436,24 @@ package body Gtk.Text_View is
    function Get_Iter_At_Position
       (View     : not null access Gtk_Text_View_Record;
        Iter     : out Gtk.Text_Iter.Gtk_Text_Iter;
-       Trailing : out Glib.Gint;
+       Trailing : access Glib.Gint := null;
        X        : Glib.Gint;
        Y        : Glib.Gint) return Boolean
    is
       function Internal
-         (View         : System.Address;
-          Acc_Iter     : access Gtk.Text_Iter.Gtk_Text_Iter;
-          Acc_Trailing : access Glib.Gint;
-          X            : Glib.Gint;
-          Y            : Glib.Gint) return Glib.Gboolean;
+         (View     : System.Address;
+          Acc_Iter : access Gtk.Text_Iter.Gtk_Text_Iter;
+          Trailing : access Glib.Gint;
+          X        : Glib.Gint;
+          Y        : Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_text_view_get_iter_at_position");
       Acc_Iter     : aliased Gtk.Text_Iter.Gtk_Text_Iter;
-      Acc_Trailing : aliased Glib.Gint;
       Tmp_Acc_Iter : aliased Gtk.Text_Iter.Gtk_Text_Iter;
       Tmp_Return   : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (View), Tmp_Acc_Iter'Access, Acc_Trailing'Access, X, Y);
+      Tmp_Return := Internal (Get_Object (View), Tmp_Acc_Iter'Access, Trailing, X, Y);
       Acc_Iter := Tmp_Acc_Iter;
       Iter := Acc_Iter;
-      Trailing := Acc_Trailing;
       return Tmp_Return /= 0;
    end Get_Iter_At_Position;
 

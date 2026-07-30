@@ -109,8 +109,8 @@ procedure Main is
 
    procedure Test_Load_And_Get_Info is
       Resource : Gresource := Load ("sample.gresource");
-      Size     : Gsize;
-      Flags    : Guint32;
+      Size     : aliased Gsize;
+      Flags    : aliased Guint32;
       Found    : Boolean;
    begin
       Assert_True (Resource /= Null_Gresource);
@@ -119,12 +119,23 @@ procedure Main is
         (Self         => Resource,
          Path         => "/org/gtkada/test/alpha.txt",
          Lookup_Flags => G_Resource_Lookup_Flags_None,
-         Size         => Size,
-         Flags        => Flags);
+         Size         => Size'Access,
+         Flags        => Flags'Access);
 
       Assert_True (Found);
       Assert_Cmpint_Eq (Gint (Size), Gint (Alpha_Text'Length));
       Assert_True (Flags = 0);
+
+      --  Both outputs are optional: C accepts a NULL for either.
+
+      Found := Get_Info
+        (Self         => Resource,
+         Path         => "/org/gtkada/test/alpha.txt",
+         Lookup_Flags => G_Resource_Lookup_Flags_None,
+         Size         => null,
+         Flags        => null);
+
+      Assert_True (Found);
 
       Unref (Resource);
    end Test_Load_And_Get_Info;
@@ -188,21 +199,20 @@ procedure Main is
    procedure Test_New_From_Data is
       Bundle   : Gbytes := Read_File_As_Gbytes ("sample.gresource");
       Resource : Gresource := Gresource_New_From_Data (Bundle);
-      Size     : Gsize;
-      Flags    : Guint32;
-      --  Not checked here; Get_Info has no way of saying "I do not want it"
-      --  now that Flags is an "out" parameter.
+      Size     : aliased Gsize;
       Found    : Boolean;
    begin
       Assert_True (Bundle /= Null_Gbytes);
       Assert_True (Resource /= Null_Gresource);
 
+      --  Flags is declined altogether, which the C contract allows.
+
       Found := Get_Info
         (Self         => Resource,
          Path         => "/org/gtkada/test/beta.txt",
          Lookup_Flags => G_Resource_Lookup_Flags_None,
-         Size         => Size,
-         Flags        => Flags);
+         Size         => Size'Access,
+         Flags        => null);
 
       Assert_True (Found);
       Assert_Cmpint_Eq (Gint (Size), Gint (Beta_Text'Length));

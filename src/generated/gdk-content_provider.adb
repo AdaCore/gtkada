@@ -152,13 +152,13 @@ package body Gdk.Content_Provider is
 
    function Get_Value
       (Self  : not null access Gdk_Content_Provider_Record;
-       Value : out Glib.Values.GValue) return Boolean
+       Value : in out Glib.Values.GValue) return Boolean
    is
       function Internal
          (Self      : System.Address;
           Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_content_provider_get_value");
-      Acc_Value  : aliased Glib.Values.GValue;
+      Acc_Value  : aliased Glib.Values.GValue := Value;
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Value'Access);

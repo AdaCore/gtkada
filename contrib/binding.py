@@ -734,9 +734,17 @@ class SubprogramProfile(object):
                 and p.c_mode in ("in", "in out", "out")
             )
 
+            # An "access" parameter is already a pointer to the caller's
+            # variable, and C documents null as "I do not want this output".
+            # It is therefore passed to C as it is, exactly like for a
+            # procedure: no local copy, and a null reaches C unchanged so
+            # that C does not compute a value nobody will read. The copy
+            # back, if the type needs a conversion, is emitted (guarded)
+            # by CType.as_call.
+
             if (
                 self.returns is not None
-                and p.mode != "in"
+                and p.mode not in ("in", "access")
                 and p.ada_binding
                 and as_array is False
             ):
@@ -750,17 +758,8 @@ class SubprogramProfile(object):
                 var.type.userecord = False
                 localvars.append(var)
 
-                if p.mode == "access":
-                    if p.type.allow_none:
-                        code.append(
-                            "if %s /= null then %s.all := %s; end if;"
-                            % (p.name, p.name, var.name)
-                        )
-                    else:
-                        code.append("%s.all := %s;" % (p.name, var.name))
-                else:
-                    is_temporary = p.mode != "out"
-                    code.append("%s := %s;" % (p.name, var.name))
+                is_temporary = p.mode != "out"
+                code.append("%s := %s;" % (p.name, var.name))
 
             # If we do not bind the parameter in the Ada profile, we will need
             # to substitute its default value instead. But we don't want to
@@ -892,6 +891,9 @@ class SubprogramProfile(object):
         if params is None:
             return []
 
+        # Check whether we'll bind to a procedure or to a function
+        is_function = self.returns and not gtkmethod.return_as_param()
+
         result = []
 
         for p_index, p in enumerate(params.findall(nparam)):
@@ -906,6 +908,28 @@ class SubprogramProfile(object):
             name = adan or name  # override default computed name
 
             default = gtkparam.get_default()
+
+            # An output that the C side documents as optional (GIR
+            # optional="1", i.e. C accepts NULL) stays "access ... := null",
+            # so that an Ada caller can decline it too; Ada mode "out" would
+            # hide that optionality. A "direction" pinned in the TOML always
+            # wins. Restricted to functions: the procedures generated before
+            # this rule have shipped with an "out" profile for years.
+            pinned_direction = gtkparam.get_direction()
+            direction = pinned_direction or p.get("direction", "in")
+            if (
+                is_function
+                and pinned_direction is None
+                and direction in ("out", "inout")
+                and p.get("optional") == "1"
+            ):
+                direction = "access"
+                default = default or "null"
+
+            assert direction in ("in", "out", "inout", "access"), (
+                "Invalid value for direction: '%s'" % direction
+            )
+
             allow_access = not default
             allow_none = gtkparam.allow_none(girnode=p) or default == "null"
             nodeOrType = gtkparam.get_type(pkg=pkg) or p
@@ -947,11 +971,6 @@ class SubprogramProfile(object):
                     self.user_data_param = int(p.get("closure", "-1"))
                     self.destroy_param = int(p.get("destroy", "-1")) - 1
 
-            direction = gtkparam.get_direction() or p.get("direction", "in")
-            assert direction in ("in", "out", "inout", "access"), (
-                "Invalid value for direction: '%s'" % direction
-            )
-
             is_allocated = (
                 gtkparam.get_caller_allocates() or p.get("caller-allocates", None)
             ) == "1"
@@ -964,6 +983,10 @@ class SubprogramProfile(object):
                 c_mode = "in out"
             elif direction in ("out", "access"):
                 c_mode = direction
+            elif pinned_direction == "in":
+                # An explicit "in" in the TOML overrides the pointer
+                # heuristic below, for a C input that happens to be a pointer.
+                c_mode = "in"
             elif type.is_ptr:
                 c_mode = "in out"
             else:
@@ -971,8 +994,8 @@ class SubprogramProfile(object):
 
             # Ada 2012 allows "out"/"in out" parameters for functions, so the
             # Ada mode is always the mode C asks for. A parameter that the C
-            # side genuinely allows to be NULL must say so with
-            # direction = "access" in its TOML.
+            # side genuinely allows to be NULL is turned into "access" above,
+            # either from the GIR or from a direction pinned in the TOML.
             mode = c_mode
 
             doc = _get_clean_doc(p)

@@ -86,3 +86,14 @@ bind = false
 id = "g_variant_get_bytestring"
 bind = false
 # c arrays
+
+# The GIR does not mark this length optional, but g_variant_dup_string
+# forwards to g_variant_get_string, whose length *is* optional and so
+# accepts a NULL. "default" is what turns on the null guard in the body.
+[[method]]
+id = "g_variant_dup_string"
+
+[[method.parameter]]
+name = "length"
+direction = "access"
+default = "null"

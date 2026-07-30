@@ -34,6 +34,9 @@ procedure Main is
    procedure Test_Scroll
    with Convention => C;
 
+   procedure Test_Iter_At_Position
+   with Convention => C;
+
    --------------------------
    -- Test_New_And_Buffer --
    --------------------------
@@ -140,6 +143,39 @@ procedure Main is
       View.Ref_Sink;
    end Test_Scroll;
 
+   ----------------------------
+   -- Test_Iter_At_Position --
+   ----------------------------
+
+   --  Trailing is an optional output: the C side accepts a NULL for it, so
+   --  the binding must let a caller decline it and return the same iterator
+   --  either way.
+
+   procedure Test_Iter_At_Position is
+      View     : Gtk_Text_View;
+      Buffer   : Gtk_Text_Buffer;
+      Iter     : Gtk_Text_Iter;
+      Iter2    : Gtk_Text_Iter;
+      Trailing : aliased Gint := -1;
+      Dummy    : Boolean;
+   begin
+      Gtk_New (View);
+      Buffer := View.Get_Buffer;
+      Buffer.Set_Text ("line one" & ASCII.LF & "line two");
+
+      Dummy := View.Get_Iter_At_Position (Iter, Trailing'Access, 0, 0);
+      Assert_True (Trailing >= 0);
+
+      Dummy := View.Get_Iter_At_Position (Iter2, null, 0, 0);
+      Assert_Cmpint_Eq (Get_Offset (Iter2), Get_Offset (Iter));
+
+      --  Trailing defaults to null, so it can also just be left out.
+      Dummy := View.Get_Iter_At_Position (Iter2, X => 0, Y => 0);
+      Assert_Cmpint_Eq (Get_Offset (Iter2), Get_Offset (Iter));
+
+      View.Ref_Sink;
+   end Test_Iter_At_Position;
+
 begin
    Glib.Test.Init;
 
@@ -152,6 +188,9 @@ begin
      ("/text-view/properties", Test_Properties'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/text-view/scroll", Test_Scroll'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/text-view/iter-at-position",
+      Test_Iter_At_Position'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

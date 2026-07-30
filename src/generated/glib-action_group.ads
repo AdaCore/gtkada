@@ -264,10 +264,10 @@ package Glib.Action_Group is
       (Self           : Gaction_Group;
        Action_Name    : UTF8_String;
        Enabled        : out Boolean;
-       Parameter_Type : out Glib.Variant.Gvariant_Type;
-       State_Type     : out Glib.Variant.Gvariant_Type;
-       State_Hint     : out Glib.Variant.Gvariant;
-       State          : out Glib.Variant.Gvariant) return Boolean;
+       Parameter_Type : access Glib.Variant.Gvariant_Type := null;
+       State_Type     : access Glib.Variant.Gvariant_Type := null;
+       State_Hint     : access Glib.Variant.Gvariant := null;
+       State          : access Glib.Variant.Gvariant := null) return Boolean;
    --  Queries all aspects of the named action within an Action_Group.
    --  This function acquires the information available from
    --  Glib.Action_Group.Has_Action, Glib.Action_Group.Get_Action_Enabled,

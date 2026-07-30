@@ -278,12 +278,58 @@ output as a pointer:
 | `"inout"`   | `in out`  | `T *` (RM B.3)                                      |
 | `"access"`  | `access`  | `T *`                                               |
 
-Use `"access"` only when the C side genuinely accepts `NULL` for that
-output *and* the caller has to be able to say so — that is, for a
-`Virtual_*` or `Cb_*` handler type, where the Ada subprogram is the
-callee and must be able to test the pointer before writing through it.
-GIR spells this `optional="1"`, and
-`contrib/binding/packages/GLoadableIcon.toml` shows the idiom:
+Without a `direction` the mode comes from the GIR. A parameter with no
+`direction` there is an input, except that an Ada type which is itself a
+pointer is passed `in out` so the wrapper can copy the value back; write
+`direction = "in"` for a C input that merely happens to be a pointer,
+such as the `GParamSpec *` of `gtk_builder_value_from_string`.
+
+#### Optional outputs
+
+An output that the C side documents as optional — GIR `optional="1"`,
+meaning C accepts `NULL` for it — is generated as `access T := null`
+rather than `out T`, so that an Ada caller can decline it in the same
+way. This is automatic for **functions**; procedures keep `out`, since
+they have carried that profile since before Ada 2012 and changing them
+would break existing callers for no gain.
+
+An `access` parameter is a pointer to the caller's own variable, so the
+body hands it to C as it is — no local copy, and the null the caller
+passed reaches C unchanged. That is what makes declining an output mean
+in Ada what C says it means: C computes nothing, and a `transfer-full`
+result the caller never asked for is never leaked.
+
+```ada
+      function Internal
+         (Self  : System.Address;
+          Size  : access Gsize;
+          Flags : access Guint32) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_resource_get_info");
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Size, Flags);
+```
+
+Only when the Ada and the C type differ — an object or a boxed type,
+which C sees as an address — is a temporary unavoidable. Its address is
+then given to C only when the caller did ask for the output, and the
+conversion back is guarded likewise; the temporary starts out null, as C
+need not write it at all (a function returning `False`, typically):
+
+```ada
+      Tmp_Path : aliased System.Address := System.Null_Address;
+      Acc_Path : constant access System.Address :=
+        (if Path /= null then Tmp_Path'Access else null);
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Drag_X, Drag_Y, Acc_Path, Pos);
+      if Path /= null then
+         Path.all := From_Object (Tmp_Path);
+      end if;
+```
+
+The same reasoning applies to a `Virtual_*` or `Cb_*` handler type,
+where the Ada subprogram is the callee and must be able to test the
+pointer before writing through it; `contrib/binding/packages/GLoadableIcon.toml`
+shows the idiom:
 
 ```toml
 [[virtual_method]]
@@ -294,9 +340,20 @@ name = "type"
 direction = "access"
 ```
 
-For an ordinary method there is nothing to gain: the generated wrapper
-allocates an `aliased Acc_<name>` temporary, passes its address to C and
-copies the result back, so C never sees a null pointer.
+A `direction` pinned in the TOML always wins over the GIR, which is the
+escape hatch for the cases upstream annotates wrongly. Such a pin should
+carry `default = "null"` as well, so that the caller can leave the
+parameter out entirely:
+
+```toml
+[[method]]
+id = "g_variant_dup_string"
+
+[[method.parameter]]
+name = "length"
+direction = "access"
+default = "null"
+```
 
 ### `[method.doc]` — per-method documentation
 

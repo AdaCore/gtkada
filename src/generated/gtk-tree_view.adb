@@ -752,26 +752,24 @@ package body Gtk.Tree_View is
       (Self   : not null access Gtk_Tree_View_Record;
        Drag_X : Glib.Gint;
        Drag_Y : Glib.Gint;
-       Path   : out Gtk.Tree_Model.Gtk_Tree_Path;
-       Pos    : out Gtk_Tree_View_Drop_Position) return Boolean
+       Path   : access Gtk.Tree_Model.Gtk_Tree_Path := null;
+       Pos    : access Gtk_Tree_View_Drop_Position := null) return Boolean
    is
       function Internal
-         (Self     : System.Address;
-          Drag_X   : Glib.Gint;
-          Drag_Y   : Glib.Gint;
-          Acc_Path : access System.Address;
-          Acc_Pos  : access Gtk_Tree_View_Drop_Position)
-          return Glib.Gboolean;
+         (Self   : System.Address;
+          Drag_X : Glib.Gint;
+          Drag_Y : Glib.Gint;
+          Path   : access System.Address;
+          Pos    : access Gtk_Tree_View_Drop_Position) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_get_dest_row_at_pos");
-      Acc_Path     : aliased Gtk.Tree_Model.Gtk_Tree_Path;
-      Acc_Pos      : aliased Gtk_Tree_View_Drop_Position;
-      Tmp_Acc_Path : aliased System.Address;
-      Tmp_Return   : Glib.Gboolean;
+      Tmp_Path   : aliased System.Address := System.Null_Address;
+      Acc_Path   : constant access System.Address := (if Path /= null then Tmp_Path'Access else null);
+      Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Drag_X, Drag_Y, Tmp_Acc_Path'Access, Acc_Pos'Access);
-      Acc_Path := From_Object (Tmp_Acc_Path);
-      Path := Acc_Path;
-      Pos := Acc_Pos;
+      Tmp_Return := Internal (Get_Object (Self), Drag_X, Drag_Y, Acc_Path, Pos);
+      if Path /= null then
+         Path.all := From_Object (Tmp_Path);
+      end if;
       return Tmp_Return /= 0;
    end Get_Dest_Row_At_Pos;
 
@@ -1340,36 +1338,34 @@ package body Gtk.Tree_View is
       (Self   : not null access Gtk_Tree_View_Record;
        X      : Glib.Gint;
        Y      : Glib.Gint;
-       Path   : out Gtk.Tree_Model.Gtk_Tree_Path;
-       Column : out Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-       Cell_X : out Glib.Gint;
-       Cell_Y : out Glib.Gint) return Boolean
+       Path   : access Gtk.Tree_Model.Gtk_Tree_Path := null;
+       Column : access Gtk.Tree_View_Column.Gtk_Tree_View_Column := null;
+       Cell_X : access Glib.Gint := null;
+       Cell_Y : access Glib.Gint := null) return Boolean
    is
       function Internal
-         (Self       : System.Address;
-          X          : Glib.Gint;
-          Y          : Glib.Gint;
-          Acc_Path   : access System.Address;
-          Acc_Column : access System.Address;
-          Acc_Cell_X : access Glib.Gint;
-          Acc_Cell_Y : access Glib.Gint) return Glib.Gboolean;
+         (Self   : System.Address;
+          X      : Glib.Gint;
+          Y      : Glib.Gint;
+          Path   : access System.Address;
+          Column : access System.Address;
+          Cell_X : access Glib.Gint;
+          Cell_Y : access Glib.Gint) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_tree_view_is_blank_at_pos");
-      Acc_Path                  : aliased Gtk.Tree_Model.Gtk_Tree_Path;
-      Acc_Column                : aliased Gtk.Tree_View_Column.Gtk_Tree_View_Column;
-      Acc_Cell_X                : aliased Glib.Gint;
-      Acc_Cell_Y                : aliased Glib.Gint;
-      Tmp_Acc_Path              : aliased System.Address;
-      Tmp_Acc_Column            : aliased System.Address;
+      Tmp_Path                  : aliased System.Address := System.Null_Address;
+      Acc_Path                  : constant access System.Address := (if Path /= null then Tmp_Path'Access else null);
+      Tmp_Column                : aliased System.Address := System.Null_Address;
+      Acc_Column                : constant access System.Address := (if Column /= null then Tmp_Column'Access else null);
       Stub_Gtk_Tree_View_Column : Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record;
       Tmp_Return                : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), X, Y, Tmp_Acc_Path'Access, Tmp_Acc_Column'Access, Acc_Cell_X'Access, Acc_Cell_Y'Access);
-      Acc_Column := Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tmp_Acc_Column, Stub_Gtk_Tree_View_Column));
-      Acc_Path := From_Object (Tmp_Acc_Path);
-      Path := Acc_Path;
-      Column := Acc_Column;
-      Cell_X := Acc_Cell_X;
-      Cell_Y := Acc_Cell_Y;
+      Tmp_Return := Internal (Get_Object (Self), X, Y, Acc_Path, Acc_Column, Cell_X, Cell_Y);
+      if Column /= null then
+         Column.all := Gtk.Tree_View_Column.Gtk_Tree_View_Column (Get_User_Data (Tmp_Column, Stub_Gtk_Tree_View_Column));
+      end if;
+      if Path /= null then
+         Path.all := From_Object (Tmp_Path);
+      end if;
       return Tmp_Return /= 0;
    end Is_Blank_At_Pos;
 

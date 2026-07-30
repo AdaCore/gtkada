@@ -687,7 +687,7 @@ package Glib.Variant is
 
    function Dup_Bytestring_Array
       (Self   : Gvariant;
-       Length : out Gsize) return GNAT.Strings.String_List;
+       Length : access Gsize := null) return GNAT.Strings.String_List;
    --  Gets the contents of an array of array of bytes Glib.Variant.Gvariant.
    --  This call makes a deep copy; the return result should be released with
    --  g_strfreev.
@@ -701,7 +701,7 @@ package Glib.Variant is
 
    function Dup_Objv
       (Self   : Gvariant;
-       Length : out Gsize) return GNAT.Strings.String_List;
+       Length : access Gsize := null) return GNAT.Strings.String_List;
    --  Gets the contents of an array of object paths Glib.Variant.Gvariant.
    --  This call makes a deep copy; the return result should be released with
    --  g_strfreev.
@@ -715,7 +715,7 @@ package Glib.Variant is
 
    function Dup_String
       (Self   : Gvariant;
-       Length : out Gsize) return UTF8_String;
+       Length : access Gsize := null) return UTF8_String;
    --  Similar to Glib.Variant.Get_String except that instead of returning a
    --  constant string, the string is duplicated.
    --  The string will always be utf8 encoded.
@@ -733,7 +733,7 @@ package Glib.Variant is
 
    function Dup_Strv
       (Self   : Gvariant;
-       Length : out Gsize) return GNAT.Strings.String_List;
+       Length : access Gsize := null) return GNAT.Strings.String_List;
    --  Gets the contents of an array of strings Glib.Variant.Gvariant. This
    --  call makes a deep copy; the return result should be released with
    --  g_strfreev.
@@ -761,7 +761,7 @@ package Glib.Variant is
 
    function Get_Bytestring_Array
       (Self   : Gvariant;
-       Length : out Gsize) return GNAT.Strings.String_List;
+       Length : access Gsize := null) return GNAT.Strings.String_List;
    --  Gets the contents of an array of array of bytes Glib.Variant.Gvariant.
    --  This call makes a shallow copy; the return result should be released
    --  with g_free, but the individual strings must not be modified.
@@ -849,7 +849,7 @@ package Glib.Variant is
 
    function Get_Objv
       (Self   : Gvariant;
-       Length : out Gsize) return GNAT.Strings.String_List;
+       Length : access Gsize := null) return GNAT.Strings.String_List;
    --  Gets the contents of an array of object paths Glib.Variant.Gvariant.
    --  This call makes a shallow copy; the return result should be released
    --  with g_free, but the individual strings must not be modified.
@@ -875,7 +875,7 @@ package Glib.Variant is
 
    function Get_String
       (Self   : Gvariant;
-       Length : out Gsize) return UTF8_String;
+       Length : access Gsize := null) return UTF8_String;
    --  Returns the string value of a Glib.Variant.Gvariant instance with a
    --  string type. This includes the types G_VARIANT_TYPE_STRING,
    --  G_VARIANT_TYPE_OBJECT_PATH and G_VARIANT_TYPE_SIGNATURE.
@@ -892,7 +892,7 @@ package Glib.Variant is
 
    function Get_Strv
       (Self   : Gvariant;
-       Length : out Gsize) return GNAT.Strings.String_List;
+       Length : access Gsize := null) return GNAT.Strings.String_List;
    --  Gets the contents of an array of strings Glib.Variant.Gvariant. This
    --  call makes a shallow copy; the return result should be released with
    --  g_free, but the individual strings must not be modified.

@@ -176,10 +176,10 @@ package Glib.Simple_Action_Group is
       (Self           : not null access Gsimple_Action_Group_Record;
        Action_Name    : UTF8_String;
        Enabled        : out Boolean;
-       Parameter_Type : out Glib.Variant.Gvariant_Type;
-       State_Type     : out Glib.Variant.Gvariant_Type;
-       State_Hint     : out Glib.Variant.Gvariant;
-       State          : out Glib.Variant.Gvariant) return Boolean;
+       Parameter_Type : access Glib.Variant.Gvariant_Type := null;
+       State_Type     : access Glib.Variant.Gvariant_Type := null;
+       State_Hint     : access Glib.Variant.Gvariant := null;
+       State          : access Glib.Variant.Gvariant := null) return Boolean;
 
    procedure Add_Action
       (Self   : not null access Gsimple_Action_Group_Record;

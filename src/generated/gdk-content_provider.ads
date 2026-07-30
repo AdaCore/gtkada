@@ -109,7 +109,7 @@ package Gdk.Content_Provider is
 
    function Get_Value
       (Self  : not null access Gdk_Content_Provider_Record;
-       Value : out Glib.Values.GValue) return Boolean;
+       Value : in out Glib.Values.GValue) return Boolean;
    --  Gets the contents of Provider stored in Value.
    --  The Value will have been initialized to the `GType` the value should be
    --  provided in. This given `GType` does not need to be listed in the
