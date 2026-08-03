@@ -894,7 +894,7 @@ class AdaTypeArray(CType):
         self.isArray = True
 
     def convert_to_c(self, pkg=None):
-        return "%(var)s (%(var)s'First)'Address"
+        return "%(var)s'Address"
 
     def convert_from_c(self):
         # ??? This implementation is specialized for the Gtk.Clipboard pkg,
@@ -1046,6 +1046,9 @@ class AdaNaming(object):
 
         if cname == "gchar**" or name == "array_of_utf8" or name == "array_of_filename":
             t = UTF8_List()
+        elif name == "array_of_guint8":
+            t = AdaTypeArray("guint8")
+            isArray = True
         elif cname in ("gint**", "int**") or name in (
             "array_of_gint",
             "array_of_guint",

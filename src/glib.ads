@@ -104,6 +104,7 @@ package Glib is
    type Glong_Array    is array (Natural range <>) of Glong;
    type Gint_Array     is array (Natural range <>) of Gint;
    type Guint_Array    is array (Natural range <>) of Guint;
+   type Guint8_Array   is array (Natural range <>) of Guint8;
    type Guint32_Array  is array (Natural range <>) of Guint32;
    type Gushort_Array  is array (Natural range <>) of Gushort;
    type Gulong_Array   is array (Natural range <>) of Gulong;
