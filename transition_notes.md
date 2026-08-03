@@ -132,14 +132,6 @@ GFile.toml:
 
 - when done, reactivate bindings in GdkTexture.toml, GAppLaunchContext.toml
 
-GInputStream.toml
-
-- when done, reactivate bindings in GdkClipboard.toml, GLoadableIcon.toml, GResource.toml, GdkDrop.toml
-
-GOutputStream.toml
-
-- when doen, reactivate bindings in GdkContentProvider.toml
-
 GdkAppLaunchContext.toml:
 
 - when done, reactivate bindings in GdkDisplay.toml

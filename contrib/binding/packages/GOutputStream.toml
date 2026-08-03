@@ -1,0 +1,71 @@
+# ============================================================
+#   GOutputStream
+# ============================================================
+ada = "Glib.Output_Stream"
+
+[[enum]]
+ctype = "GOutputStreamSpliceFlags"
+ada = "Output_Stream_Splice_Flags"
+
+[[method]]
+id = "g_output_stream_write"
+
+# Drop "count" from the Ada profile: the buffer knows its own length, and
+# a caller who wants to write less simply passes a slice.
+[[method.parameter]]
+name = "count"
+ada = ""
+default = "Buffer'Length"
+
+[[method]]
+id = "g_output_stream_write_all"
+
+[[method.parameter]]
+name = "count"
+ada = ""
+default = "Buffer'Length"
+
+[[method]]
+id = "g_output_stream_write_async"
+
+[[method.parameter]]
+name = "count"
+ada = ""
+default = "Buffer'Length"
+
+[[method]]
+id = "g_output_stream_write_all_async"
+
+[[method.parameter]]
+name = "count"
+ada = ""
+default = "Buffer'Length"
+
+# Variadic, and its va_list sibling has no Ada equivalent here. Both must be
+# declined explicitly, otherwise the generator withs Glib.Error for their
+# profile before deciding it cannot bind them.
+[[method]]
+id = "g_output_stream_printf"
+bind = false
+
+[[method]]
+id = "g_output_stream_vprintf"
+bind = false
+
+# The scatter/gather family takes an array of GOutputVector, a record that is
+# not bound yet
+[[method]]
+id = "g_output_stream_writev"
+bind = false
+
+[[method]]
+id = "g_output_stream_writev_all"
+bind = false
+
+[[method]]
+id = "g_output_stream_writev_async"
+bind = false
+
+[[method]]
+id = "g_output_stream_writev_all_async"
+bind = false

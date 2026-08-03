@@ -10,7 +10,7 @@ bind = false
 [[method]]
 id = "gdk_drop_read_finish"
 bind = false
-# No GInputStream binding
+# Unconstrained `UTF8_String` temp object
 
 [[extra.with_body]]
 pkg = "System"

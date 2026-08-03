@@ -6,3 +6,7 @@ ada = "Gdk.GLTexture"
 [[extra.with_spec]]
 pkg = "System"
 use = false
+
+[[extra.with_body]]
+pkg = "Gtkada.Bindings"
+use = false
