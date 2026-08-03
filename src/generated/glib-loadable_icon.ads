@@ -25,12 +25,13 @@
 --  icons from streams.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib.Cancellable; use Glib.Cancellable;
-with Glib.Object;      use Glib.Object;
-with Glib.Types;       use Glib.Types;
-with Gtkada.Types;     use Gtkada.Types;
+with Glib.Cancellable;  use Glib.Cancellable;
+with Glib.Input_Stream; use Glib.Input_Stream;
+with Glib.Object;       use Glib.Object;
+with Glib.Types;        use Glib.Types;
+with Gtkada.Types;      use Gtkada.Types;
 pragma Warnings(Off);  --  might be unused
-with Gtkada.Bindings;  use Gtkada.Bindings;
+with Gtkada.Bindings;   use Gtkada.Bindings;
 pragma Warnings(On);
 
 package Glib.Loadable_Icon is
@@ -67,19 +68,46 @@ package Glib.Loadable_Icon is
    -- Methods --
    -------------
 
+   function Load
+      (Self        : Gloadable_Icon;
+       Size        : Glib.Gint;
+       The_Type    : access UTF8_String := null;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       return Glib.Input_Stream.Ginput_Stream;
+   --  Loads a loadable icon. For the asynchronous version of this function,
+   --  see Glib.Loadable_Icon.Load_Async.
+   --  @param Size an integer.
+   --  @param The_Type a location to store the type of the loaded icon, null
+   --  to ignore.
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore.
+   --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from.
+
    procedure Load_Async
       (Self        : Gloadable_Icon;
        Size        : Glib.Gint;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Callback    : Gasync_Ready_Callback);
    --  Loads an icon asynchronously. To finish this function, see
-   --  g_loadable_icon_load_finish. For the synchronous, blocking version of
-   --  this function, see g_loadable_icon_load.
+   --  Glib.Loadable_Icon.Load_Finish. For the synchronous, blocking version of
+   --  this function, see Glib.Loadable_Icon.Load.
    --  @param Size an integer.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
    --  @param Callback a Gasync_Ready_Callback to call when the request is
    --  satisfied
+
+   function Load_Finish
+      (Self     : Gloadable_Icon;
+       Res      : Glib.G_Async_Result;
+       The_Type : access UTF8_String := null)
+       return Glib.Input_Stream.Ginput_Stream;
+   --  Finishes an asynchronous icon load started in
+   --  Glib.Loadable_Icon.Load_Async.
+   --  @param Res a Glib.G_Async_Result.
+   --  @param The_Type a location to store the type of the loaded icon, null
+   --  to ignore.
+   --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from.
 
    ----------------
    -- Interfaces --
@@ -108,7 +136,7 @@ package Glib.Loadable_Icon is
    --  to ignore.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
-   --  @return a Ginput.Stream.Ginput_Stream to read the icon from.
+   --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from.
 
    type Virtual_Load_Async is access procedure
      (Self        : Gloadable_Icon;
@@ -118,8 +146,8 @@ package Glib.Loadable_Icon is
       User_Data   : System.Address);
    pragma Convention (C, Virtual_Load_Async);
    --  Loads an icon asynchronously. To finish this function, see
-   --  g_loadable_icon_load_finish. For the synchronous, blocking version of
-   --  this function, see g_loadable_icon_load.
+   --  Glib.Loadable_Icon.Load_Finish. For the synchronous, blocking version of
+   --  this function, see Glib.Loadable_Icon.Load.
    --  @param Size an integer.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
@@ -137,7 +165,7 @@ package Glib.Loadable_Icon is
    --  @param Res a Glib.G_Async_Result.
    --  @param The_Type a location to store the type of the loaded icon, null
    --  to ignore.
-   --  @return a Ginput.Stream.Ginput_Stream to read the icon from.
+   --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from.
 
    subtype Loadable_Icon_Interface_Descr is Glib.Object.Interface_Description;
 

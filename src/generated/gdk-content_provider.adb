@@ -34,6 +34,59 @@ pragma Warnings(On);
 
 package body Gdk.Content_Provider is
 
+   procedure C_Gdk_Content_Provider_Write_Mime_Type_Async
+      (Self        : System.Address;
+       Mime_Type   : Gtkada.Types.Chars_Ptr;
+       Stream      : System.Address;
+       Io_Priority : Glib.Gint;
+       Cancellable : System.Address;
+       Callback    : System.Address;
+       User_Data   : System.Address);
+   pragma Import (C, C_Gdk_Content_Provider_Write_Mime_Type_Async, "gdk_content_provider_write_mime_type_async");
+   --  Asynchronously writes the contents of Provider to Stream in the given
+   --  Mime_Type.
+   --  The given mime type does not need to be listed in the formats returned
+   --  by [methodGdk.ContentProvider.ref_formats]. However, if the given
+   --  `GType` is not supported, `G_IO_ERROR_NOT_SUPPORTED` will be reported.
+   --  The given Stream will not be closed.
+   --  @param Mime_Type the mime type to provide the data in
+   --  @param Stream the `GOutputStream` to write to
+   --  @param Io_Priority I/O priority of the request.
+   --  @param Cancellable optional `GCancellable` object, null to ignore.
+   --  @param Callback callback to call when the request is satisfied
+   --  @param User_Data the data to pass to callback function
+
+   function To_Gasync_Ready_Callback is new Ada.Unchecked_Conversion
+     (System.Address, Gasync_Ready_Callback);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gasync_Ready_Callback, System.Address);
+
+   procedure Internal_Gasync_Ready_Callback
+      (Source_Object : System.Address;
+       Res           : Glib.G_Async_Result;
+       User_Data     : System.Address);
+   pragma Convention (C, Internal_Gasync_Ready_Callback);
+   --  @param Source_Object the object the asynchronous operation was started
+   --  with.
+   --  @param Res a Glib.G_Async_Result.
+   --  @param User_Data user data passed to the callback.
+
+   ------------------------------------
+   -- Internal_Gasync_Ready_Callback --
+   ------------------------------------
+
+   procedure Internal_Gasync_Ready_Callback
+      (Source_Object : System.Address;
+       Res           : Glib.G_Async_Result;
+       User_Data     : System.Address)
+   is
+      Func         : constant Gasync_Ready_Callback := To_Gasync_Ready_Callback (User_Data);
+      Stub_GObject : Glib.Object.GObject_Record;
+   begin
+      Func (Get_User_Data (Source_Object, Stub_GObject), Res);
+   end Internal_Gasync_Ready_Callback;
+
    package Type_Conversion_Gdk_Content_Provider is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gdk_Content_Provider_Record);
    pragma Unreferenced (Type_Conversion_Gdk_Content_Provider);
@@ -193,6 +246,29 @@ package body Gdk.Content_Provider is
    begin
       return From_Object (Internal (Get_Object (Self)));
    end Ref_Storable_Formats;
+
+   ---------------------------
+   -- Write_Mime_Type_Async --
+   ---------------------------
+
+   procedure Write_Mime_Type_Async
+      (Self        : not null access Gdk_Content_Provider_Record;
+       Mime_Type   : UTF8_String;
+       Stream      : not null access Glib.Output_Stream.Goutput_Stream_Record'Class;
+       Io_Priority : Glib.Gint;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback)
+   is
+      Tmp_Mime_Type : Gtkada.Types.Chars_Ptr := New_String (Mime_Type);
+   begin
+      if Callback = null then
+         C_Gdk_Content_Provider_Write_Mime_Type_Async (Get_Object (Self), Tmp_Mime_Type, Get_Object (Stream), Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+         Free (Tmp_Mime_Type);
+      else
+         C_Gdk_Content_Provider_Write_Mime_Type_Async (Get_Object (Self), Tmp_Mime_Type, Get_Object (Stream), Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+         Free (Tmp_Mime_Type);
+      end if;
+   end Write_Mime_Type_Async;
 
    ----------------------------
    -- Write_Mime_Type_Finish --

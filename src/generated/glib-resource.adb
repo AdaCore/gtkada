@@ -23,6 +23,7 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Glib.Object;     use Glib.Object;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings; use Gtkada.Bindings;
 with Gtkada.Types;    use Gtkada.Types;
@@ -145,6 +146,30 @@ package body Glib.Resource is
       Free (Tmp_Path);
       return From_Object (Tmp_Return);
    end Lookup_Data;
+
+   -----------------
+   -- Open_Stream --
+   -----------------
+
+   function Open_Stream
+      (Self         : Gresource;
+       Path         : UTF8_String;
+       Lookup_Flags : Resource_Lookup_Flags)
+       return Glib.Input_Stream.Ginput_Stream
+   is
+      function Internal
+         (Self         : System.Address;
+          Path         : Gtkada.Types.Chars_Ptr;
+          Lookup_Flags : Resource_Lookup_Flags) return System.Address;
+      pragma Import (C, Internal, "g_resource_open_stream");
+      Tmp_Path           : Gtkada.Types.Chars_Ptr := New_String (Path);
+      Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
+      Tmp_Return         : System.Address;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags);
+      Free (Tmp_Path);
+      return Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+   end Open_Stream;
 
    ---------
    -- Ref --

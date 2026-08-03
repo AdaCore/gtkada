@@ -178,6 +178,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
 with Glib.Bytes;              use Glib.Bytes;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Input_Stream;       use Glib.Input_Stream;
 
 package Glib.Resource is
 
@@ -306,6 +307,20 @@ package Glib.Resource is
    --  @param Lookup_Flags A Glib.Resource.Resource_Lookup_Flags
    --  @return Glib.Bytes.Gbytes or null on error. Free the returned object
    --  with Glib.Bytes.Unref
+
+   function Open_Stream
+      (Self         : Gresource;
+       Path         : UTF8_String;
+       Lookup_Flags : Resource_Lookup_Flags)
+       return Glib.Input_Stream.Ginput_Stream;
+   --  Looks for a file at the specified Path in the resource and returns a
+   --  Glib.Input_Stream.Ginput_Stream that lets you read the data.
+   --  Lookup_Flags controls the behaviour of the lookup.
+   --  Since: gtk+ 2.32
+   --  @param Path A pathname inside the resource
+   --  @param Lookup_Flags A Glib.Resource.Resource_Lookup_Flags
+   --  @return Glib.Input_Stream.Ginput_Stream or null on error. Free the
+   --  returned object with g_object_unref
 
    function Ref (Self : Gresource) return Gresource;
    --  Atomically increments the reference count of Resource by one. This
