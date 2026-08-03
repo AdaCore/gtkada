@@ -325,7 +325,7 @@ package Glib.Variant is
    --  Since: gtk+ 2.24
    --  @param Value a Guint8 value
 
-   procedure G_New_Bytestring (Self : out Gvariant; String : Gint_Array);
+   procedure G_New_Bytestring (Self : out Gvariant; String : Guint8_Array);
    --  Creates an array-of-bytes Glib.Variant.Gvariant with the contents of
    --  String. This function is just like g_variant_new_string except that the
    --  string need not be valid utf8.
@@ -334,7 +334,7 @@ package Glib.Variant is
    --  Since: gtk+ 2.26
    --  @param String a normal nul-terminated string in no particular encoding
 
-   function Gvariant_New_Bytestring (String : Gint_Array) return Gvariant;
+   function Gvariant_New_Bytestring (String : Guint8_Array) return Gvariant;
    --  Creates an array-of-bytes Glib.Variant.Gvariant with the contents of
    --  String. This function is just like g_variant_new_string except that the
    --  string need not be valid utf8.

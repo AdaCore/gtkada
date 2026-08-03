@@ -62,14 +62,14 @@ package Glib.Bytes is
    -- Constructors --
    ------------------
 
-   procedure G_New (Self : out Gbytes; Data : Gint_Array; Size : Gsize);
+   procedure G_New (Self : out Gbytes; Data : Guint8_Array; Size : Gsize);
    --  Creates a new Glib.Bytes.Gbytes from Data.
    --  Data is copied. If Size is 0, Data may be null.
    --  Since: gtk+ 2.32
    --  @param Data the data to be used for the bytes
    --  @param Size the size of Data
 
-   function Gbytes_New (Data : Gint_Array; Size : Gsize) return Gbytes;
+   function Gbytes_New (Data : Guint8_Array; Size : Gsize) return Gbytes;
    --  Creates a new Glib.Bytes.Gbytes from Data.
    --  Data is copied. If Size is 0, Data may be null.
    --  Since: gtk+ 2.32
@@ -78,7 +78,7 @@ package Glib.Bytes is
 
    procedure G_New_Static
       (Self : out Gbytes;
-       Data : Gint_Array;
+       Data : Guint8_Array;
        Size : Gsize);
    --  Creates a new Glib.Bytes.Gbytes from static data.
    --  Data must be static (ie: never modified or freed). It may be null if
@@ -88,7 +88,7 @@ package Glib.Bytes is
    --  @param Size the size of Data
 
    function Gbytes_New_Static
-      (Data : Gint_Array;
+      (Data : Guint8_Array;
        Size : Gsize) return Gbytes;
    --  Creates a new Glib.Bytes.Gbytes from static data.
    --  Data must be static (ie: never modified or freed). It may be null if
@@ -97,7 +97,10 @@ package Glib.Bytes is
    --  @param Data the data to be used for the bytes
    --  @param Size the size of Data
 
-   procedure G_New_Take (Self : out Gbytes; Data : Gint_Array; Size : Gsize);
+   procedure G_New_Take
+      (Self : out Gbytes;
+       Data : Guint8_Array;
+       Size : Gsize);
    --  Creates a new Glib.Bytes.Gbytes from Data.
    --  After this call, Data belongs to the bytes and may no longer be
    --  modified by the caller. g_free will be called on Data when the bytes is
@@ -111,7 +114,9 @@ package Glib.Bytes is
    --  @param Data the data to be used for the bytes
    --  @param Size the size of Data
 
-   function Gbytes_New_Take (Data : Gint_Array; Size : Gsize) return Gbytes;
+   function Gbytes_New_Take
+      (Data : Guint8_Array;
+       Size : Gsize) return Gbytes;
    --  Creates a new Glib.Bytes.Gbytes from Data.
    --  After this call, Data belongs to the bytes and may no longer be
    --  modified by the caller. g_free will be called on Data when the bytes is

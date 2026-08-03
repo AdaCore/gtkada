@@ -392,7 +392,7 @@ package body Gtk.Tree_Model is
           Length  : Gsize) return System.Address;
       pragma Import (C, Internal, "gtk_tree_path_new_from_indicesv");
    begin
-      Path.Set_Object (Internal (Indices (Indices'First)'Address, Length));
+      Path.Set_Object (Internal (Indices'Address, Length));
    end Gtk_New_From_Indicesv;
 
    -----------------------
@@ -435,7 +435,7 @@ package body Gtk.Tree_Model is
       pragma Import (C, Internal, "gtk_tree_path_new_from_indicesv");
       Path : Gtk_Tree_Path;
    begin
-      Path.Set_Object (Internal (Indices (Indices'First)'Address, Length));
+      Path.Set_Object (Internal (Indices'Address, Length));
       return Path;
    end Gtk_Tree_Path_New_From_Indicesv;
 
@@ -1037,7 +1037,7 @@ package body Gtk.Tree_Model is
           Length     : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_model_rows_reordered_with_length");
    begin
-      Internal (Tree_Model, Get_Object (Path), Iter_Or_Null (Iter'Address), New_Order (New_Order'First)'Address, Length);
+      Internal (Tree_Model, Get_Object (Path), Iter_Or_Null (Iter'Address), New_Order'Address, Length);
    end Rows_Reordered_With_Length;
 
    ---------------

@@ -1112,7 +1112,7 @@ package body Gtk.Tree_Model_Sort is
           Length     : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_model_rows_reordered_with_length");
    begin
-      Internal (Get_Object (Tree_Model), Get_Object (Path), Iter_Or_Null (Iter'Address), New_Order (New_Order'First)'Address, Length);
+      Internal (Get_Object (Tree_Model), Get_Object (Path), Iter_Or_Null (Iter'Address), New_Order'Address, Length);
    end Rows_Reordered_With_Length;
 
    ------------------------

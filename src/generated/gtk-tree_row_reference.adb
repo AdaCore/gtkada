@@ -223,7 +223,7 @@ package body Gtk.Tree_Row_Reference is
           New_Order : System.Address);
       pragma Import (C, Internal, "gtk_tree_row_reference_reordered");
    begin
-      Internal (Get_Object (Proxy), Get_Object (Path), Iter, New_Order (New_Order'First)'Address);
+      Internal (Get_Object (Proxy), Get_Object (Path), Iter, New_Order'Address);
    end Reordered;
 
 end Gtk.Tree_Row_Reference;

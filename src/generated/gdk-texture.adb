@@ -226,7 +226,7 @@ package body Gdk.Texture is
 
    procedure Download
       (Self   : not null access Gdk_Texture_Record;
-       Data   : Gint_Array;
+       Data   : Guint8_Array;
        Stride : Gsize)
    is
       procedure Internal
@@ -235,7 +235,7 @@ package body Gdk.Texture is
           Stride : Gsize);
       pragma Import (C, Internal, "gdk_texture_download");
    begin
-      Internal (Get_Object (Self), Data (Data'First)'Address, Stride);
+      Internal (Get_Object (Self), Data'Address, Stride);
    end Download;
 
    ---------------------

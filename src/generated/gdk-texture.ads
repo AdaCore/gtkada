@@ -327,7 +327,7 @@ package Gdk.Texture is
 
    procedure Download
       (Self   : not null access Gdk_Texture_Record;
-       Data   : Gint_Array;
+       Data   : Guint8_Array;
        Stride : Gsize);
    --  Downloads the Texture into local memory.
    --  This may be an expensive operation, as the actual texture data may
