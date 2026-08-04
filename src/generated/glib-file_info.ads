@@ -32,8 +32,8 @@
 --  To obtain a Glib.File_Info.Gfile_Info for a Gfile.Gfile, use
 --  g_file_query_info (or its async variant). To obtain a
 --  Glib.File_Info.Gfile_Info for a file input or output stream, use
---  g_file_input_stream_query_info or g_file_output_stream_query_info (or their
---  async variants).
+--  Glib.File_Input_Stream.Query_Info or Glib.File_Output_Stream.Query_Info (or
+--  their async variants).
 --
 --  To change the actual attributes of a file, you should then set the
 --  attribute in the Glib.File_Info.Gfile_Info and call
