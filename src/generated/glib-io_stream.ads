@@ -28,7 +28,7 @@
 --
 --  Examples of Glib.IO_Stream.Giostream objects are
 --  Gsocket.Connection.Gsocket_Connection, which represents a two-way network
---  connection; and Gfile.Iostream.Gfile_Iostream, which represents a file
+--  connection; and Glib.File_IO_Stream.Gfile_Iostream, which represents a file
 --  handle opened in read-write mode.
 --
 --  To do the actual reading and writing you need to get the substreams with

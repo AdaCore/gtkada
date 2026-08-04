@@ -175,7 +175,7 @@ binding = (
     "--Gio.FileAttributeInfoList",  # Not tested yet, from Gio
     "--Gio.FileAttributeMatcher",  # Not tested yet, from Gio
     "--Gio.FileEnumerator",  # Not tested yet, from Gio
-    "--Gio.FileIOStream",  # Not tested yet, from Gio
+    "Gio.FileIOStream",
     "--Gio.FileIcon",  # Not tested yet, from Gio
     "Gio.FileInfo",
     "Gio.FileInputStream",
