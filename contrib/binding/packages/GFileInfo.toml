@@ -1,0 +1,81 @@
+# ============================================================
+#   GFileInfo
+# ============================================================
+
+ada = "Glib.File_Info"
+
+[[method]]
+id = "g_file_info_set_attribute_mask"
+bind = false
+# Needs Attribute_Matcher
+
+[[method]]
+id = "g_file_info_get_modification_date_time"
+bind = false
+# Needs GDateTime
+
+[[method]]
+id = "g_file_info_set_modification_date_time"
+bind = false
+# Needs GDateTime
+
+[[method]]
+id = "g_file_info_get_deletion_date"
+bind = false
+# Needs GDateTime
+
+[[method]]
+id = "g_file_info_get_modification_time"
+bind = false
+# Needs GTimeVal, deprecated
+
+[[method]]
+id = "g_file_info_set_modification_time"
+bind = false
+# Needs GTimeVal, deprecated
+
+[[method]]
+id = "g_file_info_get_attribute_data"
+bind = false
+# Needs GFileAttributeType
+
+[[method]]
+id = "g_file_info_get_attribute_type"
+bind = false
+# Needs GFileAttributeType
+
+[[method]]
+id = "g_file_info_set_attribute"
+bind = false
+# Needs GFileAttributeType
+
+[[method]]
+id = "g_file_info_get_attribute_status"
+bind = false
+# Needs GFile_Attribute_Status
+
+[[method]]
+id = "g_file_info_set_attribute_status"
+bind = false
+# Needs GFile_Attribute_Status
+
+[[method]]
+id = "g_file_info_get_file_type"
+bind = false
+# Needs GFile_Type
+
+[[method]]
+id = "g_file_info_set_file_type"
+bind = false
+# Needs GFile_Type
+
+[[method]]
+id = "g_file_info_get_size"
+return = "Glib.Gint64" # override return type: goffset
+
+[[method]]
+id = "g_file_info_set_size"
+
+[[method.parameter]]
+name = "size"
+type = "Glib.Gint64"
