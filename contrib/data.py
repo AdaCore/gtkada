@@ -190,7 +190,7 @@ binding = (
     "--Gio.IOModule",  # Not tested yet, from Gio
     "--Gio.IOModuleScope",  # Not tested yet, from Gio
     "--Gio.IOSchedulerJob",  # Not tested yet, from Gio
-    "--Gio.IOStream",  # Not tested yet, from Gio
+    "Gio.IOStream",
     "--Gio.InetAddress",  # Not tested yet, from Gio
     "--Gio.InetAddressMask",  # Not tested yet, from Gio
     "--Gio.InetSocketAddress",  # Not tested yet, from Gio
@@ -703,6 +703,8 @@ naming.girname_to_ctype = {
     "Gio.AsyncReadyCallback": "GAsyncReadyCallback",
     "Gio.AsyncResult": "GAsyncResult*",
     "Gio.Cancellable": "GCancellable*",
+    "InputStream": "GInputStream",
+    "OutputStream": "GOutputStream",
     "GLib.Variant": "GVariant",
     "Gdk.Clipboard": "GdkClipboard",
     "Gdk.Paintable": "GdkPaintable",
