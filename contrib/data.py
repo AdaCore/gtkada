@@ -177,10 +177,10 @@ binding = (
     "--Gio.FileEnumerator",  # Not tested yet, from Gio
     "--Gio.FileIOStream",  # Not tested yet, from Gio
     "--Gio.FileIcon",  # Not tested yet, from Gio
-    "--Gio.FileInfo",  # Not tested yet, from Gio
-    "--Gio.FileInputStream",  # Not tested yet, from Gio
+    "Gio.FileInfo",
+    "Gio.FileInputStream",
     "--Gio.FileMonitor",  # Not tested yet, from Gio
-    "--Gio.FileOutputStream",  # Not tested yet, from Gio
+    "Gio.FileOutputStream",
     "--Gio.FilenameCompleter",  # Not tested yet, from Gio
     "--Gio.FilterInputStream",  # Not tested yet, from Gio
     "--Gio.FilterOutputStream",  # Not tested yet, from Gio
