@@ -273,6 +273,8 @@ package body Gtk.Cell_View is
          Tmp_Return := Internal (Tmp_Markup);
          Free (Tmp_Markup);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Markup);
       end if;
    end Initialize_With_Markup;
 
@@ -294,6 +296,8 @@ package body Gtk.Cell_View is
          Tmp_Return := Internal (Tmp_Text);
          Free (Tmp_Text);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Text);
       end if;
    end Initialize_With_Text;
 

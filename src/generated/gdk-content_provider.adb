@@ -165,6 +165,8 @@ package body Gdk.Content_Provider is
          Tmp_Return := Internal (Tmp_Mime_Type, Get_Object (Bytes));
          Free (Tmp_Mime_Type);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Mime_Type);
       end if;
    end Initialize_For_Bytes;
 

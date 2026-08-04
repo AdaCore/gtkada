@@ -2116,6 +2116,25 @@ class Subprogram(object):
 
         return result
 
+    def freecall(self, in_pkg=None, values=dict()):
+        """Returns code (string) thet frees temporary parameters
+        """
+        if self._import:
+            lang = "ada->c"
+        else:
+            lang = "ada"
+
+        postcall = ""
+
+        for arg in self.plist:
+            c = arg.as_call(
+                pkg=in_pkg,
+                lang=lang,  # An instance of VariableCall
+                value=values.get(arg.name.lower(), None),
+            )
+            postcall = c.postcall + postcall
+        return postcall
+
     def call_to_string(self, call: tuple, pkg=None, lang="ada"):
         """CALL is the result of call() above.
         This function returns a string that contains the code for the

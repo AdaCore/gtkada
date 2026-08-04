@@ -167,6 +167,8 @@ package body Gtk.Builder is
          Tmp_Return := Internal (Tmp_Filename);
          Free (Tmp_Filename);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Filename);
       end if;
    end Initialize_From_File;
 
@@ -188,6 +190,8 @@ package body Gtk.Builder is
          Tmp_Return := Internal (Tmp_Resource_Path);
          Free (Tmp_Resource_Path);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Resource_Path);
       end if;
    end Initialize_From_Resource;
 
@@ -211,6 +215,8 @@ package body Gtk.Builder is
          Tmp_Return := Internal (Tmp_String, Length);
          Free (Tmp_String);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_String);
       end if;
    end Initialize_From_String;
 

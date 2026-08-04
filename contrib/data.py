@@ -636,6 +636,13 @@ binding = (
     "Gtk.Window",
     "----GtkWindowAccessible",  # We do not support atk
     "Gtk.WindowGroup",
+    "Gtk.ShortcutAction",
+    "Gtk.ActivateAction",
+    "Gtk.CallbackAction",
+    "Gtk.MnemonicAction",
+    "Gtk.NamedAction",
+    "Gtk.NothingAction",
+    "Gtk.SignalAction",
 )
 
 # Entries that are bound through manual/TOML glue instead of GIR class lookup.

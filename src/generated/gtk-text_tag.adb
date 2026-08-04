@@ -89,6 +89,8 @@ package body Gtk.Text_Tag is
          Tmp_Return := Internal (Tmp_Name);
          Free (Tmp_Name);
          Set_Object (Tag, Tmp_Return);
+      else
+         Free (Tmp_Name);
       end if;
    end Initialize;
 

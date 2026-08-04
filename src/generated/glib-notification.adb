@@ -73,6 +73,8 @@ package body Glib.Notification is
          Tmp_Return := Internal (Tmp_Title);
          Free (Tmp_Title);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Title);
       end if;
    end Initialize;
 

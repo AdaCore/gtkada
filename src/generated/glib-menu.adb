@@ -218,6 +218,9 @@ package body Glib.Menu is
          Free (Tmp_Detailed_Action);
          Free (Tmp_Label);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Detailed_Action);
+         Free (Tmp_Label);
       end if;
    end Initialize;
 
@@ -265,6 +268,8 @@ package body Glib.Menu is
          Tmp_Return := Internal (Tmp_Label, Get_Object (Section));
          Free (Tmp_Label);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Label);
       end if;
    end Initialize_Section;
 
@@ -293,6 +298,8 @@ package body Glib.Menu is
          Tmp_Return := Internal (Tmp_Label, Get_Object (Submenu));
          Free (Tmp_Label);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Label);
       end if;
    end Initialize_Submenu;
 

@@ -1,0 +1,18 @@
+# ============================================================
+#   GtkShortcutAction
+# ============================================================
+
+[[enum]]
+ctype = "GtkShortcutActionFlags"
+asbitfield = true
+
+[[method]]
+id = "gtk_shortcut_action_parse_string"
+ada = "Gtk_New"
+
+[[method]]
+id = "gtk_shortcut_action_print"
+
+[[method.parameter]]
+name = "string"
+direction = "access"
