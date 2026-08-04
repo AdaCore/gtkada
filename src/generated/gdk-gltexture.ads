@@ -30,6 +30,7 @@ with Gdk.Snapshot;       use Gdk.Snapshot;
 with Gdk.Texture;        use Gdk.Texture;
 with Glib;               use Glib;
 with Glib.Cancellable;   use Glib.Cancellable;
+with Glib.Input_Stream;  use Glib.Input_Stream;
 with Glib.Loadable_Icon; use Glib.Loadable_Icon;
 with Glib.Object;        use Glib.Object;
 with Glib.Types;         use Glib.Types;
@@ -142,8 +143,8 @@ package Gdk.GLTexture is
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Callback    : Gasync_Ready_Callback);
    --  Loads an icon asynchronously. To finish this function, see
-   --  g_loadable_icon_load_finish. For the synchronous, blocking version of
-   --  this function, see g_loadable_icon_load.
+   --  Glib.Loadable_Icon.Load_Finish. For the synchronous, blocking version of
+   --  this function, see Glib.Loadable_Icon.Load.
    --  @param Size an integer.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
@@ -190,6 +191,19 @@ package Gdk.GLTexture is
        Snapshot : not null access Gdk.Snapshot.Gdk_Snapshot_Record'Class;
        Width    : Gdouble;
        Height   : Gdouble);
+
+   function Load
+      (Self        : not null access Gdk_Gltexture_Record;
+       Size        : Glib.Gint;
+       The_Type    : access UTF8_String := null;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       return Glib.Input_Stream.Ginput_Stream;
+
+   function Load_Finish
+      (Self     : not null access Gdk_Gltexture_Record;
+       Res      : Glib.G_Async_Result;
+       The_Type : access UTF8_String := null)
+       return Glib.Input_Stream.Ginput_Stream;
 
    ----------------
    -- Interfaces --

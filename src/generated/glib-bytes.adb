@@ -46,13 +46,13 @@ package body Glib.Bytes is
    -- G_New --
    -----------
 
-   procedure G_New (Self : out Gbytes; Data : Gint_Array; Size : Gsize) is
+   procedure G_New (Self : out Gbytes; Data : Guint8_Array; Size : Gsize) is
       function Internal
          (Data : System.Address;
           Size : Gsize) return System.Address;
       pragma Import (C, Internal, "g_bytes_new");
    begin
-      Self.Set_Object (Internal (Data (Data'First)'Address, Size));
+      Self.Set_Object (Internal (Data'Address, Size));
    end G_New;
 
    ------------------
@@ -61,7 +61,7 @@ package body Glib.Bytes is
 
    procedure G_New_Static
       (Self : out Gbytes;
-       Data : Gint_Array;
+       Data : Guint8_Array;
        Size : Gsize)
    is
       function Internal
@@ -69,34 +69,38 @@ package body Glib.Bytes is
           Size : Gsize) return System.Address;
       pragma Import (C, Internal, "g_bytes_new_static");
    begin
-      Self.Set_Object (Internal (Data (Data'First)'Address, Size));
+      Self.Set_Object (Internal (Data'Address, Size));
    end G_New_Static;
 
    ----------------
    -- G_New_Take --
    ----------------
 
-   procedure G_New_Take (Self : out Gbytes; Data : Gint_Array; Size : Gsize) is
+   procedure G_New_Take
+      (Self : out Gbytes;
+       Data : Guint8_Array;
+       Size : Gsize)
+   is
       function Internal
          (Data : System.Address;
           Size : Gsize) return System.Address;
       pragma Import (C, Internal, "g_bytes_new_take");
    begin
-      Self.Set_Object (Internal (Data (Data'First)'Address, Size));
+      Self.Set_Object (Internal (Data'Address, Size));
    end G_New_Take;
 
    ----------------
    -- Gbytes_New --
    ----------------
 
-   function Gbytes_New (Data : Gint_Array; Size : Gsize) return Gbytes is
+   function Gbytes_New (Data : Guint8_Array; Size : Gsize) return Gbytes is
       function Internal
          (Data : System.Address;
           Size : Gsize) return System.Address;
       pragma Import (C, Internal, "g_bytes_new");
       Self : Gbytes;
    begin
-      Self.Set_Object (Internal (Data (Data'First)'Address, Size));
+      Self.Set_Object (Internal (Data'Address, Size));
       return Self;
    end Gbytes_New;
 
@@ -105,7 +109,7 @@ package body Glib.Bytes is
    -----------------------
 
    function Gbytes_New_Static
-      (Data : Gint_Array;
+      (Data : Guint8_Array;
        Size : Gsize) return Gbytes
    is
       function Internal
@@ -114,7 +118,7 @@ package body Glib.Bytes is
       pragma Import (C, Internal, "g_bytes_new_static");
       Self : Gbytes;
    begin
-      Self.Set_Object (Internal (Data (Data'First)'Address, Size));
+      Self.Set_Object (Internal (Data'Address, Size));
       return Self;
    end Gbytes_New_Static;
 
@@ -122,14 +126,17 @@ package body Glib.Bytes is
    -- Gbytes_New_Take --
    ---------------------
 
-   function Gbytes_New_Take (Data : Gint_Array; Size : Gsize) return Gbytes is
+   function Gbytes_New_Take
+      (Data : Guint8_Array;
+       Size : Gsize) return Gbytes
+   is
       function Internal
          (Data : System.Address;
           Size : Gsize) return System.Address;
       pragma Import (C, Internal, "g_bytes_new_take");
       Self : Gbytes;
    begin
-      Self.Set_Object (Internal (Data (Data'First)'Address, Size));
+      Self.Set_Object (Internal (Data'Address, Size));
       return Self;
    end Gbytes_New_Take;
 

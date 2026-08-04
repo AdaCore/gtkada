@@ -25,6 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtkada.Bindings;
 with System;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Types;               use Gtkada.Types;
@@ -40,8 +41,8 @@ package body Gdk.Texture is
        User_Data   : System.Address);
    pragma Import (C, C_G_Loadable_Icon_Load_Async, "g_loadable_icon_load_async");
    --  Loads an icon asynchronously. To finish this function, see
-   --  g_loadable_icon_load_finish. For the synchronous, blocking version of
-   --  this function, see g_loadable_icon_load.
+   --  Glib.Loadable_Icon.Load_Finish. For the synchronous, blocking version of
+   --  this function, see Glib.Loadable_Icon.Load.
    --  @param Size an integer.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
@@ -226,7 +227,7 @@ package body Gdk.Texture is
 
    procedure Download
       (Self   : not null access Gdk_Texture_Record;
-       Data   : Gint_Array;
+       Data   : Guint8_Array;
        Stride : Gsize)
    is
       procedure Internal
@@ -235,7 +236,7 @@ package body Gdk.Texture is
           Stride : Gsize);
       pragma Import (C, Internal, "gdk_texture_download");
    begin
-      Internal (Get_Object (Self), Data (Data'First)'Address, Stride);
+      Internal (Get_Object (Self), Data'Address, Stride);
    end Download;
 
    ---------------------
@@ -491,6 +492,62 @@ package body Gdk.Texture is
    begin
       Internal (Get_Object (Self));
    end Invalidate_Size;
+
+   ----------
+   -- Load --
+   ----------
+
+   function Load
+      (Self        : not null access Gdk_Texture_Record;
+       Size        : Glib.Gint;
+       The_Type    : access UTF8_String := null;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       return Glib.Input_Stream.Ginput_Stream
+   is
+      function Internal
+         (Self        : System.Address;
+          Size        : Glib.Gint;
+          The_Type    : access Gtkada.Types.Chars_Ptr;
+          Cancellable : System.Address) return System.Address;
+      pragma Import (C, Internal, "g_loadable_icon_load");
+      Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
+      Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
+      Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
+      Tmp_Return         : System.Address;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Size, Acc_The_Type, Get_Object_Or_Null (GObject (Cancellable)));
+      if The_Type /= null then
+         The_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_The_Type);
+      end if;
+      return Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+   end Load;
+
+   -----------------
+   -- Load_Finish --
+   -----------------
+
+   function Load_Finish
+      (Self     : not null access Gdk_Texture_Record;
+       Res      : Glib.G_Async_Result;
+       The_Type : access UTF8_String := null)
+       return Glib.Input_Stream.Ginput_Stream
+   is
+      function Internal
+         (Self     : System.Address;
+          Res      : Glib.G_Async_Result;
+          The_Type : access Gtkada.Types.Chars_Ptr) return System.Address;
+      pragma Import (C, Internal, "g_loadable_icon_load_finish");
+      Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
+      Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
+      Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
+      Tmp_Return         : System.Address;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Res, Acc_The_Type);
+      if The_Type /= null then
+         The_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_The_Type);
+      end if;
+      return Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+   end Load_Finish;
 
    --------------
    -- Snapshot --

@@ -15,6 +15,9 @@ ada = "Register"
 id = "g_resources_unregister"
 ada = "Unregister"
 
-[[method]]
-id = "g_resource_open_stream"
-bind = false # missing Ginput_Stream
+# Open_Stream converts its result with Get_User_Data. GResource is a boxed
+# type, so the spec does not with Glib.Object; without this the name is
+# hidden by the homograph Glib.Main.Get_User_Data, which the spec's "use
+# Glib.Input_Stream" drags into scope.
+[[extra.with_body]]
+pkg = "Glib.Object"

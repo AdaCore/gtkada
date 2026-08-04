@@ -1,0 +1,39 @@
+# ============================================================
+#   GInputStream
+# ============================================================
+ada = "Glib.Input_Stream"
+
+[[method]]
+id = "g_input_stream_read"
+
+# The GIR annotates "count" as direction="out", but C takes gsize by
+# value. Force "in" so it is passed by value, and drop it from the Ada
+# profile: the buffer knows its own length, and a caller who wants to
+# read less simply passes a slice.
+[[method.parameter]]
+name = "count"
+ada = ""
+direction = "in"
+default = "Buffer'Length"
+
+[[method]]
+id = "g_input_stream_read_all"
+
+[[method.parameter]]
+name = "count"
+ada = ""
+direction = "in"
+default = "Buffer'Length"
+
+# The asynchronous read variants cannot be generated: their buffer is an
+# output copied back from C, which sends the generator through
+# AdaTypeArray.convert_from_c -- a Gdk.Clipboard special case that emits
+# references to an Atom_Arrays package and an N_Atoms variable that do not
+# exist here.
+[[method]]
+id = "g_input_stream_read_async"
+bind = false
+
+[[method]]
+id = "g_input_stream_read_all_async"
+bind = false

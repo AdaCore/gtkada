@@ -194,7 +194,7 @@ binding = (
     "--Gio.InetAddress",  # Not tested yet, from Gio
     "--Gio.InetAddressMask",  # Not tested yet, from Gio
     "--Gio.InetSocketAddress",  # Not tested yet, from Gio
-    "--Gio.InputStream",  # Not tested yet, from Gio
+    "Gio.InputStream",
     "Gio.ListStore",
     "--Gio.MemoryInputStream",  # Not tested yet, from Gio
     "--Gio.MemoryOutputStream",  # Not tested yet, from Gio
@@ -208,7 +208,7 @@ binding = (
     "--Gio.NetworkAddress",  # Not tested yet, from Gio
     "--Gio.NetworkService",  # Not tested yet, from Gio
     "Gio.Notification",
-    "--Gio.OutputStream",  # Not tested yet, from Gio
+    "Gio.OutputStream",
     "GLib.OptionContext",
     "--GPoll",  # Bound through manual_binding
     "--Spawn",  # Bound through manual_binding

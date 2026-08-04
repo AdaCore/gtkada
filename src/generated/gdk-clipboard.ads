@@ -45,6 +45,7 @@ with Gdk.Content_Provider; use Gdk.Content_Provider;
 with Gdk.Texture;          use Gdk.Texture;
 with Glib;                 use Glib;
 with Glib.Cancellable;     use Glib.Cancellable;
+with Glib.Input_Stream;    use Glib.Input_Stream;
 with Glib.Object;          use Glib.Object;
 with Glib.Properties;      use Glib.Properties;
 with Glib.Values;          use Glib.Values;
@@ -144,6 +145,17 @@ package Gdk.Clipboard is
    --  @param Io_Priority the I/O priority of the request
    --  @param Cancellable optional `GCancellable` object
    --  @param Callback callback to call when the request is satisfied
+
+   function Read_Finish
+      (Self          : not null access Gdk_Clipboard_Record;
+       Result        : Glib.G_Async_Result;
+       Out_Mime_Type : access UTF8_String := null)
+       return Glib.Input_Stream.Ginput_Stream;
+   --  Finishes an asynchronous clipboard read.
+   --  See [methodGdk.Clipboard.read_async].
+   --  @param Result a `GAsyncResult`
+   --  @param Out_Mime_Type location to store the chosen mime type
+   --  @return a `GInputStream`
 
    procedure Read_Text_Async
       (Self        : not null access Gdk_Clipboard_Record;

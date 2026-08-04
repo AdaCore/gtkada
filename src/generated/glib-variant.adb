@@ -88,11 +88,11 @@ package body Glib.Variant is
    -- G_New_Bytestring --
    ----------------------
 
-   procedure G_New_Bytestring (Self : out Gvariant; String : Gint_Array) is
+   procedure G_New_Bytestring (Self : out Gvariant; String : Guint8_Array) is
       function Internal (String : System.Address) return System.Address;
       pragma Import (C, Internal, "g_variant_new_bytestring");
    begin
-      Self.Set_Object (Internal (String (String'First)'Address));
+      Self.Set_Object (Internal (String'Address));
    end G_New_Bytestring;
 
    ----------------------------
@@ -388,12 +388,12 @@ package body Glib.Variant is
    -- Gvariant_New_Bytestring --
    -----------------------------
 
-   function Gvariant_New_Bytestring (String : Gint_Array) return Gvariant is
+   function Gvariant_New_Bytestring (String : Guint8_Array) return Gvariant is
       function Internal (String : System.Address) return System.Address;
       pragma Import (C, Internal, "g_variant_new_bytestring");
       Self : Gvariant;
    begin
-      Self.Set_Object (Internal (String (String'First)'Address));
+      Self.Set_Object (Internal (String'Address));
       return Self;
    end Gvariant_New_Bytestring;
 

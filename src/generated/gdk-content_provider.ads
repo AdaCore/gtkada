@@ -36,7 +36,9 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Content_Formats; use Gdk.Content_Formats;
 with Glib;                use Glib;
 with Glib.Bytes;          use Glib.Bytes;
+with Glib.Cancellable;    use Glib.Cancellable;
 with Glib.Object;         use Glib.Object;
+with Glib.Output_Stream;  use Glib.Output_Stream;
 with Glib.Properties;     use Glib.Properties;
 with Glib.Values;         use Glib.Values;
 
@@ -44,6 +46,24 @@ package Gdk.Content_Provider is
 
    type Gdk_Content_Provider_Record is new GObject_Record with null record;
    type Gdk_Content_Provider is access all Gdk_Content_Provider_Record'Class;
+
+   ---------------
+   -- Callbacks --
+   ---------------
+
+   type Gasync_Ready_Callback is access procedure
+     (Source_Object : access Glib.Object.GObject_Record'Class;
+      Res           : Glib.G_Async_Result);
+   --  Type definition for a function that will be called back when an
+   --  asynchronous operation within GIO has been completed.
+   --  Gasync_Ready_Callback callbacks from Gtask.Gtask are guaranteed to be
+   --  invoked in a later iteration of the [thread-default main
+   --  context][g-main-context-push-thread-default] where the Gtask.Gtask was
+   --  created. All other users of Gasync_Ready_Callback must likewise call it
+   --  asynchronously in a later iteration of the main context.
+   --  @param Source_Object the object the asynchronous operation was started
+   --  with.
+   --  @param Res a Glib.G_Async_Result.
 
    ------------------
    -- Constructors --
@@ -135,6 +155,25 @@ package Gdk.Content_Provider is
    --  This can be assumed to be a subset of
    --  [methodGdk.ContentProvider.ref_formats].
    --  @return The storable formats of the provider
+
+   procedure Write_Mime_Type_Async
+      (Self        : not null access Gdk_Content_Provider_Record;
+       Mime_Type   : UTF8_String;
+       Stream      : not null access Glib.Output_Stream.Goutput_Stream_Record'Class;
+       Io_Priority : Glib.Gint;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback);
+   --  Asynchronously writes the contents of Provider to Stream in the given
+   --  Mime_Type.
+   --  The given mime type does not need to be listed in the formats returned
+   --  by [methodGdk.ContentProvider.ref_formats]. However, if the given
+   --  `GType` is not supported, `G_IO_ERROR_NOT_SUPPORTED` will be reported.
+   --  The given Stream will not be closed.
+   --  @param Mime_Type the mime type to provide the data in
+   --  @param Stream the `GOutputStream` to write to
+   --  @param Io_Priority I/O priority of the request.
+   --  @param Cancellable optional `GCancellable` object, null to ignore.
+   --  @param Callback callback to call when the request is satisfied
 
    function Write_Mime_Type_Finish
       (Self   : not null access Gdk_Content_Provider_Record;

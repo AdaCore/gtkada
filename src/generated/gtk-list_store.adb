@@ -562,7 +562,7 @@ package body Gtk.List_Store is
       procedure Internal (Self : System.Address; New_Order : System.Address);
       pragma Import (C, Internal, "gtk_list_store_reorder");
    begin
-      Internal (Get_Object (Self), New_Order (New_Order'First)'Address);
+      Internal (Get_Object (Self), New_Order'Address);
    end Reorder;
 
    ----------------------
@@ -1361,7 +1361,7 @@ package body Gtk.List_Store is
           Length     : Glib.Gint);
       pragma Import (C, Internal, "gtk_tree_model_rows_reordered_with_length");
    begin
-      Internal (Get_Object (Tree_Model), Get_Object (Path), Iter_Or_Null (Iter'Address), New_Order (New_Order'First)'Address, Length);
+      Internal (Get_Object (Tree_Model), Get_Object (Path), Iter_Or_Null (Iter'Address), New_Order'Address, Length);
    end Rows_Reordered_With_Length;
 
    ------------------------

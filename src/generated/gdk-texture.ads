@@ -54,6 +54,7 @@ with Glib;                    use Glib;
 with Glib.Bytes;              use Glib.Bytes;
 with Glib.Cancellable;        use Glib.Cancellable;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Input_Stream;       use Glib.Input_Stream;
 with Glib.Loadable_Icon;      use Glib.Loadable_Icon;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
@@ -327,7 +328,7 @@ package Gdk.Texture is
 
    procedure Download
       (Self   : not null access Gdk_Texture_Record;
-       Data   : Gint_Array;
+       Data   : Guint8_Array;
        Stride : Gsize);
    --  Downloads the Texture into local memory.
    --  This may be an expensive operation, as the actual texture data may
@@ -430,8 +431,8 @@ package Gdk.Texture is
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Callback    : Gasync_Ready_Callback);
    --  Loads an icon asynchronously. To finish this function, see
-   --  g_loadable_icon_load_finish. For the synchronous, blocking version of
-   --  this function, see g_loadable_icon_load.
+   --  Glib.Loadable_Icon.Load_Finish. For the synchronous, blocking version of
+   --  this function, see Glib.Loadable_Icon.Load.
    --  @param Size an integer.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
@@ -477,6 +478,19 @@ package Gdk.Texture is
        Snapshot : not null access Gdk.Snapshot.Gdk_Snapshot_Record'Class;
        Width    : Gdouble;
        Height   : Gdouble);
+
+   function Load
+      (Self        : not null access Gdk_Texture_Record;
+       Size        : Glib.Gint;
+       The_Type    : access UTF8_String := null;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       return Glib.Input_Stream.Ginput_Stream;
+
+   function Load_Finish
+      (Self     : not null access Gdk_Texture_Record;
+       Res      : Glib.G_Async_Result;
+       The_Type : access UTF8_String := null)
+       return Glib.Input_Stream.Ginput_Stream;
 
    ----------------
    -- Properties --

@@ -6,3 +6,7 @@ ada = "Gdk.Memory_Texture"
 [[extra.with_body]]
 pkg = "System"
 use = false
+
+[[extra.with_body]]
+pkg = "Gtkada.Bindings"
+use = false
