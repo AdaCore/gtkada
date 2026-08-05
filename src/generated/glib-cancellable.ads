@@ -212,8 +212,8 @@ package Glib.Cancellable is
    --  can then be received using Glib.Cancellable.Get_Current.
    --  This is useful when implementing cancellable operations in code that
    --  does not allow you to pass down the cancellable object.
-   --  This is typically called automatically by e.g. Gfile.Gfile operations,
-   --  so you rarely have to call this yourself.
+   --  This is typically called automatically by e.g. Glib.GFile.Gfile
+   --  operations, so you rarely have to call this yourself.
 
    procedure Release_Fd (Self : not null access Gcancellable_Record);
    --  Releases a resources previously allocated by Glib.Cancellable.Get_Fd or

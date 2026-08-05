@@ -215,6 +215,11 @@ GIR node is matched.
 * `[[virtual_method]]` — match a `<virtual-method>`. For
   interfaces every virtual method is bound by default; for other
   classes none is bound. Use `bind = false` (or `true`) to override.
+  The special `id = "*"` sets the default for *every* virtual method
+  of the package, so a single entry suppresses a whole vtable that no
+  Ada program would implement (see `GFile.toml`, `GtkBuildable.toml`).
+  An entry naming a specific method always wins over `"*"`, whatever
+  the order in the file.
 
 | Key                  | Type   | Meaning                                                                                                                                                    |
 |----------------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------|

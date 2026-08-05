@@ -118,8 +118,8 @@
 --  data in it can be accessed globally in the process by using API calls like
 --  g_resources_open_stream to stream the data or g_resources_lookup_data to
 --  get a direct pointer to the data. You can also use URIs like
---  "resource:///org/gtk/Example/data/splashscreen.png" with Gfile.Gfile to
---  access the resource data.
+--  "resource:///org/gtk/Example/data/splashscreen.png" with Glib.GFile.Gfile
+--  to access the resource data.
 --
 --  Some higher-level APIs, such as Gtk.Application.Gtk_Application, will
 --  automatically load resources from certain well-known paths in the resource

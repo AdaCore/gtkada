@@ -1,0 +1,343 @@
+# ============================================================
+#   GFile
+# ============================================================
+
+ada = "Glib.GFile"
+
+[doc]
+text = '''
+A Glib.GFile.Gfile is an interface value, not a tagged object, so it cannot
+be unreferenced directly. All the constructors below transfer ownership to
+the caller; release the file with
+
+   Glib.Object.Unref (Glib.Types.To_Object (File));
+
+'''
+
+# GFile is the interface a filesystem back-end implements. No Ada program
+# does, so none of the 94 vtable slots is worth an access-to-subprogram type
+# plus a trampoline in src/misc_generated.c.
+[[virtual_method]]
+id = "*"
+bind = false
+
+[[enum]]
+ctype = "GFileQueryInfoFlags"
+
+[[enum]]
+ctype = "GFileCreateFlags"
+
+[[enum]]
+ctype = "GFileCopyFlags"
+
+# --- varargs -----------------------------------------------------------
+[[method]]
+id = "g_file_new_build_filename"
+bind = false
+# varargs
+
+# --- needs GFileProgressCallback ---------------------------------------
+[[method]]
+id = "g_file_copy"
+bind = false
+# Needs GFile_Progress_Callback
+
+[[method]]
+id = "g_file_copy_async"
+bind = false
+# Needs GFile_Progress_Callback
+
+[[method]]
+id = "g_file_copy_finish"
+bind = false
+# Needs GFile_Progress_Callback, see g_file_copy
+
+[[method]]
+id = "g_file_move"
+bind = false
+# Needs GFile_Progress_Callback
+
+# --- needs GFileEnumerator ---------------------------------------------
+[[method]]
+id = "g_file_enumerate_children"
+bind = false
+# Needs GFile_Enumerator
+
+[[method]]
+id = "g_file_enumerate_children_async"
+bind = false
+# Needs GFile_Enumerator
+
+[[method]]
+id = "g_file_enumerate_children_finish"
+bind = false
+# Needs GFile_Enumerator
+
+# --- needs GFileMonitor / GFileMonitorFlags ----------------------------
+[[method]]
+id = "g_file_monitor"
+bind = false
+# Needs GFile_Monitor
+
+[[method]]
+id = "g_file_monitor_directory"
+bind = false
+# Needs GFile_Monitor
+
+[[method]]
+id = "g_file_monitor_file"
+bind = false
+# Needs GFile_Monitor
+
+# --- needs GMount / GMountOperation ------------------------------------
+[[method]]
+id = "g_file_find_enclosing_mount"
+bind = false
+# Needs GMount
+
+[[method]]
+id = "g_file_find_enclosing_mount_async"
+bind = false
+# Needs GMount
+
+[[method]]
+id = "g_file_find_enclosing_mount_finish"
+bind = false
+# Needs GMount
+
+[[method]]
+id = "g_file_mount_enclosing_volume"
+bind = false
+# Needs GMount_Operation
+
+[[method]]
+id = "g_file_mount_enclosing_volume_finish"
+bind = false
+# Needs GMount_Operation, see g_file_mount_enclosing_volume
+
+[[method]]
+id = "g_file_mount_mountable"
+bind = false
+# Needs GMount_Operation
+
+[[method]]
+id = "g_file_mount_mountable_finish"
+bind = false
+# Needs GMount_Operation, see g_file_mount_mountable
+
+[[method]]
+id = "g_file_unmount_mountable"
+bind = false
+# Needs GMount_Operation
+
+[[method]]
+id = "g_file_unmount_mountable_finish"
+bind = false
+# Needs GMount_Operation, see g_file_unmount_mountable
+
+[[method]]
+id = "g_file_unmount_mountable_with_operation"
+bind = false
+# Needs GMount_Operation
+
+[[method]]
+id = "g_file_unmount_mountable_with_operation_finish"
+bind = false
+# Needs GMount_Operation, see g_file_unmount_mountable_with_operation
+
+[[method]]
+id = "g_file_eject_mountable"
+bind = false
+# Needs GMount_Operation
+
+[[method]]
+id = "g_file_eject_mountable_finish"
+bind = false
+# Needs GMount_Operation, see g_file_eject_mountable
+
+[[method]]
+id = "g_file_eject_mountable_with_operation"
+bind = false
+# Needs GMount_Operation
+
+[[method]]
+id = "g_file_eject_mountable_with_operation_finish"
+bind = false
+# Needs GMount_Operation, see g_file_eject_mountable_with_operation
+
+[[method]]
+id = "g_file_start_mountable"
+bind = false
+# Needs GMount_Operation
+
+[[method]]
+id = "g_file_start_mountable_finish"
+bind = false
+# Needs GMount_Operation, see g_file_start_mountable
+
+[[method]]
+id = "g_file_stop_mountable"
+bind = false
+# Needs GMount_Operation
+
+[[method]]
+id = "g_file_stop_mountable_finish"
+bind = false
+# Needs GMount_Operation, see g_file_stop_mountable
+
+[[method]]
+id = "g_file_poll_mountable"
+bind = false
+# Useless without GMount
+
+[[method]]
+id = "g_file_poll_mountable_finish"
+bind = false
+# Useless without GMount, see g_file_poll_mountable
+
+# --- needs GFileMeasureProgressCallback --------------------------------
+[[method]]
+id = "g_file_measure_disk_usage"
+bind = false
+# Needs GFile_Measure_Progress_Callback
+
+[[method]]
+id = "g_file_measure_disk_usage_async"
+bind = false
+# Needs GFile_Measure_Progress_Callback
+
+[[method]]
+id = "g_file_measure_disk_usage_finish"
+bind = false
+# Needs GFile_Measure_Progress_Callback, see g_file_measure_disk_usage
+
+# --- needs GFileAttributeInfoList --------------------------------------
+[[method]]
+id = "g_file_query_settable_attributes"
+bind = false
+# Needs GFile_Attribute_Info_List
+
+[[method]]
+id = "g_file_query_writable_namespaces"
+bind = false
+# Needs GFile_Attribute_Info_List
+
+# --- needs GFileAttributeType ------------------------------------------
+[[method]]
+id = "g_file_set_attribute"
+bind = false
+# Needs GFile_Attribute_Type; the typed Set_Attribute_* variants are bound
+
+# --- needs GFileReadMoreCallback ---------------------------------------
+[[method]]
+id = "g_file_load_partial_contents_async"
+bind = false
+# Needs GFile_Read_More_Callback
+
+[[method]]
+id = "g_file_load_partial_contents_finish"
+bind = false
+# Needs GFile_Read_More_Callback, see g_file_load_partial_contents_async
+
+# --- GAppInfo is only bound as an opaque proxy -------------------------
+[[method]]
+id = "g_file_query_default_handler"
+bind = false
+# Needs GApp_Info
+
+[[method]]
+id = "g_file_query_default_handler_async"
+bind = false
+# Needs GApp_Info
+
+[[method]]
+id = "g_file_query_default_handler_finish"
+bind = false
+# Needs GApp_Info
+
+# --- the generator cannot return a C-allocated guint8 array ------------
+# The "contents" output is a transfer-full array whose length comes back in
+# a separate parameter; convert_from_c sends the generator down the
+# Gdk.Clipboard path and it emits references to Atom_Arrays and N_Atoms.
+[[method]]
+id = "g_file_load_contents"
+bind = false
+
+[[method]]
+id = "g_file_load_contents_async"
+bind = false
+
+[[method]]
+id = "g_file_load_contents_finish"
+bind = false
+
+# --- crashes without the GError** the generator drops -------------------
+# The generator does not surface "throws" parameters, so the GError** of a
+# throwing function is simply not passed. Most of GIO only writes through it
+# on failure, but g_file_new_tmp starts with
+# g_return_val_if_fail (error == NULL || *error == NULL), which reads whatever
+# the ABI left in that register and aborts.
+[[method]]
+id = "g_file_new_tmp"
+bind = false
+
+# --- redundant explicit array length ------------------------------------
+# A Guint8_Array knows its own length, so drop "length" from the Ada profile
+# and compute it, as Glib.Input_Stream.Read does with its "count".
+[[method]]
+id = "g_file_replace_contents"
+
+[[method.parameter]]
+name = "length"
+ada = ""
+default = "Contents'Length"
+
+[[method]]
+id = "g_file_replace_contents_async"
+
+[[method.parameter]]
+name = "length"
+ada = ""
+default = "Contents'Length"
+
+# --- single out string mistyped as an array of strings ------------------
+# GIR spells the "etag_out" of the load_bytes family "gchar**" where the rest
+# of GFile spells it "char**", and the generator reads "gchar**" as a
+# NULL-terminated array of strings. Naming the pointed-to type instead gives
+# the "access UTF8_String" that g_file_replace_contents already uses for the
+# very same etag.
+[[method]]
+id = "g_file_load_bytes"
+
+[[method.parameter]]
+name = "etag_out"
+ctype = "gchar*"
+
+[[method]]
+id = "g_file_load_bytes_finish"
+
+[[method.parameter]]
+name = "etag_out"
+ctype = "gchar*"
+
+# --- bound by hand below -----------------------------------------------
+# GIR declares the instance parameter of g_file_hash as a gconstpointer, and
+# the generator honours it: the profile would take a System.Address. The
+# type of an instance parameter cannot be overridden from the TOML, so bind
+# the function by hand.
+[[method]]
+id = "g_file_hash"
+bind = false
+
+[[extra.spec]]
+text = '''
+   function Hash (Self : Gfile) return Guint;
+   pragma Import (C, Hash, "g_file_hash");
+   --  Creates a hash value for a Glib.GFile.Gfile. Two files that are Equal
+   --  have the same hash.
+   --
+   --  This call does no blocking I/O.
+   --
+   --  @return 0 if Self is not a valid Glib.GFile.Gfile, otherwise an
+   --  integer that can be used as a hash value for it.
+'''
