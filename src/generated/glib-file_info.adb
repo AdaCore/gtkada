@@ -363,6 +363,19 @@ package body Glib.File_Info is
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Etag;
 
+   -------------------
+   -- Get_File_Type --
+   -------------------
+
+   function Get_File_Type
+      (Self : not null access Gfile_Info_Record) return GFile_Type
+   is
+      function Internal (Self : System.Address) return GFile_Type;
+      pragma Import (C, Internal, "g_file_info_get_file_type");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_File_Type;
+
    --------------
    -- Get_Icon --
    --------------
@@ -804,6 +817,20 @@ package body Glib.File_Info is
       Internal (Get_Object (Self), Tmp_Edit_Name);
       Free (Tmp_Edit_Name);
    end Set_Edit_Name;
+
+   -------------------
+   -- Set_File_Type --
+   -------------------
+
+   procedure Set_File_Type
+      (Self     : not null access Gfile_Info_Record;
+       The_Type : GFile_Type)
+   is
+      procedure Internal (Self : System.Address; The_Type : GFile_Type);
+      pragma Import (C, Internal, "g_file_info_set_file_type");
+   begin
+      Internal (Get_Object (Self), The_Type);
+   end Set_File_Type;
 
    --------------
    -- Set_Icon --

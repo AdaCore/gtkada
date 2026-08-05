@@ -4,6 +4,12 @@
 
 ada = "Glib.File_Info"
 
+# GFileType lives here rather than in Glib.GFile: Glib.GFile already withs
+# Glib.File_Info for Query_Info, so the other direction would close a
+# circular spec dependency.
+[[enum]]
+ctype = "GFileType"
+
 [[method]]
 id = "g_file_info_set_attribute_mask"
 bind = false
@@ -58,16 +64,6 @@ bind = false
 id = "g_file_info_set_attribute_status"
 bind = false
 # Needs GFile_Attribute_Status
-
-[[method]]
-id = "g_file_info_get_file_type"
-bind = false
-# Needs GFile_Type
-
-[[method]]
-id = "g_file_info_set_file_type"
-bind = false
-# Needs GFile_Type
 
 [[method]]
 id = "g_file_info_get_size"

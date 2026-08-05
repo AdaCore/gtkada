@@ -29,15 +29,16 @@
 --  See [GFileAttribute][gio-GFileAttribute] for more information on how GIO
 --  handles file attributes.
 --
---  To obtain a Glib.File_Info.Gfile_Info for a Gfile.Gfile, use
---  g_file_query_info (or its async variant). To obtain a
+--  To obtain a Glib.File_Info.Gfile_Info for a Glib.GFile.Gfile, use
+--  Glib.GFile.Query_Info (or its async variant). To obtain a
 --  Glib.File_Info.Gfile_Info for a file input or output stream, use
 --  Glib.File_Input_Stream.Query_Info or Glib.File_Output_Stream.Query_Info (or
 --  their async variants).
 --
 --  To change the actual attributes of a file, you should then set the
 --  attribute in the Glib.File_Info.Gfile_Info and call
---  g_file_set_attributes_from_info or g_file_set_attributes_async on a GFile.
+--  Glib.GFile.Set_Attributes_From_Info or Glib.GFile.Set_Attributes_Async on a
+--  GFile.
 --
 --  However, not all attributes can be changed in the file. For instance, the
 --  actual size of a file cannot be changed via Glib.File_Info.Set_Size. You
@@ -49,14 +50,45 @@
 --  through a Glib.File_Info.Gfile_Info for attributes.
 
 pragma Warnings (Off, "*is already use-visible*");
-with GNAT.Strings; use GNAT.Strings;
-with Glib.G_Icon;  use Glib.G_Icon;
-with Glib.Object;  use Glib.Object;
+with GNAT.Strings;            use GNAT.Strings;
+with Glib.G_Icon;             use Glib.G_Icon;
+with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Object;             use Glib.Object;
 
 package Glib.File_Info is
 
    type Gfile_Info_Record is new GObject_Record with null record;
    type Gfile_Info is access all Gfile_Info_Record'Class;
+
+   type GFile_Type is (
+      G_File_Type_Unknown,
+      G_File_Type_Regular,
+      G_File_Type_Directory,
+      G_File_Type_Symbolic_Link,
+      G_File_Type_Special,
+      G_File_Type_Shortcut,
+      G_File_Type_Mountable);
+   pragma Convention (C, GFile_Type);
+   --  Indicates the file's on-disk type.
+   --
+   --  On Windows systems a file will never have
+   --  Glib.File_Info.G_File_Type_Symbolic_Link type; use
+   --  Glib.File_Info.Gfile_Info and G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK to
+   --  determine whether a file is a symlink or not. This is due to the fact
+   --  that NTFS does not have a single filesystem object type for symbolic
+   --  links - it has files that symlink to files, and directories that symlink
+   --  to directories. Glib.File_Info.GFile_Type enumeration cannot precisely
+   --  represent this important distinction, which is why all Windows symlinks
+   --  will continue to be reported as Glib.File_Info.G_File_Type_Regular or
+   --  Glib.File_Info.G_File_Type_Directory.
+
+   ----------------------------
+   -- Enumeration Properties --
+   ----------------------------
+
+   package GFile_Type_Properties is
+      new Generic_Internal_Discrete_Property (GFile_Type);
+   type Property_GFile_Type is new GFile_Type_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -302,6 +334,20 @@ package Glib.File_Info is
    --  Gets the [entity tag][gfile-etag] for a given
    --  Glib.File_Info.Gfile_Info. See G_FILE_ATTRIBUTE_ETAG_VALUE.
    --  @return a string containing the value of the "etag:value" attribute.
+
+   function Get_File_Type
+      (Self : not null access Gfile_Info_Record) return GFile_Type;
+   --  Gets a file's type (whether it is a regular file, symlink, etc). This
+   --  is different from the file's content type, see
+   --  Glib.File_Info.Get_Content_Type.
+   --  @return a Glib.File_Info.GFile_Type for the given file.
+
+   procedure Set_File_Type
+      (Self     : not null access Gfile_Info_Record;
+       The_Type : GFile_Type);
+   --  Sets the file type in a Glib.File_Info.Gfile_Info to Type. See
+   --  G_FILE_ATTRIBUTE_STANDARD_TYPE.
+   --  @param The_Type a Glib.File_Info.GFile_Type.
 
    function Get_Icon
       (Self : not null access Gfile_Info_Record) return Glib.G_Icon.G_Icon;

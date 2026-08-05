@@ -68,7 +68,7 @@ interfaces = (
     "--Gio.DBusObjectManager",  # Not tested yet, from Gio
     "--Gio.DesktopAppInfoLookup",  # Not tested yet, from Gio
     "--Gio.Drive",  # Not tested yet, from Gio
-    "--Gio.File",  # Not tested yet, from Gio
+    "Gio.File",
     "--Gio.FileDescriptorBased",  # Not tested yet, from Gio
     "--Gio.Initable",  # Not tested yet, from Gio
     "Gio.LoadableIcon",  # Not tested yet, from Gio
