@@ -7,6 +7,7 @@ from adaformat import naming, Enum, Proxy, Record, GObject, Tagged, List, Callba
 # General packages that don't depend on others and must be processed first
 
 enums = (
+    "ErrorEnums",
     "GtkEnums",
     "PangoEnums",
 )

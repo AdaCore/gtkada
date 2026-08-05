@@ -1,0 +1,12 @@
+# ============================================================
+#   ErrorEnums
+# ============================================================
+# A home for GLib's error-domain enumerations, on the model of GtkEnums and
+# PangoEnums. GFileError is a GLib domain rather than a GIO one -- GtkBuilder,
+# GBytes and GResource all report it -- so it does not belong in Glib.GFile.
+# Pair the codes with Glib.Error.Get_Code.
+
+ada = "Glib.Error_Enums"
+
+[[enum]]
+ctype = "GFileError"
