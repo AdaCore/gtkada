@@ -28,8 +28,8 @@
 --  To copy the content of an input stream to an output stream without
 --  manually handling the reads and writes, use Glib.Output_Stream.Splice.
 --
---  See the documentation for Giostream.Giostream for details of thread safety
---  of streaming APIs.
+--  See the documentation for Glib.IO_Stream.Giostream for details of thread
+--  safety of streaming APIs.
 --
 --  All of these functions have async variants too.
 
