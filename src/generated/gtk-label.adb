@@ -107,6 +107,8 @@ package body Gtk.Label is
          Tmp_Return := Internal (Tmp_Str);
          Free (Tmp_Str);
          Set_Object (Label, Tmp_Return);
+      else
+         Free (Tmp_Str);
       end if;
    end Initialize;
 
@@ -132,6 +134,8 @@ package body Gtk.Label is
          Tmp_Return := Internal (Tmp_Str);
          Free (Tmp_Str);
          Set_Object (Label, Tmp_Return);
+      else
+         Free (Tmp_Str);
       end if;
    end Initialize_With_Mnemonic;
 

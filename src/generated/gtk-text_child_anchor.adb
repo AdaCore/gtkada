@@ -168,6 +168,8 @@ package body Gtk.Text_Child_Anchor is
          Tmp_Return := Internal (Tmp_Character);
          Free (Tmp_Character);
          Set_Object (Anchor, Tmp_Return);
+      else
+         Free (Tmp_Character);
       end if;
    end Initialize_With_Replacement;
 

@@ -114,6 +114,8 @@ package body Glib.Simple_Action is
          Tmp_Return := Internal (Tmp_Name, Parameter_Type);
          Free (Tmp_Name);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Name);
       end if;
    end Initialize;
 
@@ -139,6 +141,8 @@ package body Glib.Simple_Action is
          Tmp_Return := Internal (Tmp_Name, Parameter_Type, Get_Object (State));
          Free (Tmp_Name);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Name);
       end if;
    end Initialize_Stateful;
 

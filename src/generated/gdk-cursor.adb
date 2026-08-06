@@ -84,6 +84,8 @@ package body Gdk.Cursor is
          Tmp_Return := Internal (Tmp_Name, Get_Object_Or_Null (GObject (Fallback)));
          Free (Tmp_Name);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Name);
       end if;
    end Initialize_From_Name;
 

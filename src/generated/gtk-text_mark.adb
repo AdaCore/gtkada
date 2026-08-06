@@ -110,6 +110,8 @@ package body Gtk.Text_Mark is
          Tmp_Return := Internal (Tmp_Name, Boolean'Pos (Left_Gravity));
          Free (Tmp_Name);
          Set_Object (Mark, Tmp_Return);
+      else
+         Free (Tmp_Name);
       end if;
    end Initialize;
 

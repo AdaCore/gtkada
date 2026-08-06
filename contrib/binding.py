@@ -1941,6 +1941,7 @@ end if;"""
         ).import_c(cname)
 
         call = internal.call(in_pkg=self.pkg)
+        post = internal.freecall(in_pkg=self.pkg)
         assert call[1] is not None, "A function"
 
         gtk_new_prefix = "Gtk_New"
@@ -1977,6 +1978,12 @@ end if;"""
                     mode="not null access",
                 )
             ] + filtered_params
+
+            if len(post) != 0:
+                code="if not %s.Is_Created then %sSet_Object (%s, %s); else %s end if" % (selfname, call[0], selfname, call[1], post)
+            else:
+                code="if not %s.Is_Created then %sSet_Object (%s, %s); end if" % (selfname, call[0], selfname, call[1])
+
             initialize = Subprogram(
                 name=initialize_name,
                 plist=initialize_params,
@@ -1989,8 +1996,7 @@ end if;"""
                     )
                     % (base_name(initialize_name),)
                 ],
-                code="if not %s.Is_Created then %sSet_Object (%s, %s); end if"
-                % (selfname, call[0], selfname, call[1]),
+                code=code,
             ).add_nested(internal)
 
             call = initialize.call(in_pkg=self.pkg)

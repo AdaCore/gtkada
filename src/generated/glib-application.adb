@@ -130,6 +130,8 @@ package body Glib.Application is
          Tmp_Return := Internal (Tmp_Application_Id, Flags);
          Free (Tmp_Application_Id);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Application_Id);
       end if;
    end Initialize;
 

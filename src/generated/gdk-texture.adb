@@ -197,6 +197,8 @@ package body Gdk.Texture is
          Tmp_Return := Internal (Tmp_Path);
          Free (Tmp_Path);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Path);
       end if;
    end Initialize_From_Filename;
 
@@ -218,6 +220,8 @@ package body Gdk.Texture is
          Tmp_Return := Internal (Tmp_Resource_Path);
          Free (Tmp_Resource_Path);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Resource_Path);
       end if;
    end Initialize_From_Resource;
 

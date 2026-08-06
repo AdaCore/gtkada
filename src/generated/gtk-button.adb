@@ -134,6 +134,8 @@ package body Gtk.Button is
          Tmp_Return := Internal (Tmp_Label);
          Free (Tmp_Label);
          Set_Object (Button, Tmp_Return);
+      else
+         Free (Tmp_Label);
       end if;
    end Initialize;
 
@@ -155,6 +157,8 @@ package body Gtk.Button is
          Tmp_Return := Internal (Tmp_Icon_Name);
          Free (Tmp_Icon_Name);
          Set_Object (Button, Tmp_Return);
+      else
+         Free (Tmp_Icon_Name);
       end if;
    end Initialize_From_Icon_Name;
 
@@ -176,6 +180,8 @@ package body Gtk.Button is
          Tmp_Return := Internal (Tmp_Label);
          Free (Tmp_Label);
          Set_Object (Button, Tmp_Return);
+      else
+         Free (Tmp_Label);
       end if;
    end Initialize_With_Mnemonic;
 

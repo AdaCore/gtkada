@@ -89,6 +89,8 @@ package body Gtk.Column_View_Column is
          Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Factory)));
          Free (Tmp_Title);
          Set_Object (Self, Tmp_Return);
+      else
+         Free (Tmp_Title);
       end if;
    end Initialize;
 
