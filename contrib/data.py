@@ -400,6 +400,7 @@ binding = (
     "Gtk.EntryBuffer",
     "Gtk.EntryCompletion",
     "----GtkEntryIconAccessible",  # We do not support atk
+    "Gtk.ExpressionWatch",
     "--GtkEventBox",
     "--Gtk.EventController",
     "Gtk.Expander",
@@ -409,6 +410,7 @@ binding = (
     "--Gtk.FileChooserWidget",
     "--Gtk.FileFilter",
     "Gtk.Filter",
+    "--Gtk.BoolFilter",
     "--Gtk.Fixed",
     "--Gtk.FlowBox",
     "----GtkFlowBoxAccessible",  # We do not support atk
