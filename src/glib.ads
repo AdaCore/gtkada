@@ -357,6 +357,10 @@ package Glib is
    --  types (for instance the ones used for widgets), the types have static
    --  values, always the same.
 
+   function Instance_Get_Type (Instance : System.Address) return GType;
+   --  Get the type identifier from a given @instance structure.
+   --  @instance: Location of a valid #GTypeInstance structure
+
    GType_Fundamental_Shift : constant Integer := 2;
 
    GType_Invalid   : constant GType := 0 * (2 ** GType_Fundamental_Shift);
@@ -439,6 +443,7 @@ private
    Null_Signal_Id : constant Signal_Id := 0;
 
    pragma Import (C, Fundamental, "ada_gtype_fundamental");
+   pragma Import (C, Instance_Get_Type, "ada_instance_get_type");
    pragma Import (C, Parent, "g_type_parent");
    pragma Import (C, Get_Qdata, "g_type_get_qdata");
    pragma Import (C, Set_Qdata, "g_type_set_qdata");

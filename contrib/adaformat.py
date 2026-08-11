@@ -588,6 +588,26 @@ class Tagged(GObject):
         return CType.as_ada_param(self, pkg)
 
 
+class Fundamental(Tagged):
+    """Tagged types that map C fundamental objects"""
+
+    def convert_from_c(self):
+        if self.transfer_ownership:
+            c = "From_Object_Full_Ownership (%(var)s)"
+        else:
+            c = "From_Object_None_Ownership (%(var)s)"
+
+        return (
+            self.param,
+            self.cparam,
+            c,
+            [],
+            # for out parameters
+            self.cparam,
+            c,
+        )
+
+
 class UTF8(CType):
 
     def __init__(self):
@@ -1556,6 +1576,7 @@ class Parameter(Local_Var):
         "c_mode",
         "ownership",
         "is_caller_allocates",
+        "classwide"
     ]
 
     def __init__(
@@ -1571,6 +1592,7 @@ class Parameter(Local_Var):
         c_mode="in",
         ownership="none",
         is_caller_allocates=False,
+        classwide=False,
     ):
         """
         'mode' is the mode for the Ada subprogram, and is automatically
@@ -1607,6 +1629,7 @@ class Parameter(Local_Var):
         self.c_mode = c_mode
         self.ownership = ownership
         self.is_caller_allocates = is_caller_allocates
+        self.classwide = classwide
 
     def _type(self, lang, pkg):
         mode = self.mode
@@ -1621,6 +1644,9 @@ class Parameter(Local_Var):
             self.type.userecord = userec
         else:
             t = super(Parameter, self)._type(lang=lang, pkg=pkg)
+
+        if self.classwide:
+            t = t + "'Class"
 
         if mode != "in":
             return "%s %s" % (mode, t)
@@ -1664,7 +1690,7 @@ class Parameter(Local_Var):
                 wrapper = "%s'Access"
 
             if isinstance(self.type, CType):
-                return self.type.as_call(
+                call = self.type.as_call(
                     name=n,
                     pkg=pkg,
                     lang=lang,
@@ -1672,6 +1698,18 @@ class Parameter(Local_Var):
                     wrapper=wrapper,
                     is_temporary_variable=self.is_temporary_variable,
                 )
+
+                if (
+                    (self.ownership == "full" or self.ownership == True)
+                    and isinstance (self.type, Fundamental)
+                    and lang == "ada->c"
+                ):
+                    if self.type.as_ada_param(pkg)[-7] == "_Record":
+                        call = call._replace(precall="Adjust (%s);" % n)
+                    else:
+                        call = call._replace(precall="if %s /= null then Adjust (%s.all); end if;" % (n, n))
+
+                return call
             else:
                 return VariableCall(call=n, precall="", postcall="", tmpvars=[])
 
@@ -1729,6 +1767,8 @@ class Subprogram(object):
         convention=None,
         lang="ada",
         allow_none=True,
+        no_spec=False,
+        overriding=False,
     ):
         """Create a new subprogram.
         'plist' is a list of Parameter.
@@ -1740,6 +1780,8 @@ class Subprogram(object):
         'allow_none': when this is an anonymous subprogram (and therefore
             used for a callback), this indicates whether the callback can be
             null or not).
+        'no_spec': do not generate spec if True
+        'overriding': add `overriding` keyword to spec/body
         The code will be automatically pretty-printed, and the appropriate
         pragma Unreferenced are also added automatically.
         """
@@ -1757,6 +1799,8 @@ class Subprogram(object):
         self._nested = []  # nested subprograms
         self._deprecated = (False, "")  # True if deprecated
         self._manual_body = None  # Written by user explicitly
+        self.no_spec = no_spec
+        self.overriding = overriding
 
         self.lang = lang  # Language for the types of parameters
 
@@ -1811,6 +1855,9 @@ class Subprogram(object):
         else:
             prefix = "procedure"
             suffix = ""
+
+        if self.overriding:
+            prefix = "overriding " + prefix
 
         if (not as_type) and self.name:
             prefix = indent + prefix + " " + base_name(self.name)
@@ -1918,6 +1965,9 @@ class Subprogram(object):
         self, pkg, indent="   ", show_doc=True, maxlen=max_profile_length, as_type=False
     ):
         """Return the spec of the subprogram"""
+
+        if self.no_spec:
+            return ""
 
         result = (
             self.profile(pkg=pkg, indent=indent, maxlen=maxlen, as_type=as_type) + ";"
@@ -2412,6 +2462,7 @@ class Package(object):
         self.formal_params = ""  # generic formal parameters
         self.elaborate_body = False
         self.isnested = isnested
+        self.pkg_body = None
 
     def __repr__(self):
         return "<Package %s>" % self.name
@@ -2427,6 +2478,13 @@ class Package(object):
         s = Section(self, name)
         self.sections.append(s)
         return s
+
+    def pkg_body_section(self):
+        """Return an existing section (or create a new one) for package code.
+        """
+        if self.pkg_body is None:
+            self.pkg_body = Section(self, "package body")
+        return self.pkg_body
 
     def add_with(self, pkg, specs=True, do_use=True, might_be_unused=False):
         """Add a with+use clause for pkg, where pkg can also be a list.
@@ -2606,5 +2664,8 @@ class Package(object):
 
         result.append(indent + "package body %s is" % self.name)
         result.append(body)
+        if self.pkg_body is not None:
+            result.append (indent + "begin")
+            result.append (self.pkg_body.body(pkg=self, indent=indent + "   "))
         result.append(indent + "end %s;" % self.name)
         return "\n".join(result)

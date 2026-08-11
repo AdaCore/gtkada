@@ -1,0 +1,46 @@
+# ============================================================
+#   GtkExpression
+# ============================================================
+
+[[method]]
+id = "gtk_expression_bind"
+
+[method.doc]
+extend = false
+text = '''
+Bind `target`'s property named `property` to `self`.
+The value that `self` evaluates to is set via `g_object_set` on
+`target`. This is repeated whenever `self` changes to ensure that the
+object's property stays synchronized with `self`.
+If `self`'s evaluation fails, `target`'s `property` is not updated. Use
+a [classGtk.TryExpression] to provide a fallback for this case.
+'''
+
+[[extra.spec]]
+text = '''
+
+   type Gtk_Expression_Array is array (Natural range <>) of Gtk_Expression;
+
+   type C_GtkExpressionArray is array (Natural range <>) of System.Address;
+   pragma Convention (C, C_GtkExpressionArray);
+
+   function To_C (Value : Gtk_Expression_Array) return C_GtkExpressionArray;
+   --  Convert the array of expressions to C array with C expressions
+'''
+
+[extra]
+body = '''
+   ----------
+   -- To_C --
+   ----------
+
+   function To_C (Value : Gtk_Expression_Array) return C_GtkExpressionArray
+   is
+     Result : C_GtkExpressionArray(Value'Range);
+   begin
+     for Index in Value'Range loop
+       Result (Index) := Value (Index).Ptr;
+     end loop;
+
+     return Result;
+   end To_C;'''

@@ -1,0 +1,118 @@
+# ============================================================
+#   GtkCClosureExpression
+# ============================================================
+
+[[method]]
+id = "gtk_cclosure_expression_new"
+bind = false
+
+[[extra.with_spec]]
+pkg = "Glib.Values"
+
+[[extra.spec]]
+text = '''
+   type Gcallback is access procedure;
+   pragma Convention (C, Gcallback);
+
+   type GClosureNotify is access procedure
+     (Data    : System.Address;
+      Closure : System.Address);
+   pragma Convention (C, GClosureNotify);
+
+   type C_Marshaller is access procedure
+     (Closure         : System.Address;
+      Return_Value    : Glib.Values.GValue;  --  Will contain returned value
+      N_Params        : Glib.Guint;          --  Number of entries in Params
+      Params          : Glib.Values.C_GValues;
+      Invocation_Hint : System.Address;
+      Marsh_Data      : System.Address);
+   pragma Convention (C, C_Marshaller);
+
+   procedure Gtk_New
+      (Self          : out Gtk_Cclosure_Expression;
+       Value_Type    : GType;
+       Marshal       : C_Marshaller;
+       Params        : Gtk.Expression.Gtk_Expression_Array;
+       Callback_Func : Gcallback;
+       User_Data     : System.Address;
+       User_Destroy  : GClosureNotify);
+   procedure Initialize
+      (Self          : not null access Gtk_Cclosure_Expression_Record'Class;
+       Value_Type    : GType;
+       Marshal       : C_Marshaller;
+       Params        : Gtk.Expression.Gtk_Expression_Array;
+       Callback_Func : Gcallback;
+       User_Data     : System.Address;
+       User_Destroy  : GClosureNotify);
+   --  Creates a `GtkExpression` that calls `callback_func` when it is
+   --  evaluated.
+   --  This function is a variant of [ctorGtk.ClosureExpression.new] that
+   --  creates a `GClosure` by calling g_cclosure_new with the given
+   --  `callback_func`, `user_data` and `user_destroy`.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
+   --  @param Value_Type the type of the value that this expression evaluates
+   --  to
+   --  @param Marshal marshaller used for creating a closure
+   --  @param Params expressions for each parameter
+   --  @param Callback_Func callback used for creating a closure
+   --  @param User_Data user data used for creating a closure
+   --  @param User_Destroy destroy notify for User_Data'''
+
+[extra]
+body = '''
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Self          : out Gtk_Cclosure_Expression;
+       Value_Type    : GType;
+       Marshal       : C_Marshaller;
+       Params        : Gtk.Expression.Gtk_Expression_Array;
+       Callback_Func : Gcallback;
+       User_Data     : System.Address;
+       User_Destroy  : GClosureNotify)
+   is
+   begin
+      Self := new Gtk_Cclosure_Expression_Record;
+      Gtk.Cclosure_Expression.Initialize (Self, Value_Type, Marshal, Params, Callback_Func, User_Data, User_Destroy);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Self          : not null access Gtk_Cclosure_Expression_Record'Class;
+       Value_Type    : GType;
+       Marshal       : C_Marshaller;
+       Params        : Gtk.Expression.Gtk_Expression_Array;
+       Callback_Func : Gcallback;
+       User_Data     : System.Address;
+       User_Destroy  : GClosureNotify)
+   is
+      function Internal
+         (Value_Type    : GType;
+          Marshal       : C_Marshaller;
+          N_Params      : Guint;
+          Acc_Params    : System.Address;
+          Callback_Func : Gcallback;
+          User_Data     : System.Address;
+          User_Destroy  : GClosureNotify)
+          return System.Address;
+      pragma Import (C, Internal, "gtk_cclosure_expression_new");
+      Acc_Params : Gtk.Expression.C_GtkExpressionArray :=
+        Gtk.Expression.To_C (Params);
+   begin
+      if not Self.Is_Created then
+         --  transfer-ownership="full"
+         for Expression of Params loop
+            if Expression /= null then
+               Adjust (Expression.all);
+            end if;
+         end loop;
+
+         Set_Object (Self, Internal (Value_Type, Marshal, Guint (Acc_Params'Length), Acc_Params'Address, Callback_Func, User_Data, User_Destroy));
+      end if;
+   end Initialize;'''

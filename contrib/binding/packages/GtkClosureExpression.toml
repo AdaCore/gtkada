@@ -1,0 +1,80 @@
+# ============================================================
+#   GtkClosureExpression
+# ============================================================
+
+[[method]]
+id = "gtk_closure_expression_new"
+bind = false
+
+[[extra.spec]]
+text = '''
+   procedure Gtk_New
+      (Self       : out Gtk_Closure_Expression;
+       Value_Type : GType;
+       Closure    : System.Address;
+       Params     : Gtk.Expression.Gtk_Expression_Array);
+   procedure Initialize
+      (Self       : not null access Gtk_Closure_Expression_Record'Class;
+       Value_Type : GType;
+       Closure    : System.Address;
+       Params     : Gtk.Expression.Gtk_Expression_Array);
+   --  Creates a `GtkExpression` that calls `closure` when it is evaluated.
+   --  `closure` is called with the `this` object and the results of
+   --  evaluating the `params` expressions.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
+   --  @param Value_Type the type of the value that this expression evaluates
+   --  to
+   --  @param Closure closure to call when evaluating this expression. If
+   --  closure is floating, it is adopted
+   --  @param Params expressions for each parameter'''
+
+[extra]
+body = '''
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Self       : out Gtk_Closure_Expression;
+       Value_Type : GType;
+       Closure    : System.Address;
+       Params     : Gtk.Expression.Gtk_Expression_Array)
+   is
+   begin
+      Self := new Gtk_Closure_Expression_Record;
+      Gtk.Closure_Expression.Initialize (Self, Value_Type, Closure, Params);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Self       : not null access Gtk_Closure_Expression_Record'Class;
+       Value_Type : GType;
+       Closure    : System.Address;
+       Params     : Gtk.Expression.Gtk_Expression_Array)
+   is
+      function Internal
+         (Value_Type : GType;
+          Closure    : System.Address;
+          N_Params   : Guint;
+          Acc_Params : System.Address)
+          return System.Address;
+      pragma Import (C, Internal, "gtk_closure_expression_new");
+      Acc_Params : Gtk.Expression.C_GtkExpressionArray :=
+        Gtk.Expression.To_C (Params);
+   begin
+      if not Self.Is_Created then
+         --  transfer-ownership="full"
+         for Expression of Params loop
+            if Expression /= null then
+               Adjust (Expression.all);
+            end if;
+         end loop;
+
+         Set_Object (Self, Internal (Value_Type, Closure, Guint (Acc_Params'Length), Acc_Params'Address));
+      end if;
+   end Initialize;'''
+

@@ -1,0 +1,11 @@
+# ============================================================
+#   GtkConstantExpression
+# ============================================================
+
+[[method]]
+id = "gtk_constant_expression_get_value"
+return = "access constant GValue"
+
+[[method.parameter]]
+name = "expression"
+ctype = "GtkConstantExpression*"

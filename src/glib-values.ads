@@ -44,6 +44,8 @@ package Glib.Values is
    --  A generic value that can hold any of the types as provided in the
    --  Set and Get functions below.
 
+   type GValue_Access is access all GValue;
+   
    type GValues is private;
    --  This type represents a table of values. Each argument of the
    --  table can be of any type.
