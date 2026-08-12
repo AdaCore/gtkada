@@ -98,6 +98,19 @@ package body Gdk.Texture is
       Gdk.Texture.Initialize_From_Bytes (Self, Bytes);
    end Gdk_New_From_Bytes;
 
+   -----------------------
+   -- Gdk_New_From_File --
+   -----------------------
+
+   procedure Gdk_New_From_File
+      (Self : out Gdk_Texture;
+       File : Glib.GFile.Gfile)
+   is
+   begin
+      Self := new Gdk_Texture_Record;
+      Gdk.Texture.Initialize_From_File (Self, File);
+   end Gdk_New_From_File;
+
    ---------------------------
    -- Gdk_New_From_Filename --
    ---------------------------
@@ -136,6 +149,19 @@ package body Gdk.Texture is
       Gdk.Texture.Initialize_From_Bytes (Self, Bytes);
       return Self;
    end Gdk_Texture_New_From_Bytes;
+
+   -------------------------------
+   -- Gdk_Texture_New_From_File --
+   -------------------------------
+
+   function Gdk_Texture_New_From_File
+      (File : Glib.GFile.Gfile) return Gdk_Texture
+   is
+      Self : constant Gdk_Texture := new Gdk_Texture_Record;
+   begin
+      Gdk.Texture.Initialize_From_File (Self, File);
+      return Self;
+   end Gdk_Texture_New_From_File;
 
    -----------------------------------
    -- Gdk_Texture_New_From_Filename --
@@ -178,6 +204,22 @@ package body Gdk.Texture is
          Set_Object (Self, Internal (Get_Object (Bytes)));
       end if;
    end Initialize_From_Bytes;
+
+   --------------------------
+   -- Initialize_From_File --
+   --------------------------
+
+   procedure Initialize_From_File
+      (Self : not null access Gdk_Texture_Record'Class;
+       File : Glib.GFile.Gfile)
+   is
+      function Internal (File : Glib.GFile.Gfile) return System.Address;
+      pragma Import (C, Internal, "gdk_texture_new_from_file");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (File));
+      end if;
+   end Initialize_From_File;
 
    ------------------------------
    -- Initialize_From_Filename --

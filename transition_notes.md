@@ -131,10 +131,6 @@ GBytes.toml:
 - Once Atom_Arrays bound, bind: get_data, unref_to_array, unref_to_data
     - TODO #135: once unref_to_data bound, reactivate GFile.Load_Bytes unit test
 
-GFile.toml:
-
-- when done, reactivate bindings in GdkTexture.toml
-
 GDateTime:
 
 - when done, reactivate bindings in GFileInfo (TODO #135)

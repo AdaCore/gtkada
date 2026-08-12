@@ -53,6 +53,7 @@ with Gdk.Snapshot;            use Gdk.Snapshot;
 with Glib;                    use Glib;
 with Glib.Bytes;              use Glib.Bytes;
 with Glib.Cancellable;        use Glib.Cancellable;
+with Glib.GFile;              use Glib.GFile;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Input_Stream;       use Glib.Input_Stream;
 with Glib.Loadable_Icon;      use Glib.Loadable_Icon;
@@ -226,6 +227,52 @@ package Gdk.Texture is
    --  load many image formats into a `GdkTexture`.
    --  Since: gtk+ 4.6
    --  @param Bytes a `GBytes` containing the data to load
+
+   procedure Gdk_New_From_File
+      (Self : out Gdk_Texture;
+       File : Glib.GFile.Gfile);
+   --  Creates a new texture by loading an image from a file.
+   --  The file format is detected automatically. The supported formats are
+   --  PNG, JPEG and TIFF, though more formats might be available.
+   --  If `NULL` is returned, then Error will be set.
+   --  This function is threadsafe, so that you can e.g. use GTask and
+   --  [methodGio.Task.run_in_thread] to avoid blocking the main thread while
+   --  loading a big image.
+   --  ::: warning Note that this function should not be used with untrusted
+   --  data. Use a proper image loading framework such as libglycin, which can
+   --  load many image formats into a `GdkTexture`.
+   --  @param File `GFile` to load
+
+   procedure Initialize_From_File
+      (Self : not null access Gdk_Texture_Record'Class;
+       File : Glib.GFile.Gfile);
+   --  Creates a new texture by loading an image from a file.
+   --  The file format is detected automatically. The supported formats are
+   --  PNG, JPEG and TIFF, though more formats might be available.
+   --  If `NULL` is returned, then Error will be set.
+   --  This function is threadsafe, so that you can e.g. use GTask and
+   --  [methodGio.Task.run_in_thread] to avoid blocking the main thread while
+   --  loading a big image.
+   --  ::: warning Note that this function should not be used with untrusted
+   --  data. Use a proper image loading framework such as libglycin, which can
+   --  load many image formats into a `GdkTexture`.
+   --  Initialize_From_File does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
+   --  @param File `GFile` to load
+
+   function Gdk_Texture_New_From_File
+      (File : Glib.GFile.Gfile) return Gdk_Texture;
+   --  Creates a new texture by loading an image from a file.
+   --  The file format is detected automatically. The supported formats are
+   --  PNG, JPEG and TIFF, though more formats might be available.
+   --  If `NULL` is returned, then Error will be set.
+   --  This function is threadsafe, so that you can e.g. use GTask and
+   --  [methodGio.Task.run_in_thread] to avoid blocking the main thread while
+   --  loading a big image.
+   --  ::: warning Note that this function should not be used with untrusted
+   --  data. Use a proper image loading framework such as libglycin, which can
+   --  load many image formats into a `GdkTexture`.
+   --  @param File `GFile` to load
 
    procedure Gdk_New_From_Filename
       (Self : out Gdk_Texture;
