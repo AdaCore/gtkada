@@ -1228,6 +1228,11 @@ ada_g_type_is_interface(GType type)
   return G_TYPE_IS_INTERFACE(type);
 }
 
+GType ada_instance_get_type(GTypeInstance *instance)
+{
+  return G_TYPE_FROM_INSTANCE(instance);
+}
+
 /******************************************
  ** Handling of tree Freeze/Thaw         **
  ******************************************/

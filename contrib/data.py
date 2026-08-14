@@ -400,7 +400,6 @@ binding = (
     "Gtk.EntryBuffer",
     "Gtk.EntryCompletion",
     "----GtkEntryIconAccessible",  # We do not support atk
-    "Gtk.ExpressionWatch",
     "--GtkEventBox",
     "--Gtk.EventController",
     "Gtk.Expander",
@@ -645,6 +644,14 @@ binding = (
     "Gtk.NamedAction",
     "Gtk.NothingAction",
     "Gtk.SignalAction",
+    "Gtk.ExpressionWatch",
+    "Gtk.Expression",
+    "Gtk.CClosureExpression",
+    "Gtk.ClosureExpression",
+    "Gtk.ConstantExpression",
+    "Gtk.ObjectExpression",
+    "Gtk.PropertyExpression",
+    "Gtk.TryExpression",
 )
 
 # Entries that are bound through manual/TOML glue instead of GIR class lookup.
@@ -665,7 +672,7 @@ manual_binding = (
 # these specific parameters.
 
 user_data_params = ["Data", "Func_Data", "User_Data", "D", "Search_Data"]
-destroy_data_params = ["destroy", "func_notify", "notify"]
+destroy_data_params = ["user_destroy", "destroy", "func_notify", "notify"]
 
 # Maps c methods to Ada subprograms or enumeration (for docs).
 # All methods that are generated automatically will be added
@@ -898,6 +905,9 @@ naming.type_exceptions = {
     "GtkRcStyle": GObject("Gtk.Rc.Gtk_Rc_Style"),
     "GtkTreeViewRowSeparatorFunc": Callback(
         "Gtk.Tree_View.Gtk_Tree_View_Row_Separator_Func"
+    ),
+    "GtkExpressionNotify": Callback(
+        "Gtk.Expression.Gtk_Expression_Notify"
     ),
     "GKeyFile*": Proxy("Glib.Key_File.G_Key_File"),
     "GdkColor*": Proxy(

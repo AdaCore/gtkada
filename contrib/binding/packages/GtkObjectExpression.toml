@@ -1,0 +1,10 @@
+# ============================================================
+#   GtkObjectExpression
+# ============================================================
+
+[[method]]
+id = "gtk_object_expression_get_object"
+
+[[method.parameter]]
+name = "expression"
+ctype = "GtkObjectExpression*"

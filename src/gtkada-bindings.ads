@@ -156,6 +156,17 @@ package Gtkada.Bindings is
    --  Marsh_Data is the data passed via Set_Meta_Marshal, null otherwise.
    --  This is meant for internal GtkAda use only.
 
+   type GClosureNotify is access procedure
+     (Data    : System.Address;
+      Closure : GClosure);
+   pragma Convention (C, GClosureNotify);
+   --   GClosureNotify:
+   --   @data: data specified when registering the notification callback
+   --   @closure: the #GClosure on which the notification is emitted
+   --
+   --   The type used for the various notification callbacks which can be registered
+   --   on closures.
+
    function CClosure_New
      (Callback  : System.Address;
       User_Data : System.Address;

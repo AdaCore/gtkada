@@ -137,6 +137,9 @@ ggettype = QName(glib_uri, "get-type").text
 gsignal = QName(glib_uri, "signal").text
 glib_type_struct = QName(glib_uri, "type-struct").text
 glib_type_name = QName(glib_uri, "type-name").text
+glib_fundamental = QName(glib_uri, "fundamental").text
+glib_ref_func = QName(glib_uri, "ref-func").text
+glib_unref_func = QName(glib_uri, "unref-func").text
 namespace = QName(uri, "namespace").text
 narray = QName(uri, "array").text
 nbitfield = QName(uri, "bitfield").text
@@ -545,7 +548,7 @@ def _get_type(
         a = nodeOrType.find(narray)
         if a is not None:
             t = a.find(ntype)
-            if a:
+            if a is not None:
                 type = t.get(ctype_qname)
                 name = t.get("name") or type  # Sometimes name is not set
 
@@ -1106,6 +1109,24 @@ class GIRClass(object):
         self.node = node
         self.rootNode = rootNode
         self.ctype = self.node.get(ctype_qname)
+
+        # fundamental classes
+        self.is_parent_fundamental = False
+        self.is_fundamental = False
+        self.has_ref = False
+        self.has_unref = False
+        # process only Gtk* fundamental classes only
+        if self.ctype is not None and self.ctype.startswith("Gtk"):
+            self.is_parent_fundamental = self.node.get(glib_fundamental) == "1"
+            if self.is_parent_fundamental:
+                if self.node.get("parent", None) is None:
+                    self.is_fundamental = True
+                else:
+                    if '.' in self.node.get("parent", None):
+                        # do not process fundamental classes based on external GIR file
+                        self.is_parent_fundamental = False
+                        self.is_fundamental = False
+
         if not self.ctype:
             print(f"no c:type defined for {self.node.get(glib_type_name)}")
             return
@@ -1145,6 +1166,7 @@ class GIRClass(object):
         # (self.is_record)
 
         self.is_proxy = False
+        self.is_boxed = False
         self.is_boxed = self.node.tag == nrecord and (
             not self.node.findall(nfield) or self.node.get("introspectable", "1") == "0"
         )
@@ -1191,6 +1213,8 @@ class GIRClass(object):
             ctype = self.ctype
             if is_interface:
                 t = Interface(pkg)
+            elif self.is_parent_fundamental:
+                t = Fundamental(pkg)
             elif is_gobject:
                 t = GObject(pkg)
             elif self.is_proxy:
@@ -1236,6 +1260,8 @@ class GIRClass(object):
                     t_root = Proxy(root_ada_name)
                 elif self.is_boxed:
                     t_root = Tagged(root_ada_name)
+                elif self.is_parent_fundamental:
+                    t_root = Fundamental(root_ada_name)
                 else:
                     t_root = Record(root_ada_name)
                 naming.add_type_exception(cname=ctype, type=t_root, override=True)
@@ -1253,6 +1279,7 @@ class GIRClass(object):
             "name": self.name,
             "typename": base_name(typename),
             "cname": self.ctype or "",
+            "classname" : self.node.get("name") or ""
         }
 
     def _handle_function(
@@ -1274,6 +1301,16 @@ class GIRClass(object):
         are not raised later.
         """
         cname = c.get(cidentifier)
+
+        if (
+            self.is_fundamental
+            and (
+                 self.node.get(glib_ref_func) == cname
+                 or self.node.get(glib_unref_func) == cname
+            )
+        ):
+            # do not make ref/unref visible for fundamental types
+            return
 
         if gtkmethod is None:
             gtkmethod = self.gtkpkg.get_method(cname=cname)
@@ -1315,19 +1352,34 @@ class GIRClass(object):
         # Try to extract the type of the parameter from the instance-parameter
         # node.
         t = None
+        ownership="none"
         if not inherited:
             try:
                 ip = next(node.iter(ninstanceparam))
-                ipt = ip.find(ntype)
-                if ipt is not None:
-                    ctype_name = ipt.get(ctype_qname)
-                    if ctype_name:
-                        ctype_name = ctype_name.replace("const ", "")
+                name = ip.get("name", None)
+                ownership = ip.get("transfer-ownership", "none")
+                gtktype = gtkmethod.get_param(name).get_type(None)
+
+                if gtktype is not None:
+                    # take in account type set in *.toml file
+                    if isinstance (gtktype, CType):
+                       gtktype = gtktype.as_ada_param(self.pkg)
                     t = naming.type(
-                        name=ipt.get("name"),
-                        cname=ctype_name,
+                        name=name,
+                        cname=gtktype,
                         useclass=gtkmethod.is_class_wide(),
                     )
+                else:
+                    ipt = ip.find(ntype)
+                    if ipt is not None:
+                        ctype_name = ipt.get(ctype_qname)
+                        if ctype_name:
+                            ctype_name = ctype_name.replace("const ", "")
+                        t = naming.type(
+                            name=ipt.get("name"),
+                            cname=ctype_name,
+                            useclass=gtkmethod.is_class_wide(),
+                        )
             except StopIteration:
                 t = None
 
@@ -1352,7 +1404,7 @@ class GIRClass(object):
         else:
             mode = "in"
 
-        profile.add_param(0, Parameter(name=pname, type=t, mode=mode))
+        profile.add_param(0, Parameter(name=pname, type=t, mode=mode, ownership=ownership))
 
     def _handle_function_internal(
         self,
@@ -1387,6 +1439,7 @@ class GIRClass(object):
             and not body
             and not gtkmethod.return_as_param()
         )
+
         adaname = adaname or gtkmethod.ada_name() or node.get("name").title()
         adaname = naming.protect_keywords(adaname)
 
@@ -1590,9 +1643,6 @@ end if;"""
         destroy = profile.find_param(destroy_data_params)
 
         # Compute the profile of the callback (will all its arguments)
-
-        gtkmethod = self.gtkpkg.get_method(cname=cname)
-
         try:
             cb_gir_node = self.gir.callbacks[cb.type.ada]
         except:
@@ -1636,7 +1686,10 @@ end if;"""
                 # user data, that the Ada applications can use
 
                 nouser_cb_profile = copy.deepcopy(cb_profile)
-                nouser_cb_profile.remove_param(destroy_data_params + [cb_user_data])
+                if destroy is None:
+                    nouser_cb_profile.remove_param([cb_user_data])
+                else:
+                    nouser_cb_profile.remove_param([destroy, cb_user_data])
                 subp = nouser_cb_profile.subprogram(name="")
                 section.add("\ntype %s is %s" % (funcname, subp.spec(pkg=self.pkg)))
 
@@ -1730,7 +1783,10 @@ end if;"""
                 user_data.lower(): "To_Address (%s)" % cb.name,
             }
         else:
-            nouser_profile.remove_param(destroy_data_params + [user_data])
+            if destroy is None:
+                nouser_profile.remove_param([user_data])
+            else:
+                nouser_profile.remove_param([destroy, user_data])
             values = {
                 destroy: "System.Null_Address",
                 cb.name.lower(): "Internal_%s'Address" % funcname,
@@ -1840,7 +1896,8 @@ end if;"""
 
             full_profile = copy.deepcopy(profile)
             full_profile.set_class_wide()
-            full_profile.remove_param(destroy_data_params)
+            if destroy is not None:
+                full_profile.remove_param([destroy])
             full_profile.replace_param(cb.name, funcname)
             full_profile.replace_param(user_data, "User_Data_Type")
 
@@ -2286,6 +2343,7 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
                 and self.is_gobject
                 and self._subst["parent"] is not None
                 and not self.is_gdk_event_subclass
+                and not self.is_parent_fundamental
             ):
 
                 self.pkg.add_with("Glib.Type_Conversion_Hooks", specs=False)
@@ -3532,6 +3590,8 @@ end From_Object_Free;"""
             oldtype = naming.type(cname=self.ctype)
             newtype = None
             # and create the new one accordingly
+            if isinstance(oldtype, Fundamental):
+                newtype = Fundamental(typename)
             if isinstance(oldtype, Tagged):
                 newtype = Tagged(typename)
             elif isinstance(oldtype, GObject):
@@ -3659,6 +3719,9 @@ type %(typename)s is new %(parent)s with null record;"""
                 in_spec=False,
             )
 
+        elif self.is_fundamental:
+            self.fundamental_spec(section)
+
         elif self._subst["parent"] is None:
             # Likely a public record type (ie with visible fields).
             # Automatically add it to the list of records to bind.
@@ -3728,6 +3791,13 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         self._method_get_type()
         self._methods()
 
+        if self.is_fundamental:
+            self.fundamental_adjust_body()
+            self.fundamental_finalize_body()
+
+        elif self.is_parent_fundamental:
+            self.register_fundamental_constructor()
+
         if extra:
             s = None
             for p in extra:
@@ -3751,6 +3821,308 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         self._properties()
         self._signals()
 
+    def fundamental_spec(self, section):
+        """Build the specification for fundamental class.
+
+        Implementation based on Ada.Finalization.Controlled class
+          and implement Adjust/Finalize if ref/unref defined
+        """
+
+        self.pkg.add_with("Ada.Finalization")
+
+        # force `with System; use System;`
+        self.pkg.spec_withs["System"] = (True, False)
+
+        t = self._subst["typename"] + "_Record"
+        self.has_ref = self.node.get(glib_ref_func) is not None
+        self.has_unref = self.node.get(glib_unref_func) is not None
+
+        section.add(
+                """
+   type %(typename)s_Record is abstract new Ada.Finalization.Controlled with private;
+   type %(typename)s is access all %(typename)s_Record'Class;
+""" % self._subst
+        )
+
+        # additions
+        section = self.pkg.section("GtkAda additions")
+
+        subp = Subprogram(
+            name="Is_Created",
+            plist=[Parameter(name="Self", type=t, mode="not null access", classwide=True)],
+            returns=AdaType("Boolean"),
+            code="""
+      return Self.Ptr /= System.Null_Address""",
+            showdoc=True,
+            doc="Retrn True if Self is initialized with Gtk object"
+        )
+        section.add(subp)
+
+        subp = Subprogram(
+            name="Get_Object",
+            plist=[Parameter(name="Self", type=t, mode="access", classwide=True)],
+            returns=AdaType("System.Address"),
+            code="""
+      if Self = null then
+         return System.Null_Address;
+      else
+         return Self.Ptr;
+      end if""",
+            showdoc=True,
+            doc="For internal usage. Do not call manualy."
+        )
+        section.add(subp)
+
+        subp = Subprogram(
+            name="Set_Object",
+            plist=[Parameter(name="Self", type=t, mode="not null access", classwide=True),
+                   Parameter(name="Object", type="System.Address", mode="in")],
+            code="""
+      Self.Ptr := Object""",
+            showdoc=True,
+            doc="For internal usage. Do not call manualy."
+        )
+        section.add(subp)
+
+        self.pkg.add_with("Ada.Tags.Generic_Dispatching_Constructor", specs=False, do_use=False)
+
+        section.add(
+            ("function Dispatching_Constructor is\n"
+             + " new Ada.Tags.Generic_Dispatching_Constructor\n"
+             + "  (%s, System.Address, Create);"
+            ) % t,
+            in_spec=False,
+        )
+
+        subp = Subprogram(
+            name="From_Object_Full_Ownership",
+            plist=[Parameter(name="Object", type="System.Address")],
+            returns=AdaType("%(typename)s" % self._subst),
+            local_vars=[
+                Local_Var(
+                    "T",
+                    "Glib.GType",
+                ),
+                Local_Var(
+                    "O",
+                    "aliased System.Address",
+                    "System.Null_Address",
+                ),
+                Local_Var(
+                    "Result",
+                    "%(typename)s" % self._subst,
+                )
+            ],
+            code="""
+        if Object /= System.Null_Address then
+            T := Glib.Instance_Get_Type (Object);
+            Result := new %(typename)s_Record'Class'
+              (Dispatching_Constructor
+                (Ada.Tags.Internal_Tag (Glib.Type_Name (T)), O'Access));
+            Set_Object (Result, Object);
+            return Result;
+        else
+            return null;
+        end if;
+        exception
+           when Ada.Tags.Tag_Error =>
+              Result := new Dummy_%(typename)s_Record'(Create (O'Access));
+              Set_Object (Result, Object);
+              return Result""" % self._subst,
+            showdoc=True,
+            doc="For internal usage. Do not call manualy."
+        )
+        section.add(subp)
+
+        subp = Subprogram(
+            name="From_Object_None_Ownership",
+            plist=[Parameter(name="Object", type="System.Address")],
+            returns=AdaType("%(typename)s" % self._subst),
+            local_vars=[
+                Local_Var(
+                    "Result",
+                    "%(typename)s" % self._subst,
+                )
+            ],
+            code="""
+        Result := From_Object_Full_Ownership (Object);
+        if Result /= null then
+           --  To call Ref
+           Adjust (Result.all);
+        end if;
+        return Result""" % self._subst,
+            showdoc=True,
+            doc="For internal usage. Do not call manualy."
+        )
+        section.add(subp)
+
+        section.add(
+            ("function Create (Ptr: not null access System.Address) return %s is abstract;"
+            ) % t,
+            in_spec=True,
+        )
+        section.add(
+            ("type Dummy_%(typename)s_Record is new %(typename)s_Record with private;\n"
+             + "function Create (Ptr: not null access System.Address) return Dummy_%(typename)s_Record;"
+            ) % self._subst,
+            in_spec=True,
+        )
+
+        subp = Subprogram(
+            name="Create",
+            plist=[Parameter(name="Ptr", type="not null access System.Address")],
+            returns=AdaType("Dummy_%s" % t),
+            local_vars=[
+                Local_Var(
+                    "Result",
+                    "Dummy_%s" % t,
+                )
+            ],
+            code="""
+        return Result""",
+            showdoc=False,
+            no_spec=True,
+        )
+        section.add(subp)
+
+        # private part
+        self.pkg.add_private(
+                """
+   type Dummy_%(typename)s_Record is new %(typename)s_Record with null record;
+""" % self._subst
+        )
+
+        if self.has_unref:
+            self.pkg.add_private(
+                """   overriding procedure Finalize (Object : in out %s);""" % t
+        )
+
+        if self.has_ref:
+            self.pkg.add_private(
+                """   overriding procedure Adjust (Object : in out %s);""" % t
+        )
+
+        self.pkg.add_private(
+                """
+   type %s is abstract new Ada.Finalization.Controlled with record
+      Ptr : System.Address := System.Null_Address;
+   end record;
+""" % t
+        )
+
+        # withes all nested classes to call Register_Tag and register constructors
+        for c in self.gir.classes.values():
+            if (
+                c.is_parent_fundamental
+                and not c.is_fundamental
+                and self._subst["typename"] == c.get_fundamental_name()
+            ):
+                self.pkg.add_with(c.name, specs=False, do_use=False, might_be_unused=True)
+
+    def fundamental_adjust_body(self):
+        """Generate body for Adjust for fundamental type"""
+
+        if not self.has_ref:
+            return
+
+        t = self._subst["typename"] + "_Record"
+        section = self.pkg.section("Methods")
+        subp = Subprogram(
+            name="Adjust",
+            plist=[Parameter(name="Object", type=t, mode="in out")],
+            code="""
+      if Object.Ptr /= System.Null_Address then
+         Object.Ptr := Ref (Object.Ptr);
+      end if""",
+            showdoc=False,
+            no_spec=True,
+            overriding=True,
+        )
+        subp.add_nested(self.internal_c_ref_unref_subp(self.node.get(glib_ref_func), "Ref"))
+        section.add(subp)
+
+    def fundamental_finalize_body(self):
+        """Generate body for Finalize for fundamental type"""
+
+        if not self.has_unref:
+            return
+
+        t = self._subst["typename"] + "_Record"
+        section = self.pkg.section("Methods")
+        subp = Subprogram(
+            name="Finalize",
+            plist=[Parameter(name="Object", type=t, mode="in out")],
+            code="""
+        if Object.Ptr /= System.Null_Address then
+            Unref (Object.Ptr);
+            Object.Ptr := System.Null_Address;
+        end if""",
+            showdoc=False,
+            no_spec=True,
+            overriding=True,
+        )
+        subp.add_nested(self.internal_c_ref_unref_subp(self.node.get(glib_unref_func), "Unref"))
+        section.add(subp)
+
+    def internal_c_ref_unref_subp(self, name, adaname):
+        """Generate binding for c ref/unref method"""
+
+        local_vars = []
+        internal_call = []
+
+        for c in self.node.findall(nmethod):
+            cname = c.get(cidentifier)
+            if cname == name:
+                gtkmethod = self.gtkpkg.get_method(cname=cname)
+                profile = SubprogramProfile.parse(node=c, gtkmethod=gtkmethod, pkg=self.pkg)
+                self._add_self_param(
+                    None, c, gtkmethod, profile, inherited=False
+                )
+                c_params = profile.c_params(local_vars, internal_call)
+                return Subprogram(
+                    name=adaname,
+                    returns=profile.returns,
+                    lang="ada->c",
+                    plist=c_params,
+                ).import_c(cname)
+
+    def register_fundamental_constructor(self):
+        """Generate constructor to create class based on fundamental class."""
+
+        section = self.pkg.section("GtkAda additions")
+        subp = Subprogram(
+            name="Create",
+            plist=[Parameter(name="Object", type="not null access System.Address")],
+            returns=AdaType("%(typename)s_Record" % self._subst),
+            local_vars=[
+                Local_Var(
+                    "Result",
+                    "%(typename)s_Record" % self._subst,
+                )
+            ],
+            code="""
+        return Result""",
+            showdoc=False,
+            no_spec=False,
+            overriding=True,
+        )
+        section.add(subp)
+
+        self.pkg.add_private(
+            """   for %(typename)s_Record'External_Tag use "%(cname)s";""" % self._subst
+        )
+
+    def get_fundamental_name(self):
+        """Return the name of base fundamental class
+
+        """
+        name = None
+        while True:
+            c = self.gir.klass ("Gtk" + self.node.get("parent"))
+            if c.is_fundamental:
+                name = c._subst["typename"]
+                break
+        return name
 
 # Module-level handles to the parsed GIR data and the TOML override
 # registry. They are assigned by :func:`main` and read from class

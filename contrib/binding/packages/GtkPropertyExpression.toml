@@ -1,0 +1,24 @@
+# ============================================================
+#   GtkPropertyExpression
+# ============================================================
+
+[[method]]
+id = "gtk_property_expression_new_for_pspec"
+
+[[method.parameter]]
+name = "pspec"
+type = "Glib.Param_Spec"
+
+[[method]]
+id = "gtk_property_expression_get_expression"
+
+[[method.parameter]]
+name = "expression"
+ctype = "GtkPropertyExpression*"
+
+[[method]]
+id = "gtk_property_expression_get_pspec"
+
+[[method.parameter]]
+name = "expression"
+ctype = "GtkPropertyExpression*"
