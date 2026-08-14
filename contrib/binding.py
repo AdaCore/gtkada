@@ -2482,6 +2482,10 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
                 # (Property_Object).
 
                 tp = _get_type(p)
+                if isinstance (tp, Fundamental):
+                    # do not crate property for fundamental class for now
+                    continue
+
                 tp.userecord = False
                 ptype = tp.as_property()
                 if ptype:
