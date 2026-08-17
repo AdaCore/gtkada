@@ -111,3 +111,8 @@ build-doc:
         target_subdir=$CI_COMMIT_BRANCH/doc
       fi
     - publish-pages $WD/install --target-subdir $target_subdir --expires 30
+
+include:
+  - component: $CI_SERVER_FQDN/it/gitlab-templates/gitleaks@~latest
+    inputs:
+      stage: build
