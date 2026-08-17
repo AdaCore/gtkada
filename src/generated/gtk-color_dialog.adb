@@ -150,7 +150,6 @@ package body Gtk.Color_Dialog is
        Result : Glib.G_Async_Result;
        Error  : out Glib.Error.GError) return Gdk.RGBA.Gdk_RGBA
    is
-      use type Glib.Error.GError;
       function Internal
          (Self   : System.Address;
           Result : Glib.G_Async_Result;
@@ -159,20 +158,18 @@ package body Gtk.Color_Dialog is
       --  gtk_color_dialog_choose_rgba_finish returns a newly allocated
       --  GdkRGBA* (transfer full), or NULL when the dialog was dismissed,
       --  in which case it sets Error.
-      Error : aliased Glib.Error.GError := null;
-      Color : constant access Gdk.RGBA.Gdk_RGBA :=
-        Internal (Get_Object (Self), Result, Error'Access);
+      Acc_Error  : aliased Glib.Error.GError := null;
+      Color      : constant access Gdk.RGBA.Gdk_RGBA :=
+        Internal (Get_Object (Self), Result, Acc_Error'Access);
    begin
-      --  By the GError convention a successful call (Color /= null) leaves
-      --  Error untouched, so in practice the two are mutually exclusive.
-      --  Free it unconditionally regardless, so that should GTK ever set
-      --  both we never leak the GError.
-      if Error /= null then
-         Glib.Error.Error_Free (Error);
-      end if;
+      Error := Acc_Error;
       if Color = null then
          --  Dismissed (or failed): report no colour. The caller treats
          --  Null_RGBA as "no colour chosen".
+         return Gdk.RGBA.Null_RGBA;
+      elsif Error /= null then
+         --  Failure and non-null value
+         Gdk.RGBA.Free (Color.all);
          return Gdk.RGBA.Null_RGBA;
       end if;
       return Gdk.RGBA.From_Object_Free (Color);
