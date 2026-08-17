@@ -406,6 +406,14 @@ stripping `prefix` to compute the Ada identifier.
 | `prefix_regexp` | string | Python regex matching the C name.                    |
 | `prefix`        | string | Stripped from the C name to compute the Ada name.    |
 
+### `[[property]]`
+
+Match a class `<property>` 
+
+|----------------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| `id`                 | string | **Required.** The C identifier of the property.|
+| `bind`               | bool   | When `false`, suppress the binding for this property.|
+
 ### `[[record]]`
 
 Bind a `<record>` (or `<union>`) as an Ada record type.

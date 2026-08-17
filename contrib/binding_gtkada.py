@@ -295,6 +295,14 @@ class GtkAdaPackage(object):
 
         return GtkAdaMethod(None, self)
 
+    def get_property(self, cname):
+        if self.node is not None:
+            for f in self.node.get("property", []):
+                if f.get("id") == cname:
+                    return GtkAdaProperty(f, self)
+
+        return GtkAdaProperty(None, self)
+
     def get_type(self, name):
         if self.node is not None:
             name = name.lower()
@@ -632,3 +640,15 @@ class GtkAdaType(object):
         if self.node is not None:
             return self.node.get("subtype", False)
         return False
+
+
+class GtkAdaProperty(object):
+    def __init__(self, node, pkg):
+        self.node = node
+        self.pkg = pkg
+        
+    def bind(self, default="true"):
+        """Whether to bind"""
+        if self.node is not None:
+            return self.node.get("bind", default != "false")
+        return default != "false"

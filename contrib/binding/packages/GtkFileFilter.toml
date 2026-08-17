@@ -1,0 +1,15 @@
+# ============================================================
+#   GtkFileFilter
+# ============================================================
+
+[[property]]
+id = "mime-types"
+bind = false
+
+[[property]]
+id = "patterns"
+bind = false
+
+[[property]]
+id = "suffixes"
+bind = false
