@@ -652,6 +652,8 @@ binding = (
     "Gtk.ObjectExpression",
     "Gtk.PropertyExpression",
     "Gtk.TryExpression",
+    "Gtk.BoolFilter",
+    "Gtk.StringFilter",
 )
 
 # Entries that are bound through manual/TOML glue instead of GIR class lookup.
