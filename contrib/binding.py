@@ -2470,6 +2470,9 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
         if props is not None:
             adaprops = []
             for p in props:
+                if not self.gtkpkg.get_property(cname=p.get("name")).bind():
+                   continue
+
                 flags = []
                 if p.get("readable", "1") != "0":
                     flags.append("read")
