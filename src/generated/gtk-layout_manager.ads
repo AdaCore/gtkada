@@ -116,6 +116,7 @@ package Gtk.Layout_Manager is
    --  using the given `GtkLayoutManager`.
    --  @param Child a `GtkWidget`
    --  @return a `GtkLayoutChild`
+   --  Return has transfer-ownership='none'
 
    function Get_Request_Mode
       (Manager : not null access Gtk_Layout_Manager_Record)
@@ -127,6 +128,7 @@ package Gtk.Layout_Manager is
       (Manager : not null access Gtk_Layout_Manager_Record)
        return Glib.Object.GObject;
    --  Retrieves the `GtkWidget` using the given `GtkLayoutManager`.
+   --  Return has transfer-ownership='none'
 
    procedure Layout_Changed
       (Manager : not null access Gtk_Layout_Manager_Record);

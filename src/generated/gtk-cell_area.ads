@@ -641,6 +641,7 @@ package Gtk.Cell_Area is
    --  Gets the `GtkCellRenderer` in Area that is currently being edited.
    --  Deprecated since 4.10, 1
    --  @return The currently edited `GtkCellRenderer`
+   --  Return has transfer-ownership='none'
 
    function Get_Focus_Cell
       (Self : not null access Gtk_Cell_Area_Record)
@@ -649,6 +650,7 @@ package Gtk.Cell_Area is
    --  Retrieves the currently focused cell for Area
    --  Deprecated since 4.10, 1
    --  @return the currently focused cell in Area.
+   --  Return has transfer-ownership='none'
 
    procedure Set_Focus_Cell
       (Self     : not null access Gtk_Cell_Area_Record;
@@ -675,6 +677,7 @@ package Gtk.Cell_Area is
    --  Deprecated since 4.10, 1
    --  @param Renderer the `GtkCellRenderer`
    --  @return the `GtkCellRenderer` for which Renderer is a sibling
+   --  Return has transfer-ownership='none'
 
    function Get_Focus_Siblings
       (Self     : not null access Gtk_Cell_Area_Record;

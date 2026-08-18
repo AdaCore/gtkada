@@ -576,6 +576,7 @@ package Gtk.Widget is
    --  considers Widget to be an ancestor of itself.
    --  @param Widget_Type ancestor type
    --  @return the ancestor widget
+   --  Return has transfer-ownership='none'
 
    function Get_Baseline
       (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
@@ -671,11 +672,13 @@ package Gtk.Widget is
    --  Returns the widget's first child.
    --  This function is primarily meant for widget implementations.
    --  @return the widget's first child
+   --  Return has transfer-ownership='none'
 
    function Get_Focus_Child
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
    --  Returns the focus child of the widget.
    --  @return the current focus child of Widget
+   --  Return has transfer-ownership='none'
 
    procedure Set_Focus_Child
       (Widget : not null access Gtk_Widget_Record;
@@ -732,6 +735,7 @@ package Gtk.Widget is
    --  Gets the font map of the widget.
    --  See [methodGtk.Widget.set_font_map].
    --  @return the font map of Widget
+   --  Return has transfer-ownership='none'
 
    procedure Set_Font_Map
       (Widget   : not null access Gtk_Widget_Record;
@@ -872,6 +876,7 @@ package Gtk.Widget is
    --  Returns the widget's last child.
    --  This function is primarily meant for widget implementations.
    --  @return the widget's last child
+   --  Return has transfer-ownership='none'
 
    function Get_Layout_Manager
       (Widget : not null access Gtk_Widget_Record)
@@ -879,12 +884,14 @@ package Gtk.Widget is
    --  Retrieves the layout manager of the widget.
    --  See [methodGtk.Widget.set_layout_manager].
    --  @return the layout manager of Widget
+   --  Return has transfer-ownership='none'
 
    procedure Set_Layout_Manager
       (Widget         : not null access Gtk_Widget_Record;
        Layout_Manager : access Gtk.Layout_Manager.Gtk_Layout_Manager_Record'Class);
    --  Sets the layout manager to use for measuring and allocating children of
    --  the widget.
+   --  Parameter Layout_Manager has transfer-ownership='full'
    --  @param Layout_Manager a layout manager
 
    function Get_Limit_Events
@@ -974,6 +981,7 @@ package Gtk.Widget is
    --  Returns the widget's next sibling.
    --  This function is primarily meant for widget implementations.
    --  @return the widget's next sibling
+   --  Return has transfer-ownership='none'
 
    function Get_Opacity
       (Widget : not null access Gtk_Widget_Record) return Gdouble;
@@ -1018,11 +1026,13 @@ package Gtk.Widget is
    --  tracked by listening to changes of the [propertyGtk.Widget:root]
    --  property on the widget.
    --  @return the `PangoContext` for the widget
+   --  Return has transfer-ownership='none'
 
    function Get_Parent
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
    --  Returns the parent widget of the widget.
    --  @return the parent widget of Widget
+   --  Return has transfer-ownership='none'
 
    procedure Set_Parent
       (Widget : not null access Gtk_Widget_Record;
@@ -1059,6 +1069,7 @@ package Gtk.Widget is
    --  Returns the widget's previous sibling.
    --  This function is primarily meant for widget implementations.
    --  @return the widget's previous sibling
+   --  Return has transfer-ownership='none'
 
    function Get_Realized
       (Widget : not null access Gtk_Widget_Record) return Boolean;
@@ -1174,6 +1185,7 @@ package Gtk.Widget is
    --  in the template
    --  @param Name ID of the child defined in the template XML
    --  @return the object built in the template XML with the id Name
+   --  Return has transfer-ownership='none'
 
    function Get_Tooltip_Markup
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;

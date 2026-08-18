@@ -195,6 +195,7 @@ package Gtk.Menu_Button is
    --  Gets the child widget of Menu_Button.
    --  Since: gtk+ 4.6
    --  @return the child widget of Menu_Button
+   --  Return has transfer-ownership='none'
 
    procedure Set_Child
       (Self  : not null access Gtk_Menu_Button_Record;
@@ -274,6 +275,7 @@ package Gtk.Menu_Button is
        return Glib.Menu_Model.Gmenu_Model;
    --  Returns the `GMenuModel` used to generate the popup.
    --  @return a `GMenuModel`
+   --  Return has transfer-ownership='none'
 
    procedure Set_Menu_Model
       (Self       : not null access Gtk_Menu_Button_Record;
@@ -294,6 +296,7 @@ package Gtk.Menu_Button is
    --  Returns the `GtkPopover` that pops out of the button.
    --  If the button is not using a `GtkPopover`, this function returns null.
    --  @return a `GtkPopover` or null
+   --  Return has transfer-ownership='none'
 
    procedure Set_Popover
       (Self    : not null access Gtk_Menu_Button_Record;

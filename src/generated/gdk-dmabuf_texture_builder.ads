@@ -162,6 +162,7 @@ package Gdk.Dmabuf_Texture_Builder is
    --  Gdk.Dmabuf_Texture_Builder.Set_Color_State.
    --  Since: gtk+ 4.16
    --  @return the color state
+   --  Return has transfer-ownership='none'
 
    procedure Set_Color_State
       (Self        : not null access Gdk_Dmabuf_Texture_Builder_Record;
@@ -179,6 +180,7 @@ package Gdk.Dmabuf_Texture_Builder is
    --  Returns the display that this texture builder is associated with.
    --  Since: gtk+ 4.14
    --  @return the display
+   --  Return has transfer-ownership='none'
 
    procedure Set_Display
       (Self    : not null access Gdk_Dmabuf_Texture_Builder_Record;
@@ -351,6 +353,7 @@ package Gdk.Dmabuf_Texture_Builder is
    --  Gdk.Dmabuf_Texture_Builder.Set_Update_Texture or null if none was set.
    --  Since: gtk+ 4.14
    --  @return The texture
+   --  Return has transfer-ownership='none'
 
    procedure Set_Update_Texture
       (Self    : not null access Gdk_Dmabuf_Texture_Builder_Record;

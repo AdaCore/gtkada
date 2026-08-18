@@ -328,6 +328,7 @@ package Gtk.Text_View is
    --  The reference count on the buffer is not incremented; the caller of
    --  this function won't own a new reference.
    --  @return a `GtkTextBuffer`
+   --  Return has transfer-ownership='none'
 
    procedure Set_Buffer
       (View   : not null access Gtk_Text_View_Record;
@@ -399,6 +400,7 @@ package Gtk.Text_View is
    --  Gets the menu model that gets added to the context menu or null if none
    --  has been set.
    --  @return the menu model
+   --  Return has transfer-ownership='none'
 
    procedure Set_Extra_Menu
       (View  : not null access Gtk_Text_View_Record;
@@ -418,6 +420,7 @@ package Gtk.Text_View is
    --  Gtk.Enums.Text_Window_Bottom.
    --  @param Win a `GtkTextWindowType`
    --  @return a `GtkWidget`
+   --  Return has transfer-ownership='none'
 
    procedure Set_Gutter
       (View   : not null access Gtk_Text_View_Record;
@@ -585,6 +588,7 @@ package Gtk.Text_View is
    --  The context may be replaced when CSS changes occur.
    --  Since: gtk+ 4.4
    --  @return a `PangoContext`
+   --  Return has transfer-ownership='none'
 
    function Get_Monospace
       (View : not null access Gtk_Text_View_Record) return Boolean;
@@ -676,6 +680,7 @@ package Gtk.Text_View is
    --  The context may be replaced when CSS changes occur.
    --  Since: gtk+ 4.4
    --  @return a `PangoContext`
+   --  Return has transfer-ownership='none'
 
    function Get_Tabs
       (View : not null access Gtk_Text_View_Record)

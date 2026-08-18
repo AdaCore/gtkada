@@ -138,6 +138,7 @@ package Gtk.Text_Tag_Table is
    --  Look up a named tag.
    --  @param Name name of a tag
    --  @return The tag
+   --  Return has transfer-ownership='none'
 
    procedure Remove
       (Table : not null access Gtk_Text_Tag_Table_Record;

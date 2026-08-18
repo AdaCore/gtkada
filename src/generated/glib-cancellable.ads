@@ -265,6 +265,7 @@ package Glib.Cancellable is
    --  Gets the top cancellable from the stack.
    --  @return a Glib.Cancellable.Gcancellable from the top of the stack, or
    --  null if the stack is empty.
+   --  Return has transfer-ownership='none'
 
    -------------
    -- Signals --

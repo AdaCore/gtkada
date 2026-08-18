@@ -50,5 +50,6 @@ package Gtk.Activate_Action is
    --  This is an action that calls Gtk.Widget.Activate on the given widget
    --  upon activation.
    --  @return The activate action
+   --  Return has transfer-ownership='none'
 
 end Gtk.Activate_Action;

@@ -117,6 +117,7 @@ package Gdk.Display is
        return Gdk.Clipboard.Gdk_Clipboard;
    --  Gets the clipboard used for copy/paste operations.
    --  @return the display's clipboard
+   --  Return has transfer-ownership='none'
 
    function Get_Default_Seat
       (Self : not null access Gdk_Display_Record) return Gdk.Gdk_Seat;
@@ -124,6 +125,7 @@ package Gdk.Display is
    --  Note that a display may not have a seat. In this case, this function
    --  will return null.
    --  @return the default seat.
+   --  Return has transfer-ownership='none'
 
    function Get_Dmabuf_Formats
       (Self : not null access Gdk_Display_Record)
@@ -137,6 +139,7 @@ package Gdk.Display is
    --  This function is threadsafe. It can be called from any thread.
    --  Since: gtk+ 4.14
    --  @return a `GdkDmabufFormats` object
+   --  Return has transfer-ownership='none'
 
    function Get_Monitor_At_Surface
       (Self    : not null access Gdk_Display_Record;
@@ -145,6 +148,7 @@ package Gdk.Display is
    --  Gets the monitor in which the largest area of Surface resides.
    --  @param Surface a `GdkSurface`
    --  @return the monitor with the largest overlap with Surface
+   --  Return has transfer-ownership='none'
 
    function Get_Monitors
       (Self : not null access Gdk_Display_Record)
@@ -169,6 +173,7 @@ package Gdk.Display is
    --  On backends where the primary clipboard is not supported natively, GDK
    --  emulates this clipboard locally.
    --  @return the primary clipboard
+   --  Return has transfer-ownership='none'
 
    function Get_Setting
       (Self  : not null access Gdk_Display_Record;
@@ -293,12 +298,14 @@ package Gdk.Display is
    --  This is a convenience function for:
    --  gdk_display_manager_get_default_display (gdk_display_manager_get ())
    --  @return a `GdkDisplay`, or null if there is no default display
+   --  Return has transfer-ownership='none'
 
    function Open (Display_Name : UTF8_String := "") return Gdk.Gdk_Display;
    --  Opens a display.
    --  If opening the display fails, `NULL` is returned.
    --  @param Display_Name the name of the display to open
    --  @return a `GdkDisplay`
+   --  Return has transfer-ownership='none'
 
    ----------------
    -- Properties --

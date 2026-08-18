@@ -68,6 +68,7 @@ package Gtk.Expression_Watch is
    --  Releases a reference on the given `GtkExpressionWatch`.
    --  If the reference was the last, the resources associated to `self` are
    --  freed.
+   --  Parameter Self has transfer-ownership='full'
 
    procedure Unwatch (Self : Gtk_Expression_Watch);
    --  Stops watching an expression.

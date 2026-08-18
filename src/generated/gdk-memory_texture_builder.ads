@@ -93,6 +93,7 @@ package Gdk.Memory_Texture_Builder is
    --  or null if none was set.
    --  Since: gtk+ 4.16
    --  @return The bytes
+   --  Return has transfer-ownership='none'
 
    procedure Set_Bytes
       (Self  : not null access Gdk_Memory_Texture_Builder_Record;
@@ -110,6 +111,7 @@ package Gdk.Memory_Texture_Builder is
    --  Gdk.Memory_Texture_Builder.Set_Color_State.
    --  Since: gtk+ 4.16
    --  @return The colorstate
+   --  Return has transfer-ownership='none'
 
    procedure Set_Color_State
       (Self        : not null access Gdk_Memory_Texture_Builder_Record;
@@ -237,6 +239,7 @@ package Gdk.Memory_Texture_Builder is
    --  Gdk.Memory_Texture_Builder.Set_Update_Texture or null if none was set.
    --  Since: gtk+ 4.16
    --  @return The update texture
+   --  Return has transfer-ownership='none'
 
    procedure Set_Update_Texture
       (Self    : not null access Gdk_Memory_Texture_Builder_Record;

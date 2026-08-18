@@ -96,6 +96,7 @@ package Gtk.Color_Dialog_Button is
    --  Returns the `GtkColorDialog` of Self.
    --  Since: gtk+ 4.10
    --  @return the `GtkColorDialog`
+   --  Return has transfer-ownership='none'
 
    procedure Set_Dialog
       (Self   : not null access Gtk_Color_Dialog_Button_Record;

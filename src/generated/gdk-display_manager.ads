@@ -78,6 +78,7 @@ package Gdk.Display_Manager is
        return Gdk.Gdk_Display;
    --  Gets the default `GdkDisplay`.
    --  @return a `GdkDisplay`
+   --  Return has transfer-ownership='none'
 
    procedure Set_Default_Display
       (Self    : not null access Gdk_Display_Manager_Record;
@@ -96,6 +97,7 @@ package Gdk.Display_Manager is
    --  Opens a display.
    --  @param Name the name of the display to open
    --  @return a `GdkDisplay`, or null if the display could not be opened
+   --  Return has transfer-ownership='none'
 
    ---------------
    -- Functions --
@@ -110,6 +112,7 @@ package Gdk.Display_Manager is
    --  Applications can use [funcSet_Allowed_Backends] to limit what backends
    --  will be used.
    --  @return The global `GdkDisplayManager` singleton
+   --  Return has transfer-ownership='none'
 
    ----------------
    -- Properties --

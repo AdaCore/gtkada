@@ -206,6 +206,7 @@ package Glib.IO_Stream is
    --  Since: gtk+ 2.22
    --  @return a Glib.Input_Stream.Ginput_Stream, owned by the
    --  Glib.IO_Stream.Giostream. Do not free.
+   --  Return has transfer-ownership='none'
 
    function Get_Output_Stream
       (Self : not null access Giostream_Record)
@@ -214,6 +215,7 @@ package Glib.IO_Stream is
    --  Since: gtk+ 2.22
    --  @return a Glib.Output_Stream.Goutput_Stream, owned by the
    --  Glib.IO_Stream.Giostream. Do not free.
+   --  Return has transfer-ownership='none'
 
    function Has_Pending
       (Self : not null access Giostream_Record) return Boolean;

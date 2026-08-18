@@ -1,0 +1,355 @@
+# ============================================================
+#   GtkCustomSorter
+# ============================================================
+
+[[method]]
+id = "gtk_custom_sorter_new"
+bind = false
+
+[[method]]
+id = "gtk_custom_sorter_set_sort_func"
+bind = false
+
+[[extra.with_spec]]
+pkg = "Glib.List_Store"
+
+[[extra.spec]]
+text = '''
+   ------------------
+   -- Constructors --
+   ------------------
+
+   procedure Gtk_New
+      (Self      : out Gtk_Custom_Sorter;
+       Sort_Func : Glib.List_Store.Compare_Data_Func);
+   procedure Initialize
+      (Self      : not null access Gtk_Custom_Sorter_Record'Class;
+       Sort_Func : Glib.List_Store.Compare_Data_Func);
+   --  Creates a new `GtkSorter` that works by calling Sort_Func to compare
+   --  items.
+   --  If Sort_Func is null, all items are considered equal.
+   --  Initialize does nothing if the object was already created with another
+   --  call to Initialize* or G_New.
+   --  @param Sort_Func the `GCompareDataFunc` to use for sorting
+
+   function Gtk_Custom_Sorter_New
+      (Sort_Func : Glib.List_Store.Compare_Data_Func)
+       return Gtk_Custom_Sorter;
+   --  Creates a new `GtkSorter` that works by calling Sort_Func to compare
+   --  items.
+   --  If Sort_Func is null, all items are considered equal.
+   --  @param Sort_Func the `GCompareDataFunc` to use for sorting
+
+   -------------
+   -- Methods --
+   -------------
+
+   procedure Set_Sort_Func
+      (Self      : not null access Gtk_Custom_Sorter_Record;
+       Sort_Func : Glib.List_Store.Compare_Data_Func);
+   --  Sets (or unsets) the function used for sorting items.
+   --  If Sort_Func is null, all items are considered equal.
+   --  If the sort func changes its sorting behavior, Gtk.Sorter.Changed needs
+   --  to be called.
+   --  @param Sort_Func function to sort items
+
+   -----------------------------
+   -- Custom_Sorter_User_Data --
+   -----------------------------
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type) is null;
+   package Custom_Sorter_User_Data is
+
+      type Gcompare_Data_Func is access function
+        (A         : not null access GObject_Record'Class;
+         B         : not null access GObject_Record'Class;
+         User_Data : User_Data_Type) return Glib.Gint;
+      --  Specifies the type of a comparison function used to compare two values.
+      --  The function should return a negative integer if the first value comes
+      --  before the second, 0 if they are equal, or a positive integer if the
+      --  first value comes after the second.
+      --  @param A a value
+      --  @param B a value to compare with
+      --  @param User_Data user data
+      --  @return negative value if A < B; zero if A = B; positive value if A > B
+
+      procedure Gtk_New_User
+         (Self      : out Gtk_Custom_Sorter;
+          Sort_Func : Gcompare_Data_Func;
+          User_Data : User_Data_Type);
+      procedure Initialize_User
+         (Self      : not null access Gtk_Custom_Sorter_Record'Class;
+          Sort_Func : Gcompare_Data_Func;
+          User_Data : User_Data_Type);
+      --  Creates a new `GtkSorter` that works by calling Sort_Func to compare
+      --  items.
+      --  If Sort_Func is null, all items are considered equal.
+      --  Initialize does nothing if the object was already created with another
+      --  call to Initialize* or G_New.
+      --  @param Sort_Func the `GCompareDataFunc` to use for sorting
+
+      function Gtk_Custom_Sorter_New_User
+         (Sort_Func : Gcompare_Data_Func;
+          User_Data : User_Data_Type)
+          return Gtk_Custom_Sorter;
+      --  Creates a new `GtkSorter` that works by calling Sort_Func to compare
+      --  items.
+      --  If Sort_Func is null, all items are considered equal.
+      --  @param Sort_Func the `GCompareDataFunc` to use for sorting
+
+      procedure Set_Sort_Func_User
+         (Self      : not null access Gtk.Custom_Sorter.Gtk_Custom_Sorter_Record'Class;
+          Sort_Func : Gcompare_Data_Func;
+          User_Data : User_Data_Type);
+      --  Sets (or unsets) the function used for sorting items.
+      --  If Sort_Func is null, all items are considered equal.
+      --  If the sort func changes its sorting behavior, Gtk.Sorter.Changed
+      --  needs to be called.
+      --  If a previous function was set, its User_Destroy will be called now.
+      --  @param Sort_Func function to sort items
+      --  @param User_Data user data to pass to Match_Func
+
+   end Custom_Sorter_User_Data;
+'''
+
+[[extra.with_body]]
+pkg = "Ada.Unchecked_Conversion"
+use = false
+
+[extra]
+body = '''
+   function C_Gtk_Custom_Sorter_New
+      (Sort_Func    : System.Address;
+       User_Data    : System.Address;
+       User_Destroy : System.Address)
+       return System.Address;
+   pragma Import (C, C_Gtk_Custom_Sorter_New, "gtk_custom_sorter_new");
+
+   procedure C_Gtk_Custom_Sorter_Set_Sort_Func
+      (Self         : System.Address;
+       Sort_Func    : System.Address;
+       User_Data    : System.Address;
+       User_Destroy : System.Address);
+   pragma Import (C, C_Gtk_Custom_Sorter_Set_Sort_Func, "gtk_custom_sorter_set_sort_func");
+   --  Sets (or unsets) the function used for sorting items.
+   --  If Sort_Func is null, all items are considered equal.
+   --  If the sort func changes its sorting behavior, Gtk.Sorter.Changed needs
+   --  to be called.
+   --  If a previous function was set, its User_Destroy will be called now.
+   --  @param Sort_Func function to sort items
+   --  @param User_Data user data to pass to Match_Func
+   --  @param User_Destroy destroy notify for User_Data
+
+   function To_Compare_Data_Func is new Ada.Unchecked_Conversion
+     (System.Address, Glib.List_Store.Compare_Data_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Glib.List_Store.Compare_Data_Func, System.Address);
+
+   function Internal_Gtk_Sort_Func
+      (A         : System.Address;
+       B         : System.Address;
+       User_Data : System.Address) return Glib.Gint;
+   pragma Convention (C, Internal_Gtk_Sort_Func);
+
+   procedure Internal_Destroy (Data : System.Address) is null;
+   pragma Convention (C, Internal_Destroy);
+
+   ---------------------------
+   -- Gtk_Custom_Sorter_New --
+   ---------------------------
+
+   function Gtk_Custom_Sorter_New
+      (Sort_Func : Glib.List_Store.Compare_Data_Func)
+       return Gtk_Custom_Sorter
+   is
+      Self : constant Gtk_Custom_Sorter := new Gtk_Custom_Sorter_Record;
+   begin
+      Gtk.Custom_Sorter.Initialize (Self, Sort_Func);
+      return Self;
+   end Gtk_Custom_Sorter_New;
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New
+      (Self      : out Gtk_Custom_Sorter;
+       Sort_Func : Glib.List_Store.Compare_Data_Func) is
+   begin
+      Self := new Gtk_Custom_Sorter_Record;
+      Gtk.Custom_Sorter.Initialize (Self, Sort_Func);
+   end Gtk_New;
+
+   ----------------
+   -- Initialize --
+   ----------------
+
+   procedure Initialize
+      (Self      : not null access Gtk_Custom_Sorter_Record'Class;
+       Sort_Func : Glib.List_Store.Compare_Data_Func) is
+   begin
+      if not Self.Is_Created then
+         if Sort_Func = null then
+            Set_Object
+              (Self, C_Gtk_Custom_Sorter_New
+                (System.Null_Address, System.Null_Address, Internal_Destroy'Address));
+         else
+            Set_Object
+              (Self, C_Gtk_Custom_Sorter_New
+                (Internal_Gtk_Sort_Func'Address, To_Address (Sort_Func), Internal_Destroy'Address));
+         end if;
+      end if;
+   end Initialize;
+
+   -------------------
+   -- Set_Sort_Func --
+   -------------------
+
+   procedure Set_Sort_Func
+      (Self      : not null access Gtk_Custom_Sorter_Record;
+       Sort_Func : Glib.List_Store.Compare_Data_Func)
+   is
+   begin
+      if Sort_Func = null then
+         C_Gtk_Custom_Sorter_Set_Sort_Func
+           (Get_Object (Self), System.Null_Address, System.Null_Address, Internal_Destroy'Address);
+      else
+         C_Gtk_Custom_Sorter_Set_Sort_Func
+           (Get_Object (Self), Internal_Gtk_Sort_Func'Address, To_Address (Sort_Func), Internal_Destroy'Address);
+      end if;
+   end Set_Sort_Func;
+
+   ----------------------------
+   -- Internal_Gtk_Sort_Func --
+   ----------------------------
+
+   function Internal_Gtk_Sort_Func
+      (A         : System.Address;
+       B         : System.Address;
+       User_Data : System.Address) return Glib.Gint
+   is
+      Stub : Glib.Object.GObject_Record;
+   begin
+      return To_Compare_Data_Func (User_Data)
+        (Get_User_Data (A, Stub), Get_User_Data (B, Stub));
+   exception
+      when others => return 0;
+   end Internal_Gtk_Sort_Func;
+
+   -----------------------------
+   -- Custom_Sorter_User_Data --
+   -----------------------------
+
+   package body Custom_Sorter_User_Data is
+
+      package Users is new Glib.Object.User_Data_Closure
+        (User_Data_Type, Destroy);
+
+      function To_Gcompare_Data_Func is new Ada.Unchecked_Conversion
+        (System.Address, Gcompare_Data_Func);
+
+      function To_Address is new Ada.Unchecked_Conversion
+        (Gcompare_Data_Func, System.Address);
+
+      function Internal_Cb
+         (A         : System.Address;
+          B         : System.Address;
+          User_Data : System.Address) return Glib.Gint;
+      pragma Convention (C, Internal_Cb);
+
+      --------------------------------
+      -- Gtk_Custom_Sorter_New_User --
+      --------------------------------
+
+      function Gtk_Custom_Sorter_New_User
+         (Sort_Func : Gcompare_Data_Func;
+          User_Data : User_Data_Type)
+          return Gtk_Custom_Sorter
+      is
+         Self : constant Gtk_Custom_Sorter := new Gtk_Custom_Sorter_Record;
+      begin
+         Initialize_User (Self, Sort_Func, User_Data);
+         return Self;
+      end Gtk_Custom_Sorter_New_User;
+
+      ------------------
+      -- Gtk_New_User --
+      ------------------
+
+      procedure Gtk_New_User
+         (Self      : out Gtk_Custom_Sorter;
+          Sort_Func : Gcompare_Data_Func;
+          User_Data : User_Data_Type) is
+      begin
+         Self := new Gtk_Custom_Sorter_Record;
+         Initialize_User (Self, Sort_Func, User_Data);
+      end Gtk_New_User;
+
+      ---------------------
+      -- Initialize_User --
+      ---------------------
+
+      procedure Initialize_User
+         (Self      : not null access Gtk_Custom_Sorter_Record'Class;
+          Sort_Func : Gcompare_Data_Func;
+          User_Data : User_Data_Type)
+      is
+         D : System.Address;
+      begin
+         if not Self.Is_Created then
+            if Sort_Func = null then
+               Set_Object
+                 (Self, C_Gtk_Custom_Sorter_New
+                   (System.Null_Address, System.Null_Address, Users.Free_Data'Address));
+            else
+               D := Users.Build (To_Address (Sort_Func), User_Data);
+               Set_Object
+                 (Self, C_Gtk_Custom_Sorter_New
+                   (Internal_Cb'Address, D, Users.Free_Data'Address));
+            end if;
+         end if;
+      end Initialize_User;
+
+      ------------------------
+      -- Set_Sort_Func_User --
+      ------------------------
+
+      procedure Set_Sort_Func_User
+         (Self      : not null access Gtk.Custom_Sorter.Gtk_Custom_Sorter_Record'Class;
+          Sort_Func : Gcompare_Data_Func;
+          User_Data : User_Data_Type)
+      is
+         D : System.Address;
+      begin
+         if Sort_Func = null then
+            C_Gtk_Custom_Sorter_Set_Sort_Func
+              (Get_Object (Self), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
+         else
+            D := Users.Build (To_Address (Sort_Func), User_Data);
+            C_Gtk_Custom_Sorter_Set_Sort_Func
+              (Get_Object (Self), Internal_Cb'Address, D, Users.Free_Data'Address);
+         end if;
+      end Set_Sort_Func_User;
+
+      -----------------
+      -- Internal_Cb --
+      -----------------
+
+      function Internal_Cb
+         (A         : System.Address;
+          B         : System.Address;
+          User_Data : System.Address) return Glib.Gint
+      is
+         D    : constant Users.Internal_Data_Access := Users.Convert (User_Data);
+         Stub : Glib.Object.GObject_Record;
+      begin
+         return To_Gcompare_Data_Func (D.Func)
+           (Get_User_Data (A, Stub), Get_User_Data (B, Stub), D.Data.all);
+      exception
+         when others => return 0;
+      end Internal_Cb;
+   end Custom_Sorter_User_Data;
+'''

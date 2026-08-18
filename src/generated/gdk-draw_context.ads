@@ -96,6 +96,7 @@ package Gdk.Draw_Context is
        return Gdk.Gdk_Display;
    --  Retrieves the `GdkDisplay` the Context is created for
    --  @return the `GdkDisplay`
+   --  Return has transfer-ownership='none'
 
    function Get_Frame_Region
       (Self : not null access Gdk_Draw_Context_Record)
@@ -116,6 +117,7 @@ package Gdk.Draw_Context is
        return Gdk.Gdk_Surface;
    --  Retrieves the surface that Context is bound to.
    --  @return a `GdkSurface`
+   --  Return has transfer-ownership='none'
 
    function Is_In_Frame
       (Self : not null access Gdk_Draw_Context_Record) return Boolean;

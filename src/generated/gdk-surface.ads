@@ -143,6 +143,7 @@ package Gdk.Surface is
    --  surface, and it is using the cursor for its parent surface.
    --  Use [methodGdk.Surface.set_cursor] to unset the cursor of the surface.
    --  @return a `GdkCursor`
+   --  Return has transfer-ownership='none'
 
    procedure Set_Cursor
       (Self   : not null access Gdk_Surface_Record;
@@ -167,6 +168,7 @@ package Gdk.Surface is
    --  Use [methodGdk.Surface.set_cursor] to unset the cursor of the surface.
    --  @param Device a pointer `GdkDevice`
    --  @return a `GdkCursor`
+   --  Return has transfer-ownership='none'
 
    procedure Set_Device_Cursor
       (Self   : not null access Gdk_Surface_Record;
@@ -186,6 +188,7 @@ package Gdk.Surface is
       (Self : not null access Gdk_Surface_Record) return Gdk.Gdk_Display;
    --  Gets the `GdkDisplay` associated with a `GdkSurface`.
    --  @return the `GdkDisplay` associated with Surface
+   --  Return has transfer-ownership='none'
 
    function Get_Frame_Clock
       (Self : not null access Gdk_Surface_Record)
@@ -194,6 +197,7 @@ package Gdk.Surface is
    --  The frame clock for a surface never changes unless the surface is
    --  reparented to a new toplevel surface.
    --  @return the frame clock
+   --  Return has transfer-ownership='none'
 
    function Get_Height
       (Self : not null access Gdk_Surface_Record) return Glib.Gint;

@@ -110,16 +110,19 @@ package Gdk.Drag is
        return Gdk.Content_Provider.Gdk_Content_Provider;
    --  Returns the `GdkContentProvider` associated to the `GdkDrag` object.
    --  @return The `GdkContentProvider` associated to Drag.
+   --  Return has transfer-ownership='none'
 
    function Get_Device
       (Self : not null access Gdk_Drag_Record) return Gdk.Gdk_Device;
    --  Returns the `GdkDevice` associated to the `GdkDrag` object.
    --  @return The `GdkDevice` associated to Drag.
+   --  Return has transfer-ownership='none'
 
    function Get_Display
       (Self : not null access Gdk_Drag_Record) return Gdk.Gdk_Display;
    --  Gets the `GdkDisplay` that the drag object was created for.
    --  @return a `GdkDisplay`
+   --  Return has transfer-ownership='none'
 
    function Get_Drag_Surface
       (Self : not null access Gdk_Drag_Record) return Gdk.Gdk_Surface;
@@ -130,12 +133,14 @@ package Gdk.Drag is
    --  operation. The surface is owned by Drag and will be destroyed when the
    --  drag operation is over.
    --  @return the drag surface
+   --  Return has transfer-ownership='none'
 
    function Get_Formats
       (Self : not null access Gdk_Drag_Record)
        return Gdk.Content_Formats.Gdk_Content_Formats;
    --  Retrieves the formats supported by this `GdkDrag` object.
    --  @return a `GdkContentFormats`
+   --  Return has transfer-ownership='none'
 
    function Get_Selected_Action
       (Self : not null access Gdk_Drag_Record) return Drag_Action;
@@ -146,6 +151,7 @@ package Gdk.Drag is
       (Self : not null access Gdk_Drag_Record) return Gdk.Gdk_Surface;
    --  Returns the `GdkSurface` where the drag originates.
    --  @return The `GdkSurface` where the drag originates
+   --  Return has transfer-ownership='none'
 
    procedure Set_Hotspot
       (Self  : not null access Gdk_Drag_Record;

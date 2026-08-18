@@ -154,6 +154,7 @@ package Gtk.Expander is
        return Gtk.Widget.Gtk_Widget;
    --  Gets the child widget of Expander.
    --  @return the child widget of Expander
+   --  Return has transfer-ownership='none'
 
    procedure Set_Child
       (Self  : not null access Gtk_Expander_Record;
@@ -198,6 +199,7 @@ package Gtk.Expander is
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the label widget for the frame.
    --  @return the label widget
+   --  Return has transfer-ownership='none'
 
    procedure Set_Label_Widget
       (Self         : not null access Gtk_Expander_Record;

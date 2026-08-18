@@ -167,6 +167,7 @@ package Gtk.Column_View is
    --  Gets the factory that's currently used to populate section headers.
    --  Since: gtk+ 4.12
    --  @return The factory in use
+   --  Return has transfer-ownership='none'
 
    procedure Set_Header_Factory
       (Self    : not null access Gtk_Column_View_Record;
@@ -208,6 +209,7 @@ package Gtk.Column_View is
    --  Gets the factory set via [methodGtk.ColumnView.set_row_factory].
    --  Since: gtk+ 4.12
    --  @return The factory
+   --  Return has transfer-ownership='none'
 
    procedure Set_Row_Factory
       (Self    : not null access Gtk_Column_View_Record;
@@ -274,6 +276,7 @@ package Gtk.Column_View is
    --  gtk_no_selection_new (model); gtk_column_view_set_model (view,
    --  selection); ```
    --  @return the `GtkSorter` of Self
+   --  Return has transfer-ownership='none'
 
    function Get_Tab_Behavior
       (Self : not null access Gtk_Column_View_Record)
@@ -317,6 +320,7 @@ package Gtk.Column_View is
    --  This function works no matter if the columnview is shown or focused. If
    --  it isn't, then the changes will take effect once that happens.
    --  Since: gtk+ 4.12
+   --  Parameter Scroll has transfer-ownership='full'
    --  @param Pos position of the item. Must be less than the number of items
    --  in the view.
    --  @param Column The column to scroll to or `NULL` to not scroll columns

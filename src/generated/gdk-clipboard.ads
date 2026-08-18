@@ -92,6 +92,7 @@ package Gdk.Clipboard is
    --  process, null will be returned.
    --  @return The content of a clipboard if the clipboard does not maintain
    --  any content
+   --  Return has transfer-ownership='none'
 
    function Set_Content
       (Self     : not null access Gdk_Clipboard_Record;
@@ -114,6 +115,7 @@ package Gdk.Clipboard is
       (Self : not null access Gdk_Clipboard_Record) return Gdk.Gdk_Display;
    --  Gets the `GdkDisplay` that the clipboard was created for.
    --  @return a `GdkDisplay`
+   --  Return has transfer-ownership='none'
 
    function Get_Formats
       (Self : not null access Gdk_Clipboard_Record)
@@ -121,6 +123,7 @@ package Gdk.Clipboard is
    --  Gets the formats that the clipboard can provide its current contents
    --  in.
    --  @return The formats of the clipboard
+   --  Return has transfer-ownership='none'
 
    function Is_Local
       (Self : not null access Gdk_Clipboard_Record) return Boolean;

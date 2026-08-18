@@ -121,6 +121,7 @@ package Gdk.Frame_Clock is
    --  @return the `GdkFrameTimings` for the frame currently being processed,
    --  or even no frame is being processed, for the previous frame. Before any
    --  frames have been processed, returns null.
+   --  Return has transfer-ownership='none'
 
    function Get_Fps
       (Self : not null access Gdk_Frame_Clock_Record) return Gdouble;
@@ -189,6 +190,7 @@ package Gdk.Frame_Clock is
    --  be received
    --  @return the `GdkFrameTimings` object for the specified frame, or null
    --  if it is not available
+   --  Return has transfer-ownership='none'
 
    procedure Request_Phase
       (Self  : not null access Gdk_Frame_Clock_Record;

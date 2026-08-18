@@ -166,6 +166,7 @@ package Gtk.Tree_Selection is
    pragma Obsolescent (Get_Tree_View);
    --  Returns the tree view associated with Selection.
    --  Deprecated since 4.10, 1
+   --  Return has transfer-ownership='none'
 
    function Get_User_Data
       (Self : not null access Gtk_Tree_Selection_Record)

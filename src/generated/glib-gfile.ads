@@ -1416,6 +1416,7 @@ package Glib.GFile is
        Info   : out Glib.File_Info.Gfile_Info) return Boolean;
    --  Finishes setting an attribute started in
    --  Glib.GFile.Set_Attributes_Async.
+   --  Parameter Info has transfer-ownership='full'
    --  @param Result a Glib.G_Async_Result
    --  @param Info a Glib.File_Info.Gfile_Info
    --  @return True if the attributes were set correctly, False otherwise.

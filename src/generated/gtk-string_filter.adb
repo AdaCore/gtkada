@@ -74,6 +74,7 @@ package body Gtk.String_Filter is
    begin
       if not Self.Is_Created then
          if Expression /= null then
+            --  transfer-ownership='full'
             Adjust (Expression.all);
          end if;
          Set_Object (Self, Internal (Get_Object (Expression)));

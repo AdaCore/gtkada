@@ -354,6 +354,7 @@ package Gdk.Texture is
    --  Returns the color state associated with the texture.
    --  Since: gtk+ 4.16
    --  @return the color state of the `GdkTexture`
+   --  Return has transfer-ownership='none'
 
    function Get_Format
       (Self : not null access Gdk_Texture_Record) return Gdk_Memory_Format;

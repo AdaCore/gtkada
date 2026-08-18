@@ -176,6 +176,7 @@ package Pango.Layout is
        return Pango.Attributes.Pango_Attr_List;
    --  Gets the attribute list for the layout, if any.
    --  @return a Pango.Attributes.Pango_Attr_List or null if none was set.
+   --  Return has transfer-ownership='none'
 
    procedure Set_Attributes
       (Layout : not null access Pango_Layout_Record;
@@ -238,6 +239,7 @@ package Pango.Layout is
    --  @return the Pango.Context.Pango_Context for the layout. This does not
    --  have an additional refcount added, so if you want to keep a copy of this
    --  around, you must reference it yourself.
+   --  Return has transfer-ownership='none'
 
    procedure Get_Cursor_Pos
       (Layout     : not null access Pango_Layout_Record;
@@ -782,6 +784,7 @@ package Pango.Layout is
    --  Gets the layout associated with a Pango.Layout.Pango_Layout_Iter.
    --  Since: gtk+ 1.20
    --  @return the layout associated with Iter.
+   --  Return has transfer-ownership='none'
 
    procedure Get_Layout_Extents
       (Self         : Pango_Layout_Iter;

@@ -96,6 +96,7 @@ package Gdk.Device is
        return Gdk.Device_Tool.Gdk_Device_Tool;
    --  Retrieves the current tool for Device.
    --  @return the `GdkDeviceTool`
+   --  Return has transfer-ownership='none'
 
    function Get_Direction
       (Self : not null access Gdk_Device_Record)
@@ -112,6 +113,7 @@ package Gdk.Device is
       (Self : not null access Gdk_Device_Record) return Gdk.Gdk_Display;
    --  Returns the `GdkDisplay` to which Device pertains.
    --  @return a `GdkDisplay`
+   --  Return has transfer-ownership='none'
 
    function Get_Has_Cursor
       (Self : not null access Gdk_Device_Record) return Boolean;
@@ -161,6 +163,7 @@ package Gdk.Device is
       (Self : not null access Gdk_Device_Record) return Gdk.Gdk_Seat;
    --  Returns the `GdkSeat` the device belongs to.
    --  @return a `GdkSeat`
+   --  Return has transfer-ownership='none'
 
    function Get_Source
       (Self : not null access Gdk_Device_Record) return Gdk_Input_Source;
@@ -180,6 +183,7 @@ package Gdk.Device is
    --  @param Win_Y return location for the Y coordinate of the device
    --  location relative to the surface origin
    --  @return the `GdkSurface` under the device position
+   --  Return has transfer-ownership='none'
 
    function Get_Timestamp
       (Self : not null access Gdk_Device_Record) return Guint32;

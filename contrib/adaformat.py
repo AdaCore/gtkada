@@ -1698,16 +1698,15 @@ class Parameter(Local_Var):
                     wrapper=wrapper,
                     is_temporary_variable=self.is_temporary_variable,
                 )
-
                 if (
                     (self.ownership == "full" or self.ownership == True)
-                    and isinstance (self.type, Fundamental)
                     and lang == "ada->c"
                 ):
-                    if self.type.as_ada_param(pkg)[-7] == "_Record":
-                        call = call._replace(precall="Adjust (%s);" % n)
-                    else:
-                        call = call._replace(precall="if %s /= null then Adjust (%s.all); end if;" % (n, n))
+                    if isinstance (self.type, Fundamental):
+                        if self.type.as_ada_param(pkg)[-7] == "_Record":
+                            call = call._replace(precall="--  transfer-ownership='full'\nAdjust (%s);" % n)
+                        else:
+                            call = call._replace(precall="if %s /= null then\n--  transfer-ownership='full'\nAdjust (%s.all); end if;" % (n, n))
 
                 return call
             else:
@@ -1945,10 +1944,13 @@ class Subprogram(object):
         if self.showdoc:
             doc = []
             returns = []
+            afterreturns = []
 
             for d in self.doc:
                 if isinstance(d, str) and d.lstrip().startswith("@return "):
                     returns.append(d)
+                elif isinstance(d, str) and d.lstrip().startswith("@afterreturn "):
+                    afterreturns.append(d.replace("@afterreturn ", ""))
                 else:
                     doc.append(d)
 
@@ -1956,6 +1958,7 @@ class Subprogram(object):
                 doc += [self._deprecated[1]]
             doc += [p.doc for p in self.plist]
             doc += returns
+            doc += afterreturns
         else:
             doc = []
 

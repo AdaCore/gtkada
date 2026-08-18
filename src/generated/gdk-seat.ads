@@ -90,18 +90,21 @@ package Gdk.Seat is
    --  Returns the `GdkDisplay` this seat belongs to.
    --  @return a `GdkDisplay`. This object is owned by GTK and must not be
    --  freed.
+   --  Return has transfer-ownership='none'
 
    function Get_Keyboard
       (Self : not null access Gdk_Seat_Record) return Gdk.Gdk_Device;
    --  Returns the device that routes keyboard events.
    --  @return a `GdkDevice` with keyboard capabilities. This object is owned
    --  by GTK and must not be freed.
+   --  Return has transfer-ownership='none'
 
    function Get_Pointer
       (Self : not null access Gdk_Seat_Record) return Gdk.Gdk_Device;
    --  Returns the device that routes pointer events.
    --  @return a `GdkDevice` with pointer capabilities. This object is owned
    --  by GTK and must not be freed.
+   --  Return has transfer-ownership='none'
 
    function Get_Tools
       (Self : not null access Gdk_Seat_Record)

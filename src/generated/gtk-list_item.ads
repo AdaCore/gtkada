@@ -110,6 +110,7 @@ package Gtk.List_Item is
    --  Gets the child previously set via [methodGtk.ListItem.set_child] or
    --  `NULL` if none was set.
    --  @return The child
+   --  Return has transfer-ownership='none'
 
    procedure Set_Child
       (Self  : not null access Gtk_List_Item_Record;

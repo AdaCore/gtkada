@@ -402,6 +402,7 @@ package Pango.Language is
    --  @return an opaque pointer to a Pango.Language.Pango_Language structure,
    --  or null if Language was null. The returned pointer will be valid forever
    --  after, and should not be freed.
+   --  Return has transfer-ownership='none'
 
    function Get_Default return Pango_Language;
    --  Returns the Pango.Language.Pango_Language for the current locale of the
@@ -428,6 +429,7 @@ package Pango.Language is
    --  Since: gtk+ 1.16
    --  @return the default language as a Pango.Language.Pango_Language, must
    --  not be freed.
+   --  Return has transfer-ownership='none'
 
 private
    Null_Pango_Language : constant Pango_Language :=

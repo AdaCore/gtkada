@@ -191,6 +191,7 @@ package Gtk.Bitset is
    function Ref (Self : Gtk_Bitset) return Gtk_Bitset;
    --  Acquires a reference on the given `GtkBitset`.
    --  @return the `GtkBitset` with an additional reference
+   --  Return has transfer-ownership='none'
 
    function Remove (Self : Gtk_Bitset; Value : Guint) return Boolean;
    --  Removes Value from Self if it was part of it before.
@@ -277,6 +278,7 @@ package Gtk.Bitset is
    --  Releases a reference on the given `GtkBitset`.
    --  If the reference was the last, the resources associated to the Self are
    --  freed.
+   --  Parameter Self has transfer-ownership='full'
 
 private
    Null_Gtk_Bitset : constant Gtk_Bitset :=

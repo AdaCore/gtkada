@@ -248,6 +248,7 @@ package Gdk.Cursor is
    --  it is used on does not support textured cursors.
    --  @return the fallback of the cursor or null to use the default cursor as
    --  fallback
+   --  Return has transfer-ownership='none'
 
    function Get_Hotspot_X
       (Self : not null access Gdk_Cursor_Record) return Glib.Gint;

@@ -50,5 +50,6 @@ package Gtk.Mnemonic_Action is
    --  This is an action that calls Gtk.Widget.Mnemonic_Activate on the given
    --  widget upon activation.
    --  @return The mnemonic action
+   --  Return has transfer-ownership='none'
 
 end Gtk.Mnemonic_Action;

@@ -81,6 +81,7 @@ package Gtk.Center_Layout is
        return Gtk.Widget.Gtk_Widget;
    --  Returns the center widget of the layout.
    --  @return the current center widget of Self
+   --  Return has transfer-ownership='none'
 
    procedure Set_Center_Widget
       (Center_Layout : not null access Gtk_Center_Layout_Record;
@@ -94,6 +95,7 @@ package Gtk.Center_Layout is
        return Gtk.Widget.Gtk_Widget;
    --  Returns the end widget of the layout.
    --  @return the current end widget of Self
+   --  Return has transfer-ownership='none'
 
    procedure Set_End_Widget
       (Center_Layout : not null access Gtk_Center_Layout_Record;
@@ -139,6 +141,7 @@ package Gtk.Center_Layout is
        return Gtk.Widget.Gtk_Widget;
    --  Returns the start widget of the layout.
    --  @return The current start widget of Self
+   --  Return has transfer-ownership='none'
 
    procedure Set_Start_Widget
       (Center_Layout : not null access Gtk_Center_Layout_Record;

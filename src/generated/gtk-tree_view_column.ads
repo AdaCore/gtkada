@@ -239,6 +239,7 @@ package Gtk.Tree_View_Column is
    --  Returns the button used in the treeview column header
    --  Deprecated since 4.10, 1
    --  @return The button for the column header.
+   --  Return has transfer-ownership='none'
 
    function Get_Clickable
       (Self : not null access Gtk_Tree_View_Column_Record) return Boolean;
@@ -494,6 +495,7 @@ package Gtk.Tree_View_Column is
    --  Column is currently not inserted in any tree view, null is returned.
    --  Deprecated since 4.10, 1
    --  @return The tree view wherein Column has been inserted
+   --  Return has transfer-ownership='none'
 
    function Get_Visible
       (Self : not null access Gtk_Tree_View_Column_Record) return Boolean;
@@ -519,6 +521,7 @@ package Gtk.Tree_View_Column is
    --  If a custom widget has not been set then null is returned.
    --  Deprecated since 4.10, 1
    --  @return The `GtkWidget` in the column header
+   --  Return has transfer-ownership='none'
 
    procedure Set_Widget
       (Self   : not null access Gtk_Tree_View_Column_Record;

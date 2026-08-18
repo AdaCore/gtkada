@@ -218,10 +218,12 @@ package Gtk.Expression is
    --  stays synchronized with `self`. If `self`'s evaluation fails, `target`'s
    --  `property` is not updated. Use a [classGtk.TryExpression] to provide a
    --  fallback for this case.
+   --  Parameter Self has transfer-ownership='full'
    --  @param Target the target object to bind to
    --  @param Property name of the property on `target` to bind to
    --  @param This the this argument for the evaluation of `self`
    --  @return a `GtkExpressionWatch`
+   --  Return has transfer-ownership='none'
 
    function Evaluate
       (Self  : Gtk_Expression;
@@ -271,6 +273,7 @@ package Gtk.Expression is
    --  automatically, and not just via [methodGtk.ExpressionWatch.unwatch]. You
    --  should call [methodGtk.ExpressionWatch.ref] if you want to keep the
    --  watch around.
+   --  Return has transfer-ownership='none'
 
    generic
       type User_Data_Type (<>) is private;
@@ -302,6 +305,7 @@ package Gtk.Expression is
       --  happen automatically, and not just via
       --  [methodGtk.ExpressionWatch.unwatch]. You should call
       --  [methodGtk.ExpressionWatch.ref] if you want to keep the watch around.
+      --  Return has transfer-ownership='none'
 
    end Watch_User_Data;
 
