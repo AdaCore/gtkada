@@ -14,6 +14,7 @@ with GNAT.Strings; use GNAT.Strings;
 
 with Glib;           use Glib;
 with Glib.Bytes;     use Glib.Bytes;
+with Glib.Error;
 with Glib.Resource;  use Glib.Resource;
 with Glib.Test;      use Glib.Test;
 
@@ -108,10 +109,13 @@ procedure Main is
    ----------------------------
 
    procedure Test_Load_And_Get_Info is
-      Resource : Gresource := Load ("sample.gresource");
+      Error    : Glib.Error.GError := null;
+      Resource : Gresource := Load ("sample.gresource", Error);
       Size     : aliased Gsize;
       Flags    : aliased Guint32;
       Found    : Boolean;
+
+      use type Glib.Error.GError;
    begin
       Assert_True (Resource /= Null_Gresource);
 
@@ -120,8 +124,10 @@ procedure Main is
          Path         => "/org/gtkada/test/alpha.txt",
          Lookup_Flags => G_Resource_Lookup_Flags_None,
          Size         => Size'Access,
-         Flags        => Flags'Access);
+         Flags        => Flags'Access,
+         Error        => Error);
 
+      Assert_True (Error = null);
       Assert_True (Found);
       Assert_Cmpint_Eq (Gint (Size), Gint (Alpha_Text'Length));
       Assert_True (Flags = 0);
@@ -133,9 +139,11 @@ procedure Main is
          Path         => "/org/gtkada/test/alpha.txt",
          Lookup_Flags => G_Resource_Lookup_Flags_None,
          Size         => null,
-         Flags        => null);
+         Flags        => null,
+         Error        => Error);
 
       Assert_True (Found);
+      Assert_True (Error = null);
 
       Unref (Resource);
    end Test_Load_And_Get_Info;
@@ -145,12 +153,16 @@ procedure Main is
    -----------------------------
 
    procedure Test_Enumerate_Children is
-      Resource : Gresource := Load ("sample.gresource");
+      Error    : Glib.Error.GError := null;
+      Resource : Gresource := Load ("sample.gresource", Error);
       Children : String_List := Enumerate_Children
         (Self         => Resource,
          Path         => "/org/gtkada/test",
-         Lookup_Flags => G_Resource_Lookup_Flags_None);
+         Lookup_Flags => G_Resource_Lookup_Flags_None,
+         Error        => Error);
+      use type Glib.Error.GError;
    begin
+      Assert_True (Error = null);
       Assert_True (Resource /= Null_Gresource);
       Assert_Cmpint_Eq (Gint (Children'Length), 2);
       Assert_True (Has_Entry (Children, "alpha.txt"));
@@ -165,12 +177,17 @@ procedure Main is
    ----------------------
 
    procedure Test_Lookup_Data is
-      Resource : Gresource := Load ("sample.gresource");
+      Load_E, Lookup_E    : Glib.Error.GError;
+      Resource : Gresource := Load ("sample.gresource", Load_E);
       Bytes    : Gbytes := Lookup_Data
         (Self         => Resource,
          Path         => "/org/gtkada/test/beta.txt",
-         Lookup_Flags => G_Resource_Lookup_Flags_None);
+         Lookup_Flags => G_Resource_Lookup_Flags_None,
+         Error        => Lookup_E);
+      use type Glib.Error.GError;
    begin
+      Assert_True (Load_E = null);
+      Assert_True (Lookup_E = null);
       Assert_True (Resource /= Null_Gresource);
       Assert_True (Bytes /= Null_Gbytes);
       Assert_Cmpint_Eq (Gint (Get_Size (Bytes)), Gint (Beta_Text'Length));
@@ -184,8 +201,11 @@ procedure Main is
    ------------------------------
 
    procedure Test_Register_Unregister is
-      Resource : Gresource := Load ("sample.gresource");
+      Error    : Glib.Error.GError := null;
+      Resource : Gresource := Load ("sample.gresource", Error);
+      use type Glib.Error.GError;
    begin
+      Assert_True (Error = null);
       Assert_True (Resource /= Null_Gresource);
       Register (Resource);
       Unregister (Resource);
@@ -197,11 +217,14 @@ procedure Main is
    ------------------------
 
    procedure Test_New_From_Data is
+      Error    : Glib.Error.GError := null;
       Bundle   : Gbytes := Read_File_As_Gbytes ("sample.gresource");
-      Resource : Gresource := Gresource_New_From_Data (Bundle);
+      Resource : Gresource := Gresource_New_From_Data (Bundle, Error);
       Size     : aliased Gsize;
       Found    : Boolean;
+      use type Glib.Error.GError;
    begin
+      Assert_True (Error = null);
       Assert_True (Bundle /= Null_Gbytes);
       Assert_True (Resource /= Null_Gresource);
 
@@ -212,8 +235,10 @@ procedure Main is
          Path         => "/org/gtkada/test/beta.txt",
          Lookup_Flags => G_Resource_Lookup_Flags_None,
          Size         => Size'Access,
-         Flags        => null);
+         Flags        => null,
+         Error        => Error);
 
+      Assert_True (Error = null);
       Assert_True (Found);
       Assert_Cmpint_Eq (Gint (Size), Gint (Beta_Text'Length));
 

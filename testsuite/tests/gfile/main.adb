@@ -12,6 +12,7 @@ with System;
 
 with Glib;                    use Glib;
 with Glib.Bytes;
+with Glib.Error;
 with Glib.File_Info;          use Glib.File_Info;
 with Glib.File_Input_Stream;  use Glib.File_Input_Stream;
 with Glib.File_Output_Stream; use Glib.File_Output_Stream;
@@ -30,6 +31,7 @@ procedure Main is
    --  package. A local subtype spares the rest of the file the prefix.
 
    use type Glib.Bytes.Gbytes;
+   use type Glib.Error.GError;
 
    Payload : constant UTF8_String := "gfile payload" & ASCII.LF;
 
@@ -97,21 +99,27 @@ procedure Main is
    -------------------
 
    procedure Write_Payload (File : Gfile) is
+      Error  : Glib.Error.GError;
       Stream : constant Gfile_Output_Stream := Replace
         (Self        => File,
          Etag        => "",
          Make_Backup => False,
          Flags       => G_File_Create_None,
-         Cancellable => null);
+         Cancellable => null,
+         Error       => Error);
    begin
+      Assert_True (Error = null);
       Assert_True (Stream /= null);
       Assert_True
         (Glib.Output_Stream.Write_All
            (Self          => Goutput_Stream (Stream),
             Buffer        => To_Buffer (Payload),
-            Cancellable   => null));
+            Cancellable   => null,
+            Error         => Error));
+      Assert_True (Error = null);
       Assert_True
-        (Glib.Output_Stream.Close (Goutput_Stream (Stream), null));
+        (Glib.Output_Stream.Close (Goutput_Stream (Stream), null, Error));
+      Assert_True (Error = null);
 
       Glib.Object.Unref (Glib.Object.GObject (Stream));
    end Write_Payload;
@@ -201,6 +209,7 @@ procedure Main is
       Stream : Gfile_Input_Stream;
       Buffer : Guint8_Array (1 .. 64) := (others => 0);
       Count  : Gssize;
+      Error  : Glib.Error.GError;
    begin
       --  Glib.GFile.Replace hands out a Gfile_Output_Stream, and
       --  Glib.GFile.Read a Gfile_Input_Stream: this is where GFile meets the
@@ -208,20 +217,24 @@ procedure Main is
 
       Write_Payload (File);
 
-      Stream := Read (Self => File, Cancellable => null);
+      Stream := Read (Self => File, Cancellable => null, Error => Error);
+      Assert_True (Error = null);
       Assert_True (Stream /= null);
 
       Count := Glib.Input_Stream.Read
         (Self        => Glib.Input_Stream.Ginput_Stream (Stream),
          Buffer      => Buffer,
-         Cancellable => null);
+         Cancellable => null,
+         Error       => Error);
 
+      Assert_True (Error = null);
       Assert_Cmpint_Eq (Gint (Count), Gint (Payload'Length));
       Assert_Cmpstr_Eq (To_String (Buffer (1 .. Natural (Count))), Payload);
 
       Assert_True
         (Glib.Input_Stream.Close
-           (Glib.Input_Stream.Ginput_Stream (Stream), null));
+           (Glib.Input_Stream.Ginput_Stream (Stream), null, Error));
+      Assert_True (Error = null);
       Glib.Object.Unref (Glib.Object.GObject (Stream));
 
       Release (File);
@@ -239,23 +252,22 @@ procedure Main is
    --     type Contents_Access is access all Contents;
    --     function To_Contents is new Ada.Unchecked_Conversion
    --       (System.Address, Contents_Access);
-
    --     File  : constant Gfile := New_For_Path (Data_Path);
    --     Bytes : Glib.Bytes.Gbytes;
    --     Size  : Gsize := 0;
    --     Data  : System.Address;
+   --     Error : Glib.Error.GError;
    --  begin
    --     Write_Payload (File);
 
    --     --  Etag_Out is declined: the C side then computes no entity tag.
-
-   --     Bytes := Load_Bytes (Self => File, Cancellable => null);
+   --     Bytes := Load_Bytes (Self => File, Cancellable => null, Error => Error);
+   --     Assert_True (Error = null);
    --     Assert_True (Bytes /= Glib.Bytes.Null_Gbytes);
    --     Assert_Cmpint_Eq
-   --       (Gint (Glib.Bytes.Get_Size (Bytes)), Gint (Payload'Length));
+   --        (Gint (Glib.Bytes.Get_Size (Bytes)), Gint (Payload'Length));
 
    --     --  Unref_To_Data consumes the last reference and yields the buffer.
-
    --     Data := Glib.Bytes.Unref_To_Data (Bytes, Size);
    --     Assert_Cmpint_Eq (Gint (Size), Gint (Payload'Length));
    --     for I in Contents'Range loop
@@ -264,7 +276,6 @@ procedure Main is
    --           = Payload (Payload'First + I - 1));
    --     end loop;
    --     Glib.g_free (Data);
-
    --     Release (File);
    --  end Test_Load_Bytes;
 
@@ -278,6 +289,7 @@ procedure Main is
       Missing : constant Gfile :=
         New_For_Path (Ada.Directories.Compose (Base, "no-such-file"));
       Info    : Gfile_Info;
+      Error   : Glib.Error.GError;
    begin
       Write_Payload (File);
 
@@ -288,7 +300,9 @@ procedure Main is
         (Self        => File,
          Attributes  => "standard::*",
          Flags       => G_File_Query_Info_None,
-         Cancellable => null);
+         Cancellable => null,
+         Error       => Error);
+      Assert_True (Error = null);
       Assert_True (Info /= null);
       Assert_Cmpstr_Eq (Get_Name (Info), "data.txt");
       Assert_Cmpint_Eq
@@ -324,25 +338,32 @@ procedure Main is
         New_For_Path (Ada.Directories.Compose (Base, "sub"));
       File   : constant Gfile := Get_Child (Dir, "created.txt");
       Stream : Gfile_Output_Stream;
+      Error  : Glib.Error.GError;
    begin
       Assert_False (Query_Exists (Dir, null));
-      Assert_True (Make_Directory (Dir, null));
+      Assert_True (Make_Directory (Dir, null, Error));
+      Assert_True (Error = null);
       Assert_True (Query_Exists (Dir, null));
 
       Assert_False (Query_Exists (File, null));
       Stream := Create
         (Self        => File,
          Flags       => G_File_Create_None,
-         Cancellable => null);
+         Cancellable => null,
+         Error       => Error);
+      Assert_True (Error = null);
       Assert_True (Stream /= null);
       Assert_True
-        (Glib.Output_Stream.Close (Goutput_Stream (Stream), null));
+        (Glib.Output_Stream.Close (Goutput_Stream (Stream), null, Error));
+      Assert_True (Error = null);
       Glib.Object.Unref (Glib.Object.GObject (Stream));
       Assert_True (Query_Exists (File, null));
 
-      Assert_True (Delete (File, null));
+      Assert_True (Delete (File, null, Error));
+      Assert_True (Error = null);
       Assert_False (Query_Exists (File, null));
-      Assert_True (Delete (Dir, null));
+      Assert_True (Delete (Dir, null, Error));
+      Assert_True (Error = null);
       Assert_False (Query_Exists (Dir, null));
 
       Release (File);

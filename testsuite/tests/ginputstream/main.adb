@@ -10,6 +10,7 @@
 with Ada.Command_Line;
 
 with Glib;              use Glib;
+with Glib.Error;
 with Glib.Input_Stream; use Glib.Input_Stream;
 with Glib.Object;
 with Glib.Resource;     use Glib.Resource;
@@ -19,6 +20,8 @@ procedure Main is
 
    Alpha_Text : constant UTF8_String := "alpha resource" & ASCII.LF;
    Beta_Text  : constant UTF8_String := "beta value" & ASCII.LF;
+
+   use type Glib.Error.GError;
 
    function Open (Path : UTF8_String) return Ginput_Stream;
    --  Open Path in sample.gresource. The resource itself is released at once:
@@ -31,12 +34,17 @@ procedure Main is
    ----------
 
    function Open (Path : UTF8_String) return Ginput_Stream is
-      Resource : Gresource := Load ("sample.gresource");
-      Stream   : constant Ginput_Stream := Open_Stream
+      Load_Error   : Glib.Error.GError;
+      Stream_Error : Glib.Error.GError;
+      Resource     : Gresource := Load ("sample.gresource", Load_Error);
+      Stream       : constant Ginput_Stream := Open_Stream
         (Self         => Resource,
          Path         => Path,
-         Lookup_Flags => G_Resource_Lookup_Flags_None);
+         Lookup_Flags => G_Resource_Lookup_Flags_None,
+         Error        => Stream_Error);
    begin
+      Assert_True (Load_Error = null);
+      Assert_True (Stream_Error = null);
       Assert_True (Resource /= Null_Gresource);
       Unref (Resource);
 
@@ -79,14 +87,17 @@ procedure Main is
       Stream : constant Ginput_Stream := Open ("/org/gtkada/test/alpha.txt");
       Buffer : Guint8_Array (1 .. 64) := (others => 0);
       Read_Count : Gssize;
+      Error      : Glib.Error.GError;
    begin
       Assert_True (Stream /= null);
 
       Read_Count := Read
         (Self        => Stream,
          Buffer      => Buffer,
-         Cancellable => null);
+         Cancellable => null,
+         Error       => Error);
 
+      Assert_True (Error = null);
       Assert_Cmpint_Eq (Gint (Read_Count), Gint (Alpha_Text'Length));
       Assert_Cmpstr_Eq
         (To_String (Buffer (1 .. Natural (Read_Count))), Alpha_Text);
@@ -102,6 +113,7 @@ procedure Main is
       Stream : constant Ginput_Stream := Open ("/org/gtkada/test/alpha.txt");
       Buffer : Guint8_Array (1 .. 64) := (others => 0);
       Read_Count : Gssize;
+      Error      : Glib.Error.GError;
    begin
       Assert_True (Stream /= null);
 
@@ -111,8 +123,10 @@ procedure Main is
       Read_Count := Read
         (Self        => Stream,
          Buffer      => Buffer (1 .. 5),
-         Cancellable => null);
+         Cancellable => null,
+         Error       => Error);
 
+      Assert_True (Error = null);
       Assert_Cmpint_Eq (Gint (Read_Count), 5);
       Assert_Cmpstr_Eq (To_String (Buffer (1 .. 5)), Alpha_Text (1 .. 5));
 
@@ -131,6 +145,7 @@ procedure Main is
       Stream     : constant Ginput_Stream := Open ("/org/gtkada/test/beta.txt");
       Buffer     : Guint8_Array (1 .. 64) := (others => 0);
       Bytes_Read : Gsize;
+      Error      : Glib.Error.GError;
    begin
       Assert_True (Stream /= null);
 
@@ -139,8 +154,10 @@ procedure Main is
            (Self        => Stream,
             Buffer      => Buffer,
             Bytes_Read  => Bytes_Read,
-            Cancellable => null));
+            Cancellable => null,
+            Error       => Error));
 
+      Assert_True (Error = null);
       Assert_Cmpint_Eq (Gint (Bytes_Read), Gint (Beta_Text'Length));
       Assert_Cmpstr_Eq
         (To_String (Buffer (1 .. Natural (Bytes_Read))), Beta_Text);
@@ -154,11 +171,13 @@ procedure Main is
 
    procedure Test_Close is
       Stream : constant Ginput_Stream := Open ("/org/gtkada/test/alpha.txt");
+      Error  : Glib.Error.GError;
    begin
       Assert_True (Stream /= null);
       Assert_False (Is_Closed (Stream));
 
-      Assert_True (Close (Self => Stream, Cancellable => null));
+      Assert_True (Close (Self => Stream, Cancellable => null, Error => Error));
+      Assert_True (Error = null);
       Assert_True (Is_Closed (Stream));
 
       Glib.Object.Unref (Glib.Object.GObject (Stream));
