@@ -11,6 +11,7 @@ enums = (
     "GtkEnums",
     "PangoEnums",
     "GdkKeyMatch",
+    "GdkEnums",
 )
 
 # List of interfaces to bind. These are processed before the widgets themselves
@@ -104,7 +105,6 @@ binding = (
     "Gdk.ContentFormats",
     "Gdk.Cursor",
     "Gdk.Device",
-    "--GdkDeviceManager",
     "Gdk.DeviceTool",
     "Gdk.Display",
     "Gdk.DisplayManager",
@@ -127,14 +127,14 @@ binding = (
     "Gdk.Monitor",
     "Gdk.RGBA",
     "Gdk.Rectangle",
-    "--Gdk.Monitor",
-    "--GdkScreen",
+    "Gdk.Monitor",
     "Gdk.Seat",
     "Gdk.Snapshot",
     "Gdk.Surface",
     "Gdk.Texture",
     "--Gdk.VulkanContext", # deprecated since 4.14
     "--GdkWindow",
+    "Gdk.PopupLayout",
     "--GAction",  # bound as an interface, see interfaces tuple
     "--GActionGroup",  # bound as an interface, see interfaces tuple
     "--GActionMap",  # bound as an interface, see interfaces tuple
