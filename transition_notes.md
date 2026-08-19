@@ -210,6 +210,11 @@ GtkColumnView - bound but requires the following to be useable:
     - `GEqualFunc` and `GCompareDateFunc` callback handling
   - needs `Gtk.BuilderScope` and `GtkBuilderCScope` bound
 
+GtkDropDown.toml
+
+- `model` property is not binded because the generator can't generate
+  the proper methods. Also it is an open question whether we really nned it.
+
 ## Dialog widgets (work item #46)
 
 Bound so far: `GtkNativeDialog`, `GtkAlertDialog`, `GtkFontDialog` +

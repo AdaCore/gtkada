@@ -666,10 +666,16 @@ binding = (
     "Gtk.ColumnViewSorter",
     "Gtk.ShortcutTrigger",
     "Gtk.AlternativeTrigger",
-    "--Gtk.KeyvalTrigger", # needed Gdk.Types.GdkModifierType
+    "--Gtk.KeyvalTrigger",      # needed Gdk.Types.GdkModifierType
     "Gtk.MnemonicTrigger",
     "Gtk.NeverTrigger",
     "Gtk.Shortcut",
+    "--Gtk.ShortcutController", # needed Gdk.Types
+    "--Gtk.ShortcutsShortcut",  # Obsolescent
+    "--Gtk.ShortcutsGroup",     # Obsolescent
+    "--Gtk.ShortcutLabel",      # Obsolescent
+    "--Gtk.ShortcutsSection",   # Obsolescent
+    "Gtk.DropDown",
 )
 
 # Entries that are bound through manual/TOML glue instead of GIR class lookup.
