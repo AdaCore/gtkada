@@ -120,6 +120,7 @@ package Gtk.Property_Expression is
       (Self : Gtk_Property_Expression) return Gtk.Expression.Gtk_Expression;
    --  Gets the expression specifying the object of a property expression.
    --  @return the object expression
+   --  Return has transfer-ownership='none'
 
    function Get_Pspec
       (Self : Gtk_Property_Expression) return Glib.Param_Spec;

@@ -174,6 +174,7 @@ package Gtk.Grid is
    --  @param Column the left edge of the cell
    --  @param Row the top edge of the cell
    --  @return the child at the given position
+   --  Return has transfer-ownership='none'
 
    function Get_Column_Homogeneous
       (Self : not null access Gtk_Grid_Record) return Boolean;

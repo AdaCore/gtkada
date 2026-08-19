@@ -202,6 +202,7 @@ package Gtk.GEntry is
    --  Gets the attribute list of the `GtkEntry`.
    --  See [methodGtk.Entry.set_attributes].
    --  @return the attribute list
+   --  Return has transfer-ownership='none'
 
    procedure Set_Attributes
       (Self  : not null access Gtk_Entry_Record;
@@ -217,6 +218,7 @@ package Gtk.GEntry is
        return Gtk.Entry_Buffer.Gtk_Entry_Buffer;
    --  Get the `GtkEntryBuffer` object which holds the text for this widget.
    --  @return A `GtkEntryBuffer` object.
+   --  Return has transfer-ownership='none'
 
    procedure Set_Buffer
       (Self   : not null access Gtk_Entry_Record;
@@ -231,6 +233,7 @@ package Gtk.GEntry is
    --  Returns the auxiliary completion object currently in use by Entry.
    --  Deprecated since 4.10, 1
    --  @return The auxiliary completion object currently in use by Entry
+   --  Return has transfer-ownership='none'
 
    procedure Set_Completion
       (Self       : not null access Gtk_Entry_Record;
@@ -256,6 +259,7 @@ package Gtk.GEntry is
        return Glib.Menu_Model.Gmenu_Model;
    --  Gets the menu model set with Gtk.GEntry.Set_Extra_Menu.
    --  @return the menu model
+   --  Return has transfer-ownership='none'
 
    procedure Set_Extra_Menu
       (Self  : not null access Gtk_Entry_Record;
@@ -573,6 +577,7 @@ package Gtk.GEntry is
    --  Gets the tabstops of the `GtkEntry`.
    --  See [methodGtk.Entry.set_tabs].
    --  @return the tabstops
+   --  Return has transfer-ownership='none'
 
    procedure Set_Tabs
       (Self : not null access Gtk_Entry_Record;

@@ -407,9 +407,6 @@ binding = (
     "--GtkFileChooserButton",
     "--Gtk.FileChooserDialog",
     "--Gtk.FileChooserWidget",
-    "--Gtk.FileFilter",
-    "Gtk.Filter",
-    "--Gtk.BoolFilter",
     "--Gtk.Fixed",
     "--Gtk.FlowBox",
     "----GtkFlowBoxAccessible",  # We do not support atk
@@ -652,6 +649,7 @@ binding = (
     "Gtk.ObjectExpression",
     "Gtk.PropertyExpression",
     "Gtk.TryExpression",
+    "Gtk.Filter",
     "Gtk.BoolFilter",
     "Gtk.StringFilter",
     "Gtk.CustomFilter",
@@ -659,6 +657,12 @@ binding = (
     "Gtk.AnyFilter",
     "Gtk.EveryFilter",
     "Gtk.FileFilter",
+    "Gtk.NumericSorter",
+    "Gtk.StringSorter",
+    "Gtk.CustomSorter",
+    "Gtk.MultiSorter",
+    "Gtk.TreeListRowSorter",
+    "Gtk.ColumnViewSorter",
 )
 
 # Entries that are bound through manual/TOML glue instead of GIR class lookup.

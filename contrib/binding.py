@@ -855,6 +855,21 @@ class SubprogramProfile(object):
         if lang == "ada":
             params = [p for p in self.params if p.ada_binding]
 
+        for p in params:
+            if (
+                (p.ownership == "full" or p.ownership == True)
+                # and not isinstance (p, Fundamental)
+                and isinstance (p.type, GObject)
+            ):
+                self.doc += [("Parameter %s has transfer-ownership='full'" % p.name)]
+
+        if self.returns is not None:
+            if (
+                (self.returns.transfer_ownership == "none" or self.returns.transfer_ownership == False)
+                and isinstance (self.returns, GObject)
+            ):
+                self.doc += ["@afterreturn Return has transfer-ownership='none'"]
+
         subp = Subprogram(
             name=name,
             plist=params,

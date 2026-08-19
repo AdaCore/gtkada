@@ -283,6 +283,7 @@ package Gtk.Spin_Button is
        return Gtk.Adjustment.Gtk_Adjustment;
    --  Get the adjustment associated with a `GtkSpinButton`.
    --  @return the `GtkAdjustment` of Spin_Button
+   --  Return has transfer-ownership='none'
 
    procedure Set_Adjustment
       (Self       : not null access Gtk_Spin_Button_Record;

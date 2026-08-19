@@ -188,6 +188,7 @@ package Gdk.Content_Formats is
        Second : Gdk_Content_Formats) return Gdk_Content_Formats;
    --  Append all missing types from Second to First, in the order they had in
    --  Second.
+   --  Parameter Self has transfer-ownership='full'
    --  @param Second the `GdkContentFormats` to merge from
    --  @return a new `GdkContentFormats`
 
@@ -195,24 +196,28 @@ package Gdk.Content_Formats is
       (Self : Gdk_Content_Formats) return Gdk_Content_Formats;
    --  Add GTypes for mime types in Formats for which deserializers are
    --  registered.
+   --  Parameter Self has transfer-ownership='full'
    --  @return a new `GdkContentFormats`
 
    function Union_Deserialize_Mime_Types
       (Self : Gdk_Content_Formats) return Gdk_Content_Formats;
    --  Add mime types for GTypes in Formats for which deserializers are
    --  registered.
+   --  Parameter Self has transfer-ownership='full'
    --  @return a new `GdkContentFormats`
 
    function Union_Serialize_Gtypes
       (Self : Gdk_Content_Formats) return Gdk_Content_Formats;
    --  Add GTypes for the mime types in Formats for which serializers are
    --  registered.
+   --  Parameter Self has transfer-ownership='full'
    --  @return a new `GdkContentFormats`
 
    function Union_Serialize_Mime_Types
       (Self : Gdk_Content_Formats) return Gdk_Content_Formats;
    --  Add mime types for GTypes in Formats for which serializers are
    --  registered.
+   --  Parameter Self has transfer-ownership='full'
    --  @return a new `GdkContentFormats`
 
    procedure Unref (Self : Gdk_Content_Formats);

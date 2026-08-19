@@ -66,6 +66,7 @@ package Gtk.Bool_Filter is
        return Gtk.Expression.Gtk_Expression;
    --  Gets the expression that the filter evaluates for each item.
    --  @return the expression
+   --  Return has transfer-ownership='none'
 
    procedure Set_Expression
       (Self       : not null access Gtk_Bool_Filter_Record;

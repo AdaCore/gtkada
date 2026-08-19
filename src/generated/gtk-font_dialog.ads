@@ -178,6 +178,7 @@ package Gtk.Font_Dialog is
    --  default fontmap.
    --  Since: gtk+ 4.10
    --  @return the fontmap
+   --  Return has transfer-ownership='none'
 
    procedure Set_Font_Map
       (Self    : not null access Gtk_Font_Dialog_Record;

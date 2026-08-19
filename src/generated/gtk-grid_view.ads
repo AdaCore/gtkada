@@ -136,6 +136,7 @@ package Gtk.Grid_View is
        return Gtk.List_Item_Factory.Gtk_List_Item_Factory;
    --  Gets the factory that's currently used to populate list items.
    --  @return The factory in use
+   --  Return has transfer-ownership='none'
 
    procedure Set_Factory
       (Self    : not null access Gtk_Grid_View_Record;
@@ -222,6 +223,7 @@ package Gtk.Grid_View is
    --  This function works no matter if the gridview is shown or focused. If
    --  it isn't, then the changes will take effect once that happens.
    --  Since: gtk+ 4.12
+   --  Parameter Scroll has transfer-ownership='full'
    --  @param Pos position of the item. Must be less than the number of items
    --  in the view.
    --  @param Flags actions to perform

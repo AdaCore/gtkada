@@ -291,6 +291,8 @@ package Glib.Action_Group is
    --  the action doesn't exist, False is returned and the fields may or may
    --  not have been modified.
    --  Since: gtk+ 2.32
+   --  Parameter State_Hint has transfer-ownership='full'
+   --  Parameter State has transfer-ownership='full'
    --  @param Action_Name the name of an action in the group
    --  @param Enabled if the action is presently enabled
    --  @param Parameter_Type the parameter type, or null if none needed
@@ -620,6 +622,8 @@ package Glib.Action_Group is
    --  the action doesn't exist, False is returned and the fields may or may
    --  not have been modified.
    --  Since: gtk+ 2.32
+   --  Parameter State_Hint has transfer-ownership='full'
+   --  Parameter State has transfer-ownership='full'
    --  @param Action_Name the name of an action in the group
    --  @param Enabled if the action is presently enabled
    --  @param Parameter_Type the parameter type, or null if none needed

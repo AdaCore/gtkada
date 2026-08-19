@@ -66,6 +66,7 @@ package Gtk.Column_View_Cell is
    --  null if none was set.
    --  Since: gtk+ 4.12
    --  @return The child
+   --  Return has transfer-ownership='none'
 
    procedure Set_Child
       (Self  : not null access Gtk_Column_View_Cell_Record;

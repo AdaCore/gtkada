@@ -200,6 +200,7 @@ package Gtk.Notebook is
    --  @param Pack_Type pack type of the action widget to receive
    --  @return The action widget with the given Pack_Type or null when this
    --  action widget has not been set
+   --  Return has transfer-ownership='none'
 
    procedure Set_Action_Widget
       (Notebook  : not null access Gtk_Notebook_Record;
@@ -251,6 +252,7 @@ package Gtk.Notebook is
    --  @param Child a widget contained in a page of Notebook
    --  @return the menu label, or null if the notebook page does not have a
    --  menu label other than the default (the tab label).
+   --  Return has transfer-ownership='none'
 
    procedure Set_Menu_Label
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -291,6 +293,7 @@ package Gtk.Notebook is
    --  @param Page_Num the index of a page in the notebook, or -1 to get the
    --  last page
    --  @return the child widget, or null if Page_Num is out of bounds
+   --  Return has transfer-ownership='none'
 
    function Get_Pages
       (Notebook : not null access Gtk_Notebook_Record)
@@ -387,6 +390,7 @@ package Gtk.Notebook is
    --  specifically been set for Child.
    --  @param Child the page
    --  @return the tab label
+   --  Return has transfer-ownership='none'
 
    procedure Set_Tab_Label
       (Notebook  : not null access Gtk_Notebook_Record;

@@ -154,6 +154,7 @@ package Gtk.Sort_List_Model is
    --  sections.
    --  Since: gtk+ 4.12
    --  @return the sorter of self
+   --  Return has transfer-ownership='none'
 
    procedure Set_Section_Sorter
       (Self   : not null access Gtk_Sort_List_Model_Record;
@@ -167,6 +168,7 @@ package Gtk.Sort_List_Model is
        return Gtk.Sorter.Gtk_Sorter;
    --  Gets the sorter that is used to sort Self.
    --  @return the sorter of self
+   --  Return has transfer-ownership='none'
 
    procedure Set_Sorter
       (Self   : not null access Gtk_Sort_List_Model_Record;

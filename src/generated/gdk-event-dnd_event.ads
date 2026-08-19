@@ -45,5 +45,6 @@ package Gdk.Event.DND_Event is
    function Get_Drop (Self : Gdk.Event.Gdk_Event) return Gdk.Drop.Gdk_Drop;
    --  Gets the `GdkDrop` object from a DND event.
    --  @return the drop
+   --  Return has transfer-ownership='none'
 
 end Gdk.Event.DND_Event;

@@ -613,6 +613,7 @@ package Gtk.Builder is
       (Self : not null access Gtk_Builder_Record) return Glib.Object.GObject;
    --  Gets the current object set via Gtk.Builder.Set_Current_Object.
    --  @return the current object
+   --  Return has transfer-ownership='none'
 
    procedure Set_Current_Object
       (Self           : not null access Gtk_Builder_Record;
@@ -634,6 +635,7 @@ package Gtk.Builder is
    --  returned object.
    --  @param Name name of object to get
    --  @return the object named Name
+   --  Return has transfer-ownership='none'
 
    function Get_Objects
       (Self : not null access Gtk_Builder_Record)

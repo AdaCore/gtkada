@@ -108,11 +108,13 @@ package Gdk.Drop is
       (Self : not null access Gdk_Drop_Record) return Gdk.Gdk_Device;
    --  Returns the `GdkDevice` performing the drop.
    --  @return The `GdkDevice` performing the drop.
+   --  Return has transfer-ownership='none'
 
    function Get_Display
       (Self : not null access Gdk_Drop_Record) return Gdk.Gdk_Display;
    --  Gets the `GdkDisplay` that Self was created for.
    --  @return a `GdkDisplay`
+   --  Return has transfer-ownership='none'
 
    function Get_Drag
       (Self : not null access Gdk_Drop_Record) return Gdk.Drag.Gdk_Drag;
@@ -120,6 +122,7 @@ package Gdk.Drop is
    --  that corresponds to this drop.
    --  If it is not, `NULL` is returned.
    --  @return the corresponding `GdkDrag`
+   --  Return has transfer-ownership='none'
 
    function Get_Formats
       (Self : not null access Gdk_Drop_Record)
@@ -127,11 +130,13 @@ package Gdk.Drop is
    --  Returns the `GdkContentFormats` that the drop offers the data to be
    --  read in.
    --  @return The possible `GdkContentFormats`
+   --  Return has transfer-ownership='none'
 
    function Get_Surface
       (Self : not null access Gdk_Drop_Record) return Gdk.Gdk_Surface;
    --  Returns the `GdkSurface` performing the drop.
    --  @return The `GdkSurface` performing the drop.
+   --  Return has transfer-ownership='none'
 
    procedure Read_Value_Async
       (Self        : not null access Gdk_Drop_Record;

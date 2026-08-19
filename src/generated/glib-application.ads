@@ -854,6 +854,7 @@ package Glib.Application is
    --  If there is no default application then null is returned.
    --  Since: gtk+ 2.32
    --  @return the default application for this process, or null
+   --  Return has transfer-ownership='none'
 
    function Id_Is_Valid (Application_Id : UTF8_String) return Boolean;
    --  Checks if Application_Id is a valid application identifier.

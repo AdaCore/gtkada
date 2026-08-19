@@ -66,6 +66,7 @@ package Gdk.App_Launch_Context is
        return Gdk.Gdk_Display;
    --  Gets the `GdkDisplay` that Context is for.
    --  @return the display of Context
+   --  Return has transfer-ownership='none'
 
    procedure Set_Desktop
       (Self    : not null access Gdk_App_Launch_Context_Record;

@@ -118,6 +118,7 @@ package Gtk.Builder_List_Item_Factory is
    --  Gets the data used as the `GtkBuilder` UI template for constructing
    --  listitems.
    --  @return The `GtkBuilder` data
+   --  Return has transfer-ownership='none'
 
    function Get_Resource
       (Self : not null access Gtk_Builder_List_Item_Factory_Record)

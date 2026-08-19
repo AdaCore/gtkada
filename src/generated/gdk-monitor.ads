@@ -88,6 +88,7 @@ package Gdk.Monitor is
       (Self : not null access Gdk_Monitor_Record) return Gdk.Gdk_Display;
    --  Gets the display that this monitor belongs to.
    --  @return the display
+   --  Return has transfer-ownership='none'
 
    procedure Get_Geometry
       (Self     : not null access Gdk_Monitor_Record;

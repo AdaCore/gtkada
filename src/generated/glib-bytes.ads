@@ -178,6 +178,7 @@ package Glib.Bytes is
    --  g_bytes_new_take or g_byte_array_free_to_bytes. In all other cases the
    --  data is copied.
    --  Since: gtk+ 2.32
+   --  Parameter Self has transfer-ownership='full'
    --  @param Size location to place the length of the returned data
    --  @return a pointer to the same byte data, which should be freed with
    --  g_free

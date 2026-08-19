@@ -378,6 +378,7 @@ package Glib.Option is
    --  of `--help` output, after the usage summary `programname [OPTION...]`
    --  @return a newly created Glib.Option.Goption_Context, which must be
    --  freed with Glib.Option.Free after use.
+   --  Return has transfer-ownership='none'
 
 private
    Null_Goption_Context : constant Goption_Context :=

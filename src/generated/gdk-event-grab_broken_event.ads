@@ -45,6 +45,7 @@ package Gdk.Event.Grab_Broken_Event is
       (Self : Gdk.Event.Gdk_Event) return Gdk.Gdk_Surface;
    --  Extracts the grab surface from a grab broken event.
    --  @return the grab surface of Event
+   --  Return has transfer-ownership='none'
 
    function Get_Implicit (Self : Gdk.Event.Gdk_Event) return Boolean;
    --  Checks whether the grab broken event is for an implicit grab.

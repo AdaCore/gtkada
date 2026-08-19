@@ -117,6 +117,7 @@ package Gtk.Font_Dialog_Button is
    --  Returns the `GtkFontDialog` of Self.
    --  Since: gtk+ 4.10
    --  @return the `GtkFontDialog`
+   --  Return has transfer-ownership='none'
 
    procedure Set_Dialog
       (Self   : not null access Gtk_Font_Dialog_Button_Record;

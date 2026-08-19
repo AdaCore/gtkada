@@ -67,6 +67,7 @@ package Gtk.Accessible_Hypertext is
    --  Since: gtk+ 4.22
    --  @param Index the index of the link
    --  @return the link
+   --  Return has transfer-ownership='none'
 
    type Virtual_Get_Link_At is access function
      (Self   : Gtk_Accessible_Hypertext;

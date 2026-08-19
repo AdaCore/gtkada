@@ -120,6 +120,7 @@ package Gtk.Column_View_Column is
    --  Gets the factory that's currently used to populate list items for this
    --  column.
    --  @return The factory in use
+   --  Return has transfer-ownership='none'
 
    procedure Set_Factory
       (Self    : not null access Gtk_Column_View_Column_Record;
@@ -149,6 +150,7 @@ package Gtk.Column_View_Column is
    --  Gets the menu model that is used to create the context menu for the
    --  column header.
    --  @return the `GMenuModel`
+   --  Return has transfer-ownership='none'
 
    procedure Set_Header_Menu
       (Self : not null access Gtk_Column_View_Column_Record;
@@ -190,6 +192,7 @@ package Gtk.Column_View_Column is
        return Gtk.Sorter.Gtk_Sorter;
    --  Returns the sorter that is associated with the column.
    --  @return the `GtkSorter` of Self
+   --  Return has transfer-ownership='none'
 
    procedure Set_Sorter
       (Self   : not null access Gtk_Column_View_Column_Record;

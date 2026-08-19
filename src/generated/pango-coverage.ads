@@ -99,5 +99,6 @@ package Pango.Coverage is
    procedure Unref (Self : not null access Pango_Coverage_Record);
    --  Decrease the reference count on the Pango.Coverage.Pango_Coverage by
    --  one. If the result is zero, free the coverage and all associated memory.
+   --  Parameter Self has transfer-ownership='full'
 
 end Pango.Coverage;

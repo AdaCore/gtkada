@@ -99,6 +99,7 @@ package Gtk.String_Filter is
    --  Gets the expression that the string filter uses to obtain strings from
    --  items.
    --  @return the expression
+   --  Return has transfer-ownership='none'
 
    procedure Set_Expression
       (Self       : not null access Gtk_String_Filter_Record;

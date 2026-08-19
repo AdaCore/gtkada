@@ -60,6 +60,7 @@ package Gtk.Native is
    function Get_Surface (Self : Gtk_Native) return Gdk.Gdk_Surface;
    --  Returns the surface of this `GtkNative`.
    --  @return the surface of Self
+   --  Return has transfer-ownership='none'
 
    procedure Get_Surface_Transform
       (Self : Gtk_Native;

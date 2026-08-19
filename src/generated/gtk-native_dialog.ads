@@ -107,6 +107,7 @@ package Gtk.Native_Dialog is
    --  Fetches the transient parent for this window.
    --  @return the transient parent for this window, or null if no transient
    --  parent has been set.
+   --  Return has transfer-ownership='none'
 
    procedure Set_Transient_For
       (Self   : not null access Gtk_Native_Dialog_Record;

@@ -75,6 +75,7 @@ package body Gtk.Expression is
    --  automatically, and not just via [methodGtk.ExpressionWatch.unwatch]. You
    --  should call [methodGtk.ExpressionWatch.ref] if you want to keep the
    --  watch around.
+   --  Return has transfer-ownership='none'
 
    function To_Gtk_Expression_Notify is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Expression_Notify);
@@ -130,6 +131,7 @@ package body Gtk.Expression is
       Tmp_Return   : System.Address;
    begin
       if Self /= null then
+         --  transfer-ownership='full'
          Adjust (Self.all);
       end if;
       Tmp_Return := Internal (Get_Object (Self), Target, Tmp_Property, This);

@@ -199,6 +199,7 @@ package Gtk.File_Filter is
        return Glib.Variant.Gvariant;
    --  Serialize a file filter to an `a{sv}` variant.
    --  @return a new, floating, `GVariant`
+   --  Return has transfer-ownership='none'
 
    ----------------
    -- Properties --

@@ -191,6 +191,7 @@ package Gtk.Text_Buffer is
    --  to the caller of this function.
    --  @param Iter location in the buffer
    --  @return the created child anchor
+   --  Return has transfer-ownership='none'
 
    function Create_Mark
       (Buffer       : not null access Gtk_Text_Buffer_Record;
@@ -215,6 +216,7 @@ package Gtk.Text_Buffer is
    --  @param Where location to place mark
    --  @param Left_Gravity whether the mark has left gravity
    --  @return the new `GtkTextMark` object
+   --  Return has transfer-ownership='none'
 
    procedure Cut_Clipboard
       (Buffer           : not null access Gtk_Text_Buffer_Record;
@@ -378,6 +380,7 @@ package Gtk.Text_Buffer is
    --  named "insert", but very slightly more efficient, and involves less
    --  typing.
    --  @return insertion point mark
+   --  Return has transfer-ownership='none'
 
    procedure Insert
       (Buffer : not null access Gtk_Text_Buffer_Record;
@@ -477,6 +480,7 @@ package Gtk.Text_Buffer is
    --  exists in the buffer.
    --  @param Name a mark name
    --  @return a `GtkTextMark`
+   --  Return has transfer-ownership='none'
 
    function Get_Max_Undo_Levels
       (Buffer : not null access Gtk_Text_Buffer_Record) return Guint;
@@ -528,6 +532,7 @@ package Gtk.Text_Buffer is
    --  function for handling the selection, if you just want to know whether
    --  there's a selection and what its bounds are.
    --  @return selection bound mark
+   --  Return has transfer-ownership='none'
 
    procedure Get_Selection_Bounds
       (Buffer  : not null access Gtk_Text_Buffer_Record;
@@ -584,6 +589,7 @@ package Gtk.Text_Buffer is
        return Gtk.Text_Tag_Table.Gtk_Text_Tag_Table;
    --  Get the `GtkTextTagTable` associated with this buffer.
    --  @return the buffer's tag table
+   --  Return has transfer-ownership='none'
 
    function Get_Text
       (Buffer               : not null access Gtk_Text_Buffer_Record;

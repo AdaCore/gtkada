@@ -212,6 +212,7 @@ package Glib.File_Info is
    --  @param Attribute a file attribute key.
    --  @return a Glib.Object.GObject associated with the given Attribute, or
    --  null otherwise.
+   --  Return has transfer-ownership='none'
 
    procedure Set_Attribute_Object
       (Self       : not null access Gfile_Info_Record;

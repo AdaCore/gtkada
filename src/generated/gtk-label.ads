@@ -311,6 +311,7 @@ package Gtk.Label is
    --  attributes for the label, use `pango_layout_get_attributes
    --  (gtk_label_get_layout (self))`.
    --  @return the attribute list
+   --  Return has transfer-ownership='none'
 
    procedure Set_Attributes
       (Label : not null access Gtk_Label_Record;
@@ -355,6 +356,7 @@ package Gtk.Label is
    --  Gets the extra menu model of the label.
    --  See [methodGtk.Label.set_extra_menu].
    --  @return the menu model
+   --  Return has transfer-ownership='none'
 
    procedure Set_Extra_Menu
       (Label : not null access Gtk_Label_Record;
@@ -406,6 +408,7 @@ package Gtk.Label is
    --  Label is free to recreate its layout at any time, so it should be
    --  considered read-only.
    --  @return the [classPango.Layout] for this label
+   --  Return has transfer-ownership='none'
 
    procedure Get_Layout_Offsets
       (Label : not null access Gtk_Label_Record;
@@ -463,6 +466,7 @@ package Gtk.Label is
    --  See [methodGtk.Label.set_mnemonic_widget].
    --  @return the target of the label's mnemonic, or `NULL` if none has been
    --  set and the default algorithm will be used.
+   --  Return has transfer-ownership='none'
 
    procedure Set_Mnemonic_Widget
       (Label  : not null access Gtk_Label_Record;
