@@ -10,6 +10,7 @@ enums = (
     "ErrorEnums",
     "GtkEnums",
     "PangoEnums",
+    "GdkKeyMatch",
 )
 
 # List of interfaces to bind. These are processed before the widgets themselves
@@ -663,6 +664,12 @@ binding = (
     "Gtk.MultiSorter",
     "Gtk.TreeListRowSorter",
     "Gtk.ColumnViewSorter",
+    "Gtk.ShortcutTrigger",
+    "Gtk.AlternativeTrigger",
+    "--Gtk.KeyvalTrigger", # needed Gdk.Types.GdkModifierType
+    "Gtk.MnemonicTrigger",
+    "Gtk.NeverTrigger",
+    "Gtk.Shortcut",
 )
 
 # Entries that are bound through manual/TOML glue instead of GIR class lookup.
