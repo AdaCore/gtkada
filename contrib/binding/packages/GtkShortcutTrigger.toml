@@ -1,0 +1,50 @@
+# ============================================================
+#   GtkShortcutTrigger
+# ============================================================
+
+[[method]]
+id = "gtk_shortcut_trigger_parse_string"
+ada = "Gtk_New"
+
+[[method]]
+id = "gtk_shortcut_trigger_compare"
+
+[[method.parameter]]
+name = "trigger1"
+ctype = "GtkShortcutTrigger"
+
+[[method.parameter]]
+name = "trigger2"
+ctype = "GtkShortcutTrigger"
+
+[[method]]
+id = "gtk_shortcut_trigger_equal"
+
+[[method.parameter]]
+name = "trigger1"
+ctype = "GtkShortcutTrigger"
+
+[[method.parameter]]
+name = "trigger2"
+ctype = "GtkShortcutTrigger"
+
+[[method]]
+id = "gtk_shortcut_trigger_hash"
+
+[[method.parameter]]
+name = "trigger"
+ctype = "GtkShortcutTrigger"
+
+[[method]]
+id = "gtk_shortcut_trigger_print"
+
+[[method.parameter]]
+name = "string"
+direction = "access"
+
+[[method]]
+id = "gtk_shortcut_trigger_print_label"
+
+[[method.parameter]]
+name = "string"
+direction = "access"
