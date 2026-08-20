@@ -198,13 +198,6 @@ install_binaries() {
   GDK_PIXBUF_MODULEDIR=$basedir/lib/gdk-pixbuf-2.0/2.10.0/loaders \
   $basedir/bin/gdk-pixbuf-query-loaders --update-cache
 
-  # Update immodules cache
-
-  LD_LIBRARY_PATH=$basedir/lib:$basedir/lib64:$LD_LIBRARY_PATH \
-  GTK_IM_MODULE_FILE=$basedir/lib/gtk-3.0/3.0.0/immodules.cache \
-  GTK_PATH=$basedir/lib/gtk-3.0 \
-  $basedir/bin/gtk-query-immodules-3.0 --update-cache
-
   echo "Compiling GtkAda"
   ./configure --prefix="$basedir" && make all install 2>&1 | \
      tee install.log
