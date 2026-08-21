@@ -24,18 +24,20 @@ Outputs:
   * One Ada file containing the spec and body of every generated
     package, separated by ``pragma Page;`` boundaries so ``gnatchop``
     can split them.
-  * One C file with simple setters for the virtual-method function
+  * One C file with simple setters and getters for the virtual-method function
     pointers of the Ada-side interfaces.
 
 Pipeline
 --------
 
-The bulk of the work happens at module bottom, in three phases:
+The bulk of the work happens the following phases:
 
-1. Iterate :data:`data.enums` and emit standalone enumeration packages.
-2. Iterate :data:`data.interfaces` and emit one package per interface.
-3. Iterate :data:`data.binding` and emit one package per
+1. ``_emit_enums()`` - iterates :data:``data.enums`` and emits standalone enumeration packages.
+2. ``_emit_interfaces()`` - iterates :data:``data.interfaces`` and emits one package per interface.
+3. ``_emit_widgets()`` - iterates :data:``data.binding`` and emits one package per
    widget/record/boxed type.
+4. ``_emit_gdk_event_subclasses()`` - filters :data:``data.binding`` for Gdk event subclasses
+   and emits one package per event subclass
 
 Each phase delegates to :class:`GIRClass` instances created up-front
 by :class:`GIR.__init__` while parsing the ``.gir`` files.
@@ -48,7 +50,7 @@ Communication protocol
 * The GIR XML trees, which describe what the C library exposes (types,
   methods, properties, signals).
 * The :class:`binding_gtkada.GtkAdaPackage` overrides loaded from the
-  ``.toml`` directory, which describe what the Ada surface should look
+  ``toml_dir`` location, which describe what the Ada surface should look
   like (renames, type substitutions, hand-written bodies, extra ``with``
   clauses, ...).
 
@@ -83,7 +85,7 @@ Top-level classes
   (used when a ``.toml`` requests that a global function be bound
   inside a specific package).
 
-See ``contrib/binding/Documentation.md`` for a reference of the TOML override
+See ``contrib/Documentation.md`` for a reference of the TOML override
 schema that drives this generator.
 """
 
@@ -639,7 +641,7 @@ class SubprogramProfile(object):
     @staticmethod
     def parse(node, gtkmethod, pkg=None, ignore_return=False):
         """Parse the parameter info and return type info from the XML
-        GIR node, overriding with binding.toml.
+        GIR node, overriding with info from the toml package.
         gtkmethod is the GtkAdaMethod that contains the overriding for the
         various method attributes.
         If pkg is specified, with statements are added as necessary.
