@@ -3689,6 +3689,92 @@ end From_Object_Free;"""
 
         section = self.pkg.section("")
 
+        self._declare_type(section)
+
+        for ctype, enum, prefix, asbitfield, ignore in self.gtkpkg.enumerations():
+
+            self.enumeration_binding(
+                section, ctype, enum, prefix, asbitfield=asbitfield, ignore=ignore
+            )
+
+        for regexp, prefix in self.gtkpkg.constants():
+            self.constants_binding(section, regexp, prefix)
+
+        for ctype, enum, adaname, fields, unions, private in self.gtkpkg.records():
+
+            self.record_binding(section, ctype, adaname, enum, fields, unions, private)
+
+        for ada, ctype, single, sect_name in self.gtkpkg.lists():
+            sect = self.pkg.section(sect_name)
+            self.add_list_binding(sect, ada, ctype, single)
+
+        if extra:
+            for p in extra:
+                if p.tag == "with_spec":
+                    self.pkg.add_with(
+                        p.get("pkg", "Missing package name in <extra>"),
+                        do_use=p.get("use", "true").lower() == "true",
+                    )
+                elif p.tag == "with_body":
+                    self.pkg.add_with(
+                        p.get("pkg"),
+                        specs=False,
+                        do_use=p.get("use", "true").lower() == "true",
+                    )
+                elif p.tag == "type":
+                    naming.add_type_exception(
+                        cname=p.get("ctype"),
+                        type=Proxy(p.get("ada"), p.get("properties", None)),
+                    )
+                    section.add(p.text)
+                elif p.tag == "body":
+                    if p.get("before", "true").lower() == "true":
+                        # Go before the body of generated subprograms, so that
+                        # we can add type definition
+                        section.add(p.text, in_spec=False)
+
+        self._constructors()
+        self._method_get_type()
+        self._methods()
+
+        if self.is_fundamental:
+            self.fundamental_adjust_body()
+            self.fundamental_finalize_body()
+
+        elif self.is_parent_fundamental:
+            self.register_fundamental_constructor()
+
+        if extra:
+            s = None
+            for p in extra:
+                if p.tag == "spec":
+                    if p.get("private", "False").lower() == "true":
+                        self.pkg.add_private(p.text, at_end=True)
+                    else:
+                        s = s or self.pkg.section("GtkAda additions")
+                        s.add(p.text)
+                elif p.tag == "body" and p.get("before", "true").lower() != "true":
+                    s.add(p.text, in_spec=False)
+
+        self._functions()
+        self._globals()
+        self._fields()
+
+        self._virtual_methods()
+
+        if not into and self.name != "Gtk.Widget":
+            self._implements()
+        self._properties()
+        self._signals()
+
+    def _declare_type(self, section: Section):
+        """Emit the obsolescence pragma (if any) and the core Ada type
+        declaration for this class, picking the right shape (interface /
+        subtype / gdk-event subclass / proxy / boxed / fundamental /
+        record) based on the flags set in ``__init__``. Called once from
+        :meth:`generate`.
+        """
+
         if self.gtkpkg.is_obsolete():
             pragma_lines = ["pragma Obsolescent;"]
             doc_deprecated = self.gtkpkg.get_doc_deprecated()
@@ -3818,82 +3904,6 @@ type %(typename)s_Record is new %(parent)s_Record with null record;
 type %(typename)s is access all %(typename)s_Record'Class;"""
                     % self._subst
                 )
-
-        for ctype, enum, prefix, asbitfield, ignore in self.gtkpkg.enumerations():
-
-            self.enumeration_binding(
-                section, ctype, enum, prefix, asbitfield=asbitfield, ignore=ignore
-            )
-
-        for regexp, prefix in self.gtkpkg.constants():
-            self.constants_binding(section, regexp, prefix)
-
-        for ctype, enum, adaname, fields, unions, private in self.gtkpkg.records():
-
-            self.record_binding(section, ctype, adaname, enum, fields, unions, private)
-
-        for ada, ctype, single, sect_name in self.gtkpkg.lists():
-            sect = self.pkg.section(sect_name)
-            self.add_list_binding(sect, ada, ctype, single)
-
-        if extra:
-            for p in extra:
-                if p.tag == "with_spec":
-                    self.pkg.add_with(
-                        p.get("pkg", "Missing package name in <extra>"),
-                        do_use=p.get("use", "true").lower() == "true",
-                    )
-                elif p.tag == "with_body":
-                    self.pkg.add_with(
-                        p.get("pkg"),
-                        specs=False,
-                        do_use=p.get("use", "true").lower() == "true",
-                    )
-                elif p.tag == "type":
-                    naming.add_type_exception(
-                        cname=p.get("ctype"),
-                        type=Proxy(p.get("ada"), p.get("properties", None)),
-                    )
-                    section.add(p.text)
-                elif p.tag == "body":
-                    if p.get("before", "true").lower() == "true":
-                        # Go before the body of generated subprograms, so that
-                        # we can add type definition
-                        section.add(p.text, in_spec=False)
-
-        self._constructors()
-        self._method_get_type()
-        self._methods()
-
-        if self.is_fundamental:
-            self.fundamental_adjust_body()
-            self.fundamental_finalize_body()
-
-        elif self.is_parent_fundamental:
-            self.register_fundamental_constructor()
-
-        if extra:
-            s = None
-            for p in extra:
-                if p.tag == "spec":
-                    if p.get("private", "False").lower() == "true":
-                        self.pkg.add_private(p.text, at_end=True)
-                    else:
-                        s = s or self.pkg.section("GtkAda additions")
-                        s.add(p.text)
-                elif p.tag == "body" and p.get("before", "true").lower() != "true":
-                    s.add(p.text, in_spec=False)
-
-        self._functions()
-        self._globals()
-        self._fields()
-
-        self._virtual_methods()
-
-        if not into and self.name != "Gtk.Widget":
-            self._implements()
-        self._properties()
-        self._signals()
 
     def fundamental_spec(self, section: Section):
         """Build the specification for fundamental class.
