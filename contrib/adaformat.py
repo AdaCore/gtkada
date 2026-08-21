@@ -32,6 +32,38 @@ from typing import Any, Optional
 #                         and it is simpler to pass this type).
 
 
+# How to convert a value returned from C to Ada; returned by
+# CType.convert_from_c() and CType.as_return().
+#   ada_type       - name of the Ada type.
+#   c_type         - name of the C type.
+#   conversion     - conversion from C type to Ada type. The value is read
+#                    from "%(var)s". It can also use "%(tmp)s" if a
+#                    temporary variable is needed.
+#   tmp_vars       - list of needed temporary variables (except for the one
+#                    corresponding to "%(tmp)s").
+#   out_c_type     - name of the C type, for "out" parameters. Often same
+#                    as c_type.
+#   out_conversion - conversion from out_c_type to the Ada type. Often same
+#                    as conversion.
+#
+# `tmp_vars` is really a list[Local_Var], forward-referenced since Local_Var
+# is defined later in this file; that's fine here since `type` aliases
+# (PEP 695) are lazily evaluated.
+
+ConvertTuple = namedtuple("ConvertTuple",
+                          ['ada_type',
+                           'c_type',
+                           'conversion',
+                           'tmp_vars',
+                           'out_c_type',
+                           'out_conversion'])
+
+# convert_from_c()/as_return() return None instead of a ConvertTuple when
+# there is no meaningful conversion (e.g. Callback, which never hands its
+# value back to Ada).
+type ConvertedValue = Optional[ConvertTuple]
+
+
 class CType(object):
     """Describes the types in the various cases where they can be used.
 
@@ -113,20 +145,18 @@ class CType(object):
         self.param = ada  # type as parameter
         self.cparam = ada  # type for Ada subprograms binding to C
 
-    def convert_from_c(self):
-        """How to convert the value returned from C to Ada.
-        This function returns a tuple:
-           [0] = name of the Ada type
-           [1] = name of the C type
-           [2] = Conversion from C type to Ada type. The value is read
-                 from "%(var)s". It can also use "%(tmp)s" if a temporary
-                 variable is needed.
-           [3] = List of needed temporary variables (except for the one
-                 corresponding to "%(tmp)s".
-           [4] = Name of the C type, for "out" parameters. Often same as [1]
-           [5] = Convert from [4] to the Ada type. Often same as [2]
+    def convert_from_c(self) -> ConvertedValue:
+        """How to convert the value returned from C to Ada. See ConvertTuple
+        for what each field means.
         """
-        return (self.param, self.cparam, "%(var)s", [], self.cparam, "%(var)s")
+        return ConvertTuple(
+            ada_type=self.param,
+            c_type=self.cparam,
+            conversion="%(var)s",
+            tmp_vars=[],
+            out_c_type=self.cparam,
+            out_conversion="%(var)s",
+        )
 
     def convert_from_c_add_with(self, pkg: Package, specs: bool = False):
         """Add the "with" statements needed to do the conversion stated
@@ -159,20 +189,16 @@ class CType(object):
         """The type to use for the property"""
         return self.property
 
-    def as_return(self, pkg=None):
-        """See CType documentation for a description of the returned tuple"""
+    def as_return(self, pkg: Optional[Package] = None) -> ConvertedValue:
+        """See ConvertTuple for a description of the returned fields"""
 
         returns = self.convert_from_c()
 
         if returns and pkg:
             # Avoid full dotted notation when inside the package itself
-            return (
-                returns[0].replace("%s." % pkg.name, ""),
-                returns[1].replace("%s." % pkg.name, ""),
-                returns[2],
-                returns[3],
-                returns[4],
-                returns[5],
+            return returns._replace(
+                ada_type=returns.ada_type.replace("%s." % pkg.name, ""),
+                c_type=returns.c_type.replace("%s." % pkg.name, ""),
             )
         else:
             return returns
@@ -201,7 +227,9 @@ class CType(object):
         else:
             return self.cparam
 
-    def _access_param_as_call(self, name, returns, tmpvars):
+    def _access_param_as_call(
+        self, name: str, returns: ConvertedValue, tmpvars: list[Local_Var]
+    ) -> VariableCall:
         """How to pass an "access T" parameter to C.
 
         Such a parameter is a pointer to the caller's own variable, and C
@@ -210,7 +238,7 @@ class CType(object):
         pointer itself, so that a null reaches C unchanged.
         """
 
-        conv = returns and returns[5]
+        conv = returns and returns.out_conversion
 
         if not conv or conv == "%(var)s":
             # C uses the very same type: no temporary at all.
@@ -234,17 +262,19 @@ class CType(object):
             tmpvars=[
                 Local_Var(
                     name=tmp,
-                    type=returns[4],
+                    type=returns.out_c_type,
                     aliased=True,
                     # C need not write the temporary at all, for instance when
                     # the function returns False. Never convert a stale value.
                     default=(
-                        "System.Null_Address" if returns[4] == "System.Address" else ""
+                        "System.Null_Address"
+                        if returns.out_c_type == "System.Address"
+                        else ""
                     ),
                 ),
                 Local_Var(
                     name=acc,
-                    type="access %s" % returns[4],
+                    type="access %s" % returns.out_c_type,
                     constant=True,
                     default="(if %s /= null then %s'Access else null)" % (name, tmp),
                 ),
@@ -287,9 +317,9 @@ class CType(object):
 
         elif lang == "ada->c":
             returns = self.convert_from_c()
-            ret = returns and returns[2]
+            ret = returns and returns.conversion
 
-            additional_tmp_vars = [] if not returns else returns[3]
+            additional_tmp_vars = [] if not returns else returns.tmp_vars
 
             if mode == "access" and not is_temporary_variable:
                 return self._access_param_as_call(
@@ -305,12 +335,14 @@ class CType(object):
                 tmp = "Tmp_%s" % name
 
                 if mode in ("out", "access"):
-                    tmpvars = [Local_Var(name=tmp, type=returns[4], aliased=True)]
+                    tmpvars = [
+                        Local_Var(name=tmp, type=returns.out_c_type, aliased=True)
+                    ]
                 else:
                     tmpvars = [
                         Local_Var(
                             name=tmp,
-                            type=returns[4],
+                            type=returns.out_c_type,
                             aliased=True,
                             default=self.convert_to_c() % {"var": name},
                         )
@@ -318,14 +350,17 @@ class CType(object):
 
                 if "%(tmp)s" in ret:
                     tmp2 = "Tmp2_%s" % name
-                    tmpvars += [Local_Var(name=tmp2, type=returns[4])]
+                    tmpvars += [Local_Var(name=tmp2, type=returns.out_c_type)]
                     postcall = "%s; %s := %s;" % (
-                        returns[5] % {"var": tmp, "tmp": tmp2},
+                        returns.out_conversion % {"var": tmp, "tmp": tmp2},
                         name,
                         tmp2,
                     )
                 else:
-                    postcall = "%s := %s;" % (name, returns[5] % {"var": tmp})
+                    postcall = "%s := %s;" % (
+                        name,
+                        returns.out_conversion % {"var": tmp},
+                    )
 
                 call = VariableCall(
                     call=wrapper % tmp,
@@ -438,7 +473,7 @@ class Enum(CType):
             # at 0, or as holes in the series.
             self.cparam = self.ada
 
-    def convert_from_c(self):
+    def convert_from_c(self) -> ConvertedValue:
         if self.ada.lower() == "boolean":
             if self.ada == "Boolean":
                 # Do not use Boolean'Val for more flexibility, in case C
@@ -447,14 +482,13 @@ class Enum(CType):
                 conv = "%(var)s /= 0"
             else:
                 conv = "%s'Val (%%(var)s)" % self.ada
-            return (
-                self.param,
-                self.cparam,
-                conv,
-                [],
-                # for out parameters
-                self.cparam,
-                conv,
+            return ConvertTuple(
+                ada_type=self.param,
+                c_type=self.cparam,
+                conversion=conv,
+                tmp_vars=[],
+                out_c_type=self.cparam,
+                out_conversion=conv,
             )
         else:
             return super(Enum, self).convert_from_c()
@@ -523,7 +557,7 @@ class GObject(CType):
             self.record_ada if self.record_ada is not None else "%s_Record" % self.ada
         )
 
-    def convert_from_c(self):
+    def convert_from_c(self) -> ConvertedValue:
         stub = "Stub_%s" % (base_name(self.ada),)
         record_name = self._record_ada_name()
 
@@ -532,14 +566,13 @@ class GObject(CType):
         else:
             conv = "%s (Get_User_Data (%%(var)s, %s))" % (self.ada, stub)
 
-        return (
-            self.param,
-            self.cparam,
-            conv,
-            [Local_Var(stub, AdaType(record_name, in_spec=False))],
-            # for out parameters
-            self.cparam,
-            conv,
+        return ConvertTuple(
+            ada_type=self.param,
+            c_type=self.cparam,
+            conversion=conv,
+            tmp_vars=[Local_Var(stub, AdaType(record_name, in_spec=False))],
+            out_c_type=self.cparam,
+            out_conversion=conv,
         )
 
     def convert_to_c(self) -> str:
@@ -577,15 +610,14 @@ class GObject(CType):
 class Tagged(GObject):
     """Tagged types that map C objects, but do not derive from GObject"""
 
-    def convert_from_c(self):
-        return (
-            self.param,
-            self.cparam,
-            "From_Object (%(var)s)",
-            [],
-            # for out parameters
-            self.cparam,
-            "From_Object (%(var)s)",
+    def convert_from_c(self) -> ConvertedValue:
+        return ConvertTuple(
+            ada_type=self.param,
+            c_type=self.cparam,
+            conversion="From_Object (%(var)s)",
+            tmp_vars=[],
+            out_c_type=self.cparam,
+            out_conversion="From_Object (%(var)s)",
         )
 
     def convert_to_c(self) -> str:
@@ -599,20 +631,19 @@ class Tagged(GObject):
 class Fundamental(Tagged):
     """Tagged types that map C fundamental objects"""
 
-    def convert_from_c(self):
+    def convert_from_c(self) -> ConvertedValue:
         if self.transfer_ownership:
             c = "From_Object_Full_Ownership (%(var)s)"
         else:
             c = "From_Object_None_Ownership (%(var)s)"
 
-        return (
-            self.param,
-            self.cparam,
-            c,
-            [],
-            # for out parameters
-            self.cparam,
-            c,
+        return ConvertTuple(
+            ada_type=self.param,
+            c_type=self.cparam,
+            conversion=c,
+            tmp_vars=[],
+            out_c_type=self.cparam,
+            out_conversion=c,
         )
 
 
@@ -623,20 +654,19 @@ class UTF8(CType):
         self.cparam = "Gtkada.Types.Chars_Ptr"
         self.cleanup = "Free (%s);"
 
-    def convert_from_c(self):
+    def convert_from_c(self) -> ConvertedValue:
         conv = "Gtkada.Bindings.Value_Allowing_Null (%(var)s)"
 
         if self.transfer_ownership:
             conv = "Gtkada.Bindings.Value_And_Free (%(var)s)"
 
-        return (
-            self.param,
-            self.cparam,
-            conv,
-            [],
-            # for out parameters
-            self.cparam,
-            conv,
+        return ConvertTuple(
+            ada_type=self.param,
+            c_type=self.cparam,
+            conversion=conv,
+            tmp_vars=[],
+            out_c_type=self.cparam,
+            out_conversion=conv,
         )
 
     def convert_from_c_add_with(self, pkg, specs=False):
@@ -682,7 +712,7 @@ class UTF8_List(CType):
         self.cparam = "Gtkada.Types.chars_ptr_array"
         self.cleanup = "Gtkada.Types.Free (%s);"
 
-    def convert_from_c(self):
+    def convert_from_c(self) -> ConvertedValue:
         # Use a temporary variable to store the result of To_String_List,
         # because in some cases the result will need to be freed. For instance,
         # when a callback from C receives a list of strings as
@@ -694,14 +724,13 @@ class UTF8_List(CType):
         if self.transfer_ownership:
             conv = "To_String_List_And_Free (%(var)s)"
 
-        return (
-            self.param,
-            "chars_ptr_array_access",
-            conv,
-            [],
-            # for out parameters
-            "chars_ptr_array_access",
-            conv,
+        return ConvertTuple(
+            ada_type=self.param,
+            c_type="chars_ptr_array_access",
+            conversion=conv,
+            tmp_vars=[],
+            out_c_type="chars_ptr_array_access",
+            out_conversion=conv,
         )
 
     def record_field_type(self, pkg=None) -> str:
@@ -741,19 +770,18 @@ class Record(CType):
         # C, GNAT will automatically pass the address of the record
         self.cparam = ada
 
-    def convert_from_c(self):
+    def convert_from_c(self) -> ConvertedValue:
         conv = "%(var)s.all"  # convert C -> Ada,
         if self.transfer_ownership:
             conv = "From_Object_Free (%(var)s)"
 
-        return (
-            self.ada,
-            "access %s" % self.ada,
-            conv,
-            [],
-            # for out parameters
-            self.ada,
-            "%(var)s",
+        return ConvertTuple(
+            ada_type=self.ada,
+            c_type="access %s" % self.ada,
+            conversion=conv,
+            tmp_vars=[],
+            out_c_type=self.ada,
+            out_conversion="%(var)s",
         )
 
     def convert_to_c(self) -> str:
@@ -821,7 +849,7 @@ class Callback(CType):
     def __repr__(self) -> str:
         return "<Callback %s>" % self.ada
 
-    def convert_from_c(self):
+    def convert_from_c(self) -> ConvertedValue:
         # Never return such a callback to Ada (because in fact we are pointing
         # to a function in one of the bodies of GtkAda, not the actual user
         # callback.
@@ -847,16 +875,15 @@ class List(CType):
         self.cparam = "System.Address"
         self.is_ptr = False
 
-    def convert_from_c(self):
+    def convert_from_c(self) -> ConvertTuple:
         conv = "%s.Set_Object (%%(tmp)s, %%(var)s)" % self.__adapkg
-        return (  # Use %(tmp)s so forces the use of temporary var.
-            self.param,
-            self.cparam,
-            conv,
-            [],
-            # for out parameters
-            self.cparam,
-            conv,
+        return ConvertTuple(  # Use %(tmp)s so forces the use of temporary var.
+            ada_type=self.param,
+            c_type=self.cparam,
+            conversion=conv,
+            tmp_vars=[],
+            out_c_type=self.cparam,
+            out_conversion=conv,
         )
 
     @staticmethod
@@ -930,7 +957,7 @@ class AdaTypeArray(CType):
     def convert_to_c(self) -> str:
         return "%(var)s'Address"
 
-    def convert_from_c(self):
+    def convert_from_c(self) -> ConvertTuple:
         # ??? This implementation is specialized for the Gtk.Clipboard pkg,
         # which is the only place where we use it
         c = (
@@ -938,14 +965,14 @@ class AdaTypeArray(CType):
             + "(Atom_Arrays.Convert (%(var)s), Integer (N_Atoms))"
         )
 
-        return (
-            self.param,  # name of Ada type
-            self.cparam,  # name of C type
-            c,  # convert from C to Ada
-            [],  # list of temporary variables needed
-            self.cparam,  # name of C type for out parameters
-            c,
-        )  # convert from previous line to Ada type
+        return ConvertTuple(
+            ada_type=self.param,
+            c_type=self.cparam,
+            conversion=c,
+            tmp_vars=[],
+            out_c_type=self.cparam,
+            out_conversion=c,
+        )
 
     def record_field_type(self, pkg=None) -> str:
         if self.isArray and self.array_fixed_size is not None:
@@ -1883,11 +1910,11 @@ class Subprogram(object):
         if returns:
             prefix = "function"
             if self.lang == "ada->c":
-                suffix = " return %s" % returns[1]
+                suffix = " return %s" % returns.c_type
             elif self.lang == "c->ada":
-                suffix = " return %s" % returns[1]
+                suffix = " return %s" % returns.c_type
             else:
-                suffix = " return %s" % returns[0]
+                suffix = " return %s" % returns.ada_type
         else:
             prefix = "procedure"
             suffix = ""
@@ -1960,10 +1987,10 @@ class Subprogram(object):
         if self.returns:
             r = self.returns.as_return(pkg=pkg)
             if self.lang in ("ada->c", "c->ada"):
-                pkg.add_with(package_name(r[1]), specs=in_specs)
+                pkg.add_with(package_name(r.c_type), specs=in_specs)
                 self.returns.convert_from_c_add_with(pkg=pkg, specs=in_specs)
             else:
-                pkg.add_with(package_name(r[0]), specs=in_specs)
+                pkg.add_with(package_name(r.ada_type), specs=in_specs)
 
         if self.plist:
             for p in self.plist:
@@ -2157,14 +2184,14 @@ class Subprogram(object):
             if lang == "ada->c":
                 self.returns.convert_from_c_add_with(pkg=in_pkg)
 
-                tmpvars.extend(returns[3])
-                if "%(tmp)s" in returns[2]:
+                tmpvars.extend(returns.tmp_vars)
+                if "%(tmp)s" in returns.conversion:
                     # Result of Internal is used to create a temp. variable,
                     # which is then returned. This variable has the same type
                     # as the Ada type (not necessarily same as Internal)
-                    call = returns[2] % {"var": call, "tmp": "Tmp_Return"}
+                    call = returns.conversion % {"var": call, "tmp": "Tmp_Return"}
 
-                    tmpvars.append(Local_Var("Tmp_Return", returns[0]))
+                    tmpvars.append(Local_Var("Tmp_Return", returns.ada_type))
                     result = (
                         "%s%s;%s" % (precall, call, postcall),
                         "Tmp_Return",
@@ -2172,24 +2199,24 @@ class Subprogram(object):
                     )
 
                 elif postcall:
-                    tmpvars.append(Local_Var("Tmp_Return", returns[1]))
+                    tmpvars.append(Local_Var("Tmp_Return", returns.c_type))
                     call = "Tmp_Return := %s" % call
                     result = (
                         "%s%s;%s" % (precall, call, postcall),
-                        returns[2] % {"var": "Tmp_Return"},
+                        returns.conversion % {"var": "Tmp_Return"},
                         tmpvars,
                     )
 
                 else:
                     # No need for a temporary variable
-                    result = (precall, returns[2] % {"var": call}, tmpvars)
+                    result = (precall, returns.conversion % {"var": call}, tmpvars)
 
             else:  # "ada" or "c->ada"
                 if postcall:
                     # We need to use a temporary variable, since there are
                     # cleanups to perform. This will not work if the function
                     # returns an unconstrained array though.
-                    tmpvars.append(Local_Var("Tmp_Return", returns[0]))
+                    tmpvars.append(Local_Var("Tmp_Return", returns.ada_type))
                     call = "Tmp_Return := %s" % call
                     result = (
                         "%s%s;%s" % (precall, call, postcall),
