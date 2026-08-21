@@ -161,11 +161,15 @@ package body Gtk.Alert_Dialog is
           Acc_Error : access Glib.Error.GError) return Glib.Gint;
       pragma Import (C, Internal, "gtk_alert_dialog_choose_finish");
       Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Glib.Gint;
       Tmp_Return : Glib.Gint;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      return Tmp_Return;
+      if Acc_Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Choose_Finish;
 
    -----------------

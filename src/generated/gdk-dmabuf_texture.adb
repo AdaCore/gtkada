@@ -247,6 +247,7 @@ package body Gdk.Dmabuf_Texture is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_loadable_icon_load");
       Acc_Error          : aliased Glib.Error.GError;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
       Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
@@ -257,7 +258,10 @@ package body Gdk.Dmabuf_Texture is
          The_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_The_Type);
       end if;
       Error := Acc_Error;
-      return Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      if Acc_Error = null then
+         Return_Obj := Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      end if;
+      return Return_Obj;
    end Load;
 
    -----------------
@@ -278,6 +282,7 @@ package body Gdk.Dmabuf_Texture is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_loadable_icon_load_finish");
       Acc_Error          : aliased Glib.Error.GError;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
       Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
@@ -288,7 +293,10 @@ package body Gdk.Dmabuf_Texture is
          The_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_The_Type);
       end if;
       Error := Acc_Error;
-      return Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      if Acc_Error = null then
+         Return_Obj := Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      end if;
+      return Return_Obj;
    end Load_Finish;
 
    --------------

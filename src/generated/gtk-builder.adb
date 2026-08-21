@@ -394,13 +394,17 @@ package body Gtk.Builder is
           Acc_Error     : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_builder_create_closure");
       Acc_Error         : aliased Glib.Error.GError;
+      Return_Obj        : System.Address;
       Tmp_Function_Name : Gtkada.Types.Chars_Ptr := New_String (Function_Name);
       Tmp_Return        : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Function_Name, Flags, Get_Object_Or_Null (GObject (Object)), Acc_Error'Access);
       Error := Acc_Error;
       Free (Tmp_Function_Name);
-      return Tmp_Return;
+      if Acc_Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Create_Closure;
 
    -------------------

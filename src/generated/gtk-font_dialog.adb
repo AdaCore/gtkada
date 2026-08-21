@@ -196,12 +196,16 @@ package body Gtk.Font_Dialog is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_font_dialog_choose_face_finish");
       Acc_Error            : aliased Glib.Error.GError;
+      Return_Obj           : Pango.Font_Face.Pango_Font_Face;
       Stub_Pango_Font_Face : Pango.Font_Face.Pango_Font_Face_Record;
       Tmp_Return           : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      return Pango.Font_Face.Pango_Font_Face (Get_User_Data (Tmp_Return, Stub_Pango_Font_Face));
+      if Acc_Error = null then
+         Return_Obj := Pango.Font_Face.Pango_Font_Face (Get_User_Data (Tmp_Return, Stub_Pango_Font_Face));
+      end if;
+      return Return_Obj;
    end Choose_Face_Finish;
 
    -------------------
@@ -239,12 +243,16 @@ package body Gtk.Font_Dialog is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_font_dialog_choose_family_finish");
       Acc_Error              : aliased Glib.Error.GError;
+      Return_Obj             : Pango.Font_Family.Pango_Font_Family;
       Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
       Tmp_Return             : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      return Pango.Font_Family.Pango_Font_Family (Get_User_Data (Tmp_Return, Stub_Pango_Font_Family));
+      if Acc_Error = null then
+         Return_Obj := Pango.Font_Family.Pango_Font_Family (Get_User_Data (Tmp_Return, Stub_Pango_Font_Family));
+      end if;
+      return Return_Obj;
    end Choose_Family_Finish;
 
    -----------------
@@ -283,11 +291,15 @@ package body Gtk.Font_Dialog is
           return Pango.Font.Pango_Font_Description;
       pragma Import (C, Internal, "gtk_font_dialog_choose_font_finish");
       Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Pango.Font.Pango_Font_Description;
       Tmp_Return : Pango.Font.Pango_Font_Description;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      return Tmp_Return;
+      if Acc_Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Choose_Font_Finish;
 
    ------------------

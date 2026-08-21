@@ -442,11 +442,15 @@ package body Glib.Output_Stream is
           Acc_Error   : access Glib.Error.GError) return Gssize;
       pragma Import (C, Internal, "g_output_stream_splice");
       Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Gssize;
       Tmp_Return : Gssize;
    begin
       Tmp_Return := Internal (Get_Object (Self), Get_Object (Source), Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      return Tmp_Return;
+      if Acc_Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Splice;
 
    ------------------
@@ -484,11 +488,15 @@ package body Glib.Output_Stream is
           Acc_Error : access Glib.Error.GError) return Gssize;
       pragma Import (C, Internal, "g_output_stream_splice_finish");
       Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Gssize;
       Tmp_Return : Gssize;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      return Tmp_Return;
+      if Acc_Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Splice_Finish;
 
    -----------
@@ -509,11 +517,15 @@ package body Glib.Output_Stream is
           Acc_Error   : access Glib.Error.GError) return Gssize;
       pragma Import (C, Internal, "g_output_stream_write");
       Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Gssize;
       Tmp_Return : Gssize;
    begin
       Tmp_Return := Internal (Get_Object (Self), Buffer'Address, Buffer'Length, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      return Tmp_Return;
+      if Acc_Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Write;
 
    ---------------
@@ -622,11 +634,15 @@ package body Glib.Output_Stream is
           Acc_Error   : access Glib.Error.GError) return Gssize;
       pragma Import (C, Internal, "g_output_stream_write_bytes");
       Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Gssize;
       Tmp_Return : Gssize;
    begin
       Tmp_Return := Internal (Get_Object (Self), Get_Object (Bytes), Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      return Tmp_Return;
+      if Acc_Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Write_Bytes;
 
    -----------------------
@@ -663,11 +679,15 @@ package body Glib.Output_Stream is
           Acc_Error : access Glib.Error.GError) return Gssize;
       pragma Import (C, Internal, "g_output_stream_write_bytes_finish");
       Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Gssize;
       Tmp_Return : Gssize;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      return Tmp_Return;
+      if Acc_Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Write_Bytes_Finish;
 
    ------------------
@@ -685,11 +705,15 @@ package body Glib.Output_Stream is
           Acc_Error : access Glib.Error.GError) return Gssize;
       pragma Import (C, Internal, "g_output_stream_write_finish");
       Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Gssize;
       Tmp_Return : Gssize;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      return Tmp_Return;
+      if Acc_Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Write_Finish;
 
    -----------------------

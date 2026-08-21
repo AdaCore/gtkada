@@ -1543,7 +1543,7 @@ class GIRClass(object):
         to_override = body and "%(auto)s" not in body
 
         local_vars = []
-        call = ""
+        subp_code = []
 
         if not is_import:
             # Prepare the Internal C function
@@ -1597,22 +1597,100 @@ class GIRClass(object):
                 values=internal_values,
             )
 
+            subp_code = execute.precall
+            if execute.call:
+                subp_code.append (execute.call + ';')
+            subp_code += execute.postcall + execute.freecall
+
+            # procedure: write return value to a location
             if ret_as_param is not None:
                 assert (
                     execute.returnvar is not None
                 ), "Must have a return value in %s => %s" % (cname, execute)
-                call = "%s%s := %s;" % (execute.code(), ret_as_param, execute.returnvar)
-
-            else:
-                if execute.returnvar:  # A function, with a standard "return"
-                    call = "%sreturn %s;" % (execute.code(), execute.returnvar)
+                assign_return = f"{ret_as_param} := {execute.returnvar};"
+                if profile.throws:
+                    subp_code += [
+                        "if Acc_Error = null then",
+                        assign_return,
+                        "end if;"
+                    ]
                 else:
-                    call = execute.code()
+                    subp_code.append (assign_return)
+            # function: add a return statement
+            elif execute.returnvar:
 
+                # Abort early if an error is reported
+                # without writing to the return value
+                # EXCEPT if return type is bool
+                # => then this is directly tied to success or failure
+
+                if profile.throws and profile.returns.ada != 'Boolean':
+                    if isinstance(profile.returns, (GObject, Proxy)):
+                        var_return = "Return_Obj"
+                        assign_return = f"{var_return} := {execute.returnvar};"
+                        local_vars.append(Local_Var(name=var_return,type=profile.returns.ada))
+
+                        subp_code += ["if Acc_Error = null then",
+                                    assign_return,
+                                    "end if;",
+                                    f"return {var_return};"]
+                    elif isinstance(profile.returns, (UTF8, UTF8_List)):
+                        null_val = profile.returns.null_value
+
+                        # If we need to a free a temporary variable,
+                        # execute.returnvar will already have the free call embedded
+                        # but we need to add it explicitly for null_val
+
+                        if profile.returns.transfer_ownership and execute.tmpvars:
+                            cleanup_func = profile.returns.cleanup if isinstance(profile.returns, UTF8) else 'g_strfreev (%s);'
+
+                            # Work one step backwards:
+                            # Subprogram.call will append a temporary variable
+                            # when profile.returns requires freeing => this is the one
+                            # TODO do something better in future.
+                            # This might get complicated if a subprogram takes multiple string inputs
+                            tmp_return = execute.tmpvars[-1].name
+                            cleanup = cleanup_func % tmp_return
+                            subp_code += [
+                                    "if Acc_Error = null then",
+                                    f"return {execute.returnvar};",
+                                    "else",
+                                    cleanup,
+                                    f"return {null_val};",
+                                    "end if;"
+                                ]
+                        else:
+                            subp_code += [
+                                'return',
+                                '(if Acc_Error = null then',
+                                execute.returnvar,
+                                'else',
+                                null_val,
+                                ');'
+                            ]
+                    elif isinstance(profile.returns, Interface):
+                        # This relies on the interface generate method emitting this:
+                        # Null_{typename} : constant {typename} := {typename} (Null_Interface);
+                        subp_code += [
+                            'return',
+                            '(if Acc_Error = null then',
+                            execute.returnvar,
+                            'else',
+                            profile.returns.null_name(),
+                            ');'
+                        ]
+                    else:
+                        # Emit incorrect code FOR NOW
+                        return_stmt = f"return {execute.returnvar}; -- FIXME"
+                        subp_code.append (return_stmt)
+
+                else:
+                    return_stmt = f"return {execute.returnvar};"
+                    subp_code.append (return_stmt)
             local_vars += execute.tmpvars
 
         subp = profile.subprogram(
-            name=adaname, showdoc=showdoc, local_vars=local_vars, code=[call]
+            name=adaname, showdoc=showdoc, local_vars=local_vars, code=subp_code
         )
 
         if is_import:
@@ -2066,7 +2144,8 @@ end if;"""
         """
         
         def constructor_code(
-            call: CodeCall, selfname: str = "Self", guard: str = "", function: bool = False
+            call: CodeCall, selfname: str = "Self", guard: str = "", function: bool = False,
+            throws: bool = False
         ) -> list[str]:
             """Build the ``code`` list for a Gtk_New/Initialize-style
             constructor from a CodeCall, unifying the
@@ -2081,6 +2160,11 @@ end if;"""
                     constructor = "%s.Set_Object (%s);" % (selfname, call.returnvar)
                 else:
                     constructor = "%s := %s;" % (selfname, call.returnvar)
+
+
+            # Wrap Internal call in checks
+            if constructor and throws:
+                constructor = " ".join(['if Acc_Error = null then',constructor,'end if;'])
 
             body = list(call.precall)
             if call.call is not None:
@@ -2133,7 +2217,7 @@ end if;"""
             returns=profile.returns,
         ).import_c(cname)
 
-        call: CodeCall = internal.call(in_pkg=self.pkg)
+        call: CodeCall = internal.call(in_pkg=self.pkg, extra_postcall="".join(code))
         assert call.returnvar is not None, "A function"
 
         gtk_new_prefix = "Gtk_New"
@@ -2193,7 +2277,8 @@ end if;"""
                 local_vars=local_vars + call.tmpvars,
                 doc=init_doc,
                 code=constructor_code(
-                    call, selfname=selfname, guard="not %s.Is_Created" % selfname
+                    call, selfname=selfname, guard="not %s.Is_Created" % selfname,
+                    throws=profile.throws
                 ),
             ).add_nested(internal)
 
@@ -2237,7 +2322,8 @@ end if;"""
                         "new %(typename)s_Record" % self._subst,
                     )
                 ],
-                code=constructor_code(call, selfname=selfname, function=True),
+                code=constructor_code(call, selfname=selfname, function=True,
+                    throws=profile.throws),
                 doc=profile.doc,
             )
             section.add(gtk_new)
@@ -2256,7 +2342,8 @@ end if;"""
                 ]
                 + profile.params,
                 local_vars=local_vars + call.tmpvars,
-                code=constructor_code(call, selfname=selfname),
+                code=constructor_code(call, selfname=selfname,
+                    throws=profile.throws),
                 doc=profile.doc,
             )
 
@@ -2273,7 +2360,8 @@ end if;"""
                 local_vars=local_vars
                 + call.tmpvars
                 + [Local_Var(selfname, "%(typename)s" % self._subst)],
-                code=constructor_code(call, selfname=selfname, function=True),
+                code=constructor_code(call, selfname=selfname, function=True,
+                    throws=profile.throws),
                 doc=profile.doc,
             )
             gtk_new.add_nested(internal)
@@ -2294,7 +2382,8 @@ end if;"""
                 ]
                 + profile.params,
                 local_vars=local_vars + call.tmpvars,
-                code=constructor_code(call, selfname=selfname),
+                code=constructor_code(call, selfname=selfname,
+                    throws=profile.throws),
                 doc=profile.doc,
             )
             gtk_new.add_nested(internal)
@@ -2310,7 +2399,8 @@ end if;"""
                 local_vars=local_vars
                 + call.tmpvars
                 + [Local_Var(selfname, "%(typename)s" % self._subst)],
-                code=constructor_code(call, selfname=selfname, function=True),
+                code=constructor_code(call, selfname=selfname, function=True,
+                    throws=profile.throws),
                 doc=profile.doc,
             )
             gtk_new.add_nested(internal)

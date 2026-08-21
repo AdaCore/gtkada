@@ -63,10 +63,13 @@ package body Gtk.Constant_Expression is
       function Internal
          (Acc_Value : access Glib.Values.GValue) return System.Address;
       pragma Import (C, Internal, "gtk_constant_expression_new_for_value");
-      Acc_Value : aliased Glib.Values.GValue := Value;
+      Acc_Value  : aliased Glib.Values.GValue := Value;
+      Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
-         Set_Object (Self, Internal (Acc_Value'Access));
+         Tmp_Return := Internal (Acc_Value'Access);
+         Value := Acc_Value;
+         Set_Object (Self, Tmp_Return);
       end if;
    end Initialize_For_Value;
 

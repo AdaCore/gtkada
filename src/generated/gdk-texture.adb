@@ -211,10 +211,15 @@ package body Gdk.Texture is
          (Bytes     : System.Address;
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gdk_texture_new_from_bytes");
-      Acc_Error : aliased Glib.Error.GError;
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
-         Set_Object (Self, Internal (Get_Object (Bytes), Acc_Error'Access));
+         Tmp_Return := Internal (Get_Object (Bytes), Acc_Error'Access);
+         Error := Acc_Error;
+         if Acc_Error = null then
+            Set_Object (Self, Tmp_Return);
+         end if;
       end if;
    end Initialize_From_Bytes;
 
@@ -231,10 +236,15 @@ package body Gdk.Texture is
          (File      : Glib.GFile.Gfile;
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gdk_texture_new_from_file");
-      Acc_Error : aliased Glib.Error.GError;
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
-         Set_Object (Self, Internal (File, Acc_Error'Access));
+         Tmp_Return := Internal (File, Acc_Error'Access);
+         Error := Acc_Error;
+         if Acc_Error = null then
+            Set_Object (Self, Tmp_Return);
+         end if;
       end if;
    end Initialize_From_File;
 
@@ -257,7 +267,10 @@ package body Gdk.Texture is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_Path, Acc_Error'Access);
-         Set_Object (Self, Tmp_Return);
+         Error := Acc_Error;
+         if Acc_Error = null then
+            Set_Object (Self, Tmp_Return);
+         end if;
       end if;
       Free (Tmp_Path);
    end Initialize_From_Filename;
@@ -575,6 +588,7 @@ package body Gdk.Texture is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_loadable_icon_load");
       Acc_Error          : aliased Glib.Error.GError;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
       Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
@@ -585,7 +599,10 @@ package body Gdk.Texture is
          The_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_The_Type);
       end if;
       Error := Acc_Error;
-      return Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      if Acc_Error = null then
+         Return_Obj := Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      end if;
+      return Return_Obj;
    end Load;
 
    -----------------
@@ -606,6 +623,7 @@ package body Gdk.Texture is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_loadable_icon_load_finish");
       Acc_Error          : aliased Glib.Error.GError;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
       Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
@@ -616,7 +634,10 @@ package body Gdk.Texture is
          The_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_The_Type);
       end if;
       Error := Acc_Error;
-      return Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      if Acc_Error = null then
+         Return_Obj := Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      end if;
+      return Return_Obj;
    end Load_Finish;
 
    --------------

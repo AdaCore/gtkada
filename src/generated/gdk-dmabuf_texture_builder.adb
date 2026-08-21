@@ -87,12 +87,16 @@ package body Gdk.Dmabuf_Texture_Builder is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gdk_dmabuf_texture_builder_build");
       Acc_Error        : aliased Glib.Error.GError;
+      Return_Obj       : Gdk.Texture.Gdk_Texture;
       Stub_Gdk_Texture : Gdk.Texture.Gdk_Texture_Record;
       Tmp_Return       : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Destroy, Data, Acc_Error'Access);
       Error := Acc_Error;
-      return Gdk.Texture.Gdk_Texture (Get_User_Data (Tmp_Return, Stub_Gdk_Texture));
+      if Acc_Error = null then
+         Return_Obj := Gdk.Texture.Gdk_Texture (Get_User_Data (Tmp_Return, Stub_Gdk_Texture));
+      end if;
+      return Return_Obj;
    end Build;
 
    ---------------------

@@ -153,12 +153,16 @@ package body Gdk.Surface is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gdk_surface_create_gl_context");
       Acc_Error          : aliased Glib.Error.GError;
+      Return_Obj         : Gdk.GLContext.Gdk_GLContext;
       Stub_Gdk_GLContext : Gdk.GLContext.Gdk_GLContext_Record;
       Tmp_Return         : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Error'Access);
       Error := Acc_Error;
-      return Gdk.GLContext.Gdk_GLContext (Get_User_Data (Tmp_Return, Stub_Gdk_GLContext));
+      if Acc_Error = null then
+         Return_Obj := Gdk.GLContext.Gdk_GLContext (Get_User_Data (Tmp_Return, Stub_Gdk_GLContext));
+      end if;
+      return Return_Obj;
    end Create_Gl_Context;
 
    -------------
