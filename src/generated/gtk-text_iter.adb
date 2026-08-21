@@ -344,10 +344,10 @@ package body Gtk.Text_Iter is
       Tmp_Return := Internal (Acc_Iter'Access, Tmp_Str, Flags, Tmp_Acc_Match_Start'Access, Tmp_Acc_Match_End'Access, Iter_Or_Null (Limit'Address));
       Acc_Match_End := Tmp_Acc_Match_End;
       Acc_Match_Start := Tmp_Acc_Match_Start;
-      Free (Tmp_Str);
       Iter := Acc_Iter;
       Match_Start := Acc_Match_Start;
       Match_End := Acc_Match_End;
+      Free (Tmp_Str);
       Result := Tmp_Return /= 0;
    end Backward_Search;
 
@@ -906,10 +906,10 @@ package body Gtk.Text_Iter is
       Tmp_Return := Internal (Acc_Iter'Access, Tmp_Str, Flags, Tmp_Acc_Match_Start'Access, Tmp_Acc_Match_End'Access, Iter_Or_Null (Limit'Address));
       Acc_Match_End := Tmp_Acc_Match_End;
       Acc_Match_Start := Tmp_Acc_Match_Start;
-      Free (Tmp_Str);
       Iter := Acc_Iter;
       Match_Start := Acc_Match_Start;
       Match_End := Acc_Match_End;
+      Free (Tmp_Str);
       Result := Tmp_Return /= 0;
    end Forward_Search;
 

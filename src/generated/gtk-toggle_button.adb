@@ -140,11 +140,9 @@ package body Gtk.Toggle_Button is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_Label);
-         Free (Tmp_Label);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Label);
       end if;
+      Free (Tmp_Label);
    end Initialize_With_Label;
 
    ------------------------------
@@ -163,11 +161,9 @@ package body Gtk.Toggle_Button is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_Label);
-         Free (Tmp_Label);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Label);
       end if;
+      Free (Tmp_Label);
    end Initialize_With_Mnemonic;
 
    ----------------

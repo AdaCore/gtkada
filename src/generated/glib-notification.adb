@@ -71,11 +71,9 @@ package body Glib.Notification is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_Title);
-         Free (Tmp_Title);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Title);
       end if;
+      Free (Tmp_Title);
    end Initialize;
 
    ----------------

@@ -129,11 +129,9 @@ package body Gtk.Drop_Down is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_Strings);
-         Gtkada.Types.Free (Tmp_Strings);
          Set_Object (Self, Tmp_Return);
-      else
-         Gtkada.Types.Free (Tmp_Strings);
       end if;
+      Gtkada.Types.Free (Tmp_Strings);
    end Initialize_From_Strings;
 
    -----------------------

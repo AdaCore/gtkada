@@ -316,8 +316,8 @@ package body Glib.Action_Group is
          State_Hint.all := From_Object (Tmp_State_Hint);
       end if;
       Acc_Enabled := Tmp_Acc_Enabled /= 0;
-      Free (Tmp_Action_Name);
       Enabled := Acc_Enabled;
+      Free (Tmp_Action_Name);
       return Tmp_Return /= 0;
    end Query_Action;
 

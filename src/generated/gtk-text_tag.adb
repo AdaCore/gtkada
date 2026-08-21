@@ -86,11 +86,9 @@ package body Gtk.Text_Tag is
             then Gtkada.Types.Null_Ptr
             else New_String (Name));
          Tmp_Return := Internal (Tmp_Name);
-         Free (Tmp_Name);
          Set_Object (Tag, Tmp_Return);
-      else
-         Free (Tmp_Name);
       end if;
+      Free (Tmp_Name);
    end Initialize;
 
    -------------

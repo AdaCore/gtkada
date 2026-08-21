@@ -88,11 +88,9 @@ package body Gtk.Entry_Buffer is
             then Gtkada.Types.Null_Ptr
             else New_String (Initial_Chars));
          Tmp_Return := Internal (Tmp_Initial_Chars, N_Initial_Chars);
-         Free (Tmp_Initial_Chars);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Initial_Chars);
       end if;
+      Free (Tmp_Initial_Chars);
    end Initialize;
 
    -----------------

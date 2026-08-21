@@ -104,11 +104,9 @@ package body Gtk.Label is
             then Gtkada.Types.Null_Ptr
             else New_String (Str));
          Tmp_Return := Internal (Tmp_Str);
-         Free (Tmp_Str);
          Set_Object (Label, Tmp_Return);
-      else
-         Free (Tmp_Str);
       end if;
+      Free (Tmp_Str);
    end Initialize;
 
    ------------------------------
@@ -130,11 +128,9 @@ package body Gtk.Label is
             then Gtkada.Types.Null_Ptr
             else New_String (Str));
          Tmp_Return := Internal (Tmp_Str);
-         Free (Tmp_Str);
          Set_Object (Label, Tmp_Return);
-      else
-         Free (Tmp_Str);
       end if;
+      Free (Tmp_Str);
    end Initialize_With_Mnemonic;
 
    --------------------

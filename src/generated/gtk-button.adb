@@ -131,11 +131,9 @@ package body Gtk.Button is
             then Gtkada.Types.Null_Ptr
             else New_String (Label));
          Tmp_Return := Internal (Tmp_Label);
-         Free (Tmp_Label);
          Set_Object (Button, Tmp_Return);
-      else
-         Free (Tmp_Label);
       end if;
+      Free (Tmp_Label);
    end Initialize;
 
    -------------------------------
@@ -154,11 +152,9 @@ package body Gtk.Button is
    begin
       if not Button.Is_Created then
          Tmp_Return := Internal (Tmp_Icon_Name);
-         Free (Tmp_Icon_Name);
          Set_Object (Button, Tmp_Return);
-      else
-         Free (Tmp_Icon_Name);
       end if;
+      Free (Tmp_Icon_Name);
    end Initialize_From_Icon_Name;
 
    ------------------------------
@@ -177,11 +173,9 @@ package body Gtk.Button is
    begin
       if not Button.Is_Created then
          Tmp_Return := Internal (Tmp_Label);
-         Free (Tmp_Label);
          Set_Object (Button, Tmp_Return);
-      else
-         Free (Tmp_Label);
       end if;
+      Free (Tmp_Label);
    end Initialize_With_Mnemonic;
 
    --------------------

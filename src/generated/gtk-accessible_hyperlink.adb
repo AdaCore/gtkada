@@ -91,11 +91,9 @@ package body Gtk.Accessible_Hyperlink is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Parent, Index, Tmp_URI, Bounds);
-         Free (Tmp_URI);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_URI);
       end if;
+      Free (Tmp_URI);
    end Initialize;
 
    ------------------------

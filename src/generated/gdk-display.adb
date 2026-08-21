@@ -237,8 +237,8 @@ package body Gdk.Display is
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Name, Acc_Value'Access);
-      Free (Tmp_Name);
       Value := Acc_Value;
+      Free (Tmp_Name);
       return Tmp_Return /= 0;
    end Get_Setting;
 

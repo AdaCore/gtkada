@@ -64,6 +64,64 @@ ConvertTuple = namedtuple("ConvertTuple",
 type ConvertedValue = Optional[ConvertTuple]
 
 
+class CodeCall(
+    namedtuple(
+        "CodeCall",
+        ["call", "precall", "postcall", "tmpvars", "returnvar", "freecall"],
+        # Every field but 'call' defaults to empty, to simplify construction
+        defaults=[[], [], [], None, []],
+    )
+):
+    """
+    Data structure to wrap Ada -> C calls, with the following fields:
+    call : Optional[str]
+    precall: list[str] = []
+    postcall: list[str] = []
+    tmp_vars: list[Local_Var] = []
+    returnvar: Optional[str]
+    freecall: list[str] = []
+
+    precall and postcall contain variable assignment statements
+    to set up tmp_vars for call (without memory allocation)
+    call is one statement, or None
+    precall and postcall are executed iff call is executed
+    This is relevant if a function wraps [call] in a guard
+
+    freecall is called unconditionally to free memory allocated
+    in the declarative part
+    (though only emitted for params with transfer_ownership=True)
+
+    Example Ada code:
+    declare
+       $(tmpvars)
+       [Internal C function]
+    begin
+       $(precall)
+       Call ($(call), ...)
+       (postcall)
+       (freecall)
+    end;
+    """
+
+    def code(self, include_freecall: bool = True) -> str:
+        """Join precall/call/postcall(/freecall) into the Ada code to
+        execute before any "return" statement (see call_to_string for
+        that part). 'call' is None when the call expression is embedded
+        directly into 'returnvar' instead of being its own statement.
+
+        :param include_freecall: False when the caller fetches freecall
+           separately (e.g. via Subprogram.freecall()), to avoid running
+           the unconditional cleanup code twice.
+        """
+        result = "".join(self.precall)
+        if self.call is not None:
+            result += self.call + ";"
+        result += "".join(self.postcall)
+        if include_freecall:
+            result += "".join(self.freecall)
+        return result
+
+
 class CType(object):
     """Describes the types in the various cases where they can be used.
 
@@ -71,44 +129,46 @@ class CType(object):
     Ada subprogram implemented via a pragma Import. The latter case is
     abbreviated to a "c" subprogram below.
 
-    For returned values, various pieces of information are needed:
-           (adatype, ctype, converter, tmpvars=[])
+    For returned values, various pieces of information are needed, as a
+    ConvertTuple (see its own comment near the top of this file for the
+    full field list):
+           ConvertTuple(ada_type, c_type, conversion, tmp_vars, ...)
     They are used as:
-           function ... (...) return adatype is
-               function ... (...) return ctype;
+           function ... (...) return ada_type is
+               function ... (...) return c_type;
                pragma Import (C, ..., "...");
-               Tmp : ctype;
-               tmpvars;
+               Tmp : c_type;
+               tmp_vars;
            begin
                ...;   --  pre-call code
                Tmp := ... (...);
                ...;   --  post-call code
-               return <converter % Tmp>
+               return <conversion % Tmp>
            end;
     In the example above, "Tmp" is only created if there is some post-call
     code, otherwise we avoid the temporary variable.
     The variable "Tmp" is automatically added, and does not need to
-    be specified manually in tmpvars.
+    be specified manually in tmp_vars.
 
-    if converted contains the string "%(tmp)s", then we always use a
-    temporary variable of type adatype. This is used for instance when the
+    if conversion contains the string "%(tmp)s", then we always use a
+    temporary variable of type ada_type. This is used for instance when the
     variable is initialized through a procedure call rather than a function
     call.
-           function ... (...) return adatype is
-               function ... (...) return ctype;
+           function ... (...) return ada_type is
+               function ... (...) return c_type;
                pragma Import (C, ..., "...")
-               Tmp_Result : adatype;
-               tmpvars;
+               Tmp_Result : ada_type;
+               tmp_vars;
            begin
                ...   --  pre-call code
-               convert % {"var":..., "tmp":"Tmp_Result"};  -- proc call
+               conversion % {"var":..., "tmp":"Tmp_Result"};  -- proc call
                ...   --  post-call code
                return Tmp_Result;
            end;
     The variable "Tmp_Result" is automatically added, and does not need to
-    be specified manually in tmpvars.
+    be specified manually in tmp_vars.
 
-    Converter will contain a single %s which will be replaced by the
+    conversion will contain a single %s which will be replaced by the
     name of the temporary variable that holds the result of the call
     to the function.
     """
@@ -229,7 +289,7 @@ class CType(object):
 
     def _access_param_as_call(
         self, name: str, returns: ConvertedValue, tmpvars: list[Local_Var]
-    ) -> VariableCall:
+    ) -> CodeCall:
         """How to pass an "access T" parameter to C.
 
         Such a parameter is a pointer to the caller's own variable, and C
@@ -242,7 +302,7 @@ class CType(object):
 
         if not conv or conv == "%(var)s":
             # C uses the very same type: no temporary at all.
-            return VariableCall(call=name, precall="", postcall="", tmpvars=tmpvars)
+            return CodeCall(call=name, precall=[], postcall=[], tmpvars=tmpvars)
 
         # C uses a different type, so one temporary is unavoidable. C is
         # given its address only when the caller did ask for the output, and
@@ -254,11 +314,13 @@ class CType(object):
         tmp = "Tmp_%s" % name
         acc = "Acc_%s" % name
 
-        return VariableCall(
+        return CodeCall(
             call=acc,
-            precall="",
-            postcall="if %s /= null then %s.all := %s; end if;"
-            % (name, name, conv % {"var": tmp}),
+            precall=[],
+            postcall=[
+                "if %s /= null then %s.all := %s; end if;"
+                % (name, name, conv % {"var": tmp})
+            ],
             tmpvars=[
                 Local_Var(
                     name=tmp,
@@ -291,7 +353,7 @@ class CType(object):
         mode: str = "in",
         value: Optional[str] = None,
         is_temporary_variable: bool = True,
-    ) -> VariableCall:
+    ) -> CodeCall:
         """'name' represents a parameter of type 'self'.
         'pkg' is the Package instance in which the call occurs.
         'wrapper' is used in the call itself, and %s is replaced by the
@@ -302,7 +364,7 @@ class CType(object):
            variable is a variable local to the subprogram, as opposed to a
            parameter. In this case, we can sometimes avoid creating a second
            temporary variable, thus increasing efficiency.
-        Returns an instance of VariableCall.
+        Returns an instance of CodeCall.
         See comments at the beginning of this package for valid LANG values
         """
         assert lang in ("ada", "c->ada", "ada->c")
@@ -311,8 +373,8 @@ class CType(object):
         )
 
         if lang == "ada":
-            return VariableCall(
-                call=wrapper % name, precall="", postcall="", tmpvars=[]
+            return CodeCall(
+                call=wrapper % name, precall=[], postcall=[], tmpvars=[]
             )
 
         elif lang == "ada->c":
@@ -362,20 +424,21 @@ class CType(object):
                         returns.out_conversion % {"var": tmp},
                     )
 
-                call = VariableCall(
+                call = CodeCall(
                     call=wrapper % tmp,
-                    precall="",
-                    postcall=postcall,
+                    precall=[],
+                    postcall=[postcall],
                     tmpvars=tmpvars + additional_tmp_vars,
                 )
 
             elif "%(tmp)" in self.convert_to_c():
                 # The conversion sets the temporary variable itself
                 tmp = "Tmp_%s" % name
-                call = VariableCall(
+                call = CodeCall(
                     call=wrapper % tmp,
-                    precall=self.convert_to_c() % {"var": name, "tmp": tmp},
-                    postcall=self.cleanup % tmp,
+                    precall=[self.convert_to_c() % {"var": name, "tmp": tmp}],
+                    postcall=[],
+                    freecall=[self.cleanup % tmp],
                     tmpvars=[Local_Var(name=tmp, type=self.cparam)] + [],
                 )
 
@@ -386,10 +449,11 @@ class CType(object):
                 # Initialize the temporary variable with a default value, in
                 # case it is an unconstrained type (a chars_ptr_array for
                 # instance)
-                call = VariableCall(
+                call = CodeCall(
                     call=wrapper % tmp,
-                    precall="",
-                    postcall=self.cleanup % tmp,
+                    precall=[],
+                    postcall=[],
+                    freecall=[self.cleanup % tmp],
                     tmpvars=[
                         Local_Var(name=tmp, type=AdaType(self.cparam), default=conv)
                     ],
@@ -397,8 +461,8 @@ class CType(object):
 
             else:
                 conv = self.convert_to_c() % {"var": name}
-                call = VariableCall(
-                    call=wrapper % conv, precall="", postcall="", tmpvars=[]
+                call = CodeCall(
+                    call=wrapper % conv, precall=[], postcall=[], tmpvars=[]
                 )
 
             return call
@@ -411,11 +475,11 @@ class CType(object):
             # An "out" parameter for an enumeration requires a temporary
             # variable: Internal(Enum'Pos (Param)) is invalid
 
-            ret_convert = ret and ret[2]
+            ret_convert = ret and ret.conversion
 
             if ret_convert and ret_convert != "%(var)s" and mode != "in":
                 tmp = "Tmp_%s" % name
-                tmpvars = [Local_Var(name=tmp, type=self.ada)] + ret[3]
+                tmpvars = [Local_Var(name=tmp, type=self.ada)] + ret.tmp_vars
 
                 if "%(tmp)s" in ret_convert:
                     tmp2 = "Tmp2_%s" % name
@@ -431,16 +495,16 @@ class CType(object):
                         self.convert_to_c() % {"var": tmp},
                     )
 
-                return VariableCall(
-                    call=wrapper % tmp, precall="", postcall=postcall, tmpvars=tmpvars
+                return CodeCall(
+                    call=wrapper % tmp, precall=[], postcall=[postcall], tmpvars=tmpvars
                 )
 
             else:
-                return VariableCall(
-                    call=wrapper % (ret[2] % {"var": name}),
-                    precall="",
-                    postcall="",
-                    tmpvars=ret[3],
+                return CodeCall(
+                    call=wrapper % (ret.conversion % {"var": name}),
+                    precall=[],
+                    postcall=[],
+                    tmpvars=ret.tmp_vars,
                 )
 
     def add_with(self, pkg: Package, specs: bool = False):
@@ -1544,21 +1608,6 @@ def indent_code(code, indent=3, addnewlines=True) -> str:
     return result
 
 
-# The necessary setup to use a variable in a subprogram call. The returned
-# values map to the following Ada code:
-#   declare
-# $(tmpvars)    # A list of LocalVar
-#   begin
-#      $(precall)
-#      Call ($(call), ...)
-# (postcall)
-#   end;
-# and are used in case temporary variables are needed. If not, only 'call'
-# will have a non-null value
-
-VariableCall = namedtuple("VariableCall", ["call", "precall", "postcall", "tmpvars"])
-
-
 class Local_Var(object):
     __slots__ = ["name", "type", "default", "aliased", "constant"]
 
@@ -1629,12 +1678,12 @@ class Local_Var(object):
 
     def as_call(
         self, pkg: Package, lang: str = "ada", value: Optional[str] = None
-    ) -> VariableCall:
+    ) -> CodeCall:
         """Pass self (or the value) as a parameter to an Ada subprogram call,
         implemented in the given language. See comments at the beginning
         of this package for valid values of LANG.
         'pkg' is the instance of Package in which the call occurs.
-        :return: an instance of VariableCall
+        :return: an instance of CodeCall
         """
         n = value or self.name
         if isinstance(self.type, CType):
@@ -1642,7 +1691,7 @@ class Local_Var(object):
                 name=n, pkg=pkg, lang=lang, wrapper="%s", is_temporary_variable=True
             )
         else:
-            return VariableCall(call=n, precall="", postcall="", tmpvars=[])
+            return CodeCall(call=n, precall=[], postcall=[], tmpvars=[])
 
 
 class Parameter(Local_Var):
@@ -1737,21 +1786,21 @@ class Parameter(Local_Var):
 
     def as_call(
         self, pkg: Package, lang: str = "ada", value: Optional[str] = None
-    ) -> VariableCall:
+    ) -> CodeCall:
         """'pkg' is the package instance in which the call occurs."""
 
         assert lang in ("ada", "c->ada", "ada->c")
 
         if not self.ada_binding:
             if self.default is not None:
-                return VariableCall(
-                    call=self.default, precall="", postcall="", tmpvars=[]
+                return CodeCall(
+                    call=self.default, precall=[], postcall=[], tmpvars=[]
                 )
             else:
-                return VariableCall(
+                return CodeCall(
                     call="Parameter not bound in Ada",
-                    precall="",
-                    postcall="",
+                    precall=[],
+                    postcall=[],
                     tmpvars=[],
                 )
         else:
@@ -1789,13 +1838,13 @@ class Parameter(Local_Var):
                 ):
                     if isinstance (self.type, Fundamental):
                         if self.type.as_ada_param(pkg)[-7] == "_Record":
-                            call = call._replace(precall="--  transfer-ownership='full'\nAdjust (%s);" % n)
+                            call = call._replace(precall=["--  transfer-ownership='full'\nAdjust (%s);" % n])
                         else:
-                            call = call._replace(precall="if %s /= null then\n--  transfer-ownership='full'\nAdjust (%s.all); end if;" % (n, n))
+                            call = call._replace(precall=["if %s /= null then\n--  transfer-ownership='full'\nAdjust (%s.all); end if;" % (n, n)])
 
                 return call
             else:
-                return VariableCall(call=n, precall="", postcall="", tmpvars=[])
+                return CodeCall(call=n, precall=[], postcall=[], tmpvars=[])
 
     def direct_c_map(self) -> bool:
         """Whether the parameter can be passed as is to C"""
@@ -1842,7 +1891,7 @@ class Subprogram(object):
     def __init__(
         self,
         name: str,
-        code: str = "",
+        code: list[str] = [],
         plist: list[Parameter] = [],
         local_vars: list[Local_Var] = [],
         returns: Optional[CType] = None,
@@ -1858,7 +1907,8 @@ class Subprogram(object):
         'plist' is a list of Parameter.
         'local_vars' is a list of Local_Var.
         'doc' is a string or a list of paragraphs.
-        'code' can be the empty string, in which case no body is output.
+        'code' is a list of Ada code fragments (joined here into the
+            subprogram's body); the empty list means no body is output.
         'lang' is the language for the types of parameters (see comment at
             the top of this file).
         'allow_none': when this is an anonymous subprogram (and therefore
@@ -1888,10 +1938,15 @@ class Subprogram(object):
 
         self.lang = lang  # Language for the types of parameters
 
-        if code and code[-1] != ";":
-            self.code = code + ";"
+        # Stitched here (rather than by every caller) since nothing else
+        # ever composes multiple Subprograms' code together at the list
+        # level -- unlike CodeCall's precall/postcall/freecall, this is a
+        # terminal use of the fragments.
+        joined: str = "".join(code)
+        if joined and not joined.endswith(';'):
+            self.code = joined + ";"
         else:
-            self.code = code
+            self.code = joined
 
         if isinstance(doc, list):
             self.doc = doc
@@ -2142,7 +2197,7 @@ class Subprogram(object):
 
         return result + indent + "end %s;\n" % base_name(self.name)
 
-    def call(self, in_pkg=None, extra_postcall="", values=dict(), lang=None):
+    def call(self, in_pkg=None, extra_postcall="", values=dict(), lang=None) -> CodeCall:
         """A call to 'self'.
         The parameters that are passed to self are assumed to have the
         same name as in self's declaration. When 'self' is implemented
@@ -2179,21 +2234,29 @@ class Subprogram(object):
 
         assert lang in ("ada", "c->ada", "ada->c")
 
-        tmpvars = []
-        precall = ""
-        params = []
-        postcall = extra_postcall
+        tmpvars  = []
+        precall  = []
+        params   = []
+        freecall = []
+        postcall = [extra_postcall] if extra_postcall else []
 
         for arg in self.plist:
             c = arg.as_call(
                 pkg=in_pkg,
-                lang=lang,  # An instance of VariableCall
+                lang=lang,  # An instance of CodeCall
                 value=values.get(arg.name.lower(), None),
             )
             params.append(c.call)
             tmpvars.extend(c.tmpvars)
-            precall += c.precall
+            precall.extend(c.precall)
+            # Matches the historical string-concatenation order
+            # (postcall = c.postcall + postcall): each arg's postcall is
+            # prepended, so the last-processed arg's cleanup/postcall runs
+            # first -- some bindings rely on this ordering (e.g. a later
+            # out-param's postcall writing a value that an earlier
+            # out-param's postcall reads).
             postcall = c.postcall + postcall
+            freecall = c.freecall + freecall
 
         if params:
             call = "%s (%s)" % (self.name, ", ".join(params))
@@ -2213,44 +2276,74 @@ class Subprogram(object):
                     call = returns.conversion % {"var": call, "tmp": "Tmp_Return"}
 
                     tmpvars.append(Local_Var("Tmp_Return", returns.ada_type))
-                    result = (
-                        "%s%s;%s" % (precall, call, postcall),
-                        "Tmp_Return",
-                        tmpvars,
+                    result = CodeCall(
+                        call=call,
+                        precall=precall,
+                        postcall=postcall,
+                        freecall=freecall,
+                        returnvar="Tmp_Return",
+                        tmpvars=tmpvars,
                     )
 
-                elif postcall:
+                elif postcall or freecall:
                     tmpvars.append(Local_Var("Tmp_Return", returns.c_type))
                     call = "Tmp_Return := %s" % call
-                    result = (
-                        "%s%s;%s" % (precall, call, postcall),
-                        returns.conversion % {"var": "Tmp_Return"},
-                        tmpvars,
+                    result = CodeCall(
+                        call=call,
+                        precall=precall,
+                        postcall=postcall,
+                        freecall=freecall,
+                        returnvar=returns.conversion % {"var": "Tmp_Return"},
+                        tmpvars=tmpvars,
                     )
 
                 else:
                     # No need for a temporary variable
-                    result = (precall, returns.conversion % {"var": call}, tmpvars)
+                    result = CodeCall(
+                        call=None,
+                        precall=precall,
+                        postcall=postcall,
+                        freecall=freecall,
+                        returnvar=returns.conversion % {"var": call},
+                        tmpvars=tmpvars,
+                    )
 
             else:  # "ada" or "c->ada"
-                if postcall:
+                if postcall or freecall:
                     # We need to use a temporary variable, since there are
                     # cleanups to perform. This will not work if the function
                     # returns an unconstrained array though.
                     tmpvars.append(Local_Var("Tmp_Return", returns.ada_type))
                     call = "Tmp_Return := %s" % call
-                    result = (
-                        "%s%s;%s" % (precall, call, postcall),
-                        "Tmp_Return",
-                        tmpvars,
+                    result = CodeCall(
+                        call=call,
+                        precall=precall,
+                        postcall=postcall,
+                        freecall=freecall,
+                        returnvar="Tmp_Return",
+                        tmpvars=tmpvars,
                     )
                 else:
                     # No need for a temporary variable
-                    result = (precall, call, tmpvars)
+                    result = CodeCall(
+                        call=None,
+                        precall=precall,
+                        postcall=postcall,
+                        freecall=freecall,
+                        returnvar=call,
+                        tmpvars=tmpvars,
+                    )
 
         else:
             # A procedure
-            result = ("%s%s;%s" % (precall, call, postcall), None, tmpvars)
+            result = CodeCall(
+                call=call,
+                precall=precall,
+                postcall=postcall,
+                freecall=freecall,
+                returnvar=None,
+                tmpvars=tmpvars,
+            )
 
         return result
 
@@ -2262,23 +2355,25 @@ class Subprogram(object):
         else:
             lang = "ada"
 
-        postcall = ""
+        freecall = []
 
         for arg in self.plist:
             c = arg.as_call(
                 pkg=in_pkg,
-                lang=lang,  # An instance of VariableCall
+                lang=lang,  # An instance of CodeCall
                 value=values.get(arg.name.lower(), None),
             )
-            postcall = c.postcall + postcall
-        return postcall
+            # Matches the historical prepend order (see call()).
+            freecall = c.freecall + freecall
+        return "".join(freecall)
 
-    def call_to_string(self, call: tuple, lang="ada") -> str:
+    def call_to_string(self, call: CodeCall, lang="ada") -> str:
         """CALL is the result of call() above.
         This function returns a string that contains the code for the
         subprogram.
         """
-        result, ada_retval, _ = call
+        result = call.code()
+        ada_retval = call.returnvar
         if ada_retval:
             if lang == "c->ada":
                 # Add code to convert ada_retval back to C (this

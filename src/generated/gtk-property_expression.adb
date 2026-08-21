@@ -111,11 +111,9 @@ package body Gtk.Property_Expression is
             Adjust (Expression.all);
          end if;
          Tmp_Return := Internal (This_Type, Get_Object (Expression), Tmp_Property_Name);
-         Free (Tmp_Property_Name);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Property_Name);
       end if;
+      Free (Tmp_Property_Name);
    end Initialize;
 
    --------------------------

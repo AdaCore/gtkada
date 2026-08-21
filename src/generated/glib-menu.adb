@@ -213,13 +213,10 @@ package body Glib.Menu is
             then Gtkada.Types.Null_Ptr
             else New_String (Detailed_Action));
          Tmp_Return := Internal (Tmp_Label, Tmp_Detailed_Action);
-         Free (Tmp_Detailed_Action);
-         Free (Tmp_Label);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Detailed_Action);
-         Free (Tmp_Label);
       end if;
+      Free (Tmp_Detailed_Action);
+      Free (Tmp_Label);
    end Initialize;
 
    ---------------------------
@@ -263,11 +260,9 @@ package body Glib.Menu is
             then Gtkada.Types.Null_Ptr
             else New_String (Label));
          Tmp_Return := Internal (Tmp_Label, Get_Object (Section));
-         Free (Tmp_Label);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Label);
       end if;
+      Free (Tmp_Label);
    end Initialize_Section;
 
    ------------------------
@@ -292,11 +287,9 @@ package body Glib.Menu is
             then Gtkada.Types.Null_Ptr
             else New_String (Label));
          Tmp_Return := Internal (Tmp_Label, Get_Object (Submenu));
-         Free (Tmp_Label);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Label);
       end if;
+      Free (Tmp_Label);
    end Initialize_Submenu;
 
    ------------

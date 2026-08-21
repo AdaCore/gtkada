@@ -1054,8 +1054,8 @@ package body Gtk.Text_Buffer is
       Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Buffer), Tmp_Iter, Tmp_Text, -1);
-      Free (Tmp_Text);
       Iter := Tmp_Iter;
+      Free (Tmp_Text);
    end Insert;
 
    ----------------------
@@ -1119,8 +1119,8 @@ package body Gtk.Text_Buffer is
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Buffer), Acc_Iter'Access, Tmp_Text, -1, Boolean'Pos (Default_Editable));
-      Free (Tmp_Text);
       Iter := Acc_Iter;
+      Free (Tmp_Text);
       return Tmp_Return /= 0;
    end Insert_Interactive;
 
@@ -1166,8 +1166,8 @@ package body Gtk.Text_Buffer is
       Tmp_Markup : Gtkada.Types.Chars_Ptr := New_String (Markup);
    begin
       Internal (Get_Object (Buffer), Tmp_Iter, Tmp_Markup, -1);
-      Free (Tmp_Markup);
       Iter := Tmp_Iter;
+      Free (Tmp_Markup);
    end Insert_Markup;
 
    ----------------------

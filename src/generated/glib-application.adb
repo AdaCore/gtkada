@@ -127,11 +127,9 @@ package body Glib.Application is
             then Gtkada.Types.Null_Ptr
             else New_String (Application_Id));
          Tmp_Return := Internal (Tmp_Application_Id, Flags);
-         Free (Tmp_Application_Id);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Application_Id);
       end if;
+      Free (Tmp_Application_Id);
    end Initialize;
 
    --------------
@@ -1029,8 +1027,8 @@ package body Glib.Application is
          State_Hint.all := From_Object (Tmp_State_Hint);
       end if;
       Acc_Enabled := Tmp_Acc_Enabled /= 0;
-      Free (Tmp_Action_Name);
       Enabled := Acc_Enabled;
+      Free (Tmp_Action_Name);
       return Tmp_Return /= 0;
    end Query_Action;
 

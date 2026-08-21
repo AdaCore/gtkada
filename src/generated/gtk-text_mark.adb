@@ -107,11 +107,9 @@ package body Gtk.Text_Mark is
             then Gtkada.Types.Null_Ptr
             else New_String (Name));
          Tmp_Return := Internal (Tmp_Name, Boolean'Pos (Left_Gravity));
-         Free (Tmp_Name);
          Set_Object (Mark, Tmp_Return);
-      else
-         Free (Tmp_Name);
       end if;
+      Free (Tmp_Name);
    end Initialize;
 
    -----------------

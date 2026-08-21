@@ -928,7 +928,7 @@ class SubprogramProfile(object):
         name: str,
         showdoc: bool = True,
         local_vars: list[Local_Var] = [],
-        code: str = "",
+        code: list[str] = [],
         convention: Optional[str] = None,
         lang: str = "ada",
     ) -> Subprogram:
@@ -1556,20 +1556,20 @@ class GIRClass(object):
 
             if ret_as_param is not None:
                 assert (
-                    execute[1] is not None
+                    execute.returnvar is not None
                 ), "Must have a return value in %s => %s" % (cname, execute)
-                call = "%s%s := %s;" % (execute[0], ret_as_param, execute[1])
+                call = "%s%s := %s;" % (execute.code(), ret_as_param, execute.returnvar)
 
             else:
-                if execute[1]:  # A function, with a standard "return"
-                    call = "%sreturn %s;" % (execute[0], execute[1])
+                if execute.returnvar:  # A function, with a standard "return"
+                    call = "%sreturn %s;" % (execute.code(), execute.returnvar)
                 else:
-                    call = execute[0]
+                    call = execute.code()
 
-            local_vars += execute[2]
+            local_vars += execute.tmpvars
 
         subp = profile.subprogram(
-            name=adaname, showdoc=showdoc, local_vars=local_vars, code=call
+            name=adaname, showdoc=showdoc, local_vars=local_vars, code=[call]
         )
 
         if is_import:
@@ -1660,7 +1660,9 @@ class GIRClass(object):
 
             # Code if user data supplied
             data_call = gtk_func.call(in_pkg=self.pkg, extra_postcall=postcall_code, values=values)
-            data_cbk_body, return_val, tmp_data = data_call
+            data_cbk_body = data_call.code()
+            return_val = data_call.returnvar
+            tmp_data = data_call.tmpvars
             # include user data setup and cleanup
             # strip() removes whitespace if user_data functions empty
             data_cbk = "\n".join([user_data_setup, data_cbk_body, user_data_cleanup]).strip()
@@ -1777,9 +1779,9 @@ end if;"""
                             "To_%s (%s)" % (funcname, cb_user_data),
                         )
                     ]
-                    + ada_func_call[2],
+                    + ada_func_call.tmpvars,
                     lang="c->ada",
-                    code=ada_func.call_to_string(ada_func_call, lang="c->ada"),
+                    code=[ada_func.call_to_string(ada_func_call, lang="c->ada")],
                 )
                 body_cb.convention = "C"
                 body_cb.doc = []
@@ -1839,7 +1841,7 @@ end if;"""
         c_call = call_to_c(gtk_func, values)
 
         subp = nouser_profile.subprogram(
-            name=adaname, local_vars=c_call[1], code=c_call[0]
+            name=adaname, local_vars=c_call[1], code=[c_call[0]]
         )
         section.add(subp)
 
@@ -1924,10 +1926,10 @@ end if;"""
                         "Users.Convert (%s)" % user_data2,
                     )
                 ]
-                + user_cb_call[2],
+                + user_cb_call.tmpvars,
                 convention="C",
                 lang="c->ada",
-                code=user_cb.call_to_string(user_cb_call, lang="c->ada"),
+                code=[user_cb.call_to_string(user_cb_call, lang="c->ada")],
             )
             sect2.add(internal_cb, in_spec=False)
 
@@ -1963,7 +1965,7 @@ end if;"""
             subp2 = full_profile.subprogram(
                 name=adaname,
                 local_vars=c_call[1] + [Local_Var("D", "System.Address")],
-                code=c_call[0],
+                code=[c_call[0]],
             )
             sect2.add(subp2)
 
@@ -2014,6 +2016,43 @@ end if;"""
         case we also emit the equivalent function form (named
         ``<Type>_<Suffix>``).
         """
+        
+        def constructor_code(
+            call: CodeCall, selfname: str = "Self", guard: str = "", function: bool = False
+        ) -> list[str]:
+            """Build the ``code`` list for a Gtk_New/Initialize-style
+            constructor from a CodeCall, unifying the
+            is_gobject/is_boxed/proxy shapes that would otherwise each
+            hand-build their own code string.
+            """
+            constructor = ""
+            if call.returnvar:
+                if self.is_gobject:
+                    constructor = "Set_Object (%s, %s);" % (selfname, call.returnvar)
+                elif self.is_boxed:
+                    constructor = "%s.Set_Object (%s);" % (selfname, call.returnvar)
+                else:
+                    constructor = "%s := %s;" % (selfname, call.returnvar)
+
+            body = list(call.precall)
+            if call.call is not None:
+                body.append(call.call + ";")
+            body += call.postcall
+            if constructor:
+                body.append(constructor)
+
+            freecall = list(call.freecall)
+
+            if guard:
+                body = ["if %s then" % guard] + body + ["end if;"]
+
+            body += freecall
+
+            if function:
+                body.append("return %s;" % selfname)
+
+            return body
+
         assert profile is None or isinstance(profile, SubprogramProfile)
 
         section = self.pkg.section("Constructors")
@@ -2047,8 +2086,7 @@ end if;"""
         ).import_c(cname)
 
         call = internal.call(in_pkg=self.pkg)
-        post = internal.freecall(in_pkg=self.pkg)
-        assert call[1] is not None, "A function"
+        assert call.returnvar is not None, "A function"
 
         gtk_new_prefix = "Gtk_New"
 
@@ -2085,30 +2123,28 @@ end if;"""
                 )
             ] + filtered_params
 
-            if len(post) != 0:
-                code="if not %s.Is_Created then %sSet_Object (%s, %s); else %s end if" % (selfname, call[0], selfname, call[1], post)
-            else:
-                code="if not %s.Is_Created then %sSet_Object (%s, %s); end if" % (selfname, call[0], selfname, call[1])
-
-            initialize = Subprogram(
-                name=initialize_name,
-                plist=initialize_params,
-                local_vars=local_vars + call[2],
-                doc=profile.doc
-                + [
+            init_doc = profile.doc + [
                     (
                         "\n%s does nothing if the object was already"
                         + " created with another call to Initialize* or G_New."
                     )
                     % (base_name(initialize_name),)
-                ],
-                code=code,
+                ]
+            initialize = Subprogram(
+                name=initialize_name,
+                plist=initialize_params,
+                local_vars=local_vars + call.tmpvars,
+                doc=init_doc,
+                code=constructor_code(
+                    call, selfname=selfname, guard="not %s.Is_Created" % selfname
+                ),
             ).add_nested(internal)
 
             call = initialize.call(in_pkg=self.pkg)
-            assert call[1] is None, "This is a procedure"
+            assert call.returnvar is None, "This is a procedure"
 
             naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
+            allocation = selfname + " := new %(typename)s_Record;" % self._subst
             gtk_new = Subprogram(
                 name=adaname,
                 plist=[
@@ -2121,8 +2157,8 @@ end if;"""
                     )
                 ]
                 + filtered_params,
-                local_vars=call[2],
-                code=selfname + " := new %(typename)s_Record;" % self._subst + call[0],
+                local_vars=call.tmpvars,
+                code=[allocation, call.code()],
                 doc=profile.doc,
             )
 
@@ -2136,7 +2172,7 @@ end if;"""
                     "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
                 ),
                 plist=filtered_params,
-                local_vars=call[2]
+                local_vars=call.tmpvars
                 + [
                     Local_Var(
                         selfname,
@@ -2144,7 +2180,7 @@ end if;"""
                         "new %(typename)s_Record" % self._subst,
                     )
                 ],
-                code=call[0] + "return %s;" % selfname,
+                code=constructor_code(call, selfname=selfname, function=True),
                 doc=profile.doc,
             )
             section.add(gtk_new)
@@ -2162,8 +2198,8 @@ end if;"""
                     )
                 ]
                 + profile.params,
-                local_vars=local_vars + call[2],
-                code="%s%s.Set_Object (%s)" % (call[0], selfname, call[1]),
+                local_vars=local_vars + call.tmpvars,
+                code=constructor_code(call, selfname=selfname),
                 doc=profile.doc,
             )
 
@@ -2178,10 +2214,9 @@ end if;"""
                 ),
                 plist=profile.params,
                 local_vars=local_vars
-                + call[2]
+                + call.tmpvars
                 + [Local_Var(selfname, "%(typename)s" % self._subst)],
-                code="%s%s.Set_Object (%s); return %s"
-                % (call[0], selfname, call[1], selfname),
+                code=constructor_code(call, selfname=selfname, function=True),
                 doc=profile.doc,
             )
             gtk_new.add_nested(internal)
@@ -2201,8 +2236,8 @@ end if;"""
                     )
                 ]
                 + profile.params,
-                local_vars=local_vars + call[2],
-                code="%s%s := %s" % (call[0], selfname, call[1]),
+                local_vars=local_vars + call.tmpvars,
+                code=constructor_code(call, selfname=selfname),
                 doc=profile.doc,
             )
             gtk_new.add_nested(internal)
@@ -2216,9 +2251,9 @@ end if;"""
                 ),
                 plist=profile.params,
                 local_vars=local_vars
-                + call[2]
+                + call.tmpvars
                 + [Local_Var(selfname, "%(typename)s" % self._subst)],
-                code="%s%s := %s; return %s;" % (call[0], selfname, call[1], selfname),
+                code=constructor_code(call, selfname=selfname, function=True),
                 doc=profile.doc,
             )
             gtk_new.add_nested(internal)
@@ -2709,7 +2744,7 @@ See Glib.Properties for more information on properties)"""
         callback = Subprogram(
             name="",
             plist=[Parameter(name="Self", type=callback_selftype)] + profile.params,
-            code="null",
+            code=["null"],
             allow_none=False,
             returns=profile.returns,
         )
@@ -2767,7 +2802,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                         default="null",
                     ),
                 ],
-                code=connect_slot_body,
+                code=[connect_slot_body],
             )
             section.add(connect_slot, in_spec=False)
 
@@ -2795,7 +2830,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                 ]
                 + marsh_local,
                 convention="C",
-                code=marsh_body,
+                code=[marsh_body],
             )
             section.add(marsh, in_spec=False)
 
@@ -2820,7 +2855,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
         callback = Subprogram(
             name="",
             plist=[Parameter(name="Self", type=selftype)] + profile.params,
-            code="null",
+            code=["null"],
             allow_none=False,
             returns=profile.returns,
         )
@@ -2872,7 +2907,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                     Parameter("Handler", name),
                     Parameter("After", "Boolean"),
                 ],
-                code=connect_body,
+                code=[connect_body],
             )
             section.add(connect, in_spec=False)
 
@@ -2901,7 +2936,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                 ]
                 + marsh_local,
                 convention="C",
-                code=marsh_body,
+                code=[marsh_body],
             )
             section.add(marsh, in_spec=False)
 
@@ -2980,7 +3015,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                             Parameter(name="Call", type=Proxy(handler_type_name)),
                             Parameter(name="After", type="Boolean", default="False"),
                         ],
-                        code='Connect (Self, "%s" & ASCII.NUL, Call, After);' % name,
+                        code=['Connect (Self, "%s" & ASCII.NUL, Call, After);' % name],
                     )
                     section.add(connect, add_newline=False)
 
@@ -3000,11 +3035,13 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
                             ),
                             Parameter(name="After", type="Boolean", default="False"),
                         ],
-                        code=(
-                            'Connect_Slot (Self, "%s" & ASCII.NUL,'
-                            + " Call, After, Slot);"
-                        )
-                        % name,
+                        code=[
+                            (
+                                'Connect_Slot (Self, "%s" & ASCII.NUL,'
+                                + " Call, After, Slot);"
+                            )
+                            % name
+                        ],
                     )
                     section.add(obj_connect)
 
@@ -3935,8 +3972,8 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
             name="Is_Created",
             plist=[Parameter(name="Self", type=t, mode="not null access", classwide=True)],
             returns=AdaType("Boolean"),
-            code="""
-      return Self.Ptr /= System.Null_Address""",
+            code=["""
+      return Self.Ptr /= System.Null_Address"""],
             showdoc=True,
             doc="Retrn True if Self is initialized with Gtk object"
         )
@@ -3946,12 +3983,12 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
             name="Get_Object",
             plist=[Parameter(name="Self", type=t, mode="access", classwide=True)],
             returns=AdaType("System.Address"),
-            code="""
+            code=["""
       if Self = null then
          return System.Null_Address;
       else
          return Self.Ptr;
-      end if""",
+      end if"""],
             showdoc=True,
             doc="For internal usage. Do not call manualy."
         )
@@ -3961,8 +3998,8 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
             name="Set_Object",
             plist=[Parameter(name="Self", type=t, mode="not null access", classwide=True),
                    Parameter(name="Object", type="System.Address", mode="in")],
-            code="""
-      Self.Ptr := Object""",
+            code=["""
+      Self.Ptr := Object"""],
             showdoc=True,
             doc="For internal usage. Do not call manualy."
         )
@@ -3997,7 +4034,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                     "%(typename)s" % self._subst,
                 )
             ],
-            code="""
+            code=["""
         if Object /= System.Null_Address then
             T := Glib.Instance_Get_Type (Object);
             Result := new %(typename)s_Record'Class'
@@ -4012,7 +4049,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
            when Ada.Tags.Tag_Error =>
               Result := new Dummy_%(typename)s_Record'(Create (O'Access));
               Set_Object (Result, Object);
-              return Result""" % self._subst,
+              return Result""" % self._subst],
             showdoc=True,
             doc="For internal usage. Do not call manualy."
         )
@@ -4028,13 +4065,13 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                     "%(typename)s" % self._subst,
                 )
             ],
-            code="""
+            code=["""
         Result := From_Object_Full_Ownership (Object);
         if Result /= null then
            --  To call Ref
            Adjust (Result.all);
         end if;
-        return Result""" % self._subst,
+        return Result""" % self._subst],
             showdoc=True,
             doc="For internal usage. Do not call manualy."
         )
@@ -4062,8 +4099,8 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                     "Dummy_%s" % t,
                 )
             ],
-            code="""
-        return Result""",
+            code=["""
+        return Result"""],
             showdoc=False,
             no_spec=True,
         )
@@ -4114,10 +4151,10 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         subp = Subprogram(
             name="Adjust",
             plist=[Parameter(name="Object", type=t, mode="in out")],
-            code="""
+            code=["""
       if Object.Ptr /= System.Null_Address then
          Object.Ptr := Ref (Object.Ptr);
-      end if""",
+      end if"""],
             showdoc=False,
             no_spec=True,
             overriding=True,
@@ -4136,11 +4173,11 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         subp = Subprogram(
             name="Finalize",
             plist=[Parameter(name="Object", type=t, mode="in out")],
-            code="""
+            code=["""
         if Object.Ptr /= System.Null_Address then
             Unref (Object.Ptr);
             Object.Ptr := System.Null_Address;
-        end if""",
+        end if"""],
             showdoc=False,
             no_spec=True,
             overriding=True,
@@ -4184,8 +4221,8 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                     "%(typename)s_Record" % self._subst,
                 )
             ],
-            code="""
-        return Result""",
+            code=["""
+        return Result"""],
             showdoc=False,
             no_spec=False,
             overriding=True,

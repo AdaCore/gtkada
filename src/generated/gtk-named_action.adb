@@ -74,11 +74,9 @@ package body Gtk.Named_Action is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_Name);
-         Free (Tmp_Name);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Name);
       end if;
+      Free (Tmp_Name);
    end Initialize;
 
    ---------------------

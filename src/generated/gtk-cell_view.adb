@@ -271,11 +271,9 @@ package body Gtk.Cell_View is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_Markup);
-         Free (Tmp_Markup);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Markup);
       end if;
+      Free (Tmp_Markup);
    end Initialize_With_Markup;
 
    --------------------------
@@ -294,11 +292,9 @@ package body Gtk.Cell_View is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_Text);
-         Free (Tmp_Text);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Text);
       end if;
+      Free (Tmp_Text);
    end Initialize_With_Text;
 
    -----------------------------

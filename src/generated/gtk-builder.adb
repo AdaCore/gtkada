@@ -165,11 +165,9 @@ package body Gtk.Builder is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_Filename);
-         Free (Tmp_Filename);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Filename);
       end if;
+      Free (Tmp_Filename);
    end Initialize_From_File;
 
    ------------------------------
@@ -188,11 +186,9 @@ package body Gtk.Builder is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_Resource_Path);
-         Free (Tmp_Resource_Path);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Resource_Path);
       end if;
+      Free (Tmp_Resource_Path);
    end Initialize_From_Resource;
 
    ----------------------------
@@ -213,11 +209,9 @@ package body Gtk.Builder is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_String, Length);
-         Free (Tmp_String);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_String);
       end if;
+      Free (Tmp_String);
    end Initialize_From_String;
 
    -------------------
@@ -600,8 +594,8 @@ package body Gtk.Builder is
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Pspec, Tmp_String, Acc_Value'Access);
-      Free (Tmp_String);
       Value := Acc_Value;
+      Free (Tmp_String);
       return Tmp_Return /= 0;
    end Value_From_String;
 
@@ -626,8 +620,8 @@ package body Gtk.Builder is
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), The_Type, Tmp_String, Acc_Value'Access);
-      Free (Tmp_String);
       Value := Acc_Value;
+      Free (Tmp_String);
       return Tmp_Return /= 0;
    end Value_From_String_Type;
 

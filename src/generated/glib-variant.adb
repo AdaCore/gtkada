@@ -58,8 +58,8 @@ package body Glib.Variant is
       Tmp_Return      : Gvariant_Type;
    begin
       Tmp_Return := Internal (Tmp_Type_String);
-      Free (Tmp_Type_String);
       Self := Tmp_Return;
+      Free (Tmp_Type_String);
    end G_New;
 
    -------------------
@@ -112,8 +112,8 @@ package body Glib.Variant is
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Strv, Length);
-      Gtkada.Types.Free (Tmp_Strv);
       Self.Set_Object (Tmp_Return);
+      Gtkada.Types.Free (Tmp_Strv);
    end G_New_Bytestring_Array;
 
    ----------------------
@@ -220,8 +220,8 @@ package body Glib.Variant is
       Tmp_Return      : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Object_Path);
-      Free (Tmp_Object_Path);
       Self.Set_Object (Tmp_Return);
+      Free (Tmp_Object_Path);
    end G_New_Object_Path;
 
    ----------------
@@ -241,8 +241,8 @@ package body Glib.Variant is
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Strv, Length);
-      Gtkada.Types.Free (Tmp_Strv);
       Self.Set_Object (Tmp_Return);
+      Gtkada.Types.Free (Tmp_Strv);
    end G_New_Objv;
 
    ---------------------
@@ -257,8 +257,8 @@ package body Glib.Variant is
       Tmp_Return    : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Signature);
-      Free (Tmp_Signature);
       Self.Set_Object (Tmp_Return);
+      Free (Tmp_Signature);
    end G_New_Signature;
 
    ------------------
@@ -273,8 +273,8 @@ package body Glib.Variant is
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_String);
-      Free (Tmp_String);
       Self.Set_Object (Tmp_Return);
+      Free (Tmp_String);
    end G_New_String;
 
    ----------------
@@ -294,8 +294,8 @@ package body Glib.Variant is
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Strv, Length);
-      Gtkada.Types.Free (Tmp_Strv);
       Self.Set_Object (Tmp_Return);
+      Gtkada.Types.Free (Tmp_Strv);
    end G_New_Strv;
 
    -----------------------
@@ -310,8 +310,8 @@ package body Glib.Variant is
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_String);
-      Free (Tmp_String);
       Self.Set_Object (Tmp_Return);
+      Free (Tmp_String);
    end G_New_Take_String;
 
    ------------------
@@ -414,8 +414,8 @@ package body Glib.Variant is
       Self       : Gvariant;
    begin
       Tmp_Return := Internal (Tmp_Strv, Length);
-      Gtkada.Types.Free (Tmp_Strv);
       Self.Set_Object (Tmp_Return);
+      Gtkada.Types.Free (Tmp_Strv);
       return Self;
    end Gvariant_New_Bytestring_Array;
 
@@ -517,8 +517,8 @@ package body Glib.Variant is
       Self            : Gvariant;
    begin
       Tmp_Return := Internal (Tmp_Object_Path);
-      Free (Tmp_Object_Path);
       Self.Set_Object (Tmp_Return);
+      Free (Tmp_Object_Path);
       return Self;
    end Gvariant_New_Object_Path;
 
@@ -539,8 +539,8 @@ package body Glib.Variant is
       Self       : Gvariant;
    begin
       Tmp_Return := Internal (Tmp_Strv, Length);
-      Gtkada.Types.Free (Tmp_Strv);
       Self.Set_Object (Tmp_Return);
+      Gtkada.Types.Free (Tmp_Strv);
       return Self;
    end Gvariant_New_Objv;
 
@@ -557,8 +557,8 @@ package body Glib.Variant is
       Self          : Gvariant;
    begin
       Tmp_Return := Internal (Tmp_Signature);
-      Free (Tmp_Signature);
       Self.Set_Object (Tmp_Return);
+      Free (Tmp_Signature);
       return Self;
    end Gvariant_New_Signature;
 
@@ -575,8 +575,8 @@ package body Glib.Variant is
       Self       : Gvariant;
    begin
       Tmp_Return := Internal (Tmp_String);
-      Free (Tmp_String);
       Self.Set_Object (Tmp_Return);
+      Free (Tmp_String);
       return Self;
    end Gvariant_New_String;
 
@@ -597,8 +597,8 @@ package body Glib.Variant is
       Self       : Gvariant;
    begin
       Tmp_Return := Internal (Tmp_Strv, Length);
-      Gtkada.Types.Free (Tmp_Strv);
       Self.Set_Object (Tmp_Return);
+      Gtkada.Types.Free (Tmp_Strv);
       return Self;
    end Gvariant_New_Strv;
 
@@ -615,8 +615,8 @@ package body Glib.Variant is
       Self       : Gvariant;
    begin
       Tmp_Return := Internal (Tmp_String);
-      Free (Tmp_String);
       Self.Set_Object (Tmp_Return);
+      Free (Tmp_String);
       return Self;
    end Gvariant_New_Take_String;
 
@@ -687,8 +687,8 @@ package body Glib.Variant is
       Self            : Gvariant_Type;
    begin
       Tmp_Return := Internal (Tmp_Type_String);
-      Free (Tmp_Type_String);
       Self := Tmp_Return;
+      Free (Tmp_Type_String);
       return Self;
    end Gvariant_Type_New;
 

@@ -63,8 +63,8 @@ package body Gdk.Content_Formats is
       Self           : Gdk_Content_Formats;
    begin
       Tmp_Return := Internal (Tmp_Mime_Types, N_Mime_Types);
-      Gtkada.Types.Free (Tmp_Mime_Types);
       Self.Set_Object (Tmp_Return);
+      Gtkada.Types.Free (Tmp_Mime_Types);
       return Self;
    end Gdk_Content_Formats_New;
 
@@ -100,8 +100,8 @@ package body Gdk.Content_Formats is
       Tmp_Return     : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Mime_Types, N_Mime_Types);
-      Gtkada.Types.Free (Tmp_Mime_Types);
       Self.Set_Object (Tmp_Return);
+      Gtkada.Types.Free (Tmp_Mime_Types);
    end Gdk_New;
 
    -----------------------
