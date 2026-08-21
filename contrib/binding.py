@@ -609,9 +609,9 @@ class SubprogramProfile(object):
       ``-1`` when there is no destroy callback.
     """
 
-    def __init__(self):
-        self.node = None  # the XML node for this profile
-        self.gtkmethod = None
+    def __init__(self, node, gtkmethod=None):
+        self.node = node # the XML node for this profile
+        self.gtkmethod = gtkmethod
         self.params = (list[Parameter] | None)  # list of parameters (None if we have varargs)
         self.returns = None  # return value (None for a procedure)
         self.returns_doc = ""  # documentation for returned value
@@ -639,9 +639,7 @@ class SubprogramProfile(object):
         used for constructors, so that we do not end up adding extra 'with'
         statements in the generated package.
         """
-        profile = SubprogramProfile()
-        profile.node = node
-        profile.gtkmethod = gtkmethod
+        profile = SubprogramProfile(node, gtkmethod)
 
         # make sure to init the 'returns' field before the parameters, to be
         # able to correctly set the parameters direction ('in out' or 'out'
@@ -659,8 +657,7 @@ class SubprogramProfile(object):
     @staticmethod
     def setter(node, pkg=None):
         """Create a new SubprogramProfile for a getter"""
-        profile = SubprogramProfile()
-        profile.node = node
+        profile = SubprogramProfile(node)
         profile.params = [Parameter("Value", _get_type(node, pkg))]
         return profile
 
@@ -795,6 +792,81 @@ class SubprogramProfile(object):
             self.user_data_param += 1
         if self.destroy_param >= 0 and self.destroy_param >= pos:
             self.destroy_param += 1
+
+    def add_self_param(self, pkg, own_cname, inherited):
+        """Add a Self parameter to the list of parameters.
+        The exact type of the parameter depends on several criteria.
+
+        :param own_cname: the C type name of the class this profile is
+          being generated into (GIRClass._subst["cname"]). Needed as an
+          explicit argument separately from `self.gtkmethod`, since for a
+          method inherited from an interface `self.gtkmethod` describes
+          the interface's own declaration, not the concrete class we are
+          attaching Self to.
+        :param bool inherited: should be true if this is for a subprogram
+          inherited from an interface (in which case we force the type of
+          Self to be that of the child, not the interface type as described
+          in the gir file)
+        """
+
+        gtkmethod = self.gtkmethod
+
+        # Try to extract the type of the parameter from the instance-parameter
+        # node.
+        t = None
+        ownership="none"
+        if not inherited:
+            try:
+                ip = next(self.node.iter(ninstanceparam))
+                name = ip.get("name", None)
+                ownership = ip.get("transfer-ownership", "none")
+                gtktype = gtkmethod.get_param(name).get_type(None)
+
+                if gtktype is not None:
+                    # take in account type set in *.toml file
+                    if isinstance (gtktype, CType):
+                       gtktype = gtktype.as_ada_param(pkg)
+                    t = naming.type(
+                        name=name,
+                        cname=gtktype,
+                        useclass=gtkmethod.is_class_wide(),
+                    )
+                else:
+                    ipt = ip.find(ntype)
+                    if ipt is not None:
+                        ctype_name = ipt.get(ctype_qname)
+                        if ctype_name:
+                            ctype_name = ctype_name.replace("const ", "")
+                        t = naming.type(
+                            name=ipt.get("name"),
+                            cname=ctype_name,
+                            useclass=gtkmethod.is_class_wide(),
+                        )
+            except StopIteration:
+                t = None
+
+        # There was no instance-parameter node, guess the type from the
+        # package name
+
+        if t is None:
+            t = naming.type(
+                own_cname,
+                cname=own_cname,
+                useclass=gtkmethod.is_class_wide(),
+            )
+
+        gtkparam = gtkmethod.get_param("self")
+        pname = gtkparam.ada_name() or "Self"
+
+        direction = gtkparam.get_direction() or "in"
+        if direction in ("out", "access"):
+            mode = direction
+        elif direction == "inout":
+            mode = "in out"
+        else:
+            mode = "in"
+
+        self.add_param(0, Parameter(name=pname, type=t, mode=mode, ownership=ownership))
 
     def replace_param(self, name_or_index, type):
         """Overrides the type of a parameter"""
@@ -1345,73 +1417,6 @@ class GIRClass(object):
         """
         return not self.is_gobject and not self.is_boxed and profile.direct_c_map()
 
-    def _add_self_param(self, node, gtkmethod, profile, inherited):
-        """Add a Self parameter to the list of parameters in profile.
-        The exact type of the parameter depends on several criteria.
-
-        :param bool inherited: should be true if this is for a subprogram
-          inherited from an interface (in which case we force the type of
-          Self to be that of the child, not the interface type as described
-          in the gir file)
-        """
-
-        # Try to extract the type of the parameter from the instance-parameter
-        # node.
-        t = None
-        ownership="none"
-        if not inherited:
-            try:
-                ip = next(node.iter(ninstanceparam))
-                name = ip.get("name", None)
-                ownership = ip.get("transfer-ownership", "none")
-                gtktype = gtkmethod.get_param(name).get_type(None)
-
-                if gtktype is not None:
-                    # take in account type set in *.toml file
-                    if isinstance (gtktype, CType):
-                       gtktype = gtktype.as_ada_param(self.pkg)
-                    t = naming.type(
-                        name=name,
-                        cname=gtktype,
-                        useclass=gtkmethod.is_class_wide(),
-                    )
-                else:
-                    ipt = ip.find(ntype)
-                    if ipt is not None:
-                        ctype_name = ipt.get(ctype_qname)
-                        if ctype_name:
-                            ctype_name = ctype_name.replace("const ", "")
-                        t = naming.type(
-                            name=ipt.get("name"),
-                            cname=ctype_name,
-                            useclass=gtkmethod.is_class_wide(),
-                        )
-            except StopIteration:
-                t = None
-
-        # There was no instance-parameter node, guess the type from the
-        # package name
-
-        if t is None:
-            t = naming.type(
-                self._subst["cname"],
-                cname=self._subst["cname"],
-                useclass=gtkmethod.is_class_wide(),
-            )
-
-        gtkparam = gtkmethod.get_param("self")
-        pname = gtkparam.ada_name() or "Self"
-
-        direction = gtkparam.get_direction() or "in"
-        if direction in ("out", "access"):
-            mode = direction
-        elif direction == "inout":
-            mode = "in out"
-        else:
-            mode = "in"
-
-        profile.add_param(0, Parameter(name=pname, type=t, mode=mode, ownership=ownership))
-
     def _handle_function_internal(
         self,
         section,
@@ -1453,8 +1458,8 @@ class GIRClass(object):
             naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
 
         if ismethod:
-            self._add_self_param(
-                node, gtkmethod, profile, inherited=isinherited
+            profile.add_self_param(
+                self.pkg, self._subst["cname"], inherited=isinherited
             )
 
         # Binding provides own body that does not wrap
@@ -2282,10 +2287,9 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
                 # mechanism that adds only the withs the rendered
                 # profile actually needs for the given lang.
                 profile = SubprogramProfile.parse(node=c, gtkmethod=gtkmethod, pkg=None)
-                self._add_self_param(
-                    node=c,
-                    gtkmethod=gtkmethod,
-                    profile=profile,
+                profile.add_self_param(
+                    pkg=self.pkg,
+                    own_cname=self._subst["cname"],
                     inherited=False,
                 )
                 subp = profile.subprogram(
@@ -4087,8 +4091,8 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
             if cname == name:
                 gtkmethod = self.gtkpkg.get_method(cname=cname)
                 profile = SubprogramProfile.parse(node=c, gtkmethod=gtkmethod, pkg=self.pkg)
-                self._add_self_param(
-                    c, gtkmethod, profile, inherited=False
+                profile.add_self_param(
+                    self.pkg, self._subst["cname"], inherited=False
                 )
                 c_params = profile.c_params(local_vars, internal_call)
                 return Subprogram(
