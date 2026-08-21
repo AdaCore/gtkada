@@ -2769,9 +2769,6 @@ class Package(object):
         """
         if full_typename not in self.use_types:
             self.use_types.add(full_typename)
-            package,_ = full_typename.rsplit('.', 1)
-            if package not in self.body_withs:
-                self.body_withs[package] = False,False,False
 
     def add_private(self, code: str, at_end: bool = False):
         if at_end:
@@ -2922,7 +2919,6 @@ class Package(object):
             for tpkg in type_packages:
                 if tpkg not in self.body_withs:
                     self.body_withs[tpkg] = False,False,False
-
             result.append(self._output_withs(self.body_withs) + self._output_use_types())
 
         result.append(indent + "package body %s is" % self.name)
