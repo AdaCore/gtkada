@@ -2663,6 +2663,7 @@ class Package(object):
         self.sections = []  # [Section]
         self.spec_withs = dict()  # "pkg" -> use, might_be_unused, limited:Boolean
         self.body_withs = dict()  # "pkg" -> use, might_be_unused, limited:Boolean
+        self.use_types  = set()
         self.private = []  # Private section
         self.language_version = ""  # a pragma to be put just after the headers
         self.formal_params = ""  # generic formal parameters
@@ -2761,6 +2762,17 @@ class Package(object):
                 if spec_info is None or spec_info[2]:
                     self.body_withs[p] = p_info
 
+    def add_use_type(self, full_typename:str):
+        """
+        Add a top-level "use type [type]" clause to package body.
+        [full_typename] must be fully namespaced.
+        """
+        if full_typename not in self.use_types:
+            self.use_types.add(full_typename)
+            package,_ = full_typename.rsplit('.', 1)
+            if package not in self.body_withs:
+                self.body_withs[package] = False,False
+
     def add_private(self, code: str, at_end: bool = False):
         if at_end:
             self.private.append(code)
@@ -2797,6 +2809,15 @@ class Package(object):
 
             return "\n".join(result) + "\n"
         return ""
+
+    def _output_use_types(self) -> str:
+        """Return string of use type clauses to insert into package spec or body"""
+        if not self.use_types:
+            return ""
+        result = []
+        for typ in sorted(self.use_types):
+            result.append (f"use type {typ};")
+        return "\n" + "\n".join(result) + "\n"
 
     def section_order(self, name: str) -> int:
         """Return a numerical order for sections"""
@@ -2895,7 +2916,14 @@ class Package(object):
 
             result.append("pragma Style_Checks (Off);")
             result.append('pragma Warnings (Off, "*is already use-visible*");')
-            result.append(self._output_withs(self.body_withs))
+
+            # Add these as one list item to avoid emitting empty newlines
+            type_packages = [tname.rsplit('.', 1)[0] for tname in self.use_types]
+            for tpkg in type_packages:
+                if tpkg not in self.body_withs:
+                    self.body_withs[tpkg] = False,False,False
+
+            result.append(self._output_withs(self.body_withs) + self._output_use_types())
 
         result.append(indent + "package body %s is" % self.name)
         result.append(body)

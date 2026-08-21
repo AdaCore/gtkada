@@ -1522,13 +1522,6 @@ class GIRClass(object):
         # around generated body
         to_override = body and "%(auto)s" not in body
 
-        if not to_override and adaname.startswith("Gtk_New"):
-            # Overrides the GIR file even if it reported a function or method
-            self._handle_constructor(
-                node, gtkmethod=gtkmethod, cname=cname, profile=profile
-            )
-            return
-
         local_vars = []
         call = ""
 
