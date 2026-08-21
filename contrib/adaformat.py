@@ -639,9 +639,11 @@ class UTF8(CType):
     def convert_to_c(self, pkg=None):
         if self.allow_none:
             return (
-                'if %(var)s = "" then %(tmp)s :='
-                + " Gtkada.Types.Null_Ptr; else"
-                + " %(tmp)s := New_String (%(var)s); end if;"
+                '%(tmp)s := '
+                + '(if %(var)s = "" '
+                + 'then Gtkada.Types.Null_Ptr '
+                + 'else New_String (%(var)s)'
+                + ');'
             )
         else:
             return "New_String (%(var)s)"
@@ -1408,6 +1410,8 @@ def indent_code(code, indent=3, addnewlines=True):
         body = re.sub(r"exception when", "exception\nwhen", body)
         body = re.sub(r"\bdo\b", "do\n", body)
         body = re.sub(r"\n\s*\n+", "\n\n", body)
+        # Handle Ada2012 if-expressions
+        body = re.sub(r"\(if\s*(.*)\s*then\s*(.*)\s*else\s*(.*)\)", "\n(if \\1\nthen \\2\nelse \\3)", body)
 
     parent_count = 0
     result = ""
@@ -1424,7 +1428,7 @@ def indent_code(code, indent=3, addnewlines=True):
         if (
             line.startswith("end")
             or line.startswith("elsif")
-            or line.startswith("else")
+            or line == "else"
             or line.startswith("begin")
             or line.startswith("exception")
             or line.startswith("}")

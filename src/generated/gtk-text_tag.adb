@@ -81,11 +81,10 @@ package body Gtk.Text_Tag is
       Tmp_Return : System.Address;
    begin
       if not Tag.Is_Created then
-         if Name = "" then
-            Tmp_Name := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Name := New_String (Name);
-         end if;
+         Tmp_Name :=
+           (if Name = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Name));
          Tmp_Return := Internal (Tmp_Name);
          Free (Tmp_Name);
          Set_Object (Tag, Tmp_Return);

@@ -267,11 +267,10 @@ package body Gtk.Widget is
       Stub_Pango_Layout : Pango.Layout.Pango_Layout_Record;
       Tmp_Return        : System.Address;
    begin
-      if Text = "" then
-         Tmp_Text := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Text := New_String (Text);
-      end if;
+      Tmp_Text :=
+        (if Text = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Text));
       Tmp_Return := Internal (Get_Object (Widget), Tmp_Text);
       Free (Tmp_Text);
       return Pango.Layout.Pango_Layout (Get_User_Data (Tmp_Return, Stub_Pango_Layout));
@@ -1452,11 +1451,10 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_set_cursor_from_name");
       Tmp_Name : Gtkada.Types.Chars_Ptr;
    begin
-      if Name = "" then
-         Tmp_Name := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Name := New_String (Name);
-      end if;
+      Tmp_Name :=
+        (if Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Name));
       Internal (Get_Object (Widget), Tmp_Name);
       Free (Tmp_Name);
    end Set_Cursor_From_Name;
@@ -1795,11 +1793,10 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_set_tooltip_markup");
       Tmp_Markup : Gtkada.Types.Chars_Ptr;
    begin
-      if Markup = "" then
-         Tmp_Markup := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Markup := New_String (Markup);
-      end if;
+      Tmp_Markup :=
+        (if Markup = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Markup));
       Internal (Get_Object (Widget), Tmp_Markup);
       Free (Tmp_Markup);
    end Set_Tooltip_Markup;
@@ -1818,11 +1815,10 @@ package body Gtk.Widget is
       pragma Import (C, Internal, "gtk_widget_set_tooltip_text");
       Tmp_Text : Gtkada.Types.Chars_Ptr;
    begin
-      if Text = "" then
-         Tmp_Text := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Text := New_String (Text);
-      end if;
+      Tmp_Text :=
+        (if Text = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Text));
       Internal (Get_Object (Widget), Tmp_Text);
       Free (Tmp_Text);
    end Set_Tooltip_Text;

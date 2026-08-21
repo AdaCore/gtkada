@@ -791,11 +791,10 @@ package body Glib.Test is
       pragma Import (C, Internal, "g_test_skip");
       Tmp_Msg : Gtkada.Types.Chars_Ptr;
    begin
-      if Msg = "" then
-         Tmp_Msg := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Msg := New_String (Msg);
-      end if;
+      Tmp_Msg :=
+        (if Msg = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Msg));
       Internal (Tmp_Msg);
       Free (Tmp_Msg);
    end Skip;

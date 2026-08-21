@@ -81,11 +81,10 @@ package body Gtk.Column_View_Column is
       Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
-         if Title = "" then
-            Tmp_Title := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Title := New_String (Title);
-         end if;
+         Tmp_Title :=
+           (if Title = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Title));
          Tmp_Return := Internal (Tmp_Title, Get_Object_Or_Null (GObject (Factory)));
          Free (Tmp_Title);
          Set_Object (Self, Tmp_Return);
@@ -307,11 +306,10 @@ package body Gtk.Column_View_Column is
       pragma Import (C, Internal, "gtk_column_view_column_set_id");
       Tmp_Id : Gtkada.Types.Chars_Ptr;
    begin
-      if Id = "" then
-         Tmp_Id := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Id := New_String (Id);
-      end if;
+      Tmp_Id :=
+        (if Id = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Id));
       Internal (Get_Object (Self), Tmp_Id);
       Free (Tmp_Id);
    end Set_Id;
@@ -358,11 +356,10 @@ package body Gtk.Column_View_Column is
       pragma Import (C, Internal, "gtk_column_view_column_set_title");
       Tmp_Title : Gtkada.Types.Chars_Ptr;
    begin
-      if Title = "" then
-         Tmp_Title := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Title := New_String (Title);
-      end if;
+      Tmp_Title :=
+        (if Title = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Title));
       Internal (Get_Object (Self), Tmp_Title);
       Free (Tmp_Title);
    end Set_Title;

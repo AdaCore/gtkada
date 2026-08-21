@@ -774,11 +774,10 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_set_icon_from_icon_name");
       Tmp_Icon_Name : Gtkada.Types.Chars_Ptr;
    begin
-      if Icon_Name = "" then
-         Tmp_Icon_Name := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Icon_Name := New_String (Icon_Name);
-      end if;
+      Tmp_Icon_Name :=
+        (if Icon_Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Icon_Name));
       Internal (Get_Object (Self), Icon_Pos, Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
    end Set_Icon_From_Icon_Name;
@@ -835,11 +834,10 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_set_icon_tooltip_markup");
       Tmp_Tooltip : Gtkada.Types.Chars_Ptr;
    begin
-      if Tooltip = "" then
-         Tmp_Tooltip := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Tooltip := New_String (Tooltip);
-      end if;
+      Tmp_Tooltip :=
+        (if Tooltip = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Tooltip));
       Internal (Get_Object (Self), Icon_Pos, Tmp_Tooltip);
       Free (Tmp_Tooltip);
    end Set_Icon_Tooltip_Markup;
@@ -860,11 +858,10 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_set_icon_tooltip_text");
       Tmp_Tooltip : Gtkada.Types.Chars_Ptr;
    begin
-      if Tooltip = "" then
-         Tmp_Tooltip := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Tooltip := New_String (Tooltip);
-      end if;
+      Tmp_Tooltip :=
+        (if Tooltip = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Tooltip));
       Internal (Get_Object (Self), Icon_Pos, Tmp_Tooltip);
       Free (Tmp_Tooltip);
    end Set_Icon_Tooltip_Text;
@@ -977,11 +974,10 @@ package body Gtk.GEntry is
       pragma Import (C, Internal, "gtk_entry_set_placeholder_text");
       Tmp_Text : Gtkada.Types.Chars_Ptr;
    begin
-      if Text = "" then
-         Tmp_Text := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Text := New_String (Text);
-      end if;
+      Tmp_Text :=
+        (if Text = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Text));
       Internal (Get_Object (Self), Tmp_Text);
       Free (Tmp_Text);
    end Set_Placeholder_Text;

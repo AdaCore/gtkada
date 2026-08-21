@@ -1468,11 +1468,10 @@ package body Glib.Variant is
       Tmp_Endptr : Gtkada.Types.chars_ptr_array := From_String_List (Endptr);
       Tmp_Return : System.Address;
    begin
-      if Limit = "" then
-         Tmp_Limit := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Limit := New_String (Limit);
-      end if;
+      Tmp_Limit :=
+        (if Limit = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Limit));
       Tmp_Return := Internal (The_Type, Tmp_Text, Tmp_Limit, Tmp_Endptr);
       Gtkada.Types.Free (Tmp_Endptr);
       Free (Tmp_Limit);

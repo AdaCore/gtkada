@@ -102,11 +102,10 @@ package body Gtk.Text_Mark is
       Tmp_Return : System.Address;
    begin
       if not Mark.Is_Created then
-         if Name = "" then
-            Tmp_Name := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Name := New_String (Name);
-         end if;
+         Tmp_Name :=
+           (if Name = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Name));
          Tmp_Return := Internal (Tmp_Name, Boolean'Pos (Left_Gravity));
          Free (Tmp_Name);
          Set_Object (Mark, Tmp_Return);

@@ -99,11 +99,10 @@ package body Gtk.Label is
       Tmp_Return : System.Address;
    begin
       if not Label.Is_Created then
-         if Str = "" then
-            Tmp_Str := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Str := New_String (Str);
-         end if;
+         Tmp_Str :=
+           (if Str = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Str));
          Tmp_Return := Internal (Tmp_Str);
          Free (Tmp_Str);
          Set_Object (Label, Tmp_Return);
@@ -126,11 +125,10 @@ package body Gtk.Label is
       Tmp_Return : System.Address;
    begin
       if not Label.Is_Created then
-         if Str = "" then
-            Tmp_Str := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Str := New_String (Str);
-         end if;
+         Tmp_Str :=
+           (if Str = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Str));
          Tmp_Return := Internal (Tmp_Str);
          Free (Tmp_Str);
          Set_Object (Label, Tmp_Return);

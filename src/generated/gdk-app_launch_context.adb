@@ -94,11 +94,10 @@ package body Gdk.App_Launch_Context is
       pragma Import (C, Internal, "gdk_app_launch_context_set_icon_name");
       Tmp_Icon_Name : Gtkada.Types.Chars_Ptr;
    begin
-      if Icon_Name = "" then
-         Tmp_Icon_Name := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Icon_Name := New_String (Icon_Name);
-      end if;
+      Tmp_Icon_Name :=
+        (if Icon_Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Icon_Name));
       Internal (Get_Object (Self), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
    end Set_Icon_Name;

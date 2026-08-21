@@ -199,11 +199,10 @@ package body Gtk.String_Filter is
       pragma Import (C, Internal, "gtk_string_filter_set_search");
       Tmp_Search : Gtkada.Types.Chars_Ptr;
    begin
-      if Search = "" then
-         Tmp_Search := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Search := New_String (Search);
-      end if;
+      Tmp_Search :=
+        (if Search = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Search));
       Internal (Get_Object (Self), Tmp_Search);
       Free (Tmp_Search);
    end Set_Search;

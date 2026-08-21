@@ -145,11 +145,10 @@ package body Pango.Language is
       Tmp_Language : Gtkada.Types.Chars_Ptr;
       Tmp_Return   : System.Address;
    begin
-      if Language = "" then
-         Tmp_Language := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Language := New_String (Language);
-      end if;
+      Tmp_Language :=
+        (if Language = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Language));
       Tmp_Return := Internal (Tmp_Language);
       Free (Tmp_Language);
       return From_Object (Tmp_Return);

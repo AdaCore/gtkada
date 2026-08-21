@@ -83,11 +83,10 @@ package body Gtk.Entry_Buffer is
       Tmp_Return        : System.Address;
    begin
       if not Self.Is_Created then
-         if Initial_Chars = "" then
-            Tmp_Initial_Chars := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Initial_Chars := New_String (Initial_Chars);
-         end if;
+         Tmp_Initial_Chars :=
+           (if Initial_Chars = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Initial_Chars));
          Tmp_Return := Internal (Tmp_Initial_Chars, N_Initial_Chars);
          Free (Tmp_Initial_Chars);
          Set_Object (Self, Tmp_Return);

@@ -432,11 +432,10 @@ package body Gtk.Text_Buffer is
       Stub_Gtk_Text_Mark : Gtk.Text_Mark.Gtk_Text_Mark_Record;
       Tmp_Return         : System.Address;
    begin
-      if Mark_Name = "" then
-         Tmp_Mark_Name := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Mark_Name := New_String (Mark_Name);
-      end if;
+      Tmp_Mark_Name :=
+        (if Mark_Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Mark_Name));
       Tmp_Return := Internal (Get_Object (Buffer), Tmp_Mark_Name, Where, Boolean'Pos (Left_Gravity));
       Free (Tmp_Mark_Name);
       return Gtk.Text_Mark.Gtk_Text_Mark (Get_User_Data (Tmp_Return, Stub_Gtk_Text_Mark));

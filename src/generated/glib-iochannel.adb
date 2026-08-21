@@ -237,11 +237,10 @@ package body Glib.IOChannel is
       pragma Import (C, Internal, "g_io_channel_set_line_term");
       Tmp_Line_Term : Gtkada.Types.Chars_Ptr;
    begin
-      if Line_Term = "" then
-         Tmp_Line_Term := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Line_Term := New_String (Line_Term);
-      end if;
+      Tmp_Line_Term :=
+        (if Line_Term = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Line_Term));
       Internal (Self, Tmp_Line_Term, Length);
       Free (Tmp_Line_Term);
    end Set_Line_Term;

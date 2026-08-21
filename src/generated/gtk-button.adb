@@ -126,11 +126,10 @@ package body Gtk.Button is
       Tmp_Return : System.Address;
    begin
       if not Button.Is_Created then
-         if Label = "" then
-            Tmp_Label := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Label := New_String (Label);
-         end if;
+         Tmp_Label :=
+           (if Label = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Label));
          Tmp_Return := Internal (Tmp_Label);
          Free (Tmp_Label);
          Set_Object (Button, Tmp_Return);

@@ -85,11 +85,10 @@ package body Gtk.Application is
       Tmp_Return         : System.Address;
    begin
       if not Self.Is_Created then
-         if Application_Id = "" then
-            Tmp_Application_Id := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Application_Id := New_String (Application_Id);
-         end if;
+         Tmp_Application_Id :=
+           (if Application_Id = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Application_Id));
          Tmp_Return := Internal (Tmp_Application_Id, Flags);
          Free (Tmp_Application_Id);
          Set_Object (Self, Tmp_Return);
@@ -256,11 +255,10 @@ package body Gtk.Application is
       Tmp_Reason : Gtkada.Types.Chars_Ptr;
       Tmp_Return : Guint;
    begin
-      if Reason = "" then
-         Tmp_Reason := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Reason := New_String (Reason);
-      end if;
+      Tmp_Reason :=
+        (if Reason = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Reason));
       Tmp_Return := Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Window)), Flags, Tmp_Reason);
       Free (Tmp_Reason);
       return Tmp_Return;

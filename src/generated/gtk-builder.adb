@@ -571,11 +571,10 @@ package body Gtk.Builder is
       pragma Import (C, Internal, "gtk_builder_set_translation_domain");
       Tmp_Domain : Gtkada.Types.Chars_Ptr;
    begin
-      if Domain = "" then
-         Tmp_Domain := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Domain := New_String (Domain);
-      end if;
+      Tmp_Domain :=
+        (if Domain = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Domain));
       Internal (Get_Object (Self), Tmp_Domain);
       Free (Tmp_Domain);
    end Set_Translation_Domain;

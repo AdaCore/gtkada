@@ -122,11 +122,10 @@ package body Glib.Application is
       Tmp_Return         : System.Address;
    begin
       if not Self.Is_Created then
-         if Application_Id = "" then
-            Tmp_Application_Id := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Application_Id := New_String (Application_Id);
-         end if;
+         Tmp_Application_Id :=
+           (if Application_Id = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Application_Id));
          Tmp_Return := Internal (Tmp_Application_Id, Flags);
          Free (Tmp_Application_Id);
          Set_Object (Self, Tmp_Return);
@@ -463,11 +462,10 @@ package body Glib.Application is
       pragma Import (C, Internal, "g_application_send_notification");
       Tmp_Id : Gtkada.Types.Chars_Ptr;
    begin
-      if Id = "" then
-         Tmp_Id := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Id := New_String (Id);
-      end if;
+      Tmp_Id :=
+        (if Id = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Id));
       Internal (Get_Object (Self), Tmp_Id, Get_Object (Notification));
       Free (Tmp_Id);
    end Send_Notification;
@@ -486,11 +484,10 @@ package body Glib.Application is
       pragma Import (C, Internal, "g_application_set_application_id");
       Tmp_Application_Id : Gtkada.Types.Chars_Ptr;
    begin
-      if Application_Id = "" then
-         Tmp_Application_Id := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Application_Id := New_String (Application_Id);
-      end if;
+      Tmp_Application_Id :=
+        (if Application_Id = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Application_Id));
       Internal (Get_Object (Self), Tmp_Application_Id);
       Free (Tmp_Application_Id);
    end Set_Application_Id;
@@ -562,11 +559,10 @@ package body Glib.Application is
       pragma Import (C, Internal, "g_application_set_option_context_description");
       Tmp_Description : Gtkada.Types.Chars_Ptr;
    begin
-      if Description = "" then
-         Tmp_Description := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Description := New_String (Description);
-      end if;
+      Tmp_Description :=
+        (if Description = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Description));
       Internal (Get_Object (Self), Tmp_Description);
       Free (Tmp_Description);
    end Set_Option_Context_Description;
@@ -585,11 +581,10 @@ package body Glib.Application is
       pragma Import (C, Internal, "g_application_set_option_context_parameter_string");
       Tmp_Parameter_String : Gtkada.Types.Chars_Ptr;
    begin
-      if Parameter_String = "" then
-         Tmp_Parameter_String := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Parameter_String := New_String (Parameter_String);
-      end if;
+      Tmp_Parameter_String :=
+        (if Parameter_String = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Parameter_String));
       Internal (Get_Object (Self), Tmp_Parameter_String);
       Free (Tmp_Parameter_String);
    end Set_Option_Context_Parameter_String;
@@ -608,11 +603,10 @@ package body Glib.Application is
       pragma Import (C, Internal, "g_application_set_option_context_summary");
       Tmp_Summary : Gtkada.Types.Chars_Ptr;
    begin
-      if Summary = "" then
-         Tmp_Summary := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Summary := New_String (Summary);
-      end if;
+      Tmp_Summary :=
+        (if Summary = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Summary));
       Internal (Get_Object (Self), Tmp_Summary);
       Free (Tmp_Summary);
    end Set_Option_Context_Summary;
@@ -631,11 +625,10 @@ package body Glib.Application is
       pragma Import (C, Internal, "g_application_set_resource_base_path");
       Tmp_Resource_Path : Gtkada.Types.Chars_Ptr;
    begin
-      if Resource_Path = "" then
-         Tmp_Resource_Path := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Resource_Path := New_String (Resource_Path);
-      end if;
+      Tmp_Resource_Path :=
+        (if Resource_Path = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Resource_Path));
       Internal (Get_Object (Self), Tmp_Resource_Path);
       Free (Tmp_Resource_Path);
    end Set_Resource_Base_Path;

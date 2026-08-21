@@ -550,11 +550,10 @@ package body Glib.File_Info is
       Tmp_Name_Space : Gtkada.Types.Chars_Ptr;
       Tmp_Return     : chars_ptr_array_access;
    begin
-      if Name_Space = "" then
-         Tmp_Name_Space := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Name_Space := New_String (Name_Space);
-      end if;
+      Tmp_Name_Space :=
+        (if Name_Space = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Name_Space));
       Tmp_Return := Internal (Get_Object (Self), Tmp_Name_Space);
       Free (Tmp_Name_Space);
       return To_String_List_And_Free (Tmp_Return);
