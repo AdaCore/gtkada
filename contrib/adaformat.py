@@ -4,9 +4,12 @@
 Various formatting classes for Ada code
 """
 
+from __future__ import annotations
+
 import re
 import copy
 from collections import namedtuple
+from typing import Any, Optional
 
 # A lot of subprograms below take a "lang" parameter, which indicates how
 # values should be converted:
@@ -78,7 +81,7 @@ class CType(object):
     to the function.
     """
 
-    def __init__(self, ada, property):
+    def __init__(self, ada: str, property: Optional[str]):
         self.set_ada_name(ada)
         self.property = property
         self.default_record_field_value = None
@@ -105,7 +108,7 @@ class CType(object):
 
         self.transfer_ownership = False
 
-    def set_ada_name(self, ada):
+    def set_ada_name(self, ada: str):
         self.ada = ada  # Fully qualified Ada type
         self.param = ada  # type as parameter
         self.cparam = ada  # type for Ada subprograms binding to C
@@ -125,13 +128,13 @@ class CType(object):
         """
         return (self.param, self.cparam, "%(var)s", [], self.cparam, "%(var)s")
 
-    def convert_from_c_add_with(self, pkg, specs=False):
+    def convert_from_c_add_with(self, pkg: Package, specs: bool = False):
         """Add the "with" statements needed to do the conversion stated
         in convert_from_c().
         """
         pass
 
-    def convert_to_c(self, pkg=None):
+    def convert_to_c(self, pkg: Optional[Package] = None) -> str:
         """How to convert from Ada parameter to C parameter. If it uses %(tmp)s,
         we assume the converter sets the value of the temporary variable
         itself.
@@ -148,11 +151,11 @@ class CType(object):
         else:
             return "%(var)s"
 
-    def direct_c_map(self):
+    def direct_c_map(self) -> bool:
         """Whether the parameter can be passed as is to C"""
         return self.convert_to_c() == "%(var)s"
 
-    def as_property(self):
+    def as_property(self) -> Optional[str]:
         """The type to use for the property"""
         return self.property
 
@@ -174,14 +177,14 @@ class CType(object):
         else:
             return returns
 
-    def record_field_type(self, pkg=None):
+    def record_field_type(self, pkg=None) -> str:
         """The type to use when self is used in a record.
         [pkg] should be the current package, to avoid fully qualified name
         that reference that package.
         """
         return self.as_c_param(pkg=pkg)
 
-    def as_ada_param(self, pkg):
+    def as_ada_param(self, pkg: Package) -> str:
         """Converts self to a description for an Ada parameter to a
         subprogram.
         `pkg` is the package in which we insert the name. It is used to
@@ -189,7 +192,7 @@ class CType(object):
         """
         return self.param.replace("%s." % pkg.name, "")
 
-    def as_c_param(self, pkg=None):
+    def as_c_param(self, pkg: Optional[Package] = None) -> str:
         """Returns the C type (as a parameter to a subprogram that imports
         a C function)
         """
@@ -251,14 +254,14 @@ class CType(object):
 
     def as_call(
         self,
-        name,
-        pkg,
-        wrapper="%s",
-        lang="ada",
-        mode="in",
-        value=None,
-        is_temporary_variable=True,
-    ):
+        name: str,
+        pkg: Package,
+        wrapper: str = "%s",
+        lang: str = "ada",
+        mode: str = "in",
+        value: Optional[str] = None,
+        is_temporary_variable: bool = True,
+    ) -> VariableCall:
         """'name' represents a parameter of type 'self'.
         'pkg' is the Package instance in which the call occurs.
         'wrapper' is used in the call itself, and %s is replaced by the
@@ -421,7 +424,7 @@ class CType(object):
 
 class Enum(CType):
 
-    def __init__(self, ada, property=None):
+    def __init__(self, ada: str, property: Optional[str] = None):
         base = ada[ada.rfind(".") + 1 :] or ada
         if property is None:
             CType.__init__(self, ada, "Gtk.Enums.Property_%s" % base)
@@ -457,13 +460,13 @@ class Enum(CType):
         else:
             return super(Enum, self).convert_from_c()
 
-    def convert_to_c (self):
+    def convert_to_c(self) -> str:
         if self.ada.lower() == "boolean":
             return "%s'Pos (%%(var)s)" % self.ada
         else:
             return super(Enum, self).convert_to_c()
 
-    def record_field_type(self, pkg=None):
+    def record_field_type(self, pkg=None) -> str:
         if pkg:
             return self.ada.replace("%s." % pkg.name, "")
         else:
@@ -491,7 +494,13 @@ class Enum(CType):
 
 class GObject(CType):
 
-    def __init__(self, ada, userecord=True, allow_none=False, classwide=False):
+    def __init__(
+        self,
+        ada: str,
+        userecord: bool = True,
+        allow_none: bool = False,
+        classwide: bool = False,
+    ):
         CType.__init__(self, ada, "Glib.Properties.Property_Object")
         # The C-side rendering is just an opaque pointer, so callers in
         # ``ada->c`` / ``c->ada`` mode do *not* need to with the Ada
@@ -509,7 +518,7 @@ class GObject(CType):
         # strip correctly within the defining package body.
         self.record_ada = None
 
-    def _record_ada_name(self):
+    def _record_ada_name(self) -> str:
         """Fully-qualified Ada name to use when building '_Record' references."""
         return (
             self.record_ada if self.record_ada is not None else "%s_Record" % self.ada
@@ -534,13 +543,13 @@ class GObject(CType):
             conv,
         )
 
-    def convert_to_c (self):
+    def convert_to_c(self) -> str:
         if self.allow_none:
             return "Get_Object_Or_Null (GObject (%(var)s))"
         else:
             return "Get_Object (%(var)s)"
 
-    def as_ada_param(self, pkg):
+    def as_ada_param(self, pkg) -> str:
         if self.userecord:
             prefix = "" if self.allow_none else "not null "
             record_name = self._record_ada_name()
@@ -580,10 +589,10 @@ class Tagged(GObject):
             "From_Object (%(var)s)",
         )
 
-    def convert_to_c (self):
+    def convert_to_c(self) -> str:
         return "Get_Object (%(var)s)"
 
-    def as_ada_param(self, pkg):
+    def as_ada_param(self, pkg) -> str:
         # Make sure to bind as a CType here, not as a GOBject
         return CType.as_ada_param(self, pkg)
 
@@ -636,7 +645,7 @@ class UTF8(CType):
             pkg.add_with("Gtkada.Bindings", specs=specs, might_be_unused=True)
             pkg.add_with("Gtkada.Types", specs=specs)
 
-    def convert_to_c (self):
+    def convert_to_c(self) -> str:
         if self.allow_none:
             return (
                 '%(tmp)s := '
@@ -664,7 +673,7 @@ class SignalName(UTF8):
         self.set_ada_name("Glib.Signal_Name")
         self.cparam = "Gtkada.Types.Chars_Ptr"
 
-    def convert_to_c (self):
+    def convert_to_c(self) -> str:
         return "New_String (String (%(var)s))"
 
 
@@ -697,10 +706,10 @@ class UTF8_List(CType):
             conv,
         )
 
-    def record_field_type(self, pkg=None):
+    def record_field_type(self, pkg=None) -> str:
         return "Gtkada.Types.char_array_access"
 
-    def convert_to_c (self):
+    def convert_to_c(self) -> str:
         return "From_String_List (%(var)s)"
 
     def add_with(self, pkg=None, specs=False):
@@ -712,7 +721,12 @@ class UTF8_List(CType):
 
 class Record(CType):
 
-    def __init__(self, ada, property=None, val_or_null=None):
+    def __init__(
+        self,
+        ada: str,
+        property: Optional[str] = None,
+        val_or_null: Optional[str] = None,
+    ):
         """
         :param val_or_null: if specified, and the null constant is passed
           as a parameter, then System.Null_Address is passed to C. If
@@ -745,7 +759,7 @@ class Record(CType):
             "%(var)s",
         )
 
-    def convert_to_c (self):
+    def convert_to_c(self) -> str:
         if self.allow_none and self.val_or_null:
             self.cparam = "System.Address"
             return "%s (%%(var)s'Address)" % self.val_or_null
@@ -770,10 +784,10 @@ class Proxy(CType):
 
     def __init__(
         self,
-        ada,
-        property=None,
-        val_or_null=None,
-        default_record_field=None,
+        ada: str,
+        property: Optional[str] = None,
+        val_or_null: Optional[str] = None,
+        default_record_field: Optional[str] = None,
     ):
         """:param val_or_null: is used when GIR indicates the parameter has
         allow-none=1, and is used to test whether we should pass NULL
@@ -792,7 +806,7 @@ class Proxy(CType):
         self.val_or_null = val_or_null
         self.default_record_field_value = default_record_field
 
-    def record_field_type(self, pkg=None):
+    def record_field_type(self, pkg=None) -> str:
         if self.isArray and self.array_fixed_size is not None:
             return "%s (1 .. %s)" % (self.as_c_param(pkg=pkg), self.array_fixed_size)
         elif self.is_ptr or self.isArray:
@@ -803,11 +817,11 @@ class Proxy(CType):
 
 class Callback(CType):
 
-    def __init__(self, ada):
+    def __init__(self, ada: str):
         CType.__init__(self, ada, "")
         self.cparam = "System.Address"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<Callback %s>" % self.ada
 
     def convert_from_c(self):
@@ -816,13 +830,13 @@ class Callback(CType):
         # callback.
         return None
 
-    def convert_to_c (self):
+    def convert_to_c(self) -> str:
         return "%(var)s'Address"
 
 
 class Interface(CType):
 
-    def __init__(self, ada):
+    def __init__(self, ada: str):
         CType.__init__(self, ada, "Glib.Properties.Property_Interface")
         self.cparam = ada
         self.is_ptr = False
@@ -830,7 +844,7 @@ class Interface(CType):
 
 class List(CType):
 
-    def __init__(self, ada):
+    def __init__(self, ada: str):
         CType.__init__(self, ada, "Glib.Properties.Property_Object")
         self.__adapkg = ada[: ada.rfind(".")]
         self.cparam = "System.Address"
@@ -864,7 +878,7 @@ class List(CType):
         t = List("%s.%s.%s" % (pkg, ada, gtype))
         naming.add_type_exception(listCname, t)
 
-    def convert_to_c (self):
+    def convert_to_c(self) -> str:
         return "%s.Get_Object (%%(var)s)" % self.__adapkg
 
     def add_with(self, pkg=None, specs=False):
@@ -880,7 +894,14 @@ class List(CType):
 
 class AdaType(CType):
 
-    def __init__(self, adatype, pkg=None, in_spec=True, ctype="", convert="%(var)s"):
+    def __init__(
+        self,
+        adatype: str,
+        pkg: Optional[Package] = None,
+        in_spec: bool = True,
+        ctype: str = "",
+        convert: str = "%(var)s",
+    ):
         """The 'adatype' type is represented as 'ctype' for subprograms
         that import C functions. The parameters of that type are converted
         from Ada to C by using 'convert'. 'convert' must use '%s' once
@@ -897,20 +918,20 @@ class AdaType(CType):
         if pkg:
             self.add_with(pkg)
 
-    def convert_to_c (self):
+    def convert_to_c(self) -> str:
         return self.__convert
 
 
 class AdaTypeArray(CType):
     """An array of scalar types"""
 
-    def __init__(self, adatype):
+    def __init__(self, adatype: str):
         CType.__init__(self, adatype, "")
         self.param = "%s_Array" % naming.case(adatype)
         self.cparam = "System.Address"
         self.isArray = True
 
-    def convert_to_c (self):
+    def convert_to_c(self) -> str:
         return "%(var)s'Address"
 
     def convert_from_c(self):
@@ -930,7 +951,7 @@ class AdaTypeArray(CType):
             c,
         )  # convert from previous line to Ada type
 
-    def record_field_type(self, pkg=None):
+    def record_field_type(self, pkg=None) -> str:
         if self.isArray and self.array_fixed_size is not None:
             return "%s (1 .. %s)" % (self.as_ada_param(pkg=pkg), self.array_fixed_size)
         else:
@@ -966,7 +987,7 @@ class AdaNaming(object):
         if override or girname not in self.girname_to_ctype:
             self.girname_to_ctype[girname] = ctype
 
-    def ctype_from_girname(self, girname):
+    def ctype_from_girname(self, girname) -> str:
         """Return the C type corresponding to a GIR name"""
 
         if not girname:
@@ -978,7 +999,7 @@ class AdaNaming(object):
 
         return self.girname_to_ctype.get(girname, default)
 
-    def adamethod_name(self, cname, warning_if_not_found=True):
+    def adamethod_name(self, cname, warning_if_not_found=True) -> str:
         """Return the ada name corresponding to the C method's name"""
         try:
             return self.cname_to_adaname[cname]
@@ -988,7 +1009,7 @@ class AdaNaming(object):
             self.cname_to_adaname[cname] = cname  # Display warning once only
             return cname
 
-    def case(self, name, protect=True):
+    def case(self, name, protect=True) -> str:
         """Return the proper casing to use for 'name', taking keywords
         into account. This is for packages.
         """
@@ -1001,10 +1022,10 @@ class AdaNaming(object):
         else:
             return name
 
-    def protect_keywords(self, name):
+    def protect_keywords(self, name) -> str:
         return ".".join(self.exceptions.get(n, n) for n in name.split("."))
 
-    def __camel_case_to_ada(self, name):
+    def __camel_case_to_ada(self, name) -> str:
         """Converts a name with CamelCase to Camel_Case"""
 
         if not name:
@@ -1144,7 +1165,7 @@ def max_length(iter):
     return longuest
 
 
-def fill_text(text, prefix, length, firstLineLength=0):
+def fill_text(text, prefix, length, firstLineLength=0) -> str:
     """Split TEXT on several lines (with a given max length and a prefix)."""
 
     line = ""
@@ -1178,12 +1199,12 @@ def fill_text(text, prefix, length, firstLineLength=0):
     return ("\n" + prefix).join(result)
 
 
-def cleanup_doc(doc):
+def cleanup_doc(doc) -> str:
     """Replaces gtk-doc features in the doc with appropriate Ada
     equivalents.
     """
 
-    def remargin_programlisting(content, margin=3):
+    def remargin_programlisting(content, margin=3) -> str:
         lines = content.splitlines()
 
         # Drop artificial outer blank lines from block delimiters.
@@ -1208,17 +1229,17 @@ def cleanup_doc(doc):
 
         return "\n".join(remargined)
 
-    def replace_programlisting_content(content):
+    def replace_programlisting_content(content) -> str:
         return (
             "\n\n__PROGRAMLISTING__"
             + remargin_programlisting(content)
             + "__END_PROGRAMLISTING__"
         )
 
-    def replace_programlisting(match):
+    def replace_programlisting(match) -> str:
         return replace_programlisting_content(match.group(1))
 
-    def replace_gtkdoc_programlisting(match):
+    def replace_gtkdoc_programlisting(match) -> str:
         content = match.group(1)
         lines = content.splitlines()
 
@@ -1247,7 +1268,7 @@ def cleanup_doc(doc):
 
         return replace_programlisting_content(content)
 
-    def replace_type(x):
+    def replace_type(x) -> str:
         t = naming.type(x.group(1))
         t.userecord = False
         return t.ada
@@ -1307,7 +1328,7 @@ def cleanup_doc(doc):
     return doc
 
 
-def format_doc(doc, indent, separate_paragraphs=True, fill=True):
+def format_doc(doc, indent, separate_paragraphs=True, fill=True) -> str:
     """Transform the doc from a list of strings to a single string"""
 
     result = ""
@@ -1374,7 +1395,7 @@ def format_doc(doc, indent, separate_paragraphs=True, fill=True):
     return result
 
 
-def box(name, indent="   "):
+def box(name, indent="   ") -> str:
     return (
         indent
         + "-" * (len(name) + 6)
@@ -1388,7 +1409,7 @@ def box(name, indent="   "):
     )
 
 
-def indent_code(code, indent=3, addnewlines=True):
+def indent_code(code, indent=3, addnewlines=True) -> str:
     """Return code properly indented and split on several lines.
     These are heuristics only, not perfect.
     """
@@ -1496,7 +1517,14 @@ VariableCall = namedtuple("VariableCall", ["call", "precall", "postcall", "tmpva
 class Local_Var(object):
     __slots__ = ["name", "type", "default", "aliased", "constant"]
 
-    def __init__(self, name, type, default="", aliased=False, constant=False):
+    def __init__(
+        self,
+        name: str,
+        type: str | CType,
+        default: str = "",
+        aliased: bool = False,
+        constant: bool = False,
+    ):
         self.set_type(type)
         self.name = name
         self.default = default
@@ -1506,13 +1534,16 @@ class Local_Var(object):
     def __repr__(self):
         return "<Local_Var name=%s type=%s>" % (self.name, self.type)
 
-    def set_type(self, type):
+    def set_type(self, type: str | CType):
+        """self.type (unlike the `type` param here) is always a CType: a
+        bare Ada type name string gets wrapped in an AdaType.
+        """
         if isinstance(type, str):
             self.type = AdaType(type)
         else:
             self.type = type
 
-    def _type(self, lang, pkg):
+    def _type(self, lang: str, pkg: Package) -> str:
         """`pkg` is the package in which we insert the variable, and is used
         to add necessary with statements, if any.
         """
@@ -1523,7 +1554,13 @@ class Local_Var(object):
         elif lang == "c->ada":
             return self.type.convert_from_c()[1]
 
-    def spec(self, pkg, length=0, lang="ada", show_default=True):
+    def spec(
+        self,
+        pkg: Package,
+        length: int = 0,
+        lang: str = "ada",
+        show_default: bool = True,
+    ) -> str:
         """Format the declaration for the variable or parameter.
         'length' is the minimum length that the name should occupy (for
         proper alignment when there are several variables.
@@ -1545,7 +1582,9 @@ class Local_Var(object):
         else:
             return "%-*s : %s%s" % (length, self.name, aliased, t)
 
-    def as_call(self, pkg, lang="ada", value=None):
+    def as_call(
+        self, pkg: Package, lang: str = "ada", value: Optional[str] = None
+    ) -> VariableCall:
         """Pass self (or the value) as a parameter to an Ada subprogram call,
         implemented in the given language. See comments at the beginning
         of this package for valid values of LANG.
@@ -1580,18 +1619,18 @@ class Parameter(Local_Var):
 
     def __init__(
         self,
-        name,
-        type,
-        default="",
-        doc="",
-        mode="in",
-        for_function=False,
-        ada_binding=True,
-        is_temporary_variable=False,
-        c_mode="in",
-        ownership="none",
-        is_caller_allocates=False,
-        classwide=False,
+        name: str,
+        type: str | CType,
+        default: str = "",
+        doc: str = "",
+        mode: str = "in",
+        for_function: bool = False,
+        ada_binding: bool = True,
+        is_temporary_variable: bool = False,
+        c_mode: str = "in",
+        ownership: str | bool = "none",
+        is_caller_allocates: bool = False,
+        classwide: bool = False,
     ):
         """
         'mode' is the mode for the Ada subprogram, and is automatically
@@ -1630,7 +1669,7 @@ class Parameter(Local_Var):
         self.is_caller_allocates = is_caller_allocates
         self.classwide = classwide
 
-    def _type(self, lang, pkg):
+    def _type(self, lang: str, pkg: Package) -> str:
         mode = self.mode
 
         if lang == "ada->c" and mode != "in" and self.for_function:
@@ -1651,7 +1690,9 @@ class Parameter(Local_Var):
             return "%s %s" % (mode, t)
         return t
 
-    def as_call(self, pkg, lang="ada", value=None):
+    def as_call(
+        self, pkg: Package, lang: str = "ada", value: Optional[str] = None
+    ) -> VariableCall:
         """'pkg' is the package instance in which the call occurs."""
 
         assert lang in ("ada", "c->ada", "ada->c")
@@ -1711,11 +1752,11 @@ class Parameter(Local_Var):
             else:
                 return VariableCall(call=n, precall="", postcall="", tmpvars=[])
 
-    def direct_c_map(self):
+    def direct_c_map(self) -> bool:
         """Whether the parameter can be passed as is to C"""
         return self.type.direct_c_map()
 
-    def value(self):
+    def value(self) -> str | bool:
         if not self.ada_binding:
             if self.default is not None:
                 return self.default
@@ -1725,7 +1766,7 @@ class Parameter(Local_Var):
             return self.ada_binding
 
 
-def base_name(qname):
+def base_name(qname) -> str:
     """Return the basename for a fully qualified name:
     Pkg.Name  => Name
     """
@@ -1735,7 +1776,7 @@ def base_name(qname):
         return qname
 
 
-def package_name(qname):
+def package_name(qname) -> str:
     """Return the package part of a fully qualified name:
     Pkg.Child.Name  => Pkg.Child
     Name      => ""
@@ -1755,18 +1796,18 @@ class Subprogram(object):
 
     def __init__(
         self,
-        name,
-        code="",
-        plist=[],
-        local_vars=[],
-        returns=None,
-        doc=[],
-        showdoc=True,
-        convention=None,
-        lang="ada",
-        allow_none=True,
-        no_spec=False,
-        overriding=False,
+        name: str,
+        code: str = "",
+        plist: list[Parameter] = [],
+        local_vars: list[Local_Var] = [],
+        returns: Optional[CType] = None,
+        doc: str | list[str] = [],
+        showdoc: bool = True,
+        convention: Optional[str] = None,
+        lang: str = "ada",
+        allow_none: bool = True,
+        no_spec: bool = False,
+        overriding: bool = False,
     ):
         """Create a new subprogram.
         'plist' is a list of Parameter.
@@ -1837,7 +1878,7 @@ class Subprogram(object):
 
     def profile(
         self, pkg, indent="   ", maxlen=max_profile_length, as_type=False, specs=False
-    ):
+    ) -> str:
         """Compute the profile for the subprogram"""
 
         returns = self.returns and self.returns.as_return(pkg=pkg)
@@ -1939,7 +1980,7 @@ class Subprogram(object):
                 else:
                     p.type.add_with(pkg=pkg, specs=in_specs)
 
-    def formatted_doc(self, indent="   "):
+    def formatted_doc(self, indent="   ") -> str:
         if self.showdoc:
             doc = []
             returns = []
@@ -1965,7 +2006,7 @@ class Subprogram(object):
 
     def spec(
         self, pkg, indent="   ", show_doc=True, maxlen=max_profile_length, as_type=False
-    ):
+    ) -> str:
         """Return the spec of the subprogram"""
 
         if self.no_spec:
@@ -1995,7 +2036,7 @@ class Subprogram(object):
 
         return result + doc
 
-    def _find_unreferenced(self, local_vars="", indent="   "):
+    def _find_unreferenced(self, local_vars="", indent="   ") -> str:
         """List the pragma Unreferenced statements that are needed for this
         subprogram.
         """
@@ -2009,7 +2050,7 @@ class Subprogram(object):
         else:
             return ""
 
-    def _format_local_vars(self, pkg, indent="   "):
+    def _format_local_vars(self, pkg, indent="   ") -> str:
         """The list of local variable declarations"""
         if self.local:
             max = max_length([p.name for p in self.local])
@@ -2025,7 +2066,7 @@ class Subprogram(object):
         else:
             return ""
 
-    def body(self, pkg, indent="   "):
+    def body(self, pkg, indent="   ") -> str:
         if not self.code and not self._manual_body:
             return ""
 
@@ -2168,7 +2209,7 @@ class Subprogram(object):
 
         return result
 
-    def freecall(self, in_pkg=None, values=dict()):
+    def freecall(self, in_pkg=None, values=dict()) -> str:
         """Returns code (string) thet frees temporary parameters
         """
         if self._import:
@@ -2187,7 +2228,7 @@ class Subprogram(object):
             postcall = c.postcall + postcall
         return postcall
 
-    def call_to_string(self, call: tuple, lang="ada"):
+    def call_to_string(self, call: tuple, lang="ada") -> str:
         """CALL is the result of call() above.
         This function returns a string that contains the code for the
         subprogram.
@@ -2213,7 +2254,7 @@ class Code(object):
     automatically formatted (and C names substituted as appropriate).
     """
 
-    def __init__(self, content, iscomment=False, fill=True):
+    def __init__(self, content: str, iscomment: bool = False, fill: bool = True):
         """:param:`fill` whether to reflow the text if this is a comment.
         :param:`add_newline` whether the block should have a leading newline
         """
@@ -2222,7 +2263,7 @@ class Code(object):
         self.fill = fill
         self.add_newline = True
 
-    def format(self, indent=""):
+    def format(self, indent="") -> str:
         """Return the code that should be written into a package"""
         if self.iscomment:
             return format_doc(self.content, indent=indent, fill=self.fill)
@@ -2245,7 +2286,7 @@ class Section(object):
     # order is alphabetical for getters, but setters appear just after the
     # getter.
 
-    def __init__(self, pkg, name):
+    def __init__(self, pkg: Package, name: str):
         self.pkg = pkg  # The instance of Package in which the section is
         self.name = name
         self.__comment = ""
@@ -2356,7 +2397,7 @@ class Section(object):
         else:
             return [[obj] for obj, in_spec in self.__objects if in_spec]
 
-    def spec(self, pkg, indent):
+    def spec(self, pkg, indent) -> str:
         """Return the spec of the section"""
 
         result = ""
@@ -2409,7 +2450,7 @@ class Section(object):
 
         return result
 
-    def body(self, pkg, indent):
+    def body(self, pkg, indent) -> str:
         result = []
 
         for obj, in_spec in self.__objects:
@@ -2451,7 +2492,7 @@ class Package(object):
     copyright_header = ""
     # Can be overridden by applications to change the copyright header
 
-    def __init__(self, name, doc=[], isnested=False):
+    def __init__(self, name: str, doc: list[str] = [], isnested: bool = False):
         """'doc' is a list of strings, where each string is a paragraph"""
         self.name = name
         self.doc = doc
@@ -2466,10 +2507,10 @@ class Package(object):
         self.isnested = isnested
         self.pkg_body = None
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<Package %s>" % self.name
 
-    def section(self, name):
+    def section(self, name: str) -> Section:
         """Return an existing section (or create a new one) with the given
         name.
         """
@@ -2481,14 +2522,20 @@ class Package(object):
         self.sections.append(s)
         return s
 
-    def pkg_body_section(self):
+    def pkg_body_section(self) -> Section:
         """Return an existing section (or create a new one) for package code.
         """
         if self.pkg_body is None:
             self.pkg_body = Section(self, "package body")
         return self.pkg_body
 
-    def add_with(self, pkg, specs=True, do_use=True, might_be_unused=False):
+    def add_with(
+        self,
+        pkg: str | list[str],
+        specs: bool = True,
+        do_use: bool = True,
+        might_be_unused: bool = False,
+    ):
         """Add a with+use clause for pkg, where pkg can also be a list.
         Automatic casing is performed. If specs is True, the withs are
         added to the specs of the package, otherwise to the body.
@@ -2530,13 +2577,13 @@ class Package(object):
             elif p not in self.spec_withs:
                 self.body_withs[p] = p_info
 
-    def add_private(self, code, at_end=False):
+    def add_private(self, code: str, at_end: bool = False):
         if at_end:
             self.private.append(code)
         else:
             self.private.insert(0, code)
 
-    def _output_withs(self, withs):
+    def _output_withs(self, withs: dict[str, tuple[bool, bool]]) -> str:
         if withs:
             result = []
             m = max_length(withs)
@@ -2565,7 +2612,7 @@ class Package(object):
             return "\n".join(result) + "\n"
         return ""
 
-    def section_order(self, name):
+    def section_order(self, name: str) -> int:
         """Return a numerical order for sections"""
         order = {
             "": 0,
@@ -2589,7 +2636,7 @@ class Package(object):
         }
         return order.get(name, 1000)
 
-    def spec(self):
+    def spec(self) -> str:
         """Returns the spec of the package, in the file `out`"""
 
         result = []
@@ -2634,7 +2681,7 @@ class Package(object):
         result.append(indent + "end %s;" % self.name)
         return "\n".join(result)
 
-    def body(self):
+    def body(self) -> str:
         """Returns the body of the package"""
 
         result = []

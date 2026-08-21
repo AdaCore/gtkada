@@ -89,13 +89,18 @@ See ``contrib/Documentation.md`` for a reference of the TOML override
 schema that drives this generator.
 """
 
+from __future__ import annotations
+
 from xml.etree.cElementTree import parse, Element, QName, tostring
 from adaformat import *
 import copy
-from binding_gtkada import GtkAda
+from binding_gtkada import GtkAda, GtkAdaMethod
 from data import enums, interfaces, binding, manual_binding, user_data_params
 from data import destroy_data_params
 import sys
+
+# type hints
+from typing import Any, Optional
 
 # For parsing command line options
 from optparse import OptionParser
@@ -156,6 +161,9 @@ nvalue = QName(uri, "value").text
 nvarargs = QName(uri, "varargs").text
 nconstant = QName(uri, "constant").text
 ninstanceparam = QName(uri, "instance-parameter").text
+
+# type annotations
+type GIRNode = Element
 
 
 class GIR(object):
@@ -609,26 +617,31 @@ class SubprogramProfile(object):
       ``-1`` when there is no destroy callback.
     """
 
-    def __init__(self, node, gtkmethod=None):
-        self.node = node # the XML node for this profile
+    def __init__(self, node: GIRNode, gtkmethod: Optional[GtkAdaMethod] = None):
+        self.node = node  # the XML node for this profile
         self.gtkmethod = gtkmethod
-        self.params = (list[Parameter] | None)  # list of parameters (None if we have varargs)
-        self.returns = None  # return value (None for a procedure)
-        self.returns_doc = ""  # documentation for returned value
-        self.doc = ""  # documentation for the subprogram
+        self.params: Optional[list[Parameter]] = None  # None if we have varargs
+        self.returns: Optional[CType] = None  # return value (None for a procedure)
+        self.returns_doc: str = ""  # documentation for returned value
+        self.doc: str | list[str] = ""  # documentation for the subprogram
 
         # The following fields are used to handle callback parameters
         # and generate an Ada generic
 
-        self.callback_param = []  # indexes of the callback parameter
-        self.user_data_param = -1  # index of the "user data" parameter
-        self.destroy_param = -1  # index of the parameter to destroy data
+        self.callback_param: list[int] = []  # indexes of the callback parameter
+        self.user_data_param: int = -1  # index of the "user data" parameter
+        self.destroy_param: int = -1  # index of the parameter to destroy data
 
     def __repr__(self):
         return "<SubprogramProfile %s>" % self.node.get("name")
 
     @staticmethod
-    def parse(node, gtkmethod, pkg=None, ignore_return=False):
+    def parse(
+        node: GIRNode,
+        gtkmethod: GtkAdaMethod,
+        pkg: Optional[Package] = None,
+        ignore_return: bool = False,
+    ) -> SubprogramProfile:
         """Parse the parameter info and return type info from the XML
         GIR node, overriding with info from the toml package.
         gtkmethod is the GtkAdaMethod that contains the overriding for the
@@ -655,7 +668,7 @@ class SubprogramProfile(object):
         return profile
 
     @staticmethod
-    def setter(node, pkg=None):
+    def setter(node: GIRNode, pkg: Optional[Package] = None) -> SubprogramProfile:
         """Create a new SubprogramProfile for a getter"""
         profile = SubprogramProfile(node)
         profile.params = [Parameter("Value", _get_type(node, pkg))]
@@ -695,10 +708,13 @@ class SubprogramProfile(object):
                 return False
         return self.returns is None or self.returns.direct_c_map()
 
-    def c_params(self, localvars, code):
+    def c_params(
+        self, localvars: list[Local_Var], code: list[str]
+    ) -> list[Parameter]:
         """Returns the list of parameters for an Ada function that would be
         a direct pragma Import. local variables or additional code will
-        be extended as needed to handle conversions.
+        be extended as needed to handle conversions (appended in place to
+        `localvars`/`code`).
         """
         assert isinstance(localvars, list)
         assert isinstance(code, list)
@@ -793,7 +809,7 @@ class SubprogramProfile(object):
         if self.destroy_param >= 0 and self.destroy_param >= pos:
             self.destroy_param += 1
 
-    def add_self_param(self, pkg, own_cname, inherited):
+    def add_self_param(self, pkg: Package, own_cname: str, inherited: bool):
         """Add a Self parameter to the list of parameters.
         The exact type of the parameter depends on several criteria.
 
@@ -882,7 +898,7 @@ class SubprogramProfile(object):
                     return
 
     def remove_param(self, names):
-        """Remove the parameter with the given names from the list"""
+        """Remove parameters with the given names from the list"""
         assert isinstance(names, list)
 
         for n in names:
@@ -908,8 +924,14 @@ class SubprogramProfile(object):
             p.default = None
 
     def subprogram(
-        self, name, showdoc=True, local_vars=[], code=[], convention=None, lang="ada"
-    ):
+        self,
+        name: str,
+        showdoc: bool = True,
+        local_vars: list[Local_Var] = [],
+        code: str = "",
+        convention: Optional[str] = None,
+        lang: str = "ada",
+    ) -> Subprogram:
         """Return an instance of Subprogram with the corresponding profile.
         lang is one of "ada", "c->ada" or "ada->c".
         """
@@ -963,7 +985,9 @@ class SubprogramProfile(object):
             doc.append("Since: gtk+ %s" % node.get("version"))
         return doc
 
-    def _parameters(self, c, gtkmethod, pkg):
+    def _parameters(
+        self, c: GIRNode, gtkmethod: GtkAdaMethod, pkg: Optional[Package]
+    ) -> list[Parameter]:
         """Parse the <parameters> child node of c"""
         if c is None:
             return []
@@ -1101,7 +1125,9 @@ class SubprogramProfile(object):
 
         return result
 
-    def _returns(self, node, gtkmethod, pkg):
+    def _returns(
+        self, node: GIRNode, gtkmethod: GtkAdaMethod, pkg: Optional[Package]
+    ) -> Optional[CType]:
         """Parse the method's return type"""
 
         returns = gtkmethod.returned_c_type()
@@ -1173,13 +1199,13 @@ class GIRClass(object):
 
     def __init__(
         self,
-        gir,
-        rootNode,
-        node,
-        identifier_prefix,
-        is_interface=False,
-        is_gobject=True,
-        has_toplevel_type=True,
+        gir: GIR,
+        rootNode: GIRNode,
+        node: GIRNode,
+        identifier_prefix: str,
+        is_interface: bool = False,
+        is_gobject: bool = True,
+        has_toplevel_type: bool = True,
     ):
         """If has_toplevel_type is False, no widget type is generated"""
 
@@ -1362,12 +1388,12 @@ class GIRClass(object):
 
     def _handle_function(
         self,
-        section,
-        c,
-        ismethod=False,
-        gtkmethod=None,
-        showdoc=True,
-        isinherited=False,
+        section: Section,
+        c: GIRNode,
+        ismethod: bool = False,
+        gtkmethod: Optional[GtkAdaMethod] = None,
+        showdoc: bool = True,
+        isinherited: bool = False,
     ):
         """Top-level entry point for binding a GIR ``<function>`` or
         ``<method>`` node ``c``. Reads the TOML override (or honours
@@ -1410,7 +1436,7 @@ class GIRClass(object):
                 cname, gtkmethod.ada_name() or cname
             )  # Avoid warning later on
 
-    def _func_is_direct_import(self, profile):
+    def _func_is_direct_import(self, profile: SubprogramProfile) -> bool:
         """Whether a function with this profile
         should be implemented directly as a pragma Import, rather than
         require its own body.
@@ -1419,16 +1445,16 @@ class GIRClass(object):
 
     def _handle_function_internal(
         self,
-        section,
-        node,
-        cname,
-        gtkmethod,
-        profile=None,
-        showdoc=True,
-        adaname=None,
-        ismethod=False,
-        isinherited=False,
-    ):
+        section: Section,
+        node: GIRNode,
+        cname: str,
+        gtkmethod: GtkAdaMethod,
+        profile: Optional[SubprogramProfile] = None,
+        showdoc: bool = True,
+        adaname: Optional[str] = None,
+        ismethod: bool = False,
+        isinherited: bool = False,
+    ) -> Optional[Subprogram]:
         """Generate a binding for a function.,
         This returns None if no binding was made, an instance of Subprogram
         otherwise.
@@ -1572,7 +1598,13 @@ class GIRClass(object):
         section.add(subp)
         return subp
 
-    def _callback_support(self, adaname, cname, profile, cb):
+    def _callback_support(
+        self,
+        adaname: str,
+        cname: str,
+        profile: SubprogramProfile,
+        cbs: list[Parameter],
+    ) -> Optional[Subprogram]:
         """Add support for a function with a callback parameter and user data.
         We generate multiple bindings for such a function:
         * One version that doesn't take a user_data. This looks like:
@@ -1598,14 +1630,14 @@ class GIRClass(object):
         :profile: is an instance of SubprogramProfile.
         :cname: is the name of the gtk+ C function.
         :adaname: is the name of the corresponding Ada function.
-        :cb: is a list of Parameter instances representing the callback
+        :cbs: is a list of Parameter instances representing the callback
            parameters.
         """
 
-        if len(cb) > 1:
+        if len(cbs) > 1:
             print(f"No binding for {cname}: multiple callback parameters")
             return
-        cb = cb[0]
+        cb = cbs[0]
 
         def call_to_c(gtk_func: Subprogram, values, user_data_setup="", user_data_cleanup=""):
             """Implement the call to the C function.
@@ -1968,7 +2000,13 @@ end if;"""
                 c, gtkmethod=gtkmethod, cname=cname, profile=profile
             )
 
-    def _handle_constructor(self, c, cname, gtkmethod, profile=None):
+    def _handle_constructor(
+        self,
+        c: GIRNode,
+        cname: str,
+        gtkmethod: GtkAdaMethod,
+        profile: Optional[SubprogramProfile] = None,
+    ):
         """Emit the Ada constructors for a single GIR ``<constructor>``
         node. For ``GObject``-derived types we emit a ``Gtk_New``
         procedure plus an ``Initialize`` primitive, and for
@@ -2371,7 +2409,7 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
                     in_spec=False,
                 )
 
-    def _get_c_type(self, node):
+    def _get_c_type(self, node: GIRNode) -> Optional[str]:
         t = node.find(ntype)
         if t is not None:
             return t.get(ctype_qname)
@@ -2573,7 +2611,7 @@ See Glib.Properties for more information on properties)"""
                         d + ' :=\n     %(pkg)s.Build ("%(cname)s");' % p
                     )
 
-    def _compute_marshaller_suffix(self, selftype, profile):
+    def _compute_marshaller_suffix(self, selftype: CType, profile: SubprogramProfile) -> str:
         """Computes the suffix for the connect and marshallers types based on
         the profile of the signal.
         """
@@ -2646,7 +2684,9 @@ See Glib.Properties for more information on properties)"""
 
         return marsh_local, marsh_body
 
-    def _generate_slot_marshaller(self, section, selftype, node, gtkmethod) -> tuple[str, Subprogram]:
+    def _generate_slot_marshaller(
+        self, section: Section, selftype: CType, node: GIRNode, gtkmethod: GtkAdaMethod
+    ) -> tuple[str, Subprogram]:
         """Generate connect+marshaller when connect takes a slot object. These
         procedure are independent of the specific widget, and can be shared.
         Writes the generated code to section.
@@ -2761,7 +2801,9 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
 
         return slot_name, callback
 
-    def _generate_marshaller(self, section, selftype, node, gtkmethod) -> tuple[str, Subprogram, SubprogramProfile]:
+    def _generate_marshaller(
+        self, section: Section, selftype: CType, node: GIRNode, gtkmethod: GtkAdaMethod
+    ) -> tuple[str, Subprogram, SubprogramProfile]:
         """Generate, if needed, a connect+marshaller for signals with this
         profile.
         Returns the name of the type that contains the subprogram profile
@@ -3117,7 +3159,7 @@ end "+";"""
                 if impl["body"]:
                     section.add(impl["body"], in_spec=False)
 
-    def add_list_binding(self, section, adaname, ctype, singleList):
+    def add_list_binding(self, section: Section, adaname: str, ctype: CType, singleList: bool):
         """Instantiate ``Glib.Glist.Generic_List`` (or its single-linked
         counterpart) for the given element type, along with the
         ``Convert`` helpers needed by the generic. The instance is
@@ -3192,7 +3234,14 @@ end "+";"""
         section.add(body, in_spec=False)
 
     def record_binding(
-        self, section, ctype, adaname, type, override_fields, unions, private
+        self,
+        section: Section,
+        ctype: str,
+        adaname: Optional[str],
+        type: CType,
+        override_fields: dict[str, CType],
+        unions: list[tuple[str, str]],
+        private: bool,
     ):
         """Create the binding for a <record> or <union> type.
         override_fields has the same format as returned by
@@ -3375,7 +3424,7 @@ end From_Object_Free;"""
 
         section.add(Code(_get_clean_doc(node), iscomment=True))
 
-    def get_enumeration_values(self, enum_ctype):
+    def get_enumeration_values(self, enum_ctype: str) -> list[tuple[str, str]]:
         """Return the list of enumeration values for the given enum, as a list
         of tuples  (C identifier, ada identifier)"""
 
@@ -3385,7 +3434,7 @@ end From_Object_Free;"""
             for m in node.findall(nmember)
         ]
 
-    def constants_binding(self, section, regexp, prefix):
+    def constants_binding(self, section: Section, regexp: str, prefix: str):
         """Emit Ada string-constant declarations for every namespace
         ``<constant>`` whose C name matches ``regexp``. ``prefix``
         is stripped from the C name to compute the Ada identifier.
@@ -3428,7 +3477,13 @@ end From_Object_Free;"""
         section.add("\n".join(constants))
 
     def enumeration_binding(
-        self, section, ctype, type, prefix, asbitfield=False, ignore=""
+        self,
+        section: Section,
+        ctype: str,
+        type: CType,
+        prefix: str,
+        asbitfield: bool = False,
+        ignore: str = "",
     ):
         """Add to the section the Ada type definition for the <enumeration>
         ctype. type is the corresponding instance of CType().
@@ -3521,7 +3576,7 @@ end From_Object_Free;"""
 
         self.pkg.add_with("Glib.Generic_Properties")
 
-    def generate(self, gir):
+    def generate(self, gir: GIR):
         """Build the Ada package for this class.
 
         This is the main driver of :class:`GIRClass`. It resolves the
@@ -3837,7 +3892,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         self._properties()
         self._signals()
 
-    def fundamental_spec(self, section):
+    def fundamental_spec(self, section: Section):
         """Build the specification for fundamental class.
 
         Implementation based on Ada.Finalization.Controlled class
@@ -4080,7 +4135,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         subp.add_nested(self.internal_c_ref_unref_subp(self.node.get(glib_unref_func), "Unref"))
         section.add(subp)
 
-    def internal_c_ref_unref_subp(self, name, adaname):
+    def internal_c_ref_unref_subp(self, name: str, adaname: str) -> Optional[Subprogram]:
         """Generate binding for c ref/unref method"""
 
         local_vars = []
@@ -4128,7 +4183,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
             """   for %(typename)s_Record'External_Tag use "%(cname)s";""" % self._subst
         )
 
-    def get_fundamental_name(self):
+    def get_fundamental_name(self) -> Optional[str]:
         """Return the name of base fundamental class
 
         """
@@ -4311,12 +4366,12 @@ def _emit_widgets():
     like ``GIO``) are fabricated on the fly from a stub XML node.
     """
 
-    def _normalize_ctype(name):
+    def _normalize_ctype(name: Optional[str]) -> Optional[str]:
         if not name:
             return name
         return name.rstrip("*")
 
-    def _manual_ctype(name):
+    def _manual_ctype(name: str) -> Optional[str]:
         """Resolve a manual entry name to the TOML package key/ctype."""
         if "." in name:
             try:
