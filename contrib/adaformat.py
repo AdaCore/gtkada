@@ -610,6 +610,19 @@ class GObject(CType):
 class Tagged(GObject):
     """Tagged types that map C objects, but do not derive from GObject"""
 
+    def null_name(self) -> str:
+        """Name of the Null_<Type> constant declared in this boxed type's
+        own package (see GIRClass.generate's ``is_boxed`` branch). For
+        example, Gresource (Glib.C_Boxed with null record) declares
+        Null_Gresource in glib-resource.ads.
+
+        Note: Fundamental (a Tagged subclass) does not actually get a
+        Null_<Type> constant -- it uses Ada.Finalization.Controlled
+        ref-counting instead -- so this only makes sense for genuinely
+        boxed (is_boxed) instances.
+        """
+        return "Null_%s" % base_name(self.ada)
+
     def convert_from_c(self) -> ConvertedValue:
         return ConvertTuple(
             ada_type=self.param,
@@ -865,6 +878,14 @@ class Interface(CType):
         CType.__init__(self, ada, "Glib.Properties.Property_Interface")
         self.cparam = ada
         self.is_ptr = False
+
+    def null_name(self) -> str:
+        """Name of the Null_<Type> constant declared in this interface's
+        own package (see GIRClass.generate's ``is_interface`` branch).
+        Computed rather than cached, so it stays correct across a later
+        set_ada_name() call.
+        """
+        return "Null_%s" % base_name(self.ada)
 
 
 class List(CType):

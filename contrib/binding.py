@@ -3706,17 +3706,18 @@ end From_Object_Free;"""
 
         elif self.is_interface:
             self.pkg.add_with("Glib.Types")
+            subst = dict(self._subst, null_name=naming.type_exceptions[self.ctype].null_name())
             section.add(
                 """type %(typename)s is new Glib.Types.GType_Interface;
-Null_%(typename)s : constant %(typename)s;"""
-                % self._subst
+%(null_name)s : constant %(typename)s;"""
+                % subst
             )
 
             self.pkg.add_private(
                 """
-   Null_%(typename)s : constant %(typename)s :=
+   %(null_name)s : constant %(typename)s :=
       %(typename)s (Glib.Types.Null_Interface);"""
-                % self._subst
+                % subst
             )
 
         elif self.gtktype.is_subtype():
@@ -3745,26 +3746,28 @@ type %(typename)s is new %(parent)s with null record;"""
             # The type is not private so that we can directly instantiate
             # generic packages for lists of this type.
 
+            subst = dict(self._subst, null_name=naming.type_exceptions[self.ctype].null_name())
+
             section.add(
                 """
    type %(typename)s is new Glib.C_Boxed with null record;
-   Null_%(typename)s : constant %(typename)s;
+   %(null_name)s : constant %(typename)s;
 
    function From_Object (Object : System.Address) return %(typename)s;
    function From_Object_Free (B : access %(typename)s'Class) return %(typename)s;
    pragma Inline (From_Object_Free, From_Object);
 """
-                % self._subst
+                % subst
             )
 
             # Insert constant declaration at the end of the package, to avoid
             # freezing issues
             self.pkg.add_private(
                 (
-                    "   Null_%(typename)s : constant %(typename)s :=\n"
+                    "   %(null_name)s : constant %(typename)s :=\n"
                     "      (Glib.C_Boxed with null record);\n"
                 )
-                % self._subst,
+                % subst,
                 at_end=True,
             )
 
