@@ -150,7 +150,7 @@ class CType(object):
 
     def direct_c_map(self):
         """Whether the parameter can be passed as is to C"""
-        return self.convert_to_c(pkg=None) == "%(var)s"
+        return self.convert_to_c() == "%(var)s"
 
     def as_property(self):
         """The type to use for the property"""
@@ -309,7 +309,7 @@ class CType(object):
                             name=tmp,
                             type=returns[4],
                             aliased=True,
-                            default=self.convert_to_c(pkg=pkg) % {"var": name},
+                            default=self.convert_to_c() % {"var": name},
                         )
                     ]
 
@@ -331,19 +331,19 @@ class CType(object):
                     tmpvars=tmpvars + additional_tmp_vars,
                 )
 
-            elif "%(tmp)" in self.convert_to_c(pkg=pkg):
+            elif "%(tmp)" in self.convert_to_c():
                 # The conversion sets the temporary variable itself
                 tmp = "Tmp_%s" % name
                 call = VariableCall(
                     call=wrapper % tmp,
-                    precall=self.convert_to_c(pkg=pkg) % {"var": name, "tmp": tmp},
+                    precall=self.convert_to_c() % {"var": name, "tmp": tmp},
                     postcall=self.cleanup % tmp,
                     tmpvars=[Local_Var(name=tmp, type=self.cparam)] + [],
                 )
 
             elif self.cleanup:
                 tmp = "Tmp_%s" % name
-                conv = self.convert_to_c(pkg=pkg) % {"var": name}
+                conv = self.convert_to_c() % {"var": name}
 
                 # Initialize the temporary variable with a default value, in
                 # case it is an unconstrained type (a chars_ptr_array for
@@ -358,7 +358,7 @@ class CType(object):
                 )
 
             else:
-                conv = self.convert_to_c(pkg=pkg) % {"var": name}
+                conv = self.convert_to_c() % {"var": name}
                 call = VariableCall(
                     call=wrapper % conv, precall="", postcall="", tmpvars=[]
                 )
@@ -390,7 +390,7 @@ class CType(object):
                 else:
                     postcall = "%s := %s;" % (
                         name,
-                        self.convert_to_c(pkg=pkg) % {"var": tmp},
+                        self.convert_to_c() % {"var": tmp},
                     )
 
                 return VariableCall(
@@ -457,11 +457,11 @@ class Enum(CType):
         else:
             return super(Enum, self).convert_from_c()
 
-    def convert_to_c(self, pkg=None):
+    def convert_to_c (self):
         if self.ada.lower() == "boolean":
             return "%s'Pos (%%(var)s)" % self.ada
         else:
-            return super(Enum, self).convert_to_c(pkg=pkg)
+            return super(Enum, self).convert_to_c()
 
     def record_field_type(self, pkg=None):
         if pkg:
@@ -534,7 +534,7 @@ class GObject(CType):
             conv,
         )
 
-    def convert_to_c(self, pkg=None):
+    def convert_to_c (self):
         if self.allow_none:
             return "Get_Object_Or_Null (GObject (%(var)s))"
         else:
@@ -580,7 +580,7 @@ class Tagged(GObject):
             "From_Object (%(var)s)",
         )
 
-    def convert_to_c(self, pkg=None):
+    def convert_to_c (self):
         return "Get_Object (%(var)s)"
 
     def as_ada_param(self, pkg):
@@ -636,7 +636,7 @@ class UTF8(CType):
             pkg.add_with("Gtkada.Bindings", specs=specs, might_be_unused=True)
             pkg.add_with("Gtkada.Types", specs=specs)
 
-    def convert_to_c(self, pkg=None):
+    def convert_to_c (self):
         if self.allow_none:
             return (
                 '%(tmp)s := '
@@ -664,7 +664,7 @@ class SignalName(UTF8):
         self.set_ada_name("Glib.Signal_Name")
         self.cparam = "Gtkada.Types.Chars_Ptr"
 
-    def convert_to_c(self, pkg=None):
+    def convert_to_c (self):
         return "New_String (String (%(var)s))"
 
 
@@ -700,7 +700,7 @@ class UTF8_List(CType):
     def record_field_type(self, pkg=None):
         return "Gtkada.Types.char_array_access"
 
-    def convert_to_c(self, pkg=None):
+    def convert_to_c (self):
         return "From_String_List (%(var)s)"
 
     def add_with(self, pkg=None, specs=False):
@@ -745,7 +745,7 @@ class Record(CType):
             "%(var)s",
         )
 
-    def convert_to_c(self, pkg=None):
+    def convert_to_c (self):
         if self.allow_none and self.val_or_null:
             self.cparam = "System.Address"
             return "%s (%%(var)s'Address)" % self.val_or_null
@@ -773,16 +773,11 @@ class Proxy(CType):
         ada,
         property=None,
         val_or_null=None,
-        from_gvalue=None,
         default_record_field=None,
     ):
         """:param val_or_null: is used when GIR indicates the parameter has
         allow-none=1, and is used to test whether we should pass NULL
         to C or a pointer to the Ada data.
-
-        :param from_gvalue: is the function used to retrieve this type from
-        a GValue, in particular when processing callbacks. The default is to
-        retrieve a C_Proxy and Cast as appropriate.
 
         :param str default_record_field: the default value to set in record
            type declarations for fields of that type. No default value set
@@ -821,7 +816,7 @@ class Callback(CType):
         # callback.
         return None
 
-    def convert_to_c(self, pkg=None):
+    def convert_to_c (self):
         return "%(var)s'Address"
 
 
@@ -869,7 +864,7 @@ class List(CType):
         t = List("%s.%s.%s" % (pkg, ada, gtype))
         naming.add_type_exception(listCname, t)
 
-    def convert_to_c(self, pkg=None):
+    def convert_to_c (self):
         return "%s.Get_Object (%%(var)s)" % self.__adapkg
 
     def add_with(self, pkg=None, specs=False):
@@ -902,7 +897,7 @@ class AdaType(CType):
         if pkg:
             self.add_with(pkg)
 
-    def convert_to_c(self, pkg=None):
+    def convert_to_c (self):
         return self.__convert
 
 
@@ -915,7 +910,7 @@ class AdaTypeArray(CType):
         self.cparam = "System.Address"
         self.isArray = True
 
-    def convert_to_c(self, pkg=None):
+    def convert_to_c (self):
         return "%(var)s'Address"
 
     def convert_from_c(self):
@@ -2192,7 +2187,7 @@ class Subprogram(object):
             postcall = c.postcall + postcall
         return postcall
 
-    def call_to_string(self, call: tuple, pkg=None, lang="ada"):
+    def call_to_string(self, call: tuple, lang="ada"):
         """CALL is the result of call() above.
         This function returns a string that contains the code for the
         subprogram.
@@ -2203,7 +2198,7 @@ class Subprogram(object):
                 # Add code to convert ada_retval back to C (this
                 # is the returned value from a callback, for instance)
                 # This code block is already semicolon-terminated
-                return_val = self.returns.convert_to_c(pkg=pkg) % {"var": ada_retval}
+                return_val = self.returns.convert_to_c() % {"var": ada_retval}
             else:
                 # ada_retval is just an identifier so we need to add a semicolon
                 return_val = ada_retval + ';'

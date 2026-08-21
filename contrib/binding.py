@@ -89,17 +89,7 @@ See ``contrib/Documentation.md`` for a reference of the TOML override
 schema that drives this generator.
 """
 
-# Issues:
-# - Missing handling of <field> nodes (see GtkArrow for instance)
-# - Some comments contain xref like "#GtkMisc". Not sure what to do with
-#     those. Likewise for names of subprograms in comments.
-#
-# Backward incompatibility:
-#   - Missing documentation for some properties.
-#     SOLVE: we could point to the corresponding Set_* and Get_* subprograms,
-#            or simply ignore the missing doc
-
-from xml.etree.cElementTree import parse, Element, QName, tostring, fromstring
+from xml.etree.cElementTree import parse, Element, QName, tostring
 from adaformat import *
 import copy
 from binding_gtkada import GtkAda
@@ -112,11 +102,10 @@ from optparse import OptionParser
 
 # Python interpreter version check:
 # this script does not work with Python version < 3.7 !
-from sys import version_info
 
 MIN_PY = (3, 7)
-if version_info < MIN_PY:
-    installed = ".".join(map(str, version_info[0:2]))
+if sys.version_info < MIN_PY:
+    installed = ".".join(map(str, sys.version_info[0:2]))
     required = ".".join(map(str, MIN_PY[0:2]))
     print(f"Need at least Python {required}, got version {installed}")
     quit(1)
@@ -1356,7 +1345,7 @@ class GIRClass(object):
         """
         return not self.is_gobject and not self.is_boxed and profile.direct_c_map()
 
-    def _add_self_param(self, adaname, node, gtkmethod, profile, inherited):
+    def _add_self_param(self, node, gtkmethod, profile, inherited):
         """Add a Self parameter to the list of parameters in profile.
         The exact type of the parameter depends on several criteria.
 
@@ -1465,7 +1454,7 @@ class GIRClass(object):
 
         if ismethod:
             self._add_self_param(
-                adaname, node, gtkmethod, profile, inherited=isinherited
+                node, gtkmethod, profile, inherited=isinherited
             )
 
         # Binding provides own body that does not wrap
@@ -2294,7 +2283,6 @@ void gtkada_%(type)s_set_%(method)s(%(iface)s* iface, void* handler) {
                 # profile actually needs for the given lang.
                 profile = SubprogramProfile.parse(node=c, gtkmethod=gtkmethod, pkg=None)
                 self._add_self_param(
-                    adaname=adaname,
                     node=c,
                     gtkmethod=gtkmethod,
                     profile=profile,
@@ -4100,7 +4088,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
                 gtkmethod = self.gtkpkg.get_method(cname=cname)
                 profile = SubprogramProfile.parse(node=c, gtkmethod=gtkmethod, pkg=self.pkg)
                 self._add_self_param(
-                    None, c, gtkmethod, profile, inherited=False
+                    c, gtkmethod, profile, inherited=False
                 )
                 c_params = profile.c_params(local_vars, internal_call)
                 return Subprogram(
