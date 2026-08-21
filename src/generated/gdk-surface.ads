@@ -34,7 +34,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo.Region;    use Cairo.Region;
 with Gdk.Cursor;      use Gdk.Cursor;
-with Gdk.Device;      use Gdk.Device;
+with Gdk.Device;
 with Gdk.Frame_Clock; use Gdk.Frame_Clock;
 with Gdk.GLContext;   use Gdk.GLContext;
 with Gdk.Monitor;     use Gdk.Monitor;

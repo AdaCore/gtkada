@@ -408,12 +408,11 @@ class CType(object):
                     tmpvars=ret[3],
                 )
 
-    def add_with(self, pkg=None, specs=False):
+    def add_with(self, pkg: Package, specs: bool = False):
         """Add required withs for this type"""
-        if pkg:
-            pkg.add_with(package_name(self.ada))
+        pkg.add_with(package_name(self.ada))
 
-        if pkg and self.allow_none and self.val_or_null:
+        if self.allow_none and self.val_or_null:
             base = self.val_or_null
             pkg.add_with(package_name(base), specs=specs)
 
@@ -561,13 +560,13 @@ class GObject(CType):
 
         return super(GObject, self).as_ada_param(pkg)
 
-    def add_with(self, pkg=None, specs=False):
+    def add_with(self, pkg: Package, specs: bool = False):
         super(GObject, self).add_with(pkg=pkg, specs=specs)
 
         # Conversion helpers for ada_access_root types instantiate stubs of
         # the tagged record type (e.g. Gdk.Display.Gdk_Display_Record) inside
         # generated bodies, so the record package is needed there.
-        if pkg and self.record_ada is not None:
+        if self.record_ada is not None:
             pkg.add_with(package_name(self.record_ada), specs=False, do_use=False)
 
     def copy(self):
@@ -657,10 +656,9 @@ class UTF8(CType):
         else:
             return "New_String (%(var)s)"
 
-    def add_with(self, pkg, specs=False):
+    def add_with(self, pkg: Package, specs: bool = False):
         super(UTF8, self).add_with(pkg)
-        if pkg:
-            pkg.add_with("Gtkada.Types", specs=specs, might_be_unused=True)
+        pkg.add_with("Gtkada.Types", specs=specs, might_be_unused=True)
 
 
 class SignalName(UTF8):
@@ -712,11 +710,10 @@ class UTF8_List(CType):
     def convert_to_c(self) -> str:
         return "From_String_List (%(var)s)"
 
-    def add_with(self, pkg=None, specs=False):
+    def add_with(self, pkg: Package, specs: bool = False):
         super(UTF8_List, self).add_with(pkg=pkg)
-        if pkg:
-            pkg.add_with("GNAT.Strings", specs=True)
-            pkg.add_with("Gtkada.Bindings", specs=specs, might_be_unused=True)
+        pkg.add_with("GNAT.Strings", specs=True)
+        pkg.add_with("Gtkada.Bindings", specs=specs, might_be_unused=True)
 
 
 class Record(CType):
@@ -881,15 +878,14 @@ class List(CType):
     def convert_to_c(self) -> str:
         return "%s.Get_Object (%%(var)s)" % self.__adapkg
 
-    def add_with(self, pkg=None, specs=False):
+    def add_with(self, pkg: Package, specs: bool = False):
         # A list comes from an instantiation (pkg.instance.glist), so we need
         # to skip backward two "."
-        if pkg:
-            p = self.ada.rfind(".")
+        p = self.ada.rfind(".")
+        if p != -1:
+            p = self.ada[:p].rfind(".")
             if p != -1:
-                p = self.ada[:p].rfind(".")
-                if p != -1:
-                    pkg.add_with(self.ada[:p], specs=True)
+                pkg.add_with(self.ada[:p], specs=True)
 
 
 class AdaType(CType):
@@ -1149,7 +1145,8 @@ class AdaNaming(object):
         # Needs to be called last, since the output might depend on all the
         # attributes set above
 
-        t.add_with(pkg)
+        if pkg:
+            t.add_with(pkg)
 
         return t
 
@@ -2555,20 +2552,24 @@ class Package(object):
 
         if type(pkg) == str:
             pkg = [pkg]
+
+        l_name = self.name.lower().split(".")
         for p in pkg:
 
             def sublist(sub, parent):
                 """return a non-empty list if sub is not a sublist of parent"""
                 return [elem for elem in sub if elem not in parent]
 
-            l_name = self.name.lower().split(".")
             l_p_name = p.lower().split(".")
             if not sublist(l_p_name, l_name):
                 continue  # Already imported by construction
 
+            # Need to unpack the tuple to use values in a bool clause
+            # as a tuple always evaluates to True
+            prev_do_use, prev_might_be_unused = self.spec_withs.get(p, (False, False))
             p_info = (
-                do_use or self.spec_withs.get(p, False),  # do_use
-                might_be_unused,
+                do_use or prev_do_use,
+                might_be_unused or prev_might_be_unused,
             )
 
             if specs:
