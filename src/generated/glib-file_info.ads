@@ -61,7 +61,6 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
-with Gdate.Time;              use Gdate.Time;
 with Glib.G_Icon;             use Glib.G_Icon;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
@@ -137,30 +136,6 @@ package Glib.File_Info is
    function Dup (Self : not null access Gfile_Info_Record) return Gfile_Info;
    --  Duplicates a file info structure.
    --  @return a duplicate Glib.File_Info.Gfile_Info of Other.
-
-   function Get_Access_Date_Time
-      (Self : not null access Gfile_Info_Record)
-       return Gdate.Time.Gdate_Time;
-   --  Gets the access time of the current Info and returns it as a
-   --  Gdate.Time.Gdate_Time.
-   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
-   --  contain G_FILE_ATTRIBUTE_TIME_ACCESS. If
-   --  G_FILE_ATTRIBUTE_TIME_ACCESS_USEC is provided, the resulting
-   --  Gdate.Time.Gdate_Time will additionally have microsecond precision.
-   --  If nanosecond precision is needed, G_FILE_ATTRIBUTE_TIME_ACCESS_NSEC
-   --  must be queried separately using Glib.File_Info.Get_Attribute_Uint32.
-   --  Since: gtk+ 2.70
-   --  @return access time, or null if unknown
-
-   procedure Set_Access_Date_Time
-      (Self  : not null access Gfile_Info_Record;
-       Atime : Gdate.Time.Gdate_Time);
-   --  Sets the G_FILE_ATTRIBUTE_TIME_ACCESS and
-   --  G_FILE_ATTRIBUTE_TIME_ACCESS_USEC attributes in the file info to the
-   --  given date/time value.
-   --  G_FILE_ATTRIBUTE_TIME_ACCESS_NSEC will be cleared.
-   --  Since: gtk+ 2.70
-   --  @param Atime a Gdate.Time.Gdate_Time.
 
    function Get_Attribute_As_String
       (Self      : not null access Gfile_Info_Record;
@@ -366,30 +341,6 @@ package Glib.File_Info is
    --  See G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE.
    --  @param Content_Type a content type. See
    --  [GContentType][gio-GContentType]
-
-   function Get_Creation_Date_Time
-      (Self : not null access Gfile_Info_Record)
-       return Gdate.Time.Gdate_Time;
-   --  Gets the creation time of the current Info and returns it as a
-   --  Gdate.Time.Gdate_Time.
-   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
-   --  contain G_FILE_ATTRIBUTE_TIME_CREATED. If
-   --  G_FILE_ATTRIBUTE_TIME_CREATED_USEC is provided, the resulting
-   --  Gdate.Time.Gdate_Time will additionally have microsecond precision.
-   --  If nanosecond precision is needed, G_FILE_ATTRIBUTE_TIME_CREATED_NSEC
-   --  must be queried separately using Glib.File_Info.Get_Attribute_Uint32.
-   --  Since: gtk+ 2.70
-   --  @return creation time, or null if unknown
-
-   procedure Set_Creation_Date_Time
-      (Self          : not null access Gfile_Info_Record;
-       Creation_Time : Gdate.Time.Gdate_Time);
-   --  Sets the G_FILE_ATTRIBUTE_TIME_CREATED and
-   --  G_FILE_ATTRIBUTE_TIME_CREATED_USEC attributes in the file info to the
-   --  given date/time value.
-   --  G_FILE_ATTRIBUTE_TIME_CREATED_NSEC will be cleared.
-   --  Since: gtk+ 2.70
-   --  @param Creation_Time a Gdate.Time.Gdate_Time.
 
    function Get_Display_Name
       (Self : not null access Gfile_Info_Record) return UTF8_String;

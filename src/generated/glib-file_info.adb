@@ -106,20 +106,6 @@ package body Glib.File_Info is
       return Glib.File_Info.Gfile_Info (Get_User_Data (Internal (Get_Object (Self)), Stub_Gfile_Info));
    end Dup;
 
-   --------------------------
-   -- Get_Access_Date_Time --
-   --------------------------
-
-   function Get_Access_Date_Time
-      (Self : not null access Gfile_Info_Record)
-       return Gdate.Time.Gdate_Time
-   is
-      function Internal (Self : System.Address) return System.Address;
-      pragma Import (C, Internal, "g_file_info_get_access_date_time");
-   begin
-      return From_Object (Internal (Get_Object (Self)));
-   end Get_Access_Date_Time;
-
    -----------------------------
    -- Get_Attribute_As_String --
    -----------------------------
@@ -354,20 +340,6 @@ package body Glib.File_Info is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Content_Type;
-
-   ----------------------------
-   -- Get_Creation_Date_Time --
-   ----------------------------
-
-   function Get_Creation_Date_Time
-      (Self : not null access Gfile_Info_Record)
-       return Gdate.Time.Gdate_Time
-   is
-      function Internal (Self : System.Address) return System.Address;
-      pragma Import (C, Internal, "g_file_info_get_creation_date_time");
-   begin
-      return From_Object (Internal (Get_Object (Self)));
-   end Get_Creation_Date_Time;
 
    ----------------------
    -- Get_Display_Name --
@@ -625,20 +597,6 @@ package body Glib.File_Info is
       Free (Tmp_Attribute);
    end Remove_Attribute;
 
-   --------------------------
-   -- Set_Access_Date_Time --
-   --------------------------
-
-   procedure Set_Access_Date_Time
-      (Self  : not null access Gfile_Info_Record;
-       Atime : Gdate.Time.Gdate_Time)
-   is
-      procedure Internal (Self : System.Address; Atime : System.Address);
-      pragma Import (C, Internal, "g_file_info_set_access_date_time");
-   begin
-      Internal (Get_Object (Self), Get_Object (Atime));
-   end Set_Access_Date_Time;
-
    ---------------------------
    -- Set_Attribute_Boolean --
    ---------------------------
@@ -864,22 +822,6 @@ package body Glib.File_Info is
       Internal (Get_Object (Self), Tmp_Content_Type);
       Free (Tmp_Content_Type);
    end Set_Content_Type;
-
-   ----------------------------
-   -- Set_Creation_Date_Time --
-   ----------------------------
-
-   procedure Set_Creation_Date_Time
-      (Self          : not null access Gfile_Info_Record;
-       Creation_Time : Gdate.Time.Gdate_Time)
-   is
-      procedure Internal
-         (Self          : System.Address;
-          Creation_Time : System.Address);
-      pragma Import (C, Internal, "g_file_info_set_creation_date_time");
-   begin
-      Internal (Get_Object (Self), Get_Object (Creation_Time));
-   end Set_Creation_Date_Time;
 
    ----------------------
    -- Set_Display_Name --

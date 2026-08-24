@@ -15,20 +15,38 @@ id = "g_file_info_set_attribute_mask"
 bind = false
 # Needs Attribute_Matcher
 
+# -----------------------
+# TODO: Bind these once GDateTime is done
+
 [[method]]
 id = "g_file_info_get_modification_date_time"
 bind = false
-# Needs GDateTime
 
 [[method]]
 id = "g_file_info_set_modification_date_time"
 bind = false
-# Needs GDateTime
 
 [[method]]
 id = "g_file_info_get_deletion_date"
 bind = false
-# Needs GDateTime
+
+[[method]]
+id = "g_file_info_get_access_date_time"
+bind = false
+
+[[method]]
+id = "g_file_info_get_creation_date_time"
+bind = false
+
+[[method]]
+id = "g_file_info_set_access_date_time"
+bind = false
+
+[[method]]
+id = "g_file_info_set_creation_date_time"
+bind = false
+
+# -----------------------
 
 [[method]]
 id = "g_file_info_get_modification_time"
