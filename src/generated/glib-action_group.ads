@@ -143,6 +143,30 @@ package Glib.Action_Group is
    --  parameter must be given as Parameter. If the action is expecting no
    --  parameters then Parameter must be null. See
    --  Glib.Action_Group.Get_Action_Parameter_Type.
+   --  If the Glib.Action_Group.Gaction_Group implementation supports
+   --  asynchronous remote activation over D-Bus, this call may return before
+   --  the relevant D-Bus traffic has been sent, or any replies have been
+   --  received. In order to block on such asynchronous activation calls,
+   --  g_dbus_connection_flush should be called prior to the code, which
+   --  depends on the result of the action activation. Without flushing the
+   --  D-Bus connection, there is no guarantee that the action would have been
+   --  activated.
+   --  The following code which runs in a remote app instance, shows an
+   --  example of a "quit" action being activated on the primary app instance
+   --  over D-Bus. Here g_dbus_connection_flush is called before `exit`.
+   --  Without g_dbus_connection_flush, the "quit" action may fail to be
+   --  activated on the primary instance.
+   --
+   --     // call "quit" action on primary instance
+   --     g_action_group_activate_action (G_ACTION_GROUP (app), "quit", NULL);
+   --
+   --     // make sure the action is activated now
+   --     g_dbus_connection_flush (...);
+   --
+   --     g_debug ("application has been terminated. exiting.");
+   --
+   --     exit (0);
+   --
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to activate
    --  @param Parameter parameters to the activation
@@ -464,6 +488,30 @@ package Glib.Action_Group is
    --  parameter must be given as Parameter. If the action is expecting no
    --  parameters then Parameter must be null. See
    --  Glib.Action_Group.Get_Action_Parameter_Type.
+   --  If the Glib.Action_Group.Gaction_Group implementation supports
+   --  asynchronous remote activation over D-Bus, this call may return before
+   --  the relevant D-Bus traffic has been sent, or any replies have been
+   --  received. In order to block on such asynchronous activation calls,
+   --  g_dbus_connection_flush should be called prior to the code, which
+   --  depends on the result of the action activation. Without flushing the
+   --  D-Bus connection, there is no guarantee that the action would have been
+   --  activated.
+   --  The following code which runs in a remote app instance, shows an
+   --  example of a "quit" action being activated on the primary app instance
+   --  over D-Bus. Here g_dbus_connection_flush is called before `exit`.
+   --  Without g_dbus_connection_flush, the "quit" action may fail to be
+   --  activated on the primary instance.
+   --
+   --     // call "quit" action on primary instance
+   --     g_action_group_activate_action (G_ACTION_GROUP (app), "quit", NULL);
+   --
+   --     // make sure the action is activated now
+   --     g_dbus_connection_flush (...);
+   --
+   --     g_debug ("application has been terminated. exiting.");
+   --
+   --     exit (0);
+   --
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to activate
    --  @param Parameter parameters to the activation

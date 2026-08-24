@@ -138,9 +138,11 @@ package Glib.List_Store is
        Func     : Equal_Func;
        Position : access Guint := null) return Boolean;
    --  Looks up the given Item in the list store by looping over the items and
-   --  comparing them with Compare_Func until the first occurrence of Item
-   --  which matches. If Item was not found, then Position will not be set, and
-   --  this method will return False.
+   --  comparing them with Equal_Func until the first occurrence of Item which
+   --  matches. If Item was not found, then Position will not be set, and this
+   --  method will return False.
+   --  Item is always passed as second parameter to Equal_Func.
+   --  Since GLib 2.76 it is possible to pass `NULL` for Item.
    --  Since: gtk+ 2.64
    --  @param Item an item
    --  @param Func A custom equality check function
@@ -249,6 +251,9 @@ package Glib.List_Store is
    --  The type of items contained in this list store. Items must be
    --  subclasses of Glib.Object.GObject.
 
+   N_Items_Property : constant Glib.Properties.Property_Uint;
+   --  The number of items contained in this list store.
+
    ----------------
    -- Interfaces --
    ----------------
@@ -268,6 +273,8 @@ package Glib.List_Store is
    renames Implements_Glist_Model.To_Object;
 
 private
+   N_Items_Property : constant Glib.Properties.Property_Uint :=
+     Glib.Properties.Build ("n-items");
    Item_Type_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("item-type");
 end Glib.List_Store;

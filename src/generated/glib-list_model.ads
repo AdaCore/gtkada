@@ -64,6 +64,20 @@
 --  implementation, but typically it will be from the thread that owns the
 --  [thread-default main context][g-main-context-push-thread-default] in effect
 --  at the time that the model was created.
+--
+--  Over time, it has established itself as good practice for listmodel
+--  implementations to provide properties `item-type` and `n-items` to ease
+--  working with them. While it is not required, it is recommended that
+--  implementations provide these two properties. They should return the values
+--  of Glib.List_Model.Get_Item_Type and Glib.List_Model.Get_N_Items
+--  respectively and be defined as such:
+--
+--     properties[PROP_ITEM_TYPE] =
+--       g_param_spec_gtype ("item-type", "", "", G_TYPE_OBJECT,
+--                           G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+--     properties[PROP_N_ITEMS] =
+--       g_param_spec_uint ("n-items", "", "", 0, G_MAXUINT, 0,
+--                          G_PARAM_READABLE | G_PARAM_STATIC_STRINGS);
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Object; use Glib.Object;
@@ -87,9 +101,10 @@ package Glib.List_Model is
 
    function Get_Item_Type (Self : Glist_Model) return GType;
    pragma Import (C, Get_Item_Type, "g_list_model_get_item_type");
-   --  Gets the type of the items in List. All items returned from
-   --  g_list_model_get_type are of that type or a subtype, or are an
-   --  implementation of that interface.
+   --  Gets the type of the items in List.
+   --  All items returned from g_list_model_get_item are of the type returned
+   --  by this function, or a subtype, or if the type is an interface, they are
+   --  an implementation of that interface.
    --  The item type of a Glib.List_Model.Glist_Model can not change during
    --  the life of the model.
    --  Since: gtk+ 2.44
@@ -107,10 +122,14 @@ package Glib.List_Model is
    function Get_Item
       (Self     : Glist_Model;
        Position : Guint) return Glib.Object.GObject;
-   --  Get the item at Position. If Position is greater than the number of
-   --  items in List, null is returned.
+   --  Get the item at Position.
+   --  If Position is greater than the number of items in List, null is
+   --  returned.
    --  null is never returned for an index that is smaller than the length of
-   --  the list. See Glib.List_Model.Get_N_Items.
+   --  the list.
+   --  This function is meant to be used by language bindings in place of
+   --  g_list_model_get_item.
+   --  See also: Glib.List_Model.Get_N_Items
    --  Since: gtk+ 2.44
    --  @param Position the position of the item to fetch
    --  @return the object at Position.
@@ -173,7 +192,7 @@ package Glib.List_Model is
    --  List. At Position, Removed items were removed and Added items were added
    --  in their place.
    --
-   --  Note: If Removed != Added, the positions of all later items in the
+   --  Note: If `removed != added`, the positions of all later items in the
    --  model change.
    -- 
    --  Callback parameters:
@@ -201,15 +220,18 @@ package Glib.List_Model is
    --  items in List, null is returned.
    --  null is never returned for an index that is smaller than the length of
    --  the list. See Glib.List_Model.Get_N_Items.
+   --  The same Glib.Object.GObject instance may not appear more than once in
+   --  a Glib.List_Model.Glist_Model.
    --  Since: gtk+ 2.44
    --  @param Position the position of the item to fetch
    --  @return the object at Position.
 
    type Virtual_Get_Item_Type is access function (Self : Glist_Model) return GType;
    pragma Convention (C, Virtual_Get_Item_Type);
-   --  Gets the type of the items in List. All items returned from
-   --  g_list_model_get_type are of that type or a subtype, or are an
-   --  implementation of that interface.
+   --  Gets the type of the items in List.
+   --  All items returned from g_list_model_get_item are of the type returned
+   --  by this function, or a subtype, or if the type is an interface, they are
+   --  an implementation of that interface.
    --  The item type of a Glib.List_Model.Glist_Model can not change during
    --  the life of the model.
    --  Since: gtk+ 2.44

@@ -51,10 +51,13 @@ package Glib.File_Input_Stream is
    --  Type definition for a function that will be called back when an
    --  asynchronous operation within GIO has been completed.
    --  Gasync_Ready_Callback callbacks from Gtask.Gtask are guaranteed to be
-   --  invoked in a later iteration of the [thread-default main
-   --  context][g-main-context-push-thread-default] where the Gtask.Gtask was
+   --  invoked in a later iteration of the thread-default main context (see
+   --  [methodGlib.MainContext.push_thread_default]) where the Gtask.Gtask was
    --  created. All other users of Gasync_Ready_Callback must likewise call it
    --  asynchronously in a later iteration of the main context.
+   --  The asynchronous operation is guaranteed to have held a reference to
+   --  Source_Object from the time when the `*_async` function was called,
+   --  until after this callback returns.
    --  @param Source_Object the object the asynchronous operation was started
    --  with.
    --  @param Res a Glib.G_Async_Result.
@@ -104,7 +107,8 @@ package Glib.File_Input_Stream is
    --  @param Io_Priority the [I/O priority][io-priority] of the request
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
-   --  @param Callback callback to call when the request is satisfied
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
 
    function Query_Info_Finish
       (Self   : not null access Gfile_Input_Stream_Record;

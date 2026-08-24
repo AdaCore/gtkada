@@ -163,6 +163,17 @@ package body Glib.Application is
       Free (Tmp_Property);
    end Bind_Busy_Property;
 
+   ----------
+   -- Done --
+   ----------
+
+   procedure Done (Self : not null access Gapplication_Command_Line_Record) is
+      procedure Internal (Self : System.Address);
+      pragma Import (C, Internal, "g_application_command_line_done");
+   begin
+      Internal (Get_Object (Self));
+   end Done;
+
    ------------------------
    -- Get_Application_Id --
    ------------------------
@@ -358,6 +369,20 @@ package body Glib.Application is
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Resource_Base_Path;
 
+   -----------------
+   -- Get_Version --
+   -----------------
+
+   function Get_Version
+      (Self : not null access Gapplication_Record) return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "g_application_get_version");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
+   end Get_Version;
+
    ------------
    -- Getenv --
    ------------
@@ -399,6 +424,42 @@ package body Glib.Application is
    begin
       Internal (Get_Object (Self));
    end Mark_Busy;
+
+   -------------------
+   -- Print_Literal --
+   -------------------
+
+   procedure Print_Literal
+      (Self    : not null access Gapplication_Command_Line_Record;
+       Message : UTF8_String)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Message : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "g_application_command_line_print_literal");
+      Tmp_Message : Gtkada.Types.Chars_Ptr := New_String (Message);
+   begin
+      Internal (Get_Object (Self), Tmp_Message);
+      Free (Tmp_Message);
+   end Print_Literal;
+
+   ----------------------
+   -- Printerr_Literal --
+   ----------------------
+
+   procedure Printerr_Literal
+      (Self    : not null access Gapplication_Command_Line_Record;
+       Message : UTF8_String)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Message : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "g_application_command_line_printerr_literal");
+      Tmp_Message : Gtkada.Types.Chars_Ptr := New_String (Message);
+   begin
+      Internal (Get_Object (Self), Tmp_Message);
+      Free (Tmp_Message);
+   end Printerr_Literal;
 
    ----------
    -- Quit --
@@ -630,6 +691,24 @@ package body Glib.Application is
       Internal (Get_Object (Self), Tmp_Resource_Path);
       Free (Tmp_Resource_Path);
    end Set_Resource_Base_Path;
+
+   -----------------
+   -- Set_Version --
+   -----------------
+
+   procedure Set_Version
+      (Self    : not null access Gapplication_Record;
+       Version : UTF8_String)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Version : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "g_application_set_version");
+      Tmp_Version : Gtkada.Types.Chars_Ptr := New_String (Version);
+   begin
+      Internal (Get_Object (Self), Tmp_Version);
+      Free (Tmp_Version);
+   end Set_Version;
 
    --------------------------
    -- Unbind_Busy_Property --
@@ -1049,6 +1128,24 @@ package body Glib.Application is
       Internal (Get_Object (Self), Tmp_Action_Name);
       Free (Tmp_Action_Name);
    end Remove_Action;
+
+   ---------------------------
+   -- Remove_Action_Entries --
+   ---------------------------
+
+   procedure Remove_Action_Entries
+      (Self      : not null access Gapplication_Record;
+       Entries   : GAction_Entry_Array;
+       N_Entries : Glib.Gint)
+   is
+      procedure Internal
+         (Self      : System.Address;
+          Entries   : GAction_Entry_Array;
+          N_Entries : Glib.Gint);
+      pragma Import (C, Internal, "g_action_map_remove_action_entries");
+   begin
+      Internal (Get_Object (Self), Entries, N_Entries);
+   end Remove_Action_Entries;
 
    -----------------
    -- Get_Default --

@@ -514,4 +514,22 @@ package body Glib.Simple_Action_Group is
       Free (Tmp_Action_Name);
    end Remove_Action;
 
+   ---------------------------
+   -- Remove_Action_Entries --
+   ---------------------------
+
+   procedure Remove_Action_Entries
+      (Self      : not null access Gsimple_Action_Group_Record;
+       Entries   : GAction_Entry_Array;
+       N_Entries : Glib.Gint)
+   is
+      procedure Internal
+         (Self      : System.Address;
+          Entries   : GAction_Entry_Array;
+          N_Entries : Glib.Gint);
+      pragma Import (C, Internal, "g_action_map_remove_action_entries");
+   begin
+      Internal (Get_Object (Self), Entries, N_Entries);
+   end Remove_Action_Entries;
+
 end Glib.Simple_Action_Group;

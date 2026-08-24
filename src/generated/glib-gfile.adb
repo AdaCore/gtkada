@@ -150,6 +150,70 @@ package body Glib.GFile is
    --  satisfied
    --  @param User_Data the data to pass to callback function
 
+   procedure C_G_File_Make_Symbolic_Link_Async
+      (Self          : Gfile;
+       Symlink_Value : Gtkada.Types.Chars_Ptr;
+       Io_Priority   : Glib.Gint;
+       Cancellable   : System.Address;
+       Callback      : System.Address;
+       User_Data     : System.Address);
+   pragma Import (C, C_G_File_Make_Symbolic_Link_Async, "g_file_make_symbolic_link_async");
+   --  Asynchronously creates a symbolic link named File which contains the
+   --  string Symlink_Value.
+   --  Since: gtk+ 2.74
+   --  @param Symlink_Value a string with the path for the target of the new
+   --  symlink
+   --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+   --  @param User_Data the data to pass to callback function
+
+   procedure C_G_File_New_Tmp_Async
+      (Tmpl        : Gtkada.Types.Chars_Ptr;
+       Io_Priority : Glib.Gint;
+       Cancellable : System.Address;
+       Callback    : System.Address;
+       User_Data   : System.Address);
+   pragma Import (C, C_G_File_New_Tmp_Async, "g_file_new_tmp_async");
+   --  Asynchronously opens a file in the preferred directory for temporary
+   --  files (as returned by g_get_tmp_dir) as g_file_new_tmp.
+   --  Tmpl should be a string in the GLib file name encoding containing a
+   --  sequence of six 'X' characters, and containing no directory components.
+   --  If it is null, a default template is used.
+   --  Since: gtk+ 2.74
+   --  @param Tmpl Template for the file name, as in g_file_open_tmp, or null
+   --  for a default template
+   --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  done
+   --  @param User_Data data to pass to Callback
+
+   procedure C_G_File_New_Tmp_Dir_Async
+      (Tmpl        : Gtkada.Types.Chars_Ptr;
+       Io_Priority : Glib.Gint;
+       Cancellable : System.Address;
+       Callback    : System.Address;
+       User_Data   : System.Address);
+   pragma Import (C, C_G_File_New_Tmp_Dir_Async, "g_file_new_tmp_dir_async");
+   --  Asynchronously creates a directory in the preferred directory for
+   --  temporary files (as returned by g_get_tmp_dir) as g_dir_make_tmp.
+   --  Tmpl should be a string in the GLib file name encoding containing a
+   --  sequence of six 'X' characters, and containing no directory components.
+   --  If it is null, a default template is used.
+   --  Since: gtk+ 2.74
+   --  @param Tmpl Template for the file name, as in g_dir_make_tmp, or null
+   --  for a default template
+   --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  done
+   --  @param User_Data data to pass to Callback
+
    procedure C_G_File_Open_Readwrite_Async
       (Self        : Gfile;
        Io_Priority : Glib.Gint;
@@ -378,8 +442,9 @@ package body Glib.GFile is
    --  @param Io_Priority the [I/O priority][io-priority] of the request
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
-   --  @param Callback a Gasync_Ready_Callback
-   --  @param User_Data a System.Address
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+   --  @param User_Data the data to pass to callback function
 
    procedure C_G_File_Set_Display_Name_Async
       (Self         : Gfile;
@@ -428,12 +493,12 @@ package body Glib.GFile is
    procedure Internal_Gasync_Ready_Callback
       (Source_Object : System.Address;
        Res           : Glib.G_Async_Result;
-       User_Data     : System.Address);
+       Data          : System.Address);
    pragma Convention (C, Internal_Gasync_Ready_Callback);
    --  @param Source_Object the object the asynchronous operation was started
    --  with.
    --  @param Res a Glib.G_Async_Result.
-   --  @param User_Data user data passed to the callback.
+   --  @param Data user data passed to the callback.
 
    ------------------------------------
    -- Internal_Gasync_Ready_Callback --
@@ -442,9 +507,9 @@ package body Glib.GFile is
    procedure Internal_Gasync_Ready_Callback
       (Source_Object : System.Address;
        Res           : Glib.G_Async_Result;
-       User_Data     : System.Address)
+       Data          : System.Address)
    is
-      Func         : constant Gasync_Ready_Callback := To_Gasync_Ready_Callback (User_Data);
+      Func         : constant Gasync_Ready_Callback := To_Gasync_Ready_Callback (Data);
       Stub_GObject : Glib.Object.GObject_Record;
    begin
       Func (Get_User_Data (Source_Object, Stub_GObject), Res);
@@ -506,6 +571,51 @@ package body Glib.GFile is
    begin
       return Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Internal (Self, Res), Stub_Gfile_Output_Stream));
    end Append_To_Finish;
+
+   -----------------------------------
+   -- Build_Attribute_List_For_Copy --
+   -----------------------------------
+
+   function Build_Attribute_List_For_Copy
+      (Self        : Gfile;
+       Flags       : GFile_Copy_Flags;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       return UTF8_String
+   is
+      function Internal
+         (Self        : Gfile;
+          Flags       : GFile_Copy_Flags;
+          Cancellable : System.Address) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "g_file_build_attribute_list_for_copy");
+   begin
+      return Gtkada.Bindings.Value_And_Free (Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable))));
+   end Build_Attribute_List_For_Copy;
+
+   ------------------------------
+   -- Copy_Async_With_Closures --
+   ------------------------------
+
+   procedure Copy_Async_With_Closures
+      (Self                      : Gfile;
+       Destination               : Gfile;
+       Flags                     : GFile_Copy_Flags;
+       Io_Priority               : Glib.Gint;
+       Cancellable               : access Glib.Cancellable.Gcancellable_Record'Class;
+       Progress_Callback_Closure : System.Address;
+       Ready_Callback_Closure    : System.Address)
+   is
+      procedure Internal
+         (Self                      : Gfile;
+          Destination               : Gfile;
+          Flags                     : GFile_Copy_Flags;
+          Io_Priority               : Glib.Gint;
+          Cancellable               : System.Address;
+          Progress_Callback_Closure : System.Address;
+          Ready_Callback_Closure    : System.Address);
+      pragma Import (C, Internal, "g_file_copy_async_with_closures");
+   begin
+      Internal (Self, Destination, Flags, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Progress_Callback_Closure, Ready_Callback_Closure);
+   end Copy_Async_With_Closures;
 
    ---------------------
    -- Copy_Attributes --
@@ -1021,6 +1131,144 @@ package body Glib.GFile is
       Free (Tmp_Symlink_Value);
       return Tmp_Return /= 0;
    end Make_Symbolic_Link;
+
+   ------------------------------
+   -- Make_Symbolic_Link_Async --
+   ------------------------------
+
+   procedure Make_Symbolic_Link_Async
+      (Self          : Gfile;
+       Symlink_Value : UTF8_String;
+       Io_Priority   : Glib.Gint;
+       Cancellable   : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback      : Gasync_Ready_Callback)
+   is
+      Tmp_Symlink_Value : Gtkada.Types.Chars_Ptr := New_String (Symlink_Value);
+   begin
+      if Callback = null then
+         C_G_File_Make_Symbolic_Link_Async (Self, Tmp_Symlink_Value, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+         Free (Tmp_Symlink_Value);
+      else
+         C_G_File_Make_Symbolic_Link_Async (Self, Tmp_Symlink_Value, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+         Free (Tmp_Symlink_Value);
+      end if;
+   end Make_Symbolic_Link_Async;
+
+   -------------------------------
+   -- Make_Symbolic_Link_Finish --
+   -------------------------------
+
+   function Make_Symbolic_Link_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result) return Boolean
+   is
+      function Internal
+         (Self   : Gfile;
+          Result : Glib.G_Async_Result) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_file_make_symbolic_link_finish");
+   begin
+      return Internal (Self, Result) /= 0;
+   end Make_Symbolic_Link_Finish;
+
+   ------------------------------
+   -- Move_Async_With_Closures --
+   ------------------------------
+
+   procedure Move_Async_With_Closures
+      (Self                      : Gfile;
+       Destination               : Gfile;
+       Flags                     : GFile_Copy_Flags;
+       Io_Priority               : Glib.Gint;
+       Cancellable               : access Glib.Cancellable.Gcancellable_Record'Class;
+       Progress_Callback_Closure : System.Address;
+       Ready_Callback_Closure    : System.Address)
+   is
+      procedure Internal
+         (Self                      : Gfile;
+          Destination               : Gfile;
+          Flags                     : GFile_Copy_Flags;
+          Io_Priority               : Glib.Gint;
+          Cancellable               : System.Address;
+          Progress_Callback_Closure : System.Address;
+          Ready_Callback_Closure    : System.Address);
+      pragma Import (C, Internal, "g_file_move_async_with_closures");
+   begin
+      Internal (Self, Destination, Flags, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Progress_Callback_Closure, Ready_Callback_Closure);
+   end Move_Async_With_Closures;
+
+   -----------------
+   -- Move_Finish --
+   -----------------
+
+   function Move_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result) return Boolean
+   is
+      function Internal
+         (Self   : Gfile;
+          Result : Glib.G_Async_Result) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_file_move_finish");
+   begin
+      return Internal (Self, Result) /= 0;
+   end Move_Finish;
+
+   -------------------
+   -- New_Tmp_Async --
+   -------------------
+
+   procedure New_Tmp_Async
+      (Tmpl        : UTF8_String := "";
+       Io_Priority : Glib.Gint;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback)
+   is
+      Tmp_Tmpl : Gtkada.Types.Chars_Ptr;
+   begin
+      if Callback = null then
+         Tmp_Tmpl :=
+           (if Tmpl = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Tmpl));
+         C_G_File_New_Tmp_Async (Tmp_Tmpl, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+         Free (Tmp_Tmpl);
+      else
+         Tmp_Tmpl :=
+           (if Tmpl = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Tmpl));
+         C_G_File_New_Tmp_Async (Tmp_Tmpl, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+         Free (Tmp_Tmpl);
+      end if;
+   end New_Tmp_Async;
+
+   -----------------------
+   -- New_Tmp_Dir_Async --
+   -----------------------
+
+   procedure New_Tmp_Dir_Async
+      (Tmpl        : UTF8_String := "";
+       Io_Priority : Glib.Gint;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback)
+   is
+      Tmp_Tmpl : Gtkada.Types.Chars_Ptr;
+   begin
+      if Callback = null then
+         Tmp_Tmpl :=
+           (if Tmpl = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Tmpl));
+         C_G_File_New_Tmp_Dir_Async (Tmp_Tmpl, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
+         Free (Tmp_Tmpl);
+      else
+         Tmp_Tmpl :=
+           (if Tmpl = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Tmpl));
+         C_G_File_New_Tmp_Dir_Async (Tmp_Tmpl, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
+         Free (Tmp_Tmpl);
+      end if;
+   end New_Tmp_Dir_Async;
 
    --------------------
    -- Open_Readwrite --
@@ -1957,6 +2205,23 @@ package body Glib.GFile is
       return Internal (Self, Result) /= 0;
    end Trash_Finish;
 
+   -------------------------
+   -- New_Build_Filenamev --
+   -------------------------
+
+   function New_Build_Filenamev
+      (Args : GNAT.Strings.String_List) return Gfile
+   is
+      function Internal (Args : Gtkada.Types.chars_ptr_array) return Gfile;
+      pragma Import (C, Internal, "g_file_new_build_filenamev");
+      Tmp_Args   : Gtkada.Types.chars_ptr_array := From_String_List (Args);
+      Tmp_Return : Gfile;
+   begin
+      Tmp_Return := Internal (Tmp_Args);
+      Gtkada.Types.Free (Tmp_Args);
+      return Tmp_Return;
+   end New_Build_Filenamev;
+
    -----------------------------
    -- New_For_Commandline_Arg --
    -----------------------------
@@ -2023,6 +2288,29 @@ package body Glib.GFile is
       Free (Tmp_URI);
       return Tmp_Return;
    end New_For_Uri;
+
+   --------------------
+   -- New_Tmp_Finish --
+   --------------------
+
+   function New_Tmp_Finish
+      (Result   : Glib.G_Async_Result;
+       Iostream : out Glib.File_IO_Stream.Gfile_Iostream) return Gfile
+   is
+      function Internal
+         (Result       : Glib.G_Async_Result;
+          Acc_Iostream : access System.Address) return Gfile;
+      pragma Import (C, Internal, "g_file_new_tmp_finish");
+      Acc_Iostream        : aliased Glib.File_IO_Stream.Gfile_Iostream;
+      Tmp_Acc_Iostream    : aliased System.Address;
+      Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
+      Tmp_Return          : Gfile;
+   begin
+      Tmp_Return := Internal (Result, Tmp_Acc_Iostream'Access);
+      Acc_Iostream := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Acc_Iostream, Stub_Gfile_Iostream));
+      Iostream := Acc_Iostream;
+      return Tmp_Return;
+   end New_Tmp_Finish;
 
    ----------------
    -- Parse_Name --

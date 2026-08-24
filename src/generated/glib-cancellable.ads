@@ -39,11 +39,14 @@ package Glib.Cancellable is
 
    type Gcallback is access procedure;
    --  The type used for callback functions in structure definitions and
-   --  function signatures. This doesn't mean that all callback functions must
-   --  take no parameters and return void. The required signature of a callback
-   --  function is determined by the context in which is used (e.g. the signal
-   --  to which it is connected). Use G_CALLBACK to cast the callback function
-   --  to a Gcallback.
+   --  function signatures.
+   --  This doesn't mean that all callback functions must take no parameters
+   --  and return void. The required signature of a callback function is
+   --  determined by the context in which is used (e.g. the signal to which it
+   --  is connected).
+   --  Use G_CALLBACK to cast the callback function to a Gcallback.
+
+   pragma Convention (C, Gcallback);
 
    ------------------
    -- Constructors --
@@ -101,6 +104,7 @@ package Glib.Cancellable is
    function Connect
       (Self              : not null access Gcancellable_Record;
        Callback          : Gcallback;
+       Data              : System.Address;
        Data_Destroy_Func : Glib.G_Destroy_Notify_Address) return Gulong;
    --  Convenience function to connect to the
    --  Glib.Cancellable.Gcancellable::cancelled signal. Also handles the race
@@ -119,51 +123,10 @@ package Glib.Cancellable is
    --  unconditionally invokes e.g. Glib.Cancellable.Cancel.
    --  Since: gtk+ 2.22
    --  @param Callback The Gcallback to connect.
+   --  @param Data Data to pass to Callback.
    --  @param Data_Destroy_Func Free function for Data or null.
    --  @return The id of the signal handler or 0 if Cancellable has already
    --  been cancelled.
-
-   generic
-      type User_Data_Type (<>) is private;
-      with procedure Destroy (Data : in out User_Data_Type) is null;
-   package Connect_User_Data is
-
-      type Gcallback is access procedure (Data : User_Data_Type);
-      --  The type used for callback functions in structure definitions and
-      --  function signatures. This doesn't mean that all callback functions must
-      --  take no parameters and return void. The required signature of a callback
-      --  function is determined by the context in which is used (e.g. the signal
-      --  to which it is connected). Use G_CALLBACK to cast the callback function
-      --  to a Gcallback.
-
-      function Connect
-         (Self              : not null access Glib.Cancellable.Gcancellable_Record'Class;
-          Callback          : Gcallback;
-          Data              : User_Data_Type;
-          Data_Destroy_Func : Glib.G_Destroy_Notify_Address) return Gulong;
-      --  Convenience function to connect to the
-      --  Glib.Cancellable.Gcancellable::cancelled signal. Also handles the
-      --  race condition that may happen if the cancellable is cancelled right
-      --  before connecting.
-      --  Callback is called at most once, either directly at the time of the
-      --  connect if Cancellable is already cancelled, or when Cancellable is
-      --  cancelled in some thread.
-      --  Data_Destroy_Func will be called when the handler is disconnected,
-      --  or immediately if the cancellable is already cancelled.
-      --  See Glib.Cancellable.Gcancellable::cancelled for details on how to
-      --  use this.
-      --  Since GLib 2.40, the lock protecting Cancellable is not held when
-      --  Callback is invoked. This lifts a restriction in place for earlier
-      --  GLib versions which now makes it easier to write cleanup code that
-      --  unconditionally invokes e.g. Glib.Cancellable.Cancel.
-      --  Since: gtk+ 2.22
-      --  @param Callback The Gcallback to connect.
-      --  @param Data Data to pass to Callback.
-      --  @param Data_Destroy_Func Free function for Data or null.
-      --  @return The id of the signal handler or 0 if Cancellable has already
-      --  been cancelled.
-
-   end Connect_User_Data;
 
    procedure Disconnect
       (Self       : not null access Gcancellable_Record;

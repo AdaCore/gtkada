@@ -59,25 +59,6 @@ package body Glib.Cancellable is
    --  @return The id of the signal handler or 0 if Cancellable has already
    --  been cancelled.
 
-   function To_Gcallback is new Ada.Unchecked_Conversion
-     (System.Address, Gcallback);
-
-   function To_Address is new Ada.Unchecked_Conversion
-     (Gcallback, System.Address);
-
-   procedure Internal_Gcallback (Data : System.Address);
-   pragma Convention (C, Internal_Gcallback);
-
-   ------------------------
-   -- Internal_Gcallback --
-   ------------------------
-
-   procedure Internal_Gcallback (Data : System.Address) is
-      Func : constant Gcallback := To_Gcallback (Data);
-   begin
-      Func.all;
-   end Internal_Gcallback;
-
    package Type_Conversion_Gcancellable is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gcancellable_Record);
    pragma Unreferenced (Type_Conversion_Gcancellable);
@@ -134,8 +115,10 @@ package body Glib.Cancellable is
    function Connect
       (Self              : not null access Gcancellable_Record;
        Callback          : Gcallback;
+       Data              : System.Address;
        Data_Destroy_Func : Glib.G_Destroy_Notify_Address) return Gulong
    is
+      pragma Unreferenced (Data);
    begin
       if Callback = null then
          return C_G_Cancellable_Connect (Get_Object (Self), System.Null_Address, System.Null_Address, Data_Destroy_Func);
@@ -143,58 +126,6 @@ package body Glib.Cancellable is
          return C_G_Cancellable_Connect (Get_Object (Self), Internal_Gcallback'Address, To_Address (Callback), Data_Destroy_Func);
       end if;
    end Connect;
-
-   package body Connect_User_Data is
-
-      package Users is new Glib.Object.User_Data_Closure
-        (User_Data_Type, Destroy);
-
-      function To_Gcallback is new Ada.Unchecked_Conversion
-        (System.Address, Gcallback);
-
-      function To_Address is new Ada.Unchecked_Conversion
-        (Gcallback, System.Address);
-
-      procedure Internal_Cb (Data : System.Address);
-      pragma Convention (C, Internal_Cb);
-      --  The type used for callback functions in structure definitions and
-      --  function signatures. This doesn't mean that all callback functions
-      --  must take no parameters and return void. The required signature of a
-      --  callback function is determined by the context in which is used (e.g.
-      --  the signal to which it is connected). Use G_CALLBACK to cast the
-      --  callback function to a Gcallback.
-
-      -------------
-      -- Connect --
-      -------------
-
-      function Connect
-         (Self              : not null access Glib.Cancellable.Gcancellable_Record'Class;
-          Callback          : Gcallback;
-          Data              : User_Data_Type;
-          Data_Destroy_Func : Glib.G_Destroy_Notify_Address) return Gulong
-      is
-         D : System.Address;
-      begin
-         if Callback = null then
-            return C_G_Cancellable_Connect (Get_Object (Self), System.Null_Address, System.Null_Address, Data_Destroy_Func);
-         else
-            D := Users.Build (To_Address (Callback), Data);
-            return C_G_Cancellable_Connect (Get_Object (Self), Internal_Cb'Address, D, Data_Destroy_Func);
-         end if;
-      end Connect;
-
-      -----------------
-      -- Internal_Cb --
-      -----------------
-
-      procedure Internal_Cb (Data : System.Address) is
-         D : constant Users.Internal_Data_Access := Users.Convert (Data);
-      begin
-         To_Gcallback (D.Func) (D.Data.all);
-      end Internal_Cb;
-
-   end Connect_User_Data;
 
    ----------------
    -- Disconnect --

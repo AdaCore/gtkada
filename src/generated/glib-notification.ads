@@ -34,6 +34,30 @@
 --  running, applications using Glib.Notification.Gnotification should be able
 --  to be started as a D-Bus service, using Glib.Application.Gapplication.
 --
+--  In order for Glib.Notification.Gnotification to work, the application must
+--  have installed a `.desktop` file. For example:
+--
+--     [Desktop Entry]
+--      Name=Test Application
+--      Comment=Description of what Test Application does
+--      Exec=gnome-test-application
+--      Icon=org.gnome.TestApplication
+--      Terminal=false
+--      Type=Application
+--      Categories=GNOME;GTK;TestApplication Category;
+--      StartupNotify=true
+--      DBusActivatable=true
+--      X-GNOME-UsesNotifications=true
+--
+--
+--  The `X-GNOME-UsesNotifications` key indicates to GNOME Control Center that
+--  this application uses notifications, so it can be listed in the Control
+--  Center's ‘Notifications' panel.
+--
+--  The `.desktop` file must be named as `org.gnome.TestApplication.desktop`,
+--  where `org.gnome.TestApplication` is the ID passed to
+--  Glib.Application.G_New.
+--
 --  User interaction with a notification (either the default action, or
 --  buttons) must be associated with actions on the application (ie: "app."
 --  actions). It is not possible to route user interaction through the
@@ -147,6 +171,18 @@ package Glib.Notification is
    --  Since: gtk+ 2.40
    --  @param The_Body the new body for Notification, or null
 
+   procedure Set_Category
+      (Self     : not null access Gnotification_Record;
+       Category : UTF8_String := "");
+   --  Sets the type of Notification to Category. Categories have a main type
+   --  like `email`, `im` or `device` and can have a detail separated by a `.`,
+   --  e.g. `im.received` or `email.arrived`. Setting the category helps the
+   --  notification server to select proper feedback to the user.
+   --  Standard categories are [listed in the
+   --  specification](https://specifications.freedesktop.org/notification-spec/latest/ar01s06.html).
+   --  Since: gtk+ 2.70
+   --  @param Category the category for Notification, or null for no category
+
    procedure Set_Default_Action
       (Self            : not null access Gnotification_Record;
        Detailed_Action : UTF8_String);
@@ -170,7 +206,7 @@ package Glib.Notification is
    --  activated when the notification is clicked on. It must be an
    --  application-wide action (start with "app.").
    --  If Target is non-null, Action will be activated with Target as its
-   --  parameter.
+   --  parameter. If Target is floating, it will be consumed.
    --  When no default action is set, the application that the notification
    --  was sent on is activated.
    --  Since: gtk+ 2.40

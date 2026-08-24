@@ -32,9 +32,11 @@
 --  you have a path. - Glib.GFile.New_For_Uri if you have a URI. -
 --  Glib.GFile.New_For_Commandline_Arg for a command line argument. -
 --  g_file_new_tmp to create a temporary file from a template. -
---  Glib.GFile.Parse_Name from a UTF-8 string gotten from
---  Glib.GFile.Get_Parse_Name. - g_file_new_build_filename to create a file
---  from path elements.
+--  Glib.GFile.New_Tmp_Async to asynchronously create a temporary file. -
+--  Glib.GFile.New_Tmp_Dir_Async to asynchronously create a temporary
+--  directory. - Glib.GFile.Parse_Name from a UTF-8 string gotten from
+--  Glib.GFile.Get_Parse_Name. - g_file_new_build_filename or
+--  Glib.GFile.New_Build_Filenamev to create a file from path elements.
 --
 --  One way to think of a Glib.GFile.Gfile is as an abstraction of a pathname.
 --  For normal files the system pathname is what is stored internally, but as
@@ -109,6 +111,7 @@
 --  Glib.Object.Unref (Glib.Types.To_Object (File));
 
 pragma Warnings (Off, "*is already use-visible*");
+with GNAT.Strings;            use GNAT.Strings;
 with Glib.Bytes;              use Glib.Bytes;
 with Glib.Cancellable;        use Glib.Cancellable;
 with Glib.File_IO_Stream;     use Glib.File_IO_Stream;
@@ -150,6 +153,7 @@ package Glib.GFile is
    G_File_Copy_All_Metadata : constant GFile_Copy_Flags := 8;
    G_File_Copy_No_Fallback_For_Move : constant GFile_Copy_Flags := 16;
    G_File_Copy_Target_Default_Perms : constant GFile_Copy_Flags := 32;
+   G_File_Copy_Target_Default_Modified_Time : constant GFile_Copy_Flags := 64;
 
    ---------------
    -- Callbacks --
@@ -161,10 +165,13 @@ package Glib.GFile is
    --  Type definition for a function that will be called back when an
    --  asynchronous operation within GIO has been completed.
    --  Gasync_Ready_Callback callbacks from Gtask.Gtask are guaranteed to be
-   --  invoked in a later iteration of the [thread-default main
-   --  context][g-main-context-push-thread-default] where the Gtask.Gtask was
+   --  invoked in a later iteration of the thread-default main context (see
+   --  [methodGlib.MainContext.push_thread_default]) where the Gtask.Gtask was
    --  created. All other users of Gasync_Ready_Callback must likewise call it
    --  asynchronously in a later iteration of the main context.
+   --  The asynchronous operation is guaranteed to have held a reference to
+   --  Source_Object from the time when the `*_async` function was called,
+   --  until after this callback returns.
    --  @param Source_Object the object the asynchronous operation was started
    --  with.
    --  @param Res a Glib.G_Async_Result.
@@ -204,9 +211,9 @@ package Glib.GFile is
    --  Gets an output stream for appending data to the file. If the file
    --  doesn't already exist it is created.
    --  By default files created are generally readable by everyone, but if you
-   --  pass G_FILE_CREATE_PRIVATE in Flags the file will be made readable only
-   --  to the current user, to the level that is supported on the target
-   --  filesystem.
+   --  pass Glib.GFile.G_File_Create_Private in Flags the file will be made
+   --  readable only to the current user, to the level that is supported on the
+   --  target filesystem.
    --  If Cancellable is not null, then the operation can be cancelled by
    --  triggering the cancellable object from another thread. If the operation
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
@@ -248,6 +255,34 @@ package Glib.GFile is
    --  @return a valid Glib.File_Output_Stream.Gfile_Output_Stream or null on
    --  error. Free the returned object with g_object_unref.
 
+   function Build_Attribute_List_For_Copy
+      (Self        : Gfile;
+       Flags       : GFile_Copy_Flags;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       return UTF8_String;
+   --  Prepares the file attribute query string for copying to File.
+   --  This function prepares an attribute query string to be passed to
+   --  Glib.GFile.Query_Info to get a list of attributes normally copied with
+   --  the file (see Glib.GFile.Copy_Attributes for the detailed description).
+   --  This function is used by the implementation of
+   --  Glib.GFile.Copy_Attributes and is useful when one needs to query and set
+   --  the attributes in two stages (e.g., for recursive move of a directory).
+   --  Since: gtk+ 2.68
+   --  @param Flags a set of Glib.GFile.GFile_Copy_Flags
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @return an attribute query string for Glib.GFile.Query_Info, or null if
+   --  an error occurs.
+
+   procedure Copy_Async_With_Closures
+      (Self                      : Gfile;
+       Destination               : Gfile;
+       Flags                     : GFile_Copy_Flags;
+       Io_Priority               : Glib.Gint;
+       Cancellable               : access Glib.Cancellable.Gcancellable_Record'Class;
+       Progress_Callback_Closure : System.Address;
+       Ready_Callback_Closure    : System.Address);
+
    function Copy_Attributes
       (Self        : Gfile;
        Destination : Gfile;
@@ -257,9 +292,9 @@ package Glib.GFile is
    --  Copies the file attributes from Source to Destination.
    --  Normally only a subset of the file attributes are copied, those that
    --  are copies in a normal file copy operation (which for instance does not
-   --  include e.g. owner). However if G_FILE_COPY_ALL_METADATA is specified in
-   --  Flags, then all the metadata that is possible to copy is copied. This is
-   --  useful when implementing move by copy + delete source.
+   --  include e.g. owner). However if Glib.GFile.G_File_Copy_All_Metadata is
+   --  specified in Flags, then all the metadata that is possible to copy is
+   --  copied. This is useful when implementing move by copy + delete source.
    --  @param Destination a Glib.GFile.Gfile to copy attributes to
    --  @param Flags a set of Glib.GFile.GFile_Copy_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
@@ -275,9 +310,9 @@ package Glib.GFile is
    --  Creates a new file and returns an output stream for writing to it. The
    --  file must not already exist.
    --  By default files created are generally readable by everyone, but if you
-   --  pass G_FILE_CREATE_PRIVATE in Flags the file will be made readable only
-   --  to the current user, to the level that is supported on the target
-   --  filesystem.
+   --  pass Glib.GFile.G_File_Create_Private in Flags the file will be made
+   --  readable only to the current user, to the level that is supported on the
+   --  target filesystem.
    --  If Cancellable is not null, then the operation can be cancelled by
    --  triggering the cancellable object from another thread. If the operation
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
@@ -331,9 +366,9 @@ package Glib.GFile is
    --  Creates a new file and returns a stream for reading and writing to it.
    --  The file must not already exist.
    --  By default files created are generally readable by everyone, but if you
-   --  pass G_FILE_CREATE_PRIVATE in Flags the file will be made readable only
-   --  to the current user, to the level that is supported on the target
-   --  filesystem.
+   --  pass Glib.GFile.G_File_Create_Private in Flags the file will be made
+   --  readable only to the current user, to the level that is supported on the
+   --  target filesystem.
    --  If Cancellable is not null, then the operation can be cancelled by
    --  triggering the cancellable object from another thread. If the operation
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
@@ -541,8 +576,10 @@ package Glib.GFile is
    function Get_Uri (Self : Gfile) return UTF8_String;
    --  Gets the URI for the File.
    --  This call does no blocking I/O.
-   --  @return a string containing the Glib.GFile.Gfile's URI. The returned
-   --  string should be freed with g_free when no longer needed.
+   --  @return a string containing the Glib.GFile.Gfile's URI. If the
+   --  Glib.GFile.Gfile was constructed with an invalid URI, an invalid URI is
+   --  returned. The returned string should be freed with g_free when no longer
+   --  needed.
 
    function Get_Uri_Scheme (Self : Gfile) return UTF8_String;
    --  Gets the URI scheme for a Glib.GFile.Gfile. RFC 3986 decodes the scheme
@@ -551,10 +588,14 @@ package Glib.GFile is
    --     URI = scheme ":" hier-part [ "?" query ] [ "#" fragment ]
    --
    --  Common schemes include "file", "http", "ftp", etc.
+   --  The scheme can be different from the one used to construct the
+   --  Glib.GFile.Gfile, in that it might be replaced with one that is
+   --  logically equivalent to the Glib.GFile.Gfile.
    --  This call does no blocking I/O.
    --  @return a string containing the URI scheme for the given
-   --  Glib.GFile.Gfile. The returned string should be freed with g_free when
-   --  no longer needed.
+   --  Glib.GFile.Gfile or null if the Glib.GFile.Gfile was constructed with an
+   --  invalid URI. The returned string should be freed with g_free when no
+   --  longer needed.
 
    function Has_Parent (Self : Gfile; Parent : Gfile) return Boolean;
    --  Checks if File has a parent, and optionally, if it is Parent.
@@ -734,6 +775,50 @@ package Glib.GFile is
    --  to ignore
    --  @return True on the creation of a new symlink, False otherwise.
 
+   procedure Make_Symbolic_Link_Async
+      (Self          : Gfile;
+       Symlink_Value : UTF8_String;
+       Io_Priority   : Glib.Gint;
+       Cancellable   : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback      : Gasync_Ready_Callback);
+   --  Asynchronously creates a symbolic link named File which contains the
+   --  string Symlink_Value.
+   --  Since: gtk+ 2.74
+   --  @param Symlink_Value a string with the path for the target of the new
+   --  symlink
+   --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
+
+   function Make_Symbolic_Link_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result) return Boolean;
+   --  Finishes an asynchronous symbolic link creation, started with
+   --  Glib.GFile.Make_Symbolic_Link_Async.
+   --  Since: gtk+ 2.74
+   --  @param Result a Glib.G_Async_Result
+   --  @return True on successful directory creation, False otherwise.
+
+   procedure Move_Async_With_Closures
+      (Self                      : Gfile;
+       Destination               : Gfile;
+       Flags                     : GFile_Copy_Flags;
+       Io_Priority               : Glib.Gint;
+       Cancellable               : access Glib.Cancellable.Gcancellable_Record'Class;
+       Progress_Callback_Closure : System.Address;
+       Ready_Callback_Closure    : System.Address);
+
+   function Move_Finish
+      (Self   : Gfile;
+       Result : Glib.G_Async_Result) return Boolean;
+   --  Finishes an asynchronous file movement, started with
+   --  Glib.GFile.Move_Async.
+   --  Since: gtk+ 2.72
+   --  @param Result a Glib.G_Async_Result
+   --  @return True on successful file move, False otherwise.
+
    function Open_Readwrite
       (Self        : Gfile;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
@@ -840,7 +925,7 @@ package Glib.GFile is
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
    --  @return The Glib.File_Info.GFile_Type of the file and
-   --  G_FILE_TYPE_UNKNOWN if the file does not exist
+   --  Glib.File_Info.G_File_Type_Unknown if the file does not exist
 
    function Query_Filesystem_Info
       (Self        : Gfile;
@@ -925,10 +1010,10 @@ package Glib.GFile is
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
    --  For symlinks, normally the information about the target of the symlink
    --  is returned, rather than information about the symlink itself. However
-   --  if you pass G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS in Flags the information
-   --  about the symlink itself will be returned. Also, for symlinks that point
-   --  to non-existing files the information about the symlink itself will be
-   --  returned.
+   --  if you pass Glib.GFile.G_File_Query_Info_Nofollow_Symlinks in Flags the
+   --  information about the symlink itself will be returned. Also, for
+   --  symlinks that point to non-existing files the information about the
+   --  symlink itself will be returned.
    --  If the file does not exist, the G_IO_ERROR_NOT_FOUND error will be
    --  returned. Other errors are possible too, and depend on what kind of
    --  filesystem the file is on.
@@ -1030,9 +1115,9 @@ package Glib.GFile is
    --  file and then atomically rename over the destination when the stream is
    --  closed.
    --  By default files created are generally readable by everyone, but if you
-   --  pass G_FILE_CREATE_PRIVATE in Flags the file will be made readable only
-   --  to the current user, to the level that is supported on the target
-   --  filesystem.
+   --  pass Glib.GFile.G_File_Create_Private in Flags the file will be made
+   --  readable only to the current user, to the level that is supported on the
+   --  target filesystem.
    --  If Cancellable is not null, then the operation can be cancelled by
    --  triggering the cancellable object from another thread. If the operation
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
@@ -1266,10 +1351,10 @@ package Glib.GFile is
        Relative_Path : UTF8_String) return Gfile;
    --  Resolves a relative path for File to an absolute path.
    --  This call does no blocking I/O.
+   --  If the Relative_Path is an absolute path name, the resolution is done
+   --  absolutely (without taking File path as base).
    --  @param Relative_Path a given relative path string
-   --  @return Glib.GFile.Gfile to the resolved path. null if Relative_Path is
-   --  null or if File is invalid. Free the returned object with
-   --  g_object_unref.
+   --  @return a Glib.GFile.Gfile for the resolved path.
 
    function Set_Attribute_Byte_String
       (Self        : Gfile;
@@ -1408,7 +1493,8 @@ package Glib.GFile is
    --  @param Io_Priority the [I/O priority][io-priority] of the request
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
-   --  @param Callback a Gasync_Ready_Callback
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
 
    function Set_Attributes_Finish
       (Self   : Gfile;
@@ -1542,6 +1628,44 @@ package Glib.GFile is
    --  @param Result a Glib.G_Async_Result
    --  @return True on successful trash, False otherwise.
 
+   procedure New_Tmp_Async
+      (Tmpl        : UTF8_String := "";
+       Io_Priority : Glib.Gint;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback);
+   --  Asynchronously opens a file in the preferred directory for temporary
+   --  files (as returned by g_get_tmp_dir) as g_file_new_tmp.
+   --  Tmpl should be a string in the GLib file name encoding containing a
+   --  sequence of six 'X' characters, and containing no directory components.
+   --  If it is null, a default template is used.
+   --  Since: gtk+ 2.74
+   --  @param Tmpl Template for the file name, as in g_file_open_tmp, or null
+   --  for a default template
+   --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  done
+
+   procedure New_Tmp_Dir_Async
+      (Tmpl        : UTF8_String := "";
+       Io_Priority : Glib.Gint;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Callback    : Gasync_Ready_Callback);
+   --  Asynchronously creates a directory in the preferred directory for
+   --  temporary files (as returned by g_get_tmp_dir) as g_dir_make_tmp.
+   --  Tmpl should be a string in the GLib file name encoding containing a
+   --  sequence of six 'X' characters, and containing no directory components.
+   --  If it is null, a default template is used.
+   --  Since: gtk+ 2.74
+   --  @param Tmpl Template for the file name, as in g_dir_make_tmp, or null
+   --  for a default template
+   --  @param Io_Priority the [I/O priority][io-priority] of the request
+   --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
+   --  to ignore
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  done
+
    ----------------------
    -- GtkAda additions --
    ----------------------
@@ -1559,6 +1683,17 @@ package Glib.GFile is
    ---------------
    -- Functions --
    ---------------
+
+   function New_Build_Filenamev
+      (Args : GNAT.Strings.String_List) return Gfile;
+   --  Constructs a Glib.GFile.Gfile from a vector of elements using the
+   --  correct separator for filenames.
+   --  Using this function is equivalent to calling g_build_filenamev,
+   --  followed by Glib.GFile.New_For_Path on the result.
+   --  Since: gtk+ 2.78
+   --  @param Args null-terminated array of strings containing the path
+   --  elements.
+   --  @return a new Glib.GFile.Gfile
 
    function New_For_Commandline_Arg (Arg : UTF8_String) return Gfile;
    --  Creates a Glib.GFile.Gfile with the given argument from the command
@@ -1611,6 +1746,27 @@ package Glib.GFile is
    --  @param URI a UTF-8 string containing a URI
    --  @return a new Glib.GFile.Gfile for the given Uri. Free the returned
    --  object with g_object_unref.
+
+   function New_Tmp_Dir_Finish (Result : Glib.G_Async_Result) return Gfile;
+   pragma Import (C, New_Tmp_Dir_Finish, "g_file_new_tmp_dir_finish");
+   --  Finishes a temporary directory creation started by
+   --  Glib.GFile.New_Tmp_Dir_Async.
+   --  Since: gtk+ 2.74
+   --  @param Result a Glib.G_Async_Result
+   --  @return a new Glib.GFile.Gfile. Free the returned object with
+   --  g_object_unref.
+
+   function New_Tmp_Finish
+      (Result   : Glib.G_Async_Result;
+       Iostream : out Glib.File_IO_Stream.Gfile_Iostream) return Gfile;
+   --  Finishes a temporary file creation started by Glib.GFile.New_Tmp_Async.
+   --  Since: gtk+ 2.74
+   --  Parameter Iostream has transfer-ownership='full'
+   --  @param Result a Glib.G_Async_Result
+   --  @param Iostream on return, a Glib.File_IO_Stream.Gfile_Iostream for the
+   --  created file
+   --  @return a new Glib.GFile.Gfile. Free the returned object with
+   --  g_object_unref.
 
    function Parse_Name (Parse_Name : UTF8_String) return Gfile;
    --  Constructs a Glib.GFile.Gfile with the given Parse_Name (i.e. something

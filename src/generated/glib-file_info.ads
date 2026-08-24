@@ -46,11 +46,22 @@
 --  g_file_query_writable_namespaces to discover the settable attributes of a
 --  particular file at runtime.
 --
+--  The direct accessors, such as Glib.File_Info.Get_Name, are slightly more
+--  optimized than the generic attribute accessors, such as
+--  Glib.File_Info.Get_Attribute_Byte_String.This optimization will matter only
+--  if calling the API in a tight loop.
+--
+--  It is an error to call these accessors without specifying their required
+--  file attributes when creating the Glib.File_Info.Gfile_Info. Use
+--  Glib.File_Info.Has_Attribute or Glib.File_Info.List_Attributes to check
+--  what attributes are specified for a Glib.File_Info.Gfile_Info.
+--
 --  Gfile.Attribute_Matcher.Gfile_Attribute_Matcher allows for searching
 --  through a Glib.File_Info.Gfile_Info for attributes.
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
+with Gdate.Time;              use Gdate.Time;
 with Glib.G_Icon;             use Glib.G_Icon;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
@@ -127,10 +138,34 @@ package Glib.File_Info is
    --  Duplicates a file info structure.
    --  @return a duplicate Glib.File_Info.Gfile_Info of Other.
 
+   function Get_Access_Date_Time
+      (Self : not null access Gfile_Info_Record)
+       return Gdate.Time.Gdate_Time;
+   --  Gets the access time of the current Info and returns it as a
+   --  Gdate.Time.Gdate_Time.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_TIME_ACCESS. If
+   --  G_FILE_ATTRIBUTE_TIME_ACCESS_USEC is provided, the resulting
+   --  Gdate.Time.Gdate_Time will additionally have microsecond precision.
+   --  If nanosecond precision is needed, G_FILE_ATTRIBUTE_TIME_ACCESS_NSEC
+   --  must be queried separately using Glib.File_Info.Get_Attribute_Uint32.
+   --  Since: gtk+ 2.70
+   --  @return access time, or null if unknown
+
+   procedure Set_Access_Date_Time
+      (Self  : not null access Gfile_Info_Record;
+       Atime : Gdate.Time.Gdate_Time);
+   --  Sets the G_FILE_ATTRIBUTE_TIME_ACCESS and
+   --  G_FILE_ATTRIBUTE_TIME_ACCESS_USEC attributes in the file info to the
+   --  given date/time value.
+   --  G_FILE_ATTRIBUTE_TIME_ACCESS_NSEC will be cleared.
+   --  Since: gtk+ 2.70
+   --  @param Atime a Gdate.Time.Gdate_Time.
+
    function Get_Attribute_As_String
       (Self      : not null access Gfile_Info_Record;
        Attribute : UTF8_String) return UTF8_String;
-   --  Gets the value of a attribute, formatted as a string. This escapes
+   --  Gets the value of an attribute, formatted as a string. This escapes
    --  things as needed to make the string valid UTF-8.
    --  @param Attribute a file attribute key.
    --  @return a UTF-8 string associated with the given Attribute, or null if
@@ -169,6 +204,30 @@ package Glib.File_Info is
    --  Sets the Attribute to contain the given Attr_Value, if possible.
    --  @param Attribute a file attribute key.
    --  @param Attr_Value a byte string.
+
+   function Get_Attribute_File_Path
+      (Self      : not null access Gfile_Info_Record;
+       Attribute : UTF8_String) return UTF8_String;
+   --  Gets the value of a byte string attribute as a file path.
+   --  If the attribute does not contain a byte string, `NULL` will be
+   --  returned.
+   --  This function is meant to be used by language bindings that have
+   --  specific handling for Unix paths.
+   --  Since: gtk+ 2.78
+   --  @param Attribute a file attribute key.
+   --  @return the contents of the Attribute value as a file path, or null
+   --  otherwise.
+
+   procedure Set_Attribute_File_Path
+      (Self       : not null access Gfile_Info_Record;
+       Attribute  : UTF8_String;
+       Attr_Value : UTF8_String);
+   --  Sets the Attribute to contain the given Attr_Value, if possible.
+   --  This function is meant to be used by language bindings that have
+   --  specific handling for Unix paths.
+   --  Since: gtk+ 2.78
+   --  @param Attribute a file attribute key.
+   --  @param Attr_Value a file path.
 
    function Get_Attribute_Int32
       (Self      : not null access Gfile_Info_Record;
@@ -295,6 +354,8 @@ package Glib.File_Info is
    function Get_Content_Type
       (Self : not null access Gfile_Info_Record) return UTF8_String;
    --  Gets the file's content type.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE.
    --  @return a string containing the file's content type, or null if
    --  unknown.
 
@@ -306,9 +367,35 @@ package Glib.File_Info is
    --  @param Content_Type a content type. See
    --  [GContentType][gio-GContentType]
 
+   function Get_Creation_Date_Time
+      (Self : not null access Gfile_Info_Record)
+       return Gdate.Time.Gdate_Time;
+   --  Gets the creation time of the current Info and returns it as a
+   --  Gdate.Time.Gdate_Time.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_TIME_CREATED. If
+   --  G_FILE_ATTRIBUTE_TIME_CREATED_USEC is provided, the resulting
+   --  Gdate.Time.Gdate_Time will additionally have microsecond precision.
+   --  If nanosecond precision is needed, G_FILE_ATTRIBUTE_TIME_CREATED_NSEC
+   --  must be queried separately using Glib.File_Info.Get_Attribute_Uint32.
+   --  Since: gtk+ 2.70
+   --  @return creation time, or null if unknown
+
+   procedure Set_Creation_Date_Time
+      (Self          : not null access Gfile_Info_Record;
+       Creation_Time : Gdate.Time.Gdate_Time);
+   --  Sets the G_FILE_ATTRIBUTE_TIME_CREATED and
+   --  G_FILE_ATTRIBUTE_TIME_CREATED_USEC attributes in the file info to the
+   --  given date/time value.
+   --  G_FILE_ATTRIBUTE_TIME_CREATED_NSEC will be cleared.
+   --  Since: gtk+ 2.70
+   --  @param Creation_Time a Gdate.Time.Gdate_Time.
+
    function Get_Display_Name
       (Self : not null access Gfile_Info_Record) return UTF8_String;
    --  Gets a display name for a file. This is guaranteed to always be set.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME.
    --  @return a string containing the display name.
 
    procedure Set_Display_Name
@@ -321,6 +408,8 @@ package Glib.File_Info is
    function Get_Edit_Name
       (Self : not null access Gfile_Info_Record) return UTF8_String;
    --  Gets the edit name for a file.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_EDIT_NAME.
    --  @return a string containing the edit name.
 
    procedure Set_Edit_Name
@@ -334,6 +423,8 @@ package Glib.File_Info is
       (Self : not null access Gfile_Info_Record) return UTF8_String;
    --  Gets the [entity tag][gfile-etag] for a given
    --  Glib.File_Info.Gfile_Info. See G_FILE_ATTRIBUTE_ETAG_VALUE.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_ETAG_VALUE.
    --  @return a string containing the value of the "etag:value" attribute.
 
    function Get_File_Type
@@ -341,6 +432,8 @@ package Glib.File_Info is
    --  Gets a file's type (whether it is a regular file, symlink, etc). This
    --  is different from the file's content type, see
    --  Glib.File_Info.Get_Content_Type.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_TYPE.
    --  @return a Glib.File_Info.GFile_Type for the given file.
 
    procedure Set_File_Type
@@ -353,6 +446,8 @@ package Glib.File_Info is
    function Get_Icon
       (Self : not null access Gfile_Info_Record) return Glib.G_Icon.G_Icon;
    --  Gets the icon for a file.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_ICON.
    --  @return Glib.G_Icon.G_Icon for the given Info.
 
    procedure Set_Icon
@@ -365,11 +460,15 @@ package Glib.File_Info is
    function Get_Is_Backup
       (Self : not null access Gfile_Info_Record) return Boolean;
    --  Checks if a file is a backup file.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP.
    --  @return True if file is a backup file, False otherwise.
 
    function Get_Is_Hidden
       (Self : not null access Gfile_Info_Record) return Boolean;
    --  Checks if a file is hidden.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN.
    --  @return True if the file is a hidden file, False otherwise.
 
    procedure Set_Is_Hidden
@@ -382,6 +481,8 @@ package Glib.File_Info is
    function Get_Is_Symlink
       (Self : not null access Gfile_Info_Record) return Boolean;
    --  Checks if a file is a symlink.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_IS_SYMLINK.
    --  @return True if the given Info is a symlink.
 
    procedure Set_Is_Symlink
@@ -394,6 +495,8 @@ package Glib.File_Info is
    function Get_Name
       (Self : not null access Gfile_Info_Record) return UTF8_String;
    --  Gets the name for a file. This is guaranteed to always be set.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_NAME.
    --  @return a string containing the file name.
 
    procedure Set_Name
@@ -405,7 +508,11 @@ package Glib.File_Info is
 
    function Get_Size
       (Self : not null access Gfile_Info_Record) return Glib.Gint64;
-   --  Gets the file's size.
+   --  Gets the file's size (in bytes). The size is retrieved through the
+   --  value of the G_FILE_ATTRIBUTE_STANDARD_SIZE attribute and is converted
+   --  from Guint64 to goffset before returning the result.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_SIZE.
 
    procedure Set_Size
       (Self : not null access Gfile_Info_Record;
@@ -418,6 +525,8 @@ package Glib.File_Info is
       (Self : not null access Gfile_Info_Record) return Gint32;
    --  Gets the value of the sort_order attribute from the
    --  Glib.File_Info.Gfile_Info. See G_FILE_ATTRIBUTE_STANDARD_SORT_ORDER.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_SORT_ORDER.
    --  @return a Gint32 containing the value of the "standard::sort_order"
    --  attribute.
 
@@ -431,6 +540,8 @@ package Glib.File_Info is
    function Get_Symbolic_Icon
       (Self : not null access Gfile_Info_Record) return Glib.G_Icon.G_Icon;
    --  Gets the symbolic icon for a file.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_SYMBOLIC_ICON.
    --  Since: gtk+ 2.34
    --  @return Glib.G_Icon.G_Icon for the given Info.
 
@@ -445,6 +556,8 @@ package Glib.File_Info is
    function Get_Symlink_Target
       (Self : not null access Gfile_Info_Record) return UTF8_String;
    --  Gets the symlink target for a given Glib.File_Info.Gfile_Info.
+   --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
+   --  contain G_FILE_ATTRIBUTE_STANDARD_SYMLINK_TARGET.
    --  @return a string containing the symlink target.
 
    procedure Set_Symlink_Target

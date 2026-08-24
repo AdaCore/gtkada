@@ -198,6 +198,11 @@ package Glib.Simple_Action_Group is
       (Self        : not null access Gsimple_Action_Group_Record;
        Action_Name : UTF8_String);
 
+   procedure Remove_Action_Entries
+      (Self      : not null access Gsimple_Action_Group_Record;
+       Entries   : GAction_Entry_Array;
+       N_Entries : Glib.Gint);
+
    ----------------
    -- Interfaces --
    ----------------

@@ -243,6 +243,11 @@ package Gtk.Application_Window is
       (Self        : not null access Gtk_Application_Window_Record;
        Action_Name : UTF8_String);
 
+   procedure Remove_Action_Entries
+      (Self      : not null access Gtk_Application_Window_Record;
+       Entries   : GAction_Entry_Array;
+       N_Entries : Glib.Gint);
+
    procedure Announce
       (Self     : not null access Gtk_Application_Window_Record;
        Message  : UTF8_String;

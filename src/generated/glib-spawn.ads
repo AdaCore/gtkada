@@ -45,6 +45,9 @@ package Glib.Spawn is
    G_Spawn_File_And_Argv_Zero : constant GSpawn_Flags := 64;
    G_Spawn_Search_Path_From_Envp : constant GSpawn_Flags := 128;
    G_Spawn_Cloexec_Pipes : constant GSpawn_Flags := 256;
+   G_Spawn_Child_Inherits_Stdout : constant GSpawn_Flags := 512;
+   G_Spawn_Child_Inherits_Stderr : constant GSpawn_Flags := 1024;
+   G_Spawn_Stdin_From_Dev_Null : constant GSpawn_Flags := 2048;
 
    type GSpawn_Error is (
       G_Spawn_Error_Fork,

@@ -102,11 +102,9 @@ package Glib.Bytes is
        Data : Guint8_Array;
        Size : Gsize);
    --  Creates a new Glib.Bytes.Gbytes from Data.
-   --  After this call, Data belongs to the bytes and may no longer be
-   --  modified by the caller. g_free will be called on Data when the bytes is
-   --  no longer in use. Because of this Data must have been created by a call
-   --  to g_malloc, g_malloc0 or g_realloc or by one of the many functions that
-   --  wrap these calls (such as g_new, g_strdup, etc).
+   --  After this call, Data belongs to the Glib.Bytes.Gbytes and may no
+   --  longer be modified by the caller. The memory of Data has to be
+   --  dynamically allocated and will eventually be freed with g_free.
    --  For creating Glib.Bytes.Gbytes with memory from other allocators, see
    --  g_bytes_new_with_free_func.
    --  Data may be null if Size is 0.
@@ -118,11 +116,9 @@ package Glib.Bytes is
       (Data : Guint8_Array;
        Size : Gsize) return Gbytes;
    --  Creates a new Glib.Bytes.Gbytes from Data.
-   --  After this call, Data belongs to the bytes and may no longer be
-   --  modified by the caller. g_free will be called on Data when the bytes is
-   --  no longer in use. Because of this Data must have been created by a call
-   --  to g_malloc, g_malloc0 or g_realloc or by one of the many functions that
-   --  wrap these calls (such as g_new, g_strdup, etc).
+   --  After this call, Data belongs to the Glib.Bytes.Gbytes and may no
+   --  longer be modified by the caller. The memory of Data has to be
+   --  dynamically allocated and will eventually be freed with g_free.
    --  For creating Glib.Bytes.Gbytes with memory from other allocators, see
    --  g_bytes_new_with_free_func.
    --  Data may be null if Size is 0.
@@ -136,6 +132,32 @@ package Glib.Bytes is
    -------------
    -- Methods --
    -------------
+
+   function Get_Region
+      (Self         : Gbytes;
+       Element_Size : Gsize;
+       Offset       : Gsize;
+       N_Elements   : Gsize) return System.Address;
+   --  Gets a pointer to a region in Bytes.
+   --  The region starts at Offset many bytes from the start of the data and
+   --  contains N_Elements many elements of Element_Size size.
+   --  N_Elements may be zero, but Element_Size must always be non-zero.
+   --  Ideally, Element_Size is a static constant (eg: sizeof a struct).
+   --  This function does careful bounds checking (including checking for
+   --  arithmetic overflows) and returns a non-null pointer if the specified
+   --  region lies entirely within the Bytes. If the region is in some way out
+   --  of range, or if an overflow has occurred, then null is returned.
+   --  Note: it is possible to have a valid zero-size region. In this case,
+   --  the returned pointer will be equal to the base pointer of the data of
+   --  Bytes, plus Offset. This will be non-null except for the case where
+   --  Bytes itself was a zero-sized region. Since it is unlikely that you will
+   --  be using this function to check for a zero-sized region in a zero-sized
+   --  Bytes, null effectively always means "error".
+   --  Since: gtk+ 2.70
+   --  @param Element_Size a non-zero element size
+   --  @param Offset an offset to the start of the region within the Bytes
+   --  @param N_Elements the number of elements in the region
+   --  @return the requested region, or null in case of an error
 
    function Get_Size (Self : Gbytes) return Gsize;
    --  Get the size of the byte data in the Glib.Bytes.Gbytes.
@@ -153,6 +175,12 @@ package Glib.Bytes is
    --  of Bytes.
    --  A reference to Bytes will be held by the newly created
    --  Glib.Bytes.Gbytes until the byte data is no longer needed.
+   --  Since 2.56, if Offset is 0 and Length matches the size of Bytes, then
+   --  Bytes will be returned with the reference count incremented by 1. If
+   --  Bytes is a slice of another Glib.Bytes.Gbytes, then the resulting
+   --  Glib.Bytes.Gbytes will reference the same Glib.Bytes.Gbytes instead of
+   --  Bytes. This allows consumers to simplify the usage of Glib.Bytes.Gbytes
+   --  when asynchronously writing to streams.
    --  Since: gtk+ 2.32
    --  @param Offset offset which subsection starts at
    --  @param Length length of subsection
@@ -165,12 +193,12 @@ package Glib.Bytes is
 
    procedure Unref (Self : Gbytes);
    --  Releases a reference on Bytes. This may result in the bytes being
-   --  freed.
+   --  freed. If Bytes is null, it will return immediately.
    --  Since: gtk+ 2.32
 
    function Unref_To_Data
       (Self : Gbytes;
-       Size : in out Gsize) return System.Address;
+       Size : out Gsize) return Guint8_Array;
    --  Unreferences the bytes, and returns a pointer the same byte data
    --  contents.
    --  As an optimization, the byte data is returned without copying if this

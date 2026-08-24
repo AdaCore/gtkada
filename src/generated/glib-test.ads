@@ -30,18 +30,17 @@ with System;
 
 package Glib.Test is
 
-   ----------------------
-   -- GtkAda additions --
-   ----------------------
-
    type Test_Function is access procedure;
    pragma Convention (C, Test_Function);
-   --  A test function with no fixture, registered via Add_Func.
+   --  A test function with no fixture, registered via Add_Func
 
    type Test_Data_Function is access procedure (User_Data : System.Address);
    pragma Convention (C, Test_Data_Function);
-   --  A test function that receives the user-data pointer passed to
-   --  Add_Data_Func.
+   --  A test function that receives the user-data pointer passed to Add_Data_Func.
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
 
    procedure Init;
    --  Initialize the GLib testing framework, parsing the test-related
@@ -316,9 +315,9 @@ package Glib.Test is
    pragma Import (C, Run, "g_test_run");
    --  Runs all tests under the toplevel suite which can be retrieved with
    --  g_test_get_root. Similar to g_test_run_suite, the test cases to be run
-   --  are filtered according to test path arguments (`-p testpath`) as parsed
-   --  by g_test_init. g_test_run_suite or Glib.Test.Run may only be called
-   --  once in a program.
+   --  are filtered according to test path arguments (`-p testpath` and `-s
+   --  testpath`) as parsed by g_test_init. g_test_run_suite or Glib.Test.Run
+   --  may only be called once in a program.
    --  In general, the tests and sub-suites within each suite are run in the
    --  order in which they are defined. However, note that prior to GLib 2.36,
    --  there was a bug in the `g_test_add_*` functions which caused them to
@@ -338,8 +337,9 @@ package Glib.Test is
    --  the order that tests are run in. If you need to ensure that some
    --  particular code runs before or after a given test case, use g_test_add,
    --  which lets you specify setup and teardown functions.
-   --  If all tests are skipped, this function will return 0 if producing TAP
-   --  output, or 77 (treated as "skip test" by Automake) otherwise.
+   --  If all tests are skipped or marked as incomplete (expected failures),
+   --  this function will return 0 if producing TAP output, or 77 (treated as
+   --  "skip test" by Automake) otherwise.
    --  Since: gtk+ 2.16
 
    procedure Fail;
@@ -353,6 +353,10 @@ package Glib.Test is
    --  return from the test function yourself. So you can produce additional
    --  diagnostic messages or even continue running the test.
    --  If not called from inside a test, this function does nothing.
+   --  Note that unlike Glib.Test.Skip and g_test_incomplete, this function
+   --  does not log a message alongside the test failure. If details of the
+   --  test failure are available, either log them with g_test_message before
+   --  Glib.Test.Fail, or use g_test_fail_printf instead.
    --  Since: gtk+ 2.30
 
    function Failed return Boolean;
@@ -374,34 +378,5 @@ package Glib.Test is
    --  If not called from inside a test, this function does nothing.
    --  Since: gtk+ 2.38
    --  @param Msg explanation
-
-   procedure Add_Func (Testpath : UTF8_String; Test_Func : Test_Function);
-   --  Create a new test case, similar to g_test_create_case. However the test
-   --  is assumed to use no fixture, and test suites are automatically created
-   --  on the fly and added to the root fixture, based on the slash-separated
-   --  portions of Testpath.
-   --  If Testpath includes the component "subprocess" anywhere in it, the
-   --  test will be skipped by default, and only run if explicitly required via
-   --  the `-p` command-line option or g_test_trap_subprocess.
-   --  Since: gtk+ 2.16
-   --  @param Testpath /-separated test case path name for the test.
-   --  @param Test_Func The test function to invoke for this test.
-
-   procedure Add_Data_Func
-      (Testpath  : UTF8_String;
-       Test_Data : System.Address;
-       Test_Func : Test_Data_Function);
-   --  Create a new test case, similar to g_test_create_case. However the test
-   --  is assumed to use no fixture, and test suites are automatically created
-   --  on the fly and added to the root fixture, based on the slash-separated
-   --  portions of Testpath. The Test_Data argument will be passed as first
-   --  argument to Test_Func.
-   --  If Testpath includes the component "subprocess" anywhere in it, the
-   --  test will be skipped by default, and only run if explicitly required via
-   --  the `-p` command-line option or g_test_trap_subprocess.
-   --  Since: gtk+ 2.16
-   --  @param Testpath /-separated test case path name for the test.
-   --  @param Test_Data Test data argument for the test function.
-   --  @param Test_Func The test function to invoke for this test.
 
 end Glib.Test;

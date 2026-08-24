@@ -142,6 +142,37 @@ package Glib.Action_Map is
    --  Since: gtk+ 2.32
    --  @param Action_Name the name of the action
 
+   procedure Remove_Action_Entries
+      (Self      : Gaction_Map;
+       Entries   : GAction_Entry_Array;
+       N_Entries : Glib.Gint);
+   pragma Import (C, Remove_Action_Entries, "g_action_map_remove_action_entries");
+   --  Remove actions from a Glib.Action_Map.Gaction_Map. This is meant as the
+   --  reverse of Glib.Action_Map.Add_Action_Entries.
+   --
+   --     static const GActionEntry entries[] = {
+   --         { "quit",         activate_quit              },
+   --         { "print-string", activate_print_string, "s" }
+   --     };
+   --
+   --     void
+   --     add_actions (GActionMap *map)
+   --     {
+   --       g_action_map_add_action_entries (map, entries, G_N_ELEMENTS (entries), NULL);
+   --     }
+   --
+   --     void
+   --     remove_actions (GActionMap *map)
+   --     {
+   --       g_action_map_remove_action_entries (map, entries, G_N_ELEMENTS (entries));
+   --     }
+   --
+   --  Since: gtk+ 2.78
+   --  @param Entries a pointer to the first item in an array of
+   --  Glib.Action_Map.GAction_Entry structs
+   --  @param N_Entries the length of Entries, or -1 if Entries is
+   --  null-terminated
+
    ----------------------
    -- GtkAda additions --
    ----------------------

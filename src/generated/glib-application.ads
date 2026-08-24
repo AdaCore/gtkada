@@ -58,7 +58,7 @@
 --  returns. See the code examples below.
 --
 --  If used, the expected form of an application identifier is the same as
---  that of of a [D-Bus well-known bus
+--  that of a [D-Bus well-known bus
 --  name](https://dbus.freedesktop.org/doc/dbus-specification.htmlmessage-protocol-names-bus).
 --  Examples include: `com.example.MyApp`,
 --  `org.example.internal_apps.Calculator`, `org._7_zip.Archiver`. For details
@@ -87,6 +87,10 @@
 --  wrapper to conveniently access them remotely. GIO provides a
 --  Gdbus.Menu_Model.Gdbus_Menu_Model wrapper for remote access to exported
 --  GMenu_Models.
+--
+--  Note: Due to the fact that actions are exported on the session bus, using
+--  `maybe` parameters is not supported, since D-Bus does not support `maybe`
+--  types.
 --
 --  There is a number of different entry points into a GApplication:
 --
@@ -127,13 +131,13 @@
 --  the local instance, respectively.
 --
 --  For an example of opening files with a GApplication, see
---  [gapplication-example-open.c](https://git.gnome.org/browse/glib/tree/gio/tests/gapplication-example-open.c).
+--  [gapplication-example-open.c](https://gitlab.gnome.org/GNOME/glib/-/blob/HEAD/gio/tests/gapplication-example-open.c).
 --
 --  For an example of using actions with GApplication, see
---  [gapplication-example-actions.c](https://git.gnome.org/browse/glib/tree/gio/tests/gapplication-example-actions.c).
+--  [gapplication-example-actions.c](https://gitlab.gnome.org/GNOME/glib/-/blob/HEAD/gio/tests/gapplication-example-actions.c).
 --
 --  For an example of using extra D-Bus hooks with GApplication, see
---  [gapplication-example-dbushooks.c](https://git.gnome.org/browse/glib/tree/gio/tests/gapplication-example-dbushooks.c).
+--  [gapplication-example-dbushooks.c](https://gitlab.gnome.org/GNOME/glib/-/blob/HEAD/gio/tests/gapplication-example-dbushooks.c).
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
@@ -159,6 +163,7 @@ package Glib.Application is
    --  Flags used to define the behaviour of a Glib.Application.Gapplication.
 
    G_Application_Flags_None : constant GApplication_Flags := 0;
+   G_Application_Default_Flags : constant GApplication_Flags := 0;
    G_Application_Is_Service : constant GApplication_Flags := 1;
    G_Application_Is_Launcher : constant GApplication_Flags := 2;
    G_Application_Handles_Open : constant GApplication_Flags := 4;
@@ -401,10 +406,17 @@ package Glib.Application is
    --  Since: gtk+ 2.42
    --  @param Resource_Path the resource path to use
 
+   function Get_Version
+      (Self : not null access Gapplication_Record) return UTF8_String;
+
+   procedure Set_Version
+      (Self    : not null access Gapplication_Record;
+       Version : UTF8_String);
+
    procedure Hold (Self : not null access Gapplication_Record);
    --  Increases the use count of Application.
    --  Use this function to indicate that the application has a reason to
-   --  continue to run. For example, Glib.Application.Hold is called by GTK+
+   --  continue to run. For example, Glib.Application.Hold is called by GTK
    --  when a toplevel window is on the screen.
    --  To cancel the hold, call Glib.Application.Release.
 
@@ -416,6 +428,7 @@ package Glib.Application is
    --  will use that information to indicate the state to the user (e.g. with a
    --  spinner).
    --  To cancel the busy indication, use Glib.Application.Unmark_Busy.
+   --  The application must be registered before calling this function.
    --  Since: gtk+ 2.38
 
    procedure Quit (Self : not null access Gapplication_Record);
@@ -476,8 +489,8 @@ package Glib.Application is
    --  Glib.Application.Gapplication subclass and override local_command_line.
    --  In this case, you most likely want to return True from your
    --  local_command_line implementation to suppress the default handling. See
-   --  [gapplication-example-cmdline2.c][gapplication-example-cmdline2] for an
-   --  example.
+   --  [gapplication-example-cmdline2.c][https://gitlab.gnome.org/GNOME/glib/-/blob/HEAD/gio/tests/gapplication-example-cmdline2.c]
+   --  for an example.
    --  If, after the above is done, the use count of the application is zero
    --  then the exit status is returned immediately. If the use count is
    --  non-zero then the default main context is iterated until the use count
@@ -613,6 +626,8 @@ package Glib.Application is
    --  Since: gtk+ 2.40
    --  @param Id id of a previously sent notification
 
+   procedure Done (Self : not null access Gapplication_Command_Line_Record);
+
    function Get_Arguments
       (Self : not null access Gapplication_Command_Line_Record)
        return GNAT.Strings.String_List;
@@ -696,6 +711,8 @@ package Glib.Application is
    --  the context in which the invocation occurred. It typically contains
    --  information like the current working directory and the startup
    --  notification ID.
+   --  It comes from an untrusted external process and hence the types of all
+   --  values must be validated before being used.
    --  For local invocation, it will be null.
    --  Since: gtk+ 2.28
    --  @return the platform data, or null
@@ -715,6 +732,14 @@ package Glib.Application is
    --  Since: gtk+ 2.28
    --  @param Name the environment variable to get
    --  @return the value of the variable, or null if unset or unsent
+
+   procedure Print_Literal
+      (Self    : not null access Gapplication_Command_Line_Record;
+       Message : UTF8_String);
+
+   procedure Printerr_Literal
+      (Self    : not null access Gapplication_Command_Line_Record;
+       Message : UTF8_String);
 
    ----------------------
    -- GtkAda additions --
@@ -841,6 +866,11 @@ package Glib.Application is
       (Self        : not null access Gapplication_Record;
        Action_Name : UTF8_String);
 
+   procedure Remove_Action_Entries
+      (Self      : not null access Gapplication_Record;
+       Entries   : GAction_Entry_Array;
+       N_Entries : Glib.Gint);
+
    ---------------
    -- Functions --
    ---------------
@@ -927,6 +957,8 @@ package Glib.Application is
    Is_Remote_Property : constant Glib.Properties.Property_Boolean;
 
    Resource_Base_Path_Property : constant Glib.Properties.Property_String;
+
+   Version_Property : constant Glib.Properties.Property_String;
 
    Arguments_Property : constant Glib.Properties.Property_Object;
    --  Type: Glib.Variant.Gvariant
@@ -1145,6 +1177,8 @@ package Glib.Application is
      (Self         : System.Address;
       Command_Line : System.Address) return Glib.Gint;
    pragma Convention (C, Virtual_Command_Line);
+   --  invoked on the primary instance when a command-line is not handled
+   --  locally
 
    type Virtual_Local_Command_Line is access function
      (Self        : System.Address;
@@ -1184,6 +1218,8 @@ private
      Glib.Properties.Build ("options");
    Arguments_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("arguments");
+   Version_Property : constant Glib.Properties.Property_String :=
+     Glib.Properties.Build ("version");
    Resource_Base_Path_Property : constant Glib.Properties.Property_String :=
      Glib.Properties.Build ("resource-base-path");
    Is_Remote_Property : constant Glib.Properties.Property_Boolean :=
