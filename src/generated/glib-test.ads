@@ -30,13 +30,18 @@ with System;
 
 package Glib.Test is
 
+   ---------------
+   -- Callbacks --
+   ---------------
+
    type Test_Function is access procedure;
    pragma Convention (C, Test_Function);
-   --  A test function with no fixture, registered via Add_Func
+   --  A test function with no fixture, registered via Add_Func.
 
    type Test_Data_Function is access procedure (User_Data : System.Address);
    pragma Convention (C, Test_Data_Function);
-   --  A test function that receives the user-data pointer passed to Add_Data_Func.
+   --  A test function that receives the user-data pointer passed to
+   --  Add_Data_Func.
 
    ----------------------
    -- GtkAda additions --
@@ -378,5 +383,40 @@ package Glib.Test is
    --  If not called from inside a test, this function does nothing.
    --  Since: gtk+ 2.38
    --  @param Msg explanation
+
+   procedure Add_Func (Testpath : UTF8_String; Test_Func : Test_Function);
+   --  Create a new test case, similar to g_test_create_case. However the test
+   --  is assumed to use no fixture, and test suites are automatically created
+   --  on the fly and added to the root fixture, based on the slash-separated
+   --  portions of Testpath.
+   --  If Testpath includes the component "subprocess" anywhere in it, the
+   --  test will be skipped by default, and only run if explicitly required via
+   --  the `-p` command-line option or g_test_trap_subprocess.
+   --  No component of Testpath may start with a dot (`.`) if the
+   --  G_TEST_OPTION_ISOLATE_DIRS option is being used; and it is recommended
+   --  to do so even if it isn't.
+   --  Since: gtk+ 2.16
+   --  @param Testpath /-separated test case path name for the test.
+   --  @param Test_Func The test function to invoke for this test.
+
+   procedure Add_Data_Func
+      (Testpath  : UTF8_String;
+       Test_Data : System.Address;
+       Test_Func : Test_Data_Function);
+   --  Create a new test case, similar to g_test_create_case. However the test
+   --  is assumed to use no fixture, and test suites are automatically created
+   --  on the fly and added to the root fixture, based on the slash-separated
+   --  portions of Testpath. The Test_Data argument will be passed as first
+   --  argument to Test_Func.
+   --  If Testpath includes the component "subprocess" anywhere in it, the
+   --  test will be skipped by default, and only run if explicitly required via
+   --  the `-p` command-line option or g_test_trap_subprocess.
+   --  No component of Testpath may start with a dot (`.`) if the
+   --  G_TEST_OPTION_ISOLATE_DIRS option is being used; and it is recommended
+   --  to do so even if it isn't.
+   --  Since: gtk+ 2.16
+   --  @param Testpath /-separated test case path name for the test.
+   --  @param Test_Data Test data argument for the test function.
+   --  @param Test_Func The test function to invoke for this test.
 
 end Glib.Test;

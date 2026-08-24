@@ -4,6 +4,29 @@
 ada      = "Glib.Test"
 bindtype = false
 
+[[extra.type]]
+ctype = 'GTestFunc'
+ada = 'Test_Function'
+text = '''
+   ---------------
+   -- Callbacks --
+   ---------------
+
+   type Test_Function is access procedure;
+   pragma Convention (C, Test_Function);
+   --  A test function with no fixture, registered via Add_Func.
+'''
+
+[[extra.type]]
+ctype = 'GTestDataFunc'
+ada = 'Test_Data_Function'
+text = '''
+   type Test_Data_Function is access procedure (User_Data : System.Address);
+   pragma Convention (C, Test_Data_Function);
+   --  A test function that receives the user-data pointer passed to
+   --  Add_Data_Func.
+'''
+
 # ------------------------------------------------------------
 # Simple namespace-level functions that GIR describes cleanly.
 # ------------------------------------------------------------
@@ -28,9 +51,20 @@ ada = "Skip"
 # g_test_add_func: (testpath, GTestFunc) — retype the callback to
 # the Test_Function access type declared in [[extra.spec]] below.
 
+
 [[function]]
 id  = "g_test_add_func"
 ada = "Add_Func"
+body = '''
+      procedure Internal
+         (Testpath  : Gtkada.Types.Chars_Ptr;
+          Test_Func : Test_Function);
+      pragma Import (C, Internal, "g_test_add_func");
+      Tmp_Testpath : Gtkada.Types.Chars_Ptr := New_String (Testpath);
+   begin
+      Internal (Tmp_Testpath, Test_Func);
+      Free (Tmp_Testpath);
+'''
 
 [[function.parameter]]
 name = "test_func"
@@ -42,6 +76,17 @@ type = "Test_Function"
 [[function]]
 id  = "g_test_add_data_func"
 ada = "Add_Data_Func"
+body = '''
+      procedure Internal
+         (Testpath  : Gtkada.Types.Chars_Ptr;
+          Test_Data : System.Address;
+          Test_Func : Test_Data_Function);
+      pragma Import (C, Internal, "g_test_add_data_func");
+      Tmp_Testpath : Gtkada.Types.Chars_Ptr := New_String (Testpath);
+   begin
+      Internal (Tmp_Testpath, Test_Data, Test_Func);
+      Free (Tmp_Testpath);
+'''
 
 [[function.parameter]]
 name = "test_data"
@@ -95,16 +140,6 @@ use = false
 
 [[extra.spec]]
 text = '''
-
-   type Test_Function is access procedure;
-   pragma Convention (C, Test_Function);
-   --  A test function with no fixture, registered via Add_Func.
-
-   type Test_Data_Function is access procedure (User_Data : System.Address);
-   pragma Convention (C, Test_Data_Function);
-   --  A test function that receives the user-data pointer passed to
-   --  Add_Data_Func.
-
    procedure Init;
    --  Initialize the GLib testing framework, parsing the test-related
    --  command-line arguments visible through Ada.Command_Line (e.g.
