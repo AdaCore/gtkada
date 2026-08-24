@@ -95,6 +95,11 @@ body = '''
       return Tmp_Return /= 0;
 '''
 
+# TODO fix callback handling
+[[method]]
+id = 'g_list_store_find_with_equal_func_full'
+bind = false
+
 [[method]]
 id = "g_list_store_insert"
 body = '''
