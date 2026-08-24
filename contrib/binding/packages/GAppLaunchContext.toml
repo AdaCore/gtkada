@@ -13,7 +13,18 @@ id = "g_app_launch_context_get_startup_notify_id"
 bind = false
 # requires Gio.AppInfo and Gio.File bindings
 
+# ---------------
+# signal payload includes Gio.AppInfo
+# TODO Gio.AppInfo GAppInfo
+
 [[method]]
 id = "::launched"
 bind = false
-# signal payload includes Gio.AppInfo
+
+[[method]]
+id = "::launch-failed"
+bind = false
+
+[[method]]
+id = "::launch-started"
+bind = false

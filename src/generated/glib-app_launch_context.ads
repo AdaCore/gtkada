@@ -28,7 +28,6 @@
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings; use GNAT.Strings;
 with Glib.Object;  use Glib.Object;
-with Glib.Variant; use Glib.Variant;
 
 package Glib.App_Launch_Context is
 
@@ -105,24 +104,7 @@ package Glib.App_Launch_Context is
    -- Signals --
    -------------
 
-   type Cb_Gapp_Launch_Context_UTF8_String_Void is not null access procedure
-     (Self              : access Gapp_Launch_Context_Record'Class;
-      Startup_Notify_Id : UTF8_String);
-
-   type Cb_GObject_UTF8_String_Void is not null access procedure
-     (Self              : access Glib.Object.GObject_Record'Class;
-      Startup_Notify_Id : UTF8_String);
-
    Signal_Launch_Failed : constant Glib.Signal_Name := "launch-failed";
-   procedure On_Launch_Failed
-      (Self  : not null access Gapp_Launch_Context_Record;
-       Call  : Cb_Gapp_Launch_Context_UTF8_String_Void;
-       After : Boolean := False);
-   procedure On_Launch_Failed
-      (Self  : not null access Gapp_Launch_Context_Record;
-       Call  : Cb_GObject_UTF8_String_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False);
    --  The Glib.App_Launch_Context.Gapp_Launch_Context::launch-failed signal
    --  is emitted when a Glib.GApp_Info launch fails. The startup notification
    --  id is provided, so that the launcher can cancel the startup
@@ -131,27 +113,11 @@ package Glib.App_Launch_Context is
    --  Because a launch operation may involve spawning multiple instances of
    --  the target application, you should expect this signal to be emitted
    --  multiple times, one for each spawned instance.
-
-   type Cb_Gapp_Launch_Context_App_Info_Gvariant_Void is not null access procedure
-     (Self          : access Gapp_Launch_Context_Record'Class;
-      Info          : App_Info;
-      Platform_Data : Glib.Variant.Gvariant);
-
-   type Cb_GObject_App_Info_Gvariant_Void is not null access procedure
-     (Self          : access Glib.Object.GObject_Record'Class;
-      Info          : App_Info;
-      Platform_Data : Glib.Variant.Gvariant);
+   --    procedure Handler
+   --       (Self              : access Gapp_Launch_Context_Record'Class;
+   --        Startup_Notify_Id : UTF8_String)
 
    Signal_Launch_Started : constant Glib.Signal_Name := "launch-started";
-   procedure On_Launch_Started
-      (Self  : not null access Gapp_Launch_Context_Record;
-       Call  : Cb_Gapp_Launch_Context_App_Info_Gvariant_Void;
-       After : Boolean := False);
-   procedure On_Launch_Started
-      (Self  : not null access Gapp_Launch_Context_Record;
-       Call  : Cb_GObject_App_Info_Gvariant_Void;
-       Slot  : not null access Glib.Object.GObject_Record'Class;
-       After : Boolean := False);
    --  The Glib.App_Launch_Context.Gapp_Launch_Context::launch-started signal
    --  is emitted when a Glib.GApp_Info is about to be launched. If non-null
    --  the Platform_Data is an GVariant dictionary mapping strings to variants
@@ -172,6 +138,10 @@ package Glib.App_Launch_Context is
    --  Because a launch operation may involve spawning multiple instances of
    --  the target application, you should expect this signal to be emitted
    --  multiple times, one for each spawned instance.
+   --    procedure Handler
+   --       (Self          : access Gapp_Launch_Context_Record'Class;
+   --        Info          : App_Info;
+   --        Platform_Data : Glib.Variant.Gvariant)
    -- 
    --  Callback parameters:
    --    --  @param Info the Glib.GApp_Info that is about to be launched
