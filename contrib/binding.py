@@ -531,8 +531,11 @@ def _get_type(
                 return None
 
             ctype_name = t.get(ctype_qname)
+            const = False
             if ctype_name:
-                ctype_name = ctype_name.replace("const ", "")
+                if "const " in ctype_name:
+                    ctype_name = ctype_name.replace("const ", "")
+                    const = True
             return naming.type(
                 name=t.get("name"),
                 cname=ctype_name,
@@ -541,18 +544,18 @@ def _get_type(
                 allow_access=allow_access,
                 allow_none=allow_none,
                 pkg=pkg,
+                const=const,
             )
 
         a = nodeOrType.find(narray)
         if a is not None:
             t = a.find(ntype)
-            if a is not None:
+            if t is not None:
                 type = t.get(ctype_qname)
                 name = t.get("name") or type  # Sometimes name is not set
 
                 size = a.get("fixed-size", None)
-
-                if type:
+                if size is not None:
                     type = "array_of_%s" % (type,)
 
                 return naming.type(
@@ -750,7 +753,7 @@ class SubprogramProfile(object):
 
             if (
                 self.returns is not None
-                and p.mode not in ("in", "access")
+                and p.mode not in ("in", "access", "not null access")
                 and p.ada_binding
                 and as_array is False
             ):
@@ -874,12 +877,21 @@ class SubprogramProfile(object):
         pname = gtkparam.ada_name() or "Self"
 
         direction = gtkparam.get_direction() or "in"
-        if direction in ("out", "access"):
+        if direction in ("out", "access", "not null access"):
             mode = direction
         elif direction == "inout":
             mode = "in out"
         else:
-            mode = "in"
+            if isinstance (t, Record) and t.is_ptr:
+                if ip.get("optional", "0") == "1" or ip.get("allow-none", "0") == "1":
+                    if t.is_constant:
+                        mode = "access constant"
+                    else:
+                        mode = "access"
+                else:
+                    mode = "not null access"
+            else:
+                mode = "in"
 
         self.add_param(0, Parameter(name=pname, type=t, mode=mode, ownership=ownership))
 
@@ -1030,7 +1042,7 @@ class SubprogramProfile(object):
                 direction = "access"
                 default = default or "null"
 
-            assert direction in ("in", "out", "inout", "access"), (
+            assert direction in ("in", "out", "inout", "access", "not null access"), (
                 "Invalid value for direction: '%s'" % direction
             )
 
@@ -1085,14 +1097,29 @@ class SubprogramProfile(object):
 
             if direction == "inout":
                 c_mode = "in out"
-            elif direction in ("out", "access"):
+            elif direction in ("out"):
+                if (
+                    isinstance (type, Record)
+                    and type.is_ptr
+                    and p.get("caller-allocates", "0") == "1"
+                ):
+                    c_mode = "not null access"
+                else:
+                    c_mode = direction
+            elif direction in ("access", "not null access"):
                 c_mode = direction
             elif pinned_direction == "in":
                 # An explicit "in" in the TOML overrides the pointer
                 # heuristic below, for a C input that happens to be a pointer.
                 c_mode = "in"
             elif type.is_ptr:
-                c_mode = "in out"
+                if isinstance (type, Record):
+                    if p.get("optional", "0") == "1" or p.get("allow-none", "0") == "1":
+                        c_mode = "access"
+                    else:
+                        c_mode = "not null access"
+                else:
+                    c_mode = "in out"
             else:
                 c_mode = "in"
 
@@ -3322,8 +3349,7 @@ end "+";"""
                 if type:
                     ftype = override_fields.get(name, None)
                     if ftype is None:
-
-                        if not first_field_ctype:
+                        if not first_field_ctype and is_union:
                             t = field.findall(ntype)
                             assert t, "No type info for %s.%s" % (ctype, name)
 
@@ -3756,8 +3782,9 @@ end From_Object_Free;"""
             for p in extra:
                 if p.tag == "with_spec":
                     self.pkg.add_with(
-                        p.get("pkg", "Missing package name in <extra>"),
+                        pkg=p.get("pkg", "Missing package name in <extra>"),
                         do_use=p.get("use", "true").lower() == "true",
+                        limited=p.get("limited", "false").lower() == "true",
                     )
                 elif p.tag == "with_body":
                     self.pkg.add_with(
@@ -3959,7 +3986,7 @@ type %(typename)s is access all %(typename)s_Record'Class;"""
         self.pkg.add_with("Ada.Finalization")
 
         # force `with System; use System;`
-        self.pkg.spec_withs["System"] = (True, False)
+        self.pkg.spec_withs["System"] = (True, False, False)
 
         t = self._subst["typename"] + "_Record"
         self.has_ref = self.node.get(glib_ref_func) is not None

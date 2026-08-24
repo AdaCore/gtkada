@@ -1,0 +1,117 @@
+# ============================================================
+#   Graphene_Box_T
+# ============================================================
+
+ada = "Graphene.Box"
+
+[[extra.with_spec]]
+pkg = "Graphene.Sphere"
+limited = true
+
+[[method]]
+id = "graphene_box_alloc"
+bind = false
+
+[[method]]
+id = "graphene_box_get_vertices"
+bind = false
+
+[[method]]
+id = "graphene_box_init_from_points"
+bind = false
+
+[[method]]
+id = "graphene_box_init_from_vectors"
+bind = false
+
+[[extra.spec]]
+text = '''
+   type Graphene_Vec3_Array8 is array (1 .. 8) of Graphene_Vec3_T;
+   pragma Convention (C, Graphene_Vec3_Array8);
+
+   procedure Get_Vertices
+      (Self     : not null access Graphene_Box_T;
+       Vertices : out Graphene_Vec3_Array8);
+   --  Computes the vertices of the given Graphene.Box.Graphene_Box_T.
+   --  Since: gtk+ 1.2
+   --  @param Vertices return location for an array of 8
+   --  Graphene.Vec3.Graphene_Vec3_T
+
+   function Init_From_Points
+      (Self   : not null access Graphene_Box_T;
+       Points : Graphene.Point3d.Graphene_Point3d_Array) return access Graphene_Box_T;
+   --  Initializes the given Graphene.Box.Graphene_Box_T with the given array
+   --  of vertices.
+   --  If Points'Length is 0, the returned box is initialized with
+   --  Graphene.Box.Empty.
+   --  Since: gtk+ 1.2
+   --  @param Points an array of Graphene.Point3d.Graphene_Point3D_T
+   --  @return the initialized Graphene.Box.Graphene_Box_T
+
+   function Init_From_Vectors
+      (Self    : not null access Graphene_Box_T;
+       Vectors : Graphene.Vec3.Graphene_Vec3_Array) return access Graphene_Box_T;
+   --  Initializes the given Graphene.Box.Graphene_Box_T with the given array
+   --  of vertices.
+   --  If Vectors'Length is 0, the returned box is initialized with
+   --  Graphene.Box.Empty.
+   --  Since: gtk+ 1.2
+   --  @param Vectors an array of Graphene.Vec3.Graphene_Vec3_T
+   --  @return the initialized Graphene.Box.Graphene_Box_T
+
+'''
+
+[extra]
+body = '''
+   ------------------
+   -- Get_Vertices --
+   ------------------
+
+   procedure Get_Vertices
+      (Self     : not null access Graphene_Box_T;
+       Vertices : out Graphene_Vec3_Array8)
+   is
+      procedure Internal
+         (Self     : not null access Graphene_Box_T;
+          Vertices : System.Address);
+      pragma Import (C, Internal, "graphene_box_get_vertices");
+
+   begin
+      Internal (Self, Vertices'Address);
+   end Get_Vertices;
+
+   ----------------------
+   -- Init_From_Points --
+   ----------------------
+
+   function Init_From_Points
+      (Self   : not null access Graphene_Box_T;
+       Points : Graphene.Point3d.Graphene_Point3d_Array) return access Graphene_Box_T
+   is
+      function Internal
+         (Self     : access Graphene_Box_T;
+          N_Points : Guint;
+          Points   : System.Address) return access Graphene_Box_T;
+      pragma Import (C, Internal, "graphene_box_init_from_points");
+   begin
+      return Internal (Self, Guint (Points'Length), Points'Address);
+   end Init_From_Points;
+
+   -----------------------
+   -- Init_From_Vectors --
+   -----------------------
+
+   function Init_From_Vectors
+      (Self    : not null access Graphene_Box_T;
+       Vectors : Graphene.Vec3.Graphene_Vec3_Array) return access Graphene_Box_T
+   is
+      function Internal
+         (Self      : access Graphene_Box_T;
+          N_Vectors : Guint;
+          Vectors   : System.Address) return access Graphene_Box_T;
+      pragma Import (C, Internal, "graphene_box_init_from_vectors");
+   begin
+      return Internal (Self, Guint (Vectors'Length), Vectors'Address);
+   end Init_From_Vectors;
+
+'''

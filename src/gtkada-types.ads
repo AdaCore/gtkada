@@ -128,28 +128,6 @@ package Gtkada.Types is
    procedure Free (A : in out Interfaces.C.Strings.chars_ptr_array);
    --  Free all the strings in A.
 
-   --------------
-   -- Graphene --
-   --------------
-
-   type graphene_point_t is record
-      x : Interfaces.C.C_float;
-      y : Interfaces.C.C_float;
-   end record;
-   pragma Convention (C, graphene_point_t);
-
-   type graphene_size_t is record
-      width  : Interfaces.C.C_float;
-      height : Interfaces.C.C_float;
-   end record;
-   pragma Convention (C, graphene_size_t);
-
-   type graphene_rect_t is record
-      origin : graphene_point_t;
-      size   : graphene_size_t;
-   end record;
-   pragma Convention (C, graphene_rect_t);
-
 private
    type Chars_Ptr is new Interfaces.C.Strings.chars_ptr;
    pragma Import (C, g_free, "g_free");

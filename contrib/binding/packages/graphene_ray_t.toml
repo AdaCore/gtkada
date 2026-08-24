@@ -1,0 +1,12 @@
+# ============================================================
+#   Graphene_Ray_T
+# ============================================================
+
+ada = "Graphene.Ray"
+
+[[enum]]
+ctype = "graphene_ray_intersection_kind_t"
+
+[[method]]
+id = "graphene_ray_alloc"
+bind = false

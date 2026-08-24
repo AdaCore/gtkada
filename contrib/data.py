@@ -12,6 +12,8 @@ enums = (
     "PangoEnums",
     "GdkKeyMatch",
     "GdkEnums",
+    "graphene_simd4f_t",
+    "graphene_simd4x4f_t",
 )
 
 # List of interfaces to bind. These are processed before the widgets themselves
@@ -135,6 +137,7 @@ binding = (
     "--Gdk.VulkanContext", # deprecated since 4.14
     "--GdkWindow",
     "Gdk.PopupLayout",
+    "Gdk.ToplevelLayout",
     "--GAction",  # bound as an interface, see interfaces tuple
     "--GActionGroup",  # bound as an interface, see interfaces tuple
     "--GActionMap",  # bound as an interface, see interfaces tuple
@@ -216,6 +219,7 @@ binding = (
     "--Spawn",  # Bound through manual_binding
     "--GTest",  # Bound through manual_binding
     "--Utils",  # Bound through manual_binding
+    "--GObject",
     "--GObject.ParamSpec",  # Bound manually
     "--GObject.ParamSpecBoolean",  # Bound manually
     "--GObject.ParamSpecBoxed",  # Bound manually
@@ -317,13 +321,9 @@ binding = (
     "Pango.TabArray",
     "Gtk.AboutDialog",
     "--GtkAccelGroup",
-    "--GtkAccelLabel",
-    "--GtkAccelMap",
     "--GtkAccessible",  # Bound through manual_binding
     "Gtk.AccessibleHyperlink",
     "--GtkAccessibleText",  # Bound through manual_binding
-    "--GtkAction",
-    "--GtkActionGroup",
     "--Gtk.ActionBar",
     "Gtk.Adjustment",
     "Gtk.AlertDialog",
@@ -670,6 +670,23 @@ binding = (
     "--Gtk.ShortcutLabel",      # Obsolescent
     "--Gtk.ShortcutsSection",   # Obsolescent
     "Gtk.DropDown",
+    "graphene_point_t",
+    "graphene_point3d_t",
+    "graphene_size_t",
+    "graphene_rect_t",
+    "graphene_sphere_t",
+    "graphene_box_t",
+    "graphene_quad_t",
+    "graphene_ray_t",
+    "graphene_matrix_t",
+    "graphene_quaternion_t",
+    "graphene_euler_t",
+    "graphene_plane_t",
+    "graphene_triangle_t",
+    "graphene_frustum_t",
+    "graphene_vec2_t",
+    "graphene_vec3_t",
+    "graphene_vec4_t",
 )
 
 # Entries that are bound through manual/TOML glue instead of GIR class lookup.
@@ -800,6 +817,8 @@ naming.exceptions = {
     "Return": "Do_Return",
     "Function": "Func",
     "Digits": "The_Digits",
+    "Delta": "The_Delta",
+    "Constant": "The_Constant",
     "Reverse": "Gtk_Reverse",
     "Raise": "Gdk_Raise",
     "Use": "GUse",
@@ -823,6 +842,7 @@ naming.exceptions = {
 
 naming.type_exceptions = {
     "gboolean": Enum("Boolean", "Glib.Properties.Property_Boolean"),
+    "_Bool": Enum("Boolean", "Glib.Properties.Property_Boolean"),
     "gdouble": Proxy("Gdouble", "Glib.Properties.Property_Double"),
     "double": Proxy("Gdouble", "Glib.Properties.Property_Double"),
     "gshort": Proxy("Gshort", "Glib.Properties.Property_Int"),

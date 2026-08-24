@@ -3,16 +3,19 @@
 --  into a paintable. The point is to prove the generated package links and
 --  runs, not to inspect the produced render node (which needs Gsk).
 
-with Glib;          use Glib;
-with Glib.Object;   use Glib.Object;
-with Glib.Test;     use Glib.Test;
+with Glib;           use Glib;
+with Glib.Object;    use Glib.Object;
+with Glib.Test;      use Glib.Test;
 with Ada.Command_Line;
 with System;
-with Gdk.Paintable; use Gdk.Paintable;
-with Gdk.RGBA;      use Gdk.RGBA;
+with Gdk.Paintable;  use Gdk.Paintable;
+with Gdk.RGBA;       use Gdk.RGBA;
 with Gtk.Main;
-with Gtk.Snapshot;  use Gtk.Snapshot;
-with Gtkada.Types;  use Gtkada.Types;
+with Gtk.Snapshot;   use Gtk.Snapshot;
+with Graphene.Rect;  use Graphene.Rect;
+with Graphene.Point; use Graphene.Point;
+with Graphene.Size;  use Graphene.Size;
+with Gtkada.Types;   use Gtkada.Types;
 
 procedure Snapshot is
 
@@ -23,30 +26,32 @@ procedure Snapshot is
       Snap      : constant Gtk_Snapshot := Gtk_Snapshot_New;
       Color     : constant Gdk_RGBA :=
         (Red => 0.20, Green => 0.50, Blue => 0.85, Alpha => 1.0);
-      Bounds    : graphene_rect_t :=
+      Bounds    : aliased Graphene.Rect.Graphene_Rect_T :=
         (origin => (x => 0.0, y => 0.0),
          size   => (width => 100.0, height => 100.0));
-      Point     : graphene_point_t := (x => 10.0, y => 20.0);
-      Size      : graphene_size_t  := (width => 100.0, height => 100.0);
+      Point     : aliased Graphene.Point.Graphene_Point_T :=
+        (x => 10.0, y => 20.0);
+      Size      : aliased Graphene.Size.Graphene_Size_T  :=
+        (width => 100.0, height => 100.0);
       Paintable : Gdk_Paintable;
    begin
       Assert_Nonnull (Get_Object (Snap));
 
       --  Transform stack.
       Snap.Save;
-      Snap.Translate (Point);
+      Snap.Translate (Point'Access);
       Snap.Scale (2.0, 2.0);
       Snap.Rotate (45.0);
 
       --  A clip push must be balanced by a pop.
-      Snap.Push_Clip (Bounds);
-      Snap.Append_Color (Color, Bounds);
+      Snap.Push_Clip (Bounds'Access);
+      Snap.Append_Color (Color, Bounds'Access);
       Snap.Pop;
 
       Snap.Restore;
 
       --  Consumes the snapshot and hands back a paintable.
-      Paintable := Snap.To_Paintable (Size);
+      Paintable := Snap.To_Paintable (Size'Access);
       Assert_Nonnull (System.Address (Paintable));
    end Test_Paint;
 

@@ -1,0 +1,39 @@
+# ============================================================
+#   Graphene_Vec3_T
+# ============================================================
+
+ada = "Graphene.Vec3"
+
+[[extra.type]]
+ctype = "array_of_graphene_vec3_t"
+ada = "Graphene_Vec3_Array"
+text = '''
+
+         type Graphene_Vec3_Array is array (Natural range <>) of Graphene_Vec3_T;
+         pragma Convention (C, Graphene_Vec3_Array);
+       '''
+
+[[method]]
+id = "graphene_vec3_alloc"
+bind = false
+
+#[[method]]
+#id = "graphene_vec3_init"
+#bind = false
+
+#[[method]]
+#id = "graphene_vec3_init_from_vec3"
+#bind = false
+
+#[[method]]
+#id = "graphene_vec3_zero"
+#bind = false
+
+[[method]]
+id = "graphene_vec3_init_from_float"
+bind = false # need array_of_float
+
+[[method]]
+id = "graphene_vec3_to_float"
+bind = false # need array_of_float
+

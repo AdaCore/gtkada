@@ -1,0 +1,10 @@
+# ============================================================
+#   GdkToplevelLayout
+# ============================================================
+
+[[extra.with_spec]]
+pkg = "System"
+use = false
+
+[[extra.with_body]]
+pkg = "Glib.Object"

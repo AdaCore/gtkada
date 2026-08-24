@@ -1,0 +1,13 @@
+# ============================================================
+#   Graphene_Triangle_T
+# ============================================================
+
+ada = "Graphene.Triangle"
+
+[[method]]
+id = "graphene_triangle_alloc"
+bind = false
+
+[[method]]
+id = "graphene_triangle_init_from_float" # array_of_float
+bind = false

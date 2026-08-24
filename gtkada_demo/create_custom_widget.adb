@@ -40,6 +40,7 @@ with Gtk.Enums;    use Gtk.Enums;
 with Gtk.Label;    use Gtk.Label;
 with Gtk.Snapshot; use Gtk.Snapshot;
 with Gtk.Widget;   use Gtk.Widget;
+with Graphene.Rect;
 with Gtkada.Types;
 
 package body Create_Custom_Widget is
@@ -157,13 +158,13 @@ package body Create_Custom_Widget is
 
       Color  : constant Gdk_RGBA :=
         (Red => 0.20, Green => 0.50, Blue => 0.85, Alpha => 1.0);
-      Bounds : Gtkada.Types.graphene_rect_t :=
+      Bounds : aliased Graphene.Rect.Graphene_Rect_T :=
         (origin => (x => 0.0, y => 0.0),
          size   =>
            (width  => C_float (Self.Alloc_Width),
             height => C_float (Self.Alloc_Height)));
    begin
-      Snap.Append_Color (Color, Bounds);
+      Snap.Append_Color (Color, Bounds'Access);
    end Gizmo_Snapshot;
 
    ----------------

@@ -71,18 +71,16 @@ package body Gtk.Snapshot is
 
    function Append_Cairo
       (Self   : not null access Gtk_Snapshot_Record;
-       Bounds : in out graphene_rect_t) return Cairo.Cairo_Context
+       Bounds : not null access Graphene.Rect.Graphene_Rect_T)
+       return Cairo.Cairo_Context
    is
       function Internal
-         (Self       : System.Address;
-          Acc_Bounds : access graphene_rect_t) return Cairo.Cairo_Context;
+         (Self   : System.Address;
+          Bounds : access Graphene.Rect.Graphene_Rect_T)
+          return Cairo.Cairo_Context;
       pragma Import (C, Internal, "gtk_snapshot_append_cairo");
-      Acc_Bounds : aliased graphene_rect_t := Bounds;
-      Tmp_Return : Cairo.Cairo_Context;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Acc_Bounds'Access);
-      Bounds := Acc_Bounds;
-      return Tmp_Return;
+      return Internal (Get_Object (Self), Bounds);
    end Append_Cairo;
 
    ------------------
@@ -92,12 +90,12 @@ package body Gtk.Snapshot is
    procedure Append_Color
       (Self   : not null access Gtk_Snapshot_Record;
        Color  : Gdk.RGBA.Gdk_RGBA;
-       Bounds : in out graphene_rect_t)
+       Bounds : not null access Graphene.Rect.Graphene_Rect_T)
    is
       procedure Internal
          (Self   : System.Address;
           Color  : Gdk.RGBA.Gdk_RGBA;
-          Bounds : in out graphene_rect_t);
+          Bounds : not null access Graphene.Rect.Graphene_Rect_T);
       pragma Import (C, Internal, "gtk_snapshot_append_color");
    begin
       Internal (Get_Object (Self), Color, Bounds);
@@ -127,12 +125,12 @@ package body Gtk.Snapshot is
 
    procedure Append_Paste
       (Self   : not null access Gtk_Snapshot_Record;
-       Bounds : in out graphene_rect_t;
+       Bounds : not null access Graphene.Rect.Graphene_Rect_T;
        Nth    : Gsize)
    is
       procedure Internal
          (Self   : System.Address;
-          Bounds : in out graphene_rect_t;
+          Bounds : not null access Graphene.Rect.Graphene_Rect_T;
           Nth    : Gsize);
       pragma Import (C, Internal, "gtk_snapshot_append_paste");
    begin
@@ -146,12 +144,12 @@ package body Gtk.Snapshot is
    procedure Append_Texture
       (Self    : not null access Gtk_Snapshot_Record;
        Texture : not null access Gdk.Texture.Gdk_Texture_Record'Class;
-       Bounds  : in out graphene_rect_t)
+       Bounds  : not null access Graphene.Rect.Graphene_Rect_T)
    is
       procedure Internal
          (Self    : System.Address;
           Texture : System.Address;
-          Bounds  : in out graphene_rect_t);
+          Bounds  : not null access Graphene.Rect.Graphene_Rect_T);
       pragma Import (C, Internal, "gtk_snapshot_append_texture");
    begin
       Internal (Get_Object (Self), Get_Object (Texture), Bounds);
@@ -217,11 +215,11 @@ package body Gtk.Snapshot is
 
    procedure Push_Clip
       (Self   : not null access Gtk_Snapshot_Record;
-       Bounds : in out graphene_rect_t)
+       Bounds : not null access Graphene.Rect.Graphene_Rect_T)
    is
       procedure Internal
          (Self   : System.Address;
-          Bounds : in out graphene_rect_t);
+          Bounds : not null access Graphene.Rect.Graphene_Rect_T);
       pragma Import (C, Internal, "gtk_snapshot_push_clip");
    begin
       Internal (Get_Object (Self), Bounds);
@@ -272,13 +270,13 @@ package body Gtk.Snapshot is
 
    procedure Push_Repeat
       (Self         : not null access Gtk_Snapshot_Record;
-       Bounds       : in out graphene_rect_t;
-       Child_Bounds : in out graphene_rect_t)
+       Bounds       : not null access Graphene.Rect.Graphene_Rect_T;
+       Child_Bounds : access Graphene.Rect.Graphene_Rect_T)
    is
       procedure Internal
          (Self         : System.Address;
-          Bounds       : in out graphene_rect_t;
-          Child_Bounds : in out graphene_rect_t);
+          Bounds       : not null access Graphene.Rect.Graphene_Rect_T;
+          Child_Bounds : access Graphene.Rect.Graphene_Rect_T);
       pragma Import (C, Internal, "gtk_snapshot_push_repeat");
    begin
       Internal (Get_Object (Self), Bounds, Child_Bounds);
@@ -366,19 +364,16 @@ package body Gtk.Snapshot is
 
    function To_Paintable
       (Self : not null access Gtk_Snapshot_Record;
-       Size : in out graphene_size_t) return Gdk.Paintable.Gdk_Paintable
+       Size : access Graphene.Size.Graphene_Size_T)
+       return Gdk.Paintable.Gdk_Paintable
    is
       function Internal
-         (Self     : System.Address;
-          Acc_Size : access graphene_size_t)
+         (Self : System.Address;
+          Size : access Graphene.Size.Graphene_Size_T)
           return Gdk.Paintable.Gdk_Paintable;
       pragma Import (C, Internal, "gtk_snapshot_to_paintable");
-      Acc_Size   : aliased graphene_size_t := Size;
-      Tmp_Return : Gdk.Paintable.Gdk_Paintable;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Acc_Size'Access);
-      Size := Acc_Size;
-      return Tmp_Return;
+      return Internal (Get_Object (Self), Size);
    end To_Paintable;
 
    ---------------
@@ -387,11 +382,11 @@ package body Gtk.Snapshot is
 
    procedure Translate
       (Self  : not null access Gtk_Snapshot_Record;
-       Point : in out graphene_point_t)
+       Point : not null access Graphene.Point.Graphene_Point_T)
    is
       procedure Internal
          (Self  : System.Address;
-          Point : in out graphene_point_t);
+          Point : not null access Graphene.Point.Graphene_Point_T);
       pragma Import (C, Internal, "gtk_snapshot_translate");
    begin
       Internal (Get_Object (Self), Point);
