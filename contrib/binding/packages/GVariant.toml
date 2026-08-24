@@ -87,6 +87,11 @@ id = "g_variant_get_bytestring"
 bind = false
 # c arrays
 
+[[method]]
+id = "intern"
+bind = false
+# Internal get-type function?
+
 # The GIR does not mark this length optional, but g_variant_dup_string
 # forwards to g_variant_get_string, whose length *is* optional and so
 # accepts a NULL. "default" is what turns on the null guard in the body.

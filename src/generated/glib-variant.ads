@@ -650,12 +650,6 @@ package Glib.Variant is
    --  Since: gtk+ 2.24
    --  @param Value a Glib.Variant.Gvariant instance
 
-   function Get_Type return Glib.GType;
-   pragma Import (C, Get_Type, "intern");
-
-   function Get_Type return Glib.GType;
-   pragma Import (C, Get_Type, "g_variant_type_get_gtype");
-
    procedure G_New (Self : out Gvariant_Type; Type_String : UTF8_String);
    --  Creates a new Glib.Variant.Gvariant_Type corresponding to the type
    --  string given by Type_String. It is appropriate to call Glib.Variant.Free
@@ -683,6 +677,9 @@ package Glib.Variant is
    --  It is appropriate to call Glib.Variant.Free on the return value.
    --  @param Key a basic Glib.Variant.Gvariant_Type
    --  @param Value a Glib.Variant.Gvariant_Type
+
+   function Get_Type return Glib.GType;
+   pragma Import (C, Get_Type, "g_variant_type_get_gtype");
 
    -------------
    -- Methods --
