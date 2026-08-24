@@ -211,24 +211,4 @@ package body Glib.Bytes is
       Internal (Get_Object (Self));
    end Unref;
 
-   -------------------
-   -- Unref_To_Data --
-   -------------------
-
-   function Unref_To_Data
-      (Self : Gbytes;
-       Size : out Gsize) return Guint8_Array
-   is
-      function Internal
-         (Self     : System.Address;
-          Acc_Size : access Gsize) return System.Address;
-      pragma Import (C, Internal, "g_bytes_unref_to_data");
-      Acc_Size   : aliased Gsize;
-      Tmp_Return : System.Address;
-   begin
-      Tmp_Return := Internal (Get_Object (Self), Acc_Size'Access);
-      Size := Acc_Size;
-      return Atom_Arrays.To_Array (Atom_Arrays.Convert (Tmp_Return), Integer (N_Atoms));
-   end Unref_To_Data;
-
 end Glib.Bytes;

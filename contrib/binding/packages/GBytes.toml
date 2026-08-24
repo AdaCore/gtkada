@@ -23,12 +23,18 @@ id = "g_bytes_hash"
 bind = false
 # gconstpointer
 
+# ----------------------
+# TODO (binding pending)
+# Need to figure out how to use Atom_Arrays
+
 [[method]]
 id = "g_bytes_get_data"
 bind = false
-# Need to figure out how to use Atom_Arrays
 
 [[method]]
 id = "g_bytes_unref_to_array"
 bind = false
-# Need to figure out how to use Atom_Arrays
+
+[[method]]
+id = "g_bytes_unref_to_data"
+bind = false

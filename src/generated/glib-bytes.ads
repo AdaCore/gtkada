@@ -196,21 +196,6 @@ package Glib.Bytes is
    --  freed. If Bytes is null, it will return immediately.
    --  Since: gtk+ 2.32
 
-   function Unref_To_Data
-      (Self : Gbytes;
-       Size : out Gsize) return Guint8_Array;
-   --  Unreferences the bytes, and returns a pointer the same byte data
-   --  contents.
-   --  As an optimization, the byte data is returned without copying if this
-   --  was the last reference to bytes and bytes was created with g_bytes_new,
-   --  g_bytes_new_take or g_byte_array_free_to_bytes. In all other cases the
-   --  data is copied.
-   --  Since: gtk+ 2.32
-   --  Parameter Self has transfer-ownership='full'
-   --  @param Size location to place the length of the returned data
-   --  @return a pointer to the same byte data, which should be freed with
-   --  g_free
-
 private
    Null_Gbytes : constant Gbytes :=
       (Glib.C_Boxed with null record);
