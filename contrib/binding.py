@@ -1478,6 +1478,9 @@ class GIRClass(object):
         )
 
         adaname = adaname or gtkmethod.ada_name() or node.get("name").title()
+        # Remove trailing underscores
+        if adaname.endswith('_'):
+            adaname = adaname.rstrip('_')
         adaname = naming.protect_keywords(adaname)
 
         if not isinherited:
