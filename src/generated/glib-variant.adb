@@ -1469,7 +1469,7 @@ package body Glib.Variant is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_variant_parse");
       Acc_Error  : aliased Glib.Error.GError;
-      Return_Obj : Gvariant;
+      Return_Obj : Gvariant := Null_Gvariant;
       Tmp_Text   : Gtkada.Types.Chars_Ptr := New_String (Text);
       Tmp_Limit  : Gtkada.Types.Chars_Ptr;
       Tmp_Endptr : Gtkada.Types.chars_ptr_array := From_String_List (Endptr);

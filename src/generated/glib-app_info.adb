@@ -828,7 +828,10 @@ package body Glib.App_Info is
       Error := Acc_Error;
       Free (Tmp_Application_Name);
       Free (Tmp_Commandline);
-      return Tmp_Return;
+      return
+        (if Acc_Error = null
+         then Tmp_Return
+         else Null_Gapp_Info);
    end Create_From_Commandline;
 
    -------------

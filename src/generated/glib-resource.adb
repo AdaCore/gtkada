@@ -196,7 +196,7 @@ package body Glib.Resource is
           Acc_Error    : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_resource_lookup_data");
       Acc_Error  : aliased Glib.Error.GError;
-      Return_Obj : Glib.Bytes.Gbytes;
+      Return_Obj : Glib.Bytes.Gbytes := Null_Gbytes;
       Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
       Tmp_Return : System.Address;
    begin
@@ -298,7 +298,7 @@ package body Glib.Resource is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_resource_load");
       Acc_Error    : aliased Glib.Error.GError;
-      Return_Obj   : Gresource;
+      Return_Obj   : Gresource := Null_Gresource;
       Tmp_Filename : Gtkada.Types.Chars_Ptr := New_String (Filename);
       Tmp_Return   : System.Address;
    begin

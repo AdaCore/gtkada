@@ -684,6 +684,8 @@ class SubprogramProfile(object):
             if pkg is not None:
                 pkg.add_with("Glib.Error", specs=True)
                 pkg.add_use_type ("Glib.Error.GError")
+            if profile.returns:
+                profile.returns.allow_none = True
 
         profile.doc = profile._getdoc(gtkmethod, node)
         if profile.returns_doc:
@@ -1628,7 +1630,10 @@ class GIRClass(object):
                     if isinstance(profile.returns, (GObject, Proxy)):
                         var_return = "Return_Obj"
                         assign_return = f"{var_return} := {execute.returnvar};"
-                        local_vars.append(Local_Var(name=var_return,type=profile.returns.ada))
+
+                        local_vars.append(Local_Var(name=var_return,
+                                                    type=profile.returns.ada,
+                                                    default=profile.returns.null_name()))
 
                         subp_code += ["if Acc_Error = null then",
                                     assign_return,

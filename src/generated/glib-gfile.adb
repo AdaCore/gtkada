@@ -628,7 +628,12 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      return Gtkada.Bindings.Value_And_Free (Tmp_Return);
+      if Acc_Error = null then
+         return Gtkada.Bindings.Value_And_Free (Tmp_Return);
+      else
+         Free (Tmp_Return);
+         return "";
+      end if;
    end Build_Attribute_List_For_Copy;
 
    ------------------------------
@@ -1095,7 +1100,7 @@ package body Glib.GFile is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_load_bytes");
       Acc_Error    : aliased Glib.Error.GError;
-      Return_Obj   : Glib.Bytes.Gbytes;
+      Return_Obj   : Glib.Bytes.Gbytes := Null_Gbytes;
       Tmp_Etag_Out : aliased Gtkada.Types.Chars_Ptr;
       Acc_Etag_Out : constant access Gtkada.Types.Chars_Ptr := (if Etag_Out /= null then Tmp_Etag_Out'Access else null);
       Tmp_Return   : System.Address;
@@ -1145,7 +1150,7 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_load_bytes_finish");
       Acc_Error    : aliased Glib.Error.GError;
-      Return_Obj   : Glib.Bytes.Gbytes;
+      Return_Obj   : Glib.Bytes.Gbytes := Null_Gbytes;
       Tmp_Etag_Out : aliased Gtkada.Types.Chars_Ptr;
       Acc_Etag_Out : constant access Gtkada.Types.Chars_Ptr := (if Etag_Out /= null then Tmp_Etag_Out'Access else null);
       Tmp_Return   : System.Address;
@@ -2627,7 +2632,10 @@ package body Glib.GFile is
       Acc_Iostream := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Acc_Iostream, Stub_Gfile_Iostream));
       Iostream := Acc_Iostream;
       Error := Acc_Error;
-      return Tmp_Return;
+      return
+        (if Acc_Error = null
+         then Tmp_Return
+         else Null_Gfile);
    end New_Tmp_Finish;
 
    ----------------

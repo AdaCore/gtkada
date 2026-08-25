@@ -354,7 +354,7 @@ package body Glib.Input_Stream is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_input_stream_read_bytes");
       Acc_Error  : aliased Glib.Error.GError;
-      Return_Obj : Glib.Bytes.Gbytes;
+      Return_Obj : Glib.Bytes.Gbytes := Null_Gbytes;
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Count, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
@@ -399,7 +399,7 @@ package body Glib.Input_Stream is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_input_stream_read_bytes_finish");
       Acc_Error  : aliased Glib.Error.GError;
-      Return_Obj : Glib.Bytes.Gbytes;
+      Return_Obj : Glib.Bytes.Gbytes := Null_Gbytes;
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);

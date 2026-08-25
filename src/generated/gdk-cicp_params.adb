@@ -84,7 +84,7 @@ package body Gdk.Cicp_Params is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gdk_cicp_params_build_color_state");
       Acc_Error  : aliased Glib.Error.GError;
-      Return_Obj : Gdk.Color_State.Gdk_Color_State;
+      Return_Obj : Gdk.Color_State.Gdk_Color_State := Null_Gdk_Color_State;
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Error'Access);
