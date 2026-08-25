@@ -178,6 +178,9 @@ class CType(object):
         self.property = property
         self.default_record_field_value = None
 
+        # Used for default values where applicable
+        self.null_value = None
+
         self.is_ptr = False
         self.is_constant = False
 
@@ -520,6 +523,11 @@ class CType(object):
         """Return a copy of self, possibly modifying some properties."""
         return copy.deepcopy(self)
 
+    def null_name(self) -> str:
+        '''
+        Name of a dedicated null object exists for [type] if it exists, else ""
+        '''
+        return ""
 
 class Enum(CType):
 
@@ -615,6 +623,7 @@ class GObject(CType):
         # record_ada holds that child-package name so that _Record references
         # strip correctly within the defining package body.
         self.record_ada = None
+        self.null_value = 'null'
 
     def _record_ada_name(self) -> str:
         """Fully-qualified Ada name to use when building '_Record' references."""
@@ -731,6 +740,7 @@ class UTF8(CType):
         CType.__init__(self, "UTF8_String", "Glib.Properties.Property_String")
         self.cparam = "Gtkada.Types.Chars_Ptr"
         self.cleanup = "Free (%s);"
+        self.null_value = '""'
 
     def convert_from_c(self) -> ConvertedValue:
         conv = "Gtkada.Bindings.Value_Allowing_Null (%(var)s)"
@@ -789,6 +799,7 @@ class UTF8_List(CType):
         CType.__init__(self, "GNAT.Strings.String_List", "")
         self.cparam = "Gtkada.Types.chars_ptr_array"
         self.cleanup = "Gtkada.Types.Free (%s);"
+        self.null_value = '(1..0 => null)'
 
     def convert_from_c(self) -> ConvertedValue:
         # Use a temporary variable to store the result of To_String_List,
