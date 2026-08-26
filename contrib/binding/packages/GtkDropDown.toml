@@ -1,0 +1,11 @@
+# ============================================================
+#   GtkDropDown
+# ============================================================
+
+[[method]]
+id = "gtk_drop_down_get_selected_item"
+return = "GObject.Object*"
+
+[[property]]
+id = "model"
+bind = false
