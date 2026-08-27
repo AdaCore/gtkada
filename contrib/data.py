@@ -870,6 +870,7 @@ naming.type_exceptions = {
     "gchar": Proxy("Gchar"),
     "guchar": Proxy("Guchar"),
     "GAppInfo": Proxy("Glib.GApp_Info"),
+    "GString*": Proxy("Glib.String.Gstring"),
     "unsigned int": Proxy("Guint"),
     # These should not be necessary, but if we don't put them the gnerated
     # binding is wrong (for instance we end up passing Gdk_Event_Record as

@@ -1354,10 +1354,10 @@ package body Glib.Variant is
       function Internal
          (Self          : System.Address;
           String        : Glib.String.Gstring;
-          Type_Annotate : Glib.Gboolean) return access Glib.String.Gstring;
+          Type_Annotate : Glib.Gboolean) return Glib.String.Gstring;
       pragma Import (C, Internal, "g_variant_print_string");
    begin
-      return From_Object_Free (Internal (Get_Object (Self), String, Boolean'Pos (Type_Annotate)));
+      return Internal (Get_Object (Self), String, Boolean'Pos (Type_Annotate));
    end Print_String;
 
    ---------
