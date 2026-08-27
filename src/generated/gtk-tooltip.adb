@@ -96,11 +96,10 @@ package body Gtk.Tooltip is
       pragma Import (C, Internal, "gtk_tooltip_set_icon_from_icon_name");
       Tmp_Icon_Name : Gtkada.Types.Chars_Ptr;
    begin
-      if Icon_Name = "" then
-         Tmp_Icon_Name := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Icon_Name := New_String (Icon_Name);
-      end if;
+      Tmp_Icon_Name :=
+        (if Icon_Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Icon_Name));
       Internal (Get_Object (Self), Tmp_Icon_Name);
       Free (Tmp_Icon_Name);
    end Set_Icon_From_Icon_Name;
@@ -119,11 +118,10 @@ package body Gtk.Tooltip is
       pragma Import (C, Internal, "gtk_tooltip_set_markup");
       Tmp_Markup : Gtkada.Types.Chars_Ptr;
    begin
-      if Markup = "" then
-         Tmp_Markup := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Markup := New_String (Markup);
-      end if;
+      Tmp_Markup :=
+        (if Markup = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Markup));
       Internal (Get_Object (Self), Tmp_Markup);
       Free (Tmp_Markup);
    end Set_Markup;
@@ -142,11 +140,10 @@ package body Gtk.Tooltip is
       pragma Import (C, Internal, "gtk_tooltip_set_text");
       Tmp_Text : Gtkada.Types.Chars_Ptr;
    begin
-      if Text = "" then
-         Tmp_Text := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Text := New_String (Text);
-      end if;
+      Tmp_Text :=
+        (if Text = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Text));
       Internal (Get_Object (Self), Tmp_Text);
       Free (Tmp_Text);
    end Set_Text;

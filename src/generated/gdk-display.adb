@@ -237,8 +237,8 @@ package body Gdk.Display is
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Name, Acc_Value'Access);
-      Free (Tmp_Name);
       Value := Acc_Value;
+      Free (Tmp_Name);
       return Tmp_Return /= 0;
    end Get_Setting;
 
@@ -403,11 +403,10 @@ package body Gdk.Display is
       Stub_Gdk_Display : Gdk_Display_Record;
       Tmp_Return       : System.Address;
    begin
-      if Display_Name = "" then
-         Tmp_Display_Name := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Display_Name := New_String (Display_Name);
-      end if;
+      Tmp_Display_Name :=
+        (if Display_Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Display_Name));
       Tmp_Return := Internal (Tmp_Display_Name);
       Free (Tmp_Display_Name);
       return Gdk.Gdk_Display (Get_User_Data (Tmp_Return, Stub_Gdk_Display));

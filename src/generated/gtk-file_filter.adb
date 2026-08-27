@@ -241,11 +241,10 @@ package body Gtk.File_Filter is
       pragma Import (C, Internal, "gtk_file_filter_set_name");
       Tmp_Name : Gtkada.Types.Chars_Ptr;
    begin
-      if Name = "" then
-         Tmp_Name := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Name := New_String (Name);
-      end if;
+      Tmp_Name :=
+        (if Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Name));
       Internal (Get_Object (Self), Tmp_Name);
       Free (Tmp_Name);
    end Set_Name;

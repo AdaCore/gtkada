@@ -1328,11 +1328,10 @@ package body Glib.GFile is
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
       Tmp_Return               : System.Address;
    begin
-      if Etag = "" then
-         Tmp_Etag := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Etag := New_String (Etag);
-      end if;
+      Tmp_Etag :=
+        (if Etag = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Etag));
       Tmp_Return := Internal (Self, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Get_Object_Or_Null (GObject (Cancellable)));
       Free (Tmp_Etag);
       return Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
@@ -1354,19 +1353,17 @@ package body Glib.GFile is
       Tmp_Etag : Gtkada.Types.Chars_Ptr;
    begin
       if Callback = null then
-         if Etag = "" then
-            Tmp_Etag := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Etag := New_String (Etag);
-         end if;
+         Tmp_Etag :=
+           (if Etag = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Etag));
          C_G_File_Replace_Async (Self, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
          Free (Tmp_Etag);
       else
-         if Etag = "" then
-            Tmp_Etag := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Etag := New_String (Etag);
-         end if;
+         Tmp_Etag :=
+           (if Etag = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Etag));
          C_G_File_Replace_Async (Self, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
          Free (Tmp_Etag);
       end if;
@@ -1401,11 +1398,10 @@ package body Glib.GFile is
       Acc_New_Etag : constant access Gtkada.Types.Chars_Ptr := (if New_Etag /= null then Tmp_New_Etag'Access else null);
       Tmp_Return   : Glib.Gboolean;
    begin
-      if Etag = "" then
-         Tmp_Etag := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Etag := New_String (Etag);
-      end if;
+      Tmp_Etag :=
+        (if Etag = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Etag));
       Tmp_Return := Internal (Self, Contents'Address, Contents'Length, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Acc_New_Etag, Get_Object_Or_Null (GObject (Cancellable)));
       if New_Etag /= null then
          New_Etag.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_New_Etag);
@@ -1430,19 +1426,17 @@ package body Glib.GFile is
       Tmp_Etag : Gtkada.Types.Chars_Ptr;
    begin
       if Callback = null then
-         if Etag = "" then
-            Tmp_Etag := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Etag := New_String (Etag);
-         end if;
+         Tmp_Etag :=
+           (if Etag = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Etag));
          C_G_File_Replace_Contents_Async (Self, Contents'Address, Contents'Length, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
          Free (Tmp_Etag);
       else
-         if Etag = "" then
-            Tmp_Etag := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Etag := New_String (Etag);
-         end if;
+         Tmp_Etag :=
+           (if Etag = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Etag));
          C_G_File_Replace_Contents_Async (Self, Contents'Address, Contents'Length, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
          Free (Tmp_Etag);
       end if;
@@ -1464,19 +1458,17 @@ package body Glib.GFile is
       Tmp_Etag : Gtkada.Types.Chars_Ptr;
    begin
       if Callback = null then
-         if Etag = "" then
-            Tmp_Etag := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Etag := New_String (Etag);
-         end if;
+         Tmp_Etag :=
+           (if Etag = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Etag));
          C_G_File_Replace_Contents_Bytes_Async (Self, Get_Object (Contents), Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
          Free (Tmp_Etag);
       else
-         if Etag = "" then
-            Tmp_Etag := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Etag := New_String (Etag);
-         end if;
+         Tmp_Etag :=
+           (if Etag = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Etag));
          C_G_File_Replace_Contents_Bytes_Async (Self, Get_Object (Contents), Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
          Free (Tmp_Etag);
       end if;
@@ -1548,11 +1540,10 @@ package body Glib.GFile is
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
       Tmp_Return          : System.Address;
    begin
-      if Etag = "" then
-         Tmp_Etag := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Etag := New_String (Etag);
-      end if;
+      Tmp_Etag :=
+        (if Etag = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Etag));
       Tmp_Return := Internal (Self, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Get_Object_Or_Null (GObject (Cancellable)));
       Free (Tmp_Etag);
       return Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
@@ -1574,19 +1565,17 @@ package body Glib.GFile is
       Tmp_Etag : Gtkada.Types.Chars_Ptr;
    begin
       if Callback = null then
-         if Etag = "" then
-            Tmp_Etag := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Etag := New_String (Etag);
-         end if;
+         Tmp_Etag :=
+           (if Etag = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Etag));
          C_G_File_Replace_Readwrite_Async (Self, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), System.Null_Address, System.Null_Address);
          Free (Tmp_Etag);
       else
-         if Etag = "" then
-            Tmp_Etag := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Etag := New_String (Etag);
-         end if;
+         Tmp_Etag :=
+           (if Etag = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Etag));
          C_G_File_Replace_Readwrite_Async (Self, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Io_Priority, Get_Object_Or_Null (GObject (Cancellable)), Internal_Gasync_Ready_Callback'Address, To_Address (Callback));
          Free (Tmp_Etag);
       end if;

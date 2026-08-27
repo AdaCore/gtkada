@@ -35,7 +35,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;           use Gdk;
-with Gdk.Display;   use Gdk.Display;
+with Gdk.Display;
 with Gdk.Event;     use Gdk.Event;
 with Gdk.Key_Match; use Gdk.Key_Match;
 with Glib;          use Glib;

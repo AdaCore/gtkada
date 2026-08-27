@@ -120,8 +120,8 @@ package body Gdk.RGBA is
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Acc_Self'Access, Tmp_Spec);
-      Free (Tmp_Spec);
       Self := Acc_Self;
+      Free (Tmp_Spec);
       Success := Tmp_Return /= 0;
    end Parse;
 

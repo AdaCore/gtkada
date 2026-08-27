@@ -232,11 +232,10 @@ package body Glib.Option is
       pragma Import (C, Internal, "g_option_context_add_main_entries");
       Tmp_Translation_Domain : Gtkada.Types.Chars_Ptr;
    begin
-      if Translation_Domain = "" then
-         Tmp_Translation_Domain := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Translation_Domain := New_String (Translation_Domain);
-      end if;
+      Tmp_Translation_Domain :=
+        (if Translation_Domain = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Translation_Domain));
       Internal (Get_Object (Self), Entries, Tmp_Translation_Domain);
       Free (Tmp_Translation_Domain);
    end Add_Main_Entries;
@@ -343,11 +342,10 @@ package body Glib.Option is
       pragma Import (C, Internal, "g_option_context_set_description");
       Tmp_Description : Gtkada.Types.Chars_Ptr;
    begin
-      if Description = "" then
-         Tmp_Description := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Description := New_String (Description);
-      end if;
+      Tmp_Description :=
+        (if Description = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Description));
       Internal (Get_Object (Self), Tmp_Description);
       Free (Tmp_Description);
    end Set_Description;
@@ -409,11 +407,10 @@ package body Glib.Option is
       pragma Import (C, Internal, "g_option_context_set_summary");
       Tmp_Summary : Gtkada.Types.Chars_Ptr;
    begin
-      if Summary = "" then
-         Tmp_Summary := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Summary := New_String (Summary);
-      end if;
+      Tmp_Summary :=
+        (if Summary = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Summary));
       Internal (Get_Object (Self), Tmp_Summary);
       Free (Tmp_Summary);
    end Set_Summary;
@@ -524,11 +521,10 @@ package body Glib.Option is
       Tmp_Parameter_String : Gtkada.Types.Chars_Ptr;
       Tmp_Return           : System.Address;
    begin
-      if Parameter_String = "" then
-         Tmp_Parameter_String := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Parameter_String := New_String (Parameter_String);
-      end if;
+      Tmp_Parameter_String :=
+        (if Parameter_String = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Parameter_String));
       Tmp_Return := Internal (Tmp_Parameter_String);
       Free (Tmp_Parameter_String);
       return From_Object (Tmp_Return);

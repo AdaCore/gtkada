@@ -86,11 +86,10 @@ package body Gdk.Display_Manager is
       Stub_Gdk_Display : Gdk.Display.Gdk_Display_Record;
       Tmp_Return       : System.Address;
    begin
-      if Name = "" then
-         Tmp_Name := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Name := New_String (Name);
-      end if;
+      Tmp_Name :=
+        (if Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Name));
       Tmp_Return := Internal (Get_Object (Self), Tmp_Name);
       Free (Tmp_Name);
       return Gdk.Gdk_Display (Get_User_Data (Tmp_Return, Stub_Gdk_Display));

@@ -432,11 +432,10 @@ package body Gtk.Text_Buffer is
       Stub_Gtk_Text_Mark : Gtk.Text_Mark.Gtk_Text_Mark_Record;
       Tmp_Return         : System.Address;
    begin
-      if Mark_Name = "" then
-         Tmp_Mark_Name := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Mark_Name := New_String (Mark_Name);
-      end if;
+      Tmp_Mark_Name :=
+        (if Mark_Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Mark_Name));
       Tmp_Return := Internal (Get_Object (Buffer), Tmp_Mark_Name, Where, Boolean'Pos (Left_Gravity));
       Free (Tmp_Mark_Name);
       return Gtk.Text_Mark.Gtk_Text_Mark (Get_User_Data (Tmp_Return, Stub_Gtk_Text_Mark));
@@ -1055,8 +1054,8 @@ package body Gtk.Text_Buffer is
       Tmp_Text : Gtkada.Types.Chars_Ptr := New_String (Text);
    begin
       Internal (Get_Object (Buffer), Tmp_Iter, Tmp_Text, -1);
-      Free (Tmp_Text);
       Iter := Tmp_Iter;
+      Free (Tmp_Text);
    end Insert;
 
    ----------------------
@@ -1120,8 +1119,8 @@ package body Gtk.Text_Buffer is
       Tmp_Return : Glib.Gboolean;
    begin
       Tmp_Return := Internal (Get_Object (Buffer), Acc_Iter'Access, Tmp_Text, -1, Boolean'Pos (Default_Editable));
-      Free (Tmp_Text);
       Iter := Acc_Iter;
+      Free (Tmp_Text);
       return Tmp_Return /= 0;
    end Insert_Interactive;
 
@@ -1167,8 +1166,8 @@ package body Gtk.Text_Buffer is
       Tmp_Markup : Gtkada.Types.Chars_Ptr := New_String (Markup);
    begin
       Internal (Get_Object (Buffer), Tmp_Iter, Tmp_Markup, -1);
-      Free (Tmp_Markup);
       Iter := Tmp_Iter;
+      Free (Tmp_Markup);
    end Insert_Markup;
 
    ----------------------

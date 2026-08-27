@@ -363,8 +363,8 @@ package body Gtk.Tree_Model is
       Tmp_Return : System.Address;
    begin
       Tmp_Return := Internal (Tmp_Path);
-      Free (Tmp_Path);
       Self.Set_Object (Tmp_Return);
+      Free (Tmp_Path);
    end Gtk_New;
 
    -------------------
@@ -454,8 +454,8 @@ package body Gtk.Tree_Model is
       Self       : Gtk_Tree_Path;
    begin
       Tmp_Return := Internal (Tmp_Path);
-      Free (Tmp_Path);
       Self.Set_Object (Tmp_Return);
+      Free (Tmp_Path);
       return Self;
    end Gtk_Tree_Path_New_From_String;
 

@@ -748,11 +748,10 @@ package body Gtk.Window is
       pragma Import (C, Internal, "gtk_window_set_icon_name");
       Tmp_Name : Gtkada.Types.Chars_Ptr;
    begin
-      if Name = "" then
-         Tmp_Name := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Name := New_String (Name);
-      end if;
+      Tmp_Name :=
+        (if Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Name));
       Internal (Get_Object (Self), Tmp_Name);
       Free (Tmp_Name);
    end Set_Icon_Name;
@@ -831,11 +830,10 @@ package body Gtk.Window is
       pragma Import (C, Internal, "gtk_window_set_title");
       Tmp_Title : Gtkada.Types.Chars_Ptr;
    begin
-      if Title = "" then
-         Tmp_Title := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Title := New_String (Title);
-      end if;
+      Tmp_Title :=
+        (if Title = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Title));
       Internal (Get_Object (Self), Tmp_Title);
       Free (Tmp_Title);
    end Set_Title;

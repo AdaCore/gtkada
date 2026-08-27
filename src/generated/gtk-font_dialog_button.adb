@@ -222,11 +222,10 @@ package body Gtk.Font_Dialog_Button is
       pragma Import (C, Internal, "gtk_font_dialog_button_set_font_features");
       Tmp_Font_Features : Gtkada.Types.Chars_Ptr;
    begin
-      if Font_Features = "" then
-         Tmp_Font_Features := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Font_Features := New_String (Font_Features);
-      end if;
+      Tmp_Font_Features :=
+        (if Font_Features = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Font_Features));
       Internal (Get_Object (Self), Tmp_Font_Features);
       Free (Tmp_Font_Features);
    end Set_Font_Features;

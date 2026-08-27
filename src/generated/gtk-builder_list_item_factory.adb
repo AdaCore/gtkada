@@ -128,11 +128,9 @@ package body Gtk.Builder_List_Item_Factory is
    begin
       if not Self.Is_Created then
          Tmp_Return := Internal (Scope, Tmp_Resource_Path);
-         Free (Tmp_Resource_Path);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Resource_Path);
       end if;
+      Free (Tmp_Resource_Path);
    end Initialize_From_Resource;
 
    ---------------

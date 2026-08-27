@@ -98,17 +98,14 @@ package body Gtk.Expander is
       Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
-         if Label = "" then
-            Tmp_Label := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Label := New_String (Label);
-         end if;
+         Tmp_Label :=
+           (if Label = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Label));
          Tmp_Return := Internal (Tmp_Label);
-         Free (Tmp_Label);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Label);
       end if;
+      Free (Tmp_Label);
    end Initialize;
 
    ------------------------------
@@ -126,17 +123,14 @@ package body Gtk.Expander is
       Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
-         if Label = "" then
-            Tmp_Label := Gtkada.Types.Null_Ptr;
-         else
-            Tmp_Label := New_String (Label);
-         end if;
+         Tmp_Label :=
+           (if Label = ""
+            then Gtkada.Types.Null_Ptr
+            else New_String (Label));
          Tmp_Return := Internal (Tmp_Label);
-         Free (Tmp_Label);
          Set_Object (Self, Tmp_Return);
-      else
-         Free (Tmp_Label);
       end if;
+      Free (Tmp_Label);
    end Initialize_With_Mnemonic;
 
    ---------------
@@ -277,11 +271,10 @@ package body Gtk.Expander is
       pragma Import (C, Internal, "gtk_expander_set_label");
       Tmp_Label : Gtkada.Types.Chars_Ptr;
    begin
-      if Label = "" then
-         Tmp_Label := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Label := New_String (Label);
-      end if;
+      Tmp_Label :=
+        (if Label = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Label));
       Internal (Get_Object (Self), Tmp_Label);
       Free (Tmp_Label);
    end Set_Label;

@@ -594,11 +594,10 @@ package body Gtk.Notebook is
       pragma Import (C, Internal, "gtk_notebook_set_group_name");
       Tmp_Group_Name : Gtkada.Types.Chars_Ptr;
    begin
-      if Group_Name = "" then
-         Tmp_Group_Name := Gtkada.Types.Null_Ptr;
-      else
-         Tmp_Group_Name := New_String (Group_Name);
-      end if;
+      Tmp_Group_Name :=
+        (if Group_Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Group_Name));
       Internal (Get_Object (Notebook), Tmp_Group_Name);
       Free (Tmp_Group_Name);
    end Set_Group_Name;

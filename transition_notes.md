@@ -114,6 +114,8 @@
 
 - Re-enable warnings for obsolescent packages (disabled in Debug mode for now)
 
+- Automatically generate GError params for functions that write to errors (work item #93)
+
 ## To do (package by package)
 
 gtk-handlers.ads:

@@ -10,19 +10,30 @@ that feed into the GIR side of the generator, see
 https://live.gnome.org/GObjectIntrospection/Annotations.
 """
 
+from __future__ import annotations
+
 try:
     import tomllib
 except ImportError:
     import tomli as tomllib
 
 import xml.etree.ElementTree as ET
+from typing import Any, Optional
 
-from adaformat import AdaType, GObject, List, naming, Enum, Record
+from adaformat import AdaType, CType, GObject, List, naming, Enum, Package, Record
+
+# A parsed TOML table (tomllib.load() produces plain nested dicts, with no
+# wrapper class of its own).
+type TOMLNode = dict[str, Any]
+
+# A GIR XML node, mirroring the alias of the same name in binding.py. Not
+# imported from there since binding.py itself imports from this module.
+type GIRNode = ET.Element
 
 
 class GtkAda(object):
 
-    def __init__(self, location):
+    def __init__(self, location: str):
         from os import listdir
         from os.path import join, splitext
         from pathlib import Path
@@ -38,7 +49,7 @@ class GtkAda(object):
             id = splitext(t)[0]
             self.packages[id] = GtkAdaPackage(id, data)
 
-    def get_pkg(self, pkg):
+    def get_pkg(self, pkg: str) -> GtkAdaPackage:
         """Return the GtkAdaPackage for a given package"""
         return self.packages.get(pkg, GtkAdaPackage(None, None))
 
@@ -74,7 +85,7 @@ checking for the presence of at least one content key.
 class GtkAdaPackage(object):
     """A package in a toml file"""
 
-    def __init__(self, pkg_id, node):
+    def __init__(self, pkg_id: Optional[str], node: Optional[TOMLNode]):
         self.pkg_id = pkg_id
         self.node = node
         self._implicit_obsolescent = False
@@ -88,10 +99,10 @@ class GtkAdaPackage(object):
             self.bindtype = True
             self._explicit_obsolescent = False
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return "<GtkAdaPackage name=%s>" % (self.pkg_id or "")
 
-    def _has_children(self):
+    def _has_children(self) -> bool:
         """True if the package has content beyond direct attributes.
 
         Replicates the XML ElementTree falsy-element behaviour: a node with no
@@ -99,7 +110,7 @@ class GtkAdaPackage(object):
         """
         return self.node is not None and bool(self.node.keys() & _CONTENT_KEYS)
 
-    def register_types(self, adapkg):
+    def register_types(self, adapkg: str):
         """If we are going to generate some enumerations in the package, we
         need to register them now, so that all places where the enumeration
         is referenced have the proper full name.
@@ -125,13 +136,13 @@ class GtkAdaPackage(object):
                     pkg=adapkg, ctype=slst["ctype"], ada=slst.get("ada"), single=True
                 )
 
-    def parent_type(self):
+    def parent_type(self) -> Optional[str]:
         """Override the parent type for the main widget type in this package"""
         if self._has_children():
             return self.node.get("parent")
         return None
 
-    def enumerations(self):
+    def enumerations(self) -> list[tuple]:
         """List of all enumeration types that need to be declared in the
         package. The result is a list of tuples.
         """
@@ -149,7 +160,7 @@ class GtkAdaPackage(object):
                 )
         return result
 
-    def constants(self):
+    def constants(self) -> list[tuple[str, str]]:
         """Return the list of constants that should be bound as part
         of this package.
         """
@@ -160,7 +171,7 @@ class GtkAdaPackage(object):
             ]
         return []
 
-    def lists(self):
+    def lists(self) -> list[tuple]:
         """Return the list of list instantiations we need to add to the
         package. Returns a list of tuples:
            [(adaname, CType for element,
@@ -190,7 +201,7 @@ class GtkAdaPackage(object):
 
         return result
 
-    def add_record_type(self, ctype):
+    def add_record_type(self, ctype: str):
         """Add explicit record to bind, unless it is already mentioned
         explicitly in the [[...record]] entries.
         """
@@ -202,7 +213,7 @@ class GtkAdaPackage(object):
 
             self.node.setdefault("record", []).append({"ctype": ctype})
 
-    def records(self):
+    def records(self) -> list[tuple]:
         """Returns the list of record types, as a list of tuples:
             [ (ctype name,  corresponding CType, ada name, [fields],
               [union], [private=False]) ...]
@@ -243,7 +254,7 @@ class GtkAdaPackage(object):
 
         return result
 
-    def get_doc(self):
+    def get_doc(self) -> list[str]:
         """Return the overridden doc for the package, as a list of
         strings. Each string is a paragraph.
         """
@@ -278,7 +289,7 @@ class GtkAdaPackage(object):
 
         return doc
 
-    def get_method(self, cname):
+    def get_method(self, cname: str) -> GtkAdaMethod:
         if self.node is not None:
             for f in self.node.get("method", []):
                 if f.get("id") == cname:
@@ -295,7 +306,7 @@ class GtkAdaPackage(object):
 
         return GtkAdaMethod(None, self)
 
-    def get_property(self, cname):
+    def get_property(self, cname: str) -> GtkAdaProperty:
         if self.node is not None:
             for f in self.node.get("property", []):
                 if f.get("id") == cname:
@@ -303,7 +314,7 @@ class GtkAdaPackage(object):
 
         return GtkAdaProperty(None, self)
 
-    def get_type(self, name):
+    def get_type(self, name: str) -> GtkAdaType:
         if self.node is not None:
             name = name.lower()
             for f in self.node.get("type", []):
@@ -311,24 +322,24 @@ class GtkAdaPackage(object):
                     return GtkAdaType(f)
         return GtkAdaType(None)
 
-    def into(self):
+    def into(self) -> Optional[str]:
         if self.node is not None:
             return self.node.get("into")
         return None
 
-    def ada_name(self):
+    def ada_name(self) -> Optional[str]:
         if self.node is not None:
             return self.node.get("ada")
         return None
 
-    def is_obsolete(self):
+    def is_obsolete(self) -> bool:
         return self._explicit_obsolescent or self._implicit_obsolescent
 
-    def get_doc_deprecated(self):
+    def get_doc_deprecated(self) -> Optional[str]:
         """Return the doc-deprecated text if available, otherwise None."""
         return self._doc_deprecated
 
-    def mark_obsolete_from_gir(self, source, doc_deprecated_text=None):
+    def mark_obsolete_from_gir(self, source: str, doc_deprecated_text: Optional[str] = None):
         """Mark this package as obsolescent due to GIR metadata.
 
         If TOML already sets ``obsolescent = true``, emit a warning so
@@ -351,7 +362,7 @@ class GtkAdaPackage(object):
             )
             self._warned_redundant_obsolescent = True
 
-    def ada_access_root(self):
+    def ada_access_root(self) -> bool:
         """Whether the access type in class package aliases access type in the namespace package.
 
         When true, binding.py emits:
@@ -362,20 +373,20 @@ class GtkAdaPackage(object):
             return self.node.get("ada_access_root", False)
         return False
 
-    def ada_elaborate_body(self):
+    def ada_elaborate_body(self) -> bool:
         """Whether to emit ``pragma Elaborate_Body;`` for this package."""
         if self.node is not None:
             return self.node.get("ada_elaborate_body", False)
         return False
 
-    def extra(self):
+    def extra(self) -> Optional[list[GIRNode]]:
         if self.node is not None:
             extra_dict = self.node.get("extra")
             if extra_dict is not None:
                 return self._extra_to_elements(extra_dict)
         return None
 
-    def _extra_to_elements(self, extra_dict):
+    def _extra_to_elements(self, extra_dict: TOMLNode) -> Optional[list[GIRNode]]:
         """Convert the TOML extra dict to XML elements.
 
         The result is extended into a GIR XML node by callers, so the
@@ -430,7 +441,7 @@ class GtkAdaPackage(object):
 
         return elements or None
 
-    def get_default_param_node(self, name):
+    def get_default_param_node(self, name: str) -> Optional[TOMLNode]:
         if name and self.node is not None:
             name = name.lower()
             for p in self.node.get("parameter", []):
@@ -438,7 +449,7 @@ class GtkAdaPackage(object):
                     return p
         return None
 
-    def get_global_functions(self):
+    def get_global_functions(self) -> list[GtkAdaMethod]:
         """Return the list of global functions that should be bound as part
         of this package.
         """
@@ -450,7 +461,7 @@ class GtkAdaPackage(object):
             ]
         return []
 
-    def bind_virtual_method(self, name, default):
+    def bind_virtual_method(self, name: str, default: bool) -> bool:
         """
         Whether to bind the given virtual method
         """
@@ -468,15 +479,15 @@ class GtkAdaPackage(object):
 
 class GtkAdaMethod(object):
 
-    def __init__(self, node, pkg):
+    def __init__(self, node: Optional[TOMLNode], pkg: GtkAdaPackage):
         self.node = node
         self.pkg = pkg
 
-    def cname(self):
+    def cname(self) -> Optional[str]:
         """Return the name of the C function"""
         return self.node.get("id")
 
-    def get_param(self, name):
+    def get_param(self, name: str) -> GtkAdaParameter:
         default = self.pkg.get_default_param_node(name)
         if self.node is not None:
             name = name.lower()
@@ -486,41 +497,41 @@ class GtkAdaMethod(object):
 
         return GtkAdaParameter(None, default=default)
 
-    def is_class_wide(self):
+    def is_class_wide(self) -> bool:
         return self.node is not None and self.node.get("classwide", False)
 
-    def bind(self, default="true"):
+    def bind(self, default: str = "true") -> bool:
         """Whether to bind"""
         if self.node is not None:
             return self.node.get("bind", default != "false")
         return default != "false"
 
-    def ada_name(self):
+    def ada_name(self) -> Optional[str]:
         if self.node is not None:
             return self.node.get("ada")
         return None
 
-    def returned_c_type(self):
+    def returned_c_type(self) -> Optional[str]:
         if self.node is not None:
             return self.node.get("return")
         return None
 
-    def is_obsolete(self):
+    def is_obsolete(self) -> bool:
         if self.node is not None:
             return self.node.get("obsolescent", False)
         return False
 
-    def convention(self):
+    def convention(self) -> Optional[str]:
         if self.node is not None:
             return self.node.get("convention")
         return None
 
-    def return_as_param(self):
+    def return_as_param(self) -> Optional[str]:
         if self.node is not None:
             return self.node.get("return_as_param")
         return None
 
-    def transfer_ownership(self, return_girnode):
+    def transfer_ownership(self, return_girnode: GIRNode) -> bool:
         """Whether the value returned by this method needs to be freed by the
         caller.
         return_girnode is the XML node from the gir file for the return
@@ -532,12 +543,12 @@ class GtkAdaMethod(object):
         else:
             return default != "none"
 
-    def get_body(self):
+    def get_body(self) -> Optional[str]:
         if self.node is not None:
             return self.node.get("body")
         return None
 
-    def get_doc(self, default):
+    def get_doc(self, default: str) -> list[str]:
         """Return the doc, as a list of lines"""
         if self.node is not None:
             d = self.node.get("doc")
@@ -557,23 +568,23 @@ class GtkAdaMethod(object):
 
 class GtkAdaParameter(object):
 
-    def __init__(self, node, default):
+    def __init__(self, node: Optional[TOMLNode], default: Optional[TOMLNode]):
         self.node = node
         self.default = default
 
-    def get_default(self):
+    def get_default(self) -> Optional[str]:
         if self.node is not None:
             return self.node.get("default")
         return None
 
-    def get_direction(self):
+    def get_direction(self) -> Optional[str]:
         if self.node is not None:
             return self.node.get("direction")
         if self.default is not None:
             return self.default.get("direction")
         return None
 
-    def get_caller_allocates(self):
+    def get_caller_allocates(self) -> Optional[str]:
         value = None
         if self.node is not None:
             value = self.node.get("caller_allocates")
@@ -581,7 +592,7 @@ class GtkAdaParameter(object):
             value = self.default.get("caller_allocates")
         return value
 
-    def get_transfer_ownership(self):
+    def get_transfer_ownership(self) -> Optional[str]:
         value = None
         if self.node is not None:
             value = self.node.get("transfer_ownership")
@@ -589,7 +600,7 @@ class GtkAdaParameter(object):
             value = self.default.get("transfer_ownership")
         return value
 
-    def ada_name(self):
+    def ada_name(self) -> Optional[str]:
         name = None
         if self.node is not None:
             name = self.node.get("ada")
@@ -597,7 +608,7 @@ class GtkAdaParameter(object):
             name = self.default.get("ada")
         return name
 
-    def get_type(self, pkg):
+    def get_type(self, pkg: Package) -> Optional[CType | str]:
         """pkg is used to set the with statements.
         This returns the locally overridden type, or the one from the
         default node for this parameter, or None if the type isn't
@@ -623,7 +634,7 @@ class GtkAdaParameter(object):
 
         return None
 
-    def allow_none(self, girnode):
+    def allow_none(self, girnode: GIRNode) -> bool:
         default = girnode.get("allow-none", "0")
         if self.node is not None:
             return self.node.get("allow_none", default) == "1"
@@ -633,21 +644,21 @@ class GtkAdaParameter(object):
 
 class GtkAdaType(object):
 
-    def __init__(self, node):
+    def __init__(self, node: Optional[TOMLNode]):
         self.node = node
 
-    def is_subtype(self):
+    def is_subtype(self) -> bool:
         if self.node is not None:
             return self.node.get("subtype", False)
         return False
 
 
 class GtkAdaProperty(object):
-    def __init__(self, node, pkg):
+    def __init__(self, node: Optional[TOMLNode], pkg: GtkAdaPackage):
         self.node = node
         self.pkg = pkg
-        
-    def bind(self, default="true"):
+
+    def bind(self, default: str = "true") -> bool:
         """Whether to bind"""
         if self.node is not None:
             return self.node.get("bind", default != "false")
