@@ -113,7 +113,8 @@ package Graphene.Euler is
    end record;
    pragma Convention (C, Graphene_Euler_T);
 
-   function From_Object_Free (B : access Graphene_Euler_T) return Graphene_Euler_T;
+   function From_Object_Free
+     (B : not null access Graphene_Euler_T) return Graphene_Euler_T;
    pragma Inline (From_Object_Free);
    --  Describe a rotation using Euler angles.
    --

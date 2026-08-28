@@ -52,7 +52,8 @@ package Gdk.Rectangle is
    end record;
    pragma Convention (C, Gdk_Rectangle);
 
-   function From_Object_Free (B : access Gdk_Rectangle) return Gdk_Rectangle;
+   function From_Object_Free
+     (B : not null access Gdk_Rectangle) return Gdk_Rectangle;
    pragma Inline (From_Object_Free);
    --  Represents a rectangle.
    --

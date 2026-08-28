@@ -30,7 +30,13 @@ pragma Warnings(On);
 
 package body Pango.Attributes is
 
-   function From_Object_Free (B : access Pango_Attribute) return Pango_Attribute is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Pango_Attribute) return Pango_Attribute
+   is
       Result : constant Pango_Attribute := B.all;
    begin
       Glib.g_free (B.all'Address);

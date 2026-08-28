@@ -26,7 +26,13 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Glib.G_Icon is
 
-   function From_Object_Free (B : access G_Icon) return G_Icon is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access G_Icon) return G_Icon
+   is
       Result : constant G_Icon := B.all;
    begin
       Glib.g_free (B.all'Address);

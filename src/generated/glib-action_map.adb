@@ -27,7 +27,13 @@ with Ada.Unchecked_Conversion;
 
 package body Glib.Action_Map is
 
-   function From_Object_Free (B : access GAction_Entry) return GAction_Entry is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access GAction_Entry) return GAction_Entry
+   is
       Result : constant GAction_Entry := B.all;
    begin
       Glib.g_free (B.all'Address);

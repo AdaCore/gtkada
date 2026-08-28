@@ -54,7 +54,9 @@ package Gtk.Text_Iter is
    Case_Insensitive : constant Gtk_Text_Search_Flags := 4;
 
    type Gtk_Text_Iter is private;
-   function From_Object_Free (B : access Gtk_Text_Iter) return Gtk_Text_Iter;
+
+   function From_Object_Free
+     (B : not null access Gtk_Text_Iter) return Gtk_Text_Iter;
    pragma Inline (From_Object_Free);
    --  Iterates over the contents of a `GtkTextBuffer`.
    --

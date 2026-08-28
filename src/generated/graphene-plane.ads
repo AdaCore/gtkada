@@ -42,7 +42,8 @@ package Graphene.Plane is
    end record;
    pragma Convention (C, Graphene_Plane_T);
 
-   function From_Object_Free (B : access Graphene_Plane_T) return Graphene_Plane_T;
+   function From_Object_Free
+     (B : not null access Graphene_Plane_T) return Graphene_Plane_T;
    pragma Inline (From_Object_Free);
    --  A 2D plane that extends infinitely in a 3D volume.
    --

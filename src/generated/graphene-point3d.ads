@@ -38,7 +38,8 @@ package Graphene.Point3d is
    end record;
    pragma Convention (C, Graphene_Point3D_T);
 
-   function From_Object_Free (B : access Graphene_Point3D_T) return Graphene_Point3D_T;
+   function From_Object_Free
+     (B : not null access Graphene_Point3D_T) return Graphene_Point3D_T;
    pragma Inline (From_Object_Free);
    --  A point with three components: X, Y, and Z.
 

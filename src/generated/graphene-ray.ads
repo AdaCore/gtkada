@@ -52,7 +52,8 @@ package Graphene.Ray is
    end record;
    pragma Convention (C, Graphene_Ray_T);
 
-   function From_Object_Free (B : access Graphene_Ray_T) return Graphene_Ray_T;
+   function From_Object_Free
+     (B : not null access Graphene_Ray_T) return Graphene_Ray_T;
    pragma Inline (From_Object_Free);
    --  A ray emitted from an origin in a given direction.
    --

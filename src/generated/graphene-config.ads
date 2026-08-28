@@ -36,7 +36,8 @@ package Graphene.Config is
    end record;
    pragma Convention (C, Graphene_Simd4f);
 
-   function From_Object_Free (B : access Graphene_Simd4f) return Graphene_Simd4f;
+   function From_Object_Free
+     (B : not null access Graphene_Simd4f) return Graphene_Simd4f;
    pragma Inline (From_Object_Free);
 
 
@@ -48,7 +49,8 @@ package Graphene.Config is
    end record;
    pragma Convention (C, Graphene_Simd4x4f);
 
-   function From_Object_Free (B : access Graphene_Simd4x4f) return Graphene_Simd4x4f;
+   function From_Object_Free
+     (B : not null access Graphene_Simd4x4f) return Graphene_Simd4x4f;
    pragma Inline (From_Object_Free);
 
    ----------------------

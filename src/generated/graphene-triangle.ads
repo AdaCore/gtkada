@@ -41,7 +41,8 @@ package Graphene.Triangle is
    end record;
    pragma Convention (C, Graphene_Triangle_T);
 
-   function From_Object_Free (B : access Graphene_Triangle_T) return Graphene_Triangle_T;
+   function From_Object_Free
+     (B : not null access Graphene_Triangle_T) return Graphene_Triangle_T;
    pragma Inline (From_Object_Free);
    --  A triangle.
 

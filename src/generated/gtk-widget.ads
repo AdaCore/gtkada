@@ -366,7 +366,8 @@ package Gtk.Widget is
    end record;
    pragma Convention (C, Gtk_Requisition);
 
-   function From_Object_Free (B : access Gtk_Requisition) return Gtk_Requisition;
+   function From_Object_Free
+     (B : not null access Gtk_Requisition) return Gtk_Requisition;
    pragma Inline (From_Object_Free);
    --  Represents the desired size of a widget.
    --

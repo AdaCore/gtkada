@@ -29,7 +29,13 @@ pragma Warnings(On);
 
 package body Glib.String is
 
-   function From_Object_Free (B : access Gstring_Record) return Gstring_Record is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gstring_Record) return Gstring_Record
+   is
       Result : constant Gstring_Record := B.all;
    begin
       Glib.g_free (B.all'Address);

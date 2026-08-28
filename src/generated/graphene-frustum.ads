@@ -41,7 +41,8 @@ package Graphene.Frustum is
    end record;
    pragma Convention (C, Graphene_Frustum_T);
 
-   function From_Object_Free (B : access Graphene_Frustum_T) return Graphene_Frustum_T;
+   function From_Object_Free
+     (B : not null access Graphene_Frustum_T) return Graphene_Frustum_T;
    pragma Inline (From_Object_Free);
    --  A 3D volume delimited by 2D clip planes.
    --

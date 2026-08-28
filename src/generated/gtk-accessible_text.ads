@@ -62,7 +62,8 @@ package Gtk.Accessible_Text is
    end record;
    pragma Convention (C, Gtk_Accessible_Text_Range);
 
-   function From_Object_Free (B : access Gtk_Accessible_Text_Range) return Gtk_Accessible_Text_Range;
+   function From_Object_Free
+     (B : not null access Gtk_Accessible_Text_Range) return Gtk_Accessible_Text_Range;
    pragma Inline (From_Object_Free);
    --  A range inside the text of an accessible object.
 

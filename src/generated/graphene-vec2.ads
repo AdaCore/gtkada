@@ -38,7 +38,8 @@ package Graphene.Vec2 is
    end record;
    pragma Convention (C, Graphene_Vec2_T);
 
-   function From_Object_Free (B : access Graphene_Vec2_T) return Graphene_Vec2_T;
+   function From_Object_Free
+     (B : not null access Graphene_Vec2_T) return Graphene_Vec2_T;
    pragma Inline (From_Object_Free);
    --  A structure capable of holding a vector with two dimensions, x and y.
    --

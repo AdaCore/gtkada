@@ -44,7 +44,8 @@ package Graphene.Quaternion is
    end record;
    pragma Convention (C, Graphene_Quaternion_T);
 
-   function From_Object_Free (B : access Graphene_Quaternion_T) return Graphene_Quaternion_T;
+   function From_Object_Free
+     (B : not null access Graphene_Quaternion_T) return Graphene_Quaternion_T;
    pragma Inline (From_Object_Free);
    --  A quaternion.
    --

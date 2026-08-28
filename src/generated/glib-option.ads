@@ -80,7 +80,9 @@ package Glib.Option is
    G_Option_Flag_Deprecated : constant GOption_Flags := 128;
 
    type GOption_Group is new Glib.C_Proxy;
-   function From_Object_Free (B : access GOption_Group) return GOption_Group;
+
+   function From_Object_Free
+     (B : not null access GOption_Group) return GOption_Group;
    pragma Inline (From_Object_Free);
    --  A `GOptionGroup` struct defines the options in a single group. The
    --  struct has only private fields and should not be directly accessed.
@@ -101,7 +103,8 @@ package Glib.Option is
    end record;
    pragma Convention (C, GOption_Entry);
 
-   function From_Object_Free (B : access GOption_Entry) return GOption_Entry;
+   function From_Object_Free
+     (B : not null access GOption_Entry) return GOption_Entry;
    pragma Inline (From_Object_Free);
    --  - Glib.Option.G_Option_Arg_None: %gboolean -
    --  Glib.Option.G_Option_Arg_String: %gchar* - Glib.Option.G_Option_Arg_Int:

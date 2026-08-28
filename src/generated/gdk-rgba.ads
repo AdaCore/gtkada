@@ -48,7 +48,8 @@ package Gdk.RGBA is
    end record;
    pragma Convention (C, Gdk_RGBA);
 
-   function From_Object_Free (B : access Gdk_RGBA) return Gdk_RGBA;
+   function From_Object_Free
+     (B : not null access Gdk_RGBA) return Gdk_RGBA;
    pragma Inline (From_Object_Free);
    --  Represents a color, in a way that is compatible with cairo's notion of
    --  color.

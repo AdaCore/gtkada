@@ -56,7 +56,13 @@ package body Pango.Layout is
       return S;
    end From_Object;
 
-   function From_Object_Free (B : access Pango_Layout_Line) return Pango_Layout_Line is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Pango_Layout_Line) return Pango_Layout_Line
+   is
       Result : constant Pango_Layout_Line := B.all;
    begin
       Glib.g_free (B.all'Address);

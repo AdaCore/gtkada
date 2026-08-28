@@ -38,7 +38,8 @@ package Graphene.Sphere is
    end record;
    pragma Convention (C, Graphene_Sphere_T);
 
-   function From_Object_Free (B : access Graphene_Sphere_T) return Graphene_Sphere_T;
+   function From_Object_Free
+     (B : not null access Graphene_Sphere_T) return Graphene_Sphere_T;
    pragma Inline (From_Object_Free);
    --  A sphere, represented by its center and radius.
 

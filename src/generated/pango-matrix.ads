@@ -42,7 +42,8 @@ package Pango.Matrix is
    end record;
    pragma Convention (C, Pango_Matrix);
 
-   function From_Object_Free (B : access Pango_Matrix) return Pango_Matrix;
+   function From_Object_Free
+     (B : not null access Pango_Matrix) return Pango_Matrix;
    pragma Inline (From_Object_Free);
    --  A structure specifying a transformation between user-space coordinates
    --  and device coordinates. The transformation is given by

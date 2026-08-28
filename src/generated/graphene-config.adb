@@ -27,14 +27,26 @@ with Glib; use Glib;
 
 package body Graphene.Config is
 
-   function From_Object_Free (B : access Graphene_Simd4f) return Graphene_Simd4f is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Simd4f) return Graphene_Simd4f
+   is
       Result : constant Graphene_Simd4f := B.all;
    begin
       Glib.g_free (B.all'Address);
       return Result;
    end From_Object_Free;
 
-   function From_Object_Free (B : access Graphene_Simd4x4f) return Graphene_Simd4x4f is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Simd4x4f) return Graphene_Simd4x4f
+   is
       Result : constant Graphene_Simd4x4f := B.all;
    begin
       Glib.g_free (B.all'Address);

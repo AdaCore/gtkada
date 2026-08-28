@@ -39,7 +39,8 @@ package Graphene.Quad is
    end record;
    pragma Convention (C, Graphene_Quad_T);
 
-   function From_Object_Free (B : access Graphene_Quad_T) return Graphene_Quad_T;
+   function From_Object_Free
+     (B : not null access Graphene_Quad_T) return Graphene_Quad_T;
    pragma Inline (From_Object_Free);
    --  A 4 vertex quadrilateral, as represented by four
    --  Graphene.Point.Graphene_Point_T.

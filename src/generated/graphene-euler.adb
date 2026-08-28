@@ -26,7 +26,13 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Graphene.Euler is
 
-   function From_Object_Free (B : access Graphene_Euler_T) return Graphene_Euler_T is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Euler_T) return Graphene_Euler_T
+   is
       Result : constant Graphene_Euler_T := B.all;
    begin
       Glib.g_free (B.all'Address);

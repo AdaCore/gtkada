@@ -31,7 +31,13 @@ pragma Warnings(On);
 
 package body Gdk.RGBA is
 
-   function From_Object_Free (B : access Gdk_RGBA) return Gdk_RGBA is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gdk_RGBA) return Gdk_RGBA
+   is
       Result : constant Gdk_RGBA := B.all;
    begin
       Glib.g_free (B.all'Address);

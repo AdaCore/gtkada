@@ -31,7 +31,13 @@ pragma Warnings(On);
 
 package body Gtk.Text_Iter is
 
-   function From_Object_Free (B : access Gtk_Text_Iter) return Gtk_Text_Iter is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gtk_Text_Iter) return Gtk_Text_Iter
+   is
       Result : constant Gtk_Text_Iter := B.all;
    begin
       Glib.g_free (B.all'Address);

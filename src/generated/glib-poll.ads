@@ -33,7 +33,8 @@ package Glib.Poll is
    end record;
    pragma Convention (C, GPoll_FD);
 
-   function From_Object_Free (B : access GPoll_FD) return GPoll_FD;
+   function From_Object_Free
+     (B : not null access GPoll_FD) return GPoll_FD;
    pragma Inline (From_Object_Free);
    --  Represents a file descriptor, which events to poll for, and which
    --  events occurred.

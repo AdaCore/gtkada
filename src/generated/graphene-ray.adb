@@ -26,7 +26,13 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Graphene.Ray is
 
-   function From_Object_Free (B : access Graphene_Ray_T) return Graphene_Ray_T is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Ray_T) return Graphene_Ray_T
+   is
       Result : constant Graphene_Ray_T := B.all;
    begin
       Glib.g_free (B.all'Address);

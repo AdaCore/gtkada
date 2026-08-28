@@ -36,7 +36,8 @@ package Graphene.Point is
    end record;
    pragma Convention (C, Graphene_Point_T);
 
-   function From_Object_Free (B : access Graphene_Point_T) return Graphene_Point_T;
+   function From_Object_Free
+     (B : not null access Graphene_Point_T) return Graphene_Point_T;
    pragma Inline (From_Object_Free);
    --  A point with two coordinates.
 

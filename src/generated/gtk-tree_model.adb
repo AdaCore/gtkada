@@ -214,7 +214,13 @@ package body Gtk.Tree_Model is
       return A;
    end Get_Address;
 
-   function From_Object_Free (B : access Gtk_Tree_Iter) return Gtk_Tree_Iter is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gtk_Tree_Iter) return Gtk_Tree_Iter
+   is
       Result : constant Gtk_Tree_Iter := B.all;
    begin
       Glib.g_free (B.all'Address);

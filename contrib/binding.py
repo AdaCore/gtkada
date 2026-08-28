@@ -3333,6 +3333,31 @@ end "+";"""
 
         fields = []  # array of (name,type,default) tuples
 
+        # Constants for code insertion
+        def from_objfree_decl(typename: str) -> str:
+            lines = [
+                'function From_Object_Free',
+                f"   (B : not null access {typename}) return {typename};",
+                'pragma Inline (From_Object_Free);',
+            ]
+            return "\n".join(lines)
+
+        def from_objfree_body(typename: str) -> str:
+            lines = [
+                '\n----------------------',
+                '-- From_Object_Free --',
+                '----------------------\n',
+                'function From_Object_Free',
+                f"   (B : not null access {typename}) return {typename}",
+                'is',
+                f"   Result : constant {typename} := B.all;",
+                'begin',
+                "   Glib.g_free (B.all'Address);",
+                '   return Result;',
+                'end From_Object_Free;'
+            ]
+            return "\n".join(lines)
+
         # Check if we have forced the mapping as a C proxy ?
 
         if naming.type_exceptions.get(ctype, None) is None or not isinstance(
@@ -3387,37 +3412,14 @@ end "+";"""
                     fields.append((naming.case(name), ftype, default_value))
 
         if not fields:
-            section.add(
-                (
-                    "\ntype %(typename)s is new Glib.C_Proxy;\n"
-                    + "function From_Object_Free (B : access %(typename)s) "
-                    + "return %(typename)s;\npragma Inline (From_Object_Free);"
-                )
-                % {"typename": base}
-            )
-            section.add(
-                """
-function From_Object_Free (B : access %(typename)s) return %(typename)s is
-   Result : constant %(typename)s := B.all;
-begin
-   Glib.g_free (B.all'Address);
-   return Result;
-end From_Object_Free;"""
-                % {"typename": base},
-                in_spec=False,
-            )
+            section.add(f"\ntype {base} is new Glib.C_Proxy;")
+            section.add(from_objfree_decl(base))
+            section.add(from_objfree_body(base), in_spec=False)
 
         else:
             if private:
-                section.add(
-                    (
-                        "\ntype %(typename)s is private;\n"
-                        + "function From_Object_Free (B : access %(typename)s)"
-                        + " return %(typename)s;\n"
-                        + "pragma Inline (From_Object_Free);"
-                    )
-                    % {"typename": base}
-                )
+                section.add(f"\ntype {base} is private;")
+                section.add(from_objfree_decl(base))
                 adder = self.pkg.add_private
             else:
                 adder = section.add
@@ -3442,7 +3444,7 @@ end From_Object_Free;"""
                             when_stmt = [enums[index][1]]
 
                         if not when_stmt:
-                            print(f"ERROR: no discrimant value for field {f[0]}")
+                            print(f"ERROR: no discriminant value for field {f[0]}")
 
                         text += "\n      when %s =>\n %s : %s;\n" % (
                             "\n          | ".join(when_stmt),
@@ -3471,26 +3473,8 @@ end From_Object_Free;"""
                 adder(c.format("   "))
 
             if not private:
-                section.add(
-                    (
-                        "\nfunction From_Object_Free (B : access %(type)s)"
-                        + " return %(type)s;\n"
-                        + "pragma Inline (From_Object_Free);"
-                    )
-                    % {"type": base}
-                )
-
-            section.add(
-                """
-function From_Object_Free (B : access %(typename)s) return %(typename)s is
-   Result : constant %(typename)s := B.all;
-begin
-   Glib.g_free (B.all'Address);
-   return Result;
-end From_Object_Free;"""
-                % {"typename": base},
-                in_spec=False,
-            )
+                section.add(from_objfree_decl(base))
+            section.add(from_objfree_body(base), in_spec=False)
 
         section.add(Code(_get_clean_doc(node), iscomment=True))
 

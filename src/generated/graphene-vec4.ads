@@ -41,7 +41,8 @@ package Graphene.Vec4 is
    end record;
    pragma Convention (C, Graphene_Vec4_T);
 
-   function From_Object_Free (B : access Graphene_Vec4_T) return Graphene_Vec4_T;
+   function From_Object_Free
+     (B : not null access Graphene_Vec4_T) return Graphene_Vec4_T;
    pragma Inline (From_Object_Free);
    --  A structure capable of holding a vector with four dimensions: x, y, z,
    --  and w.

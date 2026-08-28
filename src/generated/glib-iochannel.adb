@@ -29,14 +29,26 @@ pragma Warnings(On);
 
 package body Glib.IOChannel is
 
-   function From_Object_Free (B : access GIOFuncs) return GIOFuncs is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access GIOFuncs) return GIOFuncs
+   is
       Result : constant GIOFuncs := B.all;
    begin
       Glib.g_free (B.all'Address);
       return Result;
    end From_Object_Free;
 
-   function From_Object_Free (B : access GIO_Channel_Record) return GIO_Channel_Record is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access GIO_Channel_Record) return GIO_Channel_Record
+   is
       Result : constant GIO_Channel_Record := B.all;
    begin
       Glib.g_free (B.all'Address);

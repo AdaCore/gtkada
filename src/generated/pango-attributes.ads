@@ -36,7 +36,9 @@ with Pango.Enums; use Pango.Enums;
 package Pango.Attributes is
 
    type Pango_Attribute is new Glib.C_Proxy;
-   function From_Object_Free (B : access Pango_Attribute) return Pango_Attribute;
+
+   function From_Object_Free
+     (B : not null access Pango_Attribute) return Pango_Attribute;
    pragma Inline (From_Object_Free);
    --  The Pango.Attributes.Pango_Attribute structure represents the common
    --  portions of all attributes. Particular types of attributes include this

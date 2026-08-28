@@ -26,7 +26,13 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Gdk.Rectangle is
 
-   function From_Object_Free (B : access Gdk_Rectangle) return Gdk_Rectangle is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gdk_Rectangle) return Gdk_Rectangle
+   is
       Result : constant Gdk_Rectangle := B.all;
    begin
       Glib.g_free (B.all'Address);

@@ -50,7 +50,8 @@ package Graphene.Rect is
    end record;
    pragma Convention (C, Graphene_Rect_T);
 
-   function From_Object_Free (B : access Graphene_Rect_T) return Graphene_Rect_T;
+   function From_Object_Free
+     (B : not null access Graphene_Rect_T) return Graphene_Rect_T;
    pragma Inline (From_Object_Free);
    --  The location and size of a rectangle region.
    --

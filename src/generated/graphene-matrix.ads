@@ -49,7 +49,8 @@ package Graphene.Matrix is
    end record;
    pragma Convention (C, Graphene_Matrix_T);
 
-   function From_Object_Free (B : access Graphene_Matrix_T) return Graphene_Matrix_T;
+   function From_Object_Free
+     (B : not null access Graphene_Matrix_T) return Graphene_Matrix_T;
    pragma Inline (From_Object_Free);
    --  A structure capable of holding a 4x4 matrix.
    --

@@ -45,7 +45,8 @@ package Glib.String is
    end record;
    pragma Convention (C, Gstring_Record);
 
-   function From_Object_Free (B : access Gstring_Record) return Gstring_Record;
+   function From_Object_Free
+     (B : not null access Gstring_Record) return Gstring_Record;
    pragma Inline (From_Object_Free);
    --  A `GString` is an object that handles the memory management of a C
    --  string.

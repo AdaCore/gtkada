@@ -44,14 +44,26 @@ package body Glib.Option is
       return S;
    end From_Object;
 
-   function From_Object_Free (B : access GOption_Group) return GOption_Group is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access GOption_Group) return GOption_Group
+   is
       Result : constant GOption_Group := B.all;
    begin
       Glib.g_free (B.all'Address);
       return Result;
    end From_Object_Free;
 
-   function From_Object_Free (B : access GOption_Entry) return GOption_Entry is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access GOption_Entry) return GOption_Entry
+   is
       Result : constant GOption_Entry := B.all;
    begin
       Glib.g_free (B.all'Address);

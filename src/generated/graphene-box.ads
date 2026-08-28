@@ -39,7 +39,8 @@ package Graphene.Box is
    end record;
    pragma Convention (C, Graphene_Box_T);
 
-   function From_Object_Free (B : access Graphene_Box_T) return Graphene_Box_T;
+   function From_Object_Free
+     (B : not null access Graphene_Box_T) return Graphene_Box_T;
    pragma Inline (From_Object_Free);
    --  A 3D box, described as the volume between a minimum and a maximum
    --  vertices.

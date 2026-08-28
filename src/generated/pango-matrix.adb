@@ -26,7 +26,13 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Pango.Matrix is
 
-   function From_Object_Free (B : access Pango_Matrix) return Pango_Matrix is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Pango_Matrix) return Pango_Matrix
+   is
       Result : constant Pango_Matrix := B.all;
    begin
       Glib.g_free (B.all'Address);

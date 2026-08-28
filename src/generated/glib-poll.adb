@@ -26,7 +26,13 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Glib.Poll is
 
-   function From_Object_Free (B : access GPoll_FD) return GPoll_FD is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access GPoll_FD) return GPoll_FD
+   is
       Result : constant GPoll_FD := B.all;
    begin
       Glib.g_free (B.all'Address);
