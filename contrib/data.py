@@ -315,7 +315,7 @@ binding = (
     "Pango.LayoutLine",
     "Pango.Matrix",
     "Pango.TabArray",
-    "--Gtk.AboutDialog",
+    "Gtk.AboutDialog",
     "--GtkAccelGroup",
     "--GtkAccelLabel",
     "--GtkAccelMap",
@@ -338,9 +338,6 @@ binding = (
     "--Gtk.AspectFrame",
     "--Gtk.Assistant",
     "--Gtk.ATContext",  # Bound manually
-    "--GtkBin",
-    "--GtkBindingEntry",
-    "--GtkBindingSet",
     "Gtk.Bitset",
     "--Gtk.Border",
     "Gtk.Box",
@@ -418,8 +415,6 @@ binding = (
     "--Gtk.FontChooserWidget",
     "Gtk.FontDialog",
     "Gtk.FontDialogButton",
-    "--GtkFontSelection",
-    "--GtkFontSelectionDialog",
     "Gtk.Frame",
     "----GtkFrameAccessible",  # We do not support atk
     "--Gtk.Gesture",
@@ -460,7 +455,6 @@ binding = (
     "--GtkInvisible",
     "Gtk.Label",
     "----GtkLabelAccessible",  # We do not support atk
-    "--GtkLayout",
 
            # GtkLayoutManager and GtkLayoutChild are the abstract bases of
            # the layout managers. They must be listed before their
