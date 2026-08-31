@@ -944,14 +944,14 @@ class SubprogramProfile(object):
             if (
                 (p.ownership == "full" or p.ownership == True)
                 # and not isinstance (p, Fundamental)
-                and isinstance (p.type, GObject)
+                and (isinstance (p.type, GObject) or isinstance (p.type, Tagged))
             ):
                 self.doc += [("Parameter %s has transfer-ownership='full'" % p.name)]
 
         if self.returns is not None:
             if (
                 (self.returns.transfer_ownership == "none" or self.returns.transfer_ownership == False)
-                and isinstance (self.returns, GObject)
+                and (isinstance (self.returns, GObject) or isinstance (self.returns, Tagged))
             ):
                 self.doc += ["@afterreturn Return has transfer-ownership='none'"]
 
