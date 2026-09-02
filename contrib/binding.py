@@ -95,8 +95,7 @@ from xml.etree.cElementTree import parse, Element, QName, tostring
 from adaformat import *
 import copy
 from binding_gtkada import GtkAda, GtkAdaMethod
-from data import enums, interfaces, binding, manual_binding, user_data_params
-from data import destroy_data_params
+from data import enums, interfaces, binding, manual_binding, user_data_params, callback_exceptions, destroy_data_params
 import sys
 
 # type hints
@@ -1690,7 +1689,7 @@ end if;"""
 
         destroy = profile.find_param(destroy_data_params)
 
-        # Compute the profile of the callback (will all its arguments)
+        # Compute the profile of the callback (with all its arguments)
         try:
             cb_gir_node = self.gir.callbacks[cb.type.ada]
         except:
@@ -1699,6 +1698,11 @@ end if;"""
         cbgtk = self.gtkpkg.get_method(cbname)
 
         cb_profile = SubprogramProfile.parse(cb_gir_node, gtkmethod=cbgtk, pkg=self.pkg)
+        # Override callbacks that require special handling
+        if cbname in callback_exceptions:
+            cb_profile.user_data_param = 0
+            cb_profile.add_param (cb_profile.user_data_param,
+                                  Parameter("Data", "System.Address"))
 
         user_data = profile.callback_user_data()
         cb_user_data = cb_profile.find_param(user_data_params)

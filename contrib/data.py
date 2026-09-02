@@ -692,6 +692,9 @@ manual_binding = (
 user_data_params = ["Data", "Func_Data", "User_Data", "D", "Search_Data"]
 destroy_data_params = ["user_destroy", "destroy", "func_notify", "notify"]
 
+# Callbacks that require special handling
+callback_exceptions = ['Gcallback']
+
 # Maps c methods to Ada subprograms or enumeration (for docs).
 # All methods that are generated automatically will be added
 # as they are processed.
