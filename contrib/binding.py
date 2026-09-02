@@ -2119,7 +2119,7 @@ end if;"""
             returns=profile.returns,
         ).import_c(cname)
 
-        call = internal.call(in_pkg=self.pkg)
+        call: CodeCall = internal.call(in_pkg=self.pkg)
         assert call.returnvar is not None, "A function"
 
         gtk_new_prefix = "Gtk_New"
@@ -2135,7 +2135,16 @@ end if;"""
             else:
                 adaname = "Gtk_%s" % name  # e.g.  Gtk_New
 
-        selfname = gtkmethod.get_param("self").ada_name() or "Self"
+        # Some constructor params have transfer-overship:full
+        # but this means that the constructed object owns the data
+        # and thus it should NOT be freed (example: g_string_new_take)
+        for p in internal.plist:
+            param_free = p.type.cleanup % 'Tmp_Init' if p.type.cleanup and isinstance(p.type, UTF8) else None
+            if param_free and param_free in call.freecall:
+                call.freecall.remove(param_free)
+                p.doc += 'Tmp_Init owned by object, must not be freed by constructor.'
+
+        selfname = gtkmethod.get_param("self").ada_name() or "Self"      
 
         if self.is_gobject:
             selftype = "%(typename)s_Record'Class" % self._subst
