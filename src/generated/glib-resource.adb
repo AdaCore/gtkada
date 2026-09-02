@@ -125,6 +125,26 @@ package body Glib.Resource is
       return Tmp_Return /= 0;
    end Get_Info;
 
+   ------------------
+   -- Has_Children --
+   ------------------
+
+   function Has_Children
+      (Self : Gresource;
+       Path : UTF8_String) return Boolean
+   is
+      function Internal
+         (Self : System.Address;
+          Path : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+      pragma Import (C, Internal, "g_resource_has_children");
+      Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
+      Tmp_Return : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Path);
+      Free (Tmp_Path);
+      return Tmp_Return /= 0;
+   end Has_Children;
+
    -----------------
    -- Lookup_Data --
    -----------------

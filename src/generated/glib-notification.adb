@@ -144,6 +144,28 @@ package body Glib.Notification is
       Free (Tmp_The_Body);
    end Set_Body;
 
+   ------------------
+   -- Set_Category --
+   ------------------
+
+   procedure Set_Category
+      (Self     : not null access Gnotification_Record;
+       Category : UTF8_String := "")
+   is
+      procedure Internal
+         (Self     : System.Address;
+          Category : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "g_notification_set_category");
+      Tmp_Category : Gtkada.Types.Chars_Ptr;
+   begin
+      Tmp_Category :=
+        (if Category = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Category));
+      Internal (Get_Object (Self), Tmp_Category);
+      Free (Tmp_Category);
+   end Set_Category;
+
    ------------------------
    -- Set_Default_Action --
    ------------------------

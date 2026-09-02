@@ -482,6 +482,11 @@ package Gtk.Application is
       (Self        : not null access Gtk_Application_Record;
        Action_Name : UTF8_String);
 
+   procedure Remove_Action_Entries
+      (Self      : not null access Gtk_Application_Record;
+       Entries   : GAction_Entry_Array;
+       N_Entries : Glib.Gint);
+
    ----------------
    -- Properties --
    ----------------

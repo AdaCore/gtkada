@@ -140,6 +140,26 @@ package body Glib.Bytes is
       return Self;
    end Gbytes_New_Take;
 
+   ----------------
+   -- Get_Region --
+   ----------------
+
+   function Get_Region
+      (Self         : Gbytes;
+       Element_Size : Gsize;
+       Offset       : Gsize;
+       N_Elements   : Gsize) return System.Address
+   is
+      function Internal
+         (Self         : System.Address;
+          Element_Size : Gsize;
+          Offset       : Gsize;
+          N_Elements   : Gsize) return System.Address;
+      pragma Import (C, Internal, "g_bytes_get_region");
+   begin
+      return Internal (Get_Object (Self), Element_Size, Offset, N_Elements);
+   end Get_Region;
+
    --------------
    -- Get_Size --
    --------------
@@ -190,25 +210,5 @@ package body Glib.Bytes is
    begin
       Internal (Get_Object (Self));
    end Unref;
-
-   -------------------
-   -- Unref_To_Data --
-   -------------------
-
-   function Unref_To_Data
-      (Self : Gbytes;
-       Size : in out Gsize) return System.Address
-   is
-      function Internal
-         (Self     : System.Address;
-          Acc_Size : access Gsize) return System.Address;
-      pragma Import (C, Internal, "g_bytes_unref_to_data");
-      Acc_Size   : aliased Gsize := Size;
-      Tmp_Return : System.Address;
-   begin
-      Tmp_Return := Internal (Get_Object (Self), Acc_Size'Access);
-      Size := Acc_Size;
-      return Tmp_Return;
-   end Unref_To_Data;
 
 end Glib.Bytes;

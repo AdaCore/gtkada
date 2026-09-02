@@ -711,6 +711,24 @@ package body Gtk.Application is
       Free (Tmp_Action_Name);
    end Remove_Action;
 
+   ---------------------------
+   -- Remove_Action_Entries --
+   ---------------------------
+
+   procedure Remove_Action_Entries
+      (Self      : not null access Gtk_Application_Record;
+       Entries   : GAction_Entry_Array;
+       N_Entries : Glib.Gint)
+   is
+      procedure Internal
+         (Self      : System.Address;
+          Entries   : GAction_Entry_Array;
+          N_Entries : Glib.Gint);
+      pragma Import (C, Internal, "g_action_map_remove_action_entries");
+   begin
+      Internal (Get_Object (Self), Entries, N_Entries);
+   end Remove_Action_Entries;
+
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Application_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

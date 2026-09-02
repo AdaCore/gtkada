@@ -77,8 +77,8 @@ package body Glib.Variant is
    -- G_New_Byte --
    ----------------
 
-   procedure G_New_Byte (Self : out Gvariant; Value : Guchar) is
-      function Internal (Value : Guchar) return System.Address;
+   procedure G_New_Byte (Self : out Gvariant; Value : Guint8) is
+      function Internal (Value : Guint8) return System.Address;
       pragma Import (C, Internal, "g_variant_new_byte");
    begin
       Self.Set_Object (Internal (Value));
@@ -375,8 +375,8 @@ package body Glib.Variant is
    -- Gvariant_New_Byte --
    -----------------------
 
-   function Gvariant_New_Byte (Value : Guchar) return Gvariant is
-      function Internal (Value : Guchar) return System.Address;
+   function Gvariant_New_Byte (Value : Guint8) return Gvariant is
+      function Internal (Value : Guint8) return System.Address;
       pragma Import (C, Internal, "g_variant_new_byte");
       Self : Gvariant;
    begin
@@ -844,8 +844,8 @@ package body Glib.Variant is
    -- Get_Byte --
    --------------
 
-   function Get_Byte (Self : Gvariant) return Guchar is
-      function Internal (Self : System.Address) return Guchar;
+   function Get_Byte (Self : Gvariant) return Guint8 is
+      function Internal (Self : System.Address) return Guint8;
       pragma Import (C, Internal, "g_variant_get_byte");
    begin
       return Internal (Get_Object (Self));
@@ -1087,11 +1087,11 @@ package body Glib.Variant is
    -- Hash --
    ----------
 
-   function Hash (Self : Gvariant) return Guint is
+   function Hash (Self : System.Address) return Guint is
       function Internal (Self : System.Address) return Guint;
       pragma Import (C, Internal, "g_variant_hash");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Self);
    end Hash;
 
    ----------
@@ -1520,6 +1520,21 @@ package body Glib.Variant is
    begin
       return Internal;
    end Parser_Get_Error_Quark;
+
+   ----------------------
+   -- String_Get_Depth --
+   ----------------------
+
+   function String_Get_Depth (Type_String : UTF8_String) return Gsize is
+      function Internal (Type_String : Gtkada.Types.Chars_Ptr) return Gsize;
+      pragma Import (C, Internal, "g_variant_type_string_get_depth_");
+      Tmp_Type_String : Gtkada.Types.Chars_Ptr := New_String (Type_String);
+      Tmp_Return      : Gsize;
+   begin
+      Tmp_Return := Internal (Tmp_Type_String);
+      Free (Tmp_Type_String);
+      return Tmp_Return;
+   end String_Get_Depth;
 
    ---------------------
    -- String_Is_Valid --

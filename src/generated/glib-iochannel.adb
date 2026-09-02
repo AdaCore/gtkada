@@ -185,18 +185,14 @@ package body Glib.IOChannel is
 
    function Get_Line_Term
       (Self   : Giochannel;
-       Length : in out Glib.Gint) return UTF8_String
+       Length : access Glib.Gint := null) return UTF8_String
    is
       function Internal
-         (Self       : Giochannel;
-          Acc_Length : access Glib.Gint) return Gtkada.Types.Chars_Ptr;
+         (Self   : Giochannel;
+          Length : access Glib.Gint) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_io_channel_get_line_term");
-      Acc_Length : aliased Glib.Gint := Length;
-      Tmp_Return : Gtkada.Types.Chars_Ptr;
    begin
-      Tmp_Return := Internal (Self, Acc_Length'Access);
-      Length := Acc_Length;
-      return Gtkada.Bindings.Value_Allowing_Null (Tmp_Return);
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Self, Length));
    end Get_Line_Term;
 
    ------------------

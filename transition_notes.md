@@ -2,6 +2,9 @@
 
 ## Things done
 
+- Updated GLib, GIO, and GObject GIR file versions from 2.42 to 2.88 (#135)
+- TODO: some bindings temporarily deactivated (Noted with 'TODO #135')
+
 - Commented / deactivated Gtk and Gdk completely
   - moved corresponding contrib/binding/packages/*.toml to contrib/binding/packages/gtk3/
   - deactivated corresponding entries in contrib/data.py
@@ -122,17 +125,24 @@ gtk-handlers.ads:
 
 - when done, fix gtkada_demo/create_tree_view.adb
 
-GAppInfo.toml:
+AppInfo.toml:
 
-- when done, reactivate bindings in GAppLaunchContext.toml\
+- when done, reactivate bindings in GAppLaunchContext.toml
+- TODO #135 : including signals: launch-failed, launch-started
 
 GBytes.toml:
 
 - fix binding for functions that have gconstarray as parameters
+- Once Atom_Arrays bound, bind: get_data, unref_to_array, unref_to_data
+    - TODO #135: once unref_to_data bound, reactivate GFile.Load_Bytes unit test
 
 GFile.toml:
 
 - when done, reactivate bindings in GdkTexture.toml, GAppLaunchContext.toml
+
+GDateTime:
+
+- when done, reactivate bindings in GFileInfo (TODO #135)
 
 GdkAppLaunchContext.toml:
 
@@ -204,13 +214,11 @@ GtkLayoutManager.toml and GtkLayoutChild.toml:
   `Gtk.Layout_Manager` and `Gtk.Layout_Child`. Once the generator gains
   support for `limited with`, these can be re-enabled.
 
-GtkColumnView - bound but requires the following to be useable:
+GtkColumnView - bound, awaiting:
 
-- `GtkBuilderListItemFactory` to instantiate `GtkColumnViewColumn` widgets
-  - needs `GListStore` which has the following considerations:
-    - `gconstpointer` binding
-    - `GEqualFunc` and `GCompareDateFunc` callback handling
-  - needs `Gtk.BuilderScope` and `GtkBuilderCScope` bound
+- unit tests
+- demo
+
 
 GtkDropDown.toml
 

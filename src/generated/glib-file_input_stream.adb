@@ -52,7 +52,8 @@ package body Glib.File_Input_Stream is
    --  @param Io_Priority the [I/O priority][io-priority] of the request
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
-   --  @param Callback callback to call when the request is satisfied
+   --  @param Callback a Gasync_Ready_Callback to call when the request is
+   --  satisfied
    --  @param User_Data the data to pass to callback function
 
    function To_Gasync_Ready_Callback is new Ada.Unchecked_Conversion
@@ -64,12 +65,12 @@ package body Glib.File_Input_Stream is
    procedure Internal_Gasync_Ready_Callback
       (Source_Object : System.Address;
        Res           : Glib.G_Async_Result;
-       User_Data     : System.Address);
+       Data          : System.Address);
    pragma Convention (C, Internal_Gasync_Ready_Callback);
    --  @param Source_Object the object the asynchronous operation was started
    --  with.
    --  @param Res a Glib.G_Async_Result.
-   --  @param User_Data user data passed to the callback.
+   --  @param Data user data passed to the callback.
 
    ------------------------------------
    -- Internal_Gasync_Ready_Callback --
@@ -78,9 +79,9 @@ package body Glib.File_Input_Stream is
    procedure Internal_Gasync_Ready_Callback
       (Source_Object : System.Address;
        Res           : Glib.G_Async_Result;
-       User_Data     : System.Address)
+       Data          : System.Address)
    is
-      Func         : constant Gasync_Ready_Callback := To_Gasync_Ready_Callback (User_Data);
+      Func         : constant Gasync_Ready_Callback := To_Gasync_Ready_Callback (Data);
       Stub_GObject : Glib.Object.GObject_Record;
    begin
       Func (Get_User_Data (Source_Object, Stub_GObject), Res);

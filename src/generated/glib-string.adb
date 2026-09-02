@@ -36,6 +36,153 @@ package body Glib.String is
       return Result;
    end From_Object_Free;
 
+   -----------
+   -- G_New --
+   -----------
+
+   procedure G_New (Self : out Gstring; Init : UTF8_String := "") is
+      function Internal (Init : Gtkada.Types.Chars_Ptr) return Gstring;
+      pragma Import (C, Internal, "g_string_new");
+      Tmp_Init   : Gtkada.Types.Chars_Ptr;
+      Tmp_Return : Gstring;
+   begin
+      Tmp_Init :=
+        (if Init = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Init));
+      Tmp_Return := Internal (Tmp_Init);
+      Self := Tmp_Return;
+      Free (Tmp_Init);
+   end G_New;
+
+   ---------------
+   -- G_New_Len --
+   ---------------
+
+   procedure G_New_Len
+      (Self : out Gstring;
+       Init : UTF8_String;
+       Len  : Gssize)
+   is
+      function Internal
+         (Init : Gtkada.Types.Chars_Ptr;
+          Len  : Gssize) return Gstring;
+      pragma Import (C, Internal, "g_string_new_len");
+      Tmp_Init   : Gtkada.Types.Chars_Ptr := New_String (Init);
+      Tmp_Return : Gstring;
+   begin
+      Tmp_Return := Internal (Tmp_Init, Len);
+      Self := Tmp_Return;
+      Free (Tmp_Init);
+   end G_New_Len;
+
+   ----------------
+   -- G_New_Take --
+   ----------------
+
+   procedure G_New_Take (Self : out Gstring; Init : UTF8_String := "") is
+      function Internal (Init : Gtkada.Types.Chars_Ptr) return Gstring;
+      pragma Import (C, Internal, "g_string_new_take");
+      Tmp_Init   : Gtkada.Types.Chars_Ptr;
+      Tmp_Return : Gstring;
+   begin
+      Tmp_Init :=
+        (if Init = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Init));
+      Tmp_Return := Internal (Tmp_Init);
+      Self := Tmp_Return;
+      Free (Tmp_Init);
+   end G_New_Take;
+
+   -----------------
+   -- G_Sized_New --
+   -----------------
+
+   procedure G_Sized_New (Self : out Gstring; Dfl_Size : Gsize) is
+      function Internal (Dfl_Size : Gsize) return Gstring;
+      pragma Import (C, Internal, "g_string_sized_new");
+   begin
+      Self := Internal (Dfl_Size);
+   end G_Sized_New;
+
+   -----------------
+   -- Gstring_New --
+   -----------------
+
+   function Gstring_New (Init : UTF8_String := "") return Gstring is
+      function Internal (Init : Gtkada.Types.Chars_Ptr) return Gstring;
+      pragma Import (C, Internal, "g_string_new");
+      Tmp_Init   : Gtkada.Types.Chars_Ptr;
+      Tmp_Return : Gstring;
+      Self       : Gstring;
+   begin
+      Tmp_Init :=
+        (if Init = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Init));
+      Tmp_Return := Internal (Tmp_Init);
+      Self := Tmp_Return;
+      Free (Tmp_Init);
+      return Self;
+   end Gstring_New;
+
+   ---------------------
+   -- Gstring_New_Len --
+   ---------------------
+
+   function Gstring_New_Len
+      (Init : UTF8_String;
+       Len  : Gssize) return Gstring
+   is
+      function Internal
+         (Init : Gtkada.Types.Chars_Ptr;
+          Len  : Gssize) return Gstring;
+      pragma Import (C, Internal, "g_string_new_len");
+      Tmp_Init   : Gtkada.Types.Chars_Ptr := New_String (Init);
+      Tmp_Return : Gstring;
+      Self       : Gstring;
+   begin
+      Tmp_Return := Internal (Tmp_Init, Len);
+      Self := Tmp_Return;
+      Free (Tmp_Init);
+      return Self;
+   end Gstring_New_Len;
+
+   ----------------------
+   -- Gstring_New_Take --
+   ----------------------
+
+   function Gstring_New_Take (Init : UTF8_String := "") return Gstring is
+      function Internal (Init : Gtkada.Types.Chars_Ptr) return Gstring;
+      pragma Import (C, Internal, "g_string_new_take");
+      Tmp_Init   : Gtkada.Types.Chars_Ptr;
+      Tmp_Return : Gstring;
+      Self       : Gstring;
+   begin
+      Tmp_Init :=
+        (if Init = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Init));
+      Tmp_Return := Internal (Tmp_Init);
+      Self := Tmp_Return;
+      Free (Tmp_Init);
+      return Self;
+   end Gstring_New_Take;
+
+   -----------------------
+   -- Gstring_Sized_New --
+   -----------------------
+
+   function Gstring_Sized_New (Dfl_Size : Gsize) return Gstring is
+      function Internal (Dfl_Size : Gsize) return Gstring;
+      pragma Import (C, Internal, "g_string_sized_new");
+      Self : Gstring;
+   begin
+      Self := Internal (Dfl_Size);
+      return Self;
+   end Gstring_Sized_New;
+
    ------------
    -- Append --
    ------------
@@ -50,7 +197,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Tmp_Val);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Append;
 
    ----------------
@@ -72,7 +219,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Tmp_Val, Len);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Append_Len;
 
    ------------------------
@@ -98,7 +245,7 @@ package body Glib.String is
       Tmp_Return := Internal (Self, Tmp_Unescaped, Tmp_Reserved_Chars_Allowed, Boolean'Pos (Allow_Utf8));
       Free (Tmp_Reserved_Chars_Allowed);
       Free (Tmp_Unescaped);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Append_Uri_Escaped;
 
    ------------
@@ -115,7 +262,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Tmp_Rval);
       Free (Tmp_Rval);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Assign;
 
    -----------
@@ -142,6 +289,17 @@ package body Glib.String is
       return Gtkada.Bindings.Value_And_Free (Internal (Self, Boolean'Pos (Free_Segment)));
    end Free;
 
+   --------------------
+   -- Free_And_Steal --
+   --------------------
+
+   function Free_And_Steal (Self : Gstring) return UTF8_String is
+      function Internal (Self : Gstring) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "g_string_free_and_steal");
+   begin
+      return Gtkada.Bindings.Value_And_Free (Internal (Self));
+   end Free_And_Steal;
+
    ------------
    -- Insert --
    ------------
@@ -161,7 +319,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Pos, Tmp_Val);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Insert;
 
    ----------------
@@ -185,7 +343,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Pos, Tmp_Val, Len);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Insert_Len;
 
    ---------------
@@ -207,7 +365,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Pos, Tmp_Val);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Overwrite;
 
    -------------------
@@ -231,7 +389,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Pos, Tmp_Val, Len);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Overwrite_Len;
 
    -------------
@@ -248,7 +406,7 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Tmp_Val);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Prepend;
 
    -----------------
@@ -270,7 +428,33 @@ package body Glib.String is
    begin
       Tmp_Return := Internal (Self, Tmp_Val, Len);
       Free (Tmp_Val);
-      return From_Object_Free (Tmp_Return);
+      return Tmp_Return.all;
    end Prepend_Len;
+
+   -------------
+   -- Replace --
+   -------------
+
+   function Replace
+      (Self    : Gstring;
+       Find    : UTF8_String;
+       Replace : UTF8_String;
+       Limit   : Guint) return Guint
+   is
+      function Internal
+         (Self    : Gstring;
+          Find    : Gtkada.Types.Chars_Ptr;
+          Replace : Gtkada.Types.Chars_Ptr;
+          Limit   : Guint) return Guint;
+      pragma Import (C, Internal, "g_string_replace");
+      Tmp_Find    : Gtkada.Types.Chars_Ptr := New_String (Find);
+      Tmp_Replace : Gtkada.Types.Chars_Ptr := New_String (Replace);
+      Tmp_Return  : Guint;
+   begin
+      Tmp_Return := Internal (Self, Tmp_Find, Tmp_Replace, Limit);
+      Free (Tmp_Replace);
+      Free (Tmp_Find);
+      return Tmp_Return;
+   end Replace;
 
 end Glib.String;

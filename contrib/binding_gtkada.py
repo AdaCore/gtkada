@@ -485,7 +485,7 @@ class GtkAdaMethod(object):
 
     def cname(self) -> Optional[str]:
         """Return the name of the C function"""
-        return self.node.get("id")
+        return self.node.get("id", None) if self.node else None
 
     def get_param(self, name: str) -> GtkAdaParameter:
         default = self.pkg.get_default_param_node(name)

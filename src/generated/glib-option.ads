@@ -77,6 +77,7 @@ package Glib.Option is
    G_Option_Flag_Filename : constant GOption_Flags := 16;
    G_Option_Flag_Optional_Arg : constant GOption_Flags := 32;
    G_Option_Flag_Noalias : constant GOption_Flags := 64;
+   G_Option_Flag_Deprecated : constant GOption_Flags := 128;
 
    type GOption_Group is new Glib.C_Proxy;
    function From_Object_Free (B : access GOption_Group) return GOption_Group;
@@ -102,8 +103,21 @@ package Glib.Option is
 
    function From_Object_Free (B : access GOption_Entry) return GOption_Entry;
    pragma Inline (From_Object_Free);
-   --  A GOptionEntry struct defines a single option. To have an effect, they
-   --  must be added to a Glib.Option.GOption_Group with
+   --  - Glib.Option.G_Option_Arg_None: %gboolean -
+   --  Glib.Option.G_Option_Arg_String: %gchar* - Glib.Option.G_Option_Arg_Int:
+   --  %gint - Glib.Option.G_Option_Arg_Filename: %gchar* -
+   --  Glib.Option.G_Option_Arg_String_Array: %gchar** -
+   --  Glib.Option.G_Option_Arg_Filename_Array: %gchar** -
+   --  Glib.Option.G_Option_Arg_Double: %gdouble
+   --
+   --  If Arg type is Glib.Option.G_Option_Arg_String or
+   --  Glib.Option.G_Option_Arg_Filename, the location will contain a newly
+   --  allocated string if the option was given. That string needs to be freed
+   --  by the callee using g_free. Likewise if Arg type is
+   --  Glib.Option.G_Option_Arg_String_Array or
+   --  Glib.Option.G_Option_Arg_Filename_Array, the data should be freed using
+   --  g_strfreev. A GOptionEntry struct defines a single option. To have an
+   --  effect, they must be added to a Glib.Option.GOption_Group with
    --  Glib.Option.Add_Main_Entries or g_option_group_add_entries.
 
    type GOption_Entry_Array is array (Natural range <>) of GOption_Entry;
@@ -141,9 +155,8 @@ package Glib.Option is
 
    procedure Add_Group (Self : Goption_Context; Group : GOption_Group);
    --  Adds a Glib.Option.GOption_Group to the Context, so that parsing with
-   --  Context will recognize the options in the group. Note that the group
-   --  will be freed together with the context when Glib.Option.Free is called,
-   --  so you must not free the group yourself after adding it to a context.
+   --  Context will recognize the options in the group. Note that this will
+   --  take ownership of the Group and thus the Group should not be freed.
    --  Since: gtk+ 2.6
    --  @param Group the group to add
 
@@ -163,6 +176,7 @@ package Glib.Option is
    --  Please note that parsed arguments need to be freed separately (see
    --  Glib.Option.GOption_Entry).
    --  Since: gtk+ 2.6
+   --  Parameter Self has transfer-ownership='full'
 
    function Get_Description (Self : Goption_Context) return UTF8_String;
    --  Returns the description. See Glib.Option.Set_Description.
@@ -245,6 +259,36 @@ package Glib.Option is
    --  generating `--help` output.
    --  Since: gtk+ 2.6
    --  @param Group the group to set as main group
+
+   function Get_Strict_Posix (Self : Goption_Context) return Boolean;
+   --  Returns whether strict POSIX code is enabled.
+   --  See Glib.Option.Set_Strict_Posix for more information.
+   --  Since: gtk+ 2.44
+   --  @return True if strict POSIX is enabled, False otherwise.
+
+   procedure Set_Strict_Posix
+      (Self         : Goption_Context;
+       Strict_Posix : Boolean);
+   --  Sets strict POSIX mode.
+   --  By default, this mode is disabled.
+   --  In strict POSIX mode, the first non-argument parameter encountered (eg:
+   --  filename) terminates argument processing. Remaining arguments are
+   --  treated as non-options and are not attempted to be parsed.
+   --  If strict POSIX mode is disabled then parsing is done in the GNU way
+   --  where option arguments can be freely mixed with non-options.
+   --  As an example, consider "ls foo -l". With GNU style parsing, this will
+   --  list "foo" in long mode. In strict POSIX style, this will list the files
+   --  named "foo" and "-l".
+   --  It may be useful to force strict POSIX mode when creating "verb style"
+   --  command line tools. For example, the "gsettings" command line tool
+   --  supports the global option "--schemadir" as well as many subcommands
+   --  ("get", "set", etc.) which each have their own set of arguments. Using
+   --  strict POSIX mode will allow parsing the global options up to the verb
+   --  name while leaving the remaining options to be parsed by the relevant
+   --  subcommand (which can be determined by examining the verb name, which
+   --  should be present in argv[1] after parsing).
+   --  Since: gtk+ 2.44
+   --  @param Strict_Posix the new value
 
    function Get_Summary (Self : Goption_Context) return UTF8_String;
    --  Returns the summary. See Glib.Option.Set_Summary.
@@ -378,7 +422,6 @@ package Glib.Option is
    --  of `--help` output, after the usage summary `programname [OPTION...]`
    --  @return a newly created Glib.Option.Goption_Context, which must be
    --  freed with Glib.Option.Free after use.
-   --  Return has transfer-ownership='none'
 
 private
    Null_Goption_Context : constant Goption_Context :=

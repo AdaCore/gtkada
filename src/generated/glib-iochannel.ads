@@ -53,6 +53,7 @@ package Glib.IOChannel is
    --  can only be read with Glib.IOChannel.Get_Flags, but not changed with
    --  g_io_channel_set_flags.
 
+   G_Io_Flag_None : constant GIOFlags := 0;
    G_Io_Flag_Append : constant GIOFlags := 1;
    G_Io_Flag_Nonblock : constant GIOFlags := 2;
    G_Io_Flag_Is_Readable : constant GIOFlags := 4;
@@ -69,7 +70,7 @@ package Glib.IOChannel is
       G_Io_Status_Eof,
       G_Io_Status_Again);
    pragma Convention (C, GIOStatus);
-   --  Stati returned by most of the Glib.IOChannel.GIOFuncs functions.
+   --  Statuses returned by most of the Glib.IOChannel.GIOFuncs functions.
 
    type GIOError is (
       G_Io_Error_None,
@@ -190,7 +191,9 @@ package Glib.IOChannel is
    --  The default encoding for Glib.IOChannel.Giochannel is UTF-8. If your
    --  application is reading output from a command using via pipe, you may
    --  need to set the encoding to the encoding of the current locale (see
-   --  g_get_charset) with the g_io_channel_set_encoding function.
+   --  g_get_charset) with the g_io_channel_set_encoding function. By default,
+   --  the fd passed will not be closed when the final reference to the
+   --  Glib.IOChannel.Giochannel data structure is dropped.
    --  If you want to read raw binary data without interpretation, then call
    --  the g_io_channel_set_encoding function with null for the encoding
    --  argument.
@@ -209,7 +212,9 @@ package Glib.IOChannel is
    --  The default encoding for Glib.IOChannel.Giochannel is UTF-8. If your
    --  application is reading output from a command using via pipe, you may
    --  need to set the encoding to the encoding of the current locale (see
-   --  g_get_charset) with the g_io_channel_set_encoding function.
+   --  g_get_charset) with the g_io_channel_set_encoding function. By default,
+   --  the fd passed will not be closed when the final reference to the
+   --  Glib.IOChannel.Giochannel data structure is dropped.
    --  If you want to read raw binary data without interpretation, then call
    --  the g_io_channel_set_encoding function with null for the encoding
    --  argument.
@@ -269,16 +274,18 @@ package Glib.IOChannel is
    --  be closed when Channel receives its final unref and is destroyed. The
    --  default value of this is True for channels created by
    --  g_io_channel_new_file (), and False for all other channels.
-   --  @return Whether the channel will be closed on the final unref of the
-   --  GIOChannel data structure.
+   --  @return True if the channel will be closed, False otherwise.
 
    procedure Set_Close_On_Unref (Self : Giochannel; Do_Close : Boolean);
+   --  Whether to close the channel on the final unref of the
+   --  Glib.IOChannel.Giochannel data structure. The default value of this is
+   --  True for channels created by g_io_channel_new_file (), and False for all
+   --  other channels.
    --  Setting this flag to True for a channel you have already closed can
-   --  cause problems.
+   --  cause problems when the final reference to the Glib.IOChannel.Giochannel
+   --  is dropped.
    --  @param Do_Close Whether to close the channel on the final unref of the
-   --  GIOChannel data structure. The default value of this is True for
-   --  channels created by g_io_channel_new_file (), and False for all other
-   --  channels.
+   --  GIOChannel data structure.
 
    function Get_Encoding (Self : Giochannel) return UTF8_String;
    --  Gets the encoding for the input/output of the channel. The internal
@@ -301,7 +308,7 @@ package Glib.IOChannel is
 
    function Get_Line_Term
       (Self   : Giochannel;
-       Length : in out Glib.Gint) return UTF8_String;
+       Length : access Glib.Gint := null) return UTF8_String;
    --  This returns the string that Glib.IOChannel.Giochannel uses to
    --  determine where in the file a line break occurs. A value of null
    --  indicates autodetection.
@@ -521,8 +528,11 @@ package Glib.IOChannel is
        Condition : GIOCondition) return Glib.Main.G_Source;
    pragma Import (C, Io_Create_Watch, "g_io_create_watch");
    --  Creates a Glib.Main.G_Source that's dispatched when Condition is met
-   --  for the given Channel. For example, if condition is G_IO_IN, the source
-   --  will be dispatched when there's data available for reading.
+   --  for the given Channel. For example, if condition is
+   --  Glib.IOChannel.G_Io_In, the source will be dispatched when there's data
+   --  available for reading.
+   --  The callback function invoked by the Glib.Main.G_Source should be added
+   --  with g_source_set_callback, but it has type Giofunc (not Gsource_Func).
    --  g_io_add_watch is a simpler interface to this same functionality, for
    --  the case where you want to add the source to the default main loop
    --  context at the default priority.

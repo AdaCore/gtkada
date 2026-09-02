@@ -166,6 +166,26 @@ package body Glib.File_Info is
       return Gtkada.Bindings.Value_Allowing_Null (Tmp_Return);
    end Get_Attribute_Byte_String;
 
+   -----------------------------
+   -- Get_Attribute_File_Path --
+   -----------------------------
+
+   function Get_Attribute_File_Path
+      (Self      : not null access Gfile_Info_Record;
+       Attribute : UTF8_String) return UTF8_String
+   is
+      function Internal
+         (Self      : System.Address;
+          Attribute : Gtkada.Types.Chars_Ptr) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "g_file_info_get_attribute_file_path");
+      Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
+      Tmp_Return    : Gtkada.Types.Chars_Ptr;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Attribute);
+      Free (Tmp_Attribute);
+      return Gtkada.Bindings.Value_Allowing_Null (Tmp_Return);
+   end Get_Attribute_File_Path;
+
    -------------------------
    -- Get_Attribute_Int32 --
    -------------------------
@@ -618,6 +638,28 @@ package body Glib.File_Info is
       Free (Tmp_Attr_Value);
       Free (Tmp_Attribute);
    end Set_Attribute_Byte_String;
+
+   -----------------------------
+   -- Set_Attribute_File_Path --
+   -----------------------------
+
+   procedure Set_Attribute_File_Path
+      (Self       : not null access Gfile_Info_Record;
+       Attribute  : UTF8_String;
+       Attr_Value : UTF8_String)
+   is
+      procedure Internal
+         (Self       : System.Address;
+          Attribute  : Gtkada.Types.Chars_Ptr;
+          Attr_Value : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "g_file_info_set_attribute_file_path");
+      Tmp_Attribute  : Gtkada.Types.Chars_Ptr := New_String (Attribute);
+      Tmp_Attr_Value : Gtkada.Types.Chars_Ptr := New_String (Attr_Value);
+   begin
+      Internal (Get_Object (Self), Tmp_Attribute, Tmp_Attr_Value);
+      Free (Tmp_Attr_Value);
+      Free (Tmp_Attribute);
+   end Set_Attribute_File_Path;
 
    -------------------------
    -- Set_Attribute_Int32 --

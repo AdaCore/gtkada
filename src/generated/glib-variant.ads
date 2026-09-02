@@ -21,9 +21,39 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
---  Glib.Variant.Gvariant is a variant datatype; it stores a value along with
---  information about the type of that value. The range of possible values is
---  determined by the type. The type system used by Glib.Variant.Gvariant is
+--  Glib.Variant.Gvariant is a variant datatype; it can contain one or more
+--  values along with information about the type of the values.
+--
+--  A Glib.Variant.Gvariant may contain simple types, like an integer, or a
+--  boolean value; or complex types, like an array of two strings, or a
+--  dictionary of key value pairs. A Glib.Variant.Gvariant is also immutable:
+--  once it's been created neither its type nor its content can be modified
+--  further.
+--
+--  GVariant is useful whenever data needs to be serialized, for example when
+--  sending method parameters in D-Bus, or when saving settings using
+--  GSettings.
+--
+--  When creating a new Glib.Variant.Gvariant, you pass the data you want to
+--  store in it along with a string representing the type of data you wish to
+--  pass to it.
+--
+--  For instance, if you want to create a Glib.Variant.Gvariant holding an
+--  integer value you can use:
+--
+--     GVariant *v = g_variant_new ("u", 40);
+--
+--
+--  The string "u" in the first argument tells Glib.Variant.Gvariant that the
+--  data passed to the constructor (40) is going to be an unsigned integer.
+--
+--  More advanced examples of Glib.Variant.Gvariant in use can be found in
+--  documentation for [GVariant format
+--  strings][gvariant-format-strings-pointers].
+--
+--  The range of possible values is determined by the type.
+--
+--  The type system used by Glib.Variant.Gvariant is
 --  Glib.Variant.Gvariant_Type.
 --
 --  Glib.Variant.Gvariant instances always have a type and a value (which are
@@ -40,19 +70,19 @@
 --  without problems.
 --
 --  Glib.Variant.Gvariant is heavily optimised for dealing with data in
---  serialised form. It works particularly well with data located in
---  memory-mapped files. It can perform nearly all deserialisation operations
+--  serialized form. It works particularly well with data located in
+--  memory-mapped files. It can perform nearly all deserialization operations
 --  in a small constant time, usually touching only a single memory page.
---  Serialised Glib.Variant.Gvariant data can also be sent over the network.
+--  Serialized Glib.Variant.Gvariant data can also be sent over the network.
 --
 --  Glib.Variant.Gvariant is largely compatible with D-Bus. Almost all types
 --  of Glib.Variant.Gvariant instances can be sent over D-Bus. See
 --  Glib.Variant.Gvariant_Type for exceptions. (However,
---  Glib.Variant.Gvariant's serialisation format is not the same as the
---  serialisation format of a D-Bus message body: use
+--  Glib.Variant.Gvariant's serialization format is not the same as the
+--  serialization format of a D-Bus message body: use
 --  Gdbus.Message.Gdbus_Message, in the gio library, for those.)
 --
---  For space-efficiency, the Glib.Variant.Gvariant serialisation format does
+--  For space-efficiency, the Glib.Variant.Gvariant serialization format does
 --  not automatically include the variant's length, type or endianness, which
 --  must either be implied from context (such as knowledge that a particular
 --  file format always contains a little-endian G_VARIANT_TYPE_VARIANT which
@@ -81,13 +111,13 @@
 --  future.
 --
 --  The memory allocated by Glib.Variant.Gvariant can be grouped into 4 broad
---  purposes: memory for serialised data, memory for the type information
+--  purposes: memory for serialized data, memory for the type information
 --  cache, buffer management memory and memory for the Glib.Variant.Gvariant
 --  structure itself.
 --
---  ## Serialised Data Memory
+--  ## Serialized Data Memory
 --
---  This is the memory that is used for storing GVariant data in serialised
+--  This is the memory that is used for storing GVariant data in serialized
 --  form. This is what would be sent over the network or what would end up on
 --  disk, not counting any indicator of the endianness, or of the length or
 --  type of the top-level variant.
@@ -121,7 +151,7 @@
 --
 --  As an example, consider a dictionary mapping strings to variants. In the
 --  case that the dictionary is empty, 0 bytes are required for the
---  serialisation.
+--  serialization.
 --
 --  If we add an item "width" that maps to the int32 value of 500 then we will
 --  use 4 byte to store the int32 (so 6 for the variant containing it) and 6
@@ -145,7 +175,7 @@
 --
 --  For each GVariant type that currently exists in the program a type
 --  information structure is kept in the type information cache. The type
---  information structure is required for rapid deserialisation.
+--  information structure is required for rapid deserialization.
 --
 --  Continuing with the above example, if a Glib.Variant.Gvariant exists with
 --  the type "a{sv}" then a type information struct will exist for "a{sv}",
@@ -176,7 +206,7 @@
 --  information would be allocated.
 --
 --  The type information cache, additionally, uses a GHash_Table to store and
---  lookup the cached items and stores a pointer to this hash table in static
+--  look up the cached items and stores a pointer to this hash table in static
 --  storage. The hash table is freed when there are zero items in the type
 --  cache.
 --
@@ -188,12 +218,12 @@
 --  ## Buffer Management Memory
 --
 --  Glib.Variant.Gvariant uses an internal buffer management structure to deal
---  with the various different possible sources of serialised data that it
+--  with the various different possible sources of serialized data that it
 --  uses. The buffer is responsible for ensuring that the correct call is made
 --  when the data is no longer in use by Glib.Variant.Gvariant. This may
 --  involve a g_free or a g_slice_free or even g_mapped_file_unref.
 --
---  One buffer management structure is used for each chunk of serialised data.
+--  One buffer management structure is used for each chunk of serialized data.
 --  The size of the buffer management structure is 4 * (void *). On 32-bit
 --  systems, that's 16 bytes.
 --
@@ -204,7 +234,7 @@
 --
 --  Glib.Variant.Gvariant structures only exist if they are explicitly created
 --  with API calls. For example, if a Glib.Variant.Gvariant is constructed out
---  of serialised data for the example given above (with the dictionary) then
+--  of serialized data for the example given above (with the dictionary) then
 --  although there are 9 individual values that comprise the entire dictionary
 --  (two keys, two values, two variants containing the values, two dictionary
 --  entries, plus the dictionary itself), only 1 Glib.Variant.Gvariant instance
@@ -213,19 +243,19 @@
 --  If calls are made to start accessing the other values then
 --  Glib.Variant.Gvariant instances will exist for those values only for as
 --  long as they are in use (ie: until you call Glib.Variant.Unref). The type
---  information is shared. The serialised data and the buffer management
---  structure for that serialised data is shared by the child.
+--  information is shared. The serialized data and the buffer management
+--  structure for that serialized data is shared by the child.
 --
 --  ## Summary
 --
 --  To put the entire example together, for our dictionary mapping strings to
 --  variants (with two entries, as given above), we are using 91 bytes of
---  memory for type information, 29 byes of memory for the serialised data, 16
+--  memory for type information, 29 bytes of memory for the serialized data, 16
 --  bytes for buffer management and 24 bytes for the Glib.Variant.Gvariant
 --  instance, or a total of 160 bytes, plus malloc overhead. If we were to use
 --  Glib.Variant.Get_Child_Value to access the two dictionary entries, we would
 --  use an additional 48 bytes. If we were to have other dictionaries of the
---  same type, we would use more memory for the serialised data and buffer
+--  same type, we would use more memory for the serialized data and buffer
 --  management for those dictionaries, but the type information would be
 --  shared.
 
@@ -315,12 +345,12 @@ package Glib.Variant is
    --  Since: gtk+ 2.24
    --  @param Value a Boolean value
 
-   procedure G_New_Byte (Self : out Gvariant; Value : Guchar);
+   procedure G_New_Byte (Self : out Gvariant; Value : Guint8);
    --  Creates a new byte Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
    --  @param Value a Guint8 value
 
-   function Gvariant_New_Byte (Value : Guchar) return Gvariant;
+   function Gvariant_New_Byte (Value : Guint8) return Gvariant;
    --  Creates a new byte Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
    --  @param Value a Guint8 value
@@ -328,7 +358,7 @@ package Glib.Variant is
    procedure G_New_Bytestring (Self : out Gvariant; String : Guint8_Array);
    --  Creates an array-of-bytes Glib.Variant.Gvariant with the contents of
    --  String. This function is just like g_variant_new_string except that the
-   --  string need not be valid utf8.
+   --  string need not be valid UTF-8.
    --  The nul terminator character at the end of the string is stored in the
    --  array.
    --  Since: gtk+ 2.26
@@ -337,7 +367,7 @@ package Glib.Variant is
    function Gvariant_New_Bytestring (String : Guint8_Array) return Gvariant;
    --  Creates an array-of-bytes Glib.Variant.Gvariant with the contents of
    --  String. This function is just like g_variant_new_string except that the
-   --  string need not be valid utf8.
+   --  string need not be valid UTF-8.
    --  The nul terminator character at the end of the string is stored in the
    --  array.
    --  Since: gtk+ 2.26
@@ -461,7 +491,7 @@ package Glib.Variant is
       (Self        : out Gvariant;
        Object_Path : UTF8_String);
    --  Creates a D-Bus object path Glib.Variant.Gvariant with the contents of
-   --  String. String must be a valid D-Bus object path. Use
+   --  Object_Path. Object_Path must be a valid D-Bus object path. Use
    --  Glib.Variant.Is_Object_Path if you're not sure.
    --  Since: gtk+ 2.24
    --  @param Object_Path a normal C nul-terminated string
@@ -469,7 +499,7 @@ package Glib.Variant is
    function Gvariant_New_Object_Path
       (Object_Path : UTF8_String) return Gvariant;
    --  Creates a D-Bus object path Glib.Variant.Gvariant with the contents of
-   --  String. String must be a valid D-Bus object path. Use
+   --  Object_Path. Object_Path must be a valid D-Bus object path. Use
    --  Glib.Variant.Is_Object_Path if you're not sure.
    --  Since: gtk+ 2.24
    --  @param Object_Path a normal C nul-terminated string
@@ -515,15 +545,19 @@ package Glib.Variant is
 
    procedure G_New_String (Self : out Gvariant; String : UTF8_String);
    --  Creates a string Glib.Variant.Gvariant with the contents of String.
-   --  String must be valid utf8.
+   --  String must be valid UTF-8, and must not be null. To encode
+   --  potentially-null strings, use g_variant_new with `ms` as the [format
+   --  string][gvariant-format-strings-maybe-types].
    --  Since: gtk+ 2.24
-   --  @param String a normal utf8 nul-terminated string
+   --  @param String a normal UTF-8 nul-terminated string
 
    function Gvariant_New_String (String : UTF8_String) return Gvariant;
    --  Creates a string Glib.Variant.Gvariant with the contents of String.
-   --  String must be valid utf8.
+   --  String must be valid UTF-8, and must not be null. To encode
+   --  potentially-null strings, use g_variant_new with `ms` as the [format
+   --  string][gvariant-format-strings-maybe-types].
    --  Since: gtk+ 2.24
-   --  @param String a normal utf8 nul-terminated string
+   --  @param String a normal UTF-8 nul-terminated string
 
    procedure G_New_Strv
       (Self   : out Gvariant;
@@ -548,23 +582,27 @@ package Glib.Variant is
 
    procedure G_New_Take_String (Self : out Gvariant; String : UTF8_String);
    --  Creates a string Glib.Variant.Gvariant with the contents of String.
-   --  String must be valid utf8.
-   --  This function consumes String. g_free will be called on String when it
-   --  is no longer required.
+   --  String must be valid UTF-8, and must not be null. To encode
+   --  potentially-null strings, use this with g_variant_new_maybe.
+   --  After this call, String belongs to the Glib.Variant.Gvariant and may no
+   --  longer be modified by the caller. The memory of Data has to be
+   --  dynamically allocated and will eventually be freed with g_free.
    --  You must not modify or access String in any other way after passing it
    --  to this function. It is even possible that String is immediately freed.
    --  Since: gtk+ 2.38
-   --  @param String a normal utf8 nul-terminated string
+   --  @param String a normal UTF-8 nul-terminated string
 
    function Gvariant_New_Take_String (String : UTF8_String) return Gvariant;
    --  Creates a string Glib.Variant.Gvariant with the contents of String.
-   --  String must be valid utf8.
-   --  This function consumes String. g_free will be called on String when it
-   --  is no longer required.
+   --  String must be valid UTF-8, and must not be null. To encode
+   --  potentially-null strings, use this with g_variant_new_maybe.
+   --  After this call, String belongs to the Glib.Variant.Gvariant and may no
+   --  longer be modified by the caller. The memory of Data has to be
+   --  dynamically allocated and will eventually be freed with g_free.
    --  You must not modify or access String in any other way after passing it
    --  to this function. It is even possible that String is immediately freed.
    --  Since: gtk+ 2.38
-   --  @param String a normal utf8 nul-terminated string
+   --  @param String a normal UTF-8 nul-terminated string
 
    procedure G_New_Uint16 (Self : out Gvariant; Value : Guint16);
    --  Creates a new uint16 Glib.Variant.Gvariant instance.
@@ -655,7 +693,12 @@ package Glib.Variant is
    --  This function is an identity mapping on any value that does not contain
    --  multi-byte numeric data. That include strings, booleans, bytes and
    --  containers containing only these things (recursively).
-   --  The returned value is always in normal form and is marked as trusted.
+   --  While this function can safely handle untrusted, non-normal data, it is
+   --  recommended to check whether the input is in normal form beforehand,
+   --  using Glib.Variant.Is_Normal_Form, and to reject non-normal inputs if
+   --  your application can be strict about what inputs it rejects.
+   --  The returned value is always in normal form and is marked as trusted. A
+   --  full, not floating, reference is returned.
    --  Since: gtk+ 2.24
    --  @return the byteswapped form of Value
 
@@ -718,11 +761,11 @@ package Glib.Variant is
        Length : access Gsize := null) return UTF8_String;
    --  Similar to Glib.Variant.Get_String except that instead of returning a
    --  constant string, the string is duplicated.
-   --  The string will always be utf8 encoded.
+   --  The string will always be UTF-8 encoded.
    --  The return value must be freed using g_free.
    --  Since: gtk+ 2.24
    --  @param Length a pointer to a Gsize, to store the length
-   --  @return a newly allocated string, utf8 encoded
+   --  @return a newly allocated string, UTF-8 encoded
 
    function Dup_String (Self : Gvariant_Type) return UTF8_String;
    --  Returns a newly-allocated copy of the type string corresponding to
@@ -752,12 +795,12 @@ package Glib.Variant is
    --  Since: gtk+ 2.24
    --  @return True or False
 
-   function Get_Byte (Self : Gvariant) return Guchar;
+   function Get_Byte (Self : Gvariant) return Guint8;
    --  Returns the byte value of Value.
    --  It is an error to call this function with a Value of any type other
    --  than G_VARIANT_TYPE_BYTE.
    --  Since: gtk+ 2.24
-   --  @return a Guchar
+   --  @return a Guint8
 
    function Get_Bytestring_Array
       (Self   : Gvariant;
@@ -782,6 +825,15 @@ package Glib.Variant is
    --  the container. See Glib.Variant.N_Children.
    --  The returned value is never floating. You should free it with
    --  Glib.Variant.Unref when you're done with it.
+   --  Note that values borrowed from the returned child are not guaranteed to
+   --  still be valid after the child is freed even if you still hold a
+   --  reference to Value, if Value has not been serialized at the time this
+   --  function is called. To avoid this, you can serialize Value by calling
+   --  g_variant_get_data and optionally ignoring the return value.
+   --  There may be implementation specific restrictions on deeply nested
+   --  values, which would result in the unit tuple being returned as the child
+   --  value, instead of further nested children. Glib.Variant.Gvariant is
+   --  guaranteed to handle nesting up to at least 64 levels.
    --  This function is O(1).
    --  Since: gtk+ 2.24
    --  @param Index the index of the child to fetch
@@ -840,10 +892,18 @@ package Glib.Variant is
    --  in normal form. If it is found to be in normal form then it is marked as
    --  trusted and a new reference to it is returned.
    --  If Value is found not to be in normal form then a new trusted
-   --  Glib.Variant.Gvariant is created with the same value as Value.
+   --  Glib.Variant.Gvariant is created with the same value as Value. The
+   --  non-normal parts of Value will be replaced with default values which are
+   --  guaranteed to be in normal form.
    --  It makes sense to call this function if you've received
    --  Glib.Variant.Gvariant data from untrusted sources and you want to ensure
-   --  your serialised output is definitely in normal form.
+   --  your serialized output is definitely in normal form.
+   --  If Value is already in normal form, a new reference will be returned
+   --  (which will be floating if Value is floating). If it is not in normal
+   --  form, the newly created Glib.Variant.Gvariant will be returned with a
+   --  single non-floating reference. Typically, Glib.Variant.Take_Ref should
+   --  be called on the return value from this function to guarantee ownership
+   --  of a single non-floating reference to it.
    --  Since: gtk+ 2.24
    --  @return a trusted Glib.Variant.Gvariant
 
@@ -866,12 +926,12 @@ package Glib.Variant is
    --  with Glib.Variant.Store.
    --  If Value has a fixed-sized type then this function always returned that
    --  fixed size.
-   --  In the case that Value is already in serialised form or the size has
+   --  In the case that Value is already in serialized form or the size has
    --  already been calculated (ie: this function has been called before) then
    --  this function is O(1). Otherwise, the size is calculated, an operation
    --  which is approximately O(n) in the number of values involved.
    --  Since: gtk+ 2.24
-   --  @return the serialised size of Value
+   --  @return the serialized size of Value
 
    function Get_String
       (Self   : Gvariant;
@@ -879,16 +939,20 @@ package Glib.Variant is
    --  Returns the string value of a Glib.Variant.Gvariant instance with a
    --  string type. This includes the types G_VARIANT_TYPE_STRING,
    --  G_VARIANT_TYPE_OBJECT_PATH and G_VARIANT_TYPE_SIGNATURE.
-   --  The string will always be utf8 encoded.
+   --  The string will always be UTF-8 encoded, will never be null, and will
+   --  never contain nul bytes.
    --  If Length is non-null then the length of the string (in bytes) is
    --  returned there. For trusted values, this information is already known.
-   --  For untrusted values, a strlen will be performed.
+   --  Untrusted values will be validated and, if valid, a strlen will be
+   --  performed. If invalid, a default value will be returned — for
+   --  G_VARIANT_TYPE_OBJECT_PATH, this is `"/"`, and for other types it is the
+   --  empty string.
    --  It is an error to call this function with a Value of any type other
    --  than those three.
    --  The return value remains valid as long as Value exists.
    --  Since: gtk+ 2.24
    --  @param Length a pointer to a Gsize, to store the length
-   --  @return the constant string, utf8 encoded
+   --  @return the constant string, UTF-8 encoded
 
    function Get_Strv
       (Self   : Gvariant;
@@ -945,7 +1009,7 @@ package Glib.Variant is
    --  Since: gtk+ 2.24
    --  @return the item contained in the variant
 
-   function Hash (Self : Gvariant) return Guint;
+   function Hash (Self : System.Address) return Guint;
    --  Generates a hash value for a Glib.Variant.Gvariant instance.
    --  The output of this function is guaranteed to be the same for a given
    --  value only per-process. It may change between different processor
@@ -983,12 +1047,15 @@ package Glib.Variant is
 
    function Is_Normal_Form (Self : Gvariant) return Boolean;
    --  Checks if Value is in normal form.
-   --  The main reason to do this is to detect if a given chunk of serialised
+   --  The main reason to do this is to detect if a given chunk of serialized
    --  data is in normal form: load the data into a Glib.Variant.Gvariant using
    --  g_variant_new_from_data and then use this function to check.
    --  If Value is found to be in normal form then it will be marked as being
    --  trusted. If the value was already marked as being trusted then this
    --  function will immediately return True.
+   --  There may be implementation specific restrictions on deeply nested
+   --  values. GVariant is guaranteed to handle nesting up to at least 64
+   --  levels.
    --  Since: gtk+ 2.24
    --  @return True if Value is in normal form
 
@@ -1022,7 +1089,7 @@ package Glib.Variant is
    --  string specifies what type of value is expected to be inside of the
    --  variant. If the value inside the variant has a different type then null
    --  is returned. In the event that Dictionary has a value type other than v
-   --  then Expected_Type must directly match the key type and it is used to
+   --  then Expected_Type must directly match the value type and it is used to
    --  unpack the value directly or an error occurs.
    --  In either case, if Key is not found in Dictionary, null is returned.
    --  If the key is found and the value has the correct type, it is returned.
@@ -1032,7 +1099,7 @@ package Glib.Variant is
    --  to do many lookups then Gvariant.Dict.Gvariant_Dict may be more
    --  efficient.
    --  Since: gtk+ 2.28
-   --  @param Key the key to lookup in the dictionary
+   --  @param Key the key to look up in the dictionary
    --  @param Expected_Type a Glib.Variant.Gvariant_Type, or null
    --  @return the value of the dictionary key, or null
 
@@ -1104,17 +1171,17 @@ package Glib.Variant is
    --  @return the same Value
 
    procedure Store (Self : Gvariant; Data : System.Address);
-   --  Stores the serialised form of Value at Data. Data should be large
+   --  Stores the serialized form of Value at Data. Data should be large
    --  enough. See Glib.Variant.Get_Size.
    --  The stored data is in machine native byte order but may not be in
    --  fully-normalised form if read from an untrusted source. See
    --  Glib.Variant.Get_Normal_Form for a solution.
-   --  As with g_variant_get_data, to be able to deserialise the serialised
+   --  As with g_variant_get_data, to be able to deserialize the serialized
    --  variant successfully, its type and (if the destination machine might be
    --  different) its endianness must also be available.
    --  This function is approximately O(n) in the size of Data.
    --  Since: gtk+ 2.24
-   --  @param Data the location to store the serialised data at
+   --  @param Data the location to store the serialized data at
 
    function Take_Ref (Self : Gvariant) return Gvariant;
    --  If Value is floating, sink it. Otherwise, do nothing.
@@ -1133,7 +1200,7 @@ package Glib.Variant is
    --  Glib.Variant.Gvariant with a floating reference.
    --  Using this function on the return value of the user's callback allows
    --  the user to do whichever is more convenient for them. The caller will
-   --  alway receives exactly one full reference to the value: either the one
+   --  always receives exactly one full reference to the value: either the one
    --  that was returned in the first place, or a floating reference that has
    --  been converted to a full reference.
    --  This function has an odd interaction when combined with
@@ -1385,10 +1452,10 @@ package Glib.Variant is
    --  Determines if a given string is a valid D-Bus object path. You should
    --  ensure that a string is a valid D-Bus object path before passing it to
    --  g_variant_new_object_path.
-   --  A valid object path starts with '/' followed by zero or more sequences
-   --  of characters separated by '/' characters. Each sequence must contain
-   --  only the characters "[A-Z][a-z][0-9]_". No sequence (including the one
-   --  following the final '/' character) may be empty.
+   --  A valid object path starts with `/` followed by zero or more sequences
+   --  of characters separated by `/` characters. Each sequence must contain
+   --  only the characters `[A-Z][a-z][0-9]_`. No sequence (including the one
+   --  following the final `/` character) may be empty.
    --  Since: gtk+ 2.24
    --  @param String a normal C nul-terminated string
    --  @return True if String is a D-Bus object path
@@ -1424,16 +1491,21 @@ package Glib.Variant is
    --  case that the type would have been ambiguous, such as with empty
    --  arrays).
    --  In the event that the parsing is successful, the resulting
-   --  Glib.Variant.Gvariant is returned.
+   --  Glib.Variant.Gvariant is returned. It is never floating, and must be
+   --  freed with Glib.Variant.Unref.
    --  In case of any error, null will be returned. If Error is non-null then
    --  it will be set to reflect the error that occurred.
    --  Officially, the language understood by the parser is "any string
    --  produced by Glib.Variant.Print".
+   --  There may be implementation specific restrictions on deeply nested
+   --  values, which would result in a G_VARIANT_PARSE_ERROR_RECURSION error.
+   --  Glib.Variant.Gvariant is guaranteed to handle nesting up to at least 64
+   --  levels.
    --  @param The_Type a Glib.Variant.Gvariant_Type, or null
    --  @param Text a string containing a GVariant in text form
    --  @param Limit a pointer to the end of Text, or null
    --  @param Endptr a location to store the end pointer, or null
-   --  @return a reference to a Glib.Variant.Gvariant, or null
+   --  @return a non-floating reference to a Glib.Variant.Gvariant, or null
 
    function Parse_Error_Print_Context
       (Error      : Glib.Error.GError;
@@ -1471,6 +1543,8 @@ package Glib.Variant is
    pragma Obsolescent (Parser_Get_Error_Quark);
    --  Same as g_variant_error_quark.
    --  Deprecated since None, 1
+
+   function String_Get_Depth (Type_String : UTF8_String) return Gsize;
 
    function String_Is_Valid (Type_String : UTF8_String) return Boolean;
    --  Checks if Type_String is a valid GVariant type string. This call is
