@@ -34,19 +34,6 @@ pragma Warnings(On);
 
 package body Gtk.Widget is
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Gtk_Requisition) return Gtk_Requisition
-   is
-      Result : constant Gtk_Requisition := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    function Convert (R : Gtk.Widget.Gtk_Widget) return System.Address is
    begin
       return Get_Object (R);
@@ -1985,6 +1972,19 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget));
    end Unrealize;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gtk_Requisition) return Gtk_Requisition
+   is
+      Result : constant Gtk_Requisition := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Widget_Void, System.Address);

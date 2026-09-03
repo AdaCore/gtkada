@@ -27,19 +27,6 @@ pragma Warnings (Off, "*is already use-visible*");
 package body Graphene.Sphere is
 
    ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Graphene_Sphere_T) return Graphene_Sphere_T
-   is
-      Result : constant Graphene_Sphere_T := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
-   ----------------------
    -- Init_From_Points --
    ----------------------
 
@@ -126,5 +113,18 @@ package body Graphene.Sphere is
    begin
       return Internal (Self) /= 0;
    end Is_Empty;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Sphere_T) return Graphene_Sphere_T
+   is
+      Result : constant Graphene_Sphere_T := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Graphene.Sphere;

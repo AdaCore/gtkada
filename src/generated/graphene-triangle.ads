@@ -40,10 +40,6 @@ package Graphene.Triangle is
       C : Graphene.Vec3.Graphene_Vec3_T;
    end record;
    pragma Convention (C, Graphene_Triangle_T);
-
-   function From_Object_Free
-     (B : not null access Graphene_Triangle_T) return Graphene_Triangle_T;
-   pragma Inline (From_Object_Free);
    --  A triangle.
 
    ------------------
@@ -227,5 +223,13 @@ package Graphene.Triangle is
    --  @param B a Graphene.Vec3.Graphene_Vec3_T
    --  @param C a Graphene.Vec3.Graphene_Vec3_T
    --  @return the initialized Graphene.Triangle.Graphene_Triangle_T
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Triangle_T) return Graphene_Triangle_T;
+   pragma Inline (From_Object_Free);
 
 end Graphene.Triangle;

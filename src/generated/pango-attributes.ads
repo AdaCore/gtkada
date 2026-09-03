@@ -36,10 +36,6 @@ with Pango.Enums; use Pango.Enums;
 package Pango.Attributes is
 
    type Pango_Attribute is new Glib.C_Proxy;
-
-   function From_Object_Free
-     (B : not null access Pango_Attribute) return Pango_Attribute;
-   pragma Inline (From_Object_Free);
    --  The Pango.Attributes.Pango_Attribute structure represents the common
    --  portions of all attributes. Particular types of attributes include this
    --  structure as their initial portion. The common portion of the attribute
@@ -200,6 +196,14 @@ package Pango.Attributes is
    --  @param Pos the position of the change
    --  @param Remove the number of removed bytes
    --  @param Add the number of added bytes
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Pango_Attribute) return Pango_Attribute;
+   pragma Inline (From_Object_Free);
 
    ---------------
    -- Functions --

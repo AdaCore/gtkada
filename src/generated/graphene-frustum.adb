@@ -26,19 +26,6 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Graphene.Frustum is
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Graphene_Frustum_T) return Graphene_Frustum_T
-   is
-      Result : constant Graphene_Frustum_T := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    --------------------
    -- Contains_Point --
    --------------------
@@ -106,5 +93,18 @@ package body Graphene.Frustum is
    begin
       return Internal (Self, Sphere) /= 0;
    end Intersects_Sphere;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Frustum_T) return Graphene_Frustum_T
+   is
+      Result : constant Graphene_Frustum_T := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Graphene.Frustum;

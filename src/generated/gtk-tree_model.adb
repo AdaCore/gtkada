@@ -214,19 +214,6 @@ package body Gtk.Tree_Model is
       return A;
    end Get_Address;
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Gtk_Tree_Iter) return Gtk_Tree_Iter
-   is
-      Result : constant Gtk_Tree_Iter := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean is
       use type System.Address;
    begin
@@ -1068,6 +1055,19 @@ package body Gtk.Tree_Model is
    begin
       return Internal (Get_Object (Path)) /= 0;
    end Up;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gtk_Tree_Iter) return Gtk_Tree_Iter
+   is
+      Result : constant Gtk_Tree_Iter := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
    function Convert (R : Gtk.Tree_Model.Gtk_Tree_Path) return System.Address is
    begin

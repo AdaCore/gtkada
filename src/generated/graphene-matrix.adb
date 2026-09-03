@@ -26,19 +26,6 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Graphene.Matrix is
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Graphene_Matrix_T) return Graphene_Matrix_T
-   is
-      Result : constant Graphene_Matrix_T := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    ---------------
    -- Decompose --
    ---------------
@@ -246,5 +233,18 @@ package body Graphene.Matrix is
    begin
       return Internal (Self, P, Bounds, Res) /= 0;
    end Untransform_Point;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Matrix_T) return Graphene_Matrix_T
+   is
+      Result : constant Graphene_Matrix_T := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Graphene.Matrix;

@@ -40,10 +40,6 @@ package Graphene.Frustum is
       Planes : Graphene_Plane_Array (1 .. 6);
    end record;
    pragma Convention (C, Graphene_Frustum_T);
-
-   function From_Object_Free
-     (B : not null access Graphene_Frustum_T) return Graphene_Frustum_T;
-   pragma Inline (From_Object_Free);
    --  A 3D volume delimited by 2D clip planes.
    --
    --  The contents of the `graphene_frustum_t` are private, and should not be
@@ -149,6 +145,10 @@ package Graphene.Frustum is
    ----------------------
    -- GtkAda additions --
    ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Frustum_T) return Graphene_Frustum_T;
+   pragma Inline (From_Object_Free);
 
    type Graphene_Plane_Array6 is array (1 .. 6) of Graphene_Plane_T;
    pragma Convention (C, Graphene_Plane_Array6);

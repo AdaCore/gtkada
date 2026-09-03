@@ -3420,15 +3420,18 @@ end "+";"""
                     self.pkg.add_with(package_name(ftype))
                     fields.append((naming.case(name), ftype, default_value))
 
+        assert self.pkg is not None
+        # Insert From_Object_Free into GtkAda section
+        objfree_section = self.pkg.section("GtkAda additions")
         if not fields:
             section.add(f"\ntype {base} is new Glib.C_Proxy;")
-            section.add(from_objfree_decl(base))
-            section.add(from_objfree_body(base), in_spec=False)
+            objfree_section.add(from_objfree_decl(base))
+            objfree_section.add(from_objfree_body(base), in_spec=False)
 
         else:
             if private:
                 section.add(f"\ntype {base} is private;")
-                section.add(from_objfree_decl(base))
+                objfree_section.add(from_objfree_decl(base))
                 adder = self.pkg.add_private
             else:
                 adder = section.add
@@ -3482,8 +3485,8 @@ end "+";"""
                 adder(c.format("   "))
 
             if not private:
-                section.add(from_objfree_decl(base))
-            section.add(from_objfree_body(base), in_spec=False)
+                objfree_section.add(from_objfree_decl(base))
+            objfree_section.add(from_objfree_body(base), in_spec=False)
 
         section.add(Code(_get_clean_doc(node), iscomment=True))
 

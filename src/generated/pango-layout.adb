@@ -56,19 +56,6 @@ package body Pango.Layout is
       return S;
    end From_Object;
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Pango_Layout_Line) return Pango_Layout_Line
-   is
-      Result : constant Pango_Layout_Line := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    package Type_Conversion_Pango_Layout is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Pango_Layout_Record);
    pragma Unreferenced (Type_Conversion_Pango_Layout);
@@ -1167,5 +1154,18 @@ package body Pango.Layout is
       Trailing := Acc_Trailing;
       Exact := Tmp_Return /= 0;
    end Xy_To_Index;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Pango_Layout_Line) return Pango_Layout_Line
+   is
+      Result : constant Pango_Layout_Line := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Pango.Layout;

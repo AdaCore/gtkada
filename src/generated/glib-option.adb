@@ -44,32 +44,6 @@ package body Glib.Option is
       return S;
    end From_Object;
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access GOption_Group) return GOption_Group
-   is
-      Result : constant GOption_Group := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access GOption_Entry) return GOption_Entry
-   is
-      Result : constant GOption_Entry := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    -----------
    -- Parse --
    -----------
@@ -546,6 +520,32 @@ package body Glib.Option is
       Internal (Get_Object (Self), Tmp_Domain);
       Free (Tmp_Domain);
    end Set_Translation_Domain;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access GOption_Group) return GOption_Group
+   is
+      Result : constant GOption_Group := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access GOption_Entry) return GOption_Entry
+   is
+      Result : constant GOption_Entry := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
    -----------
    -- G_New --

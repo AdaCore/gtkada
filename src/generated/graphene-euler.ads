@@ -112,10 +112,6 @@ package Graphene.Euler is
       Order : graphene_euler_order_t;
    end record;
    pragma Convention (C, Graphene_Euler_T);
-
-   function From_Object_Free
-     (B : not null access Graphene_Euler_T) return Graphene_Euler_T;
-   pragma Inline (From_Object_Free);
    --  Describe a rotation using Euler angles.
    --
    --  The contents of the Graphene.Euler.Graphene_Euler_T structure are
@@ -373,5 +369,13 @@ package Graphene.Euler is
    --  initializes a Graphene.Vec3.Graphene_Vec3_T with them.
    --  Since: gtk+ 1.2
    --  @param Res return location for a Graphene.Vec3.Graphene_Vec3_T
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Euler_T) return Graphene_Euler_T;
+   pragma Inline (From_Object_Free);
 
 end Graphene.Euler;

@@ -26,19 +26,6 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Gdk.Rectangle is
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Gdk_Rectangle) return Gdk_Rectangle
-   is
-      Result : constant Gdk_Rectangle := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    --------------------
    -- Contains_Point --
    --------------------
@@ -95,5 +82,18 @@ package body Gdk.Rectangle is
       Dest := Acc_Dest;
       Do_Intersect := Tmp_Return /= 0;
    end Intersect;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gdk_Rectangle) return Gdk_Rectangle
+   is
+      Result : constant Gdk_Rectangle := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Gdk.Rectangle;

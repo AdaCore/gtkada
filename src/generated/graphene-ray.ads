@@ -51,10 +51,6 @@ package Graphene.Ray is
       Direction : Graphene.Vec3.Graphene_Vec3_T;
    end record;
    pragma Convention (C, Graphene_Ray_T);
-
-   function From_Object_Free
-     (B : not null access Graphene_Ray_T) return Graphene_Ray_T;
-   pragma Inline (From_Object_Free);
    --  A ray emitted from an origin in a given direction.
    --
    --  The contents of the `graphene_ray_t` structure are private, and should
@@ -265,5 +261,13 @@ package Graphene.Ray is
    --  Since: gtk+ 1.10
    --  @param T a Graphene.Triangle.Graphene_Triangle_T
    --  @return `true` if the ray intersects the triangle
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Ray_T) return Graphene_Ray_T;
+   pragma Inline (From_Object_Free);
 
 end Graphene.Ray;

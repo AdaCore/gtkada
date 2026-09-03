@@ -29,19 +29,6 @@ pragma Warnings(On);
 
 package body Glib.String is
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Gstring_Record) return Gstring_Record
-   is
-      Result : constant Gstring_Record := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    -----------
    -- G_New --
    -----------
@@ -462,5 +449,18 @@ package body Glib.String is
       Free (Tmp_Find);
       return Tmp_Return;
    end Replace;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gstring_Record) return Gstring_Record
+   is
+      Result : constant Gstring_Record := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Glib.String;

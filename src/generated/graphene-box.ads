@@ -38,10 +38,6 @@ package Graphene.Box is
       Max : Graphene.Vec3.Graphene_Vec3_T;
    end record;
    pragma Convention (C, Graphene_Box_T);
-
-   function From_Object_Free
-     (B : not null access Graphene_Box_T) return Graphene_Box_T;
-   pragma Inline (From_Object_Free);
    --  A 3D box, described as the volume between a minimum and a maximum
    --  vertices.
 
@@ -247,6 +243,10 @@ package Graphene.Box is
    ----------------------
    -- GtkAda additions --
    ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Box_T) return Graphene_Box_T;
+   pragma Inline (From_Object_Free);
 
    type Graphene_Vec3_Array8 is array (1 .. 8) of Graphene_Vec3_T;
    pragma Convention (C, Graphene_Vec3_Array8);

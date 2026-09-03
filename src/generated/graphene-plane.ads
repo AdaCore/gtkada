@@ -41,10 +41,6 @@ package Graphene.Plane is
       The_Constant : Interfaces.C.C_float;
    end record;
    pragma Convention (C, Graphene_Plane_T);
-
-   function From_Object_Free
-     (B : not null access Graphene_Plane_T) return Graphene_Plane_T;
-   pragma Inline (From_Object_Free);
    --  A 2D plane that extends infinitely in a 3D volume.
    --
    --  The contents of the `graphene_plane_t` are private, and should not be
@@ -197,5 +193,13 @@ package Graphene.Plane is
    --  @param Matrix a Graphene.Matrix.Graphene_Matrix_T
    --  @param Normal_Matrix a Graphene.Matrix.Graphene_Matrix_T
    --  @param Res the transformed plane
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Plane_T) return Graphene_Plane_T;
+   pragma Inline (From_Object_Free);
 
 end Graphene.Plane;

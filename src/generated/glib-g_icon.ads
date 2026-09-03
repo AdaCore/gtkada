@@ -27,11 +27,15 @@ pragma Warnings (Off, "*is already use-visible*");
 package Glib.G_Icon is
 
    type G_Icon is new Glib.C_Proxy;
+   --  The GIConv struct wraps an iconv conversion descriptor. It contains
+   --  private data and should only be accessed using the following functions.
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
 
    function From_Object_Free
      (B : not null access G_Icon) return G_Icon;
    pragma Inline (From_Object_Free);
-   --  The GIConv struct wraps an iconv conversion descriptor. It contains
-   --  private data and should only be accessed using the following functions.
 
 end Glib.G_Icon;

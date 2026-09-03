@@ -61,10 +61,6 @@ package Gtk.Accessible_Text is
       Length : Gsize;
    end record;
    pragma Convention (C, Gtk_Accessible_Text_Range);
-
-   function From_Object_Free
-     (B : not null access Gtk_Accessible_Text_Range) return Gtk_Accessible_Text_Range;
-   pragma Inline (From_Object_Free);
    --  A range inside the text of an accessible object.
 
    type Gtk_Accessible_Text_Range_Array is
@@ -125,6 +121,14 @@ package Gtk.Accessible_Text is
    --  function every time the selection has moved, in order to notify
    --  assistive technologies.
    --  Since: gtk+ 4.14
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gtk_Accessible_Text_Range) return Gtk_Accessible_Text_Range;
+   pragma Inline (From_Object_Free);
 
    ----------------
    -- Interfaces --

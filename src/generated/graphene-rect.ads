@@ -49,10 +49,6 @@ package Graphene.Rect is
       Size : Graphene.Size.Graphene_Size_T;
    end record;
    pragma Convention (C, Graphene_Rect_T);
-
-   function From_Object_Free
-     (B : not null access Graphene_Rect_T) return Graphene_Rect_T;
-   pragma Inline (From_Object_Free);
    --  The location and size of a rectangle region.
    --
    --  The width and height of a Graphene.Rect.Graphene_Rect_T can be
@@ -396,6 +392,10 @@ package Graphene.Rect is
    ----------------------
    -- GtkAda additions --
    ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Rect_T) return Graphene_Rect_T;
+   pragma Inline (From_Object_Free);
 
    type Graphene_Vec2_Array4 is array (1 .. 4) of Graphene.Vec2.Graphene_Vec2_T;
 

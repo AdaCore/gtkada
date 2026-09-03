@@ -26,19 +26,6 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Graphene.Rect is
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Graphene_Rect_T) return Graphene_Rect_T
-   is
-      Result : constant Graphene_Rect_T := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    ------------------
    -- Get_Vertices --
    ------------------
@@ -122,5 +109,18 @@ package body Graphene.Rect is
    begin
       return Internal (Self, B, Res) /= 0;
    end Intersection;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Rect_T) return Graphene_Rect_T
+   is
+      Result : constant Graphene_Rect_T := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Graphene.Rect;

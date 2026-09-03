@@ -32,11 +32,15 @@ package Glib.Poll is
       Revents : Gushort;
    end record;
    pragma Convention (C, GPoll_FD);
+   --  Represents a file descriptor, which events to poll for, and which
+   --  events occurred.
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
 
    function From_Object_Free
      (B : not null access GPoll_FD) return GPoll_FD;
    pragma Inline (From_Object_Free);
-   --  Represents a file descriptor, which events to poll for, and which
-   --  events occurred.
 
 end Glib.Poll;

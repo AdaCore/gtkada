@@ -76,10 +76,6 @@ package Pango.Layout is
    pragma Inline (From_Object_Free, From_Object);
 
    type Pango_Layout_Line is private;
-
-   function From_Object_Free
-     (B : not null access Pango_Layout_Line) return Pango_Layout_Line;
-   pragma Inline (From_Object_Free);
    --  The Pango.Layout.Pango_Layout_Line structure represents one of the
    --  lines resulting from laying out a paragraph via
    --  Pango.Layout.Pango_Layout. Pango.Layout.Pango_Layout_Line structures are
@@ -864,6 +860,10 @@ package Pango.Layout is
    return Gtkada.Types.Chars_Ptr;
    --  Same a Get_Text, but return directly the C string, which is more
    --  efficient. The returned value should not be freed or modified.
+
+   function From_Object_Free
+     (B : not null access Pango_Layout_Line) return Pango_Layout_Line;
+   pragma Inline (From_Object_Free);
 
 private
    type Pango_Layout_Line is record

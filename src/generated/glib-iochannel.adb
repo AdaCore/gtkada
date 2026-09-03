@@ -29,32 +29,6 @@ pragma Warnings(On);
 
 package body Glib.IOChannel is
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access GIOFuncs) return GIOFuncs
-   is
-      Result : constant GIOFuncs := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access GIO_Channel_Record) return GIO_Channel_Record
-   is
-      Result : constant GIO_Channel_Record := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    ------------------
    -- Set_Encoding --
    ------------------
@@ -252,5 +226,31 @@ package body Glib.IOChannel is
       Internal (Self, Tmp_Line_Term, Length);
       Free (Tmp_Line_Term);
    end Set_Line_Term;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access GIOFuncs) return GIOFuncs
+   is
+      Result : constant GIOFuncs := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access GIO_Channel_Record) return GIO_Channel_Record
+   is
+      Result : constant GIO_Channel_Record := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Glib.IOChannel;

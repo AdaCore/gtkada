@@ -35,10 +35,6 @@ package Graphene.Point is
       Y : Interfaces.C.C_float;
    end record;
    pragma Convention (C, Graphene_Point_T);
-
-   function From_Object_Free
-     (B : not null access Graphene_Point_T) return Graphene_Point_T;
-   pragma Inline (From_Object_Free);
    --  A point with two coordinates.
 
    type Graphene_Point_Array is array (Natural range <>) of Graphene_Point_T;
@@ -150,6 +146,14 @@ package Graphene.Point is
    --  into a Graphene.Vec2.Graphene_Vec2_T.
    --  Since: gtk+ 1.4
    --  @param V return location for the vertex
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Point_T) return Graphene_Point_T;
+   pragma Inline (From_Object_Free);
 
    ---------------
    -- Functions --

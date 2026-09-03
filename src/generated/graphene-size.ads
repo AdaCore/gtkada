@@ -34,10 +34,6 @@ package Graphene.Size is
       Height : Interfaces.C.C_float;
    end record;
    pragma Convention (C, Graphene_Size_T);
-
-   function From_Object_Free
-     (B : not null access Graphene_Size_T) return Graphene_Size_T;
-   pragma Inline (From_Object_Free);
    --  A size.
 
    ------------------
@@ -109,6 +105,14 @@ package Graphene.Size is
    --  Since: gtk+ 1.0
    --  @param Factor the scaling factor
    --  @param Res return location for the scaled size
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Size_T) return Graphene_Size_T;
+   pragma Inline (From_Object_Free);
 
    ---------------
    -- Functions --

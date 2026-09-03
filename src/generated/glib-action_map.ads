@@ -48,10 +48,6 @@ package Glib.Action_Map is
    Null_Gaction_Map : constant Gaction_Map;
 
    type GAction_Entry is private;
-
-   function From_Object_Free
-     (B : not null access GAction_Entry) return GAction_Entry;
-   pragma Inline (From_Object_Free);
    --  This struct defines a single action. It is for use with
    --  Glib.Action_Map.Add_Action_Entries.
    --
@@ -178,6 +174,10 @@ package Glib.Action_Map is
    ----------------------
    -- GtkAda additions --
    ----------------------
+
+   function From_Object_Free
+     (B : not null access GAction_Entry) return GAction_Entry;
+   pragma Inline (From_Object_Free);
 
    type Activate_Callback is access procedure
      (Action    : access Glib.Simple_Action.Gsimple_Action;

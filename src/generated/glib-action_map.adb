@@ -27,19 +27,6 @@ with Ada.Unchecked_Conversion;
 
 package body Glib.Action_Map is
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access GAction_Entry) return GAction_Entry
-   is
-      Result : constant GAction_Entry := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    function Convert is new Ada.Unchecked_Conversion
      (Activate_Callback, System.Address);
    function Convert is new Ada.Unchecked_Conversion
@@ -123,6 +110,19 @@ package body Glib.Action_Map is
       Internal (Self, Tmp_Action_Name);
       Free (Tmp_Action_Name);
    end Remove_Action;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access GAction_Entry) return GAction_Entry
+   is
+      Result : constant GAction_Entry := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
    function "+" (W : Gaction_Map) return Gaction_Map is
    begin

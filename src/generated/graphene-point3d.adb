@@ -26,19 +26,6 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Graphene.Point3d is
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Graphene_Point3D_T) return Graphene_Point3D_T
-   is
-      Result : constant Graphene_Point3D_T := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    -----------
    -- Equal --
    -----------
@@ -72,5 +59,18 @@ package body Graphene.Point3d is
    begin
       return Internal (Self, B, Epsilon) /= 0;
    end Near;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Point3D_T) return Graphene_Point3D_T
+   is
+      Result : constant Graphene_Point3D_T := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Graphene.Point3d;

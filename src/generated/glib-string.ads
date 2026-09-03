@@ -44,10 +44,6 @@ package Glib.String is
       Allocated_Len : Gsize;
    end record;
    pragma Convention (C, Gstring_Record);
-
-   function From_Object_Free
-     (B : not null access Gstring_Record) return Gstring_Record;
-   pragma Inline (From_Object_Free);
    --  A `GString` is an object that handles the memory management of a C
    --  string.
    --
@@ -413,5 +409,13 @@ package Glib.String is
    --  Converts a Glib.String.Gstring to uppercase.
    --  Deprecated since 2.2, 1
    --  @return String
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gstring_Record) return Gstring_Record;
+   pragma Inline (From_Object_Free);
 
 end Glib.String;

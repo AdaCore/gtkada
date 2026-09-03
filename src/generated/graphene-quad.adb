@@ -26,19 +26,6 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Graphene.Quad is
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Graphene_Quad_T) return Graphene_Quad_T
-   is
-      Result : constant Graphene_Quad_T := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    --------------
    -- Contains --
    --------------
@@ -56,5 +43,18 @@ package body Graphene.Quad is
    begin
       return Internal (Self, P) /= 0;
    end Contains;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Quad_T) return Graphene_Quad_T
+   is
+      Result : constant Graphene_Quad_T := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Graphene.Quad;

@@ -38,10 +38,6 @@ package Graphene.Quad is
       Points : Graphene_Point_Array (1 .. 4);
    end record;
    pragma Convention (C, Graphene_Quad_T);
-
-   function From_Object_Free
-     (B : not null access Graphene_Quad_T) return Graphene_Quad_T;
-   pragma Inline (From_Object_Free);
    --  A 4 vertex quadrilateral, as represented by four
    --  Graphene.Point.Graphene_Point_T.
    --
@@ -122,6 +118,10 @@ package Graphene.Quad is
    ----------------------
    -- GtkAda additions --
    ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Quad_T) return Graphene_Quad_T;
+   pragma Inline (From_Object_Free);
 
    type Graphene_Point_Array4 is array (1 .. 4) of Graphene_Point_T;
    pragma Convention (C, Graphene_Point_Array4);

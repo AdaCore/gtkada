@@ -80,10 +80,6 @@ package Glib.Option is
    G_Option_Flag_Deprecated : constant GOption_Flags := 128;
 
    type GOption_Group is new Glib.C_Proxy;
-
-   function From_Object_Free
-     (B : not null access GOption_Group) return GOption_Group;
-   pragma Inline (From_Object_Free);
    --  A `GOptionGroup` struct defines the options in a single group. The
    --  struct has only private fields and should not be directly accessed.
    --
@@ -102,10 +98,6 @@ package Glib.Option is
       Arg_Description : Gtkada.Types.Chars_Ptr;
    end record;
    pragma Convention (C, GOption_Entry);
-
-   function From_Object_Free
-     (B : not null access GOption_Entry) return GOption_Entry;
-   pragma Inline (From_Object_Free);
    --  - Glib.Option.G_Option_Arg_None: %gboolean -
    --  Glib.Option.G_Option_Arg_String: %gchar* - Glib.Option.G_Option_Arg_Int:
    --  %gint - Glib.Option.G_Option_Arg_Filename: %gchar* -
@@ -376,6 +368,14 @@ package Glib.Option is
    ----------------------
    -- GtkAda additions --
    ----------------------
+
+   function From_Object_Free
+     (B : not null access GOption_Group) return GOption_Group;
+   pragma Inline (From_Object_Free);
+
+   function From_Object_Free
+     (B : not null access GOption_Entry) return GOption_Entry;
+   pragma Inline (From_Object_Free);
 
    Null_GOption_Entry : constant GOption_Entry;
 

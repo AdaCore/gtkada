@@ -26,19 +26,6 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Graphene.Ray is
 
-   ----------------------
-   -- From_Object_Free --
-   ----------------------
-
-   function From_Object_Free
-     (B : not null access Graphene_Ray_T) return Graphene_Ray_T
-   is
-      Result : constant Graphene_Ray_T := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    -----------
    -- Equal --
    -----------
@@ -106,5 +93,18 @@ package body Graphene.Ray is
    begin
       return Internal (Self, T) /= 0;
    end Intersects_Triangle;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Ray_T) return Graphene_Ray_T
+   is
+      Result : constant Graphene_Ray_T := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Graphene.Ray;
