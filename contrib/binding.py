@@ -2140,7 +2140,7 @@ end if;"""
         # and thus it should NOT be freed (example: g_string_new_take)
         for p in internal.plist:
             param_free = p.type.cleanup % 'Tmp_Init' if p.type.cleanup and isinstance(p.type, UTF8) else None
-            if param_free and param_free in call.freecall:
+            if p.ownership and param_free and param_free in call.freecall:
                 call.freecall.remove(param_free)
                 p.doc += 'Tmp_Init owned by object, must not be freed by constructor.'
 

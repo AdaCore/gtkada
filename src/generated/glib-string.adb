@@ -36,7 +36,6 @@ package body Glib.String is
    procedure G_New (Self : out Gstring; Init : UTF8_String := "") is
       function Internal (Init : Gtkada.Types.Chars_Ptr) return Gstring;
       pragma Import (C, Internal, "g_string_new");
-      --  Tmp_Init owned by object, must not be freed by constructor.
       Tmp_Init   : Gtkada.Types.Chars_Ptr;
       Tmp_Return : Gstring;
    begin
@@ -46,6 +45,7 @@ package body Glib.String is
          else New_String (Init));
       Tmp_Return := Internal (Tmp_Init);
       Self := Tmp_Return;
+      Free (Tmp_Init);
    end G_New;
 
    ---------------
@@ -61,12 +61,12 @@ package body Glib.String is
          (Init : Gtkada.Types.Chars_Ptr;
           Len  : Gssize) return Gstring;
       pragma Import (C, Internal, "g_string_new_len");
-      --  Tmp_Init owned by object, must not be freed by constructor.
       Tmp_Init   : Gtkada.Types.Chars_Ptr := New_String (Init);
       Tmp_Return : Gstring;
    begin
       Tmp_Return := Internal (Tmp_Init, Len);
       Self := Tmp_Return;
+      Free (Tmp_Init);
    end G_New_Len;
 
    ----------------
@@ -106,7 +106,6 @@ package body Glib.String is
    function Gstring_New (Init : UTF8_String := "") return Gstring is
       function Internal (Init : Gtkada.Types.Chars_Ptr) return Gstring;
       pragma Import (C, Internal, "g_string_new");
-      --  Tmp_Init owned by object, must not be freed by constructor.
       Tmp_Init   : Gtkada.Types.Chars_Ptr;
       Tmp_Return : Gstring;
       Self       : Gstring;
@@ -117,6 +116,7 @@ package body Glib.String is
          else New_String (Init));
       Tmp_Return := Internal (Tmp_Init);
       Self := Tmp_Return;
+      Free (Tmp_Init);
       return Self;
    end Gstring_New;
 
@@ -132,13 +132,13 @@ package body Glib.String is
          (Init : Gtkada.Types.Chars_Ptr;
           Len  : Gssize) return Gstring;
       pragma Import (C, Internal, "g_string_new_len");
-      --  Tmp_Init owned by object, must not be freed by constructor.
       Tmp_Init   : Gtkada.Types.Chars_Ptr := New_String (Init);
       Tmp_Return : Gstring;
       Self       : Gstring;
    begin
       Tmp_Return := Internal (Tmp_Init, Len);
       Self := Tmp_Return;
+      Free (Tmp_Init);
       return Self;
    end Gstring_New_Len;
 
