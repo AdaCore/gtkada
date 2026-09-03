@@ -132,11 +132,11 @@ package body Gtk.Shortcut_Trigger is
 
    procedure Print
       (Self   : not null access Gtk_Shortcut_Trigger_Record;
-       String : access Glib.String.Gstring)
+       String : Glib.String.Gstring)
    is
       procedure Internal
          (Self   : System.Address;
-          String : access Glib.String.Gstring);
+          String : Glib.String.Gstring);
       pragma Import (C, Internal, "gtk_shortcut_trigger_print");
    begin
       Internal (Get_Object (Self), String);
@@ -149,12 +149,12 @@ package body Gtk.Shortcut_Trigger is
    function Print_Label
       (Self    : not null access Gtk_Shortcut_Trigger_Record;
        Display : not null access Gdk.Display.Gdk_Display_Record'Class;
-       String  : access Glib.String.Gstring) return Boolean
+       String  : Glib.String.Gstring) return Boolean
    is
       function Internal
          (Self    : System.Address;
           Display : System.Address;
-          String  : access Glib.String.Gstring) return Glib.Gboolean;
+          String  : Glib.String.Gstring) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_shortcut_trigger_print_label");
    begin
       return Internal (Get_Object (Self), Get_Object (Display), String) /= 0;

@@ -129,7 +129,7 @@ package Gtk.Shortcut_Trigger is
 
    procedure Print
       (Self   : not null access Gtk_Shortcut_Trigger_Record;
-       String : access Glib.String.Gstring);
+       String : Glib.String.Gstring);
    --  Prints the given trigger into a string for the developer. This is meant
    --  for debugging and logging.
    --  The form of the representation may change at any time and is not
@@ -139,7 +139,7 @@ package Gtk.Shortcut_Trigger is
    function Print_Label
       (Self    : not null access Gtk_Shortcut_Trigger_Record;
        Display : not null access Gdk.Display.Gdk_Display_Record'Class;
-       String  : access Glib.String.Gstring) return Boolean;
+       String  : Glib.String.Gstring) return Boolean;
    --  Prints the given trigger into a string.
    --  This function is returning a translated string for presentation to end
    --  users for example in menu items or in help texts.
