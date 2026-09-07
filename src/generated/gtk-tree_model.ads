@@ -838,6 +838,9 @@ package Gtk.Tree_Model is
    function From_Object_Free
      (B : not null access Gtk_Tree_Iter) return Gtk_Tree_Iter;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean;
 

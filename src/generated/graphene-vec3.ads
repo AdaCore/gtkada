@@ -318,6 +318,9 @@ package Graphene.Vec3 is
    function From_Object_Free
      (B : not null access Graphene_Vec3_T) return Graphene_Vec3_T;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    ---------------
    -- Functions --

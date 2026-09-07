@@ -52,12 +52,18 @@ package Graphene.Config is
    function From_Object_Free
      (B : not null access Graphene_Simd4f) return Graphene_Simd4f;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    for Graphene_Simd4f'Alignment use 16;
 
    function From_Object_Free
      (B : not null access Graphene_Simd4x4f) return Graphene_Simd4x4f;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    for Graphene_Simd4x4f'Alignment use 16;
 

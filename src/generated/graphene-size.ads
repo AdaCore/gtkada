@@ -113,6 +113,9 @@ package Graphene.Size is
    function From_Object_Free
      (B : not null access Graphene_Size_T) return Graphene_Size_T;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    ---------------
    -- Functions --

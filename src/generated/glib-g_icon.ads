@@ -37,5 +37,8 @@ package Glib.G_Icon is
    function From_Object_Free
      (B : not null access G_Icon) return G_Icon;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
 end Glib.G_Icon;

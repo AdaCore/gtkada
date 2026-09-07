@@ -990,6 +990,9 @@ package Gtk.Text_Iter is
    function From_Object_Free
      (B : not null access Gtk_Text_Iter) return Gtk_Text_Iter;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    procedure Copy (Source : Gtk_Text_Iter; Dest : out Gtk_Text_Iter);
    pragma Inline (Copy);

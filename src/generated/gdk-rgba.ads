@@ -135,6 +135,9 @@ package Gdk.RGBA is
    function From_Object_Free
      (B : not null access Gdk_RGBA) return Gdk_RGBA;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    type array_of_Gdk_RGBA is array (Natural range <>) of Gdk_RGBA;
 

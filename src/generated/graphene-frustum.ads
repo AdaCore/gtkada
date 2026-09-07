@@ -149,6 +149,9 @@ package Graphene.Frustum is
    function From_Object_Free
      (B : not null access Graphene_Frustum_T) return Graphene_Frustum_T;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    type Graphene_Plane_Array6 is array (1 .. 6) of Graphene_Plane_T;
    pragma Convention (C, Graphene_Plane_Array6);

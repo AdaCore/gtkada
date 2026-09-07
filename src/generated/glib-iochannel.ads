@@ -368,10 +368,16 @@ package Glib.IOChannel is
    function From_Object_Free
      (B : not null access GIOFuncs) return GIOFuncs;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    function From_Object_Free
      (B : not null access GIO_Channel_Record) return GIO_Channel_Record;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    function Shutdown
      (Self     : Giochannel;

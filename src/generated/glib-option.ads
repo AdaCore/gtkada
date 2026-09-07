@@ -372,10 +372,16 @@ package Glib.Option is
    function From_Object_Free
      (B : not null access GOption_Group) return GOption_Group;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    function From_Object_Free
      (B : not null access GOption_Entry) return GOption_Entry;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    Null_GOption_Entry : constant GOption_Entry;
 

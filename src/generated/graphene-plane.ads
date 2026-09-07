@@ -201,5 +201,8 @@ package Graphene.Plane is
    function From_Object_Free
      (B : not null access Graphene_Plane_T) return Graphene_Plane_T;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
 end Graphene.Plane;

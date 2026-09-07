@@ -3348,6 +3348,9 @@ end "+";"""
                 'function From_Object_Free',
                 f"   (B : not null access {typename}) return {typename};",
                 'pragma Inline (From_Object_Free);',
+                '--  Return the underlying object and free the pointer.',
+                '--  This is meant to be used internally by GtkAda, ',
+                '--  and should not in general be called by user code.'
             ]
             return "\n".join(lines)
 

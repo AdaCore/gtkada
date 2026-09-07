@@ -154,6 +154,9 @@ package Graphene.Point is
    function From_Object_Free
      (B : not null access Graphene_Point_T) return Graphene_Point_T;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    ---------------
    -- Functions --

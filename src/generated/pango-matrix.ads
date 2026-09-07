@@ -211,5 +211,8 @@ package Pango.Matrix is
    function From_Object_Free
      (B : not null access Pango_Matrix) return Pango_Matrix;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
 end Pango.Matrix;

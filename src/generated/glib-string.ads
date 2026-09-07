@@ -417,5 +417,8 @@ package Glib.String is
    function From_Object_Free
      (B : not null access Gstring_Record) return Gstring_Record;
    pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
 end Glib.String;
