@@ -114,6 +114,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
 with Glib.Bytes;              use Glib.Bytes;
 with Glib.Cancellable;        use Glib.Cancellable;
+with Glib.Error;              use Glib.Error;
 with Glib.File_IO_Stream;     use Glib.File_IO_Stream;
 with Glib.File_Info;          use Glib.File_Info;
 with Glib.File_Input_Stream;  use Glib.File_Input_Stream;
@@ -214,7 +215,8 @@ package Glib.GFile is
    function Append_To
       (Self        : Gfile;
        Flags       : GFile_Create_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_Output_Stream.Gfile_Output_Stream;
    --  Gets an output stream for appending data to the file. If the file
    --  doesn't already exist it is created.
@@ -232,6 +234,7 @@ package Glib.GFile is
    --  @param Flags a set of Glib.GFile.GFile_Create_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Output_Stream.Gfile_Output_Stream, or null on
    --  error. Free the returned object with g_object_unref.
 
@@ -254,20 +257,22 @@ package Glib.GFile is
    --  satisfied
 
    function Append_To_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result)
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
        return Glib.File_Output_Stream.Gfile_Output_Stream;
    --  Finishes an asynchronous file append operation started with
    --  Glib.GFile.Append_To_Async.
    --  @param Res Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return a valid Glib.File_Output_Stream.Gfile_Output_Stream or null on
    --  error. Free the returned object with g_object_unref.
 
    function Build_Attribute_List_For_Copy
       (Self        : Gfile;
        Flags       : GFile_Copy_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return UTF8_String;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return UTF8_String;
    --  Prepares the file attribute query string for copying to File.
    --  This function prepares an attribute query string to be passed to
    --  Glib.GFile.Query_Info to get a list of attributes normally copied with
@@ -279,6 +284,7 @@ package Glib.GFile is
    --  @param Flags a set of Glib.GFile.GFile_Copy_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return an attribute query string for Glib.GFile.Query_Info, or null if
    --  an error occurs.
 
@@ -295,8 +301,8 @@ package Glib.GFile is
       (Self        : Gfile;
        Destination : Gfile;
        Flags       : GFile_Copy_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Copies the file attributes from Source to Destination.
    --  Normally only a subset of the file attributes are copied, those that
    --  are copies in a normal file copy operation (which for instance does not
@@ -307,13 +313,15 @@ package Glib.GFile is
    --  @param Flags a set of Glib.GFile.GFile_Copy_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True if the attributes were copied successfully, False
    --  otherwise.
 
    function Create
       (Self        : Gfile;
        Flags       : GFile_Create_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_Output_Stream.Gfile_Output_Stream;
    --  Creates a new file and returns an output stream for writing to it. The
    --  file must not already exist.
@@ -333,6 +341,7 @@ package Glib.GFile is
    --  @param Flags a set of Glib.GFile.GFile_Create_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Output_Stream.Gfile_Output_Stream for the newly
    --  created file, or null on error. Free the returned object with
    --  g_object_unref.
@@ -357,19 +366,22 @@ package Glib.GFile is
    --  satisfied
 
    function Create_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result)
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
        return Glib.File_Output_Stream.Gfile_Output_Stream;
    --  Finishes an asynchronous file create operation started with
    --  Glib.GFile.Create_Async.
    --  @param Res a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Output_Stream.Gfile_Output_Stream or null on error.
    --  Free the returned object with g_object_unref.
 
    function Create_Readwrite
       (Self        : Gfile;
        Flags       : GFile_Create_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_IO_Stream.Gfile_Iostream;
    --  Creates a new file and returns a stream for reading and writing to it.
    --  The file must not already exist.
@@ -393,6 +405,7 @@ package Glib.GFile is
    --  @param Flags a set of Glib.GFile.GFile_Create_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_IO_Stream.Gfile_Iostream for the newly created
    --  file, or null on error. Free the returned object with g_object_unref.
 
@@ -418,19 +431,22 @@ package Glib.GFile is
    --  satisfied
 
    function Create_Readwrite_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result) return Glib.File_IO_Stream.Gfile_Iostream;
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
+       return Glib.File_IO_Stream.Gfile_Iostream;
    --  Finishes an asynchronous file create operation started with
    --  Glib.GFile.Create_Readwrite_Async.
    --  Since: gtk+ 2.22
    --  @param Res a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_IO_Stream.Gfile_Iostream or null on error. Free the
    --  returned object with g_object_unref.
 
    function Delete
       (Self        : Gfile;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Deletes a file. If the File is a directory, it will only be deleted if
    --  it is empty. This has the same semantics as g_unlink.
    --  If File doesn't exist, G_IO_ERROR_NOT_FOUND will be returned. This
@@ -453,6 +469,7 @@ package Glib.GFile is
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True if the file was deleted. False otherwise.
 
    procedure Delete_Async
@@ -471,10 +488,12 @@ package Glib.GFile is
 
    function Delete_Finish
       (Self   : Gfile;
-       Result : Glib.G_Async_Result) return Boolean;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes deleting a file started with Glib.GFile.Delete_Async.
    --  Since: gtk+ 2.34
    --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return True if the file was deleted. False otherwise.
 
    function Dup (Self : Gfile) return Gfile;
@@ -526,7 +545,8 @@ package Glib.GFile is
 
    function Get_Child_For_Display_Name
       (Self         : Gfile;
-       Display_Name : UTF8_String) return Gfile;
+       Display_Name : UTF8_String;
+       Error        : out Glib.Error.GError) return Gfile;
    --  Gets the child of File for a given Display_Name (i.e. a UTF-8 version
    --  of the name). If this function fails, it returns null and Error will be
    --  set. This is very useful when constructing a Glib.GFile.Gfile for a new
@@ -535,6 +555,7 @@ package Glib.GFile is
    --  selector.
    --  This call does no blocking I/O.
    --  @param Display_Name string to a possible child
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.GFile.Gfile to the specified child, or null if the
    --  display name couldn't be converted. Free the returned object with
    --  g_object_unref.
@@ -655,7 +676,8 @@ package Glib.GFile is
    function Load_Bytes
       (Self        : Gfile;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
-       Etag_Out    : access UTF8_String := null) return Glib.Bytes.Gbytes;
+       Etag_Out    : access UTF8_String := null;
+       Error       : out Glib.Error.GError) return Glib.Bytes.Gbytes;
    --  Loads the contents of File and returns it as Glib.Bytes.Gbytes.
    --  If File is a resource:// based URI, the resulting bytes will reference
    --  the embedded resource instead of a copy. Otherwise, this is equivalent
@@ -669,6 +691,7 @@ package Glib.GFile is
    --  @param Cancellable a Glib.Cancellable.Gcancellable or null
    --  @param Etag_Out a location to place the current entity tag for the
    --  file, or null if the entity tag is not needed
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.Bytes.Gbytes or null and Error is set
 
    procedure Load_Bytes_Async
@@ -690,7 +713,8 @@ package Glib.GFile is
    function Load_Bytes_Finish
       (Self     : Gfile;
        Result   : Glib.G_Async_Result;
-       Etag_Out : access UTF8_String := null) return Glib.Bytes.Gbytes;
+       Etag_Out : access UTF8_String := null;
+       Error    : out Glib.Error.GError) return Glib.Bytes.Gbytes;
    --  Completes an asynchronous request to Glib.GFile.Load_Bytes_Async.
    --  For resources, Etag_Out will be set to null.
    --  The data contained in the resulting Glib.Bytes.Gbytes is always
@@ -702,12 +726,13 @@ package Glib.GFile is
    --  @param Result a Glib.G_Async_Result provided to the callback
    --  @param Etag_Out a location to place the current entity tag for the
    --  file, or null if the entity tag is not needed
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.Bytes.Gbytes or null and Error is set
 
    function Make_Directory
       (Self        : Gfile;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Creates a directory. Note that this will only create a child directory
    --  of the immediate parent directory of the path or URI given by the
    --  Glib.GFile.Gfile. To recursively create directories, see
@@ -722,6 +747,7 @@ package Glib.GFile is
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True on successful creation, False otherwise.
 
    procedure Make_Directory_Async
@@ -739,17 +765,19 @@ package Glib.GFile is
 
    function Make_Directory_Finish
       (Self   : Gfile;
-       Result : Glib.G_Async_Result) return Boolean;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous directory creation, started with
    --  Glib.GFile.Make_Directory_Async.
    --  Since: gtk+ 2.38
    --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return True on successful directory creation, False otherwise.
 
    function Make_Directory_With_Parents
       (Self        : Gfile;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Creates a directory and any parent directories that may not exist
    --  similar to 'mkdir -p'. If the file system does not support creating
    --  directories, this function will fail, setting Error to
@@ -764,14 +792,15 @@ package Glib.GFile is
    --  Since: gtk+ 2.18
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True if all directories have been successfully created, False
    --  otherwise.
 
    function Make_Symbolic_Link
       (Self          : Gfile;
        Symlink_Value : UTF8_String;
-       Cancellable   : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable   : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error         : out Glib.Error.GError) return Boolean;
    --  Creates a symbolic link named File which contains the string
    --  Symlink_Value.
    --  If Cancellable is not null, then the operation can be cancelled by
@@ -781,6 +810,7 @@ package Glib.GFile is
    --  symlink
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True on the creation of a new symlink, False otherwise.
 
    procedure Make_Symbolic_Link_Async
@@ -802,11 +832,13 @@ package Glib.GFile is
 
    function Make_Symbolic_Link_Finish
       (Self   : Gfile;
-       Result : Glib.G_Async_Result) return Boolean;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous symbolic link creation, started with
    --  Glib.GFile.Make_Symbolic_Link_Async.
    --  Since: gtk+ 2.74
    --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return True on successful directory creation, False otherwise.
 
    procedure Move_Async_With_Closures
@@ -820,16 +852,19 @@ package Glib.GFile is
 
    function Move_Finish
       (Self   : Gfile;
-       Result : Glib.G_Async_Result) return Boolean;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous file movement, started with
    --  Glib.GFile.Move_Async.
    --  Since: gtk+ 2.72
    --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return True on successful file move, False otherwise.
 
    function Open_Readwrite
       (Self        : Gfile;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_IO_Stream.Gfile_Iostream;
    --  Opens an existing file for reading and writing. The result is a
    --  Glib.File_IO_Stream.Gfile_Iostream that can be used to read and write
@@ -846,6 +881,7 @@ package Glib.GFile is
    --  writing.
    --  Since: gtk+ 2.22
    --  @param Cancellable a Glib.Cancellable.Gcancellable
+   --  @param Error the return location for a recoverable error
    --  @return Glib.File_IO_Stream.Gfile_Iostream or null on error. Free the
    --  returned object with g_object_unref.
 
@@ -868,12 +904,15 @@ package Glib.GFile is
    --  satisfied
 
    function Open_Readwrite_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result) return Glib.File_IO_Stream.Gfile_Iostream;
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
+       return Glib.File_IO_Stream.Gfile_Iostream;
    --  Finishes an asynchronous file read operation started with
    --  Glib.GFile.Open_Readwrite_Async.
    --  Since: gtk+ 2.22
    --  @param Res a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_IO_Stream.Gfile_Iostream or null on error. Free the
    --  returned object with g_object_unref.
 
@@ -938,8 +977,8 @@ package Glib.GFile is
    function Query_Filesystem_Info
       (Self        : Gfile;
        Attributes  : UTF8_String;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Glib.File_Info.Gfile_Info;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Glib.File_Info.Gfile_Info;
    --  Similar to Glib.GFile.Query_Info, but obtains information about the
    --  filesystem the File is on, rather than the file itself. For instance the
    --  amount of space available and the type of the filesystem.
@@ -963,6 +1002,7 @@ package Glib.GFile is
    --  @param Attributes an attribute query string
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Info.Gfile_Info or null if there was an error. Free
    --  the returned object with g_object_unref.
 
@@ -988,11 +1028,13 @@ package Glib.GFile is
    --  satisfied
 
    function Query_Filesystem_Info_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result) return Glib.File_Info.Gfile_Info;
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError) return Glib.File_Info.Gfile_Info;
    --  Finishes an asynchronous filesystem info query. See
    --  Glib.GFile.Query_Filesystem_Info_Async.
    --  @param Res a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return Glib.File_Info.Gfile_Info for given File or null on error. Free
    --  the returned object with g_object_unref.
 
@@ -1000,8 +1042,8 @@ package Glib.GFile is
       (Self        : Gfile;
        Attributes  : UTF8_String;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Glib.File_Info.Gfile_Info;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Glib.File_Info.Gfile_Info;
    --  Gets the requested information about specified File. The result is a
    --  Glib.File_Info.Gfile_Info object that contains key-value attributes
    --  (such as the type or size of the file).
@@ -1029,6 +1071,7 @@ package Glib.GFile is
    --  @param Flags a set of Glib.GFile.GFile_Query_Info_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Info.Gfile_Info for the given File, or null on
    --  error. Free the returned object with g_object_unref.
 
@@ -1055,17 +1098,20 @@ package Glib.GFile is
    --  satisfied
 
    function Query_Info_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result) return Glib.File_Info.Gfile_Info;
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError) return Glib.File_Info.Gfile_Info;
    --  Finishes an asynchronous file info query. See
    --  Glib.GFile.Query_Info_Async.
    --  @param Res a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return Glib.File_Info.Gfile_Info for given File or null on error. Free
    --  the returned object with g_object_unref.
 
    function Read
       (Self        : Gfile;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_Input_Stream.Gfile_Input_Stream;
    --  Opens a file for reading. The result is a
    --  Glib.File_Input_Stream.Gfile_Input_Stream that can be used to read the
@@ -1078,6 +1124,7 @@ package Glib.GFile is
    --  will be returned. Other errors are possible too, and depend on what kind
    --  of filesystem the file is on.
    --  @param Cancellable a Glib.Cancellable.Gcancellable
+   --  @param Error the return location for a recoverable error
    --  @return Glib.File_Input_Stream.Gfile_Input_Stream or null on error.
    --  Free the returned object with g_object_unref.
 
@@ -1098,12 +1145,14 @@ package Glib.GFile is
    --  satisfied
 
    function Read_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result)
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
        return Glib.File_Input_Stream.Gfile_Input_Stream;
    --  Finishes an asynchronous file read operation started with
    --  Glib.GFile.Read_Async.
    --  @param Res a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Input_Stream.Gfile_Input_Stream or null on error.
    --  Free the returned object with g_object_unref.
 
@@ -1112,7 +1161,8 @@ package Glib.GFile is
        Etag        : UTF8_String := "";
        Make_Backup : Boolean;
        Flags       : GFile_Create_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_Output_Stream.Gfile_Output_Stream;
    --  Returns an output stream for overwriting the file, possibly creating a
    --  backup copy of the file first. If the file doesn't exist, it will be
@@ -1154,6 +1204,7 @@ package Glib.GFile is
    --  @param Flags a set of Glib.GFile.GFile_Create_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Output_Stream.Gfile_Output_Stream or null on error.
    --  Free the returned object with g_object_unref.
 
@@ -1188,8 +1239,8 @@ package Glib.GFile is
        Make_Backup : Boolean;
        Flags       : GFile_Create_Flags;
        New_Etag    : access UTF8_String := null;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Replaces the contents of File with Contents of Length bytes.
    --  If Etag is specified (not null), any existing file must have that etag,
    --  or the error G_IO_ERROR_WRONG_ETAG will be returned.
@@ -1211,6 +1262,7 @@ package Glib.GFile is
    --  null
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True if successful. If an error has occurred, this function
    --  will return False and set Error appropriately if present.
 
@@ -1273,7 +1325,8 @@ package Glib.GFile is
    function Replace_Contents_Finish
       (Self     : Gfile;
        Res      : Glib.G_Async_Result;
-       New_Etag : access UTF8_String := null) return Boolean;
+       New_Etag : access UTF8_String := null;
+       Error    : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous replace of the given File. See
    --  Glib.GFile.Replace_Contents_Async. Sets New_Etag to the new entity tag
    --  for the document, if present.
@@ -1281,15 +1334,18 @@ package Glib.GFile is
    --  @param New_Etag a location of a new [entity tag][gfile-etag] for the
    --  document. This should be freed with g_free when it is no longer needed,
    --  or null
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on failure.
 
    function Replace_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result)
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
        return Glib.File_Output_Stream.Gfile_Output_Stream;
    --  Finishes an asynchronous file replace operation started with
    --  Glib.GFile.Replace_Async.
    --  @param Res a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Output_Stream.Gfile_Output_Stream, or null on
    --  error. Free the returned object with g_object_unref.
 
@@ -1298,7 +1354,8 @@ package Glib.GFile is
        Etag        : UTF8_String := "";
        Make_Backup : Boolean;
        Flags       : GFile_Create_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_IO_Stream.Gfile_Iostream;
    --  Returns an output stream for overwriting the file in readwrite mode,
    --  possibly creating a backup copy of the file first. If the file doesn't
@@ -1315,6 +1372,7 @@ package Glib.GFile is
    --  @param Flags a set of Glib.GFile.GFile_Create_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_IO_Stream.Gfile_Iostream or null on error. Free the
    --  returned object with g_object_unref.
 
@@ -1345,12 +1403,15 @@ package Glib.GFile is
    --  satisfied
 
    function Replace_Readwrite_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result) return Glib.File_IO_Stream.Gfile_Iostream;
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
+       return Glib.File_IO_Stream.Gfile_Iostream;
    --  Finishes an asynchronous file replace operation started with
    --  Glib.GFile.Replace_Readwrite_Async.
    --  Since: gtk+ 2.22
    --  @param Res a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_IO_Stream.Gfile_Iostream, or null on error. Free
    --  the returned object with g_object_unref.
 
@@ -1369,8 +1430,8 @@ package Glib.GFile is
        Attribute   : UTF8_String;
        Value       : UTF8_String;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Sets Attribute of type G_FILE_ATTRIBUTE_TYPE_BYTE_STRING to Value. If
    --  Attribute is of a different type, this operation will fail, returning
    --  False.
@@ -1382,6 +1443,7 @@ package Glib.GFile is
    --  @param Flags a Glib.GFile.GFile_Query_Info_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True if the Attribute was successfully set to Value in the
    --  File, False otherwise.
 
@@ -1390,8 +1452,8 @@ package Glib.GFile is
        Attribute   : UTF8_String;
        Value       : Gint32;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Sets Attribute of type G_FILE_ATTRIBUTE_TYPE_INT32 to Value. If
    --  Attribute is of a different type, this operation will fail.
    --  If Cancellable is not null, then the operation can be cancelled by
@@ -1402,6 +1464,7 @@ package Glib.GFile is
    --  @param Flags a Glib.GFile.GFile_Query_Info_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True if the Attribute was successfully set to Value in the
    --  File, False otherwise.
 
@@ -1410,8 +1473,8 @@ package Glib.GFile is
        Attribute   : UTF8_String;
        Value       : Gint64;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Sets Attribute of type G_FILE_ATTRIBUTE_TYPE_INT64 to Value. If
    --  Attribute is of a different type, this operation will fail.
    --  If Cancellable is not null, then the operation can be cancelled by
@@ -1422,6 +1485,7 @@ package Glib.GFile is
    --  @param Flags a Glib.GFile.GFile_Query_Info_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True if the Attribute was successfully set, False otherwise.
 
    function Set_Attribute_String
@@ -1429,8 +1493,8 @@ package Glib.GFile is
        Attribute   : UTF8_String;
        Value       : UTF8_String;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Sets Attribute of type G_FILE_ATTRIBUTE_TYPE_STRING to Value. If
    --  Attribute is of a different type, this operation will fail.
    --  If Cancellable is not null, then the operation can be cancelled by
@@ -1441,6 +1505,7 @@ package Glib.GFile is
    --  @param Flags Glib.GFile.GFile_Query_Info_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True if the Attribute was successfully set, False otherwise.
 
    function Set_Attribute_Uint32
@@ -1448,8 +1513,8 @@ package Glib.GFile is
        Attribute   : UTF8_String;
        Value       : Guint32;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Sets Attribute of type G_FILE_ATTRIBUTE_TYPE_UINT32 to Value. If
    --  Attribute is of a different type, this operation will fail.
    --  If Cancellable is not null, then the operation can be cancelled by
@@ -1460,6 +1525,7 @@ package Glib.GFile is
    --  @param Flags a Glib.GFile.GFile_Query_Info_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True if the Attribute was successfully set to Value in the
    --  File, False otherwise.
 
@@ -1468,8 +1534,8 @@ package Glib.GFile is
        Attribute   : UTF8_String;
        Value       : Guint64;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Sets Attribute of type G_FILE_ATTRIBUTE_TYPE_UINT64 to Value. If
    --  Attribute is of a different type, this operation will fail.
    --  If Cancellable is not null, then the operation can be cancelled by
@@ -1480,6 +1546,7 @@ package Glib.GFile is
    --  @param Flags a Glib.GFile.GFile_Query_Info_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True if the Attribute was successfully set to Value in the
    --  File, False otherwise.
 
@@ -1507,20 +1574,22 @@ package Glib.GFile is
    function Set_Attributes_Finish
       (Self   : Gfile;
        Result : Glib.G_Async_Result;
-       Info   : out Glib.File_Info.Gfile_Info) return Boolean;
+       Info   : out Glib.File_Info.Gfile_Info;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes setting an attribute started in
    --  Glib.GFile.Set_Attributes_Async.
    --  Parameter Info has transfer-ownership='full'
    --  @param Result a Glib.G_Async_Result
    --  @param Info a Glib.File_Info.Gfile_Info
+   --  @param Error the return location for a recoverable error
    --  @return True if the attributes were set correctly, False otherwise.
 
    function Set_Attributes_From_Info
       (Self        : Gfile;
        Info        : not null access Glib.File_Info.Gfile_Info_Record'Class;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Tries to set all attributes in the Glib.File_Info.Gfile_Info on the
    --  target values, not stopping on the first error.
    --  If there is any error during this operation then Error will be set to
@@ -1535,13 +1604,14 @@ package Glib.GFile is
    --  @param Flags Glib.GFile.GFile_Query_Info_Flags
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return False if there was any error, True otherwise.
 
    function Set_Display_Name
       (Self         : Gfile;
        Display_Name : UTF8_String;
-       Cancellable  : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Gfile;
+       Cancellable  : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error        : out Glib.Error.GError) return Gfile;
    --  Renames File to the specified display name.
    --  The display name is converted from UTF-8 to the correct encoding for
    --  the target filesystem if possible and the File is renamed to this.
@@ -1556,6 +1626,7 @@ package Glib.GFile is
    --  @param Display_Name a string
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.GFile.Gfile specifying what File was renamed to, or null
    --  if there was an error. Free the returned object with g_object_unref.
 
@@ -1579,12 +1650,14 @@ package Glib.GFile is
    --  satisfied
 
    function Set_Display_Name_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result) return Gfile;
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError) return Gfile;
    pragma Import (C, Set_Display_Name_Finish, "g_file_set_display_name_finish");
    --  Finishes setting a display name started with
    --  Glib.GFile.Set_Display_Name_Async.
    --  @param Res a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.GFile.Gfile or null on error. Free the returned object
    --  with g_object_unref.
 
@@ -1598,8 +1671,8 @@ package Glib.GFile is
 
    function Trash
       (Self        : Gfile;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Sends File to the "Trashcan", if possible. This is similar to deleting
    --  it, but the user can recover it before emptying the trashcan. Not all
    --  file systems support trashing, so this call can return the
@@ -1612,6 +1685,7 @@ package Glib.GFile is
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True on successful trash, False otherwise.
 
    procedure Trash_Async
@@ -1629,11 +1703,13 @@ package Glib.GFile is
 
    function Trash_Finish
       (Self   : Gfile;
-       Result : Glib.G_Async_Result) return Boolean;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous file trashing operation, started with
    --  Glib.GFile.Trash_Async.
    --  Since: gtk+ 2.38
    --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return True on successful trash, False otherwise.
 
    procedure New_Tmp_Async
@@ -1755,24 +1831,29 @@ package Glib.GFile is
    --  @return a new Glib.GFile.Gfile for the given Uri. Free the returned
    --  object with g_object_unref.
 
-   function New_Tmp_Dir_Finish (Result : Glib.G_Async_Result) return Gfile;
+   function New_Tmp_Dir_Finish
+      (Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gfile;
    pragma Import (C, New_Tmp_Dir_Finish, "g_file_new_tmp_dir_finish");
    --  Finishes a temporary directory creation started by
    --  Glib.GFile.New_Tmp_Dir_Async.
    --  Since: gtk+ 2.74
    --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return a new Glib.GFile.Gfile. Free the returned object with
    --  g_object_unref.
 
    function New_Tmp_Finish
       (Result   : Glib.G_Async_Result;
-       Iostream : out Glib.File_IO_Stream.Gfile_Iostream) return Gfile;
+       Iostream : out Glib.File_IO_Stream.Gfile_Iostream;
+       Error    : out Glib.Error.GError) return Gfile;
    --  Finishes a temporary file creation started by Glib.GFile.New_Tmp_Async.
    --  Since: gtk+ 2.74
    --  Parameter Iostream has transfer-ownership='full'
    --  @param Result a Glib.G_Async_Result
    --  @param Iostream on return, a Glib.File_IO_Stream.Gfile_Iostream for the
    --  created file
+   --  @param Error the return location for a recoverable error
    --  @return a new Glib.GFile.Gfile. Free the returned object with
    --  g_object_unref.
 

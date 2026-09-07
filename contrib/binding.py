@@ -624,6 +624,9 @@ class SubprogramProfile(object):
         self.node = node  # the XML node for this profile
         self.gtkmethod = gtkmethod
         self.params: Optional[list[Parameter]] = None  # None if we have varargs
+        self.throws: bool = node.get('throws', '0') == '1'
+        # True if a function can report an error
+
         self.returns: Optional[CType] = None  # return value (None for a procedure)
         self.returns_doc: str = ""  # documentation for returned value
         self.doc: str | list[str] = ""  # documentation for the subprogram
@@ -664,6 +667,23 @@ class SubprogramProfile(object):
             profile.returns = profile._returns(node, gtkmethod, pkg=pkg)
 
         profile.params = profile._parameters(node, gtkmethod, pkg=pkg)
+
+        # Error should be the last parameter in the list
+        if profile.throws:
+            ERROR_PARAM = Parameter(
+            name = "Error",
+            type = "Glib.Error.GError",
+            doc = "@param Error the return location for a recoverable error",
+            mode = "out",
+            c_mode="out",
+            ownership="full",
+            is_caller_allocates=True)
+
+            # Make sure this is the last parameter
+            profile.params.append (ERROR_PARAM)
+            if pkg is not None:
+                pkg.add_with("Glib.Error", specs=True)
+                pkg.add_use_type ("Glib.Error.GError")
 
         profile.doc = profile._getdoc(gtkmethod, node)
         if profile.returns_doc:

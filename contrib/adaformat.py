@@ -2771,7 +2771,7 @@ class Package(object):
             self.use_types.add(full_typename)
             package,_ = full_typename.rsplit('.', 1)
             if package not in self.body_withs:
-                self.body_withs[package] = False,False
+                self.body_withs[package] = False,False,False
 
     def add_private(self, code: str, at_end: bool = False):
         if at_end:

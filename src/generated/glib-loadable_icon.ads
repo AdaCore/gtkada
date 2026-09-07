@@ -26,6 +26,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Cancellable;  use Glib.Cancellable;
+with Glib.Error;        use Glib.Error;
 with Glib.Input_Stream; use Glib.Input_Stream;
 with Glib.Object;       use Glib.Object;
 with Glib.Types;        use Glib.Types;
@@ -75,7 +76,8 @@ package Glib.Loadable_Icon is
       (Self        : Gloadable_Icon;
        Size        : Glib.Gint;
        The_Type    : access UTF8_String := null;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
    --  Loads a loadable icon. For the asynchronous version of this function,
    --  see Glib.Loadable_Icon.Load_Async.
@@ -84,6 +86,7 @@ package Glib.Loadable_Icon is
    --  to ignore.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from.
 
    procedure Load_Async
@@ -103,13 +106,15 @@ package Glib.Loadable_Icon is
    function Load_Finish
       (Self     : Gloadable_Icon;
        Res      : Glib.G_Async_Result;
-       The_Type : access UTF8_String := null)
+       The_Type : access UTF8_String := null;
+       Error    : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
    --  Finishes an asynchronous icon load started in
    --  Glib.Loadable_Icon.Load_Async.
    --  @param Res a Glib.G_Async_Result.
    --  @param The_Type a location to store the type of the loaded icon, null
    --  to ignore.
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from.
 
    ----------------
@@ -130,7 +135,8 @@ package Glib.Loadable_Icon is
      (Self        : Gloadable_Icon;
       Size        : Glib.Gint;
       The_Type    : access Gtkada.Types.Chars_Ptr;
-      Cancellable : System.Address) return System.Address;
+      Cancellable : System.Address;
+      Error       : out Glib.Error.GError) return System.Address;
    pragma Convention (C, Virtual_Load);
    --  Loads a loadable icon. For the asynchronous version of this function,
    --  see Glib.Loadable_Icon.Load_Async.
@@ -139,6 +145,7 @@ package Glib.Loadable_Icon is
    --  to ignore.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from.
 
    type Virtual_Load_Async is access procedure
@@ -161,13 +168,15 @@ package Glib.Loadable_Icon is
    type Virtual_Load_Finish is access function
      (Self     : Gloadable_Icon;
       Res      : Glib.G_Async_Result;
-      The_Type : access Gtkada.Types.Chars_Ptr) return System.Address;
+      The_Type : access Gtkada.Types.Chars_Ptr;
+      Error    : out Glib.Error.GError) return System.Address;
    pragma Convention (C, Virtual_Load_Finish);
    --  Finishes an asynchronous icon load started in
    --  Glib.Loadable_Icon.Load_Async.
    --  @param Res a Glib.G_Async_Result.
    --  @param The_Type a location to store the type of the loaded icon, null
    --  to ignore.
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from.
 
    subtype Loadable_Icon_Interface_Descr is Glib.Object.Interface_Description;

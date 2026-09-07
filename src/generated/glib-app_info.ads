@@ -70,6 +70,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
 limited with Glib.App_Launch_Context;
 with Glib.Cancellable;        use Glib.Cancellable;
+with Glib.Error;              use Glib.Error;
 with Glib.GFile;              use Glib.GFile;
 with Glib.G_Icon;             use Glib.G_Icon;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
@@ -142,10 +143,12 @@ package Glib.App_Info is
 
    function Add_Supports_Type
       (Self         : Gapp_Info;
-       Content_Type : UTF8_String) return Boolean;
+       Content_Type : UTF8_String;
+       Error        : out Glib.Error.GError) return Boolean;
    --  Adds a content type to the application information to indicate the
    --  application is capable of opening files with the given content type.
    --  @param Content_Type a string.
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on error.
 
    function Can_Delete (Self : Gapp_Info) return Boolean;
@@ -238,8 +241,8 @@ package Glib.App_Info is
    function Launch
       (Self    : Gapp_Info;
        Files   : Glib.GFile.Gfile_List.Glist;
-       Context : access Glib.App_Launch_Context.Gapp_Launch_Context_Record'Class)
-       return Boolean;
+       Context : access Glib.App_Launch_Context.Gapp_Launch_Context_Record'Class;
+       Error   : out Glib.Error.GError) return Boolean;
    --  Launches the application. Passes Files to the launched application as
    --  arguments, using the optional Context to get information about the
    --  details of the launcher (like what screen it is on). On error, Error
@@ -264,13 +267,14 @@ package Glib.App_Info is
    --  are also set, based on information provided in Context.
    --  @param Files a GList of Glib.GFile.Gfile objects
    --  @param Context a Glib.App_Launch_Context.Gapp_Launch_Context or null
+   --  @param Error the return location for a recoverable error
    --  @return True on successful launch, False otherwise.
 
    function Launch_Uris
       (Self    : Gapp_Info;
        Uris    : Gtk.Enums.String_List.Glist;
-       Context : access Glib.App_Launch_Context.Gapp_Launch_Context_Record'Class)
-       return Boolean;
+       Context : access Glib.App_Launch_Context.Gapp_Launch_Context_Record'Class;
+       Error   : out Glib.Error.GError) return Boolean;
    --  Launches the application. This passes the Uris to the launched
    --  application as arguments, using the optional Context to get information
    --  about the details of the launcher (like what screen it is on). On error,
@@ -283,6 +287,7 @@ package Glib.App_Info is
    --  to detect this.
    --  @param Uris a GList containing URIs to launch.
    --  @param Context a Glib.App_Launch_Context.Gapp_Launch_Context or null
+   --  @param Error the return location for a recoverable error
    --  @return True on successful launch, False otherwise.
 
    procedure Launch_Uris_Async
@@ -305,43 +310,53 @@ package Glib.App_Info is
 
    function Launch_Uris_Finish
       (Self   : Gapp_Info;
-       Result : Glib.G_Async_Result) return Boolean;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes a Glib.App_Info.Launch_Uris_Async operation.
    --  Since: gtk+ 2.60
    --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return True on successful launch, False otherwise.
 
    function Remove_Supports_Type
       (Self         : Gapp_Info;
-       Content_Type : UTF8_String) return Boolean;
+       Content_Type : UTF8_String;
+       Error        : out Glib.Error.GError) return Boolean;
    --  Removes a supported type from an application, if possible.
    --  @param Content_Type a string.
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on error.
 
    function Set_As_Default_For_Extension
       (Self      : Gapp_Info;
-       Extension : UTF8_String) return Boolean;
+       Extension : UTF8_String;
+       Error     : out Glib.Error.GError) return Boolean;
    --  Sets the application as the default handler for the given file
    --  extension.
    --  @param Extension a string containing the file extension (without the
    --  dot).
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on error.
 
    function Set_As_Default_For_Type
       (Self         : Gapp_Info;
-       Content_Type : UTF8_String) return Boolean;
+       Content_Type : UTF8_String;
+       Error        : out Glib.Error.GError) return Boolean;
    --  Sets the application as the default handler for a given type.
    --  @param Content_Type the content type.
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on error.
 
    function Set_As_Last_Used_For_Type
       (Self         : Gapp_Info;
-       Content_Type : UTF8_String) return Boolean;
+       Content_Type : UTF8_String;
+       Error        : out Glib.Error.GError) return Boolean;
    --  Sets the application as the last used application for a given type.
    --  This will make the application appear as first in the list returned by
    --  Glib.App_Info.Get_Recommended_For_Type, regardless of the default
    --  application for that content type.
    --  @param Content_Type the content type.
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on error.
 
    function Should_Show (Self : Gapp_Info) return Boolean;
@@ -550,7 +565,8 @@ package Glib.App_Info is
    function Create_From_Commandline
       (Commandline      : UTF8_String;
        Application_Name : UTF8_String := "";
-       Flags            : Create_Flags) return Gapp_Info;
+       Flags            : Create_Flags;
+       Error            : out Glib.Error.GError) return Gapp_Info;
    --  Creates a new Glib.App_Info.Gapp_Info from the given information.
    --  Note that for Commandline, the quoting rules of the Exec key of the
    --  [freedesktop.org Desktop Entry
@@ -564,6 +580,7 @@ package Glib.App_Info is
    --  Commandline
    --  @param Flags flags that can specify details of the created
    --  Glib.App_Info.Gapp_Info
+   --  @param Error the return location for a recoverable error
    --  @return new Glib.App_Info.Gapp_Info for given command.
 
    function Get_All return App_Info_List.Glist;
@@ -595,7 +612,8 @@ package Glib.App_Info is
    --  error.
 
    function Get_Default_For_Type_Finish
-      (Result : Glib.G_Async_Result) return Gapp_Info;
+      (Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gapp_Info;
    pragma Import (C, Get_Default_For_Type_Finish, "g_app_info_get_default_for_type_finish");
    --  Finishes a default Glib.App_Info.Gapp_Info lookup started by
    --  Glib.App_Info.Get_Default_For_Type_Async.
@@ -603,6 +621,7 @@ package Glib.App_Info is
    --  G_IO_ERROR_NOT_FOUND.
    --  Since: gtk+ 2.74
    --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return Glib.App_Info.Gapp_Info for given Content_Type or null on
    --  error.
 
@@ -615,7 +634,8 @@ package Glib.App_Info is
    --  @return Glib.App_Info.Gapp_Info for given Uri_Scheme or null on error.
 
    function Get_Default_For_Uri_Scheme_Finish
-      (Result : Glib.G_Async_Result) return Gapp_Info;
+      (Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gapp_Info;
    pragma Import (C, Get_Default_For_Uri_Scheme_Finish, "g_app_info_get_default_for_uri_scheme_finish");
    --  Finishes a default Glib.App_Info.Gapp_Info lookup started by
    --  Glib.App_Info.Get_Default_For_Uri_Scheme_Async.
@@ -623,6 +643,7 @@ package Glib.App_Info is
    --  G_IO_ERROR_NOT_FOUND.
    --  Since: gtk+ 2.74
    --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return Glib.App_Info.Gapp_Info for given Uri_Scheme or null on error.
 
    function Get_Fallback_For_Type
@@ -647,8 +668,8 @@ package Glib.App_Info is
 
    function Launch_Default_For_Uri
       (URI     : UTF8_String;
-       Context : access Glib.App_Launch_Context.Gapp_Launch_Context_Record'Class)
-       return Boolean;
+       Context : access Glib.App_Launch_Context.Gapp_Launch_Context_Record'Class;
+       Error   : out Glib.Error.GError) return Boolean;
    --  Utility function that launches the default application registered to
    --  handle the specified uri. Synchronous I/O is done on the uri to detect
    --  the type of the file if required.
@@ -657,13 +678,16 @@ package Glib.App_Info is
    --  use Glib.App_Info.Launch_Default_For_Uri_Async instead.
    --  @param URI the uri to show
    --  @param Context an optional Glib.App_Launch_Context.Gapp_Launch_Context
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on error.
 
    function Launch_Default_For_Uri_Finish
-      (Result : Glib.G_Async_Result) return Boolean;
+      (Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous launch-default-for-uri operation.
    --  Since: gtk+ 2.50
    --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return True if the launch was successful, False if Error is set
 
    procedure Reset_Type_Associations (Content_Type : UTF8_String);
@@ -690,11 +714,13 @@ package Glib.App_Info is
 
    type Virtual_Add_Supports_Type is access function
      (Self         : Gapp_Info;
-      Content_Type : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+      Content_Type : Gtkada.Types.Chars_Ptr;
+      Error        : out Glib.Error.GError) return Glib.Gboolean;
    pragma Convention (C, Virtual_Add_Supports_Type);
    --  Adds a content type to the application information to indicate the
    --  application is capable of opening files with the given content type.
    --  @param Content_Type a string.
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on error.
 
    type Virtual_Can_Delete is access function (Self : Gapp_Info) return Glib.Gboolean;
@@ -799,7 +825,8 @@ package Glib.App_Info is
    type Virtual_Launch is access function
      (Self    : Gapp_Info;
       Files   : System.Address;
-      Context : System.Address) return Glib.Gboolean;
+      Context : System.Address;
+      Error   : out Glib.Error.GError) return Glib.Gboolean;
    pragma Convention (C, Virtual_Launch);
    --  Launches the application. Passes Files to the launched application as
    --  arguments, using the optional Context to get information about the
@@ -825,12 +852,14 @@ package Glib.App_Info is
    --  are also set, based on information provided in Context.
    --  @param Files a GList of Glib.GFile.Gfile objects
    --  @param Context a Glib.App_Launch_Context.Gapp_Launch_Context or null
+   --  @param Error the return location for a recoverable error
    --  @return True on successful launch, False otherwise.
 
    type Virtual_Launch_Uris is access function
      (Self    : Gapp_Info;
       Uris    : System.Address;
-      Context : System.Address) return Glib.Gboolean;
+      Context : System.Address;
+      Error   : out Glib.Error.GError) return Glib.Gboolean;
    pragma Convention (C, Virtual_Launch_Uris);
    --  Launches the application. This passes the Uris to the launched
    --  application as arguments, using the optional Context to get information
@@ -844,6 +873,7 @@ package Glib.App_Info is
    --  to detect this.
    --  @param Uris a GList containing URIs to launch.
    --  @param Context a Glib.App_Launch_Context.Gapp_Launch_Context or null
+   --  @param Error the return location for a recoverable error
    --  @return True on successful launch, False otherwise.
 
    type Virtual_Launch_Uris_Async is access procedure
@@ -869,48 +899,58 @@ package Glib.App_Info is
 
    type Virtual_Launch_Uris_Finish is access function
      (Self   : Gapp_Info;
-      Result : Glib.G_Async_Result) return Glib.Gboolean;
+      Result : Glib.G_Async_Result;
+      Error  : out Glib.Error.GError) return Glib.Gboolean;
    pragma Convention (C, Virtual_Launch_Uris_Finish);
    --  Finishes a Glib.App_Info.Launch_Uris_Async operation.
    --  Since: gtk+ 2.60
    --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return True on successful launch, False otherwise.
 
    type Virtual_Remove_Supports_Type is access function
      (Self         : Gapp_Info;
-      Content_Type : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+      Content_Type : Gtkada.Types.Chars_Ptr;
+      Error        : out Glib.Error.GError) return Glib.Gboolean;
    pragma Convention (C, Virtual_Remove_Supports_Type);
    --  Removes a supported type from an application, if possible.
    --  @param Content_Type a string.
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on error.
 
    type Virtual_Set_As_Default_For_Extension is access function
      (Self      : Gapp_Info;
-      Extension : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+      Extension : Gtkada.Types.Chars_Ptr;
+      Error     : out Glib.Error.GError) return Glib.Gboolean;
    pragma Convention (C, Virtual_Set_As_Default_For_Extension);
    --  Sets the application as the default handler for the given file
    --  extension.
    --  @param Extension a string containing the file extension (without the
    --  dot).
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on error.
 
    type Virtual_Set_As_Default_For_Type is access function
      (Self         : Gapp_Info;
-      Content_Type : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+      Content_Type : Gtkada.Types.Chars_Ptr;
+      Error        : out Glib.Error.GError) return Glib.Gboolean;
    pragma Convention (C, Virtual_Set_As_Default_For_Type);
    --  Sets the application as the default handler for a given type.
    --  @param Content_Type the content type.
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on error.
 
    type Virtual_Set_As_Last_Used_For_Type is access function
      (Self         : Gapp_Info;
-      Content_Type : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+      Content_Type : Gtkada.Types.Chars_Ptr;
+      Error        : out Glib.Error.GError) return Glib.Gboolean;
    pragma Convention (C, Virtual_Set_As_Last_Used_For_Type);
    --  Sets the application as the last used application for a given type.
    --  This will make the application appear as first in the list returned by
    --  Glib.App_Info.Get_Recommended_For_Type, regardless of the default
    --  application for that content type.
    --  @param Content_Type the content type.
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on error.
 
    type Virtual_Should_Show is access function (Self : Gapp_Info) return Glib.Gboolean;

@@ -48,6 +48,7 @@ with Gdk.Monitor;            use Gdk.Monitor;
 with Gdk.Seat;               use Gdk.Seat;
 with Gdk.Surface;
 with Glib;                   use Glib;
+with Glib.Error;             use Glib.Error;
 with Glib.Glist;             use Glib.Glist;
 with Glib.List_Model;        use Glib.List_Model;
 with Glib.Object;            use Glib.Object;
@@ -83,8 +84,8 @@ package Gdk.Display is
    --  This cleans up associated resources.
 
    function Create_Gl_Context
-      (Self : not null access Gdk_Display_Record)
-       return Gdk.GLContext.Gdk_GLContext;
+      (Self  : not null access Gdk_Display_Record;
+       Error : out Glib.Error.GError) return Gdk.GLContext.Gdk_GLContext;
    --  Creates a new `GdkGLContext` for the `GdkDisplay`.
    --  The context is disconnected from any particular surface or surface and
    --  cannot be used to draw to any surface. It can only be used to draw to
@@ -93,6 +94,7 @@ package Gdk.Display is
    --  using the returned `GdkGLContext`, you will need to call
    --  [methodGdk.GLContext.make_current] or [methodGdk.GLContext.realize].
    --  Since: gtk+ 4.6
+   --  @param Error the return location for a recoverable error
    --  @return the newly created `GdkGLContext`
 
    function Device_Is_Grabbed
@@ -254,7 +256,8 @@ package Gdk.Display is
    --  notification process should be completed
 
    function Prepare_Gl
-      (Self : not null access Gdk_Display_Record) return Boolean;
+      (Self  : not null access Gdk_Display_Record;
+       Error : out Glib.Error.GError) return Boolean;
    --  Checks that OpenGL is available for Self and ensures that it is
    --  properly initialized. When this fails, an Error will be set describing
    --  the error and this function returns False.
@@ -266,6 +269,7 @@ package Gdk.Display is
    --  needed. But you can use it as a check when setting up code that might
    --  make use of OpenGL.
    --  Since: gtk+ 4.4
+   --  @param Error the return location for a recoverable error
    --  @return True if the display supports OpenGL
 
    function Supports_Input_Shapes

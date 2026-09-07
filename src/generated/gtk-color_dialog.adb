@@ -31,6 +31,8 @@ with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
+use type Glib.Error.GError;
+
 package body Gtk.Color_Dialog is
 
    procedure C_Gtk_Color_Dialog_Choose_Rgba
@@ -145,7 +147,8 @@ package body Gtk.Color_Dialog is
 
    function Choose_Rgba_Finish
       (Self   : not null access Gtk_Color_Dialog_Record;
-       Result : Glib.G_Async_Result) return Gdk.RGBA.Gdk_RGBA
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gdk.RGBA.Gdk_RGBA
    is
       use type Glib.Error.GError;
       function Internal

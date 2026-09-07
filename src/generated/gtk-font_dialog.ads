@@ -38,6 +38,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;              use Glib;
 with Glib.Cancellable;  use Glib.Cancellable;
+with Glib.Error;        use Glib.Error;
 with Glib.Object;       use Glib.Object;
 with Glib.Properties;   use Glib.Properties;
 with Gtk.Window;        use Gtk.Window;
@@ -114,12 +115,15 @@ package Gtk.Font_Dialog is
 
    function Choose_Face_Finish
       (Self   : not null access Gtk_Font_Dialog_Record;
-       Result : Glib.G_Async_Result) return Pango.Font_Face.Pango_Font_Face;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError)
+       return Pango.Font_Face.Pango_Font_Face;
    --  Finishes the [methodGtk.FontDialog.choose_face] call.
    --  Note that this function returns a [errorGtk.DialogError.DISMISSED]
    --  error if the user cancels the dialog.
    --  Since: gtk+ 4.10
    --  @param Result the result
+   --  @param Error the return location for a recoverable error
    --  @return the selected [classPango.FontFace]
 
    procedure Choose_Family
@@ -138,13 +142,15 @@ package Gtk.Font_Dialog is
 
    function Choose_Family_Finish
       (Self   : not null access Gtk_Font_Dialog_Record;
-       Result : Glib.G_Async_Result)
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError)
        return Pango.Font_Family.Pango_Font_Family;
    --  Finishes the [methodGtk.FontDialog.choose_family] call.
    --  Note that this function returns a [errorGtk.DialogError.DISMISSED]
    --  error if the user cancels the dialog.
    --  Since: gtk+ 4.10
    --  @param Result the result
+   --  @param Error the return location for a recoverable error
    --  @return the selected [classPango.FontFamily]
 
    procedure Choose_Font
@@ -165,13 +171,15 @@ package Gtk.Font_Dialog is
 
    function Choose_Font_Finish
       (Self   : not null access Gtk_Font_Dialog_Record;
-       Result : Glib.G_Async_Result)
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError)
        return Pango.Font.Pango_Font_Description;
    --  Finishes the [methodGtk.FontDialog.choose_font] call.
    --  Note that this function returns a [errorGtk.DialogError.DISMISSED]
    --  error if the user cancels the dialog.
    --  Since: gtk+ 4.10
    --  @param Result the result
+   --  @param Error the return location for a recoverable error
    --  @return a [structPango.FontDescription] describing the selected font
 
    function Get_Font_Map

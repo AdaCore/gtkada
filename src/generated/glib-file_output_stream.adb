@@ -24,11 +24,14 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
+
+use type Glib.Error.GError;
 
 package body Glib.File_Output_Stream is
 
@@ -109,19 +112,22 @@ package body Glib.File_Output_Stream is
    function Query_Info
       (Self        : not null access Gfile_Output_Stream_Record;
        Attributes  : UTF8_String;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Glib.File_Info.Gfile_Info
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Glib.File_Info.Gfile_Info
    is
       function Internal
          (Self        : System.Address;
           Attributes  : Gtkada.Types.Chars_Ptr;
-          Cancellable : System.Address) return System.Address;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_output_stream_query_info");
+      Acc_Error       : aliased Glib.Error.GError;
       Tmp_Attributes  : Gtkada.Types.Chars_Ptr := New_String (Attributes);
       Stub_Gfile_Info : Glib.File_Info.Gfile_Info_Record;
       Tmp_Return      : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Attributes, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Attributes, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Attributes);
       return Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
    end Query_Info;
@@ -154,15 +160,21 @@ package body Glib.File_Output_Stream is
 
    function Query_Info_Finish
       (Self   : not null access Gfile_Output_Stream_Record;
-       Result : Glib.G_Async_Result) return Glib.File_Info.Gfile_Info
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Glib.File_Info.Gfile_Info
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return System.Address;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_output_stream_query_info_finish");
+      Acc_Error       : aliased Glib.Error.GError;
       Stub_Gfile_Info : Glib.File_Info.Gfile_Info_Record;
+      Tmp_Return      : System.Address;
    begin
-      return Glib.File_Info.Gfile_Info (Get_User_Data (Internal (Get_Object (Self), Result), Stub_Gfile_Info));
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
    end Query_Info_Finish;
 
 end Glib.File_Output_Stream;

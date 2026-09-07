@@ -95,6 +95,7 @@ with Gdk.Color_State; use Gdk.Color_State;
 with Gdk.Display;
 with Gdk.Texture;     use Gdk.Texture;
 with Glib;            use Glib;
+with Glib.Error;      use Glib.Error;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with System;
@@ -133,7 +134,8 @@ package Gdk.Dmabuf_Texture_Builder is
    function Build
       (Self    : not null access Gdk_Dmabuf_Texture_Builder_Record;
        Destroy : Glib.G_Destroy_Notify_Address;
-       Data    : System.Address) return Gdk.Texture.Gdk_Texture;
+       Data    : System.Address;
+       Error   : out Glib.Error.GError) return Gdk.Texture.Gdk_Texture;
    --  Builds a new `GdkTexture` with the values set up in the builder.
    --  It is a programming error to call this function if any mandatory
    --  property has not been set.
@@ -152,6 +154,7 @@ package Gdk.Dmabuf_Texture_Builder is
    --  @param Destroy destroy function to be called when the texture is
    --  released
    --  @param Data user data to pass to the destroy function
+   --  @param Error the return location for a recoverable error
    --  @return a newly built `GdkTexture` or `NULL` if the format is not
    --  supported
 

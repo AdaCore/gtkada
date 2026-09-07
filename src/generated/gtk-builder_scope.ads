@@ -41,6 +41,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
+with Glib.Error;      use Glib.Error;
 with Glib.Object;     use Glib.Object;
 with Glib.Types;      use Glib.Types;
 with Gtk.Enums;       use Gtk.Enums;
@@ -80,13 +81,15 @@ package Gtk.Builder_Scope is
       Builder       : System.Address;
       Function_Name : Gtkada.Types.Chars_Ptr;
       Flags         : Gtk.Enums.Gtk_Builder_Closure_Flags;
-      Object        : System.Address) return System.Address;
+      Object        : System.Address;
+      Error         : out Glib.Error.GError) return System.Address;
    pragma Convention (C, Virtual_Create_Closure);
    --  Create a closure with the given arguments. See
    --  gtk_builder_create_closure for more details on those. The C
    --  implementation will try to use dlsym to locate the function name and
    --  then g_cclosure_new to create a closure for the symbol. The default
    --  implementation just fails and returns null.
+   --  @param Error the return location for a recoverable error
 
    type Virtual_Get_Type_From_Function is access function
      (Self          : Gtk_Builder_Scope;

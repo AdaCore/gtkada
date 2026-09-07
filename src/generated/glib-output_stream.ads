@@ -36,6 +36,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Bytes;              use Glib.Bytes;
 with Glib.Cancellable;        use Glib.Cancellable;
+with Glib.Error;              use Glib.Error;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Input_Stream;       use Glib.Input_Stream;
 with Glib.Object;             use Glib.Object;
@@ -98,8 +99,8 @@ package Glib.Output_Stream is
 
    function Close
       (Self        : not null access Goutput_Stream_Record;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Closes the stream, releasing resources related to it.
    --  Once the stream is closed, all other operations will return
    --  G_IO_ERROR_CLOSED. Closing a stream multiple times will not return an
@@ -125,6 +126,7 @@ package Glib.Output_Stream is
    --  On cancellation (as with any error) there is no guarantee that all
    --  written data will reach the target.
    --  @param Cancellable optional cancellable object
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on failure
 
    procedure Close_Async
@@ -147,15 +149,17 @@ package Glib.Output_Stream is
 
    function Close_Finish
       (Self   : not null access Goutput_Stream_Record;
-       Result : Glib.G_Async_Result) return Boolean;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Closes an output stream.
    --  @param Result a Glib.G_Async_Result.
+   --  @param Error the return location for a recoverable error
    --  @return True if stream was successfully closed, False otherwise.
 
    function Flush
       (Self        : not null access Goutput_Stream_Record;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Forces a write of all user-space buffered data for the given Stream.
    --  Will block during the operation. Closing the stream will implicitly
    --  cause a flush.
@@ -164,6 +168,7 @@ package Glib.Output_Stream is
    --  triggering the cancellable object from another thread. If the operation
    --  was cancelled, the error G_IO_ERROR_CANCELLED will be returned.
    --  @param Cancellable optional cancellable object
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on error
 
    procedure Flush_Async
@@ -183,9 +188,11 @@ package Glib.Output_Stream is
 
    function Flush_Finish
       (Self   : not null access Goutput_Stream_Record;
-       Result : Glib.G_Async_Result) return Boolean;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes flushing an output stream.
    --  @param Result a GAsyncResult.
+   --  @param Error the return location for a recoverable error
    --  @return True if flush operation succeeded, False otherwise.
 
    function Has_Pending
@@ -207,22 +214,25 @@ package Glib.Output_Stream is
    --  @return True if Stream is being closed. False otherwise.
 
    function Set_Pending
-      (Self : not null access Goutput_Stream_Record) return Boolean;
+      (Self  : not null access Goutput_Stream_Record;
+       Error : out Glib.Error.GError) return Boolean;
    --  Sets Stream to have actions pending. If the pending flag is already set
    --  or Stream is closed, it will return False and set Error.
+   --  @param Error the return location for a recoverable error
    --  @return True if pending was previously unset and is now set.
 
    function Splice
       (Self        : not null access Goutput_Stream_Record;
        Source      : not null access Glib.Input_Stream.Ginput_Stream_Record'Class;
        Flags       : Output_Stream_Splice_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Gssize;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Gssize;
    --  Splices an input stream into an output stream.
    --  @param Source a Glib.Input_Stream.Ginput_Stream.
    --  @param Flags a set of Glib.Output_Stream.Output_Stream_Splice_Flags.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
+   --  @param Error the return location for a recoverable error
    --  @return a Gssize containing the size of the data spliced, or -1 if an
    --  error occurred. Note that if the number of bytes spliced is greater than
    --  G_MAXSSIZE, then that will be returned, and there is no way to determine
@@ -250,9 +260,11 @@ package Glib.Output_Stream is
 
    function Splice_Finish
       (Self   : not null access Goutput_Stream_Record;
-       Result : Glib.G_Async_Result) return Gssize;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gssize;
    --  Finishes an asynchronous stream splice operation.
    --  @param Result a Glib.G_Async_Result.
+   --  @param Error the return location for a recoverable error
    --  @return a Gssize of the number of bytes spliced. Note that if the
    --  number of bytes spliced is greater than G_MAXSSIZE, then that will be
    --  returned, and there is no way to determine the actual number of bytes
@@ -261,8 +273,8 @@ package Glib.Output_Stream is
    function Write
       (Self        : not null access Goutput_Stream_Record;
        Buffer      : Guint8_Array;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Gssize;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Gssize;
    --  Tries to write Count bytes from Buffer into the stream. Will block
    --  during the operation.
    --  If count is 0, returns 0 and does nothing. A value of Count larger than
@@ -280,14 +292,15 @@ package Glib.Output_Stream is
    --  On error -1 is returned and Error is set accordingly.
    --  @param Buffer the buffer containing the data to write.
    --  @param Cancellable optional cancellable object
+   --  @param Error the return location for a recoverable error
    --  @return Number of bytes written, or -1 on error
 
    function Write_All
       (Self          : not null access Goutput_Stream_Record;
        Buffer        : Guint8_Array;
        Bytes_Written : access Gsize := null;
-       Cancellable   : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable   : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error         : out Glib.Error.GError) return Boolean;
    --  Tries to write Count bytes from Buffer into the stream. Will block
    --  during the operation.
    --  This function is similar to Glib.Output_Stream.Write, except it tries
@@ -307,6 +320,7 @@ package Glib.Output_Stream is
    --  written to the stream
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False if there was an error
 
    procedure Write_All_Async
@@ -337,7 +351,8 @@ package Glib.Output_Stream is
    function Write_All_Finish
       (Self          : not null access Goutput_Stream_Record;
        Result        : Glib.G_Async_Result;
-       Bytes_Written : access Gsize := null) return Boolean;
+       Bytes_Written : access Gsize := null;
+       Error         : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous stream write operation started with
    --  Glib.Output_Stream.Write_All_Async.
    --  As a special exception to the normal conventions for functions that use
@@ -350,6 +365,7 @@ package Glib.Output_Stream is
    --  @param Result a Glib.G_Async_Result
    --  @param Bytes_Written location to store the number of bytes that was
    --  written to the stream
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False if there was an error
 
    procedure Write_Async
@@ -395,8 +411,8 @@ package Glib.Output_Stream is
    function Write_Bytes
       (Self        : not null access Goutput_Stream_Record;
        Bytes       : Glib.Bytes.Gbytes;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Gssize;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Gssize;
    --  A wrapper function for Glib.Output_Stream.Write which takes a
    --  Glib.Bytes.Gbytes as input. This can be more convenient for use by
    --  language bindings or in other cases where the refcounted nature of
@@ -409,6 +425,7 @@ package Glib.Output_Stream is
    --  duplicated data in the output stream.
    --  @param Bytes the Glib.Bytes.Gbytes to write
    --  @param Cancellable optional cancellable object
+   --  @param Error the return location for a recoverable error
    --  @return Number of bytes written, or -1 on error
 
    procedure Write_Bytes_Async
@@ -438,22 +455,27 @@ package Glib.Output_Stream is
 
    function Write_Bytes_Finish
       (Self   : not null access Goutput_Stream_Record;
-       Result : Glib.G_Async_Result) return Gssize;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gssize;
    --  Finishes a stream write-from-Glib.Bytes.Gbytes operation.
    --  @param Result a Glib.G_Async_Result.
+   --  @param Error the return location for a recoverable error
    --  @return a Gssize containing the number of bytes written to the stream.
 
    function Write_Finish
       (Self   : not null access Goutput_Stream_Record;
-       Result : Glib.G_Async_Result) return Gssize;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gssize;
    --  Finishes a stream write operation.
    --  @param Result a Glib.G_Async_Result.
+   --  @param Error the return location for a recoverable error
    --  @return a Gssize containing the number of bytes written to the stream.
 
    function Writev_All_Finish
       (Self          : not null access Goutput_Stream_Record;
        Result        : Glib.G_Async_Result;
-       Bytes_Written : access Gsize := null) return Boolean;
+       Bytes_Written : access Gsize := null;
+       Error         : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous stream write operation started with
    --  g_output_stream_writev_all_async.
    --  As a special exception to the normal conventions for functions that use
@@ -466,17 +488,20 @@ package Glib.Output_Stream is
    --  @param Result a Glib.G_Async_Result
    --  @param Bytes_Written location to store the number of bytes that were
    --  written to the stream
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False if there was an error
 
    function Writev_Finish
       (Self          : not null access Goutput_Stream_Record;
        Result        : Glib.G_Async_Result;
-       Bytes_Written : access Gsize := null) return Boolean;
+       Bytes_Written : access Gsize := null;
+       Error         : out Glib.Error.GError) return Boolean;
    --  Finishes a stream writev operation.
    --  Since: gtk+ 2.60
    --  @param Result a Glib.G_Async_Result.
    --  @param Bytes_Written location to store the number of bytes that were
    --  written to the stream
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False if there was an error
 
 end Glib.Output_Stream;

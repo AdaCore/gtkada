@@ -24,12 +24,15 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
+
+use type Glib.Error.GError;
 
 package body Gdk.Display is
 
@@ -75,14 +78,20 @@ package body Gdk.Display is
    -----------------------
 
    function Create_Gl_Context
-      (Self : not null access Gdk_Display_Record)
-       return Gdk.GLContext.Gdk_GLContext
+      (Self  : not null access Gdk_Display_Record;
+       Error : out Glib.Error.GError) return Gdk.GLContext.Gdk_GLContext
    is
-      function Internal (Self : System.Address) return System.Address;
+      function Internal
+         (Self      : System.Address;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gdk_display_create_gl_context");
+      Acc_Error          : aliased Glib.Error.GError;
       Stub_Gdk_GLContext : Gdk.GLContext.Gdk_GLContext_Record;
+      Tmp_Return         : System.Address;
    begin
-      return Gdk.GLContext.Gdk_GLContext (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_GLContext));
+      Tmp_Return := Internal (Get_Object (Self), Acc_Error'Access);
+      Error := Acc_Error;
+      return Gdk.GLContext.Gdk_GLContext (Get_User_Data (Tmp_Return, Stub_Gdk_GLContext));
    end Create_Gl_Context;
 
    -----------------------
@@ -349,12 +358,19 @@ package body Gdk.Display is
    ----------------
 
    function Prepare_Gl
-      (Self : not null access Gdk_Display_Record) return Boolean
+      (Self  : not null access Gdk_Display_Record;
+       Error : out Glib.Error.GError) return Boolean
    is
-      function Internal (Self : System.Address) return Glib.Gboolean;
+      function Internal
+         (Self      : System.Address;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_display_prepare_gl");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Get_Object (Self)) /= 0;
+      Tmp_Return := Internal (Get_Object (Self), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Prepare_Gl;
 
    ---------------------------

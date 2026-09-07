@@ -23,7 +23,10 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+
+use type Glib.Error.GError;
 
 package body Gdk.Dmabuf_Texture_Builder is
 
@@ -74,16 +77,22 @@ package body Gdk.Dmabuf_Texture_Builder is
    function Build
       (Self    : not null access Gdk_Dmabuf_Texture_Builder_Record;
        Destroy : Glib.G_Destroy_Notify_Address;
-       Data    : System.Address) return Gdk.Texture.Gdk_Texture
+       Data    : System.Address;
+       Error   : out Glib.Error.GError) return Gdk.Texture.Gdk_Texture
    is
       function Internal
-         (Self    : System.Address;
-          Destroy : Glib.G_Destroy_Notify_Address;
-          Data    : System.Address) return System.Address;
+         (Self      : System.Address;
+          Destroy   : Glib.G_Destroy_Notify_Address;
+          Data      : System.Address;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gdk_dmabuf_texture_builder_build");
+      Acc_Error        : aliased Glib.Error.GError;
       Stub_Gdk_Texture : Gdk.Texture.Gdk_Texture_Record;
+      Tmp_Return       : System.Address;
    begin
-      return Gdk.Texture.Gdk_Texture (Get_User_Data (Internal (Get_Object (Self), Destroy, Data), Stub_Gdk_Texture));
+      Tmp_Return := Internal (Get_Object (Self), Destroy, Data, Acc_Error'Access);
+      Error := Acc_Error;
+      return Gdk.Texture.Gdk_Texture (Get_User_Data (Tmp_Return, Stub_Gdk_Texture));
    end Build;
 
    ---------------------

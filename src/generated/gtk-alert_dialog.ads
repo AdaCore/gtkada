@@ -34,6 +34,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;     use GNAT.Strings;
 with Glib;             use Glib;
 with Glib.Cancellable; use Glib.Cancellable;
+with Glib.Error;       use Glib.Error;
 with Glib.Object;      use Glib.Object;
 with Glib.Properties;  use Glib.Properties;
 with Gtk.Window;       use Gtk.Window;
@@ -91,10 +92,12 @@ package Gtk.Alert_Dialog is
 
    function Choose_Finish
       (Self   : not null access Gtk_Alert_Dialog_Record;
-       Result : Glib.G_Async_Result) return Glib.Gint;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Glib.Gint;
    --  Finishes the [methodGtk.AlertDialog.choose] call.
    --  Since: gtk+ 4.10
    --  @param Result the result
+   --  @param Error the return location for a recoverable error
    --  @return the index of the button that was clicked, or -1 if the dialog
    --  was cancelled and [propertyGtk.AlertDialog:cancel-button] is not set
 

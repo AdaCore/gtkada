@@ -45,6 +45,7 @@ with Gdk.Content_Provider; use Gdk.Content_Provider;
 with Gdk.Texture;          use Gdk.Texture;
 with Glib;                 use Glib;
 with Glib.Cancellable;     use Glib.Cancellable;
+with Glib.Error;           use Glib.Error;
 with Glib.Input_Stream;    use Glib.Input_Stream;
 with Glib.Object;          use Glib.Object;
 with Glib.Properties;      use Glib.Properties;
@@ -155,12 +156,14 @@ package Gdk.Clipboard is
    function Read_Finish
       (Self          : not null access Gdk_Clipboard_Record;
        Result        : Glib.G_Async_Result;
-       Out_Mime_Type : access UTF8_String := null)
+       Out_Mime_Type : access UTF8_String := null;
+       Error         : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
    --  Finishes an asynchronous clipboard read.
    --  See [methodGdk.Clipboard.read_async].
    --  @param Result a `GAsyncResult`
    --  @param Out_Mime_Type location to store the chosen mime type
+   --  @param Error the return location for a recoverable error
    --  @return a `GInputStream`
 
    procedure Read_Text_Async
@@ -176,10 +179,12 @@ package Gdk.Clipboard is
 
    function Read_Text_Finish
       (Self   : not null access Gdk_Clipboard_Record;
-       Result : Glib.G_Async_Result) return UTF8_String;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return UTF8_String;
    --  Finishes an asynchronous clipboard read.
    --  See [methodGdk.Clipboard.read_text_async].
    --  @param Result a `GAsyncResult`
+   --  @param Error the return location for a recoverable error
    --  @return a new string
 
    procedure Read_Texture_Async
@@ -196,10 +201,12 @@ package Gdk.Clipboard is
 
    function Read_Texture_Finish
       (Self   : not null access Gdk_Clipboard_Record;
-       Result : Glib.G_Async_Result) return Gdk.Texture.Gdk_Texture;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gdk.Texture.Gdk_Texture;
    --  Finishes an asynchronous clipboard read.
    --  See [methodGdk.Clipboard.read_texture_async].
    --  @param Result a `GAsyncResult`
+   --  @param Error the return location for a recoverable error
    --  @return a new `GdkTexture`
 
    procedure Read_Value_Async
@@ -220,10 +227,12 @@ package Gdk.Clipboard is
 
    function Read_Value_Finish
       (Self   : not null access Gdk_Clipboard_Record;
-       Result : Glib.G_Async_Result) return Glib.Values.GValue;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Glib.Values.GValue;
    --  Finishes an asynchronous clipboard read.
    --  See [methodGdk.Clipboard.read_value_async].
    --  @param Result a `GAsyncResult`
+   --  @param Error the return location for a recoverable error
    --  @return a `GValue` containing the result.
 
    procedure Set_Text
@@ -265,10 +274,12 @@ package Gdk.Clipboard is
 
    function Store_Finish
       (Self   : not null access Gdk_Clipboard_Record;
-       Result : Glib.G_Async_Result) return Boolean;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous clipboard store.
    --  See [methodGdk.Clipboard.store_async].
    --  @param Result a `GAsyncResult`
+   --  @param Error the return location for a recoverable error
    --  @return True if storing was successful.
 
    ----------------

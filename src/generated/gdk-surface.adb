@@ -25,10 +25,13 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Gdk.Display;
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+
+use type Glib.Error.GError;
 
 package body Gdk.Surface is
 
@@ -142,14 +145,20 @@ package body Gdk.Surface is
    -----------------------
 
    function Create_Gl_Context
-      (Self : not null access Gdk_Surface_Record)
-       return Gdk.GLContext.Gdk_GLContext
+      (Self  : not null access Gdk_Surface_Record;
+       Error : out Glib.Error.GError) return Gdk.GLContext.Gdk_GLContext
    is
-      function Internal (Self : System.Address) return System.Address;
+      function Internal
+         (Self      : System.Address;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gdk_surface_create_gl_context");
+      Acc_Error          : aliased Glib.Error.GError;
       Stub_Gdk_GLContext : Gdk.GLContext.Gdk_GLContext_Record;
+      Tmp_Return         : System.Address;
    begin
-      return Gdk.GLContext.Gdk_GLContext (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_GLContext));
+      Tmp_Return := Internal (Get_Object (Self), Acc_Error'Access);
+      Error := Acc_Error;
+      return Gdk.GLContext.Gdk_GLContext (Get_User_Data (Tmp_Return, Stub_Gdk_GLContext));
    end Create_Gl_Context;
 
    -------------

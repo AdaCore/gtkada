@@ -182,6 +182,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
 with Glib.Bytes;              use Glib.Bytes;
+with Glib.Error;              use Glib.Error;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Input_Stream;       use Glib.Input_Stream;
 
@@ -213,8 +214,9 @@ package Glib.Resource is
    ------------------
 
    procedure G_New_From_Data
-      (Self : out Gresource;
-       Data : Glib.Bytes.Gbytes);
+      (Self  : out Gresource;
+       Data  : Glib.Bytes.Gbytes;
+       Error : out Glib.Error.GError);
    --  Creates a GResource from a reference to the binary resource bundle.
    --  This will keep a reference to Data while the resource lives, so the data
    --  should not be modified or freed.
@@ -227,9 +229,11 @@ package Glib.Resource is
    --  will be returned.
    --  Since: gtk+ 2.32
    --  @param Data A Glib.Bytes.Gbytes
+   --  @param Error the return location for a recoverable error
 
    function Gresource_New_From_Data
-      (Data : Glib.Bytes.Gbytes) return Gresource;
+      (Data  : Glib.Bytes.Gbytes;
+       Error : out Glib.Error.GError) return Gresource;
    --  Creates a GResource from a reference to the binary resource bundle.
    --  This will keep a reference to Data while the resource lives, so the data
    --  should not be modified or freed.
@@ -242,6 +246,7 @@ package Glib.Resource is
    --  will be returned.
    --  Since: gtk+ 2.32
    --  @param Data A Glib.Bytes.Gbytes
+   --  @param Error the return location for a recoverable error
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "g_resource_get_type");
@@ -263,7 +268,8 @@ package Glib.Resource is
    function Enumerate_Children
       (Self         : Gresource;
        Path         : UTF8_String;
-       Lookup_Flags : Resource_Lookup_Flags) return GNAT.Strings.String_List;
+       Lookup_Flags : Resource_Lookup_Flags;
+       Error        : out Glib.Error.GError) return GNAT.Strings.String_List;
    --  Returns all the names of children at the specified Path in the
    --  resource. The return result is a null terminated list of strings which
    --  should be released with g_strfreev.
@@ -273,6 +279,7 @@ package Glib.Resource is
    --  Since: gtk+ 2.32
    --  @param Path A pathname inside the resource
    --  @param Lookup_Flags A Glib.Resource.Resource_Lookup_Flags
+   --  @param Error the return location for a recoverable error
    --  @return an array of constant strings
 
    function Get_Info
@@ -280,7 +287,8 @@ package Glib.Resource is
        Path         : UTF8_String;
        Lookup_Flags : Resource_Lookup_Flags;
        Size         : access Gsize := null;
-       Flags        : access Guint32 := null) return Boolean;
+       Flags        : access Guint32 := null;
+       Error        : out Glib.Error.GError) return Boolean;
    --  Looks for a file at the specified Path in the resource and if found
    --  returns information about it.
    --  Lookup_Flags controls the behaviour of the lookup.
@@ -291,6 +299,7 @@ package Glib.Resource is
    --  or null if the length is not needed
    --  @param Flags a location to place the flags about the file, or null if
    --  the length is not needed
+   --  @param Error the return location for a recoverable error
    --  @return True if the file was found. False if there were errors
 
    function Has_Children
@@ -300,7 +309,8 @@ package Glib.Resource is
    function Lookup_Data
       (Self         : Gresource;
        Path         : UTF8_String;
-       Lookup_Flags : Resource_Lookup_Flags) return Glib.Bytes.Gbytes;
+       Lookup_Flags : Resource_Lookup_Flags;
+       Error        : out Glib.Error.GError) return Glib.Bytes.Gbytes;
    --  Looks for a file at the specified Path in the resource and returns a
    --  Glib.Bytes.Gbytes that lets you directly access the data in memory.
    --  The data is always followed by a zero byte, so you can safely use the
@@ -314,13 +324,15 @@ package Glib.Resource is
    --  Since: gtk+ 2.32
    --  @param Path A pathname inside the resource
    --  @param Lookup_Flags A Glib.Resource.Resource_Lookup_Flags
+   --  @param Error the return location for a recoverable error
    --  @return Glib.Bytes.Gbytes or null on error. Free the returned object
    --  with Glib.Bytes.Unref
 
    function Open_Stream
       (Self         : Gresource;
        Path         : UTF8_String;
-       Lookup_Flags : Resource_Lookup_Flags)
+       Lookup_Flags : Resource_Lookup_Flags;
+       Error        : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
    --  Looks for a file at the specified Path in the resource and returns a
    --  Glib.Input_Stream.Ginput_Stream that lets you read the data.
@@ -328,6 +340,7 @@ package Glib.Resource is
    --  Since: gtk+ 2.32
    --  @param Path A pathname inside the resource
    --  @param Lookup_Flags A Glib.Resource.Resource_Lookup_Flags
+   --  @param Error the return location for a recoverable error
    --  @return Glib.Input_Stream.Ginput_Stream or null on error. Free the
    --  returned object with g_object_unref
 
@@ -347,7 +360,9 @@ package Glib.Resource is
    -- Functions --
    ---------------
 
-   function Load (Filename : UTF8_String) return Gresource;
+   function Load
+      (Filename : UTF8_String;
+       Error    : out Glib.Error.GError) return Gresource;
    --  Loads a binary resource bundle and creates a Glib.Resource.Gresource
    --  representation of it, allowing you to query it for data.
    --  If you want to use this resource in the global resource namespace you
@@ -359,6 +374,7 @@ package Glib.Resource is
    --  Since: gtk+ 2.32
    --  @param Filename the path of a filename to load, in the GLib filename
    --  encoding
+   --  @param Error the return location for a recoverable error
    --  @return a new Glib.Resource.Gresource, or null on error
 
 private

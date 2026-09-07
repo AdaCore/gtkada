@@ -23,9 +23,12 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Glib.Error;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings; use Gtkada.Bindings;
 pragma Warnings(On);
+
+use type Glib.Error.GError;
 
 package body Glib.IOChannel is
 

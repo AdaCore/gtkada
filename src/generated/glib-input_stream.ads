@@ -36,6 +36,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Bytes;       use Glib.Bytes;
 with Glib.Cancellable; use Glib.Cancellable;
+with Glib.Error;       use Glib.Error;
 with Glib.Object;      use Glib.Object;
 
 package Glib.Input_Stream is
@@ -80,8 +81,8 @@ package Glib.Input_Stream is
 
    function Close
       (Self        : not null access Ginput_Stream_Record;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Closes the stream, releasing resources related to it.
    --  Once the stream is closed, all other operations will return
    --  G_IO_ERROR_CLOSED. Closing a stream multiple times will not return an
@@ -103,6 +104,7 @@ package Glib.Input_Stream is
    --  can use a faster close that doesn't block to e.g. check errors.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on failure
 
    procedure Close_Async
@@ -125,10 +127,12 @@ package Glib.Input_Stream is
 
    function Close_Finish
       (Self   : not null access Ginput_Stream_Record;
-       Result : Glib.G_Async_Result) return Boolean;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes closing a stream asynchronously, started from
    --  Glib.Input_Stream.Close_Async.
    --  @param Result a Glib.G_Async_Result.
+   --  @param Error the return location for a recoverable error
    --  @return True if the stream was closed successfully.
 
    function Has_Pending
@@ -144,8 +148,8 @@ package Glib.Input_Stream is
    function Read
       (Self        : not null access Ginput_Stream_Record;
        Buffer      : out Guint8_Array;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Gssize;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Gssize;
    --  Tries to read Count bytes from the stream into the buffer starting at
    --  Buffer. Will block during this read.
    --  If count is zero returns zero and does nothing. A value of Count larger
@@ -167,14 +171,15 @@ package Glib.Input_Stream is
    --  count bytes long).
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
+   --  @param Error the return location for a recoverable error
    --  @return Number of bytes read, or -1 on error, or 0 on end of file.
 
    function Read_All
       (Self        : not null access Ginput_Stream_Record;
        Buffer      : out Guint8_Array;
        Bytes_Read  : out Gsize;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Tries to read Count bytes from the stream into the buffer starting at
    --  Buffer. Will block during this read.
    --  This function is similar to Glib.Input_Stream.Read, except it tries to
@@ -197,12 +202,14 @@ package Glib.Input_Stream is
    --  from the stream
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False if there was an error
 
    function Read_All_Finish
       (Self       : not null access Ginput_Stream_Record;
        Result     : Glib.G_Async_Result;
-       Bytes_Read : out Gsize) return Boolean;
+       Bytes_Read : out Gsize;
+       Error      : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous stream read operation started with
    --  g_input_stream_read_all_async.
    --  As a special exception to the normal conventions for functions that use
@@ -215,13 +222,14 @@ package Glib.Input_Stream is
    --  @param Result a Glib.G_Async_Result
    --  @param Bytes_Read location to store the number of bytes that was read
    --  from the stream
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False if there was an error
 
    function Read_Bytes
       (Self        : not null access Ginput_Stream_Record;
        Count       : Gsize;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Glib.Bytes.Gbytes;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Glib.Bytes.Gbytes;
    --  Like Glib.Input_Stream.Read, this tries to read Count bytes from the
    --  stream in a blocking fashion. However, rather than reading into a
    --  user-supplied buffer, this will create a new Glib.Bytes.Gbytes
@@ -245,6 +253,7 @@ package Glib.Input_Stream is
    --  Common values include 4096 and 8192.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
+   --  @param Error the return location for a recoverable error
    --  @return a new Glib.Bytes.Gbytes, or null on error
 
    procedure Read_Bytes_Async
@@ -279,30 +288,36 @@ package Glib.Input_Stream is
 
    function Read_Bytes_Finish
       (Self   : not null access Ginput_Stream_Record;
-       Result : Glib.G_Async_Result) return Glib.Bytes.Gbytes;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Glib.Bytes.Gbytes;
    --  Finishes an asynchronous stream read-into-Glib.Bytes.Gbytes operation.
    --  Since: gtk+ 2.34
    --  @param Result a Glib.G_Async_Result.
+   --  @param Error the return location for a recoverable error
    --  @return the newly-allocated Glib.Bytes.Gbytes, or null on error
 
    function Read_Finish
       (Self   : not null access Ginput_Stream_Record;
-       Result : Glib.G_Async_Result) return Gssize;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gssize;
    --  Finishes an asynchronous stream read operation.
    --  @param Result a Glib.G_Async_Result.
+   --  @param Error the return location for a recoverable error
    --  @return number of bytes read in, or -1 on error, or 0 on end of file.
 
    function Set_Pending
-      (Self : not null access Ginput_Stream_Record) return Boolean;
+      (Self  : not null access Ginput_Stream_Record;
+       Error : out Glib.Error.GError) return Boolean;
    --  Sets Stream to have actions pending. If the pending flag is already set
    --  or Stream is closed, it will return False and set Error.
+   --  @param Error the return location for a recoverable error
    --  @return True if pending was previously unset and is now set.
 
    function Skip
       (Self        : not null access Ginput_Stream_Record;
        Count       : Gsize;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Gssize;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Gssize;
    --  Tries to skip Count bytes from the stream. Will block during the
    --  operation.
    --  This is identical to Glib.Input_Stream.Read, from a behaviour
@@ -319,6 +334,7 @@ package Glib.Input_Stream is
    --  @param Count the number of bytes that will be skipped from the stream
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
+   --  @param Error the return location for a recoverable error
    --  @return Number of bytes skipped, or -1 on error
 
    procedure Skip_Async
@@ -354,9 +370,11 @@ package Glib.Input_Stream is
 
    function Skip_Finish
       (Self   : not null access Ginput_Stream_Record;
-       Result : Glib.G_Async_Result) return Gssize;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gssize;
    --  Finishes a stream skip operation.
    --  @param Result a Glib.G_Async_Result.
+   --  @param Error the return location for a recoverable error
    --  @return the size of the bytes skipped, or `-1` on error.
 
 end Glib.Input_Stream;

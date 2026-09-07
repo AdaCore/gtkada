@@ -25,6 +25,7 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Gdk.Display;
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
 with System;
@@ -32,6 +33,8 @@ pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
+
+use type Glib.Error.GError;
 
 package body Gdk.Clipboard is
 
@@ -243,24 +246,27 @@ package body Gdk.Clipboard is
    function Read_Finish
       (Self          : not null access Gdk_Clipboard_Record;
        Result        : Glib.G_Async_Result;
-       Out_Mime_Type : access UTF8_String := null)
+       Out_Mime_Type : access UTF8_String := null;
+       Error         : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream
    is
       function Internal
          (Self          : System.Address;
           Result        : Glib.G_Async_Result;
-          Out_Mime_Type : access Gtkada.Types.Chars_Ptr)
-          return System.Address;
+          Out_Mime_Type : access Gtkada.Types.Chars_Ptr;
+          Acc_Error     : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gdk_clipboard_read_finish");
+      Acc_Error          : aliased Glib.Error.GError;
       Tmp_Out_Mime_Type  : aliased Gtkada.Types.Chars_Ptr;
       Acc_Out_Mime_Type  : constant access Gtkada.Types.Chars_Ptr := (if Out_Mime_Type /= null then Tmp_Out_Mime_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Out_Mime_Type);
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Out_Mime_Type, Acc_Error'Access);
       if Out_Mime_Type /= null then
          Out_Mime_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Out_Mime_Type);
       end if;
+      Error := Acc_Error;
       return Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
    end Read_Finish;
 
@@ -287,14 +293,21 @@ package body Gdk.Clipboard is
 
    function Read_Text_Finish
       (Self   : not null access Gdk_Clipboard_Record;
-       Result : Glib.G_Async_Result) return UTF8_String
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return UTF8_String
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return Gtkada.Types.Chars_Ptr;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError)
+          return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "gdk_clipboard_read_text_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Gtkada.Types.Chars_Ptr;
    begin
-      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self), Result));
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Gtkada.Bindings.Value_And_Free (Tmp_Return);
    end Read_Text_Finish;
 
    ------------------------
@@ -320,15 +333,21 @@ package body Gdk.Clipboard is
 
    function Read_Texture_Finish
       (Self   : not null access Gdk_Clipboard_Record;
-       Result : Glib.G_Async_Result) return Gdk.Texture.Gdk_Texture
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gdk.Texture.Gdk_Texture
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return System.Address;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gdk_clipboard_read_texture_finish");
+      Acc_Error        : aliased Glib.Error.GError;
       Stub_Gdk_Texture : Gdk.Texture.Gdk_Texture_Record;
+      Tmp_Return       : System.Address;
    begin
-      return Gdk.Texture.Gdk_Texture (Get_User_Data (Internal (Get_Object (Self), Result), Stub_Gdk_Texture));
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Gdk.Texture.Gdk_Texture (Get_User_Data (Tmp_Return, Stub_Gdk_Texture));
    end Read_Texture_Finish;
 
    ----------------------
@@ -356,14 +375,20 @@ package body Gdk.Clipboard is
 
    function Read_Value_Finish
       (Self   : not null access Gdk_Clipboard_Record;
-       Result : Glib.G_Async_Result) return Glib.Values.GValue
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Glib.Values.GValue
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return Glib.Values.GValue;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Values.GValue;
       pragma Import (C, Internal, "gdk_clipboard_read_value_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Values.GValue;
    begin
-      return Internal (Get_Object (Self), Result);
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return;
    end Read_Value_Finish;
 
    -----------------
@@ -455,14 +480,20 @@ package body Gdk.Clipboard is
 
    function Store_Finish
       (Self   : not null access Gdk_Clipboard_Record;
-       Result : Glib.G_Async_Result) return Boolean
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return Glib.Gboolean;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_clipboard_store_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Get_Object (Self), Result) /= 0;
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Store_Finish;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
