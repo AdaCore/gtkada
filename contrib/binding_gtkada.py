@@ -407,6 +407,8 @@ class GtkAdaPackage(object):
             elem.set("pkg", ws.get("pkg", ""))
             use = ws.get("use", True)
             elem.set("use", "true" if use else "false")
+            limited = ws.get("limited", False)
+            elem.set("limited", "true" if limited else "false")
             elements.append(elem)
 
         for wb in extra_dict.get("with_body", []):

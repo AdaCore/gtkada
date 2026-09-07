@@ -25,6 +25,7 @@ id = "get_attributes"
 [[virtual_method.parameter]]
 name = "ranges"
 direction = "access"
+type = "Gtk_Accessible_Text_Range_Array"
 
 [[virtual_method.parameter]]
 name = "attribute_names"
@@ -40,3 +41,4 @@ id = "get_selection"
 [[virtual_method.parameter]]
 name = "ranges"
 direction = "access"
+type = "Gtk_Accessible_Text_Range_Array"

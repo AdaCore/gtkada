@@ -1,0 +1,17 @@
+# ============================================================
+#   Graphene_Quaternion_T
+# ============================================================
+
+ada = "Graphene.Quaternion"
+
+[[extra.with_spec]]
+pkg = "Graphene.Euler"
+limited = true
+
+[[extra.with_spec]]
+pkg = "Graphene.Matrix"
+limited = true
+
+[[method]]
+id = "graphene_quaternion_alloc"
+bind = false

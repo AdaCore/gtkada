@@ -381,13 +381,14 @@ Bind a `<enumeration>` or `<bitfield>` as an Ada type inside this
 package. The generator also auto-derives naming exceptions for the
 members (overrideable in `data.cname_to_adaname`).
 
-| Key          | Type   | Meaning                                                              | Default |
-|--------------|--------|----------------------------------------------------------------------|---------|
-| `ctype`      | string | **Required.** C type to bind.                                        |         |
-| `ada`        | string | Override the Ada type name (no package qualifier needed).            | derived |
-| `prefix`     | string | Stripped from each value to compute its Ada identifier.              | `"GTK_"` |
-| `asbitfield` | bool   | Force a bitfield representation (modular type) even if GIR says enum. | `false` |
-| `ignore`     | string | Space-separated list of values that must not be bound.               | `""` |
+| Key          | Type    | Meaning                                                              | Default |
+|--------------|---------|----------------------------------------------------------------------|---------|
+| `ctype`      | string  | **Required.** C type to bind.                                        |         |
+| `ada`        | string  | Override the Ada type name (no package qualifier needed).            | derived |
+| `prefix`     | string  | Stripped from each value to compute its Ada identifier.              | `"GTK_"` |
+| `asbitfield` | bool    | Force a bitfield representation (modular type) even if GIR says enum. | `false` |
+| `ignore`     | string  | Space-separated list of values that must not be bound.               | `""` |
+| `properties` | Boolean | Whether to generate property package                                 | True |
 
 ```toml
 # GtkEnums.toml
@@ -474,10 +475,11 @@ package verbatim.
 
 ### `[[extra.with_spec]]` — extra `with` clauses in the spec
 
-| Key   | Type   | Meaning                                  | Default |
-|-------|--------|------------------------------------------|---------|
-| `pkg` | string | Package to `with`.                       |         |
-| `use` | bool   | Whether to emit a `use` clause too.       | `true`  |
+| Key       | Type   | Meaning                                    | Default |
+|-----------|--------|--------------------------------------------|---------|
+| `pkg`     | string | Package to `with`.                         |         |
+| `use`     | bool   | Whether to emit a `use` clause too.        | `true`  |
+| `limited` | bool   | Whether to prepend `limited` before `with` | `false` |
 
 ### `[[extra.with_body]]` — extra `with` clauses in the body
 

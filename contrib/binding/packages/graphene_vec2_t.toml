@@ -1,0 +1,27 @@
+# ============================================================
+#   Graphene_Vec2_T
+# ============================================================
+
+ada = "Graphene.Vec2"
+
+[[extra.type]]
+ctype = "array_of_graphene_vec2_t"
+ada = "Graphene_Vec2_Array"
+text = '''
+
+         type Graphene_Vec2_Array is array (Natural range <>) of Graphene_Vec2_T;
+         pragma Convention (C, Graphene_Vec2_Array);
+       '''
+
+[[method]]
+id = "graphene_vec2_alloc"
+bind = false
+
+[[method]]
+id = "graphene_vec2_init_from_float"
+bind = false # need array_of_float
+
+[[method]]
+id = "graphene_vec2_to_float"
+bind = false # need array_of_float
+

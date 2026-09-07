@@ -1,0 +1,17 @@
+# ============================================================
+#   Graphene_Simd4x4f_T
+# ============================================================
+
+ada = "Graphene.Config"
+
+[[record]]
+ctype = "graphene_simd4x4f_t"
+ada = "Graphene_Simd4x4f"
+
+[[extra.with_body]]
+pkg = "Glib"
+
+[[extra.spec]]
+text = '''
+   for Graphene_Simd4x4f'Alignment use 16;
+'''

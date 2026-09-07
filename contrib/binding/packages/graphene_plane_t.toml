@@ -1,0 +1,26 @@
+# ============================================================
+#   Graphene_Plane_T
+# ============================================================
+
+ada = "Graphene.Plane"
+
+[[extra.with_spec]]
+pkg = "Graphene.Matrix"
+limited = true
+
+[[extra.type]]
+ctype = "array_of_graphene_plane_t"
+ada = "Graphene_Plane_Array"
+text = '''
+
+         type Graphene_Plane_Array is array (Natural range <>) of Graphene_Plane_T;
+         pragma Convention (C, Graphene_Plane_Array);
+       '''
+
+[[method]]
+id = "graphene_plane_alloc"
+bind = false
+
+[[method]]
+id = "graphene_plane_init_from_plane"
+bind = false

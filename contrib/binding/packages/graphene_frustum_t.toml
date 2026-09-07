@@ -1,0 +1,29 @@
+# ============================================================
+#   Graphene_Frustum_T
+# ============================================================
+
+ada = "Graphene.Frustum"
+
+[[method]]
+id = "graphene_frustum_alloc"
+bind = false
+
+[[method]]
+id = "graphene_frustum_get_planes"
+bind = false
+
+[[extra.spec]]
+text = '''
+   type Graphene_Plane_Array6 is array (1 .. 6) of Graphene_Plane_T;
+   pragma Convention (C, Graphene_Plane_Array6);
+
+   procedure Get_Planes
+      (Self   : not null access Graphene_Frustum_T;
+       Planes : out Graphene_Plane_Array6);
+   pragma Import (C, Get_Planes, "graphene_frustum_get_planes");
+   --  Retrieves the planes that define the given
+   --  Graphene.Frustum.Graphene_Frustum_T.
+   --  Since: gtk+ 1.2
+   --  @param Planes return location for an array of 6
+   --  Graphene.Plane.Graphene_Plane_T
+'''

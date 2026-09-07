@@ -36,6 +36,8 @@ with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
 with Glib.Types;              use Glib.Types;
+with Graphene.Point;          use Graphene.Point;
+with Graphene.Rect;           use Graphene.Rect;
 with Gtk.Enums;               use Gtk.Enums;
 with Gtkada.Types;            use Gtkada.Types;
 
@@ -228,7 +230,8 @@ package Gtk.Accessible_Text is
      (Self    : Gtk_Accessible_Text;
       Start   : Guint;
       The_End : Guint;
-      Extents : in out graphene_rect_t) return Glib.Gboolean;
+      Extents : not null access Graphene.Rect.Graphene_Rect_T)
+   return Glib.Gboolean;
    pragma Convention (C, Virtual_Get_Extents);
    --  Obtains the extents of a range of text, in widget coordinates.
    --  Since: gtk+ 4.16
@@ -239,7 +242,7 @@ package Gtk.Accessible_Text is
 
    type Virtual_Get_Offset is access function
      (Self   : Gtk_Accessible_Text;
-      Point  : in out graphene_point_t;
+      Point  : not null access Graphene.Point.Graphene_Point_T;
       Offset : out Guint) return Glib.Gboolean;
    pragma Convention (C, Virtual_Get_Offset);
    --  Gets the text offset at a given point.

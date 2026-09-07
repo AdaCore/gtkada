@@ -39,15 +39,18 @@
 --  nodes if the child node is entirely contained within the clip rectangle.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Cairo;         use Cairo;
-with Gdk.Paintable; use Gdk.Paintable;
-with Gdk.RGBA;      use Gdk.RGBA;
-with Gdk.Snapshot;  use Gdk.Snapshot;
-with Gdk.Texture;   use Gdk.Texture;
-with Glib;          use Glib;
-with Gtkada.Types;  use Gtkada.Types;
-with Interfaces.C;  use Interfaces.C;
-with Pango.Layout;  use Pango.Layout;
+with Cairo;          use Cairo;
+with Gdk.Paintable;  use Gdk.Paintable;
+with Gdk.RGBA;       use Gdk.RGBA;
+with Gdk.Snapshot;   use Gdk.Snapshot;
+with Gdk.Texture;    use Gdk.Texture;
+with Glib;           use Glib;
+with Graphene.Point; use Graphene.Point;
+with Graphene.Rect;  use Graphene.Rect;
+with Graphene.Size;  use Graphene.Size;
+with Gtkada.Types;   use Gtkada.Types;
+with Interfaces.C;   use Interfaces.C;
+with Pango.Layout;   use Pango.Layout;
 
 package Gtk.Snapshot is
 
@@ -76,7 +79,8 @@ package Gtk.Snapshot is
 
    function Append_Cairo
       (Self   : not null access Gtk_Snapshot_Record;
-       Bounds : in out graphene_rect_t) return Cairo.Cairo_Context;
+       Bounds : not null access Graphene.Rect.Graphene_Rect_T)
+       return Cairo.Cairo_Context;
    --  Creates a new [classGsk.CairoNode] and appends it to the current render
    --  node of Snapshot, without changing the current node.
    --  @param Bounds the bounds for the new node
@@ -86,7 +90,7 @@ package Gtk.Snapshot is
    procedure Append_Color
       (Self   : not null access Gtk_Snapshot_Record;
        Color  : Gdk.RGBA.Gdk_RGBA;
-       Bounds : in out graphene_rect_t);
+       Bounds : not null access Graphene.Rect.Graphene_Rect_T);
    --  Creates a new render node drawing the Color into the given Bounds and
    --  appends it to the current render node of Snapshot.
    --  You should try to avoid calling this function if Color is transparent.
@@ -108,7 +112,7 @@ package Gtk.Snapshot is
 
    procedure Append_Paste
       (Self   : not null access Gtk_Snapshot_Record;
-       Bounds : in out graphene_rect_t;
+       Bounds : not null access Graphene.Rect.Graphene_Rect_T;
        Nth    : Gsize);
    --  Creates a new render node that pastes the contents copied by a previous
    --  call to [methodGtk.Snapshot.push_copy]
@@ -120,7 +124,7 @@ package Gtk.Snapshot is
    procedure Append_Texture
       (Self    : not null access Gtk_Snapshot_Record;
        Texture : not null access Gdk.Texture.Gdk_Texture_Record'Class;
-       Bounds  : in out graphene_rect_t);
+       Bounds  : not null access Graphene.Rect.Graphene_Rect_T);
    --  Creates a new render node drawing the Texture into the given Bounds and
    --  appends it to the current render node of Snapshot.
    --  If the texture needs to be scaled to fill Bounds, linear filtering is
@@ -158,7 +162,7 @@ package Gtk.Snapshot is
 
    procedure Push_Clip
       (Self   : not null access Gtk_Snapshot_Record;
-       Bounds : in out graphene_rect_t);
+       Bounds : not null access Graphene.Rect.Graphene_Rect_T);
    --  Clips an image to a rectangle.
    --  The image is recorded until the next call to [methodGtk.Snapshot.pop].
    --  @param Bounds the rectangle to clip to
@@ -191,8 +195,8 @@ package Gtk.Snapshot is
 
    procedure Push_Repeat
       (Self         : not null access Gtk_Snapshot_Record;
-       Bounds       : in out graphene_rect_t;
-       Child_Bounds : in out graphene_rect_t);
+       Bounds       : not null access Graphene.Rect.Graphene_Rect_T;
+       Child_Bounds : access Graphene.Rect.Graphene_Rect_T);
    --  Creates a node that repeats the child node.
    --  The child is recorded until the next call to [methodGtk.Snapshot.pop].
    --  @param Bounds the bounds within which to repeat
@@ -248,7 +252,8 @@ package Gtk.Snapshot is
 
    function To_Paintable
       (Self : not null access Gtk_Snapshot_Record;
-       Size : in out graphene_size_t) return Gdk.Paintable.Gdk_Paintable;
+       Size : access Graphene.Size.Graphene_Size_T)
+       return Gdk.Paintable.Gdk_Paintable;
    --  Returns a paintable encapsulating the render node that was constructed
    --  by Snapshot.
    --  After calling this function, it is no longer possible to add more nodes
@@ -260,7 +265,7 @@ package Gtk.Snapshot is
 
    procedure Translate
       (Self  : not null access Gtk_Snapshot_Record;
-       Point : in out graphene_point_t);
+       Point : not null access Graphene.Point.Graphene_Point_T);
    --  Translates Snapshot's coordinate system by Point in 2-dimensional
    --  space.
    --  @param Point the point to translate the snapshot by

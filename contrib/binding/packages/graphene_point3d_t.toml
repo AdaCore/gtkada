@@ -1,0 +1,30 @@
+# ============================================================
+#   Graphene_Point3d_T
+# ============================================================
+
+ada = "Graphene.Point3d"
+
+[[extra.type]]
+ctype = "array_of_graphene_point3d_t"
+ada = "Graphene_Point3D_Array"
+text = '''
+
+         type Graphene_Point3D_Array is array (Natural range <>) of Graphene_Point3D_T;
+         pragma Convention (C, Graphene_Point3D_Array);
+       '''
+
+[[method]]
+id = "graphene_point3d_alloc"
+bind = false
+
+#[[method]]
+#id = "graphene_point3d_init"
+#bind = false
+
+#[[method]]
+#id = "graphene_point3d_init_from_point"
+#bind = false
+
+#[[method]]
+#id = "graphene_point3d_zero"
+#bind = false

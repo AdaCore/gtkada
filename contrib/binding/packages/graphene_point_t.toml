@@ -1,0 +1,18 @@
+# ============================================================
+#   Graphene_Point_T
+# ============================================================
+
+ada = "Graphene.Point"
+
+[[extra.type]]
+ctype = "array_of_graphene_point_t"
+ada = "Graphene_Point_Array"
+text = '''
+
+         type Graphene_Point_Array is array (Natural range <>) of Graphene_Point_T;
+         pragma Convention (C, Graphene_Point_Array);
+       '''
+
+[[method]]
+id = "graphene_point_alloc"
+bind = false

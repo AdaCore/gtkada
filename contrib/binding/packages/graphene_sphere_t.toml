@@ -1,0 +1,97 @@
+# ============================================================
+#   Graphene_Sphere_T
+# ============================================================
+
+ada = "Graphene.Sphere"
+
+[[extra.with_spec]]
+pkg = "Graphene.Point3d"
+
+[[extra.with_spec]]
+pkg = "Graphene.Vec3"
+
+[[method]]
+id = "graphene_sphere_alloc"
+bind = false
+
+[[method]]
+id = "graphene_sphere_init_from_points"
+bind = false
+
+[[method]]
+id = "graphene_sphere_init_from_vectors"
+bind = false
+
+[[extra.spec]]
+text = '''
+   function Init_From_Points
+      (Self     : not null access Graphene_Sphere_T;
+       Points   : Graphene.Point3d.Graphene_Point3d_Array;
+       Center   : access Graphene_Point3d_T := null) return access Graphene_Sphere_T;
+   --  Initializes the given Graphene.Sphere.Graphene_Sphere_T using the given
+   --  array of 3D coordinates so that the sphere includes them.
+   --  The center of the sphere can either be specified, or will be center of
+   --  the 3D volume that encompasses all Points.
+   --  Since: gtk+ 1.2
+   --  @param Points an array of graphene_point3d_t
+   --  @param Center the center of the sphere
+   --  @return the initialized Graphene.Sphere.Graphene_Sphere_T
+
+   function Init_From_Vectors
+      (Self    : not null access Graphene_Sphere_T;
+       Vectors : Graphene_Vec3_Array;
+       Center  : access Graphene.Point3d.Graphene_Point3D_T)
+       return access Graphene_Sphere_T;
+   --  Initializes the given Graphene.Sphere.Graphene_Sphere_T using the given
+   --  array of 3D coordinates so that the sphere includes them.
+   --  The center of the sphere can either be specified, or will be center of
+   --  the 3D volume that encompasses all Vectors.
+   --  Since: gtk+ 1.2
+   --  @param Vectors an array of Graphene.Vec3.Graphene_Vec3_T
+   --  @param Center the center of the sphere
+   --  @return the initialized Graphene.Sphere.Graphene_Sphere_T
+'''
+
+[extra]
+body = '''
+
+   ----------------------
+   -- Init_From_Points --
+   ----------------------
+
+   function Init_From_Points
+      (Self     : not null access Graphene_Sphere_T;
+       Points   : Graphene.Point3d.Graphene_Point3d_Array;
+       Center   : access Graphene_Point3d_T := null) return access Graphene_Sphere_T
+   is
+      function Internal
+         (Self     : access Graphene_Sphere_T;
+          N_Points : Guint;
+          Points   : System.Address;
+          Center   : access Graphene_Point3d_T) return access Graphene_Sphere_T;
+      pragma Import (C, Internal, "graphene_sphere_init_from_points");
+   begin
+      return Internal (Self, Guint (Points'Length), Points'Address, Center);
+   end Init_From_Points;
+
+   -----------------------
+   -- Init_From_Vectors --
+   -----------------------
+
+   function Init_From_Vectors
+      (Self    : not null access Graphene_Sphere_T;
+       Vectors : Graphene_Vec3_Array;
+       Center  : access Graphene.Point3d.Graphene_Point3D_T)
+       return access Graphene_Sphere_T
+   is
+      function Internal
+         (Self      : not null access Graphene_Sphere_T;
+          N_Vectors : Guint;
+          Vectors   : System.Address;
+          Center    : access Graphene.Point3d.Graphene_Point3D_T)
+          return access Graphene_Sphere_T;
+      pragma Import (C, Internal, "graphene_sphere_init_from_vectors");
+   begin
+      return Internal (Self, Guint (Vectors'Length), Vectors'Address, Center);
+   end Init_From_Vectors;
+'''

@@ -1,0 +1,56 @@
+# ============================================================
+#   Graphene_Rect_T
+# ============================================================
+
+ada = "Graphene.Rect"
+
+[[method]]
+id = "graphene_rect_alloc"
+bind = false
+
+[[method]]
+id = "graphene_rect_round" # Obsolescent
+bind = false
+
+[[method]]
+id = "graphene_rect_round_to_pixel" # Obsolescent
+bind = false
+
+[[method]]
+id = "graphene_rect_get_vertices"
+bind = false
+
+[[extra.with_spec]]
+pkg = "Graphene.Vec2"
+
+[[extra.spec]]
+text = '''
+   type Graphene_Vec2_Array4 is array (1 .. 4) of Graphene.Vec2.Graphene_Vec2_T;
+
+   procedure Get_Vertices
+      (Self     : not null access Graphene_Rect_T;
+       Vertices : out Graphene_Vec2_Array4);
+   --  Computes the four vertices of a Graphene.Rect.Graphene_Rect_T.
+   --  Since: gtk+ 1.4
+   --  @param Vertices return location for an array of 4
+   --  Graphene.Vec2.Graphene_Vec2_T
+'''
+
+[extra]
+body = '''
+   ------------------
+   -- Get_Vertices --
+   ------------------
+
+   procedure Get_Vertices
+      (Self     : not null access Graphene_Rect_T;
+       Vertices : out Graphene_Vec2_Array4)
+   is
+      procedure Internal
+         (Self     : access Graphene_Rect_T;
+          Vertices : System.Address);
+      pragma Import (C, Internal, "graphene_rect_get_vertices");
+   begin
+      Internal (Self, Vertices'Address);
+   end Get_Vertices;
+'''

@@ -1,0 +1,16 @@
+# ============================================================
+#   Graphene_Euler_T
+# ============================================================
+
+ada = "Graphene.Euler"
+
+[[enum]]
+ctype = "graphene_euler_order_t"
+
+[[extra.with_spec]]
+pkg = "Graphene.Matrix"
+limited = true
+
+[[method]]
+id = "graphene_euler_alloc"
+bind = false

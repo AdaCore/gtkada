@@ -1,0 +1,28 @@
+# ============================================================
+#   Graphene_Quad_T
+# ============================================================
+
+ada = "Graphene.Quad"
+
+[[method]]
+id = "graphene_quad_alloc"
+bind = false
+
+[[method]]
+id = "graphene_quad_init_from_points"
+bind = false
+
+[[extra.spec]]
+text = '''
+   type Graphene_Point_Array4 is array (1 .. 4) of Graphene_Point_T;
+   pragma Convention (C, Graphene_Point_Array4);
+
+   function Init_From_Points
+      (Self   : not null access Graphene_Quad_T;
+       Points : Graphene_Point_Array4) return access Graphene_Quad_T;
+   pragma Import (C, Init_From_Points, "graphene_quad_init_from_points");
+   --  Initializes a Graphene.Quad.Graphene_Quad_T using an array of points.
+   --  Since: gtk+ 1.2
+   --  @param Points an array of 4 Graphene.Point.Graphene_Point_T
+   --  @return the initialized Graphene.Quad.Graphene_Quad_T
+'''

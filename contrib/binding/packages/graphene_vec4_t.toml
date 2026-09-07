@@ -1,0 +1,21 @@
+# ============================================================
+#   Graphene_Vec4_T
+# ============================================================
+
+ada = "Graphene.Vec4"
+
+[[extra.with_spec]]
+pkg = "Graphene.Vec3"
+limited = true
+
+[[method]]
+id = "graphene_vec4_alloc"
+bind = false
+
+[[method]]
+id = "graphene_vec4_init_from_float"
+bind = false # need array_of_float
+
+[[method]]
+id = "graphene_vec4_to_float"
+bind = false # need array_of_float

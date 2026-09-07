@@ -1,0 +1,21 @@
+# ============================================================
+#   Graphene_Matrix_T
+# ============================================================
+
+ada = "Graphene.Matrix"
+
+[[extra.with_spec]]
+pkg = "Graphene.Euler"
+limited = true
+
+[[method]]
+id = "graphene_matrix_alloc"
+bind = false
+
+[[method]]
+id = "graphene_matrix_init_from_float" # array_of_float
+bind = false
+
+[[method]]
+id = "graphene_matrix_to_float" # array_of_float
+bind = false

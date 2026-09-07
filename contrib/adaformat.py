@@ -179,6 +179,7 @@ class CType(object):
         self.default_record_field_value = None
 
         self.is_ptr = False
+        self.is_constant = False
 
         self.cleanup = None
         # If set, a tmp variable is created to hold the result of convert
@@ -368,7 +369,7 @@ class CType(object):
         See comments at the beginning of this package for valid LANG values
         """
         assert lang in ("ada", "c->ada", "ada->c")
-        assert mode in ("in", "out", "access", "not null access", "in out"), (
+        assert mode in ("in", "out", "access", "not null access", "access constant", "in out"), (
             "Incorrect mode: %s" % mode
         )
 
@@ -383,7 +384,7 @@ class CType(object):
 
             additional_tmp_vars = [] if not returns else returns.tmp_vars
 
-            if mode == "access" and not is_temporary_variable:
+            if (mode == "access" or mode == "not null access") and not is_temporary_variable:
                 return self._access_param_as_call(
                     name=name, returns=returns, tmpvars=additional_tmp_vars
                 )
@@ -852,9 +853,14 @@ class Record(CType):
         if self.transfer_ownership:
             conv = "From_Object_Free (%(var)s)"
 
+        tmp_c_type = "access %s" % self.ada
+        if self.is_ptr:
+            if self.is_constant:
+                tmp_c_type="access constant %s" % self.ada
+
         return ConvertTuple(
             ada_type=self.ada,
-            c_type="access %s" % self.ada,
+            c_type=tmp_c_type,
             conversion=conv,
             tmp_vars=[],
             out_c_type=self.ada,
@@ -1165,6 +1171,7 @@ class AdaNaming(object):
         useclass=True,
         array_fixed_size=None,
         transfer_ownership=False,
+        const=False,
     ):
         """Build an instance of CType for the corresponding cname.
         A type a described in a .gir file
@@ -1253,6 +1260,7 @@ class AdaNaming(object):
         t.allow_none = allow_none
         t.userecord = userecord
         t.transfer_ownership = transfer_ownership
+        t.is_constant = const
 
         # Needs to be called last, since the output might depend on all the
         # attributes set above
@@ -1990,7 +1998,10 @@ class Subprogram(object):
             elif self.lang == "c->ada":
                 suffix = " return %s" % returns.c_type
             else:
-                suffix = " return %s" % returns.ada_type
+                if isinstance (self.returns, Record) and self.returns.is_ptr:
+                    suffix = " return %s" % returns[1]
+                else:
+                    suffix = " return %s" % returns.ada_type
         else:
             prefix = "procedure"
             suffix = ""
@@ -2638,8 +2649,8 @@ class Package(object):
         self.doc = doc
 
         self.sections = []  # [Section]
-        self.spec_withs = dict()  # "pkg" -> use:Boolean
-        self.body_withs = dict()  # "pkg" -> use:Boolean
+        self.spec_withs = dict()  # "pkg" -> use, might_be_unused, limited:Boolean
+        self.body_withs = dict()  # "pkg" -> use, might_be_unused, limited:Boolean
         self.private = []  # Private section
         self.language_version = ""  # a pragma to be put just after the headers
         self.formal_params = ""  # generic formal parameters
@@ -2675,6 +2686,7 @@ class Package(object):
         specs: bool = True,
         do_use: bool = True,
         might_be_unused: bool = False,
+        limited=False,
     ):
         """Add a with+use clause for pkg, where pkg can also be a list.
         Automatic casing is performed. If specs is True, the withs are
@@ -2709,10 +2721,11 @@ class Package(object):
 
             # Need to unpack the tuple to use values in a bool clause
             # as a tuple always evaluates to True
-            prev_do_use, prev_might_be_unused = self.spec_withs.get(p, (False, False))
+            prev_do_use, prev_might_be_unused, prev_limited = self.spec_withs.get(p, (False, False, False))
             p_info = (
                 do_use or prev_do_use,
                 might_be_unused or prev_might_be_unused,
+                limited or prev_limited
             )
 
             if specs:
@@ -2739,13 +2752,15 @@ class Package(object):
             for w in sorted(
                 list(withs.keys()), key=lambda w: "zz%s" % w if withs[w][1] else w
             ):
-                do_use, might_be_unused = withs[w]
+                do_use, might_be_unused, limited = withs[w]
 
                 if might_be_unused and not had_warnings_off:
                     result.append("pragma Warnings(Off);  --  might be unused")
                     had_warnings_off = True
 
-                if do_use:
+                if limited:
+                    result.append("limited with %s;" % w)
+                elif do_use:
                     result.append("with %-*s use %s;" % (m + 1, w + ";", w))
                 else:
                     result.append("with %s;" % w)
