@@ -36,9 +36,6 @@ package Graphene.Config is
    end record;
    pragma Convention (C, Graphene_Simd4f);
 
-   function From_Object_Free (B : access Graphene_Simd4f) return Graphene_Simd4f;
-   pragma Inline (From_Object_Free);
-
 
    type Graphene_Simd4x4f is record
       X : Graphene_Simd4f;
@@ -48,14 +45,25 @@ package Graphene.Config is
    end record;
    pragma Convention (C, Graphene_Simd4x4f);
 
-   function From_Object_Free (B : access Graphene_Simd4x4f) return Graphene_Simd4x4f;
-   pragma Inline (From_Object_Free);
-
    ----------------------
    -- GtkAda additions --
    ----------------------
 
+   function From_Object_Free
+     (B : not null access Graphene_Simd4f) return Graphene_Simd4f;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
+
    for Graphene_Simd4f'Alignment use 16;
+
+   function From_Object_Free
+     (B : not null access Graphene_Simd4x4f) return Graphene_Simd4x4f;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    for Graphene_Simd4x4f'Alignment use 16;
 

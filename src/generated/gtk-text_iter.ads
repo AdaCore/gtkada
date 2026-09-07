@@ -54,8 +54,6 @@ package Gtk.Text_Iter is
    Case_Insensitive : constant Gtk_Text_Search_Flags := 4;
 
    type Gtk_Text_Iter is private;
-   function From_Object_Free (B : access Gtk_Text_Iter) return Gtk_Text_Iter;
-   pragma Inline (From_Object_Free);
    --  Iterates over the contents of a `GtkTextBuffer`.
    --
    --  You may wish to begin by reading the [text widget conceptual
@@ -988,6 +986,13 @@ package Gtk.Text_Iter is
    ----------------------
    -- GtkAda additions --
    ----------------------
+
+   function From_Object_Free
+     (B : not null access Gtk_Text_Iter) return Gtk_Text_Iter;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    procedure Copy (Source : Gtk_Text_Iter; Dest : out Gtk_Text_Iter);
    pragma Inline (Copy);

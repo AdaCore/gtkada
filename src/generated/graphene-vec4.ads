@@ -40,9 +40,6 @@ package Graphene.Vec4 is
       Value : Graphene.Config.Graphene_Simd4f;
    end record;
    pragma Convention (C, Graphene_Vec4_T);
-
-   function From_Object_Free (B : access Graphene_Vec4_T) return Graphene_Vec4_T;
-   pragma Inline (From_Object_Free);
    --  A structure capable of holding a vector with four dimensions: x, y, z,
    --  and w.
    --
@@ -306,6 +303,17 @@ package Graphene.Vec4 is
    --  Since: gtk+ 1.0
    --  @param B a Graphene.Vec4.Graphene_Vec4_T
    --  @param Res return location for the resulting vector
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Vec4_T) return Graphene_Vec4_T;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    ---------------
    -- Functions --

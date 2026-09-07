@@ -129,7 +129,7 @@ package Gtk.Shortcut_Action is
 
    procedure Print
       (Self   : not null access Gtk_Shortcut_Action_Record;
-       String : access Glib.String.Gstring);
+       String : Glib.String.Gstring);
    --  Prints the given action into a string for the developer.
    --  This is meant for debugging and logging.
    --  The form of the representation may change at any time and is not

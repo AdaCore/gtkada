@@ -26,13 +26,6 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Graphene.Triangle is
 
-   function From_Object_Free (B : access Graphene_Triangle_T) return Graphene_Triangle_T is
-      Result : constant Graphene_Triangle_T := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    --------------------
    -- Contains_Point --
    --------------------
@@ -108,5 +101,18 @@ package body Graphene.Triangle is
    begin
       return Internal (Self, P, Uv_A, Uv_B, Uv_C, Res) /= 0;
    end Get_Uv;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Triangle_T) return Graphene_Triangle_T
+   is
+      Result : constant Graphene_Triangle_T := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Graphene.Triangle;

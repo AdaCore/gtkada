@@ -26,7 +26,13 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Gtk.Accessible_Text is
 
-   function From_Object_Free (B : access Gtk_Accessible_Text_Range) return Gtk_Accessible_Text_Range is
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gtk_Accessible_Text_Range) return Gtk_Accessible_Text_Range
+   is
       Result : constant Gtk_Accessible_Text_Range := B.all;
    begin
       Glib.g_free (B.all'Address);

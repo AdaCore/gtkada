@@ -30,13 +30,6 @@ pragma Warnings(On);
 
 package body Pango.Attributes is
 
-   function From_Object_Free (B : access Pango_Attribute) return Pango_Attribute is
-      Result : constant Pango_Attribute := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    function Convert (R : Pango.Attributes.Pango_Attribute) return System.Address is
    begin
       return Glib.To_Address (Glib.C_Proxy (R));
@@ -265,6 +258,19 @@ package body Pango.Attributes is
    begin
       Internal (Get_Object (Self), Pos, Remove, Add);
    end Update;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Pango_Attribute) return Pango_Attribute
+   is
+      Result : constant Pango_Attribute := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
    ---------------------
    -- Attr_Family_New --

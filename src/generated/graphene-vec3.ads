@@ -40,9 +40,6 @@ package Graphene.Vec3 is
       Value : Graphene.Config.Graphene_Simd4f;
    end record;
    pragma Convention (C, Graphene_Vec3_T);
-
-   function From_Object_Free (B : access Graphene_Vec3_T) return Graphene_Vec3_T;
-   pragma Inline (From_Object_Free);
    --  A structure capable of holding a vector with three dimensions: x, y,
    --  and z.
    --
@@ -313,6 +310,17 @@ package Graphene.Vec3 is
    --  Since: gtk+ 1.0
    --  @param B a Graphene.Vec3.Graphene_Vec3_T
    --  @param Res return location for the resulting vector
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Vec3_T) return Graphene_Vec3_T;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    ---------------
    -- Functions --

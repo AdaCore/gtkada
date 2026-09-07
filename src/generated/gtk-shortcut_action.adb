@@ -105,11 +105,11 @@ package body Gtk.Shortcut_Action is
 
    procedure Print
       (Self   : not null access Gtk_Shortcut_Action_Record;
-       String : access Glib.String.Gstring)
+       String : Glib.String.Gstring)
    is
       procedure Internal
          (Self   : System.Address;
-          String : access Glib.String.Gstring);
+          String : Glib.String.Gstring);
       pragma Import (C, Internal, "gtk_shortcut_action_print");
    begin
       Internal (Get_Object (Self), String);

@@ -41,9 +41,6 @@ package Pango.Matrix is
       Y0 : Gdouble;
    end record;
    pragma Convention (C, Pango_Matrix);
-
-   function From_Object_Free (B : access Pango_Matrix) return Pango_Matrix;
-   pragma Inline (From_Object_Free);
    --  A structure specifying a transformation between user-space coordinates
    --  and device coordinates. The transformation is given by
    --
@@ -206,5 +203,16 @@ package Pango.Matrix is
    --  Since: gtk+ 1.6
    --  @param Tx amount to translate in the X direction
    --  @param Ty amount to translate in the Y direction
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Pango_Matrix) return Pango_Matrix;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
 end Pango.Matrix;

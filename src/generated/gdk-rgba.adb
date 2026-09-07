@@ -31,13 +31,6 @@ pragma Warnings(On);
 
 package body Gdk.RGBA is
 
-   function From_Object_Free (B : access Gdk_RGBA) return Gdk_RGBA is
-      Result : constant Gdk_RGBA := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    function To_Address
      (Val : Gdk_RGBA; Addr : System.Address) return System.Address is
    begin
@@ -135,5 +128,18 @@ package body Gdk.RGBA is
    begin
       return Gtkada.Bindings.Value_And_Free (Internal (Self));
    end To_String;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gdk_RGBA) return Gdk_RGBA
+   is
+      Result : constant Gdk_RGBA := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Gdk.RGBA;

@@ -31,13 +31,6 @@ pragma Warnings(On);
 
 package body Gtk.Text_Iter is
 
-   function From_Object_Free (B : access Gtk_Text_Iter) return Gtk_Text_Iter is
-      Result : constant Gtk_Text_Iter := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    type Gtk_Text_Iter_Access is access Gtk_Text_Iter;
    function Convert is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Text_Iter_Access);
@@ -1432,5 +1425,18 @@ package body Gtk.Text_Iter is
    begin
       return Internal (Iter, Get_Object_Or_Null (GObject (Tag))) /= 0;
    end Toggles_Tag;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gtk_Text_Iter) return Gtk_Text_Iter
+   is
+      Result : constant Gtk_Text_Iter := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Gtk.Text_Iter;

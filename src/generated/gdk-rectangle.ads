@@ -51,9 +51,6 @@ package Gdk.Rectangle is
       Height : Glib.Gint;
    end record;
    pragma Convention (C, Gdk_Rectangle);
-
-   function From_Object_Free (B : access Gdk_Rectangle) return Gdk_Rectangle;
-   pragma Inline (From_Object_Free);
    --  Represents a rectangle.
    --
    --  `GdkRectangle` is identical to `cairo_rectangle_t`. Together with
@@ -125,5 +122,16 @@ package Gdk.Rectangle is
    --  zero width or height).
    --  @param Src2 a `GdkRectangle`
    --  @param Dest return location for the union of Src1 and Src2
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gdk_Rectangle) return Gdk_Rectangle;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
 end Gdk.Rectangle;

@@ -113,9 +113,6 @@ package Glib.IOChannel is
       Io_Get_Flags : System.Address;
    end record;
    pragma Convention (C, GIOFuncs);
-
-   function From_Object_Free (B : access GIOFuncs) return GIOFuncs;
-   pragma Inline (From_Object_Free);
    --  A table of functions used to handle different types of
    --  Glib.IOChannel.Giochannel in a generic way.
 
@@ -142,9 +139,6 @@ package Glib.IOChannel is
       Reserved2 : System.Address := System.Null_Address;
    end record;
    pragma Convention (C, GIO_Channel_Record);
-
-   function From_Object_Free (B : access GIO_Channel_Record) return GIO_Channel_Record;
-   pragma Inline (From_Object_Free);
    --  A data structure representing an IO Channel. The fields should be
    --  considered private and should only be accessed with the following
    --  functions.
@@ -370,6 +364,20 @@ package Glib.IOChannel is
    ----------------------
    -- GtkAda additions --
    ----------------------
+
+   function From_Object_Free
+     (B : not null access GIOFuncs) return GIOFuncs;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
+
+   function From_Object_Free
+     (B : not null access GIO_Channel_Record) return GIO_Channel_Record;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    function Shutdown
      (Self     : Giochannel;

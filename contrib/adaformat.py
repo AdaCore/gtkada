@@ -1654,7 +1654,8 @@ class Local_Var(object):
         elif lang == "ada->c":
             return self.type.as_c_param(pkg)
         elif lang == "c->ada":
-            return self.type.convert_from_c()[1]
+            converted = self.type.convert_from_c()
+            return converted.c_type if converted else ""
 
     def spec(
         self,

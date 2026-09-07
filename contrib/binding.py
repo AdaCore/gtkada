@@ -2119,7 +2119,7 @@ end if;"""
             returns=profile.returns,
         ).import_c(cname)
 
-        call = internal.call(in_pkg=self.pkg)
+        call: CodeCall = internal.call(in_pkg=self.pkg)
         assert call.returnvar is not None, "A function"
 
         gtk_new_prefix = "Gtk_New"
@@ -2135,7 +2135,16 @@ end if;"""
             else:
                 adaname = "Gtk_%s" % name  # e.g.  Gtk_New
 
-        selfname = gtkmethod.get_param("self").ada_name() or "Self"
+        # Some constructor params have transfer-overship:full
+        # but this means that the constructed object owns the data
+        # and thus it should NOT be freed (example: g_string_new_take)
+        for p in internal.plist:
+            param_free = p.type.cleanup % 'Tmp_Init' if p.type.cleanup and isinstance(p.type, UTF8) else None
+            if p.ownership and param_free and param_free in call.freecall:
+                call.freecall.remove(param_free)
+                p.doc += 'Tmp_Init owned by object, must not be freed by constructor.'
+
+        selfname = gtkmethod.get_param("self").ada_name() or "Self"      
 
         if self.is_gobject:
             selftype = "%(typename)s_Record'Class" % self._subst
@@ -3333,6 +3342,34 @@ end "+";"""
 
         fields = []  # array of (name,type,default) tuples
 
+        # Constants for code insertion
+        def from_objfree_decl(typename: str) -> str:
+            lines = [
+                'function From_Object_Free',
+                f"   (B : not null access {typename}) return {typename};",
+                'pragma Inline (From_Object_Free);',
+                '--  Return the underlying object and free the pointer.',
+                '--  This is meant to be used internally by GtkAda, ',
+                '--  and should not in general be called by user code.'
+            ]
+            return "\n".join(lines)
+
+        def from_objfree_body(typename: str) -> str:
+            lines = [
+                '\n----------------------',
+                '-- From_Object_Free --',
+                '----------------------\n',
+                'function From_Object_Free',
+                f"   (B : not null access {typename}) return {typename}",
+                'is',
+                f"   Result : constant {typename} := B.all;",
+                'begin',
+                "   Glib.g_free (B.all'Address);",
+                '   return Result;',
+                'end From_Object_Free;'
+            ]
+            return "\n".join(lines)
+
         # Check if we have forced the mapping as a C proxy ?
 
         if naming.type_exceptions.get(ctype, None) is None or not isinstance(
@@ -3386,38 +3423,18 @@ end "+";"""
                     self.pkg.add_with(package_name(ftype))
                     fields.append((naming.case(name), ftype, default_value))
 
+        assert self.pkg is not None
+        # Insert From_Object_Free into GtkAda section
+        objfree_section = self.pkg.section("GtkAda additions")
         if not fields:
-            section.add(
-                (
-                    "\ntype %(typename)s is new Glib.C_Proxy;\n"
-                    + "function From_Object_Free (B : access %(typename)s) "
-                    + "return %(typename)s;\npragma Inline (From_Object_Free);"
-                )
-                % {"typename": base}
-            )
-            section.add(
-                """
-function From_Object_Free (B : access %(typename)s) return %(typename)s is
-   Result : constant %(typename)s := B.all;
-begin
-   Glib.g_free (B.all'Address);
-   return Result;
-end From_Object_Free;"""
-                % {"typename": base},
-                in_spec=False,
-            )
+            section.add(f"\ntype {base} is new Glib.C_Proxy;")
+            objfree_section.add(from_objfree_decl(base))
+            objfree_section.add(from_objfree_body(base), in_spec=False)
 
         else:
             if private:
-                section.add(
-                    (
-                        "\ntype %(typename)s is private;\n"
-                        + "function From_Object_Free (B : access %(typename)s)"
-                        + " return %(typename)s;\n"
-                        + "pragma Inline (From_Object_Free);"
-                    )
-                    % {"typename": base}
-                )
+                section.add(f"\ntype {base} is private;")
+                objfree_section.add(from_objfree_decl(base))
                 adder = self.pkg.add_private
             else:
                 adder = section.add
@@ -3442,7 +3459,7 @@ end From_Object_Free;"""
                             when_stmt = [enums[index][1]]
 
                         if not when_stmt:
-                            print(f"ERROR: no discrimant value for field {f[0]}")
+                            print(f"ERROR: no discriminant value for field {f[0]}")
 
                         text += "\n      when %s =>\n %s : %s;\n" % (
                             "\n          | ".join(when_stmt),
@@ -3471,26 +3488,8 @@ end From_Object_Free;"""
                 adder(c.format("   "))
 
             if not private:
-                section.add(
-                    (
-                        "\nfunction From_Object_Free (B : access %(type)s)"
-                        + " return %(type)s;\n"
-                        + "pragma Inline (From_Object_Free);"
-                    )
-                    % {"type": base}
-                )
-
-            section.add(
-                """
-function From_Object_Free (B : access %(typename)s) return %(typename)s is
-   Result : constant %(typename)s := B.all;
-begin
-   Glib.g_free (B.all'Address);
-   return Result;
-end From_Object_Free;"""
-                % {"typename": base},
-                in_spec=False,
-            )
+                objfree_section.add(from_objfree_decl(base))
+            objfree_section.add(from_objfree_body(base), in_spec=False)
 
         section.add(Code(_get_clean_doc(node), iscomment=True))
 

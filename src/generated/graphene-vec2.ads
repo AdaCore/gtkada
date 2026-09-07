@@ -37,9 +37,6 @@ package Graphene.Vec2 is
       Value : Graphene.Config.Graphene_Simd4f;
    end record;
    pragma Convention (C, Graphene_Vec2_T);
-
-   function From_Object_Free (B : access Graphene_Vec2_T) return Graphene_Vec2_T;
-   pragma Inline (From_Object_Free);
    --  A structure capable of holding a vector with two dimensions, x and y.
    --
    --  The contents of the Graphene.Vec2.Graphene_Vec2_T structure are private
@@ -240,6 +237,17 @@ package Graphene.Vec2 is
    --  Since: gtk+ 1.0
    --  @param B a Graphene.Vec2.Graphene_Vec2_T
    --  @param Res return location for the result
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Vec2_T) return Graphene_Vec2_T;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    ---------------
    -- Functions --

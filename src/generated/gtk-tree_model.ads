@@ -206,8 +206,6 @@ package Gtk.Tree_Model is
    Tree_Model_List_Only : constant Tree_Model_Flags := 2;
 
    type Gtk_Tree_Iter is private;
-   function From_Object_Free (B : access Gtk_Tree_Iter) return Gtk_Tree_Iter;
-   pragma Inline (From_Object_Free);
    --  The `GtkTreeIter` is the primary structure for accessing a
    --  `GtkTreeModel`. Models are expected to put a unique integer in the Stamp
    --  member, and put model-specific data in the three User_Data members.
@@ -836,6 +834,13 @@ package Gtk.Tree_Model is
       --  depends on the exact model, and will likely be an instance of
       --  Gtk_Tree_Store'Class or Gtk_List_Store'Class depending on how you
       --  created it.
+
+   function From_Object_Free
+     (B : not null access Gtk_Tree_Iter) return Gtk_Tree_Iter;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    function "=" (Left : Gtk_Tree_Iter; Right : Gtk_Tree_Iter) return Boolean;
 

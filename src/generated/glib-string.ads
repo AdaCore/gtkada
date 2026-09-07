@@ -38,15 +38,12 @@ with Gtkada.Types; use Gtkada.Types;
 
 package Glib.String is
 
-   type Gstring is record
+   type Gstring_Record is record
       Str : Gtkada.Types.Chars_Ptr;
       Len : Gsize;
       Allocated_Len : Gsize;
    end record;
-   pragma Convention (C, Gstring);
-
-   function From_Object_Free (B : access Gstring) return Gstring;
-   pragma Inline (From_Object_Free);
+   pragma Convention (C, Gstring_Record);
    --  A `GString` is an object that handles the memory management of a C
    --  string.
    --
@@ -60,6 +57,8 @@ package Glib.String is
    --  in the data. Conceptually then, `GString` is like a `GByteArray` with
    --  the addition of many convenience methods for text, and a guaranteed nul
    --  terminator.
+
+   type Gstring is access all Gstring_Record;
 
    ------------------
    -- Constructors --
@@ -145,8 +144,8 @@ package Glib.String is
    --  @param Val the string to append onto the end of String
    --  @return String
 
-   function Append_C (Self : Gstring; C : Gchar) return Gstring;
-   pragma Import (C, Append_C, "g_string_append_c");
+   function Append_Char (Self : Gstring; C : Gchar) return Gstring;
+   pragma Import (C, Append_Char, "g_string_append_c");
    --  Adds a byte onto the end of a Glib.String.Gstring, expanding it if
    --  necessary.
    --  @param C the byte to append onto the end of String
@@ -340,8 +339,8 @@ package Glib.String is
    --  @param Val the string to prepend on the start of String
    --  @return String
 
-   function Prepend_C (Self : Gstring; C : Gchar) return Gstring;
-   pragma Import (C, Prepend_C, "g_string_prepend_c");
+   function Prepend_Char (Self : Gstring; C : Gchar) return Gstring;
+   pragma Import (C, Prepend_Char, "g_string_prepend_c");
    --  Adds a byte onto the start of a Glib.String.Gstring, expanding it if
    --  necessary.
    --  @param C the byte to prepend on the start of the Glib.String.Gstring
@@ -410,5 +409,16 @@ package Glib.String is
    --  Converts a Glib.String.Gstring to uppercase.
    --  Deprecated since 2.2, 1
    --  @return String
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gstring_Record) return Gstring_Record;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
 end Glib.String;

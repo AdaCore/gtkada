@@ -26,13 +26,6 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Graphene.Vec4 is
 
-   function From_Object_Free (B : access Graphene_Vec4_T) return Graphene_Vec4_T is
-      Result : constant Graphene_Vec4_T := B.all;
-   begin
-      Glib.g_free (B.all'Address);
-      return Result;
-   end From_Object_Free;
-
    -----------
    -- Equal --
    -----------
@@ -66,5 +59,18 @@ package body Graphene.Vec4 is
    begin
       return Internal (Self, V2, Epsilon) /= 0;
    end Near;
+
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Vec4_T) return Graphene_Vec4_T
+   is
+      Result : constant Graphene_Vec4_T := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
 
 end Graphene.Vec4;

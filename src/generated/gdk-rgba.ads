@@ -47,9 +47,6 @@ package Gdk.RGBA is
       Alpha : Interfaces.C.C_float;
    end record;
    pragma Convention (C, Gdk_RGBA);
-
-   function From_Object_Free (B : access Gdk_RGBA) return Gdk_RGBA;
-   pragma Inline (From_Object_Free);
    --  Represents a color, in a way that is compatible with cairo's notion of
    --  color.
    --
@@ -134,6 +131,13 @@ package Gdk.RGBA is
    ----------------------
    -- GtkAda additions --
    ----------------------
+
+   function From_Object_Free
+     (B : not null access Gdk_RGBA) return Gdk_RGBA;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    type array_of_Gdk_RGBA is array (Natural range <>) of Gdk_RGBA;
 

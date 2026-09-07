@@ -48,9 +48,6 @@ package Graphene.Matrix is
       Value : Graphene.Config.Graphene_Simd4x4f;
    end record;
    pragma Convention (C, Graphene_Matrix_T);
-
-   function From_Object_Free (B : access Graphene_Matrix_T) return Graphene_Matrix_T;
-   pragma Inline (From_Object_Free);
    --  A structure capable of holding a 4x4 matrix.
    --
    --  The contents of the Graphene.Matrix.Graphene_Matrix_T structure are
@@ -843,5 +840,16 @@ package Graphene.Matrix is
    --  @param Bounds the bounds of the transformation
    --  @param Res return location for the untransformed point
    --  @return `true` if the point was successfully untransformed
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Matrix_T) return Graphene_Matrix_T;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
 end Graphene.Matrix;

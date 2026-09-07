@@ -37,9 +37,6 @@ package Graphene.Sphere is
       Radius : Interfaces.C.C_float;
    end record;
    pragma Convention (C, Graphene_Sphere_T);
-
-   function From_Object_Free (B : access Graphene_Sphere_T) return Graphene_Sphere_T;
-   pragma Inline (From_Object_Free);
    --  A sphere, represented by its center and radius.
 
    ------------------
@@ -144,6 +141,13 @@ package Graphene.Sphere is
    ----------------------
    -- GtkAda additions --
    ----------------------
+
+   function From_Object_Free
+     (B : not null access Graphene_Sphere_T) return Graphene_Sphere_T;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
 
    function Init_From_Points
      (Self     : not null access Graphene_Sphere_T;
