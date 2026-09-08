@@ -26,6 +26,10 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package Glib.Utils is
 
+   Major_Version : constant Glib.Gint := 2;
+   Micro_Version : constant Glib.Gint := 0;
+   Minor_Version : constant Glib.Gint := 88;
+
    ----------------------
    -- GtkAda additions --
    ----------------------

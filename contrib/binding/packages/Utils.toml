@@ -3,6 +3,10 @@
 # ============================================================
 ada = "Glib.Utils"
 
+[[constant]]
+prefix_regexp = "GLIB_\\w*_VERSION"
+prefix = "GLIB_"
+
 [extra]
 body = '''
 
