@@ -492,7 +492,29 @@ package verbatim.
 
 ### `[[extra.with_body]]` — extra `with` clauses in the body
 
-Same keys as `with_spec`.
+| Key       | Type   | Meaning                                    | Default |
+|-----------|--------|--------------------------------------------|---------|
+| `pkg`     | string | Package to `with`.                         |         |
+| `use`     | bool   | Whether to emit a `use` clause too.        | `true`  |
+
+There is no `limited` key here: a body needs the full view of the
+packages it withs.
+
+A `with` requested for the body is dropped as redundant when the spec
+already has a **full** `with` for the same package. A `limited with` in
+the spec does not make it redundant: the limited view only provides an
+incomplete type, so a body that dereferences it needs its own `with`.
+That pairing — `limited with` in the spec, plain `with` in the body — is
+how a mutual dependency between two generated packages is broken:
+
+```toml
+[[extra.with_spec]]
+pkg = "Glib.App_Launch_Context"
+limited = true
+
+[[extra.with_body]]
+pkg = "Glib.App_Launch_Context"
+```
 
 ### `[[extra.spec]]` — code injected into the spec
 

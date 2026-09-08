@@ -2720,9 +2720,17 @@ class Package(object):
             if not sublist(l_p_name, l_name):
                 continue  # Already imported by construction
 
+            # Merge with the flags already recorded for p in the very
+            # dictionary we are about to write to: a body with must not
+            # inherit `limited` from its spec counterpart, or the full view
+            # it was asked for would be lost.
+            target = self.spec_withs if specs else self.body_withs
+
             # Need to unpack the tuple to use values in a bool clause
             # as a tuple always evaluates to True
-            prev_do_use, prev_might_be_unused, prev_limited = self.spec_withs.get(p, (False, False, False))
+            prev_do_use, prev_might_be_unused, prev_limited = target.get(
+                p, (False, False, False)
+            )
             p_info = (
                 do_use or prev_do_use,
                 might_be_unused or prev_might_be_unused,
@@ -2731,9 +2739,16 @@ class Package(object):
 
             if specs:
                 self.spec_withs[p] = p_info
-                self.body_withs.pop(p, None)  # Remove same with in body
-            elif p not in self.spec_withs:
-                self.body_withs[p] = p_info
+                if not p_info[2]:
+                    # A full with in the spec makes the one in the body
+                    # redundant. A limited with does not: it only provides
+                    # an incomplete view of the type, so a body that
+                    # dereferences it still needs its own full with.
+                    self.body_withs.pop(p, None)
+            else:
+                spec_info = self.spec_withs.get(p)
+                if spec_info is None or spec_info[2]:
+                    self.body_withs[p] = p_info
 
     def add_private(self, code: str, at_end: bool = False):
         if at_end:
