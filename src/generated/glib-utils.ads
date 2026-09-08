@@ -30,30 +30,6 @@ package Glib.Utils is
    Micro_Version : constant Glib.Gint := 0;
    Minor_Version : constant Glib.Gint := 88;
 
-   ----------------------
-   -- GtkAda additions --
-   ----------------------
-
-   function Get_Home_Dir return UTF8_String;
-   --  Gets the current user's home directory. As with most UNIX tools, this
-   --  function will return the value of the HOME environment variable if it
-   --  is set to an existing absolute path name, falling back to the passwd
-   --  file in the case that it is unset. If the path given in HOME is
-   --  non-absolute, does not exist, or is not a directory, the result is
-   --  undefined. Before version 2.36 this function would ignore the HOME
-   --  environment variable, taking the value from the passwd database
-   --  instead. This was changed to increase the compatibility of GLib with
-   --  other programs (and the XDG basedir specification) and to increase
-   --  testability of programs based on GLib (by making it easier to run them
-   --  from test frameworks). If your program has a strong requirement for
-   --  either the new or the old behaviour (and if you don't wish to increase
-   --  your GLib dependency to ensure that the new behaviour is in effect)
-   --  then you should either directly check the HOME environment variable
-   --  yourself or unset it before calling any functions in GLib.
-   --
-   --  Returns:
-   --    the current user's home directory.
-
    ---------------
    -- Functions --
    ---------------
@@ -80,5 +56,24 @@ package Glib.Utils is
    --  @return null if the GLib library is compatible with the given version,
    --  or a string describing the version mismatch. The returned string is
    --  owned by GLib and must not be modified or freed.
+
+   function Get_Home_Dir return UTF8_String;
+   --  Gets the current user's home directory.
+   --  As with most UNIX tools, this function will return the value of the
+   --  `HOME` environment variable if it is set to an existing absolute path
+   --  name, falling back to the `passwd` file in the case that it is unset.
+   --  If the path given in `HOME` is non-absolute, does not exist, or is not
+   --  a directory, the result is undefined.
+   --  Before version 2.36 this function would ignore the `HOME` environment
+   --  variable, taking the value from the `passwd` database instead. This was
+   --  changed to increase the compatibility of GLib with other programs (and
+   --  the XDG basedir specification) and to increase testability of programs
+   --  based on GLib (by making it easier to run them from test frameworks).
+   --  If your program has a strong requirement for either the new or the old
+   --  behaviour (and if you don't wish to increase your GLib dependency to
+   --  ensure that the new behaviour is in effect) then you should either
+   --  directly check the `HOME` environment variable yourself or unset it
+   --  before calling any functions in GLib.
+   --  @return the current user's home directory
 
 end Glib.Utils;

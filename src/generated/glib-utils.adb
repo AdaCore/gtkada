@@ -30,22 +30,6 @@ pragma Warnings(On);
 
 package body Glib.Utils is
 
-   ------------------
-   -- Get_Home_Dir --
-   ------------------
-
-   function Get_Home_Dir return UTF8_String
-   is
-      function Internal return Gtkada.Types.Chars_Ptr;
-      pragma Import (C, Internal, "glib_get_home_dir");
-
-      Tmp    : constant Gtkada.Types.Chars_Ptr := Internal;
-      Result : constant String := Gtkada.Types.Value (Tmp);
-   begin
-      Gtkada.Types.g_free (Tmp);
-      return Result;
-   end Get_Home_Dir;
-
    -------------------
    -- Check_Version --
    -------------------
@@ -63,5 +47,16 @@ package body Glib.Utils is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Required_Major, Required_Minor, Required_Micro));
    end Check_Version;
+
+   ------------------
+   -- Get_Home_Dir --
+   ------------------
+
+   function Get_Home_Dir return UTF8_String is
+      function Internal return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "g_get_home_dir");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal);
+   end Get_Home_Dir;
 
 end Glib.Utils;
