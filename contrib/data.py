@@ -565,6 +565,7 @@ binding = (
     "Gtk.Sorter",
     "Gtk.SortListModel",
     "Gtk.FilterListModel",
+    "Gtk.MapListModel",
     "--Gtk.Spinner",
     "----GtkSpinnerAccessible",  # We do not support atk
     "Gtk.SpinButton",
