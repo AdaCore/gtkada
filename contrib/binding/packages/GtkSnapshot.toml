@@ -19,7 +19,7 @@ parent = "Gdk.Snapshot.Gdk_Snapshot"
 
 # Makes the three Graphene records (graphene_rect_t, graphene_point_t,
 # graphene_size_t) visible to the generated body.
-[[extra.with_spec]]
+[[extra.with_body]]
 pkg = "Gtkada.Types"
 
 # --- Gradient nodes: need Gsk.ColorStop -----------------------------------
