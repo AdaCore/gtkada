@@ -1498,7 +1498,8 @@ package Glib.Variant is
    --  Officially, the language understood by the parser is "any string
    --  produced by Glib.Variant.Print".
    --  There may be implementation specific restrictions on deeply nested
-   --  values, which would result in a G_VARIANT_PARSE_ERROR_RECURSION error.
+   --  values, which would result in a
+   --  Glib.Error_Enums.G_Variant_Parse_Error_Recursion error.
    --  Glib.Variant.Gvariant is guaranteed to handle nesting up to at least 64
    --  levels.
    --  @param The_Type a Glib.Variant.Gvariant_Type, or null
@@ -1533,7 +1534,8 @@ package Glib.Variant is
    --  Glib.Variant.Parse then you must add nul termination before using this
    --  function.
    --  Since: gtk+ 2.40
-   --  @param Error a Gerror.Gerror from the GVariant_Parse_Error domain
+   --  @param Error a Gerror.Gerror from the
+   --  Glib.Error_Enums.GVariant_Parse_Error domain
    --  @param Source_Str the string that was given to the parser
    --  @return the printed message
 

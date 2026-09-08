@@ -48,6 +48,15 @@ package Glib.Option is
    pragma Convention (C, GOption_Error);
    --  Error codes returned by option parsing.
 
+   GOption_Error_Name   : constant UTF8_String := "g-option-context-error-quark";
+   GOption_Error_Domain : constant GQuark := Quark_From_String (GOption_Error_Name);
+   --  Used to identify error domain in a GError
+
+   function GOption_Error_Matches
+     (Error : GError; Code : Gint) return Boolean
+   is (Error_Matches (Error, GOption_Error_Domain, Code));
+   --  Convenience helper to match error codes
+
    type GOption_Arg is (
       G_Option_Arg_None,
       G_Option_Arg_String,

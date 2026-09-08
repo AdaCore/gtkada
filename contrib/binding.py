@@ -132,6 +132,7 @@ ggettype = QName(glib_uri, "get-type").text
 gsignal = QName(glib_uri, "signal").text
 glib_type_struct = QName(glib_uri, "type-struct").text
 glib_type_name = QName(glib_uri, "type-name").text
+glib_error_domain = QName(glib_uri, "error-domain").text
 glib_fundamental = QName(glib_uri, "fundamental").text
 glib_ref_func = QName(glib_uri, "ref-func").text
 glib_unref_func = QName(glib_uri, "unref-func").text
@@ -3636,6 +3637,26 @@ end "+";"""
             for m, value in members:
                 decl += "%s : constant %s := %s;\n" % (m, base, value)
             section.add(decl)
+
+        # Special handling for error enum domains
+        quarkname: str = node.get(glib_error_domain, '')
+        # Generate string and error quark from "glib:error-domain" field
+        if base.endswith('_Error') and quarkname.endswith('-error-quark'):
+            err_string = base + '_Name'
+            err_domain = base + '_Domain'
+            quarkdecl = "\n".join([
+                f'{err_string}   : constant UTF8_String := "{quarkname}";',
+                f"{err_domain} : constant GQuark := Quark_From_String ({err_string});",
+                "--  Used to identify error domain in a GError"
+            ])
+            err_match = [
+                f'function {base}_Matches',
+                '   (Error : GError; Code : Gint) return Boolean',
+                f'is (Error_Matches (Error, {err_domain}, Code));',
+                '--  Convenience helper to match error codes'
+            ]
+            section.add(quarkdecl)
+            section.add("\n".join(err_match))
 
         section.pkg.section("Enumeration Properties").add(
             "package %s_Properties is\n" % base

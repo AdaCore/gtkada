@@ -73,6 +73,15 @@ package Glib.Spawn is
    pragma Convention (C, GSpawn_Error);
    --  Error codes returned by spawning processes.
 
+   GSpawn_Error_Name   : constant UTF8_String := "g-exec-error-quark";
+   GSpawn_Error_Domain : constant GQuark := Quark_From_String (GSpawn_Error_Name);
+   --  Used to identify error domain in a GError
+
+   function GSpawn_Error_Matches
+     (Error : GError; Code : Gint) return Boolean
+   is (Error_Matches (Error, GSpawn_Error_Domain, Code));
+   --  Convenience helper to match error codes
+
    type GPid is new Interfaces.C.ptrdiff_t;
 
    ----------------------------
