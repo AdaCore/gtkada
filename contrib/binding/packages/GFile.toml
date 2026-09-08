@@ -283,16 +283,6 @@ bind = false
 id = "g_file_load_contents_finish"
 bind = false
 
-# --- crashes without the GError** the generator drops -------------------
-# The generator does not surface "throws" parameters, so the GError** of a
-# throwing function is simply not passed. Most of GIO only writes through it
-# on failure, but g_file_new_tmp starts with
-# g_return_val_if_fail (error == NULL || *error == NULL), which reads whatever
-# the ABI left in that register and aborts.
-[[method]]
-id = "g_file_new_tmp"
-bind = false
-
 # --- redundant explicit array length ------------------------------------
 # A Guint8_Array knows its own length, so drop "length" from the Ada profile
 # and compute it, as Glib.Input_Stream.Read does with its "count".

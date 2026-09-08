@@ -31,7 +31,7 @@
 --  To construct a Glib.GFile.Gfile, you can use: - Glib.GFile.New_For_Path if
 --  you have a path. - Glib.GFile.New_For_Uri if you have a URI. -
 --  Glib.GFile.New_For_Commandline_Arg for a command line argument. -
---  g_file_new_tmp to create a temporary file from a template. -
+--  Glib.GFile.New_Tmp to create a temporary file from a template. -
 --  Glib.GFile.New_Tmp_Async to asynchronously create a temporary file. -
 --  Glib.GFile.New_Tmp_Dir_Async to asynchronously create a temporary
 --  directory. - Glib.GFile.Parse_Name from a UTF-8 string gotten from
@@ -1718,7 +1718,7 @@ package Glib.GFile is
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Callback    : Gasync_Ready_Callback);
    --  Asynchronously opens a file in the preferred directory for temporary
-   --  files (as returned by g_get_tmp_dir) as g_file_new_tmp.
+   --  files (as returned by g_get_tmp_dir) as Glib.GFile.New_Tmp.
    --  Tmpl should be a string in the GLib file name encoding containing a
    --  sequence of six 'X' characters, and containing no directory components.
    --  If it is null, a default template is used.
@@ -1830,6 +1830,28 @@ package Glib.GFile is
    --  @param URI a UTF-8 string containing a URI
    --  @return a new Glib.GFile.Gfile for the given Uri. Free the returned
    --  object with g_object_unref.
+
+   function New_Tmp
+      (Tmpl     : UTF8_String := "";
+       Iostream : out Glib.File_IO_Stream.Gfile_Iostream;
+       Error    : out Glib.Error.GError) return Gfile;
+   --  Opens a file in the preferred directory for temporary files (as
+   --  returned by g_get_tmp_dir) and returns a Glib.GFile.Gfile and
+   --  Glib.File_IO_Stream.Gfile_Iostream pointing to it.
+   --  Tmpl should be a string in the GLib file name encoding containing a
+   --  sequence of six 'X' characters, and containing no directory components.
+   --  If it is null, a default template is used.
+   --  Unlike the other Glib.GFile.Gfile constructors, this will return null
+   --  if a temporary file could not be created.
+   --  Since: gtk+ 2.32
+   --  Parameter Iostream has transfer-ownership='full'
+   --  @param Tmpl Template for the file name, as in g_file_open_tmp, or null
+   --  for a default template
+   --  @param Iostream on return, a Glib.File_IO_Stream.Gfile_Iostream for the
+   --  created file
+   --  @param Error the return location for a recoverable error
+   --  @return a new Glib.GFile.Gfile. Free the returned object with
+   --  g_object_unref.
 
    function New_Tmp_Dir_Finish
       (Result : Glib.G_Async_Result;

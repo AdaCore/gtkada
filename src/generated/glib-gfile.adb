@@ -192,7 +192,7 @@ package body Glib.GFile is
        User_Data   : System.Address);
    pragma Import (C, C_G_File_New_Tmp_Async, "g_file_new_tmp_async");
    --  Asynchronously opens a file in the preferred directory for temporary
-   --  files (as returned by g_get_tmp_dir) as g_file_new_tmp.
+   --  files (as returned by g_get_tmp_dir) as Glib.GFile.New_Tmp.
    --  Tmpl should be a string in the GLib file name encoding containing a
    --  sequence of six 'X' characters, and containing no directory components.
    --  If it is null, a default template is used.
@@ -2607,6 +2607,42 @@ package body Glib.GFile is
       Free (Tmp_URI);
       return Tmp_Return;
    end New_For_Uri;
+
+   -------------
+   -- New_Tmp --
+   -------------
+
+   function New_Tmp
+      (Tmpl     : UTF8_String := "";
+       Iostream : out Glib.File_IO_Stream.Gfile_Iostream;
+       Error    : out Glib.Error.GError) return Gfile
+   is
+      function Internal
+         (Tmpl         : Gtkada.Types.Chars_Ptr;
+          Acc_Iostream : access System.Address;
+          Acc_Error    : access Glib.Error.GError) return Gfile;
+      pragma Import (C, Internal, "g_file_new_tmp");
+      Acc_Iostream        : aliased Glib.File_IO_Stream.Gfile_Iostream;
+      Acc_Error           : aliased Glib.Error.GError;
+      Tmp_Tmpl            : Gtkada.Types.Chars_Ptr;
+      Tmp_Acc_Iostream    : aliased System.Address;
+      Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
+      Tmp_Return          : Gfile;
+   begin
+      Tmp_Tmpl :=
+        (if Tmpl = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Tmpl));
+      Tmp_Return := Internal (Tmp_Tmpl, Tmp_Acc_Iostream'Access, Acc_Error'Access);
+      Acc_Iostream := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Acc_Iostream, Stub_Gfile_Iostream));
+      Iostream := Acc_Iostream;
+      Error := Acc_Error;
+      Free (Tmp_Tmpl);
+      return
+        (if Acc_Error = null
+         then Tmp_Return
+         else Null_Gfile);
+   end New_Tmp;
 
    --------------------
    -- New_Tmp_Finish --
