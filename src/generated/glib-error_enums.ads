@@ -308,6 +308,22 @@ package Glib.Error_Enums is
    is (Error_Matches (Error, GRegex_Error_Domain, Code));
    --  Convenience helper to match error codes
 
+   type GResource_Error is (
+      G_Resource_Error_Not_Found,
+      G_Resource_Error_Internal);
+   pragma Convention (C, GResource_Error);
+   --  An error code used with G_RESOURCE_ERROR in a Gerror.Gerror returned
+   --  from a Glib.Resource.Gresource routine.
+
+   GResource_Error_Name   : constant UTF8_String := "g-resource-error-quark";
+   GResource_Error_Domain : constant GQuark := Quark_From_String (GResource_Error_Name);
+   --  Used to identify error domain in a GError
+
+   function GResource_Error_Matches
+     (Error : GError; Code : Gint) return Boolean
+   is (Error_Matches (Error, GResource_Error_Domain, Code));
+   --  Convenience helper to match error codes
+
    type GShell_Error is (
       G_Shell_Error_Bad_Quoting,
       G_Shell_Error_Empty_String,
@@ -410,6 +426,10 @@ package Glib.Error_Enums is
    package GRegex_Error_Properties is
       new Generic_Internal_Discrete_Property (GRegex_Error);
    type Property_GRegex_Error is new GRegex_Error_Properties.Property;
+
+   package GResource_Error_Properties is
+      new Generic_Internal_Discrete_Property (GResource_Error);
+   type Property_GResource_Error is new GResource_Error_Properties.Property;
 
    package GShell_Error_Properties is
       new Generic_Internal_Discrete_Property (GShell_Error);
