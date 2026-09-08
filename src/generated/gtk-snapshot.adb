@@ -24,6 +24,9 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Types;               use Gtkada.Types;
+pragma Warnings(On);
 
 package body Gtk.Snapshot is
 

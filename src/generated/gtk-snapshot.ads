@@ -48,7 +48,6 @@ with Glib;           use Glib;
 with Graphene.Point; use Graphene.Point;
 with Graphene.Rect;  use Graphene.Rect;
 with Graphene.Size;  use Graphene.Size;
-with Gtkada.Types;   use Gtkada.Types;
 with Interfaces.C;   use Interfaces.C;
 with Pango.Layout;   use Pango.Layout;
 

@@ -564,6 +564,7 @@ binding = (
     "----GtkSocket",  # X11-specific, no binding
     "Gtk.Sorter",
     "Gtk.SortListModel",
+    "Gtk.FilterListModel",
     "--Gtk.Spinner",
     "----GtkSpinnerAccessible",  # We do not support atk
     "Gtk.SpinButton",
