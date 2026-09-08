@@ -3,15 +3,32 @@
 # ============================================================
 ada = "Glib.App_Launch_Context"
 
+# GIR spells the "files" parameter "GList*" with a nested <type name="File">,
+# which the generator does not read; name Glib.GFile's list instantiation
+# explicitly instead. Likewise "info" is a "GAppInfo*", and the trailing "*"
+# on top of a C_Proxy would make the generator pass "access Glib.GApp_Info";
+# spelling the type without it passes the proxy itself, as C expects.
 [[method]]
 id = "g_app_launch_context_get_display"
-bind = false
-# requires Gio.AppInfo and Gio.File bindings
+
+[[method.parameter]]
+name = "info"
+ctype = "GAppInfo"
+
+[[method.parameter]]
+name = "files"
+ctype = "GFileList"
 
 [[method]]
 id = "g_app_launch_context_get_startup_notify_id"
-bind = false
-# requires Gio.AppInfo and Gio.File bindings
+
+[[method.parameter]]
+name = "info"
+ctype = "GAppInfo"
+
+[[method.parameter]]
+name = "files"
+ctype = "GFileList"
 
 # ---------------
 # signal payload includes Gio.AppInfo

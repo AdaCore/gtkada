@@ -118,7 +118,9 @@ with Glib.File_IO_Stream;     use Glib.File_IO_Stream;
 with Glib.File_Info;          use Glib.File_Info;
 with Glib.File_Input_Stream;  use Glib.File_Input_Stream;
 with Glib.File_Output_Stream; use Glib.File_Output_Stream;
+with Glib.GSlist;             use Glib.GSlist;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
+with Glib.Glist;              use Glib.Glist;
 with Glib.Object;             use Glib.Object;
 with Glib.Types;              use Glib.Types;
 
@@ -154,6 +156,12 @@ package Glib.GFile is
    G_File_Copy_No_Fallback_For_Move : constant GFile_Copy_Flags := 16;
    G_File_Copy_Target_Default_Perms : constant GFile_Copy_Flags := 32;
    G_File_Copy_Target_Default_Modified_Time : constant GFile_Copy_Flags := 64;
+
+   function Convert (R : Glib.GFile.Gfile) return System.Address;
+   function Convert (R : System.Address) return Glib.GFile.Gfile;
+   package Gfile_List is new Generic_List (Glib.GFile.Gfile);
+
+   package Gfile_SList is new Generic_SList (Glib.GFile.Gfile);
 
    ---------------
    -- Callbacks --

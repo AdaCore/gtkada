@@ -131,6 +131,12 @@ procedure Main is
    procedure Test_Mutate
    with Convention => C;
 
+   procedure Test_List
+   with Convention => C;
+
+   procedure Test_SList
+   with Convention => C;
+
    ----------------
    -- Test_Paths --
    ----------------
@@ -343,6 +349,102 @@ procedure Main is
       Release (Dir);
    end Test_Mutate;
 
+   ---------------
+   -- Test_List --
+   ---------------
+
+   procedure Test_List is
+      One  : constant Gfile := New_For_Path (Data_Path);
+      Two  : constant Gfile :=
+        New_For_Path (Ada.Directories.Compose (Base, "other.txt"));
+
+      List  : Gfile_List.Glist := Gfile_List.Null_List;
+      Item  : Gfile_List.Glist;
+      Count : Guint := 0;
+
+      use type Gfile_List.Glist;
+   begin
+      --  Append then Prepend, so the list reads Two, One.
+
+      Gfile_List.Append (List, One);
+      Gfile_List.Prepend (List, Two);
+      Assert_Cmpuint_Eq (Gfile_List.Length (List), 2);
+
+      --  Every element goes through the generated Convert pair on its way in
+      --  and out of the C list, so it must come back unchanged.
+
+      Assert_True (Gfile_List.Nth_Data (List, 0) = Two);
+      Assert_True (Gfile_List.Nth_Data (List, 1) = One);
+      Assert_True (Gfile_List.Nth_Data (List, 0) /= Null_Gfile);
+      Assert_True (Equal (Gfile_List.Nth_Data (List, 1), One));
+      Assert_Cmpstr_Eq (Get_Basename (Gfile_List.Nth_Data (List, 1)),
+                        "data.txt");
+
+      Assert_Cmpint_Eq (Gfile_List.Index (List, Two), 0);
+      Assert_Cmpint_Eq (Gfile_List.Index (List, One), 1);
+
+      --  Walk the whole list with First / Next.
+
+      Item := Gfile_List.First (List);
+      while Item /= Gfile_List.Null_List loop
+         Assert_True (Gfile_List.Get_Data (Item) /= Null_Gfile);
+         Count := Count + 1;
+         Item := Gfile_List.Next (Item);
+      end loop;
+      Assert_Cmpuint_Eq (Count, 2);
+
+      --  Free only releases the link cells, so the elements are still ours.
+
+      Gfile_List.Free (List);
+      Assert_True (List = Gfile_List.Null_List);
+
+      Release (Two);
+      Release (One);
+   end Test_List;
+
+   ----------------
+   -- Test_SList --
+   ----------------
+
+   procedure Test_SList is
+      One  : constant Gfile := New_For_Path (Data_Path);
+      Two  : constant Gfile :=
+        New_For_Path (Ada.Directories.Compose (Base, "other.txt"));
+
+      List  : Gfile_SList.GSlist := Gfile_SList.Null_List;
+      Item  : Gfile_SList.GSlist;
+      Count : Guint := 0;
+
+      use type Gfile_SList.GSlist;
+   begin
+      Gfile_SList.Append (List, One);
+      Gfile_SList.Prepend (List, Two);
+      Assert_Cmpuint_Eq (Gfile_SList.Length (List), 2);
+
+      Assert_True (Gfile_SList.Nth_Data (List, 0) = Two);
+      Assert_True (Gfile_SList.Nth_Data (List, 1) = One);
+      Assert_True (Equal (Gfile_SList.Nth_Data (List, 1), One));
+      Assert_Cmpint_Eq (Gfile_SList.Index (List, One), 1);
+
+      --  A single-linked list has no First, so start from the head itself.
+
+      Item := List;
+      while Item /= Gfile_SList.Null_List loop
+         Assert_True (Gfile_SList.Get_Data (Item) /= Null_Gfile);
+         Count := Count + 1;
+         Item := Gfile_SList.Next (Item);
+      end loop;
+      Assert_Cmpuint_Eq (Count, 2);
+
+      --  Unlike Glib.Glist.Free, Glib.GSlist.Free leaves List pointing at the
+      --  freed cells, so there is nothing to assert about it afterwards.
+
+      Gfile_SList.Free (List);
+
+      Release (Two);
+      Release (One);
+   end Test_SList;
+
 begin
    Glib.Test.Init;
 
@@ -359,6 +461,8 @@ begin
    Glib.Test.Add_Func
      ("/gfile/query-info", Test_Query_Info'Unrestricted_Access);
    Glib.Test.Add_Func ("/gfile/mutate", Test_Mutate'Unrestricted_Access);
+   Glib.Test.Add_Func ("/gfile/list", Test_List'Unrestricted_Access);
+   Glib.Test.Add_Func ("/gfile/slist", Test_SList'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Main;

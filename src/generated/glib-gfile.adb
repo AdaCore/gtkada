@@ -31,6 +31,17 @@ pragma Warnings(On);
 
 package body Glib.GFile is
 
+   function Convert (R : Glib.GFile.Gfile) return System.Address is
+   begin
+      return System.Address (R);
+   end Convert;
+
+   function Convert (R : System.Address) return Glib.GFile.Gfile is
+   begin
+      return Glib.GFile.Gfile (R);
+   end Convert;
+
+
    procedure C_G_File_Append_To_Async
       (Self        : Gfile;
        Flags       : GFile_Create_Flags;

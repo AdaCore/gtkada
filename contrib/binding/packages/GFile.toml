@@ -30,6 +30,18 @@ ctype = "GFileCreateFlags"
 [[enum]]
 ctype = "GFileCopyFlags"
 
+# --- lists of GFile ----------------------------------------------------
+# GLib hands out both flavours: a GList* of GFile in
+# g_app_info_launch / g_app_launch_context_*, and a GSList* of GFile in
+# gdk_file_list_get_files / gdk_file_list_new_from_list.
+[[list]]
+ctype = "GFile"
+ada   = "Gfile_List"
+
+[[slist]]
+ctype = "GFile"
+ada   = "Gfile_SList"
+
 # --- varargs -----------------------------------------------------------
 [[method]]
 id = "g_file_new_build_filename"

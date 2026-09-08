@@ -27,6 +27,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings; use GNAT.Strings;
+with Glib.GFile;   use Glib.GFile;
 with Glib.Object;  use Glib.Object;
 
 package Glib.App_Launch_Context is
@@ -63,6 +64,17 @@ package Glib.App_Launch_Context is
    -- Methods --
    -------------
 
+   function Get_Display
+      (Self  : not null access Gapp_Launch_Context_Record;
+       Info  : Glib.GApp_Info;
+       Files : Glib.GFile.Gfile_List.Glist) return UTF8_String;
+   --  Gets the display string for the Context. This is used to ensure new
+   --  applications are started on the same display as the launching
+   --  application, by setting the `DISPLAY` environment variable.
+   --  @param Info a Glib.GApp_Info
+   --  @param Files a GList of Glib.GFile.Gfile objects
+   --  @return a display string for the display.
+
    function Get_Environment
       (Self : not null access Gapp_Launch_Context_Record)
        return GNAT.Strings.String_List;
@@ -73,14 +85,36 @@ package Glib.App_Launch_Context is
    --  Since: gtk+ 2.32
    --  @return the child's environment
 
+   function Get_Startup_Notify_Id
+      (Self  : not null access Gapp_Launch_Context_Record;
+       Info  : Glib.GApp_Info;
+       Files : Glib.GFile.Gfile_List.Glist) return UTF8_String;
+   --  Initiates startup notification for the application and returns the
+   --  `XDG_ACTIVATION_TOKEN` or `DESKTOP_STARTUP_ID` for the launched
+   --  operation, if supported.
+   --  The returned token may be referred to equivalently as an ‘activation
+   --  token' (using Wayland terminology) or a ‘startup sequence ID' (using X11
+   --  terminology). The two [are
+   --  interoperable](https://gitlab.freedesktop.org/wayland/wayland-protocols/-/blob/main/staging/xdg-activation/x11-interoperation.rst).
+   --  Activation tokens are defined in the [XDG Activation
+   --  Protocol](https://wayland.app/protocols/xdg-activation-v1), and startup
+   --  notification IDs are defined in the [freedesktop.org Startup
+   --  Notification
+   --  Protocol](http://standards.freedesktop.org/startup-notification-spec/startup-notification-latest.txt).
+   --  Support for the XDG Activation Protocol was added in GLib 2.76.
+   --  @param Info a Glib.GApp_Info
+   --  @param Files a GList of Glib.GFile.Gfile objects
+   --  @return a startup notification ID for the application, or null if not
+   --  supported.
+
    procedure Launch_Failed
       (Self              : not null access Gapp_Launch_Context_Record;
        Startup_Notify_Id : UTF8_String);
    --  Called when an application has failed to launch, so that it can cancel
    --  the application startup notification started in
-   --  g_app_launch_context_get_startup_notify_id.
+   --  Glib.App_Launch_Context.Get_Startup_Notify_Id.
    --  @param Startup_Notify_Id the startup notification id that was returned
-   --  by g_app_launch_context_get_startup_notify_id.
+   --  by Glib.App_Launch_Context.Get_Startup_Notify_Id.
 
    procedure Setenv
       (Self     : not null access Gapp_Launch_Context_Record;
