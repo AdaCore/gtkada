@@ -71,6 +71,24 @@ package body Glib.App_Launch_Context is
       end if;
    end Initialize;
 
+   -----------------
+   -- Get_Display --
+   -----------------
+
+   function Get_Display
+      (Self  : not null access Gapp_Launch_Context_Record;
+       Info  : Glib.GApp_Info;
+       Files : Glib.GFile.Gfile_List.Glist) return UTF8_String
+   is
+      function Internal
+         (Self  : System.Address;
+          Info  : Glib.GApp_Info;
+          Files : System.Address) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "g_app_launch_context_get_display");
+   begin
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self), Info, Glib.GFile.Gfile_List.Get_Object (Files)));
+   end Get_Display;
+
    ---------------------
    -- Get_Environment --
    ---------------------
@@ -85,6 +103,24 @@ package body Glib.App_Launch_Context is
    begin
       return To_String_List_And_Free (Internal (Get_Object (Self)));
    end Get_Environment;
+
+   ---------------------------
+   -- Get_Startup_Notify_Id --
+   ---------------------------
+
+   function Get_Startup_Notify_Id
+      (Self  : not null access Gapp_Launch_Context_Record;
+       Info  : Glib.GApp_Info;
+       Files : Glib.GFile.Gfile_List.Glist) return UTF8_String
+   is
+      function Internal
+         (Self  : System.Address;
+          Info  : Glib.GApp_Info;
+          Files : System.Address) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "g_app_launch_context_get_startup_notify_id");
+   begin
+      return Gtkada.Bindings.Value_And_Free (Internal (Get_Object (Self), Info, Glib.GFile.Gfile_List.Get_Object (Files)));
+   end Get_Startup_Notify_Id;
 
    -------------------
    -- Launch_Failed --

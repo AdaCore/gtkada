@@ -454,6 +454,15 @@ can use as a parameter type.
 | `ctype`   | string | C type of the element contained in the list (a `List` / `SList` suffix is appended).      |
 | `section` | string | Optional section name of the generated package where the instantiation should be emitted. |
 
+The generic needs a `Convert` pair between the element type and
+`System.Address`, which the generator writes for you. The shape of those
+two functions depends on the element type: a proxy goes through
+`Glib.To_Address` / `Glib.To_Proxy`, a boxed type through `From_Object`, a
+GObject through `Get_Object` / `Glib.Object.Get_User_Data`, and a bound
+*interface* — a type derived from `Glib.Types.GType_Interface`, and hence
+from `System.Address` — through a plain type conversion.
+`Glib.GFile.Gfile_List` is an example of the last case.
+
 ### `[[type]]`
 
 Declare a hand-written Ada type or subtype.

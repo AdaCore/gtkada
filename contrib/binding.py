@@ -3261,6 +3261,10 @@ end "+";"""
 
             if isinstance(ctype, Proxy):
                 body += "return Glib.To_Address (Glib.C_Proxy (R));"
+            elif isinstance(ctype, Interface):
+                # An interface is a derived type of System.Address (see
+                # Glib.Types.GType_Interface), so a type conversion is enough.
+                body += "return System.Address (R);"
             else:
                 body += "return Get_Object (R);"
 
@@ -3278,6 +3282,9 @@ end "+";"""
                     "begin\nreturn %s " % ctype.ada
                     + "(Glib.C_Proxy'(Glib.To_Proxy (R)));"
                 )
+
+            elif isinstance(ctype, Interface):
+                body += "begin\nreturn %s (R);" % ctype.ada
 
             elif isinstance(ctype, Tagged):
                 # Not a GObject ?

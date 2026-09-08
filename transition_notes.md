@@ -138,7 +138,7 @@ GBytes.toml:
 
 GFile.toml:
 
-- when done, reactivate bindings in GdkTexture.toml, GAppLaunchContext.toml
+- when done, reactivate bindings in GdkTexture.toml
 
 GDateTime:
 
