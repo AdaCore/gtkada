@@ -23,7 +23,10 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
-with Gtkada.Types; use Gtkada.Types;
+pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings; use Gtkada.Bindings;
+with Gtkada.Types;    use Gtkada.Types;
+pragma Warnings(On);
 
 package body Glib.Utils is
 
@@ -42,5 +45,23 @@ package body Glib.Utils is
       Gtkada.Types.g_free (Tmp);
       return Result;
    end Get_Home_Dir;
+
+   -------------------
+   -- Check_Version --
+   -------------------
+
+   function Check_Version
+      (Required_Major : Guint;
+       Required_Minor : Guint;
+       Required_Micro : Guint) return UTF8_String
+   is
+      function Internal
+         (Required_Major : Guint;
+          Required_Minor : Guint;
+          Required_Micro : Guint) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "glib_check_version");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Required_Major, Required_Minor, Required_Micro));
+   end Check_Version;
 
 end Glib.Utils;

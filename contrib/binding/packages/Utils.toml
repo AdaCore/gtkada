@@ -7,6 +7,10 @@ ada = "Glib.Utils"
 prefix_regexp = "GLIB_\\w*_VERSION"
 prefix = "GLIB_"
 
+[[function]]
+id = "glib_check_version"
+bind = true
+
 [extra]
 body = '''
 
@@ -25,7 +29,7 @@ body = '''
       Gtkada.Types.g_free (Tmp);
       return Result;
    end Get_Home_Dir;
-       '''
+'''
 
 [[extra.with_body]]
 pkg = "Gtkada.Types"

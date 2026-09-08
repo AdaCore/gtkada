@@ -54,4 +54,31 @@ package Glib.Utils is
    --  Returns:
    --    the current user's home directory.
 
+   ---------------
+   -- Functions --
+   ---------------
+
+   function Check_Version
+      (Required_Major : Guint;
+       Required_Minor : Guint;
+       Required_Micro : Guint) return UTF8_String;
+   --  Checks that the GLib library in use is compatible with the given
+   --  version.
+   --  Generally you would pass in the constants GLIB_MAJOR_VERSION,
+   --  GLIB_MINOR_VERSION, GLIB_MICRO_VERSION as the three arguments to this
+   --  function; that produces a check that the library in use is compatible
+   --  with the version of GLib the application or module was compiled against.
+   --  Compatibility is defined by two things: first the version of the
+   --  running library is newer than the version
+   --  `Required_Major.required_minor.Required_Micro`. Second the running
+   --  library must be binary compatible with the version
+   --  `Required_Major.Required_Minor.Required_Micro` (same major version.)
+   --  Since: gtk+ 2.6
+   --  @param Required_Major the required major version
+   --  @param Required_Minor the required minor version
+   --  @param Required_Micro the required micro version
+   --  @return null if the GLib library is compatible with the given version,
+   --  or a string describing the version mismatch. The returned string is
+   --  owned by GLib and must not be modified or freed.
+
 end Glib.Utils;
