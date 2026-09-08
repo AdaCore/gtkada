@@ -78,8 +78,11 @@ package Glib.Spawn is
    --  Used to identify error domain in a GError
 
    function GSpawn_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GSpawn_Error_Domain, Code));
+     (Error : GError; Code : GSpawn_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GSpawn_Error_Domain,
+         Glib.Gint (GSpawn_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    type GPid is new Interfaces.C.ptrdiff_t;

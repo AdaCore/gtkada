@@ -39,6 +39,9 @@ ctype = "GOptionError"
 ctype = "GRegexError"
 
 [[enum]]
+ctype = "GResourceError"
+
+[[enum]]
 ctype = "GShellError"
 
 [[enum]]

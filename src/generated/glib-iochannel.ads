@@ -99,8 +99,11 @@ package Glib.IOChannel is
    --  Used to identify error domain in a GError
 
    function GIOChannel_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GIOChannel_Error_Domain, Code));
+     (Error : GError; Code : GIOChannel_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GIOChannel_Error_Domain,
+         Glib.Gint (GIOChannel_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    type GSeek_Type is (

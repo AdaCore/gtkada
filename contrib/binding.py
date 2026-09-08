@@ -3651,8 +3651,11 @@ end "+";"""
             ])
             err_match = [
                 f'function {base}_Matches',
-                '   (Error : GError; Code : Gint) return Boolean',
-                f'is (Error_Matches (Error, {err_domain}, Code));',
+                f'   (Error : GError; Code : {base}) return Boolean',
+                f"is (Error_Matches",
+                "       (Error,",
+                f"       {err_domain},",
+                f"       Glib.Gint ({base}'Pos (Code))));",
                 '--  Convenience helper to match error codes'
             ]
             section.add(quarkdecl)

@@ -358,8 +358,11 @@ package Gtk.Builder is
    --  Used to identify error domain in a GError
 
    function Gtk_Builder_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, Gtk_Builder_Error_Domain, Code));
+     (Error : GError; Code : Gtk_Builder_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         Gtk_Builder_Error_Domain,
+         Glib.Gint (Gtk_Builder_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    ----------------------------
