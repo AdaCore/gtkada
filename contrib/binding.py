@@ -3641,10 +3641,13 @@ end "+";"""
                 deprecated = node.get("deprecated")
                 deprecated_version = node.get("deprecated-version")
 
-                constant_str = '%s : constant %s := "%s";' % (
+                constval = node.get("value")
+                if ftype.ada.endswith('String'):
+                    constval = '"' + constval + '"'
+                constant_str = '%s : constant %s := %s;' % (
                     name,
                     ftype.ada,
-                    node.get("value"),
+                    constval,
                 )
 
                 if deprecated:
