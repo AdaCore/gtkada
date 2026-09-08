@@ -306,9 +306,9 @@ package body Gtk.Expression is
       end if;
    exception
       when Ada.Tags.Tag_Error =>
-      Result := new Dummy_Gtk_Expression_Record'(Create (O'Access));
-      Set_Object (Result, Object);
-      return Result;
+         Result := new Dummy_Gtk_Expression_Record'(Create (O'Access));
+         Set_Object (Result, Object);
+         return Result;
    end From_Object_Full_Ownership;
 
    --------------------------------
