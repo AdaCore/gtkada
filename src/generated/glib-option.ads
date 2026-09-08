@@ -53,8 +53,11 @@ package Glib.Option is
    --  Used to identify error domain in a GError
 
    function GOption_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GOption_Error_Domain, Code));
+     (Error : GError; Code : GOption_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GOption_Error_Domain,
+         Glib.Gint (GOption_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    type GOption_Arg is (

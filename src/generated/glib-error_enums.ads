@@ -45,8 +45,11 @@ package Glib.Error_Enums is
    --  Used to identify error domain in a GError
 
    function GBookmark_File_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GBookmark_File_Error_Domain, Code));
+     (Error : GError; Code : GBookmark_File_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GBookmark_File_Error_Domain,
+         Glib.Gint (GBookmark_File_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    type GConvert_Error is (
@@ -105,8 +108,11 @@ package Glib.Error_Enums is
    --  Used to identify error domain in a GError
 
    function GFile_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GFile_Error_Domain, Code));
+     (Error : GError; Code : GFile_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GFile_Error_Domain,
+         Glib.Gint (GFile_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    type GKey_File_Error is (
@@ -124,8 +130,11 @@ package Glib.Error_Enums is
    --  Used to identify error domain in a GError
 
    function GKey_File_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GKey_File_Error_Domain, Code));
+     (Error : GError; Code : GKey_File_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GKey_File_Error_Domain,
+         Glib.Gint (GKey_File_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    type GMarkup_Error is (
@@ -144,8 +153,11 @@ package Glib.Error_Enums is
    --  Used to identify error domain in a GError
 
    function GMarkup_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GMarkup_Error_Domain, Code));
+     (Error : GError; Code : GMarkup_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GMarkup_Error_Domain,
+         Glib.Gint (GMarkup_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    type GNumber_Parser_Error is (
@@ -159,8 +171,11 @@ package Glib.Error_Enums is
    --  Used to identify error domain in a GError
 
    function GNumber_Parser_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GNumber_Parser_Error_Domain, Code));
+     (Error : GError; Code : GNumber_Parser_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GNumber_Parser_Error_Domain,
+         Glib.Gint (GNumber_Parser_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    type GOption_Error is (
@@ -175,8 +190,11 @@ package Glib.Error_Enums is
    --  Used to identify error domain in a GError
 
    function GOption_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GOption_Error_Domain, Code));
+     (Error : GError; Code : GOption_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GOption_Error_Domain,
+         Glib.Gint (GOption_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    type GRegex_Error is (
@@ -304,8 +322,11 @@ package Glib.Error_Enums is
    --  Used to identify error domain in a GError
 
    function GRegex_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GRegex_Error_Domain, Code));
+     (Error : GError; Code : GRegex_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GRegex_Error_Domain,
+         Glib.Gint (GRegex_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    type GResource_Error is (
@@ -320,8 +341,11 @@ package Glib.Error_Enums is
    --  Used to identify error domain in a GError
 
    function GResource_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GResource_Error_Domain, Code));
+     (Error : GError; Code : GResource_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GResource_Error_Domain,
+         Glib.Gint (GResource_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    type GShell_Error is (
@@ -336,8 +360,11 @@ package Glib.Error_Enums is
    --  Used to identify error domain in a GError
 
    function GShell_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GShell_Error_Domain, Code));
+     (Error : GError; Code : GShell_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GShell_Error_Domain,
+         Glib.Gint (GShell_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    type GThread_Error is (
@@ -387,8 +414,11 @@ package Glib.Error_Enums is
    --  Used to identify error domain in a GError
 
    function GVariant_Parse_Error_Matches
-     (Error : GError; Code : Gint) return Boolean
-   is (Error_Matches (Error, GVariant_Parse_Error_Domain, Code));
+     (Error : GError; Code : GVariant_Parse_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         GVariant_Parse_Error_Domain,
+         Glib.Gint (GVariant_Parse_Error'Pos (Code))));
    --  Convenience helper to match error codes
 
    ----------------------------

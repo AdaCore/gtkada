@@ -223,8 +223,8 @@ package Glib.Resource is
    --  Note: Data must be backed by memory that is at least pointer aligned.
    --  Otherwise this function will internally create a copy of the memory
    --  since GLib 2.56, or in older versions fail and exit the process.
-   --  If Data is empty or corrupt, G_RESOURCE_ERROR_INTERNAL will be
-   --  returned.
+   --  If Data is empty or corrupt, Glib.Error_Enums.G_Resource_Error_Internal
+   --  will be returned.
    --  Since: gtk+ 2.32
    --  @param Data A Glib.Bytes.Gbytes
 
@@ -238,8 +238,8 @@ package Glib.Resource is
    --  Note: Data must be backed by memory that is at least pointer aligned.
    --  Otherwise this function will internally create a copy of the memory
    --  since GLib 2.56, or in older versions fail and exit the process.
-   --  If Data is empty or corrupt, G_RESOURCE_ERROR_INTERNAL will be
-   --  returned.
+   --  If Data is empty or corrupt, Glib.Error_Enums.G_Resource_Error_Internal
+   --  will be returned.
    --  Since: gtk+ 2.32
    --  @param Data A Glib.Bytes.Gbytes
 
@@ -268,7 +268,7 @@ package Glib.Resource is
    --  resource. The return result is a null terminated list of strings which
    --  should be released with g_strfreev.
    --  If Path is invalid or does not exist in the Glib.Resource.Gresource,
-   --  G_RESOURCE_ERROR_NOT_FOUND will be returned.
+   --  Glib.Error_Enums.G_Resource_Error_Not_Found will be returned.
    --  Lookup_Flags controls the behaviour of the lookup.
    --  Since: gtk+ 2.32
    --  @param Path A pathname inside the resource
@@ -353,9 +353,9 @@ package Glib.Resource is
    --  If you want to use this resource in the global resource namespace you
    --  need to register it with Glib.Resource.Register.
    --  If Filename is empty or the data in it is corrupt,
-   --  G_RESOURCE_ERROR_INTERNAL will be returned. If Filename doesn't exist,
-   --  or there is an error in reading it, an error from g_mapped_file_new will
-   --  be returned.
+   --  Glib.Error_Enums.G_Resource_Error_Internal will be returned. If Filename
+   --  doesn't exist, or there is an error in reading it, an error from
+   --  g_mapped_file_new will be returned.
    --  Since: gtk+ 2.32
    --  @param Filename the path of a filename to load, in the GLib filename
    --  encoding
