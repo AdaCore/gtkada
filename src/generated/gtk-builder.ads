@@ -320,6 +320,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
 with Glib;                    use Glib;
+with Glib.Error;              use Glib.Error;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
@@ -351,6 +352,15 @@ package Gtk.Builder is
    pragma Convention (C, Gtk_Builder_Error);
    --  Error codes that identify various errors that can occur while using
    --  `GtkBuilder`.
+
+   Gtk_Builder_Error_Name   : constant UTF8_String := "gtk-builder-error-quark";
+   Gtk_Builder_Error_Domain : constant GQuark := Quark_From_String (Gtk_Builder_Error_Name);
+   --  Used to identify error domain in a GError
+
+   function Gtk_Builder_Error_Matches
+     (Error : GError; Code : Gint) return Boolean
+   is (Error_Matches (Error, Gtk_Builder_Error_Domain, Code));
+   --  Convenience helper to match error codes
 
    ----------------------------
    -- Enumeration Properties --

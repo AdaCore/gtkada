@@ -2,6 +2,9 @@
 #   GtkBuilder
 # ============================================================
 
+[[extra.with_spec]]
+pkg = 'Glib.Error'
+
 [[enum]]
 ctype = "GtkBuilderError"
 

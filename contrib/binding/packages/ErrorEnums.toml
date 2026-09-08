@@ -8,5 +8,45 @@
 
 ada = "Glib.Error_Enums"
 
+[[extra.with_spec]]
+pkg = "Glib.Error"
+
+[[enum]]
+ctype = "GBookmarkFileError"
+
+[[enum]]
+ctype = "GConvertError"
+# Error codes returned by character set conversion routines.
+
 [[enum]]
 ctype = "GFileError"
+# Error codes returned by file operations. Matches UNIX errno codes, available on Windows too.
+
+[[enum]]
+ctype = "GKeyFileError"
+
+[[enum]]
+ctype = "GMarkupError"
+
+[[enum]]
+ctype = "GNumberParserError"
+# Error codes returned by functions converting a string to a number.
+
+[[enum]]
+ctype = "GOptionError"
+
+[[enum]]
+ctype = "GRegexError"
+
+[[enum]]
+ctype = "GShellError"
+
+[[enum]]
+ctype = "GThreadError"
+
+[[enum]]
+ctype = "GUriError"
+
+[[enum]]
+ctype = "GVariantParseError"
+# Error codes returned by parsing text-format GVariants.

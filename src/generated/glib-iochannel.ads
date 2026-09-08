@@ -94,6 +94,15 @@ package Glib.IOChannel is
    pragma Convention (C, GIOChannel_Error);
    --  Error codes returned by Glib.IOChannel.Giochannel operations.
 
+   GIOChannel_Error_Name   : constant UTF8_String := "g-io-channel-error-quark";
+   GIOChannel_Error_Domain : constant GQuark := Quark_From_String (GIOChannel_Error_Name);
+   --  Used to identify error domain in a GError
+
+   function GIOChannel_Error_Matches
+     (Error : GError; Code : Gint) return Boolean
+   is (Error_Matches (Error, GIOChannel_Error_Domain, Code));
+   --  Convenience helper to match error codes
+
    type GSeek_Type is (
       G_Seek_Cur,
       G_Seek_Set,
