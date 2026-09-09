@@ -139,10 +139,6 @@ GDateTime:
 
 - when done, reactivate bindings in GFileInfo (TODO #135)
 
-GdkAppLaunchContext.toml:
-
-- when done, reactivate bindings in GdkDisplay.toml
-
 GdkDragContext.toml:
 
 - when done, reactivate bindings in GtkTreeView.toml

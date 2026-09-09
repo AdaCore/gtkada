@@ -38,19 +38,20 @@
 --  accessed with [methodGdk.Display.get_monitor_at_surface] and similar APIs.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Gdk.Clipboard;      use Gdk.Clipboard;
+with Gdk.App_Launch_Context; use Gdk.App_Launch_Context;
+with Gdk.Clipboard;          use Gdk.Clipboard;
 with Gdk.Device;
-with Gdk.Dmabuf_Formats; use Gdk.Dmabuf_Formats;
-with Gdk.GLContext;      use Gdk.GLContext;
-with Gdk.Monitor;        use Gdk.Monitor;
-with Gdk.Seat;           use Gdk.Seat;
+with Gdk.Dmabuf_Formats;     use Gdk.Dmabuf_Formats;
+with Gdk.GLContext;          use Gdk.GLContext;
+with Gdk.Monitor;            use Gdk.Monitor;
+with Gdk.Seat;               use Gdk.Seat;
 with Gdk.Surface;
-with Glib;               use Glib;
-with Glib.Glist;         use Glib.Glist;
-with Glib.List_Model;    use Glib.List_Model;
-with Glib.Object;        use Glib.Object;
-with Glib.Properties;    use Glib.Properties;
-with Glib.Values;        use Glib.Values;
+with Glib;                   use Glib;
+with Glib.Glist;             use Glib.Glist;
+with Glib.List_Model;        use Glib.List_Model;
+with Glib.Object;            use Glib.Object;
+with Glib.Properties;        use Glib.Properties;
+with Glib.Values;            use Glib.Values;
 with System;
 
 package Gdk.Display is
@@ -111,6 +112,13 @@ package Gdk.Display is
    --  main loop is running.
    --  This is most useful for X11. On windowing systems where requests are
    --  handled synchronously, this function will do nothing.
+
+   function Get_App_Launch_Context
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.App_Launch_Context.Gdk_App_Launch_Context;
+   --  Returns a `GdkAppLaunchContext` suitable for launching applications on
+   --  the given display.
+   --  @return a new `GdkAppLaunchContext` for Display
 
    function Get_Clipboard
       (Self : not null access Gdk_Display_Record)
