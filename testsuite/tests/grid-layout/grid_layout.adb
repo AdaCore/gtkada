@@ -48,7 +48,7 @@ procedure Grid_Layout is
       return Gtk_Grid_Layout_Child is
    begin
       return Gtk_Grid_Layout_Child
-        (Layout.Get_Layout_Child (GObject (Child)));
+        (Layout.Get_Layout_Child (Child));
    end Grid_Child;
 
    --------------------
@@ -91,18 +91,18 @@ procedure Grid_Layout is
       Grid_Child (Layout, Child3).Set_Column (2);
 
       Layout.Measure
-        (GObject (Parent), Orientation_Horizontal, -1,
+        (Parent, Orientation_Horizontal, -1,
          Min_Size, Nat_Size, Min_Base, Nat_Base);
       Assert_Cmpint_Eq (Min_Size, 10 + 20 + 30);
       Assert_Cmpint_Eq (Nat_Size, 20 + 30 + 40);
 
       Layout.Measure
-        (GObject (Parent), Orientation_Vertical, -1,
+        (Parent, Orientation_Vertical, -1,
          Min_Size, Nat_Size, Min_Base, Nat_Base);
       Assert_Cmpint_Eq (Min_Size, 30);
       Assert_Cmpint_Eq (Nat_Size, 40);
 
-      Layout.Allocate (GObject (Parent), 90, 40, 0);
+      Layout.Allocate (Parent, 90, 40, 0);
 
       Assert_Cmpint_Eq (Child1.Allocated_Width, 20);
       Assert_Cmpint_Eq (Child2.Allocated_Width, 30);
@@ -157,18 +157,18 @@ procedure Grid_Layout is
       Grid_Child (Layout, Child3).Set_Row (2);
 
       Layout.Measure
-        (GObject (Parent), Orientation_Horizontal, -1,
+        (Parent, Orientation_Horizontal, -1,
          Min_Size, Nat_Size, Min_Base, Nat_Base);
       Assert_Cmpint_Eq (Min_Size, 30);
       Assert_Cmpint_Eq (Nat_Size, 40);
 
       Layout.Measure
-        (GObject (Parent), Orientation_Vertical, -1,
+        (Parent, Orientation_Vertical, -1,
          Min_Size, Nat_Size, Min_Base, Nat_Base);
       Assert_Cmpint_Eq (Min_Size, 10 + 20 + 30);
       Assert_Cmpint_Eq (Nat_Size, 20 + 30 + 40);
 
-      Layout.Allocate (GObject (Parent), 40, 90, 0);
+      Layout.Allocate (Parent, 40, 90, 0);
 
       Assert_Cmpint_Eq (Child1.Allocated_Width, 40);
       Assert_Cmpint_Eq (Child2.Allocated_Width, 40);
@@ -248,18 +248,18 @@ procedure Grid_Layout is
       LC.Set_Column (2);
 
       Layout.Measure
-        (GObject (Parent), Orientation_Horizontal, -1,
+        (Parent, Orientation_Horizontal, -1,
          Min_Size, Nat_Size, Min_Base, Nat_Base);
       Assert_Cmpint_Eq (Min_Size, 60);
       Assert_Cmpint_Eq (Nat_Size, 80);
 
       Layout.Measure
-        (GObject (Parent), Orientation_Vertical, -1,
+        (Parent, Orientation_Vertical, -1,
          Min_Size, Nat_Size, Min_Base, Nat_Base);
       Assert_Cmpint_Eq (Min_Size, 50);
       Assert_Cmpint_Eq (Nat_Size, 70);
 
-      Layout.Allocate (GObject (Parent), 80, 70, 0);
+      Layout.Allocate (Parent, 80, 70, 0);
 
       Assert_Cmpint_Eq (Child1.Allocated_Width, 30);
       Assert_Cmpint_Eq (Child2.Allocated_Width, 50);
@@ -335,18 +335,18 @@ procedure Grid_Layout is
       LC.Set_Column (1);
 
       Layout.Measure
-        (GObject (Parent), Orientation_Horizontal, -1,
+        (Parent, Orientation_Horizontal, -1,
          Min_Size, Nat_Size, Min_Base, Nat_Base);
       Assert_Cmpint_Eq (Min_Size, 60);
       Assert_Cmpint_Eq (Nat_Size, 80);
 
       Layout.Measure
-        (GObject (Parent), Orientation_Vertical, -1,
+        (Parent, Orientation_Vertical, -1,
          Min_Size, Nat_Size, Min_Base, Nat_Base);
       Assert_Cmpint_Eq (Min_Size, 60);
       Assert_Cmpint_Eq (Nat_Size, 80);
 
-      Layout.Allocate (GObject (Parent), 80, 80, 0);
+      Layout.Allocate (Parent, 80, 80, 0);
 
       Assert_Cmpint_Eq (Child1.Allocated_Width, 40);
       Assert_Cmpint_Eq (Child2.Allocated_Width, 40);
@@ -423,18 +423,18 @@ procedure Grid_Layout is
       LC.Set_Column_Span (2);
 
       Layout.Measure
-        (GObject (Parent), Orientation_Horizontal, -1,
+        (Parent, Orientation_Horizontal, -1,
          Min_Size, Nat_Size, Min_Base, Nat_Base);
       Assert_Cmpint_Eq (Min_Size, 50);
       Assert_Cmpint_Eq (Nat_Size, 100);
 
       Layout.Measure
-        (GObject (Parent), Orientation_Vertical, -1,
+        (Parent, Orientation_Vertical, -1,
          Min_Size, Nat_Size, Min_Base, Nat_Base);
       Assert_Cmpint_Eq (Min_Size, 40);
       Assert_Cmpint_Eq (Nat_Size, 100);
 
-      Layout.Allocate (GObject (Parent), 100, 100, 0);
+      Layout.Allocate (Parent, 100, 100, 0);
 
       Assert_Cmpint_Eq (Child1.Allocated_Width, 50);
       Assert_Cmpint_Eq (Child2.Allocated_Width, 50);
