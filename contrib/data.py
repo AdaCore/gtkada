@@ -567,6 +567,7 @@ binding = (
     "Gtk.FilterListModel",
     "Gtk.MapListModel",
     "Gtk.FlattenListModel",
+    "Gtk.SelectionFilterModel",
     "--Gtk.Spinner",
     "----GtkSpinnerAccessible",  # We do not support atk
     "Gtk.SpinButton",
