@@ -26,9 +26,10 @@
 --  on the same screen as the launching window.
 
 pragma Warnings (Off, "*is already use-visible*");
-with GNAT.Strings; use GNAT.Strings;
-with Glib.GFile;   use Glib.GFile;
-with Glib.Object;  use Glib.Object;
+with GNAT.Strings;  use GNAT.Strings;
+with Glib.App_Info; use Glib.App_Info;
+with Glib.GFile;    use Glib.GFile;
+with Glib.Object;   use Glib.Object;
 
 package Glib.App_Launch_Context is
 
@@ -66,12 +67,12 @@ package Glib.App_Launch_Context is
 
    function Get_Display
       (Self  : not null access Gapp_Launch_Context_Record;
-       Info  : Glib.GApp_Info;
+       Info  : Glib.App_Info.Gapp_Info;
        Files : Glib.GFile.Gfile_List.Glist) return UTF8_String;
    --  Gets the display string for the Context. This is used to ensure new
    --  applications are started on the same display as the launching
    --  application, by setting the `DISPLAY` environment variable.
-   --  @param Info a Glib.GApp_Info
+   --  @param Info a Glib.App_Info.Gapp_Info
    --  @param Files a GList of Glib.GFile.Gfile objects
    --  @return a display string for the display.
 
@@ -87,7 +88,7 @@ package Glib.App_Launch_Context is
 
    function Get_Startup_Notify_Id
       (Self  : not null access Gapp_Launch_Context_Record;
-       Info  : Glib.GApp_Info;
+       Info  : Glib.App_Info.Gapp_Info;
        Files : Glib.GFile.Gfile_List.Glist) return UTF8_String;
    --  Initiates startup notification for the application and returns the
    --  `XDG_ACTIVATION_TOKEN` or `DESKTOP_STARTUP_ID` for the launched
@@ -102,7 +103,7 @@ package Glib.App_Launch_Context is
    --  Notification
    --  Protocol](http://standards.freedesktop.org/startup-notification-spec/startup-notification-latest.txt).
    --  Support for the XDG Activation Protocol was added in GLib 2.76.
-   --  @param Info a Glib.GApp_Info
+   --  @param Info a Glib.App_Info.Gapp_Info
    --  @param Files a GList of Glib.GFile.Gfile objects
    --  @return a startup notification ID for the application, or null if not
    --  supported.
@@ -140,8 +141,8 @@ package Glib.App_Launch_Context is
 
    Signal_Launch_Failed : constant Glib.Signal_Name := "launch-failed";
    --  The Glib.App_Launch_Context.Gapp_Launch_Context::launch-failed signal
-   --  is emitted when a Glib.GApp_Info launch fails. The startup notification
-   --  id is provided, so that the launcher can cancel the startup
+   --  is emitted when a Glib.App_Info.Gapp_Info launch fails. The startup
+   --  notification id is provided, so that the launcher can cancel the startup
    --  notification.
    --
    --  Because a launch operation may involve spawning multiple instances of
@@ -153,11 +154,11 @@ package Glib.App_Launch_Context is
 
    Signal_Launch_Started : constant Glib.Signal_Name := "launch-started";
    --  The Glib.App_Launch_Context.Gapp_Launch_Context::launch-started signal
-   --  is emitted when a Glib.GApp_Info is about to be launched. If non-null
-   --  the Platform_Data is an GVariant dictionary mapping strings to variants
-   --  (ie `a{sv}`), which contains additional, platform-specific data about
-   --  this launch. On UNIX, at least the `startup-notification-id` keys will
-   --  be present.
+   --  is emitted when a Glib.App_Info.Gapp_Info is about to be launched. If
+   --  non-null the Platform_Data is an GVariant dictionary mapping strings to
+   --  variants (ie `a{sv}`), which contains additional, platform-specific data
+   --  about this launch. On UNIX, at least the `startup-notification-id` keys
+   --  will be present.
    --
    --  The value of the `startup-notification-id` key (type `s`) is a startup
    --  notification ID corresponding to the format from the
@@ -178,12 +179,12 @@ package Glib.App_Launch_Context is
    --        Platform_Data : Glib.Variant.Gvariant)
    -- 
    --  Callback parameters:
-   --    --  @param Info the Glib.GApp_Info that is about to be launched
+   --    --  @param Info the Glib.App_Info.Gapp_Info that is about to be launched
    --    --  @param Platform_Data additional platform-specific data for this launch
 
    Signal_Launched : constant Glib.Signal_Name := "launched";
    --  The Glib.App_Launch_Context.Gapp_Launch_Context::launched signal is
-   --  emitted when a Glib.GApp_Info is successfully launched.
+   --  emitted when a Glib.App_Info.Gapp_Info is successfully launched.
    --
    --  Because a launch operation may involve spawning multiple instances of
    --  the target application, you should expect this signal to be emitted
@@ -210,7 +211,7 @@ package Glib.App_Launch_Context is
    --        Platform_Data : Glib.Variant.Gvariant)
    -- 
    --  Callback parameters:
-   --    --  @param Info the Glib.GApp_Info that was just launched
+   --    --  @param Info the Glib.App_Info.Gapp_Info that was just launched
    --    --  @param Platform_Data additional platform-specific data for this launch
 
 end Glib.App_Launch_Context;

@@ -474,6 +474,106 @@ void gtkada_List_Model_set_get_n_items(GListModelInterface* iface, void* handler
     iface->get_n_items = handler;
 }
 
+void gtkada_App_Info_set_add_supports_type(GAppInfoIface* iface, void* handler) {
+    iface->add_supports_type = handler;
+}
+
+void gtkada_App_Info_set_can_delete(GAppInfoIface* iface, void* handler) {
+    iface->can_delete = handler;
+}
+
+void gtkada_App_Info_set_can_remove_supports_type(GAppInfoIface* iface, void* handler) {
+    iface->can_remove_supports_type = handler;
+}
+
+void gtkada_App_Info_set_do_delete(GAppInfoIface* iface, void* handler) {
+    iface->do_delete = handler;
+}
+
+void gtkada_App_Info_set_dup(GAppInfoIface* iface, void* handler) {
+    iface->dup = handler;
+}
+
+void gtkada_App_Info_set_equal(GAppInfoIface* iface, void* handler) {
+    iface->equal = handler;
+}
+
+void gtkada_App_Info_set_get_commandline(GAppInfoIface* iface, void* handler) {
+    iface->get_commandline = handler;
+}
+
+void gtkada_App_Info_set_get_description(GAppInfoIface* iface, void* handler) {
+    iface->get_description = handler;
+}
+
+void gtkada_App_Info_set_get_display_name(GAppInfoIface* iface, void* handler) {
+    iface->get_display_name = handler;
+}
+
+void gtkada_App_Info_set_get_executable(GAppInfoIface* iface, void* handler) {
+    iface->get_executable = handler;
+}
+
+void gtkada_App_Info_set_get_icon(GAppInfoIface* iface, void* handler) {
+    iface->get_icon = handler;
+}
+
+void gtkada_App_Info_set_get_id(GAppInfoIface* iface, void* handler) {
+    iface->get_id = handler;
+}
+
+void gtkada_App_Info_set_get_name(GAppInfoIface* iface, void* handler) {
+    iface->get_name = handler;
+}
+
+void gtkada_App_Info_set_get_supported_types(GAppInfoIface* iface, void* handler) {
+    iface->get_supported_types = handler;
+}
+
+void gtkada_App_Info_set_launch(GAppInfoIface* iface, void* handler) {
+    iface->launch = handler;
+}
+
+void gtkada_App_Info_set_launch_uris(GAppInfoIface* iface, void* handler) {
+    iface->launch_uris = handler;
+}
+
+void gtkada_App_Info_set_launch_uris_async(GAppInfoIface* iface, void* handler) {
+    iface->launch_uris_async = handler;
+}
+
+void gtkada_App_Info_set_launch_uris_finish(GAppInfoIface* iface, void* handler) {
+    iface->launch_uris_finish = handler;
+}
+
+void gtkada_App_Info_set_remove_supports_type(GAppInfoIface* iface, void* handler) {
+    iface->remove_supports_type = handler;
+}
+
+void gtkada_App_Info_set_set_as_default_for_extension(GAppInfoIface* iface, void* handler) {
+    iface->set_as_default_for_extension = handler;
+}
+
+void gtkada_App_Info_set_set_as_default_for_type(GAppInfoIface* iface, void* handler) {
+    iface->set_as_default_for_type = handler;
+}
+
+void gtkada_App_Info_set_set_as_last_used_for_type(GAppInfoIface* iface, void* handler) {
+    iface->set_as_last_used_for_type = handler;
+}
+
+void gtkada_App_Info_set_should_show(GAppInfoIface* iface, void* handler) {
+    iface->should_show = handler;
+}
+
+void gtkada_App_Info_set_supports_files(GAppInfoIface* iface, void* handler) {
+    iface->supports_files = handler;
+}
+
+void gtkada_App_Info_set_supports_uris(GAppInfoIface* iface, void* handler) {
+    iface->supports_uris = handler;
+}
+
 void gtkada_Loadable_Icon_set_load(GLoadableIconIface* iface, void* handler) {
     iface->load = handler;
 }

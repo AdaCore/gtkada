@@ -77,12 +77,12 @@ package body Glib.App_Launch_Context is
 
    function Get_Display
       (Self  : not null access Gapp_Launch_Context_Record;
-       Info  : Glib.GApp_Info;
+       Info  : Glib.App_Info.Gapp_Info;
        Files : Glib.GFile.Gfile_List.Glist) return UTF8_String
    is
       function Internal
          (Self  : System.Address;
-          Info  : Glib.GApp_Info;
+          Info  : Glib.App_Info.Gapp_Info;
           Files : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_app_launch_context_get_display");
    begin
@@ -110,12 +110,12 @@ package body Glib.App_Launch_Context is
 
    function Get_Startup_Notify_Id
       (Self  : not null access Gapp_Launch_Context_Record;
-       Info  : Glib.GApp_Info;
+       Info  : Glib.App_Info.Gapp_Info;
        Files : Glib.GFile.Gfile_List.Glist) return UTF8_String
    is
       function Internal
          (Self  : System.Address;
-          Info  : Glib.GApp_Info;
+          Info  : Glib.App_Info.Gapp_Info;
           Files : System.Address) return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_app_launch_context_get_startup_notify_id");
    begin

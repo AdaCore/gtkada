@@ -59,7 +59,7 @@ interfaces = (
     "Gio.ActionGroup",
     "Gio.ActionMap",
     "Gio.ListModel",
-    "--Gio.AppInfo",  # Not tested yet, from Gio
+    "Gio.AppInfo",
     "--Gio.AsyncInitable",  # Not tested yet, from Gio
     # GAsyncResult is bound as an opaque proxy in Glib.G_Async_Result.
     # We do not need its virtual methods on the Ada side: the "_finish"
@@ -872,7 +872,6 @@ naming.type_exceptions = {
     "gunichar": Proxy("Gunichar"),
     "gchar": Proxy("Gchar"),
     "guchar": Proxy("Guchar"),
-    "GAppInfo": Proxy("Glib.GApp_Info"),
     "GString*": Proxy("Glib.String.Gstring"),
     "unsigned int": Proxy("Guint"),
     # These should not be necessary, but if we don't put them the gnerated
