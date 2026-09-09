@@ -1,0 +1,13 @@
+# ============================================================
+#   GtkPaperSize
+# ============================================================
+
+[[list]]
+ctype   = "GtkPaperSize*"
+ada     = "Paper_Size_List"
+section = "Functions"
+
+[[method]]
+id = "gtk_paper_size_get_paper_sizes"
+return = "PaperSizeList"
+
