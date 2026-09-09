@@ -30,18 +30,20 @@ ctype = "GAppInfo"
 name = "files"
 ctype = "GFileList"
 
-# ---------------
-# signal payload includes Gio.AppInfo
-# TODO Gio.AppInfo GAppInfo
-
 [[method]]
 id = "::launched"
-bind = false
+[[method.parameter]]
+name = "info"
+ctype = "GAppInfo"
 
 [[method]]
 id = "::launch-failed"
-bind = false
+[[method.parameter]]
+name = "info"
+ctype = "GAppInfo"
 
 [[method]]
 id = "::launch-started"
-bind = false
+[[method.parameter]]
+name = "info"
+ctype = "GAppInfo"
