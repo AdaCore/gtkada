@@ -125,11 +125,6 @@ gtk-handlers.ads:
 
 - when done, fix gtkada_demo/create_tree_view.adb
 
-AppInfo.toml:
-
-- when done, reactivate bindings in GAppLaunchContext.toml
-- TODO #135 : including signals: launch-failed, launch-started
-
 GBytes.toml:
 
 - fix binding for functions that have gconstarray as parameters
@@ -143,10 +138,6 @@ GFile.toml:
 GDateTime:
 
 - when done, reactivate bindings in GFileInfo (TODO #135)
-
-GdkAppLaunchContext.toml:
-
-- when done, reactivate bindings in GdkDisplay.toml
 
 GdkDragContext.toml:
 

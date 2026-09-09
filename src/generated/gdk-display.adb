@@ -26,8 +26,8 @@ pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
-with Gtkada.Bindings;            use Gtkada.Bindings;
 pragma Warnings(Off);  --  might be unused
+with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
 
@@ -112,6 +112,21 @@ package body Gdk.Display is
    begin
       Internal (Get_Object (Self));
    end Flush;
+
+   ----------------------------
+   -- Get_App_Launch_Context --
+   ----------------------------
+
+   function Get_App_Launch_Context
+      (Self : not null access Gdk_Display_Record)
+       return Gdk.App_Launch_Context.Gdk_App_Launch_Context
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_display_get_app_launch_context");
+      Stub_Gdk_App_Launch_Context : Gdk.App_Launch_Context.Gdk_App_Launch_Context_Record;
+   begin
+      return Gdk.App_Launch_Context.Gdk_App_Launch_Context (Get_User_Data (Internal (Get_Object (Self)), Stub_Gdk_App_Launch_Context));
+   end Get_App_Launch_Context;
 
    -------------------
    -- Get_Clipboard --

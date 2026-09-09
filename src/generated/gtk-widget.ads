@@ -322,7 +322,7 @@ with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 with Glib.Variant;            use Glib.Variant;
 with Gtk.Enums;               use Gtk.Enums;
-with Gtk.Layout_Manager;      use Gtk.Layout_Manager;
+limited with Gtk.Layout_Manager;
 with Pango.Context;           use Pango.Context;
 with Pango.Font_Map;          use Pango.Font_Map;
 with Pango.Layout;            use Pango.Layout;

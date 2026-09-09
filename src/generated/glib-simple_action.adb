@@ -27,8 +27,10 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
+pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
+pragma Warnings(On);
 
 package body Glib.Simple_Action is
 

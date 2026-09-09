@@ -1,0 +1,79 @@
+# ============================================================
+#   GAppInfo
+# ============================================================
+ada = "Glib.App_Info"
+
+[[extra.with_spec]]
+pkg = "Glib.App_Launch_Context"
+limited = true
+
+[[extra.with_body]]
+pkg = "Glib.App_Launch_Context"
+use = true
+
+[[list]]
+ctype = "GAppInfo"
+ada   = "App_Info_List"
+
+[[enum]]
+ctype = "GAppInfoCreateFlags"
+ada = "Create_Flags"
+
+[[method]]
+id = "g_app_info_launch"
+
+[[method.parameter]]
+name = "files"
+ctype = "GFileList"
+
+
+[[method]]
+id = "g_app_info_launch_uris"
+
+[[method.parameter]]
+name = "uris"
+ctype = "StringList"
+
+[[method]]
+id = "g_app_info_launch_uris_async"
+
+[[method.parameter]]
+name = "uris"
+ctype = "StringList"
+
+[[method]]
+id = "g_app_info_get_all"
+return = "GAppInfoList"
+
+[[method]]
+id = "g_app_info_get_all_for_type"
+return = "GAppInfoList"
+
+[[method]]
+id = "g_app_info_get_fallback_for_type"
+return = "GAppInfoList"
+
+[[method]]
+id = "g_app_info_get_recommended_for_type"
+return = "GAppInfoList"
+
+[[virtual_method]]
+id = "launch"
+
+[[virtual_method.parameter]]
+name = "files"
+ctype = "GFileList"
+
+[[virtual_method]]
+id = "launch_uris"
+
+[[virtual_method.parameter]]
+name = "uris"
+ctype = "StringList"
+
+[[virtual_method]]
+id = "launch_uris_async"
+
+[[virtual_method.parameter]]
+name = "uris"
+ctype = "StringList"

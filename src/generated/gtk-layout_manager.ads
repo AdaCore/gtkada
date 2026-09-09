@@ -68,6 +68,7 @@ with Glib;            use Glib;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Gtk.Enums;       use Gtk.Enums;
+with Gtk.Widget;      use Gtk.Widget;
 
 package Gtk.Layout_Manager is
 
@@ -93,7 +94,7 @@ package Gtk.Layout_Manager is
 
    procedure Allocate
       (Manager  : not null access Gtk_Layout_Manager_Record;
-       Widget   : Glib.Object.GObject;
+       Widget   : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Width    : Glib.Gint;
        Height   : Glib.Gint;
        Baseline : Glib.Gint);
@@ -107,7 +108,8 @@ package Gtk.Layout_Manager is
 
    function Get_Layout_Child
       (Manager : not null access Gtk_Layout_Manager_Record;
-       Child   : Glib.Object.GObject) return Gtk_Layout_Child;
+       Child   : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Gtk_Layout_Child;
    --  Retrieves a `GtkLayoutChild` instance for the `GtkLayoutManager`,
    --  creating one if necessary.
    --  The Child widget must be a child of the widget using Manager.
@@ -126,8 +128,9 @@ package Gtk.Layout_Manager is
 
    function Get_Widget
       (Manager : not null access Gtk_Layout_Manager_Record)
-       return Glib.Object.GObject;
+       return Gtk.Widget.Gtk_Widget;
    --  Retrieves the `GtkWidget` using the given `GtkLayoutManager`.
+   --  @return a `GtkWidget`
    --  Return has transfer-ownership='none'
 
    procedure Layout_Changed
@@ -138,7 +141,7 @@ package Gtk.Layout_Manager is
 
    procedure Measure
       (Manager          : not null access Gtk_Layout_Manager_Record;
-       Widget           : Glib.Object.GObject;
+       Widget           : not null access Gtk.Widget.Gtk_Widget_Record'Class;
        Orientation      : Gtk.Enums.Gtk_Orientation;
        For_Size         : Glib.Gint;
        Minimum          : out Glib.Gint;

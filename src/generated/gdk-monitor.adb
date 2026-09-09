@@ -28,9 +28,11 @@ with Gdk.Display;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
+with System;
+pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
-with System;
+pragma Warnings(On);
 
 package body Gdk.Monitor is
 

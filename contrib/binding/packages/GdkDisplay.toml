@@ -9,11 +9,6 @@ ctype = "GdkDisplay*"
 ada   = "Display_List"
 
 [[method]]
-id = "gdk_display_get_app_launch_context"
-bind = false
-# No GdkAppLaunchContext binding
-
-[[method]]
 id = "gdk_display_list_seats"
 return = "SeatList"
 

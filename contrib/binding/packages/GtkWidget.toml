@@ -3,6 +3,12 @@
 # ============================================================
 needs_merge = false
 
+[[extra.with_spec]]
+pkg = "Gtk.Layout_Manager"
+limited = true
+
+[[extra.with_body]]
+pkg = "Gtk.Layout_Manager"
 
 [[enum]]
 ctype = "GtkAlign"
