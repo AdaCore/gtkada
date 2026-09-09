@@ -2,25 +2,22 @@
 #   GtkSnapshot
 # ============================================================
 #
-# Phase 1 of the Gtk.Snapshot binding: only the subprograms that rely on
-# types GtkAda already provides (the three Graphene records in
-# Gtkada.Types, Gdk.RGBA, Gdk.Texture, Pango, Gtk.Style_Context, Cairo and
-# the plain scalar types) are bound here. Everything that transitively
-# needs a Gsk type or one of the richer Graphene value types
-# (graphene_matrix_t, graphene_vec3/4_t, graphene_point3d_t) is suppressed
-# with `bind = false` until those bindings exist (see the Gsk/Graphene
-# follow-ups).
+# Graphene is bound in full, so every subprogram whose types come from
+# Graphene, Gdk.RGBA, Gdk.Texture, Pango, Cairo or the plain scalar types
+# is bound here. What remains suppressed with `bind = false` is the
+# Gsk-dependent set: Gsk is not bound at all (there is no
+# contrib/Gsk-4.0.gir), so anything that transitively needs a Gsk render
+# node, transform, path or enum stays out until that binding exists. A
+# handful of deprecated CSS render helpers are additionally suppressed
+# because Gtk.Style_Context is not bound, and two entry points are
+# suppressed because GTK documents them as unavailable to language
+# bindings.
 
 # The parent (Gdk.Snapshot) lives in a different .gir file, so the
 # generator cannot resolve its Ada name on its own and emits a bare,
 # unqualified `Snapshot_Record`. Spell out the fully-qualified parent so
 # the derivation and the `with Gdk.Snapshot` clause are generated.
 parent = "Gdk.Snapshot.Gdk_Snapshot"
-
-# Makes the three Graphene records (graphene_rect_t, graphene_point_t,
-# graphene_size_t) visible to the generated body.
-[[extra.with_body]]
-pkg = "Gtkada.Types"
 
 # --- Gradient nodes: need Gsk.ColorStop -----------------------------------
 [[method]]
@@ -125,7 +122,7 @@ id   = "gtk_snapshot_push_gl_shader"
 bind = false  # needs Gsk.GLShader
 
 # --- Deprecated CSS render helpers: need Gtk.Style_Context ----------------
-# Gtk.Style_Context is not bound in the gtk4 tree ("--GtkStyleContext" in
+# Gtk.Style_Context is not bound in the gtk4 tree ("--Gtk.StyleContext" in
 # data.py), and these entry points are obsolescent (deprecated since 4.10)
 # in any case.
 [[method]]
@@ -147,23 +144,6 @@ bind = false  # needs Gtk.Style_Context (unbound, deprecated)
 [[method]]
 id   = "gtk_snapshot_render_layout"
 bind = false  # needs Gtk.Style_Context (unbound, deprecated)
-
-# --- Extended Graphene value types ----------------------------------------
-[[method]]
-id   = "gtk_snapshot_push_color_matrix"
-bind = false  # needs graphene_matrix_t / graphene_vec4_t
-
-[[method]]
-id   = "gtk_snapshot_transform_matrix"
-bind = false  # needs graphene_matrix_t
-
-[[method]]
-id   = "gtk_snapshot_rotate_3d"
-bind = false  # needs graphene_vec3_t
-
-[[method]]
-id   = "gtk_snapshot_translate_3d"
-bind = false  # needs graphene_point3d_t
 
 # --- not directly available ----------------------------------------
 # For next methods the documentation says:

@@ -39,17 +39,21 @@
 --  nodes if the child node is entirely contained within the clip rectangle.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Cairo;          use Cairo;
-with Gdk.Paintable;  use Gdk.Paintable;
-with Gdk.RGBA;       use Gdk.RGBA;
-with Gdk.Snapshot;   use Gdk.Snapshot;
-with Gdk.Texture;    use Gdk.Texture;
-with Glib;           use Glib;
-with Graphene.Point; use Graphene.Point;
-with Graphene.Rect;  use Graphene.Rect;
-with Graphene.Size;  use Graphene.Size;
-with Interfaces.C;   use Interfaces.C;
-with Pango.Layout;   use Pango.Layout;
+with Cairo;            use Cairo;
+with Gdk.Paintable;    use Gdk.Paintable;
+with Gdk.RGBA;         use Gdk.RGBA;
+with Gdk.Snapshot;     use Gdk.Snapshot;
+with Gdk.Texture;      use Gdk.Texture;
+with Glib;             use Glib;
+with Graphene.Matrix;  use Graphene.Matrix;
+with Graphene.Point;   use Graphene.Point;
+with Graphene.Point3d; use Graphene.Point3d;
+with Graphene.Rect;    use Graphene.Rect;
+with Graphene.Size;    use Graphene.Size;
+with Graphene.Vec3;    use Graphene.Vec3;
+with Graphene.Vec4;    use Graphene.Vec4;
+with Interfaces.C;     use Interfaces.C;
+with Pango.Layout;     use Pango.Layout;
 
 package Gtk.Snapshot is
 
@@ -166,6 +170,20 @@ package Gtk.Snapshot is
    --  The image is recorded until the next call to [methodGtk.Snapshot.pop].
    --  @param Bounds the rectangle to clip to
 
+   procedure Push_Color_Matrix
+      (Self         : not null access Gtk_Snapshot_Record;
+       Color_Matrix : not null access Graphene.Matrix.Graphene_Matrix_T;
+       Color_Offset : not null access Graphene.Vec4.Graphene_Vec4_T);
+   --  Modifies the colors of an image by applying an affine transformation in
+   --  RGB space.
+   --  In particular, the colors will be transformed by applying
+   --  pixel = transpose(color_matrix) * pixel + color_offset
+   --  for every pixel. The transformation operates on unpremultiplied colors,
+   --  with color components ordered R, G, B, A.
+   --  The image is recorded until the next call to [methodGtk.Snapshot.pop].
+   --  @param Color_Matrix the color matrix to use
+   --  @param Color_Offset the color offset to use
+
    procedure Push_Copy (Self : not null access Gtk_Snapshot_Record);
    --  Stores the current rendering state for later pasting via
    --  [methodGtk.Snapshot.append_paste].
@@ -217,6 +235,15 @@ package Gtk.Snapshot is
    --  [methodGsk.Transform.rotate_3d].
    --  @param Angle the rotation angle, in degrees (clockwise)
 
+   procedure Rotate_3D
+      (Self  : not null access Gtk_Snapshot_Record;
+       Angle : Interfaces.C.C_float;
+       Axis  : not null access Graphene.Vec3.Graphene_Vec3_T);
+   --  Rotates Snapshot's coordinate system by Angle degrees around Axis.
+   --  For a rotation in 2D space, use [methodGsk.Transform.rotate].
+   --  @param Angle the rotation angle, in degrees (clockwise)
+   --  @param Axis The rotation axis
+
    procedure Save (Self : not null access Gtk_Snapshot_Record);
    --  Makes a copy of the current state of Snapshot and saves it on an
    --  internal stack.
@@ -262,11 +289,23 @@ package Gtk.Snapshot is
    --  bounds of the snapshot
    --  @return a new `GdkPaintable`
 
+   procedure Transform_Matrix
+      (Self   : not null access Gtk_Snapshot_Record;
+       Matrix : not null access Graphene.Matrix.Graphene_Matrix_T);
+   --  Transforms Snapshot's coordinate system with the given Matrix.
+   --  @param Matrix the matrix to multiply the transform with
+
    procedure Translate
       (Self  : not null access Gtk_Snapshot_Record;
        Point : not null access Graphene.Point.Graphene_Point_T);
    --  Translates Snapshot's coordinate system by Point in 2-dimensional
    --  space.
+   --  @param Point the point to translate the snapshot by
+
+   procedure Translate_3D
+      (Self  : not null access Gtk_Snapshot_Record;
+       Point : not null access Graphene.Point3d.Graphene_Point3D_T);
+   --  Translates Snapshot's coordinate system by Point.
    --  @param Point the point to translate the snapshot by
 
 end Gtk.Snapshot;
