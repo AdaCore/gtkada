@@ -1,15 +1,3 @@
 # ============================================================
 #   GdkKeyEvent
 # ============================================================
-
-[[method]]
-id   = "gdk_key_event_get_consumed_modifiers"
-bind = false
-
-[[method]]
-id   = "gdk_key_event_get_match"
-bind = false
-
-[[method]]
-id   = "gdk_key_event_matches"
-bind = false

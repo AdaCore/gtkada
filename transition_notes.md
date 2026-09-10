@@ -116,6 +116,17 @@
 
 - Automatically generate GError params for functions that write to errors (work item #93)
 
+- Host the nine namespace-level `gtk_accelerator_*` functions
+  (`accelerator_parse`, `accelerator_parse_with_keycode`,
+  `accelerator_name`, `accelerator_name_with_keycode`,
+  `accelerator_get_label`, `accelerator_get_label_with_keycode`,
+  `accelerator_get_accessible_label`,
+  `accelerator_get_default_mod_mask`, `accelerator_valid`).
+  No TOML suppresses them: they are simply not hosted by any package, since
+  gtk4 has no `GtkAccelGroup` to put them in, so a `[[function]]` host has to
+  be chosen for them. Their `GdkModifierType` dependency is bound
+  (`Gdk.Enums`), so nothing else blocks them.
+
 ## To do (package by package)
 
 gtk-handlers.ads:
@@ -155,11 +166,6 @@ GdkTexture.toml:
 GdkKeymapKey:
 
 - when done, reactivate bindings in GdkDisplay.toml
-
-GdkModifierType:
-
-- when done, reactivate bindings in GdkDevice.toml, GtkDisplay.toml,
-  GdkSurface.toml, GtkTreeView.toml, GdkDevice.toml, GtkCellRendererAccel.toml
 
 GtkApplication.toml:
 

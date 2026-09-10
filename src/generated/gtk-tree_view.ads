@@ -95,6 +95,9 @@
 --  is used.
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Content_Formats;     use Gdk.Content_Formats;
+with Gdk.Drag;                use Gdk.Drag;
+with Gdk.Enums;               use Gdk.Enums;
 with Gdk.Paintable;           use Gdk.Paintable;
 with Gdk.Rectangle;           use Gdk.Rectangle;
 with Glib;                    use Glib;
@@ -381,6 +384,32 @@ package Gtk.Tree_View is
    --  Deprecated since 4.10, 1
    --  @param Path a `GtkTreePath` in Tree_View
    --  @return a newly-allocated surface of the drag icon.
+
+   procedure Enable_Model_Drag_Dest
+      (Self    : not null access Gtk_Tree_View_Record;
+       Formats : Gdk.Content_Formats.Gdk_Content_Formats;
+       Actions : Gdk.Drag.Drag_Action);
+   pragma Obsolescent (Enable_Model_Drag_Dest);
+   --  Turns Tree_View into a drop destination for automatic DND. Calling this
+   --  method sets `GtkTreeView`:reorderable to False.
+   --  Deprecated since 4.10, 1
+   --  @param Formats the target formats that the drag will support
+   --  @param Actions the bitmask of possible actions for a drag from this
+   --  widget
+
+   procedure Enable_Model_Drag_Source
+      (Self              : not null access Gtk_Tree_View_Record;
+       Start_Button_Mask : Gdk.Enums.Gdk_Modifier_Type;
+       Formats           : Gdk.Content_Formats.Gdk_Content_Formats;
+       Actions           : Gdk.Drag.Drag_Action);
+   pragma Obsolescent (Enable_Model_Drag_Source);
+   --  Turns Tree_View into a drag source for automatic DND. Calling this
+   --  method sets `GtkTreeView`:reorderable to False.
+   --  Deprecated since 4.10, 1
+   --  @param Start_Button_Mask Mask of allowed buttons to start drag
+   --  @param Formats the target formats that the drag will support
+   --  @param Actions the bitmask of possible actions for a drag from this
+   --  widget
 
    procedure Expand_All (Self : not null access Gtk_Tree_View_Record);
    pragma Obsolescent (Expand_All);
@@ -1507,14 +1536,14 @@ package Gtk.Tree_View is
    procedure Unset_Rows_Drag_Dest
       (Self : not null access Gtk_Tree_View_Record);
    pragma Obsolescent (Unset_Rows_Drag_Dest);
-   --  Undoes the effect of gtk_tree_view_enable_model_drag_dest. Calling this
+   --  Undoes the effect of Gtk.Tree_View.Enable_Model_Drag_Dest. Calling this
    --  method sets `GtkTreeView`:reorderable to False.
    --  Deprecated since 4.10, 1
 
    procedure Unset_Rows_Drag_Source
       (Self : not null access Gtk_Tree_View_Record);
    pragma Obsolescent (Unset_Rows_Drag_Source);
-   --  Undoes the effect of gtk_tree_view_enable_model_drag_source. Calling
+   --  Undoes the effect of Gtk.Tree_View.Enable_Model_Drag_Source. Calling
    --  this method sets `GtkTreeView`:reorderable to False.
    --  Deprecated since 4.10, 1
 

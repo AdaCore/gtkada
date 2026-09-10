@@ -27,6 +27,7 @@ with System;
 with Gdk.Device;
 with Gdk.Device_Tool;
 with Gdk.Display;
+with Gdk.Enums;
 limited with Gdk.Event.Button_Event;
 limited with Gdk.Event.Crossing_Event;
 limited with Gdk.Event.Delete_Event;
@@ -302,7 +303,8 @@ package Gdk.Event is
    --    Return location for the length of the returned array.
    --  @return an array of time and coordinates.
 
-   --  function Get_Modifier_State (Self : Gdk_Event'Class) return Glib.Guint;
+   function Get_Modifier_State
+     (Self : Gdk_Event'Class) return Gdk.Enums.Gdk_Modifier_Type;
    --  Returns the modifier state field of an event.
    --
    --  @param Self a `GdkEvent`.

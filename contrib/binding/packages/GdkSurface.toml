@@ -20,11 +20,6 @@ bind = false
 # No GdkVulkanContext binding, obsolete
 
 [[method]]
-id = "gdk_surface_get_device_position"
-bind = false
-# No GdkModifierType binding
-
-[[method]]
 id = "::enter-monitor"
 
 [[method.parameter]]

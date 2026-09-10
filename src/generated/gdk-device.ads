@@ -29,6 +29,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
 with Gdk.Device_Tool;         use Gdk.Device_Tool;
+with Gdk.Enums;               use Gdk.Enums;
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Glist;              use Glib.Glist;
@@ -129,6 +130,13 @@ package Gdk.Device is
    --  This is only relevant for keyboard devices.
    --  Since: gtk+ 4.18
    --  @return null-terminated array of strings of layouts,
+
+   function Get_Modifier_State
+      (Self : not null access Gdk_Device_Record)
+       return Gdk.Enums.Gdk_Modifier_Type;
+   --  Retrieves the current modifier state of the keyboard.
+   --  This is only relevant for keyboard devices.
+   --  @return the current modifier state
 
    function Get_Name
       (Self : not null access Gdk_Device_Record) return UTF8_String;
@@ -258,8 +266,8 @@ package Gdk.Device is
    Has_Cursor_Property : constant Glib.Properties.Property_Boolean;
    --  Whether the device is represented by a cursor on the screen.
 
-   Modifier_State_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Gdk.Types.Gdk_Modifier_Type
+   Modifier_State_Property : constant Gdk.Enums.Property_Gdk_Modifier_Type;
+   --  Type: Gdk.Enums.Gdk_Modifier_Type
    --  The current modifier state of the device.
    --
    --  This is only relevant for keyboard devices.
@@ -375,8 +383,8 @@ private
      Glib.Properties.Build ("name");
    N_Axes_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("n-axes");
-   Modifier_State_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("modifier-state");
+   Modifier_State_Property : constant Gdk.Enums.Property_Gdk_Modifier_Type :=
+     Gdk.Enums.Build ("modifier-state");
    Has_Cursor_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("has-cursor");
    Has_Bidi_Layouts_Property : constant Glib.Properties.Property_Boolean :=

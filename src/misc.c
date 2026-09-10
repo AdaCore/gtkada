@@ -1323,20 +1323,6 @@ ada_gtk_file_chooser_dialog_new(const gchar *title,
   return gtk_file_chooser_dialog_new(title, parent, action, NULL, (char *)NULL);
 }
 
-/**************************************************************
- **  Default accelerator modifier
- **************************************************************/
-
-GdkModifierType
-ada_gdk_get_default_modifier()
-{
-#ifdef GDK_WINDOWING_QUARTZ
-  return GDK_META_MASK;
-#else
-  return GDK_CONTROL_MASK;
-#endif
-}
-
 // Application handling for opening files from the explorer/finder
 
 typedef struct

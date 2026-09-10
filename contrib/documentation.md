@@ -407,6 +407,14 @@ stripping `prefix` to compute the Ada identifier.
 | `prefix_regexp` | string | Python regex matching the C name.                    |
 | `prefix`        | string | Stripped from the C name to compute the Ada name.    |
 
+Note that `constants_binding` always emits the value as a *string*
+literal (`Name : constant <Type> := "<value>";`), so only constants whose
+Ada type is a string type come out right. A numeric namespace constant
+such as `GDK_MODIFIER_MASK` would produce
+`Modifier_Mask : constant Gint := "469769999";`, which does not compile —
+declare those by hand through [`[[extra.spec]]`](#extraspec--code-injected-into-the-spec)
+until the generator is taught to quote conditionally.
+
 ### `[[property]]`
 
 Match a class `<property>` 

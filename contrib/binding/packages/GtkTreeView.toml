@@ -60,34 +60,6 @@ id = "gtk_tree_view_set_vadjustment"
 bind = false
 # from scrollable
 
-[[method]]
-id = "gtk_tree_view_enable_model_drag_source"
-bind = false
-# Needs GdkModifierType
-
-[[method.parameter]]
-name = "targets"
-ctype = "Gtk.Target_List.Target_Entry_Array"
-
-[[method.parameter]]
-name = "n_targets"
-ada = ""
-default = "Targets'Length"
-
-[[method]]
-id = "gtk_tree_view_enable_model_drag_dest"
-bind = false
-# Needs Gdk.Drag_Contexts.Gdk_Drag_Action
-
-[[method.parameter]]
-name = "targets"
-ctype = "Gtk.Target_List.Target_Entry_Array"
-
-[[method.parameter]]
-name = "n_targets"
-ada = ""
-default = "Targets'Length"
-
 [extra]
 body = '''
 

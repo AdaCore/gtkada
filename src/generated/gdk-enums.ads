@@ -24,6 +24,7 @@
 
 
 pragma Warnings (Off, "*is already use-visible*");
+with Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 
 package Gdk.Enums is
@@ -84,6 +85,32 @@ package Gdk.Enums is
    Gdk_Anchor_Slide : constant Gdk_Anchor_Hints := 12;
    Gdk_Anchor_Resize : constant Gdk_Anchor_Hints := 48;
 
+   type Gdk_Modifier_Type is mod 2 ** Integer'Size;
+   pragma Convention (C, Gdk_Modifier_Type);
+   --  Flags to indicate the state of modifier keys and mouse buttons in
+   --  events.
+   --
+   --  Typical modifier keys are Shift, Control, Meta, Super, Hyper, Alt,
+   --  Compose, Apple, CapsLock or ShiftLock.
+   --
+   --  Note that GDK may add internal values to events which include values
+   --  outside of this enumeration. Your code should preserve and ignore them.
+   --  You can use GDK_MODIFIER_MASK to remove all private values.
+
+   Gdk_No_Modifier_Mask : constant Gdk_Modifier_Type := 0;
+   Gdk_Shift_Mask : constant Gdk_Modifier_Type := 1;
+   Gdk_Lock_Mask : constant Gdk_Modifier_Type := 2;
+   Gdk_Control_Mask : constant Gdk_Modifier_Type := 4;
+   Gdk_Alt_Mask : constant Gdk_Modifier_Type := 8;
+   Gdk_Button1_Mask : constant Gdk_Modifier_Type := 256;
+   Gdk_Button2_Mask : constant Gdk_Modifier_Type := 512;
+   Gdk_Button3_Mask : constant Gdk_Modifier_Type := 1024;
+   Gdk_Button4_Mask : constant Gdk_Modifier_Type := 2048;
+   Gdk_Button5_Mask : constant Gdk_Modifier_Type := 4096;
+   Gdk_Super_Mask : constant Gdk_Modifier_Type := 67108864;
+   Gdk_Hyper_Mask : constant Gdk_Modifier_Type := 134217728;
+   Gdk_Meta_Mask : constant Gdk_Modifier_Type := 268435456;
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -95,5 +122,22 @@ package Gdk.Enums is
    package Gdk_Anchor_Hints_Properties is
       new Generic_Internal_Discrete_Property (Gdk_Anchor_Hints);
    type Property_Gdk_Anchor_Hints is new Gdk_Anchor_Hints_Properties.Property;
+
+   package Gdk_Modifier_Type_Properties is
+      new Generic_Internal_Discrete_Property (Gdk_Modifier_Type);
+   type Property_Gdk_Modifier_Type is new Gdk_Modifier_Type_Properties.Property;
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   Gdk_Modifier_Mask : constant Gdk_Modifier_Type := 16#1C00_1F0F#;
+   --  A mask covering all entries in Gdk_Modifier_Type. GDK may set bits
+   --  outside of this mask on events, so mask them out before comparing.
+
+   function Gdk_Modifier_Type_Get_Type return Glib.GType;
+   pragma Import (C, Gdk_Modifier_Type_Get_Type, "gdk_modifier_type_get_type");
+   --  The GType of the Gdk_Modifier_Type flags class, for use with
+   --  Glib.Properties.Creation.Flags_Class_From_Type.
 
 end Gdk.Enums;

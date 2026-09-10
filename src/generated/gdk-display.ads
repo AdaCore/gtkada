@@ -42,6 +42,7 @@ with Gdk.App_Launch_Context; use Gdk.App_Launch_Context;
 with Gdk.Clipboard;          use Gdk.Clipboard;
 with Gdk.Device;
 with Gdk.Dmabuf_Formats;     use Gdk.Dmabuf_Formats;
+with Gdk.Enums;              use Gdk.Enums;
 with Gdk.GLContext;          use Gdk.GLContext;
 with Gdk.Monitor;            use Gdk.Monitor;
 with Gdk.Seat;               use Gdk.Seat;
@@ -296,6 +297,40 @@ package Gdk.Display is
    --  removed.
    --  This is most useful for X11. On windowing systems where requests are
    --  handled synchronously, this function will do nothing.
+
+   function Translate_Key
+      (Self            : not null access Gdk_Display_Record;
+       Keycode         : Guint;
+       State           : Gdk.Enums.Gdk_Modifier_Type;
+       Group           : Glib.Gint;
+       Keyval          : access Guint := null;
+       Effective_Group : access Glib.Gint := null;
+       Level           : access Glib.Gint := null;
+       Consumed        : access Gdk.Enums.Gdk_Modifier_Type := null)
+       return Boolean;
+   --  Translates the contents of a `GdkEventKey` into a keyval, effective
+   --  group, and level.
+   --  Modifiers that affected the translation and are thus unavailable for
+   --  application use are returned in Consumed_Modifiers.
+   --  The Effective_Group is the group that was actually used for the
+   --  translation; some keys such as Enter are not affected by the active
+   --  keyboard group. The Level is derived from State.
+   --  Consumed_Modifiers gives modifiers that should be masked out from State
+   --  when comparing this key press to a keyboard shortcut. For instance, on a
+   --  US keyboard, the `plus` symbol is shifted, so when comparing a key press
+   --  to a `<Control>plus` accelerator `<Shift>` should be masked out.
+   --  This function should rarely be needed, since `GdkEventKey` already
+   --  contains the translated keyval. It is exported for the benefit of
+   --  virtualized test environments.
+   --  @param Keycode a keycode
+   --  @param State a modifier state
+   --  @param Group active keyboard group
+   --  @param Keyval return location for keyval
+   --  @param Effective_Group return location for effective group
+   --  @param Level return location for level
+   --  @param Consumed return location for modifiers that were used to
+   --  determine the group or level
+   --  @return True if there was a keyval bound to keycode/state/group.
 
    ---------------
    -- Functions --

@@ -668,11 +668,11 @@ binding = (
     "Gtk.ColumnViewSorter",
     "Gtk.ShortcutTrigger",
     "Gtk.AlternativeTrigger",
-    "--Gtk.KeyvalTrigger",      # needed Gdk.Types.GdkModifierType
+    "Gtk.KeyvalTrigger",
     "Gtk.MnemonicTrigger",
     "Gtk.NeverTrigger",
     "Gtk.Shortcut",
-    "--Gtk.ShortcutController", # needed Gdk.Types
+    "--Gtk.ShortcutController", # needed Gtk.EventController
     "--Gtk.ShortcutsShortcut",  # Obsolescent
     "--Gtk.ShortcutsGroup",     # Obsolescent
     "--Gtk.ShortcutLabel",      # Obsolescent
@@ -974,8 +974,6 @@ naming.type_exceptions = {
     "GdkPixbufAnimation*": Proxy("Gdk.Pixbuf.Gdk_Pixbuf_Animation"),
     "GdkRectangle": Record("Gdk.Rectangle.Gdk_Rectangle"),
     "GdkRectangle*": Proxy("Gdk.Rectangle.Gdk_Rectangle"),
-    "Gdk.ModifierType": Proxy("Gdk.Types.Gdk_Modifier_Type"),
-    "GdkModifierType": Proxy("Gdk.Types.Gdk_Modifier_Type"),
     "GdkKeyType": Proxy("Gdk.Types.Gdk_Key_Type"),
     "GdkWindowAttr*": Proxy("Gdk.Gdk_Window_Attr"),
     # Override type: we do not want to show they derive from GObject

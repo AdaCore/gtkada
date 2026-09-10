@@ -594,6 +594,44 @@ package body Gtk.Tree_View is
       return Internal (Get_Object (Self), Get_Object (Path));
    end Create_Row_Drag_Icon;
 
+   ----------------------------
+   -- Enable_Model_Drag_Dest --
+   ----------------------------
+
+   procedure Enable_Model_Drag_Dest
+      (Self    : not null access Gtk_Tree_View_Record;
+       Formats : Gdk.Content_Formats.Gdk_Content_Formats;
+       Actions : Gdk.Drag.Drag_Action)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Formats : System.Address;
+          Actions : Gdk.Drag.Drag_Action);
+      pragma Import (C, Internal, "gtk_tree_view_enable_model_drag_dest");
+   begin
+      Internal (Get_Object (Self), Get_Object (Formats), Actions);
+   end Enable_Model_Drag_Dest;
+
+   ------------------------------
+   -- Enable_Model_Drag_Source --
+   ------------------------------
+
+   procedure Enable_Model_Drag_Source
+      (Self              : not null access Gtk_Tree_View_Record;
+       Start_Button_Mask : Gdk.Enums.Gdk_Modifier_Type;
+       Formats           : Gdk.Content_Formats.Gdk_Content_Formats;
+       Actions           : Gdk.Drag.Drag_Action)
+   is
+      procedure Internal
+         (Self              : System.Address;
+          Start_Button_Mask : Gdk.Enums.Gdk_Modifier_Type;
+          Formats           : System.Address;
+          Actions           : Gdk.Drag.Drag_Action);
+      pragma Import (C, Internal, "gtk_tree_view_enable_model_drag_source");
+   begin
+      Internal (Get_Object (Self), Start_Button_Mask, Get_Object (Formats), Actions);
+   end Enable_Model_Drag_Source;
+
    ----------------
    -- Expand_All --
    ----------------

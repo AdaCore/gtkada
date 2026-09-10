@@ -30,6 +30,7 @@
 --  <group>Trees and Lists</group>
 
 pragma Warnings (Off, "*is already use-visible*");
+with Gdk.Enums;              use Gdk.Enums;
 with Glib;                   use Glib;
 with Glib.Object;            use Glib.Object;
 with Glib.Properties;        use Glib.Properties;
@@ -76,8 +77,8 @@ package Gtk.Cell_Renderer_Accel is
    --  GTK are allowed, and the accelerators are rendered in the same way as
    --  they are in menus.
 
-   Accel_Mods_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Gdk.Types.Gdk_Modifier_Type
+   Accel_Mods_Property : constant Gdk.Enums.Property_Gdk_Modifier_Type;
+   --  Type: Gdk.Enums.Gdk_Modifier_Type
    --  The modifier mask of the accelerator.
 
    Keycode_Property : constant Glib.Properties.Property_Uint;
@@ -109,14 +110,31 @@ package Gtk.Cell_Renderer_Accel is
        After : Boolean := False);
    --  Gets emitted when the user has removed the accelerator.
 
+   type Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void is not null access procedure
+     (Self             : access Gtk_Cell_Renderer_Accel_Record'Class;
+      Path_String      : UTF8_String;
+      Accel_Key        : Guint;
+      Accel_Mods       : Gdk.Enums.Gdk_Modifier_Type;
+      Hardware_Keycode : Guint);
+
+   type Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void is not null access procedure
+     (Self             : access Glib.Object.GObject_Record'Class;
+      Path_String      : UTF8_String;
+      Accel_Key        : Guint;
+      Accel_Mods       : Gdk.Enums.Gdk_Modifier_Type;
+      Hardware_Keycode : Guint);
+
    Signal_Accel_Edited : constant Glib.Signal_Name := "accel-edited";
+   procedure On_Accel_Edited
+      (Self  : not null access Gtk_Cell_Renderer_Accel_Record;
+       Call  : Cb_Gtk_Cell_Renderer_Accel_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void;
+       After : Boolean := False);
+   procedure On_Accel_Edited
+      (Self  : not null access Gtk_Cell_Renderer_Accel_Record;
+       Call  : Cb_GObject_UTF8_String_Guint_Gdk_Modifier_Type_Guint_Void;
+       Slot  : not null access Glib.Object.GObject_Record'Class;
+       After : Boolean := False);
    --  Gets emitted when the user has selected a new accelerator.
-   --    procedure Handler
-   --       (Self             : access Gtk_Cell_Renderer_Accel_Record'Class;
-   --        Path_String      : UTF8_String;
-   --        Accel_Key        : Guint;
-   --        Accel_Mods       : Gdk.Types.Gdk_Modifier_Type;
-   --        Hardware_Keycode : Guint)
    -- 
    --  Callback parameters:
    --    --  @param Path_String the path identifying the row of the edited cell
@@ -127,8 +145,8 @@ package Gtk.Cell_Renderer_Accel is
 private
    Keycode_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("keycode");
-   Accel_Mods_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("accel-mods");
+   Accel_Mods_Property : constant Gdk.Enums.Property_Gdk_Modifier_Type :=
+     Gdk.Enums.Build ("accel-mods");
    Accel_Mode_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("accel-mode");
    Accel_Key_Property : constant Glib.Properties.Property_Uint :=

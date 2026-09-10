@@ -394,6 +394,36 @@ package body Gdk.Display is
       Internal (Get_Object (Self));
    end Sync;
 
+   -------------------
+   -- Translate_Key --
+   -------------------
+
+   function Translate_Key
+      (Self            : not null access Gdk_Display_Record;
+       Keycode         : Guint;
+       State           : Gdk.Enums.Gdk_Modifier_Type;
+       Group           : Glib.Gint;
+       Keyval          : access Guint := null;
+       Effective_Group : access Glib.Gint := null;
+       Level           : access Glib.Gint := null;
+       Consumed        : access Gdk.Enums.Gdk_Modifier_Type := null)
+       return Boolean
+   is
+      function Internal
+         (Self            : System.Address;
+          Keycode         : Guint;
+          State           : Gdk.Enums.Gdk_Modifier_Type;
+          Group           : Glib.Gint;
+          Keyval          : access Guint;
+          Effective_Group : access Glib.Gint;
+          Level           : access Glib.Gint;
+          Consumed        : access Gdk.Enums.Gdk_Modifier_Type)
+          return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_display_translate_key");
+   begin
+      return Internal (Get_Object (Self), Keycode, State, Group, Keyval, Effective_Group, Level, Consumed) /= 0;
+   end Translate_Key;
+
    -----------------
    -- Get_Default --
    -----------------

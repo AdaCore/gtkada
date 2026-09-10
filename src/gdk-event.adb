@@ -457,12 +457,15 @@ package body Gdk.Event is
    -- Get_Modifier_State --
    ------------------------
 
-   --  function Get_Modifier_State (Self : Gdk_Event'Class) return Glib.Guint is
-   --     function Internal (Self : System.Address) return Glib.Guint;
-   --     pragma Import (C, Internal, "gdk_event_get_modifier_state");
-   --  begin
-   --     return Internal (Get_Object (Self));
-   --  end Get_Modifier_State;
+   function Get_Modifier_State
+     (Self : Gdk_Event'Class) return Gdk.Enums.Gdk_Modifier_Type
+   is
+      function Internal
+        (Self : System.Address) return Gdk.Enums.Gdk_Modifier_Type;
+      pragma Import (C, Internal, "gdk_event_get_modifier_state");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Modifier_State;
 
    --------------------------
    -- Get_Pointer_Emulated --

@@ -8,3 +8,22 @@ ctype = "GdkGravity"
 [[enum]]
 ctype = "GdkAnchorHints"
 asbitfield = true
+
+[[enum]]
+ctype = "GdkModifierType"
+
+[[extra.spec]]
+text = '''
+   Gdk_Modifier_Mask : constant Gdk_Modifier_Type := 16#1C00_1F0F#;
+   --  A mask covering all entries in Gdk_Modifier_Type. GDK may set bits
+   --  outside of this mask on events, so mask them out before comparing.
+
+   function Gdk_Modifier_Type_Get_Type return Glib.GType;
+   pragma Import (C, Gdk_Modifier_Type_Get_Type, "gdk_modifier_type_get_type");
+   --  The GType of the Gdk_Modifier_Type flags class, for use with
+   --  Glib.Properties.Creation.Flags_Class_From_Type.
+'''
+
+[[extra.with_spec]]
+pkg = "Glib"
+use = false
