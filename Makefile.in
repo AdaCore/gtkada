@@ -89,8 +89,8 @@ src/gtkada-intl.adb: src/gtkada-intl.gpb Makefile
 
 tests:
 	@echo "====== Building demo ====="
-	cd gtkada_demo; GTKADA_EXTERNALLY_BUILT=yes \
-	   ${GPRBUILD_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) -Pgtkada_demo.gpr -aP ../src
+	cd gtkada_demo; ${GPRBUILD_FULL} -XGTKADA_EXTERNALLY_BUILT=yes \
+	   -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) -Pgtkada_demo.gpr -aP ../src
 
 demo: tests
 	cd gtkada_demo && ./gtkada_demo

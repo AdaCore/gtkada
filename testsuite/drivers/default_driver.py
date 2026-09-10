@@ -141,9 +141,18 @@ class DefaultScriptDriver(ClassicTestDriver):
             raise TestAbortWithFailure(msg)
         gpr = gpr_files[0]
 
-        # Launch "gprinspect" to find the mains
+        # Launch "gprinspect" to find the mains. It is given the same
+        # externally-built setting as the build below, so that both see the
+        # same project tree.
         p = self.build_step(
-            ["gprinspect", "-P", gpr.name, "--display=json", "--attributes"],
+            [
+                "gprinspect",
+                "-P",
+                gpr.name,
+                "--display=json",
+                "--attributes",
+                "-XGTKADA_EXTERNALLY_BUILT=yes",
+            ],
             # Use the gpr2 gprinspect to get the json dump
             env=env | {"GNAT_GPR_ENGINE": "2"},
         )
@@ -188,15 +197,24 @@ class DefaultScriptDriver(ClassicTestDriver):
         if executables_dir is None:
             executables_dir = Path(working_dir)
 
-        # The gprbuild command line
-        gprbuild_cl = ["gprbuild", "-P", str(gpr), "-j0", "-g", "-O0"]
+        # The gprbuild command line. GTKADA_EXTERNALLY_BUILT keeps the test
+        # from rebuilding the library it withs: the library is built once
+        # before the run (see drivers/library.py), and tests building in
+        # parallel would otherwise write over each other's libgtkada.a.
+        externally_built = "-XGTKADA_EXTERNALLY_BUILT=yes"
+        gprbuild_cl = [
+            "gprbuild",
+            "-P",
+            str(gpr),
+            "-j0",
+            "-g",
+            "-O0",
+            externally_built,
+        ]
 
         is_coverage = "GNATCOV_TRACE_FILE" in env
         if is_coverage:
             gnatcov_rts_gpr = gtkada_root / "obj/gnatcov-rts/share/gpr/gnatcov_rts.gpr"
-
-            # Protection against each test wanting to rebuild an instrumented GtkAda
-            env["GTKADA_EXTERNALLY_BUILT"] = "yes"
 
             gprbuild_cl.extend(
                 [
@@ -215,6 +233,7 @@ class DefaultScriptDriver(ClassicTestDriver):
                 "--externally-built-projects",
                 "--projects=gtkada",
                 "-XLIBRARY_TYPE=static",
+                externally_built,
                 "--runtime-project",
                 str(gnatcov_rts_gpr),
             ]

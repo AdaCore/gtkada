@@ -49,24 +49,28 @@ procedure Flags_Transfer is
 
    Seen_Mods  : Gdk_Modifier_Type := Gdk_No_Modifier_Mask;
    Seen_Count : Natural := 0;
-   --  Written by On_Accel_Edited, read back by Test_Signal_Argument.
+   --  Written by Accel_Edited_Handler, read back by Test_Signal_Argument.
 
-   procedure On_Accel_Edited
+   procedure Accel_Edited_Handler
      (Self             : access Gtk_Cell_Renderer_Accel_Record'Class;
       Path_String      : UTF8_String;
       Accel_Key        : Guint;
       Accel_Mods       : Gdk_Modifier_Type;
       Hardware_Keycode : Guint);
+   --  Handler for "accel-edited". Deliberately not named On_Accel_Edited:
+   --  that is the name of the connection primitive called below, and
+   --  overloading it here makes the "'Unrestricted_Access" argument of that
+   --  call ambiguous -- which some compiler versions reject.
 
    procedure Test_Signal_Argument with Convention => C;
    procedure Test_Renderer_Property with Convention => C;
    procedure Test_Trigger_Property with Convention => C;
 
-   ---------------------
-   -- On_Accel_Edited --
-   ---------------------
+   --------------------------
+   -- Accel_Edited_Handler --
+   --------------------------
 
-   procedure On_Accel_Edited
+   procedure Accel_Edited_Handler
      (Self             : access Gtk_Cell_Renderer_Accel_Record'Class;
       Path_String      : UTF8_String;
       Accel_Key        : Guint;
@@ -80,7 +84,7 @@ procedure Flags_Transfer is
 
       Seen_Mods  := Accel_Mods;
       Seen_Count := Seen_Count + 1;
-   end On_Accel_Edited;
+   end Accel_Edited_Handler;
 
    --------------------------
    -- Test_Signal_Argument --
@@ -94,7 +98,7 @@ procedure Flags_Transfer is
       Params   : GValue_Array;
    begin
       Gtk_New (Renderer);
-      Renderer.On_Accel_Edited (On_Accel_Edited'Unrestricted_Access);
+      Renderer.On_Accel_Edited (Accel_Edited_Handler'Unrestricted_Access);
 
       --  The instance comes first, then the four "accel-edited" arguments.
       Init (Params (0), Gtk.Cell_Renderer_Accel.Get_Type);
