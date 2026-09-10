@@ -199,6 +199,63 @@ package body Glib.Generic_Properties is
    end Generic_Internal_Discrete_Property;
 
    -------------------------------------
+   -- Generic_Internal_Flags_Property --
+   -------------------------------------
+
+   package body Generic_Internal_Flags_Property is
+      ------------------
+      -- Get_Property --
+      ------------------
+
+      function Get_Property
+        (Object : access Glib.Object.GObject_Record'Class;
+         Name   : Property_RO) return Flags_Type
+      is
+         procedure Get
+           (Object : System.Address;
+            Name   : Property;
+            Value  : out Guint);
+         pragma Import (C, Get, "ada_g_object_get_uint");
+
+         Ret : Guint;
+
+      begin
+         Get (Get_Object (Object), Property (Name), Ret);
+         return Flags_Type'Mod (Ret);
+      end Get_Property;
+
+      ------------------
+      -- Get_Property --
+      ------------------
+
+      function Get_Property
+        (Object : access Glib.Object.GObject_Record'Class;
+         Name   : Property) return Flags_Type is
+      begin
+         return Get_Property (Object, Property_RO (Name));
+      end Get_Property;
+
+      ------------------
+      -- Set_Property --
+      ------------------
+
+      procedure Set_Property
+        (Object : access Glib.Object.GObject_Record'Class;
+         Name   : Property;
+         Value  : Flags_Type)
+      is
+         procedure Internal
+           (Object : System.Address;
+            Name   : Property;
+            Value  : Guint);
+         pragma Import (C, Internal, "ada_g_object_set_uint");
+
+      begin
+         Internal (Get_Object (Object), Name, Guint (Value));
+      end Set_Property;
+   end Generic_Internal_Flags_Property;
+
+   -------------------------------------
    -- Generic_Internal_Boxed_Property --
    -------------------------------------
 

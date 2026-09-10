@@ -263,7 +263,7 @@ package Pango.Enums is
    type Property_Direction is new Direction_Properties.Property;
 
    package Font_Mask_Properties is
-      new Generic_Internal_Discrete_Property (Font_Mask);
+      new Generic_Internal_Flags_Property (Font_Mask);
    type Property_Font_Mask is new Font_Mask_Properties.Property;
 
    package Gravity_Properties is

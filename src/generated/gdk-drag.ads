@@ -70,7 +70,7 @@ package Gdk.Drag is
    ----------------------------
 
    package Drag_Action_Properties is
-      new Generic_Internal_Discrete_Property (Drag_Action);
+      new Generic_Internal_Flags_Property (Drag_Action);
    type Property_Drag_Action is new Drag_Action_Properties.Property;
 
    package Drag_Cancel_Reason_Properties is

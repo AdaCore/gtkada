@@ -182,7 +182,7 @@ package Glib.Application is
    ----------------------------
 
    package GApplication_Flags_Properties is
-      new Generic_Internal_Discrete_Property (GApplication_Flags);
+      new Generic_Internal_Flags_Property (GApplication_Flags);
    type Property_GApplication_Flags is new GApplication_Flags_Properties.Property;
 
    ------------------

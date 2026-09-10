@@ -211,6 +211,24 @@ void ada_g_object_get_ulong(gpointer object,
   g_object_get(object, property_name, property, NULL);
 }
 
+/* Flags (G_TYPE_FLAGS) properties are represented as a guint, so they must
+   not go through the gulong helpers above: g_object_get lcopies a flags value
+   through a guint*, which on LP64 would leave half of a gulong untouched.  */
+
+void ada_g_object_get_uint(gpointer object,
+                           const gchar *property_name,
+                           guint *property)
+{
+  g_object_get(object, property_name, property, NULL);
+}
+
+void ada_g_object_set_uint(gpointer object,
+                           const gchar *property_name,
+                           guint property)
+{
+  g_object_set(object, property_name, property, NULL);
+}
+
 void ada_g_object_set_string(gpointer object,
                              const gchar *property_name,
                              const gchar *property)

@@ -205,7 +205,7 @@ package Glib.Resource is
    ----------------------------
 
    package Resource_Lookup_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Resource_Lookup_Flags);
+      new Generic_Internal_Flags_Property (Resource_Lookup_Flags);
    type Property_Resource_Lookup_Flags is new Resource_Lookup_Flags_Properties.Property;
 
    ------------------

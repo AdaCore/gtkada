@@ -120,11 +120,11 @@ package Gdk.Enums is
    type Property_Gdk_Gravity is new Gdk_Gravity_Properties.Property;
 
    package Gdk_Anchor_Hints_Properties is
-      new Generic_Internal_Discrete_Property (Gdk_Anchor_Hints);
+      new Generic_Internal_Flags_Property (Gdk_Anchor_Hints);
    type Property_Gdk_Anchor_Hints is new Gdk_Anchor_Hints_Properties.Property;
 
    package Gdk_Modifier_Type_Properties is
-      new Generic_Internal_Discrete_Property (Gdk_Modifier_Type);
+      new Generic_Internal_Flags_Property (Gdk_Modifier_Type);
    type Property_Gdk_Modifier_Type is new Gdk_Modifier_Type_Properties.Property;
 
    ----------------------

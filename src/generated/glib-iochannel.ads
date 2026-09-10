@@ -163,11 +163,11 @@ package Glib.IOChannel is
    ----------------------------
 
    package GIOCondition_Properties is
-      new Generic_Internal_Discrete_Property (GIOCondition);
+      new Generic_Internal_Flags_Property (GIOCondition);
    type Property_GIOCondition is new GIOCondition_Properties.Property;
 
    package GIOFlags_Properties is
-      new Generic_Internal_Discrete_Property (GIOFlags);
+      new Generic_Internal_Flags_Property (GIOFlags);
    type Property_GIOFlags is new GIOFlags_Properties.Property;
 
    package GIOStatus_Properties is

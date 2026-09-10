@@ -110,7 +110,7 @@ package Gtk.Cell_Renderer is
    ----------------------------
 
    package Gtk_Cell_Renderer_State_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Cell_Renderer_State);
+      new Generic_Internal_Flags_Property (Gtk_Cell_Renderer_State);
    type Property_Gtk_Cell_Renderer_State is new Gtk_Cell_Renderer_State_Properties.Property;
 
    package Gtk_Cell_Renderer_Mode_Properties is

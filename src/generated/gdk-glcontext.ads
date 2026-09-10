@@ -93,7 +93,7 @@ package Gdk.GLContext is
    ----------------------------
 
    package Gdk_GLAPI_Properties is
-      new Generic_Internal_Discrete_Property (Gdk_GLAPI);
+      new Generic_Internal_Flags_Property (Gdk_GLAPI);
    type Property_Gdk_GLAPI is new Gdk_GLAPI_Properties.Property;
 
    ------------------

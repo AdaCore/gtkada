@@ -189,15 +189,15 @@ package Glib.GFile is
    ----------------------------
 
    package GFile_Query_Info_Flags_Properties is
-      new Generic_Internal_Discrete_Property (GFile_Query_Info_Flags);
+      new Generic_Internal_Flags_Property (GFile_Query_Info_Flags);
    type Property_GFile_Query_Info_Flags is new GFile_Query_Info_Flags_Properties.Property;
 
    package GFile_Create_Flags_Properties is
-      new Generic_Internal_Discrete_Property (GFile_Create_Flags);
+      new Generic_Internal_Flags_Property (GFile_Create_Flags);
    type Property_GFile_Create_Flags is new GFile_Create_Flags_Properties.Property;
 
    package GFile_Copy_Flags_Properties is
-      new Generic_Internal_Discrete_Property (GFile_Copy_Flags);
+      new Generic_Internal_Flags_Property (GFile_Copy_Flags);
    type Property_GFile_Copy_Flags is new GFile_Copy_Flags_Properties.Property;
 
    ------------------

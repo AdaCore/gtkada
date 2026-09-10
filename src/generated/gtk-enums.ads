@@ -566,7 +566,7 @@ package Gtk.Enums is
    type Property_Gtk_Accessible_Text_Content_Change is new Gtk_Accessible_Text_Content_Change_Properties.Property;
 
    package Gtk_Builder_Closure_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Builder_Closure_Flags);
+      new Generic_Internal_Flags_Property (Gtk_Builder_Closure_Flags);
    type Property_Gtk_Builder_Closure_Flags is new Gtk_Builder_Closure_Flags_Properties.Property;
 
    package Gtk_Corner_Type_Properties is
@@ -586,7 +586,7 @@ package Gtk.Enums is
    type Property_Gtk_Entry_Icon_Position is new Gtk_Entry_Icon_Position_Properties.Property;
 
    package Gtk_Icon_Size_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Icon_Size);
+      new Generic_Internal_Flags_Property (Gtk_Icon_Size);
    type Property_Gtk_Icon_Size is new Gtk_Icon_Size_Properties.Property;
 
    package Gtk_Image_Type_Properties is
@@ -606,7 +606,7 @@ package Gtk.Enums is
    type Property_Gtk_Movement_Step is new Gtk_Movement_Step_Properties.Property;
 
    package Gtk_Input_Hints_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Input_Hints);
+      new Generic_Internal_Flags_Property (Gtk_Input_Hints);
    type Property_Gtk_Input_Hints is new Gtk_Input_Hints_Properties.Property;
 
    package Gtk_Input_Purpose_Properties is
@@ -618,7 +618,7 @@ package Gtk.Enums is
    type Property_Gtk_List_Tab_Behavior is new Gtk_List_Tab_Behavior_Properties.Property;
 
    package Gtk_List_Scroll_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_List_Scroll_Flags);
+      new Generic_Internal_Flags_Property (Gtk_List_Scroll_Flags);
    type Property_Gtk_List_Scroll_Flags is new Gtk_List_Scroll_Flags_Properties.Property;
 
    package Gtk_Natural_Wrap_Mode_Properties is
@@ -714,7 +714,7 @@ package Gtk.Enums is
    type Property_Gtk_Sort_Type is new Gtk_Sort_Type_Properties.Property;
 
    package Gtk_State_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_State_Flags);
+      new Generic_Internal_Flags_Property (Gtk_State_Flags);
    type Property_Gtk_State_Flags is new Gtk_State_Flags_Properties.Property;
 
    package Gtk_Text_Direction_Properties is

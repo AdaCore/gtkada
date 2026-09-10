@@ -163,7 +163,7 @@ package Gtk.Popover_Menu is
    ----------------------------
 
    package Gtk_Popover_Menu_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Popover_Menu_Flags);
+      new Generic_Internal_Flags_Property (Gtk_Popover_Menu_Flags);
    type Property_Gtk_Popover_Menu_Flags is new Gtk_Popover_Menu_Flags_Properties.Property;
 
    ------------------

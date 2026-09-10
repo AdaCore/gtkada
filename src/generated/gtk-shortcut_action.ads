@@ -70,7 +70,7 @@ package Gtk.Shortcut_Action is
    ----------------------------
 
    package Gtk_Shortcut_Action_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Shortcut_Action_Flags);
+      new Generic_Internal_Flags_Property (Gtk_Shortcut_Action_Flags);
    type Property_Gtk_Shortcut_Action_Flags is new Gtk_Shortcut_Action_Flags_Properties.Property;
 
    ------------------
