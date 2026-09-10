@@ -54,6 +54,7 @@ with Create_Toggle_Buttons;
 with Create_Tooltips;
 with Create_Tree_Filter;
 with Create_Tree_View;
+with Create_Slice_List_Model;
 
 package body Demo_Registry is
 
@@ -146,7 +147,11 @@ package body Demo_Registry is
       To_Demo
         ("Tree View/Tree Store",
          Create_Tree_View.Run'Access,
-         Create_Tree_View.Help'Access));
+         Create_Tree_View.Help'Access),
+      To_Demo
+        ("Tree View/Slice List Model",
+         Create_Slice_List_Model.Run'Access,
+         Create_Slice_List_Model.Help'Access));
    --  The set of demos exposed in the selector, named after gtk4-demo's own
    --  taxonomy. A name with no "/" is a demo that upstream leaves
    --  uncategorised, and which therefore sits at the top level of the tree.
