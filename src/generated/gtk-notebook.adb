@@ -237,6 +237,24 @@ package body Gtk.Notebook is
       return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Notebook), Page_Num), Stub_Gtk_Widget));
    end Get_Nth_Page;
 
+   --------------
+   -- Get_Page --
+   --------------
+
+   function Get_Page
+      (Notebook : not null access Gtk_Notebook_Record;
+       Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Gtk.Notebook_Page.Gtk_Notebook_Page
+   is
+      function Internal
+         (Notebook : System.Address;
+          Child    : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_notebook_get_page");
+      Stub_Gtk_Notebook_Page : Gtk.Notebook_Page.Gtk_Notebook_Page_Record;
+   begin
+      return Gtk.Notebook_Page.Gtk_Notebook_Page (Get_User_Data (Internal (Get_Object (Notebook), Get_Object (Child)), Stub_Gtk_Notebook_Page));
+   end Get_Page;
+
    ---------------
    -- Get_Pages --
    ---------------
