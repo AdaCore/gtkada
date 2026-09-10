@@ -211,6 +211,24 @@ void ada_g_object_get_ulong(gpointer object,
   g_object_get(object, property_name, property, NULL);
 }
 
+/* Flags (G_TYPE_FLAGS) properties are represented as a guint, so they must
+   not go through the gulong helpers above: g_object_get lcopies a flags value
+   through a guint*, which on LP64 would leave half of a gulong untouched.  */
+
+void ada_g_object_get_uint(gpointer object,
+                           const gchar *property_name,
+                           guint *property)
+{
+  g_object_get(object, property_name, property, NULL);
+}
+
+void ada_g_object_set_uint(gpointer object,
+                           const gchar *property_name,
+                           guint property)
+{
+  g_object_set(object, property_name, property, NULL);
+}
+
 void ada_g_object_set_string(gpointer object,
                              const gchar *property_name,
                              const gchar *property)
@@ -1321,20 +1339,6 @@ ada_gtk_file_chooser_dialog_new(const gchar *title,
                                 GtkFileChooserAction action)
 {
   return gtk_file_chooser_dialog_new(title, parent, action, NULL, (char *)NULL);
-}
-
-/**************************************************************
- **  Default accelerator modifier
- **************************************************************/
-
-GdkModifierType
-ada_gdk_get_default_modifier()
-{
-#ifdef GDK_WINDOWING_QUARTZ
-  return GDK_META_MASK;
-#else
-  return GDK_CONTROL_MASK;
-#endif
 }
 
 // Application handling for opening files from the explorer/finder

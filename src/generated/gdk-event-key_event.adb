@@ -26,6 +26,20 @@ pragma Warnings (Off, "*is already use-visible*");
 
 package body Gdk.Event.Key_Event is
 
+   ----------------------------
+   -- Get_Consumed_Modifiers --
+   ----------------------------
+
+   function Get_Consumed_Modifiers
+      (Self : Gdk.Event.Gdk_Event) return Gdk.Enums.Gdk_Modifier_Type
+   is
+      function Internal
+         (Self : System.Address) return Gdk.Enums.Gdk_Modifier_Type;
+      pragma Import (C, Internal, "gdk_key_event_get_consumed_modifiers");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Consumed_Modifiers;
+
    -----------------
    -- Get_Keycode --
    -----------------
@@ -70,6 +84,31 @@ package body Gdk.Event.Key_Event is
       return Internal (Get_Object (Self));
    end Get_Level;
 
+   ---------------
+   -- Get_Match --
+   ---------------
+
+   function Get_Match
+      (Self      : Gdk.Event.Gdk_Event;
+       Keyval    : out Guint;
+       Modifiers : out Gdk.Enums.Gdk_Modifier_Type) return Boolean
+   is
+      function Internal
+         (Self          : System.Address;
+          Acc_Keyval    : access Guint;
+          Acc_Modifiers : access Gdk.Enums.Gdk_Modifier_Type)
+          return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_key_event_get_match");
+      Acc_Keyval    : aliased Guint;
+      Acc_Modifiers : aliased Gdk.Enums.Gdk_Modifier_Type;
+      Tmp_Return    : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Acc_Keyval'Access, Acc_Modifiers'Access);
+      Keyval := Acc_Keyval;
+      Modifiers := Acc_Modifiers;
+      return Tmp_Return /= 0;
+   end Get_Match;
+
    -----------------
    -- Is_Modifier --
    -----------------
@@ -80,5 +119,25 @@ package body Gdk.Event.Key_Event is
    begin
       return Internal (Get_Object (Self)) /= 0;
    end Is_Modifier;
+
+   -------------
+   -- Matches --
+   -------------
+
+   function Matches
+      (Self      : Gdk.Event.Gdk_Event;
+       Keyval    : Guint;
+       Modifiers : Gdk.Enums.Gdk_Modifier_Type)
+       return Gdk.Key_Match.Gdk_Key_Match
+   is
+      function Internal
+         (Self      : System.Address;
+          Keyval    : Guint;
+          Modifiers : Gdk.Enums.Gdk_Modifier_Type)
+          return Gdk.Key_Match.Gdk_Key_Match;
+      pragma Import (C, Internal, "gdk_key_event_matches");
+   begin
+      return Internal (Get_Object (Self), Keyval, Modifiers);
+   end Matches;
 
 end Gdk.Event.Key_Event;

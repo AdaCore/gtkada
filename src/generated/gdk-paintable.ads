@@ -93,7 +93,7 @@ package Gdk.Paintable is
    ----------------------------
 
    package Gdk_Paintable_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Gdk_Paintable_Flags);
+      new Generic_Internal_Flags_Property (Gdk_Paintable_Flags);
    type Property_Gdk_Paintable_Flags is new Gdk_Paintable_Flags_Properties.Property;
 
    ------------------

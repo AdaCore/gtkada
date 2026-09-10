@@ -79,7 +79,7 @@ package Gtk.Text_Iter is
    ----------------------------
 
    package Gtk_Text_Search_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Text_Search_Flags);
+      new Generic_Internal_Flags_Property (Gtk_Text_Search_Flags);
    type Property_Gtk_Text_Search_Flags is new Gtk_Text_Search_Flags_Properties.Property;
 
    ------------------

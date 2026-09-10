@@ -100,6 +100,16 @@ package Glib.Values is
    pragma Inline (Unsafe_Enum_Nth);
    --  Used for enumeration types
 
+   generic
+      type T is mod <>;
+   function Unsafe_Flags_Nth
+     (Values : C_GValues; Num : Guint) return T;
+   pragma Inline (Unsafe_Flags_Nth);
+   --  Used for flags types, i.e. the modular types bound from a C bitfield.
+   --  These are G_TYPE_FLAGS values, held in a GValue as a guint; reading
+   --  them with Unsafe_Enum_Nth would call g_value_get_int on a flags
+   --  GValue, which returns 0 and emits a GLib critical.
+
    --  </doc_ignore>
 
    -------------------------------------------------

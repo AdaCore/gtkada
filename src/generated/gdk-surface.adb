@@ -196,6 +196,28 @@ package body Gdk.Surface is
       return Gdk.Cursor.Gdk_Cursor (Get_User_Data (Internal (Get_Object (Self), Get_Object (Device)), Stub_Gdk_Cursor));
    end Get_Device_Cursor;
 
+   -------------------------
+   -- Get_Device_Position --
+   -------------------------
+
+   function Get_Device_Position
+      (Self   : not null access Gdk_Surface_Record;
+       Device : not null access Gdk.Device.Gdk_Device_Record'Class;
+       X      : access Gdouble := null;
+       Y      : access Gdouble := null;
+       Mask   : access Gdk.Enums.Gdk_Modifier_Type := null) return Boolean
+   is
+      function Internal
+         (Self   : System.Address;
+          Device : System.Address;
+          X      : access Gdouble;
+          Y      : access Gdouble;
+          Mask   : access Gdk.Enums.Gdk_Modifier_Type) return Glib.Gboolean;
+      pragma Import (C, Internal, "gdk_surface_get_device_position");
+   begin
+      return Internal (Get_Object (Self), Get_Object (Device), X, Y, Mask) /= 0;
+   end Get_Device_Position;
+
    -----------------
    -- Get_Display --
    -----------------

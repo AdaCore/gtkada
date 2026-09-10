@@ -149,6 +149,21 @@ package body Gdk.Device is
       return To_String_List_And_Free (Internal (Get_Object (Self)));
    end Get_Layout_Names;
 
+   ------------------------
+   -- Get_Modifier_State --
+   ------------------------
+
+   function Get_Modifier_State
+      (Self : not null access Gdk_Device_Record)
+       return Gdk.Enums.Gdk_Modifier_Type
+   is
+      function Internal
+         (Self : System.Address) return Gdk.Enums.Gdk_Modifier_Type;
+      pragma Import (C, Internal, "gdk_device_get_modifier_state");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Modifier_State;
+
    --------------
    -- Get_Name --
    --------------

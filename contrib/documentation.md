@@ -118,7 +118,7 @@ at build time. One recurring case:
 
 | Symptom at build time                              | Likely fix                                                                                                                       |
 |----------------------------------------------------|----------------------------------------------------------------------------------------------------------------------------------|
-| `"Unchecked_To_<Enum>" is undefined`               | The enum is used as a signal-callback parameter and needs an `Unsafe_Enum_Nth` instantiation in the hand-maintained `src/gtk-arguments.ads`. |
+| `"Unchecked_To_<Enum>" is undefined`               | The enum is used as a signal-callback parameter and needs an instantiation in the hand-maintained `src/gtk-arguments.ads`: `Unsafe_Enum_Nth` for an enumeration, `Unsafe_Flags_Nth` for a bitfield (see [`[[enum]]`](#enum)). |
 
 ## Conventions used below
 
@@ -397,6 +397,25 @@ ctype = "GtkIconSize"
 asbitfield = true
 ```
 
+An `<enumeration>` becomes an Ada enumeration type and a `<bitfield>` (or
+an enum forced with `asbitfield`) becomes a modular type. That choice
+also decides how the type's properties and signal arguments are
+transferred, because GObject represents the two differently: an enum
+value is a `gint`, a flags value a `guint`.
+
+* `properties = true` instantiates
+  `Generic_Internal_Discrete_Property` for an enumeration and
+  `Generic_Internal_Flags_Property` for a bitfield. The former reads and
+  writes through the `gulong` helpers in `misc.c`, the latter through the
+  `guint` ones, which is what `g_object_get` lcopies a flags property
+  into.
+* A signal argument needs the matching extractor in
+  `src/gtk-arguments.ads`: `Glib.Values.Unsafe_Enum_Nth` for an
+  enumeration, `Glib.Values.Unsafe_Flags_Nth` for a bitfield. Getting
+  this wrong is not a compile error — `Unsafe_Enum_Nth` on a flags
+  `GValue` calls `g_value_get_int`, which returns 0 and logs a GLib
+  critical.
+
 ### `[[constant]]`
 
 Bind every namespace `<constant>` whose C name matches `prefix_regexp`,
@@ -406,6 +425,14 @@ stripping `prefix` to compute the Ada identifier.
 |-----------------|--------|------------------------------------------------------|
 | `prefix_regexp` | string | Python regex matching the C name.                    |
 | `prefix`        | string | Stripped from the C name to compute the Ada name.    |
+
+Note that `constants_binding` always emits the value as a *string*
+literal (`Name : constant <Type> := "<value>";`), so only constants whose
+Ada type is a string type come out right. A numeric namespace constant
+such as `GDK_MODIFIER_MASK` would produce
+`Modifier_Mask : constant Gint := "469769999";`, which does not compile —
+declare those by hand through [`[[extra.spec]]`](#extraspec--code-injected-into-the-spec)
+until the generator is taught to quote conditionally.
 
 ### `[[property]]`
 

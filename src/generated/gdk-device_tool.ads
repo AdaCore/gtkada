@@ -78,7 +78,7 @@ package Gdk.Device_Tool is
    type Property_Gdk_Device_Tool_Type is new Gdk_Device_Tool_Type_Properties.Property;
 
    package Gdk_Axis_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Gdk_Axis_Flags);
+      new Generic_Internal_Flags_Property (Gdk_Axis_Flags);
    type Property_Gdk_Axis_Flags is new Gdk_Axis_Flags_Properties.Property;
 
    ------------------

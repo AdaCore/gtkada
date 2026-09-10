@@ -239,7 +239,7 @@ package Gtk.Tree_Model is
    ----------------------------
 
    package Tree_Model_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Tree_Model_Flags);
+      new Generic_Internal_Flags_Property (Tree_Model_Flags);
    type Property_Tree_Model_Flags is new Tree_Model_Flags_Properties.Property;
 
    ------------------

@@ -244,6 +244,19 @@ package body Glib.Values is
       return T'Val (Get_Int (Val));
    end Unsafe_Enum_Nth;
 
+   ----------------------
+   -- Unsafe_Flags_Nth --
+   ----------------------
+
+   function Unsafe_Flags_Nth
+     (Values : C_GValues; Num : Guint) return T
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Values, Num, Val);
+      return T'Mod (Get_Flags (Val));
+   end Unsafe_Flags_Nth;
+
    -------------
    -- Type_Of --
    -------------

@@ -140,6 +140,9 @@ package Glib.Properties.Creation is
    function Nick (Val : Flags_Value) return String;
    --  Return a displayable string for Val.
 
+   function Flags_Class_From_Type (Typ : Glib.GType) return Flags_Class;
+   --  Return the flags class corresponding to a type
+
    ---------------
    -- ParamSpec --
    ---------------
@@ -476,6 +479,7 @@ private
    pragma Import (C, Get_Qdata, "g_param_spec_get_qdata");
    pragma Import (C, Set_Qdata, "g_param_spec_set_qdata_full");
    pragma Import (C, Enum_Class_From_Type, "g_type_class_ref");
+   pragma Import (C, Flags_Class_From_Type, "g_type_class_ref");
    pragma Inline (Description);
    pragma Inline (Name);
 

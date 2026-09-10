@@ -382,7 +382,7 @@ package Gtk.Widget is
    ----------------------------
 
    package Gtk_Align_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Align);
+      new Generic_Internal_Flags_Property (Gtk_Align);
    type Property_Gtk_Align is new Gtk_Align_Properties.Property;
 
    ------------------

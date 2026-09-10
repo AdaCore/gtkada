@@ -60,7 +60,7 @@ package Gdk.Seat is
    ----------------------------
 
    package Seat_Capabilities_Properties is
-      new Generic_Internal_Discrete_Property (Seat_Capabilities);
+      new Generic_Internal_Flags_Property (Seat_Capabilities);
    type Property_Seat_Capabilities is new Seat_Capabilities_Properties.Property;
 
    ------------------

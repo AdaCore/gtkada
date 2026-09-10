@@ -145,7 +145,7 @@ package Gtk.Application is
    ----------------------------
 
    package Gtk_Application_Inhibit_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Gtk_Application_Inhibit_Flags);
+      new Generic_Internal_Flags_Property (Gtk_Application_Inhibit_Flags);
    type Property_Gtk_Application_Inhibit_Flags is new Gtk_Application_Inhibit_Flags_Properties.Property;
 
    ------------------

@@ -84,6 +84,40 @@ package Glib.Generic_Properties is
 
    end Generic_Internal_Discrete_Property;
 
+   -----------------------------------------------
+   -- Generic package for flags type properties --
+   -----------------------------------------------
+   --  This package is the counterpart of
+   --  Generic_Internal_Discrete_Property for the modular types bound from a
+   --  C bitfield. A GObject property whose type is a G_TYPE_FLAGS descendant
+   --  is represented as a guint, not as a gulong, so such properties must be
+   --  read and written through this package rather than through the discrete
+   --  one, whose helpers use gulong.
+
+   generic
+      type Flags_Type is mod <>;
+   package Generic_Internal_Flags_Property is
+      type Property_RO is new Glib.Property;
+      type Property is new Glib.Property;
+
+      procedure Set_Property
+        (Object : access Glib.Object.GObject_Record'Class;
+         Name   : Property;
+         Value  : Flags_Type);
+      --  Set a property of Object based on Flags_Type.
+
+      function Get_Property
+        (Object : access Glib.Object.GObject_Record'Class;
+         Name   : Property) return Flags_Type;
+      pragma Inline (Get_Property);
+
+      function Get_Property
+        (Object : access Glib.Object.GObject_Record'Class;
+         Name   : Property_RO) return Flags_Type;
+      --  Get a property from Object
+
+   end Generic_Internal_Flags_Property;
+
    -------------------------------------------------
    -- Generic package for enumerations properties --
    -------------------------------------------------

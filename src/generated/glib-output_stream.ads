@@ -79,7 +79,7 @@ package Glib.Output_Stream is
    ----------------------------
 
    package Output_Stream_Splice_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Output_Stream_Splice_Flags);
+      new Generic_Internal_Flags_Property (Output_Stream_Splice_Flags);
    type Property_Output_Stream_Splice_Flags is new Output_Stream_Splice_Flags_Properties.Property;
 
    ------------------

@@ -23,11 +23,6 @@ bind = false
 # No array of GdkKeymapKey
 
 [[method]]
-id = "gdk_display_translate_key"
-bind = false
-# No GdkModifierType binding
-
-[[method]]
 id = "::seat-added"
 
 [[method.parameter]]

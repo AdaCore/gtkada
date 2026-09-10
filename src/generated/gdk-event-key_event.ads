@@ -24,7 +24,9 @@
 --  An event related to a key-based device.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib; use Glib;
+with Gdk.Enums;     use Gdk.Enums;
+with Gdk.Key_Match; use Gdk.Key_Match;
+with Glib;          use Glib;
 
 package Gdk.Event.Key_Event is
 
@@ -40,6 +42,11 @@ package Gdk.Event.Key_Event is
    -------------
    -- Methods --
    -------------
+
+   function Get_Consumed_Modifiers
+      (Self : Gdk.Event.Gdk_Event) return Gdk.Enums.Gdk_Modifier_Type;
+   --  Extracts the consumed modifiers from a key event.
+   --  @return the consumed modifiers or Event
 
    function Get_Keycode (Self : Gdk.Event.Gdk_Event) return Guint;
    --  Extracts the keycode from a key event.
@@ -57,8 +64,32 @@ package Gdk.Event.Key_Event is
    --  Extracts the shift level from a key event.
    --  @return the shift level of Event
 
+   function Get_Match
+      (Self      : Gdk.Event.Gdk_Event;
+       Keyval    : out Guint;
+       Modifiers : out Gdk.Enums.Gdk_Modifier_Type) return Boolean;
+   --  Gets a keyval and modifier combination that will match the event.
+   --  See [methodGdk.KeyEvent.matches].
+   --  @param Keyval return location for a keyval
+   --  @param Modifiers return location for modifiers
+   --  @return True on success
+
    function Is_Modifier (Self : Gdk.Event.Gdk_Event) return Boolean;
    --  Extracts whether the key event is for a modifier key.
    --  @return True if the Event is for a modifier key
+
+   function Matches
+      (Self      : Gdk.Event.Gdk_Event;
+       Keyval    : Guint;
+       Modifiers : Gdk.Enums.Gdk_Modifier_Type)
+       return Gdk.Key_Match.Gdk_Key_Match;
+   --  Matches a key event against a keyval and modifiers.
+   --  This is typically used to trigger keyboard shortcuts such as Ctrl-C.
+   --  Partial matches are possible where the combination matches if the
+   --  currently active group is ignored.
+   --  Note that we ignore Caps Lock for matching.
+   --  @param Keyval the keyval to match
+   --  @param Modifiers the modifiers to match
+   --  @return a `GdkKeyMatch` value describing whether Event matches
 
 end Gdk.Event.Key_Event;

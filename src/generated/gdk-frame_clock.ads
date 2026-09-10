@@ -88,7 +88,7 @@ package Gdk.Frame_Clock is
    ----------------------------
 
    package Gdk_Frame_Clock_Phase_Properties is
-      new Generic_Internal_Discrete_Property (Gdk_Frame_Clock_Phase);
+      new Generic_Internal_Flags_Property (Gdk_Frame_Clock_Phase);
    type Property_Gdk_Frame_Clock_Phase is new Gdk_Frame_Clock_Phase_Properties.Property;
 
    ------------------

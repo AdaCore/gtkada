@@ -7,6 +7,7 @@ This contains Ada bindings for Gtk, Gdk, Glib, Pango and Cairo.
 ```sh
 src/ # The main source directory
     generated/ # The generated bindings
+    gtk3/      # A quarry of GtkAda-for-Gtk3 sources: not built, not edited
     misc.c     # C code for miscellaneous functions and constants
 docs/    # The user-facing documentation
 gtkada_demo/ # A demo that can be used as an example for how to use GtkAda.
@@ -31,6 +32,9 @@ The documentation for bindings is in `contrib/documentation.md`.
 **Never edit the files under `src/generated/` by hand.** They are
 generated. See `contrib/documentation.md`.
 
+**Never edit the files under `src/gtk3/` either.** They are the Gtk3
+bindings, kept as a quarry to port from.
+
 To write a custom widget in Ada by overriding the `GtkWidget` virtual
 methods (`measure`, `size_allocate`, `realize`, `snapshot`), use the
 `Set_Default_*_Handler` / `Inherited_*` family in `Gtk.Widget`. See the
@@ -47,6 +51,15 @@ The testsuite is an Ada port of the C testsuite. The C testsuite is available in
 `testsuite/c_tests/`.
 
 A minimal example test is available in `testsuite/tests/main/`.
+
+The library itself is built once, by the testsuite runner, before any test
+runs; each test is then built with `-XGTKADA_EXTERNALLY_BUILT=yes` so that it
+links against that library rather than rebuilding it. This is not merely an
+economy: every test project withs the same `src/gtkada.gpr` and would archive
+into the same `src/lib/gtkada/<kind>/libgtkada.a`, so tests building in
+parallel overwrite each other's archive and the losers fail to link with
+`libgtkada.a: file format not recognized`. Pass `--no-library-build` to run
+against the library already in `src/lib` as it stands.
 
 GTK tests need an X display. On Linux the test driver starts a private `Xvfb`
 server for each main it runs, so `Xvfb` must be installed (e.g. the

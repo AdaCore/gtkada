@@ -35,6 +35,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Cairo.Region;    use Cairo.Region;
 with Gdk.Cursor;      use Gdk.Cursor;
 with Gdk.Device;
+with Gdk.Enums;       use Gdk.Enums;
 with Gdk.Frame_Clock; use Gdk.Frame_Clock;
 with Gdk.GLContext;   use Gdk.GLContext;
 with Gdk.Monitor;     use Gdk.Monitor;
@@ -183,6 +184,21 @@ package Gdk.Surface is
    --  GDK_BLANK_CURSOR.
    --  @param Device a pointer `GdkDevice`
    --  @param Cursor a `GdkCursor`
+
+   function Get_Device_Position
+      (Self   : not null access Gdk_Surface_Record;
+       Device : not null access Gdk.Device.Gdk_Device_Record'Class;
+       X      : access Gdouble := null;
+       Y      : access Gdouble := null;
+       Mask   : access Gdk.Enums.Gdk_Modifier_Type := null) return Boolean;
+   --  Obtains the current device position and modifier state.
+   --  The position is given in coordinates relative to the upper left corner
+   --  of Surface.
+   --  @param Device pointer `GdkDevice` to query to
+   --  @param X return location for the X coordinate of Device
+   --  @param Y return location for the Y coordinate of Device
+   --  @param Mask return location for the modifier mask
+   --  @return True if the device is over the surface
 
    function Get_Display
       (Self : not null access Gdk_Surface_Record) return Gdk.Gdk_Display;

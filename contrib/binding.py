@@ -3668,9 +3668,18 @@ end "+";"""
             section.add(quarkdecl)
             section.add("\n".join(err_match))
 
+        # A bitfield binds to a G_TYPE_FLAGS descendant, which GObject
+        # represents as a guint rather than as a gulong: it needs the flags
+        # flavour of the property helpers.
+        generic = (
+            "Generic_Internal_Flags_Property"
+            if node.tag == nbitfield or asbitfield
+            else "Generic_Internal_Discrete_Property"
+        )
+
         section.pkg.section("Enumeration Properties").add(
             "package %s_Properties is\n" % base
-            + "   new Generic_Internal_Discrete_Property (%s);\n" % base
+            + "   new %s (%s);\n" % (generic, base)
             + "type Property_%s is new %s_Properties.Property;\n\n" % (base, base)
         )
 

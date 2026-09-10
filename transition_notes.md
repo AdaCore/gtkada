@@ -116,6 +116,31 @@
 
 - Automatically generate GError params for functions that write to errors (work item #93)
 
+- Host the nine namespace-level `gtk_accelerator_*` functions
+  (`accelerator_parse`, `accelerator_parse_with_keycode`,
+  `accelerator_name`, `accelerator_name_with_keycode`,
+  `accelerator_get_label`, `accelerator_get_label_with_keycode`,
+  `accelerator_get_accessible_label`,
+  `accelerator_get_default_mod_mask`, `accelerator_valid`).
+  No TOML suppresses them: they are simply not hosted by any package, since
+  gtk4 has no `GtkAccelGroup` to put them in, so a `[[function]]` host has to
+  be chosen for them. Their `GdkModifierType` dependency is bound
+  (`Gdk.Enums`), so nothing else blocks them.
+
+- Give the remaining `Generic_Internal_Discrete_Property` instantiations an
+  exact-width helper, as the bitfield ones now have. That package reads and
+  writes through `ada_g_object_get_ulong` / `ada_g_object_set_ulong`, but
+  GObject lcopies a `G_TYPE_ENUM` property through a `gint *` (and a
+  `G_TYPE_UINT` one through a `guint *`) and collects it in the matching
+  width, so the C types do not line up on LP64. It goes unnoticed on x86-64
+  and aarch64 because the Ada type is 32 bits wide and GNAT's unchecked
+  conversion from `Gulong` keeps the low-order half, which is the half
+  `g_object_get` wrote; a big-endian LP64 target would read the untouched half
+  instead. The fix has the same shape as
+  `Generic_Internal_Flags_Property`: exact-width helpers in `misc.c`, and
+  instantiations (or a generator) that pick the one matching the property's
+  GObject representation.
+
 ## To do (package by package)
 
 gtk-handlers.ads:
@@ -155,11 +180,6 @@ GdkTexture.toml:
 GdkKeymapKey:
 
 - when done, reactivate bindings in GdkDisplay.toml
-
-GdkModifierType:
-
-- when done, reactivate bindings in GdkDevice.toml, GtkDisplay.toml,
-  GdkSurface.toml, GtkTreeView.toml, GdkDevice.toml, GtkCellRendererAccel.toml
 
 GtkApplication.toml:
 

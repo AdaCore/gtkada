@@ -92,7 +92,7 @@ package Glib.Spawn is
    ----------------------------
 
    package GSpawn_Flags_Properties is
-      new Generic_Internal_Discrete_Property (GSpawn_Flags);
+      new Generic_Internal_Flags_Property (GSpawn_Flags);
    type Property_GSpawn_Flags is new GSpawn_Flags_Properties.Property;
 
    package GSpawn_Error_Properties is

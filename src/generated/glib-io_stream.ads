@@ -123,7 +123,7 @@ package Glib.IO_Stream is
    ----------------------------
 
    package GIOStream_Splice_Flags_Properties is
-      new Generic_Internal_Discrete_Property (GIOStream_Splice_Flags);
+      new Generic_Internal_Flags_Property (GIOStream_Splice_Flags);
    type Property_GIOStream_Splice_Flags is new GIOStream_Splice_Flags_Properties.Property;
 
    ------------------

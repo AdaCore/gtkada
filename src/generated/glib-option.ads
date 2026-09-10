@@ -153,7 +153,7 @@ package Glib.Option is
    type Property_GOption_Arg is new GOption_Arg_Properties.Property;
 
    package GOption_Flags_Properties is
-      new Generic_Internal_Discrete_Property (GOption_Flags);
+      new Generic_Internal_Flags_Property (GOption_Flags);
    type Property_GOption_Flags is new GOption_Flags_Properties.Property;
 
    -------------

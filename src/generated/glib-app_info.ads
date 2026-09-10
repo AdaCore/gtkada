@@ -126,7 +126,7 @@ package Glib.App_Info is
    ----------------------------
 
    package Create_Flags_Properties is
-      new Generic_Internal_Discrete_Property (Create_Flags);
+      new Generic_Internal_Flags_Property (Create_Flags);
    type Property_Create_Flags is new Create_Flags_Properties.Property;
 
    ------------------
