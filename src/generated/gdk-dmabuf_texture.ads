@@ -34,6 +34,7 @@ with Gdk.Snapshot;       use Gdk.Snapshot;
 with Gdk.Texture;        use Gdk.Texture;
 with Glib;               use Glib;
 with Glib.Cancellable;   use Glib.Cancellable;
+with Glib.Error;         use Glib.Error;
 with Glib.Input_Stream;  use Glib.Input_Stream;
 with Glib.Loadable_Icon; use Glib.Loadable_Icon;
 with Glib.Object;        use Glib.Object;
@@ -136,13 +137,15 @@ package Gdk.Dmabuf_Texture is
       (Self        : not null access Gdk_Dmabuf_Texture_Record;
        Size        : Glib.Gint;
        The_Type    : access UTF8_String := null;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
 
    function Load_Finish
       (Self     : not null access Gdk_Dmabuf_Texture_Record;
        Res      : Glib.G_Async_Result;
-       The_Type : access UTF8_String := null)
+       The_Type : access UTF8_String := null;
+       Error    : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
 
    ----------------

@@ -53,6 +53,7 @@ with Gdk.Snapshot;            use Gdk.Snapshot;
 with Glib;                    use Glib;
 with Glib.Bytes;              use Glib.Bytes;
 with Glib.Cancellable;        use Glib.Cancellable;
+with Glib.Error;              use Glib.Error;
 with Glib.GFile;              use Glib.GFile;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Input_Stream;       use Glib.Input_Stream;
@@ -181,7 +182,8 @@ package Gdk.Texture is
 
    procedure Gdk_New_From_Bytes
       (Self  : out Gdk_Texture;
-       Bytes : Glib.Bytes.Gbytes);
+       Bytes : Glib.Bytes.Gbytes;
+       Error : out Glib.Error.GError);
    --  Creates a new texture by loading an image from memory,
    --  The file format is detected automatically. The supported formats are
    --  PNG, JPEG and TIFF, though more formats might be available.
@@ -194,10 +196,12 @@ package Gdk.Texture is
    --  load many image formats into a `GdkTexture`.
    --  Since: gtk+ 4.6
    --  @param Bytes a `GBytes` containing the data to load
+   --  @param Error the return location for a recoverable error
 
    procedure Initialize_From_Bytes
       (Self  : not null access Gdk_Texture_Record'Class;
-       Bytes : Glib.Bytes.Gbytes);
+       Bytes : Glib.Bytes.Gbytes;
+       Error : out Glib.Error.GError);
    --  Creates a new texture by loading an image from memory,
    --  The file format is detected automatically. The supported formats are
    --  PNG, JPEG and TIFF, though more formats might be available.
@@ -212,9 +216,11 @@ package Gdk.Texture is
    --  Initialize_From_Bytes does nothing if the object was already created
    --  with another call to Initialize* or G_New.
    --  @param Bytes a `GBytes` containing the data to load
+   --  @param Error the return location for a recoverable error
 
    function Gdk_Texture_New_From_Bytes
-      (Bytes : Glib.Bytes.Gbytes) return Gdk_Texture;
+      (Bytes : Glib.Bytes.Gbytes;
+       Error : out Glib.Error.GError) return Gdk_Texture;
    --  Creates a new texture by loading an image from memory,
    --  The file format is detected automatically. The supported formats are
    --  PNG, JPEG and TIFF, though more formats might be available.
@@ -227,10 +233,12 @@ package Gdk.Texture is
    --  load many image formats into a `GdkTexture`.
    --  Since: gtk+ 4.6
    --  @param Bytes a `GBytes` containing the data to load
+   --  @param Error the return location for a recoverable error
 
    procedure Gdk_New_From_File
-      (Self : out Gdk_Texture;
-       File : Glib.GFile.Gfile);
+      (Self  : out Gdk_Texture;
+       File  : Glib.GFile.Gfile;
+       Error : out Glib.Error.GError);
    --  Creates a new texture by loading an image from a file.
    --  The file format is detected automatically. The supported formats are
    --  PNG, JPEG and TIFF, though more formats might be available.
@@ -242,10 +250,12 @@ package Gdk.Texture is
    --  data. Use a proper image loading framework such as libglycin, which can
    --  load many image formats into a `GdkTexture`.
    --  @param File `GFile` to load
+   --  @param Error the return location for a recoverable error
 
    procedure Initialize_From_File
-      (Self : not null access Gdk_Texture_Record'Class;
-       File : Glib.GFile.Gfile);
+      (Self  : not null access Gdk_Texture_Record'Class;
+       File  : Glib.GFile.Gfile;
+       Error : out Glib.Error.GError);
    --  Creates a new texture by loading an image from a file.
    --  The file format is detected automatically. The supported formats are
    --  PNG, JPEG and TIFF, though more formats might be available.
@@ -259,9 +269,11 @@ package Gdk.Texture is
    --  Initialize_From_File does nothing if the object was already created
    --  with another call to Initialize* or G_New.
    --  @param File `GFile` to load
+   --  @param Error the return location for a recoverable error
 
    function Gdk_Texture_New_From_File
-      (File : Glib.GFile.Gfile) return Gdk_Texture;
+      (File  : Glib.GFile.Gfile;
+       Error : out Glib.Error.GError) return Gdk_Texture;
    --  Creates a new texture by loading an image from a file.
    --  The file format is detected automatically. The supported formats are
    --  PNG, JPEG and TIFF, though more formats might be available.
@@ -273,10 +285,12 @@ package Gdk.Texture is
    --  data. Use a proper image loading framework such as libglycin, which can
    --  load many image formats into a `GdkTexture`.
    --  @param File `GFile` to load
+   --  @param Error the return location for a recoverable error
 
    procedure Gdk_New_From_Filename
-      (Self : out Gdk_Texture;
-       Path : UTF8_String);
+      (Self  : out Gdk_Texture;
+       Path  : UTF8_String;
+       Error : out Glib.Error.GError);
    --  Creates a new texture by loading an image from a file.
    --  The file format is detected automatically. The supported formats are
    --  PNG, JPEG and TIFF, though more formats might be available.
@@ -289,10 +303,12 @@ package Gdk.Texture is
    --  load many image formats into a `GdkTexture`.
    --  Since: gtk+ 4.6
    --  @param Path the filename to load
+   --  @param Error the return location for a recoverable error
 
    procedure Initialize_From_Filename
-      (Self : not null access Gdk_Texture_Record'Class;
-       Path : UTF8_String);
+      (Self  : not null access Gdk_Texture_Record'Class;
+       Path  : UTF8_String;
+       Error : out Glib.Error.GError);
    --  Creates a new texture by loading an image from a file.
    --  The file format is detected automatically. The supported formats are
    --  PNG, JPEG and TIFF, though more formats might be available.
@@ -307,9 +323,11 @@ package Gdk.Texture is
    --  Initialize_From_Filename does nothing if the object was already created
    --  with another call to Initialize* or G_New.
    --  @param Path the filename to load
+   --  @param Error the return location for a recoverable error
 
    function Gdk_Texture_New_From_Filename
-      (Path : UTF8_String) return Gdk_Texture;
+      (Path  : UTF8_String;
+       Error : out Glib.Error.GError) return Gdk_Texture;
    --  Creates a new texture by loading an image from a file.
    --  The file format is detected automatically. The supported formats are
    --  PNG, JPEG and TIFF, though more formats might be available.
@@ -322,6 +340,7 @@ package Gdk.Texture is
    --  load many image formats into a `GdkTexture`.
    --  Since: gtk+ 4.6
    --  @param Path the filename to load
+   --  @param Error the return location for a recoverable error
 
    procedure Gdk_New_From_Resource
       (Self          : out Gdk_Texture;
@@ -534,13 +553,15 @@ package Gdk.Texture is
       (Self        : not null access Gdk_Texture_Record;
        Size        : Glib.Gint;
        The_Type    : access UTF8_String := null;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
 
    function Load_Finish
       (Self     : not null access Gdk_Texture_Record;
        Res      : Glib.G_Async_Result;
-       The_Type : access UTF8_String := null)
+       The_Type : access UTF8_String := null;
+       Error    : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream;
 
    ----------------

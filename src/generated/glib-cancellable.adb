@@ -24,10 +24,13 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
+
+use type Glib.Error.GError;
 
 package body Glib.Cancellable is
 
@@ -286,12 +289,19 @@ package body Glib.Cancellable is
    ----------------------------
 
    function Set_Error_If_Cancelled
-      (Self : not null access Gcancellable_Record) return Boolean
+      (Self  : not null access Gcancellable_Record;
+       Error : out Glib.Error.GError) return Boolean
    is
-      function Internal (Self : System.Address) return Glib.Gboolean;
+      function Internal
+         (Self      : System.Address;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_cancellable_set_error_if_cancelled");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Get_Object (Self)) /= 0;
+      Tmp_Return := Internal (Get_Object (Self), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Set_Error_If_Cancelled;
 
    ----------------

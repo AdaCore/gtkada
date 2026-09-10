@@ -24,11 +24,14 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
+
+use type Glib.Error.GError;
 
 package body Gtk.Alert_Dialog is
 
@@ -149,14 +152,24 @@ package body Gtk.Alert_Dialog is
 
    function Choose_Finish
       (Self   : not null access Gtk_Alert_Dialog_Record;
-       Result : Glib.G_Async_Result) return Glib.Gint
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Glib.Gint
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return Glib.Gint;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gint;
       pragma Import (C, Internal, "gtk_alert_dialog_choose_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Glib.Gint;
+      Tmp_Return : Glib.Gint;
    begin
-      return Internal (Get_Object (Self), Result);
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Choose_Finish;
 
    -----------------

@@ -38,6 +38,7 @@ pragma Warnings (Off, "*is already use-visible*");
 with Gdk.RGBA;         use Gdk.RGBA;
 with Glib;             use Glib;
 with Glib.Cancellable; use Glib.Cancellable;
+with Glib.Error;       use Glib.Error;
 with Glib.Object;      use Glib.Object;
 with Glib.Properties;  use Glib.Properties;
 with Gtk.Window;       use Gtk.Window;
@@ -106,12 +107,14 @@ package Gtk.Color_Dialog is
 
    function Choose_Rgba_Finish
       (Self   : not null access Gtk_Color_Dialog_Record;
-       Result : Glib.G_Async_Result) return Gdk.RGBA.Gdk_RGBA;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gdk.RGBA.Gdk_RGBA;
    --  Finishes the [methodGtk.ColorDialog.choose_rgba] call
    --  Note that this function returns a [errorGtk.DialogError.DISMISSED]
    --  error if the user cancels the dialog.
    --  Since: gtk+ 4.10
    --  @param Result the result
+   --  @param Error the return location for a recoverable error
    --  @return the selected color
 
    function Get_Modal

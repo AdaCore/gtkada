@@ -25,9 +25,12 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Display;
 with Gdk.Surface;
+with Glib.Error;
 with Glib.Object;                use Glib.Object;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with System;
+
+use type Glib.Error.GError;
 
 package body Gdk.GLContext is
 
@@ -223,12 +226,19 @@ package body Gdk.GLContext is
    -------------
 
    function Realize
-      (Self : not null access Gdk_GLContext_Record) return Boolean
+      (Self  : not null access Gdk_GLContext_Record;
+       Error : out Glib.Error.GError) return Boolean
    is
-      function Internal (Self : System.Address) return Glib.Gboolean;
+      function Internal
+         (Self      : System.Address;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_gl_context_realize");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Get_Object (Self)) /= 0;
+      Tmp_Return := Internal (Get_Object (Self), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Realize;
 
    ----------------------

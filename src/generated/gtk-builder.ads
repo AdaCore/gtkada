@@ -476,7 +476,8 @@ package Gtk.Builder is
 
    function Add_From_File
       (Self     : not null access Gtk_Builder_Record;
-       Filename : UTF8_String) return Boolean;
+       Filename : UTF8_String;
+       Error    : out Glib.Error.GError) return Boolean;
    --  Parses a file containing a UI definition and merges it with the current
    --  contents of Builder.
    --  This function is useful if you need to call
@@ -493,11 +494,13 @@ package Gtk.Builder is
    --  to the reported failure. The only reasonable thing to do when an error
    --  is detected is to call `g_error`.
    --  @param Filename the name of the file to parse
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False if an error occurred
 
    function Add_From_Resource
       (Self          : not null access Gtk_Builder_Record;
-       Resource_Path : UTF8_String) return Boolean;
+       Resource_Path : UTF8_String;
+       Error         : out Glib.Error.GError) return Boolean;
    --  Parses a resource file containing a UI definition and merges it with
    --  the current contents of Builder.
    --  This function is useful if you need to call
@@ -511,11 +514,13 @@ package Gtk.Builder is
    --  The only reasonable thing to do when an error is detected is to call
    --  g_error.
    --  @param Resource_Path the path of the resource file to parse
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False if an error occurred
 
    function Add_From_String
       (Self   : not null access Gtk_Builder_Record;
-       Buffer : UTF8_String) return Boolean;
+       Buffer : UTF8_String;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Parses a string containing a UI definition and merges it with the
    --  current contents of Builder.
    --  This function is useful if you need to call
@@ -529,12 +534,14 @@ package Gtk.Builder is
    --  The only reasonable thing to do when an error is detected is to call
    --  g_error.
    --  @param Buffer the string to parse
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False if an error occurred
 
    function Add_Objects_From_File
       (Self       : not null access Gtk_Builder_Record;
        Filename   : UTF8_String;
-       Object_Ids : GNAT.Strings.String_List) return Boolean;
+       Object_Ids : GNAT.Strings.String_List;
+       Error      : out Glib.Error.GError) return Boolean;
    --  Parses a file containing a UI definition building only the requested
    --  objects and merges them with the current contents of Builder.
    --  Upon errors, 0 will be returned and Error will be assigned a `GError`
@@ -544,12 +551,14 @@ package Gtk.Builder is
    --  you have to explicitly list all of them in Object_Ids.
    --  @param Filename the name of the file to parse
    --  @param Object_Ids nul-terminated array of objects to build
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False if an error occurred
 
    function Add_Objects_From_Resource
       (Self          : not null access Gtk_Builder_Record;
        Resource_Path : UTF8_String;
-       Object_Ids    : GNAT.Strings.String_List) return Boolean;
+       Object_Ids    : GNAT.Strings.String_List;
+       Error         : out Glib.Error.GError) return Boolean;
    --  Parses a resource file containing a UI definition, building only the
    --  requested objects and merges them with the current contents of Builder.
    --  Upon errors, 0 will be returned and Error will be assigned a `GError`
@@ -559,12 +568,14 @@ package Gtk.Builder is
    --  you have to explicitly list all of them in Object_Ids.
    --  @param Resource_Path the path of the resource file to parse
    --  @param Object_Ids nul-terminated array of objects to build
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False if an error occurred
 
    function Add_Objects_From_String
       (Self       : not null access Gtk_Builder_Record;
        Buffer     : UTF8_String;
-       Object_Ids : GNAT.Strings.String_List) return Boolean;
+       Object_Ids : GNAT.Strings.String_List;
+       Error      : out Glib.Error.GError) return Boolean;
    --  Parses a string containing a UI definition, building only the requested
    --  objects and merges them with the current contents of Builder.
    --  Upon errors False will be returned and Error will be assigned a
@@ -574,14 +585,15 @@ package Gtk.Builder is
    --  you have to explicitly list all of them in Object_Ids.
    --  @param Buffer the string to parse
    --  @param Object_Ids nul-terminated array of objects to build
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False if an error occurred
 
    function Create_Closure
       (Self          : not null access Gtk_Builder_Record;
        Function_Name : UTF8_String;
        Flags         : Gtk.Enums.Gtk_Builder_Closure_Flags;
-       Object        : access Glib.Object.GObject_Record'Class)
-       return System.Address;
+       Object        : access Glib.Object.GObject_Record'Class;
+       Error         : out Glib.Error.GError) return System.Address;
    --  Creates a closure to invoke the function called Function_Name.
    --  This is using the create_closure implementation of Builder's
    --  [ifaceGtk.BuilderScope].
@@ -590,6 +602,7 @@ package Gtk.Builder is
    --  @param Function_Name name of the function to look up
    --  @param Flags closure creation flags
    --  @param Object Object to create the closure with
+   --  @param Error the return location for a recoverable error
    --  @return A new closure for invoking Function_Name
 
    procedure Expose_Object
@@ -610,7 +623,8 @@ package Gtk.Builder is
        Object        : not null access Glib.Object.GObject_Record'Class;
        Template_Type : GType;
        Buffer        : UTF8_String;
-       Length        : Gssize) return Boolean;
+       Length        : Gssize;
+       Error         : out Glib.Error.GError) return Boolean;
    --  Main private entry point for building composite components from
    --  template XML.
    --  Most likely you do not need to call this function in applications as
@@ -620,6 +634,7 @@ package Gtk.Builder is
    --  @param Buffer the string to parse
    --  @param Length the length of Buffer (may be -1 if Buffer is
    --  nul-terminated)
+   --  @param Error the return location for a recoverable error
    --  @return A positive value on success, 0 if an error occurred
 
    function Get_Current_Object
@@ -696,7 +711,8 @@ package Gtk.Builder is
       (Self   : not null access Gtk_Builder_Record;
        Pspec  : Glib.Param_Spec;
        String : UTF8_String;
-       Value  : out Glib.Values.GValue) return Boolean;
+       Value  : out Glib.Values.GValue;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Demarshals a value from a string.
    --  This function calls g_value_init on the Value argument, so it need not
    --  be initialised beforehand.
@@ -707,13 +723,15 @@ package Gtk.Builder is
    --  @param Pspec the `GParamSpec` for the property
    --  @param String the string representation of the value
    --  @param Value the `GValue` to store the result in
+   --  @param Error the return location for a recoverable error
    --  @return True on success
 
    function Value_From_String_Type
       (Self     : not null access Gtk_Builder_Record;
        The_Type : GType;
        String   : UTF8_String;
-       Value    : out Glib.Values.GValue) return Boolean;
+       Value    : out Glib.Values.GValue;
+       Error    : out Glib.Error.GError) return Boolean;
    --  Demarshals a value from a string.
    --  Unlike [methodGtk.Builder.value_from_string], this function takes a
    --  `GType` instead of `GParamSpec`.
@@ -724,6 +742,7 @@ package Gtk.Builder is
    --  @param The_Type the `GType` of the value
    --  @param String the string representation of the value
    --  @param Value the `GValue` to store the result in
+   --  @param Error the return location for a recoverable error
    --  @return True on success
 
    ----------------

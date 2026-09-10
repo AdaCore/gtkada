@@ -25,6 +25,7 @@
 --  GIO to allow for cancellation of synchronous and asynchronous operations.
 
 pragma Warnings (Off, "*is already use-visible*");
+with Glib.Error;  use Glib.Error;
 with Glib.Main;   use Glib.Main;
 with Glib.Object; use Glib.Object;
 
@@ -240,9 +241,11 @@ package Glib.Cancellable is
    --  for further async operations.
 
    function Set_Error_If_Cancelled
-      (Self : not null access Gcancellable_Record) return Boolean;
+      (Self  : not null access Gcancellable_Record;
+       Error : out Glib.Error.GError) return Boolean;
    --  If the Cancellable is cancelled, sets the error to notify that the
    --  operation was cancelled.
+   --  @param Error the return location for a recoverable error
    --  @return True if Cancellable was cancelled, False if it was not
 
    function Source_New

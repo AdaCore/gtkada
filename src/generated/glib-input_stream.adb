@@ -24,7 +24,10 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+
+use type Glib.Error.GError;
 
 package body Glib.Input_Stream is
 
@@ -168,15 +171,20 @@ package body Glib.Input_Stream is
 
    function Close
       (Self        : not null access Ginput_Stream_Record;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : System.Address;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_input_stream_close");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Cancellable))) /= 0;
+      Tmp_Return := Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Close;
 
    -----------------
@@ -203,14 +211,20 @@ package body Glib.Input_Stream is
 
    function Close_Finish
       (Self   : not null access Ginput_Stream_Record;
-       Result : Glib.G_Async_Result) return Boolean
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return Glib.Gboolean;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_input_stream_close_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Get_Object (Self), Result) /= 0;
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Close_Finish;
 
    -----------------
@@ -246,17 +260,26 @@ package body Glib.Input_Stream is
    function Read
       (Self        : not null access Ginput_Stream_Record;
        Buffer      : out Guint8_Array;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Gssize
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Gssize
    is
       function Internal
          (Self        : System.Address;
           Buffer      : System.Address;
           Count       : Gsize;
-          Cancellable : System.Address) return Gssize;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Gssize;
       pragma Import (C, Internal, "g_input_stream_read");
+      Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Gssize;
+      Tmp_Return : Gssize;
    begin
-      return Internal (Get_Object (Self), Buffer'Address, Buffer'Length, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Get_Object (Self), Buffer'Address, Buffer'Length, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Read;
 
    --------------
@@ -267,21 +290,24 @@ package body Glib.Input_Stream is
       (Self        : not null access Ginput_Stream_Record;
        Buffer      : out Guint8_Array;
        Bytes_Read  : out Gsize;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self           : System.Address;
           Buffer         : System.Address;
           Count          : Gsize;
           Acc_Bytes_Read : access Gsize;
-          Cancellable    : System.Address) return Glib.Gboolean;
+          Cancellable    : System.Address;
+          Acc_Error      : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_input_stream_read_all");
       Acc_Bytes_Read : aliased Gsize;
+      Acc_Error      : aliased Glib.Error.GError;
       Tmp_Return     : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Buffer'Address, Buffer'Length, Acc_Bytes_Read'Access, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Get_Object (Self), Buffer'Address, Buffer'Length, Acc_Bytes_Read'Access, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Bytes_Read := Acc_Bytes_Read;
+      Error := Acc_Error;
       return Tmp_Return /= 0;
    end Read_All;
 
@@ -292,18 +318,22 @@ package body Glib.Input_Stream is
    function Read_All_Finish
       (Self       : not null access Ginput_Stream_Record;
        Result     : Glib.G_Async_Result;
-       Bytes_Read : out Gsize) return Boolean
+       Bytes_Read : out Gsize;
+       Error      : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self           : System.Address;
           Result         : Glib.G_Async_Result;
-          Acc_Bytes_Read : access Gsize) return Glib.Gboolean;
+          Acc_Bytes_Read : access Gsize;
+          Acc_Error      : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_input_stream_read_all_finish");
       Acc_Bytes_Read : aliased Gsize;
+      Acc_Error      : aliased Glib.Error.GError;
       Tmp_Return     : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Bytes_Read'Access);
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Bytes_Read'Access, Acc_Error'Access);
       Bytes_Read := Acc_Bytes_Read;
+      Error := Acc_Error;
       return Tmp_Return /= 0;
    end Read_All_Finish;
 
@@ -314,16 +344,25 @@ package body Glib.Input_Stream is
    function Read_Bytes
       (Self        : not null access Ginput_Stream_Record;
        Count       : Gsize;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Glib.Bytes.Gbytes
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Glib.Bytes.Gbytes
    is
       function Internal
          (Self        : System.Address;
           Count       : Gsize;
-          Cancellable : System.Address) return System.Address;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_input_stream_read_bytes");
+      Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Glib.Bytes.Gbytes := Null_Gbytes;
+      Tmp_Return : System.Address;
    begin
-      return From_Object (Internal (Get_Object (Self), Count, Get_Object_Or_Null (GObject (Cancellable))));
+      Tmp_Return := Internal (Get_Object (Self), Count, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := From_Object (Tmp_Return);
+      end if;
+      return Return_Obj;
    end Read_Bytes;
 
    ----------------------
@@ -351,14 +390,24 @@ package body Glib.Input_Stream is
 
    function Read_Bytes_Finish
       (Self   : not null access Ginput_Stream_Record;
-       Result : Glib.G_Async_Result) return Glib.Bytes.Gbytes
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Glib.Bytes.Gbytes
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return System.Address;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_input_stream_read_bytes_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Glib.Bytes.Gbytes := Null_Gbytes;
+      Tmp_Return : System.Address;
    begin
-      return From_Object (Internal (Get_Object (Self), Result));
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := From_Object (Tmp_Return);
+      end if;
+      return Return_Obj;
    end Read_Bytes_Finish;
 
    -----------------
@@ -367,14 +416,24 @@ package body Glib.Input_Stream is
 
    function Read_Finish
       (Self   : not null access Ginput_Stream_Record;
-       Result : Glib.G_Async_Result) return Gssize
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gssize
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return Gssize;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Gssize;
       pragma Import (C, Internal, "g_input_stream_read_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Gssize;
+      Tmp_Return : Gssize;
    begin
-      return Internal (Get_Object (Self), Result);
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Read_Finish;
 
    -----------------
@@ -382,12 +441,19 @@ package body Glib.Input_Stream is
    -----------------
 
    function Set_Pending
-      (Self : not null access Ginput_Stream_Record) return Boolean
+      (Self  : not null access Ginput_Stream_Record;
+       Error : out Glib.Error.GError) return Boolean
    is
-      function Internal (Self : System.Address) return Glib.Gboolean;
+      function Internal
+         (Self      : System.Address;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_input_stream_set_pending");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Get_Object (Self)) /= 0;
+      Tmp_Return := Internal (Get_Object (Self), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Set_Pending;
 
    ----------
@@ -397,16 +463,25 @@ package body Glib.Input_Stream is
    function Skip
       (Self        : not null access Ginput_Stream_Record;
        Count       : Gsize;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Gssize
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Gssize
    is
       function Internal
          (Self        : System.Address;
           Count       : Gsize;
-          Cancellable : System.Address) return Gssize;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Gssize;
       pragma Import (C, Internal, "g_input_stream_skip");
+      Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Gssize;
+      Tmp_Return : Gssize;
    begin
-      return Internal (Get_Object (Self), Count, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Get_Object (Self), Count, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Skip;
 
    ----------------
@@ -434,14 +509,24 @@ package body Glib.Input_Stream is
 
    function Skip_Finish
       (Self   : not null access Ginput_Stream_Record;
-       Result : Glib.G_Async_Result) return Gssize
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Gssize
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return Gssize;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Gssize;
       pragma Import (C, Internal, "g_input_stream_skip_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Gssize;
+      Tmp_Return : Gssize;
    begin
-      return Internal (Get_Object (Self), Result);
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Skip_Finish;
 
 end Glib.Input_Stream;

@@ -41,6 +41,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Cancellable; use Glib.Cancellable;
+with Glib.Error;       use Glib.Error;
 with Glib.File_Info;   use Glib.File_Info;
 with Glib.IO_Stream;   use Glib.IO_Stream;
 with Glib.Object;      use Glib.Object;
@@ -93,8 +94,8 @@ package Glib.File_IO_Stream is
    function Query_Info
       (Self        : not null access Gfile_Iostream_Record;
        Attributes  : UTF8_String;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Glib.File_Info.Gfile_Info;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Glib.File_Info.Gfile_Info;
    --  Queries a file io stream for the given Attributes. This function blocks
    --  while querying the stream. For the asynchronous version of this
    --  function, see Glib.File_IO_Stream.Query_Info_Async. While the stream is
@@ -113,6 +114,7 @@ package Glib.File_IO_Stream is
    --  @param Attributes a file attribute query string.
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
+   --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Info.Gfile_Info for the Stream, or null on error.
 
    procedure Query_Info_Async
@@ -137,11 +139,13 @@ package Glib.File_IO_Stream is
 
    function Query_Info_Finish
       (Self   : not null access Gfile_Iostream_Record;
-       Result : Glib.G_Async_Result) return Glib.File_Info.Gfile_Info;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Glib.File_Info.Gfile_Info;
    --  Finalizes the asynchronous query started by
    --  Glib.File_IO_Stream.Query_Info_Async.
    --  Since: gtk+ 2.22
    --  @param Result a Glib.G_Async_Result.
+   --  @param Error the return location for a recoverable error
    --  @return A Glib.File_Info.Gfile_Info for the finished query.
 
 end Glib.File_IO_Stream;

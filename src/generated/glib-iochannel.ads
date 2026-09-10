@@ -352,7 +352,8 @@ package Glib.IOChannel is
    function Seek_Position
       (Self     : Giochannel;
        Offset   : Gint64;
-       The_Type : GSeek_Type) return GIOStatus;
+       The_Type : GSeek_Type;
+       Error    : out Glib.Error.GError) return GIOStatus;
    pragma Import (C, Seek_Position, "g_io_channel_seek_position");
    --  Replacement for g_io_channel_seek with the new API.
    --  @param Offset The offset in bytes from the position specified by Type
@@ -360,6 +361,7 @@ package Glib.IOChannel is
    --  Glib.IOChannel.G_Seek_Cur is only allowed in those cases where a call to
    --  g_io_channel_set_encoding () is allowed. See the documentation for
    --  g_io_channel_set_encoding () for details.
+   --  @param Error the return location for a recoverable error
    --  @return the status of the operation.
 
    function Unix_Get_Fd (Self : Giochannel) return Glib.Gint;

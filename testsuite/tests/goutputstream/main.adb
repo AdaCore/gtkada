@@ -14,6 +14,7 @@ with Ada.Unchecked_Conversion;
 with System;
 
 with Glib;               use Glib;
+with Glib.Error;
 with Glib.Input_Stream;  use Glib.Input_Stream;
 with Glib.Object;
 with Glib.Output_Stream; use Glib.Output_Stream;
@@ -23,6 +24,8 @@ with Glib.Test;          use Glib.Test;
 procedure Main is
 
    Alpha_Text : constant UTF8_String := "alpha resource" & ASCII.LF;
+
+   use type Glib.Error.GError;
 
    function New_Memory_Stream return Goutput_Stream;
    --  A resizable GMemoryOutputStream, which grows as it is written to.
@@ -85,12 +88,17 @@ procedure Main is
    ----------------
 
    function Open_Alpha return Ginput_Stream is
-      Resource : Gresource := Load ("sample.gresource");
-      Stream   : constant Ginput_Stream := Open_Stream
+      Load_Error   : Glib.Error.GError;
+      Stream_Error : Glib.Error.GError;
+      Resource     : Gresource := Load ("sample.gresource", Load_Error);
+      Stream       : constant Ginput_Stream := Open_Stream
         (Self         => Resource,
          Path         => "/org/gtkada/test/alpha.txt",
-         Lookup_Flags => G_Resource_Lookup_Flags_None);
+         Lookup_Flags => G_Resource_Lookup_Flags_None,
+         Error        => Stream_Error);
    begin
+      Assert_True (Load_Error = null);
+      Assert_True (Stream_Error = null);
       Assert_True (Resource /= Null_Gresource);
       Unref (Resource);
 
@@ -133,18 +141,22 @@ procedure Main is
       Stream  : constant Goutput_Stream := New_Memory_Stream;
       Buffer  : constant Guint8_Array := To_Buffer ("hello");
       Written : Gssize;
+      Error   : Glib.Error.GError;
    begin
       Assert_True (Stream /= null);
 
       Written := Write
         (Self        => Stream,
          Buffer      => Buffer,
-         Cancellable => null);
+         Cancellable => null,
+         Error       => Error);
 
+      Assert_True (Error = null);
       Assert_Cmpint_Eq (Gint (Written), 5);
       Assert_Cmpstr_Eq (Contents (Stream), "hello");
 
-      Assert_True (Close (Self => Stream, Cancellable => null));
+      Assert_True (Close (Self => Stream, Cancellable => null, Error => Error));
+      Assert_True (Error = null);
       Assert_True (Is_Closed (Stream));
 
       Glib.Object.Unref (Glib.Object.GObject (Stream));
@@ -158,6 +170,7 @@ procedure Main is
       Stream  : constant Goutput_Stream := New_Memory_Stream;
       Buffer  : constant Guint8_Array := To_Buffer ("hello");
       Written : Gssize;
+      Error   : Glib.Error.GError;
    begin
       Assert_True (Stream /= null);
 
@@ -167,8 +180,10 @@ procedure Main is
       Written := Write
         (Self        => Stream,
          Buffer      => Buffer (1 .. 3),
-         Cancellable => null);
+         Cancellable => null,
+         Error       => Error);
 
+      Assert_True (Error = null);
       Assert_Cmpint_Eq (Gint (Written), 3);
       Assert_Cmpstr_Eq (Contents (Stream), "hel");
 
@@ -183,6 +198,7 @@ procedure Main is
       Stream  : constant Goutput_Stream := New_Memory_Stream;
       Buffer  : constant Guint8_Array := To_Buffer (Alpha_Text);
       Written : aliased Gsize := 0;
+      Error   : Glib.Error.GError;
    begin
       Assert_True (Stream /= null);
 
@@ -191,8 +207,10 @@ procedure Main is
            (Self          => Stream,
             Buffer        => Buffer,
             Bytes_Written => Written'Access,
-            Cancellable   => null));
+            Cancellable   => null,
+            Error         => Error));
 
+      Assert_True (Error = null);
       Assert_Cmpint_Eq (Gint (Written), Gint (Alpha_Text'Length));
       Assert_Cmpstr_Eq (Contents (Stream), Alpha_Text);
 
@@ -203,8 +221,10 @@ procedure Main is
            (Self          => Stream,
             Buffer        => Buffer,
             Bytes_Written => null,
-            Cancellable   => null));
+            Cancellable   => null,
+            Error         => Error));
 
+      Assert_True (Error = null);
       Assert_Cmpstr_Eq (Contents (Stream), Alpha_Text & Alpha_Text);
 
       Glib.Object.Unref (Glib.Object.GObject (Stream));
@@ -215,9 +235,10 @@ procedure Main is
    -----------------
 
    procedure Test_Splice is
-      Source : constant Ginput_Stream := Open_Alpha;
-      Target : constant Goutput_Stream := New_Memory_Stream;
+      Source  : constant Ginput_Stream := Open_Alpha;
+      Target  : constant Goutput_Stream := New_Memory_Stream;
       Spliced : Gssize;
+      Error   : Glib.Error.GError;
    begin
       Assert_True (Source /= null);
       Assert_True (Target /= null);
@@ -226,8 +247,10 @@ procedure Main is
         (Self        => Target,
          Source      => Source,
          Flags       => G_Output_Stream_Splice_Close_Source,
-         Cancellable => null);
+         Cancellable => null,
+         Error       => Error);
 
+      Assert_True (Error = null);
       Assert_Cmpint_Eq (Gint (Spliced), Gint (Alpha_Text'Length));
       Assert_Cmpstr_Eq (Contents (Target), Alpha_Text);
       Assert_True (Is_Closed (Source));

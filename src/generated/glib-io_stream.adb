@@ -24,7 +24,10 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+
+use type Glib.Error.GError;
 
 package body Glib.IO_Stream is
 
@@ -126,15 +129,20 @@ package body Glib.IO_Stream is
 
    function Close
       (Self        : not null access Giostream_Record;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : System.Address;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_io_stream_close");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Cancellable))) /= 0;
+      Tmp_Return := Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Close;
 
    -----------------
@@ -161,14 +169,20 @@ package body Glib.IO_Stream is
 
    function Close_Finish
       (Self   : not null access Giostream_Record;
-       Result : Glib.G_Async_Result) return Boolean
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return Glib.Gboolean;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_io_stream_close_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Get_Object (Self), Result) /= 0;
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Close_Finish;
 
    ----------------------
@@ -232,12 +246,19 @@ package body Glib.IO_Stream is
    -----------------
 
    function Set_Pending
-      (Self : not null access Giostream_Record) return Boolean
+      (Self  : not null access Giostream_Record;
+       Error : out Glib.Error.GError) return Boolean
    is
-      function Internal (Self : System.Address) return Glib.Gboolean;
+      function Internal
+         (Self      : System.Address;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_io_stream_set_pending");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Get_Object (Self)) /= 0;
+      Tmp_Return := Internal (Get_Object (Self), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Set_Pending;
 
    ------------------
@@ -264,11 +285,20 @@ package body Glib.IO_Stream is
    -- Splice_Finish --
    -------------------
 
-   function Splice_Finish (Result : Glib.G_Async_Result) return Boolean is
-      function Internal (Result : Glib.G_Async_Result) return Glib.Gboolean;
+   function Splice_Finish
+      (Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
+   is
+      function Internal
+         (Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_io_stream_splice_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Result) /= 0;
+      Tmp_Return := Internal (Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Splice_Finish;
 
 end Glib.IO_Stream;

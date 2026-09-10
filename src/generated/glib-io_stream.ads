@@ -77,6 +77,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Cancellable;        use Glib.Cancellable;
+with Glib.Error;              use Glib.Error;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Input_Stream;       use Glib.Input_Stream;
 with Glib.Object;             use Glib.Object;
@@ -143,8 +144,8 @@ package Glib.IO_Stream is
 
    function Close
       (Self        : not null access Giostream_Record;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean;
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean;
    --  Closes the stream, releasing resources related to it. This will also
    --  close the individual input and output streams, if they are not already
    --  closed.
@@ -174,6 +175,7 @@ package Glib.IO_Stream is
    --  Since: gtk+ 2.22
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False on failure
 
    procedure Close_Async
@@ -197,10 +199,12 @@ package Glib.IO_Stream is
 
    function Close_Finish
       (Self   : not null access Giostream_Record;
-       Result : Glib.G_Async_Result) return Boolean;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Closes a stream.
    --  Since: gtk+ 2.22
    --  @param Result a Glib.G_Async_Result
+   --  @param Error the return location for a recoverable error
    --  @return True if stream was successfully closed, False otherwise.
 
    function Get_Input_Stream
@@ -234,10 +238,12 @@ package Glib.IO_Stream is
    --  @return True if the stream is closed.
 
    function Set_Pending
-      (Self : not null access Giostream_Record) return Boolean;
+      (Self  : not null access Giostream_Record;
+       Error : out Glib.Error.GError) return Boolean;
    --  Sets Stream to have actions pending. If the pending flag is already set
    --  or Stream is closed, it will return False and set Error.
    --  Since: gtk+ 2.22
+   --  @param Error the return location for a recoverable error
    --  @return True if pending was previously unset and is now set.
 
    procedure Splice_Async
@@ -265,10 +271,13 @@ package Glib.IO_Stream is
    -- Functions --
    ---------------
 
-   function Splice_Finish (Result : Glib.G_Async_Result) return Boolean;
+   function Splice_Finish
+      (Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous io stream splice operation.
    --  Since: gtk+ 2.28
    --  @param Result a Glib.G_Async_Result.
+   --  @param Error the return location for a recoverable error
    --  @return True on success, False otherwise.
 
    ----------------

@@ -23,11 +23,14 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Glib.Error;
 with Glib.Object;     use Glib.Object;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings; use Gtkada.Bindings;
 with Gtkada.Types;    use Gtkada.Types;
 pragma Warnings(On);
+
+use type Glib.Error.GError;
 
 package body Glib.Resource is
 
@@ -52,13 +55,22 @@ package body Glib.Resource is
    ---------------------
 
    procedure G_New_From_Data
-      (Self : out Gresource;
-       Data : Glib.Bytes.Gbytes)
+      (Self  : out Gresource;
+       Data  : Glib.Bytes.Gbytes;
+       Error : out Glib.Error.GError)
    is
-      function Internal (Data : System.Address) return System.Address;
+      function Internal
+         (Data      : System.Address;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_resource_new_from_data");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : System.Address;
    begin
-      Self.Set_Object (Internal (Get_Object (Data)));
+      Tmp_Return := Internal (Get_Object (Data), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Self.Set_Object (Tmp_Return);
+      end if;
    end G_New_From_Data;
 
    -----------------------------
@@ -66,13 +78,22 @@ package body Glib.Resource is
    -----------------------------
 
    function Gresource_New_From_Data
-      (Data : Glib.Bytes.Gbytes) return Gresource
+      (Data  : Glib.Bytes.Gbytes;
+       Error : out Glib.Error.GError) return Gresource
    is
-      function Internal (Data : System.Address) return System.Address;
+      function Internal
+         (Data      : System.Address;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_resource_new_from_data");
-      Self : Gresource;
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : System.Address;
+      Self       : Gresource;
    begin
-      Self.Set_Object (Internal (Get_Object (Data)));
+      Tmp_Return := Internal (Get_Object (Data), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Self.Set_Object (Tmp_Return);
+      end if;
       return Self;
    end Gresource_New_From_Data;
 
@@ -83,20 +104,29 @@ package body Glib.Resource is
    function Enumerate_Children
       (Self         : Gresource;
        Path         : UTF8_String;
-       Lookup_Flags : Resource_Lookup_Flags) return GNAT.Strings.String_List
+       Lookup_Flags : Resource_Lookup_Flags;
+       Error        : out Glib.Error.GError) return GNAT.Strings.String_List
    is
       function Internal
          (Self         : System.Address;
           Path         : Gtkada.Types.Chars_Ptr;
-          Lookup_Flags : Resource_Lookup_Flags)
+          Lookup_Flags : Resource_Lookup_Flags;
+          Acc_Error    : access Glib.Error.GError)
           return chars_ptr_array_access;
       pragma Import (C, Internal, "g_resource_enumerate_children");
+      Acc_Error  : aliased Glib.Error.GError;
       Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
       Tmp_Return : chars_ptr_array_access;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Path);
-      return To_String_List_And_Free (Tmp_Return);
+      if Error = null then
+         return To_String_List_And_Free (Tmp_Return);
+      else
+         g_strfreev (Tmp_Return);
+         return (1..0 => null);
+      end if;
    end Enumerate_Children;
 
    --------------
@@ -108,19 +138,23 @@ package body Glib.Resource is
        Path         : UTF8_String;
        Lookup_Flags : Resource_Lookup_Flags;
        Size         : access Gsize := null;
-       Flags        : access Guint32 := null) return Boolean
+       Flags        : access Guint32 := null;
+       Error        : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self         : System.Address;
           Path         : Gtkada.Types.Chars_Ptr;
           Lookup_Flags : Resource_Lookup_Flags;
           Size         : access Gsize;
-          Flags        : access Guint32) return Glib.Gboolean;
+          Flags        : access Guint32;
+          Acc_Error    : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_resource_get_info");
+      Acc_Error  : aliased Glib.Error.GError;
       Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
       Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Size, Flags);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Size, Flags, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Path);
       return Tmp_Return /= 0;
    end Get_Info;
@@ -152,19 +186,27 @@ package body Glib.Resource is
    function Lookup_Data
       (Self         : Gresource;
        Path         : UTF8_String;
-       Lookup_Flags : Resource_Lookup_Flags) return Glib.Bytes.Gbytes
+       Lookup_Flags : Resource_Lookup_Flags;
+       Error        : out Glib.Error.GError) return Glib.Bytes.Gbytes
    is
       function Internal
          (Self         : System.Address;
           Path         : Gtkada.Types.Chars_Ptr;
-          Lookup_Flags : Resource_Lookup_Flags) return System.Address;
+          Lookup_Flags : Resource_Lookup_Flags;
+          Acc_Error    : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_resource_lookup_data");
+      Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Glib.Bytes.Gbytes := Null_Gbytes;
       Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
       Tmp_Return : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Path);
-      return From_Object (Tmp_Return);
+      if Error = null then
+         Return_Obj := From_Object (Tmp_Return);
+      end if;
+      return Return_Obj;
    end Lookup_Data;
 
    -----------------
@@ -174,21 +216,29 @@ package body Glib.Resource is
    function Open_Stream
       (Self         : Gresource;
        Path         : UTF8_String;
-       Lookup_Flags : Resource_Lookup_Flags)
+       Lookup_Flags : Resource_Lookup_Flags;
+       Error        : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream
    is
       function Internal
          (Self         : System.Address;
           Path         : Gtkada.Types.Chars_Ptr;
-          Lookup_Flags : Resource_Lookup_Flags) return System.Address;
+          Lookup_Flags : Resource_Lookup_Flags;
+          Acc_Error    : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_resource_open_stream");
+      Acc_Error          : aliased Glib.Error.GError;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_Path           : Gtkada.Types.Chars_Ptr := New_String (Path);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Path);
-      return Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      if Error = null then
+         Return_Obj := Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      end if;
+      return Return_Obj;
    end Open_Stream;
 
    ---------
@@ -239,16 +289,26 @@ package body Glib.Resource is
    -- Load --
    ----------
 
-   function Load (Filename : UTF8_String) return Gresource is
+   function Load
+      (Filename : UTF8_String;
+       Error    : out Glib.Error.GError) return Gresource
+   is
       function Internal
-         (Filename : Gtkada.Types.Chars_Ptr) return System.Address;
+         (Filename  : Gtkada.Types.Chars_Ptr;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_resource_load");
+      Acc_Error    : aliased Glib.Error.GError;
+      Return_Obj   : Gresource := Null_Gresource;
       Tmp_Filename : Gtkada.Types.Chars_Ptr := New_String (Filename);
       Tmp_Return   : System.Address;
    begin
-      Tmp_Return := Internal (Tmp_Filename);
+      Tmp_Return := Internal (Tmp_Filename, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Filename);
-      return From_Object (Tmp_Return);
+      if Error = null then
+         Return_Obj := From_Object (Tmp_Return);
+      end if;
+      return Return_Obj;
    end Load;
 
 end Glib.Resource;

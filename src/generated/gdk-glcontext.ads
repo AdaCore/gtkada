@@ -72,6 +72,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Draw_Context;        use Gdk.Draw_Context;
 with Glib;                    use Glib;
+with Glib.Error;              use Glib.Error;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Properties;         use Glib.Properties;
 
@@ -280,9 +281,11 @@ package Gdk.GLContext is
    --  Makes the Context the current one.
 
    function Realize
-      (Self : not null access Gdk_GLContext_Record) return Boolean;
+      (Self  : not null access Gdk_GLContext_Record;
+       Error : out Glib.Error.GError) return Boolean;
    --  Realizes the given `GdkGLContext`.
    --  It is safe to call this function on a realized `GdkGLContext`.
+   --  @param Error the return location for a recoverable error
    --  @return True if the context is realized
 
    ---------------

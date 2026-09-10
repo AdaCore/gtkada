@@ -23,6 +23,7 @@
 
 with Gdk.RGBA;                 use Gdk.RGBA;
 with Glib;                     use Glib;
+with Glib.Error;
 with Glib.Object;              use Glib.Object;
 with Gtk.Box;                  use Gtk.Box;
 with Gtk.Button;               use Gtk.Button;
@@ -86,18 +87,26 @@ package body Create_Color_Chooser is
      (Source_Object : access GObject_Record'Class;
       Res           : Glib.G_Async_Result)
    is
+      use type Glib.Error.GError;
       pragma Warnings (Off, Source_Object);
-      Color : constant Gdk_RGBA := Dialog.Choose_Rgba_Finish (Res);
+      Error : Glib.Error.GError := null;
+      Color : constant Gdk_RGBA := Dialog.Choose_Rgba_Finish (Res, Error);
    begin
-      if Color = Null_RGBA then
+      if Color /= Null_RGBA and Error = null then
          --  Choose_Rgba_Finish yields a null colour when the user dismisses
          --  the dialog; treat that as "no change".
-         Result_Label.Set_Text ("Selection cancelled.");
-      else
          Result_Label.Set_Text ("Selected colour: " & To_String (Color));
 
          --  Keep the colour button in sync with the explicitly-picked colour.
          Color_Button.Set_Rgba (Color);
+      else
+         if Error /= null then
+            Result_Label.Set_Text
+              ("Selection cancelled: " & Glib.Error.Get_Message (Error));
+            Glib.Error.Error_Free (Error);
+         else
+            Result_Label.Set_Text ("Selection cancelled.");
+         end if;
       end if;
    end On_Chosen;
 

@@ -25,6 +25,9 @@ pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
 with Glib.App_Launch_Context;  use Glib.App_Launch_Context;
+with Glib.Error;
+
+use type Glib.Error.GError;
 
 package body Glib.App_Info is
 
@@ -155,16 +158,20 @@ package body Glib.App_Info is
 
    function Add_Supports_Type
       (Self         : Gapp_Info;
-       Content_Type : UTF8_String) return Boolean
+       Content_Type : UTF8_String;
+       Error        : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self         : Gapp_Info;
-          Content_Type : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+          Content_Type : Gtkada.Types.Chars_Ptr;
+          Acc_Error    : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_app_info_add_supports_type");
+      Acc_Error        : aliased Glib.Error.GError;
       Tmp_Content_Type : Gtkada.Types.Chars_Ptr := New_String (Content_Type);
       Tmp_Return       : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Tmp_Content_Type);
+      Tmp_Return := Internal (Self, Tmp_Content_Type, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Content_Type);
       return Tmp_Return /= 0;
    end Add_Supports_Type;
@@ -487,16 +494,21 @@ package body Glib.App_Info is
    function Launch
       (Self    : Gapp_Info;
        Files   : Glib.GFile.Gfile_List.Glist;
-       Context : access Glib.App_Launch_Context.Gapp_Launch_Context_Record'Class)
-       return Boolean
+       Context : access Glib.App_Launch_Context.Gapp_Launch_Context_Record'Class;
+       Error   : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self    : Gapp_Info;
-          Files   : System.Address;
-          Context : System.Address) return Glib.Gboolean;
+         (Self      : Gapp_Info;
+          Files     : System.Address;
+          Context   : System.Address;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_app_info_launch");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Glib.GFile.Gfile_List.Get_Object (Files), Get_Object_Or_Null (GObject (Context))) /= 0;
+      Tmp_Return := Internal (Self, Glib.GFile.Gfile_List.Get_Object (Files), Get_Object_Or_Null (GObject (Context)), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Launch;
 
    ----------------------------------
@@ -600,16 +612,21 @@ package body Glib.App_Info is
    function Launch_Uris
       (Self    : Gapp_Info;
        Uris    : Gtk.Enums.String_List.Glist;
-       Context : access Glib.App_Launch_Context.Gapp_Launch_Context_Record'Class)
-       return Boolean
+       Context : access Glib.App_Launch_Context.Gapp_Launch_Context_Record'Class;
+       Error   : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self    : Gapp_Info;
-          Uris    : System.Address;
-          Context : System.Address) return Glib.Gboolean;
+         (Self      : Gapp_Info;
+          Uris      : System.Address;
+          Context   : System.Address;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_app_info_launch_uris");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Gtk.Enums.String_List.Get_Object (Uris), Get_Object_Or_Null (GObject (Context))) /= 0;
+      Tmp_Return := Internal (Self, Gtk.Enums.String_List.Get_Object (Uris), Get_Object_Or_Null (GObject (Context)), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Launch_Uris;
 
    -----------------------
@@ -637,14 +654,20 @@ package body Glib.App_Info is
 
    function Launch_Uris_Finish
       (Self   : Gapp_Info;
-       Result : Glib.G_Async_Result) return Boolean
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self   : Gapp_Info;
-          Result : Glib.G_Async_Result) return Glib.Gboolean;
+         (Self      : Gapp_Info;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_app_info_launch_uris_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Result) /= 0;
+      Tmp_Return := Internal (Self, Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Launch_Uris_Finish;
 
    --------------------------
@@ -653,16 +676,20 @@ package body Glib.App_Info is
 
    function Remove_Supports_Type
       (Self         : Gapp_Info;
-       Content_Type : UTF8_String) return Boolean
+       Content_Type : UTF8_String;
+       Error        : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self         : Gapp_Info;
-          Content_Type : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+          Content_Type : Gtkada.Types.Chars_Ptr;
+          Acc_Error    : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_app_info_remove_supports_type");
+      Acc_Error        : aliased Glib.Error.GError;
       Tmp_Content_Type : Gtkada.Types.Chars_Ptr := New_String (Content_Type);
       Tmp_Return       : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Tmp_Content_Type);
+      Tmp_Return := Internal (Self, Tmp_Content_Type, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Content_Type);
       return Tmp_Return /= 0;
    end Remove_Supports_Type;
@@ -673,16 +700,20 @@ package body Glib.App_Info is
 
    function Set_As_Default_For_Extension
       (Self      : Gapp_Info;
-       Extension : UTF8_String) return Boolean
+       Extension : UTF8_String;
+       Error     : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self      : Gapp_Info;
-          Extension : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+          Extension : Gtkada.Types.Chars_Ptr;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_app_info_set_as_default_for_extension");
+      Acc_Error     : aliased Glib.Error.GError;
       Tmp_Extension : Gtkada.Types.Chars_Ptr := New_String (Extension);
       Tmp_Return    : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Tmp_Extension);
+      Tmp_Return := Internal (Self, Tmp_Extension, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Extension);
       return Tmp_Return /= 0;
    end Set_As_Default_For_Extension;
@@ -693,16 +724,20 @@ package body Glib.App_Info is
 
    function Set_As_Default_For_Type
       (Self         : Gapp_Info;
-       Content_Type : UTF8_String) return Boolean
+       Content_Type : UTF8_String;
+       Error        : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self         : Gapp_Info;
-          Content_Type : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+          Content_Type : Gtkada.Types.Chars_Ptr;
+          Acc_Error    : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_app_info_set_as_default_for_type");
+      Acc_Error        : aliased Glib.Error.GError;
       Tmp_Content_Type : Gtkada.Types.Chars_Ptr := New_String (Content_Type);
       Tmp_Return       : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Tmp_Content_Type);
+      Tmp_Return := Internal (Self, Tmp_Content_Type, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Content_Type);
       return Tmp_Return /= 0;
    end Set_As_Default_For_Type;
@@ -713,16 +748,20 @@ package body Glib.App_Info is
 
    function Set_As_Last_Used_For_Type
       (Self         : Gapp_Info;
-       Content_Type : UTF8_String) return Boolean
+       Content_Type : UTF8_String;
+       Error        : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self         : Gapp_Info;
-          Content_Type : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+          Content_Type : Gtkada.Types.Chars_Ptr;
+          Acc_Error    : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_app_info_set_as_last_used_for_type");
+      Acc_Error        : aliased Glib.Error.GError;
       Tmp_Content_Type : Gtkada.Types.Chars_Ptr := New_String (Content_Type);
       Tmp_Return       : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Tmp_Content_Type);
+      Tmp_Return := Internal (Self, Tmp_Content_Type, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Content_Type);
       return Tmp_Return /= 0;
    end Set_As_Last_Used_For_Type;
@@ -767,13 +806,16 @@ package body Glib.App_Info is
    function Create_From_Commandline
       (Commandline      : UTF8_String;
        Application_Name : UTF8_String := "";
-       Flags            : Create_Flags) return Gapp_Info
+       Flags            : Create_Flags;
+       Error            : out Glib.Error.GError) return Gapp_Info
    is
       function Internal
          (Commandline      : Gtkada.Types.Chars_Ptr;
           Application_Name : Gtkada.Types.Chars_Ptr;
-          Flags            : Create_Flags) return Gapp_Info;
+          Flags            : Create_Flags;
+          Acc_Error        : access Glib.Error.GError) return Gapp_Info;
       pragma Import (C, Internal, "g_app_info_create_from_commandline");
+      Acc_Error            : aliased Glib.Error.GError;
       Tmp_Commandline      : Gtkada.Types.Chars_Ptr := New_String (Commandline);
       Tmp_Application_Name : Gtkada.Types.Chars_Ptr;
       Tmp_Return           : Gapp_Info;
@@ -782,10 +824,14 @@ package body Glib.App_Info is
         (if Application_Name = ""
          then Gtkada.Types.Null_Ptr
          else New_String (Application_Name));
-      Tmp_Return := Internal (Tmp_Commandline, Tmp_Application_Name, Flags);
+      Tmp_Return := Internal (Tmp_Commandline, Tmp_Application_Name, Flags, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Application_Name);
       Free (Tmp_Commandline);
-      return Tmp_Return;
+      return
+        (if Error = null
+         then Tmp_Return
+         else Null_Gapp_Info);
    end Create_From_Commandline;
 
    -------------
@@ -899,17 +945,20 @@ package body Glib.App_Info is
 
    function Launch_Default_For_Uri
       (URI     : UTF8_String;
-       Context : access Glib.App_Launch_Context.Gapp_Launch_Context_Record'Class)
-       return Boolean
+       Context : access Glib.App_Launch_Context.Gapp_Launch_Context_Record'Class;
+       Error   : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (URI     : Gtkada.Types.Chars_Ptr;
-          Context : System.Address) return Glib.Gboolean;
+         (URI       : Gtkada.Types.Chars_Ptr;
+          Context   : System.Address;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_app_info_launch_default_for_uri");
+      Acc_Error  : aliased Glib.Error.GError;
       Tmp_URI    : Gtkada.Types.Chars_Ptr := New_String (URI);
       Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Tmp_URI, Get_Object_Or_Null (GObject (Context)));
+      Tmp_Return := Internal (Tmp_URI, Get_Object_Or_Null (GObject (Context)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_URI);
       return Tmp_Return /= 0;
    end Launch_Default_For_Uri;
@@ -919,12 +968,19 @@ package body Glib.App_Info is
    -----------------------------------
 
    function Launch_Default_For_Uri_Finish
-      (Result : Glib.G_Async_Result) return Boolean
+      (Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
    is
-      function Internal (Result : Glib.G_Async_Result) return Glib.Gboolean;
+      function Internal
+         (Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_app_info_launch_default_for_uri_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Result) /= 0;
+      Tmp_Return := Internal (Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Launch_Default_For_Uri_Finish;
 
    -----------------------------

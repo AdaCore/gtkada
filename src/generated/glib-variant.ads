@@ -1474,7 +1474,8 @@ package Glib.Variant is
       (The_Type : Gvariant_Type;
        Text     : UTF8_String;
        Limit    : UTF8_String := "";
-       Endptr   : GNAT.Strings.String_List) return Gvariant;
+       Endptr   : GNAT.Strings.String_List;
+       Error    : out Glib.Error.GError) return Gvariant;
    --  Parses a Glib.Variant.Gvariant from a text representation.
    --  A single Glib.Variant.Gvariant is parsed from the content of Text.
    --  The format is described [here][gvariant-text].
@@ -1506,6 +1507,7 @@ package Glib.Variant is
    --  @param Text a string containing a GVariant in text form
    --  @param Limit a pointer to the end of Text, or null
    --  @param Endptr a location to store the end pointer, or null
+   --  @param Error the return location for a recoverable error
    --  @return a non-floating reference to a Glib.Variant.Gvariant, or null
 
    function Parse_Error_Print_Context

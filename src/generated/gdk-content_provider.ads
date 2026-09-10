@@ -37,6 +37,7 @@ with Gdk.Content_Formats; use Gdk.Content_Formats;
 with Glib;                use Glib;
 with Glib.Bytes;          use Glib.Bytes;
 with Glib.Cancellable;    use Glib.Cancellable;
+with Glib.Error;          use Glib.Error;
 with Glib.Object;         use Glib.Object;
 with Glib.Output_Stream;  use Glib.Output_Stream;
 with Glib.Properties;     use Glib.Properties;
@@ -132,7 +133,8 @@ package Gdk.Content_Provider is
 
    function Get_Value
       (Self  : not null access Gdk_Content_Provider_Record;
-       Value : in out Glib.Values.GValue) return Boolean;
+       Value : in out Glib.Values.GValue;
+       Error : out Glib.Error.GError) return Boolean;
    --  Gets the contents of Provider stored in Value.
    --  The Value will have been initialized to the `GType` the value should be
    --  provided in. This given `GType` does not need to be listed in the
@@ -140,6 +142,7 @@ package Gdk.Content_Provider is
    --  the given `GType` is not supported, this operation can fail and
    --  `G_IO_ERROR_NOT_SUPPORTED` will be reported.
    --  @param Value the `GValue` to fill
+   --  @param Error the return location for a recoverable error
    --  @return True if the value was set successfully. Otherwise Error will be
    --  set to describe the failure.
 
@@ -180,10 +183,12 @@ package Gdk.Content_Provider is
 
    function Write_Mime_Type_Finish
       (Self   : not null access Gdk_Content_Provider_Record;
-       Result : Glib.G_Async_Result) return Boolean;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean;
    --  Finishes an asynchronous write operation.
    --  See [methodGdk.ContentProvider.write_mime_type_async].
    --  @param Result a `GAsyncResult`
+   --  @param Error the return location for a recoverable error
    --  @return True if the operation was completed successfully. Otherwise
    --  Error will be set to describe the failure.
 

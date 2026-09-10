@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Gtk.Arguments;              use Gtk.Arguments;
 with Gtkada.Bindings;            use Gtkada.Bindings;
@@ -31,6 +32,8 @@ with System;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
+
+use type Glib.Error.GError;
 
 package body Gdk.Content_Provider is
 
@@ -179,10 +182,13 @@ package body Gdk.Content_Provider is
       function Internal
          (Acc_Value : access Glib.Values.GValue) return System.Address;
       pragma Import (C, Internal, "gdk_content_provider_new_for_value");
-      Acc_Value : aliased Glib.Values.GValue := Value;
+      Acc_Value  : aliased Glib.Values.GValue := Value;
+      Tmp_Return : System.Address;
    begin
       if not Self.Is_Created then
-         Set_Object (Self, Internal (Acc_Value'Access));
+         Tmp_Return := Internal (Acc_Value'Access);
+         Value := Acc_Value;
+         Set_Object (Self, Tmp_Return);
       end if;
    end Initialize_For_Value;
 
@@ -205,17 +211,21 @@ package body Gdk.Content_Provider is
 
    function Get_Value
       (Self  : not null access Gdk_Content_Provider_Record;
-       Value : in out Glib.Values.GValue) return Boolean
+       Value : in out Glib.Values.GValue;
+       Error : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self      : System.Address;
-          Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
+          Acc_Value : access Glib.Values.GValue;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_content_provider_get_value");
       Acc_Value  : aliased Glib.Values.GValue := Value;
+      Acc_Error  : aliased Glib.Error.GError;
       Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Acc_Value'Access);
+      Tmp_Return := Internal (Get_Object (Self), Acc_Value'Access, Acc_Error'Access);
       Value := Acc_Value;
+      Error := Acc_Error;
       return Tmp_Return /= 0;
    end Get_Value;
 
@@ -276,14 +286,20 @@ package body Gdk.Content_Provider is
 
    function Write_Mime_Type_Finish
       (Self   : not null access Gdk_Content_Provider_Record;
-       Result : Glib.G_Async_Result) return Boolean
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return Glib.Gboolean;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gdk_content_provider_write_mime_type_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Get_Object (Self), Result) /= 0;
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Write_Mime_Type_Finish;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion

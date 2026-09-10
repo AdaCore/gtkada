@@ -40,6 +40,7 @@ with Gdk.Frame_Clock; use Gdk.Frame_Clock;
 with Gdk.GLContext;   use Gdk.GLContext;
 with Gdk.Monitor;     use Gdk.Monitor;
 with Glib;            use Glib;
+with Glib.Error;      use Glib.Error;
 with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with System;
@@ -117,13 +118,14 @@ package Gdk.Surface is
    --  short beep on the display just as [methodGdk.Display.beep].
 
    function Create_Gl_Context
-      (Self : not null access Gdk_Surface_Record)
-       return Gdk.GLContext.Gdk_GLContext;
+      (Self  : not null access Gdk_Surface_Record;
+       Error : out Glib.Error.GError) return Gdk.GLContext.Gdk_GLContext;
    --  Creates a new `GdkGLContext` for the `GdkSurface`.
    --  The context is disconnected from any particular surface or surface. If
    --  the creation of the `GdkGLContext` failed, Error will be set. Before
    --  using the returned `GdkGLContext`, you will need to call
    --  [methodGdk.GLContext.make_current] or [methodGdk.GLContext.realize].
+   --  @param Error the return location for a recoverable error
    --  @return the newly created `GdkGLContext`
 
    procedure Destroy (Self : not null access Gdk_Surface_Record);

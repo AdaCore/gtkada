@@ -24,11 +24,14 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
+
+use type Glib.Error.GError;
 
 package body Gtk.Font_Dialog is
 
@@ -183,15 +186,26 @@ package body Gtk.Font_Dialog is
 
    function Choose_Face_Finish
       (Self   : not null access Gtk_Font_Dialog_Record;
-       Result : Glib.G_Async_Result) return Pango.Font_Face.Pango_Font_Face
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError)
+       return Pango.Font_Face.Pango_Font_Face
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return System.Address;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_font_dialog_choose_face_finish");
+      Acc_Error            : aliased Glib.Error.GError;
+      Return_Obj           : Pango.Font_Face.Pango_Font_Face;
       Stub_Pango_Font_Face : Pango.Font_Face.Pango_Font_Face_Record;
+      Tmp_Return           : System.Address;
    begin
-      return Pango.Font_Face.Pango_Font_Face (Get_User_Data (Internal (Get_Object (Self), Result), Stub_Pango_Font_Face));
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Pango.Font_Face.Pango_Font_Face (Get_User_Data (Tmp_Return, Stub_Pango_Font_Face));
+      end if;
+      return Return_Obj;
    end Choose_Face_Finish;
 
    -------------------
@@ -219,16 +233,26 @@ package body Gtk.Font_Dialog is
 
    function Choose_Family_Finish
       (Self   : not null access Gtk_Font_Dialog_Record;
-       Result : Glib.G_Async_Result)
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError)
        return Pango.Font_Family.Pango_Font_Family
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return System.Address;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_font_dialog_choose_family_finish");
+      Acc_Error              : aliased Glib.Error.GError;
+      Return_Obj             : Pango.Font_Family.Pango_Font_Family;
       Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
+      Tmp_Return             : System.Address;
    begin
-      return Pango.Font_Family.Pango_Font_Family (Get_User_Data (Internal (Get_Object (Self), Result), Stub_Pango_Font_Family));
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Pango.Font_Family.Pango_Font_Family (Get_User_Data (Tmp_Return, Stub_Pango_Font_Family));
+      end if;
+      return Return_Obj;
    end Choose_Family_Finish;
 
    -----------------
@@ -256,16 +280,26 @@ package body Gtk.Font_Dialog is
 
    function Choose_Font_Finish
       (Self   : not null access Gtk_Font_Dialog_Record;
-       Result : Glib.G_Async_Result)
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError)
        return Pango.Font.Pango_Font_Description
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result)
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError)
           return Pango.Font.Pango_Font_Description;
       pragma Import (C, Internal, "gtk_font_dialog_choose_font_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Pango.Font.Pango_Font_Description;
+      Tmp_Return : Pango.Font.Pango_Font_Description;
    begin
-      return Internal (Get_Object (Self), Result);
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Choose_Font_Finish;
 
    ------------------

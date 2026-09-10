@@ -24,10 +24,13 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Error;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;          use Gtkada.Bindings;
 with Gtkada.Types;             use Gtkada.Types;
 pragma Warnings(On);
+
+use type Glib.Error.GError;
 
 package body Glib.GFile is
 
@@ -189,7 +192,7 @@ package body Glib.GFile is
        User_Data   : System.Address);
    pragma Import (C, C_G_File_New_Tmp_Async, "g_file_new_tmp_async");
    --  Asynchronously opens a file in the preferred directory for temporary
-   --  files (as returned by g_get_tmp_dir) as g_file_new_tmp.
+   --  files (as returned by g_get_tmp_dir) as Glib.GFile.New_Tmp.
    --  Tmpl should be a string in the GLib file name encoding containing a
    --  sequence of six 'X' characters, and containing no directory components.
    --  If it is null, a default template is used.
@@ -533,17 +536,27 @@ package body Glib.GFile is
    function Append_To
       (Self        : Gfile;
        Flags       : GFile_Create_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_Output_Stream.Gfile_Output_Stream
    is
       function Internal
          (Self        : Gfile;
           Flags       : GFile_Create_Flags;
-          Cancellable : System.Address) return System.Address;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_append_to");
+      Acc_Error                : aliased Glib.Error.GError;
+      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
+      Tmp_Return               : System.Address;
    begin
-      return Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable))), Stub_Gfile_Output_Stream));
+      Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
+      end if;
+      return Return_Obj;
    end Append_To;
 
    ---------------------
@@ -570,17 +583,27 @@ package body Glib.GFile is
    ----------------------
 
    function Append_To_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result)
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
        return Glib.File_Output_Stream.Gfile_Output_Stream
    is
       function Internal
-         (Self : Gfile;
-          Res  : Glib.G_Async_Result) return System.Address;
+         (Self      : Gfile;
+          Res       : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_append_to_finish");
+      Acc_Error                : aliased Glib.Error.GError;
+      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
+      Tmp_Return               : System.Address;
    begin
-      return Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Internal (Self, Res), Stub_Gfile_Output_Stream));
+      Tmp_Return := Internal (Self, Res, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
+      end if;
+      return Return_Obj;
    end Append_To_Finish;
 
    -----------------------------------
@@ -590,16 +613,27 @@ package body Glib.GFile is
    function Build_Attribute_List_For_Copy
       (Self        : Gfile;
        Flags       : GFile_Copy_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return UTF8_String
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return UTF8_String
    is
       function Internal
          (Self        : Gfile;
           Flags       : GFile_Copy_Flags;
-          Cancellable : System.Address) return Gtkada.Types.Chars_Ptr;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError)
+          return Gtkada.Types.Chars_Ptr;
       pragma Import (C, Internal, "g_file_build_attribute_list_for_copy");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Gtkada.Types.Chars_Ptr;
    begin
-      return Gtkada.Bindings.Value_And_Free (Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable))));
+      Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         return Gtkada.Bindings.Value_And_Free (Tmp_Return);
+      else
+         Free (Tmp_Return);
+         return "";
+      end if;
    end Build_Attribute_List_For_Copy;
 
    ------------------------------
@@ -636,17 +670,22 @@ package body Glib.GFile is
       (Self        : Gfile;
        Destination : Gfile;
        Flags       : GFile_Copy_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
           Destination : Gfile;
           Flags       : GFile_Copy_Flags;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_copy_attributes");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Destination, Flags, Get_Object_Or_Null (GObject (Cancellable))) /= 0;
+      Tmp_Return := Internal (Self, Destination, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Copy_Attributes;
 
    ------------
@@ -656,17 +695,27 @@ package body Glib.GFile is
    function Create
       (Self        : Gfile;
        Flags       : GFile_Create_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_Output_Stream.Gfile_Output_Stream
    is
       function Internal
          (Self        : Gfile;
           Flags       : GFile_Create_Flags;
-          Cancellable : System.Address) return System.Address;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_create");
+      Acc_Error                : aliased Glib.Error.GError;
+      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
+      Tmp_Return               : System.Address;
    begin
-      return Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable))), Stub_Gfile_Output_Stream));
+      Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
+      end if;
+      return Return_Obj;
    end Create;
 
    ------------------
@@ -693,17 +742,27 @@ package body Glib.GFile is
    -------------------
 
    function Create_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result)
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
        return Glib.File_Output_Stream.Gfile_Output_Stream
    is
       function Internal
-         (Self : Gfile;
-          Res  : Glib.G_Async_Result) return System.Address;
+         (Self      : Gfile;
+          Res       : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_create_finish");
+      Acc_Error                : aliased Glib.Error.GError;
+      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
+      Tmp_Return               : System.Address;
    begin
-      return Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Internal (Self, Res), Stub_Gfile_Output_Stream));
+      Tmp_Return := Internal (Self, Res, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
+      end if;
+      return Return_Obj;
    end Create_Finish;
 
    ----------------------
@@ -713,17 +772,27 @@ package body Glib.GFile is
    function Create_Readwrite
       (Self        : Gfile;
        Flags       : GFile_Create_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_IO_Stream.Gfile_Iostream
    is
       function Internal
          (Self        : Gfile;
           Flags       : GFile_Create_Flags;
-          Cancellable : System.Address) return System.Address;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_create_readwrite");
+      Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
+      Tmp_Return          : System.Address;
    begin
-      return Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable))), Stub_Gfile_Iostream));
+      Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
+      end if;
+      return Return_Obj;
    end Create_Readwrite;
 
    ----------------------------
@@ -750,16 +819,27 @@ package body Glib.GFile is
    -----------------------------
 
    function Create_Readwrite_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result) return Glib.File_IO_Stream.Gfile_Iostream
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
+       return Glib.File_IO_Stream.Gfile_Iostream
    is
       function Internal
-         (Self : Gfile;
-          Res  : Glib.G_Async_Result) return System.Address;
+         (Self      : Gfile;
+          Res       : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_create_readwrite_finish");
+      Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
+      Tmp_Return          : System.Address;
    begin
-      return Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Internal (Self, Res), Stub_Gfile_Iostream));
+      Tmp_Return := Internal (Self, Res, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
+      end if;
+      return Return_Obj;
    end Create_Readwrite_Finish;
 
    ------------
@@ -768,15 +848,20 @@ package body Glib.GFile is
 
    function Delete
       (Self        : Gfile;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_delete");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Get_Object_Or_Null (GObject (Cancellable))) /= 0;
+      Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Delete;
 
    ------------------
@@ -803,14 +888,20 @@ package body Glib.GFile is
 
    function Delete_Finish
       (Self   : Gfile;
-       Result : Glib.G_Async_Result) return Boolean
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self   : Gfile;
-          Result : Glib.G_Async_Result) return Glib.Gboolean;
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_delete_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Result) /= 0;
+      Tmp_Return := Internal (Self, Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Delete_Finish;
 
    -----------
@@ -858,18 +949,25 @@ package body Glib.GFile is
 
    function Get_Child_For_Display_Name
       (Self         : Gfile;
-       Display_Name : UTF8_String) return Gfile
+       Display_Name : UTF8_String;
+       Error        : out Glib.Error.GError) return Gfile
    is
       function Internal
          (Self         : Gfile;
-          Display_Name : Gtkada.Types.Chars_Ptr) return Gfile;
+          Display_Name : Gtkada.Types.Chars_Ptr;
+          Acc_Error    : access Glib.Error.GError) return Gfile;
       pragma Import (C, Internal, "g_file_get_child_for_display_name");
+      Acc_Error        : aliased Glib.Error.GError;
       Tmp_Display_Name : Gtkada.Types.Chars_Ptr := New_String (Display_Name);
       Tmp_Return       : Gfile;
    begin
-      Tmp_Return := Internal (Self, Tmp_Display_Name);
+      Tmp_Return := Internal (Self, Tmp_Display_Name, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Display_Name);
-      return Tmp_Return;
+      return
+        (if Error = null
+         then Tmp_Return
+         else Null_Gfile);
    end Get_Child_For_Display_Name;
 
    --------------------
@@ -992,22 +1090,30 @@ package body Glib.GFile is
    function Load_Bytes
       (Self        : Gfile;
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
-       Etag_Out    : access UTF8_String := null) return Glib.Bytes.Gbytes
+       Etag_Out    : access UTF8_String := null;
+       Error       : out Glib.Error.GError) return Glib.Bytes.Gbytes
    is
       function Internal
          (Self        : Gfile;
           Cancellable : System.Address;
-          Etag_Out    : access Gtkada.Types.Chars_Ptr) return System.Address;
+          Etag_Out    : access Gtkada.Types.Chars_Ptr;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_load_bytes");
+      Acc_Error    : aliased Glib.Error.GError;
+      Return_Obj   : Glib.Bytes.Gbytes := Null_Gbytes;
       Tmp_Etag_Out : aliased Gtkada.Types.Chars_Ptr;
       Acc_Etag_Out : constant access Gtkada.Types.Chars_Ptr := (if Etag_Out /= null then Tmp_Etag_Out'Access else null);
       Tmp_Return   : System.Address;
    begin
-      Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Etag_Out);
+      Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Etag_Out, Acc_Error'Access);
       if Etag_Out /= null then
          Etag_Out.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Etag_Out);
       end if;
-      return From_Object (Tmp_Return);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := From_Object (Tmp_Return);
+      end if;
+      return Return_Obj;
    end Load_Bytes;
 
    ----------------------
@@ -1034,22 +1140,30 @@ package body Glib.GFile is
    function Load_Bytes_Finish
       (Self     : Gfile;
        Result   : Glib.G_Async_Result;
-       Etag_Out : access UTF8_String := null) return Glib.Bytes.Gbytes
+       Etag_Out : access UTF8_String := null;
+       Error    : out Glib.Error.GError) return Glib.Bytes.Gbytes
    is
       function Internal
-         (Self     : Gfile;
-          Result   : Glib.G_Async_Result;
-          Etag_Out : access Gtkada.Types.Chars_Ptr) return System.Address;
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Etag_Out  : access Gtkada.Types.Chars_Ptr;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_load_bytes_finish");
+      Acc_Error    : aliased Glib.Error.GError;
+      Return_Obj   : Glib.Bytes.Gbytes := Null_Gbytes;
       Tmp_Etag_Out : aliased Gtkada.Types.Chars_Ptr;
       Acc_Etag_Out : constant access Gtkada.Types.Chars_Ptr := (if Etag_Out /= null then Tmp_Etag_Out'Access else null);
       Tmp_Return   : System.Address;
    begin
-      Tmp_Return := Internal (Self, Result, Acc_Etag_Out);
+      Tmp_Return := Internal (Self, Result, Acc_Etag_Out, Acc_Error'Access);
       if Etag_Out /= null then
          Etag_Out.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Etag_Out);
       end if;
-      return From_Object (Tmp_Return);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := From_Object (Tmp_Return);
+      end if;
+      return Return_Obj;
    end Load_Bytes_Finish;
 
    --------------------
@@ -1058,15 +1172,20 @@ package body Glib.GFile is
 
    function Make_Directory
       (Self        : Gfile;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_make_directory");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Get_Object_Or_Null (GObject (Cancellable))) /= 0;
+      Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Make_Directory;
 
    --------------------------
@@ -1093,14 +1212,20 @@ package body Glib.GFile is
 
    function Make_Directory_Finish
       (Self   : Gfile;
-       Result : Glib.G_Async_Result) return Boolean
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self   : Gfile;
-          Result : Glib.G_Async_Result) return Glib.Gboolean;
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_make_directory_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Result) /= 0;
+      Tmp_Return := Internal (Self, Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Make_Directory_Finish;
 
    ---------------------------------
@@ -1109,15 +1234,20 @@ package body Glib.GFile is
 
    function Make_Directory_With_Parents
       (Self        : Gfile;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_make_directory_with_parents");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Get_Object_Or_Null (GObject (Cancellable))) /= 0;
+      Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Make_Directory_With_Parents;
 
    ------------------------
@@ -1127,18 +1257,21 @@ package body Glib.GFile is
    function Make_Symbolic_Link
       (Self          : Gfile;
        Symlink_Value : UTF8_String;
-       Cancellable   : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable   : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error         : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self          : Gfile;
           Symlink_Value : Gtkada.Types.Chars_Ptr;
-          Cancellable   : System.Address) return Glib.Gboolean;
+          Cancellable   : System.Address;
+          Acc_Error     : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_make_symbolic_link");
+      Acc_Error         : aliased Glib.Error.GError;
       Tmp_Symlink_Value : Gtkada.Types.Chars_Ptr := New_String (Symlink_Value);
       Tmp_Return        : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Tmp_Symlink_Value, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Tmp_Symlink_Value, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Symlink_Value);
       return Tmp_Return /= 0;
    end Make_Symbolic_Link;
@@ -1171,14 +1304,20 @@ package body Glib.GFile is
 
    function Make_Symbolic_Link_Finish
       (Self   : Gfile;
-       Result : Glib.G_Async_Result) return Boolean
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self   : Gfile;
-          Result : Glib.G_Async_Result) return Glib.Gboolean;
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_make_symbolic_link_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Result) /= 0;
+      Tmp_Return := Internal (Self, Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Make_Symbolic_Link_Finish;
 
    ------------------------------
@@ -1213,14 +1352,20 @@ package body Glib.GFile is
 
    function Move_Finish
       (Self   : Gfile;
-       Result : Glib.G_Async_Result) return Boolean
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self   : Gfile;
-          Result : Glib.G_Async_Result) return Glib.Gboolean;
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_move_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Result) /= 0;
+      Tmp_Return := Internal (Self, Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Move_Finish;
 
    -------------------
@@ -1287,16 +1432,26 @@ package body Glib.GFile is
 
    function Open_Readwrite
       (Self        : Gfile;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_IO_Stream.Gfile_Iostream
    is
       function Internal
          (Self        : Gfile;
-          Cancellable : System.Address) return System.Address;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_open_readwrite");
+      Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
+      Tmp_Return          : System.Address;
    begin
-      return Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Internal (Self, Get_Object_Or_Null (GObject (Cancellable))), Stub_Gfile_Iostream));
+      Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
+      end if;
+      return Return_Obj;
    end Open_Readwrite;
 
    --------------------------
@@ -1322,16 +1477,27 @@ package body Glib.GFile is
    ---------------------------
 
    function Open_Readwrite_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result) return Glib.File_IO_Stream.Gfile_Iostream
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
+       return Glib.File_IO_Stream.Gfile_Iostream
    is
       function Internal
-         (Self : Gfile;
-          Res  : Glib.G_Async_Result) return System.Address;
+         (Self      : Gfile;
+          Res       : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_open_readwrite_finish");
+      Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
+      Tmp_Return          : System.Address;
    begin
-      return Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Internal (Self, Res), Stub_Gfile_Iostream));
+      Tmp_Return := Internal (Self, Res, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
+      end if;
+      return Return_Obj;
    end Open_Readwrite_Finish;
 
    ---------------
@@ -1388,21 +1554,28 @@ package body Glib.GFile is
    function Query_Filesystem_Info
       (Self        : Gfile;
        Attributes  : UTF8_String;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Glib.File_Info.Gfile_Info
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Glib.File_Info.Gfile_Info
    is
       function Internal
          (Self        : Gfile;
           Attributes  : Gtkada.Types.Chars_Ptr;
-          Cancellable : System.Address) return System.Address;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_query_filesystem_info");
+      Acc_Error       : aliased Glib.Error.GError;
+      Return_Obj      : Glib.File_Info.Gfile_Info;
       Tmp_Attributes  : Gtkada.Types.Chars_Ptr := New_String (Attributes);
       Stub_Gfile_Info : Glib.File_Info.Gfile_Info_Record;
       Tmp_Return      : System.Address;
    begin
-      Tmp_Return := Internal (Self, Tmp_Attributes, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Tmp_Attributes, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Attributes);
-      return Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
+      if Error = null then
+         Return_Obj := Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
+      end if;
+      return Return_Obj;
    end Query_Filesystem_Info;
 
    ---------------------------------
@@ -1432,16 +1605,26 @@ package body Glib.GFile is
    ----------------------------------
 
    function Query_Filesystem_Info_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result) return Glib.File_Info.Gfile_Info
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError) return Glib.File_Info.Gfile_Info
    is
       function Internal
-         (Self : Gfile;
-          Res  : Glib.G_Async_Result) return System.Address;
+         (Self      : Gfile;
+          Res       : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_query_filesystem_info_finish");
+      Acc_Error       : aliased Glib.Error.GError;
+      Return_Obj      : Glib.File_Info.Gfile_Info;
       Stub_Gfile_Info : Glib.File_Info.Gfile_Info_Record;
+      Tmp_Return      : System.Address;
    begin
-      return Glib.File_Info.Gfile_Info (Get_User_Data (Internal (Self, Res), Stub_Gfile_Info));
+      Tmp_Return := Internal (Self, Res, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
+      end if;
+      return Return_Obj;
    end Query_Filesystem_Info_Finish;
 
    ----------------
@@ -1452,22 +1635,29 @@ package body Glib.GFile is
       (Self        : Gfile;
        Attributes  : UTF8_String;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Glib.File_Info.Gfile_Info
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Glib.File_Info.Gfile_Info
    is
       function Internal
          (Self        : Gfile;
           Attributes  : Gtkada.Types.Chars_Ptr;
           Flags       : GFile_Query_Info_Flags;
-          Cancellable : System.Address) return System.Address;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_query_info");
+      Acc_Error       : aliased Glib.Error.GError;
+      Return_Obj      : Glib.File_Info.Gfile_Info;
       Tmp_Attributes  : Gtkada.Types.Chars_Ptr := New_String (Attributes);
       Stub_Gfile_Info : Glib.File_Info.Gfile_Info_Record;
       Tmp_Return      : System.Address;
    begin
-      Tmp_Return := Internal (Self, Tmp_Attributes, Flags, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Tmp_Attributes, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Attributes);
-      return Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
+      if Error = null then
+         Return_Obj := Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
+      end if;
+      return Return_Obj;
    end Query_Info;
 
    ----------------------
@@ -1498,16 +1688,26 @@ package body Glib.GFile is
    -----------------------
 
    function Query_Info_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result) return Glib.File_Info.Gfile_Info
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError) return Glib.File_Info.Gfile_Info
    is
       function Internal
-         (Self : Gfile;
-          Res  : Glib.G_Async_Result) return System.Address;
+         (Self      : Gfile;
+          Res       : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_query_info_finish");
+      Acc_Error       : aliased Glib.Error.GError;
+      Return_Obj      : Glib.File_Info.Gfile_Info;
       Stub_Gfile_Info : Glib.File_Info.Gfile_Info_Record;
+      Tmp_Return      : System.Address;
    begin
-      return Glib.File_Info.Gfile_Info (Get_User_Data (Internal (Self, Res), Stub_Gfile_Info));
+      Tmp_Return := Internal (Self, Res, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
+      end if;
+      return Return_Obj;
    end Query_Info_Finish;
 
    ----------
@@ -1516,16 +1716,26 @@ package body Glib.GFile is
 
    function Read
       (Self        : Gfile;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_Input_Stream.Gfile_Input_Stream
    is
       function Internal
          (Self        : Gfile;
-          Cancellable : System.Address) return System.Address;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_read");
+      Acc_Error               : aliased Glib.Error.GError;
+      Return_Obj              : Glib.File_Input_Stream.Gfile_Input_Stream;
       Stub_Gfile_Input_Stream : Glib.File_Input_Stream.Gfile_Input_Stream_Record;
+      Tmp_Return              : System.Address;
    begin
-      return Glib.File_Input_Stream.Gfile_Input_Stream (Get_User_Data (Internal (Self, Get_Object_Or_Null (GObject (Cancellable))), Stub_Gfile_Input_Stream));
+      Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_Input_Stream.Gfile_Input_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Input_Stream));
+      end if;
+      return Return_Obj;
    end Read;
 
    ----------------
@@ -1551,17 +1761,27 @@ package body Glib.GFile is
    -----------------
 
    function Read_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result)
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
        return Glib.File_Input_Stream.Gfile_Input_Stream
    is
       function Internal
-         (Self : Gfile;
-          Res  : Glib.G_Async_Result) return System.Address;
+         (Self      : Gfile;
+          Res       : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_read_finish");
+      Acc_Error               : aliased Glib.Error.GError;
+      Return_Obj              : Glib.File_Input_Stream.Gfile_Input_Stream;
       Stub_Gfile_Input_Stream : Glib.File_Input_Stream.Gfile_Input_Stream_Record;
+      Tmp_Return              : System.Address;
    begin
-      return Glib.File_Input_Stream.Gfile_Input_Stream (Get_User_Data (Internal (Self, Res), Stub_Gfile_Input_Stream));
+      Tmp_Return := Internal (Self, Res, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_Input_Stream.Gfile_Input_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Input_Stream));
+      end if;
+      return Return_Obj;
    end Read_Finish;
 
    -------------
@@ -1573,7 +1793,8 @@ package body Glib.GFile is
        Etag        : UTF8_String := "";
        Make_Backup : Boolean;
        Flags       : GFile_Create_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_Output_Stream.Gfile_Output_Stream
    is
       function Internal
@@ -1581,8 +1802,11 @@ package body Glib.GFile is
           Etag        : Gtkada.Types.Chars_Ptr;
           Make_Backup : Glib.Gboolean;
           Flags       : GFile_Create_Flags;
-          Cancellable : System.Address) return System.Address;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_replace");
+      Acc_Error                : aliased Glib.Error.GError;
+      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
       Tmp_Etag                 : Gtkada.Types.Chars_Ptr;
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
       Tmp_Return               : System.Address;
@@ -1591,9 +1815,13 @@ package body Glib.GFile is
         (if Etag = ""
          then Gtkada.Types.Null_Ptr
          else New_String (Etag));
-      Tmp_Return := Internal (Self, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Etag);
-      return Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
+      if Error = null then
+         Return_Obj := Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
+      end if;
+      return Return_Obj;
    end Replace;
 
    -------------------
@@ -1639,8 +1867,8 @@ package body Glib.GFile is
        Make_Backup : Boolean;
        Flags       : GFile_Create_Flags;
        New_Etag    : access UTF8_String := null;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
@@ -1650,8 +1878,10 @@ package body Glib.GFile is
           Make_Backup : Glib.Gboolean;
           Flags       : GFile_Create_Flags;
           New_Etag    : access Gtkada.Types.Chars_Ptr;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_replace_contents");
+      Acc_Error    : aliased Glib.Error.GError;
       Tmp_Etag     : Gtkada.Types.Chars_Ptr;
       Tmp_New_Etag : aliased Gtkada.Types.Chars_Ptr;
       Acc_New_Etag : constant access Gtkada.Types.Chars_Ptr := (if New_Etag /= null then Tmp_New_Etag'Access else null);
@@ -1661,10 +1891,11 @@ package body Glib.GFile is
         (if Etag = ""
          then Gtkada.Types.Null_Ptr
          else New_String (Etag));
-      Tmp_Return := Internal (Self, Contents'Address, Contents'Length, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Acc_New_Etag, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Contents'Address, Contents'Length, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Acc_New_Etag, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       if New_Etag /= null then
          New_Etag.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_New_Etag);
       end if;
+      Error := Acc_Error;
       Free (Tmp_Etag);
       return Tmp_Return /= 0;
    end Replace_Contents;
@@ -1740,21 +1971,25 @@ package body Glib.GFile is
    function Replace_Contents_Finish
       (Self     : Gfile;
        Res      : Glib.G_Async_Result;
-       New_Etag : access UTF8_String := null) return Boolean
+       New_Etag : access UTF8_String := null;
+       Error    : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self     : Gfile;
-          Res      : Glib.G_Async_Result;
-          New_Etag : access Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+         (Self      : Gfile;
+          Res       : Glib.G_Async_Result;
+          New_Etag  : access Gtkada.Types.Chars_Ptr;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_replace_contents_finish");
+      Acc_Error    : aliased Glib.Error.GError;
       Tmp_New_Etag : aliased Gtkada.Types.Chars_Ptr;
       Acc_New_Etag : constant access Gtkada.Types.Chars_Ptr := (if New_Etag /= null then Tmp_New_Etag'Access else null);
       Tmp_Return   : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Res, Acc_New_Etag);
+      Tmp_Return := Internal (Self, Res, Acc_New_Etag, Acc_Error'Access);
       if New_Etag /= null then
          New_Etag.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_New_Etag);
       end if;
+      Error := Acc_Error;
       return Tmp_Return /= 0;
    end Replace_Contents_Finish;
 
@@ -1763,17 +1998,27 @@ package body Glib.GFile is
    --------------------
 
    function Replace_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result)
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
        return Glib.File_Output_Stream.Gfile_Output_Stream
    is
       function Internal
-         (Self : Gfile;
-          Res  : Glib.G_Async_Result) return System.Address;
+         (Self      : Gfile;
+          Res       : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_replace_finish");
+      Acc_Error                : aliased Glib.Error.GError;
+      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
+      Tmp_Return               : System.Address;
    begin
-      return Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Internal (Self, Res), Stub_Gfile_Output_Stream));
+      Tmp_Return := Internal (Self, Res, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
+      end if;
+      return Return_Obj;
    end Replace_Finish;
 
    -----------------------
@@ -1785,7 +2030,8 @@ package body Glib.GFile is
        Etag        : UTF8_String := "";
        Make_Backup : Boolean;
        Flags       : GFile_Create_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.File_IO_Stream.Gfile_Iostream
    is
       function Internal
@@ -1793,8 +2039,11 @@ package body Glib.GFile is
           Etag        : Gtkada.Types.Chars_Ptr;
           Make_Backup : Glib.Gboolean;
           Flags       : GFile_Create_Flags;
-          Cancellable : System.Address) return System.Address;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_replace_readwrite");
+      Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
       Tmp_Etag            : Gtkada.Types.Chars_Ptr;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
       Tmp_Return          : System.Address;
@@ -1803,9 +2052,13 @@ package body Glib.GFile is
         (if Etag = ""
          then Gtkada.Types.Null_Ptr
          else New_String (Etag));
-      Tmp_Return := Internal (Self, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Etag);
-      return Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
+      if Error = null then
+         Return_Obj := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
+      end if;
+      return Return_Obj;
    end Replace_Readwrite;
 
    -----------------------------
@@ -1845,16 +2098,27 @@ package body Glib.GFile is
    ------------------------------
 
    function Replace_Readwrite_Finish
-      (Self : Gfile;
-       Res  : Glib.G_Async_Result) return Glib.File_IO_Stream.Gfile_Iostream
+      (Self  : Gfile;
+       Res   : Glib.G_Async_Result;
+       Error : out Glib.Error.GError)
+       return Glib.File_IO_Stream.Gfile_Iostream
    is
       function Internal
-         (Self : Gfile;
-          Res  : Glib.G_Async_Result) return System.Address;
+         (Self      : Gfile;
+          Res       : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_replace_readwrite_finish");
+      Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
+      Tmp_Return          : System.Address;
    begin
-      return Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Internal (Self, Res), Stub_Gfile_Iostream));
+      Tmp_Return := Internal (Self, Res, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
+      end if;
+      return Return_Obj;
    end Replace_Readwrite_Finish;
 
    ---------------------------
@@ -1886,21 +2150,24 @@ package body Glib.GFile is
        Attribute   : UTF8_String;
        Value       : UTF8_String;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
           Attribute   : Gtkada.Types.Chars_Ptr;
           Value       : Gtkada.Types.Chars_Ptr;
           Flags       : GFile_Query_Info_Flags;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_set_attribute_byte_string");
+      Acc_Error     : aliased Glib.Error.GError;
       Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
       Tmp_Value     : Gtkada.Types.Chars_Ptr := New_String (Value);
       Tmp_Return    : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Tmp_Attribute, Tmp_Value, Flags, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Tmp_Attribute, Tmp_Value, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Value);
       Free (Tmp_Attribute);
       return Tmp_Return /= 0;
@@ -1915,20 +2182,23 @@ package body Glib.GFile is
        Attribute   : UTF8_String;
        Value       : Gint32;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
           Attribute   : Gtkada.Types.Chars_Ptr;
           Value       : Gint32;
           Flags       : GFile_Query_Info_Flags;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_set_attribute_int32");
+      Acc_Error     : aliased Glib.Error.GError;
       Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
       Tmp_Return    : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Tmp_Attribute, Value, Flags, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Tmp_Attribute, Value, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Attribute);
       return Tmp_Return /= 0;
    end Set_Attribute_Int32;
@@ -1942,20 +2212,23 @@ package body Glib.GFile is
        Attribute   : UTF8_String;
        Value       : Gint64;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
           Attribute   : Gtkada.Types.Chars_Ptr;
           Value       : Gint64;
           Flags       : GFile_Query_Info_Flags;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_set_attribute_int64");
+      Acc_Error     : aliased Glib.Error.GError;
       Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
       Tmp_Return    : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Tmp_Attribute, Value, Flags, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Tmp_Attribute, Value, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Attribute);
       return Tmp_Return /= 0;
    end Set_Attribute_Int64;
@@ -1969,21 +2242,24 @@ package body Glib.GFile is
        Attribute   : UTF8_String;
        Value       : UTF8_String;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
           Attribute   : Gtkada.Types.Chars_Ptr;
           Value       : Gtkada.Types.Chars_Ptr;
           Flags       : GFile_Query_Info_Flags;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_set_attribute_string");
+      Acc_Error     : aliased Glib.Error.GError;
       Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
       Tmp_Value     : Gtkada.Types.Chars_Ptr := New_String (Value);
       Tmp_Return    : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Tmp_Attribute, Tmp_Value, Flags, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Tmp_Attribute, Tmp_Value, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Value);
       Free (Tmp_Attribute);
       return Tmp_Return /= 0;
@@ -1998,20 +2274,23 @@ package body Glib.GFile is
        Attribute   : UTF8_String;
        Value       : Guint32;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
           Attribute   : Gtkada.Types.Chars_Ptr;
           Value       : Guint32;
           Flags       : GFile_Query_Info_Flags;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_set_attribute_uint32");
+      Acc_Error     : aliased Glib.Error.GError;
       Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
       Tmp_Return    : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Tmp_Attribute, Value, Flags, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Tmp_Attribute, Value, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Attribute);
       return Tmp_Return /= 0;
    end Set_Attribute_Uint32;
@@ -2025,20 +2304,23 @@ package body Glib.GFile is
        Attribute   : UTF8_String;
        Value       : Guint64;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
           Attribute   : Gtkada.Types.Chars_Ptr;
           Value       : Guint64;
           Flags       : GFile_Query_Info_Flags;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_set_attribute_uint64");
+      Acc_Error     : aliased Glib.Error.GError;
       Tmp_Attribute : Gtkada.Types.Chars_Ptr := New_String (Attribute);
       Tmp_Return    : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Tmp_Attribute, Value, Flags, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Tmp_Attribute, Value, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Attribute);
       return Tmp_Return /= 0;
    end Set_Attribute_Uint64;
@@ -2070,21 +2352,25 @@ package body Glib.GFile is
    function Set_Attributes_Finish
       (Self   : Gfile;
        Result : Glib.G_Async_Result;
-       Info   : out Glib.File_Info.Gfile_Info) return Boolean
+       Info   : out Glib.File_Info.Gfile_Info;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self     : Gfile;
-          Result   : Glib.G_Async_Result;
-          Acc_Info : access System.Address) return Glib.Gboolean;
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Acc_Info  : access System.Address;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_set_attributes_finish");
       Acc_Info        : aliased Glib.File_Info.Gfile_Info;
+      Acc_Error       : aliased Glib.Error.GError;
       Tmp_Acc_Info    : aliased System.Address;
       Stub_Gfile_Info : Glib.File_Info.Gfile_Info_Record;
       Tmp_Return      : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Self, Result, Tmp_Acc_Info'Access);
+      Tmp_Return := Internal (Self, Result, Tmp_Acc_Info'Access, Acc_Error'Access);
       Acc_Info := Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Acc_Info, Stub_Gfile_Info));
       Info := Acc_Info;
+      Error := Acc_Error;
       return Tmp_Return /= 0;
    end Set_Attributes_Finish;
 
@@ -2096,17 +2382,22 @@ package body Glib.GFile is
       (Self        : Gfile;
        Info        : not null access Glib.File_Info.Gfile_Info_Record'Class;
        Flags       : GFile_Query_Info_Flags;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
           Info        : System.Address;
           Flags       : GFile_Query_Info_Flags;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_set_attributes_from_info");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Get_Object (Info), Flags, Get_Object_Or_Null (GObject (Cancellable))) /= 0;
+      Tmp_Return := Internal (Self, Get_Object (Info), Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Set_Attributes_From_Info;
 
    ----------------------
@@ -2116,20 +2407,26 @@ package body Glib.GFile is
    function Set_Display_Name
       (Self         : Gfile;
        Display_Name : UTF8_String;
-       Cancellable  : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Gfile
+       Cancellable  : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error        : out Glib.Error.GError) return Gfile
    is
       function Internal
          (Self         : Gfile;
           Display_Name : Gtkada.Types.Chars_Ptr;
-          Cancellable  : System.Address) return Gfile;
+          Cancellable  : System.Address;
+          Acc_Error    : access Glib.Error.GError) return Gfile;
       pragma Import (C, Internal, "g_file_set_display_name");
+      Acc_Error        : aliased Glib.Error.GError;
       Tmp_Display_Name : Gtkada.Types.Chars_Ptr := New_String (Display_Name);
       Tmp_Return       : Gfile;
    begin
-      Tmp_Return := Internal (Self, Tmp_Display_Name, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Tmp_Display_Name, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Display_Name);
-      return Tmp_Return;
+      return
+        (if Error = null
+         then Tmp_Return
+         else Null_Gfile);
    end Set_Display_Name;
 
    ----------------------------
@@ -2171,15 +2468,20 @@ package body Glib.GFile is
 
    function Trash
       (Self        : Gfile;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
-       return Boolean
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self        : Gfile;
-          Cancellable : System.Address) return Glib.Gboolean;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_trash");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Get_Object_Or_Null (GObject (Cancellable))) /= 0;
+      Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Trash;
 
    -----------------
@@ -2206,14 +2508,20 @@ package body Glib.GFile is
 
    function Trash_Finish
       (Self   : Gfile;
-       Result : Glib.G_Async_Result) return Boolean
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self   : Gfile;
-          Result : Glib.G_Async_Result) return Glib.Gboolean;
+         (Self      : Gfile;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "g_file_trash_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Tmp_Return : Glib.Gboolean;
    begin
-      return Internal (Self, Result) /= 0;
+      Tmp_Return := Internal (Self, Result, Acc_Error'Access);
+      Error := Acc_Error;
+      return Tmp_Return /= 0;
    end Trash_Finish;
 
    -------------------------
@@ -2300,27 +2608,70 @@ package body Glib.GFile is
       return Tmp_Return;
    end New_For_Uri;
 
+   -------------
+   -- New_Tmp --
+   -------------
+
+   function New_Tmp
+      (Tmpl     : UTF8_String := "";
+       Iostream : out Glib.File_IO_Stream.Gfile_Iostream;
+       Error    : out Glib.Error.GError) return Gfile
+   is
+      function Internal
+         (Tmpl         : Gtkada.Types.Chars_Ptr;
+          Acc_Iostream : access System.Address;
+          Acc_Error    : access Glib.Error.GError) return Gfile;
+      pragma Import (C, Internal, "g_file_new_tmp");
+      Acc_Iostream        : aliased Glib.File_IO_Stream.Gfile_Iostream;
+      Acc_Error           : aliased Glib.Error.GError;
+      Tmp_Tmpl            : Gtkada.Types.Chars_Ptr;
+      Tmp_Acc_Iostream    : aliased System.Address;
+      Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
+      Tmp_Return          : Gfile;
+   begin
+      Tmp_Tmpl :=
+        (if Tmpl = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Tmpl));
+      Tmp_Return := Internal (Tmp_Tmpl, Tmp_Acc_Iostream'Access, Acc_Error'Access);
+      Acc_Iostream := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Acc_Iostream, Stub_Gfile_Iostream));
+      Iostream := Acc_Iostream;
+      Error := Acc_Error;
+      Free (Tmp_Tmpl);
+      return
+        (if Error = null
+         then Tmp_Return
+         else Null_Gfile);
+   end New_Tmp;
+
    --------------------
    -- New_Tmp_Finish --
    --------------------
 
    function New_Tmp_Finish
       (Result   : Glib.G_Async_Result;
-       Iostream : out Glib.File_IO_Stream.Gfile_Iostream) return Gfile
+       Iostream : out Glib.File_IO_Stream.Gfile_Iostream;
+       Error    : out Glib.Error.GError) return Gfile
    is
       function Internal
          (Result       : Glib.G_Async_Result;
-          Acc_Iostream : access System.Address) return Gfile;
+          Acc_Iostream : access System.Address;
+          Acc_Error    : access Glib.Error.GError) return Gfile;
       pragma Import (C, Internal, "g_file_new_tmp_finish");
       Acc_Iostream        : aliased Glib.File_IO_Stream.Gfile_Iostream;
+      Acc_Error           : aliased Glib.Error.GError;
       Tmp_Acc_Iostream    : aliased System.Address;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
       Tmp_Return          : Gfile;
    begin
-      Tmp_Return := Internal (Result, Tmp_Acc_Iostream'Access);
+      Tmp_Return := Internal (Result, Tmp_Acc_Iostream'Access, Acc_Error'Access);
       Acc_Iostream := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Acc_Iostream, Stub_Gfile_Iostream));
       Iostream := Acc_Iostream;
-      return Tmp_Return;
+      Error := Acc_Error;
+      return
+        (if Error = null
+         then Tmp_Return
+         else Null_Gfile);
    end New_Tmp_Finish;
 
    ----------------

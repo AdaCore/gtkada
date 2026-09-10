@@ -43,6 +43,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Color_State;         use Gdk.Color_State;
 with Glib;                    use Glib;
+with Glib.Error;              use Glib.Error;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
@@ -104,13 +105,14 @@ package Gdk.Cicp_Params is
    -------------
 
    function Build_Color_State
-      (Self : not null access Gdk_Cicp_Params_Record)
-       return Gdk.Color_State.Gdk_Color_State;
+      (Self  : not null access Gdk_Cicp_Params_Record;
+       Error : out Glib.Error.GError) return Gdk.Color_State.Gdk_Color_State;
    --  Creates a new `GdkColorState` object for the cicp parameters in Self.
    --  Note that this may fail if the cicp parameters in Self are not
    --  supported by GTK. In that case, `NULL` is returned, and Error is set
    --  with an error message that can be presented to the user.
    --  Since: gtk+ 4.16
+   --  @param Error the return location for a recoverable error
    --  @return A newly allocated `GdkColorState`
 
    function Get_Color_Primaries

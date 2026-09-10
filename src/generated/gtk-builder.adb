@@ -23,11 +23,14 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
 pragma Warnings(On);
+
+use type Glib.Error.GError;
 
 package body Gtk.Builder is
 
@@ -220,16 +223,20 @@ package body Gtk.Builder is
 
    function Add_From_File
       (Self     : not null access Gtk_Builder_Record;
-       Filename : UTF8_String) return Boolean
+       Filename : UTF8_String;
+       Error    : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self     : System.Address;
-          Filename : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+         (Self      : System.Address;
+          Filename  : Gtkada.Types.Chars_Ptr;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_add_from_file");
+      Acc_Error    : aliased Glib.Error.GError;
       Tmp_Filename : Gtkada.Types.Chars_Ptr := New_String (Filename);
       Tmp_Return   : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Filename);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Filename, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Filename);
       return Tmp_Return /= 0;
    end Add_From_File;
@@ -240,16 +247,20 @@ package body Gtk.Builder is
 
    function Add_From_Resource
       (Self          : not null access Gtk_Builder_Record;
-       Resource_Path : UTF8_String) return Boolean
+       Resource_Path : UTF8_String;
+       Error         : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self          : System.Address;
-          Resource_Path : Gtkada.Types.Chars_Ptr) return Glib.Gboolean;
+          Resource_Path : Gtkada.Types.Chars_Ptr;
+          Acc_Error     : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_add_from_resource");
+      Acc_Error         : aliased Glib.Error.GError;
       Tmp_Resource_Path : Gtkada.Types.Chars_Ptr := New_String (Resource_Path);
       Tmp_Return        : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Resource_Path);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Resource_Path, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Resource_Path);
       return Tmp_Return /= 0;
    end Add_From_Resource;
@@ -260,17 +271,21 @@ package body Gtk.Builder is
 
    function Add_From_String
       (Self   : not null access Gtk_Builder_Record;
-       Buffer : UTF8_String) return Boolean
+       Buffer : UTF8_String;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
-         (Self   : System.Address;
-          Buffer : Gtkada.Types.Chars_Ptr;
-          Length : Gssize) return Glib.Gboolean;
+         (Self      : System.Address;
+          Buffer    : Gtkada.Types.Chars_Ptr;
+          Length    : Gssize;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_add_from_string");
+      Acc_Error  : aliased Glib.Error.GError;
       Tmp_Buffer : Gtkada.Types.Chars_Ptr := New_String (Buffer);
       Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Buffer, -1);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Buffer, -1, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Buffer);
       return Tmp_Return /= 0;
    end Add_From_String;
@@ -282,18 +297,22 @@ package body Gtk.Builder is
    function Add_Objects_From_File
       (Self       : not null access Gtk_Builder_Record;
        Filename   : UTF8_String;
-       Object_Ids : GNAT.Strings.String_List) return Boolean
+       Object_Ids : GNAT.Strings.String_List;
+       Error      : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self       : System.Address;
           Filename   : Gtkada.Types.Chars_Ptr;
-          Object_Ids : Gtkada.Types.chars_ptr_array) return Glib.Gboolean;
+          Object_Ids : Gtkada.Types.chars_ptr_array;
+          Acc_Error  : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_add_objects_from_file");
+      Acc_Error      : aliased Glib.Error.GError;
       Tmp_Filename   : Gtkada.Types.Chars_Ptr := New_String (Filename);
       Tmp_Object_Ids : Gtkada.Types.chars_ptr_array := From_String_List (Object_Ids);
       Tmp_Return     : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Filename, Tmp_Object_Ids);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Filename, Tmp_Object_Ids, Acc_Error'Access);
+      Error := Acc_Error;
       Gtkada.Types.Free (Tmp_Object_Ids);
       Free (Tmp_Filename);
       return Tmp_Return /= 0;
@@ -306,18 +325,22 @@ package body Gtk.Builder is
    function Add_Objects_From_Resource
       (Self          : not null access Gtk_Builder_Record;
        Resource_Path : UTF8_String;
-       Object_Ids    : GNAT.Strings.String_List) return Boolean
+       Object_Ids    : GNAT.Strings.String_List;
+       Error         : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self          : System.Address;
           Resource_Path : Gtkada.Types.Chars_Ptr;
-          Object_Ids    : Gtkada.Types.chars_ptr_array) return Glib.Gboolean;
+          Object_Ids    : Gtkada.Types.chars_ptr_array;
+          Acc_Error     : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_add_objects_from_resource");
+      Acc_Error         : aliased Glib.Error.GError;
       Tmp_Resource_Path : Gtkada.Types.Chars_Ptr := New_String (Resource_Path);
       Tmp_Object_Ids    : Gtkada.Types.chars_ptr_array := From_String_List (Object_Ids);
       Tmp_Return        : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Resource_Path, Tmp_Object_Ids);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Resource_Path, Tmp_Object_Ids, Acc_Error'Access);
+      Error := Acc_Error;
       Gtkada.Types.Free (Tmp_Object_Ids);
       Free (Tmp_Resource_Path);
       return Tmp_Return /= 0;
@@ -330,19 +353,23 @@ package body Gtk.Builder is
    function Add_Objects_From_String
       (Self       : not null access Gtk_Builder_Record;
        Buffer     : UTF8_String;
-       Object_Ids : GNAT.Strings.String_List) return Boolean
+       Object_Ids : GNAT.Strings.String_List;
+       Error      : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self       : System.Address;
           Buffer     : Gtkada.Types.Chars_Ptr;
           Length     : Gssize;
-          Object_Ids : Gtkada.Types.chars_ptr_array) return Glib.Gboolean;
+          Object_Ids : Gtkada.Types.chars_ptr_array;
+          Acc_Error  : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_add_objects_from_string");
+      Acc_Error      : aliased Glib.Error.GError;
       Tmp_Buffer     : Gtkada.Types.Chars_Ptr := New_String (Buffer);
       Tmp_Object_Ids : Gtkada.Types.chars_ptr_array := From_String_List (Object_Ids);
       Tmp_Return     : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Buffer, -1, Tmp_Object_Ids);
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Buffer, -1, Tmp_Object_Ids, Acc_Error'Access);
+      Error := Acc_Error;
       Gtkada.Types.Free (Tmp_Object_Ids);
       Free (Tmp_Buffer);
       return Tmp_Return /= 0;
@@ -356,21 +383,28 @@ package body Gtk.Builder is
       (Self          : not null access Gtk_Builder_Record;
        Function_Name : UTF8_String;
        Flags         : Gtk.Enums.Gtk_Builder_Closure_Flags;
-       Object        : access Glib.Object.GObject_Record'Class)
-       return System.Address
+       Object        : access Glib.Object.GObject_Record'Class;
+       Error         : out Glib.Error.GError) return System.Address
    is
       function Internal
          (Self          : System.Address;
           Function_Name : Gtkada.Types.Chars_Ptr;
           Flags         : Gtk.Enums.Gtk_Builder_Closure_Flags;
-          Object        : System.Address) return System.Address;
+          Object        : System.Address;
+          Acc_Error     : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_builder_create_closure");
+      Acc_Error         : aliased Glib.Error.GError;
+      Return_Obj        : System.Address;
       Tmp_Function_Name : Gtkada.Types.Chars_Ptr := New_String (Function_Name);
       Tmp_Return        : System.Address;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Tmp_Function_Name, Flags, Get_Object_Or_Null (GObject (Object)));
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Function_Name, Flags, Get_Object_Or_Null (GObject (Object)), Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Function_Name);
-      return Tmp_Return;
+      if Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Create_Closure;
 
    -------------------
@@ -402,19 +436,23 @@ package body Gtk.Builder is
        Object        : not null access Glib.Object.GObject_Record'Class;
        Template_Type : GType;
        Buffer        : UTF8_String;
-       Length        : Gssize) return Boolean
+       Length        : Gssize;
+       Error         : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self          : System.Address;
           Object        : System.Address;
           Template_Type : GType;
           Buffer        : Gtkada.Types.Chars_Ptr;
-          Length        : Gssize) return Glib.Gboolean;
+          Length        : Gssize;
+          Acc_Error     : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_extend_with_template");
+      Acc_Error  : aliased Glib.Error.GError;
       Tmp_Buffer : Gtkada.Types.Chars_Ptr := New_String (Buffer);
       Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Get_Object (Object), Template_Type, Tmp_Buffer, Length);
+      Tmp_Return := Internal (Get_Object (Self), Get_Object (Object), Template_Type, Tmp_Buffer, Length, Acc_Error'Access);
+      Error := Acc_Error;
       Free (Tmp_Buffer);
       return Tmp_Return /= 0;
    end Extend_With_Template;
@@ -581,20 +619,24 @@ package body Gtk.Builder is
       (Self   : not null access Gtk_Builder_Record;
        Pspec  : Glib.Param_Spec;
        String : UTF8_String;
-       Value  : out Glib.Values.GValue) return Boolean
+       Value  : out Glib.Values.GValue;
+       Error  : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self      : System.Address;
           Pspec     : Glib.Param_Spec;
           String    : Gtkada.Types.Chars_Ptr;
-          Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
+          Acc_Value : access Glib.Values.GValue;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_value_from_string");
       Acc_Value  : aliased Glib.Values.GValue;
+      Acc_Error  : aliased Glib.Error.GError;
       Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
       Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Pspec, Tmp_String, Acc_Value'Access);
+      Tmp_Return := Internal (Get_Object (Self), Pspec, Tmp_String, Acc_Value'Access, Acc_Error'Access);
       Value := Acc_Value;
+      Error := Acc_Error;
       Free (Tmp_String);
       return Tmp_Return /= 0;
    end Value_From_String;
@@ -607,20 +649,24 @@ package body Gtk.Builder is
       (Self     : not null access Gtk_Builder_Record;
        The_Type : GType;
        String   : UTF8_String;
-       Value    : out Glib.Values.GValue) return Boolean
+       Value    : out Glib.Values.GValue;
+       Error    : out Glib.Error.GError) return Boolean
    is
       function Internal
          (Self      : System.Address;
           The_Type  : GType;
           String    : Gtkada.Types.Chars_Ptr;
-          Acc_Value : access Glib.Values.GValue) return Glib.Gboolean;
+          Acc_Value : access Glib.Values.GValue;
+          Acc_Error : access Glib.Error.GError) return Glib.Gboolean;
       pragma Import (C, Internal, "gtk_builder_value_from_string_type");
       Acc_Value  : aliased Glib.Values.GValue;
+      Acc_Error  : aliased Glib.Error.GError;
       Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
       Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), The_Type, Tmp_String, Acc_Value'Access);
+      Tmp_Return := Internal (Get_Object (Self), The_Type, Tmp_String, Acc_Value'Access, Acc_Error'Access);
       Value := Acc_Value;
+      Error := Acc_Error;
       Free (Tmp_String);
       return Tmp_Return /= 0;
    end Value_From_String_Type;

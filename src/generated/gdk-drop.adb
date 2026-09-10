@@ -27,8 +27,11 @@ with Ada.Unchecked_Conversion;
 with Gdk.Device;
 with Gdk.Display;
 with Gdk.Surface;
+with Glib.Error;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with System;
+
+use type Glib.Error.GError;
 
 package body Gdk.Drop is
 
@@ -210,14 +213,24 @@ package body Gdk.Drop is
 
    function Read_Value_Finish
       (Self   : not null access Gdk_Drop_Record;
-       Result : Glib.G_Async_Result) return Glib.Values.GValue
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Glib.Values.GValue
    is
       function Internal
-         (Self   : System.Address;
-          Result : Glib.G_Async_Result) return Glib.Values.GValue;
+         (Self      : System.Address;
+          Result    : Glib.G_Async_Result;
+          Acc_Error : access Glib.Error.GError) return Glib.Values.GValue;
       pragma Import (C, Internal, "gdk_drop_read_value_finish");
+      Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Glib.Values.GValue;
+      Tmp_Return : Glib.Values.GValue;
    begin
-      return Internal (Get_Object (Self), Result);
+      Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Tmp_Return;
+      end if;
+      return Return_Obj;
    end Read_Value_Finish;
 
    ------------

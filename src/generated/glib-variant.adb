@@ -23,10 +23,13 @@
 
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
+with Glib.Error;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings; use Gtkada.Bindings;
 with Gtkada.Types;    use Gtkada.Types;
 pragma Warnings(On);
+
+use type Glib.Error.GError;
 
 package body Glib.Variant is
 
@@ -1455,14 +1458,18 @@ package body Glib.Variant is
       (The_Type : Gvariant_Type;
        Text     : UTF8_String;
        Limit    : UTF8_String := "";
-       Endptr   : GNAT.Strings.String_List) return Gvariant
+       Endptr   : GNAT.Strings.String_List;
+       Error    : out Glib.Error.GError) return Gvariant
    is
       function Internal
-         (The_Type : Gvariant_Type;
-          Text     : Gtkada.Types.Chars_Ptr;
-          Limit    : Gtkada.Types.Chars_Ptr;
-          Endptr   : Gtkada.Types.chars_ptr_array) return System.Address;
+         (The_Type  : Gvariant_Type;
+          Text      : Gtkada.Types.Chars_Ptr;
+          Limit     : Gtkada.Types.Chars_Ptr;
+          Endptr    : Gtkada.Types.chars_ptr_array;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_variant_parse");
+      Acc_Error  : aliased Glib.Error.GError;
+      Return_Obj : Gvariant := Null_Gvariant;
       Tmp_Text   : Gtkada.Types.Chars_Ptr := New_String (Text);
       Tmp_Limit  : Gtkada.Types.Chars_Ptr;
       Tmp_Endptr : Gtkada.Types.chars_ptr_array := From_String_List (Endptr);
@@ -1472,11 +1479,15 @@ package body Glib.Variant is
         (if Limit = ""
          then Gtkada.Types.Null_Ptr
          else New_String (Limit));
-      Tmp_Return := Internal (The_Type, Tmp_Text, Tmp_Limit, Tmp_Endptr);
+      Tmp_Return := Internal (The_Type, Tmp_Text, Tmp_Limit, Tmp_Endptr, Acc_Error'Access);
+      Error := Acc_Error;
       Gtkada.Types.Free (Tmp_Endptr);
       Free (Tmp_Limit);
       Free (Tmp_Text);
-      return From_Object (Tmp_Return);
+      if Error = null then
+         Return_Obj := From_Object (Tmp_Return);
+      end if;
+      return Return_Obj;
    end Parse;
 
    -------------------------------

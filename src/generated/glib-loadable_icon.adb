@@ -24,6 +24,9 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Unchecked_Conversion;
+with Glib.Error;
+
+use type Glib.Error.GError;
 
 package body Glib.Loadable_Icon is
 
@@ -83,25 +86,33 @@ package body Glib.Loadable_Icon is
       (Self        : Gloadable_Icon;
        Size        : Glib.Gint;
        The_Type    : access UTF8_String := null;
-       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class)
+       Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
+       Error       : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream
    is
       function Internal
          (Self        : Gloadable_Icon;
           Size        : Glib.Gint;
           The_Type    : access Gtkada.Types.Chars_Ptr;
-          Cancellable : System.Address) return System.Address;
+          Cancellable : System.Address;
+          Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_loadable_icon_load");
+      Acc_Error          : aliased Glib.Error.GError;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
       Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
    begin
-      Tmp_Return := Internal (Self, Size, Acc_The_Type, Get_Object_Or_Null (GObject (Cancellable)));
+      Tmp_Return := Internal (Self, Size, Acc_The_Type, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       if The_Type /= null then
          The_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_The_Type);
       end if;
-      return Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      end if;
+      return Return_Obj;
    end Load;
 
    ----------------
@@ -129,24 +140,32 @@ package body Glib.Loadable_Icon is
    function Load_Finish
       (Self     : Gloadable_Icon;
        Res      : Glib.G_Async_Result;
-       The_Type : access UTF8_String := null)
+       The_Type : access UTF8_String := null;
+       Error    : out Glib.Error.GError)
        return Glib.Input_Stream.Ginput_Stream
    is
       function Internal
-         (Self     : Gloadable_Icon;
-          Res      : Glib.G_Async_Result;
-          The_Type : access Gtkada.Types.Chars_Ptr) return System.Address;
+         (Self      : Gloadable_Icon;
+          Res       : Glib.G_Async_Result;
+          The_Type  : access Gtkada.Types.Chars_Ptr;
+          Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_loadable_icon_load_finish");
+      Acc_Error          : aliased Glib.Error.GError;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
       Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
    begin
-      Tmp_Return := Internal (Self, Res, Acc_The_Type);
+      Tmp_Return := Internal (Self, Res, Acc_The_Type, Acc_Error'Access);
       if The_Type /= null then
          The_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_The_Type);
       end if;
-      return Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      Error := Acc_Error;
+      if Error = null then
+         Return_Obj := Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
+      end if;
+      return Return_Obj;
    end Load_Finish;
 
    function "+" (W : Gloadable_Icon) return Gloadable_Icon is

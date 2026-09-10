@@ -42,6 +42,7 @@ with Gdk.Content_Formats; use Gdk.Content_Formats;
 with Gdk.Drag;            use Gdk.Drag;
 with Glib;                use Glib;
 with Glib.Cancellable;    use Glib.Cancellable;
+with Glib.Error;          use Glib.Error;
 with Glib.Object;         use Glib.Object;
 with Glib.Properties;     use Glib.Properties;
 with Glib.Values;         use Glib.Values;
@@ -159,10 +160,12 @@ package Gdk.Drop is
 
    function Read_Value_Finish
       (Self   : not null access Gdk_Drop_Record;
-       Result : Glib.G_Async_Result) return Glib.Values.GValue;
+       Result : Glib.G_Async_Result;
+       Error  : out Glib.Error.GError) return Glib.Values.GValue;
    --  Finishes an async drop read.
    --  See [methodGdk.Drop.read_value_async].
    --  @param Result a `GAsyncResult`
+   --  @param Error the return location for a recoverable error
    --  @return a `GValue` containing the result.
 
    procedure Status
