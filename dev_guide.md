@@ -48,11 +48,25 @@ The testsuite is an Ada port of the C testsuite. The C testsuite is available in
 
 A minimal example test is available in `testsuite/tests/main/`.
 
-GTK tests need an X display. On Linux the test driver wraps each test in
-`xvfb-run -a`, giving every (parallel) test its own private virtual display, so
-`xvfb` must be installed (e.g. the `xorg-x11-server-Xvfb` / `xvfb` package). If
-`xvfb-run` is not found, the driver logs a warning and falls back to the ambient
-`DISPLAY`.
+GTK tests need an X display. On Linux the test driver starts a private `Xvfb`
+server for each main it runs, so `Xvfb` must be installed (e.g. the
+`xorg-x11-server-Xvfb` / `xvfb` package); nothing else is needed, in particular
+no `xauth`. If `Xvfb` is not found, the driver logs a warning and falls back to
+the ambient `DISPLAY`.
+
+The driver does *not* use `xvfb-run`: that wrapper picks a display number by
+scanning for a free lock file, which races against every other test starting at
+the same moment and yields `Server is already active for display N` (or, worse,
+two tests silently sharing one display). Instead `testsuite/drivers/xvfb.py`
+runs `Xvfb -displayfd` with no display number, letting the server pick and
+claim a free one atomically and report back which it got.
+
+To watch a test on your own screen rather than on a virtual display, pass
+`--display=:0` (or `--no-xvfb`, to use the ambient `DISPLAY`).
+
+Each test executable is run under a timeout, one minute by default, so that a
+wedged test fails instead of hanging the whole run. A test that genuinely needs
+longer can raise it with a `timeout:` key in its `test.yaml`.
 
 ## Work checklist
 
