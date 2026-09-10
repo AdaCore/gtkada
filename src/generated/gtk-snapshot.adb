@@ -228,6 +228,24 @@ package body Gtk.Snapshot is
       Internal (Get_Object (Self), Bounds);
    end Push_Clip;
 
+   -----------------------
+   -- Push_Color_Matrix --
+   -----------------------
+
+   procedure Push_Color_Matrix
+      (Self         : not null access Gtk_Snapshot_Record;
+       Color_Matrix : not null access Graphene.Matrix.Graphene_Matrix_T;
+       Color_Offset : not null access Graphene.Vec4.Graphene_Vec4_T)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Color_Matrix : not null access Graphene.Matrix.Graphene_Matrix_T;
+          Color_Offset : not null access Graphene.Vec4.Graphene_Vec4_T);
+      pragma Import (C, Internal, "gtk_snapshot_push_color_matrix");
+   begin
+      Internal (Get_Object (Self), Color_Matrix, Color_Offset);
+   end Push_Color_Matrix;
+
    ---------------
    -- Push_Copy --
    ---------------
@@ -312,6 +330,24 @@ package body Gtk.Snapshot is
       Internal (Get_Object (Self), Angle);
    end Rotate;
 
+   ---------------
+   -- Rotate_3D --
+   ---------------
+
+   procedure Rotate_3D
+      (Self  : not null access Gtk_Snapshot_Record;
+       Angle : Interfaces.C.C_float;
+       Axis  : not null access Graphene.Vec3.Graphene_Vec3_T)
+   is
+      procedure Internal
+         (Self  : System.Address;
+          Angle : Interfaces.C.C_float;
+          Axis  : not null access Graphene.Vec3.Graphene_Vec3_T);
+      pragma Import (C, Internal, "gtk_snapshot_rotate_3d");
+   begin
+      Internal (Get_Object (Self), Angle, Axis);
+   end Rotate_3D;
+
    ----------
    -- Save --
    ----------
@@ -379,6 +415,22 @@ package body Gtk.Snapshot is
       return Internal (Get_Object (Self), Size);
    end To_Paintable;
 
+   ----------------------
+   -- Transform_Matrix --
+   ----------------------
+
+   procedure Transform_Matrix
+      (Self   : not null access Gtk_Snapshot_Record;
+       Matrix : not null access Graphene.Matrix.Graphene_Matrix_T)
+   is
+      procedure Internal
+         (Self   : System.Address;
+          Matrix : not null access Graphene.Matrix.Graphene_Matrix_T);
+      pragma Import (C, Internal, "gtk_snapshot_transform_matrix");
+   begin
+      Internal (Get_Object (Self), Matrix);
+   end Transform_Matrix;
+
    ---------------
    -- Translate --
    ---------------
@@ -394,5 +446,21 @@ package body Gtk.Snapshot is
    begin
       Internal (Get_Object (Self), Point);
    end Translate;
+
+   ------------------
+   -- Translate_3D --
+   ------------------
+
+   procedure Translate_3D
+      (Self  : not null access Gtk_Snapshot_Record;
+       Point : not null access Graphene.Point3d.Graphene_Point3D_T)
+   is
+      procedure Internal
+         (Self  : System.Address;
+          Point : not null access Graphene.Point3d.Graphene_Point3D_T);
+      pragma Import (C, Internal, "gtk_snapshot_translate_3d");
+   begin
+      Internal (Get_Object (Self), Point);
+   end Translate_3D;
 
 end Gtk.Snapshot;

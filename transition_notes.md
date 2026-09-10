@@ -110,9 +110,6 @@
   - reactivate tools
   - reactivate docs (once updated)
 
-- Consider whether to generate the bindings for Graphene.
-  - In which case, remove the Graphene section from GtkAda.Types
-
 - Fix misc.c (look for the "TRANSITION" string)
 
 - Re-enable warnings for obsolescent packages (disabled in Debug mode for now)
@@ -330,11 +327,6 @@ Re-enable the matching `bind = false` entries in
 - `push_blend` / `push_mask` / `push_composite` / `push_isolation` /
   `push_component_transfer` / `push_shadow` / `push_gl_shader` — need the
   corresponding Gsk enums / types.
-- `push_color_matrix` / `transform_matrix` / `rotate_3d` / `translate_3d`
-  — need the richer Graphene value types (`graphene_matrix_t`,
-  `graphene_vec3_t`, `graphene_vec4_t`, `graphene_point3d_t`), not yet in
-  `Gtkada.Types`. Revisit alongside the "generate the bindings for
-  Graphene" item above.
 
 ## Testsuite
 
