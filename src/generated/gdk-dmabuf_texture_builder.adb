@@ -93,7 +93,7 @@ package body Gdk.Dmabuf_Texture_Builder is
    begin
       Tmp_Return := Internal (Get_Object (Self), Destroy, Data, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Gdk.Texture.Gdk_Texture (Get_User_Data (Tmp_Return, Stub_Gdk_Texture));
       end if;
       return Return_Obj;

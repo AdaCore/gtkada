@@ -132,7 +132,7 @@ package body Glib.File_IO_Stream is
       Tmp_Return := Internal (Get_Object (Self), Tmp_Attributes, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
       Free (Tmp_Attributes);
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
       end if;
       return Return_Obj;
@@ -181,7 +181,7 @@ package body Glib.File_IO_Stream is
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
       end if;
       return Return_Obj;

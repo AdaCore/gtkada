@@ -109,7 +109,7 @@ package body Glib.Loadable_Icon is
          The_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_The_Type);
       end if;
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
       end if;
       return Return_Obj;
@@ -162,7 +162,7 @@ package body Glib.Loadable_Icon is
          The_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_The_Type);
       end if;
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
       end if;
       return Return_Obj;

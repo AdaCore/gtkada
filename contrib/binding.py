@@ -1612,7 +1612,7 @@ class GIRClass(object):
                 assign_return = f"{ret_as_param} := {execute.returnvar};"
                 if profile.throws:
                     subp_code += [
-                        "if Acc_Error = null then",
+                        "if Error = null then",
                         assign_return,
                         "end if;"
                     ]
@@ -1635,7 +1635,7 @@ class GIRClass(object):
                                                     type=profile.returns.ada,
                                                     default=profile.returns.null_name()))
 
-                        subp_code += ["if Acc_Error = null then",
+                        subp_code += ["if Error = null then",
                                     assign_return,
                                     "end if;",
                                     f"return {var_return};"]
@@ -1657,7 +1657,7 @@ class GIRClass(object):
                             tmp_return = execute.tmpvars[-1].name
                             cleanup = cleanup_func % tmp_return
                             subp_code += [
-                                    "if Acc_Error = null then",
+                                    "if Error = null then",
                                     f"return {execute.returnvar};",
                                     "else",
                                     cleanup,
@@ -1667,7 +1667,7 @@ class GIRClass(object):
                         else:
                             subp_code += [
                                 'return',
-                                '(if Acc_Error = null then',
+                                '(if Error = null then',
                                 execute.returnvar,
                                 'else',
                                 null_val,
@@ -1678,7 +1678,7 @@ class GIRClass(object):
                         # Null_{typename} : constant {typename} := {typename} (Null_Interface);
                         subp_code += [
                             'return',
-                            '(if Acc_Error = null then',
+                            '(if Error = null then',
                             execute.returnvar,
                             'else',
                             profile.returns.null_name(),
@@ -2169,7 +2169,7 @@ end if;"""
 
             # Wrap Internal call in checks
             if constructor and throws:
-                constructor = " ".join(['if Acc_Error = null then',constructor,'end if;'])
+                constructor = " ".join(['if Error = null then',constructor,'end if;'])
 
             body = list(call.precall)
             if call.call is not None:

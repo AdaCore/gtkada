@@ -447,7 +447,7 @@ package body Glib.Output_Stream is
    begin
       Tmp_Return := Internal (Get_Object (Self), Get_Object (Source), Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Tmp_Return;
       end if;
       return Return_Obj;
@@ -493,7 +493,7 @@ package body Glib.Output_Stream is
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Tmp_Return;
       end if;
       return Return_Obj;
@@ -522,7 +522,7 @@ package body Glib.Output_Stream is
    begin
       Tmp_Return := Internal (Get_Object (Self), Buffer'Address, Buffer'Length, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Tmp_Return;
       end if;
       return Return_Obj;
@@ -639,7 +639,7 @@ package body Glib.Output_Stream is
    begin
       Tmp_Return := Internal (Get_Object (Self), Get_Object (Bytes), Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Tmp_Return;
       end if;
       return Return_Obj;
@@ -684,7 +684,7 @@ package body Glib.Output_Stream is
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Tmp_Return;
       end if;
       return Return_Obj;
@@ -710,7 +710,7 @@ package body Glib.Output_Stream is
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Tmp_Return;
       end if;
       return Return_Obj;

@@ -268,7 +268,7 @@ package body Gdk.Clipboard is
          Out_Mime_Type.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Out_Mime_Type);
       end if;
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
       end if;
       return Return_Obj;
@@ -311,7 +311,7 @@ package body Gdk.Clipboard is
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          return Gtkada.Bindings.Value_And_Free (Tmp_Return);
       else
          Free (Tmp_Return);
@@ -357,7 +357,7 @@ package body Gdk.Clipboard is
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Gdk.Texture.Gdk_Texture (Get_User_Data (Tmp_Return, Stub_Gdk_Texture));
       end if;
       return Return_Obj;
@@ -402,7 +402,7 @@ package body Gdk.Clipboard is
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Tmp_Return;
       end if;
       return Return_Obj;

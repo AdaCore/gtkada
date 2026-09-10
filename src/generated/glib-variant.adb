@@ -1484,7 +1484,7 @@ package body Glib.Variant is
       Gtkada.Types.Free (Tmp_Endptr);
       Free (Tmp_Limit);
       Free (Tmp_Text);
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := From_Object (Tmp_Return);
       end if;
       return Return_Obj;

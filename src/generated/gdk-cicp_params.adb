@@ -89,7 +89,7 @@ package body Gdk.Cicp_Params is
    begin
       Tmp_Return := Internal (Get_Object (Self), Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := From_Object (Tmp_Return);
       end if;
       return Return_Obj;

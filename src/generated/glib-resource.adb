@@ -68,7 +68,7 @@ package body Glib.Resource is
    begin
       Tmp_Return := Internal (Get_Object (Data), Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Self.Set_Object (Tmp_Return);
       end if;
    end G_New_From_Data;
@@ -91,7 +91,7 @@ package body Glib.Resource is
    begin
       Tmp_Return := Internal (Get_Object (Data), Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Self.Set_Object (Tmp_Return);
       end if;
       return Self;
@@ -121,7 +121,7 @@ package body Glib.Resource is
       Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Acc_Error'Access);
       Error := Acc_Error;
       Free (Tmp_Path);
-      if Acc_Error = null then
+      if Error = null then
          return To_String_List_And_Free (Tmp_Return);
       else
          g_strfreev (Tmp_Return);
@@ -203,7 +203,7 @@ package body Glib.Resource is
       Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Acc_Error'Access);
       Error := Acc_Error;
       Free (Tmp_Path);
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := From_Object (Tmp_Return);
       end if;
       return Return_Obj;
@@ -235,7 +235,7 @@ package body Glib.Resource is
       Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Acc_Error'Access);
       Error := Acc_Error;
       Free (Tmp_Path);
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.Input_Stream.Ginput_Stream (Get_User_Data (Tmp_Return, Stub_Ginput_Stream));
       end if;
       return Return_Obj;
@@ -305,7 +305,7 @@ package body Glib.Resource is
       Tmp_Return := Internal (Tmp_Filename, Acc_Error'Access);
       Error := Acc_Error;
       Free (Tmp_Filename);
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := From_Object (Tmp_Return);
       end if;
       return Return_Obj;

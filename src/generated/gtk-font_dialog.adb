@@ -202,7 +202,7 @@ package body Gtk.Font_Dialog is
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Pango.Font_Face.Pango_Font_Face (Get_User_Data (Tmp_Return, Stub_Pango_Font_Face));
       end if;
       return Return_Obj;
@@ -249,7 +249,7 @@ package body Gtk.Font_Dialog is
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Pango.Font_Family.Pango_Font_Family (Get_User_Data (Tmp_Return, Stub_Pango_Font_Family));
       end if;
       return Return_Obj;
@@ -296,7 +296,7 @@ package body Gtk.Font_Dialog is
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Tmp_Return;
       end if;
       return Return_Obj;

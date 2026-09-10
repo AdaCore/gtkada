@@ -553,7 +553,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
       end if;
       return Return_Obj;
@@ -600,7 +600,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
       end if;
       return Return_Obj;
@@ -628,7 +628,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          return Gtkada.Bindings.Value_And_Free (Tmp_Return);
       else
          Free (Tmp_Return);
@@ -712,7 +712,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
       end if;
       return Return_Obj;
@@ -759,7 +759,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
       end if;
       return Return_Obj;
@@ -789,7 +789,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
       end if;
       return Return_Obj;
@@ -836,7 +836,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
       end if;
       return Return_Obj;
@@ -965,7 +965,7 @@ package body Glib.GFile is
       Error := Acc_Error;
       Free (Tmp_Display_Name);
       return
-        (if Acc_Error = null
+        (if Error = null
          then Tmp_Return
          else Null_Gfile);
    end Get_Child_For_Display_Name;
@@ -1110,7 +1110,7 @@ package body Glib.GFile is
          Etag_Out.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Etag_Out);
       end if;
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := From_Object (Tmp_Return);
       end if;
       return Return_Obj;
@@ -1160,7 +1160,7 @@ package body Glib.GFile is
          Etag_Out.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Etag_Out);
       end if;
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := From_Object (Tmp_Return);
       end if;
       return Return_Obj;
@@ -1448,7 +1448,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
       end if;
       return Return_Obj;
@@ -1494,7 +1494,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
       end if;
       return Return_Obj;
@@ -1572,7 +1572,7 @@ package body Glib.GFile is
       Tmp_Return := Internal (Self, Tmp_Attributes, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
       Free (Tmp_Attributes);
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
       end if;
       return Return_Obj;
@@ -1621,7 +1621,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
       end if;
       return Return_Obj;
@@ -1654,7 +1654,7 @@ package body Glib.GFile is
       Tmp_Return := Internal (Self, Tmp_Attributes, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
       Free (Tmp_Attributes);
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
       end if;
       return Return_Obj;
@@ -1704,7 +1704,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Info.Gfile_Info (Get_User_Data (Tmp_Return, Stub_Gfile_Info));
       end if;
       return Return_Obj;
@@ -1732,7 +1732,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Input_Stream.Gfile_Input_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Input_Stream));
       end if;
       return Return_Obj;
@@ -1778,7 +1778,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Input_Stream.Gfile_Input_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Input_Stream));
       end if;
       return Return_Obj;
@@ -1818,7 +1818,7 @@ package body Glib.GFile is
       Tmp_Return := Internal (Self, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
       Free (Tmp_Etag);
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
       end if;
       return Return_Obj;
@@ -2015,7 +2015,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_Output_Stream.Gfile_Output_Stream (Get_User_Data (Tmp_Return, Stub_Gfile_Output_Stream));
       end if;
       return Return_Obj;
@@ -2055,7 +2055,7 @@ package body Glib.GFile is
       Tmp_Return := Internal (Self, Tmp_Etag, Boolean'Pos (Make_Backup), Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
       Free (Tmp_Etag);
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
       end if;
       return Return_Obj;
@@ -2115,7 +2115,7 @@ package body Glib.GFile is
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
-      if Acc_Error = null then
+      if Error = null then
          Return_Obj := Glib.File_IO_Stream.Gfile_Iostream (Get_User_Data (Tmp_Return, Stub_Gfile_Iostream));
       end if;
       return Return_Obj;
@@ -2424,7 +2424,7 @@ package body Glib.GFile is
       Error := Acc_Error;
       Free (Tmp_Display_Name);
       return
-        (if Acc_Error = null
+        (if Error = null
          then Tmp_Return
          else Null_Gfile);
    end Set_Display_Name;
@@ -2639,7 +2639,7 @@ package body Glib.GFile is
       Error := Acc_Error;
       Free (Tmp_Tmpl);
       return
-        (if Acc_Error = null
+        (if Error = null
          then Tmp_Return
          else Null_Gfile);
    end New_Tmp;
@@ -2669,7 +2669,7 @@ package body Glib.GFile is
       Iostream := Acc_Iostream;
       Error := Acc_Error;
       return
-        (if Acc_Error = null
+        (if Error = null
          then Tmp_Return
          else Null_Gfile);
    end New_Tmp_Finish;

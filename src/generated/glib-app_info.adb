@@ -829,7 +829,7 @@ package body Glib.App_Info is
       Free (Tmp_Application_Name);
       Free (Tmp_Commandline);
       return
-        (if Acc_Error = null
+        (if Error = null
          then Tmp_Return
          else Null_Gapp_Info);
    end Create_From_Commandline;
