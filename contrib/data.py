@@ -600,6 +600,7 @@ binding = (
     "Gtk.TextTag",
     "Gtk.TextTagTable",
     "Gtk.TextView",
+    "Gtk.ListView",
     "----GtkTextViewAccessible",  # We do not support atk
     "--GtkThemingEngine",
     "Gtk.TreeIter",
