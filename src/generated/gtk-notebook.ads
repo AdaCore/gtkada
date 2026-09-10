@@ -124,6 +124,7 @@ with Gtk.Atcontext;         use Gtk.Atcontext;
 with Gtk.Buildable;         use Gtk.Buildable;
 with Gtk.Constraint_Target; use Gtk.Constraint_Target;
 with Gtk.Enums;             use Gtk.Enums;
+with Gtk.Notebook_Page;     use Gtk.Notebook_Page;
 with Gtk.Widget;            use Gtk.Widget;
 
 package Gtk.Notebook is
@@ -293,6 +294,15 @@ package Gtk.Notebook is
    --  @param Page_Num the index of a page in the notebook, or -1 to get the
    --  last page
    --  @return the child widget, or null if Page_Num is out of bounds
+   --  Return has transfer-ownership='none'
+
+   function Get_Page
+      (Notebook : not null access Gtk_Notebook_Record;
+       Child    : not null access Gtk.Widget.Gtk_Widget_Record'Class)
+       return Gtk.Notebook_Page.Gtk_Notebook_Page;
+   --  Returns the `GtkNotebookPage` for Child.
+   --  @param Child a child of Notebook
+   --  @return the `GtkNotebookPage` for Child
    --  Return has transfer-ownership='none'
 
    function Get_Pages

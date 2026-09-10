@@ -504,6 +504,7 @@ binding = (
     "----GtkMountOperation",  # Requires a lot of GIO
     "Gtk.NativeDialog",
     "Gtk.Notebook",
+    "Gtk.NotebookPage",
     "----GtkNotebookAccessible",  # We do not support atk
     "----GtkNotebookPageAccessible",  # We do not support atk
     "----GtkNumerableIcon",  # Requires a lot of GIO
