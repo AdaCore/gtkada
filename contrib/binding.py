@@ -3462,19 +3462,25 @@ end "+";"""
             return "\n".join(lines)
 
         def from_objfree_body(typename: str) -> str:
+            gtkmethod = self.gtkpkg.get_method("From_Object_Free")
             lines = [
                 '\n----------------------',
                 '-- From_Object_Free --',
                 '----------------------\n',
                 'function From_Object_Free',
                 f"   (B : not null access {typename}) return {typename}",
-                'is',
-                f"   Result : constant {typename} := B.all;",
-                'begin',
-                "   Glib.g_free (B.all'Address);",
-                '   return Result;',
-                'end From_Object_Free;'
-            ]
+                'is']
+
+            if gtkmethod is not None and gtkmethod.get_body() is not None:
+                lines += [gtkmethod.get_body().rstrip()]
+            else:
+                lines += [
+                    f"   Result : constant {typename} := B.all;",
+                    'begin',
+                    "   Glib.g_free (B.all'Address);",
+                    '   return Result;'
+                ]
+            lines += ['end From_Object_Free;']
             return "\n".join(lines)
 
         # Check if we have forced the mapping as a C proxy ?
