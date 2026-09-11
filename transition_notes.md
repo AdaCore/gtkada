@@ -94,6 +94,33 @@
     Gtk4 binding, so they were reused unchanged.
   Ported the corresponding C unit test (`testsuite/c_tests/tooltips.c`)
   to `testsuite/tests/tooltips/`.
+- Bound `GtkSearchEntry` and `GtkSearchBar` and reactivated
+  `gtkada_demo`'s `Create_Entry` package around them, migrated from Gtk3
+  to Gtk4. Notable points:
+  - `Gtk_Search_Entry` emits `search-changed` only after `Search_Delay`
+    milliseconds of quiet, so the demo filters a small word list from
+    `On_Search_Changed` and exposes the delay through a `Gtk_Spin_Button`
+    to make that debounce visible. Its `next-match` / `previous-match` /
+    `stop-search` keybinding signals are reported into a label.
+  - `Gtk_Search_Bar.Connect_Entry` takes a `Gtk_Editable` in Gtk4, not a
+    `Gtk_Entry`, so the bar is fed with `+Bar_Entry` through the
+    `Implements_Gtk_Editable` conversion.
+  - `Set_Key_Capture_Widget` is given the demo frame, so typing anywhere
+    reveals the bar. The property is nullable on both widgets and comes
+    back as a null `Gtk_Widget` when unset.
+  - `Gtk_Combo_Box_Text` and `Gtk_Level_Bar` are not bound yet, so the
+    parts of the Gtk3 demo that used them were dropped for now; the rest
+    of the Gtk3-isms went the usual way (`Gtk_New (Box, Orientation_*,
+    Spacing)` + `Append` instead of `Gtk_New_Vbox` / `Pack_Start`,
+    `Set_Child` instead of `Add`, `Set_Margin_*` instead of
+    `Set_Border_Width`, no `Show_All`).
+  - The Gtk3 demo passed the entry to its callbacks as user data through
+    `Gtk.Handlers.User_Callback`; the generated Gtk4 handlers take only
+    the emitting widget, so the governed widgets are held at library
+    level instead.
+  Added `testsuite/tests/search-entry/` (no C test exists to port) and
+  `testsuite/tests/search-bar/`, the latter ported from
+  `testsuite/c_tests/searchbar.c`.
 
 ## To do as we translate
 

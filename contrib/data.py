@@ -547,8 +547,8 @@ binding = (
     "----GtkScaleAccessible",  # We do not support atk
     "--Gtk.ScaleButton",
     "----GtkScaleButtonAccessible",  # We do not support atk
-    "--Gtk.SearchBar",
-    "--Gtk.SearchEntry",
+    "Gtk.SearchBar",
+    "Gtk.SearchEntry",
     "--GtkSelectionData",
     "Gtk.Separator",
     "--Gtk.ShortcutsWindow",
