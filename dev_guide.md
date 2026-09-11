@@ -35,6 +35,14 @@ generated. See `contrib/documentation.md`.
 **Never edit the files under `src/gtk3/` either.** They are the Gtk3
 bindings, kept as a quarry to port from.
 
+When you bind a new widget, a demo in `gtkada_demo/` is desirable alongside
+the testsuite test. Either add a `create_<widget>.{ads,adb}` package and
+register it in the `Demos` array of `gtkada_demo/main_windows.adb`, or
+extend the demo of the closest related widget. Then point the widget's
+`contrib/binding/packages/Gtk<Widget>.toml` at it with a
+`gtkada_demo = "create_<widget>.adb"` key in its `[doc]` block, so that the
+reference manual links the two.
+
 To write a custom widget in Ada by overriding the `GtkWidget` virtual
 methods (`measure`, `size_allocate`, `realize`, `snapshot`), use the
 `Set_Default_*_Handler` / `Inherited_*` family in `Gtk.Widget`. See the

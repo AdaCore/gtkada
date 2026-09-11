@@ -90,7 +90,7 @@ with Create_Color_Chooser;
 with Create_Custom_Widget;
 --  with Create_Cursors;
 --  with Create_Dnd;
---  with Create_Entry;
+with Create_Entry;
 --  with Create_File_Chooser;
 --  with Create_File_Selection;
 with Create_Frame;
@@ -212,7 +212,8 @@ package body Main_Windows is
       To_Demo
         ("List Store",
          Create_List_Store.Run'Access,
-         Create_List_Store.Help'Access));
+         Create_List_Store.Help'Access),
+      To_Demo ("Entry", Create_Entry.Run'Access, Create_Entry.Help'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.
 
