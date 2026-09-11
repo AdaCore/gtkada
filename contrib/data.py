@@ -485,6 +485,7 @@ binding = (
     "----GtkListBoxRowAccessible",  # We do not support atk
     "Gtk.ListItem",
     "Gtk.ListItemFactory",
+    "Gtk.SignalListItemFactory",
     "Gtk.ListStore",
     "----GtkLockButton",  # requires GPermission
     "----GtkLockButtonAccessible",  # We do not support atk
@@ -565,6 +566,8 @@ binding = (
     "----GtkSocket",  # X11-specific, no binding
     "Gtk.Sorter",
     "Gtk.SortListModel",
+    "Gtk.StringList",
+    "Gtk.StringObject",
     "Gtk.FilterListModel",
     "Gtk.MapListModel",
     "Gtk.FlattenListModel",

@@ -39,6 +39,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
 with Glib.Properties; use Glib.Properties;
 with Gtk.List_Item;   use Gtk.List_Item;
 with Gtk.Widget;      use Gtk.Widget;
@@ -100,11 +101,12 @@ package Gtk.Column_View_Cell is
 
    function Get_Item
       (Self : not null access Gtk_Column_View_Cell_Record)
-       return System.Address;
+       return Glib.Object.GObject;
    --  Gets the model item that associated with Self.
    --  If Self is unbound, this function returns null.
    --  Since: gtk+ 4.12
    --  @return The item displayed
+   --  Return has transfer-ownership='none'
 
    function Get_Position
       (Self : not null access Gtk_Column_View_Cell_Record) return Guint;

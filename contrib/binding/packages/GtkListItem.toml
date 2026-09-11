@@ -1,0 +1,15 @@
+# ============================================================
+#   GtkListItem
+# ============================================================
+
+# The GIR declares the item as GObject.Object with c:type="gpointer", and
+# the generator honours the c:type: without this override Get_Item returns
+# a System.Address that every caller would have to convert by hand.
+
+[[method]]
+id = "gtk_list_item_get_item"
+return = "GObject*"
+
+[method.doc]
+extend = true
+text = "@return The item displayed"

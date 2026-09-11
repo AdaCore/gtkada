@@ -229,7 +229,7 @@ GIR node is matched.
 | `obsolescent`        | bool   | When `true`, the generated subprogram gets `pragma Obsolescent`.                                                                                            |
 | `transfer_ownership` | string | `"full"` if the return value must be freed by the caller; `"none"` if the C library owns it.                                                                |
 | `return_as_param`    | string | Replace the function's return value with an `out` parameter of this name.                    |
-| `return`             | string | Override the C type of the return value. Use `"void"` to turn a function into a procedure.                                                                  |
+| `return`             | string | Override the C type of the return value. Use `"void"` to turn a function into a procedure. Overriding it discards the GIR's `@return` documentation, so restore it with a `[method.doc]` `extend` block (see `GtkListItem.toml`). |
 | `classwide`          | bool   | When `true`, declare the subprogram class-wide rather than as a primitive operation.                                                                        |
 | `body`               | string | Hand-written body inserted after the `is` keyword (use `'''...'''`). Use `%(auto)s` inside the string to splice the automatic body in.                       |
 | `convention`         | string | Override the calling convention (e.g. `"C"`).                                                                                                              |
@@ -242,6 +242,22 @@ ada    = "Gtk_New"
 [[method]]
 id   = "gtk_button_new"
 bind = false
+```
+
+A `return` override is also the cure for a GIR that declares a
+`GObject`-returning accessor with `c:type="gpointer"`: the generator
+honours the `c:type` and emits a `System.Address` that no caller can use
+without an `Unchecked_Conversion`. `Gtk.List_Item.Get_Item` and its
+three cousins are the worked precedent.
+
+```toml
+[[method]]
+id     = "gtk_list_item_get_item"
+return = "GObject*"
+
+[method.doc]
+extend = true
+text   = "@return The item displayed"
 ```
 
 ### `[[method.parameter]]` — per-parameter overrides

@@ -142,10 +142,12 @@ package Gtk.List_Item is
    --  @param Focusable if the item should be focusable
 
    function Get_Item
-      (Self : not null access Gtk_List_Item_Record) return System.Address;
+      (Self : not null access Gtk_List_Item_Record)
+       return Glib.Object.GObject;
    --  Gets the model item that associated with Self.
    --  If Self is unbound, this function returns `NULL`.
    --  @return The item displayed
+   --  Return has transfer-ownership='none'
 
    function Get_Position
       (Self : not null access Gtk_List_Item_Record) return Guint;

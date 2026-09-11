@@ -95,12 +95,13 @@ package body Gtk.Column_View_Row is
 
    function Get_Item
       (Self : not null access Gtk_Column_View_Row_Record)
-       return System.Address
+       return Glib.Object.GObject
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_column_view_row_get_item");
+      Stub_GObject : Glib.Object.GObject_Record;
    begin
-      return Internal (Get_Object (Self));
+      return Get_User_Data (Internal (Get_Object (Self)), Stub_GObject);
    end Get_Item;
 
    ------------------
