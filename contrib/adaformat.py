@@ -1615,6 +1615,7 @@ def indent_code(code, indent=3, addnewlines=True) -> str:
             or line.endswith("do")
             or line.endswith("declare")
             or line.startswith("exception")
+            or line.startswith("when") and line.endswith('=>')
         ):
             indent += 3
 

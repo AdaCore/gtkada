@@ -81,7 +81,7 @@ package Glib.Test is
 
    procedure Assert_True
      (Condition : Boolean;
-      Expr      : UTF8_String := "";
+      Expr      : UTF8_String := "should be TRUE";
       File      : UTF8_String := GNAT.Source_Info.File;
       Line      : Natural     := GNAT.Source_Info.Line;
       Func      : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
@@ -89,7 +89,7 @@ package Glib.Test is
 
    procedure Assert_False
      (Condition : Boolean;
-      Expr      : UTF8_String := "";
+      Expr      : UTF8_String := "should be FALSE";
       File      : UTF8_String := GNAT.Source_Info.File;
       Line      : Natural     := GNAT.Source_Info.Line;
       Func      : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
@@ -97,7 +97,7 @@ package Glib.Test is
 
    procedure Assert_Null
      (Object : System.Address;
-      Expr   : UTF8_String := "";
+      Expr   : UTF8_String := "should be NULL";
       File   : UTF8_String := GNAT.Source_Info.File;
       Line   : Natural     := GNAT.Source_Info.Line;
       Func   : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
@@ -105,7 +105,7 @@ package Glib.Test is
 
    procedure Assert_Nonnull
      (Object : System.Address;
-      Expr   : UTF8_String := "";
+      Expr   : UTF8_String := "should not be NULL";
       File   : UTF8_String := GNAT.Source_Info.File;
       Line   : Natural     := GNAT.Source_Info.Line;
       Func   : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
@@ -115,7 +115,6 @@ package Glib.Test is
      (File : UTF8_String := GNAT.Source_Info.File;
       Line : Natural     := GNAT.Source_Info.Line;
       Func : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
-   pragma No_Return (Assert_Not_Reached);
    --  g_assert_not_reached: fail unconditionally; flags code that should
    --  never be executed.
 
@@ -296,7 +295,7 @@ package Glib.Test is
 
    procedure Assert_No_Error
      (Error : Glib.Error.GError;
-      Expr  : UTF8_String := "";
+      Expr  : UTF8_String := "Assert_No_Error";
       File  : UTF8_String := GNAT.Source_Info.File;
       Line  : Natural     := GNAT.Source_Info.Line;
       Func  : UTF8_String := GNAT.Source_Info.Enclosing_Entity);
@@ -306,7 +305,7 @@ package Glib.Test is
      (Error  : Glib.Error.GError;
       Domain : Glib.GQuark;
       Code   : Glib.Gint;
-      Expr   : UTF8_String := "";
+      Expr   : UTF8_String := "Assert_Error";
       File   : UTF8_String := GNAT.Source_Info.File;
       Line   : Natural     := GNAT.Source_Info.Line;
       Func   : UTF8_String := GNAT.Source_Info.Enclosing_Entity);

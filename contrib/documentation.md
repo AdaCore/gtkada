@@ -438,7 +438,8 @@ until the generator is taught to quote conditionally.
 
 Match a class `<property>` 
 
-|----------------------|--------|------------------------------------------------------------------------------------------------------------------------------------------------------------|
+| Key             | Type   | Meaning                                              |
+|-----------------|--------|------------------------------------------------------|
 | `id`                 | string | **Required.** The C identifier of the property.|
 | `bind`               | bool   | When `false`, suppress the binding for this property.|
 
