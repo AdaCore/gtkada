@@ -376,6 +376,32 @@ direction = "access"
 default = "null"
 ```
 
+#### Transfer of ownership on input
+
+An Ada `UTF8_String` has no C representation, so the body allocates a
+`Chars_Ptr` copy for the call and frees it afterwards. When the
+parameter is `transfer_ownership = "full"`, though, the callee keeps
+the pointer and frees it in its own time: the generated body then hands
+its allocation over and emits no `Free` at all. Freeing it would leave
+C holding a dangling pointer — a use-after-free on the next read, and a
+double free when the owner is finally destroyed.
+
+`gtk_string_list_take` is the canonical case, and its body is bare on
+purpose:
+
+```ada
+      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
+   begin
+      Internal (Get_Object (Self), Tmp_String);
+   end Take;
+```
+
+This follows the GIR, so nothing needs writing in the TOML unless
+upstream annotates the parameter wrongly. For a *tagged* parameter — a
+GObject rather than a string — `transfer_ownership = "full"` instead
+makes the body `Adjust` the reference count before the call, since the
+Ada side keeps its own reference to the object.
+
 ### `[method.doc]` — per-method documentation
 
 A single table per method.

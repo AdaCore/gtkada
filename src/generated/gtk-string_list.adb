@@ -187,7 +187,6 @@ package body Gtk.String_List is
       Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
    begin
       Internal (Get_Object (Self), Tmp_String);
-      Free (Tmp_String);
    end Take;
 
    --------------
