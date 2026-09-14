@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Gtk.Column_View;            use Gtk.Column_View;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
@@ -97,13 +98,13 @@ package body Gtk.Column_View_Column is
 
    function Get_Column_View
       (Self : not null access Gtk_Column_View_Column_Record)
-       return Glib.Object.GObject
+       return Gtk.Column_View.Gtk_Column_View
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_column_view_column_get_column_view");
-      Stub_GObject : Glib.Object.GObject_Record;
+      Stub_Gtk_Column_View : Gtk.Column_View.Gtk_Column_View_Record;
    begin
-      return Get_User_Data (Internal (Get_Object (Self)), Stub_GObject);
+      return Gtk.Column_View.Gtk_Column_View (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Column_View));
    end Get_Column_View;
 
    ----------------

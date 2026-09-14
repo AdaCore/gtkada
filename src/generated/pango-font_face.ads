@@ -25,9 +25,10 @@
 --  of fonts with the same family, slant, weight, width, but varying sizes.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;        use Glib;
-with Glib.Object; use Glib.Object;
-with Pango.Font;  use Pango.Font;
+with Glib;              use Glib;
+with Glib.Object;       use Glib.Object;
+with Pango.Font;        use Pango.Font;
+limited with Pango.Font_Family;
 
 package Pango.Font_Face is
 
@@ -65,6 +66,14 @@ package Pango.Font_Face is
    --  to users.
    --  @return the face name for the face. This string is owned by the face
    --  object and must not be modified or freed.
+
+   function Get_Family
+      (Self : not null access Pango_Font_Face_Record)
+       return Pango.Font_Family.Pango_Font_Family;
+   --  Gets the Pango.Font_Family.Pango_Font_Family that Face belongs to.
+   --  Since: gtk+ 1.46
+   --  @return the Pango.Font_Family.Pango_Font_Family
+   --  Return has transfer-ownership='none'
 
    function Is_Synthesized
       (Self : not null access Pango_Font_Face_Record) return Boolean;

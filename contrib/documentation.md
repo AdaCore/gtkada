@@ -95,6 +95,7 @@ flags pointing at the spot that needs an override:
 | A signal callback parameter typed with a package name (e.g. `Gdk.Clipboard` instead of `Gdk.Clipboard.Gdk_Clipboard_Record'Class`) | signal parameters are matched by their GIR name, which needs an entry in `naming.girname_to_ctype` in [`data.py`](data.py) (e.g. `"Gdk.Clipboard": "GdkClipboard"`) |
 | A method using a callback type that does not exist       | inject the access-to-subprogram via [`[[extra.spec]]`](#extraspec--code-injected-into-the-spec) and reference it from a [`[[method.parameter]]`](#methodparameter--per-parameter-overrides) `type` override |
 | A method that cannot be expressed in Ada at all          | suppress it with `bind = false` and re-expose it through `[extra]` |
+| A method whose type would make two packages with each other | break the cycle with a [`limited with`](#extrawith_spec--extra-with-clauses-in-the-spec) in one spec plus a plain `with` in its body |
 
 When in doubt, look for a similar pattern in an existing TOML — many
 of the recipes you will need are already present in
@@ -585,6 +586,11 @@ limited = true
 [[extra.with_body]]
 pkg = "Glib.App_Launch_Context"
 ```
+
+A `bind = false` whose comment blames a "circular dependency" predates
+that support, and is usually curable by this recipe: work out which of
+the two packages the other one already withs, and give the *other* one a
+`limited with` on it. Try it before assuming the method cannot be bound.
 
 ### `[[extra.spec]]` — code injected into the spec
 

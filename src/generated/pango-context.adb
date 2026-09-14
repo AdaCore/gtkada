@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Pango.Font_Map;             use Pango.Font_Map;
 
 package body Pango.Context is
 
@@ -118,6 +119,21 @@ package body Pango.Context is
    begin
       return Internal (Get_Object (Self));
    end Get_Font_Description;
+
+   ------------------
+   -- Get_Font_Map --
+   ------------------
+
+   function Get_Font_Map
+      (Self : not null access Pango_Context_Record)
+       return Pango.Font_Map.Pango_Font_Map
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "pango_context_get_font_map");
+      Stub_Pango_Font_Map : Pango.Font_Map.Pango_Font_Map_Record;
+   begin
+      return Pango.Font_Map.Pango_Font_Map (Get_User_Data (Internal (Get_Object (Self)), Stub_Pango_Font_Map));
+   end Get_Font_Map;
 
    -----------------
    -- Get_Gravity --
@@ -345,6 +361,20 @@ package body Pango.Context is
    begin
       Internal (Get_Object (Self), Desc);
    end Set_Font_Description;
+
+   ------------------
+   -- Set_Font_Map --
+   ------------------
+
+   procedure Set_Font_Map
+      (Self     : not null access Pango_Context_Record;
+       Font_Map : not null access Pango.Font_Map.Pango_Font_Map_Record'Class)
+   is
+      procedure Internal (Self : System.Address; Font_Map : System.Address);
+      pragma Import (C, Internal, "pango_context_set_font_map");
+   begin
+      Internal (Get_Object (Self), Get_Object (Font_Map));
+   end Set_Font_Map;
 
    ----------------------
    -- Set_Gravity_Hint --

@@ -528,19 +528,51 @@ GtkCustomLayout.toml:
   parameters (`GtkCustomRequestModeFunc`, `GtkCustomMeasureFunc`,
   `GtkCustomAllocateFunc`). Re-enable once those callback types are bound.
 
-GtkLayoutManager.toml and GtkLayoutChild.toml:
+GtkColumnView - bound, awaiting:
 
-- `gtk_layout_manager_get_widget`, `gtk_layout_manager_allocate`,
-  `gtk_layout_manager_measure`, `gtk_layout_manager_get_layout_child`,
-  `gtk_layout_child_get_child_widget`, `gtk_layout_child_get_layout_manager`
-  are disabled to break a circular dependency between `Gtk.Widget`,
-  `Gtk.Layout_Manager` and `Gtk.Layout_Child`. Once the generator gains
-  support for `limited with`, these can be re-enabled.
+- unit tests
+- demo
 
 GtkDropDown.toml
 
 - `model` property is not binded because the generator can't generate
   the proper methods. Also it is an open question whether we really nned it.
+
+### Circular dependencies still to break
+
+The generator supports `limited with` (`[[extra.with_spec]]` with
+`limited = true`, paired with a plain `[[extra.with_body]]`).
+What circular dependencies are left, and why:
+
+- **GtkTextIter.toml** (`gtk_text_iter_get_buffer`,
+  `gtk_text_iter_get_child_anchor`) and **GtkTextMark.toml**
+  (`gtk_text_mark_get_buffer`). Technically easy, but these operations are
+  currently re-exposed by hand from `GtkTextBuffer.toml`, as
+  `Get_Buffer (Iter : ...)` / `Get_Buffer (Mark : ...)`. Re-enabling them
+  means *removing* those manual re-expositions in the same go, or callers
+  meet two versions of the same operation and an ambiguity. That touches
+  three TOMLs, two generated packages, the `text-iter` / `text-buffer` /
+  `text-view` tests and `gtkada_demo/`, so it wants its own work item.
+
+- **GtkATContext.toml** (`gtk_at_context_get_accessible`,
+  `gtk_at_context_get_accessible_role`). This TOML is inert: `contrib/data.py`
+  lists `"--Gtk.ATContext"`, so the type is not generated at all and
+  `Gtk.Atcontext` is hand-written in `src/gtk-atcontext.ads`. Fixing it means
+  re-enabling generation for the type and retiring the hand-written package,
+  which is a much larger job than a `limited with`. Do not re-diagnose this
+  one as a plain cycle.
+
+- **GApplication.toml** (`g_application_add_main_option`,
+  `g_application_add_option_group`). The cycle is real — `Glib.Option` withs
+  `Glib.Application` — but a limited view gives incomplete types, which suits
+  a tagged return and not the by-copy `GOptionFlags` / `GOptionArg` scalars
+  and the `GOption_Group` proxy these take. The better fix is probably to
+  remove `Glib.Option`'s dependency on `Glib.Application` instead.
+
+- **GtkCellLayout.toml** (virtual methods, circular with `Gtk.Cell_Area`) and
+  **GtkTreeSelection.toml** (`gtk_tree_selection_get_tree_view`, returning a
+  `Gtk_Widget`). Both belong to the cell-renderer / tree-view family, which is
+  `pragma Obsolescent` in the gtk4 bindings. Not worth churning.
 
 ## Dialog widgets (work item #46)
 

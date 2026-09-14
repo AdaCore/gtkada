@@ -24,6 +24,7 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Pango.Font_Family;          use Pango.Font_Family;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
@@ -63,6 +64,21 @@ package body Pango.Font_Face is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Face_Name;
+
+   ----------------
+   -- Get_Family --
+   ----------------
+
+   function Get_Family
+      (Self : not null access Pango_Font_Face_Record)
+       return Pango.Font_Family.Pango_Font_Family
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "pango_font_face_get_family");
+      Stub_Pango_Font_Family : Pango.Font_Family.Pango_Font_Family_Record;
+   begin
+      return Pango.Font_Family.Pango_Font_Family (Get_User_Data (Internal (Get_Object (Self)), Stub_Pango_Font_Family));
+   end Get_Family;
 
    --------------------
    -- Is_Synthesized --

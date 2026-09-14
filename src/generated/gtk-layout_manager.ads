@@ -166,6 +166,21 @@ package Gtk.Layout_Manager is
    --  @param Minimum_Baseline the baseline position for the minimum size
    --  @param Natural_Baseline the baseline position for the natural size
 
+   function Get_Child_Widget
+      (Layout_Child : not null access Gtk_Layout_Child_Record)
+       return Gtk.Widget.Gtk_Widget;
+   --  Retrieves the `GtkWidget` associated to the given Layout_Child.
+   --  @return a `GtkWidget`
+   --  Return has transfer-ownership='none'
+
+   function Get_Layout_Manager
+      (Layout_Child : not null access Gtk_Layout_Child_Record)
+       return Gtk_Layout_Manager;
+   --  Retrieves the `GtkLayoutManager` instance that created the given
+   --  Layout_Child.
+   --  @return a `GtkLayoutManager`
+   --  Return has transfer-ownership='none'
+
    ----------------
    -- Properties --
    ----------------
