@@ -1745,7 +1745,7 @@ package body Gtk.Notebook is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_Gtk_Widget_Gtk_Notebook := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased not null access Gtk_Notebook_Record'Class := H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
+      V   : aliased System.Address := Glib.Object.Get_Object_Or_Null (H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1))));
    begin
       Set_Value (Return_Value, V'Address);
    exception
@@ -1897,7 +1897,7 @@ package body Gtk.Notebook is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Notebook_Gtk_Widget_Gtk_Notebook := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Notebook := Gtk_Notebook (Unchecked_To_Object (Params, 0));
-      V   : aliased not null access Gtk_Notebook_Record'Class := H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1)));
+      V   : aliased System.Address := Glib.Object.Get_Object_Or_Null (H (Obj, Gtk.Widget.Gtk_Widget (Unchecked_To_Object (Params, 1))));
    begin
       Set_Value (Return_Value, V'Address);
    exception

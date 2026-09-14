@@ -2880,12 +2880,31 @@ See Glib.Properties for more information on properties)"""
         else:
             call = "H (Obj)"
 
-        if profile.returns:
-            marsh_local = [Local_Var("V", profile.returns, aliased=True, default=call)]
-            marsh_body = "Set_Value (Return_Value, V'Address);"
-        else:
+        if profile.returns is None:
             marsh_local = []
             marsh_body = "%s;" % call
+
+        elif isinstance(profile.returns, GObject):
+            # A GObject result must reach the GValue as the C object pointer,
+            # not as the Ada access value that designates its wrapper. It must
+            # also stay nullable: returning NULL is how a handler declines to
+            # provide an object (GIR nullable="1"), and "not null access" would
+            # raise Constraint_Error before the value was ever stored.
+            self.pkg.add_with("Glib.Object", specs=False, do_use=False)
+            marsh_local = [
+                Local_Var(
+                    "V",
+                    "System.Address",
+                    aliased=True,
+                    default="Glib.Object.Get_Object_Or_Null (%s)"
+                    % call,
+                )
+            ]
+            marsh_body = "Set_Value (Return_Value, V'Address);"
+
+        else:
+            marsh_local = [Local_Var("V", profile.returns, aliased=True, default=call)]
+            marsh_body = "Set_Value (Return_Value, V'Address);"
 
         marsh_body += "exception when E : others => Process_Exception (E);"
 
