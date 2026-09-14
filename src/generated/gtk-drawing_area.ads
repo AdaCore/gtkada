@@ -81,6 +81,8 @@
 --
 --  If you need more complex control over your widget, you should consider
 --  creating your own `GtkWidget` subclass.
+--
+--  <gtkada_demo>create_drawing_area.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                 use Cairo;
