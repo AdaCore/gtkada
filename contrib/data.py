@@ -45,7 +45,7 @@ interfaces = (
     "Gtk.PrintOperationPreview",
     "--Gtk.RecentChooser",
     "Gtk.Root",
-    "--Gtk.Scrollable",
+    "Gtk.Scrollable",
     "Gtk.SectionModel",
     "Gtk.SelectionModel",
     "Gtk.ShortcutManager",

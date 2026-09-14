@@ -64,6 +64,7 @@ with Glib.Object;           use Glib.Object;
 with Glib.Properties;       use Glib.Properties;
 with Glib.Types;            use Glib.Types;
 with Gtk.Accessible;        use Gtk.Accessible;
+with Gtk.Adjustment;        use Gtk.Adjustment;
 with Gtk.Atcontext;         use Gtk.Atcontext;
 with Gtk.Buildable;         use Gtk.Buildable;
 with Gtk.Constraint_Target; use Gtk.Constraint_Target;
@@ -72,6 +73,7 @@ with Gtk.List_Base;         use Gtk.List_Base;
 with Gtk.List_Item_Factory; use Gtk.List_Item_Factory;
 with Gtk.Orientable;        use Gtk.Orientable;
 with Gtk.Scroll_Info;       use Gtk.Scroll_Info;
+with Gtk.Scrollable;        use Gtk.Scrollable;
 with Gtk.Selection_Model;   use Gtk.Selection_Model;
 
 package Gtk.Grid_View is
@@ -309,6 +311,42 @@ package Gtk.Grid_View is
       (Self        : not null access Gtk_Grid_View_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
+   function Get_Border
+      (Self   : not null access Gtk_Grid_View_Record;
+       Border : out Gtk.Scrollable.Gtk_Border) return Boolean;
+
+   function Get_Hadjustment
+      (Self : not null access Gtk_Grid_View_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
+
+   procedure Set_Hadjustment
+      (Self        : not null access Gtk_Grid_View_Record;
+       Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+
+   function Get_Hscroll_Policy
+      (Self : not null access Gtk_Grid_View_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy;
+
+   procedure Set_Hscroll_Policy
+      (Self   : not null access Gtk_Grid_View_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+
+   function Get_Vadjustment
+      (Self : not null access Gtk_Grid_View_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
+
+   procedure Set_Vadjustment
+      (Self        : not null access Gtk_Grid_View_Record;
+       Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+
+   function Get_Vscroll_Policy
+      (Self : not null access Gtk_Grid_View_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy;
+
+   procedure Set_Vscroll_Policy
+      (Self   : not null access Gtk_Grid_View_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+
    ----------------
    -- Properties --
    ----------------
@@ -384,6 +422,8 @@ package Gtk.Grid_View is
    --  - "Gtk.ConstraintTarget"
    --
    --  - "Gtk.Orientable"
+   --
+   --  - "Gtk.Scrollable"
 
    package Implements_Gtk_Accessible is new Glib.Types.Implements
      (Gtk.Accessible.Gtk_Accessible, Gtk_Grid_View_Record, Gtk_Grid_View);
@@ -428,6 +468,17 @@ package Gtk.Grid_View is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_Grid_View
    renames Implements_Gtk_Orientable.To_Object;
+
+   package Implements_Gtk_Scrollable is new Glib.Types.Implements
+     (Gtk.Scrollable.Gtk_Scrollable, Gtk_Grid_View_Record, Gtk_Grid_View);
+   function "+"
+     (Widget : access Gtk_Grid_View_Record'Class)
+   return Gtk.Scrollable.Gtk_Scrollable
+   renames Implements_Gtk_Scrollable.To_Interface;
+   function "-"
+     (Interf : Gtk.Scrollable.Gtk_Scrollable)
+   return Gtk_Grid_View
+   renames Implements_Gtk_Scrollable.To_Object;
 
 private
    Tab_Behavior_Property : constant Gtk.Enums.Property_Gtk_List_Tab_Behavior :=

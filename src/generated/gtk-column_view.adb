@@ -545,6 +545,29 @@ package body Gtk.Column_View is
    end Get_At_Context;
 
    ----------------
+   -- Get_Border --
+   ----------------
+
+   function Get_Border
+      (Self   : not null access Gtk_Column_View_Record;
+       Border : out Gtk.Scrollable.Gtk_Border) return Boolean
+   is
+      function Internal
+         (Self       : System.Address;
+          Acc_Border : access Gtk.Scrollable.Gtk_Border)
+          return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_scrollable_get_border");
+      Acc_Border     : aliased Gtk.Scrollable.Gtk_Border;
+      Tmp_Acc_Border : aliased Gtk.Scrollable.Gtk_Border;
+      Tmp_Return     : Glib.Gboolean;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Acc_Border'Access);
+      Acc_Border := Tmp_Acc_Border;
+      Border := Acc_Border;
+      return Tmp_Return /= 0;
+   end Get_Border;
+
+   ----------------
    -- Get_Bounds --
    ----------------
 
@@ -591,6 +614,36 @@ package body Gtk.Column_View is
       return Internal (Get_Object (Self));
    end Get_First_Accessible_Child;
 
+   ---------------------
+   -- Get_Hadjustment --
+   ---------------------
+
+   function Get_Hadjustment
+      (Self : not null access Gtk_Column_View_Record)
+       return Gtk.Adjustment.Gtk_Adjustment
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_scrollable_get_hadjustment");
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
+   begin
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Adjustment));
+   end Get_Hadjustment;
+
+   ------------------------
+   -- Get_Hscroll_Policy --
+   ------------------------
+
+   function Get_Hscroll_Policy
+      (Self : not null access Gtk_Column_View_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Scrollable_Policy;
+      pragma Import (C, Internal, "gtk_scrollable_get_hscroll_policy");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Hscroll_Policy;
+
    ---------------------------------
    -- Get_Next_Accessible_Sibling --
    ---------------------------------
@@ -622,6 +675,36 @@ package body Gtk.Column_View is
    begin
       return Internal (Get_Object (Self), State) /= 0;
    end Get_Platform_State;
+
+   ---------------------
+   -- Get_Vadjustment --
+   ---------------------
+
+   function Get_Vadjustment
+      (Self : not null access Gtk_Column_View_Record)
+       return Gtk.Adjustment.Gtk_Adjustment
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_scrollable_get_vadjustment");
+      Stub_Gtk_Adjustment : Gtk.Adjustment.Gtk_Adjustment_Record;
+   begin
+      return Gtk.Adjustment.Gtk_Adjustment (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Adjustment));
+   end Get_Vadjustment;
+
+   ------------------------
+   -- Get_Vscroll_Policy --
+   ------------------------
+
+   function Get_Vscroll_Policy
+      (Self : not null access Gtk_Column_View_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy
+   is
+      function Internal
+         (Self : System.Address) return Gtk.Enums.Gtk_Scrollable_Policy;
+      pragma Import (C, Internal, "gtk_scrollable_get_vscroll_policy");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Vscroll_Policy;
 
    --------------------
    -- Reset_Property --
@@ -688,6 +771,70 @@ package body Gtk.Column_View is
    begin
       Internal (Get_Object (Self), Parent, Next_Sibling);
    end Set_Accessible_Parent;
+
+   ---------------------
+   -- Set_Hadjustment --
+   ---------------------
+
+   procedure Set_Hadjustment
+      (Self        : not null access Gtk_Column_View_Record;
+       Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Hadjustment : System.Address);
+      pragma Import (C, Internal, "gtk_scrollable_set_hadjustment");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Hadjustment)));
+   end Set_Hadjustment;
+
+   ------------------------
+   -- Set_Hscroll_Policy --
+   ------------------------
+
+   procedure Set_Hscroll_Policy
+      (Self   : not null access Gtk_Column_View_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy)
+   is
+      procedure Internal
+         (Self   : System.Address;
+          Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+      pragma Import (C, Internal, "gtk_scrollable_set_hscroll_policy");
+   begin
+      Internal (Get_Object (Self), Policy);
+   end Set_Hscroll_Policy;
+
+   ---------------------
+   -- Set_Vadjustment --
+   ---------------------
+
+   procedure Set_Vadjustment
+      (Self        : not null access Gtk_Column_View_Record;
+       Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class)
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Vadjustment : System.Address);
+      pragma Import (C, Internal, "gtk_scrollable_set_vadjustment");
+   begin
+      Internal (Get_Object (Self), Get_Object_Or_Null (GObject (Vadjustment)));
+   end Set_Vadjustment;
+
+   ------------------------
+   -- Set_Vscroll_Policy --
+   ------------------------
+
+   procedure Set_Vscroll_Policy
+      (Self   : not null access Gtk_Column_View_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy)
+   is
+      procedure Internal
+         (Self   : System.Address;
+          Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+      pragma Import (C, Internal, "gtk_scrollable_set_vscroll_policy");
+   begin
+      Internal (Get_Object (Self), Policy);
+   end Set_Vscroll_Policy;
 
    ------------------------------------
    -- Update_Next_Accessible_Sibling --

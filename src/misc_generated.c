@@ -210,6 +210,10 @@ void gtkada_Print_Operation_Preview_set_render_page(GtkPrintOperationPreviewIfac
     iface->render_page = handler;
 }
 
+void gtkada_Scrollable_set_get_border(GtkScrollableInterface* iface, void* handler) {
+    iface->get_border = handler;
+}
+
 void gtkada_Section_Model_set_get_section(GtkSectionModelInterface* iface, void* handler) {
     iface->get_section = handler;
 }

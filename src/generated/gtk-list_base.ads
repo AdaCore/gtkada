@@ -67,11 +67,13 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;                  use Glib;
 with Glib.Types;            use Glib.Types;
 with Gtk.Accessible;        use Gtk.Accessible;
+with Gtk.Adjustment;        use Gtk.Adjustment;
 with Gtk.Atcontext;         use Gtk.Atcontext;
 with Gtk.Buildable;         use Gtk.Buildable;
 with Gtk.Constraint_Target; use Gtk.Constraint_Target;
 with Gtk.Enums;             use Gtk.Enums;
 with Gtk.Orientable;        use Gtk.Orientable;
+with Gtk.Scrollable;        use Gtk.Scrollable;
 with Gtk.Widget;            use Gtk.Widget;
 
 package Gtk.List_Base is
@@ -165,6 +167,42 @@ package Gtk.List_Base is
       (Self        : not null access Gtk_List_Base_Record;
        Orientation : Gtk.Enums.Gtk_Orientation);
 
+   function Get_Border
+      (Self   : not null access Gtk_List_Base_Record;
+       Border : out Gtk.Scrollable.Gtk_Border) return Boolean;
+
+   function Get_Hadjustment
+      (Self : not null access Gtk_List_Base_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
+
+   procedure Set_Hadjustment
+      (Self        : not null access Gtk_List_Base_Record;
+       Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+
+   function Get_Hscroll_Policy
+      (Self : not null access Gtk_List_Base_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy;
+
+   procedure Set_Hscroll_Policy
+      (Self   : not null access Gtk_List_Base_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+
+   function Get_Vadjustment
+      (Self : not null access Gtk_List_Base_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
+
+   procedure Set_Vadjustment
+      (Self        : not null access Gtk_List_Base_Record;
+       Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+
+   function Get_Vscroll_Policy
+      (Self : not null access Gtk_List_Base_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy;
+
+   procedure Set_Vscroll_Policy
+      (Self   : not null access Gtk_List_Base_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+
    ----------------
    -- Properties --
    ----------------
@@ -186,6 +224,8 @@ package Gtk.List_Base is
    --  - "Gtk.ConstraintTarget"
    --
    --  - "Gtk.Orientable"
+   --
+   --  - "Gtk.Scrollable"
 
    package Implements_Gtk_Accessible is new Glib.Types.Implements
      (Gtk.Accessible.Gtk_Accessible, Gtk_List_Base_Record, Gtk_List_Base);
@@ -230,6 +270,17 @@ package Gtk.List_Base is
      (Interf : Gtk.Orientable.Gtk_Orientable)
    return Gtk_List_Base
    renames Implements_Gtk_Orientable.To_Object;
+
+   package Implements_Gtk_Scrollable is new Glib.Types.Implements
+     (Gtk.Scrollable.Gtk_Scrollable, Gtk_List_Base_Record, Gtk_List_Base);
+   function "+"
+     (Widget : access Gtk_List_Base_Record'Class)
+   return Gtk.Scrollable.Gtk_Scrollable
+   renames Implements_Gtk_Scrollable.To_Interface;
+   function "-"
+     (Interf : Gtk.Scrollable.Gtk_Scrollable)
+   return Gtk_List_Base
+   renames Implements_Gtk_Scrollable.To_Object;
 
 private
    Orientation_Property : constant Gtk.Enums.Property_Gtk_Orientation :=
