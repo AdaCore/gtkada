@@ -520,7 +520,7 @@ binding = (
     "----GtkPopoverAccessible",  # We do not support atk
     "Gtk.PopoverMenu",
     "Gtk.PopoverMenuBar",
-    "--Gtk.PrintContext",
+    "Gtk.PrintContext",
     "--Gtk.PrintOperation",
     "--Gtk.PrintSettings",
     "----GtkPlug",  # X11-specific, no binding
