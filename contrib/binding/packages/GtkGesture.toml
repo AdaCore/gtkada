@@ -1,0 +1,22 @@
+# ============================================================
+#   GtkGesture
+# ============================================================
+
+# get_group and get_sequences both hand back a GList. Declare the element
+# types so they come out typed rather than as a bare GList.
+
+[[list]]
+ada = "Gesture_List"
+ctype = "GtkGesture"
+
+[[list]]
+ada = "Gdk_Event_Sequence_List"
+ctype = "GdkEventSequence"
+
+[[method]]
+id = "gtk_gesture_get_group"
+return = "GtkGestureList"
+
+[[method]]
+id = "gtk_gesture_get_sequences"
+return = "GdkEventSequenceList"

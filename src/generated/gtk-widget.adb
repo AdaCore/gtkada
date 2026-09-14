@@ -27,6 +27,7 @@ with Ada.Unchecked_Conversion;
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
 with Glib.Values;                use Glib.Values;
 with Gtk.Arguments;              use Gtk.Arguments;
+with Gtk.Event_Controller;       use Gtk.Event_Controller;
 with Gtk.Layout_Manager;         use Gtk.Layout_Manager;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
@@ -179,6 +180,22 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget));
    end Activate_Default;
+
+   --------------------
+   -- Add_Controller --
+   --------------------
+
+   procedure Add_Controller
+      (Widget     : not null access Gtk_Widget_Record;
+       Controller : not null access Gtk.Event_Controller.Gtk_Event_Controller_Record'Class)
+   is
+      procedure Internal
+         (Widget     : System.Address;
+          Controller : System.Address);
+      pragma Import (C, Internal, "gtk_widget_add_controller");
+   begin
+      Internal (Get_Object (Widget), Get_Object (Controller));
+   end Add_Controller;
 
    -------------------
    -- Add_Css_Class --
@@ -1318,6 +1335,22 @@ package body Gtk.Widget is
    begin
       Internal (Get_Object (Widget));
    end Realize;
+
+   -----------------------
+   -- Remove_Controller --
+   -----------------------
+
+   procedure Remove_Controller
+      (Widget     : not null access Gtk_Widget_Record;
+       Controller : not null access Gtk.Event_Controller.Gtk_Event_Controller_Record'Class)
+   is
+      procedure Internal
+         (Widget     : System.Address;
+          Controller : System.Address);
+      pragma Import (C, Internal, "gtk_widget_remove_controller");
+   begin
+      Internal (Get_Object (Widget), Get_Object (Controller));
+   end Remove_Controller;
 
    ----------------------
    -- Remove_Css_Class --

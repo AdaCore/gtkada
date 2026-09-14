@@ -392,14 +392,14 @@ binding = (
     "--Gtk.CssProvider",
     "--Gtk.CssSection",
     "--Gtk.Dialog",
-    "--Gtk.DrawingArea",
+    "Gtk.DrawingArea",
     "Gtk.Entry",
     "----GtkEntryAccessible",  # We do not support atk
     "Gtk.EntryBuffer",
     "Gtk.EntryCompletion",
     "----GtkEntryIconAccessible",  # We do not support atk
     "--GtkEventBox",
-    "--Gtk.EventController",
+    "Gtk.EventController",
     "Gtk.Expander",
     "----GtkExpanderAccessible",  # We do not support atk
     "--GtkFileChooserButton",
@@ -417,13 +417,13 @@ binding = (
     "Gtk.FontDialogButton",
     "Gtk.Frame",
     "----GtkFrameAccessible",  # We do not support atk
-    "--Gtk.Gesture",
-    "--Gtk.GestureDrag",
+    "Gtk.Gesture",
+    "Gtk.GestureClick",
+    "Gtk.GestureDrag",
     "--Gtk.GestureLongPress",
-    "--GtkGestureMultiPress",
     "--Gtk.GesturePan",
     "--Gtk.GestureRotate",
-    "--Gtk.GestureSingle",
+    "Gtk.GestureSingle",
     "--Gtk.GestureSwipe",
     "--Gtk.GestureZoom",
     "--GtkGradient",
@@ -921,6 +921,10 @@ naming.type_exceptions = {
     "GVariantIter": Proxy("Glib.Variant.Gvariant_Iter"),
     # Proper generation of lists
     "GdkEventSequence": Proxy("Gdk.Event.Gdk_Event_Sequence"),
+    # GdkEventSequence* is what the Gtk gir actually spells (see the
+    # Gdk.EventSequence entry above); without this the pointer form is not
+    # recognized as a proxy and every sequence parameter comes out "in out".
+    "GdkEventSequence*": Proxy("Gdk.Event.Gdk_Event_Sequence"),
     # Specific to this binding generator (referenced from binding.xml)
     "VisualList": List("Gdk.Visual.Gdk_Visual_List.Glist"),
     "ObjectList": List("Glib.Object.Object_Simple_List.Glist"),

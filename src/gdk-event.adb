@@ -419,12 +419,14 @@ package body Gdk.Event is
    -- Get_Event_Sequence --
    ------------------------
 
-   --  function Get_Event_Sequence (Self : Gdk_Event'Class) return System.Address is
-   --     function Internal (Self : System.Address) return System.Address;
-   --     pragma Import (C, Internal, "gdk_event_get_event_sequence");
-   --  begin
-   --     return Internal (Get_Object (Self));
-   --  end Get_Event_Sequence;
+   function Get_Event_Sequence
+     (Self : Gdk_Event'Class) return Gdk_Event_Sequence
+   is
+      function Internal (Self : System.Address) return Gdk_Event_Sequence;
+      pragma Import (C, Internal, "gdk_event_get_event_sequence");
+   begin
+      return Internal (Get_Object (Self));
+   end Get_Event_Sequence;
 
    --------------------
    -- Get_Event_Type --

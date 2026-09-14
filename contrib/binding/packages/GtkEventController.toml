@@ -1,0 +1,16 @@
+# ============================================================
+#   GtkEventController
+# ============================================================
+
+# gtk_event_controller_set_static_name stores the pointer it is handed
+# verbatim and marks it never-free (gtkeventcontroller.c: `priv->name =
+# (char *)name; priv->name_is_static = TRUE;`). An Ada string reaches C
+# through a temporary, so the generated binding freed that temporary on
+# return and left the controller reading freed memory.
+#
+# There is nothing to gain by binding it: Set_Name is the same call with a
+# g_strdup, so from Ada the two are observably identical. The static variant
+# exists only so that C callers can pass a literal without allocating.
+[[method]]
+id = "gtk_event_controller_set_static_name"
+bind = false

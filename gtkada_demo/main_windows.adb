@@ -90,6 +90,7 @@ with Create_Color_Chooser;
 with Create_Custom_Widget;
 --  with Create_Cursors;
 --  with Create_Dnd;
+with Create_Drawing_Area;
 with Create_Entry;
 --  with Create_File_Chooser;
 --  with Create_File_Selection;
@@ -201,6 +202,10 @@ package body Main_Windows is
         ("Custom Widget",
          Create_Custom_Widget.Run'Access,
          Create_Custom_Widget.Help'Access),
+      To_Demo
+        ("Drawing Area",
+         Create_Drawing_Area.Run'Access,
+         Create_Drawing_Area.Help'Access),
       To_Demo
         ("Reparent", Create_Reparent.Run'Access, Create_Reparent.Help'Access),
       To_Demo
