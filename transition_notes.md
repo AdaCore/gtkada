@@ -562,8 +562,6 @@ Intentionally deferred:
 - `GtkFileDialog` — every interesting method takes or returns
   `GFile*` / `GListModel<GFile>`. Revisit when `GFile` (Gio
   interface) is wired up.
-- `GtkPrintDialog` — needs `GtkPageSetup`, `GtkPrintSettings`,
-  `GtkPrintSetup`, `GFile`, `GOutputStream`. Revisit after those.
 - `GtkFontDialog.choose_font_and_features` — multiple complex out
   parameters; suppressed for now.
 - `GtkFontDialog.{get,set}_filter` — needs `GtkFilter`; suppressed

@@ -53,7 +53,7 @@ with Gdk.Rectangle;
 with Gtk.Enums;
 --  with Gtk.GEntry;
 --  with Gtk.Notebook;
---  with Gtk.Print_Operation;
+with Gtk.Print_Operation;
 --  with Gtk.Status_Bar;
 with Gtk.Text_Iter;
 with Gtk.Text_View;
@@ -204,9 +204,9 @@ package Gtk.Arguments is
      Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Scroll_Step);
    --   function Unchecked_To_Gtk_Response_Type
    --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Dialog.Gtk_Response_Type);
-   --   function Unchecked_To_Gtk_Print_Operation_Result
-   --     is new Glib.Values.Unsafe_Enum_Nth
-   --        (Gtk.Print_Operation.Gtk_Print_Operation_Result);
+   function Unchecked_To_Gtk_Print_Operation_Result
+     is new Glib.Values.Unsafe_Enum_Nth
+        (Gtk.Print_Operation.Gtk_Print_Operation_Result);
    function Unchecked_To_Gdk_Modifier_Type is new
      Glib.Values.Unsafe_Flags_Nth (Gdk.Enums.Gdk_Modifier_Type);
    function Unchecked_To_Gtk_Entry_Icon_Position

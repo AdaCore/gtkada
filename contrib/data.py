@@ -42,7 +42,7 @@ interfaces = (
     "--Gio.Icon",
     "Gtk.Native",
     "Gtk.Orientable",
-    "--Gtk.PrintOperationPreview",
+    "Gtk.PrintOperationPreview",
     "--Gtk.RecentChooser",
     "Gtk.Root",
     "--Gtk.Scrollable",
@@ -513,16 +513,18 @@ binding = (
     "--Gtk.Overlay",
     "Gtk.Paned",
     "----GtkPanedAccessible",  # We do not support atk
-    "--Gtk.PageSetup",
+    "Gtk.PageSetup",
     "Gtk.PaperSize",
     "----GtkPlacesSidebar",  # Requires GFile
     "Gtk.Popover",
     "----GtkPopoverAccessible",  # We do not support atk
     "Gtk.PopoverMenu",
     "Gtk.PopoverMenuBar",
-    "--Gtk.PrintContext",
-    "--Gtk.PrintOperation",
-    "--Gtk.PrintSettings",
+    "Gtk.PrintContext",
+    "Gtk.PrintDialog",
+    "Gtk.PrintOperation",
+    "Gtk.PrintSettings",
+    "Gtk.PrintSetup",
     "----GtkPlug",  # X11-specific, no binding
     "--Gtk.ProgressBar",
     "----GtkProgressBarAccessible",  # We do not support atk

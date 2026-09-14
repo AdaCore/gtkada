@@ -105,6 +105,9 @@ ctype = "GtkPrintPages"
 ctype = "GtkPrintQuality"
 
 [[enum]]
+ctype = "GtkPrintStatus"
+
+[[enum]]
 ctype = "GtkScrollStep"
 
 [[enum]]

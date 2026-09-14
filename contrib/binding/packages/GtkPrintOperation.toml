@@ -1,0 +1,9 @@
+# ============================================================
+#   GtkPrintOperation
+# ============================================================
+
+[[enum]]
+ctype = "GtkPrintOperationAction"
+
+[[enum]]
+ctype = "GtkPrintOperationResult"
