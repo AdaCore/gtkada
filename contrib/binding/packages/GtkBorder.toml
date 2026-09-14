@@ -1,0 +1,59 @@
+# ============================================================
+#   GtkBorder
+# ============================================================
+
+[[record]]
+ctype = "GtkBorder"
+
+[[method]]
+id = "gtk_border_new"
+bind = false # manual implementation below
+
+[[method]]
+id = "gtk_border_free"
+
+[[method.parameter]]
+name = "Self"
+direction = "not null access"
+
+[[method]]
+id = "gtk_border_copy"
+return = "not null access Gtk_Border"
+
+[[method.parameter]]
+name = "Self"
+direction = "not null access"
+
+[[method]]
+id = "From_Object_Free"
+body = '''
+      Result : constant Gtk_Border := B.all;
+   begin
+      Gtk.Border.Free (B);
+      return Result;
+'''
+
+[[extra.spec]]
+text = '''
+   procedure Gtk_New (Self : out Gtk_Border);
+   --  Allocates a new `GtkBorder` struct and initializes its elements to
+   --  zero.
+
+   function Gtk_Border_New return not null access Gtk_Border;
+   pragma Import (C, Gtk_Border_New, "gtk_border_new");
+   --  Allocates a new `GtkBorder` struct and initializes its elements to
+   --  zero.
+'''
+
+[extra]
+body = '''
+
+   -------------
+   -- Gtk_New --
+   -------------
+
+   procedure Gtk_New (Self : out Gtk_Border) is
+   begin
+      Self := From_Object_Free (Gtk_Border_New);
+   end Gtk_New;
+'''
