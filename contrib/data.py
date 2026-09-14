@@ -521,7 +521,7 @@ binding = (
     "Gtk.PopoverMenu",
     "Gtk.PopoverMenuBar",
     "Gtk.PrintContext",
-    "--Gtk.PrintOperation",
+    "Gtk.PrintOperation",
     "Gtk.PrintSettings",
     "----GtkPlug",  # X11-specific, no binding
     "--Gtk.ProgressBar",
