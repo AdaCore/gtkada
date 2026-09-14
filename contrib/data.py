@@ -423,7 +423,7 @@ binding = (
     "--GtkGestureMultiPress",
     "--Gtk.GesturePan",
     "--Gtk.GestureRotate",
-    "--Gtk.GestureSingle",
+    "Gtk.GestureSingle",
     "--Gtk.GestureSwipe",
     "--Gtk.GestureZoom",
     "--GtkGradient",
