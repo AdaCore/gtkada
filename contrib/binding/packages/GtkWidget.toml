@@ -10,6 +10,16 @@ limited = true
 [[extra.with_body]]
 pkg = "Gtk.Layout_Manager"
 
+#  Gtk.Event_Controller withs Gtk.Widget back, for Get_Widget. Break the
+#  cycle the same way: an incomplete view is all the spec needs here, since
+#  the controller only ever appears as a parameter.
+[[extra.with_spec]]
+pkg = "Gtk.Event_Controller"
+limited = true
+
+[[extra.with_body]]
+pkg = "Gtk.Event_Controller"
+
 [[enum]]
 ctype = "GtkAlign"
 asbitfield = true # Since Align_Baseline_Fill == Align_Baseline
@@ -21,10 +31,6 @@ asbitfield = true # Since Align_Baseline_Fill == Align_Baseline
 
 # The following are deactivated until the corresponding packages
 # are bound.
-
-[[method]]
-id = "gtk_widget_add_controller"
-bind = false
 
 [[method]]
 id = "gtk_widget_get_tick_callback"
@@ -84,10 +90,6 @@ bind = false
 
 [[method]]
 id = "gtk_widget_get_primary_clipboard"
-bind = false
-
-[[method]]
-id = "gtk_widget_remove_controller"
 bind = false
 
 [[method]]

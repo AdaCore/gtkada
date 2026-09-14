@@ -322,6 +322,7 @@ with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 with Glib.Variant;            use Glib.Variant;
 with Gtk.Enums;               use Gtk.Enums;
+limited with Gtk.Event_Controller;
 limited with Gtk.Layout_Manager;
 with Pango.Context;           use Pango.Context;
 with Pango.Font_Map;          use Pango.Font_Map;
@@ -437,6 +438,18 @@ package Gtk.Widget is
    --  Activates the `default.activate` action for the widget.
    --  The action is looked up in the same was as for
    --  [methodGtk.Widget.activate_action].
+
+   procedure Add_Controller
+      (Widget     : not null access Gtk_Widget_Record;
+       Controller : not null access Gtk.Event_Controller.Gtk_Event_Controller_Record'Class);
+   --  Adds an event controller to the widget.
+   --  The event controllers of a widget handle the events that are propagated
+   --  to the widget.
+   --  You will usually want to call this function right after creating any
+   --  kind of [classGtk.EventController].
+   --  Parameter Controller has transfer-ownership='full'
+   --  @param Controller an event controller that hasn't been added to a
+   --  widget yet
 
    procedure Add_Css_Class
       (Widget    : not null access Gtk_Widget_Record;
@@ -1516,6 +1529,16 @@ package Gtk.Widget is
    --  very useful otherwise. Many times when you think you might need it, a
    --  better approach is to connect to a signal that will be called after the
    --  widget is realized automatically, such as [signalGtk.Widget::realize].
+
+   procedure Remove_Controller
+      (Widget     : not null access Gtk_Widget_Record;
+       Controller : not null access Gtk.Event_Controller.Gtk_Event_Controller_Record'Class);
+   --  Removes an event controller from the widget.
+   --  The removed event controller will not receive any more events, and
+   --  should not be used again.
+   --  Widgets will remove all event controllers automatically when they are
+   --  destroyed, there is normally no need to call this function.
+   --  @param Controller an event controller
 
    procedure Remove_Css_Class
       (Widget    : not null access Gtk_Widget_Record;
