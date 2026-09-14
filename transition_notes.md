@@ -40,6 +40,7 @@
 
 - Demos for `Create_Tree_Filter` and `Create_Tree_View` rewritten and enabled
 - Added new demo: `Create_Custom_Widget`
+- Added new demo: `Create_Drawing_Area`
 - Reactivated and ported demos for simple button widgets (`GtkButton`, `GtkCheckButton`, `GtkToggleButton`, others pending)
 - Removed demos for widgets removed in GTK4 (See work item #111)
 - Reactivated `gtkada_demo`'s `Create_Label` package: migrated from Gtk3 to Gtk4
