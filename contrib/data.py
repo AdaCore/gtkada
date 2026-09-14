@@ -339,7 +339,7 @@ binding = (
     "--Gtk.Assistant",
     "--Gtk.ATContext",  # Bound manually
     "Gtk.Bitset",
-    "Gtk.Border",
+    "--Gtk.Border",
     "Gtk.Box",
     "----GtkBooleanCellAccessible",  # We do not support atk
     "Gtk.Builder",
