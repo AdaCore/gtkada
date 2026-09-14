@@ -513,7 +513,7 @@ binding = (
     "--Gtk.Overlay",
     "Gtk.Paned",
     "----GtkPanedAccessible",  # We do not support atk
-    "--Gtk.PageSetup",
+    "Gtk.PageSetup",
     "Gtk.PaperSize",
     "----GtkPlacesSidebar",  # Requires GFile
     "Gtk.Popover",
