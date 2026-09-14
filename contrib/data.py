@@ -392,7 +392,7 @@ binding = (
     "--Gtk.CssProvider",
     "--Gtk.CssSection",
     "--Gtk.Dialog",
-    "--Gtk.DrawingArea",
+    "Gtk.DrawingArea",
     "Gtk.Entry",
     "----GtkEntryAccessible",  # We do not support atk
     "Gtk.EntryBuffer",
