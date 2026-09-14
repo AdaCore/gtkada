@@ -76,16 +76,13 @@ package body Glib.String is
    procedure G_New_Take (Self : out Gstring; Init : UTF8_String := "") is
       function Internal (Init : Gtkada.Types.Chars_Ptr) return Gstring;
       pragma Import (C, Internal, "g_string_new_take");
-      --  Tmp_Init owned by object, must not be freed by constructor.
-      Tmp_Init   : Gtkada.Types.Chars_Ptr;
-      Tmp_Return : Gstring;
+      Tmp_Init : Gtkada.Types.Chars_Ptr;
    begin
       Tmp_Init :=
         (if Init = ""
          then Gtkada.Types.Null_Ptr
          else New_String (Init));
-      Tmp_Return := Internal (Tmp_Init);
-      Self := Tmp_Return;
+      Self := Internal (Tmp_Init);
    end G_New_Take;
 
    -----------------
@@ -149,17 +146,14 @@ package body Glib.String is
    function Gstring_New_Take (Init : UTF8_String := "") return Gstring is
       function Internal (Init : Gtkada.Types.Chars_Ptr) return Gstring;
       pragma Import (C, Internal, "g_string_new_take");
-      --  Tmp_Init owned by object, must not be freed by constructor.
-      Tmp_Init   : Gtkada.Types.Chars_Ptr;
-      Tmp_Return : Gstring;
-      Self       : Gstring;
+      Tmp_Init : Gtkada.Types.Chars_Ptr;
+      Self     : Gstring;
    begin
       Tmp_Init :=
         (if Init = ""
          then Gtkada.Types.Null_Ptr
          else New_String (Init));
-      Tmp_Return := Internal (Tmp_Init);
-      Self := Tmp_Return;
+      Self := Internal (Tmp_Init);
       return Self;
    end Gstring_New_Take;
 

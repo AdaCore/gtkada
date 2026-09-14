@@ -109,12 +109,14 @@ package body Gtk.List_Item is
    --------------
 
    function Get_Item
-      (Self : not null access Gtk_List_Item_Record) return System.Address
+      (Self : not null access Gtk_List_Item_Record)
+       return Glib.Object.GObject
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_list_item_get_item");
+      Stub_GObject : Glib.Object.GObject_Record;
    begin
-      return Internal (Get_Object (Self));
+      return Get_User_Data (Internal (Get_Object (Self)), Stub_GObject);
    end Get_Item;
 
    ------------------

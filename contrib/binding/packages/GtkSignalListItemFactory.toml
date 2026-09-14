@@ -1,0 +1,39 @@
+# ============================================================
+#   GtkSignalListItemFactory
+# ============================================================
+
+# The four signals declare their argument as a bare GObject* in the GIR,
+# although it is always a GtkListItem. Retyping it here spares every
+# handler a manual conversion.
+
+[[method]]
+id = "::setup"
+
+[[method.parameter]]
+name = "object"
+ctype = "GtkListItem*"
+
+[[method]]
+id = "::bind"
+
+[[method.parameter]]
+name = "object"
+ctype = "GtkListItem*"
+
+[[method]]
+id = "::unbind"
+
+[[method.parameter]]
+name = "object"
+ctype = "GtkListItem*"
+
+[[method]]
+id = "::teardown"
+
+[[method.parameter]]
+name = "object"
+ctype = "GtkListItem*"
+
+[doc]
+group = "Trees and Lists"
+gtkada_demo = "create_column_view.adb"

@@ -1,0 +1,14 @@
+# ============================================================
+#   GtkColumnViewRow
+# ============================================================
+
+# See GtkListItem.toml: the GIR's gpointer return would otherwise yield a
+# System.Address rather than a GObject.
+
+[[method]]
+id = "gtk_column_view_row_get_item"
+return = "GObject*"
+
+[method.doc]
+extend = true
+text = "@return The item displayed"

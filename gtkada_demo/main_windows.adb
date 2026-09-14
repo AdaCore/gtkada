@@ -87,6 +87,7 @@ with Create_Buttons;
 with Create_Check_Buttons;
 --  with Create_Clipboard;
 with Create_Color_Chooser;
+with Create_Column_View;
 with Create_Custom_Widget;
 --  with Create_Cursors;
 --  with Create_Dnd;
@@ -218,6 +219,10 @@ package body Main_Windows is
         ("List Store",
          Create_List_Store.Run'Access,
          Create_List_Store.Help'Access),
+      To_Demo
+        ("Column View",
+         Create_Column_View.Run'Access,
+         Create_Column_View.Help'Access),
       To_Demo ("Entry", Create_Entry.Run'Access, Create_Entry.Help'Access));
    --  The set of demos exposed in the selector. New entries can be added
    --  here as the corresponding bindings are reintroduced.

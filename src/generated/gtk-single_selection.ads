@@ -134,10 +134,11 @@ package Gtk.Single_Selection is
 
    function Get_Selected_Item
       (Self : not null access Gtk_Single_Selection_Record)
-       return System.Address;
+       return Glib.Object.GObject;
    --  Gets the selected item.
    --  If no item is selected, null is returned.
    --  @return The selected item
+   --  Return has transfer-ownership='none'
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

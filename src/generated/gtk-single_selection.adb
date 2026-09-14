@@ -134,12 +134,13 @@ package body Gtk.Single_Selection is
 
    function Get_Selected_Item
       (Self : not null access Gtk_Single_Selection_Record)
-       return System.Address
+       return Glib.Object.GObject
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_single_selection_get_selected_item");
+      Stub_GObject : Glib.Object.GObject_Record;
    begin
-      return Internal (Get_Object (Self));
+      return Get_User_Data (Internal (Get_Object (Self)), Stub_GObject);
    end Get_Selected_Item;
 
    --------------------

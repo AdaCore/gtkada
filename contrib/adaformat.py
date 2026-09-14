@@ -1862,6 +1862,11 @@ class Parameter(Local_Var):
                             call = call._replace(precall=["--  transfer-ownership='full'\nAdjust (%s);" % n])
                         else:
                             call = call._replace(precall=["if %s /= null then\n--  transfer-ownership='full'\nAdjust (%s.all); end if;" % (n, n)])
+                    elif isinstance (self.type, UTF8) and call.freecall:
+                        # C takes ownership of the string we allocated for it,
+                        # and frees it itself later on. Freeing it here would
+                        # leave C with a dangling pointer.
+                        call = call._replace(freecall=[])
 
                 return call
             else:

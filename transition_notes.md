@@ -538,11 +538,6 @@ GtkLayoutManager.toml and GtkLayoutChild.toml:
   `Gtk.Layout_Manager` and `Gtk.Layout_Child`. Once the generator gains
   support for `limited with`, these can be re-enabled.
 
-GtkColumnView - bound, awaiting:
-
-- unit tests
-- demo
-
 GtkDropDown.toml
 
 - `model` property is not binded because the generator can't generate
@@ -612,7 +607,7 @@ Supporting changes:
   in the selector; `testsuite/c_tests/popover.c` and `popovermenu.c`
   were ported to `testsuite/tests/popover` and
   `testsuite/tests/popovermenu` (the latter builds its models with
-  `Glib.Menu` instead of the unbound `GtkBuilder`).
+  `Glib.Menu` rather than `GtkBuilder`).
 
 ## GtkTextView (work item #89)
 
@@ -648,6 +643,74 @@ family; the deferred child-anchor cases from `textbuffer.c`
 (`test_iter_with_anchor` / `test_get_text_with_anchor`) were back-filled
 into `testsuite/tests/text-buffer`, now attaching a `Gtk_Label` at each
 anchor through the view.
+
+## GtkColumnView, GtkSignalListItemFactory (work item #155)
+
+`GtkColumnView` was bound earlier but could not be demonstrated or
+tested, because the only factory an Ada application can use was missing.
+`GtkBuilderListItemFactory` — the other one — builds its cells from a
+`.ui` fragment, so without `GtkSignalListItemFactory` the sole way to
+populate a column view from Ada was to embed XML in a string literal.
+
+`Gtk.Signal_List_Item_Factory` is now enabled in `contrib/data.py`. It
+needed no glue beyond retyping the argument of its four signals
+(`setup`, `bind`, `unbind`, `teardown`) in
+`contrib/binding/packages/GtkSignalListItemFactory.toml`: the GIR
+declares it as a bare `GObject*` although it is always a
+`GtkListItem*`, and a `ctype` override on each `[[method.parameter]]`
+hands handlers a `Gtk_List_Item` directly. No `Unchecked_To_*`
+instantiation was required — `src/gtk-arguments.ads` already carries the
+generic `Unchecked_To_Object` that the generated marshaller calls, that
+family being needed only for enum and flag signal parameters.
+
+`Gtk.String_List` and `Gtk.String_Object` are enabled too, with no TOML
+at all; they are the trivial list model that every upstream column-view
+example uses for its data. (The `"StringList"` entry at
+`contrib/data.py:931` is unrelated — that map is keyed by
+generator-internal type aliases used by `return =` overrides, not by C
+type name, and `Gtk.String_List` and `Gtk.Enums.String_List` coexist
+happily.)
+
+**Beware `c:type="gpointer"`.** `gtk_list_item_get_item` is declared in
+the GIR as `<type name="GObject.Object" c:type="gpointer"/>`, and the
+generator honours the `c:type`, so it generated a `System.Address`
+return that no caller could use without an `Unchecked_Conversion`. A
+`return = "GObject*"` override fixes it. The same affliction touched
+`gtk_column_view_cell_get_item`, `gtk_column_view_row_get_item` and
+`gtk_single_selection_get_selected_item`; all four now have a TOML and
+return a `Glib.Object.GObject`. Note that overriding `return` makes the
+generator drop the GIR's `@return` documentation, so each override
+restores it with a `[method.doc]` `extend = true` block.
+
+Sorting a column view is a chain rather than a setter, and the shape of
+it is easy to get wrong: there is **no** `Gtk.Column_View.Set_Sorter`.
+Each column takes its own sorter via
+`Gtk.Column_View_Column.Set_Sorter`; the view then exposes through
+`Get_Sorter` a read-only sorter reflecting the header the user last
+clicked, and *that* one must be installed on a `Gtk_Sort_List_Model`
+wrapped around the data. Mind the ownership while you do it:
+`gtk_column_view_get_sorter` is transfer-none whereas
+`gtk_sort_list_model_new` is transfer-full on both its arguments, so the
+sorter needs an explicit `Ref` before being handed over — without it the
+sorter is finalised along with the sort model and the program crashes.
+
+`gtkada_demo/create_column_view.adb` shows the lot, and
+`testsuite/tests/column-view` covers construction, the model round trip,
+the column list, the boolean properties, the sorting chain, and — the
+case that earns its keep — a factory that is realized and pumped so that
+`setup` and `bind` are proved to fire and to receive the right items.
+Note that presenting the window is enough to create the cells
+synchronously, so a test that resets its counters *after* `Present` will
+see nothing.
+
+Left for later, on demand:
+
+- The demo has two plain label columns. A third, interactive column (a
+  recycled `Gtk_Check_Button`, say) would demonstrate why `unbind`
+  exists, which is the part of the factory protocol an inattentive
+  reader gets wrong.
+- `Gtk.String_List.Find` is GTK 4.18+; avoid it if older toolchains must
+  build.
 
 ## GtkSnapshot
 

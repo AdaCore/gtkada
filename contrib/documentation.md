@@ -229,7 +229,7 @@ GIR node is matched.
 | `obsolescent`        | bool   | When `true`, the generated subprogram gets `pragma Obsolescent`.                                                                                            |
 | `transfer_ownership` | string | `"full"` if the return value must be freed by the caller; `"none"` if the C library owns it.                                                                |
 | `return_as_param`    | string | Replace the function's return value with an `out` parameter of this name.                    |
-| `return`             | string | Override the C type of the return value. Use `"void"` to turn a function into a procedure.                                                                  |
+| `return`             | string | Override the C type of the return value. Use `"void"` to turn a function into a procedure. Overriding it discards the GIR's `@return` documentation, so restore it with a `[method.doc]` `extend` block (see `GtkListItem.toml`). |
 | `classwide`          | bool   | When `true`, declare the subprogram class-wide rather than as a primitive operation.                                                                        |
 | `body`               | string | Hand-written body inserted after the `is` keyword (use `'''...'''`). Use `%(auto)s` inside the string to splice the automatic body in.                       |
 | `convention`         | string | Override the calling convention (e.g. `"C"`).                                                                                                              |
@@ -242,6 +242,22 @@ ada    = "Gtk_New"
 [[method]]
 id   = "gtk_button_new"
 bind = false
+```
+
+A `return` override is also the cure for a GIR that declares a
+`GObject`-returning accessor with `c:type="gpointer"`: the generator
+honours the `c:type` and emits a `System.Address` that no caller can use
+without an `Unchecked_Conversion`. `Gtk.List_Item.Get_Item` and its
+three cousins are the worked precedent.
+
+```toml
+[[method]]
+id     = "gtk_list_item_get_item"
+return = "GObject*"
+
+[method.doc]
+extend = true
+text   = "@return The item displayed"
 ```
 
 ### `[[method.parameter]]` — per-parameter overrides
@@ -359,6 +375,32 @@ name = "length"
 direction = "access"
 default = "null"
 ```
+
+#### Transfer of ownership on input
+
+An Ada `UTF8_String` has no C representation, so the body allocates a
+`Chars_Ptr` copy for the call and frees it afterwards. When the
+parameter is `transfer_ownership = "full"`, though, the callee keeps
+the pointer and frees it in its own time: the generated body then hands
+its allocation over and emits no `Free` at all. Freeing it would leave
+C holding a dangling pointer — a use-after-free on the next read, and a
+double free when the owner is finally destroyed.
+
+`gtk_string_list_take` is the canonical case, and its body is bare on
+purpose:
+
+```ada
+      Tmp_String : Gtkada.Types.Chars_Ptr := New_String (String);
+   begin
+      Internal (Get_Object (Self), Tmp_String);
+   end Take;
+```
+
+This follows the GIR, so nothing needs writing in the TOML unless
+upstream annotates the parameter wrongly. For a *tagged* parameter — a
+GObject rather than a string — `transfer_ownership = "full"` instead
+makes the body `Adjust` the reference count before the call, since the
+Ada side keeps its own reference to the object.
 
 ### `[method.doc]` — per-method documentation
 
