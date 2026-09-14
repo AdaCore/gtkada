@@ -382,6 +382,20 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Print_Quality);
    --  See also Gtk.Print_Settings.Set_Quality.
 
+   type Gtk_Print_Status is (
+      Print_Status_Initial,
+      Print_Status_Preparing,
+      Print_Status_Generating_Data,
+      Print_Status_Sending_Data,
+      Print_Status_Pending,
+      Print_Status_Pending_Issue,
+      Print_Status_Printing,
+      Print_Status_Finished,
+      Print_Status_Finished_Aborted);
+   pragma Convention (C, Gtk_Print_Status);
+   --  The status gives a rough indication of the completion of a running
+   --  print operation.
+
    type Gtk_Scroll_Step is (
       Scroll_Steps,
       Scroll_Pages,
@@ -695,6 +709,10 @@ package Gtk.Enums is
    package Gtk_Print_Quality_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Print_Quality);
    type Property_Gtk_Print_Quality is new Gtk_Print_Quality_Properties.Property;
+
+   package Gtk_Print_Status_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Print_Status);
+   type Property_Gtk_Print_Status is new Gtk_Print_Status_Properties.Property;
 
    package Gtk_Scroll_Step_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Scroll_Step);
