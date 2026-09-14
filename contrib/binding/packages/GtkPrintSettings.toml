@@ -1,0 +1,13 @@
+# ============================================================
+#   GtkPrintSettings
+# ============================================================
+
+[[extra.type]]
+ctype = "GtkPageRange"
+ada = "Page_Range"
+text = '''
+type Page_Range is record
+   First, Last : Glib.gint;
+end record
+  with Convention => C;
+'''

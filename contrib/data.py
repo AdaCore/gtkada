@@ -522,7 +522,7 @@ binding = (
     "Gtk.PopoverMenuBar",
     "Gtk.PrintContext",
     "--Gtk.PrintOperation",
-    "--Gtk.PrintSettings",
+    "Gtk.PrintSettings",
     "----GtkPlug",  # X11-specific, no binding
     "--Gtk.ProgressBar",
     "----GtkProgressBarAccessible",  # We do not support atk

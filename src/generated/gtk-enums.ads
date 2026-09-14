@@ -284,7 +284,7 @@ package Gtk.Enums is
       Page_Orientation_Reverse_Portrait,
       Page_Orientation_Reverse_Landscape);
    pragma Convention (C, Gtk_Page_Orientation);
-   --  See also gtk_print_settings_set_orientation.
+   --  See also Gtk.Print_Settings.Set_Orientation.
 
    type Gtk_Page_Set is (
       Page_Set_All,
@@ -364,7 +364,7 @@ package Gtk.Enums is
       Print_Duplex_Horizontal,
       Print_Duplex_Vertical);
    pragma Convention (C, Gtk_Print_Duplex);
-   --  See also gtk_print_settings_set_duplex.
+   --  See also Gtk.Print_Settings.Set_Duplex.
 
    type Gtk_Print_Pages is (
       Print_Pages_All,
@@ -380,7 +380,7 @@ package Gtk.Enums is
       Print_Quality_High,
       Print_Quality_Draft);
    pragma Convention (C, Gtk_Print_Quality);
-   --  See also gtk_print_settings_set_quality.
+   --  See also Gtk.Print_Settings.Set_Quality.
 
    type Gtk_Scroll_Step is (
       Scroll_Steps,
@@ -513,7 +513,7 @@ package Gtk.Enums is
       Inch,
       Mm);
    pragma Convention (C, Gtk_Unit);
-   --  See also gtk_print_settings_set_paper_width.
+   --  See also Gtk.Print_Settings.Set_Paper_Width.
 
    type Gtk_Window_Gravity is (
       Window_Gravity_Top_Left,
