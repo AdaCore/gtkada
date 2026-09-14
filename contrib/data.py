@@ -513,7 +513,7 @@ binding = (
     "Gtk.Paned",
     "----GtkPanedAccessible",  # We do not support atk
     "--Gtk.PageSetup",
-    "--Gtk.PaperSize",
+    "Gtk.PaperSize",
     "----GtkPlacesSidebar",  # Requires GFile
     "Gtk.Popover",
     "----GtkPopoverAccessible",  # We do not support atk
@@ -925,6 +925,7 @@ naming.type_exceptions = {
     "VisualList": List("Gdk.Visual.Gdk_Visual_List.Glist"),
     "ObjectList": List("Glib.Object.Object_Simple_List.Glist"),
     "ObjectSList": List("Glib.Object.Object_List.GSlist"),
+    "PaperSizeList": List("Gtk.Paper_Size.Paper_Size_List.Glist"),
     "StringList": List("Gtk.Enums.String_List.Glist"),
     "StringSList": List("Gtk.Enums.String_SList.GSlist"),
     "TreePathList": List("Gtk.Tree_Model.Gtk_Tree_Path_List.Glist"),
