@@ -23,29 +23,29 @@
 
 with GNAT.Strings;
 
-with Glib;                          use Glib;
-with Glib.List_Model;               use Glib.List_Model;
-with Glib.Object;                   use Glib.Object;
+with Glib;            use Glib;
+with Glib.List_Model; use Glib.List_Model;
+with Glib.Object;     use Glib.Object;
 
-with Gtk.Column_View;               use Gtk.Column_View;
-with Gtk.Column_View_Column;        use Gtk.Column_View_Column;
-with Gtk.Custom_Sorter;             use Gtk.Custom_Sorter;
-with Gtk.Enums;                     use Gtk.Enums;
+with Gtk.Column_View;              use Gtk.Column_View;
+with Gtk.Column_View_Column;       use Gtk.Column_View_Column;
+with Gtk.Custom_Sorter;            use Gtk.Custom_Sorter;
+with Gtk.Enums;                    use Gtk.Enums;
 with Gtk.Expression;
-with Gtk.Frame;                     use Gtk.Frame;
-with Gtk.Label;                     use Gtk.Label;
-with Gtk.List_Item;                 use Gtk.List_Item;
-with Gtk.Property_Expression;       use Gtk.Property_Expression;
-with Gtk.Scrolled_Window;           use Gtk.Scrolled_Window;
+with Gtk.Frame;                    use Gtk.Frame;
+with Gtk.Label;                    use Gtk.Label;
+with Gtk.List_Item;                use Gtk.List_Item;
+with Gtk.Property_Expression;      use Gtk.Property_Expression;
+with Gtk.Scrolled_Window;          use Gtk.Scrolled_Window;
 with Gtk.Selection_Model;
-with Gtk.Signal_List_Item_Factory;  use Gtk.Signal_List_Item_Factory;
-with Gtk.Single_Selection;          use Gtk.Single_Selection;
-with Gtk.Sort_List_Model;           use Gtk.Sort_List_Model;
-with Gtk.Sorter;                    use Gtk.Sorter;
-with Gtk.String_List;               use Gtk.String_List;
-with Gtk.String_Object;             use Gtk.String_Object;
-with Gtk.String_Sorter;             use Gtk.String_Sorter;
-with Gtk.Widget;                    use Gtk.Widget;
+with Gtk.Signal_List_Item_Factory; use Gtk.Signal_List_Item_Factory;
+with Gtk.Single_Selection;         use Gtk.Single_Selection;
+with Gtk.Sort_List_Model;          use Gtk.Sort_List_Model;
+with Gtk.Sorter;                   use Gtk.Sorter;
+with Gtk.String_List;              use Gtk.String_List;
+with Gtk.String_Object;            use Gtk.String_Object;
+with Gtk.String_Sorter;            use Gtk.String_Sorter;
+with Gtk.Widget;                   use Gtk.Widget;
 
 package body Create_Column_View is
 
@@ -73,31 +73,15 @@ package body Create_Column_View is
       return
         "A @bGtk_Column_View@B presents a @bGlist_Model@B as a table: one "
         & "row per item, and one @bGtk_Column_View_Column@B per field."
-        & ASCII.LF & ASCII.LF
-        & "Unlike the older @bGtk_Tree_View@B, a column view holds no cell "
-        & "renderers. Each column is given a @bGtk_List_Item_Factory@B, "
-        & "which manufactures the widget shown in every cell of that column. "
-        & "This demo uses a @bGtk_Signal_List_Item_Factory@B, the factory "
-        & "that builds its cells from Ada signal handlers rather than from a "
-        & "@bGtk_Builder@B XML fragment."
-        & ASCII.LF & ASCII.LF
-        & "A factory emits @bsetup@B once per recycled cell widget -- that "
-        & "is where the @bGtk_Label@B below is created and handed to the "
-        & "@bGtk_List_Item@B -- and @bbind@B every time that widget is "
-        & "pointed at a new item, which is where the per-item text is "
-        & "computed. Because list items are recycled as the view scrolls, "
-        & "anything a @bbind@B handler attaches to an item (a signal "
-        & "connection, say) must be detached again in @bunbind@B."
-        & ASCII.LF & ASCII.LF
-        & "Sorting is a chain rather than a single call. Each column is "
-        & "given a @bGtk_Sorter@B; the view then exposes, through "
-        & "@bGet_Sorter@B, a sorter reflecting the header the user last "
-        & "clicked. That one has to be installed on a "
-        & "@bGtk_Sort_List_Model@B wrapped around the data for the clicks "
-        & "to have any effect."
         & ASCII.LF
-        & "Click a column header to sort by it, click again to reverse it, "
-        & "and drag a header to reorder the columns."
+        & ASCII.LF
+        & "Each column is given a @bGtk_List_Item_Factory@B, "
+        & "which manufactures the widget shown in every cell of that column. "
+        & ASCII.LF
+        & ASCII.LF
+        & "Each column is given a @bGtk_Sorter@B."
+        & ASCII.LF
+        & "Click a column header to sort by it."
         & ASCII.LF;
    end Help;
 
@@ -115,24 +99,25 @@ package body Create_Column_View is
      (A, B : not null access GObject_Record'Class) return Gint;
    pragma Convention (C, Compare_Lengths);
 
-   function Cell_Label (Item : not null access Gtk_List_Item_Record'Class)
-     return Gtk_Label;
-   function Item_String (Item : not null access Gtk_List_Item_Record'Class)
-     return String;
+   function Cell_Label
+     (Item : not null access Gtk_List_Item_Record'Class) return Gtk_Label;
+   function Item_String
+     (Item : not null access Gtk_List_Item_Record'Class) return String;
 
    ----------------
    -- Cell_Label --
    ----------------
 
-   function Cell_Label (Item : not null access Gtk_List_Item_Record'Class)
-     return Gtk_Label is (Gtk_Label (Item.Get_Child));
+   function Cell_Label
+     (Item : not null access Gtk_List_Item_Record'Class) return Gtk_Label
+   is (Gtk_Label (Item.Get_Child));
 
    ----------------
    -- Item_String --
    ----------------
 
-   function Item_String (Item : not null access Gtk_List_Item_Record'Class)
-     return String
+   function Item_String
+     (Item : not null access Gtk_List_Item_Record'Class) return String
    is
       --  Get_Item returns a GObject, which for a Gtk_String_List model is
       --  always a Gtk_String_Object. It is null while the item is unbound.
