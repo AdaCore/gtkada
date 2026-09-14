@@ -45,7 +45,7 @@ with Glib.Object;
 with Glib.Types;
 --  with Gdk.Drag_Contexts;
 with Gdk.Enums;
---  with Gdk.Event;
+with Gdk.Event;
 --  with Gdk.RGBA;
 with Gdk.Rectangle;
 --  with Gdk.Types;
@@ -184,8 +184,8 @@ package Gtk.Arguments is
    --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Pan_Direction);
    function Unchecked_To_Gtk_Position_Type is new
      Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Position_Type);
-   --   function Unchecked_To_Gtk_Event_Sequence_State
-   --     is new Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Event_Sequence_State);
+   function Unchecked_To_Gtk_Event_Sequence_State is new
+     Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Event_Sequence_State);
    function Unchecked_To_Gtk_Direction_Type is new
      Glib.Values.Unsafe_Enum_Nth (Gtk.Enums.Gtk_Direction_Type);
    --   function Unchecked_To_Gtk_Widget_Help_Type
@@ -213,6 +213,8 @@ package Gtk.Arguments is
       is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Enums.Gtk_Entry_Icon_Position);
    function Unchecked_To_Gtk_Text_Iter
      is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Text_Iter.Gtk_Text_Iter);
+   function Unchecked_To_Gdk_Event_Sequence
+     is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Sequence);
    function Unchecked_To_Gtk_Text_Extend_Selection is new
      Glib.Values.Unsafe_Enum_Nth (Gtk.Text_View.Gtk_Text_Extend_Selection);
    function Unchecked_To_Gtk_Tree_Iter is new

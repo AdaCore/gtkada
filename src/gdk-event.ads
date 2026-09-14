@@ -49,6 +49,12 @@ package Gdk.Event is
    type Gdk_Event is tagged private;
    --  Opaque reference-counted wrapper around GdkEvent*.
 
+   type Gdk_Event_Sequence is new Glib.C_Proxy;
+   --  Opaque identity token for a sequence of related touch events. Unlike
+   --  Gdk_Event it is not reference counted and is never owned: it is only
+   --  ever compared against other sequences, so that the events of one
+   --  finger can be told apart from another's.
+
    type Gdk_Event_Type is
      (Delete,
       Motion_Notify,
@@ -270,7 +276,8 @@ package Gdk.Event is
    --  @param Self a `GdkEvent`.
    --  @return a `GdkDisplay`.
 
-   --  function Get_Event_Sequence (Self : Gdk_Event'Class) return System.Address;
+   function Get_Event_Sequence
+     (Self : Gdk_Event'Class) return Gdk_Event_Sequence;
    --  Returns the event sequence to which the event belongs.
    --
    --  Related touch events are connected in a sequence. Other
