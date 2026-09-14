@@ -218,26 +218,4 @@ package body Gtk.Event_Controller is
       Internal (Get_Object (Self), Phase);
    end Set_Propagation_Phase;
 
-   ---------------------
-   -- Set_Static_Name --
-   ---------------------
-
-   procedure Set_Static_Name
-      (Self : not null access Gtk_Event_Controller_Record;
-       Name : UTF8_String := "")
-   is
-      procedure Internal
-         (Self : System.Address;
-          Name : Gtkada.Types.Chars_Ptr);
-      pragma Import (C, Internal, "gtk_event_controller_set_static_name");
-      Tmp_Name : Gtkada.Types.Chars_Ptr;
-   begin
-      Tmp_Name :=
-        (if Name = ""
-         then Gtkada.Types.Null_Ptr
-         else New_String (Name));
-      Internal (Get_Object (Self), Tmp_Name);
-      Free (Tmp_Name);
-   end Set_Static_Name;
-
 end Gtk.Event_Controller;

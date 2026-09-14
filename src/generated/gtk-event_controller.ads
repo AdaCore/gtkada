@@ -143,13 +143,6 @@ package Gtk.Event_Controller is
    procedure Reset (Self : not null access Gtk_Event_Controller_Record);
    --  Resets the Controller to a clean state.
 
-   procedure Set_Static_Name
-      (Self : not null access Gtk_Event_Controller_Record;
-       Name : UTF8_String := "");
-   --  Sets a name on the controller that can be used for debugging.
-   --  Since: gtk+ 4.8
-   --  @param Name a name for Controller, must be a static string
-
    ----------------
    -- Properties --
    ----------------
