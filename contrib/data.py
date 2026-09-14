@@ -521,6 +521,7 @@ binding = (
     "Gtk.PopoverMenu",
     "Gtk.PopoverMenuBar",
     "Gtk.PrintContext",
+    "Gtk.PrintDialog",
     "Gtk.PrintOperation",
     "Gtk.PrintSettings",
     "Gtk.PrintSetup",
