@@ -42,7 +42,7 @@ interfaces = (
     "--Gio.Icon",
     "Gtk.Native",
     "Gtk.Orientable",
-    "--Gtk.PrintOperationPreview",
+    "Gtk.PrintOperationPreview",
     "--Gtk.RecentChooser",
     "Gtk.Root",
     "--Gtk.Scrollable",

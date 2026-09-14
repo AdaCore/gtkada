@@ -190,6 +190,26 @@ void gtkada_Editable_set_set_selection_bounds(GtkEditableInterface* iface, void*
     iface->set_selection_bounds = handler;
 }
 
+void gtkada_Print_Operation_Preview_set_end_preview(GtkPrintOperationPreviewIface* iface, void* handler) {
+    iface->end_preview = handler;
+}
+
+void gtkada_Print_Operation_Preview_set_got_page_size(GtkPrintOperationPreviewIface* iface, void* handler) {
+    iface->got_page_size = handler;
+}
+
+void gtkada_Print_Operation_Preview_set_is_selected(GtkPrintOperationPreviewIface* iface, void* handler) {
+    iface->is_selected = handler;
+}
+
+void gtkada_Print_Operation_Preview_set_ready(GtkPrintOperationPreviewIface* iface, void* handler) {
+    iface->ready = handler;
+}
+
+void gtkada_Print_Operation_Preview_set_render_page(GtkPrintOperationPreviewIface* iface, void* handler) {
+    iface->render_page = handler;
+}
+
 void gtkada_Section_Model_set_get_section(GtkSectionModelInterface* iface, void* handler) {
     iface->get_section = handler;
 }
