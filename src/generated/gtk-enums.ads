@@ -310,6 +310,13 @@ package Gtk.Enums is
    --  Describes the stage at which events are fed into a
    --  [classEventcontroller].
 
+   type Gtk_Propagation_Limit is (
+      Limit_None,
+      Limit_Same_Native);
+   pragma Convention (C, Gtk_Propagation_Limit);
+   --  Describes limits of a [classEventcontroller] for handling events
+   --  targeting other widgets.
+
    type Gtk_Event_Sequence_State is (
       Event_Sequence_None,
       Event_Sequence_Claimed,
@@ -652,6 +659,10 @@ package Gtk.Enums is
    package Gtk_Propagation_Phase_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Propagation_Phase);
    type Property_Gtk_Propagation_Phase is new Gtk_Propagation_Phase_Properties.Property;
+
+   package Gtk_Propagation_Limit_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Propagation_Limit);
+   type Property_Gtk_Propagation_Limit is new Gtk_Propagation_Limit_Properties.Property;
 
    package Gtk_Event_Sequence_State_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Event_Sequence_State);

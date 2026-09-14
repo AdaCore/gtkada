@@ -399,7 +399,7 @@ binding = (
     "Gtk.EntryCompletion",
     "----GtkEntryIconAccessible",  # We do not support atk
     "--GtkEventBox",
-    "--Gtk.EventController",
+    "Gtk.EventController",
     "Gtk.Expander",
     "----GtkExpanderAccessible",  # We do not support atk
     "--GtkFileChooserButton",

@@ -78,6 +78,9 @@ ctype = "GtkPanDirection"
 ctype = "GtkPropagationPhase"
 
 [[enum]]
+ctype = "GtkPropagationLimit"
+
+[[enum]]
 ctype = "GtkEventSequenceState"
 
 [[enum]]
