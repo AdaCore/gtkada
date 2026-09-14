@@ -418,9 +418,9 @@ binding = (
     "Gtk.Frame",
     "----GtkFrameAccessible",  # We do not support atk
     "Gtk.Gesture",
+    "Gtk.GestureClick",
     "Gtk.GestureDrag",
     "--Gtk.GestureLongPress",
-    "--GtkGestureMultiPress",
     "--Gtk.GesturePan",
     "--Gtk.GestureRotate",
     "Gtk.GestureSingle",
