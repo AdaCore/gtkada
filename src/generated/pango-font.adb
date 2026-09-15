@@ -277,14 +277,14 @@ package body Pango.Font is
    ------------------
 
    function Get_Font_Map
-      (Font : not null access Pango_Font_Record)
+      (Font : access Pango_Font_Record'Class)
        return Pango.Font_Map.Pango_Font_Map
    is
       function Internal (Font : System.Address) return System.Address;
       pragma Import (C, Internal, "pango_font_get_font_map");
       Stub_Pango_Font_Map : Pango.Font_Map.Pango_Font_Map_Record;
    begin
-      return Pango.Font_Map.Pango_Font_Map (Get_User_Data (Internal (Get_Object (Font)), Stub_Pango_Font_Map));
+      return Pango.Font_Map.Pango_Font_Map (Get_User_Data (Internal (Get_Object_Or_Null (GObject (Font))), Stub_Pango_Font_Map));
    end Get_Font_Map;
 
    -----------------------
@@ -292,7 +292,7 @@ package body Pango.Font is
    -----------------------
 
    procedure Get_Glyph_Extents
-      (Font         : not null access Pango_Font_Record;
+      (Font         : access Pango_Font_Record'Class;
        Glyph        : Pango_Glyph;
        Ink_Rect     : out Pango_Rectangle;
        Logical_Rect : out Pango_Rectangle)
@@ -304,7 +304,7 @@ package body Pango.Font is
           Logical_Rect : out Pango_Rectangle);
       pragma Import (C, Internal, "pango_font_get_glyph_extents");
    begin
-      Internal (Get_Object (Font), Glyph, Ink_Rect, Logical_Rect);
+      Internal (Get_Object_Or_Null (GObject (Font)), Glyph, Ink_Rect, Logical_Rect);
    end Get_Glyph_Extents;
 
    -----------------
@@ -312,7 +312,7 @@ package body Pango.Font is
    -----------------
 
    function Get_Metrics
-      (Font     : not null access Pango_Font_Record;
+      (Font     : access Pango_Font_Record'Class;
        Language : Pango.Language.Pango_Language := Pango.Language.Null_Pango_Language)
        return Pango.Font_Metrics.Pango_Font_Metrics
    is
@@ -321,7 +321,7 @@ package body Pango.Font is
           Language : System.Address) return System.Address;
       pragma Import (C, Internal, "pango_font_get_metrics");
    begin
-      return From_Object (Internal (Get_Object (Font), Get_Object (Language)));
+      return From_Object (Internal (Get_Object_Or_Null (GObject (Font)), Get_Object (Language)));
    end Get_Metrics;
 
    --------------------------

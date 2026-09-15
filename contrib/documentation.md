@@ -377,6 +377,26 @@ direction = "access"
 default = "null"
 ```
 
+#### Nullable instance parameters
+
+A handful of C functions accept `NULL` as their *instance* argument and
+document what they do with it — `pango_font_get_font_map (NULL)` returns
+`NULL`, `g_application_set_default (NULL)` unsets the default
+application. The GIR says so with `allow-none="1"` on the
+`<instance-parameter>`, and the generator follows it: `Self` is declared
+`access T_Record'Class` rather than `not null access T_Record`, and the
+body converts it with `Get_Object_Or_Null` instead of `Get_Object`.
+
+The `'Class` is not cosmetic. A controlling operand of a dispatching
+call may not be null (RM 3.9.2(16)), so a primitive operation could
+never be handed the very null value it accepts; declaring the
+subprogram class-wide takes it out of the dispatching set and lets the
+null through. Prefix notation still works, and so do calls on derived
+types.
+
+As for any other parameter, `allow_none` on the `self`
+`[[method.parameter]]` overrides the GIR either way.
+
 #### Transfer of ownership on input
 
 An Ada `UTF8_String` has no C representation, so the body allocates a

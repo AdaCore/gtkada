@@ -352,7 +352,7 @@ package Gtk.Cell_Renderer is
    --  @param Sensitive the sensitivity of the cell
 
    function Get_State
-      (Cell       : not null access Gtk_Cell_Renderer_Record;
+      (Cell       : access Gtk_Cell_Renderer_Record'Class;
        Widget     : access Gtk.Widget.Gtk_Widget_Record'Class;
        Cell_State : Gtk_Cell_Renderer_State)
        return Gtk.Enums.Gtk_State_Flags;

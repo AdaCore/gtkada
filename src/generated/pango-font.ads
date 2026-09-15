@@ -104,7 +104,7 @@ package Pango.Font is
    --  Return has transfer-ownership='none'
 
    function Get_Font_Map
-      (Font : not null access Pango_Font_Record)
+      (Font : access Pango_Font_Record'Class)
        return Pango.Font_Map.Pango_Font_Map;
    --  Gets the font map for which the font was created.
    --  Note that the font maintains a <firstterm>weak</firstterm> reference to
@@ -120,7 +120,7 @@ package Pango.Font is
    --  Return has transfer-ownership='none'
 
    procedure Get_Glyph_Extents
-      (Font         : not null access Pango_Font_Record;
+      (Font         : access Pango_Font_Record'Class;
        Glyph        : Pango_Glyph;
        Ink_Rect     : out Pango_Rectangle;
        Logical_Rect : out Pango_Rectangle);
@@ -140,7 +140,7 @@ package Pango.Font is
    --  glyph or null to indicate that the result is not needed.
 
    function Get_Metrics
-      (Font     : not null access Pango_Font_Record;
+      (Font     : access Pango_Font_Record'Class;
        Language : Pango.Language.Pango_Language := Pango.Language.Null_Pango_Language)
        return Pango.Font_Metrics.Pango_Font_Metrics;
    --  Gets overall metric information for a font. Since the metrics may be

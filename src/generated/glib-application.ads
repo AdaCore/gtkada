@@ -554,7 +554,7 @@ package Glib.Application is
    --  @param Id id of the notification, or null
    --  @param Notification the Glib.Notification.Gnotification to send
 
-   procedure Set_Default (Self : not null access Gapplication_Record);
+   procedure Set_Default (Self : access Gapplication_Record'Class);
    --  Sets or unsets the default application for the process, as returned by
    --  Glib.Application.Get_Default.
    --  This function does not take its own reference on Application. If

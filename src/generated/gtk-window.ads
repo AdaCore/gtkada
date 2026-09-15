@@ -361,7 +361,7 @@ package Gtk.Window is
    --  @param Gravity the new gravity
 
    function Get_Group
-      (Self : not null access Gtk_Window_Record) return Gtk_Window_Group;
+      (Self : access Gtk_Window_Record'Class) return Gtk_Window_Group;
    --  Returns the group for the window.
    --  If the window has no group, then the default group is returned.
    --  @return the window group for Window or the default group
