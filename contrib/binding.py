@@ -981,6 +981,122 @@ class SubprogramProfile(object):
         for p in self.params:
             p.default = None
 
+    def _add_error_checks(
+        self,
+        cname: str,
+        subp_call: CodeCall,
+        local_vars: list[Local_Var],
+    ) -> list[str]:
+        """
+        Check for function or procedure return values.
+        Add any memory free calls required,
+        and wrap in error checks if necessary.
+        """
+
+        # Check subp_call structure for setup code
+        subp_code = subp_call.precall
+        if subp_call.call:
+            subp_code.append (subp_call.call.rstrip(';') + ';')
+        subp_code += subp_call.postcall
+
+        ret_as_param = self.gtkmethod.return_as_param() if self.gtkmethod else None
+        returnval = self.returns
+
+        # procedure: write return value to a location
+        if ret_as_param is not None:
+            assert (
+                subp_call.returnvar is not None
+            ), "Must have a return value in %s => %s" % (cname, subp_call)
+            assign_return = f"{ret_as_param} := {subp_call.returnvar};"
+            if self.throws:
+                subp_code += [
+                    "if Error = null then",
+                    assign_return,
+                    "end if;"
+                ]
+            else:
+                subp_code.append (assign_return)
+            subp_code += subp_call.freecall
+        # function: add a return statement
+        elif subp_call.returnvar:
+
+            subp_code += subp_call.freecall
+            # Abort early if an error is reported
+            # without writing to the return value
+
+            # Exception: if a function returns a Boolean on success,
+            # the error handling is already included in here
+            if self.throws and returnval.ada != 'Boolean':
+                if isinstance(returnval, (GObject, Proxy)):
+                    var_return = "Return_Obj"
+                    assign_return = f"{var_return} := {subp_call.returnvar};"
+
+                    local_vars.append(Local_Var(name=var_return,
+                                                type=returnval.ada,
+                                                default=returnval.null_name()))
+
+                    subp_code += ["if Error = null then",
+                                assign_return,
+                                "end if;",
+                                f"return {var_return};"]
+                elif isinstance(returnval, (UTF8, UTF8_List)):
+                    null_val = returnval.null_value
+
+                    # If we need to a free a temporary variable,
+                    # subp_call.returnvar will already have the free call embedded
+                    # but we need to add it explicitly for null_val
+
+                    if returnval.transfer_ownership and subp_call.tmpvars:
+                        cleanup_func = returnval.cleanup if isinstance(returnval, UTF8) else 'g_strfreev (%s);'
+
+                        # Work one step backwards:
+                        # Subprogram.call will append a temporary variable
+                        # when returnval requires freeing => this is the one
+                        # TODO do something better in future.
+                        # This might get complicated if a subprogram takes multiple string inputs
+                        tmp_return = subp_call.tmpvars[-1].name
+                        cleanup = cleanup_func % tmp_return
+                        subp_code += [
+                                "if Error = null then",
+                                f"return {subp_call.returnvar};",
+                                "else",
+                                cleanup,
+                                f"return {null_val};",
+                                "end if;"
+                            ]
+                    else:
+                        subp_code += [
+                            'return',
+                            '(if Error = null then',
+                            subp_call.returnvar,
+                            'else',
+                            null_val,
+                            ');'
+                        ]
+                elif isinstance(returnval, Interface):
+                    # This relies on the interface generate method emitting this:
+                    # Null_{typename} : constant {typename} := {typename} (Null_Interface);
+                    subp_code += [
+                        'return',
+                        '(if Error = null then',
+                        subp_call.returnvar,
+                        'else',
+                        returnval.null_name(),
+                        ');'
+                    ]
+                else:
+                    # Emit incorrect code FOR NOW
+                    return_stmt = f"return {subp_call.returnvar}; -- FIXME"
+                    subp_code.append (return_stmt)
+
+            else:
+                return_stmt = f"return {subp_call.returnvar};"
+                subp_code.append (return_stmt)
+        else:
+            subp_code += subp_call.freecall
+
+        return subp_code
+
     def subprogram(
         self,
         name: str,
@@ -1534,7 +1650,7 @@ class GIRClass(object):
         node: GIRNode,
         cname: str,
         gtkmethod: GtkAdaMethod,
-        profile: Optional[SubprogramProfile] = None,
+        profile: SubprogramProfile,
         showdoc: bool = True,
         adaname: Optional[str] = None,
         ismethod: bool = False,
@@ -1548,7 +1664,7 @@ class GIRClass(object):
         attribute of `node'.
         `profile' is an instance of SubprogramProfile
         """
-        assert profile is None or isinstance(profile, SubprogramProfile)
+        assert isinstance(profile, SubprogramProfile)
 
         if profile.has_varargs() and gtkmethod.get_param("varargs").node is None:
             naming.add_cmethod(cname, cname)  # Avoid warning later on.
@@ -1635,99 +1751,7 @@ class GIRClass(object):
                 values=internal_values,
             )
 
-            subp_code = execute.precall
-            if execute.call:
-                subp_code.append (execute.call + ';')
-            subp_code += execute.postcall + execute.freecall
-
-            # procedure: write return value to a location
-            if ret_as_param is not None:
-                assert (
-                    execute.returnvar is not None
-                ), "Must have a return value in %s => %s" % (cname, execute)
-                assign_return = f"{ret_as_param} := {execute.returnvar};"
-                if profile.throws:
-                    subp_code += [
-                        "if Error = null then",
-                        assign_return,
-                        "end if;"
-                    ]
-                else:
-                    subp_code.append (assign_return)
-            # function: add a return statement
-            elif execute.returnvar:
-
-                # Abort early if an error is reported
-                # without writing to the return value
-                # EXCEPT if return type is bool
-                # => then this is directly tied to success or failure
-
-                if profile.throws and profile.returns.ada != 'Boolean':
-                    if isinstance(profile.returns, (GObject, Proxy)):
-                        var_return = "Return_Obj"
-                        assign_return = f"{var_return} := {execute.returnvar};"
-
-                        local_vars.append(Local_Var(name=var_return,
-                                                    type=profile.returns.ada,
-                                                    default=profile.returns.null_name()))
-
-                        subp_code += ["if Error = null then",
-                                    assign_return,
-                                    "end if;",
-                                    f"return {var_return};"]
-                    elif isinstance(profile.returns, (UTF8, UTF8_List)):
-                        null_val = profile.returns.null_value
-
-                        # If we need to a free a temporary variable,
-                        # execute.returnvar will already have the free call embedded
-                        # but we need to add it explicitly for null_val
-
-                        if profile.returns.transfer_ownership and execute.tmpvars:
-                            cleanup_func = profile.returns.cleanup if isinstance(profile.returns, UTF8) else 'g_strfreev (%s);'
-
-                            # Work one step backwards:
-                            # Subprogram.call will append a temporary variable
-                            # when profile.returns requires freeing => this is the one
-                            # TODO do something better in future.
-                            # This might get complicated if a subprogram takes multiple string inputs
-                            tmp_return = execute.tmpvars[-1].name
-                            cleanup = cleanup_func % tmp_return
-                            subp_code += [
-                                    "if Error = null then",
-                                    f"return {execute.returnvar};",
-                                    "else",
-                                    cleanup,
-                                    f"return {null_val};",
-                                    "end if;"
-                                ]
-                        else:
-                            subp_code += [
-                                'return',
-                                '(if Error = null then',
-                                execute.returnvar,
-                                'else',
-                                null_val,
-                                ');'
-                            ]
-                    elif isinstance(profile.returns, Interface):
-                        # This relies on the interface generate method emitting this:
-                        # Null_{typename} : constant {typename} := {typename} (Null_Interface);
-                        subp_code += [
-                            'return',
-                            '(if Error = null then',
-                            execute.returnvar,
-                            'else',
-                            profile.returns.null_name(),
-                            ');'
-                        ]
-                    else:
-                        # Emit incorrect code FOR NOW
-                        return_stmt = f"return {execute.returnvar}; -- FIXME"
-                        subp_code.append (return_stmt)
-
-                else:
-                    return_stmt = f"return {execute.returnvar};"
-                    subp_code.append (return_stmt)
+            subp_code = profile._add_error_checks(cname, execute, local_vars)
             local_vars += execute.tmpvars
 
         subp = profile.subprogram(
@@ -2201,7 +2225,6 @@ end if;"""
                     constructor = "%s.Set_Object (%s);" % (selfname, call.returnvar)
                 else:
                     constructor = "%s := %s;" % (selfname, call.returnvar)
-
 
             # Wrap Internal call in checks
             if constructor and throws:
@@ -2736,7 +2759,7 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
             adaprops = []
             for p in props:
                 if not self.gtkpkg.get_property(cname=p.get("name")).bind():
-                   continue
+                    continue
 
                 flags = []
                 if p.get("readable", "1") != "0":
