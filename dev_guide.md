@@ -89,6 +89,10 @@ Each test executable is run under a timeout, one minute by default, so that a
 wedged test fails instead of hanging the whole run. A test that genuinely needs
 longer can raise it with a `timeout:` key in its `test.yaml`.
 
+## Debugging
+
+A useful trick for making warnings fatal: set `G_DEBUG=fatal-warnings`.
+
 ## Work checklist
 
 Before submitting your work:

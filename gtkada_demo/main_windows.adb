@@ -21,8 +21,13 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Directories;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Text_IO;
+with Interfaces.C.Strings;
+with System;
 
+with Gdk.Display;
 with Glib;                   use Glib;
 with Gtk.Application;        use Gtk.Application;
 with Gtk.Application_Window; use Gtk.Application_Window;
@@ -139,6 +144,68 @@ with Create_Tree_View;
 --  with Libart_Demo;  use Libart_Demo;
 
 package body Main_Windows is
+
+   Css_Filename : constant String := "gtkada_demo.css";
+
+   Gtk_Style_Provider_Priority_Application : constant Guint := 600;
+
+   function Gtk_Css_Provider_New return System.Address;
+   pragma Import (C, Gtk_Css_Provider_New, "gtk_css_provider_new");
+
+   procedure Gtk_Css_Provider_Load_From_Path
+     (Provider : System.Address;
+      Path     : Interfaces.C.Strings.chars_ptr);
+   pragma Import
+     (C,
+      Gtk_Css_Provider_Load_From_Path,
+      "gtk_css_provider_load_from_path");
+
+   procedure Gtk_Style_Context_Add_Provider_For_Display
+     (Display  : System.Address;
+      Provider : System.Address;
+      Priority : Guint);
+   pragma Import
+     (C,
+      Gtk_Style_Context_Add_Provider_For_Display,
+      "gtk_style_context_add_provider_for_display");
+
+   procedure G_Object_Unref (Object : System.Address);
+   pragma Import (C, G_Object_Unref, "g_object_unref");
+
+   procedure Load_Css (Window : Gtk_Application_Window);
+   --  Load the demo stylesheet and install it for every widget on Window's
+   --  display. A missing stylesheet is non-fatal so that the demo can still
+   --  be run from a directory where its data files are unavailable.
+
+   --------------
+   -- Load_Css --
+   --------------
+
+   procedure Load_Css (Window : Gtk_Application_Window) is
+      use Interfaces.C.Strings;
+
+      Path     : chars_ptr;
+      Provider : System.Address;
+   begin
+      if not Ada.Directories.Exists (Css_Filename) then
+         Ada.Text_IO.Put_Line
+           (Ada.Text_IO.Standard_Error,
+            "warning: cannot find " & Css_Filename
+            & "; continuing without custom CSS");
+         return;
+      end if;
+
+      Provider := Gtk_Css_Provider_New;
+      Path := New_String (Css_Filename);
+      Gtk_Css_Provider_Load_From_Path (Provider, Path);
+      Free (Path);
+
+      Gtk_Style_Context_Add_Provider_For_Display
+        (Gdk.Display.Convert (Window.Get_Display),
+         Provider,
+         Gtk_Style_Provider_Priority_Application);
+      G_Object_Unref (Provider);
+   end Load_Css;
 
    Label_Column : constant := 0;
    Demo_Column  : constant := 1;
@@ -311,7 +378,7 @@ package body Main_Windows is
          if Index in Demos'Range and then Demos (Index).Help /= null then
             Help_Label.Set_Markup (To_Markup (Demos (Index).Help.all));
          else
-            Help_Label.Set_Text ("");
+            Help_Label.Set_Markup ("No help available");
          end if;
       end;
    end On_Selection_Changed;
@@ -334,6 +401,7 @@ package body Main_Windows is
       Gtk_New (App_Win, Gtk_Application (Self));
       App_Win.Set_Title ("GtkAda Demo");
       App_Win.Set_Default_Size (800, 600);
+      Load_Css (App_Win);
 
       Gtk_New (Paned, Orientation_Horizontal);
       App_Win.Set_Child (Paned);
@@ -376,7 +444,9 @@ package body Main_Windows is
          Demo_Frame.Set_Vexpand (True);
          Right_Box.Append (Demo_Frame);
 
-         Gtk_New (Help_Frame, "Help");
+         --  A titled Gtk_Frame reports inconsistent cross-axis sizes when its
+         --  child wraps. Keep the visible heading in Help_Label's markup.
+         Gtk_New (Help_Frame);
          Gtk_New (Help_Label);
          Help_Label.Set_Wrap (True);
          Help_Label.Set_Xalign (0.0);
