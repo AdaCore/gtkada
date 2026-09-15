@@ -45,6 +45,10 @@ with Gtk.Sorter;                   use Gtk.Sorter;
 with Gtk.String_List;              use Gtk.String_List;
 with Gtk.String_Object;            use Gtk.String_Object;
 with Gtk.String_Sorter;            use Gtk.String_Sorter;
+with Gtk.Tree_Expander;            use Gtk.Tree_Expander;
+with Gtk.Tree_List_Model;          use Gtk.Tree_List_Model;
+with Gtk.Tree_List_Row;            use Gtk.Tree_List_Row;
+with Gtk.Tree_List_Row_Sorter;     use Gtk.Tree_List_Row_Sorter;
 with Gtk.Widget;                   use Gtk.Widget;
 
 package body Create_Column_View is
@@ -64,6 +68,26 @@ package body Create_Column_View is
       new String'("SPARK"),
       new String'("Smalltalk"));
 
+   --  The revisions of the three languages that have any: every other row is
+   --  a leaf, and Create_Model below says so by returning no model at all.
+
+   Ada_Revisions : aliased GNAT.Strings.String_List :=
+     (new String'("Ada 83"),
+      new String'("Ada 95"),
+      new String'("Ada 2005"),
+      new String'("Ada 2012"),
+      new String'("Ada 2022"));
+
+   C_Revisions : aliased GNAT.Strings.String_List :=
+     (new String'("C89"),
+      new String'("C99"),
+      new String'("C11"),
+      new String'("C17"),
+      new String'("C23"));
+
+   Python_Revisions : aliased GNAT.Strings.String_List :=
+     (new String'("Python 2"), new String'("Python 3"));
+
    ----------
    -- Help --
    ----------
@@ -82,9 +106,25 @@ package body Create_Column_View is
         & "Each column is given a @bGtk_Sorter@B."
         & ASCII.LF
         & "Click a column header to sort by it."
+        & ASCII.LF
+        & ASCII.LF
+        & "The rows here form a tree rather than a flat list: a "
+        & "@bGtk_Tree_List_Model@B wraps the list of languages and calls "
+        & "back for the children of a row the first time it is expanded."
+        & ASCII.LF
+        & ASCII.LF
+        & "It is the @bGtk_Tree_Expander@B in the first column that makes "
+        & "the tree visible: it draws the arrow, indents the row by its "
+        & "depth, and expands or collapses the @bGtk_Tree_List_Row@B it is "
+        & "given. Click an arrow, or press @b+@B or @b-@B on a row."
         & ASCII.LF;
    end Help;
 
+   function Create_Model (Item : GObject) return Glist_Model;
+
+   procedure Setup_Expander
+     (Self : access Gtk_Signal_List_Item_Factory_Record'Class;
+      Item : not null access Gtk_List_Item_Record'Class);
    procedure Setup_Cell
      (Self : access Gtk_Signal_List_Item_Factory_Record'Class;
       Item : not null access Gtk_List_Item_Record'Class);
@@ -104,6 +144,35 @@ package body Create_Column_View is
    function Item_String
      (Item : not null access Gtk_List_Item_Record'Class) return String;
 
+   ------------------
+   -- Create_Model --
+   ------------------
+
+   function Create_Model (Item : GObject) return Glist_Model is
+      Name     : constant String := Gtk_String_Object (Item).Get_String;
+      Children : Gtk_String_List;
+   begin
+      --  Called once per row, the first time it is expanded, and again for
+      --  each child: the revisions themselves have no children, so they fall
+      --  through to the leaf case below.
+
+      if Name = "Ada" then
+         Gtk.String_List.Gtk_New (Children, Ada_Revisions);
+      elsif Name = "C" then
+         Gtk.String_List.Gtk_New (Children, C_Revisions);
+      elsif Name = "Python" then
+         Gtk.String_List.Gtk_New (Children, Python_Revisions);
+      else
+         --  No model at all, as opposed to an empty one: this row can never
+         --  have children, and gets no expander arrow.
+         return Null_Glist_Model;
+      end if;
+
+      --  The callback is transfer-full on its result, so the reference held
+      --  by Children is the one the tree model takes over.
+      return +Children;
+   end Create_Model;
+
    ----------------
    -- Cell_Label --
    ----------------
@@ -112,23 +181,58 @@ package body Create_Column_View is
      (Item : not null access Gtk_List_Item_Record'Class) return Gtk_Label
    is (Gtk_Label (Item.Get_Child));
 
-   ----------------
+   -----------------
    -- Item_String --
-   ----------------
+   -----------------
 
    function Item_String
      (Item : not null access Gtk_List_Item_Record'Class) return String
    is
-      --  Get_Item returns a GObject, which for a Gtk_String_List model is
-      --  always a Gtk_String_Object. It is null while the item is unbound.
-      Obj : constant GObject := Item.Get_Item;
+      --  Because the tree model is not a passthrough one, Get_Item hands
+      --  back the Gtk_Tree_List_Row wrapping the item rather than the item
+      --  itself -- this is the part of the API that is easiest to get wrong.
+      --  The row is null while the cell is unbound.
+      Row : constant GObject := Item.Get_Item;
    begin
-      if Obj = null then
+      if Row = null then
          return "";
-      else
-         return Gtk_String_Object (Obj).Get_String;
       end if;
+
+      declare
+         --  For a Gtk_String_List model the item is a Gtk_String_Object.
+         Obj : constant GObject := Gtk_Tree_List_Row (Row).Get_Item;
+      begin
+         if Obj = null then
+            return "";
+         else
+            return Gtk_String_Object (Obj).Get_String;
+         end if;
+      end;
    end Item_String;
+
+   --------------------
+   -- Setup_Expander --
+   --------------------
+
+   procedure Setup_Expander
+     (Self : access Gtk_Signal_List_Item_Factory_Record'Class;
+      Item : not null access Gtk_List_Item_Record'Class)
+   is
+      pragma Unreferenced (Self);
+      Label    : Gtk_Label;
+      Expander : Gtk_Tree_Expander;
+   begin
+      Gtk.Label.Gtk_New (Label, "");
+      Label.Set_Xalign (0.0);
+
+      Gtk.Tree_Expander.Gtk_New (Expander);
+      Expander.Set_Child (Label);
+      Item.Set_Child (Expander);
+
+      --  The expander carries the +, -, and arrow key bindings, so the
+      --  keyboard focus must reach it rather than stop at the row.
+      Item.Set_Focusable (False);
+   end Setup_Expander;
 
    ----------------
    -- Setup_Cell --
@@ -155,8 +259,14 @@ package body Create_Column_View is
       Item : not null access Gtk_List_Item_Record'Class)
    is
       pragma Unreferenced (Self);
+      Expander : constant Gtk_Tree_Expander :=
+        Gtk_Tree_Expander (Item.Get_Child);
    begin
-      Cell_Label (Item).Set_Text (Item_String (Item));
+      --  Handing the row to the expander is all that is needed for the arrow,
+      --  the indentation and the expand/collapse gestures: the expander
+      --  watches the row from here on.
+      Expander.Set_List_Row (Gtk_Tree_List_Row (Item.Get_Item));
+      Gtk_Label (Expander.Get_Child).Set_Text (Item_String (Item));
    end Bind_Language;
 
    ------------------
@@ -185,6 +295,8 @@ package body Create_Column_View is
       Len_A : constant Natural := Gtk_String_Object (A).Get_String'Length;
       Len_B : constant Natural := Gtk_String_Object (B).Get_String'Length;
    begin
+      --  The tree sorter below unwraps the rows, so this sees the string
+      --  objects themselves and needs to know nothing of the tree.
       return Gint (Len_A) - Gint (Len_B);
    end Compare_Lengths;
 
@@ -194,6 +306,7 @@ package body Create_Column_View is
 
    procedure Run (Frame : access Gtk_Frame_Record'Class) is
       Strings     : Gtk_String_List;
+      Tree        : Gtk_Tree_List_Model;
       View        : Gtk_Column_View;
       Language    : Gtk_Column_View_Column;
       Letters     : Gtk_Column_View_Column;
@@ -201,13 +314,26 @@ package body Create_Column_View is
       By_Name     : Gtk_String_Sorter;
       By_Length   : Gtk_Custom_Sorter;
       View_Sorter : Gtk_Sorter;
+      Row_Sorter  : Gtk_Tree_List_Row_Sorter;
       Sorted      : Gtk_Sort_List_Model;
       Scrolled    : Gtk_Scrolled_Window;
+      Root_Row    : Gtk_Tree_List_Row;
    begin
       Frame.Set_Label ("Column View");
       Frame.Set_Label_Align (0.5);
 
       Gtk.String_List.Gtk_New (Strings, Languages);
+
+      --  Passthrough => False is what turns the rows into Gtk_Tree_List_Rows,
+      --  which both Gtk_Tree_Expander and Gtk_Tree_List_Row_Sorter require.
+      --  Autoexpand => False leaves the tree collapsed, so that Create_Model
+      --  is called only for the rows the user actually opens.
+      Gtk.Tree_List_Model.Gtk_New
+        (Tree,
+         Root        => +Strings,
+         Passthrough => False,
+         Autoexpand  => False,
+         Create_Func => Create_Model'Access);
 
       --  The view is built without a model: the model can only be created
       --  once the columns are in place, since it is the view's own sorter
@@ -219,9 +345,10 @@ package body Create_Column_View is
       View.Set_Reorderable (True);
 
       --  A column with no factory shows empty cells, so every column gets
-      --  one. Handlers are shared: the two columns differ only in bind.
+      --  one. Handlers are shared where they can be: only the first column
+      --  needs the expander, the second is a plain label.
       Gtk.Signal_List_Item_Factory.Gtk_New (Factory);
-      Factory.On_Setup (Setup_Cell'Access);
+      Factory.On_Setup (Setup_Expander'Access);
       Factory.On_Bind (Bind_Language'Access);
 
       Gtk.Column_View_Column.Gtk_New (Language, "Language", Factory);
@@ -245,18 +372,30 @@ package body Create_Column_View is
       Letters.Set_Sorter (By_Length);
       View.Append_Column (Letters);
 
-      --  Get_Sorter is transfer-none whereas Gtk_Sort_List_Model_New is
+      --  Get_Sorter is transfer-none whereas Gtk_Tree_List_Row_Sorter_New is
       --  transfer-full on its sorter, so the reference has to be taken
       --  explicitly here. Without it the sorter would be finalised along
-      --  with the sort model, and the demo would crash.
+      --  with the row sorter, and the demo would crash.
       View_Sorter := View.Get_Sorter;
       Ref (View_Sorter);
 
-      Sorted := Gtk_Sort_List_Model_New (+Strings, View_Sorter);
+      --  The sort model sees Gtk_Tree_List_Rows, which the columns' sorters
+      --  know nothing about. Gtk_Tree_List_Row_Sorter unwraps each row and
+      --  sorts every level of the tree among its own siblings, so that
+      --  children stay beneath their parent.
+      Row_Sorter := Gtk_Tree_List_Row_Sorter_New (View_Sorter);
+
+      Sorted := Gtk_Sort_List_Model_New (+Tree, Row_Sorter);
       View.Set_Model (+Gtk_Single_Selection_New (+Sorted));
 
       --  Only now that a sort model is in place does this have any effect.
       View.Sort_By_Column (Language, Sort_Ascending);
+
+      --  Expand one row from the start, so that the indentation is visible
+      --  without having to hunt for an arrow. Get_Child_Row indexes the root
+      --  model, so it is unaffected by the sorting just installed.
+      Root_Row := Tree.Get_Child_Row (0);
+      Root_Row.Set_Expanded (True);
 
       Gtk.Scrolled_Window.Gtk_New (Scrolled);
       Scrolled.Set_Policy (Policy_Automatic, Policy_Automatic);
