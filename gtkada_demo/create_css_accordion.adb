@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,72 +21,98 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gtk.Widget; use Gtk.Widget;
-with Gtk.Button; use Gtk.Button;
-with Gtk.Box; use Gtk.Box;
+with Ada.Directories;
+with Ada.Text_IO;
+
+with Glib.Object;        use Glib.Object;
+with Gtk.Box;            use Gtk.Box;
+with Gtk.Button;         use Gtk.Button;
+with Gtk.Css_Provider;   use Gtk.Css_Provider;
+with Gtk.Enums;          use Gtk.Enums;
+with Gtk.Frame;          use Gtk.Frame;
+with Gtk.Style_Context;  use Gtk.Style_Context;
 with Gtk.Style_Provider; use Gtk.Style_Provider;
-with Gtk.Style_Context; use Gtk.Style_Context;
-with Gtk.Css_Provider; use Gtk.Css_Provider;
-with Ada.Text_IO; use Ada.Text_IO;
-with Glib.Error;
-with Glib;
-with Gtk.Container; use Gtk.Container;
+with Gtk.Widget;         use Gtk.Widget;
 
 package body Create_Css_Accordion is
 
-   package FA is new Forall_User_Data (Gtk_Style_Provider);
+   Css_Filename : constant String := "css_accordion.css";
 
-   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Box : Gtk_Box;
-      Provider : constant Gtk_Css_Provider
-        := Gtk_Css_Provider_New;
-      Error : aliased Glib.Error.GError;
+   Css_Installation_Attempted : Boolean := False;
+   --  The provider is display-wide, so install it only once. Its selectors
+   --  are scoped to the accordion's CSS class and cannot affect other demos.
 
-      procedure Apply_Css
-        (Widget : not null access Gtk.Widget.Gtk_Widget_Record'Class;
-         Provider : Gtk_Style_Provider)
-      is
-      begin
-         Get_Style_Context (Widget).Add_Provider (Provider, Glib.Guint'Last);
+   procedure Install_Css (Widget : not null access Gtk_Widget_Record'Class);
+   --  Load and install the accordion stylesheet. A missing stylesheet is
+   --  non-fatal, matching the behaviour of the main demo stylesheet.
 
-         if Widget.all in Gtk_Container_Record'Class then
-            declare
-               Container : constant Gtk_Container := Gtk_Container (Widget);
-            begin
-               FA.Forall (Container, Apply_Css'Unrestricted_Access, Provider);
-            end;
-         end if;
+   -----------------
+   -- Install_Css --
+   -----------------
 
-      end Apply_Css;
-
+   procedure Install_Css (Widget : not null access Gtk_Widget_Record'Class) is
+      Provider : Gtk_Css_Provider;
    begin
-
-      Gtk_New_Hbox (Box, False, 5);
-      Set_Border_Width (Box, 10);
-      Frame.Add (Box);
-
-      Box.Add (Gtk_Button_New_With_Label ("This"));
-      Box.Add (Gtk_Button_New_With_Label ("is"));
-      Box.Add (Gtk_Button_New_With_Label ("a"));
-      Box.Add (Gtk_Button_New_With_Label ("CSS"));
-      Box.Add (Gtk_Button_New_With_Label ("Accordion"));
-      Box.Add (Gtk_Button_New_With_Label (":-)"));
-
-      if not Provider.Load_From_Path ("./css_accordion.css", Error'Access) then
-         Put_Line ("Failed to load css_accordion.css !");
-         Put_Line (Glib.Error.Get_Message (Error));
+      if Css_Installation_Attempted then
          return;
       end if;
 
-      Apply_Css (Frame, +Provider);
+      Css_Installation_Attempted := True;
 
-      Show_All (Frame);
-   end Run;
+      if not Ada.Directories.Exists (Css_Filename) then
+         Ada.Text_IO.Put_Line
+           (Ada.Text_IO.Standard_Error,
+            "warning: cannot find "
+            & Css_Filename
+            & "; continuing without CSS Accordion styling");
+         return;
+      end if;
+
+      Gtk_New (Provider);
+      Provider.Load_From_Path (Css_Filename);
+      Add_Provider_For_Display
+        (Get_Style_Context (Widget).Get_Display,
+         +Provider,
+         Priority_Application);
+      Unref (Provider);
+   end Install_Css;
+
+   ----------
+   -- Help --
+   ----------
 
    function Help return String is
    begin
       return
-        "This demo showcases the use of CSS for styling in GTK+ 3.x";
+        "This demo showcases CSS transitions and multiple backgrounds in"
+        & " Gtk4. Hover over the buttons to expand the accordion.";
    end Help;
+
+   ---------
+   -- Run --
+   ---------
+
+   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
+      Box          : Gtk_Box;
+      Styled_Frame : Gtk_Frame;
+   begin
+      Gtk_New (Styled_Frame);
+      Styled_Frame.Add_Css_Class ("accordion");
+      Frame.Set_Child (Styled_Frame);
+
+      Gtk_New (Box, Orientation_Horizontal, Spacing => 0);
+      Box.Set_Halign (Align_Center);
+      Box.Set_Valign (Align_Center);
+      Styled_Frame.Set_Child (Box);
+
+      Box.Append (Gtk_Button_New_With_Label ("This"));
+      Box.Append (Gtk_Button_New_With_Label ("Is"));
+      Box.Append (Gtk_Button_New_With_Label ("A"));
+      Box.Append (Gtk_Button_New_With_Label ("CSS"));
+      Box.Append (Gtk_Button_New_With_Label ("Accordion"));
+      Box.Append (Gtk_Button_New_With_Label (":-)"));
+
+      Install_Css (Styled_Frame);
+   end Run;
 
 end Create_Css_Accordion;

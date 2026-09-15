@@ -24,21 +24,22 @@
 with Ada.Directories;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO;
-with Interfaces.C.Strings;
-with System;
 
-with Gdk.Display;
 with Glib;                   use Glib;
+with Glib.Object;            use Glib.Object;
 with Gtk.Application;        use Gtk.Application;
 with Gtk.Application_Window; use Gtk.Application_Window;
 with Gtk.Box;                use Gtk.Box;
 with Gtk.Cell_Renderer_Text; use Gtk.Cell_Renderer_Text;
+with Gtk.Css_Provider;       use Gtk.Css_Provider;
 with Gtk.Enums;              use Gtk.Enums;
 with Gtk.Frame;              use Gtk.Frame;
 with Gtk.Label;              use Gtk.Label;
 with Gtk.List_Store;         use Gtk.List_Store;
 with Gtk.Paned;              use Gtk.Paned;
 with Gtk.Scrolled_Window;    use Gtk.Scrolled_Window;
+with Gtk.Style_Context;      use Gtk.Style_Context;
+with Gtk.Style_Provider;     use Gtk.Style_Provider;
 with Gtk.Tree_Model;         use Gtk.Tree_Model;
 with Gtk.Tree_Selection;     use Gtk.Tree_Selection;
 with Gtk.Tree_View;          use Gtk.Tree_View;
@@ -138,7 +139,7 @@ with Create_Tooltips;
 with Create_Tree_Filter;
 with Create_Tree_View;
 --  with Common; use Common;
---  with Create_Css_Accordion;
+with Create_Css_Accordion;
 --  with Create_Css_Editor;
 --
 --  with Libart_Demo;  use Libart_Demo;
@@ -146,31 +147,6 @@ with Create_Tree_View;
 package body Main_Windows is
 
    Css_Filename : constant String := "gtkada_demo.css";
-
-   Gtk_Style_Provider_Priority_Application : constant Guint := 600;
-
-   function Gtk_Css_Provider_New return System.Address;
-   pragma Import (C, Gtk_Css_Provider_New, "gtk_css_provider_new");
-
-   procedure Gtk_Css_Provider_Load_From_Path
-     (Provider : System.Address;
-      Path     : Interfaces.C.Strings.chars_ptr);
-   pragma Import
-     (C,
-      Gtk_Css_Provider_Load_From_Path,
-      "gtk_css_provider_load_from_path");
-
-   procedure Gtk_Style_Context_Add_Provider_For_Display
-     (Display  : System.Address;
-      Provider : System.Address;
-      Priority : Guint);
-   pragma Import
-     (C,
-      Gtk_Style_Context_Add_Provider_For_Display,
-      "gtk_style_context_add_provider_for_display");
-
-   procedure G_Object_Unref (Object : System.Address);
-   pragma Import (C, G_Object_Unref, "g_object_unref");
 
    procedure Load_Css (Window : Gtk_Application_Window);
    --  Load the demo stylesheet and install it for every widget on Window's
@@ -182,29 +158,23 @@ package body Main_Windows is
    --------------
 
    procedure Load_Css (Window : Gtk_Application_Window) is
-      use Interfaces.C.Strings;
-
-      Path     : chars_ptr;
-      Provider : System.Address;
+      Provider : Gtk_Css_Provider;
    begin
       if not Ada.Directories.Exists (Css_Filename) then
          Ada.Text_IO.Put_Line
            (Ada.Text_IO.Standard_Error,
-            "warning: cannot find " & Css_Filename
+            "warning: cannot find "
+            & Css_Filename
             & "; continuing without custom CSS");
          return;
       end if;
 
-      Provider := Gtk_Css_Provider_New;
-      Path := New_String (Css_Filename);
-      Gtk_Css_Provider_Load_From_Path (Provider, Path);
-      Free (Path);
+      Gtk_New (Provider);
+      Provider.Load_From_Path (Css_Filename);
 
-      Gtk_Style_Context_Add_Provider_For_Display
-        (Gdk.Display.Convert (Window.Get_Display),
-         Provider,
-         Gtk_Style_Provider_Priority_Application);
-      G_Object_Unref (Provider);
+      Add_Provider_For_Display
+        (Window.Get_Display, +Provider, Priority_Application);
+      Unref (Provider);
    end Load_Css;
 
    Label_Column : constant := 0;
@@ -266,6 +236,10 @@ package body Main_Windows is
         ("Color Chooser",
          Create_Color_Chooser.Run'Access,
          Create_Color_Chooser.Help'Access),
+      To_Demo
+        ("CSS Accordion",
+         Create_Css_Accordion.Run'Access,
+         Create_Css_Accordion.Help'Access),
       To_Demo
         ("Custom Widget",
          Create_Custom_Widget.Run'Access,
@@ -371,6 +345,7 @@ package body Main_Windows is
            Integer (Get_Int (Model, Iter, Demo_Column));
       begin
          Demo_Frame.Set_Child (null);
+         Demo_Frame.Set_Label ("");
          if Index in Demos'Range and then Demos (Index).Run /= null then
             Demos (Index).Run (Demo_Frame);
          end if;
@@ -441,6 +416,7 @@ package body Main_Windows is
          Paned.Set_End_Child (Right_Box);
 
          Gtk_New (Demo_Frame);
+         Demo_Frame.Set_Name ("demo-frame");
          Demo_Frame.Set_Vexpand (True);
          Right_Box.Append (Demo_Frame);
 

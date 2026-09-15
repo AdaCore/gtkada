@@ -23,6 +23,5 @@ GtkTreeView *:hover {
 }
 
 #demo-frame {
-   border: 1px solid #d00404;
-   padding: 10px;
+   border: none;
 }
