@@ -22,7 +22,8 @@ procedure Style_Context is
    function Contains (Text, Pattern : String) return Boolean
    is (Ada.Strings.Fixed.Index (Text, Pattern) /= 0);
 
-   procedure Test_Widget_Context with Convention => C;
+   procedure Test_Widget_Context
+   with Convention => C;
 
    -------------------------
    -- Test_Widget_Context --
@@ -50,7 +51,7 @@ procedure Style_Context is
       Context.Add_Class ("temporary-style-class");
       Assert_True (Context.Has_Class ("temporary-style-class"));
       Context.Restore;
-      Assert_True (not Context.Has_Class ("temporary-style-class"));
+      Assert_False (Context.Has_Class ("temporary-style-class"));
 
       Provider.Load_From_String
         ("@define-color gtkada_style_context_test rgb(255, 0, 0);");
