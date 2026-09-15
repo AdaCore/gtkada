@@ -2147,7 +2147,7 @@ end if;"""
         case we also emit the equivalent function form (named
         ``<Type>_<Suffix>``).
         """
-        
+
         def constructor_code(
             call: CodeCall, selfname: str = "Self", guard: str = "", function: bool = False,
             throws: bool = False
@@ -2238,7 +2238,7 @@ end if;"""
             else:
                 adaname = "Gtk_%s" % name  # e.g.  Gtk_New
 
-        selfname = gtkmethod.get_param("self").ada_name() or "Self"      
+        selfname = gtkmethod.get_param("self").ada_name() or "Self"
 
         if self.is_gobject:
             selftype = "%(typename)s_Record'Class" % self._subst
@@ -3194,6 +3194,7 @@ function Address_To_Cb is new Ada.Unchecked_Conversion
 
                 if not bind:
                     sub.name = "Handler"
+                    section.add("--  Callback for this signal:")
                     section.add(
                         Code(
                             sub.profile(pkg=self.pkg, maxlen=69),

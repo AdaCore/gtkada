@@ -72,6 +72,7 @@ package Gtk.Style_Provider is
    -------------
 
    Signal_Gtk_Private_Changed : constant Glib.Signal_Name := "gtk-private-changed";
+   --  Callback for this signal:
    --    procedure Handler (Self : Gtk_Style_Provider)
 
    ----------------

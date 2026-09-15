@@ -1065,6 +1065,8 @@ package Glib.Application is
    --  You can override local_command_line if you need more powerful
    --  capabilities than what is provided here, but this should not normally be
    --  required.
+
+   --  Callback for this signal:
    --    function Handler
    --       (Self    : access Gapplication_Record'Class;
    --        Options : GLib.Variant_Dict) return Glib.Gint

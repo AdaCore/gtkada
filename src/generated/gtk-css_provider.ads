@@ -232,6 +232,8 @@ package Gtk.Css_Provider is
    --  Note that this signal may be emitted at any time as the css provider
    --  may opt to defer parsing parts or all of the input to a later time than
    --  when a loading function was called.
+
+   --  Callback for this signal:
    --    procedure Handler
    --       (Self    : access Gtk_Css_Provider_Record'Class;
    --        Section : Gtk.Css_Section.Gtk_Css_Section;
