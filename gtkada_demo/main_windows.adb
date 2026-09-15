@@ -21,19 +21,25 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Directories;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
+with Ada.Text_IO;
 
 with Glib;                   use Glib;
+with Glib.Object;            use Glib.Object;
 with Gtk.Application;        use Gtk.Application;
 with Gtk.Application_Window; use Gtk.Application_Window;
 with Gtk.Box;                use Gtk.Box;
 with Gtk.Cell_Renderer_Text; use Gtk.Cell_Renderer_Text;
+with Gtk.Css_Provider;       use Gtk.Css_Provider;
 with Gtk.Enums;              use Gtk.Enums;
 with Gtk.Frame;              use Gtk.Frame;
 with Gtk.Label;              use Gtk.Label;
 with Gtk.List_Store;         use Gtk.List_Store;
 with Gtk.Paned;              use Gtk.Paned;
 with Gtk.Scrolled_Window;    use Gtk.Scrolled_Window;
+with Gtk.Style_Context;      use Gtk.Style_Context;
+with Gtk.Style_Provider;     use Gtk.Style_Provider;
 with Gtk.Tree_Model;         use Gtk.Tree_Model;
 with Gtk.Tree_Selection;     use Gtk.Tree_Selection;
 with Gtk.Tree_View;          use Gtk.Tree_View;
@@ -133,12 +139,43 @@ with Create_Tooltips;
 with Create_Tree_Filter;
 with Create_Tree_View;
 --  with Common; use Common;
---  with Create_Css_Accordion;
+with Create_Css_Accordion;
 --  with Create_Css_Editor;
 --
 --  with Libart_Demo;  use Libart_Demo;
 
 package body Main_Windows is
+
+   Css_Filename : constant String := "gtkada_demo.css";
+
+   procedure Load_Css (Window : Gtk_Application_Window);
+   --  Load the demo stylesheet and install it for every widget on Window's
+   --  display. A missing stylesheet is non-fatal so that the demo can still
+   --  be run from a directory where its data files are unavailable.
+
+   --------------
+   -- Load_Css --
+   --------------
+
+   procedure Load_Css (Window : Gtk_Application_Window) is
+      Provider : Gtk_Css_Provider;
+   begin
+      if not Ada.Directories.Exists (Css_Filename) then
+         Ada.Text_IO.Put_Line
+           (Ada.Text_IO.Standard_Error,
+            "warning: cannot find "
+            & Css_Filename
+            & "; continuing without custom CSS");
+         return;
+      end if;
+
+      Gtk_New (Provider);
+      Provider.Load_From_Path (Css_Filename);
+
+      Add_Provider_For_Display
+        (Window.Get_Display, +Provider, Priority_Application);
+      Unref (Provider);
+   end Load_Css;
 
    Label_Column : constant := 0;
    Demo_Column  : constant := 1;
@@ -199,6 +236,10 @@ package body Main_Windows is
         ("Color Chooser",
          Create_Color_Chooser.Run'Access,
          Create_Color_Chooser.Help'Access),
+      To_Demo
+        ("CSS Accordion",
+         Create_Css_Accordion.Run'Access,
+         Create_Css_Accordion.Help'Access),
       To_Demo
         ("Custom Widget",
          Create_Custom_Widget.Run'Access,
@@ -304,6 +345,7 @@ package body Main_Windows is
            Integer (Get_Int (Model, Iter, Demo_Column));
       begin
          Demo_Frame.Set_Child (null);
+         Demo_Frame.Set_Label ("");
          if Index in Demos'Range and then Demos (Index).Run /= null then
             Demos (Index).Run (Demo_Frame);
          end if;
@@ -311,7 +353,7 @@ package body Main_Windows is
          if Index in Demos'Range and then Demos (Index).Help /= null then
             Help_Label.Set_Markup (To_Markup (Demos (Index).Help.all));
          else
-            Help_Label.Set_Text ("");
+            Help_Label.Set_Markup ("No help available");
          end if;
       end;
    end On_Selection_Changed;
@@ -334,6 +376,7 @@ package body Main_Windows is
       Gtk_New (App_Win, Gtk_Application (Self));
       App_Win.Set_Title ("GtkAda Demo");
       App_Win.Set_Default_Size (800, 600);
+      Load_Css (App_Win);
 
       Gtk_New (Paned, Orientation_Horizontal);
       App_Win.Set_Child (Paned);
@@ -373,10 +416,13 @@ package body Main_Windows is
          Paned.Set_End_Child (Right_Box);
 
          Gtk_New (Demo_Frame);
+         Demo_Frame.Set_Name ("demo-frame");
          Demo_Frame.Set_Vexpand (True);
          Right_Box.Append (Demo_Frame);
 
-         Gtk_New (Help_Frame, "Help");
+         --  A titled Gtk_Frame reports inconsistent cross-axis sizes when its
+         --  child wraps. Keep the visible heading in Help_Label's markup.
+         Gtk_New (Help_Frame);
          Gtk_New (Help_Label);
          Help_Label.Set_Wrap (True);
          Help_Label.Set_Xalign (0.0);

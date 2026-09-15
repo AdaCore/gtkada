@@ -1,0 +1,29 @@
+# ============================================================
+#   GtkStyleProvider
+# ============================================================
+
+[[method]]
+id = "::gtk-private-changed"
+bind = false
+#  This signal is private to GTK.
+
+[[extra.spec]]
+text = '''
+
+   subtype Priority is Glib.Guint;
+
+   Priority_Fallback : constant Priority := 1;
+   --  Used when no theme is defined.
+
+   Priority_Theme : constant Priority := 200;
+   --  Used for style information provided by the theme.
+
+   Priority_Settings : constant Priority := 400;
+   --  Used for style information provided via Gtk.Settings.
+
+   Priority_Application : constant Priority := 600;
+   --  Used for application-specific style information.
+
+   Priority_User : constant Priority := 800;
+   --  Used for style information from ~/.config/gtk-4.0/gtk.css.
+       '''

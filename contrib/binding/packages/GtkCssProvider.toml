@@ -1,0 +1,16 @@
+# ============================================================
+#   GtkCssProvider
+# ============================================================
+
+[[method]]
+id = "::parsing-error"
+bind = false
+#  GtkCssSection is not bound yet.
+
+[[method]]
+id = "gtk_css_provider_load_from_data"
+
+[[method.parameter]]
+name = "length"
+ada = ""
+default = "-1"

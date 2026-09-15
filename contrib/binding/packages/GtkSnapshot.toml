@@ -7,11 +7,9 @@
 # is bound here. What remains suppressed with `bind = false` is the
 # Gsk-dependent set: Gsk is not bound at all (there is no
 # contrib/Gsk-4.0.gir), so anything that transitively needs a Gsk render
-# node, transform, path or enum stays out until that binding exists. A
-# handful of deprecated CSS render helpers are additionally suppressed
-# because Gtk.Style_Context is not bound, and two entry points are
-# suppressed because GTK documents them as unavailable to language
-# bindings.
+# node, transform, path or enum stays out until that binding exists. Two
+# entry points are suppressed because GTK documents them as unavailable
+# to language bindings.
 
 # The parent (Gdk.Snapshot) lives in a different .gir file, so the
 # generator cannot resolve its Ada name on its own and emits a bare,
@@ -120,30 +118,6 @@ bind = false  # needs Gsk.Shadow
 [[method]]
 id   = "gtk_snapshot_push_gl_shader"
 bind = false  # needs Gsk.GLShader
-
-# --- Deprecated CSS render helpers: need Gtk.Style_Context ----------------
-# Gtk.Style_Context is not bound in the gtk4 tree ("--Gtk.StyleContext" in
-# data.py), and these entry points are obsolescent (deprecated since 4.10)
-# in any case.
-[[method]]
-id   = "gtk_snapshot_render_background"
-bind = false  # needs Gtk.Style_Context (unbound, deprecated)
-
-[[method]]
-id   = "gtk_snapshot_render_focus"
-bind = false  # needs Gtk.Style_Context (unbound, deprecated)
-
-[[method]]
-id   = "gtk_snapshot_render_frame"
-bind = false  # needs Gtk.Style_Context (unbound, deprecated)
-
-[[method]]
-id   = "gtk_snapshot_render_insertion_cursor"
-bind = false  # needs Gtk.Style_Context (unbound, deprecated)
-
-[[method]]
-id   = "gtk_snapshot_render_layout"
-bind = false  # needs Gtk.Style_Context (unbound, deprecated)
 
 # --- not directly available ----------------------------------------
 # For next methods the documentation says:

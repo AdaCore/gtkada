@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
---               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2026, AdaCore                     --
+--      Copyright (C) 1998-2000 E. Briot, J. Brobecker and A. Charlet       --
+--                     Copyright (C) 2000-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,9 +21,14 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gtk.Frame;  use Gtk.Frame;
+pragma Style_Checks (Off);
+pragma Warnings (Off, "*is already use-visible*");
 
-package Create_Css_Accordion is
-   procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
-   function Help return String;
-end Create_Css_Accordion;
+package body Gtk.Style_Provider is
+
+   function "+" (W : Gtk_Style_Provider) return Gtk_Style_Provider is
+   begin
+      return W;
+   end "+";
+
+end Gtk.Style_Provider;

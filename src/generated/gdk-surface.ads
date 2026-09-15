@@ -461,6 +461,8 @@ package Gdk.Surface is
 
    Signal_Render : constant Glib.Signal_Name := "render";
    --  Emitted when part of the surface needs to be redrawn.
+
+   --  Callback for this signal:
    --    function Handler
    --       (Self   : access Gdk_Surface_Record'Class;
    --        Region : cairo.Region) return Boolean

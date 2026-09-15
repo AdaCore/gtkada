@@ -21,3 +21,7 @@ GtkTreeView *:hover {
 .needs-attention {
    color: red;
 }
+
+#demo-frame {
+   border: none;
+}

@@ -1,0 +1,55 @@
+# ============================================================
+#   GtkStyleContext
+# ============================================================
+
+[[extra.with_spec]]
+pkg = "Gtk.Widget"
+
+[[enum]]
+ctype = "GtkStyleContextPrintFlags"
+
+[[method]]
+id = "gtk_style_context_get_border"
+bind = false
+#  GtkBorder is not bound yet.
+
+[[method]]
+id = "gtk_style_context_get_margin"
+bind = false
+#  GtkBorder is not bound yet.
+
+[[method]]
+id = "gtk_style_context_get_padding"
+bind = false
+#  GtkBorder is not bound yet.
+
+[[method]]
+id = "gtk_style_context_lookup_color"
+return_as_param = "Found"
+
+[extra]
+body = '''
+
+   function Get_Style_Context
+      (Widget : not null access Gtk_Widget_Record'Class)
+       return Gtk_Style_Context
+   is
+      function Internal (Widget : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_style_context");
+      Stub_Gtk_Style_Context : Gtk_Style_Context_Record;
+   begin
+      return Gtk_Style_Context
+        (Get_User_Data (Internal (Get_Object (Widget)),
+                        Stub_Gtk_Style_Context));
+   end Get_Style_Context;
+       '''
+
+[[extra.spec]]
+text = '''
+
+   function Get_Style_Context
+      (Widget : not null access Gtk_Widget_Record'Class)
+       return Gtk_Style_Context;
+   --  Returns the style context associated with Widget.
+   --  The returned context is owned by Widget and must not be freed.
+       '''

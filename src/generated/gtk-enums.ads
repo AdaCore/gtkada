@@ -223,6 +223,36 @@ package Gtk.Enums is
    --  This enumeration may be extended in the future; input methods should
    --  interpret unknown values as "free form".
 
+   type Gtk_Interface_Color_Scheme is (
+      Interface_Color_Scheme_Unsupported,
+      Interface_Color_Scheme_Default,
+      Interface_Color_Scheme_Dark,
+      Interface_Color_Scheme_Light);
+   pragma Convention (C, Gtk_Interface_Color_Scheme);
+   --  Values for the [propertyGtk.Settings:gtk-interface-color-scheme] and
+   --  [propertyGtk.CssProvider:prefers-color-scheme] properties that indicates
+   --  what color scheme is used.
+   --
+   --  This information can be used inside CSS via media queries.
+   --
+   --  More values may be added to this enumeration. Unknown values should be
+   --  treated the same as `GTK_INTERFACE_COLOR_SCHEME_DEFAULT`.
+
+   type Gtk_Interface_Contrast is (
+      Interface_Contrast_Unsupported,
+      Interface_Contrast_No_Preference,
+      Interface_Contrast_More,
+      Interface_Contrast_Less);
+   pragma Convention (C, Gtk_Interface_Contrast);
+   --  Values for the [propertyGtk.Settings:gtk-interface-contrast] and
+   --  [propertyGtk.CssProvider:prefers-contrast] properties that indicates the
+   --  preferred level of contrast.
+   --
+   --  This information can be used inside CSS via media queries.
+   --
+   --  More values may be added to this enumeration. Unknown values should be
+   --  treated the same as `GTK_INTERFACE_CONTRAST_NO_PREFERENCE`.
+
    type Gtk_List_Tab_Behavior is (
       List_Tab_All,
       List_Tab_Item,
@@ -316,6 +346,16 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Propagation_Limit);
    --  Describes limits of a [classEventcontroller] for handling events
    --  targeting other widgets.
+
+   type Gtk_Reduced_Motion is (
+      Reduced_Motion_No_Preference,
+      Reduced_Motion_Reduce);
+   pragma Convention (C, Gtk_Reduced_Motion);
+   --  Values for the [propertyGtk.Settings:gtk-interface-reduced-motion] and
+   --  [propertyGtk.CssProvider:prefers-reduced-motion] properties that
+   --  indicates the preferred level of motion animations.
+   --
+   --  This information can be used inside CSS via media queries.
 
    type Gtk_Event_Sequence_State is (
       Event_Sequence_None,
@@ -634,6 +674,14 @@ package Gtk.Enums is
       new Generic_Internal_Discrete_Property (Gtk_Input_Purpose);
    type Property_Gtk_Input_Purpose is new Gtk_Input_Purpose_Properties.Property;
 
+   package Gtk_Interface_Color_Scheme_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Interface_Color_Scheme);
+   type Property_Gtk_Interface_Color_Scheme is new Gtk_Interface_Color_Scheme_Properties.Property;
+
+   package Gtk_Interface_Contrast_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Interface_Contrast);
+   type Property_Gtk_Interface_Contrast is new Gtk_Interface_Contrast_Properties.Property;
+
    package Gtk_List_Tab_Behavior_Properties is
       new Generic_Internal_Discrete_Property (Gtk_List_Tab_Behavior);
    type Property_Gtk_List_Tab_Behavior is new Gtk_List_Tab_Behavior_Properties.Property;
@@ -677,6 +725,10 @@ package Gtk.Enums is
    package Gtk_Propagation_Limit_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Propagation_Limit);
    type Property_Gtk_Propagation_Limit is new Gtk_Propagation_Limit_Properties.Property;
+
+   package Gtk_Reduced_Motion_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Reduced_Motion);
+   type Property_Gtk_Reduced_Motion is new Gtk_Reduced_Motion_Properties.Property;
 
    package Gtk_Event_Sequence_State_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Event_Sequence_State);
