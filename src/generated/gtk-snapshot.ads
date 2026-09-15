@@ -39,21 +39,23 @@
 --  nodes if the child node is entirely contained within the clip rectangle.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Cairo;            use Cairo;
-with Gdk.Paintable;    use Gdk.Paintable;
-with Gdk.RGBA;         use Gdk.RGBA;
-with Gdk.Snapshot;     use Gdk.Snapshot;
-with Gdk.Texture;      use Gdk.Texture;
-with Glib;             use Glib;
-with Graphene.Matrix;  use Graphene.Matrix;
-with Graphene.Point;   use Graphene.Point;
-with Graphene.Point3d; use Graphene.Point3d;
-with Graphene.Rect;    use Graphene.Rect;
-with Graphene.Size;    use Graphene.Size;
-with Graphene.Vec3;    use Graphene.Vec3;
-with Graphene.Vec4;    use Graphene.Vec4;
-with Interfaces.C;     use Interfaces.C;
-with Pango.Layout;     use Pango.Layout;
+with Cairo;             use Cairo;
+with Gdk.Paintable;     use Gdk.Paintable;
+with Gdk.RGBA;          use Gdk.RGBA;
+with Gdk.Snapshot;      use Gdk.Snapshot;
+with Gdk.Texture;       use Gdk.Texture;
+with Glib;              use Glib;
+with Graphene.Matrix;   use Graphene.Matrix;
+with Graphene.Point;    use Graphene.Point;
+with Graphene.Point3d;  use Graphene.Point3d;
+with Graphene.Rect;     use Graphene.Rect;
+with Graphene.Size;     use Graphene.Size;
+with Graphene.Vec3;     use Graphene.Vec3;
+with Graphene.Vec4;     use Graphene.Vec4;
+with Gtk.Style_Context; use Gtk.Style_Context;
+with Interfaces.C;      use Interfaces.C;
+with Pango.Enums;       use Pango.Enums;
+with Pango.Layout;      use Pango.Layout;
 
 package Gtk.Snapshot is
 
@@ -219,6 +221,94 @@ package Gtk.Snapshot is
    --  @param Bounds the bounds within which to repeat
    --  @param Child_Bounds the bounds of the child or null to use the full
    --  size of the collected child node
+
+   procedure Render_Background
+      (Self    : not null access Gtk_Snapshot_Record;
+       Context : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble);
+   pragma Obsolescent (Render_Background);
+   --  Creates a render node for the CSS background according to Context, and
+   --  appends it to the current node of Snapshot, without changing the current
+   --  node.
+   --  Deprecated since 4.10, 1
+   --  @param Context the style context that defines the background
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
+
+   procedure Render_Focus
+      (Self    : not null access Gtk_Snapshot_Record;
+       Context : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble);
+   pragma Obsolescent (Render_Focus);
+   --  Creates a render node for the focus outline according to Context, and
+   --  appends it to the current node of Snapshot, without changing the current
+   --  node.
+   --  Deprecated since 4.10, 1
+   --  @param Context the style context that defines the focus ring
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
+
+   procedure Render_Frame
+      (Self    : not null access Gtk_Snapshot_Record;
+       Context : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble);
+   pragma Obsolescent (Render_Frame);
+   --  Creates a render node for the CSS border according to Context, and
+   --  appends it to the current node of Snapshot, without changing the current
+   --  node.
+   --  Deprecated since 4.10, 1
+   --  @param Context the style context that defines the frame
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Width rectangle width
+   --  @param Height rectangle height
+
+   procedure Render_Insertion_Cursor
+      (Self      : not null access Gtk_Snapshot_Record;
+       Context   : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       X         : Gdouble;
+       Y         : Gdouble;
+       Layout    : not null access Pango.Layout.Pango_Layout_Record'Class;
+       Index     : Glib.Gint;
+       Direction : Pango.Enums.Direction);
+   pragma Obsolescent (Render_Insertion_Cursor);
+   --  Draws a text caret using Snapshot at the specified index of Layout.
+   --  Deprecated since 4.10, 1
+   --  @param Context a `GtkStyleContext`
+   --  @param X X origin
+   --  @param Y Y origin
+   --  @param Layout the `PangoLayout` of the text
+   --  @param Index the index in the `PangoLayout`
+   --  @param Direction the `PangoDirection` of the text
+
+   procedure Render_Layout
+      (Self    : not null access Gtk_Snapshot_Record;
+       Context : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Layout  : not null access Pango.Layout.Pango_Layout_Record'Class);
+   pragma Obsolescent (Render_Layout);
+   --  Creates a render node for rendering Layout according to the style
+   --  information in Context, and appends it to the current node of Snapshot,
+   --  without changing the current node.
+   --  Deprecated since 4.10, 1
+   --  @param Context the style context that defines the text
+   --  @param X X origin of the rectangle
+   --  @param Y Y origin of the rectangle
+   --  @param Layout the `PangoLayout` to render
 
    procedure Restore (Self : not null access Gtk_Snapshot_Record);
    --  Restores Snapshot to the state saved by a preceding call to

@@ -49,7 +49,7 @@ interfaces = (
     "Gtk.SectionModel",
     "Gtk.SelectionModel",
     "Gtk.ShortcutManager",
-    "--Gtk.StyleProvider",
+    "Gtk.StyleProvider",
     "--Gtk.ToolShell",
     "Gtk.TreeDragDest",
     "Gtk.TreeDragSource",
@@ -389,7 +389,7 @@ binding = (
     "----GtkContainerAccessible",  # We do not support atk
     "----GtkContainerCellAccessible",  # We do not support atk
     "----GtkContainerClass",
-    "--Gtk.CssProvider",
+    "Gtk.CssProvider",
     "--Gtk.CssSection",
     "--Gtk.Dialog",
     "Gtk.DrawingArea",
@@ -587,7 +587,7 @@ binding = (
     "--GtkStatusIcon",
     "--GtkStockItem",
     "--GtkStyle",
-    "--Gtk.StyleContext",
+    "Gtk.StyleContext",
     "--GtkStyleProperties",
     "--Gtk.Switch",
     "----GtkSwitchAccessible",  # We do not support atk

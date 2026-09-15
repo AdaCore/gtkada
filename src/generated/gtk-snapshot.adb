@@ -303,6 +303,126 @@ package body Gtk.Snapshot is
       Internal (Get_Object (Self), Bounds, Child_Bounds);
    end Push_Repeat;
 
+   -----------------------
+   -- Render_Background --
+   -----------------------
+
+   procedure Render_Background
+      (Self    : not null access Gtk_Snapshot_Record;
+       Context : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Context : System.Address;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Width   : Gdouble;
+          Height  : Gdouble);
+      pragma Import (C, Internal, "gtk_snapshot_render_background");
+   begin
+      Internal (Get_Object (Self), Get_Object (Context), X, Y, Width, Height);
+   end Render_Background;
+
+   ------------------
+   -- Render_Focus --
+   ------------------
+
+   procedure Render_Focus
+      (Self    : not null access Gtk_Snapshot_Record;
+       Context : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Context : System.Address;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Width   : Gdouble;
+          Height  : Gdouble);
+      pragma Import (C, Internal, "gtk_snapshot_render_focus");
+   begin
+      Internal (Get_Object (Self), Get_Object (Context), X, Y, Width, Height);
+   end Render_Focus;
+
+   ------------------
+   -- Render_Frame --
+   ------------------
+
+   procedure Render_Frame
+      (Self    : not null access Gtk_Snapshot_Record;
+       Context : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Width   : Gdouble;
+       Height  : Gdouble)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Context : System.Address;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Width   : Gdouble;
+          Height  : Gdouble);
+      pragma Import (C, Internal, "gtk_snapshot_render_frame");
+   begin
+      Internal (Get_Object (Self), Get_Object (Context), X, Y, Width, Height);
+   end Render_Frame;
+
+   -----------------------------
+   -- Render_Insertion_Cursor --
+   -----------------------------
+
+   procedure Render_Insertion_Cursor
+      (Self      : not null access Gtk_Snapshot_Record;
+       Context   : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       X         : Gdouble;
+       Y         : Gdouble;
+       Layout    : not null access Pango.Layout.Pango_Layout_Record'Class;
+       Index     : Glib.Gint;
+       Direction : Pango.Enums.Direction)
+   is
+      procedure Internal
+         (Self      : System.Address;
+          Context   : System.Address;
+          X         : Gdouble;
+          Y         : Gdouble;
+          Layout    : System.Address;
+          Index     : Glib.Gint;
+          Direction : Pango.Enums.Direction);
+      pragma Import (C, Internal, "gtk_snapshot_render_insertion_cursor");
+   begin
+      Internal (Get_Object (Self), Get_Object (Context), X, Y, Get_Object (Layout), Index, Direction);
+   end Render_Insertion_Cursor;
+
+   -------------------
+   -- Render_Layout --
+   -------------------
+
+   procedure Render_Layout
+      (Self    : not null access Gtk_Snapshot_Record;
+       Context : not null access Gtk.Style_Context.Gtk_Style_Context_Record'Class;
+       X       : Gdouble;
+       Y       : Gdouble;
+       Layout  : not null access Pango.Layout.Pango_Layout_Record'Class)
+   is
+      procedure Internal
+         (Self    : System.Address;
+          Context : System.Address;
+          X       : Gdouble;
+          Y       : Gdouble;
+          Layout  : System.Address);
+      pragma Import (C, Internal, "gtk_snapshot_render_layout");
+   begin
+      Internal (Get_Object (Self), Get_Object (Context), X, Y, Get_Object (Layout));
+   end Render_Layout;
+
    -------------
    -- Restore --
    -------------

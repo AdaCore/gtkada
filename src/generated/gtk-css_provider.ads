@@ -50,11 +50,13 @@
 --  [signalGtk.CssProvider::parsing-error] signal.
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;        use Glib;
-with Glib.Bytes;  use Glib.Bytes;
-with Glib.GFile;  use Glib.GFile;
-with Glib.Object; use Glib.Object;
-with Gtk.Enums;   use Gtk.Enums;
+with Glib;               use Glib;
+with Glib.Bytes;         use Glib.Bytes;
+with Glib.GFile;         use Glib.GFile;
+with Glib.Object;        use Glib.Object;
+with Glib.Types;         use Glib.Types;
+with Gtk.Enums;          use Gtk.Enums;
+with Gtk.Style_Provider; use Gtk.Style_Provider;
 
 package Gtk.Css_Provider is
 
@@ -238,6 +240,24 @@ package Gtk.Css_Provider is
    --  Callback parameters:
    --    --  @param Section section the error happened in
    --    --  @param Error The parsing error
+
+   ----------------
+   -- Interfaces --
+   ----------------
+   --  This class implements several interfaces. See Glib.Types
+   --
+   --  - "Gtk.StyleProvider"
+
+   package Implements_Gtk_Style_Provider is new Glib.Types.Implements
+     (Gtk.Style_Provider.Gtk_Style_Provider, Gtk_Css_Provider_Record, Gtk_Css_Provider);
+   function "+"
+     (Widget : access Gtk_Css_Provider_Record'Class)
+   return Gtk.Style_Provider.Gtk_Style_Provider
+   renames Implements_Gtk_Style_Provider.To_Interface;
+   function "-"
+     (Interf : Gtk.Style_Provider.Gtk_Style_Provider)
+   return Gtk_Css_Provider
+   renames Implements_Gtk_Style_Provider.To_Object;
 
 private
    Prefers_Reduced_Motion_Property : constant Gtk.Enums.Property_Gtk_Reduced_Motion :=

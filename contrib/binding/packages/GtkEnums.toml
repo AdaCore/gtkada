@@ -46,6 +46,12 @@ ctype = "GtkInputHints"
 ctype = "GtkInputPurpose"
 
 [[enum]]
+ctype = "GtkInterfaceColorScheme"
+
+[[enum]]
+ctype = "GtkInterfaceContrast"
+
+[[enum]]
 ctype = "GtkListTabBehavior"
 
 [[enum]]
@@ -79,6 +85,9 @@ ctype = "GtkPropagationPhase"
 
 [[enum]]
 ctype = "GtkPropagationLimit"
+
+[[enum]]
+ctype = "GtkReducedMotion"
 
 [[enum]]
 ctype = "GtkEventSequenceState"
