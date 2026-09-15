@@ -257,11 +257,11 @@ package body Gdk.Clipboard is
           Acc_Error     : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gdk_clipboard_read_finish");
       Acc_Error          : aliased Glib.Error.GError;
-      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_Out_Mime_Type  : aliased Gtkada.Types.Chars_Ptr;
       Acc_Out_Mime_Type  : constant access Gtkada.Types.Chars_Ptr := (if Out_Mime_Type /= null then Tmp_Out_Mime_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Out_Mime_Type, Acc_Error'Access);
       if Out_Mime_Type /= null then
@@ -351,9 +351,9 @@ package body Gdk.Clipboard is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gdk_clipboard_read_texture_finish");
       Acc_Error        : aliased Glib.Error.GError;
-      Return_Obj       : Gdk.Texture.Gdk_Texture;
       Stub_Gdk_Texture : Gdk.Texture.Gdk_Texture_Record;
       Tmp_Return       : System.Address;
+      Return_Obj       : Gdk.Texture.Gdk_Texture;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
@@ -397,8 +397,8 @@ package body Gdk.Clipboard is
           Acc_Error : access Glib.Error.GError) return Glib.Values.GValue;
       pragma Import (C, Internal, "gdk_clipboard_read_value_finish");
       Acc_Error  : aliased Glib.Error.GError;
-      Return_Obj : Glib.Values.GValue;
       Tmp_Return : Glib.Values.GValue;
+      Return_Obj : Glib.Values.GValue;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;

@@ -981,11 +981,10 @@ class SubprogramProfile(object):
         for p in self.params:
             p.default = None
 
-    def _add_error_checks(
+    def _build_return_stmt(
         self,
         cname: str,
         subp_call: CodeCall,
-        local_vars: list[Local_Var],
     ) -> list[str]:
         """
         Check for function or procedure return values.
@@ -993,11 +992,8 @@ class SubprogramProfile(object):
         and wrap in error checks if necessary.
         """
 
-        # Check subp_call structure for setup code
-        subp_code = subp_call.precall
-        if subp_call.call:
-            subp_code.append (subp_call.call.rstrip(';') + ';')
-        subp_code += subp_call.postcall
+        tmpvars  = subp_call.tmpvars # Dangerous
+        ret_stmt = []
 
         ret_as_param = self.gtkmethod.return_as_param() if self.gtkmethod else None
         returnval = self.returns
@@ -1009,18 +1005,16 @@ class SubprogramProfile(object):
             ), "Must have a return value in %s => %s" % (cname, subp_call)
             assign_return = f"{ret_as_param} := {subp_call.returnvar};"
             if self.throws:
-                subp_code += [
+                ret_stmt += [
                     "if Error = null then",
                     assign_return,
                     "end if;"
                 ]
             else:
-                subp_code.append (assign_return)
-            subp_code += subp_call.freecall
+                ret_stmt.append (assign_return)
+
         # function: add a return statement
         elif subp_call.returnvar:
-
-            subp_code += subp_call.freecall
             # Abort early if an error is reported
             # without writing to the return value
 
@@ -1031,11 +1025,11 @@ class SubprogramProfile(object):
                     var_return = "Return_Obj"
                     assign_return = f"{var_return} := {subp_call.returnvar};"
 
-                    local_vars.append(Local_Var(name=var_return,
-                                                type=returnval.ada,
-                                                default=returnval.null_name()))
+                    tmpvars.append(Local_Var(name=var_return,
+                                             type=returnval.ada,
+                                             default=returnval.null_name()))
 
-                    subp_code += ["if Error = null then",
+                    ret_stmt += ["if Error = null then",
                                 assign_return,
                                 "end if;",
                                 f"return {var_return};"]
@@ -1056,7 +1050,7 @@ class SubprogramProfile(object):
                         # This might get complicated if a subprogram takes multiple string inputs
                         tmp_return = subp_call.tmpvars[-1].name
                         cleanup = cleanup_func % tmp_return
-                        subp_code += [
+                        ret_stmt += [
                                 "if Error = null then",
                                 f"return {subp_call.returnvar};",
                                 "else",
@@ -1065,7 +1059,7 @@ class SubprogramProfile(object):
                                 "end if;"
                             ]
                     else:
-                        subp_code += [
+                        ret_stmt += [
                             'return',
                             '(if Error = null then',
                             subp_call.returnvar,
@@ -1076,7 +1070,7 @@ class SubprogramProfile(object):
                 elif isinstance(returnval, Interface):
                     # This relies on the interface generate method emitting this:
                     # Null_{typename} : constant {typename} := {typename} (Null_Interface);
-                    subp_code += [
+                    ret_stmt += [
                         'return',
                         '(if Error = null then',
                         subp_call.returnvar,
@@ -1087,15 +1081,13 @@ class SubprogramProfile(object):
                 else:
                     # Emit incorrect code FOR NOW
                     return_stmt = f"return {subp_call.returnvar}; -- FIXME"
-                    subp_code.append (return_stmt)
+                    ret_stmt.append (return_stmt)
 
             else:
                 return_stmt = f"return {subp_call.returnvar};"
-                subp_code.append (return_stmt)
-        else:
-            subp_code += subp_call.freecall
+                ret_stmt.append (return_stmt)
 
-        return subp_code
+        return ret_stmt
 
     def subprogram(
         self,
@@ -1751,8 +1743,10 @@ class GIRClass(object):
                 values=internal_values,
             )
 
-            subp_code = profile._add_error_checks(cname, execute, local_vars)
+            ret_stmt = profile._build_return_stmt(cname, execute)
             local_vars += execute.tmpvars
+            subp_call = [execute.call + ';'] if execute.call else []
+            subp_code = execute.precall + subp_call + execute.postcall + execute.freecall + ret_stmt
 
         subp = profile.subprogram(
             name=adaname, showdoc=showdoc, local_vars=local_vars, code=subp_code
@@ -2198,7 +2192,7 @@ end if;"""
         c: GIRNode,
         cname: str,
         gtkmethod: GtkAdaMethod,
-        profile: Optional[SubprogramProfile] = None,
+        profile: SubprogramProfile,
     ):
         """Emit the Ada constructors for a single GIR ``<constructor>``
         node. For ``GObject``-derived types we emit a ``Gtk_New``
@@ -2253,7 +2247,71 @@ end if;"""
 
             return body
 
-        assert profile is None or isinstance(profile, SubprogramProfile)
+
+        def to_constructor(
+            name: str,
+            profile: SubprogramProfile,
+            internal: CodeCall,
+            extra_params: list[Parameter] = [],
+            extra_locals: list[Local_Var] = [],
+            returns: Optional[CType] = None,
+            selfname: str = "Self",
+            guard: str = "",
+            extra_doc: str = "",
+        ) -> Subprogram:
+            """
+            Build constructor with necessary checks and overrides
+            """
+            constructor = ""
+            if internal.returnvar:
+                if self.is_gobject:
+                    constructor = "Set_Object (%s, %s);" % (selfname, internal.returnvar)
+                elif self.is_boxed:
+                    constructor = "%s.Set_Object (%s);" % (selfname, internal.returnvar)
+                else:
+                    constructor = "%s := %s;" % (selfname, internal.returnvar)
+
+            body = internal.precall
+            if internal.call is not None:
+                body.append (internal.call.rstrip(';') + ';')
+            body += internal.postcall
+            if constructor:
+                body.append(constructor)
+            if guard:
+                body = ["if %s then" % guard] + body + ["end if;"]
+
+            new_profile = copy.deepcopy(profile)
+            new_profile.params = extra_params + (new_profile.params or [])
+            new_profile.returns = returns
+            if isinstance(returns, AdaType):
+                # Override Python class so that _build_return_stmt can parse
+                if self.is_gobject or self.is_boxed:
+                    new_profile.returns = GObject(returns.ada)
+                elif self.is_proxy:
+                    new_profile.returns = Proxy(returns.ada)
+                elif self.is_interface:
+                    new_profile.returns = Interface(returns.ada)
+                else:
+                    new_profile.returns = CType (returns.ada, None)
+                
+            if extra_doc != "":
+                new_profile.doc += ["\n" + extra_doc]
+            new_call = internal._replace(returnvar=selfname if returns else '')
+            ret_stmt: list[str] = new_profile._build_return_stmt(cname, new_call)
+
+            body += internal.freecall
+            body += ret_stmt
+
+            subp = Subprogram(name=name,
+                              code=body,
+                              plist=new_profile.params,
+                              local_vars=extra_locals + internal.tmpvars,
+                              returns=returns,
+                              doc=new_profile.doc
+            )
+            return subp
+
+        assert isinstance(profile, SubprogramProfile)
 
         section = self.pkg.section("Constructors")
         name = c.get("name").title()
@@ -2269,11 +2327,12 @@ end if;"""
             self._subst["params"] = ""
             self._subst["internal_params"] = ""
 
+        selftypename = "%(typename)s" % self._subst
         if self.is_gobject or self.is_boxed:
             profile.returns = AdaType("System.Address", pkg=self.pkg, in_spec=False)
         else:
             profile.returns = AdaType(
-                "%(typename)s" % self._subst, pkg=self.pkg, in_spec=False
+                selftypename, pkg=self.pkg, in_spec=False
             )
 
         local_vars = []
@@ -2306,39 +2365,36 @@ end if;"""
         if self.is_gobject:
             selftype = "%(typename)s_Record'Class" % self._subst
         else:
-            selftype = "%(typename)s" % self._subst
+            selftype = selftypename
 
         if self.is_gobject:
             filtered_params = [p for p in profile.params if p.ada_binding]
+            profile.params = filtered_params
 
             initialize_name = adaname.replace(
                 gtk_new_prefix, "%s.Initialize" % self.pkg.name
             )
-
             initialize_params = [
                 Parameter(
                     name=selfname,
                     type=AdaType(selftype, pkg=self.pkg, in_spec=True),
                     mode="not null access",
                 )
-            ] + filtered_params
-
-            init_doc = profile.doc + [
-                    (
-                        "\n%s does nothing if the object was already"
-                        + " created with another call to Initialize* or G_New."
-                    )
-                    % (base_name(initialize_name),)
-                ]
-            initialize = Subprogram(
+            ]
+            init_doc: str = (
+                base_name(initialize_name)
+                + " does nothing if the object was already"
+                + " created with another call to Initialize* or G_New."
+            )
+            initialize = to_constructor(
                 name=initialize_name,
-                plist=initialize_params,
-                local_vars=local_vars + call.tmpvars,
-                doc=init_doc,
-                code=constructor_code(
-                    call, selfname=selfname, guard="not %s.Is_Created" % selfname,
-                    throws=profile.throws
-                ),
+                selfname=selfname,
+                profile=profile,
+                internal=call,
+                extra_params=initialize_params,
+                extra_locals=local_vars,
+                guard="not %s.Is_Created" % selfname,
+                extra_doc=init_doc
             ).add_nested(internal)
 
             call = initialize.call(in_pkg=self.pkg)
@@ -2346,44 +2402,38 @@ end if;"""
 
             naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
             allocation = selfname + " := new %(typename)s_Record;" % self._subst
-            gtk_new = Subprogram(
+            new_call = call._replace(precall=call.precall + [allocation])
+            gtk_new = to_constructor(
                 name=adaname,
-                plist=[
+                selfname=selfname,
+                profile=profile,
+                internal=new_call,
+                extra_params=[
                     Parameter(
                         name=selfname,
-                        type=AdaType(
-                            "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
-                        ),
+                        type=GObject(selftypename),
                         mode="out",
                     )
-                ]
-                + filtered_params,
-                local_vars=call.tmpvars,
-                code=[allocation, call.code()],
-                doc=profile.doc,
+                ],
             )
-
             section.add(gtk_new)
             section.add(initialize)
 
             # Gtk_New as a function
-            gtk_new = Subprogram(
-                name="%s_%s" % (self._subst["typename"], name),
-                returns=AdaType(
-                    "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
-                ),
-                plist=filtered_params,
-                local_vars=call.tmpvars
-                + [
+            new_call = call._replace(returnvar=selfname)
+            gtk_new = to_constructor(
+                name="%s_%s" % (selftypename, name),
+                selfname=selfname,
+                profile=profile,
+                internal=new_call,
+                returns=AdaType(selftypename, in_spec=True, pkg=self.pkg),
+                extra_locals=[
                     Local_Var(
                         selfname,
                         "constant %(typename)s" % self._subst,
                         "new %(typename)s_Record" % self._subst,
                     )
                 ],
-                code=constructor_code(call, selfname=selfname, function=True,
-                    throws=profile.throws),
-                doc=profile.doc,
             )
             section.add(gtk_new)
 
@@ -2394,7 +2444,7 @@ end if;"""
                     Parameter(
                         name=selfname,
                         type=AdaType(
-                            "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
+                            selftypename, pkg=self.pkg, in_spec=True
                         ),
                         mode="out",
                     )
@@ -2411,16 +2461,15 @@ end if;"""
 
             # Now as a function
             gtk_new = Subprogram(
-                name="%s_%s" % (self._subst["typename"], name),
+                name="%s_%s" % (selftypename, name),
                 returns=AdaType(
-                    "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
+                    selftypename, pkg=self.pkg, in_spec=True
                 ),
                 plist=profile.params,
                 local_vars=local_vars
                 + call.tmpvars
                 + [Local_Var(selfname, "%(typename)s" % self._subst)],
-                code=constructor_code(call, selfname=selfname, function=True,
-                    throws=profile.throws),
+                code=constructor_code(call, selfname=selfname,function=True),
                 doc=profile.doc,
             )
             gtk_new.add_nested(internal)
@@ -2434,15 +2483,14 @@ end if;"""
                     Parameter(
                         name=selfname,
                         type=AdaType(
-                            "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
+                            selftypename, pkg=self.pkg, in_spec=True
                         ),
                         mode="out",
                     )
                 ]
                 + profile.params,
                 local_vars=local_vars + call.tmpvars,
-                code=constructor_code(call, selfname=selfname,
-                    throws=profile.throws),
+                code=constructor_code(call, selfname=selfname),
                 doc=profile.doc,
             )
             gtk_new.add_nested(internal)
@@ -2450,16 +2498,15 @@ end if;"""
 
             # Now as a function
             gtk_new = Subprogram(
-                name="%s_%s" % (self._subst["typename"], name),
+                name="%s_%s" % (selftypename, name),
                 returns=AdaType(
-                    "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
+                    selftypename, pkg=self.pkg, in_spec=True
                 ),
                 plist=profile.params,
                 local_vars=local_vars
                 + call.tmpvars
-                + [Local_Var(selfname, "%(typename)s" % self._subst)],
-                code=constructor_code(call, selfname=selfname, function=True,
-                    throws=profile.throws),
+                + [Local_Var(selfname, selftypename)],
+                code=constructor_code(call, selfname=selfname,function=True),
                 doc=profile.doc,
             )
             gtk_new.add_nested(internal)

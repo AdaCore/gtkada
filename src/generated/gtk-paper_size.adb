@@ -311,9 +311,7 @@ package body Gtk.Paper_Size is
          else New_String (Group_Name));
       Tmp_Return := Internal (Key_File, Tmp_Group_Name, Acc_Error'Access);
       Error := Acc_Error;
-      if Error = null then
-         Self.Set_Object (Tmp_Return);
-      end if;
+      Self.Set_Object (Tmp_Return);
       Free (Tmp_Group_Name);
       return Self;
    end Gtk_Paper_Size_New_From_Key_File;

@@ -340,8 +340,8 @@ package body Gtk.Text_Iter is
       Iter := Acc_Iter;
       Match_Start := Acc_Match_Start;
       Match_End := Acc_Match_End;
-      Result := Tmp_Return /= 0;
       Free (Tmp_Str);
+      Result := Tmp_Return /= 0;
    end Backward_Search;
 
    -----------------------------
@@ -902,8 +902,8 @@ package body Gtk.Text_Iter is
       Iter := Acc_Iter;
       Match_Start := Acc_Match_Start;
       Match_End := Acc_Match_End;
-      Result := Tmp_Return /= 0;
       Free (Tmp_Str);
+      Result := Tmp_Return /= 0;
    end Forward_Search;
 
    --------------------------

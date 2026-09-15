@@ -318,11 +318,11 @@ package body Gdk.GLTexture is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_loadable_icon_load");
       Acc_Error          : aliased Glib.Error.GError;
-      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
       Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
    begin
       Tmp_Return := Internal (Get_Object (Self), Size, Acc_The_Type, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       if The_Type /= null then
@@ -353,11 +353,11 @@ package body Gdk.GLTexture is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_loadable_icon_load_finish");
       Acc_Error          : aliased Glib.Error.GError;
-      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
       Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
    begin
       Tmp_Return := Internal (Get_Object (Self), Res, Acc_The_Type, Acc_Error'Access);
       if The_Type /= null then

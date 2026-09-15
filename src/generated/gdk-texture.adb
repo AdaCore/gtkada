@@ -178,10 +178,14 @@ package body Gdk.Texture is
       (Bytes : Glib.Bytes.Gbytes;
        Error : out Glib.Error.GError) return Gdk_Texture
    is
-      Self : constant Gdk_Texture := new Gdk_Texture_Record;
+      Self       : constant Gdk_Texture := new Gdk_Texture_Record;
+      Return_Obj : Gdk_Texture;
    begin
       Gdk.Texture.Initialize_From_Bytes (Self, Bytes, Error);
-      return Self;
+      if Error = null then
+         Return_Obj := Self;
+      end if;
+      return Return_Obj;
    end Gdk_Texture_New_From_Bytes;
 
    -------------------------------
@@ -192,10 +196,14 @@ package body Gdk.Texture is
       (File  : Glib.GFile.Gfile;
        Error : out Glib.Error.GError) return Gdk_Texture
    is
-      Self : constant Gdk_Texture := new Gdk_Texture_Record;
+      Self       : constant Gdk_Texture := new Gdk_Texture_Record;
+      Return_Obj : Gdk_Texture;
    begin
       Gdk.Texture.Initialize_From_File (Self, File, Error);
-      return Self;
+      if Error = null then
+         Return_Obj := Self;
+      end if;
+      return Return_Obj;
    end Gdk_Texture_New_From_File;
 
    -----------------------------------
@@ -206,10 +214,14 @@ package body Gdk.Texture is
       (Path  : UTF8_String;
        Error : out Glib.Error.GError) return Gdk_Texture
    is
-      Self : constant Gdk_Texture := new Gdk_Texture_Record;
+      Self       : constant Gdk_Texture := new Gdk_Texture_Record;
+      Return_Obj : Gdk_Texture;
    begin
       Gdk.Texture.Initialize_From_Filename (Self, Path, Error);
-      return Self;
+      if Error = null then
+         Return_Obj := Self;
+      end if;
+      return Return_Obj;
    end Gdk_Texture_New_From_Filename;
 
    -----------------------------------
@@ -261,9 +273,7 @@ package body Gdk.Texture is
       if not Self.Is_Created then
          Tmp_Return := Internal (Get_Object (Bytes), Acc_Error'Access);
          Error := Acc_Error;
-         if Error = null then
-            Set_Object (Self, Tmp_Return);
-         end if;
+         Set_Object (Self, Tmp_Return);
       end if;
    end Initialize_From_Bytes;
 
@@ -287,9 +297,7 @@ package body Gdk.Texture is
       if not Self.Is_Created then
          Tmp_Return := Internal (File, Acc_Error'Access);
          Error := Acc_Error;
-         if Error = null then
-            Set_Object (Self, Tmp_Return);
-         end if;
+         Set_Object (Self, Tmp_Return);
       end if;
    end Initialize_From_File;
 
@@ -314,9 +322,7 @@ package body Gdk.Texture is
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_Path, Acc_Error'Access);
          Error := Acc_Error;
-         if Error = null then
-            Set_Object (Self, Tmp_Return);
-         end if;
+         Set_Object (Self, Tmp_Return);
       end if;
       Free (Tmp_Path);
    end Initialize_From_Filename;
@@ -634,11 +640,11 @@ package body Gdk.Texture is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_loadable_icon_load");
       Acc_Error          : aliased Glib.Error.GError;
-      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
       Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
    begin
       Tmp_Return := Internal (Get_Object (Self), Size, Acc_The_Type, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       if The_Type /= null then
@@ -669,11 +675,11 @@ package body Gdk.Texture is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_loadable_icon_load_finish");
       Acc_Error          : aliased Glib.Error.GError;
-      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_The_Type       : aliased Gtkada.Types.Chars_Ptr;
       Acc_The_Type       : constant access Gtkada.Types.Chars_Ptr := (if The_Type /= null then Tmp_The_Type'Access else null);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
    begin
       Tmp_Return := Internal (Get_Object (Self), Res, Acc_The_Type, Acc_Error'Access);
       if The_Type /= null then
