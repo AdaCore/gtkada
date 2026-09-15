@@ -296,13 +296,13 @@ package body Gtk.Window is
    ---------------
 
    function Get_Group
-      (Self : not null access Gtk_Window_Record) return Gtk_Window_Group
+      (Self : access Gtk_Window_Record'Class) return Gtk_Window_Group
    is
       function Internal (Self : System.Address) return System.Address;
       pragma Import (C, Internal, "gtk_window_get_group");
       Stub_Gtk_Window_Group : Gtk_Window_Group_Record;
    begin
-      return Gtk.Window.Gtk_Window_Group (Get_User_Data (Internal (Get_Object (Self)), Stub_Gtk_Window_Group));
+      return Gtk.Window.Gtk_Window_Group (Get_User_Data (Internal (Get_Object_Or_Null (GObject (Self))), Stub_Gtk_Window_Group));
    end Get_Group;
 
    ------------------------------

@@ -123,11 +123,11 @@ package body Glib.Cancellable is
    -- Cancel --
    ------------
 
-   procedure Cancel (Self : not null access Gcancellable_Record) is
+   procedure Cancel (Self : access Gcancellable_Record'Class) is
       procedure Internal (Self : System.Address);
       pragma Import (C, Internal, "g_cancellable_cancel");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object_Or_Null (GObject (Self)));
    end Cancel;
 
    -------------
@@ -135,15 +135,15 @@ package body Glib.Cancellable is
    -------------
 
    function Connect
-      (Self              : not null access Gcancellable_Record;
+      (Self              : access Gcancellable_Record'Class;
        Callback          : Gcallback;
        Data_Destroy_Func : Glib.G_Destroy_Notify_Address) return Gulong
    is
    begin
       if Callback = null then
-         return C_G_Cancellable_Connect (Get_Object (Self), System.Null_Address, System.Null_Address, Data_Destroy_Func);
+         return C_G_Cancellable_Connect (Get_Object_Or_Null (GObject (Self)), System.Null_Address, System.Null_Address, Data_Destroy_Func);
       else
-         return C_G_Cancellable_Connect (Get_Object (Self), Internal_Gcallback'Address, To_Address (Callback), Data_Destroy_Func);
+         return C_G_Cancellable_Connect (Get_Object_Or_Null (GObject (Self)), Internal_Gcallback'Address, To_Address (Callback), Data_Destroy_Func);
       end if;
    end Connect;
 
@@ -173,7 +173,7 @@ package body Glib.Cancellable is
       -------------
 
       function Connect
-         (Self              : not null access Glib.Cancellable.Gcancellable_Record'Class;
+         (Self              : access Glib.Cancellable.Gcancellable_Record'Class;
           Callback          : Gcallback;
           Data              : User_Data_Type;
           Data_Destroy_Func : Glib.G_Destroy_Notify_Address) return Gulong
@@ -181,10 +181,10 @@ package body Glib.Cancellable is
          D : System.Address;
       begin
          if Callback = null then
-            return C_G_Cancellable_Connect (Get_Object (Self), System.Null_Address, System.Null_Address, Data_Destroy_Func);
+            return C_G_Cancellable_Connect (Get_Object_Or_Null (GObject (Self)), System.Null_Address, System.Null_Address, Data_Destroy_Func);
          else
             D := Users.Build (To_Address (Callback), Data);
-            return C_G_Cancellable_Connect (Get_Object (Self), Internal_Cb'Address, D, Data_Destroy_Func);
+            return C_G_Cancellable_Connect (Get_Object_Or_Null (GObject (Self)), Internal_Cb'Address, D, Data_Destroy_Func);
          end if;
       end Connect;
 
@@ -205,13 +205,13 @@ package body Glib.Cancellable is
    ----------------
 
    procedure Disconnect
-      (Self       : not null access Gcancellable_Record;
+      (Self       : access Gcancellable_Record'Class;
        Handler_Id : Gulong)
    is
       procedure Internal (Self : System.Address; Handler_Id : Gulong);
       pragma Import (C, Internal, "g_cancellable_disconnect");
    begin
-      Internal (Get_Object (Self), Handler_Id);
+      Internal (Get_Object_Or_Null (GObject (Self)), Handler_Id);
    end Disconnect;
 
    ------------
@@ -219,12 +219,12 @@ package body Glib.Cancellable is
    ------------
 
    function Get_Fd
-      (Self : not null access Gcancellable_Record) return Glib.Gint
+      (Self : access Gcancellable_Record'Class) return Glib.Gint
    is
       function Internal (Self : System.Address) return Glib.Gint;
       pragma Import (C, Internal, "g_cancellable_get_fd");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object_Or_Null (GObject (Self)));
    end Get_Fd;
 
    ------------------
@@ -232,56 +232,56 @@ package body Glib.Cancellable is
    ------------------
 
    function Is_Cancelled
-      (Self : not null access Gcancellable_Record) return Boolean
+      (Self : access Gcancellable_Record'Class) return Boolean
    is
       function Internal (Self : System.Address) return Glib.Gboolean;
       pragma Import (C, Internal, "g_cancellable_is_cancelled");
    begin
-      return Internal (Get_Object (Self)) /= 0;
+      return Internal (Get_Object_Or_Null (GObject (Self))) /= 0;
    end Is_Cancelled;
 
    -----------------
    -- Pop_Current --
    -----------------
 
-   procedure Pop_Current (Self : not null access Gcancellable_Record) is
+   procedure Pop_Current (Self : access Gcancellable_Record'Class) is
       procedure Internal (Self : System.Address);
       pragma Import (C, Internal, "g_cancellable_pop_current");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object_Or_Null (GObject (Self)));
    end Pop_Current;
 
    ------------------
    -- Push_Current --
    ------------------
 
-   procedure Push_Current (Self : not null access Gcancellable_Record) is
+   procedure Push_Current (Self : access Gcancellable_Record'Class) is
       procedure Internal (Self : System.Address);
       pragma Import (C, Internal, "g_cancellable_push_current");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object_Or_Null (GObject (Self)));
    end Push_Current;
 
    ----------------
    -- Release_Fd --
    ----------------
 
-   procedure Release_Fd (Self : not null access Gcancellable_Record) is
+   procedure Release_Fd (Self : access Gcancellable_Record'Class) is
       procedure Internal (Self : System.Address);
       pragma Import (C, Internal, "g_cancellable_release_fd");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object_Or_Null (GObject (Self)));
    end Release_Fd;
 
    -----------
    -- Reset --
    -----------
 
-   procedure Reset (Self : not null access Gcancellable_Record) is
+   procedure Reset (Self : access Gcancellable_Record'Class) is
       procedure Internal (Self : System.Address);
       pragma Import (C, Internal, "g_cancellable_reset");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object_Or_Null (GObject (Self)));
    end Reset;
 
    ----------------------------
@@ -289,7 +289,7 @@ package body Glib.Cancellable is
    ----------------------------
 
    function Set_Error_If_Cancelled
-      (Self  : not null access Gcancellable_Record;
+      (Self  : access Gcancellable_Record'Class;
        Error : out Glib.Error.GError) return Boolean
    is
       function Internal
@@ -299,7 +299,7 @@ package body Glib.Cancellable is
       Acc_Error  : aliased Glib.Error.GError;
       Tmp_Return : Glib.Gboolean;
    begin
-      Tmp_Return := Internal (Get_Object (Self), Acc_Error'Access);
+      Tmp_Return := Internal (Get_Object_Or_Null (GObject (Self)), Acc_Error'Access);
       Error := Acc_Error;
       return Tmp_Return /= 0;
    end Set_Error_If_Cancelled;
@@ -309,12 +309,12 @@ package body Glib.Cancellable is
    ----------------
 
    function Source_New
-      (Self : not null access Gcancellable_Record) return Glib.Main.G_Source
+      (Self : access Gcancellable_Record'Class) return Glib.Main.G_Source
    is
       function Internal (Self : System.Address) return Glib.Main.G_Source;
       pragma Import (C, Internal, "g_cancellable_source_new");
    begin
-      return Internal (Get_Object (Self));
+      return Internal (Get_Object_Or_Null (GObject (Self)));
    end Source_New;
 
    -----------------

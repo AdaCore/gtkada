@@ -4,6 +4,15 @@
 
 [extra]
 
+# Pango.Font_Family withs Pango.Font_Face, so the full view can only be
+# had in the body.
+[[extra.with_spec]]
+pkg = "Pango.Font_Family"
+limited = true
+
+[[extra.with_body]]
+pkg = "Pango.Font_Family"
+
 [[extra.type]]
 ctype = "Pango_Font_Face_Array"
 ada = "Pango_Font_Face_Array"
@@ -11,11 +20,6 @@ text = '''
 
          type Pango_Font_Face_Array is array (Natural range <>) of Pango_Font_Face;
        '''
-
-[[method]]
-id = "pango_font_face_get_family"
-bind = false
-# circular dependency
 
 [[method]]
 id = "pango_font_face_list_sizes"

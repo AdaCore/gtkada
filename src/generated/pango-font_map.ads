@@ -75,7 +75,7 @@ package Pango.Font_Map is
        return Pango.Context.Pango_Context;
    --  Creates a Pango.Context.Pango_Context connected to Fontmap. This is
    --  equivalent to Pango.Context.Gdk_New followed by
-   --  pango_context_set_font_map.
+   --  Pango.Context.Set_Font_Map.
    --  If you are using Pango as part of a higher-level system, that system
    --  may have it's own way of create a Pango.Context.Pango_Context. For
    --  instance, the GTK+ toolkit has, among others,

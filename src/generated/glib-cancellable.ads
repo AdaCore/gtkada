@@ -84,7 +84,7 @@ package Glib.Cancellable is
    -- Methods --
    -------------
 
-   procedure Cancel (Self : not null access Gcancellable_Record);
+   procedure Cancel (Self : access Gcancellable_Record'Class);
    --  Will set Cancellable to cancelled, and will emit the
    --  Glib.Cancellable.Gcancellable::cancelled signal. (However, see the
    --  warning about race conditions in the documentation for that signal if
@@ -101,7 +101,7 @@ package Glib.Cancellable is
    --  application returns to the main loop.
 
    function Connect
-      (Self              : not null access Gcancellable_Record;
+      (Self              : access Gcancellable_Record'Class;
        Callback          : Gcallback;
        Data_Destroy_Func : Glib.G_Destroy_Notify_Address) return Gulong;
    --  Convenience function to connect to the
@@ -140,7 +140,7 @@ package Glib.Cancellable is
       --  Use G_CALLBACK to cast the callback function to a Gcallback.
 
       function Connect
-         (Self              : not null access Glib.Cancellable.Gcancellable_Record'Class;
+         (Self              : access Glib.Cancellable.Gcancellable_Record'Class;
           Callback          : Gcallback;
           Data              : User_Data_Type;
           Data_Destroy_Func : Glib.G_Destroy_Notify_Address) return Gulong;
@@ -169,7 +169,7 @@ package Glib.Cancellable is
    end Connect_User_Data;
 
    procedure Disconnect
-      (Self       : not null access Gcancellable_Record;
+      (Self       : access Gcancellable_Record'Class;
        Handler_Id : Gulong);
    --  Disconnects a handler from a cancellable instance similar to
    --  g_signal_handler_disconnect. Additionally, in the event that a signal
@@ -186,7 +186,7 @@ package Glib.Cancellable is
    --  @param Handler_Id Handler id of the handler to be disconnected, or `0`.
 
    function Get_Fd
-      (Self : not null access Gcancellable_Record) return Glib.Gint;
+      (Self : access Gcancellable_Record'Class) return Glib.Gint;
    --  Gets the file descriptor for a cancellable job. This can be used to
    --  implement cancellable operations on Unix systems. The returned fd will
    --  turn readable when Cancellable is cancelled.
@@ -201,16 +201,16 @@ package Glib.Cancellable is
    --  supported, or on errors.
 
    function Is_Cancelled
-      (Self : not null access Gcancellable_Record) return Boolean;
+      (Self : access Gcancellable_Record'Class) return Boolean;
    --  Checks if a cancellable job has been cancelled.
    --  @return True if Cancellable is cancelled, FALSE if called with null or
    --  if item is not cancelled.
 
-   procedure Pop_Current (Self : not null access Gcancellable_Record);
+   procedure Pop_Current (Self : access Gcancellable_Record'Class);
    --  Pops Cancellable off the cancellable stack (verifying that Cancellable
    --  is on the top of the stack).
 
-   procedure Push_Current (Self : not null access Gcancellable_Record);
+   procedure Push_Current (Self : access Gcancellable_Record'Class);
    --  Pushes Cancellable onto the cancellable stack. The current cancellable
    --  can then be received using Glib.Cancellable.Get_Current.
    --  This is useful when implementing cancellable operations in code that
@@ -218,7 +218,7 @@ package Glib.Cancellable is
    --  This is typically called automatically by e.g. Glib.GFile.Gfile
    --  operations, so you rarely have to call this yourself.
 
-   procedure Release_Fd (Self : not null access Gcancellable_Record);
+   procedure Release_Fd (Self : access Gcancellable_Record'Class);
    --  Releases a resources previously allocated by Glib.Cancellable.Get_Fd or
    --  g_cancellable_make_pollfd.
    --  For compatibility reasons with older releases, calling this function is
@@ -229,7 +229,7 @@ package Glib.Cancellable is
    --  GCancellables are used at the same time.
    --  Since: gtk+ 2.22
 
-   procedure Reset (Self : not null access Gcancellable_Record);
+   procedure Reset (Self : access Gcancellable_Record'Class);
    --  Resets Cancellable to its uncancelled state.
    --  If cancellable is currently in use by any cancellable operation then
    --  the behavior of this function is undefined.
@@ -241,7 +241,7 @@ package Glib.Cancellable is
    --  for further async operations.
 
    function Set_Error_If_Cancelled
-      (Self  : not null access Gcancellable_Record;
+      (Self  : access Gcancellable_Record'Class;
        Error : out Glib.Error.GError) return Boolean;
    --  If the Cancellable is cancelled, sets the error to notify that the
    --  operation was cancelled.
@@ -249,7 +249,7 @@ package Glib.Cancellable is
    --  @return True if Cancellable was cancelled, False if it was not
 
    function Source_New
-      (Self : not null access Gcancellable_Record) return Glib.Main.G_Source;
+      (Self : access Gcancellable_Record'Class) return Glib.Main.G_Source;
    --  Creates a source that triggers if Cancellable is cancelled and calls
    --  its callback of type Gcancellable_Source_Func. This is primarily useful
    --  for attaching to another (non-cancellable) source with

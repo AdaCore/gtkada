@@ -95,6 +95,7 @@ flags pointing at the spot that needs an override:
 | A signal callback parameter typed with a package name (e.g. `Gdk.Clipboard` instead of `Gdk.Clipboard.Gdk_Clipboard_Record'Class`) | signal parameters are matched by their GIR name, which needs an entry in `naming.girname_to_ctype` in [`data.py`](data.py) (e.g. `"Gdk.Clipboard": "GdkClipboard"`) |
 | A method using a callback type that does not exist       | inject the access-to-subprogram via [`[[extra.spec]]`](#extraspec--code-injected-into-the-spec) and reference it from a [`[[method.parameter]]`](#methodparameter--per-parameter-overrides) `type` override |
 | A method that cannot be expressed in Ada at all          | suppress it with `bind = false` and re-expose it through `[extra]` |
+| A method whose type would make two packages with each other | break the cycle with a [`limited with`](#extrawith_spec--extra-with-clauses-in-the-spec) in one spec plus a plain `with` in its body |
 
 When in doubt, look for a similar pattern in an existing TOML — many
 of the recipes you will need are already present in
@@ -376,6 +377,26 @@ direction = "access"
 default = "null"
 ```
 
+#### Nullable instance parameters
+
+A handful of C functions accept `NULL` as their *instance* argument and
+document what they do with it — `pango_font_get_font_map (NULL)` returns
+`NULL`, `g_application_set_default (NULL)` unsets the default
+application. The GIR says so with `allow-none="1"` on the
+`<instance-parameter>`, and the generator follows it: `Self` is declared
+`access T_Record'Class` rather than `not null access T_Record`, and the
+body converts it with `Get_Object_Or_Null` instead of `Get_Object`.
+
+The `'Class` is not cosmetic. A controlling operand of a dispatching
+call may not be null (RM 3.9.2(16)), so a primitive operation could
+never be handed the very null value it accepts; declaring the
+subprogram class-wide takes it out of the dispatching set and lets the
+null through. Prefix notation still works, and so do calls on derived
+types.
+
+As for any other parameter, `allow_none` on the `self`
+`[[method.parameter]]` overrides the GIR either way.
+
 #### Transfer of ownership on input
 
 An Ada `UTF8_String` has no C representation, so the body allocates a
@@ -585,6 +606,11 @@ limited = true
 [[extra.with_body]]
 pkg = "Glib.App_Launch_Context"
 ```
+
+A `bind = false` whose comment blames a "circular dependency" predates
+that support, and is usually curable by this recipe: work out which of
+the two packages the other one already withs, and give the *other* one a
+`limited with` on it. Try it before assuming the method cannot be bound.
 
 ### `[[extra.spec]]` — code injected into the spec
 

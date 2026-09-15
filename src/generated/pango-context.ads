@@ -30,6 +30,7 @@ with Glib.Object;        use Glib.Object;
 with Pango.Enums;        use Pango.Enums;
 with Pango.Font;         use Pango.Font;
 with Pango.Font_Family;  use Pango.Font_Family;
+limited with Pango.Font_Map;
 with Pango.Font_Metrics; use Pango.Font_Metrics;
 with Pango.Fontset;      use Pango.Fontset;
 with Pango.Language;     use Pango.Language;
@@ -48,7 +49,7 @@ package Pango.Context is
    --  Creates a new Pango.Context.Pango_Context initialized to default
    --  values.
    --  This function is not particularly useful as it should always be
-   --  followed by a pango_context_set_font_map call, and the function
+   --  followed by a Pango.Context.Set_Font_Map call, and the function
    --  Pango.Font_Map.Create_Context does these two steps together and hence
    --  users are recommended to use that.
    --  If you are using Pango as part of a higher-level system, that system
@@ -61,7 +62,7 @@ package Pango.Context is
    --  Creates a new Pango.Context.Pango_Context initialized to default
    --  values.
    --  This function is not particularly useful as it should always be
-   --  followed by a pango_context_set_font_map call, and the function
+   --  followed by a Pango.Context.Set_Font_Map call, and the function
    --  Pango.Font_Map.Create_Context does these two steps together and hence
    --  users are recommended to use that.
    --  If you are using Pango as part of a higher-level system, that system
@@ -76,7 +77,7 @@ package Pango.Context is
    --  Creates a new Pango.Context.Pango_Context initialized to default
    --  values.
    --  This function is not particularly useful as it should always be
-   --  followed by a pango_context_set_font_map call, and the function
+   --  followed by a Pango.Context.Set_Font_Map call, and the function
    --  Pango.Font_Map.Create_Context does these two steps together and hence
    --  users are recommended to use that.
    --  If you are using Pango as part of a higher-level system, that system
@@ -148,6 +149,25 @@ package Pango.Context is
        Desc : Pango.Font.Pango_Font_Description);
    --  Set the default font description for the context
    --  @param Desc the new pango font description
+
+   function Get_Font_Map
+      (Self : not null access Pango_Context_Record)
+       return Pango.Font_Map.Pango_Font_Map;
+   --  Gets the Pango.Font_Map.Pango_Font_Map used to look up fonts for this
+   --  context.
+   --  Since: gtk+ 1.6
+   --  @return the font map for the Pango.Context.Pango_Context. This value is
+   --  owned by Pango and should not be unreferenced.
+   --  Return has transfer-ownership='none'
+
+   procedure Set_Font_Map
+      (Self     : not null access Pango_Context_Record;
+       Font_Map : not null access Pango.Font_Map.Pango_Font_Map_Record'Class);
+   --  Sets the font map to be searched when fonts are looked-up in this
+   --  context. This is only for internal use by Pango backends, a
+   --  Pango.Context.Pango_Context obtained via one of the recommended methods
+   --  should already have a suitable font map.
+   --  @param Font_Map the Pango.Font_Map.Pango_Font_Map to set.
 
    function Get_Gravity
       (Self : not null access Pango_Context_Record)

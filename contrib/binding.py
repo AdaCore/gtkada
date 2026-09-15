@@ -855,6 +855,7 @@ class SubprogramProfile(object):
         # Try to extract the type of the parameter from the instance-parameter
         # node.
         t = None
+        ip = None
         ownership="none"
         if not inherited:
             try:
@@ -899,6 +900,18 @@ class SubprogramProfile(object):
         gtkparam = gtkmethod.get_param("self")
         pname = gtkparam.ada_name() or "Self"
 
+        # A few C functions accept a null instance and document what they
+        # return in that case (pango_font_get_font_map, for instance). Such
+        # a Self must be bound as a plain "access", and converted with
+        # Get_Object_Or_Null rather than Get_Object. It also has to be made
+        # class-wide: a controlling operand of a dispatching call may not be
+        # null, so a primitive operation could never be handed the very null
+        # value it accepts.
+        if ip is not None and isinstance(t, GObject):
+            if gtkparam.allow_none(girnode=ip):
+                t.allow_none = True
+                t.classwide = True
+
         direction = gtkparam.get_direction() or "in"
         if direction in ("out", "access", "not null access"):
             mode = direction
@@ -906,7 +919,10 @@ class SubprogramProfile(object):
             mode = "in out"
         else:
             if isinstance (t, Record) and t.is_ptr:
-                if ip.get("optional", "0") == "1" or ip.get("allow-none", "0") == "1":
+                if ip is not None and (
+                    ip.get("optional", "0") == "1"
+                    or ip.get("allow-none", "0") == "1"
+                ):
                     if t.is_constant:
                         mode = "access constant"
                     else:

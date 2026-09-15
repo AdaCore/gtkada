@@ -2,20 +2,19 @@
 #   PangoContext
 # ============================================================
 
-[[method]]
-id = "pango_context_get_font_map"
-bind = false
-# circular dep
-
-[[method]]
-id = "pango_context_set_font_map"
-bind = false
-# circular dep
-
 [extra]
 
 [[extra.with_spec]]
 pkg = "Pango.Font_Family"
+
+# Pango.Font_Map withs Pango.Context, so the full view can only be had in
+# the body.
+[[extra.with_spec]]
+pkg = "Pango.Font_Map"
+limited = true
+
+[[extra.with_body]]
+pkg = "Pango.Font_Map"
 
 [[method]]
 id = "pango_context_list_families"

@@ -37,6 +37,7 @@ procedure Grid_Layout is
    procedure Test_Spans with Convention => C;
    procedure Test_Homogeneous with Convention => C;
    procedure Test_Simple_Layout with Convention => C;
+   procedure Test_Layout_Child with Convention => C;
 
    ----------------
    -- Grid_Child --
@@ -451,6 +452,41 @@ procedure Grid_Layout is
       Window.Destroy;
    end Test_Simple_Layout;
 
+   -----------------------
+   -- Test_Layout_Child --
+   -----------------------
+
+   --  Check that a layout child points back at the widget it lays out and at
+   --  the layout manager that created it.
+
+   procedure Test_Layout_Child is
+      Window : Gtk_Window;
+      Parent : Gizmo_Widget;
+      Layout : Gtk_Grid_Layout;
+      Child  : Gizmo_Widget;
+      LC     : Gtk_Grid_Layout_Child;
+   begin
+      Window := Gtk_Window_New;
+      Gtk_New (Parent);
+      Window.Set_Child (Parent);
+
+      Layout := Gtk_Grid_Layout_New;
+      Parent.Set_Layout_Manager (Layout);
+
+      Gtk_New (Child);
+      Child.Set_Sizes (10, 10, 20, 20);
+      Child.Set_Parent (Parent);
+
+      LC := Grid_Child (Layout, Child);
+
+      Assert_True (LC.Get_Child_Widget = Gtk_Widget (Child));
+      Assert_True (LC.Get_Layout_Manager = Gtk_Layout_Manager (Layout));
+
+      Child.Unparent;
+
+      Window.Destroy;
+   end Test_Layout_Child;
+
 begin
    Glib.Test.Init;
 
@@ -468,6 +504,8 @@ begin
      ("/grid-layout/homogeneous", Test_Homogeneous'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/grid-layout/simple", Test_Simple_Layout'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/grid-layout/layout-child", Test_Layout_Child'Unrestricted_Access);
 
    --  Return with the exit code
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);

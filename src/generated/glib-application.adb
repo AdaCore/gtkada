@@ -555,11 +555,11 @@ package body Glib.Application is
    -- Set_Default --
    -----------------
 
-   procedure Set_Default (Self : not null access Gapplication_Record) is
+   procedure Set_Default (Self : access Gapplication_Record'Class) is
       procedure Internal (Self : System.Address);
       pragma Import (C, Internal, "g_application_set_default");
    begin
-      Internal (Get_Object (Self));
+      Internal (Get_Object_Or_Null (GObject (Self)));
    end Set_Default;
 
    ---------------------

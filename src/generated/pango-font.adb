@@ -24,6 +24,8 @@
 pragma Style_Checks (Off);
 pragma Warnings (Off, "*is already use-visible*");
 with Glib.Type_Conversion_Hooks; use Glib.Type_Conversion_Hooks;
+with Pango.Font_Face;            use Pango.Font_Face;
+with Pango.Font_Map;             use Pango.Font_Map;
 pragma Warnings(Off);  --  might be unused
 with Gtkada.Bindings;            use Gtkada.Bindings;
 with Gtkada.Types;               use Gtkada.Types;
@@ -225,6 +227,39 @@ package body Pango.Font is
       return Internal (Self, Desc2) /= 0;
    end Equal;
 
+   ------------------
+   -- Get_Coverage --
+   ------------------
+
+   function Get_Coverage
+      (Font     : not null access Pango_Font_Record;
+       Language : Pango.Language.Pango_Language)
+       return Pango.Coverage.Pango_Coverage
+   is
+      function Internal
+         (Font     : System.Address;
+          Language : System.Address) return System.Address;
+      pragma Import (C, Internal, "pango_font_get_coverage");
+      Stub_Pango_Coverage : Pango.Coverage.Pango_Coverage_Record;
+   begin
+      return Pango.Coverage.Pango_Coverage (Get_User_Data (Internal (Get_Object (Font), Get_Object (Language)), Stub_Pango_Coverage));
+   end Get_Coverage;
+
+   --------------
+   -- Get_Face --
+   --------------
+
+   function Get_Face
+      (Font : not null access Pango_Font_Record)
+       return Pango.Font_Face.Pango_Font_Face
+   is
+      function Internal (Font : System.Address) return System.Address;
+      pragma Import (C, Internal, "pango_font_get_face");
+      Stub_Pango_Font_Face : Pango.Font_Face.Pango_Font_Face_Record;
+   begin
+      return Pango.Font_Face.Pango_Font_Face (Get_User_Data (Internal (Get_Object (Font)), Stub_Pango_Font_Face));
+   end Get_Face;
+
    ----------------
    -- Get_Family --
    ----------------
@@ -237,12 +272,27 @@ package body Pango.Font is
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Self));
    end Get_Family;
 
+   ------------------
+   -- Get_Font_Map --
+   ------------------
+
+   function Get_Font_Map
+      (Font : access Pango_Font_Record'Class)
+       return Pango.Font_Map.Pango_Font_Map
+   is
+      function Internal (Font : System.Address) return System.Address;
+      pragma Import (C, Internal, "pango_font_get_font_map");
+      Stub_Pango_Font_Map : Pango.Font_Map.Pango_Font_Map_Record;
+   begin
+      return Pango.Font_Map.Pango_Font_Map (Get_User_Data (Internal (Get_Object_Or_Null (GObject (Font))), Stub_Pango_Font_Map));
+   end Get_Font_Map;
+
    -----------------------
    -- Get_Glyph_Extents --
    -----------------------
 
    procedure Get_Glyph_Extents
-      (Font         : not null access Pango_Font_Record;
+      (Font         : access Pango_Font_Record'Class;
        Glyph        : Pango_Glyph;
        Ink_Rect     : out Pango_Rectangle;
        Logical_Rect : out Pango_Rectangle)
@@ -254,7 +304,7 @@ package body Pango.Font is
           Logical_Rect : out Pango_Rectangle);
       pragma Import (C, Internal, "pango_font_get_glyph_extents");
    begin
-      Internal (Get_Object (Font), Glyph, Ink_Rect, Logical_Rect);
+      Internal (Get_Object_Or_Null (GObject (Font)), Glyph, Ink_Rect, Logical_Rect);
    end Get_Glyph_Extents;
 
    -----------------
@@ -262,7 +312,7 @@ package body Pango.Font is
    -----------------
 
    function Get_Metrics
-      (Font     : not null access Pango_Font_Record;
+      (Font     : access Pango_Font_Record'Class;
        Language : Pango.Language.Pango_Language := Pango.Language.Null_Pango_Language)
        return Pango.Font_Metrics.Pango_Font_Metrics
    is
@@ -271,7 +321,7 @@ package body Pango.Font is
           Language : System.Address) return System.Address;
       pragma Import (C, Internal, "pango_font_get_metrics");
    begin
-      return From_Object (Internal (Get_Object (Font), Get_Object (Language)));
+      return From_Object (Internal (Get_Object_Or_Null (GObject (Font)), Get_Object (Language)));
    end Get_Metrics;
 
    --------------------------

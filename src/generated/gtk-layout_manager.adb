@@ -58,6 +58,22 @@ package body Gtk.Layout_Manager is
    end Allocate;
 
    ----------------------
+   -- Get_Child_Widget --
+   ----------------------
+
+   function Get_Child_Widget
+      (Layout_Child : not null access Gtk_Layout_Child_Record)
+       return Gtk.Widget.Gtk_Widget
+   is
+      function Internal
+         (Layout_Child : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_layout_child_get_child_widget");
+      Stub_Gtk_Widget : Gtk.Widget.Gtk_Widget_Record;
+   begin
+      return Gtk.Widget.Gtk_Widget (Get_User_Data (Internal (Get_Object (Layout_Child)), Stub_Gtk_Widget));
+   end Get_Child_Widget;
+
+   ----------------------
    -- Get_Layout_Child --
    ----------------------
 
@@ -74,6 +90,22 @@ package body Gtk.Layout_Manager is
    begin
       return Gtk.Layout_Manager.Gtk_Layout_Child (Get_User_Data (Internal (Get_Object (Manager), Get_Object (Child)), Stub_Gtk_Layout_Child));
    end Get_Layout_Child;
+
+   ------------------------
+   -- Get_Layout_Manager --
+   ------------------------
+
+   function Get_Layout_Manager
+      (Layout_Child : not null access Gtk_Layout_Child_Record)
+       return Gtk_Layout_Manager
+   is
+      function Internal
+         (Layout_Child : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_layout_child_get_layout_manager");
+      Stub_Gtk_Layout_Manager : Gtk_Layout_Manager_Record;
+   begin
+      return Gtk.Layout_Manager.Gtk_Layout_Manager (Get_User_Data (Internal (Get_Object (Layout_Child)), Stub_Gtk_Layout_Manager));
+   end Get_Layout_Manager;
 
    ----------------------
    -- Get_Request_Mode --

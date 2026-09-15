@@ -36,7 +36,10 @@ pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Object;             use Glib.Object;
+with Pango.Coverage;          use Pango.Coverage;
 with Pango.Enums;             use Pango.Enums;
+limited with Pango.Font_Face;
+limited with Pango.Font_Map;
 with Pango.Font_Metrics;      use Pango.Font_Metrics;
 with Pango.Language;          use Pango.Language;
 
@@ -84,8 +87,40 @@ package Pango.Font is
    --  Since: gtk+ 1.14
    --  @return a newly-allocated Pango.Font.Pango_Font_Description object.
 
+   function Get_Coverage
+      (Font     : not null access Pango_Font_Record;
+       Language : Pango.Language.Pango_Language)
+       return Pango.Coverage.Pango_Coverage;
+   --  Computes the coverage map for a given font and language tag.
+   --  @param Language the language tag
+   --  @return a newly-allocated Pango.Coverage.Pango_Coverage object.
+
+   function Get_Face
+      (Font : not null access Pango_Font_Record)
+       return Pango.Font_Face.Pango_Font_Face;
+   --  Gets the Pango.Font_Face.Pango_Font_Face to which Font belongs.
+   --  Since: gtk+ 1.46
+   --  @return the Pango.Font_Face.Pango_Font_Face
+   --  Return has transfer-ownership='none'
+
+   function Get_Font_Map
+      (Font : access Pango_Font_Record'Class)
+       return Pango.Font_Map.Pango_Font_Map;
+   --  Gets the font map for which the font was created.
+   --  Note that the font maintains a <firstterm>weak</firstterm> reference to
+   --  the font map, so if all references to font map are dropped, the font map
+   --  will be finalized even if there are fonts created with the font map that
+   --  are still alive. In that case this function will return null. It is the
+   --  responsibility of the user to ensure that the font map is kept alive. In
+   --  most uses this is not an issue as a Pango.Context.Pango_Context holds a
+   --  reference to the font map.
+   --  Since: gtk+ 1.10
+   --  @return the Pango.Font_Map.Pango_Font_Map for the font, or null if Font
+   --  is null.
+   --  Return has transfer-ownership='none'
+
    procedure Get_Glyph_Extents
-      (Font         : not null access Pango_Font_Record;
+      (Font         : access Pango_Font_Record'Class;
        Glyph        : Pango_Glyph;
        Ink_Rect     : out Pango_Rectangle;
        Logical_Rect : out Pango_Rectangle);
@@ -105,7 +140,7 @@ package Pango.Font is
    --  glyph or null to indicate that the result is not needed.
 
    function Get_Metrics
-      (Font     : not null access Pango_Font_Record;
+      (Font     : access Pango_Font_Record'Class;
        Language : Pango.Language.Pango_Language := Pango.Language.Null_Pango_Language)
        return Pango.Font_Metrics.Pango_Font_Metrics;
    --  Gets overall metric information for a font. Since the metrics may be
