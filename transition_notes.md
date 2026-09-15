@@ -741,6 +741,52 @@ Left for later, on demand:
 - `Gtk.String_List.Find` is GTK 4.18+; avoid it if older toolchains must
   build.
 
+## GtkTreeExpander (work item #178)
+
+`GtkTreeExpander` is what turns a flat `GtkListView` or `GtkColumnView`
+row into a tree row: it draws the arrow, indents the row by its depth,
+and expands or collapses the `GtkTreeListRow` it is given. Without it,
+`Gtk.Tree_List_Model` and `Gtk.Tree_List_Row` — bound earlier — could
+build a tree but nothing could show one.
+
+The binding itself needed only an entry in `contrib/data.py` and a
+`GtkTreeExpander.toml`, the widget having no signals and no enums of its
+own. The single override in the TOML is the `c:type="gpointer"`
+affliction described under GtkColumnView above: `gtk_tree_expander_get_item`
+is yet another `<type name="GObject.Object" c:type="gpointer"/>`, and
+`return = "GObject*"` plus a `[method.doc]` block fixes it the same way.
+
+**Passthrough is load-bearing.** The tree model must be created with
+`Passthrough => False`, which is what makes it hand out
+`Gtk_Tree_List_Row`s rather than the underlying items. In a factory
+handler `Gtk_List_Item.Get_Item` therefore gives you the *row*; the item
+is one `Gtk.Tree_List_Row.Get_Item` further on. This is the part of the
+API that is easiest to get wrong, and it is also what
+`Gtk_Tree_List_Row_Sorter` needs — a column's own sorter cannot compare
+rows, so the view's sorter has to be wrapped in one before it reaches
+the `Gtk_Sort_List_Model`, or nothing sorts.
+
+`gtkada_demo/create_column_view.adb` was extended into a tree rather
+than a second demo being added, so the `gtkada_demo` key of the TOML
+points at it. `testsuite/tests/tree-expander` covers the properties, the
+list-row round trip (including depth and expansion), and — the case that
+earns its keep — an expander driven by a real factory inside a realized
+`Gtk_List_View`, where the depth of the second row proves the tree is
+genuinely a tree.
+
+**To do: the transfer-full object getters.** The GIR declares
+`gtk_tree_expander_get_item` as `transfer-ownership="full"`, but the
+generated `Get_Item` wraps the returned pointer with `Get_User_Data` and
+never unrefs it, so the reference C hands over is leaked. This binding
+deliberately follows the existing precedent rather than diverging from
+it: `Gtk.Tree_List_Row.Get_Item`, `Gtk.List_Item.Get_Item`,
+`Gtk.Column_View_Cell`, `Gtk.Column_View_Row` and `Gtk.List_Header` are
+all declared transfer-full in the GIR and all bound exactly this way
+today. The fix wants doing in one sweep over the lot — either a
+generator that honours `transfer-ownership` on object returns, or a
+hand-written `[extra]` body per getter — rather than one package at a
+time.
+
 ## GtkSnapshot
 
 Re-enable the matching `bind = false` entries in
