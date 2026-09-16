@@ -547,9 +547,9 @@ package body Glib.GFile is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_append_to");
       Acc_Error                : aliased Glib.Error.GError;
+      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
       Tmp_Return               : System.Address;
-      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
    begin
       Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
@@ -594,9 +594,9 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_append_to_finish");
       Acc_Error                : aliased Glib.Error.GError;
+      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
       Tmp_Return               : System.Address;
-      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
@@ -706,9 +706,9 @@ package body Glib.GFile is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_create");
       Acc_Error                : aliased Glib.Error.GError;
+      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
       Tmp_Return               : System.Address;
-      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
    begin
       Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
@@ -753,9 +753,9 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_create_finish");
       Acc_Error                : aliased Glib.Error.GError;
+      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
       Tmp_Return               : System.Address;
-      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
@@ -783,9 +783,9 @@ package body Glib.GFile is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_create_readwrite");
       Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
       Tmp_Return          : System.Address;
-      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
    begin
       Tmp_Return := Internal (Self, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
@@ -830,9 +830,9 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_create_readwrite_finish");
       Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
       Tmp_Return          : System.Address;
-      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
@@ -1103,17 +1103,16 @@ package body Glib.GFile is
       Tmp_Etag_Out : aliased Gtkada.Types.Chars_Ptr;
       Acc_Etag_Out : constant access Gtkada.Types.Chars_Ptr := (if Etag_Out /= null then Tmp_Etag_Out'Access else null);
       Tmp_Return   : System.Address;
-      Return_Obj   : Glib.Bytes.Gbytes := Null_Gbytes;
    begin
       Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Etag_Out, Acc_Error'Access);
       if Etag_Out /= null then
          Etag_Out.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Etag_Out);
       end if;
       Error := Acc_Error;
-      if Error = null then
-         Return_Obj := From_Object (Tmp_Return);
-      end if;
-      return Return_Obj;
+      return
+        (if Error = null
+         then From_Object (Tmp_Return)
+         else Null_Gbytes);
    end Load_Bytes;
 
    ----------------------
@@ -1153,17 +1152,16 @@ package body Glib.GFile is
       Tmp_Etag_Out : aliased Gtkada.Types.Chars_Ptr;
       Acc_Etag_Out : constant access Gtkada.Types.Chars_Ptr := (if Etag_Out /= null then Tmp_Etag_Out'Access else null);
       Tmp_Return   : System.Address;
-      Return_Obj   : Glib.Bytes.Gbytes := Null_Gbytes;
    begin
       Tmp_Return := Internal (Self, Result, Acc_Etag_Out, Acc_Error'Access);
       if Etag_Out /= null then
          Etag_Out.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Etag_Out);
       end if;
       Error := Acc_Error;
-      if Error = null then
-         Return_Obj := From_Object (Tmp_Return);
-      end if;
-      return Return_Obj;
+      return
+        (if Error = null
+         then From_Object (Tmp_Return)
+         else Null_Gbytes);
    end Load_Bytes_Finish;
 
    --------------------
@@ -1442,9 +1440,9 @@ package body Glib.GFile is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_open_readwrite");
       Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
       Tmp_Return          : System.Address;
-      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
    begin
       Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
@@ -1488,9 +1486,9 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_open_readwrite_finish");
       Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
       Tmp_Return          : System.Address;
-      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
@@ -1564,10 +1562,10 @@ package body Glib.GFile is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_query_filesystem_info");
       Acc_Error       : aliased Glib.Error.GError;
+      Return_Obj      : Glib.File_Info.Gfile_Info;
       Tmp_Attributes  : Gtkada.Types.Chars_Ptr := New_String (Attributes);
       Stub_Gfile_Info : Glib.File_Info.Gfile_Info_Record;
       Tmp_Return      : System.Address;
-      Return_Obj      : Glib.File_Info.Gfile_Info;
    begin
       Tmp_Return := Internal (Self, Tmp_Attributes, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
@@ -1615,9 +1613,9 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_query_filesystem_info_finish");
       Acc_Error       : aliased Glib.Error.GError;
+      Return_Obj      : Glib.File_Info.Gfile_Info;
       Stub_Gfile_Info : Glib.File_Info.Gfile_Info_Record;
       Tmp_Return      : System.Address;
-      Return_Obj      : Glib.File_Info.Gfile_Info;
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
@@ -1646,10 +1644,10 @@ package body Glib.GFile is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_query_info");
       Acc_Error       : aliased Glib.Error.GError;
+      Return_Obj      : Glib.File_Info.Gfile_Info;
       Tmp_Attributes  : Gtkada.Types.Chars_Ptr := New_String (Attributes);
       Stub_Gfile_Info : Glib.File_Info.Gfile_Info_Record;
       Tmp_Return      : System.Address;
-      Return_Obj      : Glib.File_Info.Gfile_Info;
    begin
       Tmp_Return := Internal (Self, Tmp_Attributes, Flags, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
@@ -1698,9 +1696,9 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_query_info_finish");
       Acc_Error       : aliased Glib.Error.GError;
+      Return_Obj      : Glib.File_Info.Gfile_Info;
       Stub_Gfile_Info : Glib.File_Info.Gfile_Info_Record;
       Tmp_Return      : System.Address;
-      Return_Obj      : Glib.File_Info.Gfile_Info;
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
@@ -1726,9 +1724,9 @@ package body Glib.GFile is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_read");
       Acc_Error               : aliased Glib.Error.GError;
+      Return_Obj              : Glib.File_Input_Stream.Gfile_Input_Stream;
       Stub_Gfile_Input_Stream : Glib.File_Input_Stream.Gfile_Input_Stream_Record;
       Tmp_Return              : System.Address;
-      Return_Obj              : Glib.File_Input_Stream.Gfile_Input_Stream;
    begin
       Tmp_Return := Internal (Self, Get_Object_Or_Null (GObject (Cancellable)), Acc_Error'Access);
       Error := Acc_Error;
@@ -1772,9 +1770,9 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_read_finish");
       Acc_Error               : aliased Glib.Error.GError;
+      Return_Obj              : Glib.File_Input_Stream.Gfile_Input_Stream;
       Stub_Gfile_Input_Stream : Glib.File_Input_Stream.Gfile_Input_Stream_Record;
       Tmp_Return              : System.Address;
-      Return_Obj              : Glib.File_Input_Stream.Gfile_Input_Stream;
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
@@ -1806,10 +1804,10 @@ package body Glib.GFile is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_replace");
       Acc_Error                : aliased Glib.Error.GError;
+      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
       Tmp_Etag                 : Gtkada.Types.Chars_Ptr;
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
       Tmp_Return               : System.Address;
-      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
    begin
       Tmp_Etag :=
         (if Etag = ""
@@ -2009,9 +2007,9 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_replace_finish");
       Acc_Error                : aliased Glib.Error.GError;
+      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
       Stub_Gfile_Output_Stream : Glib.File_Output_Stream.Gfile_Output_Stream_Record;
       Tmp_Return               : System.Address;
-      Return_Obj               : Glib.File_Output_Stream.Gfile_Output_Stream;
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;
@@ -2043,10 +2041,10 @@ package body Glib.GFile is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_replace_readwrite");
       Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
       Tmp_Etag            : Gtkada.Types.Chars_Ptr;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
       Tmp_Return          : System.Address;
-      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
    begin
       Tmp_Etag :=
         (if Etag = ""
@@ -2109,9 +2107,9 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_replace_readwrite_finish");
       Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
       Stub_Gfile_Iostream : Glib.File_IO_Stream.Gfile_Iostream_Record;
       Tmp_Return          : System.Address;
-      Return_Obj          : Glib.File_IO_Stream.Gfile_Iostream;
    begin
       Tmp_Return := Internal (Self, Res, Acc_Error'Access);
       Error := Acc_Error;

@@ -317,9 +317,9 @@ package body Gtk.Print_Dialog is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "gtk_print_dialog_print_finish");
       Acc_Error           : aliased Glib.Error.GError;
+      Return_Obj          : Glib.Output_Stream.Goutput_Stream;
       Stub_Goutput_Stream : Glib.Output_Stream.Goutput_Stream_Record;
       Tmp_Return          : System.Address;
-      Return_Obj          : Glib.Output_Stream.Goutput_Stream;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
@@ -446,14 +446,13 @@ package body Gtk.Print_Dialog is
       pragma Import (C, Internal, "gtk_print_dialog_setup_finish");
       Acc_Error  : aliased Glib.Error.GError;
       Tmp_Return : System.Address;
-      Return_Obj : Gtk.Print_Setup.Gtk_Print_Setup := Null_Gtk_Print_Setup;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;
-      if Error = null then
-         Return_Obj := From_Object (Tmp_Return);
-      end if;
-      return Return_Obj;
+      return
+        (if Error = null
+         then From_Object (Tmp_Return)
+         else Null_Gtk_Print_Setup);
    end Setup_Finish;
 
 end Gtk.Print_Dialog;

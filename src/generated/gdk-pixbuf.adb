@@ -252,6 +252,9 @@ package body Gdk.Pixbuf is
    begin
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_File (Self, Filename, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gdk_New_From_File;
 
    --------------------------------
@@ -269,6 +272,9 @@ package body Gdk.Pixbuf is
    begin
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_File_At_Scale (Self, Filename, Width, Height, Preserve_Aspect_Ratio, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gdk_New_From_File_At_Scale;
 
    -------------------------------
@@ -285,6 +291,9 @@ package body Gdk.Pixbuf is
    begin
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_File_At_Size (Self, Filename, Width, Height, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gdk_New_From_File_At_Size;
 
    -------------------------
@@ -300,6 +309,9 @@ package body Gdk.Pixbuf is
    begin
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_Inline (Self, Data_Length, Data, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gdk_New_From_Inline;
 
    ---------------------------
@@ -314,6 +326,9 @@ package body Gdk.Pixbuf is
    begin
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_Resource (Self, Resource_Path, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gdk_New_From_Resource;
 
    ------------------------------------
@@ -331,6 +346,9 @@ package body Gdk.Pixbuf is
    begin
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_Resource_At_Scale (Self, Resource_Path, Width, Height, Preserve_Aspect_Ratio, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gdk_New_From_Resource_At_Scale;
 
    -------------------------
@@ -346,6 +364,9 @@ package body Gdk.Pixbuf is
    begin
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_Stream (Self, Stream, Cancellable, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gdk_New_From_Stream;
 
    ----------------------------------
@@ -364,6 +385,9 @@ package body Gdk.Pixbuf is
    begin
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_Stream_At_Scale (Self, Stream, Width, Height, Preserve_Aspect_Ratio, Cancellable, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gdk_New_From_Stream_At_Scale;
 
    --------------------------------
@@ -378,6 +402,9 @@ package body Gdk.Pixbuf is
    begin
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_Stream_Finish (Self, Async_Result, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gdk_New_From_Stream_Finish;
 
    ---------------------------
@@ -459,9 +486,12 @@ package body Gdk.Pixbuf is
       (Filename : UTF8_String;
        Error    : out Glib.Error.GError) return Gdk_Pixbuf
    is
-      Self : constant Gdk_Pixbuf := new Gdk_Pixbuf_Record;
+      Self : Gdk_Pixbuf := new Gdk_Pixbuf_Record;
    begin
       Gdk.Pixbuf.Initialize_From_File (Self, Filename, Error);
+      if Error /= null then
+         Self := null;
+      end if;
       return Self;
    end Gdk_Pixbuf_New_From_File;
 
@@ -476,9 +506,12 @@ package body Gdk.Pixbuf is
        Preserve_Aspect_Ratio : Boolean;
        Error                 : out Glib.Error.GError) return Gdk_Pixbuf
    is
-      Self : constant Gdk_Pixbuf := new Gdk_Pixbuf_Record;
+      Self : Gdk_Pixbuf := new Gdk_Pixbuf_Record;
    begin
       Gdk.Pixbuf.Initialize_From_File_At_Scale (Self, Filename, Width, Height, Preserve_Aspect_Ratio, Error);
+      if Error /= null then
+         Self := null;
+      end if;
       return Self;
    end Gdk_Pixbuf_New_From_File_At_Scale;
 
@@ -492,9 +525,12 @@ package body Gdk.Pixbuf is
        Height   : Glib.Gint;
        Error    : out Glib.Error.GError) return Gdk_Pixbuf
    is
-      Self : constant Gdk_Pixbuf := new Gdk_Pixbuf_Record;
+      Self : Gdk_Pixbuf := new Gdk_Pixbuf_Record;
    begin
       Gdk.Pixbuf.Initialize_From_File_At_Size (Self, Filename, Width, Height, Error);
+      if Error /= null then
+         Self := null;
+      end if;
       return Self;
    end Gdk_Pixbuf_New_From_File_At_Size;
 
@@ -507,9 +543,12 @@ package body Gdk.Pixbuf is
        Data        : Guint8_Array;
        Error       : out Glib.Error.GError) return Gdk_Pixbuf
    is
-      Self : constant Gdk_Pixbuf := new Gdk_Pixbuf_Record;
+      Self : Gdk_Pixbuf := new Gdk_Pixbuf_Record;
    begin
       Gdk.Pixbuf.Initialize_From_Inline (Self, Data_Length, Data, Error);
+      if Error /= null then
+         Self := null;
+      end if;
       return Self;
    end Gdk_Pixbuf_New_From_Inline;
 
@@ -521,9 +560,12 @@ package body Gdk.Pixbuf is
       (Resource_Path : UTF8_String;
        Error         : out Glib.Error.GError) return Gdk_Pixbuf
    is
-      Self : constant Gdk_Pixbuf := new Gdk_Pixbuf_Record;
+      Self : Gdk_Pixbuf := new Gdk_Pixbuf_Record;
    begin
       Gdk.Pixbuf.Initialize_From_Resource (Self, Resource_Path, Error);
+      if Error /= null then
+         Self := null;
+      end if;
       return Self;
    end Gdk_Pixbuf_New_From_Resource;
 
@@ -538,9 +580,12 @@ package body Gdk.Pixbuf is
        Preserve_Aspect_Ratio : Boolean;
        Error                 : out Glib.Error.GError) return Gdk_Pixbuf
    is
-      Self : constant Gdk_Pixbuf := new Gdk_Pixbuf_Record;
+      Self : Gdk_Pixbuf := new Gdk_Pixbuf_Record;
    begin
       Gdk.Pixbuf.Initialize_From_Resource_At_Scale (Self, Resource_Path, Width, Height, Preserve_Aspect_Ratio, Error);
+      if Error /= null then
+         Self := null;
+      end if;
       return Self;
    end Gdk_Pixbuf_New_From_Resource_At_Scale;
 
@@ -553,9 +598,12 @@ package body Gdk.Pixbuf is
        Cancellable : access Glib.Cancellable.Gcancellable_Record'Class;
        Error       : out Glib.Error.GError) return Gdk_Pixbuf
    is
-      Self : constant Gdk_Pixbuf := new Gdk_Pixbuf_Record;
+      Self : Gdk_Pixbuf := new Gdk_Pixbuf_Record;
    begin
       Gdk.Pixbuf.Initialize_From_Stream (Self, Stream, Cancellable, Error);
+      if Error /= null then
+         Self := null;
+      end if;
       return Self;
    end Gdk_Pixbuf_New_From_Stream;
 
@@ -571,9 +619,12 @@ package body Gdk.Pixbuf is
        Cancellable           : access Glib.Cancellable.Gcancellable_Record'Class;
        Error                 : out Glib.Error.GError) return Gdk_Pixbuf
    is
-      Self : constant Gdk_Pixbuf := new Gdk_Pixbuf_Record;
+      Self : Gdk_Pixbuf := new Gdk_Pixbuf_Record;
    begin
       Gdk.Pixbuf.Initialize_From_Stream_At_Scale (Self, Stream, Width, Height, Preserve_Aspect_Ratio, Cancellable, Error);
+      if Error /= null then
+         Self := null;
+      end if;
       return Self;
    end Gdk_Pixbuf_New_From_Stream_At_Scale;
 
@@ -585,9 +636,12 @@ package body Gdk.Pixbuf is
       (Async_Result : Glib.G_Async_Result;
        Error        : out Glib.Error.GError) return Gdk_Pixbuf
    is
-      Self : constant Gdk_Pixbuf := new Gdk_Pixbuf_Record;
+      Self : Gdk_Pixbuf := new Gdk_Pixbuf_Record;
    begin
       Gdk.Pixbuf.Initialize_From_Stream_Finish (Self, Async_Result, Error);
+      if Error /= null then
+         Self := null;
+      end if;
       return Self;
    end Gdk_Pixbuf_New_From_Stream_Finish;
 

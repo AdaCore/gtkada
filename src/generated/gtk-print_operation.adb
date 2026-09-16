@@ -264,7 +264,6 @@ package body Gtk.Print_Operation is
       Tmp_Return := Internal (Get_Object (Self), Action, Get_Object_Or_Null (GObject (Parent)), Acc_Error'Access);
       Error := Acc_Error;
       return Tmp_Return;
-      -- FIXME;
    end Run;
 
    ---------------------

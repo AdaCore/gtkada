@@ -59,6 +59,9 @@ package body Gtk.Page_Setup is
    begin
       Self := new Gtk_Page_Setup_Record;
       Gtk.Page_Setup.Initialize_From_File (Self, File_Name, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gtk_New_From_File;
 
    ---------------------------
@@ -87,6 +90,9 @@ package body Gtk.Page_Setup is
    begin
       Self := new Gtk_Page_Setup_Record;
       Gtk.Page_Setup.Initialize_From_Key_File (Self, Key_File, Group_Name, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gtk_New_From_Key_File;
 
    ------------------------
@@ -108,14 +114,13 @@ package body Gtk.Page_Setup is
       (File_Name : UTF8_String;
        Error     : out Glib.Error.GError) return Gtk_Page_Setup
    is
-      Self       : constant Gtk_Page_Setup := new Gtk_Page_Setup_Record;
-      Return_Obj : Gtk_Page_Setup;
+      Self : Gtk_Page_Setup := new Gtk_Page_Setup_Record;
    begin
       Gtk.Page_Setup.Initialize_From_File (Self, File_Name, Error);
-      if Error = null then
-         Return_Obj := Self;
+      if Error /= null then
+         Self := null;
       end if;
-      return Return_Obj;
+      return Self;
    end Gtk_Page_Setup_New_From_File;
 
    --------------------------------------
@@ -140,14 +145,13 @@ package body Gtk.Page_Setup is
        Group_Name : UTF8_String := "";
        Error      : out Glib.Error.GError) return Gtk_Page_Setup
    is
-      Self       : constant Gtk_Page_Setup := new Gtk_Page_Setup_Record;
-      Return_Obj : Gtk_Page_Setup;
+      Self : Gtk_Page_Setup := new Gtk_Page_Setup_Record;
    begin
       Gtk.Page_Setup.Initialize_From_Key_File (Self, Key_File, Group_Name, Error);
-      if Error = null then
-         Return_Obj := Self;
+      if Error /= null then
+         Self := null;
       end if;
-      return Return_Obj;
+      return Self;
    end Gtk_Page_Setup_New_From_Key_File;
 
    ----------------
@@ -184,7 +188,9 @@ package body Gtk.Page_Setup is
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_File_Name, Acc_Error'Access);
          Error := Acc_Error;
-         Set_Object (Self, Tmp_Return);
+         if Error = null then
+            Set_Object (Self, Tmp_Return);
+         end if;
       end if;
       Free (Tmp_File_Name);
    end Initialize_From_File;
@@ -232,7 +238,9 @@ package body Gtk.Page_Setup is
             else New_String (Group_Name));
          Tmp_Return := Internal (Key_File, Tmp_Group_Name, Acc_Error'Access);
          Error := Acc_Error;
-         Set_Object (Self, Tmp_Return);
+         if Error = null then
+            Set_Object (Self, Tmp_Return);
+         end if;
       end if;
       Free (Tmp_Group_Name);
    end Initialize_From_Key_File;

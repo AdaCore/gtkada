@@ -222,8 +222,8 @@ package body Gdk.Drop is
           Acc_Error : access Glib.Error.GError) return Glib.Values.GValue;
       pragma Import (C, Internal, "gdk_drop_read_value_finish");
       Acc_Error  : aliased Glib.Error.GError;
-      Tmp_Return : Glib.Values.GValue;
       Return_Obj : Glib.Values.GValue;
+      Tmp_Return : Glib.Values.GValue;
    begin
       Tmp_Return := Internal (Get_Object (Self), Result, Acc_Error'Access);
       Error := Acc_Error;

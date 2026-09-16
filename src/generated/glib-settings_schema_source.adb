@@ -70,6 +70,7 @@ package body Glib.Settings_Schema_Source is
       Tmp_Directory : Gtkada.Types.Chars_Ptr := New_String (Directory);
       Tmp_Return    : System.Address;
    begin
+      Error := null;
       Tmp_Return := Internal (Tmp_Directory, Get_Object (Parent), Boolean'Pos (Trusted), Acc_Error'Access);
       Error := Acc_Error;
       if Error = null then
@@ -95,10 +96,11 @@ package body Glib.Settings_Schema_Source is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_settings_schema_source_new_from_directory");
       Acc_Error     : aliased Glib.Error.GError;
+      Self          : Gsettings_Schema_Source;
       Tmp_Directory : Gtkada.Types.Chars_Ptr := New_String (Directory);
       Tmp_Return    : System.Address;
-      Self          : Gsettings_Schema_Source;
    begin
+      Error := null;
       Tmp_Return := Internal (Tmp_Directory, Get_Object (Parent), Boolean'Pos (Trusted), Acc_Error'Access);
       Error := Acc_Error;
       if Error = null then

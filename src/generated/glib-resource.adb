@@ -66,6 +66,7 @@ package body Glib.Resource is
       Acc_Error  : aliased Glib.Error.GError;
       Tmp_Return : System.Address;
    begin
+      Error := null;
       Tmp_Return := Internal (Get_Object (Data), Acc_Error'Access);
       Error := Acc_Error;
       if Error = null then
@@ -86,12 +87,15 @@ package body Glib.Resource is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_resource_new_from_data");
       Acc_Error  : aliased Glib.Error.GError;
-      Tmp_Return : System.Address;
       Self       : Gresource;
+      Tmp_Return : System.Address;
    begin
+      Error := null;
       Tmp_Return := Internal (Get_Object (Data), Acc_Error'Access);
       Error := Acc_Error;
-      Self.Set_Object (Tmp_Return);
+      if Error = null then
+         Self.Set_Object (Tmp_Return);
+      end if;
       return Self;
    end Gresource_New_From_Data;
 
@@ -196,15 +200,14 @@ package body Glib.Resource is
       Acc_Error  : aliased Glib.Error.GError;
       Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
       Tmp_Return : System.Address;
-      Return_Obj : Glib.Bytes.Gbytes := Null_Gbytes;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Acc_Error'Access);
       Error := Acc_Error;
       Free (Tmp_Path);
-      if Error = null then
-         Return_Obj := From_Object (Tmp_Return);
-      end if;
-      return Return_Obj;
+      return
+        (if Error = null
+         then From_Object (Tmp_Return)
+         else Null_Gbytes);
    end Lookup_Data;
 
    -----------------
@@ -225,10 +228,10 @@ package body Glib.Resource is
           Acc_Error    : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_resource_open_stream");
       Acc_Error          : aliased Glib.Error.GError;
+      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
       Tmp_Path           : Gtkada.Types.Chars_Ptr := New_String (Path);
       Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
       Tmp_Return         : System.Address;
-      Return_Obj         : Glib.Input_Stream.Ginput_Stream;
    begin
       Tmp_Return := Internal (Get_Object (Self), Tmp_Path, Lookup_Flags, Acc_Error'Access);
       Error := Acc_Error;
@@ -298,15 +301,14 @@ package body Glib.Resource is
       Acc_Error    : aliased Glib.Error.GError;
       Tmp_Filename : Gtkada.Types.Chars_Ptr := New_String (Filename);
       Tmp_Return   : System.Address;
-      Return_Obj   : Gresource := Null_Gresource;
    begin
       Tmp_Return := Internal (Tmp_Filename, Acc_Error'Access);
       Error := Acc_Error;
       Free (Tmp_Filename);
-      if Error = null then
-         Return_Obj := From_Object (Tmp_Return);
-      end if;
-      return Return_Obj;
+      return
+        (if Error = null
+         then From_Object (Tmp_Return)
+         else Null_Gresource);
    end Load;
 
 end Glib.Resource;

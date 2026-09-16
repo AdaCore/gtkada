@@ -99,6 +99,9 @@ package body Gtk.Print_Settings is
    begin
       Self := new Gtk_Print_Settings_Record;
       Gtk.Print_Settings.Initialize_From_File (Self, File_Name, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gtk_New_From_File;
 
    ---------------------------
@@ -127,6 +130,9 @@ package body Gtk.Print_Settings is
    begin
       Self := new Gtk_Print_Settings_Record;
       Gtk.Print_Settings.Initialize_From_Key_File (Self, Key_File, Group_Name, Error);
+      if Error /= null then
+         Self := null;
+      end if;
    end Gtk_New_From_Key_File;
 
    ----------------------------
@@ -148,14 +154,13 @@ package body Gtk.Print_Settings is
       (File_Name : UTF8_String;
        Error     : out Glib.Error.GError) return Gtk_Print_Settings
    is
-      Self       : constant Gtk_Print_Settings := new Gtk_Print_Settings_Record;
-      Return_Obj : Gtk_Print_Settings;
+      Self : Gtk_Print_Settings := new Gtk_Print_Settings_Record;
    begin
       Gtk.Print_Settings.Initialize_From_File (Self, File_Name, Error);
-      if Error = null then
-         Return_Obj := Self;
+      if Error /= null then
+         Self := null;
       end if;
-      return Return_Obj;
+      return Self;
    end Gtk_Print_Settings_New_From_File;
 
    ------------------------------------------
@@ -180,14 +185,13 @@ package body Gtk.Print_Settings is
        Group_Name : UTF8_String := "";
        Error      : out Glib.Error.GError) return Gtk_Print_Settings
    is
-      Self       : constant Gtk_Print_Settings := new Gtk_Print_Settings_Record;
-      Return_Obj : Gtk_Print_Settings;
+      Self : Gtk_Print_Settings := new Gtk_Print_Settings_Record;
    begin
       Gtk.Print_Settings.Initialize_From_Key_File (Self, Key_File, Group_Name, Error);
-      if Error = null then
-         Return_Obj := Self;
+      if Error /= null then
+         Self := null;
       end if;
-      return Return_Obj;
+      return Self;
    end Gtk_Print_Settings_New_From_Key_File;
 
    ----------------
@@ -226,7 +230,9 @@ package body Gtk.Print_Settings is
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_File_Name, Acc_Error'Access);
          Error := Acc_Error;
-         Set_Object (Self, Tmp_Return);
+         if Error = null then
+            Set_Object (Self, Tmp_Return);
+         end if;
       end if;
       Free (Tmp_File_Name);
    end Initialize_From_File;
@@ -274,7 +280,9 @@ package body Gtk.Print_Settings is
             else New_String (Group_Name));
          Tmp_Return := Internal (Key_File, Tmp_Group_Name, Acc_Error'Access);
          Error := Acc_Error;
-         Set_Object (Self, Tmp_Return);
+         if Error = null then
+            Set_Object (Self, Tmp_Return);
+         end if;
       end if;
       Free (Tmp_Group_Name);
    end Initialize_From_Key_File;

@@ -103,9 +103,9 @@ package body Glib.String is
    function Gstring_New (Init : UTF8_String := "") return Gstring is
       function Internal (Init : Gtkada.Types.Chars_Ptr) return Gstring;
       pragma Import (C, Internal, "g_string_new");
+      Self       : Gstring;
       Tmp_Init   : Gtkada.Types.Chars_Ptr;
       Tmp_Return : Gstring;
-      Self       : Gstring;
    begin
       Tmp_Init :=
         (if Init = ""
@@ -129,9 +129,9 @@ package body Glib.String is
          (Init : Gtkada.Types.Chars_Ptr;
           Len  : Gssize) return Gstring;
       pragma Import (C, Internal, "g_string_new_len");
+      Self       : Gstring;
       Tmp_Init   : Gtkada.Types.Chars_Ptr := New_String (Init);
       Tmp_Return : Gstring;
-      Self       : Gstring;
    begin
       Tmp_Return := Internal (Tmp_Init, Len);
       Self := Tmp_Return;
@@ -146,8 +146,8 @@ package body Glib.String is
    function Gstring_New_Take (Init : UTF8_String := "") return Gstring is
       function Internal (Init : Gtkada.Types.Chars_Ptr) return Gstring;
       pragma Import (C, Internal, "g_string_new_take");
-      Tmp_Init : Gtkada.Types.Chars_Ptr;
       Self     : Gstring;
+      Tmp_Init : Gtkada.Types.Chars_Ptr;
    begin
       Tmp_Init :=
         (if Init = ""
