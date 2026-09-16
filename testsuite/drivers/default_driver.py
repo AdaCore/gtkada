@@ -125,9 +125,11 @@ class DefaultScriptDriver(ClassicTestDriver):
         # library can be loaded.
         env.setdefault("GSK_RENDERER", "cairo")
 
-        env["GPR_PROJECT_PATH"] = (
-            str(gtkada_root / "src") + os.pathsep + env.get("GPR_PROJECT_PATH", "")
-        )
+        # If we're not in development mode, we use gtkada.gpr from the install
+        if not self.testsuite_options.no_library_build:
+            env["GPR_PROJECT_PATH"] = (
+                str(gtkada_root / "src") + os.pathsep + env.get("GPR_PROJECT_PATH", "")
+            )
 
         # Find the ".gpr" file in the working directory
         gpr_files = list(Path(working_dir).glob("*.gpr"))
@@ -179,7 +181,7 @@ class DefaultScriptDriver(ClassicTestDriver):
                     main if main.endswith(".exe") else main + ".exe" for main in mains
                 ]
         except KeyError:
-            msg = "Failed to find mains in gprinspect output"
+            msg = f"Failed to find mains in gprinspect output: {p.stdout}"
             self.result.log += msg
             raise TestAbortWithFailure(msg)
 

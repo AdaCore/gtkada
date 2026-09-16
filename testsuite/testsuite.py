@@ -1,3 +1,5 @@
+#! /usr/bin/env python
+
 """GtkAda testsuite runner"""
 
 from __future__ import annotations
