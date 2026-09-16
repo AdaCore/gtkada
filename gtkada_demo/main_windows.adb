@@ -25,26 +25,31 @@ with Ada.Directories;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 with Ada.Text_IO;
 
-with Glib;                   use Glib;
-with Glib.Object;            use Glib.Object;
-with Gtk.Application;        use Gtk.Application;
-with Gtk.Application_Window; use Gtk.Application_Window;
-with Gtk.Box;                use Gtk.Box;
-with Gtk.Cell_Renderer_Text; use Gtk.Cell_Renderer_Text;
-with Gtk.Css_Provider;       use Gtk.Css_Provider;
-with Gtk.Enums;              use Gtk.Enums;
-with Gtk.Frame;              use Gtk.Frame;
-with Gtk.Label;              use Gtk.Label;
-with Gtk.List_Store;         use Gtk.List_Store;
-with Gtk.Paned;              use Gtk.Paned;
-with Gtk.Scrolled_Window;    use Gtk.Scrolled_Window;
-with Gtk.Style_Context;      use Gtk.Style_Context;
-with Gtk.Style_Provider;     use Gtk.Style_Provider;
-with Gtk.Tree_Model;         use Gtk.Tree_Model;
-with Gtk.Tree_Selection;     use Gtk.Tree_Selection;
-with Gtk.Tree_View;          use Gtk.Tree_View;
-with Gtk.Tree_View_Column;   use Gtk.Tree_View_Column;
-with Gtk.Widget;             use Gtk.Widget;
+with Glib;                        use Glib;
+with Glib.Object;                 use Glib.Object;
+with Gtk.Application;             use Gtk.Application;
+with Gtk.Application_Window;      use Gtk.Application_Window;
+with Gtk.Box;                     use Gtk.Box;
+with Gtk.Css_Provider;            use Gtk.Css_Provider;
+with Gtk.Enums;                   use Gtk.Enums;
+with Gtk.Frame;                   use Gtk.Frame;
+with Gtk.Label;                   use Gtk.Label;
+with Gtk.List_Item;               use Gtk.List_Item;
+with Gtk.List_View;               use Gtk.List_View;
+with Gtk.Paned;                   use Gtk.Paned;
+with Gtk.Scrolled_Window;         use Gtk.Scrolled_Window;
+with Gtk.Selection_Model;
+with Gtk.Signal_List_Item_Factory; use Gtk.Signal_List_Item_Factory;
+with Gtk.Single_Selection;        use Gtk.Single_Selection;
+with Gtk.Style_Context;           use Gtk.Style_Context;
+with Gtk.Style_Provider;          use Gtk.Style_Provider;
+with Gtk.Tree_Expander;           use Gtk.Tree_Expander;
+with Gtk.Tree_List_Model;         use Gtk.Tree_List_Model;
+with Gtk.Tree_List_Row;           use Gtk.Tree_List_Row;
+with Gtk.Widget;                  use Gtk.Widget;
+
+with Demo_Items;                  use Demo_Items;
+with Demo_Registry;
 
 --  TRANSITION: the original `with` clauses are preserved below as
 --  comments. Uncomment each one as the corresponding binding becomes
@@ -54,11 +59,8 @@ with Gtk.Widget;             use Gtk.Widget;
 --  with Gtk;                 use Gtk;
 --  with Gdk;                 use Gdk;
 --  with Gdk.Color;           use Gdk.Color;
-with Gtk.Box;    use Gtk.Box;
-with Gtk.Button; use Gtk.Button;
 --  with Gtk.Handlers;        use Gtk.Handlers;
 --  with Gtkada.Handlers;     use Gtkada.Handlers;
---  with Gtk.Label;           use Gtk.Label;
 --  with Gtk.Main;            use Gtk.Main;
 --  with Gtk.Notebook;        use Gtk.Notebook;
 --  with Gtk.Text_Buffer;     use Gtk.Text_Buffer;
@@ -70,79 +72,24 @@ with Gtk.Button; use Gtk.Button;
 --  with Gtk.Window;          use Gtk.Window;
 --  with Pango.Font;          use Pango.Font;
 
-with Ada.Strings.Unbounded;
-
---  with Create_Application;
-with Create_Box;
---  with Create_Builder;
---  with Create_GL;
---  with Create_Gtkada_Builder;
-with Create_Buttons;
---  with Create_Cairo;
---  with Create_Calendar;
---  with Create_Canvas;
---  with Create_Canvas_View_Animate;
---  with Create_Canvas_View_Composite;
---  with Create_Canvas_View_Edit;
---  with Create_Canvas_View_Events;
---  with Create_Canvas_View_Items;
---  with Create_Canvas_View_Links;
---  with Create_Canvas_View_Minimap;
---  with Create_Canvas_View_Routes;
---  with Create_Canvas_View_Rtrees;
-with Create_Check_Buttons;
---  with Create_Clipboard;
-with Create_Color_Chooser;
-with Create_Column_View;
-with Create_Custom_Widget;
---  with Create_Cursors;
---  with Create_Dnd;
-with Create_Drawing_Area;
-with Create_Entry;
---  with Create_File_Chooser;
---  with Create_File_Selection;
-with Create_Frame;
---  with Create_Fixed;
---  with Create_Flow_Box;
---  with Create_Font_Chooser;
---  with Create_Gestures;
---  with Create_Gtkada_Dialog;
-with Create_Label;
-with Create_List_Store;
---  with Create_Link_Buttons;
---  with Create_Main_Loop;
-with Create_Menu;
---  with Create_MDI;
---  with Create_Notebook;
---  with Create_Opacity;
-with Create_Paned;
---  with Create_Pixbuf;
---  with Create_Print;
---  with Create_Progress;
---  with Create_Range;
-with Create_Reparent;
---  with Create_Revealer;
---  with Create_Selection;
---  with Create_Size_Groups;
---  with Create_Stack;
-with Create_Scrolled;
---  with Create_Sources;
-with Create_Spin;
---  with Create_Spinners;
---  with Create_Splittable;
---  with Create_Task_Monitor;
---  with Create_Test_Idle;
-with Create_Test_Timeout;
-with Create_Text_View;
-with Create_Toggle_Buttons;
-with Create_Tooltips;
-with Create_Tree_Filter;
-with Create_Tree_View;
---  with Common; use Common;
-with Create_Css_Accordion;
---  with Create_Css_Editor;
+--  TRANSITION: the demos themselves now live in Demo_Registry, which is the
+--  single place to edit when a binding comes back. The ones still waiting
+--  for theirs are:
 --
---  with Libart_Demo;  use Libart_Demo;
+--  Create_Application, Create_Builder, Create_GL, Create_Gtkada_Builder,
+--  Create_Cairo, Create_Calendar, Create_Canvas, Create_Canvas_View_Animate,
+--  Create_Canvas_View_Composite, Create_Canvas_View_Edit,
+--  Create_Canvas_View_Events, Create_Canvas_View_Items,
+--  Create_Canvas_View_Links, Create_Canvas_View_Minimap,
+--  Create_Canvas_View_Routes, Create_Canvas_View_Rtrees, Create_Clipboard,
+--  Create_Cursors, Create_Dnd, Create_File_Chooser, Create_File_Selection,
+--  Create_Fixed, Create_Flow_Box, Create_Font_Chooser, Create_Gestures,
+--  Create_Gtkada_Dialog, Create_Link_Buttons, Create_Main_Loop, Create_MDI,
+--  Create_Notebook, Create_Opacity, Create_Pixbuf, Create_Print,
+--  Create_Progress, Create_Range, Create_Revealer, Create_Selection,
+--  Create_Size_Groups, Create_Stack, Create_Sources, Create_Spinners,
+--  Create_Splittable, Create_Task_Monitor, Create_Test_Idle,
+--  Create_Css_Editor, Libart_Demo.
 
 package body Main_Windows is
 
@@ -177,97 +124,6 @@ package body Main_Windows is
       Unref (Provider);
    end Load_Css;
 
-   Label_Column : constant := 0;
-   Demo_Column  : constant := 1;
-   --  Columns in the demo selector list store. Label_Column holds the text
-   --  shown in the tree, Demo_Column holds the index into Demos below.
-
-   type Demo_Function is
-     access procedure (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
-
-   type Help_Function is access function return String;
-
-   type Demo_Info is record
-      Label : Ada.Strings.Unbounded.Unbounded_String;
-      Run   : Demo_Function;
-      Help  : Help_Function;
-   end record;
-
-   function To_Demo
-     (Name : String; Runner : Demo_Function; Help : Help_Function)
-      return Demo_Info
-   is (Label => To_Unbounded_String (Name), Run => Runner, Help => Help);
-
-   Demos : constant array (Positive range <>) of Demo_Info :=
-     (To_Demo ("Labels", Create_Label.Run'Access, Create_Label.Help'Access),
-      To_Demo
-        ("Tree Filter",
-         Create_Tree_Filter.Run'Access,
-         Create_Tree_Filter.Help'Access),
-      To_Demo
-        ("Tree View",
-         Create_Tree_View.Run'Access,
-         Create_Tree_View.Help'Access),
-      To_Demo ("Boxes", Create_Box.Run'Access, Create_Box.Help'Access),
-      To_Demo ("Frames", Create_Frame.Run'Access, Create_Frame.Help'Access),
-      To_Demo ("Paned", Create_Paned.Run'Access, Create_Paned.Help'Access),
-      To_Demo
-        ("Scrolled Window",
-         Create_Scrolled.Run'Access,
-         Create_Scrolled.Help'Access),
-      To_Demo
-        ("Text View",
-         Create_Text_View.Run'Access,
-         Create_Text_View.Help'Access),
-      To_Demo
-        ("Buttons", Create_Buttons.Run'Access, Create_Buttons.Help'Access),
-      To_Demo
-        ("Check Buttons",
-         Create_Check_Buttons.Run'Access,
-         Create_Check_Buttons.Help'Access),
-      To_Demo
-        ("Toggle Buttons",
-         Create_Toggle_Buttons.Run'Access,
-         Create_Toggle_Buttons.Help'Access),
-      To_Demo
-        ("Spin Buttons", Create_Spin.Run'Access, Create_Spin.Help'Access),
-      To_Demo ("Menus", Create_Menu.Run'Access, Create_Menu.Help'Access),
-      To_Demo
-        ("Color Chooser",
-         Create_Color_Chooser.Run'Access,
-         Create_Color_Chooser.Help'Access),
-      To_Demo
-        ("CSS Accordion",
-         Create_Css_Accordion.Run'Access,
-         Create_Css_Accordion.Help'Access),
-      To_Demo
-        ("Custom Widget",
-         Create_Custom_Widget.Run'Access,
-         Create_Custom_Widget.Help'Access),
-      To_Demo
-        ("Drawing Area",
-         Create_Drawing_Area.Run'Access,
-         Create_Drawing_Area.Help'Access),
-      To_Demo
-        ("Reparent", Create_Reparent.Run'Access, Create_Reparent.Help'Access),
-      To_Demo
-        ("Tooltips", Create_Tooltips.Run'Access, Create_Tooltips.Help'Access),
-      To_Demo
-        ("Timeout",
-         Create_Test_Timeout.Run'Access,
-         Create_Test_Timeout.Help'Access),
-      To_Demo
-        ("List Store",
-         Create_List_Store.Run'Access,
-         Create_List_Store.Help'Access),
-      To_Demo
-        ("Column View",
-         Create_Column_View.Run'Access,
-         Create_Column_View.Help'Access),
-      To_Demo ("Entry", Create_Entry.Run'Access, Create_Entry.Help'Access));
-   --  The set of demos exposed in the selector. New entries can be added
-   --  here as the corresponding bindings are reintroduced.
-
    Demo_Frame : Gtk_Frame;
    --  The frame on the right-hand side of the paned, in which the currently
    --  selected demo is displayed.
@@ -281,10 +137,26 @@ package body Main_Windows is
    --  strings into Pango markup ("<b>...</b>"), escaping the XML-significant
    --  characters along the way so the result is always well-formed markup.
 
-   procedure On_Selection_Changed
-     (Selection : access Gtk_Tree_Selection_Record'Class);
-   --  Replace the contents of Demo_Frame with the demo corresponding to the
-   --  currently selected row, and refresh Help_Label with its help text.
+   procedure Show_Demo (Item : Demo_Item);
+   --  Replace the contents of Demo_Frame with Item's demo, and refresh
+   --  Help_Label with its help text.
+
+   procedure Setup_Row
+     (Self : access Gtk_Signal_List_Item_Factory_Record'Class;
+      Item : not null access Gtk_List_Item_Record'Class);
+   --  Build the widget shown in a selector row: a Gtk_Tree_Expander, which
+   --  draws the arrow and the indentation, around a label.
+
+   procedure Bind_Row
+     (Self : access Gtk_Signal_List_Item_Factory_Record'Class;
+      Item : not null access Gtk_List_Item_Record'Class);
+   --  Point a recycled selector row at the item it is now to show.
+
+   procedure On_Selection
+     (Self     : Gtk.Selection_Model.Gtk_Selection_Model;
+      Position : Guint;
+      N_Items  : Guint);
+   --  Run the newly selected demo, if the selected row is one.
 
    ---------------
    -- To_Markup --
@@ -325,53 +197,133 @@ package body Main_Windows is
       return To_String (Result);
    end To_Markup;
 
-   --------------------------
-   -- On_Selection_Changed --
-   --------------------------
+   ---------------
+   -- Show_Demo --
+   ---------------
 
-   procedure On_Selection_Changed
-     (Selection : access Gtk_Tree_Selection_Record'Class)
-   is
-      Model : Gtk_Tree_Model;
-      Iter  : Gtk_Tree_Iter;
+   procedure Show_Demo (Item : Demo_Item) is
    begin
-      Get_Selected (Selection, Model, Iter);
-      if Iter = Null_Iter then
+      Demo_Frame.Set_Child (null);
+      Demo_Frame.Set_Label ("");
+      Item.Run (Demo_Frame);
+
+      if Item.Help /= null then
+         Help_Label.Set_Markup (To_Markup (Item.Help.all));
+      else
+         Help_Label.Set_Markup ("No help available");
+      end if;
+   end Show_Demo;
+
+   ---------------
+   -- Setup_Row --
+   ---------------
+
+   procedure Setup_Row
+     (Self : access Gtk_Signal_List_Item_Factory_Record'Class;
+      Item : not null access Gtk_List_Item_Record'Class)
+   is
+      pragma Unreferenced (Self);
+      Expander : Gtk_Tree_Expander;
+      Label    : Gtk_Label;
+   begin
+      Gtk.Label.Gtk_New (Label, "");
+      Label.Set_Xalign (0.0);
+
+      Gtk.Tree_Expander.Gtk_New (Expander);
+      Expander.Set_Child (Label);
+      Item.Set_Child (Expander);
+
+      --  The expander carries the +, - and arrow key bindings, so the
+      --  keyboard focus must reach it rather than stop at the row.
+      Item.Set_Focusable (False);
+   end Setup_Row;
+
+   --------------
+   -- Bind_Row --
+   --------------
+
+   procedure Bind_Row
+     (Self : access Gtk_Signal_List_Item_Factory_Record'Class;
+      Item : not null access Gtk_List_Item_Record'Class)
+   is
+      pragma Unreferenced (Self);
+      Expander : constant Gtk_Tree_Expander :=
+        Gtk_Tree_Expander (Item.Get_Child);
+      Row      : constant GObject := Item.Get_Item;
+   begin
+      --  The tree model is not a passthrough one, so what the list item
+      --  holds is the Gtk_Tree_List_Row wrapping the demo item -- which is
+      --  also the only thing Set_List_Row accepts. The row is null while
+      --  the cell is unbound.
+      if Row = null then
          return;
       end if;
 
-      declare
-         Index : constant Integer :=
-           Integer (Get_Int (Model, Iter, Demo_Column));
-      begin
-         Demo_Frame.Set_Child (null);
-         Demo_Frame.Set_Label ("");
-         if Index in Demos'Range and then Demos (Index).Run /= null then
-            Demos (Index).Run (Demo_Frame);
-         end if;
+      --  Handing the row to the expander is all that is needed for the
+      --  arrow, the indentation and the expand/collapse gestures: the
+      --  expander watches the row from here on.
+      Expander.Set_List_Row (Gtk_Tree_List_Row (Row));
 
-         if Index in Demos'Range and then Demos (Index).Help /= null then
-            Help_Label.Set_Markup (To_Markup (Demos (Index).Help.all));
-         else
-            Help_Label.Set_Markup ("No help available");
-         end if;
+      declare
+         Object : constant GObject := Gtk_Tree_List_Row (Row).Get_Item;
+         Demo   : constant Demo_Item := To_Demo_Item (Object);
+      begin
+         Gtk_Label (Expander.Get_Child).Set_Text (Title_Of (Object));
+
+         --  A category has nothing to run, so take the click affordance
+         --  away. This is cosmetic only: a non-selectable item may still be
+         --  selected, and GTK resets the property on every rebind, so the
+         --  guard that matters is the one in On_Selection below.
+         Item.Set_Selectable (Demo /= null and then Demo.Run /= null);
       end;
-   end On_Selection_Changed;
+   end Bind_Row;
+
+   ------------------
+   -- On_Selection --
+   ------------------
+
+   procedure On_Selection
+     (Self     : Gtk.Selection_Model.Gtk_Selection_Model;
+      Position : Guint;
+      N_Items  : Guint)
+   is
+      pragma Unreferenced (Position, N_Items);
+      Selection : constant Gtk_Single_Selection := -Self;
+      Row       : constant GObject := Selection.Get_Selected_Item;
+      Demo      : Demo_Item;
+   begin
+      --  Null when nothing is selected: this replaces the old Null_Iter
+      --  guard.
+      if Row = null then
+         return;
+      end if;
+
+      Demo := To_Demo_Item (Gtk_Tree_List_Row (Row).Get_Item);
+
+      --  THE guard against running a category row. Gtk.List_Item.
+      --  Set_Selectable (False) does not stop the selection model selecting
+      --  one -- gtk-list_item.ads says so outright, and GTK resets the
+      --  property on every rebind -- so the test has to happen here.
+      --  Upstream gates the same way, on demo->func /= NULL.
+      if Demo = null or else Demo.Run = null then
+         return;
+      end if;
+
+      Show_Demo (Demo);
+   end On_Selection;
 
    -----------------
    -- On_Activate --
    -----------------
 
    procedure On_Activate (Self : access GApplication_Record'Class) is
-      App_Win  : Gtk_Application_Window;
-      Paned    : Gtk_Paned;
-      Scrolled : Gtk_Scrolled_Window;
-      Tree     : Gtk_Tree_View;
-      Store    : Gtk_List_Store;
-      Render   : Gtk_Cell_Renderer_Text;
-      Col      : Gtk_Tree_View_Column;
-      Iter     : Gtk_Tree_Iter;
-      Dummy    : Gint;
+      App_Win   : Gtk_Application_Window;
+      Paned     : Gtk_Paned;
+      Scrolled  : Gtk_Scrolled_Window;
+      Tree      : Gtk_Tree_List_Model;
+      Selection : Gtk_Single_Selection;
+      Factory   : Gtk_Signal_List_Item_Factory;
+      List      : Gtk_List_View;
    begin
       Gtk_New (App_Win, Gtk_Application (Self));
       App_Win.Set_Title ("GtkAda Demo");
@@ -386,26 +338,30 @@ package body Main_Windows is
       Paned.Set_Start_Child (Scrolled);
       Paned.Set_Resize_Start_Child (False);
 
-      Gtk_New
-        (Store, (Label_Column => GType_String, Demo_Column => GType_Int));
-      for Index in Demos'Range loop
-         Store.Append (Iter);
-         Store.Set
-           (Iter,
-            Label_Column,
-            Ada.Strings.Unbounded.To_String (Demos (Index).Label));
-         Store.Set (Iter, Demo_Column, Gint (Index));
-      end loop;
+      --  Passthrough => False is load-bearing: it is what makes the items of
+      --  the model Gtk_Tree_List_Rows, which is the only thing the expanders
+      --  built by Setup_Row accept. Autoexpand => True opens the tree on
+      --  startup, so that the first demo can be shown without a category
+      --  having to be expanded first.
+      --
+      --  Each of the three constructors below is transfer-full on what it
+      --  wraps, and each is handed something freshly made, so -- unlike
+      --  Demo_Registry.Children_Of -- no reference is taken here.
+      Gtk.Tree_List_Model.Gtk_New
+        (Tree,
+         Root        => Demo_Registry.Root_Model,
+         Passthrough => False,
+         Autoexpand  => True,
+         Create_Func => Demo_Registry.Children_Of'Access);
 
-      Gtk_New (Tree, +Store);
-      Tree.Set_Headers_Visible (False);
-      Scrolled.Set_Child (Tree);
+      Selection := Gtk_Single_Selection_New (+Tree);
 
-      Gtk_New (Col);
-      Gtk_New (Render);
-      Col.Pack_Start (Render, Expand => True);
-      Col.Add_Attribute (Render, "text", Label_Column);
-      Dummy := Tree.Append_Column (Col);
+      Gtk.Signal_List_Item_Factory.Gtk_New (Factory);
+      Factory.On_Setup (Setup_Row'Access);
+      Factory.On_Bind (Bind_Row'Access);
+
+      Gtk.List_View.Gtk_New (List, +Selection, Factory);
+      Scrolled.Set_Child (List);
 
       declare
          Right_Box  : Gtk_Box;
@@ -435,14 +391,34 @@ package body Main_Windows is
       end;
       Paned.Set_Position (170);
 
-      Get_Selection (Tree).Set_Mode (Selection_Single);
-      Get_Selection (Tree).On_Changed (On_Selection_Changed'Access);
+      --  Select the first demo, so that the demo frame is populated on
+      --  startup. Row 0 is a category now, hence the walk; Autoexpand above
+      --  is what guarantees its children are already in the model. The
+      --  selection is made -- and shown by hand -- before the handler is
+      --  connected, so that the demo is built exactly once whether or not
+      --  Set_Selected emits selection-changed.
+      declare
+         Position : Guint := 0;
+         Row      : Gtk_Tree_List_Row;
+         Demo     : Demo_Item;
+      begin
+         while Position < Tree.Get_N_Items loop
+            Row := Tree.Get_Row (Position);
+            Demo :=
+              (if Row = null then null else To_Demo_Item (Row.Get_Item));
 
-      --  Select the first row so the demo frame is populated on startup.
-      Iter := Get_Iter_First (+Store);
-      if Iter /= Null_Iter then
-         Get_Selection (Tree).Select_Iter (Iter);
-      end if;
+            if Demo /= null and then Demo.Run /= null then
+               Selection.Set_Selected (Position);
+               Show_Demo (Demo);
+               exit;
+            end if;
+
+            Position := Position + 1;
+         end loop;
+      end;
+
+      Gtk.Selection_Model.On_Selection_Changed
+        (+Selection, On_Selection'Access);
 
       App_Win.Present;
    end On_Activate;
