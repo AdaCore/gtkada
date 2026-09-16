@@ -577,6 +577,7 @@ binding = (
     "Gtk.SelectionFilterModel",
     "Gtk.TreeListRow",
     "Gtk.TreeListModel",
+    "Gtk.TreeExpander",
     "--Gtk.Spinner",
     "----GtkSpinnerAccessible",  # We do not support atk
     "Gtk.SpinButton",

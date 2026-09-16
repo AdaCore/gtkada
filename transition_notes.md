@@ -460,6 +460,16 @@ gtk4 port.
   instantiations (or a generator) that pick the one matching the property's
   GObject representation.
 
+- Honour `transfer-ownership="full"` on object returns. The GIR declares
+  `gtk_tree_expander_get_item` transfer-full, but the generated `Get_Item`
+  wraps the returned pointer with `Get_User_Data` and never unrefs it, so the
+  reference C hands over is leaked. `Gtk.Tree_List_Row.Get_Item`,
+  `Gtk.List_Item.Get_Item`, `Gtk.Column_View_Cell`, `Gtk.Column_View_Row` and
+  `Gtk.List_Header` are all declared transfer-full in the GIR and all bound
+  exactly this way today. The fix wants doing in one sweep over the lot —
+  either a generator that honours `transfer-ownership` on object returns, or a
+  hand-written `[extra]` body per getter — rather than one package at a time.
+
 ## To do (package by package)
 
 gtk-handlers.ads:
