@@ -123,8 +123,7 @@ package Gtk.Search_Bar is
       (Self : not null access Gtk_Search_Bar_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the child widget of Bar.
-   --  @return the child widget of Bar
-   --  Return has transfer-ownership='none'
+   --  @return the child widget of Bar. Has transfer-ownership='none'.
 
    procedure Set_Child
       (Self  : not null access Gtk_Search_Bar_Record;
@@ -136,8 +135,7 @@ package Gtk.Search_Bar is
       (Self : not null access Gtk_Search_Bar_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the widget that Bar is capturing key events from.
-   --  @return The key capture widget.
-   --  Return has transfer-ownership='none'
+   --  @return The key capture widget. Has transfer-ownership='none'.
 
    procedure Set_Key_Capture_Widget
       (Self   : not null access Gtk_Search_Bar_Record;

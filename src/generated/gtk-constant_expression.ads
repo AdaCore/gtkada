@@ -63,6 +63,7 @@ package Gtk.Constant_Expression is
    function Get_Value
       (Self : Gtk_Constant_Expression) return access constant GValue;
    --  Gets the value that a constant expression evaluates to.
+   --  @return the value
 
    ----------------------
    -- GtkAda additions --

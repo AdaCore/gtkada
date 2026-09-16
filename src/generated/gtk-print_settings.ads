@@ -170,7 +170,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record)
        return Gtk_Print_Settings;
    --  Copies a `GtkPrintSettings` object.
-   --  @return a newly allocated copy of Other
+   --  @return a newly allocated copy of Other. Has transfer-ownership='full'.
 
    procedure Foreach
       (Self : not null access Gtk_Print_Settings_Record;
@@ -474,7 +474,7 @@ package Gtk.Print_Settings is
        return Gtk.Paper_Size.Gtk_Paper_Size;
    --  Gets the value of GTK_PRINT_SETTINGS_PAPER_FORMAT, converted to a
    --  `GtkPaperSize`.
-   --  @return the paper size
+   --  @return the paper size. Has transfer-ownership='full'.
 
    procedure Set_Paper_Size
       (Self       : not null access Gtk_Print_Settings_Record;
@@ -664,8 +664,7 @@ package Gtk.Print_Settings is
       (Self : not null access Gtk_Print_Settings_Record)
        return Glib.Variant.Gvariant;
    --  Serialize print settings to an a{sv} variant.
-   --  @return a new, floating, `GVariant`
-   --  Return has transfer-ownership='none'
+   --  @return a new, floating, `GVariant`. Has transfer-ownership='none'.
 
    procedure To_Key_File
       (Self       : not null access Gtk_Print_Settings_Record;

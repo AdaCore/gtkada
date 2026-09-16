@@ -156,7 +156,7 @@ package Gdk.Dmabuf_Texture_Builder is
    --  @param Data user data to pass to the destroy function
    --  @param Error the return location for a recoverable error
    --  @return a newly built `GdkTexture` or `NULL` if the format is not
-   --  supported
+   --  supported. Has transfer-ownership='full'.
 
    function Get_Color_State
       (Self : not null access Gdk_Dmabuf_Texture_Builder_Record)
@@ -164,8 +164,7 @@ package Gdk.Dmabuf_Texture_Builder is
    --  Gets the color state previously set via
    --  Gdk.Dmabuf_Texture_Builder.Set_Color_State.
    --  Since: gtk+ 4.16
-   --  @return the color state
-   --  Return has transfer-ownership='none'
+   --  @return the color state. Has transfer-ownership='none'.
 
    procedure Set_Color_State
       (Self        : not null access Gdk_Dmabuf_Texture_Builder_Record;
@@ -182,8 +181,7 @@ package Gdk.Dmabuf_Texture_Builder is
        return Gdk.Gdk_Display;
    --  Returns the display that this texture builder is associated with.
    --  Since: gtk+ 4.14
-   --  @return the display
-   --  Return has transfer-ownership='none'
+   --  @return the display. Has transfer-ownership='none'.
 
    procedure Set_Display
       (Self    : not null access Gdk_Dmabuf_Texture_Builder_Record;
@@ -355,8 +353,7 @@ package Gdk.Dmabuf_Texture_Builder is
    --  Gets the texture previously set via
    --  Gdk.Dmabuf_Texture_Builder.Set_Update_Texture or null if none was set.
    --  Since: gtk+ 4.14
-   --  @return The texture
-   --  Return has transfer-ownership='none'
+   --  @return The texture. Has transfer-ownership='none'.
 
    procedure Set_Update_Texture
       (Self    : not null access Gdk_Dmabuf_Texture_Builder_Record;

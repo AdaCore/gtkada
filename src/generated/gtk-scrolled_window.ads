@@ -151,8 +151,8 @@ package Gtk.Scrolled_Window is
    --  If the scrolled window automatically added a [classGtk.Viewport], this
    --  function will return the viewport widget, and you can retrieve its child
    --  using [methodGtk.Viewport.get_child].
-   --  @return the child widget of Scrolled_Window
-   --  Return has transfer-ownership='none'
+   --  @return the child widget of Scrolled_Window. Has
+   --  transfer-ownership='none'.
 
    procedure Set_Child
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
@@ -169,8 +169,7 @@ package Gtk.Scrolled_Window is
    --  Returns the horizontal scrollbar's adjustment.
    --  This is the adjustment used to connect the horizontal scrollbar to the
    --  child widget's horizontal scroll functionality.
-   --  @return the horizontal `GtkAdjustment`
-   --  Return has transfer-ownership='none'
+   --  @return the horizontal `GtkAdjustment`. Has transfer-ownership='none'.
 
    procedure Set_Hadjustment
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
@@ -196,8 +195,8 @@ package Gtk.Scrolled_Window is
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Returns the horizontal scrollbar of Scrolled_Window.
-   --  @return the horizontal scrollbar of the scrolled window.
-   --  Return has transfer-ownership='none'
+   --  @return the horizontal scrollbar of the scrolled window. Has
+   --  transfer-ownership='none'.
 
    function Get_Kinetic_Scrolling
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
@@ -368,8 +367,7 @@ package Gtk.Scrolled_Window is
    --  Returns the vertical scrollbar's adjustment.
    --  This is the adjustment used to connect the vertical scrollbar to the
    --  child widget's vertical scroll functionality.
-   --  @return the vertical `GtkAdjustment`
-   --  Return has transfer-ownership='none'
+   --  @return the vertical `GtkAdjustment`. Has transfer-ownership='none'.
 
    procedure Set_Vadjustment
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record;
@@ -382,8 +380,8 @@ package Gtk.Scrolled_Window is
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Returns the vertical scrollbar of Scrolled_Window.
-   --  @return the vertical scrollbar of the scrolled window.
-   --  Return has transfer-ownership='none'
+   --  @return the vertical scrollbar of the scrolled window. Has
+   --  transfer-ownership='none'.
 
    procedure Unset_Placement
       (Scrolled_Window : not null access Gtk_Scrolled_Window_Record);

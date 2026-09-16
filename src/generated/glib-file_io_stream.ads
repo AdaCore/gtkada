@@ -116,6 +116,7 @@ package Glib.File_IO_Stream is
    --  to ignore.
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Info.Gfile_Info for the Stream, or null on error.
+   --  Has transfer-ownership='full'.
 
    procedure Query_Info_Async
       (Self        : not null access Gfile_Iostream_Record;
@@ -146,6 +147,7 @@ package Glib.File_IO_Stream is
    --  Since: gtk+ 2.22
    --  @param Result a Glib.G_Async_Result.
    --  @param Error the return location for a recoverable error
-   --  @return A Glib.File_Info.Gfile_Info for the finished query.
+   --  @return A Glib.File_Info.Gfile_Info for the finished query. Has
+   --  transfer-ownership='full'.
 
 end Glib.File_IO_Stream;

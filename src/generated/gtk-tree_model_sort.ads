@@ -210,7 +210,7 @@ package Gtk.Tree_Model_Sort is
    --  path on the child model, then null is returned.
    --  Deprecated since 4.10, 1
    --  @param Child_Path A `GtkTreePath` to convert
-   --  @return A newly allocated `GtkTreePath`
+   --  @return A newly allocated `GtkTreePath`. Has transfer-ownership='full'.
 
    procedure Convert_Iter_To_Child_Iter
       (Self        : not null access Gtk_Tree_Model_Sort_Record;
@@ -235,7 +235,7 @@ package Gtk.Tree_Model_Sort is
    --  null is returned.
    --  Deprecated since 4.10, 1
    --  @param Sorted_Path A `GtkTreePath` to convert
-   --  @return A newly allocated `GtkTreePath`
+   --  @return A newly allocated `GtkTreePath`. Has transfer-ownership='full'.
 
    function Get_Model
       (Self : not null access Gtk_Tree_Model_Sort_Record)

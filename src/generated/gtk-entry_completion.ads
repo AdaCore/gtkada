@@ -186,8 +186,8 @@ package Gtk.Entry_Completion is
    pragma Obsolescent (Get_Entry);
    --  Gets the entry Completion has been attached to.
    --  Deprecated since 4.10, 1
-   --  @return The entry Completion has been attached to
-   --  Return has transfer-ownership='none'
+   --  @return The entry Completion has been attached to. Has
+   --  transfer-ownership='none'.
 
    function Get_Inline_Completion
       (Self : not null access Gtk_Entry_Completion_Record) return Boolean;

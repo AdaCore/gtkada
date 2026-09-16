@@ -590,6 +590,7 @@ package Glib.App_Info is
    --  `NoDisplay=true` set or are excluded from display by means of
    --  `OnlyShowIn` or `NotShowIn`. See Glib.App_Info.Should_Show. The returned
    --  list does not include applications which have the `Hidden` key set.
+   --  @return a newly allocated GList of references to GApp_Infos.
 
    function Get_All_For_Type
       (Content_Type : UTF8_String) return App_Info_List.Glist;
@@ -599,6 +600,7 @@ package Glib.App_Info is
    --  Glib.App_Info.Get_Fallback_For_Type.
    --  @param Content_Type the content type to find a Glib.App_Info.Gapp_Info
    --  for
+   --  @return GList of GApp_Infos for given Content_Type or null on error.
 
    function Get_Default_For_Type
       (Content_Type      : UTF8_String;
@@ -654,6 +656,7 @@ package Glib.App_Info is
    --  Since: gtk+ 2.28
    --  @param Content_Type the content type to find a Glib.App_Info.Gapp_Info
    --  for
+   --  @return GList of GApp_Infos for given Content_Type or null on error.
 
    function Get_Recommended_For_Type
       (Content_Type : UTF8_String) return App_Info_List.Glist;
@@ -665,6 +668,7 @@ package Glib.App_Info is
    --  Since: gtk+ 2.28
    --  @param Content_Type the content type to find a Glib.App_Info.Gapp_Info
    --  for
+   --  @return GList of GApp_Infos for given Content_Type or null on error.
 
    function Launch_Default_For_Uri
       (URI     : UTF8_String;

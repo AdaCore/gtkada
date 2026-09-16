@@ -310,8 +310,7 @@ package Gtk.Label is
    --  [methodGtk.Label.set_markup]). If you want to get the effective
    --  attributes for the label, use `pango_layout_get_attributes
    --  (gtk_label_get_layout (self))`.
-   --  @return the attribute list
-   --  Return has transfer-ownership='none'
+   --  @return the attribute list. Has transfer-ownership='none'.
 
    procedure Set_Attributes
       (Label : not null access Gtk_Label_Record;
@@ -355,8 +354,7 @@ package Gtk.Label is
        return Glib.Menu_Model.Gmenu_Model;
    --  Gets the extra menu model of the label.
    --  See [methodGtk.Label.set_extra_menu].
-   --  @return the menu model
-   --  Return has transfer-ownership='none'
+   --  @return the menu model. Has transfer-ownership='none'.
 
    procedure Set_Extra_Menu
       (Label : not null access Gtk_Label_Record;
@@ -407,8 +405,8 @@ package Gtk.Label is
    --  layout is owned by the Label so need not be freed by the caller. The
    --  Label is free to recreate its layout at any time, so it should be
    --  considered read-only.
-   --  @return the [classPango.Layout] for this label
-   --  Return has transfer-ownership='none'
+   --  @return the [classPango.Layout] for this label. Has
+   --  transfer-ownership='none'.
 
    procedure Get_Layout_Offsets
       (Label : not null access Gtk_Label_Record;
@@ -465,8 +463,8 @@ package Gtk.Label is
    --  Retrieves the mnemonic target of this label.
    --  See [methodGtk.Label.set_mnemonic_widget].
    --  @return the target of the label's mnemonic, or `NULL` if none has been
-   --  set and the default algorithm will be used.
-   --  Return has transfer-ownership='none'
+   --  set and the default algorithm will be used. Has
+   --  transfer-ownership='none'.
 
    procedure Set_Mnemonic_Widget
       (Label  : not null access Gtk_Label_Record;
@@ -527,7 +525,7 @@ package Gtk.Label is
    --  The returned Start and End positions are in characters.
    --  @param Start return location for start of selection
    --  @param The_End return location for end of selection
-   --  @return true if selection is non-empty
+   --  @param Has_Selection true if selection is non-empty
 
    function Get_Single_Line_Mode
       (Label : not null access Gtk_Label_Record) return Boolean;
@@ -547,7 +545,8 @@ package Gtk.Label is
    --  The returned array will be `NULL` if "standard" (8-space) tabs are
    --  used.
    --  Since: gtk+ 4.8
-   --  @return copy of default tab array, or `NULL` if standard tabs are used
+   --  @return copy of default tab array, or `NULL` if standard tabs are used.
+   --  Has transfer-ownership='full'.
 
    procedure Set_Tabs
       (Label : not null access Gtk_Label_Record;

@@ -700,7 +700,7 @@ package Glib.Variant is
    --  The returned value is always in normal form and is marked as trusted. A
    --  full, not floating, reference is returned.
    --  Since: gtk+ 2.24
-   --  @return the byteswapped form of Value
+   --  @return the byteswapped form of Value. Has transfer-ownership='full'.
 
    function Check_Format_String
       (Self          : Gvariant;
@@ -837,7 +837,8 @@ package Glib.Variant is
    --  This function is O(1).
    --  Since: gtk+ 2.24
    --  @param Index the index of the child to fetch
-   --  @return the child at the specified index
+   --  @return the child at the specified index. Has
+   --  transfer-ownership='full'.
 
    function Get_Double (Self : Gvariant) return Gdouble;
    --  Returns the double precision floating point value of Value.
@@ -881,7 +882,7 @@ package Glib.Variant is
    --  Given a maybe-typed Glib.Variant.Gvariant instance, extract its value.
    --  If the value is Nothing, then this function returns null.
    --  Since: gtk+ 2.24
-   --  @return the contents of Value, or null
+   --  @return the contents of Value, or null. Has transfer-ownership='full'.
 
    function Get_Normal_Form (Self : Gvariant) return Gvariant;
    --  Gets a Glib.Variant.Gvariant instance that has the same value as Value
@@ -905,7 +906,7 @@ package Glib.Variant is
    --  be called on the return value from this function to guarantee ownership
    --  of a single non-floating reference to it.
    --  Since: gtk+ 2.24
-   --  @return a trusted Glib.Variant.Gvariant
+   --  @return a trusted Glib.Variant.Gvariant. Has transfer-ownership='full'.
 
    function Get_Objv
       (Self   : Gvariant;
@@ -1007,7 +1008,8 @@ package Glib.Variant is
    --  Unboxes Value. The result is the Glib.Variant.Gvariant instance that
    --  was contained in Value.
    --  Since: gtk+ 2.24
-   --  @return the item contained in the variant
+   --  @return the item contained in the variant. Has
+   --  transfer-ownership='full'.
 
    function Hash (Self : System.Address) return Guint;
    --  Generates a hash value for a Glib.Variant.Gvariant instance.
@@ -1101,7 +1103,8 @@ package Glib.Variant is
    --  Since: gtk+ 2.28
    --  @param Key the key to look up in the dictionary
    --  @param Expected_Type a Glib.Variant.Gvariant_Type, or null
-   --  @return the value of the dictionary key, or null
+   --  @return the value of the dictionary key, or null. Has
+   --  transfer-ownership='full'.
 
    function N_Children (Self : Gvariant) return Gsize;
    --  Determines the number of children in a container Glib.Variant.Gvariant
@@ -1144,7 +1147,7 @@ package Glib.Variant is
    function Ref (Self : Gvariant) return Gvariant;
    --  Increases the reference count of Value.
    --  Since: gtk+ 2.24
-   --  @return the same Value
+   --  @return the same Value. Has transfer-ownership='full'.
 
    function Ref_Sink (Self : Gvariant) return Gvariant;
    --  Glib.Variant.Gvariant uses a floating reference count system. All
@@ -1168,7 +1171,7 @@ package Glib.Variant is
    --  maintaining normal refcounting semantics in situations where values are
    --  not floating.
    --  Since: gtk+ 2.24
-   --  @return the same Value
+   --  @return the same Value. Has transfer-ownership='full'.
 
    procedure Store (Self : Gvariant; Data : System.Address);
    --  Stores the serialized form of Value at Data. Data should be large
@@ -1211,7 +1214,7 @@ package Glib.Variant is
    --  be that the floating reference is converted to a hard reference and an
    --  additional reference on top of that one is added. It is best to avoid
    --  this situation.
-   --  @return the same Value
+   --  @return the same Value. Has transfer-ownership='full'.
 
    procedure Unref (Self : Gvariant);
    --  Decreases the reference count of Value. When its reference count drops
@@ -1255,7 +1258,8 @@ package Glib.Variant is
    --     }
    --
    --  Since: gtk+ 2.24
-   --  @return a Glib.Variant.Gvariant, or null
+   --  @return a Glib.Variant.Gvariant, or null. Has
+   --  transfer-ownership='full'.
 
    function Copy (Self : Gvariant_Type) return Gvariant_Type;
    pragma Import (C, Copy, "g_variant_type_copy");
@@ -1508,7 +1512,8 @@ package Glib.Variant is
    --  @param Limit a pointer to the end of Text, or null
    --  @param Endptr a location to store the end pointer, or null
    --  @param Error the return location for a recoverable error
-   --  @return a non-floating reference to a Glib.Variant.Gvariant, or null
+   --  @return a non-floating reference to a Glib.Variant.Gvariant, or null.
+   --  Has transfer-ownership='full'.
 
    function Parse_Error_Print_Context
       (Error      : Glib.Error.GError;

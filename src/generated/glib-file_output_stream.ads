@@ -109,6 +109,7 @@ package Glib.File_Output_Stream is
    --  to ignore.
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Info.Gfile_Info for the Stream, or null on error.
+   --  Has transfer-ownership='full'.
 
    procedure Query_Info_Async
       (Self        : not null access Gfile_Output_Stream_Record;
@@ -136,6 +137,7 @@ package Glib.File_Output_Stream is
    --  Glib.File_Output_Stream.Query_Info_Async.
    --  @param Result a Glib.G_Async_Result.
    --  @param Error the return location for a recoverable error
-   --  @return A Glib.File_Info.Gfile_Info for the finished query.
+   --  @return A Glib.File_Info.Gfile_Info for the finished query. Has
+   --  transfer-ownership='full'.
 
 end Glib.File_Output_Stream;

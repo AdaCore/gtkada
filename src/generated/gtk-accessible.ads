@@ -355,7 +355,8 @@ package Gtk.Accessible is
       (Self : Gtk_Accessible) return Gtk.Atcontext.Gtk_Atcontext;
    --  Retrieves the implementation for the given accessible object.
    --  Since: gtk+ 4.10
-   --  @return the accessible implementation object
+   --  @return the accessible implementation object. Has
+   --  transfer-ownership='full'.
 
    function Get_Bounds
       (Self   : Gtk_Accessible;
@@ -487,7 +488,8 @@ package Gtk.Accessible is
    pragma Convention (C, Virtual_Get_At_Context);
    --  Retrieves the implementation for the given accessible object.
    --  Since: gtk+ 4.10
-   --  @return the accessible implementation object
+   --  @return the accessible implementation object. Has
+   --  transfer-ownership='full'.
 
    type Virtual_Get_Bounds is access function
      (Self   : Gtk_Accessible;

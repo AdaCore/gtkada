@@ -174,7 +174,8 @@ package Gdk.Content_Formats is
 
    function Ref (Self : Gdk_Content_Formats) return Gdk_Content_Formats;
    --  Increases the reference count of a `GdkContentFormats` by one.
-   --  @return the passed in `GdkContentFormats`.
+   --  @return the passed in `GdkContentFormats`. Has
+   --  transfer-ownership='full'.
 
    function To_String (Self : Gdk_Content_Formats) return UTF8_String;
    --  Prints the given Formats into a human-readable string.
@@ -188,37 +189,37 @@ package Gdk.Content_Formats is
        Second : Gdk_Content_Formats) return Gdk_Content_Formats;
    --  Append all missing types from Second to First, in the order they had in
    --  Second.
-   --  Parameter Self has transfer-ownership='full'
+   --  @param Self has transfer-ownership='full'.
    --  @param Second the `GdkContentFormats` to merge from
-   --  @return a new `GdkContentFormats`
+   --  @return a new `GdkContentFormats`. Has transfer-ownership='full'.
 
    function Union_Deserialize_Gtypes
       (Self : Gdk_Content_Formats) return Gdk_Content_Formats;
    --  Add GTypes for mime types in Formats for which deserializers are
    --  registered.
-   --  Parameter Self has transfer-ownership='full'
-   --  @return a new `GdkContentFormats`
+   --  @param Self has transfer-ownership='full'.
+   --  @return a new `GdkContentFormats`. Has transfer-ownership='full'.
 
    function Union_Deserialize_Mime_Types
       (Self : Gdk_Content_Formats) return Gdk_Content_Formats;
    --  Add mime types for GTypes in Formats for which deserializers are
    --  registered.
-   --  Parameter Self has transfer-ownership='full'
-   --  @return a new `GdkContentFormats`
+   --  @param Self has transfer-ownership='full'.
+   --  @return a new `GdkContentFormats`. Has transfer-ownership='full'.
 
    function Union_Serialize_Gtypes
       (Self : Gdk_Content_Formats) return Gdk_Content_Formats;
    --  Add GTypes for the mime types in Formats for which serializers are
    --  registered.
-   --  Parameter Self has transfer-ownership='full'
-   --  @return a new `GdkContentFormats`
+   --  @param Self has transfer-ownership='full'.
+   --  @return a new `GdkContentFormats`. Has transfer-ownership='full'.
 
    function Union_Serialize_Mime_Types
       (Self : Gdk_Content_Formats) return Gdk_Content_Formats;
    --  Add mime types for GTypes in Formats for which serializers are
    --  registered.
-   --  Parameter Self has transfer-ownership='full'
-   --  @return a new `GdkContentFormats`
+   --  @param Self has transfer-ownership='full'.
+   --  @return a new `GdkContentFormats`. Has transfer-ownership='full'.
 
    procedure Unref (Self : Gdk_Content_Formats);
    --  Decreases the reference count of a `GdkContentFormats` by one.
@@ -236,7 +237,8 @@ package Gdk.Content_Formats is
    --  If String does not describe valid content formats, null is returned.
    --  Since: gtk+ 4.4
    --  @param String the string to parse
-   --  @return the content formats if String is valid
+   --  @return the content formats if String is valid. Has
+   --  transfer-ownership='full'.
 
 private
    Null_Gdk_Content_Formats : constant Gdk_Content_Formats :=

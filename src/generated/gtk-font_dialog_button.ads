@@ -93,7 +93,8 @@ package Gtk.Font_Dialog_Button is
    --  Since: gtk+ 4.10
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  @param Dialog the `GtkFontDialog` to use
+   --  @param Dialog the `GtkFontDialog` to use. Has
+   --  transfer-ownership='full'.
 
    function Gtk_Font_Dialog_Button_New
       (Dialog : access Gtk.Font_Dialog.Gtk_Font_Dialog_Record'Class)
@@ -102,7 +103,8 @@ package Gtk.Font_Dialog_Button is
    --  You can pass `NULL` to this function and set a `GtkFontDialog` later.
    --  The button will be insensitive until that happens.
    --  Since: gtk+ 4.10
-   --  @param Dialog the `GtkFontDialog` to use
+   --  @param Dialog the `GtkFontDialog` to use. Has
+   --  transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_font_dialog_button_get_type");
@@ -116,8 +118,7 @@ package Gtk.Font_Dialog_Button is
        return Gtk.Font_Dialog.Gtk_Font_Dialog;
    --  Returns the `GtkFontDialog` of Self.
    --  Since: gtk+ 4.10
-   --  @return the `GtkFontDialog`
-   --  Return has transfer-ownership='none'
+   --  @return the `GtkFontDialog`. Has transfer-ownership='none'.
 
    procedure Set_Dialog
       (Self   : not null access Gtk_Font_Dialog_Button_Record;
@@ -169,7 +170,7 @@ package Gtk.Font_Dialog_Button is
        return Pango.Language.Pango_Language;
    --  Returns the language that is used for font features.
    --  Since: gtk+ 4.10
-   --  @return the language
+   --  @return the language. Has transfer-ownership='full'.
 
    procedure Set_Language
       (Self     : not null access Gtk_Font_Dialog_Button_Record;

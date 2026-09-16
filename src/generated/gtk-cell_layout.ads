@@ -187,6 +187,9 @@ package Gtk.Cell_Layout is
    pragma Obsolescent (Get_Cells);
    --  Returns the cell renderers which have been added to Cell_Layout.
    --  Deprecated since 4.10, 1
+   --  @return a list of cell renderers. The list, but not the renderers has
+   --  been newly allocated and should be freed with g_list_free when no longer
+   --  needed.
 
    procedure Pack_End
       (Self   : Gtk_Cell_Layout;

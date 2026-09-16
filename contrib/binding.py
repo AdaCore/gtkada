@@ -688,8 +688,15 @@ class SubprogramProfile(object):
                 profile.returns.allow_none = True
 
         profile.doc = profile._getdoc(gtkmethod, node)
-        if profile.returns_doc:
-            profile.doc.append(profile.returns_doc)
+        if gtkmethod.return_as_param() is not None:
+            if profile.returns_doc:
+                doc = profile.returns_doc.split(" ", 1)[-1]
+                profile.doc.append(
+                    "@lastparam %s " % gtkmethod.return_as_param() + doc
+                )
+        else:
+            if profile.returns_doc:
+                profile.doc.append(profile.returns_doc)
         return profile
 
     @staticmethod
@@ -990,21 +997,6 @@ class SubprogramProfile(object):
         if lang == "ada":
             params = [p for p in self.params if p.ada_binding]
 
-        for p in params:
-            if (
-                (p.ownership == "full" or p.ownership == True)
-                # and not isinstance (p, Fundamental)
-                and (isinstance (p.type, GObject) or isinstance (p.type, Tagged))
-            ):
-                self.doc += [("Parameter %s has transfer-ownership='full'" % p.name)]
-
-        if self.returns is not None:
-            if (
-                (self.returns.transfer_ownership == "none" or self.returns.transfer_ownership == False)
-                and (isinstance (self.returns, GObject) or isinstance (self.returns, Tagged))
-            ):
-                self.doc += ["@afterreturn Return has transfer-ownership='none'"]
-
         subp = Subprogram(
             name=name,
             plist=params,
@@ -1196,25 +1188,46 @@ class SubprogramProfile(object):
         """Parse the method's return type"""
 
         returns = gtkmethod.returned_c_type()
-        if returns is None:
-            ret = node.find(nreturn)
-            if ret is None:
-                # For a <field>, the method's return value will be the type
-                # of the field itself
-                ret = node
-            else:
+        ret = node.find(nreturn)
+        if ret is None:
+            # For a <field>, the method's return value will be the type
+            # of the field itself
+            ret = node
+        else:
+            if not any("@return" in s for s in gtkmethod.get_doc("")):
                 self.returns_doc = _get_clean_doc(ret)
                 if self.returns_doc:
                     self.returns_doc = "@return %s" % self.returns_doc
 
-            return _get_type(
+        owner = ""
+        ownership = gtkmethod.transfer_ownership(ret)
+        if ownership:
+            owner = "full"
+        else:
+            owner = "none"
+        result = None
+
+        if returns is None:
+            result = _get_type(
                 ret,
                 allow_access=False,
                 pkg=pkg,
-                transfer_ownership=gtkmethod.transfer_ownership(ret),
+                transfer_ownership=ownership,
             )
         else:
-            return naming.type(name=None, cname=returns, pkg=pkg)
+            result = naming.type(
+                name=None,
+                cname=returns,
+                pkg=pkg,
+                transfer_ownership=ownership)
+
+        if result is not None and result.print_ownership_comment():
+            if self.returns_doc != "":
+                if not self.returns_doc.endswith("."):
+                    self.returns_doc += "."
+                self.returns_doc += " Has transfer-ownership='%s'." % owner
+
+        return result
 
 
 class GIRClass(object):

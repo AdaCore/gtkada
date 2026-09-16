@@ -72,8 +72,8 @@ package Pango.Font_Face is
        return Pango.Font_Family.Pango_Font_Family;
    --  Gets the Pango.Font_Family.Pango_Font_Family that Face belongs to.
    --  Since: gtk+ 1.46
-   --  @return the Pango.Font_Family.Pango_Font_Family
-   --  Return has transfer-ownership='none'
+   --  @return the Pango.Font_Family.Pango_Font_Family. Has
+   --  transfer-ownership='none'.
 
    function Is_Synthesized
       (Self : not null access Pango_Font_Face_Record) return Boolean;

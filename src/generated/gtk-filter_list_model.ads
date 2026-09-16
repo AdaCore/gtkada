@@ -63,7 +63,7 @@ package Gtk.Filter_List_Model is
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
    --  @param Model the model to sort
-   --  @param Filter filter
+   --  @param Filter filter. Has transfer-ownership='full'.
 
    function Gtk_Filter_List_Model_New
       (Model  : Glib.List_Model.Glist_Model;
@@ -72,7 +72,7 @@ package Gtk.Filter_List_Model is
    --  Creates a new `GtkFilterListModel` that will filter Model using the
    --  given Filter.
    --  @param Model the model to sort
-   --  @param Filter filter
+   --  @param Filter filter. Has transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_filter_list_model_get_type");
@@ -85,8 +85,7 @@ package Gtk.Filter_List_Model is
       (Self : not null access Gtk_Filter_List_Model_Record)
        return Gtk.Filter.Gtk_Filter;
    --  Gets the `GtkFilter` currently set on Self.
-   --  @return The filter currently in use
-   --  Return has transfer-ownership='none'
+   --  @return The filter currently in use. Has transfer-ownership='none'.
 
    procedure Set_Filter
       (Self   : not null access Gtk_Filter_List_Model_Record;

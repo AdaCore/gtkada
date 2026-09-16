@@ -114,7 +114,7 @@ package Gdk.Frame_Timings is
 
    function Ref (Self : Gdk_Frame_Timings) return Gdk_Frame_Timings;
    --  Increases the reference count of Timings.
-   --  @return Timings
+   --  @return Timings. Has transfer-ownership='full'.
 
    procedure Unref (Self : Gdk_Frame_Timings);
    --  Decreases the reference count of Timings.

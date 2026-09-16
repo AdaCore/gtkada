@@ -196,7 +196,8 @@ package Gtk.Accessible_Text is
    --  @param Start the beginning of the range, in characters
    --  @param The_End the end of the range, in characters
    --  @return the requested slice of the contents of the accessible object,
-   --  as UTF-8. Note that the slice does not have to be NUL-terminated
+   --  as UTF-8. Note that the slice does not have to be NUL-terminated. Has
+   --  transfer-ownership='full'.
 
    type Virtual_Get_Contents_At is access function
      (Self        : Gtk_Accessible_Text;
@@ -214,7 +215,8 @@ package Gtk.Accessible_Text is
    --  @param Start the start of the range, in characters
    --  @param The_End the end of the range, in characters
    --  @return the requested slice of the contents of the accessible object,
-   --  as UTF-8. Note that the slice does not have to be NUL-terminated
+   --  as UTF-8. Note that the slice does not have to be NUL-terminated. Has
+   --  transfer-ownership='full'.
 
    type Virtual_Get_Default_Attributes is access procedure
      (Self             : Gtk_Accessible_Text;

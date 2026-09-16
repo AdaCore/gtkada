@@ -120,7 +120,7 @@ package Pango.Font_Metrics is
 
    function Ref (Self : Pango_Font_Metrics) return Pango_Font_Metrics;
    --  Increase the reference count of a font metrics structure by one.
-   --  @return Metrics
+   --  @return Metrics. Has transfer-ownership='full'.
 
    procedure Unref (Self : Pango_Font_Metrics);
    --  Decrease the reference count of a font metrics structure by one. If the

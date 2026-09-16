@@ -74,8 +74,7 @@ package body Gtk.Expression is
    --  the watch will be released when the watch is unwatched which can happen
    --  automatically, and not just via [methodGtk.ExpressionWatch.unwatch]. You
    --  should call [methodGtk.ExpressionWatch.ref] if you want to keep the
-   --  watch around.
-   --  Return has transfer-ownership='none'
+   --  watch around. Has transfer-ownership='none'.
 
    function To_Gtk_Expression_Notify is new Ada.Unchecked_Conversion
      (System.Address, Gtk_Expression_Notify);

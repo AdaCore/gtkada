@@ -200,7 +200,7 @@ package Gtk.Cell_View is
    --  Returns a `GtkTreePath` referring to the currently displayed row. If no
    --  row is currently displayed, null is returned.
    --  Deprecated since 4.10, 1
-   --  @return the currently displayed row
+   --  @return the currently displayed row. Has transfer-ownership='full'.
 
    procedure Set_Displayed_Row
       (Self : not null access Gtk_Cell_View_Record;

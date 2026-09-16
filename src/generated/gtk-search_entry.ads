@@ -146,8 +146,7 @@ package Gtk.Search_Entry is
       (Self : not null access Gtk_Search_Entry_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the widget that Entry is capturing key events from.
-   --  @return The key capture widget.
-   --  Return has transfer-ownership='none'
+   --  @return The key capture widget. Has transfer-ownership='none'.
 
    procedure Set_Key_Capture_Widget
       (Self   : not null access Gtk_Search_Entry_Record;

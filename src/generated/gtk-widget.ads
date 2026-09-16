@@ -447,9 +447,8 @@ package Gtk.Widget is
    --  to the widget.
    --  You will usually want to call this function right after creating any
    --  kind of [classGtk.EventController].
-   --  Parameter Controller has transfer-ownership='full'
    --  @param Controller an event controller that hasn't been added to a
-   --  widget yet
+   --  widget yet. Has transfer-ownership='full'.
 
    procedure Add_Css_Class
       (Widget    : not null access Gtk_Widget_Record;
@@ -489,7 +488,7 @@ package Gtk.Widget is
    --  The `PangoContext` will have the appropriate font map, font options,
    --  font description, and base direction set.
    --  See also [methodGtk.Widget.get_pango_context].
-   --  @return the new `PangoContext`
+   --  @return the new `PangoContext`. Has transfer-ownership='full'.
 
    function Create_Pango_Layout
       (Widget : not null access Gtk_Widget_Record;
@@ -502,7 +501,7 @@ package Gtk.Widget is
    --  tracked by listening to changes of the [propertyGtk.Widget:root]
    --  property on the widget.
    --  @param Text text to set on the layout
-   --  @return the new `PangoLayout`
+   --  @return the new `PangoLayout`. Has transfer-ownership='full'.
 
    procedure Dispose_Template
       (Widget      : not null access Gtk_Widget_Record;
@@ -585,8 +584,7 @@ package Gtk.Widget is
    --  Note that unlike [methodGtk.Widget.is_ancestor], this function
    --  considers Widget to be an ancestor of itself.
    --  @param Widget_Type ancestor type
-   --  @return the ancestor widget
-   --  Return has transfer-ownership='none'
+   --  @return the ancestor widget. Has transfer-ownership='none'.
 
    function Get_Baseline
       (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
@@ -681,14 +679,13 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
    --  Returns the widget's first child.
    --  This function is primarily meant for widget implementations.
-   --  @return the widget's first child
-   --  Return has transfer-ownership='none'
+   --  @return the widget's first child. Has transfer-ownership='none'.
 
    function Get_Focus_Child
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
    --  Returns the focus child of the widget.
-   --  @return the current focus child of Widget
-   --  Return has transfer-ownership='none'
+   --  @return the current focus child of Widget. Has
+   --  transfer-ownership='none'.
 
    procedure Set_Focus_Child
       (Widget : not null access Gtk_Widget_Record;
@@ -744,8 +741,7 @@ package Gtk.Widget is
        return Pango.Font_Map.Pango_Font_Map;
    --  Gets the font map of the widget.
    --  See [methodGtk.Widget.set_font_map].
-   --  @return the font map of Widget
-   --  Return has transfer-ownership='none'
+   --  @return the font map of Widget. Has transfer-ownership='none'.
 
    procedure Set_Font_Map
       (Widget   : not null access Gtk_Widget_Record;
@@ -885,24 +881,21 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
    --  Returns the widget's last child.
    --  This function is primarily meant for widget implementations.
-   --  @return the widget's last child
-   --  Return has transfer-ownership='none'
+   --  @return the widget's last child. Has transfer-ownership='none'.
 
    function Get_Layout_Manager
       (Widget : not null access Gtk_Widget_Record)
        return Gtk.Layout_Manager.Gtk_Layout_Manager;
    --  Retrieves the layout manager of the widget.
    --  See [methodGtk.Widget.set_layout_manager].
-   --  @return the layout manager of Widget
-   --  Return has transfer-ownership='none'
+   --  @return the layout manager of Widget. Has transfer-ownership='none'.
 
    procedure Set_Layout_Manager
       (Widget         : not null access Gtk_Widget_Record;
        Layout_Manager : access Gtk.Layout_Manager.Gtk_Layout_Manager_Record'Class);
    --  Sets the layout manager to use for measuring and allocating children of
    --  the widget.
-   --  Parameter Layout_Manager has transfer-ownership='full'
-   --  @param Layout_Manager a layout manager
+   --  @param Layout_Manager a layout manager. Has transfer-ownership='full'.
 
    function Get_Limit_Events
       (Widget : not null access Gtk_Widget_Record) return Boolean;
@@ -990,8 +983,7 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
    --  Returns the widget's next sibling.
    --  This function is primarily meant for widget implementations.
-   --  @return the widget's next sibling
-   --  Return has transfer-ownership='none'
+   --  @return the widget's next sibling. Has transfer-ownership='none'.
 
    function Get_Opacity
       (Widget : not null access Gtk_Widget_Record) return Gdouble;
@@ -1035,14 +1027,13 @@ package Gtk.Widget is
    --  be updated to match any changes to the widget's attributes. This can be
    --  tracked by listening to changes of the [propertyGtk.Widget:root]
    --  property on the widget.
-   --  @return the `PangoContext` for the widget
-   --  Return has transfer-ownership='none'
+   --  @return the `PangoContext` for the widget. Has
+   --  transfer-ownership='none'.
 
    function Get_Parent
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
    --  Returns the parent widget of the widget.
-   --  @return the parent widget of Widget
-   --  Return has transfer-ownership='none'
+   --  @return the parent widget of Widget. Has transfer-ownership='none'.
 
    procedure Set_Parent
       (Widget : not null access Gtk_Widget_Record;
@@ -1078,8 +1069,7 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
    --  Returns the widget's previous sibling.
    --  This function is primarily meant for widget implementations.
-   --  @return the widget's previous sibling
-   --  Return has transfer-ownership='none'
+   --  @return the widget's previous sibling. Has transfer-ownership='none'.
 
    function Get_Realized
       (Widget : not null access Gtk_Widget_Record) return Boolean;
@@ -1194,8 +1184,8 @@ package Gtk.Widget is
    --  @param Widget_Type The type of the widget class that defines the child
    --  in the template
    --  @param Name ID of the child defined in the template XML
-   --  @return the object built in the template XML with the id Name
-   --  Return has transfer-ownership='none'
+   --  @return the object built in the template XML with the id Name. Has
+   --  transfer-ownership='none'.
 
    function Get_Tooltip_Markup
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;
@@ -1475,6 +1465,7 @@ package Gtk.Widget is
    --  might destroy the widgets, you must call `g_list_foreach (result,
    --  (GFunc)g_object_ref, NULL)` first, and then unref all the widgets
    --  afterwards.
+   --  @return the list of mnemonic labels
 
    procedure Map (Widget : not null access Gtk_Widget_Record);
    --  Causes a widget to be mapped if it isn't already.
@@ -1616,8 +1607,8 @@ package Gtk.Widget is
    --  Dest_Widget
    --  @param Dest_Y location to store Y position in widget coordinates of
    --  Dest_Widget
-   --  @return true if Src_Widget and Dest_Widget have a common ancestor,
-   --  false otherwise
+   --  @param Result true if Src_Widget and Dest_Widget have a common
+   --  ancestor, false otherwise
 
    procedure Trigger_Tooltip_Query
       (Widget : not null access Gtk_Widget_Record);

@@ -47,6 +47,6 @@ package Gtk.Never_Trigger is
    --  Gets the never trigger.
    --  This is a singleton for a trigger that never triggers. Use this trigger
    --  instead of null because it implements all virtual functions.
-   --  Return has transfer-ownership='none'
+   --  @return The never trigger. Has transfer-ownership='none'.
 
 end Gtk.Never_Trigger;

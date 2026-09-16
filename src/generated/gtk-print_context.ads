@@ -104,14 +104,14 @@ package Gtk.Print_Context is
        return Pango.Context.Pango_Context;
    --  Creates a new `PangoContext` that can be used with the
    --  `GtkPrintContext`.
-   --  @return a new Pango context for Context
+   --  @return a new Pango context for Context. Has transfer-ownership='full'.
 
    function Create_Pango_Layout
       (Self : not null access Gtk_Print_Context_Record)
        return Pango.Layout.Pango_Layout;
    --  Creates a new `PangoLayout` that is suitable for use with the
    --  `GtkPrintContext`.
-   --  @return a new Pango layout for Context
+   --  @return a new Pango layout for Context. Has transfer-ownership='full'.
 
    function Get_Cairo_Context
       (Self : not null access Gtk_Print_Context_Record)
@@ -169,16 +169,14 @@ package Gtk.Print_Context is
        return Gtk.Page_Setup.Gtk_Page_Setup;
    --  Obtains the `GtkPageSetup` that determines the page dimensions of the
    --  `GtkPrintContext`.
-   --  @return the page setup of Context
-   --  Return has transfer-ownership='none'
+   --  @return the page setup of Context. Has transfer-ownership='none'.
 
    function Get_Pango_Fontmap
       (Self : not null access Gtk_Print_Context_Record)
        return Pango.Font_Map.Pango_Font_Map;
    --  Returns a `PangoFontMap` that is suitable for use with the
    --  `GtkPrintContext`.
-   --  @return the font map of Context
-   --  Return has transfer-ownership='none'
+   --  @return the font map of Context. Has transfer-ownership='none'.
 
    function Get_Width
       (Self : not null access Gtk_Print_Context_Record) return Gdouble;

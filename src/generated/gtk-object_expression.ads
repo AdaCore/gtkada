@@ -74,8 +74,7 @@ package Gtk.Object_Expression is
    function Get_Object
       (Self : Gtk_Object_Expression) return Glib.Object.GObject;
    --  Gets the object that the expression evaluates to.
-   --  @return the object, or `NULL`
-   --  Return has transfer-ownership='none'
+   --  @return the object, or `NULL`. Has transfer-ownership='none'.
 
    ----------------------
    -- GtkAda additions --

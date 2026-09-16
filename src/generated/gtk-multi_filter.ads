@@ -52,8 +52,7 @@ package Gtk.Multi_Filter is
       (Self   : not null access Gtk_Multi_Filter_Record;
        Filter : not null access Gtk.Filter.Gtk_Filter_Record'Class);
    --  Adds a filter.
-   --  Parameter Filter has transfer-ownership='full'
-   --  @param Filter a filter to add
+   --  @param Filter a filter to add. Has transfer-ownership='full'.
 
    procedure Remove
       (Self     : not null access Gtk_Multi_Filter_Record;

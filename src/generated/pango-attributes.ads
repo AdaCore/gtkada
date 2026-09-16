@@ -95,7 +95,8 @@ package Pango.Attributes is
    --  Copy List and return an identical new list.
    --  @return the newly allocated Pango.Attributes.Pango_Attr_List, with a
    --  reference count of one, which should be freed with
-   --  Pango.Attributes.Unref. Returns null if List was null.
+   --  Pango.Attributes.Unref. Returns null if List was null. Has
+   --  transfer-ownership='full'.
 
    procedure Destroy (Self : Pango_Attribute);
    pragma Import (C, Destroy, "pango_attribute_destroy");
@@ -133,7 +134,7 @@ package Pango.Attributes is
    --  @param Func callback function; returns True if an attribute should be
    --  filtered out.
    --  @return the new Pango.Attributes.Pango_Attr_List or null if no
-   --  attributes of the given types were found.
+   --  attributes of the given types were found. Has transfer-ownership='full'.
 
    procedure Insert (Self : Pango_Attr_List; Attr : Pango_Attribute);
    --  Insert the given attribute into the Pango.Attributes.Pango_Attr_List.
@@ -152,7 +153,7 @@ package Pango.Attributes is
    function Ref (Self : Pango_Attr_List) return Pango_Attr_List;
    --  Increase the reference count of the given attribute list by one.
    --  Since: gtk+ 1.10
-   --  @return The attribute list passed in
+   --  @return The attribute list passed in. Has transfer-ownership='full'.
 
    procedure Splice
       (Self  : Pango_Attr_List;

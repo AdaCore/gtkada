@@ -113,7 +113,8 @@ package Gdk.Cicp_Params is
    --  with an error message that can be presented to the user.
    --  Since: gtk+ 4.16
    --  @param Error the return location for a recoverable error
-   --  @return A newly allocated `GdkColorState`
+   --  @return A newly allocated `GdkColorState`. Has
+   --  transfer-ownership='full'.
 
    function Get_Color_Primaries
       (Self : not null access Gdk_Cicp_Params_Record) return Guint;

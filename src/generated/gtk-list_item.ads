@@ -109,8 +109,7 @@ package Gtk.List_Item is
        return Gtk.Widget.Gtk_Widget;
    --  Gets the child previously set via [methodGtk.ListItem.set_child] or
    --  `NULL` if none was set.
-   --  @return The child
-   --  Return has transfer-ownership='none'
+   --  @return The child. Has transfer-ownership='none'.
 
    procedure Set_Child
       (Self  : not null access Gtk_List_Item_Record;
@@ -147,7 +146,6 @@ package Gtk.List_Item is
    --  Gets the model item that associated with Self.
    --  If Self is unbound, this function returns `NULL`.
    --  @return The item displayed
-   --  Return has transfer-ownership='none'
 
    function Get_Position
       (Self : not null access Gtk_List_Item_Record) return Guint;

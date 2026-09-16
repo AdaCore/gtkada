@@ -254,7 +254,8 @@ package Glib.Input_Stream is
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
    --  @param Error the return location for a recoverable error
-   --  @return a new Glib.Bytes.Gbytes, or null on error
+   --  @return a new Glib.Bytes.Gbytes, or null on error. Has
+   --  transfer-ownership='full'.
 
    procedure Read_Bytes_Async
       (Self        : not null access Ginput_Stream_Record;
@@ -294,7 +295,8 @@ package Glib.Input_Stream is
    --  Since: gtk+ 2.34
    --  @param Result a Glib.G_Async_Result.
    --  @param Error the return location for a recoverable error
-   --  @return the newly-allocated Glib.Bytes.Gbytes, or null on error
+   --  @return the newly-allocated Glib.Bytes.Gbytes, or null on error. Has
+   --  transfer-ownership='full'.
 
    function Read_Finish
       (Self   : not null access Ginput_Stream_Record;

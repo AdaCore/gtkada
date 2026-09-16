@@ -124,7 +124,8 @@ package Gtk.Font_Dialog is
    --  Since: gtk+ 4.10
    --  @param Result the result
    --  @param Error the return location for a recoverable error
-   --  @return the selected [classPango.FontFace]
+   --  @return the selected [classPango.FontFace]. Has
+   --  transfer-ownership='full'.
 
    procedure Choose_Family
       (Self          : not null access Gtk_Font_Dialog_Record;
@@ -151,7 +152,8 @@ package Gtk.Font_Dialog is
    --  Since: gtk+ 4.10
    --  @param Result the result
    --  @param Error the return location for a recoverable error
-   --  @return the selected [classPango.FontFamily]
+   --  @return the selected [classPango.FontFamily]. Has
+   --  transfer-ownership='full'.
 
    procedure Choose_Font
       (Self          : not null access Gtk_Font_Dialog_Record;
@@ -188,8 +190,7 @@ package Gtk.Font_Dialog is
    --  Returns the fontmap from which fonts are selected, or `NULL` for the
    --  default fontmap.
    --  Since: gtk+ 4.10
-   --  @return the fontmap
-   --  Return has transfer-ownership='none'
+   --  @return the fontmap. Has transfer-ownership='none'.
 
    procedure Set_Font_Map
       (Self    : not null access Gtk_Font_Dialog_Record;
@@ -204,7 +205,7 @@ package Gtk.Font_Dialog is
        return Pango.Language.Pango_Language;
    --  Returns the language for which font features are applied.
    --  Since: gtk+ 4.10
-   --  @return the language for font features
+   --  @return the language for font features. Has transfer-ownership='full'.
 
    procedure Set_Language
       (Self     : not null access Gtk_Font_Dialog_Record;

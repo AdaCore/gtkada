@@ -93,15 +93,16 @@ package Pango.Font is
        return Pango.Coverage.Pango_Coverage;
    --  Computes the coverage map for a given font and language tag.
    --  @param Language the language tag
-   --  @return a newly-allocated Pango.Coverage.Pango_Coverage object.
+   --  @return a newly-allocated Pango.Coverage.Pango_Coverage object. Has
+   --  transfer-ownership='full'.
 
    function Get_Face
       (Font : not null access Pango_Font_Record)
        return Pango.Font_Face.Pango_Font_Face;
    --  Gets the Pango.Font_Face.Pango_Font_Face to which Font belongs.
    --  Since: gtk+ 1.46
-   --  @return the Pango.Font_Face.Pango_Font_Face
-   --  Return has transfer-ownership='none'
+   --  @return the Pango.Font_Face.Pango_Font_Face. Has
+   --  transfer-ownership='none'.
 
    function Get_Font_Map
       (Font : access Pango_Font_Record'Class)
@@ -116,8 +117,7 @@ package Pango.Font is
    --  reference to the font map.
    --  Since: gtk+ 1.10
    --  @return the Pango.Font_Map.Pango_Font_Map for the font, or null if Font
-   --  is null.
-   --  Return has transfer-ownership='none'
+   --  is null. Has transfer-ownership='none'.
 
    procedure Get_Glyph_Extents
       (Font         : access Pango_Font_Record'Class;
@@ -152,7 +152,8 @@ package Pango.Font is
    --  @param Language language tag used to determine which script to get the
    --  metrics for, or null to indicate to get the metrics for the entire font.
    --  @return a Pango.Font_Metrics.Pango_Font_Metrics object. The caller must
-   --  call Pango.Font_Metrics.Unref when finished using the object.
+   --  call Pango.Font_Metrics.Unref when finished using the object. Has
+   --  transfer-ownership='full'.
 
    function Has_Char
       (Font : not null access Pango_Font_Record;

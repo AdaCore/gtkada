@@ -87,7 +87,8 @@ package Glib.Loadable_Icon is
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
    --  @param Error the return location for a recoverable error
-   --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from.
+   --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from. Has
+   --  transfer-ownership='full'.
 
    procedure Load_Async
       (Self        : Gloadable_Icon;
@@ -115,7 +116,8 @@ package Glib.Loadable_Icon is
    --  @param The_Type a location to store the type of the loaded icon, null
    --  to ignore.
    --  @param Error the return location for a recoverable error
-   --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from.
+   --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from. Has
+   --  transfer-ownership='full'.
 
    ----------------
    -- Interfaces --
@@ -146,7 +148,8 @@ package Glib.Loadable_Icon is
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
    --  @param Error the return location for a recoverable error
-   --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from.
+   --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from. Has
+   --  transfer-ownership='full'.
 
    type Virtual_Load_Async is access procedure
      (Self        : Gloadable_Icon;
@@ -177,7 +180,8 @@ package Glib.Loadable_Icon is
    --  @param The_Type a location to store the type of the loaded icon, null
    --  to ignore.
    --  @param Error the return location for a recoverable error
-   --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from.
+   --  @return a Glib.Input_Stream.Ginput_Stream to read the icon from. Has
+   --  transfer-ownership='full'.
 
    subtype Loadable_Icon_Interface_Descr is Glib.Object.Interface_Description;
 

@@ -84,7 +84,7 @@ package Pango.Tabs is
    function Copy (Self : Pango_Tab_Array) return Pango_Tab_Array;
    --  Copies a Pango.Tabs.Pango_Tab_Array
    --  @return the newly allocated Pango.Tabs.Pango_Tab_Array, which should be
-   --  freed with Pango.Tabs.Free.
+   --  freed with Pango.Tabs.Free. Has transfer-ownership='full'.
 
    procedure Free (Self : Pango_Tab_Array);
    --  Frees a tab array and associated resources.

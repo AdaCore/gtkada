@@ -84,32 +84,32 @@ package Gdk.Seat is
        Capabilities : Seat_Capabilities) return Gdk.Device.Device_List.Glist;
    --  Returns the devices that match the given capabilities.
    --  @param Capabilities capabilities to get devices for
+   --  @return A list of `GdkDevices`. The list must be freed with
+   --  g_list_free, the elements are owned by GTK and must not be freed.
 
    function Get_Display
       (Self : not null access Gdk_Seat_Record) return Gdk.Gdk_Display;
    --  Returns the `GdkDisplay` this seat belongs to.
    --  @return a `GdkDisplay`. This object is owned by GTK and must not be
-   --  freed.
-   --  Return has transfer-ownership='none'
+   --  freed. Has transfer-ownership='none'.
 
    function Get_Keyboard
       (Self : not null access Gdk_Seat_Record) return Gdk.Gdk_Device;
    --  Returns the device that routes keyboard events.
    --  @return a `GdkDevice` with keyboard capabilities. This object is owned
-   --  by GTK and must not be freed.
-   --  Return has transfer-ownership='none'
+   --  by GTK and must not be freed. Has transfer-ownership='none'.
 
    function Get_Pointer
       (Self : not null access Gdk_Seat_Record) return Gdk.Gdk_Device;
    --  Returns the device that routes pointer events.
    --  @return a `GdkDevice` with pointer capabilities. This object is owned
-   --  by GTK and must not be freed.
-   --  Return has transfer-ownership='none'
+   --  by GTK and must not be freed. Has transfer-ownership='none'.
 
    function Get_Tools
       (Self : not null access Gdk_Seat_Record)
        return Gdk.Device_Tool.Device_Tool_List.Glist;
    --  Returns all `GdkDeviceTools` that are known to the application.
+   --  @return A list of tools. Free with g_list_free.
 
    ----------------
    -- Properties --

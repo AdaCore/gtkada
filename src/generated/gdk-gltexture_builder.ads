@@ -93,7 +93,7 @@ package Gdk.GLTexture_Builder is
    --  @param Destroy destroy function to be called when the texture is
    --  released
    --  @param Data user data to pass to the destroy function
-   --  @return a newly built `GdkTexture`
+   --  @return a newly built `GdkTexture`. Has transfer-ownership='full'.
 
    function Get_Color_State
       (Self : not null access Gdk_Gltexture_Builder_Record)
@@ -101,8 +101,7 @@ package Gdk.GLTexture_Builder is
    --  Gets the color state previously set via
    --  Gdk.GLTexture_Builder.Set_Color_State.
    --  Since: gtk+ 4.16
-   --  @return the color state
-   --  Return has transfer-ownership='none'
+   --  @return the color state. Has transfer-ownership='none'.
 
    procedure Set_Color_State
       (Self        : not null access Gdk_Gltexture_Builder_Record;
@@ -119,8 +118,7 @@ package Gdk.GLTexture_Builder is
    --  Gets the context previously set via Gdk.GLTexture_Builder.Set_Context
    --  or null if none was set.
    --  Since: gtk+ 4.12
-   --  @return The context
-   --  Return has transfer-ownership='none'
+   --  @return The context. Has transfer-ownership='none'.
 
    procedure Set_Context
       (Self    : not null access Gdk_Gltexture_Builder_Record;
@@ -258,8 +256,7 @@ package Gdk.GLTexture_Builder is
    --  Gets the texture previously set via
    --  Gdk.GLTexture_Builder.Set_Update_Texture or null if none was set.
    --  Since: gtk+ 4.12
-   --  @return The texture
-   --  Return has transfer-ownership='none'
+   --  @return The texture. Has transfer-ownership='none'.
 
    procedure Set_Update_Texture
       (Self    : not null access Gdk_Gltexture_Builder_Record;

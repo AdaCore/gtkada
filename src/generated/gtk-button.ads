@@ -173,8 +173,7 @@ package Gtk.Button is
       (Button : not null access Gtk_Button_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the child widget of Button.
-   --  @return the child widget of Button
-   --  Return has transfer-ownership='none'
+   --  @return the child widget of Button. Has transfer-ownership='none'.
 
    procedure Set_Child
       (Button : not null access Gtk_Button_Record;

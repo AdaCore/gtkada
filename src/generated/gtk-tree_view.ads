@@ -506,8 +506,7 @@ package Gtk.Tree_View is
    --  Deprecated since 4.10, 1
    --  @param N The position of the column, counting from 0.
    --  @return The `GtkTreeViewColumn`, or null if the position is outside the
-   --  range of columns.
-   --  Return has transfer-ownership='none'
+   --  range of columns. Has transfer-ownership='none'.
 
    function Get_Columns
       (Self : not null access Gtk_Tree_View_Record)
@@ -516,6 +515,7 @@ package Gtk.Tree_View is
    --  Returns a `GList` of all the `GtkTreeViewColumn`s currently in
    --  Tree_View. The returned list must be freed with g_list_free ().
    --  Deprecated since 4.10, 1
+   --  @return A list of `GtkTreeViewColumn`s
 
    procedure Get_Cursor
       (Self         : not null access Gtk_Tree_View_Record;
@@ -527,9 +527,9 @@ package Gtk.Tree_View is
    --  currently has focus, then *Focus_Column will be null.
    --  The returned `GtkTreePath` must be freed with Gtk.Tree_Model.Path_Free
    --  when you are done with it.
-   --  Parameter Path has transfer-ownership='full'
    --  Deprecated since 4.10, 1
-   --  @param Path A pointer to be filled with the current cursor path
+   --  @param Path A pointer to be filled with the current cursor path. Has
+   --  transfer-ownership='full'.
    --  @param Focus_Column A pointer to be filled with the current focus
    --  column
 
@@ -566,11 +566,11 @@ package Gtk.Tree_View is
    --  are expected to be in widget coordinates. This function is only
    --  meaningful if Tree_View is realized. Therefore this function will always
    --  return False if Tree_View is not realized or does not have a model.
-   --  Parameter Path has transfer-ownership='full'
    --  Deprecated since 4.10, 1
    --  @param Drag_X the position to determine the destination row for
    --  @param Drag_Y the position to determine the destination row for
-   --  @param Path Return location for the path of the highlighted row
+   --  @param Path Return location for the path of the highlighted row. Has
+   --  transfer-ownership='full'.
    --  @param Pos Return location for the drop position, or null
    --  @return whether there is a row at the given position, True if this is
    --  indeed the case.
@@ -581,9 +581,9 @@ package Gtk.Tree_View is
        Pos  : out Gtk_Tree_View_Drop_Position);
    pragma Obsolescent (Get_Drag_Dest_Row);
    --  Gets information about the row that is highlighted for feedback.
-   --  Parameter Path has transfer-ownership='full'
    --  Deprecated since 4.10, 1
-   --  @param Path Return location for the path of the highlighted row
+   --  @param Path Return location for the path of the highlighted row. Has
+   --  transfer-ownership='full'.
    --  @param Pos Return location for the drop position
 
    procedure Set_Drag_Dest_Row
@@ -640,8 +640,7 @@ package Gtk.Tree_View is
    --  Returns the column that is the current expander column, or null if none
    --  has been set. This column has the expander arrow drawn next to it.
    --  Deprecated since 4.10, 1
-   --  @return The expander column.
-   --  Return has transfer-ownership='none'
+   --  @return The expander column. Has transfer-ownership='none'.
 
    procedure Set_Expander_Column
       (Self   : not null access Gtk_Tree_View_Record;
@@ -828,18 +827,18 @@ package Gtk.Tree_View is
    --  For converting widget coordinates (eg. the ones you get from
    --  GtkWidget::query-tooltip), please see
    --  Gtk.Tree_View.Convert_Widget_To_Bin_Window_Coords.
-   --  Parameter Path has transfer-ownership='full'
    --  Deprecated since 4.10, 1
    --  @param X The x position to be identified (relative to bin_window).
    --  @param Y The y position to be identified (relative to bin_window).
-   --  @param Path A pointer to a `GtkTreePath` pointer to be filled in
+   --  @param Path A pointer to a `GtkTreePath` pointer to be filled in. Has
+   --  transfer-ownership='full'.
    --  @param Column A pointer to a `GtkTreeViewColumn` pointer to be filled
    --  in
    --  @param Cell_X A pointer where the X coordinate relative to the cell can
    --  be placed
    --  @param Cell_Y A pointer where the Y coordinate relative to the cell can
    --  be placed
-   --  @return True if a row exists at that coordinate.
+   --  @param Row_Found True if a row exists at that coordinate.
 
    function Get_Reorderable
       (Self : not null access Gtk_Tree_View_Record) return Boolean;
@@ -975,8 +974,7 @@ package Gtk.Tree_View is
    pragma Obsolescent (Get_Selection);
    --  Gets the `GtkTreeSelection` associated with Tree_View.
    --  Deprecated since 4.10, 1
-   --  @return A `GtkTreeSelection` object.
-   --  Return has transfer-ownership='none'
+   --  @return A `GtkTreeSelection` object. Has transfer-ownership='none'.
 
    function Get_Show_Expanders
       (Self : not null access Gtk_Tree_View_Record) return Boolean;
@@ -1044,15 +1042,15 @@ package Gtk.Tree_View is
    --  Model, Path and Iter which have been provided will be set to point to
    --  that row and the corresponding model. X and Y will always be converted
    --  to be relative to Tree_View's bin_window if Keyboard_Tooltip is False.
-   --  Parameter Path has transfer-ownership='full'
    --  Deprecated since 4.10, 1
    --  @param X the x coordinate (relative to widget coordinates)
    --  @param Y the y coordinate (relative to widget coordinates)
    --  @param Keyboard_Tip whether this is a keyboard tooltip or not
    --  @param Model a pointer to receive a `GtkTreeModel`
-   --  @param Path a pointer to receive a `GtkTreePath`
+   --  @param Path a pointer to receive a `GtkTreePath`. Has
+   --  transfer-ownership='full'.
    --  @param Iter a pointer to receive a `GtkTreeIter`
-   --  @return whether or not the given tooltip context points to a row
+   --  @param Success whether or not the given tooltip context points to a row
 
    procedure Get_Visible_Range
       (Self       : not null access Gtk_Tree_View_Record;
@@ -1063,12 +1061,13 @@ package Gtk.Tree_View is
    --  Sets Start_Path and End_Path to be the first and last visible path.
    --  Note that there may be invisible paths in between.
    --  The paths should be freed with Gtk.Tree_Model.Path_Free after use.
-   --  Parameter Start_Path has transfer-ownership='full'
-   --  Parameter End_Path has transfer-ownership='full'
    --  Deprecated since 4.10, 1
-   --  @param Start_Path Return location for start of region
-   --  @param End_Path Return location for end of region
-   --  @return True, if valid paths were placed in Start_Path and End_Path.
+   --  @param Start_Path Return location for start of region. Has
+   --  transfer-ownership='full'.
+   --  @param End_Path Return location for end of region. Has
+   --  transfer-ownership='full'.
+   --  @param Success True, if valid paths were placed in Start_Path and
+   --  End_Path.
 
    procedure Get_Visible_Rect
       (Self         : not null access Gtk_Tree_View_Record;
@@ -1194,11 +1193,11 @@ package Gtk.Tree_View is
    --  The Path, Column, Cell_X and Cell_Y arguments will be filled in
    --  likewise as for Gtk.Tree_View.Get_Path_At_Pos. Please see
    --  Gtk.Tree_View.Get_Path_At_Pos for more information.
-   --  Parameter Path has transfer-ownership='full'
    --  Deprecated since 4.10, 1
    --  @param X The x position to be identified (relative to bin_window)
    --  @param Y The y position to be identified (relative to bin_window)
-   --  @param Path A pointer to a `GtkTreePath` pointer to be filled in
+   --  @param Path A pointer to a `GtkTreePath` pointer to be filled in. Has
+   --  transfer-ownership='full'.
    --  @param Column A pointer to a `GtkTreeViewColumn` pointer to be filled
    --  in
    --  @param Cell_X A pointer where the X coordinate relative to the cell can

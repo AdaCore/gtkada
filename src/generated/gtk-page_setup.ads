@@ -171,7 +171,7 @@ package Gtk.Page_Setup is
    function Copy
       (Self : not null access Gtk_Page_Setup_Record) return Gtk_Page_Setup;
    --  Copies a `GtkPageSetup`.
-   --  @return a copy of Other
+   --  @return a copy of Other. Has transfer-ownership='full'.
 
    function Get_Bottom_Margin
       (Self : not null access Gtk_Page_Setup_Record;
@@ -246,8 +246,7 @@ package Gtk.Page_Setup is
       (Self : not null access Gtk_Page_Setup_Record)
        return Gtk.Paper_Size.Gtk_Paper_Size;
    --  Gets the paper size of the `GtkPageSetup`.
-   --  @return the paper size
-   --  Return has transfer-ownership='none'
+   --  @return the paper size. Has transfer-ownership='none'.
 
    procedure Set_Paper_Size
       (Self : not null access Gtk_Page_Setup_Record;
@@ -338,8 +337,7 @@ package Gtk.Page_Setup is
       (Self : not null access Gtk_Page_Setup_Record)
        return Glib.Variant.Gvariant;
    --  Serialize page setup to an a{sv} variant.
-   --  @return a new, floating, `GVariant`
-   --  Return has transfer-ownership='none'
+   --  @return a new, floating, `GVariant`. Has transfer-ownership='none'.
 
    procedure To_Key_File
       (Self       : not null access Gtk_Page_Setup_Record;

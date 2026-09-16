@@ -183,7 +183,7 @@ package Glib.Option is
    --  Please note that parsed arguments need to be freed separately (see
    --  Glib.Option.GOption_Entry).
    --  Since: gtk+ 2.6
-   --  Parameter Self has transfer-ownership='full'
+   --  @param Self has transfer-ownership='full'.
 
    function Get_Description (Self : Goption_Context) return UTF8_String;
    --  Returns the description. See Glib.Option.Set_Description.
@@ -442,7 +442,7 @@ package Glib.Option is
    --  @param Parameter_String a string which is displayed in the first line
    --  of `--help` output, after the usage summary `programname [OPTION...]`
    --  @return a newly created Glib.Option.Goption_Context, which must be
-   --  freed with Glib.Option.Free after use.
+   --  freed with Glib.Option.Free after use. Has transfer-ownership='full'.
 
 private
    Null_Goption_Context : constant Goption_Context :=

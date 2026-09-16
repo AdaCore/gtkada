@@ -93,7 +93,7 @@ package Gtk.Selection_Model is
    --  [methodGtk.SelectionModel.get_selection_in_range].
    --  @return a `GtkBitset` containing all the values currently selected in
    --  Model. If no items are selected, the bitset is empty. The bitset must
-   --  not be modified.
+   --  not be modified. Has transfer-ownership='full'.
 
    function Set_Selection
       (Self     : Gtk_Selection_Model;
@@ -135,7 +135,7 @@ package Gtk.Selection_Model is
    --  @param N_Items number of items in the queried range
    --  @return A `GtkBitset` that matches the selection state for the given
    --  range with all other values being undefined. The bitset must not be
-   --  modified.
+   --  modified. Has transfer-ownership='full'.
 
    function Is_Selected
       (Self     : Gtk_Selection_Model;
@@ -270,7 +270,7 @@ package Gtk.Selection_Model is
    --  @param N_Items number of items in the queried range
    --  @return A `GtkBitset` that matches the selection state for the given
    --  range with all other values being undefined. The bitset must not be
-   --  modified.
+   --  modified. Has transfer-ownership='full'.
 
    type Virtual_Is_Selected is access function
      (Self     : Gtk_Selection_Model;

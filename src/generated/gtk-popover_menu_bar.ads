@@ -106,8 +106,7 @@ package Gtk.Popover_Menu_Bar is
       (Self : not null access Gtk_Popover_Menu_Bar_Record)
        return Glib.Menu_Model.Gmenu_Model;
    --  Returns the model from which the contents of Bar are taken.
-   --  @return a `GMenuModel`
-   --  Return has transfer-ownership='none'
+   --  @return a `GMenuModel`. Has transfer-ownership='none'.
 
    procedure Set_Menu_Model
       (Self  : not null access Gtk_Popover_Menu_Bar_Record;

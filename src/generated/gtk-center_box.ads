@@ -118,8 +118,7 @@ package Gtk.Center_Box is
       (Self : not null access Gtk_Center_Box_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the center widget.
-   --  @return the center widget
-   --  Return has transfer-ownership='none'
+   --  @return the center widget. Has transfer-ownership='none'.
 
    procedure Set_Center_Widget
       (Self  : not null access Gtk_Center_Box_Record;
@@ -132,8 +131,7 @@ package Gtk.Center_Box is
       (Self : not null access Gtk_Center_Box_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the end widget.
-   --  @return the end widget
-   --  Return has transfer-ownership='none'
+   --  @return the end widget. Has transfer-ownership='none'.
 
    procedure Set_End_Widget
       (Self  : not null access Gtk_Center_Box_Record;
@@ -165,8 +163,7 @@ package Gtk.Center_Box is
       (Self : not null access Gtk_Center_Box_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the start widget.
-   --  @return the start widget
-   --  Return has transfer-ownership='none'
+   --  @return the start widget. Has transfer-ownership='none'.
 
    procedure Set_Start_Widget
       (Self  : not null access Gtk_Center_Box_Record;

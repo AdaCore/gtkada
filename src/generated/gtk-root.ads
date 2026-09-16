@@ -59,16 +59,14 @@ package Gtk.Root is
 
    function Get_Display (Self : Gtk_Root) return Gdk.Gdk_Display;
    --  Returns the display that this `GtkRoot` is on.
-   --  @return the display of Root
-   --  Return has transfer-ownership='none'
+   --  @return the display of Root. Has transfer-ownership='none'.
 
    function Get_Focus (Self : Gtk_Root) return Gtk.Widget.Gtk_Widget;
    --  Retrieves the current focused widget within the root.
    --  Note that this is the widget that would have the focus if the root is
    --  active; if the root is not focused then `gtk_widget_has_focus (widget)`
    --  will be False for the widget.
-   --  @return the currently focused widget
-   --  Return has transfer-ownership='none'
+   --  @return the currently focused widget. Has transfer-ownership='none'.
 
    procedure Set_Focus
       (Self  : Gtk_Root;

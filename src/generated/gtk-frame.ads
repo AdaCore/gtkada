@@ -108,8 +108,7 @@ package Gtk.Frame is
    function Get_Child
       (Self : not null access Gtk_Frame_Record) return Gtk.Widget.Gtk_Widget;
    --  Gets the child widget of Frame.
-   --  @return the child widget of Frame
-   --  Return has transfer-ownership='none'
+   --  @return the child widget of Frame. Has transfer-ownership='none'.
 
    procedure Set_Child
       (Self  : not null access Gtk_Frame_Record;
@@ -149,8 +148,7 @@ package Gtk.Frame is
    function Get_Label_Widget
       (Self : not null access Gtk_Frame_Record) return Gtk.Widget.Gtk_Widget;
    --  Retrieves the label widget for the frame.
-   --  @return the label widget
-   --  Return has transfer-ownership='none'
+   --  @return the label widget. Has transfer-ownership='none'.
 
    procedure Set_Label_Widget
       (Self         : not null access Gtk_Frame_Record;

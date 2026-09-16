@@ -84,7 +84,7 @@ package Gdk.Memory_Texture_Builder is
    --  It is possible to call this function multiple times to create multiple
    --  textures, possibly with changing properties in between.
    --  Since: gtk+ 4.16
-   --  @return a newly built `GdkTexture`
+   --  @return a newly built `GdkTexture`. Has transfer-ownership='full'.
 
    function Get_Bytes
       (Self : not null access Gdk_Memory_Texture_Builder_Record)
@@ -92,8 +92,7 @@ package Gdk.Memory_Texture_Builder is
    --  Gets the bytes previously set via Gdk.Memory_Texture_Builder.Set_Bytes
    --  or null if none was set.
    --  Since: gtk+ 4.16
-   --  @return The bytes
-   --  Return has transfer-ownership='none'
+   --  @return The bytes. Has transfer-ownership='none'.
 
    procedure Set_Bytes
       (Self  : not null access Gdk_Memory_Texture_Builder_Record;
@@ -110,8 +109,7 @@ package Gdk.Memory_Texture_Builder is
    --  Gets the colorstate previously set via
    --  Gdk.Memory_Texture_Builder.Set_Color_State.
    --  Since: gtk+ 4.16
-   --  @return The colorstate
-   --  Return has transfer-ownership='none'
+   --  @return The colorstate. Has transfer-ownership='none'.
 
    procedure Set_Color_State
       (Self        : not null access Gdk_Memory_Texture_Builder_Record;
@@ -238,8 +236,7 @@ package Gdk.Memory_Texture_Builder is
    --  Gets the texture previously set via
    --  Gdk.Memory_Texture_Builder.Set_Update_Texture or null if none was set.
    --  Since: gtk+ 4.16
-   --  @return The update texture
-   --  Return has transfer-ownership='none'
+   --  @return The update texture. Has transfer-ownership='none'.
 
    procedure Set_Update_Texture
       (Self    : not null access Gdk_Memory_Texture_Builder_Record;

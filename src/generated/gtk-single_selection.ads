@@ -138,7 +138,6 @@ package Gtk.Single_Selection is
    --  Gets the selected item.
    --  If no item is selected, null is returned.
    --  @return The selected item
-   --  Return has transfer-ownership='none'
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

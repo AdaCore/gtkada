@@ -47,7 +47,6 @@ package Gtk.Nothing_Action is
    --  Gets the nothing action.
    --  This is an action that does nothing and where activating it always
    --  fails.
-   --  @return The nothing action
-   --  Return has transfer-ownership='none'
+   --  @return The nothing action. Has transfer-ownership='none'.
 
 end Gtk.Nothing_Action;

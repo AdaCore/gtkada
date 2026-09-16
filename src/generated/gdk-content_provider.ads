@@ -150,7 +150,7 @@ package Gdk.Content_Provider is
       (Self : not null access Gdk_Content_Provider_Record)
        return Gdk.Content_Formats.Gdk_Content_Formats;
    --  Gets the formats that the provider can provide its current contents in.
-   --  @return The formats of the provider
+   --  @return The formats of the provider. Has transfer-ownership='full'.
 
    function Ref_Storable_Formats
       (Self : not null access Gdk_Content_Provider_Record)
@@ -160,7 +160,8 @@ package Gdk.Content_Provider is
    --  An example of such an application would be a clipboard manager.
    --  This can be assumed to be a subset of
    --  [methodGdk.ContentProvider.ref_formats].
-   --  @return The storable formats of the provider
+   --  @return The storable formats of the provider. Has
+   --  transfer-ownership='full'.
 
    procedure Write_Mime_Type_Async
       (Self        : not null access Gdk_Content_Provider_Record;

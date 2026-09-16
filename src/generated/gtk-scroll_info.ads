@@ -86,7 +86,7 @@ package Gtk.Scroll_Info is
    function Ref (Self : Gtk_Scroll_Info) return Gtk_Scroll_Info;
    --  Increases the reference count of a `GtkScrollInfo` by one.
    --  Since: gtk+ 4.12
-   --  @return the passed in `GtkScrollInfo`.
+   --  @return the passed in `GtkScrollInfo`. Has transfer-ownership='full'.
 
    procedure Unref (Self : Gtk_Scroll_Info);
    --  Decreases the reference count of a `GtkScrollInfo` by one.

@@ -72,7 +72,7 @@ package Gdk.Toplevel_Layout is
    function Copy (Self : Gdk_Toplevel_Layout) return Gdk_Toplevel_Layout;
    --  Create a new `GdkToplevelLayout` and copy the contents of Layout into
    --  it.
-   --  @return a copy of Layout.
+   --  @return a copy of Layout. Has transfer-ownership='full'.
 
    function Equal
       (Self  : Gdk_Toplevel_Layout;
@@ -105,8 +105,8 @@ package Gdk.Toplevel_Layout is
    function Get_Fullscreen_Monitor
       (Self : Gdk_Toplevel_Layout) return Gdk.Monitor.Gdk_Monitor;
    --  Returns the monitor that the layout is fullscreening the surface on.
-   --  @return the monitor on which Layout fullscreens
-   --  Return has transfer-ownership='none'
+   --  @return the monitor on which Layout fullscreens. Has
+   --  transfer-ownership='none'.
 
    function Get_Maximized
       (Self      : Gdk_Toplevel_Layout;
@@ -134,7 +134,7 @@ package Gdk.Toplevel_Layout is
 
    function Ref (Self : Gdk_Toplevel_Layout) return Gdk_Toplevel_Layout;
    --  Increases the reference count of Layout.
-   --  @return the same Layout
+   --  @return the same Layout. Has transfer-ownership='full'.
 
    procedure Unref (Self : Gdk_Toplevel_Layout);
    --  Decreases the reference count of Layout.

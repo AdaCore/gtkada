@@ -109,20 +109,19 @@ package Gdk.Drag is
       (Self : not null access Gdk_Drag_Record)
        return Gdk.Content_Provider.Gdk_Content_Provider;
    --  Returns the `GdkContentProvider` associated to the `GdkDrag` object.
-   --  @return The `GdkContentProvider` associated to Drag.
-   --  Return has transfer-ownership='none'
+   --  @return The `GdkContentProvider` associated to Drag. Has
+   --  transfer-ownership='none'.
 
    function Get_Device
       (Self : not null access Gdk_Drag_Record) return Gdk.Gdk_Device;
    --  Returns the `GdkDevice` associated to the `GdkDrag` object.
-   --  @return The `GdkDevice` associated to Drag.
-   --  Return has transfer-ownership='none'
+   --  @return The `GdkDevice` associated to Drag. Has
+   --  transfer-ownership='none'.
 
    function Get_Display
       (Self : not null access Gdk_Drag_Record) return Gdk.Gdk_Display;
    --  Gets the `GdkDisplay` that the drag object was created for.
-   --  @return a `GdkDisplay`
-   --  Return has transfer-ownership='none'
+   --  @return a `GdkDisplay`. Has transfer-ownership='none'.
 
    function Get_Drag_Surface
       (Self : not null access Gdk_Drag_Record) return Gdk.Gdk_Surface;
@@ -132,15 +131,13 @@ package Gdk.Drag is
    --  begun. GDK will move the surface in accordance with the ongoing drag
    --  operation. The surface is owned by Drag and will be destroyed when the
    --  drag operation is over.
-   --  @return the drag surface
-   --  Return has transfer-ownership='none'
+   --  @return the drag surface. Has transfer-ownership='none'.
 
    function Get_Formats
       (Self : not null access Gdk_Drag_Record)
        return Gdk.Content_Formats.Gdk_Content_Formats;
    --  Retrieves the formats supported by this `GdkDrag` object.
-   --  @return a `GdkContentFormats`
-   --  Return has transfer-ownership='none'
+   --  @return a `GdkContentFormats`. Has transfer-ownership='none'.
 
    function Get_Selected_Action
       (Self : not null access Gdk_Drag_Record) return Drag_Action;
@@ -150,8 +147,8 @@ package Gdk.Drag is
    function Get_Surface
       (Self : not null access Gdk_Drag_Record) return Gdk.Gdk_Surface;
    --  Returns the `GdkSurface` where the drag originates.
-   --  @return The `GdkSurface` where the drag originates
-   --  Return has transfer-ownership='none'
+   --  @return The `GdkSurface` where the drag originates. Has
+   --  transfer-ownership='none'.
 
    procedure Set_Hotspot
       (Self  : not null access Gdk_Drag_Record;
@@ -193,7 +190,7 @@ package Gdk.Drag is
    --  started
    --  @param Dy the y offset to Device's position where the drag nominally
    --  started
-   --  @return a newly created `GdkDrag`
+   --  @return a newly created `GdkDrag`. Has transfer-ownership='full'.
 
    ----------------
    -- Properties --

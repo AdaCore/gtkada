@@ -49,8 +49,7 @@ package Gtk.Notebook_Page is
       (Self : not null access Gtk_Notebook_Page_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Returns the notebook child to which Page belongs.
-   --  @return the child to which Page belongs
-   --  Return has transfer-ownership='none'
+   --  @return the child to which Page belongs. Has transfer-ownership='none'.
 
    ----------------
    -- Properties --

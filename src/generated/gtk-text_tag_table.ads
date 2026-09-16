@@ -137,8 +137,7 @@ package Gtk.Text_Tag_Table is
        Name  : UTF8_String) return Gtk.Text_Tag.Gtk_Text_Tag;
    --  Look up a named tag.
    --  @param Name name of a tag
-   --  @return The tag
-   --  Return has transfer-ownership='none'
+   --  @return The tag. Has transfer-ownership='none'.
 
    procedure Remove
       (Table : not null access Gtk_Text_Tag_Table_Record;

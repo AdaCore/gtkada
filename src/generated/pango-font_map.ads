@@ -83,7 +83,7 @@ package Pango.Font_Map is
    --  those instead.
    --  Since: gtk+ 1.22
    --  @return the newly allocated Pango.Context.Pango_Context, which should
-   --  be freed with g_object_unref.
+   --  be freed with g_object_unref. Has transfer-ownership='full'.
 
    function Get_Serial
       (Self : not null access Pango_Font_Map_Record) return Guint;
@@ -115,7 +115,7 @@ package Pango.Font_Map is
    --  @param Desc a Pango.Font.Pango_Font_Description describing the font to
    --  load
    --  @return the newly allocated Pango.Font.Pango_Font loaded, or null if no
-   --  font matched.
+   --  font matched. Has transfer-ownership='full'.
 
    function Load_Fontset
       (Self     : not null access Pango_Font_Map_Record;
@@ -132,6 +132,6 @@ package Pango.Font_Map is
    --  @param Language a Pango.Language.Pango_Language the fonts will be used
    --  for
    --  @return the newly allocated Pango.Fontset.Pango_Fontset loaded, or null
-   --  if no font matched.
+   --  if no font matched. Has transfer-ownership='full'.
 
 end Pango.Font_Map;

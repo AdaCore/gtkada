@@ -137,8 +137,7 @@ package Gtk.Tree_Expander is
       (Self : not null access Gtk_Tree_Expander_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the child widget displayed by Self.
-   --  @return The child displayed by Self
-   --  Return has transfer-ownership='none'
+   --  @return The child displayed by Self. Has transfer-ownership='none'.
 
    procedure Set_Child
       (Self  : not null access Gtk_Tree_Expander_Record;
@@ -200,14 +199,12 @@ package Gtk.Tree_Expander is
    --  ```c gtk_tree_list_row_get_item (gtk_tree_expander_get_list_row
    --  (Self)); ```
    --  @return The item of the row this expander manages
-   --  Return has transfer-ownership='none'
 
    function Get_List_Row
       (Self : not null access Gtk_Tree_Expander_Record)
        return Gtk.Tree_List_Row.Gtk_Tree_List_Row;
    --  Gets the list row managed by Self.
-   --  @return The list row displayed by Self
-   --  Return has transfer-ownership='none'
+   --  @return The list row displayed by Self. Has transfer-ownership='none'.
 
    procedure Set_List_Row
       (Self     : not null access Gtk_Tree_Expander_Record;

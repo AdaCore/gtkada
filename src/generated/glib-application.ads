@@ -715,7 +715,7 @@ package Glib.Application is
    --  values must be validated before being used.
    --  For local invocation, it will be null.
    --  Since: gtk+ 2.28
-   --  @return the platform data, or null
+   --  @return the platform data, or null. Has transfer-ownership='full'.
 
    function Getenv
       (Self : not null access Gapplication_Command_Line_Record;
@@ -883,8 +883,8 @@ package Glib.Application is
    --  control over this by using Glib.Application.Set_Default.
    --  If there is no default application then null is returned.
    --  Since: gtk+ 2.32
-   --  @return the default application for this process, or null
-   --  Return has transfer-ownership='none'
+   --  @return the default application for this process, or null. Has
+   --  transfer-ownership='none'.
 
    function Id_Is_Valid (Application_Id : UTF8_String) return Boolean;
    --  Checks if Application_Id is a valid application identifier.

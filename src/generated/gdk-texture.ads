@@ -422,8 +422,8 @@ package Gdk.Texture is
        return Gdk.Color_State.Gdk_Color_State;
    --  Returns the color state associated with the texture.
    --  Since: gtk+ 4.16
-   --  @return the color state of the `GdkTexture`
-   --  Return has transfer-ownership='none'
+   --  @return the color state of the `GdkTexture`. Has
+   --  transfer-ownership='none'.
 
    function Get_Format
       (Self : not null access Gdk_Texture_Record) return Gdk_Memory_Format;
@@ -471,7 +471,8 @@ package Gdk.Texture is
    --  If you are dealing with high dynamic range float data, you might also
    --  want to consider [methodGdk.Texture.save_to_tiff_bytes] instead.
    --  Since: gtk+ 4.6
-   --  @return a newly allocated `GBytes` containing PNG data
+   --  @return a newly allocated `GBytes` containing PNG data. Has
+   --  transfer-ownership='full'.
 
    function Save_To_Tiff
       (Self     : not null access Gdk_Texture_Record;
@@ -493,7 +494,8 @@ package Gdk.Texture is
    --  and a more portable format, you might want to use
    --  [methodGdk.Texture.save_to_png_bytes].
    --  Since: gtk+ 4.6
-   --  @return a newly allocated `GBytes` containing TIFF data
+   --  @return a newly allocated `GBytes` containing TIFF data. Has
+   --  transfer-ownership='full'.
 
    procedure Load_Async
       (Self        : not null access Gdk_Texture_Record;

@@ -150,7 +150,7 @@ package Gtk.Tree_View_Column is
    --  @param X_Offset return location for the horizontal position of Cell
    --  within Tree_Column
    --  @param Width return location for the width of Cell
-   --  @return True if Cell belongs to Tree_Column
+   --  @param Success True if Cell belongs to Tree_Column
 
    procedure Cell_Get_Size
       (Self     : not null access Gtk_Tree_View_Column_Record;
@@ -238,8 +238,8 @@ package Gtk.Tree_View_Column is
    pragma Obsolescent (Get_Button);
    --  Returns the button used in the treeview column header
    --  Deprecated since 4.10, 1
-   --  @return The button for the column header.
-   --  Return has transfer-ownership='none'
+   --  @return The button for the column header. Has
+   --  transfer-ownership='none'.
 
    function Get_Clickable
       (Self : not null access Gtk_Tree_View_Column_Record) return Boolean;
@@ -494,8 +494,8 @@ package Gtk.Tree_View_Column is
    --  Returns the `GtkTreeView` wherein Tree_Column has been inserted. If
    --  Column is currently not inserted in any tree view, null is returned.
    --  Deprecated since 4.10, 1
-   --  @return The tree view wherein Column has been inserted
-   --  Return has transfer-ownership='none'
+   --  @return The tree view wherein Column has been inserted. Has
+   --  transfer-ownership='none'.
 
    function Get_Visible
       (Self : not null access Gtk_Tree_View_Column_Record) return Boolean;
@@ -520,8 +520,8 @@ package Gtk.Tree_View_Column is
    --  Returns the `GtkWidget` in the button on the column header.
    --  If a custom widget has not been set then null is returned.
    --  Deprecated since 4.10, 1
-   --  @return The `GtkWidget` in the column header
-   --  Return has transfer-ownership='none'
+   --  @return The `GtkWidget` in the column header. Has
+   --  transfer-ownership='none'.
 
    procedure Set_Widget
       (Self   : not null access Gtk_Tree_View_Column_Record;

@@ -66,8 +66,7 @@ package Gtk.Column_View_Cell is
    --  Gets the child previously set via Gtk.Column_View_Cell.Set_Child or
    --  null if none was set.
    --  Since: gtk+ 4.12
-   --  @return The child
-   --  Return has transfer-ownership='none'
+   --  @return The child. Has transfer-ownership='none'.
 
    procedure Set_Child
       (Self  : not null access Gtk_Column_View_Cell_Record;
@@ -106,7 +105,6 @@ package Gtk.Column_View_Cell is
    --  If Self is unbound, this function returns null.
    --  Since: gtk+ 4.12
    --  @return The item displayed
-   --  Return has transfer-ownership='none'
 
    function Get_Position
       (Self : not null access Gtk_Column_View_Cell_Record) return Guint;

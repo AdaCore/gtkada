@@ -64,6 +64,7 @@ package Pango.Coverage is
    --  it.)
    --  @return the newly allocated Pango.Coverage.Pango_Coverage, with a
    --  reference count of one, which should be freed with Pango.Coverage.Unref.
+   --  Has transfer-ownership='full'.
 
    function Get
       (Self  : not null access Pango_Coverage_Record;
@@ -86,7 +87,7 @@ package Pango.Coverage is
       (Self : not null access Pango_Coverage_Record) return Pango_Coverage;
    --  Increase the reference count on the Pango.Coverage.Pango_Coverage by
    --  one
-   --  @return Coverage
+   --  @return Coverage. Has transfer-ownership='full'.
 
    procedure Set
       (Self  : not null access Pango_Coverage_Record;
@@ -99,6 +100,6 @@ package Pango.Coverage is
    procedure Unref (Self : not null access Pango_Coverage_Record);
    --  Decrease the reference count on the Pango.Coverage.Pango_Coverage by
    --  one. If the result is zero, free the coverage and all associated memory.
-   --  Parameter Self has transfer-ownership='full'
+   --  @param Self has transfer-ownership='full'.
 
 end Pango.Coverage;

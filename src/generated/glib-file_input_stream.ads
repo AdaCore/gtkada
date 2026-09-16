@@ -88,7 +88,8 @@ package Glib.File_Input_Stream is
    --  @param Cancellable optional Glib.Cancellable.Gcancellable object, null
    --  to ignore.
    --  @param Error the return location for a recoverable error
-   --  @return a Glib.File_Info.Gfile_Info, or null on error.
+   --  @return a Glib.File_Info.Gfile_Info, or null on error. Has
+   --  transfer-ownership='full'.
 
    procedure Query_Info_Async
       (Self        : not null access Gfile_Input_Stream_Record;
@@ -119,6 +120,6 @@ package Glib.File_Input_Stream is
    --  Finishes an asynchronous info query operation.
    --  @param Result a Glib.G_Async_Result.
    --  @param Error the return location for a recoverable error
-   --  @return Glib.File_Info.Gfile_Info.
+   --  @return Glib.File_Info.Gfile_Info. Has transfer-ownership='full'.
 
 end Glib.File_Input_Stream;

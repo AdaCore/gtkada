@@ -111,13 +111,14 @@ package Pango.Fontset is
    --  Unicode character Wc.
    --  @param Wc a Unicode character
    --  @return a Pango.Font.Pango_Font. The caller must call g_object_unref
-   --  when finished with the font.
+   --  when finished with the font. Has transfer-ownership='full'.
 
    function Get_Metrics
       (Self : not null access Pango_Fontset_Record)
        return Pango.Font_Metrics.Pango_Font_Metrics;
    --  Get overall metric information for the fonts in the fontset.
    --  @return a Pango.Font_Metrics.Pango_Font_Metrics object. The caller must
-   --  call Pango.Font_Metrics.Unref when finished using the object.
+   --  call Pango.Font_Metrics.Unref when finished using the object. Has
+   --  transfer-ownership='full'.
 
 end Pango.Fontset;
