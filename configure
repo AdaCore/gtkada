@@ -5033,6 +5033,68 @@ fi
   GTK_LIBS="$GTK_LIBS $GMODULE_LIBS $FONTCONFIG_LIBS"
 
 
+
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for redundant -L switches in GTK_LIBS" >&5
+printf %s "checking for redundant -L switches in GTK_LIBS... " >&6; }
+
+   # Canonicalise one directory.
+   am_sdl_realpath ()
+   {
+      ( cd "$1" 2>/dev/null && pwd -P ) || :
+   }
+
+   # Run "gcc -print-search-dirs", canonicalize the entries, to find the
+   # system-searched paths on the system.
+   am_sdl_defaults=" "
+   for am_sdl_dir in `LIBRARY_PATH= $CC -print-search-dirs 2>/dev/null | \
+                      sed -n 's/^libraries: *=*//p' | tr ':' ' '`; do
+      am_sdl_real=`am_sdl_realpath "$am_sdl_dir"`
+      if test -n "$am_sdl_real"; then
+         am_sdl_defaults="$am_sdl_defaults$am_sdl_real "
+      fi
+   done
+
+   am_sdl_kept=""
+   am_sdl_dropped=""
+   for am_sdl_arg in $GTK_LIBS; do
+      am_sdl_drop=no
+      case $am_sdl_arg in
+         # Only absolute directories are considered.  A relative -L cannot be
+         # compared against the (absolute) default list, and is in any case
+         # meant to be interpreted relative to the installed project file
+         # rather than to the current directory. (See the mingw case in
+         # AM_PATH_GTK).
+         -L/*)
+            am_sdl_dir=`expr "X$am_sdl_arg" : 'X-L\(.*\)'`
+            am_sdl_real=`am_sdl_realpath "$am_sdl_dir"`
+            if test -n "$am_sdl_real"; then
+               case $am_sdl_defaults in
+                  *" $am_sdl_real "*) am_sdl_drop=yes ;;
+               esac
+            fi
+            ;;
+      esac
+      if test $am_sdl_drop = yes; then
+         am_sdl_dropped="$am_sdl_dropped $am_sdl_arg"
+      else
+         am_sdl_kept="$am_sdl_kept $am_sdl_arg"
+      fi
+   done
+
+   # Unquoted, so that the leading separator built up by the loop is
+   # cleared, along with any other whitespace.
+   GTK_LIBS=`echo $am_sdl_kept`
+
+   if test -n "$am_sdl_dropped"; then
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: dropped$am_sdl_dropped" >&5
+printf "%s\n" "dropped$am_sdl_dropped" >&6; }
+   else
+      { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: none" >&5
+printf "%s\n" "none" >&6; }
+   fi
+
+
+
   case $build_os in
      *mingw*) GTK_LIBS="-L../../lib -L../../bin $GTK_LIBS";;
   esac
