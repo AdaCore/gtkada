@@ -21,6 +21,19 @@ AC_DEFUN([AM_PATH_GTK],
 
   GTK_LIBS="$GTK_LIBS $GMODULE_LIBS $FONTCONFIG_LIBS"
 
+  dnl GTK_LIBS is pkg-config output, so it carries a -L for every directory
+  dnl the .pc files mention, and some of those are system directories: GTK+ 4
+  dnl requires vulkan, and when the GTK+ stack we build against ships no
+  dnl vulkan.pc of its own, pkg-config falls back to the system one and we
+  dnl inherit its "-L/usr/lib64".  Such a switch reaches gtkada.gpr's
+  dnl Linker_Options, and from there gprbuild turns it into an
+  dnl $ORIGIN-relative run path entry that diverts the linker to the system
+  dnl libraries.  See strip_default_libdirs.m4 for the full story.  Do this
+  dnl before the mingw adjustment below, so that the relative -L switches it
+  dnl prepends are never even looked at.
+
+  AM_STRIP_DEFAULT_LIBDIRS([GTK_LIBS])
+
   dnl On windows gtk will be embedded along with gtk distrib. In that
   dnl case we need to adjust switches so that gtkada.gpr packaged in
   dnl lib/gnat is usable
