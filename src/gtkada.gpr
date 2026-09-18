@@ -52,6 +52,13 @@ library project GtkAda is
    for Library_Version use
      "lib" & Project'Library_Name & GtkAda_Shared.So_Ext & "." & Version;
    for Run_Path_Option use ();
+   Gtk_Rpath_Link := ("-Wl,-rpath-link," & GtkAda_Shared.Gtk_Prefix & "/lib");
+   --  Empty list of `Run_Path_Option` disables adding of RPATH header to
+   --  the shared library.
+   --  `Gtk_Rpath_Link` switch is used to force lookup for implicit
+   --  dependencies of Gtk+ libraries in the GtkAda installation, before lookup
+   --  in system directories. To lookup for explicit dependencies `-L` is
+   --  used first.
 
    case GtkAda_Shared.Library_Kind is
       when "static-pic" | "relocatable" =>
@@ -76,7 +83,7 @@ library project GtkAda is
    case GtkAda_Shared.Library_Kind is
       when "relocatable" =>
          for Leading_Library_Options use GtkAda_Shared.Ldflags;
-         for Library_Options use GtkAda_Shared.Gtk_Libs;
+         for Library_Options use Gtk_Rpath_Link & GtkAda_Shared.Gtk_Libs;
       when others =>
          null;
    end case;
@@ -88,7 +95,7 @@ library project GtkAda is
    package IDE      renames GtkAda_Shared.IDE;
 
    package Linker is
-      for Linker_Options use GtkAda_Shared.Gtk_Libs;
+      for Linker_Options use Gtk_Rpath_Link & GtkAda_Shared.Gtk_Libs;
    end Linker;
 
    package Install is
