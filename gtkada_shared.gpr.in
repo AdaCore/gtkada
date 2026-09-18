@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                   Copyright (C) 2015-2022, AdaCore                       --
+--                   Copyright (C) 2015-2026, AdaCore                       --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -40,6 +40,7 @@ project GtkAda_Shared is
    So_Ext      : So_Ext_Type := "@SO_EXT@";
 
    Version     := "@PACKAGE_VERSION@";
+   Gtk_Prefix  := External ("GTK_PREFIX", "@GTK_PREFIX@");
    Gtk_Include := Gtk.Gtk_Default_Include & (@GTK_CFLAGS_GPR@);
    Gtk_Libs    := Gtk.Gtk_Default_Libs    & (@GTK_LIBS_GPR@);
 
