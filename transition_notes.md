@@ -36,234 +36,19 @@
   initialises it with the `GType` the value is to be provided in.
 - `Gtk.Builder.Value_From_String` takes its `Pspec` `in`; C never writes to it.
 
-## gtkada_demo
-
-- Demos for `Create_Tree_Filter` and `Create_Tree_View` rewritten and enabled
-- Added new demo: `Create_Custom_Widget`
-- Added new demo: `Create_Drawing_Area`
-- Reactivated and ported demos for simple button widgets (`GtkButton`, `GtkCheckButton`, `GtkToggleButton`, others pending)
-- Removed demos for widgets removed in GTK4 (See work item #111)
-- Reactivated `gtkada_demo`'s `Create_Label` package: migrated from Gtk3 to Gtk4
-  (`Gtk_New (Box, Orientation_*, …)` + `Append` instead of `Pack_Start`,
-  `Set_Child` instead of `Add`, `Set_Wrap` / `Set_Wrap_Mode` instead of
-  `Set_Line_Wrap`, `Set_Markup` with `<u>...</u>` in place of the now-gone
-  `Set_Pattern`, dropped `Show_All`) and wired it into
-  `Main_Windows.On_Activate`, so the demo window now shows the `Gtk.Label`
-  test instead of the placeholder.
-- Reintroduced `GtkListStore` for gtk4 (re-enabled in `contrib/data.py`,
-  added `contrib/binding/packages/GtkListStore.toml`) and used it in
-  `gtkada_demo/main_windows.adb` to build a `Gtk_Paned` + `Gtk_Scrolled_Window` +
-  `Gtk_Tree_View` selector with a single "labels" entry that drives
-  the `Create_Label` demo on the right-hand side. The C glue
-  (`ada_gtk_list_store_set_*`) was already present in `src/misc.c`.
-- Reactivated `gtkada_demo`'s `Create_Box`, `Create_Frame`, `Create_Paned`
-  and `Create_Scrolled` packages: migrated their bodies from Gtk3 to Gtk4
-  and wired them (plus their `Help` text) into the `Main_Windows` selector.
-  Notable API substitutions:
-  - `Gtk_New (Box, Orientation_*, Spacing)` + `Set_Homogeneous` instead of
-    `Gtk_New_Hbox` / `Gtk_New_Vbox`, and `Append` with per-child
-    `Set_Hexpand` / `Set_Halign` instead of `Pack_Start`'s
-    `Expand` / `Fill` arguments.
-  - `Set_Child` instead of `Add`, `Set_Margin_*` instead of
-    `Set_Border_Width`, and `Gtk_New (Sep/Paned, Orientation_*)` instead of
-    the `H`/`V` constructors.
-  - `Gtk_Paned`'s `Pack1` / `Pack2` became `Set_Start_Child` /
-    `Set_End_Child` with their `Set_Resize_*_Child` / `Set_Shrink_*_Child`
-    companions; the decorative `Set_Shadow_Type` frames are gone (Gtk4
-    dropped `Gtk_Shadow_Type`).
-  - `Create_Frame` no longer demonstrates shadow types (removed in Gtk4);
-    it now showcases label presence/absence and the `Xalign` of the frame
-    label (`Set_Label_Align` lost its `Yalign` argument).
-  - Dropped the now-redundant `Show_All` calls (Gtk4 widgets are visible by
-    default).
-  The selector now also shows each demo's `Help` text in a panel below the
-  demo frame; the legacy `@b...@B` emphasis markers are converted to Pango
-  markup at display time.
-- Reactivated `gtkada_demo`'s `Create_Tooltips` package: migrated its body
-  from Gtk3 to Gtk4 and wired it (plus its `Help` text) into the
-  `Main_Windows` selector. Notable API substitutions:
-  - `Gtk_Tooltip.Set_Icon_From_Stock (Stock_Delete, …)` (and the
-    now-gone `Gtk.Stock` unit) became
-    `Gtk_Tooltip.Set_Icon_From_Icon_Name ("edit-delete")`.
-  - The custom-tooltip example no longer uses a `Window_Popup` tooltip
-    window with `Set_Tooltip_Window` / `Override_Background_Color` (all
-    removed in Gtk4); it now embeds a custom widget through the
-    `query-tooltip` handler via `Gtk.Tooltip.Set_Custom`.
-  - `Gtk_New_With_Label` + `Append` / `Set_Child` instead of `Gtk_New`
-    with a label, `Pack_Start` and `Add`; dropped `Show_All` / `Show`.
-  - The `On_Query_Tooltip` callback signatures already match the generated
-    Gtk4 binding, so they were reused unchanged.
-  Ported the corresponding C unit test (`testsuite/c_tests/tooltips.c`)
-  to `testsuite/tests/tooltips/`.
-- Bound `GtkSearchEntry` and `GtkSearchBar` and reactivated
-  `gtkada_demo`'s `Create_Entry` package around them, migrated from Gtk3
-  to Gtk4. Notable points:
-  - `Gtk_Search_Entry` emits `search-changed` only after `Search_Delay`
-    milliseconds of quiet, so the demo filters a small word list from
-    `On_Search_Changed` and exposes the delay through a `Gtk_Spin_Button`
-    to make that debounce visible. Its `next-match` / `previous-match` /
-    `stop-search` keybinding signals are reported into a label.
-  - `Gtk_Search_Bar.Connect_Entry` takes a `Gtk_Editable` in Gtk4, not a
-    `Gtk_Entry`, so the bar is fed with `+Bar_Entry` through the
-    `Implements_Gtk_Editable` conversion.
-  - `Set_Key_Capture_Widget` is given the demo frame, so typing anywhere
-    reveals the bar. The property is nullable on both widgets and comes
-    back as a null `Gtk_Widget` when unset.
-  - `Gtk_Combo_Box_Text` and `Gtk_Level_Bar` are not bound yet, so the
-    parts of the Gtk3 demo that used them were dropped for now; the rest
-    of the Gtk3-isms went the usual way (`Gtk_New (Box, Orientation_*,
-    Spacing)` + `Append` instead of `Gtk_New_Vbox` / `Pack_Start`,
-    `Set_Child` instead of `Add`, `Set_Margin_*` instead of
-    `Set_Border_Width`, no `Show_All`).
-  - The Gtk3 demo passed the entry to its callbacks as user data through
-    `Gtk.Handlers.User_Callback`; the generated Gtk4 handlers take only
-    the emitting widget, so the governed widgets are held at library
-    level instead.
-  Added `testsuite/tests/search-entry/` (no C test exists to port) and
-  `testsuite/tests/search-bar/`, the latter ported from
-  `testsuite/c_tests/searchbar.c`.
-
 ## gtkada_demo: aligning with gtk4-demo
 
-Goal: bring `gtkada_demo` closer to the demo shipped with gtk4
-(`gtk-4.22.2/demos/gtk-demo/`), in presentation and in coverage.
-
-Decisions:
-
-- Selector: `Gtk.List_View` + `Gtk.Tree_List_Model`, upstream's own sidebar
-  machinery, rather than `Gtk_Tree_Store` + `Gtk_Tree_View` — the demo's
-  chrome should showcase the gtk4 list API, not the one gtk4 deprecated.
-- Demo names follow upstream's `Category/Title` strings verbatim
-  (`Text View/Markup`, `Lists/Colors`, …) so coverage can be diffed
-  mechanically; GtkAda-only demos get `GtkAda/…` categories.
-- The shell otherwise stays as it is: demo frame plus help panel.
-  Upstream's source-code tab, search entry and "run in its own toplevel"
-  are out of scope. (Should we reconsider: the source viewer needs only
-  `Gtk.Notebook` + `Gtk.Text_View`, both bound; the search box needs
-  `Gtk.Search_Entry`, `--` in `contrib/data.py`.)
-
-### Step 1 — categorised tree selector
-
-- [ ] **Bind `GtkSignalListItemFactory`**: `new` plus the `setup` / `bind` /
-  `unbind` / `teardown` signals, each carrying a `Gtk.List_Item` (bound).
-  Absent from `contrib/data.py`; a leaf class with no unbound dependencies.
-  (The bound `Gtk.Builder_List_Item_Factory` is feasible too — an Ada item
-  can expose template-lookup properties via `Glib.Properties.Creation` +
-  `Initialize_Class_Record` — but costs, per item type, a property-id enum,
-  a `Set_Property`/`Get_Property` pair, a `Param_Spec` per field and a UI
-  template. The signal factory costs two handlers. Rejected on cost only.)
-- [ ] **Bind `GtkTreeExpander`**: draws the expander arrow and the
-  indentation, and ties a row to its `Gtk.Tree_List_Row`. Deferrable — our
-  tree is two levels and static, so an indent box plus a toggle calling
-  `Gtk.Tree_List_Row.Set_Expanded` would do, at the cost of not looking
-  like the rest of gtk4.
-
-  Both are worth doing first regardless: every `Lists/…` demo and the
-  awaited `Gtk.Column_View` demo need them. They give row *rendering*
-  only — `Lists/Settings`, `Lists/Alternative Settings`,
-  `Lists/Application launcher` and `Lists/File browser` stay blocked on
-  their data sources (Step 2).
-- [ ] **Add a `Demo_Item` GObject**: a `Glib.Object.GObject_Record`
-  derivative registered through `Ada_GObject_Class` (the pattern
-  `create_custom_widget.adb` uses), carrying title, category, the `Run`
-  access-to-procedure and the `Help` function.
-- [ ] **Move the `Demos` array** out of `main_windows.adb` into its own
-  package (say `Demo_Registry`), each entry naming its full upstream-style
-  path; derive the category list from those paths so adding a demo stays a
-  one-line change.
-- [ ] **Rebuild the selector**: `Glib.List_Store` of categories →
-  `Gtk.Tree_List_Model` (create-child-model function returning each
-  category's `Glib.List_Store` of demos) → `Gtk.Single_Selection` →
-  `Gtk.List_View` with a signal factory building a `GtkTreeExpander` +
-  `Gtk.Label` per row. `Gtk.List_Store`, `Gtk.Tree_View`,
-  `Gtk.Tree_View_Column` and `Gtk.Cell_Renderer_Text` then leave
-  `main_windows.adb`; they stay demonstrated by the `Tree View/…` demos.
-- [ ] **Write a new selection callback.** `On_Selection_Changed` cannot be
-  carried over: it takes a `Gtk_Tree_Selection`, calls `Get_Selected` for a
-  `Gtk_Tree_Iter` and reads an index back through `Demo_Column` — none of
-  the three survive. The replacement hangs off `Gtk.Single_Selection`'s
-  `notify::selected-item` and must:
-  - unwrap the row: `Get_Selected_Item` over a `Gtk.Tree_List_Model`
-    returns the `Gtk.Tree_List_Row` wrapper, and
-    `Gtk.Tree_List_Row.Get_Item` the item proper. It returns null when
-    nothing is selected, which replaces the old `Null_Iter` guard.
-  - **reject category rows in the callback itself**, by returning early
-    for anything that is not a `Demo_Item`. That type test is *the* guard,
-    not a backstop: `Gtk.List_Item.Set_Selectable (False)` does not stop
-    the selection model selecting the row. `gtk-list_item.ads` says so
-    outright — "making an item non-selectable has no influence on the
-    selected state at all. A non-selectable item may still be selected" —
-    and GTK resets the property whenever the item is rebound. Set it for
-    the click affordance if we like, but nothing may depend on it.
-    Upstream guards the same way (`main.c:selection_cb` gates on
-    `demo->func != NULL`). Making the invariant structural instead would
-    mean a selection model that refuses expandable rows, i.e. subclassing:
-    GTK ships nothing off the shelf.
-  - read `Run` and `Help` straight off the `Demo_Item`, so the
-    `Index in Demos'Range` tests go away with the array.
-
-  Only the tail of the old body carries over: clear the frame, call
-  `Run (Demo_Frame)`, set the help label from `To_Markup`.
-- [ ] **Remap the existing demos** onto the upstream taxonomy:
-
-  | today | becomes |
-  | --- | --- |
-  | Boxes | `Layout/Boxes` *(GtkAda-only; upstream has no box demo)* |
-  | Buttons | `Buttons/Buttons` *(GtkAda-only)* |
-  | Check Buttons | `Buttons/Check Buttons` *(GtkAda-only)* |
-  | Color Chooser | `Pickers and Launchers` *(the colour half only)* |
-  | Custom Widget | `GtkAda/Custom Widget` |
-  | Frames | `Layout/Frames` *(GtkAda-only)* |
-  | Labels | `GtkAda/Labels` *(GtkAda-only)* |
-  | List Store | `Tree View/List Store` |
-  | Menus | `GtkAda/Menus` *(upstream folds menus into other demos)* |
-  | Paned | `Paned Widgets` |
-  | Reparent | `GtkAda/Reparent` |
-  | Scrolled Window | `Layout/Scrolled Window` *(GtkAda-only)* |
-  | Spin Buttons | `Spin Buttons` |
-  | Text View | `Text View/Multiple Views` |
-  | Timeout | `GtkAda/Timeout` |
-  | Toggle Buttons | `Buttons/Toggle Buttons` *(GtkAda-only)* |
-  | Tooltips | `GtkAda/Tooltips` |
-  | Tree Filter | `Tree View/Filter Model` |
-  | Tree View | `Tree View/Tree Store` |
-
-### Step 2 — coverage map against upstream
+### To do — coverage map against upstream
 
 All 110 upstream demos, grouped by what blocks them. "Ready" means every
 binding the demo needs is generated. A snapshot to re-check as bindings
 land, not a contract.
 
-**Ready now** (no new binding needed)
-
-| upstream demo | notes |
-| --- | --- |
-| `Tree View/List Store` | exists (`create_list_store`), needs renaming only |
-| `Tree View/Filter Model` | exists (`create_tree_filter`) |
-| `Tree View/Tree Store` | exists (`create_tree_view`) |
-| `Tree View/Editable Cells` | `Gtk.Cell_Renderer_Text` editing + `Gtk.List_Store` |
-| `Paned Widgets` | exists (`create_paned`) |
-| `Spin Buttons` | exists (`create_spin`) |
-| `Expander` | `Gtk.Expander` bound |
-| `Entry/Completion` | `Gtk.Entry_Completion` bound |
-| `Entry/Undo and Redo` | `Gtk.GEntry` + `Gtk.Editable` undo properties |
-| `Text View/Multiple Views` | exists (`create_text_view`) |
-| `Text View/Markup` | `Gtk.Text_Buffer` + `Gtk.Text_Tag` |
-| `Text View/Tabs` | `Pango.Tabs` bound |
-| `Text View/Undo and Redo` | `Gtk.Text_Buffer` undo API |
-| `Text View/Automatic Scrolling` | `Gtk.Text_View.Scroll_To_Mark` + `Glib.Main` |
-| `Builder` | `Gtk.Builder` bound; the `.ui` must stay within bound widgets |
-| `Application Class` | `Gtk.Application` + `Glib.Menu`; drop the header bar |
-| `Combo Boxes` | only as a `Gtk.Drop_Down` demo — `Gtk.ComboBox` is gone from gtk4 anyway |
-
-**One binding away** — ranked by how many demos each unlocks. *Upstream*
-demos only, with no "revives `create_*`" annotations: nearly every legacy
-demo is held back by several missing units, so naming one binding as its
-cure misleads. Step 3 has the full blocker sets.
+**One binding away** - These are upstream demos that are blocked by just one missing binding.
 
 | missing binding | unlocks |
 | --- | --- |
-| `GtkSignalListItemFactory` (+ `GtkTreeExpander`) | the `Lists/…` demos whose data is plain Ada: `Selections`, `Colors`, `Words`, `Characters`, `Clocks`, `Weather`, plus the awaited `GtkColumnView` demo — and the Step 1 selector itself. Row rendering only; `Lists/Settings`, `Lists/Alternative Settings`, `Lists/Application launcher` and `Lists/File browser` additionally need their data sources (see the list-model row below) |
+| `GtkSignalListItemFactory` (+ `GtkTreeExpander`) | the `Lists/…` demos whose data is plain Ada: `Selections`, `Colors`, `Words`, `Characters`, `Clocks`, `Weather`, and the Step 1 selector itself. Row rendering only; `Lists/Settings`, `Lists/Alternative Settings`, `Lists/Application launcher` and `Lists/File browser` additionally need their data sources (see the list-model row below) |
 | `Gtk.DrawingArea` | `Drawing Area`, `Masking`, `Pango/Rotated Text`, `Pango/Text Mask`, and the substrate for most `Path/…` demos |
 | `Gtk.Image` / `Gtk.Picture` (+ `GdkPixbuf` or `Gdk.Texture` loading) | `Images`, `Image Scaling`, `Image Filtering`, `Cursors`, the `Paintable/…` family, `Icon View/…` |
 | `Gtk.EventController` + the `Gtk.Gesture*` family | `Gestures`, `Paint`, `Text View/Hypertext`, `Constraints/Interactive Constraints` |
@@ -288,7 +73,7 @@ cure misleads. Step 3 has the full blocker sets.
 | `Gtk.PasswordEntry` | `Entry/Password Entry` |
 | `Gtk.Dialog` / `Gtk.MessageDialog` | `Dialogs`, `Error States` |
 
-**Needs a substantial new area**
+**Needs a substantial new area** - waiting on more than one binding.
 
 | area | demos |
 | --- | --- |
@@ -305,33 +90,11 @@ cure misleads. Step 3 has the full blocker sets.
 | `Gtk.FileDialog`, `Gtk.FileLauncher`, `Gtk.UriLauncher`, `Gtk.PrintDialog` (+ `GtkDropTarget`) | `Pickers and Launchers` — a picker/launcher demo, not a list-model one. All four classes are absent from `contrib/data.py` altogether. Its colour and font halves are already bound (`Gtk.ColorDialog` / `Gtk.ColorDialogButton`, `Gtk.FontDialog` / `Gtk.FontDialogButton`), so a colour+font subset can land first and grow |
 | benchmark harness | `Benchmark/Fishbowl`, `Frames`, `Scrolling`, `Themes` |
 
-**Deliberately not ported**
+**Deliberately not ported** - upstream demos we don't intend to port.
 
 - `Lists/Minesweeper`, `Peg Solitaire`, `Sliding Puzzle` — games; low
   binding-coverage value for the effort.
 - `Shortcuts Window` — `GtkShortcutsWindow` is deprecated since 4.18.
-
-### Step 3 — GtkAda-only demos still commented out
-
-These `create_*` packages exist in `gtkada_demo/` but are commented out of
-`main_windows.adb`. Each belongs under a `GtkAda/…` category once revived.
-
-Four things make one unbuildable, and a package usually hits more than one:
-
-1. a unit disabled in `contrib/data.py` (marked `--`) or absent from it, and
-   therefore not generated;
-2. a unit that exists only under `src/gtk3`, which `src/gtkada.gpr` does not
-   list in `Source_Dirs` (`"generated"` and `"."` only);
-3. a `.ui` / `.xml` loaded at run time whose widget classes or signals gtk4
-   removed — these do not show up in the `with` clauses;
-4. a project-level dependency commented out of `gtkada_demo.gpr`.
-
-Spelling in `contrib/data.py` is a rough signal of "wait for the binding" vs
-"rewrite the demo": a disabled entry with a dot (`--Gtk.Revealer`) is usually
-a class gtk4 still has, one without (`--GtkContainer`, `--GtkMenu`) one gtk4
-removed. A convention, not a guarantee — `# Bound through manual_binding`
-entries are exceptions, and `--GtkFileChooserButton` is camel-case although
-gtk 4.22 still has the class. Check the gtk4 documentation first.
 
 **Blocked on bindings only.** Each row is the *whole* blocker set for that
 package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
