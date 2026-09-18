@@ -183,7 +183,7 @@ package Glib.Menu_Model is
    --  @param Item_Index the index of the item
    --  @param Attribute the attribute to query
    --  @param Expected_Type the expected type of the attribute, or null
-   --  @return the value of the attribute
+   --  @return the value of the attribute. Has transfer-ownership='full'.
 
    function Get_Item_Link
       (Self       : not null access Gmenu_Model_Record;
@@ -196,7 +196,8 @@ package Glib.Menu_Model is
    --  Since: gtk+ 2.32
    --  @param Item_Index the index of the item
    --  @param Link the link to query
-   --  @return the linked Glib.Menu_Model.Gmenu_Model, or null
+   --  @return the linked Glib.Menu_Model.Gmenu_Model, or null. Has
+   --  transfer-ownership='full'.
 
    function Get_N_Items
       (Self : not null access Gmenu_Model_Record) return Glib.Gint;
@@ -245,7 +246,8 @@ package Glib.Menu_Model is
    --  You must free the iterator with g_object_unref when you are done.
    --  Since: gtk+ 2.32
    --  @param Item_Index the index of the item
-   --  @return a new Glib.Menu_Model.Gmenu_Attribute_Iter
+   --  @return a new Glib.Menu_Model.Gmenu_Attribute_Iter. Has
+   --  transfer-ownership='full'.
 
    function Iterate_Item_Links
       (Self       : not null access Gmenu_Model_Record;
@@ -255,7 +257,8 @@ package Glib.Menu_Model is
    --  You must free the iterator with g_object_unref when you are done.
    --  Since: gtk+ 2.32
    --  @param Item_Index the index of the item
-   --  @return a new Glib.Menu_Model.Gmenu_Link_Iter
+   --  @return a new Glib.Menu_Model.Gmenu_Link_Iter. Has
+   --  transfer-ownership='full'.
 
    function Get_Name
       (Self : not null access Gmenu_Attribute_Iter_Record)
@@ -279,7 +282,8 @@ package Glib.Menu_Model is
    --  Gets the value of the attribute at the current iterator position.
    --  The iterator is not advanced.
    --  Since: gtk+ 2.32
-   --  @return the value of the current attribute
+   --  @return the value of the current attribute. Has
+   --  transfer-ownership='full'.
 
    function Get_Value
       (Self : not null access Gmenu_Link_Iter_Record) return Gmenu_Model;
@@ -287,7 +291,8 @@ package Glib.Menu_Model is
    --  position.
    --  The iterator is not advanced.
    --  Since: gtk+ 2.32
-   --  @return the Glib.Menu_Model.Gmenu_Model that is linked to
+   --  @return the Glib.Menu_Model.Gmenu_Model that is linked to. Has
+   --  transfer-ownership='full'.
 
    function Next
       (Self : not null access Gmenu_Attribute_Iter_Record) return Boolean;

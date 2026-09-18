@@ -126,7 +126,8 @@ package Gdk.Surface is
    --  using the returned `GdkGLContext`, you will need to call
    --  [methodGdk.GLContext.make_current] or [methodGdk.GLContext.realize].
    --  @param Error the return location for a recoverable error
-   --  @return the newly created `GdkGLContext`
+   --  @return the newly created `GdkGLContext`. Has
+   --  transfer-ownership='full'.
 
    procedure Destroy (Self : not null access Gdk_Surface_Record);
    --  Destroys the window system resources associated with Surface and
@@ -145,8 +146,7 @@ package Gdk.Surface is
    --  If the return value is null then there is no custom cursor set on the
    --  surface, and it is using the cursor for its parent surface.
    --  Use [methodGdk.Surface.set_cursor] to unset the cursor of the surface.
-   --  @return a `GdkCursor`
-   --  Return has transfer-ownership='none'
+   --  @return a `GdkCursor`. Has transfer-ownership='none'.
 
    procedure Set_Cursor
       (Self   : not null access Gdk_Surface_Record;
@@ -170,8 +170,7 @@ package Gdk.Surface is
    --  specified surface, and it is using the cursor for its parent surface.
    --  Use [methodGdk.Surface.set_cursor] to unset the cursor of the surface.
    --  @param Device a pointer `GdkDevice`
-   --  @return a `GdkCursor`
-   --  Return has transfer-ownership='none'
+   --  @return a `GdkCursor`. Has transfer-ownership='none'.
 
    procedure Set_Device_Cursor
       (Self   : not null access Gdk_Surface_Record;
@@ -205,8 +204,8 @@ package Gdk.Surface is
    function Get_Display
       (Self : not null access Gdk_Surface_Record) return Gdk.Gdk_Display;
    --  Gets the `GdkDisplay` associated with a `GdkSurface`.
-   --  @return the `GdkDisplay` associated with Surface
-   --  Return has transfer-ownership='none'
+   --  @return the `GdkDisplay` associated with Surface. Has
+   --  transfer-ownership='none'.
 
    function Get_Frame_Clock
       (Self : not null access Gdk_Surface_Record)
@@ -214,8 +213,7 @@ package Gdk.Surface is
    --  Gets the frame clock for the surface.
    --  The frame clock for a surface never changes unless the surface is
    --  reparented to a new toplevel surface.
-   --  @return the frame clock
-   --  Return has transfer-ownership='none'
+   --  @return the frame clock. Has transfer-ownership='none'.
 
    function Get_Height
       (Self : not null access Gdk_Surface_Record) return Glib.Gint;

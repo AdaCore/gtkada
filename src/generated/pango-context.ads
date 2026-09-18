@@ -157,8 +157,8 @@ package Pango.Context is
    --  context.
    --  Since: gtk+ 1.6
    --  @return the font map for the Pango.Context.Pango_Context. This value is
-   --  owned by Pango and should not be unreferenced.
-   --  Return has transfer-ownership='none'
+   --  owned by Pango and should not be unreferenced. Has
+   --  transfer-ownership='none'.
 
    procedure Set_Font_Map
       (Self     : not null access Pango_Context_Record;
@@ -202,7 +202,7 @@ package Pango.Context is
       (Self : not null access Pango_Context_Record)
        return Pango.Language.Pango_Language;
    --  Retrieves the global language tag for the context.
-   --  @return the global language tag.
+   --  @return the global language tag. Has transfer-ownership='full'.
 
    procedure Set_Language
       (Self     : not null access Pango_Context_Record;
@@ -257,7 +257,8 @@ package Pango.Context is
    --  used. If no language tag is set on the context, metrics for the default
    --  language (as determined by Pango.Language.Get_Default) will be returned.
    --  @return a Pango.Font_Metrics.Pango_Font_Metrics object. The caller must
-   --  call Pango.Font_Metrics.Unref when finished using the object.
+   --  call Pango.Font_Metrics.Unref when finished using the object. Has
+   --  transfer-ownership='full'.
 
    function Get_Round_Glyph_Positions
       (Self : not null access Pango_Context_Record) return Boolean;
@@ -307,7 +308,7 @@ package Pango.Context is
    --  @param Desc a Pango.Font.Pango_Font_Description describing the font to
    --  load
    --  @return the newly allocated Pango.Font.Pango_Font that was loaded, or
-   --  null if no font matched.
+   --  null if no font matched. Has transfer-ownership='full'.
 
    function Load_Fontset
       (Self     : not null access Pango_Context_Record;
@@ -321,6 +322,6 @@ package Pango.Context is
    --  @param Language a Pango.Language.Pango_Language the fonts will be used
    --  for
    --  @return the newly allocated Pango.Fontset.Pango_Fontset loaded, or null
-   --  if no font matched.
+   --  if no font matched. Has transfer-ownership='full'.
 
 end Pango.Context;

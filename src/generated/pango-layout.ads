@@ -147,13 +147,15 @@ package Pango.Layout is
    --  Does a deep copy-by-value of the Src layout. The attribute list, tab
    --  array, and text from the original layout are all copied by value.
    --  @return the newly allocated Pango.Layout.Pango_Layout, with a reference
-   --  count of one, which should be freed with g_object_unref.
+   --  count of one, which should be freed with g_object_unref. Has
+   --  transfer-ownership='full'.
 
    function Copy (Self : Pango_Layout_Iter) return Pango_Layout_Iter;
    --  Copies a Pango.Layout.Pango_Layout_Iter.
    --  Since: gtk+ 1.20
    --  @return the newly allocated Pango.Layout.Pango_Layout_Iter, which
-   --  should be freed with Pango.Layout.Free, or null if Iter was null.
+   --  should be freed with Pango.Layout.Free, or null if Iter was null. Has
+   --  transfer-ownership='full'.
 
    function Get_Alignment
       (Layout : not null access Pango_Layout_Record)
@@ -173,8 +175,8 @@ package Pango.Layout is
       (Layout : not null access Pango_Layout_Record)
        return Pango.Attributes.Pango_Attr_List;
    --  Gets the attribute list for the layout, if any.
-   --  @return a Pango.Attributes.Pango_Attr_List or null if none was set.
-   --  Return has transfer-ownership='none'
+   --  @return a Pango.Attributes.Pango_Attr_List or null if none was set. Has
+   --  transfer-ownership='none'.
 
    procedure Set_Attributes
       (Layout : not null access Pango_Layout_Record;
@@ -236,8 +238,7 @@ package Pango.Layout is
    --  Retrieves the Pango.Context.Pango_Context used for this layout.
    --  @return the Pango.Context.Pango_Context for the layout. This does not
    --  have an additional refcount added, so if you want to keep a copy of this
-   --  around, you must reference it yourself.
-   --  Return has transfer-ownership='none'
+   --  around, you must reference it yourself. Has transfer-ownership='none'.
 
    procedure Get_Cursor_Pos
       (Layout     : not null access Pango_Layout_Record;
@@ -375,7 +376,7 @@ package Pango.Layout is
        return Pango_Layout_Iter;
    --  Returns an iterator to iterate over the visual extents of the layout.
    --  @return the new Pango.Layout.Pango_Layout_Iter that should be freed
-   --  using Pango.Layout.Free.
+   --  using Pango.Layout.Free. Has transfer-ownership='full'.
 
    function Get_Justify
       (Layout : not null access Pango_Layout_Record) return Boolean;
@@ -531,7 +532,8 @@ package Pango.Layout is
    --  Pango.Tabs.Pango_Tab_Array has been set, then the default tabs are in
    --  use and null is returned. Default tabs are every 8 spaces. The return
    --  value should be freed with Pango.Tabs.Free.
-   --  @return a copy of the tabs for this layout, or null.
+   --  @return a copy of the tabs for this layout, or null. Has
+   --  transfer-ownership='full'.
 
    procedure Set_Tabs
       (Layout : not null access Pango_Layout_Record;
@@ -744,7 +746,7 @@ package Pango.Layout is
    --  grapheme the user clicked. It will either be zero, or the number of
    --  characters in the grapheme. 0 represents the leading edge of the
    --  grapheme.
-   --  @return True if the coordinates were inside text, False otherwise.
+   --  @param Exact True if the coordinates were inside text, False otherwise.
 
    function At_Last_Line (Self : Pango_Layout_Iter) return Boolean;
    --  Determines whether Iter is on the last line of the layout.
@@ -781,8 +783,7 @@ package Pango.Layout is
    function Get_Layout (Self : Pango_Layout_Iter) return Pango_Layout;
    --  Gets the layout associated with a Pango.Layout.Pango_Layout_Iter.
    --  Since: gtk+ 1.20
-   --  @return the layout associated with Iter.
-   --  Return has transfer-ownership='none'
+   --  @return the layout associated with Iter. Has transfer-ownership='none'.
 
    procedure Get_Layout_Extents
       (Self         : Pango_Layout_Iter;

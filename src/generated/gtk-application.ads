@@ -273,8 +273,7 @@ package Gtk.Application is
    --  application). This window may not have the focus at the moment if
    --  another application has it — this is just the most recently-focused
    --  window within this application.
-   --  @return the active window
-   --  Return has transfer-ownership='none'
+   --  @return the active window. Has transfer-ownership='none'.
 
    function Get_Menu_By_Id
       (Self : not null access Gtk_Application_Record;
@@ -285,15 +284,14 @@ package Gtk.Application is
    --  information.
    --  @param Id the ID of the menu to look up
    --  @return Gets the menu with the given ID from the automatically loaded
-   --  resources
-   --  Return has transfer-ownership='none'
+   --  resources. Has transfer-ownership='none'.
 
    function Get_Menubar
       (Self : not null access Gtk_Application_Record)
        return Glib.Menu_Model.Gmenu_Model;
    --  Returns the menu model for the menu bar of the application.
-   --  @return the menubar for windows of the application
-   --  Return has transfer-ownership='none'
+   --  @return the menubar for windows of the application. Has
+   --  transfer-ownership='none'.
 
    procedure Set_Menubar
       (Self    : not null access Gtk_Application_Record;
@@ -321,8 +319,7 @@ package Gtk.Application is
    --  The ID of a `GtkApplicationWindow` can be retrieved with
    --  [methodGtk.ApplicationWindow.get_id].
    --  @param Id an identifier number
-   --  @return the window for the given ID
-   --  Return has transfer-ownership='none'
+   --  @return the window for the given ID. Has transfer-ownership='none'.
 
    function Get_Windows
       (Self : not null access Gtk_Application_Record)
@@ -334,6 +331,7 @@ package Gtk.Application is
    --  The list that is returned should not be modified in any way. It will
    --  only remain valid until the next focus change or window creation or
    --  deletion.
+   --  @return the list of windows
 
    function Inhibit
       (Self   : not null access Gtk_Application_Record;

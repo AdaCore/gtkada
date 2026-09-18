@@ -61,7 +61,7 @@ package Gdk.Color_State is
    --  It is not guaranteed that every `GdkColorState` can be represented with
    --  Cicp parameters. If that is the case, this function returns `NULL`.
    --  Since: gtk+ 4.16
-   --  @return A new [classGdk.CicpParams]
+   --  @return A new [classGdk.CicpParams]. Has transfer-ownership='full'.
 
    function Equal
       (Self  : Gdk_Color_State;
@@ -88,7 +88,7 @@ package Gdk.Color_State is
    function Ref (Self : Gdk_Color_State) return Gdk_Color_State;
    --  Increase the reference count of Self.
    --  Since: gtk+ 4.16
-   --  @return the object that was passed in
+   --  @return the object that was passed in. Has transfer-ownership='full'.
 
    procedure Unref (Self : Gdk_Color_State);
    --  Decrease the reference count of Self.
@@ -104,14 +104,16 @@ package Gdk.Color_State is
    --  Returns the color state object representing the oklab color space.
    --  This is a perceptually uniform color state.
    --  Since: gtk+ 4.18
-   --  @return the color state object for oklab
+   --  @return the color state object for oklab. Has
+   --  transfer-ownership='full'.
 
    function Get_Oklch return Gdk_Color_State;
    --  Returns the color state object representing the oklch color space.
    --  This is the polar variant of oklab, in which the hue is encoded as a
    --  polar coordinate.
    --  Since: gtk+ 4.18
-   --  @return the color state object for oklch
+   --  @return the color state object for oklch. Has
+   --  transfer-ownership='full'.
 
    function Get_Rec2100_Linear return Gdk_Color_State;
    --  Returns the color state object representing the linear rec2100 color
@@ -123,7 +125,8 @@ package Gdk.Color_State is
    --  Module](https://drafts.csswg.org/css-color-hdr/valdef-color-rec2100-linear)
    --  for details about this colorstate.
    --  Since: gtk+ 4.16
-   --  @return the color state object for linearized rec2100
+   --  @return the color state object for linearized rec2100. Has
+   --  transfer-ownership='full'.
 
    function Get_Rec2100_Pq return Gdk_Color_State;
    --  Returns the color state object representing the rec2100-pq color space.
@@ -134,7 +137,8 @@ package Gdk.Color_State is
    --  Module](https://drafts.csswg.org/css-color-hdr/valdef-color-rec2100-pq)
    --  for details about this colorstate.
    --  Since: gtk+ 4.16
-   --  @return the color state object for rec2100-pq
+   --  @return the color state object for rec2100-pq. Has
+   --  transfer-ownership='full'.
 
    function Get_Srgb return Gdk_Color_State;
    --  Returns the color state object representing the sRGB color space.
@@ -145,7 +149,7 @@ package Gdk.Color_State is
    --  Module](https://www.w3.org/TR/css-color-4/predefined-sRGB) for details
    --  about this colorstate.
    --  Since: gtk+ 4.16
-   --  @return the color state object for sRGB
+   --  @return the color state object for sRGB. Has transfer-ownership='full'.
 
    function Get_Srgb_Linear return Gdk_Color_State;
    --  Returns the color state object representing the linearized sRGB color
@@ -157,7 +161,8 @@ package Gdk.Color_State is
    --  Module](https://www.w3.org/TR/css-color-4/predefined-sRGB-linear) for
    --  details about this colorstate.
    --  Since: gtk+ 4.16
-   --  @return the color state object for linearized sRGB
+   --  @return the color state object for linearized sRGB. Has
+   --  transfer-ownership='full'.
 
 private
    Null_Gdk_Color_State : constant Gdk_Color_State :=

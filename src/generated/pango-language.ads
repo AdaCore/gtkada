@@ -349,6 +349,11 @@ package Pango.Language is
    --  values are from the GUnicodeScript enumeration, which may have more
    --  values. Callers need to handle unknown values.
    --  Since: gtk+ 1.22
+   --  @return An array of Pango.Language.Pango_Script values, with the number
+   --  of entries in the array stored in Num_Scripts, or null if Pango does not
+   --  have any information about this particular language tag (also the case
+   --  if Language is null). The returned array is owned by Pango and should
+   --  not be modified or freed.
 
    function Includes_Script
       (Self   : Pango_Language;
@@ -401,8 +406,7 @@ package Pango.Language is
    --  @param Language a string representing a language tag, or null
    --  @return an opaque pointer to a Pango.Language.Pango_Language structure,
    --  or null if Language was null. The returned pointer will be valid forever
-   --  after, and should not be freed.
-   --  Return has transfer-ownership='none'
+   --  after, and should not be freed. Has transfer-ownership='none'.
 
    function Get_Default return Pango_Language;
    --  Returns the Pango.Language.Pango_Language for the current locale of the
@@ -428,8 +432,7 @@ package Pango.Language is
    --  details.
    --  Since: gtk+ 1.16
    --  @return the default language as a Pango.Language.Pango_Language, must
-   --  not be freed.
-   --  Return has transfer-ownership='none'
+   --  not be freed. Has transfer-ownership='none'.
 
 private
    Null_Pango_Language : constant Pango_Language :=

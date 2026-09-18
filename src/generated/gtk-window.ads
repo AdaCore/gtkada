@@ -209,8 +209,7 @@ package Gtk.Window is
       (Self : not null access Gtk_Window_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the child widget of the window.
-   --  @return the child widget of Window
-   --  Return has transfer-ownership='none'
+   --  @return the child widget of Window. Has transfer-ownership='none'.
 
    procedure Set_Child
       (Self  : not null access Gtk_Window_Record;
@@ -285,8 +284,7 @@ package Gtk.Window is
       (Self : not null access Gtk_Window_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Returns the default widget for Window.
-   --  @return the default widget
-   --  Return has transfer-ownership='none'
+   --  @return the default widget. Has transfer-ownership='none'.
 
    procedure Set_Default_Widget
       (Self           : not null access Gtk_Window_Record;
@@ -364,8 +362,8 @@ package Gtk.Window is
       (Self : access Gtk_Window_Record'Class) return Gtk_Window_Group;
    --  Returns the group for the window.
    --  If the window has no group, then the default group is returned.
-   --  @return the window group for Window or the default group
-   --  Return has transfer-ownership='none'
+   --  @return the window group for Window or the default group. Has
+   --  transfer-ownership='none'.
 
    function Get_Handle_Menubar_Accel
       (Self : not null access Gtk_Window_Record) return Boolean;
@@ -475,8 +473,7 @@ package Gtk.Window is
        return Gtk.Widget.Gtk_Widget;
    --  Returns the titlebar that has been set with
    --  [methodGtk.Window.set_titlebar].
-   --  @return the titlebar
-   --  Return has transfer-ownership='none'
+   --  @return the titlebar. Has transfer-ownership='none'.
 
    procedure Set_Titlebar
       (Self     : not null access Gtk_Window_Record;
@@ -494,8 +491,7 @@ package Gtk.Window is
    function Get_Transient_For
       (Self : not null access Gtk_Window_Record) return Gtk_Window;
    --  Fetches the transient parent for this window.
-   --  @return the transient parent
-   --  Return has transfer-ownership='none'
+   --  @return the transient parent. Has transfer-ownership='none'.
 
    procedure Set_Transient_For
       (Self   : not null access Gtk_Window_Record;
@@ -679,6 +675,7 @@ package Gtk.Window is
       (Window_Group : not null access Gtk_Window_Group_Record)
        return Gtk.Widget.Widget_List.Glist;
    --  Returns a list of the `GtkWindows` that belong to Window_Group.
+   --  @return A newly-allocated list of windows inside the group.
 
    procedure Remove_Window
       (Window_Group : not null access Gtk_Window_Group_Record;
@@ -811,6 +808,7 @@ package Gtk.Window is
    --  might destroy the widgets, you must call `g_list_foreach (result,
    --  (GFunc)g_object_ref, NULL)` first, and then unref all the widgets
    --  afterwards.
+   --  @return list of toplevel widgets
 
    procedure Set_Auto_Startup_Notification (Setting : Boolean);
    --  Sets whether the window should request startup notification.

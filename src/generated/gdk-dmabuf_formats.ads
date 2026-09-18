@@ -106,7 +106,7 @@ package Gdk.Dmabuf_Formats is
    function Ref (Self : Gdk_Dmabuf_Formats) return Gdk_Dmabuf_Formats;
    --  Increases the reference count of Formats.
    --  Since: gtk+ 4.14
-   --  @return the passed-in object
+   --  @return the passed-in object. Has transfer-ownership='full'.
 
    procedure Unref (Self : Gdk_Dmabuf_Formats);
    --  Decreases the reference count of Formats.

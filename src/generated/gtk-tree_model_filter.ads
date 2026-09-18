@@ -207,7 +207,7 @@ package Gtk.Tree_Model_Filter is
    --  null is returned.
    --  Deprecated since 4.10, 1
    --  @param Child_Path A `GtkTreePath` to convert.
-   --  @return A newly allocated `GtkTreePath`
+   --  @return A newly allocated `GtkTreePath`. Has transfer-ownership='full'.
 
    procedure Convert_Iter_To_Child_Iter
       (Self        : not null access Gtk_Tree_Model_Filter_Record;
@@ -230,7 +230,7 @@ package Gtk.Tree_Model_Filter is
    --  does not point to a location in the child model, null is returned.
    --  Deprecated since 4.10, 1
    --  @param Filter_Path A `GtkTreePath` to convert.
-   --  @return A newly allocated `GtkTreePath`
+   --  @return A newly allocated `GtkTreePath`. Has transfer-ownership='full'.
 
    function Get_Model
       (Self : not null access Gtk_Tree_Model_Filter_Record)

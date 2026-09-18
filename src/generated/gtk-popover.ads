@@ -179,8 +179,7 @@ package Gtk.Popover is
       (Self : not null access Gtk_Popover_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Gets the child widget of Popover.
-   --  @return the child widget of Popover
-   --  Return has transfer-ownership='none'
+   --  @return the child widget of Popover. Has transfer-ownership='none'.
 
    procedure Set_Child
       (Self  : not null access Gtk_Popover_Record;

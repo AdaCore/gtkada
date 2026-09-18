@@ -65,8 +65,10 @@ package Gtk.Shortcut is
    --  activates Action.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  @param Trigger The trigger that will trigger the shortcut
-   --  @param Action The action that will be activated upon triggering
+   --  @param Trigger The trigger that will trigger the shortcut. Has
+   --  transfer-ownership='full'.
+   --  @param Action The action that will be activated upon triggering. Has
+   --  transfer-ownership='full'.
 
    function Gtk_Shortcut_New
       (Trigger : access Gtk.Shortcut_Trigger.Gtk_Shortcut_Trigger_Record'Class;
@@ -74,8 +76,10 @@ package Gtk.Shortcut is
        return Gtk_Shortcut;
    --  Creates a new `GtkShortcut` that is triggered by Trigger and then
    --  activates Action.
-   --  @param Trigger The trigger that will trigger the shortcut
-   --  @param Action The action that will be activated upon triggering
+   --  @param Trigger The trigger that will trigger the shortcut. Has
+   --  transfer-ownership='full'.
+   --  @param Action The action that will be activated upon triggering. Has
+   --  transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_shortcut_get_type");
@@ -88,23 +92,20 @@ package Gtk.Shortcut is
       (Self : not null access Gtk_Shortcut_Record)
        return Gtk.Shortcut_Action.Gtk_Shortcut_Action;
    --  Gets the action that is activated by this shortcut.
-   --  @return the action
-   --  Return has transfer-ownership='none'
+   --  @return the action. Has transfer-ownership='none'.
 
    procedure Set_Action
       (Self   : not null access Gtk_Shortcut_Record;
        Action : access Gtk.Shortcut_Action.Gtk_Shortcut_Action_Record'Class);
    --  Sets the new action for Self to be Action.
-   --  Parameter Action has transfer-ownership='full'
    --  @param Action The new action. If the Action is null, the nothing action
-   --  will be used.
+   --  will be used. Has transfer-ownership='full'.
 
    function Get_Arguments
       (Self : not null access Gtk_Shortcut_Record)
        return Glib.Variant.Gvariant;
    --  Gets the arguments that are passed when activating the shortcut.
-   --  @return the arguments
-   --  Return has transfer-ownership='none'
+   --  @return the arguments. Has transfer-ownership='none'.
 
    procedure Set_Arguments
       (Self : not null access Gtk_Shortcut_Record;
@@ -116,16 +117,14 @@ package Gtk.Shortcut is
       (Self : not null access Gtk_Shortcut_Record)
        return Gtk.Shortcut_Trigger.Gtk_Shortcut_Trigger;
    --  Gets the trigger used to trigger Self.
-   --  @return the trigger used
-   --  Return has transfer-ownership='none'
+   --  @return the trigger used. Has transfer-ownership='none'.
 
    procedure Set_Trigger
       (Self    : not null access Gtk_Shortcut_Record;
        Trigger : access Gtk.Shortcut_Trigger.Gtk_Shortcut_Trigger_Record'Class);
    --  Sets the new trigger for Self to be Trigger.
-   --  Parameter Trigger has transfer-ownership='full'
    --  @param Trigger The new trigger. If the Trigger is null, the never
-   --  trigger will be used.
+   --  trigger will be used. Has transfer-ownership='full'.
 
    ----------------
    -- Properties --

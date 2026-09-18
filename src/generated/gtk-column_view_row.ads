@@ -121,7 +121,6 @@ package Gtk.Column_View_Row is
    --  If Self is unbound, this function returns null.
    --  Since: gtk+ 4.12
    --  @return The item displayed
-   --  Return has transfer-ownership='none'
 
    function Get_Position
       (Self : not null access Gtk_Column_View_Row_Record) return Guint;

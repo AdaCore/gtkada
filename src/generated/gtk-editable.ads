@@ -287,7 +287,8 @@ package Gtk.Editable is
    --  Note that positions are specified in characters, not bytes.
    --  @param Start_Pos location to store the starting position
    --  @param End_Pos location to store the end position
-   --  @return True if there is a non-empty selection, False otherwise
+   --  @param Has_Selection True if there is a non-empty selection, False
+   --  otherwise
 
    function Get_Text (Self : Gtk_Editable) return UTF8_String;
    --  Retrieves the contents of Editable.

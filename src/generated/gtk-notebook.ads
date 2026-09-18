@@ -200,8 +200,7 @@ package Gtk.Notebook is
    --  See [methodGtk.Notebook.set_action_widget].
    --  @param Pack_Type pack type of the action widget to receive
    --  @return The action widget with the given Pack_Type or null when this
-   --  action widget has not been set
-   --  Return has transfer-ownership='none'
+   --  action widget has not been set. Has transfer-ownership='none'.
 
    procedure Set_Action_Widget
       (Notebook  : not null access Gtk_Notebook_Record;
@@ -252,8 +251,8 @@ package Gtk.Notebook is
    --  Retrieves the menu label widget of the page containing Child.
    --  @param Child a widget contained in a page of Notebook
    --  @return the menu label, or null if the notebook page does not have a
-   --  menu label other than the default (the tab label).
-   --  Return has transfer-ownership='none'
+   --  menu label other than the default (the tab label). Has
+   --  transfer-ownership='none'.
 
    procedure Set_Menu_Label
       (Notebook   : not null access Gtk_Notebook_Record;
@@ -293,8 +292,8 @@ package Gtk.Notebook is
    --  Returns the child widget contained in page number Page_Num.
    --  @param Page_Num the index of a page in the notebook, or -1 to get the
    --  last page
-   --  @return the child widget, or null if Page_Num is out of bounds
-   --  Return has transfer-ownership='none'
+   --  @return the child widget, or null if Page_Num is out of bounds. Has
+   --  transfer-ownership='none'.
 
    function Get_Page
       (Notebook : not null access Gtk_Notebook_Record;
@@ -302,8 +301,7 @@ package Gtk.Notebook is
        return Gtk.Notebook_Page.Gtk_Notebook_Page;
    --  Returns the `GtkNotebookPage` for Child.
    --  @param Child a child of Notebook
-   --  @return the `GtkNotebookPage` for Child
-   --  Return has transfer-ownership='none'
+   --  @return the `GtkNotebookPage` for Child. Has transfer-ownership='none'.
 
    function Get_Pages
       (Notebook : not null access Gtk_Notebook_Record)
@@ -399,8 +397,7 @@ package Gtk.Notebook is
    --  null is returned if Child is not in Notebook or if no tab label has
    --  specifically been set for Child.
    --  @param Child the page
-   --  @return the tab label
-   --  Return has transfer-ownership='none'
+   --  @return the tab label. Has transfer-ownership='none'.
 
    procedure Set_Tab_Label
       (Notebook  : not null access Gtk_Notebook_Record;

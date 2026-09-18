@@ -124,7 +124,8 @@ package Gtk.Bitset is
 
    function Copy (Self : Gtk_Bitset) return Gtk_Bitset;
    --  Creates a copy of Self.
-   --  @return A new bitset that contains the same values as Self
+   --  @return A new bitset that contains the same values as Self. Has
+   --  transfer-ownership='full'.
 
    procedure Difference (Self : Gtk_Bitset; Other : Gtk_Bitset);
    --  Sets Self to be the symmetric difference of Self and Other.
@@ -190,8 +191,8 @@ package Gtk.Bitset is
 
    function Ref (Self : Gtk_Bitset) return Gtk_Bitset;
    --  Acquires a reference on the given `GtkBitset`.
-   --  @return the `GtkBitset` with an additional reference
-   --  Return has transfer-ownership='none'
+   --  @return the `GtkBitset` with an additional reference. Has
+   --  transfer-ownership='none'.
 
    function Remove (Self : Gtk_Bitset; Value : Guint) return Boolean;
    --  Removes Value from Self if it was part of it before.
@@ -278,7 +279,7 @@ package Gtk.Bitset is
    --  Releases a reference on the given `GtkBitset`.
    --  If the reference was the last, the resources associated to the Self are
    --  freed.
-   --  Parameter Self has transfer-ownership='full'
+   --  @param Self has transfer-ownership='full'.
 
 private
    Null_Gtk_Bitset : constant Gtk_Bitset :=

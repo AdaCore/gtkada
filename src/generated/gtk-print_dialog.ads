@@ -130,8 +130,7 @@ package Gtk.Print_Dialog is
        return Gtk.Page_Setup.Gtk_Page_Setup;
    --  Returns the page setup.
    --  Since: gtk+ 4.14
-   --  @return the page setup
-   --  Return has transfer-ownership='none'
+   --  @return the page setup. Has transfer-ownership='none'.
 
    procedure Set_Page_Setup
       (Self       : not null access Gtk_Print_Dialog_Record;
@@ -145,8 +144,7 @@ package Gtk.Print_Dialog is
        return Gtk.Print_Settings.Gtk_Print_Settings;
    --  Returns the print settings for the print dialog.
    --  Since: gtk+ 4.14
-   --  @return the settings
-   --  Return has transfer-ownership='none'
+   --  @return the settings. Has transfer-ownership='none'.
 
    procedure Set_Print_Settings
       (Self           : not null access Gtk_Print_Dialog_Record;
@@ -236,7 +234,7 @@ package Gtk.Print_Dialog is
    --  Since: gtk+ 4.14
    --  @param Result a `GAsyncResult`
    --  @param Error the return location for a recoverable error
-   --  @return a [classGio.OutputStream]
+   --  @return a [classGio.OutputStream]. Has transfer-ownership='full'.
 
    procedure Setup
       (Self        : not null access Gtk_Print_Dialog_Record;
@@ -271,7 +269,8 @@ package Gtk.Print_Dialog is
    --  Since: gtk+ 4.14
    --  @param Result a `GAsyncResult`
    --  @param Error the return location for a recoverable error
-   --  @return the resulting `[structGtk.PrintSetup]`
+   --  @return the resulting `[structGtk.PrintSetup]`. Has
+   --  transfer-ownership='full'.
 
    ----------------
    -- Properties --

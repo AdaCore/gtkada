@@ -61,7 +61,7 @@ package Gtk.Tree_List_Row is
    --  If Self is not expanded or Position is greater than the number of
    --  children, null is returned.
    --  @param Position position of the child to get
-   --  @return the child in Position
+   --  @return the child in Position. Has transfer-ownership='full'.
 
    function Get_Children
       (Self : not null access Gtk_Tree_List_Row_Record)
@@ -103,7 +103,8 @@ package Gtk.Tree_List_Row is
       (Self : not null access Gtk_Tree_List_Row_Record)
        return Glib.Object.GObject;
    --  Gets the item corresponding to this row,
-   --  Return has transfer-ownership='none'
+   --  @return The item of this row. This function is only marked as nullable
+   --  for backwards compatibility reasons. Has transfer-ownership='full'.
 
    function Get_Parent
       (Self : not null access Gtk_Tree_List_Row_Record)
@@ -114,7 +115,7 @@ package Gtk.Tree_List_Row is
    --  If Self is a row corresponding to the root model, null is returned.
    --  The value returned by this function never changes until the row is
    --  removed from its model at which point it will forever return null.
-   --  @return The parent of Self
+   --  @return The parent of Self. Has transfer-ownership='full'.
 
    function Get_Position
       (Self : not null access Gtk_Tree_List_Row_Record) return Guint;

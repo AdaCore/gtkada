@@ -58,7 +58,7 @@ package Gtk.Tree_List_Row_Sorter is
    --  being False as it can only sort [classGtk.TreeListRow]s.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  @param Sorter a `GtkSorter`
+   --  @param Sorter a `GtkSorter`. Has transfer-ownership='full'.
 
    function Gtk_Tree_List_Row_Sorter_New
       (Sorter : access Gtk.Sorter.Gtk_Sorter_Record'Class)
@@ -67,7 +67,7 @@ package Gtk.Tree_List_Row_Sorter is
    --  the levels of a `GtkTreeListModel`.
    --  Note that this sorter relies on [propertyGtk.TreeListModel:passthrough]
    --  being False as it can only sort [classGtk.TreeListRow]s.
-   --  @param Sorter a `GtkSorter`
+   --  @param Sorter a `GtkSorter`. Has transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_tree_list_row_sorter_get_type");
@@ -80,8 +80,7 @@ package Gtk.Tree_List_Row_Sorter is
       (Self : not null access Gtk_Tree_List_Row_Sorter_Record)
        return Gtk.Sorter.Gtk_Sorter;
    --  Returns the sorter used by Self.
-   --  @return the sorter used
-   --  Return has transfer-ownership='none'
+   --  @return the sorter used. Has transfer-ownership='none'.
 
    procedure Set_Sorter
       (Self   : not null access Gtk_Tree_List_Row_Sorter_Record;

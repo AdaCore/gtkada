@@ -108,7 +108,7 @@ package Gtk.Text_Iter is
    --  Returns True if movement was possible; if Iter was the first in the
    --  buffer (character offset 0), this function returns False for convenience
    --  when writing loops.
-   --  @return whether movement was possible
+   --  @param Result whether movement was possible
 
    procedure Backward_Chars
       (Iter   : in out Gtk_Text_Iter;
@@ -122,13 +122,13 @@ package Gtk.Text_Iter is
    --  end iterator, then False is returned. If Count is 0, the function does
    --  nothing and returns False.
    --  @param Count number of characters to move
-   --  @return whether Iter moved and is dereferenceable
+   --  @param Result whether Iter moved and is dereferenceable
 
    procedure Backward_Cursor_Position
       (Iter   : in out Gtk_Text_Iter;
        Result : out Boolean);
    --  Like [methodGtk.TextIter.forward_cursor_position], but moves backward.
-   --  @return True if we moved
+   --  @param Result True if we moved
 
    procedure Backward_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
@@ -137,7 +137,7 @@ package Gtk.Text_Iter is
    --  Moves up to Count cursor positions.
    --  See [methodGtk.TextIter.forward_cursor_position] for details.
    --  @param Count number of positions to move
-   --  @return True if we moved and the new position is dereferenceable
+   --  @param Result True if we moved and the new position is dereferenceable
 
    function Backward_Find_Char
       (Iter  : in out Gtk_Text_Iter;
@@ -159,7 +159,7 @@ package Gtk.Text_Iter is
    --  of the line and the function returns True. (Note that this implies that
    --  in a loop calling this function, the line number may not change on every
    --  iteration, if your first iteration is on line 0.)
-   --  @return whether Iter moved
+   --  @param Result whether Iter moved
 
    procedure Backward_Lines
       (Iter   : in out Gtk_Text_Iter;
@@ -174,7 +174,7 @@ package Gtk.Text_Iter is
    --  nothing and returns False. If Count is negative, moves forward by 0 -
    --  Count lines.
    --  @param Count number of lines to move backward
-   --  @return whether Iter moved and is dereferenceable
+   --  @param Result whether Iter moved and is dereferenceable
 
    procedure Backward_Search
       (Iter        : in out Gtk_Text_Iter;
@@ -193,7 +193,7 @@ package Gtk.Text_Iter is
    --  @param Match_End return location for end of match
    --  @param Limit location of last possible Match_Start, or null for start
    --  of buffer
-   --  @return whether a match was found
+   --  @param Result whether a match was found
 
    procedure Backward_Sentence_Start
       (Iter   : in out Gtk_Text_Iter;
@@ -203,7 +203,7 @@ package Gtk.Text_Iter is
    --  next one.
    --  Sentence boundaries are determined by Pango and should be correct for
    --  nearly any language.
-   --  @return True if Iter moved and is not the end iterator
+   --  @param Result True if Iter moved and is not the end iterator
 
    procedure Backward_Sentence_Starts
       (Iter   : in out Gtk_Text_Iter;
@@ -212,7 +212,7 @@ package Gtk.Text_Iter is
    --  Calls [methodGtk.TextIter.backward_sentence_start] up to Count times.
    --  If Count is negative, moves forward instead of backward.
    --  @param Count number of sentences to move
-   --  @return True if Iter moved and is not the end iterator
+   --  @param Result True if Iter moved and is not the end iterator
 
    procedure Backward_To_Tag_Toggle
       (Iter   : in out Gtk_Text_Iter;
@@ -225,14 +225,14 @@ package Gtk.Text_Iter is
    --  Iter to the location of the toggle, or the start of the buffer if no
    --  toggle is found.
    --  @param Tag a `GtkTextTag`
-   --  @return whether we found a tag toggle before Iter
+   --  @param Result whether we found a tag toggle before Iter
 
    procedure Backward_Visible_Cursor_Position
       (Iter   : in out Gtk_Text_Iter;
        Result : out Boolean);
    --  Moves Iter backward to the previous visible cursor position.
    --  See [methodGtk.TextIter.backward_cursor_position] for details.
-   --  @return True if we moved and the new position is dereferenceable
+   --  @param Result True if we moved and the new position is dereferenceable
 
    procedure Backward_Visible_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
@@ -241,7 +241,7 @@ package Gtk.Text_Iter is
    --  Moves up to Count visible cursor positions.
    --  See [methodGtk.TextIter.backward_cursor_position] for details.
    --  @param Count number of positions to move
-   --  @return True if we moved and the new position is dereferenceable
+   --  @param Result True if we moved and the new position is dereferenceable
 
    procedure Backward_Visible_Line
       (Iter   : in out Gtk_Text_Iter;
@@ -253,7 +253,7 @@ package Gtk.Text_Iter is
    --  of the line and the function returns True. (Note that this implies that
    --  in a loop calling this function, the line number may not change on every
    --  iteration, if your first iteration is on line 0.)
-   --  @return whether Iter moved
+   --  @param Result whether Iter moved
 
    procedure Backward_Visible_Lines
       (Iter   : in out Gtk_Text_Iter;
@@ -268,7 +268,7 @@ package Gtk.Text_Iter is
    --  nothing and returns False. If Count is negative, moves forward by 0 -
    --  Count lines.
    --  @param Count number of lines to move backward
-   --  @return whether Iter moved and is dereferenceable
+   --  @param Result whether Iter moved and is dereferenceable
 
    procedure Backward_Visible_Word_Start
       (Iter   : in out Gtk_Text_Iter;
@@ -278,7 +278,7 @@ package Gtk.Text_Iter is
    --  after that.
    --  Word breaks are determined by Pango and should be correct for nearly
    --  any language.
-   --  @return True if Iter moved and is not the end iterator
+   --  @param Result True if Iter moved and is not the end iterator
 
    procedure Backward_Visible_Word_Starts
       (Iter   : in out Gtk_Text_Iter;
@@ -287,7 +287,7 @@ package Gtk.Text_Iter is
    --  Calls [methodGtk.TextIter.backward_visible_word_start] up to Count
    --  times.
    --  @param Count number of times to move
-   --  @return True if Iter moved and is not the end iterator
+   --  @param Result True if Iter moved and is not the end iterator
 
    procedure Backward_Word_Start
       (Iter   : in out Gtk_Text_Iter;
@@ -297,7 +297,7 @@ package Gtk.Text_Iter is
    --  after that.
    --  Word breaks are determined by Pango and should be correct for nearly
    --  any language
-   --  @return True if Iter moved and is not the end iterator
+   --  @param Result True if Iter moved and is not the end iterator
 
    procedure Backward_Word_Starts
       (Iter   : in out Gtk_Text_Iter;
@@ -305,7 +305,7 @@ package Gtk.Text_Iter is
        Result : out Boolean);
    --  Calls [methodGtk.TextIter.backward_word_start] up to Count times.
    --  @param Count number of times to move
-   --  @return True if Iter moved and is not the end iterator
+   --  @param Result True if Iter moved and is not the end iterator
 
    function Can_Insert
       (Iter                : Gtk_Text_Iter;
@@ -403,7 +403,7 @@ package Gtk.Text_Iter is
    --  you have images in your buffer. If Iter is the end iterator or one
    --  character before it, Iter will now point at the end iterator, and this
    --  function returns False for convenience when writing loops.
-   --  @return whether Iter moved and is dereferenceable
+   --  @param Result whether Iter moved and is dereferenceable
 
    procedure Forward_Chars
       (Iter   : in out Gtk_Text_Iter;
@@ -417,7 +417,7 @@ package Gtk.Text_Iter is
    --  iterator in the buffer is not dereferenceable). If Count is 0, the
    --  function does nothing and returns False.
    --  @param Count number of characters to move, may be negative
-   --  @return whether Iter moved and is dereferenceable
+   --  @param Result whether Iter moved and is dereferenceable
 
    procedure Forward_Cursor_Position
       (Iter   : in out Gtk_Text_Iter;
@@ -433,7 +433,7 @@ package Gtk.Text_Iter is
    --  cursor can't go between those two characters.
    --  See also the [structPango.LogAttr] struct and the [funcPango.break]
    --  function.
-   --  @return True if we moved and the new position is dereferenceable
+   --  @param Result True if we moved and the new position is dereferenceable
 
    procedure Forward_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
@@ -442,7 +442,7 @@ package Gtk.Text_Iter is
    --  Moves up to Count cursor positions.
    --  See [methodGtk.TextIter.forward_cursor_position] for details.
    --  @param Count number of positions to move
-   --  @return True if we moved and the new position is dereferenceable
+   --  @param Result True if we moved and the new position is dereferenceable
 
    function Forward_Find_Char
       (Iter  : in out Gtk_Text_Iter;
@@ -494,7 +494,7 @@ package Gtk.Text_Iter is
    --  to the end of the current line. If after the operation, the iter is at
    --  the end of the buffer and not dereferenceable, returns False. Otherwise,
    --  returns True.
-   --  @return whether Iter can be dereferenced
+   --  @param Result whether Iter can be dereferenced
 
    procedure Forward_Lines
       (Iter   : in out Gtk_Text_Iter;
@@ -509,7 +509,7 @@ package Gtk.Text_Iter is
    --  nothing and returns False. If Count is negative, moves backward by 0 -
    --  Count lines.
    --  @param Count number of lines to move forward
-   --  @return whether Iter moved and is dereferenceable
+   --  @param Result whether Iter moved and is dereferenceable
 
    procedure Forward_Search
       (Iter        : in out Gtk_Text_Iter;
@@ -533,7 +533,7 @@ package Gtk.Text_Iter is
    --  @param Match_End return location for end of match
    --  @param Limit location of last possible Match_End, or null for the end
    --  of the buffer
-   --  @return whether a match was found
+   --  @param Result whether a match was found
 
    procedure Forward_Sentence_End
       (Iter   : in out Gtk_Text_Iter;
@@ -542,7 +542,7 @@ package Gtk.Text_Iter is
    --  If Iter is at the end of a sentence, moves to the next end of sentence.
    --  Sentence boundaries are determined by Pango and should be correct for
    --  nearly any language.
-   --  @return True if Iter moved and is not the end iterator
+   --  @param Result True if Iter moved and is not the end iterator
 
    procedure Forward_Sentence_Ends
       (Iter   : in out Gtk_Text_Iter;
@@ -551,7 +551,7 @@ package Gtk.Text_Iter is
    --  Calls [methodGtk.TextIter.forward_sentence_end] Count times.
    --  If Count is negative, moves backward instead of forward.
    --  @param Count number of sentences to move
-   --  @return True if Iter moved and is not the end iterator
+   --  @param Result True if Iter moved and is not the end iterator
 
    procedure Forward_To_End (Iter : in out Gtk_Text_Iter);
    pragma Import (C, Forward_To_End, "gtk_text_iter_forward_to_end");
@@ -571,7 +571,8 @@ package Gtk.Text_Iter is
    --  to the paragraph delimiter characters for the next line. If Iter is on
    --  the last line in the buffer, which does not end in paragraph delimiters,
    --  moves to the end iterator (end of the last line), and returns False.
-   --  @return True if we moved and the new location is not the end iterator
+   --  @param Result True if we moved and the new location is not the end
+   --  iterator
 
    procedure Forward_To_Tag_Toggle
       (Iter   : in out Gtk_Text_Iter;
@@ -584,14 +585,14 @@ package Gtk.Text_Iter is
    --  Iter to the location of the toggle, or to the end of the buffer if no
    --  toggle is found.
    --  @param Tag a `GtkTextTag`
-   --  @return whether we found a tag toggle after Iter
+   --  @param Result whether we found a tag toggle after Iter
 
    procedure Forward_Visible_Cursor_Position
       (Iter   : in out Gtk_Text_Iter;
        Result : out Boolean);
    --  Moves Iter forward to the next visible cursor position.
    --  See [methodGtk.TextIter.forward_cursor_position] for details.
-   --  @return True if we moved and the new position is dereferenceable
+   --  @param Result True if we moved and the new position is dereferenceable
 
    procedure Forward_Visible_Cursor_Positions
       (Iter   : in out Gtk_Text_Iter;
@@ -600,7 +601,7 @@ package Gtk.Text_Iter is
    --  Moves up to Count visible cursor positions.
    --  See [methodGtk.TextIter.forward_cursor_position] for details.
    --  @param Count number of positions to move
-   --  @return True if we moved and the new position is dereferenceable
+   --  @param Result True if we moved and the new position is dereferenceable
 
    procedure Forward_Visible_Line
       (Iter   : in out Gtk_Text_Iter;
@@ -609,7 +610,7 @@ package Gtk.Text_Iter is
    --  Returns True if there was a next line to move to, and False if Iter was
    --  simply moved to the end of the buffer and is now not dereferenceable, or
    --  if Iter was already at the end of the buffer.
-   --  @return whether Iter can be dereferenced
+   --  @param Result whether Iter can be dereferenced
 
    procedure Forward_Visible_Lines
       (Iter   : in out Gtk_Text_Iter;
@@ -624,7 +625,7 @@ package Gtk.Text_Iter is
    --  nothing and returns False. If Count is negative, moves backward by 0 -
    --  Count lines.
    --  @param Count number of lines to move forward
-   --  @return whether Iter moved and is dereferenceable
+   --  @param Result whether Iter moved and is dereferenceable
 
    procedure Forward_Visible_Word_End
       (Iter   : in out Gtk_Text_Iter;
@@ -634,7 +635,7 @@ package Gtk.Text_Iter is
    --  that.
    --  Word breaks are determined by Pango and should be correct for nearly
    --  any language
-   --  @return True if Iter moved and is not the end iterator
+   --  @param Result True if Iter moved and is not the end iterator
 
    procedure Forward_Visible_Word_Ends
       (Iter   : in out Gtk_Text_Iter;
@@ -642,7 +643,7 @@ package Gtk.Text_Iter is
        Result : out Boolean);
    --  Calls [methodGtk.TextIter.forward_visible_word_end] up to Count times.
    --  @param Count number of times to move
-   --  @return True if Iter moved and is not the end iterator
+   --  @param Result True if Iter moved and is not the end iterator
 
    procedure Forward_Word_End
       (Iter   : in out Gtk_Text_Iter;
@@ -652,7 +653,7 @@ package Gtk.Text_Iter is
    --  that.
    --  Word breaks are determined by Pango and should be correct for nearly
    --  any language.
-   --  @return True if Iter moved and is not the end iterator
+   --  @param Result True if Iter moved and is not the end iterator
 
    procedure Forward_Word_Ends
       (Iter   : in out Gtk_Text_Iter;
@@ -660,7 +661,7 @@ package Gtk.Text_Iter is
        Result : out Boolean);
    --  Calls [methodGtk.TextIter.forward_word_end] up to Count times.
    --  @param Count number of times to move
-   --  @return True if Iter moved and is not the end iterator
+   --  @param Result True if Iter moved and is not the end iterator
 
    function Get_Bytes_In_Line (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Bytes_In_Line, "gtk_text_iter_get_bytes_in_line");
@@ -690,7 +691,7 @@ package Gtk.Text_Iter is
    --  Returns the language in effect at Iter.
    --  If no tags affecting language apply to Iter, the return value is
    --  identical to that of [funcGtk.get_default_language].
-   --  @return language in effect at Iter
+   --  @return language in effect at Iter. Has transfer-ownership='full'.
 
    function Get_Line (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Line, "gtk_text_iter_get_line");
@@ -751,6 +752,7 @@ package Gtk.Text_Iter is
    --  buffer, they are just marks in between iterable locations), multiple
    --  marks can exist in the same place.
    --  The returned list is not in any meaningful order.
+   --  @return list of `GtkTextMark`
 
    function Get_Offset (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Offset, "gtk_text_iter_get_offset");
@@ -798,6 +800,7 @@ package Gtk.Text_Iter is
    --  The highest-priority tags are last.
    --  The `GtkTextTag`s in the list don't have a reference added, but you
    --  have to free the list itself.
+   --  @return list of `GtkTextTag`
 
    function Get_Text
       (Iter    : Gtk_Text_Iter;
@@ -820,6 +823,7 @@ package Gtk.Text_Iter is
    --  following Iter has that tag applied to it. If a tag is toggled off, then
    --  some non-empty range following Iter does not have the tag applied to it.
    --  @param Toggled_On True to get toggled-on tags
+   --  @return tags toggled at this point
 
    function Get_Visible_Line_Index (Iter : Gtk_Text_Iter) return Glib.Gint;
    pragma Import (C, Get_Visible_Line_Index, "gtk_text_iter_get_visible_line_index");

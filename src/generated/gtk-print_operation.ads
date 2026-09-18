@@ -167,8 +167,7 @@ package Gtk.Print_Operation is
       (Self : not null access Gtk_Print_Operation_Record)
        return Gtk.Page_Setup.Gtk_Page_Setup;
    --  Returns the default page setup.
-   --  @return the default page setup
-   --  Return has transfer-ownership='none'
+   --  @return the default page setup. Has transfer-ownership='none'.
 
    procedure Set_Default_Page_Setup
       (Self               : not null access Gtk_Print_Operation_Record;
@@ -238,8 +237,8 @@ package Gtk.Print_Operation is
    --  Note that the return value is null until either
    --  [methodGtk.PrintOperation.set_print_settings] or
    --  [methodGtk.PrintOperation.run] have been called.
-   --  @return the current print settings of Op.
-   --  Return has transfer-ownership='none'
+   --  @return the current print settings of Op. Has
+   --  transfer-ownership='none'.
 
    procedure Set_Print_Settings
       (Self           : not null access Gtk_Print_Operation_Record;

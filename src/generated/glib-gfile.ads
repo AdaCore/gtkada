@@ -236,7 +236,8 @@ package Glib.GFile is
    --  to ignore
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Output_Stream.Gfile_Output_Stream, or null on
-   --  error. Free the returned object with g_object_unref.
+   --  error. Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
 
    procedure Append_To_Async
       (Self        : Gfile;
@@ -266,7 +267,8 @@ package Glib.GFile is
    --  @param Res Glib.G_Async_Result
    --  @param Error the return location for a recoverable error
    --  @return a valid Glib.File_Output_Stream.Gfile_Output_Stream or null on
-   --  error. Free the returned object with g_object_unref.
+   --  error. Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
 
    function Build_Attribute_List_For_Copy
       (Self        : Gfile;
@@ -344,7 +346,7 @@ package Glib.GFile is
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Output_Stream.Gfile_Output_Stream for the newly
    --  created file, or null on error. Free the returned object with
-   --  g_object_unref.
+   --  g_object_unref. Has transfer-ownership='full'.
 
    procedure Create_Async
       (Self        : Gfile;
@@ -375,7 +377,8 @@ package Glib.GFile is
    --  @param Res a Glib.G_Async_Result
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Output_Stream.Gfile_Output_Stream or null on error.
-   --  Free the returned object with g_object_unref.
+   --  Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
 
    function Create_Readwrite
       (Self        : Gfile;
@@ -408,6 +411,7 @@ package Glib.GFile is
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_IO_Stream.Gfile_Iostream for the newly created
    --  file, or null on error. Free the returned object with g_object_unref.
+   --  Has transfer-ownership='full'.
 
    procedure Create_Readwrite_Async
       (Self        : Gfile;
@@ -441,7 +445,7 @@ package Glib.GFile is
    --  @param Res a Glib.G_Async_Result
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_IO_Stream.Gfile_Iostream or null on error. Free the
-   --  returned object with g_object_unref.
+   --  returned object with g_object_unref. Has transfer-ownership='full'.
 
    function Delete
       (Self        : Gfile;
@@ -692,7 +696,8 @@ package Glib.GFile is
    --  @param Etag_Out a location to place the current entity tag for the
    --  file, or null if the entity tag is not needed
    --  @param Error the return location for a recoverable error
-   --  @return a Glib.Bytes.Gbytes or null and Error is set
+   --  @return a Glib.Bytes.Gbytes or null and Error is set. Has
+   --  transfer-ownership='full'.
 
    procedure Load_Bytes_Async
       (Self        : Gfile;
@@ -727,7 +732,8 @@ package Glib.GFile is
    --  @param Etag_Out a location to place the current entity tag for the
    --  file, or null if the entity tag is not needed
    --  @param Error the return location for a recoverable error
-   --  @return a Glib.Bytes.Gbytes or null and Error is set
+   --  @return a Glib.Bytes.Gbytes or null and Error is set. Has
+   --  transfer-ownership='full'.
 
    function Make_Directory
       (Self        : Gfile;
@@ -883,7 +889,7 @@ package Glib.GFile is
    --  @param Cancellable a Glib.Cancellable.Gcancellable
    --  @param Error the return location for a recoverable error
    --  @return Glib.File_IO_Stream.Gfile_Iostream or null on error. Free the
-   --  returned object with g_object_unref.
+   --  returned object with g_object_unref. Has transfer-ownership='full'.
 
    procedure Open_Readwrite_Async
       (Self        : Gfile;
@@ -914,7 +920,7 @@ package Glib.GFile is
    --  @param Res a Glib.G_Async_Result
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_IO_Stream.Gfile_Iostream or null on error. Free the
-   --  returned object with g_object_unref.
+   --  returned object with g_object_unref. Has transfer-ownership='full'.
 
    function Peek_Path (Self : Gfile) return UTF8_String;
    --  Exactly like Glib.GFile.Get_Path, but caches the result via
@@ -1004,7 +1010,7 @@ package Glib.GFile is
    --  to ignore
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Info.Gfile_Info or null if there was an error. Free
-   --  the returned object with g_object_unref.
+   --  the returned object with g_object_unref. Has transfer-ownership='full'.
 
    procedure Query_Filesystem_Info_Async
       (Self        : Gfile;
@@ -1036,7 +1042,7 @@ package Glib.GFile is
    --  @param Res a Glib.G_Async_Result
    --  @param Error the return location for a recoverable error
    --  @return Glib.File_Info.Gfile_Info for given File or null on error. Free
-   --  the returned object with g_object_unref.
+   --  the returned object with g_object_unref. Has transfer-ownership='full'.
 
    function Query_Info
       (Self        : Gfile;
@@ -1073,7 +1079,8 @@ package Glib.GFile is
    --  to ignore
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Info.Gfile_Info for the given File, or null on
-   --  error. Free the returned object with g_object_unref.
+   --  error. Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
 
    procedure Query_Info_Async
       (Self        : Gfile;
@@ -1106,7 +1113,7 @@ package Glib.GFile is
    --  @param Res a Glib.G_Async_Result
    --  @param Error the return location for a recoverable error
    --  @return Glib.File_Info.Gfile_Info for given File or null on error. Free
-   --  the returned object with g_object_unref.
+   --  the returned object with g_object_unref. Has transfer-ownership='full'.
 
    function Read
       (Self        : Gfile;
@@ -1126,7 +1133,8 @@ package Glib.GFile is
    --  @param Cancellable a Glib.Cancellable.Gcancellable
    --  @param Error the return location for a recoverable error
    --  @return Glib.File_Input_Stream.Gfile_Input_Stream or null on error.
-   --  Free the returned object with g_object_unref.
+   --  Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
 
    procedure Read_Async
       (Self        : Gfile;
@@ -1154,7 +1162,8 @@ package Glib.GFile is
    --  @param Res a Glib.G_Async_Result
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Input_Stream.Gfile_Input_Stream or null on error.
-   --  Free the returned object with g_object_unref.
+   --  Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
 
    function Replace
       (Self        : Gfile;
@@ -1206,7 +1215,8 @@ package Glib.GFile is
    --  to ignore
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Output_Stream.Gfile_Output_Stream or null on error.
-   --  Free the returned object with g_object_unref.
+   --  Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
 
    procedure Replace_Async
       (Self        : Gfile;
@@ -1347,7 +1357,8 @@ package Glib.GFile is
    --  @param Res a Glib.G_Async_Result
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_Output_Stream.Gfile_Output_Stream, or null on
-   --  error. Free the returned object with g_object_unref.
+   --  error. Free the returned object with g_object_unref. Has
+   --  transfer-ownership='full'.
 
    function Replace_Readwrite
       (Self        : Gfile;
@@ -1374,7 +1385,7 @@ package Glib.GFile is
    --  to ignore
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_IO_Stream.Gfile_Iostream or null on error. Free the
-   --  returned object with g_object_unref.
+   --  returned object with g_object_unref. Has transfer-ownership='full'.
 
    procedure Replace_Readwrite_Async
       (Self        : Gfile;
@@ -1413,7 +1424,7 @@ package Glib.GFile is
    --  @param Res a Glib.G_Async_Result
    --  @param Error the return location for a recoverable error
    --  @return a Glib.File_IO_Stream.Gfile_Iostream, or null on error. Free
-   --  the returned object with g_object_unref.
+   --  the returned object with g_object_unref. Has transfer-ownership='full'.
 
    function Resolve_Relative_Path
       (Self          : Gfile;
@@ -1578,9 +1589,8 @@ package Glib.GFile is
        Error  : out Glib.Error.GError) return Boolean;
    --  Finishes setting an attribute started in
    --  Glib.GFile.Set_Attributes_Async.
-   --  Parameter Info has transfer-ownership='full'
    --  @param Result a Glib.G_Async_Result
-   --  @param Info a Glib.File_Info.Gfile_Info
+   --  @param Info a Glib.File_Info.Gfile_Info. Has transfer-ownership='full'.
    --  @param Error the return location for a recoverable error
    --  @return True if the attributes were set correctly, False otherwise.
 
@@ -1844,11 +1854,10 @@ package Glib.GFile is
    --  Unlike the other Glib.GFile.Gfile constructors, this will return null
    --  if a temporary file could not be created.
    --  Since: gtk+ 2.32
-   --  Parameter Iostream has transfer-ownership='full'
    --  @param Tmpl Template for the file name, as in g_file_open_tmp, or null
    --  for a default template
    --  @param Iostream on return, a Glib.File_IO_Stream.Gfile_Iostream for the
-   --  created file
+   --  created file. Has transfer-ownership='full'.
    --  @param Error the return location for a recoverable error
    --  @return a new Glib.GFile.Gfile. Free the returned object with
    --  g_object_unref.
@@ -1871,10 +1880,9 @@ package Glib.GFile is
        Error    : out Glib.Error.GError) return Gfile;
    --  Finishes a temporary file creation started by Glib.GFile.New_Tmp_Async.
    --  Since: gtk+ 2.74
-   --  Parameter Iostream has transfer-ownership='full'
    --  @param Result a Glib.G_Async_Result
    --  @param Iostream on return, a Glib.File_IO_Stream.Gfile_Iostream for the
-   --  created file
+   --  created file. Has transfer-ownership='full'.
    --  @param Error the return location for a recoverable error
    --  @return a new Glib.GFile.Gfile. Free the returned object with
    --  g_object_unref.

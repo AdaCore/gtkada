@@ -73,7 +73,7 @@ package Gtk.Tree_List_Model is
    --  null is returned.
    --  Do not confuse this function with [methodGtk.TreeListModel.get_row].
    --  @param Position position of the child to get
-   --  @return the child in Position
+   --  @return the child in Position. Has transfer-ownership='full'.
 
    function Get_Model
       (Self : not null access Gtk_Tree_List_Model_Record)
@@ -109,7 +109,7 @@ package Gtk.Tree_List_Model is
    --  Do not confuse this function with
    --  [methodGtk.TreeListModel.get_child_row].
    --  @param Position the position of the row to fetch
-   --  @return The row item
+   --  @return The row item. Has transfer-ownership='full'.
 
    ----------------------
    -- GtkAda additions --

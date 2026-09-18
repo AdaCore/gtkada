@@ -377,6 +377,7 @@ package Gtk.Tree_Model is
    --  returned.
    --  Deprecated since 4.10, 1
    --  @param Path the `GtkTreePath`
+   --  @return The Iter
 
    function Get_Iter_First
       (Tree_Model : Gtk_Tree_Model) return Gtk_Tree_Iter;
@@ -385,6 +386,7 @@ package Gtk.Tree_Model is
    --  path "0").
    --  Returns False if the tree is empty, True otherwise.
    --  Deprecated since 4.10, 1
+   --  @return The Iter
 
    function Get_Iter_From_String
       (Tree_Model  : Gtk_Tree_Model;
@@ -394,6 +396,7 @@ package Gtk.Tree_Model is
    --  Otherwise, Iter is left invalid and False is returned.
    --  Deprecated since 4.10, 1
    --  @param Path_String a string representation of a `GtkTreePath`
+   --  @return The Iter
 
    function Get_N_Columns (Tree_Model : Gtk_Tree_Model) return Glib.Gint;
    pragma Import (C, Get_N_Columns, "gtk_tree_model_get_n_columns");
@@ -410,7 +413,7 @@ package Gtk.Tree_Model is
    --  This path should be freed with Gtk.Tree_Model.Path_Free.
    --  Deprecated since 4.10, 1
    --  @param Iter the `GtkTreeIter`
-   --  @return a newly-created `GtkTreePath`
+   --  @return a newly-created `GtkTreePath`. Has transfer-ownership='full'.
 
    function Get_String_From_Iter
       (Tree_Model : Gtk_Tree_Model;
@@ -450,6 +453,7 @@ package Gtk.Tree_Model is
    --  `gtk_tree_model_get_iter_first (tree_model, iter);`
    --  Deprecated since 4.10, 1
    --  @param Parent the `GtkTreeIter`
+   --  @return The Iter
 
    function Has_Child
       (Tree_Model : Gtk_Tree_Model;
@@ -498,6 +502,7 @@ package Gtk.Tree_Model is
    --  Deprecated since 4.10, 1
    --  @param Parent the `GtkTreeIter` to get the child from
    --  @param N the index of the desired child
+   --  @return The Iter
 
    function Parent
       (Tree_Model : Gtk_Tree_Model;
@@ -511,6 +516,7 @@ package Gtk.Tree_Model is
    --  Iter cannot point to the same memory location.
    --  Deprecated since 4.10, 1
    --  @param Child the `GtkTreeIter`
+   --  @return The Iter
 
    procedure Previous
       (Tree_Model : Gtk_Tree_Model;
@@ -679,7 +685,7 @@ package Gtk.Tree_Model is
    pragma Obsolescent (Copy);
    --  Creates a new `GtkTreePath` as a copy of Path.
    --  Deprecated since 4.10, 1
-   --  @return a new `GtkTreePath`
+   --  @return a new `GtkTreePath`. Has transfer-ownership='full'.
 
    procedure Down (Path : Gtk_Tree_Path);
    pragma Obsolescent (Down);
@@ -704,6 +710,7 @@ package Gtk.Tree_Model is
    --  value should not be freed.
    --  The length of the array can be obtained with Gtk.Tree_Model.Get_Depth.
    --  Deprecated since 4.10, 1
+   --  @return The current indices
 
    function Is_Ancestor
       (Path       : Gtk_Tree_Path;
@@ -1078,7 +1085,7 @@ package Gtk.Tree_Model is
    --  This path should be freed with gtk_tree_path_free.
    --  Deprecated since 4.10, 1
    --  @param Iter the `GtkTreeIter`
-   --  @return a newly-created `GtkTreePath`
+   --  @return a newly-created `GtkTreePath`. Has transfer-ownership='full'.
 
    type Virtual_Get_Value is access procedure
      (Tree_Model : Gtk_Tree_Model;

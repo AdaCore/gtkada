@@ -73,8 +73,7 @@ package Gtk.Multi_Sorter is
    --  Add Sorter to Self to use for sorting at the end.
    --  Self will consult all existing sorters before it will sort with the
    --  given Sorter.
-   --  Parameter Sorter has transfer-ownership='full'
-   --  @param Sorter a sorter to add
+   --  @param Sorter a sorter to add. Has transfer-ownership='full'.
 
    procedure Remove
       (Self     : not null access Gtk_Multi_Sorter_Record;

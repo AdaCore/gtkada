@@ -73,7 +73,8 @@ package Gtk.Tree_Drag_Source is
    --  found in the model!
    --  Deprecated since 4.10, 1
    --  @param Path row that was dragged
-   --  @return a `GdkContentProvider` for the given Path
+   --  @return a `GdkContentProvider` for the given Path. Has
+   --  transfer-ownership='full'.
 
    function Row_Draggable
       (Self : Gtk_Tree_Drag_Source;
@@ -123,7 +124,8 @@ package Gtk.Tree_Drag_Source is
    --  found in the model!
    --  Deprecated since 4.10, 1
    --  @param Path row that was dragged
-   --  @return a `GdkContentProvider` for the given Path
+   --  @return a `GdkContentProvider` for the given Path. Has
+   --  transfer-ownership='full'.
 
    type Virtual_Row_Draggable is access function
      (Self : Gtk_Tree_Drag_Source;

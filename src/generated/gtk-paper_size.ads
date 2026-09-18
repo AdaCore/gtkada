@@ -193,7 +193,7 @@ package Gtk.Paper_Size is
 
    function Copy (Self : Gtk_Paper_Size) return Gtk_Paper_Size;
    --  Copies an existing `GtkPaperSize`.
-   --  @return a copy of Other
+   --  @return a copy of Other. Has transfer-ownership='full'.
 
    procedure Free (Self : Gtk_Paper_Size);
    --  Free the given `GtkPaperSize` object.
@@ -279,8 +279,7 @@ package Gtk.Paper_Size is
 
    function To_Gvariant (Self : Gtk_Paper_Size) return Glib.Variant.Gvariant;
    --  Serialize a paper size to an `a{sv}` variant.
-   --  @return a new, floating, `GVariant`
-   --  Return has transfer-ownership='none'
+   --  @return a new, floating, `GVariant`. Has transfer-ownership='none'.
 
    procedure To_Key_File
       (Self       : Gtk_Paper_Size;
@@ -309,6 +308,8 @@ package Gtk.Paper_Size is
    --  Creates a list of known paper sizes.
    --  @param Include_Custom whether to include custom paper sizes as defined
    --  in the page setup dialog
+   --  @return a newly allocated list of newly allocated `GtkPaperSize`
+   --  objects
 
 private
    Null_Gtk_Paper_Size : constant Gtk_Paper_Size :=

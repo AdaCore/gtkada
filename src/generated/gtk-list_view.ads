@@ -143,7 +143,8 @@ package Gtk.List_View is
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
    --  @param Model the model to use
-   --  @param Factory The factory to populate items with
+   --  @param Factory The factory to populate items with. Has
+   --  transfer-ownership='full'.
 
    function Gtk_List_View_New
       (Model   : Gtk.Selection_Model.Gtk_Selection_Model;
@@ -155,7 +156,8 @@ package Gtk.List_View is
    --  like ```c list_view = gtk_list_view_new (create_model (),
    --  gtk_builder_list_item_factory_new_from_resource ("/resource.ui")); ```
    --  @param Model the model to use
-   --  @param Factory The factory to populate items with
+   --  @param Factory The factory to populate items with. Has
+   --  transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_list_view_get_type");
@@ -179,8 +181,7 @@ package Gtk.List_View is
       (Self : not null access Gtk_List_View_Record)
        return Gtk.List_Item_Factory.Gtk_List_Item_Factory;
    --  Gets the factory that's currently used to populate list items.
-   --  @return The factory in use
-   --  Return has transfer-ownership='none'
+   --  @return The factory in use. Has transfer-ownership='none'.
 
    procedure Set_Factory
       (Self    : not null access Gtk_List_View_Record;
@@ -193,8 +194,7 @@ package Gtk.List_View is
        return Gtk.List_Item_Factory.Gtk_List_Item_Factory;
    --  Gets the factory that's currently used to populate section headers.
    --  Since: gtk+ 4.12
-   --  @return The factory in use
-   --  Return has transfer-ownership='none'
+   --  @return The factory in use. Has transfer-ownership='none'.
 
    procedure Set_Header_Factory
       (Self    : not null access Gtk_List_View_Record;
@@ -269,12 +269,11 @@ package Gtk.List_View is
    --  This function works no matter if the listview is shown or focused. If
    --  it isn't, then the changes will take effect once that happens.
    --  Since: gtk+ 4.12
-   --  Parameter Scroll has transfer-ownership='full'
    --  @param Pos position of the item. Must be less than the number of items
    --  in the view.
    --  @param Flags actions to perform
    --  @param Scroll details of how to perform the scroll operation or null to
-   --  scroll into view
+   --  scroll into view. Has transfer-ownership='full'.
 
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --

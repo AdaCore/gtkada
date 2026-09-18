@@ -566,7 +566,7 @@ package Glib.Menu is
    --  Since: gtk+ 2.34
    --  @param Attribute the attribute name to query
    --  @param Expected_Type the expected type of the attribute
-   --  @return the attribute value, or null
+   --  @return the attribute value, or null. Has transfer-ownership='full'.
 
    procedure Set_Attribute_Value
       (Self      : not null access Gmenu_Item_Record;
@@ -595,7 +595,7 @@ package Glib.Menu is
    --  Queries the named Link on Menu_Item.
    --  Since: gtk+ 2.34
    --  @param Link the link name to query
-   --  @return the link, or null
+   --  @return the link, or null. Has transfer-ownership='full'.
 
    procedure Set_Link
       (Self  : not null access Gmenu_Item_Record;

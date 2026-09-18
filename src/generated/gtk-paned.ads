@@ -142,8 +142,7 @@ package Gtk.Paned is
       (Paned : not null access Gtk_Paned_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the end child of the given `GtkPaned`.
-   --  @return the end child widget
-   --  Return has transfer-ownership='none'
+   --  @return the end child widget. Has transfer-ownership='none'.
 
    procedure Set_End_Child
       (Paned : not null access Gtk_Paned_Record;
@@ -217,8 +216,7 @@ package Gtk.Paned is
       (Paned : not null access Gtk_Paned_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the start child of the given `GtkPaned`.
-   --  @return the start child widget
-   --  Return has transfer-ownership='none'
+   --  @return the start child widget. Has transfer-ownership='none'.
 
    procedure Set_Start_Child
       (Paned : not null access Gtk_Paned_Record;

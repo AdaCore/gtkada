@@ -46,6 +46,10 @@ body = '''
 name = "iter"
 ada = ""
 
+[method.doc]
+extend = true
+text = "@return The Iter"
+
 [[method]]
 id = "gtk_tree_model_get_iter_from_string"
 return = "Gtk_Tree_Iter"
@@ -68,6 +72,10 @@ body = '''
 name = "iter"
 ada = ""
 
+[method.doc]
+extend = true
+text = "@return The Iter"
+
 [[method]]
 id = "gtk_tree_model_get_iter_first"
 return = "Gtk_Tree_Iter"
@@ -86,6 +94,10 @@ body = '''
 [[method.parameter]]
 name = "iter"
 ada = ""
+
+[method.doc]
+extend = true
+text = "@return The Iter"
 
 [[method]]
 id = "gtk_tree_model_iter_next"
@@ -149,6 +161,10 @@ body = '''
 name = "iter"
 ada = ""
 
+[method.doc]
+extend = true
+text = "@return The Iter"
+
 [[method]]
 id = "gtk_tree_model_iter_has_child"
 ada = "Has_Child"
@@ -188,6 +204,10 @@ body = '''
 name = "iter"
 ada = ""
 
+[method.doc]
+extend = true
+text = "@return The Iter"
+
 [[method]]
 id = "gtk_tree_model_iter_parent"
 ada = "Parent"
@@ -209,6 +229,10 @@ body = '''
 [[method.parameter]]
 name = "iter"
 ada = ""
+
+[method.doc]
+extend = true
+text = "@return The Iter"
 
 [[method]]
 id = "gtk_tree_model_rows_reordered"

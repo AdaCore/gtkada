@@ -156,8 +156,7 @@ package Gtk.Style_Context is
    pragma Obsolescent (Get_Display);
    --  Returns the `GdkDisplay` to which Context is attached.
    --  Deprecated since 4.10, 1
-   --  @return a `GdkDisplay`.
-   --  Return has transfer-ownership='none'
+   --  @return a `GdkDisplay`. Has transfer-ownership='none'.
 
    procedure Set_Display
       (Self    : not null access Gtk_Style_Context_Record;
@@ -226,7 +225,7 @@ package Gtk.Style_Context is
    --  Deprecated since 4.10, 1
    --  @param Color_Name color name to lookup
    --  @param Color Return location for the looked up color
-   --  @return True if Color_Name was found and resolved, False otherwise
+   --  @param Found True if Color_Name was found and resolved, False otherwise
 
    procedure Remove_Class
       (Self       : not null access Gtk_Style_Context_Record;

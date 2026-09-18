@@ -476,7 +476,8 @@ package Gtk.Cell_Area is
    --  be displayed.
    --  Deprecated since 4.10, 1
    --  @param Context the `GtkCellArea`Context to copy
-   --  @return a newly created `GtkCellArea`Context copy of Context.
+   --  @return a newly created `GtkCellArea`Context copy of Context. Has
+   --  transfer-ownership='full'.
 
    function Create_Context
       (Self : not null access Gtk_Cell_Area_Record)
@@ -490,7 +491,7 @@ package Gtk.Cell_Area is
    --  those rows of data).
    --  Deprecated since 4.10, 1
    --  @return a newly created `GtkCellArea`Context which can be used with
-   --  Area.
+   --  Area. Has transfer-ownership='full'.
 
    function Focus
       (Self      : not null access Gtk_Cell_Area_Record;
@@ -640,8 +641,8 @@ package Gtk.Cell_Area is
    pragma Obsolescent (Get_Edited_Cell);
    --  Gets the `GtkCellRenderer` in Area that is currently being edited.
    --  Deprecated since 4.10, 1
-   --  @return The currently edited `GtkCellRenderer`
-   --  Return has transfer-ownership='none'
+   --  @return The currently edited `GtkCellRenderer`. Has
+   --  transfer-ownership='none'.
 
    function Get_Focus_Cell
       (Self : not null access Gtk_Cell_Area_Record)
@@ -649,8 +650,8 @@ package Gtk.Cell_Area is
    pragma Obsolescent (Get_Focus_Cell);
    --  Retrieves the currently focused cell for Area
    --  Deprecated since 4.10, 1
-   --  @return the currently focused cell in Area.
-   --  Return has transfer-ownership='none'
+   --  @return the currently focused cell in Area. Has
+   --  transfer-ownership='none'.
 
    procedure Set_Focus_Cell
       (Self     : not null access Gtk_Cell_Area_Record;
@@ -676,8 +677,8 @@ package Gtk.Cell_Area is
    --  sibling.
    --  Deprecated since 4.10, 1
    --  @param Renderer the `GtkCellRenderer`
-   --  @return the `GtkCellRenderer` for which Renderer is a sibling
-   --  Return has transfer-ownership='none'
+   --  @return the `GtkCellRenderer` for which Renderer is a sibling. Has
+   --  transfer-ownership='none'.
 
    function Get_Focus_Siblings
       (Self     : not null access Gtk_Cell_Area_Record;
@@ -687,6 +688,8 @@ package Gtk.Cell_Area is
    --  Gets the focus sibling cell renderers for Renderer.
    --  Deprecated since 4.10, 1
    --  @param Renderer the `GtkCellRenderer` expected to have focus
+   --  @return A `GList` of `GtkCellRenderer`s. The returned list is internal
+   --  and should not be freed.
 
    procedure Get_Preferred_Height
       (Self           : not null access Gtk_Cell_Area_Record;

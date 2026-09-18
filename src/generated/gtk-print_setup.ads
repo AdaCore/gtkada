@@ -65,8 +65,7 @@ package Gtk.Print_Setup is
    --  It may be different from the `GtkPrintDialog`'s page setup if the user
    --  changed it during the setup process.
    --  Since: gtk+ 4.14
-   --  @return the page setup, or `NULL`
-   --  Return has transfer-ownership='none'
+   --  @return the page setup, or `NULL`. Has transfer-ownership='none'.
 
    function Get_Print_Settings
       (Self : Gtk_Print_Setup) return Gtk.Print_Settings.Gtk_Print_Settings;
@@ -74,13 +73,12 @@ package Gtk.Print_Setup is
    --  They may be different from the `GtkPrintDialog`'s settings if the user
    --  changed them during the setup process.
    --  Since: gtk+ 4.14
-   --  @return the print settings, or `NULL`
-   --  Return has transfer-ownership='none'
+   --  @return the print settings, or `NULL`. Has transfer-ownership='none'.
 
    function Ref (Self : Gtk_Print_Setup) return Gtk_Print_Setup;
    --  Increase the reference count of Setup.
    --  Since: gtk+ 4.14
-   --  @return the print setup
+   --  @return the print setup. Has transfer-ownership='full'.
 
    procedure Unref (Self : Gtk_Print_Setup);
    --  Decrease the reference count of Setup.

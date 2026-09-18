@@ -135,7 +135,8 @@ package Glib.File_Info is
 
    function Dup (Self : not null access Gfile_Info_Record) return Gfile_Info;
    --  Duplicates a file info structure.
-   --  @return a duplicate Glib.File_Info.Gfile_Info of Other.
+   --  @return a duplicate Glib.File_Info.Gfile_Info of Other. Has
+   --  transfer-ownership='full'.
 
    function Get_Attribute_As_String
       (Self      : not null access Gfile_Info_Record;
@@ -245,8 +246,7 @@ package Glib.File_Info is
    --  does not contain a Glib.Object.GObject, null will be returned.
    --  @param Attribute a file attribute key.
    --  @return a Glib.Object.GObject associated with the given Attribute, or
-   --  null otherwise.
-   --  Return has transfer-ownership='none'
+   --  null otherwise. Has transfer-ownership='none'.
 
    procedure Set_Attribute_Object
       (Self       : not null access Gfile_Info_Record;
@@ -464,6 +464,7 @@ package Glib.File_Info is
    --  from Guint64 to goffset before returning the result.
    --  It is an error to call this if the Glib.File_Info.Gfile_Info does not
    --  contain G_FILE_ATTRIBUTE_STANDARD_SIZE.
+   --  @return a goffset containing the file's size (in bytes).
 
    procedure Set_Size
       (Self : not null access Gfile_Info_Record;

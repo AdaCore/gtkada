@@ -172,8 +172,7 @@ package Gtk.Check_Button is
    --  Gets the child widget of Button or `NULL` if
    --  [propertyCheckbutton:label] is set.
    --  Since: gtk+ 4.8
-   --  @return the child widget of Button
-   --  Return has transfer-ownership='none'
+   --  @return the child widget of Button. Has transfer-ownership='none'.
 
    procedure Set_Child
       (Self  : not null access Gtk_Check_Button_Record;

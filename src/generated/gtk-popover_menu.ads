@@ -275,8 +275,7 @@ package Gtk.Popover_Menu is
       (Self : not null access Gtk_Popover_Menu_Record)
        return Glib.Menu_Model.Gmenu_Model;
    --  Returns the menu model used to populate the popover.
-   --  @return the menu model of Popover
-   --  Return has transfer-ownership='none'
+   --  @return the menu model of Popover. Has transfer-ownership='none'.
 
    procedure Set_Menu_Model
       (Self  : not null access Gtk_Popover_Menu_Record;

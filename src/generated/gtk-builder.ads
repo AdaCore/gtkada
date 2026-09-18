@@ -640,8 +640,7 @@ package Gtk.Builder is
    function Get_Current_Object
       (Self : not null access Gtk_Builder_Record) return Glib.Object.GObject;
    --  Gets the current object set via Gtk.Builder.Set_Current_Object.
-   --  @return the current object
-   --  Return has transfer-ownership='none'
+   --  @return the current object. Has transfer-ownership='none'.
 
    procedure Set_Current_Object
       (Self           : not null access Gtk_Builder_Record;
@@ -662,8 +661,7 @@ package Gtk.Builder is
    --  Note that this function does not increment the reference count of the
    --  returned object.
    --  @param Name name of object to get
-   --  @return the object named Name
-   --  Return has transfer-ownership='none'
+   --  @return the object named Name. Has transfer-ownership='none'.
 
    function Get_Objects
       (Self : not null access Gtk_Builder_Record)
@@ -671,6 +669,9 @@ package Gtk.Builder is
    --  Gets all objects that have been constructed by Builder.
    --  Note that this function does not increment the reference counts of the
    --  returned objects.
+   --  @return a newly-allocated `GSList` containing all the objects
+   --  constructed by the `GtkBuilder instance`. It should be freed by
+   --  g_slist_free
 
    function Get_Scope
       (Self : not null access Gtk_Builder_Record)

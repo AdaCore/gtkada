@@ -327,8 +327,7 @@ package Gtk.Text_View is
    --  Returns the `GtkTextBuffer` being displayed by this text view.
    --  The reference count on the buffer is not incremented; the caller of
    --  this function won't own a new reference.
-   --  @return a `GtkTextBuffer`
-   --  Return has transfer-ownership='none'
+   --  @return a `GtkTextBuffer`. Has transfer-ownership='none'.
 
    procedure Set_Buffer
       (View   : not null access Gtk_Text_View_Record;
@@ -399,8 +398,7 @@ package Gtk.Text_View is
        return Glib.Menu_Model.Gmenu_Model;
    --  Gets the menu model that gets added to the context menu or null if none
    --  has been set.
-   --  @return the menu model
-   --  Return has transfer-ownership='none'
+   --  @return the menu model. Has transfer-ownership='none'.
 
    procedure Set_Extra_Menu
       (View  : not null access Gtk_Text_View_Record;
@@ -419,8 +417,7 @@ package Gtk.Text_View is
    --  Gtk.Enums.Text_Window_Right, Gtk.Enums.Text_Window_Top, or
    --  Gtk.Enums.Text_Window_Bottom.
    --  @param Win a `GtkTextWindowType`
-   --  @return a `GtkWidget`
-   --  Return has transfer-ownership='none'
+   --  @return a `GtkWidget`. Has transfer-ownership='none'.
 
    procedure Set_Gutter
       (View   : not null access Gtk_Text_View_Record;
@@ -587,8 +584,7 @@ package Gtk.Text_View is
    --  layouts.
    --  The context may be replaced when CSS changes occur.
    --  Since: gtk+ 4.4
-   --  @return a `PangoContext`
-   --  Return has transfer-ownership='none'
+   --  @return a `PangoContext`. Has transfer-ownership='none'.
 
    function Get_Monospace
       (View : not null access Gtk_Text_View_Record) return Boolean;
@@ -679,8 +675,7 @@ package Gtk.Text_View is
    --  layouts.
    --  The context may be replaced when CSS changes occur.
    --  Since: gtk+ 4.4
-   --  @return a `PangoContext`
-   --  Return has transfer-ownership='none'
+   --  @return a `PangoContext`. Has transfer-ownership='none'.
 
    function Get_Tabs
       (View : not null access Gtk_Text_View_Record)
@@ -690,7 +685,8 @@ package Gtk.Text_View is
    --  be null if "standard" (8-space) tabs are used. Free the return value
    --  with [methodPango.TabArray.free].
    --  @return copy of default tab array, or null if standard tabs are used;
-   --  must be freed with [methodPango.TabArray.free].
+   --  must be freed with [methodPango.TabArray.free]. Has
+   --  transfer-ownership='full'.
 
    procedure Set_Tabs
       (View : not null access Gtk_Text_View_Record;

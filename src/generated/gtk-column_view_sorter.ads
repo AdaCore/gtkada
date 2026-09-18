@@ -93,8 +93,7 @@ package Gtk.Column_View_Sorter is
    --  @param Position the position of the sort column to retrieve (0 for the
    --  primary sort column)
    --  @param Sort_Order return location for the sort order
-   --  @return the sort column at the Position
-   --  Return has transfer-ownership='none'
+   --  @return the sort column at the Position. Has transfer-ownership='none'.
 
    function Get_Primary_Sort_Column
       (Self : not null access Gtk_Column_View_Sorter_Record)
@@ -103,8 +102,7 @@ package Gtk.Column_View_Sorter is
    --  The primary sort column is the one that displays the triangle in a
    --  column view header.
    --  Since: gtk+ 4.10
-   --  @return the primary sort column
-   --  Return has transfer-ownership='none'
+   --  @return the primary sort column. Has transfer-ownership='none'.
 
    function Get_Primary_Sort_Order
       (Self : not null access Gtk_Column_View_Sorter_Record)

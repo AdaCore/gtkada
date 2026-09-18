@@ -269,8 +269,7 @@ package Glib.Cancellable is
    function Get_Current return Gcancellable;
    --  Gets the top cancellable from the stack.
    --  @return a Glib.Cancellable.Gcancellable from the top of the stack, or
-   --  null if the stack is empty.
-   --  Return has transfer-ownership='none'
+   --  null if the stack is empty. Has transfer-ownership='none'.
 
    -------------
    -- Signals --

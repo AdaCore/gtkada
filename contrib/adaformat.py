@@ -529,6 +529,13 @@ class CType(object):
         '''
         return ""
 
+    def print_ownership_comment(self):
+        '''
+        Whether we need the comment about transfer-ownership
+        '''
+        return False
+
+
 class Enum(CType):
 
     def __init__(self, ada: str, property: Optional[str] = None):
@@ -680,6 +687,9 @@ class GObject(CType):
         result = CType.copy(self)
         return result
 
+    def print_ownership_comment(self):
+        return True
+
 
 class Tagged(GObject):
     """Tagged types that map C objects, but do not derive from GObject"""
@@ -713,6 +723,9 @@ class Tagged(GObject):
     def as_ada_param(self, pkg) -> str:
         # Make sure to bind as a CType here, not as a GOBject
         return CType.as_ada_param(self, pkg)
+
+    def print_ownership_comment(self):
+        return True
 
 
 class Fundamental(Tagged):
@@ -1885,6 +1898,24 @@ class Parameter(Local_Var):
         else:
             return self.ada_binding
 
+    def get_doc(self):
+        if (
+            (self.ownership == "full" or self.ownership == True)
+            and self.type.print_ownership_comment()
+        ):
+            if (
+                (isinstance (self.doc, str) and self.doc == "")
+                or (isinstance (self.doc, list) and len(self.doc) == 0)
+            ):
+                return ("@param %s has transfer-ownership='full'. " % self.name)
+            else:
+                doc = self.doc
+                if not doc.endswith("."):
+                    doc = doc + "."
+                return doc + " Has transfer-ownership='full'."
+        else:
+            return self.doc
+
 
 def base_name(qname) -> str:
     """Return the basename for a fully qualified name:
@@ -2112,22 +2143,28 @@ class Subprogram(object):
     def formatted_doc(self, indent="   ") -> str:
         if self.showdoc:
             doc = []
+            lastparam = []
             returns = []
-            afterreturns = []
 
             for d in self.doc:
                 if isinstance(d, str) and d.lstrip().startswith("@return "):
                     returns.append(d)
-                elif isinstance(d, str) and d.lstrip().startswith("@afterreturn "):
-                    afterreturns.append(d.replace("@afterreturn ", ""))
+                elif isinstance(d, str) and d.lstrip().startswith("@lastparam "):
+                    lastparam.append("@param" + d.replace("@lastparam", ""))
                 else:
                     doc.append(d)
 
             if self._deprecated[0]:
                 doc += [self._deprecated[1]]
-            doc += [p.doc for p in self.plist]
-            doc += returns
-            doc += afterreturns
+            if self.lang == "ada":
+                doc += [p.get_doc() for p in self.plist]
+            else:
+                doc += [p.doc for p in self.plist]
+
+            doc += lastparam
+
+            if self.returns:
+                doc += returns
         else:
             doc = []
 

@@ -62,13 +62,14 @@ package Gtk.Expression_Watch is
 
    function Ref (Self : Gtk_Expression_Watch) return Gtk_Expression_Watch;
    --  Acquires a reference on the given `GtkExpressionWatch`.
-   --  @return the `GtkExpressionWatch` with an additional reference
+   --  @return the `GtkExpressionWatch` with an additional reference. Has
+   --  transfer-ownership='full'.
 
    procedure Unref (Self : Gtk_Expression_Watch);
    --  Releases a reference on the given `GtkExpressionWatch`.
    --  If the reference was the last, the resources associated to `self` are
    --  freed.
-   --  Parameter Self has transfer-ownership='full'
+   --  @param Self has transfer-ownership='full'.
 
    procedure Unwatch (Self : Gtk_Expression_Watch);
    --  Stops watching an expression.

@@ -95,7 +95,8 @@ package Gdk.Display is
    --  [methodGdk.GLContext.make_current] or [methodGdk.GLContext.realize].
    --  Since: gtk+ 4.6
    --  @param Error the return location for a recoverable error
-   --  @return the newly created `GdkGLContext`
+   --  @return the newly created `GdkGLContext`. Has
+   --  transfer-ownership='full'.
 
    function Device_Is_Grabbed
       (Self   : not null access Gdk_Display_Record;
@@ -121,22 +122,21 @@ package Gdk.Display is
        return Gdk.App_Launch_Context.Gdk_App_Launch_Context;
    --  Returns a `GdkAppLaunchContext` suitable for launching applications on
    --  the given display.
-   --  @return a new `GdkAppLaunchContext` for Display
+   --  @return a new `GdkAppLaunchContext` for Display. Has
+   --  transfer-ownership='full'.
 
    function Get_Clipboard
       (Self : not null access Gdk_Display_Record)
        return Gdk.Clipboard.Gdk_Clipboard;
    --  Gets the clipboard used for copy/paste operations.
-   --  @return the display's clipboard
-   --  Return has transfer-ownership='none'
+   --  @return the display's clipboard. Has transfer-ownership='none'.
 
    function Get_Default_Seat
       (Self : not null access Gdk_Display_Record) return Gdk.Gdk_Seat;
    --  Returns the default `GdkSeat` for this display.
    --  Note that a display may not have a seat. In this case, this function
    --  will return null.
-   --  @return the default seat.
-   --  Return has transfer-ownership='none'
+   --  @return the default seat. Has transfer-ownership='none'.
 
    function Get_Dmabuf_Formats
       (Self : not null access Gdk_Display_Record)
@@ -149,8 +149,7 @@ package Gdk.Display is
    --  To learn more about dma-bufs, see [classGdk.DmabufTextureBuilder].
    --  This function is threadsafe. It can be called from any thread.
    --  Since: gtk+ 4.14
-   --  @return a `GdkDmabufFormats` object
-   --  Return has transfer-ownership='none'
+   --  @return a `GdkDmabufFormats` object. Has transfer-ownership='none'.
 
    function Get_Monitor_At_Surface
       (Self    : not null access Gdk_Display_Record;
@@ -158,8 +157,8 @@ package Gdk.Display is
        return Gdk.Monitor.Gdk_Monitor;
    --  Gets the monitor in which the largest area of Surface resides.
    --  @param Surface a `GdkSurface`
-   --  @return the monitor with the largest overlap with Surface
-   --  Return has transfer-ownership='none'
+   --  @return the monitor with the largest overlap with Surface. Has
+   --  transfer-ownership='none'.
 
    function Get_Monitors
       (Self : not null access Gdk_Display_Record)
@@ -183,8 +182,7 @@ package Gdk.Display is
    --  Gets the clipboard used for the primary selection.
    --  On backends where the primary clipboard is not supported natively, GDK
    --  emulates this clipboard locally.
-   --  @return the primary clipboard
-   --  Return has transfer-ownership='none'
+   --  @return the primary clipboard. Has transfer-ownership='none'.
 
    function Get_Setting
       (Self  : not null access Gdk_Display_Record;
@@ -239,6 +237,7 @@ package Gdk.Display is
       (Self : not null access Gdk_Display_Record)
        return Gdk.Seat.Seat_List.Glist;
    --  Returns the list of seats known to Display.
+   --  @return the list of seats known to the `GdkDisplay`
 
    procedure Notify_Startup_Complete
       (Self       : not null access Gdk_Display_Record;
@@ -344,15 +343,14 @@ package Gdk.Display is
    --  Gets the default `GdkDisplay`.
    --  This is a convenience function for:
    --  gdk_display_manager_get_default_display (gdk_display_manager_get ())
-   --  @return a `GdkDisplay`, or null if there is no default display
-   --  Return has transfer-ownership='none'
+   --  @return a `GdkDisplay`, or null if there is no default display. Has
+   --  transfer-ownership='none'.
 
    function Open (Display_Name : UTF8_String := "") return Gdk.Gdk_Display;
    --  Opens a display.
    --  If opening the display fails, `NULL` is returned.
    --  @param Display_Name the name of the display to open
-   --  @return a `GdkDisplay`
-   --  Return has transfer-ownership='none'
+   --  @return a `GdkDisplay`. Has transfer-ownership='none'.
 
    ----------------
    -- Properties --

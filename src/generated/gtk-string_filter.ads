@@ -77,14 +77,16 @@ package Gtk.String_Filter is
    --  and by providing a property to look up on the item.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  @param Expression the expression to evaluate
+   --  @param Expression the expression to evaluate. Has
+   --  transfer-ownership='full'.
 
    function Gtk_String_Filter_New
       (Expression : Gtk.Expression.Gtk_Expression) return Gtk_String_Filter;
    --  Creates a new string filter.
    --  You will want to set up the filter by providing a string to search for
    --  and by providing a property to look up on the item.
-   --  @param Expression the expression to evaluate
+   --  @param Expression the expression to evaluate. Has
+   --  transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_string_filter_get_type");
@@ -98,8 +100,7 @@ package Gtk.String_Filter is
        return Gtk.Expression.Gtk_Expression;
    --  Gets the expression that the string filter uses to obtain strings from
    --  items.
-   --  @return the expression
-   --  Return has transfer-ownership='none'
+   --  @return the expression. Has transfer-ownership='none'.
 
    procedure Set_Expression
       (Self       : not null access Gtk_String_Filter_Record;

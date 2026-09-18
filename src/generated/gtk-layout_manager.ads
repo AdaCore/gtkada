@@ -117,8 +117,7 @@ package Gtk.Layout_Manager is
    --  is guaranteed to exist as long as Child is a child of the `GtkWidget`
    --  using the given `GtkLayoutManager`.
    --  @param Child a `GtkWidget`
-   --  @return a `GtkLayoutChild`
-   --  Return has transfer-ownership='none'
+   --  @return a `GtkLayoutChild`. Has transfer-ownership='none'.
 
    function Get_Request_Mode
       (Manager : not null access Gtk_Layout_Manager_Record)
@@ -130,8 +129,7 @@ package Gtk.Layout_Manager is
       (Manager : not null access Gtk_Layout_Manager_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the `GtkWidget` using the given `GtkLayoutManager`.
-   --  @return a `GtkWidget`
-   --  Return has transfer-ownership='none'
+   --  @return a `GtkWidget`. Has transfer-ownership='none'.
 
    procedure Layout_Changed
       (Manager : not null access Gtk_Layout_Manager_Record);
@@ -170,16 +168,14 @@ package Gtk.Layout_Manager is
       (Layout_Child : not null access Gtk_Layout_Child_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Retrieves the `GtkWidget` associated to the given Layout_Child.
-   --  @return a `GtkWidget`
-   --  Return has transfer-ownership='none'
+   --  @return a `GtkWidget`. Has transfer-ownership='none'.
 
    function Get_Layout_Manager
       (Layout_Child : not null access Gtk_Layout_Child_Record)
        return Gtk_Layout_Manager;
    --  Retrieves the `GtkLayoutManager` instance that created the given
    --  Layout_Child.
-   --  @return a `GtkLayoutManager`
-   --  Return has transfer-ownership='none'
+   --  @return a `GtkLayoutManager`. Has transfer-ownership='none'.
 
    ----------------
    -- Properties --

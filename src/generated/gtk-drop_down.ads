@@ -108,7 +108,7 @@ package Gtk.Drop_Down is
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
    --  @param Model the model to use
-   --  @param Expression the expression to use
+   --  @param Expression the expression to use. Has transfer-ownership='full'.
 
    function Gtk_Drop_Down_New
       (Model      : Glib.List_Model.Glist_Model;
@@ -117,7 +117,7 @@ package Gtk.Drop_Down is
    --  You may want to call [methodGtk.DropDown.set_factory] to set up a way
    --  to map its items to widgets.
    --  @param Model the model to use
-   --  @param Expression the expression to use
+   --  @param Expression the expression to use. Has transfer-ownership='full'.
 
    procedure Gtk_New_From_Strings
       (Self    : out Gtk_Drop_Down;
@@ -161,8 +161,7 @@ package Gtk.Drop_Down is
        return Gtk.Expression.Gtk_Expression;
    --  Gets the expression set that is used to obtain strings from items.
    --  See [methodGtk.DropDown.set_expression].
-   --  @return a `GtkExpression`
-   --  Return has transfer-ownership='none'
+   --  @return a `GtkExpression`. Has transfer-ownership='none'.
 
    procedure Set_Expression
       (Self       : not null access Gtk_Drop_Down_Record;
@@ -179,8 +178,7 @@ package Gtk.Drop_Down is
    --  The factory returned by this function is always used for the item in
    --  the button. It is also used for items in the popup if
    --  [propertyGtk.DropDown:list-factory] is not set.
-   --  @return The factory in use
-   --  Return has transfer-ownership='none'
+   --  @return The factory in use. Has transfer-ownership='none'.
 
    procedure Set_Factory
       (Self    : not null access Gtk_Drop_Down_Record;
@@ -194,8 +192,7 @@ package Gtk.Drop_Down is
    --  Gets the factory that's currently used to create header widgets for the
    --  popup.
    --  Since: gtk+ 4.12
-   --  @return The factory in use
-   --  Return has transfer-ownership='none'
+   --  @return The factory in use. Has transfer-ownership='none'.
 
    procedure Set_Header_Factory
       (Self    : not null access Gtk_Drop_Down_Record;
@@ -210,8 +207,7 @@ package Gtk.Drop_Down is
        return Gtk.List_Item_Factory.Gtk_List_Item_Factory;
    --  Gets the factory that's currently used to populate list items in the
    --  popup.
-   --  @return The factory in use
-   --  Return has transfer-ownership='none'
+   --  @return The factory in use. Has transfer-ownership='none'.
 
    procedure Set_List_Factory
       (Self    : not null access Gtk_Drop_Down_Record;
@@ -263,7 +259,7 @@ package Gtk.Drop_Down is
       (Self : not null access Gtk_Drop_Down_Record)
        return Glib.Object.GObject;
    --  Gets the selected item. If no item is selected, null is returned.
-   --  Return has transfer-ownership='none'
+   --  @return The selected item. Has transfer-ownership='none'.
 
    function Get_Show_Arrow
       (Self : not null access Gtk_Drop_Down_Record) return Boolean;

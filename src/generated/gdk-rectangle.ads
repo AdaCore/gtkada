@@ -107,7 +107,7 @@ package Gdk.Rectangle is
    --  for Dest.
    --  @param Src2 a `GdkRectangle`
    --  @param Dest return location for the intersection of Src1 and Src2
-   --  @return True if the rectangles intersect.
+   --  @param Do_Intersect True if the rectangles intersect.
 
    procedure Union
       (Self : Gdk_Rectangle;

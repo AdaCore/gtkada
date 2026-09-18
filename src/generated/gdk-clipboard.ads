@@ -95,8 +95,7 @@ package Gdk.Clipboard is
    --  If the Clipboard is empty or its contents are not owned by the current
    --  process, null will be returned.
    --  @return The content of a clipboard if the clipboard does not maintain
-   --  any content
-   --  Return has transfer-ownership='none'
+   --  any content. Has transfer-ownership='none'.
 
    function Set_Content
       (Self     : not null access Gdk_Clipboard_Record;
@@ -118,16 +117,14 @@ package Gdk.Clipboard is
    function Get_Display
       (Self : not null access Gdk_Clipboard_Record) return Gdk.Gdk_Display;
    --  Gets the `GdkDisplay` that the clipboard was created for.
-   --  @return a `GdkDisplay`
-   --  Return has transfer-ownership='none'
+   --  @return a `GdkDisplay`. Has transfer-ownership='none'.
 
    function Get_Formats
       (Self : not null access Gdk_Clipboard_Record)
        return Gdk.Content_Formats.Gdk_Content_Formats;
    --  Gets the formats that the clipboard can provide its current contents
    --  in.
-   --  @return The formats of the clipboard
-   --  Return has transfer-ownership='none'
+   --  @return The formats of the clipboard. Has transfer-ownership='none'.
 
    function Is_Local
       (Self : not null access Gdk_Clipboard_Record) return Boolean;
@@ -164,7 +161,7 @@ package Gdk.Clipboard is
    --  @param Result a `GAsyncResult`
    --  @param Out_Mime_Type location to store the chosen mime type
    --  @param Error the return location for a recoverable error
-   --  @return a `GInputStream`
+   --  @return a `GInputStream`. Has transfer-ownership='full'.
 
    procedure Read_Text_Async
       (Self        : not null access Gdk_Clipboard_Record;
@@ -207,7 +204,7 @@ package Gdk.Clipboard is
    --  See [methodGdk.Clipboard.read_texture_async].
    --  @param Result a `GAsyncResult`
    --  @param Error the return location for a recoverable error
-   --  @return a new `GdkTexture`
+   --  @return a new `GdkTexture`. Has transfer-ownership='full'.
 
    procedure Read_Value_Async
       (Self        : not null access Gdk_Clipboard_Record;

@@ -79,7 +79,8 @@ package Gtk.Sort_List_Model is
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
    --  @param Model the model to sort
-   --  @param Sorter the `GtkSorter` to sort Model with,
+   --  @param Sorter the `GtkSorter` to sort Model with,. Has
+   --  transfer-ownership='full'.
 
    function Gtk_Sort_List_Model_New
       (Model  : Glib.List_Model.Glist_Model;
@@ -87,7 +88,8 @@ package Gtk.Sort_List_Model is
        return Gtk_Sort_List_Model;
    --  Creates a new sort list model that uses the Sorter to sort Model.
    --  @param Model the model to sort
-   --  @param Sorter the `GtkSorter` to sort Model with,
+   --  @param Sorter the `GtkSorter` to sort Model with,. Has
+   --  transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_sort_list_model_get_type");
@@ -153,8 +155,7 @@ package Gtk.Sort_List_Model is
    --  Gets the section sorter that is used to sort items of Self into
    --  sections.
    --  Since: gtk+ 4.12
-   --  @return the sorter of self
-   --  Return has transfer-ownership='none'
+   --  @return the sorter of self. Has transfer-ownership='none'.
 
    procedure Set_Section_Sorter
       (Self   : not null access Gtk_Sort_List_Model_Record;
@@ -167,8 +168,7 @@ package Gtk.Sort_List_Model is
       (Self : not null access Gtk_Sort_List_Model_Record)
        return Gtk.Sorter.Gtk_Sorter;
    --  Gets the sorter that is used to sort Self.
-   --  @return the sorter of self
-   --  Return has transfer-ownership='none'
+   --  @return the sorter of self. Has transfer-ownership='none'.
 
    procedure Set_Sorter
       (Self   : not null access Gtk_Sort_List_Model_Record;

@@ -52,14 +52,16 @@ package Gtk.Numeric_Sorter is
    --  [methodGtk.NumericSorter.set_sort_order] to change this.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  @param Expression The expression to evaluate
+   --  @param Expression The expression to evaluate. Has
+   --  transfer-ownership='full'.
 
    function Gtk_Numeric_Sorter_New
       (Expression : Gtk.Expression.Gtk_Expression) return Gtk_Numeric_Sorter;
    --  Creates a new numeric sorter using the given Expression.
    --  Smaller numbers will be sorted first. You can call
    --  [methodGtk.NumericSorter.set_sort_order] to change this.
-   --  @param Expression The expression to evaluate
+   --  @param Expression The expression to evaluate. Has
+   --  transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_numeric_sorter_get_type");
@@ -72,8 +74,7 @@ package Gtk.Numeric_Sorter is
       (Self : not null access Gtk_Numeric_Sorter_Record)
        return Gtk.Expression.Gtk_Expression;
    --  Gets the expression that is evaluated to obtain numbers from items.
-   --  @return a `GtkExpression`
-   --  Return has transfer-ownership='none'
+   --  @return a `GtkExpression`. Has transfer-ownership='none'.
 
    procedure Set_Expression
       (Self       : not null access Gtk_Numeric_Sorter_Record;

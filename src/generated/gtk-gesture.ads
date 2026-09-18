@@ -173,12 +173,12 @@ package Gtk.Gesture is
       (Self : not null access Gtk_Gesture_Record) return Gdk.Gdk_Device;
    --  Returns the logical `GdkDevice` that is currently operating on Gesture.
    --  This returns null if the gesture is not being interacted.
-   --  @return a `GdkDevice`
-   --  Return has transfer-ownership='none'
+   --  @return a `GdkDevice`. Has transfer-ownership='none'.
 
    function Get_Group
       (Self : not null access Gtk_Gesture_Record) return Gesture_List.Glist;
    --  Returns all gestures in the group of Gesture
+   --  @return The list of `GtkGesture`s, free with g_list_free
 
    procedure Group
       (Self    : not null access Gtk_Gesture_Record;
@@ -206,8 +206,7 @@ package Gtk.Gesture is
    --  still interpreted by the Gesture. If in doubt, you should make a copy of
    --  the event.
    --  @param Sequence a `GdkEventSequence`
-   --  @return The last event from Sequence
-   --  Return has transfer-ownership='none'
+   --  @return The last event from Sequence. Has transfer-ownership='none'.
 
    function Get_Last_Updated_Sequence
       (Self : not null access Gtk_Gesture_Record)
@@ -277,6 +276,9 @@ package Gtk.Gesture is
        return Gdk_Event_Sequence_List.Glist;
    --  Returns the list of `GdkEventSequences` currently being interpreted by
    --  Gesture.
+   --  @return A list of `GdkEventSequence`, the list elements are owned by
+   --  GTK and must not be freed or modified, the list itself must be deleted
+   --  through g_list_free
 
    function Handles_Sequence
       (Self     : not null access Gtk_Gesture_Record;

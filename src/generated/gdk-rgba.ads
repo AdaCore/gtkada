@@ -108,7 +108,7 @@ package Gdk.RGBA is
    --  "h" is 0 to 360, and "s", "l" can be either numbers in the range 0 to
    --  100 or percentages.
    --  @param Spec the string specifying the color
-   --  @return True if the parsing succeeded
+   --  @param Success True if the parsing succeeded
 
    function Print
       (Self   : Gdk_RGBA;

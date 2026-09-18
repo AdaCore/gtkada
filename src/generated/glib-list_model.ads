@@ -132,7 +132,7 @@ package Glib.List_Model is
    --  See also: Glib.List_Model.Get_N_Items
    --  Since: gtk+ 2.44
    --  @param Position the position of the item to fetch
-   --  @return the object at Position.
+   --  @return the object at Position. Has transfer-ownership='full'.
 
    procedure Items_Changed
       (Self     : Glist_Model;

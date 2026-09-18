@@ -55,8 +55,10 @@ package Gtk.Alternative_Trigger is
    --  create a new alternative trigger for each option.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  @param First The first trigger that may trigger
-   --  @param Second The second trigger that may trigger
+   --  @param First The first trigger that may trigger. Has
+   --  transfer-ownership='full'.
+   --  @param Second The second trigger that may trigger. Has
+   --  transfer-ownership='full'.
 
    function Gtk_Alternative_Trigger_New
       (First  : not null access Gtk.Shortcut_Trigger.Gtk_Shortcut_Trigger_Record'Class;
@@ -66,8 +68,10 @@ package Gtk.Alternative_Trigger is
    --  two given triggers gets triggered.
    --  Note that nesting is allowed, so if you want more than two alternative,
    --  create a new alternative trigger for each option.
-   --  @param First The first trigger that may trigger
-   --  @param Second The second trigger that may trigger
+   --  @param First The first trigger that may trigger. Has
+   --  transfer-ownership='full'.
+   --  @param Second The second trigger that may trigger. Has
+   --  transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_alternative_trigger_get_type");
@@ -81,16 +85,14 @@ package Gtk.Alternative_Trigger is
        return Gtk.Shortcut_Trigger.Gtk_Shortcut_Trigger;
    --  Gets the first of the two alternative triggers that may trigger Self.
    --  [methodGtk.AlternativeTrigger.get_second] will return the other one.
-   --  @return the first alternative trigger
-   --  Return has transfer-ownership='none'
+   --  @return the first alternative trigger. Has transfer-ownership='none'.
 
    function Get_Second
       (Self : not null access Gtk_Alternative_Trigger_Record)
        return Gtk.Shortcut_Trigger.Gtk_Shortcut_Trigger;
    --  Gets the second of the two alternative triggers that may trigger Self.
    --  [methodGtk.AlternativeTrigger.get_first] will return the other one.
-   --  @return the second alternative trigger
-   --  Return has transfer-ownership='none'
+   --  @return the second alternative trigger. Has transfer-ownership='none'.
 
    ----------------
    -- Properties --

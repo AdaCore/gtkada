@@ -184,12 +184,12 @@ package Glib.Bytes is
    --  Since: gtk+ 2.32
    --  @param Offset offset which subsection starts at
    --  @param Length length of subsection
-   --  @return a new Glib.Bytes.Gbytes
+   --  @return a new Glib.Bytes.Gbytes. Has transfer-ownership='full'.
 
    function Ref (Self : Gbytes) return Gbytes;
    --  Increase the reference count on Bytes.
    --  Since: gtk+ 2.32
-   --  @return the Glib.Bytes.Gbytes
+   --  @return the Glib.Bytes.Gbytes. Has transfer-ownership='full'.
 
    procedure Unref (Self : Gbytes);
    --  Releases a reference on Bytes. This may result in the bytes being

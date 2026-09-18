@@ -345,6 +345,9 @@ package Glib.Test is
    --  this function will return 0 if producing TAP output, or 77 (treated as
    --  "skip test" by Automake) otherwise.
    --  Since: gtk+ 2.16
+   --  @return 0 on success, 1 on failure (assuming it returns at all), 0 or
+   --  77 if all tests were skipped with Glib.Test.Skip and/or
+   --  g_test_incomplete
 
    procedure Fail;
    pragma Import (C, Fail, "g_test_fail");

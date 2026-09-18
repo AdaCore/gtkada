@@ -146,7 +146,6 @@ package Gtk.Main is
    --  direction.
    --  This function is equivalent to [funcPango.Language.get_default]. See
    --  that function for details.
-   --  @return the default language
-   --  Return has transfer-ownership='none'
+   --  @return the default language. Has transfer-ownership='none'.
 
 end Gtk.Main;

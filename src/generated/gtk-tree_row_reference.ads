@@ -136,7 +136,7 @@ package Gtk.Tree_Row_Reference is
    pragma Obsolescent (Copy);
    --  Copies a `GtkTreeRowReference`.
    --  Deprecated since 4.10, 1
-   --  @return a copy of Reference
+   --  @return a copy of Reference. Has transfer-ownership='full'.
 
    procedure Free (Self : Gtk_Tree_Row_Reference);
    pragma Obsolescent (Free);
@@ -156,7 +156,7 @@ package Gtk.Tree_Row_Reference is
    --  Returns a path that the row reference currently points to, or null if
    --  the path pointed to is no longer valid.
    --  Deprecated since 4.10, 1
-   --  @return a current path
+   --  @return a current path. Has transfer-ownership='full'.
 
    function Valid (Self : Gtk_Tree_Row_Reference) return Boolean;
    pragma Obsolescent (Valid);

@@ -225,7 +225,7 @@ package Glib.Action_Group is
    --  when it is no longer required.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
-   --  @return the current state of the action
+   --  @return the current state of the action. Has transfer-ownership='full'.
 
    function Get_Action_State_Hint
       (Self        : Gaction_Group;
@@ -246,7 +246,7 @@ package Glib.Action_Group is
    --  when it is no longer required.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
-   --  @return the state range hint
+   --  @return the state range hint. Has transfer-ownership='full'.
 
    function Get_Action_State_Type
       (Self        : Gaction_Group;
@@ -315,14 +315,14 @@ package Glib.Action_Group is
    --  the action doesn't exist, False is returned and the fields may or may
    --  not have been modified.
    --  Since: gtk+ 2.32
-   --  Parameter State_Hint has transfer-ownership='full'
-   --  Parameter State has transfer-ownership='full'
    --  @param Action_Name the name of an action in the group
    --  @param Enabled if the action is presently enabled
    --  @param Parameter_Type the parameter type, or null if none needed
    --  @param State_Type the state type, or null if stateless
-   --  @param State_Hint the state hint, or null if none
-   --  @param State the current state, or null if stateless
+   --  @param State_Hint the state hint, or null if none. Has
+   --  transfer-ownership='full'.
+   --  @param State the current state, or null if stateless. Has
+   --  transfer-ownership='full'.
    --  @return True if the action exists, else False
 
    -------------
@@ -575,7 +575,7 @@ package Glib.Action_Group is
    --  when it is no longer required.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
-   --  @return the current state of the action
+   --  @return the current state of the action. Has transfer-ownership='full'.
 
    type Virtual_Get_Action_State_Hint is access function
      (Self        : Gaction_Group;
@@ -597,7 +597,7 @@ package Glib.Action_Group is
    --  when it is no longer required.
    --  Since: gtk+ 2.28
    --  @param Action_Name the name of the action to query
-   --  @return the state range hint
+   --  @return the state range hint. Has transfer-ownership='full'.
 
    type Virtual_Get_Action_State_Type is access function
      (Self        : Gaction_Group;
@@ -670,8 +670,6 @@ package Glib.Action_Group is
    --  the action doesn't exist, False is returned and the fields may or may
    --  not have been modified.
    --  Since: gtk+ 2.32
-   --  Parameter State_Hint has transfer-ownership='full'
-   --  Parameter State has transfer-ownership='full'
    --  @param Action_Name the name of an action in the group
    --  @param Enabled if the action is presently enabled
    --  @param Parameter_Type the parameter type, or null if none needed

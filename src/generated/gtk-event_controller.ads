@@ -65,8 +65,8 @@ package Gtk.Event_Controller is
        return Gdk.Event.Gdk_Event;
    --  Returns the event that is currently being handled by the controller.
    --  At other times, null is returned.
-   --  @return the event that is currently handled by Controller
-   --  Return has transfer-ownership='none'
+   --  @return the event that is currently handled by Controller. Has
+   --  transfer-ownership='none'.
 
    function Get_Current_Event_Device
       (Self : not null access Gtk_Event_Controller_Record)
@@ -74,8 +74,8 @@ package Gtk.Event_Controller is
    --  Returns the device of the event that is currently being handled by the
    --  controller.
    --  At other times, null is returned.
-   --  @return device of the event is currently handled by Controller
-   --  Return has transfer-ownership='none'
+   --  @return device of the event is currently handled by Controller. Has
+   --  transfer-ownership='none'.
 
    function Get_Current_Event_State
       (Self : not null access Gtk_Event_Controller_Record)
@@ -137,8 +137,7 @@ package Gtk.Event_Controller is
       (Self : not null access Gtk_Event_Controller_Record)
        return Gtk.Widget.Gtk_Widget;
    --  Returns the `GtkWidget` this controller relates to.
-   --  @return a `GtkWidget`
-   --  Return has transfer-ownership='none'
+   --  @return a `GtkWidget`. Has transfer-ownership='none'.
 
    procedure Reset (Self : not null access Gtk_Event_Controller_Record);
    --  Resets the Controller to a clean state.

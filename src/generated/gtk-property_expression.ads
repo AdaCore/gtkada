@@ -57,7 +57,7 @@ package Gtk.Property_Expression is
    --  call to Initialize* or G_New.
    --  @param This_Type The type to expect for the this type
    --  @param Expression Expression to evaluate to get the object to query or
-   --  `NULL` to query the `this` object
+   --  `NULL` to query the `this` object. Has transfer-ownership='full'.
    --  @param Property_Name name of the property
 
    function Gtk_Property_Expression_New
@@ -73,7 +73,7 @@ package Gtk.Property_Expression is
    --  The given `this_type` must have a property with `property_name`.
    --  @param This_Type The type to expect for the this type
    --  @param Expression Expression to evaluate to get the object to query or
-   --  `NULL` to query the `this` object
+   --  `NULL` to query the `this` object. Has transfer-ownership='full'.
    --  @param Property_Name name of the property
 
    procedure Gtk_New_For_Pspec
@@ -93,7 +93,7 @@ package Gtk.Property_Expression is
    --  Initialize_For_Pspec does nothing if the object was already created
    --  with another call to Initialize* or G_New.
    --  @param Expression Expression to evaluate to get the object to query or
-   --  `NULL` to query the `this` object
+   --  `NULL` to query the `this` object. Has transfer-ownership='full'.
    --  @param Pspec the `GParamSpec` for the property to query
 
    function Gtk_Property_Expression_New_For_Pspec
@@ -106,7 +106,7 @@ package Gtk.Property_Expression is
    --  by `pspec` will be queried. Otherwise, this expression's evaluation will
    --  fail.
    --  @param Expression Expression to evaluate to get the object to query or
-   --  `NULL` to query the `this` object
+   --  `NULL` to query the `this` object. Has transfer-ownership='full'.
    --  @param Pspec the `GParamSpec` for the property to query
 
    function Get_Type return Glib.GType;
@@ -119,8 +119,7 @@ package Gtk.Property_Expression is
    function Get_Expression
       (Self : Gtk_Property_Expression) return Gtk.Expression.Gtk_Expression;
    --  Gets the expression specifying the object of a property expression.
-   --  @return the object expression
-   --  Return has transfer-ownership='none'
+   --  @return the object expression. Has transfer-ownership='none'.
 
    function Get_Pspec
       (Self : Gtk_Property_Expression) return Glib.Param_Spec;

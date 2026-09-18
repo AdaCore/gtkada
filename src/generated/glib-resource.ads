@@ -326,7 +326,7 @@ package Glib.Resource is
    --  @param Lookup_Flags A Glib.Resource.Resource_Lookup_Flags
    --  @param Error the return location for a recoverable error
    --  @return Glib.Bytes.Gbytes or null on error. Free the returned object
-   --  with Glib.Bytes.Unref
+   --  with Glib.Bytes.Unref. Has transfer-ownership='full'.
 
    function Open_Stream
       (Self         : Gresource;
@@ -342,13 +342,14 @@ package Glib.Resource is
    --  @param Lookup_Flags A Glib.Resource.Resource_Lookup_Flags
    --  @param Error the return location for a recoverable error
    --  @return Glib.Input_Stream.Ginput_Stream or null on error. Free the
-   --  returned object with g_object_unref
+   --  returned object with g_object_unref. Has transfer-ownership='full'.
 
    function Ref (Self : Gresource) return Gresource;
    --  Atomically increments the reference count of Resource by one. This
    --  function is MT-safe and may be called from any thread.
    --  Since: gtk+ 2.32
-   --  @return The passed in Glib.Resource.Gresource
+   --  @return The passed in Glib.Resource.Gresource. Has
+   --  transfer-ownership='full'.
 
    procedure Unref (Self : Gresource);
    --  Atomically decrements the reference count of Resource by one. If the
@@ -375,7 +376,8 @@ package Glib.Resource is
    --  @param Filename the path of a filename to load, in the GLib filename
    --  encoding
    --  @param Error the return location for a recoverable error
-   --  @return a new Glib.Resource.Gresource, or null on error
+   --  @return a new Glib.Resource.Gresource, or null on error. Has
+   --  transfer-ownership='full'.
 
 private
    Null_Gresource : constant Gresource :=

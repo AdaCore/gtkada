@@ -77,7 +77,8 @@ package Gtk.String_Sorter is
    --  items as invalid.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  @param Expression The expression to evaluate
+   --  @param Expression The expression to evaluate. Has
+   --  transfer-ownership='full'.
 
    function Gtk_String_Sorter_New
       (Expression : Gtk.Expression.Gtk_Expression) return Gtk_String_Sorter;
@@ -85,7 +86,8 @@ package Gtk.String_Sorter is
    --  Expression.
    --  Unless an expression is set on it, this sorter will always compare
    --  items as invalid.
-   --  @param Expression The expression to evaluate
+   --  @param Expression The expression to evaluate. Has
+   --  transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_string_sorter_get_type");
@@ -111,8 +113,7 @@ package Gtk.String_Sorter is
       (Self : not null access Gtk_String_Sorter_Record)
        return Gtk.Expression.Gtk_Expression;
    --  Gets the expression that is evaluated to obtain strings from items.
-   --  @return a `GtkExpression`
-   --  Return has transfer-ownership='none'
+   --  @return a `GtkExpression`. Has transfer-ownership='none'.
 
    procedure Set_Expression
       (Self       : not null access Gtk_String_Sorter_Record;

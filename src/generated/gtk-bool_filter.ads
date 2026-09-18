@@ -47,12 +47,14 @@ package Gtk.Bool_Filter is
    --  Creates a new bool filter.
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  @param Expression the expression to evaluate
+   --  @param Expression the expression to evaluate. Has
+   --  transfer-ownership='full'.
 
    function Gtk_Bool_Filter_New
       (Expression : Gtk.Expression.Gtk_Expression) return Gtk_Bool_Filter;
    --  Creates a new bool filter.
-   --  @param Expression the expression to evaluate
+   --  @param Expression the expression to evaluate. Has
+   --  transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_bool_filter_get_type");
@@ -65,8 +67,7 @@ package Gtk.Bool_Filter is
       (Self : not null access Gtk_Bool_Filter_Record)
        return Gtk.Expression.Gtk_Expression;
    --  Gets the expression that the filter evaluates for each item.
-   --  @return the expression
-   --  Return has transfer-ownership='none'
+   --  @return the expression. Has transfer-ownership='none'.
 
    procedure Set_Expression
       (Self       : not null access Gtk_Bool_Filter_Record;

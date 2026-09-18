@@ -70,7 +70,8 @@ package Gtk.Column_View_Column is
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
    --  @param Title Title to use for this column
-   --  @param Factory The factory to populate items with
+   --  @param Factory The factory to populate items with. Has
+   --  transfer-ownership='full'.
 
    function Gtk_Column_View_Column_New
       (Title   : UTF8_String := "";
@@ -84,7 +85,8 @@ package Gtk.Column_View_Column is
    --  ```c column = gtk_column_view_column_new (_("Name"),
    --  gtk_builder_list_item_factory_new_from_resource ("/name.ui")); ```
    --  @param Title Title to use for this column
-   --  @param Factory The factory to populate items with
+   --  @param Factory The factory to populate items with. Has
+   --  transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_column_view_column_get_type");
@@ -98,8 +100,7 @@ package Gtk.Column_View_Column is
        return Gtk.Column_View.Gtk_Column_View;
    --  Gets the column view that's currently displaying this column.
    --  If Self has not been added to a column view yet, `NULL` is returned.
-   --  @return The column view displaying Self.
-   --  Return has transfer-ownership='none'
+   --  @return The column view displaying Self. Has transfer-ownership='none'.
 
    function Get_Expand
       (Self : not null access Gtk_Column_View_Column_Record) return Boolean;
@@ -119,8 +120,7 @@ package Gtk.Column_View_Column is
        return Gtk.List_Item_Factory.Gtk_List_Item_Factory;
    --  Gets the factory that's currently used to populate list items for this
    --  column.
-   --  @return The factory in use
-   --  Return has transfer-ownership='none'
+   --  @return The factory in use. Has transfer-ownership='none'.
 
    procedure Set_Factory
       (Self    : not null access Gtk_Column_View_Column_Record;
@@ -149,8 +149,7 @@ package Gtk.Column_View_Column is
        return Glib.Menu_Model.Gmenu_Model;
    --  Gets the menu model that is used to create the context menu for the
    --  column header.
-   --  @return the `GMenuModel`
-   --  Return has transfer-ownership='none'
+   --  @return the `GMenuModel`. Has transfer-ownership='none'.
 
    procedure Set_Header_Menu
       (Self : not null access Gtk_Column_View_Column_Record;
@@ -191,8 +190,7 @@ package Gtk.Column_View_Column is
       (Self : not null access Gtk_Column_View_Column_Record)
        return Gtk.Sorter.Gtk_Sorter;
    --  Returns the sorter that is associated with the column.
-   --  @return the `GtkSorter` of Self
-   --  Return has transfer-ownership='none'
+   --  @return the `GtkSorter` of Self. Has transfer-ownership='none'.
 
    procedure Set_Sorter
       (Self   : not null access Gtk_Column_View_Column_Record;

@@ -72,7 +72,8 @@ package Gtk.Color_Dialog_Button is
    --  Since: gtk+ 4.10
    --  Initialize does nothing if the object was already created with another
    --  call to Initialize* or G_New.
-   --  @param Dialog the `GtkColorDialog` to use
+   --  @param Dialog the `GtkColorDialog` to use. Has
+   --  transfer-ownership='full'.
 
    function Gtk_Color_Dialog_Button_New
       (Dialog : access Gtk.Color_Dialog.Gtk_Color_Dialog_Record'Class)
@@ -81,7 +82,8 @@ package Gtk.Color_Dialog_Button is
    --  You can pass `NULL` to this function and set a `GtkColorDialog` later.
    --  The button will be insensitive until that happens.
    --  Since: gtk+ 4.10
-   --  @param Dialog the `GtkColorDialog` to use
+   --  @param Dialog the `GtkColorDialog` to use. Has
+   --  transfer-ownership='full'.
 
    function Get_Type return Glib.GType;
    pragma Import (C, Get_Type, "gtk_color_dialog_button_get_type");
@@ -95,8 +97,7 @@ package Gtk.Color_Dialog_Button is
        return Gtk.Color_Dialog.Gtk_Color_Dialog;
    --  Returns the `GtkColorDialog` of Self.
    --  Since: gtk+ 4.10
-   --  @return the `GtkColorDialog`
-   --  Return has transfer-ownership='none'
+   --  @return the `GtkColorDialog`. Has transfer-ownership='none'.
 
    procedure Set_Dialog
       (Self   : not null access Gtk_Color_Dialog_Button_Record;

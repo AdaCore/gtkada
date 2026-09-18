@@ -121,7 +121,7 @@ package Gdk.Popup_Layout is
 
    function Copy (Self : Gdk_Popup_Layout) return Gdk_Popup_Layout;
    --  Makes a copy of Layout.
-   --  @return a copy of Layout.
+   --  @return a copy of Layout. Has transfer-ownership='full'.
 
    function Equal
       (Self  : Gdk_Popup_Layout;
@@ -216,7 +216,7 @@ package Gdk.Popup_Layout is
 
    function Ref (Self : Gdk_Popup_Layout) return Gdk_Popup_Layout;
    --  Increases the reference count of Value.
-   --  @return the same Layout
+   --  @return the same Layout. Has transfer-ownership='full'.
 
    procedure Unref (Self : Gdk_Popup_Layout);
    --  Decreases the reference count of Value.

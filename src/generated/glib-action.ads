@@ -129,7 +129,7 @@ package Glib.Action is
    --  The return value (if non-null) should be freed with Glib.Variant.Unref
    --  when it is no longer required.
    --  Since: gtk+ 2.28
-   --  @return the current state of the action
+   --  @return the current state of the action. Has transfer-ownership='full'.
 
    function Get_State_Hint (Self : Gaction) return Glib.Variant.Gvariant;
    --  Requests a hint about the valid range of values for the state of
@@ -147,7 +147,7 @@ package Glib.Action is
    --  The return value (if non-null) should be freed with Glib.Variant.Unref
    --  when it is no longer required.
    --  Since: gtk+ 2.28
-   --  @return the state range hint
+   --  @return the state range hint. Has transfer-ownership='full'.
 
    function Get_State_Type
       (Self : Gaction) return Glib.Variant.Gvariant_Type;
@@ -298,7 +298,7 @@ package Glib.Action is
    --  The return value (if non-null) should be freed with g_variant_unref
    --  when it is no longer required.
    --  Since: gtk+ 2.28
-   --  @return the current state of the action
+   --  @return the current state of the action. Has transfer-ownership='full'.
 
    type Virtual_Get_State_Hint is access function (Self : Gaction) return System.Address;
    pragma Convention (C, Virtual_Get_State_Hint);
@@ -317,7 +317,7 @@ package Glib.Action is
    --  The return value (if non-null) should be freed with g_variant_unref
    --  when it is no longer required.
    --  Since: gtk+ 2.28
-   --  @return the state range hint
+   --  @return the state range hint. Has transfer-ownership='full'.
 
    type Virtual_Get_State_Type is access function (Self : Gaction) return Glib.Variant.Gvariant_Type;
    pragma Convention (C, Virtual_Get_State_Type);

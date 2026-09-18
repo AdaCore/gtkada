@@ -153,8 +153,7 @@ package Gdk.GLContext is
    function Get_Display
       (Self : not null access Gdk_GLContext_Record) return Gdk.Gdk_Display;
    --  Retrieves the display the Context is created for
-   --  @return a `GdkDisplay`
-   --  Return has transfer-ownership='none'
+   --  @return a `GdkDisplay`. Has transfer-ownership='none'.
 
    function Get_Forward_Compatible
       (Self : not null access Gdk_GLContext_Record) return Boolean;
@@ -206,14 +205,12 @@ package Gdk.GLContext is
    --  As many contexts can share data now and no single shared context exists
    --  anymore, this function has been deprecated and now always returns null.
    --  Deprecated since 4.4, 1
-   --  @return null
-   --  Return has transfer-ownership='none'
+   --  @return null. Has transfer-ownership='none'.
 
    function Get_Surface
       (Self : not null access Gdk_GLContext_Record) return Gdk.Gdk_Surface;
    --  Retrieves the surface used by the Context.
-   --  @return a `GdkSurface`
-   --  Return has transfer-ownership='none'
+   --  @return a `GdkSurface`. Has transfer-ownership='none'.
 
    function Get_Use_Es
       (Self : not null access Gdk_GLContext_Record) return Boolean;
@@ -299,8 +296,7 @@ package Gdk.GLContext is
 
    function Get_Current return Gdk_GLContext;
    --  Retrieves the current `GdkGLContext`.
-   --  @return the current `GdkGLContext`
-   --  Return has transfer-ownership='none'
+   --  @return the current `GdkGLContext`. Has transfer-ownership='none'.
 
    ----------------
    -- Properties --
