@@ -26,8 +26,10 @@ abstract project Gtk is
    Gtk_Prefix := External ("GTK_PREFIX", Gtk'Project_Dir);
 
    Gtk_Default_Include :=
-     ("-I" & Gtk_Prefix & "/include/gtk-3.0",
+     ("-I" & Gtk_Prefix & "/include/gtk-4.0",
       "-I" & Gtk_Prefix & "/include/atk-1.0",
+      "-I" & Gtk_Prefix & "/include/graphene-1.0",
+      "-I" & Gtk_Prefix & "/lib/graphene-1.0/include", --  graphene-config.h is there
       "-I" & Gtk_Prefix & "/include/cairo",
       "-I" & Gtk_Prefix & "/include/gdk-pixbuf-2.0",
       "-I" & Gtk_Prefix & "/include/glib-2.0",
