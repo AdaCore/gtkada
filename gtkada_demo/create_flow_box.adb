@@ -137,7 +137,15 @@ package body Create_Flow_Box is
 
    function Help return String is
    begin
-      return "";
+      return "A @bGtk_Flow_Box@B lays out its children in a reflowing"
+        & " grid: as many items per row as fit, wrapping to a new row when"
+        & " needed, like text wrapping."
+        & ASCII.LF
+        & "Use @bFlow box controls@B below to change its homogeneity,"
+        & " alignment, orientation, selection mode, min/max children per"
+        & " line and spacing; use @bTest item controls@B to switch between"
+        & " plain, focusable and variable-width items, or to"
+        & " add/remove/filter/sort them.";
    end Help;
 
    -------------------------

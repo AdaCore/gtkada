@@ -37,21 +37,17 @@ package body Create_Frame is
 
    function Help return String is
    begin
-      return "This demo shows what a @bGtk_Frame@B offers in Gtk4."
+      return "A @bGtk_Frame@B draws a border around its one child, with an"
+        & " optional label embedded in the top edge."
         & ASCII.LF
-        & "A frame draws a border around its single child and may carry an"
-        & " optional text label embedded in its top edge."
+        & "Gtk4 dropped Gtk3's shadow types (@bShadow_In@B, @bShadow_Out@B,"
+        & " ...), so the frames below instead vary the label's presence"
+        & " and its horizontal placement, set with @bSet_Label_Align@B"
+        & " (@bXalign@B 0.0 = left, 1.0 = right; there is no vertical"
+        & " argument any more, labels always sit on top)."
         & ASCII.LF
-        & "The shadow types of Gtk3 (@bShadow_In@B, @bShadow_Out@B, ...) no"
-        & " longer exist in Gtk4, so the frames below instead illustrate the"
-        & " presence or absence of a label and the horizontal placement of"
-        & " that label, set with @bSet_Label_Align@B. An @bXalign@B of 0.0 is"
-        & " left-aligned and 1.0 is right-aligned; the vertical placement"
-        & " argument is gone, as labels always sit on the top edge."
-        & ASCII.LF
-        & "If you want to constrain the child to a specific aspect ratio even"
-        & " when the frame is resized, you should look at the"
-        & " @bGtk_Aspect_Frame@B widget instead.";
+        & "For a child that must keep a fixed aspect ratio when resized,"
+        & " see @bGtk_Aspect_Frame@B instead.";
    end Help;
 
    ---------

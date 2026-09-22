@@ -57,17 +57,14 @@ package body Create_Size_Groups is
    function Help return String is
    begin
       return
-        "@bGtk_Size_Group@B provides a mechanism for grouping a number of"
-        & " widgets together so they all request the same amount of space."
-        & " This is typically useful when you want a column of widgets to have"
-        & " the same size, but you can't use a @bGtk_Table@B widget."
+        "A @bGtk_Size_Group@B makes a set of widgets request the same"
+        & " size, useful for aligning a column of widgets when a table"
+        & " isn't an option."
         & ASCII.LF
-        & "Note that size groups only affect the amount of space requested,"
-        & " not the size that the widgets finally receive. If you want the"
-        & " widgets in a @bGtk_Size_Group@B to actually be the same size,"
-        & " you need to pack them in such a way that they get the size they"
-        & " request and not more. For example, if you are packing your"
-        & " widgets into a table, you would not include the FILL flag.";
+        & "It only affects the size requested, not the size finally"
+        & " allocated: to make the widgets actually end up the same size,"
+        & " pack them so they get exactly what they request (no FILL"
+        & " flag).";
    end Help;
 
    -------------

@@ -37,24 +37,14 @@ package body Create_List_Store is
    function Help return String is
    begin
       return
-        "A @bGlist_Store@B is a simple data type for holding @bGObject@Bs. "
-        & "It replaces the old @bGtk_List_Store@B type and implements the "
-        & " @bGlist_Model@B interface, providing array functionality such as "
-        & "appending, inserting, removing and sorting items. "
+        "A @bGlist_Store@B is a simple @bGlist_Model@B holding"
+        & " @bGObject@Bs of one type, replacing the old @bGtk_List_Store@B:"
+        & " append, insert, remove and sort, with no UI of its own."
         & ASCII.LF
-        & "A list store must be initialised with a @bGObject@B-derived type "
-        & "and will only store items of this type, including custom types."
-        & ASCII.LF & ASCII.LF
-        & "List stores are data types rather than widgets, so they have no "
-        & "interactive or visual elements unless they are connected to "
-        & " interactive widgets through signal handlers."
-        & ASCII.LF
-        & "They can be used as underlying databases for view widgets "
-        & "such as @bGtk_Tree_View@B, @bGtk_List_View@B, @bGtk_Column_View@B, and so on."
-        & ASCII.LF
-        & "This demo showcases common @bGlist_Store@B operations using only "
-        & " simple UI elements such as buttons and labels."
-        & ASCII.LF;
+        & "It is meant to be wrapped by a view, such as @bGtk_Tree_View@B,"
+        & " @bGtk_List_View@B or @bGtk_Column_View@B. This demo pokes at a"
+        & " store directly with plain buttons and labels, to show what"
+        & " each operation does.";
    end Help;
 
    -----------------------

@@ -108,31 +108,23 @@ package body Create_Entry is
 
    function Help return String is
    begin
-      return "This demo shows the three text-entry widgets of Gtk4."
+      return "Gtk4's three text-entry widgets."
         & ASCII.LF
-        & "The first two @bGtk_Entry@B widgets carry an embedded progress"
-        & " indicator, pulsed and fractional respectively. The third is a"
-        & " plain @bGtk_Entry@B whose @bEditable@B, @bOverwrite@B,"
-        & " @bVisible@B and @bSensitive@B settings can be toggled with the"
+        & "The first two @bGtk_Entry@B widgets carry a pulsed and a"
+        & " fractional progress indicator; the third has @bEditable@B,"
+        & " @bOverwrite@B, @bVisible@B and @bSensitive@B toggled by the"
         & " check buttons below it."
         & ASCII.LF
-        & "A @bGtk_Search_Entry@B looks like an entry but emits"
-        & " @bsearch-changed@B only once the user has stopped typing for"
-        & " @bSearch_Delay@B milliseconds, which is what makes it suitable"
-        & " for driving a live search. Raise the delay with the spin button"
-        & " to feel the difference. Here it searches a small list of fruits,"
-        & " shown in full below it with the current match in bold."
+        & "The @bGtk_Search_Entry@B fires @bsearch-changed@B only after the"
+        & " user stops typing for @bSearch_Delay@B milliseconds; raise the"
+        & " delay with the spin button to feel it live-search this list of"
+        & " fruits, with the current match shown in bold. It also handles"
+        & " @bnext-match@B / @bprevious-match@B (Ctrl+G / Ctrl+Shift+G) and"
+        & " @bstop-search@B (Escape)."
         & ASCII.LF
-        & "It also offers the keybinding signals @bnext-match@B (Ctrl+G),"
-        & " @bprevious-match@B (Ctrl+Shift+G) and @bstop-search@B (Escape),"
-        & " reported below the list. The first two move the bold highlight"
-        & " to the next and previous match, wrapping around at either end."
-        & ASCII.LF
-        & "A @bGtk_Search_Bar@B is the revealer that usually holds such an"
-        & " entry. It is hidden until its search mode is switched on, either"
-        & " with the toggle button or simply by typing: the bar is given this"
-        & " demo's frame as its @bkey capture widget@B, so any keystroke"
-        & " landing outside another entry reveals it.";
+        & "The @bGtk_Search_Bar@B below is hidden until switched on, either"
+        & " with the toggle or by typing anywhere in this demo's frame --"
+        & " it is set as the bar's @bkey capture widget@B.";
    end Help;
 
    ---------------------

@@ -214,34 +214,20 @@ package body Create_Canvas is
 
    function Help return String is
    begin
-      return "An @bInteractive_Canvas@B is an interactive widgets, on which"
-        & " you can put items that the user will be able to manipulate"
-        & " dynamically with the mouse."
+      return "An @bInteractive_Canvas@B holds items that the user can drag"
+        & " around with the mouse; items stay connected to their links as"
+        & " they move."
         & ASCII.LF
-        & "As you can see in this demo, the items can be linked together, and"
-        & " the items remain connected when they are moved."
+        & "It scrolls automatically when dragging an item near the edge,"
+        & " inside a @bGtk_Scrolled_Window@B. The two arrow buttons at the"
+        & " top control @bzooming@B."
         & ASCII.LF
-        & "The canvas also support @bscrolling@B, if put in a "
-        & " @bGtk_Scrolled_Window@B, as you can see if you move the items"
-        & " outside of the visible part of the canvas."
-        & "There is a small area on each side of the canvas. If you leave the"
-        & " mouse in this area while dragging an item, the canvas will"
-        & " keep scrolling until the mouse is moved outside of this area."
-        & ASCII.LF
-        & "The canvas provides @bzooming@B capabilities. Try clicking on the"
-        & " two arrow buttons at the top of this demo."
-        & ASCII.LF
-        & "The canvas includes a simple @blayout scheme@B, that can be"
-        & " overriden with more complex algorithms. Items are stored in a"
-        & " graph structure, tha includes a number of useful algorithms for"
-        & " layout: topological sort,..."
-        & ASCII.LF
-        & "@bNon-rectangular items@B can also be used, see for instance the"
-        & " two items 2 and 4 in the default layout."
-        & ASCII.LF
-        & "You can also redefine your own @btype of links@B. By default, links"
-        & " are either straight or arc links, that may optionaly have arrows"
-        & " on either end.";
+        & "Items live in a graph structure with a simple, overridable"
+        & " @blayout scheme@B (including topological sort)."
+        & " @bNon-rectangular items@B are supported too -- see items 2 and 4"
+        & " in the default layout -- and you can define your own @btype of"
+        & " links@B; by default links are straight or arc, with optional"
+        & " arrows on either end.";
    end Help;
 
    ---------------------------

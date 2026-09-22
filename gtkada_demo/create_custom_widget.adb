@@ -223,25 +223,15 @@ package body Create_Custom_Widget is
    function Help return String is
    begin
       return
-        "This demo shows how to write a @bcustom widget@B in Ada for"
-        & " Gtk4."
+        "This demo implements a @bcustom widget@B: the blue @bgizmo@B is a"
+        & " direct @bGtk_Widget@B subclass overriding @bmeasure@B,"
+        & " @bsize_allocate@B and @bsnapshot@B."
         & ASCII.LF
-        & "The blue @bgizmo@B is a direct @bGtk_Widget@B subclass that"
-        & " overrides three class virtual methods through the new"
-        & " @bGtk.Widget@B handlers:"
-        & ASCII.LF
-        & " - @bmeasure@B advertises a minimum size (60 x 40) that is"
-        & " deliberately smaller than its natural size (240 x 150);"
-        & ASCII.LF
-        & " - @bsize_allocate@B records the size the gizmo is given and"
-        & " chains to the inherited implementation;"
-        & ASCII.LF
-        & " - @bsnapshot@B paints the gizmo a solid colour."
-        & ASCII.LF
-        & "Resize the window and watch the label below the gizmo report the"
-        & " size it is allocated. None of this is possible without a custom"
-        & " widget: no stock widget lets its minimum and natural sizes differ"
-        & " and be read back.";
+        & "@bmeasure@B advertises a minimum size (60x40) smaller than its"
+        & " natural size (240x150); @bsize_allocate@B records whatever size"
+        & " it is actually given; @bsnapshot@B paints it. Resize the window"
+        & " and watch the label below report the allocated size -- no"
+        & " stock widget lets you read that back.";
    end Help;
 
    ---------

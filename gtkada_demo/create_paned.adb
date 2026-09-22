@@ -36,28 +36,18 @@ package body Create_Paned is
 
    function Help return String is
    begin
-      return "A @bGtk_Paned@B splits a container in two parts, that can be"
-        & " resized by the user." & ASCII.LF
-        & "They have two children, one for each side, set with"
-        & " @bSet_Start_Child@B and @bSet_End_Child@B."
+      return "A @bGtk_Paned@B splits a container into two resizable parts,"
+        & " set with @bSet_Start_Child@B and @bSet_End_Child@B."
         & ASCII.LF
-        & "If @bShrink@B is set to True for one of the children, then the user"
-        & " can resize it to any size. If it is set to False, then the"
-        & " minimum size set for the child by a call to @bSet_Size_Request@B is"
-        & " enforced, and the child can never shrink more than that."
+        & "@bShrink@B, when False, enforces the minimum size set by"
+        & " @bSet_Size_Request@B on that child. @bResize@B decides who"
+        & " absorbs extra space when the window grows: if only one child"
+        & " has it set, that child gets exactly what it asked for and the"
+        & " other gets the rest; if both (or neither) agree, space is"
+        & " split proportionally."
         & ASCII.LF
-        & "If @bResize@B is set to True for one of the children only, then"
-        & " that child gets the exact size it requested, the other gets the"
-        & " remaining space. In the example, the two buttons have requested"
-        & " the same size, but since the second sets Resize to True, it gets"
-        & " more space."
-        & ASCII.LF
-        & "If both children have the same value for resize, their allocated"
-        & " size is a ratio between their respective sizes."
-        & ASCII.LF
-        & "Note that moving the handle to manually resize the widgets"
-        & " cancels the effect of the resize buttons, so you should click on"
-        & " them before playing with the handles...";
+        & "Try the resize buttons below first -- dragging the handle by"
+        & " hand overrides whatever they set.";
    end Help;
 
    ---------

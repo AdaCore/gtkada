@@ -94,44 +94,21 @@ package body Create_MDI is
 
    function Help return String is
    begin
-      return "A Gtkada specific widget." & ASCII.LF
-        & "This is based on the GtkAda multi panned widget. You should"
-        & " try the corresponding demo to find out about other capabilities"
-        & " like splitting windows or using fixed sizes." & ASCII.LF
-        & "In the MDI, windows can be dragged around to be reorganized."
-        & " The MDI also supports the notion of perspectives: when you"
-        & " select another perspective, some of the windows (the ones in the"
-        & " central area) will be preserved. All other windows will only"
-        & " remain visible if they also are in the other perspective."
-        & " This example loads the perspectives from an XML file, and you"
-        & " can then switch between perspectives by using the menu"
-        & " <b>Perspectives</b>. By default, the MDI includes a central area"
-        & " whose content is preserved when you switch perspectives. For"
-        & " instance, this could be used in an IDE so that the editors are"
-        & " the same in the development and debugging perspectives. However,"
-        & " it can sometimes be confusing to users, so you can force"
-        & " the perspectives to be <b>independent</b>. In such a case, no"
-        & " window is preserved when switching perspectives."
+      return "GtkAda's @bMDI@B (multi-panned window) widget. Windows can be"
+        & " dragged to reorganize, or dragged outside the MDI to"
+        & " @bfloat@B; a contextual menu in the tabs closes windows or"
+        & " moves them."
         & ASCII.LF
-        & "The MDI also provides the notion of desktop (the current layout"
-        & " of your windows in all the perspectives). Such a desktop can be"
-        & " saved to the disk, and restored when the application is"
-        & " restarted (not shown in this demo). This is actually how"
-        & " the default perspectives themselves can be defined initially"
-        & " when you package your application."
+        & "@bPerspectives@B are named window layouts, loaded here from an"
+        & " XML file and switched from the @bPerspectives@B menu. By"
+        & " default a perspective's central-area windows are shared across"
+        & " perspectives (handy for keeping the same editors in different"
+        & " IDE modes); mark a perspective @bindependent@B to keep none of"
+        & " its windows. The full layout across perspectives is a"
+        & " @bdesktop@B, which can be saved and restored (not shown here)."
         & ASCII.LF
-        & "Windows can be @bfloated@B, ie put outside of the MDI, by"
-        & " the user. This provides a convenient use for many users who"
-        & " prefer having multiple windows. It is also a convenient way"
-        & " to use multiple screens. You can either float a window"
-        & " programmatically (and provide a menu to the user to do so),"
-        & " or the user can drag a window outside of the MDI to float it"
-        & ASCII.LF
-        & "A contextual menu exists in the notebook tabs to close windows,"
-        & " or change the location of tabs."
-        & ASCII.LF
-        & "The button Screenshot is independent of the MDI, and shows how"
-        & " to do a screenshot of a widget into a PDF file (screenshot.pdf).";
+        & "The @bScreenshot@B button is unrelated to the MDI: it shows how"
+        & " to capture a widget to a PDF file.";
    end Help;
 
    ------------------

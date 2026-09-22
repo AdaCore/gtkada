@@ -272,15 +272,10 @@ package body Create_Pixbuf is
    function Help return String is
    begin
       return
-        "This demo shows how one can animate several images on the"
-        & " screen. All the images are loaded from the disk (and thus you"
-        & " should start gtkada_demo from the directory that contains the images."
-        & ASCII.LF
-        & "Note that nothing is precomputed in this demo, and all the drawing,"
-        & " scaling and transparency is done in real-time."
-        & ASCII.LF
-        & "This demo uses some timeout callback to do the animation. It is"
-        & " on several @bGdk_Pixbuf@B images.";
+        "Animating several @bGdk_Pixbuf@B images loaded from disk (run"
+        & " gtkada_demo from the directory containing them). All scaling,"
+        & " transparency and drawing happens live, driven by a"
+        & " @bTimeout@B -- nothing is precomputed.";
    end Help;
 
    ---------

@@ -57,19 +57,17 @@ package body Create_Tree_Filter is
 
    function Help return String is
    begin
-      return "This example demonstrates a special tree modeL: it wraps another"
-        & " model, and can be used to filter out lines, or even modify its"
-        & " appearance on the fly." & ASCII.LF
-        & "In this example, we have creates a model that contains the sequence"
-        & " 1, 2, ... 9. Another model is applied on top of it, and filters"
-        & " all odd numbers rows. It also changes the appearance to display"
-        & " some extra text." & ASCII.LF
-        & "The underlying model itself is never modified, and by changing a"
-        & " few properties we can decide to show the whole underlying model"
-        & " itself." & ASCII.LF
-        & "Modifying the appearance on the fly is not efficient. It is"
-        & " generally better to use the functions from @bGtk_Cell_Layout@B to"
-        & " create ""virtual"" columns in the model. See the Cell View demo.";
+      return "A @bGtk_Tree_Model_Filter@B wraps another model to hide rows"
+        & " or change how they appear, without touching the underlying"
+        & " data."
+        & ASCII.LF
+        & "Here the underlying model holds 1..9; the filter hides odd rows"
+        & " and adds extra text to the rest. Toggle its properties to"
+        & " reveal the full underlying model again."
+        & ASCII.LF
+        & "Changing appearance this way is not efficient -- prefer"
+        & " @bGtk_Cell_Layout@B ""virtual"" columns for that (see the Cell"
+        & " View demo).";
    end Help;
 
    -------------------

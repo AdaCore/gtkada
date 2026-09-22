@@ -107,7 +107,7 @@ package body Create_GL is
 
    function Help return String is
    begin
-      return "This demo show how you can use @GtkGLArea@ widget.";
+      return "This demo shows how you can use the @bGtk_GLArea@B widget.";
    end Help;
 
    ------------------------

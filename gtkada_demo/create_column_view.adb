@@ -95,29 +95,18 @@ package body Create_Column_View is
    function Help return String is
    begin
       return
-        "A @bGtk_Column_View@B presents a @bGlist_Model@B as a table: one "
-        & "row per item, and one @bGtk_Column_View_Column@B per field."
+        "A @bGtk_Column_View@B shows a @bGlist_Model@B as a table: one row"
+        & " per item, one @bGtk_Column_View_Column@B per field, each backed"
+        & " by a @bGtk_List_Item_Factory@B that builds the widget shown in"
+        & " its cells. Give a column a @bGtk_Sorter@B and click its header"
+        & " to sort by it."
         & ASCII.LF
-        & ASCII.LF
-        & "Each column is given a @bGtk_List_Item_Factory@B, "
-        & "which manufactures the widget shown in every cell of that column. "
-        & ASCII.LF
-        & ASCII.LF
-        & "Each column is given a @bGtk_Sorter@B."
-        & ASCII.LF
-        & "Click a column header to sort by it."
-        & ASCII.LF
-        & ASCII.LF
-        & "The rows here form a tree rather than a flat list: a "
-        & "@bGtk_Tree_List_Model@B wraps the list of languages and calls "
-        & "back for the children of a row the first time it is expanded."
-        & ASCII.LF
-        & ASCII.LF
-        & "It is the @bGtk_Tree_Expander@B in the first column that makes "
-        & "the tree visible: it draws the arrow, indents the row by its "
-        & "depth, and expands or collapses the @bGtk_Tree_List_Row@B it is "
-        & "given. Click an arrow, or press @b+@B or @b-@B on a row."
-        & ASCII.LF;
+        & "The rows here form a tree, not a flat list: a"
+        & " @bGtk_Tree_List_Model@B wraps the languages and fetches a row's"
+        & " children the first time it is expanded. The"
+        & " @bGtk_Tree_Expander@B in the first column draws the arrow and"
+        & " indentation; click it, or press @b+@B / @b-@B on a row, to"
+        & " expand or collapse.";
    end Help;
 
    function Create_Model (Item : GObject) return Glist_Model;

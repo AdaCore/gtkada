@@ -74,8 +74,8 @@ package body Create_Font_Chooser is
 
    function Help return String is
    begin
-      return "A very specific widget to select a new font based on its"
-        & " characteristics, like the family, weight, size, ...";
+      return "A @bGtk_Font_Chooser@B lets the user pick a font by family,"
+        & " weight, size, and so on.";
    end Help;
 
    ---------

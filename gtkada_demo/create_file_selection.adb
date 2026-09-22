@@ -36,9 +36,9 @@ package body Create_File_Selection is
 
    function Help return String is
    begin
-      return "the @Gtkada.File_Selection_Dialog@B is a dialog to ask the user"
-        & " for a file name. It can also give access to basic file and"
-        & " directory manipulation, such as create, rename, delete.";
+      return "A @bGtkada.File_Selection_Dialog@B asks the user to pick a"
+        & " file, with basic file and directory operations (create,"
+        & " rename, delete) built in.";
    end Help;
 
    ---------

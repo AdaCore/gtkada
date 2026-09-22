@@ -452,29 +452,21 @@ package body Create_Drawing_Area is
    begin
       return
         "A @bGtk_Drawing_Area@B is a blank widget you draw on with"
-        & " @bCairo@B."
+        & " @bCairo@B. Install a drawing function with @bSet_Draw_Func@B;"
+        & " it is called again whenever the area needs to be repainted,"
+        & " including on resize."
         & ASCII.LF
-        & "Install a drawing function with @bSet_Draw_Func@B: it receives a"
-        & " Cairo context and the area's current width and height, and is"
-        & " called again every time the area has to be repainted. Resize the"
-        & " window and both areas are redrawn at their new size."
+        & "The top area is a @bknockout group@B: a black disc is drawn"
+        & " offscreen, three discs are cut out of it with"
+        & " @bCairo_Operator_Dest_Out@B, then added back at half intensity"
+        & " with @bCairo_Operator_Add@B so they blend without seams. The"
+        & " checkerboard behind it shows where the result is transparent."
         & ASCII.LF
-        & "The top area is a @bknockout group@B. A black disc is drawn into"
-        & " an offscreen surface, three discs are cut out of it with"
-        & " @bCairo_Operator_Dest_Out@B, and the same three are added back at"
-        & " half intensity with @bCairo_Operator_Add@B -- from a group of"
-        & " their own, so that they join without seams. The checkerboard"
-        & " behind it shows where the result is transparent."
-        & ASCII.LF
-        & "The bottom area is a @bscribble pad@B. Drag in it with any mouse"
-        & " button to draw; click the right button to clear it; resize the"
-        & " window and it clears too. A draw function may only draw, never"
-        & " change a widget, so the strokes are kept in a Cairo image surface"
-        & " of their own that the draw function simply copies out."
-        & " The pointer is read with @bevent controllers@B: a"
-        & " @bGtk_Gesture_Drag@B listening to any button, and a"
-        & " @bGtk_Gesture_Click@B listening to the right one, both handed to"
-        & " the area with @bAdd_Controller@B.";
+        & "The bottom area is a @bscribble pad@B: drag with any button to"
+        & " draw, right-click to clear. Since a draw function may only"
+        & " draw, the strokes are kept in a Cairo image surface of their"
+        & " own, read through @bevent controllers@B (@bGtk_Gesture_Drag@B"
+        & " and @bGtk_Gesture_Click@B) attached with @bAdd_Controller@B.";
    end Help;
 
    ---------

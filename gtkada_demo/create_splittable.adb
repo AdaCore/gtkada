@@ -57,21 +57,13 @@ package body Create_Splittable is
 
    function Help return String is
    begin
-      return "A Gtkada-specific widget, where children can be resized"
-        & " interactively by the user, as well as splitted." & ASCII.LF
+      return "GtkAda's @bSplittable@B widget, similar to @bGtk_Paned@B but"
+        & " with any number of children instead of two, which lets you"
+        & " drag one separator far enough to move another -- something"
+        & " nested @bGtk_Paned@Bs can't do."
         & ASCII.LF
-        & "It is similar to a Gtk.Paned widget, but with a number of"
-        & " differences: there are multiple children (only two for a"
-        & " Gtk_Paned), which cannot be emulated by nested multiple"
-        & " Gtk_Paned widgets. For instance, if you drag the right-most"
-        & " vertical separator towards the left, it will eventually also"
-        & " move the left-most separator. This would not happen if you"
-        & " had two nested Gtk_Paned." & ASCII.LF
-        & ASCII.LF
-        & "It provides non-opaque resizing, whereas a Gtk_Paned only"
-        & " provides opaque resizing. The latter can be slow when the"
-        & " application is running on a remote machine with a local"
-        & " display.";
+        & "It also resizes live (non-opaque), unlike @bGtk_Paned@B's"
+        & " opaque resizing, which can lag over a remote display.";
    end Help;
 
    ---------------

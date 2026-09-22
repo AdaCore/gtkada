@@ -43,16 +43,12 @@ package body Create_Toggle_Buttons is
    function Help return String is
    begin
       return
-        "A @bGtk_Toggle_Button@B is a button with two possible states: "
-        & "on (active) or off. This state switches each time the user presses "
-        & "the button."
+        "A @bGtk_Toggle_Button@B is a button with two states, on or off,"
+        & " that flips each time it is pressed."
         & ASCII.LF
-        & "By default, multiple toggle buttons may be active at the same time. "
-        & "However, if the toggle buttons are all added to the same group "
-        & " then only one toggle button in the group may be active at a time."
-        & ASCII.LF
-        & "This behaviour mimics the @bGtk_Radio_Button@B widget, "
-        & "which has been removed in GTK4.";
+        & "Several toggle buttons in the same group act like the"
+        & " @bGtk_Radio_Button@B that Gtk4 removed: only one in the group"
+        & " can be active at a time.";
    end Help;
 
    -----------------

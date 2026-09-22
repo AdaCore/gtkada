@@ -131,7 +131,8 @@ package body Create_Css_Editor is
    function Help return String is
    begin
       return
-        "This demo showcases the use of CSS for styling in GTK+ 3.x";
+        "This demo showcases using CSS to style widgets, edited live in"
+        & " the text view below.";
    end Help;
 
 end Create_Css_Editor;

@@ -58,19 +58,13 @@ package body Create_Canvas_View_Links is
 
    function Help return String is
    begin
-      return "This demo illustrates various capabilities for links"
-        & " in the canvas view widget."
+      return "Links in the @bCanvas_View@B widget can attach to any item,"
+        & " including other links and text items, and can carry arrows"
+        & " and annotations."
         & ASCII.LF
-        & "Links can be attached to any other items (boxes, but also other"
-        & " links and texts)."
-        & ASCII.LF
-        & "Links can also have arrows and annotations, as illustrated by"
-        & " the examples here."
-        & ASCII.LF
-        & "Custom links can be implemented relatively easily. This demo shows"
-        & " for instance that displays a @bspring@B instead of a line."
-        & ASCII.LF
-        & "It is also possible to force specific @bwaypoints@B for links";
+        & "Custom link types are easy to add -- the example here draws a"
+        & " @bspring@B instead of a line -- and links can be forced through"
+        & " specific @bwaypoints@B.";
    end Help;
 
    --------------------

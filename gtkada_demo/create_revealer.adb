@@ -37,7 +37,13 @@ package body Create_Revealer is
 
    function Help return String is
    begin
-      return "";
+      return "A @bGtk_Revealer@B animates showing or hiding its single"
+        & " child."
+        & ASCII.LF
+        & "Toggle each button below to reveal its entry, using a different"
+        & " @bGtk_Revealer_Transition_Type@B (none, crossfade, or slide"
+        & " from each side). The transitions here are slowed to 2 seconds"
+        & " so you can see them clearly.";
    end Help;
 
    ---------

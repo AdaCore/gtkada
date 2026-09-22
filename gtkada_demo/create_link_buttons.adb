@@ -66,11 +66,10 @@ package body Create_Link_Buttons is
 
    function Help return String is
    begin
-      return "a @bGtk_Link_Button@B is a @bGtk_Button@B with a hyperlink,"
-        & " similar to the kind displayed by web browsers.  It is associated"
-        & " with a URI.  The URI is passed to a callback procedure that is"
-        & " invoked when the user clicks the button. "
-        & " This widget also keeps track of whether it has been visited.";
+      return "A @bGtk_Link_Button@B is a @bGtk_Button@B associated with a"
+        & " URI, styled like a hyperlink in a web browser. Clicking it"
+        & " invokes a callback with that URI, and the button remembers"
+        & " whether it has been visited.";
    end Help;
 
    ---------
