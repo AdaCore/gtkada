@@ -97,10 +97,12 @@ with Glib.Properties;         use Glib.Properties;
 with Glib.Types;              use Glib.Types;
 with Gtk.Accessible;          use Gtk.Accessible;
 with Gtk.Accessible_Text;     use Gtk.Accessible_Text;
+with Gtk.Adjustment;          use Gtk.Adjustment;
 with Gtk.Atcontext;           use Gtk.Atcontext;
 with Gtk.Buildable;           use Gtk.Buildable;
 with Gtk.Constraint_Target;   use Gtk.Constraint_Target;
 with Gtk.Enums;               use Gtk.Enums;
+with Gtk.Scrollable;          use Gtk.Scrollable;
 with Gtk.Text_Buffer;         use Gtk.Text_Buffer;
 with Gtk.Text_Child_Anchor;   use Gtk.Text_Child_Anchor;
 with Gtk.Text_Iter;           use Gtk.Text_Iter;
@@ -971,6 +973,42 @@ package Gtk.Text_View is
    procedure Update_Selection_Bound
       (Self : not null access Gtk_Text_View_Record);
 
+   function Get_Border
+      (Self   : not null access Gtk_Text_View_Record;
+       Border : out Gtk.Scrollable.Gtk_Border) return Boolean;
+
+   function Get_Hadjustment
+      (Self : not null access Gtk_Text_View_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
+
+   procedure Set_Hadjustment
+      (Self        : not null access Gtk_Text_View_Record;
+       Hadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+
+   function Get_Hscroll_Policy
+      (Self : not null access Gtk_Text_View_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy;
+
+   procedure Set_Hscroll_Policy
+      (Self   : not null access Gtk_Text_View_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+
+   function Get_Vadjustment
+      (Self : not null access Gtk_Text_View_Record)
+       return Gtk.Adjustment.Gtk_Adjustment;
+
+   procedure Set_Vadjustment
+      (Self        : not null access Gtk_Text_View_Record;
+       Vadjustment : access Gtk.Adjustment.Gtk_Adjustment_Record'Class);
+
+   function Get_Vscroll_Policy
+      (Self : not null access Gtk_Text_View_Record)
+       return Gtk.Enums.Gtk_Scrollable_Policy;
+
+   procedure Set_Vscroll_Policy
+      (Self   : not null access Gtk_Text_View_Record;
+       Policy : Gtk.Enums.Gtk_Scrollable_Policy);
+
    ----------------
    -- Properties --
    ----------------
@@ -1473,6 +1511,8 @@ package Gtk.Text_View is
    --  - "Gtk.Buildable"
    --
    --  - "Gtk.ConstraintTarget"
+   --
+   --  - "Gtk.Scrollable"
 
    package Implements_Gtk_Accessible is new Glib.Types.Implements
      (Gtk.Accessible.Gtk_Accessible, Gtk_Text_View_Record, Gtk_Text_View);
@@ -1517,6 +1557,17 @@ package Gtk.Text_View is
      (Interf : Gtk.Constraint_Target.Gtk_Constraint_Target)
    return Gtk_Text_View
    renames Implements_Gtk_Constraint_Target.To_Object;
+
+   package Implements_Gtk_Scrollable is new Glib.Types.Implements
+     (Gtk.Scrollable.Gtk_Scrollable, Gtk_Text_View_Record, Gtk_Text_View);
+   function "+"
+     (Widget : access Gtk_Text_View_Record'Class)
+   return Gtk.Scrollable.Gtk_Scrollable
+   renames Implements_Gtk_Scrollable.To_Interface;
+   function "-"
+     (Interf : Gtk.Scrollable.Gtk_Scrollable)
+   return Gtk_Text_View
+   renames Implements_Gtk_Scrollable.To_Object;
 
 private
    Wrap_Mode_Property : constant Gtk.Enums.Property_Gtk_Wrap_Mode :=
