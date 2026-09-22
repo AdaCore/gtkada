@@ -67,25 +67,21 @@ package body Create_Menu is
    function Help return String is
    begin
       return
-        "In Gtk4, menus are described by a @bmenu model@B (@bGmenu@B, from"
-        & " the @bGlib.Menu@B package): a tree of items, sections and"
-        & " submenus, where each item carries a label and the name of an"
-        & " @baction@B to activate. Actions (@bGlib.Simple_Action@B) are"
-        & " collected in action groups (@bGlib.Simple_Action_Group@B), which"
-        & " are made available to a widget hierarchy with"
+        "Gtk4 menus are described by a @bmenu model@B (@bGmenu@B): a tree"
+        & " of items, sections and submenus where each item names an"
+        & " @baction@B to activate. Actions (@bGlib.Simple_Action@B) live"
+        & " in action groups made available to a widget hierarchy with"
         & " @bGtk.Widget.Insert_Action_Group@B."
         & ASCII.LF
-        & "Three widgets display a menu model: @bGtk_Popover_Menu_Bar@B is"
-        & " the horizontal menu bar at the top of a window;"
-        & " @bGtk_Menu_Button@B pops up a menu (or any popover) when"
-        & " clicked; and @bGtk_Popover_Menu@B is the popover that shows a"
-        & " menu model, used directly for contextual menus."
+        & "Three widgets can display a menu model: @bGtk_Popover_Menu_Bar@B"
+        & " (the bar at the top), @bGtk_Menu_Button@B (pops one up when"
+        & " clicked), and @bGtk_Popover_Menu@B (used here for the"
+        & " contextual menu)."
         & ASCII.LF
-        & "In this demo, all the menu items activate actions from the same"
-        & " action group; the label at the bottom tracks the most recently"
-        & " activated action. The @bCheck me@B item is backed by a stateful"
-        & " boolean action, which is rendered as a check menu item and"
-        & " toggles itself with no handler code.";
+        & "All items below share one action group; the label at the bottom"
+        & " tracks the last action activated. @bCheck me@B is a stateful"
+        & " boolean action that renders as a check item and toggles itself"
+        & " with no handler code.";
    end Help;
 
    -------------------------

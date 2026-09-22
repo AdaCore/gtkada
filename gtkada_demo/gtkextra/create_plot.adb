@@ -199,23 +199,14 @@ package body Create_Plot is
 
    function Help return String is
    begin
-      return "A @bGtk_Plot@B widget can help when you want to display complex"
-        & " data sets, that you dynamically generate through a function or"
-        & " that you already have in an array."
+      return "A @bGtk_Plot@B displays data sets, generated on the fly or"
+        & " supplied as an array."
         & ASCII.LF
-        & "In this demo, the @bGtk_Plot@B is put in a @bGtk_Plot_Canvas@B"
-        & " container, so as to provide drag-and-drop capabilities for its"
-        & " legends, points, graphs,..."
-        & ASCII.LF
-        & "The ""Print"" button at the top-left corner generates a"
-        & " postscript file, called plotdemo.ps, that contains the exact"
-        & " same content that you can see in this demo."
-        & ASCII.LF
-        & "The two buttons 1 and 2 indicate which plot is considered the"
-        & " active one, as returned by the subprogram Get_Active_Plot."
-        & ASCII.LF
-        & "It is possible to specify customer labels for the ticks on each"
-        & " axis.";
+        & "Here it sits inside a @bGtk_Plot_Canvas@B, which adds"
+        & " drag-and-drop for its legends, points and graphs. ""Print"""
+        & " writes the same content to a PostScript file, plotdemo.ps."
+        & " Buttons 1 and 2 pick which plot @bGet_Active_Plot@B returns."
+        & " Tick labels on either axis can be overridden with custom text.";
    end Help;
 
    -----------------

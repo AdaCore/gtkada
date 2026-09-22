@@ -350,53 +350,21 @@ package body Create_Dnd is
    function Help return String is
    begin
       return
-        "This demo demonstrates the drag-and-drop features of GtkAda."
-        & " Several @bdrag-and-drop@B (dnd) protocols are supported, so that"
-        & " your application can easily communicate with other external codes,"
-        & " but this is mostly transparent for you."
+        "This demo shows @bdrag-and-drop@B between widgets in the same"
+        & " application."
         & ASCII.LF
-        & "Although providing dnd capabilities in your application is not"
-        & " difficult, it requires you to take care of several things, which"
-        & " might be a little bit tricky the first time. You should look at"
-        & " this demo while reading its source code, extensively documented"
-        & " in gtkada_demo/create_dnd.adb in the GtkAda distribution."
+        & "Three @bdrag sources@B offer different data: plain text, a URL,"
+        & " or both. Three @bdrop sites@B each accept only some of these"
+        & " types, so a drag is rejected when source and target share"
+        & " nothing in common. Drop @bactions@B (@bAction_Copy@B or"
+        & " @bAction_Move@B) default to the first one both sides support;"
+        & " hold @bshift@B to force a move, which asks the source to"
+        & " delete its data."
         & ASCII.LF
-        & "Several things worth noting in this demo:"
-        & ASCII.LF
-        & ASCII.LF
-        & " - Several @bdrag sources@B are available. The first only knows"
-        & " how to transmitted plain text data. The second one only knows"
-        & " about URLs, whereas the third one can provide any of the above."
-        & ASCII.LF
-        & ASCII.LF
-        & " - Several @bdrop sites@B are also provided. Like the drag sources,"
-        & " they all have special attributes and accept only special types"
-        & " of data. Thus, some dnd operations will simply be rejected if"
-        & " there is no common type between the drag source and the drop site."
-        & ASCII.LF
-        & ASCII.LF
-        & " - In addition, all of the above have special types of @bactions@B"
-        & " that they can handle. These are either @bAction_Copy@B,"
-        & " @bAction_Move@B, or a combination of the two. These actions"
-        & " control the default behavior of the drag and drop operation. The"
-        & " action selected will be the first one common to both the drag"
-        & " source and the drop site, unless you press @bshift@B at the same"
-        & " time to force a move. Notice than when Action_Move is selected,"
-        & " GtkAda asks the drag source to delete the data, thus the Delete"
-        & " message that you see on the output."
-        & ASCII.LF
-        & ASCII.LF
-        & " - The @btrashcan@B has a special behavior, since no default"
-        & " behavior is associated to it, and everything is managed directly"
-        & " by the demo, by connecting to the appropriate signals. We also"
-        & " chose to change its visual aspect when the mouse is over the"
-        & " widget and a drag-and-drop operation is taking place."
-        & ASCII.LF
-        & ASCII.LF
-        & " - The @bicons@B can be freely modified. Note that the pixmap used"
-        & " when dragging from the first button is different than the one used"
-        & " for the other buttons. This can provide some interesting visual"
-        & " clues for the user.";
+        & "The @btrashcan@B has no default drop behaviour: this demo wires"
+        & " it up entirely by hand, including changing its look while a"
+        & " drag hovers over it. Note also that the first button drags a"
+        & " different icon than the others.";
    end Help;
 
    -------------

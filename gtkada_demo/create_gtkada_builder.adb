@@ -241,7 +241,15 @@ package body Create_Gtkada_Builder is
 
    function Help return String is
    begin
-      return "";
+      return "@bGtkada.Builder@B loads a user interface from a GtkBuilder"
+        & " XML file (here, gtkbuilder_example.xml) and gives back the"
+        & " widgets by name with @bGet_Object@B."
+        & ASCII.LF
+        & "Signal handlers are registered by name with"
+        & " @bRegister_Handler@B and wired up in one call to"
+        & " @bDo_Connect@B, matching the handler names written in the XML"
+        & " file. This demo also inserts custom widgets into a placeholder"
+        & " box found in the file.";
    end Help;
 
    ---------

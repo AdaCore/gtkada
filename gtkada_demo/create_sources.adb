@@ -102,27 +102,15 @@ package body Create_Sources is
    function Help return String is
    begin
       return
-        "The main even loop of gtk+ is highly configurable. It monitors"
-        & " various event sources, including the windowing system, pipes,"
-        & " running processes, timeouts... and will call user-defined"
-        & " callbacks whenever some event happens."
+        "Gtk's main loop can watch custom event sources, not just the"
+        & " windowing system, pipes or timeouts -- this demo adds one of"
+        & " its own."
         & ASCII.LF
-        & "It is possible for you to define your own source of events, as"
-        & " demonstrated here."
-        & ASCII.LF
-        & "This demo monitors a file on the disk (""sources"" in the"
-        & " gtkada_demo directory)."
-        & " Open a text editor, create that file if necessary,"
-        & " add some data to it, and save. You will see immediately the new"
-        & " contents of the file."
-        & ASCII.LF
-        & "While it certainly isn't the most efficient way to do that (having"
-        & " a timeout that checks periodically might be more appropriate),"
-        & " this demo shows how you can create your own event source. On"
-        & " linux systems, the kernel is able to notify users whenever some"
-        & " part of the file system changes. You could connect to dbus, on"
-        & " which the kernel sends this info, and use this as an event source"
-        & " in your application.";
+        & "It watches a file named ""sources"" in the gtkada_demo"
+        & " directory. Edit and save that file (create it if needed) and"
+        & " its new contents appear here within a second or so: the custom"
+        & " source polls the file's timestamp itself rather than waiting"
+        & " for a kernel notification.";
    end Help;
 
    ------------------

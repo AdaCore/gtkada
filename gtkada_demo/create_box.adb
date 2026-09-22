@@ -47,27 +47,15 @@ package body Create_Box is
    function Help return String is
    begin
       return
-        "This demo shows how you can use the @bGtk_Box@B container in"
-        & " Gtk4."
+        "A @bGtk_Box@B packs a row or column of widgets with @bAppend@B."
         & ASCII.LF
-        & ASCII.LF
-        & "Each row below packs three buttons into a horizontal box with"
-        & " @bAppend@B, and illustrates how the @bHomogeneous@B box property"
-        & " combines with the per-child @bhexpand@B and @bhalign@B properties."
-        & " Gtk4 has replaced the old @bExpand@B and @bFill@B arguments of"
-        & " @bPack_Start@B with these child properties."
-        & ASCII.LF
-        & " - @bHomogeneous@B: if True, every child of the box is given the"
-        & " same size as the largest child. The per-child expand setting is"
-        & " then irrelevant."
-        & ASCII.LF
-        & " - @bhexpand@B (labelled @bExpand@B below): if True, the child"
-        & " claims any extra space available along the box's orientation."
-        & ASCII.LF
-        & " - @bhalign@B (labelled @bFill@B below): @bAlign_Fill@B stretches"
-        & " the child so it occupies all the space it was given, whereas"
-        & " @bAlign_Center@B leaves the child at its minimum requested size,"
-        & " surrounded by empty space.";
+        & "Each row below compares the box's @bHomogeneous@B property, which"
+        & " forces every child to the size of the largest one, against the"
+        & " per-child @bhexpand@B and @bhalign@B properties that replaced"
+        & " Gtk3's @bExpand@B and @bFill@B arguments to @bPack_Start@B:"
+        & " @bhexpand@B lets a child claim extra space, and @bhalign@B"
+        & " decides whether it then stretches to fill that space or stays"
+        & " at its natural size.";
    end Help;
 
    -----------------

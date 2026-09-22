@@ -45,7 +45,10 @@ package body Create_Canvas_View_Minimap is
 
    function Help return String is
    begin
-      return "";
+      return "A @bMinimap_View@B mirrors a @bCanvas_View@B at a scale where"
+        & " the whole model fits, with a rectangle showing the area"
+        & " currently visible in the monitored view. Scroll or zoom the"
+        & " canvas on the right and watch the rectangle follow.";
    end Help;
 
    ---------

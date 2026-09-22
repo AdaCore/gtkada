@@ -52,17 +52,13 @@ package body Create_Text_View is
 
    function Help return String is
    begin
-      return "A @bGtk_Text_View@B widget is a widget used to display any"
-        & " text graphically. It provides support for changing fonts, colors,"
-        & " background colors, as well as inserting pixmaps in the text."
+      return "A @bGtk_Text_View@B displays and edits text, with support for"
+        & " fonts, colours and embedded images."
         & ASCII.LF
-        & "It is based on the model-view paradigm: the text itself is stored"
-        & " in a non-graphical object, a @bGtk_Text_Buffer@B, which has"
-        & " support for traversing the text through @bGtk_Text_Iter@B objects;"
-        & " This buffer is then associated with one or many @bGtk_Text_View@B"
-        & " which automatically reflect any change in the buffer."
-        & ASCII.LF
-        & "The text is fully editable";
+        & "It follows model-view: the text lives in a @bGtk_Text_Buffer@B,"
+        & " traversed with @bGtk_Text_Iter@B, and one or more"
+        & " @bGtk_Text_View@Bs display it and stay in sync with any"
+        & " change.";
    end Help;
 
    ---------------------

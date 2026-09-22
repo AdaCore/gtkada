@@ -55,14 +55,14 @@ package body Create_Color_Chooser is
 
    function Help return String is
    begin
-      return "This page demonstrates the Gtk4 colour-selection API."
-        & " A @bGtk_Color_Dialog_Button@B is the one-widget, declarative"
-        & " path: it renders the currently-selected colour and pops up a"
-        & " colour chooser when clicked. The @bPick a colour...@B button"
-        & " drives the asynchronous @bGtk_Color_Dialog.Choose_Rgba@B flow"
-        & " explicitly; its @bChoose_Rgba_Finish@B callback reads the chosen"
-        & " colour and writes its textual form into the label below."
-        & " Cancelling the dialog leaves the current colour unchanged.";
+      return "Gtk4's colour-selection API. A @bGtk_Color_Dialog_Button@B"
+        & " does it all for you: it shows the current colour and pops up a"
+        & " chooser when clicked."
+        & ASCII.LF
+        & "The @bPick a colour...@B button instead drives"
+        & " @bGtk_Color_Dialog.Choose_Rgba@B directly; its"
+        & " @bChoose_Rgba_Finish@B callback reads the chosen colour and"
+        & " writes it below. Cancelling leaves the colour unchanged.";
    end Help;
 
    -------------

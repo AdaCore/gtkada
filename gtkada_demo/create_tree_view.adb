@@ -90,28 +90,17 @@ package body Create_Tree_View is
 
    function Help return String is
    begin
-      return "A @bGtk_Tree_View@B is a widget used to display a number of"
-        & " lines, organized either as a simple list or into a tree"
-        & " hierarchy." & ASCII.LF
-        & "Each line can contain multiple resizable column, each of which"
-        & " can contain pixmaps, texts, or both. The columns can be sorted"
-        & " interactively by the user by clicking on the column header."
+      return "A @bGtk_Tree_View@B displays rows, either a flat list or a"
+        & " tree, each with multiple resizable, sortable columns of text"
+        & " and/or pixmaps."
         & ASCII.LF
-        & "Like the @bGtk_Text_View@B, this widget is based on the model-"
-        & "view-controller paradigm: data is stored in a non graphical"
-        & " object (a @bGtk_Tree_Model@B), which is then associated with"
-        & " one or many view. The model provides subprograms for inserting"
-        & " or removing lines, as well as for traversing an existing tree."
+        & "Like @bGtk_Text_View@B, it follows model-view: data lives in a"
+        & " @bGtk_Tree_Model@B, which one or more views display."
+        & " Double-click a cell in this demo to edit it in place."
         & ASCII.LF
-        & "Cells in the tree can be defined as editable, as shown in this"
-        & " example: in this case, the user needs to double click on the"
-        & " cell, and an entry widget is then displayed in which the text"
-        & " can be modified"
-        & ASCII.LF
-        & "The first column is sortable in this example. By default, gtk+"
-        & " would use an alphabetical order on a text column, but here we have"
-        & " defined our own sorting algorithm (striken first, then others,"
-        & " and alphabetical within)";
+        & "The first column is sortable, but not alphabetically: click its"
+        & " header to sort by a custom order (struck-through rows first,"
+        & " then the rest alphabetically).";
    end Help;
 
    -----------------

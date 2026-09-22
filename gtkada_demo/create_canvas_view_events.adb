@@ -66,38 +66,19 @@ package body Create_Canvas_View_Events is
 
    function Help return String is
    begin
-      return "This demo illustrates the @binteractive@B features of the"
-        & " Canvas_View widget."
+      return "The @bCanvas_View@B widget handles very little on its own"
+        & " beyond scrolling in a @bGtk_Scrolled_Window@B (including mouse"
+        & " wheel and touchpad). Everything else -- selection, moving"
+        & " items, zooming -- comes from connecting to the signals it"
+        & " emits, chiefly ""@bitem_event@B""."
         & ASCII.LF
-        & "By default, this widget provides very limited handling events."
-        & " It knows how to scroll when inserted in a Gtk_Scrolled_Window,"
-        & " including reacting to mouse wheels and touchpad events for the"
-        & " scrolling."
-        & ASCII.LF
-        & "But if you want more advanced behavior (@bselection@B of items,"
-        & " @bmoving items@B with the mouse or keyboard, @bzooming@B in or"
-        & " out, ...) you will need to connect to the signals emitted by"
-        & " the view, in particular ""@bitem_event@B""."
-        & ASCII.LF
-        & "This demo shows the following capabilities:" & ASCII.LF
-        & "  - @bdragging items@B with the mouse. Items will tend to @bsnap@B"
-        & " to the grid when they get close enough to it, but they are"
-        & " not constrained to grid coordinates. Snapping is disabled if you"
-        & " press shift during the move. Items will also snap on @bsmart"
-        & " guides@B, which are lines matching various points of interest"
-        & " from the other items. This provides a convenient way to align"
-        & " items."
-        & ASCII.LF
-        & "  - @boverlap@B avoidance: when an item is moved on top of another"
-        & " item, the latter is moved aside."
-        & ASCII.LF
-        & "  - @bscrolling@B by dragging the background with the mouse."
-        & ASCII.LF
-        & "  - @bzooming@B with alt-mouse wheel." & ASCII.LF
-        & "  - @bkeys@B can be used to move the selected items, or scroll the"
-        & " view when no item is selected." & ASCII.LF
-        & "  - @bkeys@B can also be used to navigate between items, by"
-        & " pressing @balt@B at the same time as the keyboard arrows.";
+        & "This demo wires up: dragging items, which @bsnap@B to the grid"
+        & " and to @bsmart guides@B aligning with other items (hold shift"
+        & " to disable snapping); moving an item onto another pushes the"
+        & " latter aside; dragging the background scrolls the view;"
+        & " alt+wheel zooms; and the keyboard moves the selection, or"
+        & " scrolls if nothing is selected -- add @balt@B to navigate"
+        & " between items instead.";
    end Help;
 
    -------------------

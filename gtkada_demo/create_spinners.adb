@@ -51,11 +51,10 @@ package body Create_Spinners is
 
    function Help return String is
    begin
-      return "A %bGtk_Spinner%B widget displays an icon-size spinning"
-        & " animation. It is often used as an alternative to a"
-        & " %bGtk_Progress%B for displaying indefinite activity, instead"
-        & " of actual progress.  To start the animation, use"
-        & " %bGtk.Spinner.Start%B; to stop it use $bGtk.Spinner.Stop$B.";
+      return "A @bGtk_Spinner@B shows an icon-size spinning animation,"
+        & " often used instead of a @bGtk_Progress_Bar@B when there's no"
+        & " way to measure actual progress. Start it with"
+        & " @bGtk.Spinner.Start@B, stop it with @bGtk.Spinner.Stop@B.";
    end Help;
 
    ---------

@@ -66,7 +66,13 @@ package body Create_Gestures is
 
    function Help return String is
    begin
-      return "";
+      return "@bGtk_Gesture@B objects let a widget react to touch and"
+        & " pointer gestures independently of raw button/motion events."
+        & ASCII.LF
+        & "This demo attaches a @bGtk_Gesture_Long_Press@B (press and hold"
+        & " to draw a blue circle) and a @bGtk_Gesture_Zoom@B (pinch, on"
+        & " hardware that reports two touch points, to scale the drawing)"
+        & " to the area below.";
    end Help;
 
    ----------------------

@@ -107,11 +107,11 @@ package body Create_Notebook is
 
    function Help return String is
    begin
-      return "A @bGtk_Toolbar@B is a tabbed dialog that contains any kind"
-        & " of widget, like @bGtk_Frame@Bs in this case. Whenever the user"
-        & " selects a new tab, a new page is displayed." & ASCII.LF
-        & "A callback can be called whenever a new page is selected, through"
-        & " the ""page_switch"" signal.";
+      return "A @bGtk_Notebook@B shows one of several pages at a time,"
+        & " selected through tabs -- here each page is a @bGtk_Frame@B."
+        & ASCII.LF
+        & "Connect to its ""switch_page"" signal to run code whenever the"
+        & " user selects a different tab.";
    end Help;
 
    ----------

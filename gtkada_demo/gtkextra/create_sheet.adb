@@ -308,24 +308,16 @@ package body Create_Sheet is
 
    function Help return String is
    begin
-      return "A @bGtk_Sheet@B is an improved version of a @bGtk_Table@B."
-        & " Like a table, it can contain children associated with its"
-        & " cells, but provides a much more efficient way to store text"
-        & " since you don't need to create a widget for every cell."
+      return "A @bGtk_Sheet@B is an improved @bGtk_Table@B: cells can hold"
+        & " child widgets like a table, but text cells are stored far more"
+        & " efficiently since they don't need a widget each -- this one"
+        & " has 1000 rows."
         & ASCII.LF
-        & "In this example, the table has 1000 lines."
-        & ASCII.LF
-        & "You can highlight a specific range in the table by using the"
-        & " Clip and Unclip subprograms, bound to Ctrl-C and Ctrl-X in this"
-        & " demo."
-        & ASCII.LF
-        & "This demo also integrates the following widgets:"
+        & "Select a range and press Ctrl-C / Ctrl-X to clip/unclip it. The"
+        & " entry at the top is not part of the sheet; it's a separate"
+        & " widget wired up through callbacks. Also shown:"
         & " @bGtk_Border_Combo@B, @bGtk_Color_Combo@B, @bGtk_Font_Combo@B"
-        & " @bGtk_IEntry@B"
-        & ASCII.LF
-        & "Note also that only the table itself is a @bGtk_Sheet@B. For"
-        & " instance, the entry at the top of the screen is not part of the"
-        & " sheet, and is managed through callbacks (see the code).";
+        & " and @bGtk_IEntry@B.";
    end Help;
 
    ------------------------

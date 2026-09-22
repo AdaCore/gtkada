@@ -35,9 +35,9 @@ package body Create_Calendar is
 
    function Help return String is
    begin
-      return "A @bGtk_Calendar@B is a simple way to interactively select"
-        & " a date. A callback can be set for every change to the date,"
-        & " for instance the date, the month,...";
+      return "A @bGtk_Calendar@B is a simple way to interactively pick a"
+        & " date. Connect a callback to be notified whenever the selection"
+        & " changes -- day, month, or year.";
    end Help;
 
    ---------

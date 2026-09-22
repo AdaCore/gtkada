@@ -40,23 +40,15 @@ package body Create_Range is
 
    function Help return String is
    begin
-      return "A @bGtk_Range@B is a simple way to select a value in a"
-        & " specific interval. Although less precise than a "
-        & "@bGtk_Spin_Button@B, it is much faster to use."
+      return "A @bGtk_Range@B selects a value in an interval; less precise"
+        & " but faster to use than a @bGtk_Spin_Button@B. The"
+        & " @bGtk_Scrollbar@B below is also a @bGtk_Range@B, just without a"
+        & " visible value."
         & ASCII.LF
-        & "A @bGtk_Scrollbar@B (seen below the range) can also be used as a"
-        & " @bGtk_Range@B, although it does not display its value and relies"
-        & " on another widget to do so."
-        & ASCII.LF
-        & "Note that this demo does not require any explicit callback to be"
-        & " set to connect the two widgets. In fact, they both use the same"
-        & " @bGtk_Adjustment@B for their value. Thus, when you modify one of"
-        & " the widget, it modifies its value in the adjustment, which is then"
-        & " reflected in the other widget."
-        & ASCII.LF
-        & "As you can see, the @bGtk_Scrollbar@B update its value as soon as"
-        & " it is moved, whereas the @bGtk_Range@B only update its value when"
-        & " the user releases the mouse button.";
+        & "Both here share the same @bGtk_Adjustment@B, so moving one"
+        & " updates the other with no explicit callback. The scrollbar"
+        & " updates live as you drag it, while the range only updates when"
+        & " you release the mouse.";
    end Help;
 
    ---------

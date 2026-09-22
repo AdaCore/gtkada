@@ -48,18 +48,15 @@ package body Create_Reparent is
    function Help return String is
    begin
       return
-        "This demo does not demonstrate a widget. Instead, it shows how"
-        & " you can dynamically change the parent of a widget. Clicking either"
-        & " @bbring the label here@B button moves the label into that button's frame: the"
-        & " widget is removed from its old container and appended to the new"
-        & " one."
+        "This isn't really about one widget -- it shows how to move a"
+        & " widget between containers at runtime. Click either @bbring the"
+        & " label here@B button to remove the label from its current frame"
+        & " and append it into that button's."
         & ASCII.LF
-        & "In Gtk4 the single-call @bReparent@B is gone; the move is expressed"
-        & " as @bRemove@B on the old container followed by @bAppend@B on the"
-        & " new one."
-        & ASCII.LF
-        & "This demo also shows how to extend an existing @bGtk_Button@B to"
-        & " include specific data to it.";
+        & "Gtk4 dropped the single-call @bReparent@B; the move is now"
+        & " @bRemove@B on the old container followed by @bAppend@B on the"
+        & " new one. The demo also shows how to attach extra data to a"
+        & " plain @bGtk_Button@B.";
    end Help;
 
    --------------------

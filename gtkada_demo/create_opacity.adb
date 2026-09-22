@@ -42,12 +42,13 @@ package body Create_Opacity is
    function Help return String is
    begin
       return
-        "This demo makes the main window partially"
-        & " transparent, with opacity 0 being fully transparent and 1 fully"
-        & " opaque.  On X11 this has effect only on X screens with a"
-        & " compositing manager running.  On Windows it should always work."
-        & "  Note that setting a window's opacity after the window has been"
-        & " shown causes it to flicker once on Windows.";
+        "Makes the main window partially transparent: opacity 0 is fully"
+        & " transparent, 1 fully opaque."
+        & ASCII.LF
+        & "On X11 this only has an effect with a compositing manager"
+        & " running; on Windows it should always work, though changing"
+        & " opacity after the window is shown causes a visible flicker"
+        & " there.";
    end Help;
 
    ----------------------

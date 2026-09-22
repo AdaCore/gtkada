@@ -38,40 +38,25 @@ package body Create_Canvas_View_Composite is
 
    function Help return String is
    begin
-      return "This demo illustrates various capabilities for compositing items"
-        & " in the canvas_view widget."
+      return "This demo composites items inside a @bCanvas_View@B item"
+        & " hierarchy."
         & ASCII.LF
-        & "The first item (red background) shows that @bautomatic size@B"
-        & " computation occurs for items, based on the size requested by"
-        & " their children and their margin."
+        & "The red item auto-sizes to fit its children plus their margins."
+        & " The second item has two @bfloating@B children on the left, so"
+        & " the third child lays out at the same vertical position and ends"
+        & " up on top of them. The third item shows @balignment@B: its"
+        & " title bar packs two children with @bPack_End@B so they always"
+        & " sit at the end regardless of size."
         & ASCII.LF
-        & "The second item shows a toplevel item with three children."
-        & " The first two of these children are @bfloating@B, so that the"
-        & " third is laid out at the same vertical position, and thus on top"
-        & " of them."
-        & ASCII.LF
-        & "The third item illustrates @balignment@B."
-        & ASCII.LF
-        & "The first child is a title bar, made up of four small text items"
-        & " (which would be buttons in a real application). The two on the"
-        & " right or bottom are added with @bPack_End@B set to True, which"
-        & " ensures that they will always be at the end of the parent"
-        & " container, whatever its size. There is no hard-coding of"
-        & " positions."
-        & ASCII.LF
-        & "The first three children"
-        & " specify an explicit width in pixels. Since they do not occupy the"
-        & " full width, the remaining extra space is distributed around them"
-        & " based on the alignment property."
-        & ASCII.LF
-        & "The next three children specify a width of 100% that of their"
-        & " parent container. But they also include margins, so in fact they"
-        & " extend to the right of their parent."
-        & ASCII.LF
-        & "The next three children do not specify a width at all, so they"
-        & " use all of the parent's width (modulo their specific margins)."
-        & " Since they occupy all available space, the alignment has no"
-        & " effect.";
+        & "Below the title bar, four rows compare width strategies: fixed"
+        & " pixel widths leave room for alignment to matter; percentage"
+        & " widths (100%) already fill the container, so alignment has no"
+        & " visible effect there, and since margins aren't counted in that"
+        & " 100% the item can overflow its parent; @bAuto_Size@B, with no"
+        & " children to size from, collapses these items down to a few"
+        & " pixels wide, so alignment is visible again; and @bFit_Size@B"
+        & " stretches the item (plus its margins) to exactly fill the"
+        & " parent, so alignment has no effect either.";
    end Help;
 
    ---------

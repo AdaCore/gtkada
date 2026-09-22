@@ -70,18 +70,14 @@ package body Create_Clipboard is
 
    function Help return String is
    begin
-      return "This demo shows how to interface to the system clipboard. You"
-        & " should select text or images in some other application, copy them"
-        & " to the clipboard (generally through Edit->Copy), and then click on"
-        & " Refresh in this demo." & ASCII.LF
-        & "The data contained in a clipboard can be retrieved in multiple"
-        & " formats (ASCII text, UTF8 text, image, application-dependent types"
-        & ",...). This demo shows the format that the current clipboard"
-        & " can be retrieved in. Double-clicking on any of the format will"
-        & " retrieve the selection in that format, and display it if possible"
+      return "Reading the system clipboard. Copy some text or an image in"
+        & " another application (Edit -> Copy), then click @bRefresh@B"
+        & " here."
         & ASCII.LF
-        & "Try also copying an image into the clipboard, it will be displayed."
-        & " Big images will take time to be retrieved asynchronously however.";
+        & "The list shows every format the current clipboard content is"
+        & " available in; double-click one to retrieve and display it in"
+        & " that format. Large images are fetched asynchronously and take"
+        & " a moment.";
    end Help;
 
    ------------------------
