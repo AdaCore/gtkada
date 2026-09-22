@@ -667,19 +667,37 @@ package body Gtk.Print_Settings is
    ---------------------
 
    function Get_Page_Ranges
-      (Self       : not null access Gtk_Print_Settings_Record;
-       Num_Ranges : out Glib.Gint) return Page_Range
+      (Self : not null access Gtk_Print_Settings_Record)
+       return Page_Range_Array
    is
+      type Page_Range_Array_Bounded is array (Natural) of Page_Range;
+      pragma Convention (C, Page_Range_Array_Bounded);
+      type Page_Range_Array_Access is access all Page_Range_Array_Bounded;
+
       function Internal
-         (Self           : System.Address;
-          Acc_Num_Ranges : access Glib.Gint) return Page_Range;
+         (Self       : System.Address;
+          Num_Ranges : access Glib.Gint) return Page_Range_Array_Access;
       pragma Import (C, Internal, "gtk_print_settings_get_page_ranges");
-      Acc_Num_Ranges : aliased Glib.Gint;
-      Tmp_Return     : Page_Range;
+
+      procedure G_Free (Ranges : Page_Range_Array_Access);
+      pragma Import (C, G_Free, "g_free");
+
+      Count  : aliased Glib.Gint := 0;
+      Ranges : constant Page_Range_Array_Access :=
+        Internal (Get_Object (Self), Count'Access);
+      Length : constant Natural :=
+        (if Ranges = null or else Count <= 0 then 0 else Natural (Count));
+      Result : Page_Range_Array (1 .. Length);
    begin
-      Tmp_Return := Internal (Get_Object (Self), Acc_Num_Ranges'Access);
-      Num_Ranges := Acc_Num_Ranges;
-      return Tmp_Return;
+      for R in Result'Range loop
+         Result (R) := Ranges (R - 1);
+      end loop;
+
+      if Ranges /= null then
+         G_Free (Ranges);
+      end if;
+
+      return Result;
    end Get_Page_Ranges;
 
    ------------------
@@ -1246,16 +1264,18 @@ package body Gtk.Print_Settings is
 
    procedure Set_Page_Ranges
       (Self        : not null access Gtk_Print_Settings_Record;
-       Page_Ranges : Page_Range;
-       Num_Ranges  : Glib.Gint)
+       Page_Ranges : Page_Range_Array)
    is
       procedure Internal
          (Self        : System.Address;
-          Page_Ranges : Page_Range;
+          Page_Ranges : System.Address;
           Num_Ranges  : Glib.Gint);
       pragma Import (C, Internal, "gtk_print_settings_set_page_ranges");
    begin
-      Internal (Get_Object (Self), Page_Ranges, Num_Ranges);
+      Internal
+        (Get_Object (Self),
+         Page_Ranges'Address,
+         Glib.Gint (Page_Ranges'Length));
    end Set_Page_Ranges;
 
    ------------------
