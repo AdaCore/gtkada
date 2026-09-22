@@ -1,0 +1,7 @@
+# ============================================================
+#   GtkEventControllerScroll
+# ============================================================
+
+[[enum]]
+ctype = "GtkEventControllerScrollFlags"
+asbitfield = true

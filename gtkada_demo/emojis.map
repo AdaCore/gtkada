@@ -1,0 +1,5 @@
+include "%L"
+
+# Sequence: Press `\`, release it, then press `c`, then press `o`
+<backslash> <c> <o> : "©" copyright
+<backslash> <c> <s> : "☺" smile
