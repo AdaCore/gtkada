@@ -823,6 +823,9 @@ void ada_gvalue_set(GValue *value, void *val)
     g_value_set_double(value, *(gdouble *)val);
   else if G_VALUE_HOLDS_POINTER (value)
     g_value_set_pointer(value, *(gpointer *)val);
+  else if G_VALUE_HOLDS_OBJECT (value)
+    /* NULL is a legal result here: a signal handler returns it to decline. */
+    g_value_set_object(value, *(gpointer *)val);
   else
     fprintf(stderr, "GtkAda: Return value type not supported\n");
 }

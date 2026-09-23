@@ -11,3 +11,74 @@ type Page_Range is record
 end record
   with Convention => C;
 '''
+
+[[extra.type]]
+ctype = "GtkPageRangeArray"
+ada = "Page_Range_Array"
+text = '''
+type Page_Range_Array is array (Natural range <>) of Page_Range;
+pragma Convention (C, Page_Range_Array);
+'''
+
+[[method]]
+id = "gtk_print_settings_get_page_ranges"
+return = "GtkPageRangeArray"
+body = '''
+      type Page_Range_Array_Bounded is array (Natural) of Page_Range;
+      pragma Convention (C, Page_Range_Array_Bounded);
+      type Page_Range_Array_Access is access all Page_Range_Array_Bounded;
+
+      function Internal
+         (Self       : System.Address;
+          Num_Ranges : access Glib.Gint) return Page_Range_Array_Access;
+      pragma Import (C, Internal, "gtk_print_settings_get_page_ranges");
+
+      procedure G_Free (Ranges : Page_Range_Array_Access);
+      pragma Import (C, G_Free, "g_free");
+
+      Count  : aliased Glib.Gint := 0;
+      Ranges : constant Page_Range_Array_Access :=
+        Internal (Get_Object (Self), Count'Access);
+      Length : constant Natural :=
+        (if Ranges = null or else Count <= 0 then 0 else Natural (Count));
+      Result : Page_Range_Array (1 .. Length);
+   begin
+      for R in Result'Range loop
+         Result (R) := Ranges (R - 1);
+      end loop;
+
+      if Ranges /= null then
+         G_Free (Ranges);
+      end if;
+
+      return Result;'''
+
+[[method.parameter]]
+name = "num_ranges"
+ada = ""
+
+[method.doc]
+extend = true
+text = "@return the page ranges, or an empty array if none is set"
+
+[[method]]
+id = "gtk_print_settings_set_page_ranges"
+body = '''
+      procedure Internal
+         (Self        : System.Address;
+          Page_Ranges : System.Address;
+          Num_Ranges  : Glib.Gint);
+      pragma Import (C, Internal, "gtk_print_settings_set_page_ranges");
+   begin
+      Internal
+        (Get_Object (Self),
+         Page_Ranges'Address,
+         Glib.Gint (Page_Ranges'Length));'''
+
+[[method.parameter]]
+name = "page_ranges"
+type = "Page_Range_Array"
+
+[[method.parameter]]
+name = "num_ranges"
+ada = ""

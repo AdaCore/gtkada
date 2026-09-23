@@ -1386,7 +1386,7 @@ package body Gtk.Print_Operation is
       pragma Unreferenced (N_Params, Params, Invocation_Hint, User_Data);
       H   : constant Cb_GObject_GObject := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
-      V   : aliased not null access Glib.Object.GObject_Record'Class := H (Obj);
+      V   : aliased System.Address := Glib.Object.Get_Object_Or_Null (H (Obj));
    begin
       Set_Value (Return_Value, V'Address);
    exception
@@ -1599,7 +1599,7 @@ package body Gtk.Print_Operation is
       pragma Unreferenced (N_Params, Invocation_Hint, User_Data);
       H   : constant Cb_Gtk_Print_Operation_GObject := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Print_Operation := Gtk_Print_Operation (Unchecked_To_Object (Params, 0));
-      V   : aliased not null access Glib.Object.GObject_Record'Class := H (Obj);
+      V   : aliased System.Address := Glib.Object.Get_Object_Or_Null (H (Obj));
    begin
       Set_Value (Return_Value, V'Address);
    exception

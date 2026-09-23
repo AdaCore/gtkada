@@ -241,7 +241,12 @@ package body Glib.Values is
       Val : GValue;
    begin
       Unsafe_Nth (Values, Num, Val);
-      return T'Val (Get_Int (Val));
+
+      if Fundamental (Type_Of (Val)) = GType_Enum then
+         return T'Val (Get_Enum (Val));
+      else
+         return T'Val (Get_Int (Val));
+      end if;
    end Unsafe_Enum_Nth;
 
    ----------------------

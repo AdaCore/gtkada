@@ -133,7 +133,8 @@ package Glib.Object is
      (Object : access GObject_Record'Class) return System.Address;
    --  Access the underlying C pointer.
 
-   function Get_Object_Or_Null (Object : GObject) return System.Address;
+   function Get_Object_Or_Null
+     (Object : access GObject_Record'Class) return System.Address;
    --  Same as above, but passing "null" is valid.
 
    procedure Set_Object

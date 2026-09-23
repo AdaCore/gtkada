@@ -142,7 +142,8 @@ package body Glib.Object is
    -- Get_Object_Or_Null --
    ------------------------
 
-   function Get_Object_Or_Null (Object : GObject) return System.Address is
+   function Get_Object_Or_Null
+     (Object : access GObject_Record'Class) return System.Address is
    begin
       if Object = null then
          return System.Null_Address;

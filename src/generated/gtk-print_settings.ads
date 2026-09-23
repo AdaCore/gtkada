@@ -52,6 +52,9 @@ package Gtk.Print_Settings is
    end record
       with Convention => C;
 
+   type Page_Range_Array is array (Natural range <>) of Page_Range;
+   pragma Convention (C, Page_Range_Array);
+
    ---------------
    -- Callbacks --
    ---------------
@@ -427,20 +430,16 @@ package Gtk.Print_Settings is
    --  @param Output_Bin the output bin
 
    function Get_Page_Ranges
-      (Self       : not null access Gtk_Print_Settings_Record;
-       Num_Ranges : out Glib.Gint) return Page_Range;
+      (Self : not null access Gtk_Print_Settings_Record)
+       return Page_Range_Array;
    --  Gets the value of GTK_PRINT_SETTINGS_PAGE_RANGES.
-   --  @param Num_Ranges return location for the length of the returned array
-   --  @return an array of `GtkPageRange`s. Use g_free to free the array when
-   --  it is no longer needed.
+   --  @return the page ranges, or an empty array if none is set
 
    procedure Set_Page_Ranges
       (Self        : not null access Gtk_Print_Settings_Record;
-       Page_Ranges : Page_Range;
-       Num_Ranges  : Glib.Gint);
+       Page_Ranges : Page_Range_Array);
    --  Sets the value of GTK_PRINT_SETTINGS_PAGE_RANGES.
    --  @param Page_Ranges an array of `GtkPageRange`s
-   --  @param Num_Ranges the length of Page_Ranges
 
    function Get_Page_Set
       (Self : not null access Gtk_Print_Settings_Record)
