@@ -14,10 +14,6 @@ windows. Each container that creates a layer knows how it should behave when it
 is resized, and how it should move its children.  Thus almost everything is
 handled automatically, and you don't have to do anything to support resizing.
 
-If you really insist on moving the children to a specific position, look at the
-`Gtk_Fixed` widget and its demo in :file:`gtkada_demo/`. But you really should not
-use this container, since you will then have to do everything by hand.
-
 All the containers are demonstrated in :file:`gtkada_demo/`, in the GtkAda
 distribution. This should help you understand all the parameters associated
 with the containers. It is very important to master these containers, since
@@ -28,14 +24,13 @@ that a Gtk_Window inherits from Gtk_Bin, and thus can have only one child. In
 most cases, the child of a Gtk_Window will thus be a Gtk_Box, which can have
 any number of children.
 
-Some widgets in GtkAda itself are built using this strategy, from the very
-basic `Gtk_Button` to the more advanced `Gtk_File_Selection`.
+Some widgets in GtkAda itself are built using this strategy, starting with the
+very basic `Gtk_Button`.
 
 For example, by default a Gtk_Button contains a Gtk_Label, which displays the
 text of the button (like 'OK' or 'Cancel').
 
-However, it is easy to put a pixmap in a button instead. When you create the
-button, do not specify any label. Thus, no child will be added, and you can
-give it your own. See :file:`gtkada_demo/create_pixmap.adb` for an example on how
-to do that.
+However, it is easy to put something else in a button instead: `Set_Icon_Name`
+displays an icon, and `Set_Child` replaces the label with any widget of your
+choice.
 

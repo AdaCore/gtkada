@@ -188,7 +188,6 @@ belongs here rather than under "one binding away".
 
 - Makefile.in:
   - reactivate tools
-  - reactivate docs (once updated)
 
 - Fix misc.c (look for the "TRANSITION" string)
 

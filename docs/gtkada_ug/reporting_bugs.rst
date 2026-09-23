@@ -6,13 +6,13 @@ How to report bugs
 
 GtkAda is a mature, stable toolkit that is heavily and widely used on a variety
 of platforms.  We test GtkAda using an Ada version of the :file:`gtkada_demo.c`
-file found in the gtk+ distribution.
+file found in the GTK distribution.
 For code examples that demonstrate the use of this toolkit, look within the
 :file:`gtkada_demo/` directory.
 
 There are two kinds of problems you can encounter:
 
-* If the gtk library itself was compiled with warnings turned on, you may get
+* If the GTK library itself was compiled with warnings turned on, you may get
   some  warning messages,  mainly because of types problems.  These warnings
   should not appear, as we have tried to be as type safe as possible  in this
   package. To know exactly where the problem is, compile your program with
@@ -29,8 +29,8 @@ There are two kinds of problems you can encounter:
     ....
     (gdb) where
 
-* In  some  (hopefully) rare cases,   you can even get a  segmentation
-  fault within gtk.  That means there is definitly something wrong either
+* In  some  (hopefully) rare cases, you can even get a segmentation
+  fault within GTK.  That means there is definitely something wrong either
   in your program or in the toolkit.  Please check your program carefully
   and, if you think this is a problem in GtkAda itself, send us an e-mail.
 

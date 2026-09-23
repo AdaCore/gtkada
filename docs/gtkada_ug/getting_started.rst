@@ -17,10 +17,10 @@ How to build and install GtkAda
 This section explains how to build and install GtkAda on your machine.
 
 On Windows systems, we provide an automatic installer that installs GtkAda
-along with dependent components like gtk+ libraries.
+along with dependent components like GTK libraries.
 
 On Unix systems, just follow the instructions listed in the
-:file:`INSTALL` file. Note that the :file:`doinstall.sh` script
+:file:`INSTALL` file. Note that the :file:`doinstall` script
 will compile GtkAda, so make sure the version of GNAT that you want to use is
 in your PATH.
 
@@ -28,18 +28,18 @@ in your PATH.
 How to distribute a GtkAda application
 ======================================
 
-Since GtkAda depends on Gtk+, you usually need to distribute some Gtk+
+Since GtkAda depends on GTK, you usually need to distribute some GTK
 libraries along with your application.
 
-Under some OSes such as Linux, Gtk+ comes preinstalled, so in this case, a
-simple solution is to rely on the preinstalled Gtk+ libraries. See below for
+Under some OSes such as Linux, GTK comes preinstalled, so in this case, a
+simple solution is to rely on the preinstalled GTK libraries. See below for
 more information on the gtkada library itself.
 
-Under other unix systems, GtkAda usually comes with a precompiled set of Gtk+
+Under other unix systems, GtkAda usually comes with a precompiled set of GTK
 libraries that have been specifically designed to be easily redistributed.
 
-In order to use the precompiled Gtk+ binaries that we distribute with GtkAda,
-you need to distribute all the Gtk+ .so libraries along with your application,
+In order to use the precompiled GTK binaries that we distribute with GtkAda,
+you need to distribute all the GTK .so libraries along with your application,
 and use the LD_LIBRARY_PATH environment variable to point to these libraries.
 
 The list of libraries needed is :file:`<gtkada-prefix>/lib/lib*.so.?` or
@@ -69,7 +69,7 @@ environment variables set, as explained above::
    LD_LIBRARY_PATH=$prefix/lib:$LD_LIBRARY_PATH
    export PATH LD_LIBRARY_PATH
 
-Set the following variables as well when using a custom gtk+ build (but not
+Set the following variables as well when using a custom GTK build (but not
 if you are using the system's libraries)::
 
    GDK_PIXBUF_MODULE_FILE=$prefix/lib/gdk-pixbuf-2.0/2.10.0/loaders.cache
@@ -124,7 +124,7 @@ some examples of code that you might find interesting for your own application.
 
 * :file:`docs/` directory:
 
-  It contains the html, info, text and @TeX{} versions of the documentation you
+  It contains the HTML and PDF versions of the documentation you
   are currently reading. Note that the documentation is divided into two
   subdirectories, one containing the user guide, which you are currently
   reading, the other containing the reference manual, which gives detailed
@@ -181,7 +181,7 @@ static library instead.
 Architecture of the toolkit
 ===========================
 
-The gtk+ toolkit has been designed from the beginning to be portable.  It is
+The GTK toolkit has been designed from the beginning to be portable.  It is
 made of two libraries: `gtk` and `gdk`.  In addition, GtkAda provides binding
 to three supporting libraries: `pango`, `cairo` and `glib`.
 
@@ -192,7 +192,7 @@ Since most of its contents are already available in Ada (or in the
 complete binding to it.  For the parts of `Glib` that we do depend on, we
 provide :file:`Glib.*` packages in the GtkAda distribution.
 
-`Gdk` is the platform-dependent part of gtk+, and so there are different
+`Gdk` is the platform-dependent part of GTK, and so there are different
 implementations (for instance, for Win32 and X11 based systems) that implement
 a common API. `Gdk` provides basic graphical functionality to, for instance,
 draw lines, rectangles and pixmaps on the screen, as well as manipulate colors.
@@ -233,7 +233,7 @@ Although the packages have been evolving a lot since the first versions of
 GtkAda, the specs are stabilizing now. We will try as much as possible to
 provide backward compatibility whenever possible.
 
-Since GtkAda is based on gtk+ we have tried to stay as close to it as possible
+Since GtkAda is based on GTK we have tried to stay as close to it as possible
 while using high-level features of the Ada language. It is thus relatively easy
 to convert external examples from C to Ada.
 
@@ -242,25 +242,24 @@ We have tried to adopt a consistent naming scheme for Ada identifiers:
 * The widget names are the same as in C, except that an underscore
   sign (_) is used to separate words, e.g::
 
-    Gtk_Button   Gtk_Color_Selection_Dialog
+    Gtk_Button   Gtk_Color_Dialog_Button
 
-* Because of a clash between Ada keywords and widget names, there
-  are two exceptions to the above general rule::
+* When a name clashes with an Ada keyword, a ``G`` is prepended to the
+  package name, e.g.::
 
-    Gtk.GEntry.Gtk_Entry   Gtk.GRange.Gtk_Range
+    Gtk.GEntry.Gtk_Entry
 
 * The function names are the same as in  C, ignoring the leading
   `gtk_` and the widget name, e.g::
 
-    gtk_misc_set_padding        =>  Gtk.Misc.Set_Padding
-    gtk_toggle_button_set_state =>  Gtk.Toggle_Button.Set_State
+    gtk_window_present           =>  Gtk.Window.Present
+    gtk_toggle_button_set_active =>  Gtk.Toggle_Button.Set_Active
 
 * Most enum types have been grouped in the :file:`gtk-enums.ads` file
 
 * Some features have been implemented as generic packages. These
-  are the timeout functions (see `Gtk.Main.Timeout`), the idle functions
-  (see `Gtk.Main.Idle`), and the data that can be attached to any object
-  (see `Gtk.Object.User_Data`). Type safety is ensured through these
+  are the timeout and idle functions (see `Glib.Main.Generic_Sources`), and
+  the data that can be attached to any object (see `Glib.Object.User_Data`). Type safety is ensured through these
   generic packages.
 
 * Callbacks were the most difficult thing to interface with. These
@@ -270,10 +269,10 @@ We have tried to adopt a consistent naming scheme for Ada identifiers:
   (:ref:`Signal_handling`).
 
 **WARNING:** all the generic packages allocate some memory for internal
-structures, and call internal functions. This memory is freed by gtk
+structures, and call internal functions. This memory is freed by GTK
 itself, by calling some Ada functions. Therefore the generic packages
 have to be instantiated at library level, not inside a subprogram, so
-that the functions are still defined when gtk needs to free the memory.
+that the functions are still defined when GTK needs to free the memory.
 
 **WARNING** Before any other call to the GtkAda library is performed,
 `Gtk.Main.Init` must be invoked first. Most of the time, this
@@ -285,7 +284,7 @@ Widgets Hierarchy
 =================
 
 All widgets in `GtkAda` are implemented as tagged types. They all have a common
-ancestor, called `Gtk.Object.Gtk_Object`. All visual objects have a common
+ancestor, called `Glib.Object.GObject`. All visual objects have a common
 ancestor called `Gtk.Widget.Gtk_Widget`.
 
 The following table describes the list of objects and their inheritance tree.
@@ -293,12 +292,12 @@ As usual with tagged types, all the primitive subprograms defined for a type
 are also known for all of its children. This is a very powerful way to create
 new widgets, as will be explained in :ref:`Creating_new_widgets_in_Ada`.
 
-Although gtk+ was written in C its design is object-oriented, and thus GtkAda
+Although GTK was written in C its design is object-oriented, and thus GtkAda
 has the same structure. The following rules have been applied to convert from C
 names to Ada names: a widget `Gtk_XXX` is defined in the Ada package `Gtk.XXX`,
 in the file :file:`gtk-xxx.ads`. This follows the GNAT convention for file
-names.  For instance, the `Gtk_Text` widget is defined in the package
-`Gtk.Text`, in the file :file:`gtk-text.ads`.
+names.  For instance, the `Gtk_Text_View` widget is defined in the package
+`Gtk.Text_View`, in the file :file:`gtk-text_view.ads`.
 
 Note also that most of the documentation for GtkAda is found in the spec files
 themselves.
