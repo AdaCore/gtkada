@@ -477,7 +477,7 @@ binding = (
 
     "--Gtk.LevelBar",
     "----GtkLevelBarAccessible",  # We do not support atk
-    "--Gtk.LinkButton",
+    "Gtk.LinkButton",
     "----GtkLinkButtonAccessible",  # We do not support atk
     "Gtk.ListBase",
     "--Gtk.ListBox",

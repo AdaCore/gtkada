@@ -84,12 +84,11 @@ with Demo_Registry;
 --  Create_Canvas_View_Routes, Create_Canvas_View_Rtrees, Create_Clipboard,
 --  Create_Cursors, Create_Dnd, Create_File_Chooser, Create_File_Selection,
 --  Create_Fixed, Create_Flow_Box, Create_Font_Chooser, Create_Gestures,
---  Create_Gtkada_Dialog, Create_Link_Buttons, Create_Main_Loop, Create_MDI,
---  Create_Notebook, Create_Opacity, Create_Pixbuf, Create_Print,
---  Create_Progress, Create_Range, Create_Revealer, Create_Selection,
---  Create_Size_Groups, Create_Sources, Create_Spinners,
---  Create_Splittable, Create_Task_Monitor, Create_Test_Idle,
---  Create_Css_Editor, Libart_Demo.
+--  Create_Gtkada_Dialog, Create_Main_Loop, Create_MDI, Create_Notebook,
+--  Create_Opacity, Create_Pixbuf, Create_Print, Create_Progress,
+--  Create_Range, Create_Revealer, Create_Selection, Create_Size_Groups,
+--  Create_Sources, Create_Spinners, Create_Splittable,
+--  Create_Task_Monitor, Create_Test_Idle, Create_Css_Editor, Libart_Demo.
 
 package body Main_Windows is
 
