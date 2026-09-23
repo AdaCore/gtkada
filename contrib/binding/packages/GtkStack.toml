@@ -1,0 +1,20 @@
+# ============================================================
+#   GtkStack
+# ============================================================
+
+[doc]
+group       = "Layout containers"
+gtkada_demo = "create_stack.adb"
+
+[[enum]]
+ctype = "GtkStackTransitionType"
+
+# gtk_stack_get_pages is transfer-full, but Gtk_Selection_Model is an
+# interface handle, for which the generator emits no ownership note, so the
+# caller would otherwise never be told it owns a reference.
+[[method]]
+id = "gtk_stack_get_pages"
+
+[method.doc]
+extend = true
+text = "The caller owns a reference on the result and must Unref it."

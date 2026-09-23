@@ -583,8 +583,10 @@ binding = (
     "----GtkSpinnerAccessible",  # We do not support atk
     "Gtk.SpinButton",
     "----GtkSpinButtonAccessible",  # We do not support atk
-    "--Gtk.Stack",
-    "--Gtk.StackSwitcher",
+    "Gtk.Stack",
+    "Gtk.StackPage",
+    "Gtk.StackSidebar",
+    "Gtk.StackSwitcher",
     "--Gtk.Statusbar",
     "----GtkStatusbarAccessible",  # We do not support atk
     "--GtkStatusIcon",
