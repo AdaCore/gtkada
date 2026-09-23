@@ -1,0 +1,137 @@
+# ============================================================
+#   GtkDialog
+# ============================================================
+
+[doc]
+group = "Dialogs"
+screenshot = "gtk-dialog"
+gtkada_demo = "create_dialog.adb"
+
+[[parameter]]
+name = "response_id"
+type = "Gtk_Response_Type"
+
+[[enum]]
+ctype = "GtkDialogFlags"
+asbitfield = true
+
+[[method]]
+id = "gtk_dialog_get_content_area"
+return = "GtkBox*"
+
+[[method]]
+id = "gtk_dialog_get_response_for_widget"
+return = "GtkResponseType"
+
+[[method]]
+id = "ada_gtk_dialog_new_with_buttons"
+
+[[method.parameter]]
+name = "parent"
+default = "null"
+
+[extra]
+body = '''
+
+   --  The ::response signal carries its response id as a gint, so the
+   --  marshaller below needs an extractor for Gtk_Response_Type. It cannot
+   --  live in Gtk.Arguments with its siblings: that would make
+   --  Gtk.Arguments depend on this obsolescent package.
+
+   function Unchecked_To_Gtk_Response_Type
+     is new Glib.Values.Unsafe_Enum_Nth (Gtk_Response_Type);
+
+   procedure G_New_Dialog
+      (Self  : not null access Gtk_Dialog_Record'Class;
+       Flags : Gtk_Dialog_Flags;
+       Typ   : Glib.GType := Gtk.Dialog.Get_Type)
+   is
+      function Internal
+         (Typ : GType; Flags : Gtk_Dialog_Flags) return System.Address;
+      pragma Import (C, Internal, "ada_g_dialog_new");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Typ, Flags));
+      end if;
+   end G_New_Dialog;
+'''
+
+[[extra.spec]]
+text = '''
+
+   procedure G_New_Dialog
+      (Self  : not null access Gtk_Dialog_Record'Class;
+       Flags : Gtk_Dialog_Flags;
+       Typ   : Glib.GType := Gtk.Dialog.Get_Type);
+   --  Equivalent of Glib.Object.G_New for a dialog. This function should be
+   --  used when you are subclassing the dialog class (for instance to add new
+   --  signals). The Use_Header_Bar flag can only have an impact before the
+   --  dialog is created, so this function will take that into account as
+   --  appropriate. Other flags (Modal and Destroy_With_Parent) are ignored.
+'''
+
+[[extra.type]]
+ctype = "GtkResponseType"
+ada = "Gtk_Response_Type"
+text = '''
+
+   type Gtk_Response_Type is new Gint;
+   --  Type used for Response_Id's.
+   --  Positive values are totally user-interpreted.
+   --  GtkAda will sometimes return Gtk_Response_None if no Response_Id is
+   --  available.
+   --
+   --  Typical usage is:
+   --    procedure On_Response
+   --      (Self : access Gtk_Dialog_Record'Class;
+   --       Response_Id : Gtk_Response_Type) is
+   --    begin
+   --       if Response_Id = Gtk_Response_Accept then
+   --          blah;
+   --       end if;
+   --    end On_Response;
+
+   Gtk_Response_None : constant Gtk_Response_Type := -1;
+   --  GtkAda returns this if a response widget has no Response_Id,
+   --  or if the dialog gets programmatically hidden or destroyed.
+
+   Gtk_Response_Reject : constant Gtk_Response_Type := -2;
+   Gtk_Response_Accept : constant Gtk_Response_Type := -3;
+   --  GtkAda won't return these unless you pass them in
+   --  as the response for an action widget. They are
+   --  for your convenience.
+
+   Gtk_Response_Delete_Event : constant Gtk_Response_Type := -4;
+   --  If the dialog is deleted through the button in the titlebar
+
+   Gtk_Response_OK     : constant Gtk_Response_Type := -5;
+   Gtk_Response_Cancel : constant Gtk_Response_Type := -6;
+   Gtk_Response_Close  : constant Gtk_Response_Type := -7;
+   Gtk_Response_Yes    : constant Gtk_Response_Type := -8;
+   Gtk_Response_No     : constant Gtk_Response_Type := -9;
+   Gtk_Response_Apply  : constant Gtk_Response_Type := -10;
+   Gtk_Response_Help   : constant Gtk_Response_Type := -11;
+   --  These are returned from dialogs, and you can also use them
+   --  yourself if you like.
+'''
+
+[[extra.gir_element]]
+xml = '''
+<gir:constructor xmlns:c="http://www.gtk.org/introspection/c/1.0" xmlns:gir="http://www.gtk.org/introspection/core/1.0" c:identifier="ada_gtk_dialog_new_with_buttons" name="new" version="GtkAda 1.0">
+             <gir:doc>Create a new dialog with a specific title, and specific attributes. Parent is the transient parent for the dialog (ie the one that is used for reference for the flag Destroy_With_Parent, or to compute the initial position of the dialog). Buttons are added afterwards with Add_Button.</gir:doc>
+           <gir:return-value>
+              <gir:type name="GtkDialog" c:type="GtkDialog*" />
+           </gir:return-value>
+           <gir:parameters>
+              <gir:parameter name="title">
+                 <gir:type name="utf8" c:type="gchar*" />
+              </gir:parameter>
+              <gir:parameter name="parent">
+                 <gir:type name="Window" c:type="GtkWindow*" />
+              </gir:parameter>
+              <gir:parameter name="flags">
+                 <gir:type name="DialogFlags" c:type="GtkDialogFlags" />
+              </gir:parameter>
+           </gir:parameters>
+        </gir:constructor>
+'''

@@ -392,7 +392,7 @@ binding = (
     "----GtkContainerClass",
     "Gtk.CssProvider",
     "--Gtk.CssSection",
-    "--Gtk.Dialog",
+    "Gtk.Dialog",
     "Gtk.DrawingArea",
     "Gtk.Entry",
     "----GtkEntryAccessible",  # We do not support atk
@@ -502,7 +502,7 @@ binding = (
     "--GtkMenuShell",
     "----GtkMenuShellAccessible",  # We do not support atk
     "--GtkMenuToolButton",
-    "--Gtk.MessageDialog",
+    "Gtk.MessageDialog",
     "----GtkMountOperation",  # Requires a lot of GIO
     "Gtk.NativeDialog",
     "Gtk.Notebook",

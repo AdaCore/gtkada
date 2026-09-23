@@ -95,6 +95,7 @@ flags pointing at the spot that needs an override:
 | A signal callback parameter typed with a package name (e.g. `Gdk.Clipboard` instead of `Gdk.Clipboard.Gdk_Clipboard_Record'Class`) | signal parameters are matched by their GIR name, which needs an entry in `naming.girname_to_ctype` in [`data.py`](data.py) (e.g. `"Gdk.Clipboard": "GdkClipboard"`) |
 | A method using a callback type that does not exist       | inject the access-to-subprogram via [`[[extra.spec]]`](#extraspec--code-injected-into-the-spec) and reference it from a [`[[method.parameter]]`](#methodparameter--per-parameter-overrides) `type` override |
 | A method that cannot be expressed in Ada at all          | suppress it with `bind = false` and re-expose it through `[extra]` |
+| A `printf`-style method missing entirely, with `No binding for <name>: varargs` on the generator's output | recover it with a `varargs` parameter defaulting to a trailing NULL — see [Recovering a varargs subprogram](#recovering-a-varargs-subprogram) |
 | A method whose type would make two packages with each other | break the cycle with a [`limited with`](#extrawith_spec--extra-with-clauses-in-the-spec) in one spec plus a plain `with` in its body |
 
 When in doubt, look for a similar pattern in an existing TOML — many
@@ -285,6 +286,37 @@ name       = "label"
 default    = "\"\""
 allow_none = "1"
 ```
+
+### Recovering a varargs subprogram
+
+The generator drops any subprogram with a `...` parameter: Ada has no
+way to build a C variadic call. A `printf`-style entry point can still
+be recovered when the only argument ever needed is the format string
+itself, by naming the variadic tail `varargs` and giving it a type and a
+default that amount to a trailing `NULL`:
+
+```toml
+[[method]]
+id = "gtk_message_dialog_new"
+
+[[method.parameter]]
+name    = "message_format"
+ada     = "message"
+default = "\"\""
+
+[[method.parameter]]
+name    = "varargs"
+ada     = ""
+ctype   = "gpointer"
+default = "System.Null_Address"
+```
+
+The empty `ada` omits the tail from the Ada profile while still passing
+its default to C, so the import is `(…, message, NULL)` and the message
+is used as-is. The catch is that it remains a *format* string: a caller
+writing `"50% done"` hands `printf` a conversion with no argument
+behind it. Say so in the subprogram's `[method.doc]`, as
+`GtkMessageDialog.toml` does.
 
 ### Parameter modes
 
