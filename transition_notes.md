@@ -60,7 +60,6 @@ land, not a contract.
 | `Gtk.Revealer` | `Revealer`, `Read More` |
 | `Gtk.FlowBox` (+ `Gtk.FlowBoxChild`) | `Flow Box` |
 | `Gtk.SearchEntry` (+ `Gtk.SearchBar`) | `Entry/Search Entry`, and would enable upstream's search box in our own shell |
-| `Gtk.HeaderBar` | `Header Bar` |
 | `Gtk.InfoBar` | `Info Bars` |
 | `Gtk.AspectFrame` | `Aspect Frame` |
 | `Gtk.Assistant` | `Assistant` |
