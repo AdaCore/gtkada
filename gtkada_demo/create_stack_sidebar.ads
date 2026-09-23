@@ -23,9 +23,9 @@
 
 with Gtk.Frame;
 
-package Create_Stack is
+package Create_Stack_Sidebar is
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class);
    function Help return String;
 
-end Create_Stack;
+end Create_Stack_Sidebar;

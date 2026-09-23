@@ -1,0 +1,7 @@
+# ============================================================
+#   GtkStackSidebar
+# ============================================================
+
+[doc]
+group       = "Layout containers"
+gtkada_demo = "create_stack_sidebar.adb"

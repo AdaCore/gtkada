@@ -49,6 +49,8 @@ with Create_Paned;
 with Create_Reparent;
 with Create_Scrolled;
 with Create_Spin;
+with Create_Stack;
+with Create_Stack_Sidebar;
 with Create_Test_Timeout;
 with Create_Text_View;
 with Create_Toggle_Buttons;
@@ -131,6 +133,11 @@ package body Demo_Registry is
          Create_Color_Chooser.Help'Access),
       To_Demo
         ("Spin Buttons", Create_Spin.Run'Access, Create_Spin.Help'Access),
+      To_Demo ("Stack", Create_Stack.Run'Access, Create_Stack.Help'Access),
+      To_Demo
+        ("Stack Sidebar",
+         Create_Stack_Sidebar.Run'Access,
+         Create_Stack_Sidebar.Help'Access),
       To_Demo
         ("Text View/Multiple Views",
          Create_Text_View.Run'Access,
