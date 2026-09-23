@@ -54,7 +54,6 @@ land, not a contract.
 | `Gtk.EventController` + the `Gtk.Gesture*` family | `Gestures`, `Paint`, `Text View/Hypertext`, `Constraints/Interactive Constraints` |
 | `GtkDragSource` + `GtkDropTarget` | `Drag-and-Drop`; part of `Pickers and Launchers`; and `Clipboard`, whose demo image is a drag source (that one also needs `Gtk.Image`). Both are absent from `contrib/data.py` — and they, not the generic `Gtk.EventController` / gesture family, are what gtk4 DnD is built from. The content side they need is already generated: `Gdk.Content_Provider`, `Gdk.Content_Formats`, `Gdk.Drag`, `Gdk.Drop` |
 | `Gtk.ListBox` + `Gtk.ListBoxRow` | `List Box/Complex`, `List Box/Controls` |
-| `Gtk.Stack` (+ `StackSwitcher`, `StackSidebar`) | `Stack`, `Stack Sidebar` |
 | `Gtk.ShortcutController` | `Shortcuts` (`shortcut_triggers.c`) — the `Gtk.Shortcut` / `Shortcut_Action` / `Shortcut_Trigger` half is already bound |
 | `Gtk.SizeGroup` | `Size Groups` |
 | `Gtk.Overlay` | `Overlay/Interactive Overlay`, `Overlay/Decorative Overlay`, `Overlay/Transparency` (`Gtk.Overlay_Layout` is bound, the widget is not) |
@@ -126,10 +125,9 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_revealer` | `Gtk.Revealer` — genuinely a single binding |
   | `create_size_groups` | `Gtk.Size_Group`, `Gtk.Handlers` *(gtk3)* |
   | `create_spinners` | `Gtk.Spinner`, plus `Common` |
-  | `create_stack` | `Gtk.Stack`, `Gtk.Stack_Switcher` — no other blocker |
 
-  Only `create_fixed`, `create_gestures`, `create_gl`, `create_revealer` and
-  `create_stack` are blocked purely on bindings Step 2 already tracks. Every
+  Only `create_fixed`, `create_gestures`, `create_gl` and `create_revealer`
+  are blocked purely on bindings Step 2 already tracks. Every
   other package wants at least one unit no upstream demo needs and Step 2
   therefore never schedules (`Gtk.Calendar`, the combo/scale/scrollbar
   family, `Gtk.Container`, `Gtk.Clipboard`, `Gtk.Selection_Data`,
