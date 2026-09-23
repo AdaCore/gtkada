@@ -67,7 +67,6 @@ land, not a contract.
 | `Gtk.Spinner` | `Spinner` |
 | `Gtk.Scale` (+ `Gtk.Range`) | `Scales` |
 | `Gtk.LevelBar` / `Gtk.ProgressBar` | no upstream demo of its own; kept here because both are one-class bindings that several legacy demos wait on |
-| `Gtk.LinkButton` | `Links` |
 | `Gtk.IconView` | `Icon View/Icon View Basics`, `Icon View/Editing and Drag-and-Drop` (the latter drags through `GtkIconView`'s own model-drag API, not the DnD controllers) |
 | `Gtk.PasswordEntry` | `Entry/Password Entry` |
 | `Gtk.Accessible.Update_State` / `Update_Property` / `Update_Relation` | `Error States`. The demo's whole subject is flagging an entry invalid and describing why, which is these three calls; every widget it uses is already bound. All three are varargs in C and so unbound, but each has a non-varargs `_value` twin (`gtk_accessible_update_state_value` and friends) taking parallel arrays — that is the shape to bind |
@@ -115,7 +114,6 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_font_chooser` | `Gtk.Font_Chooser_Widget` |
   | `create_gestures` | `Gtk.Gesture`, `Gtk.Gesture_Long_Press`, `Gtk.Gesture_Zoom`, `Gtk.Drawing_Area` |
   | `create_gl` | `Gtk.GLArea`, `Gtk.GRange` (`--Gtk.Range`), `Gtk.Scale`. Its `Epoxy`, `OpenGL` and `Create_GL.GLSL` dependencies are demo-local sources and fine |
-  | `create_link_buttons` | `Gtk.Link_Button`, `Gtk.Handlers` *(gtk3)* |
   | `create_notebook` | `Gtk.Combo_Box_Text`, `Gtk.Image`, `Gdk.Pixbuf` *(gtk3)*, `Gtk.Handlers` *(gtk3)*, plus `Common`. `Gtk.Notebook` itself is bound |
   | `create_opacity` | `Gtk.Scale`, plus `Common` |
   | `create_pixbuf` | `Gtk.Drawing_Area`, `Gtk.Image`, `Gdk.Pixbuf` *(gtk3)*, `Gdk.Cairo` *(gtk3)*, `Gtkada.Handlers` *(gtk3)* |
@@ -152,7 +150,7 @@ checked against its `with` clauses *and*, where it loads one, its `.ui` /
   | --- | --- | --- |
   | `create_application` | `Gtk.Menu`, `Gtk.Menu_Tool_Button`; `application.ui` uses `GtkToolbar`, `GtkToolButton`, `GtkMenuToolButton`, `GtkSeparatorToolItem`, `GtkInfoBar`, `GtkStatusbar` | rebuild the menu from `Glib.Menu` + `Gtk.Popover_Menu_Bar` (both bound), drop the tool button, and rewrite `application.ui`: the four tool classes are gone from gtk4, so `Gtk.Builder` cannot instantiate them at all. `GtkInfoBar` / `GtkStatusbar` survive in 4.22 (deprecated) and the builder can still create them, but are unbound the moment Ada touches one. The Ada side also calls `Win.Add` and `Gtk_Menu_Tool_Button`, neither of which gtk4 has. `menus.ui` is a plain `GMenu` model and carries over unchanged |
   | `create_builder` | `Gtk.Handlers` *(gtk3)*, `Common`; `gtkbuilder_example.xml` uses `GtkVBox`, `GtkHBox`, `GtkTable` and connects `delete_event` / `destroy` | port the callbacks to the generated `On_*` setters and rewrite the XML: box and table classes went in gtk4 (`GtkBox` with an orientation, `GtkGrid`), `delete_event` becomes `GtkWindow::close-request`, `GtkWidget::destroy` is gone |
-  | `create_gtkada_builder` | `Gtkada.Builder` *(gtk3)*, `Common`; the same `gtkbuilder_example.xml` plus `gtkbuilder_custom_widget.xml` (`GtkVBox`, `GtkLinkButton`) | a gtk4 port of `Gtkada.Builder`, or a rewrite onto `Gtk.Builder` + `Gtk.Builder_Cscope` (both bound); the same XML rewrite; and the body casts `Get_Object` results to `Gtk_Hbox`, which gtk4's `Gtk.Box` no longer exports. Worth checking rather than assuming: whether `Gtk.Builder` can still instantiate the unbound `GtkLinkButton` through its type lookup |
+  | `create_gtkada_builder` | `Gtkada.Builder` *(gtk3)*, `Common`; the same `gtkbuilder_example.xml` plus `gtkbuilder_custom_widget.xml` (`GtkVBox`, `GtkLinkButton`) | a gtk4 port of `Gtkada.Builder`, or a rewrite onto `Gtk.Builder` + `Gtk.Builder_Cscope` (both bound); the same XML rewrite; and the body casts `Get_Object` results to `Gtk_Hbox`, which gtk4's `Gtk.Box` no longer exports |
   | `create_main_loop` | `Gtk.Main.Main`, `Gtk.Main.Main_Quit`, `Common` | gone from gtk4: the generated `Gtk.Main` keeps only the version accessors and `Init`. Re-think the demo around `Glib.Main` or `Gtk.Application`, or retire it — its subject is the recursive `gtk_main` gtk4 removed |
   | `create_sources` | `Gtkada.Handlers` *(gtk3)* | as `create_builder`; it loads no UI file |
   | `create_task_monitor` | `Gtk.Progress_Bar`, `Gtk.Handlers` *(gtk3)*, `Common`, and `Task_Worker` from `gtkada_demo/task_project/src` | the binding and the handler port, *and* the task project: `gtkada_demo.gpr` has `with "task_project/task_project"` commented out under a `TRANSITION` marker and `Source_Dirs` set to `"./"`, so `Task_Worker` is out of the source closure. Re-enable the project or fold the worker into `gtkada_demo/` |

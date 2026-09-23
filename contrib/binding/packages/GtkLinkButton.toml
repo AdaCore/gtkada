@@ -1,0 +1,16 @@
+# ============================================================
+#   GtkLinkButton
+# ============================================================
+
+[doc]
+screenshot  = "gtk-link_button"
+group       = "Buttons and Toggles"
+gtkada_demo = "create_link_buttons.adb"
+
+[[method]]
+id = "gtk_link_button_new_with_label"
+
+[[method.parameter]]
+name       = "label"
+default    = "\"\""
+allow_none = "1"

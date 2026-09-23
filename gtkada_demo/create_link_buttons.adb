@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 2010-2018, AdaCore                     --
+--                     Copyright (C) 2010-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,27 +22,31 @@
 ------------------------------------------------------------------------------
 
 with Ada.Text_IO;     use Ada.Text_IO;
-with Glib;            use Glib;
+with Glib.Object;     use Glib.Object;
 with Gtk;             use Gtk;
 with Gtk.Box;         use Gtk.Box;
 with Gtk.Button;      use Gtk.Button;
-with Gtk.Handlers;    use Gtk.Handlers;
+with Gtk.Enums;       use Gtk.Enums;
+with Gtk.Frame;       use Gtk.Frame;
 with Gtk.Link_Button; use Gtk.Link_Button;
 with Gtk.Widget;      use Gtk.Widget;
 
 package body Create_Link_Buttons is
 
-   package Link_Button_Cb is new Handlers.Callback (Gtk_Link_Button_Record);
-   package Link_Button_Return_Cb is new Handlers.Return_Callback
-     (Gtk_Link_Button_Record, Boolean);
+   function On_Link_Button_Clicked
+     (Button : access Gtk_Link_Button_Record'Class) return Boolean;
+   --  Report the URI and mark the button visited, returning True so that
+   --  Gtk.Link_Button's default handler does not hand the URI to a launcher.
+
+   procedure On_Reset_Button_Clicked (Widget : access GObject_Record'Class);
+   --  Clear the visited state of the link button passed as the slot.
 
    ----------------------------
    -- On_Link_Button_Clicked --
    ----------------------------
 
    function On_Link_Button_Clicked
-     (Button : access Gtk_Link_Button_Record'Class) return Boolean
-   is
+     (Button : access Gtk_Link_Button_Record'Class) return Boolean is
    begin
       Put_Line ("Link_Button clicked: " & Button.Get_Uri);
       Set_Visited (Button, True);
@@ -53,11 +57,9 @@ package body Create_Link_Buttons is
    -- On_Reset_Button_Clicked --
    -----------------------------
 
-   procedure On_Reset_Button_Clicked
-     (Widget : access Gtk_Link_Button_Record'Class)
-   is
+   procedure On_Reset_Button_Clicked (Widget : access GObject_Record'Class) is
    begin
-      Set_Visited (Widget, False);
+      Set_Visited (Gtk_Link_Button (Widget), False);
    end On_Reset_Button_Clicked;
 
    ----------
@@ -81,30 +83,24 @@ package body Create_Link_Buttons is
       Link_Button1 : Gtk_Link_Button;
       Reset_Button : Gtk_Button;
    begin
-      Gtk.Frame.Set_Label (Frame, "Link_Buttons");
+      Gtk.Frame.Set_Label (Frame, "Link Buttons");
 
-      Gtk_New_Vbox (Box1, Homogeneous => False, Spacing => 0);
-      Gtk.Frame.Add (Frame, Box1);
+      Gtk_New (Box1, Orientation => Orientation_Vertical, Spacing => 6);
+      Box1.Set_Homogeneous (False);
+      Frame.Set_Child (Box1);
 
       Gtk_New_With_Label
-        (Widget => Link_Button1,
-         URI    => "http://www.example.com/",
-         Label  => "Click me.");
-      Link_Button_Return_Cb.Connect
-         (Link_Button1, Signal_Activate_Link, On_Link_Button_Clicked'Access);
-      Pack_Start
-        (Box1, Link_Button1, Expand => False, Fill => False, Padding => 0);
+        (Self  => Link_Button1,
+         URI   => "http://www.example.com/",
+         Label => "Click me.");
+      Link_Button1.Set_Halign (Align_Start);
+      Link_Button1.On_Activate_Link (On_Link_Button_Clicked'Access);
+      Box1.Append (Link_Button1);
 
       Gtk_New (Reset_Button, "Reset Link_Button's ""visited"" state");
-      Link_Button_Cb.Object_Connect
-        (Reset_Button,
-         "clicked",
-         On_Reset_Button_Clicked'Access,
-         Link_Button1);
-      Pack_Start
-        (Box1, Reset_Button, Expand => False, Fill => False, Padding => 0);
-
-      Show_All (Box1);
+      Reset_Button.Set_Halign (Align_Start);
+      Reset_Button.On_Clicked (On_Reset_Button_Clicked'Access, Link_Button1);
+      Box1.Append (Reset_Button);
    end Run;
 
 end Create_Link_Buttons;

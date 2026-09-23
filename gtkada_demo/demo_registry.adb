@@ -43,6 +43,7 @@ with Create_Drawing_Area;
 with Create_Entry;
 with Create_Frame;
 with Create_Label;
+with Create_Link_Buttons;
 with Create_List_Store;
 with Create_Menu;
 with Create_Paned;
@@ -81,6 +82,10 @@ package body Demo_Registry is
         ("Buttons/Check Buttons",
          Create_Check_Buttons.Run'Access,
          Create_Check_Buttons.Help'Access),
+      To_Demo
+        ("Buttons/Link Buttons",
+         Create_Link_Buttons.Run'Access,
+         Create_Link_Buttons.Help'Access),
       To_Demo
         ("Buttons/Toggle Buttons",
          Create_Toggle_Buttons.Run'Access,
