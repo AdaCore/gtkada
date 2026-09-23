@@ -71,7 +71,7 @@ land, not a contract.
 | `Gtk.LinkButton` | `Links` |
 | `Gtk.IconView` | `Icon View/Icon View Basics`, `Icon View/Editing and Drag-and-Drop` (the latter drags through `GtkIconView`'s own model-drag API, not the DnD controllers) |
 | `Gtk.PasswordEntry` | `Entry/Password Entry` |
-| `Gtk.Dialog` / `Gtk.MessageDialog` | `Dialogs`, `Error States` |
+| `Gtk.Accessible.Update_State` / `Update_Property` / `Update_Relation` | `Error States`. The demo's whole subject is flagging an entry invalid and describing why, which is these three calls; every widget it uses is already bound. All three are varargs in C and so unbound, but each has a non-varargs `_value` twin (`gtk_accessible_update_state_value` and friends) taking parallel arrays — that is the shape to bind |
 
 **Needs a substantial new area** - waiting on more than one binding.
 
@@ -138,8 +138,8 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   `Gtk.Font_Chooser_Widget` is the near miss — Step 2's font introspection
   row names `GtkFontChooser`, which would carry it.
 
-**`Common` is a shared blocker.** `gtkada_demo/common.ads` withs `Gtk.Dialog`
-(`--`) and `Gtk.Handlers` *(gtk3)*, so it does not build. All ten of its
+**`Common` is a shared blocker.** `gtkada_demo/common.ads` withs
+`Gtk.Handlers` *(gtk3)*, so it does not build. All ten of its
 users are commented out today — `create_builder`, `create_entry`,
 `create_gtkada_builder`, `create_main_loop`, `create_notebook`,
 `create_opacity`, `create_progress`, `create_spinners`,
@@ -170,9 +170,7 @@ checked against its `with` clauses *and*, where it loads one, its `.ui` /
 gtk4 ports if we decide to bind them: `create_canvas`, the nine
 `create_canvas_view_*`, `create_mdi`, `create_splittable`,
 `create_gtkada_dialog`, `libart_demo`, `test_rtree`. `create_gtkada_dialog`
-belongs here rather than under "one binding away": beyond `Gtk.Dialog` /
-`Gtk.Message_Dialog` it withs `Gtkada.Dialogs` *(gtk3)*, which needs its own
-gtk4 port.
+belongs here rather than under "one binding away".
 
 **Gone with gtk4**, to be deleted rather than revived:
 `create_file_selection`, `create_selection` (gtk3 selection API).
@@ -181,6 +179,10 @@ gtk4 port.
 
 - In case of message reporting missing "Unchecked_To_X", uncomment the
   corresponding functions in src/gtk-arguments.ads and src/gtk-arguments.adb.
+  When the type belongs to an obsolescent package, put the instantiation in
+  that package's own `[extra] body` instead, so that `Gtk.Arguments` does not
+  have to `with` it: `Gtk_Response_Type` in `GtkDialog.toml` is the worked
+  example.
 
 ## To do (globally)
 
@@ -350,7 +352,8 @@ What circular dependencies are left, and why:
 ## Dialog widgets (work item #46)
 
 Bound so far: `GtkNativeDialog`, `GtkAlertDialog`, `GtkFontDialog` +
-`GtkFontDialogButton`, `GtkColorDialog` + `GtkColorDialogButton`.
+`GtkFontDialogButton`, `GtkColorDialog` + `GtkColorDialogButton`, and
+`GtkDialog` + `GtkMessageDialog`.
 `GdkRGBA` was reactivated to support `GtkColorDialog`. A minimal
 `src/gdk.ads` parent unit was reintroduced for the same reason. The
 GIO async-result pattern is supported via an opaque
@@ -359,10 +362,11 @@ GIO async-result pattern is supported via an opaque
 
 Intentionally deferred:
 
-- `GtkAppChooserDialog` — deprecated since 4.10, and depends on the
-  yet-to-be-reactivated `GtkDialog`. Dropped from the work item.
-- `GtkPageSetupUnixDialog` — depends on `GtkDialog`, `GtkPageSetup`
-  and `GtkPrintSettings`. Revisit once those are bound.
+- `GtkAppChooserDialog` — deprecated since 4.10. Dropped from the
+  work item; its `GtkDialog` dependency has since been bound, so only
+  the deprecation stands in the way now.
+- `GtkPageSetupUnixDialog` — depends on `GtkPageSetup` and
+  `GtkPrintSettings`. Revisit once those are bound.
 - `GtkFileDialog` — every interesting method takes or returns
   `GFile*` / `GListModel<GFile>`. Revisit when `GFile` (Gio
   interface) is wired up.

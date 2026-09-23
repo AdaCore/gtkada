@@ -38,6 +38,7 @@ with Create_Color_Chooser;
 with Create_Column_View;
 with Create_Css_Accordion;
 with Create_Custom_Widget;
+with Create_Dialog;
 with Create_Drawing_Area;
 with Create_Entry;
 with Create_Frame;
@@ -82,6 +83,8 @@ package body Demo_Registry is
         ("Buttons/Toggle Buttons",
          Create_Toggle_Buttons.Run'Access,
          Create_Toggle_Buttons.Help'Access),
+      To_Demo
+        ("Dialogs", Create_Dialog.Run'Access, Create_Dialog.Help'Access),
       To_Demo
         ("Drawing Area",
          Create_Drawing_Area.Run'Access,

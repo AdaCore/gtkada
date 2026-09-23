@@ -1,0 +1,97 @@
+# ============================================================
+#   GtkMessageDialog
+# ============================================================
+
+[doc]
+group = "Dialogs"
+screenshot = "messagedialog"
+
+[[parameter]]
+name = "self"
+ada = "Dialog"
+
+[[enum]]
+ctype = "GtkMessageType"
+prefix = "GTK_"
+
+[[enum]]
+ctype = "GtkButtonsType"
+prefix = "GTK_"
+
+# The four subprograms below are varargs in C. They are recovered by
+# declaring the variadic tail explicitly as a gpointer defaulting to
+# System.Null_Address, so that the import passes a trailing NULL and the
+# message is used verbatim. The message therefore remains a printf format
+# string: see the warning repeated in each [method.doc] below.
+
+[[method]]
+id = "gtk_message_dialog_new"
+
+[[method.parameter]]
+name = "message_format"
+ada = "message"
+default = "\"\""
+
+[[method.parameter]]
+name = "varargs"
+ada = ""
+ctype = "gpointer"
+default = "System.Null_Address"
+
+[method.doc]
+extend = true
+text = "Message is passed to printf as its format string, so a literal '%' in it must be doubled as '%%'."
+
+[[method]]
+id = "gtk_message_dialog_new_with_markup"
+
+[[method.parameter]]
+name = "message_format"
+ada = "message"
+default = "\"\""
+
+[[method.parameter]]
+name = "varargs"
+ada = ""
+ctype = "gpointer"
+default = "System.Null_Address"
+
+[method.doc]
+extend = true
+text = "Message is passed to printf as its format string, so a literal '%' in it must be doubled as '%%'. Use Set_Markup instead when the markup is already in hand."
+
+[[method]]
+id = "gtk_message_dialog_format_secondary_text"
+
+[[method.parameter]]
+name = "message_format"
+ada = "message"
+default = "\"\""
+
+[[method.parameter]]
+name = "varargs"
+ada = ""
+ctype = "gpointer"
+default = "System.Null_Address"
+
+[method.doc]
+extend = true
+text = "Message is passed to printf as its format string, so a literal '%' in it must be doubled as '%%'."
+
+[[method]]
+id = "gtk_message_dialog_format_secondary_markup"
+
+[[method.parameter]]
+name = "message_format"
+ada = "message"
+default = "\"\""
+
+[[method.parameter]]
+name = "varargs"
+ada = ""
+ctype = "gpointer"
+default = "System.Null_Address"
+
+[method.doc]
+extend = true
+text = "Message is passed to printf as its format string, so a literal '%' in it must be doubled as '%%'."

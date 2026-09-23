@@ -37,7 +37,7 @@ bindings, kept as a quarry to port from.
 
 When you bind a new widget, a demo in `gtkada_demo/` is desirable alongside
 the testsuite test. Either add a `create_<widget>.{ads,adb}` package and
-register it in the `Demos` array of `gtkada_demo/main_windows.adb`, or
+register it in the `Demos` array of `gtkada_demo/demo_registry.adb`, or
 extend the demo of the closest related widget. Then point the widget's
 `contrib/binding/packages/Gtk<Widget>.toml` at it with a
 `gtkada_demo = "create_<widget>.adb"` key in its `[doc]` block, so that the
