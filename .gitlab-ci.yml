@@ -55,8 +55,8 @@ build:
         anod build gtkada ;
       fi
 
+    # Export to GitLab pages
     - gnatcov_report_dir=$(pwd)/gnatcov_report/
-      # Export to GitLab pages
     - |
       if [[ $CI_PIPELINE_SOURCE = "merge_request_event" ]]; then
         target_subdir=MRs/$CI_MERGE_REQUEST_IID
@@ -84,3 +84,30 @@ build:
         path: gnatcov_report/cobertura/cobertura.xml
     paths:
       - gnatcov_report/cobertura/cobertura.xml
+
+build-doc:
+  services:
+    - image:gtk-deps
+    - cpu:8
+    - mem:16
+  stage: build
+  interruptible: true
+  rules:
+    - if: $CI_PIPELINE_SOURCE == 'merge_request_event'
+    - if: $CI_PIPELINE_SOURCE == 'pipeline'
+
+  script:
+    # Build the doc using anod
+    - generic_anod_ci
+    - . /tmp/ci_env.sh
+    - anod build gtkada-doc
+
+    # Upload the doc to gitlab-pages
+    - WD=$(anod info build gtkada-doc --show working_dir)
+    - |
+      if [[ $CI_PIPELINE_SOURCE = "merge_request_event" ]]; then
+        target_subdir=MRs/$CI_MERGE_REQUEST_IID/doc
+      else
+        target_subdir=$CI_COMMIT_BRANCH/doc
+      fi
+    - publish-pages $WD/install --target-subdir $target_subdir --expires 30
