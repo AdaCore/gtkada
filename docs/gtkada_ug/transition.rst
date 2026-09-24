@@ -19,7 +19,7 @@ will if you are writting your own container widgets.
 
 The gtk+ developers have documented various things that will likely need
 to be changed in user applications. The page at
-http://developer.gnome.org/gtk3/3.3/gtk-migrating-2-to-3.html provides a
+https://docs.gtk.org/gtk3/migrating-2to3.html provides a
 migration guide. Its code samples are in C, but should be applicable to
 Ada quite easily.
 
@@ -1078,8 +1078,7 @@ Gtkada.Properties
 
 This package has been removed. It used to provide a dialog allowing you to
 view and edit the properties of widgets in your application, live. This is
-now provided directly by third parties through the GtkParasite tool.
-See http://code.google.com/p/gtkparasite/
+now provided by the GTK Inspector, which is built into GTK itself.
 
 Gnome
 =====

@@ -188,7 +188,6 @@ belongs here rather than under "one binding away".
 
 - Makefile.in:
   - reactivate tools
-  - reactivate docs (once updated)
 
 - Fix misc.c (look for the "TRANSITION" string)
 
@@ -271,9 +270,22 @@ GdkKeymapKey:
 
 - when done, reactivate bindings in GdkDisplay.toml
 
+GApplication.toml:
+
+- `g_application_open` and the "open" signal are disabled ("requires
+  GFile"). Bind them, so that `G_Application_Handles_Open` becomes usable
+  from Ada, then document it: add an "Opening files" section to
+  `docs/gtkada_ug/applications.rst` (with a sample in
+  `testsuite/tests/user-guide/ug_application.adb`), and list the flag in
+  its "Command line and single instance" section.
+
 GtkApplication.toml:
 
 - when done, reactivate bindings in GtkWindow.toml
+  (`gtk_window_get_application` / `gtk_window_set_application`), then
+  mention `Gtk.Window.Set_Application` alongside
+  `Gtk.Application.Add_Window` in `docs/gtkada_ug/applications.rst`
+  ("Creating the main window").
 
 GtkWidget.toml:
 

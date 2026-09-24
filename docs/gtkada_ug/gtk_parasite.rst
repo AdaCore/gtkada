@@ -2,7 +2,7 @@
 Using GtkParasite to inspect and modify running GtkAda applications
 *******************************************************************
 
-GtkParasite is a tool that enables one to inspect running Gtk+ applications. It’s usable with GtkAda application without any Ada specific recommendations.
+GtkParasite is a tool that enables one to inspect running GTK applications. It’s usable with GtkAda application without any Ada specific recommendations.
 
 When it is installed, you have to make sure that your application will be able to access GtkParasite library. This means either :
 

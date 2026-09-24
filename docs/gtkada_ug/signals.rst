@@ -58,14 +58,19 @@ Connecting via the `On_*` procedures
 Each widget has a number of primitive operations (including inherited
 ones) for all the signals it might emit. In fact, for each signal there
 are two `On_<signal_name>` procedures that can be used to easily connect
-to the corresponding signal::
+to the corresponding signal:
 
-    procedure Handler (Button : access Gtk_Button_Record'Class) is
-    begin
-       ...
-    end Handler;
+.. literalinclude:: ../../testsuite/tests/user-guide/ug_signals.adb
+   :language: ada
+   :start-after: --  START handler
+   :end-before: --  END handler
+   :dedent: 3
 
-    Button.On_Clicked (Handler'Access);
+.. literalinclude:: ../../testsuite/tests/user-guide/ug_signals.adb
+   :language: ada
+   :start-after: --  START connect
+   :end-before: --  END connect
+   :dedent: 6
 
 The code above ensures that the procedure `Handler` is called whenever the
 button is clicked.
@@ -76,23 +81,28 @@ and thus are type-safe.
 The type of the first parameter to the handler is always the type where
 the signal is defined, not the type to which the handler is connected.
 
-For instance, the "draw" signal is defined for a `Gtk_Widget`. But if you
-connect this signal to a `Gtk_Button`, the first paramter of the handler
+For instance, the "map" signal is defined for a `Gtk_Widget`. But if you
+connect this signal to a `Gtk_Button`, the first parameter of the handler
 is always of type `access Gtk_Widget_Record'Class`.
 
 There is a second version of the `On_*` procedures, which is used to pass a
 different object than the one the signal is connected to. In practice, this is
-the version that is used more often. For instance, clicking on a toolbar button
+the version that is used more often. For instance, clicking on a button
 will in general affect some other widget than the button itself, and you would
 typically pass the main window as a parameter to the handler. Here is an
-example, note how the type of the first parameter is different::
+example, note how the type of the first parameter is different:
 
-    procedure Handler (Win : access GObject_Record'Class) is
-    begin
-       ...
-    end Handler;
+.. literalinclude:: ../../testsuite/tests/user-guide/ug_signals.adb
+   :language: ada
+   :start-after: --  START slot_handler
+   :end-before: --  END slot_handler
+   :dedent: 3
 
-    Button.On_Clicked (Handler'Access, Slot => Main_Window);
+.. literalinclude:: ../../testsuite/tests/user-guide/ug_signals.adb
+   :language: ada
+   :start-after: --  START connect_slot
+   :end-before: --  END connect_slot
+   :dedent: 6
 
 This subprogram also ensures that the handler is automaticall disconnected if
 the second object is destroyed.
@@ -203,9 +213,9 @@ callbacks directly for GtkAda, and that will call your application's handlers
 after extracting the required values from the array of arguments. Although this
 might sound somewhat complicated, in practice it simplifies the task of
 connecting signals. In fact, the techniques employed are similar to what is
-done internally by gtk+ in C. Because of the similarity of techniques, there is
+done internally by GTK in C. Because of the similarity of techniques, there is
 no overhead involved in using `Gtk.Marshallers` with Ada over the C code in
-gtk+.
+GTK.
 
 A set of functions `To_Marshaller` is found in every generic package in
 `Gtk.Handlers`. They each take a single argument, the name of the function you
@@ -229,7 +239,7 @@ that the parameter to our callback (Files) will be the Slot_Object given in
 Object_Connect, instead of being the button itself.
 
 Compare the above code to the approach described in the first section, in
-particular when using Ada05 notation::
+particular when using the Ada 2012 dot notation::
 
    Window.Get_Ok_Button.On_Clicked (Ok'Access, Window);
 
