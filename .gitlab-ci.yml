@@ -100,10 +100,10 @@ build-doc:
     # Build the doc using anod
     - generic_anod_ci
     - . /tmp/ci_env.sh
-    - anod build gtkada-doc
+    - anod build gtkada4-doc
 
     # Upload the doc to gitlab-pages
-    - WD=$(anod info build gtkada-doc --show working_dir)
+    - WD=$(anod info build gtkada4-doc --show working_dir)
     - |
       if [[ $CI_PIPELINE_SOURCE = "merge_request_event" ]]; then
         target_subdir=MRs/$CI_MERGE_REQUEST_IID/doc
