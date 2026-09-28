@@ -7,6 +7,7 @@ with Ada.Command_Line;
 with System;
 with Interfaces.C.Strings;
 with Ada.Strings.Unbounded;
+with GNAT.OS_Lib;
 with GNAT.Strings;
 with Glib;             use Glib;
 with Glib.Application; use Glib.Application;
@@ -162,11 +163,21 @@ procedure User_Guide is
         (new String'("user_guide"),
          new String'("a.txt"),
          new String'("b.txt"));
+      Expected : Unbounded_String := To_Unbounded_String ("a.txt b.txt ");
    begin
+      --  On Windows, g_application_run ignores Argv and reads the real
+      --  command line of the process instead.
+      if GNAT.OS_Lib.Directory_Separator = '\' then
+         Expected := Null_Unbounded_String;
+         for J in 1 .. Ada.Command_Line.Argument_Count loop
+            Append (Expected, Ada.Command_Line.Argument (J) & " ");
+         end loop;
+      end if;
+
       App.On_Activate (Click_Quit'Unrestricted_Access, After => True);
       Assert_Cmpint_Eq (App.Run (Argv'Length, Argv), 0);
       Assert_Cmpstr_Eq
-        (To_String (UG_Application.Opened_Files), "a.txt b.txt ");
+        (To_String (UG_Application.Opened_Files), To_String (Expected));
       for Arg of Argv loop
          GNAT.Strings.Free (Arg);
       end loop;
