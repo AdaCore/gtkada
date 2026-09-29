@@ -3,6 +3,8 @@
 --  of what it inherits from Gtk.Editable.
 
 with Ada.Command_Line;
+with Interfaces.C.Strings;
+with System;
 with Glib;                use Glib;
 with Glib.Menu;           use Glib.Menu;
 with Glib.Menu_Model;     use Glib.Menu_Model;
@@ -18,12 +20,32 @@ procedure Password_Entry is
    Changed : Natural := 0;
    --  Incremented by the "changed" handler
 
+   Activated : Natural := 0;
+   --  Incremented by the "activate" handlers
+
+   Last_Activated : GObject := null;
+   --  The instance handed to the last "activate" handler
+
+   procedure Emit_By_Name
+     (Instance : System.Address; Name : Interfaces.C.Strings.chars_ptr)
+   with Import, Convention => C_Variadic_2,
+        External_Name => "g_signal_emit_by_name";
+
+   procedure Activate (E : Gtk_Password_Entry);
+   --  Emit "activate" on E. Gtk.Widget.Activate is no help here: the entry
+   --  sets no activate signal on its widget class, it relays the "activate"
+   --  of its inner text, so the call returns False and emits nothing.
+
    procedure On_Changed (Self : Gtk_Editable);
+
+   procedure On_Activate_Entry (Self : access Gtk_Password_Entry_Record'Class);
+   procedure On_Activate_Object (Self : access GObject_Record'Class);
 
    procedure Test_Peek_Icon with Convention => C;
    procedure Test_Extra_Menu with Convention => C;
    procedure Test_Properties with Convention => C;
    procedure Test_Editable with Convention => C;
+   procedure Test_Activate with Convention => C;
 
    ----------------
    -- On_Changed --
@@ -34,6 +56,39 @@ procedure Password_Entry is
    begin
       Changed := Changed + 1;
    end On_Changed;
+
+   --------------
+   -- Activate --
+   --------------
+
+   procedure Activate (E : Gtk_Password_Entry) is
+      Name : Interfaces.C.Strings.chars_ptr :=
+        Interfaces.C.Strings.New_String ("activate");
+   begin
+      Emit_By_Name (Get_Object (E), Name);
+      Interfaces.C.Strings.Free (Name);
+   end Activate;
+
+   -----------------------
+   -- On_Activate_Entry --
+   -----------------------
+
+   procedure On_Activate_Entry (Self : access Gtk_Password_Entry_Record'Class)
+   is
+   begin
+      Activated := Activated + 1;
+      Last_Activated := GObject (Self);
+   end On_Activate_Entry;
+
+   ------------------------
+   -- On_Activate_Object --
+   ------------------------
+
+   procedure On_Activate_Object (Self : access GObject_Record'Class) is
+   begin
+      Activated := Activated + 1;
+      Last_Activated := GObject (Self);
+   end On_Activate_Object;
 
    ---------------------
    -- Test_Peek_Icon --
@@ -123,6 +178,49 @@ procedure Password_Entry is
       Unref (E);
    end Test_Editable;
 
+   -------------------
+   -- Test_Activate --
+   -------------------
+
+   procedure Test_Activate is
+      E     : constant Gtk_Password_Entry := Gtk_Password_Entry_New;
+      Other : constant Gtk_Password_Entry := Gtk_Password_Entry_New;
+   begin
+      Ref_Sink (E);
+      Ref_Sink (Other);
+
+      Activated := 0;
+      Last_Activated := null;
+
+      --  Typing does not activate the entry.
+      E.On_Activate (On_Activate_Entry'Unrestricted_Access);
+      E.Set_Text ("hunter2");
+      Assert_Cmpint_Eq (Gint (Activated), 0);
+
+      --  The signal is the one the Enter key is bound to.
+      Activate (E);
+      Assert_Cmpint_Eq (Gint (Activated), 1);
+      Assert_True (Last_Activated = GObject (E));
+
+      Activate (E);
+      Assert_Cmpint_Eq (Gint (Activated), 2);
+
+      --  The variant with a slot: the handler gets the slot, not the
+      --  emitter, and is connected on top of the first one.
+      E.On_Activate (On_Activate_Object'Unrestricted_Access, Other);
+      Last_Activated := null;
+      Activate (E);
+      Assert_Cmpint_Eq (Gint (Activated), 4);
+      Assert_True (Last_Activated = GObject (Other));
+
+      --  Activating another entry does not reach the handlers of E.
+      Activate (Other);
+      Assert_Cmpint_Eq (Gint (Activated), 4);
+
+      Unref (E);
+      Unref (Other);
+   end Test_Activate;
+
 begin
    Glib.Test.Init;
 
@@ -137,6 +235,8 @@ begin
      ("/passwordentry/properties", Test_Properties'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/passwordentry/editable", Test_Editable'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/passwordentry/activate", Test_Activate'Unrestricted_Access);
 
    --  Return with the exit code
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
