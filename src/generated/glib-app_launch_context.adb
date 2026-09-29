@@ -194,6 +194,16 @@ package body Glib.App_Launch_Context is
      (System.Address, Cb_GObject_UTF8_String_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_Gapp_Launch_Context_Gapp_Info_Gvariant_Or_Null_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_Gapp_Launch_Context_Gapp_Info_Gvariant_Or_Null_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
+     (Cb_GObject_Gapp_Info_Gvariant_Or_Null_Void, System.Address);
+   function Address_To_Cb is new Ada.Unchecked_Conversion
+     (System.Address, Cb_GObject_Gapp_Info_Gvariant_Or_Null_Void);
+
+   function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gapp_Launch_Context_Gapp_Info_Gvariant_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
      (System.Address, Cb_Gapp_Launch_Context_Gapp_Info_Gvariant_Void);
@@ -212,6 +222,12 @@ package body Glib.App_Launch_Context is
    procedure Connect
       (Object  : access Gapp_Launch_Context_Record'Class;
        C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gapp_Launch_Context_Gapp_Info_Gvariant_Or_Null_Void;
+       After   : Boolean);
+
+   procedure Connect
+      (Object  : access Gapp_Launch_Context_Record'Class;
+       C_Name  : Glib.Signal_Name;
        Handler : Cb_Gapp_Launch_Context_Gapp_Info_Gvariant_Void;
        After   : Boolean);
 
@@ -225,9 +241,25 @@ package body Glib.App_Launch_Context is
    procedure Connect_Slot
       (Object  : access Gapp_Launch_Context_Record'Class;
        C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gapp_Info_Gvariant_Or_Null_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Connect_Slot
+      (Object  : access Gapp_Launch_Context_Record'Class;
+       C_Name  : Glib.Signal_Name;
        Handler : Cb_GObject_Gapp_Info_Gvariant_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
+
+   procedure Marsh_GObject_Gapp_Info_Gvariant_Or_Null_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_GObject_Gapp_Info_Gvariant_Or_Null_Void);
 
    procedure Marsh_GObject_Gapp_Info_Gvariant_Void
       (Closure         : GClosure;
@@ -246,6 +278,15 @@ package body Glib.App_Launch_Context is
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_UTF8_String_Void);
+
+   procedure Marsh_Gapp_Launch_Context_Gapp_Info_Gvariant_Or_Null_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address);
+   pragma Convention (C, Marsh_Gapp_Launch_Context_Gapp_Info_Gvariant_Or_Null_Void);
 
    procedure Marsh_Gapp_Launch_Context_Gapp_Info_Gvariant_Void
       (Closure         : GClosure;
@@ -280,6 +321,25 @@ package body Glib.App_Launch_Context is
         (Object      => Object,
          C_Name      => C_Name,
          Marshaller  => Marsh_Gapp_Launch_Context_UTF8_String_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         After       => After);
+   end Connect;
+
+   -------------
+   -- Connect --
+   -------------
+
+   procedure Connect
+      (Object  : access Gapp_Launch_Context_Record'Class;
+       C_Name  : Glib.Signal_Name;
+       Handler : Cb_Gapp_Launch_Context_Gapp_Info_Gvariant_Or_Null_Void;
+       After   : Boolean)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_Gapp_Launch_Context_Gapp_Info_Gvariant_Or_Null_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -331,6 +391,27 @@ package body Glib.App_Launch_Context is
    procedure Connect_Slot
       (Object  : access Gapp_Launch_Context_Record'Class;
        C_Name  : Glib.Signal_Name;
+       Handler : Cb_GObject_Gapp_Info_Gvariant_Or_Null_Void;
+       After   : Boolean;
+       Slot    : access Glib.Object.GObject_Record'Class := null)
+   is
+   begin
+      Unchecked_Do_Signal_Connect
+        (Object      => Object,
+         C_Name      => C_Name,
+         Marshaller  => Marsh_GObject_Gapp_Info_Gvariant_Or_Null_Void'Access,
+         Handler     => Cb_To_Address (Handler),--  Set in the closure
+         Slot_Object => Slot,
+         After       => After);
+   end Connect_Slot;
+
+   ------------------
+   -- Connect_Slot --
+   ------------------
+
+   procedure Connect_Slot
+      (Object  : access Gapp_Launch_Context_Record'Class;
+       C_Name  : Glib.Signal_Name;
        Handler : Cb_GObject_Gapp_Info_Gvariant_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
@@ -344,6 +425,27 @@ package body Glib.App_Launch_Context is
          Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
+
+   ---------------------------------------------------
+   -- Marsh_GObject_Gapp_Info_Gvariant_Or_Null_Void --
+   ---------------------------------------------------
+
+   procedure Marsh_GObject_Gapp_Info_Gvariant_Or_Null_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_GObject_Gapp_Info_Gvariant_Or_Null_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
+   begin
+      H (Obj, Glib.App_Info.Gapp_Info (Unchecked_To_Interface (Params, 1)), Glib.Variant.From_Object (Unchecked_To_Address (Params, 2)));
+   exception
+      when E : others => Process_Exception (E);
+   end Marsh_GObject_Gapp_Info_Gvariant_Or_Null_Void;
 
    -------------------------------------------
    -- Marsh_GObject_Gapp_Info_Gvariant_Void --
@@ -386,6 +488,27 @@ package body Glib.App_Launch_Context is
    exception
       when E : others => Process_Exception (E);
    end Marsh_GObject_UTF8_String_Void;
+
+   ---------------------------------------------------------------
+   -- Marsh_Gapp_Launch_Context_Gapp_Info_Gvariant_Or_Null_Void --
+   ---------------------------------------------------------------
+
+   procedure Marsh_Gapp_Launch_Context_Gapp_Info_Gvariant_Or_Null_Void
+      (Closure         : GClosure;
+       Return_Value    : Glib.Values.GValue;
+       N_Params        : Glib.Guint;
+       Params          : Glib.Values.C_GValues;
+       Invocation_Hint : System.Address;
+       User_Data       : System.Address)
+   is
+      pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
+      H   : constant Cb_Gapp_Launch_Context_Gapp_Info_Gvariant_Or_Null_Void := Address_To_Cb (Get_Callback (Closure));
+      Obj : constant Gapp_Launch_Context := Gapp_Launch_Context (Unchecked_To_Object (Params, 0));
+   begin
+      H (Obj, Glib.App_Info.Gapp_Info (Unchecked_To_Interface (Params, 1)), Glib.Variant.From_Object (Unchecked_To_Address (Params, 2)));
+   exception
+      when E : others => Process_Exception (E);
+   end Marsh_Gapp_Launch_Context_Gapp_Info_Gvariant_Or_Null_Void;
 
    -------------------------------------------------------
    -- Marsh_Gapp_Launch_Context_Gapp_Info_Gvariant_Void --
@@ -462,7 +585,7 @@ package body Glib.App_Launch_Context is
 
    procedure On_Launch_Started
       (Self  : not null access Gapp_Launch_Context_Record;
-       Call  : Cb_Gapp_Launch_Context_Gapp_Info_Gvariant_Void;
+       Call  : Cb_Gapp_Launch_Context_Gapp_Info_Gvariant_Or_Null_Void;
        After : Boolean := False)
    is
    begin
@@ -475,7 +598,7 @@ package body Glib.App_Launch_Context is
 
    procedure On_Launch_Started
       (Self  : not null access Gapp_Launch_Context_Record;
-       Call  : Cb_GObject_Gapp_Info_Gvariant_Void;
+       Call  : Cb_GObject_Gapp_Info_Gvariant_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is

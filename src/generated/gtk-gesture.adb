@@ -335,86 +335,86 @@ package body Gtk.Gesture is
    end Ungroup;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Gtk_Gesture_Gdk_Event_Sequence_Void, System.Address);
+     (Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Gtk_Gesture_Gdk_Event_Sequence_Void);
+     (System.Address, Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Gdk_Event_Sequence_Void, System.Address);
+     (Cb_GObject_Gdk_Event_Sequence_Or_Null_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Gdk_Event_Sequence_Void);
+     (System.Address, Cb_GObject_Gdk_Event_Sequence_Or_Null_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void, System.Address);
+     (Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void);
+     (System.Address, Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void, System.Address);
+     (Cb_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void);
+     (System.Address, Cb_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void);
 
    procedure Connect
       (Object  : access Gtk_Gesture_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
+       Handler : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void;
        After   : Boolean);
 
    procedure Connect
       (Object  : access Gtk_Gesture_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void;
+       Handler : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void;
        After   : Boolean);
 
    procedure Connect_Slot
       (Object  : access Gtk_Gesture_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gdk_Event_Sequence_Void;
+       Handler : Cb_GObject_Gdk_Event_Sequence_Or_Null_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
    procedure Connect_Slot
       (Object  : access Gtk_Gesture_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void;
+       Handler : Cb_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
-   procedure Marsh_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void
+   procedure Marsh_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void);
+   pragma Convention (C, Marsh_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void);
 
-   procedure Marsh_GObject_Gdk_Event_Sequence_Void
+   procedure Marsh_GObject_Gdk_Event_Sequence_Or_Null_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_Gdk_Event_Sequence_Void);
+   pragma Convention (C, Marsh_GObject_Gdk_Event_Sequence_Or_Null_Void);
 
-   procedure Marsh_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void
+   procedure Marsh_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void);
+   pragma Convention (C, Marsh_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void);
 
-   procedure Marsh_Gtk_Gesture_Gdk_Event_Sequence_Void
+   procedure Marsh_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_Gtk_Gesture_Gdk_Event_Sequence_Void);
+   pragma Convention (C, Marsh_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void);
 
    -------------
    -- Connect --
@@ -423,14 +423,14 @@ package body Gtk.Gesture is
    procedure Connect
       (Object  : access Gtk_Gesture_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
+       Handler : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void;
        After   : Boolean)
    is
    begin
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_Gtk_Gesture_Gdk_Event_Sequence_Void'Access,
+         Marshaller  => Marsh_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -442,14 +442,14 @@ package body Gtk.Gesture is
    procedure Connect
       (Object  : access Gtk_Gesture_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void;
+       Handler : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void;
        After   : Boolean)
    is
    begin
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void'Access,
+         Marshaller  => Marsh_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -461,7 +461,7 @@ package body Gtk.Gesture is
    procedure Connect_Slot
       (Object  : access Gtk_Gesture_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gdk_Event_Sequence_Void;
+       Handler : Cb_GObject_Gdk_Event_Sequence_Or_Null_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
    is
@@ -469,7 +469,7 @@ package body Gtk.Gesture is
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_Gdk_Event_Sequence_Void'Access,
+         Marshaller  => Marsh_GObject_Gdk_Event_Sequence_Or_Null_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
@@ -482,7 +482,7 @@ package body Gtk.Gesture is
    procedure Connect_Slot
       (Object  : access Gtk_Gesture_Record'Class;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void;
+       Handler : Cb_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
    is
@@ -490,17 +490,17 @@ package body Gtk.Gesture is
       Unchecked_Do_Signal_Connect
         (Object      => Object,
          C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void'Access,
+         Marshaller  => Marsh_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
-   --------------------------------------------------------------------
-   -- Marsh_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void --
-   --------------------------------------------------------------------
+   ----------------------------------------------------------------------------
+   -- Marsh_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void --
+   ----------------------------------------------------------------------------
 
-   procedure Marsh_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void
+   procedure Marsh_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -509,19 +509,19 @@ package body Gtk.Gesture is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gdk_Event_Sequence (Params, 1), Unchecked_To_Gtk_Event_Sequence_State (Params, 2));
    exception
       when E : others => Process_Exception (E);
-   end Marsh_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void;
+   end Marsh_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void;
 
-   -------------------------------------------
-   -- Marsh_GObject_Gdk_Event_Sequence_Void --
-   -------------------------------------------
+   ---------------------------------------------------
+   -- Marsh_GObject_Gdk_Event_Sequence_Or_Null_Void --
+   ---------------------------------------------------
 
-   procedure Marsh_GObject_Gdk_Event_Sequence_Void
+   procedure Marsh_GObject_Gdk_Event_Sequence_Or_Null_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -530,19 +530,19 @@ package body Gtk.Gesture is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_Gdk_Event_Sequence_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_GObject_Gdk_Event_Sequence_Or_Null_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Unchecked_To_Gdk_Event_Sequence (Params, 1));
    exception
       when E : others => Process_Exception (E);
-   end Marsh_GObject_Gdk_Event_Sequence_Void;
+   end Marsh_GObject_Gdk_Event_Sequence_Or_Null_Void;
 
-   ------------------------------------------------------------------------
-   -- Marsh_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void --
-   ------------------------------------------------------------------------
+   --------------------------------------------------------------------------------
+   -- Marsh_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void --
+   --------------------------------------------------------------------------------
 
-   procedure Marsh_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void
+   procedure Marsh_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -551,19 +551,19 @@ package body Gtk.Gesture is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Gesture := Gtk_Gesture (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gdk_Event_Sequence (Params, 1), Unchecked_To_Gtk_Event_Sequence_State (Params, 2));
    exception
       when E : others => Process_Exception (E);
-   end Marsh_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void;
+   end Marsh_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void;
 
-   -----------------------------------------------
-   -- Marsh_Gtk_Gesture_Gdk_Event_Sequence_Void --
-   -----------------------------------------------
+   -------------------------------------------------------
+   -- Marsh_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void --
+   -------------------------------------------------------
 
-   procedure Marsh_Gtk_Gesture_Gdk_Event_Sequence_Void
+   procedure Marsh_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -572,13 +572,13 @@ package body Gtk.Gesture is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Gtk_Gesture_Gdk_Event_Sequence_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Gesture := Gtk_Gesture (Unchecked_To_Object (Params, 0));
    begin
       H (Obj, Unchecked_To_Gdk_Event_Sequence (Params, 1));
    exception
       when E : others => Process_Exception (E);
-   end Marsh_Gtk_Gesture_Gdk_Event_Sequence_Void;
+   end Marsh_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void;
 
    --------------
    -- On_Begin --
@@ -586,7 +586,7 @@ package body Gtk.Gesture is
 
    procedure On_Begin
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
+       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void;
        After : Boolean := False)
    is
    begin
@@ -599,7 +599,7 @@ package body Gtk.Gesture is
 
    procedure On_Begin
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_GObject_Gdk_Event_Sequence_Void;
+       Call  : Cb_GObject_Gdk_Event_Sequence_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is
@@ -613,7 +613,7 @@ package body Gtk.Gesture is
 
    procedure On_Cancel
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
+       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void;
        After : Boolean := False)
    is
    begin
@@ -626,7 +626,7 @@ package body Gtk.Gesture is
 
    procedure On_Cancel
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_GObject_Gdk_Event_Sequence_Void;
+       Call  : Cb_GObject_Gdk_Event_Sequence_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is
@@ -640,7 +640,7 @@ package body Gtk.Gesture is
 
    procedure On_End
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
+       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void;
        After : Boolean := False)
    is
    begin
@@ -653,7 +653,7 @@ package body Gtk.Gesture is
 
    procedure On_End
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_GObject_Gdk_Event_Sequence_Void;
+       Call  : Cb_GObject_Gdk_Event_Sequence_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is
@@ -667,7 +667,7 @@ package body Gtk.Gesture is
 
    procedure On_Sequence_State_Changed
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void;
+       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void;
        After : Boolean := False)
    is
    begin
@@ -680,7 +680,7 @@ package body Gtk.Gesture is
 
    procedure On_Sequence_State_Changed
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void;
+       Call  : Cb_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is
@@ -694,7 +694,7 @@ package body Gtk.Gesture is
 
    procedure On_Update
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
+       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void;
        After : Boolean := False)
    is
    begin
@@ -707,7 +707,7 @@ package body Gtk.Gesture is
 
    procedure On_Update
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_GObject_Gdk_Event_Sequence_Void;
+       Call  : Cb_GObject_Gdk_Event_Sequence_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is

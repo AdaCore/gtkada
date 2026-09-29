@@ -1831,12 +1831,12 @@ package Gtk.Tree_View is
    --    --  @param Extend whether to extend the selection
    --    --  @param Modify whether to modify the selection
 
-   type Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void is not null access procedure
+   type Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Or_Null_Void is not null access procedure
      (Self   : access Gtk_Tree_View_Record'Class;
       Path   : Gtk.Tree_Model.Gtk_Tree_Path;
       Column : access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class);
 
-   type Cb_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void is not null access procedure
+   type Cb_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Or_Null_Void is not null access procedure
      (Self   : access Glib.Object.GObject_Record'Class;
       Path   : Gtk.Tree_Model.Gtk_Tree_Path;
       Column : access Gtk.Tree_View_Column.Gtk_Tree_View_Column_Record'Class);
@@ -1844,11 +1844,11 @@ package Gtk.Tree_View is
    Signal_Row_Activated : constant Glib.Signal_Name := "row-activated";
    procedure On_Row_Activated
       (Self  : not null access Gtk_Tree_View_Record;
-       Call  : Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
+       Call  : Cb_Gtk_Tree_View_Gtk_Tree_Path_Gtk_Tree_View_Column_Or_Null_Void;
        After : Boolean := False);
    procedure On_Row_Activated
       (Self  : not null access Gtk_Tree_View_Record;
-       Call  : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Void;
+       Call  : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_View_Column_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  The "row-activated" signal is emitted when the method

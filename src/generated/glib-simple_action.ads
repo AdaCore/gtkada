@@ -242,22 +242,22 @@ package Glib.Simple_Action is
    -- Signals --
    -------------
 
-   type Cb_Gsimple_Action_Gvariant_Void is not null access procedure
+   type Cb_Gsimple_Action_Gvariant_Or_Null_Void is not null access procedure
      (Self      : access Gsimple_Action_Record'Class;
       Parameter : Glib.Variant.Gvariant);
 
-   type Cb_GObject_Gvariant_Void is not null access procedure
+   type Cb_GObject_Gvariant_Or_Null_Void is not null access procedure
      (Self      : access Glib.Object.GObject_Record'Class;
       Parameter : Glib.Variant.Gvariant);
 
    Signal_Activate : constant Glib.Signal_Name := "activate";
    procedure On_Activate
       (Self  : not null access Gsimple_Action_Record;
-       Call  : Cb_Gsimple_Action_Gvariant_Void;
+       Call  : Cb_Gsimple_Action_Gvariant_Or_Null_Void;
        After : Boolean := False);
    procedure On_Activate
       (Self  : not null access Gsimple_Action_Record;
-       Call  : Cb_GObject_Gvariant_Void;
+       Call  : Cb_GObject_Gvariant_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Indicates that the action was just activated.
@@ -279,11 +279,11 @@ package Glib.Simple_Action is
    Signal_Change_State : constant Glib.Signal_Name := "change-state";
    procedure On_Change_State
       (Self  : not null access Gsimple_Action_Record;
-       Call  : Cb_Gsimple_Action_Gvariant_Void;
+       Call  : Cb_Gsimple_Action_Gvariant_Or_Null_Void;
        After : Boolean := False);
    procedure On_Change_State
       (Self  : not null access Gsimple_Action_Record;
-       Call  : Cb_GObject_Gvariant_Void;
+       Call  : Cb_GObject_Gvariant_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Indicates that the action just received a request to change its state.

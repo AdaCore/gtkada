@@ -1,0 +1,11 @@
+# ============================================================
+#   GtkListBox
+# ============================================================
+
+[doc]
+group       = "Trees and Lists"
+gtkada_demo = "create_list_box_complex.adb"
+
+[[method]]
+id = "gtk_list_box_get_selected_rows"
+return = "GtkListBoxRowList"

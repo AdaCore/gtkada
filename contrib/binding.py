@@ -2824,7 +2824,10 @@ See Glib.Properties for more information on properties)"""
         """
         return "_".join(
             [base_name(selftype.ada)]
-            + [base_name(p.type.ada) for p in profile.params]
+            + [
+                base_name(p.type.ada) + ("_Or_Null" if p.type.allow_none else "")
+                for p in profile.params
+            ]
             + [base_name(profile.returns.ada) if profile.returns else "Void"]
         )
 

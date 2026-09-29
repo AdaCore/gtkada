@@ -132,14 +132,14 @@ package Gtk.Gesture_Click is
        After : Boolean := False);
    --  Emitted whenever any time/distance threshold has been exceeded.
 
-   type Cb_Gtk_Gesture_Click_Gdouble_Gdouble_Guint_Gdk_Event_Sequence_Void is not null access procedure
+   type Cb_Gtk_Gesture_Click_Gdouble_Gdouble_Guint_Gdk_Event_Sequence_Or_Null_Void is not null access procedure
      (Self     : access Gtk_Gesture_Click_Record'Class;
       X        : Gdouble;
       Y        : Gdouble;
       Button   : Guint;
       Sequence : Gdk.Event.Gdk_Event_Sequence);
 
-   type Cb_GObject_Gdouble_Gdouble_Guint_Gdk_Event_Sequence_Void is not null access procedure
+   type Cb_GObject_Gdouble_Gdouble_Guint_Gdk_Event_Sequence_Or_Null_Void is not null access procedure
      (Self     : access Glib.Object.GObject_Record'Class;
       X        : Gdouble;
       Y        : Gdouble;
@@ -149,11 +149,11 @@ package Gtk.Gesture_Click is
    Signal_Unpaired_Release : constant Glib.Signal_Name := "unpaired-release";
    procedure On_Unpaired_Release
       (Self  : not null access Gtk_Gesture_Click_Record;
-       Call  : Cb_Gtk_Gesture_Click_Gdouble_Gdouble_Guint_Gdk_Event_Sequence_Void;
+       Call  : Cb_Gtk_Gesture_Click_Gdouble_Gdouble_Guint_Gdk_Event_Sequence_Or_Null_Void;
        After : Boolean := False);
    procedure On_Unpaired_Release
       (Self  : not null access Gtk_Gesture_Click_Record;
-       Call  : Cb_GObject_Gdouble_Gdouble_Guint_Gdk_Event_Sequence_Void;
+       Call  : Cb_GObject_Gdouble_Gdouble_Guint_Gdk_Event_Sequence_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Emitted whenever the gesture receives a release event that had no

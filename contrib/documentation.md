@@ -98,6 +98,14 @@ flags pointing at the spot that needs an override:
 | A `printf`-style method missing entirely, with `No binding for <name>: varargs` on the generator's output | recover it with a `varargs` parameter defaulting to a trailing NULL — see [Recovering a varargs subprogram](#recovering-a-varargs-subprogram) |
 | A method whose type would make two packages with each other | break the cycle with a [`limited with`](#extrawith_spec--extra-with-clauses-in-the-spec) in one spec plus a plain `with` in its body |
 
+Signal handler types are named `Cb_<Self>_<Params>_<Return>`, and shared by
+every signal of a package with the same profile. A nullable parameter (GIR
+`nullable="1"` or `allow-none="1"`) has `_Or_Null` appended to its type in
+that name, as in `Cb_Gtk_List_Box_Gtk_List_Box_Row_Or_Null_Void`, so that two
+signals differing only in nullability, such as `Gtk.List_Box`'s
+`row-activated` and `row-selected`, get distinct handler types: `access`
+for the nullable parameter, `not null access` for the other.
+
 When in doubt, look for a similar pattern in an existing TOML — many
 of the recipes you will need are already present in
 [`contrib/binding/packages/`](packages/). The legacy gtk3 overrides
