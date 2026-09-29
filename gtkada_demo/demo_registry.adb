@@ -45,6 +45,8 @@ with Create_Frame;
 with Create_Header_Bar;
 with Create_Label;
 with Create_Link_Buttons;
+with Create_List_Box_Complex;
+with Create_List_Box_Controls;
 with Create_List_Store;
 with Create_Menu;
 with Create_Paned;
@@ -138,6 +140,14 @@ package body Demo_Registry is
         ("Layout/Scrolled Window",
          Create_Scrolled.Run'Access,
          Create_Scrolled.Help'Access),
+      To_Demo
+        ("List Box/Complex",
+         Create_List_Box_Complex.Run'Access,
+         Create_List_Box_Complex.Help'Access),
+      To_Demo
+        ("List Box/Controls",
+         Create_List_Box_Controls.Run'Access,
+         Create_List_Box_Controls.Help'Access),
       To_Demo
         ("Paned Widgets", Create_Paned.Run'Access, Create_Paned.Help'Access),
       To_Demo

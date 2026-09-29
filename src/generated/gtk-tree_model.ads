@@ -985,13 +985,13 @@ package Gtk.Tree_Model is
    --    --  @param Path a `GtkTreePath` identifying the new row
    --    --  @param Iter a valid `GtkTreeIter` pointing to the new row
 
-   type Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void is not null access procedure
+   type Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void is not null access procedure
      (Self      : Gtk_Tree_Model;
       Path      : Gtk_Tree_Path;
       Iter      : Gtk_Tree_Iter;
       New_Order : System.Address);
 
-   type Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void is not null access procedure
+   type Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void is not null access procedure
      (Self      : access Glib.Object.GObject_Record'Class;
       Path      : Gtk_Tree_Path;
       Iter      : Gtk_Tree_Iter;
@@ -1000,11 +1000,11 @@ package Gtk.Tree_Model is
    Signal_Rows_Reordered : constant Glib.Signal_Name := "rows-reordered";
    procedure On_Rows_Reordered
       (Self  : Gtk_Tree_Model;
-       Call  : Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void;
+       Call  : Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void;
        After : Boolean := False);
    procedure On_Rows_Reordered
       (Self  : Gtk_Tree_Model;
-       Call  : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void;
+       Call  : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  This signal is emitted when the children of a node in the

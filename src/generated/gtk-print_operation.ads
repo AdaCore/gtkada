@@ -818,14 +818,14 @@ package Gtk.Print_Operation is
    --  Callback parameters:
    --    --  @param Context the `GtkPrintContext` for the current operation
 
-   type Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean is not null access function
+   type Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Or_Null_Boolean is not null access function
      (Self    : access Gtk_Print_Operation_Record'Class;
       Preview : Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview;
       Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
       Parent  : access Gtk.Window.Gtk_Window_Record'Class)
    return Boolean;
 
-   type Cb_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean is not null access function
+   type Cb_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Or_Null_Boolean is not null access function
      (Self    : access Glib.Object.GObject_Record'Class;
       Preview : Gtk.Print_Operation_Preview.Gtk_Print_Operation_Preview;
       Context : not null access Gtk.Print_Context.Gtk_Print_Context_Record'Class;
@@ -835,11 +835,11 @@ package Gtk.Print_Operation is
    Signal_Preview : constant Glib.Signal_Name := "preview";
    procedure On_Preview
       (Self  : not null access Gtk_Print_Operation_Record;
-       Call  : Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean;
+       Call  : Cb_Gtk_Print_Operation_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Or_Null_Boolean;
        After : Boolean := False);
    procedure On_Preview
       (Self  : not null access Gtk_Print_Operation_Record;
-       Call  : Cb_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Boolean;
+       Call  : Cb_GObject_Gtk_Print_Operation_Preview_Gtk_Print_Context_Gtk_Window_Or_Null_Boolean;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Gets emitted when a preview is requested from the native dialog.

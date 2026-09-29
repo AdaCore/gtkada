@@ -1,0 +1,11 @@
+# ============================================================
+#   GtkListBoxRow
+# ============================================================
+
+[doc]
+group       = "Trees and Lists"
+gtkada_demo = "create_list_box_controls.adb"
+
+[[list]]
+ada = "List_Box_Row_List"
+ctype = "GtkListBoxRow"

@@ -356,22 +356,22 @@ package Gtk.Gesture is
    -- Signals --
    -------------
 
-   type Cb_Gtk_Gesture_Gdk_Event_Sequence_Void is not null access procedure
+   type Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void is not null access procedure
      (Self     : access Gtk_Gesture_Record'Class;
       Sequence : Gdk.Event.Gdk_Event_Sequence);
 
-   type Cb_GObject_Gdk_Event_Sequence_Void is not null access procedure
+   type Cb_GObject_Gdk_Event_Sequence_Or_Null_Void is not null access procedure
      (Self     : access Glib.Object.GObject_Record'Class;
       Sequence : Gdk.Event.Gdk_Event_Sequence);
 
    Signal_Begin : constant Glib.Signal_Name := "begin";
    procedure On_Begin
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
+       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void;
        After : Boolean := False);
    procedure On_Begin
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_GObject_Gdk_Event_Sequence_Void;
+       Call  : Cb_GObject_Gdk_Event_Sequence_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Emitted when the gesture is recognized.
@@ -387,11 +387,11 @@ package Gtk.Gesture is
    Signal_Cancel : constant Glib.Signal_Name := "cancel";
    procedure On_Cancel
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
+       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void;
        After : Boolean := False);
    procedure On_Cancel
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_GObject_Gdk_Event_Sequence_Void;
+       Call  : Cb_GObject_Gdk_Event_Sequence_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Emitted whenever a sequence is cancelled.
@@ -407,11 +407,11 @@ package Gtk.Gesture is
    Signal_End : constant Glib.Signal_Name := "end";
    procedure On_End
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
+       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void;
        After : Boolean := False);
    procedure On_End
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_GObject_Gdk_Event_Sequence_Void;
+       Call  : Cb_GObject_Gdk_Event_Sequence_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Emitted when Gesture either stopped recognizing the event sequences as
@@ -424,12 +424,12 @@ package Gtk.Gesture is
    --  may be detected by checking through
    --  [methodGtk.Gesture.handles_sequence].
 
-   type Cb_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void is not null access procedure
+   type Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void is not null access procedure
      (Self     : access Gtk_Gesture_Record'Class;
       Sequence : Gdk.Event.Gdk_Event_Sequence;
       State    : Gtk.Enums.Gtk_Event_Sequence_State);
 
-   type Cb_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void is not null access procedure
+   type Cb_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void is not null access procedure
      (Self     : access Glib.Object.GObject_Record'Class;
       Sequence : Gdk.Event.Gdk_Event_Sequence;
       State    : Gtk.Enums.Gtk_Event_Sequence_State);
@@ -437,11 +437,11 @@ package Gtk.Gesture is
    Signal_Sequence_State_Changed : constant Glib.Signal_Name := "sequence-state-changed";
    procedure On_Sequence_State_Changed
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void;
+       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void;
        After : Boolean := False);
    procedure On_Sequence_State_Changed
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_GObject_Gdk_Event_Sequence_Gtk_Event_Sequence_State_Void;
+       Call  : Cb_GObject_Gdk_Event_Sequence_Or_Null_Gtk_Event_Sequence_State_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Emitted whenever a sequence state changes.
@@ -456,11 +456,11 @@ package Gtk.Gesture is
    Signal_Update : constant Glib.Signal_Name := "update";
    procedure On_Update
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Void;
+       Call  : Cb_Gtk_Gesture_Gdk_Event_Sequence_Or_Null_Void;
        After : Boolean := False);
    procedure On_Update
       (Self  : not null access Gtk_Gesture_Record;
-       Call  : Cb_GObject_Gdk_Event_Sequence_Void;
+       Call  : Cb_GObject_Gdk_Event_Sequence_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False);
    --  Emitted whenever an event is handled while the gesture is recognized.

@@ -1100,14 +1100,14 @@ package body Gtk.Tree_Model is
      (System.Address, Cb_GObject_Gtk_Tree_Path_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void, System.Address);
+     (Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void);
+     (System.Address, Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void);
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
-     (Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void, System.Address);
+     (Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion
-     (System.Address, Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void);
+     (System.Address, Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void);
 
    procedure Connect
       (Object  : Gtk_Tree_Model;
@@ -1124,7 +1124,7 @@ package body Gtk.Tree_Model is
    procedure Connect
       (Object  : Gtk_Tree_Model;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void;
+       Handler : Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void;
        After   : Boolean);
 
    procedure Connect_Slot
@@ -1144,18 +1144,18 @@ package body Gtk.Tree_Model is
    procedure Connect_Slot
       (Object  : Gtk_Tree_Model;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void;
+       Handler : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null);
 
-   procedure Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void
+   procedure Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void);
+   pragma Convention (C, Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void);
 
    procedure Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Void
       (Closure         : GClosure;
@@ -1175,14 +1175,14 @@ package body Gtk.Tree_Model is
        User_Data       : System.Address);
    pragma Convention (C, Marsh_GObject_Gtk_Tree_Path_Void);
 
-   procedure Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void
+   procedure Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
        Params          : Glib.Values.C_GValues;
        Invocation_Hint : System.Address;
        User_Data       : System.Address);
-   pragma Convention (C, Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void);
+   pragma Convention (C, Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void);
 
    procedure Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Void
       (Closure         : GClosure;
@@ -1247,14 +1247,14 @@ package body Gtk.Tree_Model is
    procedure Connect
       (Object  : Gtk_Tree_Model;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void;
+       Handler : Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void;
        After   : Boolean)
    is
    begin
       Unchecked_Do_Signal_Connect
         (Object      => Glib.Types.GType_Interface (Object),
          C_Name      => C_Name,
-         Marshaller  => Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void'Access,
+         Marshaller  => Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          After       => After);
    end Connect;
@@ -1308,7 +1308,7 @@ package body Gtk.Tree_Model is
    procedure Connect_Slot
       (Object  : Gtk_Tree_Model;
        C_Name  : Glib.Signal_Name;
-       Handler : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void;
+       Handler : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void;
        After   : Boolean;
        Slot    : access Glib.Object.GObject_Record'Class := null)
    is
@@ -1316,17 +1316,17 @@ package body Gtk.Tree_Model is
       Unchecked_Do_Signal_Connect
         (Object      => Glib.Types.GType_Interface (Object),
          C_Name      => C_Name,
-         Marshaller  => Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void'Access,
+         Marshaller  => Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void'Access,
          Handler     => Cb_To_Address (Handler),--  Set in the closure
          Slot_Object => Slot,
          After       => After);
    end Connect_Slot;
 
-   ------------------------------------------------------------
-   -- Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void --
-   ------------------------------------------------------------
+   --------------------------------------------------------------------
+   -- Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void --
+   --------------------------------------------------------------------
 
-   procedure Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void
+   procedure Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -1335,13 +1335,13 @@ package body Gtk.Tree_Model is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Glib.Object.GObject := Glib.Object.Convert (Get_Data (Closure));
    begin
       H (Obj, Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2), Unchecked_To_Address (Params, 3));
    exception
       when E : others => Process_Exception (E);
-   end Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void;
+   end Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void;
 
    ----------------------------------------------------
    -- Marsh_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Void --
@@ -1385,11 +1385,11 @@ package body Gtk.Tree_Model is
       when E : others => Process_Exception (E);
    end Marsh_GObject_Gtk_Tree_Path_Void;
 
-   -------------------------------------------------------------------
-   -- Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void --
-   -------------------------------------------------------------------
+   ---------------------------------------------------------------------------
+   -- Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void --
+   ---------------------------------------------------------------------------
 
-   procedure Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void
+   procedure Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void
       (Closure         : GClosure;
        Return_Value    : Glib.Values.GValue;
        N_Params        : Glib.Guint;
@@ -1398,13 +1398,13 @@ package body Gtk.Tree_Model is
        User_Data       : System.Address)
    is
       pragma Unreferenced (Return_Value, N_Params, Invocation_Hint, User_Data);
-      H   : constant Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void := Address_To_Cb (Get_Callback (Closure));
+      H   : constant Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void := Address_To_Cb (Get_Callback (Closure));
       Obj : constant Gtk_Tree_Model := Gtk_Tree_Model (Unchecked_To_Interface (Params, 0));
    begin
       H (Obj, Gtk.Tree_Model.From_Object (Unchecked_To_Address (Params, 1)), Unchecked_To_Gtk_Tree_Iter (Params, 2), Unchecked_To_Address (Params, 3));
    exception
       when E : others => Process_Exception (E);
-   end Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void;
+   end Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void;
 
    -----------------------------------------------------------
    -- Marsh_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Void --
@@ -1562,7 +1562,7 @@ package body Gtk.Tree_Model is
 
    procedure On_Rows_Reordered
       (Self  : Gtk_Tree_Model;
-       Call  : Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void;
+       Call  : Cb_Gtk_Tree_Model_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void;
        After : Boolean := False)
    is
    begin
@@ -1575,7 +1575,7 @@ package body Gtk.Tree_Model is
 
    procedure On_Rows_Reordered
       (Self  : Gtk_Tree_Model;
-       Call  : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Void;
+       Call  : Cb_GObject_Gtk_Tree_Path_Gtk_Tree_Iter_Address_Or_Null_Void;
        Slot  : not null access Glib.Object.GObject_Record'Class;
        After : Boolean := False)
    is

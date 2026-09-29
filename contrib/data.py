@@ -488,9 +488,9 @@ binding = (
     "Gtk.LinkButton",
     "----GtkLinkButtonAccessible",  # We do not support atk
     "Gtk.ListBase",
-    "--Gtk.ListBox",
+    "Gtk.ListBox",
     "----GtkListBoxAccessible",  # We do not support atk
-    "--Gtk.ListBoxRow",
+    "Gtk.ListBoxRow",
     "----GtkListBoxRowAccessible",  # We do not support atk
     "Gtk.ListItem",
     "Gtk.ListItemFactory",
@@ -733,7 +733,13 @@ manual_binding = (
 # these specific parameters.
 
 user_data_params = ["Data", "Func_Data", "User_Data", "D", "Search_Data"]
-destroy_data_params = ["user_destroy", "destroy", "func_notify", "notify"]
+destroy_data_params = [
+    "user_destroy",
+    "destroy",
+    "func_notify",
+    "notify",
+    "user_data_free_func",
+]
 
 # Callbacks that require special handling
 callback_exceptions = ['Gcallback']
