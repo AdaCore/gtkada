@@ -1,0 +1,25 @@
+# ============================================================
+#   GtkIMContext
+# ============================================================
+
+[[method]]
+id = "gtk_im_context_get_surrounding"
+bind = false # Obsolescent
+
+[[method]]
+id = "gtk_im_context_set_surrounding"
+bind = false # Obsolescent
+
+[[method]]
+id = "gtk_im_context_get_preedit_string"
+
+[[method.parameter]]
+name = "str"
+type = "Gtkada.Types.Chars_Ptr"
+
+[[method]]
+id = "gtk_im_context_get_surrounding_with_selection"
+
+[[method.parameter]]
+name = "text"
+type = "Gtkada.Types.Chars_Ptr"

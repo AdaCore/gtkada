@@ -1,0 +1,7 @@
+# ============================================================
+#   GtkIMContextSimple
+# ============================================================
+
+[[method]]
+id = "gtk_im_context_simple_add_table"
+bind = false # Obsolescent

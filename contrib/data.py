@@ -401,6 +401,14 @@ binding = (
     "----GtkEntryIconAccessible",  # We do not support atk
     "--GtkEventBox",
     "Gtk.EventController",
+    "Gtk.IMContext",
+    "Gtk.IMContextSimple",
+    "Gtk.IMMulticontext",
+    "Gtk.EventControllerKey",
+    "Gtk.EventControllerFocus",
+    "Gtk.EventControllerLegacy",
+    "Gtk.EventControllerMotion",
+    "Gtk.EventControllerScroll",
     "Gtk.Expander",
     "----GtkExpanderAccessible",  # We do not support atk
     "--GtkFileChooserButton",
