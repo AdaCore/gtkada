@@ -433,7 +433,7 @@ binding = (
     "Gtk.GridView",
     "--GtkHandleBox",
     "--GtkHButtonBox",
-    "--Gtk.HeaderBar",
+    "Gtk.HeaderBar",
     "--GtkHPaned",
     "--GtkHScale",
     "--GtkHScrollbar",

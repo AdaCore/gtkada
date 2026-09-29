@@ -42,6 +42,7 @@ with Create_Dialog;
 with Create_Drawing_Area;
 with Create_Entry;
 with Create_Frame;
+with Create_Header_Bar;
 with Create_Label;
 with Create_Link_Buttons;
 with Create_List_Store;
@@ -122,6 +123,10 @@ package body Demo_Registry is
         ("GtkAda/Tooltips",
          Create_Tooltips.Run'Access,
          Create_Tooltips.Help'Access),
+      To_Demo
+        ("Header Bar",
+         Create_Header_Bar.Run'Access,
+         Create_Header_Bar.Help'Access),
       To_Demo
         ("Layout/Boxes", Create_Box.Run'Access, Create_Box.Help'Access),
       To_Demo
