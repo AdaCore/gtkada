@@ -314,9 +314,8 @@ package Glib.Option is
    --  of options, or null
 
    procedure Set_Translate_Func
-      (Self           : Goption_Context;
-       Func           : Gtranslate_Func;
-       Destroy_Notify : Glib.G_Destroy_Notify_Address);
+      (Self : Goption_Context;
+       Func : Gtranslate_Func);
    --  Sets the function which is used to translate the contexts user-visible
    --  strings, for `--help` output. If Func is null, strings are not
    --  translated.
@@ -328,8 +327,6 @@ package Glib.Option is
    --  see Glib.Option.Set_Translation_Domain.
    --  Since: gtk+ 2.12
    --  @param Func the Gtranslate_Func, or null
-   --  @param Destroy_Notify a function which gets called to free Data, or
-   --  null
 
    generic
       type User_Data_Type (<>) is private;
@@ -348,10 +345,9 @@ package Glib.Option is
       --  returned string is owned by GLib and must not be freed.
 
       procedure Set_Translate_Func
-         (Self           : Glib.Option.Goption_Context;
-          Func           : Gtranslate_Func;
-          Data           : User_Data_Type;
-          Destroy_Notify : Glib.G_Destroy_Notify_Address);
+         (Self : Glib.Option.Goption_Context;
+          Func : Gtranslate_Func;
+          Data : User_Data_Type);
       --  Sets the function which is used to translate the contexts
       --  user-visible strings, for `--help` output. If Func is null, strings
       --  are not translated.
@@ -364,8 +360,6 @@ package Glib.Option is
       --  Since: gtk+ 2.12
       --  @param Func the Gtranslate_Func, or null
       --  @param Data user data to pass to Func, or null
-      --  @param Destroy_Notify a function which gets called to free Data, or
-      --  null
 
    end Set_Translate_Func_User_Data;
 

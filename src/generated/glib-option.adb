@@ -147,7 +147,7 @@ package body Glib.Option is
       (Self           : System.Address;
        Func           : System.Address;
        Data           : System.Address;
-       Destroy_Notify : Glib.G_Destroy_Notify_Address);
+       Destroy_Notify : System.Address);
    pragma Import (C, C_G_Option_Context_Set_Translate_Func, "g_option_context_set_translate_func");
    --  Sets the function which is used to translate the contexts user-visible
    --  strings, for `--help` output. If Func is null, strings are not
@@ -433,15 +433,14 @@ package body Glib.Option is
    ------------------------
 
    procedure Set_Translate_Func
-      (Self           : Goption_Context;
-       Func           : Gtranslate_Func;
-       Destroy_Notify : Glib.G_Destroy_Notify_Address)
+      (Self : Goption_Context;
+       Func : Gtranslate_Func)
    is
    begin
       if Func = null then
-         C_G_Option_Context_Set_Translate_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Destroy_Notify);
+         C_G_Option_Context_Set_Translate_Func (Get_Object (Self), System.Null_Address, System.Null_Address, System.Null_Address);
       else
-         C_G_Option_Context_Set_Translate_Func (Get_Object (Self), Internal_Gtranslate_Func'Address, To_Address (Func), Destroy_Notify);
+         C_G_Option_Context_Set_Translate_Func (Get_Object (Self), Internal_Gtranslate_Func'Address, To_Address (Func), System.Null_Address);
       end if;
    end Set_Translate_Func;
 
@@ -486,18 +485,17 @@ package body Glib.Option is
       ------------------------
 
       procedure Set_Translate_Func
-         (Self           : Glib.Option.Goption_Context;
-          Func           : Gtranslate_Func;
-          Data           : User_Data_Type;
-          Destroy_Notify : Glib.G_Destroy_Notify_Address)
+         (Self : Glib.Option.Goption_Context;
+          Func : Gtranslate_Func;
+          Data : User_Data_Type)
       is
          D : System.Address;
       begin
          if Func = null then
-            C_G_Option_Context_Set_Translate_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Destroy_Notify);
+            C_G_Option_Context_Set_Translate_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
             D := Users.Build (To_Address (Func), Data);
-            C_G_Option_Context_Set_Translate_Func (Get_Object (Self), Internal_Cb'Address, D, Destroy_Notify);
+            C_G_Option_Context_Set_Translate_Func (Get_Object (Self), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Translate_Func;
 

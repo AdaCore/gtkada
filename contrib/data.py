@@ -444,7 +444,6 @@ binding = (
     "--GtkHButtonBox",
     "Gtk.HeaderBar",
     "--GtkHPaned",
-    "--GtkHScale",
     "--GtkHScrollbar",
     "--GtkHSV",
     "--GtkIconFactory",
@@ -545,7 +544,7 @@ binding = (
     "--GtkRadioMenuItem",
     "----GtkRadioMenuItemAccessible",  # We do not support atk
     "--GtkRadioToolButton",
-    "--Gtk.Range",
+    "Gtk.Range",
     "----GtkRangeAccessible",  # We do not support atk
     "----GtkRcStyle",  # manual binding for these deprecated routines
     "--GtkRecentAction",
@@ -557,7 +556,7 @@ binding = (
     "--Gtk.RecentManager",
     "----GtkRendererCellAccessible",  # We do not support atk
     "Gtk.Revealer",
-    "--Gtk.Scale",
+    "Gtk.Scale",
     "----GtkScaleAccessible",  # We do not support atk
     "--Gtk.ScaleButton",
     "----GtkScaleButtonAccessible",  # We do not support atk
@@ -639,7 +638,6 @@ binding = (
     "--GtkUIManager",
     "--GtkVButtonBox",
     "--GtkVPaned",
-    "--GtkVScale",
     "--GtkVScrollbar",
     "--Gtk.Viewport",
     "--Gtk.VolumeButton",
@@ -733,6 +731,7 @@ user_data_params = ["Data", "Func_Data", "User_Data", "D", "Search_Data"]
 destroy_data_params = [
     "user_destroy",
     "destroy",
+    "destroy_notify",
     "func_notify",
     "notify",
     "user_data_free_func",
