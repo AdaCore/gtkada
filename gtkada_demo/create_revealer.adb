@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 2014-2018, AdaCore                     --
+--                     Copyright (C) 2010-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,15 +21,75 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gtk.Grid;          use Gtk.Grid;
+with Glib;              use Glib;
+with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Frame;         use Gtk.Frame;
-with Gtk.Label;         use Gtk.Label;
 with Gtk.GEntry;        use Gtk.GEntry;
-with Gtk.Toggle_Button; use Gtk.Toggle_Button;
+with Gtk.Grid;          use Gtk.Grid;
+with Gtk.Label;         use Gtk.Label;
 with Gtk.Revealer;      use Gtk.Revealer;
+with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 with Gtk.Widget;        use Gtk.Widget;
 
 package body Create_Revealer is
+
+   Duration : constant Guint := 2000;
+   --  Slow enough to see what each transition does
+
+   procedure Add_Revealer
+     (Grid        : not null access Gtk_Grid_Record'Class;
+      Title       : String;
+      Text        : String;
+      Transition  : Gtk_Revealer_Transition_Type;
+      Button_Col  : Gint;
+      Button_Row  : Gint;
+      Col         : Gint;
+      Row         : Gint;
+      Halign      : Gtk_Align := Align_Fill;
+      Valign      : Gtk_Align := Align_Fill;
+      Hexpand     : Boolean := False;
+      Vexpand     : Boolean := False);
+   --  Put a toggle button labelled Title at (Button_Col, Button_Row), and at
+   --  (Col, Row) a revealer showing an entry holding Text, which the button
+   --  reveals with the given transition.
+
+   ------------------
+   -- Add_Revealer --
+   ------------------
+
+   procedure Add_Revealer
+     (Grid        : not null access Gtk_Grid_Record'Class;
+      Title       : String;
+      Text        : String;
+      Transition  : Gtk_Revealer_Transition_Type;
+      Button_Col  : Gint;
+      Button_Row  : Gint;
+      Col         : Gint;
+      Row         : Gint;
+      Halign      : Gtk_Align := Align_Fill;
+      Valign      : Gtk_Align := Align_Fill;
+      Hexpand     : Boolean := False;
+      Vexpand     : Boolean := False)
+   is
+      Button   : constant Gtk_Toggle_Button :=
+        Gtk_Toggle_Button_New_With_Label (Title);
+      Revealer : constant Gtk_Revealer := Gtk_Revealer_New;
+      Ent      : constant Gtk_Entry := Gtk_Entry_New;
+   begin
+      Grid.Attach (Button, Button_Col, Button_Row);
+
+      Ent.Set_Text (Text);
+      Revealer.Set_Child (Ent);
+      Revealer.Set_Halign (Halign);
+      Revealer.Set_Valign (Valign);
+      Revealer.Set_Hexpand (Hexpand);
+      Revealer.Set_Vexpand (Vexpand);
+      Revealer.Set_Transition_Type (Transition);
+      Revealer.Set_Transition_Duration (Duration);
+      Grid.Attach (Revealer, Col, Row);
+
+      Button.Bind_Property ("active", Revealer, "reveal-child");
+   end Add_Revealer;
 
    ----------
    -- Help --
@@ -43,7 +103,11 @@ package body Create_Revealer is
         & "Toggle each button below to reveal its entry, using a different"
         & " @bGtk_Revealer_Transition_Type@B (none, crossfade, or slide"
         & " from each side). The transitions here are slowed to 2 seconds"
-        & " so you can see them clearly.";
+        & " so you can see them clearly."
+        & ASCII.LF
+        & "Each button is tied to its revealer by binding the button's"
+        & " @bactive@B property to the revealer's @breveal-child@B, so no"
+        & " signal handler is needed.";
    end Help;
 
    ---------
@@ -51,114 +115,51 @@ package body Create_Revealer is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Box      : Gtk_Grid;
-      Label    : Gtk_Label;
-      Button   : Gtk_Toggle_Button;
-      Revealer : Gtk_Revealer;
-      Ent      : Gtk_Entry;
+      Grid : constant Gtk_Grid := Gtk_Grid_New;
+
+      procedure Add_Note (Col, Row : Gint);
+      procedure Add_Note (Col, Row : Gint) is
+         Note : constant Gtk_Label :=
+           Gtk_Label_New
+             ("The animations in this demo" & ASCII.LF & "were made very slow");
+      begin
+         Note.Set_Margin_Top (10);
+         Note.Set_Margin_Bottom (10);
+         Note.Set_Margin_Start (10);
+         Note.Set_Margin_End (10);
+         Grid.Attach (Note, Col, Row);
+      end Add_Note;
    begin
       Frame.Set_Label ("Revealer");
+      Frame.Set_Child (Grid);
 
-      Gtk_New (Box);
-      Frame.Add (Box);
+      Add_Note (1, 1);
+      Add_Note (3, 3);
 
-      Gtk_New (Label,
-               "The animations in this demo"
-               & ASCII.LF & "were made very slow");
-      Label.Set_Margin_Top (10);
-      Label.Set_Margin_Bottom (10);
-      Label.Set_Margin_Start (10);
-      Label.Set_Margin_End (10);
-      Box.Attach (Label, 1, 1, 1, 1);
-
-      Gtk_New (Label,
-               "The animations in this demo"
-               & ASCII.LF & "were made very slow");
-      Label.Set_Margin_Top (10);
-      Label.Set_Margin_Bottom (10);
-      Label.Set_Margin_Start (10);
-      Label.Set_Margin_End (10);
-      Box.Attach (Label, 3, 3, 1, 1);
-
-      Gtk_New (Button, "None");
-      Box.Attach (Button, 0, 0, 1, 1);
-      Gtk_New (Revealer);
-      Revealer.Set_Halign (Align_Start);
-      Revealer.Set_Valign (Align_Start);
-      Gtk_New (Ent);
-      Ent.Set_Text ("00000");
-      Revealer.Add (Ent);
-      Button.Bind_Property ("active", Revealer, "reveal-child");
-      Revealer.Set_Transition_Type (Revealer_Transition_Type_None);
-      Revealer.Set_Transition_Duration (2000);
-      Box.Attach (Revealer, 1, 0, 1, 1);
-
-      Gtk_New (Button, "Fade");
-      Box.Attach (Button, 4, 4, 1, 1);
-      Gtk_New (Revealer);
-      Revealer.Set_Halign (Align_End);
-      Revealer.Set_Valign (Align_End);
-      Gtk_New (Ent);
-      Ent.Set_Text ("00000");
-      Revealer.Add (Ent);
-      Button.Bind_Property ("active", Revealer, "reveal-child");
-      Revealer.Set_Transition_Type (Revealer_Transition_Type_Crossfade);
-      Revealer.Set_Transition_Duration (2000);
-      Box.Attach (Revealer, 3, 4, 1, 1);
-
-      Gtk_New (Button, "Right");
-      Box.Attach (Button, 0, 2, 1, 1);
-      Gtk_New (Revealer);
-      Revealer.Set_Hexpand (True);
-      Revealer.Set_Halign (Align_Start);
-      Gtk_New (Ent);
-      Ent.Set_Text ("12345");
-      Revealer.Add (Ent);
-      Button.Bind_Property ("active", Revealer, "reveal-child");
-      Revealer.Set_Transition_Type (Revealer_Transition_Type_Slide_Right);
-      Revealer.Set_Transition_Duration (2000);
-      Box.Attach (Revealer, 1, 2, 1, 1);
-
-      Gtk_New (Button, "Down");
-      Box.Attach (Button, 2, 0, 1, 1);
-      Gtk_New (Revealer);
-      Revealer.Set_Vexpand (True);
-      Revealer.Set_Valign (Align_Start);
-      Gtk_New (Ent);
-      Ent.Set_Text ("23456");
-      Revealer.Add (Ent);
-      Button.Bind_Property ("active", Revealer, "reveal-child");
-      Revealer.Set_Transition_Type (Revealer_Transition_Type_Slide_Down);
-      Revealer.Set_Transition_Duration (2000);
-      Box.Attach (Revealer, 2, 1, 1, 1);
-
-      Gtk_New (Button, "Left");
-      Box.Attach (Button, 4, 2, 1, 1);
-      Gtk_New (Revealer);
-      Revealer.Set_Hexpand (True);
-      Revealer.Set_Halign (Align_End);
-      Gtk_New (Ent);
-      Ent.Set_Text ("34567");
-      Revealer.Add (Ent);
-      Button.Bind_Property ("active", Revealer, "reveal-child");
-      Revealer.Set_Transition_Type (Revealer_Transition_Type_Slide_Left);
-      Revealer.Set_Transition_Duration (2000);
-      Box.Attach (Revealer, 3, 2, 1, 1);
-
-      Gtk_New (Button, "Up");
-      Box.Attach (Button, 2, 4, 1, 1);
-      Gtk_New (Revealer);
-      Revealer.Set_Vexpand (True);
-      Revealer.Set_Valign (Align_End);
-      Gtk_New (Ent);
-      Ent.Set_Text ("45678");
-      Revealer.Add (Ent);
-      Button.Bind_Property ("active", Revealer, "reveal-child");
-      Revealer.Set_Transition_Type (Revealer_Transition_Type_Slide_Up);
-      Revealer.Set_Transition_Duration (2000);
-      Box.Attach (Revealer, 2, 3, 1, 1);
-
-      Frame.Show_All;
+      Add_Revealer
+        (Grid, "None", "00000", None,
+         Button_Col => 0, Button_Row => 0, Col => 1, Row => 0,
+         Halign => Align_Start, Valign => Align_Start);
+      Add_Revealer
+        (Grid, "Fade", "00000", Crossfade,
+         Button_Col => 4, Button_Row => 4, Col => 3, Row => 4,
+         Halign => Align_End, Valign => Align_End);
+      Add_Revealer
+        (Grid, "Right", "12345", Slide_Right,
+         Button_Col => 0, Button_Row => 2, Col => 1, Row => 2,
+         Halign => Align_Start, Hexpand => True);
+      Add_Revealer
+        (Grid, "Down", "23456", Slide_Down,
+         Button_Col => 2, Button_Row => 0, Col => 2, Row => 1,
+         Valign => Align_Start, Vexpand => True);
+      Add_Revealer
+        (Grid, "Left", "34567", Slide_Left,
+         Button_Col => 4, Button_Row => 2, Col => 3, Row => 2,
+         Halign => Align_End, Hexpand => True);
+      Add_Revealer
+        (Grid, "Up", "45678", Slide_Up,
+         Button_Col => 2, Button_Row => 4, Col => 2, Row => 3,
+         Valign => Align_End, Vexpand => True);
    end Run;
 
 end Create_Revealer;
