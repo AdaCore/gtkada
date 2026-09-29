@@ -58,7 +58,6 @@ land, not a contract.
 | `Gtk.FlowBox` (+ `Gtk.FlowBoxChild`) | `Flow Box` |
 | `Gtk.SearchEntry` (+ `Gtk.SearchBar`) | `Entry/Search Entry`, and would enable upstream's search box in our own shell |
 | `Gtk.InfoBar` | `Info Bars` |
-| `Gtk.AspectFrame` | `Aspect Frame` |
 | `Gtk.Assistant` | `Assistant` |
 | `Gtk.Spinner` | `Spinner` |
 | `Gtk.Scale` (+ `Gtk.Range`) | `Scales` |

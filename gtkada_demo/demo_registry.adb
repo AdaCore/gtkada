@@ -31,6 +31,7 @@ with Demo_Items; use Demo_Items;
 --  TRANSITION: the demos that are still waiting for their bindings are
 --  listed, commented out, in main_windows.adb's own transition block.
 
+with Create_Aspect_Frame;
 with Create_Box;
 with Create_Buttons;
 with Create_Check_Buttons;
@@ -133,6 +134,10 @@ package body Demo_Registry is
         ("Header Bar",
          Create_Header_Bar.Run'Access,
          Create_Header_Bar.Help'Access),
+      To_Demo
+        ("Layout/Aspect Frame",
+         Create_Aspect_Frame.Run'Access,
+         Create_Aspect_Frame.Help'Access),
       To_Demo
         ("Layout/Boxes", Create_Box.Run'Access, Create_Box.Help'Access),
       To_Demo

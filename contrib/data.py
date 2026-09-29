@@ -335,7 +335,7 @@ binding = (
     "Gtk.ApplicationWindow",
     "--GtkArrow",
     "----GtkArrowAccessible",  # We do not support atk
-    "--Gtk.AspectFrame",
+    "Gtk.AspectFrame",
     "--Gtk.Assistant",
     "--Gtk.ATContext",  # Bound manually
     "Gtk.Bitset",

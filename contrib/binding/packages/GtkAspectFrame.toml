@@ -1,0 +1,16 @@
+# ============================================================
+#   GtkAspectFrame
+# ============================================================
+
+[doc]
+group       = "Ornaments"
+gtkada_demo = "create_aspect_frame.adb"
+text = '''
+A Gtk_Aspect_Frame keeps its one child at a fixed aspect ratio (width
+divided by height) however much the frame itself is resized, using the
+Xalign and Yalign properties to place the child in any space left over.
+With Obey_Child set, the ratio is taken from the child's own size request
+instead of from Ratio.
+
+Unlike Gtk_Frame it draws no border and has no label.
+      '''
