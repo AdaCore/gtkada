@@ -393,6 +393,7 @@ binding = (
     "Gtk.CssProvider",
     "--Gtk.CssSection",
     "Gtk.Dialog",
+    "Gtk.DirectoryList",
     "Gtk.DrawingArea",
     "Gtk.Entry",
     "----GtkEntryAccessible",  # We do not support atk
