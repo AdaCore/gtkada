@@ -49,6 +49,8 @@ with Create_List_Store;
 with Create_Menu;
 with Create_Paned;
 with Create_Reparent;
+with Create_Read_More;
+with Create_Revealer;
 with Create_Scrolled;
 with Create_Spin;
 with Create_Stack;
@@ -142,6 +144,14 @@ package body Demo_Registry is
         ("Pickers and Launchers",
          Create_Color_Chooser.Run'Access,
          Create_Color_Chooser.Help'Access),
+      To_Demo
+        ("Read More",
+         Create_Read_More.Run'Access,
+         Create_Read_More.Help'Access),
+      To_Demo
+        ("Revealer",
+         Create_Revealer.Run'Access,
+         Create_Revealer.Help'Access),
       To_Demo
         ("Spin Buttons", Create_Spin.Run'Access, Create_Spin.Help'Access),
       To_Demo ("Stack", Create_Stack.Run'Access, Create_Stack.Help'Access),

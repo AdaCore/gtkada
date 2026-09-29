@@ -57,7 +57,6 @@ land, not a contract.
 | `Gtk.ShortcutController` | `Shortcuts` (`shortcut_triggers.c`) — the `Gtk.Shortcut` / `Shortcut_Action` / `Shortcut_Trigger` half is already bound |
 | `Gtk.SizeGroup` | `Size Groups` |
 | `Gtk.Overlay` | `Overlay/Interactive Overlay`, `Overlay/Decorative Overlay`, `Overlay/Transparency` (`Gtk.Overlay_Layout` is bound, the widget is not) |
-| `Gtk.Revealer` | `Revealer`, `Read More` |
 | `Gtk.FlowBox` (+ `Gtk.FlowBoxChild`) | `Flow Box` |
 | `Gtk.SearchEntry` (+ `Gtk.SearchBar`) | `Entry/Search Entry`, and would enable upstream's search box in our own shell |
 | `Gtk.InfoBar` | `Info Bars` |
@@ -119,12 +118,11 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_print` | `Gtk.Print_Operation`, `Gtk.Print_Context`, `Gtk.Page_Setup`, `Gtk.Paper_Size`, `Gtkada.Printing` *(gtk3)* |
   | `create_progress` | `Gtk.Progress_Bar`, `Gtk.Combo_Box_Text`, `Gtk.Alignment` (removed in gtk4 — use the child's `Halign` / `Valign`), `Gtkada.Handlers` *(gtk3)*, plus `Common` |
   | `create_range` | `Gtk.Scale`, `Gtk.Scale_Button`, `Gtk.Scrollbar`, `Gtk.Volume_Button` |
-  | `create_revealer` | `Gtk.Revealer` — genuinely a single binding |
   | `create_size_groups` | `Gtk.Size_Group`, `Gtk.Handlers` *(gtk3)* |
   | `create_spinners` | `Gtk.Spinner`, plus `Common` |
 
-  Only `create_fixed`, `create_gestures`, `create_gl` and `create_revealer`
-  are blocked purely on bindings Step 2 already tracks. Every
+  Only `create_fixed`, `create_gestures` and `create_gl` are blocked
+  purely on bindings Step 2 already tracks. Every
   other package wants at least one unit no upstream demo needs and Step 2
   therefore never schedules (`Gtk.Calendar`, the combo/scale/scrollbar
   family, `Gtk.Container`, `Gtk.Clipboard`, `Gtk.Selection_Data`,

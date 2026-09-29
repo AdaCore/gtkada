@@ -1,0 +1,11 @@
+# ============================================================
+#   GtkRevealer
+# ============================================================
+
+[doc]
+group       = "Layout containers"
+gtkada_demo = "create_revealer.adb"
+
+[[enum]]
+ctype = "GtkRevealerTransitionType"
+prefix = "GTK_REVEALER_TRANSITION_TYPE_"

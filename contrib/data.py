@@ -554,7 +554,7 @@ binding = (
     "--Gtk.RecentInfo",
     "--Gtk.RecentManager",
     "----GtkRendererCellAccessible",  # We do not support atk
-    "--Gtk.Revealer",
+    "Gtk.Revealer",
     "--Gtk.Scale",
     "----GtkScaleAccessible",  # We do not support atk
     "--Gtk.ScaleButton",
