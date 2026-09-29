@@ -690,7 +690,7 @@ binding = (
     "Gtk.MnemonicTrigger",
     "Gtk.NeverTrigger",
     "Gtk.Shortcut",
-    "--Gtk.ShortcutController", # needed Gtk.EventController
+    "Gtk.ShortcutController",
     "--Gtk.ShortcutsShortcut",  # Obsolescent
     "--Gtk.ShortcutsGroup",     # Obsolescent
     "--Gtk.ShortcutLabel",      # Obsolescent
