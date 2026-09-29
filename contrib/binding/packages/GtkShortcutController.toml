@@ -1,0 +1,10 @@
+# ============================================================
+#   GtkShortcutController
+# ============================================================
+
+[doc]
+gtkada_demo = "create_shortcuts.adb"
+
+[[enum]]
+ctype = "GtkShortcutScope"
+prefix = "GTK_SHORTCUT_SCOPE_"

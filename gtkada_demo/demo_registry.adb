@@ -54,6 +54,7 @@ with Create_Reparent;
 with Create_Read_More;
 with Create_Revealer;
 with Create_Scrolled;
+with Create_Shortcuts;
 with Create_Spin;
 with Create_Stack;
 with Create_Stack_Sidebar;
@@ -154,6 +155,10 @@ package body Demo_Registry is
         ("Pickers and Launchers",
          Create_Color_Chooser.Run'Access,
          Create_Color_Chooser.Help'Access),
+      To_Demo
+        ("Shortcuts",
+         Create_Shortcuts.Run'Access,
+         Create_Shortcuts.Help'Access),
       To_Demo
         ("Read More",
          Create_Read_More.Run'Access,
