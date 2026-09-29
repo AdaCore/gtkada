@@ -415,9 +415,9 @@ binding = (
     "--Gtk.FileChooserDialog",
     "--Gtk.FileChooserWidget",
     "--Gtk.Fixed",
-    "--Gtk.FlowBox",
+    "Gtk.FlowBox",
     "----GtkFlowBoxAccessible",  # We do not support atk
-    "--Gtk.FlowBoxChild",
+    "Gtk.FlowBoxChild",
     "----GtkFlowBoxChildAccessible",  # We do not support atk
     "--Gtk.FontButton",
     "--Gtk.FontChooserDialog",

@@ -1,0 +1,11 @@
+# ============================================================
+#   GtkFlowBox
+# ============================================================
+
+[doc]
+group       = "Layout containers"
+gtkada_demo = "create_flow_box.adb"
+
+[[method]]
+id = "gtk_flow_box_get_selected_children"
+return = "GtkFlowBoxChildList"
