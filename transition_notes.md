@@ -52,7 +52,7 @@ land, not a contract.
 | `Gtk.DrawingArea` | `Drawing Area`, `Masking`, `Pango/Rotated Text`, `Pango/Text Mask`, and the substrate for most `Path/…` demos |
 | `Gtk.Image` / `Gtk.Picture` (+ `GdkPixbuf` or `Gdk.Texture` loading) | `Images`, `Image Scaling`, `Image Filtering`, `Cursors`, the `Paintable/…` family, `Icon View/…` |
 | `Gtk.EventController` + the `Gtk.Gesture*` family | `Gestures`, `Paint`, `Text View/Hypertext`, `Constraints/Interactive Constraints` |
-| `GtkDragSource` + `GtkDropTarget` | `Drag-and-Drop`; part of `Pickers and Launchers`; and `Clipboard`, whose demo image is a drag source (that one also needs `Gtk.Image`). Both are absent from `contrib/data.py` — and they, not the generic `Gtk.EventController` / gesture family, are what gtk4 DnD is built from. The content side they need is already generated: `Gdk.Content_Provider`, `Gdk.Content_Formats`, `Gdk.Drag`, `Gdk.Drop` |
+| `GtkDragSource` | `Drag-and-Drop`; part of `Pickers and Launchers`; and `Clipboard`, whose demo image is a drag source (that one also needs `Gtk.Image`). `GtkDragSource` is absent from `contrib/data.py` — and it and `GtkDropTarget`, not the generic `Gtk.EventController` / gesture family, are what gtk4 DnD is built from. The content side they need is already generated: `Gdk.Content_Provider`, `Gdk.Content_Formats`, `Gdk.Drag`, `Gdk.Drop` |
 | `Gtk.SizeGroup` | `Size Groups` |
 | `Gtk.Overlay` | `Overlay/Interactive Overlay`, `Overlay/Decorative Overlay`, `Overlay/Transparency` (`Gtk.Overlay_Layout` is bound, the widget is not) |
 | `Gtk.SearchEntry` (+ `Gtk.SearchBar`) | `Entry/Search Entry`, and would enable upstream's search box in our own shell |
@@ -554,3 +554,4 @@ Pango.Attributes (src/generated/pango-attributes.ads) currently provides no:
 
 Revisit and complete /label/markup-parse once the Pango attribute
 introspection bindings are available.
+

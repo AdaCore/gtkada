@@ -691,6 +691,7 @@ binding = (
     "--Gtk.ShortcutLabel",      # Obsolescent
     "--Gtk.ShortcutsSection",   # Obsolescent
     "Gtk.DropDown",
+    "Gtk.DropTarget",
     "graphene_point_t",
     "graphene_point3d_t",
     "graphene_size_t",
@@ -814,6 +815,7 @@ naming.girname_to_ctype = {
     "Gdk.Image": "GdkImage*",
     "Gdk.GLContext": "GdkGLContext*",
     "Gdk.DragContext": "GdkDragContext",
+    "Gdk.Drop": "GdkDrop*",  # e.g. the `drop` of GtkDropTarget::accept
     "GdkPixbuf.PixbufAnimation": "GdkPixbufAnimation*",
     "Gdk.Bitmap": "GdkBitmap*",
     "Gdk.Color": "GdkColor*",
@@ -821,6 +823,7 @@ naming.girname_to_ctype = {
     "Gdk.RGBA": "GdkRGBA",
     "GObject.Object": "GObject*",
     "GObject.Closure": "GClosure*",
+    "GObject.Value": "GValue",  # e.g. the `value` of GtkDropTarget::drop
     "cairo.Surface": "cairo_surface_t*",
     "cairo.Context": "cairo_t*",
     "cairo.RectangleInt": "cairo_rectangle_int_t*",

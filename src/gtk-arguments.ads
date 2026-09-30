@@ -116,6 +116,8 @@ package Gtk.Arguments is
      (Args : Glib.Values.C_GValues; Num : Guint) return access Gdouble;
    function Unchecked_To_Guint
      (Args : Glib.Values.C_GValues; Num : Guint) return Guint;
+   function Unchecked_To_GValue
+     (Args : Glib.Values.C_GValues; Num : Guint) return Glib.Values.GValue;
    function Unchecked_To_UTF8_String
      (Args : Glib.Values.C_GValues; Num : Guint) return UTF8_String;
    --   function Unchecked_To_Context_Id
