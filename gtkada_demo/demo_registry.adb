@@ -40,6 +40,7 @@ with Create_Column_View;
 with Create_Css_Accordion;
 with Create_Custom_Widget;
 with Create_Dialog;
+with Create_Drag_And_Drop;
 with Create_Drawing_Area;
 with Create_Entry;
 with Create_Flow_Box;
@@ -103,6 +104,10 @@ package body Demo_Registry is
          Create_Toggle_Buttons.Help'Access),
       To_Demo
         ("Dialogs", Create_Dialog.Run'Access, Create_Dialog.Help'Access),
+      To_Demo
+        ("Drag and Drop",
+         Create_Drag_And_Drop.Run'Access,
+         Create_Drag_And_Drop.Help'Access),
       To_Demo
         ("Drawing Area",
          Create_Drawing_Area.Run'Access,

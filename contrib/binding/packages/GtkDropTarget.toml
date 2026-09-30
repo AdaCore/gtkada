@@ -21,3 +21,7 @@ bind = false
 id = "value"
 bind = false
 # GValue property
+
+[doc]
+group       = "Drag and Drop"
+gtkada_demo = "create_drag_and_drop.adb"

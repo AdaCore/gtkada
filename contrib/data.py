@@ -434,6 +434,7 @@ binding = (
     "--Gtk.GesturePan",
     "--Gtk.GestureRotate",
     "Gtk.GestureSingle",
+    "Gtk.DragSource",
     "--Gtk.GestureSwipe",
     "--Gtk.GestureZoom",
     "--GtkGradient",
@@ -815,7 +816,9 @@ naming.girname_to_ctype = {
     "Gdk.Image": "GdkImage*",
     "Gdk.GLContext": "GdkGLContext*",
     "Gdk.DragContext": "GdkDragContext",
-    "Gdk.Drop": "GdkDrop*",  # e.g. the `drop` of GtkDropTarget::accept
+    "Gdk.Drag": "GdkDrag*",
+    "Gdk.ContentProvider": "GdkContentProvider*",
+    "Gdk.Drop": "GdkDrop*",
     "GdkPixbuf.PixbufAnimation": "GdkPixbufAnimation*",
     "Gdk.Bitmap": "GdkBitmap*",
     "Gdk.Color": "GdkColor*",
@@ -823,7 +826,7 @@ naming.girname_to_ctype = {
     "Gdk.RGBA": "GdkRGBA",
     "GObject.Object": "GObject*",
     "GObject.Closure": "GClosure*",
-    "GObject.Value": "GValue",  # e.g. the `value` of GtkDropTarget::drop
+    "GObject.Value": "GValue",
     "cairo.Surface": "cairo_surface_t*",
     "cairo.Context": "cairo_t*",
     "cairo.RectangleInt": "cairo_rectangle_int_t*",

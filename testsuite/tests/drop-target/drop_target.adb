@@ -31,12 +31,60 @@ procedure Drop_Target is
         External_Name => "g_signal_emit_by_name";
    --  The variadic tail of "drop" is (GValue *, double, double, gboolean *)
 
+   procedure Emit_Motion
+     (Instance : System.Address;
+      Name     : Interfaces.C.Strings.chars_ptr;
+      X, Y     : Gdouble;
+      Result   : access Drag_Action)
+   with Import, Convention => C_Variadic_2,
+        External_Name => "g_signal_emit_by_name";
+   --  The variadic tail of "motion" is (double, double, GdkDragAction *)
+
+   function Handle_Motion
+     (Self : access Gtk_Drop_Target_Record'Class;
+      X, Y : Gdouble) return Drag_Action;
+
    function Handle_Drop
      (Self  : access Gtk_Drop_Target_Record'Class;
       Value : GValue;
       X, Y  : Gdouble) return Boolean;
+   procedure Test_Motion_Signal with Convention => C;
    procedure Test_Properties with Convention => C;
    procedure Test_Drop_Signal with Convention => C;
+
+   -------------------
+   -- Handle_Motion --
+   -------------------
+
+   function Handle_Motion
+     (Self : access Gtk_Drop_Target_Record'Class;
+      X, Y : Gdouble) return Drag_Action
+   is
+      pragma Unreferenced (Self, X, Y);
+   begin
+      return Gdk_Action_Move;
+   end Handle_Motion;
+
+   -------------------------
+   -- Test_Motion_Signal --
+   -------------------------
+
+   procedure Test_Motion_Signal is
+      T      : constant Gtk_Drop_Target :=
+        Gtk_Drop_Target_New (GType_Int, Gdk_Action_Copy or Gdk_Action_Move);
+      Result : aliased Drag_Action := Gdk_Action_None;
+      Name   : Interfaces.C.Strings.chars_ptr :=
+        Interfaces.C.Strings.New_String ("motion");
+   begin
+      T.On_Motion (Handle_Motion'Unrestricted_Access);
+
+      --  A flags return value must make it back through the marshaller.
+      Emit_Motion (Get_Object (T), Name, 1.0, 2.0, Result'Access);
+      Interfaces.C.Strings.Free (Name);
+      Assert_True (Result = Gdk_Action_Move);
+
+      Unref (T);
+   end Test_Motion_Signal;
 
    -----------------
    -- Handle_Drop --
@@ -115,6 +163,8 @@ begin
 
    Glib.Test.Add_Func
      ("/droptarget/properties", Test_Properties'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/droptarget/motion-signal", Test_Motion_Signal'Unrestricted_Access);
    Glib.Test.Add_Func
      ("/droptarget/drop-signal", Test_Drop_Signal'Unrestricted_Access);
 

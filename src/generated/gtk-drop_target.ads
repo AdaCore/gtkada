@@ -73,6 +73,9 @@
 --  If you are not interested in receiving the drop, but just want to update
 --  UI state during a Drag-and-Drop operation (e.g. switching tabs), you can
 --  use [classGtk.DropControllerMotion].
+--
+--  <group>Drag and Drop</group>
+--  <gtkada_demo>create_drag_and_drop.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Content_Formats;  use Gdk.Content_Formats;

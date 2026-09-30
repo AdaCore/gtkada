@@ -813,6 +813,10 @@ void ada_gvalue_set(GValue *value, void *val)
     g_value_set_int(value, *(gint *)val);
   else if G_VALUE_HOLDS_UINT (value)
     g_value_set_uint(value, *(guint *)val);
+  else if G_VALUE_HOLDS_FLAGS (value)
+    g_value_set_flags(value, *(guint *)val);
+  else if G_VALUE_HOLDS_ENUM (value)
+    g_value_set_enum(value, *(gint *)val);
   else if G_VALUE_HOLDS_LONG (value)
     g_value_set_long(value, *(glong *)val);
   else if G_VALUE_HOLDS_ULONG (value)
