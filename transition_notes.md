@@ -55,7 +55,6 @@ land, not a contract.
 | `GtkDragSource` + `GtkDropTarget` | `Drag-and-Drop`; part of `Pickers and Launchers`; and `Clipboard`, whose demo image is a drag source (that one also needs `Gtk.Image`). Both are absent from `contrib/data.py` — and they, not the generic `Gtk.EventController` / gesture family, are what gtk4 DnD is built from. The content side they need is already generated: `Gdk.Content_Provider`, `Gdk.Content_Formats`, `Gdk.Drag`, `Gdk.Drop` |
 | `Gtk.SizeGroup` | `Size Groups` |
 | `Gtk.Overlay` | `Overlay/Interactive Overlay`, `Overlay/Decorative Overlay`, `Overlay/Transparency` (`Gtk.Overlay_Layout` is bound, the widget is not) |
-| `Gtk.FlowBox` (+ `Gtk.FlowBoxChild`) | `Flow Box` |
 | `Gtk.SearchEntry` (+ `Gtk.SearchBar`) | `Entry/Search Entry`, and would enable upstream's search box in our own shell |
 | `Gtk.InfoBar` | `Info Bars` |
 | `Gtk.Assistant` | `Assistant` |
@@ -104,7 +103,6 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_entry` | `Gtk.Combo_Box_Text`, `Gtk.Level_Bar`, `Gtk.Search_Entry`, `Gtk.Handlers` *(gtk3)*, plus `Common` (see below) |
   | `create_file_chooser` | `Gtk.File_Chooser` (the interface) and `Gtk.File_Chooser_Button`; both deprecated upstream since 4.10, so the revival should target `GtkFileDialog` — itself unbound and absent from `contrib/data.py`, i.e. a new binding of its own |
   | `create_fixed` | `Gtk.Fixed`. It calls only `Gtk.Fixed.Put`, so this really is its whole blocker — it is *not* part of the `Gsk.Transform` group |
-  | `create_flow_box` | `Gtk.Flow_Box`, `Gtk.Flow_Box_Child`, `Gtk.Combo_Box`, `Gtk.Combo_Box_Text`, `Gtk.Handlers` *(gtk3)* |
   | `create_font_chooser` | `Gtk.Font_Chooser_Widget` |
   | `create_gestures` | `Gtk.Gesture`, `Gtk.Gesture_Long_Press`, `Gtk.Gesture_Zoom`, `Gtk.Drawing_Area` |
   | `create_gl` | `Gtk.GLArea`, `Gtk.GRange` (`--Gtk.Range`), `Gtk.Scale`. Its `Epoxy`, `OpenGL` and `Create_GL.GLSL` dependencies are demo-local sources and fine |
