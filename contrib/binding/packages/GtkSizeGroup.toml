@@ -1,0 +1,18 @@
+# ============================================================
+#   GtkSizeGroup
+# ============================================================
+
+[doc]
+gtkada_demo = "create_size_groups.adb"
+
+[[parameter]]
+name = "self"
+ada = "Size_Group"
+
+[[enum]]
+ctype = "GtkSizeGroupMode"
+prefix = "GTK_SIZE_GROUP_"
+
+[[method]]
+id = "gtk_size_group_get_widgets"
+return = "WidgetSList"

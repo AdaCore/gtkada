@@ -566,7 +566,7 @@ binding = (
     "--GtkSelectionData",
     "Gtk.Separator",
     "--Gtk.ShortcutsWindow",
-    "--Gtk.SizeGroup",
+    "Gtk.SizeGroup",
     "--Gtk.Scrollbar",
     "Gtk.ScrolledWindow",
     "----GtkScrolledWindowAccessible",  # We do not support atk

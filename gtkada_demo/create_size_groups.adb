@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                    Copyright (C) 1998-2026, AdaCore                      --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,34 +21,36 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib;              use Glib;
-with Gtk.Box;           use Gtk.Box;
-with Gtk.Button;        use Gtk.Button;
-with Gtk.Check_Button;  use Gtk.Check_Button;
-with Gtk.Enums;         use Gtk.Enums;
-with Gtk.Frame;         use Gtk.Frame;
-with Gtk.Handlers;      use Gtk.Handlers;
-with Gtk.Label;         use Gtk.Label;
-with Gtk.Size_Group;    use Gtk.Size_Group;
-with Gtk.Grid;          use Gtk.Grid;
+with GNAT.Strings;
+
+with Glib;             use Glib;
+with Gtk;              use Gtk;
+with Gtk.Box;          use Gtk.Box;
+with Gtk.Check_Button; use Gtk.Check_Button;
+with Gtk.Drop_Down;    use Gtk.Drop_Down;
+with Gtk.Enums;        use Gtk.Enums;
+with Gtk.Frame;        use Gtk.Frame;
+with Gtk.Grid;         use Gtk.Grid;
+with Gtk.Label;        use Gtk.Label;
+with Gtk.Size_Group;   use Gtk.Size_Group;
+with Gtk.Widget;       use Gtk.Widget;
 
 package body Create_Size_Groups is
 
+   Group : Gtk_Size_Group;
+   --  The group shared by every drop-down of the demo
+
    procedure Add_Row
-     (Table : access Gtk_Grid_Record'Class;
-      Row   : Gint;
-      Group : Gtk_Size_Group;
-      Text  : String);
-   --  Add a new row in Table, with a label Text .
-   --  The option menu in that row is added to the group Group.
+     (Grid    : not null access Gtk_Grid_Record'Class;
+      Row     : Gint;
+      Text    : String;
+      Options : GNAT.Strings.String_List);
+   --  Add a new row in Grid, with a label Text and a drop-down offering
+   --  Options. The drop-down is added to Group.
 
    procedure Toggle_Grouping
-     (Check_Button : access Gtk_Check_Button_Record'Class;
-      Group        : Gtk_Size_Group);
-   --  Toggle whether the size group is active.
-
-   package Toggle_Cb is new Gtk.Handlers.User_Callback
-     (Gtk_Check_Button_Record, Gtk_Size_Group);
+     (Check_Button : access Gtk_Check_Button_Record'Class);
+   --  Toggle whether the size group is active
 
    ----------
    -- Help --
@@ -58,13 +60,16 @@ package body Create_Size_Groups is
    begin
       return
         "A @bGtk_Size_Group@B makes a set of widgets request the same"
-        & " size, useful for aligning a column of widgets when a table"
-        & " isn't an option."
+        & " size, which is useful to line up controls that do not share a"
+        & " common container. Here the drop-downs of two independent"
+        & " grids are put in the same horizontal size group, so that"
+        & " they all have the same width."
         & ASCII.LF
-        & "It only affects the size requested, not the size finally"
-        & " allocated: to make the widgets actually end up the same size,"
-        & " pack them so they get exactly what they request (no FILL"
-        & " flag).";
+        & "Clear the ""Enable grouping"" check button to see them fall"
+        & " out of alignment."
+        & ASCII.LF
+        & "Note that a size group only affects the size @brequested@B by"
+        & " the widgets, not the size they are finally allocated.";
    end Help;
 
    -------------
@@ -72,21 +77,23 @@ package body Create_Size_Groups is
    -------------
 
    procedure Add_Row
-     (Table : access Gtk_Grid_Record'Class;
-      Row   : Gint;
-      Group : Gtk_Size_Group;
-      Text  : String)
+     (Grid    : not null access Gtk_Grid_Record'Class;
+      Row     : Gint;
+      Text    : String;
+      Options : GNAT.Strings.String_List)
    is
-      Label  : Gtk_Label;
-      Button : Gtk_Button;
+      Label    : Gtk_Label;
+      Dropdown : Gtk_Drop_Down;
    begin
-      Gtk_New (Label, Text);
-      Set_Alignment (Label, 0.0, 1.0);
-      Table.Attach (Label, 0, Row);
+      Gtk_New_With_Mnemonic (Label, Text);
+      Label.Set_Halign (Align_Start);
+      Label.Set_Hexpand (True);
+      Grid.Attach (Label, 0, Row);
 
-      Gtk_New (Button, Text);
-      Gtk.Size_Group.Add_Widget (Group, Button);
-      Table.Attach (Button, 1, Row);
+      Gtk_New_From_Strings (Dropdown, Options);
+      Label.Set_Mnemonic_Widget (Dropdown);
+      Group.Add_Widget (Dropdown);
+      Grid.Attach (Dropdown, 1, Row);
    end Add_Row;
 
    ---------------------
@@ -94,16 +101,15 @@ package body Create_Size_Groups is
    ---------------------
 
    procedure Toggle_Grouping
-     (Check_Button : access Gtk_Check_Button_Record'Class;
-      Group        : Gtk_Size_Group) is
+     (Check_Button : access Gtk_Check_Button_Record'Class) is
    begin
-      --  Note: we use both the properties and the directy function call only
-      --  to demonstrate the two technics. No other technical reason.
+      --  Setting the property and calling Set_Mode are equivalent: both are
+      --  shown only to demonstrate the two techniques.
 
-      if Get_Active (Check_Button) then
+      if Check_Button.Get_Active then
          Set_Property (Group, Mode_Property, Horizontal);
       else
-         Gtk.Size_Group.Set_Mode (Group, None);
+         Group.Set_Mode (None);
       end if;
    end Toggle_Grouping;
 
@@ -112,45 +118,85 @@ package body Create_Size_Groups is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
+      Color_Options : GNAT.Strings.String_List :=
+        (new String'("Red"), new String'("Green"), new String'("Blue"));
+      Dash_Options  : GNAT.Strings.String_List :=
+        (new String'("Solid"), new String'("Dashed"), new String'("Dotted"));
+      End_Options   : GNAT.Strings.String_List :=
+        (new String'("Square"), new String'("Round"),
+         new String'("Double Arrow"));
+
       Vbox   : Gtk_Box;
-      Group  : Gtk_Size_Group;
-      Table  : Gtk_Grid;
-      F      : Gtk_Frame;
       Toggle : Gtk_Check_Button;
+      Grid   : Gtk_Grid;
+
+      function New_Options_Frame (Title : String) return Gtk_Grid;
+      --  Append to Vbox a frame titled Title, and return the grid it holds
+
+      procedure Free (List : in out GNAT.Strings.String_List);
+      --  Free every string in List
+
+      ----------
+      -- Free --
+      ----------
+
+      procedure Free (List : in out GNAT.Strings.String_List) is
+      begin
+         for S of List loop
+            GNAT.Strings.Free (S);
+         end loop;
+      end Free;
+
+      -----------------------
+      -- New_Options_Frame --
+      -----------------------
+
+      function New_Options_Frame (Title : String) return Gtk_Grid is
+         F    : Gtk_Frame;
+         Grid : Gtk_Grid;
+      begin
+         Gtk_New (F, Title);
+         Vbox.Append (F);
+
+         Gtk_New (Grid);
+         Grid.Set_Margin_Start (5);
+         Grid.Set_Margin_End (5);
+         Grid.Set_Margin_Top (5);
+         Grid.Set_Margin_Bottom (5);
+         Grid.Set_Row_Spacing (5);
+         Grid.Set_Column_Spacing (10);
+         F.Set_Child (Grid);
+         return Grid;
+      end New_Options_Frame;
 
    begin
-      Gtk_New_Vbox (Vbox, Homogeneous => False);
-      Add (Frame, Vbox);
-      Set_Label (Frame, "Size group");
+      Set_Label (Frame, "Size Groups");
+
+      Gtk_New (Vbox, Orientation_Vertical, 5);
+      Vbox.Set_Margin_Start (5);
+      Vbox.Set_Margin_End (5);
+      Vbox.Set_Margin_Top (5);
+      Vbox.Set_Margin_Bottom (5);
+      Frame.Set_Child (Vbox);
 
       Gtk_New (Group, Horizontal);
 
-      Gtk_New (F, "Options1");
-      Pack_Start (Vbox, F, Expand => False, Fill => False);
+      Grid := New_Options_Frame ("Color Options");
+      Add_Row (Grid, 0, "_Foreground", Color_Options);
+      Add_Row (Grid, 1, "_Background", Color_Options);
 
-      Gtk_New (Table);
-      F.Add (Table);
-      Table.Set_Border_Width (5);
+      Grid := New_Options_Frame ("Line Options");
+      Add_Row (Grid, 0, "_Dashing", Dash_Options);
+      Add_Row (Grid, 1, "_Line ends", End_Options);
 
-      Add_Row (Table, 0, Group, "foofoofoofoofoofoofoofoofoo");
-      Add_Row (Table, 1, Group, "foofoofoo");
-
-      Gtk_New (F, "Options2");
-      Vbox.Pack_Start (F, Expand => False, Fill => False);
-
-      Gtk_New (Table);
-      F.Add (Table);
-      Table.Set_Border_Width (5);
-
-      Add_Row (Table, 0, Group, "foo");
-      Add_Row (Table, 1, Group, "foofoofoofoofoofoo");
-
-      Gtk_New (Toggle, "Enable grouping");
-      Vbox.Pack_Start (Toggle, Expand => False, Fill => False);
+      Gtk_New_With_Mnemonic (Toggle, "_Enable grouping");
       Toggle.Set_Active (True);
-      Toggle_Cb.Connect (Toggle, "toggled", Toggle_Grouping'Access, Group);
+      Toggle.On_Toggled (Toggle_Grouping'Access);
+      Vbox.Append (Toggle);
 
-      Frame.Show_All;
+      Free (Color_Options);
+      Free (Dash_Options);
+      Free (End_Options);
    end Run;
 
 end Create_Size_Groups;
