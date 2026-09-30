@@ -30,6 +30,7 @@ package body Gtk.Arguments is
    use Glib.Values;
 
    type Cairo_Rectangle_Int_Access is access Cairo.Region.Cairo_Rectangle_Int;
+   type Gdk_Rectangle_Access is access Gdk.Rectangle.Gdk_Rectangle;
    type Gint_Access is access Gint;
    type Gdouble_Access is access Gdouble;
 
@@ -413,6 +414,22 @@ package body Gtk.Arguments is
    begin
       return (Result.X, Result.Y, Result.Width, Result.Height);
    end Unchecked_To_Gdk_Rectangle;
+
+   ---------------------------------------
+   -- Unchecked_To_Gdk_Rectangle_Access --
+   ---------------------------------------
+
+   function Unchecked_To_Gdk_Rectangle_Access
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return access Gdk.Rectangle.Gdk_Rectangle
+   is
+      function Convert is new Ada.Unchecked_Conversion
+        (C_Proxy, Gdk_Rectangle_Access);
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Convert (Get_Proxy (Val));
+   end Unchecked_To_Gdk_Rectangle_Access;
 --
 --   ---------------------------
 --   -- Unchecked_To_Gdk_RGBA --

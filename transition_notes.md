@@ -52,7 +52,6 @@ land, not a contract.
 | `Gtk.DrawingArea` | `Drawing Area`, `Masking`, `Pango/Rotated Text`, `Pango/Text Mask`, and the substrate for most `Path/…` demos |
 | `Gtk.Image` / `Gtk.Picture` (+ `GdkPixbuf` or `Gdk.Texture` loading) | `Images`, `Image Scaling`, `Image Filtering`, `Cursors`, the `Paintable/…` family, `Icon View/…` |
 | `Gtk.EventController` + the `Gtk.Gesture*` family | `Gestures`, `Paint`, `Text View/Hypertext`, `Constraints/Interactive Constraints` |
-| `Gtk.Overlay` | `Overlay/Interactive Overlay`, `Overlay/Decorative Overlay`, `Overlay/Transparency` (`Gtk.Overlay_Layout` is bound, the widget is not) |
 | `Gtk.SearchEntry` (+ `Gtk.SearchBar`) | `Entry/Search Entry`, and would enable upstream's search box in our own shell |
 | `Gtk.InfoBar` | `Info Bars` |
 | `Gtk.Assistant` | `Assistant` |

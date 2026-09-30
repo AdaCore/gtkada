@@ -399,7 +399,7 @@ package Gtk.Popover is
    --  Whether mnemonics are currently visible in this popover.
 
    Pointing_To_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Gdk.Rectangle
+   --  Type: Gdk.Rectangle.Gdk_Rectangle
    --  Rectangle in the parent widget that the popover points to.
 
    Position_Property : constant Gtk.Enums.Property_Gtk_Position_Type;

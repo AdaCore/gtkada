@@ -520,7 +520,7 @@ binding = (
     "----GtkNotebookPageAccessible",  # We do not support atk
     "----GtkNumerableIcon",  # Requires a lot of GIO
     "--GtkOffscreenWindow",
-    "--Gtk.Overlay",
+    "Gtk.Overlay",
     "Gtk.Paned",
     "----GtkPanedAccessible",  # We do not support atk
     "Gtk.PageSetup",
@@ -824,6 +824,7 @@ naming.girname_to_ctype = {
     "Gdk.Color": "GdkColor*",
     "Gdk.Screen": "GdkScreen",
     "Gdk.RGBA": "GdkRGBA",
+    "Gdk.Rectangle": "GdkRectangle*",
     "GObject.Object": "GObject*",
     "GObject.Closure": "GClosure*",
     "GObject.Value": "GValue",
