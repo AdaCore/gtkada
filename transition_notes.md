@@ -63,7 +63,6 @@ land, not a contract.
 | `Gtk.Scale` (+ `Gtk.Range`) | `Scales` |
 | `Gtk.LevelBar` / `Gtk.ProgressBar` | no upstream demo of its own; kept here because both are one-class bindings that several legacy demos wait on |
 | `Gtk.IconView` | `Icon View/Icon View Basics`, `Icon View/Editing and Drag-and-Drop` (the latter drags through `GtkIconView`'s own model-drag API, not the DnD controllers) |
-| `Gtk.PasswordEntry` | `Entry/Password Entry` |
 | `Gtk.Accessible.Update_State` / `Update_Property` / `Update_Relation` | `Error States`. The demo's whole subject is flagging an entry invalid and describing why, which is these three calls; every widget it uses is already bound. All three are varargs in C and so unbound, but each has a non-varargs `_value` twin (`gtk_accessible_update_state_value` and friends) taking parallel arrays — that is the shape to bind |
 
 **Needs a substantial new area** - waiting on more than one binding.

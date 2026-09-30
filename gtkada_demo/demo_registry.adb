@@ -51,6 +51,7 @@ with Create_List_Box_Controls;
 with Create_List_Store;
 with Create_Menu;
 with Create_Paned;
+with Create_Password_Entry;
 with Create_Reparent;
 with Create_Read_More;
 with Create_Revealer;
@@ -203,6 +204,10 @@ package body Demo_Registry is
         ("Tree View/Slice List Model",
          Create_Slice_List_Model.Run'Access,
          Create_Slice_List_Model.Help'Access),
+      To_Demo
+        ("Entry/Password Entry",
+         Create_Password_Entry.Run'Access,
+         Create_Password_Entry.Help'Access),
       To_Demo
         ("Entry/Unicode",
          Create_Unicode_Entry.Run'Access,

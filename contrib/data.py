@@ -524,6 +524,7 @@ binding = (
     "----GtkPanedAccessible",  # We do not support atk
     "Gtk.PageSetup",
     "Gtk.PaperSize",
+    "Gtk.PasswordEntry",
     "----GtkPlacesSidebar",  # Requires GFile
     "Gtk.Popover",
     "----GtkPopoverAccessible",  # We do not support atk
