@@ -635,15 +635,7 @@ binding = (
     "Gtk.TreeViewColumn",
     "--GtkToggleAction",
     "Gtk.ToggleButton",
-    "----GtkToggleButtonAccessible",  # We do not support atk
-    "--GtkToggleToolButton",
-    "--GtkToolButton",
-    "--GtkToolbar",
-    "--GtkToolItem",
-    "--GtkToolItemGroup",
     "Gtk.Tooltip",
-    "--GtkToolPalette",
-    "----GtkToplevelAccessible",  # We do not support atk
     "--GtkUIManager",
     "--GtkVButtonBox",
     "--GtkVPaned",
@@ -672,6 +664,9 @@ binding = (
     "Gtk.ObjectExpression",
     "Gtk.PropertyExpression",
     "Gtk.TryExpression",
+    "--Gtk.ParamSpecExpression", # ancestor of the Glib.Param_Spec
+    # and not used anywhere so do not bind for now
+    "Gtk.PasswordEntryBuffer",
     "Gtk.Filter",
     "Gtk.BoolFilter",
     "Gtk.StringFilter",
