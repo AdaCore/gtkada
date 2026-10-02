@@ -1390,6 +1390,12 @@ class GIRClass(object):
 
         pkg = "%s.%s" % (pkg, n)
         naming.add_girname(girname=n, ctype=self.ctype)
+        if self.is_interface and self.namespace_name:
+            # Properties may use the qualified GIR name without a c:type.
+            naming.add_girname(
+                girname="%s.%s" % (self.namespace_name, self.node.get("name")),
+                ctype=self.ctype,
+            )
 
         if has_toplevel_type:
             ctype = self.ctype

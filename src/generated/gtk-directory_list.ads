@@ -206,6 +206,10 @@ package Gtk.Directory_List is
    --  Type: GLib.Error
    --  Error encountered while loading files.
 
+   File_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Glib.GFile.Gfile
+   --  File to query.
+
    Io_Priority_Property : constant Glib.Properties.Property_Int;
    --  Priority used when loading.
 
@@ -251,6 +255,8 @@ private
      Glib.Properties.Build ("item-type");
    Io_Priority_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("io-priority");
+   File_Property : constant Glib.Properties.Property_Interface :=
+     Glib.Properties.Build ("file");
    Error_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("error");
    Attributes_Property : constant Glib.Properties.Property_String :=

@@ -539,7 +539,14 @@ until the generator is taught to quote conditionally.
 
 ### `[[property]]`
 
-Match a class `<property>` 
+Match a class `<property>`.
+
+Qualified GIR interface names are registered automatically from the XML
+namespace and interface name. Properties without a `c:type`, such as
+`GtkDirectoryList:file` with `<type name="Gio.File"/>`, therefore resolve
+to the interface's Ada type and use `Glib.Properties.Property_Interface`.
+No manual GIR-to-C mapping is needed; explicit mappings in `data.py` take
+precedence over the automatic registration.
 
 | Key             | Type   | Meaning                                              |
 |-----------------|--------|------------------------------------------------------|

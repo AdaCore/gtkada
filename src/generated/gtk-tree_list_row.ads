@@ -138,8 +138,8 @@ package Gtk.Tree_List_Row is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
-   Children_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Gio.List_Model
+   Children_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Glib.List_Model.Glist_Model
    --  The model holding the row's children.
 
    Depth_Property : constant Glib.Properties.Property_Uint;
@@ -164,6 +164,6 @@ private
      Glib.Properties.Build ("expandable");
    Depth_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("depth");
-   Children_Property : constant Glib.Properties.Property_Boxed :=
+   Children_Property : constant Glib.Properties.Property_Interface :=
      Glib.Properties.Build ("children");
 end Gtk.Tree_List_Row;
