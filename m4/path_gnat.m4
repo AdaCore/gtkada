@@ -37,7 +37,7 @@ end Conftest;
 EOF
 
    $GPRBUILD -q -P conftest.gpr > /dev/null
-   rm -f auto.cgpr b__conftest.*
+   rm -f auto.cgpr b__conftest.* .*conftest.json .*conftest.adb.json
 
    if ( test ! -x conftest ) then
       AC_MSG_RESULT(no)
