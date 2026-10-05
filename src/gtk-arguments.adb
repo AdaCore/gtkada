@@ -22,6 +22,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with System.Address_To_Access_Conversions;
 with Ada.Unchecked_Conversion;
 
 package body Gtk.Arguments is
@@ -253,6 +254,24 @@ package body Gtk.Arguments is
       Unsafe_Nth (Args, Num, Val);
       return Get_Uint (Val);
    end Unchecked_To_Guint;
+
+   -------------------------
+   -- Unchecked_To_GValue --
+   -------------------------
+
+   function Unchecked_To_GValue
+     (Args : Glib.Values.C_GValues; Num : Guint) return Glib.Values.GValue
+   is
+      package Conv is new System.Address_To_Access_Conversions
+        (Glib.Values.GValue);
+      Val : GValue;
+   begin
+      --  A signal parameter of type GValue* is emitted as a G_TYPE_VALUE
+      --  (boxed) one, so what Args holds is a pointer to the GValue. It is
+      --  owned by the emission and must not be unset.
+      Unsafe_Nth (Args, Num, Val);
+      return Conv.To_Pointer (Get_Boxed (Val)).all;
+   end Unchecked_To_GValue;
 
    ------------------------------
    -- Unchecked_To_UTF8_String --

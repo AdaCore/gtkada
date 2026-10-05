@@ -1,0 +1,27 @@
+# ============================================================
+#   GtkDropTarget
+# ============================================================
+
+[[method]]
+id = "gtk_drop_target_get_value"
+return = "access constant GValue"
+# Returns a `const GValue*`, or NULL when no drop is in progress
+
+[[method]]
+id = "gtk_drop_target_get_gtypes"
+bind = false
+# No "array of GType"
+
+[[method]]
+id = "gtk_drop_target_set_gtypes"
+bind = false
+# No "array of GType"
+
+[[property]]
+id = "value"
+bind = false
+# GValue property
+
+[doc]
+group       = "Drag and Drop"
+gtkada_demo = "create_drag_and_drop.adb"
