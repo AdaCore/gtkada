@@ -6,11 +6,6 @@ ada = "Gdk.Texture"
 [[enum]]
 ctype = "GdkMemoryFormat"
 
-[[method]]
-id = "gdk_texture_new_for_pixbuf"
-bind = false
-# No GdkPixbuf binding
-
 [[extra.with_body]]
 pkg = "System"
 use = false

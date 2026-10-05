@@ -59,6 +59,7 @@ with Create_Menu;
 with Create_Paned;
 with Create_Password_Entry;
 with Create_Progress;
+with Create_Pixbuf;
 with Create_Reparent;
 with Create_Read_More;
 with Create_Revealer;
@@ -157,6 +158,8 @@ package body Demo_Registry is
          Create_Tooltips.Help'Access),
       To_Demo
         ("Flow Box", Create_Flow_Box.Run'Access, Create_Flow_Box.Help'Access),
+      To_Demo
+        ("Images/Pixbuf", Create_Pixbuf.Run'Access, Create_Pixbuf.Help'Access),
       To_Demo
         ("Overlay", Create_Overlay.Run'Access, Create_Overlay.Help'Access),
       To_Demo

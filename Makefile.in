@@ -138,6 +138,7 @@ generate:
 	   --gir-file=contrib/GObject-2.0.gir \
 	   --gir-file=contrib/Gtk-4.0.gir \
 	   --gir-file=contrib/Gdk-4.0.gir \
+	   --gir-file=contrib/GdkPixbuf-2.0.gir \
 	   --gir-file=contrib/Pango-1.0.gir \
 	   --gir-file=contrib/Gio-2.0.gir \
 	   --gir-file=contrib/Graphene-1.0.gir \

@@ -233,8 +233,9 @@ class GtkAdaPackage(object):
                 override_fields = {}
 
                 for field in rec.get("field", []):
-                    override_fields[field["name"]] = naming.type(
-                        name="", cname=field["ctype"]
+                    override_fields[field["name"]] = (
+                        AdaType(field["type"]) if field.get("type") else
+                        naming.type(name="", cname=field["ctype"])
                     )
 
                 unions = []
@@ -428,6 +429,7 @@ class GtkAdaPackage(object):
         for type_entry in extra_dict.get("type", []):
             elem = ET.Element("type")
             elem.set("ctype", type_entry.get("ctype", ""))
+            elem.set("override", str(type_entry.get("override", False)).lower())
             ada = type_entry.get("ada")
             if ada:
                 elem.set("ada", ada)

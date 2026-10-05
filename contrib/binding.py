@@ -2218,6 +2218,10 @@ end if;"""
 
             if guard:
                 body = ["if %s then" % guard] + body + ["end if;"]
+                if throws:
+                    # Initialize is a no-op for an existing object, but its
+                    # out error parameter must still have a defined value.
+                    body.insert(0, "Error := null;")
 
             body += freecall
 
@@ -3996,6 +4000,7 @@ end "+";"""
                     naming.add_type_exception(
                         cname=p.get("ctype"),
                         type=Proxy(p.get("ada"), p.get("properties", None)),
+                        override=p.get("override", "false") == "true",
                     )
                     section.add(p.text)
                 elif p.tag == "body":

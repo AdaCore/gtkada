@@ -4,7 +4,7 @@ The GtkAda bindings under `src/generated/` are produced by
 `contrib/binding.py`, which merges two sources of truth:
 
 * the `.gir` files under `contrib/` (one per GObject-introspection
-  namespace: GLib, GObject, Gtk, Gdk, Pango, Gio), which describe what
+  namespace: GLib, GObject, Gtk, Gdk, GdkPixbuf, Pango, Gio), which describe what
   the C library exposes; and
 * per-package `.toml` override files under
   [`contrib/binding/packages/`](packages/), which describe what the
@@ -569,6 +569,7 @@ Bind a `<record>` (or `<union>`) as an Ada record type.
 |---------|--------|------------------------------------------------------|
 | `name`  | string | **Required.** Field name as it appears in the GIR.   |
 | `ctype` | string | Override the C type for the field.                   |
+| `type`  | string | Override the Ada type directly (takes precedence over `ctype`). |
 
 #### `[[record.union]]` — union discriminant mapping
 
@@ -676,6 +677,7 @@ the naming table.
 |---------|--------|------------------------------------------------------------------------|
 | `ctype` | string | **Required.** C type name.                                             |
 | `ada`   | string | Ada type name.                                                          |
+| `override` | bool | Replace an existing type mapping; defaults to `false`.                |
 | `text`  | string | Optional Ada type declaration, placed after generated types but before subprograms. |
 
 ### `[[extra.gir_element]]` — splice raw GIR XML

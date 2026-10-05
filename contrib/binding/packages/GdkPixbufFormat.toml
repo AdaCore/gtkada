@@ -1,0 +1,47 @@
+ada = "Gdk.Pixbuf_Format"
+
+[[record]]
+ctype = "GdkPixbufModulePattern"
+
+# Fields must retain their C representation rather than value conversions.
+[[record]]
+ctype = "GdkPixbufFormat"
+[[record.field]]
+name = "signature"
+ctype = "gpointer"
+[[record.field]]
+name = "disabled"
+type = "Glib.Gboolean"
+
+[[extra.type]]
+ctype = "GdkPixbufFormat*"
+ada = "Gdk.Pixbuf_Format.Gdk_Pixbuf_Format_Access"
+override = true
+text = '''
+   type Gdk_Pixbuf_Format_Access is access all Gdk_Pixbuf_Format;
+   pragma Convention (C, Gdk_Pixbuf_Format_Access);
+'''
+
+[[extra.type]]
+ctype = "PixbufFormatPointer"
+ada = "Gdk.Pixbuf_Format.Gdk_Pixbuf_Format_Access"
+
+[[extra.with_spec]]
+pkg = "Ada.Unchecked_Conversion"
+use = false
+[[extra.with_spec]]
+pkg = "Glib.GSlist"
+use = false
+[[extra.with_spec]]
+pkg = "System"
+use = false
+
+[[extra.spec]]
+text = '''
+   function Convert is new Ada.Unchecked_Conversion
+     (Gdk_Pixbuf_Format_Access, System.Address);
+   function Convert is new Ada.Unchecked_Conversion
+     (System.Address, Gdk_Pixbuf_Format_Access);
+   package Format_List is new Glib.GSlist.Generic_SList
+     (Gdk_Pixbuf_Format_Access);
+'''
