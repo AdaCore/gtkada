@@ -40,7 +40,8 @@ with Glib.Types;      use Glib.Types;
 package Gtk.Cell_Editable is
 
    pragma Obsolescent;
-   --  List views use widgets for displaying their contents. See [iface@Gtk.Editable] for editable text widgets
+   --  List views use widgets for displaying their contents. See
+   --  [iface@Gtk.Editable] for editable text widgets
 
    type Gtk_Cell_Editable is new Glib.Types.GType_Interface;
    Null_Gtk_Cell_Editable : constant Gtk_Cell_Editable;

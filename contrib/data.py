@@ -462,7 +462,7 @@ binding = (
     "----GtkImageAccessible",  # We do not support atk
     "----GtkImageCellAccessible",  # We do not support atk
     "--GtkImageMenuItem",
-    "--Gtk.InfoBar",
+    "Gtk.InfoBar",
     "--GtkInvisible",
     "Gtk.Label",
     "----GtkLabelAccessible",  # We do not support atk

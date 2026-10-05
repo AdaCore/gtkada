@@ -73,7 +73,9 @@ with Gtk.Widget;              use Gtk.Widget;
 package Gtk.Style_Context is
 
    pragma Obsolescent;
-   --  The relevant API has been moved to [class@Gtk.Widget] where applicable; otherwise, there is no replacement for querying the style machinery. Stylable UI elements should use widgets.
+   --  The relevant API has been moved to [class@Gtk.Widget] where applicable;
+   --  otherwise, there is no replacement for querying the style machinery.
+   --  Stylable UI elements should use widgets.
 
    type Gtk_Style_Context_Record is new GObject_Record with null record;
    type Gtk_Style_Context is access all Gtk_Style_Context_Record'Class;

@@ -47,6 +47,7 @@ with Create_Entry;
 with Create_Flow_Box;
 with Create_Frame;
 with Create_Header_Bar;
+with Create_Info_Bar;
 with Create_Overlay;
 with Create_Label;
 with Create_Level_Bar;
@@ -161,6 +162,8 @@ package body Demo_Registry is
         ("Header Bar",
          Create_Header_Bar.Run'Access,
          Create_Header_Bar.Help'Access),
+      To_Demo
+        ("Info Bars", Create_Info_Bar.Run'Access, Create_Info_Bar.Help'Access),
       To_Demo
         ("Layout/Aspect Frame",
          Create_Aspect_Frame.Run'Access,

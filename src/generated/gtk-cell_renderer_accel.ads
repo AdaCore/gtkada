@@ -39,7 +39,8 @@ with Gtk.Cell_Renderer_Text; use Gtk.Cell_Renderer_Text;
 package Gtk.Cell_Renderer_Accel is
 
    pragma Obsolescent;
-   --  Applications editing keyboard accelerators should provide their own implementation according to platform design guidelines
+   --  Applications editing keyboard accelerators should provide their own
+   --  implementation according to platform design guidelines
 
    type Gtk_Cell_Renderer_Accel_Record is new Gtk_Cell_Renderer_Text_Record with null record;
    type Gtk_Cell_Renderer_Accel is access all Gtk_Cell_Renderer_Accel_Record'Class;
