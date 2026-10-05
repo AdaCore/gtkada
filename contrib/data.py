@@ -397,6 +397,7 @@ binding = (
     "Gtk.Dialog",
     "Gtk.DirectoryList",
     "Gtk.DrawingArea",
+    "Gtk.EditableLabel",
     "Gtk.Entry",
     "----GtkEntryAccessible",  # We do not support atk
     "Gtk.EntryBuffer",
