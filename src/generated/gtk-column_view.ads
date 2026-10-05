@@ -455,8 +455,8 @@ package Gtk.Column_View is
    --  The following properties are defined for this widget. See
    --  Glib.Properties for more information on properties)
 
-   Columns_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Gio.List_Model
+   Columns_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Glib.List_Model.Glist_Model
    --  The list of columns.
 
    Enable_Rubberband_Property : constant Glib.Properties.Property_Boolean;
@@ -604,6 +604,6 @@ private
      Glib.Properties.Build ("header-factory");
    Enable_Rubberband_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("enable-rubberband");
-   Columns_Property : constant Glib.Properties.Property_Boxed :=
+   Columns_Property : constant Glib.Properties.Property_Interface :=
      Glib.Properties.Build ("columns");
 end Gtk.Column_View;

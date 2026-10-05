@@ -127,8 +127,8 @@ package Gtk.Flatten_List_Model is
    --  Type: GType
    --  The type of items. See [methodGio.ListModel.get_item_type].
 
-   Model_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Gio.List_Model
+   Model_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Glib.List_Model.Glist_Model
    --  The model being flattened.
 
    N_Items_Property : constant Glib.Properties.Property_Uint;
@@ -168,7 +168,7 @@ package Gtk.Flatten_List_Model is
 private
    N_Items_Property : constant Glib.Properties.Property_Uint :=
      Glib.Properties.Build ("n-items");
-   Model_Property : constant Glib.Properties.Property_Boxed :=
+   Model_Property : constant Glib.Properties.Property_Interface :=
      Glib.Properties.Build ("model");
    Item_Type_Property : constant Glib.Properties.Property_Boxed :=
      Glib.Properties.Build ("item-type");

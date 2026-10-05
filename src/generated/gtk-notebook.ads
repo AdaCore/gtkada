@@ -654,8 +654,8 @@ package Gtk.Notebook is
    Page_Property : constant Glib.Properties.Property_Int;
    --  The index of the current page.
 
-   Pages_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Gio.List_Model
+   Pages_Property : constant Glib.Properties.Property_Interface;
+   --  Type: Glib.List_Model.Glist_Model
    --  A selection model with the pages.
 
    Scrollable_Property : constant Glib.Properties.Property_Boolean;
@@ -969,7 +969,7 @@ private
      Glib.Properties.Build ("show-border");
    Scrollable_Property : constant Glib.Properties.Property_Boolean :=
      Glib.Properties.Build ("scrollable");
-   Pages_Property : constant Glib.Properties.Property_Boxed :=
+   Pages_Property : constant Glib.Properties.Property_Interface :=
      Glib.Properties.Build ("pages");
    Page_Property : constant Glib.Properties.Property_Int :=
      Glib.Properties.Build ("page");
