@@ -55,7 +55,6 @@ land, not a contract.
 | `Gtk.Image` / `Gtk.Picture` (+ `GdkPixbuf` or `Gdk.Texture` loading) | `Images`, `Image Scaling`, `Image Filtering`, `Cursors`, the `Paintable/…` family, `Icon View/…` |
 | `Gtk.EventController` + the `Gtk.Gesture*` family | `Gestures`, `Paint`, `Text View/Hypertext`, `Constraints/Interactive Constraints` |
 | `Gtk.SearchEntry` (+ `Gtk.SearchBar`) | `Entry/Search Entry`, and would enable upstream's search box in our own shell |
-| `Gtk.Spinner` | `Spinner` |
 | `Gtk.IconView` | `Icon View/Icon View Basics`, `Icon View/Editing and Drag-and-Drop` (the latter drags through `GtkIconView`'s own model-drag API, not the DnD controllers) |
 | `Gtk.Accessible.Update_State` / `Update_Property` / `Update_Relation` | `Error States`. The demo's whole subject is flagging an entry invalid and describing why, which is these three calls; every widget it uses is already bound. All three are varargs in C and so unbound, but each has a non-varargs `_value` twin (`gtk_accessible_update_state_value` and friends) taking parallel arrays — that is the shape to bind |
 
@@ -106,7 +105,6 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_pixbuf` | `Gtk.Drawing_Area`, `Gtk.Image`, `Gdk.Pixbuf` *(gtk3)*, `Gdk.Cairo` *(gtk3)*, `Gtkada.Handlers` *(gtk3)* |
   | `create_print` | `Gtk.Print_Operation`, `Gtk.Print_Context`, `Gtk.Page_Setup`, `Gtk.Paper_Size`, `Gtkada.Printing` *(gtk3)* |
   | `create_range` | `Gtk.Scale_Button`, `Gtk.Scrollbar`, `Gtk.Volume_Button` |
-  | `create_spinners` | `Gtk.Spinner`, plus `Common` |
 
   Only `create_fixed`, `create_gestures` and `create_gl` are blocked
   purely on bindings Step 2 already tracks. Every
@@ -122,7 +120,7 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
 `Gtk.Handlers` *(gtk3)*, so it does not build. All nine of its
 users are commented out today — `create_builder`, `create_entry`,
 `create_gtkada_builder`, `create_main_loop`, `create_notebook`,
-`create_opacity`, `create_spinners`,
+`create_opacity`,
 `create_task_monitor`, `create_test_idle` — which is why nothing notices.
 Port `Common` before any of them.
 

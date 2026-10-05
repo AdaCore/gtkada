@@ -67,6 +67,7 @@ with Create_Scrolled;
 with Create_Shortcuts;
 with Create_Size_Groups;
 with Create_Spin;
+with Create_Spinners;
 with Create_Stack;
 with Create_Stack_Sidebar;
 with Create_Test_Timeout;
@@ -210,6 +211,8 @@ package body Demo_Registry is
          Create_Size_Groups.Help'Access),
       To_Demo
         ("Spin Buttons", Create_Spin.Run'Access, Create_Spin.Help'Access),
+      To_Demo
+        ("Spinners", Create_Spinners.Run'Access, Create_Spinners.Help'Access),
       To_Demo ("Stack", Create_Stack.Run'Access, Create_Stack.Help'Access),
       To_Demo
         ("Stack Sidebar",

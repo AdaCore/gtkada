@@ -590,7 +590,7 @@ binding = (
     "Gtk.TreeListModel",
     "Gtk.TreeExpander",
     "Gtk.SliceListModel",
-    "--Gtk.Spinner",
+    "Gtk.Spinner",
     "----GtkSpinnerAccessible",  # We do not support atk
     "Gtk.SpinButton",
     "----GtkSpinButtonAccessible",  # We do not support atk

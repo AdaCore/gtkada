@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 2011-2018, AdaCore                     --
+--                     Copyright (C) 2011-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,113 +21,55 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Glib.Main;       use Glib.Main;
-with Glib.Properties; use Glib.Properties;
-with Gtk.Enums;       use Gtk.Enums;
-with Gtk.Label;       use Gtk.Label;
-with Gtk.Spinner;     use Gtk.Spinner;
-with Gtk.Grid;        use Gtk.Grid;
-with Gtk.Widget;      use Gtk.Widget;
-
-with Common;          use Common;
+with Gtk.Frame;         use Gtk.Frame;
+with Gtk.Grid;          use Gtk.Grid;
+with Gtk.Label;         use Gtk.Label;
+with Gtk.Spinner;       use Gtk.Spinner;
+with Gtk.Toggle_Button; use Gtk.Toggle_Button;
 
 package body Create_Spinners is
 
-   --  Timer for pulsing activity of one of our spinners.
-   package Time_Cb is new Glib.Main.Generic_Sources (Gtk_Spinner);
-
-   --  Function passed to Time_Cb.Timeout_Add, to be invoked periodically.
-   function Spinner_Timeout (Spinner : Gtk_Spinner) return Boolean;
-
-   --  A handle referencing our timeout
-   Timer : G_Source_Id := No_Source_Id;
-
-   procedure Stop_Timeout (Widget : access Gtk_Widget_Record'Class);
-   --  Callback invoked when our spinner widget is destroyed.
-
-   ----------
-   -- Help --
-   ----------
-
    function Help return String is
    begin
-      return "A @bGtk_Spinner@B shows an icon-size spinning animation,"
-        & " often used instead of a @bGtk_Progress_Bar@B when there's no"
-        & " way to measure actual progress. Start it with"
-        & " @bGtk.Spinner.Start@B, stop it with @bGtk.Spinner.Stop@B.";
+      return "A @bGtk_Spinner@B shows activity when progress cannot be"
+        & " measured. Use @bStart@B and @bStop@B, or set its"
+        & " @bspinning@B property."
+        & ASCII.LF
+        & "The first spinner runs continuously, the second follows the"
+        & " toggle button, and the third stays stopped.";
    end Help;
 
-   ---------
-   -- Run --
-   ---------
-
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Active_Spinner, Transition_Spinner, Inactive_Spinner : Gtk_Spinner;
-      Active_Label,   Transition_Label,   Inactive_Label   : Gtk_Label;
-      Table1 : Gtk_Grid;
+      Grid     : constant Gtk_Grid := Gtk_Grid_New;
+      Active   : constant Gtk_Spinner := Gtk_Spinner_New;
+      On_Off   : constant Gtk_Spinner := Gtk_Spinner_New;
+      Inactive : Gtk_Spinner;
+      Toggle   : constant Gtk_Toggle_Button :=
+        Gtk_Toggle_Button_New_With_Label ("Start / stop");
    begin
-      Set_Label (Frame, "Spinners");
+      Frame.Set_Label ("Spinners");
+      Frame.Set_Child (Grid);
+      Grid.Set_Row_Spacing (12);
+      Grid.Set_Column_Spacing (12);
+      Grid.Set_Margin_Top (12);
+      Grid.Set_Margin_Bottom (12);
+      Grid.Set_Margin_Start (12);
+      Grid.Set_Margin_End (12);
 
-      Gtk_New (Table1);
-      Frame.Add (Table1);
+      Gtk_New (Inactive);
+      Active.Set_Size_Request (32, 32);
+      On_Off.Set_Size_Request (32, 32);
+      Inactive.Set_Size_Request (32, 32);
+      Grid.Attach (Gtk_Label_New ("Active spinner:"), 0, 0);
+      Grid.Attach (Active, 1, 0);
+      Grid.Attach (Gtk_Label_New ("On/off spinner:"), 0, 1);
+      Grid.Attach (On_Off, 1, 1);
+      Grid.Attach (Toggle, 2, 1);
+      Grid.Attach (Gtk_Label_New ("Inactive spinner:"), 0, 2);
+      Grid.Attach (Inactive, 1, 2);
 
-      Gtk_New (Active_Label, "Active spinner:");
-      Gtk_New (Active_Spinner);
-      Table1.Attach (Active_Label, 0, 0);
-      Table1.Attach (Active_Spinner, 1, 0);
-
-      Gtk_New (Transition_Label, "On/Off spinner:");
-      Gtk_New (Transition_Spinner);
-      Table1.Attach (Transition_Label, 0, 1);
-      Table1.Attach (Transition_Spinner, 1, 1);
-
-      Gtk_New (Inactive_Label, "Inactive spinner:");
-      Gtk_New (Inactive_Spinner);
-      Table1.Attach (Inactive_Label, 0, 2);
-      Table1.Attach (Inactive_Spinner, 1, 2);
-
-      --  Start one spinner, set another pulsing, and don't touch the
-      --  third (so that it stays off).
-      Gtk.Spinner.Start (Active_Spinner);
-
-      Timer := Time_Cb.Timeout_Add
-        (1_000, Spinner_Timeout'Access, Transition_Spinner);
-
-      --  Make sure to disengage the timer if the spinner is destroyed,
-      --  otherwise when Spinner_Timeout is called we'll raise an
-      --  exception.
-      Widget_Handler.Connect
-        (Transition_Spinner, "destroy",
-         Widget_Handler.To_Marshaller (Stop_Timeout'Access));
-
-      Show_All (Frame);
+      Active.Start;
+      Toggle.Bind_Property ("active", On_Off, "spinning");
    end Run;
-
-   ---------------------
-   -- Spinner_Timeout --
-   ---------------------
-
-   function Spinner_Timeout (Spinner : Gtk_Spinner) return Boolean is
-   begin
-      case Get_Property (Spinner, Active_Property) is
-         when True  => Stop  (Spinner);
-         when False => Start (Spinner);
-      end case;
-
-      return True;
-   end Spinner_Timeout;
-
-   ------------------
-   -- Stop_Timeout --
-   ------------------
-
-   procedure Stop_Timeout (Widget : access Gtk_Widget_Record'Class) is
-      pragma Unreferenced (Widget);
-   begin
-      if Timer /= No_Source_Id then
-         Remove (Timer);
-         Timer := No_Source_Id;
-      end if;
-   end Stop_Timeout;
 
 end Create_Spinners;
