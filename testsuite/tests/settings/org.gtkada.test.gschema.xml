@@ -1,0 +1,11 @@
+<schemalist>
+  <schema id="org.gtkada.test" path="/org/gtkada/test/">
+    <key name="enabled" type="b"><default>true</default><summary>Enabled</summary><description>Enable the test feature.</description></key>
+    <key name="name" type="s"><default>'Ada'</default></key>
+    <key name="count" type="i"><range min="0" max="10"/><default>3</default></key>
+    <key name="words" type="as"><default>['Ada', 'GTK']</default></key>
+  </schema>
+  <schema id="org.gtkada.relocatable">
+    <key name="enabled" type="b"><default>false</default></key>
+  </schema>
+</schemalist>

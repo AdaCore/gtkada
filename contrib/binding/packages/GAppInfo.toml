@@ -77,3 +77,7 @@ id = "launch_uris_async"
 [[virtual_method.parameter]]
 name = "uris"
 ctype = "StringList"
+
+[doc]
+group = "GIO"
+gtkada_demo = "create_data_lists.adb"

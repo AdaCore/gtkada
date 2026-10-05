@@ -1,0 +1,37 @@
+ada = "Glib.Settings_Backend"
+
+[doc]
+group = "GIO"
+gtkada_demo = "create_settings.adb"
+
+[[virtual_method]]
+id = "*"
+bind = false
+# Back-end implementation is deferred; applications can use existing back ends.
+
+[[method]]
+id = "g_settings_backend_flatten_tree"
+bind = false
+# Requires GTree.
+
+[[method]]
+id = "g_settings_backend_changed_tree"
+bind = false
+# Requires GTree.
+
+[[extra.spec]]
+text = '''
+   function Memory_New return Gsettings_Backend;
+   --  Creates a private, nonpersistent back end. Unref when finished.
+'''
+
+[extra]
+body = '''
+   function Memory_New return Gsettings_Backend is
+      function Internal return System.Address;
+      pragma Import (C, Internal, "g_memory_settings_backend_new");
+      Stub : Gsettings_Backend_Record;
+   begin
+      return Gsettings_Backend (Get_User_Data (Internal, Stub));
+   end Memory_New;
+'''

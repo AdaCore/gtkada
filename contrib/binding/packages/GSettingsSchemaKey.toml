@@ -1,0 +1,5 @@
+ada = "Glib.Settings_Schema_Key"
+
+[doc]
+group = "GIO"
+gtkada_demo = "create_settings.adb"

@@ -50,7 +50,7 @@ land, not a contract.
 
 | missing binding | unlocks |
 | --- | --- |
-| `GtkSignalListItemFactory` (+ `GtkTreeExpander`) | the `Lists/…` demos whose data is plain Ada: `Selections`, `Colors`, `Words`, `Characters`, `Clocks`, `Weather`, and the Step 1 selector itself. Row rendering only; `Lists/Settings`, `Lists/Alternative Settings`, `Lists/Application launcher` and `Lists/File browser` additionally need their data sources (see the list-model row below) |
+| `GtkSignalListItemFactory` (+ `GtkTreeExpander`) | the `Lists/…` demos whose data is plain Ada: `Selections`, `Colors`, `Words`, `Characters`, `Clocks`, `Weather`, and the Step 1 selector itself. Row rendering only |
 | `Gtk.DrawingArea` | `Drawing Area`, `Masking`, `Pango/Rotated Text`, `Pango/Text Mask`, and the substrate for most `Path/…` demos |
 | `Gtk.Image` (`Gtk.Picture`, `Gdk.Pixbuf` and `Gdk.Texture` are bound) | `Images`, `Image Scaling`, `Image Filtering`, `Cursors`, the `Paintable/…` family, `Icon View/…` |
 | `Gtk.EventController` + the `Gtk.Gesture*` family | `Gestures`, `Paint`, `Text View/Hypertext`, `Constraints/Interactive Constraints` |
@@ -71,7 +71,6 @@ land, not a contract.
 | `Gdk.Paintable` implementable from Ada | `Paintable/Simple`, `Animated`, `Emblems`, `SVG`, `Symbolic` (5) |
 | `Gtk.LayoutManager` subclassing from Ada (see the `GtkLayoutManager.toml` entry above) | `Layout Manager/Transition`, `Layout Manager/Transformation` |
 | font introspection (`Pango` attribute iterators, `GtkFontChooser`) | `Pango/Font Explorer`, `Pango/Font Rendering` |
-| `GAppInfo` / `GSettings` / `GFile` list models | `Lists/Application launcher`, `Lists/Settings`, `Lists/Alternative Settings`, `Lists/File browser` (each *also* needs the list-item factory from "One binding away") |
 | `Gtk.FileDialog`, `Gtk.FileLauncher`, `Gtk.UriLauncher`, `Gtk.PrintDialog` (+ `GtkDropTarget`) | `Pickers and Launchers` — a picker/launcher demo, not a list-model one. All four classes are absent from `contrib/data.py` altogether. Its colour and font halves are already bound (`Gtk.ColorDialog` / `Gtk.ColorDialogButton`, `Gtk.FontDialog` / `Gtk.FontDialogButton`), so a colour+font subset can land first and grow |
 | benchmark harness | `Benchmark/Fishbowl`, `Frames`, `Scrolling`, `Themes` |
 
@@ -259,6 +258,14 @@ GApplication.toml:
   `docs/gtkada_ug/applications.rst` (with a sample in
   `testsuite/tests/user-guide/ug_application.adb`), and list the flag in
   its "Command line and single instance" section.
+
+GTree.toml:
+
+- `g_settings_backend_flatten_tree` and `g_settings_backend_changed_tree`
+  are disabled ("Requires GTree"): both take a `GTree*`, which is not
+  bound. Re-enable them once `GTree` is bound. Only matters for
+  implementing a settings back end, which is itself deferred (all virtual
+  methods are unbound), so applications are not affected.
 
 GtkApplication.toml:
 

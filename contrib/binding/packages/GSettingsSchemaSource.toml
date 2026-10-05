@@ -1,0 +1,30 @@
+ada = "Glib.Settings_Schema_Source"
+
+[doc]
+group = "GIO"
+gtkada_demo = "create_settings.adb"
+
+[[method]]
+id = "g_settings_schema_source_list_schemas"
+body = '''
+      procedure Internal
+        (Self : System.Address; Recursive : Gboolean;
+         Non_Relocatable, Relocatable : out chars_ptr_array_access);
+      pragma Import (C, Internal, "g_settings_schema_source_list_schemas");
+      Fixed, Movable : chars_ptr_array_access;
+   begin
+      Internal (Get_Object (Self), Boolean'Pos (Recursive), Fixed, Movable);
+      Non_Relocatable := new GNAT.Strings.String_List'(To_String_List_And_Free (Fixed));
+      Relocatable := new GNAT.Strings.String_List'(To_String_List_And_Free (Movable));
+'''
+
+[[method.parameter]]
+name = "non_relocatable"
+type = "GNAT.Strings.String_List_Access"
+
+[[method.parameter]]
+name = "relocatable"
+type = "GNAT.Strings.String_List_Access"
+
+[[extra.with_body]]
+pkg = "Gtkada.Bindings"

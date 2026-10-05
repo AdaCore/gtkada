@@ -65,6 +65,9 @@
 --  should be noted that it's generally not safe for applications to rely on
 --  the format of a particular URIs. Different launcher applications (e.g. file
 --  managers) may have different ideas of what a given URI means.
+--
+--  <group>GIO</group>
+--  <gtkada_demo>create_data_lists.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;

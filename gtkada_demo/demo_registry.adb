@@ -38,6 +38,8 @@ with Create_Buttons;
 with Create_Check_Buttons;
 with Create_Color_Chooser;
 with Create_Column_View;
+with Create_Data_Lists;
+with Create_Settings;
 with Create_Css_Accordion;
 with Create_Custom_Widget;
 with Create_Dialog;
@@ -96,6 +98,17 @@ package body Demo_Registry is
    Demos : constant array (Positive range <>) of Demo_Info :=
      (To_Demo
         ("Assistant", Create_Assistant.Run'Access, Create_Assistant.Help'Access),
+      To_Demo
+        ("Lists/Application launcher", Create_Data_Lists.Run_Applications'Access,
+         Create_Data_Lists.Help_Applications'Access),
+      To_Demo
+        ("Lists/File browser", Create_Data_Lists.Run_Files'Access,
+         Create_Data_Lists.Help_Files'Access),
+      To_Demo
+        ("Lists/Settings", Create_Settings.Run'Access, Create_Settings.Help'Access),
+      To_Demo
+        ("Lists/Alternative Settings", Create_Settings.Run_Alternative'Access,
+         Create_Settings.Help'Access),
       To_Demo
         ("Buttons/Buttons",
          Create_Buttons.Run'Access,
