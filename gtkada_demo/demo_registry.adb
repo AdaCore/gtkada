@@ -60,6 +60,7 @@ with Create_Revealer;
 with Create_Scale;
 with Create_Scrolled;
 with Create_Shortcuts;
+with Create_Size_Groups;
 with Create_Spin;
 with Create_Stack;
 with Create_Stack_Sidebar;
@@ -184,6 +185,10 @@ package body Demo_Registry is
          Create_Revealer.Help'Access),
       To_Demo
         ("Scales", Create_Scale.Run'Access, Create_Scale.Help'Access),
+      To_Demo
+        ("Size Groups",
+         Create_Size_Groups.Run'Access,
+         Create_Size_Groups.Help'Access),
       To_Demo
         ("Spin Buttons", Create_Spin.Run'Access, Create_Spin.Help'Access),
       To_Demo ("Stack", Create_Stack.Run'Access, Create_Stack.Help'Access),
