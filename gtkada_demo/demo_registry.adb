@@ -56,6 +56,7 @@ with Create_Password_Entry;
 with Create_Reparent;
 with Create_Read_More;
 with Create_Revealer;
+with Create_Scale;
 with Create_Scrolled;
 with Create_Shortcuts;
 with Create_Spin;
@@ -176,6 +177,8 @@ package body Demo_Registry is
         ("Revealer",
          Create_Revealer.Run'Access,
          Create_Revealer.Help'Access),
+      To_Demo
+        ("Scales", Create_Scale.Run'Access, Create_Scale.Help'Access),
       To_Demo
         ("Spin Buttons", Create_Spin.Run'Access, Create_Spin.Help'Access),
       To_Demo ("Stack", Create_Stack.Run'Access, Create_Stack.Help'Access),

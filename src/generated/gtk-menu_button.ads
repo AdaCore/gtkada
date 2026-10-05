@@ -338,9 +338,8 @@ package Gtk.Menu_Button is
    --  Pop up the menu.
 
    procedure Set_Create_Popup_Func
-      (Self           : not null access Gtk_Menu_Button_Record;
-       Func           : Gtk_Menu_Button_Create_Popup_Func;
-       Destroy_Notify : Glib.G_Destroy_Notify_Address);
+      (Self : not null access Gtk_Menu_Button_Record;
+       Func : Gtk_Menu_Button_Create_Popup_Func);
    --  Sets Func to be called when a popup is about to be shown.
    --  Func should use one of
    --  - [methodGtk.MenuButton.set_popover] -
@@ -352,7 +351,6 @@ package Gtk.Menu_Button is
    --  @param Func function to call when a popup is about to be shown, but
    --  none has been provided via other means, or null to reset to default
    --  behavior
-   --  @param Destroy_Notify destroy notify for User_Data
 
    generic
       type User_Data_Type (<>) is private;
@@ -372,10 +370,9 @@ package Gtk.Menu_Button is
       --  Gtk.Menu_Button.Set_Create_Popup_Func
 
       procedure Set_Create_Popup_Func
-         (Self           : not null access Gtk.Menu_Button.Gtk_Menu_Button_Record'Class;
-          Func           : Gtk_Menu_Button_Create_Popup_Func;
-          User_Data      : User_Data_Type;
-          Destroy_Notify : Glib.G_Destroy_Notify_Address);
+         (Self      : not null access Gtk.Menu_Button.Gtk_Menu_Button_Record'Class;
+          Func      : Gtk_Menu_Button_Create_Popup_Func;
+          User_Data : User_Data_Type);
       --  Sets Func to be called when a popup is about to be shown.
       --  Func should use one of
       --  - [methodGtk.MenuButton.set_popover] -
@@ -388,7 +385,6 @@ package Gtk.Menu_Button is
       --  none has been provided via other means, or null to reset to default
       --  behavior
       --  @param User_Data user data to pass to Func
-      --  @param Destroy_Notify destroy notify for User_Data
 
    end Set_Create_Popup_Func_User_Data;
 

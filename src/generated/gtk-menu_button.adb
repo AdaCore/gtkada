@@ -38,7 +38,7 @@ package body Gtk.Menu_Button is
       (Self           : System.Address;
        Func           : System.Address;
        User_Data      : System.Address;
-       Destroy_Notify : Glib.G_Destroy_Notify_Address);
+       Destroy_Notify : System.Address);
    pragma Import (C, C_Gtk_Menu_Button_Set_Create_Popup_Func, "gtk_menu_button_set_create_popup_func");
    --  Sets Func to be called when a popup is about to be shown.
    --  Func should use one of
@@ -373,15 +373,14 @@ package body Gtk.Menu_Button is
    ---------------------------
 
    procedure Set_Create_Popup_Func
-      (Self           : not null access Gtk_Menu_Button_Record;
-       Func           : Gtk_Menu_Button_Create_Popup_Func;
-       Destroy_Notify : Glib.G_Destroy_Notify_Address)
+      (Self : not null access Gtk_Menu_Button_Record;
+       Func : Gtk_Menu_Button_Create_Popup_Func)
    is
    begin
       if Func = null then
-         C_Gtk_Menu_Button_Set_Create_Popup_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Destroy_Notify);
+         C_Gtk_Menu_Button_Set_Create_Popup_Func (Get_Object (Self), System.Null_Address, System.Null_Address, System.Null_Address);
       else
-         C_Gtk_Menu_Button_Set_Create_Popup_Func (Get_Object (Self), Internal_Gtk_Menu_Button_Create_Popup_Func'Address, To_Address (Func), Destroy_Notify);
+         C_Gtk_Menu_Button_Set_Create_Popup_Func (Get_Object (Self), Internal_Gtk_Menu_Button_Create_Popup_Func'Address, To_Address (Func), System.Null_Address);
       end if;
    end Set_Create_Popup_Func;
 
@@ -428,18 +427,17 @@ package body Gtk.Menu_Button is
       ---------------------------
 
       procedure Set_Create_Popup_Func
-         (Self           : not null access Gtk.Menu_Button.Gtk_Menu_Button_Record'Class;
-          Func           : Gtk_Menu_Button_Create_Popup_Func;
-          User_Data      : User_Data_Type;
-          Destroy_Notify : Glib.G_Destroy_Notify_Address)
+         (Self      : not null access Gtk.Menu_Button.Gtk_Menu_Button_Record'Class;
+          Func      : Gtk_Menu_Button_Create_Popup_Func;
+          User_Data : User_Data_Type)
       is
          D : System.Address;
       begin
          if Func = null then
-            C_Gtk_Menu_Button_Set_Create_Popup_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Destroy_Notify);
+            C_Gtk_Menu_Button_Set_Create_Popup_Func (Get_Object (Self), System.Null_Address, System.Null_Address, Users.Free_Data'Address);
          else
             D := Users.Build (To_Address (Func), User_Data);
-            C_Gtk_Menu_Button_Set_Create_Popup_Func (Get_Object (Self), Internal_Cb'Address, D, Destroy_Notify);
+            C_Gtk_Menu_Button_Set_Create_Popup_Func (Get_Object (Self), Internal_Cb'Address, D, Users.Free_Data'Address);
          end if;
       end Set_Create_Popup_Func;
 
