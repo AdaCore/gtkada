@@ -46,6 +46,7 @@ with Create_Entry;
 with Create_Flow_Box;
 with Create_Frame;
 with Create_Header_Bar;
+with Create_Overlay;
 with Create_Label;
 with Create_Link_Buttons;
 with Create_List_Box_Complex;
@@ -141,6 +142,8 @@ package body Demo_Registry is
          Create_Tooltips.Help'Access),
       To_Demo
         ("Flow Box", Create_Flow_Box.Run'Access, Create_Flow_Box.Help'Access),
+      To_Demo
+        ("Overlay", Create_Overlay.Run'Access, Create_Overlay.Help'Access),
       To_Demo
         ("Header Bar",
          Create_Header_Bar.Run'Access,

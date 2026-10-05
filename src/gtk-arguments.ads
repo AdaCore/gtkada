@@ -236,6 +236,9 @@ package Gtk.Arguments is
    function Unchecked_To_Gdk_Rectangle
      (Args : Glib.Values.C_GValues; Num : Guint)
       return Gdk.Rectangle.Gdk_Rectangle;
+   function Unchecked_To_Gdk_Rectangle_Access
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return access Gdk.Rectangle.Gdk_Rectangle;
    --   function Unchecked_To_Gtk_Allocation
    --     (Args : Glib.Values.C_GValues; Num : Guint)
    --     return Gtk.Widget.Gtk_Allocation
