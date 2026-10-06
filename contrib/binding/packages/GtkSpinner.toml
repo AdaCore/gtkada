@@ -1,0 +1,5 @@
+# GtkSpinner
+
+[doc]
+group = "Ornaments"
+gtkada_demo = "create_spinners.adb"
