@@ -1,0 +1,12 @@
+# ============================================================
+#   GtkProgressBar
+# ============================================================
+
+[doc]
+screenshot = "gtk-progress_bar"
+group = "Display widgets"
+gtkada_demo = "create_progress.adb"
+
+[[parameter]]
+name = "self"
+ada = "Progress_Bar"

@@ -49,6 +49,7 @@ with Create_Frame;
 with Create_Header_Bar;
 with Create_Overlay;
 with Create_Label;
+with Create_Level_Bar;
 with Create_Link_Buttons;
 with Create_List_Box_Complex;
 with Create_List_Box_Controls;
@@ -56,6 +57,7 @@ with Create_List_Store;
 with Create_Menu;
 with Create_Paned;
 with Create_Password_Entry;
+with Create_Progress;
 with Create_Reparent;
 with Create_Read_More;
 with Create_Revealer;
@@ -129,6 +131,14 @@ package body Demo_Registry is
         ("GtkAda/Entry", Create_Entry.Run'Access, Create_Entry.Help'Access),
       To_Demo
         ("GtkAda/Labels", Create_Label.Run'Access, Create_Label.Help'Access),
+      To_Demo
+        ("GtkAda/Level Bars",
+         Create_Level_Bar.Run'Access,
+         Create_Level_Bar.Help'Access),
+      To_Demo
+        ("GtkAda/Progress Bars",
+         Create_Progress.Run'Access,
+         Create_Progress.Help'Access),
       To_Demo
         ("GtkAda/Menus", Create_Menu.Run'Access, Create_Menu.Help'Access),
       To_Demo

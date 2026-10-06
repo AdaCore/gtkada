@@ -9,6 +9,8 @@
   - moved corresponding contrib/binding/packages/*.toml to contrib/binding/packages/gtk3/
   - deactivated corresponding entries in contrib/data.py
 - Moved GtkAda-specific packages and any gtk3 packages to src/gtk3
+- Bound `Gtk.Level_Bar` and `Gtk.Progress_Bar`, with tests and interactive
+  demos. `create_progress` now uses GTK4 widgets and generated callbacks.
 - Reintroduced the minimal closure of GtkAda packages to allow GLib to build
 - Removed any obsolete code in src/misc.c - translated some code from gtk3 to gtk4
 - Upgraded Glib bindings
@@ -55,7 +57,6 @@ land, not a contract.
 | `Gtk.SearchEntry` (+ `Gtk.SearchBar`) | `Entry/Search Entry`, and would enable upstream's search box in our own shell |
 | `Gtk.InfoBar` | `Info Bars` |
 | `Gtk.Spinner` | `Spinner` |
-| `Gtk.LevelBar` / `Gtk.ProgressBar` | no upstream demo of its own; kept here because both are one-class bindings that several legacy demos wait on |
 | `Gtk.IconView` | `Icon View/Icon View Basics`, `Icon View/Editing and Drag-and-Drop` (the latter drags through `GtkIconView`'s own model-drag API, not the DnD controllers) |
 | `Gtk.Accessible.Update_State` / `Update_Property` / `Update_Relation` | `Error States`. The demo's whole subject is flagging an entry invalid and describing why, which is these three calls; every widget it uses is already bound. All three are varargs in C and so unbound, but each has a non-varargs `_value` twin (`gtk_accessible_update_state_value` and friends) taking parallel arrays — that is the shape to bind |
 
@@ -95,7 +96,7 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_css_accordion`, `create_css_editor` | `Gtk.Container`, which gtk4 removed; the CSS provider, style context, and style provider bindings are available |
   | `create_cursors` | `Gtk.Drawing_Area`, `Gdk.Window` (gtk4: `Gdk.Surface`, bound), `Gdk.Device_Manager` *(absent; gone from gtk4)*, `Gtk.Handlers` *(gtk3)* |
   | `create_dnd` | `Gtk.Dnd` *(gtk3)*, `Gdk.Dnd` *(gtk3)*, `Gdk.Drag_Contexts` (`--GdkDragContext`), `Gtk.Target_List` *(absent)*, `Gtk.Selection_Data` *(absent)*, `Gtk.Image`, `Gdk.Window` (gtk4: `Gdk.Surface`), `Gdk.Pixbuf` *(gtk3)*, `Gdk.Types` *(gtk3)*, `Gtk.Handlers` *(gtk3)*. gtk4 replaced the whole DnD API with `GtkDragSource` / `GtkDropTarget`, both bound now (see `create_drag_and_drop`), over `Gdk.Content_Provider`: a rewrite, not a port |
-  | `create_entry` | `Gtk.Combo_Box_Text`, `Gtk.Level_Bar`, `Gtk.Search_Entry`, `Gtk.Handlers` *(gtk3)*, plus `Common` (see below) |
+  | `create_entry` | `Gtk.Combo_Box_Text`, `Gtk.Search_Entry`, `Gtk.Handlers` *(gtk3)*, plus `Common` (see below) |
   | `create_file_chooser` | `Gtk.File_Chooser` (the interface) and `Gtk.File_Chooser_Button`; both deprecated upstream since 4.10, so the revival should target `GtkFileDialog` — itself unbound and absent from `contrib/data.py`, i.e. a new binding of its own |
   | `create_fixed` | `Gtk.Fixed`. It calls only `Gtk.Fixed.Put`, so this really is its whole blocker — it is *not* part of the `Gsk.Transform` group |
   | `create_font_chooser` | `Gtk.Font_Chooser_Widget` |
@@ -105,7 +106,6 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_opacity` | `Common` |
   | `create_pixbuf` | `Gtk.Drawing_Area`, `Gtk.Image`, `Gdk.Pixbuf` *(gtk3)*, `Gdk.Cairo` *(gtk3)*, `Gtkada.Handlers` *(gtk3)* |
   | `create_print` | `Gtk.Print_Operation`, `Gtk.Print_Context`, `Gtk.Page_Setup`, `Gtk.Paper_Size`, `Gtkada.Printing` *(gtk3)* |
-  | `create_progress` | `Gtk.Progress_Bar`, `Gtk.Combo_Box_Text`, `Gtk.Alignment` (removed in gtk4 — use the child's `Halign` / `Valign`), `Gtkada.Handlers` *(gtk3)*, plus `Common` |
   | `create_range` | `Gtk.Scale_Button`, `Gtk.Scrollbar`, `Gtk.Volume_Button` |
   | `create_spinners` | `Gtk.Spinner`, plus `Common` |
 
@@ -120,10 +120,10 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   row names `GtkFontChooser`, which would carry it.
 
 **`Common` is a shared blocker.** `gtkada_demo/common.ads` withs
-`Gtk.Handlers` *(gtk3)*, so it does not build. All ten of its
+`Gtk.Handlers` *(gtk3)*, so it does not build. All nine of its
 users are commented out today — `create_builder`, `create_entry`,
 `create_gtkada_builder`, `create_main_loop`, `create_notebook`,
-`create_opacity`, `create_progress`, `create_spinners`,
+`create_opacity`, `create_spinners`,
 `create_task_monitor`, `create_test_idle` — which is why nothing notices.
 Port `Common` before any of them.
 
@@ -138,7 +138,7 @@ checked against its `with` clauses *and*, where it loads one, its `.ui` /
   | `create_gtkada_builder` | `Gtkada.Builder` *(gtk3)*, `Common`; the same `gtkbuilder_example.xml` plus `gtkbuilder_custom_widget.xml` (`GtkVBox`, `GtkLinkButton`) | a gtk4 port of `Gtkada.Builder`, or a rewrite onto `Gtk.Builder` + `Gtk.Builder_Cscope` (both bound); the same XML rewrite; and the body casts `Get_Object` results to `Gtk_Hbox`, which gtk4's `Gtk.Box` no longer exports |
   | `create_main_loop` | `Gtk.Main.Main`, `Gtk.Main.Main_Quit`, `Common` | gone from gtk4: the generated `Gtk.Main` keeps only the version accessors and `Init`. Re-think the demo around `Glib.Main` or `Gtk.Application`, or retire it — its subject is the recursive `gtk_main` gtk4 removed |
   | `create_sources` | `Gtkada.Handlers` *(gtk3)* | as `create_builder`; it loads no UI file |
-  | `create_task_monitor` | `Gtk.Progress_Bar`, `Gtk.Handlers` *(gtk3)*, `Common`, and `Task_Worker` from `gtkada_demo/task_project/src` | the binding and the handler port, *and* the task project: `gtkada_demo.gpr` has `with "task_project/task_project"` commented out under a `TRANSITION` marker and `Source_Dirs` set to `"./"`, so `Task_Worker` is out of the source closure. Re-enable the project or fold the worker into `gtkada_demo/` |
+  | `create_task_monitor` | `Gtk.Handlers` *(gtk3)*, `Common`, and `Task_Worker` from `gtkada_demo/task_project/src` | the handler port and the task project: `gtkada_demo.gpr` has `with "task_project/task_project"` commented out under a `TRANSITION` marker and `Source_Dirs` set to `"./"`, so `Task_Worker` is out of the source closure. Re-enable the project or fold the worker into `gtkada_demo/` |
   | `create_test_idle` | `Gtk.Radio_Button`, `Gtk.Handlers` *(gtk3)*, `Common` | gone from gtk4: `Gtk.Check_Button` with `Set_Group` replaces the radio group, plus the handler port |
 
   The `Gtk.Handlers` / `Gtkada.Handlers` port runs through four of these

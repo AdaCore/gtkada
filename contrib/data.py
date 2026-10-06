@@ -485,7 +485,7 @@ binding = (
            "Gtk.OverlayLayout",
            "Gtk.OverlayLayoutChild",
 
-    "--Gtk.LevelBar",
+    "Gtk.LevelBar",
     "----GtkLevelBarAccessible",  # We do not support atk
     "Gtk.LinkButton",
     "----GtkLinkButtonAccessible",  # We do not support atk
@@ -538,7 +538,7 @@ binding = (
     "Gtk.PrintSettings",
     "Gtk.PrintSetup",
     "----GtkPlug",  # X11-specific, no binding
-    "--Gtk.ProgressBar",
+    "Gtk.ProgressBar",
     "----GtkProgressBarAccessible",  # We do not support atk
     "--GtkRadioAction",
     "--GtkRadioButton",

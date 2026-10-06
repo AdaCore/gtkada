@@ -20,42 +20,32 @@
 -- <http://www.gnu.org/licenses/>.                                          --
 --                                                                          --
 
-with Glib.Object;       use Glib.Object;
 with Gtk.Box;           use Gtk.Box;
-with Gtk.Button;        use Gtk.Button;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Label;         use Gtk.Label;
-with Gtk.Progress_Bar;  use Gtk.Progress_Bar;
+with Gtk.Level_Bar;     use Gtk.Level_Bar;
 with Gtk.Scale;         use Gtk.Scale;
 with Gtk.Toggle_Button; use Gtk.Toggle_Button;
-with Pango.Layout;      use Pango.Layout;
 
-package body Create_Progress is
+package body Create_Level_Bar is
    function Help return String is
    begin
-      return "A @bGtk_Progress_Bar@B shows a fraction between zero and one."
-        & " Move the scale to update the bars; one displays a percentage,"
-        & " the other uses custom text and ellipsization."
+      return "A @bGtk_Level_Bar@B displays a value within an interval."
+        & " Move the scale to compare continuous and discrete modes."
+        & " The named @blow@B, @bhigh@B and @bfull@B offsets select the"
+        & " fill's style as the value crosses each threshold."
         & ASCII.LF
-        & "When the amount of work is unknown, call @bPulse@B repeatedly"
-        & " to advance an activity indicator. Click Pulse to try it."
-        & " @bSet_Pulse_Step@B controls the size of each step.";
+        & "The bars share the scale's value through @bBind_Property@B."
+        & " The toggle reverses their fill direction with @bSet_Inverted@B.";
    end Help;
-
-   procedure Pulse (Object : access GObject_Record'Class) is
-   begin
-      Gtk_Progress_Bar (Object).Pulse;
-   end Pulse;
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       Box      : Gtk_Box;
       Scale    : Gtk_Scale;
-      Bar      : Gtk_Progress_Bar;
-      Activity : Gtk_Progress_Bar;
+      Bar      : Gtk_Level_Bar;
       Inverted : Gtk_Toggle_Button;
-      Button   : Gtk_Button;
    begin
-      Frame.Set_Label ("Progress Bars");
+      Frame.Set_Label ("Level Bars");
       Gtk_New (Box, Orientation_Vertical, 12);
       Box.Set_Margin_Start (12);
       Box.Set_Margin_End (12);
@@ -63,31 +53,27 @@ package body Create_Progress is
       Box.Set_Margin_Bottom (12);
       Frame.Set_Child (Box);
 
-      Gtk_New_With_Range (Scale, Orientation_Horizontal, 0.0, 1.0, 0.01);
+      Gtk_New_With_Range (Scale, Orientation_Horizontal, 0.0, 10.0, 0.1);
       Scale.Set_Draw_Value (True);
       Box.Append (Scale);
       Gtk_New_With_Label (Inverted, "Inverted");
 
-      for Custom_Text in Boolean loop
-         Gtk_New (Bar);
-         Bar.Set_Show_Text (True);
-         if Custom_Text then
-            Bar.Set_Text ("Processing files — custom progress text");
-            Bar.Set_Ellipsize (Ellipsize_End);
+      for Mode in Gtk_Level_Bar_Mode loop
+         if Mode = Level_Bar_Mode_Continuous then
+            Box.Append (Gtk_Label_New ("Continuous"));
+         else
+            Box.Append (Gtk_Label_New ("Discrete"));
          end if;
+         Gtk_New_For_Interval (Bar, 0.0, 10.0);
+         Bar.Set_Mode (Mode);
+         Bar.Add_Offset_Value ("low", 3.0);
+         Bar.Add_Offset_Value ("high", 8.0);
+         Bar.Add_Offset_Value ("full", 10.0);
          Box.Append (Bar);
-         Scale.Get_Adjustment.Bind_Property ("value", Bar, "fraction");
+         Scale.Get_Adjustment.Bind_Property ("value", Bar, "value");
          Inverted.Bind_Property ("active", Bar, "inverted");
       end loop;
       Box.Append (Inverted);
-      Scale.Set_Value (0.4);
-
-      Box.Append (Gtk_Label_New ("Activity mode (unknown total)"));
-      Gtk_New (Activity);
-      Activity.Set_Pulse_Step (0.1);
-      Box.Append (Activity);
-      Gtk_New (Button, "Pulse");
-      Button.On_Clicked (Pulse'Access, Slot => Activity);
-      Box.Append (Button);
+      Scale.Set_Value (5.0);
    end Run;
-end Create_Progress;
+end Create_Level_Bar;
