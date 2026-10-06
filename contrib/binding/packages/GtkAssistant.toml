@@ -1,0 +1,6 @@
+# GtkAssistant
+
+[doc]
+group = "Windows"
+gtkada_demo = "create_assistant.adb"
+see = "Gtk.Assistant_Page"

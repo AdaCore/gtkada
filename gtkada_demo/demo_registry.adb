@@ -32,6 +32,7 @@ with Demo_Items; use Demo_Items;
 --  listed, commented out, in main_windows.adb's own transition block.
 
 with Create_Aspect_Frame;
+with Create_Assistant;
 with Create_Box;
 with Create_Buttons;
 with Create_Check_Buttons;
@@ -89,6 +90,8 @@ package body Demo_Registry is
 
    Demos : constant array (Positive range <>) of Demo_Info :=
      (To_Demo
+        ("Assistant", Create_Assistant.Run'Access, Create_Assistant.Help'Access),
+      To_Demo
         ("Buttons/Buttons",
          Create_Buttons.Run'Access,
          Create_Buttons.Help'Access),
