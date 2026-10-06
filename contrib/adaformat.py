@@ -1244,6 +1244,9 @@ class AdaNaming(object):
         elif name in ("array_of_gchar",):
             t = AdaTypeArray("gchar")
             isArray = True
+        elif name in ("array_of_gpointer",):
+            t = AdaTypeArray("Glib.GPointer")
+            isArray = True            
         elif cname == "void":
             return None
         elif name == "utf8" or cname == "gchar*" or cname == "char*":

@@ -118,6 +118,8 @@ package Glib is
    type Short_Array    is array (Natural range <>) of C.short;
    type Long_Array     is array (Natural range <>) of C.long;
 
+   type Gpointer_Array is array (Natural range <>) of System.Address;
+
    -------------------------
    -- Conversion services --
    -------------------------

@@ -1,0 +1,35 @@
+# ============================================================
+#   GtkBitsetIter
+# ============================================================
+
+[[record]]
+ctype = "GtkBitsetIter"
+private = true
+
+[[method]]
+id = "gtk_bitset_iter_is_valid"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "gtk_bitset_iter_get_value"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "gtk_bitset_iter_next"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "gtk_bitset_iter_previous"
+
+[[method.parameter]]
+name = "self"
+direction = "access"

@@ -341,6 +341,7 @@ binding = (
     "Gtk.AssistantPage",
     "--Gtk.ATContext",  # Bound manually
     "Gtk.Bitset",
+    "Gtk.BitsetIter",
     "Gtk.BookmarkList",
     "--Gtk.Border",
     "Gtk.Box",
@@ -415,9 +416,9 @@ binding = (
     "Gtk.EventControllerScroll",
     "Gtk.Expander",
     "----GtkExpanderAccessible",  # We do not support atk
-    "--GtkFileChooserButton",
-    "--Gtk.FileChooserDialog",
-    "--Gtk.FileChooserWidget",
+    "--Gtk.FileChooserDialog", # Obsolescent
+    "--Gtk.FileChooserNative", # Obsolescent
+    "--Gtk.FileChooserWidget", # Obsolescent
     "--Gtk.Fixed",
     "Gtk.FlowBox",
     "----GtkFlowBoxAccessible",  # We do not support atk
@@ -457,9 +458,6 @@ binding = (
     "--Gtk.IconTheme",
     "--Gtk.IconView",
     "----GtkIconViewAccessible",  # We do not support atk
-    "--Gtk.IMContext",
-    "--Gtk.IMContextSimple",
-    "--Gtk.IMMulticontext",
     "--Gtk.Image",
     "----GtkImageAccessible",  # We do not support atk
     "----GtkImageCellAccessible",  # We do not support atk
