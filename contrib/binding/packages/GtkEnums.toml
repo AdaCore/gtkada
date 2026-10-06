@@ -163,6 +163,12 @@ ctype = "GtkWindowGravity"
 ctype = "GtkWrapMode"
 
 [[enum]]
+ctype = "GtkConstraintRelation"
+
+[[enum]]
+ctype = "GtkConstraintAttribute"
+
+[[enum]]
 ctype = "GtkOrdering"
 prefix = "GTK_ORDERING_"
 
