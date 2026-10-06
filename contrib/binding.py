@@ -94,6 +94,7 @@ from __future__ import annotations
 from xml.etree.cElementTree import parse, Element, QName, tostring
 from adaformat import *
 import copy
+import textwrap
 from binding_gtkada import GtkAda, GtkAdaMethod
 from data import enums, interfaces, binding, manual_binding, user_data_params, callback_exceptions, destroy_data_params
 import sys
@@ -4052,8 +4053,8 @@ end "+";"""
                 # Clean up the text: strip whitespace and replace newlines with spaces
                 doc_text = doc_deprecated.strip()
                 doc_text = " ".join(doc_text.split())
-                # Add doc as a comment on the next line
-                pragma_lines.append("--  " + doc_text)
+                # Keep the indented comment within the Ada line limit.
+                pragma_lines.extend("--  " + line for line in textwrap.wrap(doc_text, width=72))
             # Combine all lines and add as a single section to avoid blank lines
             section.add("\n".join(pragma_lines))
 

@@ -63,7 +63,8 @@ with Gtk.Widget;            use Gtk.Widget;
 package Gtk.Cell_View is
 
    pragma Obsolescent;
-   --  List views use widgets to display their contents. You can use [class@Gtk.Box] instead
+   --  List views use widgets to display their contents. You can use
+   --  [class@Gtk.Box] instead
 
    type Gtk_Cell_View_Record is new Gtk_Widget_Record with null record;
    type Gtk_Cell_View is access all Gtk_Cell_View_Record'Class;

@@ -39,7 +39,8 @@ with Gtk.Tree_Model; use Gtk.Tree_Model;
 package Gtk.Tree_Sortable is
 
    pragma Obsolescent;
-   --  There is no replacement for this interface. You should use [class@Gtk.SortListModel] to wrap your list model instead
+   --  There is no replacement for this interface. You should use
+   --  [class@Gtk.SortListModel] to wrap your list model instead
 
    type Gtk_Tree_Sortable is new Glib.Types.GType_Interface;
    Null_Gtk_Tree_Sortable : constant Gtk_Tree_Sortable;

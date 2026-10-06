@@ -35,7 +35,8 @@ with Gtk.Tree_Model;       use Gtk.Tree_Model;
 package Gtk.Tree_Drag_Source is
 
    pragma Obsolescent;
-   --  List views use widgets to display their contents. You can use [class@Gtk.DragSource] to implement a drag source
+   --  List views use widgets to display their contents. You can use
+   --  [class@Gtk.DragSource] to implement a drag source
 
    type Gtk_Tree_Drag_Source is new Glib.Types.GType_Interface;
    Null_Gtk_Tree_Drag_Source : constant Gtk_Tree_Drag_Source;

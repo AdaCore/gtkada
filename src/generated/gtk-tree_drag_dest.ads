@@ -35,7 +35,8 @@ with Gtk.Tree_Model; use Gtk.Tree_Model;
 package Gtk.Tree_Drag_Dest is
 
    pragma Obsolescent;
-   --  List views use widgets to display their contents. You can use [class@Gtk.DropTarget] to implement a drop destination
+   --  List views use widgets to display their contents. You can use
+   --  [class@Gtk.DropTarget] to implement a drop destination
 
    type Gtk_Tree_Drag_Dest is new Glib.Types.GType_Interface;
    Null_Gtk_Tree_Drag_Dest : constant Gtk_Tree_Drag_Dest;

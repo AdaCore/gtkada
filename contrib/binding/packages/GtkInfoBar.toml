@@ -1,0 +1,5 @@
+# GtkInfoBar
+
+[doc]
+group = "Dialogs"
+gtkada_demo = "create_info_bar.adb"
