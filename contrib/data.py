@@ -392,6 +392,7 @@ binding = (
     "--Gtk.ComboBoxText",
     "Gtk.Constraint",
     "--GtkConstraintTarget",  # Bound through manual_binding
+    "Gtk.ConstraintGuide",
     "--GtkContainer",
     "----GtkContainerAccessible",  # We do not support atk
     "----GtkContainerCellAccessible",  # We do not support atk

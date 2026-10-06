@@ -643,6 +643,23 @@ package Gtk.Enums is
       Equal => 0,
       Larger => 1);
 
+   type Gtk_Constraint_Strength is (
+      Constraint_Strength_Weak,
+      Constraint_Strength_Medium,
+      Constraint_Strength_Strong,
+      Constraint_Strength_Required);
+   pragma Convention (C, Gtk_Constraint_Strength);
+   --  The strength of a constraint, expressed as a symbolic constant.
+   --
+   --  The strength of a [classConstraint] can be expressed with any positive
+   --  integer; the values of this enumeration can be used for readability.
+
+   for Gtk_Constraint_Strength use (
+      Constraint_Strength_Weak => 1,
+      Constraint_Strength_Medium => 1000,
+      Constraint_Strength_Strong => 1000000000,
+      Constraint_Strength_Required => 1001001000);
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -862,6 +879,10 @@ package Gtk.Enums is
    package Gtk_Ordering_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Ordering);
    type Property_Gtk_Ordering is new Gtk_Ordering_Properties.Property;
+
+   package Gtk_Constraint_Strength_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Constraint_Strength);
+   type Property_Gtk_Constraint_Strength is new Gtk_Constraint_Strength_Properties.Property;
 
    ----------------------
    -- GtkAda additions --
