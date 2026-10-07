@@ -1,0 +1,135 @@
+ada = "Gdk.Pixbuf"
+
+[doc]
+group = "GDK"
+gtkada_demo = "create_pixbuf.adb"
+
+[[enum]]
+ctype = "GdkColorspace"
+
+[[enum]]
+ctype = "GdkInterpType"
+
+[[enum]]
+ctype = "GdkPixbufRotation"
+
+[[enum]]
+ctype = "GdkPixbufError"
+
+# The pixel accessors return borrowed buffers, valid while the pixbuf lives.
+# Keep their C pointer representation so callers can also modify the pixels.
+[[method]]
+id = "gdk_pixbuf_get_pixels"
+return = "gpointer"
+[method.doc]
+extend = true
+text = "Returns a borrowed pixel buffer. Its size is Get_Byte_Length; use Get_Rowstride to locate each row. Keep the pixbuf alive while accessing the buffer."
+
+[[method]]
+id = "gdk_pixbuf_get_pixels_with_length"
+return = "gpointer"
+
+[[method]]
+id = "gdk_pixbuf_read_pixels"
+return = "gconstpointer"
+
+# This constructor retains Data. An Ada array would be a temporary C copy.
+[[method]]
+id = "gdk_pixbuf_new_from_data"
+[method.doc]
+extend = true
+text = "Data is retained, not copied. Keep it alive until the last pixbuf reference is released. Destroy_Fn uses the C calling convention and receives Data and Destroy_Fn_Data."
+[[method.parameter]]
+name = "data"
+ctype = "gpointer"
+[[method.parameter]]
+name = "destroy_fn"
+ctype = "gpointer"
+type = "Gdk_Pixbuf_Destroy_Notify"
+default = "null"
+[[method.parameter]]
+name = "destroy_fn_data"
+default = "System.Null_Address"
+
+[[extra.with_spec]]
+pkg = "System"
+use = false
+
+# Caller owns this allocated buffer and releases it with Glib.G_Free.
+[[method]]
+id = "gdk_pixbuf_save_to_bufferv"
+[method.doc]
+extend = true
+text = "On success, Buffer is owned by the caller; release it with Glib.G_Free after consuming Buffer_Size bytes."
+[[method.parameter]]
+name = "buffer"
+ctype = "gpointer"
+
+# Use the inherited GObject reference operations, which manage Ada wrappers.
+[[method]]
+id = "gdk_pixbuf_ref"
+bind = false
+[[method]]
+id = "gdk_pixbuf_unref"
+bind = false
+
+# The callback's array/error marshalling needs a dedicated wrapper.
+[[method]]
+id = "gdk_pixbuf_save_to_callbackv"
+bind = false
+
+[[property]]
+id = "colorspace"
+bind = false
+# GIR omits c:type for the enum; expose the correctly typed property below.
+[[extra.spec]]
+text = '''
+   Colorspace_Property : constant Property_Gdk_Colorspace :=
+     Build ("colorspace");
+'''
+
+# Get_Options returns a borrowed hash table. Get_Formats returns an owned
+# list of borrowed format descriptors; free only the list nodes.
+[[method]]
+id = "gdk_pixbuf_get_options"
+return = "gpointer"
+[[method]]
+id = "gdk_pixbuf_get_formats"
+return = "GdkPixbufFormatSList"
+
+# The obsolete inline loader may retain its input unless copying is forced.
+[[method]]
+id = "gdk_pixbuf_new_from_inline"
+[[method.parameter]]
+name = "copy_pixels"
+ada = ""
+default = "1"
+
+[[method]]
+id = "gdk_pixbuf_get_file_info"
+return = "PixbufFormatPointer"
+[[method]]
+id = "gdk_pixbuf_get_file_info_finish"
+return = "PixbufFormatPointer"
+
+[[extra.type]]
+ctype = "PixbufDestroyNotify"
+ada = "Gdk.Pixbuf.Gdk_Pixbuf_Destroy_Notify"
+text = '''
+   type Gdk_Pixbuf_Destroy_Notify is access procedure
+     (Pixels : System.Address; Data : System.Address);
+   pragma Convention (C, Gdk_Pixbuf_Destroy_Notify);
+   --  Data must remain valid until the callback runs at the last unref.
+   --  Without a callback, the caller must keep the pixel buffer alive until
+   --  the pixbuf releases it, then free it.
+'''
+
+[[property]]
+id = "pixels"
+bind = false
+# A pointer property must not be read as a zero-terminated string.
+[[extra.spec]]
+text = '''
+   Pixels_Property : constant Glib.Properties.Property_Address :=
+     Glib.Properties.Build ("pixels");
+'''

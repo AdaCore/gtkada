@@ -52,7 +52,7 @@ land, not a contract.
 | --- | --- |
 | `GtkSignalListItemFactory` (+ `GtkTreeExpander`) | the `Lists/…` demos whose data is plain Ada: `Selections`, `Colors`, `Words`, `Characters`, `Clocks`, `Weather`, and the Step 1 selector itself. Row rendering only; `Lists/Settings`, `Lists/Alternative Settings`, `Lists/Application launcher` and `Lists/File browser` additionally need their data sources (see the list-model row below) |
 | `Gtk.DrawingArea` | `Drawing Area`, `Masking`, `Pango/Rotated Text`, `Pango/Text Mask`, and the substrate for most `Path/…` demos |
-| `Gtk.Image` / `Gtk.Picture` (+ `GdkPixbuf` or `Gdk.Texture` loading) | `Images`, `Image Scaling`, `Image Filtering`, `Cursors`, the `Paintable/…` family, `Icon View/…` |
+| `Gtk.Image` (`Gtk.Picture`, `Gdk.Pixbuf` and `Gdk.Texture` are bound) | `Images`, `Image Scaling`, `Image Filtering`, `Cursors`, the `Paintable/…` family, `Icon View/…` |
 | `Gtk.EventController` + the `Gtk.Gesture*` family | `Gestures`, `Paint`, `Text View/Hypertext`, `Constraints/Interactive Constraints` |
 | `Gtk.SearchEntry` (+ `Gtk.SearchBar`) | `Entry/Search Entry`, and would enable upstream's search box in our own shell |
 | `Gtk.IconView` | `Icon View/Icon View Basics`, `Icon View/Editing and Drag-and-Drop` (the latter drags through `GtkIconView`'s own model-drag API, not the DnD controllers) |
@@ -88,21 +88,20 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
 
   | package | not generated / not visible |
   | --- | --- |
-  | `create_cairo` | through `Testcairo_Drawing`: `Gtk.Drawing_Area`, `Gtk.Print_Context`, `Gtk.Print_Operation`, `Gdk.Pixbuf` *(gtk3)*, `Gdk.Cairo` *(gtk3)*, `Gtkada.Printing` *(gtk3)*. `Cairo` itself is bound |
+  | `create_cairo` | through `Testcairo_Drawing`: `Gtk.Drawing_Area`, `Gtk.Print_Context`, `Gtk.Print_Operation`, `Gdk.Pixbuf` (bound), `Gdk.Cairo` *(gtk3)*, `Gtkada.Printing` *(gtk3)*. `Cairo` itself is bound |
   | `create_calendar` | `Gtk.Calendar` |
-  | `create_clipboard` | `Gtk.Clipboard`, `Gtk.Selection_Data` *(absent)*, `Gtk.Hbutton_Box` *(absent)*, `Gtk.Image`, `Gdk.Pixbuf` *(gtk3)*, `Gdk.Property` *(gtk3)*, `Gdk.Types` *(gtk3)*, `Gtkada.Handlers` *(gtk3)*. gtk4 replaced the first three outright — `Gdk.Clipboard` (bound) plus content providers is the target API, so this is a rewrite |
+  | `create_clipboard` | `Gtk.Clipboard`, `Gtk.Selection_Data` *(absent)*, `Gtk.Hbutton_Box` *(absent)*, `Gtk.Image`, `Gdk.Pixbuf` (bound), `Gdk.Property` *(gtk3)*, `Gdk.Types` *(gtk3)*, `Gtkada.Handlers` *(gtk3)*. gtk4 replaced the first three outright — `Gdk.Clipboard` (bound) plus content providers is the target API, so this is a rewrite |
   | `create_css_accordion`, `create_css_editor` | `Gtk.Container`, which gtk4 removed; the CSS provider, style context, and style provider bindings are available |
   | `create_cursors` | `Gtk.Drawing_Area`, `Gdk.Window` (gtk4: `Gdk.Surface`, bound), `Gdk.Device_Manager` *(absent; gone from gtk4)*, `Gtk.Handlers` *(gtk3)* |
-  | `create_dnd` | `Gtk.Dnd` *(gtk3)*, `Gdk.Dnd` *(gtk3)*, `Gdk.Drag_Contexts` (`--GdkDragContext`), `Gtk.Target_List` *(absent)*, `Gtk.Selection_Data` *(absent)*, `Gtk.Image`, `Gdk.Window` (gtk4: `Gdk.Surface`), `Gdk.Pixbuf` *(gtk3)*, `Gdk.Types` *(gtk3)*, `Gtk.Handlers` *(gtk3)*. gtk4 replaced the whole DnD API with `GtkDragSource` / `GtkDropTarget`, both bound now (see `create_drag_and_drop`), over `Gdk.Content_Provider`: a rewrite, not a port |
+  | `create_dnd` | `Gtk.Dnd` *(gtk3)*, `Gdk.Dnd` *(gtk3)*, `Gdk.Drag_Contexts` (`--GdkDragContext`), `Gtk.Target_List` *(absent)*, `Gtk.Selection_Data` *(absent)*, `Gtk.Image`, `Gdk.Window` (gtk4: `Gdk.Surface`), `Gdk.Types` *(gtk3)*, `Gtk.Handlers` *(gtk3)*. |
   | `create_entry` | `Gtk.Combo_Box_Text`, `Gtk.Search_Entry`, `Gtk.Handlers` *(gtk3)*, plus `Common` (see below) |
   | `create_file_chooser` | `Gtk.File_Chooser` (the interface) and `Gtk.File_Chooser_Button`; both deprecated upstream since 4.10, so the revival should target `GtkFileDialog` — itself unbound and absent from `contrib/data.py`, i.e. a new binding of its own |
   | `create_fixed` | `Gtk.Fixed`. It calls only `Gtk.Fixed.Put`, so this really is its whole blocker — it is *not* part of the `Gsk.Transform` group |
   | `create_font_chooser` | `Gtk.Font_Chooser_Widget` |
   | `create_gestures` | `Gtk.Gesture`, `Gtk.Gesture_Long_Press`, `Gtk.Gesture_Zoom`, `Gtk.Drawing_Area` |
   | `create_gl` | `Gtk.GLArea`. Its `Epoxy`, `OpenGL` and `Create_GL.GLSL` dependencies are demo-local sources and fine |
-  | `create_notebook` | `Gtk.Combo_Box_Text`, `Gtk.Image`, `Gdk.Pixbuf` *(gtk3)*, `Gtk.Handlers` *(gtk3)*, plus `Common`. `Gtk.Notebook` itself is bound |
+  | `create_notebook` | `Gtk.Combo_Box_Text`, `Gtk.Image`, `Gdk.Pixbuf` (bound), `Gtk.Handlers` *(gtk3)*, plus `Common`. `Gtk.Notebook` itself is bound |
   | `create_opacity` | `Common` |
-  | `create_pixbuf` | `Gtk.Drawing_Area`, `Gtk.Image`, `Gdk.Pixbuf` *(gtk3)*, `Gdk.Cairo` *(gtk3)*, `Gtkada.Handlers` *(gtk3)* |
   | `create_print` | `Gtk.Print_Operation`, `Gtk.Print_Context`, `Gtk.Page_Setup`, `Gtk.Paper_Size`, `Gtkada.Printing` *(gtk3)* |
   | `create_range` | `Gtk.Scale_Button`, `Gtk.Scrollbar`, `Gtk.Volume_Button` |
 
@@ -238,7 +237,7 @@ GdkEvent.toml:
 
 GdkPixbuf.toml:
 
-- when done, reactivate bindings in GdkTexture.toml
+- `save_to_callbackv` needs a wrapper for callback buffer and error marshalling.
 
 GdkSurface.toml:
 

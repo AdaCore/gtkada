@@ -21,7 +21,6 @@ enums = (
 
 interfaces = (
     "Gdk.Paintable",
-    "--GdkPixbuf.Pixbuf",
     "--Gtk.Actionable",
     "--Gtk.Activatable",
     "Gtk.Accessible",
@@ -134,6 +133,8 @@ binding = (
     "Gdk.Snapshot",
     "Gdk.Surface",
     "Gdk.Texture",
+    "GdkPixbuf.PixbufFormat",
+    "GdkPixbuf.Pixbuf",
     "--Gdk.VulkanContext", # deprecated since 4.14
     "--GdkWindow",
     "Gdk.PopupLayout",
@@ -523,6 +524,7 @@ binding = (
     "--GtkOffscreenWindow",
     "Gtk.Overlay",
     "Gtk.Paned",
+    "Gtk.Picture",
     "----GtkPanedAccessible",  # We do not support atk
     "Gtk.PageSetup",
     "Gtk.PaperSize",
@@ -957,6 +959,7 @@ naming.type_exceptions = {
     "VisualList": List("Gdk.Visual.Gdk_Visual_List.Glist"),
     "ObjectList": List("Glib.Object.Object_Simple_List.Glist"),
     "ObjectSList": List("Glib.Object.Object_List.GSlist"),
+    "GdkPixbufFormatSList": List("Gdk.Pixbuf_Format.Format_List.GSlist"),
     "PaperSizeList": List("Gtk.Paper_Size.Paper_Size_List.Glist"),
     "StringList": List("Gtk.Enums.String_List.Glist"),
     "StringSList": List("Gtk.Enums.String_SList.GSlist"),

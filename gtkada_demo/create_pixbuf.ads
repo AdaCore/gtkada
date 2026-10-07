@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -27,8 +27,5 @@ package Create_Pixbuf is
 
    procedure Run (F : access Gtk.Frame.Gtk_Frame_Record'Class);
    function Help return String;
-
-   procedure Run_Gif (F : access Gtk.Frame.Gtk_Frame_Record'Class);
-   function Help_Gif return String;
 
 end Create_Pixbuf;

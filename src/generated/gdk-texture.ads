@@ -49,6 +49,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk.Color_State;         use Gdk.Color_State;
 with Gdk.Paintable;           use Gdk.Paintable;
+with Gdk.Pixbuf;              use Gdk.Pixbuf;
 with Gdk.Snapshot;            use Gdk.Snapshot;
 with Glib;                    use Glib;
 with Glib.Bytes;              use Glib.Bytes;
@@ -179,6 +180,35 @@ package Gdk.Texture is
    ------------------
    -- Constructors --
    ------------------
+
+   procedure Gdk_New_For_Pixbuf
+      (Self   : out Gdk_Texture;
+       Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+   --  Creates a new texture object representing the `GdkPixbuf`.
+   --  This function is threadsafe, so that you can e.g. use GTask and
+   --  [methodGio.Task.run_in_thread] to avoid blocking the main thread while
+   --  loading a big image.
+   --  @param Pixbuf a `GdkPixbuf`
+
+   procedure Initialize_For_Pixbuf
+      (Self   : not null access Gdk_Texture_Record'Class;
+       Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class);
+   --  Creates a new texture object representing the `GdkPixbuf`.
+   --  This function is threadsafe, so that you can e.g. use GTask and
+   --  [methodGio.Task.run_in_thread] to avoid blocking the main thread while
+   --  loading a big image.
+   --  Initialize_For_Pixbuf does nothing if the object was already created
+   --  with another call to Initialize* or G_New.
+   --  @param Pixbuf a `GdkPixbuf`
+
+   function Gdk_Texture_New_For_Pixbuf
+      (Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+       return Gdk_Texture;
+   --  Creates a new texture object representing the `GdkPixbuf`.
+   --  This function is threadsafe, so that you can e.g. use GTask and
+   --  [methodGio.Task.run_in_thread] to avoid blocking the main thread while
+   --  loading a big image.
+   --  @param Pixbuf a `GdkPixbuf`
 
    procedure Gdk_New_From_Bytes
       (Self  : out Gdk_Texture;

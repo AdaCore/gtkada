@@ -1,0 +1,6 @@
+[doc]
+group = "Display Widgets"
+gtkada_demo = "create_pixbuf.adb"
+
+[[enum]]
+ctype = "GtkContentFit"

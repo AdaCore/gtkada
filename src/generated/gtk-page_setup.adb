@@ -172,6 +172,7 @@ package body Gtk.Page_Setup is
       Tmp_File_Name : Gtkada.Types.Chars_Ptr := New_String (File_Name);
       Tmp_Return    : System.Address;
    begin
+      Error := null;
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_File_Name, Acc_Error'Access);
          Error := Acc_Error;
@@ -217,6 +218,7 @@ package body Gtk.Page_Setup is
       Tmp_Group_Name : Gtkada.Types.Chars_Ptr;
       Tmp_Return     : System.Address;
    begin
+      Error := null;
       if not Self.Is_Created then
          Tmp_Group_Name :=
            (if Group_Name = ""

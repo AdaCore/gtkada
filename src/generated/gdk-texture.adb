@@ -89,6 +89,19 @@ package body Gdk.Texture is
    pragma Unreferenced (Type_Conversion_Gdk_Texture);
 
    ------------------------
+   -- Gdk_New_For_Pixbuf --
+   ------------------------
+
+   procedure Gdk_New_For_Pixbuf
+      (Self   : out Gdk_Texture;
+       Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+   is
+   begin
+      Self := new Gdk_Texture_Record;
+      Gdk.Texture.Initialize_For_Pixbuf (Self, Pixbuf);
+   end Gdk_New_For_Pixbuf;
+
+   ------------------------
    -- Gdk_New_From_Bytes --
    ------------------------
 
@@ -142,6 +155,20 @@ package body Gdk.Texture is
       Self := new Gdk_Texture_Record;
       Gdk.Texture.Initialize_From_Resource (Self, Resource_Path);
    end Gdk_New_From_Resource;
+
+   --------------------------------
+   -- Gdk_Texture_New_For_Pixbuf --
+   --------------------------------
+
+   function Gdk_Texture_New_For_Pixbuf
+      (Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+       return Gdk_Texture
+   is
+      Self : constant Gdk_Texture := new Gdk_Texture_Record;
+   begin
+      Gdk.Texture.Initialize_For_Pixbuf (Self, Pixbuf);
+      return Self;
+   end Gdk_Texture_New_For_Pixbuf;
 
    --------------------------------
    -- Gdk_Texture_New_From_Bytes --
@@ -199,6 +226,22 @@ package body Gdk.Texture is
    end Gdk_Texture_New_From_Resource;
 
    ---------------------------
+   -- Initialize_For_Pixbuf --
+   ---------------------------
+
+   procedure Initialize_For_Pixbuf
+      (Self   : not null access Gdk_Texture_Record'Class;
+       Pixbuf : not null access Gdk.Pixbuf.Gdk_Pixbuf_Record'Class)
+   is
+      function Internal (Pixbuf : System.Address) return System.Address;
+      pragma Import (C, Internal, "gdk_texture_new_for_pixbuf");
+   begin
+      if not Self.Is_Created then
+         Set_Object (Self, Internal (Get_Object (Pixbuf)));
+      end if;
+   end Initialize_For_Pixbuf;
+
+   ---------------------------
    -- Initialize_From_Bytes --
    ---------------------------
 
@@ -214,6 +257,7 @@ package body Gdk.Texture is
       Acc_Error  : aliased Glib.Error.GError;
       Tmp_Return : System.Address;
    begin
+      Error := null;
       if not Self.Is_Created then
          Tmp_Return := Internal (Get_Object (Bytes), Acc_Error'Access);
          Error := Acc_Error;
@@ -239,6 +283,7 @@ package body Gdk.Texture is
       Acc_Error  : aliased Glib.Error.GError;
       Tmp_Return : System.Address;
    begin
+      Error := null;
       if not Self.Is_Created then
          Tmp_Return := Internal (File, Acc_Error'Access);
          Error := Acc_Error;
@@ -265,6 +310,7 @@ package body Gdk.Texture is
       Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
       Tmp_Return : System.Address;
    begin
+      Error := null;
       if not Self.Is_Created then
          Tmp_Return := Internal (Tmp_Path, Acc_Error'Access);
          Error := Acc_Error;
