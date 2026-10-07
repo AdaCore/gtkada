@@ -142,6 +142,7 @@ generate:
 	   --gir-file=contrib/Pango-1.0.gir \
 	   --gir-file=contrib/Gio-2.0.gir \
 	   --gir-file=contrib/Graphene-1.0.gir \
+	   --gir-file=contrib/Gsk-4.0.gir \
 	   --toml-dir=contrib/binding/packages \
 	   --ada-output=src/generated/tmp.ada \
 	   --c-output=src/misc_generated.c

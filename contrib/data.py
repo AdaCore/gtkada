@@ -9,6 +9,7 @@ from adaformat import naming, Enum, Proxy, Record, GObject, Tagged, List, Callba
 enums = (
     "ErrorEnums",
     "GtkEnums",
+    "GskEnums",
     "PangoEnums",
     "GdkKeyMatch",
     "GdkEnums",
@@ -27,7 +28,7 @@ interfaces = (
     "--Gtk.AccessibleRange",
     "Gtk.AccessibleText",
     "Gtk.AccessibleHypertext",
-    # "Gtk.AppChooser",
+    "--Gtk.AppChooser", # Obsolescent
     "--Atk.ImplementorIface",
     "Gtk.Buildable",
     "Gtk.BuilderScope",
@@ -328,14 +329,12 @@ binding = (
     "Gtk.ActionBar",
     "Gtk.Adjustment",
     "Gtk.AlertDialog",
-    "--GtkAlignment",
-    "----GtkAppChooserButton",  # Needs GFile
-    "----GtkAppChooserDialog",  # Needs GFile
-    "----GtkAppChooserWidget",  # Needs GFile
+    "--GtkAppChooserButton",  # Obsolescent
+    "--GtkAppChooserDialog",  # Obsolescent
+    "--GtkAppChooserWidget",  # Obsolescent
     "Gtk.Application",
     "Gtk.ApplicationWindow",
     "--GtkArrow",
-    "----GtkArrowAccessible",  # We do not support atk
     "Gtk.AspectFrame",
     "Gtk.Assistant",
     "Gtk.AssistantPage",
@@ -345,15 +344,11 @@ binding = (
     "Gtk.BookmarkList",
     "--Gtk.Border",
     "Gtk.Box",
-    "----GtkBooleanCellAccessible",  # We do not support atk
     "Gtk.Builder",
     "Gtk.BuilderCScope",
     "Gtk.BuilderListItemFactory",
     "Gtk.Button",
-    "----GtkButtonAccessible",  # We do not support atk
-    "--GtkButtonBox",
     "--Gtk.Calendar",
-    "----GtkCellAccessible",  # We do not support atk
     "Gtk.CellArea",
     "Gtk.CellAreaBox",
     "----GtkCellAreaClass",
@@ -370,31 +365,21 @@ binding = (
     "Gtk.CellRendererToggle",
     "Gtk.CellView",
     "Gtk.CheckButton",
-    "--GtkCheckMenuItem",
-    "----GtkCheckMenuItemAccessible",  # We do not support atk
     "Gtk.CenterBox",
-    "--GtkClipboard",
-    "--Gtk.ColorButton",
-    "--Gtk.ColorChooserDialog",
+    "--Gtk.ColorButton", # Obsolescent
+    "--Gtk.ColorChooserDialog", # Obsolescent
     "Gtk.ColorDialog",
     "Gtk.ColorDialogButton",
-    "--Gtk.ColorChooserWidget",
-    "--GtkColorSelection",
-    "--GtkColorSelectionDialog",
+    "--Gtk.ColorChooserWidget", # Obsolescent
     "Gtk.ColumnView",
     "Gtk.ColumnViewCell",
     "Gtk.ColumnViewColumn",
     "Gtk.ColumnViewRow",
-    "--Gtk.ComboBox",
-    "----GtkComboBoxAccessible",  # We do not support atk
-    "--Gtk.ComboBoxText",
+    "--Gtk.ComboBox", # Obsolescent
+    "--Gtk.ComboBoxText", # Obsolescent
     "Gtk.Constraint",
     "--GtkConstraintTarget",  # Bound through manual_binding
     "Gtk.ConstraintGuide",
-    "--GtkContainer",
-    "----GtkContainerAccessible",  # We do not support atk
-    "----GtkContainerCellAccessible",  # We do not support atk
-    "----GtkContainerClass",
     "Gtk.CssProvider",
     "--Gtk.CssSection",
     "Gtk.Dialog",
@@ -403,11 +388,8 @@ binding = (
     "Gtk.EditableLabel",
     "Gtk.EmojiChooser",
     "Gtk.Entry",
-    "----GtkEntryAccessible",  # We do not support atk
     "Gtk.EntryBuffer",
     "Gtk.EntryCompletion",
-    "----GtkEntryIconAccessible",  # We do not support atk
-    "--GtkEventBox",
     "Gtk.EventController",
     "Gtk.IMContext",
     "Gtk.IMContextSimple",
@@ -418,14 +400,13 @@ binding = (
     "Gtk.EventControllerMotion",
     "Gtk.EventControllerScroll",
     "Gtk.Expander",
-    "----GtkExpanderAccessible",  # We do not support atk
     "Gtk.FileDialog",
     "Gtk.FileLauncher",
     "Gtk.UriLauncher",
     "--Gtk.FileChooserDialog", # Obsolescent
     "--Gtk.FileChooserNative", # Obsolescent
     "--Gtk.FileChooserWidget", # Obsolescent
-    "--Gtk.Fixed",
+    "Gtk.Fixed",
     "Gtk.FlowBox",
     "----GtkFlowBoxAccessible",  # We do not support atk
     "Gtk.FlowBoxChild",
@@ -678,6 +659,7 @@ binding = (
     "graphene_vec2_t",
     "graphene_vec3_t",
     "graphene_vec4_t",
+    "GskTransform",
 )
 
 # Entries that are bound through manual/TOML glue instead of GIR class lookup.
