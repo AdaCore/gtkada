@@ -388,6 +388,7 @@ binding = (
     "--Gtk.ComboBox",
     "----GtkComboBoxAccessible",  # We do not support atk
     "--Gtk.ComboBoxText",
+    "Gtk.Constraint",
     "--GtkConstraintTarget",  # Bound through manual_binding
     "--GtkContainer",
     "----GtkContainerAccessible",  # We do not support atk

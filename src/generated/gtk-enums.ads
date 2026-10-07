@@ -597,6 +597,35 @@ package Gtk.Enums is
    pragma Convention (C, Gtk_Wrap_Mode);
    --  Describes a type of line wrapping.
 
+   type Gtk_Constraint_Relation is (
+      Constraint_Relation_Le,
+      Constraint_Relation_Eq,
+      Constraint_Relation_Ge);
+   pragma Convention (C, Gtk_Constraint_Relation);
+   --  The relation between two terms of a constraint.
+
+   for Gtk_Constraint_Relation use (
+      Constraint_Relation_Le => -1,
+      Constraint_Relation_Eq => 0,
+      Constraint_Relation_Ge => 1);
+
+   type Gtk_Constraint_Attribute is (
+      Constraint_Attribute_None,
+      Constraint_Attribute_Left,
+      Constraint_Attribute_Right,
+      Constraint_Attribute_Top,
+      Constraint_Attribute_Bottom,
+      Constraint_Attribute_Start,
+      Constraint_Attribute_End,
+      Constraint_Attribute_Width,
+      Constraint_Attribute_Height,
+      Constraint_Attribute_Center_X,
+      Constraint_Attribute_Center_Y,
+      Constraint_Attribute_Baseline);
+   pragma Convention (C, Gtk_Constraint_Attribute);
+   --  The widget attributes that can be used when creating a
+   --  [classConstraint].
+
    type Gtk_Ordering is (
       Smaller,
       Equal,
@@ -821,6 +850,14 @@ package Gtk.Enums is
    package Gtk_Wrap_Mode_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Wrap_Mode);
    type Property_Gtk_Wrap_Mode is new Gtk_Wrap_Mode_Properties.Property;
+
+   package Gtk_Constraint_Relation_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Constraint_Relation);
+   type Property_Gtk_Constraint_Relation is new Gtk_Constraint_Relation_Properties.Property;
+
+   package Gtk_Constraint_Attribute_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Constraint_Attribute);
+   type Property_Gtk_Constraint_Attribute is new Gtk_Constraint_Attribute_Properties.Property;
 
    package Gtk_Ordering_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Ordering);
