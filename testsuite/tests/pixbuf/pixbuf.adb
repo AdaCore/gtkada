@@ -7,10 +7,14 @@ with Gdk.Texture;       use Gdk.Texture;
 with Glib;              use Glib;
 with Glib.Bytes;        use Glib.Bytes;
 with Glib.Error;        use Glib.Error;
+with Glib.File_Input_Stream;
+with Glib.GFile;
 with Glib.Input_Stream;
 with Glib.Object;       use Glib.Object;
 with Glib.Properties;   use Glib.Properties;
+with Glib.Resource;     use Glib.Resource;
 with Glib.Test;         use Glib.Test;
+with Glib.Types;
 with GNAT.Strings;
 with Gtk.Main;
 with Gtk.Picture;       use Gtk.Picture;
@@ -27,6 +31,27 @@ procedure Pixbuf is
    procedure Test_Texture with Convention => C;
    procedure Test_Format_Layout with Convention => C;
    procedure Test_Initialize_Existing with Convention => C;
+   procedure Test_Constructors with Convention => C;
+   procedure Test_Constructors_Invalid with Convention => C;
+
+   type Route is (Procedure_Form, Function_Form, Initialize_Form);
+   --  The three Ada subprograms generated for each C constructor
+
+   type Source is
+     (File, File_At_Scale, File_At_Size, Inline, Resource, Resource_At_Scale,
+      Stream, Stream_At_Scale);
+   --  The throwing constructors. From_Stream_Finish needs a real
+   --  GAsyncResult, so only Test_Initialize_Existing covers it.
+
+   function Construct
+     (Via : Route; From : Source; Valid : Boolean; Error : out GError)
+      return Gdk_Pixbuf;
+   --  Valid inputs all hold the 3 x 2, 16#112233FF# image of the pixbuf.png
+   --  fixture (scaled to 6 x 4 by the _At_Scale/_At_Size sources); invalid
+   --  ones are missing or not an image.
+
+   function Pixdata return Guint8_Array;
+   --  pixbuf.png's image as a serialized GdkPixdata, for From_Inline
 
    procedure Check_Pixel
      (P : Gdk_Pixbuf; X, Y : Gint; R, G, B, A : Guint8);
@@ -99,6 +124,185 @@ procedure Pixbuf is
       Error_Free (Saved_Error);
       Unref (P);
    end Test_Initialize_Existing;
+
+   function Pixdata return Guint8_Array is
+      Header : constant Guint8_Array :=
+        (16#47#, 16#64#, 16#6B#, 16#50#,  --  magic "GdkP"
+         0, 0, 0, 48,                      --  total length
+         1, 1, 0, 2,                       --  raw, 8 bits/sample, RGBA
+         0, 0, 0, 12,                      --  rowstride
+         0, 0, 0, 3,                       --  width
+         0, 0, 0, 2);                      --  height
+      Pixel  : constant Guint8_Array := (16#11#, 16#22#, 16#33#, 16#FF#);
+   begin
+      return Header & Pixel & Pixel & Pixel & Pixel & Pixel & Pixel;
+   end Pixdata;
+
+   function Construct
+     (Via : Route; From : Source; Valid : Boolean; Error : out GError)
+      return Gdk_Pixbuf
+   is
+      Path : constant String :=
+        (if Valid then "pixbuf.png" else "/gtkada-missing/pixbuf.png");
+      Resource_Path : constant String :=
+        (if Valid then "/org/gtkada/test/pixbuf.png"
+         else "/gtkada-missing/pixbuf");
+      Data : constant Guint8_Array :=
+        (if Valid then Pixdata else (1 .. 32 => 16#AA#));
+      --  Longer than the pixdata header: shorter data is a programming
+      --  error (g_return_val_if_fail), not a GError
+      use type Glib.File_Input_Stream.Gfile_Input_Stream;
+      In_Stream : Glib.File_Input_Stream.Gfile_Input_Stream;
+      P : Gdk_Pixbuf;
+   begin
+      Message (Via'Image & " " & From'Image & " " & Valid'Image);
+      if From in Stream | Stream_At_Scale then
+         --  An invalid stream is readable, but not an image
+         declare
+            Input : constant Glib.GFile.Gfile := Glib.GFile.New_For_Path
+              (if Valid then "pixbuf.png" else "pixbuf.gresource.xml");
+         begin
+            In_Stream := Glib.GFile.Read (Input, null, Error);
+            Assert_True (Error = null);
+            Glib.Object.Unref
+              (Glib.Types.To_Object (Glib.Types.GType_Interface (Input)));
+         end;
+      end if;
+      if Via = Initialize_Form then
+         P := new Gdk_Pixbuf_Record;
+      end if;
+
+      case From is
+         when File =>
+            case Via is
+               when Procedure_Form => Gdk_New_From_File (P, Path, Error);
+               when Function_Form =>
+                  P := Gdk_Pixbuf_New_From_File (Path, Error);
+               when Initialize_Form => Initialize_From_File (P, Path, Error);
+            end case;
+         when File_At_Scale =>
+            case Via is
+               when Procedure_Form =>
+                  Gdk_New_From_File_At_Scale (P, Path, 6, 4, True, Error);
+               when Function_Form =>
+                  P := Gdk_Pixbuf_New_From_File_At_Scale
+                    (Path, 6, 4, True, Error);
+               when Initialize_Form =>
+                  Initialize_From_File_At_Scale (P, Path, 6, 4, True, Error);
+            end case;
+         when File_At_Size =>
+            case Via is
+               when Procedure_Form =>
+                  Gdk_New_From_File_At_Size (P, Path, 6, 4, Error);
+               when Function_Form =>
+                  P := Gdk_Pixbuf_New_From_File_At_Size (Path, 6, 4, Error);
+               when Initialize_Form =>
+                  Initialize_From_File_At_Size (P, Path, 6, 4, Error);
+            end case;
+         when Inline =>
+            case Via is
+               when Procedure_Form =>
+                  Gdk_New_From_Inline (P, Data'Length, Data, Error);
+               when Function_Form =>
+                  P := Gdk_Pixbuf_New_From_Inline (Data'Length, Data, Error);
+               when Initialize_Form =>
+                  Initialize_From_Inline (P, Data'Length, Data, Error);
+            end case;
+         when Resource =>
+            case Via is
+               when Procedure_Form =>
+                  Gdk_New_From_Resource (P, Resource_Path, Error);
+               when Function_Form =>
+                  P := Gdk_Pixbuf_New_From_Resource (Resource_Path, Error);
+               when Initialize_Form =>
+                  Initialize_From_Resource (P, Resource_Path, Error);
+            end case;
+         when Resource_At_Scale =>
+            case Via is
+               when Procedure_Form =>
+                  Gdk_New_From_Resource_At_Scale
+                    (P, Resource_Path, 6, 4, True, Error);
+               when Function_Form =>
+                  P := Gdk_Pixbuf_New_From_Resource_At_Scale
+                    (Resource_Path, 6, 4, True, Error);
+               when Initialize_Form =>
+                  Initialize_From_Resource_At_Scale
+                    (P, Resource_Path, 6, 4, True, Error);
+            end case;
+         when Stream =>
+            case Via is
+               when Procedure_Form =>
+                  Gdk_New_From_Stream (P, In_Stream, null, Error);
+               when Function_Form =>
+                  P := Gdk_Pixbuf_New_From_Stream (In_Stream, null, Error);
+               when Initialize_Form =>
+                  Initialize_From_Stream (P, In_Stream, null, Error);
+            end case;
+         when Stream_At_Scale =>
+            case Via is
+               when Procedure_Form =>
+                  Gdk_New_From_Stream_At_Scale
+                    (P, In_Stream, 6, 4, True, null, Error);
+               when Function_Form =>
+                  P := Gdk_Pixbuf_New_From_Stream_At_Scale
+                    (In_Stream, 6, 4, True, null, Error);
+               when Initialize_Form =>
+                  Initialize_From_Stream_At_Scale
+                    (P, In_Stream, 6, 4, True, null, Error);
+            end case;
+      end case;
+
+      if In_Stream /= null then
+         In_Stream.Unref;
+      end if;
+      return P;
+   end Construct;
+
+   procedure Test_Constructors is
+      Error : GError;
+      P : Gdk_Pixbuf;
+   begin
+      for From in Source loop
+         for Via in Route loop
+            P := Construct (Via, From, True, Error);
+            Assert_True (Error = null);
+            Assert_True (P /= null and then P.Is_Created);
+            if From in File_At_Scale | File_At_Size | Resource_At_Scale
+              | Stream_At_Scale
+            then
+               Assert_True (P.Get_Width = 6 and P.Get_Height = 4);
+            else
+               Assert_True (P.Get_Width = 3 and P.Get_Height = 2);
+            end if;
+            Check_Pixel (P, 0, 0, 16#11#, 16#22#, 16#33#, 255);
+            Unref (P);
+         end loop;
+      end loop;
+   end Test_Constructors;
+
+   procedure Test_Constructors_Invalid is
+      Error : GError;
+      P : Gdk_Pixbuf;
+   begin
+      for From in Source loop
+         for Via in Route loop
+            P := Construct (Via, From, False, Error);
+            Assert_True (Error /= null);
+            Assert_True (Get_Message (Error)'Length > 0);
+            Error_Free (Error);
+            case Via is
+               when Procedure_Form | Function_Form =>
+                  --  The generated constructor frees its record
+                  Assert_True (P = null);
+               when Initialize_Form =>
+                  --  The caller's record is left allocated but not created
+                  Assert_True (P /= null);
+                  Assert_False (P.Is_Created);
+                  P.Deallocate;
+            end case;
+         end loop;
+      end loop;
+   end Test_Constructors_Invalid;
 
    procedure Check_Pixel
      (P : Gdk_Pixbuf; X, Y : Gint; R, G, B, A : Guint8)
@@ -300,6 +504,15 @@ procedure Pixbuf is
 begin
    Glib.Test.Init;
    Gtk.Main.Init;
+   declare
+      --  pixbuf.gresource is generated from pixbuf.gresource.xml with
+      --    glib-compile-resources pixbuf.gresource.xml --target=pixbuf.gresource
+      Error : GError;
+      Bundle : constant Gresource := Load ("pixbuf.gresource", Error);
+   begin
+      Assert_True (Error = null);
+      Register (Bundle);
+   end;
    Add_Func ("/pixbuf/pixels", Test_Pixels'Unrestricted_Access);
    Add_Func ("/pixbuf/transforms", Test_Transforms'Unrestricted_Access);
    Add_Func ("/pixbuf/data", Test_Data'Unrestricted_Access);
@@ -308,5 +521,9 @@ begin
    Add_Func ("/pixbuf/texture", Test_Texture'Unrestricted_Access);
    Add_Func ("/pixbuf/format-layout", Test_Format_Layout'Unrestricted_Access);
    Add_Func ("/pixbuf/initialize-existing", Test_Initialize_Existing'Unrestricted_Access);
+   Add_Func ("/pixbuf/constructors", Test_Constructors'Unrestricted_Access);
+   Add_Func
+     ("/pixbuf/constructors-invalid",
+      Test_Constructors_Invalid'Unrestricted_Access);
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Pixbuf;
