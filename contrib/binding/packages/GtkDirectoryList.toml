@@ -1,0 +1,3 @@
+[doc]
+group = "Lists"
+gtkada_demo = "create_data_lists.adb"

@@ -251,9 +251,11 @@ binding = (
     "--Gio.ProxyAddressEnumerator",  # Not tested yet, from Gio
     "--Gio.Resolver",  # Not tested yet, from Gio
     "Gio.Resource",
-    "--Gio.Settings",  # Not tested yet, from Gio
-    "--Gio.SettingsSchema",  # Not tested yet, from Gio
-    "--Gio.SettingsSchemaSource",  # Not tested yet, from Gio
+    "Gio.SettingsBackend",
+    "Gio.SettingsSchemaKey",
+    "Gio.SettingsSchema",
+    "Gio.SettingsSchemaSource",
+    "Gio.Settings",
     "Gio.SimpleAction",
     "Gio.SimpleActionGroup",
     "--Gio.SimpleAsyncResult",  # Not tested yet, from Gio

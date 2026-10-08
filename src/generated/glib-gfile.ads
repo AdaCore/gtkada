@@ -109,6 +109,8 @@
 --  ownership to the caller; release the file with
 --
 --  Glib.Object.Unref (Glib.Types.To_Object (File));
+--
+--  <gtkada_demo>create_data_lists.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;

@@ -43,6 +43,9 @@
 --  g_file_enumerator_get_child. This means you do not need access to the
 --  `GtkDirectoryList`, but can access the `GFile` directly from the
 --  `GFileInfo` when operating with a `GtkListView` or similar.
+--
+--  <group>Lists</group>
+--  <gtkada_demo>create_data_lists.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;            use Glib;

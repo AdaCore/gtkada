@@ -1,0 +1,73 @@
+ada = "Glib.Settings"
+
+[doc]
+group = "GIO"
+gtkada_demo = "create_settings.adb"
+
+[[enum]]
+ctype = "GSettingsBindFlags"
+prefix = "G_SETTINGS_BIND_"
+
+[[method]]
+id = "g_settings_bind_with_mapping"
+bind = false
+# Mapping callbacks need lifetime and GVariant ownership adapters.
+
+[[method]]
+id = "g_settings_bind_with_mapping_closures"
+bind = false
+# Mapping callbacks need lifetime and GVariant ownership adapters.
+
+[[method]]
+id = "g_settings_get_mapped"
+bind = false
+# Mapping callbacks need lifetime and GVariant ownership adapters.
+
+[[method]]
+id = "::change-event"
+bind = false
+# Batch quark-array marshalling needs a separate adapter; use changed.
+
+[[method]]
+id = "::writable-change-event"
+bind = false
+# Raw quark signal; use writable-changed.
+
+[[virtual_method]]
+id = "*"
+bind = false
+
+[[property]]
+id = "backend"
+bind = false
+
+[[method]]
+id = "g_settings_bind"
+
+[[method.parameter]]
+name = "object"
+ctype = "GObject*"
+
+[[method]]
+id = "g_settings_bind_writable"
+
+[[method.parameter]]
+name = "object"
+ctype = "GObject*"
+
+[[method]]
+id = "g_settings_unbind"
+
+[[method.parameter]]
+name = "object"
+ctype = "GObject*"
+
+[[extra.with_spec]]
+pkg = "Glib.Properties"
+use = false
+
+[[extra.spec]]
+text = '''
+   Backend_Property : constant Glib.Properties.Property_Object :=
+     Glib.Properties.Build ("backend");
+'''

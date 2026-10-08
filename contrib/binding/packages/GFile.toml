@@ -5,6 +5,7 @@
 ada = "Glib.GFile"
 
 [doc]
+gtkada_demo = "create_data_lists.adb"
 text = '''
 A Glib.GFile.Gfile is an interface value, not a tagged object, so it cannot
 be unreferenced directly. All the constructors below transfer ownership to
