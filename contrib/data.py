@@ -403,6 +403,7 @@ binding = (
     "Gtk.DirectoryList",
     "Gtk.DrawingArea",
     "Gtk.EditableLabel",
+    "Gtk.EmojiChooser",
     "Gtk.Entry",
     "----GtkEntryAccessible",  # We do not support atk
     "Gtk.EntryBuffer",
