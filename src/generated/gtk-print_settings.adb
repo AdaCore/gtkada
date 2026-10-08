@@ -100,6 +100,7 @@ package body Gtk.Print_Settings is
       Self := new Gtk_Print_Settings_Record;
       Gtk.Print_Settings.Initialize_From_File (Self, File_Name, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gtk_New_From_File;
@@ -131,6 +132,7 @@ package body Gtk.Print_Settings is
       Self := new Gtk_Print_Settings_Record;
       Gtk.Print_Settings.Initialize_From_Key_File (Self, Key_File, Group_Name, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gtk_New_From_Key_File;
@@ -158,6 +160,7 @@ package body Gtk.Print_Settings is
    begin
       Gtk.Print_Settings.Initialize_From_File (Self, File_Name, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;
@@ -189,6 +192,7 @@ package body Gtk.Print_Settings is
    begin
       Gtk.Print_Settings.Initialize_From_Key_File (Self, Key_File, Group_Name, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;

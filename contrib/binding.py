@@ -2290,8 +2290,11 @@ end if;"""
                 null_val = 'null'
                 if 'null_name' in self._subst:
                     null_val = self._subst['null_name']
-                null_asmt = f'{selfname} := {null_val};'
-                body += new_profile._wrap_stmt(null_asmt, success=False)
+                null_asmt = [
+                    f'{selfname}.Deallocate;',
+                    f'{selfname} := {null_val};']
+                
+                body += new_profile._wrap_stmt('\n'.join(null_asmt), success=False)
 
             if guard and body:
                 body = ["if %s then" % guard] + body + ["end if;"]

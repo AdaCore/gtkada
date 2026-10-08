@@ -253,6 +253,7 @@ package body Gdk.Pixbuf is
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_File (Self, Filename, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gdk_New_From_File;
@@ -273,6 +274,7 @@ package body Gdk.Pixbuf is
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_File_At_Scale (Self, Filename, Width, Height, Preserve_Aspect_Ratio, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gdk_New_From_File_At_Scale;
@@ -292,6 +294,7 @@ package body Gdk.Pixbuf is
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_File_At_Size (Self, Filename, Width, Height, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gdk_New_From_File_At_Size;
@@ -310,6 +313,7 @@ package body Gdk.Pixbuf is
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_Inline (Self, Data_Length, Data, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gdk_New_From_Inline;
@@ -327,6 +331,7 @@ package body Gdk.Pixbuf is
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_Resource (Self, Resource_Path, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gdk_New_From_Resource;
@@ -347,6 +352,7 @@ package body Gdk.Pixbuf is
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_Resource_At_Scale (Self, Resource_Path, Width, Height, Preserve_Aspect_Ratio, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gdk_New_From_Resource_At_Scale;
@@ -365,6 +371,7 @@ package body Gdk.Pixbuf is
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_Stream (Self, Stream, Cancellable, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gdk_New_From_Stream;
@@ -386,6 +393,7 @@ package body Gdk.Pixbuf is
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_Stream_At_Scale (Self, Stream, Width, Height, Preserve_Aspect_Ratio, Cancellable, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gdk_New_From_Stream_At_Scale;
@@ -403,6 +411,7 @@ package body Gdk.Pixbuf is
       Self := new Gdk_Pixbuf_Record;
       Gdk.Pixbuf.Initialize_From_Stream_Finish (Self, Async_Result, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gdk_New_From_Stream_Finish;
@@ -490,6 +499,7 @@ package body Gdk.Pixbuf is
    begin
       Gdk.Pixbuf.Initialize_From_File (Self, Filename, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;
@@ -510,6 +520,7 @@ package body Gdk.Pixbuf is
    begin
       Gdk.Pixbuf.Initialize_From_File_At_Scale (Self, Filename, Width, Height, Preserve_Aspect_Ratio, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;
@@ -529,6 +540,7 @@ package body Gdk.Pixbuf is
    begin
       Gdk.Pixbuf.Initialize_From_File_At_Size (Self, Filename, Width, Height, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;
@@ -547,6 +559,7 @@ package body Gdk.Pixbuf is
    begin
       Gdk.Pixbuf.Initialize_From_Inline (Self, Data_Length, Data, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;
@@ -564,6 +577,7 @@ package body Gdk.Pixbuf is
    begin
       Gdk.Pixbuf.Initialize_From_Resource (Self, Resource_Path, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;
@@ -584,6 +598,7 @@ package body Gdk.Pixbuf is
    begin
       Gdk.Pixbuf.Initialize_From_Resource_At_Scale (Self, Resource_Path, Width, Height, Preserve_Aspect_Ratio, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;
@@ -602,6 +617,7 @@ package body Gdk.Pixbuf is
    begin
       Gdk.Pixbuf.Initialize_From_Stream (Self, Stream, Cancellable, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;
@@ -623,6 +639,7 @@ package body Gdk.Pixbuf is
    begin
       Gdk.Pixbuf.Initialize_From_Stream_At_Scale (Self, Stream, Width, Height, Preserve_Aspect_Ratio, Cancellable, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;
@@ -640,6 +657,7 @@ package body Gdk.Pixbuf is
    begin
       Gdk.Pixbuf.Initialize_From_Stream_Finish (Self, Async_Result, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;

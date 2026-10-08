@@ -114,6 +114,7 @@ package body Gdk.Texture is
       Self := new Gdk_Texture_Record;
       Gdk.Texture.Initialize_From_Bytes (Self, Bytes, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gdk_New_From_Bytes;
@@ -131,6 +132,7 @@ package body Gdk.Texture is
       Self := new Gdk_Texture_Record;
       Gdk.Texture.Initialize_From_File (Self, File, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gdk_New_From_File;
@@ -148,6 +150,7 @@ package body Gdk.Texture is
       Self := new Gdk_Texture_Record;
       Gdk.Texture.Initialize_From_Filename (Self, Path, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
    end Gdk_New_From_Filename;
@@ -191,6 +194,7 @@ package body Gdk.Texture is
    begin
       Gdk.Texture.Initialize_From_Bytes (Self, Bytes, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;
@@ -208,6 +212,7 @@ package body Gdk.Texture is
    begin
       Gdk.Texture.Initialize_From_File (Self, File, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;
@@ -225,6 +230,7 @@ package body Gdk.Texture is
    begin
       Gdk.Texture.Initialize_From_Filename (Self, Path, Error);
       if Error /= null then
+         Self.Deallocate;
          Self := null;
       end if;
       return Self;
