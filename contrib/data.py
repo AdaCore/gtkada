@@ -327,7 +327,7 @@ binding = (
     "--GtkAccessible",  # Bound through manual_binding
     "Gtk.AccessibleHyperlink",
     "--GtkAccessibleText",  # Bound through manual_binding
-    "--Gtk.ActionBar",
+    "Gtk.ActionBar",
     "Gtk.Adjustment",
     "Gtk.AlertDialog",
     "--GtkAlignment",
