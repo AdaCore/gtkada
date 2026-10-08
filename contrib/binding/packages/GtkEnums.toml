@@ -172,6 +172,9 @@ ctype = "GtkConstraintAttribute"
 ctype = "GtkOrdering"
 prefix = "GTK_ORDERING_"
 
+[[enum]]
+ctype = "GtkConstraintStrength"
+
 [extra]
 body = '''
 
