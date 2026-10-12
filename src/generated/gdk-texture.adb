@@ -113,6 +113,10 @@ package body Gdk.Texture is
    begin
       Self := new Gdk_Texture_Record;
       Gdk.Texture.Initialize_From_Bytes (Self, Bytes, Error);
+      if Error /= null then
+         Self.Deallocate;
+         Self := null;
+      end if;
    end Gdk_New_From_Bytes;
 
    -----------------------
@@ -127,6 +131,10 @@ package body Gdk.Texture is
    begin
       Self := new Gdk_Texture_Record;
       Gdk.Texture.Initialize_From_File (Self, File, Error);
+      if Error /= null then
+         Self.Deallocate;
+         Self := null;
+      end if;
    end Gdk_New_From_File;
 
    ---------------------------
@@ -141,6 +149,10 @@ package body Gdk.Texture is
    begin
       Self := new Gdk_Texture_Record;
       Gdk.Texture.Initialize_From_Filename (Self, Path, Error);
+      if Error /= null then
+         Self.Deallocate;
+         Self := null;
+      end if;
    end Gdk_New_From_Filename;
 
    ---------------------------
@@ -178,9 +190,13 @@ package body Gdk.Texture is
       (Bytes : Glib.Bytes.Gbytes;
        Error : out Glib.Error.GError) return Gdk_Texture
    is
-      Self : constant Gdk_Texture := new Gdk_Texture_Record;
+      Self : Gdk_Texture := new Gdk_Texture_Record;
    begin
       Gdk.Texture.Initialize_From_Bytes (Self, Bytes, Error);
+      if Error /= null then
+         Self.Deallocate;
+         Self := null;
+      end if;
       return Self;
    end Gdk_Texture_New_From_Bytes;
 
@@ -192,9 +208,13 @@ package body Gdk.Texture is
       (File  : Glib.GFile.Gfile;
        Error : out Glib.Error.GError) return Gdk_Texture
    is
-      Self : constant Gdk_Texture := new Gdk_Texture_Record;
+      Self : Gdk_Texture := new Gdk_Texture_Record;
    begin
       Gdk.Texture.Initialize_From_File (Self, File, Error);
+      if Error /= null then
+         Self.Deallocate;
+         Self := null;
+      end if;
       return Self;
    end Gdk_Texture_New_From_File;
 
@@ -206,9 +226,13 @@ package body Gdk.Texture is
       (Path  : UTF8_String;
        Error : out Glib.Error.GError) return Gdk_Texture
    is
-      Self : constant Gdk_Texture := new Gdk_Texture_Record;
+      Self : Gdk_Texture := new Gdk_Texture_Record;
    begin
       Gdk.Texture.Initialize_From_Filename (Self, Path, Error);
+      if Error /= null then
+         Self.Deallocate;
+         Self := null;
+      end if;
       return Self;
    end Gdk_Texture_New_From_Filename;
 

@@ -59,6 +59,10 @@ package body Gtk.Page_Setup is
    begin
       Self := new Gtk_Page_Setup_Record;
       Gtk.Page_Setup.Initialize_From_File (Self, File_Name, Error);
+      if Error /= null then
+         Self.Deallocate;
+         Self := null;
+      end if;
    end Gtk_New_From_File;
 
    ---------------------------
@@ -87,6 +91,10 @@ package body Gtk.Page_Setup is
    begin
       Self := new Gtk_Page_Setup_Record;
       Gtk.Page_Setup.Initialize_From_Key_File (Self, Key_File, Group_Name, Error);
+      if Error /= null then
+         Self.Deallocate;
+         Self := null;
+      end if;
    end Gtk_New_From_Key_File;
 
    ------------------------
@@ -108,9 +116,13 @@ package body Gtk.Page_Setup is
       (File_Name : UTF8_String;
        Error     : out Glib.Error.GError) return Gtk_Page_Setup
    is
-      Self : constant Gtk_Page_Setup := new Gtk_Page_Setup_Record;
+      Self : Gtk_Page_Setup := new Gtk_Page_Setup_Record;
    begin
       Gtk.Page_Setup.Initialize_From_File (Self, File_Name, Error);
+      if Error /= null then
+         Self.Deallocate;
+         Self := null;
+      end if;
       return Self;
    end Gtk_Page_Setup_New_From_File;
 
@@ -136,9 +148,13 @@ package body Gtk.Page_Setup is
        Group_Name : UTF8_String := "";
        Error      : out Glib.Error.GError) return Gtk_Page_Setup
    is
-      Self : constant Gtk_Page_Setup := new Gtk_Page_Setup_Record;
+      Self : Gtk_Page_Setup := new Gtk_Page_Setup_Record;
    begin
       Gtk.Page_Setup.Initialize_From_Key_File (Self, Key_File, Group_Name, Error);
+      if Error /= null then
+         Self.Deallocate;
+         Self := null;
+      end if;
       return Self;
    end Gtk_Page_Setup_New_From_Key_File;
 

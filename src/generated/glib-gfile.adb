@@ -1100,7 +1100,6 @@ package body Glib.GFile is
           Acc_Error   : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_load_bytes");
       Acc_Error    : aliased Glib.Error.GError;
-      Return_Obj   : Glib.Bytes.Gbytes := Null_Gbytes;
       Tmp_Etag_Out : aliased Gtkada.Types.Chars_Ptr;
       Acc_Etag_Out : constant access Gtkada.Types.Chars_Ptr := (if Etag_Out /= null then Tmp_Etag_Out'Access else null);
       Tmp_Return   : System.Address;
@@ -1110,10 +1109,10 @@ package body Glib.GFile is
          Etag_Out.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Etag_Out);
       end if;
       Error := Acc_Error;
-      if Error = null then
-         Return_Obj := From_Object (Tmp_Return);
-      end if;
-      return Return_Obj;
+      return
+        (if Error = null
+         then From_Object (Tmp_Return)
+         else Null_Gbytes);
    end Load_Bytes;
 
    ----------------------
@@ -1150,7 +1149,6 @@ package body Glib.GFile is
           Acc_Error : access Glib.Error.GError) return System.Address;
       pragma Import (C, Internal, "g_file_load_bytes_finish");
       Acc_Error    : aliased Glib.Error.GError;
-      Return_Obj   : Glib.Bytes.Gbytes := Null_Gbytes;
       Tmp_Etag_Out : aliased Gtkada.Types.Chars_Ptr;
       Acc_Etag_Out : constant access Gtkada.Types.Chars_Ptr := (if Etag_Out /= null then Tmp_Etag_Out'Access else null);
       Tmp_Return   : System.Address;
@@ -1160,10 +1158,10 @@ package body Glib.GFile is
          Etag_Out.all := Gtkada.Bindings.Value_Allowing_Null (Tmp_Etag_Out);
       end if;
       Error := Acc_Error;
-      if Error = null then
-         Return_Obj := From_Object (Tmp_Return);
-      end if;
-      return Return_Obj;
+      return
+        (if Error = null
+         then From_Object (Tmp_Return)
+         else Null_Gbytes);
    end Load_Bytes_Finish;
 
    --------------------

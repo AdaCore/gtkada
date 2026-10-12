@@ -875,7 +875,7 @@ class SubprogramProfile(object):
                 if gtktype is not None:
                     # take in account type set in *.toml file
                     if isinstance (gtktype, CType):
-                       gtktype = gtktype.as_ada_param(pkg)
+                        gtktype = gtktype.as_ada_param(pkg)
                     t = naming.type(
                         name=name,
                         cname=gtktype,
@@ -980,6 +980,147 @@ class SubprogramProfile(object):
         """Remove the default values for the parameters"""
         for p in self.params:
             p.default = None
+
+    def _wrap_stmt(
+        self,
+        stmt: str,
+        success: bool=True
+    ) -> list[str]:
+
+        wrapped_return = []
+        if self.throws:
+            op = '=' if success else '/='
+            wrapped_return = [
+                f"if Error {op} null then ",
+                stmt,
+                "end if;"
+            ]
+        else:
+            wrapped_return = [stmt]
+        return wrapped_return
+
+
+    def _wrap_var_return(
+        self,
+        call_obj: CodeCall,
+        return_type: CType,
+        returnvar: str
+    ) -> list[str]:
+        wrapped_return = []
+        if (
+            not self.throws
+            or return_type.ada == "Boolean"
+        ):
+            wrapped_return.append(f"return {returnvar};")
+            return wrapped_return
+
+        if isinstance(return_type, (UTF8, UTF8_List)):
+            null_val = return_type.null_value
+
+            # If we need to a free a temporary variable,
+            # returnvar will already have the free call embedded
+            # but we need to add it explicitly for null_val
+
+            if return_type.transfer_ownership and call_obj.tmpvars:
+                cleanup_func = 'g_strfreev (%s);'
+                if isinstance(return_type, UTF8):
+                    cleanup_func = return_type.cleanup
+
+                # Work one step backwards:
+                # Subprogram.call will append a temporary variable
+                # when return_type requires freeing
+                # => get last variable
+                tmp_return = call_obj.tmpvars[-1].name
+                cleanup = cleanup_func % tmp_return
+                wrapped_return += [
+                        "if Error = null then",
+                        f"return {returnvar};",
+                        "else",
+                        cleanup,
+                        f"return {null_val};",
+                        "end if;"
+                    ]
+            else:
+                wrapped_return += [
+                    'return',
+                    '(if Error = null then',
+                    returnvar,
+                    'else',
+                    null_val,
+                    ');'
+                ]
+        elif return_type.null_name():
+            # This relies on the interface generate method emitting this:
+            # Null_{typename} : constant {typename} := {typename} (Null_Interface);
+            wrapped_return += [
+                'return',
+                '(if Error = null then',
+                returnvar,
+                'else',
+                return_type.null_name(),
+                ');'
+            ]
+        elif isinstance (return_type, (GObject, Proxy, Enum)):
+            wrapped_return.append(f"return {returnvar};")
+
+        else:
+            # Emit incorrect code FOR NOW
+            return_stmt = f"return {returnvar}; -- FIXME ({return_type.ada} : {return_type.__class__})"
+            wrapped_return.append (return_stmt)
+        return wrapped_return
+
+    def _build_return_stmt(
+        self,
+        cname: str,
+        subp_call: CodeCall,
+    ) -> list[str]:
+        """
+        Check for function or procedure return values.
+        Add any memory free calls required,
+        and wrap in error checks if necessary.
+        """
+
+        # Wire up call components
+        ret_stmt = subp_call.precall
+        if subp_call.call:
+            ret_stmt.append (subp_call.call + ';')
+        ret_stmt += subp_call.postcall
+        ret_stmt += subp_call.freecall
+
+        retvar = subp_call.returnvar
+        ret_as_param = self.gtkmethod.return_as_param() if self.gtkmethod else None
+
+        # procedure: write return value to a location
+        if ret_as_param is not None:
+            assert (
+                subp_call.returnvar is not None
+            ), "Must have a return value in %s => %s" % (cname, subp_call)
+            assign_stmt = f"{ret_as_param} := {subp_call.returnvar};"
+            ret_stmt += self._wrap_stmt(assign_stmt)
+
+        # function: wrap a return statement
+        elif retvar and self.returns:
+
+            if (self.throws
+                and isinstance(self.returns, (GObject, Proxy))
+                and not self.returns.null_name()):
+                var_return = "Return_Obj"
+                assign_stmt = f"{var_return} := {retvar};"
+
+                subp_call.tmpvars.insert(0,
+                    Local_Var(
+                        name=var_return,
+                        type=self.returns.ada,
+                    )
+                )
+                ret_stmt += self._wrap_stmt (assign_stmt)
+                ret_stmt.append (f'return {var_return};')
+            else:
+                ret_stmt += self._wrap_var_return(
+                    subp_call,
+                    self.returns,
+                    retvar)
+        return ret_stmt
 
     def subprogram(
         self,
@@ -1534,7 +1675,7 @@ class GIRClass(object):
         node: GIRNode,
         cname: str,
         gtkmethod: GtkAdaMethod,
-        profile: Optional[SubprogramProfile] = None,
+        profile: SubprogramProfile,
         showdoc: bool = True,
         adaname: Optional[str] = None,
         ismethod: bool = False,
@@ -1548,7 +1689,7 @@ class GIRClass(object):
         attribute of `node'.
         `profile' is an instance of SubprogramProfile
         """
-        assert profile is None or isinstance(profile, SubprogramProfile)
+        assert isinstance(profile, SubprogramProfile)
 
         if profile.has_varargs() and gtkmethod.get_param("varargs").node is None:
             naming.add_cmethod(cname, cname)  # Avoid warning later on.
@@ -1635,100 +1776,9 @@ class GIRClass(object):
                 values=internal_values,
             )
 
-            subp_code = execute.precall
-            if execute.call:
-                subp_code.append (execute.call + ';')
-            subp_code += execute.postcall + execute.freecall
-
-            # procedure: write return value to a location
-            if ret_as_param is not None:
-                assert (
-                    execute.returnvar is not None
-                ), "Must have a return value in %s => %s" % (cname, execute)
-                assign_return = f"{ret_as_param} := {execute.returnvar};"
-                if profile.throws:
-                    subp_code += [
-                        "if Error = null then",
-                        assign_return,
-                        "end if;"
-                    ]
-                else:
-                    subp_code.append (assign_return)
-            # function: add a return statement
-            elif execute.returnvar:
-
-                # Abort early if an error is reported
-                # without writing to the return value
-                # EXCEPT if return type is bool
-                # => then this is directly tied to success or failure
-
-                if profile.throws and profile.returns.ada != 'Boolean':
-                    if isinstance(profile.returns, (GObject, Proxy)):
-                        var_return = "Return_Obj"
-                        assign_return = f"{var_return} := {execute.returnvar};"
-
-                        local_vars.append(Local_Var(name=var_return,
-                                                    type=profile.returns.ada,
-                                                    default=profile.returns.null_name()))
-
-                        subp_code += ["if Error = null then",
-                                    assign_return,
-                                    "end if;",
-                                    f"return {var_return};"]
-                    elif isinstance(profile.returns, (UTF8, UTF8_List)):
-                        null_val = profile.returns.null_value
-
-                        # If we need to a free a temporary variable,
-                        # execute.returnvar will already have the free call embedded
-                        # but we need to add it explicitly for null_val
-
-                        if profile.returns.transfer_ownership and execute.tmpvars:
-                            cleanup_func = profile.returns.cleanup if isinstance(profile.returns, UTF8) else 'g_strfreev (%s);'
-
-                            # Work one step backwards:
-                            # Subprogram.call will append a temporary variable
-                            # when profile.returns requires freeing => this is the one
-                            # TODO do something better in future.
-                            # This might get complicated if a subprogram takes multiple string inputs
-                            tmp_return = execute.tmpvars[-1].name
-                            cleanup = cleanup_func % tmp_return
-                            subp_code += [
-                                    "if Error = null then",
-                                    f"return {execute.returnvar};",
-                                    "else",
-                                    cleanup,
-                                    f"return {null_val};",
-                                    "end if;"
-                                ]
-                        else:
-                            subp_code += [
-                                'return',
-                                '(if Error = null then',
-                                execute.returnvar,
-                                'else',
-                                null_val,
-                                ');'
-                            ]
-                    elif isinstance(profile.returns, Interface):
-                        # This relies on the interface generate method emitting this:
-                        # Null_{typename} : constant {typename} := {typename} (Null_Interface);
-                        subp_code += [
-                            'return',
-                            '(if Error = null then',
-                            execute.returnvar,
-                            'else',
-                            profile.returns.null_name(),
-                            ');'
-                        ]
-                    else:
-                        # Emit incorrect code FOR NOW
-                        return_stmt = f"return {execute.returnvar}; -- FIXME"
-                        subp_code.append (return_stmt)
-
-                else:
-                    return_stmt = f"return {execute.returnvar};"
-                    subp_code.append (return_stmt)
+            ret_stmt = profile._build_return_stmt(cname, execute)
             local_vars += execute.tmpvars
+            subp_code = ret_stmt
 
         subp = profile.subprogram(
             name=adaname, showdoc=showdoc, local_vars=local_vars, code=subp_code
@@ -2174,7 +2224,7 @@ end if;"""
         c: GIRNode,
         cname: str,
         gtkmethod: GtkAdaMethod,
-        profile: Optional[SubprogramProfile] = None,
+        profile: SubprogramProfile,
     ):
         """Emit the Ada constructors for a single GIR ``<constructor>``
         node. For ``GObject``-derived types we emit a ``Gtk_New``
@@ -2184,53 +2234,95 @@ end if;"""
         ``<Type>_<Suffix>``).
         """
 
-        def constructor_code(
-            call: CodeCall, selfname: str = "Self", guard: str = "", function: bool = False,
-            throws: bool = False
-        ) -> list[str]:
-            """Build the ``code`` list for a Gtk_New/Initialize-style
-            constructor from a CodeCall, unifying the
-            is_gobject/is_boxed/proxy shapes that would otherwise each
-            hand-build their own code string.
+        def to_constructor(
+            name: str,
+            profile: SubprogramProfile,
+            internal: CodeCall,
+            extra_params: list[Parameter] = [],
+            extra_locals: list[Local_Var] = [],
+            returns: Optional[CType] = None,
+            selfname: str = "Self",
+            guard: str = "",
+            extra_doc: str = "",
+        ) -> Subprogram:
             """
-            constructor = ""
-            if call.returnvar:
+            Build constructor with necessary checks and overrides
+            """
+
+            # Override return type so _wrap_var_return picks it up
+            new_profile = copy.deepcopy(profile)
+            new_profile.params = extra_params + (new_profile.params or [])
+            if extra_doc != "":
+                new_profile.doc += ["\n" + extra_doc]
+            new_profile.returns = returns
+            if isinstance(returns, AdaType):
+                # Override Python class so that _build_return_stmt can parse
                 if self.is_gobject:
-                    constructor = "Set_Object (%s, %s);" % (selfname, call.returnvar)
+                    new_profile.returns = GObject(returns.ada)
+                elif self.is_proxy or self.is_boxed:
+                    new_profile.returns = Proxy(returns.ada)
+                elif self.is_interface:
+                    new_profile.returns = Interface(returns.ada)
+
+            # Define object init
+            constructor = ""
+            if internal.returnvar:
+                if self.is_gobject:
+                    constructor = "Set_Object (%s, %s);" % (
+                        selfname,
+                        internal.returnvar,
+                    )
                 elif self.is_boxed:
-                    constructor = "%s.Set_Object (%s);" % (selfname, call.returnvar)
+                    constructor = "%s.Set_Object (%s);" % (selfname, internal.returnvar)
                 else:
-                    constructor = "%s := %s;" % (selfname, call.returnvar)
+                    constructor = "%s := %s;" % (selfname, internal.returnvar)
 
+            # Wire up calls
+            body = internal.precall
+            if internal.call is not None:
+                body.append(internal.call.rstrip(";") + ";")
+            body += internal.postcall
 
-            # Wrap Internal call in checks
-            if constructor and throws:
-                constructor = " ".join(['if Error = null then',constructor,'end if;'])
-
-            body = list(call.precall)
-            if call.call is not None:
-                body.append(call.call + ";")
-            body += call.postcall
+            # Do we set Self through assignment or return?
             if constructor:
-                body.append(constructor)
+                body += new_profile._wrap_stmt(constructor)
+            elif new_profile.throws:
+                null_val = 'null'
+                if 'null_name' in self._subst:
+                    null_val = self._subst['null_name']
+                null_asmt = [
+                    f'{selfname}.Deallocate;',
+                    f'{selfname} := {null_val};']
+                
+                body += new_profile._wrap_stmt('\n'.join(null_asmt), success=False)
 
-            freecall = list(call.freecall)
-
-            if guard:
+            if guard and body:
                 body = ["if %s then" % guard] + body + ["end if;"]
-                if throws:
-                    # Initialize is a no-op for an existing object, but its
-                    # out error parameter must still have a defined value.
-                    body.insert(0, "Error := null;")
 
-            body += freecall
+            body += internal.freecall
 
-            if function:
-                body.append("return %s;" % selfname)
+            if new_profile.returns:
+                body += new_profile._wrap_var_return(
+                    internal, new_profile.returns, selfname
+                )
 
-            return body
+            # Initialize is a no-op for an existing object, but its
+            # out error parameter must still have a defined value
+            # UNLESS it will be propagated to another function that sets it
+            if new_profile.throws and 'Acc_Error' in ''.join(body):
+                body.insert(0, "Error := null;")
 
-        assert profile is None or isinstance(profile, SubprogramProfile)
+            subp = Subprogram(
+                name=name,
+                code=body,
+                plist=new_profile.params,
+                local_vars=extra_locals + internal.tmpvars,
+                returns=returns,
+                doc=new_profile.doc,
+            )
+            return subp
+
+        assert isinstance(profile, SubprogramProfile)
 
         section = self.pkg.section("Constructors")
         name = c.get("name").title()
@@ -2246,11 +2338,12 @@ end if;"""
             self._subst["params"] = ""
             self._subst["internal_params"] = ""
 
+        selftypename = "%(typename)s" % self._subst
         if self.is_gobject or self.is_boxed:
             profile.returns = AdaType("System.Address", pkg=self.pkg, in_spec=False)
         else:
             profile.returns = AdaType(
-                "%(typename)s" % self._subst, pkg=self.pkg, in_spec=False
+                selftypename, pkg=self.pkg, in_spec=False
             )
 
         local_vars = []
@@ -2283,161 +2376,164 @@ end if;"""
         if self.is_gobject:
             selftype = "%(typename)s_Record'Class" % self._subst
         else:
-            selftype = "%(typename)s" % self._subst
+            selftype = selftypename
 
         if self.is_gobject:
+            # Three constructors:
+            #   procedure Initialize...
+            #   procedure G/Gtk/Gdk_New
+            #   function [typename]_New
             filtered_params = [p for p in profile.params if p.ada_binding]
+            profile.params = filtered_params
 
+            # Initialize wraps around the underlying C constructor
             initialize_name = adaname.replace(
                 gtk_new_prefix, "%s.Initialize" % self.pkg.name
             )
-
             initialize_params = [
                 Parameter(
                     name=selfname,
                     type=AdaType(selftype, pkg=self.pkg, in_spec=True),
                     mode="not null access",
                 )
-            ] + filtered_params
-
-            init_doc = profile.doc + [
-                    (
-                        "\n%s does nothing if the object was already"
-                        + " created with another call to Initialize* or G_New."
-                    )
-                    % (base_name(initialize_name),)
-                ]
-            initialize = Subprogram(
+            ]
+            init_doc: str = (
+                base_name(initialize_name)
+                + " does nothing if the object was already"
+                + " created with another call to Initialize* or G_New."
+            )
+            initialize = to_constructor(
                 name=initialize_name,
-                plist=initialize_params,
-                local_vars=local_vars + call.tmpvars,
-                doc=init_doc,
-                code=constructor_code(
-                    call, selfname=selfname, guard="not %s.Is_Created" % selfname,
-                    throws=profile.throws
-                ),
+                selfname=selfname,
+                profile=profile,
+                internal=call,
+                extra_params=initialize_params,
+                extra_locals=local_vars,
+                guard="not %s.Is_Created" % selfname,
+                extra_doc=init_doc
             ).add_nested(internal)
 
+            # procedure gtk_new (Self : out ...)
+            # wraps call to Initialize and assigns Self
             call = initialize.call(in_pkg=self.pkg)
             assert call.returnvar is None, "This is a procedure"
-
             naming.add_cmethod(cname, "%s.%s" % (self.pkg.name, adaname))
             allocation = selfname + " := new %(typename)s_Record;" % self._subst
-            gtk_new = Subprogram(
+            new_call = call._replace(precall=call.precall + [allocation])
+            gtk_new = to_constructor(
                 name=adaname,
-                plist=[
+                selfname=selfname,
+                profile=profile,
+                internal=new_call,
+                extra_params=[
                     Parameter(
                         name=selfname,
-                        type=AdaType(
-                            "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
-                        ),
+                        type=GObject(selftypename),
                         mode="out",
                     )
-                ]
-                + filtered_params,
-                local_vars=call.tmpvars,
-                code=[allocation, call.code()],
-                doc=profile.doc,
+                ],
             )
-
             section.add(gtk_new)
             section.add(initialize)
 
-            # Gtk_New as a function
-            gtk_new = Subprogram(
-                name="%s_%s" % (self._subst["typename"], name),
-                returns=AdaType(
-                    "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
-                ),
-                plist=filtered_params,
-                local_vars=call.tmpvars
-                + [
+            # function gtk_new wraps Initialize and returns Self
+            gtk_new = to_constructor(
+                name="%s_%s" % (selftypename, name),
+                selfname=selfname,
+                profile=profile,
+                internal=call,
+                returns=AdaType(selftypename, in_spec=True, pkg=self.pkg),
+                extra_locals=[
                     Local_Var(
                         selfname,
-                        "constant %(typename)s" % self._subst,
+                        selftypename,
                         "new %(typename)s_Record" % self._subst,
+                        constant=not profile.throws
                     )
                 ],
-                code=constructor_code(call, selfname=selfname, function=True,
-                    throws=profile.throws),
-                doc=profile.doc,
             )
             section.add(gtk_new)
 
         elif self.is_boxed:
-            gtk_new = Subprogram(
+            # Two constructors:
+            #   procedure G/Gtk/Gdk_New
+            #   function [typename]_New
+
+            gtk_new = to_constructor(
                 name=adaname,
-                plist=[
+                selfname=selfname,
+                profile=profile,
+                internal=call,
+                extra_params=[
                     Parameter(
                         name=selfname,
                         type=AdaType(
-                            "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
+                            selftypename, pkg=self.pkg, in_spec=True
                         ),
                         mode="out",
                     )
-                ]
-                + profile.params,
-                local_vars=local_vars + call.tmpvars,
-                code=constructor_code(call, selfname=selfname,
-                    throws=profile.throws),
-                doc=profile.doc,
+                ],
+                extra_locals=local_vars,
             )
-
             gtk_new.add_nested(internal)
             section.add(gtk_new)
 
             # Now as a function
-            gtk_new = Subprogram(
-                name="%s_%s" % (self._subst["typename"], name),
-                returns=AdaType(
-                    "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
-                ),
-                plist=profile.params,
-                local_vars=local_vars
-                + call.tmpvars
-                + [Local_Var(selfname, "%(typename)s" % self._subst)],
-                code=constructor_code(call, selfname=selfname, function=True,
-                    throws=profile.throws),
-                doc=profile.doc,
+            local_vars.append (Local_Var(selfname, selftypename))
+            boxed_call = internal.call(in_pkg=self.pkg, extra_postcall="".join(code))
+
+            func_gtk_new = to_constructor(
+                name="%s_%s" % (selftypename, name),
+                selfname=selfname,
+                profile=profile,
+                internal=boxed_call,
+                returns=AdaType(selftypename, pkg=self.pkg, in_spec=True),
+                extra_locals=local_vars,
             )
-            gtk_new.add_nested(internal)
-            section.add(gtk_new)
+            func_gtk_new.add_nested(internal)
+            section.add(func_gtk_new)
 
         else:
+
+            proxy_call = internal.call(
+                in_pkg=self.pkg,
+                extra_postcall="".join(code))
+
             # likely a Proxy
-            gtk_new = Subprogram(
+            gtk_new = to_constructor(
                 name=adaname,
-                plist=[
+                selfname=selfname,
+                profile=profile,
+                internal=proxy_call,
+                extra_params=[
                     Parameter(
                         name=selfname,
                         type=AdaType(
-                            "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
+                            selftypename, pkg=self.pkg, in_spec=True
                         ),
                         mode="out",
                     )
-                ]
-                + profile.params,
-                local_vars=local_vars + call.tmpvars,
-                code=constructor_code(call, selfname=selfname,
-                    throws=profile.throws),
-                doc=profile.doc,
+                ],
+                extra_locals=local_vars,
             )
             gtk_new.add_nested(internal)
             section.add(gtk_new)
 
+            proxy_call = internal.call(
+                in_pkg=self.pkg,
+                extra_postcall="".join(code))
+
             # Now as a function
-            gtk_new = Subprogram(
-                name="%s_%s" % (self._subst["typename"], name),
+            gtk_new = to_constructor(
+                name="%s_%s" % (selftypename, name),
+                selfname=selfname,
                 returns=AdaType(
-                    "%(typename)s" % self._subst, pkg=self.pkg, in_spec=True
-                ),
-                plist=profile.params,
-                local_vars=local_vars
-                + call.tmpvars
-                + [Local_Var(selfname, "%(typename)s" % self._subst)],
-                code=constructor_code(call, selfname=selfname, function=True,
-                    throws=profile.throws),
-                doc=profile.doc,
+                    selftypename,
+                    pkg=self.pkg,
+                    in_spec=True),
+                profile=profile,
+                internal=proxy_call,
+                extra_locals=local_vars + [Local_Var(selfname, selftypename)],
             )
             gtk_new.add_nested(internal)
             section.add(gtk_new)
@@ -2736,7 +2832,7 @@ void %(cname)s (%(self)s* self, %(ctype)s val) {
             adaprops = []
             for p in props:
                 if not self.gtkpkg.get_property(cname=p.get("name")).bind():
-                   continue
+                    continue
 
                 flags = []
                 if p.get("readable", "1") != "0":

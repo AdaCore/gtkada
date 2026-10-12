@@ -442,9 +442,9 @@ package body Gtk.Tree_Model is
       function Internal
          (Path : Gtkada.Types.Chars_Ptr) return System.Address;
       pragma Import (C, Internal, "gtk_tree_path_new_from_string");
+      Self       : Gtk_Tree_Path;
       Tmp_Path   : Gtkada.Types.Chars_Ptr := New_String (Path);
       Tmp_Return : System.Address;
-      Self       : Gtk_Tree_Path;
    begin
       Tmp_Return := Internal (Tmp_Path);
       Self.Set_Object (Tmp_Return);

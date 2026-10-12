@@ -58,9 +58,9 @@ package body Gdk.Content_Formats is
          (Mime_Types   : Gtkada.Types.chars_ptr_array;
           N_Mime_Types : Guint) return System.Address;
       pragma Import (C, Internal, "gdk_content_formats_new");
+      Self           : Gdk_Content_Formats;
       Tmp_Mime_Types : Gtkada.Types.chars_ptr_array := From_String_List (Mime_Types);
       Tmp_Return     : System.Address;
-      Self           : Gdk_Content_Formats;
    begin
       Tmp_Return := Internal (Tmp_Mime_Types, N_Mime_Types);
       Self.Set_Object (Tmp_Return);
