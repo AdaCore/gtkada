@@ -1,0 +1,29 @@
+# ============================================================
+#   PangoColor
+# ============================================================
+
+[[record]]
+ctype="PangoColor"
+
+[[method]]
+id = "pango_color_copy"
+bind = false
+
+[[method]]
+id = "pango_color_free"
+bind = false
+
+[[method]]
+id = "pango_color_parse"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
+[[method]]
+id = "pango_color_parse_with_alpha"
+
+[[method.parameter]]
+name = "self"
+direction = "access"
+
