@@ -2,10 +2,10 @@
 Introduction: What is GtkAda ?
 ******************************
 
-GtkAda is a high-level portable graphical toolkit, based on the gtk+ toolkit,
+GtkAda is a high-level portable graphical toolkit, based on the GTK toolkit,
 one of the official GNU toolkits. It makes it easy to create portable user
-interfaces for multiple platforms, including most platforms that have a X11
-server and Win32 platforms.
+interfaces for multiple platforms, including Linux (on both Wayland and X11)
+and Windows.
 
 Although it is based on a C library, GtkAda uses some advanced Ada features
 such as tagged types, generic packages, access to subprograms, and exceptions
@@ -29,28 +29,25 @@ document OpenGL at all, see any book on OpenGL, or the specification that came
 with your OpenGL library, for more information.
 
 The following Internet sites will always contain the latest public packages for
-`GtkAda`, `gtk+` and `Cairo`
+`GtkAda`, `GTK` and `Cairo`
 
 * `https://github.com/AdaCore/gtkada <https://github.com/AdaCore/gtkada>`_
 
-* `http://www.gtk.org/ <http://www.gtk.org/>`_
+* `https://www.gtk.org/ <https://www.gtk.org/>`_
 
-* `http://www.cairographics.org/ <http://www.cairographics.org/>`_
+* `https://www.cairographics.org/ <https://www.cairographics.org/>`_
 
 This toolkit was tested on the following systems:
 
-* GNU Linux/x86
 * GNU Linux/x86-64
-* Mac OS/x86-64
-* Windows 2008r2,7,10/x86
-* Windows 2008r2,7,10/x86-64
+* GNU Linux/AArch64
+* Windows/x86-64
 
-with the latest version of the `GNAT` compiler, developed and supported by
-Ada Core Technologies (see `http://www.adacore.com <http://www.adacore.com>`_).
+with recent versions of the `GNAT` compiler.
 
-This version of GtkAda is known to be compatible with `gtk+` **3.24.x**
-This release may or may not be compatible with older versions of
-gtk+.
+This version of GtkAda is known to be compatible with `GTK` **4.22.x**.
+This release may not be compatible with older versions of
+GTK 4.
 
 This document does not describe all the widgets available in GtkAda, nor does
 it try to explain all the subprograms. The GtkAda Reference Manual provides
@@ -58,9 +55,9 @@ this documentation instead, as well as the GtkAda sources spec files
 themselves, whose extension is :file:`.ads`.
 
 No complete example is provided in this documentation. Instead, please refer to
-the examples that you can find in the :file:`gtkada_demo/` and :file:`examples/`
-directory in the GtkAda distribution, since these are more up-to-date (and more
-extensive).  They are heavily commented, and are likely to contain a lot of
+the examples that you can find in the :file:`share/examples/gtkada/gtkada_demo/`
+directory in the GtkAda distribution, since these are more up-to-date (and more extensive).
+They are heavily commented, and are likely to contain a lot of
 information that you might find interesting.
 
 If you are interested in getting support for GtkAda--including priority bug

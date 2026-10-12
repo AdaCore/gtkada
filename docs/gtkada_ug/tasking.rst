@@ -4,9 +4,9 @@
 Tasking with GtkAda
 *******************
 
-Note that Gtk+ under Windows does not interact properly with threads,
+Note that GTK under Windows does not interact properly with threads,
 so the only safe approach under this operating system is to perform all your
-Gtk+ calls in the same task.
+GTK calls in the same task.
 
 On other platforms, the Glib library can be used in a task-safe mode by calling
 `Gdk.Threads.G_Init` and `Gdk.Threads.Init` before making any other Glib/Gdk
