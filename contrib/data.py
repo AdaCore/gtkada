@@ -439,14 +439,13 @@ binding = (
     "Gtk.Gesture",
     "Gtk.GestureClick",
     "Gtk.GestureDrag",
-    "--Gtk.GestureLongPress",
+    "Gtk.GestureLongPress",
     "--Gtk.GesturePan",
     "--Gtk.GestureRotate",
     "Gtk.GestureSingle",
     "Gtk.DragSource",
     "--Gtk.GestureSwipe",
     "--Gtk.GestureZoom",
-    "--GtkGradient",
     "--Gtk.GLArea",
     "Gtk.Grid",
     "Gtk.GridView",
@@ -491,51 +490,38 @@ binding = (
            "Gtk.OverlayLayoutChild",
 
     "Gtk.LevelBar",
-    "----GtkLevelBarAccessible",  # We do not support atk
     "Gtk.LinkButton",
-    "----GtkLinkButtonAccessible",  # We do not support atk
     "Gtk.ListBase",
     "Gtk.ListBox",
-    "----GtkListBoxAccessible",  # We do not support atk
     "Gtk.ListBoxRow",
-    "----GtkListBoxRowAccessible",  # We do not support atk
     "Gtk.ListItem",
     "Gtk.ListItemFactory",
     "Gtk.SignalListItemFactory",
     "Gtk.ListStore",
     "----GtkLockButton",  # requires GPermission
-    "----GtkLockButtonAccessible",  # We do not support atk
     "--GtkMain",  # Bound through manual_binding
     "--GtkMisc",
     "--GtkMenu",
-    "----GtkMenuAccessible",  # We do not support atk
     "--GtkMenuBar",
     "Gtk.MenuButton",
-    "----GtkMenuButtonAccessible",  # We do not support atk
     "--GtkMenuItem",
-    "----GtkMenuItemAccessible",  # We do not support atk
     "--GtkMenuShell",
-    "----GtkMenuShellAccessible",  # We do not support atk
     "--GtkMenuToolButton",
     "Gtk.MessageDialog",
     "----GtkMountOperation",  # Requires a lot of GIO
     "Gtk.NativeDialog",
     "Gtk.Notebook",
     "Gtk.NotebookPage",
-    "----GtkNotebookAccessible",  # We do not support atk
-    "----GtkNotebookPageAccessible",  # We do not support atk
     "----GtkNumerableIcon",  # Requires a lot of GIO
     "--GtkOffscreenWindow",
     "Gtk.Overlay",
     "Gtk.Paned",
     "Gtk.Picture",
-    "----GtkPanedAccessible",  # We do not support atk
     "Gtk.PageSetup",
     "Gtk.PaperSize",
     "Gtk.PasswordEntry",
     "----GtkPlacesSidebar",  # Requires GFile
     "Gtk.Popover",
-    "----GtkPopoverAccessible",  # We do not support atk
     "Gtk.PopoverMenu",
     "Gtk.PopoverMenuBar",
     "Gtk.PrintContext",
@@ -545,15 +531,11 @@ binding = (
     "Gtk.PrintSetup",
     "----GtkPlug",  # X11-specific, no binding
     "Gtk.ProgressBar",
-    "----GtkProgressBarAccessible",  # We do not support atk
     "--GtkRadioAction",
     "--GtkRadioButton",
-    "----GtkRadioButtonAccessible",  # We do not support atk
     "--GtkRadioMenuItem",
-    "----GtkRadioMenuItemAccessible",  # We do not support atk
     "--GtkRadioToolButton",
     "Gtk.Range",
-    "----GtkRangeAccessible",  # We do not support atk
     "----GtkRcStyle",  # manual binding for these deprecated routines
     "--GtkRecentAction",
     "--GtkRecentChooserDialog",
@@ -562,12 +544,10 @@ binding = (
     "--GtkRecentFilter",
     "--Gtk.RecentInfo",
     "--Gtk.RecentManager",
-    "----GtkRendererCellAccessible",  # We do not support atk
     "Gtk.Revealer",
     "Gtk.Scale",
     "----GtkScaleAccessible",  # We do not support atk
     "--Gtk.ScaleButton",
-    "----GtkScaleButtonAccessible",  # We do not support atk
     "Gtk.SearchBar",
     "Gtk.SearchEntry",
     "--GtkSelectionData",
@@ -576,7 +556,6 @@ binding = (
     "Gtk.SizeGroup",
     "--Gtk.Scrollbar",
     "Gtk.ScrolledWindow",
-    "----GtkScrolledWindowAccessible",  # We do not support atk
     "Gtk.ScrollInfo",
     "--Gtk.Settings",
     "Gtk.MultiSelection",  # Implements Gtk.SelectionModel
@@ -597,18 +576,14 @@ binding = (
     "Gtk.TreeExpander",
     "Gtk.SliceListModel",
     "Gtk.Spinner",
-    "----GtkSpinnerAccessible",  # We do not support atk
     "Gtk.SpinButton",
-    "----GtkSpinButtonAccessible",  # We do not support atk
     "Gtk.Stack",
     "Gtk.StackPage",
     "Gtk.StackSidebar",
     "Gtk.StackSwitcher",
     "--Gtk.Statusbar", # Obsolescent
-    "----GtkStatusbarAccessible",  # We do not support atk
     "Gtk.StyleContext",
     "Gtk.Switch",
-    "----GtkSwitchAccessible",  # We do not support atk
     "--GtkSymbolicColor",
     "--GtkTable",
     "--GtkTargetEntry",
@@ -616,7 +591,6 @@ binding = (
     "--GtkTearoffMenuItem",
     "--GtkTextAttributes",  # Removed upstream in GTK 4
     "Gtk.TextBuffer",
-    "----GtkTextCellAccessible",  # We do not support atk
     "Gtk.TextChildAnchor",
     "Gtk.TextIter",
     "Gtk.TextMark",
@@ -624,7 +598,6 @@ binding = (
     "Gtk.TextTagTable",
     "Gtk.TextView",
     "Gtk.ListView",
-    "----GtkTextViewAccessible",  # We do not support atk
     "--GtkThemingEngine",
     "Gtk.TreeIter",
     "Gtk.TreeModelFilter",
@@ -634,7 +607,6 @@ binding = (
     "Gtk.TreeSelection",
     "Gtk.TreeStore",
     "Gtk.TreeView",
-    "----GtkTreeViewAccessible",  # We do not support atk
     "Gtk.TreeViewColumn",
     "--GtkToggleAction",
     "Gtk.ToggleButton",
@@ -646,10 +618,8 @@ binding = (
     "--Gtk.Viewport",
     "--Gtk.VolumeButton",
     "Gtk.Widget",
-    "----GtkWidgetAccessible",  # We do not support atk
     "--Gtk.WidgetClass",
     "Gtk.Window",
-    "----GtkWindowAccessible",  # We do not support atk
     "Gtk.WindowGroup",
     "Gtk.ShortcutAction",
     "Gtk.ActivateAction",
