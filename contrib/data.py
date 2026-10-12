@@ -604,14 +604,10 @@ binding = (
     "Gtk.StackPage",
     "Gtk.StackSidebar",
     "Gtk.StackSwitcher",
-    "--Gtk.Statusbar",
+    "--Gtk.Statusbar", # Obsolescent
     "----GtkStatusbarAccessible",  # We do not support atk
-    "--GtkStatusIcon",
-    "--GtkStockItem",
-    "--GtkStyle",
     "Gtk.StyleContext",
-    "--GtkStyleProperties",
-    "--Gtk.Switch",
+    "Gtk.Switch",
     "----GtkSwitchAccessible",  # We do not support atk
     "--GtkSymbolicColor",
     "--GtkTable",
