@@ -8,7 +8,7 @@ GtkAda comes with a Perl script to help you create a binding to a C widget
 (this is the script we have used ourselves).  This will not fully automate the
 process, although it should really speed things up. You will probably need less
 than 15 min to create a new binding once you will get used to the way GtkAda
-works. Note that your C file should have the same format as is used by Gtk+
+works. Note that your C file should have the same format as is used by GTK
 itself.
 
 To get started on a new binding, launch the script :file:`contrib/binding.pl`

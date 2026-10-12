@@ -5,7 +5,7 @@ Object-oriented features
 ************************
 
 GtkAda has been designed from the beginning to provide a full object
-oriented layer over gtk+. This means that features such as type
+oriented layer over GTK. This means that features such as type
 extension and dynamic dispatching are made available through the
 standard Ada language.
 
@@ -59,7 +59,7 @@ There are three kinds of widgets that you can use with GtkAda:
   oriented features of GtkAda
 
 * *Standard widgets*:
-  These are the widgets that are part of the standard gtk+ and GtkAda
+  These are the widgets that are part of the standard GTK and GtkAda
   distributions. This include all the basic widgets you need to build
   advanced interfaces.
 
@@ -70,7 +70,7 @@ There are three kinds of widgets that you can use with GtkAda:
 
 GtkAda will always be able to find and/or create a valid tagged type in the
 first two cases, no matter if you explicitly created the widget or if it was
-created automatically by gtk+. For instance, if you created a widget in Ada,
+created automatically by GTK. For instance, if you created a widget in Ada,
 put it in a table, and later on extracted it from the table, then you will
 still have the same widget.
 
@@ -83,13 +83,13 @@ widgets to Ada widgets. This is your job to teach GtkAda how to do the
 conversion.
 
 We thus provide a 'hook' function which you need to modify. This function is
-defined in the package **Glib.Type_Conversion**. This function takes a string
+defined in the package **Glib.Type_Conversion_Hooks**. This function takes a string
 with the name of the C widget (ex/ "GtkButton"), and should return a newly
 allocated pointer. If you don't know this type either, simply return **null**.
 
 .. _Using_tagged_types_to_extend_Gtk_widgets:
 
-Using tagged types to extend Gtk widgets
+Using tagged types to extend GTK widgets
 ========================================
 
 .. highlight:: ada
@@ -98,29 +98,33 @@ With this toolkit, it's possible to associate your own data with existing
 widgets simply by creating new types. This section will show you a simple
 example, but you should rather read the source code in the :file:`gtkada_demo/`
 directory where we used this feature instead of using `user_data` as is used in
-the C version:::
+the C version:
 
-  type My_Button_Record is new Gtk_Button_Record with record
-      --  whatever data you want to associate with your button
-  end record;
-  type My_Button is access all My_Button_Record'Class;
+.. literalinclude:: ../../testsuite/tests/user-guide/ug_my_button.ads
+   :language: ada
+   :start-after: --  START type
+   :end-before: --  END type
+   :dedent: 3
 
 With the above statements, your new type is defined. Every function
 available for `Gtk_Button` is also available for `My_Button`.
 Of course, as with every tagged type in Ada, you can create your own
-primitive functions with the following prototype::
+primitive functions with the following prototype:
 
-  procedure My_Primitive_Func (Myb : access My_Button_Record);
+.. literalinclude:: ../../testsuite/tests/user-guide/ug_my_button.ads
+   :language: ada
+   :start-after: --  START primitive
+   :end-before: --  END primitive
+   :dedent: 3
 
-To instanciate an object of type `My_Button` in your application, do
-the following::
+To instantiate an object of type `My_Button` in your application, with
+``Myb`` declared as a `My_Button`, do the following:
 
-  declare
-     Myb : My_Button;
-  begin
-     Myb := new My_Button_Record;
-     Initialize (Myb);   --  from Gtk.Button
-  end;
+.. literalinclude:: ../../testsuite/tests/user-guide/ug_my_button.adb
+   :language: ada
+   :start-after: --  START create
+   :end-before: --  END create
+   :dedent: 6
 
 The first line creates the Ada type, whereas the `Initialize` call
 actually creates the C widget and associates it with the Ada type.
@@ -131,16 +135,15 @@ Creating new widgets in Ada
 ===========================
 
 With GtkAda, you can create widgets directly in Ada. These new
-widgets can be used directly, as if they were part of gtk itself.
+widgets can be used directly, as if they were part of GTK itself.
 
 Creating new widgets is a way to create reuseable components. You can apply to
 them the same functions as you would for any other widget, such as `Show`,
 `Hide`, and so on.
 
 This section will explain how to create two types of widgets: composite widgets
-and widgets created from scratch. Two examples are provided with GtkAda, in the
-directories :file:`examples/composite_widget` and :file:`examples/base_widget`.
-Please also refer to the gtk+ tutorial, which describes the basic mechanisms
+and widgets created from scratch. An example of the latter is provided with
+GtkAda, in :file:`gtkada_demo/create_custom_widget.adb`. Please also refer to the GTK tutorial, which describes the basic mechanisms
 that you need to know to create a widget.
 
 .. _Creating_composite_widgets:
@@ -150,8 +153,7 @@ Creating composite widgets
 
 A composite widget is a widget that does not do much by itself. Rather, this is
 a collection of subwidgets grouped into a more general entity.  For instance,
-among the standard widgets, `Gtk_File_Selection` and `Gtk_Font_Selection`
-belong to this category.
+among the standard widgets, `Gtk_Font_Dialog_Button` belongs to this category.
 
 The good news is that there is nothing special to know. Just create a new
 tagged type, extending one of the standard widgets (or even another of your own
@@ -159,9 +161,6 @@ widgets), provide a `Gtk_New` function that allocates memory for this widget,
 and call the `Initialize` function that does the actual creation of the widget
 and the subwidgets.  There is only one thing to do: `Initialize` should call
 the parent class's `Initialize` function, to create the underlying C widget.
-
-The example directory :file:`examples/composite_widget` reimplements the
-`Gtk_Dialog` widget as written in C by the creators of gtk+.
 
 .. _Creating_widgets_from_scratch:
 
@@ -174,14 +173,9 @@ This is therefore not an activity recommended for novice GtkAda programmers.
 
 Creating a widget from scratch is what you want to do if your widget should be
 drawn in a special way, should create and emit new signals, or otherwise
-perform differently than pre-existing widgets.  The example we give in
-:file:`examples/base_widget` is a small target on which the user can click, and
-that sends one of two signals: "bullseye" or "missed", depending on where the
-user has clicked.
-
-See also the example in :file:`examples/tutorial/gtkdial` for a more complex
-widget, that implements a gauge where the user can move the arrow to select
-a new value.
+perform differently than pre-existing widgets.  The example in
+:file:`gtkada_demo/create_custom_widget.adb` is a small widget that computes its
+own size and draws itself.
 
 Since we are creating a totally new widget from scratch, with potentially
 its own signals, we need to do slightly more work. In particular, we need to
@@ -189,7 +183,7 @@ provide a function ``Get_Type`` similar to what all the predefined widgets
 provide::
 
    with Glib.Properties.Creation;   use Glib.Properties.Creation;
-   with Glib.Objects;               use Glib.Objects;
+   with Glib.Object;                use Glib.Object;
    with Gtk.Scrollable;
    with System;
 
@@ -217,14 +211,11 @@ provide::
          Override_Property  (Self, PROP_H_ADJ, "hadjustment");
          Override_Property  (Self, PROP_V_ADJ, "vadjustment");
 
-         --  Install some custom style properties
-         Install_Style_Property (Self, Gnew_Int (...));
-
          --  Override some the inherited methods (how to draw the widget)
-         Set_Default_Draw_Handler (Self, On_Draw'Access);
+         Set_Default_Snapshot_Handler (Self, On_Snapshot'Access);
 
          --  Override the primitives to compute the widget size
-         Set_Default_Get_Preferred_Width (Self, ...);
+         Set_Default_Measure_Handler (Self, ...);
       end Class_Init;
 
       function Get_Type return GType is
@@ -291,7 +282,7 @@ three or four arguments:
     interfaces it inherits, and all the signals is defines.
 
     These `GType` are often created early on when an application is launched,
-    and provide the basic introspection capabilities in a gtk+ application.
+    and provide the basic introspection capabilities in a GTK application.
 
     In Ada, this type is created by the function `Get_Type` in the example
     above (which is why we need to add the interface in that function).
@@ -304,7 +295,7 @@ three or four arguments:
     composite widget, as well as some of its behavior -- they can be
     modified through introspection for instance in a GUI builder).
 
-    Such a type is created automatically by gtk+ just before it creates
+    Such a type is created automatically by GTK just before it creates
     the first instance of that widget type. It will then immediately call
     the `Class_Init` function that might have been passed to
     `Glib.Object.Initialize_Class_Record`. At that point, you can add your
