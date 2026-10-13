@@ -443,7 +443,7 @@ binding = (
     "Gtk.GestureSingle",
     "Gtk.DragSource",
     "--Gtk.GestureSwipe",
-    "--Gtk.GestureZoom",
+    "Gtk.GestureZoom",
     "--Gtk.GLArea",
     "Gtk.Grid",
     "Gtk.GridView",
