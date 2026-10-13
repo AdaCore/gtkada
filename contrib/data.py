@@ -438,7 +438,7 @@ binding = (
     "Gtk.GestureClick",
     "Gtk.GestureDrag",
     "Gtk.GestureLongPress",
-    "--Gtk.GesturePan",
+    "Gtk.GesturePan",
     "Gtk.GestureRotate",
     "Gtk.GestureSingle",
     "Gtk.DragSource",
