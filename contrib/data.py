@@ -439,7 +439,7 @@ binding = (
     "Gtk.GestureDrag",
     "Gtk.GestureLongPress",
     "--Gtk.GesturePan",
-    "--Gtk.GestureRotate",
+    "Gtk.GestureRotate",
     "Gtk.GestureSingle",
     "Gtk.DragSource",
     "--Gtk.GestureSwipe",
