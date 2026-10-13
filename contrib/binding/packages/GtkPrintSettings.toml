@@ -82,3 +82,6 @@ type = "Page_Range_Array"
 [[method.parameter]]
 name = "num_ranges"
 ada = ""
+
+[doc]
+gtkada_demo = "create_print.adb"

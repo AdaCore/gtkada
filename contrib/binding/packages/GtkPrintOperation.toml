@@ -7,3 +7,34 @@ ctype = "GtkPrintOperationAction"
 
 [[enum]]
 ctype = "GtkPrintOperationResult"
+
+[doc]
+gtkada_demo = "create_print.adb"
+
+[[enum]]
+ctype = "GtkPrintError"
+
+[[function]]
+id = "gtk_print_error_quark"
+ada = "Print_Error_Quark"
+
+[[function]]
+id = "gtk_print_run_page_setup_dialog"
+ada = "Run_Page_Setup_Dialog"
+
+[[function]]
+id = "gtk_print_run_page_setup_dialog_async"
+ada = "Run_Page_Setup_Dialog_Async"
+
+# GTK passes NULL to the completion callback when the dialog is cancelled,
+# despite the GIR marking page_setup as non-nullable.
+[[callback]]
+id = "Gtk_Page_Setup_Done_Func"
+
+[[callback.parameter]]
+name = "page_setup"
+allow_none = "1"
+
+[callback.doc]
+extend = true
+text = "@param Page_Setup the accepted setup (borrowed), or null on cancellation"

@@ -54,6 +54,8 @@
 --  if (page_setup) g_object_unref (page_setup);
 --
 --  page_setup = new_page_setup; } ```
+--
+--  <gtkada_demo>create_print.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;

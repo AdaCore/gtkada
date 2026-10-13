@@ -32,6 +32,8 @@
 --  The `GtkPaperSize` object stores not only the dimensions (width and
 --  height) of a paper size and its name, it also provides default print
 --  margins.
+--
+--  <gtkada_demo>create_print.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;          use Glib;
@@ -49,6 +51,14 @@ package Gtk.Paper_Size is
    function From_Object (Object : System.Address) return Gtk_Paper_Size;
    function From_Object_Free (B : access Gtk_Paper_Size'Class) return Gtk_Paper_Size;
    pragma Inline (From_Object_Free, From_Object);
+
+   Paper_Name_A3 : constant UTF8_String := "iso_a3";
+   Paper_Name_A4 : constant UTF8_String := "iso_a4";
+   Paper_Name_A5 : constant UTF8_String := "iso_a5";
+   Paper_Name_B5 : constant UTF8_String := "iso_b5";
+   Paper_Name_Executive : constant UTF8_String := "na_executive";
+   Paper_Name_Legal : constant UTF8_String := "na_legal";
+   Paper_Name_Letter : constant UTF8_String := "na_letter";
 
    ------------------
    -- Constructors --

@@ -32,6 +32,8 @@
 --  the settings for the next time your app runs, or even store them in a
 --  document. The predefined keys try to use shared values as much as possible
 --  so that moving such a document between systems still works.
+--
+--  <gtkada_demo>create_print.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;           use Glib;

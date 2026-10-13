@@ -73,6 +73,8 @@
 --  // Font Fill cairo_set_source_rgb (cr, 0, 0.0, 1.0); cairo_fill (cr);
 --
 --  g_object_unref (layout); } ```
+--
+--  <gtkada_demo>create_print.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;          use Cairo;
