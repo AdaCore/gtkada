@@ -30,12 +30,14 @@ with Glib.Object;         use Glib.Object;
 
 with Gtk.Box;             use Gtk.Box;
 with Gtk.Button;          use Gtk.Button;
+with Gtk.Dialog;          use Gtk.Dialog;
 with Gtk.GEntry;          use Gtk.GEntry;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Print_Settings;  use Gtk.Print_Settings;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Frame;           use Gtk.Frame;
 with Gtk.Page_Setup;      use Gtk.Page_Setup;
+with Gtk.Page_Setup_Unix_Dialog; use Gtk.Page_Setup_Unix_Dialog;
 with Gtk.Paper_Size;      use Gtk.Paper_Size;
 with Gtk.Print_Context;   use Gtk.Print_Context;
 with Gtk.Print_Operation; use Gtk.Print_Operation;
@@ -53,6 +55,7 @@ package body Create_Print is
    end record;
    type Print_State_Access is access Print_State;
    package Print_Data is new Glib.Object.User_Data (Print_State_Access);
+   package Dialog_Owners is new Glib.Object.User_Data (GObject);
    procedure Free_State is new Ada.Unchecked_Deallocation
      (Print_State, Print_State_Access);
 
@@ -78,6 +81,8 @@ package body Create_Print is
       return "Print a two-page Cairo drawing or export it as a PDF."
         & " Page Setup selects the layout for the first page; the second"
         & " page demonstrates request-page-setup with A5 landscape paper."
+        & " Unix Page Setup opens Gtk_Page_Setup_Unix_Dialog directly and"
+        & " applies the layout when you answer OK."
         & " Print settings are remembered while this demo is open."
         & " Enter a PDF filename before choosing Export PDF.";
    end Help;
@@ -188,8 +193,71 @@ package body Create_Print is
          State.Setup, State.Settings);
       State.Setup.Unref;
       State.Setup := Setup;
+      --  Settings saved by a previous print/export can override this layout.
+      State.Settings.Set_Orientation (Setup.Get_Orientation);
+      State.Settings.Set_Paper_Size (Setup.Get_Paper_Size);
       Object.Unref;
    end Page_Setup;
+
+   procedure Release_Dialog_Owner (Owner : GObject) is
+   begin
+      Owner.Unref;
+   end Release_Dialog_Owner;
+
+   procedure Unix_Setup_Response
+     (Self        : access Gtk_Dialog_Record'Class;
+      Response_Id : Gtk_Response_Type)
+   is
+      State : constant Print_State_Access :=
+        Print_Data.Get (Dialog_Owners.Get (Self));
+      Dialog : constant Gtk_Page_Setup_Unix_Dialog :=
+        Gtk_Page_Setup_Unix_Dialog (Self);
+   begin
+      if Response_Id = Gtk_Response_OK then
+         declare
+            --  The setup accessor returns a new reference; settings are
+            --  borrowed, so copy them before destroying the dialog.
+            Setup : constant Gtk_Page_Setup := Dialog.Get_Page_Setup;
+            Settings : constant Gtk_Print_Settings :=
+              Dialog.Get_Print_Settings.Copy;
+         begin
+            Settings.Set_Orientation (Setup.Get_Orientation);
+            Settings.Set_Paper_Size (Setup.Get_Paper_Size);
+            State.Setup.Unref;
+            State.Setup := Setup;
+            State.Settings.Unref;
+            State.Settings := Settings;
+         end;
+         State.Status.Set_Text ("Unix page setup applied.");
+      else
+         State.Status.Set_Text ("Unix page setup cancelled.");
+      end if;
+      Dialog.Destroy;
+   end Unix_Setup_Response;
+
+   procedure Unix_Page_Setup (Object : access GObject_Record'Class) is
+      State : constant Print_State_Access := Print_Data.Get (Object);
+      Dialog : Gtk_Page_Setup_Unix_Dialog;
+      Settings : Gtk_Print_Settings;
+   begin
+      Gtk_New
+        (Dialog, "Unix Page Setup",
+         Gtk_Window (Gtk_Box (Object).Get_Ancestor (Gtk.Window.Get_Type)));
+      Dialog.Set_Modal (True);
+      Dialog.Set_Destroy_With_Parent (True);
+      Settings := State.Settings.Copy;
+      Dialog.Set_Print_Settings (Settings);
+      Settings.Unref;
+      Dialog.Set_Page_Setup (State.Setup);
+      --  Keep this demo's state alive until the dialog is finalized,
+      --  including if its parent window closes before a response arrives.
+      Object.Ref;
+      Dialog_Owners.Set
+        (Dialog, GObject (Object),
+         On_Destroyed => Release_Dialog_Owner'Access);
+      Dialog.On_Response (Unix_Setup_Response'Access);
+      Dialog.Present;
+   end Unix_Page_Setup;
 
    procedure Do_Print
      (Object : access GObject_Record'Class;
@@ -297,6 +365,9 @@ package body Create_Print is
       Box.Append (Buttons);
       Gtk_New (Button, "Page Setup");
       Button.On_Clicked (Page_Setup'Access, Slot => Box);
+      Buttons.Append (Button);
+      Gtk_New (Button, "Unix Page Setup");
+      Button.On_Clicked (Unix_Page_Setup'Access, Slot => Box);
       Buttons.Append (Button);
       Gtk_New (Button, "Print");
       Button.On_Clicked (Print'Access, Slot => Box);

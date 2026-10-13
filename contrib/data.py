@@ -516,6 +516,7 @@ binding = (
     "Gtk.Paned",
     "Gtk.Picture",
     "Gtk.PageSetup",
+    "Gtk.PageSetupUnixDialog",
     "Gtk.PaperSize",
     "Gtk.PasswordEntry",
     "----GtkPlacesSidebar",  # Requires GFile

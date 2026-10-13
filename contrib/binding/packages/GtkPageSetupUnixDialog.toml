@@ -1,0 +1,25 @@
+# ============================================================
+#   GtkPageSetupUnixDialog
+# ============================================================
+
+[doc]
+group = "Printing"
+gtkada_demo = "create_print.adb"
+
+[[method]]
+id = "gtk_page_setup_unix_dialog_new"
+
+[[method.parameter]]
+name = "title"
+default = "\"\""
+
+[[method.parameter]]
+name = "parent"
+default = "null"
+
+# get_current_page_setup() returns g_list_model_get_item() or
+# gtk_page_setup_new(), both with a new reference. Correct the GIR's
+# transfer-none annotation so callers release the returned setup.
+[[method]]
+id = "gtk_page_setup_unix_dialog_get_page_setup"
+transfer_ownership = "full"

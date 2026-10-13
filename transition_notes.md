@@ -45,8 +45,10 @@ printing signals, with Page Setup, Print, and PDF export controls. The five core
 bindings (`Gtk.Print_Operation`, `Gtk.Page_Setup`, `Gtk.Print_Settings`,
 `Gtk.Print_Context`, and `Gtk.Paper_Size`) are available. Added the standalone
 synchronous and asynchronous page-setup dialog functions, printing error domain
-and codes, and standard paper-name constants. The asynchronous page-setup
-completion callback accepts null on cancellation, correcting the GIR annotation.
+and codes, and standard paper-name constants. `Gtk.Page_Setup_Unix_Dialog`
+is also bound, with constructor, page-setup and print-settings accessors, and
+a direct response-driven Unix Page Setup button in the printing demo.
+The asynchronous page-setup completion callback accepts null on cancellation, correcting the GIR annotation.
 The demo retains print settings for its lifetime and draws a second page on A5
 landscape paper. It no longer needs the GTK3-only `Gtkada.Printing` helper.
 
@@ -356,8 +358,8 @@ What circular dependencies are left, and why:
 ## Dialog widgets (work item #46)
 
 Bound so far: `GtkNativeDialog`, `GtkAlertDialog`, `GtkFontDialog` +
-`GtkFontDialogButton`, `GtkColorDialog` + `GtkColorDialogButton`, and
-`GtkDialog` + `GtkMessageDialog`.
+`GtkFontDialogButton`, `GtkColorDialog` + `GtkColorDialogButton`,
+`GtkDialog` + `GtkMessageDialog`, and `GtkPageSetupUnixDialog`.
 `GdkRGBA` was reactivated to support `GtkColorDialog`. A minimal
 `src/gdk.ads` parent unit was reintroduced for the same reason. The
 GIO async-result pattern is supported via an opaque
@@ -369,10 +371,6 @@ Intentionally deferred:
 - `GtkAppChooserDialog` — deprecated since 4.10. Dropped from the
   work item; its `GtkDialog` dependency has since been bound, so only
   the deprecation stands in the way now.
-- `GtkPageSetupUnixDialog` — its dependencies are now bound. The portable
-  `Gtk.Print_Operation.Run_Page_Setup_Dialog{,_Async}` entry points are available
-  and the synchronous one is used by `Printing/Printing`; the Unix-specific
-  dialog class remains deferred.
 - `GtkFileDialog` — every interesting method takes or returns
   `GFile*` / `GListModel<GFile>`. Revisit when `GFile` (Gio
   interface) is wired up.
