@@ -120,8 +120,8 @@ package Gtk.Enums is
    --
    --  If you want to get the image from the widget, you can only get the
    --  currently-stored representation; for instance, if the
-   --  gtk_image_get_storage_type returns Gtk.Enums.Image_Paintable, then you
-   --  can call gtk_image_get_paintable.
+   --  Gtk.Image.Get_Storage_Type returns Gtk.Enums.Image_Paintable, then you
+   --  can call Gtk.Image.Get_Paintable.
    --
    --  For empty images, you can request any storage type (call any of the
    --  "get" functions), but they will all return null values.
