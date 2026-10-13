@@ -552,7 +552,7 @@ binding = (
     "Gtk.Separator",
     "--Gtk.ShortcutsWindow",
     "Gtk.SizeGroup",
-    "--Gtk.Scrollbar",
+    "Gtk.Scrollbar",
     "Gtk.ScrolledWindow",
     "Gtk.ScrollInfo",
     "--Gtk.Settings",
