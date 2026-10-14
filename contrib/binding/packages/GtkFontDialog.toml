@@ -1,4 +1,5 @@
 [doc]
+gtkada_demo = "create_font_chooser.adb"
 group = "Dialogs"
 
 [[parameter]]

@@ -36,6 +36,7 @@
 --  contains a button node with the .font style class.
 --
 --  <group>Buttons and Toggles</group>
+--  <gtkada_demo>create_font_chooser.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                    use Glib;

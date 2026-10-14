@@ -4,3 +4,4 @@
 
 [doc]
 group = "Dialogs"
+gtkada_demo = "create_file_chooser.adb"

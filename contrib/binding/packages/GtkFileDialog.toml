@@ -4,6 +4,7 @@
 
 [doc]
 group = "Dialogs"
+gtkada_demo = "create_file_chooser.adb"
 
 # GTK 4.18 text finish methods return borrowed const char* outputs. Use
 # unbounded Ada strings: callers cannot know their lengths before finishing.

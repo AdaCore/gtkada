@@ -35,6 +35,7 @@
 --  To launch uris that don't represent files, use [classGtk.UriLauncher].
 --
 --  <group>Dialogs</group>
+--  <gtkada_demo>create_file_chooser.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;

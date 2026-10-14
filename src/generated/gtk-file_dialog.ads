@@ -31,6 +31,7 @@
 --  [methodGtk.FileDialog.save], etc.
 --
 --  <group>Dialogs</group>
+--  <gtkada_demo>create_file_chooser.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
