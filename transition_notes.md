@@ -40,6 +40,18 @@
 
 ## gtkada_demo: aligning with gtk4-demo
 
+`Printing/Printing` is restored in `create_print` using the generated GTK4
+printing signals, with Page Setup, Print, and PDF export controls. The five core
+bindings (`Gtk.Print_Operation`, `Gtk.Page_Setup`, `Gtk.Print_Settings`,
+`Gtk.Print_Context`, and `Gtk.Paper_Size`) are available. Added the standalone
+synchronous and asynchronous page-setup dialog functions, printing error domain
+and codes, and standard paper-name constants. `Gtk.Page_Setup_Unix_Dialog`
+is also bound, with constructor, page-setup and print-settings accessors, and
+a direct response-driven Unix Page Setup button in the printing demo.
+The asynchronous page-setup completion callback accepts null on cancellation, correcting the GIR annotation.
+The demo retains print settings for its lifetime and draws a second page on A5
+landscape paper. It no longer needs the GTK3-only `Gtkada.Printing` helper.
+
 ### To do — coverage map against upstream
 
 All 110 upstream demos, grouped by what blocks them. "Ready" means every
@@ -67,7 +79,6 @@ land, not a contract.
 | `GtkConstraint` + `GtkConstraintGuide` (see the `GtkConstraintLayout.toml` entry above) | `Constraints/Simple Constraints`, `Interactive`, `VFL`, `Builder` (4) |
 | `Gtk.GLArea` + GSK renderers | `OpenGL/Gears`, `OpenGL Area`, `Shadertoy` |
 | `GtkMediaStream` / `GtkVideo` | `Video Player`, `Paintable/Media Stream` |
-| `Gtk.PrintOperation` + `PageSetup` + `PrintSettings` (+ `Gtk.PrintContext`, `Gtk.PaperSize`) | `Printing/Printing` |
 | `Gdk.Paintable` implementable from Ada | `Paintable/Simple`, `Animated`, `Emblems`, `SVG`, `Symbolic` (5) |
 | `Gtk.LayoutManager` subclassing from Ada (see the `GtkLayoutManager.toml` entry above) | `Layout Manager/Transition`, `Layout Manager/Transformation` |
 | font introspection (`Pango` attribute iterators, `GtkFontChooser`) | `Pango/Font Explorer`, `Pango/Font Rendering` |
@@ -87,7 +98,7 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
 
   | package | not generated / not visible |
   | --- | --- |
-  | `create_cairo` | through `Testcairo_Drawing`: `Gtk.Drawing_Area`, `Gtk.Print_Context`, `Gtk.Print_Operation`, `Gdk.Pixbuf` (bound), `Gdk.Cairo` *(gtk3)*, `Gtkada.Printing` *(gtk3)*. `Cairo` itself is bound |
+  | `create_cairo` | through `Testcairo_Drawing`: `Gtk.Drawing_Area`, `Gdk.Cairo` *(gtk3)*, `Gtkada.Printing` *(gtk3)*. `Cairo` itself is bound |
   | `create_calendar` | `Gtk.Calendar` |
   | `create_clipboard` | `Gtk.Clipboard`, `Gtk.Selection_Data` *(absent)*, `Gtk.Hbutton_Box` *(absent)*, `Gtk.Image`, `Gdk.Pixbuf` (bound), `Gdk.Property` *(gtk3)*, `Gdk.Types` *(gtk3)*, `Gtkada.Handlers` *(gtk3)*. gtk4 replaced the first three outright — `Gdk.Clipboard` (bound) plus content providers is the target API, so this is a rewrite |
   | `create_css_accordion`, `create_css_editor` | `Gtk.Container`, which gtk4 removed; the CSS provider, style context, and style provider bindings are available |
@@ -101,7 +112,6 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_gl` | `Gtk.GLArea`. Its `Epoxy`, `OpenGL` and `Create_GL.GLSL` dependencies are demo-local sources and fine |
   | `create_notebook` | `Gtk.Combo_Box_Text`, `Gtk.Image`, `Gdk.Pixbuf` (bound), `Gtk.Handlers` *(gtk3)*, plus `Common`. `Gtk.Notebook` itself is bound |
   | `create_opacity` | `Common` |
-  | `create_print` | `Gtk.Print_Operation`, `Gtk.Print_Context`, `Gtk.Page_Setup`, `Gtk.Paper_Size`, `Gtkada.Printing` *(gtk3)* |
   | `create_range` | `Gtk.Scale_Button`, `Gtk.Scrollbar`, `Gtk.Volume_Button` |
 
   Only `create_fixed`, `create_gestures` and `create_gl` are blocked
@@ -348,8 +358,8 @@ What circular dependencies are left, and why:
 ## Dialog widgets (work item #46)
 
 Bound so far: `GtkNativeDialog`, `GtkAlertDialog`, `GtkFontDialog` +
-`GtkFontDialogButton`, `GtkColorDialog` + `GtkColorDialogButton`, and
-`GtkDialog` + `GtkMessageDialog`.
+`GtkFontDialogButton`, `GtkColorDialog` + `GtkColorDialogButton`,
+`GtkDialog` + `GtkMessageDialog`, and `GtkPageSetupUnixDialog`.
 `GdkRGBA` was reactivated to support `GtkColorDialog`. A minimal
 `src/gdk.ads` parent unit was reintroduced for the same reason. The
 GIO async-result pattern is supported via an opaque
@@ -361,8 +371,6 @@ Intentionally deferred:
 - `GtkAppChooserDialog` — deprecated since 4.10. Dropped from the
   work item; its `GtkDialog` dependency has since been bound, so only
   the deprecation stands in the way now.
-- `GtkPageSetupUnixDialog` — depends on `GtkPageSetup` and
-  `GtkPrintSettings`. Revisit once those are bound.
 - `GtkFileDialog` — every interesting method takes or returns
   `GFile*` / `GListModel<GFile>`. Revisit when `GFile` (Gio
   interface) is wired up.

@@ -73,6 +73,8 @@
 --  [methodGtk.PrintOperationPreview.end_preview] and
 --  [methodGtk.PrintOperationPreview.is_selected] are useful when implementing
 --  a print preview.
+--
+--  <gtkada_demo>create_print.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                        use Glib;
@@ -114,6 +116,42 @@ package Gtk.Print_Operation is
    --
    --  A value of this type is returned by [methodGtk.PrintOperation.run].
 
+   type Gtk_Print_Error is (
+      Print_Error_General,
+      Print_Error_Internal_Error,
+      Print_Error_Nomem,
+      Print_Error_Invalid_File);
+   pragma Convention (C, Gtk_Print_Error);
+   --  Error codes that identify various errors that can occur while using the
+   --  GTK printing support.
+
+   Gtk_Print_Error_Name   : constant UTF8_String := "gtk-print-error-quark";
+   Gtk_Print_Error_Domain : constant GQuark := Quark_From_String (Gtk_Print_Error_Name);
+   --  Used to identify error domain in a GError
+
+   function Gtk_Print_Error_Matches
+     (Error : GError; Code : Gtk_Print_Error) return Boolean
+   is (Error_Matches
+        (Error,
+         Gtk_Print_Error_Domain,
+         Glib.Gint (Gtk_Print_Error'Pos (Code))));
+   --  Convenience helper to match error codes
+
+   ---------------
+   -- Callbacks --
+   ---------------
+
+   type Gtk_Page_Setup_Done_Func is access procedure
+     (Page_Setup : access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class);
+   --  The type of function that is passed to
+   --  Gtk.Print_Operation.Run_Page_Setup_Dialog_Async.
+   --  This function will be called when the page setup dialog is dismissed,
+   --  and also serves as destroy notify for Data.
+   --  @param Page_Setup the accepted setup (borrowed), or null on
+   --  cancellation
+   --  @param Page_Setup the `GtkPageSetup` that has been passed to
+   --  Gtk.Print_Operation.Run_Page_Setup_Dialog_Async
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -125,6 +163,10 @@ package Gtk.Print_Operation is
    package Gtk_Print_Operation_Result_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Print_Operation_Result);
    type Property_Gtk_Print_Operation_Result is new Gtk_Print_Operation_Result_Properties.Property;
+
+   package Gtk_Print_Error_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Print_Error);
+   type Property_Gtk_Print_Error is new Gtk_Print_Error_Properties.Property;
 
    ------------------
    -- Constructors --
@@ -438,6 +480,23 @@ package Gtk.Print_Operation is
    --  at the top left corner of the imageable area (i.e. inside the margins).
    --  @param Full_Page True to set up the `GtkPrintContext` for the full page
 
+   procedure Run_Page_Setup_Dialog_Async
+      (Parent     : access Gtk.Window.Gtk_Window_Record'Class;
+       Page_Setup : access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
+       Settings   : not null access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class;
+       Done_Cb    : Gtk_Page_Setup_Done_Func);
+   --  Runs a page setup dialog, letting the user modify the values from
+   --  Page_Setup.
+   --  In contrast to [funcGtk.print_run_page_setup_dialog], this function
+   --  returns after showing the page setup dialog on platforms that support
+   --  this, and calls Done_Cb from a signal handler for the ::response signal
+   --  of the dialog.
+   --  @param Parent transient parent
+   --  @param Page_Setup an existing `GtkPageSetup`
+   --  @param Settings a `GtkPrintSettings`
+   --  @param Done_Cb a function to call when the user saves the modified page
+   --  setup
+
    ---------------------------------------------
    -- Inherited subprograms (from interfaces) --
    ---------------------------------------------
@@ -451,6 +510,32 @@ package Gtk.Print_Operation is
    procedure Render_Page
       (Self    : not null access Gtk_Print_Operation_Record;
        Page_Nr : Glib.Gint);
+
+   ---------------
+   -- Functions --
+   ---------------
+
+   function Print_Error_Quark return Glib.GQuark;
+   --  Registers an error quark for `GtkPrintOperation` if necessary.
+   --  @return The error quark used for `GtkPrintOperation` errors.
+
+   function Run_Page_Setup_Dialog
+      (Parent     : access Gtk.Window.Gtk_Window_Record'Class;
+       Page_Setup : access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
+       Settings   : not null access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class)
+       return Gtk.Page_Setup.Gtk_Page_Setup;
+   --  Runs a page setup dialog, letting the user modify the values from
+   --  Page_Setup.
+   --  If the user cancels the dialog, the returned `GtkPageSetup` is
+   --  identical to the passed in Page_Setup, otherwise it contains the
+   --  modifications done in the dialog.
+   --  Note that this function may use a recursive mainloop to show the page
+   --  setup dialog. See [funcGtk.print_run_page_setup_dialog_async] if this is
+   --  a problem.
+   --  @param Parent transient parent
+   --  @param Page_Setup an existing `GtkPageSetup`
+   --  @param Settings a `GtkPrintSettings`
+   --  @return a new `GtkPageSetup`. Has transfer-ownership='full'.
 
    ----------------
    -- Properties --

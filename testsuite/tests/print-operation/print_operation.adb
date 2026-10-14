@@ -16,6 +16,10 @@ with Ada.Command_Line;
 with Ada.Directories;
 with Ada.Exceptions;
 with Glib;                use Glib;
+with Glib.Main;
+with Glib.List_Model;     use Glib.List_Model;
+with Gtk.Dialog;
+with Gtk.Window;
 with Glib.Error;          use Glib.Error;
 with Glib.Object;         use Glib.Object;
 with Glib.Test;           use Glib.Test;
@@ -24,6 +28,8 @@ with Gtk.Box;             use Gtk.Box;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Label;           use Gtk.Label;
 with Gtk.Main;
+with Gtk.Page_Setup;      use Gtk.Page_Setup;
+with Gtk.Paper_Size;      use Gtk.Paper_Size;
 with Gtk.Print_Context;   use Gtk.Print_Context;
 with Gtk.Print_Operation; use Gtk.Print_Operation;
 with Gtk.Print_Settings;  use Gtk.Print_Settings;
@@ -48,10 +54,17 @@ procedure Print_Operation is
       Return_Value        : System.Address);
    pragma Import (C, G_Signal_Emitv, "g_signal_emitv");
 
+   procedure Cb_Request_Page_Setup
+     (Self    : access Gtk_Print_Operation_Record'Class;
+      Context : not null access Gtk_Print_Context_Record'Class;
+      Page_Nr : Gint;
+      Setup   : not null access Gtk_Page_Setup_Record'Class);
+
    Pages : constant Gint := 2;
 
    Begin_Count  : Natural := 0;
    Draw_Count   : Natural := 0;
+   Page_Setup_Count : Natural := 0;
    End_Count    : Natural := 0;
    Done_Count   : Natural := 0;
    Setup_Count  : Natural := 0;
@@ -101,6 +114,78 @@ procedure Print_Operation is
 
    procedure Reset_Counts;
 
+   procedure Test_Page_Setup_Dialogs
+   with Convention => C;
+
+   Async_Setup : Gtk_Page_Setup;
+   Async_Done : Boolean := False;
+   Dialog_Response : Gint := Gint (Gtk.Dialog.Gtk_Response_Cancel);
+
+   function Dismiss_Page_Setup return Boolean is
+      procedure Respond (Dialog : System.Address; Response : Gint);
+      pragma Import (C, Respond, "gtk_dialog_response");
+      Windows : constant Glist_Model := Gtk.Window.Get_Toplevels;
+      Dialog  : GObject;
+   begin
+      if Get_N_Items (Windows) = 0 then
+         return True;
+      end if;
+      Dialog := Get_Item (Windows, 0);
+      Respond (Get_Object (Dialog), Dialog_Response);
+      Dialog.Unref;
+      return False;
+   end Dismiss_Page_Setup;
+
+   procedure Page_Setup_Done
+     (Setup : access Gtk_Page_Setup_Record'Class)
+   is
+   begin
+      --  GTK lends the setup to the callback; keep an independent copy.
+      Async_Done := True;
+      if Setup /= null then
+         Async_Setup := Setup.Copy;
+      end if;
+   end Page_Setup_Done;
+
+   procedure Test_Page_Setup_Dialogs is
+      Setup    : constant Gtk_Page_Setup := Gtk_Page_Setup_New;
+      Settings : constant Gtk_Print_Settings := Gtk_Print_Settings_New;
+      Returned : Gtk_Page_Setup;
+      Source   : Glib.Main.G_Source_Id;
+      Dispatched : Boolean;
+      pragma Unreferenced (Source, Dispatched);
+   begin
+      Setup.Set_Orientation (Page_Orientation_Landscape);
+      Source := Glib.Main.Idle_Add (Dismiss_Page_Setup'Unrestricted_Access);
+      Returned := Run_Page_Setup_Dialog (null, Setup, Settings);
+      Assert_True (Returned.Get_Orientation = Page_Orientation_Landscape);
+      Returned.Unref;
+
+      Dialog_Response := Gint (Gtk.Dialog.Gtk_Response_Ok);
+      Run_Page_Setup_Dialog_Async
+        (null, Setup, Settings, Page_Setup_Done'Unrestricted_Access);
+      Source := Glib.Main.Idle_Add (Dismiss_Page_Setup'Unrestricted_Access);
+      while not Async_Done loop
+         Dispatched := Glib.Main.Main_Context_Iteration;
+      end loop;
+      Assert_True (Async_Setup /= null);
+      Assert_Cmpfloat_Gt (Async_Setup.Get_Paper_Width (Mm), 0.0);
+      Assert_Cmpfloat_Gt (Async_Setup.Get_Paper_Height (Mm), 0.0);
+      Async_Setup.Unref;
+      Async_Setup := null;
+      Async_Done := False;
+      Dialog_Response := Gint (Gtk.Dialog.Gtk_Response_Cancel);
+      Run_Page_Setup_Dialog_Async
+        (null, null, Settings, Page_Setup_Done'Unrestricted_Access);
+      Source := Glib.Main.Idle_Add (Dismiss_Page_Setup'Unrestricted_Access);
+      while not Async_Done loop
+         Dispatched := Glib.Main.Main_Context_Iteration;
+      end loop;
+      Assert_True (Async_Setup = null);
+      Setup.Unref;
+      Settings.Unref;
+   end Test_Page_Setup_Dialogs;
+
    procedure Test_Properties
    with Convention => C;
 
@@ -146,6 +231,24 @@ procedure Print_Operation is
       Self.Set_N_Pages (Pages);
    end Cb_Begin_Print;
 
+   procedure Cb_Request_Page_Setup
+     (Self    : access Gtk_Print_Operation_Record'Class;
+      Context : not null access Gtk_Print_Context_Record'Class;
+      Page_Nr : Gint;
+      Setup   : not null access Gtk_Page_Setup_Record'Class)
+   is
+      pragma Unreferenced (Self, Context);
+      Paper : Gtk_Paper_Size;
+   begin
+      Page_Setup_Count := Page_Setup_Count + 1;
+      if Page_Nr = 1 then
+         Gtk_New (Paper, Paper_Name_A5);
+         Setup.Set_Paper_Size_And_Default_Margins (Paper);
+         Setup.Set_Orientation (Page_Orientation_Landscape);
+         Paper.Free;
+      end if;
+   end Cb_Request_Page_Setup;
+
    ------------------
    -- Cb_Draw_Page --
    ------------------
@@ -164,6 +267,16 @@ procedure Print_Operation is
       Assert_Cmpint_Eq (Page_Nr, Gint (Draw_Count) - 1);
       Assert_Cmpfloat_Gt (Context.Get_Width, 0.0);
       Assert_Cmpfloat_Gt (Context.Get_Height, 0.0);
+      if Page_Nr = 1 then
+         Assert_True
+           (Context.Get_Page_Setup.Get_Orientation = Page_Orientation_Landscape);
+         Assert_Cmpstr_Eq
+           (Context.Get_Page_Setup.Get_Paper_Size.Get_Name, Paper_Name_A5);
+         Assert_Cmpfloat_Eq
+           (Context.Get_Page_Setup.Get_Paper_Width (Mm), 210.0);
+         Assert_Cmpfloat_Eq
+           (Context.Get_Page_Setup.Get_Paper_Height (Mm), 148.0);
+      end if;
    end Cb_Draw_Page;
 
    ------------------
@@ -268,6 +381,7 @@ procedure Print_Operation is
    begin
       Begin_Count := 0;
       Draw_Count := 0;
+      Page_Setup_Count := 0;
       End_Count := 0;
       Done_Count := 0;
       Setup_Count := 0;
@@ -324,6 +438,8 @@ procedure Print_Operation is
       Op.Set_Job_Name ("export");
       Op.On_Begin_Print (Cb_Begin_Print'Unrestricted_Access);
       Op.On_Draw_Page (Cb_Draw_Page'Unrestricted_Access);
+      Op.On_Request_Page_Setup
+        (Cb_Request_Page_Setup'Unrestricted_Access);
       Op.On_End_Print (Cb_End_Print'Unrestricted_Access);
       Op.On_Done (Cb_Done'Unrestricted_Access);
       Op.On_Status_Changed (Cb_Status_Changed'Unrestricted_Access);
@@ -335,6 +451,7 @@ procedure Print_Operation is
 
       Assert_Cmpint_Eq (Gint (Begin_Count), 1);
       Assert_Cmpint_Eq (Gint (Draw_Count), Pages);
+      Assert_Cmpint_Eq (Gint (Page_Setup_Count), Pages);
       Assert_Cmpint_Eq (Gint (End_Count), 1);
       Assert_Cmpint_Eq (Gint (Done_Count), 1);
       Assert_Cmpint_Gt (Gint (Setup_Count), 0);
@@ -377,6 +494,9 @@ procedure Print_Operation is
       --  Print_Operation_Result_Error.
       Op.Get_Error (Reported);
       Assert_True (Reported /= null);
+      Assert_True (Get_Domain (Reported) = Print_Error_Quark);
+      Error_Free (Error);
+      Error_Free (Reported);
 
       Assert_Cmpint_Eq (Gint (Done_Count), 1);
       Assert_True (Last_Result = Print_Operation_Result_Error);
@@ -426,6 +546,10 @@ begin
    Gtk_New (Label, "Custom option");
    Custom.Append (Label);
    Custom.Ref_Sink;
+
+   Glib.Test.Add_Func
+     ("/print-operation/page-setup-dialogs",
+      Test_Page_Setup_Dialogs'Unrestricted_Access);
 
    Glib.Test.Add_Func
      ("/print-operation/properties", Test_Properties'Unrestricted_Access);

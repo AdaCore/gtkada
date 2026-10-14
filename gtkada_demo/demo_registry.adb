@@ -60,6 +60,7 @@ with Create_List_Store;
 with Create_Menu;
 with Create_Paned;
 with Create_Password_Entry;
+with Create_Print;
 with Create_Progress;
 with Create_Pixbuf;
 with Create_Reparent;
@@ -97,6 +98,8 @@ package body Demo_Registry is
 
    Demos : constant array (Positive range <>) of Demo_Info :=
      (To_Demo
+        ("Printing/Printing", Create_Print.Run'Access, Create_Print.Help'Access),
+      To_Demo
         ("Assistant", Create_Assistant.Run'Access, Create_Assistant.Help'Access),
       To_Demo
         ("Lists/Application launcher", Create_Data_Lists.Run_Applications'Access,

@@ -37,6 +37,55 @@ use type Glib.Error.GError;
 
 package body Gtk.Print_Operation is
 
+   procedure C_Gtk_Print_Run_Page_Setup_Dialog_Async
+      (Parent     : System.Address;
+       Page_Setup : System.Address;
+       Settings   : System.Address;
+       Done_Cb    : System.Address;
+       Data       : System.Address);
+   pragma Import (C, C_Gtk_Print_Run_Page_Setup_Dialog_Async, "gtk_print_run_page_setup_dialog_async");
+   --  Runs a page setup dialog, letting the user modify the values from
+   --  Page_Setup.
+   --  In contrast to [funcGtk.print_run_page_setup_dialog], this function
+   --  returns after showing the page setup dialog on platforms that support
+   --  this, and calls Done_Cb from a signal handler for the ::response signal
+   --  of the dialog.
+   --  @param Parent transient parent
+   --  @param Page_Setup an existing `GtkPageSetup`
+   --  @param Settings a `GtkPrintSettings`
+   --  @param Done_Cb a function to call when the user saves the modified page
+   --  setup
+   --  @param Data user data to pass to Done_Cb
+
+   function To_Gtk_Page_Setup_Done_Func is new Ada.Unchecked_Conversion
+     (System.Address, Gtk_Page_Setup_Done_Func);
+
+   function To_Address is new Ada.Unchecked_Conversion
+     (Gtk_Page_Setup_Done_Func, System.Address);
+
+   procedure Internal_Gtk_Page_Setup_Done_Func
+      (Page_Setup : System.Address;
+       Data       : System.Address);
+   pragma Convention (C, Internal_Gtk_Page_Setup_Done_Func);
+   --  @param Page_Setup the `GtkPageSetup` that has been passed to
+   --  Gtk.Print_Operation.Run_Page_Setup_Dialog_Async
+   --  @param Data user data that has been passed to
+   --  Gtk.Print_Operation.Run_Page_Setup_Dialog_Async
+
+   ---------------------------------------
+   -- Internal_Gtk_Page_Setup_Done_Func --
+   ---------------------------------------
+
+   procedure Internal_Gtk_Page_Setup_Done_Func
+      (Page_Setup : System.Address;
+       Data       : System.Address)
+   is
+      Func                : constant Gtk_Page_Setup_Done_Func := To_Gtk_Page_Setup_Done_Func (Data);
+      Stub_Gtk_Page_Setup : Gtk.Page_Setup.Gtk_Page_Setup_Record;
+   begin
+      Func (Gtk.Page_Setup.Gtk_Page_Setup (Get_User_Data (Page_Setup, Stub_Gtk_Page_Setup)));
+   end Internal_Gtk_Page_Setup_Done_Func;
+
    package Type_Conversion_Gtk_Print_Operation is new Glib.Type_Conversion_Hooks.Hook_Registrator
      (Get_Type'Access, Gtk_Print_Operation_Record);
    pragma Unreferenced (Type_Conversion_Gtk_Print_Operation);
@@ -265,6 +314,24 @@ package body Gtk.Print_Operation is
       Error := Acc_Error;
       return Tmp_Return;
    end Run;
+
+   ---------------------------------
+   -- Run_Page_Setup_Dialog_Async --
+   ---------------------------------
+
+   procedure Run_Page_Setup_Dialog_Async
+      (Parent     : access Gtk.Window.Gtk_Window_Record'Class;
+       Page_Setup : access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
+       Settings   : not null access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class;
+       Done_Cb    : Gtk_Page_Setup_Done_Func)
+   is
+   begin
+      if Done_Cb = null then
+         C_Gtk_Print_Run_Page_Setup_Dialog_Async (Get_Object_Or_Null (GObject (Parent)), Get_Object_Or_Null (GObject (Page_Setup)), Get_Object (Settings), System.Null_Address, System.Null_Address);
+      else
+         C_Gtk_Print_Run_Page_Setup_Dialog_Async (Get_Object_Or_Null (GObject (Parent)), Get_Object_Or_Null (GObject (Page_Setup)), Get_Object (Settings), Internal_Gtk_Page_Setup_Done_Func'Address, To_Address (Done_Cb));
+      end if;
+   end Run_Page_Setup_Dialog_Async;
 
    ---------------------
    -- Set_Allow_Async --
@@ -559,6 +626,37 @@ package body Gtk.Print_Operation is
    begin
       Internal (Get_Object (Self), Page_Nr);
    end Render_Page;
+
+   -----------------------
+   -- Print_Error_Quark --
+   -----------------------
+
+   function Print_Error_Quark return Glib.GQuark is
+      function Internal return Glib.GQuark;
+      pragma Import (C, Internal, "gtk_print_error_quark");
+   begin
+      return Internal;
+   end Print_Error_Quark;
+
+   ---------------------------
+   -- Run_Page_Setup_Dialog --
+   ---------------------------
+
+   function Run_Page_Setup_Dialog
+      (Parent     : access Gtk.Window.Gtk_Window_Record'Class;
+       Page_Setup : access Gtk.Page_Setup.Gtk_Page_Setup_Record'Class;
+       Settings   : not null access Gtk.Print_Settings.Gtk_Print_Settings_Record'Class)
+       return Gtk.Page_Setup.Gtk_Page_Setup
+   is
+      function Internal
+         (Parent     : System.Address;
+          Page_Setup : System.Address;
+          Settings   : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_print_run_page_setup_dialog");
+      Stub_Gtk_Page_Setup : Gtk.Page_Setup.Gtk_Page_Setup_Record;
+   begin
+      return Gtk.Page_Setup.Gtk_Page_Setup (Get_User_Data (Internal (Get_Object_Or_Null (GObject (Parent)), Get_Object_Or_Null (GObject (Page_Setup)), Get_Object (Settings)), Stub_Gtk_Page_Setup));
+   end Run_Page_Setup_Dialog;
 
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gtk_Print_Operation_Gtk_Print_Context_Void, System.Address);

@@ -2,6 +2,13 @@
 #   GtkPaperSize
 # ============================================================
 
+[doc]
+gtkada_demo = "create_print.adb"
+
+[[constant]]
+prefix_regexp = "GTK_PAPER_NAME_"
+prefix = "GTK_"
+
 [[list]]
 ctype   = "GtkPaperSize*"
 ada     = "Paper_Size_List"

@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 2010-2018, AdaCore                     --
+--                     Copyright (C) 2010-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -22,41 +22,55 @@
 ------------------------------------------------------------------------------
 
 with Ada.Numerics;
-with Ada.Text_IO;         use Ada.Text_IO;
+with Ada.Unchecked_Deallocation;
 
 with Glib;                use Glib;
+with Glib.Error;          use Glib.Error;
 with Glib.Object;         use Glib.Object;
 
 with Gtk.Box;             use Gtk.Box;
+with Gtk.Button;          use Gtk.Button;
+with Gtk.Dialog;          use Gtk.Dialog;
+with Gtk.GEntry;          use Gtk.GEntry;
+with Gtk.Label;           use Gtk.Label;
+with Gtk.Print_Settings;  use Gtk.Print_Settings;
 with Gtk.Enums;           use Gtk.Enums;
 with Gtk.Frame;           use Gtk.Frame;
 with Gtk.Page_Setup;      use Gtk.Page_Setup;
+with Gtk.Page_Setup_Unix_Dialog; use Gtk.Page_Setup_Unix_Dialog;
 with Gtk.Paper_Size;      use Gtk.Paper_Size;
 with Gtk.Print_Context;   use Gtk.Print_Context;
 with Gtk.Print_Operation; use Gtk.Print_Operation;
 with Gtk.Window;          use Gtk.Window;
 
-with Gtkada.Printing;     use Gtkada.Printing;
-
 with Cairo;               use Cairo;
 
 package body Create_Print is
 
-   type Print_Op_Record is new Gtkada_Print_Operation_Record with null record;
-   type Print_Op_Access is access all Print_Op_Record'Class;
+   type Print_State is record
+      Settings : Gtk_Print_Settings;
+      Setup    : Gtk_Page_Setup;
+      Status   : Gtk_Label;
+      Filename : Gtk_Entry;
+   end record;
+   type Print_State_Access is access Print_State;
+   package Print_Data is new Glib.Object.User_Data (Print_State_Access);
+   package Dialog_Owners is new Glib.Object.User_Data (GObject);
+   procedure Free_State is new Ada.Unchecked_Deallocation
+     (Print_State, Print_State_Access);
 
    procedure Request_Page_Setup
-     (Print_Operation : access Print_Op_Record;
-      Context         : Gtk_Print_Context;
+     (Print_Operation : access Gtk_Print_Operation_Record'Class;
+      Context         : not null access Gtk_Print_Context_Record'Class;
       Page_Num        : Gint;
-      Setup           : Gtk_Page_Setup);
-   --  (Overriding) Callback to setup page layout when printing.
+      Setup           : not null access Gtk_Page_Setup_Record'Class);
+   --  Callback to set up page layout when printing.
 
    procedure Draw_Page
-     (Print_Operation : access Print_Op_Record;
-      Context         : Gtk_Print_Context;
+     (Print_Operation : access Gtk_Print_Operation_Record'Class;
+      Context         : not null access Gtk_Print_Context_Record'Class;
       Page_Num        : Gint);
-   --  (Overriding) Callback to draw the pages as they are being printed.
+   --  Callback to draw the pages as they are being printed.
 
    ----------
    -- Help --
@@ -64,10 +78,13 @@ package body Create_Print is
 
    function Help return String is
    begin
-      return "This is a very simple demo to demonstrate GtkAda's high-level,"
-        & " portable printing API.  On some platforms, Gtkada_Print_Operation"
-        & " uses the native print dialog.  On platforms which do not provide"
-        & " a native print dialog, GtkAda uses GTK+'s own.";
+      return "Print a two-page Cairo drawing or export it as a PDF."
+        & " Page Setup selects the layout for the first page; the second"
+        & " page demonstrates request-page-setup with A5 landscape paper."
+        & " Unix Page Setup opens Gtk_Page_Setup_Unix_Dialog directly and"
+        & " applies the layout when you answer OK."
+        & " Print settings are remembered while this demo is open."
+        & " Enter a PDF filename before choosing Export PDF.";
    end Help;
 
    ---------------
@@ -75,8 +92,8 @@ package body Create_Print is
    ---------------
 
    procedure Draw_Page
-     (Print_Operation : access Print_Op_Record;
-      Context         : Gtk_Print_Context;
+     (Print_Operation : access Gtk_Print_Operation_Record'Class;
+      Context         : not null access Gtk_Print_Context_Record'Class;
       Page_Num        : Gint)
    is
       pragma Unreferenced (Print_Operation);
@@ -138,10 +155,10 @@ package body Create_Print is
    ------------------------
 
    procedure Request_Page_Setup
-     (Print_Operation : access Print_Op_Record;
-      Context         : Gtk_Print_Context;
+     (Print_Operation : access Gtk_Print_Operation_Record'Class;
+      Context         : not null access Gtk_Print_Context_Record'Class;
       Page_Num        : Gint;
-      Setup           : Gtk_Page_Setup)
+      Setup           : not null access Gtk_Page_Setup_Record'Class)
    is
       pragma Unreferenced (Print_Operation);
       pragma Unreferenced (Context);
@@ -150,42 +167,214 @@ package body Create_Print is
    begin
       --  Make the second page landscape mode A5
       if Page_Num = 1 then
-         Gtk_New (A5_Size, Gtk_Paper_Name_A5);
+         Gtk_New (A5_Size, Paper_Name_A5);
          Set_Orientation (Setup, Page_Orientation_Landscape);
-         Set_Paper_Size (Setup, A5_Size);
+         Set_Paper_Size_And_Default_Margins (Setup, A5_Size);
          Free (A5_Size);
       end if;
    end Request_Page_Setup;
 
-   ---------
-   -- Run --
-   ---------
+   procedure Release_State (State : Print_State_Access) is
+      Owned : Print_State_Access := State;
+   begin
+      State.Settings.Unref;
+      State.Setup.Unref;
+      Free_State (Owned);
+   end Release_State;
+
+   procedure Page_Setup (Object : access GObject_Record'Class) is
+      State : constant Print_State_Access := Print_Data.Get (Object);
+      Setup : Gtk_Page_Setup;
+   begin
+      --  Keep the state alive across the dialog's recursive main loop.
+      Object.Ref;
+      Setup := Run_Page_Setup_Dialog
+        (Gtk_Window (Gtk_Box (Object).Get_Ancestor (Gtk.Window.Get_Type)),
+         State.Setup, State.Settings);
+      State.Setup.Unref;
+      State.Setup := Setup;
+      --  Settings saved by a previous print/export can override this layout.
+      State.Settings.Set_Orientation (Setup.Get_Orientation);
+      State.Settings.Set_Paper_Size (Setup.Get_Paper_Size);
+      Object.Unref;
+   end Page_Setup;
+
+   procedure Release_Dialog_Owner (Owner : GObject) is
+   begin
+      Owner.Unref;
+   end Release_Dialog_Owner;
+
+   procedure Unix_Setup_Response
+     (Self        : access Gtk_Dialog_Record'Class;
+      Response_Id : Gtk_Response_Type)
+   is
+      State : constant Print_State_Access :=
+        Print_Data.Get (Dialog_Owners.Get (Self));
+      Dialog : constant Gtk_Page_Setup_Unix_Dialog :=
+        Gtk_Page_Setup_Unix_Dialog (Self);
+   begin
+      if Response_Id = Gtk_Response_OK then
+         declare
+            --  The setup accessor returns a new reference; settings are
+            --  borrowed, so copy them before destroying the dialog.
+            Setup : constant Gtk_Page_Setup := Dialog.Get_Page_Setup;
+            Settings : constant Gtk_Print_Settings :=
+              Dialog.Get_Print_Settings.Copy;
+         begin
+            Settings.Set_Orientation (Setup.Get_Orientation);
+            Settings.Set_Paper_Size (Setup.Get_Paper_Size);
+            State.Setup.Unref;
+            State.Setup := Setup;
+            State.Settings.Unref;
+            State.Settings := Settings;
+         end;
+         State.Status.Set_Text ("Unix page setup applied.");
+      else
+         State.Status.Set_Text ("Unix page setup cancelled.");
+      end if;
+      Dialog.Destroy;
+   end Unix_Setup_Response;
+
+   procedure Unix_Page_Setup (Object : access GObject_Record'Class) is
+      State : constant Print_State_Access := Print_Data.Get (Object);
+      Dialog : Gtk_Page_Setup_Unix_Dialog;
+      Settings : Gtk_Print_Settings;
+   begin
+      Gtk_New
+        (Dialog, "Unix Page Setup",
+         Gtk_Window (Gtk_Box (Object).Get_Ancestor (Gtk.Window.Get_Type)));
+      Dialog.Set_Modal (True);
+      Dialog.Set_Destroy_With_Parent (True);
+      Settings := State.Settings.Copy;
+      Dialog.Set_Print_Settings (Settings);
+      Settings.Unref;
+      Dialog.Set_Page_Setup (State.Setup);
+      --  Keep this demo's state alive until the dialog is finalized,
+      --  including if its parent window closes before a response arrives.
+      Object.Ref;
+      Dialog_Owners.Set
+        (Dialog, GObject (Object),
+         On_Destroyed => Release_Dialog_Owner'Access);
+      Dialog.On_Response (Unix_Setup_Response'Access);
+      Dialog.Present;
+   end Unix_Page_Setup;
+
+   procedure Do_Print
+     (Object : access GObject_Record'Class;
+      Action : Gtk_Print_Operation_Action)
+   is
+      State    : constant Print_State_Access := Print_Data.Get (Object);
+      Print_Op : Gtk_Print_Operation;
+      Result   : Gtk_Print_Operation_Result;
+      Error    : GError;
+   begin
+      Object.Ref;
+      Gtk_New (Print_Op);
+      Print_Op.Set_Current_Page (0);
+      Print_Op.Set_N_Pages (2);
+      Print_Op.Set_Unit (Inch);
+      Print_Op.Set_Job_Name ("GtkAda printing demo");
+      Print_Op.Set_Allow_Async (False);
+      Print_Op.Set_Default_Page_Setup (State.Setup);
+      Print_Op.Set_Print_Settings (State.Settings);
+      Print_Op.Set_Embed_Page_Setup (True);
+      Print_Op.On_Request_Page_Setup (Request_Page_Setup'Access);
+      Print_Op.On_Draw_Page (Draw_Page'Access);
+      if Action = Print_Operation_Action_Export then
+         Print_Op.Set_Export_Filename (State.Filename.Get_Text);
+      end if;
+
+      Result := Print_Op.Run
+        (Action,
+         Gtk_Window (Gtk_Box (Object).Get_Ancestor (Gtk.Window.Get_Type)),
+         Error);
+      case Result is
+         when Print_Operation_Result_Error =>
+            if Error /= null then
+               State.Status.Set_Text ("Printing failed: " & Get_Message (Error));
+               Error_Free (Error);
+            else
+               State.Status.Set_Text ("Printing failed.");
+            end if;
+         when Print_Operation_Result_Apply =>
+            --  Get_Print_Settings returns a borrowed reference.
+            declare
+               Settings : constant Gtk_Print_Settings :=
+                 Print_Op.Get_Print_Settings.Copy;
+            begin
+               State.Settings.Unref;
+               State.Settings := Settings;
+            end;
+            if Action = Print_Operation_Action_Export then
+               State.Status.Set_Text
+                 ("PDF exported to " & State.Filename.Get_Text);
+            else
+               State.Status.Set_Text (Print_Op.Get_Status_String);
+            end if;
+         when Print_Operation_Result_Cancel =>
+            State.Status.Set_Text ("Printing cancelled.");
+         when Print_Operation_Result_In_Progress =>
+            State.Status.Set_Text (Print_Op.Get_Status_String);
+      end case;
+      Print_Op.Unref;
+      Object.Unref;
+   end Do_Print;
+
+   procedure Print (Object : access GObject_Record'Class) is
+   begin
+      Do_Print (Object, Print_Operation_Action_Print_Dialog);
+   end Print;
+
+   procedure Export_Pdf (Object : access GObject_Record'Class) is
+   begin
+      Do_Print (Object, Print_Operation_Action_Export);
+   end Export_Pdf;
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Box      : Gtk_Box;
-      Print_Op : Print_Op_Access;
-      Result   : Gtk_Print_Operation_Result;
+      Box     : Gtk_Box;
+      Buttons : Gtk_Box;
+      Button  : Gtk_Button;
+      State   : constant Print_State_Access := new Print_State;
+      Paper   : Gtk_Paper_Size;
    begin
-      Set_Label (Frame, "Printing");
+      Frame.Set_Label ("Printing");
+      Gtk_New (Box, Orientation_Vertical, 12);
+      Box.Set_Margin_Start (12);
+      Box.Set_Margin_End (12);
+      Box.Set_Margin_Top (12);
+      Box.Set_Margin_Bottom (12);
+      Frame.Set_Child (Box);
+      Box.Append (Gtk_Label_New
+        ("Two pages of Cairo artwork: first A4, then A5 landscape."));
 
-      Gtk_New_Vbox (Box, Homogeneous => False);
-      Add (Frame, Box);
+      Gtk_New (State.Settings);
+      Gtk_New (State.Setup);
+      Gtk_New (Paper, Paper_Name_A4);
+      State.Setup.Set_Paper_Size_And_Default_Margins (Paper);
+      Paper.Free;
+      Gtk_New (State.Filename);
+      State.Filename.Set_Text ("gtkada-print.pdf");
+      Box.Append (Gtk_Label_New ("PDF output filename:"));
+      Box.Append (State.Filename);
+      Gtk_New (State.Status, "Choose Page Setup, Print, or Export PDF.");
+      State.Status.Set_Wrap (True);
+      Box.Append (State.Status);
+      Print_Data.Set (Box, State, On_Destroyed => Release_State'Access);
 
-      --  Set up print operation basics
-      Print_Op := new Print_Op_Record;
-      Gtkada.Printing.Initialize (Print_Op);
-
-      Set_Current_Page (Print_Op, 1);
-      Set_N_Pages (Print_Op, 2);
-      Set_Unit (Print_Op, Inch);
-
-      --  Call up the print operation dialog
-      Result := Connect_And_Run
-        (Print_Op, Action_Print_Dialog, Gtk_Window (Get_Toplevel (Frame)));
-      Put_Line ("Result is " & Result'Img);
-      Put_Line ("Print status: " & Get_Status_String (Print_Op));
-
-      Show_All (Frame);
+      Gtk_New (Buttons, Orientation_Horizontal, 6);
+      Box.Append (Buttons);
+      Gtk_New (Button, "Page Setup");
+      Button.On_Clicked (Page_Setup'Access, Slot => Box);
+      Buttons.Append (Button);
+      Gtk_New (Button, "Unix Page Setup");
+      Button.On_Clicked (Unix_Page_Setup'Access, Slot => Box);
+      Buttons.Append (Button);
+      Gtk_New (Button, "Print");
+      Button.On_Clicked (Print'Access, Slot => Box);
+      Buttons.Append (Button);
+      Gtk_New (Button, "Export PDF");
+      Button.On_Clicked (Export_Pdf'Access, Slot => Box);
+      Buttons.Append (Button);
    end Run;
 
 end Create_Print;
