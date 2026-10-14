@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,80 +21,44 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with Gtk.Font_Chooser_Widget;   use Gtk.Font_Chooser_Widget;
-with Gtk;                       use Gtk;
-with Pango.Enums;               use Pango.Enums;
-with Pango.Font;                use Pango.Font;
-with Pango.Font_Face;           use Pango.Font_Face;
-with Pango.Font_Family;         use Pango.Font_Family;
+with Gtk.Box;                use Gtk.Box;
+with Gtk.Enums;              use Gtk.Enums;
+with Gtk.Font_Dialog;        use Gtk.Font_Dialog;
+with Gtk.Font_Dialog_Button; use Gtk.Font_Dialog_Button;
+with Gtk.Label;              use Gtk.Label;
+with Pango.Font;             use Pango.Font;
 
 package body Create_Font_Chooser is
-
-   function On_Filter
-      (Family : not null access Pango_Font_Family_Record'Class;
-       Face   : not null access Pango_Font_Face_Record'Class)
-      return Boolean;
-   --  Whether to show a font in the dialog
-
-   ---------------
-   -- On_Filter --
-   ---------------
-
-   function On_Filter
-      (Family : not null access Pango_Font_Family_Record'Class;
-       Face   : not null access Pango_Font_Face_Record'Class)
-      return Boolean
-   is
-   begin
-      --  Do not show fonts that are synthesized by the engine, for
-      --  instance to emulate bold. These are generally lower quality
-
-      if Face.Is_Synthesized then
-         return False;
-      end if;
-
-      --  Hide all italic fonts
-
-      if Get_Style (Face.Describe) = Pango_Style_Italic then
-         return False;
-      end if;
-
-      --  Only show monospace (fixed size) fonts
-
-      if not Family.Is_Monospace then
-         return False;
-      end if;
-
-      return True;
-   end On_Filter;
-
-   ----------
-   -- Help --
-   ----------
-
    function Help return String is
    begin
-      return "A @bGtk_Font_Chooser@B lets the user pick a font by family,"
-        & " weight, size, and so on.";
+      return "Gtk_Font_Dialog_Button opens Gtk_Font_Dialog and keeps the"
+        & " selected font description. This button displays its name using"
+        & " the chosen font and size. Applications can read Get_Font_Desc"
+        & " and listen to notify::font-desc to update their text.";
    end Help;
 
-   ---------
-   -- Run --
-   ---------
-
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Font       : Gtk_Font_Chooser_Widget;
+      Box    : Gtk_Box;
+      Dialog : Gtk_Font_Dialog;
+      Button : Gtk_Font_Dialog_Button;
+      Font   : Pango_Font_Description := From_String ("Sans 14");
    begin
-      Set_Label (Frame, "Gtk_Font_Chooser_Widget");
-
-      Gtk_New (Font);
-      Font.Set_Font ("courier 9");
-      Font.Set_Filter_Func (On_Filter'Access);
-
-      --  ??? Show filter
-
-      Frame.Add (Font);
-      Frame.Show_All;
+      Frame.Set_Label ("Font Chooser");
+      Gtk_New (Box, Orientation_Vertical, 12);
+      Box.Set_Margin_Start (12);
+      Box.Set_Margin_End (12);
+      Box.Set_Margin_Top (12);
+      Box.Set_Margin_Bottom (12);
+      Frame.Set_Child (Box);
+      Box.Append (Gtk_Label_New ("Choose a font to change the button's text:"));
+      Gtk_New (Dialog);
+      Dialog.Set_Title ("Choose a font");
+      --  Gtk_Font_Dialog_Button_New takes ownership of Dialog.
+      Gtk_New (Button, Dialog);
+      Button.Set_Font_Desc (Font);
+      Free (Font);
+      Button.Set_Use_Font (True);
+      Button.Set_Use_Size (True);
+      Box.Append (Button);
    end Run;
-
 end Create_Font_Chooser;

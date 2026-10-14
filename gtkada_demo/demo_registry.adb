@@ -46,6 +46,8 @@ with Create_Dialog;
 with Create_Drag_And_Drop;
 with Create_Drawing_Area;
 with Create_Entry;
+with Create_File_Chooser;
+with Create_Font_Chooser;
 with Create_Flow_Box;
 with Create_Frame;
 with Create_Header_Bar;
@@ -207,9 +209,17 @@ package body Demo_Registry is
       To_Demo
         ("Paned Widgets", Create_Paned.Run'Access, Create_Paned.Help'Access),
       To_Demo
-        ("Pickers and Launchers",
+        ("Pickers and Launchers/Colours",
          Create_Color_Chooser.Run'Access,
          Create_Color_Chooser.Help'Access),
+      To_Demo
+        ("Pickers and Launchers/Files and URIs",
+         Create_File_Chooser.Run_Button'Access,
+         Create_File_Chooser.Help_Button'Access),
+      To_Demo
+        ("Pickers and Launchers/Fonts",
+         Create_Font_Chooser.Run'Access,
+         Create_Font_Chooser.Help'Access),
       To_Demo
         ("Shortcuts",
          Create_Shortcuts.Run'Access,

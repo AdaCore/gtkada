@@ -82,7 +82,6 @@ land, not a contract.
 | `Gdk.Paintable` implementable from Ada | `Paintable/Simple`, `Animated`, `Emblems`, `SVG`, `Symbolic` (5) |
 | `Gtk.LayoutManager` subclassing from Ada (see the `GtkLayoutManager.toml` entry above) | `Layout Manager/Transition`, `Layout Manager/Transformation` |
 | font introspection (`Pango` attribute iterators, `GtkFontChooser`) | `Pango/Font Explorer`, `Pango/Font Rendering` |
-| `Gtk.FileDialog`, `Gtk.FileLauncher`, `Gtk.UriLauncher`, `Gtk.PrintDialog` (+ `GtkDropTarget`) | `Pickers and Launchers` — a picker/launcher demo, not a list-model one. All four classes are absent from `contrib/data.py` altogether. Its colour and font halves are already bound (`Gtk.ColorDialog` / `Gtk.ColorDialogButton`, `Gtk.FontDialog` / `Gtk.FontDialogButton`), so a colour+font subset can land first and grow |
 | benchmark harness | `Benchmark/Fishbowl`, `Frames`, `Scrolling`, `Themes` |
 
 **Deliberately not ported** - upstream demos we don't intend to port.
@@ -105,9 +104,7 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_cursors` | `Gtk.Drawing_Area`, `Gdk.Window` (gtk4: `Gdk.Surface`, bound), `Gdk.Device_Manager` *(absent; gone from gtk4)*, `Gtk.Handlers` *(gtk3)* |
   | `create_dnd` | `Gtk.Dnd` *(gtk3)*, `Gdk.Dnd` *(gtk3)*, `Gdk.Drag_Contexts` (`--GdkDragContext`), `Gtk.Target_List` *(absent)*, `Gtk.Selection_Data` *(absent)*, `Gtk.Image`, `Gdk.Window` (gtk4: `Gdk.Surface`), `Gdk.Types` *(gtk3)*, `Gtk.Handlers` *(gtk3)*. |
   | `create_entry` | `Gtk.Combo_Box_Text`, `Gtk.Search_Entry`, `Gtk.Handlers` *(gtk3)*, plus `Common` (see below) |
-  | `create_file_chooser` | `Gtk.File_Chooser` (the interface) and `Gtk.File_Chooser_Button`; both deprecated upstream since 4.10, so the revival should target `GtkFileDialog` — itself unbound and absent from `contrib/data.py`, i.e. a new binding of its own |
   | `create_fixed` | `Gtk.Fixed`. It calls only `Gtk.Fixed.Put`, so this really is its whole blocker — it is *not* part of the `Gsk.Transform` group |
-  | `create_font_chooser` | `Gtk.Font_Chooser_Widget` |
   | `create_gestures` | `Gtk.Gesture`, `Gtk.Gesture_Long_Press`, `Gtk.Gesture_Zoom`, `Gtk.Drawing_Area` |
   | `create_gl` | `Gtk.GLArea`. Its `Epoxy`, `OpenGL` and `Create_GL.GLSL` dependencies are demo-local sources and fine |
   | `create_notebook` | `Gtk.Combo_Box_Text`, `Gtk.Image`, `Gdk.Pixbuf` (bound), `Gtk.Handlers` *(gtk3)*, plus `Common`. `Gtk.Notebook` itself is bound |
@@ -371,9 +368,6 @@ Intentionally deferred:
 - `GtkAppChooserDialog` — deprecated since 4.10. Dropped from the
   work item; its `GtkDialog` dependency has since been bound, so only
   the deprecation stands in the way now.
-- `GtkFileDialog` — every interesting method takes or returns
-  `GFile*` / `GListModel<GFile>`. Revisit when `GFile` (Gio
-  interface) is wired up.
 - `GtkFontDialog.choose_font_and_features` — multiple complex out
   parameters; suppressed for now.
 - `GtkFontDialog.{get,set}_filter` — needs `GtkFilter`; suppressed

@@ -1,0 +1,98 @@
+# ============================================================
+#   GtkFileDialog
+# ============================================================
+
+[doc]
+group = "Dialogs"
+gtkada_demo = "create_file_chooser.adb"
+
+# GTK 4.18 text finish methods return borrowed const char* outputs. Use
+# unbounded Ada strings: callers cannot know their lengths before finishing.
+[[extra.with_spec]]
+pkg = "Ada.Strings.Unbounded"
+
+[[extra.with_body]]
+pkg = "Gtkada.Bindings"
+
+[[extra.with_body]]
+pkg = "Gtkada.Types"
+
+[[method]]
+id = "gtk_file_dialog_open_text_file_finish"
+body = '''
+      function Internal
+         (Self : System.Address;
+          Result : Glib.G_Async_Result;
+          Encoding : access Gtkada.Types.Chars_Ptr;
+          Error : access Glib.Error.GError) return Glib.GFile.Gfile;
+      pragma Import (C, Internal, "gtk_file_dialog_open_text_file_finish");
+      C_Encoding : aliased Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
+      C_Error : aliased Glib.Error.GError := null;
+      File : Glib.GFile.Gfile;
+   begin
+      File := Internal (Get_Object (Self), Result, C_Encoding'Access, C_Error'Access);
+      Error := C_Error;
+      Encoding := Ada.Strings.Unbounded.To_Unbounded_String
+        (Gtkada.Bindings.Value_Allowing_Null (C_Encoding));
+      return (if Error = null then File else Glib.GFile.Null_Gfile);
+'''
+
+[[method.parameter]]
+name = "encoding"
+type = "Ada.Strings.Unbounded.Unbounded_String"
+
+[[method]]
+id = "gtk_file_dialog_open_multiple_text_files_finish"
+body = '''
+      function Internal
+         (Self : System.Address;
+          Result : Glib.G_Async_Result;
+          Encoding : access Gtkada.Types.Chars_Ptr;
+          Error : access Glib.Error.GError) return Glib.List_Model.Glist_Model;
+      pragma Import (C, Internal, "gtk_file_dialog_open_multiple_text_files_finish");
+      C_Encoding : aliased Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
+      C_Error : aliased Glib.Error.GError := null;
+      File : Glib.List_Model.Glist_Model;
+   begin
+      File := Internal (Get_Object (Self), Result, C_Encoding'Access, C_Error'Access);
+      Error := C_Error;
+      Encoding := Ada.Strings.Unbounded.To_Unbounded_String
+        (Gtkada.Bindings.Value_Allowing_Null (C_Encoding));
+      return (if Error = null then File else Glib.List_Model.Null_Glist_Model);
+'''
+
+[[method.parameter]]
+name = "encoding"
+type = "Ada.Strings.Unbounded.Unbounded_String"
+
+[[method]]
+id = "gtk_file_dialog_save_text_file_finish"
+body = '''
+      function Internal
+         (Self : System.Address;
+          Result : Glib.G_Async_Result;
+          Encoding : access Gtkada.Types.Chars_Ptr;
+          Line_Ending : access Gtkada.Types.Chars_Ptr;
+          Error : access Glib.Error.GError) return Glib.GFile.Gfile;
+      pragma Import (C, Internal, "gtk_file_dialog_save_text_file_finish");
+      C_Encoding : aliased Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
+      C_Line_Ending : aliased Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
+      C_Error : aliased Glib.Error.GError := null;
+      File : Glib.GFile.Gfile;
+   begin
+      File := Internal (Get_Object (Self), Result, C_Encoding'Access, C_Line_Ending'Access, C_Error'Access);
+      Error := C_Error;
+      Encoding := Ada.Strings.Unbounded.To_Unbounded_String
+        (Gtkada.Bindings.Value_Allowing_Null (C_Encoding));
+      Line_Ending := Ada.Strings.Unbounded.To_Unbounded_String
+        (Gtkada.Bindings.Value_Allowing_Null (C_Line_Ending));
+      return (if Error = null then File else Glib.GFile.Null_Gfile);
+'''
+
+[[method.parameter]]
+name = "encoding"
+type = "Ada.Strings.Unbounded.Unbounded_String"
+
+[[method.parameter]]
+name = "line_ending"
+type = "Ada.Strings.Unbounded.Unbounded_String"
