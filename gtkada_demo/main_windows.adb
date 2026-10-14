@@ -86,7 +86,7 @@ with Demo_Registry;
 --  Create_Fixed, Create_Gestures, Create_Gtkada_Dialog,
 --  Create_Main_Loop, Create_MDI, Create_Notebook,
 --  Create_Opacity, Create_Pixbuf,
---  Create_Range, Create_Selection, Create_Sources,
+--  Create_Selection, Create_Sources,
 --  Create_Spinners, Create_Splittable, Create_Task_Monitor,
 --  Create_Test_Idle, Create_Css_Editor, Libart_Demo.
 
