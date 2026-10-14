@@ -56,6 +56,9 @@
 --  If you know none of these things are an issue for your application, and
 --  prefer the simplicity of `GtkFixed`, by all means use the widget. But you
 --  should be aware of the tradeoffs.
+--
+--  <group>Layout containers</group>
+--  <gtkada_demo>create_fixed.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                  use Glib;
