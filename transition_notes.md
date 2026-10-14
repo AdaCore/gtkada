@@ -75,7 +75,7 @@ land, not a contract.
 | area | demos |
 | --- | --- |
 | `Gsk.Path` + `Gsk.Stroke` + `Gsk.PathBuilder` | `Path/Fill and Stroke`, `Maze`, `Spinner`, `Sweep`, `Text`, `Walk`, `Path Explorer` (7) |
-| `Gsk.Transform` (+ the `Gtk.Fixed` widget) | `Fixed Layout/Cube`, `Fixed Layout/Transformations`. `Gtk.Fixed_Layout` is bound, but both demos position children through `Gsk.Transform`, and there is no `Gsk` binding in the tree at all — no generated sources, no `contrib/binding/packages/` entry, nothing in `contrib/data.py`. A new area, shared with the `Gsk.Path` row. Our own `create_fixed` is *not* in this group: it only calls `Gtk.Fixed.Put` |
+| `Gsk.Transform` | `Fixed Layout/Cube`, `Fixed Layout/Transformations`. `Gtk.Fixed_Layout` is bound, but both demos position children through `Gsk.Transform`, and there is no `Gsk` binding in the tree at all — no generated sources, no `contrib/binding/packages/` entry, nothing in `contrib/data.py`. A new area, shared with the `Gsk.Path` row. |
 | `GtkConstraint` + `GtkConstraintGuide` (see the `GtkConstraintLayout.toml` entry above) | `Constraints/Simple Constraints`, `Interactive`, `VFL`, `Builder` (4) |
 | `Gtk.GLArea` + GSK renderers | `OpenGL/Gears`, `OpenGL Area`, `Shadertoy` |
 | `GtkMediaStream` / `GtkVideo` | `Video Player`, `Paintable/Media Stream` |
@@ -104,13 +104,12 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_cursors` | `Gtk.Drawing_Area`, `Gdk.Window` (gtk4: `Gdk.Surface`, bound), `Gdk.Device_Manager` *(absent; gone from gtk4)*, `Gtk.Handlers` *(gtk3)* |
   | `create_dnd` | `Gtk.Dnd` *(gtk3)*, `Gdk.Dnd` *(gtk3)*, `Gdk.Drag_Contexts` (`--GdkDragContext`), `Gtk.Target_List` *(absent)*, `Gtk.Selection_Data` *(absent)*, `Gtk.Image`, `Gdk.Window` (gtk4: `Gdk.Surface`), `Gdk.Types` *(gtk3)*, `Gtk.Handlers` *(gtk3)*. |
   | `create_entry` | `Gtk.Combo_Box_Text`, `Gtk.Search_Entry`, `Gtk.Handlers` *(gtk3)*, plus `Common` (see below) |
-  | `create_fixed` | `Gtk.Fixed`. It calls only `Gtk.Fixed.Put`, so this really is its whole blocker — it is *not* part of the `Gsk.Transform` group |
   | `create_gestures` | `Gtk.Gesture`, `Gtk.Gesture_Long_Press`, `Gtk.Gesture_Zoom`, `Gtk.Drawing_Area` |
   | `create_gl` | `Gtk.GLArea`. Its `Epoxy`, `OpenGL` and `Create_GL.GLSL` dependencies are demo-local sources and fine |
   | `create_notebook` | `Gtk.Combo_Box_Text`, `Gtk.Image`, `Gdk.Pixbuf` (bound), `Gtk.Handlers` *(gtk3)*, plus `Common`. `Gtk.Notebook` itself is bound |
   | `create_opacity` | `Common` |
 
-  Only `create_fixed`, `create_gestures` and `create_gl` are blocked
+  Only `create_gestures` and `create_gl` are blocked
   purely on bindings Step 2 already tracks. Every
   other package wants at least one unit no upstream demo needs and Step 2
   therefore never schedules (`Gtk.Calendar`, the combo

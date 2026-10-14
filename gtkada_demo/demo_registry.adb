@@ -49,6 +49,7 @@ with Create_Entry;
 with Create_File_Chooser;
 with Create_Font_Chooser;
 with Create_Flow_Box;
+with Create_Fixed;
 with Create_Frame;
 with Create_Header_Bar;
 with Create_Info_Bar;
@@ -195,6 +196,8 @@ package body Demo_Registry is
         ("Layout/Boxes", Create_Box.Run'Access, Create_Box.Help'Access),
       To_Demo
         ("Layout/Frames", Create_Frame.Run'Access, Create_Frame.Help'Access),
+      To_Demo
+        ("Layout/Fixed", Create_Fixed.Run'Access, Create_Fixed.Help'Access),
       To_Demo
         ("Layout/Scrolled Window",
          Create_Scrolled.Run'Access,
