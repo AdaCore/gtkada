@@ -419,6 +419,7 @@ binding = (
     "Gtk.EventControllerScroll",
     "Gtk.Expander",
     "----GtkExpanderAccessible",  # We do not support atk
+    "Gtk.FileDialog",
     "--Gtk.FileChooserDialog", # Obsolescent
     "--Gtk.FileChooserNative", # Obsolescent
     "--Gtk.FileChooserWidget", # Obsolescent
