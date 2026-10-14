@@ -1,0 +1,7 @@
+# ============================================================
+#   GtkVolumeButton
+# ============================================================
+
+[doc]
+group = "Numeric/Text Data Entry"
+gtkada_demo = "create_range.adb"

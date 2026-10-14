@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -21,8 +21,9 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with GNAT.Strings;
+
 with Glib;              use Glib;
-with Gtk;               use Gtk;
 with Gtk.Adjustment;    use Gtk.Adjustment;
 with Gtk.Box;           use Gtk.Box;
 with Gtk.Enums;         use Gtk.Enums;
@@ -40,15 +41,16 @@ package body Create_Range is
 
    function Help return String is
    begin
-      return "A @bGtk_Range@B selects a value in an interval; less precise"
-        & " but faster to use than a @bGtk_Spin_Button@B. The"
-        & " @bGtk_Scrollbar@B below is also a @bGtk_Range@B, just without a"
-        & " visible value."
+      return "The scale, scrollbar and scale button share one"
+        & " @bGtk_Adjustment@B. Changing any of them updates the other"
+        & " two immediately, without an explicit callback."
         & ASCII.LF
-        & "Both here share the same @bGtk_Adjustment@B, so moving one"
-        & " updates the other with no explicit callback. The scrollbar"
-        & " updates live as you drag it, while the range only updates when"
-        & " you release the mouse.";
+        & "A @bGtk_Scale_Button@B opens a popup scale and selects its"
+        & " icon from the list passed to @bGtk_New@B or @bSet_Icons@B."
+        & ASCII.LF
+        & "The separate @bGtk_Volume_Button@B supplies volume icons"
+        & " and a range from 0 to 1. It is deprecated since GTK 4.10;"
+        & " new applications can use a scale button with volume icons.";
    end Help;
 
    ---------
@@ -56,59 +58,65 @@ package body Create_Range is
    ---------
 
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
-      Box1         : Gtk_Box;
-      Box2         : Gtk_Box;
+      Main_Box     : Gtk_Box;
       Adjustment   : Gtk_Adjustment;
       Scale        : Gtk_Scale;
       Scrollbar    : Gtk_Scrollbar;
 
-      Box3         : Gtk_Box;
+      Buttons      : Gtk_Box;
       Label        : Gtk_Label;
       Scale_Button : Gtk_Scale_Button;
       Vol_Button   : Gtk_Volume_Button;
+      Icons        : GNAT.Strings.String_List :=
+        (new String'("audio-volume-muted-symbolic"),
+         new String'("audio-volume-high-symbolic"),
+         new String'("audio-volume-low-symbolic"),
+         new String'("audio-volume-medium-symbolic"));
 
    begin
       Set_Label (Frame, "Range");
 
-      Gtk_New_Vbox (Box1, False, 0);
-      Add (Frame, Box1);
+      Gtk_New (Main_Box, Orientation_Vertical, 10);
+      Main_Box.Set_Margin_Start (10);
+      Main_Box.Set_Margin_End (10);
+      Main_Box.Set_Margin_Top (10);
+      Main_Box.Set_Margin_Bottom (10);
+      Frame.Set_Child (Main_Box);
 
-      Gtk_New_Vbox (Box2, False, 10);
-      Set_Border_Width (Box2, 10);
-      Pack_Start (Box1, Box2, False, False, 0);
-
-      Gtk_New (Adjustment, 0.0, 0.0, 101.0, 0.1, 1.0, 1.0);
-      Gtk_New_Hscale (Scale, Adjustment);
+      Gtk_New (Adjustment, 50.0, 0.0, 100.0, 0.1, 1.0, 0.0);
+      Gtk_New (Scale, Orientation_Horizontal, Adjustment);
       Scale.Set_Size_Request (150, 80);
       Set_Digits (Scale, 1);
       Set_Draw_Value (Scale, True);
       Set_Value_Pos (Scale, Pos_Bottom);
-      Pack_Start (Box2, Scale, True, True, 0);
+      Main_Box.Append (Scale);
 
       for I in 0 .. 10 loop
          Add_Mark (Scale, Gdouble (I) * 10.0, Pos_Top, I'Img);
       end loop;
 
-      Gtk_New_Hscrollbar (Scrollbar, Adjustment);
-      Pack_Start (Box2, Scrollbar, True, True, 0);
+      Gtk_New (Scrollbar, Orientation_Horizontal, Adjustment);
+      Main_Box.Append (Scrollbar);
 
-      Gtk_New_Hbox (Box3, False, 10);
-      Pack_Start (Box2, Box3, True, True, 0);
+      Gtk_New (Buttons, Orientation_Horizontal, 10);
+      Main_Box.Append (Buttons);
 
       Gtk_New (Label, "Scale button:");
-      Pack_Start (Box3, Label, False, False, 0);
+      Buttons.Append (Label);
 
-      Gtk_New (Scale_Button, Icon_Size_Button, 0.0, 100.0, 2.0,
-               Icons => (1 .. 0 => null));
-      Pack_Start (Box3, Scale_Button, False, False, 0);
+      Gtk_New (Scale_Button, 0.0, 100.0, 2.0, Icons);
+      for Icon of Icons loop
+         GNAT.Strings.Free (Icon);
+      end loop;
+      Scale_Button.Set_Adjustment (Adjustment);
+      Buttons.Append (Scale_Button);
 
       Gtk_New (Label, "Volume button:");
-      Pack_Start (Box3, Label, False, False, 0);
+      Buttons.Append (Label);
 
       Gtk_New (Vol_Button);
-      Pack_Start (Box3, Vol_Button, False, False, 0);
-
-      Show_All (Frame);
+      Vol_Button.Set_Value (0.5);
+      Buttons.Append (Vol_Button);
    end Run;
 
 end Create_Range;

@@ -1,0 +1,12 @@
+# ============================================================
+#   GtkScaleButton
+# ============================================================
+
+[doc]
+group = "Numeric/Text Data Entry"
+gtkada_demo = "create_range.adb"
+
+# G_TYPE_STRV is not supported by Glib.Properties. Use Set_Icons instead.
+[[property]]
+id = "icons"
+bind = false

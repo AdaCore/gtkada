@@ -68,6 +68,7 @@ with Create_Pixbuf;
 with Create_Reparent;
 with Create_Read_More;
 with Create_Revealer;
+with Create_Range;
 with Create_Scale;
 with Create_Scrolled;
 with Create_Shortcuts;
@@ -232,6 +233,8 @@ package body Demo_Registry is
         ("Revealer",
          Create_Revealer.Run'Access,
          Create_Revealer.Help'Access),
+      To_Demo
+        ("Range", Create_Range.Run'Access, Create_Range.Help'Access),
       To_Demo
         ("Scales", Create_Scale.Run'Access, Create_Scale.Help'Access),
       To_Demo

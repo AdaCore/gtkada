@@ -549,7 +549,7 @@ binding = (
     "Gtk.Revealer",
     "Gtk.Scale",
     "----GtkScaleAccessible",  # We do not support atk
-    "--Gtk.ScaleButton",
+    "Gtk.ScaleButton",
     "Gtk.SearchBar",
     "Gtk.SearchEntry",
     "--GtkSelectionData",
@@ -611,7 +611,7 @@ binding = (
     "--GtkVPaned",
     "--GtkVScrollbar",
     "--Gtk.Viewport",
-    "--Gtk.VolumeButton",
+    "Gtk.VolumeButton",
     "Gtk.Widget",
     "--Gtk.WidgetClass",
     "Gtk.Window",

@@ -109,12 +109,11 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_gl` | `Gtk.GLArea`. Its `Epoxy`, `OpenGL` and `Create_GL.GLSL` dependencies are demo-local sources and fine |
   | `create_notebook` | `Gtk.Combo_Box_Text`, `Gtk.Image`, `Gdk.Pixbuf` (bound), `Gtk.Handlers` *(gtk3)*, plus `Common`. `Gtk.Notebook` itself is bound |
   | `create_opacity` | `Common` |
-  | `create_range` | `Gtk.Scale_Button`, `Gtk.Scrollbar`, `Gtk.Volume_Button` |
 
   Only `create_fixed`, `create_gestures` and `create_gl` are blocked
   purely on bindings Step 2 already tracks. Every
   other package wants at least one unit no upstream demo needs and Step 2
-  therefore never schedules (`Gtk.Calendar`, the combo/scale/scrollbar
+  therefore never schedules (`Gtk.Calendar`, the combo
   family, `Gtk.Container`, `Gtk.Clipboard`, `Gtk.Selection_Data`,
   `Gtk.Target_List`, the `Gdk.*` gtk3 units, `Gtkada.Printing`, the handler
   packages), so these need scheduling as ports in their own right.
