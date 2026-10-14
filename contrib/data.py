@@ -460,7 +460,7 @@ binding = (
     "--Gtk.IconTheme",
     "--Gtk.IconView",
     "----GtkIconViewAccessible",  # We do not support atk
-    "--Gtk.Image",
+    "Gtk.Image",
     "----GtkImageAccessible",  # We do not support atk
     "----GtkImageCellAccessible",  # We do not support atk
     "--GtkImageMenuItem",
