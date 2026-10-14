@@ -424,6 +424,7 @@ binding = (
     "Gtk.GestureLongPress",
     "Gtk.GesturePan",
     "Gtk.GestureRotate",
+    "Gtk.GraphicsOffload",
     "Gtk.GestureSingle",
     "Gtk.DragSource",
     "Gtk.GestureSwipe",
