@@ -421,6 +421,7 @@ binding = (
     "----GtkExpanderAccessible",  # We do not support atk
     "Gtk.FileDialog",
     "Gtk.FileLauncher",
+    "Gtk.UriLauncher",
     "--Gtk.FileChooserDialog", # Obsolescent
     "--Gtk.FileChooserNative", # Obsolescent
     "--Gtk.FileChooserWidget", # Obsolescent
