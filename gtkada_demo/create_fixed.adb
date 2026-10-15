@@ -1,7 +1,7 @@
 ------------------------------------------------------------------------------
 --               GtkAda - Ada95 binding for the Gimp Toolkit                --
 --                                                                          --
---                     Copyright (C) 1998-2018, AdaCore                     --
+--                     Copyright (C) 1998-2026, AdaCore                     --
 --                                                                          --
 -- This library is free software;  you can redistribute it and/or modify it --
 -- under terms of the  GNU General Public License  as published by the Free --
@@ -23,7 +23,6 @@
 
 with Gtk.Button; use Gtk.Button;
 with Gtk.Fixed; use Gtk.Fixed;
-with Gtk; use Gtk;
 
 package body Create_Fixed is
 
@@ -33,16 +32,12 @@ package body Create_Fixed is
 
    function Help return String is
    begin
-      return "@bGtk_Fixed@B is the only container that does not do any layout "
-        & "for you. Instead, you can place the children at the exact "
-        & "coordinates you want, as in this example."
+      return "@bGtk_Fixed@B places children at explicit coordinates, "
+        & "as shown by the labels on these four buttons."
         & ASCII.LF
-        & "It is not recommended to use this container, since you have to "
-        & "handle the resizing of the window yourself, and nothing is done "
-        & "for you."
-        & ASCII.LF
-        & "If you need to use this container, it probably means that the "
-        & "design of your application is not correct and should be rethought.";
+        & "The positions stay the same when the window is resized. "
+        & "Prefer layout containers such as Gtk_Box or Gtk_Grid when "
+        & "children should adapt to window sizes, fonts or translations.";
    end Help;
 
    ---------
@@ -57,21 +52,19 @@ package body Create_Fixed is
       Gtk.Frame.Set_Label (Frame, "Fixed");
 
       Gtk_New (Fix);
-      Add (Frame, Fix);
+      Frame.Set_Child (Fix);
 
       Gtk_New (Button, "(10, 10)");
-      Put (Fix, Button, 10, 10);
+      Put (Fix, Button, 10.0, 10.0);
 
       Gtk_New (Button, "(135, 123)");
-      Put (Fix, Button, 135, 123);
+      Put (Fix, Button, 135.0, 123.0);
 
       Gtk_New (Button, "(265, 243)");
-      Put (Fix, Button, 265, 243);
+      Put (Fix, Button, 265.0, 243.0);
 
       Gtk_New (Button, "(165, 243)");
-      Put (Fix, Button, 165, 243);
-
-      Show_All (Frame);
+      Put (Fix, Button, 165.0, 243.0);
    end Run;
 
 end Create_Fixed;

@@ -83,7 +83,7 @@ with Demo_Registry;
 --  Create_Canvas_View_Links, Create_Canvas_View_Minimap,
 --  Create_Canvas_View_Routes, Create_Canvas_View_Rtrees, Create_Clipboard,
 --  Create_Cursors, Create_Dnd, Create_File_Selection,
---  Create_Fixed, Create_Gestures, Create_Gtkada_Dialog,
+--  Create_Gestures, Create_Gtkada_Dialog,
 --  Create_Main_Loop, Create_MDI, Create_Notebook,
 --  Create_Opacity, Create_Pixbuf,
 --  Create_Selection, Create_Sources,
