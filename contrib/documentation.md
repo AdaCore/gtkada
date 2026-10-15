@@ -570,6 +570,7 @@ Bind a `<record>` (or `<union>`) as an Ada record type.
 | `name`  | string | **Required.** Field name as it appears in the GIR.   |
 | `ctype` | string | Override the C type for the field.                   |
 | `type`  | string | Override the Ada type directly (takes precedence over `ctype`). |
+| `text`  | string | Hand-written field type representation               |
 
 #### `[[record.union]]` — union discriminant mapping
 

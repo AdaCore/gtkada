@@ -428,6 +428,7 @@ binding = (
     "Gtk.GestureSingle",
     "Gtk.DragSource",
     "Gtk.GestureSwipe",
+    "Gtk.GestureStylus",
     "Gtk.GestureZoom",
     "--Gtk.GLArea",
     "Gtk.Grid",

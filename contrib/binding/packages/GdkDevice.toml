@@ -7,6 +7,13 @@ ada_access_root = true
 [[enum]]
 ctype = "GdkInputSource"
 
+[[record]]
+ctype = "GdkTimeCoord"
+
+[[record.field]]
+name = "axes"
+text = "Gdouble_Array (Gdk_Axis_Use'Pos (Gdk_Axis_Use'First) .. Gdk_Axis_Use'Pos (Gdk_Axis_Use'Last) - 1)"
+
 [[list]]
 ctype = "GdkDevice*"
 ada   = "Device_List"
@@ -38,3 +45,9 @@ use = false
 [[extra.with_body]]
 pkg = "Gdk.Display"
 use = false
+
+[[extra.spec]]
+text = '''
+   type Gdk_Time_Coord_Array is array (Natural range <>) of Gdk_Time_Coord;
+   type Gdk_Time_Coord_Array_Access is access Gdk_Time_Coord_Array;
+'''

@@ -1,0 +1,178 @@
+# ============================================================
+#   GtkGestureStylus
+# ============================================================
+
+[[extra.with_spec]]
+pkg = "Gdk.Device"
+
+[[extra.with_body]]
+pkg = "Interfaces.C.Pointers"
+use = false
+
+[[method]]
+id = "gtk_gesture_stylus_get_axis"
+body = '''
+      function Internal
+         (Self  : System.Address;
+          Axis  : Gdk.Enums.Gdk_Axis_Use;
+          Value : out Gdouble) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_gesture_stylus_get_axis");
+   begin
+      return Internal (Get_Object (Self), Axis, Value) /= 0;'''
+
+[[method.parameter]]
+name = "value"
+type = "Gdouble"
+direction = "out"
+
+[[method]]
+id = "gtk_gesture_stylus_get_axes"
+bind = false # manual implementation
+
+[[method]]
+id = "gtk_gesture_stylus_get_backlog"
+bind = false # manual implementation
+
+[[extra.spec]]
+text = '''
+   function Get_Axes
+      (Self   : not null access Gtk_Gesture_Stylus_Record;
+       Axes   : Gdk_Axis_Use_Array;
+       Values : out Gdouble_Array) return Boolean
+         with Pre =>
+           Axes'Length > 1
+           and then Axes (Axes'Last) = Gdk.Enums.Gdk_Axis_Ignore
+           and then (for all I in Axes'Range =>
+                          I = Axes'Last
+                            or else Axes (I) /= Gdk.Enums.Gdk_Axis_Ignore)
+            and then Values'Length = Axes'Length - 1;
+   --  Returns the current values for the requested Axes.
+   --  This function must be called from the handler of one of the
+   --  [signalGtk.GestureStylus::down], [signalGtk.GestureStylus::motion],
+   --  [signalGtk.GestureStylus::up] or [signalGtk.GestureStylus::proximity]
+   --  signals.
+   --  @param Axes array of requested axes, terminated with
+   --  Gdk.Enums.Gdk_Axis_Ignore
+   --  @param Values return location for the axis values
+   --  @return True if there is a current value for the axes
+
+   function Get_Backlog
+      (Self    : not null access Gtk_Gesture_Stylus_Record;
+       Backlog : out Gdk.Device.Gdk_Time_Coord_Array_Access)
+       return Boolean;
+   --  Returns the accumulated backlog of tracking information.
+   --  By default, GTK will limit rate of input events. On stylus input where
+   --  accuracy of strokes is paramount, this function returns the accumulated
+   --  coordinate/timing state before the emission of the current
+   --  [Gtk.GestureStylus::motion] signal.
+   --  This function may only be called within a
+   --  [signalGtk.GestureStylus::motion] signal handler, the state given in
+   --  this signal and obtainable through [methodGtk.GestureStylus.get_axis]
+   --  express the latest (most up-to-date) state in motion history.
+   --  The Backlog is provided in chronological order.
+   --  @param Backlog coordinates and times for the backlog events.
+   --  Should be freed by caller.
+   --  @return True if there is a backlog to unfold in the current state.
+'''
+
+[extra]
+body = '''
+   --------------
+   -- Get_Axes --
+   --------------
+
+   function Get_Axes
+      (Self   : not null access Gtk_Gesture_Stylus_Record;
+       Axes   : Gdk_Axis_Use_Array;
+       Values : out Gdouble_Array) return Boolean
+   is
+      use Interfaces.C;
+      type Aliased_Gdouble_Array is array (Natural range <>) of aliased Gdouble;
+      pragma Convention (C, Aliased_Gdouble_Array);
+      package P is new Interfaces.C.Pointers
+        (Natural, Gdouble, Aliased_Gdouble_Array, 0.0);
+      use P;
+
+      function Internal
+         (Self       : System.Address;
+          Axes       : System.Address;
+          Acc_Values : out P.Pointer) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_gesture_stylus_get_axes");
+      Acc_Values : P.Pointer := null;
+      Acc_Result : Glib.Gboolean;
+   begin
+      Acc_Result := Internal (Get_Object (Self), Axes'Address, Acc_Values);
+
+      if Acc_Result /= 0 then
+         declare
+            Arr : constant Gdouble_Array := Gdouble_Array (P.Value (Acc_Values, Axes'Length - 1));
+         begin
+            Glib.g_free (Acc_Values.all'Address);
+            Values := Arr;
+         end;
+         return True;
+
+      else
+         if Acc_Values /= null then
+            Glib.g_free (Acc_Values.all'Address);
+         end if;
+         return False;
+      end if;
+   end Get_Axes;
+
+   -----------------
+   -- Get_Backlog --
+   -----------------
+
+   function Get_Backlog
+      (Self    : not null access Gtk_Gesture_Stylus_Record;
+       Backlog : out Gdk.Device.Gdk_Time_Coord_Array_Access)
+       return Boolean
+   is
+      use Interfaces.C;
+      use System;
+      type Guint_Access is access Guint;
+      type Time_Coord_Array is array (Natural range <>) of aliased Gdk_Time_Coord;
+      pragma Convention (C, Time_Coord_Array);
+      package P is new Interfaces.C.Pointers
+        (Natural, Gdk_Time_Coord, Time_Coord_Array, (0, 0, (others => 0.0)));
+      use P;
+
+      type Time_Coord_Array_Access is access Time_Coord_Array;
+
+      function Internal
+         (Self        : System.Address;
+          Acc_Backlog : out P.Pointer;
+          Acc_N_Elems : out Guint) return Glib.Gboolean;
+      pragma Import (C, Internal, "gtk_gesture_stylus_get_backlog");
+      Acc_Backlog     : P.Pointer := null;
+      Acc_N_Elems     : Guint;
+      Elems           : Natural;
+      Tmp_Return      : Glib.Gboolean;
+   begin
+      Backlog := null;
+
+      Tmp_Return := Internal (Get_Object (Self), Acc_Backlog, Acc_N_Elems);
+      if Tmp_Return /= 0 then
+         Elems := Natural (Acc_N_Elems);
+         declare
+            Arr : constant Gdk_Time_Coord_Array :=
+              Gdk_Time_Coord_Array
+               (P.Value (Acc_Backlog, ptrdiff_t (Elems)));
+         begin
+            Glib.g_free (Acc_Backlog.all'Address);
+            Backlog := new Gdk_Time_Coord_Array (1 .. Elems);
+            Backlog.all := Arr;
+         end;
+
+         return True;
+
+      else
+         if Acc_Backlog /= null then
+            Glib.g_free (Acc_Backlog.all'Address);
+         end if;
+
+         return False;
+      end if;
+   end Get_Backlog;
+'''

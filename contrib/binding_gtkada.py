@@ -20,7 +20,7 @@ except ImportError:
 import xml.etree.ElementTree as ET
 from typing import Any, Optional
 
-from adaformat import AdaType, CType, GObject, List, naming, Enum, Package, Record
+from adaformat import AdaType, CType, RecordFieldCustomType, GObject, List, naming, Enum, Package, Record
 
 # A parsed TOML table (tomllib.load() produces plain nested dicts, with no
 # wrapper class of its own).
@@ -233,10 +233,15 @@ class GtkAdaPackage(object):
                 override_fields = {}
 
                 for field in rec.get("field", []):
-                    override_fields[field["name"]] = (
-                        AdaType(field["type"]) if field.get("type") else
-                        naming.type(name="", cname=field["ctype"])
-                    )
+                    if field.get("text"):
+                        override_fields[field["name"]] = (
+                            RecordFieldCustomType(field["text"])
+                        )
+                    else:
+                        override_fields[field["name"]] = (
+                            AdaType(field["type"]) if field.get("type") else
+                            naming.type(name="", cname=field["ctype"])
+                        )
 
                 unions = []
                 for union in rec.get("union", []):

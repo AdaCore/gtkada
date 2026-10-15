@@ -317,6 +317,19 @@ package body Gdk.Device is
       return Internal (Get_Object (Self)) /= 0;
    end Has_Bidi_Layouts;
 
+   ----------------------
+   -- From_Object_Free --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gdk_Time_Coord) return Gdk_Time_Coord
+   is
+      Result : constant Gdk_Time_Coord := B.all;
+   begin
+      Glib.g_free (B.all'Address);
+      return Result;
+   end From_Object_Free;
+
    function Cb_To_Address is new Ada.Unchecked_Conversion
      (Cb_Gdk_Device_Void, System.Address);
    function Address_To_Cb is new Ada.Unchecked_Conversion

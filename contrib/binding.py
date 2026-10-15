@@ -3679,6 +3679,7 @@ end "+";"""
                     print(" generated record is most certainly incorrect")
 
                 if ftype is not None:
+                    add_with = not isinstance(ftype, RecordFieldCustomType)
                     if ftype.ada in ("GSList", "GList") and private:
                         ftype = "System.Address"
                         default_value = "System.Null_Address"
@@ -3686,7 +3687,8 @@ end "+";"""
                         default_value = ftype.default_record_field_value
                         ftype = ftype.record_field_type(pkg=self.pkg)
 
-                    self.pkg.add_with(package_name(ftype))
+                    if add_with:
+                        self.pkg.add_with(package_name(ftype))
                     fields.append((naming.case(name), ftype, default_value))
 
         assert self.pkg is not None

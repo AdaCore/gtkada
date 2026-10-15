@@ -111,6 +111,27 @@ package Gdk.Enums is
    Gdk_Hyper_Mask : constant Gdk_Modifier_Type := 134217728;
    Gdk_Meta_Mask : constant Gdk_Modifier_Type := 268435456;
 
+   type Gdk_Axis_Use is (
+      Gdk_Axis_Ignore,
+      Gdk_Axis_X,
+      Gdk_Axis_Y,
+      Gdk_Axis_Delta_X,
+      Gdk_Axis_Delta_Y,
+      Gdk_Axis_Pressure,
+      Gdk_Axis_Xtilt,
+      Gdk_Axis_Ytilt,
+      Gdk_Axis_Wheel,
+      Gdk_Axis_Distance,
+      Gdk_Axis_Rotation,
+      Gdk_Axis_Slider,
+      Gdk_Axis_Last);
+   pragma Convention (C, Gdk_Axis_Use);
+   --  Defines how device axes are interpreted by GTK.
+   --
+   --  Note that the X and Y axes are not really needed; pointer devices
+   --  report their location via the x/y members of events regardless. Whether
+   --  X and Y are present as axes depends on the GDK backend.
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -127,6 +148,10 @@ package Gdk.Enums is
       new Generic_Internal_Flags_Property (Gdk_Modifier_Type);
    type Property_Gdk_Modifier_Type is new Gdk_Modifier_Type_Properties.Property;
 
+   package Gdk_Axis_Use_Properties is
+      new Generic_Internal_Discrete_Property (Gdk_Axis_Use);
+   type Property_Gdk_Axis_Use is new Gdk_Axis_Use_Properties.Property;
+
    ----------------------
    -- GtkAda additions --
    ----------------------
@@ -139,5 +164,8 @@ package Gdk.Enums is
    pragma Import (C, Gdk_Modifier_Type_Get_Type, "gdk_modifier_type_get_type");
    --  The GType of the Gdk_Modifier_Type flags class, for use with
    --  Glib.Properties.Creation.Flags_Class_From_Type.
+
+   type Gdk_Axis_Use_Array is array (Natural range <>) of Gdk_Axis_Use;
+   pragma Convention (C, Gdk_Axis_Use_Array);
 
 end Gdk.Enums;
