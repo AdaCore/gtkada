@@ -71,4 +71,34 @@ package body Gtk.Fixed_Layout is
       end if;
    end Initialize;
 
+   -------------------
+   -- Get_Transform --
+   -------------------
+
+   function Get_Transform
+      (Child : not null access Gtk_Fixed_Layout_Child_Record)
+       return Gsk.Transform.Gsk_Transform
+   is
+      function Internal (Child : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_fixed_layout_child_get_transform");
+   begin
+      return From_Object (Internal (Get_Object (Child)));
+   end Get_Transform;
+
+   -------------------
+   -- Set_Transform --
+   -------------------
+
+   procedure Set_Transform
+      (Child     : not null access Gtk_Fixed_Layout_Child_Record;
+       Transform : Gsk.Transform.Gsk_Transform)
+   is
+      procedure Internal
+         (Child     : System.Address;
+          Transform : System.Address);
+      pragma Import (C, Internal, "gtk_fixed_layout_child_set_transform");
+   begin
+      Internal (Get_Object (Child), Get_Object (Transform));
+   end Set_Transform;
+
 end Gtk.Fixed_Layout;

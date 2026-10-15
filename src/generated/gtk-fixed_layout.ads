@@ -56,6 +56,7 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
 with Glib.Properties;    use Glib.Properties;
+with Gsk.Transform;      use Gsk.Transform;
 with Gtk.Layout_Manager; use Gtk.Layout_Manager;
 
 package Gtk.Fixed_Layout is
@@ -85,6 +86,22 @@ package Gtk.Fixed_Layout is
 
    function Fixed_Layout_Child_Get_Type return Glib.GType;
    pragma Import (C, Fixed_Layout_Child_Get_Type, "gtk_fixed_layout_child_get_type");
+
+   -------------
+   -- Methods --
+   -------------
+
+   function Get_Transform
+      (Child : not null access Gtk_Fixed_Layout_Child_Record)
+       return Gsk.Transform.Gsk_Transform;
+   --  Retrieves the transformation of the child.
+   --  @return a `GskTransform`. Has transfer-ownership='none'.
+
+   procedure Set_Transform
+      (Child     : not null access Gtk_Fixed_Layout_Child_Record;
+       Transform : Gsk.Transform.Gsk_Transform);
+   --  Sets the transformation of the child of a `GtkFixedLayout`.
+   --  @param Transform a `GskTransform`
 
    ----------------
    -- Properties --
