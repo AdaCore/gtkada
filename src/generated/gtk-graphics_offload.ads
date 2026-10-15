@@ -78,8 +78,8 @@ package Gtk.Graphics_Offload is
    type Gtk_Graphics_Offload is access all Gtk_Graphics_Offload_Record'Class;
 
    type Gtk_Graphics_Offload_Enabled is (
-      Graphics_Offload_Enabled,
-      Graphics_Offload_Disabled);
+      Enabled,
+      Disabled);
    pragma Convention (C, Gtk_Graphics_Offload_Enabled);
    --  Represents the state of graphics offloading.
 

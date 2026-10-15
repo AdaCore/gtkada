@@ -4,3 +4,4 @@
 
 [[enum]]
 ctype = "GtkGraphicsOffloadEnabled"
+prefix = "GTK_GRAPHICS_OFFLOAD_"
