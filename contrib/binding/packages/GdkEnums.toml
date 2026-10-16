@@ -12,6 +12,9 @@ asbitfield = true
 [[enum]]
 ctype = "GdkModifierType"
 
+[[enum]]
+ctype = "GdkAxisUse"
+
 [[extra.spec]]
 text = '''
    Gdk_Modifier_Mask : constant Gdk_Modifier_Type := 16#1C00_1F0F#;
@@ -22,6 +25,9 @@ text = '''
    pragma Import (C, Gdk_Modifier_Type_Get_Type, "gdk_modifier_type_get_type");
    --  The GType of the Gdk_Modifier_Type flags class, for use with
    --  Glib.Properties.Creation.Flags_Class_From_Type.
+
+   type Gdk_Axis_Use_Array is array (Natural range <>) of Gdk_Axis_Use;
+   pragma Convention (C, Gdk_Axis_Use_Array);   
 '''
 
 [[extra.with_spec]]

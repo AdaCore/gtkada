@@ -134,7 +134,9 @@ package Glib is
    -- Some Access types --
    -----------------------
 
+   type Gdouble_Access is access Gdouble;
    type Guchar_Array_Access is access Guchar_Array;
+   type Gdouble_Array_Access is access Gdouble_Array;
 
    type String_Ptr is access all String;
 

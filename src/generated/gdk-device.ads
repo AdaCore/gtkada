@@ -54,6 +54,19 @@ package Gdk.Device is
    pragma Convention (C, Gdk_Input_Source);
    --  An enumeration describing the type of an input device in general terms.
 
+   type Gdk_Time_Coord is record
+      Time : Guint32;
+      Flags : Gdk.Device_Tool.Gdk_Axis_Flags;
+      Axes : Gdouble_Array (Gdk_Axis_Use'Pos (Gdk_Axis_Use'First) .. Gdk_Axis_Use'Pos (Gdk_Axis_Use'Last) - 1);
+   end record;
+   pragma Convention (C, Gdk_Time_Coord);
+   --  Stores a single event in a motion history.
+   --
+   --  To check whether an axis is present, check whether the corresponding
+   --  flag from the [flagsGdk.AxisFlags] enumeration is set in the Flags To
+   --  access individual axis values, use the values of the values of the
+   --  [enumGdk.AxisUse] enumerations as indices.
+
    function Convert (R : Gdk.Gdk_Device) return System.Address;
    function Convert (R : System.Address) return Gdk.Gdk_Device;
    package Device_List is new Generic_List (Gdk.Gdk_Device);
@@ -223,6 +236,20 @@ package Gdk.Device is
    --  languages are in use on the keyboard.
    --  This is only relevant for keyboard devices.
    --  @return True if there are layouts with both directions, False otherwise
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   function From_Object_Free
+     (B : not null access Gdk_Time_Coord) return Gdk_Time_Coord;
+   pragma Inline (From_Object_Free);
+   --  Return the underlying object and free the pointer.
+   --  This is meant to be used internally by GtkAda,
+   --  and should not in general be called by user code.
+
+   type Gdk_Time_Coord_Array is array (Natural range <>) of Gdk_Time_Coord;
+   type Gdk_Time_Coord_Array_Access is access Gdk_Time_Coord_Array;
 
    ----------------
    -- Properties --

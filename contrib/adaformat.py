@@ -536,6 +536,21 @@ class CType(object):
         return False
 
 
+class RecordFieldCustomType(CType):
+
+    def __init__(self, ada: str, property: Optional[str] = None):
+#        CType.__init__(self, ada, property)
+        self.ada = None
+        self.default_record_field_value = None
+        self.fieldtype = ada
+
+    def record_field_type(self, pkg=None) -> str:
+        return self.fieldtype
+    
+    def add_with(self, pkg: Package, specs: bool = False):
+        pass
+
+
 class Enum(CType):
 
     def __init__(self, ada: str, property: Optional[str] = None):
