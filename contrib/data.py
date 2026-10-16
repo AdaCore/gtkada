@@ -450,6 +450,7 @@ binding = (
     "----GtkImageAccessible",  # We do not support atk
     "----GtkImageCellAccessible",  # We do not support atk
     "--GtkImageMenuItem",
+    "Gtk.Inscription",
     "Gtk.InfoBar",
     "--GtkInvisible",
     "Gtk.Label",
