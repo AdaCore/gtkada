@@ -1,0 +1,7 @@
+# ============================================================
+#   GtkInscription
+# ============================================================
+
+[[enum]]
+ctype = "GtkInscriptionOverflow"
+prefix = "GTK_INSCRIPTION_OVERFLOW_"
