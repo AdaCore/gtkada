@@ -1,0 +1,49 @@
+# ============================================================
+#   GtkIconTheme
+# ============================================================
+
+[[enum]]
+ctype = "GtkIconLookupFlags"
+asbitfield = true
+
+[[property]]
+id = "icon-names"
+bind = false # string-vector property that is not supported
+
+[[property]]
+id = "resource-path"
+bind = false # string-vector property that is not supported
+
+[[property]]
+id = "search-path"
+bind = false # string-vector property that is not supported
+
+[[extra.with_body]]
+pkg = "Interfaces.C.Pointers"
+use = false
+
+[[method]]
+id = "gtk_icon_theme_get_icon_sizes"
+body = '''
+      use Interfaces.C;
+      type Aliased_Gint_Array is array (Natural range <>) of aliased Gint;
+      pragma Convention (C, Aliased_Gint_Array);
+      package P is new Interfaces.C.Pointers
+        (Natural, Gint, Aliased_Gint_Array, 0);
+      use P;
+      
+      function Internal
+         (Self      : System.Address;
+          Icon_Name : Gtkada.Types.Chars_Ptr) return P.Pointer;
+      pragma Import (C, Internal, "gtk_icon_theme_get_icon_sizes");
+      Tmp_Icon_Name : Gtkada.Types.Chars_Ptr := New_String (Icon_Name);
+      Tmp_Return    : P.Pointer;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Icon_Name);
+      Free (Tmp_Icon_Name);
+      declare
+         Arr : constant Gint_Array := Gint_Array (P.Value (Tmp_Return));
+      begin
+         Glib.g_free (Tmp_Return.all'Address);
+         return Arr;
+      end;'''

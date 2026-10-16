@@ -527,28 +527,6 @@ def _get_type(
         )
 
     else:
-        t = nodeOrType.find(ntype)
-        if t is not None:
-            if t.get("name") == "none":
-                return None
-
-            ctype_name = t.get(ctype_qname)
-            const = False
-            if ctype_name:
-                if "const " in ctype_name:
-                    ctype_name = ctype_name.replace("const ", "")
-                    const = True
-            return naming.type(
-                name=t.get("name"),
-                cname=ctype_name,
-                userecord=userecord,
-                transfer_ownership=transfer_ownership,
-                allow_access=allow_access,
-                allow_none=allow_none,
-                pkg=pkg,
-                const=const,
-            )
-
         a = nodeOrType.find(narray)
         if a is not None:
             t = a.find(ntype)
@@ -571,6 +549,28 @@ def _get_type(
                     userecord=userecord,
                     allow_access=allow_access,
                 )
+
+        t = nodeOrType.find(ntype)
+        if t is not None:
+            if t.get("name") == "none":
+                return None
+
+            ctype_name = t.get(ctype_qname)
+            const = False
+            if ctype_name:
+                if "const " in ctype_name:
+                    ctype_name = ctype_name.replace("const ", "")
+                    const = True
+            return naming.type(
+                name=t.get("name"),
+                cname=ctype_name,
+                userecord=userecord,
+                transfer_ownership=transfer_ownership,
+                allow_access=allow_access,
+                allow_none=allow_none,
+                pkg=pkg,
+                const=const,
+            )
 
         a = nodeOrType.find(nvarargs)
         if a is not None:

@@ -82,10 +82,18 @@ package body Gtkada.Bindings is
    function To_String_List_And_Free
      (C : chars_ptr_array_access) return String_List
    is
-      Result : constant String_List := To_String_List (C.all);
+      Empty : constant String_List (1 .. 0) := (others => null);
    begin
-      g_strfreev (C);
-      return Result;
+      if C = null then
+         return Empty;
+      else
+         declare
+            Result : constant String_List := To_String_List (C.all);
+         begin
+            g_strfreev (C);
+            return Result;
+         end;
+      end if;
    end To_String_List_And_Free;
 
    --------------------

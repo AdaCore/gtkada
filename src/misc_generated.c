@@ -262,6 +262,14 @@ void gtkada_Shortcut_Manager_set_remove_controller(GtkShortcutManagerInterface* 
     iface->remove_controller = handler;
 }
 
+void gtkada_Symbolic_Paintable_set_snapshot_symbolic(GtkSymbolicPaintableInterface* iface, void* handler) {
+    iface->snapshot_symbolic = handler;
+}
+
+void gtkada_Symbolic_Paintable_set_snapshot_with_weight(GtkSymbolicPaintableInterface* iface, void* handler) {
+    iface->snapshot_with_weight = handler;
+}
+
 void gtkada_Tree_Drag_Dest_set_drag_data_received(GtkTreeDragDestIface* iface, void* handler) {
     iface->drag_data_received = handler;
 }

@@ -1,0 +1,103 @@
+# ============================================================
+#   GtkSymbolicPaintable
+# ============================================================
+
+[[method]]
+id = "gtk_symbolic_paintable_snapshot_symbolic"
+bind = false # manual binding
+
+[[method]]
+id = "gtk_symbolic_paintable_snapshot_with_weight"
+bind = false # manual binding
+
+[[extra.with_spec]]
+pkg = "Gdk.Snapshot"
+
+[[extra.with_spec]]
+pkg = "Gdk.RGBA"
+
+[[extra.spec]]
+text = '''
+   procedure Snapshot_Symbolic
+      (Self     : Gtk_Symbolic_Paintable;
+       Snapshot : not null access Gdk.Snapshot.Gdk_Snapshot_Record'Class;
+       Width    : Gdouble;
+       Height   : Gdouble;
+       Colors   : array_of_Gdk_RGBA);
+   --  Snapshots the paintable with the given colors.
+   --  If less than 5 colors are provided, GTK will pad the array with default
+   --  colors.
+   --  Since: gtk+ 4.6
+   --  @param Snapshot a `GdkSnapshot` to snapshot to
+   --  @param Width width to snapshot in
+   --  @param Height height to snapshot in
+   --  @param Colors a pointer to an array of colors
+
+   procedure Snapshot_With_Weight
+      (Self     : Gtk_Symbolic_Paintable;
+       Snapshot : not null access Gdk.Snapshot.Gdk_Snapshot_Record'Class;
+       Width    : Gdouble;
+       Height   : Gdouble;
+       Colors   : array_of_Gdk_RGBA;
+       Weight   : Gdouble);
+   --  Snapshots the paintable with the given colors and weight.
+   --  If less than 5 colors are provided, GTK will pad the array with default
+   --  colors.
+   --  Since: gtk+ 4.22
+   --  @param Snapshot a `GdkSnapshot` to snapshot to
+   --  @param Width width to snapshot in
+   --  @param Height height to snapshot in
+   --  @param Colors a pointer to an array of colors
+   --  @param Weight The font weight to use (from 1 to 1000, with default 400)
+'''
+
+[extra]
+body = '''
+   -----------------------
+   -- Snapshot_Symbolic --
+   -----------------------
+
+   procedure Snapshot_Symbolic
+      (Self     : Gtk_Symbolic_Paintable;
+       Snapshot : not null access Gdk.Snapshot.Gdk_Snapshot_Record'Class;
+       Width    : Gdouble;
+       Height   : Gdouble;
+       Colors   : array_of_Gdk_RGBA)
+   is
+      procedure Internal
+         (Self     : Gtk_Symbolic_Paintable;
+          Snapshot : System.Address;
+          Width    : Gdouble;
+          Height   : Gdouble;
+          Colors   : System.Address;
+          N_Colors : Gsize);
+      pragma Import (C, Internal, "gtk_symbolic_paintable_snapshot_symbolic");
+   begin
+      Internal (Self, Get_Object (Snapshot), Width, Height, Colors'Address, Gsize (Colors'Length));
+   end Snapshot_Symbolic;
+
+   --------------------------
+   -- Snapshot_With_Weight --
+   --------------------------
+
+   procedure Snapshot_With_Weight
+      (Self     : Gtk_Symbolic_Paintable;
+       Snapshot : not null access Gdk.Snapshot.Gdk_Snapshot_Record'Class;
+       Width    : Gdouble;
+       Height   : Gdouble;
+       Colors   : array_of_Gdk_RGBA;
+       Weight   : Gdouble)
+   is
+      procedure Internal
+         (Self     : Gtk_Symbolic_Paintable;
+          Snapshot : System.Address;
+          Width    : Gdouble;
+          Height   : Gdouble;
+          Colors   : System.Address;
+          N_Colors : Gsize;
+          Weight   : Gdouble);
+      pragma Import (C, Internal, "gtk_symbolic_paintable_snapshot_with_weight");
+   begin
+      Internal (Self, Get_Object (Snapshot), Width, Height, Colors'Address, Gsize (Colors'Length), Weight);
+   end Snapshot_With_Weight;
+'''

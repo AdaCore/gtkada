@@ -50,6 +50,7 @@ interfaces = (
     "Gtk.SelectionModel",
     "Gtk.ShortcutManager",
     "Gtk.StyleProvider",
+    "Gtk.SymbolicPaintable",
     "--Gtk.ToolShell",
     "Gtk.TreeDragDest",
     "Gtk.TreeDragSource",
@@ -443,18 +444,14 @@ binding = (
     "--GtkIconInfo",
     "--GtkIconSet",
     "--GtkIconSource",
-    "--Gtk.IconTheme",
-    "--Gtk.IconView",
-    "----GtkIconViewAccessible",  # We do not support atk
+    "Gtk.IconPaintable",
+    "Gtk.IconTheme",
+    "--Gtk.IconView", # Obsolescent
     "Gtk.Image",
-    "----GtkImageAccessible",  # We do not support atk
-    "----GtkImageCellAccessible",  # We do not support atk
     "--GtkImageMenuItem",
     "Gtk.Inscription",
     "Gtk.InfoBar",
-    "--GtkInvisible",
     "Gtk.Label",
-    "----GtkLabelAccessible",  # We do not support atk
 
            # GtkLayoutManager and GtkLayoutChild are the abstract bases of
            # the layout managers. They must be listed before their
