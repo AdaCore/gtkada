@@ -22,6 +22,8 @@
 ------------------------------------------------------------------------------
 
 with "gtkada";
+with "../gtkada_shared";
+
 --  TRANSITION
 --  with "task_project/task_project";
 
@@ -38,6 +40,15 @@ project GtkAda_Demo is
       --  subprogram specs not required in gtkada_demo
       for Switches ("Ada") use ("-g", "-O0", "-gnaty-s", "-gnatwJ");
    end Compiler;
+
+   package Naming is
+      case GtkAda_Shared.So_Ext is
+         when ".dll" =>
+            for Body ("Create_Print") use "create_print__win.adb";
+         when others =>
+            null;
+      end case;
+   end Naming;
 
    package Linker is
       for Switches ("gtkada_demo.adb") use ("-lepoxy");
