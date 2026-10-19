@@ -5,7 +5,7 @@
 [[method]]
 id = "::parsing-error"
 bind = false
-#  GtkCssSection is not bound yet.
+#  Incorrect code generated for the signal
 
 [[method]]
 id = "gtk_css_provider_load_from_data"
