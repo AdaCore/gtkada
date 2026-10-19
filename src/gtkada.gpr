@@ -88,6 +88,15 @@ library project GtkAda is
          null;
    end case;
 
+   case GtkAda_Shared.So_Ext is
+      when ".dll" =>
+         for Excluded_Source_Files use
+            ("gtk-page_setup_unix_dialog.ads",
+             "gtk-page_setup_unix_dialog.adb");
+      when others =>
+         for Excluded_Source_Files use ();
+   end case;
+
    package Builder  renames GtkAda_Shared.Builder;
    package Naming   renames GtkAda_Shared.Naming;
    package Compiler renames GtkAda_Shared.Compiler;
