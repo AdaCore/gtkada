@@ -86,14 +86,11 @@ package body Gtk.Gesture_Stylus is
    is
       use Interfaces.C;
       use System;
-      type Guint_Access is access Guint;
       type Time_Coord_Array is array (Natural range <>) of aliased Gdk_Time_Coord;
       pragma Convention (C, Time_Coord_Array);
       package P is new Interfaces.C.Pointers
         (Natural, Gdk_Time_Coord, Time_Coord_Array, (0, 0, (others => 0.0)));
       use P;
-
-      type Time_Coord_Array_Access is access Time_Coord_Array;
 
       function Internal
         (Self        : System.Address;
