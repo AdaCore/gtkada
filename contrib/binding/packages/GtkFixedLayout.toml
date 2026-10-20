@@ -1,4 +1,5 @@
 [doc]
+gtkada_demo = "create_fixed_layout.adb"
 group = "Layout containers"
 
 [[parameter]]

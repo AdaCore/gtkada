@@ -1,0 +1,69 @@
+# ============================================================
+#   GskStroke
+# ============================================================
+
+[doc]
+gtkada_demo = "create_paths.adb"
+
+# GIR's float arrays require a wrapper, not a scalar float parameter.
+[[method]]
+id = "gsk_stroke_get_dash"
+bind = false
+[[method]]
+id = "gsk_stroke_set_dash"
+bind = false
+
+[[extra.spec]]
+text = '''
+   type Dash_Array is array (Natural range <>) of Interfaces.C.C_float;
+   pragma Convention (C, Dash_Array);
+
+   procedure Set_Dash (Self : Gsk_Stroke; Dash : Dash_Array);
+
+   function Get_Dash (Self : Gsk_Stroke) return Dash_Array;
+   --  Returns a copy; it stays valid after modifying or freeing Self.
+'''
+
+[[extra.with_body]]
+pkg = "Ada.Unchecked_Conversion"
+use = false
+
+[extra]
+body = '''
+   procedure Set_Dash (Self : Gsk_Stroke; Dash : Dash_Array) is
+      procedure Internal
+        (Self : System.Address; Dash : System.Address; N : Gsize);
+      pragma Import (C, Internal, "gsk_stroke_set_dash");
+   begin
+      Internal (Get_Object (Self), Dash'Address, Gsize (Dash'Length));
+   end Set_Dash;
+
+   function Get_Dash (Self : Gsk_Stroke) return Dash_Array is
+      function Internal (Self : System.Address; N : out Gsize)
+        return System.Address;
+      pragma Import (C, Internal, "gsk_stroke_get_dash");
+      N : Gsize;
+      Data : constant System.Address := Internal (Get_Object (Self), N);
+   begin
+      if N = 0 then
+         return (1 .. 0 => 0.0);
+      end if;
+      declare
+         subtype Buffer is Dash_Array (1 .. Natural (N));
+         type Buffer_Access is access all Buffer;
+         function Convert is new Ada.Unchecked_Conversion
+           (System.Address, Buffer_Access);
+      begin
+         return Convert (Data).all;
+      end;
+   end Get_Dash;
+'''
+
+[[method]]
+id = "gsk_stroke_equal"
+[[method.parameter]]
+name = "stroke1"
+ctype = "GskStroke*"
+[[method.parameter]]
+name = "stroke2"
+ctype = "GskStroke*"

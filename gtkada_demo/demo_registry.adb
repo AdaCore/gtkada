@@ -53,6 +53,7 @@ with Create_File_Chooser;
 with Create_Font_Chooser;
 with Create_Flow_Box;
 with Create_Fixed;
+with Create_Fixed_Layout;
 with Create_Frame;
 with Create_GL;
 with Create_Header_Bar;
@@ -69,6 +70,7 @@ with Create_Paned;
 with Create_Password_Entry;
 with Create_Print;
 with Create_Progress;
+with Create_Paths;
 with Create_Pixbuf;
 with Create_Reparent;
 with Create_Read_More;
@@ -107,6 +109,27 @@ package body Demo_Registry is
    Demos : constant array (Positive range <>) of Demo_Info :=
      (To_Demo
         ("Printing/Printing", Create_Print.Run'Access, Create_Print.Help'Access),
+      To_Demo
+        ("Path/Fill and Stroke", Create_Paths.Run_Fill_And_Stroke'Access,
+         Create_Paths.Help_Fill_And_Stroke'Access),
+      To_Demo
+        ("Path/Maze", Create_Paths.Run_Maze'Access,
+         Create_Paths.Help_Maze'Access),
+      To_Demo
+        ("Path/Spinner", Create_Paths.Run_Spinner'Access,
+         Create_Paths.Help_Spinner'Access),
+      To_Demo
+        ("Path/Sweep", Create_Paths.Run_Sweep'Access,
+         Create_Paths.Help_Sweep'Access),
+      To_Demo
+        ("Path/Text", Create_Paths.Run_Text'Access,
+         Create_Paths.Help_Text'Access),
+      To_Demo
+        ("Path/Walk", Create_Paths.Run_Walk'Access,
+         Create_Paths.Help_Walk'Access),
+      To_Demo
+        ("Path/Path Explorer", Create_Paths.Run_Explorer'Access,
+         Create_Paths.Help_Explorer'Access),
       To_Demo
         ("Assistant", Create_Assistant.Run'Access, Create_Assistant.Help'Access),
       To_Demo
@@ -204,6 +227,13 @@ package body Demo_Registry is
         ("Layout/Frames", Create_Frame.Run'Access, Create_Frame.Help'Access),
       To_Demo
         ("Layout/Fixed", Create_Fixed.Run'Access, Create_Fixed.Help'Access),
+      To_Demo
+        ("Fixed Layout/Cube", Create_Fixed_Layout.Run_Cube'Access,
+         Create_Fixed_Layout.Help_Cube'Access),
+      To_Demo
+        ("Fixed Layout/Transformations",
+         Create_Fixed_Layout.Run_Transformations'Access,
+         Create_Fixed_Layout.Help_Transformations'Access),
       To_Demo
         ("Layout/Scrolled Window",
          Create_Scrolled.Run'Access,
