@@ -48,6 +48,99 @@ package Gsk.Enums is
    --  multiplication `C = A * B`, `category(C) = MIN (category(A),
    --  category(B))`.
 
+   type Gsk_Fill_Rule is (
+      Gsk_Fill_Rule_Winding,
+      Gsk_Fill_Rule_Even_Odd);
+   pragma Convention (C, Gsk_Fill_Rule);
+   --  Specifies how paths are filled.
+   --
+   --  Whether or not a point is included in the fill is determined by taking
+   --  a ray from that point to infinity and looking at intersections with the
+   --  path. The ray can be in any direction, as long as it doesn't pass
+   --  through the end point of a segment or have a tricky intersection such as
+   --  intersecting tangent to the path.
+   --
+   --  (Note that filling is not actually implemented in this way. This is
+   --  just a description of the rule that is applied.)
+   --
+   --  New entries may be added in future versions.
+
+   type Gsk_Line_Cap is (
+      Gsk_Line_Cap_Butt,
+      Gsk_Line_Cap_Round,
+      Gsk_Line_Cap_Square);
+   pragma Convention (C, Gsk_Line_Cap);
+   --  Specifies how to render the start and end points of contours or dashes
+   --  when stroking.
+   --
+   --  The default line cap style is `GSK_LINE_CAP_BUTT`.
+   --
+   --  New entries may be added in future versions.
+   --
+   --  <figure> <picture> <source srcset="caps-dark.png"
+   --  media="(prefers-color-scheme: dark)"> <img alt="Line Cap Styles"
+   --  src="caps-light.png"> </picture> <figcaption>GSK_LINE_CAP_BUTT,
+   --  GSK_LINE_CAP_ROUND, GSK_LINE_CAP_SQUARE</figcaption> </figure>
+
+   type Gsk_Line_Join is (
+      Gsk_Line_Join_Miter,
+      Gsk_Line_Join_Round,
+      Gsk_Line_Join_Bevel);
+   pragma Convention (C, Gsk_Line_Join);
+   --  Specifies how to render the junction of two lines when stroking.
+   --
+   --  The default line join style is `GSK_LINE_JOIN_MITER`.
+   --
+   --  New entries may be added in future versions.
+   --
+   --  <figure> <picture> <source srcset="join-dark.png"
+   --  media="(prefers-color-scheme: dark)"> <img alt="Line Join Styles"
+   --  src="join-light.png"> </picture> <figcaption>GSK_LINE_JOINT_MITER,
+   --  GSK_LINE_JOINT_ROUND, GSK_LINE_JOIN_BEVEL</figcaption> </figure>
+
+   type Gsk_Path_Direction is (
+      Gsk_Path_From_Start,
+      Gsk_Path_To_Start,
+      Gsk_Path_To_End,
+      Gsk_Path_From_End);
+   pragma Convention (C, Gsk_Path_Direction);
+   --  Used to pick one of the four tangents at a given point on the path.
+   --
+   --  Note that the directions for Gsk_Path_From_Start/Gsk_Path_To_End and
+   --  Gsk_Path_To_Start/Gsk_Path_From_End will coincide for smooth points.
+   --  Only sharp turns will exhibit four different directions.
+   --
+   --  <picture> <source srcset="directions-dark.png"
+   --  media="(prefers-color-scheme: dark)"> <img alt="Path Tangents"
+   --  src="directions-light.png"> </picture>
+
+   type Gsk_Path_Operation is (
+      Gsk_Path_Move,
+      Gsk_Path_Close,
+      Gsk_Path_Line,
+      Gsk_Path_Quad,
+      Gsk_Path_Cubic,
+      Gsk_Path_Conic);
+   pragma Convention (C, Gsk_Path_Operation);
+   --  Describes the segments of a `GskPath`.
+   --
+   --  More values may be added in the future.
+
+   type Gsk_Path_Foreach_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gsk_Path_Foreach_Flags);
+   --  Flags that can be passed to gsk_path_foreach to influence what kinds of
+   --  operations the path is decomposed into.
+   --
+   --  By default, [methodGsk.Path.foreach] will only emit a path with all
+   --  operations flattened to straight lines to allow for maximum
+   --  compatibility. The only operations emitted will be `GSK_PATH_MOVE`,
+   --  `GSK_PATH_LINE` and `GSK_PATH_CLOSE`.
+
+   Gsk_Path_Foreach_Allow_Only_Lines : constant Gsk_Path_Foreach_Flags := 0;
+   Gsk_Path_Foreach_Allow_Quad : constant Gsk_Path_Foreach_Flags := 1;
+   Gsk_Path_Foreach_Allow_Cubic : constant Gsk_Path_Foreach_Flags := 2;
+   Gsk_Path_Foreach_Allow_Conic : constant Gsk_Path_Foreach_Flags := 4;
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -55,5 +148,29 @@ package Gsk.Enums is
    package Gsk_Transform_Category_Properties is
       new Generic_Internal_Discrete_Property (Gsk_Transform_Category);
    type Property_Gsk_Transform_Category is new Gsk_Transform_Category_Properties.Property;
+
+   package Gsk_Fill_Rule_Properties is
+      new Generic_Internal_Discrete_Property (Gsk_Fill_Rule);
+   type Property_Gsk_Fill_Rule is new Gsk_Fill_Rule_Properties.Property;
+
+   package Gsk_Line_Cap_Properties is
+      new Generic_Internal_Discrete_Property (Gsk_Line_Cap);
+   type Property_Gsk_Line_Cap is new Gsk_Line_Cap_Properties.Property;
+
+   package Gsk_Line_Join_Properties is
+      new Generic_Internal_Discrete_Property (Gsk_Line_Join);
+   type Property_Gsk_Line_Join is new Gsk_Line_Join_Properties.Property;
+
+   package Gsk_Path_Direction_Properties is
+      new Generic_Internal_Discrete_Property (Gsk_Path_Direction);
+   type Property_Gsk_Path_Direction is new Gsk_Path_Direction_Properties.Property;
+
+   package Gsk_Path_Operation_Properties is
+      new Generic_Internal_Discrete_Property (Gsk_Path_Operation);
+   type Property_Gsk_Path_Operation is new Gsk_Path_Operation_Properties.Property;
+
+   package Gsk_Path_Foreach_Flags_Properties is
+      new Generic_Internal_Flags_Property (Gsk_Path_Foreach_Flags);
+   type Property_Gsk_Path_Foreach_Flags is new Gsk_Path_Foreach_Flags_Properties.Property;
 
 end Gsk.Enums;

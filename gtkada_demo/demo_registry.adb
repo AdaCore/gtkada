@@ -69,6 +69,7 @@ with Create_Paned;
 with Create_Password_Entry;
 with Create_Print;
 with Create_Progress;
+with Create_Paths;
 with Create_Pixbuf;
 with Create_Reparent;
 with Create_Read_More;
@@ -107,6 +108,27 @@ package body Demo_Registry is
    Demos : constant array (Positive range <>) of Demo_Info :=
      (To_Demo
         ("Printing/Printing", Create_Print.Run'Access, Create_Print.Help'Access),
+      To_Demo
+        ("Path/Fill and Stroke", Create_Paths.Run_Fill_And_Stroke'Access,
+         Create_Paths.Help_Fill_And_Stroke'Access),
+      To_Demo
+        ("Path/Maze", Create_Paths.Run_Maze'Access,
+         Create_Paths.Help_Maze'Access),
+      To_Demo
+        ("Path/Spinner", Create_Paths.Run_Spinner'Access,
+         Create_Paths.Help_Spinner'Access),
+      To_Demo
+        ("Path/Sweep", Create_Paths.Run_Sweep'Access,
+         Create_Paths.Help_Sweep'Access),
+      To_Demo
+        ("Path/Text", Create_Paths.Run_Text'Access,
+         Create_Paths.Help_Text'Access),
+      To_Demo
+        ("Path/Walk", Create_Paths.Run_Walk'Access,
+         Create_Paths.Help_Walk'Access),
+      To_Demo
+        ("Path/Path Explorer", Create_Paths.Run_Explorer'Access,
+         Create_Paths.Help_Explorer'Access),
       To_Demo
         ("Assistant", Create_Assistant.Run'Access, Create_Assistant.Help'Access),
       To_Demo

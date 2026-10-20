@@ -59,8 +59,7 @@ land, not a contract.
 
 | area | demos |
 | --- | --- |
-| `Gsk.Path` + `Gsk.Stroke` + `Gsk.PathBuilder` | `Path/Fill and Stroke`, `Maze`, `Spinner`, `Sweep`, `Text`, `Walk`, `Path Explorer` (7) |
-| `Gsk.Transform` | `Fixed Layout/Cube`, `Fixed Layout/Transformations`. `Gtk.Fixed_Layout` is bound, but both demos position children through `Gsk.Transform`, and there is no `Gsk` binding in the tree at all — no generated sources, no `contrib/binding/packages/` entry, nothing in `contrib/data.py`. A new area, shared with the `Gsk.Path` row. |
+| `Gsk.Transform` | `Fixed Layout/Cube`, `Fixed Layout/Transformations`. |
 | `GtkConstraint` + `GtkConstraintGuide` (see the `GtkConstraintLayout.toml` entry above) | `Constraints/Simple Constraints`, `Interactive`, `VFL`, `Builder` (4) |
 | GSK renderers and demo ports | `OpenGL/Gears`, `Shadertoy` |
 | `GtkMediaStream` / `GtkVideo` | `Video Player`, `Paintable/Media Stream` |
@@ -270,9 +269,7 @@ GtkWidget.toml:
 GtkFixedLayoutChild.toml:
 
 - `gtk_fixed_layout_child_get_transform` and `gtk_fixed_layout_child_set_transform`
-  are currently disabled because they take or return a `GskTransform*` and GSK
-  is not bound yet (no `Gsk-4.0.gir` is loaded). Re-enable them when GSK is
-  bound.
+  should be reviewed now that `Gsk.Transform` is bound.
 
 GtkConstraintLayout.toml:
 
@@ -506,8 +503,6 @@ Re-enable the matching `bind = false` entries in
   `append_repeating_linear/radial_gradient`) — need `Gsk.ColorStop`.
 - `append_border` / `append_inset_shadow` / `append_outset_shadow` /
   `push_rounded_clip` — need `Gsk.RoundedRect`.
-- `append_fill` / `append_stroke` / `push_fill` / `push_stroke` — need
-  `Gsk.Path`, `Gsk.FillRule`, `Gsk.Stroke`.
 - `append_node` / `to_node` / `transform` — need `Gsk.RenderNode` /
   `Gsk.Transform`.
 - `append_scaled_texture` — needs `Gsk.ScalingFilter`.

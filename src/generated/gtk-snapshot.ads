@@ -52,6 +52,9 @@ with Graphene.Rect;     use Graphene.Rect;
 with Graphene.Size;     use Graphene.Size;
 with Graphene.Vec3;     use Graphene.Vec3;
 with Graphene.Vec4;     use Graphene.Vec4;
+with Gsk.Enums;         use Gsk.Enums;
+with Gsk.Path;          use Gsk.Path;
+with Gsk.Stroke;        use Gsk.Stroke;
 with Gtk.Style_Context; use Gtk.Style_Context;
 with Interfaces.C;      use Interfaces.C;
 with Pango.Enums;       use Pango.Enums;
@@ -102,6 +105,19 @@ package Gtk.Snapshot is
    --  @param Color the color to draw
    --  @param Bounds the bounds for the new node
 
+   procedure Append_Fill
+      (Self      : not null access Gtk_Snapshot_Record;
+       Path      : Gsk.Path.Gsk_Path;
+       Fill_Rule : Gsk.Enums.Gsk_Fill_Rule;
+       Color     : Gdk.RGBA.Gdk_RGBA);
+   --  A convenience method to fill a path with a color.
+   --  See [methodGtk.Snapshot.push_fill] if you need to fill a path with more
+   --  complex content than a color.
+   --  Since: gtk+ 4.14
+   --  @param Path The path describing the area to fill
+   --  @param Fill_Rule The fill rule to use
+   --  @param Color the color to fill the path with
+
    procedure Append_Layout
       (Self   : not null access Gtk_Snapshot_Record;
        Layout : not null access Pango.Layout.Pango_Layout_Record'Class;
@@ -125,6 +141,19 @@ package Gtk.Snapshot is
    --  @param Bounds the bounds for the new node
    --  @param Nth the index of the copy, with 0 being the latest copy, 1 being
    --  the copy before that, and so on.
+
+   procedure Append_Stroke
+      (Self   : not null access Gtk_Snapshot_Record;
+       Path   : Gsk.Path.Gsk_Path;
+       Stroke : Gsk.Stroke.Gsk_Stroke;
+       Color  : Gdk.RGBA.Gdk_RGBA);
+   --  A convenience method to stroke a path with a color.
+   --  See [methodGtk.Snapshot.push_stroke] if you need to stroke a path with
+   --  more complex content than a color.
+   --  Since: gtk+ 4.14
+   --  @param Path The path describing the area to fill
+   --  @param Stroke The stroke attributes
+   --  @param Color the color to fill the path with
 
    procedure Append_Texture
       (Self    : not null access Gtk_Snapshot_Record;
@@ -205,6 +234,20 @@ package Gtk.Snapshot is
    --  [methodGtk.Snapshot.pop].
    --  @param Progress progress between 0.0 and 1.0
 
+   procedure Push_Fill
+      (Self      : not null access Gtk_Snapshot_Record;
+       Path      : Gsk.Path.Gsk_Path;
+       Fill_Rule : Gsk.Enums.Gsk_Fill_Rule);
+   --  Fills the area given by Path and Fill_Rule with an image and discards
+   --  everything outside of it.
+   --  The image is recorded until the next call to [methodGtk.Snapshot.pop].
+   --  If you want to fill the path with a color,
+   --  [methodGtk.Snapshot.append_fill] than rendering new ones, use
+   --  [methodGtk.Snapshot.append_fill] may be more convenient.
+   --  Since: gtk+ 4.14
+   --  @param Path The path describing the area to fill
+   --  @param Fill_Rule The fill rule to use
+
    procedure Push_Opacity
       (Self    : not null access Gtk_Snapshot_Record;
        Opacity : Gdouble);
@@ -221,6 +264,22 @@ package Gtk.Snapshot is
    --  @param Bounds the bounds within which to repeat
    --  @param Child_Bounds the bounds of the child or null to use the full
    --  size of the collected child node
+
+   procedure Push_Stroke
+      (Self   : not null access Gtk_Snapshot_Record;
+       Path   : Gsk.Path.Gsk_Path;
+       Stroke : Gsk.Stroke.Gsk_Stroke);
+   --  Strokes the given Path with the attributes given by Stroke and an
+   --  image.
+   --  The image is recorded until the next call to [methodGtk.Snapshot.pop].
+   --  Note that the strokes are subject to the same transformation as
+   --  everything else, so uneven scaling will cause horizontal and vertical
+   --  strokes to have different widths.
+   --  If you want to stroke the path with a color,
+   --  [methodGtk.Snapshot.append_stroke] may be more convenient.
+   --  Since: gtk+ 4.14
+   --  @param Path The path to stroke
+   --  @param Stroke The stroke attributes
 
    procedure Render_Background
       (Self    : not null access Gtk_Snapshot_Record;

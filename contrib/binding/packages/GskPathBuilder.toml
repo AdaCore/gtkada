@@ -1,0 +1,58 @@
+# ============================================================
+#   GskPathBuilder
+# ============================================================
+
+[doc]
+gtkada_demo = "create_paths.adb"
+
+[[method]]
+id = "gsk_path_builder_add_rounded_rect"
+bind = false # Gsk.RoundedRect is a separate area
+
+[[method]]
+id = "gsk_path_builder_free_to_path"
+bind = false # consuming entry point; use To_Path followed by Unref
+
+[[extra.with_body]]
+pkg = "Glib.Object"
+
+[[method]]
+id = "gsk_path_builder_add_cairo_path"
+bind = false
+[[method]]
+id = "gsk_path_builder_get_current_point"
+bind = false
+
+[[extra.with_spec]]
+pkg = "Cairo"
+[[extra.with_spec]]
+pkg = "Graphene.Point"
+
+[[extra.spec]]
+text = '''
+   procedure Add_Cairo_Path (Self : Gsk_Path_Builder; Path : Cairo.Cairo_Path_Access);
+   --  Copies a path obtained from Cairo.Copy_Path; the caller retains it.
+
+   function Get_Current_Point (Self : Gsk_Path_Builder)
+     return Graphene.Point.Graphene_Point_T;
+   --  Returns a copy of the builder's current point.
+'''
+
+[extra]
+body = '''
+   procedure Add_Cairo_Path (Self : Gsk_Path_Builder; Path : Cairo.Cairo_Path_Access) is
+      procedure Internal (Self : System.Address; Path : Cairo.Cairo_Path_Access);
+      pragma Import (C, Internal, "gsk_path_builder_add_cairo_path");
+   begin
+      Internal (Get_Object (Self), Path);
+   end Add_Cairo_Path;
+
+   function Get_Current_Point (Self : Gsk_Path_Builder)
+     return Graphene.Point.Graphene_Point_T is
+      function Internal (Self : System.Address)
+        return access constant Graphene.Point.Graphene_Point_T;
+      pragma Import (C, Internal, "gsk_path_builder_get_current_point");
+   begin
+      return Internal (Get_Object (Self)).all;
+   end Get_Current_Point;
+'''

@@ -662,6 +662,10 @@ binding = (
     "graphene_vec3_t",
     "graphene_vec4_t",
     "GskTransform",
+    "Gsk.Path",
+    "Gsk.Stroke",
+    "Gsk.PathMeasure",
+    "Gsk.PathBuilder",
 )
 
 # Entries that are bound through manual/TOML glue instead of GIR class lookup.
@@ -828,6 +832,8 @@ naming.exceptions = {
 # namings are needed here
 
 naming.type_exceptions = {
+    # Stack allocated opaque union, bound by hand with its C size/alignment.
+    "GskPathPoint": Record("Gsk.Path_Point.Gsk_Path_Point"),
     "gboolean": Enum("Boolean", "Glib.Properties.Property_Boolean"),
     "_Bool": Enum("Boolean", "Glib.Properties.Property_Boolean"),
     "gdouble": Proxy("Gdouble", "Glib.Properties.Property_Double"),

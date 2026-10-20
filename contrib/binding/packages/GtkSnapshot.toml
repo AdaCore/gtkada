@@ -2,14 +2,8 @@
 #   GtkSnapshot
 # ============================================================
 #
-# Graphene is bound in full, so every subprogram whose types come from
-# Graphene, Gdk.RGBA, Gdk.Texture, Pango, Cairo or the plain scalar types
-# is bound here. What remains suppressed with `bind = false` is the
-# Gsk-dependent set: Gsk is not bound at all (there is no
-# contrib/Gsk-4.0.gir), so anything that transitively needs a Gsk render
-# node, transform, path or enum stays out until that binding exists. Two
-# entry points are suppressed because GTK documents them as unavailable
-# to language bindings.
+# Graphene and GSK path fill/stroke APIs are bound. Other GSK node types
+# remain suppressed below until their dependencies are bound.
 
 # The parent (Gdk.Snapshot) lives in a different .gir file, so the
 # generator cannot resolve its Ada name on its own and emits a bare,
@@ -50,23 +44,6 @@ bind = false  # needs Gsk.RoundedRect
 [[method]]
 id   = "gtk_snapshot_append_outset_shadow"
 bind = false  # needs Gsk.RoundedRect
-
-# --- Path fill / stroke: need Gsk.Path, Gsk.FillRule, Gsk.Stroke ----------
-[[method]]
-id   = "gtk_snapshot_append_fill"
-bind = false  # needs Gsk.Path / Gsk.FillRule
-
-[[method]]
-id   = "gtk_snapshot_append_stroke"
-bind = false  # needs Gsk.Path / Gsk.Stroke
-
-[[method]]
-id   = "gtk_snapshot_push_fill"
-bind = false  # needs Gsk.Path / Gsk.FillRule
-
-[[method]]
-id   = "gtk_snapshot_push_stroke"
-bind = false  # needs Gsk.Path / Gsk.Stroke
 
 # --- Render-node returns: need Gsk.RenderNode -----------------------------
 [[method]]

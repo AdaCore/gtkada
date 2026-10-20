@@ -4,3 +4,21 @@
 
 [[enum]]
 ctype = "GskTransformCategory"
+
+[[enum]]
+ctype = "GskFillRule"
+
+[[enum]]
+ctype = "GskLineCap"
+
+[[enum]]
+ctype = "GskLineJoin"
+
+[[enum]]
+ctype = "GskPathDirection"
+
+[[enum]]
+ctype = "GskPathOperation"
+
+[[enum]]
+ctype = "GskPathForeachFlags"

@@ -104,6 +104,26 @@ package body Gtk.Snapshot is
       Internal (Get_Object (Self), Color, Bounds);
    end Append_Color;
 
+   -----------------
+   -- Append_Fill --
+   -----------------
+
+   procedure Append_Fill
+      (Self      : not null access Gtk_Snapshot_Record;
+       Path      : Gsk.Path.Gsk_Path;
+       Fill_Rule : Gsk.Enums.Gsk_Fill_Rule;
+       Color     : Gdk.RGBA.Gdk_RGBA)
+   is
+      procedure Internal
+         (Self      : System.Address;
+          Path      : System.Address;
+          Fill_Rule : Gsk.Enums.Gsk_Fill_Rule;
+          Color     : Gdk.RGBA.Gdk_RGBA);
+      pragma Import (C, Internal, "gtk_snapshot_append_fill");
+   begin
+      Internal (Get_Object (Self), Get_Object (Path), Fill_Rule, Color);
+   end Append_Fill;
+
    -------------------
    -- Append_Layout --
    -------------------
@@ -139,6 +159,26 @@ package body Gtk.Snapshot is
    begin
       Internal (Get_Object (Self), Bounds, Nth);
    end Append_Paste;
+
+   -------------------
+   -- Append_Stroke --
+   -------------------
+
+   procedure Append_Stroke
+      (Self   : not null access Gtk_Snapshot_Record;
+       Path   : Gsk.Path.Gsk_Path;
+       Stroke : Gsk.Stroke.Gsk_Stroke;
+       Color  : Gdk.RGBA.Gdk_RGBA)
+   is
+      procedure Internal
+         (Self   : System.Address;
+          Path   : System.Address;
+          Stroke : System.Address;
+          Color  : Gdk.RGBA.Gdk_RGBA);
+      pragma Import (C, Internal, "gtk_snapshot_append_stroke");
+   begin
+      Internal (Get_Object (Self), Get_Object (Path), Get_Object (Stroke), Color);
+   end Append_Stroke;
 
    --------------------
    -- Append_Texture --
@@ -271,6 +311,24 @@ package body Gtk.Snapshot is
       Internal (Get_Object (Self), Progress);
    end Push_Cross_Fade;
 
+   ---------------
+   -- Push_Fill --
+   ---------------
+
+   procedure Push_Fill
+      (Self      : not null access Gtk_Snapshot_Record;
+       Path      : Gsk.Path.Gsk_Path;
+       Fill_Rule : Gsk.Enums.Gsk_Fill_Rule)
+   is
+      procedure Internal
+         (Self      : System.Address;
+          Path      : System.Address;
+          Fill_Rule : Gsk.Enums.Gsk_Fill_Rule);
+      pragma Import (C, Internal, "gtk_snapshot_push_fill");
+   begin
+      Internal (Get_Object (Self), Get_Object (Path), Fill_Rule);
+   end Push_Fill;
+
    ------------------
    -- Push_Opacity --
    ------------------
@@ -302,6 +360,24 @@ package body Gtk.Snapshot is
    begin
       Internal (Get_Object (Self), Bounds, Child_Bounds);
    end Push_Repeat;
+
+   -----------------
+   -- Push_Stroke --
+   -----------------
+
+   procedure Push_Stroke
+      (Self   : not null access Gtk_Snapshot_Record;
+       Path   : Gsk.Path.Gsk_Path;
+       Stroke : Gsk.Stroke.Gsk_Stroke)
+   is
+      procedure Internal
+         (Self   : System.Address;
+          Path   : System.Address;
+          Stroke : System.Address);
+      pragma Import (C, Internal, "gtk_snapshot_push_stroke");
+   begin
+      Internal (Get_Object (Self), Get_Object (Path), Get_Object (Stroke));
+   end Push_Stroke;
 
    -----------------------
    -- Render_Background --

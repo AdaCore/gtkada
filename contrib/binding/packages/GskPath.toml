@@ -1,0 +1,55 @@
+# ============================================================
+#   GskPath
+# ============================================================
+
+[doc]
+gtkada_demo = "create_paths.adb"
+
+# Intersection callback needs const record-pointer marshalling.
+[[method]]
+id = "gsk_path_foreach_intersection"
+bind = false
+
+# Pass the whole point buffer to callers; automatic marshalling dereferences
+# it into one point and loses the remaining control points.
+[[method]]
+id = "gsk_path_foreach"
+bind = false
+
+[[extra.spec]]
+text = '''
+   type Gsk_Path_Foreach_Func is access function
+     (Op : Gsk.Enums.Gsk_Path_Operation;
+      Points : access constant Graphene.Point.Graphene_Point_T;
+      N_Points : Gsize; Weight : Interfaces.C.C_float;
+      User_Data : System.Address) return Gboolean;
+   pragma Convention (C, Gsk_Path_Foreach_Func);
+   --  Points is a borrowed C array with N_Points elements, valid during
+   --  the callback only. Return False (0) to stop iteration.
+
+   function Foreach
+     (Self : Gsk_Path; Flags : Gsk.Enums.Gsk_Path_Foreach_Flags;
+      Func : Gsk_Path_Foreach_Func;
+      User_Data : System.Address := System.Null_Address) return Boolean;
+'''
+
+[[extra.with_spec]]
+pkg = "Gsk.Enums"
+[[extra.with_spec]]
+pkg = "Interfaces.C"
+
+[extra]
+body = '''
+   function Foreach
+     (Self : Gsk_Path; Flags : Gsk.Enums.Gsk_Path_Foreach_Flags;
+      Func : Gsk_Path_Foreach_Func;
+      User_Data : System.Address := System.Null_Address) return Boolean is
+      function Internal
+        (Self : System.Address; Flags : Gsk.Enums.Gsk_Path_Foreach_Flags;
+         Func : Gsk_Path_Foreach_Func; User_Data : System.Address)
+         return Gboolean;
+      pragma Import (C, Internal, "gsk_path_foreach");
+   begin
+      return Internal (Get_Object (Self), Flags, Func, User_Data) /= 0;
+   end Foreach;
+'''
