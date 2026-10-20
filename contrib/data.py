@@ -527,8 +527,8 @@ binding = (
     "--GtkRecentChooserMenu",
     "--GtkRecentChooserWidget",
     "--GtkRecentFilter",
-    "--Gtk.RecentInfo",
-    "--Gtk.RecentManager",
+    "Gtk.RecentInfo",
+    "Gtk.RecentManager",
     "Gtk.Revealer",
     "Gtk.Scale",
     "----GtkScaleAccessible",  # We do not support atk

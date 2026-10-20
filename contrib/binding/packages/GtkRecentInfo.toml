@@ -1,0 +1,83 @@
+# ============================================================
+#   GtkRecentInfo
+# ============================================================
+
+# GTK4 timestamps use Glib.Date_Time; retain the boxed Ref return value.
+[doc]
+group = "Recent Files"
+text = """
+Metadata associated with an item in the recently used files list.
+Ref returns an additional reference; release owned references with Unref.
+The dates returned by Get_Added, Get_Modified and Get_Visited are borrowed
+from the manager's database. Take a Glib.Date_Time.Ref before retaining a
+date across changes to that database.
+"""
+
+# C returns a borrowed string of unknown length. Copy it into an unbounded
+# Ada string, and initialize every output for the missing-application case.
+[[extra.with_spec]]
+pkg = "Ada.Strings.Unbounded"
+
+[[extra.with_body]]
+pkg = "Gtkada.Bindings"
+
+[[extra.with_body]]
+pkg = "Gtkada.Types"
+
+[[method]]
+id = "gtk_recent_info_get_application_info"
+body = """
+      function Internal
+         (Self : System.Address;
+          App_Name : Gtkada.Types.Chars_Ptr;
+          App_Exec : access Gtkada.Types.Chars_Ptr;
+          Count : access Guint;
+          Stamp : access System.Address) return Gboolean;
+      pragma Import (C, Internal, "gtk_recent_info_get_application_info");
+      C_Name : Gtkada.Types.Chars_Ptr := New_String (App_Name);
+      C_Exec : aliased Gtkada.Types.Chars_Ptr := Gtkada.Types.Null_Ptr;
+      C_Count : aliased Guint := 0;
+      C_Stamp : aliased System.Address := System.Null_Address;
+      Found : Gboolean;
+   begin
+      Found := Internal
+        (Get_Object (Self), C_Name, C_Exec'Access, C_Count'Access, C_Stamp'Access);
+      Free (C_Name);
+      App_Exec := Ada.Strings.Unbounded.To_Unbounded_String
+        (Gtkada.Bindings.Value_Allowing_Null (C_Exec));
+      Count := C_Count;
+      Stamp := Glib.Date_Time.From_Object (C_Stamp);
+      return Found /= 0;
+"""
+
+[[method.parameter]]
+name = "app_exec"
+type = "Ada.Strings.Unbounded.Unbounded_String"
+
+[method.doc]
+extend = true
+text = """
+App_Exec is copied into an Ada unbounded string. Stamp is borrowed from
+Self. On failure, App_Exec is empty, Count is zero and Stamp is null.
+@return True if the application registered this resource, False otherwise.
+"""
+
+[[method]]
+id = "gtk_recent_info_get_applications"
+[method.doc]
+text = """
+Returns the names of applications that registered this resource. Length,
+when supplied, receives their count. The returned Ada strings belong to
+the caller; free each element with GNAT.Strings.Free.
+@return an Ada list of application names.
+"""
+
+[[method]]
+id = "gtk_recent_info_get_groups"
+[method.doc]
+text = """
+Returns the group names registered for this resource. Length, when
+supplied, receives their count. The returned Ada strings belong to the
+caller; free each element with GNAT.Strings.Free.
+@return an Ada list of group names.
+"""
