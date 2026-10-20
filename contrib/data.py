@@ -23,7 +23,6 @@ enums = (
 interfaces = (
     "Gdk.Paintable",
     "--Gtk.Actionable",
-    "--Gtk.Activatable",
     "Gtk.Accessible",
     "Gtk.AccessibleRange",
     "Gtk.AccessibleText",
@@ -50,7 +49,6 @@ interfaces = (
     "Gtk.ShortcutManager",
     "Gtk.StyleProvider",
     "Gtk.SymbolicPaintable",
-    "--Gtk.ToolShell",
     "Gtk.TreeDragDest",
     "Gtk.TreeDragSource",
     "Gtk.TreeSortable",
@@ -409,16 +407,13 @@ binding = (
     "--Gtk.FileChooserWidget", # Obsolescent
     "Gtk.Fixed",
     "Gtk.FlowBox",
-    "----GtkFlowBoxAccessible",  # We do not support atk
     "Gtk.FlowBoxChild",
-    "----GtkFlowBoxChildAccessible",  # We do not support atk
     "--Gtk.FontButton",
     "--Gtk.FontChooserDialog",
     "--Gtk.FontChooserWidget",
     "Gtk.FontDialog",
     "Gtk.FontDialogButton",
     "Gtk.Frame",
-    "----GtkFrameAccessible",  # We do not support atk
     "Gtk.Gesture",
     "Gtk.GestureClick",
     "Gtk.GestureDrag",
@@ -434,21 +429,11 @@ binding = (
     "Gtk.GLArea",
     "Gtk.Grid",
     "Gtk.GridView",
-    "--GtkHandleBox",
-    "--GtkHButtonBox",
     "Gtk.HeaderBar",
-    "--GtkHPaned",
-    "--GtkHScrollbar",
-    "--GtkHSV",
-    "--GtkIconFactory",
-    "--GtkIconInfo",
-    "--GtkIconSet",
-    "--GtkIconSource",
     "Gtk.IconPaintable",
     "Gtk.IconTheme",
     "--Gtk.IconView", # Obsolescent
     "Gtk.Image",
-    "--GtkImageMenuItem",
     "Gtk.Inscription",
     "Gtk.InfoBar",
     "Gtk.Label",
@@ -483,19 +468,12 @@ binding = (
     "----GtkLockButton",  # requires GPermission
     "--GtkMain",  # Bound through manual_binding
     "--GtkMisc",
-    "--GtkMenu",
-    "--GtkMenuBar",
     "Gtk.MenuButton",
-    "--GtkMenuItem",
-    "--GtkMenuShell",
-    "--GtkMenuToolButton",
     "Gtk.MessageDialog",
     "----GtkMountOperation",  # Requires a lot of GIO
     "Gtk.NativeDialog",
     "Gtk.Notebook",
     "Gtk.NotebookPage",
-    "----GtkNumerableIcon",  # Requires a lot of GIO
-    "--GtkOffscreenWindow",
     "Gtk.Overlay",
     "Gtk.Paned",
     "Gtk.Picture",
@@ -503,7 +481,6 @@ binding = (
     "Gtk.PageSetupUnixDialog",
     "Gtk.PaperSize",
     "Gtk.PasswordEntry",
-    "----GtkPlacesSidebar",  # Requires GFile
     "Gtk.Popover",
     "Gtk.PopoverMenu",
     "Gtk.PopoverMenuBar",
@@ -512,28 +489,15 @@ binding = (
     "Gtk.PrintOperation",
     "Gtk.PrintSettings",
     "Gtk.PrintSetup",
-    "----GtkPlug",  # X11-specific, no binding
     "Gtk.ProgressBar",
-    "--GtkRadioAction",
-    "--GtkRadioButton",
-    "--GtkRadioMenuItem",
-    "--GtkRadioToolButton",
     "Gtk.Range",
-    "----GtkRcStyle",  # manual binding for these deprecated routines
-    "--GtkRecentAction",
-    "--GtkRecentChooserDialog",
-    "--GtkRecentChooserMenu",
-    "--GtkRecentChooserWidget",
-    "--GtkRecentFilter",
     "Gtk.RecentInfo",
     "Gtk.RecentManager",
     "Gtk.Revealer",
     "Gtk.Scale",
-    "----GtkScaleAccessible",  # We do not support atk
     "Gtk.ScaleButton",
     "Gtk.SearchBar",
     "Gtk.SearchEntry",
-    "--GtkSelectionData",
     "Gtk.Separator",
     "--Gtk.ShortcutsWindow",
     "Gtk.SizeGroup",
@@ -545,7 +509,6 @@ binding = (
     "Gtk.NoSelection",     # Implements Gtk.SelectionModel
     "Gtk.SingleSelection", # Implements Gtk.SelectionModel
     "Gtk.Snapshot",
-    "----GtkSocket",  # X11-specific, no binding
     "Gtk.Sorter",
     "Gtk.SortListModel",
     "Gtk.StringList",
@@ -567,7 +530,6 @@ binding = (
     "--Gtk.Statusbar", # Obsolescent
     "Gtk.StyleContext",
     "Gtk.Switch",
-    "--GtkTextAttributes",  # Removed upstream in GTK 4
     "Gtk.TextBuffer",
     "Gtk.TextChildAnchor",
     "Gtk.TextIter",
@@ -587,10 +549,6 @@ binding = (
     "Gtk.TreeViewColumn",
     "Gtk.ToggleButton",
     "Gtk.Tooltip",
-    "--GtkUIManager",
-    "--GtkVButtonBox",
-    "--GtkVPaned",
-    "--GtkVScrollbar",
     "--Gtk.Viewport",
     "Gtk.VolumeButton",
     "Gtk.Widget",
