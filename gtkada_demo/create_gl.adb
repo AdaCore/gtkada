@@ -23,16 +23,19 @@
 
 pragma Ada_2022;
 
+with Ada.Exceptions;
 with Ada.Numerics.Generic_Elementary_Functions;
-with Ada.Text_IO; use Ada.Text_IO;
 with Interfaces.C.Strings;
 
 with Gdk.GLContext;
 with Glib;
+with Glib.Error;
 with Gtk.Box;    use Gtk.Box;
+with Gtk.Enums;  use Gtk.Enums;
 with Gtk.Frame;  use Gtk.Frame;
 with Gtk.GLArea; use Gtk.GLArea;
 with Gtk.GRange;
+with Gtk.Label;  use Gtk.Label;
 with Gtk.Scale;  use Gtk.Scale;
 with Gtk.Widget;
 
@@ -46,10 +49,13 @@ with System.Storage_Elements;
 package body Create_GL is
 
    use type Interfaces.C.ptrdiff_t;
+   use type Glib.Error.GError;
    use type OpenGL.GLfloat;
    use type OpenGL.GLint;
 
    procedure On_Realize (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
+
+   procedure On_Unrealize (Widget : access Gtk.Widget.Gtk_Widget_Record'Class);
 
    procedure On_Resize
      (Widget : access Gtk.GLArea.Gtk_GLArea_Record'Class;
@@ -83,12 +89,12 @@ package body Create_GL is
       ([0.5,  -0.366, 0.0], [0.0, 1.0, 0.0]),
       ([-0.5, -0.366, 0.0], [0.0, 0.0, 1.0])] with Convention => C;
 
-   Program           : Epoxy.GLuint;
-   P_Location        : Epoxy.GLuint;
-   MV_Location       : Epoxy.GLuint;
+   Program           : Epoxy.GLuint := 0;
+   P_Location        : OpenGL.GLint;
+   MV_Location       : OpenGL.GLint;
    Position_Location : Epoxy.GLuint;
    Color_Location    : Epoxy.GLuint;
-   VAO               : aliased Epoxy.GLuint;
+   VAO               : aliased Epoxy.GLuint := 0;
 
    P  : OpenGL.GLfloat_Matrix_4x4 :=
      [[1.0, 0.0, 0.0, 0.0],
@@ -206,17 +212,16 @@ package body Create_GL is
             begin
                Epoxy.glGetShaderInfoLog (Shader, Length, Log_Length, Log_Text);
 
-               Put_Line (Interfaces.C.To_Ada (Log_Text));
+               Epoxy.glDeleteShader (Shader);
+               raise Program_Error with Interfaces.C.To_Ada (Log_Text);
             end;
-
-            raise Program_Error;
          end if;
 
          return Shader;
       end Create_Shader;
 
-      Vertex   : Epoxy.GLuint;
-      Fragment : Epoxy.GLuint;
+      Vertex   : Epoxy.GLuint := 0;
+      Fragment : Epoxy.GLuint := 0;
       Status   : OpenGL.GLint;
 
    begin
@@ -232,13 +237,13 @@ package body Create_GL is
       Epoxy.glGetProgramiv (program, Epoxy.GL_LINK_STATUS, Status);
 
       if Status = Epoxy.GL_FALSE then
-         raise Program_Error;
+         raise Program_Error with "Could not link the GL shader program";
       end if;
 
       P_Location        :=
-        Epoxy.GLuint (Epoxy.glGetUniformLocation (Program, GLSL.P));
+        Epoxy.glGetUniformLocation (Program, GLSL.P);
       MV_Location       :=
-        Epoxy.GLuint (Epoxy.glGetUniformLocation (Program, GLSL.MV));
+        Epoxy.glGetUniformLocation (Program, GLSL.MV);
       Position_Location :=
         Epoxy.GLuint (Epoxy.glGetAttribLocation (Program, GLSL.Position));
       Color_Location    :=
@@ -249,6 +254,13 @@ package body Create_GL is
 
       Epoxy.glDeleteShader (Vertex);
       Epoxy.glDeleteShader (Fragment);
+   exception
+      when others =>
+         Epoxy.glDeleteShader (Vertex);
+         Epoxy.glDeleteShader (Fragment);
+         Epoxy.glDeleteProgram (Program);
+         Program := 0;
+         raise;
    end Initialize_Shaders;
 
    ----------------
@@ -262,9 +274,41 @@ package body Create_GL is
       --  Make OpenGL context of the widget current
       Make_Current (GL);
 
+      if GL.Get_Error /= null then
+         return;
+      end if;
+
       Initialize_Shaders;
       Initialize_Buffers;
+   exception
+      when E : Program_Error =>
+         declare
+            Error : constant Glib.Error.GError := Glib.Error.Error_New
+              (Glib.Quark_From_String ("gtkada-demo-gl"), 0,
+               Ada.Exceptions.Exception_Message (E));
+         begin
+            GL.Set_Error (Error);
+            Glib.Error.Error_Free (Error);
+         end;
    end On_Realize;
+
+   ------------------
+   -- On_Unrealize --
+   ------------------
+
+   procedure On_Unrealize
+     (Widget : access Gtk.Widget.Gtk_Widget_Record'Class)
+   is
+      GL : Gtk_GLArea renames Gtk_GLArea (Widget);
+   begin
+      GL.Make_Current;
+      if GL.Get_Error = null then
+         Epoxy.glDeleteVertexArrays (1, VAO'Access);
+         Epoxy.glDeleteProgram (Program);
+      end if;
+      VAO := 0;
+      Program := 0;
+   end On_Unrealize;
 
    ---------------
    -- On_Render --
@@ -275,16 +319,16 @@ package body Create_GL is
       GLContext : not null access Gdk.GLContext.Gdk_GLContext_Record'Class)
       return Boolean is
       use type OpenGL.GLbitfield;
-      GL : Gtk_GLArea renames Gtk_GLArea (Widget);
+      pragma Unreferenced (Widget, GLContext);
    begin
       Epoxy.glClearColor (0.5, 0.5, 0.5, 1.0);
       Epoxy.glClear (Epoxy.GL_COLOR_BUFFER_BIT + Epoxy.GL_DEPTH_BUFFER_BIT);
 
       Epoxy.glUseProgram (Program);
       Epoxy.glUniformMatrix4fv
-        (OpenGL.GLint (P_Location), 1, Epoxy.GL_FALSE, P);
+        (P_Location, 1, Epoxy.GL_FALSE, P);
       Epoxy.glUniformMatrix4fv
-        (OpenGL.GLint (MV_Location), 1, Epoxy.GL_FALSE, MV);
+        (MV_Location, 1, Epoxy.GL_FALSE, MV);
       Epoxy.glBindVertexArray (VAO);
 
       Epoxy.glDrawArrays (Epoxy.GL_TRIANGLES, 0, 3);
@@ -306,10 +350,14 @@ package body Create_GL is
    is
       use type Glib.Gint;
 
-      Aspect : constant OpenGL.GLfloat :=
-        OpenGL.GLfloat (Width) / OpenGL.GLfloat (Height);
+      pragma Unreferenced (Widget);
+      Aspect : OpenGL.GLfloat;
 
    begin
+      if Width <= 0 or else Height <= 0 then
+         return;
+      end if;
+      Aspect := OpenGL.GLfloat (Width) / OpenGL.GLfloat (Height);
       if Width < Height then
          P (1, 1) := 1.0;
          P (2, 2) := Aspect;
@@ -327,6 +375,7 @@ package body Create_GL is
    procedure On_Value_Changed
      (Self : access Gtk.GRange.Gtk_Range_Record'Class)
    is
+      pragma Unreferenced (Self);
       package Elementary_Functions is
         new Ada.Numerics.Generic_Elementary_Functions (OpenGL.GLfloat);
       use Elementary_Functions;
@@ -371,7 +420,7 @@ package body Create_GL is
          [S2,    -C2S1,         C2C1,          0.0],
          [0.0, 0.0, 0.0, 1.0]];
 
-      GL_Area.Queue_Draw;
+      GL_Area.Queue_Render;
    end On_Value_Changed;
 
    ---------
@@ -381,37 +430,48 @@ package body Create_GL is
    procedure Run (Frame : access Gtk.Frame.Gtk_Frame_Record'Class) is
       use type Glib.Gdouble;
 
-      Box   : Gtk_Box;
+      Box : Gtk_Box;
+
+      procedure Add_Rotation (Axis : String; Scale : out Gtk_Scale) is
+         Row   : Gtk_Box;
+         Label : Gtk_Label;
+      begin
+         Gtk_New (Row, Orientation_Horizontal, 6);
+         Gtk_New (Label, Axis);
+         Row.Append (Label);
+         Scale := Gtk_Scale_New_With_Range
+           (Orientation_Horizontal, -180.0, 180.0, 1.0);
+         Scale.Set_Value (0.0);
+         Scale.Set_Hexpand (True);
+         Scale.Set_Draw_Value (True);
+         Scale.On_Value_Changed (On_Value_Changed'Access);
+         Row.Append (Scale);
+         Box.Append (Row);
+      end Add_Rotation;
 
    begin
       Set_Label (Frame, "GtkGLArea");
 
-      Gtk_New_Vbox (Box, False, 0);
-      Add (Frame, Box);
+      Gtk_New (Box, Orientation_Vertical, 6);
+      Frame.Set_Child (Box);
 
       Gtk_New (GL_Area);
+      GL_Area.Set_Required_Version (3, 2);
+      GL_Area.Set_Allowed_Apis (Gdk.GLContext.Gdk_Gl_Api_Gl);
+      GL_Area.Set_Auto_Render (False);
+      GL_Area.Set_Size_Request (320, 240);
+      GL_Area.Set_Vexpand (True);
       GL_Area.On_Realize (On_Realize'Access);
+      GL_Area.On_Unrealize (On_Unrealize'Access);
       GL_Area.On_Resize (On_Resize'Access);
       GL_Area.On_Render (On_Render'Access);
       GL_Area.Set_Has_Depth_Buffer (True);
-      Pack_Start (Box, GL_Area);
+      Box.Append (GL_Area);
 
-      X_Scale := Gtk_Hscale_New_With_Range (-180.0, 180.0, 1.0);
-      X_Scale.Set_Value (0.0);
-      X_Scale.On_Value_Changed (On_Value_Changed'Access);
-      Pack_Start (Box, X_Scale, False);
-
-      Y_Scale := Gtk_Hscale_New_With_Range (-180.0, 180.0, 1.0);
-      Y_Scale.Set_Value (0.0);
-      Y_Scale.On_Value_Changed (On_Value_Changed'Access);
-      Pack_Start (Box, Y_Scale, False);
-
-      Z_Scale := Gtk_Hscale_New_With_Range (-180.0, 180.0, 1.0);
-      Z_Scale.Set_Value (0.0);
-      Z_Scale.On_Value_Changed (On_Value_Changed'Access);
-      Pack_Start (Box, Z_Scale, False);
-
-      Show_All (Frame);
+      Add_Rotation ("X", X_Scale);
+      Add_Rotation ("Y", Y_Scale);
+      Add_Rotation ("Z", Z_Scale);
+      On_Value_Changed (X_Scale);
    end Run;
 
 end Create_GL;

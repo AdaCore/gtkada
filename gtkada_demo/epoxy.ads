@@ -130,6 +130,16 @@ package Epoxy is
    glDeleteBuffers : constant not null PFNGLDELETEBUFFERSPROC
      with Import, Convention => C, External_Name => "epoxy_glDeleteBuffers";
 
+   type PFNGLDELETEPROGRAMPROC is access procedure (program : Epoxy.GLuint)
+     with Convention => C;
+
+   glDeleteProgram : constant not null PFNGLDELETEPROGRAMPROC
+     with Import, Convention => C, External_Name => "epoxy_glDeleteProgram";
+
+   glDeleteVertexArrays : constant not null PFNGLDELETEBUFFERSPROC
+     with Import, Convention => C,
+          External_Name => "epoxy_glDeleteVertexArrays";
+
    type PFNGLDELETESHADERPROC is access procedure (shader : epoxy.GLuint)
      with Convention => C;
 

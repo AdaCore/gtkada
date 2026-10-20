@@ -431,7 +431,7 @@ binding = (
     "Gtk.GestureSwipe",
     "Gtk.GestureStylus",
     "Gtk.GestureZoom",
-    "--Gtk.GLArea",
+    "Gtk.GLArea",
     "Gtk.Grid",
     "Gtk.GridView",
     "--GtkHandleBox",

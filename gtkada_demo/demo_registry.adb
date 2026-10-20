@@ -51,6 +51,7 @@ with Create_Font_Chooser;
 with Create_Flow_Box;
 with Create_Fixed;
 with Create_Frame;
+with Create_GL;
 with Create_Header_Bar;
 with Create_Info_Bar;
 with Create_Overlay;
@@ -180,6 +181,8 @@ package body Demo_Registry is
         ("Flow Box", Create_Flow_Box.Run'Access, Create_Flow_Box.Help'Access),
       To_Demo
         ("Images/Pixbuf", Create_Pixbuf.Run'Access, Create_Pixbuf.Help'Access),
+      To_Demo
+        ("OpenGL Area", Create_GL.Run'Access, Create_GL.Help'Access),
       To_Demo
         ("Overlay", Create_Overlay.Run'Access, Create_Overlay.Help'Access),
       To_Demo

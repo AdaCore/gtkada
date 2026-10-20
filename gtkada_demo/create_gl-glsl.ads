@@ -34,7 +34,7 @@ private package Create_GL.GLSL is
      renames Interfaces.C.Strings.New_String;
 
    Vertex   : constant Interfaces.C.Strings.chars_ptr_array :=
-     [-("#version 130" & LF
+     [-("#version 150" & LF
       & "in vec3 position;" & LF
       & "in vec3 color;" & LF
       & "uniform mat4 p;" & LF
@@ -46,7 +46,7 @@ private package Create_GL.GLSL is
       & "}" & LF)];
 
    Fragment : constant Interfaces.C.Strings.chars_ptr_array :=
-     [-("#version 130" & LF
+     [-("#version 150" & LF
       & "smooth in vec4 vertexColor;" & LF
       & "out vec4 outputColor;" & LF
       & "void main() {" & LF
