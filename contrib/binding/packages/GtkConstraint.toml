@@ -1,3 +1,27 @@
 # ============================================================
 #   GtkConstraint
 # ============================================================
+
+[doc]
+group = "Layout containers"
+gtkada_demo = "create_constraints.adb"
+
+# GIR uses gpointer for these ConstraintTarget interface arguments.
+
+[[method]]
+id = "gtk_constraint_new"
+
+[[method.parameter]]
+name = "target"
+ctype = "GtkConstraintTarget*"
+
+[[method.parameter]]
+name = "source"
+ctype = "GtkConstraintTarget*"
+
+[[method]]
+id = "gtk_constraint_new_constant"
+
+[[method.parameter]]
+name = "target"
+ctype = "GtkConstraintTarget*"

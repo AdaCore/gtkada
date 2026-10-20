@@ -34,6 +34,9 @@
 --
 --  The source and target, as well as their attributes, of a `GtkConstraint`
 --  instance are immutable after creation.
+--
+--  <group>Layout containers</group>
+--  <gtkada_demo>create_constraints.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                  use Glib;
@@ -53,20 +56,20 @@ package Gtk.Constraint is
 
    procedure Gtk_New
       (Self             : out Gtk_Constraint;
-       Target           : System.Address;
+       Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Relation         : Gtk.Enums.Gtk_Constraint_Relation;
-       Source           : System.Address;
+       Source           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Source_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Multiplier       : Gdouble;
        The_Constant     : Gdouble;
        Strength         : Glib.Gint);
    procedure Initialize
       (Self             : not null access Gtk_Constraint_Record'Class;
-       Target           : System.Address;
+       Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Relation         : Gtk.Enums.Gtk_Constraint_Relation;
-       Source           : System.Address;
+       Source           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Source_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Multiplier       : Gdouble;
        The_Constant     : Gdouble;
@@ -87,10 +90,10 @@ package Gtk.Constraint is
    --  @param Strength the strength of the constraint
 
    function Gtk_Constraint_New
-      (Target           : System.Address;
+      (Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Relation         : Gtk.Enums.Gtk_Constraint_Relation;
-       Source           : System.Address;
+       Source           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Source_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Multiplier       : Gdouble;
        The_Constant     : Gdouble;
@@ -110,14 +113,14 @@ package Gtk.Constraint is
 
    procedure Gtk_New_Constant
       (Self             : out Gtk_Constraint;
-       Target           : System.Address;
+       Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Relation         : Gtk.Enums.Gtk_Constraint_Relation;
        The_Constant     : Gdouble;
        Strength         : Glib.Gint);
    procedure Initialize_Constant
       (Self             : not null access Gtk_Constraint_Record'Class;
-       Target           : System.Address;
+       Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Relation         : Gtk.Enums.Gtk_Constraint_Relation;
        The_Constant     : Gdouble;
@@ -134,7 +137,7 @@ package Gtk.Constraint is
    --  @param Strength the strength of the constraint
 
    function Gtk_Constraint_New_Constant
-      (Target           : System.Address;
+      (Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Relation         : Gtk.Enums.Gtk_Constraint_Relation;
        The_Constant     : Gdouble;

@@ -158,12 +158,21 @@
 --  plus 12 [button1(button2 / 2 + 12)] ```
 --
 --  <group>Layout containers</group>
+--  <gtkada_demo>create_constraints.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
-with Glib;               use Glib;
-with Glib.Types;         use Glib.Types;
-with Gtk.Buildable;      use Gtk.Buildable;
-with Gtk.Layout_Manager; use Gtk.Layout_Manager;
+with Ada.Strings.Unbounded;
+with GNAT.Strings;
+with Glib;                  use Glib;
+with Glib.Error;            use Glib.Error;
+with Glib.List_Model;       use Glib.List_Model;
+with Glib.Object;           use Glib.Object;
+with Glib.Types;            use Glib.Types;
+with Gtk.Buildable;         use Gtk.Buildable;
+with Gtk.Constraint;        use Gtk.Constraint;
+with Gtk.Constraint_Guide;  use Gtk.Constraint_Guide;
+with Gtk.Constraint_Target; use Gtk.Constraint_Target;
+with Gtk.Layout_Manager;    use Gtk.Layout_Manager;
 
 package Gtk.Constraint_Layout is
 
@@ -197,9 +206,100 @@ package Gtk.Constraint_Layout is
    -- Methods --
    -------------
 
+   procedure Add_Constraint
+      (Layout     : not null access Gtk_Constraint_Layout_Record;
+       Constraint : not null access Gtk.Constraint.Gtk_Constraint_Record'Class);
+   --  Adds a constraint to the layout manager.
+   --  The [propertyGtk.Constraint:source] and [propertyGtk.Constraint:target]
+   --  properties of `constraint` can be:
+   --  - set to `NULL` to indicate that the constraint refers to the widget
+   --  using `layout` - set to the [classGtk.Widget] using `layout` - set to a
+   --  child of the [classGtk.Widget] using `layout` - set to a
+   --  [classGtk.ConstraintGuide] that is part of `layout`
+   --  The Layout acquires the ownership of Constraint after calling this
+   --  function.
+   --  @param Constraint a [classGtk.Constraint]. Has
+   --  transfer-ownership='full'.
+
+   procedure Add_Guide
+      (Layout : not null access Gtk_Constraint_Layout_Record;
+       Guide  : not null access Gtk.Constraint_Guide.Gtk_Constraint_Guide_Record'Class);
+   --  Adds a guide to `layout`.
+   --  A guide can be used as the source or target of constraints, like a
+   --  widget, but it is not visible.
+   --  The `layout` acquires the ownership of `guide` after calling this
+   --  function.
+   --  @param Guide a [classGtk.ConstraintGuide] object. Has
+   --  transfer-ownership='full'.
+
+   function Observe_Constraints
+      (Layout : not null access Gtk_Constraint_Layout_Record)
+       return Glib.List_Model.Glist_Model;
+   --  Returns a `GListModel` to track the constraints that are part of the
+   --  layout.
+   --  Calling this function will enable extra internal bookkeeping to track
+   --  constraints and emit signals on the returned listmodel. It may slow down
+   --  operations a lot.
+   --  Applications should try hard to avoid calling this function because of
+   --  the slowdowns.
+   --  @return a `GListModel` tracking the layout's constraints
+
+   function Observe_Guides
+      (Layout : not null access Gtk_Constraint_Layout_Record)
+       return Glib.List_Model.Glist_Model;
+   --  Returns a `GListModel` to track the guides that are part of the layout.
+   --  Calling this function will enable extra internal bookkeeping to track
+   --  guides and emit signals on the returned listmodel. It may slow down
+   --  operations a lot.
+   --  Applications should try hard to avoid calling this function because of
+   --  the slowdowns.
+   --  @return a `GListModel` tracking the layout's guides
+
    procedure Remove_All_Constraints
       (Layout : not null access Gtk_Constraint_Layout_Record);
    --  Removes all constraints from the layout manager.
+
+   procedure Remove_Constraint
+      (Layout     : not null access Gtk_Constraint_Layout_Record;
+       Constraint : not null access Gtk.Constraint.Gtk_Constraint_Record'Class);
+   --  Removes `constraint` from the layout manager, so that it no longer
+   --  influences the layout.
+   --  The constraint must be attached: the layout's widget must be rooted.
+   --  @param Constraint a [classGtk.Constraint]
+
+   procedure Remove_Guide
+      (Layout : not null access Gtk_Constraint_Layout_Record;
+       Guide  : not null access Gtk.Constraint_Guide.Gtk_Constraint_Guide_Record'Class);
+   --  Removes `guide` from the layout manager, so that it no longer
+   --  influences the layout.
+   --  @param Guide a [classGtk.ConstraintGuide] object
+
+   ----------------------
+   -- GtkAda additions --
+   ----------------------
+
+   type Named_View is record
+      Name : Ada.Strings.Unbounded.Unbounded_String;
+      Target : Gtk.Constraint_Target.Gtk_Constraint_Target;
+   end record;
+   type Named_View_Array is array (Positive range <>) of Named_View;
+
+   function Add_Constraints_From_Description
+     (Layout : not null access Gtk_Constraint_Layout_Record;
+      Lines : GNAT.Strings.String_List;
+      Views : Named_View_Array;
+      Error : out Glib.Error.GError;
+      Hspacing : Glib.Gint := -1;
+      Vspacing : Glib.Gint := -1)
+   return Glib.Object.Object_Simple_List.Glist;
+   --  Parse VFL lines and add their constraints to Layout. Names in Views
+   --  refer to children or guides already added to the layout. A null entry
+   --  in Lines is treated as an empty line. Arbitrary array bounds are allowed.
+   --  Free the returned list nodes with Object_Simple_List.Free; its objects
+   --  belong to Layout and must not be unreferenced by the caller.
+   --  On a parse error, Error is set (free it with Glib.Error.Error_Free).
+   --  GTK can add constraints from preceding valid lines before an error;
+   --  the returned list includes those constraints, so they can be removed.
 
    ----------------
    -- Interfaces --
