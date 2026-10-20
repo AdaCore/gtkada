@@ -21,8 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
+with Ada.Characters.Handling; use Ada.Characters.Handling;
+with Ada.Strings.Fixed;
 with Ada.Strings.Unbounded; use Ada.Strings.Unbounded;
 
+with Glib;            use type Glib.Guint;
 with Glib.List_Store; use Glib.List_Store;
 with Glib.Object;     use Glib.Object;
 
@@ -312,6 +315,9 @@ package body Demo_Registry is
 
    Root : Glist_Store := null;
 
+   Leaves : array (Demos'Range) of Demo_Item;
+   --  Own the leaves while filtering temporarily removes them from stores.
+
    Built : Boolean := False;
 
    procedure Build;
@@ -446,6 +452,9 @@ package body Demo_Registry is
          --  Append takes its own reference; the one held here is never given
          --  back, the registry living as long as the process does.
          Root.Append (Roots (I).Item);
+         if Roots (I).Demo /= 0 then
+            Leaves (Roots (I).Demo) := Roots (I).Item;
+         end if;
       end loop;
 
       for I in Demos'Range loop
@@ -459,6 +468,7 @@ package body Demo_Registry is
                Index := Find_Root (Category);
                Gtk_New
                  (Leaf, Title_Part (Path), Demos (I).Run, Demos (I).Help);
+               Leaves (I) := Leaf;
                if Index /= 0 and then Roots (Index).Children /= null then
                   Roots (Index).Children.Append (Leaf);
                end if;
@@ -468,12 +478,58 @@ package body Demo_Registry is
    end Build;
 
    ----------------
+   -- Set_Search --
+   ----------------
+
+   procedure Set_Search (Pattern : String) is
+      Query : constant String := To_Lower (Pattern);
+   begin
+      Build;
+      --  Detach categories first: the tree then rebuilds expanded rows from
+      --  the filtered children, including when a previously empty category
+      --  comes back. The registry owns every item throughout this update.
+      Root.Remove_All;
+      for R in 1 .. Last_Root loop
+         if Roots (R).Children /= null then
+            Roots (R).Children.Remove_All;
+         end if;
+
+         for I in Demos'Range loop
+            declare
+               Path : constant String := To_String (Demos (I).Path);
+            begin
+               if Query = "" or else
+                 Ada.Strings.Fixed.Index (To_Lower (Path), Query) /= 0
+               then
+                  if Roots (R).Children /= null
+                    and then Category_Part (Path) = Roots (R).Name
+                  then
+                     Roots (R).Children.Append (Leaves (I));
+                  end if;
+               end if;
+            end;
+         end loop;
+
+         if Roots (R).Children /= null then
+            if Roots (R).Children.Get_N_Items /= 0 then
+               Root.Append (Roots (R).Item);
+            end if;
+         elsif Query = "" or else Ada.Strings.Fixed.Index
+           (To_Lower (To_String (Roots (R).Name)), Query) /= 0
+         then
+            Root.Append (Roots (R).Item);
+         end if;
+      end loop;
+   end Set_Search;
+
+   ----------------
    -- Root_Model --
    ----------------
 
    function Root_Model return Glib.List_Model.Glist_Model is
    begin
       Build;
+      Ref (Root);
       return +Root;
    end Root_Model;
 

@@ -38,20 +38,6 @@
   initialises it with the `GType` the value is to be provided in.
 - `Gtk.Builder.Value_From_String` takes its `Pspec` `in`; C never writes to it.
 
-## gtkada_demo: aligning with gtk4-demo
-
-`Printing/Printing` is restored in `create_print` using the generated GTK4
-printing signals, with Page Setup, Print, and PDF export controls. The five core
-bindings (`Gtk.Print_Operation`, `Gtk.Page_Setup`, `Gtk.Print_Settings`,
-`Gtk.Print_Context`, and `Gtk.Paper_Size`) are available. Added the standalone
-synchronous and asynchronous page-setup dialog functions, printing error domain
-and codes, and standard paper-name constants. `Gtk.Page_Setup_Unix_Dialog`
-is also bound, with constructor, page-setup and print-settings accessors, and
-a direct response-driven Unix Page Setup button in the printing demo.
-The asynchronous page-setup completion callback accepts null on cancellation, correcting the GIR annotation.
-The demo retains print settings for its lifetime and draws a second page on A5
-landscape paper. It no longer needs the GTK3-only `Gtkada.Printing` helper.
-
 ### To do — coverage map against upstream
 
 All 110 upstream demos, grouped by what blocks them. "Ready" means every
@@ -66,7 +52,6 @@ land, not a contract.
 | `Gtk.DrawingArea` | `Drawing Area`, `Masking`, `Pango/Rotated Text`, `Pango/Text Mask`, and the substrate for most `Path/…` demos |
 | `Gtk.Image` (`Gtk.Picture`, `Gdk.Pixbuf` and `Gdk.Texture` are bound) | `Images`, `Image Scaling`, `Image Filtering`, `Cursors`, the `Paintable/…` family, `Icon View/…` |
 | `Gtk.EventController` + the `Gtk.Gesture*` family | `Gestures`, `Paint`, `Text View/Hypertext`, `Constraints/Interactive Constraints` |
-| `Gtk.SearchEntry` (+ `Gtk.SearchBar`) | `Entry/Search Entry`, and would enable upstream's search box in our own shell |
 | `Gtk.IconView` | `Icon View/Icon View Basics`, `Icon View/Editing and Drag-and-Drop` (the latter drags through `GtkIconView`'s own model-drag API, not the DnD controllers) |
 | `Gtk.Accessible.Update_State` / `Update_Property` / `Update_Relation` | `Error States`. The demo's whole subject is flagging an entry invalid and describing why, which is these three calls; every widget it uses is already bound. All three are varargs in C and so unbound, but each has a non-varargs `_value` twin (`gtk_accessible_update_state_value` and friends) taking parallel arrays — that is the shape to bind |
 
@@ -103,7 +88,6 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_css_accordion`, `create_css_editor` | `Gtk.Container`, which gtk4 removed; the CSS provider, style context, and style provider bindings are available |
   | `create_cursors` | `Gtk.Drawing_Area`, `Gdk.Window` (gtk4: `Gdk.Surface`, bound), `Gdk.Device_Manager` *(absent; gone from gtk4)*, `Gtk.Handlers` *(gtk3)* |
   | `create_dnd` | `Gtk.Dnd` *(gtk3)*, `Gdk.Dnd` *(gtk3)*, `Gdk.Drag_Contexts` (`--GdkDragContext`), `Gtk.Target_List` *(absent)*, `Gtk.Selection_Data` *(absent)*, `Gtk.Image`, `Gdk.Window` (gtk4: `Gdk.Surface`), `Gdk.Types` *(gtk3)*, `Gtk.Handlers` *(gtk3)*. |
-  | `create_entry` | `Gtk.Combo_Box_Text`, `Gtk.Search_Entry`, `Gtk.Handlers` *(gtk3)*, plus `Common` (see below) |
   | `create_gestures` | `Gtk.Gesture`, `Gtk.Gesture_Long_Press`, `Gtk.Gesture_Zoom`, `Gtk.Drawing_Area` |
   | `create_notebook` | `Gtk.Combo_Box_Text`, `Gtk.Image`, `Gdk.Pixbuf` (bound), `Gtk.Handlers` *(gtk3)*, plus `Common`. `Gtk.Notebook` itself is bound |
   | `create_opacity` | `Common` |
@@ -119,8 +103,8 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   row names `GtkFontChooser`, which would carry it.
 
 **`Common` is a shared blocker.** `gtkada_demo/common.ads` withs
-`Gtk.Handlers` *(gtk3)*, so it does not build. All nine of its
-users are commented out today — `create_builder`, `create_entry`,
+`Gtk.Handlers` *(gtk3)*, so it does not build. Its remaining
+users are commented out today — `create_builder`,
 `create_gtkada_builder`, `create_main_loop`, `create_notebook`,
 `create_opacity`,
 `create_task_monitor`, `create_test_idle` — which is why nothing notices.

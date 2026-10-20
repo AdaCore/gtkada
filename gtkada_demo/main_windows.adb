@@ -38,6 +38,7 @@ with Gtk.List_Item;               use Gtk.List_Item;
 with Gtk.List_View;               use Gtk.List_View;
 with Gtk.Paned;                   use Gtk.Paned;
 with Gtk.Scrolled_Window;         use Gtk.Scrolled_Window;
+with Gtk.Search_Entry;            use Gtk.Search_Entry;
 with Gtk.Selection_Model;
 with Gtk.Signal_List_Item_Factory; use Gtk.Signal_List_Item_Factory;
 with Gtk.Single_Selection;        use Gtk.Single_Selection;
@@ -47,6 +48,7 @@ with Gtk.Tree_Expander;           use Gtk.Tree_Expander;
 with Gtk.Tree_List_Model;         use Gtk.Tree_List_Model;
 with Gtk.Tree_List_Row;           use Gtk.Tree_List_Row;
 with Gtk.Widget;                  use Gtk.Widget;
+with Gtk.Window;                  use Gtk.Window;
 
 with Demo_Items;                  use Demo_Items;
 with Demo_Registry;
@@ -91,6 +93,13 @@ with Demo_Registry;
 --  Create_Test_Idle, Create_Css_Editor, Libart_Demo.
 
 package body Main_Windows is
+
+   Tree      : Gtk_Tree_List_Model;
+   Selection : Gtk_Single_Selection;
+   Filtering : Boolean := False;
+
+   procedure Search_Changed (Self : access Gtk_Search_Entry_Record'Class);
+   procedure Stop_Search (Self : access Gtk_Search_Entry_Record'Class);
 
    Css_Filename : constant String := "gtkada_demo.css";
 
@@ -274,6 +283,7 @@ package body Main_Windows is
          --  selected, and GTK resets the property on every rebind, so the
          --  guard that matters is the one in On_Selection below.
          Item.Set_Selectable (Demo /= null and then Demo.Run /= null);
+         Unref (Object);
       end;
    end Bind_Row;
 
@@ -291,9 +301,8 @@ package body Main_Windows is
       Row       : constant GObject := Selection.Get_Selected_Item;
       Demo      : Demo_Item;
    begin
-      --  Null when nothing is selected: this replaces the old Null_Iter
-      --  guard.
-      if Row = null then
+      --  Ignore intermediate selection changes while filtering the tree.
+      if Filtering or else Row = null then
          return;
       end if;
 
@@ -304,26 +313,79 @@ package body Main_Windows is
       --  one -- gtk-list_item.ads says so outright, and GTK resets the
       --  property on every rebind -- so the test has to happen here.
       --  Upstream gates the same way, on demo->func /= NULL.
-      if Demo = null or else Demo.Run = null then
-         return;
+      if Demo /= null then
+         if Demo.Run /= null then
+            Show_Demo (Demo);
+         end if;
+         Unref (Demo);
       end if;
-
-      Show_Demo (Demo);
    end On_Selection;
+
+   --------------------
+   -- Search_Changed --
+   --------------------
+
+   procedure Search_Changed (Self : access Gtk_Search_Entry_Record'Class) is
+      Selected : constant GObject := Selection.Get_Selected_Item;
+      Previous : constant Demo_Item :=
+        (if Selected = null then null
+         else To_Demo_Item (Gtk_Tree_List_Row (Selected).Get_Item));
+      Row : Gtk_Tree_List_Row;
+      Item : GObject;
+      Matches : Boolean;
+   begin
+      --  Do not run demos while GTK removes and reinserts category rows.
+      --  Keep the displayed demo, and its selection if it still matches.
+      Filtering := True;
+      Demo_Registry.Set_Search (Self.Get_Text);
+      Selection.Set_Selected (Guint'Last);
+      for Position in 0 .. Integer (Tree.Get_N_Items) - 1 loop
+         Row := Tree.Get_Row (Guint (Position));
+         Item := Row.Get_Item;
+         Matches := To_Demo_Item (Item) = Previous;
+         Unref (Item);
+         Unref (Row);
+         if Matches then
+            Selection.Set_Selected (Guint (Position));
+            exit;
+         end if;
+      end loop;
+      if Previous /= null then
+         Unref (Previous);
+      end if;
+      Filtering := False;
+   end Search_Changed;
+
+   -----------------
+   -- Stop_Search --
+   -----------------
+
+   procedure Stop_Search (Self : access Gtk_Search_Entry_Record'Class) is
+   begin
+      Self.Set_Text ("");
+      Search_Changed (Self);
+   end Stop_Search;
 
    -----------------
    -- On_Activate --
    -----------------
 
    procedure On_Activate (Self : access GApplication_Record'Class) is
+      Existing  : constant Gtk_Window :=
+        Gtk_Application (Self).Get_Active_Window;
       App_Win   : Gtk_Application_Window;
       Paned     : Gtk_Paned;
       Scrolled  : Gtk_Scrolled_Window;
-      Tree      : Gtk_Tree_List_Model;
-      Selection : Gtk_Single_Selection;
+      Sidebar   : Gtk_Box;
+      Search    : Gtk_Search_Entry;
       Factory   : Gtk_Signal_List_Item_Factory;
       List      : Gtk_List_View;
    begin
+      if Existing /= null then
+         Existing.Present;
+         return;
+      end if;
+
       Gtk_New (App_Win, Gtk_Application (Self));
       App_Win.Set_Title ("GtkAda Demo");
       App_Win.Set_Default_Size (800, 600);
@@ -332,9 +394,23 @@ package body Main_Windows is
       Gtk_New (Paned, Orientation_Horizontal);
       App_Win.Set_Child (Paned);
 
+      Gtk_New (Sidebar, Orientation_Vertical, Spacing => 0);
+      Sidebar.Set_Homogeneous (False);
+      Paned.Set_Start_Child (Sidebar);
+
+      Gtk_New (Search);
+      Search.Set_Placeholder_Text ("Search demos");
+      Search.Set_Name ("demo-search");
+      Search.Set_Margin_Start (5);
+      Search.Set_Margin_End (5);
+      Search.Set_Margin_Top (5);
+      Search.Set_Margin_Bottom (5);
+      Sidebar.Append (Search);
+
       Gtk_New (Scrolled);
       Scrolled.Set_Has_Frame (True);
-      Paned.Set_Start_Child (Scrolled);
+      Scrolled.Set_Vexpand (True);
+      Sidebar.Append (Scrolled);
       Paned.Set_Resize_Start_Child (False);
 
       --  Passthrough => False is load-bearing: it is what makes the items of
@@ -343,9 +419,9 @@ package body Main_Windows is
       --  startup, so that the first demo can be shown without a category
       --  having to be expanded first.
       --
-      --  Each of the three constructors below is transfer-full on what it
-      --  wraps, and each is handed something freshly made, so -- unlike
-      --  Demo_Registry.Children_Of -- no reference is taken here.
+      --  Constructors consume their model references. Root_Model returns
+      --  an extra reference; Tree and Selection are freshly constructed.
+      Demo_Registry.Set_Search ("");
       Gtk.Tree_List_Model.Gtk_New
         (Tree,
          Root        => Demo_Registry.Root_Model,
@@ -354,12 +430,15 @@ package body Main_Windows is
          Create_Func => Demo_Registry.Children_Of'Access);
 
       Selection := Gtk_Single_Selection_New (+Tree);
+      Selection.Set_Autoselect (False);
+      Selection.Set_Can_Unselect (True);
 
       Gtk.Signal_List_Item_Factory.Gtk_New (Factory);
       Factory.On_Setup (Setup_Row'Access);
       Factory.On_Bind (Bind_Row'Access);
 
       Gtk.List_View.Gtk_New (List, +Selection, Factory);
+      List.Set_Name ("demo-list");
       Scrolled.Set_Child (List);
 
       declare
@@ -409,15 +488,26 @@ package body Main_Windows is
             if Demo /= null and then Demo.Run /= null then
                Selection.Set_Selected (Position);
                Show_Demo (Demo);
+               Unref (Demo);
+               Unref (Row);
                exit;
             end if;
 
+            if Demo /= null then
+               Unref (Demo);
+            end if;
+            if Row /= null then
+               Unref (Row);
+            end if;
             Position := Position + 1;
          end loop;
       end;
 
       Gtk.Selection_Model.On_Selection_Changed
         (+Selection, On_Selection'Access);
+
+      Search.On_Search_Changed (Search_Changed'Access);
+      Search.On_Stop_Search (Stop_Search'Access);
 
       App_Win.Present;
    end On_Activate;
