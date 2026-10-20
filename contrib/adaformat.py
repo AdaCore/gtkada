@@ -1253,6 +1253,9 @@ class AdaNaming(object):
         elif name in ("array_of_Gdk.Atom",):
             t = AdaTypeArray("Gdk_Atom")
             isArray = True
+        elif name in ("array_of_Gdk.RGBA",):
+            t = AdaTypeArray("Gdk.RGBA.Gdk_RGBA")
+            isArray = True
         elif name in ("array_of_gdouble",):
             t = AdaTypeArray("gdouble")
             isArray = True

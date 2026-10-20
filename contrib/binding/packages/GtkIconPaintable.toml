@@ -1,0 +1,11 @@
+# ============================================================
+#   GtkIconPaintable
+# ============================================================
+
+[[method]]
+id = "gtk_icon_paintable_get_icon_name"
+bind = false # Obsolescent
+
+[[method]]
+id = "gtk_icon_paintable_is_symbolic"
+bind = false # Obsolescent
