@@ -549,7 +549,7 @@ binding = (
     "Gtk.TreeViewColumn",
     "Gtk.ToggleButton",
     "Gtk.Tooltip",
-    "--Gtk.Viewport",
+    "Gtk.Viewport",
     "Gtk.VolumeButton",
     "Gtk.Widget",
     "--Gtk.WidgetClass",
