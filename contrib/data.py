@@ -145,6 +145,8 @@ binding = (
     "Gio.Application",
     "Gio.AppLaunchContext",
     "Gio.ApplicationCommandLine",
+    "GLib.TimeZone",
+    "GLib.DateTime",
     "GLib.Bytes",  # Function returning arrays
     "--Gio.BufferedInputStream",  # Not tested yet, from Gio
     "--Gio.BufferedOutputStream",  # Not tested yet, from Gio
@@ -926,6 +928,7 @@ naming.type_exceptions = {
     # type and the matching closure-passing trampoline, which is much
     # more usable than a low-level access-to-subprogram.
     "GQuark": Proxy("Glib.GQuark"),
+    "GTimeSpan": Proxy("Glib.Gint64", ""),
     "GObject": Proxy("Glib.Object.GObject"),
     "GParamSpec": Proxy("Glib.Param_Spec"),
     "GClosure": Proxy("GClosure"),

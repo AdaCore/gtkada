@@ -1,0 +1,7 @@
+ada = "Glib.Time_Zone"
+
+[doc]
+group = "GLib"
+
+[[enum]]
+ctype = "GTimeType"
