@@ -35,6 +35,7 @@ with Glib;                  use Glib;
 with Glib.Properties;       use Glib.Properties;
 with Glib.Types;            use Glib.Types;
 with Gtk.Accessible;        use Gtk.Accessible;
+with Gtk.Accessible_Range;  use Gtk.Accessible_Range;
 with Gtk.Atcontext;         use Gtk.Atcontext;
 with Gtk.Buildable;         use Gtk.Buildable;
 with Gtk.Constraint_Target; use Gtk.Constraint_Target;
@@ -171,6 +172,8 @@ package Gtk.Volume_Button is
    --
    --  - "Gtk.Accessible"
    --
+   --  - "Gtk.AccessibleRange"
+   --
    --  - "Gtk.Buildable"
    --
    --  - "Gtk.ConstraintTarget"
@@ -187,6 +190,17 @@ package Gtk.Volume_Button is
      (Interf : Gtk.Accessible.Gtk_Accessible)
    return Gtk_Volume_Button
    renames Implements_Gtk_Accessible.To_Object;
+
+   package Implements_Gtk_Accessible_Range is new Glib.Types.Implements
+     (Gtk.Accessible_Range.Gtk_Accessible_Range, Gtk_Volume_Button_Record, Gtk_Volume_Button);
+   function "+"
+     (Widget : access Gtk_Volume_Button_Record'Class)
+   return Gtk.Accessible_Range.Gtk_Accessible_Range
+   renames Implements_Gtk_Accessible_Range.To_Interface;
+   function "-"
+     (Interf : Gtk.Accessible_Range.Gtk_Accessible_Range)
+   return Gtk_Volume_Button
+   renames Implements_Gtk_Accessible_Range.To_Object;
 
    package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Volume_Button_Record, Gtk_Volume_Button);

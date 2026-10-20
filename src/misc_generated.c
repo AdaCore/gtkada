@@ -78,6 +78,10 @@ void gtkada_Accessible_set_get_platform_state(GtkAccessibleInterface* iface, voi
     iface->get_platform_state = handler;
 }
 
+void gtkada_Accessible_Range_set_set_current_value(GtkAccessibleRangeInterface* iface, void* handler) {
+    iface->set_current_value = handler;
+}
+
 void gtkada_Accessible_Text_set_get_attributes(GtkAccessibleTextInterface* iface, void* handler) {
     iface->get_attributes = handler;
 }
