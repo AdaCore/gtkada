@@ -76,7 +76,7 @@ with Demo_Registry;
 --  single place to edit when a binding comes back. The ones still waiting
 --  for theirs are:
 --
---  Create_Application, Create_Builder, Create_GL, Create_Gtkada_Builder,
+--  Create_Application, Create_Builder, Create_Gtkada_Builder,
 --  Create_Cairo, Create_Calendar, Create_Canvas, Create_Canvas_View_Animate,
 --  Create_Canvas_View_Composite, Create_Canvas_View_Edit,
 --  Create_Canvas_View_Events, Create_Canvas_View_Items,
