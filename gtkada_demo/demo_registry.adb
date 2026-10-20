@@ -53,6 +53,7 @@ with Create_File_Chooser;
 with Create_Font_Chooser;
 with Create_Flow_Box;
 with Create_Fixed;
+with Create_Fixed_Layout;
 with Create_Frame;
 with Create_GL;
 with Create_Header_Bar;
@@ -226,6 +227,13 @@ package body Demo_Registry is
         ("Layout/Frames", Create_Frame.Run'Access, Create_Frame.Help'Access),
       To_Demo
         ("Layout/Fixed", Create_Fixed.Run'Access, Create_Fixed.Help'Access),
+      To_Demo
+        ("Fixed Layout/Cube", Create_Fixed_Layout.Run_Cube'Access,
+         Create_Fixed_Layout.Help_Cube'Access),
+      To_Demo
+        ("Fixed Layout/Transformations",
+         Create_Fixed_Layout.Run_Transformations'Access,
+         Create_Fixed_Layout.Help_Transformations'Access),
       To_Demo
         ("Layout/Scrolled Window",
          Create_Scrolled.Run'Access,

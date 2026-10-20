@@ -59,7 +59,6 @@ land, not a contract.
 
 | area | demos |
 | --- | --- |
-| `Gsk.Transform` | `Fixed Layout/Cube`, `Fixed Layout/Transformations`. |
 | `GtkConstraint` + `GtkConstraintGuide` (see the `GtkConstraintLayout.toml` entry above) | `Constraints/Simple Constraints`, `Interactive`, `VFL`, `Builder` (4) |
 | GSK renderers and demo ports | `OpenGL/Gears`, `Shadertoy` |
 | `GtkMediaStream` / `GtkVideo` | `Video Player`, `Paintable/Media Stream` |
@@ -265,11 +264,6 @@ GtkApplication.toml:
 GtkWidget.toml:
 
 - Review the commented-out code imported from the gtk3 bindings, and reactivate as needed.
-
-GtkFixedLayoutChild.toml:
-
-- `gtk_fixed_layout_child_get_transform` and `gtk_fixed_layout_child_set_transform`
-  should be reviewed now that `Gsk.Transform` is bound.
 
 GtkConstraintLayout.toml:
 

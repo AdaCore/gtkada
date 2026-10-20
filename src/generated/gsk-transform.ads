@@ -30,6 +30,8 @@
 --  `GskTransform` objects are immutable and cannot be changed after creation.
 --  This means code can safely expose them as properties of objects without
 --  having to worry about others changing them.
+--
+--  <gtkada_demo>create_fixed_layout.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;             use Glib;

@@ -52,6 +52,7 @@
 --  long-term maintenance problem for your application.
 --
 --  <group>Layout containers</group>
+--  <gtkada_demo>create_fixed_layout.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
