@@ -38,8 +38,11 @@ package Demo_Registry is
    --  category, plus one per uncategorised demo, in alphabetical order.
    --
    --  Transfer full, to suit Gtk.Tree_List_Model's constructor: the registry
-   --  builds the store on the first call and hands over its own reference,
-   --  so this is meant to be called once.
+   --  keeps the store and returns an extra reference on each call.
+
+   procedure Set_Search (Pattern : String);
+   --  Filter full demo paths case-insensitively, retaining their categories.
+   --  An empty pattern restores the complete catalogue.
 
    function Children_Of
      (Item : Glib.Object.GObject) return Glib.List_Model.Glist_Model;

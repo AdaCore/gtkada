@@ -1,0 +1,51 @@
+# GDateTime is a refcounted boxed value, not a GObject.
+ada = "Glib.Date_Time"
+
+[doc]
+group = "GLib"
+
+# GTimeVal is deprecated and intentionally remains unbound.
+[[method]]
+id = "g_date_time_new_from_timeval_local"
+bind = false
+
+[[method]]
+id = "g_date_time_new_from_timeval_utc"
+bind = false
+
+[[method]]
+id = "g_date_time_to_timeval"
+bind = false
+
+# The GIR uses a C identifier that is an Ada keyword.
+[[method]]
+id = "g_date_time_difference"
+[[method.parameter]]
+name = "begin"
+ada = "Start"
+
+# These callback-compatible C APIs accept gconstpointer, but callers should
+# pass boxed values through the same typed interface as the other methods.
+[[method]]
+id = "g_date_time_compare"
+[[method.parameter]]
+name = "dt1"
+ctype = "GDateTime*"
+[[method.parameter]]
+name = "dt2"
+ctype = "GDateTime*"
+
+[[method]]
+id = "g_date_time_equal"
+[[method.parameter]]
+name = "dt1"
+ctype = "GDateTime*"
+[[method.parameter]]
+name = "dt2"
+ctype = "GDateTime*"
+
+[[method]]
+id = "g_date_time_hash"
+[[method.parameter]]
+name = "datetime"
+ctype = "GDateTime*"
