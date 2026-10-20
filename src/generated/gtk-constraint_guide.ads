@@ -31,6 +31,9 @@
 --  can be aligned to, or like *flexible space*.
 --
 --  Unlike a `GtkWidget`, a `GtkConstraintGuide` will not be drawn.
+--
+--  <group>Layout containers</group>
+--  <gtkada_demo>create_constraints.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;                  use Glib;

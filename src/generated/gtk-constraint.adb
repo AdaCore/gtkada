@@ -36,10 +36,10 @@ package body Gtk.Constraint is
    ------------------------
 
    function Gtk_Constraint_New
-      (Target           : System.Address;
+      (Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Relation         : Gtk.Enums.Gtk_Constraint_Relation;
-       Source           : System.Address;
+       Source           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Source_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Multiplier       : Gdouble;
        The_Constant     : Gdouble;
@@ -56,7 +56,7 @@ package body Gtk.Constraint is
    ---------------------------------
 
    function Gtk_Constraint_New_Constant
-      (Target           : System.Address;
+      (Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Relation         : Gtk.Enums.Gtk_Constraint_Relation;
        The_Constant     : Gdouble;
@@ -74,10 +74,10 @@ package body Gtk.Constraint is
 
    procedure Gtk_New
       (Self             : out Gtk_Constraint;
-       Target           : System.Address;
+       Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Relation         : Gtk.Enums.Gtk_Constraint_Relation;
-       Source           : System.Address;
+       Source           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Source_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Multiplier       : Gdouble;
        The_Constant     : Gdouble;
@@ -94,7 +94,7 @@ package body Gtk.Constraint is
 
    procedure Gtk_New_Constant
       (Self             : out Gtk_Constraint;
-       Target           : System.Address;
+       Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Relation         : Gtk.Enums.Gtk_Constraint_Relation;
        The_Constant     : Gdouble;
@@ -111,20 +111,20 @@ package body Gtk.Constraint is
 
    procedure Initialize
       (Self             : not null access Gtk_Constraint_Record'Class;
-       Target           : System.Address;
+       Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Relation         : Gtk.Enums.Gtk_Constraint_Relation;
-       Source           : System.Address;
+       Source           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Source_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Multiplier       : Gdouble;
        The_Constant     : Gdouble;
        Strength         : Glib.Gint)
    is
       function Internal
-         (Target           : System.Address;
+         (Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
           Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
           Relation         : Gtk.Enums.Gtk_Constraint_Relation;
-          Source           : System.Address;
+          Source           : Gtk.Constraint_Target.Gtk_Constraint_Target;
           Source_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
           Multiplier       : Gdouble;
           The_Constant     : Gdouble;
@@ -142,14 +142,14 @@ package body Gtk.Constraint is
 
    procedure Initialize_Constant
       (Self             : not null access Gtk_Constraint_Record'Class;
-       Target           : System.Address;
+       Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
        Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
        Relation         : Gtk.Enums.Gtk_Constraint_Relation;
        The_Constant     : Gdouble;
        Strength         : Glib.Gint)
    is
       function Internal
-         (Target           : System.Address;
+         (Target           : Gtk.Constraint_Target.Gtk_Constraint_Target;
           Target_Attribute : Gtk.Enums.Gtk_Constraint_Attribute;
           Relation         : Gtk.Enums.Gtk_Constraint_Relation;
           The_Constant     : Gdouble;

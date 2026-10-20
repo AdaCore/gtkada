@@ -54,6 +54,7 @@ with Create_Font_Chooser;
 with Create_Flow_Box;
 with Create_Fixed;
 with Create_Fixed_Layout;
+with Create_Constraints;
 with Create_Frame;
 with Create_GL;
 with Create_Header_Bar;
@@ -108,6 +109,18 @@ package body Demo_Registry is
 
    Demos : constant array (Positive range <>) of Demo_Info :=
      (To_Demo
+        ("Constraints/Simple Constraints", Create_Constraints.Run_Simple'Access,
+         Create_Constraints.Help_Simple'Access),
+      To_Demo
+        ("Constraints/Interactive", Create_Constraints.Run_Interactive'Access,
+         Create_Constraints.Help_Interactive'Access),
+      To_Demo
+        ("Constraints/VFL", Create_Constraints.Run_VFL'Access,
+         Create_Constraints.Help_VFL'Access),
+      To_Demo
+        ("Constraints/Builder", Create_Constraints.Run_Builder'Access,
+         Create_Constraints.Help_Builder'Access),
+      To_Demo
         ("Printing/Printing", Create_Print.Run'Access, Create_Print.Help'Access),
       To_Demo
         ("Path/Fill and Stroke", Create_Paths.Run_Fill_And_Stroke'Access,

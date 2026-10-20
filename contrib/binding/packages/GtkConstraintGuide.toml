@@ -1,3 +1,7 @@
 # ============================================================
 #   GtkConstraintGuide
 # ============================================================
+
+[doc]
+group = "Layout containers"
+gtkada_demo = "create_constraints.adb"

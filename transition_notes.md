@@ -51,7 +51,7 @@ land, not a contract.
 | `GtkSignalListItemFactory` (+ `GtkTreeExpander`) | the `Lists/…` demos whose data is plain Ada: `Selections`, `Colors`, `Words`, `Characters`, `Clocks`, `Weather`, and the Step 1 selector itself. Row rendering only |
 | `Gtk.DrawingArea` | `Drawing Area`, `Masking`, `Pango/Rotated Text`, `Pango/Text Mask`, and the substrate for most `Path/…` demos |
 | `Gtk.Image` (`Gtk.Picture`, `Gdk.Pixbuf` and `Gdk.Texture` are bound) | `Images`, `Image Scaling`, `Image Filtering`, `Cursors`, the `Paintable/…` family, `Icon View/…` |
-| `Gtk.EventController` + the `Gtk.Gesture*` family | `Gestures`, `Paint`, `Text View/Hypertext`, `Constraints/Interactive Constraints` |
+| `Gtk.EventController` + the `Gtk.Gesture*` family | `Gestures`, `Paint`, `Text View/Hypertext` |
 | `Gtk.IconView` | `Icon View/Icon View Basics`, `Icon View/Editing and Drag-and-Drop` (the latter drags through `GtkIconView`'s own model-drag API, not the DnD controllers) |
 | `Gtk.Accessible.Update_State` / `Update_Property` / `Update_Relation` | `Error States`. The demo's whole subject is flagging an entry invalid and describing why, which is these three calls; every widget it uses is already bound. All three are varargs in C and so unbound, but each has a non-varargs `_value` twin (`gtk_accessible_update_state_value` and friends) taking parallel arrays — that is the shape to bind |
 
@@ -59,7 +59,6 @@ land, not a contract.
 
 | area | demos |
 | --- | --- |
-| `GtkConstraint` + `GtkConstraintGuide` (see the `GtkConstraintLayout.toml` entry above) | `Constraints/Simple Constraints`, `Interactive`, `VFL`, `Builder` (4) |
 | GSK renderers and demo ports | `OpenGL/Gears`, `Shadertoy` |
 | `GtkMediaStream` / `GtkVideo` | `Video Player`, `Paintable/Media Stream` |
 | `Gdk.Paintable` implementable from Ada | `Paintable/Simple`, `Animated`, `Emblems`, `SVG`, `Symbolic` (5) |
@@ -264,13 +263,6 @@ GtkApplication.toml:
 GtkWidget.toml:
 
 - Review the commented-out code imported from the gtk3 bindings, and reactivate as needed.
-
-GtkConstraintLayout.toml:
-
-- All methods that take or return a `GtkConstraint` or `GtkConstraintGuide`
-  are currently disabled (add/remove constraint, add/remove guide,
-  observe_constraints, observe_guides, add_constraints_from_description*).
-  Re-enable them once `GtkConstraint` and `GtkConstraintGuide` are bound.
 
 GtkCustomLayout.toml:
 

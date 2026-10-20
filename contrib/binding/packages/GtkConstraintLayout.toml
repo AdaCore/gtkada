@@ -1,7 +1,6 @@
-
-
 [doc]
 group = "Layout containers"
+gtkada_demo = "create_constraints.adb"
 
 [[parameter]]
 name = "self"
@@ -11,40 +10,147 @@ ada = "Layout"
 id = "gtk_constraint_layout_new"
 return = "GtkConstraintLayout*"
 
-# The following methods rely on GtkConstraint and GtkConstraintGuide,
-# which are not bound yet. Disable them; see transition_notes.md.
-[[method]]
-id = "gtk_constraint_layout_add_constraint"
-bind = false
-
+# Use the Ada array/dictionary wrapper below instead of C varargs or GHashTable.
 [[method]]
 id = "gtk_constraint_layout_add_constraints_from_description"
 bind = false
-# varargs
 
 [[method]]
 id = "gtk_constraint_layout_add_constraints_from_descriptionv"
 bind = false
-# Needs GHashTable<utf8, GtkConstraintTarget> and GError
-
-[[method]]
-id = "gtk_constraint_layout_add_guide"
-bind = false
-
-[[method]]
-id = "gtk_constraint_layout_observe_constraints"
-bind = false
-# Returns GListModel of GtkConstraint
-
-[[method]]
-id = "gtk_constraint_layout_observe_guides"
-bind = false
-# Returns GListModel of GtkConstraintGuide
 
 [[method]]
 id = "gtk_constraint_layout_remove_constraint"
-bind = false
 
-[[method]]
-id = "gtk_constraint_layout_remove_guide"
-bind = false
+[method.doc]
+extend = true
+text = "The constraint must be attached: the layout's widget must be rooted."
+
+[[extra.with_spec]]
+pkg = "Ada.Strings.Unbounded"
+use = false
+
+[[extra.with_spec]]
+pkg = "GNAT.Strings"
+use = false
+
+[[extra.with_spec]]
+pkg = "Gtk.Constraint_Target"
+
+[[extra.with_spec]]
+pkg = "Glib.Error"
+
+[[extra.with_spec]]
+pkg = "Glib.Object"
+
+[[extra.spec]]
+text = '''
+   type Named_View is record
+      Name : Ada.Strings.Unbounded.Unbounded_String;
+      Target : Gtk.Constraint_Target.Gtk_Constraint_Target;
+   end record;
+   type Named_View_Array is array (Positive range <>) of Named_View;
+
+   function Add_Constraints_From_Description
+     (Layout : not null access Gtk_Constraint_Layout_Record;
+      Lines : GNAT.Strings.String_List;
+      Views : Named_View_Array;
+      Error : out Glib.Error.GError;
+      Hspacing : Glib.Gint := -1;
+      Vspacing : Glib.Gint := -1)
+      return Glib.Object.Object_Simple_List.Glist;
+   --  Parse VFL lines and add their constraints to Layout. Names in Views
+   --  refer to children or guides already added to the layout. A null entry
+   --  in Lines is treated as an empty line. Arbitrary array bounds are allowed.
+   --  Free the returned list nodes with Object_Simple_List.Free; its objects
+   --  belong to Layout and must not be unreferenced by the caller.
+   --  On a parse error, Error is set (free it with Glib.Error.Error_Free).
+   --  GTK can add constraints from preceding valid lines before an error;
+   --  the returned list includes those constraints, so they can be removed.
+'''
+
+[[extra.with_body]]
+pkg = "Interfaces.C"
+use = false
+
+[[extra.with_body]]
+pkg = "Gtkada.Types"
+
+[extra]
+body = '''
+   function Add_Constraints_From_Description
+     (Layout : not null access Gtk_Constraint_Layout_Record;
+      Lines : GNAT.Strings.String_List;
+      Views : Named_View_Array;
+      Error : out Glib.Error.GError;
+      Hspacing : Glib.Gint := -1;
+      Vspacing : Glib.Gint := -1)
+      return Glib.Object.Object_Simple_List.Glist
+   is
+      use Gtkada.Types;
+      use type System.Address;
+      use type GNAT.Strings.String_Access;
+      type Hash_Func is access function (Key : Chars_Ptr) return Glib.Guint;
+      pragma Convention (C, Hash_Func);
+      type Equal_Func is access function (A, B : Chars_Ptr) return Glib.Gboolean;
+      pragma Convention (C, Equal_Func);
+      function Str_Hash (Key : Chars_Ptr) return Glib.Guint;
+      pragma Import (C, Str_Hash, "g_str_hash");
+      function Str_Equal (A, B : Chars_Ptr) return Glib.Gboolean;
+      pragma Import (C, Str_Equal, "g_str_equal");
+      function New_Table (Hash : Hash_Func; Equal : Equal_Func) return System.Address;
+      pragma Import (C, New_Table, "g_hash_table_new");
+      function Insert
+        (Table : System.Address; Key : Chars_Ptr; Value : System.Address)
+         return Glib.Gboolean;
+      pragma Import (C, Insert, "g_hash_table_insert");
+      procedure Unref (Table : System.Address);
+      pragma Import (C, Unref, "g_hash_table_unref");
+      function Internal
+        (Layout : System.Address;
+         Lines : System.Address;
+         N_Lines : Gsize;
+         Hspacing, Vspacing : Glib.Gint;
+         Views : System.Address;
+         Error : access Glib.Error.GError) return System.Address;
+      pragma Import (C, Internal,
+        "gtk_constraint_layout_add_constraints_from_descriptionv");
+      C_Lines : Chars_Ptr_Array (1 .. Interfaces.C.size_t (Lines'Length)) :=
+        (others => Null_Ptr);
+      C_Names : Chars_Ptr_Array (1 .. Interfaces.C.size_t (Views'Length)) :=
+        (others => Null_Ptr);
+      Table : System.Address := New_Table (Str_Hash'Access, Str_Equal'Access);
+      C_Error : aliased Glib.Error.GError := null;
+      Result : Glib.Object.Object_Simple_List.Glist;
+      Ignored : Glib.Gboolean;
+   begin
+      for I in Lines'Range loop
+         C_Lines (Interfaces.C.size_t (I - Lines'First + 1)) := New_String
+           ((if Lines (I) = null then "" else Lines (I).all));
+      end loop;
+      for I in Views'Range loop
+         C_Names (Interfaces.C.size_t (I - Views'First + 1)) := New_String
+           (Ada.Strings.Unbounded.To_String (Views (I).Name));
+         Ignored := Insert
+           (Table, C_Names (Interfaces.C.size_t (I - Views'First + 1)),
+            System.Address (Views (I).Target));
+      end loop;
+      Glib.Object.Object_Simple_List.Set_Object
+        (Result, Internal (Get_Object (Layout), C_Lines'Address,
+         Gsize (Lines'Length), Hspacing, Vspacing, Table, C_Error'Access));
+      Error := C_Error;
+      Unref (Table);
+      Table := System.Null_Address;
+      Free (C_Names);
+      Free (C_Lines);
+      return Result;
+   exception
+      when others =>
+         if Table /= System.Null_Address then
+            Unref (Table);
+         end if;
+         Free (C_Names);
+         Free (C_Lines);
+         raise;
+   end Add_Constraints_From_Description;
+'''
