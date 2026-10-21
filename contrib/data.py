@@ -43,7 +43,6 @@ interfaces = (
     "Gtk.Native",
     "Gtk.Orientable",
     "Gtk.PrintOperationPreview",
-    "--Gtk.RecentChooser",
     "Gtk.Root",
     "Gtk.Scrollable",
     "Gtk.SectionModel",
@@ -337,7 +336,6 @@ binding = (
     "--GtkAppChooserWidget",  # Obsolescent
     "Gtk.Application",
     "Gtk.ApplicationWindow",
-    "--GtkArrow",
     "Gtk.AspectFrame",
     "Gtk.Assistant",
     "Gtk.AssistantPage",
@@ -345,7 +343,7 @@ binding = (
     "Gtk.Bitset",
     "Gtk.BitsetIter",
     "Gtk.BookmarkList",
-    "--Gtk.Border",
+    "--Gtk.Border", # record
     "Gtk.Box",
     "Gtk.Builder",
     "Gtk.BuilderCScope",
@@ -384,7 +382,7 @@ binding = (
     "--GtkConstraintTarget",  # Bound through manual_binding
     "Gtk.ConstraintGuide",
     "Gtk.CssProvider",
-    "--Gtk.CssSection",
+    "Gtk.CssSection",
     "Gtk.Dialog",
     "Gtk.DirectoryList",
     "Gtk.DrawingArea",
