@@ -107,6 +107,8 @@
 --
 --  - If the gesture has Gtk.Enums.Phase_None, ensuring events of type
 --  GDK_TOUCHPAD_SWIPE and GDK_TOUCHPAD_PINCH are handled by the `GtkGesture`
+--
+--  <gtkada_demo>create_gestures.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Gdk;                  use Gdk;

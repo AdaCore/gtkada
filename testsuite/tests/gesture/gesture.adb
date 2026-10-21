@@ -4,9 +4,17 @@
 --  the part that the bindings are responsible for: that a gesture can be
 --  built, configured, attached to a widget and detached again, that the
 --  controller reports the widget it was attached to, and that a gesture
---  which has seen no input reports itself inactive.
+--  which has seen no input reports itself inactive. Signal tests cover
+--  the null event sequence used for mouse input and opaque touch tokens.
 
 with Ada.Command_Line;
+with Ada.Unchecked_Conversion;
+with Interfaces.C.Strings;
+with System;
+with Gdk.Event;          use Gdk.Event;
+with Glib.Object;        use Glib.Object;
+with Glib.Values;        use Glib.Values;
+with Gtk.Arguments;
 with Glib;               use Glib;
 with Glib.Test;          use Glib.Test;
 with Gtk.Drawing_Area;   use Gtk.Drawing_Area;
@@ -32,6 +40,86 @@ procedure Gesture is
 
    procedure Test_Remove
    with Convention => C;
+
+   procedure Test_Sequence_Conversion with Convention => C;
+   procedure Test_Mouse_Sequence_Signals with Convention => C;
+
+   Typed_Calls, Slot_Calls : Natural := 0;
+
+   procedure On_Sequence
+     (Self : access Gtk_Gesture_Record'Class;
+      Sequence : Gdk_Event_Sequence)
+   is
+      pragma Unreferenced (Self);
+   begin
+      Assert_True (Sequence = null);
+      Typed_Calls := Typed_Calls + 1;
+   end On_Sequence;
+
+   procedure On_Slot_Sequence
+     (Self : access GObject_Record'Class;
+      Sequence : Gdk_Event_Sequence)
+   is
+      pragma Unreferenced (Self);
+   begin
+      Assert_True (Sequence = null);
+      Slot_Calls := Slot_Calls + 1;
+   end On_Slot_Sequence;
+
+   procedure Test_Sequence_Conversion is
+      Value : aliased GValue;
+      Token : aliased Gint := 42;
+      function To_Proxy is new Ada.Unchecked_Conversion
+        (System.Address, C_Proxy);
+   begin
+      Init (Value, GType_Pointer);
+      Set_Proxy (Value, null);
+      Assert_True
+        (Gtk.Arguments.Unchecked_To_Gdk_Event_Sequence
+           (C_GValues (Value'Address), 0) = null);
+
+      --  A sequence is the pointer itself, not the data it points to.
+      Set_Proxy (Value, To_Proxy (Token'Address));
+      Assert_True
+        (Gtk.Arguments.Unchecked_To_Gdk_Event_Sequence
+           (C_GValues (Value'Address), 0) =
+         Gdk_Event_Sequence (C_Proxy'(To_Proxy (Token'Address))));
+      Unset (Value);
+   end Test_Sequence_Conversion;
+
+   procedure Test_Mouse_Sequence_Signals is
+      Drag : constant Gtk_Gesture_Drag := Gtk_Gesture_Drag_New;
+      G    : constant Gtk_Gesture := Gtk_Gesture (Drag);
+
+      procedure Emit
+        (Instance : System.Address;
+         Name : Interfaces.C.Strings.chars_ptr;
+         Sequence : Gdk_Event_Sequence)
+      with Import, Convention => C_Variadic_2,
+           External_Name => "g_signal_emit_by_name";
+
+      procedure Emit_Null (Signal_Name : String) is
+         Name : Interfaces.C.Strings.chars_ptr :=
+           Interfaces.C.Strings.New_String (Signal_Name);
+      begin
+         Emit (Get_Object (G), Name, null);
+         Interfaces.C.Strings.Free (Name);
+      end Emit_Null;
+   begin
+      Typed_Calls := 0;
+      Slot_Calls := 0;
+      G.On_End (On_Sequence'Unrestricted_Access);
+      G.On_End (On_Slot_Sequence'Unrestricted_Access, Slot => G);
+      G.On_Cancel (On_Sequence'Unrestricted_Access);
+      G.On_Cancel (On_Slot_Sequence'Unrestricted_Access, Slot => G);
+
+      --  Mouse releases and cancellations use NULL rather than a touch token.
+      Emit_Null ("end");
+      Emit_Null ("cancel");
+      Assert_Cmpint_Eq (Gint (Typed_Calls), 2);
+      Assert_Cmpint_Eq (Gint (Slot_Calls), 2);
+      G.Unref;
+   end Test_Mouse_Sequence_Signals;
 
    ---------------
    -- Test_Drag --
@@ -114,6 +202,13 @@ begin
    Glib.Test.Add_Func ("/gesture/drag", Test_Drag'Unrestricted_Access);
    Glib.Test.Add_Func ("/gesture/click", Test_Click'Unrestricted_Access);
    Glib.Test.Add_Func ("/gesture/remove", Test_Remove'Unrestricted_Access);
+
+   Glib.Test.Add_Func
+     ("/gesture/sequence-conversion",
+      Test_Sequence_Conversion'Unrestricted_Access);
+   Glib.Test.Add_Func
+     ("/gesture/mouse-sequence-signals",
+      Test_Mouse_Sequence_Signals'Unrestricted_Access);
 
    Ada.Command_Line.Set_Exit_Status (Glib.Test.Run);
 end Gesture;

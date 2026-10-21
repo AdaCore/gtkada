@@ -20,3 +20,6 @@ return = "GtkGestureList"
 [[method]]
 id = "gtk_gesture_get_sequences"
 return = "GdkEventSequenceList"
+
+[doc]
+gtkada_demo = "create_gestures.adb"

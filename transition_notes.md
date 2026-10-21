@@ -85,13 +85,11 @@ package. Markers: *(gtk3)* = the unit exists only under `src/gtk3`;
   | `create_css_accordion`, `create_css_editor` | `Gtk.Container`, which gtk4 removed; the CSS provider, style context, and style provider bindings are available |
   | `create_cursors` | `Gtk.Drawing_Area`, `Gdk.Window` (gtk4: `Gdk.Surface`, bound), `Gdk.Device_Manager` *(absent; gone from gtk4)*, `Gtk.Handlers` *(gtk3)* |
   | `create_dnd` | `Gtk.Dnd` *(gtk3)*, `Gdk.Dnd` *(gtk3)*, `Gdk.Drag_Contexts` (`--GdkDragContext`), `Gtk.Target_List` *(absent)*, `Gtk.Selection_Data` *(absent)*, `Gtk.Image`, `Gdk.Window` (gtk4: `Gdk.Surface`), `Gdk.Types` *(gtk3)*, `Gtk.Handlers` *(gtk3)*. |
-  | `create_gestures` | `Gtk.Gesture`, `Gtk.Gesture_Long_Press`, `Gtk.Gesture_Zoom`, `Gtk.Drawing_Area` |
   | `create_notebook` | `Gtk.Combo_Box_Text`, `Gtk.Image`, `Gdk.Pixbuf` (bound), `Gtk.Handlers` *(gtk3)*, plus `Common`. `Gtk.Notebook` itself is bound |
   | `create_opacity` | `Common` |
 
-  Only `create_gestures` is blocked
-  purely on bindings Step 2 already tracks. Every
-  other package wants at least one unit no upstream demo needs and Step 2
+  With `create_gestures` restored, every remaining package wants at least
+  one unit no upstream demo needs and Step 2
   therefore never schedules (`Gtk.Calendar`, the combo
   family, `Gtk.Container`, `Gtk.Clipboard`, `Gtk.Selection_Data`,
   `Gtk.Target_List`, the `Gdk.*` gtk3 units, `Gtkada.Printing`, the handler
