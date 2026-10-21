@@ -110,15 +110,15 @@ package body Gtk.Arguments is
    -- Unchecked_To_Gdk_Event_Sequence --
    -------------------------------------
 
---   function Unchecked_To_Gdk_Event_Sequence
---     (Args : Glib.Values.C_GValues; Num : Guint)
---     return Gdk.Event.Gdk_Event_Sequence
---   is
---      Val : GValue;
---   begin
---      Unsafe_Nth (Args, Num, Val);
---      return Gdk.Event.Gdk_Event_Sequence (Get_Proxy (Val));
---   end Unchecked_To_Gdk_Event_Sequence;
+   function Unchecked_To_Gdk_Event_Sequence
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Gdk.Event.Gdk_Event_Sequence
+   is
+      Val : GValue;
+   begin
+      Unsafe_Nth (Args, Num, Val);
+      return Gdk.Event.Gdk_Event_Sequence (Get_Proxy (Val));
+   end Unchecked_To_Gdk_Event_Sequence;
 
    ----------------
    -- To_Address --

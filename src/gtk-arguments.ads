@@ -128,9 +128,6 @@ package Gtk.Arguments is
    --     (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.RGBA.Gdk_RGBA;
    --   function Unchecked_To_Gdk_Key_Type
    --     (Args : Glib.Values.C_GValues; Num : Guint) return Gdk.Types.Gdk_Key_Type;
-   --   function Unchecked_To_Gdk_Event_Sequence
-   --     (Args : Glib.Values.C_GValues; Num : Guint)
-   --     return Gdk.Event.Gdk_Event_Sequence;
    --   function Unchecked_To_Gdk_Event_Button
    --     is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Button);
    --   function Unchecked_To_Gdk_Event_Owner_Change
@@ -216,7 +213,9 @@ package Gtk.Arguments is
    function Unchecked_To_Gtk_Text_Iter
      is new Glib.Values.Unsafe_Proxy_Nth (Gtk.Text_Iter.Gtk_Text_Iter);
    function Unchecked_To_Gdk_Event_Sequence
-     is new Glib.Values.Unsafe_Proxy_Nth (Gdk.Event.Gdk_Event_Sequence);
+     (Args : Glib.Values.C_GValues; Num : Guint)
+      return Gdk.Event.Gdk_Event_Sequence;
+   --  Preserve the opaque sequence pointer, including null for mouse input.
    function Unchecked_To_Gtk_Text_Extend_Selection is new
      Glib.Values.Unsafe_Enum_Nth (Gtk.Text_View.Gtk_Text_Extend_Selection);
    function Unchecked_To_Gtk_Tree_Iter is new

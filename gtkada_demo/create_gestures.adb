@@ -31,7 +31,6 @@ with Gtk.Drawing_Area;  use Gtk.Drawing_Area;
 with Gtk.Enums;         use Gtk.Enums;
 with Gtk.Frame;         use Gtk.Frame;
 with Gtk.Label;         use Gtk.Label;
-with Gtk.Widget;        use Gtk.Widget;
 with Gtk.Gesture;             use Gtk.Gesture;
 with Gtk.Gesture_Long_Press;  use Gtk.Gesture_Long_Press;
 with Gtk.Gesture_Zoom;        use Gtk.Gesture_Zoom;
@@ -43,6 +42,7 @@ package body Create_Gestures is
       Long_Press_Y : Gdouble := Gdouble'First;
 
       Zoom_Scale   : Gdouble := 1.0;
+      Zoom_Base    : Gdouble := 1.0;
    end record;
    type My_Drawing_Area is access all My_Drawing_Area_Record'Class;
 
@@ -52,13 +52,17 @@ package body Create_Gestures is
    procedure On_Long_Press_End
       (Area : access GObject_Record'Class;
        Sequence : Gdk_Event_Sequence);
+   procedure On_Zoom_Begin
+      (Area : access GObject_Record'Class;
+       Sequence : Gdk_Event_Sequence);
    procedure On_Scale_Changed
       (Area : access GObject_Record'Class;
        Scale : Gdouble);
 
-   function On_Draw
-      (Area : access Gtk_Widget_Record'Class;
-       Cr   : Cairo.Cairo_Context) return Boolean;
+   procedure On_Draw
+      (Area          : not null access Gtk_Drawing_Area_Record'Class;
+       Cr            : Cairo.Cairo_Context;
+       Width, Height : Gint);
 
    ----------
    -- Help --
@@ -75,6 +79,21 @@ package body Create_Gestures is
         & " to the area below.";
    end Help;
 
+   -------------------
+   -- On_Zoom_Begin --
+   -------------------
+
+   procedure On_Zoom_Begin
+      (Area : access GObject_Record'Class;
+       Sequence : Gdk_Event_Sequence)
+   is
+      pragma Unreferenced (Sequence);
+      A : constant My_Drawing_Area := My_Drawing_Area (Area);
+   begin
+      --  Each pinch reports a scale relative to its own starting distance.
+      A.Zoom_Base := A.Zoom_Scale;
+   end On_Zoom_Begin;
+
    ----------------------
    -- On_Scale_Changed --
    ----------------------
@@ -85,7 +104,7 @@ package body Create_Gestures is
    is
       A : constant My_Drawing_Area := My_Drawing_Area (Area);
    begin
-      A.Zoom_Scale := Scale;
+      A.Zoom_Scale := A.Zoom_Base * Scale;
       A.Queue_Draw;
    end On_Scale_Changed;
 
@@ -123,21 +142,19 @@ package body Create_Gestures is
    -- On_Draw --
    -------------
 
-   function On_Draw
-      (Area : access Gtk_Widget_Record'Class;
-       Cr   : Cairo.Cairo_Context) return Boolean
+   procedure On_Draw
+      (Area          : not null access Gtk_Drawing_Area_Record'Class;
+       Cr            : Cairo.Cairo_Context;
+       Width, Height : Gint)
    is
       A : constant My_Drawing_Area := My_Drawing_Area (Area);
-      Alloc : Gtk_Allocation;
    begin
-      Area.Get_Allocation (Alloc);
-
       Cairo.Scale (Cr, A.Zoom_Scale, A.Zoom_Scale);
 
       Cairo.Save (Cr);
       Cairo.Rectangle
-         (Cr, 5.0, 5.0, Gdouble (Alloc.Width) - 10.0,
-          Gdouble (Alloc.Height) - 10.0);
+         (Cr, 5.0, 5.0, Gdouble (Width) - 10.0,
+          Gdouble (Height) - 10.0);
       Cairo.Set_Source_Rgba (Cr, 1.0, 0.0, 0.0, 0.8);
       Cairo.Set_Line_Width (Cr, 2.0);
       Cairo.Stroke (Cr);
@@ -152,14 +169,13 @@ package body Create_Gestures is
       if A.Long_Press_X /= Gdouble'First then
          Cairo.Save (Cr);
          Cairo.Arc
-            (Cr, A.Long_Press_X, A.Long_Press_Y,
+            (Cr, A.Long_Press_X / A.Zoom_Scale,
+             A.Long_Press_Y / A.Zoom_Scale,
              Radius => 20.0, Angle1 => 0.0, Angle2 => 2.0 * Pi);
          Cairo.Set_Source_Rgba (Cr, 0.0, 0.0, 1.0, 0.8);
          Cairo.Stroke (Cr);
          Cairo.Restore (Cr);
       end if;
-
-      return True;
    end On_Draw;
 
    ---------
@@ -173,38 +189,45 @@ package body Create_Gestures is
    begin
       Frame.Set_Label ("Gestures");
 
-      Gtk_New_Vbox (Box, Homogeneous => False);
-      Frame.Add (Box);
+      Gtk_New (Box, Orientation_Vertical, 12);
+      Frame.Set_Child (Box);
 
       Gtk_New
          (Label,
-         "Try various gestures below: long press and zoom (on some hardware)");
-      Box.Pack_Start (Label, Expand => False, Fill => True);
+         "Press and hold to draw a circle." & ASCII.LF
+         & "Pinch with two touch points to zoom (on supported hardware).");
+      Box.Append (Label);
 
       Area := new My_Drawing_Area_Record;
       Gtk.Drawing_Area.Initialize (Area);
-      Box.Pack_Start (Area, Expand => True, Fill => True);
-      Area.On_Draw (On_Draw'Access);
+      Area.Set_Content_Width (400);
+      Area.Set_Content_Height (300);
+      Area.Set_Hexpand (True);
+      Area.Set_Vexpand (True);
+      Box.Append (Area);
+      Area.Set_Draw_Func (On_Draw'Access);
 
       declare
          G : Gtk_Gesture_Long_Press;
       begin
-         Gtk_New (G, Area);
+         Gtk_New (G);
          G.On_Pressed (On_Long_Press'Access, Area);
-         G.On_End (On_Long_Press_End'Access, Area);
+         Gtk_Gesture (G).On_End (On_Long_Press_End'Access, Area);
+         Gtk_Gesture (G).On_Cancel (On_Long_Press_End'Access, Area);
          G.Set_Propagation_Phase (Phase_Bubble);
-         --  Weak_Ref (Area, Glib.Object.Unref, G);
+         --  The widget takes ownership of the controller.
+         Area.Add_Controller (G);
       end;
 
       declare
          G : Gtk_Gesture_Zoom;
       begin
-         Gtk_New (G, Area);
+         Gtk_New (G);
+         Gtk_Gesture (G).On_Begin (On_Zoom_Begin'Access, Area);
          G.On_Scale_Changed (On_Scale_Changed'Access, Area);
          G.Set_Propagation_Phase (Phase_Bubble);
+         Area.Add_Controller (G);
       end;
-
-      Frame.Show_All;
    end Run;
 
 end Create_Gestures;

@@ -26,6 +26,8 @@
 --  Whenever the distance between both tracked sequences changes, the
 --  [signalGtk.GestureZoom::scale-changed] signal is emitted to report the
 --  scale factor.
+--
+--  <gtkada_demo>create_gestures.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;        use Glib;

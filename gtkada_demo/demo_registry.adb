@@ -56,6 +56,7 @@ with Create_Fixed;
 with Create_Fixed_Layout;
 with Create_Constraints;
 with Create_Frame;
+with Create_Gestures;
 with Create_GL;
 with Create_Header_Bar;
 with Create_Info_Bar;
@@ -182,6 +183,8 @@ package body Demo_Registry is
         ("Drawing Area",
          Create_Drawing_Area.Run'Access,
          Create_Drawing_Area.Help'Access),
+      To_Demo
+        ("Gestures", Create_Gestures.Run'Access, Create_Gestures.Help'Access),
       To_Demo
         ("GtkAda/Column View",
          Create_Column_View.Run'Access,

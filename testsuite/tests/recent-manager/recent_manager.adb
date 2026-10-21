@@ -73,8 +73,6 @@ procedure Recent_Manager is
       Exec : Unbounded_String;
       App_Stamp : Gdate_Time;
       App_Info : Glib.App_Info.Gapp_Info;
-      Groups : String_List :=
-        (new String'("documents"), new String'("tests"));
    begin
       --  Check the default manager resolved the temporary data directory
       --  before performing any write through it.
@@ -86,15 +84,17 @@ procedure Recent_Manager is
          raise Program_Error with "recent database is not isolated";
       end if;
       Assert_True (Manager = Get_Default);
+      --  The groups come from recent-groups.xbel. GTK's add_full checks
+      --  ((char *) data->groups)[0] instead of data->groups[0], so it can
+      --  silently ignore groups depending on the first string's address.
+      --  Exercise group queries from a fixture and update the remaining
+      --  metadata through Add_Full without relying on that upstream bug.
       Assert_True
         (Manager.Add_Full
            (Uri, Display_Name => "Test document", Description => "Metadata",
             Mime_Type => "text/plain", App_Name => App,
-            App_Exec => "gtkada-recent-test %u", Groups => Groups,
+            App_Exec => "gtkada-recent-test %u", Groups => (1 .. 0 => null),
             Is_Private => True));
-      for Group of Groups loop
-         Free (Group);
-      end loop;
       Assert_True (Manager.Has_Item (Uri));
       Info := Manager.Lookup_Item (Uri, Error);
       Assert_True (Error = null);
@@ -237,6 +237,8 @@ procedure Recent_Manager is
 
 begin
    Ada.Directories.Create_Directory (Data_Dir);
+   Ada.Directories.Copy_File
+     ("recent-groups.xbel", Data_Dir & "/recently-used.xbel");
    Ada.Environment_Variables.Set ("XDG_DATA_HOME", Data_Dir);
    Glib.Test.Init;
    Gtk.Main.Init;

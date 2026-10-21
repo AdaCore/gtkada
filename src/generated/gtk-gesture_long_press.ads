@@ -36,6 +36,8 @@
 --  determined by the [propertyGtk.Settings:gtk-long-press-time] setting. It
 --  can be modified by the [propertyGtk.GestureLongPress:delay-factor]
 --  property.
+--
+--  <gtkada_demo>create_gestures.adb</gtkada_demo>
 
 pragma Warnings (Off, "*is already use-visible*");
 with Glib;               use Glib;
