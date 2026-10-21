@@ -78,6 +78,7 @@ with Glib;                  use Glib;
 with Glib.Properties;       use Glib.Properties;
 with Glib.Types;            use Glib.Types;
 with Gtk.Accessible;        use Gtk.Accessible;
+with Gtk.Accessible_Range;  use Gtk.Accessible_Range;
 with Gtk.Atcontext;         use Gtk.Atcontext;
 with Gtk.Buildable;         use Gtk.Buildable;
 with Gtk.Constraint_Target; use Gtk.Constraint_Target;
@@ -352,6 +353,8 @@ package Gtk.Progress_Bar is
    --
    --  - "Gtk.Accessible"
    --
+   --  - "Gtk.AccessibleRange"
+   --
    --  - "Gtk.Buildable"
    --
    --  - "Gtk.ConstraintTarget"
@@ -368,6 +371,17 @@ package Gtk.Progress_Bar is
      (Interf : Gtk.Accessible.Gtk_Accessible)
    return Gtk_Progress_Bar
    renames Implements_Gtk_Accessible.To_Object;
+
+   package Implements_Gtk_Accessible_Range is new Glib.Types.Implements
+     (Gtk.Accessible_Range.Gtk_Accessible_Range, Gtk_Progress_Bar_Record, Gtk_Progress_Bar);
+   function "+"
+     (Widget : access Gtk_Progress_Bar_Record'Class)
+   return Gtk.Accessible_Range.Gtk_Accessible_Range
+   renames Implements_Gtk_Accessible_Range.To_Interface;
+   function "-"
+     (Interf : Gtk.Accessible_Range.Gtk_Accessible_Range)
+   return Gtk_Progress_Bar
+   renames Implements_Gtk_Accessible_Range.To_Object;
 
    package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Progress_Bar_Record, Gtk_Progress_Bar);

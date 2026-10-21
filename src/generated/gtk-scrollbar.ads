@@ -65,6 +65,7 @@ with Glib;                  use Glib;
 with Glib.Properties;       use Glib.Properties;
 with Glib.Types;            use Glib.Types;
 with Gtk.Accessible;        use Gtk.Accessible;
+with Gtk.Accessible_Range;  use Gtk.Accessible_Range;
 with Gtk.Adjustment;        use Gtk.Adjustment;
 with Gtk.Atcontext;         use Gtk.Atcontext;
 with Gtk.Buildable;         use Gtk.Buildable;
@@ -221,6 +222,8 @@ package Gtk.Scrollbar is
    --
    --  - "Gtk.Accessible"
    --
+   --  - "Gtk.AccessibleRange"
+   --
    --  - "Gtk.Buildable"
    --
    --  - "Gtk.ConstraintTarget"
@@ -237,6 +240,17 @@ package Gtk.Scrollbar is
      (Interf : Gtk.Accessible.Gtk_Accessible)
    return Gtk_Scrollbar
    renames Implements_Gtk_Accessible.To_Object;
+
+   package Implements_Gtk_Accessible_Range is new Glib.Types.Implements
+     (Gtk.Accessible_Range.Gtk_Accessible_Range, Gtk_Scrollbar_Record, Gtk_Scrollbar);
+   function "+"
+     (Widget : access Gtk_Scrollbar_Record'Class)
+   return Gtk.Accessible_Range.Gtk_Accessible_Range
+   renames Implements_Gtk_Accessible_Range.To_Interface;
+   function "-"
+     (Interf : Gtk.Accessible_Range.Gtk_Accessible_Range)
+   return Gtk_Scrollbar
+   renames Implements_Gtk_Accessible_Range.To_Object;
 
    package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Scrollbar_Record, Gtk_Scrollbar);

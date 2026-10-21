@@ -25,7 +25,7 @@ interfaces = (
     "--Gtk.Actionable",
     "--Gtk.Activatable",
     "Gtk.Accessible",
-    "--Gtk.AccessibleRange",
+    "Gtk.AccessibleRange",
     "Gtk.AccessibleText",
     "Gtk.AccessibleHypertext",
     "--Gtk.AppChooser", # Obsolescent
