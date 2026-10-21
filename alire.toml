@@ -1,0 +1,36 @@
+name = "gtkada4"
+version = "27.0.0"
+website = "https://github.com/adacore/gtkada"
+description = "An Ada graphical toolkit based on GTK"
+long-description = "This crate requires GTK >= 4.22.2"
+authors = ["AdaCore"]
+licenses = "GPL-3.0-or-later WITH GCC-exception-3.1"
+maintainers = ["setton@adacore.com", "reznik@adacore.com", "mathur@adacore.com", "ogorodnik@adacore.com", "godunko@adacore.com", "leonardo@adacore.com"]
+maintainers-logins = ["setton", "reznikmm", "virtualmech", "ogorodnik", "godunko", "AnthonyLeonardoGracio"]
+project-files = ["gtkada.gpr"]
+tags = ["gtk", "gui"]
+
+[configuration]
+disabled = true
+
+# Prepend PATH with pkg-config directory to stabilize GitHub CI
+[[actions]]
+type = "post-fetch"
+command = ["bash", "-c", "PATH=${DISTRIB_ROOT}/mingw64/bin:${PATH} ./configure"]
+
+# Generate gtkada-intl.adb to be able to build with gtkada.gpr
+[[actions]]
+type = "post-fetch"
+command = ["make", "src/gtkada-intl.adb"]
+
+[[depends-on]]
+make = "*"
+pkg_config = "*"
+libgtk4 = ">=4.22.2"
+
+[gpr-externals]
+LIBRARY_TYPE = ["static", "static-pic", "relocatable"]
+
+# Update PATH on Windows to help deps find .DLL files
+[environment.'case(os)'.windows.PATH]
+append = "${CRATE_ROOT}/src/obj/gtkada/relocatable"
