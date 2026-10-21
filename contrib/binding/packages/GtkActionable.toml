@@ -1,0 +1,7 @@
+# ============================================================
+#   GtkActionable
+# ============================================================
+
+[[property]]
+id = "action-target"
+bind = false # needs Glib.Variant.Gvariant property

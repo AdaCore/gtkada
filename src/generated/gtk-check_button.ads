@@ -89,7 +89,9 @@ with Glib;                  use Glib;
 with Glib.Object;           use Glib.Object;
 with Glib.Properties;       use Glib.Properties;
 with Glib.Types;            use Glib.Types;
+with Glib.Variant;          use Glib.Variant;
 with Gtk.Accessible;        use Gtk.Accessible;
+with Gtk.Actionable;        use Gtk.Actionable;
 with Gtk.Atcontext;         use Gtk.Atcontext;
 with Gtk.Buildable;         use Gtk.Buildable;
 with Gtk.Constraint_Target; use Gtk.Constraint_Target;
@@ -318,6 +320,25 @@ package Gtk.Check_Button is
       (Self  : not null access Gtk_Check_Button_Record;
        State : Gtk.Accessible.Gtk_Accessible_Platform_State);
 
+   function Get_Action_Name
+      (Self : not null access Gtk_Check_Button_Record) return UTF8_String;
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Check_Button_Record;
+       Action_Name : UTF8_String := "");
+
+   function Get_Action_Target_Value
+      (Self : not null access Gtk_Check_Button_Record)
+       return Glib.Variant.Gvariant;
+
+   procedure Set_Action_Target_Value
+      (Self         : not null access Gtk_Check_Button_Record;
+       Target_Value : Glib.Variant.Gvariant);
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Check_Button_Record;
+       Detailed_Action_Name : UTF8_String);
+
    ----------------
    -- Properties --
    ----------------
@@ -404,6 +425,8 @@ package Gtk.Check_Button is
    --
    --  - "Gtk.Accessible"
    --
+   --  - "Gtk.Actionable"
+   --
    --  - "Gtk.Buildable"
    --
    --  - "Gtk.ConstraintTarget"
@@ -418,6 +441,17 @@ package Gtk.Check_Button is
      (Interf : Gtk.Accessible.Gtk_Accessible)
    return Gtk_Check_Button
    renames Implements_Gtk_Accessible.To_Object;
+
+   package Implements_Gtk_Actionable is new Glib.Types.Implements
+     (Gtk.Actionable.Gtk_Actionable, Gtk_Check_Button_Record, Gtk_Check_Button);
+   function "+"
+     (Widget : access Gtk_Check_Button_Record'Class)
+   return Gtk.Actionable.Gtk_Actionable
+   renames Implements_Gtk_Actionable.To_Interface;
+   function "-"
+     (Interf : Gtk.Actionable.Gtk_Actionable)
+   return Gtk_Check_Button
+   renames Implements_Gtk_Actionable.To_Object;
 
    package Implements_Gtk_Buildable is new Glib.Types.Implements
      (Gtk.Buildable.Gtk_Buildable, Gtk_Check_Button_Record, Gtk_Check_Button);

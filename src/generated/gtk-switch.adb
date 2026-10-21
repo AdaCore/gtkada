@@ -190,6 +190,34 @@ package body Gtk.Switch is
       return Internal (Get_Object (Self));
    end Get_Accessible_Role;
 
+   ---------------------
+   -- Get_Action_Name --
+   ---------------------
+
+   function Get_Action_Name
+      (Self : not null access Gtk_Switch_Record) return UTF8_String
+   is
+      function Internal
+         (Self : System.Address) return Gtkada.Types.Chars_Ptr;
+      pragma Import (C, Internal, "gtk_actionable_get_action_name");
+   begin
+      return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
+   end Get_Action_Name;
+
+   -----------------------------
+   -- Get_Action_Target_Value --
+   -----------------------------
+
+   function Get_Action_Target_Value
+      (Self : not null access Gtk_Switch_Record)
+       return Glib.Variant.Gvariant
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_actionable_get_action_target_value");
+   begin
+      return From_Object (Internal (Get_Object (Self)));
+   end Get_Action_Target_Value;
+
    --------------------
    -- Get_At_Context --
    --------------------
@@ -349,6 +377,62 @@ package body Gtk.Switch is
    begin
       Internal (Get_Object (Self), Parent, Next_Sibling);
    end Set_Accessible_Parent;
+
+   ---------------------
+   -- Set_Action_Name --
+   ---------------------
+
+   procedure Set_Action_Name
+      (Self        : not null access Gtk_Switch_Record;
+       Action_Name : UTF8_String := "")
+   is
+      procedure Internal
+         (Self        : System.Address;
+          Action_Name : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "gtk_actionable_set_action_name");
+      Tmp_Action_Name : Gtkada.Types.Chars_Ptr;
+   begin
+      Tmp_Action_Name :=
+        (if Action_Name = ""
+         then Gtkada.Types.Null_Ptr
+         else New_String (Action_Name));
+      Internal (Get_Object (Self), Tmp_Action_Name);
+      Free (Tmp_Action_Name);
+   end Set_Action_Name;
+
+   -----------------------------
+   -- Set_Action_Target_Value --
+   -----------------------------
+
+   procedure Set_Action_Target_Value
+      (Self         : not null access Gtk_Switch_Record;
+       Target_Value : Glib.Variant.Gvariant)
+   is
+      procedure Internal
+         (Self         : System.Address;
+          Target_Value : System.Address);
+      pragma Import (C, Internal, "gtk_actionable_set_action_target_value");
+   begin
+      Internal (Get_Object (Self), Get_Object (Target_Value));
+   end Set_Action_Target_Value;
+
+   ------------------------------
+   -- Set_Detailed_Action_Name --
+   ------------------------------
+
+   procedure Set_Detailed_Action_Name
+      (Self                 : not null access Gtk_Switch_Record;
+       Detailed_Action_Name : UTF8_String)
+   is
+      procedure Internal
+         (Self                 : System.Address;
+          Detailed_Action_Name : Gtkada.Types.Chars_Ptr);
+      pragma Import (C, Internal, "gtk_actionable_set_detailed_action_name");
+      Tmp_Detailed_Action_Name : Gtkada.Types.Chars_Ptr := New_String (Detailed_Action_Name);
+   begin
+      Internal (Get_Object (Self), Tmp_Detailed_Action_Name);
+      Free (Tmp_Detailed_Action_Name);
+   end Set_Detailed_Action_Name;
 
    ------------------------------------
    -- Update_Next_Accessible_Sibling --
