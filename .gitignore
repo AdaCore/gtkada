@@ -1,3 +1,7 @@
+/alire/
+/config/
+/.libs/
+/.objs/
 *.ali
 *.exe
 # e3-testsuite results directory
