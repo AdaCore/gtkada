@@ -54,6 +54,7 @@ package body Create_Constraints is
       Kind       : Demo_Kind;
       Layout     : Gtk_Constraint_Layout;
       Guide      : Gtk_Constraint_Guide;
+      Divider    : Gtk_Label := null;
       Position   : Gtk_Constraint        := null;
       A, B, C    : Gtk_Button;
       Control    : Gtk_Scale;
@@ -81,6 +82,8 @@ package body Create_Constraints is
             Multiplier, Offset, Strength));
    end Link;
 
+   procedure Build_Layout (Self : Stage);
+
    procedure Changed (Object : access GObject_Record'Class) is
       Self          : constant Stage := Stage (Object);
       Width, Height : Gint;
@@ -103,7 +106,13 @@ package body Create_Constraints is
             "sets the horizontal gap.");
       else
          if Self.Position /= null then
-            Self.Layout.Remove_Constraint (Self.Position);
+            --  Replacing only the position in the live solver can retain
+            --  the previous allocation as a size request. Rebuild the graph
+            --  so moving the divider cannot grow the stage or freeze a child.
+            Gtk_New (Self.Layout);
+            Self.Set_Layout_Manager (Self.Layout);
+            Self.Position := null;
+            Build_Layout (Self);
          end if;
          --  Resolve the proportion to a pixel offset after allocation.
          --  A relation to the parent's width would also feed the requested
@@ -240,11 +249,21 @@ package body Create_Constraints is
            (Gtk_Constraint_New_Constant
               (+Self.B, Constraint_Attribute_Width, Constraint_Relation_Ge,
                80.0, Required));
-         Gtk_New (Divider, "↔");
-         Divider.Add_Css_Class ("accent");
-         Divider.Set_Can_Target (True);
-         Divider.Set_Cursor_From_Name ("col-resize");
-         Self.Append (Divider);
+         if Self.Divider = null then
+            Gtk_New (Self.Divider, "↔");
+            Self.Divider.Add_Css_Class ("accent");
+            Self.Divider.Set_Can_Target (True);
+            Self.Divider.Set_Cursor_From_Name ("col-resize");
+            Self.Append (Self.Divider);
+            Gtk_New (Drag);
+            Drag.On_Drag_Begin (Drag_Begin'Access, Slot => Self);
+            Drag.On_Drag_Update (Drag_Update'Access, Slot => Self);
+            --  Keep drag coordinates in the stationary container: attaching
+            --  to the moving divider makes its own motion alter the offsets.
+            Drag.Set_Propagation_Phase (Phase_Capture);
+            Self.Add_Controller (Drag);
+         end if;
+         Divider := Self.Divider;
          Link
            (Self.Layout, +Divider, Constraint_Attribute_Start, +Self.Guide,
             Constraint_Attribute_Start);
@@ -257,13 +276,6 @@ package body Create_Constraints is
          Link
            (Self.Layout, +Divider, Constraint_Attribute_Bottom, +Self.A,
             Constraint_Attribute_Bottom);
-         Gtk_New (Drag);
-         Drag.On_Drag_Begin (Drag_Begin'Access, Slot => Self);
-         Drag.On_Drag_Update (Drag_Update'Access, Slot => Self);
-         --  Keep drag coordinates in the stationary container: attaching
-         --  to the moving divider makes its own motion alter the offsets.
-         Drag.Set_Propagation_Phase (Phase_Capture);
-         Self.Add_Controller (Drag);
       end if;
    end Build_Layout;
 
@@ -435,7 +447,7 @@ package body Create_Constraints is
    begin
       return
         "Drag the divider between the blue buttons, or use the slider. " &
-        "The demo replaces an immutable position constraint as you move. " &
+        "The demo rebuilds the constraints with a new divider position. " &
         "Required minimum widths take priority over its strong position " &
         "constraint. Resizing preserves the requested proportion.";
    end Help_Interactive;
