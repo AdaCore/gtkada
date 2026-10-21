@@ -1,7 +1,7 @@
 """
-Default test driver for GtkAda. The expectation is that each test will contain
-one and only one ".gpr" file, defining a main which is supposed to run
-Glib.Test.Init / Glib.Test.Run.
+Default test driver for GtkAda. Each test selects its project with
+"project_file" in test.yaml, or contains exactly one ".gpr" file. Its main
+is supposed to run Glib.Test.Init / Glib.Test.Run.
 
 As a minimal example, see tests/main/.
 """
@@ -131,8 +131,10 @@ class DefaultScriptDriver(ClassicTestDriver):
                 str(gtkada_root / "src") + os.pathsep + env.get("GPR_PROJECT_PATH", "")
             )
 
-        # Find the ".gpr" file in the working directory
-        gpr_files = list(Path(working_dir).glob("*.gpr"))
+        # Select the test project explicitly when other projects (such as
+        # an interactive example) share the working directory.
+        project_file = self.test_env.get("project_file", "*.gpr")
+        gpr_files = list(Path(working_dir).glob(project_file))
         if not gpr_files:
             msg = f"No .gpr file found in {working_dir}"
             self.result.log += msg

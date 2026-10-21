@@ -47,7 +47,7 @@ libdir=@libdir@
 datadir=@datadir@
 datarootdir=@datarootdir@
 exampledir=${datadir}/examples/gtkada/gtkada_demo
-basic_application_dir=${datadir}/examples/basic_application
+basic_application_dir=${datadir}/examples/gtkada4/basic_application
 
 all:
 
@@ -112,9 +112,8 @@ install-examples:
 	@echo "====== Installing examples ====="
 	mkdir -p "${DESTDIR}${basic_application_dir}"
 	cp testsuite/tests/user-guide/*.ad? testsuite/tests/user-guide/test.gpr \
+		testsuite/tests/user-guide/basic_application.gpr \
 		testsuite/tests/user-guide/README "${DESTDIR}${basic_application_dir}/"
-	cp testsuite/tests/user-guide/basic_application.gpr.in \
-		"${DESTDIR}${basic_application_dir}/basic_application.gpr"
 
 install: install-clean install-examples
 	@echo "====== Installing tools ====="

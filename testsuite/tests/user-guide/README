@@ -6,11 +6,19 @@ includes a simple application that opens a window with a Quit button, and
 an automated test of the samples for use in release sanity checks.
 
 Copy this directory to a writable location before building. GNAT and
-GPRbuild must be available in PATH. If GtkAda's installed project file is
-not found automatically, add <prefix>/lib/gnat to GPR_PROJECT_PATH, where
-<prefix> is the GtkAda installation prefix. When using shared libraries,
-their directories must also be on the platform's library search path
-(LD_LIBRARY_PATH on Linux, PATH on Windows).
+GPRbuild must be available in PATH. On Unix, set up the environment using
+the gtkada-env.sh script supplied with GtkAda, replacing <prefix> with
+the GtkAda installation prefix:
+
+    eval "$("<prefix>/bin/gtkada-env.sh" --print-only)"
+
+Run this command in the shell used for the build and run commands below,
+including the automated sanity check. This checks the supplied script as
+well as the installed library, without setting the project and library
+search paths by hand.
+
+On Windows, ensure <prefix>/lib/gnat is in GPR_PROJECT_PATH and
+<prefix>/bin is in PATH.
 
 To build and run the interactive application:
 
