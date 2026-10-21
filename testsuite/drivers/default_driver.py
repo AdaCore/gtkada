@@ -125,10 +125,10 @@ class DefaultScriptDriver(ClassicTestDriver):
         # library can be loaded.
         env.setdefault("GSK_RENDERER", "cairo")
 
-        # If we're not in development mode, we use gtkada.gpr from the install
+        # Use the checkout unless --no-library-build selects an installed library.
         if not self.testsuite_options.no_library_build:
             env["GPR_PROJECT_PATH"] = (
-                str(gtkada_root / "src") + os.pathsep + env.get("GPR_PROJECT_PATH", "")
+                str(gtkada_root) + os.pathsep + env.get("GPR_PROJECT_PATH", "")
             )
 
         # Select the test project explicitly when other projects (such as

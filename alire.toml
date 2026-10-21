@@ -33,4 +33,4 @@ LIBRARY_TYPE = ["static", "static-pic", "relocatable"]
 
 # Update PATH on Windows to help deps find .DLL files
 [environment.'case(os)'.windows.PATH]
-append = "${CRATE_ROOT}/src/obj/gtkada/relocatable"
+append = "${CRATE_ROOT}/.libs/gtkada/relocatable"

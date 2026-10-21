@@ -67,11 +67,11 @@ project with `project_file:` in `test.yaml`. For example, `user-guide` selects
 The library itself is built once, by the testsuite runner, before any test
 runs; each test is then built with `-XGTKADA_EXTERNALLY_BUILT=yes` so that it
 links against that library rather than rebuilding it. This is not merely an
-economy: every test project withs the same `src/gtkada.gpr` and would archive
-into the same `src/lib/gtkada/<kind>/libgtkada.a`, so tests building in
+economy: every test project withs the same `gtkada.gpr` and would archive
+into the same `.libs/gtkada/<kind>/libgtkada.a`, so tests building in
 parallel overwrite each other's archive and the losers fail to link with
 `libgtkada.a: file format not recognized`. Pass `--no-library-build` to run
-against the library already in `src/lib` as it stands.
+against an installed library found through `GPR_PROJECT_PATH`.
 
 GTK tests need an X display. On Linux the test driver starts a private `Xvfb`
 server for each main it runs, so `Xvfb` must be installed (e.g. the

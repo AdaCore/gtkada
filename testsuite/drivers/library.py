@@ -2,8 +2,8 @@
 
 Tests are built with "-XGTKADA_EXTERNALLY_BUILT=yes" (see
 default_driver.py), so none of them ever rebuilds the library. They have
-to be kept from it: every test project withs the one src/gtkada.gpr and
-would archive into the one src/lib/gtkada/<kind>/libgtkada.a, so a dozen
+to be kept from it: every test project withs the one gtkada.gpr and
+would archive into the one .libs/gtkada/<kind>/libgtkada.a, so a dozen
 tests building in parallel write over each other's archive and the ones
 that lose the race fail to link with "libgtkada.a: file format not
 recognized".
@@ -23,7 +23,7 @@ from drivers.default_driver import BUILD_TIMEOUT, as_text
 GTKADA_ROOT = Path(__file__).resolve().parent.parent.parent
 
 #: The library project that every test project withs.
-LIBRARY_GPR = GTKADA_ROOT / "src" / "gtkada.gpr"
+LIBRARY_GPR = GTKADA_ROOT / "gtkada.gpr"
 
 
 class LibraryBuildError(Exception):

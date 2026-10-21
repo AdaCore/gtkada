@@ -45,7 +45,7 @@ class GtkAdaTestsuite(e3.testsuite.Testsuite):
             "--no-library-build",
             action="store_true",
             help="Do not build the GtkAda library before running the"
-            " tests: use the one already in src/lib as it stands.",
+            " tests: use an installed library found through GPR_PROJECT_PATH.",
         )
 
     def set_up(self) -> None:
