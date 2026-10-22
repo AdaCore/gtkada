@@ -25,6 +25,20 @@ ctype = "GtkAlign"
 asbitfield = true # Since Align_Baseline_Fill == Align_Baseline
 # TRANSITION: review this
 
+[[method]]
+id = "gtk_widget_get_allocation"
+
+[[method.parameter]]
+name = "allocation"
+ctype = "GdkRectangle"
+
+[[method]]
+id = "gtk_widget_size_allocate"
+
+[[method.parameter]]
+name = "allocation"
+ctype = "GdkRectangle*"
+
 ##############
 # TRANSITION #
 ##############
@@ -33,148 +47,12 @@ asbitfield = true # Since Align_Baseline_Fill == Align_Baseline
 # are bound.
 
 [[method]]
-id = "gtk_widget_get_tick_callback"
-bind = false
-
-[[method]]
-id = "gtk_widget_add_tick_callback"
-bind = false
-
-[[method]]
-id = "gtk_widget_add_tick_callback"
-bind = false
-
-[[method]]
-id = "gtk_widget_allocate"
-bind = false
-
-[[method]]
-id = "gtk_widget_compute_bounds"
-bind = false
-
-[[method]]
-id = "gtk_widget_compute_expand"
-bind = false
-
-[[method]]
-id = "gtk_widget_compute_point"
-bind = false
-
-[[method]]
-id = "gtk_widget_compute_transform"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_allocation"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_color"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_cursor"
-bind = false
-
-[[method]]
-id = "gtk_widget_set_cursor"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_display"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_frame_clock"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_primary_clipboard"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_native"
-bind = false
-
-[[method]]
 id = "gtk_widget_get_root"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_overflow"
-bind = false
-
-[[method]]
-id = "gtk_widget_set_overflow"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_size"
-bind = false
-
-[[method]]
-id = "gtk_widget_child_focus"
-bind = false
-
-[[method]]
-id = "gtk_widget_keynav_failed"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_direction"
-bind = false
-
-[[method]]
-id = "gtk_widget_set_direction"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_request_mode"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_state_flags"
-bind = false
-
-[[method]]
-id = "gtk_widget_set_state_flags"
-bind = false
-
-[[method]]
-id = "gtk_widget_unset_state_flags"
-bind = false
-
-[[method]]
-id = "gtk_widget_measure"
-bind = false
-
-[[method]]
-id = "gtk_widget_observe_children"
-bind = false
-
-[[method]]
-id = "gtk_widget_observe_controllers"
-bind = false
-
-[[method]]
-id = "gtk_widget_pick"
-bind = false
-
-[[method]]
-id = "gtk_widget_size_allocate"
-bind = false
+bind = false # Needs Gtk.Root
 
 [[method]]
 id = "gtk_widget_snapshot_child"
-bind = false
-
-[[method]]
-id = "gtk_widget_get_default_direction"
-bind = false
-
-[[method]]
-id = "gtk_widget_set_default_direction"
-bind = false
+bind = false # Needs Gtk.Snapshot
 
 ####################
 # Gtk3 definitions #

@@ -313,17 +313,29 @@
 pragma Warnings (Off, "*is already use-visible*");
 with Cairo;                   use Cairo;
 with GNAT.Strings;            use GNAT.Strings;
+with Gdk;                     use Gdk;
+with Gdk.Clipboard;           use Gdk.Clipboard;
+with Gdk.Cursor;              use Gdk.Cursor;
+with Gdk.Frame_Clock;         use Gdk.Frame_Clock;
+with Gdk.RGBA;                use Gdk.RGBA;
+with Gdk.Rectangle;           use Gdk.Rectangle;
 with Glib;                    use Glib;
 with Glib.Action_Group;       use Glib.Action_Group;
 with Glib.GSlist;             use Glib.GSlist;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.Glist;              use Glib.Glist;
+with Glib.List_Model;         use Glib.List_Model;
 with Glib.Object;             use Glib.Object;
 with Glib.Properties;         use Glib.Properties;
 with Glib.Variant;            use Glib.Variant;
+with Graphene.Matrix;         use Graphene.Matrix;
+with Graphene.Point;          use Graphene.Point;
+with Graphene.Rect;           use Graphene.Rect;
+with Gsk.Transform;           use Gsk.Transform;
 with Gtk.Enums;               use Gtk.Enums;
 limited with Gtk.Event_Controller;
 limited with Gtk.Layout_Manager;
+with Gtk.Native;              use Gtk.Native;
 with Pango.Context;           use Pango.Context;
 with Pango.Font_Map;          use Pango.Font_Map;
 with Pango.Layout;            use Pango.Layout;
@@ -377,6 +389,21 @@ package Gtk.Widget is
    package Widget_List is new Generic_List (Gtk.Widget.Gtk_Widget);
 
    package Widget_SList is new Generic_SList (Gtk.Widget.Gtk_Widget);
+
+   ---------------
+   -- Callbacks --
+   ---------------
+
+   type Gtk_Tick_Callback is access function
+     (Widget      : not null access Gtk_Widget_Record'Class;
+      Frame_Clock : not null access Gdk.Frame_Clock.Gdk_Frame_Clock_Record'Class)
+   return Boolean;
+   --  Callback type for adding a function to update animations.
+   --  See [methodGtk.Widget.add_tick_callback].
+   --  @param Widget the widget
+   --  @param Frame_Clock the frame clock for the widget
+   --  @return `G_SOURCE_CONTINUE` if the tick callback should continue to be
+   --  called, `G_SOURCE_REMOVE` if it should be removed
 
    ----------------------------
    -- Enumeration Properties --
@@ -469,6 +496,194 @@ package Gtk.Widget is
    --  the widget is destroyed, so the caller must make sure to update its
    --  internal state at this point as well.
    --  @param Label a widget that acts as a mnemonic label for Widget
+
+   function Add_Tick_Callback
+      (Widget   : not null access Gtk_Widget_Record;
+       Callback : Gtk_Tick_Callback) return Guint;
+   --  Queues an animation frame update and adds a callback to be called
+   --  before each frame.
+   --  Until the tick callback is removed, it will be called frequently
+   --  (usually at the frame rate of the output device or as quickly as the
+   --  application can be repainted, whichever is slower). For this reason, is
+   --  most suitable for handling graphics that change every frame or every few
+   --  frames.
+   --  The tick callback does not automatically imply a relayout or repaint.
+   --  If you want a repaint or relayout, and aren't changing widget properties
+   --  that would trigger that (for example, changing the text of a label),
+   --  then you will have to call [methodGtk.Widget.queue_resize] or
+   --  [methodGtk.Widget.queue_draw] yourself.
+   --  [methodGdk.FrameClock.get_frame_time] should generally be used for
+   --  timing continuous animations and
+   --  [methodGdk.FrameTimings.get_predicted_presentation_time] should be used
+   --  if you are trying to display isolated frames at particular times.
+   --  This is a more convenient alternative to connecting directly to the
+   --  [signalGdk.FrameClock::update] signal of the frame clock, since you
+   --  don't have to worry about when a frame clock is assigned to a widget.
+   --  To remove a tick callback, pass the ID that is returned by this
+   --  function to [methodGtk.Widget.remove_tick_callback].
+   --  @param Callback function to call for updating animations
+   --  @return an ID for this callback
+
+   generic
+      type User_Data_Type (<>) is private;
+      with procedure Destroy (Data : in out User_Data_Type) is null;
+   package Add_Tick_Callback_User_Data is
+
+      type Gtk_Tick_Callback is access function
+        (Widget      : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+         Frame_Clock : not null access Gdk.Frame_Clock.Gdk_Frame_Clock_Record'Class;
+         User_Data   : User_Data_Type) return Boolean;
+      --  Callback type for adding a function to update animations.
+      --  See [methodGtk.Widget.add_tick_callback].
+      --  @param Widget the widget
+      --  @param Frame_Clock the frame clock for the widget
+      --  @param User_Data user data passed to
+      --  [methodGtk.Widget.add_tick_callback].
+      --  @return `G_SOURCE_CONTINUE` if the tick callback should continue to be
+      --  called, `G_SOURCE_REMOVE` if it should be removed
+
+      function Add_Tick_Callback
+         (Widget    : not null access Gtk.Widget.Gtk_Widget_Record'Class;
+          Callback  : Gtk_Tick_Callback;
+          User_Data : User_Data_Type) return Guint;
+      --  Queues an animation frame update and adds a callback to be called
+      --  before each frame.
+      --  Until the tick callback is removed, it will be called frequently
+      --  (usually at the frame rate of the output device or as quickly as the
+      --  application can be repainted, whichever is slower). For this reason,
+      --  is most suitable for handling graphics that change every frame or
+      --  every few frames.
+      --  The tick callback does not automatically imply a relayout or
+      --  repaint. If you want a repaint or relayout, and aren't changing
+      --  widget properties that would trigger that (for example, changing the
+      --  text of a label), then you will have to call
+      --  [methodGtk.Widget.queue_resize] or [methodGtk.Widget.queue_draw]
+      --  yourself.
+      --  [methodGdk.FrameClock.get_frame_time] should generally be used for
+      --  timing continuous animations and
+      --  [methodGdk.FrameTimings.get_predicted_presentation_time] should be
+      --  used if you are trying to display isolated frames at particular
+      --  times.
+      --  This is a more convenient alternative to connecting directly to the
+      --  [signalGdk.FrameClock::update] signal of the frame clock, since you
+      --  don't have to worry about when a frame clock is assigned to a widget.
+      --  To remove a tick callback, pass the ID that is returned by this
+      --  function to [methodGtk.Widget.remove_tick_callback].
+      --  @param Callback function to call for updating animations
+      --  @param User_Data data to pass to Callback
+      --  @return an ID for this callback
+
+   end Add_Tick_Callback_User_Data;
+
+   procedure Allocate
+      (Widget    : not null access Gtk_Widget_Record;
+       Width     : Glib.Gint;
+       Height    : Glib.Gint;
+       Baseline  : Glib.Gint;
+       Transform : Gsk.Transform.Gsk_Transform);
+   --  Assigns size, position, (optionally) a baseline and transform to a
+   --  child widget.
+   --  In this function, the allocation and baseline may be adjusted. The
+   --  given allocation will be forced to be bigger than the widget's minimum
+   --  size, as well as at least 0×0 in size.
+   --  This function is only used by widget implementations.
+   --  For a version that does not take a transform, see
+   --  [methodGtk.Widget.size_allocate].
+   --  @param Width new width
+   --  @param Height new height
+   --  @param Baseline new baseline, or -1
+   --  @param Transform transformation to be applied. Has
+   --  transfer-ownership='full'.
+
+   function Child_Focus
+      (Widget    : not null access Gtk_Widget_Record;
+       Direction : Gtk.Enums.Gtk_Direction_Type) return Boolean;
+   --  Called by widgets as the user moves around the window using keyboard
+   --  shortcuts.
+   --  The Direction argument indicates what kind of motion is taking place
+   --  (up, down, left, right, tab forward, tab backward).
+   --  This function calls the [vfuncGtk.Widget.focus] virtual function;
+   --  widgets can override the virtual function in order to implement
+   --  appropriate focus behavior.
+   --  The default `focus` virtual function for a widget should return true if
+   --  moving in Direction left the focus on a focusable location inside that
+   --  widget, and false if moving in Direction moved the focus outside the
+   --  widget. When returning true, widgets normally call
+   --  [methodGtk.Widget.grab_focus] to place the focus accordingly; when
+   --  returning false, they don't modify the current focus location.
+   --  This function is used by custom widget implementations; if you're
+   --  writing an app, you'd use [methodGtk.Widget.grab_focus] to move the
+   --  focus to a particular widget.
+   --  @param Direction direction of focus movement
+   --  @return true if focus ended up inside Widget
+
+   function Compute_Bounds
+      (Widget     : not null access Gtk_Widget_Record;
+       Target     : not null access Gtk_Widget_Record'Class;
+       Out_Bounds : not null access Graphene.Rect.Graphene_Rect_T)
+       return Boolean;
+   --  Computes the bounds for Widget in the coordinate space of Target.
+   --  The bounds of widget are (the bounding box of) the region that it is
+   --  expected to draw in. See the [coordinate system](coordinates.html)
+   --  overview to learn more.
+   --  If the operation is successful, true is returned. If Widget has no
+   --  bounds or the bounds cannot be expressed in Target's coordinate space
+   --  (for example if both widgets are in different windows), false is
+   --  returned and Bounds is set to the zero rectangle.
+   --  It is valid for Widget and Target to be the same widget.
+   --  @param Target the target widget
+   --  @param Out_Bounds the rectangle taking the bounds
+   --  @return true if the bounds could be computed
+
+   function Compute_Expand
+      (Widget      : not null access Gtk_Widget_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation) return Boolean;
+   --  Computes whether a parent widget should give this widget extra space
+   --  when possible.
+   --  Widgets with children should check this, rather than looking at
+   --  [methodGtk.Widget.get_hexpand] or [methodGtk.Widget.get_vexpand].
+   --  This function already checks whether the widget is visible, so
+   --  visibility does not need to be checked separately. Non-visible widgets
+   --  are not expanded.
+   --  The computed expand value uses either the expand setting explicitly set
+   --  on the widget itself, or, if none has been explicitly set, the widget
+   --  may expand if some of its children do.
+   --  @param Orientation expand direction
+   --  @return whether widget tree rooted here should be expanded
+
+   function Compute_Point
+      (Widget    : not null access Gtk_Widget_Record;
+       Target    : not null access Gtk_Widget_Record'Class;
+       Point     : not null access Graphene.Point.Graphene_Point_T;
+       Out_Point : not null access Graphene.Point.Graphene_Point_T)
+       return Boolean;
+   --  Translates the given Point in Widget's coordinates to coordinates in
+   --  Target's coordinate system.
+   --  In order to perform this operation, both widgets must share a a common
+   --  ancestor. If that is not the case, Out_Point is set to (0, 0) and false
+   --  is returned.
+   --  @param Target the widget to transform into
+   --  @param Point a point in Widget's coordinate system
+   --  @param Out_Point set to the corresponding coordinates in Target's
+   --  coordinate system
+   --  @return true if Src_Widget and Dest_Widget have a common ancestor,
+   --  false otherwise
+
+   function Compute_Transform
+      (Widget        : not null access Gtk_Widget_Record;
+       Target        : not null access Gtk_Widget_Record'Class;
+       Out_Transform : not null access Graphene.Matrix.Graphene_Matrix_T)
+       return Boolean;
+   --  Computes a matrix suitable to describe a transformation from Widget's
+   --  coordinate system into Target's coordinate system.
+   --  The transform can not be computed in certain cases, for example when
+   --  Widget and Target do not share a common ancestor. In that case
+   --  Out_Transform gets set to the identity matrix.
+   --  To learn more about widget coordinate systems, see the coordinate
+   --  system [overview](coordinates.html).
+   --  @param Target the target widget that the matrix will transform to
+   --  @param Out_Transform location to store the final transformation
+   --  @return true if the transform could be computed
 
    function Contains
       (Widget : not null access Gtk_Widget_Record;
@@ -574,6 +789,25 @@ package Gtk.Widget is
    --  Deprecated since 4.12, 1
    --  @return the width of the Widget
 
+   procedure Get_Allocation
+      (Widget     : not null access Gtk_Widget_Record;
+       Allocation : out Gdk.Rectangle.Gdk_Rectangle);
+   pragma Obsolescent (Get_Allocation);
+   --  Retrieves the widget's allocation.
+   --  Note, when implementing a layout widget: a widget's allocation will be
+   --  its "adjusted" allocation, that is, the widget's parent typically calls
+   --  [methodGtk.Widget.size_allocate] with an allocation, and that allocation
+   --  is then adjusted (to handle margin and alignment for example) before
+   --  assignment to the widget. [methodGtk.Widget.get_allocation] returns the
+   --  adjusted allocation that was actually assigned to the widget. The
+   --  adjusted allocation is guaranteed to be completely contained within the
+   --  [methodGtk.Widget.size_allocate] allocation, however.
+   --  So a layout widget is guaranteed that its children stay inside the
+   --  assigned bounds, but not that they have exactly the bounds the widget
+   --  assigned.
+   --  Deprecated since 4.12, 1
+   --  @param Allocation a pointer to a `GtkAllocation` to copy to
+
    function Get_Ancestor
       (Widget      : not null access Gtk_Widget_Record;
        Widget_Type : GType) return Gtk_Widget;
@@ -657,6 +891,15 @@ package Gtk.Widget is
    --  @param Child_Visible whether Widget should be mapped along with its
    --  parent
 
+   procedure Get_Color
+      (Widget : not null access Gtk_Widget_Record;
+       Color  : out Gdk.RGBA.Gdk_RGBA);
+   --  Gets the current foreground color for the widget's style.
+   --  This function should only be used in snapshot implementations that need
+   --  to do custom drawing with the foreground color.
+   --  Since: gtk+ 4.10
+   --  @param Color return location for the color
+
    function Get_Css_Classes
       (Widget : not null access Gtk_Widget_Record)
        return GNAT.Strings.String_List;
@@ -674,6 +917,56 @@ package Gtk.Widget is
       (Widget : not null access Gtk_Widget_Record) return UTF8_String;
    --  Returns the CSS name of the widget.
    --  @return the CSS name
+
+   function Get_Cursor
+      (Widget : not null access Gtk_Widget_Record)
+       return Gdk.Cursor.Gdk_Cursor;
+   --  Gets the cursor set on the widget.
+   --  See [methodGtk.Widget.set_cursor] for details.
+   --  @return the cursor that is set on Widget. Has
+   --  transfer-ownership='none'.
+
+   procedure Set_Cursor
+      (Widget : not null access Gtk_Widget_Record;
+       Cursor : access Gdk.Cursor.Gdk_Cursor_Record'Class);
+   --  Sets the cursor to be shown when the pointer hovers over the widget.
+   --  If the Cursor is `NULL`, Widget will use the cursor inherited from its
+   --  parent.
+   --  @param Cursor the new cursor
+
+   function Get_Direction
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Enums.Gtk_Text_Direction;
+   --  Gets the reading direction for the widget.
+   --  See [methodGtk.Widget.set_direction].
+   --  @return the reading direction for the widget
+
+   procedure Set_Direction
+      (Widget : not null access Gtk_Widget_Record;
+       Dir    : Gtk.Enums.Gtk_Text_Direction);
+   --  Sets the reading direction on the widget.
+   --  This direction controls the primary direction for widgets containing
+   --  text, and also the direction in which the children of a container are
+   --  packed. The ability to set the direction is present in order so that
+   --  correct localization into languages with right-to-left reading
+   --  directions can be done.
+   --  Generally, applications will let the default reading direction prevail,
+   --  except for widgets where the children are arranged in an order that is
+   --  explicitly visual rather than logical (such as buttons for text
+   --  justification).
+   --  If the direction is set to [enumGtk.TextDirection.none], then the value
+   --  set by [funcGtk.Widget.set_default_direction] will be used.
+   --  @param Dir the new direction
+
+   function Get_Display
+      (Widget : not null access Gtk_Widget_Record) return Gdk.Gdk_Display;
+   --  Get the display for the window that the widget belongs to.
+   --  This function can only be called after the widget has been added to a
+   --  widget hierarchy with a `GtkRoot` at the top.
+   --  In general, you should only create display-specific resources when a
+   --  widget has been realized, and you should free those resources when the
+   --  widget is unrealized.
+   --  @return the display for this widget. Has transfer-ownership='none'.
 
    function Get_First_Child
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
@@ -772,6 +1065,29 @@ package Gtk.Widget is
    --  Deprecated since 4.16, 1
    --  @param Options a `cairo_font_options_t` struct to unset any previously
    --  set default font options
+
+   function Get_Frame_Clock
+      (Widget : not null access Gtk_Widget_Record)
+       return Gdk.Frame_Clock.Gdk_Frame_Clock;
+   --  Obtains the frame clock for a widget.
+   --  The frame clock is a global "ticker" that can be used to drive
+   --  animations and repaints. The most common reason to get the frame clock
+   --  is to call [methodGdk.FrameClock.get_frame_time], in order to get a time
+   --  to use for animating. For example you might record the start of the
+   --  animation with an initial value from
+   --  [methodGdk.FrameClock.get_frame_time], and then update the animation by
+   --  calling [methodGdk.FrameClock.get_frame_time] again during each repaint.
+   --  [methodGdk.FrameClock.request_phase] will result in a new frame on the
+   --  clock, but won't necessarily repaint any widgets. To repaint a widget,
+   --  you have to use [methodGtk.Widget.queue_draw] which invalidates the
+   --  widget (thus scheduling it to receive a draw on the next frame).
+   --  [methodGtk.Widget.queue_draw] will also end up requesting a frame on the
+   --  appropriate frame clock.
+   --  A widget's frame clock will not change while the widget is mapped.
+   --  Reparenting a widget (which implies a temporary unmap) can change the
+   --  widget's frame clock.
+   --  Unrealized widgets do not have a frame clock.
+   --  @return the frame clock. Has transfer-ownership='none'.
 
    function Get_Halign
       (Widget : not null access Gtk_Widget_Record) return Gtk_Align;
@@ -979,6 +1295,15 @@ package Gtk.Widget is
    --  alphanumeric symbols, dashes and underscores will suffice.
    --  @param Name name for the widget
 
+   function Get_Native
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Native.Gtk_Native;
+   --  Returns the nearest `GtkNative` ancestor of the widget.
+   --  This function will return `NULL` if the widget is not contained inside
+   --  a widget tree with a native ancestor.
+   --  `GtkNative` widgets will return themselves here.
+   --  @return the `GtkNative` ancestor of Widget
+
    function Get_Next_Sibling
       (Widget : not null access Gtk_Widget_Record) return Gtk_Widget;
    --  Returns the widget's next sibling.
@@ -1014,6 +1339,23 @@ package Gtk.Widget is
    --  thus by default appear non-translucent, even if they are attached to a
    --  toplevel that is translucent.
    --  @param Opacity desired opacity, between 0 and 1
+
+   function Get_Overflow
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Enums.Gtk_Overflow;
+   --  Returns the widget's overflow value.
+   --  @return The widget's overflow value
+
+   procedure Set_Overflow
+      (Widget   : not null access Gtk_Widget_Record;
+       Overflow : Gtk.Enums.Gtk_Overflow);
+   --  Sets how the widget treats content that is drawn outside the it's
+   --  content area.
+   --  See the definition of [enumGtk.Overflow] for details.
+   --  This setting is provided for widget implementations and should not be
+   --  used by application code.
+   --  The default value is [enumGtk.Overflow.visible].
+   --  @param Overflow desired overflow value
 
    function Get_Pango_Context
       (Widget : not null access Gtk_Widget_Record)
@@ -1071,6 +1413,17 @@ package Gtk.Widget is
    --  This function is primarily meant for widget implementations.
    --  @return the widget's previous sibling. Has transfer-ownership='none'.
 
+   function Get_Primary_Clipboard
+      (Widget : not null access Gtk_Widget_Record)
+       return Gdk.Clipboard.Gdk_Clipboard;
+   --  Gets the primary clipboard of the widget.
+   --  This is a utility function to get the primary clipboard object for the
+   --  display that Widget is using.
+   --  Note that this function always works, even when Widget is not realized
+   --  yet.
+   --  @return the appropriate clipboard object. Has
+   --  transfer-ownership='none'.
+
    function Get_Realized
       (Widget : not null access Gtk_Widget_Record) return Boolean;
    --  Determines whether the widget is realized.
@@ -1091,6 +1444,16 @@ package Gtk.Widget is
    --  its toplevel when it has the focus, even if another widget is the
    --  default.
    --  @param Receives_Default whether or not Widget can be a default widget
+
+   function Get_Request_Mode
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Enums.Gtk_Size_Request_Mode;
+   --  Gets whether the widget prefers a height-for-width layout or a
+   --  width-for-height layout.
+   --  Single-child widgets generally propagate the preference of their child,
+   --  more complex widgets need to request something either in context of
+   --  their children or in context of their allocation capabilities.
+   --  @return The `GtkSizeRequestMode` preferred by Widget.
 
    function Get_Scale_Factor
       (Widget : not null access Gtk_Widget_Record) return Glib.Gint;
@@ -1124,6 +1487,21 @@ package Gtk.Widget is
    --  Insensitive widgets are known as "inactive", "disabled", or "ghosted" in
    --  some other toolkits.
    --  @param Sensitive true to make the widget sensitive
+
+   function Get_Size
+      (Widget      : not null access Gtk_Widget_Record;
+       Orientation : Gtk.Enums.Gtk_Orientation) return Glib.Gint;
+   --  Returns the content width or height of the widget.
+   --  Which dimension is returned depends on Orientation.
+   --  This is equivalent to calling [methodGtk.Widget.get_width] for
+   --  [enumGtk.Orientation.horizontal] or [methodGtk.Widget.get_height] for
+   --  [enumGtk.Orientation.vertical], but can be used when writing
+   --  orientation-independent code, such as when implementing
+   --  [ifaceGtk.Orientable] widgets.
+   --  To learn more about widget sizes, see the coordinate system
+   --  [overview](coordinates.html).
+   --  @param Orientation the orientation to query
+   --  @return the size of Widget in Orientation
 
    procedure Get_Size_Request
       (Widget : not null access Gtk_Widget_Record;
@@ -1169,6 +1547,31 @@ package Gtk.Widget is
    --  other padding or border properties set by any subclass of `GtkWidget`.
    --  @param Width width Widget should request, or -1 to unset
    --  @param Height height Widget should request, or -1 to unset
+
+   function Get_State_Flags
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Enums.Gtk_State_Flags;
+   --  Returns the widget state as a flag set.
+   --  It is worth mentioning that the effective
+   --  [flagsGtk.StateFlags.insensitive] state will be returned, that is, also
+   --  based on parent insensitivity, even if Widget itself is sensitive.
+   --  Also note that if you are looking for a way to obtain the
+   --  [flagsGtk.StateFlags] to pass to a [classGtk.StyleContext] method, you
+   --  should look at [methodGtk.StyleContext.get_state].
+   --  @return the state flags of widget
+
+   procedure Set_State_Flags
+      (Widget : not null access Gtk_Widget_Record;
+       Flags  : Gtk.Enums.Gtk_State_Flags;
+       Clear  : Boolean);
+   --  Turns on flag values in the current widget state.
+   --  Typical widget states are insensitive, prelighted, etc.
+   --  This function accepts the values [flagsGtk.StateFlags.dir-ltr] and
+   --  [flagsGtk.StateFlags.dir-rtl] but ignores them. If you want to set the
+   --  widget's direction, use [methodGtk.Widget.set_direction].
+   --  This function is for use in widget implementations.
+   --  @param Flags state flags to turn on
+   --  @param Clear whether to clear state before turning on Flags
 
    function Get_Template_Child
       (Widget      : not null access Gtk_Widget_Record;
@@ -1455,6 +1858,36 @@ package Gtk.Widget is
    --  [methodGtk.Widget.set_visible].
    --  @return true if the widget and all its parents are visible
 
+   function Keynav_Failed
+      (Widget    : not null access Gtk_Widget_Record;
+       Direction : Gtk.Enums.Gtk_Direction_Type) return Boolean;
+   --  Emits the [signalGtk.Widget::keynav-failed] signal on the widget.
+   --  This function should be called whenever keyboard navigation within a
+   --  single widget hits a boundary.
+   --  The return value of this function should be interpreted in a way
+   --  similar to the return value of [methodGtk.Widget.child_focus]. When true
+   --  is returned, stay in the widget, the failed keyboard navigation is ok
+   --  and/or there is nowhere we can/should move the focus to. When false is
+   --  returned, the caller should continue with keyboard navigation outside
+   --  the widget, e.g. by calling [methodGtk.Widget.child_focus] on the
+   --  widget's toplevel.
+   --  The default [signalGtk.Widget::keynav-failed] handler returns false for
+   --  [enumGtk.DirectionType.tab-forward] and
+   --  [enumGtk.DirectionType.tab-backward]. For the other values of
+   --  [enumGtk.DirectionType] it returns true.
+   --  Whenever the default handler returns true, it also calls
+   --  [methodGtk.Widget.error_bell] to notify the user of the failed keyboard
+   --  navigation.
+   --  A use case for providing an own implementation of `::keynav-failed`
+   --  (either by connecting to it or by overriding it) would be a row of
+   --  [classGtk.Entry] widgets where the user should be able to navigate the
+   --  entire row with the cursor keys, as e.g. known from user interfaces that
+   --  require entering license keys.
+   --  @param Direction direction of focus movement
+   --  @return true if stopping keyboard navigation is fine, false if the
+   --  emitting widget should try to handle the keyboard navigation attempt in
+   --  its parent widget
+
    function List_Mnemonic_Labels
       (Widget : not null access Gtk_Widget_Record) return Widget_List.Glist;
    --  Returns the widgets for which this widget is the target of a mnemonic.
@@ -1471,6 +1904,35 @@ package Gtk.Widget is
    --  Causes a widget to be mapped if it isn't already.
    --  This function is only for use in widget implementations.
 
+   procedure Measure
+      (Widget           : not null access Gtk_Widget_Record;
+       Orientation      : Gtk.Enums.Gtk_Orientation;
+       For_Size         : Glib.Gint;
+       Minimum          : out Glib.Gint;
+       Natural          : out Glib.Gint;
+       Minimum_Baseline : out Glib.Gint;
+       Natural_Baseline : out Glib.Gint);
+   --  Measures Widget in the orientation Orientation and for the given
+   --  For_Size.
+   --  As an example, if Orientation is Gtk.Enums.Orientation_Horizontal and
+   --  For_Size is 300, this functions will compute the minimum and natural
+   --  width of Widget if it is allocated at a height of 300 pixels.
+   --  See [GtkWidget's geometry management
+   --  section](class.Widget.htmlheight-for-width-geometry-management) for a
+   --  more details on implementing `GtkWidgetClass.measure`.
+   --  @param Orientation the orientation to measure
+   --  @param For_Size Size for the opposite of Orientation, i.e. if
+   --  Orientation is Gtk.Enums.Orientation_Horizontal, this is the height the
+   --  widget should be measured with. The Gtk.Enums.Orientation_Vertical case
+   --  is analogous. This way, both height-for-width and width-for-height
+   --  requests can be implemented. If no size is known, -1 can be passed.
+   --  @param Minimum location to store the minimum size
+   --  @param Natural location to store the natural size
+   --  @param Minimum_Baseline location to store the baseline position for the
+   --  minimum size, or -1 to report no baseline
+   --  @param Natural_Baseline location to store the baseline position for the
+   --  natural size, or -1 to report no baseline
+
    function Mnemonic_Activate
       (Widget        : not null access Gtk_Widget_Record;
        Group_Cycling : Boolean) return Boolean;
@@ -1478,6 +1940,48 @@ package Gtk.Widget is
    --  @param Group_Cycling true if there are other widgets with the same
    --  mnemonic
    --  @return true if the signal has been handled
+
+   function Observe_Children
+      (Widget : not null access Gtk_Widget_Record)
+       return Glib.List_Model.Glist_Model;
+   --  Returns a list model to track the children of the widget.
+   --  Calling this function will enable extra internal bookkeeping to track
+   --  children and emit signals on the returned listmodel. It may slow down
+   --  operations a lot.
+   --  Applications should try hard to avoid calling this function because of
+   --  the slowdowns.
+   --  @return a list model tracking Widget's children
+
+   function Observe_Controllers
+      (Widget : not null access Gtk_Widget_Record)
+       return Glib.List_Model.Glist_Model;
+   --  Returns a list model to track the event controllers of the widget.
+   --  Calling this function will enable extra internal bookkeeping to track
+   --  controllers and emit signals on the returned listmodel. It may slow down
+   --  operations a lot.
+   --  Applications should try hard to avoid calling this function because of
+   --  the slowdowns.
+   --  @return a list model tracking Widget's controllers
+
+   function Pick
+      (Widget : not null access Gtk_Widget_Record;
+       X      : Gdouble;
+       Y      : Gdouble;
+       Flags  : Gtk.Enums.Gtk_Pick_Flags) return Gtk_Widget;
+   --  Finds the descendant of the widget closest to a point.
+   --  The point (x, y) must be given in widget coordinates, so (0, 0) is
+   --  assumed to be the top left of Widget's content area.
+   --  Usually widgets will return `NULL` if the given coordinate is not
+   --  contained in Widget checked via [methodGtk.Widget.contains]. Otherwise
+   --  they will recursively try to find a child that does not return `NULL`.
+   --  Widgets are however free to customize their picking algorithm.
+   --  This function is used on the toplevel to determine the widget below the
+   --  mouse cursor for purposes of hover highlighting and delivering events.
+   --  @param X x coordinate to test, relative to Widget's origin
+   --  @param Y y coordinate to test, relative to Widget's origin
+   --  @param Flags flags to influence what is picked
+   --  @return the widget's descendant at (x, y). Has
+   --  transfer-ownership='none'.
 
    procedure Queue_Allocate (Widget : not null access Gtk_Widget_Record);
    --  Flags the widget for a rerun of the [vfuncGtk.Widget.size_allocate]
@@ -1585,6 +2089,16 @@ package Gtk.Widget is
    --  is realized and mapped.
    --  Deprecated since 4.10, 1
 
+   procedure Size_Allocate
+      (Widget     : not null access Gtk_Widget_Record;
+       Allocation : Gdk.Rectangle.Gdk_Rectangle;
+       Baseline   : Glib.Gint);
+   --  Allocates widget with a transformation that translates the origin to
+   --  the position in Allocation.
+   --  This is a simple form of [methodGtk.Widget.allocate].
+   --  @param Allocation position and size to be allocated to Widget
+   --  @param Baseline the baseline of the child, or -1
+
    procedure Translate_Coordinates
       (Widget      : not null access Gtk_Widget_Record;
        Dest_Widget : not null access Gtk_Widget_Record'Class;
@@ -1627,6 +2141,14 @@ package Gtk.Widget is
    --  Causes a widget to be unrealized.
    --  This frees all GDK resources associated with the widget.
    --  This function is only useful in widget implementations.
+
+   procedure Unset_State_Flags
+      (Widget : not null access Gtk_Widget_Record;
+       Flags  : Gtk.Enums.Gtk_State_Flags);
+   --  Turns off flag values for the current widget state.
+   --  See [methodGtk.Widget.set_state_flags].
+   --  This function is for use in widget implementations.
+   --  @param Flags state flags to turn off
 
    ----------------------
    -- GtkAda additions --
@@ -1740,6 +2262,21 @@ package Gtk.Widget is
       Widget   : access Gtk_Widget_Record'Class;
       Snapshot : System.Address);
    --  Call the parent class "snapshot" implementation.
+
+   ---------------
+   -- Functions --
+   ---------------
+
+   function Get_Default_Direction return Gtk.Enums.Gtk_Text_Direction;
+   --  Obtains the default reading direction.
+   --  See [funcGtk.Widget.set_default_direction].
+   --  @return the current default direction
+
+   procedure Set_Default_Direction (Dir : Gtk.Enums.Gtk_Text_Direction);
+   --  Sets the default reading direction for widgets.
+   --  See [methodGtk.Widget.set_direction].
+   --  @param Dir the new default direction, either
+   --  [enumGtk.TextDirection.ltr] or [enumGtk.TextDirection.rtl]
 
    ----------------
    -- Properties --
@@ -1862,8 +2399,7 @@ package Gtk.Widget is
    --  Type: Gdouble
    --  The requested opacity of the widget.
 
-   Overflow_Property : constant Glib.Properties.Property_Boxed;
-   --  Type: Overflow
+   Overflow_Property : constant Gtk.Enums.Property_Gtk_Overflow;
    --  How content outside the widget's content area is treated.
    --
    --  This property is meant to be set by widget implementations, typically
@@ -2246,8 +2782,8 @@ private
      Glib.Properties.Build ("receives-default");
    Parent_Property : constant Glib.Properties.Property_Object :=
      Glib.Properties.Build ("parent");
-   Overflow_Property : constant Glib.Properties.Property_Boxed :=
-     Glib.Properties.Build ("overflow");
+   Overflow_Property : constant Gtk.Enums.Property_Gtk_Overflow :=
+     Gtk.Enums.Build ("overflow");
    Opacity_Property : constant Glib.Properties.Property_Double :=
      Glib.Properties.Build ("opacity");
    Name_Property : constant Glib.Properties.Property_String :=
