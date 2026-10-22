@@ -1297,6 +1297,21 @@ package body Gtk.Widget is
       return Internal (Get_Object (Widget)) /= 0;
    end Get_Sensitive;
 
+   ------------------
+   -- Get_Settings --
+   ------------------
+
+   function Get_Settings
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Settings.Gtk_Settings
+   is
+      function Internal (Widget : System.Address) return System.Address;
+      pragma Import (C, Internal, "gtk_widget_get_settings");
+      Stub_Gtk_Settings : Gtk.Settings.Gtk_Settings_Record;
+   begin
+      return Gtk.Settings.Gtk_Settings (Get_User_Data (Internal (Get_Object (Widget)), Stub_Gtk_Settings));
+   end Get_Settings;
+
    --------------
    -- Get_Size --
    --------------
