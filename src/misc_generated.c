@@ -50,6 +50,22 @@ void gtkada_Paintable_set_snapshot(GdkPaintableInterface* iface, void* handler) 
     iface->snapshot = handler;
 }
 
+void gtkada_Actionable_set_get_action_name(GtkActionableInterface* iface, void* handler) {
+    iface->get_action_name = handler;
+}
+
+void gtkada_Actionable_set_get_action_target_value(GtkActionableInterface* iface, void* handler) {
+    iface->get_action_target_value = handler;
+}
+
+void gtkada_Actionable_set_set_action_name(GtkActionableInterface* iface, void* handler) {
+    iface->set_action_name = handler;
+}
+
+void gtkada_Actionable_set_set_action_target_value(GtkActionableInterface* iface, void* handler) {
+    iface->set_action_target_value = handler;
+}
+
 void gtkada_Accessible_set_get_accessible_id(GtkAccessibleInterface* iface, void* handler) {
     iface->get_accessible_id = handler;
 }

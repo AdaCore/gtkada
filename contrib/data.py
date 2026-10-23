@@ -22,7 +22,7 @@ enums = (
 
 interfaces = (
     "Gdk.Paintable",
-    "--Gtk.Actionable",
+    "Gtk.Actionable",
     "Gtk.Accessible",
     "Gtk.AccessibleRange",
     "Gtk.AccessibleText",
@@ -33,7 +33,7 @@ interfaces = (
     "Gtk.BuilderScope",
     "Gtk.CellEditable",
     "Gtk.CellLayout",
-    "--Gtk.ColorChooser",
+    "--Gtk.ColorChooser", # Obsolescent
     "Gtk.ConstraintTarget",
     "Gtk.Editable",
     "--Gtk.FileChooser",
