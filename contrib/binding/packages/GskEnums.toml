@@ -22,3 +22,16 @@ ctype = "GskPathOperation"
 
 [[enum]]
 ctype = "GskPathForeachFlags"
+
+[[enum]]
+ctype = "GskBlendMode"
+
+[[enum]]
+ctype = "GskMaskMode"
+
+[[enum]]
+ctype = "GskPorterDuff"
+
+[[enum]]
+ctype = "GskIsolation"
+asbitfield = true

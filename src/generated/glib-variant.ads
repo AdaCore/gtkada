@@ -261,6 +261,7 @@
 
 pragma Warnings (Off, "*is already use-visible*");
 with GNAT.Strings;            use GNAT.Strings;
+with Glib.Bytes;              use Glib.Bytes;
 with Glib.Error;              use Glib.Error;
 with Glib.Generic_Properties; use Glib.Generic_Properties;
 with Glib.String;             use Glib.String;
@@ -440,6 +441,41 @@ package Glib.Variant is
    --  Creates a new double Glib.Variant.Gvariant instance.
    --  Since: gtk+ 2.24
    --  @param Value a Gdouble floating point value
+
+   procedure G_New_From_Bytes
+      (Self     : out Gvariant;
+       The_Type : Gvariant_Type;
+       Bytes    : Glib.Bytes.Gbytes;
+       Trusted  : Boolean);
+   --  Constructs a new serialized-mode Glib.Variant.Gvariant instance. This
+   --  is the inner interface for creation of new serialized values that gets
+   --  called from various functions in gvariant.c.
+   --  A reference is taken on Bytes.
+   --  The data in Bytes must be aligned appropriately for the Type being
+   --  loaded. Otherwise this function will internally create a copy of the
+   --  memory (since GLib 2.60) or (in older versions) fail and exit the
+   --  process.
+   --  Since: gtk+ 2.36
+   --  @param The_Type a Glib.Variant.Gvariant_Type
+   --  @param Bytes a Glib.Bytes.Gbytes
+   --  @param Trusted if the contents of Bytes are trusted
+
+   function Gvariant_New_From_Bytes
+      (The_Type : Gvariant_Type;
+       Bytes    : Glib.Bytes.Gbytes;
+       Trusted  : Boolean) return Gvariant;
+   --  Constructs a new serialized-mode Glib.Variant.Gvariant instance. This
+   --  is the inner interface for creation of new serialized values that gets
+   --  called from various functions in gvariant.c.
+   --  A reference is taken on Bytes.
+   --  The data in Bytes must be aligned appropriately for the Type being
+   --  loaded. Otherwise this function will internally create a copy of the
+   --  memory (since GLib 2.60) or (in older versions) fail and exit the
+   --  process.
+   --  Since: gtk+ 2.36
+   --  @param The_Type a Glib.Variant.Gvariant_Type
+   --  @param Bytes a Glib.Bytes.Gbytes
+   --  @param Trusted if the contents of Bytes are trusted
 
    procedure G_New_Handle (Self : out Gvariant; Value : Gint32);
    --  Creates a new handle Glib.Variant.Gvariant instance.
@@ -838,6 +874,15 @@ package Glib.Variant is
    --  Since: gtk+ 2.24
    --  @param Index the index of the child to fetch
    --  @return the child at the specified index. Has
+   --  transfer-ownership='full'.
+
+   function Get_Data_As_Bytes (Self : Gvariant) return Glib.Bytes.Gbytes;
+   --  Returns a pointer to the serialized form of a Glib.Variant.Gvariant
+   --  instance. The semantics of this function are exactly the same as
+   --  g_variant_get_data, except that the returned Glib.Bytes.Gbytes holds a
+   --  reference to the variant data.
+   --  Since: gtk+ 2.36
+   --  @return A new Glib.Bytes.Gbytes representing the variant data. Has
    --  transfer-ownership='full'.
 
    function Get_Double (Self : Gvariant) return Gdouble;

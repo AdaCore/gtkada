@@ -10,11 +10,6 @@ bind = false
 # implementation detail
 
 [[method]]
-id = "g_variant_type_new_from_bytes"
-bind = false
-# requires GByte
-
-[[method]]
 id = "g_variant_type_new_tuple"
 bind = false
 # c arrays

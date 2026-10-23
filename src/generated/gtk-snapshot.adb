@@ -238,6 +238,22 @@ package body Gtk.Snapshot is
       Internal (Get_Object (Self));
    end Pop;
 
+   ----------------
+   -- Push_Blend --
+   ----------------
+
+   procedure Push_Blend
+      (Self       : not null access Gtk_Snapshot_Record;
+       Blend_Mode : Gsk.Enums.Gsk_Blend_Mode)
+   is
+      procedure Internal
+         (Self       : System.Address;
+          Blend_Mode : Gsk.Enums.Gsk_Blend_Mode);
+      pragma Import (C, Internal, "gtk_snapshot_push_blend");
+   begin
+      Internal (Get_Object (Self), Blend_Mode);
+   end Push_Blend;
+
    ---------------
    -- Push_Blur --
    ---------------
@@ -286,6 +302,22 @@ package body Gtk.Snapshot is
       Internal (Get_Object (Self), Color_Matrix, Color_Offset);
    end Push_Color_Matrix;
 
+   --------------------
+   -- Push_Composite --
+   --------------------
+
+   procedure Push_Composite
+      (Self : not null access Gtk_Snapshot_Record;
+       Op   : Gsk.Enums.Gsk_Porter_Duff)
+   is
+      procedure Internal
+         (Self : System.Address;
+          Op   : Gsk.Enums.Gsk_Porter_Duff);
+      pragma Import (C, Internal, "gtk_snapshot_push_composite");
+   begin
+      Internal (Get_Object (Self), Op);
+   end Push_Composite;
+
    ---------------
    -- Push_Copy --
    ---------------
@@ -328,6 +360,38 @@ package body Gtk.Snapshot is
    begin
       Internal (Get_Object (Self), Get_Object (Path), Fill_Rule);
    end Push_Fill;
+
+   --------------------
+   -- Push_Isolation --
+   --------------------
+
+   procedure Push_Isolation
+      (Self     : not null access Gtk_Snapshot_Record;
+       Features : Gsk.Enums.Gsk_Isolation)
+   is
+      procedure Internal
+         (Self     : System.Address;
+          Features : Gsk.Enums.Gsk_Isolation);
+      pragma Import (C, Internal, "gtk_snapshot_push_isolation");
+   begin
+      Internal (Get_Object (Self), Features);
+   end Push_Isolation;
+
+   ---------------
+   -- Push_Mask --
+   ---------------
+
+   procedure Push_Mask
+      (Self      : not null access Gtk_Snapshot_Record;
+       Mask_Mode : Gsk.Enums.Gsk_Mask_Mode)
+   is
+      procedure Internal
+         (Self      : System.Address;
+          Mask_Mode : Gsk.Enums.Gsk_Mask_Mode);
+      pragma Import (C, Internal, "gtk_snapshot_push_mask");
+   begin
+      Internal (Get_Object (Self), Mask_Mode);
+   end Push_Mask;
 
    ------------------
    -- Push_Opacity --
@@ -610,6 +674,20 @@ package body Gtk.Snapshot is
    begin
       return Internal (Get_Object (Self), Size);
    end To_Paintable;
+
+   ---------------
+   -- Transform --
+   ---------------
+
+   procedure Transform
+      (Self      : not null access Gtk_Snapshot_Record;
+       Transform : Gsk.Transform.Gsk_Transform)
+   is
+      procedure Internal (Self : System.Address; Transform : System.Address);
+      pragma Import (C, Internal, "gtk_snapshot_transform");
+   begin
+      Internal (Get_Object (Self), Get_Object (Transform));
+   end Transform;
 
    ----------------------
    -- Transform_Matrix --

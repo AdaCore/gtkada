@@ -163,6 +163,26 @@ package body Glib.Application is
       Free (Tmp_Property);
    end Bind_Busy_Property;
 
+   -------------------------
+   -- Create_File_For_Arg --
+   -------------------------
+
+   function Create_File_For_Arg
+      (Self : not null access Gapplication_Command_Line_Record;
+       Arg  : UTF8_String) return Glib.GFile.Gfile
+   is
+      function Internal
+         (Self : System.Address;
+          Arg  : Gtkada.Types.Chars_Ptr) return Glib.GFile.Gfile;
+      pragma Import (C, Internal, "g_application_command_line_create_file_for_arg");
+      Tmp_Arg    : Gtkada.Types.Chars_Ptr := New_String (Arg);
+      Tmp_Return : Glib.GFile.Gfile;
+   begin
+      Tmp_Return := Internal (Get_Object (Self), Tmp_Arg);
+      Free (Tmp_Arg);
+      return Tmp_Return;
+   end Create_File_For_Arg;
+
    ----------
    -- Done --
    ----------
@@ -368,6 +388,21 @@ package body Glib.Application is
    begin
       return Gtkada.Bindings.Value_Allowing_Null (Internal (Get_Object (Self)));
    end Get_Resource_Base_Path;
+
+   ---------------
+   -- Get_Stdin --
+   ---------------
+
+   function Get_Stdin
+      (Self : not null access Gapplication_Command_Line_Record)
+       return Glib.Input_Stream.Ginput_Stream
+   is
+      function Internal (Self : System.Address) return System.Address;
+      pragma Import (C, Internal, "g_application_command_line_get_stdin");
+      Stub_Ginput_Stream : Glib.Input_Stream.Ginput_Stream_Record;
+   begin
+      return Glib.Input_Stream.Ginput_Stream (Get_User_Data (Internal (Get_Object (Self)), Stub_Ginput_Stream));
+   end Get_Stdin;
 
    -----------------
    -- Get_Version --
