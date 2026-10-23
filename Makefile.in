@@ -83,7 +83,7 @@ tools:
 
 build_library_type/%:  src/gtkada-intl.adb
 	@echo "====== Building $(@F) libraries ====="
-	${GPRBUILD_FULL} -XLIBRARY_TYPE=$(@F) -Psrc/gtkada.gpr
+	${GPRBUILD_FULL} -XLIBRARY_TYPE=$(@F) -Pgtkada.gpr
 
 src/gtkada-intl.adb: src/gtkada-intl.gpb Makefile
 	gnatprep -DGETTEXT_INTL=$(GETTEXT_INTL) -DHAVE_GETTEXT=$(HAVE_GETTEXT) src/gtkada-intl.gpb $@
@@ -91,7 +91,7 @@ src/gtkada-intl.adb: src/gtkada-intl.gpb Makefile
 tests:
 	@echo "====== Building demo ====="
 	cd gtkada_demo; ${GPRBUILD_FULL} -XGTKADA_EXTERNALLY_BUILT=yes \
-	   -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) -Pgtkada_demo.gpr -aP ../src
+	   -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) -Pgtkada_demo.gpr -aP ..
 
 demo: tests
 	cd gtkada_demo && ./gtkada_demo
@@ -100,7 +100,7 @@ install/%: force
 	${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(@F) --build-name=$(@F) \
 		--sources-subdir=include/gtkada/gtkada.$(@F) \
 		--lib-subdir=lib/gtkada/gtkada.$(@F) \
-		-Psrc/gtkada.gpr
+		-Pgtkada.gpr
 
 install-clean:
 ifneq (,$(wildcard $(prefix)/lib/gnat/manifests/gtkada))
@@ -123,7 +123,7 @@ install: install-clean install-examples
 	@echo "====== Installing demo ====="
 	cd gtkada_demo; ${GPRINSTALL_FULL} -XLIBRARY_TYPE=$(LIBRARY_TYPE_FOR_TOOLS) \
 		--mode=usage --exec-subdir=${DESTDIR}${exampledir} \
-		-Pgtkada_demo.gpr -aP ../src
+		-Pgtkada_demo.gpr -aP ..
 ifneq ($(OS),Windows_NT)
 	ln -s ${libdir} ${DESTDIR}${datadir}/examples/gtkada --force
 endif
@@ -167,9 +167,9 @@ mostlyclean-generic: clean-generic
 clean/%: force
 	# -gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/tools/tools.gpr
 	# -gprclean -r -q -XLIBRARY_TYPE=$(@F) -gtkada_demo/gtkada_demo.gpr
-	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Psrc/gtkada.gpr
+	-gprclean -r -q -XLIBRARY_TYPE=$(@F) -Pgtkada.gpr
 	rm -rf obj/gnatcov-rts
-	rm -rf src/obj/gtkada/static/gtkada-gnatcov-instr
+	rm -rf .objs/gtkada/static/gtkada-gnatcov-instr
 	rm -rf gnatcov_traces
 	rm -rf gnatcov_report
 
@@ -196,18 +196,18 @@ force:
 obj/gnatcov-rts:
 # Create a local gnatcov RTS - do not do this in the gnatcov install prefix
 	gnatcov setup --prefix=$$(pwd)/obj/gnatcov-rts
-	rm -rf src/obj/gtkada/static/
+	rm -rf .objs/gtkada/static/
 
 # Instrumented sources
-src/obj/gtkada/static/gtkada-gnatcov-instr: obj/gnatcov-rts
+.objs/gtkada/static/gtkada-gnatcov-instr: obj/gnatcov-rts
 	@echo "====== Building $(@F) libraries ====="
-	gnatcov instrument -XLIBRARY_TYPE=static -Psrc/gtkada.gpr \
+	gnatcov instrument -XLIBRARY_TYPE=static -Pgtkada.gpr \
 		--level=stmt \
 		--no-subprojects \
 	    --runtime-project $$(pwd)/obj/gnatcov-rts/share/gpr/gnatcov_rts.gpr
 
-coverage-build: src/gtkada-intl.adb src/obj/gtkada/static/gtkada-gnatcov-instr
-	gprbuild -j0 -p -g -O0 -Psrc/gtkada.gpr -XLIBRARY_TYPE=static \
+coverage-build: src/gtkada-intl.adb .objs/gtkada/static/gtkada-gnatcov-instr
+	gprbuild -j0 -p -g -O0 -Pgtkada.gpr -XLIBRARY_TYPE=static \
 	    --src-subdirs=gnatcov-instr \
 	    --implicit-with=$$(pwd)/obj/gnatcov-rts/share/gpr/gnatcov_rts.gpr
 
@@ -223,7 +223,7 @@ coverage-report:
 # Create a report from the traces; use the HTML and Cobertura formats for
 # the report, and place it in a local directory.
 	export GNATCOV_TRACE_FILE=$$(pwd)/gnatcov_traces/ && \
-	gnatcov coverage -P src/gtkada.gpr \
+	gnatcov coverage -P gtkada.gpr \
 	    --level=stmt \
 		--externally-built-projects \
 		--annotate=html,cobertura \

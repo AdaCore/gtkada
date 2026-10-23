@@ -1,4 +1,4 @@
-with "gtkada";
+with "gtkada.gpr";
 
 project Test is
    for Main use ("tree_expander.adb");

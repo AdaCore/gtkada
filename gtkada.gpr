@@ -21,7 +21,7 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "../gtkada_shared";
+with "gtkada_shared.gpr";
 
 library project GtkAda is
    case GtkAda_Shared.Need_Objective_C is
@@ -45,7 +45,7 @@ library project GtkAda is
 
    --  Put "generated" first, so that files are preferably taken from there
    --  even if they still exist in "."
-   for Source_Dirs use ("generated", ".");
+   for Source_Dirs use ("src/generated", "src");
 
    for Library_Kind use GtkAda_Shared.Library_Kind;
    for Library_Name use "gtkada";
@@ -63,20 +63,20 @@ library project GtkAda is
    case GtkAda_Shared.Library_Kind is
       when "static-pic" | "relocatable" =>
          --  Objects used for static-pic and relocatable are exactly the same
-         for Object_Dir use "obj/gtkada/relocatable";
-         for Library_Dir use "lib/gtkada/relocatable";
+         for Object_Dir use ".objs/gtkada/relocatable";
+         for Library_Dir use ".libs/gtkada/relocatable";
       when "static" =>
          case GtkAda_Shared.So_Ext is
             when ".dll" | ".dylib" =>
                --  On Windows and Darwin, objects are always position
                --  independent.
-               for Object_Dir use "obj/gtkada/relocatable";
-               for Library_Dir use "lib/gtkada/relocatable";
+               for Object_Dir use ".objs/gtkada/relocatable";
+               for Library_Dir use ".libs/gtkada/relocatable";
             when others =>
                --  This is not the case in general for Unix systems such
                --  as Linux.
-               for Object_Dir use "obj/gtkada/static";
-               for Library_Dir use "lib/gtkada/static";
+               for Object_Dir use ".objs/gtkada/static";
+               for Library_Dir use ".libs/gtkada/static";
          end case;
    end case;
 
@@ -109,10 +109,10 @@ library project GtkAda is
 
    package Install is
       for Artifacts ("share/doc/gtkada/gtkada_ug") use
-        ("../docs/gtkada_ug/_build/html/*",
-         "../docs/gtkada_ug/_build/latex/GtkAda.pdf");
+        ("docs/gtkada_ug/_build/html/*",
+         "docs/gtkada_ug/_build/latex/GtkAda.pdf");
       for Artifacts ("share/doc/gtkada") use
-        ("../docs/gtkada_rm/gtkada_rm");
+        ("docs/gtkada_rm/gtkada_rm");
    end Install;
 
    package Coverage is

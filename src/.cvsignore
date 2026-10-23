@@ -1,5 +1,4 @@
 Makefile
 Makefile.common
 gtkada-intl.adb
-gtkada.gpr
 config.h

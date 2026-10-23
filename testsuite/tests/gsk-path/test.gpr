@@ -1,4 +1,4 @@
-with "gtkada";
+with "gtkada.gpr";
 project Test is
    for Languages use ("Ada", "C");
    for Main use ("paths.adb");
