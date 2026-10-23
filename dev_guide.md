@@ -60,6 +60,10 @@ The testsuite is an Ada port of the C testsuite. The C testsuite is available in
 
 A minimal example test is available in `testsuite/tests/main/`.
 
+Tests containing more than one project file must select the automated test
+project with `project_file:` in `test.yaml`. For example, `user-guide` selects
+`test.gpr` alongside the interactive `basic_application.gpr` example.
+
 The library itself is built once, by the testsuite runner, before any test
 runs; each test is then built with `-XGTKADA_EXTERNALLY_BUILT=yes` so that it
 links against that library rather than rebuilding it. This is not merely an

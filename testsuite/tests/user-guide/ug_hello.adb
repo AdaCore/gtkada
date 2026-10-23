@@ -2,9 +2,10 @@
 --  User's Guide (docs/gtkada_ug/applications.rst). The text between the
 --  START and END markers is included verbatim in the guide.
 --
---  This procedure is only compiled by the test, not run: it would pass the
---  test driver's own switches to the application. User_Guide runs the same
---  handlers with a command line of its choosing instead.
+--  In the testsuite, this procedure is only compiled, not run: it would pass
+--  the test driver's own switches to the application. User_Guide runs the
+--  same handlers with a command line of its choosing instead. The installed
+--  basic_application.gpr project uses this procedure as its main.
 
 --  START main
 with Ada.Command_Line;

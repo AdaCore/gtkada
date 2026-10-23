@@ -15,6 +15,12 @@ application runs at a time, if this behavior is desired.
 You do not need to call `Gtk.Main.Init` or run a main loop yourself, as the
 application object does both.
 
+The complete source code for this application is also installed in
+:file:`share/examples/gtkada4/basic_application/`, under the GtkAda installation
+prefix. Build the application with :file:`basic_application.gpr`; the separate
+:file:`test.gpr` project builds the automated checks. The :file:`README` includes
+instructions for building and running both programs.
+
 The main procedure
 ==================
 

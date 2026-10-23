@@ -1,0 +1,6 @@
+with "gtkada";
+project Basic_Application is
+   for Main use ("ug_hello.adb");
+   for Object_Dir use "obj";
+   for Exec_Dir use "bin";
+end Basic_Application;
