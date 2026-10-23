@@ -660,6 +660,24 @@ package Gtk.Enums is
       Constraint_Strength_Strong => 1000000000,
       Constraint_Strength_Required => 1001001000);
 
+   type Gtk_Overflow is (
+      Overflow_Visible,
+      Overflow_Hidden);
+   pragma Convention (C, Gtk_Overflow);
+   --  Defines how content overflowing a given area should be handled.
+   --
+   --  This is used in [methodGtk.Widget.set_overflow]. The
+   --  [propertyGtk.Widget:overflow] property is modeled after the CSS overflow
+   --  property, but implements it only partially.
+
+   type Gtk_Pick_Flags is mod 2 ** Integer'Size;
+   pragma Convention (C, Gtk_Pick_Flags);
+   --  Flags that influence the behavior of [methodWidget.pick].
+
+   Pick_Default : constant Gtk_Pick_Flags := 0;
+   Pick_Insensitive : constant Gtk_Pick_Flags := 1;
+   Pick_Non_Targetable : constant Gtk_Pick_Flags := 2;
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -883,6 +901,14 @@ package Gtk.Enums is
    package Gtk_Constraint_Strength_Properties is
       new Generic_Internal_Discrete_Property (Gtk_Constraint_Strength);
    type Property_Gtk_Constraint_Strength is new Gtk_Constraint_Strength_Properties.Property;
+
+   package Gtk_Overflow_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Overflow);
+   type Property_Gtk_Overflow is new Gtk_Overflow_Properties.Property;
+
+   package Gtk_Pick_Flags_Properties is
+      new Generic_Internal_Flags_Property (Gtk_Pick_Flags);
+   type Property_Gtk_Pick_Flags is new Gtk_Pick_Flags_Properties.Property;
 
    ----------------------
    -- GtkAda additions --

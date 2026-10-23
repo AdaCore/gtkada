@@ -175,6 +175,13 @@ prefix = "GTK_ORDERING_"
 [[enum]]
 ctype = "GtkConstraintStrength"
 
+[[enum]]
+ctype = "GtkOverflow"
+
+[[enum]]
+ctype = "GtkPickFlags"
+asbitfield = true
+
 [extra]
 body = '''
 
