@@ -21,12 +21,12 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "gtkada_demo/gtkada_demo";
-with "gtkada";
-with "src/opengl/opengl";
-with "src/tools/tools";
-with "gtkada_shared";
-with "contrib/contrib";
+with "gtkada_demo/gtkada_demo.gpr";
+with "gtkada.gpr";
+with "src/opengl/opengl.gpr";
+with "src/tools/tools.gpr";
+with "gtkada_shared.gpr";
+with "contrib/contrib.gpr";
 
 project GtkAda is
    for Source_Files use ();

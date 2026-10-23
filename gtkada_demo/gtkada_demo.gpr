@@ -21,11 +21,11 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "gtkada";
-with "../gtkada_shared";
+with "gtkada.gpr";
+with "../gtkada_shared.gpr";
 
 --  TRANSITION
---  with "task_project/task_project";
+--  with "task_project/task_project.gpr";
 
 project GtkAda_Demo is
 

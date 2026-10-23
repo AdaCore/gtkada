@@ -21,8 +21,8 @@
 --                                                                          --
 ------------------------------------------------------------------------------
 
-with "../../gtkada";
-with "../../gtkada_shared";
+with "../../gtkada.gpr";
+with "../../gtkada_shared.gpr";
 
 project Tools is
    for Main use ("gdialog.adb");

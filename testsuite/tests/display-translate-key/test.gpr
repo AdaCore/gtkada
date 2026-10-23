@@ -1,4 +1,4 @@
-with "gtkada";
+with "gtkada.gpr";
 project Test is
    for Main use ("translate_key.adb");
    for Object_Dir use "obj";
