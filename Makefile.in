@@ -47,7 +47,7 @@ libdir=@libdir@
 datadir=@datadir@
 datarootdir=@datarootdir@
 exampledir=${datadir}/examples/gtkada/gtkada_demo
-basic_application_dir=${datadir}/examples/gtkada4/basic_application
+basic_application_dir=${datadir}/examples/gtkada/basic_application
 
 all:
 
