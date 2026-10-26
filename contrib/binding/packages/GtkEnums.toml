@@ -182,6 +182,9 @@ ctype = "GtkOverflow"
 ctype = "GtkPickFlags"
 asbitfield = true
 
+[[enum]]
+ctype = "GtkFontRendering"
+
 [extra]
 body = '''
 

@@ -120,11 +120,6 @@ bind = false
 # in Gtk.Clipboard
 
 [[method]]
-id = "gtk_widget_get_settings"
-bind = false
-# in Gtk.Settings
-
-[[method]]
 id = "gtk_widget_modify_style"
 bind = false
 # in Gtk.RC

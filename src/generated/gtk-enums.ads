@@ -678,6 +678,13 @@ package Gtk.Enums is
    Pick_Insensitive : constant Gtk_Pick_Flags := 1;
    Pick_Non_Targetable : constant Gtk_Pick_Flags := 2;
 
+   type Gtk_Font_Rendering is (
+      Font_Rendering_Automatic,
+      Font_Rendering_Manual);
+   pragma Convention (C, Gtk_Font_Rendering);
+   --  Values for the [propertyGtk.Settings:gtk-font-rendering] setting that
+   --  influence how GTK renders fonts.
+
    ----------------------------
    -- Enumeration Properties --
    ----------------------------
@@ -909,6 +916,10 @@ package Gtk.Enums is
    package Gtk_Pick_Flags_Properties is
       new Generic_Internal_Flags_Property (Gtk_Pick_Flags);
    type Property_Gtk_Pick_Flags is new Gtk_Pick_Flags_Properties.Property;
+
+   package Gtk_Font_Rendering_Properties is
+      new Generic_Internal_Discrete_Property (Gtk_Font_Rendering);
+   type Property_Gtk_Font_Rendering is new Gtk_Font_Rendering_Properties.Property;
 
    ----------------------
    -- GtkAda additions --

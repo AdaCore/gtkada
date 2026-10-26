@@ -336,6 +336,7 @@ with Gtk.Enums;               use Gtk.Enums;
 limited with Gtk.Event_Controller;
 limited with Gtk.Layout_Manager;
 with Gtk.Native;              use Gtk.Native;
+with Gtk.Settings;            use Gtk.Settings;
 with Pango.Context;           use Pango.Context;
 with Pango.Font_Map;          use Pango.Font_Map;
 with Pango.Layout;            use Pango.Layout;
@@ -1487,6 +1488,16 @@ package Gtk.Widget is
    --  Insensitive widgets are known as "inactive", "disabled", or "ghosted" in
    --  some other toolkits.
    --  @param Sensitive true to make the widget sensitive
+
+   function Get_Settings
+      (Widget : not null access Gtk_Widget_Record)
+       return Gtk.Settings.Gtk_Settings;
+   --  Gets the settings object holding the settings used for the widget.
+   --  Note that this function can only be called when the `GtkWidget` is
+   --  attached to a toplevel, since the settings object is specific to a
+   --  particular display. If you want to monitor the widget for changes in its
+   --  settings, connect to the `notify::display` signal.
+   --  @return the relevant settings object. Has transfer-ownership='none'.
 
    function Get_Size
       (Widget      : not null access Gtk_Widget_Record;

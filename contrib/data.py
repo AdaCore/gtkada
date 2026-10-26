@@ -36,8 +36,8 @@ interfaces = (
     "--Gtk.ColorChooser", # Obsolescent
     "Gtk.ConstraintTarget",
     "Gtk.Editable",
-    "--Gtk.FileChooser",
-    "--Gtk.FontChooser",
+    "--Gtk.FileChooser", # Obsolescent
+    "--Gtk.FontChooser", # Obsolescent
     "--Gio.Icon",
     "Gtk.Native",
     "Gtk.Orientable",
@@ -408,9 +408,9 @@ binding = (
     "Gtk.Fixed",
     "Gtk.FlowBox",
     "Gtk.FlowBoxChild",
-    "--Gtk.FontButton",
-    "--Gtk.FontChooserDialog",
-    "--Gtk.FontChooserWidget",
+    "--Gtk.FontButton",        # Obsolescent
+    "--Gtk.FontChooserDialog", # Obsolescent
+    "--Gtk.FontChooserWidget", # Obsolescent
     "Gtk.FontDialog",
     "Gtk.FontDialogButton",
     "Gtk.Frame",
@@ -504,7 +504,7 @@ binding = (
     "Gtk.Scrollbar",
     "Gtk.ScrolledWindow",
     "Gtk.ScrollInfo",
-    "--Gtk.Settings",
+    "Gtk.Settings",
     "Gtk.MultiSelection",  # Implements Gtk.SelectionModel
     "Gtk.NoSelection",     # Implements Gtk.SelectionModel
     "Gtk.SingleSelection", # Implements Gtk.SelectionModel
