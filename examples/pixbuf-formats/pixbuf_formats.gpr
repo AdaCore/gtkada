@@ -1,0 +1,7 @@
+with "../../gtkada.gpr";
+
+project Pixbuf_Formats is
+   for Main use ("pixbuf_formats.adb");
+   for Object_Dir use ".objs";
+   for Exec_Dir use "bin";
+end Pixbuf_Formats;
